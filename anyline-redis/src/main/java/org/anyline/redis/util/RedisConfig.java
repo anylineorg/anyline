@@ -54,6 +54,5 @@ public class RedisConfig extends BasicConfig{
 		}
 	}
 	
-	private static void debug(){
-	}
+	private static void debug(){}
 }
