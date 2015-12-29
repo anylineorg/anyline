@@ -1,0 +1,513 @@
+
+package org.anyline.entity;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import net.sf.json.JSONObject;
+
+import org.anyline.service.AnylineService;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+
+public class DataRow extends HashMap<String, Object> implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private Logger log = Logger.getLogger(this.getClass());
+
+	public static String PARENT 		= "PARENT";				//上级数据
+	public static String ALL_PARENT 	= "ALL_PARENT";			//所有上级数据
+	public static String CHILDREN 		= "CHILDREN";			//子数据
+	public static String CD				= "CD";
+	public static String ITEMS			= "ITEMS";
+	private DataSet container;									//包含当前对象的容器
+
+	private List<String> primaryKeys;					//主键
+	private String dataSource;							//数据源(表|视图|XML定义SQL)
+	private String author;
+	private String table;
+	private Object clientTrace;							//客户端数据
+
+	protected Boolean isNew = false;					//强制新建(适应hibernate主键策略)
+
+	@Autowired
+	protected AnylineService service;
+	
+	public DataRow(){}
+	public DataRow(Map<String,Object> map){
+		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
+			String key = itr.next();
+			Object value = map.get(key);
+			put(key.toUpperCase(), value);
+		}
+	}
+	public DataRow(Object ... params){
+		if(null != params)
+		for(int i=0; i<params.length-1; i+=2){
+			Object key = params[i];
+			Object value = params[i+1];
+			if(null != key){
+				put(key.toString().toUpperCase(),value);
+			}
+		}
+	}
+//	/**
+//	 * BUG
+//	 * @return
+//	 */
+//	public DataRow toLowerKey(){
+//		for(Iterator<String> itr=keySet().iterator(); itr.hasNext();){
+//			String key = itr.next();
+//			Object value = get(key);
+//			remove(key);
+//			put(key.toLowerCase(), value);
+//		}
+//		return this;
+//	}
+//	/**
+//	 * BUG
+//	 * @return
+//	 */
+//	public DataRow toUpperKey(){
+//		for(Iterator<String> itr=keySet().iterator(); itr.hasNext();){
+//			String key = itr.next();
+//			Object value = get(key);
+//			remove(key);
+//			put(key.toLowerCase(), value);
+//		}
+//		return this;
+//	}
+
+	public Boolean isNew() {
+		String pk = getPrimaryKey();
+		String pv = getString(pk);
+		return (null == pv ||(null == isNew)|| isNew || BasicUtil.isEmpty(pv));
+	}
+	public String getCd(){
+		return getString("CD");
+	}
+	public String getCode(){
+		return getString("CODE");
+	}
+	public String getNm(){
+		return getString("NM");
+	}
+	public DataSet getItems(){
+		Object items = get(ITEMS);
+		if(items instanceof DataSet){
+			return (DataSet)items;
+		}
+		return null;
+	}
+	public void putItems(Object obj){
+		put(ITEMS,obj);
+	}
+	/**
+	 * 保存之前处理
+	 * @return
+	 */
+	public boolean processBeforeSave(){
+		return true;
+	}
+	/**
+	 * 显示之前处理
+	 * @return
+	 */
+	public boolean processBeforeDisplay(){
+		return true;
+	}
+	/**
+	 * 添加主键
+	 * 当前对象处于容器中时,设置容器主键,否则设置自身主键
+	 * @param primary
+	 */
+	public DataRow addPrimaryKey(String ... primaryKeys){
+		if(BasicUtil.isEmpty(primaryKeys)){
+			return this;
+		}
+		/*设置容器主键*/
+		if(hasContainer()){
+			getContainer().addPrimary(primaryKeys);
+			return this;
+		}
+		
+		/*没有处于容器中时,设置自身主键*/
+		if(null == this.primaryKeys){
+			this.primaryKeys = new ArrayList<String>();
+		}
+		for(String item:primaryKeys){
+			if(BasicUtil.isEmpty(item)){
+				continue;
+			}
+			item = item.toUpperCase();
+			if(!this.primaryKeys.contains(item)){
+				this.primaryKeys.add(item);
+			}
+		}
+		return this;
+	}
+	/**
+	 * 读取主键
+	 * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键
+	 * @return
+	 */
+	public List<String> getPrimaryKeys(){
+		/*有主键直接返回*/
+		if(hasSelfPrimaryKeys()){
+			return primaryKeys;
+		}
+		
+		/*处于容器中并且容器有主键,返回容器主键*/
+		if(hasContainer() && getContainer().hasPrimaryKeys()){
+			return getContainer().getPrimaryKeys();
+		}
+		
+		/*本身与容器都没有主键 返回默认主键*/
+		List<String> defaultPrimary = new ArrayList<String>();
+		String configKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+		if(null != configKey && !configKey.trim().equals("")){
+			defaultPrimary.add(configKey);	
+		}
+
+		return defaultPrimary;
+	}
+	public String getPrimaryKey(){
+		List<String> keys = getPrimaryKeys();
+		if(null != keys && keys.size()>0){
+			return keys.get(0); 
+		}
+		return null;
+	}
+	/**
+	 * 主键值
+	 * @return
+	 */
+	public List<Object> getPrimaryValues(){
+		List<Object> values = new ArrayList<Object>();
+		List<String> keys = getPrimaryKeys();
+		if(null != keys){
+			for(String key:keys){
+				values.add(get(key));
+			}
+		}
+		return values;
+	}
+	public Object getPrimaryValue(){
+		String key = getPrimaryKey();
+		if(null != key){
+			return get(key);
+		}
+		return null;
+	}
+	/**
+	 * 是否有主键
+	 * @return
+	 */
+	public boolean hasPrimaryKeys(){
+		if(hasSelfPrimaryKeys()){
+			return true;
+		}
+		if(null != getContainer()){
+			return getContainer().hasPrimaryKeys();
+		}
+		if(keys().contains(ConfigTable.getString("DEFAULT_PRIMARY_KEY"))){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 自身是否有主键
+	 * @return
+	 */
+	public boolean hasSelfPrimaryKeys(){
+		if(null != primaryKeys && primaryKeys.size()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * 读取数据源
+	 * 数据源为空时,读取容器数据源
+	 * @return
+	 */
+	public String getDataSource() {
+		String ds = dataSource;
+		if(BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(author)){
+			ds = author + "." + ds;
+		}
+		if(null == ds && null != getContainer()){
+			ds = getContainer().getDataSource();
+		}
+		
+		return ds;
+	}
+
+	/**
+	 * 设置数据源
+	 * 当前对象处于容器中时,设置容器数据源
+	 * @param dataSource
+	 */
+	public void setDataSource(String dataSource){
+		if(null == dataSource){
+			return;
+		}
+		if(null  != getContainer()){
+			getContainer().setDataSource(dataSource);
+		}else{
+			this.dataSource = dataSource;
+			if(dataSource.contains(".") && !dataSource.contains(":")){
+				author = dataSource.substring(0,dataSource.indexOf("."));
+				table = dataSource.substring(dataSource.indexOf(".") + 1);
+			}
+		}
+	}
+	/**
+	 * 子类
+	 * @return
+	 */
+	public Object getChildren(){
+		return get(CHILDREN);
+	}
+	public void setChildren(Object children){
+		put(CHILDREN, children);
+	}
+	/**
+	 * 父类
+	 * @return
+	 */
+	public Object getParent(){
+		return get(PARENT);
+	}
+	public void setParent(Object parent){
+		put(PARENT,parent);
+	}
+	/**
+	 * 所有上级数据(递归)
+	 * @return
+	 */
+	public List<Object> getAllParent(){
+		if(null != get(ALL_PARENT)){
+			return (List<Object>)get(ALL_PARENT);
+		}
+		List<Object> parents = new ArrayList<Object>();
+		Object parent = getParent();
+		if(null != parent){
+			parents.add(parent);
+			if(parent instanceof DataRow){
+				DataRow tmp = (DataRow)parent;
+				parents.addAll(tmp.getAllParent());
+			}
+		}
+		return parents;
+	}
+	/**
+	 * 转换成对象
+	 * @param clazz
+	 * @return
+	 */
+	public <T> T entity(Class<T> clazz){
+		T entity = null;
+		if(null == clazz){
+			return entity;
+		}
+		try {
+			entity = (T)clazz.newInstance();
+			/*读取类属性*/
+			List<Field> fields = BeanUtil.getFields(clazz);		
+			for(Field field:fields){
+				/*取request参数值*/
+				String column = BeanUtil.getColumn(field, false, false);
+				Object value = get(column);
+				/*属性赋值*/
+				BeanUtil.setFieldValue(entity, field, value);
+			}//end 自身属性
+		} catch (InstantiationException e) {
+			log.error(e);
+		} catch (IllegalAccessException e) {
+			log.error(e);
+		} catch (SecurityException e) {
+			log.error(e);
+		} catch (Exception e) {
+			log.error(e);
+		}
+		return entity;
+	}
+//	public Object entity(Class<?> clazz){
+//		Object entity = null;
+//		try{
+//			entity = clazz.newInstance();
+//			List<Field> fields = BeanUtil.getAllField(clazz);
+//			for(Field field:fields){
+//				Annotation annotationTransient = field.getAnnotation(Transient.class);
+//				if(null == annotationTransient){//是否有对应的列
+//					Annotation annotationColumn  = field.getAnnotation(Column.class);
+//					if(null != annotationColumn){
+//							Method methodName = annotationColumn.annotationType().getMethod("name");//引用name方法
+//							String column = (String)methodName.invoke(annotationColumn);			//执行name方法返回结果
+//							Object value = get(column);
+//							if(BasicUtil.isNotEmpty(value)){
+//								BeanUtil.setFieldValue(entity, field.getName(), value);
+//							}
+//						}
+//					}
+//			}//end for
+//			int chk = getInt("CHK");
+//			BeanUtil.setFieldValue(entity, "chk", chk);
+//		}catch(Exception e){
+//			log.error(e);
+//		}
+//		return entity;
+//	}
+	
+	public List<String> keys(){
+		List<String> keys = new ArrayList<String>();
+		for(Iterator<String> itr=this.keySet().iterator(); itr.hasNext();){
+			keys.add(itr.next());
+		}
+		return keys;
+	}
+	public void put(String key, String value){
+		if(null != key){
+			super.put(key.toUpperCase(), value);
+		}
+	}
+	public Object get(String key){
+		Object result = null;
+		if(null != key){
+			result = super.get(key.toUpperCase());
+		}
+		return result;
+	}
+	public String getStringNvl(String key, String ... defs){
+		String result = getString(key);
+		if(BasicUtil.isEmpty(result)){
+			if(null == defs || defs.length == 0){
+				result = "";
+			}else{
+				result = BasicUtil.nvl(result,defs).toString();
+			}
+		}
+		return result;
+	}
+	public String getString(String key){
+		String result = null;
+		Object value = get(key);
+		if(null != value)
+			result = value.toString();
+		return result;
+	}
+	public int getInt(String key){
+		int result = 0;
+		try{
+			result = (int)getDouble(key);
+		}catch(Exception e){
+			result = 0;
+		}
+		return result;
+	}
+	public double getDouble(String key){
+		double result = 0;
+		Object value = get(key);
+		try{
+			result = Double.parseDouble(value.toString());
+		}catch(Exception e){
+			result = 0;
+		}
+		return result;
+	}
+	public boolean getBoolean(String key, boolean def){
+		return BasicUtil.parseBoolean(getString(key), def);
+	}
+	/**
+	 * 转换成json格式
+	 * @return
+	 */
+	public String toJSON(){
+		String result = "";
+		JSONObject json = JSONObject.fromObject(this);
+		result = json.toString();
+		return result;
+	}
+	/**
+	 * 轮换成xml格式
+	 * @return
+	 */
+	public String toXML(){
+		StringBuilder builder = new StringBuilder();
+		return builder.toString();
+	}
+	/**
+	 * 是否处于容器内
+	 * @return
+	 */
+	public boolean hasContainer(){
+		if(null != getContainer()){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	/**
+	 * 包含当前对象的容器
+	 * @return
+	 */
+	public DataSet getContainer() {
+		return container;
+	}
+	public void setContainer(DataSet container) {
+		this.container = container;
+	}
+	public Object getClientTrace() {
+		return clientTrace;
+	}
+	public void setClientTrace(Object clientTrace) {
+		this.clientTrace = clientTrace;
+	}
+	public String getAuthor() {
+		if(null != author){
+			return author;
+		}else{
+			return getContainer().getAuthor();
+		}
+	}
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+	public String getTable() {
+		if(null != table){
+			return table;
+		}else{
+			return getContainer().getTable();
+		}
+	}
+	public void setTable(String table) {
+		this.table = table;
+	}
+	public Boolean getIsNew() {
+		return isNew;
+	}
+	public void setIsNew(Boolean isNew) {
+		this.isNew = isNew;
+	}
+	public AnylineService getService() {
+		return service;
+	}
+	public void setService(AnylineService service) {
+		this.service = service;
+	}
+	public int delete(){
+		return service.delete(this);
+	}
+	public int save(){
+		return service.save(this);
+	}
+	
+}

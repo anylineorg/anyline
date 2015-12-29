@@ -1,0 +1,58 @@
+
+package org.anyline.config.db.sql.xml;
+
+import java.util.List;
+
+import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQLVariable;
+/**
+ * order 需要区分XML定义还是动态添加
+ * @author Administrator
+ *
+ */
+public interface XMLSQL extends SQL{
+	public SQL init() ;
+
+	/**
+	 * 设置SQL 主体文本
+	 * @param text
+	 */
+	public SQL setText(String text) ;
+	public String getText();
+
+	/**
+	 * 添加静态文本查询条件
+	 */
+	public SQL addCondition(String condition) ;
+
+	/* ***********************************************************************************************************************************
+	 * 
+	 * 														赋值
+	 * 
+	 * ***********************************************************************************************************************************/
+	/**
+	 * 添加查询条件
+	 * @param	condition
+	 * 			列名|查询条件ID
+	 * @param	variable
+	 * 			变量key
+	 * @param	value
+	 * 			值
+	 */
+	public SQL setConditionValue(String condition, String variable, Object value);
+	/* ***********************************************************************************************************************************
+	 * 
+	 * 														生成SQL
+	 * 
+	 * ***********************************************************************************************************************************/
+	/**
+	 * 添加分组
+	 * @param builder
+	 */
+	//public void appendGroup(StringBuilder builder);
+	public SQL setDataSource(String ds);
+	public String getDataSource();
+	public String getAuthor();
+	
+	public List<SQLVariable> getSQLVariables();
+}
