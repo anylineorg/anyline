@@ -374,10 +374,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return keys;
 	}
-	public void put(String key, String value){
+	public Object put(String key, Object value){
 		if(null != key){
 			super.put(key.toUpperCase(), value);
 		}
+		return this;
 	}
 	public Object get(String key){
 		Object result = null;
