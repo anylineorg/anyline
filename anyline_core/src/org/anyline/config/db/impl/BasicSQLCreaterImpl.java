@@ -35,8 +35,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
-	public static String disKeyFr = "";
-	public static String disKeyTo = "";
+	public String disKeyFr = "";
+	public String disKeyTo = "";
 
 	@Autowired(required=false)
 	private PrimaryCreater primaryCreater;
@@ -222,7 +222,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			throw new RuntimeException("未指定表");
 		}
 		StringBuilder param = new StringBuilder();
-		if((row.hasPrimaryKeys()||ConfigTable.getBoolean("AUTO_CREATE_PRIMARY_KEY") )&& BasicUtil.isEmpty(row.get(row.getPrimaryKey()))){
+		if(row.hasPrimaryKeys() && ConfigTable.getBoolean("AUTO_CREATE_PRIMARY_KEY") && BasicUtil.isEmpty(row.get(row.getPrimaryKey()))){
 			String pk = row.getPrimaryKey();
 			if(null == pk){
 				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
