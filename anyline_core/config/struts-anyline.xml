@@ -2,7 +2,9 @@
         "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
         "http://struts.apache.org/dtds/struts-2.0.dtd">
 <struts>
-<package name="anyline-default" namespace="/" extends="struts-default">
-</package>
-
+	<package name="anyline-default" namespace="/" extends="struts-default">
+		<result-types>
+			<result-type name="template" class="org.anyline.struts.result.TemplateResult" default="true"></result-type>
+		</result-types>
+	</package>
 </struts>
