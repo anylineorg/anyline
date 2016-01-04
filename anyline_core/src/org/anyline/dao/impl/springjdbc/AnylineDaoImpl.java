@@ -308,7 +308,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			throw new RuntimeException("未指定SQL");
 		}
 		if(ConfigTable.getBoolean("SHOW_SQL")){
-			log.info(sql);
+			log.info("\n"+sql);
 			log.info(values);
 		}
 		DataSet set = new DataSet();
