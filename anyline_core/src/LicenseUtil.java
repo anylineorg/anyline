@@ -23,8 +23,8 @@ public class LicenseUtil {
 " * limitations under the License.\n"+
 " */\n";
 	public static void main(String args[]){
-		//addLicense();
-		removeLicense();
+		addLicense();
+		//removeLicense();
 	}
 	public static void removeLicense(){
 		File dir = new File(LicenseUtil.class.getResource("").getPath().replace("WebRoot/WEB-INF/classes", "src/org"));
