@@ -16,6 +16,7 @@ anyline的优势在于SQL处理特别是查询条件的处理
 以及返回数据与前端(JSP,ajax)的无缝对接
 
 一行代码自我介绍
+```
 
 
 HelloWord:
@@ -46,3 +47,4 @@ publicListquery(Class clazz, ConfigStore configs, String ... conditions);
  service.query("hr.MEMBER(count(0) AS CNT)");	//直接查表或视图
  service.query("SELECT * FROM hr.MEMBER");	//原生SQL
  service.query("oc.web.hr:ALL_LEAVE_MEMBER");	//自定义SQL 像mybatis那种方式
+```
