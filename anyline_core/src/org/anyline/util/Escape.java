@@ -50,7 +50,7 @@ public class Escape{
     }
     public static String escape(String s) {
         StringBuffer sbuf = new StringBuffer();
-    	if(s==""||s==null)return "";        
+    	if("".equals(s) || null==s)return "";        
         int len = s.length();        
         for (int i = 0; i < len; i++) {        
             int ch = s.charAt(i);        
