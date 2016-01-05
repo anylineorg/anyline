@@ -960,10 +960,7 @@ public class WebUtil {
 		List<String> ks = BeanUtil.getMapKeys(map);
 		for (String k : ks) {
 			Object v = map.get(k);
-			if (null == v) {
-				continue;
-			}
-			if (v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
+			if (null == v || v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
 				if(null == keys || keys.length == 0 || BasicUtil.contains(keys, k)){
 					String key = encryptByType(k, WebUtil.ENCRYPT_TYPE_KEY, mix);
 					map.remove(k);

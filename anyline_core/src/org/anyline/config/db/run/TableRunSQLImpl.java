@@ -82,7 +82,11 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					column = column.replace("{", "").replace("}", "");
 					builder.append(column);
 				}else{
-					builder.append(disKeyFr).append(columns.get(i)).append(disKeyTo);					
+					if(column.contains("AS") || column.contains("(")){
+						builder.append(column);
+					}else{
+						builder.append(disKeyFr).append(column).append(disKeyTo);
+					}
 				}
 				if(i<size-1){
 					builder.append(",");
