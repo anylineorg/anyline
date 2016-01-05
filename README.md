@@ -44,7 +44,9 @@ AGE:age
 public DataSet query(DataSource ds, String src, ConfigStore configs, String ... conditions);
 public DataSet query(String src, int fr, int to, String ... conditions);
 publicListquery(Class clazz, ConfigStore configs, String ... conditions);
- service.query("hr.MEMBER(count(0) AS CNT)");	//直接查表或视图
- service.query("SELECT * FROM hr.MEMBER");	//原生SQL
- service.query("oc.web.hr:ALL_LEAVE_MEMBER");	//自定义SQL 像mybatis那种方式
+
+
+service.query("hr.MEMBER(count(0) AS CNT)");	//直接查表或视图
+service.query("SELECT * FROM hr.MEMBER");	//原生SQL
+service.query("oc.web.hr:ALL_LEAVE_MEMBER");	//自定义SQL 像mybatis那种方式
 ```
