@@ -80,7 +80,7 @@ public class Escape{
     	return escape(escape(s));
     }
     public static String unescape(String s) {
-    	if(s==""||s==null)return s;
+    	if("".equals(s) || null==s)return s; 
         StringBuffer sbuf = new StringBuffer();        
         int i = 0;        
         int len = s.length();        
