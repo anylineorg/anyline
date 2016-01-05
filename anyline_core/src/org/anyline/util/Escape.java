@@ -1,12 +1,6 @@
 
 package org.anyline.util;
-
-/**      
- * 将url中文参数编码或者反编码      
- * javascript escape/unescape 编码的 Java 实现      
- * author jackyz      
- * keep this copyright info while using this method by free      
- */         
+         
 public class Escape{        
     private final static String[] hex = {        
         "00","01","02","03","04","05","06","07","08","09","0A","0B","0C","0D","0E","0F",        
