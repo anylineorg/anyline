@@ -39,7 +39,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 			//指定列名
 			setTable(table.substring(0,table.indexOf("(")));
 			int colIdx0 = table.indexOf("(");
-			int colIdx1 = table.indexOf(")");
+			int colIdx1 = table.lastIndexOf(")");
 			String columns = table.substring(colIdx0+1,colIdx1);
 			if(columns.contains("DISTINCT")){
 				//distinct
