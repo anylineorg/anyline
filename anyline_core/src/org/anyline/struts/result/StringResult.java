@@ -44,7 +44,7 @@ public class StringResult extends StrutsResultSupport {
         	}
         	writer.print(data.toString());
         }catch(Exception e){
-        	e.printStackTrace();
+        	log.error(e);
         }finally {
             if (writer != null) {
                 writer.flush();

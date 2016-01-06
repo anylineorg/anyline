@@ -267,7 +267,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				setPrimaryValue(data, key.getKey().intValue());
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return 1;
 	}

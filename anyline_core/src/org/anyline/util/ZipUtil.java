@@ -35,6 +35,8 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
+import org.apache.log4j.Logger;
+
 /**
  * Java utils 实现的Zip工具
  * 不支付RAR格式
@@ -42,6 +44,7 @@ import java.util.zip.ZipOutputStream;
  * @author once
  */
 public class ZipUtil {
+	static Logger log = Logger.getLogger(ZipUtil.class);
 	private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte
 
 	/**
@@ -61,7 +64,7 @@ public class ZipUtil {
 			}
 			zipout.close();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
@@ -88,7 +91,7 @@ public class ZipUtil {
 			zipout.setComment(comment);
 			zipout.close();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
@@ -146,7 +149,7 @@ public class ZipUtil {
 			}
 			zf.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 		return files;
 	}
@@ -205,7 +208,7 @@ public class ZipUtil {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 		return fileList;
 	}
@@ -230,7 +233,7 @@ public class ZipUtil {
 				entryNames.add(new String(getEntryName(entry).getBytes("GB2312"), "8859_1"));
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return entryNames;
 	}
@@ -251,7 +254,7 @@ public class ZipUtil {
 		try{
 			zf = new ZipFile(zipFile);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return zf.entries();
 
@@ -270,7 +273,7 @@ public class ZipUtil {
 		try{
 			result = new String(entry.getComment().getBytes("GB2312"), "8859_1");
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return result;
 	}
@@ -288,7 +291,7 @@ public class ZipUtil {
 		try{
 			result =  new String(entry.getName().getBytes("GB2312"), "8859_1");
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return result;
 	}
@@ -334,7 +337,7 @@ public class ZipUtil {
 				zipout.closeEntry();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 }

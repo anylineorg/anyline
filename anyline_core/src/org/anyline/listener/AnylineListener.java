@@ -82,7 +82,6 @@ public class AnylineListener implements ServletContextListener,HttpSessionListen
 //				}
 //			}
 //		}catch(Exception e){
-//			e.printStackTrace();
 //		}
 	}	
 	/**

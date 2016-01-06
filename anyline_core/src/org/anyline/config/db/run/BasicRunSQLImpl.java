@@ -33,10 +33,11 @@ import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
+import org.apache.log4j.Logger;
 
 
 public abstract class BasicRunSQLImpl implements RunSQL {
-
+	protected Logger log = Logger.getLogger(this.getClass());
 	protected SQL sql;
 	protected List<Object> values;
 	protected PageNavi pageNavi;
@@ -305,7 +306,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 					where = true;
 				}
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 		return where;

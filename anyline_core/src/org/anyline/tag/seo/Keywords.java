@@ -74,7 +74,7 @@ public class Keywords extends BaseBodyTag{
 			out = pageContext.getOut();
 			out.print(body);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}finally{
 			release();
 		}

@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -38,10 +37,10 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.WebUtil;
+import org.apache.log4j.Logger;
 
 public class AbstractBasicController{
-	private static final long serialVersionUID = -3285333952875449587L;
-
+	protected Logger log = Logger.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
 	protected final String FAIL = "fail";
 	protected final String AJAX = "ajax";
@@ -105,7 +104,7 @@ public class AbstractBasicController{
 			// BeanUtil.setValue(entity, "clientTrace", client);
 			BeanUtil.setFieldValue(entity, "clientTrace", client);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 		return entity;
 	}
@@ -531,7 +530,7 @@ public class AbstractBasicController{
 			Field field = this.getClass().getField("dir");//子类dir必须public
 			dir = (String)field.get(this);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return dir;
 	}

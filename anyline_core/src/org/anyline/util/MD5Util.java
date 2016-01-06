@@ -74,7 +74,7 @@ public class MD5Util {
 		    }
 		    in.close();
 	    } catch (Exception e) {
-	    	e.printStackTrace();
+	    	log.error(e);
 	    return null;
 	    }
 	    BigInteger bigInt = new BigInteger(1, digest.digest());
