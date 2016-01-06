@@ -30,8 +30,10 @@ import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.config.http.Config;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
+import org.apache.log4j.Logger;
 
 public class ConfigImpl implements Config{
+	protected Logger log = Logger.getLogger(this.getClass());
 	//从request 取值方式
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值
 	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组
@@ -183,7 +185,7 @@ public class ConfigImpl implements Config{
 			}
 			empty = BasicUtil.isEmpty(true,values);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 

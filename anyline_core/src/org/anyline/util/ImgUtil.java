@@ -27,10 +27,13 @@ import java.util.Random;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
+
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 public class ImgUtil {
+	static Logger log = Logger.getLogger(ImgUtil.class);
 	/**
 	 * 创建验证码图片
 	 * @return
@@ -127,7 +130,7 @@ public class ImgUtil {
 			encoder.encode(tag);    
 			out.close();
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 }

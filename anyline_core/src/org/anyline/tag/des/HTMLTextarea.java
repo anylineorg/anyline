@@ -20,6 +20,7 @@ import org.anyline.tag.ComponentTag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.WebUtil;
+import org.apache.log4j.Logger;
 /**
  * 加密textarea
  * @author Administrator
@@ -28,6 +29,7 @@ import org.anyline.util.WebUtil;
 public class HTMLTextarea extends ComponentTag{
 	private static final long serialVersionUID = 1L;
 
+	protected Logger log = Logger.getLogger(this.getClass());
 	public void createHead(Object obj){
 		setEncrypt(true);
 		builder.append("\t\t\t<textarea ");
@@ -50,7 +52,7 @@ public class HTMLTextarea extends ComponentTag{
 					value = v.toString();
 				}
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 		if(!"text".equalsIgnoreCase(type)){

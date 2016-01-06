@@ -62,7 +62,7 @@ public class FileResult extends StrutsResultSupport {
 				log.info("传输完成:"+file.getAbsolutePath()+",请求来自"+request.getRequestURL()+"?"+request.getQueryString());
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		} finally {
 			if(null != in)
 				in.close();

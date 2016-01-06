@@ -22,12 +22,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 public class I18NUtil {
+	static Logger log = Logger.getLogger(I18NUtil.class);
 	public static final String defaultLang = "cn";
 	private static Map<String,Map<String,String>> messages;
 	
@@ -59,7 +61,9 @@ public class I18NUtil {
 					}
 				}
 			} catch (DocumentException e) {
-				e.printStackTrace();
+				log.error(e);
+			}catch(Exception e){
+				log.error(e);
 			}
 		}
 	}

@@ -88,9 +88,9 @@ public abstract class BasicEntity {
 			result = (String)method.invoke(annotation);									//执行name方法返回结果
 			result = result.replace("[", "").replace("]","");
 		}catch(NoClassDefFoundError e){
-			e.printStackTrace();
+			log.error(e);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return result;
 	}

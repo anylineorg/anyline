@@ -26,9 +26,11 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
+import org.apache.log4j.Logger;
 
 public abstract class ComponentTag extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
+	protected Logger log = Logger.getLogger(this.getClass());
 	
 	protected HttpServletRequest request; 
 	protected HttpSession session;
@@ -57,7 +59,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 			try{
 				out.println(builder);
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error(e);
 			}finally{
 				try{
 					//out.clear();
@@ -66,7 +68,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 				release();
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}finally{
 			release();
 		}

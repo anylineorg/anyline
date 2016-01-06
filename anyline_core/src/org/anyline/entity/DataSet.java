@@ -33,9 +33,11 @@ import org.anyline.config.db.PageNavi;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.Escape;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataSet implements Collection<Object>, Serializable {
+	protected Logger log = Logger.getLogger(this.getClass());
 	private boolean result = true; 		// 执行结果
 	private Exception exception; 			// 异常
 	private String message; 				// 提示信息
@@ -347,7 +349,7 @@ public class DataSet implements Collection<Object>, Serializable {
 			try{
 				bd = new BigDecimal(tmp);
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error(e);
 			}
 			re = re.add(bd);
 		}

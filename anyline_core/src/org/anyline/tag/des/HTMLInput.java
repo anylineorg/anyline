@@ -20,12 +20,14 @@ import org.anyline.tag.ComponentTag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.WebUtil;
+import org.apache.log4j.Logger;
 /**
  * 加密
  * @author Administrator
  *
  */
 public class HTMLInput extends ComponentTag{
+	protected Logger log = Logger.getLogger(this.getClass());
 	private static final long serialVersionUID = 1L;
 
 	public void createHead(Object obj){
@@ -58,7 +60,7 @@ public class HTMLInput extends ComponentTag{
 					value = v.toString();
 				}
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 		if(!"text".equalsIgnoreCase(type)){

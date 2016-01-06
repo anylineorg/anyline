@@ -120,13 +120,13 @@ public class FileUtil {
             	}
             }
          }catch(Exception ex){
-        	 ex.printStackTrace();
+        	log.error(ex);
          } finally  {
                 try{
                 	if(null != in) in.close();
                 	if(null != inputStream)inputStream.close();
                 }catch(Exception e){
-                	e.printStackTrace();
+                	log.error(e);
                 }
         }  
 
@@ -142,7 +142,7 @@ public class FileUtil {
 		try{
 			buffer = readStream(new FileInputStream(file),encode);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return buffer;
 	}
@@ -152,7 +152,7 @@ public class FileUtil {
 			String encode = getFileEncode(file);
 			buffer = readStream(new FileInputStream(file),encode);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return buffer;
 	}
@@ -168,7 +168,7 @@ public class FileUtil {
 			fw.write(content);
 			fw.close();  
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 	public static void writeFile(String content, File file, String encode) {
@@ -180,13 +180,13 @@ public class FileUtil {
 			osw.write(content); 
 			osw.flush(); 
 		} catch (Exception e) { 
-			e.printStackTrace(); 
+			log.error(e); 
 		}finally{
 			try{
 				osw.close();
 				fos.close();
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 	}
@@ -355,7 +355,7 @@ public class FileUtil {
 		//	detector.add(JChardetFacade.getInstance());
 			charset = detector.detectCodepage(file.toURI().toURL());
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 		if (charset != null) {
 			encode = charset.name();
@@ -420,21 +420,21 @@ public class FileUtil {
 						out.write(buf, 0, len);
 					}
 				}catch(Exception e){
-					e.printStackTrace();
+					log.error(e);
 					result = false;
 				}finally{
 					if(null != in){
 						try{
 							in.close();
 						}catch(Exception ex){
-							ex.printStackTrace();
+							log.error(ex);
 						}
 					}
 					if(null != out){
 						try{
 							out.close();
 						}catch(Exception ex){
-							ex.printStackTrace();
+							log.error(ex);
 						}
 					}
 				}
@@ -536,7 +536,7 @@ public class FileUtil {
 				}
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 		return list;
 	}
@@ -724,7 +724,7 @@ public class FileUtil {
 			}
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 		result = true;
 		return result;

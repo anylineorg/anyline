@@ -143,7 +143,7 @@ public class Checkbox extends BaseBodyTag {
 			JspWriter out = pageContext.getOut();
 			out.print(html);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		} finally {
 			release();
 		}

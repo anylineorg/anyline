@@ -40,6 +40,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -50,6 +51,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
+	protected Logger log = Logger.getLogger(this.getClass());
 	public String disKeyFr = "";
 	public String disKeyTo = "";
 
@@ -222,9 +224,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				result = (String)method.invoke(annotation);									//执行name方法返回结果
 				result = result.replace(getDisKeyFr(), "").replace(getDisKeyTo(),"");
 			}catch(NoClassDefFoundError e){
-				e.printStackTrace();
+				log.error(e);
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 		return result;

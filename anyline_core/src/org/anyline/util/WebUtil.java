@@ -31,11 +31,13 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 
 import org.anyline.util.regular.RegularUtil;
+import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 public class WebUtil {
+	static Logger log = Logger.getLogger(WebUtil.class);
 	/*
 	 * public static final String HTTP_REQUEST_PARAM_KEY_PREFIX =
 	 * "wwwanylineorgk"; //参数名加密前缀 public static final String
@@ -98,7 +100,7 @@ public class WebUtil {
 				defaultDesKey.setPrefixParamValue("p298pn6e9o1r5gv");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
@@ -148,7 +150,7 @@ public class WebUtil {
 			try {
 				inet = InetAddress.getLocalHost();
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error(e);
 			}
 			ip = inet.getHostAddress();
 		}
@@ -397,7 +399,7 @@ public class WebUtil {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 			result = null;
 		}
 		return result;
@@ -417,7 +419,7 @@ public class WebUtil {
 		try {
 			param = encryptRequestParam(param);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 		url = url.substring(0, url.indexOf("?") + 1) + param;
 		return url;
@@ -434,7 +436,7 @@ public class WebUtil {
 			String url = RegularUtil.fetchUrl(tag);
 			tag = tag.replace(url, encryptUrl(url));
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 
 		return tag;
@@ -631,18 +633,6 @@ public class WebUtil {
 	 */
 	public static Object getHttpRequestParam(HttpServletRequest request,String key, boolean keyEncrypt, boolean valueEncrypt) {
 		String result = "";
-		//result = request.getParameter(key);
-//		if(keyEncrypt){
-		//	key = decryptHttpRequestParamKey(key);
-//		}
-//		result = getHttpRequestParamFormDecryptMap(request, key, keyEncrypt);
-//		try {
-//			if (valueEncrypt) {
-//				result = decryptHttpRequestParamValue(result);
-//			}
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
 		 List<Object> list = getHttpRequestParams(request, key, keyEncrypt, valueEncrypt);
 		 if(null != list && list.size()>0){
 			 result = (String)list.get(0);
@@ -760,7 +750,7 @@ public class WebUtil {
 							+ src.substring(idx + DES_VERSION_LENGTH); // 没有版本号的密文
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 		return result;
