@@ -50,7 +50,7 @@ public class BeanUtil {
 				field.setAccessible(false);
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 			return false;
 		}
 		return true;
@@ -160,10 +160,10 @@ public class BeanUtil {
 			}
 			return column;
 		}catch(NoClassDefFoundError e){
-			e.printStackTrace();
+			log.error(e);
 			return null;
-		}
-		catch(Exception e){
+		}catch(Exception e){
+			log.error(e);
 			return null;
 		}
 	}
@@ -217,7 +217,7 @@ public class BeanUtil {
 				try{
 					return getFieldValue(obj, field);
 				}catch(Exception e){
-					e.printStackTrace();
+					log.error(e);
 				}
 			}
 		}

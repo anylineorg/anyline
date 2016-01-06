@@ -42,7 +42,7 @@ public class If extends BaseBodyTag implements Cloneable{
 				out.println(elseValue);
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}finally{
 			release();
 		}

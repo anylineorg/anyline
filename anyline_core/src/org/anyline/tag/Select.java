@@ -121,7 +121,7 @@ public class Select extends BaseBodyTag{
 				JspWriter out = pageContext.getOut();
 				out.print(html);
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}finally{
 			release();
 		}

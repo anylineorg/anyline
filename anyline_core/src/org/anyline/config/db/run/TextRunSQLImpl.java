@@ -136,7 +136,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 	private void createRunTxt(){

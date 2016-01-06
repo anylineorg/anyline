@@ -56,7 +56,7 @@ public class Power extends BaseBodyTag {
 				out.print(body);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		} finally {
 			release();
 		}

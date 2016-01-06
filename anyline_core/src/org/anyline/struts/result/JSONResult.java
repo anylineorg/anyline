@@ -88,7 +88,7 @@ public class JSONResult extends StrutsResultSupport {
         	JSON json = JSONObject.fromObject(map);
         	writer.print(json.toString());
         }catch(Exception e){
-        	e.printStackTrace();
+        	log.error(e);
         }finally {
             if (writer != null) {
                 writer.flush();

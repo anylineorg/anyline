@@ -129,7 +129,6 @@ public class HttpUtil {
 			source.setLastModified(connection.getLastModified());
 			is.close();
 		} catch (Exception e) {
-			e.printStackTrace();
 			log.error("getSourceByUrl(" + url + "):\n" + e);
 			source = null;
 		} finally {
@@ -141,7 +140,7 @@ public class HttpUtil {
 				if (null != connection)
 					connection.disconnect();
 			} catch (Exception e) {
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 		return source;
@@ -295,14 +294,14 @@ public class HttpUtil {
 				os.write(buffer, 0, len);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
 					is = null;
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					log.error(ex);
 					is = null;
 				}
 			}
@@ -311,7 +310,7 @@ public class HttpUtil {
 					os.close();
 					os = null;
 				} catch (Exception ex) {
-					ex.printStackTrace();
+					log.error(ex);
 					os = null;
 				}
 			}
@@ -354,13 +353,13 @@ public class HttpUtil {
 			bis.close();
 			httpUrl.disconnect();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e);
 		} finally {
 			try {
 				bis.close();
 				bos.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 	}

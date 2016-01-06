@@ -30,9 +30,12 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.apache.log4j.Logger;
+
 import com.sun.crypto.provider.SunJCE;
 
 public class DESUtil {
+	static Logger log = Logger.getLogger(DESUtil.class);
 	public static final String DEFAULT_SECRET_KEY = "L~@L$^N*)E+";	//默认密钥
 	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";	//盐值
 	private Cipher encryptCipher = null;					//加密
@@ -69,13 +72,13 @@ public class DESUtil {
 			try{
 				instance = new DESUtil(key);
 			}catch(NoSuchPaddingException e){
-				e.printStackTrace();
+				log.error(e);
 			}catch(NoSuchAlgorithmException e){
-				e.printStackTrace();
+				log.error(e);
 			}catch(InvalidKeyException e){
-				e.printStackTrace();
+				log.error(e);
 			}catch(Exception e){
-				e.printStackTrace();
+				log.error(e);
 			}
 		}
 		return instance;
