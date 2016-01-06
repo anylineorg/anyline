@@ -3,9 +3,9 @@
 **以数据库操作为核心 以WEB开发为背景 追求极致的开发效率**
 **站在实战架构师的角度，告诉你WEB系统应该怎么架构，如何作到质量与效率并重。**
 
-**Spring Struts MyBatis 等以及IOC MVC AOP等在实现开发中应该怎么用**
+**在实际开发中如何Spring Struts MyBatis 等以及IOC MVC AOP等发挥到极致**
 
-实例中集成了Struts2和SpringMVC两种框架，可以根据你的选择选一个。
+我们的框架中集成了Struts2和SpringMVC，可以根据需要的选择选一个。
 
 
 我们期望的理想状态是:
