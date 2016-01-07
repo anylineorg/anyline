@@ -13,7 +13,6 @@
     http://www.springframework.org/schema/aop/spring-aop-4.0.xsd">
 	<context:component-scan base-package="org.anyline"></context:component-scan>
 	<bean id="dataSource" class="org.logicalcobwebs.proxool.ProxoolDataSource">
-		<!-- 
 		<property name="driver">
 			<value>com.mysql.jdbc.Driver</value>
 		</property>
@@ -22,9 +21,8 @@
 		</property>
 		<property name="user" value="root" />
 		<property name="password" value="000000" />
-		 -->
 
-
+<!-- 
 		<property name="driver">
 			<value>com.microsoft.sqlserver.jdbc.SQLServerDriver</value>
 		</property>
@@ -33,6 +31,7 @@
 		</property>
 		<property name="user" value="sa"/>
 		<property name="password" value="000000"/>
+ -->
 		
 		
 		<property name="maximumActiveTime" value="300000" />
@@ -42,13 +41,6 @@
 		<property name="simultaneousBuildThrottle" value="3" />
 		<property name="houseKeepingTestSql" value="SELECT 0" />
 	</bean>
-	<!-- 
-	<bean id="txManager"
-		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="dataSource" />
-	</bean>
-	<tx:annotation-driven transaction-manager="txManager" />
-	 -->
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
 		<property name="dataSource" ref="dataSource"></property>
 	</bean>

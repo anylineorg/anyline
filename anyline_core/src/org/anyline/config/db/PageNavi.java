@@ -33,7 +33,7 @@ public interface PageNavi{
 	 * 计算分页变量
 	 */
 	public void calculate() ;
-	public void createHidParam(String name, Object values);
+	public String createHidParam(String name, Object values);
 
 	/**
 	 * 第一行
