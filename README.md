@@ -57,3 +57,7 @@ service.query("hr.MEMBER(count(0) AS CNT)");	//直接查表或视图
 service.query("SELECT * FROM hr.MEMBER");	//原生SQL
 service.query("oc.web.hr:ALL_LEAVE_MEMBER");	//自定义SQL 像mybatis那种方式
 ```
+
+这是jar包的源码，demo请下载https://git.oschina.net/anyline/anyline_demo
+
+分别基于springmv和struts2实现的 增删改查
