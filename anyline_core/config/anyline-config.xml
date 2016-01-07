@@ -25,7 +25,7 @@
 	<!-- 默认主键 -->
 	<property key="DEFAULT_PRIMARY_KEY">CD</property>
 	<!-- 自动添加主键 -->
-	<property key="AUTO_CREATE_PRIMARY_KEY">true</property>
+	<property key="AUTO_CREATE_PRIMARY_KEY">false</property>
 	<!-- 是否显示执行的SQL -->
 	<property key="SHOW_SQL">true</property>
 	<property key="SHOW_SQL_PARAM">true</property>
