@@ -36,7 +36,7 @@ public class MD5Util {
 	public static String crypto(String str){
 		if(null == str) return null;
 		String result = null;
-        if (str !=""){     
+        if (!"".equals(str)){     
             try{
                 MessageDigest md = MessageDigest.getInstance("MD5"); 
                 //使用指定的字节数组对摘要进行最后更新，然后完成摘要计算     
