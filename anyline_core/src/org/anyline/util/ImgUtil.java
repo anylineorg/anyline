@@ -34,15 +34,8 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 public class ImgUtil {
 	static Logger log = Logger.getLogger(ImgUtil.class);
-	/**
-	 * 创建验证码图片
-	 * @return
-	 */
-	public static BufferedImage createValidateImg(String code){
-		int width = ConfigTable.getInt("VALIDATE_CODE_IMG_WIDTH");				//图片宽度
-		int height = ConfigTable.getInt("VALIDATE_CODE_IMG_HEIGHT");			//图片高度
-		int charSize = ConfigTable.getInt("VALIDATE_CODE_IMG_CHAR_SIZE");		//字符数量
-		int lineSize = ConfigTable.getInt("VALIDATE_CODE_IMG_COMPLEXITY");		//干扰线数量
+	public static BufferedImage createValidateImg(String code, int width, int height, int line){
+		int charSize = code.length();		//字符数量
 		int maxXOffset = 10;													//x轴最大偏移
 		int maxYOffset = 5;														//y轴最大偏移
 		int charHeight = height - 2;
@@ -63,7 +56,7 @@ public class ImgUtil {
 		Random random = new Random();
 		int xFr = random.nextInt(width/2);
 		int yFr = random.nextInt(height/2);
-		for (int i = 0; i < lineSize; i++){
+		for (int i = 0; i < line; i++){
 			int xOffset = random.nextInt(maxXOffset);
 			int yOffset = random.nextInt(maxYOffset);
 			int xEnd = xFr + xOffset;
@@ -92,6 +85,16 @@ public class ImgUtil {
 			gd.drawString(chr, (i + 1) * xx, yy);
 		}
 		return img;
+	}
+	/**
+	 * 创建验证码图片
+	 * @return
+	 */
+	public static BufferedImage createValidateImg(String code){
+		int width = ConfigTable.getInt("VALIDATE_CODE_IMG_WIDTH");				//图片宽度
+		int height = ConfigTable.getInt("VALIDATE_CODE_IMG_HEIGHT");			//图片高度
+		int line = ConfigTable.getInt("VALIDATE_CODE_IMG_COMPLEXITY");		//干扰线数量
+		return createValidateImg(code, width, height, line);
 	}
 	/**
 	 * 按比例缩放图片
