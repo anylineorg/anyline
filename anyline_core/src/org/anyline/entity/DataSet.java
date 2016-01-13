@@ -509,7 +509,13 @@ public class DataSet implements Collection<Object>, Serializable {
 	public String navi() {
 		return displayNavi(null);
 	}
-
+	public DataSet put(int idx, String key, Object value){
+		DataRow row = getRow(idx);
+		if(null != row){
+			row.put(key, value);
+		}
+		return this;
+	}
 	/**
 	 * String
 	 * 
