@@ -15,6 +15,7 @@
  */
 package org.anyline.controller.impl;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.Constant;
+import org.anyline.util.JSONDateFormat;
 import org.anyline.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -298,8 +300,9 @@ public  class AnylineController extends AbstractBasicController{
     	map.put("message", message);
     	map.put("data", data);
     	map.put("success", result);
-    	
-    	JSON json = JSONObject.fromObject(map);
+    	JsonConfig jsonConfig = new JsonConfig();
+        jsonConfig.registerJsonValueProcessor(Date.class , new JSONDateFormat());
+    	JSON json = JSONObject.fromObject(map,jsonConfig);
     	return json.toString();
 	}
 	/**

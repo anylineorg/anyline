@@ -1,1 +1,6 @@
+/anyline-config.xml
+/applicationContext.xml
+/key.xml
+/log4j.properties
 /org
+/LicenseUtil.class
