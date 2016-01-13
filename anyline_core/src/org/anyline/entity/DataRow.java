@@ -99,6 +99,18 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 //		return this;
 //	}
 
+	public DataRow merge(DataRow row, boolean over){
+		List<String> keys = row.keys();
+		for(String key : keys){
+			if(over || null != this.get(key)){
+				this.put(key, row.get(key));
+			}
+		}
+		return this;
+	}
+	public DataRow merge(DataRow row){
+		return merge(row, false);
+	}
 	public Boolean isNew() {
 		String pk = getPrimaryKey();
 		String pv = getString(pk);
