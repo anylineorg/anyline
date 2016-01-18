@@ -27,7 +27,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 
 public class StringResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L;
-	Logger log = Logger.getLogger(StringResult.class);
+	private static Logger LOG = Logger.getLogger(StringResult.class);
 	private Object data = null;
 
 
@@ -44,7 +44,7 @@ public class StringResult extends StrutsResultSupport {
         	}
         	writer.print(data.toString());
         }catch(Exception e){
-        	log.error(e);
+        	LOG.error(e);
         }finally {
             if (writer != null) {
                 writer.flush();

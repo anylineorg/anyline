@@ -32,7 +32,7 @@ import org.anyline.util.regular.RegularUtil;
 
 public class Checkbox extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Checkbox.class);
+	private static Logger LOG = Logger.getLogger(Checkbox.class);
 	private String scope;
 	private Object data;
 	private String valueKey = "CD";
@@ -143,7 +143,7 @@ public class Checkbox extends BaseBodyTag {
 			JspWriter out = pageContext.getOut();
 			out.print(html);
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error(e);
 		} finally {
 			release();
 		}

@@ -35,7 +35,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 
 @WebListener
 public class AnylineListener implements ServletContextListener,HttpSessionListener{
-	Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(AnylineListener.class);
 	/**
 	 * session创建
 	 */

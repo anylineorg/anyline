@@ -29,7 +29,7 @@ import org.anyline.util.BasicUtil;
  */
 public class Division extends BodyTagSupport{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Division.class);
+	private static Logger LOG = Logger.getLogger(Division.class);
 	private String divisor;		//除数
 	private String dividend;	//被除数
 	private String format;
@@ -50,7 +50,7 @@ public class Division extends BodyTagSupport{
 			}
 			out.print(defaultValue);
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

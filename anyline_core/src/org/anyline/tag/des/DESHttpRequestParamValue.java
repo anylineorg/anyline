@@ -30,7 +30,6 @@ import org.anyline.util.WebUtil;
  */
 public class DESHttpRequestParamValue extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(DESHttpRequestParamValue.class);
 	private String value;		//被加密数据
 
 	public int doEndTag() throws JspException {
@@ -38,7 +37,7 @@ public class DESHttpRequestParamValue extends BaseBodyTag{
 			JspWriter out = pageContext.getOut();
 			out.print(WebUtil.encryptHttpRequestParamValue(BasicUtil.nvl(value,body,"").toString()));
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

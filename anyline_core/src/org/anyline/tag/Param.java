@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  */
 public class Param extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(Param.class);
 	private String key;
 	
 	 public int doEndTag() throws JspException {
@@ -44,7 +44,7 @@ public class Param extends BaseBodyTag implements Cloneable{
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

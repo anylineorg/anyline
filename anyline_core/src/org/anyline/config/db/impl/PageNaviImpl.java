@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 
 
 public class PageNaviImpl implements PageNavi{
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(PageNaviImpl.class);
 //
 //	public static final String PAGE_VOL				= "pageRows"							;
 //	public static final String PAGE_NO				= "pageNo"								;
@@ -122,7 +122,7 @@ public class PageNaviImpl implements PageNavi{
 				html += createHidParam(key,values);
 			}
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 		return html;
 	}

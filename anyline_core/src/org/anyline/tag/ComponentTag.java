@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 
 public abstract class ComponentTag extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected static Logger LOG = Logger.getLogger(ComponentTag.class);
 	
 	protected HttpServletRequest request; 
 	protected HttpSession session;
@@ -43,7 +43,8 @@ public abstract class ComponentTag extends BaseBodyTag{
 	protected String parentId;
 	protected StringBuilder builder;
 	
-	protected boolean isEncrypt;	//id name是否加密
+	protected boolean isEncryptKey;	//id name是否加密
+	protected boolean isEncryptValue; //value 是否加密  主要针对有默认值 的hidden
 	
 	public int doStartTag() throws JspException {
 		request = (HttpServletRequest)pageContext.getRequest();
@@ -59,7 +60,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 			try{
 				out.println(builder);
 			}catch(Exception e){
-				log.error(e);
+				LOG.error(e);
 			}finally{
 				try{
 					//out.clear();
@@ -68,7 +69,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 				release();
 			}
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}
@@ -192,7 +193,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		if(BasicUtil.isNotEmpty(parentId)){
 			runId = parentId + "_" + id + "_" + index;
 		}
-		if(isEncrypt){
+		if(isEncryptKey){
 			runId = WebUtil.encryptHttpRequestParamKey(runId);
 		}
 		if(null != id						){builder.append(" id=\""						).append(runId					).append("\"");}//获取标识对象的字符串。
@@ -212,7 +213,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		if(null != language					){builder.append(" language=\""					).append(language				).append("\"");}//设置或获取当前脚本编写用的语言。
 		if(null != maxlength				){builder.append(" maxlength=\""				).append(maxlength				).append("\"");}//设置或获取用户可在文本控件中输入的最多字符数。
 		String runName = name;
-		if(isEncrypt){
+		if(isEncryptKey){
 			runName = WebUtil.encryptHttpRequestParamKey(runName);
 		}
 		if(null != name						){builder.append(" name=\""						).append(runName				).append("\"");}//设置或获取对象的名称。
@@ -940,12 +941,12 @@ public abstract class ComponentTag extends BaseBodyTag{
 		this.parentId = parentId;
 	}
 
-	public boolean isEncrypt() {
-		return isEncrypt;
+	public boolean isEncryptKey() {
+		return isEncryptKey;
 	}
 
-	public void setEncrypt(boolean isEncrypt) {
-		this.isEncrypt = isEncrypt;
+	public void setEncryptKey(boolean isEncryptKey) {
+		this.isEncryptKey = isEncryptKey;
 	}
 
 	public String getChecked() {
@@ -954,6 +955,12 @@ public abstract class ComponentTag extends BaseBodyTag{
 
 	public void setChecked(String checked) {
 		this.checked = checked;
+	}
+	public boolean isEncryptValue() {
+		return isEncryptValue;
+	}
+	public void setEncryptValue(boolean isEncryptValue) {
+		this.isEncryptValue = isEncryptValue;
 	}
 
 }

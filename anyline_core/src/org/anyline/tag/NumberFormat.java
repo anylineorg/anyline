@@ -28,7 +28,7 @@ import org.anyline.util.DateUtil;
 
 public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(NumberFormat.class);
 	private String format;
 	
 
@@ -56,7 +56,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 			JspWriter out = pageContext.getOut();
 			out.println(result);
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

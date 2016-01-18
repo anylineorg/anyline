@@ -45,7 +45,7 @@ import org.springframework.stereotype.Service;
 
 @Service("anylineService")
 public class AnylineServiceImpl implements AnylineService {
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(AnylineServiceImpl.class);
 	@Autowired(required = false)
 	@Qualifier("anylineDao")
 	protected AnylineDao dao;
@@ -88,7 +88,7 @@ public class AnylineServiceImpl implements AnylineService {
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
-			log.error(e);
+			LOG.error(e);
 		}
 		return set;
 	}
@@ -343,7 +343,7 @@ public class AnylineServiceImpl implements AnylineService {
 		try {
 			return dao.save(ds, dest, data, checkPrimary, columns);
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error(e);
 			throw new RuntimeException(e);
 		}
 	}
@@ -409,7 +409,7 @@ public class AnylineServiceImpl implements AnylineService {
 		try {
 			result = dao.executeProcedure(ds, procedure);
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error(e);
 		}
 		return result;
 	}
@@ -434,7 +434,7 @@ public class AnylineServiceImpl implements AnylineService {
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
-			log.error(e);
+			LOG.error(e);
 		}
 		return set;
 	}

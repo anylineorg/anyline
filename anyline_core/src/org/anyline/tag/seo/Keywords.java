@@ -41,7 +41,7 @@ import org.anyline.util.WebUtil;
  */
 public class Keywords extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(Keywords.class);
 	//<seo:keyword key="java" count="3"/>
 	//<ic:param key ="" count="3"/>
 
@@ -74,7 +74,7 @@ public class Keywords extends BaseBodyTag{
 			out = pageContext.getOut();
 			out.print(body);
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

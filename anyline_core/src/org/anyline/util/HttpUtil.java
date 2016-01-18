@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 import org.anyline.util.regular.RegularUtil;
 
 public class HttpUtil {
-	private static Logger log = Logger.getLogger(HttpUtil.class);
+	private static Logger LOG = Logger.getLogger(HttpUtil.class);
 	private static int CONNECT_TIMEOUT = 90000; // 连接超时
 	private static int READ_TIMEOUT = 50000; // 读取超时
 
@@ -129,7 +129,7 @@ public class HttpUtil {
 			source.setLastModified(connection.getLastModified());
 			is.close();
 		} catch (Exception e) {
-			log.error("getSourceByUrl(" + url + "):\n" + e);
+			LOG.error("getSourceByUrl(" + url + "):\n" + e);
 			source = null;
 		} finally {
 			try {
@@ -140,7 +140,7 @@ public class HttpUtil {
 				if (null != connection)
 					connection.disconnect();
 			} catch (Exception e) {
-				log.error(e);
+				LOG.error(e);
 			}
 		}
 		return source;
@@ -294,14 +294,14 @@ public class HttpUtil {
 				os.write(buffer, 0, len);
 			}
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error(e);
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
 					is = null;
 				} catch (Exception ex) {
-					log.error(ex);
+					LOG.error(ex);
 					is = null;
 				}
 			}
@@ -310,7 +310,7 @@ public class HttpUtil {
 					os.close();
 					os = null;
 				} catch (Exception ex) {
-					log.error(ex);
+					LOG.error(ex);
 					os = null;
 				}
 			}
@@ -353,13 +353,13 @@ public class HttpUtil {
 			bis.close();
 			httpUrl.disconnect();
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error(e);
 		} finally {
 			try {
 				bis.close();
 				bos.close();
 			} catch (IOException e) {
-				log.error(e);
+				LOG.error(e);
 			}
 		}
 	}

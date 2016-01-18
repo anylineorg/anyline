@@ -34,8 +34,7 @@ import javax.swing.ImageIcon;
 import org.apache.log4j.Logger;
 
 public class Watermark {
-
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected static Logger LOG = Logger.getLogger(Watermark.class);
 	private Integer degree;								//旋转角度
 	private Color color = Color.LIGHT_GRAY;				//水印颜色
 	private String fontName = "宋体";						//字体名称
@@ -100,19 +99,19 @@ public class Watermark {
             ImageIO.write(buffImg, "JPG", os);
 
         } catch (Exception e) {
-            log.error(e);
+            LOG.error(e);
         } finally {
             try {
                 if (null != is)
                     is.close();
             } catch (Exception e) {
-                log.error(e);
+                LOG.error(e);
             }
             try {
                 if (null != os)
                     os.close();
             } catch (Exception e) {
-                log.error(e);
+                LOG.error(e);
             }
         }
     }
@@ -176,13 +175,13 @@ public class Watermark {
             ImageIO.write(buffImg, "JPG", os);
 
         } catch (Exception e) {
-            log.error(e);
+            LOG.error(e);
         } finally {
             try {
                 if (null != os)
                     os.close();
             } catch (Exception e) {
-                log.error(e);
+                LOG.error(e);
             }
         }
     }

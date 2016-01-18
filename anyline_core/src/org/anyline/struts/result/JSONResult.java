@@ -35,7 +35,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 
 public class JSONResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(JSONResult.class);
 	private boolean result = true;
 	private Object data = null;
 	private String message = null;
@@ -88,7 +88,7 @@ public class JSONResult extends StrutsResultSupport {
         	JSON json = JSONObject.fromObject(map);
         	writer.print(json.toString());
         }catch(Exception e){
-        	log.error(e);
+        	LOG.error(e);
         }finally {
             if (writer != null) {
                 writer.flush();

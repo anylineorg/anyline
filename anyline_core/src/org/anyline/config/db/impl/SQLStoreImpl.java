@@ -43,7 +43,7 @@ public class SQLStoreImpl extends SQLStore{
 
 	private static SQLStoreImpl instance;
 	private static Hashtable<String,SQL> sqls = new Hashtable<String,SQL>();
-	private static Logger log = Logger.getLogger(SQLStoreImpl.class);
+	private static Logger LOG = Logger.getLogger(SQLStoreImpl.class);
 
 	private SQLStoreImpl() {}
 	private static String sqlDir;
@@ -131,8 +131,8 @@ public class SQLStoreImpl extends SQLStore{
 			SAXReader reader = new SAXReader();
 			document = reader.read(file);
 		}catch(Exception e){
-			log.error(e);
-			log.error(e);
+			LOG.error(e);
+			LOG.error(e);
 		}
 		return document;
 	}
@@ -148,8 +148,8 @@ public class SQLStoreImpl extends SQLStore{
 		try{
 			sql = sqls.get(id);
 		}catch(Exception e){
-			log.error("SQL提取失败:"+id);
-			log.error(e);
+			LOG.error("SQL提取失败:"+id);
+			LOG.error(e);
 		} 
 		return sql;
 	}

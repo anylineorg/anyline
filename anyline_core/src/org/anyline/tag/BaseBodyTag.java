@@ -28,7 +28,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.apache.log4j.Logger;
 public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(BaseBodyTag.class);
+	protected static Logger LOG = Logger.getLogger(BaseBodyTag.class);
 
 	protected List<Object> paramList = null;
 	protected Map<String,Object> paramMap = null;

@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class XMLConditionImpl extends BasicCondition implements Condition{
-	Logger log = Logger.getLogger(XMLConditionImpl.class);
+	private static Logger LOG = Logger.getLogger(XMLConditionImpl.class);
 	
 	private String text;
 	
@@ -151,7 +151,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 	}
 
