@@ -36,7 +36,7 @@ import org.anyline.util.BeanUtil;
 @MappedSuperclass
 public abstract class BasicEntity {
 	@Transient
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected static Logger LOG = Logger.getLogger(BasicEntity.class);
 	   
 	@Id         
 	@Column(name="CD",insertable=true,updatable=false)   
@@ -88,9 +88,9 @@ public abstract class BasicEntity {
 			result = (String)method.invoke(annotation);									//执行name方法返回结果
 			result = result.replace("[", "").replace("]","");
 		}catch(NoClassDefFoundError e){
-			log.error(e);
+			LOG.error(e);
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 		return result;
 	}

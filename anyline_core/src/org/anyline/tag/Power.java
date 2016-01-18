@@ -26,7 +26,7 @@ import org.anyline.entity.DataSet;
 
 public class Power extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Power.class);
+	private static Logger LOG = Logger.getLogger(Power.class);
 	private Object powers;		//权限范围
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -56,7 +56,7 @@ public class Power extends BaseBodyTag {
 				out.print(body);
 			}
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error(e);
 		} finally {
 			release();
 		}

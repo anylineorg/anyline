@@ -29,7 +29,7 @@ import org.anyline.config.http.ConfigChain;
 import org.apache.log4j.Logger;
 
 public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
-	Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(ConfigChainImpl.class);
 	private List<Config> configs = new ArrayList<Config>();
 	
 	public ConfigChainImpl(){}

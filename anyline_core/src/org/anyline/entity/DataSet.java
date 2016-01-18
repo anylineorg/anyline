@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataSet implements Collection<Object>, Serializable {
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected static Logger log = Logger.getLogger(DataSet.class);
 	private boolean result = true; 		// 执行结果
 	private Exception exception; 			// 异常
 	private String message; 				// 提示信息

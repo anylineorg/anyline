@@ -27,11 +27,13 @@ import org.apache.log4j.Logger;
  *
  */
 public class HTMLInput extends ComponentTag{
-	protected Logger log = Logger.getLogger(this.getClass());
 	private static final long serialVersionUID = 1L;
 
 	public void createHead(Object obj){
-		setEncrypt(true);
+		setEncryptKey(true);
+		if("hidden".equalsIgnoreCase(type)){
+			setEncryptValue(true);
+		}
 		builder.append("\t\t\t<input ");
 		createAttribute();
 		createValue(null);
@@ -60,10 +62,10 @@ public class HTMLInput extends ComponentTag{
 					value = v.toString();
 				}
 			}catch(Exception e){
-				log.error(e);
+				LOG.error(e);
 			}
 		}
-		if(!"text".equalsIgnoreCase(type)){
+		if(isEncryptValue){
 			value = WebUtil.encryptHttpRequestParamValue(value);
 		}
 		value = BasicUtil.nvl(value,"").toString();

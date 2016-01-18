@@ -31,7 +31,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 
 public class FileResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L;
-	Logger log = Logger.getLogger(FileResult.class);
+	private static Logger LOG = Logger.getLogger(FileResult.class);
 	private Object data = null;
 
 	protected void doExecute(String finalLocation, ActionInvocation invocation)
@@ -55,14 +55,14 @@ public class FileResult extends StrutsResultSupport {
 				out = response.getOutputStream();
 				byte[] buf = new byte[1024];
 				int count = 0;
-				log.info("在正传输文件:"+file.getAbsolutePath()+",请求来自"+request.getRequestURL()+"?"+request.getQueryString());
+				LOG.info("在正传输文件:"+file.getAbsolutePath()+",请求来自"+request.getRequestURL()+"?"+request.getQueryString());
 				while ((count = in.read(buf)) >= 0) {
 					out.write(buf, 0, count);
 				}
-				log.info("传输完成:"+file.getAbsolutePath()+",请求来自"+request.getRequestURL()+"?"+request.getQueryString());
+				LOG.info("传输完成:"+file.getAbsolutePath()+",请求来自"+request.getRequestURL()+"?"+request.getQueryString());
 			}
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error(e);
 		} finally {
 			if(null != in)
 				in.close();

@@ -27,7 +27,7 @@ import org.anyline.util.BasicUtil;
 public class Ellipsis extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
 	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() ";
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(Ellipsis.class);
 	private int length;					//结果长度
 	private String replace = "...";		//替换字符
 
@@ -61,7 +61,7 @@ public class Ellipsis extends BaseBodyTag {
 			}
 			writer.print(result);
 		} catch (IOException e) {
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

@@ -26,7 +26,7 @@ import org.anyline.util.BasicUtil;
 
 public class Money extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(Money.class);
 
 	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim();
@@ -42,7 +42,7 @@ public class Money extends BaseBodyTag {
 			result = BasicUtil.moneyUpper(d);
 			writer.print(result);
 		} catch (IOException e) {
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

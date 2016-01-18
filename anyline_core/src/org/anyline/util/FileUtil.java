@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
 
 
 public class FileUtil {
-	private static Logger log = Logger.getLogger(FileUtil.class);
+	private static Logger LOG = Logger.getLogger(FileUtil.class);
 	private static HttpURLConnection connection = null;
 	private static Map<String,String>acTimes = new HashMap<String,String>();
 	public final static int PATH_TYPE_JAR = 0;
@@ -120,13 +120,13 @@ public class FileUtil {
             	}
             }
          }catch(Exception ex){
-        	log.error(ex);
+        	LOG.error(ex);
          } finally  {
                 try{
                 	if(null != in) in.close();
                 	if(null != inputStream)inputStream.close();
                 }catch(Exception e){
-                	log.error(e);
+                	LOG.error(e);
                 }
         }  
 
@@ -142,7 +142,7 @@ public class FileUtil {
 		try{
 			buffer = readStream(new FileInputStream(file),encode);
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 		return buffer;
 	}
@@ -152,7 +152,7 @@ public class FileUtil {
 			String encode = getFileEncode(file);
 			buffer = readStream(new FileInputStream(file),encode);
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 		return buffer;
 	}
@@ -168,7 +168,7 @@ public class FileUtil {
 			fw.write(content);
 			fw.close();  
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 	}
 	public static void writeFile(String content, File file, String encode) {
@@ -180,13 +180,13 @@ public class FileUtil {
 			osw.write(content); 
 			osw.flush(); 
 		} catch (Exception e) { 
-			log.error(e); 
+			LOG.error(e); 
 		}finally{
 			try{
 				osw.close();
 				fos.close();
 			}catch(Exception e){
-				log.error(e);
+				LOG.error(e);
 			}
 		}
 	}
@@ -263,7 +263,7 @@ public class FileUtil {
 			}
 			file.createNewFile();
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 		return true;
 	}
@@ -355,7 +355,7 @@ public class FileUtil {
 		//	detector.add(JChardetFacade.getInstance());
 			charset = detector.detectCodepage(file.toURI().toURL());
 		} catch (Exception e) {
-			log.error(e);
+			LOG.error(e);
 		}
 		if (charset != null) {
 			encode = charset.name();
@@ -420,21 +420,21 @@ public class FileUtil {
 						out.write(buf, 0, len);
 					}
 				}catch(Exception e){
-					log.error(e);
+					LOG.error(e);
 					result = false;
 				}finally{
 					if(null != in){
 						try{
 							in.close();
 						}catch(Exception ex){
-							log.error(ex);
+							LOG.error(ex);
 						}
 					}
 					if(null != out){
 						try{
 							out.close();
 						}catch(Exception ex){
-							log.error(ex);
+							LOG.error(ex);
 						}
 					}
 				}
@@ -536,7 +536,7 @@ public class FileUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 		return list;
 	}
@@ -617,11 +617,11 @@ public class FileUtil {
         }     
         catch (FileNotFoundException e)     
         {     
-            log.error(e);     
+            LOG.error(e);     
         }     
         catch (IOException e)     
         {     
-            log.error(e);     
+            LOG.error(e);     
         }     
         return filetype;     
     } 
@@ -724,7 +724,7 @@ public class FileUtil {
 			}
 			out.close();
 		} catch (IOException e) {
-			log.error(e);
+			LOG.error(e);
 		}
 		result = true;
 		return result;

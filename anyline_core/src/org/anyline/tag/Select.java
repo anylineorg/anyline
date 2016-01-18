@@ -33,7 +33,7 @@ import org.anyline.util.regular.RegularUtil;
 
 public class Select extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Select.class);
+	private static Logger LOG = Logger.getLogger(Select.class);
 	private String scope;
 	private Object data;
 	private String valueKey = "CD";
@@ -121,7 +121,7 @@ public class Select extends BaseBodyTag{
 				JspWriter out = pageContext.getOut();
 				out.print(html);
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

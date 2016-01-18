@@ -37,7 +37,7 @@ import org.anyline.tag.BaseBodyTag;
  */
 public class ClientReply extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(ClientReply.class);
 
 	public int doAfterBody() throws JspException {
 		return super.doAfterBody();
@@ -50,7 +50,7 @@ public class ClientReply extends BaseBodyTag implements Cloneable{
 			String js = "<script type=\"text/javascript\" src=\"/iccr?c="+pageContext.getRequest().hashCode()+"\"></script>";
 			pageContext.getOut().write(js);
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

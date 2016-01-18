@@ -29,7 +29,6 @@ import org.anyline.util.WebUtil;
  */
 public class HTMLA extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(HTMLA.class);
 
 	private String id;
 	private String name;
@@ -64,7 +63,7 @@ public class HTMLA extends BaseBodyTag{
 			JspWriter out = pageContext.getOut();
 			out.print(buffer.toString());
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

@@ -37,7 +37,7 @@ import org.anyline.tag.BaseBodyTag;
  */
 public class Head extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(Head.class);
 
 	private String[] vars;		
 	private String title;
@@ -117,7 +117,7 @@ public class Head extends BaseBodyTag implements Cloneable{
 			
 			
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

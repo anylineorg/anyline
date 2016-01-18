@@ -34,7 +34,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
  *
  */
 public class RegxpContain implements RegularInterface{
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(RegxpContain.class);
 	private static PatternCompiler patternCompiler = new Perl5Compiler();
 	/**
 	 * 配置状态
@@ -75,7 +75,7 @@ public class RegxpContain implements RegularInterface{
 				list.add(item);
 			}
 		}catch(Exception e){
-			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
+			LOG.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
 		}
 		return list;
 	}
@@ -99,8 +99,8 @@ public class RegxpContain implements RegularInterface{
 				list.add(matchResult.group(idx));
 			}
 		}catch(Exception e){
-			log.error(e);
-			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
+			LOG.error(e);
+			LOG.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
 			throw e;
 		}
 		return list;

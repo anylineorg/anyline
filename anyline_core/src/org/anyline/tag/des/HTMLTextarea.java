@@ -29,9 +29,8 @@ import org.apache.log4j.Logger;
 public class HTMLTextarea extends ComponentTag{
 	private static final long serialVersionUID = 1L;
 
-	protected Logger log = Logger.getLogger(this.getClass());
 	public void createHead(Object obj){
-		setEncrypt(true);
+		setEncryptKey(true);
 		builder.append("\t\t\t<textarea ");
 		createAttribute();
 		createValue(null);
@@ -39,6 +38,9 @@ public class HTMLTextarea extends ComponentTag{
 	}
 	public void createBody(Object obj){
 		value = BasicUtil.nvl(body,value,"").toString();
+		if(isEncryptValue){
+			value = WebUtil.encryptValue(value);
+		}
 		builder.append(value);
 	}
 	public void createEnd(){
@@ -52,7 +54,7 @@ public class HTMLTextarea extends ComponentTag{
 					value = v.toString();
 				}
 			}catch(Exception e){
-				log.error(e);
+				LOG.error(e);
 			}
 		}
 		if(!"text".equalsIgnoreCase(type)){
