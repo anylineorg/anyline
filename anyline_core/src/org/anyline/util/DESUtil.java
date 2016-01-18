@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
 import com.sun.crypto.provider.SunJCE;
 
 public class DESUtil {
-	static Logger log = Logger.getLogger(DESUtil.class);
+	static Logger LOG = Logger.getLogger(DESUtil.class);
 	public static final String DEFAULT_SECRET_KEY = "L~@L$^N*)E+";	//默认密钥
 	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";	//盐值
 	private Cipher encryptCipher = null;					//加密
@@ -72,13 +72,13 @@ public class DESUtil {
 			try{
 				instance = new DESUtil(key);
 			}catch(NoSuchPaddingException e){
-				log.error(e);
+				LOG.error(e);
 			}catch(NoSuchAlgorithmException e){
-				log.error(e);
+				LOG.error(e);
 			}catch(InvalidKeyException e){
-				log.error(e);
+				LOG.error(e);
 			}catch(Exception e){
-				log.error(e);
+				LOG.error(e);
 			}
 		}
 		return instance;

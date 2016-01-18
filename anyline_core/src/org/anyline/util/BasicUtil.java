@@ -34,7 +34,7 @@ import javax.servlet.ServletRequest;
 import org.apache.log4j.Logger;
 
 public class BasicUtil {
-	private static Logger log = Logger.getLogger(BasicUtil.class);
+	private static Logger LOG = Logger.getLogger(BasicUtil.class);
 
 	/**
 	 * 是否为空或""或"null"(大写字母"NULL"不算空) 集合对象检查是否为空或集合中是否有对象
@@ -807,7 +807,7 @@ public class BasicUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 		return ips;
 	}

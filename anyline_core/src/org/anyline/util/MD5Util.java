@@ -26,7 +26,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 public class MD5Util {
-	private static Logger log = Logger.getLogger(MD5Util.class); 
+	private static Logger LOG = Logger.getLogger(MD5Util.class); 
 	private final static String[] hexDigits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"}; 
 	/**
 	 * 字符MD5加密
@@ -44,7 +44,7 @@ public class MD5Util {
                 //将得到的字节数组变成字符串返回     
                 result = byteArrayToHexString(results);     
             } catch(Exception ex){     
-                log.debug(ex);     
+                LOG.debug(ex);     
             }     
         }
         return result;     
@@ -74,7 +74,7 @@ public class MD5Util {
 		    }
 		    in.close();
 	    } catch (Exception e) {
-	    	log.error(e);
+	    	LOG.error(e);
 	    return null;
 	    }
 	    BigInteger bigInt = new BigInteger(1, digest.digest());

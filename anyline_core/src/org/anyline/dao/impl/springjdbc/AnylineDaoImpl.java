@@ -55,7 +55,7 @@ import org.springframework.stereotype.Repository;
  
 @Repository("anylineDao")
 public class AnylineDaoImpl implements AnylineDao {
-	Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(AnylineDaoImpl.class);
 
 	@Autowired(required=false)
 	private SQLCreater creater;
@@ -267,7 +267,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				setPrimaryValue(data, key.getKey().intValue());
 			}
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 		return 1;
 	}
@@ -323,8 +323,8 @@ public class AnylineDaoImpl implements AnylineDao {
 			throw new RuntimeException("未指定SQL");
 		}
 		if(ConfigTable.getBoolean("SHOW_SQL")){
-			log.info("\n"+sql);
-			log.info(values);
+			LOG.info("\n"+sql);
+			LOG.info(values);
 		}
 		DataSet set = new DataSet();
 		
@@ -348,8 +348,8 @@ public class AnylineDaoImpl implements AnylineDao {
 		List<Object> values = run.getValues();
 
 		if(ConfigTable.getBoolean("SHOW_SQL")){
-			log.info(txt);
-			log.info(values);
+			LOG.info(txt);
+			LOG.info(values);
 		}
 		if(null != values && values.size() > 0){
 			result = jdbc.update(txt, values.toArray());
@@ -379,8 +379,8 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<Integer> outputTypes = procedure.getOutputTypes();
 
 		if(ConfigTable.getBoolean("SHOW_SQL")){
-			log.info(procedure.getName());
-			log.info(inputValues);
+			LOG.info(procedure.getName());
+			LOG.info(inputValues);
 		}
 		String sql = "{call "+procedure.getName()+"(";
 		final int sizeIn = null == inputTypes? 0 : inputTypes.size();
@@ -439,8 +439,8 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<Integer> outputTypes = procedure.getOutputTypes();
 
 		if(ConfigTable.getBoolean("SHOW_SQL")){
-			log.info(procedure.getName());
-			log.info(inputValues);
+			LOG.info(procedure.getName());
+			LOG.info(inputValues);
 		}
 		@SuppressWarnings("unchecked")
 		DataSet set = (DataSet)jdbc.execute(new CallableStatementCreator(){  
@@ -503,8 +503,8 @@ public class AnylineDaoImpl implements AnylineDao {
 		final String sql = run.getDeleteTxt();
 		final List<Object> values = run.getValues();
 		if(ConfigTable.getBoolean("SHOW_SQL")){
-			log.info(sql);
-			log.info(values);
+			LOG.info(sql);
+			LOG.info(values);
 		}
 		jdbc.update(
 	            new PreparedStatementCreator() {

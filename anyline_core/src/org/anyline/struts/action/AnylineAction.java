@@ -54,7 +54,7 @@ import com.opensymphony.xwork2.inject.Inject;
 import com.opensymphony.xwork2.util.ValueStack;
 
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware,Action, Validateable, ValidationAware, TextProvider, LocaleProvider, Serializable {
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected static Logger LOG = Logger.getLogger(AnylineAction.class);
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
 	@Resource
@@ -293,8 +293,8 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	        if (ctx != null) {
 	            return ctx.getLocale();
 	        } else {
-	            if (log.isDebugEnabled()) {
-	            	log.debug("Action context not initialized");
+	            if (LOG.isDebugEnabled()) {
+	            	LOG.debug("Action context not initialized");
 	            }
 	            return null;
 	        }

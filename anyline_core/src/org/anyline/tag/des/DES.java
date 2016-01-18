@@ -31,7 +31,6 @@ import org.anyline.util.DESUtil;
  */
 public class DES extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(DES.class);
 	private String key;			//密钥
 	private String value;		//被加密数据
 
@@ -42,7 +41,7 @@ public class DES extends BaseBodyTag{
 			JspWriter out = pageContext.getOut();
 			out.print(value);
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}

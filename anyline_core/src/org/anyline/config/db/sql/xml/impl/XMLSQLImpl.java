@@ -158,7 +158,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}
 	}
 	/**

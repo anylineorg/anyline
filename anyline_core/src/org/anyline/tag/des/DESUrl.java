@@ -30,7 +30,7 @@ import org.anyline.util.WebUtil;
  */
 public class DESUrl extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private Logger log = Logger.getLogger(this.getClass());
+	private static Logger LOG = Logger.getLogger(DESUrl.class);
 	private String value;		//被加密数据
 
 	public int doEndTag() throws JspException {
@@ -51,7 +51,7 @@ public class DESUrl extends BaseBodyTag implements Cloneable{
 				out.print(result);
 			}
 		}catch(Exception e){
-			log.error(e);
+			LOG.error(e);
 		}finally{
 			release();
 		}
