@@ -71,7 +71,9 @@ public class SQLStoreImpl extends SQLStore{
 		fileName = fileName.replace(dirName, "").replace(".xml", "").replace(FileUtil.getFileSeparator(), ".");
 		
 		Document document = createDocument(file);
-		if(null == document) return result;
+		if(null == document) {
+			return result;
+		}
 		Element root = document.getRootElement();
 		//条件分组
 		Map<String,List<Condition>> conditionMap = new HashMap<String,List<Condition>>();

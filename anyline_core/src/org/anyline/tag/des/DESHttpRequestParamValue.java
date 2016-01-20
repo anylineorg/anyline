@@ -18,8 +18,6 @@ package org.anyline.tag.des;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
-
 import org.anyline.tag.BaseBodyTag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;

@@ -111,7 +111,9 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 	 * 解析 SQL 主体文本
 	 */
 	private void parseText(){
-		if(null == text) return;
+		if(null == text) {
+			return;
+		}
 		try{
 			int varType = -1;
 			int compare = SQL.COMPARE_TYPE_EQUAL;
@@ -265,7 +267,9 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 	private String createRunText(){
 		initRunValues();
 		String result = text;
-		if(null == variables) return result;
+		if(null == variables) {
+			return result;
+		}
 
 		for(SQLVariable var:variables){
 			if(var.getType() == SQLVariable.VAR_TYPE_REPLACE){
