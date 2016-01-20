@@ -89,7 +89,9 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	}
 	private void parseText(){
 		String text = sql.getText();
-		if(null == text) return;
+		if(null == text){
+			return;
+		}
 		try{
 			int varType = -1;
 			int compare = SQL.COMPARE_TYPE_EQUAL;

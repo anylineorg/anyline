@@ -63,12 +63,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 	}
 	public DataRow(Object ... params){
-		if(null != params)
-		for(int i=0; i<params.length-1; i+=2){
-			Object key = params[i];
-			Object value = params[i+1];
-			if(null != key){
-				put(key.toString().toUpperCase(),value);
+		if(null != params){
+			for(int i=0; i<params.length-1; i+=2){
+				Object key = params[i];
+				Object value = params[i+1];
+				if(null != key){
+					put(key.toString().toUpperCase(),value);
+				}
 			}
 		}
 	}

@@ -27,8 +27,8 @@ import org.apache.oro.text.regex.PatternMatcher;
 import org.apache.oro.text.regex.PatternMatcherInput;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
-
 import org.anyline.util.BasicUtil;
+import org.anyline.util.HttpUtil;
 
 
 public class RegularUtil {
@@ -220,7 +220,7 @@ public class RegularUtil {
 	public static String cut(String text,String ... tags){
 		if(null == tags || tags.length < 2){
 			/*没有开始结束标志*/
-			return "";
+			return null;
 		}
 		int _fr = -1;	//开始下标
 		int _to = -1;	//结束下标
@@ -234,22 +234,33 @@ public class RegularUtil {
 				_fr= text.indexOf(frTag, _fr);
 			}
 			if(_fr == -1){
-				return "";
+				return null;
 			}
 		}
 		_to = text.indexOf(toTag,_fr+frTag.length());
-		if(_to <= _fr) return "";
+		if(_to <= _fr) {
+			return null;
+		}
 		return text.substring(_fr+frTag.length(),_to).trim();
 	}
 	public static List<String> cuts(String text, String ... tags){
 		List<String> list = new ArrayList<String>();
 		while(true){
 			String item = cut(text, tags);
-			if(BasicUtil.isEmpty(item)){
+			//if(BasicUtil.isEmpty(item)){
+			if(null == item){
 				break;
 			}else{
 				list.add(item);
-				text = text.substring(text.indexOf(item)+1);
+				int idx = 0;
+				//计算新起点 
+				for(int i=0; i<tags.length; i++){
+					idx = text.indexOf(tags[i], idx+1);
+				}
+				if(idx <= 0){
+					break;
+				}
+				text = text.substring(idx);
 			}
 		}
 		return list;

@@ -97,7 +97,9 @@ public class ClientTrace extends BasicEntity{
 	public ClientTrace(){}
 	
 	public ClientTrace(HttpServletRequest request){
-		if(null == request) return;
+		if(null == request) {
+			return;
+		}
 		adminCd = (String)request.getSession().getAttribute("ADMIN_CD");
 		serverName = request.getServerName();
 		serverIP = request.getLocalAddr();

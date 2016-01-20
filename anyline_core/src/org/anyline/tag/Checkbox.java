@@ -150,10 +150,11 @@ public class Checkbox extends BaseBodyTag {
 		return EVAL_PAGE;
 	}
 	private boolean checked(Collection<Object> chks, Object value){
-		if(null != chks)
-		for(Object chk:chks){
-			if(null != chk && chk.equals(value)){
-				return true;
+		if(null != chks){
+			for(Object chk:chks){
+				if(null != chk && chk.equals(value)){
+					return true;
+				}
 			}
 		}
 		return false;
