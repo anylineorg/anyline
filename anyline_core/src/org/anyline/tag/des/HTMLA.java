@@ -15,6 +15,7 @@
  */
 
 package org.anyline.tag.des;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
@@ -22,12 +23,14 @@ import org.apache.log4j.Logger;
 
 import org.anyline.tag.BaseBodyTag;
 import org.anyline.util.WebUtil;
+
 /**
  * 加密
+ * 
  * @author Administrator
- *
+ * 
  */
-public class HTMLA extends BaseBodyTag{
+public class HTMLA extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
 
 	private String id;
@@ -41,34 +44,59 @@ public class HTMLA extends BaseBodyTag{
 	private String onmouseover;
 	private String onmouseout;
 	private String onclick;
-	
-	public int doEndTag() throws JspException {   
-		try{
+
+	public int doEndTag() throws JspException {
+		try {
 			StringBuffer buffer = new StringBuffer();
 			buffer.append("<a");
-			if(null != id){buffer.append(" id = \""+ id +"\"");}
-			if(null != name){buffer.append(" name = \""+ name +"\"");}
-			if(null != href){buffer.append(" href = \""+ WebUtil.encryptUrl(href) +"\"");}
-			if(null != clazz){buffer.append(" class = \""+ clazz +"\"");}
-			if(null != style){buffer.append(" style = \""+ style +"\"");}
-			if(null != title){buffer.append(" title = \""+ title +"\"");}
-			if(null != target){buffer.append(" target = \""+ target +"\"");}
-			if(null != shape){buffer.append(" shape = \""+ shape +"\"");}
-			if(null != onmouseover){buffer.append(" onmouseover = \""+ onmouseover +"\"");}
-			if(null != onmouseout){buffer.append(" onmouseout id = \""+ onmouseout +"\"");}
-			if(null != onclick){buffer.append(" onclick = \""+ onclick +"\"");}
+			if (null != id) {
+				buffer.append(" id = \"" + id + "\"");
+			}
+			if (null != name) {
+				buffer.append(" name = \"" + name + "\"");
+			}
+			if (null != href) {
+				buffer.append(" href = \"" + WebUtil.encryptUrl(href) + "\"");
+			}
+			if (null != clazz) {
+				buffer.append(" class = \"" + clazz + "\"");
+			}
+			if (null != style) {
+				buffer.append(" style = \"" + style + "\"");
+			}
+			if (null != title) {
+				buffer.append(" title = \"" + title + "\"");
+			}
+			if (null != target) {
+				buffer.append(" target = \"" + target + "\"");
+			}
+			if (null != shape) {
+				buffer.append(" shape = \"" + shape + "\"");
+			}
+			if (null != onmouseover) {
+				buffer.append(" onmouseover = \"" + onmouseover + "\"");
+			}
+			if (null != onmouseout) {
+				buffer.append(" onmouseout id = \"" + onmouseout + "\"");
+			}
+			if (null != onclick) {
+				buffer.append(" onclick = \"" + onclick + "\"");
+			}
 			buffer.append(">");
-			if(null != body){buffer.append(body);}
+			if (null != body) {
+				buffer.append(body);
+			}
 			buffer.append("</a>");
 			JspWriter out = pageContext.getOut();
 			out.print(buffer.toString());
-		}catch(Exception e){
+		} catch (Exception e) {
 			LOG.error(e);
-		}finally{
+		} finally {
 			release();
 		}
-		return EVAL_PAGE;   
+		return EVAL_PAGE;
 	}
+
 	@Override
 	public void release() {
 		super.release();
@@ -84,69 +112,91 @@ public class HTMLA extends BaseBodyTag{
 		onmouseout = null;
 		onclick = null;
 	}
+
 	public String getId() {
 		return id;
 	}
+
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	public String getHref() {
 		return href;
 	}
+
 	public void setHref(String href) {
 		this.href = href;
 	}
+
 	public String getClazz() {
 		return clazz;
 	}
+
 	public void setClazz(String clazz) {
 		this.clazz = clazz;
 	}
+
 	public String getStyle() {
 		return style;
 	}
+
 	public void setStyle(String style) {
 		this.style = style;
 	}
+
 	public String getTitle() {
 		return title;
 	}
+
 	public void setTitle(String title) {
 		this.title = title;
 	}
+
 	public String getTarget() {
 		return target;
 	}
+
 	public void setTarget(String target) {
 		this.target = target;
 	}
+
 	public String getShape() {
 		return shape;
 	}
+
 	public void setShape(String shape) {
 		this.shape = shape;
 	}
+
 	public String getOnmouseover() {
 		return onmouseover;
 	}
+
 	public void setOnmouseover(String onmouseover) {
 		this.onmouseover = onmouseover;
 	}
+
 	public String getOnmouseout() {
 		return onmouseout;
 	}
+
 	public void setOnmouseout(String onmouseout) {
 		this.onmouseout = onmouseout;
 	}
+
 	public String getOnclick() {
 		return onclick;
 	}
+
 	public void setOnclick(String onclick) {
 		this.onclick = onclick;
 	}

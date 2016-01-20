@@ -179,7 +179,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 	public String getRunText(String disKey) {
 		String result = text;
 		runValues = new ArrayList<Object>();
-		if(null == variables) return result;
+		if(null == variables){
+			return result;
+		}
 		for(SQLVariable var: variables){
 			if(var.getType() == SQLVariable.VAR_TYPE_REPLACE){
 				//CD = ::CD

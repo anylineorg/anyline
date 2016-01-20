@@ -123,8 +123,12 @@ public class FileUtil {
         	LOG.error(ex);
          } finally  {
                 try{
-                	if(null != in) in.close();
-                	if(null != inputStream)inputStream.close();
+                	if(null != in) {
+                		in.close();
+                	}
+                	if(null != inputStream){
+                		inputStream.close();
+                	}
                 }catch(Exception e){
                 	LOG.error(e);
                 }
@@ -197,14 +201,17 @@ public class FileUtil {
 	 * @return
 	 */
 	public static String crateFullFilePath(String dir, String fileName, String separator){
-		if(null==dir || null==fileName) return null;
+		if(null==dir || null==fileName) {
+			return null;
+		}
 		String path = null;
-		if(FileUtil.endWithSeparator(dir)&& FileUtil.startWithSeparator(fileName))
+		if(FileUtil.endWithSeparator(dir)&& FileUtil.startWithSeparator(fileName)){
 			path = dir.substring(0,dir.length()-1) + fileName;
-		else if(FileUtil.endWithSeparator(dir) || FileUtil.startWithSeparator(fileName))
+		}else if(FileUtil.endWithSeparator(dir) || FileUtil.startWithSeparator(fileName)){
 			path = dir + fileName;
-		else
+		}else{
 			path = dir + separator + fileName;
+		}
 		return path;
 	}
 	public static String createFullFilePath(String dir, String fileName){

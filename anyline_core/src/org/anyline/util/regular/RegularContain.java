@@ -114,8 +114,9 @@ public class RegularContain implements Regular{
 	public List<String> pick(List<String> src, String regx){
 		List<String> list = new ArrayList<String>();
 		for(String item : src){
-			if(match(item, regx))
+			if(match(item, regx)){
 				list.add(item);
+			}
 		}
 		return list;
 	}
@@ -128,8 +129,9 @@ public class RegularContain implements Regular{
 	public List<String> wipe(List<String> src, String regx){
 		List<String> list = new ArrayList<String>();
 		for(String item : src){
-			if(!match(item, regx))
+			if(!match(item, regx)){
 				list.add(item);
+			}
 		}
 		return list;
 	}

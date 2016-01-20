@@ -64,10 +64,12 @@ public class FileResult extends StrutsResultSupport {
 		} catch (Exception e) {
 			LOG.error(e);
 		} finally {
-			if(null != in)
+			if(null != in){
 				in.close();
-			if(null != out)
+			}
+			if(null != out){
 				out.close();
+			}
 		}
 	}
 

@@ -37,7 +37,9 @@ public class KeyValueEncryptConfig{
 	 * @param defValueEncrypt	默认设置
 	 */
 	public KeyValueEncryptConfig(String config, boolean defKeyEncrypt, boolean defValueEncrypt){
-		if(null == config) return;
+		if(null == config) {
+			return;
+		}
 		isKeyEncrypt = defKeyEncrypt;
 		isValueEncrypt = defValueEncrypt;
 		field = config;

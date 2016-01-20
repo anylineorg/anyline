@@ -115,11 +115,12 @@ public class PageNaviImpl implements PageNavi{
 	private String createHidParams(){
 		String html = "";
 		try{
-			if(null != params)
-			for(Iterator<String> itrKey=params.keySet().iterator(); itrKey.hasNext();){
-				String key = itrKey.next();
-				Object values = params.get(key);
-				html += createHidParam(key,values);
+			if(null != params){
+				for(Iterator<String> itrKey=params.keySet().iterator(); itrKey.hasNext();){
+					String key = itrKey.next();
+					Object values = params.get(key);
+					html += createHidParam(key,values);
+				}
 			}
 		}catch(Exception e){
 			LOG.error(e);
@@ -133,7 +134,9 @@ public class PageNaviImpl implements PageNavi{
 	 */
 	public int getFirstRow(){
 		if(calType == 0){
-			if(curPage <= 0) return 0;
+			if(curPage <= 0) {
+				return 0;
+			}
 			return (curPage-1) * pageRows;
 		}else{
 			return firstRow;
@@ -145,7 +148,9 @@ public class PageNaviImpl implements PageNavi{
 	 */
 	public int getLastRow(){
 		if(calType == 0){
-			if(curPage == 0) return pageRows -1;
+			if(curPage == 0) {
+				return pageRows -1;
+			}
 			return curPage * pageRows - 1;
 		}else{
 			return lastRow;

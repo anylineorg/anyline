@@ -59,7 +59,9 @@ public class Escape{
     }
     public static String escape(String s) {
         StringBuffer sbuf = new StringBuffer();
-    	if("".equals(s) || null==s)return "";        
+    	if("".equals(s) || null==s){
+    		return "";        
+    	}
         int len = s.length();        
         for (int i = 0; i < len; i++) {        
             int ch = s.charAt(i);        
@@ -95,7 +97,9 @@ public class Escape{
     	return escape(escape(s));
     }
     public static String unescape(String s) {
-    	if("".equals(s) || null==s)return s; 
+    	if("".equals(s) || null==s){
+    		return s; 
+    	}
         StringBuffer sbuf = new StringBuffer();        
         int i = 0;        
         int len = s.length();        
