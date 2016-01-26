@@ -16,17 +16,12 @@
 
 package org.anyline.config.http;
 
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
-import org.anyline.config.db.SQL;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.WebUtil;
 
 public interface Config {
 	//从request 取值方式
@@ -88,4 +83,5 @@ public interface Config {
 	public boolean isValueEncrypt();
 	
 	public Object clone();
+	public String toString();
 }

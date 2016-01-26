@@ -25,7 +25,7 @@ import org.anyline.config.db.SQL;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.DataSet;
 
-public interface AnylineDao {
+public interface AnylineDao{
 	/**
 	 * 查询
 	 * @param sql
