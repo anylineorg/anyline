@@ -526,17 +526,17 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public void setIsNew(Boolean isNew) {
 		this.isNew = isNew;
 	}
-	public AnylineService getService() {
-		return service;
-	}
-	public void setService(AnylineService service) {
-		this.service = service;
-	}
 	public int delete(){
 		return service.delete(this);
 	}
 	public int save(){
 		return service.save(this);
+	}
+	public AnylineService getService() {
+		return service;
+	}
+	public void setService(AnylineService service) {
+		this.service = service;
 	}
 	
 }

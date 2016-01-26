@@ -33,6 +33,15 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 	private List<Config> configs = new ArrayList<Config>();
 	
 	public ConfigChainImpl(){}
+	public String toString(){
+		String str = "";
+		if(null != configs){
+			for(Config conf:configs){
+				str += "." + conf.toString();
+			}
+		}
+		return str;
+	}
 	public ConfigChainImpl(String config){
 		if(null == config){
 			return;

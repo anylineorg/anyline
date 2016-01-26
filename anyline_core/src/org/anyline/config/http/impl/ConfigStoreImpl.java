@@ -49,7 +49,24 @@ public class ConfigStoreImpl implements ConfigStore{
 	private PageNavi navi;
 	private OrderStore orders;		//排序依据
 	private GroupStore groups;
-	
+
+	@Override
+	public String toString(){
+		String str = "";
+		if(null != chain){
+			str += chain.toString();
+		}
+		if(null != navi){
+			str += "." + navi.getFirstRow() + "." + navi.getLastRow() + "." + navi.getCurPage();
+		}
+		if(null != orders){
+			str += "." + orders.getRunText("");
+		}
+		if(null != groups){
+			str += "." + groups.getRunText("");
+		}
+		return str;
+	}
 	
 	/**
 	 * 解析查询配置参数
@@ -75,6 +92,25 @@ public class ConfigStoreImpl implements ConfigStore{
 		this.navi = navi;
 		return this;
 	}
+	@Override
+	public ConfigStore copyPageNavi(PageNavi navi){
+		if(null == this.navi){
+			this.navi = navi;
+		}else{
+			this.navi.setBaseLink(navi.getBaseLink());
+			this.navi.setCalType(navi.getCalType());
+			this.navi.setCurPage(navi.getCurPage());
+			this.navi.setDisplayPageFirst(navi.getDisplayPageFirst());
+			this.navi.setDisplayPageLast(navi.getDisplayPageLast());
+			this.navi.setFirstRow(navi.getFirstRow());
+			this.navi.setLastRow(navi.getLastRow());
+			this.navi.setPageRows(navi.getPageRows());
+			this.navi.setTotalPage(navi.getTotalPage());
+			this.navi.setTotalRow(navi.getTotalRow());
+		}
+		return this;
+	}
+	
 	public ConfigStoreImpl(String ... configs){
 		configs = BasicUtil.compressionSpace(configs);
 		chain = new ConfigChainImpl();

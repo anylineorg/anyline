@@ -16,9 +16,10 @@
 
 package org.anyline.config.db;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface OrderStore extends Cloneable{
+public interface OrderStore extends Cloneable,Serializable{
 
 	public List<Order> getOrders();
 	public void order(Order order);
