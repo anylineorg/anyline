@@ -25,7 +25,7 @@ import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 
-public interface AnylineService {
+public interface AnylineService{
 	/**
 	 * 按条件查询
 	 * @param src			数据源(表或自定义SQL或SELECT语句)

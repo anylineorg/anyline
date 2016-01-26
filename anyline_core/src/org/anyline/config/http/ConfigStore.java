@@ -43,6 +43,7 @@ public interface ConfigStore {
 	 */
 	public Config parseConfig(String config);
 	public ConfigStore setPageNavi(PageNavi navi);
+	public ConfigStore copyPageNavi(PageNavi navi);
 	public ConfigStore addParam(String key, String value);
 	public ConfigStore setValue(HttpServletRequest request);
 	public ConfigChain getConfigChain();
@@ -79,6 +80,8 @@ public interface ConfigStore {
 	 * @return
 	 */
 	public ConfigStore fetch(String ... keys);
+	
+	public String toString();
 }
 
 

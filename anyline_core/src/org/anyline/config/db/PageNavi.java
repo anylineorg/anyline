@@ -16,10 +16,12 @@
 
 package org.anyline.config.db;
 
+import java.io.Serializable;
 
 
 
-public interface PageNavi{
+
+public interface PageNavi extends Serializable{
 	public static final String PAGE_ROWS			= "_anyline_page_rows"								;
 	public static final String PAGE_NO				= "_anyline_page"								;
 	

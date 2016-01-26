@@ -49,6 +49,7 @@ public class DataSet implements Collection<Object>, Serializable {
 	private String author;
 	private String table;
 
+
 	@Autowired
 	protected AnylineService service;
 	/**
@@ -949,13 +950,17 @@ public class DataSet implements Collection<Object>, Serializable {
 	public void setTable(String table) {
 		this.table = table;
 	}
-	public void setService(AnylineService service){
-		this.service = service;
-	}
 	public int delete(){
 		return service.delete(this);
 	}
 	public int save(){
 		return service.save(this);
 	}
+	public AnylineService getService() {
+		return service;
+	}
+	public void setService(AnylineService service) {
+		this.service = service;
+	}
+	
 }
