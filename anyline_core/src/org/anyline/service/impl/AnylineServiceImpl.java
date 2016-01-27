@@ -16,10 +16,16 @@
 
 package org.anyline.service.impl;
 
+import java.io.File;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 import javax.sql.DataSource;
+
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
 
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
@@ -37,6 +43,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,24 +60,69 @@ public class AnylineServiceImpl implements AnylineService {
 	public AnylineDao getDao() {
 		return dao;
 	}
-
+	
+	private String createCacheElementKey(DataSource ds, String src, ConfigStore configs, String ... conditions){
+		String key = "";
+		key += ds+"."+src;
+		if(null != configs){
+			key += "."+configs.toString();
+		}
+		if(null != conditions){
+			for(String item:conditions){
+				key += "."+item;
+			}
+		}
+		return key;
+	}
 	/**
 	 * 按条件查询
-	 * 
-	 * @param ds
-	 *            数据源
-	 * @param src
-	 *            表｜视图｜函数｜自定义SQL
-	 * @param configs
-	 *            http参数封装
-	 * @param conditions
-	 *            固定查询条件
+	 * @param ds 数据源
+	 * @param src 表｜视图｜函数｜自定义SQL
+	 * @param configs http参数封装
+	 * @param conditions 固定查询条件
 	 * @return
 	 */
 	@Override
 	public DataSet query(DataSource ds, String src, ConfigStore configs, String... conditions) {
 		DataSet set = null;
 		conditions = BasicUtil.compressionSpace(conditions);
+		//是否启动缓存
+		if(!ConfigTable.getBoolean("IS_USE_CACHE")){
+			set = queryFromDao(ds,src, configs, conditions);
+			return set;
+		}
+		
+		String cacaheKey = "anyline.query.cache";
+		String elementKey = createCacheElementKey(ds, src, configs, conditions);
+		Element element = null;
+        synchronized (this) {
+        	String path = ConfigTable.getWebRoot()+"/WEB-INF/classes/ehcache.xml";
+        	CacheManager manager = CacheManager.newInstance(path);
+    		Cache cache = manager.getCache(cacaheKey);
+    		if(null == cache){
+    			manager.addCache(cacaheKey);
+    			cache = manager.getCache(cacaheKey);
+    		}
+            element = cache.get(elementKey);
+            if (element == null) {
+            	LOG.info(elementKey + "加入到缓存： " + cache.getName());
+                // 调用实际 的方法
+            	set = queryFromDao(ds,src, configs, conditions);
+            	set.setService(null);
+                element = new Element(elementKey, (Serializable)set);
+                cache.put(element);
+            } else {
+            	LOG.info(elementKey + "使用缓存： " + cache.getName());
+            	set = (DataSet)element.getObjectValue();
+            }
+            set.setService(this);
+            configs.copyPageNavi(set.getNavi());
+        }
+        return set;
+		
+	}
+	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
+		DataSet set = null;
 		try {
 			SQL sql = null;
 			if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
@@ -92,7 +144,6 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return set;
 	}
-
 	@Override
 	public DataSet query(String src, ConfigStore configs, String... conditions) {
 		return query(null, src, configs, conditions);
@@ -173,7 +224,7 @@ public class AnylineServiceImpl implements AnylineService {
 		DataSet set = query(ds, src, store, conditions);
 		if (null != set && set.size() > 0) {
 			DataRow row = set.getRow(0);
-			row.setService(this);
+			//row.setService(this);
 			return row;
 		}
 		return null;
