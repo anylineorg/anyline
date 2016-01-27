@@ -39,6 +39,8 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.entity.BasicEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.exception.SQLQueryException;
+import org.anyline.exception.SQLUpdateException;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -129,14 +131,19 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public int update(DataSource ds, String dest, Object obj, String ... columns ){
 		if(null == obj){
-			throw new RuntimeException("更新空数据");
+			throw new SQLUpdateException("更新空数据");
 		}
-		//row.processBeforeSave();								//保存之前预处理
-		RunSQL run = creater.createUpdateTxt(dest, obj, false, columns);
-		/*执行SQL*/
-		int result = jdbc.update(run.getUpdateTxt(), run.getValues().toArray());
-	//	row.processBeforeDisplay();	//显示之前预处理
-		
+		int result = 0;
+		try{
+			//row.processBeforeSave();								//保存之前预处理
+			RunSQL run = creater.createUpdateTxt(dest, obj, false, columns);
+			/*执行SQL*/
+			result = jdbc.update(run.getUpdateTxt(), run.getValues().toArray());
+		//	row.processBeforeDisplay();	//显示之前预处理
+		}catch(Exception e){
+			LOG.error(e);
+			throw new SQLUpdateException("更新异常:"+e);
+		}
 		return result;
 	}
 	@Override
@@ -157,7 +164,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public int save(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
-			throw new RuntimeException("保存空数据");
+			throw new SQLUpdateException("保存空数据");
 		}
 		if(data instanceof Collection){
 			Collection<?> items = (Collection<?>)data;
@@ -249,8 +256,9 @@ public class AnylineDaoImpl implements AnylineDao {
 		final String sql = run.getInsertTxt();
 		final List<Object> values = run.getValues();
 		KeyHolder key=new GeneratedKeyHolder();
-		final String primaryKey = creater.getPrimaryKey(data);
-		jdbc.update(
+		final String primaryKey = creater.getPrimaryKey(data);	
+		try{
+			jdbc.update(
 	            new PreparedStatementCreator() {
 	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
 	                {
@@ -262,12 +270,13 @@ public class AnylineDaoImpl implements AnylineDao {
 	                    return ps;
 	                }
 	            }, key);
-		try{
+
 			if(null != key && null != key.getKey()){
 				setPrimaryValue(data, key.getKey().intValue());
 			}
 		}catch(Exception e){
 			LOG.error(e);
+			throw new SQLUpdateException("插入异常:"+e);
 		}
 		return 1;
 	}
@@ -320,24 +329,28 @@ public class AnylineDaoImpl implements AnylineDao {
 	 */
 	private DataSet select(DataSource ds, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
-			throw new RuntimeException("未指定SQL");
+			throw new SQLQueryException("未指定SQL");
 		}
 		if(ConfigTable.getBoolean("SHOW_SQL")){
 			LOG.info("\n"+sql);
 			LOG.info(values);
 		}
 		DataSet set = new DataSet();
-		
-		List<Map<String,Object>> list = null;
-		if(null != values && values.size()>0){
-			list = jdbc.queryForList(sql, values.toArray());
-		}else{
-			list = jdbc.queryForList(sql);
+		try{
+			List<Map<String,Object>> list = null;
+			if(null != values && values.size()>0){
+				list = jdbc.queryForList(sql, values.toArray());
+			}else{
+				list = jdbc.queryForList(sql);
+			}
+	        for(Map<String,Object> map:list){
+	        	DataRow row = new DataRow(map);
+	        	set.add(row);
+	        }
+		}catch(Exception e){
+			LOG.error(e);
+			throw new SQLQueryException("查询异常:"+e+"\nSQL:"+sql+"\nPARAM:"+values);
 		}
-        for(Map<String,Object> map:list){
-        	DataRow row = new DataRow(map);
-        	set.add(row);
-        }
 		return set;
 	}
 	@Override
@@ -351,10 +364,15 @@ public class AnylineDaoImpl implements AnylineDao {
 			LOG.info(txt);
 			LOG.info(values);
 		}
-		if(null != values && values.size() > 0){
-			result = jdbc.update(txt, values.toArray());
-		}else{
-			result = jdbc.update(txt);
+		try{
+			if(null != values && values.size() > 0){
+				result = jdbc.update(txt, values.toArray());
+			}else{
+				result = jdbc.update(txt);
+			}
+		}catch(Exception e){
+			LOG.error(e);
+			throw new SQLUpdateException("执行异常:"+e+"\nSQL:"+txt+"\nPARAM:"+values);
 		}
 		return result; 
 	}
@@ -393,32 +411,37 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 		}
 		sql += ")}";
-		result = (List<Object>)jdbc.execute(sql,new CallableStatementCallback<Object>(){     
-	        public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
-				final List<Object> result = new ArrayList<Object>();
-				for(int i=1; i<=sizeIn; i++){
-					Object value = inputValues.get(i-1);
-					if(null == value || "NULL".equalsIgnoreCase(value.toString())){
-						value = null;
+		try{
+			result = (List<Object>)jdbc.execute(sql,new CallableStatementCallback<Object>(){     
+		        public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
+					final List<Object> result = new ArrayList<Object>();
+					for(int i=1; i<=sizeIn; i++){
+						Object value = inputValues.get(i-1);
+						if(null == value || "NULL".equalsIgnoreCase(value.toString())){
+							value = null;
+						}
+						cs.setObject(i, value, inputTypes.get(i-1));
 					}
-					cs.setObject(i, value, inputTypes.get(i-1));
-				}
-				for(int i=1; i<=sizeOut; i++){
-					cs.registerOutParameter(i+sizeIn, outputTypes.get(i-1));     
-				}
-	            if(sizeOut > 0){
-					//注册输出参数
-					cs.execute();
 					for(int i=1; i<=sizeOut; i++){
-						final Object output = cs.getObject(sizeIn+i);
-						result.add(output);
+						cs.registerOutParameter(i+sizeIn, outputTypes.get(i-1));     
 					}
-				}else{
-					boolean exeResult = cs.execute();
-				}
-	            return result;
-	        }
-	    });      
+		            if(sizeOut > 0){
+						//注册输出参数
+						cs.execute();
+						for(int i=1; i<=sizeOut; i++){
+							final Object output = cs.getObject(sizeIn+i);
+							result.add(output);
+						}
+					}else{
+						boolean exeResult = cs.execute();
+					}
+		            return result;
+		        }
+		    });     
+		}catch(Exception e){
+			LOG.error(e);
+			throw new SQLUpdateException("PROCEDURE执行异常:"+e+"\nPROCEDURE:"+procedure.getName()+"\nPARAM:"+procedure.getInputValues());
+		}
 		return result;
 	}
 
@@ -442,54 +465,59 @@ public class AnylineDaoImpl implements AnylineDao {
 			LOG.info(procedure.getName());
 			LOG.info(inputValues);
 		}
-		@SuppressWarnings("unchecked")
-		DataSet set = (DataSet)jdbc.execute(new CallableStatementCreator(){  
-            public CallableStatement createCallableStatement(Connection conn) throws SQLException {  
-            	String sql = "{call "+procedure.getName()+"(";
-        		final int sizeIn = null == inputTypes? 0 : inputTypes.size();
-        		final int sizeOut = null == outputTypes? 0 : outputTypes.size();
-        		final int size = sizeIn + sizeOut;
-        		for(int i=0; i<size; i++){
-        			sql += "?";
-        			if(i < size-1){
-        				sql += ",";
-        			}
-        		}
-        		sql += ")}";
-        		
-                CallableStatement cs = conn.prepareCall(sql);
-                for(int i=1; i<=sizeIn; i++){
-					Object value = inputValues.get(i-1);
-					if(null == value || "NULL".equalsIgnoreCase(value.toString())){
-						value = null;
+		DataSet set = null;
+		try{
+			set = (DataSet)jdbc.execute(new CallableStatementCreator(){  
+	            public CallableStatement createCallableStatement(Connection conn) throws SQLException {  
+	            	String sql = "{call "+procedure.getName()+"(";
+	        		final int sizeIn = null == inputTypes? 0 : inputTypes.size();
+	        		final int sizeOut = null == outputTypes? 0 : outputTypes.size();
+	        		final int size = sizeIn + sizeOut;
+	        		for(int i=0; i<size; i++){
+	        			sql += "?";
+	        			if(i < size-1){
+	        				sql += ",";
+	        			}
+	        		}
+	        		sql += ")}";
+	        		
+	                CallableStatement cs = conn.prepareCall(sql);
+	                for(int i=1; i<=sizeIn; i++){
+						Object value = inputValues.get(i-1);
+						if(null == value || "NULL".equalsIgnoreCase(value.toString())){
+							value = null;
+						}
+						cs.setObject(i, value, inputTypes.get(i-1));
 					}
-					cs.setObject(i, value, inputTypes.get(i-1));
-				}
-				for(int i=1; i<=sizeOut; i++){
-					cs.registerOutParameter(i+sizeIn, outputTypes.get(i-1));     
-				}
-                return cs;  
-            }  
-        },new CallableStatementCallback(){  
-            public Object doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {  
-                ResultSet rs = cs.executeQuery();
-                DataSet set = new DataSet();
-        		ResultSetMetaData rsmd = rs.getMetaData();
-        		int cols = rsmd.getColumnCount();
-        		for(int i=1; i<=cols; i++){
-        			set.addHead(rsmd.getColumnName(i));
-        		}
-                while(rs.next()){
-    				DataRow row = new DataRow();
-    				for(int i=1; i<=cols; i++){
-    					row.put(rsmd.getColumnName(i).toUpperCase(), rs.getObject(i));
-    				}
-    				row.processBeforeDisplay();	//显示之前预处理
-    				set.addRow(row);
-    			}
-                return set;
-            }  
-        });  
+					for(int i=1; i<=sizeOut; i++){
+						cs.registerOutParameter(i+sizeIn, outputTypes.get(i-1));     
+					}
+	                return cs;  
+	            }  
+	        },new CallableStatementCallback(){  
+	            public Object doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {  
+	                ResultSet rs = cs.executeQuery();
+	                DataSet set = new DataSet();
+	        		ResultSetMetaData rsmd = rs.getMetaData();
+	        		int cols = rsmd.getColumnCount();
+	        		for(int i=1; i<=cols; i++){
+	        			set.addHead(rsmd.getColumnName(i));
+	        		}
+	                while(rs.next()){
+	    				DataRow row = new DataRow();
+	    				for(int i=1; i<=cols; i++){
+	    					row.put(rsmd.getColumnName(i).toUpperCase(), rs.getObject(i));
+	    				}
+	    				row.processBeforeDisplay();	//显示之前预处理
+	    				set.addRow(row);
+	    			}
+	                return set;
+	            }  
+	        });  
+		}catch(Exception e){
+			LOG.error(e);
+			throw new SQLQueryException("查询异常:"+e+"\nPROCEDURE:"+ procedure.getName());
+		}
 		return set;
 	}
 	@Override
@@ -506,7 +534,8 @@ public class AnylineDaoImpl implements AnylineDao {
 			LOG.info(sql);
 			LOG.info(values);
 		}
-		jdbc.update(
+		try{
+			jdbc.update(
 	            new PreparedStatementCreator() {
 	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
 	                {
@@ -518,6 +547,10 @@ public class AnylineDaoImpl implements AnylineDao {
 	                    return ps;
 	                }
 	            });
+		}catch(Exception e){
+			LOG.error(e);
+			throw new SQLUpdateException("删除异常:"+e);
+		}
 		return 1;
 	}
  
