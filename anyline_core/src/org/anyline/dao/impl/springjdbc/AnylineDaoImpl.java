@@ -87,6 +87,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		DataSet set = null;
 		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
 		PageNavi navi = run.getPageNavi();
+		//只有一条的情况单独处理
 		int total = 0;
 		if(null != navi){
 			total = getTotal(ds, run.getTotalQueryTxt(), run.getValues());
@@ -255,24 +256,22 @@ public class AnylineDaoImpl implements AnylineDao {
 		RunSQL run = creater.createInsertTxt(dest, data, checkPrimary, columns);
 		final String sql = run.getInsertTxt();
 		final List<Object> values = run.getValues();
-		KeyHolder key=new GeneratedKeyHolder();
-		final String primaryKey = creater.getPrimaryKey(data);	
+		KeyHolder keyholder = new GeneratedKeyHolder();
 		try{
-			jdbc.update(
-	            new PreparedStatementCreator() {
-	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
-	                {
-	                    PreparedStatement ps = jdbc.getDataSource().getConnection().prepareStatement(sql.toString(),new String[] {primaryKey});
-	                    int idx = 0;
+			int cnt= jdbc.update(new PreparedStatementCreator() {
+				@Override
+				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+					PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+					 int idx = 0;
 	                    for(Object obj:values){
 	                    	ps.setObject(++idx, obj);
 	                    }
-	                    return ps;
-	                }
-	            }, key);
-
-			if(null != key && null != key.getKey()){
-				setPrimaryValue(data, key.getKey().intValue());
+	                return ps;
+				}
+			}, keyholder);
+			if (cnt == 1) {
+				int id = (int) keyholder.getKey().longValue();
+				setPrimaryValue(data, id);
 			}
 		}catch(Exception e){
 			LOG.error(e);
