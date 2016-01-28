@@ -87,7 +87,6 @@ public class AnylineDaoImpl implements AnylineDao {
 		DataSet set = null;
 		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
 		PageNavi navi = run.getPageNavi();
-		//只有一条的情况单独处理
 		int total = 0;
 		if(null != navi){
 			total = getTotal(ds, run.getTotalQueryTxt(), run.getValues());
