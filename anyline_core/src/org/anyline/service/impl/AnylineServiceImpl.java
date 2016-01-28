@@ -224,7 +224,7 @@ public class AnylineServiceImpl implements AnylineService {
 		DataSet set = query(ds, src, store, conditions);
 		if (null != set && set.size() > 0) {
 			DataRow row = set.getRow(0);
-			//row.setService(this);
+			row.setService(this);
 			return row;
 		}
 		return null;
