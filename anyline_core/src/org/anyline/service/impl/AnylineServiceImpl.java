@@ -86,38 +86,39 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet query(DataSource ds, String src, ConfigStore configs, String... conditions) {
 		DataSet set = null;
 		conditions = BasicUtil.compressionSpace(conditions);
-		//是否启动缓存
-		if(!ConfigTable.getBoolean("IS_USE_CACHE")){
-			set = queryFromDao(ds,src, configs, conditions);
-			return set;
-		}
-		
-		String cacaheKey = "anyline.query.cache";
-		String elementKey = createCacheElementKey(ds, src, configs, conditions);
-		Element element = null;
-        synchronized (this) {
-        	String path = ConfigTable.getWebRoot()+"/WEB-INF/classes/ehcache.xml";
-        	CacheManager manager = CacheManager.newInstance(path);
-    		Cache cache = manager.getCache(cacaheKey);
-    		if(null == cache){
-    			manager.addCache(cacaheKey);
-    			cache = manager.getCache(cacaheKey);
-    		}
-            element = cache.get(elementKey);
-            if (element == null) {
-            	LOG.info(elementKey + "加入到缓存： " + cache.getName());
-                // 调用实际 的方法
-            	set = queryFromDao(ds,src, configs, conditions);
-            	set.setService(null);
-                element = new Element(elementKey, (Serializable)set);
-                cache.put(element);
-            } else {
-            	LOG.info(elementKey + "使用缓存： " + cache.getName());
-            	set = (DataSet)element.getObjectValue();
-            }
-            set.setService(this);
-            configs.copyPageNavi(set.getNavi());
-        }
+//		//是否启动缓存
+//		if(!ConfigTable.getBoolean("IS_USE_CACHE")){
+//			set = queryFromDao(ds,src, configs, conditions);
+//			return set;
+//		}
+//		
+//		String cacaheKey = "anyline.query.cache";
+//		String elementKey = createCacheElementKey(ds, src, configs, conditions);
+//		Element element = null;
+//        synchronized (this) {
+//        	String path = ConfigTable.getWebRoot()+"/WEB-INF/classes/ehcache.xml";
+//        	CacheManager manager = CacheManager.newInstance(path);
+//    		Cache cache = manager.getCache(cacaheKey);
+//    		if(null == cache){
+//    			manager.addCache(cacaheKey);
+//    			cache = manager.getCache(cacaheKey);
+//    		}
+//            element = cache.get(elementKey);
+//            if (element == null) {
+//            	LOG.info(elementKey + "加入到缓存： " + cache.getName());
+//                // 调用实际 的方法
+//            	set = queryFromDao(ds,src, configs, conditions);
+//            	set.setService(null);
+//                element = new Element(elementKey, (Serializable)set);
+//                cache.put(element);
+//            } else {
+//            	LOG.info(elementKey + "使用缓存： " + cache.getName());
+//            	set = (DataSet)element.getObjectValue();
+//            }
+//            set.setService(this);
+//            configs.copyPageNavi(set.getNavi());
+//        }
+		set = queryFromDao(ds,src, configs, conditions);
         return set;
 		
 	}
