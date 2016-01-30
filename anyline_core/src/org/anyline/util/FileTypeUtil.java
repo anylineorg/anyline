@@ -211,13 +211,13 @@ public class FileTypeUtil {
 		return stringBuilder.toString();
 	}
 
-	public static void main(String[] args) throws Exception {
-		File f = new File("d://YeePaySecureGuard.msi");
-		if (f.exists()) {
-			String filetype1 = getImageFileType(f);
-			System.out.println(filetype1);
-			String filetype2 = getFileByFile(f);
-			System.out.println(filetype2);
-		}
-	}
+//	public static void main(String[] args) throws Exception {
+//		File f = new File("d://TEST.msi");
+//		if (f.exists()) {
+//			String filetype1 = getImageFileType(f);
+//			System.out.println(filetype1);
+//			String filetype2 = getFileByFile(f);
+//			System.out.println(filetype2);
+//		}
+//	}
 }
