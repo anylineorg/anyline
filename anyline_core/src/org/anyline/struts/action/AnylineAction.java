@@ -25,8 +25,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.anyline.config.http.ConfigStore;
 import org.anyline.controller.AbstractBasicController;
@@ -57,6 +59,8 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected static Logger LOG = Logger.getLogger(AnylineAction.class);
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
+	protected HttpSession session;
+	protected ServletContext servlet;
 	@Resource
 	protected AnylineService service;
 
@@ -517,6 +521,8 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 
 	public void setServletRequest(HttpServletRequest request) {
 		this.request = request;
+		this.session = request.getSession();
+		this.servlet = this.session.getServletContext();
 	}
 	/******************************************************************************************************************
 	 * 
@@ -591,8 +597,8 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 				messages.remove(msg);
 			}
 		}
-		msg = BasicUtil.nvl(msg, "").toString()
-				+ BasicUtil.nvl(html, "").toString();
+		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString();
+		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
 		if (isAjaxRequest(request)) {
 			return AJAX;
 		} else {
