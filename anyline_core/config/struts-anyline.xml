@@ -7,5 +7,9 @@
 			<result-type name="template" class="org.anyline.struts.result.TemplateResult" default="true"></result-type>
 			<result-type name="json" class="org.anyline.struts.result.JSONResult"></result-type>
 		</result-types>
+		<global-results>
+		<!-- AJAX请求 -->
+		<result name="ajax" type="json"></result>
+	</global-results>
 	</package>
 </struts>
