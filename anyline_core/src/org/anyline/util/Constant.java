@@ -27,6 +27,7 @@ public class Constant {
 
 	public static final String SESSION_ATTR_MESSAGE					= "SESSION_ATTR_MESSAGE"				;//session信息
 	public static final String SESSION_ATTR_TOKEN_VALUE_EMPTY		= "SESSION_ATTR_TOKEN_VALUE_EMPTY"		;//TOKEN空值(已被验证过一次)
+	public static final String SESSION_ATTR_ERROR_MESSAGE			= "SESSION_ATTR_ERROR_MESSAGE";
 	//request变量及参数
 	public static final String REQUEST_ATTR_HTTP_CLIENT_CD 			= "REQUEST_HTTP_CLIENT_CD"				;//操作客户端CD
 	public static final String REQUEST_ATTR_HTTP_CLIENT				= "REQUEST_HTTP_CLIENT"					;//操作客户端cn.ecool.entity.HttpClient
