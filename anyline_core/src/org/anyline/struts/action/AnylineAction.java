@@ -232,19 +232,6 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected boolean isWap() {
 		return WebUtil.isWap(request);
 	}
-	protected String fail(Object... msgs) {
-		return fail(request, msgs);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 		private final ValidationAwareSupport validationAware = new ValidationAwareSupport();
@@ -580,7 +567,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 * 
 	 * @return
 	 */
-	protected String fail(HttpServletRequest request, Object... msgs) {
+	protected String fail(Object... msgs) {
 		result = false;
 		if (null != msgs && msgs.length > 0) {
 			for (Object msg : msgs) {
