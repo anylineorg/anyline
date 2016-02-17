@@ -273,19 +273,35 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		return null;
 	}
-
+	/**
+	 * distinct
+	 * @param keys
+	 * @return
+	 */
 	public DataSet distinct(String... keys) {
 		DataSet result = new DataSet();
 		if (null != rows) {
 			int size = rows.size();
 			for (int i = 0; i < size; i++) {
 				DataRow row = rows.get(i);
-
+				//查看result中是否已存在
+				String[] params = new String[keys.length*2];
+				int idx = 0;
+				for(String key:keys){
+					params[idx++] = key;
+					params[idx++] = row.getString(key);
+				}
+				if(result.getRows(params).size() == 0){
+					DataRow tmp = new DataRow();
+					for(String key:keys){
+						tmp.put(key, row.get(key));
+					}
+					result.addRow(tmp);
+				}
 			}
 		}
 		return result;
 	}
-
 	/**
 	 * 提取符合指定属性值的集合
 	 * 
@@ -842,7 +858,11 @@ public class DataSet implements Collection<Object>, Serializable {
 	public DataSet union(DataSet set) {
 		return union(set, "CD");
 	}
-
+	/**
+	 * 合并
+	 * @param set
+	 * @return
+	 */
 	public DataSet unionAll(DataSet set) {
 		DataSet result = new DataSet();
 		if (null != rows) {
@@ -875,6 +895,12 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		return false;
 	}
+	/**
+	 * 从items中按相应的key提取数据 存入
+	 * @param items
+	 * @param keys
+	 * @return
+	 */
 	public DataSet dispatchItems(DataSet items, String ... keys){
 		if(null == items || null == keys || keys.length == 0){
 			return this;
@@ -889,6 +915,16 @@ public class DataSet implements Collection<Object>, Serializable {
 			row.putItems(items.getRows(params));
 		}
 		return this;
+	}
+	/**
+	 * 按keys分组
+	 * @param keys
+	 * @return
+	 */
+	public DataSet group(String ... keys){
+		DataSet result = distinct(keys);
+		result.dispatchItems(this, keys);
+		return result;
 	}
 	/*********************************************** 实现接口 ************************************************************/
 	public boolean add(Object e) {
