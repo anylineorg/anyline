@@ -27,21 +27,49 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import org.apache.log4j.Logger;
+import java.util.Map;
+import java.util.Set;
 
 import org.anyline.util.regular.RegularUtil;
+import org.apache.log4j.Logger;
 
 public class HttpUtil {
 	private static Logger LOG = Logger.getLogger(HttpUtil.class);
 	private static int CONNECT_TIMEOUT = 90000; // 连接超时
 	private static int READ_TIMEOUT = 50000; // 读取超时
+	/**
+	 * 格式化http参数
+	 * @param params
+	 * @return
+	 */
+	public static String formatParam(Map<String,Object> params){
+		String result = "";
+		Set<String> keys = params.keySet();
+		boolean fr = true;
+		for(String key:keys){
+			String sign = "";
+			if(fr){
+				sign = "&";
+				fr = false;
+			}
+			result += sign + key+"="+params.get(key);
+		}
+		return result;
+	}
 	public static Source post(String url, String encode, String param){
 		return request(url, encode, "POST", param);
 	}
+	public static Source post(String url, String encode, Map<String,Object> param){
+		return post(url, encode, formatParam(param));
+	}
+	
 	public static Source get(String url, String encode, String param){
 		return request(url, encode, "GET", param);
 	}
+	public static Source get(String url, String encode, Map<String,Object> param){
+		return get(url, encode, formatParam(param));
+	}
+	
 
 	/**
 	 * 获取url源文件
@@ -50,7 +78,7 @@ public class HttpUtil {
 	 * @return
 	 */
 	public static Source getSourceByUrl(String url, String encode) {
-		return get(url, encode, null);
+		return get(url, encode, "");
 	}
 	/**
 	 * 
@@ -77,6 +105,12 @@ public class HttpUtil {
 		InputStream is = null;
 		try {
 			connection = imitateBrowser(url);
+			if("POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(param)){
+				//设置post参数
+				connection.setDoOutput(true);// 是否输入参数
+		        byte[] bypes = param.toString().getBytes();
+		        connection.getOutputStream().write(bypes);// 输入参数
+			}
 			source.setContentType(connection.getContentType());
 
 			/* 确认编码 */
@@ -85,12 +119,6 @@ public class HttpUtil {
 			}
 			if (null == source.getEncode()) {
 				source.setEncode(encode);
-			}
-			if("POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(param)){
-				//设置post参数
-				connection.setDoOutput(true);// 是否输入参数
-		        byte[] bypes = param.toString().getBytes();
-		        connection.getOutputStream().write(bypes);// 输入参数
 			}
 			/* 读取数据 */
 			is = connection.getInputStream();
@@ -146,6 +174,7 @@ public class HttpUtil {
 			source.setLastModified(connection.getLastModified());
 			is.close();
 		} catch (Exception e) {
+			e.printStackTrace();
 			LOG.error("getSourceByUrl(" + url + "):\n" + e);
 			source = null;
 		} finally {
