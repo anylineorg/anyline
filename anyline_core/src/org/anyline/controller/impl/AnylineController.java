@@ -243,11 +243,11 @@ public  class AnylineController extends AbstractBasicController{
 	 *            执行结果
 	 * @param data
 	 * 			  返回数据
+	 * @param message
+	 * 			 
 	 */
 
-	public String result(boolean result, Object obj){
-		Object data = obj;
-    	String message = "";
+	public String result(boolean result, Object data, String message){
 		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		if (null != messages) {
 			for (int i = 0; i < messages.size(); i++) {
@@ -303,16 +303,16 @@ public  class AnylineController extends AbstractBasicController{
 	 * 
 	 * @return
 	 */
-	protected String fail(Object msg) {
-		return result(false, msg);
+	protected String fail(String msg) {
+		return result(false, null,msg);
 	}
 	protected String fail() {
-		return result(false, null);
+		return fail(null);
 	}
-	protected String success(Object msg) {
-		return result(true, msg);
+	protected String success(Object data) {
+		return result(true, data, null);
 	}
 	protected String success() {
-		return result(true, null);
+		return success(null);
 	}
 }
