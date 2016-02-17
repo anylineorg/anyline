@@ -229,13 +229,6 @@ public  class AnylineController extends AbstractBasicController{
 	protected boolean isWap() {
 		return WebUtil.isWap(getRequest());
 	}
-	protected String fail(Object... msgs) {
-		return fail(getRequest(), msgs);
-	}
-	
-
-
-	
 	
 	
 	/******************************************************************************************************************
@@ -248,16 +241,13 @@ public  class AnylineController extends AbstractBasicController{
 	 * 
 	 * @param result
 	 *            执行结果
-	 * @param success
-	 *            执行成功时返回数据
-	 * @param fail
-	 *            执行失败时返回数据
+	 * @param data
+	 * 			  返回数据
 	 */
 
 	public String result(boolean result, Object obj){
 		Object data = obj;
     	String message = "";
-
 		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		if (null != messages) {
 			for (int i = 0; i < messages.size(); i++) {
@@ -294,6 +284,9 @@ public  class AnylineController extends AbstractBasicController{
 		}else{
 			dataType = "map";
 		}
+    	if(!result && null != data){
+    		message = data.toString();
+    	}
     	Map<String,Object> map = new HashMap<String,Object>();
     	map.put("type", dataType);
     	map.put("result", result);
