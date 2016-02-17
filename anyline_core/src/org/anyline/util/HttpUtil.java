@@ -36,6 +36,12 @@ public class HttpUtil {
 	private static Logger LOG = Logger.getLogger(HttpUtil.class);
 	private static int CONNECT_TIMEOUT = 90000; // 连接超时
 	private static int READ_TIMEOUT = 50000; // 读取超时
+	public static Source post(String url, String encode, String param){
+		return request(url, encode, "POST", param);
+	}
+	public static Source get(String url, String encode, String param){
+		return request(url, encode, "GET", param);
+	}
 
 	/**
 	 * 获取url源文件
@@ -44,7 +50,25 @@ public class HttpUtil {
 	 * @return
 	 */
 	public static Source getSourceByUrl(String url, String encode) {
+		return get(url, encode, null);
+	}
+	/**
+	 * 
+	 * @param url http://www.anyline.org
+	 * @param encode UTF-8
+	 * @param param name=zhang&age=20
+	 * @param type POST | GET
+	 * @return
+	 */
+	public static Source request(String url, String encode, String type, String param){
 		Source source = new Source();
+		if(!"POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(param)){
+			if(url.contains("?")){
+				url += "&" + param;
+			}else{
+				url += "?" + param;
+			}
+		}
 		String host = getHostUrl(url);
 		source.setUrl(url);
 		source.setHost(host);
@@ -52,13 +76,6 @@ public class HttpUtil {
 		BufferedReader reader = null;
 		InputStream is = null;
 		try {
-			/* 代理 */
-			/*
-			 * System.getProperties().put( "proxySet", "true");
-			 * System.getProperties().put( "proxyHost", "72.36.112.74");
-			 * System.getProperties().put( "proxyPort", "3124");
-			 */
-
 			connection = imitateBrowser(url);
 			source.setContentType(connection.getContentType());
 
@@ -69,13 +86,18 @@ public class HttpUtil {
 			if (null == source.getEncode()) {
 				source.setEncode(encode);
 			}
+			if("POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(param)){
+				//设置post参数
+				connection.setDoOutput(true);// 是否输入参数
+		        byte[] bypes = param.toString().getBytes();
+		        connection.getOutputStream().write(bypes);// 输入参数
+			}
 			/* 读取数据 */
 			is = connection.getInputStream();
 			if (null == source.getEncode()) {
 				reader = new BufferedReader(new InputStreamReader(is));
 			} else {
-				reader = new BufferedReader(new InputStreamReader(is,
-						source.getEncode()));
+				reader = new BufferedReader(new InputStreamReader(is, source.getEncode()));
 			}
 			StringBuffer buffer = new StringBuffer();
 			String line;
@@ -87,10 +109,8 @@ public class HttpUtil {
 				idx++;
 				if (idx == 30) {
 					// 读取30行时验证编码
-					String realEncode = RegularUtil.cut(buffer.toString(),
-							"charset=", "\"");
-					if (BasicUtil.isNotEmpty(realEncode)
-							&& !realEncode.equalsIgnoreCase(source.getEncode())) {
+					String realEncode = RegularUtil.cut(buffer.toString(), "charset=", "\"");
+					if (BasicUtil.isNotEmpty(realEncode) && !realEncode.equalsIgnoreCase(source.getEncode())) {
 						encodeStatus = 2;
 						source.setEncode(realEncode);
 						break;
@@ -101,10 +121,8 @@ public class HttpUtil {
 			}
 			if (encodeStatus == 0) {
 				// 验证编码(全文不到30行)
-				String realEncode = RegularUtil.cut(buffer.toString(),
-						"charset=", "\"");
-				if (BasicUtil.isNotEmpty(realEncode)
-						&& !realEncode.equalsIgnoreCase(source.getEncode())) {
+				String realEncode = RegularUtil.cut(buffer.toString(), "charset=", "\"");
+				if (BasicUtil.isNotEmpty(realEncode) && !realEncode.equalsIgnoreCase(source.getEncode())) {
 					encodeStatus = 2;
 					source.setEncode(realEncode);
 				} else {
@@ -117,8 +135,7 @@ public class HttpUtil {
 				connection = imitateBrowser(url);
 				buffer = new StringBuffer();
 				is = connection.getInputStream();
-				reader = new BufferedReader(new InputStreamReader(is,
-						source.getEncode()));
+				reader = new BufferedReader(new InputStreamReader(is, source.getEncode()));
 				while ((line = reader.readLine()) != null) {
 					buffer.append("\n");
 					buffer.append(line);
@@ -257,18 +274,14 @@ public class HttpUtil {
 	private static HttpURLConnection imitateBrowser(String url) {
 		HttpURLConnection connection = null;
 		try {
-			System.setProperty("sun.net.client.defaultConnectTimeout",
-					CONNECT_TIMEOUT + "");
-			System.setProperty("sun.net.client.defaultReadTime", READ_TIMEOUT
-					+ "");
+			System.setProperty("sun.net.client.defaultConnectTimeout", CONNECT_TIMEOUT + "");
+			System.setProperty("sun.net.client.defaultReadTime", READ_TIMEOUT + "");
 			connection = (HttpURLConnection) new URL(url).openConnection();
 			connection.setConnectTimeout(CONNECT_TIMEOUT);
 			connection.setReadTimeout(READ_TIMEOUT);
 			connection.setInstanceFollowRedirects(true);
 			connection.setRequestMethod("GET");
-			connection
-					.setRequestProperty("User-Agent",
-							"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)");
+			connection.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)");
 		} catch (Exception e) {
 
 		}
@@ -278,7 +291,8 @@ public class HttpUtil {
 	public static void download(String url, String dst) {
 		download(url, new File(dst));
 	}
-		public static void download(String url, File dst) {
+
+	public static void download(String url, File dst) {
 		OutputStream os = null;
 		InputStream is = null;
 		byte[] buffer = new byte[1024];
@@ -318,9 +332,10 @@ public class HttpUtil {
 
 	}
 
-		public static void downloadFile(String remoteFilePath, String dst) {
-			downloadFile(remoteFilePath, new File(dst));
-		}
+	public static void downloadFile(String remoteFilePath, String dst) {
+		downloadFile(remoteFilePath, new File(dst));
+	}
+
 	/**
 	 * 下载远程文件并保存到本地
 	 * 
@@ -335,7 +350,7 @@ public class HttpUtil {
 		BufferedInputStream bis = null;
 		BufferedOutputStream bos = null;
 		File parent = dst.getParentFile();
-		if(!parent.exists()){
+		if (!parent.exists()) {
 			parent.mkdirs();
 		}
 		try {
