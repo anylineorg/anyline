@@ -1046,7 +1046,7 @@ public class WebUtil {
 	 * @throws ServletException
 	 * @throws IOException
 	 */
-	public String parseJsp(HttpServletRequest request, HttpServletResponse response, String file) throws ServletException, IOException {
+	public static String parseJsp(HttpServletRequest request, HttpServletResponse response, String file) throws ServletException, IOException {
 		ServletContext servlet = request.getServletContext();
 		RequestDispatcher dispatcher = servlet.getRequestDispatcher(file);
 		final ByteArrayOutputStream os = new ByteArrayOutputStream();
