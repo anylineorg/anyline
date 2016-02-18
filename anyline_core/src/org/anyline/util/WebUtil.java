@@ -16,7 +16,11 @@
 
 package org.anyline.util;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,7 +32,14 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
@@ -1026,5 +1037,45 @@ public class WebUtil {
 	public static Object encryptKey(Object obj, String... keys) {
 		return encryptKey(obj, false, keys);
 	}
-	
+	/**
+	 * 解析jsp成html 只能解析当前应用下的jsp文件
+	 * @param request
+	 * @param response
+	 * @param file "/WEB-INF/page/index.jsp"
+	 * @return
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	public String parseJsp(HttpServletRequest request, HttpServletResponse response, String file) throws ServletException, IOException {
+		ServletContext servlet = request.getServletContext();
+		RequestDispatcher dispatcher = servlet.getRequestDispatcher(file);
+		final ByteArrayOutputStream os = new ByteArrayOutputStream();
+		final ServletOutputStream stream = new ServletOutputStream() {
+			public void write(byte[] data, int offset, int length) {
+				os.write(data, offset, length);
+			}
+			public void write(int b) throws IOException {
+				os.write(b);
+			}
+			@Override
+			public boolean isReady() {
+				return false;
+			}
+
+			@Override
+			public void setWriteListener(WriteListener arg0) {}
+		};
+		final PrintWriter writer = new PrintWriter(new OutputStreamWriter(os));
+		HttpServletResponse resp = new HttpServletResponseWrapper(response) {
+			public ServletOutputStream getOutputStream() {
+				return stream;
+			}
+			public PrintWriter getWriter() {
+				return writer;
+			}
+		};
+		dispatcher.include(request, resp);
+		writer.flush();
+		return os.toString();
+	}
 }
