@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-
 package org.anyline.struts.action;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -34,11 +36,12 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.Constant;
 import org.anyline.util.WebUtil;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
 
-public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware{
+public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware {
 	protected static Logger LOG = Logger.getLogger(AnylineAction.class);
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
@@ -47,25 +50,26 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	@Resource
 	protected AnylineService service;
 
+	protected Object data; // 返回数据
+	protected boolean result = true; // 执行结果
+	protected String msg; // 返回信息
+	protected String url; // 动态跳转
+	private List<File> upload;
+	private List<String> uploadContentType;
+	private List<String> uploadFileName;
 
-	protected Object data; 				// 返回数据
-	protected boolean result = true; 	// 执行结果
-	protected String msg; 				// 返回信息
-	protected String url; 				// 动态跳转
-	
-	
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params){
+	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, clazz, keyEncrypt, valueEncrypt, params);
 	}
-	
-	
+
 	public <T> T entity(Class<T> clazz, boolean keyEncrypt, String... params) {
-		return entity(request,clazz, keyEncrypt, false, params);
+		return entity(request, clazz, keyEncrypt, false, params);
 	}
 
 	public <T> T entity(Class<T> clazz, String... params) {
 		return entity(request, clazz, false, false, params);
 	}
+
 	public DataRow entityRow(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entityRow(request, row, keyEncrypt, valueEncrypt, params);
 	}
@@ -73,41 +77,38 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	public DataRow entityRow(DataRow row, boolean keyEncrypt, String... params) {
 		return entityRow(request, row, keyEncrypt, false, params);
 	}
+
 	public DataRow entityRow(DataRow row, String... params) {
 		return entityRow(request, row, false, false, params);
 	}
 
 	public DataRow entityRow(boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entityRow(request,null, keyEncrypt, valueEncrypt, params);
+		return entityRow(request, null, keyEncrypt, valueEncrypt, params);
 	}
-
 
 	public DataRow entityRow(boolean keyEncrypt, String... params) {
-		return entityRow(request,null, keyEncrypt, false, params);
+		return entityRow(request, null, keyEncrypt, false, params);
 	}
-	
 
 	public DataRow entityRow(String... params) {
 		return entityRow(request, null, false, false, params);
 	}
-	
+
 	public DataSet entitySet(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitySet(request, keyEncrypt, valueEncrypt, params);
 	}
 
 	public DataSet entitySet(boolean keyEncrypt, String... params) {
-		return entitySet(request,keyEncrypt, false, params);
+		return entitySet(request, keyEncrypt, false, params);
 	}
 
 	public DataSet entitySet(String... params) {
 		return entitySet(request, false, false, params);
 	}
-	
 
 	protected ConfigStore parseConfig(boolean navi, String... configs) {
 		return parseConfig(request, navi, configs);
 	}
-	
 
 	protected ConfigStore parseConfig(int vol, String... configs) {
 		return parseConfig(request, vol, configs);
@@ -116,6 +117,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected ConfigStore parseConfig(int fr, int to, String... configs) {
 		return parseConfig(request, fr, to, configs);
 	}
+
 	protected ConfigStore parseConfig(String... conditions) {
 		return parseConfig(request, false, conditions);
 	}
@@ -125,23 +127,21 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	}
 
 	protected String getParam(String key, boolean keyEncrypt) {
-		return getParam(request,key, keyEncrypt, false);
+		return getParam(request, key, keyEncrypt, false);
 	}
-	
 
 	protected String getParam(String key) {
 		return getParam(request, key, false, false);
 	}
 
-
 	protected List<Object> getParams(String key, boolean keyEncrypt) {
 		return getParams(request, key, keyEncrypt, false);
 	}
 
-
 	protected List<Object> getParams(String key) {
-		return getParams(request,key, false, false);
+		return getParams(request, key, false, false);
 	}
+
 	protected boolean checkRequired(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return checkRequired(request, keyEncrypt, valueEncrypt, params);
 	}
@@ -149,35 +149,29 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected boolean checkRequired(String... params) {
 		return checkRequired(request, false, false, params);
 	}
+
 	protected boolean isAjaxRequest() {
 		return isAjaxRequest(request);
 	}
-	
-	
-	
 
 	protected ClientTrace currentClient() {
 		return currentClient(request);
 	}
-	
-
 
 	protected String currentClientCd() {
 		return currentClientCd(request);
 	}
-	
-	
 
 	protected void setRequestMessage(String key, Object value, String type) {
 		setRequestMessage(request, key, value, type);
 	}
-	
+
 	protected void setRequestMessage(String key, Object value) {
-		setRequestMessage(request,key, value, null);
+		setRequestMessage(request, key, value, null);
 	}
 
 	protected void setRequestMessage(Object value) {
-		setRequestMessage(request,BasicUtil.getRandomLowerString(10), value, null);
+		setRequestMessage(request, BasicUtil.getRandomLowerString(10), value, null);
 	}
 
 	protected void setMessage(String key, Object value, String type) {
@@ -203,6 +197,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected void setSessionMessage(Object value) {
 		setSessionMessage(request.getSession(), BasicUtil.getRandomLowerString(10), value, null);
 	}
+
 	protected boolean hasReffer() {
 		return hasReffer(request);
 	}
@@ -210,13 +205,10 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected boolean isSpider() {
 		return !hasReffer(request);
 	}
-	
 
 	protected boolean isWap() {
 		return WebUtil.isWap(request);
 	}
-	
-	
 
 	public void setServletResponse(HttpServletResponse response) {
 		this.response = response;
@@ -227,6 +219,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		this.session = request.getSession();
 		this.servlet = this.session.getServletContext();
 	}
+
 	/******************************************************************************************************************
 	 * 
 	 * 返回执行结果路径
@@ -253,6 +246,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected String result(boolean result, Object success, Object fail) {
 		return result(request, result, success, fail);
 	}
+
 	/**
 	 * 执行成功
 	 * 
@@ -267,15 +261,17 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		}
 		return super.SUCCESS;
 	}
-	protected String success(Object data){
+
+	protected String success(Object data) {
 		return success(request, data);
 	}
+
 	protected String success(HttpServletRequest request) {
-		return success(request,data);
+		return success(request, data);
 	}
 
 	protected String success() {
-		return success(request,data);
+		return success(request, data);
 	}
 
 	/**
@@ -287,12 +283,11 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		result = false;
 		if (null != msgs && msgs.length > 0) {
 			for (Object msg : msgs) {
-				setMessage(request,msg);
+				setMessage(request, msg);
 			}
 		}
 		String html = "";
-		DataSet messages = (DataSet) request
-				.getAttribute(Constant.REQUEST_ATTR_MESSAGE);
+		DataSet messages = (DataSet) request.getAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		if (null != messages) {
 			for (int i = 0; i < messages.size(); i++) {
 				DataRow msg = messages.getRow(i);
@@ -308,9 +303,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			return FAIL;
 		}
 	}
-	
-	
-	
+
 	public Object getData() {
 		return data;
 	}
@@ -342,5 +335,52 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	public void setUrl(String url) {
 		this.url = url;
 	}
-	
+
+	public List<File> getUpload() {
+		return upload;
+	}
+
+	public void setUpload(List<File> upload) {
+		this.upload = upload;
+	}
+
+	public List<String> getUploadContentType() {
+		return uploadContentType;
+	}
+
+	public void setUploadContentType(List<String> uploadContentType) {
+		this.uploadContentType = uploadContentType;
+	}
+
+	public List<String> getUploadFileName() {
+		return uploadFileName;
+	}
+
+	public void setUploadFileName(List<String> uploadFileName) {
+		this.uploadFileName = uploadFileName;
+	}
+	/**
+	 * 上传文件
+	 * @param dir
+	 * @return
+	 */
+	public List<File> upload(String dir) {
+		List<File> result = new ArrayList<File>();
+		File file = new File(dir);
+		// 如果指定的路径没有就创建
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		// 把得到的文件的集合通过循环的方式读取并放在指定的路径下
+		for (int i = 0; i < upload.size(); i++) {
+			try {
+				File dst = new File(file, uploadFileName.get(i));
+				FileUtils.copyFile(upload.get(i), dst);
+				result.add(dst);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
 }
