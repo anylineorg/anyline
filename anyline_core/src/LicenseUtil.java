@@ -8,7 +8,7 @@ import org.anyline.util.FileUtil;
 public class LicenseUtil {
 	private static String license = 
 "/* \n"+
-" * Copyright 2006-2015 the original author or authors.\n"+
+" * Copyright 2006-2015 www.anyline.org\n"+
 " *\n"+
 " * Licensed under the Apache License, Version 2.0 (the \"License\");\n"+
 " * you may not use this file except in compliance with the License.\n"+
