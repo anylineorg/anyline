@@ -285,7 +285,7 @@ public  class AnylineController extends AbstractBasicController{
 			dataType = "map";
 		}
     	if(!result && null != data){
-    		message = data.toString();
+    		message += data.toString();
     	}
     	Map<String,Object> map = new HashMap<String,Object>();
     	map.put("type", dataType);
