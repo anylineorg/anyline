@@ -16,8 +16,12 @@
 
 package org.anyline.controller.impl;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -38,49 +42,56 @@ import org.anyline.entity.DataSet;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.Constant;
+import org.anyline.util.FileUtil;
 import org.anyline.util.JSONDateFormat;
 import org.anyline.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-public  class AnylineController extends AbstractBasicController{
+public class AnylineController extends AbstractBasicController {
 
-	@Autowired(required=false)
+	@Autowired(required = false)
 	@Qualifier("anylineService")
 	protected AnylineService service;
-	
+
 	/**
 	 * 当前线程下的request
+	 * 
 	 * @return
 	 */
-	protected HttpServletRequest getRequest(){
-		return ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+	protected HttpServletRequest getRequest() {
+		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 	}
-	protected HttpServletResponse getResponse(){
-		return ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getResponse();
+
+	protected HttpServletResponse getResponse() {
+		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 	}
-	protected HttpSession getSession(){
+
+	protected HttpSession getSession() {
 		return getRequest().getSession();
 	}
-	protected ServletContext getServlet(){
+
+	protected ServletContext getServlet() {
 		return getSession().getServletContext();
 	}
-	
-	
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params){
+
+	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(getRequest(), clazz, keyEncrypt, valueEncrypt, params);
 	}
-	
-	
+
 	public <T> T entity(Class<T> clazz, boolean keyEncrypt, String... params) {
-		return entity(getRequest(),clazz, keyEncrypt, false, params);
+		return entity(getRequest(), clazz, keyEncrypt, false, params);
 	}
 
 	public <T> T entity(Class<T> clazz, String... params) {
 		return entity(getRequest(), clazz, false, false, params);
 	}
+
 	public DataRow entityRow(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entityRow(getRequest(), row, keyEncrypt, valueEncrypt, params);
 	}
@@ -88,41 +99,38 @@ public  class AnylineController extends AbstractBasicController{
 	public DataRow entityRow(DataRow row, boolean keyEncrypt, String... params) {
 		return entityRow(getRequest(), row, keyEncrypt, false, params);
 	}
+
 	public DataRow entityRow(DataRow row, String... params) {
 		return entityRow(getRequest(), row, false, false, params);
 	}
 
 	public DataRow entityRow(boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entityRow(getRequest(),null, keyEncrypt, valueEncrypt, params);
+		return entityRow(getRequest(), null, keyEncrypt, valueEncrypt, params);
 	}
-
 
 	public DataRow entityRow(boolean keyEncrypt, String... params) {
-		return entityRow(getRequest(),null, keyEncrypt, false, params);
+		return entityRow(getRequest(), null, keyEncrypt, false, params);
 	}
-	
 
 	public DataRow entityRow(String... params) {
 		return entityRow(getRequest(), null, false, false, params);
 	}
-	
+
 	public DataSet entitySet(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitySet(getRequest(), keyEncrypt, valueEncrypt, params);
 	}
 
 	public DataSet entitySet(boolean keyEncrypt, String... params) {
-		return entitySet(getRequest(),keyEncrypt, false, params);
+		return entitySet(getRequest(), keyEncrypt, false, params);
 	}
 
 	public DataSet entitySet(String... params) {
 		return entitySet(getRequest(), false, false, params);
 	}
-	
 
 	protected ConfigStore parseConfig(boolean navi, String... configs) {
 		return parseConfig(getRequest(), navi, configs);
 	}
-	
 
 	protected ConfigStore parseConfig(int vol, String... configs) {
 		return parseConfig(getRequest(), vol, configs);
@@ -131,6 +139,7 @@ public  class AnylineController extends AbstractBasicController{
 	protected ConfigStore parseConfig(int fr, int to, String... configs) {
 		return parseConfig(getRequest(), fr, to, configs);
 	}
+
 	protected ConfigStore parseConfig(String... conditions) {
 		return parseConfig(getRequest(), false, conditions);
 	}
@@ -140,23 +149,21 @@ public  class AnylineController extends AbstractBasicController{
 	}
 
 	protected String getParam(String key, boolean keyEncrypt) {
-		return getParam(getRequest(),key, keyEncrypt, false);
+		return getParam(getRequest(), key, keyEncrypt, false);
 	}
-	
 
 	protected String getParam(String key) {
 		return getParam(getRequest(), key, false, false);
 	}
 
-
 	protected List<Object> getParams(String key, boolean keyEncrypt) {
 		return getParams(getRequest(), key, keyEncrypt, false);
 	}
 
-
 	protected List<Object> getParams(String key) {
-		return getParams(getRequest(),key, false, false);
+		return getParams(getRequest(), key, false, false);
 	}
+
 	protected boolean checkRequired(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return checkRequired(getRequest(), keyEncrypt, valueEncrypt, params);
 	}
@@ -164,35 +171,29 @@ public  class AnylineController extends AbstractBasicController{
 	protected boolean checkRequired(String... params) {
 		return checkRequired(getRequest(), false, false, params);
 	}
+
 	protected boolean isAjaxRequest() {
 		return isAjaxRequest(getRequest());
 	}
-	
-	
-	
 
 	protected ClientTrace currentClient() {
 		return currentClient(getRequest());
 	}
-	
-
 
 	protected String currentClientCd() {
 		return currentClientCd(getRequest());
 	}
-	
-	
 
 	protected void setRequestMessage(String key, Object value, String type) {
 		setRequestMessage(getRequest(), key, value, type);
 	}
-	
+
 	protected void setRequestMessage(String key, Object value) {
-		setRequestMessage(getRequest(),key, value, null);
+		setRequestMessage(getRequest(), key, value, null);
 	}
 
 	protected void setRequestMessage(Object value) {
-		setRequestMessage(getRequest(),BasicUtil.getRandomLowerString(10), value, null);
+		setRequestMessage(getRequest(), BasicUtil.getRandomLowerString(10), value, null);
 	}
 
 	protected void setMessage(String key, Object value, String type) {
@@ -218,6 +219,7 @@ public  class AnylineController extends AbstractBasicController{
 	protected void setSessionMessage(Object value) {
 		setSessionMessage(getRequest().getSession(), BasicUtil.getRandomLowerString(10), value, null);
 	}
+
 	protected boolean hasReffer() {
 		return hasReffer(getRequest());
 	}
@@ -225,13 +227,11 @@ public  class AnylineController extends AbstractBasicController{
 	protected boolean isSpider() {
 		return !hasReffer(getRequest());
 	}
-	
 
 	protected boolean isWap() {
 		return WebUtil.isWap(getRequest());
 	}
-	
-	
+
 	/******************************************************************************************************************
 	 * 
 	 * 返回执行结果路径
@@ -243,12 +243,12 @@ public  class AnylineController extends AbstractBasicController{
 	 * @param result
 	 *            执行结果
 	 * @param data
-	 * 			  返回数据
+	 *            返回数据
 	 * @param message
-	 * 			 
+	 * 
 	 */
 
-	public String result(boolean result, Object data, String message){
+	public String result(boolean result, Object data, String message) {
 		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		if (null != messages) {
 			for (int i = 0; i < messages.size(); i++) {
@@ -257,62 +257,108 @@ public  class AnylineController extends AbstractBasicController{
 			}
 			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		}
-    	//转换成JSON格式
-    	JsonConfig config = new JsonConfig();
-    	String dataType   = null; 	//数据类型
-    	if(null == data){
-    		message = (String)BasicUtil.nvl(message, "没有返回数据");
-    		data= "";
-    	}else if(data instanceof Iterable){
+		// 转换成JSON格式
+		JsonConfig config = new JsonConfig();
+		String dataType = null; // 数据类型
+		if (null == data) {
+			message = (String) BasicUtil.nvl(message, "没有返回数据");
+			data = "";
+		} else if (data instanceof Iterable) {
 			dataType = "list";
-    	}else if (data instanceof DataSet) {
-    		DataSet set = (DataSet)data;
-    		message += (String)BasicUtil.nvl(message,set.getMessage());
+		} else if (data instanceof DataSet) {
+			DataSet set = (DataSet) data;
+			message += (String) BasicUtil.nvl(message, set.getMessage());
 			dataType = "list";
 			data = set.getRows();
-		}else if (data instanceof DataRow) {
+		} else if (data instanceof DataRow) {
 			dataType = "map";
-		}else if(data instanceof Map){
+		} else if (data instanceof Map) {
 			dataType = "map";
-		}else if(data instanceof String){
+		} else if (data instanceof String) {
 			dataType = "string";
-			//data = BasicUtil.convertJSONChar(data.toString());
+			// data = BasicUtil.convertJSONChar(data.toString());
 			data = data.toString();
-		}else if(data instanceof Number){
+		} else if (data instanceof Number) {
 			dataType = "number";
 			data = data.toString();
-		}else{
+		} else {
 			dataType = "map";
 		}
-    	if(!result && null != data){
-    		message += data.toString();
-    	}
-    	Map<String,Object> map = new HashMap<String,Object>();
-    	map.put("type", dataType);
-    	map.put("result", result);
-    	map.put("message", message);
-    	map.put("data", data);
-    	map.put("success", result);
-    	JsonConfig jsonConfig = new JsonConfig();
-        jsonConfig.registerJsonValueProcessor(Date.class , new JSONDateFormat());
-    	JSON json = JSONObject.fromObject(map,jsonConfig);
-    	return json.toString();
+		if (!result && null != data) {
+			message += data.toString();
+		}
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("type", dataType);
+		map.put("result", result);
+		map.put("message", message);
+		map.put("data", data);
+		map.put("success", result);
+		JsonConfig jsonConfig = new JsonConfig();
+		jsonConfig.registerJsonValueProcessor(Date.class, new JSONDateFormat());
+		JSON json = JSONObject.fromObject(map, jsonConfig);
+		return json.toString();
 	}
+
 	/**
 	 * 执行失败
 	 * 
 	 * @return
 	 */
 	protected String fail(String msg) {
-		return result(false, null,msg);
+		return result(false, null, msg);
 	}
+
 	protected String fail() {
 		return fail(null);
 	}
+
 	protected String success(Object data) {
 		return result(true, data, null);
 	}
+
 	protected String success() {
 		return success(null);
 	}
+
+	/**
+	 * 上传文件
+	 * @param request
+	 * @param dir
+	 * @return
+	 * @throws IllegalStateException
+	 * @throws IOException
+	 */
+	public List<File> upload(String dir) throws IllegalStateException, IOException {
+		List<File> result = new ArrayList<File>();
+		HttpServletRequest request = getRequest();
+		// 创建一个通用的多部分解析器
+		CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
+		// 判断 request 是否有文件上传,即多部分请求
+		if (multipartResolver.isMultipart(request)) {
+			// 转换成多部分request
+			MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+			// 取得request中的所有文件名
+			Iterator<String> iter = multiRequest.getFileNames();
+			while (iter.hasNext()) {
+				// 取得上传文件
+				MultipartFile file = multiRequest.getFile(iter.next());
+				if (file != null) {
+					// 取得当前上传文件的文件名称
+					String fileName = file.getOriginalFilename();
+					// 如果名称不为"",说明该文件存在，否则说明该文件不存在
+					if (BasicUtil.isNotEmpty(fileName)) {
+						// 重命名上传后的文件名
+						String sufName = FileUtil.getSuffixFileName(fileName);
+						// 定义上传路径
+						File localFile = new File(dir,BasicUtil.getRandomLowerString(10)+"."+sufName);
+						file.transferTo(localFile);
+						result.add(localFile);
+					}
+				}
+			}
+
+		}
+		return result;
+	}
+
 }
