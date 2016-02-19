@@ -371,6 +371,11 @@ public class FileUtil {
 
 		return encode;
 	}
+	/**
+	 * 不含后缀的文件名
+	 * @param file
+	 * @return
+	 */
 	public static String getSimpleFileName(File file){
 		String name = null;
 		if(null == file) return null;
@@ -379,6 +384,7 @@ public class FileUtil {
 		name = name.substring(0,idx);
 		return name;
 	}
+	
 	public static String getSimpleFileName(String file){
 		return getSimpleFileName(new File(file));
 	}
@@ -389,6 +395,17 @@ public class FileUtil {
 		if(null != file)
 			return file.getName();
 		return null;
+	}
+	public static String getSuffixFileName(File file){
+		String name = null;
+		if(null == file) return null;
+		name = file.getName();
+		int idx = name.lastIndexOf(".");
+		name = name.substring(idx+1);
+		return name;
+	}
+	public static String getSuffixFileName(String file){
+		return getSuffixFileName(new File(file));
 	}
 	/**
 	 * 复制文件  源文件  目标文件
