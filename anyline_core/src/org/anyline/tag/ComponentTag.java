@@ -1,3 +1,18 @@
+/* 
+ * Copyright 2006-2015 www.anyline.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 
 
@@ -225,7 +240,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		if(null != onbeforeactivate			){builder.append(" onbeforeactivate=\""			).append(onbeforeactivate		).append("\"");}//对象要被设置为当前元素前立即触发。
 		if(null != onbeforecut				){builder.append(" onbeforecut=\""				).append(onbeforecut			).append("\"");}//当选中区从文档中删除之前在源对象触发。
 		if(null != onbeforedeactivate		){builder.append(" onbeforedeactivate=\""		).append(onbeforedeactivate		).append("\"");}//在activeElement从当前对象变为父文档其它对象之前立即触发。
-		if(null != onbeforeeditfocus		){builder.append(" onbeforeeditfocus=\""		).append(onbeforeeditfocus		).append("\"");}//在包含于可编辑元素内的对象进入用户界面激活状态前或可编辑容器变成控件选中区前触发。
+		if(null != onbeforeeditfocus		){builder.append(" onbeforeeditfocus=\""		).append(onbeforeeditfocus		).append("\"");}//在包���于可编辑元素内的对象进入用户界面激活状态前或可编辑容器变成控件选中区前触发。
 		if(null != onbeforepaste			){builder.append(" onbeforepaste=\""			).append(onbeforepaste			).append("\"");}//在选中区从系统剪贴板粘贴到文档前在目标对象上触发。
 		if(null != onbeforeupdate			){builder.append(" onbeforeupdate=\""			).append(onbeforeupdate			).append("\"");}//当成功更新数据源对象中的关联对象前在数据绑定对象上触发。
 		if(null != onblur					){builder.append(" onblur=\""					).append(onblur					).append("\"");}//在对象失去输入焦点时触发。
