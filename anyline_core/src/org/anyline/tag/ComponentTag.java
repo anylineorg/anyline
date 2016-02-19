@@ -1,18 +1,4 @@
-/* 
- * Copyright 2006-2015 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 
 package org.anyline.tag;
@@ -157,7 +143,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		 onfilterchange				= null; //当可视滤镜更改状态或完成转换时触发。
 		 onfocus					= null; //当对象获得焦点时触发。
 		 onfocusin					= null; //当元素将要被设置为焦点之前触发。
-		 onfocusout					= null; //在移动焦点到其它元素之后立即触发于当前拥有焦点的元素上触发。
+		 onfocusout					= null; //在移动焦点到其它元素之后立即触发于当前拥有焦点的元��上触发。
 		 onhelp						= null; //当用户在浏览器为当前窗口时按F1键时触发。
 		 onkeydown					= null; //当用户按下键盘按键时触发。
 		 onkeypress					= null; //当用户按下字面键时触发。
