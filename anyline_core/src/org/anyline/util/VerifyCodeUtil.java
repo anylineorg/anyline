@@ -133,6 +133,7 @@ public class VerifyCodeUtil {
 		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		Random rand = new Random();
 		Graphics2D g2 = image.createGraphics();
+		g2.setFont(new Font("宋体", Font.PLAIN, 12));
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		Color[] colors = new Color[5];
 		Color[] colorSpaces = new Color[] { Color.WHITE, Color.CYAN, Color.GRAY, Color.LIGHT_GRAY, Color.MAGENTA, Color.ORANGE, Color.PINK, Color.YELLOW };
