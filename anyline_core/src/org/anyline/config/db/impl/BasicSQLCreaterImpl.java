@@ -266,7 +266,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				param.append(value);
 			}else{
 				param.append("?");
-				values.add(value);
+				if("NULL".equals(value)){
+					values.add(null);
+				}else{
+					values.add(value);
+				}
 			}
 			if(i<size-1){
 				sql.append(",");
@@ -410,7 +414,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		for(int i=0; i<size; i++){
 			String key = keys.get(i);
 			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
-			values.add(row.get(key));
+			Object value = row.get(key);
+			if("NULL".equals(value)){
+				values.add(null);
+			}else{
+				values.add(row.get(key));
+			}
 			if(i<size-1){
 				sql.append(",");
 			}

@@ -325,7 +325,7 @@ public class HttpUtil {
 	public static void download(String url, File dst) {
 		OutputStream os = null;
 		InputStream is = null;
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[10];
 		int len = 0;
 		try {
 			File dir = dst.getParentFile();
