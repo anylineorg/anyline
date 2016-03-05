@@ -54,9 +54,9 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected boolean result = true; // 执行结果
 	protected String msg; // 返回信息
 	protected String url; // 动态跳转
-	private List<File> upload;
-	private List<String> uploadContentType;
-	private List<String> uploadFileName;
+	protected List<File> upload;
+	protected List<String> uploadContentType;
+	protected List<String> uploadFileName;
 
 	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, clazz, keyEncrypt, valueEncrypt, params);
