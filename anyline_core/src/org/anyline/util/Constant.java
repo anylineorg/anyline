@@ -40,7 +40,9 @@ public class Constant {
 	public static final String REQUEST_ATTR_CURRENT_POWER_CD		= "REQUEST_ATTR_CURRENT_POWER_CD"		;//当前请求的action(String)
 	public static final String REQUEST_PARAM_PAGE_VOL				= "pageVol"								;
 	public static final String REQUEST_PARAM_PAGE_NO				= "pageNo"								;
-	
+	public static final String REQUEST_ATTR_TEMPLATE_LAYOUT_PATH	= "REQUEST_ATTR_TEMPLATE_LAYOUT_PATH"	;//模板路径(布局)
+	public static final String REQUEST_ATTR_TEMPLATE_STYLE_PATH		= "REQUEST_ATTR_TEMPLATE_STYLE_PATH"	;//模板路径(样式)
+	public static final String REQUEST_ATTR_TEMPLATE_DATA_PATH		= "REQUEST_ATTR_TEMPLATE_DATA_PATH"		;//模板路径(数据)
 	public static final String REQUEST_ATTR_MESSAGE					= "REQUEST_ATTR_MESSAGE"				;//
 	public static final String REQUEST_ATTR_ACTION_URI				= "REQUEST_ATTR_ACTION_URI"				;
 	
@@ -56,4 +58,5 @@ public class Constant {
 	public static final String MESSAGE_TYPE_INFO					= "info"								;//消息类型info
 
 	public static final int DATABASE_VERSION 						= 2005;									//数据库版本
+	
 }
