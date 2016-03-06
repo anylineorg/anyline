@@ -35,6 +35,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.Constant;
+import org.anyline.util.DESUtil;
 import org.anyline.util.WebUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -304,6 +305,74 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		}
 	}
 
+	/**
+	 * 上传文件
+	 * @param dir
+	 * @return
+	 */
+	public List<File> upload(String dir) {
+		List<File> result = new ArrayList<File>();
+		File file = new File(dir);
+		// 如果指定的路径没有就创建
+		if (!file.exists()) {
+			file.mkdirs();
+		}
+		// 把得到的文件的集合通过循环的方式读取并放在指定的路径下
+		for (int i = 0; i < upload.size(); i++) {
+			try {
+				File dst = new File(file, uploadFileName.get(i));
+				FileUtils.copyFile(upload.get(i), dst);
+				result.add(dst);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
+	/**
+	 * 设置模板
+	 * @param template
+	 */
+	protected void setTemplate(String template, String style, String data){
+		request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH, template);
+	}
+	protected void template(String template){
+		request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH, template);
+	}
+	/**
+	 * 
+	 * @param layout 布局path
+	 * @param style  样式path
+	 * @param data	  数据path
+	 */
+	protected void SetTemplate(String layout, String style, String data){
+		request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH, layout);
+		try{
+			if(null != style){
+				if(style.startsWith("/")){
+					//从根目录开始
+				}else{
+					//根据内容页相对目录
+					int idx = this.getDir().indexOf("/page/");
+					if(idx > 0){
+						String styleDir = this.getDir().replace("/page/", "/template/style/");
+						if(!styleDir.endsWith("/")){
+							styleDir = styleDir + "/";
+						}
+						style = styleDir + style;
+					}
+				}
+			}
+			request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_STYLE_PATH, DESUtil.getInstance().encrypt(style));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_DATA_PATH, data);
+	}
+	protected void template(String layout, String style, String data){
+		SetTemplate(layout, style, data);
+	}
+
 	public Object getData() {
 		return data;
 	}
@@ -358,29 +427,5 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 
 	public void setUploadFileName(List<String> uploadFileName) {
 		this.uploadFileName = uploadFileName;
-	}
-	/**
-	 * 上传文件
-	 * @param dir
-	 * @return
-	 */
-	public List<File> upload(String dir) {
-		List<File> result = new ArrayList<File>();
-		File file = new File(dir);
-		// 如果指定的路径没有就创建
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-		// 把得到的文件的集合通过循环的方式读取并放在指定的路径下
-		for (int i = 0; i < upload.size(); i++) {
-			try {
-				File dst = new File(file, uploadFileName.get(i));
-				FileUtils.copyFile(upload.get(i), dst);
-				result.add(dst);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
 	}
 }
