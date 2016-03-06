@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import org.anyline.util.ConfigTable;
+import org.anyline.util.Constant;
 import org.anyline.util.WebUtil;
 import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
@@ -40,11 +41,10 @@ public class TemplateResult extends StrutsResultSupport {
 		super(location);
 	}
 
-	public void doExecute(String finalLocation, ActionInvocation invocation)
-			throws Exception {
-		this.contentPage = finalLocation;
+	public void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
+		this.contentPage = finalLocation;						//内容页path
 		Result result = invocation.getResult();
-		if (!contentPage.startsWith("/")) {
+		if (!contentPage.startsWith("/")) {						//相对目录
 			String dir = (String) invocation.getStack().findValue("dir");
 			if (null != dir) {
 				if (!dir.endsWith("/")) {
@@ -55,11 +55,27 @@ public class TemplateResult extends StrutsResultSupport {
 		}
 		
 		HttpServletRequest request = ServletActionContext.getRequest();
-		String template = ""; 
-		int idx = contentPage.indexOf("/page/");
-		if(idx > 0){
-			template = contentPage.substring(0,idx)+"/template/default.jsp";
+		String template = (String)request.getAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH);
+		//action中设置模板
+		if(null != template){
+			if(template.startsWith("/")){
+				//从根目录开始
+			}else{
+				//根据内容页相对目录
+				int idx = contentPage.indexOf("/page/");
+				if(idx > 0){
+					template = contentPage.substring(0,idx)+"/template/layout/" + template;
+				}
+			}
 		}
+		//根据内容页构建模板path
+		if(null == template){
+			int idx = contentPage.indexOf("/page/");
+			if(idx > 0){
+				template = contentPage.substring(0,idx)+"/template/layout/default.jsp";
+			}
+		}
+		//根据配置文件读取固定模板path
 		if(null == template){
 			template = ConfigTable.getString("TEMPLET_FILE_PATH_WEB");
 			if (WebUtil.isWap(request)) {
@@ -69,6 +85,7 @@ public class TemplateResult extends StrutsResultSupport {
 				template = ConfigTable.getString("TEMPLET_FILE_PATH");
 			}
 		}
+	
 		PageContext pageContext = ServletActionContext.getPageContext();
 		if (pageContext != null) {
 			pageContext.include(template);
