@@ -430,7 +430,7 @@ public class FileUtil {
 				InputStream in = null;
 				OutputStream out = null;
 				try{
-					if(!dstPath.isFile()){
+					if(dstPath.isDirectory()){
 						File dir = dstPath.getParentFile();
 						if(!dir.exists()){
 							dir.mkdirs();
@@ -475,7 +475,7 @@ public class FileUtil {
 	 */
 	public static List<File> getAllChildrenFile(File dir, String ...types){
 		List<File> list = new ArrayList<File>();
-		if(!dir.isDirectory()){
+		if(dir.isFile()){
 			if(filterByType(dir, types)){
 				list.add(dir);
 			}
@@ -506,7 +506,7 @@ public class FileUtil {
 	 */
 	public static List<File> getAllChildrenDirectory(File dir){
 		List<File> list = new ArrayList<File>();
-		if(!dir.isDirectory()){
+		if(dir.isFile()){
 			return list;
 		}
 		File[] children = dir.listFiles();
