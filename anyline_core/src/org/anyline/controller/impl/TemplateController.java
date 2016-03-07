@@ -27,7 +27,7 @@ public class TemplateController extends AnylineController {
 		String base = this.getClass().getPackage().getName().replace(ConfigTable.getString("BASE_PACKAGE")+".", "").replace("controller", "").replace(".", "/");
 		String dir = (String)BeanUtil.getFieldValue(this, "dir");
 		if(!name.startsWith("/")){
-			if(null != dir){
+			if(BasicUtil.isNotEmpty(dir)){
 				if(dir.endsWith("/")){
 					name = dir+name;
 				}else{
