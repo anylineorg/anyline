@@ -28,6 +28,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,35 +44,59 @@ public class HttpUtil {
 	private static int READ_TIMEOUT = 50000; // 读取超时
 	/**
 	 * 格式化http参数
-	 * @param params
-	 * @return
+	 * @param params String | Collection
+	 * @return name=zhang&age=23&age=22
 	 */
-	public static String formatParam(Map<String,Object> params){
+	private static String formatHttpParam(Map<String,Object> params){
 		String result = "";
 		Set<String> keys = params.keySet();
-		boolean fr = true;
+		int idx = 0;
 		for(String key:keys){
-			String sign = "";
-			if(fr){
-				sign = "&";
-				fr = false;
+			Object val = params.get(key);
+			if(null != val && val instanceof Collection){
+				Collection con = (Collection)val;
+				for(Object item:con){
+					if(idx > 0){
+						result = result + "&" + key + "=" + item;
+					}else{
+						result = key + "=" + item;
+					}
+					idx ++;
+				}
+			}else{
+				if(idx > 0){
+					result = result + "&" + key + "=" + val;
+				}else{
+					result = key + "=" + val;
+				}
+				idx ++;
 			}
-			result += sign + key+"="+params.get(key);
 		}
 		return result;
 	}
-	public static Source post(String url, String encode, String param){
-		return request(url, encode, "POST", param);
+	/**
+	 * 数组转换成map
+	 * @param params {"name","zhang","age",List}
+	 * @return
+	 */
+	private static Map<String,Object> paramToMap(Object ... params){
+		Map<String,Object> result = new HashMap<String,Object>();
+		if(null != params){
+			int size = params.length;
+			for(int i=0; i<size-1; i+=2){
+				Object key = params[i];
+				Object value = params[i+1];
+				result.put(key.toString(), value);
+			}
+		}
+		return result;
 	}
-	public static Source post(String url, String encode, Map<String,Object> param){
-		return post(url, encode, formatParam(param));
+	public static Source post(String url, String encode, Object ... params){
+		return request(url, encode, "POST", paramToMap(params));
 	}
 	
-	public static Source get(String url, String encode, String param){
-		return request(url, encode, "GET", param);
-	}
-	public static Source get(String url, String encode, Map<String,Object> param){
-		return get(url, encode, formatParam(param));
+	public static Source get(String url, String encode, String ... params){
+		return request(url, encode, "GET", paramToMap(params));
 	}
 	
 
@@ -89,13 +117,13 @@ public class HttpUtil {
 	 * @param type POST | GET
 	 * @return
 	 */
-	public static Source request(String url, String encode, String type, String param){
+	public static Source request(String url, String encode, String type, Map<String,Object> params){
 		Source source = new Source();
-		if(!"POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(param)){
+		if(!"POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(params)){
 			if(url.contains("?")){
-				url += "&" + param;
+				url += "&" + formatHttpParam(params);
 			}else{
-				url += "?" + param;
+				url += "?" + formatHttpParam(params);
 			}
 		}
 		String host = getHostUrl(url);
@@ -106,10 +134,10 @@ public class HttpUtil {
 		InputStream is = null;
 		try {
 			connection = imitateBrowser(url);
-			if("POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(param)){
+			if("POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(params)){
 				//设置post参数
 				connection.setDoOutput(true);// 是否输入参数
-		        byte[] bypes = param.toString().getBytes();
+		        byte[] bypes = formatHttpParam(params).getBytes();
 		        connection.getOutputStream().write(bypes);// 输入参数
 			}
 			source.setContentType(connection.getContentType());
