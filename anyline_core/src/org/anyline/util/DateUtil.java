@@ -75,24 +75,17 @@ public class DateUtil {
 			calendar.setTime(fr);
 			result = time - calendar.get(Calendar.WEEK_OF_YEAR);
 		}
+		long ms = to.getTime() - fr.getTime();
 		if (Calendar.DAY_OF_YEAR == part) {
-			long time = to.getTime() / 1000 / 60 / 60 / 24;
-			result = time - fr.getTime() / 1000 / 60 / 60 / 24;
-		}
-		if (Calendar.HOUR == part) {
-			long time = to.getTime() / 1000 / 60 / 60;
-			result = time - fr.getTime() / 1000 / 60 / 60;
-		}
-		if (Calendar.MINUTE == part) {
-			long time = to.getTime() / 1000 / 60;
-			result = time - fr.getTime() / 1000 / 60;
-		}
-		if (Calendar.SECOND == part) {
-			long time = to.getTime() / 1000;
-			result = time - fr.getTime() / 1000;
-		}
-		if (Calendar.MILLISECOND == part) {
-			result = to.getTime() - fr.getTime();
+			result = ms / 1000 / 60 / 60 / 24;
+		}else if (Calendar.HOUR == part) {
+			result = ms / 1000 / 60 / 60;
+		}else if (Calendar.MINUTE == part) {
+			result = ms / 1000 / 60;
+		}else if (Calendar.SECOND == part) {
+			result = ms / 1000;
+		}else if (Calendar.MILLISECOND == part) {
+			result = ms;
 		}
 		return result;
 	}
