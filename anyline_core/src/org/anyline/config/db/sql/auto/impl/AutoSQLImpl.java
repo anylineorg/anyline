@@ -29,6 +29,7 @@ import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.BasicSQL;
 import org.anyline.config.db.sql.auto.AutoSQL;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
 
 public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	protected String author;
@@ -138,13 +139,45 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 		}
 		if(columns.contains(",")){
 			//多列
-			String[] cols = columns.split(",");
-			for(String col:cols){
-				this.columns.add(col.trim());
-			}
+			parseMultColumns(columns);
 		}else{
 			//单列
 			this.columns.add(columns);
+		}
+	}
+	/**
+	 * 解析多列 
+	 * @param src
+	 */
+	private void parseMultColumns(String src){
+		List<String> cols = new ArrayList<String>();
+		//拆分转义字段({}) CD, {ISNULL(NM,'') AS NM}, {CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE  
+		while(src.contains("{")){
+			src = src.trim();
+			int fr = src.indexOf("{");
+			String tmp = "";
+			if(0 == fr){
+				tmp = src.substring(0, src.indexOf("}")+1);
+				src = src.substring(src.indexOf("}")+1);
+			}else{
+				tmp = src.substring(0, fr);
+				src = src.substring(fr);
+			}
+			cols.add(tmp);
+		}
+		cols.add(src);
+		//二次拆分
+		for(String c:cols){
+			if(c.contains("{")){
+				this.columns.add(c);
+			}else{
+				String[] cs = c.split(",");
+				for(String item:cs){
+					item = item.trim();
+					if(item.length()>0)
+						this.columns.add(item);
+				}
+			}
 		}
 	}
 	public String getDataSource(){
