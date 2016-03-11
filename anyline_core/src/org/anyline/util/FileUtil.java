@@ -482,19 +482,21 @@ public class FileUtil {
 			return list;
 		}
 		File[] children = dir.listFiles();
-		int size = children.length;
-		for(int i=0; i<size; i++){
-			File child = children[i];
-			if(child.isHidden()){
-				continue;
-			}
-			if(child.isFile()){
-				if(filterByType(child,types)){
-					list.add(child);
+		if(null != children){
+			int size = children.length;
+			for(int i=0; i<size; i++){
+				File child = children[i];
+				if(child.isHidden()){
+					continue;
 				}
-			}else{
-				List<File> tmpList = getAllChildrenFile(child,types);
-				list.addAll(tmpList);
+				if(child.isFile()){
+					if(filterByType(child,types)){
+						list.add(child);
+					}
+				}else{
+					List<File> tmpList = getAllChildrenFile(child,types);
+					list.addAll(tmpList);
+				}
 			}
 		}
 		return list;
