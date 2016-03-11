@@ -519,7 +519,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 	}
 	public void setTable(String table) {
-		this.table = table;
+		if(null != table && table.contains(".")){
+			String[] tbs = table.split("\\.");
+			this.table = tbs[1];
+			this.author = tbs[0];
+		}else{
+			this.table = table;
+		}
 	}
 	public Boolean getIsNew() {
 		return isNew;
