@@ -985,7 +985,13 @@ public class DataSet implements Collection<Object>, Serializable {
 	}
 
 	public void setTable(String table) {
-		this.table = table;
+		if(null != table && table.contains(".")){
+			String[] tbs = table.split("\\.");
+			this.table = tbs[1];
+			this.author = tbs[0];
+		}else{
+			this.table = table;
+		}
 	}
 	public int delete(){
 		return service.delete(this);
