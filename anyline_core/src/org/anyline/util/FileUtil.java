@@ -512,17 +512,19 @@ public class FileUtil {
 			return list;
 		}
 		File[] children = dir.listFiles();
-		int size = children.length;
-		for(int i=0; i<size; i++){
-			File child = children[i];
-			if(child.isHidden()){
-				continue;
-			}
-			if(child.isDirectory()){
-				if(child.listFiles().length == 0){
-					list.add(child);
-				}else{
-					list.addAll(getAllChildrenDirectory(child));
+		if(null != children){
+			int size = children.length;
+			for(int i=0; i<size; i++){
+				File child = children[i];
+				if(child.isHidden()){
+					continue;
+				}
+				if(child.isDirectory()){
+					if(null == child.listFiles() || child.listFiles().length == 0){
+						list.add(child);
+					}else{
+						list.addAll(getAllChildrenDirectory(child));
+					}
 				}
 			}
 		}
@@ -537,9 +539,11 @@ public class FileUtil {
 	public static List<File> getChildrenFile(File dir, String ...types){
 		List<File> list = new ArrayList<File>();
 		File files[] = dir.listFiles();
-		for(File file:files){
-			if(file.isFile() && filterByType(file,types))
-				list.add(file);
+		if(null != files){
+			for(File file:files){
+				if(file.isFile() && filterByType(file,types))
+					list.add(file);
+			}
 		}
 		return list;
 	}
@@ -692,10 +696,12 @@ public class FileUtil {
 	public static boolean deleteDir(File dir) {
 		if (null != dir && dir.isDirectory()) {
 			String[] children = dir.list();
-			for (int i=0; i<children.length; i++) {
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
+			if(null != children){
+				for (int i=0; i<children.length; i++) {
+					boolean success = deleteDir(new File(dir, children[i]));
+					if (!success) {
+						return false;
+					}
 				}
 			}
 		}
