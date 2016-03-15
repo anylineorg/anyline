@@ -17,16 +17,10 @@
 
 package org.anyline.service.impl;
 
-import java.io.File;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
 import javax.sql.DataSource;
-
-import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Element;
 
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
@@ -44,7 +38,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
