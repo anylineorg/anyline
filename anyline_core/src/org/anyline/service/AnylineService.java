@@ -41,7 +41,7 @@ public interface AnylineService{
 	/**
 	 * 按行数查询
 	 * @param src			数据源(表或自定义SQL)
-	 * @param fr			开始行(下标从1开始)
+	 * @param fr			开始行(下标从0开始)
 	 * @param to			结束行
 	 * @param order			排序
 	 * @param conditions	固定查询条件
