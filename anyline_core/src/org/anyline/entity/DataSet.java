@@ -33,7 +33,7 @@ import net.sf.json.JSONObject;
 import org.anyline.config.db.PageNavi;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.Escape;
+import org.anyline.util.EscapeUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -604,13 +604,13 @@ public class DataSet implements Collection<Object>, Serializable {
 	 */
 	public String getEscapeString(int index, String key) {
 		String result = getString(index, key);
-		result = Escape.escape(result).toString();
+		result = EscapeUtil.escape(result).toString();
 		return result;
 	}
 
 	public String getDoubleEscapeString(int index, String key) {
 		String result = getString(index, key);
-		result = Escape.doubleEscape(result);
+		result = EscapeUtil.doubleEscape(result);
 		return result;
 	}
 
