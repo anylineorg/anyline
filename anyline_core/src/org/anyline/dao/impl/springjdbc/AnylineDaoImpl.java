@@ -334,7 +334,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
-		if(ConfigTable.getBoolean("SHOW_SQL")){
+		if(showSQL){
 			LOG.info("\n"+sql);
 			LOG.info(values);
 		}
@@ -363,7 +363,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		String txt = run.getExecuteTxt();
 		List<Object> values = run.getValues();
 
-		if(ConfigTable.getBoolean("SHOW_SQL")){
+		if(showSQL){
 			LOG.info(txt);
 			LOG.info(values);
 		}
@@ -399,7 +399,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<Integer> inputTypes = procedure.getInputTypes();
 		final List<Integer> outputTypes = procedure.getOutputTypes();
 
-		if(ConfigTable.getBoolean("SHOW_SQL")){
+		if(showSQL){
 			LOG.info(procedure.getName());
 			LOG.info(inputValues);
 		}
@@ -464,7 +464,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<Integer> inputTypes = procedure.getInputTypes();
 		final List<Integer> outputTypes = procedure.getOutputTypes();
 
-		if(ConfigTable.getBoolean("SHOW_SQL")){
+		if(showSQL){
 			LOG.info(procedure.getName());
 			LOG.info(inputValues);
 		}
@@ -533,7 +533,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		RunSQL run = creater.createDeleteRunSQL(dest, data, columns);
 		final String sql = run.getDeleteTxt();
 		final List<Object> values = run.getValues();
-		if(ConfigTable.getBoolean("SHOW_SQL")){
+		if(showSQL){
 			LOG.info(sql);
 			LOG.info(values);
 		}
