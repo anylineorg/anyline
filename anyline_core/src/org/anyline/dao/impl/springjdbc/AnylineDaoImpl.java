@@ -67,8 +67,6 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Autowired(required=false)
 	private DataSource dataSource;			//数据源
 	
-	
-	
 	private static boolean showSQL = false;
 	private static boolean showSQLParam = false;
 	private static boolean showSQLWhenError = true;
@@ -208,8 +206,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		return save(null, null, data, false, columns);
 	}
 	
-	
-	
+
 	
 	public int inserts(DataSource ds, String dest, Collection items, boolean checkPrimary, String ... columns){
 		if(null == items){
