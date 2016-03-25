@@ -23,8 +23,15 @@ public class TemplateController extends AnylineController {
 	}
 	protected TemplateModelAndView createView(String name, String template){
 		TemplateModelAndView tv = new TemplateModelAndView();
-		
-		String base = this.getClass().getPackage().getName().replace(ConfigTable.getString("BASE_PACKAGE")+".", "").replace("controller", "").replace(".", "/");
+		String basepack = ConfigTable.getString("BASE_PACKAGE")+".";
+		String base = this.getClass().getPackage().getName();
+		base = base.replace(basepack, "");
+		base = base.replace("controller.", "");
+		base = base.replace("controller", "");
+		base = base.replace(".", "/");
+		if(BasicUtil.isNotEmpty(base) && !base.endsWith("/")){
+			base = base + "/";
+		}
 		String dir = (String)BeanUtil.getFieldValue(this, "dir");
 		if(!name.startsWith("/")){
 			if(BasicUtil.isNotEmpty(dir)){
