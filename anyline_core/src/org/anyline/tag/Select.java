@@ -28,7 +28,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
-
+import org.anyline.util.BeanUtil;
 import org.anyline.util.regular.RegularUtil;
 
 
@@ -91,11 +91,12 @@ public class Select extends BaseBodyTag{
 					}
 					data = list;
 				}
-				Collection<Map> items = (Collection<Map>)data;
+				Collection items = (Collection)data;
 				if(null != items)
-				for(Map item:items){
-					html += "<option value='"+item.get(valueKey)+"'";
-					if(null != value && value.toString().equals(item.get(valueKey))){
+				for(Object item:items){
+					Object value = BeanUtil.getFieldValue(item, valueKey);
+					html += "<option value='" + value + "'";
+					if(null != value && value.toString().equals(value)){
 						html += " selected='selected'";
 					}
 					String text = "";
@@ -103,14 +104,14 @@ public class Select extends BaseBodyTag{
 						text = textKey;
 						List<String> keys =RegularUtil.fetch(textKey, "\\{\\w+\\}",2,0);
 						for(String key:keys){
-							Object v = item.get(key.replace("{", "").replace("}", ""));
+							Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
 							if(null == v){
 								v = "";
 							}
 							text = text.replace(key, v.toString());
 						}
 					}else{
-						Object v = item.get(textKey);
+						Object v = BeanUtil.getFieldValue(item, textKey);
 						if(null != v){
 							text = v.toString();
 						}
