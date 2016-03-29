@@ -96,7 +96,7 @@ public class Select extends BaseBodyTag{
 				for(Object item:items){
 					Object value = BeanUtil.getFieldValue(item, valueKey);
 					html += "<option value='" + value + "'";
-					if(null != value && value.toString().equals(value)){
+					if(null != value && value.toString().equals(this.value)){
 						html += " selected='selected'";
 					}
 					String text = "";
