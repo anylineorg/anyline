@@ -18,6 +18,7 @@
 package org.anyline.entity;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -455,6 +456,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public boolean getBoolean(String key, boolean def){
 		return BasicUtil.parseBoolean(getString(key), def);
+	}
+	public BigDecimal getDecimal(String key){
+		BigDecimal result = null;
+		try{
+			result = new BigDecimal(getString(key));
+		}catch(Exception e){
+			result = null;
+		}
+		return result;
 	}
 	/**
 	 * 转换成json格式

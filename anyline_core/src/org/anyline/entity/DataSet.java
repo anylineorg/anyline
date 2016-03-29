@@ -561,6 +561,14 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		return strings;
 	}
+
+	public BigDecimal getDecimal(int idx, String key){
+		BigDecimal result = null;
+		DataRow row = getRow(idx);
+		if (null != row)
+			result = row.getDecimal(key);
+		return result;
+	}
 	public List<String> getDistinctStrings(String key){
 		List<String> strings = new ArrayList<String>();
 		int size = rows.size();
