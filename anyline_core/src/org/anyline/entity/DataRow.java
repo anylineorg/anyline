@@ -466,6 +466,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return result;
 	}
+	public BigDecimal getDecimal(String key, double def){
+		BigDecimal result = getDecimal(key);
+		if(null == result){
+			result = new BigDecimal(def);
+		}
+		return result;
+	}
 	/**
 	 * 转换成json格式
 	 * @return
