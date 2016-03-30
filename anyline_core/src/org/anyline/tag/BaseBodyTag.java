@@ -43,7 +43,14 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String onchange;
 	protected String onblur;
 	protected String onfocus;
+	protected String disabled;
 	
+	public String getDisabled() {
+		return disabled;
+	}
+	public void setDisabled(String disabled) {
+		this.disabled = disabled;
+	}
 	protected String tag(){
 		String html = "";
 		if(null != id){
@@ -72,6 +79,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		}
 		if(null != onfocus){
 			html += " onfocus='" + onfocus + "'";
+		}
+		if(null != disabled){
+			html += " disabled='" + disabled + "'";
 		}
 		return html;
 	}
