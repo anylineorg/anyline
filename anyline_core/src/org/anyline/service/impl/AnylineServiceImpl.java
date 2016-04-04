@@ -314,6 +314,24 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @return
 	 */
 	@Override
+	public int update(boolean sync, DataSource ds, String dest, Object data, String... columns) {
+		final String cols[] = BasicUtil.compressionSpace(columns);
+		final DataSource _ds = ds;
+		final String _dest = dest;
+		final Object _data = data;
+		if(sync){
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					dao.update(_ds, _dest, _data, cols);
+				}
+			}).start();
+			return 0;
+		}else{
+			return dao.update(ds, dest, data, cols);
+		}
+	}
+	@Override
 	public int update(DataSource ds, String dest, Object data, String... columns) {
 		columns = BasicUtil.compressionSpace(columns);
 		return dao.update(ds, dest, data, columns);
@@ -323,17 +341,49 @@ public class AnylineServiceImpl implements AnylineService {
 	public int update(String dest, Object data, String... columns) {
 		return update(null, dest, data, columns);
 	}
+	@Override
+	public int update(boolean sync, String dest, Object data, String... columns) {
+		return update(false,null, dest, data, columns);
+	}
 
 	@Override
 	public int update(DataSource ds, Object data, String... columns) {
 		return update(ds, null, data, columns);
+	}
+	@Override
+	public int update(boolean sync, DataSource ds, Object data, String... columns) {
+		return update(sync, ds, null, data, columns);
 	}
 
 	@Override
 	public int update(Object data, String... columns) {
 		return update(null, null, data, columns);
 	}
-
+	@Override
+	public int update(boolean sync, Object data, String... columns) {
+		return update(sync, null, null, data, columns);
+	}
+	@Override
+	public int save(boolean sync, DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
+		if(sync){
+			final DataSource _ds = ds;
+			final String _dest = dest;
+			final Object _data = data;
+			final boolean _chk = checkPrimary;
+			final String[] cols = columns;
+			new Thread(new Runnable(){
+				@Override
+				public void run() {
+					save(_ds, _dest, _data, _chk, cols);
+				}
+				
+			}).start();
+			return 0;
+		}else{
+			return save(ds, dest, data, checkPrimary, columns);
+		}
+		
+	}
 	@Override
 	public int save(DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
 		if (null == data) {
@@ -354,15 +404,27 @@ public class AnylineServiceImpl implements AnylineService {
 	public int save(String dest, Object data, boolean checkPrimary, String... columns) {
 		return save(null, dest, data, checkPrimary, columns);
 	}
+	@Override
+	public int save(boolean sync, String dest, Object data, boolean checkPrimary, String... columns) {
+		return save(sync,null, dest, data, checkPrimary, columns);
+	}
 
 	@Override
 	public int save(DataSource ds, Object data, boolean checkPrimary, String... columns) {
 		return save(ds, null, data, checkPrimary, columns);
 	}
+	@Override
+	public int save(boolean sync, DataSource ds, Object data, boolean checkPrimary, String... columns) {
+		return save(sync, ds, null, data, checkPrimary, columns);
+	}
 
 	@Override
 	public int save(Object data, boolean checkPrimary, String... columns) {
 		return save(null, null, data, checkPrimary, columns);
+	}
+	@Override
+	public int save(boolean sync, Object data, boolean checkPrimary, String... columns) {
+		return save(sync, null, null, data, checkPrimary, columns);
 	}
 
 	@Override
@@ -371,18 +433,36 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 
 	@Override
+	public int save(boolean sync, DataSource ds, Object data, String... columns) {
+		return save(sync, ds, null, data, false, columns);
+	}
+
+	@Override
 	public int save(String dest, Object data, String... columns) {
 		return save(null, dest, data, false, columns);
+	}
+	@Override
+	public int save(boolean sync, String dest, Object data, String... columns) {
+		return save(sync, null, dest, data, false, columns);
 	}
 
 	@Override
 	public int save(Object data, String... columns) {
 		return save(null, null, data, false, columns);
 	}
+	@Override
+	public int save(boolean sync, Object data, String... columns) {
+		return save(sync, null, null, data, false, columns);
+	}
 
 	@Override
 	public int save(DataSource ds, String dest, Object data, String... columns) {
 		return save(ds, dest, data, false, columns);
+	}
+
+	@Override
+	public int save(boolean sync, DataSource ds, String dest, Object data, String... columns) {
+		return save(sync, ds, dest, data, false, columns);
 	}
 
 	private int saveObject(DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
