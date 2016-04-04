@@ -54,6 +54,5 @@
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/asm-3.3.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/asm-commons-3.3.jar"/>
 	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/freemarker-2.3.22.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/anyline_mssql.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

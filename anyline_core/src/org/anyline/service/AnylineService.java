@@ -93,6 +93,11 @@ public interface AnylineService{
 	public int update(String dest, Object data, String ... columns);
 	public int update(DataSource ds, Object data, String ... columns);
 	public int update(Object data, String ... columns);
+	
+	public int update(boolean sync, DataSource ds, String dest, Object data, String ... columns);
+	public int update(boolean sync, String dest, Object data, String ... columns);
+	public int update(boolean sync, DataSource ds, Object data, String ... columns);
+	public int update(boolean sync, Object data, String ... columns);
 	/**
 	 * 保存(insert|update)
 	 * @param data
@@ -109,7 +114,15 @@ public interface AnylineService{
 	public int save(String dest, Object data, String ... columns);
 	public int save(Object data, String ... columns);
 	public int save(DataSource ds, String dest, Object data, String ... columns);
-	
+//
+	public int save(boolean sync, DataSource ds, String dest, Object data, boolean checkPriamry, String ... columns);
+	public int save(boolean sync, String dest, Object data, boolean checkPriamry, String ... columns);
+	public int save(boolean sync, DataSource ds, Object data, boolean checkPriamry, String ... columns);
+	public int save(boolean sync, Object data, boolean checkPriamry, String ... columns);
+	public int save(boolean sync, DataSource ds, Object data, String ... columns);
+	public int save(boolean sync, String dest, Object data, String ... columns);
+	public int save(boolean sync, Object data, String ... columns);
+	public int save(boolean sync, DataSource ds, String dest, Object data, String ... columns);
 
 
 	public int insert(DataSource ds, String dest, Object data, boolean checkPriamry, String ... columns);
