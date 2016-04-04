@@ -45,7 +45,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public static String ITEMS			= "ITEMS";
 	private DataSet container;									//包含当前对象的容器
 
-	private List<String> primaryKeys;					//主键
+	private List<String> primaryKeys = new ArrayList<String>();					//主键
 	private String dataSource;							//数据源(表|视图|XML定义SQL)
 	private String author;
 	private String table;
@@ -56,7 +56,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	@Autowired
 	protected AnylineService service;
 	
-	public DataRow(){}
+	public DataRow(){
+		String pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+		if(null != pk){
+			primaryKeys.add("CD");
+		}
+	}
 	public DataRow(Map<String,Object> map){
 		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
 			String key = itr.next();
