@@ -194,7 +194,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			dest = getDataSource(obj);
 		}
 		if(obj instanceof DataRow){
-			return createInsertTxtFromDataRow(dest,(DataRow)obj,checkPrimary, columns);
+			DataRow row = (DataRow)obj;
+			row.setDataSource(dest);
+			return createInsertTxtFromDataRow(dest,row,checkPrimary, columns);
 		}
 		if(obj instanceof BasicEntity){
 			return createInsertTxtFromEntity(dest,(BasicEntity)obj,checkPrimary, columns);	
