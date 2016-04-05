@@ -17,6 +17,7 @@
 
 package org.anyline.util;
 
+import java.math.BigDecimal;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -260,6 +261,20 @@ public class BasicUtil {
 		}
 	}
 
+	public static BigDecimal parseDecimal(Object value, double def) {
+		return parseDecimal(value,new BigDecimal(def));
+	}
+
+	public static BigDecimal parseDecimal(Object value, BigDecimal def) {
+		if (null == value) {
+			return def;
+		}
+		try {
+			return new BigDecimal(value.toString());
+		} catch (Exception e) {
+			return def;
+		}
+	}
 	public static Long parseLong(Object value, Long def) {
 		if (null == value) {
 			return def;
