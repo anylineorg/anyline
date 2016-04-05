@@ -570,9 +570,12 @@ public class DataSet implements Collection<Object>, Serializable {
 		return result;
 	}
 	public BigDecimal getDecimal(int idx, String key, double def){
+		return getDecimal(idx, key, new BigDecimal(def));
+	}
+	public BigDecimal getDecimal(int idx, String key, BigDecimal def){
 		BigDecimal result =getDecimal(idx, key);
 		if(null ==result){
-			result = new BigDecimal(def);
+			result = def;
 		}
 		return result;
 	}
