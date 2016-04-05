@@ -472,12 +472,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return result;
 	}
 	public BigDecimal getDecimal(String key, double def){
+		return getDecimal(key, new BigDecimal(def));
+	}
+	public BigDecimal getDecimal(String key, BigDecimal def){
 		BigDecimal result = getDecimal(key);
 		if(null == result){
-			result = new BigDecimal(def);
+			result = def;
 		}
 		return result;
 	}
+	
 	/**
 	 * 转换成json格式
 	 * @return
