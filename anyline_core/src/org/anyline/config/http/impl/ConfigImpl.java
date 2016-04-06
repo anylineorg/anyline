@@ -94,7 +94,7 @@ public class ConfigImpl implements Config{
 
 	/**
 	 * 解析配置
-	 * 		[+]	SQL参数名	[.SQL变量名]	:	[>=]request参数名
+	 * 		[+]	SQL参数名	[.SQL变量名]	:	[>=]request参数名		:默认值
 	 * 										[request参数名]
 	 * 										%request参数名%
 	 * 						
@@ -162,6 +162,12 @@ public class ConfigImpl implements Config{
 			values = new ArrayList<Object>();
 		}
 		try{
+			String def = null;//默认值
+			if(key.contains(":")){
+				String keys[] = key.split(":");
+				key = keys[0];
+				def = keys[1];
+			}
 			if(null != className && null != methodName){
 				Class clazz = Class.forName(className);
 				Method method = clazz.getMethod(methodName, String.class);
@@ -183,6 +189,10 @@ public class ConfigImpl implements Config{
 				}else{
 					values = WebUtil.getHttpRequestParams(request, key,isKeyEncrypt, isValueEncrypt);
 				}
+			}
+			if(null != def && BasicUtil.isEmpty(true,values)){
+				values = new ArrayList<Object>();
+				values.add(def);
 			}
 			empty = BasicUtil.isEmpty(true,values);
 		}catch(Exception e){

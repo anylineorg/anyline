@@ -210,7 +210,7 @@ public class AnylineServiceImpl implements AnylineService {
 		conditions = BasicUtil.compressionSpace(conditions);
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(0);
-		navi.setLastRow(1);
+		navi.setLastRow(0);
 		navi.setCalType(1);
 		if (null == store) {
 			store = new ConfigStoreImpl();
