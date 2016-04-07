@@ -46,7 +46,7 @@ import org.springframework.stereotype.Service;
 
 @Service("anylineService")
 public class AnylineServiceImpl implements AnylineService {
-	private static Logger LOG = Logger.getLogger(AnylineServiceImpl.class);
+	protected Logger LOG = Logger.getLogger(this.getClass());
 	@Autowired(required = false)
 	@Qualifier("anylineDao")
 	protected AnylineDao dao;
