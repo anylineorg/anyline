@@ -415,12 +415,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int size = keys.size();
 		for(int i=0; i<size; i++){
 			String key = keys.get(i);
-			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
 			Object value = row.get(key);
-			if("NULL".equals(value)){
-				values.add(null);
+			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
+				value = value.toString().replace("{", "").replace("}", "");
+				sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 			}else{
-				values.add(row.get(key));
+				sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
+				if("NULL".equals(value)){
+					values.add(null);
+				}else{
+					values.add(row.get(key));
+				}
 			}
 			if(i<size-1){
 				sql.append(",");
@@ -434,6 +439,24 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		run.addValues(values);
 		return run;
 	}
+	/*
+			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
+				value = value.toString().replace("{", "").replace("}", "");
+				param.append(value);
+			}else{
+				param.append("?");
+				if("NULL".equals(value)){
+					values.add(null);
+				}else{
+					values.add(value);
+				}
+			}
+			if(i<size-1){
+				sql.append(",");
+				param.append(",");
+			}
+		}*/
 	/**
 	 * 确认需要插入的列
 	 * @param row
