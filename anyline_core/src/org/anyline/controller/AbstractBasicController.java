@@ -41,7 +41,7 @@ import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 
 public class AbstractBasicController{
-	protected static Logger LOG = Logger.getLogger(AbstractBasicController.class);
+	protected Logger LOG = Logger.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
 	protected final String FAIL = "fail";
 	protected final String AJAX = "ajax";
@@ -343,6 +343,9 @@ public class AbstractBasicController{
 		boolean result = true;
 		for (String param : params) {
 			param = param.trim();
+			if(BasicUtil.isEmpty(param)){
+				continue;
+			}
 			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(param,
 					keyEncrypt, valueEncrypt);
 			if (BasicUtil.isEmpty(getParam(request, conf.getKey(), conf.isKeyEncrypt(), conf.isValueEncrypt()))) {
