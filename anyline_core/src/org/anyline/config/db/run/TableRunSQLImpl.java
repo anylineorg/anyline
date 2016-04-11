@@ -29,7 +29,6 @@ import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLCreater;
-import org.anyline.config.db.impl.GroupStoreImpl;
 import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.sql.auto.TableSQL;
 import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
@@ -197,12 +196,14 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(BasicUtil.isEmpty(condition)){
 			return this;
 		}
-		if(condition.contains(":")){
-			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(condition);
-			addCondition(conf.isRequired(),conf.getField(),conf.getKey(),SQL.COMPARE_TYPE_EQUAL);
-		}else{
+		if(!condition.contains(":") || 
+			(condition.startsWith("{") && condition.endsWith("}"))
+		){
 			Condition con = new AutoConditionImpl(condition);
 			conditionChain.addCondition(con);
+		}else{
+			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(condition);
+			addCondition(conf.isRequired(),conf.getField(),conf.getKey(),SQL.COMPARE_TYPE_EQUAL);
 		}
 		return this;
 	}
