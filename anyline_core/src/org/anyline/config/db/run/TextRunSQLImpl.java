@@ -28,7 +28,6 @@ import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLVariable;
-import org.anyline.config.db.impl.GroupStoreImpl;
 import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.impl.SQLVariableImpl;
 import org.anyline.config.db.sql.auto.AutoCondition;
@@ -410,12 +409,15 @@ private void appendOrderStore(){
 		if(BasicUtil.isEmpty(condition)){
 			return this;
 		}
-		if(condition.contains(":")){
+		
+		if(!condition.contains(":") || 
+			(condition.startsWith("{") && condition.endsWith("}"))
+		){
+			Condition con = new AutoConditionImpl(condition);
+			conditionChain.addCondition(con);
+		}else{
 			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(condition);
 			addCondition(conf.isRequired(),conf.getField(),conf.getKey(),SQL.COMPARE_TYPE_EQUAL);
-		}else{
-			Condition con = new XMLConditionImpl(condition);
-			conditionChain.addCondition(con);
 		}
 		return this;
 	}
