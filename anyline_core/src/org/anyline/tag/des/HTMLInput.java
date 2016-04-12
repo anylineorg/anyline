@@ -21,7 +21,6 @@ import org.anyline.tag.ComponentTag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.WebUtil;
-import org.apache.log4j.Logger;
 /**
  * 加密
  * @author Administrator
