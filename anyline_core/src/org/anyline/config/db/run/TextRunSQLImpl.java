@@ -409,17 +409,16 @@ private void appendOrderStore(){
 		if(BasicUtil.isEmpty(condition)){
 			return this;
 		}
-		
-		if(!condition.contains(":") || 
-			(condition.startsWith("{") && condition.endsWith("}"))
-		){
-			Condition con = new AutoConditionImpl(condition);
+		if(condition.startsWith("{") && condition.endsWith("}")){
+			Condition con = new AutoConditionImpl(condition.substring(1, condition.length()-1));
 			conditionChain.addCondition(con);
-		}else{
+		}else if(condition.contains(":")){
 			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(condition);
 			addCondition(conf.isRequired(),conf.getField(),conf.getKey(),SQL.COMPARE_TYPE_EQUAL);
+		}else{
+			Condition con = new AutoConditionImpl(condition);
+			conditionChain.addCondition(con);
 		}
 		return this;
 	}
-
 }
