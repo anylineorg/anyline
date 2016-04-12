@@ -219,28 +219,7 @@ public class DataSet implements Collection<Object>, Serializable {
 		return result;
 	}
 
-	/**
-	 * 转换成对象
-	 * 
-	 * @param clazz
-	 * @return
-	 */
-	// public Object entity(Class clazz){
-	// Object entity = null;
-	// DataRow row = getRow(0);
-	// if(null != row){
-	// entity = row.entity(clazz);
-	// }
-	// return entity;
-	// }
-	// public List entityList(Class clazz){
-	// List<Object> list = new ArrayList<Object>();
-	// if(null == rows) return list;
-	// for(DataRow row: rows){
-	// list.add(row.entity(clazz));
-	// }
-	// return list;
-	// }
+	
 	/**
 	 * 读取一行数据
 	 * 
@@ -919,6 +898,7 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * @param items
 	 * @param keys
 	 * @return
+	 * dispatchItems(items, "DEPAT_CD")
 	 */
 	public DataSet dispatchItems(DataSet items, String ... keys){
 		if(null == items || null == keys || keys.length == 0){
