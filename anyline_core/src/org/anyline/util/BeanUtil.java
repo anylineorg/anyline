@@ -142,7 +142,7 @@ public class BeanUtil {
 			Annotation annotation = field.getAnnotation(Column.class);
 			if(null == annotation){
 				//没有Column注解
-				return null;
+				return field.getName();
 			}
 			String column = (String)getAnnotationValue(field, Column.class, "name");
 			if(checkInsert){
