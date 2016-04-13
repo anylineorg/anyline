@@ -22,8 +22,6 @@ import java.util.List;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
-import org.anyline.config.db.SQLVariable;
-import org.anyline.util.BasicUtil;
 
 
 

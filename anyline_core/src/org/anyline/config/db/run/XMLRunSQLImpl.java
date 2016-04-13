@@ -207,7 +207,7 @@ private void appendOrderStore(){
 	 * @param sql
 	 */
 	private void appendCondition(){
-		if(null == conditionChain){
+		if(null == conditionChain || !conditionChain.isActive()){
 			return;
 		}
 		if(!hasWhere(builder.toString())){

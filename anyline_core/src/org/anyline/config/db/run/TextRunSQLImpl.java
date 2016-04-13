@@ -240,7 +240,7 @@ private void appendOrderStore(){
 			return;
 		}
 		List<Condition> cons = conditionChain.getConditions();
-		if(null == cons){
+		if(null == cons || cons.size()==0){
 			return;
 		}
 		String txt = builder.toString().toUpperCase();
