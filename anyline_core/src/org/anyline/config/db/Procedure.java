@@ -46,5 +46,7 @@ public interface Procedure{
 	public String getName() ;
 	public void setName(String name) ;
 	public List<Integer> getOutputTypes() ;
+	public void setResult(List<Object> result);
+	public List<Object> getResult();
 
 }
