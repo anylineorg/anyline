@@ -28,7 +28,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
-
 import org.anyline.util.regular.RegularUtil;
 
 public class Checkbox extends BaseBodyTag {
@@ -38,7 +37,7 @@ public class Checkbox extends BaseBodyTag {
 	private Object data;
 	private String valueKey = "CD";
 	private String textKey = "NM";
-	private Object checked;	//已选中项
+	private Object checked;	//已选中项 1或{1,2}或List
 	private String checkKey;
 
 	public int doEndTag() throws JspException {
@@ -112,6 +111,7 @@ public class Checkbox extends BaseBodyTag {
 				if (null != items)
 					for (Map item : items) {
 						Object val = item.get(valueKey);
+						String id = name +"_"+ value;
 						html += "<input type='checkbox' value='" + val + "' id='" + id+"_"+val+"'";
 						Object chk = item.get("CHECKED")+"";
 						if("1".equals(chk) || checked(chks,val) ) {
