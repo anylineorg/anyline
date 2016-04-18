@@ -30,9 +30,11 @@ import org.anyline.config.db.Procedure;
 public class ProcedureImpl  implements Procedure{
 
 	private String name;
-	private List<Integer> outputTypes;					//输出参数
+	private List<Integer> outputTypes;	//输出参数类型
 	private List<String> inputValues;
 	private List<Integer> inputTypes;
+	private List<Object> result;	//执行结果
+	
 	
 	public ProcedureImpl(String name){
 		this();
@@ -86,6 +88,12 @@ public class ProcedureImpl  implements Procedure{
 	}
 	public List<Integer> getOutputTypes() {
 		return outputTypes;
+	}
+	public List<Object> getResult() {
+		return result;
+	}
+	public void setResult(List<Object> result) {
+		this.result = result;
 	}
 
 }
