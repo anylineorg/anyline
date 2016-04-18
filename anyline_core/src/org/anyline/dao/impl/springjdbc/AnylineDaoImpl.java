@@ -437,7 +437,8 @@ public class AnylineDaoImpl implements AnylineDao {
 					}
 		            return result;
 		        }
-		    });     
+		    });    
+			procedure.setResult(result);
 		}catch(Exception e){
 			LOG.error(e);
 			throw new SQLUpdateException("PROCEDURE执行异常:"+e+"\nPROCEDURE:"+procedure.getName()+"\nPARAM:"+procedure.getInputValues());
