@@ -111,14 +111,14 @@ public class Checkbox extends BaseBodyTag {
 				if (null != items)
 					for (Map item : items) {
 						Object val = item.get(valueKey);
-						String id = name +"_"+ value;
-						html += "<input type='checkbox' value='" + val + "' id='" + id+"_"+val+"'";
+						String id = name +"_"+ val;
+						html += "<input type='checkbox' value='" + val + "' id='" + id + "'";
 						Object chk = item.get("CHECKED")+"";
 						if("1".equals(chk) || checked(chks,val) ) {
 							html += " checked='checked'";
 						}
 						html +=tag()+ "/>";
-						String label = "<label for='"+id+"_"+val+"'>";
+						String label = "<label for='"+id+ "'>";
 						String text = "";
 						if (textKey.contains("{")) {
 							text = textKey;
