@@ -141,6 +141,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		//	row.processBeforeDisplay();	//显示之前预处理
 		}catch(Exception e){
 			LOG.error(e);
+			e.printStackTrace();
 			throw new SQLUpdateException("更新异常:"+e);
 		}
 		return result;
