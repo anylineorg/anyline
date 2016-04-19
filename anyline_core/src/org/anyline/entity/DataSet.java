@@ -305,7 +305,7 @@ public class DataSet implements Collection<Object>, Serializable {
 	public DataSet getRows(String... params) {
 		DataSet set = this;
 		if (null == params) {
-			return new DataSet();
+			return set;
 		}
 		for (int i = 0; i < params.length - 1; i += 2) {
 			if (i + 1 < params.length) {
@@ -805,9 +805,6 @@ public class DataSet implements Collection<Object>, Serializable {
 		this.navi = navi;
 	}
 
-	public List<DataRow> getRows() {
-		return rows;
-	}
 
 	public void setRows(List<DataRow> rows) {
 		this.rows = rows;
