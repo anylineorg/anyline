@@ -291,15 +291,16 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	
 	protected boolean hasWhere(String txt){
 		boolean where = false;
+		txt = txt.toUpperCase();
 		int fr = txt.lastIndexOf("WHERE");
 		if(fr > 0){
 			txt = txt.substring(fr);
 			try{
-				int bSize = 0;
+				int bSize = 0;//左括号数据
 				if(txt.contains(")")){
 					bSize = RegularUtil.fetch(txt, ")").size();
 				}
-				int eSize = 0;
+				int eSize = 0;//右括号数量
 				if(txt.contains("(")){
 					eSize = RegularUtil.fetch(txt, "(").size();
 				}
