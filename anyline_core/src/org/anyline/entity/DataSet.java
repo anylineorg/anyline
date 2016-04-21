@@ -301,7 +301,9 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		return set;
 	}
-
+	public List<DataRow> getRows(){
+		return rows;
+	}
 	public DataSet getRows(String... params) {
 		DataSet set = this;
 		if (null == params) {
