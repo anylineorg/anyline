@@ -305,12 +305,9 @@ public class AbstractBasicController{
 		int pageNo = 1; // 当前页数 默认1
 		int pageVol = ConfigTable.getInt("PAGE_DEFAULT_VOL"); // 每页多少条 默认10
 		// 提取request中请求参数
-		pageVol = BasicUtil.parseInt(request.getAttribute(PageNavi.PAGE_ROWS),
-				pageVol);
-		pageVol = BasicUtil.parseInt(request.getParameter(PageNavi.PAGE_ROWS),
-				pageVol);
-		pageNo = BasicUtil.parseInt(request.getParameter(PageNavi.PAGE_NO),
-				pageNo);
+		pageVol = BasicUtil.parseInt(request.getAttribute(PageNavi.PAGE_ROWS),pageVol);
+		pageVol = BasicUtil.parseInt(request.getParameter(PageNavi.PAGE_ROWS),pageVol);
+		pageNo = BasicUtil.parseInt(request.getParameter(PageNavi.PAGE_NO),pageNo);
 		String uri = null;
 		if (null == uri) {
 			uri = request.getRequestURI();

@@ -66,6 +66,7 @@ public abstract class BasicCondition implements Condition{
 		}
 
 	}
+	@Override
 	public void setActive(boolean active){
 		this.active = active;
 	}
