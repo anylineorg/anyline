@@ -64,6 +64,7 @@ public interface Condition extends Cloneable{
 	public void init();
 	public void initRunValue();
 	public boolean isActive();
+	public void setActive(boolean active);
 	public int getVariableType();
 	/*************************************************************************************************************
 	 * 

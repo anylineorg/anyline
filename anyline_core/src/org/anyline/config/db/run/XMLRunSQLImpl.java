@@ -96,6 +96,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				this.pageNavi = navi;
 			}
 		}
+		//condition赋值
 		if(null != conditions){
 			for(String condition:conditions){
 				if(BasicUtil.isEmpty(condition)){
@@ -247,6 +248,9 @@ private void appendOrderStore(){
 		}
 		variable = BasicUtil.nvl(variable, condition).toString();
 		con.setValue(variable, value);
+		if(con.isActive()){
+			this.conditionChain.setActive(true);
+		}
 		return this;
 	}
 	public void setConditions(String[] conditions) {
