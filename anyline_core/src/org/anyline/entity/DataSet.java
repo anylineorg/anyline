@@ -33,6 +33,7 @@ import net.sf.json.JSONObject;
 import org.anyline.config.db.PageNavi;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.EscapeUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +50,7 @@ public class DataSet implements Collection<Object>, Serializable {
 	private String dataSource; 				// 数据源(表|视图|XML定义SQL)
 	private String author;
 	private String table;
-
+	
 
 	@Autowired
 	protected AnylineService service;
@@ -304,11 +305,25 @@ public class DataSet implements Collection<Object>, Serializable {
 	public List<DataRow> getRows(){
 		return rows;
 	}
+	public Object clone(){
+		DataSet set = new DataSet();
+		List<DataRow> rows = new ArrayList<DataRow>();
+		for(DataRow row:this.rows){
+			rows.add((DataRow)row.clone());
+		}
+		set.setRows(rows);
+		set.exception = this.exception;
+		set.message = this.message;
+		set.navi = this.navi;
+		set.head = this.head;
+		set.primaryKeys = this.primaryKeys;
+		set.dataSource = this.dataSource;
+		set.author = this.author;
+		set.table = this.table;
+		return set;
+	}
 	public DataSet getRows(String... params) {
 		DataSet set = this;
-		if (null == params) {
-			return set;
-		}
 		for (int i = 0; i < params.length - 1; i += 2) {
 			if (i + 1 < params.length) {
 				String key = params[i];
@@ -318,7 +333,6 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		return set;
 	}
-
 	public DataSet getRows(int fr, int to) {
 		DataSet set = new DataSet();
 		for (int i = fr; i < this.size() && i <= to; i++) {
@@ -840,7 +854,7 @@ public class DataSet implements Collection<Object>, Serializable {
 			}
 		}
 		if (null == chkCol) {
-			chkCol = "CD";
+			chkCol = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 		}
 		int size = set.size();
 		for (int i = 0; i < size; i++) {
@@ -853,7 +867,7 @@ public class DataSet implements Collection<Object>, Serializable {
 	}
 
 	public DataSet union(DataSet set) {
-		return union(set, "CD");
+		return union(set, ConfigTable.getString("DEFAULT_PRIMARY_KEY"));
 	}
 	/**
 	 * 合并
