@@ -28,10 +28,10 @@ import net.sf.json.JSONObject;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
+
 import com.opensymphony.xwork2.ActionInvocation;
 
 public class JSONResult extends StrutsResultSupport {
@@ -72,10 +72,10 @@ public class JSONResult extends StrutsResultSupport {
 				dataType = "map";
 			}else if(data instanceof String){
 				dataType = "string";
-				data = BasicUtil.convertJSONChar(data.toString());
+				data = convertJSONChar(data.toString());
 			}else if(data instanceof Number){
 				dataType = "number";
-				data = BasicUtil.convertJSONChar(data.toString());
+				data = convertJSONChar(data.toString());
 			}else{
 				dataType = "map";
 			}
@@ -95,6 +95,12 @@ public class JSONResult extends StrutsResultSupport {
                 writer.close();
             }
         }
+	}	
+    private String convertJSONChar(String value) {
+		if (null != value) {
+			value = value.replace("\\", "\\\\").replace("\"", "\\\"");
+		}
+		return value;
 	}
 	
 }
