@@ -22,8 +22,8 @@ import java.io.IOException;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
-
 import org.anyline.util.BasicUtil;
+import org.anyline.util.MoneyUtil;
 
 public class Money extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
@@ -40,7 +40,7 @@ public class Money extends BaseBodyTag {
 		try {
 			writer = pageContext.getOut();
 			double d = BasicUtil.parseDouble(value, 0d);
-			result = BasicUtil.moneyUpper(d);
+			result = MoneyUtil.format(d);
 			writer.print(result);
 		} catch (IOException e) {
 			LOG.error(e);

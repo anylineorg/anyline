@@ -16,13 +16,15 @@
 
 
 package org.anyline.tag;
+import java.math.BigDecimal;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import org.apache.log4j.Logger;
-
 import org.anyline.util.BasicUtil;
+import org.anyline.util.NumberUtil;
+import org.apache.log4j.Logger;
 /**
  * 除法运算 主要处理0被除数异常 及格式化
  * @author Administrator
@@ -39,12 +41,12 @@ public class Division extends BodyTagSupport{
 	 public int doStartTag() throws JspException {
 		try{
 			JspWriter out = pageContext.getOut();
-			Double _divisor = BasicUtil.parseDouble(divisor, null);
-			Double _dividend = BasicUtil.parseDouble(dividend, null);
-			if(BasicUtil.isNotEmpty(_divisor) && BasicUtil.isNotEmpty(_dividend) && 0 != _dividend){
-				double result = _dividend/_divisor;
+			BigDecimal _divisor = BasicUtil.parseDecimal(divisor, 0);
+			BigDecimal _dividend = BasicUtil.parseDecimal(dividend, 0);
+			if(_dividend.compareTo(new BigDecimal(0)) != 0){
+				BigDecimal result = _dividend.divide(_divisor);
 				if(null != format){
-					defaultValue = BasicUtil.formatNumber(result, format);
+					defaultValue = NumberUtil.format(result, format);
 				}else{
 					defaultValue = result +"";
 				}

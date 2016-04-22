@@ -21,10 +21,8 @@ package org.anyline.tag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.DateUtil;
 
 
 public class NumberFormat extends BaseBodyTag implements Cloneable{
@@ -50,9 +48,9 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 				value = body;
 			}
 			if(value instanceof String){
-				result = BasicUtil.formatNumber((String)value,format);
+				result = NumberUtil.format((String)value,format);
 			}else if(value instanceof Number){
-				result = BasicUtil.formatNumber((Number)value,format);
+				result = NumberUtil.format((Number)value,format);
 			}
 			JspWriter out = pageContext.getOut();
 			out.println(result);

@@ -627,35 +627,7 @@ public class BasicUtil {
 		}
 	}
 
-	/**
-	 * 数据格式化
-	 * 
-	 * @param src
-	 * @param pattern
-	 * @return
-	 */
-	public static String formatNumber(String src, String pattern) {
-		if (null == src) {
-			return "";
-		}
-		double srcDouble = Double.parseDouble(src);
-		return formatNumber(srcDouble, pattern);
-	}
-
-	/**
-	 * 数字格式化
-	 * 
-	 * @param src
-	 * @param pattern
-	 * @return
-	 */
-	public static String formatNumber(Number src, String pattern) {
-		if (null == src) {
-			return "";
-		}
-		DecimalFormat df = new DecimalFormat(pattern);
-		return df.format(src);
-	}
+	
 
 	/**
 	 * 合并数组
@@ -767,14 +739,7 @@ public class BasicUtil {
 		}
 		return src.substring(fr, to);
 	}
-	/**
-	 * 金额大小
-	 * @param n
-	 * @return
-	 */
-	public static String moneyUpper(double n) {
-		return MoneyUtil.format(n);
-	}
+
 	/**
 	 * 获取本机IP
 	 * @return
