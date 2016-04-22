@@ -21,7 +21,6 @@ import java.math.BigDecimal;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -30,8 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-
-import javax.servlet.ServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -46,7 +43,6 @@ public class BasicUtil {
 	 *            是否递归查检集合对象
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	public static boolean isEmpty(boolean recursion, Object obj) {
 		if (null == obj) {
 			return true;
@@ -99,7 +95,7 @@ public class BasicUtil {
 	}
 
 	/**
-	 * nvl 取第一个不为null的值,如果全为空则返回null
+	 * nvl 取第一个不为null的值,没有符合条件的 则返回null
 	 * 
 	 * @param recursion
 	 *            对于集合变量,是否递归
@@ -123,8 +119,8 @@ public class BasicUtil {
 	}
 
 	/**
-	 * 反回第一个不为空(""|null|empty)的值
-	 * 
+	 * 反回第一个不为空(""|null|empty)的值 没有符合条件的 则返回NULL
+	 * 与nvl区别 : ""不符合evl条件 但符合nvl条件 
 	 * @param recursion
 	 * @param values
 	 * @return
@@ -195,7 +191,13 @@ public class BasicUtil {
 	public static String getRandomNumberString(int length) {
 		return getRandomString(length, new StringBuffer("1234567890"));
 	}
-
+	/**
+	 * 在src的第idx位置插入key
+	 * @param src
+	 * @param idx
+	 * @param key
+	 * @return
+	 */
 	public static String insert(String src, int idx, String key) {
 		if (null == src || null == key) {
 			return src;
@@ -316,57 +318,6 @@ public class BasicUtil {
 
 	public static boolean parseBoolean(Object obj) {
 		return parseBoolean(obj, false);
-	}
-
-	/**
-	 * 选取最大数
-	 * 
-	 * @param num
-	 * @return
-	 */
-	public static double getMax(double num, double... nums) {
-		double max = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (max < nums[i]) {
-					max = nums[i];
-				}
-			}
-		}
-		return max;
-	}
-
-	/**
-	 * 选取最小数
-	 * 
-	 * @param num
-	 * @return
-	 */
-	public static double getMin(double num, double... nums) {
-		double min = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (min > nums[i]) {
-					min = nums[i];
-				}
-			}
-		}
-		return min;
-	}
-
-	/**
-	 * 过滤JSON转义符 " \
-	 * 
-	 * @param value
-	 * @return
-	 */
-	public static String convertJSONChar(String value) {
-		if (null != value) {
-			value = value.replace("\\", "\\\\").replace("\"", "\\\"");
-		}
-		return value;
 	}
 
 	/**
@@ -565,69 +516,6 @@ public class BasicUtil {
 		}
 		return result;
 	}
-
-	/**
-	 * 检查并转换JSON格式文本
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static String validateJSONString(String str) {
-		if (null == str) {
-			str = "";
-		} else {
-			str = str.replace("\"", "\\\"");
-			str = str.replace("'", "\\'");
-		}
-		return str;
-	}
-
-	/**
-	 * 检查并转换XML格式文本
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static String validateXMLString(String str) {
-		if (null == str) {
-			str = "";
-		} else {
-			str = str.replace(">", "&gt;");
-			str = str.replace("<", "&lt;");
-		}
-		return str;
-	}
-
-	/**
-	 * 测试函数
-	 * 
-	 * @param map
-	 */
-	public static void print(Object obj) {
-		System.out.print(obj);
-		if (null == obj) {
-			return;
-		}
-		if (obj instanceof Map) {
-			Map<?, ?> map = (Map<?, ?>) obj;
-			for (Iterator<?> itr = map.keySet().iterator(); itr.hasNext();) {
-				Object key = itr.next();
-				Object value = map.get(key);
-				System.out.println(key + "=" + value);
-			}
-		}
-		if (obj instanceof ServletRequest) {
-			ServletRequest request = (ServletRequest) obj;
-			Enumeration<?> keys = request.getParameterNames();
-			for (; keys.hasMoreElements();) {
-				String key = keys.nextElement().toString();
-				String value = request.getParameter(key);
-				System.out.println(key + "=" + value);
-			}
-		}
-	}
-
-	
 
 	/**
 	 * 合并数组

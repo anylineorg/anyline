@@ -53,5 +53,81 @@ public class NumberUtil {
 	public static String toUpper(String num){
 		return "";
 	}
-	
+
+	/**
+	 * 选取最大数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static double getMax(double num, double... nums) {
+		double max = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (max < nums[i]) {
+					max = nums[i];
+				}
+			}
+		}
+		return max;
+	}
+
+	/**
+	 * 选取最小数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static double getMin(double num, double... nums) {
+		double min = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (min > nums[i]) {
+					min = nums[i];
+				}
+			}
+		}
+		return min;
+	}
+
+	/**
+	 * 选取最大数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static double getMax(int num, int... nums) {
+		double max = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (max < nums[i]) {
+					max = nums[i];
+				}
+			}
+		}
+		return max;
+	}
+
+	/**
+	 * 选取最小数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static double getMin(int num, int... nums) {
+		double min = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (min > nums[i]) {
+					min = nums[i];
+				}
+			}
+		}
+		return min;
+	}
+
 }

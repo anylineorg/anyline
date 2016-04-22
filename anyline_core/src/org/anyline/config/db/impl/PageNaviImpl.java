@@ -29,6 +29,7 @@ import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
 
 
@@ -435,7 +436,7 @@ public class PageNaviImpl implements PageNavi{
 		builder.append("第<span class='navi-cur-page'>").append(curPage)
 		.append("</span>/<span class='navi-total-page'>").append(totalPage).append("</span>页\n");
 		builder.append("<input type='button' class='navi-first-button' value='第一页' onclick='_navi_go(1)'/>\n");
-		builder.append("<input type='button' class='navi-prev-button' value='上一页' onclick='_navi_go("+(int)BasicUtil.getMax(curPage-1,1)+")'/>\n");
+		builder.append("<input type='button' class='navi-prev-button' value='上一页' onclick='_navi_go("+(int)NumberUtil.getMax(curPage-1,1)+")'/>\n");
 		builder.append("<span class='navi-num-border'>\n");
 		for(int i=1; i<=totalPage; i++){
 			String cur = "";
@@ -445,7 +446,7 @@ public class PageNaviImpl implements PageNavi{
 			builder.append("<span class='navi-num-item"+cur+"' onclick='_navi_go("+i+")'>").append(i).append("</span>\n");
 		}
 		builder.append("</span>");
-		builder.append("<input type='button' class='navi-next-button' value='下一页' onclick='_navi_go("+(int)BasicUtil.getMin(curPage+1, totalPage)+")'/>\n");
+		builder.append("<input type='button' class='navi-next-button' value='下一页' onclick='_navi_go("+(int)NumberUtil.getMin(curPage+1, totalPage)+")'/>\n");
 		builder.append("<input type='button' class='navi-last-button' value='最后页' onclick='_navi_go("+totalPage+")'/>\n");
 		builder.append("</span>\n");
 		builder.append("转到<input type='text' id='_anyline_go' value='"+curPage+"' class='navi-go-txt'/>页 &nbsp;<input type='button' value='确定' class='navi-go-button' onclick='_navi_go()'/>\n");
