@@ -14,16 +14,65 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ClassUtil {
+	public static List<Class> getClassList(String packageName, boolean recursion, Class ... bases){
+		List<Class> list = new ArrayList<Class>();
+		List<String> names = getClassNameList(packageName, recursion);
+		for(String name:names){
+			try{
+				Class c = Class.forName(name);
+				if(isInSub(c, bases)){
+					list.add(c);
+				}
+			}catch(Exception e){
+				
+			}
+		}
+		return list;
+	}
+	/**
+	 * 是否是bases子类或实现了basees接口(满足其中一个)
+	 * @param c
+	 * @param bases
+	 * @return
+	 */
+	public static boolean isInSub(Class c, Class ... bases){
+		if(null == bases || bases.length == 0){
+			return true;
+		}
+		for(Class base : bases){
+			if(!base.isAssignableFrom(c)){
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * 是否是bases子类或实现了basees接口(满足全部)
+	 * @param c
+	 * @param bases
+	 * @return
+	 */
+	public static boolean isAllSub(Class c, Class ... bases){
+		if(null == bases || bases.length == 0){
+			return true;
+		}
+		for(Class base : bases){
+			if(base.isAssignableFrom(c)){
+				return true;
+			}
+		}
+		return false;
+	}
 	/**
 	 * 获取某包下所有类
 	 * 
 	 * @param packageName
 	 *            包名
-	 * @param isRecursion
+	 * @param recursion
 	 *            是否遍历子包
 	 * @return 类的完整名称
 	 */
-	public static List<String> getClassName(String packageName, boolean isRecursion) {
+	public static List<String> getClassNameList(String packageName, boolean recursion) {
 		List<String> classNames = null;
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		String packagePath = packageName.replace(".", "/");
@@ -32,7 +81,7 @@ public class ClassUtil {
 		if (url != null) {
 			String protocol = url.getProtocol();
 			if (protocol.equals("file")) {
-				classNames = getClassNameFromDir(url.getPath(), packageName, isRecursion);
+				classNames = getClassNameListFromDir(url.getPath(), packageName, recursion);
 			} else if (protocol.equals("jar")) {
 				JarFile jarFile = null;
 				try {
@@ -42,12 +91,12 @@ public class ClassUtil {
 				}
 
 				if (jarFile != null) {
-					getClassNameFromJar(jarFile.entries(), packageName, isRecursion);
+					getClassNameListFromJar(jarFile.entries(), packageName, recursion);
 				}
 			}
 		} else {
 			/* 从所有的jar包中查找包名 */
-			classNames = getClassNameFromJars(((URLClassLoader) loader).getURLs(), packageName, isRecursion);
+			classNames = getClassNameFromJars(((URLClassLoader) loader).getURLs(), packageName, recursion);
 		}
 
 		return classNames;
@@ -64,14 +113,14 @@ public class ClassUtil {
 	 *            是否遍历子包
 	 * @return 类的完整名称
 	 */
-	private static List<String> getClassNameFromDir(String filePath, String packageName, boolean isRecursion) {
+	private static List<String> getClassNameListFromDir(String filePath, String packageName, boolean isRecursion) {
 		List<String> className = new ArrayList<String>();
 		File file = new File(filePath);
 		File[] files = file.listFiles();
 		for (File childFile : files) {
 			if (childFile.isDirectory()) {
 				if (isRecursion) {
-					className.addAll(getClassNameFromDir(childFile.getPath(), packageName + "." + childFile.getName(), isRecursion));
+					className.addAll(getClassNameListFromDir(childFile.getPath(), packageName + "." + childFile.getName(), isRecursion));
 				}
 			} else {
 				String fileName = childFile.getName();
@@ -90,7 +139,7 @@ public class ClassUtil {
 	 * @param isRecursion
 	 * @return
 	 */
-	private static Set<String> getClassNameFromJar(Enumeration<JarEntry> jarEntries, String packageName, boolean isRecursion) {
+	private static Set<String> getClassNameListFromJar(Enumeration<JarEntry> jarEntries, String packageName, boolean isRecursion) {
 		Set<String> classNames = new HashSet<String>();
 
 		while (jarEntries.hasMoreElements()) {
@@ -145,7 +194,7 @@ public class ClassUtil {
 			}
 
 			if (jarFile != null) {
-				classNames.addAll(getClassNameFromJar(jarFile.entries(), packageName, isRecursion));
+				classNames.addAll(getClassNameListFromJar(jarFile.entries(), packageName, isRecursion));
 			}
 		}
 
