@@ -17,13 +17,10 @@
 
 package org.anyline.util;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -34,7 +31,7 @@ public class DateUtil {
 	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.ms";
 	public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 	public static final String FORMAT_DATE = "yyyy-MM-dd";
-	private static Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("ETC/GMT-8"), Locale.CHINESE);
+	private static Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINESE);
 	public static boolean between( Date cur,Date fr, Date to){
 		if(cur.getTime() >= fr.getTime() && cur.getTime() <= to.getTime()){
 			return true;
@@ -172,9 +169,8 @@ public class DateUtil {
 	 * @param sdate
 	 * @return
 	 */
-	public static String getWeek(String sdate) {
+	public static String getWeek(Date date) {
 		// 再转换为时间
-		Date date = DateUtil.parse(sdate);
 		calendar.setTime(date);
 		// int hour=c.get(Calendar.DAY_OF_WEEK);
 		// hour中存的就是星期几了，其范围 1~7
@@ -187,20 +183,17 @@ public class DateUtil {
 	 * @param date
 	 * @return
 	 */
-	public static String getFirstDayOfMonth(Date date) {
-		String str = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	public static Date getFirstDayOfMonth(Date date) {
 		calendar.setTime(date);
-		calendar.set(Calendar.DATE, 1);// 设为当前月的1号
-		str = sdf.format(calendar.getTime());
-		return str;
+		calendar.set(Calendar.DAY_OF_MONTH, 1);// 设为当前月的1号
+		return calendar.getTime();
 	}
 
-	public static String getFirstDayOfMonth(String date) {
+	public static Date getFirstDayOfMonth(String date) {
 		return getFirstDayOfMonth(parse(date));
 	}
 
-	public static String getFirstDayOfMonth() {
+	public static Date getFirstDayOfMonth() {
 		return getFirstDayOfMonth(new Date());
 	}
 
@@ -209,21 +202,18 @@ public class DateUtil {
 	 * @param date
 	 * @return
 	 */
-	public static String getFirstDayOfNextMonth(Date date) {
-		String str = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	public static Date getFirstDayOfNextMonth(Date date) {
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, 1);// 减一个月
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天
-		str = sdf.format(calendar.getTime());
-		return str;
+		return calendar.getTime();
 	}
 
-	public static String getFirstDayOfNextMonth(String date) {
+	public static Date getFirstDayOfNextMonth(String date) {
 		return getFirstDayOfNextMonth(parse(date));
 	}
 
-	public static String getFirstDayOfNextMonth() {
+	public static Date getFirstDayOfNextMonth() {
 		return getFirstDayOfNextMonth(new Date());
 	}
 	/**
@@ -231,21 +221,17 @@ public class DateUtil {
 	 * @param date
 	 * @return
 	 */
-	public static String getFirstDayOfPreviousMonth(Date date) {
-		String str = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	public static Date getFirstDayOfPreviousMonth(Date date) {
 		calendar.setTime(date);
 		calendar.set(Calendar.DATE, 1);// 设为当前月的1号
 		calendar.add(Calendar.MONTH, -1);// 减一个月，变为下月的1号
-		// lastDate.add(Calendar.DATE,-1);//减去一天，变为当月最后一天
-		str = sdf.format(calendar.getTime());
-		return str;
+		return calendar.getTime();
 	}
-	public static String getFirstDayOfPreviousMonth(String date) {
+	public static Date getFirstDayOfPreviousMonth(String date) {
 		return getFirstDayOfPreviousMonth(parse(date));
 	}
 
-	public static String getFirstDayOfPreviousMonth() {
+	public static Date getFirstDayOfPreviousMonth() {
 		return getFirstDayOfPreviousMonth(new Date());
 	}
 
@@ -254,24 +240,20 @@ public class DateUtil {
 	 * @param date
 	 * @return
 	 */
-	public static String getLastDayOfMonth(Date date) {
-		String str = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	public static Date getLastDayOfMonth(Date date) {
 		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("ETC/GMT-8"), Locale.CHINESE);
 		calendar.setTimeInMillis(date.getTime()+100000);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);// 设为当前月的1号
 		calendar.add(Calendar.MONTH, 1);// 加一个月，变为下月的1号
-		str = sdf.format(calendar.getTime());
 		calendar.add(Calendar.DATE, -1);// 减去一天，变为当月最后一天
-		str = sdf.format(calendar.getTime());
-		return str;
+		return calendar.getTime();
 	}
 
-	public static String getLastDayOfMonth(String date) {
+	public static Date getLastDayOfMonth(String date) {
 		return getLastDayOfMonth(parse(date));
 	}
 
-	public static String getLastDayOfMonth() {
+	public static Date getLastDayOfMonth() {
 		return getLastDayOfMonth(new Date());
 	}
 
@@ -280,22 +262,19 @@ public class DateUtil {
 	 * @param date
 	 * @return
 	 */
-	public static String getLastDayOfPreviousMonth(Date date) {
-		String str = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	public static Date getLastDayOfPreviousMonth(Date date) {
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, -1);// 减一个月
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天
 		calendar.roll(Calendar.DATE, -1);// 日期回滚一天，也就是本月最后一天
-		str = sdf.format(calendar.getTime());
-		return str;
+		return calendar.getTime();
 	}
 
-	public static String getLastDayOfPreviousMonth(String date) {
+	public static Date getLastDayOfPreviousMonth(String date) {
 		return getLastDayOfPreviousMonth(parse(date));
 	}
 
-	public static String getLastDayOfPreviousMonth() {
+	public static Date getLastDayOfPreviousMonth() {
 		return getLastDayOfPreviousMonth(new Date());
 	}
 
@@ -304,40 +283,41 @@ public class DateUtil {
 	 * @param date
 	 * @return
 	 */
-	public static String getLastDayOfNextMonth(Date date) {
-		String str = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	public static Date getLastDayOfNextMonth(Date date) {
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, 1);// 加一个月
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天
 		calendar.roll(Calendar.DATE, -1);// 日期回滚一天，也就是本月最后一天
-		str = sdf.format(calendar.getTime());
-		return str;
+		return calendar.getTime();
 	}
 
-	public static String getLastDayOfNextMonth(String date) {
+	public static Date getLastDayOfNextMonth(String date) {
 		return getLastDayOfNextMonth(parse(date));
 	}
 
-	public static String getLastDayOfNextMonth() {
+	public static Date getLastDayOfNextMonth() {
 		return getLastDayOfNextMonth(new Date());
 	}
 
+	
 	// 获得本周星期日的日期
-	public static String getCurrentWeekday() {
-		int mondayPlus = getMondayPlus();
-		GregorianCalendar currentDate = new GregorianCalendar();
-		currentDate.add(GregorianCalendar.DATE, mondayPlus + 6);
-		Date monday = currentDate.getTime();
-
-		DateFormat df = DateFormat.getDateInstance();
-		String preMonday = df.format(monday);
-		return preMonday;
+	public static Date getCurrentWeekday(Date date) {
+		int mondayPlus = getMondayPlus(date);
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, mondayPlus + 6);
+		return calendar.getTime();
 	}
 
+	public static Date getCurrentWeekday(String date) {
+		return getCurrentWeekday(parse(date));
+	}
+
+	public static Date getCurrentWeekday() {
+		return getCurrentWeekday(new Date());
+	}
 	// 获得当前日期与本周日相差的天数
-	public static int getMondayPlus() {
-		calendar.setTime(new Date());
+	public static int getMondayPlus(Date date) {
+		calendar.setTime(date);
 		// 获得今天是一周的第几天，星期日是第一天，星期二是第二天......
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 因为按中国礼拜一作为第一天所以这里减1
 		if (dayOfWeek == 1) {
@@ -346,42 +326,59 @@ public class DateUtil {
 			return 1 - dayOfWeek;
 		}
 	}
-
-	// 获得本周一的日期
-	public static String getMondayOFWeek() {
-		int mondayPlus = getMondayPlus();
-		GregorianCalendar currentDate = new GregorianCalendar();
-		currentDate.add(GregorianCalendar.DATE, mondayPlus);
-		Date monday = currentDate.getTime();
-		DateFormat df = DateFormat.getDateInstance();
-		String preMonday = df.format(monday);
-		return preMonday;
+	public static int getMondayPlus() {
+		return getMondayPlus(new Date());
 	}
 
+	// 获得本周一的日期
+	public static Date getMondayOFWeek(Date date) {
+		int mondayPlus = getMondayPlus(date);
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, mondayPlus);
+		return calendar.getTime();
+	}
+
+	public static Date getMondayOFWeek(String date) {
+		return getMondayOFWeek(parse(date));
+	}
+
+	public static Date getMondayOFWeek() {
+		return getMondayOFWeek(new Date(0));
+	}
+	
+
 	// 获得下周星期一的日期
-	public static String getNextMonday() {
-		int mondayPlus = getMondayPlus();
-		GregorianCalendar currentDate = new GregorianCalendar();
-		currentDate.add(GregorianCalendar.DATE, mondayPlus + 7);
-		Date monday = currentDate.getTime();
-		DateFormat df = DateFormat.getDateInstance();
-		String preMonday = df.format(monday);
-		return preMonday;
+	public static Date getNextMonday(Date date) {
+		int mondayPlus = getMondayPlus(date);
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, mondayPlus + 7);
+		return calendar.getTime();
+	}
+	public static Date getNextMonday(String date) {
+		return getNextMonday(parse(date));
+	}
+	public static Date getNextMonday() {
+		return getNextMonday(new Date());
 	}
 
 	// 获得下周星期日的日期
-	public static String getNextSunday() {
-		int mondayPlus = getMondayPlus();
-		GregorianCalendar currentDate = new GregorianCalendar();
-		currentDate.add(GregorianCalendar.DATE, mondayPlus + 7 + 6);
-		Date monday = currentDate.getTime();
-		DateFormat df = DateFormat.getDateInstance();
-		String preMonday = df.format(monday);
-		return preMonday;
+	public static Date getNextSunday(Date date) {
+		int mondayPlus = getMondayPlus(date);
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, mondayPlus + 7 + 6);
+		return calendar.getTime();
+	}
+	public static Date getNextSunday(String date) {
+		return getNextSunday(parse(date));
 	}
 
-	public static int getMonthPlus() {
-		calendar.setTime(new Date());
+	public static Date getNextSunday() {
+		return getNextSunday(new Date());
+	}
+	
+	//当前日期与本周日相差几天
+	public static int getMonthPlus(Date date) {
+		calendar.setTime(date);
 		int monthOfNumber = calendar.get(Calendar.DAY_OF_MONTH);
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天
 		calendar.roll(Calendar.DATE, -1);// 日期回滚一天，也就是最后一天
@@ -394,28 +391,32 @@ public class DateUtil {
 	}
 
 	// 获得明年最后一天的日期
-	public static String getNextYearEnd() {
-		String str = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		calendar.setTime(new Date());
+	public static Date getNextYearEnd(Date date) {
+		calendar.setTime(date);
 		calendar.add(Calendar.YEAR, 1);// 加一个年
 		calendar.set(Calendar.DAY_OF_YEAR, 1);
 		calendar.roll(Calendar.DAY_OF_YEAR, -1);
-		str = sdf.format(calendar.getTime());
-		return str;
+		return calendar.getTime();
+	}
+	public static Date getNextYearEnd(String date) {
+		return getNextYearEnd(parse(date));
+	}
+	public static Date getNextYearEnd() {
+		return getNextYearEnd(new Date());
 	}
 
 	// 获得明年第一天的日期
-	public static String getNextYearFirst() {
-		String str = "";
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-		Calendar lastDate = Calendar.getInstance();
-		lastDate.add(Calendar.YEAR, 1);// 加一个年
-		lastDate.set(Calendar.DAY_OF_YEAR, 1);
-		str = sdf.format(lastDate.getTime());
-		return str;
+	public static Date getNextYearFirst(Date date) {
+		calendar.setTime(date);
+		calendar.add(Calendar.YEAR, 1);// 加一个年
+		calendar.set(Calendar.DAY_OF_YEAR, 1);
+		return calendar.getTime();
+	}
+	public static Date getNextYearFirst(String date) {
+		return getNextYearFirst(parse(date));
+	}
+	public static Date getNextYearFirst() {
+		return getNextYearFirst(new Date());
 	}
 
 	/**
@@ -432,8 +433,9 @@ public class DateUtil {
 	public static int getDaysOfYear(){
 		return getDaysOfYear(new Date());
 	}
-	private static int getYearPlus() {
-		calendar.setTime(new Date());
+	
+	private static int getYearPlus(Date date) {
+		calendar.setTime(date);
 		int yearOfNumber = calendar.get(Calendar.DAY_OF_YEAR);// 获得当天是一年中的第几天
 		calendar.set(Calendar.DAY_OF_YEAR, 1);// 把日期设为当年第一天
 		calendar.roll(Calendar.DAY_OF_YEAR, -1);// 把日期回滚一天。
@@ -446,32 +448,45 @@ public class DateUtil {
 	}
 
 	// 获得本年第一天的日期
-	public static String getFirstDayOfYear() {
-		int yearPlus = getYearPlus();
-		GregorianCalendar currentDate = new GregorianCalendar();
-		currentDate.add(GregorianCalendar.DATE, yearPlus);
-		Date yearDay = currentDate.getTime();
-		DateFormat df = DateFormat.getDateInstance();
-		String preYearDay = df.format(yearDay);
-		return preYearDay;
+	public static Date getFirstDayOfYear(Date date) {
+		int yearPlus = getYearPlus(date);
+		calendar.setTime(date);
+		calendar.add(Calendar.DATE, yearPlus);
+		return calendar.getTime();
+	}
+	public static Date getFirstDayOfYear(String date) {
+		return getFirstDayOfYear(parse(date));
+	}
+	public static Date getFirstDayOfYear() {
+		return getFirstDayOfYear(new Date());
 	}
 
 	// 获得本年最后一天的日期 *
-	public static String getCurrentYearEnd() {
-		Date date = new Date();
+	public static String getCurrentYearEnd(Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");// 可以方便地修改日期格式
 		String years = dateFormat.format(date);
 		return years + "-12-31";
 	}
 
-	// 获得上年一天的日期 *
-	public static String getPreviousYearFirst() {
-		Date date = new Date();
+	public static String getCurrentYearEnd(String date) {
+		return getCurrentYearEnd(parse(date));
+	}
+	public static String getCurrentYearEnd() {
+		return getCurrentYearEnd(new Date());
+	}
+	// 获得上年第一天的日期 *
+	public static String getPreviousYearFirst(Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");// 可以方便地修改日期格式
 		String years = dateFormat.format(date);
 		int years_value = Integer.parseInt(years);
 		years_value--;
-		return years_value + "-1-1";
+		return years_value + "-01--1";
+	}
+	public static String getPreviousYearFirst(String date) {
+		return getPreviousYearFirst(parse(date));
+	}
+	public static String getPreviousYearFirst() {
+		return getPreviousYearFirst(new Date());
 	}
 
 	/**
