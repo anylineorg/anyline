@@ -21,7 +21,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +40,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware {
 	protected static Logger LOG = Logger.getLogger(AnylineAction.class);
@@ -48,7 +49,8 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected HttpServletResponse response;
 	protected HttpSession session;
 	protected ServletContext servlet;
-	@Resource
+	@Autowired(required = false)
+	@Qualifier("anylineService")
 	protected AnylineService service;
 
 	protected Object data; // 返回数据
