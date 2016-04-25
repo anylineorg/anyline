@@ -229,6 +229,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}catch(NoClassDefFoundError e){
 				LOG.error(e);
 			}catch(Exception e){
+				e.printStackTrace();
 				LOG.error(e);
 			}
 		}

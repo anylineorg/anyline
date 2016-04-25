@@ -122,6 +122,7 @@ public class FileUtil {
             }
          }catch(Exception ex){
         	LOG.error(ex);
+        	ex.printStackTrace();
          } finally  {
                 try{
                 	if(null != in) {
@@ -132,6 +133,7 @@ public class FileUtil {
                 	}
                 }catch(Exception e){
                 	LOG.error(e);
+                	e.printStackTrace();
                 }
         }  
 
@@ -446,6 +448,7 @@ public class FileUtil {
 					}
 				}catch(Exception e){
 					LOG.error(e);
+					e.printStackTrace();
 					result = false;
 				}finally{
 					if(null != in){
