@@ -277,6 +277,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 		}catch(Exception e){
 			LOG.error(e);
+			e.printStackTrace();
 			throw new SQLUpdateException("插入异常:"+e);
 		}
 		return 1;
@@ -350,6 +351,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	        }
 		}catch(Exception e){
 			LOG.error(e);
+			e.printStackTrace();
 			throw new SQLQueryException("查询异常:"+e+"\nSQL:"+sql+"\nPARAM:"+values);
 		}
 		return set;
@@ -373,6 +375,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 		}catch(Exception e){
 			LOG.error(e);
+			e.printStackTrace();
 			throw new SQLUpdateException("执行异常:"+e+"\nSQL:"+txt+"\nPARAM:"+values);
 		}
 		return result; 
@@ -442,6 +445,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			procedure.setResult(result);
 		}catch(Exception e){
 			LOG.error(e);
+			e.printStackTrace();
 			throw new SQLUpdateException("PROCEDURE执行异常:"+e+"\nPROCEDURE:"+procedure.getName()+"\nPARAM:"+procedure.getInputValues());
 		}
 		return result;
@@ -518,6 +522,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	        });  
 		}catch(Exception e){
 			LOG.error(e);
+			e.printStackTrace();
 			throw new SQLQueryException("查询异常:"+e+"\nPROCEDURE:"+ procedure.getName());
 		}
 		return set;
