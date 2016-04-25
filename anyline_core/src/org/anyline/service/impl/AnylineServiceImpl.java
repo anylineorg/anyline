@@ -135,6 +135,7 @@ public class AnylineServiceImpl implements AnylineService {
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
+			e.printStackTrace();
 			LOG.error(e);
 		}
 		return set;
@@ -470,6 +471,7 @@ public class AnylineServiceImpl implements AnylineService {
 			return dao.save(ds, dest, data, checkPrimary, columns);
 		} catch (Exception e) {
 			LOG.error(e);
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		}
 	}
@@ -536,6 +538,7 @@ public class AnylineServiceImpl implements AnylineService {
 			result = dao.executeProcedure(ds, procedure);
 		} catch (Exception e) {
 			LOG.error(e);
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -561,6 +564,7 @@ public class AnylineServiceImpl implements AnylineService {
 			set = new DataSet();
 			set.setException(e);
 			LOG.error(e);
+			e.printStackTrace();
 		}
 		return set;
 	}
