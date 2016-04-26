@@ -62,6 +62,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			primaryKeys.add("CD");
 		}
 	}
+	public DataRow(String table){
+		this();
+		this.setTable(table);
+	}
 	public DataRow(Map<String,Object> map){
 		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
 			String key = itr.next();
@@ -409,12 +413,36 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return keys;
 	}
+	@Override
 	public Object put(String key, Object value){
 		if(null != key){
 			super.put(key.toUpperCase(), value);
 		}
 		return this;
 	}
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 * @param pk		是否是主键
+	 * @param override	是否覆盖之前的主键(追加到primaryKeys) 默认覆盖(单一主键)
+	 * @return
+	 */
+	public Object put(String key, Object value, boolean pk, boolean override){
+		if(pk){
+			if(override){
+				primaryKeys.clear();
+			}
+			primaryKeys.add(key);
+		}
+		this.put(key, value);
+		return this;
+	}
+	public Object put(String key, Object value, boolean pk){
+		this.put(key, value, pk , true);
+		return this;
+	}
+	
 	public Object get(String key){
 		Object result = null;
 		if(null != key){
@@ -531,7 +559,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != author){
 			return author;
 		}else{
-			return getContainer().getAuthor();
+			DataSet container = getContainer();
+			if(null != container){
+				return container.getAuthor();
+			}else{
+				return null;
+			}
 		}
 	}
 	public void setAuthor(String author) {
@@ -541,7 +574,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != table){
 			return table;
 		}else{
-			return getContainer().getTable();
+			DataSet container = getContainer();
+			if(null != container){
+				return container.getTable();
+			}else{
+				return null;
+			}
 		}
 	}
 	public void setTable(String table) {

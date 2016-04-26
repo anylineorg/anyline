@@ -114,10 +114,18 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	
 	private RunSQL createDeleteRunSQLFromDataRow(String dest, DataRow obj, String ... columns){
 		TableRunSQLImpl run = new TableRunSQLImpl();
-		run.getBuilder().append("DELETE FROM ").append(dest)
-		.append(" WHERE ").append(getDisKeyFr()).append(obj.getPrimaryKey()).append(getDisKeyTo())
-		.append("=?");
-		run.addValue(obj.getPrimaryValue());
+		StringBuilder builder = run.getBuilder();
+		builder.append("DELETE FROM ").append(dest).append(" WHERE ");
+		List<String> keys = obj.getPrimaryKeys();
+		int size = keys.size();
+		for(int i=0; i<size; i++){
+			if(i > 0){
+				builder.append(" AND ");
+			}
+			String key = keys.get(i);
+			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ? ");
+			run.addValue(obj.get(key));
+		}
 		return run;
 	}
 
