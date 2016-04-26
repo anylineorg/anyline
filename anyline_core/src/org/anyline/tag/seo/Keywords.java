@@ -44,7 +44,7 @@ public class Keywords extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
 	private static Logger LOG = Logger.getLogger(Keywords.class);
 	//<seo:keyword key="java" count="3"/>
-	//<ic:param key ="" count="3"/>
+	//<al:param key ="" count="3"/>
 
 	
 	public int doAfterBody() throws JspException {
