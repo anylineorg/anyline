@@ -6,6 +6,7 @@
 		<result-types>
 			<result-type name="template" class="org.anyline.struts.result.TemplateResult" default="true"></result-type>
 			<result-type name="json" class="org.anyline.struts.result.JSONResult"></result-type>
+			<result-type name="file" class="org.anyline.struts.result.FileResult"></result-type>
 		</result-types>
 		<global-results>
 		<!-- AJAX请求 -->
