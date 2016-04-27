@@ -258,7 +258,7 @@ private void appendOrderStore(){
 			if(idx > 0){
 				builder.append(" AND ");
 			}
-			builder.append(con.getRunText(disKeyFr+disKeyTo));
+			builder.append(con.getRunText(creater));
 			addValues(con.getRunValues());
 			idx ++;
 		}
