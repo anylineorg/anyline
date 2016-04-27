@@ -122,11 +122,12 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 					text += "= ?";
 				}
 			}else if(compare == SQL.COMPARE_TYPE_LIKE){
-				text += "LIKE concat('%', ? , '%')";
+				text += "LIKE "+ creater.concat("'%'", "?" , "'%'");
 			}else if(compare == SQL.COMPARE_TYPE_LIKE_PREFIX){
 				text += "LIKE concat(? , '%')";
+				text += "LIKE "+ creater.concat("?" , "'%'");
 			}else if(compare == SQL.COMPARE_TYPE_LIKE_SUBFIX){
-				text += "LIKE concat('%' , ?)";
+				text += "LIKE "+ creater.concat("'%'", "?");
 			} 
 			text += "";
 			/*运行时参数*/
