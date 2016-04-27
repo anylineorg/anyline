@@ -438,7 +438,15 @@ public class PageNaviImpl implements PageNavi{
 		builder.append("<input type='button' class='navi-first-button' value='第一页' onclick='_navi_go(1)'/>\n");
 		builder.append("<input type='button' class='navi-prev-button' value='上一页' onclick='_navi_go("+(int)NumberUtil.getMax(curPage-1,1)+")'/>\n");
 		builder.append("<span class='navi-num-border'>\n");
-		for(int i=1; i<=totalPage; i++){
+		int fr = curPage - 5;
+		if(fr <=0){
+			fr = 1;
+		}
+		int to = curPage + 5;
+		if(to > this.totalPage){
+			to = totalPage;
+		}
+		for(int i=fr; i<=to; i++){
 			String cur = "";
 			if(i ==curPage){
 				cur = " navi-num-cur";
