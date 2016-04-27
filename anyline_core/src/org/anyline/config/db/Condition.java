@@ -33,7 +33,7 @@ public interface Condition extends Cloneable{
 	 * 运行时文本
 	 * @return
 	 */
-	public String getRunText(String disKey);
+	public String getRunText(SQLCreater creater);
 	/**
 	 * 运行时参数值
 	 * @return

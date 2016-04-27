@@ -147,7 +147,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null == conditionChain){
 			return;
 		}
-		builder.append(conditionChain.getRunText(disKeyFr+disKeyTo));
+		builder.append(conditionChain.getRunText(creater));
 		addValues(conditionChain.getRunValues());
 	}
 	

@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.BasicCondition;
 import org.anyline.config.db.sql.auto.AutoCondition;
 import org.anyline.config.http.Config;
@@ -78,14 +79,10 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	 * 运行时文本
 	 */
 	@SuppressWarnings("unchecked")
-	public String getRunText(String disKey){
+	public String getRunText(SQLCreater creater){
 		
-		String disKeyFr = "";
-		String diskeyTo = "";
-		if(null != disKey && disKey.length() > 1){
-			disKeyFr = disKey.substring(0, 1);
-			diskeyTo = disKey.substring(1, 2);
-		}
+		String disKeyFr = creater.getDisKeyFr();
+		String diskeyTo = creater.getDisKeyTo();
 		runValues = new ArrayList<Object>();
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
