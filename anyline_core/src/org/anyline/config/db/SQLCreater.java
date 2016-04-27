@@ -61,4 +61,10 @@ public interface SQLCreater {
 	public String getDataSource(Object obj);
 	public String getPrimaryKey(Object obj);
 	public Object getPrimaryValue(Object obj);
+	/**
+	 * 拼接字符串
+	 * @param args
+	 * @return
+	 */
+	public String concat(String ... args);
 }

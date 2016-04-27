@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.BasicCondition;
 import org.anyline.config.db.impl.SQLVariableImpl;
@@ -177,7 +178,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 
 	
 
-	public String getRunText(String disKey) {
+	public String getRunText(SQLCreater creater) {
 		String result = text;
 		runValues = new ArrayList<Object>();
 		if(null == variables){

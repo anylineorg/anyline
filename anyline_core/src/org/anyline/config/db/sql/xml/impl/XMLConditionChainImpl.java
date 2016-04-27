@@ -19,21 +19,22 @@ package org.anyline.config.db.sql.xml.impl;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.BasicConditionChain;
 
 public class XMLConditionChainImpl extends BasicConditionChain implements ConditionChain{
 
-	public String getRunText(String disKey){
+	public String getRunText(SQLCreater creater){
 		initRunValue();
 		StringBuilder builder = new StringBuilder();
 		if(null != conditions){
 			for(Condition condition: conditions){
 				if(condition.getVariableType() == VARIABLE_FLAG_TYPE_NONE){
 					builder.append("\n\t");
-					builder.append(condition.getRunText(disKey));
+					builder.append(condition.getRunText(creater));
 				}else if(condition.isActive()){
 					builder.append("\n\t");
-					builder.append(condition.getRunText(disKey));
+					builder.append(condition.getRunText(creater));
 					addRunValue(condition.getRunValues());
 				}
 			}

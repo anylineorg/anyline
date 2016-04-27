@@ -21,10 +21,11 @@ import java.util.ArrayList;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.BasicConditionChain;
 
 public class AutoConditionChainImpl extends BasicConditionChain implements ConditionChain{
-	public String getRunText(String disKey){
+	public String getRunText(SQLCreater creater){
 		runValues = new ArrayList<Object>();
 		int size = conditions.size();
 		if(size == 0){
@@ -42,7 +43,7 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 			if(i>0 && !condition.isContainer()){
 				builder.append(condition.getJoin());
 			}
-			builder.append(condition.getRunText(disKey));
+			builder.append(condition.getRunText(creater));
 			addRunValue(condition.getRunValues());
 			joinSize ++;
 		}
