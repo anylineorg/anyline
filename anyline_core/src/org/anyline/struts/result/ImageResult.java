@@ -30,9 +30,9 @@ import org.apache.struts2.dispatcher.StrutsResultSupport;
 
 import com.opensymphony.xwork2.ActionInvocation;
 
-public class FileResult extends StrutsResultSupport {
+public class ImageResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(FileResult.class);
+	private static Logger LOG = Logger.getLogger(ImageResult.class);
 	private Object data = null;
 
 	protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
