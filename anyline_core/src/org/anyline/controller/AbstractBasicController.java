@@ -535,6 +535,30 @@ public class AbstractBasicController{
 		}
 		return dir;
 	}
-	
+	public String getUploadTable(HttpServletRequest request, String cf){
+		if(null == cf){			
+			cf = getParam(request,"cf");
+		}
+		if(null == cf){
+			cf = (String)request.getSession().getAttribute("upload_config");
+		}
+		String table = ConfigTable.getString("UPLOAD_TABLE_"+cf);
+		if(null == table){
+			table = "dbo.UPLOAD_FILE";
+		}
+		return table;
+	}
+	public String getUploadDir(HttpServletRequest request,String cf){
+		if(null == cf){			
+			cf = getParam(request,"cf");
+		}
+		if(null == cf){
+			cf = (String)request.getSession().getAttribute("upload_config");
+		}
+		if(null == cf){
+			cf = "common";
+		}
+		return cf;
+	}
 	
 }
