@@ -35,6 +35,8 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.Constant;
 import org.anyline.util.DESUtil;
+import org.anyline.util.DateUtil;
+import org.anyline.util.FileUtil;
 import org.anyline.util.WebUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -322,7 +324,8 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		// 把得到的文件的集合通过循环的方式读取并放在指定的路径下
 		for (int i = 0; i < upload.size(); i++) {
 			try {
-				File dst = new File(file, uploadFileName.get(i));
+				String dstName = DateUtil.format("yyyyMMddhhmmssms")+BasicUtil.getRandomLowerString(10)+"."+FileUtil.getSuffixFileName(uploadFileName.get(i));
+				File dst = new File(file, dstName);
 				FileUtils.copyFile(upload.get(i), dst);
 				result.add(dst);
 			} catch (IOException e) {
@@ -375,6 +378,20 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		SetTemplate(layout, style, data);
 	}
 
+	
+	
+	
+	
+	public String getUploadTable(String cf){
+		return getUploadTable(request, cf);
+	}
+	public String getUploadDir(String cf){
+		return getUploadDir(request, cf);
+	}
+	
+	
+	
+	
 	public Object getData() {
 		return data;
 	}
@@ -430,4 +447,5 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	public void setUploadFileName(List<String> uploadFileName) {
 		this.uploadFileName = uploadFileName;
 	}
+	
 }
