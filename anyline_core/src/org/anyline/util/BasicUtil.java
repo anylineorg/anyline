@@ -17,6 +17,7 @@
 
 package org.anyline.util;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -172,24 +173,44 @@ public class BasicUtil {
 	}
 
 	public static String getRandomString(int length) {
-		return getRandomString(
-				length,
-				new StringBuffer(
-						"_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+		return getRandomString(length,new StringBuffer("_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 	}
 
 	public static String getRandomLowerString(int length) {
-		return getRandomString(length, new StringBuffer(
-				"abcdefghijklmnopqrstuvwxyz"));
+		return getRandomString(length, new StringBuffer("abcdefghijklmnopqrstuvwxyz"));
 	}
 
 	public static String getRandomUpperString(int length) {
-		return getRandomString(length, new StringBuffer(
-				"ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+		return getRandomString(length, new StringBuffer("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 	}
 
 	public static String getRandomNumberString(int length) {
 		return getRandomString(length, new StringBuffer("1234567890"));
+	}
+	/**
+	 * 随机中文字符(GBK)
+	 * @param length
+	 * @return
+	 */
+	public static String getRandomCnString(int length){
+		String result = "";
+		for (int i = 0; i < length; i++) {
+			String str = null;
+			int hPos, lPos; // 定义高低位
+			Random random = new Random();
+			hPos = (176 + Math.abs(random.nextInt(39))); // 获取高位值
+			lPos = (161 + Math.abs(random.nextInt(93))); // 获取低位值
+			byte[] b = new byte[2];
+			b[0] = (new Integer(hPos).byteValue());
+			b[1] = (new Integer(lPos).byteValue());
+			try {
+				str = new String(b, "GBk"); // 转成中文
+			} catch (UnsupportedEncodingException ex) {
+				ex.printStackTrace();
+			}
+			result += str;
+		}
+     return result;
 	}
 	/**
 	 * 在src的第idx位置插入key
