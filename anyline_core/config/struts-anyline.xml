@@ -9,8 +9,12 @@
 			<result-type name="file" class="org.anyline.struts.result.FileResult"></result-type>
 		</result-types>
 		<global-results>
-		<!-- AJAX请求 -->
-		<result name="ajax" type="json"></result>
-	</global-results>
+			<!-- AJAX请求 -->
+			<result name="ajax" type="json"></result>
+		</global-results>
+		<action name="kind_upload" class="anyline.fileAction" method="upload"></action>
+		<action name="ig" class="anyline.fileAction" method="img">
+			<result type="file"></result>
+		</action>
 	</package>
 </struts>
