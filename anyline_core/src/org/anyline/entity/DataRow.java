@@ -468,6 +468,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			result = value.toString();
 		return result;
 	}
+	/**
+	 * boolean类型true 解析成 1
+	 * @param key
+	 * @return
+	 */
 	public int getInt(String key){
 		int result = 0;
 		try{
