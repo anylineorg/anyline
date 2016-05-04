@@ -73,7 +73,8 @@ public class SelectText extends BaseBodyTag{
 			Collection<Map> items = (Collection<Map>)data;
 			if(null != value){
 				for(Map item:items){
-					if(value.toString().equals(item.get(valueKey))){
+					Object tmp = item.get(valueKey);
+					if(null != tmp && value.toString().equals(tmp.toString())){
 						html += item.get(textKey);
 					}
 				}
@@ -133,5 +134,4 @@ public class SelectText extends BaseBodyTag{
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
-
 }
