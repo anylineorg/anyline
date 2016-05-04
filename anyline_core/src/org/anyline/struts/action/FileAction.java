@@ -12,10 +12,6 @@ import net.sf.json.JSONObject;
 import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.apache.struts2.dispatcher.multipart.MultiPartRequestWrapper;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Controller;
-@Controller("anyline.fileAction")
-@Scope("prototype")
 public class FileAction extends AnylineAction {
 	public String upload() {
 		try {
