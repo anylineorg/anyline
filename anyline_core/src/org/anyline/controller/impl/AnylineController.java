@@ -63,11 +63,23 @@ public class AnylineController extends AbstractBasicController {
 	 * @return
 	 */
 	protected HttpServletRequest getRequest() {
-		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		try{
+			request.setCharacterEncoding("UTF-8");
+		}catch(Exception e){
+			
+		}
+		return request;
 	}
 
 	protected HttpServletResponse getResponse() {
-		return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+		HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+		try{
+			response.setCharacterEncoding("UTF-8");
+		}catch(Exception e){
+			
+		}
+		return response;
 	}
 
 	protected HttpSession getSession() {
