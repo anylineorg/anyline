@@ -471,7 +471,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public int getInt(String key){
 		int result = 0;
 		try{
-			result = (int)getDouble(key);
+			Object val = get(key);
+			if(null != val && val instanceof Boolean && (Boolean)val){
+				result = 1;
+			}else{
+				result = Integer.parseInt(val.toString());
+			}
 		}catch(Exception e){
 			result = 0;
 		}
