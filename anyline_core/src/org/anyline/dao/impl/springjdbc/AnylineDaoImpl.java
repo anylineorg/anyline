@@ -133,13 +133,27 @@ public class AnylineDaoImpl implements AnylineDao {
 			throw new SQLUpdateException("更新空数据");
 		}
 		int result = 0;
+		//row.processBeforeSave();								//保存之前预处理
+		RunSQL run = creater.createUpdateTxt(dest, obj, false, columns);
+		String sql = run.getUpdateTxt();
+		List<Object> values = run.getValues();
+		long fr = System.currentTimeMillis();
+		if(showSQL){
+			LOG.info("\n"+sql);
+			LOG.info(values);
+		}
+		/*执行SQL*/
 		try{
-			//row.processBeforeSave();								//保存之前预处理
-			RunSQL run = creater.createUpdateTxt(dest, obj, false, columns);
-			/*执行SQL*/
-			result = jdbc.update(run.getUpdateTxt(), run.getValues().toArray());
+			result = jdbc.update(sql, values.toArray());
+			if(showSQL){
+				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr));
+			}
 		//	row.processBeforeDisplay();	//显示之前预处理
 		}catch(Exception e){
+			if(showSQLWhenError){
+				LOG.info("执行异常\n"+sql);
+				LOG.info(values);
+			}
 			LOG.error(e);
 			e.printStackTrace();
 			throw new SQLUpdateException("更新异常:"+e);
@@ -255,6 +269,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		final String sql = run.getInsertTxt();
 		final List<Object> values = run.getValues();
 		KeyHolder keyholder = new GeneratedKeyHolder();
+		long fr = System.currentTimeMillis();
+		if(showSQL){
+			LOG.info("\n"+sql);
+			LOG.info(values);
+		}
 		try{
 			int cnt= jdbc.update(new PreparedStatementCreator() {
 				@Override
@@ -275,7 +294,15 @@ public class AnylineDaoImpl implements AnylineDao {
 					
 				}
 			}
+
+			if(showSQL){
+				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr));
+			}
 		}catch(Exception e){
+			if(showSQLWhenError){
+				LOG.info("\n"+sql);
+				LOG.info(values);
+			}
 			LOG.error(e);
 			e.printStackTrace();
 			throw new SQLUpdateException("插入异常:"+e);
@@ -333,6 +360,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
+		long fr = System.currentTimeMillis();
 		if(showSQL){
 			LOG.info("\n"+sql);
 			LOG.info(values);
@@ -345,11 +373,22 @@ public class AnylineDaoImpl implements AnylineDao {
 			}else{
 				list = jdbc.queryForList(sql);
 			}
+			long mid = System.currentTimeMillis();
+			if(showSQL){
+				LOG.info("执行耗时:"+(mid - fr));
+			}
 	        for(Map<String,Object> map:list){
 	        	DataRow row = new DataRow(map);
 	        	set.add(row);
 	        }
+			if(showSQL){
+				LOG.info("封装耗时:"+(System.currentTimeMillis() - mid));
+			}
 		}catch(Exception e){
+			if(showSQLWhenError){
+				LOG.info("\n"+sql);
+				LOG.info(values);
+			}
 			LOG.error(e);
 			e.printStackTrace();
 			throw new SQLQueryException("查询异常:"+e+"\nSQL:"+sql+"\nPARAM:"+values);
@@ -362,7 +401,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		RunSQL run = creater.createExecuteRunSQL(sql, configs, conditions);
 		String txt = run.getExecuteTxt();
 		List<Object> values = run.getValues();
-
+		long fr = System.currentTimeMillis();
 		if(showSQL){
 			LOG.info(txt);
 			LOG.info(values);
@@ -373,8 +412,16 @@ public class AnylineDaoImpl implements AnylineDao {
 			}else{
 				result = jdbc.update(txt);
 			}
+
+			if(showSQL){
+				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr));
+			}
 		}catch(Exception e){
 			LOG.error(e);
+			if(showSQLWhenError){
+				LOG.info("\n"+sql);
+				LOG.info(values);
+			}
 			e.printStackTrace();
 			throw new SQLUpdateException("执行异常:"+e+"\nSQL:"+txt+"\nPARAM:"+values);
 		}
@@ -399,7 +446,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<String> inputValues = procedure.getInputValues();
 		final List<Integer> inputTypes = procedure.getInputTypes();
 		final List<Integer> outputTypes = procedure.getOutputTypes();
-
+		long fr = System.currentTimeMillis();
 		if(showSQL){
 			LOG.info(procedure.getName());
 			LOG.info(inputValues);
@@ -442,8 +489,16 @@ public class AnylineDaoImpl implements AnylineDao {
 		            return result;
 		        }
 		    });    
+
+			if(showSQL){
+				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr));
+			}
 			procedure.setResult(result);
 		}catch(Exception e){
+			if(showSQLWhenError){
+				LOG.info("\n"+sql);
+				LOG.info(inputValues);
+			}
 			LOG.error(e);
 			e.printStackTrace();
 			throw new SQLUpdateException("PROCEDURE执行异常:"+e+"\nPROCEDURE:"+procedure.getName()+"\nPARAM:"+procedure.getInputValues());
@@ -466,7 +521,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<String> inputValues = procedure.getInputValues();
 		final List<Integer> inputTypes = procedure.getInputTypes();
 		final List<Integer> outputTypes = procedure.getOutputTypes();
-
+		long fr = System.currentTimeMillis();
 		if(showSQL){
 			LOG.info(procedure.getName());
 			LOG.info(inputValues);
@@ -520,7 +575,14 @@ public class AnylineDaoImpl implements AnylineDao {
 	                return set;
 	            }  
 	        });  
+			if(showSQL){
+				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr));
+			}
 		}catch(Exception e){
+			if(showSQLWhenError){
+				LOG.info("\n"+procedure.getName());
+				LOG.info(inputValues);
+			}
 			LOG.error(e);
 			e.printStackTrace();
 			throw new SQLQueryException("查询异常:"+e+"\nPROCEDURE:"+ procedure.getName());
@@ -537,6 +599,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		RunSQL run = creater.createDeleteRunSQL(dest, data, columns);
 		final String sql = run.getDeleteTxt();
 		final List<Object> values = run.getValues();
+		long fr = System.currentTimeMillis();
 		if(showSQL){
 			LOG.info(sql);
 			LOG.info(values);
@@ -554,7 +617,15 @@ public class AnylineDaoImpl implements AnylineDao {
 	                    return ps;
 	                }
 	            });
+			if(showSQL){
+				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr));
+				LOG.info(values);
+			}
 		}catch(Exception e){
+			if(showSQLWhenError){
+				LOG.info("\n"+sql);
+				LOG.info(values);
+			}
 			LOG.error(e);
 			throw new SQLUpdateException("删除异常:"+e);
 		}
