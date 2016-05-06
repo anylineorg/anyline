@@ -91,6 +91,13 @@ public class ConfigTable {
 	public static String getString(String key) {
 		return get(key);
 	}
+	public static String getString(String key, String def){
+		String val = getString(key);
+		if(BasicUtil.isEmpty(val)){
+			val = def;
+		}
+		return val;
+	}
 	public static boolean getBoolean(String key){
 		return getBoolean(key,false);
 	}

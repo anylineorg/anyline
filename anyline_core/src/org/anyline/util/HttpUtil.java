@@ -17,6 +17,8 @@
 
 package org.anyline.util;
 
+
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -27,58 +29,67 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
-import org.anyline.util.regular.RegularUtil;
+import org.apache.commons.httpclient.HostConfiguration;
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
+import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
+
 
 public class HttpUtil {
 	private static Logger LOG = Logger.getLogger(HttpUtil.class);
-	private static int CONNECT_TIMEOUT = 90000; // 连接超时
-	private static int READ_TIMEOUT = 50000; // 读取超时
-	/**
-	 * 格式化http参数
-	 * @param params String | Collection
-	 * @return name=zhang&age=23&age=22
-	 */
-	private static String formatHttpParam(Map<String,Object> params){
-		String result = "";
-		Set<String> keys = params.keySet();
-		int idx = 0;
-		for(String key:keys){
-			Object val = params.get(key);
-			if(null != val && val instanceof Collection){
-				Collection con = (Collection)val;
-				for(Object item:con){
-					if(idx > 0){
-						result = result + "&" + key + "=" + item;
-					}else{
-						result = key + "=" + item;
-					}
-					idx ++;
-				}
-			}else{
-				if(idx > 0){
-					result = result + "&" + key + "=" + val;
-				}else{
-					result = key + "=" + val;
-				}
-				idx ++;
-			}
-		}
-		return result;
+	private static HttpUtil instance = new HttpUtil();
+	private HttpClient client = null;
+	private String encode = "UTF-8";
+	private int timeout = 10000;
+	private boolean initialized = false;
+	private HttpProxy proxy;
+
+	public static Source post(HttpProxy proxy, String url, String encode, Object... params) {
+		Map<String, Object> map = paramToMap(params);
+		return post(proxy, url, encode, map);
 	}
-	/**
-	 * 数组转换成map
-	 * @param params {"name","zhang","age",List}
-	 * @return
-	 */
+	public static Source post(String url, String encode, Object... params) {
+		return post(null, url, encode, params);
+	}
+	public static Source post(String url, String encode, Map<String, Object> params) {
+		return post(null, url, encode, params);
+	}
+	public static Source post(HttpProxy proxy, String url, String encode, Map<String, Object> params) {
+		HttpUtil instance = getInstance();
+		instance.setProxy(proxy);
+		instance.setEncode(encode);
+		HttpMethod method = instance.packPost(url, params);
+		return instance.invoke(method);
+	}
+	public static Source get(HttpProxy proxy,String url, String encode,  Map<String, Object> params) {
+		HttpUtil instance = getInstance();
+		instance.setProxy(proxy);
+		instance.setEncode(encode);
+		HttpMethod method = instance.packGet(url, params);
+		return instance.invoke(method);
+	}
+
+	public static HttpUtil getInstance() {
+		if (!instance.initialized) {
+			instance.init();
+		}
+		return instance;
+	}
 	private static Map<String,Object> paramToMap(Object ... params){
 		Map<String,Object> result = new HashMap<String,Object>();
 		if(null != params){
@@ -91,135 +102,189 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	public static Source post(String url, String encode, Object ... params){
-		return request(url, encode, "POST", paramToMap(params));
-	}
-	
-	public static Source get(String url, String encode, String ... params){
-		return request(url, encode, "GET", paramToMap(params));
-	}
-	
 
-	/**
-	 * 获取url源文件
-	 * 
-	 * @param url
-	 * @return
-	 */
-	public static Source getSourceByUrl(String url, String encode) {
-		return get(url, encode, "");
+	private synchronized void init() {
+		client = new HttpClient(new MultiThreadedHttpConnectionManager());
+		if (encode != null && !encode.trim().equals("")) {
+			client.getParams().setParameter("http.protocol.content-charset", encode);
+			client.getParams().setContentCharset(encode);
+		}
+		if (timeout > 0) {
+			client.getParams().setSoTimeout(timeout);
+		}
+		if (null != proxy) {
+			HostConfiguration hc = new HostConfiguration();
+			hc.setProxy(proxy.getHost(), proxy.getPort());
+			client.setHostConfiguration(hc);
+			client.getState().setProxyCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxy.getUser(), proxy.getPassword()));
+		}
+		initialized = true;
 	}
-	/**
-	 * 
-	 * @param url http://www.anyline.org
-	 * @param encode UTF-8
-	 * @param param name=zhang&age=20
-	 * @param type POST | GET
-	 * @return
-	 */
-	public static Source request(String url, String encode, String type, Map<String,Object> params){
+
+	private Source invoke(HttpMethod method) {
 		Source source = new Source();
-		if(!"POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(params)){
-			if(url.contains("?")){
-				url += "&" + formatHttpParam(params);
-			}else{
-				url += "?" + formatHttpParam(params);
-			}
-		}
-		String host = getHostUrl(url);
-		source.setUrl(url);
-		source.setHost(host);
-		HttpURLConnection connection = null;
-		BufferedReader reader = null;
-		InputStream is = null;
+		String result = "";
+		String uri = null;
 		try {
-			connection = imitateBrowser(url);
-			if("POST".equalsIgnoreCase(type) && BasicUtil.isNotEmpty(params)){
-				//设置post参数
-				connection.setDoOutput(true);// 是否输入参数
-		        byte[] bypes = formatHttpParam(params).getBytes();
-		        connection.getOutputStream().write(bypes);// 输入参数
-			}
-			source.setContentType(connection.getContentType());
-
-			/* 确认编码 */
-			if (null == source.getEncode()) {
-				source.setEncode(connection.getContentEncoding());
-			}
-			if (null == source.getEncode()) {
-				source.setEncode(encode);
-			}
-			/* 读取数据 */
-			is = connection.getInputStream();
-			if (null == source.getEncode()) {
-				reader = new BufferedReader(new InputStreamReader(is));
-			} else {
-				reader = new BufferedReader(new InputStreamReader(is, source.getEncode()));
-			}
-			StringBuffer buffer = new StringBuffer();
-			String line;
-			int idx = 0;
-			int encodeStatus = 0; // 编码状态(0-未验证 1-验证正确 2-验证错误)
+			uri = method.getURI().getURI();
+			client.executeMethod(method);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(), encode));
+			String line = null;
+			String html = null;
 			while ((line = reader.readLine()) != null) {
-				buffer.append("\n");
-				buffer.append(line);
-				idx++;
-				if (idx == 30) {
-					// 读取30行时验证编码
-					String realEncode = RegularUtil.cut(buffer.toString(), "charset=", "\"");
-					if (BasicUtil.isNotEmpty(realEncode) && !realEncode.equalsIgnoreCase(source.getEncode())) {
-						encodeStatus = 2;
-						source.setEncode(realEncode);
-						break;
-					} else {
-						encodeStatus = 1;
-					}
-				}
-			}
-			if (encodeStatus == 0) {
-				// 验证编码(全文不到30行)
-				String realEncode = RegularUtil.cut(buffer.toString(), "charset=", "\"");
-				if (BasicUtil.isNotEmpty(realEncode) && !realEncode.equalsIgnoreCase(source.getEncode())) {
-					encodeStatus = 2;
-					source.setEncode(realEncode);
+				if (html == null) {
+					html = "";
 				} else {
-					encodeStatus = 1;
+					html += "\r\n";
 				}
+				html += line;
 			}
-
-			if (encodeStatus == 2) {
-				// 修正编码重新读取数据
-				connection = imitateBrowser(url);
-				buffer = new StringBuffer();
-				is = connection.getInputStream();
-				reader = new BufferedReader(new InputStreamReader(is, source.getEncode()));
-				while ((line = reader.readLine()) != null) {
-					buffer.append("\n");
-					buffer.append(line);
-				}
+			if (html != null) {
+				//result = new String(html.getBytes("ISO-8859-1"), encode);
+				result = html;
 			}
-
-			source.setText(buffer.toString());
-			source.setLastModified(connection.getLastModified());
-			is.close();
+		} catch (SocketTimeoutException e) {
+			LOG.error("连接超时[" + uri + "]"+e.getMessage());
+		} catch (java.net.ConnectException e) {
+			LOG.error("连接失败[" + uri + "]"+e.getMessage());
 		} catch (Exception e) {
+			LOG.error("连接时出现异常[" + uri + "]"+e.getMessage());
 			e.printStackTrace();
-			LOG.error("getSourceByUrl(" + url + "):\n" + e);
-			source = null;
 		} finally {
-			try {
-				if (null != reader)
-					reader.close();
-				if (null != is)
-					is.close();
-				if (null != connection)
-					connection.disconnect();
-			} catch (Exception e) {
-				LOG.error(e);
+			if (method != null) {
+				try {
+					method.releaseConnection();
+				} catch (Exception e) {
+					LOG.error("释放网络连接失败[" + uri + "]"+e.getMessage());
+				}
 			}
 		}
+		source.setText(result);
 		return source;
 	}
+
+	private PostMethod packPost(String url, Map<String, Object> params) {
+		PostMethod post = new PostMethod(url);
+		if (null != params && params.size() > 0) {
+			Iterator<String> paramKeys = params.keySet().iterator();
+			NameValuePair[] form = new NameValuePair[params.size()];
+			int idx = 0;
+			while (paramKeys.hasNext()) {
+				String key = (String) paramKeys.next();
+				Object value = params.get(key);
+				if (null == value && "".equals(value)) {
+					// 空参数
+					continue;
+				}
+				if (value instanceof String[] && ((String[]) value).length > 0) {
+					NameValuePair[] tempForm = new NameValuePair[form.length + ((String[]) value).length - 1];
+					for (int i = 0; i < idx; i++) {
+						tempForm[i] = form[i];
+					}
+					form = tempForm;
+					for (String v : (String[]) value) {
+						if(null == v){
+							v = "";
+						}
+						form[idx] = new NameValuePair(key, (String) v);
+						idx++;
+					}
+				} else if (value instanceof Collection) {
+					Collection<Object> con = (Collection<Object>)value;
+					if(con.size()>0){
+						NameValuePair[] tempForm = new NameValuePair[form.length + con.size() - 1];
+						for (int i = 0; i < idx; i++) {
+							tempForm[i] = form[i];
+						}
+						form = tempForm;
+						for (Object v : con) {
+							if(null == v){
+								v = "";
+							}
+							form[idx] = new NameValuePair(key, v.toString());
+							idx++;
+						}
+					}
+				}else{
+					form[idx] = new NameValuePair(key, value.toString());
+					idx++;
+				}
+			}
+			post.setRequestBody(form);
+		}
+		return post;
+	}
+
+	private GetMethod packGet(String url, Map<String, Object> params) {
+		GetMethod get = null;
+		if (params != null && params.size() > 0) {
+			Iterator paramKeys = params.keySet().iterator();
+			StringBuffer getUrl = new StringBuffer(url.trim());
+			if (url.trim().indexOf("?") > -1) {
+				if (url.trim().indexOf("?") < url.trim().length() - 1 && url.trim().indexOf("&") < url.trim().length() - 1) {
+					getUrl.append("&");
+				}
+			} else {
+				getUrl.append("?");
+			}
+			while (paramKeys.hasNext()) {
+				String key = (String) paramKeys.next();
+				Object value = params.get(key);
+				if (null == value || "".equals(value)) {
+					continue;
+				}
+				if (value instanceof String[] && ((String[]) value).length > 0) {
+					for (String v : (String[]) value) {
+						getUrl.append(key).append("=").append(v).append("&");
+					}
+				} else if (value instanceof Collection) {
+					Collection<Object> con = (Collection)value;
+					for (Object v : con) {
+						if(null == v || "".equals(v.toString())){
+							continue;
+						}
+						getUrl.append(key).append("=").append(v).append("&");
+					}
+				}else{
+					getUrl.append(key).append("=").append(value).append("&");
+				}
+			}
+			if (getUrl.lastIndexOf("&") == getUrl.length() - 1) {
+				url = getUrl.substring(0, getUrl.length() - 1);
+			} else {
+				url = getUrl.toString();
+			}
+		}
+		get = new GetMethod(url);
+		return get;
+	}
+
+
+	public String getEncode() {
+		return encode;
+	}
+	public void setEncode(String encode) {
+		this.encode = encode;
+	}
+	public HttpProxy getProxy() {
+		return proxy;
+	}
+	public void setProxy(HttpProxy proxy) {
+		this.proxy = proxy;
+	}
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+	public synchronized boolean isInitialized() {
+		return initialized;
+	}
+	
+	
+
+
+	
+
 
 	/**
 	 * 提取url根目录
@@ -323,34 +388,13 @@ public class HttpUtil {
 		return false;
 	}
 
-	/**
-	 * 模拟浏览器
-	 * 
-	 * @param url
-	 * @return
-	 */
-	private static HttpURLConnection imitateBrowser(String url) {
-		HttpURLConnection connection = null;
-		try {
-			System.setProperty("sun.net.client.defaultConnectTimeout", CONNECT_TIMEOUT + "");
-			System.setProperty("sun.net.client.defaultReadTime", READ_TIMEOUT + "");
-			connection = (HttpURLConnection) new URL(url).openConnection();
-			connection.setConnectTimeout(CONNECT_TIMEOUT);
-			connection.setReadTimeout(READ_TIMEOUT);
-			connection.setInstanceFollowRedirects(true);
-			connection.setRequestMethod("GET");
-			connection.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)");
-		} catch (Exception e) {
-
-		}
-		return connection;
-	}
 
 	public static void download(String url, String dst) {
 		download(url, new File(dst));
 	}
 
 	public static void download(String url, File dst) {
+		
 		OutputStream os = null;
 		InputStream is = null;
 		byte[] buffer = new byte[10];
