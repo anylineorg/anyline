@@ -19,6 +19,7 @@ package org.anyline.controller.impl;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -40,8 +41,10 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.FileUtil;
+import org.anyline.util.JSONDateFormatProcessor;
 import org.anyline.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -65,7 +68,7 @@ public class AnylineController extends AbstractBasicController {
 	protected HttpServletRequest getRequest() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		try{
-			request.setCharacterEncoding("UTF-8");
+			request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
 			
 		}
@@ -75,7 +78,7 @@ public class AnylineController extends AbstractBasicController {
 	protected HttpServletResponse getResponse() {
 		HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		try{
-			response.setCharacterEncoding("UTF-8");
+			response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
 			
 		}
@@ -263,12 +266,14 @@ public class AnylineController extends AbstractBasicController {
 		if (null != messages) {
 			for (int i = 0; i < messages.size(); i++) {
 				DataRow msg = messages.getRow(i);
-				message += "\n" + msg.getString(Constant.MESSAGE_VALUE);
+				message = BasicUtil.nvl(message,"") + "\n" + msg.getString(Constant.MESSAGE_VALUE);
 			}
 			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		}
 		// 转换成JSON格式
 		JsonConfig config = new JsonConfig();
+		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());  
+		
 		String dataType = null; // 数据类型
 		if (null == data) {
 			message = (String) BasicUtil.nvl(message, "没有返回数据");
@@ -303,7 +308,7 @@ public class AnylineController extends AbstractBasicController {
 		map.put("message", message);
 		map.put("data", data);
 		map.put("success", result);
-		JSON json = JSONObject.fromObject(map);
+		JSON json = JSONObject.fromObject(map,config);
 		return json.toString();
 	}
 

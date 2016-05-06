@@ -146,7 +146,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		try{
 			result = jdbc.update(sql, values.toArray());
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr));
+				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms");
 			}
 		//	row.processBeforeDisplay();	//显示之前预处理
 		}catch(Exception e){
@@ -296,7 +296,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr));
+				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms");
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
@@ -375,14 +375,14 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			long mid = System.currentTimeMillis();
 			if(showSQL){
-				LOG.info("执行耗时:"+(mid - fr));
+				LOG.info("执行耗时:"+(mid - fr)+"ms");
 			}
 	        for(Map<String,Object> map:list){
 	        	DataRow row = new DataRow(map);
 	        	set.add(row);
 	        }
 			if(showSQL){
-				LOG.info("封装耗时:"+(System.currentTimeMillis() - mid));
+				LOG.info("封装耗时:"+(System.currentTimeMillis() - mid)+"ms");
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
@@ -414,7 +414,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr));
+				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms");
 			}
 		}catch(Exception e){
 			LOG.error(e);
@@ -491,7 +491,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		    });    
 
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr));
+				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms");
 			}
 			procedure.setResult(result);
 		}catch(Exception e){
@@ -576,7 +576,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	            }  
 	        });  
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr));
+				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms");
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
@@ -618,7 +618,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	                }
 	            });
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr));
+				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms");
 				LOG.info(values);
 			}
 		}catch(Exception e){
