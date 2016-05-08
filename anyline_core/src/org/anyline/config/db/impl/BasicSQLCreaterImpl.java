@@ -256,9 +256,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(null == pk){
 				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 			}
-			row.put(pk, primaryCreater.createPrimary(dest, pk, null));
+			row.put(pk, primaryCreater.createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
 		}
 		/*确定需要插入的列*/
+		
 		List<String> keys = confirmInsertColumns(dest, row, columns);
 		if(null == keys || keys.size() == 0){
 			throw new RuntimeException("未指定列");
