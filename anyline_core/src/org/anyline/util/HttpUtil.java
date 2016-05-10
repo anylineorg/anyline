@@ -45,8 +45,6 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.Logger;
 
 
@@ -55,7 +53,7 @@ public class HttpUtil {
 	private static HttpUtil instance = new HttpUtil();
 	private HttpClient client = null;
 	private String encode = "UTF-8";
-	private int timeout = 10000;
+	private int timeout = 60000;
 	private boolean initialized = false;
 	private HttpProxy proxy;
 
