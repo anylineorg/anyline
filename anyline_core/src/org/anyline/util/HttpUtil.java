@@ -45,6 +45,7 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.log4j.Logger;
 
 
@@ -95,6 +96,9 @@ public class HttpUtil {
 			for(int i=0; i<size-1; i+=2){
 				Object key = params[i];
 				Object value = params[i+1];
+				if(null == value){
+					value = "";
+				}
 				result.put(key.toString(), value);
 			}
 		}
@@ -163,6 +167,7 @@ public class HttpUtil {
 
 	private PostMethod packPost(String url, Map<String, Object> params) {
 		PostMethod post = new PostMethod(url);
+		post.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,encode);  
 		if (null != params && params.size() > 0) {
 			Iterator<String> paramKeys = params.keySet().iterator();
 			NameValuePair[] form = new NameValuePair[params.size()];
@@ -170,9 +175,8 @@ public class HttpUtil {
 			while (paramKeys.hasNext()) {
 				String key = (String) paramKeys.next();
 				Object value = params.get(key);
-				if (null == value || "".equals(value)) {
-					// 空参数
-					continue;
+				if (null == value) {
+					value = "";
 				}
 				if (value instanceof String[] && ((String[]) value).length > 0) {
 					NameValuePair[] tempForm = new NameValuePair[form.length + ((String[]) value).length - 1];
@@ -228,8 +232,8 @@ public class HttpUtil {
 			while (paramKeys.hasNext()) {
 				String key = (String) paramKeys.next();
 				Object value = params.get(key);
-				if (null == value || "".equals(value)) {
-					continue;
+				if (null == value) {
+					value = "";
 				}
 				if (value instanceof String[] && ((String[]) value).length > 0) {
 					for (String v : (String[]) value) {
@@ -254,6 +258,7 @@ public class HttpUtil {
 			}
 		}
 		get = new GetMethod(url);
+		get.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,encode);
 		return get;
 	}
 
