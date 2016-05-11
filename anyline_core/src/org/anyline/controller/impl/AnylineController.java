@@ -311,20 +311,32 @@ public class AnylineController extends AbstractBasicController {
 		JSON json = JSONObject.fromObject(map,config);
 		return json.toString();
 	}
-
 	/**
-	 * 执行失败
 	 * 
+	 * @param msg
+	 * @param encrypt	是否加密
 	 * @return
 	 */
-	protected String fail(String msg) {
+	protected String fail(String msg, boolean encrypt) {
+		if(encrypt){
+			msg = WebUtil.encryptHttpRequestParamValue(msg);
+		}
 		return result(false, null, msg);
 	}
 
+	protected String fail(String msg) {
+		return result(false, null, msg);
+	}
 	protected String fail() {
 		return fail(null);
 	}
 
+	protected String success(Object data, boolean encrypt) {
+		if(encrypt && null != data){
+			return result(true,WebUtil.encryptHttpRequestParamValue(data.toString()),null);
+		}
+		return result(true, data, null);
+	}
 	protected String success(Object data) {
 		return result(true, data, null);
 	}
