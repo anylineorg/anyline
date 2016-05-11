@@ -170,7 +170,7 @@ public class HttpUtil {
 			while (paramKeys.hasNext()) {
 				String key = (String) paramKeys.next();
 				Object value = params.get(key);
-				if (null == value && "".equals(value)) {
+				if (null == value || "".equals(value)) {
 					// 空参数
 					continue;
 				}
@@ -184,7 +184,7 @@ public class HttpUtil {
 						if(null == v){
 							v = "";
 						}
-						form[idx] = new NameValuePair(key, (String) v);
+						form[idx] = new NameValuePair(key, v);
 						idx++;
 					}
 				} else if (value instanceof Collection) {
