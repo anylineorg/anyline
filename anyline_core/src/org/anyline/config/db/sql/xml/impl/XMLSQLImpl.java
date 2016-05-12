@@ -265,80 +265,80 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 	 * @param text
 	 * @return
 	 */
-	private String createRunText(){
-		initRunValues();
-		String result = text;
-		if(null == variables) {
-			return result;
-		}
-
-		for(SQLVariable var:variables){
-			if(var.getType() == SQLVariable.VAR_TYPE_REPLACE){
-				//CD = ::CD
-				Object varValue = var.getValues();
-				String value = null;
-				if(BasicUtil.isNotEmpty(varValue)){
-					value = varValue.toString();
-				}
-				if(null != value){
-					result = result.replace("::"+var.getKey(), value);
-				}else{
-					result = result.replace("::"+var.getKey(), "NULL");
-				}
-			}
-		}
-		for(SQLVariable var:variables){
-			if(var.getType() == SQLVariable.VAR_TYPE_KEY_REPLACE){
-				//CD = ':CD'
-				List<Object> varValues = var.getValues();
-				String value = null;
-				if(BasicUtil.isNotEmpty(true,varValues)){
-					value = (String)varValues.get(0);
-				}
-				if(null != value){
-					result = result.replace(":"+var.getKey(), value);
-				}else{
-					result = result.replace(":"+var.getKey(), "");
-				}
-			}
-		}
-		for(SQLVariable var:variables){
-			if(var.getType() == SQLVariable.VAR_TYPE_KEY){
-				// CD = :CD
-				List<Object> varValues = var.getValues();
-				if(BasicUtil.isNotEmpty(true, varValues)){
-					if(var.getCompare() == SQL.COMPARE_TYPE_IN){
-						//多个值IN
-						String replaceSrc = ":"+var.getKey();
-						String replaceDst = ""; 
-						for(Object tmp:varValues){
-							addRunValue(tmp);
-							replaceDst += " ?";
-						}
-						replaceDst = replaceDst.trim().replace(" ", ",");
-						result = result.replace(replaceSrc, replaceDst);
-					}else{
-						//单个值
-						result = result.replace(":"+var.getKey(), "?");
-						addRunValue(varValues.get(0));
-					}
-				}
-			}
-		}
-		//添加其他变量值
-		for(SQLVariable var:variables){
-			//CD = ?
-			if(var.getType() == SQLVariable.VAR_TYPE_INDEX){
-				List<Object> varValues = var.getValues();
-				String value = null;
-				if(BasicUtil.isNotEmpty(true, varValues)){
-					value = (String)varValues.get(0);
-				}
-				addRunValue(value);
-			}
-		}
-		return result;
-	}
+//	private String createRunText(){
+//		initRunValues();
+//		String result = text;
+//		if(null == variables) {
+//			return result;
+//		}
+//
+//		for(SQLVariable var:variables){
+//			if(var.getType() == SQLVariable.VAR_TYPE_REPLACE){
+//				//CD = ::CD
+//				Object varValue = var.getValues();
+//				String value = null;
+//				if(BasicUtil.isNotEmpty(varValue)){
+//					value = varValue.toString();
+//				}
+//				if(null != value){
+//					result = result.replace("::"+var.getKey(), value);
+//				}else{
+//					result = result.replace("::"+var.getKey(), "NULL");
+//				}
+//			}
+//		}
+//		for(SQLVariable var:variables){
+//			if(var.getType() == SQLVariable.VAR_TYPE_KEY_REPLACE){
+//				//CD = ':CD'
+//				List<Object> varValues = var.getValues();
+//				String value = null;
+//				if(BasicUtil.isNotEmpty(true,varValues)){
+//					value = (String)varValues.get(0);
+//				}
+//				if(null != value){
+//					result = result.replace(":"+var.getKey(), value);
+//				}else{
+//					result = result.replace(":"+var.getKey(), "");
+//				}
+//			}
+//		}
+//		for(SQLVariable var:variables){
+//			if(var.getType() == SQLVariable.VAR_TYPE_KEY){
+//				// CD = :CD
+//				List<Object> varValues = var.getValues();
+//				if(BasicUtil.isNotEmpty(true, varValues)){
+//					if(var.getCompare() == SQL.COMPARE_TYPE_IN){
+//						//多个值IN
+//						String replaceSrc = ":"+var.getKey();
+//						String replaceDst = ""; 
+//						for(Object tmp:varValues){
+//							addRunValue(tmp);
+//							replaceDst += " ?";
+//						}
+//						replaceDst = replaceDst.trim().replace(" ", ",");
+//						result = result.replace(replaceSrc, replaceDst);
+//					}else{
+//						//单个值
+//						result = result.replace(":"+var.getKey(), "?");
+//						addRunValue(varValues.get(0));
+//					}
+//				}
+//			}
+//		}
+//		//添加其他变量值
+//		for(SQLVariable var:variables){
+//			//CD = ?
+//			if(var.getType() == SQLVariable.VAR_TYPE_INDEX){
+//				List<Object> varValues = var.getValues();
+//				String value = null;
+//				if(BasicUtil.isNotEmpty(true, varValues)){
+//					value = (String)varValues.get(0);
+//				}
+//				addRunValue(value);
+//			}
+//		}
+//		return result;
+//	}
 
 	public SQL setDataSource(String ds){
 		this.id = ds;

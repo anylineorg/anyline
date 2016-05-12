@@ -130,6 +130,7 @@ public interface SQL extends Cloneable {
 	 */
 	public SQL setConditionValue(String condition, String variable, Object value);
 	public OrderStore getOrders();
+	public GroupStore getGroups();
 	public void setOrders(OrderStore ordres);
 	public int getVersion();
 	public ConditionChain getConditionChain();

@@ -17,18 +17,17 @@
 
 package org.anyline.config.db.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.GroupStore;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.SQL;
-import org.anyline.config.db.SQLVariable;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
@@ -41,7 +40,7 @@ public abstract class BasicSQL implements SQL{
 
 	protected ConditionChain chain;			//查询条件
 	protected OrderStore orders;
-	protected List<String> groups;			//分组条件
+	protected GroupStore groups;			//分组条件
 	protected PageNavi navi;				//分页
 	//运行时参数值
 	protected Vector<Object> runValues;
@@ -106,16 +105,10 @@ public abstract class BasicSQL implements SQL{
 		}
 		
 		if(null == groups){
-			groups = new ArrayList<String>();
+			groups = new GroupStoreImpl();
 		}
-
 		group = group.trim().toUpperCase();
-
-		
-		/*添加新分组条件*/
-		if(!groups.contains(group)){
-			groups.add(group);
-		}
+		groups.group(group);
 		
 		return this;
 	}
@@ -197,6 +190,9 @@ public abstract class BasicSQL implements SQL{
 		return navi;
 	}
 
+	public GroupStore getGroups(){
+		return groups;
+	}
 	public OrderStore getOrders() {
 		return orders;
 	}
