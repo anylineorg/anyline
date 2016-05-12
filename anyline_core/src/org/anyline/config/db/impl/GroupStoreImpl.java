@@ -45,9 +45,8 @@ public class GroupStoreImpl implements GroupStore{
 
 	/**
 	 * 排序多列以,分隔
-	 * order("CD","DESC");
-	 * order("CD DESC");
-	 * order("CD DESC,NM ASC");
+	 * group("CD","NM");
+	 * group("CD ,NM ");
 	 * @param str
 	 */
 	public void group(String str) {
