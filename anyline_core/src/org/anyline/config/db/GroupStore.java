@@ -24,10 +24,8 @@ public interface GroupStore{
 	public void group(Group group) ;
 	/**
 	 * 排序多列以,分隔
-	 * order("CD","DESC");
-	 * order("CD DESC");
-	 * order("CD DESC,NM ASC");
-	 * @param str
+	 * gropu("CD");
+	 * group("CD,NM");
 	 */
 	public void group(String str) ;
 

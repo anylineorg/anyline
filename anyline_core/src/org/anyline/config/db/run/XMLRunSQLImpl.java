@@ -24,11 +24,14 @@ import java.util.List;
 import org.anyline.config.KeyValueEncryptConfig;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.Group;
+import org.anyline.config.db.GroupStore;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLVariable;
+import org.anyline.config.db.impl.GroupStoreImpl;
 import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.sql.xml.impl.XMLConditionChainImpl;
 import org.anyline.config.db.sql.xml.impl.XMLConditionImpl;
@@ -43,6 +46,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		this.conditionChain = new XMLConditionChainImpl();
 		this.configStore = new ConfigStoreImpl();
 		this.orderStore = new OrderStoreImpl();
+		this.groupStore = new GroupStoreImpl();
 	}
 	public void init(){
 		super.init();
@@ -108,6 +112,15 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}else{
 					Condition con = new XMLConditionImpl(condition);
 					conditionChain.addCondition(con);
+				}
+			}
+		}
+		GroupStore groupStore = sql.getGroups();
+		if(null != groupStore){
+			List<Group> groups = groupStore.getGroups();
+			if(null != groups){
+				for(Group group:groups){
+					this.groupStore.group(group);
 				}
 			}
 		}
