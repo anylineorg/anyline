@@ -12,8 +12,8 @@
 			<!-- AJAX请求 -->
 			<result name="ajax" type="json"></result>
 		</global-results>
-		<action name="kind_upload" class="anyline.fileAction" method="upload"></action>
-		<action name="ig" class="anyline.fileAction" method="img">
+		<action name="kind_upload" class="org.anyline.struts.action.FileAction" method="upload"></action>
+		<action name="ig" class="org.anyline.struts.action.FileAction" method="img">
 			<result type="file"></result>
 		</action>
 	</package>
