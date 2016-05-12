@@ -33,6 +33,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.DESUtil;
 import org.anyline.util.DateUtil;
@@ -308,26 +309,58 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			return FAIL;
 		}
 	}
-
+	public DataRow upload(File src, String srcName, String title,File dst){
+		DataRow fileRow = new DataRow();
+		try{
+			FileUtils.copyFile(src, dst);
+			fileRow.put("TITLE", title);
+			fileRow.put("SRC_NAME", srcName);
+			fileRow.put("ROOT", request.getSession().getServletContext().getRealPath("/"));
+			fileRow.put("PATH_ABS", dst.getAbsolutePath());
+			fileRow.put("PATH_REL", dst.getAbsolutePath());
+			service.save(getUploadTable(null), fileRow);
+		}catch(Exception e){
+			e.printStackTrace();
+			return null;
+		}
+		return fileRow;
+	}
 	/**
-	 * 上传文件
-	 * @param dir
-	 * @return
+	 * 上传文件 并保存到数据库中
+	 * upload uploadFileName uploadContentType
+	 * @param dir 
+	 * @returnn
 	 */
-	public List<File> upload(String dir) {
-		List<File> result = new ArrayList<File>();
-		File file = new File(dir);
+	public List<DataRow> upload(String dir) {
+		List<DataRow> result = new ArrayList<DataRow>();
+		if(null == upload){
+			return result;
+		}
+		File root = null;
+		if(BasicUtil.isEmpty(dir)){
+			root = new File(ConfigTable.getWebRoot()).getParentFile();
+		}else{
+			root = new File(dir);
+		}
 		// 如果指定的路径没有就创建
-		if (!file.exists()) {
-			file.mkdirs();
+		if (!root.exists()) {
+			root.mkdirs();
 		}
 		// 把得到的文件的集合通过循环的方式读取并放在指定的路径下
 		for (int i = 0; i < upload.size(); i++) {
 			try {
 				String dstName = DateUtil.format("yyyyMMddhhmmssms")+BasicUtil.getRandomLowerString(10)+"."+FileUtil.getSuffixFileName(uploadFileName.get(i));
-				File dst = new File(file, dstName);
+				File dst = new File(new File(root, "upload_img"), dstName);
 				FileUtils.copyFile(upload.get(i), dst);
-				result.add(dst);
+				DataRow fileRow = new DataRow();
+				fileRow.put("TITLE", dst.getName());
+				fileRow.put("SRC_NAME", uploadFileName.get(i));
+				fileRow.put("ROOT", request.getSession().getServletContext().getRealPath("/"));
+				fileRow.put("PATH_ABS", dst.getAbsolutePath());
+				fileRow.put("PATH_REL", dst.getAbsolutePath().replace(root.getAbsolutePath(),""));
+				service.save(getUploadTable(null), fileRow);
+				result.add(fileRow);
+				
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
