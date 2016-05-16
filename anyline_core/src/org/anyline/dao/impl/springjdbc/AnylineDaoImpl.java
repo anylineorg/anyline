@@ -88,8 +88,12 @@ public class AnylineDaoImpl implements AnylineDao {
 		PageNavi navi = run.getPageNavi();
 		int total = 0;
 		if(null != navi){
-			total = getTotal(ds, run.getTotalQueryTxt(), run.getValues());
-			navi.setTotalRow(total);
+			if(navi.getLastRow() == 0){
+				total = 1;
+			}else{
+				total = getTotal(ds, run.getTotalQueryTxt(), run.getValues());
+				navi.setTotalRow(total);
+			}
 		}
 		if(null == navi || total > 0){
 			set = select(ds, run.getFinalQueryTxt(), run.getValues());

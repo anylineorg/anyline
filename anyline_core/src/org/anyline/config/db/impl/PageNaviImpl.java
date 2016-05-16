@@ -27,7 +27,6 @@ import java.util.Map;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
-import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
@@ -53,7 +52,7 @@ public class PageNaviImpl implements PageNavi{
 	private OrderStore orders;				//排序依据(根据 orderCol 排序分页)
 	private int calType = 0;				//分页计算方式(0-按页数 1-按开始结束数)
 	private int firstRow = 0;				//第一行
-	private int lastRow = 0;				//最后一行
+	private int lastRow = -1;				//最后一行
 	
 //	private String statFormat = "共<i class='blue'> {totalRow} </i>条记录，当前显示第&nbsp;<i class='blue'>{curPage}&nbsp;</i>页";
 //	private String tagFirst = "<span class=\"first\">&nbsp;第一页&nbsp;</span>";
