@@ -25,7 +25,8 @@ import org.anyline.config.db.OrderStore;
 import org.anyline.util.BasicUtil;
 
 public class OrderStoreImpl implements OrderStore{
-	private List<Order> orders = new ArrayList<Order>();;
+	private static final long serialVersionUID = -2129393152486629564L;
+	private List<Order> orders = new ArrayList<Order>();
 
 	public OrderStoreImpl() {
 	}
