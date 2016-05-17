@@ -30,7 +30,7 @@ import org.anyline.config.db.ConditionChain;
  *
  */
 public abstract class BasicConditionChain extends BasicCondition implements ConditionChain{
-	protected List<Condition> conditions = new ArrayList<Condition>();;
+	protected List<Condition> conditions = new ArrayList<Condition>();
 	protected int joinSize;
 	
 	public void init(){
