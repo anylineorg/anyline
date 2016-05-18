@@ -467,13 +467,7 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 
 	private int saveObject(DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
-		try {
-			return dao.save(ds, dest, data, checkPrimary, columns);
-		} catch (Exception e) {
-			LOG.error(e);
-			e.printStackTrace();
-			throw new RuntimeException(e);
-		}
+		return dao.save(ds, dest, data, checkPrimary, columns);
 	}
 
 	@Override
@@ -534,12 +528,7 @@ public class AnylineServiceImpl implements AnylineService {
 	@Override
 	public List<Object> executeProcedure(DataSource ds, Procedure procedure) {
 		List<Object> result = null;
-		try {
-			result = dao.executeProcedure(ds, procedure);
-		} catch (Exception e) {
-			LOG.error(e);
-			e.printStackTrace();
-		}
+		result = dao.executeProcedure(ds, procedure);
 		return result;
 	}
 
@@ -668,12 +657,7 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 
 	private int deleteRow(DataSource ds, String dest, DataRow row, String... columns) {
-		try {
-			dao.delete(ds, dest, row, columns);
-			return 1;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		return dao.delete(ds, dest, row, columns);
 	}
 
 }
