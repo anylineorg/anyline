@@ -38,6 +38,7 @@ import org.anyline.util.EscapeUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@SuppressWarnings("serial")
 public class DataSet implements Collection<Object>, Serializable {
 	protected static Logger log = Logger.getLogger(DataSet.class);
 	private boolean result = true; 		// 执行结果
@@ -485,7 +486,11 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		return result;
 	}
-
+	/**
+	 * 取单列不重复的值
+	 * @param key
+	 * @return
+	 */
 	public List<String> fetchDistinctValue(String key) {
 		List<String> result = new ArrayList<String>();
 		for (int i = 0; i < size(); i++) {
@@ -506,7 +511,7 @@ public class DataSet implements Collection<Object>, Serializable {
 	public String displayNavi(String link) {
 		String result = "";
 		if (null != navi) {
-			//result = navi.html(link);
+			result = navi.toString();
 		}
 		return result;
 	}
@@ -548,15 +553,11 @@ public class DataSet implements Collection<Object>, Serializable {
 		return getString(0, key);
 	}
 	public List<String> getStrings(String key){
-		List<String> strings = new ArrayList<String>();
-		int size = rows.size();
-		for(int i=0; i<size; i++){
-			String value = getString(i,key);
-			strings.add(value);
-		}
-		return strings;
+		return fetchValues(key);
 	}
-
+	public List<String> getDistinctStrings(String key){
+		return fetchDistinctValue(key);
+	}
 	public BigDecimal getDecimal(int idx, String key){
 		BigDecimal result = null;
 		DataRow row = getRow(idx);
@@ -573,18 +574,6 @@ public class DataSet implements Collection<Object>, Serializable {
 			result = def;
 		}
 		return result;
-	}
-	public List<String> getDistinctStrings(String key){
-		List<String> strings = new ArrayList<String>();
-		int size = rows.size();
-		for(int i=0; i<size; i++){
-			String value = getString(i,key);
-			if(strings.contains(value)){
-				continue;
-			}
-			strings.add(value);
-		}
-		return strings;
 	}
 
 	/**
