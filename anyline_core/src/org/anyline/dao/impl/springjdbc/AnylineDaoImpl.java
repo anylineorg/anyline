@@ -150,7 +150,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		try{
 			result = jdbc.update(sql, values.toArray());
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms");
+				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+result);
 			}
 		//	row.processBeforeDisplay();	//显示之前预处理
 		}catch(Exception e){
@@ -299,7 +299,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms");
+				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+cnt);
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
@@ -384,7 +384,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	        	set.add(row);
 	        }
 			if(showSQL){
-				LOG.info("封装耗时:"+(System.currentTimeMillis() - mid)+"ms");
+				LOG.info("封装耗时:"+(System.currentTimeMillis() - mid)+"ms 封装行数:"+list.size());
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
@@ -415,7 +415,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms");
+				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms 影响行数:"+result);
 			}
 		}catch(Exception e){
 			LOG.error(e);
@@ -595,6 +595,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public int delete(DataSource ds, String dest, Object data, String... columns) {
 		RunSQL run = creater.createDeleteRunSQL(dest, data, columns);
+		int result = 0;
 		final String sql = run.getDeleteTxt();
 		final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
@@ -603,7 +604,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			LOG.info(values);
 		}
 		try{
-			jdbc.update(
+			result = jdbc.update(
 	            new PreparedStatementCreator() {
 	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
 	                {
@@ -616,7 +617,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	                }
 	            });
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms");
+				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms 影响行数:"+result);
 				LOG.info(values);
 			}
 		}catch(Exception e){
@@ -627,7 +628,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			LOG.error(e);
 			throw new SQLUpdateException("删除异常:"+e);
 		}
-		return 1;
+		return result;
 	}
  
 }
