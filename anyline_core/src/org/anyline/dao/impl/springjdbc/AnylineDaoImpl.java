@@ -269,6 +269,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public int insert(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
 		RunSQL run = creater.createInsertTxt(dest, data, checkPrimary, columns);
+		int cnt = 0;
 		final String sql = run.getInsertTxt();
 		final List<Object> values = run.getValues();
 		KeyHolder keyholder = new GeneratedKeyHolder();
@@ -278,7 +279,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			LOG.info(values);
 		}
 		try{
-			int cnt= jdbc.update(new PreparedStatementCreator() {
+			cnt= jdbc.update(new PreparedStatementCreator() {
 				@Override
 				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 					PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -309,7 +310,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			LOG.error(e);
 			throw new SQLUpdateException("插入异常:"+e);
 		}
-		return 1;
+		return cnt;
 	}
 
 	@Override
