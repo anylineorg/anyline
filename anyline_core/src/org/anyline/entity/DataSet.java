@@ -661,7 +661,15 @@ public class DataSet implements Collection<Object>, Serializable {
 	public double getDouble(String key) {
 		return getDouble(0, key);
 	}
-
+	/**
+	 * rows 列表中的数据格式化成json格式   不同与toJSON
+	 * map.put("type", "list");
+    	map.put("result", result);
+    	map.put("message", message);
+    	map.put("rows", rows);
+    	map.put("success", result);
+    	map.put("navi", navi);
+	 */
 	public String toString() {
 		Map<String,Object> map = new HashMap<String,Object>();
     	map.put("type", "list");
@@ -673,6 +681,10 @@ public class DataSet implements Collection<Object>, Serializable {
     	JSON json = JSONObject.fromObject(map);
 		return json.toString();
 	}
+	/**
+	 * rows 列表中的数据格式化成json格式   不同与toString
+	 * @return
+	 */
 	public String toJSON(){
 		JSONArray json = JSONArray.fromObject(rows);
 		return json.toString();
