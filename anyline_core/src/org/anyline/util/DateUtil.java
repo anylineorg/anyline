@@ -143,6 +143,14 @@ public class DateUtil {
 		return format(d, format);
 	}
 
+	public static String dateformat(Date date){
+		return format(date, FORMAT_DATE);
+	}
+
+	public static String dateformat(){
+		return format(new Date(), FORMAT_DATE);
+	}
+	
 	/**
 	 * 时间转换成分钟
 	 * 
