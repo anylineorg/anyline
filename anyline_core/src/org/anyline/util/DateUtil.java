@@ -765,24 +765,26 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static int year() {
-		calendar.setTime(new Date());
-		return calendar.get(Calendar.YEAR);
-	}
-
 	public static int year(Date date) {
 		calendar.setTime(date);
 		return calendar.get(Calendar.YEAR);
 	}
+	public static int year() {
+		return year(new Date());
+	}
+
 
 	/**
 	 * 月份
 	 * 
 	 * @return
 	 */
-	public static int month() {
-		calendar.setTime(new Date());
+	public static int month(Date date) {
+		calendar.setTime(date);
 		return calendar.get(Calendar.MONTH);
+	}
+	public static int month() {
+		return month(new Date());
 	}
 
 	/**
@@ -790,9 +792,12 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static int day() {
-		calendar.setTime(new Date());
+	public static int day(Date date) {
+		calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_MONTH);
+	}
+	public static int day() {
+		return day(new Date());
 	}
 
 	/**
@@ -800,9 +805,12 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static int hour() {
-		calendar.setTime(new Date());
+	public static int hour(Date date) {
+		calendar.setTime(date);
 		return calendar.get(Calendar.HOUR);
+	}
+	public static int hour() {
+		return hour(new Date());
 	}
 
 	/**
@@ -810,9 +818,13 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static int minute() {
-		calendar.setTime(new Date());
+	public static int minute(Date date) {
+		calendar.setTime(date);
 		return calendar.get(Calendar.MINUTE);
+	}
+
+	public static int minute() {
+		return minute(new Date());
 	}
 
 	/**
@@ -820,9 +832,12 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static int second() {
-		calendar.setTime(new Date());
+	public static int second(Date date) {
+		calendar.setTime(date);
 		return calendar.get(Calendar.SECOND);
+	}
+	public static int second() {
+		return second(new Date());
 	}
 
 	/**
@@ -830,9 +845,12 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static int weekday() {
-		calendar.setTime(new Date());
+	public static int weekday(Date date) {
+		calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_WEEK) - 1;
+	}
+	public static int weekday() {
+		return weekday(new Date());
 	}
 
 	/**
@@ -840,9 +858,12 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static int weekOfYear() {
-		calendar.setTime(new Date());
+	public static int weekOfYear(Date date) {
+		calendar.setTime(date);
 		return calendar.get(Calendar.WEEK_OF_YEAR);
+	}
+	public static int weekOfYear() {
+		return weekOfYear(new Date());
 	}
 
 	/**
@@ -850,9 +871,12 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static boolean isAm() {
-		calendar.setTime(new Date());
+	public static boolean isAm(Date date) {
+		calendar.setTime(date);
 		return calendar.get(Calendar.AM_PM) == 0;
+	}
+	public static boolean isAm() {
+		return isAm(new Date());
 	}
 
 	/**
@@ -860,8 +884,11 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static boolean isPm() {
-		calendar.setTime(new Date());
+	public static boolean isPm(Date date) {
+		calendar.setTime(date);
 		return calendar.get(Calendar.AM_PM) == 1;
+	}
+	public static boolean isPm() {
+		return isPm(new Date());
 	}
 }
