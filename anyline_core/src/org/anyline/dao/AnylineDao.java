@@ -71,6 +71,16 @@ public interface AnylineDao{
 	public int insert(String dst, Object data, String ... columns);
 	public int insert(DataSource ds, Object data, String ... columns);
 	public int insert(Object data, String ... columns);
+	
+
+	public int batchInsert(DataSource ds, String dst, Object data, boolean checkPrimary, String ... columns);
+	public int batchInsert(String dst, Object data, boolean checkPrimary, String ... columns);
+	public int batchInsert(DataSource ds, Object data, boolean checkPrimary, String ... columns);
+	public int batchInsert(Object data, boolean checkPrimary, String ... columns);
+	public int batchInsert(DataSource ds, String dst, Object data, String ... columns);
+	public int batchInsert(String dst, Object data, String ... columns);
+	public int batchInsert(DataSource ds, Object data, String ... columns);
+	public int batchInsert(Object data, String ... columns);
 	/**
 	 * 保存(insert|update)
 	 * @param data

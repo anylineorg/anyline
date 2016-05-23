@@ -134,6 +134,15 @@ public interface AnylineService{
 	public int insert(Object data, String ... columns);
 	public int insert(DataSource ds, String dest, Object data, String ... columns);
 
+
+	public int batchInsert(DataSource ds, String dest, Object data, boolean checkPriamry, String ... columns);
+	public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
+	public int batchInsert(DataSource ds, Object data, boolean checkPriamry, String ... columns);
+	public int batchInsert(Object data, boolean checkPriamry, String ... columns);
+	public int batchInsert(DataSource ds, Object data, String ... columns);
+	public int batchInsert(String dest, Object data, String ... columns);
+	public int batchInsert(Object data, String ... columns);
+	public int batchInsert(DataSource ds, String dest, Object data, String ... columns);
 	/**
 	 * save insert区别
 	 * 操作单个对象时没有区别

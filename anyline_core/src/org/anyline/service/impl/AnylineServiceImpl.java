@@ -511,6 +511,45 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 
 	@Override
+	public int batchInsert(DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
+		return dao.batchInsert(ds, dest, data, checkPrimary, columns);
+	}
+
+	@Override
+	public int batchInsert(String dest, Object data, boolean checkPrimary, String... columns) {
+		return batchInsert(null, dest, data, checkPrimary, columns);
+	}
+
+	@Override
+	public int batchInsert(DataSource ds, Object data, boolean checkPrimary, String... columns) {
+		return batchInsert(ds, null, data, checkPrimary, columns);
+	}
+
+	@Override
+	public int batchInsert(Object data, boolean checkPrimary, String... columns) {
+		return batchInsert(null, null, data, checkPrimary, columns);
+	}
+
+	@Override
+	public int batchInsert(DataSource ds, Object data, String... columns) {
+		return batchInsert(ds, null, data, false, columns);
+	}
+
+	@Override
+	public int batchInsert(String dest, Object data, String... columns) {
+		return batchInsert(null, dest, data, false, columns);
+	}
+
+	@Override
+	public int batchInsert(Object data, String... columns) {
+		return batchInsert(null, null, data, false, columns);
+	}
+
+	@Override
+	public int batchInsert(DataSource ds, String dest, Object data, String... columns) {
+		return batchInsert(ds, dest, data, false, columns);
+	}
+	@Override
 	public List<Object> executeProcedure(DataSource ds, String procedure, String... inputs) {
 		Procedure proc = new ProcedureImpl();
 		proc.setName(procedure);
