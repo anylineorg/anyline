@@ -38,6 +38,8 @@ import org.anyline.config.http.ConfigStore;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.BasicEntity;
 import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.exception.SQLException;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -209,6 +211,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(obj instanceof BasicEntity){
 			return createInsertTxtFromEntity(dest,(BasicEntity)obj,checkPrimary, columns);	
 		}
+		if(obj instanceof DataSet){
+			DataSet set = (DataSet)obj;
+			set.setDataSource(dest);
+			return createInsertTxtFromDataSet(dest,set,checkPrimary, columns);
+		}
 		return null;
 	}
 	@Override
@@ -293,6 +300,69 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		sql.append(param);
 		run.setBuilder(sql);
 		run.addValues(values);
+		return run;
+	}
+	private RunSQL createInsertTxtFromDataSet(String dest, DataSet set, boolean checkPrimary, String ... columns){
+		RunSQL run = new TableRunSQLImpl();
+		StringBuilder sql = new StringBuilder();
+		if(BasicUtil.isEmpty(dest)){
+			throw new SQLException("未指定表");
+		}
+		if(null == set || set.size() ==0){
+			throw new SQLException("空数据");
+		}
+		DataRow first = set.getRow(0);
+		/*确定需要插入的列*/
+		
+		List<String> keys = confirmInsertColumns(dest, first, columns);
+		if(null == keys || keys.size() == 0){
+			throw new RuntimeException("未指定列");
+		}
+		sql.append("INSERT INTO ").append(dest);
+		sql.append("(");
+		
+		int keySize = keys.size();
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			if(i<keySize-1){
+				sql.append(",");
+			}
+		}
+		sql.append(") VALUES ");
+		int dataSize = set.size();
+		for(int i=0; i<dataSize; i++){
+			DataRow row = set.getRow(i);
+
+			if(row.hasPrimaryKeys() && ConfigTable.getBoolean("AUTO_CREATE_PRIMARY_KEY") && BasicUtil.isEmpty(row.get(row.getPrimaryKey()))){
+				String pk = row.getPrimaryKey();
+				if(null == pk){
+					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+				}
+				row.put(pk, primaryCreater.createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
+			}
+			
+			sql.append("(");
+			for(int j=0; j<keySize; j++){
+				Object value = row.get(keys.get(j));
+				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
+					value = value.toString().replace("{", "").replace("}", "");
+				}
+				if(null == value || "NULL".equals(value)){
+					sql.append("null");
+				}else{
+					sql.append("'").append(value.toString().replace("'", "''")).append("'");
+				}
+				if(j<keySize-1){
+					sql.append(",");
+				}
+			}
+			sql.append(")");
+			if(i<dataSize-1){
+				sql.append(",");
+			}
+		}
+		run.setBuilder(sql);
 		return run;
 	}
 	private RunSQL createInsertTxtFromEntity(String dest, BasicEntity entity, boolean checkPrimary, String ... columns){
