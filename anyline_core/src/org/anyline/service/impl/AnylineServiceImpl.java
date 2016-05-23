@@ -472,7 +472,7 @@ public class AnylineServiceImpl implements AnylineService {
 
 	@Override
 	public int insert(DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
-		return insert(ds, dest, data, checkPrimary, columns);
+		return dao.insert(ds, dest, data, checkPrimary, columns);
 	}
 
 	@Override
