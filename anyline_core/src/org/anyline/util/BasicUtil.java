@@ -327,6 +327,7 @@ public class BasicUtil {
 				def = true;
 			} else if ("0".equals(obj.toString())
 					|| "false".equalsIgnoreCase(obj.toString())
+					|| "off".equalsIgnoreCase(obj.toString())
 					|| "f".equalsIgnoreCase(obj.toString())) {
 				def = false;
 			} else {
@@ -354,10 +355,11 @@ public class BasicUtil {
 			int temp = num % 2;
 			num = (num - temp) / 2;
 			if (temp == 1) {
-				if (count == 0)
+				if (count == 0){
 					list.add("1");
-				else
+				}else{
 					list.add((2 << (count - 1)) + "");
+				}
 			}
 			count++;
 		}
