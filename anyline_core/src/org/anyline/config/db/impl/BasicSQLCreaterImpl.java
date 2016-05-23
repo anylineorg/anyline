@@ -255,7 +255,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		StringBuilder sql = new StringBuilder();
 		List<Object> values = new ArrayList<Object>();
 		if(BasicUtil.isEmpty(dest)){
-			throw new RuntimeException("未指定表");
+			throw new SQLException("未指定表");
 		}
 		StringBuilder param = new StringBuilder();
 		if(row.hasPrimaryKeys() && ConfigTable.getBoolean("AUTO_CREATE_PRIMARY_KEY") && BasicUtil.isEmpty(row.get(row.getPrimaryKey()))){
@@ -269,7 +269,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		
 		List<String> keys = confirmInsertColumns(dest, row, columns);
 		if(null == keys || keys.size() == 0){
-			throw new RuntimeException("未指定列");
+			throw new SQLException("未指定列");
 		}
 		sql.append("INSERT INTO ").append(dest);
 		sql.append("(");
@@ -316,7 +316,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		
 		List<String> keys = confirmInsertColumns(dest, first, columns);
 		if(null == keys || keys.size() == 0){
-			throw new RuntimeException("未指定列");
+			throw new SQLException("未指定列");
 		}
 		sql.append("INSERT INTO ").append(dest);
 		sql.append("(");
@@ -375,14 +375,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			dest = entity.getDataSource();
 		}
 		if(BasicUtil.isEmpty(dest)){
-			throw new RuntimeException("未指定表");
+			throw new SQLException("未指定表");
 		}
 		
 		
 		/*确定需要更新的列*/
 		List<String> keys = confirmInsertColumns(dest, entity, columns);
 		if(null == keys || keys.size() == 0){
-			throw new RuntimeException("未指定列");
+			throw new SQLException("未指定列");
 		}
 		sql.append("INSERT INTO ").append(dest);
 		sql.append("(");
@@ -428,17 +428,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		RunSQL run = new TableRunSQLImpl();
 //		if(null == entity){
 		
-//			throw new RuntimeException("更新空数据");
+//			throw new SQLException("更新空数据");
 //		}
 //		if(null == dest){
 //			dest = entity.getDataSource();
 //		}
 //		if(BasicUtil.isEmpty(dest)){
-//			throw new RuntimeException("未指定表");
+//			throw new SQLException("未指定表");
 //		}
 //		List<String> primaryKeys = entity.getPrimaryKeys();
 //		if(BasicUtil.isEmpty(true,primaryKeys)){
-//			throw new RuntimeException("未指定主键");
+//			throw new SQLException("未指定主键");
 //		}
 //		
 //		entity.processBeforeSave();	//保存之前预处理
@@ -453,7 +453,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 //		}
 //		
 //		if(BasicUtil.isEmpty(true,keys)){
-//			throw new RuntimeException("未指定更新列");
+//			throw new SQLException("未指定更新列");
 //		}
 //
 //		/*构造SQL*/
@@ -487,7 +487,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		/*不更新主键*/
 		keys.remove(primaryKey);
 		if(BasicUtil.isEmpty(true,keys)){
-			throw new RuntimeException("未指定更新列");
+			throw new SQLException("未指定更新列");
 		}
 		/*构造SQL*/
 		sql.append("UPDATE ").append(dest);
