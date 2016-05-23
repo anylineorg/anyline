@@ -59,7 +59,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anylineDao")
 public class AnylineDaoImpl implements AnylineDao {
 	private static Logger LOG = Logger.getLogger(AnylineDaoImpl.class);
-
+	
 	@Autowired(required=false)
 	private SQLCreater creater;
 	@Autowired(required=false)
@@ -225,14 +225,6 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 	
 
-	
-	public int inserts(DataSource ds, String dest, Collection items, boolean checkPrimary, String ... columns){
-		if(null == items){
-			return 0;
-		}
-		
-		return items.size();
-	}
 	private int saveObject(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
 			return 0;
@@ -284,9 +276,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 					PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 					 int idx = 0;
+					 if(null != values){
 	                    for(Object obj:values){
 	                    	ps.setObject(++idx, obj);
 	                    }
+					 }
 	                return ps;
 				}
 			}, keyholder);
@@ -308,6 +302,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				LOG.info(values);
 			}
 			LOG.error(e);
+			e.printStackTrace();
 			throw new SQLUpdateException("插入异常:"+e);
 		}
 		return cnt;
@@ -340,6 +335,43 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public int insert(Object data, String ... columns){
 		return insert(null, null, data, false, columns);
+	}
+	
+
+	@Override
+	public int batchInsert(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
+		String table = "";
+		String cols = "";
+		return 0;
+	}
+
+	@Override
+	public int batchInsert(String dest, Object data, boolean checkPrimary, String ... columns){
+		return batchInsert(null, dest, data, checkPrimary, columns);
+	}
+	@Override
+	public int batchInsert(DataSource ds, Object data, boolean checkPrimary, String ... columns){
+		return batchInsert(ds, null, data, checkPrimary, columns);
+	}
+	@Override
+	public int batchInsert(Object data, boolean checkPrimary, String ... columns){
+		return batchInsert(null, null, data, checkPrimary, columns);
+	}
+	@Override
+	public int batchInsert(DataSource ds, String dest, Object data, String ... columns){
+		return batchInsert(ds, dest, data, false, columns);
+	}
+	@Override
+	public int batchInsert(String dest, Object data, String ... columns){
+		return batchInsert(null, dest, data, false, columns);
+	}
+	@Override
+	public int batchInsert(DataSource ds, Object data, String ... columns){
+		return batchInsert(ds, null, data, false, columns);
+	}
+	@Override
+	public int batchInsert(Object data, String ... columns){
+		return batchInsert(null, null, data, false, columns);
 	}
 	private void setPrimaryValue(Object obj, int value){
 		if(null == obj){
