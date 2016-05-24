@@ -67,21 +67,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		this.setTable(table);
 	}
 	public DataRow(Map<String,Object> map){
+		this();
 		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
 			String key = itr.next();
 			Object value = map.get(key);
 			put(key.toUpperCase(), value);
-		}
-	}
-	public DataRow(Object ... params){
-		if(null != params){
-			for(int i=0; i<params.length-1; i+=2){
-				Object key = params[i];
-				Object value = params[i+1];
-				if(null != key){
-					put(key.toString().toUpperCase(),value);
-				}
-			}
 		}
 	}
 //	/**
