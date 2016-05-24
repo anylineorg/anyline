@@ -468,11 +468,6 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 	}
 
-	public void addRow(Object... params) {
-		DataRow row = new DataRow(params);
-		rows.add(row);
-	}
-
 	/**
 	 * 提取单列值
 	 * 
