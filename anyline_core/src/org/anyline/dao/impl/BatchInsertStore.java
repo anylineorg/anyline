@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class BatchInsertStore {
 	private ConcurrentHashMap<String,Vector<Object>> map = new ConcurrentHashMap<String,Vector<Object>>();
 	
-	public void addData(String table, String cols, Object data){
+	public void addData(String table, String cols, String data){
 		String key = table + "_" + cols;
 		Vector<Object> rows = map.get(key);
 		if(null == rows){

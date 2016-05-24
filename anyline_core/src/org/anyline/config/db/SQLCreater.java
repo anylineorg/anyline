@@ -17,8 +17,12 @@
 
 package org.anyline.config.db;
 
+import java.util.List;
+
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.http.ConfigStore;
+import org.anyline.entity.BasicEntity;
+import org.anyline.entity.DataRow;
 
 public interface SQLCreater {
 
@@ -61,6 +65,7 @@ public interface SQLCreater {
 	public String getDataSource(Object obj);
 	public String getPrimaryKey(Object obj);
 	public Object getPrimaryValue(Object obj);
+	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
 	/**
 	 * 拼接字符串
 	 * @param args
