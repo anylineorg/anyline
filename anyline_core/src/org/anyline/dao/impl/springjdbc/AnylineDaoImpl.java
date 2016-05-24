@@ -342,7 +342,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	
 
 	@Override
-	public int batchInsert(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
+	public int batchInsert(final DataSource ds, final String dest, final Object data, final boolean checkPrimary, final String ... columns){
 		if(null == data){
 			return 0;
 		}
@@ -356,29 +356,35 @@ public class AnylineDaoImpl implements AnylineDao {
 		String table = creater.getDataSource(data);
 		List<String> cols = creater.confirmInsertColumns(dest, data, columns);
 		String strCols = "";
-		String strVals = "";
 		int size = cols.size();
 		for(int i=0; i<size; i++){
 			String col = cols.get(i);
-			Object val = null;
-			if(data instanceof DataRow){
-				val = ((DataRow)data).get(col);
-			}else{
-				val = BeanUtil.getFieldValue(data, col);
-			}
-			strCols += creater.getDisKeyFr() + col + creater.getDisKeyTo();
-			
-			if(null == val || "NULL".equals(val)){
-				strVals += "null";
-			}else{
-				strVals += "'" + val.toString().replace("'", "''") + "'";
-			}
-			if(i<size-1){
-				strCols += ",";
-				strVals += ",";
+			strCols +=  ","+col;
+		}
+		batchInsertStore.addData(table, strCols,(DataRow)data);
+		synchronized (batchInsertStore) {
+			if(!batchInsertStore.isRun){
+				batchInsertStore.isRun = true;
+				new Thread(new Runnable(){
+					public void run(){
+						try{
+							while(true){
+								DataSet list = batchInsertStore.getDatas();
+								insert(ds, dest, list, checkPrimary, columns);
+								if(null == list || list.size() ==0){
+									batchInsertStore.isRun = false;
+									break;
+								}
+								Thread.sleep(1000*10);
+							}
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+						
+					}
+				}).start();
 			}
 		}
-		batchInsertStore.addData(table, strCols, strVals);
 		return 0;
 	}
 
