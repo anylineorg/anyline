@@ -369,32 +369,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return entity;
 	}
-//	public Object entity(Class<?> clazz){
-//		Object entity = null;
-//		try{
-//			entity = clazz.newInstance();
-//			List<Field> fields = BeanUtil.getAllField(clazz);
-//			for(Field field:fields){
-//				Annotation annotationTransient = field.getAnnotation(Transient.class);
-//				if(null == annotationTransient){//是否有对应的列
-//					Annotation annotationColumn  = field.getAnnotation(Column.class);
-//					if(null != annotationColumn){
-//							Method methodName = annotationColumn.annotationType().getMethod("name");//引用name方法
-//							String column = (String)methodName.invoke(annotationColumn);			//执行name方法返回结果
-//							Object value = get(column);
-//							if(BasicUtil.isNotEmpty(value)){
-//								BeanUtil.setFieldValue(entity, field.getName(), value);
-//							}
-//						}
-//					}
-//			}//end for
-//			int chk = getInt("CHK");
-//			BeanUtil.setFieldValue(entity, "chk", chk);
-//		}catch(Exception e){
-//			LOG.error(e);
-//		}
-//		return entity;
-//	}
 	
 	public List<String> keys(){
 		List<String> keys = new ArrayList<String>();
