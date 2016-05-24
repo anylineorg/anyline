@@ -37,6 +37,7 @@ import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.dao.AnylineDao;
+import org.anyline.dao.impl.BatchInsertStore;
 import org.anyline.entity.BasicEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -66,6 +67,8 @@ public class AnylineDaoImpl implements AnylineDao {
 	private JdbcTemplate jdbc;
 	@Autowired(required=false)
 	private DataSource dataSource;			//数据源
+	
+	private BatchInsertStore batchInsertStore = new BatchInsertStore();
 	
 	private static boolean showSQL = false;
 	private static boolean showSQLParam = false;
@@ -340,8 +343,42 @@ public class AnylineDaoImpl implements AnylineDao {
 
 	@Override
 	public int batchInsert(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
-		String table = "";
-		String cols = "";
+		if(null == data){
+			return 0;
+		}
+		if(data instanceof DataSet){
+			DataSet set = (DataSet)data;
+			int size = set.size();
+			for(int i=0; i<size; i++){
+				batchInsert(ds, dest, set.getRow(i), checkPrimary, columns);
+			}
+		}
+		String table = creater.getDataSource(data);
+		List<String> cols = creater.confirmInsertColumns(dest, data, columns);
+		String strCols = "";
+		String strVals = "";
+		int size = cols.size();
+		for(int i=0; i<size; i++){
+			String col = cols.get(i);
+			Object val = null;
+			if(data instanceof DataRow){
+				val = ((DataRow)data).get(col);
+			}else{
+				val = BeanUtil.getFieldValue(data, col);
+			}
+			strCols += creater.getDisKeyFr() + col + creater.getDisKeyTo();
+			
+			if(null == val || "NULL".equals(val)){
+				strVals += "null";
+			}else{
+				strVals += "'" + val.toString().replace("'", "''") + "'";
+			}
+			if(i<size-1){
+				strCols += ",";
+				strVals += ",";
+			}
+		}
+		batchInsertStore.addData(table, strCols, strVals);
 		return 0;
 	}
 

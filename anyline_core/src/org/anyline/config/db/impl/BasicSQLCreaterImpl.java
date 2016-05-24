@@ -365,6 +365,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		run.setBuilder(sql);
 		return run;
 	}
+	
 	private RunSQL createInsertTxtFromEntity(String dest, BasicEntity entity, boolean checkPrimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
 		StringBuilder sql = new StringBuilder();
@@ -624,6 +625,20 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		return keys;
+	}
+	/**
+	 * 确认需要插入的列 
+	 */
+	public List<String> confirmInsertColumns(String dst, Object data, String ... columns){
+		if(null == data){
+			return null;
+		}
+		if(data instanceof DataRow){
+			return confirmInsertColumns(dst, (DataRow)data, columns);
+		}else if(data instanceof BasicEntity){
+			return confirmInsertColumns(dst, (BasicEntity)data, columns);
+		}
+		return null;
 	}
 	/**
 	 * 确认需要插入的列
