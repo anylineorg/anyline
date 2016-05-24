@@ -55,19 +55,6 @@ public class AnylineServiceImpl implements AnylineService {
 		return dao;
 	}
 	
-	private String createCacheElementKey(DataSource ds, String src, ConfigStore configs, String ... conditions){
-		String key = "";
-		key += ds+"."+src;
-		if(null != configs){
-			key += "."+configs.toString();
-		}
-		if(null != conditions){
-			for(String item:conditions){
-				key += "."+item;
-			}
-		}
-		return key;
-	}
 	/**
 	 * 按条件查询
 	 * @param ds 数据源

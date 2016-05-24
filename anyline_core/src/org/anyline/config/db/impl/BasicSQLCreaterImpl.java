@@ -235,6 +235,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				return null;
 			}
 			result = result + getDisKeyFr() + table + getDisKeyTo();
+		}else if(obj instanceof DataSet){
+			DataSet set = (DataSet)obj;
+			if(set.size()>0){
+				result = getDataSource(set.getRow(0));
+			}
 		}else{
 			try{
 				Annotation annotation = obj.getClass().getAnnotation(Table.class);			//提取Table注解
@@ -305,11 +310,18 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private RunSQL createInsertTxtFromDataSet(String dest, DataSet set, boolean checkPrimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
 		StringBuilder sql = new StringBuilder();
-		if(BasicUtil.isEmpty(dest)){
-			throw new SQLException("未指定表");
-		}
+
 		if(null == set || set.size() ==0){
 			throw new SQLException("空数据");
+		}
+		if(BasicUtil.isEmpty(dest)){
+			dest = getDataSource(set);
+		}
+		if(BasicUtil.isEmpty(dest)){
+			dest = getDataSource(set.getRow(0));
+		}
+		if(BasicUtil.isEmpty(dest)){
+			throw new SQLException("未指定表");
 		}
 		DataRow first = set.getRow(0);
 		/*确定需要插入的列*/
