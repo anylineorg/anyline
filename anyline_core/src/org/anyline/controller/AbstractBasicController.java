@@ -442,8 +442,11 @@ public class AbstractBasicController{
 			messages = new DataSet();
 			request.setAttribute(Constant.REQUEST_ATTR_MESSAGE, messages);
 		}
-		messages.addRow(Constant.MESSAGE_KEY, key, Constant.MESSAGE_VALUE,
-				value, Constant.MESSAGE_TYPE, type);
+		DataRow row = new DataRow();
+		row.put(Constant.MESSAGE_KEY, key);
+		row.put(Constant.MESSAGE_VALUE, value);
+		row.put(Constant.MESSAGE_TYPE, type);
+		messages.addRow(row);
 	}
 	
 	protected void setRequestMessage(HttpServletRequest request, String key, Object value) {
@@ -473,8 +476,11 @@ public class AbstractBasicController{
 			messages = new DataSet();
 			session.setAttribute(Constant.SESSION_ATTR_MESSAGE, messages);
 		}
-		messages.addRow(Constant.MESSAGE_KEY, key, Constant.MESSAGE_VALUE,
-				value, Constant.MESSAGE_TYPE, type);
+		DataRow row = new DataRow();
+		row.put(Constant.MESSAGE_KEY, key);
+		row.put(Constant.MESSAGE_VALUE, value);
+		row.put(Constant.MESSAGE_TYPE, type);
+		messages.addRow(row);
 	}
 
 
