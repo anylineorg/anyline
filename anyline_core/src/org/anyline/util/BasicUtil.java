@@ -17,7 +17,6 @@
 
 package org.anyline.util;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -205,7 +204,7 @@ public class BasicUtil {
 			b[1] = (new Integer(lPos).byteValue());
 			try {
 				str = new String(b, "GBk"); // 转成中文
-			} catch (UnsupportedEncodingException ex) {
+			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
 			result += str;
@@ -317,25 +316,26 @@ public class BasicUtil {
 	 * @return
 	 */
 	public static Boolean parseBoolean(Object obj, Boolean def) {
+		boolean result = def;
 		if (isEmpty(obj))
-			return def;
+			return result;
 		try {
 			if ("1".equals(obj.toString())
 					|| "true".equalsIgnoreCase(obj.toString())
 					|| "on".equalsIgnoreCase(obj.toString())
 					|| "t".equalsIgnoreCase(obj.toString())) {
-				def = true;
+				result = true;
 			} else if ("0".equals(obj.toString())
 					|| "false".equalsIgnoreCase(obj.toString())
 					|| "off".equalsIgnoreCase(obj.toString())
 					|| "f".equalsIgnoreCase(obj.toString())) {
-				def = false;
+				result = false;
 			} else {
-				def = Boolean.parseBoolean(obj.toString());
+				result = Boolean.parseBoolean(obj.toString());
 			}
 		} catch (Exception e) {
 		}
-		return def;
+		return result;
 	}
 
 	public static boolean parseBoolean(Object obj) {
