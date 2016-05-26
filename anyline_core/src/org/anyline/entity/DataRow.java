@@ -156,6 +156,30 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 	/**
+	 * 设置主键 先清空之前设置过和主键
+	 * 当前对象处于容器中时,设置容器主键,否则设置自身主键
+	 * @param primary
+	 */
+	public DataRow setPrimaryKey(String ... primaryKeys){
+		if(BasicUtil.isEmpty(primaryKeys)){
+			return this;
+		}
+		/*设置容器主键*/
+		if(hasContainer()){
+			getContainer().setPrimary(primaryKeys);
+			return this;
+		}
+		
+		/*没有处于容器中时,设置自身主键*/
+		if(null == this.primaryKeys){
+			this.primaryKeys = new ArrayList<String>();
+		}else{
+			this.primaryKeys.clear();
+		}
+		this.addPrimaryKey(primaryKeys);
+		return this;
+	}
+	/**
 	 * 读取主键
 	 * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键
 	 * @return
