@@ -60,19 +60,19 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * 
 	 * @param parmary
 	 */
-	public void addPrimary(String... primaryKey) {
+	public void addPrimary(String... pks) {
 		if (null == this.primaryKeys) {
 			this.primaryKeys = new ArrayList<String>();
 		}
-		if (null == primaryKey) {
+		if (null == pks) {
 			return;
 		}
-		for (String item : primaryKey) {
-			if (null == item) {
+		for (String item : pks) {
+			if (BasicUtil.isEmpty(item)) {
 				continue;
 			}
 			item = item.toUpperCase();
-			if (!this.primaryKeys.contains(primaryKey)) {
+			if (!this.primaryKeys.contains(item)) {
 				this.primaryKeys.add(item);
 			}
 		}
@@ -85,20 +85,12 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * 
 	 * @param primary
 	 */
-	public void setPrimary(String... primaryKey) {
-		if (null == primaryKey) {
+	public void setPrimary(String... pks) {
+		if (null == pks) {
 			return;
 		}
 		this.primaryKeys = new ArrayList<String>();
-		for (String item : primaryKey) {
-			if (null == item) {
-				continue;
-			}
-			item = item.toUpperCase();
-			if (!this.primaryKeys.contains(item)) {
-				this.primaryKeys.add(item);
-			}
-		}
+		addPrimary(pks);
 	}
 
 //	public DataSet toLowerKey() {
