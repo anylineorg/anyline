@@ -74,32 +74,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			put(key.toUpperCase(), value);
 		}
 	}
-//	/**
-//	 * BUG
-//	 * @return
-//	 */
-//	public DataRow toLowerKey(){
-//		for(Iterator<String> itr=keySet().iterator(); itr.hasNext();){
-//			String key = itr.next();
-//			Object value = get(key);
-//			remove(key);
-//			put(key.toLowerCase(), value);
-//		}
-//		return this;
-//	}
-//	/**
-//	 * BUG
-//	 * @return
-//	 */
-//	public DataRow toUpperKey(){
-//		for(Iterator<String> itr=keySet().iterator(); itr.hasNext();){
-//			String key = itr.next();
-//			Object value = get(key);
-//			remove(key);
-//			put(key.toLowerCase(), value);
-//		}
-//		return this;
-//	}
 
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
@@ -397,7 +371,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			if(override){
 				primaryKeys.clear();
 			}
-			primaryKeys.add(key);
+			this.addPrimaryKey(key);
 		}
 		this.put(key, value);
 		return this;
