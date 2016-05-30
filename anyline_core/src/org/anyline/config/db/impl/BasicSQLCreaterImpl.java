@@ -214,7 +214,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(obj instanceof DataSet){
 			DataSet set = (DataSet)obj;
 			set.setDataSource(dest);
-			return createInsertTxtFromDataSet(dest,set,checkPrimary, columns);
+			if(set.size() >0){
+				return createInsertTxtFromDataSet(dest,set,checkPrimary, columns);
+			}
 		}
 		return null;
 	}
@@ -357,13 +359,21 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			sql.append("(");
 			for(int j=0; j<keySize; j++){
 				Object value = row.get(keys.get(j));
-				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
-					value = value.toString().replace("{", "").replace("}", "");
-				}
+				
 				if(null == value || "NULL".equals(value)){
 					sql.append("null");
+				}else if(value instanceof String){
+					String str = value.toString();
+					if(str.startsWith("{") && str.endsWith("}")){
+						str = str.replace("{", "").replace("}", "");
+					}else{
+						str = "'" + str.replace("'", "''") + "'";
+					}
+					sql.append(str);
+				}else if(value instanceof Number || value instanceof Boolean){
+					sql.append(value.toString());
 				}else{
-					sql.append("'").append(value.toString().replace("'", "''")).append("'");
+					sql.append(value.toString());
 				}
 				if(j<keySize-1){
 					sql.append(",");
