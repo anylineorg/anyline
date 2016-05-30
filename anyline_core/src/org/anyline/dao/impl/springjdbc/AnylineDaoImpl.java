@@ -75,6 +75,8 @@ public class AnylineDaoImpl implements AnylineDao {
 	private static boolean showSQLWhenError = true;
 	private static boolean showSQLParamWhenError = true;
 	
+	private static boolean isBatchInsertRun = false;
+	
 	public AnylineDaoImpl(){
 		showSQL = ConfigTable.getBoolean("SHOW_SQL",showSQL);
 		showSQLParam = ConfigTable.getBoolean("SHOW_SQL_PARAM",showSQLParam);
@@ -264,6 +266,9 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public int insert(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
 		RunSQL run = creater.createInsertTxt(dest, data, checkPrimary, columns);
+		if(null == run){
+			return 0;
+		}
 		int cnt = 0;
 		final String sql = run.getInsertTxt();
 		final List<Object> values = run.getValues();
@@ -361,19 +366,17 @@ public class AnylineDaoImpl implements AnylineDao {
 			String col = cols.get(i);
 			strCols +=  ","+col;
 		}
-		batchInsertStore.addData(table, strCols,(DataRow)data);
 		synchronized (batchInsertStore) {
-			if(!batchInsertStore.isRun){
-				batchInsertStore.isRun = true;
+			batchInsertStore.addData(table, strCols,(DataRow)data);
+			if(!isBatchInsertRun){
+				isBatchInsertRun = true;
 				new Thread(new Runnable(){
 					public void run(){
 						try{
 							while(true){
 								DataSet list = batchInsertStore.getDatas();
-								insert(ds, dest, list, checkPrimary, columns);
-								if(null == list || list.size() ==0){
-									batchInsertStore.isRun = false;
-									break;
+								if(null != list && list.size()>0){
+									insert(ds, dest, list, checkPrimary, columns);
 								}
 								Thread.sleep(1000*10);
 							}
