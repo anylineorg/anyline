@@ -82,7 +82,7 @@ public class ConfigTable {
 				configs.put(key, value);
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			LOG.error("配置文件解析异常:"+e);
 		}
 	}
 	public static String get(String key){
