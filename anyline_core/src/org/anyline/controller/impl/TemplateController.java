@@ -23,6 +23,7 @@ public class TemplateController extends AnylineController {
 	}
 	protected TemplateModelAndView createView(String name, String template){
 		TemplateModelAndView tv = new TemplateModelAndView();
+		//删除前缀(base package)
 		String basepack = ConfigTable.getString("BASE_PACKAGE")+".";
 		String base = this.getClass().getPackage().getName();
 		base = base.replace(basepack, "");
