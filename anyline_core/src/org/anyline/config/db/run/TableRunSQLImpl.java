@@ -93,8 +93,8 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			int size = columns.size();
 			for(int i=0; i<size; i++){
 				String column = columns.get(i);
-				if(column.startsWith("{")){
-					column = column.replace("{", "").replace("}", "");
+				if(column.startsWith("{") && column.endsWith("}")){
+					column = column.substring(1, column.length()-1);
 					builder.append(column);
 				}else{
 					if(column.contains("AS") || column.contains("(") || column.contains(",")){
