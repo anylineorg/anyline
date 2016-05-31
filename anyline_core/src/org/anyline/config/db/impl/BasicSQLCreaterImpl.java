@@ -288,7 +288,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			Object value = row.get(key);
 			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo());
 			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
-				value = value.toString().replace("{", "").replace("}", "");
+				String str = value.toString();
+				value = str.substring(1, str.length()-1);
 				param.append(value);
 			}else{
 				param.append("?");
@@ -365,7 +366,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}else if(value instanceof String){
 					String str = value.toString();
 					if(str.startsWith("{") && str.endsWith("}")){
-						str = str.replace("{", "").replace("}", "");
+						str = str.substring(1, str.length()-1);
 					}else{
 						str = "'" + str.replace("'", "''") + "'";
 					}
@@ -520,7 +521,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			String key = keys.get(i);
 			Object value = row.get(key);
 			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
-				value = value.toString().replace("{", "").replace("}", "");
+				String str = value.toString();
+				value = str.substring(1, str.length()-1);
 				sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 			}else{
 				sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
@@ -542,24 +544,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		run.addValues(values);
 		return run;
 	}
-	/*
-			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo());
-			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
-				value = value.toString().replace("{", "").replace("}", "");
-				param.append(value);
-			}else{
-				param.append("?");
-				if("NULL".equals(value)){
-					values.add(null);
-				}else{
-					values.add(value);
-				}
-			}
-			if(i<size-1){
-				sql.append(",");
-				param.append(",");
-			}
-		}*/
 	/**
 	 * 确认需要插入的列
 	 * @param row
