@@ -377,8 +377,9 @@ public class AnylineDaoImpl implements AnylineDao {
 								DataSet list = batchInsertStore.getDatas();
 								if(null != list && list.size()>0){
 									insert(ds, dest, list, checkPrimary, columns);
+								}else{
+									Thread.sleep(1000*10);
 								}
-								Thread.sleep(1000*10);
 							}
 						}catch(Exception e){
 							e.printStackTrace();
