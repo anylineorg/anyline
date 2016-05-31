@@ -44,7 +44,7 @@ public class BatchInsertStore {
 			//第一次失败后 补充第二次循环查找数量>=1的数据
 			for(ConcurrentLinkedDeque<DataRow> rows :map.values()){
 				int size = rows.size();
-				if(size >= 0){
+				if(size > 0){
 					int cnt = 0;
 					while(cnt < max && !rows.isEmpty()){
 						DataRow row = rows.poll();
