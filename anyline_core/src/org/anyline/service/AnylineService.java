@@ -33,6 +33,7 @@ public interface AnylineService{
 	 * @param configs		封装来自于http的查询条件
 	 * @param conditions	固定查询条件  
 	 * 			原生SQL(AND GROUP ORDER)
+	 * 			{原生}
 	 * 			[+]CD:1
 	 * 			[+]CD:
 	 * 			[+]CD:null

@@ -103,8 +103,61 @@ public class AnylineServiceImpl implements AnylineService {
         return set;
 		
 	}
+	/**
+	 * @param conditions	固定查询条件  
+	 * 			原生SQL(AND GROUP ORDER)
+	 * 			{原生}
+	 * 			+CD:1			拼接
+	 * 			+CD:			拼接 IS NULL
+	 * 			+CD:null		拼接 IS NULL
+	 * 			+CD:NULL		拼接 IS NULL
+	 * 			CD:1		拼接
+	 * 			CD:			删除
+	 * 			CD:null		删除
+	 * 			CD:NULL		拼接 IS NULL
+	 */
 	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
+		if(null != conditions){
+			int length = conditions.length;
+			for(int i=0; i<length; i++){
+				String condition = conditions[i];
+				if(condition.startsWith("{") && condition.endsWith("}")){
+					//原生 SQL
+					continue;
+				}
+				if(null == condition || "".equals(condition)){
+					continue;
+				}
+				
+				if(null != condition && condition.contains(":")){
+					String k = "";
+					String v = "";
+					String kv[] = condition.split(":");
+					if(kv.length > 0){
+						k = kv[0];
+					}
+					if(kv.length > 1){
+						v = kv[1];
+					}
+
+					if("".equals(k) || "+".equals(k)){
+						conditions[i] = "";
+						continue;
+					}
+					
+					if(k.startsWith("+")){
+						if("null".equalsIgnoreCase(v)){
+							conditions[i] = k +":NULL";
+						}
+					}else{
+						if("".equals(v) || "null".equals(v)){
+							conditions[i] = "";
+						}
+					}
+				}
+			}
+		}
 		try {
 			SQL sql = null;
 			if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
