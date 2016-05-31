@@ -31,7 +31,13 @@ public interface AnylineService{
 	 * 按条件查询
 	 * @param src			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		封装来自于http的查询条件
-	 * @param conditions	固定查询条件
+	 * @param conditions	固定查询条件  
+	 * 			原生SQL(AND GROUP ORDER)
+	 * 			[+]CD:1
+	 * 			[+]CD:
+	 * 			[+]CD:null
+	 * 			[+]CD:NULL
+	 * 			
 	 * @return
 	 */
 	public DataSet query(DataSource ds, String src, ConfigStore configs, String ... conditions);
