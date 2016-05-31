@@ -26,13 +26,11 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyContent;
 
-import org.apache.log4j.Logger;
-
 import org.anyline.tag.BaseBodyTag;
-import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SeoUtil;
 import org.anyline.util.WebUtil;
+import org.apache.log4j.Logger;
 
 /**
  * 随机插入关键词

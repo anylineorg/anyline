@@ -68,6 +68,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Autowired(required=false)
 	private DataSource dataSource;			//数据源
 	
+	
 	private BatchInsertStore batchInsertStore = new BatchInsertStore();
 	
 	private static boolean showSQL = false;
@@ -710,5 +711,4 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		return result;
 	}
- 
 }
