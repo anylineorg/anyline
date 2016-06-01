@@ -440,7 +440,7 @@ public class BasicUtil {
 	 */
 	public static String compressionSpace(String str) {
 		if (null != str) {
-			str = str.replace("\\s{2,}", " ");
+			str = str.replaceAll("\\s{2,}", " ");
 		}
 		return str;
 	}
