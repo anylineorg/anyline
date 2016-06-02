@@ -160,11 +160,11 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 		//	row.processBeforeDisplay();	//显示之前预处理
 		}catch(Exception e){
-			if(showSQLWhenError){
-				LOG.info("执行异常\n"+sql);
-				LOG.info(values);
-			}
 			LOG.error(e);
+			if(showSQLWhenError){
+				LOG.error("执行异常\n"+sql);
+				LOG.error(values);
+			}
 			throw new SQLUpdateException("更新异常:"+e);
 		}
 		return result;
@@ -306,12 +306,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+cnt);
 			}
 		}catch(Exception e){
-			if(showSQLWhenError){
-				LOG.info("\n"+sql);
-				LOG.info(values);
-			}
 			LOG.error(e);
-			e.printStackTrace();
+			if(showSQLWhenError){
+				LOG.error("\n"+sql);
+				LOG.error(values);
+			}
 			throw new SQLUpdateException("插入异常:"+e);
 		}
 		return cnt;
@@ -468,11 +467,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				LOG.info("封装耗时:"+(System.currentTimeMillis() - mid)+"ms 封装行数:"+list.size());
 			}
 		}catch(Exception e){
-			if(showSQLWhenError){
-				LOG.info("\n"+sql);
-				LOG.info(values);
-			}
 			LOG.error(e);
+			if(showSQLWhenError){
+				LOG.error("\n"+sql);
+				LOG.error(values);
+			}
 			throw new SQLQueryException("查询异常:"+e+"\nSQL:"+sql+"\nPARAM:"+values);
 		}
 		return set;
@@ -501,8 +500,8 @@ public class AnylineDaoImpl implements AnylineDao {
 		}catch(Exception e){
 			LOG.error(e);
 			if(showSQLWhenError){
-				LOG.info("\n"+sql);
-				LOG.info(values);
+				LOG.error("\n"+sql);
+				LOG.error(values);
 			}
 			throw new SQLUpdateException("执行异常:"+e+"\nSQL:"+txt+"\nPARAM:"+values);
 		}
@@ -576,11 +575,11 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			procedure.setResult(result);
 		}catch(Exception e){
-			if(showSQLWhenError){
-				LOG.info("\n"+sql);
-				LOG.info(inputValues);
-			}
 			LOG.error(e);
+			if(showSQLWhenError){
+				LOG.error("\n"+sql);
+				LOG.error(inputValues);
+			}
 			throw new SQLUpdateException("PROCEDURE执行异常:"+e+"\nPROCEDURE:"+procedure.getName()+"\nPARAM:"+procedure.getInputValues());
 		}
 		return result;
@@ -659,11 +658,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms");
 			}
 		}catch(Exception e){
-			if(showSQLWhenError){
-				LOG.info("\n"+procedure.getName());
-				LOG.info(inputValues);
-			}
 			LOG.error(e);
+			if(showSQLWhenError){
+				LOG.error("\n"+procedure.getName());
+				LOG.error(inputValues);
+			}
 			throw new SQLQueryException("查询异常:"+e+"\nPROCEDURE:"+ procedure.getName());
 		}
 		return set;
@@ -702,11 +701,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				LOG.info(values);
 			}
 		}catch(Exception e){
-			if(showSQLWhenError){
-				LOG.info("\n"+sql);
-				LOG.info(values);
-			}
 			LOG.error(e);
+			if(showSQLWhenError){
+				LOG.error("\n"+sql);
+				LOG.error(values);
+			}
 			throw new SQLUpdateException("删除异常:"+e);
 		}
 		return result;
