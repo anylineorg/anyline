@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedDeque;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.util.ConfigTable;
 
 
 public class BatchInsertStore {
@@ -25,7 +26,7 @@ public class BatchInsertStore {
 	 * @return
 	 */
 	public synchronized DataSet getDatas(){
-		int max = 100;
+		int max = ConfigTable.getInt("BATCH_INSERT_MAX_SIZE",100);//一次最多插入
 		DataSet list = new DataSet();
 		//第一次循环查找数量>=100的数据
 				for(ConcurrentLinkedDeque<DataRow> rows :map.values()){
@@ -57,16 +58,5 @@ public class BatchInsertStore {
 			}
 			
 		return list;
-	}
-	public static void main(String args[]){
-		ConcurrentLinkedDeque list = new ConcurrentLinkedDeque();
-		for(int i=0; i<100 ;i++){
-			list.add(i);
-		}
-		int size = list.size();
-		for(int i=0; i<size;i++){
-			Object item = list.poll();
-			System.out.println(list.size());
-		}
 	}
 }
