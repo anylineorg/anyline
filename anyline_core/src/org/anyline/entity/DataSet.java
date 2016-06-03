@@ -883,7 +883,7 @@ public class DataSet implements Collection<Object>, Serializable {
 			return false;
 		}
 		if (null == chkCol) {
-			chkCol = "CD";
+			chkCol = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 		}
 		int size = rows.size();
 		for (int i = 0; i < size; i++) {

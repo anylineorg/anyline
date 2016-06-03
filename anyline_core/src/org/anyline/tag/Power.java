@@ -22,8 +22,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
-
 import org.anyline.entity.DataSet;
+import org.anyline.util.ConfigTable;
 
 public class Power extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
@@ -42,7 +42,7 @@ public class Power extends BaseBodyTag {
 			if(null != pws){
 				int size = pws.getSize();
 				for(int i=0; i<size; i++){
-					String cd = pws.getString(i, "CD");
+					String cd = pws.getString(i, ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD"));
 					if(null == cd){
 						cd = pws.getString(i,"POWER_CD");
 					}

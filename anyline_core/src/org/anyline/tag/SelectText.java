@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
 
@@ -35,7 +36,7 @@ public class SelectText extends BaseBodyTag{
 	private static Logger LOG = Logger.getLogger(SelectText.class);
 	private String scope;
 	private Object data;
-	private String valueKey = "CD";
+	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 	private String textKey = "NM";
 
 	 public int doEndTag() throws JspException {
