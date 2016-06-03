@@ -29,6 +29,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 
 
@@ -37,7 +38,7 @@ public class Select extends BaseBodyTag{
 	private static Logger LOG = Logger.getLogger(Select.class);
 	private String scope;
 	private Object data;
-	private String valueKey = "CD";
+	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 	private String textKey = "NM";
 	private String head;
 	private String headValue;
