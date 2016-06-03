@@ -41,7 +41,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public static String PARENT 		= "PARENT";				//上级数据
 	public static String ALL_PARENT 	= "ALL_PARENT";			//所有上级数据
 	public static String CHILDREN 		= "CHILDREN";			//子数据
-	public static String CD				= "CD";
+	public static String CD				= ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 	public static String ITEMS			= "ITEMS";
 	private DataSet container;									//包含当前对象的容器
 
@@ -59,7 +59,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow(){
 		String pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 		if(null != pk){
-			primaryKeys.add("CD");
+			primaryKeys.add(CD);
 		}
 	}
 	public DataRow(String table){
@@ -93,7 +93,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return (null == pv ||(null == isNew)|| isNew || BasicUtil.isEmpty(pv));
 	}
 	public String getCd(){
-		return getString("CD");
+		return getString(CD);
 	}
 	public String getCode(){
 		return getString("CODE");

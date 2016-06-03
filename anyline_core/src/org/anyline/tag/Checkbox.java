@@ -28,6 +28,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 
 public class Checkbox extends BaseBodyTag {
@@ -35,7 +36,7 @@ public class Checkbox extends BaseBodyTag {
 	private static Logger LOG = Logger.getLogger(Checkbox.class);
 	private String scope;
 	private Object data;
-	private String valueKey = "CD";
+	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 	private String textKey = "NM";
 	private Object checked;	//已选中项 1或{1,2}或List
 	private String checkKey;
