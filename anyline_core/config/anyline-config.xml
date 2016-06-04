@@ -59,7 +59,6 @@
 	<!-- 数据库备份连接SN -->
 	<property key="DOWNLOAD_DB_BAK_SN">FTYIOJ_KNBV</property>
 	<!-- 数据库备份下载连接 -->
-	<property key="SERVER_DB_BAK_URL">http://www.zqsoftware.com/bs/download_db_bak</property>
 	<!-- 本地数据库备份目录 -->
 	<property key="LOCAL_DB_BAK_DIR">D:\database\mssql\bak\download</property>
 	<!-- 模板文件目录 -->
