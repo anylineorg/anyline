@@ -18,6 +18,7 @@
 package org.anyline.struts.result;
 
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,12 +26,14 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 import org.apache.log4j.Logger;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.JSONDateFormatProcessor;
 
 import com.opensymphony.xwork2.ActionInvocation;
 
@@ -40,6 +43,7 @@ public class JSONResult extends StrutsResultSupport {
 	private boolean result = true;
 	private Object data = null;
 	private String message = null;
+	private String url = null;
 	
 	
     protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
@@ -52,6 +56,7 @@ public class JSONResult extends StrutsResultSupport {
         	data = invocation.getStack().findValue("data");
         	result = BasicUtil.parseBoolean(invocation.getStack().findValue("result"),true);
         	message = invocation.getStack().findString("msg");
+        	url = invocation.getStack().findString("url");
         	//转换成JSON格式
         	//JsonConfig config = new JsonConfig();
         	String dataType   = null; 	//数据类型
@@ -84,8 +89,12 @@ public class JSONResult extends StrutsResultSupport {
         	map.put("result", result);
         	map.put("message", message);
         	map.put("data", data);
+        	map.put("url", url);
         	map.put("success", result);
-        	JSON json = JSONObject.fromObject(map);
+        	JsonConfig config = new JsonConfig();
+    		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
+        	JSON json = JSONObject.fromObject(map, config);  
+    		
         	writer.print(json.toString());
         }catch(Exception e){
         	LOG.error(e);

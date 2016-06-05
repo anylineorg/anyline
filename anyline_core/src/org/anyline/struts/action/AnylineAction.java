@@ -263,7 +263,6 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		this.data = data;
 		if (isAjaxRequest(request)) {
 			result = true;
-			url = request.getRequestURI();
 			return AJAX;
 		}
 		return super.SUCCESS;
