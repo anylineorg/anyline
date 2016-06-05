@@ -459,6 +459,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return result;
 	}
+	public long getLong(String key){
+		long result = 0;
+		try{
+			Object value = get(key);
+			result = Long.parseLong(value.toString());
+		}catch(Exception e){
+			result = 0;
+		}
+		return result;
+	}
 	public boolean getBoolean(String key, boolean def){
 		return BasicUtil.parseBoolean(getString(key), def);
 	}
