@@ -160,11 +160,12 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		try {
 			SQL sql = null;
-			if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
+			if (src.toUpperCase().trim().startsWith("SELECT")) {
+				//java中定义
+				sql = new TextSQLImpl(src);
+			} else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
 				/* XML定义 */
 				sql = SQLStoreImpl.parseSQL(src);
-			} else if (src.toUpperCase().trim().startsWith("SELECT")) {
-				sql = new TextSQLImpl(src);
 			} else {
 				/* 自动生成 */
 				sql = new TableSQLImpl();
