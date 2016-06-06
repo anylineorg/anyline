@@ -61,6 +61,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != pk){
 			primaryKeys.add(CD);
 		}
+		this.put("anyline_data_row_create_time", System.currentTimeMillis());
 	}
 	public DataRow(String table){
 		this();
@@ -74,7 +75,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			put(key.toUpperCase(), value);
 		}
 	}
-
+	public long getCreateTime(){
+		return this.getLong("anyline_data_row_create_time");
+	}
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
 		for(String key : keys){
