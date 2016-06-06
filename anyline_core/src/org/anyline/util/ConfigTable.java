@@ -20,7 +20,6 @@ package org.anyline.util;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -33,7 +32,10 @@ public class ConfigTable {
 	private static Logger LOG = Logger.getLogger(ConfigTable.class);
 	private static String webRoot;
 	private static Hashtable<String,String> configs;
-	
+	private static long lastLoadTime = 0;	//最后一次加载时间
+	private static int reload = 0;			//重新加载间隔
+	private static boolean debug = false;
+	private static boolean sqlDebug = false;
 	static{
 		init();
 	}
@@ -84,9 +86,19 @@ public class ConfigTable {
 		} catch (Exception e) {
 			LOG.error("配置文件解析异常:"+e);
 		}
+		lastLoadTime = System.currentTimeMillis();
+		reload = getInt("RELOAD");
+		debug = getBoolean("DEBUG");
+		sqlDebug = getBoolean("SQL_DEBUG");
 	}
 	public static String get(String key){
-		return configs.get(key);
+		String val = null;
+		if(reload > 0 && (System.currentTimeMillis() - lastLoadTime)/1000 > reload){
+			//重新加载
+			init();
+		}
+		val = configs.get(key);
+		return val;
 	}
 	public static String getString(String key) {
 		return get(key);
@@ -110,27 +122,16 @@ public class ConfigTable {
 	public static int getInt(String key, int def){
 		return BasicUtil.parseInt(get(key), def);
 	}
-	public static boolean isLocal(){
-		String flag = getString("IS_LOCAL");
-		boolean result = false;
-		if(null == flag){
-			 List<String>ips = BasicUtil.getLocalIpsAddress();
-			 String localServerIp = ConfigTable.getString("LOCAL_IP_PREFIX");
-			 for(String ip:ips){
-				 if(ip.startsWith(localServerIp)){
-					 	result = true;
-						if(null == configs){
-							configs = new Hashtable<String,String>();
-						}
-						configs.put("IS_LOCAL", "1");
-					 break;
-				 }
-			 }
-		}else{
-			if("1".equals(flag)){
-				result = true;
-			}
-		}
-		return result;
+
+
+	public static int getReload() {
+		return reload;
+	}
+
+	public static boolean isDebug() {
+		return debug;
+	}
+	public static boolean isSQLDebug() {
+		return sqlDebug;
 	}
 }
