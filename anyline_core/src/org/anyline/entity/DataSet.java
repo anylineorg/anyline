@@ -51,10 +51,15 @@ public class DataSet implements Collection<Object>, Serializable {
 	private String dataSource; 				// 数据源(表|视图|XML定义SQL)
 	private String author;
 	private String table;
+	private long createTime;
 	
 
 	@Autowired
 	protected AnylineService service;
+	public DataSet() {
+		rows = new ArrayList<DataRow>();
+		createTime = System.currentTimeMillis();
+	}
 	/**
 	 * 添加主键
 	 * 
@@ -159,9 +164,7 @@ public class DataSet implements Collection<Object>, Serializable {
 		return head;
 	}
 
-	public DataSet() {
-		rows = new ArrayList<DataRow>();
-	}
+
 
 	public DataSet(List<Map<String, Object>> list) {
 		rows = new ArrayList<DataRow>();
@@ -991,6 +994,10 @@ public class DataSet implements Collection<Object>, Serializable {
 		}else{
 			this.table = table;
 		}
+	}
+	
+	public long getCreateTime() {
+		return createTime;
 	}
 	public int delete(){
 		return service.delete(this);

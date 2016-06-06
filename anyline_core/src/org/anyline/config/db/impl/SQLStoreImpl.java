@@ -45,18 +45,22 @@ public class SQLStoreImpl extends SQLStore{
 	private static SQLStoreImpl instance;
 	private static Hashtable<String,SQL> sqls = new Hashtable<String,SQL>();
 	private static Logger LOG = Logger.getLogger(SQLStoreImpl.class);
-
 	private SQLStoreImpl() {}
 	private static String sqlDir;
-	static{;
+	private static long lastLoadTime = 0;
+	static{
 		loadSQL();
 	}
-	public static void loadSQL(){
+	public static synchronized void loadSQL(){
 		sqlDir = ConfigTable.getString("SQL_STORE_DIR");
 		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),sqlDir),"xml");
 		for(File file:files){
+			if(ConfigTable.isSQLDebug()){
+				LOG.warn("解析SQL FILE:" + file.getAbsolutePath());
+			}
 			sqls.putAll(parseSQLFile(file));
 		}
+		lastLoadTime = System.currentTimeMillis();
 	}
 	
 
@@ -123,7 +127,9 @@ public class SQLStoreImpl extends SQLStore{
 			String order = sqlElement.elementText("order");
 			sql.group(group);
 			sql.order(order);
-			
+			if(ConfigTable.isSQLDebug()){
+				LOG.warn("解析SQL ID:"+sqlId + "\nTEXT:"+sqlText);
+			}
 			result.put(sqlId, sql);
 		}
 		return result;
@@ -148,7 +154,13 @@ public class SQLStoreImpl extends SQLStore{
 
 	public static SQL parseSQL(String id){
 		SQL sql = null;
+		if(ConfigTable.getReload()>0 && (System.currentTimeMillis()-lastLoadTime)/1000 > ConfigTable.getReload()){
+			loadSQL();
+		}
 		try{
+			if(ConfigTable.isSQLDebug()){
+				LOG.warn("提取SQL ID:" + id);
+			}
 			sql = sqls.get(id);
 		}catch(Exception e){
 			LOG.error("SQL提取失败:"+id);

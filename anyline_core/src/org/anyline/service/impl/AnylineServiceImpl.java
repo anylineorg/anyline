@@ -38,6 +38,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,8 @@ public class AnylineServiceImpl implements AnylineService {
 	@Autowired(required = false)
 	@Qualifier("anylineDao")
 	protected AnylineDao dao;
-
+	
+	
 	public AnylineDao getDao() {
 		return dao;
 	}
@@ -118,6 +120,9 @@ public class AnylineServiceImpl implements AnylineService {
 	 */
 	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
+		if(ConfigTable.isSQLDebug()){
+			LOG.warn("解析SQL queryFromDao:"+src);
+		}
 		if(null != conditions){
 			int length = conditions.length;
 			for(int i=0; i<length; i++){
@@ -159,20 +164,39 @@ public class AnylineServiceImpl implements AnylineService {
 			}
 		}
 		try {
-			SQL sql = null;
-			if (src.toUpperCase().trim().startsWith("SELECT")) {
-				//java中定义
-				sql = new TextSQLImpl(src);
-			} else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
-				/* XML定义 */
-				sql = SQLStoreImpl.parseSQL(src);
-			} else {
-				/* 自动生成 */
-				sql = new TableSQLImpl();
-				sql.setDataSource(src);
+			synchronized (this) {
+				SQL sql = null;
+				src = src.trim();
+				if (src.startsWith("{") && src.endsWith("}")) {
+					/* XML定义 */
+					if(ConfigTable.isSQLDebug()){
+						LOG.warn("SQL 类型:{JAVA定义} src="+src);
+					}
+					src = src.substring(1,src.length()-1);
+					sql = new TextSQLImpl(src);
+				} else if (src.toUpperCase().trim().startsWith("SELECT")) {
+					//java中定义
+					if(ConfigTable.isSQLDebug()){
+						LOG.warn("SQL类型:JAVA定义 src="+src);
+					}
+					sql = new TextSQLImpl(src);
+				}else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
+					/* XML定义 */
+					if(ConfigTable.isSQLDebug()){
+						LOG.warn("SQL类型:XML定义 src="+src);
+					}
+					sql = SQLStoreImpl.parseSQL(src);
+				} else {
+					/* 自动生成 */
+					if(ConfigTable.isSQLDebug()){
+						LOG.warn("SQL类型:auto src="+src);
+					}
+					sql = new TableSQLImpl();
+					sql.setDataSource(src);
+				}
+				set = dao.query(ds, sql, configs, conditions);
+				set.setService(this);
 			}
-			set = dao.query(ds, sql, configs, conditions);
-			set.setService(this);
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
