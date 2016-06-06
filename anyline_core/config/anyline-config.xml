@@ -8,6 +8,9 @@
     <!ATTLIST property key CDATA #REQUIRED>
 ]>
 <properties>
+	<!-- 重新加载配置时间(秒) 0:只在启动时加载一次 -->
+	<property key="RELOAD">120</property>
+	<property key="DEBUG">true</property>
 	<property key="MIN_VERSION">21</property>
 	<property key="DATABASE_VERSION">2005</property>
 	<property key="IS_HTTP_CLIENT_TRACE">false</property>
@@ -31,6 +34,7 @@
 	<property key="SHOW_SQL_PARAM">true</property>
 	<property key="SHOW_SQL_WHEN_ERROR">false</property>
 	<property key="SHOW_SQL_PARAM_WHEN_ERROR">false</property>
+	<property key="SQL_DEBUG">true</property>
 	
 
 	<!-- 登录验证码图片宽度 -->
