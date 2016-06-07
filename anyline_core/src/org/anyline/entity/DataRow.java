@@ -56,6 +56,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	@Autowired
 	protected AnylineService service;
 	
+	public static DataRow parse(Object obj){
+		DataRow row = new DataRow();
+		if(null != obj){
+			List<String> fields = BeanUtil.getFieldsName(obj.getClass());
+			for(String field : fields){
+				row.put(field, BeanUtil.getFieldValue(obj, field));
+			}
+		}
+		return row;
+	}
 	public DataRow(){
 		String pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 		if(null != pk){
