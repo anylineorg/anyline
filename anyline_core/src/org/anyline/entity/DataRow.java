@@ -50,6 +50,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private String author;
 	private String table;
 	private Object clientTrace;							//客户端数据
+	private long createTime = 0;
 
 	protected Boolean isNew = false;					//强制新建(适应hibernate主键策略)
 
@@ -71,7 +72,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != pk){
 			primaryKeys.add(CD);
 		}
-		this.put("anyline_data_row_create_time", System.currentTimeMillis());
+		createTime = System.currentTimeMillis();
 	}
 	public DataRow(String table){
 		this();
@@ -86,7 +87,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 	}
 	public long getCreateTime(){
-		return this.getLong("anyline_data_row_create_time");
+		return createTime;
 	}
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();

@@ -75,6 +75,17 @@ public class HttpUtil {
 		HttpMethod method = instance.packPost(url, params);
 		return instance.invoke(method);
 	}
+
+	public static Source get(HttpProxy proxy, String url, String encode, Object... params) {
+		Map<String, Object> map = paramToMap(params);
+		return get(proxy, url, encode, map);
+	}
+	public static Source get(String url, String encode, Object... params) {
+		return get(null, url, encode, params);
+	}
+	public static Source get(String url, String encode, Map<String, Object> params) {
+		return get(null, url, encode, params);
+	}
 	public static Source get(HttpProxy proxy,String url, String encode,  Map<String, Object> params) {
 		HttpUtil instance = getInstance();
 		instance.setProxy(proxy);
