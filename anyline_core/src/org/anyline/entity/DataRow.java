@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统
- *
  */
 package org.anyline.entity;
 import java.io.Serializable;
