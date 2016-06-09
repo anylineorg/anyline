@@ -12,14 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统
+ *
  */
-
-
 package org.anyline.entity;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +33,7 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -83,6 +86,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
 			String key = itr.next();
 			Object value = map.get(key);
+			if(value != null && value instanceof Date){
+				value = DateUtil.format((Date)value, DateUtil.FORMAT_FULL);
+			}
 			put(key.toUpperCase(), value);
 		}
 	}
