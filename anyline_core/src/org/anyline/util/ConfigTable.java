@@ -77,7 +77,7 @@ public class ConfigTable {
 			line(" svn:svn://git.oschina.net/anyline/anyline", " ", false);
 			line("","*", true);
 			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]                         ", "", false);
-			line(" debug状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>         ", "", false);
+			line(" Debug状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>         ", "", false);
 			line("","*", true);
 		}catch(Exception e){
 			
@@ -125,23 +125,30 @@ public class ConfigTable {
 				Element propertyElement = itrProperty.next();
 				String key = propertyElement.attributeValue("key");
 				String value = propertyElement.getTextTrim();
-				configs.put(key, value);
+				configs.put(key.toUpperCase().trim(), value);
 			}
 		} catch (Exception e) {
 			LOG.error("配置文件解析异常:"+e);
 		}
 		lastLoadTime = System.currentTimeMillis();
 		reload = getInt("RELOAD");
-		debug = getBoolean("DEBUG");
+		if("false".equalsIgnoreCase(getString("DEBUG"))){
+			debug = false;
+		}else{			
+			debug = true;
+		}
 		sqlDebug = getBoolean("SQL_DEBUG");
 	}
 	public static String get(String key){
+		if(null == key){
+			return null;
+		}
 		String val = null;
 		if(reload > 0 && (System.currentTimeMillis() - lastLoadTime)/1000 > reload){
 			//重新加载
 			init();
 		}
-		val = configs.get(key);
+		val = configs.get(key.toUpperCase().trim());
 		return val;
 	}
 	public static String getString(String key) {
