@@ -36,8 +36,46 @@ public class ConfigTable {
 	private static int reload = 0;			//重新加载间隔
 	private static boolean debug = false;
 	private static boolean sqlDebug = false;
+	private static final String version = "6.X";
+	private static final String minVersion = "0709";
 	static{
 		init();
+		debug();
+	}
+	private static void line(String src, String chr, boolean center){
+		int len = 80;
+		int fill = 0 ;
+		String line = "";
+		if(center){
+			fill = (len - src.length() -2)/2;
+			line = "*"+BasicUtil.fillChar("", chr, fill) + src +BasicUtil.fillChar("", chr, fill) +"*";
+		}else{
+			fill = len - src.length() - 2;
+			line = "*" + src + BasicUtil.fillChar("", chr, fill)+"*";
+		}
+		System.out.println(line);
+	}
+	
+	private static void debug(){
+		if(!isDebug()){
+			return;
+		}
+		String path =ConfigTable.class.getResource("").getPath();
+		//path = path.substring(path.indexOf("/"),path.indexOf("!"));
+		String time = new File(path).lastModified()+"";
+		line("","*", true);
+		line("Anyline Core " + version, " ", true);
+		line(" www.anyline.org", " ", true);
+		line(""," ", true);
+		line("MinVersion " + minVersion + "[" + time+"]", " ", true);
+		line(""," ", true);
+		line("","*", true);
+		line(" git:https://git.oschina.net/anyline/anyline.git", " ", false);
+		line(" svn:svn://git.oschina.net/anyline/anyline", " ", false);
+		line("","*", true);
+		line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]                         ", "", false);
+		line(" debug状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>         ", "", false);
+		line("","*", true);
 	}
 
 	private ConfigTable() {}
@@ -122,7 +160,12 @@ public class ConfigTable {
 	public static int getInt(String key, int def){
 		return BasicUtil.parseInt(get(key), def);
 	}
-
+	public static String getVersion(){
+		return version;
+	}
+	public static String getMinVersion(){
+		return minVersion;
+	}
 
 	public static int getReload() {
 		return reload;
