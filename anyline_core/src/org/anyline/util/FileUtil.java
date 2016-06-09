@@ -419,7 +419,7 @@ public class FileUtil {
 		boolean result = true;
 		if (srcPath.isDirectory()){
 			if (!dstPath.exists()){
-				result = dstPath.mkdir();
+				result = dstPath.mkdirs();
 			}
 			String files[] = srcPath.list();
 			for(int i = 0; i < files.length; i++){
@@ -429,13 +429,17 @@ public class FileUtil {
 			if(!srcPath.exists()){
 				result = false;
 			}else{
+				File dir = dstPath.getParentFile();
+				if(!dir.exists()){
+					dir.mkdirs();
+				}
 				InputStream in = null;
 				OutputStream out = null;
 				try{
 					if(dstPath.isDirectory()){
-						File dir = dstPath.getParentFile();
-						if(!dir.exists()){
-							dir.mkdirs();
+						File dirs = dstPath.getParentFile();
+						if(!dirs.exists()){
+							dirs.mkdirs();
 						}
 					}
 					dstPath.createNewFile();
