@@ -21,7 +21,10 @@ public class LicenseUtil {
 " * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n"+
 " * See the License for the specific language governing permissions and\n"+
 " * limitations under the License.\n"+
-" */\n";
+" *\n"+
+" *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统\n"+
+" *\n"+
+" */\npa";
 	public static void main(String args[]){
 		addLicense();
 		//removeLicense();
@@ -49,7 +52,7 @@ public class LicenseUtil {
 			}else{
 				int fr = content.lastIndexOf("limitations under the License");
 				fr = content.indexOf("*/",fr);
-				content = content.substring(fr+2);
+				content = content.substring(fr+4);
 				content = license + content;
 			}
 			FileUtil.writeFile(content, file, false);
