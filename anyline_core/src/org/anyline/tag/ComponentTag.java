@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统
  */
 
 
@@ -158,7 +160,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		 onfilterchange				= null; //当可视滤镜更改状态或完成转换时触发。
 		 onfocus					= null; //当对象获得焦点时触发。
 		 onfocusin					= null; //当元素将要被设置为焦点之前触发。
-		 onfocusout					= null; //在移动焦点到其它元素之后立即触发于当前拥有焦点的元��上触发。
+		 onfocusout					= null; //在���动焦点到其它元素之后立即触发于当前拥有焦点的元��上触发��
 		 onhelp						= null; //当用户在浏览器为当前窗口时按F1键时触发。
 		 onkeydown					= null; //当用户按下键盘按键时触发。
 		 onkeypress					= null; //当用户按下字面键时触发。
@@ -236,7 +238,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		if(null != vcard_name				){builder.append(" vcard_name=\""				).append(vcard_name				).append("\"");}//设置或获取对象的vcard值，以便用于自动完成框。
 		if(null != width					){builder.append(" width=\""					).append(width					).append("\"");}//设置或获取对象的计算宽度。
 		if(null != onactivate				){builder.append(" onactivate=\""				).append(onactivate				).append("\"");}//当对象设置为活动元素时触发。
-		if(null != onafterupdate			){builder.append(" onafterupdate=\""			).append(onafterupdate			).append("\"");}//当成功更新数据源对象中的关联对象后在数据绑定对象上触发。
+		if(null != onafterupdate			){builder.append(" onafterupdate=\""			).append(onafterupdate			).append("\"");}//当成功更新数据源对象中的关联对象后在����绑定对象上触发。
 		if(null != onbeforeactivate			){builder.append(" onbeforeactivate=\""			).append(onbeforeactivate		).append("\"");}//对象要被设置为当前元素前立即触发。
 		if(null != onbeforecut				){builder.append(" onbeforecut=\""				).append(onbeforecut			).append("\"");}//当选中区从文档中删除之前在源对象触发。
 		if(null != onbeforedeactivate		){builder.append(" onbeforedeactivate=\""		).append(onbeforedeactivate		).append("\"");}//在activeElement从当前对象变为父文档其它对象之前立即触发。
@@ -369,7 +371,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 	protected String onpropertychange			; //当在对象上发生对象上发生属性更改时触发。
 	protected String onreadyTRAIN_STAGEchange			; //当对象状态变更时触发。
 	protected String onresize					; //当对象的大小将要改变时触发。
-	protected String onresizeend				; //当用户更改完控件选中区中对象的尺寸时触发。
+	protected String onresizeend				; //当用户更改完控��选��区中对象的尺寸时触发。
 	protected String onresizestart				; //当用户开始更改控件选中区中对象的尺寸时触发。
 	protected String onselect					; //当当前选中区改变时触发。
 	protected String onselectstart				; //对象将要被���中时触发。

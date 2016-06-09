@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统
  */
 
 package org.anyline.struts.result;

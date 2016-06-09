@@ -12,6 +12,8 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统
  */
 
 
@@ -60,22 +62,26 @@ public class ConfigTable {
 		if(!isDebug()){
 			return;
 		}
-		String path =ConfigTable.class.getResource("").getPath();
-		//path = path.substring(path.indexOf("/"),path.indexOf("!"));
-		String time = new File(path).lastModified()+"";
-		line("","*", true);
-		line("Anyline Core " + version, " ", true);
-		line(" www.anyline.org", " ", true);
-		line(""," ", true);
-		line("MinVersion " + minVersion + "[" + time+"]", " ", true);
-		line(""," ", true);
-		line("","*", true);
-		line(" git:https://git.oschina.net/anyline/anyline.git", " ", false);
-		line(" svn:svn://git.oschina.net/anyline/anyline", " ", false);
-		line("","*", true);
-		line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]                         ", "", false);
-		line(" debug状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>         ", "", false);
-		line("","*", true);
+		try{
+			String path =ConfigTable.class.getResource("").getPath();
+			path = path.substring(path.indexOf("/"),path.indexOf("!"));
+			String time = new File(path).lastModified()+"";
+			line("","*", true);
+			line("Anyline Core " + version, " ", true);
+			line(" www.anyline.org", " ", true);
+			line(""," ", true);
+			line("MinVersion " + minVersion + "[" + time+"]", " ", true);
+			line(""," ", true);
+			line("","*", true);
+			line(" git:https://git.oschina.net/anyline/anyline.git", " ", false);
+			line(" svn:svn://git.oschina.net/anyline/anyline", " ", false);
+			line("","*", true);
+			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]                         ", "", false);
+			line(" debug状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>         ", "", false);
+			line("","*", true);
+		}catch(Exception e){
+			
+		}
 	}
 
 	private ConfigTable() {}
