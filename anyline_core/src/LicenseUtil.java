@@ -2,6 +2,7 @@
 import java.io.File;
 import java.util.List;
 
+import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 
 
@@ -24,10 +25,20 @@ public class LicenseUtil {
 " *\n"+
 " *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统\n"+
 " *\n"+
-" */\npa";
+" */\n";
 	public static void main(String args[]){
-		addLicense();
+		//addLicense();
 		//removeLicense();
+		String path = LicenseUtil.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		path = ConfigTable.getWebRoot() + "/WEB-INF/lib/anyline_core.jar";
+		List<File> files = FileUtil.getZipAllChildrenFile(new File(path));
+		String s = 
+				"************************************************************************\n"
+			   +"*                           AnyLine Core V6.X                          *\n"
+			   +"************************************************************************\n"
+			   +path
+				;
+		System.out.println(s);
 	}
 	public static void removeLicense(){
 		File dir = new File(LicenseUtil.class.getResource("").getPath().replace("WebRoot/WEB-INF/classes", "src/org"));
