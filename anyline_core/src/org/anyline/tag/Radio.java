@@ -156,6 +156,8 @@ public class Radio extends BaseBodyTag{
 	public void release() {
 		scope = null;
 		data = null;
+		value = null;
+		body = null;
 	}
 
 	public String getScope() {
