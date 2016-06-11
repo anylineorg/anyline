@@ -99,7 +99,7 @@ public class Select extends BaseBodyTag{
 				for(Object item:items){
 					Object value = BeanUtil.getFieldValue(item, valueKey);
 					html += "<option value='" + value + "'";
-					if(null != value && value.toString().equals(this.value)){
+					if(null != value && null != this.value && value.toString().equals(this.value.toString())){
 						html += " selected='selected'";
 					}
 					String text = "";
@@ -168,6 +168,10 @@ public class Select extends BaseBodyTag{
 	public void release() {
 		scope = null;
 		data = null;
+		scope = null;
+		head = null;
+		headValue = null;
+		
 	}
 
 

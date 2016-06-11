@@ -40,7 +40,7 @@ public class Checkbox extends BaseBodyTag {
 	private Object data;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 	private String textKey = "NM";
-	private Object checked;	//已选中项 1或{1,2}或List
+	//private Object checked;	//
 	private String checkKey;
 
 	public int doEndTag() throws JspException {
@@ -79,23 +79,23 @@ public class Checkbox extends BaseBodyTag {
 					data = list;
 				}
 
-				if (null != checked) {
-					if (checked instanceof String) {
-						if (checked.toString().endsWith("}")) {
-							checked = checked.toString().replace("{", "").replace(
+				if (null != this.value) {
+					if (this.value instanceof String) {
+						if (this.value.toString().endsWith("}")) {
+							this.value = this.value.toString().replace("{", "").replace(
 									"}", "");
 						}
 					}
-					if (checked instanceof String) {
-						String items[] = checked.toString().split(",");
+					if (this.value instanceof String) {
+						String items[] = this.value.toString().split(",");
 						List list = new ArrayList();
 						for (String item : items) {
 							list.add(item);
 						}
-						checked = list;
-					}else if(checked instanceof Collection){
+						this.value = list;
+					}else if(this.value instanceof Collection){
 						List list = new ArrayList();
-						Collection cols = (Collection)checked;
+						Collection cols = (Collection)this.value;
 						if(null == checkKey){
 							checkKey = valueKey;
 						}
@@ -106,11 +106,11 @@ public class Checkbox extends BaseBodyTag {
 							}
 							list.add(val);
 						}
-						checked = list;
+						this.value = list;
 					}
 				}
 				Collection<Map> items = (Collection<Map>) data;
-				Collection chks = (Collection)checked;
+				Collection chks = (Collection)this.value;
 				if (null != items)
 					for (Map item : items) {
 						Object val = item.get(valueKey);
@@ -156,7 +156,7 @@ public class Checkbox extends BaseBodyTag {
 	private boolean checked(Collection<Object> chks, Object value){
 		if(null != chks){
 			for(Object chk:chks){
-				if(null != chk && chk.equals(value)){
+				if(null != chk && null != value && chk.equals(value.toString())){
 					return true;
 				}
 			}
@@ -167,12 +167,6 @@ public class Checkbox extends BaseBodyTag {
 		return data;
 	}
 
-	public Object getChecked() {
-		return checked;
-	}
-	public void setChecked(Object checked) {
-		this.checked = checked;
-	}
 	public String getCheckKey() {
 		return checkKey;
 	}
@@ -203,6 +197,8 @@ public class Checkbox extends BaseBodyTag {
 	public void release() {
 		scope = null;
 		data = null;
+		value = null;
+		checkKey = null;
 	}
 
 	public String getScope() {
