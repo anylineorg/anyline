@@ -284,6 +284,7 @@
 	<tag>
 		<name>checkbox</name>
 		<tagclass>org.anyline.tag.Checkbox</tagclass>
+		<info>复选 框 value:已选中项 1或{1,2}或List</info>
 		<attribute>
 			<name>data</name>
 			<required>true</required>
@@ -295,10 +296,6 @@
 		</attribute>
 		<attribute>
 			<name>textKey</name>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>checked</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
