@@ -370,22 +370,12 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return result;
 	}
 	/**
-	 * 设置模板
-	 * @param template
-	 */
-	protected void setTemplate(String template, String style, String data){
-		request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH, template);
-	}
-	protected void template(String template){
-		request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH, template);
-	}
-	/**
 	 * 
 	 * @param layout 布局path
 	 * @param style  样式path
 	 * @param data	  数据path
 	 */
-	protected void SetTemplate(String layout, String style, String data){
+	protected void setTemplate(String layout, String style, String data){
 		request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_LAYOUT_PATH, layout);
 		try{
 			if(null != style){
@@ -402,6 +392,10 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 						style = styleDir + style;
 					}
 				}
+			}else{
+				if(ConfigTable.isDebug()){
+					LOG.warn("未设置样式模板,有可能需要数据url中通过parseJsp合成样式与数据");
+				}
 			}
 			request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_STYLE_PATH, DESUtil.getInstance().encrypt(style));
 		}catch(Exception e){
@@ -410,12 +404,12 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_DATA_PATH, data);
 	}
 	protected void template(String layout, String style, String data){
-		SetTemplate(layout, style, data);
+		setTemplate(layout, style, data);
+	}
+	protected void template(String template){
+		template(template, null, null);
 	}
 
-	
-	
-	
 	
 	public String getUploadTable(String cf){
 		return getUploadTable(request, cf);

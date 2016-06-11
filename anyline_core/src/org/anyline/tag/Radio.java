@@ -47,10 +47,7 @@ public class Radio extends BaseBodyTag{
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-		String html = "<span "+tag() + ">";
-		if(null != body){
-			html += body;
-		}
+		String html = "";
 		try{
 			if(BasicUtil.isEmpty(name)){
 				name = BasicUtil.getRandomLowerString(10);
@@ -87,7 +84,7 @@ public class Radio extends BaseBodyTag{
 					Object value = BeanUtil.getFieldValue(item, valueKey);
 					String id = name +"_"+ value;
 					html += "<input type='radio' value='" + value + "' name='"+name+"' id='"+id+"'";
-					if(null != value && value.toString().equals(this.value)){
+					if(null != value && null != this.value && value.toString().equals(this.value.toString())){
 						html += " checked='checked'";
 					}
 					String text = "";
