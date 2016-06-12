@@ -40,6 +40,10 @@ public class ConfigTable {
 	private static boolean sqlDebug = false;
 	private static final String version = "6.X";
 	private static final String minVersion = "0709";
+	public static void main(String args[]){
+		init();
+		debug();
+	}
 	static{
 		init();
 		debug();
@@ -64,7 +68,8 @@ public class ConfigTable {
 		}
 		try{
 			String path =ConfigTable.class.getResource("").getPath();
-			path = path.substring(path.indexOf("/"),path.indexOf("!"));
+			
+			//path = path.substring(path.indexOf("/"),path.indexOf("!"));
 			String time = new File(path).lastModified()+"";
 			line("","*", true);
 			line("Anyline Core " + version, " ", true);
@@ -77,10 +82,11 @@ public class ConfigTable {
 			line(" svn:svn://git.oschina.net/anyline/anyline", " ", false);
 			line("","*", true);
 			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]                         ", "", false);
-			line(" Debug状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>         ", "", false);
+			line(" Debug 状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>        ", "", false);
+			line(" =====================生产环境务必修改密钥文件key.xml=============================        ", "", false);
 			line("","*", true);
 		}catch(Exception e){
-			
+			e.printStackTrace();
 		}
 	}
 
@@ -132,7 +138,7 @@ public class ConfigTable {
 		}
 		lastLoadTime = System.currentTimeMillis();
 		reload = getInt("RELOAD");
-		debug = getBoolean("DEGUG");
+		debug = getBoolean("DEBUG");
 		sqlDebug = getBoolean("SQL_DEBUG");
 	}
 	public static String get(String key){
