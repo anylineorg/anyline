@@ -79,6 +79,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 		super.release();
 		this.value = null;
 		this.body = null;
+		this.format = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
