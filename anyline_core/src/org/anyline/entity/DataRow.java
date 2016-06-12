@@ -85,9 +85,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
 			String key = itr.next();
 			Object value = map.get(key);
-			if(value != null && value instanceof Date){
-				value = DateUtil.format((Date)value, DateUtil.FORMAT_FULL);
-			}
 			put(key.toUpperCase(), value);
 		}
 	}

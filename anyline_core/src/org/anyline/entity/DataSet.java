@@ -905,6 +905,7 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * @param keys
 	 * @return
 	 * dispatchItems(items, "DEPAT_CD")
+	 * dispatchItems(items, "CD:BASE_CD")
 	 */
 	public DataSet dispatchItems(DataSet items, String ... keys){
 		if(null == items || null == keys || keys.length == 0){
@@ -914,8 +915,19 @@ public class DataSet implements Collection<Object>, Serializable {
 			String[] params = new String[keys.length*2];
 			int idx = 0;
 			for(String key:keys){
-				params[idx++] = key;
-				params[idx++] = row.getString(key);
+
+				String key1 = "";
+				String key2 = "";
+				if(key.contains(":")){
+					String ks[] = key.split(":");
+					key1 = ks[0];
+					key2 = ks[1];
+				}else{
+					key1 = key;
+					key2 = key;
+				}
+				params[idx++] = key2;
+				params[idx++] = row.getString(key1);
 			}
 			row.putItems(items.getRows(params));
 		}
