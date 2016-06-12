@@ -132,11 +132,7 @@ public class ConfigTable {
 		}
 		lastLoadTime = System.currentTimeMillis();
 		reload = getInt("RELOAD");
-		if("false".equalsIgnoreCase(getString("DEBUG"))){
-			debug = false;
-		}else{			
-			debug = true;
-		}
+		debug = getBoolean("DEGUG");
 		sqlDebug = getBoolean("SQL_DEBUG");
 	}
 	public static String get(String key){
