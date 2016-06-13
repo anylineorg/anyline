@@ -432,13 +432,13 @@ public class PageNaviImpl implements PageNavi{
 		builder.append(createHidParams());
 		builder.append("</form>\n");
 		builder.append("<div class='anyline_navi'>\n");
-		builder.append("<span class='navi-summary'>\n");
+		builder.append("<div class='navi-summary'>\n");
 		builder.append("共<span class='navi-total-row'>").append(totalRow).append("</span>条\n");
 		builder.append("第<span class='navi-cur-page'>").append(curPage)
-		.append("</span>/<span class='navi-total-page'>").append(totalPage).append("</span>页\n");
+		.append("</span>/<span class='navi-total-page'>").append(totalPage).append("</span>页\n</div>");
 		builder.append("<input type='button' class='navi-first-button' value='第一页' onclick='_navi_go(1)'/>\n");
 		builder.append("<input type='button' class='navi-prev-button' value='上一页' onclick='_navi_go("+(int)NumberUtil.getMax(curPage-1,1)+")'/>\n");
-		builder.append("<span class='navi-num-border'>\n");
+		builder.append("<div class='navi-num-border'>\n");
 		int fr = curPage - 5;
 		if(fr <=0){
 			fr = 1;
@@ -454,10 +454,10 @@ public class PageNaviImpl implements PageNavi{
 			}
 			builder.append("<span class='navi-num-item"+cur+"' onclick='_navi_go("+i+")'>").append(i).append("</span>\n");
 		}
-		builder.append("</span>");
+		builder.append("</div>");
 		builder.append("<input type='button' class='navi-next-button' value='下一页' onclick='_navi_go("+(int)NumberUtil.getMin(curPage+1, totalPage)+")'/>\n");
 		builder.append("<input type='button' class='navi-last-button' value='最后页' onclick='_navi_go("+totalPage+")'/>\n");
-		builder.append("</span>\n");
+		builder.append("</div>\n");
 		builder.append("转到<input type='text' id='_anyline_go' value='"+curPage+"' class='navi-go-txt'/>页 &nbsp;<input type='button' value='确定' class='navi-go-button' onclick='_navi_go()'/>\n");
 		builder.append("</div>");
 		return builder.toString();
