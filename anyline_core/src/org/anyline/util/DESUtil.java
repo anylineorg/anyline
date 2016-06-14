@@ -19,6 +19,7 @@
 
 package org.anyline.util;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -163,9 +164,10 @@ public class DESUtil {
 	}
 	
 	
-	public String decrypt(String str)throws IllegalBlockSizeException, BadPaddingException{
-		String result =  new String(decrypt(hexStr2ByteArr(str)));
-		result = result.substring(DEFAULT_SALT.length());
+	public String decrypt(String str)throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
+		String result = "";
+			result = new String(decrypt(hexStr2ByteArr(str)),ConfigTable.getString("DES_ENCODE","UTF-8"));
+			result = result.substring(DEFAULT_SALT.length());
 		return result;
 	}
 	
