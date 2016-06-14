@@ -35,6 +35,11 @@
 	<property key="SHOW_SQL_WHEN_ERROR">false</property>
 	<property key="SHOW_SQL_PARAM_WHEN_ERROR">false</property>
 	<property key="SQL_DEBUG">true</property>
+	<property key="DES_ENCODE">UTF-8</property>
+	
+	
+	
+	
 	
 
 	<!-- 登录验证码图片宽度 -->
@@ -63,8 +68,6 @@
 	<!-- 数据库备份连接SN -->
 	<property key="DOWNLOAD_DB_BAK_SN">FTYIOJ_KNBV</property>
 	<!-- 数据库备份下载连接 -->
-	<!-- 本地数据库备份目录 -->
-	<property key="LOCAL_DB_BAK_DIR">D:\database\mssql\bak\download</property>
 	<!-- 模板文件目录 -->
 	<property key="TEMPLET_FILE_PATH_WEB">/WEB-INF/offical/web/home/template/default.jsp</property>
 	<property key="TEMPLET_FILE_PATH_WAP">/WEB-INF/def/wap/common/templet.jsp</property>
@@ -72,6 +75,5 @@
 	<property key="FAIL_FILE_PATH">/WEB-INF/def/web/common/error/fail.jsp</property>
 	<!-- error文件路径 -->
 	<property key="ERROR_FILE_PATH">/WEB-INF/def/web/common/error/error.jsp</property>
-	<property key="UPLOAD_FILE_DIR">D:/bids/upload</property>
 	
 </properties>
