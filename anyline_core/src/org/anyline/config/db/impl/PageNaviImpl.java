@@ -450,9 +450,9 @@ public class PageNaviImpl implements PageNavi{
 		builder.append("<input type=\"hidden\" name=\""+PageNavi.PAGE_NO+"\" id=\"__hidPageNo\" value='"+curPage+"'/>\n");
 		builder.append(createHidParams());
 		builder.append("</form>\n");
-		builder.append("<div class=\"anyline_navi\">");
+		builder.append("<div class=\"anyline_navi\">\n");
 		String stat = statFormat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
-		builder.append(stat);
+		builder.append(stat).append("\n");
 		createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1);
 		createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), (int)NumberUtil.getMax(curPage-1,1));
 		builder.append("<div class='navi-num-border'>\n");
@@ -470,10 +470,9 @@ public class PageNaviImpl implements PageNavi{
 		builder.append("</div>\n");
 		createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage));
 		createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage);
-		builder.append("</div>\n");
 		builder.append("转到<input type='text' id='_anyline_go' value='");
 		builder.append(curPage);
-		builder.append("' class='navi-go-txt'/>页 &nbsp;<span class='navi-go-button' onclick='_navi_go()'>")
+		builder.append("' class='navi-go-txt'/>页<span class='navi-go-button' onclick='_navi_go()'>")
 		.append(ConfigTable.getString("NAVI_TAG_GO",tagGo)).append("</span>\n");
 		builder.append("</div>");
 		return builder.toString();
