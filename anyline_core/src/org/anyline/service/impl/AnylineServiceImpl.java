@@ -136,7 +136,14 @@ public class AnylineServiceImpl implements AnylineService {
 				if(null == condition || "".equals(condition)){
 					continue;
 				}
-				
+				//CD:1 
+				//CD:'1' 
+				//CD=1 
+				//CD='1' 
+				//CD >='2012-06-06 01:01:01'  <= < != <> 
+				//CD IN (1,2)
+				//CD IN('2012-06-06: 01:01:01')
+				//注意 时间中的: 与分隔符号 冲突
 				if(null != condition && condition.contains(":")){
 					String k = "";
 					String v = "";
@@ -170,14 +177,12 @@ public class AnylineServiceImpl implements AnylineService {
 				SQL sql = null;
 				src = src.trim();
 				if (src.startsWith("{") && src.endsWith("}")) {
-					/* XML定义 */
 					if(ConfigTable.isSQLDebug()){
 						LOG.warn("SQL 类型:{JAVA定义} src="+src);
 					}
 					src = src.substring(1,src.length()-1);
 					sql = new TextSQLImpl(src);
 				} else if (src.toUpperCase().trim().startsWith("SELECT")) {
-					//java中定义
 					if(ConfigTable.isSQLDebug()){
 						LOG.warn("SQL类型:JAVA定义 src="+src);
 					}
