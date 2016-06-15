@@ -43,7 +43,8 @@ public class Radio extends BaseBodyTag{
 	private Object data;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 	private String textKey = "NM";
-
+	private String head;
+	private String headValue;
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -78,6 +79,18 @@ public class Radio extends BaseBodyTag{
 					}
 					data = list;
 				}
+
+
+				if(null == headValue){
+					headValue = "";
+				}
+				if(null != head){
+					String id = name +"_"+ headValue; 
+					html += "<input type='radio' name='"+name+"' value='" + headValue + "' id='" + id + "'/>"
+							+ "<label for='"+id+ "'>" + head + "</label>";
+				}
+				
+				
 				Collection items = (Collection)data;
 				if(null != items)
 				for(Object item:items){
@@ -155,11 +168,33 @@ public class Radio extends BaseBodyTag{
 		data = null;
 		value = null;
 		body = null;
+		head = null;
+		headValue = null;
 	}
 
 	public String getScope() {
 		return scope;
 	}
+
+	public String getHead() {
+		return head;
+	}
+
+
+	public void setHead(String head) {
+		this.head = head;
+	}
+
+
+	public String getHeadValue() {
+		return headValue;
+	}
+
+
+	public void setHeadValue(String headValue) {
+		this.headValue = headValue;
+	}
+
 
 	public void setScope(String scope) {
 		this.scope = scope;

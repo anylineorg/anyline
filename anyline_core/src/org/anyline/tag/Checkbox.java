@@ -42,6 +42,8 @@ public class Checkbox extends BaseBodyTag {
 	private String textKey = "NM";
 	//private Object checked;	//
 	private String checkKey;
+	private String head;
+	private String headValue;
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext
@@ -111,6 +113,18 @@ public class Checkbox extends BaseBodyTag {
 				}
 				Collection<Map> items = (Collection<Map>) data;
 				Collection chks = (Collection)this.value;
+				
+
+				if(null == headValue){
+					headValue = "";
+				}
+				if(null != head){
+					String id = name +"_"+ headValue; 
+					html += "<input type='checkbox' name='"+name+"' value='" + headValue + "' id='" + id + "'/>"
+							+ "<label for='"+id+ "'>" + head + "</label>";
+				}
+				
+				
 				if (null != items)
 					for (Map item : items) {
 						Object val = item.get(valueKey);
@@ -199,8 +213,22 @@ public class Checkbox extends BaseBodyTag {
 		data = null;
 		value = null;
 		checkKey = null;
+		head= null;
+		headValue="";
 	}
 
+	public String getHead() {
+		return head;
+	}
+	public void setHead(String head) {
+		this.head = head;
+	}
+	public String getHeadValue() {
+		return headValue;
+	}
+	public void setHeadValue(String headValue) {
+		this.headValue = headValue;
+	}
 	public String getScope() {
 		return scope;
 	}
