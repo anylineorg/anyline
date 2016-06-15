@@ -19,8 +19,10 @@
 
 package org.anyline.config.db.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,11 +58,7 @@ public class PageNaviImpl implements PageNavi{
 	private int firstRow = 0;				//第一行
 	private int lastRow = -1;				//最后一行
 	
-//	private String statFormat = "共<i class='blue'> {totalRow} </i>条记录，当前显示第&nbsp;<i class='blue'>{curPage}&nbsp;</i>页";
-//	private String tagFirst = "<span class=\"first\">&nbsp;第一页&nbsp;</span>";
-//	private String tagPrev = "<span class=\"navi-sign\">&lt;&lt;</span>上一页";
-//	private String tagNext = "<span class=\"next\">下一页<span class=\"navi-sign\">&gt;&gt;</span></span>";
-//	private String tagLast = "<span class=\"last\">&nbsp;最后页&nbsp;</span>";
+
 //	private String scriptFile = "/common/web/common/script/navi.js";
 //	private String styleFile = "/common/web/common/style/navi.css";
 	
@@ -422,6 +420,27 @@ public class PageNaviImpl implements PageNavi{
 		createHidParams();
 		builder.append(BR);
 		builder.append("</form>");*/
+	/*<div class="anyline_navi">
+<div class="navi-summary">共<span class="navi-total-row">{totalRow}</span>条 第<span class="navi-cur-page">{curPage}</span>/<span class="navi-total-page">{totalPage}</span>页</div>
+<input type="button" class="navi-first-button" value="首页" onclick="_navi_go(1)">
+<input type="button" class="navi-prev-button" value="上一页" onclick="_navi_go(1)">
+<div class="navi-num-border">
+<span class="navi-num-item navi-num-cur" onclick="_navi_go(1)">1</span>
+<span class="navi-num-item" onclick="_navi_go(2)">2</span>
+<span class="navi-num-item" onclick="_navi_go(3)">3</span>
+<span class="navi-num-item" onclick="_navi_go(4)">4</span>
+<span class="navi-num-item" onclick="_navi_go(5)">5</span>
+<span class="navi-num-item" onclick="_navi_go(6)">6</span>
+</div><input type="button" class="navi-next-button" value="下一页" onclick="_navi_go(2)">
+<input type="button" class="navi-last-button" value="尾页" onclick="_navi_go(46)">
+</div>*/
+	
+	private String statFormat = "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";
+	private String tagFirst = "第一页";
+	private String tagPrev = "上一页";
+	private String tagNext = "下一页";
+	private String tagLast = "最后页";
+	private String tagGo = "确定";
 	public String html(){
 		calculate();
 		StringBuilder builder = new StringBuilder();
@@ -431,36 +450,47 @@ public class PageNaviImpl implements PageNavi{
 		builder.append("<input type=\"hidden\" name=\""+PageNavi.PAGE_NO+"\" id=\"__hidPageNo\" value='"+curPage+"'/>\n");
 		builder.append(createHidParams());
 		builder.append("</form>\n");
-		builder.append("<div class='anyline_navi'>\n");
-		builder.append("<div class='navi-summary'>\n");
-		builder.append("共<span class='navi-total-row'>").append(totalRow).append("</span>条\n");
-		builder.append("第<span class='navi-cur-page'>").append(curPage)
-		.append("</span>/<span class='navi-total-page'>").append(totalPage).append("</span>页\n</div>");
-		builder.append("<input type='button' class='navi-first-button' value='第一页' onclick='_navi_go(1)'/>\n");
-		builder.append("<input type='button' class='navi-prev-button' value='上一页' onclick='_navi_go("+(int)NumberUtil.getMax(curPage-1,1)+")'/>\n");
+		builder.append("<div class=\"anyline_navi\">");
+		String stat = statFormat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
+		builder.append(stat);
+		createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1);
+		createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), (int)NumberUtil.getMax(curPage-1,1));
 		builder.append("<div class='navi-num-border'>\n");
 		int fr = curPage - 5;
-		if(fr <=0){
+		if(fr <1){
 			fr = 1;
 		}
 		int to = curPage + 5;
-		if(to > this.totalPage){
+		if(to > totalPage){
 			to = totalPage;
 		}
 		for(int i=fr; i<=to; i++){
-			String cur = "";
-			if(i ==curPage){
-				cur = " navi-num-cur";
-			}
-			builder.append("<span class='navi-num-item"+cur+"' onclick='_navi_go("+i+")'>").append(i).append("</span>\n");
+			createPageTag(builder, "navi-num-item", i + "", i);
 		}
-		builder.append("</div>");
-		builder.append("<input type='button' class='navi-next-button' value='下一页' onclick='_navi_go("+(int)NumberUtil.getMin(curPage+1, totalPage)+")'/>\n");
-		builder.append("<input type='button' class='navi-last-button' value='最后页' onclick='_navi_go("+totalPage+")'/>\n");
 		builder.append("</div>\n");
-		builder.append("转到<input type='text' id='_anyline_go' value='"+curPage+"' class='navi-go-txt'/>页 &nbsp;<input type='button' value='确定' class='navi-go-button' onclick='_navi_go()'/>\n");
+		createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage));
+		createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage);
+		builder.append("</div>\n");
+		builder.append("转到<input type='text' id='_anyline_go' value='");
+		builder.append(curPage);
+		builder.append("' class='navi-go-txt'/>页 &nbsp;<span class='navi-go-button' onclick='_navi_go()'>")
+		.append(ConfigTable.getString("NAVI_TAG_GO",tagGo)).append("</span>\n");
 		builder.append("</div>");
 		return builder.toString();
+	}
+	private void createPageTag(StringBuilder builder, String clazz, String tag, int page){
+		builder.append("<span class ='").append(clazz);
+		if(page == curPage){
+			builder.append(" navi-disabled");
+			if(clazz.contains("navi-num-item")){
+				builder.append(" navi-num-item-cur");
+			}
+			builder.append("'");
+		}else{
+			builder.append("' onclick='_navi_go(").append(page).append(")'");
+		}
+		builder.append(">");
+		builder.append(tag).append("</span>\n");
 	}
 	public String toString(){
 		return html();

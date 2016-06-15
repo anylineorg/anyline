@@ -22,6 +22,7 @@ package org.anyline.util;
 import java.io.File;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -40,56 +41,11 @@ public class ConfigTable {
 	private static boolean sqlDebug = false;
 	private static final String version = "6.X";
 	private static final String minVersion = "0709";
-	public static void main(String args[]){
-		init();
-		debug();
-	}
 	static{
 		init();
 		debug();
 	}
-	private static void line(String src, String chr, boolean center){
-		int len = 80;
-		int fill = 0 ;
-		String line = "";
-		if(center){
-			fill = (len - src.length() -2)/2;
-			line = "*"+BasicUtil.fillChar("", chr, fill) + src +BasicUtil.fillChar("", chr, fill) +"*";
-		}else{
-			fill = len - src.length() - 2;
-			line = "*" + src + BasicUtil.fillChar("", chr, fill)+"*";
-		}
-		System.out.println(line);
-	}
 	
-	private static void debug(){
-		if(!isDebug()){
-			return;
-		}
-		try{
-			String path =ConfigTable.class.getResource("").getPath();
-			
-			//path = path.substring(path.indexOf("/"),path.indexOf("!"));
-			String time = new File(path).lastModified()+"";
-			line("","*", true);
-			line("Anyline Core " + version, " ", true);
-			line(" www.anyline.org", " ", true);
-			line(""," ", true);
-			line("MinVersion " + minVersion + "[" + time+"]", " ", true);
-			line(""," ", true);
-			line("","*", true);
-			line(" git:https://git.oschina.net/anyline/anyline.git", " ", false);
-			line(" svn:svn://git.oschina.net/anyline/anyline", " ", false);
-			line("","*", true);
-			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]                         ", "", false);
-			line(" Debug 状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>        ", "", false);
-			line(" =====================生产环境务必修改密钥文件key.xml=============================        ", "", false);
-			line("","*", true);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-
 	private ConfigTable() {}
 	
 	
@@ -116,6 +72,8 @@ public class ConfigTable {
 	}
 	/**
 	 * 加载配置文件
+	 * 首先加载anyline-config.xml
+	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
 	@SuppressWarnings("unchecked")
 	private static void loadConfig() {
@@ -124,14 +82,17 @@ public class ConfigTable {
 				configs = new Hashtable<String,String>();
 			}
 			configs.put("HOME_DIR", webRoot);
-			SAXReader reader = new SAXReader();
-			Document document = reader.read(new File(webRoot , "/WEB-INF/classes/anyline-config.xml"));
-			Element root = document.getRootElement();
-			for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();){
-				Element propertyElement = itrProperty.next();
-				String key = propertyElement.attributeValue("key");
-				String value = propertyElement.getTextTrim();
-				configs.put(key.toUpperCase().trim(), value);
+
+			File file = new File(webRoot , "/WEB-INF/classes/anyline-config.xml");
+			loadConfig(file);
+			
+			File dir = new File(ConfigTable.getWebRoot() , "/WEB-INF/classes");
+			List<File> files = FileUtil.getChildrenFile(dir, "xml");
+			for(File f:files){
+				String name = f.getName();
+				if(name.startsWith("anyline") && !"anyline-config.xml".equals(name)){
+					loadConfig(f);
+				}
 			}
 		} catch (Exception e) {
 			LOG.error("配置文件解析异常:"+e);
@@ -140,6 +101,27 @@ public class ConfigTable {
 		reload = getInt("RELOAD");
 		debug = getBoolean("DEBUG");
 		sqlDebug = getBoolean("SQL_DEBUG");
+	}
+	private static void loadConfig(File file){
+		try{
+			if(isDebug()){
+				LOG.info("加载配置文件:"+file.getName());
+			}
+			SAXReader reader = new SAXReader();
+			Document document = reader.read(file);
+			Element root = document.getRootElement();
+			for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();){
+				Element propertyElement = itrProperty.next();
+				String key = propertyElement.attributeValue("key");
+				String value = propertyElement.getTextTrim();
+				configs.put(key.toUpperCase().trim(), value);
+				if(isDebug()){
+					LOG.info("加载配置文件 " + key + " = " + value);
+				}
+			}
+		}catch(Exception e){
+			LOG.error("配置文件解析异常:"+e);
+		}
 	}
 	public static String get(String key){
 		if(null == key){
@@ -192,4 +174,53 @@ public class ConfigTable {
 	public static boolean isSQLDebug() {
 		return sqlDebug;
 	}
+	
+	
+	
+	private static void line(String src, String chr, boolean center){
+		int len = 80;
+		int fill = 0 ;
+		String line = "";
+		if(center){
+			fill = (len - src.length() -2)/2;
+			line = "*"+BasicUtil.fillChar("", chr, fill) + src +BasicUtil.fillChar("", chr, fill) +"*";
+		}else{
+			fill = len - src.length() - 2;
+			line = "*" + src + BasicUtil.fillChar("", chr, fill)+"*";
+		}
+		System.out.println(line);
+	}
+	
+	private static void debug(){
+		if(!isDebug()){
+			return;
+		}
+		try{
+			String path =ConfigTable.class.getResource("").getPath();
+			
+			//path = path.substring(path.indexOf("/"),path.indexOf("!"));
+			String time = new File(path).lastModified()+"";
+			line("","*", true);
+			line("Anyline Core " + version, " ", true);
+			line(" www.anyline.org", " ", true);
+			line(""," ", true);
+			line("MinVersion " + minVersion + "[" + time+"]", " ", true);
+			line(""," ", true);
+			line("","*", true);
+			line(" git地址：https://git.oschina.net/anyline/anyline.git　                                                               ", "", false);
+			line(" svn地址：svn://git.oschina.net/anyline/anyline　                                                                              ", " ", false);
+			line(" svn帐号：public@anyline.org(111111)　                                                                                                         ", " ", false);
+			line("","*", true);
+			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]　                                                   ", "", false);
+			line(" Debug 状态设置在:anyline-config.xml:<property key=\"DEBUG\">false</property>　           ", "", false);
+			line(" =====================生产环境请务必修改密钥文件key.xml==========================　      ", "", true);
+			line("","*", true);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	public static void main(String args[]){
+		debug();
+	}
+
 }
