@@ -224,8 +224,8 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		appendGroup();
 		appendOrderStore();
 	}
-private void appendOrderStore(){
-		
+	private void appendOrderStore(){
+		builder.append(this.orderStore.getRunText(disKeyFr+disKeyTo));
 	}
 	private void appendGroup(){
 		if(null != groupStore){
