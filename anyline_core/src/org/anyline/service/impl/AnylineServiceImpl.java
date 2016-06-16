@@ -107,6 +107,25 @@ public class AnylineServiceImpl implements AnylineService {
         return set;
 		
 	}
+	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
+		DataSet set = null;
+		if(ConfigTable.isSQLDebug()){
+			LOG.warn("解析SQL queryFromDao:"+src);
+		}
+		conditions = parseConditions(conditions);
+		try {
+				SQL sql = createSQL(src);
+				set = dao.query(ds, sql, configs, conditions);
+				set.setService(this);
+		} catch (Exception e) {
+			set = new DataSet();
+			set.setException(e);
+			e.printStackTrace();
+			LOG.error(e);
+		}
+		return set;
+	}
+
 	/**
 	 * @param conditions	固定查询条件  
 	 * 			原生SQL(AND GROUP ORDER)
@@ -120,11 +139,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * 			CD:null		删除
 	 * 			CD:NULL		拼接 IS NULL
 	 */
-	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
-		DataSet set = null;
-		if(ConfigTable.isSQLDebug()){
-			LOG.warn("解析SQL queryFromDao:"+src);
-		}
+	private String[] parseConditions(String[] conditions){
 		if(null != conditions){
 			int length = conditions.length;
 			for(int i=0; i<length; i++){
@@ -144,6 +159,7 @@ public class AnylineServiceImpl implements AnylineService {
 				//CD IN (1,2)
 				//CD IN('2012-06-06: 01:01:01')
 				//注意 时间中的: 与分隔符号 冲突
+/********************************************************* 待处理   时间中的: 与分隔符号 冲突***************************************************************************************/				
 				if(null != condition && condition.contains(":")){
 					String k = "";
 					String v = "";
@@ -172,45 +188,37 @@ public class AnylineServiceImpl implements AnylineService {
 				}
 			}
 		}
-		try {
-			synchronized (this) {
-				SQL sql = null;
-				src = src.trim();
-				if (src.startsWith("{") && src.endsWith("}")) {
-					if(ConfigTable.isSQLDebug()){
-						LOG.warn("SQL 类型:{JAVA定义} src="+src);
-					}
-					src = src.substring(1,src.length()-1);
-					sql = new TextSQLImpl(src);
-				} else if (src.toUpperCase().trim().startsWith("SELECT")) {
-					if(ConfigTable.isSQLDebug()){
-						LOG.warn("SQL类型:JAVA定义 src="+src);
-					}
-					sql = new TextSQLImpl(src);
-				}else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
-					/* XML定义 */
-					if(ConfigTable.isSQLDebug()){
-						LOG.warn("SQL类型:XML定义 src="+src);
-					}
-					sql = SQLStoreImpl.parseSQL(src);
-				} else {
-					/* 自动生成 */
-					if(ConfigTable.isSQLDebug()){
-						LOG.warn("SQL类型:auto src="+src);
-					}
-					sql = new TableSQLImpl();
-					sql.setDataSource(src);
-				}
-				set = dao.query(ds, sql, configs, conditions);
-				set.setService(this);
+		return conditions;
+	}
+	private synchronized SQL createSQL(String src){
+		SQL sql = null;
+		src = src.trim();
+		if (src.startsWith("{") && src.endsWith("}")) {
+			if(ConfigTable.isSQLDebug()){
+				LOG.warn("SQL 类型:{JAVA定义} src="+src);
 			}
-		} catch (Exception e) {
-			set = new DataSet();
-			set.setException(e);
-			e.printStackTrace();
-			LOG.error(e);
+			src = src.substring(1,src.length()-1);
+			sql = new TextSQLImpl(src);
+		} else if (src.toUpperCase().trim().startsWith("SELECT")) {
+			if(ConfigTable.isSQLDebug()){
+				LOG.warn("SQL类型:JAVA定义 src="+src);
+			}
+			sql = new TextSQLImpl(src);
+		}else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
+			/* XML定义 */
+			if(ConfigTable.isSQLDebug()){
+				LOG.warn("SQL类型:XML定义 src="+src);
+			}
+			sql = SQLStoreImpl.parseSQL(src);
+		} else {
+			/* 自动生成 */
+			if(ConfigTable.isSQLDebug()){
+				LOG.warn("SQL类型:auto src="+src);
+			}
+			sql = new TableSQLImpl();
+			sql.setDataSource(src);
 		}
-		return set;
+		return sql;
 	}
 	@Override
 	public DataSet query(String src, ConfigStore configs, String... conditions) {
@@ -335,48 +343,64 @@ public class AnylineServiceImpl implements AnylineService {
 		return queryEntity(null, clazz, null, conditions);
 	}
 
-	// /**
-	// * 检查唯一性
-	// * @param src
-	// * @param configs
-	// * @param conditions
-	// * @return
-	// */
-	// @Override
-	// public boolean exists(DataSource ds, String src, ConfigStore configs,
-	// String ... conditions){
-	// DataSet set = query(ds,src, configs, conditions);
-	// if(set.size() > 0){
-	// return true;
-	// }
-	// return false;
-	// }
-	// @Override
-	// public boolean exists(String src, ConfigStore configs, String ...
-	// conditions){
-	// return exists(null, src, configs, conditions);
-	// }
-	//
-	// @Override
-	// public boolean exists(DataSource ds, String src, String ... conditions){
-	// return exists(ds,src, null, conditions);
-	// }
-	// @Override
-	// public boolean exists(String src, String ... conditions){
-	// return exists(null, src, conditions);
-	// }
-	//
-	// @Override
-	// public boolean exists(Object entity){
-	// if(null == entity){
-	// return false;
-	// }
-	// String src = BeanUtil.checkTable(entity.getClass());
-	// String pk = BeanUtil.getPrimaryKey(entity.getClass());
-	// Object pkv = BeanUtil.getValueByColumn(entity, pk);
-	// return exists(src, "+"+pk+":"+pkv);
-	// }
-	//
+	 /**
+	 * 检查唯一性
+	 * @param src
+	 * @param configs
+	 * @param conditions
+	 * @return
+	 */
+
+	public boolean exists(DataSource ds, String src, ConfigStore configs, String ... conditions){
+		return false;
+	}
+	public boolean exists(String src, ConfigStore configs, String ... conditions){
+		return exists(null, src, configs, conditions);
+	}
+	public boolean exists(DataSource ds, String src, String ... conditions){
+		return exists(ds, src, null, conditions);
+	}
+	public boolean exists(String src, String ... conditions){
+		return exists(null, src, null, conditions);
+	}
+	/**
+	 * 只根据主键判断
+	 */
+	public boolean exists(String src, DataRow row){
+		if(null != row){
+			List<String> keys = row.getPrimaryKeys();
+			if(null != keys){
+				String[] conditions = new String[keys.size()*2];
+				int idx = 0;
+				for(String key: keys){
+					conditions[idx++] = key;
+					conditions[idx++] = row.getString(key);
+				}
+				return exists(null, src, null, conditions);
+			}
+			return false;
+		}else{
+			return false;
+		}
+	}
+	public boolean exists(DataRow row){
+		return exists(null, row);
+	}
+	
+	public int count(DataSource ds, String src, ConfigStore configs, String ... conditions){
+		return 0;
+	}
+	public int count(String src, ConfigStore configs, String ... conditions){
+		return count(null, src, configs, conditions);
+	}
+	public int count(DataSource ds, String src, String ... conditions){
+		return count(ds, src, null, conditions);
+	}
+	public int count(String src, String ... conditions){
+		return count(null, src, null, conditions);
+	}
+	
+	
 	/**
 	 * 更新记录
 	 * 

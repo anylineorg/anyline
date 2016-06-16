@@ -75,18 +75,26 @@ public interface AnylineService{
 	public <T> T queryEntity(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> T queryEntity(DataSource ds, Class<T> clazz, String ... conditions);
 	public <T> T queryEntity(Class<T> clazz, String ... conditions);
-//	/**
-//	 * 是否存在
-//	 * @param src
-//	 * @param configs
-//	 * @param conditions
-//	 * @return
-//	 */
-//	public boolean exists(DataSource ds, String src, ConfigStore configs, String ... conditions);
-//	public boolean exists(String src, ConfigStore configs, String ... conditions);
-//	public boolean exists(DataSource ds, String src, String ... conditions);
-//	public boolean exists(String src, String ... conditions);
-//	public boolean exists(Object entity);
+	/**
+	 * 是否存在
+	 * @param src
+	 * @param configs
+	 * @param conditions
+	 * @return
+	 */
+	public boolean exists(DataSource ds, String src, ConfigStore configs, String ... conditions);
+	public boolean exists(String src, ConfigStore configs, String ... conditions);
+	public boolean exists(DataSource ds, String src, String ... conditions);
+	public boolean exists(String src, String ... conditions);
+	public boolean exists(String src, DataRow row);
+	public boolean exists(DataRow row);
+	
+	public int count(DataSource ds, String src, ConfigStore configs, String ... conditions);
+	public int count(String src, ConfigStore configs, String ... conditions);
+	public int count(DataSource ds, String src, String ... conditions);
+	public int count(String src, String ... conditions);
+	
+	
 	
 	/**
 	 * 更新记录
