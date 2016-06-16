@@ -38,6 +38,16 @@ public interface AnylineDao{
 	public DataSet query(SQL sql, ConfigStore configs, String ... conditions);
 	public DataSet query(DataSource ds, SQL sql, String ... conditions);
 	public DataSet query(SQL sql, String ... conditions);
+
+	public int count(DataSource ds, SQL sql, ConfigStore configs, String ... conditions);
+	public int count(SQL sql, ConfigStore configs, String ... conditions);
+	public int count(DataSource ds, SQL sql, String ... conditions);
+	public int count(SQL sql, String ... conditions);
+	
+	public boolean exists(DataSource ds, SQL sql, ConfigStore configs, String ... conditions);
+	public boolean exists(SQL sql, ConfigStore configs, String ... conditions);
+	public boolean exists(DataSource ds, SQL sql, String ... conditions);
+	public boolean exists(SQL sql, String ... conditions);
 	/**
 	 * 更新
 	 * @param	row

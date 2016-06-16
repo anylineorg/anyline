@@ -89,6 +89,7 @@ public interface RunSQL {
 	public String getBaseQueryTxt() ;
 	public String getFinalQueryTxt() ;
 	public String getTotalQueryTxt() ;
+	public String getExistsTxt();
 	public String getInsertTxt();
 	public String getDeleteTxt();
 	public String getUpdateTxt();

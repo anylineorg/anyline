@@ -123,6 +123,66 @@ public class AnylineDaoImpl implements AnylineDao {
 	public DataSet query(SQL sql, String ... conditions){
 		return query(null, sql, null, conditions);
 	}
+
+	public int count(DataSource ds, SQL sql, ConfigStore configs, String ... conditions){
+		int count = -1;
+		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
+		count = getTotal(ds, run.getTotalQueryTxt(), run.getValues());
+		return count;
+	}
+	public int count(SQL sql, ConfigStore configs, String ... conditions){
+		return count(null, sql, configs, conditions);
+	}
+	public int count(DataSource ds, SQL sql, String ... conditions){
+		return count(ds, sql, null, conditions);
+	}
+	public int count(SQL sql, String ... conditions){
+		return count(null, sql, null, conditions);
+	}
+
+	public boolean exists(DataSource ds, SQL sql, ConfigStore configs, String ... conditions){
+		boolean result = false;
+		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
+		String txt = run.getExistsTxt();
+		List<Object> values = run.getValues();
+		
+		long fr = System.currentTimeMillis();
+		if(showSQL){
+			LOG.info("\n"+sql);
+			LOG.info(values);
+		}
+		/*执行SQL*/
+		try{
+			Map<String,Object> map = null;
+			if(null != values && values.size()>0){
+				map = jdbc.queryForMap(txt, values);
+			}else{
+				map = jdbc.queryForMap(txt);
+			}
+			result =  BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
+
+			if(showSQL){
+				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+result);
+			}
+		}catch(Exception e){
+			LOG.error(e);
+			if(showSQLWhenError){
+				LOG.error("执行异常\n"+sql);
+				LOG.error(values);
+			}
+			throw new SQLQueryException("查询异常:"+e);
+		}
+		return result;
+	}
+	public boolean exists(SQL sql, ConfigStore configs, String ... conditions){
+		return exists(null, sql, configs, conditions);
+	}
+	public boolean exists(DataSource ds, SQL sql, String ... conditions){
+		return exists(ds, sql, null, conditions);
+	}
+	public boolean exists(SQL sql, String ... conditions){
+		return exists(null, sql, null, conditions);
+	}
 	/**
 	 * 总记录数
 	 * @return

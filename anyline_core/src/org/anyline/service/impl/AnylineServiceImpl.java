@@ -120,7 +120,9 @@ public class AnylineServiceImpl implements AnylineService {
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
-			e.printStackTrace();
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 			LOG.error(e);
 		}
 		return set;
@@ -356,7 +358,11 @@ public class AnylineServiceImpl implements AnylineService {
 	 */
 
 	public boolean exists(DataSource ds, String src, ConfigStore configs, String ... conditions){
-		return false;
+		boolean result = false;
+		conditions = parseConditions(conditions);
+		SQL sql = createSQL(src);
+		result = dao.exists(ds, sql, configs, conditions);
+		return result;
 	}
 	public boolean exists(String src, ConfigStore configs, String ... conditions){
 		return exists(null, src, configs, conditions);
@@ -392,7 +398,18 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 	
 	public int count(DataSource ds, String src, ConfigStore configs, String ... conditions){
-		return 0;
+		int count = -1;
+		try {
+			conditions = parseConditions(conditions);
+			SQL sql = createSQL(src);
+			count = dao.count(ds, sql, configs, conditions);
+		} catch (Exception e) {
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
+			LOG.error(e);
+		}
+		return count;
 	}
 	public int count(String src, ConfigStore configs, String ... conditions){
 		return count(null, src, configs, conditions);
