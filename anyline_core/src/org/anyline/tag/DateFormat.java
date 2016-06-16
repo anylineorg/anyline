@@ -26,7 +26,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
-
+import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 
 
@@ -34,7 +34,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
 	private static Logger LOG = Logger.getLogger(DateFormat.class);
 	private String format;
-	
+	private Object nvl = false;	//如果value为空("",null) 是否显示当前时间,默认false
 
 	public String getFormat() {
 		return format;
@@ -55,7 +55,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 			if(null == value){
 				value = body;
 			}
-			if(null == value){
+			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){
 				value = new Date();
 				result = DateUtil.format(new Date(), format);
 			}else if(value instanceof String){
@@ -80,7 +80,18 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 		this.value = null;
 		this.body = null;
 		this.format = null;
+		this.nvl = true;
 	}
+	public Object getNvl() {
+		return nvl;
+	}
+
+
+	public void setNvl(Object nvl) {
+		this.nvl = nvl;
+	}
+
+
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();

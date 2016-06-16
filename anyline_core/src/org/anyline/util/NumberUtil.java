@@ -100,8 +100,8 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static double getMax(int num, int... nums) {
-		double max = num;
+	public static int getMax(int num, int... nums) {
+		int max = num;
 		if (null != nums) {
 			int size = nums.length;
 			for (int i = 0; i < size; i++) {
@@ -119,8 +119,8 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static double getMin(int num, int... nums) {
-		double min = num;
+	public static int getMin(int num, int... nums) {
+		int min = num;
 		if (null != nums) {
 			int size = nums.length;
 			for (int i = 0; i < size; i++) {

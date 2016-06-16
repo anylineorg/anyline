@@ -19,10 +19,8 @@
 
 package org.anyline.config.db.impl;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -454,16 +452,24 @@ public class PageNaviImpl implements PageNavi{
 		String stat = statFormat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
 		builder.append(stat).append("\n");
 		createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1);
-		createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), (int)NumberUtil.getMax(curPage-1,1));
+		createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1));
 		builder.append("<div class='navi-num-border'>\n");
-		int fr = curPage - 5;
-		if(fr <1){
-			fr = 1;
+		int range = ConfigTable.getInt("NAVI_PAGE_RANGE",10);
+		int fr = NumberUtil.getMax(1,curPage - range/2);
+		int to = range - fr + 1;
+		boolean match = false;
+		if(totalPage > range && curPage>range/2){
+			match = ConfigTable.getBoolean("NAVI_PAGE_MATCH", true);
 		}
-		int to = curPage + 5;
-		if(to > totalPage){
-			to = totalPage;
+		if(match){
+			to = curPage + range/2;
 		}
+		if(totalPage - curPage < range/2){
+			fr = totalPage - range;
+		}
+		fr = NumberUtil.getMax(fr, 1);
+		to = NumberUtil.getMin(to, totalPage);
+		
 		for(int i=fr; i<=to; i++){
 			createPageTag(builder, "navi-num-item", i + "", i);
 		}
