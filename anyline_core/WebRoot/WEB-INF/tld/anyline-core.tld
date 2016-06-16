@@ -388,12 +388,17 @@
 	<tag>
 		<name>date</name>
 		<tagclass>org.anyline.tag.DateFormat</tagclass>
+		<info>日期格式化 nvl:如果value为空("",null) 是否显示当前时间</info>
 		<attribute>
 			<name>value</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>format</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nvl</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
