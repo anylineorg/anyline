@@ -53,7 +53,7 @@ public interface SQLCreater {
 	 */
 	public String parseTotalQueryTxt(RunSQL run);
 	
-	
+	public String parseExistsTxt(RunSQL run);
 	/**
 	 * 查询SQL
 	 * @param baseTxt
