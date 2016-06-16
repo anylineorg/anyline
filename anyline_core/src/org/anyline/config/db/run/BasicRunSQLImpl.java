@@ -193,6 +193,10 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		return creater.parseTotalQueryTxt(this);
 	}
 	@Override
+	public String getExistsTxt(){
+		return creater.parseExistsTxt(this);
+	}
+	@Override
 	public String getBaseQueryTxt() {
 		return builder.toString();
 	}

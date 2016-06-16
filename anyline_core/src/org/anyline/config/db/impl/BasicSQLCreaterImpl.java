@@ -184,6 +184,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
 		return sql;
 	}
+
+	@Override
+	public String parseExistsTxt(RunSQL run){
+		String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n) AS IS_EXISTS";
+		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE");
+		return sql;
+	}
 	
 	
 
