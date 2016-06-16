@@ -40,7 +40,7 @@ public class ConfigTable {
 	private static boolean debug = false;
 	private static boolean sqlDebug = false;
 	private static final String version = "6.X";
-	private static final String minVersion = "0709";
+	private static final String minVersion = "0769";
 	static{
 		init();
 		debug();
