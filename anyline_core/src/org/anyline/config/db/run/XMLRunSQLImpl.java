@@ -53,12 +53,12 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	public void init(){
 		super.init();
 		//复制XML SQL 变量
-		List<SQLVariable> vars = sql.getSQLVariables();
-		if(null != vars){
+		List<SQLVariable> xmlVars = sql.getSQLVariables();
+		if(null != xmlVars){
 			if(null == this.variables){
 				variables = new ArrayList<SQLVariable>();
 			}
-			for(SQLVariable var:vars){
+			for(SQLVariable var:xmlVars){
 				try{
 					variables.add((SQLVariable)var.clone());
 				}catch(Exception e){
@@ -67,12 +67,12 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			}
 		}
 		//复制XML SQL 查询条件
-		ConditionChain conditionChain = sql.getConditionChain();
-		if(null != conditionChain){
+		ConditionChain xmlConditionChain = sql.getConditionChain();
+		if(null != xmlConditionChain){
 			if(null == this.conditionChain){
 				this.conditionChain = new XMLConditionChainImpl();
 			}
-			List<Condition> conditions = conditionChain.getConditions();
+			List<Condition> conditions = xmlConditionChain.getConditions();
 			if(null != conditions){
 				for(Condition condition:conditions){
 					try{
@@ -83,6 +83,29 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 			}
 		}
+		//复制XML SQL ORDER
+		OrderStore xmlOrderStore = sql.getOrders();
+		if(null != xmlOrderStore){
+			List<Order> xmlOrders = xmlOrderStore.getOrders();
+			if(null != xmlOrders){
+				for(Order order:xmlOrders){
+					this.orderStore.order(order);
+				}
+			}
+		}
+		//复制 XML SQL GROUP
+		GroupStore xmlGroupStore = sql.getGroups();
+		if(null != xmlGroupStore){
+			List<Group> xmlGroups = xmlGroupStore.getGroups();
+			if(null != xmlGroups){
+				for(Group group:xmlGroups){
+					this.groupStore.group(group);
+				}
+			}
+		}
+		
+		
+		
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
 				setConditionValue(conf.getId(), conf.getVariable(), conf.getValues());
@@ -207,10 +230,10 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		builder.append(result);
 		appendCondition();
 		appendGroup();
-		appendOrderStore();
+		//appendOrderStore();
 	}
-private void appendOrderStore(){
-		
+	private void appendOrderStore(){
+		builder.append(orderStore.getRunText(disKeyFr+disKeyTo));
 	}
 	private void appendGroup(){
 		if(null != groupStore){
