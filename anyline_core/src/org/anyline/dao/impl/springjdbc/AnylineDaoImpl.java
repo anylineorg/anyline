@@ -159,8 +159,11 @@ public class AnylineDaoImpl implements AnylineDao {
 			}else{
 				map = jdbc.queryForMap(txt);
 			}
-			result =  BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
-
+			if(null == map){
+				result = false;
+			}else{
+				result =  BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
+			}
 			if(showSQL){
 				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+result);
 			}
