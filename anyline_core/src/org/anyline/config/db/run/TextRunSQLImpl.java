@@ -35,8 +35,6 @@ import org.anyline.config.db.impl.SQLVariableImpl;
 import org.anyline.config.db.sql.auto.AutoCondition;
 import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
-import org.anyline.config.db.sql.xml.impl.XMLConditionChainImpl;
-import org.anyline.config.db.sql.xml.impl.XMLConditionImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.config.http.impl.ConfigStoreImpl;
@@ -45,7 +43,7 @@ import org.anyline.util.regular.RegularUtil;
 
 public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	public TextRunSQLImpl(){
-		this.conditionChain = new XMLConditionChainImpl();
+		this.conditionChain = new AutoConditionChainImpl();
 		this.configStore = new ConfigStoreImpl();
 		this.orderStore = new OrderStoreImpl();
 	}
@@ -222,10 +220,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		builder.append(result);
 		appendCondition();
 		appendGroup();
-		appendOrderStore();
-	}
-	private void appendOrderStore(){
-		builder.append(this.orderStore.getRunText(disKeyFr+disKeyTo));
+		//appendOrderStore();
 	}
 	private void appendGroup(){
 		if(null != groupStore){
@@ -250,20 +245,23 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(!where){
 			builder.append(" WHERE ");
 		}
-		int idx = 0;
-		for(Condition con:cons){
-			SQLVariable var = getVariable(con.getId());
-			if(null != var){
-				//sql主体变量
-				continue;
-			}
-			if(idx > 0){
-				builder.append(" AND ");
-			}
-			builder.append(con.getRunText(creater));
-			addValues(con.getRunValues());
-			idx ++;
-		}
+		builder.append(conditionChain.getRunText(creater));
+		addValues(conditionChain.getRunValues());
+//		
+//		int idx = 0;
+//		for(Condition con:cons){
+//			SQLVariable var = getVariable(con.getId());
+//			if(null != var){
+//				//sql主体变量
+//				continue;
+//			}
+//			if(idx > 0){
+//				builder.append(" AND ");
+//			}
+//			builder.append(con.getRunText(creater));
+//			addValues(con.getRunValues());
+//			idx ++;
+//		}
 	}
 	
 	public void setConfigs(ConfigStore configs) {
