@@ -75,8 +75,7 @@ public class ConfigTable {
 	 * 首先加载anyline-config.xml
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
-	@SuppressWarnings("unchecked")
-	private static void loadConfig() {
+	private synchronized static void loadConfig() {
 		try {
 			if(null == configs){
 				configs = new Hashtable<String,String>();
@@ -90,7 +89,7 @@ public class ConfigTable {
 			List<File> files = FileUtil.getChildrenFile(dir, "xml");
 			for(File f:files){
 				String name = f.getName();
-				if(name.startsWith("anyline") && !"anyline-config.xml".equals(name)){
+				if(name.startsWith("anyline-config") && !"anyline-config.xml".equals(name)){
 					loadConfig(f);
 				}
 			}

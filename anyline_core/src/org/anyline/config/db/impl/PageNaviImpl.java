@@ -55,6 +55,7 @@ public class PageNaviImpl implements PageNavi{
 	private int calType = 0;				//分页计算方式(0-按页数 1-按开始结束数)
 	private int firstRow = 0;				//第一行
 	private int lastRow = -1;				//最后一行
+	private boolean lazy = false;
 	
 
 //	private String scriptFile = "/common/web/common/script/navi.js";
@@ -322,7 +323,14 @@ public class PageNaviImpl implements PageNavi{
 	public void setBaseLink(String baseLink) {
 		this.baseLink = baseLink;
 	}
-//	public String getTagFirst() {
+	
+	public boolean isLazy() {
+		return lazy;
+	}
+	public void setLazy(boolean lazy) {
+		this.lazy = lazy;
+	}
+	//	public String getTagFirst() {
 //		return tagFirst;
 //	}
 //	public void setTagFirst(String tagFirst) {

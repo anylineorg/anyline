@@ -123,5 +123,7 @@ public interface PageNavi extends Serializable{
 	public void setBaseLink(String baseLink) ;
 	public void setFirstRow(int firstRow) ;
 	public void setLastRow(int lastRow) ;
+	public void setLazy(boolean lazy);
+	public boolean isLazy();
 
 }
