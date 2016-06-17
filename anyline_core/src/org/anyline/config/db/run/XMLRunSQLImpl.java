@@ -232,9 +232,6 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		appendGroup();
 		//appendOrderStore();
 	}
-	private void appendOrderStore(){
-		builder.append(orderStore.getRunText(disKeyFr+disKeyTo));
-	}
 	private void appendGroup(){
 		if(null != groupStore){
 			builder.append(groupStore.getRunText(disKeyFr+disKeyTo));
