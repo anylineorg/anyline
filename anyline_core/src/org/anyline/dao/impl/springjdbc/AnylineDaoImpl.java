@@ -147,9 +147,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		List<Object> values = run.getValues();
 		
 		long fr = System.currentTimeMillis();
+		String random = "";
 		if(showSQL){
-			LOG.info("\n"+sql);
-			LOG.info(values);
+			random = "SQL " + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			LOG.info(random+":\n"+sql);
+			LOG.info(random+":"+values);
 		}
 		/*执行SQL*/
 		try{
@@ -165,13 +167,13 @@ public class AnylineDaoImpl implements AnylineDao {
 				result =  BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
 			}
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+result);
+				LOG.info(random+":执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+result);
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			LOG.error(random+":"+e);
 			if(showSQLWhenError){
-				LOG.error("执行异常\n"+sql);
-				LOG.error(values);
+				LOG.error(random+":执行异常\n"+sql);
+				LOG.error(random+":"+values);
 			}
 			throw new SQLQueryException("查询异常:"+e);
 		}
@@ -213,22 +215,24 @@ public class AnylineDaoImpl implements AnylineDao {
 		String sql = run.getUpdateTxt();
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
+		String random = "";
 		if(showSQL){
-			LOG.info("\n"+sql);
-			LOG.info(values);
+			random = "SQL " + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			LOG.info(random+":\n"+sql);
+			LOG.info(random+":"+values);
 		}
 		/*执行SQL*/
 		try{
 			result = jdbc.update(sql, values.toArray());
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+result);
+				LOG.info(random+":执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+result);
 			}
 		//	row.processBeforeDisplay();	//显示之前预处理
 		}catch(Exception e){
 			LOG.error(e);
 			if(showSQLWhenError){
-				LOG.error("执行异常\n"+sql);
-				LOG.error(values);
+				LOG.error(random+":执行异常\n"+sql);
+				LOG.error(random+":"+values);
 			}
 			throw new SQLUpdateException("更新异常:"+e);
 		}
@@ -340,9 +344,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<Object> values = run.getValues();
 		KeyHolder keyholder = new GeneratedKeyHolder();
 		long fr = System.currentTimeMillis();
+		String random = "";
 		if(showSQL){
-			LOG.info("\n"+sql);
-			LOG.info(values);
+			random = "SQL " + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			LOG.info(random+":\n"+sql);
+			LOG.info(random+":"+values);
 		}
 		try{
 			cnt= jdbc.update(new PreparedStatementCreator() {
@@ -368,13 +374,13 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+cnt);
+				LOG.info(random+":执行耗时:"+(System.currentTimeMillis() - fr)+"ms 影响行数:"+cnt);
 			}
 		}catch(Exception e){
 			LOG.error(e);
 			if(showSQLWhenError){
-				LOG.error("\n"+sql);
-				LOG.error(values);
+				LOG.error(random+":\n"+sql);
+				LOG.error(random+":"+values);
 			}
 			throw new SQLUpdateException("插入异常:"+e);
 		}
@@ -508,9 +514,11 @@ public class AnylineDaoImpl implements AnylineDao {
 			throw new SQLQueryException("未指定SQL");
 		}
 		long fr = System.currentTimeMillis();
+		String random = "";
 		if(showSQL){
-			LOG.info("\n"+sql);
-			LOG.info(values);
+			random = "SQL " + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			LOG.info(random+":\n"+sql);
+			LOG.info(random+":"+values);
 		}
 		DataSet set = new DataSet();
 		try{
@@ -522,20 +530,20 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			long mid = System.currentTimeMillis();
 			if(showSQL){
-				LOG.info("执行耗时:"+(mid - fr)+"ms");
+				LOG.info(random+":执行耗时:"+(mid - fr)+"ms");
 			}
 	        for(Map<String,Object> map:list){
 	        	DataRow row = new DataRow(map);
 	        	set.add(row);
 	        }
 			if(showSQL){
-				LOG.info("封装耗时:"+(System.currentTimeMillis() - mid)+"ms 封装行数:"+list.size());
+				LOG.info(random+":封装耗时:"+(System.currentTimeMillis() - mid)+"ms 封装行数:"+list.size());
 			}
 		}catch(Exception e){
 			LOG.error(e);
 			if(showSQLWhenError){
-				LOG.error("\n"+sql);
-				LOG.error(values);
+				LOG.error(random+":\n"+sql);
+				LOG.error(random+":"+values);
 			}
 			throw new SQLQueryException("查询异常:"+e+"\nSQL:"+sql+"\nPARAM:"+values);
 		}
@@ -548,9 +556,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		String txt = run.getExecuteTxt();
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
+		String random = "";
 		if(showSQL){
-			LOG.info(txt);
-			LOG.info(values);
+			random = "SQL " + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			LOG.info(random+":\n"+txt);
+			LOG.info(random+":"+values);
 		}
 		try{
 			if(null != values && values.size() > 0){
@@ -560,15 +570,15 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms 影响行数:"+result);
+				LOG.info(random+":执行耗时:"+(System.currentTimeMillis()-fr)+"ms 影响行数:"+result);
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			LOG.error(random+":"+e);
 			if(showSQLWhenError){
-				LOG.error("\n"+sql);
-				LOG.error(values);
+				LOG.error(random+":\n"+sql);
+				LOG.error(random+":"+values);
 			}
-			throw new SQLUpdateException("执行异常:"+e+"\nSQL:"+txt+"\nPARAM:"+values);
+			throw new SQLUpdateException(random+":执行异常:"+e+"\nSQL:"+txt+"\nPARAM:"+values);
 		}
 		return result; 
 	}
@@ -592,9 +602,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<Integer> inputTypes = procedure.getInputTypes();
 		final List<Integer> outputTypes = procedure.getOutputTypes();
 		long fr = System.currentTimeMillis();
+		String random = "";
 		if(showSQL){
-			LOG.info(procedure.getName());
-			LOG.info(inputValues);
+			random = "SQL " + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8); 
+			LOG.info(random+":"+procedure.getName());
+			LOG.info(random+":"+inputValues);
 		}
 		String sql = "{call "+procedure.getName()+"(";
 		final int sizeIn = null == inputTypes? 0 : inputTypes.size();
@@ -636,14 +648,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		    });    
 
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms");
+				LOG.info(random+":执行耗时:"+(System.currentTimeMillis()-fr)+"ms");
 			}
 			procedure.setResult(result);
 		}catch(Exception e){
-			LOG.error(e);
+			LOG.error(random+":"+e);
 			if(showSQLWhenError){
-				LOG.error("\n"+sql);
-				LOG.error(inputValues);
+				LOG.error(random+":\n"+sql);
+				LOG.error(random+":"+inputValues);
 			}
 			throw new SQLUpdateException("PROCEDURE执行异常:"+e+"\nPROCEDURE:"+procedure.getName()+"\nPARAM:"+procedure.getInputValues());
 		}
@@ -666,9 +678,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<Integer> inputTypes = procedure.getInputTypes();
 		final List<Integer> outputTypes = procedure.getOutputTypes();
 		long fr = System.currentTimeMillis();
+		String random = "";
 		if(showSQL){
-			LOG.info(procedure.getName());
-			LOG.info(inputValues);
+			random = "SQL " + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			LOG.info(random+":"+procedure.getName());
+			LOG.info(random+":"+inputValues);
 		}
 		DataSet set = null;
 		try{
@@ -720,13 +734,13 @@ public class AnylineDaoImpl implements AnylineDao {
 	            }  
 	        });  
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis() - fr)+"ms");
+				LOG.info(random+":执行耗时:"+(System.currentTimeMillis() - fr)+"ms");
 			}
 		}catch(Exception e){
 			LOG.error(e);
 			if(showSQLWhenError){
-				LOG.error("\n"+procedure.getName());
-				LOG.error(inputValues);
+				LOG.error(random+":\n"+procedure.getName());
+				LOG.error(random+":"+inputValues);
 			}
 			throw new SQLQueryException("查询异常:"+e+"\nPROCEDURE:"+ procedure.getName());
 		}
@@ -744,9 +758,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		final String sql = run.getDeleteTxt();
 		final List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
+		String random = "";
 		if(showSQL){
-			LOG.info(sql);
-			LOG.info(values);
+			random = "SQL " + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			LOG.info(random+":\n"+sql);
+			LOG.info(random+":"+values);
 		}
 		try{
 			result = jdbc.update(
@@ -762,14 +778,14 @@ public class AnylineDaoImpl implements AnylineDao {
 	                }
 	            });
 			if(showSQL){
-				LOG.info("执行耗时:"+(System.currentTimeMillis()-fr)+"ms 影响行数:"+result);
-				LOG.info(values);
+				LOG.info(random+":执行耗时:"+(System.currentTimeMillis()-fr)+"ms 影响行数:"+result);
+				LOG.info(random+":"+values);
 			}
 		}catch(Exception e){
 			LOG.error(e);
 			if(showSQLWhenError){
-				LOG.error("\n"+sql);
-				LOG.error(values);
+				LOG.error(random+":\n"+sql);
+				LOG.error(random+":"+values);
 			}
 			throw new SQLUpdateException("删除异常:"+e);
 		}
