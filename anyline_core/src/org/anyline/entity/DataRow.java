@@ -593,17 +593,17 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * 验证是否过期
 	 * 根据当前时间与创建时间对比
 	 * 过期返回 true
-	 * @param expire	过期时间(秒)
+	 * @param expire	过期时间(毫秒)
 	 * @return
 	 */
 	public boolean isExpire(int expire){
-		if(System.currentTimeMillis() - createTime > expire * 1000){
+		if(System.currentTimeMillis() - createTime > expire){
 			return true;
 		}
 		return false;
 	}
 	public boolean isExpire(long expire){
-		if(System.currentTimeMillis() - createTime > expire * 1000){
+		if(System.currentTimeMillis() - createTime > expire){
 			return true;
 		}
 		return false;

@@ -47,17 +47,16 @@ public interface AnylineService{
 	public DataSet query(String src, ConfigStore configs, String ... conditions);
 	public DataSet query(DataSource ds, String src, String ... conditions);
 	public DataSet query(String src, String ... conditions);
-	/**
-	 * 按行数查询
-	 * @param src			数据源(表或自定义SQL)
-	 * @param fr			开始行(下标从0开始)
-	 * @param to			结束行
-	 * @param order			排序
-	 * @param conditions	固定查询条件
-	 * @return
-	 */
 	public DataSet query(DataSource ds, String src, int fr, int to, String ... conditions);
 	public DataSet query(String src, int fr, int to, String ... conditions);
+
+	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
+	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions);
+	public DataSet cache(DataSource ds, String cache, String src, String ... conditions);
+	public DataSet cache(String cache, String src, String ... conditions);
+	public DataSet cache(DataSource ds, String cache, String src, int fr, int to, String ... conditions);
+	public DataSet cache(String cache, String src, int fr, int to, String ... conditions);
+
 	
 	public <T> List<T> query(DataSource ds, Class<T> clazz, int fr, int to, String ... conditions);
 	public <T> List<T> query(Class<T> clazz, int fr, int to, String ... conditions);
