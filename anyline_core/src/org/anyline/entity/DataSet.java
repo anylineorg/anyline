@@ -1017,13 +1017,13 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * @return
 	 */
 	public boolean isExpire(int expire){
-		if(System.currentTimeMillis() - createTime > expire * 1000){
+		if(System.currentTimeMillis() - createTime > expire){
 			return true;
 		}
 		return false;
 	}
 	public boolean isExpire(long expire){
-		if(System.currentTimeMillis() - createTime > expire * 1000){
+		if(System.currentTimeMillis() - createTime > expire){
 			return true;
 		}
 		return false;
