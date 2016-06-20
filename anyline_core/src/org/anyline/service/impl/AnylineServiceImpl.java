@@ -24,6 +24,11 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import net.sf.ehcache.Cache;
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Element;
+
+import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLStore;
@@ -32,6 +37,8 @@ import org.anyline.config.db.impl.ProcedureImpl;
 import org.anyline.config.db.impl.SQLStoreImpl;
 import org.anyline.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.config.db.sql.auto.impl.TextSQLImpl;
+import org.anyline.config.http.Config;
+import org.anyline.config.http.ConfigChain;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.config.http.impl.ConfigStoreImpl;
 import org.anyline.dao.AnylineDao;
@@ -69,41 +76,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 */
 	@Override
 	public DataSet query(DataSource ds, String src, ConfigStore configs, String... conditions) {
-		DataSet set = null;
-		conditions = BasicUtil.compressionSpace(conditions);
-//		//是否启动缓存
-//		if(!ConfigTable.getBoolean("IS_USE_CACHE")){
-//			set = queryFromDao(ds,src, configs, conditions);
-//			return set;
-//		}
-//		
-//		String cacaheKey = "anyline.query.cache";
-//		String elementKey = createCacheElementKey(ds, src, configs, conditions);
-//		Element element = null;
-//        synchronized (this) {
-//        	String path = ConfigTable.getWebRoot()+"/WEB-INF/classes/ehcache.xml";
-//        	CacheManager manager = CacheManager.newInstance(path);
-//    		Cache cache = manager.getCache(cacaheKey);
-//    		if(null == cache){
-//    			manager.addCache(cacaheKey);
-//    			cache = manager.getCache(cacaheKey);
-//    		}
-//            element = cache.get(elementKey);
-//            if (element == null) {
-//            	LOG.info(elementKey + "加入到缓存： " + cache.getName());
-//                // 调用实际 的方法
-//            	set = queryFromDao(ds,src, configs, conditions);
-//            	set.setService(null);
-//                element = new Element(elementKey, (Serializable)set);
-//                cache.put(element);
-//            } else {
-//            	LOG.info(elementKey + "使用缓存： " + cache.getName());
-//            	set = (DataSet)element.getObjectValue();
-//            }
-//            set.setService(this);
-//            configs.copyPageNavi(set.getNavi());
-//        }
-		set = queryFromDao(ds,src, configs, conditions);
+		DataSet set = queryFromDao(ds,src, configs, conditions);
         return set;
 		
 	}
@@ -257,7 +230,88 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet query(String src, int fr, int to, String... conditions) {
 		return query(null, src, fr, to, conditions);
 	}
+	private String createCacheElementKey(String src, ConfigStore store, String ... conditions){
+		String result = src+"|";
+		if(null != store){
+			ConfigChain chain = store.getConfigChain();
+			if(null != chain){
+				List<Config> configs = chain.getConfigs();
+				if(null != configs){
+					for(Config config:configs){
+						String key = config.getKey();
+						List<Object> values = config.getValues();
+						result += key+ "=";
+						for(Object value:values){
+							result += value.toString()+"|";
+						}
+					}	
+				}
+			}
+			PageNavi navi = store.getPageNavi();
+			if(null != navi){
+				result += "page=" + navi.getCurPage()+"|";
+			}
+		}
+		if(null != conditions){
+			for(String condition:conditions){
+				result += condition+"|";
+			}
+		}
+		LOG.info("cache key:"+result);
+		return result;
+	}
+	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 
+		//是否启动缓存
+		if(!ConfigTable.getBoolean("IS_USE_CACHE")){
+			return queryFromDao(ds,src, configs, conditions);
+		}
+		DataSet set = null;
+		String key = createCacheElementKey(src, configs, conditions);
+		Element element = null;
+    	CacheManager manager = CacheManager.create();
+        synchronized (manager) {
+    		Cache channel = manager.getCache(cache);
+    		if(null == channel){
+    			manager.addCache(key);
+    			channel = manager.getCache(key);
+    		}
+    		if(null != channel){
+	            element = channel.get(key);
+	            if(null != element && !element.isExpired()){
+	            	return (DataSet)element.getObjectValue();
+	            }
+    		}
+            // 调用实际 的方法
+        	set = queryFromDao(ds,src, configs, conditions);
+        	if(null != channel){
+	            element = new Element(key, set);
+	            channel.put(element);
+        	}
+        }
+		return set;
+	}
+	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions){
+		return cache(null, cache, src, configs, conditions);
+	}
+	public DataSet cache(DataSource ds, String cache, String src, String ... conditions){
+		return cache(ds, cache, src, null, conditions);
+	}
+	public DataSet cache(String cache, String src, String ... conditions){
+		return cache(null, cache, src, null, conditions);
+	}
+	public DataSet cache(DataSource ds, String cache, String src, int fr, int to, String ... conditions){
+		PageNaviImpl navi = new PageNaviImpl();
+		navi.setFirstRow(fr);
+		navi.setLastRow(to);
+		navi.setCalType(1);
+		ConfigStore configs = new ConfigStoreImpl();
+		configs.setPageNavi(navi);
+		return cache(ds, cache, src, configs, conditions);
+	}
+	public DataSet cache(String cache, String src, int fr, int to, String ... conditions){
+		return cache(null, cache, src, fr, to, conditions);
+	}
 	@Override
 	public <T> List<T> query(DataSource ds, Class<T> clazz, ConfigStore configs, String... conditions) {
 		String src = BeanUtil.checkTable(clazz);
