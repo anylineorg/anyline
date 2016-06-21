@@ -95,22 +95,22 @@ public interface PageNavi extends Serializable{
 	 * 设置总行数
 	 * @param totalRow
 	 */
-	public void setTotalRow(int totalRow) ;
+	public PageNavi setTotalRow(int totalRow) ;
 	/**
 	 * 设置最后一页
 	 * @param totalPage
 	 */
-	public void setTotalPage(int totalPage) ;
+	public PageNavi setTotalPage(int totalPage) ;
 	/**
 	 * 设置当前页
 	 * @param curPage
 	 */
-	public void setCurPage(int curPage) ;
+	public PageNavi setCurPage(int curPage) ;
 	/**
 	 * 设置每页显示的行数
 	 * @param pageRows
 	 */
-	public void setPageRows(int pageRows) ;
+	public PageNavi setPageRows(int pageRows) ;
 	public int getTotalRow() ;
 	
 	public int getTotalPage() ;
@@ -120,10 +120,30 @@ public interface PageNavi extends Serializable{
 	public int getPageRows() ;
 	
 	public String getBaseLink() ;
-	public void setBaseLink(String baseLink) ;
-	public void setFirstRow(int firstRow) ;
-	public void setLastRow(int lastRow) ;
-	public void setLazy(boolean lazy);
+	public PageNavi setBaseLink(String baseLink) ;
+	public PageNavi setFirstRow(int firstRow) ;
+	public PageNavi setLastRow(int lastRow) ;
+	/**
+	 * 总条数懒加载时间间隔(毫秒)
+	 * @return
+	 */
 	public boolean isLazy();
+	/**
+	 * 总条数懒加载时间间隔(毫秒)
+	 * @return
+	 */
+	public int getLazyPeriod();
+	/**
+	 * 总条数懒加载时间间隔(毫秒)
+	 * @param period
+	 * @return
+	 */
+	public PageNavi setLazyPeriod(int period);
+	/**
+	 * 总条数懒加载时间间隔(毫秒)
+	 * @param period
+	 * @return
+	 */
+	public PageNavi setLazy(int period);
 
 }

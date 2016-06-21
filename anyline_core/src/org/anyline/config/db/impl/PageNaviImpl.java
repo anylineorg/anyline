@@ -22,6 +22,7 @@ package org.anyline.config.db.impl;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +57,7 @@ public class PageNaviImpl implements PageNavi{
 	private int firstRow = 0;				//第一行
 	private int lastRow = -1;				//最后一行
 	private boolean lazy = false;
+	private int lazyPeriod = 0;				//总条数懒加载时间间隔(秒)
 	
 
 //	private String scriptFile = "/common/web/common/script/navi.js";
@@ -264,9 +266,11 @@ public class PageNaviImpl implements PageNavi{
 	 * @param type
 	 * @return
 	 */
+	@Override
 	public PageNavi order(String order, String type){
 		return order(new OrderImpl(order, type));
 	}
+	@Override
 	public PageNavi order(String order){
 		return order(new OrderImpl(order));
 	}
@@ -275,103 +279,99 @@ public class PageNaviImpl implements PageNavi{
 	 * 设置总行数
 	 * @param totalRow
 	 */
-	public void setTotalRow(int totalRow) {
+	@Override
+	public PageNavi setTotalRow(int totalRow) {
 		this.totalRow = totalRow;
+		return this;
 	}
 	/**
 	 * 设置最后一页
 	 * @param totalPage
 	 */
-	public void setTotalPage(int totalPage) {
+	@Override
+	public PageNavi setTotalPage(int totalPage) {
 		this.totalPage = totalPage;
+		return this;
 	}
 	/**
 	 * 设置当前页
 	 * @param curPage
 	 */
-	public void setCurPage(int curPage) {
+	@Override
+	public PageNavi setCurPage(int curPage) {
 		this.curPage = curPage;
+		return this;
 	}
 	/**
 	 * 设置每页显示的行数
 	 * @param pageRows
 	 */
-	public void setPageRows(int pageRows) {
+	@Override
+	public PageNavi setPageRows(int pageRows) {
 		if(pageRows > 0){
 			this.pageRows = pageRows;
 		}
+		return this;
 	}
+	@Override
 	public int getTotalRow() {
 		return totalRow;
 	}
-	
+
+	@Override
 	public int getTotalPage() {
 		return totalPage;
 	}
 
+	@Override
 	public int getCurPage() {
 		return curPage;
 	}
-	
+
+	@Override
 	public int getPageRows() {
 		return pageRows;
 	}
-	
+
+	@Override
 	public String getBaseLink() {
 		return baseLink;
 	}
-	public void setBaseLink(String baseLink) {
+	@Override
+	public PageNavi setBaseLink(String baseLink) {
 		this.baseLink = baseLink;
+		return this;
+	}
+	@Override
+	public PageNavi setFirstRow(int firstRow) {
+		this.firstRow = firstRow;
+		return this;
+	}
+	@Override
+	public PageNavi setLastRow(int lastRow) {
+		this.lastRow = lastRow;
+		return this;
 	}
 	
+	@Override
 	public boolean isLazy() {
-		return lazy;
+		return this.lazy;
 	}
-	public void setLazy(boolean lazy) {
-		this.lazy = lazy;
+	@Override
+	public int getLazyPeriod() {
+		return this.lazyPeriod;
 	}
-	//	public String getTagFirst() {
-//		return tagFirst;
-//	}
-//	public void setTagFirst(String tagFirst) {
-//		this.tagFirst = tagFirst;
-//	}
-//	public String gettagPrev() {
-//		return tagPrev;
-//	}
-//	public void settagPrev(String tagPrev) {
-//		this.tagPrev = tagPrev;
-//	}
-//	public String gettagNext() {
-//		return tagNext;
-//	}
-//	public void settagNext(String tagNext) {
-//		this.tagNext = tagNext;
-//	}
-//	public String gettagLast() {
-//		return tagLast;
-//	}
-//	public void settagLast(String tagLast) {
-//		this.tagLast = tagLast;
-//	}
-//	
-//	public String getScriptFile() {
-//		return scriptFile;
-//	}
-//	public void setScriptFile(String scriptFile) {
-//		this.scriptFile = scriptFile;
-//	}
-//	public String getStyleFile() {
-//		return styleFile;
-//	}
-//	public void setStyleFile(String styleFile) {
-//		this.styleFile = styleFile;
-//	}
-	public void setFirstRow(int firstRow) {
-		this.firstRow = firstRow;
+	@Override
+	public PageNavi setLazy(int period) {
+		this.lazy = true;
+		this.lazyPeriod = period;
+		return this;
 	}
-	public void setLastRow(int lastRow) {
-		this.lastRow = lastRow;
+	@Override
+	public PageNavi setLazyPeriod(int period){
+		this.lazy = true;
+		this.lazyPeriod = period;
+		return this;
 	}
 	@Override
 	public String createHidParam(String name, Object values) {
@@ -395,51 +395,6 @@ public class PageNaviImpl implements PageNavi{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	/*  builder.append("<link rel=\"stylesheet\" href=\""+styleFile+"\" type=\"text/css\"/>");
-		builder.append(BR);
-		builder.append("<script type=\"text/javascript\" src=\""+scriptFile+"\"></script>");
-		builder.append(BR);
-		builder.append("<form id=\"__frmNavi\" action=\"" + baseLink + "\" method=\"post\">");
-		builder.append(BR_TAB);
-		builder.append("<input type=\"hidden\" name=\"pageNo\" id=\"__hidPageNo\"/>");
-		builder.append(BR_TAB);
-		builder.append("<div style='clear:both;'>\n</div><div class='navi'>");
-		builder.append(BR_TAB);
-		//合计信息
-		builder.append("<span class=\"stat\">");
-		builder.append(statFormat);
-		builder.append("</span>");
-		builder.append(BR_TAB);
-		builder.append("<span class=\"idx\">");
-		createFirstPage(); 		//第一页
-		createPrevPage();		//上一页
-		for (int j = displayPageFirst; j>0 && j <=displayPageLast; j++) {
-			createLink(j,true);
-		}
-		createNextPage();		//下一页
-		createLastPage();		//最后页
-		builder.append(BR_TAB);
-		builder.append("</span>");
-		builder.append(BR_TAB);
-		builder.append("</div>");
-		createHidParams();
-		builder.append(BR);
-		builder.append("</form>");*/
-	/*<div class="anyline_navi">
-<div class="navi-summary">共<span class="navi-total-row">{totalRow}</span>条 第<span class="navi-cur-page">{curPage}</span>/<span class="navi-total-page">{totalPage}</span>页</div>
-<input type="button" class="navi-first-button" value="首页" onclick="_navi_go(1)">
-<input type="button" class="navi-prev-button" value="上一页" onclick="_navi_go(1)">
-<div class="navi-num-border">
-<span class="navi-num-item navi-num-cur" onclick="_navi_go(1)">1</span>
-<span class="navi-num-item" onclick="_navi_go(2)">2</span>
-<span class="navi-num-item" onclick="_navi_go(3)">3</span>
-<span class="navi-num-item" onclick="_navi_go(4)">4</span>
-<span class="navi-num-item" onclick="_navi_go(5)">5</span>
-<span class="navi-num-item" onclick="_navi_go(6)">6</span>
-</div><input type="button" class="navi-next-button" value="下一页" onclick="_navi_go(2)">
-<input type="button" class="navi-last-button" value="尾页" onclick="_navi_go(46)">
-</div>*/
 	
 	private String statFormat = "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";
 	private String tagFirst = "第一页";

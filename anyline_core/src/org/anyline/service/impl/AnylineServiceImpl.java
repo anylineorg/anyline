@@ -24,7 +24,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 
 import org.anyline.cache.CacheUtil;
@@ -32,6 +31,7 @@ import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLStore;
+import org.anyline.config.db.impl.PageLazyStore;
 import org.anyline.config.db.impl.PageNaviImpl;
 import org.anyline.config.db.impl.ProcedureImpl;
 import org.anyline.config.db.impl.SQLStoreImpl;
@@ -87,8 +87,24 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		conditions = parseConditions(conditions);
 		try {
+				PageNavi navi =  null;
+				String lazyKey = null;
+				if(null != configs){
+					navi = configs.getPageNavi();
+					if(null != navi && navi.isLazy()){
+						lazyKey = createCacheElementKey(src, configs, conditions);
+						int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
+						navi.setTotalRow(total);
+						if(ConfigTable.isDebug()){
+							LOG.warn("记录总数lazy key:"+lazyKey + " total:"+total);
+						}
+					}
+				}
 				SQL sql = createSQL(src);
 				set = dao.query(ds, sql, configs, conditions);
+				if(null != navi && navi.isLazy()){
+					PageLazyStore.setTotal(lazyKey, navi.getTotalRow());
+				}
 				set.setService(this);
 		} catch (Exception e) {
 			set = new DataSet();

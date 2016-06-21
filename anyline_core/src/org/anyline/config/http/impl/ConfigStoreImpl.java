@@ -302,6 +302,12 @@ public class ConfigStoreImpl implements ConfigStore{
 		result.chain = chain;
 		return result;
 	}
+	public ConfigStore setTotalLazy(int period){
+		if(null != navi){
+			navi.setLazy(period);
+		}
+		return this;
+	}
 }
 
 

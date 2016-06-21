@@ -17,6 +17,8 @@
  */
 package org.anyline.cache;
 
+import java.util.Hashtable;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -28,6 +30,8 @@ import org.apache.log4j.Logger;
 public class CacheUtil {
 	private static Logger LOG = Logger.getLogger(CacheUtil.class);
 	private static CacheManager manager = null;
+	private static Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
+	
 	public static CacheManager create(){
 		long fr = System.currentTimeMillis();
 		String configFile = ConfigTable.getString("EHCACHE_CONFIG_FILE","ehcache.xml");
@@ -54,6 +58,7 @@ public class CacheUtil {
 	}
 	public static Element getElement(String channel, String key){
 		Element result = null;
+		long fr = System.currentTimeMillis();
 		Cache cache = getCache(channel);
 		if(null != cache){
 			result = cache.get(key);
@@ -65,12 +70,12 @@ public class CacheUtil {
 			}
 			if(result.isExpired()){
 		    	if(ConfigTable.isDebug()){
-		    		LOG.warn("缓存已过期 cnannel:"+channel+" key:" + key + " 命中:"+result.getHitCount() + " 生存:"+result.getTimeToLive());
+		    		LOG.warn("缓存已过期  耗时:"+(System.currentTimeMillis()-fr)+" cnannel:"+channel+" key:" + key + " 命中:"+result.getHitCount() + " 生存:"+result.getTimeToLive());
 		    	}
 		    	result = null;
 			}
 			if(ConfigTable.isDebug()){
-	    		LOG.warn("缓存提取成功 cnannel:"+channel+" key:" + key + " 命中:"+result.getHitCount() + " 生存:"+result.getTimeToLive());
+	    		LOG.warn("缓存提取成功 耗时:"+(System.currentTimeMillis()-fr)+" cnannel:"+channel+" key:" + key + " 命中:"+result.getHitCount() + " 生存:"+result.getTimeToLive());
 	    	}
 		}
 		return result;
@@ -109,5 +114,50 @@ public class CacheUtil {
             }
         }
         return sb.toString();
+    }
+    /**
+     * 开始刷新
+     * 如果不符合刷新条件返回false
+     * @param key
+     * @return
+     */
+    public static boolean start(String key){
+    	Long fr = reflushFlag.get(key);
+    	if(null == fr){
+    		reflushFlag.put(key, System.currentTimeMillis());
+    		return true;
+    	}
+    	int age = ConfigTable.getInt(key, 120) * 1000;
+    	if(System.currentTimeMillis() - fr > age){
+    		reflushFlag.put(key, System.currentTimeMillis());
+    		return true;
+    	}
+    	return false;
+    }
+    /**
+     * 刷新完成
+     * @param key
+     */
+    public static void stop(String key){
+    	reflushFlag.remove(key);
+    }
+    public boolean isRun(String key){
+    	if(null == reflushFlag.get(key)){
+    		return false;
+    	}
+    	return true;
+    }
+    /**
+     * 已执行时间
+     * @param key
+     * @return
+     */
+    public long getRunTime(String key){
+    	long result = -1;
+    	Long fr = reflushFlag.get(key);
+    	if(null != fr){
+    		return System.currentTimeMillis() - fr;
+    	}
+    	return result;
     }
 }

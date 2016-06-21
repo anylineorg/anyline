@@ -85,6 +85,12 @@ public interface ConfigStore {
 	public ConfigStore fetch(String ... keys);
 	
 	public String toString();
+	/**
+	 * 开启记录总数懒加载 
+	 * @param period 缓存有效期
+	 * @return
+	 */
+	public ConfigStore setTotalLazy(int period);
 }
 
 
