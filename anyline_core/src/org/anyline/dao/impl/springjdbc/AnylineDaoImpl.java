@@ -106,6 +106,9 @@ public class AnylineDaoImpl implements AnylineDao {
 					navi.setTotalRow(total);	
 				}else{
 					total = navi.getTotalRow();
+					if(showSQL){
+						LOG.warn("记录总数已启用lazy并生效 total:"+total);
+					}
 				}
 			}
 		}
