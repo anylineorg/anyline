@@ -269,7 +269,21 @@ public class AnylineServiceImpl implements AnylineService {
 		DataSet set = null;
 		String key = createCacheElementKey(src, configs, conditions);
 		Element element = null;
-    	CacheManager manager = CacheManager.create();
+		long fr = 0;
+		if(ConfigTable.isDebug()){
+			fr = System.currentTimeMillis();
+		}
+		CacheManager manager = null;
+		String configFile = ConfigTable.getString("EHCACHE_CONFIG_FILE","ehcache.xml");
+		if(BasicUtil.isNotEmpty(configFile)){
+			manager = CacheManager.create(ConfigTable.getWebRoot()+"/WEB-INF/classes/"+configFile);
+		}else{
+			manager = CacheManager.create();
+		}
+    	if(ConfigTable.isDebug()){
+    		LOG.warn("加载ehcache配置文件耗时:" + (System.currentTimeMillis() - fr));
+    		fr = System.currentTimeMillis();
+    	}
         synchronized (manager) {
     		Cache channel = manager.getCache(cache);
     		if(null == channel){
@@ -279,14 +293,23 @@ public class AnylineServiceImpl implements AnylineService {
     		if(null != channel){
 	            element = channel.get(key);
 	            if(null != element && !element.isExpired()){
-	            	return (DataSet)element.getObjectValue();
+	            	set = (DataSet)element.getObjectValue();
+	            	if(ConfigTable.isDebug()){
+	            		LOG.warn("提取缓存数据:" + key + " 耗时:" + (System.currentTimeMillis() - fr));
+	            	}
+	            	return set;
 	            }
     		}
             // 调用实际 的方法
         	set = queryFromDao(ds,src, configs, conditions);
+        	if(ConfigTable.isDebug()){
+        		LOG.warn("提取数据库数据:" + key);
+        	}
         	if(null != channel){
 	            element = new Element(key, set);
-	            channel.put(element);
+	            channel.put(element);if(ConfigTable.isDebug()){
+	        		LOG.warn("存储缓存数据:" + key);
+	        	}
         	}
         }
 		return set;
