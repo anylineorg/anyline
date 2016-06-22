@@ -419,7 +419,7 @@ public class PageNaviImpl implements PageNavi{
 		builder.append("<div class='navi-num-border'>\n");
 		int range = ConfigTable.getInt("NAVI_PAGE_RANGE",10);
 		int fr = NumberUtil.getMax(1,curPage - range/2);
-		int to = range - fr + 1;
+		int to = curPage + range/2;
 		boolean match = false;
 		if(totalPage > range && curPage>range/2){
 			match = ConfigTable.getBoolean("NAVI_PAGE_MATCH", true);
