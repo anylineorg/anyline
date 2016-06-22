@@ -281,28 +281,6 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		return result;
 	}
-	/**
-	 * 提取符合指定属性值的集合
-	 * 
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	private DataSet filter(DataSet src, String key, String value) {
-		DataSet set = new DataSet();
-		String tmpValue;
-		for (int i = 0; i < src.size(); i++) {
-			tmpValue = src.getString(i, key);
-			if ((null == value && null == tmpValue)
-					|| (null != value && value.equals(tmpValue))) {
-				set.add(src.getRow(i));
-			}
-		}
-		return set;
-	}
-	public List<DataRow> getRows(){
-		return rows;
-	}
 	public Object clone(){
 		DataSet set = new DataSet();
 		List<DataRow> rows = new ArrayList<DataRow>();
@@ -327,6 +305,25 @@ public class DataSet implements Collection<Object>, Serializable {
 				String key = params[i];
 				String value = params[i + 1];
 				set = filter(set, key, value);
+			}
+		}
+		return set;
+	}
+	/**
+	 * 提取符合指定属性值的集合
+	 * 
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	private DataSet filter(DataSet src, String key, String value) {
+		DataSet set = new DataSet();
+		String tmpValue;
+		for (int i = 0; i < src.size(); i++) {
+			tmpValue = src.getString(i, key);
+			if ((null == value && null == tmpValue)
+					|| (null != value && value.equals(tmpValue))) {
+				set.add(src.getRow(i));
 			}
 		}
 		return set;
@@ -776,56 +773,6 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		return null;
 	}
-	/************************** getter setter ***************************************/
-
-	public boolean isResult() {
-		return result;
-	}
-
-	public boolean isSuccess() {
-		return result;
-	}
-
-	public void setResult(boolean result) {
-		this.result = result;
-	}
-
-	public Exception getException() {
-		return exception;
-	}
-
-	public void setException(Exception exception) {
-		this.exception = exception;
-	}
-
-	public String getMessage() {
-		return message;
-	}
-
-	public void setMessage(String message) {
-		this.message = message;
-	}
-
-	public PageNavi getNavi() {
-		return navi;
-	}
-
-	public void setNavi(PageNavi navi) {
-		this.navi = navi;
-	}
-
-
-	public void setRows(List<DataRow> rows) {
-		this.rows = rows;
-	}
-
-	public String getDataSource() {
-		String ds = dataSource;
-		if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(author)) {
-			ds = author + "." + ds;
-		}
-		return ds;
-	}
 
 	public void setDataSource(String dataSource) {
 		if (null == dataSource) {
@@ -1042,6 +989,60 @@ public class DataSet implements Collection<Object>, Serializable {
 	}
 	public void setService(AnylineService service) {
 		this.service = service;
+	}
+	public List<DataRow> getRows(){
+		return rows;
+	}
+
+	/************************** getter setter ***************************************/
+
+	public boolean isResult() {
+		return result;
+	}
+
+	public boolean isSuccess() {
+		return result;
+	}
+
+	public void setResult(boolean result) {
+		this.result = result;
+	}
+
+	public Exception getException() {
+		return exception;
+	}
+
+	public void setException(Exception exception) {
+		this.exception = exception;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public PageNavi getNavi() {
+		return navi;
+	}
+
+	public void setNavi(PageNavi navi) {
+		this.navi = navi;
+	}
+
+
+	public void setRows(List<DataRow> rows) {
+		this.rows = rows;
+	}
+
+	public String getDataSource() {
+		String ds = dataSource;
+		if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(author)) {
+			ds = author + "." + ds;
+		}
+		return ds;
 	}
 	/**
 	 * 清空service与rows中的service
