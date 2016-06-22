@@ -433,9 +433,10 @@ public class AnylineServiceImpl implements AnylineService {
         }
         // 调用实际 的方法
         row = queryRow(ds, src, configs, conditions);
-    	row.setService(null);
-    	CacheUtil.put(cache, key, row);
-		
+        if(null != null){
+	    	row.setService(null);
+	    	CacheUtil.put(cache, key, row);
+        }
 		return row;
 	}
 	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions){
