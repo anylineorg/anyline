@@ -627,6 +627,19 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return false;
 	}
+	public Object clone(){
+		DataRow row = new DataRow();
+		row.container = this.container;
+		row.primaryKeys = this.primaryKeys;
+		row.dataSource = this.dataSource;
+		row.author = this.author;
+		row.table = this.table;
+		row.clientTrace = this.clientTrace;
+		row.createTime = this.createTime;
+		row.isNew = this.isNew;
+		row.service = this.service;
+		return row;
+	}
 	public Boolean getIsNew() {
 		return isNew;
 	}
