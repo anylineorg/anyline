@@ -23,10 +23,14 @@ public class SQLLogParser {
 		}
 	}
 	public static List<SQLLog> parse(File file) throws Exception{
+		List<SQLLog> logs = new ArrayList<SQLLog>();
+		if(null == file || !file.exists()){
+			System.out.println("文件不存在 ");
+			return logs;
+		}
 		String content = FileUtil.readFile(file).toString();
 		String regex = "\\[SQL:(\\d+?-\\d+?)\\]\\[TXT";
 		List<String> heads = RegularUtil.fetch(content, regex,2,1);
-		List<SQLLog> logs = new ArrayList<SQLLog>();
 		for(String head:heads){
 			String tag = "[SQL:"+head+"][TXT:";
 			String txt = RegularUtil.cut(content,tag,"]");
