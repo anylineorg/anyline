@@ -1,4 +1,4 @@
-package org.anyline.config.db.impl;
+package org.anyline.cache;
 
 import java.util.Hashtable;
 
