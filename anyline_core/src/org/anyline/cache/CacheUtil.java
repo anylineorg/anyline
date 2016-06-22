@@ -33,12 +33,6 @@ public class CacheUtil {
 	
 	public static CacheManager create(){
 		long fr = System.currentTimeMillis();
-//		String configFile = ConfigTable.getString("EHCACHE_CONFIG_FILE","ehcache.xml");
-//		if(BasicUtil.isNotEmpty(configFile)){
-//			manager = CacheManager.create(ConfigTable.getWebRoot()+"/WEB-INF/classes/"+configFile);
-//		}else{
-//			manager = CacheManager.create();
-//		}
 		if(null == manager){
 			manager = CacheManager.create();
 	    	if(ConfigTable.isDebug()){
