@@ -27,11 +27,11 @@ import javax.sql.DataSource;
 import net.sf.ehcache.Element;
 
 import org.anyline.cache.CacheUtil;
+import org.anyline.cache.PageLazyStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLStore;
-import org.anyline.config.db.impl.PageLazyStore;
 import org.anyline.config.db.impl.PageNaviImpl;
 import org.anyline.config.db.impl.ProcedureImpl;
 import org.anyline.config.db.impl.SQLStoreImpl;
@@ -92,7 +92,7 @@ public class AnylineServiceImpl implements AnylineService {
 				if(null != configs){
 					navi = configs.getPageNavi();
 					if(null != navi && navi.isLazy()){
-						lazyKey = createCacheElementKey(src, configs, conditions);
+						lazyKey = createCacheElementKey(false, src, configs, conditions);
 						int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
 						navi.setTotalRow(total);
 						if(ConfigTable.isDebug()){
@@ -237,6 +237,7 @@ public class AnylineServiceImpl implements AnylineService {
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
 		navi.setCalType(1);
+		navi.setTotalRow(to-fr+1);
 		ConfigStore configs = new ConfigStoreImpl();
 		configs.setPageNavi(navi);
 		return query(ds, src, configs, conditions);
@@ -248,12 +249,13 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 	/**
 	 * 创建cache key
+	 * @param page 是否需要拼接分页下标
 	 * @param src
 	 * @param store
 	 * @param conditions
 	 * @return
 	 */
-	private String createCacheElementKey(String src, ConfigStore store, String ... conditions){
+	private String createCacheElementKey(boolean page, String src, ConfigStore store, String ... conditions){
 		String result = src+"|";
 		if(null != store){
 			ConfigChain chain = store.getConfigChain();
@@ -271,7 +273,7 @@ public class AnylineServiceImpl implements AnylineService {
 				}
 			}
 			PageNavi navi = store.getPageNavi();
-			if(null != navi){
+			if(page && null != navi){
 				result += "page=" + navi.getCurPage()+"|";
 			}
 		}
@@ -293,7 +295,7 @@ public class AnylineServiceImpl implements AnylineService {
 			return query(ds, src, configs, conditions);
 		}
 		DataSet set = null;
-		String key = "SET:"+createCacheElementKey(src, configs, conditions);
+		String key = "SET:"+createCacheElementKey(true, src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
         	Object value = element.getObjectValue();
@@ -324,6 +326,7 @@ public class AnylineServiceImpl implements AnylineService {
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
 		navi.setCalType(1);
+		navi.setTotalRow(to-fr+1);
 		ConfigStore configs = new ConfigStoreImpl();
 		configs.setPageNavi(navi);
 		return cache(ds, cache, src, configs, conditions);
@@ -417,7 +420,7 @@ public class AnylineServiceImpl implements AnylineService {
 		configs.setPageNavi(navi);
 		
 		DataRow row = null;
-		String key = "ROW:" + createCacheElementKey(src, configs, conditions);
+		String key = "ROW:" + createCacheElementKey(true, src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
             Object value = element.getObjectValue();

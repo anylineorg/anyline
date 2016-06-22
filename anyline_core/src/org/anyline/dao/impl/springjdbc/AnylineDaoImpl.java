@@ -100,15 +100,12 @@ public class AnylineDaoImpl implements AnylineDao {
 				//第一条
 				total = 1;
 			}else{
-				//懒计数(总数) || 未计数
-				if(!navi.isLazy() || navi.getTotalRow() ==0){
+				//未计数(总数 )
+				if(navi.getTotalRow() ==0){
 					total = getTotal(ds, run.getTotalQueryTxt(), run.getValues());
 					navi.setTotalRow(total);	
 				}else{
 					total = navi.getTotalRow();
-					if(showSQL){
-						LOG.warn("记录总数已启用lazy并生效 total:"+total);
-					}
 				}
 			}
 		}
