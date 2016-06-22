@@ -19,8 +19,10 @@
 
 package org.anyline.config.db;
 
+import java.io.Serializable;
 
-public interface Order extends Cloneable{
+
+public interface Order extends Cloneable,Serializable{
 	public static final String ORDER_TYPE_ASC = "ASC";
 	public static final String ORDER_TYPE_DESC = "DESC";
 	public String getColumn() ;

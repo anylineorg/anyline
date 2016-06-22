@@ -40,7 +40,7 @@ public class ConfigTable {
 	private static boolean debug = false;
 	private static boolean sqlDebug = false;
 	private static final String version = "6.X";
-	private static final String minVersion = "0779";
+	private static final String minVersion = "0783";
 	static{
 		init();
 		debug();
@@ -104,7 +104,7 @@ public class ConfigTable {
 	private static void loadConfig(File file){
 		try{
 			if(isDebug()){
-				LOG.info("加载配置文件:"+file.getName());
+				LOG.info("[加载配置文件] [file:" + file.getName() + "]");
 			}
 			SAXReader reader = new SAXReader();
 			Document document = reader.read(file);
@@ -115,7 +115,7 @@ public class ConfigTable {
 				String value = propertyElement.getTextTrim();
 				configs.put(key.toUpperCase().trim(), value);
 				if(isDebug()){
-					LOG.info("加载配置文件 " + key + " = " + value);
+					LOG.info("[解析配置文件] [" + key + " = " + value+"]");
 				}
 			}
 		}catch(Exception e){
