@@ -30,8 +30,6 @@ import org.apache.oro.text.regex.PatternMatcher;
 import org.apache.oro.text.regex.PatternMatcherInput;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.HttpUtil;
 
 
 public class RegularUtil {
