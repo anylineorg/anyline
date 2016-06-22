@@ -264,12 +264,7 @@ public class DataSet implements Collection<Object>, Serializable {
 			for (int i = 0; i < size; i++) {
 				DataRow row = rows.get(i);
 				//查看result中是否已存在
-				String[] params = new String[keys.length*2];
-				int idx = 0;
-				for(String key:keys){
-					params[idx++] = key;
-					params[idx++] = row.getString(key);
-				}
+				String[] params = packParam(row, keys);
 				if(result.getRows(params).size() == 0){
 					DataRow tmp = new DataRow();
 					for(String key:keys){
@@ -830,21 +825,16 @@ public class DataSet implements Collection<Object>, Serializable {
 		return result;
 	}
 
-	public boolean contains(DataRow row, String chkCol) {
-		if (null == rows || rows.size() == 0) {
+	public boolean contains(DataRow row, String ... keys) {
+		if (null == rows || rows.size() == 0 || null == row) {
 			return false;
 		}
-		if (null == chkCol) {
-			chkCol = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+		if (null == keys) {
+			keys = new String[1];
+			keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 		}
-		int size = rows.size();
-		for (int i = 0; i < size; i++) {
-			DataRow item = rows.get(i);
-			if (item.getString(chkCol).equals(row.getString(chkCol))) {
-				return true;
-			}
-		}
-		return false;
+		String params[] = packParam(row, keys);
+		return getRows(params).size() > 0;
 	}
 	/**
 	 * 从items中按相应的key提取数据 存入
@@ -889,6 +879,57 @@ public class DataSet implements Collection<Object>, Serializable {
 		DataSet result = distinct(keys);
 		result.dispatchItems(this, keys);
 		return result;
+	}
+	public DataSet or(DataSet set){
+		return this.union(set);
+	}
+	/**
+	 * 交集
+	 * @param set
+	 * @param keys
+	 * @return
+	 */
+	public DataSet intersection(DataSet set, String ... keys){
+		DataSet result = new DataSet();
+		if(null == set){
+			return result;
+		}
+		for(DataRow row:rows){
+			if(set.contains(row, keys)){
+				result.add(row.clone());
+			}
+		}
+		return result;
+	}
+	public DataSet and(DataSet set, String ... keys){
+		return intersection(set, keys);
+	}
+	/**
+	 * 差集
+	 * @param set
+	 * @param keys
+	 * @return
+	 */
+	public DataSet difference(DataSet set, String ... keys){
+		DataSet result = new DataSet();
+		for(DataRow row:rows){
+			if(null == set || !set.contains(row, keys)){
+				result.add(row.clone());
+			}
+		}
+		return result;
+	}
+	public String[] packParam(DataRow row, String ... keys){
+		if(null == keys || null == row){
+			return null;
+		}
+		String params[] = new String[keys.length*2];
+		int idx = 0;
+		for(String key:keys){
+			params[idx++] = key;
+			params[idx++] = row.getString(key);
+		}
+		return params;
 	}
 	/*********************************************** 实现接口 ************************************************************/
 	public boolean add(Object e) {
