@@ -1043,5 +1043,15 @@ public class DataSet implements Collection<Object>, Serializable {
 	public void setService(AnylineService service) {
 		this.service = service;
 	}
-	
+	/**
+	 * 清空service与rows中的service
+	 * @return
+	 */
+	public DataSet clearService(){
+		this.service = null;
+		for(DataRow row:rows){
+			row.setService(null);
+		}
+		return this;
+	}
 }

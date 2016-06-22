@@ -23,7 +23,6 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
-import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
@@ -34,16 +33,21 @@ public class CacheUtil {
 	
 	public static CacheManager create(){
 		long fr = System.currentTimeMillis();
-		String configFile = ConfigTable.getString("EHCACHE_CONFIG_FILE","ehcache.xml");
-		if(BasicUtil.isNotEmpty(configFile)){
-			manager = CacheManager.create(ConfigTable.getWebRoot()+"/WEB-INF/classes/"+configFile);
-		}else{
+//		String configFile = ConfigTable.getString("EHCACHE_CONFIG_FILE","ehcache.xml");
+//		if(BasicUtil.isNotEmpty(configFile)){
+//			manager = CacheManager.create(ConfigTable.getWebRoot()+"/WEB-INF/classes/"+configFile);
+//		}else{
+//			manager = CacheManager.create();
+//		}
+		if(null == manager){
 			manager = CacheManager.create();
+	    	if(ConfigTable.isDebug()){
+	    		LOG.warn("[加载ehcache配置文件] [耗时:" + (System.currentTimeMillis() - fr) + "]");
+	    		for(String name:manager.getCacheNames()){
+	    			LOG.warn("[解析ehcache配置文件] [name:"+name+"]");
+	    		}
+	    	}
 		}
-    	if(ConfigTable.isDebug()){
-    		LOG.warn("加载ehcache配置文件("+configFile+")耗时:" + (System.currentTimeMillis() - fr));
-    		fr = System.currentTimeMillis();
-    	}
 		return manager;
 	}
 	
@@ -64,18 +68,22 @@ public class CacheUtil {
 			result = cache.get(key);
 			if(null == result){
 		    	if(ConfigTable.isDebug()){
-		    		LOG.warn("缓存不存在 cnannel:"+channel+" key:"+key);
+		    		LOG.warn("[缓存不存在] [cnannel:" + channel + "] [key:" + key + "]");
 		    	}
 				return null;
 			}
 			if(result.isExpired()){
 		    	if(ConfigTable.isDebug()){
-		    		LOG.warn("缓存已过期  耗时:"+(System.currentTimeMillis()-fr)+" cnannel:"+channel+" key:" + key + " 命中:"+result.getHitCount() + " 生存:"+result.getTimeToLive());
+		    		LOG.warn("[缓存数据提取成功但已过期] [耗时:" + (System.currentTimeMillis()-fr) + "] [cnannel:" 
+		    				+ channel + "] [key:" + key + "] [命中:" + result.getHitCount() + "] [生存:"
+		    				+ (System.currentTimeMillis() - result.getCreationTime())/1000 + "/" + result.getTimeToLive() + "]");
 		    	}
 		    	result = null;
 			}
 			if(ConfigTable.isDebug()){
-	    		LOG.warn("缓存提取成功 耗时:"+(System.currentTimeMillis()-fr)+" cnannel:"+channel+" key:" + key + " 命中:"+result.getHitCount() + " 生存:"+result.getTimeToLive());
+	    		LOG.warn("[缓存数据提取成功并有效] [耗时:"+(System.currentTimeMillis()-fr)+"] [cnannel:"  
+	    				+ channel + "] [key:" + key + "] [命中:" + result.getHitCount() + "] [生存:"
+	    				+ (System.currentTimeMillis() - result.getCreationTime())/1000 + "/" + result.getTimeToLive() + "]");
 	    	}
 		}
 		return result;
@@ -94,7 +102,7 @@ public class CacheUtil {
 		if(null != cache){
 			cache.put(element);
 	    	if(ConfigTable.isDebug()){
-	    		LOG.warn("存储缓存:"+channel+" key:"+element.getObjectKey());
+	    		LOG.warn("[存储缓存数据] [channel:" + channel + "] [key:"+element.getObjectKey() + "]");
 	    	}
 		}
 	}

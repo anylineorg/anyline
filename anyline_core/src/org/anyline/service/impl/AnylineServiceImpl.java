@@ -291,6 +291,7 @@ public class AnylineServiceImpl implements AnylineService {
         }
         // 调用实际 的方法
     	set = queryFromDao(ds,src, configs, conditions);
+    	set.setService(null);
     	CacheUtil.put(cache, key, set);
 		return set;
 	}

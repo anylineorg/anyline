@@ -19,6 +19,7 @@
 
 package org.anyline.config.db;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -27,7 +28,7 @@ import java.util.List;
 
 
 
-public interface SQL extends Cloneable {
+public interface SQL extends Cloneable,Serializable {
 
 	public static int COMPARE_TYPE_EQUAL 			= 10;	// ==
 	public static int COMPARE_TYPE_GREAT 			= 20;	// >

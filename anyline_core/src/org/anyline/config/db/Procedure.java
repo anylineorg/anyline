@@ -21,11 +21,12 @@ package org.anyline.config.db;
 /**
  * V3.0
  */
+import java.io.Serializable;
 import java.util.List;
 
 
 
-public interface Procedure{
+public interface Procedure extends Serializable{
 	/**
 	 * 添加输入参数
 	 * @param value	值
