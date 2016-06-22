@@ -59,12 +59,31 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	@Autowired
 	protected AnylineService service;
 	
-	public static DataRow parse(Object obj){
+	/**
+	 * 
+	 * @param obj
+	 * @param keys 列名:obj属性名 "ID:memberId"
+	 * @return
+	 */
+	public static DataRow parse(Object obj, String ... keys){
+		Map<String,String> map = new HashMap<String,String>();
+		if(null != keys){
+			for(String key:keys){
+				String tmp[] = key.split(":");
+				if(null != tmp && tmp.length>1){
+					map.put(tmp[1].trim().toUpperCase(), tmp[0].trim().toUpperCase());
+				}
+			}
+		}
 		DataRow row = new DataRow();
 		if(null != obj){
 			List<String> fields = BeanUtil.getFieldsName(obj.getClass());
 			for(String field : fields){
-				row.put(field, BeanUtil.getFieldValue(obj, field));
+				String col = map.get(field.toUpperCase());
+				if(null == col){
+					col = field;
+				}
+				row.put(col, BeanUtil.getFieldValue(obj, field));
 			}
 		}
 		return row;
