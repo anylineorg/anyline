@@ -19,11 +19,12 @@
 
 package org.anyline.config.db;
 
+import java.io.Serializable;
 import java.util.List;
 
 
 
-public interface Condition extends Cloneable{
+public interface Condition extends Cloneable,Serializable{
 	public static String CONDITION_JOIN_TYPE_AND		= " AND ";	//拼接方式 AND
 	public static String CONDITION_JOIN_TYPE_OR			= " OR ";	//拼接方式 OR
 	//参数变量类型

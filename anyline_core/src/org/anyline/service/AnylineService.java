@@ -49,7 +49,15 @@ public interface AnylineService{
 	public DataSet query(String src, String ... conditions);
 	public DataSet query(DataSource ds, String src, int fr, int to, String ... conditions);
 	public DataSet query(String src, int fr, int to, String ... conditions);
-
+	/**
+	 * 
+	 * @param ds
+	 * @param cache	对应ehcache缓存配置文件 中的cache.name
+	 * @param src
+	 * @param configs
+	 * @param conditions
+	 * @return
+	 */
 	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
 	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions);
 	public DataSet cache(DataSource ds, String cache, String src, String ... conditions);

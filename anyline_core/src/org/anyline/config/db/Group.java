@@ -19,8 +19,10 @@
 
 package org.anyline.config.db;
 
+import java.io.Serializable;
 
-public interface Group extends Cloneable{
+
+public interface Group extends Cloneable,Serializable{
 	public String getColumn() ;
 	public void setColumn(String column) ;
 }

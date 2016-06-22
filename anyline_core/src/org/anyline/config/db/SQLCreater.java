@@ -19,14 +19,13 @@
 
 package org.anyline.config.db;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.http.ConfigStore;
-import org.anyline.entity.BasicEntity;
-import org.anyline.entity.DataRow;
 
-public interface SQLCreater {
+public interface SQLCreater extends Serializable{
 
 	public static final String TAB = "\t";
 	public static final String BR = "\n";

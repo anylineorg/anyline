@@ -19,9 +19,10 @@
 
 package org.anyline.config.db;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface GroupStore{
+public interface GroupStore extends Serializable{
 	public List<Group> getGroups();
 	public void group(Group group) ;
 	/**

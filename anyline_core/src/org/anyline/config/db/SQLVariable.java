@@ -22,9 +22,10 @@
  */
 package org.anyline.config.db;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface SQLVariable extends Cloneable{
+public interface SQLVariable extends Cloneable,Serializable{
 	public static final int VAR_TYPE_INDEX			= 0;		//根据下标区分 CD = ?
 	public static final int VAR_TYPE_KEY			= 1;		//根据KEY区分  CD = :CD
 	public static final int VAR_TYPE_KEY_REPLACE	= 2;		//字符替换 CD=':CD'
