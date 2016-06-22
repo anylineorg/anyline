@@ -246,6 +246,13 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet query(String src, int fr, int to, String... conditions) {
 		return query(null, src, fr, to, conditions);
 	}
+	/**
+	 * 创建cache key
+	 * @param src
+	 * @param store
+	 * @param conditions
+	 * @return
+	 */
 	private String createCacheElementKey(String src, ConfigStore store, String ... conditions){
 		String result = src+"|";
 		if(null != store){
@@ -270,27 +277,35 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		if(null != conditions){
 			for(String condition:conditions){
-				result += condition+"|";
+				if(BasicUtil.isNotEmpty(condition)){
+					result += condition+"|";
+				}
 			}
 		}
 		LOG.info("cache key:"+result);
 		return result;
 	}
+	
 	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 
 		//是否启动缓存
 		if(!ConfigTable.getBoolean("IS_USE_CACHE")){
-			return queryFromDao(ds,src, configs, conditions);
+			return query(ds, src, configs, conditions);
 		}
 		DataSet set = null;
-		String key = createCacheElementKey(src, configs, conditions);
+		String key = "SET:"+createCacheElementKey(src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
-        	set = (DataSet)element.getObjectValue();
-        	return set;
+        	Object value = element.getObjectValue();
+        	if(value instanceof DataSet){
+            	set = (DataSet)value;
+            	return set;	
+        	}else{
+        		LOG.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
+        	}
         }
         // 调用实际 的方法
-    	set = queryFromDao(ds,src, configs, conditions);
+    	set = query(ds, src, configs, conditions);
     	set.setService(null);
     	CacheUtil.put(cache, key, set);
 		return set;
@@ -316,6 +331,8 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet cache(String cache, String src, int fr, int to, String ... conditions){
 		return cache(null, cache, src, fr, to, conditions);
 	}
+
+	
 	@Override
 	public <T> List<T> query(DataSource ds, Class<T> clazz, ConfigStore configs, String... conditions) {
 		String src = BeanUtil.checkTable(clazz);
@@ -385,6 +402,50 @@ public class AnylineServiceImpl implements AnylineService {
 		return queryRow(null, src, null, conditions);
 	}
 
+	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
+		//是否启动缓存
+		if(!ConfigTable.getBoolean("IS_USE_CACHE")){
+			return queryRow(ds, src, configs, conditions);
+		}
+		PageNaviImpl navi = new PageNaviImpl();
+		navi.setFirstRow(0);
+		navi.setLastRow(0);
+		navi.setCalType(1);
+		if (null == configs) {
+			configs = new ConfigStoreImpl();
+		}
+		configs.setPageNavi(navi);
+		
+		DataRow row = null;
+		String key = "ROW:" + createCacheElementKey(src, configs, conditions);
+		Element element = CacheUtil.getElement(cache, key);
+        if(null != element){
+            Object value = element.getObjectValue();
+        	if(value instanceof DataRow){
+            	row = (DataRow)value;
+            	return row;	
+        	}else{
+        		LOG.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
+        	}
+        }
+        // 调用实际 的方法
+        row = queryRow(ds, src, configs, conditions);
+    	row.setService(null);
+    	CacheUtil.put(cache, key, row);
+		
+		return row;
+	}
+	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions){
+		return cacheRow(null, cache, src, configs, conditions);
+	}
+	public DataRow cacheRow(DataSource ds, String cache, String src, String ... conditions){
+		return cacheRow(ds, cache, src, null, conditions);
+	}
+	public DataRow cacheRow(String cache, String src, String ... conditions){
+		return cacheRow(null, cache, src, null, conditions);
+	}
+	
+	
 	@Override
 	public <T> T queryEntity(DataSource ds, Class<T> clazz, ConfigStore configs, String... conditions) {
 		String src = BeanUtil.checkTable(clazz);

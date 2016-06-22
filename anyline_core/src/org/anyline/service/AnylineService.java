@@ -77,6 +77,11 @@ public interface AnylineService{
 	public DataRow queryRow(String src, ConfigStore configs, String ... conditions);
 	public DataRow queryRow(DataSource ds, String src, String ... conditions);
 	public DataRow queryRow(String src, String ... conditions);
+	
+	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
+	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions);
+	public DataRow cacheRow(DataSource ds, String cache, String src, String ... conditions);
+	public DataRow cacheRow(String cache, String src, String ... conditions);
 
 	public <T> T queryEntity(DataSource ds, Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> T queryEntity(Class<T> clazz, ConfigStore configs, String ... conditions);
