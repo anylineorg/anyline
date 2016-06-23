@@ -333,33 +333,23 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 * @param dir 
 	 * @returnn
 	 */
-	public List<DataRow> upload(String dir) {
+	public List<DataRow> upload(File dir){
 		List<DataRow> result = new ArrayList<DataRow>();
 		if(null == upload){
 			return result;
-		}
-		File root = null;
-		if(BasicUtil.isEmpty(dir)){
-			root = new File(ConfigTable.getWebRoot()).getParentFile();
-		}else{
-			root = new File(dir);
-		}
-		// 如果指定的路径没有就创建
-		if (!root.exists()) {
-			root.mkdirs();
 		}
 		// 把得到的文件的集合通过循环的方式读取并放在指定的路径下
 		for (int i = 0; i < upload.size(); i++) {
 			try {
 				String dstName = DateUtil.format("yyyyMMddhhmmssms")+BasicUtil.getRandomLowerString(10)+"."+FileUtil.getSuffixFileName(uploadFileName.get(i));
-				File dst = new File(new File(root, "upload_img"), dstName);
+				File dst = new File(new File(dir, "upload_img"), dstName);
 				FileUtils.copyFile(upload.get(i), dst);
 				DataRow fileRow = new DataRow();
 				fileRow.put("TITLE", dst.getName());
 				fileRow.put("SRC_NAME", uploadFileName.get(i));
 				fileRow.put("ROOT", request.getSession().getServletContext().getRealPath("/"));
 				fileRow.put("PATH_ABS", dst.getAbsolutePath());
-				fileRow.put("PATH_REL", dst.getAbsolutePath().replace(root.getAbsolutePath(),""));
+				fileRow.put("PATH_REL", dst.getAbsolutePath().replace(dir.getAbsolutePath(),""));
 				service.save(getUploadTable(null), fileRow);
 				result.add(fileRow);
 				
@@ -369,6 +359,19 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		}
 		return result;
 	}
+	public List<DataRow> upload(String dir) {
+		File root = new File(ConfigTable.getWebRoot()).getParentFile();
+		
+		if(!BasicUtil.isEmpty(dir)){
+			root = new File(root,dir);
+		}
+		// 如果指定的路径没有就创建
+		if (!root.exists()) {
+			root.mkdirs();
+		}
+		return upload(root);
+	}
+	
 	/**
 	 * 
 	 * @param layout 布局path
