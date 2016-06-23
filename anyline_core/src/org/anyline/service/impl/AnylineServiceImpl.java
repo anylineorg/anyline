@@ -83,7 +83,7 @@ public class AnylineServiceImpl implements AnylineService {
 	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
 		if(ConfigTable.isSQLDebug()){
-			LOG.warn("解析SQL queryFromDao:"+src);
+			LOG.warn("[解析SQL] [src:" + src + "]");
 		}
 		conditions = parseConditions(conditions);
 		try {
@@ -95,9 +95,6 @@ public class AnylineServiceImpl implements AnylineService {
 						lazyKey = createCacheElementKey(false, src, configs, conditions);
 						int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
 						navi.setTotalRow(total);
-						if(ConfigTable.isDebug()){
-							LOG.warn("记录总数lazy key:"+lazyKey + " total:"+total);
-						}
 					}
 				}
 				SQL sql = createSQL(src);
@@ -190,25 +187,25 @@ public class AnylineServiceImpl implements AnylineService {
 		src = src.trim();
 		if (src.startsWith("{") && src.endsWith("}")) {
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("SQL 类型:{JAVA定义} src="+src);
+				LOG.warn("[解析SQL类型] [类型:{JAVA定义}] [src:" + src + "]");
 			}
 			src = src.substring(1,src.length()-1);
 			sql = new TextSQLImpl(src);
 		} else if (src.toUpperCase().trim().startsWith("SELECT")) {
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("SQL类型:JAVA定义 src="+src);
+				LOG.warn("[解析SQL类型] [类型:JAVA定义] [src:" + src + "]");
 			}
 			sql = new TextSQLImpl(src);
 		}else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
 			/* XML定义 */
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("SQL类型:XML定义 src="+src);
+				LOG.warn("[解析SQL类型] [类型:XML定义] [src:" + src + "]");
 			}
 			sql = SQLStoreImpl.parseSQL(src);
 		} else {
 			/* 自动生成 */
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("SQL类型:auto src="+src);
+				LOG.warn("[解析SQL类型] [类型:auto] [src:" + src + "]");
 			}
 			sql = new TableSQLImpl();
 			sql.setDataSource(src);

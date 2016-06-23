@@ -362,9 +362,9 @@ public class PageNaviImpl implements PageNavi{
 		return this.lazyPeriod;
 	}
 	@Override
-	public PageNavi setLazy(int period) {
+	public PageNavi setLazy(int sec) {
 		this.lazy = true;
-		this.lazyPeriod = period;
+		this.lazyPeriod = sec;
 		return this;
 	}
 	@Override

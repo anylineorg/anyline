@@ -302,9 +302,14 @@ public class ConfigStoreImpl implements ConfigStore{
 		result.chain = chain;
 		return result;
 	}
-	public ConfigStore setTotalLazy(int period){
+	/**
+	 * 开启记录总数懒加载 
+	 * @param ms 缓存有效期(秒)
+	 * @return
+	 */
+	public ConfigStore setTotalLazy(int sec){
 		if(null != navi){
-			navi.setLazy(period);
+			navi.setLazy(sec);
 		}
 		return this;
 	}
