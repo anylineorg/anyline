@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.anyline.entity.DataRow;
+import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
 
@@ -67,11 +68,15 @@ public class FileResult extends StrutsResultSupport {
 				out = response.getOutputStream();
 				byte[] buf = new byte[1024];
 				int count = 0;
-				LOG.info("在正传输文件:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+				if(ConfigTable.isDebug()){
+					LOG.info("在正传输文件:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+				}
 				while ((count = in.read(buf)) >= 0) {
 					out.write(buf, 0, count);
 				}
-				LOG.info("传输完成:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+				if(ConfigTable.isDebug()){
+					LOG.info("传输完成:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+				}
 			}
 		} catch (Exception e) {
 			LOG.error(e);

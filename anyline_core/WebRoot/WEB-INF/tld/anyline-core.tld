@@ -35,6 +35,32 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	
+	<tag>
+		<name>contains</name>
+		<tagclass>org.anyline.tag.Contains</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>data(String,Collection,Map,其他Object Map与Object取key属性值对比)中是否包含value</info>
+		<attribute>
+			<name>data</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>key</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>else</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 	<tag>
 		<name>if</name>
 		<tagclass>org.anyline.tag.If</tagclass>
