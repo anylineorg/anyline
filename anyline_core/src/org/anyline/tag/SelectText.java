@@ -127,6 +127,8 @@ public class SelectText extends BaseBodyTag{
 	public void release() {
 		scope = null;
 		data = null;
+		textKey = null;
+		valueKey = null;
 	}
 
 

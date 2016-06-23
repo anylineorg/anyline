@@ -40,18 +40,18 @@ public class PageLazyStore {
 		return result;
 	}
 	public static void setTotal(String key, int total) {
-		
 		Integer old = lazyTotal.get(key);
 		if(null == old || old != total){
 			//新计数 或 更新计数
 			lazyTime.put(key, System.currentTimeMillis());
+			lazyTotal.put(key, total);
 			if(ConfigTable.isDebug()){
-				LOG.warn("[设置记录总数时间] [key:"+key + "]");
+				LOG.warn("[重置记录总数] [key:"+key + "] [old:" + old +"]" + "[new:" + total + "]");
 			}
-		}
-		lazyTotal.put(key, total);
-		if(ConfigTable.isDebug()){
-			LOG.warn("[设置记录总数] [key:"+key + "] [total:"+total+"]");
+		}else{
+			if(ConfigTable.isDebug()){
+				LOG.warn("[缓存记录总数] [key:"+key + "] [total:" + total + "]");
+			}
 		}
 	}
 }

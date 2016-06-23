@@ -80,7 +80,7 @@ public class CacheUtil {
 			result = cache.get(key);
 			if(null == result){
 		    	if(ConfigTable.isDebug()){
-		    		LOG.warn("[缓存不存在] [cnannel:" + channel + "] [key:" + key + "]");
+		    		LOG.warn("[缓存不存在] [cnannel:" + channel + "] [key:" + key + "] [生存:-1/" +  cache.getCacheConfiguration().getTimeToLiveSeconds() + "]");
 		    	}
 				return null;
 			}
@@ -114,7 +114,7 @@ public class CacheUtil {
 		if(null != cache){
 			cache.put(element);
 	    	if(ConfigTable.isDebug()){
-	    		LOG.warn("[存储缓存数据] [channel:" + channel + "] [key:"+element.getObjectKey() + "]");
+	    		LOG.warn("[存储缓存数据] [channel:" + channel + "] [key:"+element.getObjectKey() + "] [生存:0/" + cache.getCacheConfiguration().getTimeToLiveSeconds() + "]");
 	    	}
 		}
 	}
@@ -163,13 +163,12 @@ public class CacheUtil {
     	boolean result = false;
     	Long fr = reflushFlag.get(key);
     	long age = -1;			//已生存
-    	int period = -1;		//两次刷新最小间隔
+    	int period = ConfigTable.getInt(key, 120);		//两次刷新最小间隔
     	if(null == fr){
     		result = true;
     	}else{
-	    	period = ConfigTable.getInt(key, 120);
 	    	age = (System.currentTimeMillis() - fr) / 1000;
-	    	if(System.currentTimeMillis() - fr > period){
+	    	if(age > period){
 	    		result = true;
 	    	}
     	}
@@ -190,9 +189,20 @@ public class CacheUtil {
      * @param key
      */
     public static void stop(String key){
-    	reflushFlag.remove(key);
+    	Long fr = reflushFlag.get(key);
+    	if(null == fr){
+    		if(ConfigTable.isDebug()){
+    			LOG.warn("[刷新缓存完成 有可能key拼写有误] [key:" + key + "]");
+    		}
+    		return;
+    	}
+    	long age = (System.currentTimeMillis() - fr)/1000;			//已生存
+    	int period = ConfigTable.getInt(key, 120);					//两次刷新最小间隔
+    	if(age > period){
+    		reflushFlag.remove(key);
+    	}
 		if(ConfigTable.isDebug()){
-			LOG.warn("[刷新缓存完成] [key:" + key + "]");
+			LOG.warn("[刷新缓存完成] [key:" + key + "] [间隔:" + age + "/" + period + "]");
 		}
     }
     public boolean isRun(String key){
