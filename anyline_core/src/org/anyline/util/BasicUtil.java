@@ -744,4 +744,14 @@ public class BasicUtil {
 		}
 		return false;
 	}
+   public static boolean isWrapClass(Object obj) { 
+        try { 
+        	return ((Class) obj.getClass().getField("TYPE").get(null)).isPrimitive();
+        } catch (Exception e) { 
+            return false; 
+        } 
+    } 
+   public static void main(String args[]){
+      System.out.println(isWrapClass(new String()));
+   }
 }
