@@ -25,14 +25,14 @@ public class PageLazyStore {
 				lazyTotal.remove(key);
 				lazyTime.remove(key);
 				if(ConfigTable.isDebug()){
-					LOG.warn("[记录总数过期] [key:" + key + "] [age:" + age + "]");
+					LOG.warn("[记录总数过期] [key:" + key + "] [生存:" + age + "/" + period + "]");
 				}
 				return 0;
 			}
 		}
 		Integer result = lazyTotal.get(key);
 		if(ConfigTable.isDebug()){
-			LOG.warn("[提取记录总数] [key:" + key + "] [total:" + result + "] [age:" + age + "]");
+			LOG.warn("[提取记录总数] [key:" + key + "] [total:" + result + "] [生存:" + age + "/" + period + "]");
 		}
 		if(null == result){
 			return 0;
