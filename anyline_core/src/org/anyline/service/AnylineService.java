@@ -83,6 +83,24 @@ public interface AnylineService{
 	public DataRow cacheRow(DataSource ds, String cache, String src, String ... conditions);
 	public DataRow cacheRow(String cache, String src, String ... conditions);
 
+	/**
+	 * 删除缓存 参数保持与查询参数完全一致
+	 * @param cache
+	 * @param src
+	 * @param configs
+	 * @param conditions
+	 * @return
+	 */
+	public boolean removeCache(String cache, String src, ConfigStore configs, String ... conditions);
+	public boolean removeCache(String cache, String src, String ... conditions);
+	public boolean removeCache(String cache, String src, int fr, int to, String ... conditions);
+	/**
+	 * 清空缓存
+	 * @param cache
+	 * @return
+	 */
+	public boolean clearCache(String cache);
+	
 	public <T> T queryEntity(DataSource ds, Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> T queryEntity(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> T queryEntity(DataSource ds, Class<T> clazz, String ... conditions);

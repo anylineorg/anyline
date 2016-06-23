@@ -66,21 +66,7 @@ public class AnylineServiceImpl implements AnylineService {
 	public AnylineDao getDao() {
 		return dao;
 	}
-	
-	/**
-	 * 按条件查询
-	 * @param ds 数据源
-	 * @param src 表｜视图｜函数｜自定义SQL
-	 * @param configs http参数封装
-	 * @param conditions 固定查询条件
-	 * @return
-	 */
-	@Override
-	public DataSet query(DataSource ds, String src, ConfigStore configs, String... conditions) {
-		DataSet set = queryFromDao(ds,src, configs, conditions);
-        return set;
-		
-	}
+
 	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
 		if(ConfigTable.isSQLDebug()){
@@ -114,6 +100,20 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return set;
 	}
+	/**
+	 * 按条件查询
+	 * @param ds 数据源
+	 * @param src 表｜视图｜函数｜自定义SQL
+	 * @param configs http参数封装
+	 * @param conditions 固定查询条件
+	 * @return
+	 */
+	@Override
+	public DataSet query(DataSource ds, String src, ConfigStore configs, String... conditions) {
+		DataSet set = queryFromDao(ds,src, configs, conditions);
+        return set;
+		
+	}
 
 	/**
 	 * @param conditions	固定查询条件  
@@ -129,6 +129,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * 			CD:NULL		拼接 IS NULL
 	 */
 	private String[] parseConditions(String[] conditions){
+		conditions = BasicUtil.compressionSpace(conditions);
 		if(null != conditions){
 			int length = conditions.length;
 			for(int i=0; i<length; i++){
@@ -230,7 +231,6 @@ public class AnylineServiceImpl implements AnylineService {
 
 	@Override
 	public DataSet query(DataSource ds, String src, int fr, int to, String... conditions) {
-		conditions = BasicUtil.compressionSpace(conditions);
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
@@ -254,6 +254,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @return
 	 */
 	private String createCacheElementKey(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
+		conditions = BasicUtil.compressionSpace(conditions);
 		String result = src+"|";
 		if(null != store){
 			ConfigChain chain = store.getConfigChain();
@@ -381,7 +382,6 @@ public class AnylineServiceImpl implements AnylineService {
 
 	@Override
 	public DataRow queryRow(DataSource ds, String src, ConfigStore store, String... conditions) {
-		conditions = BasicUtil.compressionSpace(conditions);
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(0);
 		navi.setLastRow(0);
@@ -458,6 +458,43 @@ public class AnylineServiceImpl implements AnylineService {
 		return cacheRow(null, cache, src, null, conditions);
 	}
 	
+	
+	/**
+	 * 删除缓存 参数保持与查询参数完全一致
+	 * @param cache
+	 * @param src
+	 * @param configs
+	 * @param conditions
+	 * @return
+	 */
+	public boolean removeCache(String cache, String src, ConfigStore configs, String ... conditions){
+		conditions = BasicUtil.compressionSpace(conditions);
+		String key = createCacheElementKey(true, true, src, configs, conditions);
+		CacheUtil.remove(cache, "SET:" + key);
+		CacheUtil.remove(cache, "ROW:" + key);
+		return true;
+	}
+	public boolean removeCache(String cache, String src, String ... conditions){
+		return removeCache(cache, src, null, conditions);
+	}
+	public boolean removeCache(String cache, String src, int fr, int to, String ... conditions){
+		PageNaviImpl navi = new PageNaviImpl();
+		navi.setFirstRow(fr);
+		navi.setLastRow(to);
+		navi.setCalType(1);
+		navi.setTotalRow(to-fr+1);
+		ConfigStore configs = new ConfigStoreImpl();
+		configs.setPageNavi(navi);
+		return removeCache(cache, src, configs, conditions);
+	}
+	/**
+	 * 清空缓存
+	 * @param cache
+	 * @return
+	 */
+	public boolean clearCache(String cache){
+		return CacheUtil.clear(cache);
+	}
 	
 	@Override
 	public <T> T queryEntity(DataSource ds, Class<T> clazz, ConfigStore configs, String... conditions) {

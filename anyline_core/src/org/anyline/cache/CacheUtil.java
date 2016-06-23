@@ -17,7 +17,9 @@
  */
 package org.anyline.cache;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -53,6 +55,22 @@ public class CacheUtil {
 		}
 		cache = manager.getCache(channel);
 		return cache;
+	}
+	public static List<String> getCacheNames(){
+		List<String> names = new ArrayList<String>();
+		CacheManager manager = create();
+		for(String name:manager.getCacheNames()){
+			names.add(name);
+		}
+		return names;
+	}
+	public static List<Cache> getCaches(){
+		List<Cache> caches = new ArrayList<Cache>();
+		CacheManager manager = create();
+		for(String name:manager.getCacheNames()){
+			caches.add(manager.getCache(name));
+		}
+		return caches;
 	}
 	public static Element getElement(String channel, String key){
 		Element result = null;
@@ -99,6 +117,35 @@ public class CacheUtil {
 	    		LOG.warn("[存储缓存数据] [channel:" + channel + "] [key:"+element.getObjectKey() + "]");
 	    	}
 		}
+	}
+	
+	public static boolean remove(String channel, String key){
+		boolean result = true;
+		try{
+			Cache cache = getCache(channel);
+			if(null != cache){
+				cache.remove(key);
+			}
+	    	if(ConfigTable.isDebug()){
+	    		LOG.warn("[删除缓存数据] [channel:" + channel + "] [key:" + key + "]");
+	    	}
+		}catch(Exception e){
+			result = false;
+		}
+    	return result;
+	}
+	public static boolean clear(String channel){
+		boolean result = true;
+		try{
+			CacheManager manager = create();
+			manager.removeCache(channel);
+	    	if(ConfigTable.isDebug()){
+	    		LOG.warn("[清空缓存数据] [channel:" + channel + "]");
+	    	}
+		}catch(Exception e){
+			result = false;
+		}
+		return result;
 	}
 	/*
 	 * 辅助缓存刷新控制, N秒内只接收一次刷新操作
