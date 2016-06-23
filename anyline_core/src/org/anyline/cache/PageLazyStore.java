@@ -12,25 +12,27 @@ public class PageLazyStore {
 	/**
 	 * 缓存中的总条数
 	 * @param key		
-	 * @param period	过期时间
+	 * @param period	过期时间(秒)
 	 * @return
 	 */
 	public static int getTotal(String key, int period) {
 		Long fr = lazyTime.get(key);		//创建时间
+		long age = -1;
 		if(null != fr){
-			if((System.currentTimeMillis() - fr)/1000 > period){
+			age = (System.currentTimeMillis() - fr)/1000; 
+			if(age > period){
 				//过期
 				lazyTotal.remove(key);
 				lazyTime.remove(key);
 				if(ConfigTable.isDebug()){
-					LOG.warn("记录总数lazy过期 key:"+key);
+					LOG.warn("[记录总数过期] [key:" + key + "] [age:" + age + "]");
 				}
 				return 0;
 			}
 		}
 		Integer result = lazyTotal.get(key);
 		if(ConfigTable.isDebug()){
-			LOG.warn("提取记录总数lazy key"+key+" total:"+result);
+			LOG.warn("[提取记录总数] [key:" + key + "] [total:" + result + "] [age:" + age + "]");
 		}
 		if(null == result){
 			return 0;
@@ -38,9 +40,18 @@ public class PageLazyStore {
 		return result;
 	}
 	public static void setTotal(String key, int total) {
+		
+		Integer old = lazyTotal.get(key);
+		if(null == old || old != total){
+			//新计数 或 更新计数
+			lazyTime.put(key, System.currentTimeMillis());
+			if(ConfigTable.isDebug()){
+				LOG.warn("[设置记录总数时间] [key:"+key + "]");
+			}
+		}
 		lazyTotal.put(key, total);
 		if(ConfigTable.isDebug()){
-			LOG.warn("设置记录总数lazy key:"+key + " total:"+total);
+			LOG.warn("[设置记录总数] [key:"+key + "] [total:"+total+"]");
 		}
 	}
 }

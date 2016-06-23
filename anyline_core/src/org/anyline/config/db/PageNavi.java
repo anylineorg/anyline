@@ -124,26 +124,26 @@ public interface PageNavi extends Serializable{
 	public PageNavi setFirstRow(int firstRow) ;
 	public PageNavi setLastRow(int lastRow) ;
 	/**
-	 * 总条数懒加载时间间隔(毫秒)
+	 * 总条数懒加载时间间隔(秒)
 	 * @return
 	 */
 	public boolean isLazy();
 	/**
-	 * 总条数懒加载时间间隔(毫秒)
+	 * 总条数懒加载时间间隔(秒)
 	 * @return
 	 */
 	public int getLazyPeriod();
 	/**
-	 * 总条数懒加载时间间隔(毫秒)
+	 * 总条数懒加载时间间隔(秒)
 	 * @param period
 	 * @return
 	 */
-	public PageNavi setLazyPeriod(int period);
+	public PageNavi setLazyPeriod(int sec);
 	/**
-	 * 总条数懒加载时间间隔(毫秒)
+	 * 总条数懒加载时间间隔(秒)
 	 * @param period
 	 * @return
 	 */
-	public PageNavi setLazy(int period);
+	public PageNavi setLazy(int sec);
 
 }
