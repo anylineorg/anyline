@@ -40,7 +40,7 @@ public class ConfigTable {
 	private static boolean debug = false;
 	private static boolean sqlDebug = false;
 	private static final String version = "6.X";
-	private static final String minVersion = "0783";
+	private static final String minVersion = "0793";
 	static{
 		init();
 		debug();
@@ -185,7 +185,7 @@ public class ConfigTable {
 			line = "*"+BasicUtil.fillChar("", chr, fill) + src +BasicUtil.fillChar("", chr, fill) +"*";
 		}else{
 			fill = len - src.length() - 2;
-			line = "*" + src + BasicUtil.fillChar("", chr, fill)+"*";
+			line = "*" + src + BasicUtil.fillChar("", chr, fill)+"";
 		}
 		System.out.println(line);
 	}
@@ -201,7 +201,7 @@ public class ConfigTable {
 			String time = new File(path).lastModified()+"";
 			line("","*", true);
 			line("Anyline Core " + version, " ", true);
-			line(" www.anyline.org", " ", true);
+			line("anyline.org ", " ", true);
 			line(""," ", true);
 			line("MinVersion " + minVersion + "[" + time+"]", " ", true);
 			line(""," ", true);
@@ -212,7 +212,7 @@ public class ConfigTable {
 			line("","*", true);
 			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]　                                                   ", "", false);
 			line(" Debug 状态设置在:anyline-config.xml:<property key=\"DEBUG\">false</property>　           ", "", false);
-			line(" =====================生产环境请务必修改密钥文件key.xml==========================　      ", "", true);
+			line(" =====================生产环境请务必修改密钥文件key.xml==========================　      ", "", false);
 			line("","*", true);
 		}catch(Exception e){
 			e.printStackTrace();

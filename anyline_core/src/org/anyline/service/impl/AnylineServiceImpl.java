@@ -28,6 +28,7 @@ import net.sf.ehcache.Element;
 
 import org.anyline.cache.CacheUtil;
 import org.anyline.cache.PageLazyStore;
+import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
@@ -92,7 +93,7 @@ public class AnylineServiceImpl implements AnylineService {
 				if(null != configs){
 					navi = configs.getPageNavi();
 					if(null != navi && navi.isLazy()){
-						lazyKey = createCacheElementKey(false, src, configs, conditions);
+						lazyKey = createCacheElementKey(false, false, src, configs, conditions);
 						int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
 						navi.setTotalRow(total);
 					}
@@ -252,7 +253,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @param conditions
 	 * @return
 	 */
-	private String createCacheElementKey(boolean page, String src, ConfigStore store, String ... conditions){
+	private String createCacheElementKey(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
 		String result = src+"|";
 		if(null != store){
 			ConfigChain chain = store.getConfigChain();
@@ -273,15 +274,26 @@ public class AnylineServiceImpl implements AnylineService {
 			if(page && null != navi){
 				result += "page=" + navi.getCurPage()+"|";
 			}
+			if(order){
+				OrderStore orders = store.getOrders();
+				if(null != orders){
+					result += orders.getRunText("").toUpperCase() +"|";
+				}
+			}
 		}
 		if(null != conditions){
 			for(String condition:conditions){
 				if(BasicUtil.isNotEmpty(condition)){
-					result += condition+"|";
+					if(condition.trim().toUpperCase().startsWith("ORDER")){
+						if(order){
+							result += condition.toUpperCase() + "|";
+						}
+					}else{
+						result += condition+"|";
+					}
 				}
 			}
 		}
-		LOG.info("cache key:"+result);
 		return result;
 	}
 	
@@ -292,7 +304,7 @@ public class AnylineServiceImpl implements AnylineService {
 			return query(ds, src, configs, conditions);
 		}
 		DataSet set = null;
-		String key = "SET:"+createCacheElementKey(true, src, configs, conditions);
+		String key = "SET:"+createCacheElementKey(true, true, src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
         	Object value = element.getObjectValue();
@@ -417,7 +429,7 @@ public class AnylineServiceImpl implements AnylineService {
 		configs.setPageNavi(navi);
 		
 		DataRow row = null;
-		String key = "ROW:" + createCacheElementKey(true, src, configs, conditions);
+		String key = "ROW:" + createCacheElementKey(true, true, src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
             Object value = element.getObjectValue();
