@@ -58,7 +58,7 @@ public class SQLStoreImpl extends SQLStore{
 		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),sqlDir),"xml");
 		for(File file:files){
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("解析SQL FILE:" + file.getAbsolutePath());
+				LOG.warn("[解析SQL] [FILE:" + file.getAbsolutePath() + "]");
 			}
 			sqls.putAll(parseSQLFile(file));
 		}
@@ -130,7 +130,7 @@ public class SQLStoreImpl extends SQLStore{
 			sql.group(group);
 			sql.order(order);
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("解析SQL ID:"+sqlId + "\nTEXT:"+sqlText);
+				LOG.warn("[解析SQL] [ID:" + sqlId + "]\n[TEXT:" + sqlText + "]");
 			}
 			result.put(sqlId, sql);
 		}
@@ -161,11 +161,11 @@ public class SQLStoreImpl extends SQLStore{
 		}
 		try{
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("提取SQL ID:" + id);
+				LOG.warn("[提取SQL] [ID:" + id + "]");
 			}
 			sql = sqls.get(id);
 		}catch(Exception e){
-			LOG.error("SQL提取失败:"+id);
+			LOG.error("[SQL提取失败] [ID:" + id + "]");
 			LOG.error(e);
 		} 
 		return sql;

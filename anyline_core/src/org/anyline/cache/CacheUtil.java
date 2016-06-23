@@ -100,23 +100,12 @@ public class CacheUtil {
 	    	}
 		}
 	}
-	/**
-     * 返回具体的方法全路径名称 参数
-     * @param targetName 全路径
-     * @param methodName 方法名称
-     * @param arguments 参数
-     * @return 完整方法名称
-     */
-    public static String getCacheKey(String targetName, String methodName, Object ... arguments) {
-        StringBuffer sb = new StringBuffer();
-        sb.append(targetName).append(".").append(methodName);
-        if ((arguments != null) && (arguments.length != 0)) {
-            for (int i = 0; i < arguments.length; i++) {
-                sb.append(".").append(arguments[i]);
-            }
-        }
-        return sb.toString();
-    }
+	/*
+	 * 辅助缓存刷新控制, N秒内只接收一次刷新操作
+	 * 调用刷新方法前,先调用start判断是否可刷新,刷新完成后调用stop
+	 * start与stop使用同一个key,
+	 * 其中两次刷新间隔时间在anyline-config中设置单位秒<property key="key">sec</property>
+	 */
     /**
      * 开始刷新
      * 如果不符合刷新条件返回false
@@ -124,17 +113,30 @@ public class CacheUtil {
      * @return
      */
     public static boolean start(String key){
+    	boolean result = false;
     	Long fr = reflushFlag.get(key);
+    	long age = -1;			//已生存
+    	int period = -1;		//两次刷新最小间隔
     	if(null == fr){
-    		reflushFlag.put(key, System.currentTimeMillis());
-    		return true;
+    		result = true;
+    	}else{
+	    	period = ConfigTable.getInt(key, 120);
+	    	age = (System.currentTimeMillis() - fr) / 1000;
+	    	if(System.currentTimeMillis() - fr > period){
+	    		result = true;
+	    	}
     	}
-    	int age = ConfigTable.getInt(key, 120) * 1000;
-    	if(System.currentTimeMillis() - fr > age){
+    	if(result){
     		reflushFlag.put(key, System.currentTimeMillis());
-    		return true;
+    		if(ConfigTable.isDebug()){
+    			LOG.warn("[刷新缓存放行] [key:" + key + "] [间隔:" + age + "/" + period + "]");
+    		}
+    	}else{
+    		if(ConfigTable.isDebug()){
+    			LOG.warn("[刷新缓存拦截] [key:" + key + "] [间隔:" + age + "/" + period + "]");
+    		}
     	}
-    	return false;
+    	return result;
     }
     /**
      * 刷新完成
@@ -142,6 +144,9 @@ public class CacheUtil {
      */
     public static void stop(String key){
     	reflushFlag.remove(key);
+		if(ConfigTable.isDebug()){
+			LOG.warn("[刷新缓存完成] [key:" + key + "]");
+		}
     }
     public boolean isRun(String key){
     	if(null == reflushFlag.get(key)){
