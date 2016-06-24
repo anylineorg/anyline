@@ -79,8 +79,7 @@ public class AnylineController extends AbstractBasicController {
 		return request;
 	}
 	protected HttpServletResponse getResponse() {
-		HttpServletResponse response =  ((ServletWebRequest) RequestContextHolder.getRequestAttributes()).getResponse();
-		
+		HttpServletResponse response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		try{
 			response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
@@ -354,6 +353,12 @@ public class AnylineController extends AbstractBasicController {
 	 * @return
 	 */
 	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
+		if(null == request){
+			request = getRequest();
+		}
+		if(null == response){
+			response = getResponse();
+		}
 		if(null == data){
 			data = (DataSet)request.getAttribute("_anyline_navi_data");
 		}else{
@@ -384,6 +389,9 @@ public class AnylineController extends AbstractBasicController {
 	}
 	public String navi(HttpServletResponse response, String page){
 		return navi(null, response, null, page);
+	}
+	public String navi(HttpServletResponse response, DataSet data, String page){
+		return navi(getRequest(), response, data, page);
 	}
 	/**
 	 * 上传文件
