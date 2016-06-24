@@ -145,5 +145,7 @@ public interface PageNavi extends Serializable{
 	 * @return
 	 */
 	public PageNavi setLazy(int sec);
+	public String ajaxPage();
+	public String jspPage();
 
 }
