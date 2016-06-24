@@ -36,6 +36,7 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import org.anyline.config.db.PageNavi;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.controller.AbstractBasicController;
 import org.anyline.entity.ClientTrace;
@@ -52,6 +53,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -76,9 +78,9 @@ public class AnylineController extends AbstractBasicController {
 		}
 		return request;
 	}
-
 	protected HttpServletResponse getResponse() {
-		HttpServletResponse response = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+		HttpServletResponse response =  ((ServletWebRequest) RequestContextHolder.getRequestAttributes()).getResponse();
+		
 		try{
 			response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
@@ -262,7 +264,6 @@ public class AnylineController extends AbstractBasicController {
 	 * @param message
 	 * 
 	 */
-
 	public String result(boolean result, Object data, String message) {
 		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		if (null != messages) {
@@ -332,7 +333,6 @@ public class AnylineController extends AbstractBasicController {
 	protected String fail() {
 		return fail(null);
 	}
-
 	protected String success(Object data, boolean encrypt) {
 		if(encrypt && null != data){
 			return result(true,WebUtil.encryptHttpRequestParamValue(data.toString()),null);
@@ -346,7 +346,45 @@ public class AnylineController extends AbstractBasicController {
 	protected String success() {
 		return success(null);
 	}
-
+	/**
+	 * AJAX分页时调用 
+	 * 分数数据在服务器生成
+	 * @param data	数据 request.setAttribute("_anyline_navi_data", data);
+	 * @param page	生成分页数据的模板(与JSP语法一致)	
+	 * @return
+	 */
+	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
+		if(null == data){
+			data = (DataSet)request.getAttribute("_anyline_navi_data");
+		}else{
+			request.setAttribute("_anyline_navi_data", data);
+		}
+		String html = "";
+		try{
+			html = WebUtil.parseJsp(request, response, page);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("BODY", html);
+		PageNavi navi = null;
+		if(null != data){
+			navi = data.getNavi();
+		}
+		if(null != navi){
+			map.put("NAVI", navi.ajaxPage());
+			map.put("TOTAL_ROW", navi.getTotalRow()+"");
+			map.put("TOTAL_PAGE", navi.getTotalPage()+"");
+			map.put("CUR_PAGE", navi.getCurPage()+"");
+			map.put("FIRST_ROW", navi.getFirstRow()+"");
+			map.put("LAST_ROW", navi.getLastRow()+"");
+			map.put("PAGE_ROWS", navi.getPageRows()+"");
+		}
+		return success(map);
+	}
+	public String navi(HttpServletResponse response, String page){
+		return navi(null, response, null, page);
+	}
 	/**
 	 * 上传文件
 	 * @param request

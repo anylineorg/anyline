@@ -402,11 +402,24 @@ public class PageNaviImpl implements PageNavi{
 	private String tagNext = "下一页";
 	private String tagLast = "最后页";
 	private String tagGo = "确定";
-	public String html(){
+	public String ajaxPage(){
+		return html(false);
+	}
+	public String jspPage(){
+		return html(true);
+	}
+	/**
+	 * 
+	 * @param script 是否引用js css文件
+	 * @return
+	 */
+	public String html(boolean include){
 		calculate();
 		StringBuilder builder = new StringBuilder();
-		builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
-		builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
+		if(include){
+			builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
+			builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
+		}
 		builder.append("<form id=\"_navi_frm\" action=\"" + baseLink + "\" method=\"post\">\n");
 		builder.append("<input type=\"hidden\" name=\""+PageNavi.PAGE_NO+"\" id=\"__hidPageNo\" value='"+curPage+"'/>\n");
 		builder.append(createHidParams());
@@ -461,7 +474,7 @@ public class PageNaviImpl implements PageNavi{
 		builder.append(tag).append("</span>\n");
 	}
 	public String toString(){
-		return html();
+		return html(true);
 	}
 
 }
