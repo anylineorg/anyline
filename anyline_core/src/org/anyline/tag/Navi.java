@@ -69,10 +69,16 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(callback)){
 				builder.append("callback:'" ).append(callback).append("',");
 			}
+			if(BasicUtil.isNotEmpty(empty)){
+				builder.append("empty:'" ).append(empty).append("',");
+			}
 			builder.append("type:'ajax'");
 			builder.append("};\n");
-			
-			builder.append("_navi_init();\n");
+			if(intime){
+				builder.append("_navi_init();\n");
+			}else{
+				builder.append("$(function(){_navi_init();});\n");
+			}
 			builder.append("</script>");
 			
 			JspWriter out = pageContext.getOut();
