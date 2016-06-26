@@ -553,11 +553,10 @@ public class AnylineServiceImpl implements AnylineService {
 		if(null != row){
 			List<String> keys = row.getPrimaryKeys();
 			if(null != keys){
-				String[] conditions = new String[keys.size()*2];
+				String[] conditions = new String[keys.size()];
 				int idx = 0;
 				for(String key: keys){
-					conditions[idx++] = key;
-					conditions[idx++] = row.getString(key);
+					conditions[idx++] = key + ":" + row.getString(key);
 				}
 				return exists(null, src, null, conditions);
 			}
