@@ -156,14 +156,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		String random = "";
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8)+"]";
-			LOG.warn(random + "[TXT:\n" + sql + "]");
+			LOG.warn(random + "[TXT:\n" + txt + "]");
 			LOG.warn(random + "[参数:" + values + "]");
 		}
 		/*执行SQL*/
 		try{
 			Map<String,Object> map = null;
 			if(null != values && values.size()>0){
-				map = jdbc.queryForMap(txt, values);
+				map = jdbc.queryForMap(txt, values.toArray());
 			}else{
 				map = jdbc.queryForMap(txt);
 			}
