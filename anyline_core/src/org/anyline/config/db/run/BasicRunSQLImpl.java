@@ -248,6 +248,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		/*添加查询条件*/
 		if(null != conditions){
 			for(String condition:conditions){
+				if(null == condition){
+					continue;
+				}
 				if(condition.toUpperCase().contains("ORDER BY")){
 					String orderStr = condition.toUpperCase().replace("ORDER BY", "");
 					String orders[] = orderStr.split(",");
