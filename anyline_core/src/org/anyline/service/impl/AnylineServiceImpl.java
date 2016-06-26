@@ -134,6 +134,10 @@ public class AnylineServiceImpl implements AnylineService {
 			int length = conditions.length;
 			for(int i=0; i<length; i++){
 				String condition = conditions[i];
+				if(null == condition){
+					condition = "";
+					continue;
+				}
 				if(condition.startsWith("{") && condition.endsWith("}")){
 					//原生 SQL
 					continue;
