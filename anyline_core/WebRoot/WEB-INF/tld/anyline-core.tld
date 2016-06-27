@@ -516,6 +516,16 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>random</name>
+		<tagclass>org.anyline.tag.Random</tagclass>
+		<info>随机数</info>
+		<attribute>
+			<name>length</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>navi</name>
 		<tagclass>org.anyline.tag.Navi</tagclass>
 		<info>分页默认ajax</info>
@@ -566,6 +576,17 @@
 		</attribute>
 		<attribute>
 			<name>naviContainer</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>des</name>
+		<tagclass>org.anyline.tag.des.DESHttpRequestParamValue</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>加密http request 请求参数value</info>
+		<attribute>
+			<name>value</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
