@@ -21,13 +21,16 @@ package org.anyline.struts.action;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.anyline.config.db.PageNavi;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.controller.AbstractBasicController;
 import org.anyline.entity.ClientTrace;
@@ -40,6 +43,7 @@ import org.anyline.util.Constant;
 import org.anyline.util.DESUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
+import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -281,7 +285,20 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected String success() {
 		return success(request, data);
 	}
+	public String navi(DataSet data, String page){
 
+		if(null == data){
+			data = (DataSet)request.getAttribute("_anyline_navi_data");
+		}else{
+			request.setAttribute("_anyline_navi_data", data);
+		}
+		PageNavi navi = null;
+		if(null != data){
+			navi = data.getNavi();
+		}
+		Map<String,Object> map = super.navi(request, response, data, navi, page);
+		return success(map);
+	}
 	/**
 	 * 执行失败
 	 * 
