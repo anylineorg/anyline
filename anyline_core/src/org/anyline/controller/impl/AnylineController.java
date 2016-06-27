@@ -353,6 +353,7 @@ public class AnylineController extends AbstractBasicController {
 	 * @return
 	 */
 	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
+		
 		if(null == request){
 			request = getRequest();
 		}
@@ -364,27 +365,11 @@ public class AnylineController extends AbstractBasicController {
 		}else{
 			request.setAttribute("_anyline_navi_data", data);
 		}
-		String html = "";
-		try{
-			html = WebUtil.parseJsp(request, response, page);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		Map<String,String> map = new HashMap<String,String>();
-		map.put("BODY", HttpUtil.escape(html));
 		PageNavi navi = null;
 		if(null != data){
 			navi = data.getNavi();
 		}
-		if(null != navi){
-			map.put("NAVI", HttpUtil.escape(navi.ajaxPage()));
-			map.put("TOTAL_ROW", navi.getTotalRow()+"");
-			map.put("TOTAL_PAGE", navi.getTotalPage()+"");
-			map.put("CUR_PAGE", navi.getCurPage()+"");
-			map.put("FIRST_ROW", navi.getFirstRow()+"");
-			map.put("LAST_ROW", navi.getLastRow()+"");
-			map.put("PAGE_ROWS", navi.getPageRows()+"");
-		}
+		Map<String,Object> map = super.navi(request, response, data, navi, page);
 		return success(map);
 	}
 	public String navi(HttpServletResponse response, String page){

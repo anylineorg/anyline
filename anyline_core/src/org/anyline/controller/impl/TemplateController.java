@@ -47,7 +47,8 @@ public class TemplateController extends AnylineController {
 	 */
 	@RequestMapping("load")
 	@ResponseBody
-	public String list(HttpServletRequest request, HttpServletResponse response){
+	public String load(HttpServletRequest request, HttpServletResponse response){
+		
 		String path = getParam("path", false, true);
 		String html = "";
 		try{
