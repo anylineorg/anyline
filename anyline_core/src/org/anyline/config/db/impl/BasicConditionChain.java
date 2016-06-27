@@ -37,6 +37,9 @@ public abstract class BasicConditionChain extends BasicCondition implements Cond
 	
 	public void init(){
 		for(Condition condition:conditions){
+			if(null == condition){
+				continue;
+			}
 			condition.init();
 		}
 	}

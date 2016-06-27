@@ -59,6 +59,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				variables = new ArrayList<SQLVariable>();
 			}
 			for(SQLVariable var:xmlVars){
+				if(null == var){
+					continue;
+				}
 				try{
 					variables.add((SQLVariable)var.clone());
 				}catch(Exception e){
@@ -75,6 +78,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			List<Condition> conditions = xmlConditionChain.getConditions();
 			if(null != conditions){
 				for(Condition condition:conditions){
+					if(null == condition){
+						continue;
+					}
 					try{
 						this.conditionChain.addCondition((Condition)condition.clone());
 					}catch(Exception e){
@@ -161,6 +167,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		String result = sql.getText();
 		if(null != variables){
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				if(var.getType() == SQLVariable.VAR_TYPE_REPLACE){
 					//CD = ::CD
 					Object varValue = var.getValues();
@@ -176,6 +185,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 			}
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				if(var.getType() == SQLVariable.VAR_TYPE_KEY_REPLACE){
 					//CD = ':CD'
 					List<Object> varValues = var.getValues();
@@ -191,6 +203,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 			}
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				if(var.getType() == SQLVariable.VAR_TYPE_KEY){
 					// CD = :CD
 					List<Object> varValues = var.getValues();
@@ -215,6 +230,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			}
 			//添加其他变量值
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				//CD = ?
 				if(var.getType() == SQLVariable.VAR_TYPE_INDEX){
 					List<Object> varValues = var.getValues();
@@ -268,6 +286,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(SQLVariable v:variables){
+				if(null == v){
+					continue;
+				}
 				if(v.getKey().equalsIgnoreCase(condition)){
 					v.setValue(value);
 				}
@@ -292,6 +313,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		/*添加查询条件*/
 		if(null != conditions){
 			for(String condition:conditions){
+				if(null == condition){
+					continue;
+				}
 				if(condition.toUpperCase().contains("ORDER BY")){
 					String orderStr = condition.toUpperCase().replace("ORDER BY", "");
 					String orders[] = orderStr.split(",");
@@ -378,6 +402,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	public RunSQL addCondition(String condition, String variable, Object value) {
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(SQLVariable v:variables){
+				if(null == v){
+					continue;
+				}
 				if(v.getKey().equalsIgnoreCase(condition)){
 					v.setValue(value);
 				}

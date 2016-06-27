@@ -70,7 +70,7 @@ public class GroupStoreImpl implements GroupStore{
 		}
 		if(null != groups){
 			for(Group o:groups){
-				if(group.equalsIgnoreCase(o.getColumn())){
+				if(null != o && group.equalsIgnoreCase(o.getColumn())){
 					return o;
 				}
 			}
@@ -88,6 +88,9 @@ public class GroupStoreImpl implements GroupStore{
 			builder.append(" GROUP BY ");
 			for(int i=0; i<groups.size(); i++){
 				Group group = groups.get(i);
+				if(null == group){
+					continue;
+				}
 				builder.append(group.getColumn());
 				if(i<groups.size()-1){
 					builder.append(",");

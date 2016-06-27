@@ -52,10 +52,16 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 			variables = new ArrayList<SQLVariable>();
 		}
 		for(SQLVariable variable:variables){
+			if(null == variable){
+				continue;
+			}
 			variable.init();
 		}
 		if(null != chain){
 			for(Condition condition:chain.getConditions()){
+				if(null == condition){
+					continue;
+				}
 				condition.init();
 			}
 		}
@@ -67,6 +73,9 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 		if(null != variables){
 			List<SQLVariable> cVariables = new ArrayList<SQLVariable>();
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				cVariables.add((SQLVariable)var.clone());
 			}
 			clone.variables = cVariables;
