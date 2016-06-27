@@ -128,11 +128,6 @@ public class AnylineServiceImpl implements AnylineService {
 	 * 			CD:null		删除
 	 * 			CD:NULL		拼接 IS NULL
 	 */
-	public static void main(String args[]){
-		String s = "ddf:12:12:12";
-		boolean result = RegularUtil.match(s, "[a-z]:([\\d]{4}-[\\d]{2}-[\\d]{2}\\s+)?\\d{2}:\\d{2}");
-		System.out.println(result);
-	}
 	private String[] parseConditions(String[] conditions){
 		conditions = BasicUtil.compressionSpace(conditions);
 		if(null != conditions){
@@ -161,7 +156,7 @@ public class AnylineServiceImpl implements AnylineService {
 				//CD ='2012-06-06 01:01:01'  <= < != <> 
 				//CD IN (1,2)
 				//CD IN('2012-06-06 01:01:01')
-				//注意 时间中的: 与分隔符号 冲突(:号之前有运算符号的视为时间)
+				//注意 时间中的: 与分隔符号 冲突(:号之前有运算符号的视为时间) [a-zA-Z]+[a-zA-Z0-9]*:([\\d]{4}-[\\d]{2}-[\\d]{2}\\s+)?\\d{2}:\\d{2}
 /********************************************************* 待处理   时间中的: 与分隔符号 冲突***************************************************************************************/				
 				if(null != condition && condition.contains(":")){
 					if(RegularUtil.match(condition, "[a-zA-Z]+\\d{2}:\\d{2}")){
