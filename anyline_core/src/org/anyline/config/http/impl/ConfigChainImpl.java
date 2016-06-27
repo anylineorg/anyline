@@ -40,6 +40,9 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 		String str = "";
 		if(null != configs){
 			for(Config conf:configs){
+				if(null == conf){
+					continue;
+				}
 				str += "." + conf.toString();
 			}
 		}

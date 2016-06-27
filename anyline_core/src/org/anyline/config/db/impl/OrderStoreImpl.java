@@ -73,7 +73,7 @@ public class OrderStoreImpl implements OrderStore{
 		}
 		if(null != orders){
 			for(Order o:orders){
-				if(order.equalsIgnoreCase(o.getColumn())){
+				if(null != o && order.equalsIgnoreCase(o.getColumn())){
 					return o;
 				}
 			}
@@ -86,6 +86,9 @@ public class OrderStoreImpl implements OrderStore{
 			builder.append(" ORDER BY ");
 			for(int i=0; i<orders.size(); i++){
 				Order order = orders.get(i);
+				if(null == order){
+					continue;
+				}
 				builder.append(order.getColumn()).append(" ").append(order.getType());
 				if(i<orders.size()-1){
 					builder.append(",");

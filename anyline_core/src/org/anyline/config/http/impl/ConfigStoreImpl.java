@@ -158,6 +158,9 @@ public class ConfigStoreImpl implements ConfigStore{
 		
 		List<Config> configs = chain.getConfigs();
 		for(Config config:configs){
+			if(null == config){
+				continue;
+			}
 			String key = config.getKey();
 			List<Object> values = new ArrayList<Object>();
 			List<Object> srcValues = config.getValues();
@@ -191,6 +194,9 @@ public class ConfigStoreImpl implements ConfigStore{
 		}
 		List<Config> configs = chain.getConfigs();
 		for(Config config:configs){
+			if(null == config){
+				continue;
+			}
 			config.setValue(request);
 		}
 		setNaviParam();
@@ -295,6 +301,9 @@ public class ConfigStoreImpl implements ConfigStore{
 		ConfigChain chain = new ConfigChainImpl();
 		List<Config> configs = getConfigChain().getConfigs();
 		for(Config config:configs){
+			if(null == config){
+				continue;
+			}
 			if(BasicUtil.contains(keys, config.getId())){
 				chain.addConfig((Config)config.clone());
 			}

@@ -95,6 +95,9 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			int size = columns.size();
 			for(int i=0; i<size; i++){
 				String column = columns.get(i);
+				if(BasicUtil.isEmpty(column)){
+					continue;
+				}
 				if(column.startsWith("{") && column.endsWith("}")){
 					column = column.substring(1, column.length()-1);
 					builder.append(column);

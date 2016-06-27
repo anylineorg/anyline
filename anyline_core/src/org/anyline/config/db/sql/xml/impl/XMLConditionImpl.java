@@ -51,6 +51,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 		if(null != variables){
 			List<SQLVariable> cVariables = new ArrayList<SQLVariable>();
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				cVariables.add((SQLVariable)var.clone());
 			}
 			clone.variables = cVariables;
@@ -93,6 +96,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 			return;
 		}
 		for(SQLVariable v:variables){
+			if(null == v){
+				continue;
+			}
 			if(variable.equalsIgnoreCase(v.getKey())){
 				v.setValue(values);
 				if(BasicUtil.isNotEmpty(true,values)){
@@ -187,6 +193,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 			return result;
 		}
 		for(SQLVariable var: variables){
+			if(null == var){
+				continue;
+			}
 			if(var.getType() == SQLVariable.VAR_TYPE_REPLACE){
 				//CD = ::CD
 				List<Object> values = var.getValues();
@@ -202,6 +211,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 			}
 		}
 		for(SQLVariable var: variables){
+			if(null == var){
+				continue;
+			}
 			if(var.getType() == SQLVariable.VAR_TYPE_KEY_REPLACE){
 				//CD = ':CD'
 				List<Object> values = var.getValues();
@@ -217,6 +229,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 			}
 		}
 		for(SQLVariable var:variables){
+			if(null == var){
+				continue;
+			}
 			if(var.getType() == SQLVariable.VAR_TYPE_KEY){
 				//CD=:CD
 				List<Object> varValues = var.getValues();
@@ -243,6 +258,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 		}
 		
 		for(SQLVariable var:variables){
+			if(null == var){
+				continue;
+			}
 			if(var.getType() == SQLVariable.VAR_TYPE_INDEX){
 				List<Object> values = var.getValues();
 				String value = null;
@@ -259,6 +277,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 			return null;
 		}
 		for(SQLVariable variable:variables){
+			if(null == variable){
+				continue;
+			}
 			if(key.equalsIgnoreCase(variable.getKey())){
 				return variable;
 			}

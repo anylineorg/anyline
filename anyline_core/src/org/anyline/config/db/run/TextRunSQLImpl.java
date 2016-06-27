@@ -61,6 +61,9 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			List<Condition> conditions = conditionChain.getConditions();
 			if(null != conditions){
 				for(Condition condition:conditions){
+					if(null == condition){
+						continue;
+					}
 					AutoCondition con = (AutoCondition)condition;
 					setConditionValue(con.getId(), null, con.getValues());
 				}
@@ -144,13 +147,18 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	private void createRunTxt(){
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-				setConditionValue(conf.getId(), conf.getVariable(), conf.getValues());
+				if(null != conf){
+					setConditionValue(conf.getId(), conf.getVariable(), conf.getValues());
+				}
 			}
 		}
 		
 		String result = sql.getText();
 		if(null != variables){
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				if(var.getType() == SQLVariable.VAR_TYPE_REPLACE){
 					//CD = ::CD
 					Object varValue = var.getValues();
@@ -166,6 +174,9 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 			}
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				if(var.getType() == SQLVariable.VAR_TYPE_KEY_REPLACE){
 					//CD = ':CD'
 					List<Object> varValues = var.getValues();
@@ -181,6 +192,9 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 			}
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				if(var.getType() == SQLVariable.VAR_TYPE_KEY){
 					// CD = :CD
 					List<Object> varValues = var.getValues();
@@ -205,6 +219,9 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			}
 			//添加其他变量值
 			for(SQLVariable var:variables){
+				if(null == var){
+					continue;
+				}
 				//CD = ?
 				if(var.getType() == SQLVariable.VAR_TYPE_INDEX){
 					List<Object> varValues = var.getValues();
@@ -279,6 +296,9 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(SQLVariable v:variables){
+				if(null == v){
+					continue;
+				}
 				if(v.getKey().equalsIgnoreCase(condition)){
 					v.setValue(value);
 				}
@@ -354,6 +374,9 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	public RunSQL addCondition(String condition, String variable, Object value) {
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(SQLVariable v:variables){
+				if(null == v){
+					continue;
+				}
 				if(v.getKey().equalsIgnoreCase(condition)){
 					v.setValue(value);
 				}
@@ -396,6 +419,9 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			return null;
 		}
 		for(SQLVariable var:variables){
+			if(null == var){
+				continue;
+			}
 			if(key.equalsIgnoreCase(var.getKey())){
 				return var;
 			}
