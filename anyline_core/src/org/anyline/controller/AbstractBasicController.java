@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.anyline.config.KeyValueEncryptConfig;
@@ -39,6 +40,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
+import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 
@@ -568,5 +570,29 @@ public class AbstractBasicController{
 		}
 		return cf;
 	}
-	
+	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page){
+		if(null == data){
+			data = (DataSet)request.getAttribute("_anyline_navi_data");
+		}else{
+			request.setAttribute("_anyline_navi_data", data);
+		}
+		String html = "";
+		try{
+			html = WebUtil.parseJsp(request, response, page);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("BODY", HttpUtil.escape(html));
+		if(null != navi){
+			map.put("NAVI", HttpUtil.escape(navi.ajaxPage()));
+			map.put("TOTAL_ROW", navi.getTotalRow()+"");
+			map.put("TOTAL_PAGE", navi.getTotalPage()+"");
+			map.put("CUR_PAGE", navi.getCurPage()+"");
+			map.put("FIRST_ROW", navi.getFirstRow()+"");
+			map.put("LAST_ROW", navi.getLastRow()+"");
+			map.put("PAGE_ROWS", navi.getPageRows()+"");
+		}
+		return map;
+	}
 }
