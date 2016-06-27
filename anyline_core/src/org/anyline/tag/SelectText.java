@@ -125,10 +125,12 @@ public class SelectText extends BaseBodyTag{
 
 	@Override
 	public void release() {
+		super.release();
 		scope = null;
 		data = null;
 		textKey = null;
 		valueKey = null;
+		value = null;
 	}
 
 
