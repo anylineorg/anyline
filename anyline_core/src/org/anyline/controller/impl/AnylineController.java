@@ -47,13 +47,13 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.FileUtil;
+import org.anyline.util.HttpUtil;
 import org.anyline.util.JSONDateFormatProcessor;
 import org.anyline.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -371,13 +371,13 @@ public class AnylineController extends AbstractBasicController {
 			e.printStackTrace();
 		}
 		Map<String,String> map = new HashMap<String,String>();
-		map.put("BODY", html);
+		map.put("BODY", HttpUtil.escape(html));
 		PageNavi navi = null;
 		if(null != data){
 			navi = data.getNavi();
 		}
 		if(null != navi){
-			map.put("NAVI", navi.ajaxPage());
+			map.put("NAVI", HttpUtil.escape(navi.ajaxPage()));
 			map.put("TOTAL_ROW", navi.getTotalRow()+"");
 			map.put("TOTAL_PAGE", navi.getTotalPage()+"");
 			map.put("CUR_PAGE", navi.getCurPage()+"");
