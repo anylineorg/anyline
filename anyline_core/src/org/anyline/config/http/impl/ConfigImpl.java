@@ -194,6 +194,11 @@ public class ConfigImpl implements Config{
 			}
 			if(null != def && BasicUtil.isEmpty(true,values)){
 				values = new ArrayList<Object>();
+				if(def.startsWith("{") && def.endsWith("}")){
+					def = def.substring(1, def.length()-1);
+				}else{
+					def = (String)WebUtil.getHttpRequestParam(request,def,isKeyEncrypt, isValueEncrypt);
+				}
 				values.add(def);
 			}
 			empty = BasicUtil.isEmpty(true,values);
