@@ -36,7 +36,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
  * 包含匹配模式
  *
  */
-public class RegxpContain implements RegularInterface{
+public class RegxpContain implements Regular{
 	private static Logger LOG = Logger.getLogger(RegxpContain.class);
 	private static PatternCompiler patternCompiler = new Perl5Compiler();
 	/**
