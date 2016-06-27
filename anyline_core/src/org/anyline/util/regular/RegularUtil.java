@@ -174,7 +174,7 @@ public class RegularUtil {
 		if(null == src){
 			return src;
 		}
-		return src.replaceAll(Regular.HTML_TAG, "");
+		return src.replaceAll(Regular.html_tag_regexp, "");
 	}
 	/**
 	 * 删除 tags之外的标签"<b>"与"</b>"只写一次 "b"
@@ -208,7 +208,7 @@ public class RegularUtil {
 	}
 	public static List<String> fetchUrls(String src) throws Exception{
 		List<String> urls = null;
-		urls = fetch(src, Regular.HTML_TAG_A, MATCH_MODE_CONTAIN, 4);
+		urls = fetch(src, Regular.html_tag_a_regexp, MATCH_MODE_CONTAIN, 4);
 		return urls;
 	}
 	public static String fetchUrl(String src) throws Exception{
