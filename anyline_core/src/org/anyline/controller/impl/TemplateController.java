@@ -16,19 +16,48 @@
  *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统
  */
 package org.anyline.controller.impl;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.anyline.plugin.springmvc.TemplateModelAndView;
 import org.anyline.plugin.springmvc.TemplateView;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
+import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
  
  
 
+@Controller("org.anyline.controller.TemplateController")
+@RequestMapping("/al/tmp")
 public class TemplateController extends AnylineController {
 	private String dir = "default";
+	
+	/**
+	 * 加载模板文件
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping("load")
+	@ResponseBody
+	public String list(HttpServletRequest request, HttpServletResponse response){
+		String path = getParam("path", false, true);
+		String html = "";
+		try{
+			html = WebUtil.parseJsp(request, response, path);
+		}catch(Exception e){
+			
+		}
+		html = HttpUtil.escape(html);
+		return success(html);
+	}
 	/**
 	 * 创建显示视图(page目录下)
 	 * @param name
@@ -64,7 +93,15 @@ public class TemplateController extends AnylineController {
 			if(!name.startsWith("page"))
 			name = base + "page/" + name;
 		}
-		String content_template = base + "template/layout/" + template + ".jsp";
+//		/WEB-INF/web/home/page/borrow/index.jsp
+//		
+//		/WEB-INF/web/home/template/layout/default.jsp
+		String content_template = "";
+		if(name.contains("/page/")){
+			content_template = name.substring(0, name.indexOf("/page/")) + "/template/layout/" + template + ".jsp";
+		}else{
+			content_template = base + "template/layout/" + template + ".jsp";
+		}
 		tv.setViewName(name);
 		tv.addObject(TemplateView.TEMPLATE_NAME, content_template);
 		tv.addObject(TemplateModelAndView.CONTENT_URL,getRequest().getRequestURI());

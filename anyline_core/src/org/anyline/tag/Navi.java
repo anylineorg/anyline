@@ -67,7 +67,7 @@ public class Navi extends BodyTagSupport{
 				builder.append("naviContainer:'" ).append(naviContainer).append("',");
 			}
 			if(BasicUtil.isNotEmpty(callback)){
-				builder.append("callback:'" ).append(callback).append("',");
+				builder.append("callback:" ).append(callback).append(",");
 			}
 			if(BasicUtil.isNotEmpty(empty)){
 				builder.append("empty:'" ).append(empty).append("',");
