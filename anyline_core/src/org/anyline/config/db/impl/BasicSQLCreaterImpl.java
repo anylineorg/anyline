@@ -357,7 +357,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int dataSize = set.size();
 		for(int i=0; i<dataSize; i++){
 			DataRow row = set.getRow(i);
-
+			if(null == row){
+				continue;
+			}
 			if(row.hasPrimaryKeys() && ConfigTable.getBoolean("AUTO_CREATE_PRIMARY_KEY") && BasicUtil.isEmpty(row.get(row.getPrimaryKey()))){
 				String pk = row.getPrimaryKey();
 				if(null == pk){

@@ -31,6 +31,9 @@ public class XMLConditionChainImpl extends BasicConditionChain implements Condit
 		StringBuilder builder = new StringBuilder();
 		if(null != conditions){
 			for(Condition condition: conditions){
+				if(null == condition){
+					continue;
+				}
 				if(condition.getVariableType() == VARIABLE_FLAG_TYPE_NONE){
 					builder.append("\n\t");
 					builder.append(condition.getRunText(creater));
@@ -46,6 +49,9 @@ public class XMLConditionChainImpl extends BasicConditionChain implements Condit
 	public void setValue(String name, Object value){
 		if(null != conditions){
 			for(Condition con:conditions){
+				if(null == con){
+					continue;
+				}
 				if(con.getId().equalsIgnoreCase(name)){
 					con.setValue(name, value);
 					break;
