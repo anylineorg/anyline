@@ -78,7 +78,7 @@ public interface Regular {
 	/**   
 	* 匹配匹配并提取url 
 	* 格式: XXXX://XXX.XXX.XXX.XX/XXX.XXX?XXX=XXX   
-	* 匹配 : http://www.anyline.ort 或news://www
+	* 匹配 : http://www.anyline.org 或news://www
 	* 提取(MatchResult matchResult=matcher.getMatch()):   
 	*              matchResult.group(0)= http://www.anyline.org:8080/index.html?login=true   
 	*              matchResult.group(1) = http   
@@ -108,7 +108,11 @@ public interface Regular {
 	* 匹配 : 2005-04-04 
 	* 不匹配: 01-01-01   
 	*/   
-	public static final String date_regexp = "^((((19){1}|(20){1})d{2})|d{2})[-\\s]{1}[01]{1}d{1}[-\\s]{1}[0-3]{1}d{1}$";// 匹配日期    
+	public static final String date_regexp = "^((((19){1}|(20){1})d{2})|d{2})[-\\s]{1}[01]{1}d{1}[-\\s]{1}[0-3]{1}d{1}$";// 匹配日期
+	
+	
+	//日期时间 或时间
+	public static final String date_time_regexp = "([\\d]{4}-[\\d]{2}-[\\d]{2}\\s+)?\\d{2}:\\d{2}";
 	/**   
 	* 匹配电话 
 	* 格式为: 0XXX-XXXXXX(10-13位首位必须为0) 或0XXX XXXXXXX(10-13位首位必须为0) 或 
@@ -126,14 +130,14 @@ public interface Regular {
 	* 匹配 : 0123456789123  
 	* 不匹配: 0123456    
 	*/   
-	public static final String ID_card_regexp = "^\\d{10}|\\d{13}|\\d{15}|\\d{18}$";    
+	public static final String id_card_regexp = "^\\d{10}|\\d{13}|\\d{15}|\\d{18}$";    
 	/**   
 	* 匹配邮编代码 
 	* 格式为: XXXXXX(6位) 
 	* 匹配 : 012345 
 	* 不匹配: 0123456    
 	*/   
-	public static final String ZIP_regexp = "^[0-9]{6}$";// 匹配邮编代码    
+	public static final String zip_regexp = "^[0-9]{6}$";// 匹配邮编代码    
 	/**   
 	* 不包括特殊字符的匹配 (字符串中不包括符号 数学次方号^ 单引号' 双引号" 分号; 逗号, 帽号: 数学减号- 右尖括号> 左尖括号<  反斜杠\ 即空格,制表符,回车符等 )
 	* 格式为: x 或 一个一上的字符 
@@ -150,9 +154,9 @@ public interface Regular {
 	//匹配非正整数（负整数 + 0） 
 	public static final String non_positive_integers_regexp = "^((-\\d+)|(0+))$";    
 	//匹配负整数   
-	public static final String NEGATIVE_INTEGER = "^-[0-9]*[1-9][0-9]*$";    
+	public static final String negative_integer_regexp = "^-[0-9]*[1-9][0-9]*$";    
 	//匹配整数     
-	public static final String INTEGER = "^-?\\d+$";    
+	public static final String integer_regexp = "^-?\\d+$";    
 	//匹配非负浮点数（正浮点数 + 0）     
 	public static final String non_negative_rational_numbers_regexp = "^\\d+(\\.\\d+)?$";    
 	//匹配正浮点数 
@@ -160,24 +164,27 @@ public interface Regular {
 	//匹配非正浮点数（负浮点数 + 0）   
 	public static final String non_positive_rational_numbers_regexp = "^((-\\d+(\\.\\d+)?)|(0+(\\.0+)?))$";    
 	//匹配负浮点数   
-	public static final String NEGATIVE_FLOAT = "^(-(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*)))$";    
+	public static final String negative_float_regexp = "^(-(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*)))$";    
 	//匹配浮点数   
-	public static final String FLOAT = "^(-?\\d+)(\\.\\d+)?$";    
+	public static final String float_regexp = "^(-?\\d+)(\\.\\d+)?$";    
 	//匹配由26个英文字母组成的字符串
-	public static final String CHAR = "^[A-Za-z]+$";    
+	public static final String char_regexp = "^[A-Za-z]+$";    
 	//匹配由26个英文字母的大写组成的字符串    
-	public static final String UPPER_CHAR = "^[A-Z]+$";    
+	public static final String upper_char_regexp = "^[A-Z]+$";    
 	//匹配由26个英文字母的小写组成的字符串
-	public static final String LOWER_CHAR = "^[a-z]+$";    
+	public static final String lower_char_regexp = "^[a-z]+$";    
 	//匹配由数字和26个英文字母组成的字符串     
-	public static final String CHAR_NUMBER = "^[A-Za-z0-9]+$";    
+	public static final String char_number_regexp = "^[A-Za-z0-9]+$";    
 	//匹配由数字、26个英文字母或者下划线组成的字符串      
-	public static final String CHAR_NUMBER_UNDERLINE = "^\\w+$";  
+	public static final String char_number_underline_regexp = "^\\w+$";  
 	//html标签<(.*)>.*|<(.*) />
-	public static final String HTML_TAG = "<(.*?)[^>]*>.*?|<.*?/>";
+	public static final String html_tag_regexp = "<(.*?)[^>]*>.*?|<.*?/>";
 	//<img> 图片地址取下标2
-	public static final String HTML_TAG_IMG_SRC = "(?i)<img.+?src[\\s]*=[\\s]*(['\"\\s])([\\S]+)\\1[\\s\\S]*?>";
+	public static final String html_tag_img_src_regexp = "(?i)<img.+?src[\\s]*=[\\s]*(['\"\\s])([\\S]+)\\1[\\s\\S]*?>";
 	//<a>标签 href:4 标签体:6
-	public static final String HTML_TAG_A = "(<a\\s+([^>h]|h(?!ref\\s))*href[\\s+]?=[\\s+]?('|\"))([^(\\s+|'|\")]*)([^>]*>)(.*?)</a>";
-// "(/?\\s?li\\b)|" +
+	public static final String html_tag_a_regexp = "(<a\\s+([^>h]|h(?!ref\\s))*href[\\s+]?=[\\s+]?('|\"))([^(\\s+|'|\")]*)([^>]*>)(.*?)</a>";
+
+	public static final String html_tag_img_regexp = "<img.+?src[\\s]*=[\\s]*(['\"\\s])([\\S]+)\\1[\\s\\S]*?>";
+	public static final String cn_regexp = "[u4e00-u9fa5]";
+	public static final String html_tag_no_br_regexp = "<(?!br).*?>";
 }
