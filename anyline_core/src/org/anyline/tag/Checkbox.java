@@ -216,6 +216,8 @@ public class Checkbox extends BaseBodyTag {
 		checkKey = null;
 		head= null;
 		headValue="";
+		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+		textKey = "NM";
 	}
 
 	public String getHead() {
