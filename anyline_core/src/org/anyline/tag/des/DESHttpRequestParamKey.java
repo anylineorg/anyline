@@ -49,6 +49,7 @@ public class DESHttpRequestParamKey extends BaseBodyTag{
 	@Override
 	public void release() {
 		super.release();
+		body = null;
 		value = null;
 	}
 

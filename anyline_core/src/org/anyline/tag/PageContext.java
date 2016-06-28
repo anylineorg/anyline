@@ -54,6 +54,8 @@ public class PageContext extends BaseBodyTag implements Cloneable{
 	@Override
 	public void release() {
 		super.release();
+		value = null;
+		body = null;
 		key = null;
 	}
 	public String getKey() {

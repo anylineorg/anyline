@@ -112,6 +112,7 @@ public class HTMLA extends BaseBodyTag {
 		onmouseover = null;
 		onmouseout = null;
 		onclick = null;
+		body = null;
 	}
 
 	public String getId() {

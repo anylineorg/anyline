@@ -112,6 +112,7 @@ public class Sum extends BaseBodyTag {
 
 	@Override
 	public void release() {
+		super.release();
 		scope = null;
 		data = null;
 		key = null;

@@ -111,6 +111,16 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 			paramMap.clear();
 		}
 		body = null;
+		id = null;
+		name = null;
+		value = null;
+		clazz = null;
+		style = null;
+		onclick = null;
+		onchange = null;
+		onblur = null;
+		onfocus = null;
+		disabled = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {

@@ -51,6 +51,7 @@ public class HtmlAs extends BaseBodyTag implements Cloneable{
 	@Override
 	public void release() {
 		super.release();
+		body = null;
 	}
 
 	@Override

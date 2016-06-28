@@ -85,6 +85,8 @@ public class Strip extends BaseBodyTag implements Cloneable{
 	public void release() {
 		super.release();
 		length = -1;
+		value = null;
+		body = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {

@@ -60,6 +60,9 @@ public class SubString extends BaseBodyTag{
 		super.release();
     	begin = -1;
     	end = -1;
+    	value = null;
+    	body = null;
+    			
     }
 	public int getBegin() {
 		return begin;

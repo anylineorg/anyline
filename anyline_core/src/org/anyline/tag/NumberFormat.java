@@ -68,6 +68,9 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	@Override
 	public void release() {
 		super.release();
+		value = null;
+		format = null;
+		body = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {

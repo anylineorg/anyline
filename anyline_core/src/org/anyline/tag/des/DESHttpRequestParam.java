@@ -77,6 +77,7 @@ public class DESHttpRequestParam extends BaseBodyTag implements Cloneable{
 	@Override
 	public void release() {
 		super.release();
+		body = null;
 		value = null;
 	}
 	public String getValue() {

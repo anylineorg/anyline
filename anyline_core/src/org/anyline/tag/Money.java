@@ -56,6 +56,7 @@ public class Money extends BaseBodyTag {
 	public void release() {
 		super.release();
 		value = null;
+		body = null;
 	}
 	
 }
