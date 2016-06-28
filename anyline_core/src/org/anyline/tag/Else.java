@@ -56,6 +56,7 @@ public class Else extends BaseBodyTag implements Cloneable{
 	public void release() {
 		super.release();
 		value = null;
+		body = null;
 	}
 
 }

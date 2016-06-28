@@ -64,6 +64,7 @@ public class DESUrl extends BaseBodyTag implements Cloneable{
 	public void release() {
 		super.release();
 		value = null;
+		body = null;
 	}
 	public String getValue() {
 		return value;
