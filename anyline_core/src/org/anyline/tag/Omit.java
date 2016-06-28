@@ -65,6 +65,7 @@ public class Omit extends BaseBodyTag {
 	public void release() {
 		super.release();
 		value = null;
+		body = null;
 		left = 0;
 		right = 0;
 		ellipsis = "*";

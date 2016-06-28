@@ -55,6 +55,8 @@ public class Random extends BaseBodyTag {
 	@Override
 	public void release() {
 		super.release();
+		value = null;
+		body = null;
 		length = "0";
 	}
 

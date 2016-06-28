@@ -209,6 +209,7 @@ public class Checkbox extends BaseBodyTag {
 
 	@Override
 	public void release() {
+		super.release();
 		scope = null;
 		data = null;
 		value = null;

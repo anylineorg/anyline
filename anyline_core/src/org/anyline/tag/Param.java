@@ -58,6 +58,8 @@ public class Param extends BaseBodyTag implements Cloneable{
 	@Override
 	public void release() {
 		super.release();
+		value = null;
+		body = null;
 		key = null;
 	}
 

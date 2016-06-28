@@ -80,6 +80,7 @@ public class Message extends BodyTagSupport{
 
 	@Override
 	public void release() {
+		super.release();
 		scope = null;
 		key = null;
 		clean = true;
