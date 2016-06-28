@@ -171,6 +171,8 @@ public class Radio extends BaseBodyTag{
 		body = null;
 		head = null;
 		headValue = null;
+		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+		textKey = "NM";
 	}
 
 	public String getScope() {
