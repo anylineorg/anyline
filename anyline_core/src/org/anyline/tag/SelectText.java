@@ -128,8 +128,8 @@ public class SelectText extends BaseBodyTag{
 		super.release();
 		scope = null;
 		data = null;
-		textKey = null;
-		valueKey = null;
+		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+		textKey = "NM";
 		value = null;
 	}
 
