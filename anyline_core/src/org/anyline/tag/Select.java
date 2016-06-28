@@ -172,6 +172,9 @@ public class Select extends BaseBodyTag{
 		scope = null;
 		head = null;
 		headValue = null;
+		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+		textKey = "NM";
+		
 		
 	}
 
