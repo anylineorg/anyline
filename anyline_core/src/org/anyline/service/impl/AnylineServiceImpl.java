@@ -449,7 +449,7 @@ public class AnylineServiceImpl implements AnylineService {
         }
         // 调用实际 的方法
         row = queryRow(ds, src, configs, conditions);
-        if(null != null){
+        if(null != row){
 	    	row.setService(null);
 	    	CacheUtil.put(cache, key, row);
         }
