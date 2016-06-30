@@ -19,10 +19,10 @@
 
 package org.anyline.config.db.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +35,7 @@ import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
 
 
-public class PageNaviImpl implements PageNavi{
+public class PageNaviImpl implements PageNavi, Serializable{
 	private static Logger LOG = Logger.getLogger(PageNaviImpl.class);
 //
 //	public static final String PAGE_VOL				= "pageRows"							;
