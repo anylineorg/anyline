@@ -27,26 +27,13 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
  
  
 
-@Controller("org.anyline.controller.TemplateController")
-@RequestMapping("/al/tmp")
 public class TemplateController extends AnylineController {
 	private String dir = "default";
 	
-	/**
-	 * 加载模板文件
-	 * @param request
-	 * @param response
-	 * @return
-	 */
-	@RequestMapping("load")
-	@ResponseBody
 	public String load(HttpServletRequest request, HttpServletResponse response){
 		
 		String path = getParam("path", false, true);
