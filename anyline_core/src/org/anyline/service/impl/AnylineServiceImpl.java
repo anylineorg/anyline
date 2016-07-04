@@ -280,7 +280,7 @@ public class AnylineServiceImpl implements AnylineService {
 			}
 			PageNavi navi = store.getPageNavi();
 			if(page && null != navi){
-				result += "page=" + navi.getCurPage()+"|";
+				result += "page=" + navi.getCurPage()+"|first=" + navi.getFirstRow() + "|last="+navi.getLastRow()+"|";
 			}
 			if(order){
 				OrderStore orders = store.getOrders();
@@ -308,11 +308,17 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 
 		//是否启动缓存
-		if(!ConfigTable.getBoolean("IS_USE_CACHE")){
+		if(!ConfigTable.getBoolean("IS_USE_CACHE") || null == cache){
 			return query(ds, src, configs, conditions);
 		}
 		DataSet set = null;
-		String key = "SET:"+createCacheElementKey(true, true, src, configs, conditions);
+		String key = "SET:";
+		if(cache.contains(":")){
+			String[] tmp = cache.split(":");
+			cache = tmp[0];
+			key += tmp[1]+":";
+		}
+		key += createCacheElementKey(true, true, src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
         	Object value = element.getObjectValue();
@@ -423,7 +429,7 @@ public class AnylineServiceImpl implements AnylineService {
 
 	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 		//是否启动缓存
-		if(!ConfigTable.getBoolean("IS_USE_CACHE")){
+		if(!ConfigTable.getBoolean("IS_USE_CACHE") || null == cache){
 			return queryRow(ds, src, configs, conditions);
 		}
 		PageNaviImpl navi = new PageNaviImpl();
@@ -436,7 +442,14 @@ public class AnylineServiceImpl implements AnylineService {
 		configs.setPageNavi(navi);
 		
 		DataRow row = null;
-		String key = "ROW:" + createCacheElementKey(true, true, src, configs, conditions);
+		String key = "ROW:";
+
+		if(cache.contains(":")){
+			String[] tmp = cache.split(":");
+			cache = tmp[0];
+			key += tmp[1]+":";
+		}
+		key +=  createCacheElementKey(true, true, src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
             Object value = element.getObjectValue();
