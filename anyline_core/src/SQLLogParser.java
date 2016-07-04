@@ -11,7 +11,7 @@ import org.anyline.util.regular.RegularUtil;
 public class SQLLogParser {
 	public static void main(String args[]) throws Exception{
 		//修改文件格式:UTF-8
-		List<SQLLog> logs = parse(new File("D:\\sql.txt"));
+		List<SQLLog> logs = parse(new File("E:\\a.txt"));
 		Collections.sort(logs, new Comparator<SQLLog>() {  
             public int compare(SQLLog o1, SQLLog o2) {  
                 int result = o1.getExeTime() - o2.getExeTime();  
@@ -49,6 +49,9 @@ public class SQLLogParser {
 			sql.setParams(param);
 			sql.setRows(rows);
 			logs.add(sql);
+			if(sql.getExeTime() > 100){
+				System.out.println("SQL:"+sql.getKey() + " 耗时:"+sql.getExeTime());
+			}
 		}
 		return logs;
 	}
