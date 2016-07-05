@@ -1,0 +1,53 @@
+
+package org.anyline.config.db.impl.mysql;
+
+import java.util.List;
+
+import org.anyline.config.db.Procedure;
+import org.anyline.config.db.impl.ProcedureImpl;
+import org.anyline.dao.AnylineDao;
+import org.anyline.dao.PrimaryCreater;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
+@Repository
+public class PrimaryCreaterImpl implements PrimaryCreater {
+
+	@Autowired(required=false)
+	@Qualifier("anylineDao")
+	private AnylineDao dao;
+	public synchronized Object createPrimary(String table, String column, String other) {
+		String primary = null;
+		if(null == column){
+			column = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+		}
+		if(null == column){
+			column = "CD";
+		}
+		if(null == table || null == column){
+			return null;
+		}
+		Procedure proc = new ProcedureImpl();
+
+		proc.setName(ConfigTable.getString("CREATE_PRIMARY_KEY_PROCEDURE"));
+		proc.addInput(table);
+		proc.addInput(column);
+		proc.addInput(other);
+		proc.regOutput();
+		try{
+			List<Object> result = dao.executeProcedure(proc);
+			if(null != result && result.size()>0){
+				primary = result.get(0).toString();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		if(null == primary || "-1".equals(primary) || "null".equalsIgnoreCase(primary)){
+			primary = BasicUtil.getRandomUpperString(10);
+		}
+		return primary;
+	}
+
+}
