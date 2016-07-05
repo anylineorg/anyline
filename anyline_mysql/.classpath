@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/anyline_core"/>
+	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/spring-aop-4.1.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/spring-beans-4.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/spring-jdbc-4.1.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/spring-context-4.0.3.RELEASE.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
