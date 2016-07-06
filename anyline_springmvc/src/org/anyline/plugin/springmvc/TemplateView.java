@@ -30,9 +30,10 @@ import org.springframework.web.servlet.view.JstlView;
 public class TemplateView extends JstlView {
 	private Logger log = Logger.getLogger(this.getClass());
 	public static final String TEMPLATE_NAME				= "template_name";
-	public static final String DATA_TEMPLATE_DES			= "data_template_des";
+	public static final String STYLE_TEMPLATE_DES			= "style_template_des";
 	public static final String TEMPLATE_NAME_DEFAULT		= "default";
 	public static final String TEMPLATE_CONTENT_PATH 		= "template_content_path";
+	
 	
 	private String template;
 	private String content;
@@ -76,7 +77,7 @@ public class TemplateView extends JstlView {
 	public void render(Map model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		
-		
+
 		String template = null;
 		if(null != model){
 			//通过ModelAndView.add(TEMPLATE_NAME,"default");形式设置模板
@@ -106,7 +107,7 @@ public class TemplateView extends JstlView {
 			File file = new File(ConfigTable.getWebRoot(), content_url);
 			if(!file.exists()){
 				//内容文件未指定  或 不存在 
-				content_url = ConfigTable.getString("DEFAULT_CONTENT_PAGE_PATH");
+				content_url = ConfigTable.getString("DEFAULT_CONTENT_PAGE_PATH","/WEB-INF/wap/vpt/common/error/error.jsp");
 			}
 			request.setAttribute(TEMPLATE_CONTENT_PATH, content_url);
 		}
