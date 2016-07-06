@@ -17,7 +17,7 @@
  */
 package org.anyline.plugin.springmvc;
 
-import org.anyline.util.DESUtil;
+import org.anyline.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
 
 public class TemplateModelAndView extends ModelAndView{
@@ -59,7 +59,7 @@ public class TemplateModelAndView extends ModelAndView{
 		
 		try{
 			String data_template= createFullTemplatePath(template);
-			addObject(TemplateView.STYLE_TEMPLATE_DES, DESUtil.getInstance().encrypt(data_template));
+			addObject(TemplateView.STYLE_TEMPLATE_DES, WebUtil.encrypt(data_template));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
