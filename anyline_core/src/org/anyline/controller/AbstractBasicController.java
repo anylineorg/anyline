@@ -20,6 +20,7 @@
 package org.anyline.controller;
 
 import java.lang.reflect.Field;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -128,12 +129,17 @@ public class AbstractBasicController{
 		}
 		if (null != params && params.length > 0) {
 			for (String param : params) {
-				KeyValueEncryptConfig conf = new KeyValueEncryptConfig(param,
-						keyEncrypt, valueEncrypt);
-				Object value = getParam(request,conf.getKey(), conf.isKeyEncrypt(),
-						conf.isValueEncrypt());
+				KeyValueEncryptConfig conf = new KeyValueEncryptConfig(param, keyEncrypt, valueEncrypt);
+				Object value = getParam(request,conf.getKey(), conf.isKeyEncrypt(), conf.isValueEncrypt());
 				row.put(conf.getField().toUpperCase(), value);
 			}
+		}else{
+			Enumeration<String> names = request.getParameterNames();
+			while(names.hasMoreElements()){
+				String name = names.nextElement();
+				String value = request.getParameter(name);
+				row.put(name, value);
+		    }
 		}
 		Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
 		if (null == client) {
