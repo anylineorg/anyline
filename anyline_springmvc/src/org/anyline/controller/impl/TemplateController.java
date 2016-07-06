@@ -16,8 +16,6 @@
  *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统
  */
 package org.anyline.controller.impl;
-import java.io.File;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -27,7 +25,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
-import org.anyline.util.FileUtil;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
 import org.springframework.stereotype.Controller;
@@ -40,14 +37,15 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller("org.anyline.controller.impl.TemplateController")
 @RequestMapping("/al/tmp")
 public class TemplateController extends AnylineController {
-	protected String dir = "default";
 
 	/**
 	 * 加载服务器端文件
 	 * path必须以密文提交 <al:des>/WEB-INF/template/a.jsp</al:des>
 	 * 以WEB-INF为相对目录根目录
 	 * al.template('/WEB-INF/template/a.jsp',function(result,data,msg){alert(data)});
-	 * al.template({path:'',type:''},function(result,data,msg){});
+	 * al.template({path:'template/a.jsp', id:'1'},function(result,data,msg){});
+	 * 模板文件中以${param.id}的形式接收参数
+	 * 
 	 * 对于复杂模板(如解析前需要查询数据)需要自行实现解析方法js中 通过{parser:'/al/tmp/load1.do'}形式指定
 	 * @param request
 	 * @param response
@@ -78,47 +76,63 @@ public class TemplateController extends AnylineController {
 	protected ModelAndView template(String name, String template){
 		return createView(name, template);
 	}
-	protected TemplateModelAndView createView(String name, String template){
-		TemplateModelAndView tv = new TemplateModelAndView();
-		//删除前缀(base package)
-		String basepack = ConfigTable.getString("BASE_PACKAGE")+".";
-		String base = this.getClass().getPackage().getName();
-		base = base.replace(basepack, "");
-		base = base.replace("controller.", "");
-		base = base.replace("controller", "");
-		base = base.replace(".", "/");
-		if(BasicUtil.isNotEmpty(base) && !base.endsWith("/")){
-			base = base + "/";
-		}
+
+	private String buildDir(){
+		String result = "";
 		String dir = (String)BeanUtil.getFieldValue(this, "dir");
-		if(!name.startsWith("/")){
-			if(BasicUtil.isNotEmpty(dir)){
-				if(dir.endsWith("/")){
-					name = dir+name;
-				}else{
-					name = dir+"/"+name;
+		String superDir = null;
+		try {
+			superDir = (String)BeanUtil.getFieldValue(getClass().getSuperclass().newInstance(), "dir");
+		} catch (InstantiationException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(null != dir){
+			result = dir;
+			if(!result.startsWith("/")){
+				if(null != superDir){
+					if(superDir.endsWith("/")){
+						result = superDir + result;
+					}else{
+						result = superDir + "/" + result;
+					}	
 				}
 			}
-		}
-		if(!name.startsWith("/")){
-			if(!name.startsWith("page"))
-			name = base + "page/" + name;
-		}
-//		/WEB-INF/web/home/page/borrow/index.jsp
-//		
-//		/WEB-INF/web/home/template/layout/default.jsp
-		String content_template = "";
-		if(name.contains("/page/")){
-			content_template = name.substring(0, name.indexOf("/page/")) + "/template/layout/" + template + ".jsp";
 		}else{
-			content_template = base + "template/layout/" + template + ".jsp";
+			if(null != superDir){
+				result = superDir;
+			}
+		}
+		if(!result.endsWith("/")){
+			result = result + "/";
+		}
+		return result;
+	}
+	protected TemplateModelAndView createView(String name, String template){
+		TemplateModelAndView tv = new TemplateModelAndView();
+		if(null != name && !name.startsWith("/")){
+			//相对目录
+			name = buildDir() + name;
+		}
+		String content_template = "";
+		if(null != template){
+			if(!template.endsWith(".jsp")){
+				template += ".jsp";
+			}
+			if(!template.startsWith("/")){
+				if(name.contains("/page/")){
+					content_template = name.substring(0, name.indexOf("/page/")) + "/template/layout/" + template;
+				}else{
+					content_template = buildDir() + "template/layout/" + template;
+				}
+			}
 		}
 		tv.setViewName(name);
 		tv.addObject(TemplateView.TEMPLATE_NAME, content_template);
 		tv.addObject(TemplateModelAndView.CONTENT_URL,getRequest().getRequestURI());
-		String data_template =name.substring(0,name.lastIndexOf("/")+1).replace("/page/", "/template/data/");
+		String style_template = name.substring(0,name.lastIndexOf("/")+1).replace("/page/", "/template/style/");
 		try{
-			tv.addObject(TemplateView.DATA_TEMPLATE_DES, DESUtil.getInstance().encrypt(data_template));
+			tv.addObject(TemplateView.STYLE_TEMPLATE_DES, DESUtil.getInstance().encrypt(style_template));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
