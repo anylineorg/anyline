@@ -94,7 +94,9 @@ public class TemplateController extends AnylineController {
 			template_path = template_path+"default.jsp";
 		}
 		String content = parseTemplate(request, response,template_path);
-		LOG.info("样式模板:"+template_path);
+		if(ConfigTable.isDebug()){
+			LOG.warn("样式模板:"+template_path);
+		}
 		try{
 			List<List<String>> vars= RegularUtil.fetch(content, "{([\\w.]+)}");//RegularUtil.REGEX_VARIABLE
 			for(List<String> var:vars){
