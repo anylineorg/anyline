@@ -47,7 +47,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.FileUtil;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.JSONDateFormatProcessor;
 import org.anyline.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -368,6 +367,9 @@ public class AnylineController extends AbstractBasicController {
 		PageNavi navi = null;
 		if(null != data){
 			navi = data.getNavi();
+		}
+		if(page != null && !page.startsWith("/")){
+			page = "/WEB-INF/"+page;
 		}
 		Map<String,Object> map = super.navi(request, response, data, navi, page);
 		return success(map);
