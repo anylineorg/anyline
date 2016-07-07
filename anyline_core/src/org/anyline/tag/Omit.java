@@ -42,15 +42,15 @@ public class Omit extends BaseBodyTag {
 		String result = "";
 		try {
 			writer = pageContext.getOut();
-			int length = value.length();
+			int length = src.length();
 			if(left > length){
 				left = length;
 			}
 			if(right > length - left){
 				right = length - left;
 			}
-			String l = value.substring(0,1);
-			String r = value.substring(length - right);
+			String l = src.substring(0,left);
+			String r = src.substring(length - right);
 			result = l+BasicUtil.fillRChar("", ellipsis, length-left-right)+r;
 			writer.print(result);
 		} catch (IOException e) {
