@@ -41,6 +41,8 @@ public class Navi extends BodyTagSupport{
 	private String id				;	//一个页面内多个标签时需要id区分
 	private Boolean intime = false	;	//实时执行,否则放入jqery.ready
 	private String callback			;	//回调函数
+	private String before			;	//渲染之前调用
+	private String after			;	//渲染之后调用			
 	private String bodyContainer	;	//如果body与page分开
 	private String naviContainer	;	//如果body与page分开
 	private String empty			;	//空数据显示内容
@@ -78,6 +80,12 @@ public class Navi extends BodyTagSupport{
 			}
 			if(BasicUtil.isNotEmpty(callback)){
 				builder.append("callback:" ).append(callback).append(",");
+			}
+			if(BasicUtil.isNotEmpty(before)){
+				builder.append("before:" ).append(before).append(",");
+			}
+			if(BasicUtil.isNotEmpty(after)){
+				builder.append("after:" ).append(after).append(",");
 			}
 			if(BasicUtil.isNotEmpty(empty)){
 				builder.append("empty:'" ).append(empty).append("',");
@@ -117,6 +125,8 @@ public class Navi extends BodyTagSupport{
 		intime 			= false	;
 		url 			= null	;
 		id 				= null	;
+		after			= null	;
+		before			= null	;
 		type			= "ajax";
 	}
 	
@@ -180,6 +190,18 @@ public class Navi extends BodyTagSupport{
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getBefore() {
+		return before;
+	}
+	public void setBefore(String before) {
+		this.before = before;
+	}
+	public String getAfter() {
+		return after;
+	}
+	public void setAfter(String after) {
+		this.after = after;
 	}
 
 }
