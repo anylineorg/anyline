@@ -338,25 +338,18 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * @return
 	 */
 	public double sum(int top, String key){
-		BigDecimal re = new BigDecimal("0");
+		BigDecimal result = new BigDecimal("0");
 		int size = rows.size();
 		if(size>top){
 			size = top;
 		}
 		for (int i = 0; i < size; i++) {
-			String tmp = getString(i, key);
-			if(null == tmp){
-				continue;
+			BigDecimal tmp = getDecimal(i, key);
+			if(null != tmp){
+				result = result.add(getDecimal(i, key));
 			}
-			BigDecimal bd = null;
-			try{
-				bd = new BigDecimal(tmp);
-			}catch(Exception e){
-				log.error(e);
-			}
-			re = re.add(bd);
 		}
-		return re.doubleValue();
+		return result.doubleValue();
 	}
 	public double sum(String key) {
 		double result = 0.0;
@@ -370,18 +363,18 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * @return
 	 */
 	public double max(int top, String key){
-		double result = 0.0;
+		BigDecimal result = new BigDecimal(0);
 		int size = rows.size();
 		if(size>top){
 			size = top;
 		}
 		for (int i = 0; i < size; i++) {
-			double tmp = getDouble(i, key);
-			if(tmp > result){
+			BigDecimal tmp = getDecimal(i, key);
+			if(null != tmp && tmp.compareTo(result) > 0){
 				result = tmp;
 			}
 		}
-		return result;
+		return result.doubleValue();
 	}
 	public double max(String key){
 		double result = 0.0;
@@ -392,13 +385,15 @@ public class DataSet implements Collection<Object>, Serializable {
 		DataRow result = null;
 		int size = size();
 		for(int i=0; i<size; i++){
-			DataRow row = getRow(i);
+			DataRow tmp = getRow(i);
 			if(null == result){
-				result = row;
+				result = tmp;
 				continue;
 			}
-			if(result.getDecimal(key).compareTo(row.getDecimal(key)) < 0){
-				result = row;
+			BigDecimal tmpVal = tmp.getDecimal(key);
+			BigDecimal resVal = result.getDecimal(key);
+			if(tmpVal != null && resVal != null && tmpVal.compareTo(resVal) > 0){
+				result = tmp;
 			}
 		}
 		return result;
@@ -407,13 +402,15 @@ public class DataSet implements Collection<Object>, Serializable {
 		DataRow result = null;
 		int size = size();
 		for(int i=0; i<size; i++){
-			DataRow row = getRow(i);
+			DataRow tmp = getRow(i);
 			if(null == result){
-				result = row;
+				result = tmp;
 				continue;
 			}
-			if(result.getDecimal(key).compareTo(row.getDecimal(key)) > 0){
-				result = row;
+			BigDecimal tmpVal = tmp.getDecimal(key);
+			BigDecimal resVal = result.getDecimal(key);
+			if(tmpVal != null && resVal != null && tmpVal.compareTo(resVal) < 0){
+				result = tmp;
 			}
 		}
 		return result;
@@ -426,18 +423,18 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * @return
 	 */
 	public double min(int top, String key){
-		double result = 0.0;
+		BigDecimal result = new BigDecimal(0);
 		int size = rows.size();
 		if(size>top){
 			size = top;
 		}
 		for (int i = 0; i < size; i++) {
-			double tmp = getDouble(i, key);
-			if(tmp < result){
+			BigDecimal tmp = getDecimal(i, key);
+			if(null != tmp && tmp.compareTo(result) < 0){
 				result = tmp;
 			}
 		}
-		return result;
+		return result.doubleValue();
 	}
 	public double min(String key){
 		double result = 0.0;
@@ -446,29 +443,29 @@ public class DataSet implements Collection<Object>, Serializable {
 	}
 
 	/**
-	 * 平均
+	 * 平均值 空数据不参与加法但参与除法
 	 * @param top 多少行
 	 * @param key
 	 * @return
 	 */
 	public double avg(int top, String key){
-		double result = 0.0;
+		BigDecimal result = new BigDecimal(0);
 		int size = rows.size();
 		if(size>top){
 			size = top;
 		}
 		int count = 0;
 		for (int i = 0; i < size; i++) {
-			double tmp = getDouble(i, key);
-			result += tmp;
+			BigDecimal tmp = getDecimal(i, key);
+			if(null != tmp){
+				result = result.add(tmp);
+			}
 			count ++;
 		}
 		if(count >0){
-			result = result/count;
-		}else{
-			result = 0;
+			result = result.divide(new BigDecimal(count));
 		}
-		return result;
+		return result.doubleValue();
 	}
 	public double avg(String key){
 		double result = 0.0;
