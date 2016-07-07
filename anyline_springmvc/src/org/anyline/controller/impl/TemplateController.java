@@ -172,9 +172,16 @@ public class TemplateController extends AnylineController {
 	}
 	
 	/**
-	 * 创建显示视图(page目录下)
+	 * 创建显示视图
 	 * @param name
 	 * @param template
+	 * template(page,template) 与createView(page,template); 相同
+		需要注意的是
+		page有两种格式相对与绝对
+		相对目录时,方法内部会将文件名与目录名拼接
+		拼接时,先拼当前类的dir 再拼父类中的dir
+		另外:template不指定时template(page)默认为default.jsp
+		内容文件与模板文件 目录结构应该保持一致
 	 * @return
 	 */
 	protected ModelAndView template(String name, String template){
