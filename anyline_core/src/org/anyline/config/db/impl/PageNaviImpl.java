@@ -30,6 +30,7 @@ import java.util.Map;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
@@ -57,6 +58,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private int firstRow = 0;				//第一行
 	private int lastRow = -1;				//最后一行
 	private boolean lazy = false;
+	private String flag  = "";				//一个jsp中有多个分页时用来区分
 	private int lazyPeriod = 0;				//总条数懒加载时间间隔(秒)
 	
 
@@ -403,32 +405,38 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private String tagLast = "最后页";
 	private String tagGo = "确定";
 	public String ajaxPage(){
-		return html(false);
+		return html("ajax");
 	}
 	public String jspPage(){
-		return html(true);
+		return html("html");
 	}
 	/**
 	 * 
 	 * @param script 是否引用js css文件
 	 * @return
 	 */
-	public String html(boolean include){
+	public String html(String type){
 		calculate();
 		StringBuilder builder = new StringBuilder();
-		if(include){
+		String configFlag = "";
+		if("ajax".equals(type)){
+			configFlag = "_anyline_navi_conf" + flag;
+		}
+		if("html".equals(type)){
 			builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
 			builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
 		}
-		builder.append("<form id=\"_navi_frm\" action=\"" + baseLink + "\" method=\"post\">\n");
-		builder.append("<input type=\"hidden\" name=\""+PageNavi.PAGE_NO+"\" id=\"__hidPageNo\" value='"+curPage+"'/>\n");
+		builder.append("<form action=\"" + baseLink + "\" method=\"post\">\n");
+		builder.append("<input type='hidden' name='"+PageNavi.PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
+		if("ajax".equals(type)){
+			builder.append("<input type='hidden' class='_anyline_navi_conf_flag' value='" + configFlag + "'/>");
+		}
 		builder.append(createHidParams());
-		builder.append("</form>\n");
 		builder.append("<div class=\"anyline_navi\">\n");
 		String stat = statFormat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
 		builder.append(stat).append("\n");
-		createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1);
-		createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1));
+		createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
+		createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
 		builder.append("<div class='navi-num-border'>\n");
 		int range = ConfigTable.getInt("NAVI_PAGE_RANGE",10);
 		int fr = NumberUtil.getMax(1,curPage - range/2);
@@ -447,19 +455,20 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		to = NumberUtil.getMin(to, totalPage);
 		
 		for(int i=fr; i<=to; i++){
-			createPageTag(builder, "navi-num-item", i + "", i);
+			createPageTag(builder, "navi-num-item", i + "", i, configFlag);
 		}
 		builder.append("</div>\n");
-		createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage));
-		createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage);
-		builder.append("转到<input type='text' id='_anyline_go' value='");
+		createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
+		createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage, configFlag);
+		builder.append("转到<input type='text' value='");
 		builder.append(curPage);
-		builder.append("' class='navi-go-txt'/>页<span class='navi-go-button' onclick='_navi_go()'>")
+		builder.append("' class='navi-go-txt _anyline_jump_txt'/>页<span class='navi-go-button' onclick='_navi_jump("+configFlag+")'>")
 		.append(ConfigTable.getString("NAVI_TAG_GO",tagGo)).append("</span>\n");
 		builder.append("</div>");
+		builder.append("</form>\n");
 		return builder.toString();
 	}
-	private void createPageTag(StringBuilder builder, String clazz, String tag, int page){
+	private void createPageTag(StringBuilder builder, String clazz, String tag, int page, String configFlag){
 		builder.append("<span class ='").append(clazz);
 		if(page == curPage){
 			builder.append(" navi-disabled");
@@ -468,13 +477,24 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			}
 			builder.append("'");
 		}else{
-			builder.append("' onclick='_navi_go(").append(page).append(")'");
+			builder.append("' onclick='_navi_go(").append(page);
+			if(BasicUtil.isNotEmpty(configFlag)){
+				builder.append(",").append(configFlag);
+			}
+			builder.append(")'");
 		}
 		builder.append(">");
 		builder.append(tag).append("</span>\n");
 	}
 	public String toString(){
-		return html(true);
+		return html("html");
+	}
+	public String getFlag() {
+		return flag;
+	}
+	public PageNavi setFlag(String flag) {
+		this.flag = flag;
+		return this;
 	}
 
 }

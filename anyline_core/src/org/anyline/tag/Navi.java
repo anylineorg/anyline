@@ -47,10 +47,20 @@ public class Navi extends BodyTagSupport{
 	public int doStartTag() throws JspException {
 		try{
 			StringBuilder builder = new StringBuilder();
-			builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
-			builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
+			String index = (String)pageContext.getAttribute("_anyline_navi_idx");
+			if(null == index){
+				index = "0";
+			}
+			int idx = BasicUtil.parseInt(index, 0);
+
+			if(idx == 0){
+				builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
+				builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
+			}
 			builder.append("<script>\n");
-			builder.append("var _anyline_navi_conf = {");
+			String confId = "_anyline_navi_conf" + idx;
+			builder.append("var " + confId + " = {");
+			builder.append("_anyline_navi_conf_flag:").append(idx).append(",");
 			if(BasicUtil.isNotEmpty(url)){
 				builder.append("url:'").append(url).append("',");
 			}
@@ -75,12 +85,14 @@ public class Navi extends BodyTagSupport{
 			builder.append("type:'ajax'");
 			builder.append("};\n");
 			if(intime){
-				builder.append("_navi_init();\n");
+				builder.append("_navi_init("+confId+");\n");
 			}else{
-				builder.append("$(function(){_navi_init();});\n");
+				builder.append("$(function(){_navi_init("+confId+");});\n");
 			}
 			builder.append("</script>");
-			
+
+			idx ++;
+			pageContext.setAttribute("_anyline_navi_idx", idx+"");
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
 		}catch(Exception e){

@@ -330,6 +330,14 @@ public class AbstractBasicController{
 			navi.setCurPage(pageNo);
 			navi.setBaseLink(uri);
 		}
+		String flag = (String)request.getAttribute("_anyline_navi_conf_flag");
+		if(null == flag){
+			flag = request.getParameter("_anyline_navi_conf_flag");
+		}
+		if(null != flag){
+			flag = flag.replace("'", "").replace("\"", "");
+		}
+		navi.setFlag(flag);
 		request.setAttribute("navi", navi);
 		return navi;
 	}
