@@ -388,6 +388,37 @@ public class DataSet implements Collection<Object>, Serializable {
 		result = max(size(),key);
 		return result;
 	}
+	public DataRow maxRow(String key){
+		DataRow result = null;
+		int size = size();
+		for(int i=0; i<size; i++){
+			DataRow row = getRow(i);
+			if(null == result){
+				result = row;
+				continue;
+			}
+			if(result.getDecimal(key).compareTo(row.getDecimal(key)) < 0){
+				result = row;
+			}
+		}
+		return result;
+	}
+	public DataRow minRow(String key){
+		DataRow result = null;
+		int size = size();
+		for(int i=0; i<size; i++){
+			DataRow row = getRow(i);
+			if(null == result){
+				result = row;
+				continue;
+			}
+			if(result.getDecimal(key).compareTo(row.getDecimal(key)) > 0){
+				result = row;
+			}
+		}
+		return result;
+	}
+	
 	/**
 	 * 最小值
 	 * @param top 多少行
