@@ -961,6 +961,9 @@ public class DataSet implements Collection<Object>, Serializable {
 	}
 	/*********************************************** 实现接口 ************************************************************/
 	public boolean add(Object e) {
+		if(null == e || e instanceof DataRow ){
+			
+		}
 		return rows.add((DataRow) e);
 	}
 

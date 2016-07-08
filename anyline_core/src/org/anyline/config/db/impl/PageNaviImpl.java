@@ -30,6 +30,7 @@ import java.util.Map;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
+import org.anyline.tag.Navi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.NumberUtil;
@@ -420,7 +421,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		StringBuilder builder = new StringBuilder();
 		String configFlag = "";
 		if("ajax".equals(type)){
-			configFlag = "_anyline_navi_conf" + flag;
+			configFlag = Navi.CONFIG_FLAG_KEY + flag;
 		}
 		if("html".equals(type)){
 			builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
@@ -429,7 +430,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		builder.append("<form action=\"" + baseLink + "\" method=\"post\">\n");
 		builder.append("<input type='hidden' name='"+PageNavi.PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
 		if("ajax".equals(type)){
-			builder.append("<input type='hidden' class='_anyline_navi_conf_flag' value='" + configFlag + "'/>");
+			builder.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + configFlag + "'/>");
 		}
 		builder.append(createHidParams());
 		builder.append("<div class=\"anyline_navi\">\n");
