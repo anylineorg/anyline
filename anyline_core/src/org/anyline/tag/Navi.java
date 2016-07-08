@@ -46,10 +46,11 @@ public class Navi extends BodyTagSupport{
 	private String bodyContainer	;	//如果body与page分开
 	private String naviContainer	;	//如果body与page分开
 	private String empty			;	//空数据显示内容
+
 	public int doStartTag() throws JspException {
 		try{
 			StringBuilder builder = new StringBuilder();
-			String index = (String)pageContext.getAttribute("_anyline_navi_idx");
+			String index = (String)pageContext.getRequest().getAttribute("_anyline_navi_idx");
 			if(null == index){
 				index = "0";
 			}
@@ -100,7 +101,7 @@ public class Navi extends BodyTagSupport{
 			builder.append("</script>");
 
 			idx ++;
-			pageContext.setAttribute("_anyline_navi_idx", idx+"");
+			pageContext.getRequest().setAttribute("_anyline_navi_idx", idx+"");
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
 		}catch(Exception e){
