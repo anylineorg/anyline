@@ -660,7 +660,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public DataRow remove(String key){
 		if(null != key){
-			remove(key.toUpperCase());
+			super.remove(key.toUpperCase());
 		}
 		return this;
 	}
