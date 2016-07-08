@@ -37,6 +37,7 @@ import org.anyline.config.http.impl.ConfigStoreImpl;
 import org.anyline.entity.ClientTrace;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.tag.Navi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -330,9 +331,9 @@ public class AbstractBasicController{
 			navi.setCurPage(pageNo);
 			navi.setBaseLink(uri);
 		}
-		String flag = (String)request.getAttribute("_anyline_navi_conf_flag");
+		String flag = (String)request.getAttribute(Navi.CONFIG_FLAG_KEY);
 		if(null == flag){
-			flag = request.getParameter("_anyline_navi_conf_flag");
+			flag = request.getParameter(Navi.CONFIG_FLAG_KEY);
 		}
 		if(null != flag){
 			flag = flag.replace("'", "").replace("\"", "");

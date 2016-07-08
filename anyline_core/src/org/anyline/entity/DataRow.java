@@ -538,7 +538,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return result;
 	}
 	/**
-	 * 轮换成xml格式
+	 * 轮换成xml格式s
 	 * @return
 	 */
 	public String toXML(){
@@ -658,5 +658,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public void setService(AnylineService service) {
 		this.service = service;
 	}
-	
+	public DataRow remove(String key){
+		if(null != key){
+			remove(key.toUpperCase());
+		}
+		return this;
+	}
 }

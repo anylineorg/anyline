@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class Navi extends BodyTagSupport{
+	public static final String CONFIG_FLAG_KEY = "_anyline_navi_conf_";
 	private static final long serialVersionUID = 1L;
 	private static Logger LOG = Logger.getLogger(Navi.class);
 	private String url				;	//数据来源
@@ -50,20 +51,20 @@ public class Navi extends BodyTagSupport{
 	public int doStartTag() throws JspException {
 		try{
 			StringBuilder builder = new StringBuilder();
-			String index = (String)pageContext.getRequest().getAttribute("_anyline_navi_idx");
-			if(null == index){
-				index = "0";
+			int idx = BasicUtil.parseInt((String)pageContext.getRequest().getAttribute("_anyline_navi_tag_idx"), 0);
+			String flag = id;
+			if(null == flag){
+				flag = idx+"";
 			}
-			int idx = BasicUtil.parseInt(index, 0);
 
 			if(idx == 0){
 				builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
 				builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
 			}
 			builder.append("<script>\n");
-			String confId = "_anyline_navi_conf" + idx;
+			String confId = CONFIG_FLAG_KEY + flag;
 			builder.append("var " + confId + " = {");
-			builder.append("_anyline_navi_conf_flag:").append(idx).append(",");
+			builder.append(CONFIG_FLAG_KEY).append(":'").append(flag).append("',");
 			if(BasicUtil.isNotEmpty(url)){
 				builder.append("url:'").append(url).append("',");
 			}
@@ -99,9 +100,8 @@ public class Navi extends BodyTagSupport{
 				builder.append("$(function(){_navi_init("+confId+");});\n");
 			}
 			builder.append("</script>");
-
 			idx ++;
-			pageContext.getRequest().setAttribute("_anyline_navi_idx", idx+"");
+			pageContext.getRequest().setAttribute("_anyline_navi_tag_idx", idx + "");
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
 		}catch(Exception e){
