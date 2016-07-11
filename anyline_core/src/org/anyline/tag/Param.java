@@ -25,6 +25,7 @@ import java.lang.reflect.Method;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 
+import org.anyline.util.BasicUtil;
 import org.apache.log4j.Logger;
 
 /**
@@ -43,7 +44,7 @@ public class Param extends BaseBodyTag implements Cloneable{
 			if(null != parent){
 				Method method = parent.getClass().getMethod("addParam",String.class, Object.class);
 				if(null != method){
-					method.invoke(parent, key, body);
+					method.invoke(parent, key, BasicUtil.nvl(value,body));
 				}
 			}
 		}catch(Exception e){
@@ -69,4 +70,6 @@ public class Param extends BaseBodyTag implements Cloneable{
 	public void setKey(String key) {
 		this.key = key;
 	}
+	
+	
 }

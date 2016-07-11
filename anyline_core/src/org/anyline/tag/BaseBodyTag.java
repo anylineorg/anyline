@@ -128,9 +128,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	}
 
 	public void addParam(String key, Object value) {
-		if(null == value || "".equals(value.toString().trim())){
-			return ;
-		}
+//		if(null == value || "".equals(value.toString().trim())){
+//			return ;
+//		}
 		if(null == key){
 			if(null == paramList){
 				paramList = new ArrayList<Object>();
