@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2006-2015 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -200,7 +200,10 @@ public class AnylineServiceImpl implements AnylineService {
 			}
 			src = src.substring(1,src.length()-1);
 			sql = new TextSQLImpl(src);
-		} else if (src.toUpperCase().trim().startsWith("SELECT")) {
+		} else if (src.toUpperCase().trim().startsWith("SELECT")
+				|| src.toUpperCase().trim().startsWith("DELETE")
+				|| src.toUpperCase().trim().startsWith("INSERT")
+				|| src.toUpperCase().trim().startsWith("UPDATE")) {
 			if(ConfigTable.isSQLDebug()){
 				LOG.warn("[解析SQL类型] [类型:JAVA定义] [src:" + src + "]");
 			}
@@ -926,12 +929,7 @@ public class AnylineServiceImpl implements AnylineService {
 	public int execute(DataSource ds, String src, ConfigStore store, String... conditions) {
 		int result = -1;
 		conditions = BasicUtil.compressionSpace(conditions);
-		SQL sql = null;
-		if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
-			sql = SQLStore.parseSQL(src);
-		} else {
-			sql = new TextSQLImpl(src);
-		}
+		SQL sql = createSQL(src);
 		if (null == sql) {
 			return result;
 		}
