@@ -38,7 +38,7 @@ public class Token extends BodyTagSupport{
 		if(null != token){
 			JspWriter out = pageContext.getOut();
 			try{
-				out.println(token);
+				out.print(token);
 			}catch(Exception e){
 				
 			}finally{

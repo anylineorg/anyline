@@ -71,7 +71,7 @@ public class Strip extends BaseBodyTag implements Cloneable{
 				}
 			}
 			JspWriter out = pageContext.getOut();
-			out.println(result);
+			out.print(result);
 		}catch(Exception e){
 			LOG.error(e);
 		}finally{
