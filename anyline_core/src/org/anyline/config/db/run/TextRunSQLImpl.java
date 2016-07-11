@@ -145,13 +145,6 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 	}
 	private void createRunTxt(){
-		if(null != configStore){
-			for(Config conf:configStore.getConfigChain().getConfigs()){
-				if(null != conf){
-					setConditionValue(conf.getId(), conf.getVariable(), conf.getValues());
-				}
-			}
-		}
 		
 		String result = sql.getText();
 		if(null != variables){
