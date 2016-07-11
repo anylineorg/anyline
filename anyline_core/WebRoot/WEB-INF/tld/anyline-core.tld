@@ -11,11 +11,13 @@
 		<name>nvl</name>
 		<tagclass>org.anyline.tag.Nvl</tagclass>
 		<bodycontent>JSP</bodycontent>
-		<info>NVL</info>
-		<attribute>
-			<name>param</name>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
+		<info>第一个 != null 的值</info>
+	</tag>
+	<tag>
+		<name>evl</name>
+		<tagclass>org.anyline.tag.Evl</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>第一个 != null 并 != "" 的值 </info>
 	</tag>
 	<tag>
 		<name>text</name>

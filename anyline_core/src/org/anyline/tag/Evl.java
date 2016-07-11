@@ -25,21 +25,18 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
 
+
 /**
- * 第一个 != null 的值
- * <al:nvl>
- * <al:param>1</al:param>
- * <al:param>2</al:param>
- * </al:nvl>
+ * 第一个 !=null 并 != "" 的值
  */
-public class Nvl extends BaseBodyTag implements Cloneable{
+public class Evl extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(Nvl.class);
+	private static Logger LOG = Logger.getLogger(Evl.class);
 	
 	 public int doEndTag() throws JspException {
 		try{
 			for(Object result:paramList){
-				if(null != result){
+				if(null != result && !result.toString().trim().equals("")){
 					JspWriter out = pageContext.getOut();
 					out.println(result.toString());
 					break;
