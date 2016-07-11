@@ -41,7 +41,7 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 			for(Object result:paramList){
 				if(null != result){
 					JspWriter out = pageContext.getOut();
-					out.println(result.toString());
+					out.print(result.toString());
 					break;
 				}
 			}

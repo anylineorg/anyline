@@ -61,7 +61,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 			//输出
 			JspWriter out = pageContext.getOut();
 			try{
-				out.println(builder);
+				out.print(builder);
 			}catch(Exception e){
 				LOG.error(e);
 			}finally{

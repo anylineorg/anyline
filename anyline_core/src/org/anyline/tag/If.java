@@ -39,10 +39,10 @@ public class If extends BaseBodyTag implements Cloneable{
 		try{
 			if(test){
 				JspWriter out = pageContext.getOut();
-				out.println(BasicUtil.nvl(value,body,""));
+				out.print(BasicUtil.nvl(value,body,""));
 			}else if(null != elseValue){
 				JspWriter out = pageContext.getOut();
-				out.println(elseValue);
+				out.print(elseValue);
 			}
 		}catch(Exception e){
 			LOG.error(e);
