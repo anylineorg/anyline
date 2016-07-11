@@ -30,7 +30,6 @@ public interface Config {
 	//从request 取值方式
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值
 	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组
-
 	/**
 	 * 参数加密配置 默认不加密
 	 * @param config 参数名　参数名是否加密　参数值是否加密

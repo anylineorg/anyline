@@ -38,8 +38,6 @@ import org.apache.log4j.Logger;
 public class ConfigImpl implements Config{
 	protected static Logger LOG = Logger.getLogger(ConfigImpl.class);
 	//从request 取值方式
-	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值
-	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组
 
 	private String id;				//id
 	private String variable;		//变量名(id.variable:request参数名)

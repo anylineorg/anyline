@@ -22,10 +22,13 @@ package org.anyline.config;
 public class KeyValueEncryptConfig{
 	private boolean required;				//是否必须
 	private String field;					//属性名 :之前
-	private String key;						//KEY	:之后
+	private String key;						//KEY:之后
+	private int compareType;
+	private int fetchType;
 	private boolean isKeyEncrypt;
- private boolean isValueEncrypt;
+	private boolean isValueEncrypt;
 	private boolean setEncrypt = false;		//是否已指定加密方式
+	private String finalStr;
 	
 	public boolean isSetEncrypt() {
 		return setEncrypt;
@@ -103,6 +106,24 @@ public class KeyValueEncryptConfig{
 	}
 	public void setRequired(boolean required) {
 		this.required = required;
+	}
+	public int getCompareType() {
+		return compareType;
+	}
+	public void setCompareType(int compareType) {
+		this.compareType = compareType;
+	}
+	public int getFetchType() {
+		return fetchType;
+	}
+	public void setFetchType(int fetchType) {
+		this.fetchType = fetchType;
+	}
+	public String getFinalStr() {
+		return finalStr;
+	}
+	public void setFinalStr(String finalStr) {
+		this.finalStr = finalStr;
 	}
 	
 }
