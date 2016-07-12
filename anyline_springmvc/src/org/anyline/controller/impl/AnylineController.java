@@ -372,7 +372,7 @@ public class AnylineController extends AbstractBasicController {
 		if(page != null && !page.startsWith("/")){
 			page = "/WEB-INF/"+page;
 		}
-		Map<String,Object> map = super.navi(request, response, data, navi, page);
+		Map<String,Object> map = super.navi(request, response, data, navi, page, ext);
 		return success(map);
 	}
 	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
