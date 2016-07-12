@@ -25,8 +25,21 @@ import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.BasicConditionChain;
+import org.anyline.config.http.Config;
+import org.anyline.config.http.ConfigChain;
 
 public class AutoConditionChainImpl extends BasicConditionChain implements ConditionChain{
+	public AutoConditionChainImpl(){
+		
+	}
+	public AutoConditionChainImpl(ConfigChain chain){
+		if(null == chain){
+			return;
+		}
+		for(Config config:chain.getConfigs()){
+			conditions.add(new AutoConditionImpl(config));
+		}
+	}
 	public String getRunText(SQLCreater creater){
 		runValues = new ArrayList<Object>();
 		int size = conditions.size();
@@ -42,7 +55,7 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 		builder.append("(");
 		for(int i=0; i<size; i++){
 			Condition condition = conditions.get(i);
-			if(i>0 && !condition.isContainer()){
+			if(i>0 /*&& !condition.isContainer()*/){
 				builder.append(condition.getJoin());
 			}
 			builder.append(condition.getRunText(creater));
