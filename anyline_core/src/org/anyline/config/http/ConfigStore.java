@@ -87,10 +87,10 @@ public interface ConfigStore {
 	public String toString();
 	/**
 	 * 开启记录总数懒加载 
-	 * @param ms 缓存有效期(秒)
+	 * @param ms 缓存有效期(毫秒)
 	 * @return
 	 */
-	public ConfigStore setTotalLazy(int sec);
+	public ConfigStore setTotalLazy(long ms);
 }
 
 

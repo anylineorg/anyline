@@ -132,19 +132,19 @@ public interface PageNavi extends Serializable{
 	 * 总条数懒加载时间间隔(秒)
 	 * @return
 	 */
-	public int getLazyPeriod();
+	public long getLazyPeriod();
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @param period
 	 * @return
 	 */
-	public PageNavi setLazyPeriod(int sec);
+	public PageNavi setLazyPeriod(long ms);
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @param period
 	 * @return
 	 */
-	public PageNavi setLazy(int sec);
+	public PageNavi setLazy(long ms);
 	public String ajaxPage();
 	public String jspPage();
 	public PageNavi setFlag(String flag);
