@@ -60,7 +60,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private int lastRow = -1;				//最后一行
 	private boolean lazy = false;
 	private String flag  = "";				//一个jsp中有多个分页时用来区分
-	private int lazyPeriod = 0;				//总条数懒加载时间间隔(秒)
+	private long lazyPeriod = 0;				//总条数懒加载时间间隔(秒)
 	
 
 //	private String scriptFile = "/common/web/common/script/navi.js";
@@ -361,19 +361,19 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		return this.lazy;
 	}
 	@Override
-	public int getLazyPeriod() {
+	public long getLazyPeriod() {
 		return this.lazyPeriod;
 	}
 	@Override
-	public PageNavi setLazy(int sec) {
+	public PageNavi setLazy(long ms) {
 		this.lazy = true;
-		this.lazyPeriod = sec;
+		this.lazyPeriod = ms;
 		return this;
 	}
 	@Override
-	public PageNavi setLazyPeriod(int period){
+	public PageNavi setLazyPeriod(long ms){
 		this.lazy = true;
-		this.lazyPeriod = period;
+		this.lazyPeriod = ms;
 		return this;
 	}
 	@Override

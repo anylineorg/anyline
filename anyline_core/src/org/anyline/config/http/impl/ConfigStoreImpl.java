@@ -313,12 +313,12 @@ public class ConfigStoreImpl implements ConfigStore{
 	}
 	/**
 	 * 开启记录总数懒加载 
-	 * @param ms 缓存有效期(秒)
+	 * @param ms 缓存有效期(毫秒)
 	 * @return
 	 */
-	public ConfigStore setTotalLazy(int sec){
+	public ConfigStore setTotalLazy(long ms){
 		if(null != navi){
-			navi.setLazy(sec);
+			navi.setLazy(ms);
 		}
 		return this;
 	}

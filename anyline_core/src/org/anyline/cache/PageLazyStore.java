@@ -15,11 +15,11 @@ public class PageLazyStore {
 	 * @param period	过期时间(秒)
 	 * @return
 	 */
-	public static int getTotal(String key, int period) {
+	public static int getTotal(String key, long period) {
 		Long fr = lazyTime.get(key);		//创建时间
 		long age = -1;
 		if(null != fr){
-			age = (System.currentTimeMillis() - fr)/1000; 
+			age = System.currentTimeMillis() - fr; 
 			if(age > period){
 				//过期
 				lazyTotal.remove(key);
