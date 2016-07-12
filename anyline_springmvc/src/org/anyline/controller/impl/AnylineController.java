@@ -348,10 +348,11 @@ public class AnylineController extends AbstractBasicController {
 	 * AJAX分页时调用 
 	 * 分数数据在服务器生成
 	 * @param data	数据 request.setAttribute("_anyline_navi_data", data);
-	 * @param page	生成分页数据的模板(与JSP语法一致)	
+	 * @param page	生成分页数据的模板(与JSP语法一致)
+	 * @param ext	扩展数据	
 	 * @return
 	 */
-	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
+	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext){
 		
 		if(null == request){
 			request = getRequest();
@@ -374,11 +375,14 @@ public class AnylineController extends AbstractBasicController {
 		Map<String,Object> map = super.navi(request, response, data, navi, page);
 		return success(map);
 	}
+	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
+		return navi(request, response, data, page ,null);
+	}
 	public String navi(HttpServletResponse response, String page){
-		return navi(null, response, null, page);
+		return navi(null, response, null, page, null);
 	}
 	public String navi(HttpServletResponse response, DataSet data, String page){
-		return navi(getRequest(), response, data, page);
+		return navi(getRequest(), response, data, page, null);
 	}
 	/**
 	 * 上传文件
