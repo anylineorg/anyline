@@ -44,6 +44,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 
 
 	public AutoConditionImpl(Config config){
+		setJoin(config.getJoin());
 		setColumn(config.getId());
 		setValues(config.getValues());
 		setCompare(config.getCompare());
