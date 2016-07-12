@@ -585,7 +585,17 @@ public class AbstractBasicController{
 		}
 		return cf;
 	}
-	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page){
+	/**
+	 * 
+	 * @param request
+	 * @param response
+	 * @param data
+	 * @param navi	分页
+	 * @param page	数据模板以WEB-INF为相对目录根目录
+	 * @param ext	扩展数据
+	 * @return
+	 */
+	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext){
 		if(null == data){
 			data = (DataSet)request.getAttribute("_anyline_navi_data");
 		}else{
@@ -608,6 +618,11 @@ public class AbstractBasicController{
 			map.put("LAST_ROW", navi.getLastRow()+"");
 			map.put("PAGE_ROWS", navi.getPageRows()+"");
 		}
+		map.put("EXT", ext);
 		return map;
+	}
+
+	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page){
+		return navi(request, response, data, navi, page, null);
 	}
 }
