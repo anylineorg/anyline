@@ -55,7 +55,6 @@ public class DataSet implements Collection<Object>, Serializable {
 	private String table;
 	private long createTime;
 	
-	
 	@Autowired
 	protected AnylineService service;
 	public DataSet() {
@@ -293,14 +292,30 @@ public class DataSet implements Collection<Object>, Serializable {
 		set.table = this.table;
 		return set;
 	}
+	/**
+	 * 筛选符合条件的集合
+	 * @param params key1,value1,key2:value2,key3,value3
+	 * @return
+	 */
 	public DataSet getRows(String... params) {
 		DataSet set = this;
-		for (int i = 0; i < params.length - 1; i += 2) {
-			if (i + 1 < params.length) {
-				String key = params[i];
-				String value = params[i + 1];
-				set = filter(set, key, value);
+		for (int i = 0; i < params.length; i += 2) {
+			String key = params[i];
+			String value = "";
+			if(null == key){
+				continue;
 			}
+			if(key.contains(":")){
+				String tmp[] = key.split(":");
+				key = tmp[0];
+				value = tmp[1];
+			}else{
+				if (i + 1 < params.length) {
+					key = params[i];
+					value = params[i + 1];
+				}
+			}
+			set = filter(set, key, value);
 		}
 		return set;
 	}
@@ -934,8 +949,9 @@ public class DataSet implements Collection<Object>, Serializable {
 	}
 	/**
 	 * 差集
+	 * 从当前集合中删除set中存在的row
 	 * @param set
-	 * @param keys
+	 * @param keys CD,"CD:WORK_CD"
 	 * @return
 	 */
 	public DataSet difference(DataSet set, String ... keys){
@@ -954,8 +970,18 @@ public class DataSet implements Collection<Object>, Serializable {
 		String params[] = new String[keys.length*2];
 		int idx = 0;
 		for(String key:keys){
-			params[idx++] = key;
-			params[idx++] = row.getString(key);
+			if(null == key){
+				continue;
+			}
+			String k1 = key;
+			String k2 = key;
+			if(key.contains(":")){
+				String tmp[] = key.split(":");
+				k1 = tmp[0];
+				k2 = tmp[1];
+			}
+			params[idx++] = k1;
+			params[idx++] = row.getString(k2);
 		}
 		return params;
 	}

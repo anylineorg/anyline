@@ -628,7 +628,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return false;
 	}
 	public Object clone(){
-		DataRow row = new DataRow();
+		DataRow row = (DataRow)super.clone();
 		row.container = this.container;
 		row.primaryKeys = this.primaryKeys;
 		row.dataSource = this.dataSource;

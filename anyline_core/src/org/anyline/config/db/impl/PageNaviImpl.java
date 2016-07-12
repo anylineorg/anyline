@@ -434,11 +434,13 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		}
 		builder.append(createHidParams());
 		builder.append("<div class=\"anyline_navi\">\n");
-		String stat = statFormat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
+		String stat = ConfigTable.getString("NAVI_STAT_FORMAT",statFormat); 
+		stat = stat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
 		builder.append(stat).append("\n");
-		createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
-		createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
-		builder.append("<div class='navi-num-border'>\n");
+		if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
+			createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
+			createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
+		}
 		int range = ConfigTable.getInt("NAVI_PAGE_RANGE",10);
 		int fr = NumberUtil.getMax(1,curPage - range/2);
 		int to = fr + range - 1;
@@ -454,17 +456,24 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		}
 		fr = NumberUtil.getMax(fr, 1);
 		to = NumberUtil.getMin(to, totalPage);
-		
-		for(int i=fr; i<=to; i++){
-			createPageTag(builder, "navi-num-item", i + "", i, configFlag);
+		if(ConfigTable.getBoolean("NAVI_SHOW_INDEX", true)){
+			builder.append("<div class='navi-num-border'>\n");
+			for(int i=fr; i<=to; i++){
+				createPageTag(builder, "navi-num-item", i + "", i, configFlag);
+			}
+			builder.append("</div>\n");
 		}
-		builder.append("</div>\n");
-		createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
-		createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage, configFlag);
-		builder.append("转到<input type='text' value='");
-		builder.append(curPage);
-		builder.append("' class='navi-go-txt _anyline_jump_txt'/>页<span class='navi-go-button' onclick='_navi_jump("+configFlag+")'>")
-		.append(ConfigTable.getString("NAVI_TAG_GO",tagGo)).append("</span>\n");
+
+		if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
+			createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
+			createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage, configFlag);
+		}
+		if(ConfigTable.getBoolean("NAVI_SHOW_JUMP")){
+			builder.append("转到<input type='text' value='");
+			builder.append(curPage);
+			builder.append("' class='navi-go-txt _anyline_jump_txt'/>页<span class='navi-go-button' onclick='_navi_jump("+configFlag+")'>")
+			.append(ConfigTable.getString("NAVI_TAG_GO",tagGo)).append("</span>\n");
+		}
 		builder.append("</div>");
 		builder.append("</form>\n");
 		return builder.toString();
