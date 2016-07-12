@@ -29,8 +29,10 @@ import javax.servlet.http.HttpServletRequest;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.config.http.Config;
+import org.anyline.config.http.ConfigChain;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
@@ -194,10 +196,15 @@ public class ConfigImpl implements Config{
 				values = new ArrayList<Object>();
 				if(def.startsWith("{") && def.endsWith("}")){
 					def = def.substring(1, def.length()-1);
+					values.add(def);
 				}else{
-					def = (String)WebUtil.getHttpRequestParam(request,def,isKeyEncrypt, isValueEncrypt);
+					if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
+						Object v = WebUtil.getHttpRequestParam(request,def,isKeyEncrypt, isValueEncrypt);
+						values.add(v);
+					}else{
+						values = WebUtil.getHttpRequestParams(request, def,isKeyEncrypt, isValueEncrypt);
+					}
 				}
-				values.add(def);
 			}
 			empty = BasicUtil.isEmpty(true,values);
 		}catch(Exception e){
@@ -290,8 +297,13 @@ public class ConfigImpl implements Config{
 	public Condition createAutoCondition(ConditionChain chain){
 		Condition condition = null;
 		if(isRequire() || !isEmpty()){
-			condition = new AutoConditionImpl(this).setJoin(join);
-			condition.setContainer(chain);
+			if(this instanceof ConfigChain){
+				condition = new AutoConditionChainImpl((ConfigChain)this).setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+				condition.setContainer(chain);
+			}else{
+				condition = new AutoConditionImpl(this).setJoin(join);
+				condition.setContainer(chain);
+			}
 		}
 		return condition;
 	}

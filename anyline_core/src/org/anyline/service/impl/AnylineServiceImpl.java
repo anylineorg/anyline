@@ -32,7 +32,6 @@ import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
-import org.anyline.config.db.SQLStore;
 import org.anyline.config.db.impl.PageNaviImpl;
 import org.anyline.config.db.impl.ProcedureImpl;
 import org.anyline.config.db.impl.SQLStoreImpl;
