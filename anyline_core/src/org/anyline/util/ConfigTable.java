@@ -139,7 +139,7 @@ public class ConfigTable {
 	}
 	public static String getString(String key, String def){
 		String val = getString(key);
-		if(BasicUtil.isEmpty(val)){
+		if(null == def){
 			val = def;
 		}
 		return val;
