@@ -36,7 +36,7 @@ public interface Config {
 	 * 只设置一项时　默认为设置参数名加密状态
 	 * @return
 	 */
-	public String parseEncrypt();
+//	public String parseEncrypt();
 
 	/**
 	 * 赋值

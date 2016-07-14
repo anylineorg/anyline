@@ -22,7 +22,9 @@ package org.anyline.config.db.sql.auto.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.anyline.config.KeyValueEncryptConfig;
+import org.anyline.config.ConfigParser;
+
+import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.Order;
@@ -106,8 +108,8 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 			return this;
 		}
 		if(condition.contains(":")){
-			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(condition);
-			addCondition(conf.isRequired(),conf.getField(),conf.getKey(),SQL.COMPARE_TYPE_EQUAL);
+			ParseResult parser = ConfigParser.parse(condition);
+			addCondition(parser.isRequired(),parser.getId(),parser.getKey(),parser.getCompare());
 		}else{
 			Condition con = new AutoConditionImpl(condition);
 			chain.addCondition(con);
