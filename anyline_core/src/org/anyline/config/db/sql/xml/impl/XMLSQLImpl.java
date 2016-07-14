@@ -22,7 +22,9 @@ package org.anyline.config.db.sql.xml.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.anyline.config.KeyValueEncryptConfig;
+import org.anyline.config.ConfigParser;
+
+import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.SQL;
@@ -104,10 +106,11 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 			return this;
 		}
 		if(condition.contains(":")){
-			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(condition);
-			String id = conf.getField();
+			ParseResult parser = ConfigParser.parse(condition);
+			
+			String id = parser.getId();
 			String var = null;
-			String value = conf.getKey();
+			String value = parser.getKey();
 			if(id.contains(".")){
 				String[] keys = id.split(".");
 				id = keys[0];

@@ -29,7 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.anyline.config.KeyValueEncryptConfig;
+import org.anyline.config.ConfigParser;
+
+import org.anyline.config.ParseResult;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.impl.PageNaviImpl;
 import org.anyline.config.http.ConfigStore;
@@ -84,11 +86,9 @@ public class AbstractBasicController{
 				for (String param : params) {
 					/* 解析属性与request参数对应关系 */
 
-					KeyValueEncryptConfig conf = new KeyValueEncryptConfig(
-							param, keyEncrypt, valueEncrypt);
-					Object value = getParam(request,conf.getKey(), conf.isKeyEncrypt(),
-							conf.isValueEncrypt());
-					BeanUtil.setFieldValue(entity, conf.getField(), value);
+					ParseResult parser = ConfigParser.parse(param);
+					Object value = getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
+					BeanUtil.setFieldValue(entity, parser.getId(), value);
 				}// end for
 			} else {// end指定属性与request参数对应关系
 				/* 未指定属性与request参数对应关系 */
@@ -130,9 +130,9 @@ public class AbstractBasicController{
 		}
 		if (null != params && params.length > 0) {
 			for (String param : params) {
-				KeyValueEncryptConfig conf = new KeyValueEncryptConfig(param, keyEncrypt, valueEncrypt);
-				Object value = getParam(request,conf.getKey(), conf.isKeyEncrypt(), conf.isValueEncrypt());
-				row.put(conf.getField().toUpperCase(), value);
+				ParseResult parser = ConfigParser.parse(param);
+				Object value = getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
+				row.put(parser.getId().toUpperCase(), value);
 			}
 		}else{
 			Enumeration<String> names = request.getParameterNames();
@@ -175,18 +175,17 @@ public class AbstractBasicController{
 
 			Map<String,List<Object>> map = new HashMap<String,List<Object>>();
 			for (String param : params) {
-				KeyValueEncryptConfig conf = new KeyValueEncryptConfig(param,
-						keyEncrypt, valueEncrypt);
-				map.put(conf.getField().toUpperCase(), getParams(request,param,keyEncrypt, valueEncrypt));
+				ParseResult parser = ConfigParser.parse(param);
+				map.put(parser.getId().toUpperCase(), getParams(request,param,keyEncrypt, valueEncrypt));
 			}
 			
 			int size = getParams(request,params[0],keyEncrypt, valueEncrypt).size();
 			for(int i=0; i<size; i++){
 				DataRow row = new DataRow();
 				for (String param : params) {
-					KeyValueEncryptConfig conf = new KeyValueEncryptConfig(param, keyEncrypt, valueEncrypt);
-					List<Object> values = map.get(conf.getField().toUpperCase());
-					row.put(conf.getField().toUpperCase(), values.get(i));
+					ParseResult parser = ConfigParser.parse(param);
+					List<Object> values = map.get(parser.getId().toUpperCase());
+					row.put(parser.getId(), values.get(i));
 				}
 
 				Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
@@ -277,8 +276,7 @@ public class AbstractBasicController{
 	 * @return
 	 */
 	protected String getParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
-		KeyValueEncryptConfig conf = new KeyValueEncryptConfig(key, keyEncrypt, valueEncrypt);
-		return (String) WebUtil.getHttpRequestParam(request, conf.getKey(),conf.isKeyEncrypt(), conf.isValueEncrypt());
+		return (String) WebUtil.getHttpRequestParam(request, key,keyEncrypt, valueEncrypt);
 	}
 
 	protected String getParam(HttpServletRequest request, String key, boolean keyEncrypt) {
@@ -289,8 +287,7 @@ public class AbstractBasicController{
 		return getParam(request, key, false, false);
 	}
 	protected List<Object> getParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
-		KeyValueEncryptConfig conf = new KeyValueEncryptConfig(key, keyEncrypt, valueEncrypt);
-		return WebUtil.getHttpRequestParams(request, conf.getKey(), conf.isKeyEncrypt(), conf.isValueEncrypt());
+		return WebUtil.getHttpRequestParams(request, key, keyEncrypt, valueEncrypt);
 	}
 	protected List<Object> getParams(String key, boolean keyEncrypt, boolean valueEncrypt) {
 		return getParams(key, keyEncrypt, valueEncrypt);
@@ -362,10 +359,10 @@ public class AbstractBasicController{
 			if(BasicUtil.isEmpty(param)){
 				continue;
 			}
-			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(param,
-					keyEncrypt, valueEncrypt);
-			if (BasicUtil.isEmpty(getParam(request, conf.getKey(), conf.isKeyEncrypt(), conf.isValueEncrypt()))) {
-				setMessage(request,"请提供必须参数:" + conf.getField());
+
+			ParseResult parser = ConfigParser.parse(param);
+			if (BasicUtil.isEmpty(getParam(request, parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt()))) {
+				setMessage(request,"请提供必须参数:" + parser.getId());
 				result = false;
 			}
 		}
