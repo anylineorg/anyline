@@ -300,8 +300,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected String success() {
 		return success(request, data);
 	}
-	public String navi(DataSet data, String page){
-
+	public String navi(DataSet data, String page, Object ext){
 		if(null == data){
 			data = (DataSet)request.getAttribute("_anyline_navi_data");
 		}else{
@@ -311,9 +310,13 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		if(null != data){
 			navi = data.getNavi();
 		}
-		Map<String,Object> map = super.navi(request, response, data, navi, page);
+		Map<String,Object> map = super.navi(request, response, data, navi, page, ext);
 		return success(map);
 	}
+	public String navi(DataSet data, String page){
+		return navi(data, page, null);
+	}
+
 	/**
 	 * 执行失败
 	 * 
