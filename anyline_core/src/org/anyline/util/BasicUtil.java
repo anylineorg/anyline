@@ -751,7 +751,4 @@ public class BasicUtil {
             return false; 
         } 
     } 
-   public static void main(String args[]){
-      System.out.println(isWrapClass(new String()));
-   }
 }

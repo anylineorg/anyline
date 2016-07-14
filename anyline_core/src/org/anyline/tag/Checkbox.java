@@ -121,7 +121,7 @@ public class Checkbox extends BaseBodyTag {
 				if(null != head){
 					String id = name +"_"+ headValue; 
 					html += "<input type='checkbox' name='"+name+"' value='" + headValue + "' id='" + id + "'/>"
-							+ "<label for='"+id+ "'>" + head + "</label>";
+							+ "<label for='"+id+ "'>" + head + "</label>\n";
 				}
 				
 				
@@ -154,7 +154,7 @@ public class Checkbox extends BaseBodyTag {
 								text = v.toString();
 							}
 						}
-						label += text +"</label>";
+						label += text +"</label>\n";
 						html += label;
 					}
 			}
