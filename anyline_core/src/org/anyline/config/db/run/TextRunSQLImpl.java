@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.anyline.config.KeyValueEncryptConfig;
+import org.anyline.config.ConfigParser;
+
+import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
@@ -420,24 +422,5 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			}
 		}
 		return null;
-	}
-	/**
-	 * 添加静态文本查询条件
-	 */
-	public RunSQL addCondition(String condition) {
-		if(BasicUtil.isEmpty(condition)){
-			return this;
-		}
-		if(condition.startsWith("{") && condition.endsWith("}")){
-			Condition con = new AutoConditionImpl(condition.substring(1, condition.length()-1));
-			conditionChain.addCondition(con);
-		}else if(condition.contains(":")){
-			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(condition);
-			addCondition(conf.isRequired(),conf.getField(),conf.getKey(),SQL.COMPARE_TYPE_EQUAL);
-		}else{
-			Condition con = new AutoConditionImpl(condition);
-			conditionChain.addCondition(con);
-		}
-		return this;
 	}
 }

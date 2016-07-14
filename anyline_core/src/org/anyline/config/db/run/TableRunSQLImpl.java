@@ -23,7 +23,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.anyline.config.KeyValueEncryptConfig;
+import org.anyline.config.ConfigParser;
+
+import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.Order;
@@ -168,56 +170,6 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 
 
 
-
-	/*******************************************************************************************
-	 * 
-	 * 										添加条件
-	 * 
-	 ********************************************************************************************/
-	/**
-	 * 添加查询条件
-	 * @param	required
-	 * 			是否必须
-	 * @param	column
-	 * 			列名
-	 * @param	value
-	 * 			值
-	 * @param	compare
-	 * 			比较方式
-	 */
-	public RunSQL addCondition(boolean requried, String column, Object value, int compare){
-		Condition condition = new AutoConditionImpl(requried,column, value, compare);
-		if(null == conditionChain){
-			conditionChain = new AutoConditionChainImpl();
-		}
-		conditionChain.addCondition(condition);
-		return this;
-	}
-
-	/**
-	 * 添加静态文本查询条件
-	 */
-	public RunSQL addCondition(String condition) {
-		if(BasicUtil.isEmpty(condition)){
-			return this;
-		}
-
-		if(condition.startsWith("{") && condition.endsWith("}")){
-			Condition con = new AutoConditionImpl(condition.substring(1, condition.length()-1));
-			conditionChain.addCondition(con);
-		}else if(condition.contains(":")){
-			KeyValueEncryptConfig conf = new KeyValueEncryptConfig(condition);
-			addCondition(conf.isRequired(),conf.getField(),conf.getKey(),SQL.COMPARE_TYPE_EQUAL);
-		}else{
-			Condition con = new AutoConditionImpl(condition);
-			conditionChain.addCondition(con);
-		}
-		return this;
-	}
-	public RunSQL addCondition(Condition condition) {
-		conditionChain.addCondition(condition);
-		return this;
-	}
 
 
 	/**

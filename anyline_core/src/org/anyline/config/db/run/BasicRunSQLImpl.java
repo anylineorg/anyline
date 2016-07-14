@@ -22,6 +22,8 @@ package org.anyline.config.db.run;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.anyline.config.ConfigParser;
+import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.GroupStore;
@@ -33,6 +35,8 @@ import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.GroupStoreImpl;
 import org.anyline.config.db.impl.OrderStoreImpl;
+import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
+import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -226,7 +230,57 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public ConditionChain getConditionChain() {
 		return this.conditionChain;
 	}
-	
+
+	/*******************************************************************************************
+	 * 
+	 * 										添加条件
+	 * 
+	 ********************************************************************************************/
+	/**
+	 * 添加查询条件
+	 * @param	required
+	 * 			是否必须
+	 * @param	column
+	 * 			列名
+	 * @param	value
+	 * 			值
+	 * @param	compare
+	 * 			比较方式
+	 */
+	public RunSQL addCondition(boolean requried, String column, Object value, int compare){
+		Condition condition = new AutoConditionImpl(requried,column, value, compare);
+		if(null == conditionChain){
+			conditionChain = new AutoConditionChainImpl();
+		}
+		if(condition.isActive()){
+			conditionChain.addCondition(condition);
+		}
+		return this;
+	}
+
+	/**
+	 * 添加静态文本查询条件
+	 */
+	public RunSQL addCondition(String condition) {
+		if(BasicUtil.isEmpty(condition)){
+			return this;
+		}
+
+		if(condition.startsWith("{") && condition.endsWith("}")){
+			//原生SQL  不处理
+			Condition con = new AutoConditionImpl(condition.substring(1, condition.length()-1));
+			conditionChain.addCondition(con);
+		}else if(condition.contains(":")){
+			//需要解析的SQL
+			ParseResult parser = ConfigParser.parse(condition);
+			addCondition(parser.isRequired(),parser.getId(),parser.getKey(),parser.getCompare());
+		}else{
+			Condition con = new AutoConditionImpl(condition);
+			conditionChain.addCondition(con);
+		}
+		return this;
+	}
+
 
 	public RunSQL addCondition(Condition condition) {
 		if(null != conditionChain){
@@ -280,6 +334,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		}
 		return this;
 	}
+	
 	public String getDeleteTxt(){
 		return this.builder.toString();
 	}

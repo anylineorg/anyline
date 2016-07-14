@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.anyline.config.KeyValueEncryptConfig;
+
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.Group;
@@ -134,16 +134,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		//condition赋值
 		if(null != conditions){
 			for(String condition:conditions){
-				if(BasicUtil.isEmpty(condition)){
-					continue;
-				}
-				if(condition.contains(":")){
-					KeyValueEncryptConfig conf = new KeyValueEncryptConfig(condition);
-					addCondition(false,conf.getField(),conf.getKey(),SQL.COMPARE_TYPE_EQUAL);
-				}else{
-					Condition con = new XMLConditionImpl(condition);
-					conditionChain.addCondition(con);
-				}
+				addCondition(condition);
 			}
 		}
 		GroupStore groupStore = sql.getGroups();
