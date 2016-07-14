@@ -263,8 +263,14 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 * @param result
 	 * @return
 	 */
-	protected String success(HttpServletRequest request, Object data) {
-		this.data = data;
+	protected String success(HttpServletRequest request, Object ... data) {
+		if(null != data){
+			if(data.length ==1){				
+				this.data = data[0];
+			}else{
+				this.data = data;
+			}
+		}
 		if (isAjaxRequest(request)) {
 			result = true;
 			return AJAX;
@@ -272,10 +278,21 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return super.SUCCESS;
 	}
 
-	protected String success(Object data) {
+	protected String success(Object ... data) {
 		return success(request, data);
 	}
-
+	/**
+	 * 加密仅支持String类型 不支持对象加密 
+	 * @param data
+	 * @param encrypt
+	 * @return
+	 */
+	protected String success(Object data, boolean encrypt) {
+		if(encrypt && null != data){
+			return result(true,WebUtil.encryptHttpRequestParamValue(data.toString()),null);
+		}
+		return success(request, data);
+	}
 	protected String success(HttpServletRequest request) {
 		return success(request, data);
 	}
