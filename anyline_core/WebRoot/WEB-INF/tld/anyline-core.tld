@@ -593,6 +593,37 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>ajax</name>
+		<tagclass>org.anyline.tag.Ajax</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>ajax请求</info>
+		<attribute>
+			<name>url</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>param</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>callback</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>async</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>intime</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>des</name>
 		<tagclass>org.anyline.tag.des.DESHttpRequestParamValue</tagclass>
 		<bodycontent>JSP</bodycontent>
