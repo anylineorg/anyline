@@ -331,18 +331,25 @@ public class AnylineController extends AbstractBasicController {
 	protected String fail() {
 		return fail(null);
 	}
+
+	/**
+	 * 加密仅支持String类型 不支持对象加密
+	 * @param data
+	 * @param encrypt
+	 * @return
+	 */
 	protected String success(Object data, boolean encrypt) {
 		if(encrypt && null != data){
 			return result(true,WebUtil.encryptHttpRequestParamValue(data.toString()),null);
 		}
 		return result(true, data, null);
 	}
-	protected String success(Object data) {
-		return result(true, data, null);
-	}
 
-	protected String success() {
-		return success(null);
+	protected String success(Object ... data) {
+		if(null != data && data.length ==1){
+			return result(true, data[0], null);
+		}
+		return result(true, data, null);
 	}
 	/**
 	 * AJAX分页时调用 
