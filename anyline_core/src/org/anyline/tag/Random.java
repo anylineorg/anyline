@@ -30,20 +30,16 @@ public class Random extends BaseBodyTag {
 	private String length;
 	
 	public int doEndTag() {
-		String src = BasicUtil.nvl(value,body,"").toString().trim();
-		if("".equals(src)){
-			return EVAL_BODY_INCLUDE;
-		}
 
 		JspWriter writer = null;
 		String result = "";
 		try {
-			writer = pageContext.getOut();
 			int size = BasicUtil.parseInt(length, 0);
 			if(size>0){
+				writer = pageContext.getOut();
 				result = BasicUtil.getRandomNumberString(size);
+				writer.print(result);
 			}
-			writer.print(result);
 		} catch (IOException e) {
 			LOG.error(e);
 		}finally{
@@ -55,13 +51,16 @@ public class Random extends BaseBodyTag {
 	@Override
 	public void release() {
 		super.release();
-		value = null;
-		body = null;
 		length = "0";
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+
+	public String getLength() {
+		return length;
+	}
+
+	public void setLength(String length) {
+		this.length = length;
 	}
 	
 }
