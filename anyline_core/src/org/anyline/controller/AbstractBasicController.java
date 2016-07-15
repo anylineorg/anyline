@@ -605,9 +605,9 @@ public class AbstractBasicController{
 			e.printStackTrace();
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("BODY", HttpUtil.escape(html));
+		map.put("BODY", BasicUtil.escape(html));
 		if(null != navi){
-			map.put("NAVI", HttpUtil.escape(navi.ajaxPage()));
+			map.put("NAVI", BasicUtil.escape(navi.ajaxPage()));
 			map.put("TOTAL_ROW", navi.getTotalRow()+"");
 			map.put("TOTAL_PAGE", navi.getTotalPage()+"");
 			map.put("CUR_PAGE", navi.getCurPage()+"");
