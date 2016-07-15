@@ -867,7 +867,24 @@ public class DateUtil {
 	public static int weekOfYear() {
 		return weekOfYear(new Date());
 	}
-
+	/**
+	 * fr > to返回 1 
+	 * @param fr
+	 * @param to
+	 * @return
+	 */
+	public static int compare(Date fr, Date to){
+		int result = 0;
+		if(fr.getTime() > to.getTime()){
+			result = 1;
+		}else{
+			result = -1;
+		}
+		return result;
+	}
+	public static int compare(String fr, String to){
+		return compare(parse(fr), parse(to));
+	}
 	/**
 	 * 是上午吗?
 	 * 
