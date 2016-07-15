@@ -27,9 +27,9 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.struts2.convention.annotation.Action;
@@ -45,7 +45,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 @Scope("prototype")
 public class TemplateAction extends AnylineAction {
 	@Actions({
-		@Action(value = "l", results = { @Result(type="json")})
+		@Action(value = "load", results = { @Result(type="json")})
 	})
 	public String load(){
 		String path = getParam("path", false, true);
@@ -55,7 +55,7 @@ public class TemplateAction extends AnylineAction {
 		}catch(Exception e){
 			
 		}
-		html = HttpUtil.escape(html);
+		html = BasicUtil.escape(html);
 		return success(html);
 	}
 
