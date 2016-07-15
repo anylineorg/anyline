@@ -71,10 +71,10 @@ public class TemplateController extends AnylineController {
 		String html = "";
 		try{
 			html = WebUtil.parseJsp(request, response, path);
+			html = BasicUtil.escape(html);
 		}catch(Exception e){
 			
 		}
-		html = HttpUtil.escape(html);
 		return success(html);
 	}
 	/**
@@ -117,7 +117,7 @@ public class TemplateController extends AnylineController {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		content = HttpUtil.escape(content);
+		content = BasicUtil.escape(content);
 		return success(content);
 	}
 	
