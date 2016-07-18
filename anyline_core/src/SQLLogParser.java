@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import org.anyline.util.FileUtil;
+import org.anyline.util.HttpUtil;
 import org.anyline.util.regular.RegularUtil;
 
 
@@ -18,6 +19,7 @@ public class SQLLogParser {
                 return result;  
             }  
         });  
+		
 		for(SQLLog log:logs){
 			System.out.println("SQL:"+log.getKey() + " 耗时:"+log.getExeTime()+ " TXT:" + log.getTxt().replace("\n", " ").replace("\r", " ").replace("\t", " "));
 		}
