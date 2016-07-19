@@ -44,6 +44,7 @@ public class DESUtil {
 	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";	//盐值
 	private Cipher encryptCipher = null;					//加密
 	private Cipher decryptCipher = null;					//解密
+	private String salt = DEFAULT_SALT;
 	
 	private static Map<String,DESUtil> instances = new Hashtable<String,DESUtil>();
 	/**
@@ -55,6 +56,7 @@ public class DESUtil {
 		if(null == instance){
 			try{
 				instance = new DESUtil();
+				instances.put(DEFAULT_SECRET_KEY, instance);
 			}catch(NoSuchPaddingException e){
 				
 			}catch(NoSuchAlgorithmException e){
@@ -75,6 +77,7 @@ public class DESUtil {
 		if(null == instance){
 			try{
 				instance = new DESUtil(key);
+				instances.put(key, instance);
 			}catch(NoSuchPaddingException e){
 				LOG.error(e);
 			}catch(NoSuchAlgorithmException e){
@@ -147,7 +150,7 @@ public class DESUtil {
 		return encryptCipher.doFinal(arrB);
 	}
 	public String encrypt(String str) throws BadPaddingException,IllegalBlockSizeException{
-		str = DEFAULT_SALT + str;
+		str = salt + str;
 		return byteArr2HexStr(encrypt(str.getBytes()));
 	}
 	
@@ -166,7 +169,7 @@ public class DESUtil {
 	public String decrypt(String str)throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
 		String result = "";
 			result = new String(decrypt(hexStr2ByteArr(str)),ConfigTable.getString("DES_ENCODE","UTF-8"));
-			result = result.substring(DEFAULT_SALT.length());
+			result = result.substring(salt.length());
 		return result;
 	}
 	

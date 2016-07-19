@@ -20,6 +20,10 @@
 package org.anyline.tag;
 
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -35,12 +39,14 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.I18NUtil;
 
 
-public class Text extends BodyTagSupport{
+public class Text extends BaseBodyTag{
 	private static final long serialVersionUID = 1554109844585627661L;
 	
 	private Object data;
 	private String lang;			//语言
 	private String key;
+	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+	private String textKey = "NM";
 	private HttpServletRequest request; 
 	
 	public int doStartTag() throws JspException {
@@ -51,19 +57,29 @@ public class Text extends BodyTagSupport{
 	 public int doEndTag() throws JspException {
 		 String text = "";
 		 if(BasicUtil.isNotEmpty(data)){
-			 if(data instanceof DataRow){
-				 text = ((DataRow)data).getString(key);
-			 }else if(data instanceof Map){
-				 Object val = ((Map)data).get(key);
-				 if(null != val){
-					 text = val.toString();
-				 }
-			 }else{
-				 Object val = BeanUtil.getFieldValue(data, key);
-				 if(null != val){
-					 text = val.toString();
-				 }
-			 }
+			 if(data instanceof String){
+				if(data.toString().endsWith("}")){
+					String items[] = data.toString().replace("{", "").replace("}", "").toString().split(",");
+					List list = new ArrayList();
+					for(String item:items){
+						Map map = new HashMap();
+						String tmp[] = item.split(":");
+						map.put(valueKey, tmp[0]);
+						map.put(textKey, tmp[1]);
+						list.add(map);
+					}
+					data = list;
+				}
+			}
+			Collection<Map> items = (Collection<Map>)data;
+			if(null != value){
+				for(Map item:items){
+					Object tmp = item.get(valueKey);
+					if(null != tmp && value.toString().equals(tmp.toString())){
+						text += item.get(textKey);
+					}
+				}
+			}
 		 }else{
 			 text = I18NUtil.get(lang, key);
 		 }
@@ -81,6 +97,11 @@ public class Text extends BodyTagSupport{
 	@Override
     public void release(){
 		super.release();
+		data = null;
+		textKey = null;
+		valueKey = null;
+		value = null;
+		
     	key = null;
     	lang = null;
     }
@@ -132,5 +153,18 @@ public class Text extends BodyTagSupport{
 	public void setData(Object data) {
 		this.data = data;
 	}
+	public String getValueKey() {
+		return valueKey;
+	}
+	public void setValueKey(String valueKey) {
+		this.valueKey = valueKey;
+	}
+	public String getTextKey() {
+		return textKey;
+	}
+	public void setTextKey(String textKey) {
+		this.textKey = textKey;
+	}
+	
 
 }
