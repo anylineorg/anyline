@@ -25,8 +25,22 @@
 		<bodycontent>empty</bodycontent>
 		<attribute>
 			<name>data</name>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>valueKey</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>textKey</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
 		<attribute>
 			<name>lang</name>
 			<rtexprvalue>true</rtexprvalue>
