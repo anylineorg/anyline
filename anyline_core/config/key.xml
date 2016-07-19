@@ -15,11 +15,11 @@
 		<!-- 默认前缀 -->
 		<des-prefix></des-prefix>
 		<!-- URL参数前缀 -->
-		<des-prefix-param>wwwinmvccomf</des-prefix-param>
+		<des-prefix-param>a</des-prefix-param>
 		<!-- URL参数名前缀 -->
-		<des-prefix-param-name>wwwinmvccomk</des-prefix-param-name>
+		<des-prefix-param-name>n</des-prefix-param-name>
 		<!-- URL参数值前缀 -->
-		<des-prefix-param-value>wwwinmvccomv</des-prefix-param-value>
+		<des-prefix-param-value>l</des-prefix-param-value>
 	</key>
 	<key version="v02">
 		<!-- 默认密钥 -->
