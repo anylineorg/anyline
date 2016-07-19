@@ -189,7 +189,10 @@ public class TemplateController extends AnylineController {
 	protected ModelAndView template(String name, String template){
 		return createView(name, template);
 	}
-
+	/**
+	 * 根据dir构造文件目录(super.dir+this.dir)
+	 * @return
+	 */
 	private String buildDir(){
 		String result = "";
 		String dir = (String)BeanUtil.getFieldValue(this, "dir");
