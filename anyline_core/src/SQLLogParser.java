@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -11,18 +12,19 @@ import org.anyline.util.regular.RegularUtil;
 
 public class SQLLogParser {
 	public static void main(String args[]) throws Exception{
-		//修改文件格式:UTF-8
-		List<SQLLog> logs = parse(new File("D:\\sql.txt"));
-		Collections.sort(logs, new Comparator<SQLLog>() {  
-            public int compare(SQLLog o1, SQLLog o2) {  
-                int result = o1.getExeTime() - o2.getExeTime();  
-                return result;  
-            }  
-        });  
-		
-		for(SQLLog log:logs){
-			System.out.println("SQL:"+log.getKey() + " 耗时:"+log.getExeTime()+ " TXT:" + log.getTxt().replace("\n", " ").replace("\r", " ").replace("\t", " "));
-		}
+//		//修改文件格式:UTF-8
+//		List<SQLLog> logs = parse(new File("D:\\sql.txt"));
+//		Collections.sort(logs, new Comparator<SQLLog>() {  
+//            public int compare(SQLLog o1, SQLLog o2) {  
+//                int result = o1.getExeTime() - o2.getExeTime();  
+//                return result;  
+//            }  
+//        });  
+//		
+//		for(SQLLog log:logs){
+//			System.out.println("SQL:"+log.getKey() + " 耗时:"+log.getExeTime()+ " TXT:" + log.getTxt().replace("\n", " ").replace("\r", " ").replace("\t", " "));
+//		}
+		System.out.println(ConfigTable.getString("RELOAD"));
 	}
 	public static List<SQLLog> parse(File file) throws Exception{
 		List<SQLLog> logs = new ArrayList<SQLLog>();
