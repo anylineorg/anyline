@@ -32,7 +32,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.springframework.context.ApplicationContext;
@@ -70,10 +69,13 @@ public class TemplateController extends AnylineController {
 		}
 		String html = "";
 		try{
+			if(ConfigTable.isDebug()){
+				LOG.warn("加载模板文件开始:"+path);
+			}
 			html = WebUtil.parseJsp(request, response, path);
 			html = BasicUtil.escape(html);
 		}catch(Exception e){
-			
+			LOG.warn("加载模板文件失败:"+path+e.getMessage());
 		}
 		return success(html);
 	}
