@@ -61,9 +61,6 @@
 	<property key="AUTO_CREATE_PRIMARY_KEY">true</property>
 	<property key="CREATE_PRIMARY_KEY_PROCEDURE">PROC_CREATE_PRIMARY</property>
 	
-	<!-- 数据库备份位置 -->
-	<property key="DATABASE_BAK_DIR">D:/database/mssql/bak</property>
-	<!-- 本地服务器ip前缀 -->
 	<property key="LOCAL_IP_PREFIX">10.20</property>
 	<!-- 数据库备份连接SN -->
 	<property key="DOWNLOAD_DB_BAK_SN">FTYIOJ_KNBV</property>
