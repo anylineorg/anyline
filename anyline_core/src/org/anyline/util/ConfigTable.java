@@ -40,7 +40,7 @@ public class ConfigTable {
 	private static boolean debug = false;
 	private static boolean sqlDebug = false;
 	private static final String version = "6.X";
-	private static final String minVersion = "0882";
+	private static final String minVersion = "0892";
 	static{
 		init();
 		debug();
@@ -206,17 +206,17 @@ public class ConfigTable {
 			line("MinVersion " + minVersion + "[" + time+"]", " ", true);
 			line(""," ", true);
 			line("","*", true);
-			line(" github地址：https://github.com/anylineorg/anyline.git　                                                               ", "", false);
-			line(" github帐号：public@anyline.org(anyline111111)　                                                                                                         ", " ", false);
-			line("                                                                                                         ", " ", false);
-			line(" osc git地址：https://git.oschina.net/anyline/anyline.git　                                                               ", "", false);
-			line(" osc svn地址：svn://git.oschina.net/anyline/anyline　                                                                              ", " ", false);
-			line(" osc 帐号密码：public@anyline.org(111111)　                                                                                                         ", " ", false);
+			line(" github地址：https://github.com/anylineorg/anyline.git", "", false);
+			line(" github帐号：public@anyline.org(anyline111111)", "", false);
+			line(" ", " ", false);
+			line(" osc git地址：https://git.oschina.net/anyline/anyline.git", "", false);
+			line(" osc svn地址：svn://git.oschina.net/anyline/anyline", "", false);
+			line(" osc 帐号密码：public@anyline.org(111111)", "", false);
 		
 			line("","*", true);
-			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]　                                                   ", "", false);
-			line(" Debug 状态设置在:anyline-config.xml:<property key=\"DEBUG\">false</property>　           ", "", false);
-			line(" =====================生产环境请务必修改密钥文件key.xml==========================　      ", "", false);
+			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]", "", false);
+			line(" Debug 状态设置在:anyline-config.xml:<property key=\"DEBUG\">false</property>", "", false);
+			line(" =====================生产环境请务必修改密钥文件key.xml==========================", "", false);
 			line("","*", true);
 		}catch(Exception e){
 			e.printStackTrace();
