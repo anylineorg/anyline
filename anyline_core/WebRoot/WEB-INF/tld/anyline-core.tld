@@ -25,7 +25,7 @@
 		<bodycontent>empty</bodycontent>
 		<attribute>
 			<name>data</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -43,11 +43,12 @@
 		
 		<attribute>
 			<name>lang</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>key</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
