@@ -286,4 +286,5 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 		}
 		return null;
 	}
+
 }
