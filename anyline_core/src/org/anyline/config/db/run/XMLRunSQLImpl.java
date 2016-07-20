@@ -23,7 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-
+import org.anyline.config.ConfigParser;
+import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.Group;
@@ -36,7 +37,6 @@ import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.GroupStoreImpl;
 import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.sql.xml.impl.XMLConditionChainImpl;
-import org.anyline.config.db.sql.xml.impl.XMLConditionImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.config.http.impl.ConfigStoreImpl;
@@ -134,7 +134,20 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		//condition赋值
 		if(null != conditions){
 			for(String condition:conditions){
-				addCondition(condition);
+				ParseResult parser = ConfigParser.parse(condition);
+				Object value = parser.getKey();
+				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT){
+					String[] tmp = value.toString().split(",");
+					if(null != tmp){
+						List<String> list = new ArrayList<String>();
+						for(String item:tmp){
+							list.add(item);
+						}
+						value = list;
+					}
+					
+				}
+				setConditionValue(parser.getId(), parser.getField(), value);
 			}
 		}
 		GroupStore groupStore = sql.getGroups();
@@ -270,8 +283,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 	}
 
-
-
+	
 	@Override
 	public RunSQL setConditionValue(String condition, String variable, Object value) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/

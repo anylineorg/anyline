@@ -579,15 +579,15 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					continue;
 				}
 				if(column.startsWith("+")){
-					column = column.replace("+", "");
+					column = column.substring(1, column.length());
 					mastKeys.add(column);
 					each = true;
 				}else if(column.startsWith("-")){
-					column = column.replace("-", "");
+					column = column.substring(1, column.length());
 					disKeys.add(column);
 					each = true;
 				}else if(column.startsWith("?")){
-					column = column.replace("?", "");
+					column = column.substring(1, column.length());
 					factKeys.add(column);
 					each = true;
 				}
@@ -681,17 +681,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					continue;
 				}
 				if(property.startsWith("+")){
-					property = property.replace("+", "");
+					property = property.substring(1, property.length());
 					String column = entity.getColumnByProperty(property);
 					mastKeys.add(column);
 					each = true;
 				}else if(property.startsWith("-")){
-					property = property.replace("-", "");
+					property = property.substring(1, property.length());
 					String column = entity.getColumnByProperty(property);
 					disKeys.add(column);
 					each = true;
 				}else if(property.startsWith("?")){
-					property = property.replace("?", "");
+					property = property.substring(1, property.length());
 					String column = entity.getColumnByProperty(property);
 					factKeys.add(column);
 					each = true;
@@ -772,15 +772,15 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					continue;
 				}
 				if(column.startsWith("+")){
-					column = column.replace("+", "");
+					column = column.substring(1, column.length());
 					mastKeys.add(column);
 					each = true;
 				}else if(column.startsWith("-")){
-					column = column.replace("-", "");
+					column = column.substring(1, column.length());
 					disKeys.add(column);
 					each = true;
 				}else if(column.startsWith("?")){
-					column = column.replace("?", "");
+					column = column.substring(1, column.length());
 					factKeys.add(column);
 					each = true;
 				}
@@ -860,17 +860,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					continue;
 				}
 				if(property.startsWith("+")){
-					property = property.replace("+", "");
+					property = property.substring(1, property.length());
 					String column = entity.getColumnByProperty(property);
 					mastKeys.add(column);
 					each = true;
 				}else if(property.startsWith("-")){
-					property = property.replace("-", "");
+					property = property.substring(1, property.length());
 					String column = entity.getColumnByProperty(property);
 					disKeys.add(column);
 					each = true;
 				}else if(property.startsWith("?")){
-					property = property.replace("?", "");
+					property = property.substring(1, property.length());
 					String column = entity.getColumnByProperty(property);
 					factKeys.add(column);
 					each = true;
