@@ -131,6 +131,20 @@ public class ConfigStoreImpl implements ConfigStore{
 			conf.setCompare(SQL.COMPARE_TYPE_IN);
 		}
 		conf.setId(key);
+		if(null != values){
+			String s = values.toString();
+			if(s.startsWith("[") && s.endsWith("]")){
+				s = s.substring(1,s.length()-1);
+				String[] ss = s.split(",");
+				if(null != ss){
+					List<Object> list = new ArrayList<Object>();
+					for(String item:ss){
+						list.add(item);
+					}
+					values = list;
+				}
+			}
+		}
 		conf.addValue(values);
 		chain.addConfig(conf);
 		return this;
