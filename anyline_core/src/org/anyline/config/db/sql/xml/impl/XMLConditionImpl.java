@@ -107,6 +107,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				break;
 			}
 		}
+		runValuesMap.put(variable, values);
 	}
 
 	/**
