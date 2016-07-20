@@ -21,6 +21,7 @@ package org.anyline.config.db;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 
 
@@ -86,4 +87,5 @@ public interface Condition extends Cloneable,Serializable{
 	public void setValue(String key, Object value);
 	public void setTest(String test);
 	public String getTest();
+	public Map<String,Object> getRunValuesMap();
 }

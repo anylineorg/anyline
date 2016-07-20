@@ -17,11 +17,15 @@
  */
 
 
-package org.anyline.config.db.run;
+package org.anyline.config.db.run.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+
+import ognl.Ognl;
+import ognl.OgnlException;
 
 import org.anyline.config.ConfigParser;
 import org.anyline.config.ParseResult;
@@ -36,6 +40,7 @@ import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.GroupStoreImpl;
 import org.anyline.config.db.impl.OrderStoreImpl;
+import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.db.sql.xml.impl.XMLConditionChainImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigStore;
@@ -159,6 +164,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 			}
 		}
+		checkTest();
 		createRunTxt();
 	}
 	private void createRunTxt(){
@@ -257,6 +263,27 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	private void appendGroup(){
 		if(null != groupStore){
 			builder.append(groupStore.getRunText(disKeyFr+disKeyTo));
+		}
+	}
+	/**
+	 * 检测test表达式
+	 */
+	private void checkTest(){
+		if(null != conditionChain){
+			for(Condition con:conditionChain.getConditions()){
+				String test = con.getTest();
+				if(null != test){
+					Map<String,Object> map = con.getRunValuesMap();
+					try {
+						Boolean result = (Boolean) Ognl.getValue(test,map);
+						if(!result){
+							con.setActive(false);
+						}
+					} catch (OgnlException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
 	}
 	/**
