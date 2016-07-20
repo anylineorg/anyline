@@ -76,5 +76,4 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 		}
 	}
 
-
 }

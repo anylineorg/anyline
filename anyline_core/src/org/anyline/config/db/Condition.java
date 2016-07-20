@@ -84,4 +84,6 @@ public interface Condition extends Cloneable,Serializable{
 	public String getId();
 	public Object clone()throws CloneNotSupportedException;
 	public void setValue(String key, Object value);
+	public void setTest(String test);
+	public String getTest();
 }

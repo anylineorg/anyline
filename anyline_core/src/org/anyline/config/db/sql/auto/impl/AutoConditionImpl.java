@@ -189,5 +189,4 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	public void setCompare(int compare) {
 		this.compare = compare;
 	}
-
 }
