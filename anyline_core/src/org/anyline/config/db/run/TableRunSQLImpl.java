@@ -23,20 +23,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.anyline.config.ConfigParser;
-
-import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
-import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.sql.auto.TableSQL;
 import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
-import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.config.http.impl.ConfigStoreImpl;
 import org.anyline.util.BasicUtil;

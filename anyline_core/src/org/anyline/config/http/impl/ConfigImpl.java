@@ -81,7 +81,9 @@ public class ConfigImpl implements Config{
 		config.values = values;
 		return config;
 	}
-	public ConfigImpl(){}
+	public ConfigImpl(){
+		this.parser = new ParseResult();
+	}
 	public String toString(){
 		String str = "";
 //		str = "ID:"+ id +",KEY:"+key 
@@ -202,10 +204,11 @@ public class ConfigImpl implements Config{
 			}
 			if(null != def && BasicUtil.isEmpty(true,values)){
 				values = new ArrayList<Object>();
-				//{1,2,3,4} {1}
+				//{[1,2,3,4]} {1}
 				if(def.startsWith("{") && def.endsWith("}")){
 					def = def.substring(1, def.length()-1);
-					if(def.contains(",")){
+					if(def.startsWith("[") && def.endsWith("]")){
+						def = def.substring(1, def.length()-1);
 						String tmps[] = def.split(",");
 						for(String tmp:tmps){
 							values.add(tmp);
@@ -329,7 +332,7 @@ public class ConfigImpl implements Config{
 	}
 
 	public void setId(String id) {
-		//this.id = id;
+		parser.setId(id);
 	}
 
 	public String getVariable() {
@@ -337,7 +340,7 @@ public class ConfigImpl implements Config{
 	}
 
 	public void setVariable(String variable) {
-		//this.variable = variable;
+		parser.setField(variable);
 	}
 
 
@@ -347,7 +350,7 @@ public class ConfigImpl implements Config{
 	}
 
 	public void setKey(String key) {
-		//this.key = key;
+		parser.setKey(key);
 	}
 
 	public int getCompare() {
@@ -355,7 +358,7 @@ public class ConfigImpl implements Config{
 	}
 
 	public void setCompare(int compare) {
-		//this.compare = compare;
+		parser.setCompare(compare);
 	}
 
 	public boolean isEmpty() {
@@ -371,7 +374,7 @@ public class ConfigImpl implements Config{
 	}
 
 	public void setRequire(boolean require) {
-		//this.require = require;
+		parser.setRequired(require);
 	}
 
 	public String getJoin() {
@@ -379,7 +382,7 @@ public class ConfigImpl implements Config{
 	}
 
 	public void setJoin(String join) {
-		//this.join = join;
+		parser.setJoin(join);
 	}
 
 	public boolean isKeyEncrypt() {

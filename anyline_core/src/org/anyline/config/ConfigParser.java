@@ -78,35 +78,35 @@ public class ConfigParser {
 		String config = result.getKey();
 		if (config.startsWith(">=")) {
 			result.setCompare(SQL.COMPARE_TYPE_GREAT_EQUAL);
-			config = config.replace(">=", "");
+			config = config.substring(2, config.length());
 		} else if (config.startsWith(">")) {
 			result.setCompare(SQL.COMPARE_TYPE_GREAT);
-			config = config.replace(">", "");
+			config = config.substring(1, config.length());
 		} else if (config.startsWith("<=")) {
 			result.setCompare(SQL.COMPARE_TYPE_LITTLE_EQUAL);
-			config = config.replace("<=", "");
+			config = config.substring(2, config.length());
 		} else if (config.startsWith("<>") || config.startsWith("!=")) {
 			result.setCompare(SQL.COMPARE_TYPE_NOT_EQUAL);
-			config = config.replace("<>", "").replace("<>", "");
+			config = config.substring(2, config.length());
 		} else if (config.startsWith("<")) {
 			result.setCompare(SQL.COMPARE_TYPE_LITTLE);
-			config = config.replace("<", "");
-		} else if (config.startsWith("[")) {
+			config = config.substring(1, config.length());
+		} else if (config.startsWith("[") && config.endsWith("]")) {
 			result.setCompare(SQL.COMPARE_TYPE_IN);
 			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT);
-			config = config.replace("[", "");
-			config = config.replace("]", "");
+			config = config.substring(1,config.length()-1);
 			
 		} else if (config.startsWith("%")) {
 			if (config.endsWith("%")) {
 				result.setCompare(SQL.COMPARE_TYPE_LIKE);
+				config = config.substring(1, config.length()-1);
 			} else {
 				result.setCompare(SQL.COMPARE_TYPE_LIKE_SUBFIX);
+				config = config.substring(1, config.length());
 			}
-			config = config.replace("%", "");
 		} else if (config.endsWith("%")) {
 			result.setCompare(SQL.COMPARE_TYPE_LIKE_PREFIX);
-			config = config.replace("%", "");
+			config = config.substring(0, config.length()-1);
 		} else {
 			result.setCompare(SQL.COMPARE_TYPE_EQUAL);
 		}
