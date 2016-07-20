@@ -82,7 +82,7 @@ public class SQLStoreImpl extends SQLStore{
 			return result;
 		}
 		Element root = document.getRootElement();
-		//条件分组
+		//全局条件分组
 		Map<String,List<Condition>> conditionMap = new HashMap<String,List<Condition>>();
 		for(Iterator<?> itrSql = root.elementIterator("conditions"); itrSql.hasNext();){
 			Element conditionGroupElement = (Element)itrSql.next();
@@ -90,12 +90,7 @@ public class SQLStoreImpl extends SQLStore{
 			List<Condition> conditions = new ArrayList<Condition>();
 			conditionMap.put(groupId, conditions);
 			for(Iterator<?> itrParam = conditionGroupElement.elementIterator("condition"); itrParam.hasNext();){
-				Element conditionElement = (Element)itrParam.next();
-				String paramId = conditionElement.attributeValue("id");	//参数主键
-				boolean isStatic = BasicUtil.parseBoolean(conditionElement.attributeValue("static"),false);	//是否是静态文本
-				String paramText = " AND " + conditionElement.getText();			//参数文本
-				Condition condition = new XMLConditionImpl(paramId, paramText, isStatic);
-				conditions.add(condition);
+				conditions.add(parseCondition(null,null,(Element)itrParam.next()));
 			}
 		}
 		for(Iterator<?> itrSql = root.elementIterator("sql"); itrSql.hasNext();){
@@ -106,24 +101,7 @@ public class SQLStoreImpl extends SQLStore{
 			sql.setDataSource(fileName+":"+sqlId);
 			sql.setText(sqlText);
 			for(Iterator<?> itrParam = sqlElement.elementIterator("condition"); itrParam.hasNext();){
-				Element conditionElement = (Element)itrParam.next();
-				String paramId = conditionElement.attributeValue("id");	//参数主键
-				if(null != paramId){
-					boolean isStatic = BasicUtil.parseBoolean(conditionElement.attributeValue("static"),false);	//是否是静态文本
-					String paramText = " AND " + conditionElement.getText();			//参数文本
-					Condition condition = new XMLConditionImpl(paramId, paramText, isStatic);
-					sql.addCondition(condition);
-				}
-				//引用全局条件
-				String ref = conditionElement.attributeValue("ref");
-				if(null != ref){
-					List<Condition> conditions = conditionMap.get(ref);
-					if(null != conditions){
-						for(Condition c:conditions){
-							sql.addCondition(c);
-						}
-					}
-				}
+				parseCondition(sql,conditionMap,(Element)itrParam.next());
 			}
 			String group = sqlElement.elementText("group");
 			String order = sqlElement.elementText("order");
@@ -135,6 +113,31 @@ public class SQLStoreImpl extends SQLStore{
 			result.put(sqlId, sql);
 		}
 		return result;
+	}
+	private static Condition parseCondition(SQL sql, Map<String,List<Condition>> map, Element element){
+		Condition condition = null;
+		String id = element.attributeValue("id");	//参数主键
+		if(null != id){
+			boolean isStatic = BasicUtil.parseBoolean(element.attributeValue("static"),false);	//是否是静态文本
+			String text = element.getText().trim();			//参数文本
+			if(!text.toUpperCase().startsWith("AND")){
+				text =  " AND " + text;
+			}
+			condition = new XMLConditionImpl(id, text, isStatic);
+			String test = element.attributeValue("test");
+			condition.setTest(test);
+		}else{
+			String ref = element.attributeValue("ref");
+			if(null != ref && null != sql && null != map){
+				List<Condition> conditions = map.get(ref);
+				if(null != conditions){
+					for(Condition c:conditions){
+						sql.addCondition(c);
+					}
+				}
+			}
+		}
+		return condition;
 	}
 	private static Document createDocument(File file){
 		Document document = null;

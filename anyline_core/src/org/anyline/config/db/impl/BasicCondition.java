@@ -41,6 +41,7 @@ public abstract class BasicCondition implements Condition{
 	protected ConditionChain container;									//当前条件所处容器
 	protected String id;
 	protected String text;												//静态条件
+	protected String test;												//判断条件
 
 	public Object clone() throws CloneNotSupportedException{
 		BasicCondition clone = (BasicCondition)super.clone();
@@ -125,4 +126,14 @@ public abstract class BasicCondition implements Condition{
 	 */
 	public void setValue(String variable, Object values){
 	}
+
+	@Override
+	public void setTest(String test) {
+		this.test = test;
+	}
+	@Override
+	public String getTest() {
+		return test;
+	}
+
 }
