@@ -20,7 +20,9 @@
 package org.anyline.config.db.impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
@@ -37,12 +39,12 @@ public abstract class BasicCondition implements Condition{
 	protected boolean active = false;									//是否活动(是否拼接到SQL中)
 	protected int variableType = VARIABLE_FLAG_TYPE_NONE;				//变量标记方式
 	protected List<Object> runValues = new ArrayList<Object>();			//运行时参数
+	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();//运行时参数
 	protected String join = Condition.CONDITION_JOIN_TYPE_AND;			//连接方式
 	protected ConditionChain container;									//当前条件所处容器
 	protected String id;
 	protected String text;												//静态条件
 	protected String test;												//判断条件
-
 	public Object clone() throws CloneNotSupportedException{
 		BasicCondition clone = (BasicCondition)super.clone();
 		if(null != runValues){
@@ -135,5 +137,8 @@ public abstract class BasicCondition implements Condition{
 	public String getTest() {
 		return test;
 	}
-
+	@Override
+	public Map<String,Object> getRunValuesMap(){
+		return runValuesMap;
+	}
 }
