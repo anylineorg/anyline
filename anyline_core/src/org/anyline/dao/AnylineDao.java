@@ -128,12 +128,12 @@ public interface AnylineDao{
 	 */
 	public List<Object> executeProcedure(DataSource ds, Procedure procedure);
 	public List<Object> executeProcedure(Procedure procedure);
-//	/**
-//	 * 根据存储过程查询
-//	 * @param procedure
-//	 * @param inputs
-//	 * @return
-//	 */
+	/**
+	 * 根据存储过程查询
+	 * @param procedure
+	 * @param inputs
+	 * @return
+	 */
 	public DataSet queryProcedure(DataSource ds, Procedure procedure);
 	public DataSet queryProcedure(Procedure procedure);
 	public int delete(DataSource ds, String dest, Object data, String ... columns);
