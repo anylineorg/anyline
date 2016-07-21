@@ -234,7 +234,14 @@ public interface AnylineService{
 	public DataSet queryProcedure(DataSource ds, Procedure procedure);
 	public DataSet queryProcedure(Procedure procedure);
 	
-
+	/**
+	 * 删除 根据columns指定的列删除, 未指明columns的 根据主键删除
+	 * @param ds
+	 * @param dest
+	 * @param data
+	 * @param columns
+	 * @return
+	 */
 	public int delete(DataSource ds, String dest, Object data,  String ... columns);
 	public int delete(DataSource ds, Object data, String ... columns);
 	public int delete(String dest, Object data, String ... columns);
