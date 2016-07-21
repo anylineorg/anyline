@@ -23,6 +23,7 @@ package org.anyline.config.db.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Table;
@@ -100,6 +101,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return run;
 	}
 	@Override
+	public RunSQL createDeleteRunSQL(String table, String key, Object values){
+		return createDeleteRunSQLFromTable(table, key, values);
+	}
+	@Override
 	public RunSQL createDeleteRunSQL(String dest, Object obj, String ... columns){
 		if(null == obj){
 			return null;
@@ -112,6 +117,40 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			run = createDeleteRunSQLFromDataRow(dest, (DataRow)obj, columns);
 		}else if(obj instanceof BasicEntity){
 			run = createDeleteRunSQLFromEntity(dest, (BasicEntity)obj, columns);
+		}
+		return run;
+	}
+	private RunSQL createDeleteRunSQLFromTable(String table, String key, Object values){
+		if(null == table || null == key || null == values){
+			return null;
+		}
+		TableRunSQLImpl run = new TableRunSQLImpl();
+		StringBuilder builder = run.getBuilder();
+		builder.append("DELETE FROM ").append(table).append(" WHERE ");
+		if(values instanceof Collection){
+			Collection cons = (Collection)values;
+			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			if(cons.size() >1){
+				builder.append(" IN(");
+				int idx = 0;
+				for(Object obj:cons){
+					if(idx > 0){
+						builder.append(",");
+					}
+					builder.append("'").append(obj).append("'");
+					idx ++;
+				}
+				builder.append(")");
+			}else{
+				for(Object obj:cons){
+					builder.append("=?");
+					run.addValue(obj);
+				}
+			}
+		}else{
+			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			builder.append("=?");
+			run.addValue(values);
 		}
 		return run;
 	}
