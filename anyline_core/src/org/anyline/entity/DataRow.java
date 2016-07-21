@@ -20,7 +20,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,7 +32,6 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -166,6 +165,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @param primary
 	 */
 	public DataRow addPrimaryKey(String ... primaryKeys){
+		if(null != primaryKeys){
+			List<String> list = new ArrayList<String>();
+			for(String pk:primaryKeys){
+				list.add(pk);
+			}
+			return addPrimaryKey(list);
+		}
+		return this;
+	}
+	public DataRow addPrimaryKey(Collection<String> primaryKeys){
 		if(BasicUtil.isEmpty(primaryKeys)){
 			return this;
 		}
@@ -196,6 +205,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @param primary
 	 */
 	public DataRow setPrimaryKey(String ... primaryKeys){
+		if(null != primaryKeys){
+			List<String> list = new ArrayList<String>();
+			for(String pk:primaryKeys){
+				list.add(pk);
+			}
+			return setPrimaryKey(list);
+		}
+		return this;
+	}
+	public DataRow setPrimaryKey(Collection<String> primaryKeys){
 		if(BasicUtil.isEmpty(primaryKeys)){
 			return this;
 		}
