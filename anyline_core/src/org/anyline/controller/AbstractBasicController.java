@@ -293,8 +293,8 @@ public class AbstractBasicController{
 		return getParams(key, keyEncrypt, valueEncrypt);
 	}
 	
-	protected List<Object> getParams(HttpServletRequest request, String key, boolean keyEncrypt) {
-		return getParams(request, key, keyEncrypt, false);
+	protected List<Object> getParams(HttpServletRequest request, String key, boolean valueEncrypt) {
+		return getParams(request, key, false, valueEncrypt);
 	}
 	protected List<Object> getParams(HttpServletRequest request, String key) {
 		return getParams(request,key, false, false);
