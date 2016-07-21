@@ -146,4 +146,4 @@ function fnParam(){
 <des:a href="/test/index.do?id=1">加密URL(id=1)</des:a>
 <des:a href="/test/index.do?member=1">加密URL(member=1)</des:a>
 </div>
-<al:text data="${set }" textKey="MMB_NAME" valueKey="MMB_ID" value="0"/>=============
+<al:text data="${set}" textKey="MMB_NAME" valueKey="MMB_ID" value="0"/>

@@ -26,11 +26,12 @@ public class TestController extends BasicController {
 	@RequestMapping("index")
 	public ModelAndView index(HttpServletRequest request, HttpServletResponse response){
 		ModelAndView mv = template("index.jsp");
-//		DataSet set = service.query("members", parseConfig(true));
+		service.query("web.pc.test:GET_MEMBERS","TID.foo:10");
+		DataSet set = service.query("members", parseConfig(true));
 //		set = service.query("members", parseConfig(true, "+mmb_id:%id++:member++"));
-//		mv.addObject("set", set);
+		mv.addObject("set", set);
 		
-		return null;
+		return mv;
 	}
 	@RequestMapping("ajax")
 	@ResponseBody
@@ -72,7 +73,7 @@ public class TestController extends BasicController {
 		//query返回DataSet 相当于一个表一个集合
 		//queryRow返回DataRow 相当于一行 一个Map
 		//queryRow的结果一定要判断是否为空再调用其方法
-		//所有的查询数据,在Map中 key以大写形式保存
+		//所有的查询数据,在DataRow中 key以大写形式保存
 		
 		
 		//SELECT * FROM MEMBERS
@@ -144,6 +145,7 @@ public class TestController extends BasicController {
 		//naviContainer:分页下标显示的容器的id 
 		//callback:回调成功后执行的函数 指定callback后将默认不显示分页数据与下标 只有在callback逻辑比较复杂时才需要
 		//after:分页数据显示或或callback执行完后执行after
+		//intime:false 分页请求默认在页面加载完成后发出.
 		//重新请求分页数据需要调用_navi_init(_anyline_navi_conf_0)
 		//后台通过navi(request, response, set,"分页样式文件");返回数据
 //		navi标签的属性
@@ -181,13 +183,17 @@ public class TestController extends BasicController {
 		
 		//指定列名(系统实现基本功能后需要完善SQL,特别是对于列数较多的表或视图)
 		//多个列名以,分隔
+		
 		service.query("members(mmb_id,mmb_name)", parseConfig(true));
 		service.query("members(mmb_id as id, mmb_name as name)", parseConfig(true));
+		service.query("members(distinct mmb_id as id, mmb_name as name)", parseConfig(true));
 		service.queryRow("members(max(mmb_id) as max_id)");
 		service.queryRow("members(avg(mmb_age) as avg_age)");
 		//对于有,的函数为避免解析器误解需要以{}形式传入{}中的参数将作为一整列拼入SQL
 		service.query("members(mmb_id, {convert(int,mmb_sex) as sex})", parseConfig(true));
 
+		
+		
 		//插入
 		DataRow member = new DataRow("members");
 		member.addPrimaryKey("mmb_id");
@@ -215,13 +221,38 @@ public class TestController extends BasicController {
 		//执行insert save upate时,表名与query不一致的情况
 		//如从视图中查询出数据,修改后保存到表中
 		member = service.queryRow("uv_members", "mmb_id:1");
-		member.addPrimaryKey("mmb_id");
+		member.addPrimaryKey("mmb_id");		//设置主键
 		member.put("mmb_name", "ljs");
 		member.put("update_time", "{now()}");
-		service.update("members", member, "mmb_name","update_time");
+		service.update("members", member, "mmb_name","update_time");	//只更新指定的两列 数据由uv_members视图中查出,但更新到mebmers表中
+		
+		//执行更新操作时会根据指定的主键生成where条件
+		//DataRow中批定主键
+		member.setPrimaryKey("mmb_id","mmb_name");		//设置主键
+		member.addPrimaryKey("mmb_age");				//在原主键基础上增加新主键, 执行后member共有3个主键
+		
+		member = new DataRow();
+		member.put("mmb_id", "1", true);			//设置属性值,同时设置这一列为主键
+		member.put("mmb_name", "zhang", true);		//mmb_name 代替mmb_id成为主键(mmb_id的值不受影响)
+		member.put("mmb_age", "20", true, false);	//第一个true表示设置mmb_age为主键,最后一个false表示不代替mmb_name,而是在原主键基础上增加新主键,执行后member有两个主键mmb_name,mmb_age 
 		
 		
 		
+//		 * save insert区别
+//		 * 操作单个对象时没有区别
+//		 * 在操作集合时区别:
+//		 * save会循环操作数据库每次都会判断insert|update
+//		 * save 集合中的数据可以是不同的表不同的结构 
+//		 * insert 集合中的数据必须保存到相同的表,结构必须相同
+//		 * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势
+		
+		
+		
+		
+		//删除
+		service.delete(member);//根据主键删除
+		service.delete(member, "mmb_id");	//根据mmb_id删除,忽略主键
+		service.delete("member", member, "mmb_id");	//从member表中删除
 		
 		
 		//原生 SQL 特殊情况下才需要执行原生SQL
@@ -255,7 +286,7 @@ public class TestController extends BasicController {
 			
 			
 			缓存中取出的数据不要再执行加密,否则会造成多重加密效果
-			需要加密显示的在jsp中通过<al:des/>或<des:--/>标签实现
+			需要加密显示的在jsp中通过<al:des/>或<des:/>标签实现
 		 */
 		if(CacheUtil.start("CACHE_REFLUSH_PERIOD_OPTION")){
 			//数据操作
@@ -295,12 +326,21 @@ public class TestController extends BasicController {
 					<condition id="DATE">
 					 mmb_RegisterTime >= :FR
 					</condition>
-					<condition id="MMB_ID">
+					<!-- test=true时 当前条件生效-->
+					<condition id="AGE" static="true" test="var>10">
+						AGE > 18
+					</condition>
+					<!-- test=true 并且 MMB_ID  非空时 当前条件有效 -->
+					<condition id="MMB_ID" test="var>10">
 					 MMB_ID = ?
 					</condition>
+					<!--parseConfig("MGR_ID:[mgr]")-->
+					<!--parseConfig("MGR_ID:[mgr:mgrId]")-->
+					<!--parseConfig("MGR_ID:[mgr:{[1,2,3]}]")-->
 					<condition id="MGR_ID">
 					 	MGR_ID IN(:MGR_ID)
 					</condition>
+					
 					<condition id="BCM_ID">
 					 	BCM_ID IN(:BCM_ID)
 					</condition>
@@ -313,20 +353,33 @@ public class TestController extends BasicController {
 		list.add("1");
 		list.add("2");
 		service.query("web.pc.test:GET_MEMBERS","MGR_ID:[1,2]");
+		service.query("web.pc.test:GET_MEMBERS","MGR_ID:[1,2]","AGE.var:11");
+		service.query("web.pc.test:GET_MEMBERS", parseConfig("AGE.var:age"));
 		service.query("web.pc.test:GET_MEMBERS", parseConfig("MGR_ID:[mgr]"));
 		service.query("web.pc.test:GET_MEMBERS", parseConfig().addConditions("MGR_ID", "[11,22]"));
 		service.query("web.pc.test:GET_MEMBERS", parseConfig().addConditions("MGR_ID", list));
-		service.query("web.pc.test:GET_MEMBERS", parseConfig("MGR_ID:[mgf:{[1,2,3]}]"));
+		service.query("web.pc.test:GET_MEMBERS", parseConfig("MGR_ID:[mgr:{[1,2,3]}]"));
+		service.query("web.pc.test:GET_MEMBERS", parseConfig("MGR_ID:[mgr0:{[1,2,3]}]"));
 		//为什么 parseConfig中需要{}
 		//因为默认情况parseConfig需要从request中取值:后表示http.key
+		//注意condition中的static 与test
+		//static:条件中没有需要解析的变量
+		//test:一个OGNL表达式 结果为false时 当前条件无效 赋值与其他变更相同 "AGE.var:10"
 		
 		
+		//异步
+		//public int save(boolean sync, String dest, Object data, boolean checkPriamry, String ... columns);
+		service.save(true, "members", member);
+		//当svae或insert,update方法耗时过长时,将影响主线程影响速度
+		//sync=true时save方法将开启新的子线程执行,以保证主线程的影响速度
+		//注意开启过多的子线程占用资源的问题,
+		//只是针对执行耗时过长的操作,并不适用于执行频繁的操作(考虑使用缓存或消息列表)
 		
+		//批量插入(异步)
+		//public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
+		//在需要大量插入操作,并不需要返回执行结果时,可以通过批量插入,批量操作并不实时执行,会先将数据放入池中,在了线程中执行统一操作
 		
-		
-		
-		
-		
+
 		
 		//set的几个方法
 		set.getRow(0);
@@ -452,7 +505,7 @@ public class TestController extends BasicController {
 		
 		
 		
-		//{}表示的原生值(不需要解析)的情况:查询条件,默认值,更新值
+		//{}表示的原生值(不需要解析)的情况:查询列,查询条件,默认值,更新值
 		//数组用[]表示[1,2,3] CD:[cd]
 		//查询条件拼接顺序先拼接query参数再拼接parseConfig()参数 注意拼接顺序与执行顺序是相反的(根据数据库不同)
 		
@@ -462,7 +515,157 @@ public class TestController extends BasicController {
 //		nvl:取第一个 != null 的值 nvl认为""符合条件
 //		evl:取第一个 != null 并 != ""的值  evl认为""不符合条件
 //		nvl有可能取出"" evl不会取出"" 并且evl内在判断value之前执行的了trim操作
+		
+
 		return success(set);
 	}
-
+//	public DataSet query(String src, ConfigStore configs, String ... conditions);
+//	public DataSet query(String src, String ... conditions);
+//	public DataSet query(String src, int fr, int to, String ... conditions);
+//	/**
+//	 * 
+//	 * @param ds
+//	 * @param cache	对应ehcache缓存配置文件 中的cache.name
+//	 * @param src
+//	 * @param configs
+//	 * @param conditions
+//	 * @return
+//	 */
+//	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions);
+//	public DataSet cache(String cache, String src, String ... conditions);
+//	public DataSet cache(String cache, String src, int fr, int to, String ... conditions);
+//
+//	
+//	public <T> List<T> query(Class<T> clazz, int fr, int to, String ... conditions);
+//	public <T> List<T> query(Class<T> clazz, ConfigStore configs, String ... conditions);
+//	public <T> List<T> query(Class<T> clazz, String ... conditions);
+//
+//	public DataRow queryRow(String src, ConfigStore configs, String ... conditions);
+//	public DataRow queryRow(String src, String ... conditions);
+//	
+//	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions);
+//	public DataRow cacheRow(String cache, String src, String ... conditions);
+//
+//	/**
+//	 * 删除缓存 参数保持与查询参数完全一致
+//	 * @param cache
+//	 * @param src
+//	 * @param configs
+//	 * @param conditions
+//	 * @return
+//	 */
+//	public boolean removeCache(String cache, String src, ConfigStore configs, String ... conditions);
+//	public boolean removeCache(String cache, String src, String ... conditions);
+//	public boolean removeCache(String cache, String src, int fr, int to, String ... conditions);
+//	/**
+//	 * 清空缓存
+//	 * @param cache
+//	 * @return
+//	 */
+//	public boolean clearCache(String cache);
+//	
+//	public <T> T queryEntity(Class<T> clazz, ConfigStore configs, String ... conditions);
+//	public <T> T queryEntity(Class<T> clazz, String ... conditions);
+//	/**
+//	 * 是否存在
+//	 * @param src
+//	 * @param configs
+//	 * @param conditions
+//	 * @return
+//	 */
+//	public boolean exists(String src, ConfigStore configs, String ... conditions);
+//	public boolean exists(String src, String ... conditions);
+//	public boolean exists(String src, DataRow row);
+//	public boolean exists(DataRow row);
+//	
+//	public int count(String src, ConfigStore configs, String ... conditions);
+//	public int count(String src, String ... conditions);
+//	
+//	
+//	
+//	/**
+//	 * 更新记录
+//	 * @param row		
+//	 * 			需要更新的数据
+//	 * @param columns	
+//	 * 			需要更新的列
+//	 * @param dest	
+//	 * 			表
+//	 * @return
+//	 */
+//	public int update(String dest, Object data, String ... columns);
+//	public int update(Object data, String ... columns);
+//	
+//	public int update(boolean sync, String dest, Object data, String ... columns);
+//	public int update(boolean sync, Object data, String ... columns);
+//	/**
+//	 * 保存(insert|update)
+//	 * @param data
+//	 * @param checkPriamry
+//	 * @param columns
+//	 * @param dest 表
+//	 * @return
+//	 */
+//	public int save(String dest, Object data, boolean checkPriamry, String ... columns);
+//	public int save(Object data, boolean checkPriamry, String ... columns);
+//	public int save(String dest, Object data, String ... columns);
+//	public int save(Object data, String ... columns);
+////
+//	public int save(boolean sync, String dest, Object data, boolean checkPriamry, String ... columns);
+//	public int save(boolean sync, Object data, boolean checkPriamry, String ... columns);
+//	public int save(boolean sync, String dest, Object data, String ... columns);
+//	public int save(boolean sync, Object data, String ... columns);
+//
+//
+//	public int insert(String dest, Object data, boolean checkPriamry, String ... columns);
+//	public int insert(Object data, boolean checkPriamry, String ... columns);
+//	public int insert(String dest, Object data, String ... columns);
+//	public int insert(Object data, String ... columns);
+//
+//
+//	public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
+//	public int batchInsert(Object data, boolean checkPriamry, String ... columns);
+//	public int batchInsert(String dest, Object data, String ... columns);
+//	public int batchInsert(Object data, String ... columns);
+//	/**
+//	 * save insert区别
+//	 * 操作单个对象时没有区别
+//	 * 在操作集合时区别:
+//	 * save会循环操作数据库每次都会判断insert|update
+//	 * save 集合中的数据可以是不同的表不同的结构 
+//	 * insert 集合中的数据必须保存到相同的表,结构必须相同
+//	 * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势
+//	 * 
+//	 */
+//	
+//	/**
+//	 * 执行
+//	 * @param src
+//	 * @param configs
+//	 * @param conditions
+//	 * @return
+//	 */
+//	public int execute(String src, ConfigStore configs, String ... conditions);
+//	public int execute(String src, String ... conditions);
+//	/**
+//	 * 执行存储过程
+//	 * @param procedure
+//	 * @param inputs
+//	 * @param outputs
+//	 * @return
+//	 */
+//	public List<Object> executeProcedure(String procedure, String... inputs);
+//	public List<Object> executeProcedure(Procedure procedure);
+//	/**
+//	 * 根据存储过程查询
+//	 * @param procedure
+//	 * @param inputs
+//	 * @return
+//	 */
+//	public DataSet queryProcedure(String procedure, String ... inputs);
+//	public DataSet queryProcedure(Procedure procedure);
+//	
+//
+//	public int delete(String dest, Object data, String ... columns);
+//	public int delete(Object data,  String ... columns);
 }
