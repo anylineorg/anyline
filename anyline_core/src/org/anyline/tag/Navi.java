@@ -57,12 +57,13 @@ public class Navi extends BodyTagSupport{
 				flag = idx+"";
 			}
 
+			String confId = CONFIG_FLAG_KEY + flag;
+			builder.append("<div id='_navi_border_"+confId+"'>");
 			if(idx == 0){
 				builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
 				builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
 			}
 			builder.append("<script>\n");
-			String confId = CONFIG_FLAG_KEY + flag;
 			builder.append("var " + confId + " = {");
 			builder.append(CONFIG_FLAG_KEY).append(":'").append(flag).append("',");
 			if(BasicUtil.isNotEmpty(url)){
@@ -95,11 +96,12 @@ public class Navi extends BodyTagSupport{
 			builder.append("type:'ajax'");
 			builder.append("};\n");
 			if(intime){
-				builder.append("_navi_init("+confId+");\n");
+				builder.append("$('#_navi_border_"+confId+"').ready(function(){_navi_init("+confId+");});");
 			}else{
 				builder.append("$(function(){_navi_init("+confId+");});\n");
 			}
 			builder.append("</script>");
+			builder.append("</div>");
 			idx ++;
 			pageContext.getRequest().setAttribute("_anyline_navi_tag_idx", idx + "");
 			JspWriter out = pageContext.getOut();
