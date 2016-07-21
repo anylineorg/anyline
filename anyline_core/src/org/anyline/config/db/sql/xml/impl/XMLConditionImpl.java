@@ -70,12 +70,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX);
 		if(!isStatic){
 			parseText();
+		}else{
+			setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE);
 		}
-	}
-	public XMLConditionImpl(String text){
-		this.text = " AND " + text;
-		this.active = true;
-		setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE);
 	}
 	public void init(){
 		setActive(false);
@@ -92,6 +89,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 	 * @param values
 	 */
 	public void setValue(String variable, Object values){
+		runValuesMap.put(variable, values);
 		if(null == variable || null == variables){
 			return;
 		}
@@ -107,7 +105,6 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				break;
 			}
 		}
-		runValuesMap.put(variable, values);
 	}
 
 	/**
