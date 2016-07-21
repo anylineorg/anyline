@@ -248,8 +248,8 @@ public interface AnylineService{
 	public int delete(String dest, Object data, String ... columns);
 	public int delete(Object data,  String ... columns);
 	
-	public int deleteTable(DataSource ds, String table, String key, Collection<Object> values);
-	public int deleteTable(String table, String key, Collection<Object> values);
-	public int deleteTable(DataSource ds, String table, String key, String ... values);
-	public int deleteTable(String table, String key, String ... values);
+	public int delete(DataSource ds, String table, String key, Collection<Object> values);
+	public int delete(String table, String key, Collection<Object> values);
+	public int delete(DataSource ds, String table, String key, String ... values);
+	public int delete(String table, String key, String ... values);
 }

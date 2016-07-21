@@ -1001,17 +1001,17 @@ public class AnylineServiceImpl implements AnylineService {
 		return dao.delete(ds, dest, row, columns);
 	}
 	
-	public int deleteTable(DataSource ds, String table, String key, Collection<Object> values){
-		return dao.deleteTable(ds, table, key, values);
+	public int delete(DataSource ds, String table, String key, Collection<Object> values){
+		return dao.delete(ds, table, key, values);
 	}
-	public int deleteTable(String table, String key, Collection<Object> values){
-		return deleteTable(null, table, key, values);
+	public int delete(String table, String key, Collection<Object> values){
+		return delete(null, table, key, values);
 	}
 	
-	public int deleteTable(DataSource ds, String table, String key, String ... values){
-		return dao.deleteTable(ds, table, key, values);
+	public int delete(DataSource ds, String table, String key, String ... values){
+		return dao.delete(ds, table, key, values);
 	}
-	public int deleteTable(String table, String key, String ... values){
-		return deleteTable(null, table, key, values);
+	public int delete(String table, String key, String ... values){
+		return delete(null, table, key, values);
 	}
 }
