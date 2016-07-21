@@ -951,19 +951,19 @@ public class AnylineServiceImpl implements AnylineService {
 		return execute(null, src, null, conditions);
 	}
 	@Override
-	public int delete(DataSource ds, String dest, Object data, String... columns) {
+	public int delete(DataSource ds, String dest, Object data) {
 		if (null == data) {
 			return 0;
 		}
 		if (data instanceof DataRow) {
-			return deleteRow(ds, dest, (DataRow) data, columns);
+			return deleteRow(ds, dest, (DataRow) data);
 		}
 		if (data instanceof DataSet) {
 			DataSet set = (DataSet) data;
 			int cnt = 0;
 			int size = set.size();
 			for (int i = 0; i < size; i++) {
-				cnt += deleteRow(ds, dest, set.getRow(i), columns);
+				cnt += deleteRow(ds, dest, set.getRow(i));
 			}
 			return cnt;
 		}
@@ -971,26 +971,26 @@ public class AnylineServiceImpl implements AnylineService {
 			Collection datas = (Collection) data;
 			int cnt = 0;
 			for (Object obj : datas) {
-				cnt += delete(ds, dest, obj, columns);
+				cnt += delete(ds, dest, obj);
 			}
 			return cnt;
 		}
-		return deleteObject(ds, dest, data, columns);
+		return deleteObject(ds, dest, data);
 	}
 
 	@Override
-	public int delete(DataSource ds, Object data, String... columns) {
-		return delete(ds, null, data, columns);
+	public int delete(DataSource ds, Object data) {
+		return delete(ds, null, data);
 	}
 
 	@Override
-	public int delete(String dest, Object data, String... columns) {
-		return delete(null, dest, data, columns);
+	public int delete(String dest, Object data) {
+		return delete(null, dest, data);
 	}
 
 	@Override
-	public int delete(Object data, String... columns) {
-		return delete(null, null, data, columns);
+	public int delete(Object data) {
+		return delete(null, null, data);
 	}
 
 	private int deleteObject(DataSource ds, String dest, Object data, String... columns) {
