@@ -524,9 +524,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		List<Object> values = new ArrayList<Object>();
 		/*确定需要更新的列*/
 		List<String> keys = confirmUpdateColumns(dest, row, columns);
-		String primaryKey = row.getPrimaryKey();
+		List<String> primaryKeys = row.getPrimaryKeys();
 		/*不更新主键*/
-		keys.remove(primaryKey);
+		for(String pk:primaryKeys){
+			keys.remove(pk);
+		}
 		if(BasicUtil.isEmpty(true,keys)){
 			throw new SQLException("未指定更新列");
 		}
@@ -555,8 +557,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		sql.append(SQLCreater.BR);
 		sql.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
-			sql.append(" AND ").append(getDisKeyFr()).append(primaryKey).append(getDisKeyTo()).append(" = ?");
-			values.add(row.getPrimaryValue());
+		for(String pk:primaryKeys){
+			sql.append(" AND ").append(getDisKeyFr()).append(pk).append(getDisKeyTo()).append(" = ?");
+			values.add(row.get(pk));
+		}
 		run.setBuilder(sql);
 		run.addValues(values);
 		return run;
