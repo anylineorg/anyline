@@ -1000,5 +1000,18 @@ public class AnylineServiceImpl implements AnylineService {
 	private int deleteRow(DataSource ds, String dest, DataRow row, String... columns) {
 		return dao.delete(ds, dest, row, columns);
 	}
-
+	
+	public int deleteTable(DataSource ds, String table, String key, Collection<Object> values){
+		return dao.deleteTable(ds, table, key, values);
+	}
+	public int deleteTable(String table, String key, Collection<Object> values){
+		return deleteTable(null, table, key, values);
+	}
+	
+	public int deleteTable(DataSource ds, String table, String key, String ... values){
+		return dao.deleteTable(ds, table, key, values);
+	}
+	public int deleteTable(String table, String key, String ... values){
+		return deleteTable(null, table, key, values);
+	}
 }

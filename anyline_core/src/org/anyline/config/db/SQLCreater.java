@@ -41,7 +41,7 @@ public interface SQLCreater extends Serializable{
 	public RunSQL createQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions);
 	
 	public RunSQL createDeleteRunSQL(String dest, Object obj, String ... columns);
-	
+	public RunSQL createDeleteRunSQL(String table, String key, Object values);
 	public RunSQL createExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions);
 	
 	public String parseBaseQueryTxt(RunSQL run);

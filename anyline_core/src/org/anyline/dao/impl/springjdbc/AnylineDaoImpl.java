@@ -763,9 +763,35 @@ public class AnylineDaoImpl implements AnylineDao {
 		return queryProcedure(null, procedure);
 	}
 
+	public int deleteTable(DataSource ds, String table, String key, Collection<Object> values){
+		RunSQL run = creater.createDeleteRunSQL(table, key, values);
+		int result = exeDelete(run);
+		return result;
+	}
+	public int deleteTable(String table, String key, Collection<Object> values){
+		return deleteTable(null, table, key, values);
+	}
+	public int deleteTable(DataSource ds, String table, String key, String ... values){
+		List<String> list = new ArrayList<String>();
+		if(null != values){
+			for(String value:values){
+				list.add(value);
+			}
+		}
+		RunSQL run = creater.createDeleteRunSQL(table, key, list);
+		int result = exeDelete(run);
+		return result;
+	}
+	public int deleteTable(String table, String key, String ... values){
+		return deleteTable(null, table, key, values);
+	}
 	@Override
 	public int delete(DataSource ds, String dest, Object data, String... columns) {
 		RunSQL run = creater.createDeleteRunSQL(dest, data, columns);
+		int result = exeDelete(run);
+		return result;
+	}
+	private int exeDelete(RunSQL run){
 		int result = 0;
 		final String sql = run.getDeleteTxt();
 		final List<Object> values = run.getValues();
@@ -783,8 +809,10 @@ public class AnylineDaoImpl implements AnylineDao {
 	                {
 	                    PreparedStatement ps = jdbc.getDataSource().getConnection().prepareStatement(sql);
 	                    int idx = 0;
-	                    for(Object obj:values){
-	                    	ps.setObject(++idx, obj);
+	                    if(null != values){
+		                    for(Object obj:values){
+		                    	ps.setObject(++idx, obj);
+		                    }
 	                    }
 	                    return ps;
 	                }
@@ -793,7 +821,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				LOG.warn(random + "[执行耗时:"+(System.currentTimeMillis()-fr)+"ms][影响行数:"+result + "]");
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			LOG.error("删除异常:"+e);
 			if(showSQLWhenError){
 				LOG.error(random + "[异常TXT:\n"+sql + "]");
 				LOG.error(random + "[异常参数:"+values + "]");
