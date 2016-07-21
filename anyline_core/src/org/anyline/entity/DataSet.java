@@ -66,7 +66,16 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * 
 	 * @param parmary
 	 */
-	public void addPrimary(String... pks) {
+	public void addPrimary(String ... pks){
+		if(null != pks){
+			List<String> list = new ArrayList<String>();
+			for(String pk:pks){
+				list.add(pk);
+			}
+			addPrimary(list);
+		}
+	}
+	public void addPrimary(Collection<String> pks) {
 		if (null == this.primaryKeys) {
 			this.primaryKeys = new ArrayList<String>();
 		}
@@ -91,7 +100,16 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * 
 	 * @param primary
 	 */
-	public void setPrimary(String... pks) {
+	public void setPrimary(String ... pks){
+		if(null != pks){
+			List<String> list = new ArrayList<String>();
+			for(String pk:pks){
+				list.add(pk);
+			}
+			setPrimary(list);
+		}
+	}
+	public void setPrimary(Collection<String> pks) {
 		if (null == pks) {
 			return;
 		}
