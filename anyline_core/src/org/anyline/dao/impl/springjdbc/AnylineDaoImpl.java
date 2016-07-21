@@ -763,15 +763,15 @@ public class AnylineDaoImpl implements AnylineDao {
 		return queryProcedure(null, procedure);
 	}
 
-	public int deleteTable(DataSource ds, String table, String key, Collection<Object> values){
+	public int delete(DataSource ds, String table, String key, Collection<Object> values){
 		RunSQL run = creater.createDeleteRunSQL(table, key, values);
 		int result = exeDelete(run);
 		return result;
 	}
-	public int deleteTable(String table, String key, Collection<Object> values){
-		return deleteTable(null, table, key, values);
+	public int delete(String table, String key, Collection<Object> values){
+		return delete(null, table, key, values);
 	}
-	public int deleteTable(DataSource ds, String table, String key, String ... values){
+	public int delete(DataSource ds, String table, String key, String ... values){
 		List<String> list = new ArrayList<String>();
 		if(null != values){
 			for(String value:values){
@@ -782,8 +782,8 @@ public class AnylineDaoImpl implements AnylineDao {
 		int result = exeDelete(run);
 		return result;
 	}
-	public int deleteTable(String table, String key, String ... values){
-		return deleteTable(null, table, key, values);
+	public int delete(String table, String key, String ... values){
+		return delete(null, table, key, values);
 	}
 	@Override
 	public int delete(DataSource ds, String dest, Object data, String... columns) {
