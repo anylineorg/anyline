@@ -272,15 +272,27 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != conditionChain){
 			for(Condition con:conditionChain.getConditions()){
 				String test = con.getTest();
+
 				if(null != test){
 					Map<String,Object> map = con.getRunValuesMap();
 					try {
 						Boolean result = (Boolean) Ognl.getValue(test,map);
 						if(!result){
 							con.setActive(false);
+						}else{
+							if(con.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE){
+								con.setActive(true);
+								conditionChain.setActive(true);
+							}
 						}
 					} catch (OgnlException e) {
 						e.printStackTrace();
+					}
+				}else{
+					//无test条件
+					if(con.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE){
+						con.setActive(true);
+						conditionChain.setActive(true);
 					}
 				}
 			}

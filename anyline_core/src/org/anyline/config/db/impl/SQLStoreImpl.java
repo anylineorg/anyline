@@ -126,6 +126,9 @@ public class SQLStoreImpl extends SQLStore{
 			condition = new XMLConditionImpl(id, text, isStatic);
 			String test = element.attributeValue("test");
 			condition.setTest(test);
+			if(null != sql){
+				sql.addCondition(condition);
+			}
 		}else{
 			String ref = element.attributeValue("ref");
 			if(null != ref && null != sql && null != map){
