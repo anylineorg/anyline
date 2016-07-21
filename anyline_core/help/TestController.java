@@ -30,7 +30,8 @@ public class TestController extends BasicController {
 		DataSet set = service.query("members", parseConfig(true));
 //		set = service.query("members", parseConfig(true, "+mmb_id:%id++:member++"));
 		mv.addObject("set", set);
-		
+		List<Object> ps = getParams("id",false);
+		service.deleteTable("members", "mmb_id", "1");
 		return mv;
 	}
 	@RequestMapping("ajax")
@@ -38,6 +39,7 @@ public class TestController extends BasicController {
 	public String ajax(HttpServletRequest request, HttpServletResponse response){
 		DataSet set = service.query("members", parseConfig(true));
 		String id = getParam("id");
+		List<Object> ids = getParams("id", true);
 		if("1".equals(id)){
 			return fail("模拟fail");
 		}
@@ -253,7 +255,8 @@ public class TestController extends BasicController {
 		service.delete(member);//根据主键删除
 		service.delete(member, "mmb_id");	//根据mmb_id删除,忽略主键
 		service.delete("member", member, "mmb_id");	//从member表中删除
-		
+		service.deleteTable("members", "mmb_id", getParams("id"));	//直接根据表与列删除
+		service.deleteTable("members", "mmb_id", "1","2");	//直接根据表与列删除
 		
 		//原生 SQL 特殊情况下才需要执行原生SQL
 		service.query("SELECT * FROM members WHERE mmb_id = 2",parseConfig(true),"mmb_name:ljs");
@@ -379,8 +382,7 @@ public class TestController extends BasicController {
 		//public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
 		//在需要大量插入操作,并不需要返回执行结果时,可以通过批量插入,批量操作并不实时执行,会先将数据放入池中,在了线程中执行统一操作
 		
-
-		
+		 
 		//set的几个方法
 		set.getRow(0);
 		set.getRows("mmb_name:ljs","age:1");				//符合条件的行
