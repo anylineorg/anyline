@@ -95,7 +95,7 @@ public class AnylineServiceImpl implements AnylineService {
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}
-			LOG.error(e);
+			LOG.error("QUERY ERROR:"+e);
 		}
 		return set;
 	}
@@ -597,7 +597,7 @@ public class AnylineServiceImpl implements AnylineService {
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}
-			LOG.error(e);
+			LOG.error("COUNT ERROR:"+e);
 		}
 		return count;
 	}
@@ -898,8 +898,10 @@ public class AnylineServiceImpl implements AnylineService {
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
-			LOG.error(e);
-			e.printStackTrace();
+			LOG.error("QUERY ERROR:"+e);
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 		}
 		return set;
 	}
