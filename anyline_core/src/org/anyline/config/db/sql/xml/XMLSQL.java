@@ -67,10 +67,5 @@ public interface XMLSQL extends SQL{
 	 * 添加分组
 	 * @param builder
 	 */
-	//public void appendGroup(StringBuilder builder);
-	public SQL setDataSource(String ds);
-	public String getDataSource();
-	public String getSchema();
-	
 	public List<SQLVariable> getSQLVariables();
 }
