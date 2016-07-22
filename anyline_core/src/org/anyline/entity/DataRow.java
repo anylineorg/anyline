@@ -48,7 +48,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 
 	private List<String> primaryKeys = new ArrayList<String>();					//主键
 	private String dataSource;							//数据源(表|视图|XML定义SQL)
-	private String author;
+	private String schema;
 	private String table;
 	private Object clientTrace;							//客户端数据
 	private long createTime = 0;
@@ -321,8 +321,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 */
 	public String getDataSource() {
 		String ds = dataSource;
-		if(BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(author)){
-			ds = author + "." + ds;
+		if(BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)){
+			ds = schema + "." + ds;
 		}
 		if(null == ds && null != getContainer()){
 			ds = getContainer().getDataSource();
@@ -345,7 +345,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}else{
 			this.dataSource = dataSource;
 			if(dataSource.contains(".") && !dataSource.contains(":")){
-				author = dataSource.substring(0,dataSource.indexOf("."));
+				schema = dataSource.substring(0,dataSource.indexOf("."));
 				table = dataSource.substring(dataSource.indexOf(".") + 1);
 			}
 		}
@@ -591,20 +591,20 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public void setClientTrace(Object clientTrace) {
 		this.clientTrace = clientTrace;
 	}
-	public String getAuthor() {
-		if(null != author){
-			return author;
+	public String getSchema() {
+		if(null != schema){
+			return schema;
 		}else{
 			DataSet container = getContainer();
 			if(null != container){
-				return container.getAuthor();
+				return container.getSchema();
 			}else{
 				return null;
 			}
 		}
 	}
-	public void setAuthor(String author) {
-		this.author = author;
+	public void setSchema(String schema) {
+		this.schema = schema;
 	}
 	public String getTable() {
 		if(null != table){
@@ -622,7 +622,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != table && table.contains(".")){
 			String[] tbs = table.split("\\.");
 			this.table = tbs[1];
-			this.author = tbs[0];
+			this.schema = tbs[0];
 		}else{
 			this.table = table;
 		}
@@ -651,7 +651,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		row.container = this.container;
 		row.primaryKeys = this.primaryKeys;
 		row.dataSource = this.dataSource;
-		row.author = this.author;
+		row.schema = this.schema;
 		row.table = this.table;
 		row.clientTrace = this.clientTrace;
 		row.createTime = this.createTime;

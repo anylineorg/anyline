@@ -74,7 +74,7 @@ public interface SQL extends Cloneable,Serializable {
 	 */
 	public SQL setDataSource(String ds);
 	public String getDataSource();
-	public String getAuthor();
+	public String getSchema();
 	public String getTable();
 	/**
 	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖

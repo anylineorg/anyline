@@ -36,7 +36,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
 
 public class AutoSQLImpl extends BasicSQL implements AutoSQL{
-	protected String author;
+	protected String schema;
 	protected String table;
 	protected List<String> columns;
 	protected String distinct = "";
@@ -187,11 +187,11 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	public String getDataSource(){
 		return table;
 	}
-	public String getAuthor() {
-		return author;
+	public String getSchema() {
+		return schema;
 	}
-	public void setAuthor(String author) {
-		this.author = author;
+	public void setSchema(String schema) {
+		this.schema = schema;
 	}
 	@Override
 	public String getTable() {

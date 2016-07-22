@@ -70,7 +70,7 @@ public interface XMLSQL extends SQL{
 	//public void appendGroup(StringBuilder builder);
 	public SQL setDataSource(String ds);
 	public String getDataSource();
-	public String getAuthor();
+	public String getSchema();
 	
 	public List<SQLVariable> getSQLVariables();
 }

@@ -289,10 +289,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String result = "";
 		if(obj instanceof DataRow){
 			DataRow row = (DataRow)obj;
-			String author = row.getAuthor();
+			String schema = row.getSchema();
 			String table = row.getTable();
-			if(null != author){
-				result = getDisKeyFr() + author +  getDisKeyTo() +".";
+			if(null != schema){
+				result = getDisKeyFr() + schema +  getDisKeyTo() +".";
 			}
 			if(null == table){
 				return null;
