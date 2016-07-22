@@ -76,8 +76,8 @@ public interface AutoSQL extends SQL{
 	 */
 	public void addColumn(String columns);
 	public String getDataSource();
-	public String getAuthor() ;
-	public void setAuthor(String author) ;
+	public String getSchema() ;
+	public void setSchema(String schema) ;
 	public String getTable() ;
 	public void setTable(String table) ;
 	public String getDistinct();

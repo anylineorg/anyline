@@ -361,7 +361,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 	public String getDataSource(){
 		return id ;
 	}
-	public String getAuthor(){
+	public String getSchema(){
 		return null;
 	}
 	@Override

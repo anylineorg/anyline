@@ -115,7 +115,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			set = new DataSet();
 		}
 		set.setDataSource(sql.getDataSource());
-		set.setAuthor(sql.getAuthor());
+		set.setSchema(sql.getSchema());
 		set.setTable(sql.getTable());
 		set.setNavi(navi);
 		return set;
