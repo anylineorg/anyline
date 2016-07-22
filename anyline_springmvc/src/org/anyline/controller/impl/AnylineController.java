@@ -163,14 +163,17 @@ public class AnylineController extends AbstractBasicController {
 		return getParam(getRequest(), key, keyEncrypt, valueEncrypt);
 	}
 
-	protected String getParam(String key, boolean keyEncrypt) {
-		return getParam(getRequest(), key, keyEncrypt, false);
+	protected String getParam(String key, boolean valueEncrypt) {
+		return getParam(getRequest(), key, false, valueEncrypt);
 	}
 
 	protected String getParam(String key) {
 		return getParam(getRequest(), key, false, false);
 	}
 
+	protected List<Object> getParams(String key, boolean keyEncrypt, boolean valueEncrypt) {
+		return getParams(getRequest(), key, keyEncrypt, valueEncrypt);
+	}
 	protected List<Object> getParams(String key, boolean valueEncrypt) {
 		return getParams(getRequest(), key, false, valueEncrypt);
 	}
