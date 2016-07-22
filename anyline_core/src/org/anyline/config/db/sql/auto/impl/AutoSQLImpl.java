@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.anyline.config.ConfigParser;
-
 import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
@@ -33,7 +32,6 @@ import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.BasicSQL;
 import org.anyline.config.db.sql.auto.AutoSQL;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.regular.RegularUtil;
 
 public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	protected String schema;
