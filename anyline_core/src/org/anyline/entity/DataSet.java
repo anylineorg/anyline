@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -42,7 +43,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @SuppressWarnings("serial")
-public class DataSet implements Collection<Object>, Serializable {
+public class DataSet implements Collection<DataRow>, Serializable {
 	protected static Logger log = Logger.getLogger(DataSet.class);
 	private boolean result = true; 		// 执行结果
 	private Exception exception; 			// 异常
@@ -991,7 +992,7 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		for(DataRow row:rows){
 			if(set.contains(row, keys)){
-				result.add(row.clone());
+				result.add((DataRow)row.clone());
 			}
 		}
 		return result;
@@ -1010,7 +1011,7 @@ public class DataSet implements Collection<Object>, Serializable {
 		DataSet result = new DataSet();
 		for(DataRow row:rows){
 			if(null == set || !set.contains(row, keys)){
-				result.add(row.clone());
+				result.add((DataRow)row.clone());
 			}
 		}
 		return result;
@@ -1038,10 +1039,7 @@ public class DataSet implements Collection<Object>, Serializable {
 		return params;
 	}
 	/*********************************************** 实现接口 ************************************************************/
-	public boolean add(Object e) {
-		if(null == e || e instanceof DataRow ){
-			
-		}
+	public boolean add(DataRow e) {
 		return rows.add((DataRow) e);
 	}
 
@@ -1205,7 +1203,74 @@ public class DataSet implements Collection<Object>, Serializable {
 		}
 		return this;
 	}
-	public DataSet order(String key){
+	public DataSet order(final String ... keys){
+		return asc(keys);
+	}
+	public DataSet asc(final String ... keys){
+		Collections.sort(rows, new Comparator<DataRow>() {  
+            public int compare(DataRow r1, DataRow r2) {
+            	int result = 0;
+            	for(String key:keys){
+            		Object v1 = r1.get(key);
+            		Object v2 = r2.get(key);
+            		if(null == v1){
+            			if(null == v2){
+            				continue;
+            			}
+            			return -1;
+            		}else{
+            			if(null == v2){
+            				return 1;
+            			}
+            		}
+            		if(v1 instanceof Number || v2 instanceof Number){
+            			BigDecimal val1 = new BigDecimal(v1.toString());
+            			BigDecimal val2 = new BigDecimal(v2.toString());
+            			result = val1.compareTo(val2);
+            		}else{
+            			result = v1.toString().compareTo(v2.toString());
+            		}
+            		if(result != 0){
+            			return result;
+            		}
+            	}
+            	return 0;
+            }  
+        }); 
+		return this;
+	}
+	public DataSet desc(final String ... keys){
+		Collections.sort(rows, new Comparator<DataRow>() {  
+			public int compare(DataRow r1, DataRow r2) {
+            	int result = 0;
+            	for(String key:keys){
+            		Object v1 = r1.get(key);
+            		Object v2 = r2.get(key);
+            		if(null == v1){
+            			if(null == v2){
+            				continue;
+            			}
+            			return 1;
+            		}else{
+            			if(null == v2){
+            				return -1;
+            			}
+            		}
+            		if(v1 instanceof Number || v2 instanceof Number){
+            			BigDecimal val1 = new BigDecimal(v1.toString());
+            			BigDecimal val2 = new BigDecimal(v2.toString());
+            			result = val2.compareTo(val1);
+            		}else{
+            			result = v2.toString().compareTo(v1.toString());
+            		}
+            		if(result != 0){
+            			return result;
+            		}
+            	}
+            	return 0;
+            } 
+        }); 
 		return this;
 	}
 }
+
