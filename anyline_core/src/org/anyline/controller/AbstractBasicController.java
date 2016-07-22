@@ -599,7 +599,7 @@ public class AbstractBasicController{
 		try{
 			html = WebUtil.parseJsp(request, response, page);
 		}catch(Exception e){
-			e.printStackTrace();
+			LOG.error(e);
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("BODY", BasicUtil.escape(html));

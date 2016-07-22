@@ -149,7 +149,6 @@ public class SQLStoreImpl extends SQLStore{
 			document = reader.read(file);
 		}catch(Exception e){
 			LOG.error(e);
-			LOG.error(e);
 		}
 		return document;
 	}
@@ -172,7 +171,6 @@ public class SQLStoreImpl extends SQLStore{
 			sql = sqls.get(id);
 		}catch(Exception e){
 			LOG.error("[SQL提取失败] [ID:" + id + "]");
-			LOG.error(e);
 		} 
 		return sql;
 	}

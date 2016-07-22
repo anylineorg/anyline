@@ -70,7 +70,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				try{
 					variables.add((SQLVariable)var.clone());
 				}catch(Exception e){
-					
+					LOG.error(e);
 				}
 			}
 		}
@@ -89,7 +89,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					try{
 						this.conditionChain.addCondition((Condition)condition.clone());
 					}catch(Exception e){
-						
+						LOG.error(e);
 					}
 				}
 			}
@@ -286,7 +286,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 							}
 						}
 					} catch (OgnlException e) {
-						e.printStackTrace();
+						LOG.error(e);
 					}
 				}else{
 					//无test条件
