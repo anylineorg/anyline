@@ -43,6 +43,7 @@ import org.anyline.entity.BasicEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.exception.SQLException;
+import org.anyline.exception.SQLUpdateException;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -130,7 +131,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
 			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
-			if(cons.size() >1){
+			if(cons.size() > 1){
 				builder.append(" IN(");
 				int idx = 0;
 				for(Object obj:cons){
@@ -141,11 +142,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					idx ++;
 				}
 				builder.append(")");
-			}else{
+			}else if(cons.size() == 1){
 				for(Object obj:cons){
 					builder.append("=?");
 					run.addValue(obj);
 				}
+			}else{
+				throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
 			}
 		}else{
 			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
@@ -167,13 +170,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			keys = obj.getPrimaryKeys();
 		}
 		int size = keys.size();
-		for(int i=0; i<size; i++){
-			if(i > 0){
-				builder.append(" AND ");
+		if(size >0){
+			for(int i=0; i<size; i++){
+				if(i > 0){
+					builder.append(" AND ");
+				}
+				String key = keys.get(i);
+				builder.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ? ");
+				run.addValue(obj.get(key));
 			}
-			String key = keys.get(i);
-			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ? ");
-			run.addValue(obj.get(key));
+		}else{
+			throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
 		}
 		return run;
 	}
