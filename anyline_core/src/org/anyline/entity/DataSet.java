@@ -450,11 +450,17 @@ public class DataSet implements Collection<Object>, Serializable {
 	 */
 	public DataRow maxRow(String key){
 		List<String> values = getStrings(key);
+		if(null == values || values.size() == 0){
+			return null;
+		}
 		Collections.sort(values);
 		return getRow(key,values.get(values.size()-1));
 	}
 	public DataRow minRow(String key){
 		List<String> values = getStrings(key);
+		if(null == values || values.size() == 0){
+			return null;
+		}
 		Collections.sort(values);
 		return getRow(key,values.get(0));
 	}
