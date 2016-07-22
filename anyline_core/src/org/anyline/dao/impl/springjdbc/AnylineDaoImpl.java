@@ -375,7 +375,7 @@ public class AnylineDaoImpl implements AnylineDao {
 					int id = (int)keyholder.getKey().longValue();
 					setPrimaryValue(data, id);
 				}catch(Exception e){
-					
+					LOG.error(e);
 				}
 			}
 
@@ -459,7 +459,7 @@ public class AnylineDaoImpl implements AnylineDao {
 								}
 							}
 						}catch(Exception e){
-							e.printStackTrace();
+							LOG.error(e);
 						}
 						
 					}
