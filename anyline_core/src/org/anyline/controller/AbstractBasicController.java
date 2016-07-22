@@ -279,8 +279,8 @@ public class AbstractBasicController{
 		return (String) WebUtil.getHttpRequestParam(request, key,keyEncrypt, valueEncrypt);
 	}
 
-	protected String getParam(HttpServletRequest request, String key, boolean keyEncrypt) {
-		return getParam(request,key, keyEncrypt, false);
+	protected String getParam(HttpServletRequest request, String key, boolean valueEncrypt) {
+		return getParam(request,key, false,valueEncrypt);
 	}
 
 	protected String getParam(HttpServletRequest request, String key) {
@@ -288,9 +288,6 @@ public class AbstractBasicController{
 	}
 	protected List<Object> getParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		return WebUtil.getHttpRequestParams(request, key, keyEncrypt, valueEncrypt);
-	}
-	protected List<Object> getParams(String key, boolean keyEncrypt, boolean valueEncrypt) {
-		return getParams(key, keyEncrypt, valueEncrypt);
 	}
 	
 	protected List<Object> getParams(HttpServletRequest request, String key, boolean valueEncrypt) {
