@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -414,40 +415,6 @@ public class DataSet implements Collection<Object>, Serializable {
 		result = max(size(),key);
 		return result;
 	}
-	public DataRow maxRow(String key){
-		DataRow result = null;
-		int size = size();
-		for(int i=0; i<size; i++){
-			DataRow tmp = getRow(i);
-			if(null == result){
-				result = tmp;
-				continue;
-			}
-			BigDecimal tmpVal = tmp.getDecimal(key);
-			BigDecimal resVal = result.getDecimal(key);
-			if(tmpVal != null && resVal != null && tmpVal.compareTo(resVal) > 0){
-				result = tmp;
-			}
-		}
-		return result;
-	}
-	public DataRow minRow(String key){
-		DataRow result = null;
-		int size = size();
-		for(int i=0; i<size; i++){
-			DataRow tmp = getRow(i);
-			if(null == result){
-				result = tmp;
-				continue;
-			}
-			BigDecimal tmpVal = tmp.getDecimal(key);
-			BigDecimal resVal = result.getDecimal(key);
-			if(tmpVal != null && resVal != null && tmpVal.compareTo(resVal) < 0){
-				result = tmp;
-			}
-		}
-		return result;
-	}
 	
 	/**
 	 * 最小值
@@ -475,6 +442,22 @@ public class DataSet implements Collection<Object>, Serializable {
 		return result;
 	}
 
+	/**
+	 * key对应的value最大的一行
+	 * max与 maxRow区别:max只对number类型计算 其他类型异常
+	 * @param key
+	 * @return
+	 */
+	public DataRow maxRow(String key){
+		List<String> values = getStrings(key);
+		Collections.sort(values);
+		return getRow(key,values.get(values.size()-1));
+	}
+	public DataRow minRow(String key){
+		List<String> values = getStrings(key);
+		Collections.sort(values);
+		return getRow(key,values.get(0));
+	}
 	/**
 	 * 平均值 空数据不参与加法但参与除法
 	 * @param top 多少行
@@ -1169,6 +1152,9 @@ public class DataSet implements Collection<Object>, Serializable {
 		for(DataRow row:rows){
 			row.setService(null);
 		}
+		return this;
+	}
+	public DataSet order(String key){
 		return this;
 	}
 }
