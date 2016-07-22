@@ -396,7 +396,7 @@ public class DataSet implements Collection<Object>, Serializable {
 	 * @param key
 	 * @return
 	 */
-	public double max(int top, String key){
+	public BigDecimal maxDecimal(int top, String key){
 		BigDecimal result = new BigDecimal(0);
 		int size = rows.size();
 		if(size>top){
@@ -408,14 +408,15 @@ public class DataSet implements Collection<Object>, Serializable {
 				result = tmp;
 			}
 		}
-		return result.doubleValue();
-	}
-	public double max(String key){
-		double result = 0.0;
-		result = max(size(),key);
 		return result;
 	}
-	
+	public BigDecimal maxDecimal(String key){
+		return maxDecimal(size(),key);
+	}
+	public int maxInt(int top, String key){
+		BigDecimal result = maxDecimal(top, key);
+		return result.intValue();
+	}
 	/**
 	 * 最小值
 	 * @param top 多少行
