@@ -417,13 +417,35 @@ public class DataSet implements Collection<Object>, Serializable {
 		BigDecimal result = maxDecimal(top, key);
 		return result.intValue();
 	}
+	public int maxInt(String key){
+		return maxInt(size(), key);
+	}
+
+	public double maxDouble(int top, String key){
+		BigDecimal result = maxDecimal(top, key);
+		return result.doubleValue();
+	}
+	public double maxDouble(String key){
+		return maxDouble(size(), key);
+	}
+
+	public double max(int top, String key){
+		BigDecimal result = maxDecimal(top, key);
+		return result.doubleValue();
+	}
+	public double max(String key){
+		return maxDouble(size(), key);
+	}
+	
+	
+	
 	/**
 	 * 最小值
 	 * @param top 多少行
 	 * @param key
 	 * @return
 	 */
-	public double min(int top, String key){
+	public BigDecimal minDecimal(int top, String key){
 		BigDecimal result = new BigDecimal(0);
 		int size = rows.size();
 		if(size>top){
@@ -435,14 +457,36 @@ public class DataSet implements Collection<Object>, Serializable {
 				result = tmp;
 			}
 		}
+		return result;
+	}
+	public BigDecimal minDecimal(String key){
+		return minDecimal(size(),key);
+	}
+
+	public int minInt(int top, String key){
+		BigDecimal result = minDecimal(top, key);
+		return result.intValue();
+	}
+	public int minInt(String key){
+		return minInt(size(), key);
+	}
+
+	public double minDouble(int top, String key){
+		BigDecimal result = minDecimal(top, key);
+		return result.doubleValue();
+	}
+	public double minDouble(String key){
+		return minDouble(size(), key);
+	}
+
+	public double min(int top, String key){
+		BigDecimal result = minDecimal(top, key);
 		return result.doubleValue();
 	}
 	public double min(String key){
-		double result = 0.0;
-		result = min(size(),key);
-		return result;
+		return minDouble(size(), key);
 	}
-
+	
 	/**
 	 * key对应的value最大的一行
 	 * max与 maxRow区别:max只对number类型计算 其他类型异常
