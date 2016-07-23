@@ -90,7 +90,7 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(after)){
 				builder.append("after:" ).append(after).append(",");
 			}
-			if(BasicUtil.isNotEmpty(empty)){
+			if(null != empty){
 				builder.append("empty:'" ).append(empty).append("',");
 			}
 			builder.append("type:'ajax'");
