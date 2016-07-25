@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  */
 public class Division extends BodyTagSupport{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(Division.class);
+	private static Logger log = Logger.getLogger(Division.class);
 	private String divisor;		//除数
 	private String dividend;	//被除数
 	private String format;
@@ -55,7 +55,7 @@ public class Division extends BodyTagSupport{
 			}
 			out.print(defaultValue);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

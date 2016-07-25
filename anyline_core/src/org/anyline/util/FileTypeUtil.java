@@ -37,7 +37,7 @@ import javax.imageio.stream.ImageInputStream;
 import org.apache.log4j.Logger;
 
 public class FileTypeUtil {
-	private static Logger LOG = Logger.getLogger(FileTypeUtil.class);
+	private static Logger log = Logger.getLogger(FileTypeUtil.class);
 	public final static Map<String, String> FILE_TYPE_MAP = new HashMap<String, String>();
 
 	private FileTypeUtil() {
@@ -132,9 +132,9 @@ public class FileTypeUtil {
 			filetype = getFileTypeByStream(b);
 			is.close();
 		} catch (FileNotFoundException e) {
-			LOG.error(e);
+			log.error(e);
 		} catch (IOException e) {
-			LOG.error(e);
+			log.error(e);
 		}
 		return filetype;
 	}

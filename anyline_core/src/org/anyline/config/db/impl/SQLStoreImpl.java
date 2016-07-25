@@ -46,7 +46,7 @@ public class SQLStoreImpl extends SQLStore{
 
 	private static SQLStoreImpl instance;
 	private static Hashtable<String,SQL> sqls = new Hashtable<String,SQL>();
-	private static Logger LOG = Logger.getLogger(SQLStoreImpl.class);
+	private static Logger log = Logger.getLogger(SQLStoreImpl.class);
 	private SQLStoreImpl() {}
 	private static String sqlDir;
 	private static long lastLoadTime = 0;
@@ -58,7 +58,7 @@ public class SQLStoreImpl extends SQLStore{
 		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),sqlDir),"xml");
 		for(File file:files){
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("[解析SQL] [FILE:" + file.getAbsolutePath() + "]");
+				log.warn("[解析SQL] [FILE:" + file.getAbsolutePath() + "]");
 			}
 			sqls.putAll(parseSQLFile(file));
 		}
@@ -108,7 +108,7 @@ public class SQLStoreImpl extends SQLStore{
 			sql.group(group);
 			sql.order(order);
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("[解析SQL] [ID:" + sqlId + "]\n[TEXT:" + sqlText + "]");
+				log.warn("[解析SQL] [ID:" + sqlId + "]\n[TEXT:" + sqlText + "]");
 			}
 			result.put(sqlId, sql);
 		}
@@ -148,7 +148,7 @@ public class SQLStoreImpl extends SQLStore{
 			SAXReader reader = new SAXReader();
 			document = reader.read(file);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return document;
 	}
@@ -166,11 +166,11 @@ public class SQLStoreImpl extends SQLStore{
 		}
 		try{
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("[提取SQL] [ID:" + id + "]");
+				log.warn("[提取SQL] [ID:" + id + "]");
 			}
 			sql = sqls.get(id);
 		}catch(Exception e){
-			LOG.error("[SQL提取失败] [ID:" + id + "]");
+			log.error("[SQL提取失败] [ID:" + id + "]");
 		} 
 		return sql;
 	}

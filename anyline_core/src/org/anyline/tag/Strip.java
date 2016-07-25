@@ -34,7 +34,7 @@ import org.anyline.util.regular.RegularUtil;
 
 public class Strip extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(Strip.class);
+	private static Logger log = Logger.getLogger(Strip.class);
 
 	private int length = -1;
 	private String ellipsis="...";
@@ -73,7 +73,7 @@ public class Strip extends BaseBodyTag implements Cloneable{
 			JspWriter out = pageContext.getOut();
 			out.print(result);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

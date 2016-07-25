@@ -38,7 +38,7 @@ public class DESHttpRequestParamValue extends BaseBodyTag{
 			JspWriter out = pageContext.getOut();
 			out.print(WebUtil.encryptHttpRequestParamValue(BasicUtil.evl(value,body,"").toString()));
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

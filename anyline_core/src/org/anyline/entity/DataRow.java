@@ -37,7 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(DataRow.class);
+	private static Logger log = Logger.getLogger(DataRow.class);
 
 	public static String PARENT 		= "PARENT";				//上级数据
 	public static String ALL_PARENT 	= "ALL_PARENT";			//所有上级数据
@@ -411,13 +411,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				BeanUtil.setFieldValue(entity, field, value);
 			}//end 自身属性
 		} catch (InstantiationException e) {
-			LOG.error(e);
+			log.error(e);
 		} catch (IllegalAccessException e) {
-			LOG.error(e);
+			log.error(e);
 		} catch (SecurityException e) {
-			LOG.error(e);
+			log.error(e);
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		}
 		return entity;
 	}

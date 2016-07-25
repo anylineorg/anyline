@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 
 
 public class BeanUtil {
-	private static Logger LOG = Logger.getLogger(BeanUtil.class);
+	private static Logger log = Logger.getLogger(BeanUtil.class);
 	public static boolean setFieldValue(Object obj, Field field, Object value){
 		if(null == obj || null == field){
 			return false;
@@ -53,7 +53,7 @@ public class BeanUtil {
 				field.setAccessible(false);
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 			return false;
 		}
 		return true;
@@ -163,10 +163,10 @@ public class BeanUtil {
 			}
 			return column;
 		}catch(NoClassDefFoundError e){
-			LOG.error(e);
+			log.error(e);
 			return null;
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 			return null;
 		}
 	}
@@ -175,9 +175,9 @@ public class BeanUtil {
 			Field _field = clazz.getDeclaredField(field);
 			return getColumn(_field, checkInsert, checkUpdate);
 		} catch (SecurityException e) {
-			LOG.error(e);
+			log.error(e);
 		} catch (NoSuchFieldException e) {
-			LOG.error(e);
+			log.error(e);
 		}
 		return null;
 	}
@@ -202,7 +202,7 @@ public class BeanUtil {
 			Object value = method.invoke(annotation);
 			return value;
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 			return null;
 		}
 	}
@@ -220,7 +220,7 @@ public class BeanUtil {
 				try{
 					return getFieldValue(obj, field);
 				}catch(Exception e){
-					LOG.error(e);
+					log.error(e);
 				}
 			}
 		}
@@ -263,7 +263,7 @@ public class BeanUtil {
 			Method method = annotation.annotationType().getMethod("name");				//引用name方法
 			result = (String)method.invoke(annotation);									//执行name方法返回结果
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return result;
 	}
@@ -284,7 +284,7 @@ public class BeanUtil {
 				}
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return list;
 	}

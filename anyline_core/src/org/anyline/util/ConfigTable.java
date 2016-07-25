@@ -32,7 +32,7 @@ import org.dom4j.io.SAXReader;
 
 
 public class ConfigTable {
-	private static Logger LOG = Logger.getLogger(ConfigTable.class);
+	private static Logger log = Logger.getLogger(ConfigTable.class);
 	private static String webRoot;
 	private static Hashtable<String,String> configs;
 	private static long lastLoadTime = 0;	//最后一次加载时间
@@ -58,7 +58,7 @@ public class ConfigTable {
 		try{
 			path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		Properties props=System.getProperties(); //获得系统属性集    
 		String osName = props.getProperty("os.name"); //操作系统名称    
@@ -94,7 +94,7 @@ public class ConfigTable {
 				}
 			}
 		} catch (Exception e) {
-			LOG.error("配置文件解析异常:"+e);
+			log.error("配置文件解析异常:"+e);
 		}
 		lastLoadTime = System.currentTimeMillis();
 		reload = getInt("RELOAD");
@@ -104,7 +104,7 @@ public class ConfigTable {
 	private static void loadConfig(File file){
 		try{
 			if(isDebug()){
-				LOG.info("[加载配置文件] [file:" + file.getName() + "]");
+				log.info("[加载配置文件] [file:" + file.getName() + "]");
 			}
 			SAXReader reader = new SAXReader();
 			Document document = reader.read(file);
@@ -115,11 +115,11 @@ public class ConfigTable {
 				String value = propertyElement.getTextTrim();
 				configs.put(key.toUpperCase().trim(), value);
 				if(isDebug()){
-					LOG.info("[解析配置文件] [" + key + " = " + value+"]");
+					log.info("[解析配置文件] [" + key + " = " + value+"]");
 				}
 			}
 		}catch(Exception e){
-			LOG.error("配置文件解析异常:"+e);
+			log.error("配置文件解析异常:"+e);
 		}
 	}
 	public static String get(String key){

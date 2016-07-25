@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
 
 
 public class PageNaviImpl implements PageNavi, Serializable{
-	private static Logger LOG = Logger.getLogger(PageNaviImpl.class);
+	private static Logger log = Logger.getLogger(PageNaviImpl.class);
 //
 //	public static final String PAGE_VOL				= "pageRows"							;
 //	public static final String PAGE_NO				= "pageNo"								;
@@ -128,7 +128,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				}
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return html;
 	}

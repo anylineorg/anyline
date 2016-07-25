@@ -32,7 +32,7 @@ import org.anyline.util.DateUtil;
 
 public class DateFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(DateFormat.class);
+	private static Logger log = Logger.getLogger(DateFormat.class);
 	private String format;
 	private Object nvl = false;	//如果value为空("",null) 是否显示当前时间,默认false
 
@@ -66,7 +66,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 			JspWriter out = pageContext.getOut();
 			out.print(result);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

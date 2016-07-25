@@ -56,7 +56,7 @@ import org.springframework.stereotype.Service;
 
 @Service("anylineService")
 public class AnylineServiceImpl implements AnylineService {
-	protected Logger LOG = Logger.getLogger(this.getClass());
+	protected Logger log = Logger.getLogger(this.getClass());
 	@Autowired(required = false)
 	@Qualifier("anylineDao")
 	protected AnylineDao dao;
@@ -69,7 +69,7 @@ public class AnylineServiceImpl implements AnylineService {
 	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
 		if(ConfigTable.isSQLDebug()){
-			LOG.warn("[解析SQL] [src:" + src + "]");
+			log.warn("[解析SQL] [src:" + src + "]");
 		}
 		conditions = parseConditions(conditions);
 		try {
@@ -95,7 +95,7 @@ public class AnylineServiceImpl implements AnylineService {
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}
-			LOG.error("QUERY ERROR:"+e);
+			log.error("QUERY ERROR:"+e);
 		}
 		return set;
 	}
@@ -195,7 +195,7 @@ public class AnylineServiceImpl implements AnylineService {
 		src = src.trim();
 		if (src.startsWith("{") && src.endsWith("}")) {
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("[解析SQL类型] [类型:{JAVA定义}] [src:" + src + "]");
+				log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:" + src + "]");
 			}
 			src = src.substring(1,src.length()-1);
 			sql = new TextSQLImpl(src);
@@ -204,19 +204,19 @@ public class AnylineServiceImpl implements AnylineService {
 				|| src.toUpperCase().trim().startsWith("INSERT")
 				|| src.toUpperCase().trim().startsWith("UPDATE")) {
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("[解析SQL类型] [类型:JAVA定义] [src:" + src + "]");
+				log.warn("[解析SQL类型] [类型:JAVA定义] [src:" + src + "]");
 			}
 			sql = new TextSQLImpl(src);
 		}else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
 			/* XML定义 */
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("[解析SQL类型] [类型:XML定义] [src:" + src + "]");
+				log.warn("[解析SQL类型] [类型:XML定义] [src:" + src + "]");
 			}
 			sql = SQLStoreImpl.parseSQL(src);
 		} else {
 			/* 自动生成 */
 			if(ConfigTable.isSQLDebug()){
-				LOG.warn("[解析SQL类型] [类型:auto] [src:" + src + "]");
+				log.warn("[解析SQL类型] [类型:auto] [src:" + src + "]");
 			}
 			sql = new TableSQLImpl();
 			sql.setDataSource(src);
@@ -328,7 +328,7 @@ public class AnylineServiceImpl implements AnylineService {
             	set = (DataSet)value;
             	return set;	
         	}else{
-        		LOG.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
+        		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
         	}
         }
         // 调用实际 的方法
@@ -459,7 +459,7 @@ public class AnylineServiceImpl implements AnylineService {
             	row = (DataRow)value;
             	return row;	
         	}else{
-        		LOG.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
+        		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
         	}
         }
         // 调用实际 的方法
@@ -597,7 +597,7 @@ public class AnylineServiceImpl implements AnylineService {
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}
-			LOG.error("COUNT ERROR:"+e);
+			log.error("COUNT ERROR:"+e);
 		}
 		return count;
 	}
@@ -898,7 +898,7 @@ public class AnylineServiceImpl implements AnylineService {
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
-			LOG.error("QUERY ERROR:"+e);
+			log.error("QUERY ERROR:"+e);
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}

@@ -54,7 +54,7 @@ public class Omit extends BaseBodyTag {
 			result = l+BasicUtil.fillRChar("", ellipsis, length-left-right)+r;
 			writer.print(result);
 		} catch (IOException e) {
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}
