@@ -1,5 +1,8 @@
 package org.anyline.config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.SQL;
 
@@ -18,14 +21,24 @@ public class ParseResult {
 	private boolean isKeyEncrypt			; //key是否加密
 	private boolean isValueEncrypt			; //value是否加密
 	
-	private String def						; //默认值
-	private boolean isDefKeyEncrypt			; //key是否加密
-	private boolean isDefValueEncrypt		; //value是否加密
+//	private String def						; //默认值
+//	private boolean isDefKeyEncrypt			; //key是否加密
+//	private boolean isDefValueEncrypt		; //value是否加密
+//	
 	private boolean setEncrypt = false		; //是否已指定加密方式
-	
+
+	private List<ParseResult> defs = new ArrayList<ParseResult>();	//默认值
 	private int compare = SQL.COMPARE_TYPE_EQUAL				; //比较方式			
 	private String join = Condition.CONDITION_JOIN_TYPE_AND		; //连接方式
 	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE; //request取值方式
+	
+	public List<ParseResult> getDefs(){
+		return defs;
+	}
+	public void addDef(ParseResult def){
+		defs.add(def);
+	}
+	
 	public boolean isRequired() {
 		return required;
 	}
@@ -50,12 +63,12 @@ public class ParseResult {
 	public void setField(String field) {
 		this.field = field;
 	}
-	public String getDef() {
-		return def;
-	}
-	public void setDef(String def) {
-		this.def = def;
-	}
+//	public String getDef() {
+//		return def;
+//	}
+//	public void setDef(String def) {
+//		this.def = def;
+//	}
 	public String getClazz() {
 		return clazz;
 	}
@@ -104,17 +117,17 @@ public class ParseResult {
 	public void setJoin(String join) {
 		this.join = join;
 	}
-	public boolean isDefKeyEncrypt() {
-		return isDefKeyEncrypt;
-	}
-	public void setDefKeyEncrypt(boolean isDefKeyEncrypt) {
-		this.isDefKeyEncrypt = isDefKeyEncrypt;
-	}
-	public boolean isDefValueEncrypt() {
-		return isDefValueEncrypt;
-	}
-	public void setDefValueEncrypt(boolean isDefValueEncrypt) {
-		this.isDefValueEncrypt = isDefValueEncrypt;
-	}
+//	public boolean isDefKeyEncrypt() {
+//		return isDefKeyEncrypt;
+//	}
+//	public void setDefKeyEncrypt(boolean isDefKeyEncrypt) {
+//		this.isDefKeyEncrypt = isDefKeyEncrypt;
+//	}
+//	public boolean isDefValueEncrypt() {
+//		return isDefValueEncrypt;
+//	}
+//	public void setDefValueEncrypt(boolean isDefValueEncrypt) {
+//		this.isDefValueEncrypt = isDefValueEncrypt;
+//	}
 
 }

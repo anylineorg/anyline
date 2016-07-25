@@ -122,7 +122,13 @@ public class ConfigParser {
 		if(key.contains(":")){
 			String[] tmp = key.split(":");
 			result.setKey(tmp[0]);
-			result.setDef(tmp[1]);
+			int size = tmp.length;
+			for(int i=1; i<size; i++){
+				ParseResult def = new ParseResult();
+				def.setKey(key);
+				def = parseEncrypt(def);
+				result.addDef(def);
+			}
 		}
 		return result;
 	}
@@ -136,12 +142,6 @@ public class ConfigParser {
 		result.setKey((String)map.get("SRC"));
 		result.setKeyEncrypt((Boolean)map.get("KEY_ENCRYPT"));
 		result.setValueEncrypt((Boolean)map.get("VALUE_ENCRYPT"));
-		
-		map = parseEncrypt(result.getDef());
-		result.setDef((String)map.get("SRC"));
-		result.setDefKeyEncrypt((Boolean)map.get("KEY_ENCRYPT"));
-		result.setDefValueEncrypt((Boolean)map.get("VALUE_ENCRYPT"));
-		
 		return result;
 	}
 	private static Map<String,Object> parseEncrypt(String key){
