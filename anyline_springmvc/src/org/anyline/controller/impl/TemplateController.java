@@ -70,12 +70,12 @@ public class TemplateController extends AnylineController {
 		String html = "";
 		try{
 			if(ConfigTable.isDebug()){
-				LOG.warn("加载模板文件开始:"+path);
+				log.warn("加载模板文件开始:"+path);
 			}
 			html = WebUtil.parseJsp(request, response, path);
 			html = BasicUtil.escape(html);
 		}catch(Exception e){
-			LOG.warn("加载模板文件失败:"+path+e.getMessage());
+			log.warn("加载模板文件失败:"+path+e.getMessage());
 		}
 		return success(html);
 	}
@@ -97,7 +97,7 @@ public class TemplateController extends AnylineController {
 		}
 		String content = parseTemplate(request, response,template_path);
 		if(ConfigTable.isDebug()){
-			LOG.warn("样式模板:"+template_path);
+			log.warn("样式模板:"+template_path);
 		}
 		try{
 			List<List<String>> vars= RegularUtil.fetch(content, "{([\\w.]+)}");//RegularUtil.REGEX_VARIABLE
