@@ -418,7 +418,7 @@ public class FileUtil {
 			if (!dstPath.exists()){
 				result = dstPath.mkdirs();
 			}
-			String files[] = srcPath.list();
+			String[] files = srcPath.list();
 			for(int i = 0; i < files.length; i++){
 				copy(new File(srcPath, files[i]), new File(dstPath, files[i]));
 			}
@@ -649,25 +649,17 @@ public class FileUtil {
 	public static String parseSubName(File file) {    
         String filetype = null;     
         byte[] b = new byte[50];     
-        try     
-        {     
+        try {     
             InputStream is = new FileInputStream(file);     
             is.read(b);     
             filetype = getFileTypeByStream(b);     
-            is.close();     
-        }     
-        catch (FileNotFoundException e)     
-        {     
-            log.error(e);     
-        }     
-        catch (IOException e)     
-        {     
+            is.close();    
+        } catch (Exception e) {     
             log.error(e);     
         }     
         return filetype;     
     } 
-	public final static String getFileTypeByStream(byte[] b)     
-    {     
+	public final static String getFileTypeByStream(byte[] b){     
         String filetypeHex = String.valueOf(getFileHexString(b));     
         Iterator<Entry<String, String>> entryiterator = Source.FILE_TYPE_MAP.entrySet().iterator();     
         while (entryiterator.hasNext()) {     
@@ -730,7 +722,7 @@ public class FileUtil {
 		BufferedReader br = null;
 		try{
 			br=new BufferedReader(new FileReader(file));   
-	        while(br.readLine()!=null){
+	        while(null != br.readLine()){
 	        	size++;
 	        }
         }catch(Exception e){
