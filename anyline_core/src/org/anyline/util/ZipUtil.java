@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  * @author once
  */
 public class ZipUtil {
-	static Logger LOG = Logger.getLogger(ZipUtil.class);
+	static Logger log = Logger.getLogger(ZipUtil.class);
 	private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte
 
 	/**
@@ -67,7 +67,7 @@ public class ZipUtil {
 			}
 			zipout.close();
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 	}
 
@@ -94,7 +94,7 @@ public class ZipUtil {
 			zipout.setComment(comment);
 			zipout.close();
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 	}
 
@@ -152,7 +152,7 @@ public class ZipUtil {
 			}
 			zf.close();
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		}
 		return files;
 	}
@@ -211,7 +211,7 @@ public class ZipUtil {
 				}
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			try {
 				zf.close();
@@ -242,7 +242,7 @@ public class ZipUtil {
 				entryNames.add(new String(getEntryName(entry).getBytes("GB2312"), "8859_1"));
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return entryNames;
 	}
@@ -263,7 +263,7 @@ public class ZipUtil {
 		try{
 			zf = new ZipFile(zipFile);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			try {
 				zf.close();
@@ -288,7 +288,7 @@ public class ZipUtil {
 		try{
 			result = new String(entry.getComment().getBytes("GB2312"), "8859_1");
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return result;
 	}
@@ -306,7 +306,7 @@ public class ZipUtil {
 		try{
 			result =  new String(entry.getName().getBytes("GB2312"), "8859_1");
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return result;
 	}
@@ -352,7 +352,7 @@ public class ZipUtil {
 				zipout.closeEntry();
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		}
 	}
 }

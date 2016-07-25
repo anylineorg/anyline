@@ -37,7 +37,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
  *
  */
 public class RegularContain implements Regular{
-	private static Logger LOG = Logger.getLogger(RegularContain.class);
+	private static Logger log = Logger.getLogger(RegularContain.class);
 	private static PatternCompiler patternCompiler = new Perl5Compiler();
 	/**
 	 * 配置状态
@@ -78,7 +78,7 @@ public class RegularContain implements Regular{
 				list.add(item);
 			}
 		}catch(Exception e){
-			LOG.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
+			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
 		}
 		return list;
 	}
@@ -102,8 +102,8 @@ public class RegularContain implements Regular{
 				list.add(matchResult.group(idx));
 			}
 		}catch(Exception e){
-			LOG.error(e);
-			LOG.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
+			log.error(e);
+			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
 			throw e;
 		}
 		return list;

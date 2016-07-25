@@ -6,7 +6,7 @@ import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
 public class PageLazyStore {
-	private static Logger LOG = Logger.getLogger(PageLazyStore.class);
+	private static Logger log = Logger.getLogger(PageLazyStore.class);
 	private static Hashtable<String, Integer> lazyTotal = new Hashtable<String,Integer>();		//总数
 	private static Hashtable<String, Long> lazyTime = new Hashtable<String,Long>();		//总数创建时间
 	/**
@@ -25,14 +25,14 @@ public class PageLazyStore {
 				lazyTotal.remove(key);
 				lazyTime.remove(key);
 				if(ConfigTable.isDebug()){
-					LOG.warn("[记录总数过期] [key:" + key + "] [生存:" + age + "/" + period + "]");
+					log.warn("[记录总数过期] [key:" + key + "] [生存:" + age + "/" + period + "]");
 				}
 				return 0;
 			}
 		}
 		Integer result = lazyTotal.get(key);
 		if(ConfigTable.isDebug()){
-			LOG.warn("[提取记录总数] [key:" + key + "] [total:" + result + "] [生存:" + age + "/" + period + "]");
+			log.warn("[提取记录总数] [key:" + key + "] [total:" + result + "] [生存:" + age + "/" + period + "]");
 		}
 		if(null == result){
 			return 0;
@@ -46,11 +46,11 @@ public class PageLazyStore {
 			lazyTime.put(key, System.currentTimeMillis());
 			lazyTotal.put(key, total);
 			if(ConfigTable.isDebug()){
-				LOG.warn("[重置记录总数] [key:"+key + "] [old:" + old +"]" + "[new:" + total + "]");
+				log.warn("[重置记录总数] [key:"+key + "] [old:" + old +"]" + "[new:" + total + "]");
 			}
 		}else{
 			if(ConfigTable.isDebug()){
-				LOG.warn("[缓存记录总数] [key:"+key + "] [total:" + total + "]");
+				log.warn("[缓存记录总数] [key:"+key + "] [total:" + total + "]");
 			}
 		}
 	}

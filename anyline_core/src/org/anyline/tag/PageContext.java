@@ -33,7 +33,7 @@ import org.anyline.util.BasicUtil;
  */
 public class PageContext extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(PageContext.class);
+	private static Logger log = Logger.getLogger(PageContext.class);
 
 	private String key;
 	
@@ -44,7 +44,7 @@ public class PageContext extends BaseBodyTag implements Cloneable{
 				pageContext.setAttribute(key, BasicUtil.nvl(value,body));
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

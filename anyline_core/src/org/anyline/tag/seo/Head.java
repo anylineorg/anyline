@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  */
 public class Head extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(Head.class);
+	private static Logger log = Logger.getLogger(Head.class);
 
 	private String[] vars;		
 	private String title;
@@ -114,7 +114,7 @@ public class Head extends BaseBodyTag implements Cloneable{
 			
 			
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

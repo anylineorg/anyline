@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
 
 public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(NumberFormat.class);
+	private static Logger log = Logger.getLogger(NumberFormat.class);
 	private String format;
 	
 
@@ -57,7 +57,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 			JspWriter out = pageContext.getOut();
 			out.print(result);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

@@ -51,7 +51,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 public class WebUtil {
-	static Logger LOG = Logger.getLogger(WebUtil.class);
+	static Logger log = Logger.getLogger(WebUtil.class);
 	/*
 	 * public static final String HTTP_REQUEST_PARAM_KEY_PREFIX =
 	 * "wwwanylineorgk"; //参数名加密前缀 public static final String
@@ -114,7 +114,7 @@ public class WebUtil {
 				defaultDesKey.setPrefixParamValue("p298pn6e9o1r5gv");
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		}
 	}
 
@@ -165,7 +165,7 @@ public class WebUtil {
 				inet = InetAddress.getLocalHost();
 				ip = inet.getHostAddress();
 			} catch (Exception e) {
-				LOG.error(e);
+				log.error(e);
 			}
 		}
 		return ip;
@@ -413,7 +413,7 @@ public class WebUtil {
 				}
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 			result = null;
 		}
 		return result;
@@ -433,7 +433,7 @@ public class WebUtil {
 		try {
 			param = encryptRequestParam(param);
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		}
 		url = url.substring(0, url.indexOf("?") + 1) + param;
 		return url;
@@ -450,7 +450,7 @@ public class WebUtil {
 			String url = RegularUtil.fetchUrl(tag);
 			tag = tag.replace(url, encryptUrl(url));
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		}
 
 		return tag;
@@ -764,7 +764,7 @@ public class WebUtil {
 							+ src.substring(idx + DES_VERSION_LENGTH); // 没有版本号的密文
 				}
 			} catch (Exception e) {
-				LOG.error(e);
+				log.error(e);
 			}
 		}
 		return result;

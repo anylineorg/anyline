@@ -49,7 +49,7 @@ import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 
 public class AbstractBasicController{
-	protected Logger LOG = Logger.getLogger(this.getClass());
+	protected Logger log = Logger.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
 	protected final String FAIL = "fail";
 	protected final String AJAX = "ajax";
@@ -111,7 +111,7 @@ public class AbstractBasicController{
 			// BeanUtil.setValue(entity, "clientTrace", client);
 			BeanUtil.setFieldValue(entity, "clientTrace", client);
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		}
 		return entity;
 	}
@@ -550,7 +550,7 @@ public class AbstractBasicController{
 			Field field = this.getClass().getField("dir");//子类dir必须public
 			dir = (String)field.get(this);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return dir;
 	}
@@ -599,7 +599,7 @@ public class AbstractBasicController{
 		try{
 			html = WebUtil.parseJsp(request, response, page);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("BODY", BasicUtil.escape(html));

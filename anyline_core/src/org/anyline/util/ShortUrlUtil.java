@@ -29,7 +29,7 @@ import org.apache.log4j.Logger;
  * @author once
  */
 public class ShortUrlUtil {
-//	static Logger LOG = Logger.getLogger(ShortUrlUtil.class);
+//	static Logger log = Logger.getLogger(ShortUrlUtil.class);
 //	// [a - z, A - Z, 0 - 9] 
 //	/**
 //	 * 根据长地址ID，得到一个6位的 62 进制数,作为短地址

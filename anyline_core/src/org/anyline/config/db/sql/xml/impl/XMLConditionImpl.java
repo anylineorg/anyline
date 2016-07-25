@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class XMLConditionImpl extends BasicCondition implements Condition{
-	private static Logger LOG = Logger.getLogger(XMLConditionImpl.class);
+	private static Logger log = Logger.getLogger(XMLConditionImpl.class);
 	
 	private String text;
 	
@@ -159,7 +159,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				}
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 	}
 

@@ -44,7 +44,7 @@ public class RegularUtil {
 	public static final int MATCH_MODE_CONTAIN = 2;				//包含匹配
 	public static final String REGEX_VARIABLE = "{(\\w+)}";		//变量{ID}
 	
-	private static Logger LOG = Logger.getLogger(RegularUtil.class);
+	private static Logger log = Logger.getLogger(RegularUtil.class);
 	static{
 		regularList.add(regularMatch);
 		regularList.add(regularMatchPrefix);
@@ -70,7 +70,7 @@ public class RegularUtil {
 			regular = regularList.get(mode);
 			result = regular.fetch(src, regx);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 			throw e;
 		}
 		return result;
@@ -142,8 +142,8 @@ public class RegularUtil {
 				}
 			}
 		}catch(Exception e){
-			LOG.error(e);
-			LOG.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
+			log.error(e);
+			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
 			
 		}
 		return idx;
@@ -166,7 +166,7 @@ public class RegularUtil {
 				result.add(row.get(0));
 			}
 		}catch(Exception e){
-			LOG.error("regexpValue:\n"+e);
+			log.error("regexpValue:\n"+e);
 		}
 		return result;
 	}
@@ -281,7 +281,7 @@ public class RegularUtil {
 //				 result = result.replace("{"+key+"}", value.toString());
 //			 }
 //		 }catch(Exception e){
-//			 LOG.error(e);
+//			 log.error(e);
 //		 }
 //		 return result;
 //	}

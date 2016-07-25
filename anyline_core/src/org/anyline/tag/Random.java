@@ -41,7 +41,7 @@ public class Random extends BaseBodyTag {
 				writer.print(result);
 			}
 		} catch (IOException e) {
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 
 public abstract class ComponentTag extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	protected static Logger LOG = Logger.getLogger(ComponentTag.class);
+	protected static Logger log = Logger.getLogger(ComponentTag.class);
 	
 	protected HttpServletRequest request; 
 	protected HttpSession session;
@@ -63,7 +63,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 			try{
 				out.print(builder);
 			}catch(Exception e){
-				LOG.error(e);
+				log.error(e);
 			}finally{
 				try{
 					//out.clear();
@@ -72,7 +72,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 				release();
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

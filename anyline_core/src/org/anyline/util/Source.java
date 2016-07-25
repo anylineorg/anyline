@@ -27,7 +27,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 public class Source {
-	private static Logger LOG = Logger.getLogger(Source.class);
+	private static Logger log = Logger.getLogger(Source.class);
 	private String url;					//URL
 	private String backFileCd;			//备份文件CD
 	private String text;				//文本
@@ -50,7 +50,7 @@ public class Source {
 			fileType = contentType.split(";")[0];
 		}catch(Exception e){
 			fileType = "text/html";
-			LOG.error("setContentType$parse content type("+contentType+")");
+			log.error("setContentType$parse content type("+contentType+")");
 		}
 		try{
 			String tmps[] = contentType.split("=");
@@ -74,7 +74,7 @@ public class Source {
 			fileType = fileType.toLowerCase();
 			fileType = httpFileExtend.get(httpFileType.indexOf(fileType));
 		}catch(Exception e){
-			LOG.error("parseHttpFileType:\n"+e);
+			log.error("parseHttpFileType:\n"+e);
 			fileType = "";
 		}
 		return fileType;
