@@ -163,10 +163,10 @@ public class WebUtil {
 			InetAddress inet = null;
 			try {
 				inet = InetAddress.getLocalHost();
+				ip = inet.getHostAddress();
 			} catch (Exception e) {
 				LOG.error(e);
 			}
-			ip = inet.getHostAddress();
 		}
 		return ip;
 	}
@@ -282,7 +282,7 @@ public class WebUtil {
 		if (null == value) {
 			return null;
 		}
-		return decrypt(value, ENCRYPT_TYPE_VALUE);
+		return decrypt(value.trim(), ENCRYPT_TYPE_VALUE);
 	}
 
 	/**
@@ -610,7 +610,7 @@ public class WebUtil {
 						result.add("");
 					}
 					if (valueEncrypt) {
-						value = decryptHttpRequestParamValue(value.trim());
+						value = decryptHttpRequestParamValue(value);
 						value = filterIllegalChar(value);
 					}
 					if (null != value) {
@@ -815,9 +815,7 @@ public class WebUtil {
 					"iemobile", "wap2.0", "WAPI" };
 			Pattern pf = Pattern.compile("wp\\d*");
 			Matcher mf = pf.matcher(agentcheck);
-			if (agentcheck != null
-					&& (agentcheck.indexOf("windows nt") == -1 && agentcheck
-							.indexOf("Ubuntu") == -1)
+			if (agentcheck != null && (agentcheck.indexOf("windows nt") == -1 && agentcheck .indexOf("Ubuntu") == -1)
 					|| (agentcheck.indexOf("windows nt") > -1 && mf.find())) {
 				for (int i = 0; i < keywords.length; i++) {
 					Pattern p = Pattern.compile(keywords[i]);

@@ -205,8 +205,9 @@ public class HttpUtil {
 						idx++;
 					}
 				} else if (value instanceof Collection) {
+					@SuppressWarnings("unchecked")
 					Collection<Object> con = (Collection<Object>)value;
-					if(con.size()>0){
+					if(!con.isEmpty()){
 						NameValuePair[] tempForm = new NameValuePair[form.length + con.size() - 1];
 						for (int i = 0; i < idx; i++) {
 							tempForm[i] = form[i];
