@@ -58,7 +58,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
-	protected static Logger LOG = Logger.getLogger(BasicSQLCreaterImpl.class);
+	protected static Logger log = Logger.getLogger(BasicSQLCreaterImpl.class);
 	public String disKeyFr = "";
 	public String disKeyTo = "";
 
@@ -310,10 +310,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				result = (String)method.invoke(annotation);									//执行name方法返回结果
 				result = result.replace(getDisKeyFr(), "").replace(getDisKeyTo(),"");
 			}catch(NoClassDefFoundError e){
-				LOG.error(e);
+				log.error(e);
 			}catch(Exception e){
 				e.printStackTrace();
-				LOG.error(e);
+				log.error(e);
 			}
 		}
 		return result;

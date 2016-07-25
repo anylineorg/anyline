@@ -29,7 +29,7 @@ import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
 public class CacheUtil {
-	private static Logger LOG = Logger.getLogger(CacheUtil.class);
+	private static Logger log = Logger.getLogger(CacheUtil.class);
 	private static CacheManager manager = null;
 	private static Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
 	
@@ -38,9 +38,9 @@ public class CacheUtil {
 		if(null == manager){
 			manager = CacheManager.create();
 	    	if(ConfigTable.isDebug()){
-	    		LOG.warn("[加载ehcache配置文件] [耗时:" + (System.currentTimeMillis() - fr) + "]");
+	    		log.warn("[加载ehcache配置文件] [耗时:" + (System.currentTimeMillis() - fr) + "]");
 	    		for(String name:manager.getCacheNames()){
-	    			LOG.warn("[解析ehcache配置文件] [name:"+name+"]");
+	    			log.warn("[解析ehcache配置文件] [name:"+name+"]");
 	    		}
 	    	}
 		}
@@ -80,20 +80,20 @@ public class CacheUtil {
 			result = cache.get(key);
 			if(null == result){
 		    	if(ConfigTable.isDebug()){
-		    		LOG.warn("[缓存不存在] [cnannel:" + channel + "] [key:" + key + "] [生存:-1/" +  cache.getCacheConfiguration().getTimeToLiveSeconds() + "]");
+		    		log.warn("[缓存不存在] [cnannel:" + channel + "] [key:" + key + "] [生存:-1/" +  cache.getCacheConfiguration().getTimeToLiveSeconds() + "]");
 		    	}
 				return null;
 			}
 			if(result.isExpired()){
 		    	if(ConfigTable.isDebug()){
-		    		LOG.warn("[缓存数据提取成功但已过期] [耗时:" + (System.currentTimeMillis()-fr) + "] [cnannel:" 
+		    		log.warn("[缓存数据提取成功但已过期] [耗时:" + (System.currentTimeMillis()-fr) + "] [cnannel:" 
 		    				+ channel + "] [key:" + key + "] [命中:" + result.getHitCount() + "] [生存:"
 		    				+ (System.currentTimeMillis() - result.getCreationTime())/1000 + "/" + result.getTimeToLive() + "]");
 		    	}
 		    	result = null;
 			}
 			if(ConfigTable.isDebug()){
-	    		LOG.warn("[缓存数据提取成功并有效] [耗时:"+(System.currentTimeMillis()-fr)+"] [cnannel:"  
+	    		log.warn("[缓存数据提取成功并有效] [耗时:"+(System.currentTimeMillis()-fr)+"] [cnannel:"  
 	    				+ channel + "] [key:" + key + "] [命中:" + result.getHitCount() + "] [生存:"
 	    				+ (System.currentTimeMillis() - result.getCreationTime())/1000 + "/" + result.getTimeToLive() + "]");
 	    	}
@@ -114,7 +114,7 @@ public class CacheUtil {
 		if(null != cache){
 			cache.put(element);
 	    	if(ConfigTable.isDebug()){
-	    		LOG.warn("[存储缓存数据] [channel:" + channel + "] [key:"+element.getObjectKey() + "] [生存:0/" + cache.getCacheConfiguration().getTimeToLiveSeconds() + "]");
+	    		log.warn("[存储缓存数据] [channel:" + channel + "] [key:"+element.getObjectKey() + "] [生存:0/" + cache.getCacheConfiguration().getTimeToLiveSeconds() + "]");
 	    	}
 		}
 	}
@@ -127,7 +127,7 @@ public class CacheUtil {
 				cache.remove(key);
 			}
 	    	if(ConfigTable.isDebug()){
-	    		LOG.warn("[删除缓存数据] [channel:" + channel + "] [key:" + key + "]");
+	    		log.warn("[删除缓存数据] [channel:" + channel + "] [key:" + key + "]");
 	    	}
 		}catch(Exception e){
 			result = false;
@@ -140,7 +140,7 @@ public class CacheUtil {
 			CacheManager manager = create();
 			manager.removeCache(channel);
 	    	if(ConfigTable.isDebug()){
-	    		LOG.warn("[清空缓存数据] [channel:" + channel + "]");
+	    		log.warn("[清空缓存数据] [channel:" + channel + "]");
 	    	}
 		}catch(Exception e){
 			result = false;
@@ -175,11 +175,11 @@ public class CacheUtil {
     	if(result){
     		reflushFlag.put(key, System.currentTimeMillis());
     		if(ConfigTable.isDebug()){
-    			LOG.warn("[刷新缓存放行] [key:" + key + "] [间隔:" + age + "/" + period + "]");
+    			log.warn("[刷新缓存放行] [key:" + key + "] [间隔:" + age + "/" + period + "]");
     		}
     	}else{
     		if(ConfigTable.isDebug()){
-    			LOG.warn("[刷新缓存拦截] [key:" + key + "] [间隔:" + age + "/" + period + "]");
+    			log.warn("[刷新缓存拦截] [key:" + key + "] [间隔:" + age + "/" + period + "]");
     		}
     	}
     	return result;
@@ -192,7 +192,7 @@ public class CacheUtil {
     	Long fr = reflushFlag.get(key);
     	if(null == fr){
     		if(ConfigTable.isDebug()){
-    			LOG.warn("[刷新缓存完成 有可能key拼写有误] [key:" + key + "]");
+    			log.warn("[刷新缓存完成 有可能key拼写有误] [key:" + key + "]");
     		}
     		return;
     	}
@@ -202,7 +202,7 @@ public class CacheUtil {
     		reflushFlag.remove(key);
     	}
 		if(ConfigTable.isDebug()){
-			LOG.warn("[刷新缓存完成] [key:" + key + "] [间隔:" + age + "/" + period + "]");
+			log.warn("[刷新缓存完成] [key:" + key + "] [间隔:" + age + "/" + period + "]");
 		}
     }
     public boolean isRun(String key){

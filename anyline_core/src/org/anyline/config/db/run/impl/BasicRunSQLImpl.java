@@ -45,7 +45,7 @@ import org.apache.log4j.Logger;
 
 
 public abstract class BasicRunSQLImpl implements RunSQL {
-	protected static Logger LOG = Logger.getLogger(BasicRunSQLImpl.class);
+	protected static Logger log = Logger.getLogger(BasicRunSQLImpl.class);
 	protected SQL sql;
 	protected List<Object> values;
 	protected PageNavi pageNavi;
@@ -373,7 +373,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 					where = true;
 				}
 			}catch(Exception e){
-				LOG.error(e);
+				log.error(e);
 			}
 		}
 		return where;

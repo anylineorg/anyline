@@ -38,7 +38,7 @@ import org.anyline.util.regular.RegularUtil;
 
 public class Radio extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(Radio.class);
+	private static Logger log = Logger.getLogger(Radio.class);
 	private String scope;
 	private Object data;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
@@ -124,7 +124,7 @@ public class Radio extends BaseBodyTag{
 			JspWriter out = pageContext.getOut();
 			out.print(html);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

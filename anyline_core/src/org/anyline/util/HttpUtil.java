@@ -52,7 +52,7 @@ import org.apache.log4j.Logger;
 
 
 public class HttpUtil {
-	private static Logger LOG = Logger.getLogger(HttpUtil.class);
+	private static Logger log = Logger.getLogger(HttpUtil.class);
 	private static HttpUtil instance = new HttpUtil();
 	private HttpClient client = null;
 	private String encode = "UTF-8";
@@ -159,18 +159,18 @@ public class HttpUtil {
 				result = html;
 			}
 		} catch (SocketTimeoutException e) {
-			LOG.error("连接超时[" + uri + "]"+e.getMessage());
+			log.error("连接超时[" + uri + "]"+e.getMessage());
 		} catch (java.net.ConnectException e) {
-			LOG.error("连接失败[" + uri + "]"+e.getMessage());
+			log.error("连接失败[" + uri + "]"+e.getMessage());
 		} catch (Exception e) {
-			LOG.error("连接时出现异常[" + uri + "]"+e.getMessage());
+			log.error("连接时出现异常[" + uri + "]"+e.getMessage());
 			e.printStackTrace();
 		} finally {
 			if (method != null) {
 				try {
 					method.releaseConnection();
 				} catch (Exception e) {
-					LOG.error("释放网络连接失败[" + uri + "]"+e.getMessage());
+					log.error("释放网络连接失败[" + uri + "]"+e.getMessage());
 				}
 			}
 		}
@@ -427,14 +427,14 @@ public class HttpUtil {
 				os.write(buffer, 0, len);
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		} finally {
 			if (is != null) {
 				try {
 					is.close();
 					is = null;
 				} catch (Exception ex) {
-					LOG.error(ex);
+					log.error(ex);
 					is = null;
 				}
 			}
@@ -443,7 +443,7 @@ public class HttpUtil {
 					os.close();
 					os = null;
 				} catch (Exception ex) {
-					LOG.error(ex);
+					log.error(ex);
 					os = null;
 				}
 			}
@@ -487,13 +487,13 @@ public class HttpUtil {
 			bis.close();
 			httpUrl.disconnect();
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		} finally {
 			try {
 				bis.close();
 				bos.close();
 			} catch (IOException e) {
-				LOG.error(e);
+				log.error(e);
 			}
 		}
 	}

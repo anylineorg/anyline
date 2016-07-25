@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
  */
 public class ClientReply extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(ClientReply.class);
+	private static Logger log = Logger.getLogger(ClientReply.class);
 
 	public int doAfterBody() throws JspException {
 		return super.doAfterBody();
@@ -46,7 +46,7 @@ public class ClientReply extends BaseBodyTag implements Cloneable{
 			String js = "<script type=\"text/javascript\" src=\"/iccr?c="+pageContext.getRequest().hashCode()+"\"></script>";
 			pageContext.getOut().write(js);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

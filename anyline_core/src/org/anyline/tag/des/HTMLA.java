@@ -91,7 +91,7 @@ public class HTMLA extends BaseBodyTag {
 			JspWriter out = pageContext.getOut();
 			out.print(buffer.toString());
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		} finally {
 			release();
 		}

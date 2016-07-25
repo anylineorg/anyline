@@ -40,7 +40,7 @@ import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 
 public class ConfigImpl implements Config{
-	protected static Logger LOG = Logger.getLogger(ConfigImpl.class);
+	protected static Logger log = Logger.getLogger(ConfigImpl.class);
 	//从request 取值方式
 
 //	private String id;				//id
@@ -228,7 +228,7 @@ public class ConfigImpl implements Config{
 			}
 			empty = BasicUtil.isEmpty(true,values);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 	}
 

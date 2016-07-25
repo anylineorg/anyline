@@ -43,7 +43,7 @@ public abstract class BasicEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Transient
-	protected static Logger LOG = Logger.getLogger(BasicEntity.class);
+	protected static Logger log = Logger.getLogger(BasicEntity.class);
 	   
 	@Id         
 	@Column(name="CD",insertable=true,updatable=false)   
@@ -98,9 +98,9 @@ public abstract class BasicEntity implements Serializable{
 			result = (String)method.invoke(annotation);									//执行name方法返回结果
 			result = result.replace("[", "").replace("]","");
 		}catch(NoClassDefFoundError e){
-			LOG.error(e);
+			log.error(e);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return result;
 	}

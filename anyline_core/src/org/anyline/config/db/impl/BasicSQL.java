@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
 
 public abstract class BasicSQL implements SQL{
 
-	protected static Logger LOG = Logger.getLogger(BasicSQL.class);
+	protected static Logger log = Logger.getLogger(BasicSQL.class);
 
 
 	protected ConditionChain chain;			//查询条件

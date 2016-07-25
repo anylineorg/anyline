@@ -44,7 +44,7 @@ public class DES extends BaseBodyTag{
 			JspWriter out = pageContext.getOut();
 			out.print(value);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

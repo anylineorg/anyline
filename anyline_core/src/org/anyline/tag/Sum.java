@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 
 public class Sum extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(Sum.class);
+	private static Logger log = Logger.getLogger(Sum.class);
 	private String scope;
 	private Object data;
 	private String key;
@@ -82,7 +82,7 @@ public class Sum extends BaseBodyTag {
 			JspWriter out = pageContext.getOut();
 			out.print(html);
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		} finally {
 			release();
 		}

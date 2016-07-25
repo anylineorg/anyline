@@ -32,7 +32,7 @@ import org.anyline.util.BasicUtil;
 
 public class Else extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(Else.class);
+	private static Logger log = Logger.getLogger(Else.class);
 	
 	 public int doEndTag() throws JspException {
 		try{
@@ -44,7 +44,7 @@ public class Else extends BaseBodyTag implements Cloneable{
 				}
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

@@ -33,7 +33,7 @@ import org.anyline.util.Constant;
 
 public class Message extends BodyTagSupport{
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(Message.class);
+	private static Logger log = Logger.getLogger(Message.class);
 	private String scope;
 	private String key;
 	private boolean clean = true;		//显示后清除
@@ -70,7 +70,7 @@ public class Message extends BodyTagSupport{
 				out.print(message);
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			release();
 		}

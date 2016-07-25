@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
 
 
 public class FileUtil {
-	private static Logger LOG = Logger.getLogger(FileUtil.class);
+	private static Logger log = Logger.getLogger(FileUtil.class);
 	public final static int PATH_TYPE_JAR = 0;
 	
 	/**
@@ -118,7 +118,7 @@ public class FileUtil {
             	}
             }
          }catch(Exception ex){
-        	LOG.error(ex);
+        	log.error(ex);
         	ex.printStackTrace();
          } finally  {
                 try{
@@ -129,7 +129,7 @@ public class FileUtil {
                 		inputStream.close();
                 	}
                 }catch(Exception e){
-                	LOG.error(e);
+                	log.error(e);
                 	e.printStackTrace();
                 }
         }  
@@ -146,7 +146,7 @@ public class FileUtil {
 		try{
 			buffer = readStream(new FileInputStream(file),encode);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return buffer;
 	}
@@ -156,7 +156,7 @@ public class FileUtil {
 			String encode = getFileEncode(file);
 			buffer = readStream(new FileInputStream(file),encode);
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return buffer;
 	}
@@ -172,7 +172,7 @@ public class FileUtil {
 			fw.write(content);
 			fw.close();  
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 	}
 	public static void writeFile(String content, File file, String encode) {
@@ -184,13 +184,13 @@ public class FileUtil {
 			osw.write(content); 
 			osw.flush(); 
 		} catch (Exception e) { 
-			LOG.error(e); 
+			log.error(e); 
 		}finally{
 			try{
 				osw.close();
 				fos.close();
 			}catch(Exception e){
-				LOG.error(e);
+				log.error(e);
 			}
 		}
 	}
@@ -270,7 +270,7 @@ public class FileUtil {
 			}
 			file.createNewFile();
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}
 		return true;
 	}
@@ -362,7 +362,7 @@ public class FileUtil {
 		//	detector.add(JChardetFacade.getInstance());
 			charset = detector.detectCodepage(file.toURI().toURL());
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		}
 		if (charset != null) {
 			encode = charset.name();
@@ -448,7 +448,7 @@ public class FileUtil {
 						out.write(buf, 0, len);
 					}
 				}catch(Exception e){
-					LOG.error(e);
+					log.error(e);
 					e.printStackTrace();
 					result = false;
 				}finally{
@@ -456,14 +456,14 @@ public class FileUtil {
 						try{
 							in.close();
 						}catch(Exception ex){
-							LOG.error(ex);
+							log.error(ex);
 						}
 					}
 					if(null != out){
 						try{
 							out.close();
 						}catch(Exception ex){
-							LOG.error(ex);
+							log.error(ex);
 						}
 					}
 				}
@@ -571,7 +571,7 @@ public class FileUtil {
 				}
 			}
 		}catch(Exception e){
-			LOG.error(e);
+			log.error(e);
 		}finally{
 			try {
 				in.close();
@@ -658,11 +658,11 @@ public class FileUtil {
         }     
         catch (FileNotFoundException e)     
         {     
-            LOG.error(e);     
+            log.error(e);     
         }     
         catch (IOException e)     
         {     
-            LOG.error(e);     
+            log.error(e);     
         }     
         return filetype;     
     } 
@@ -774,7 +774,7 @@ public class FileUtil {
 			}
 			out.close();
 		} catch (IOException e) {
-			LOG.error(e);
+			log.error(e);
 		}
 		result = true;
 		return result;
