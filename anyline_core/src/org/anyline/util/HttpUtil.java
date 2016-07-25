@@ -140,10 +140,11 @@ public class HttpUtil {
 		Source source = new Source();
 		String result = "";
 		String uri = null;
+		BufferedReader reader = null;
 		try {
 			uri = method.getURI().getURI();
 			client.executeMethod(method);
-			BufferedReader reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(), encode));
+			reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(), encode));
 			String line = null;
 			String html = null;
 			while ((line = reader.readLine()) != null) {
@@ -166,6 +167,13 @@ public class HttpUtil {
 			log.error("连接时出现异常[" + uri + "]"+e.getMessage());
 			e.printStackTrace();
 		} finally {
+			if(null !=reader){
+				try {
+					reader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 			if (method != null) {
 				try {
 					method.releaseConnection();
