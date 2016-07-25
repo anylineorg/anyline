@@ -34,14 +34,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -53,8 +50,6 @@ import org.apache.log4j.Logger;
 
 public class FileUtil {
 	private static Logger LOG = Logger.getLogger(FileUtil.class);
-	private static HttpURLConnection connection = null;
-	private static Map<String,String>acTimes = new HashMap<String,String>();
 	public final static int PATH_TYPE_JAR = 0;
 	
 	/**
@@ -577,6 +572,12 @@ public class FileUtil {
 			}
 		}catch(Exception e){
 			LOG.error(e);
+		}finally{
+			try {
+				in.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return list;
 	}
@@ -726,13 +727,20 @@ public class FileUtil {
 		if(null == file || !file.exists() || file.isDirectory()){
 			return size;
 		}
+		BufferedReader br = null;
 		try{
-			BufferedReader br=new BufferedReader(new FileReader(file));   
+			br=new BufferedReader(new FileReader(file));   
 	        while(br.readLine()!=null){
 	        	size++;
 	        }
         }catch(Exception e){
         	
+        }finally{
+        	try {
+				br.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
         }
         return size;
 	}
