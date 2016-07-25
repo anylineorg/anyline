@@ -171,9 +171,9 @@ public class ZipUtil {
 	 * @throws IOException
 	 *             IO错误时抛出
 	 */
-	public static ArrayList<File> unZipSelectedFile(File zipFile,
-			String folderPath, String nameContains) {
+	public static ArrayList<File> unZipSelectedFile(File zipFile, String folderPath, String nameContains) {
 		ArrayList<File> fileList = new ArrayList<File>();
+		ZipFile zf = null;
 		try {
 
 			File desDir = new File(folderPath);
@@ -181,7 +181,7 @@ public class ZipUtil {
 				desDir.mkdir();
 			}
 
-			ZipFile zf = new ZipFile(zipFile);
+			zf = new ZipFile(zipFile);
 			for (Enumeration<?> entries = zf.entries(); entries
 					.hasMoreElements();) {
 				ZipEntry entry = ((ZipEntry) entries.nextElement());
@@ -212,6 +212,12 @@ public class ZipUtil {
 			}
 		} catch (Exception e) {
 			LOG.error(e);
+		}finally{
+			try {
+				zf.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return fileList;
 	}
@@ -258,6 +264,12 @@ public class ZipUtil {
 			zf = new ZipFile(zipFile);
 		}catch(Exception e){
 			LOG.error(e);
+		}finally{
+			try {
+				zf.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return zf.entries();
 
