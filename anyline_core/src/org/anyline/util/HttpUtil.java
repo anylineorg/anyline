@@ -242,7 +242,7 @@ public class HttpUtil {
 	private GetMethod packGet(String url, Map<String, Object> params) {
 		GetMethod get = null;
 		if (params != null && params.size() > 0) {
-			Iterator paramKeys = params.keySet().iterator();
+			Iterator<String> paramKeys = params.keySet().iterator();
 			StringBuffer getUrl = new StringBuffer(url.trim());
 			if (url.trim().indexOf("?") > -1) {
 				if (url.trim().indexOf("?") < url.trim().length() - 1 && url.trim().indexOf("&") < url.trim().length() - 1) {
@@ -252,7 +252,7 @@ public class HttpUtil {
 				getUrl.append("?");
 			}
 			while (paramKeys.hasNext()) {
-				String key = (String) paramKeys.next();
+				String key = paramKeys.next();
 				Object value = params.get(key);
 				if (null == value) {
 					value = "";
@@ -262,7 +262,8 @@ public class HttpUtil {
 						getUrl.append(key).append("=").append(v).append("&");
 					}
 				} else if (value instanceof Collection) {
-					Collection<Object> con = (Collection)value;
+					@SuppressWarnings("unchecked")
+					Collection<Object> con = (Collection<Object>)value;
 					for (Object v : con) {
 						if(null == v || "".equals(v.toString())){
 							continue;
