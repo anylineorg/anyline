@@ -160,7 +160,44 @@ public class ConfigImpl implements Config{
 //		}
 //		return key;
 //	}
-
+	private List<Object> getDefValues(HttpServletRequest request, ParseResult parser){
+		List<Object> result = new ArrayList<Object>();
+		List<ParseResult> defs = parser.getDefs();
+		if(null != defs){
+			for(ParseResult def:defs){
+				String key = def.getKey();
+				if(key.startsWith("{") && key.endsWith("}")){
+					// col:value
+					key = key.substring(1, key.length()-1);
+					if(key.startsWith("[") && key.endsWith("]")){
+						key = key.substring(1, key.length()-1);
+						String tmps[] = key.split(",");
+						for(String tmp:tmps){
+							if(BasicUtil.isNotEmpty(tmp)){
+								result.add(tmp);
+							}
+						}
+					}else{
+						if(BasicUtil.isNotEmpty(key)){
+							result.add(key);
+						}
+					}
+				}else{
+					// col:key
+					if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == parser.getParamFetchType()){
+						Object v = WebUtil.getHttpRequestParam(request,key,def.isKeyEncrypt(), def.isValueEncrypt());
+						values.add(v);
+					}else{
+						values = WebUtil.getHttpRequestParams(request, key,def.isKeyEncrypt(), def.isValueEncrypt());
+					}
+				}
+				if(!result.isEmpty()){
+					break;
+				}
+			}
+		}
+		return result;
+	}
 	/**
 	 * 赋值
 	 * @param request
@@ -171,14 +208,17 @@ public class ConfigImpl implements Config{
 		}
 		try{
 			String key = parser.getKey();
-			String def = parser.getDef();
+			//String def = parser.getDef();
+			
 			String className = parser.getClazz();
 			String methodName = parser.getMethod();
 			int fetchValueType = parser.getParamFetchType();
 			boolean isKeyEncrypt = parser.isKeyEncrypt();
 			boolean isValueEncrypt = parser.isValueEncrypt();
-			boolean isDefKeyEncrypt = parser.isDefKeyEncrypt();
-			boolean isDefValueEncrypt = parser.isDefValueEncrypt();
+			
+			List<ParseResult> defs = parser.getDefs();
+//			boolean isDefKeyEncrypt = parser.isDefKeyEncrypt();
+//			boolean isDefValueEncrypt = parser.isDefValueEncrypt();
 			
 			if(null != className && null != methodName){
 				Class clazz = Class.forName(className);
@@ -202,31 +242,10 @@ public class ConfigImpl implements Config{
 					values = WebUtil.getHttpRequestParams(request, key,isKeyEncrypt, isValueEncrypt);
 				}
 			}
-			if(null != def && BasicUtil.isEmpty(true,values)){
-				values = new ArrayList<Object>();
-				//{[1,2,3,4]} {1}
-				if(def.startsWith("{") && def.endsWith("}")){
-					def = def.substring(1, def.length()-1);
-					if(def.startsWith("[") && def.endsWith("]")){
-						def = def.substring(1, def.length()-1);
-						String tmps[] = def.split(",");
-						for(String tmp:tmps){
-							values.add(tmp);
-						}
-					}else{
-						values.add(def);
-					}
-				}else{
-					//{cd++}
-					if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
-						Object v = WebUtil.getHttpRequestParam(request,def,isDefKeyEncrypt, isDefValueEncrypt);
-						values.add(v);
-					}else{
-						values = WebUtil.getHttpRequestParams(request, def,isDefKeyEncrypt, isDefValueEncrypt);
-					}
-				}
+			if(null == values || values.isEmpty()){
+				values = getDefValues(request, parser);
 			}
-			empty = BasicUtil.isEmpty(true,values);
+			empty = values.isEmpty();
 		}catch(Exception e){
 			log.error(e);
 		}
