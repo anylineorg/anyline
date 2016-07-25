@@ -1,4 +1,3 @@
-package com.chuangxingu.web.home.controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class TestController extends BasicController {
 		List<Object> ps = getParams("id",false);
 		service.deleteTable("members", "mmb_id", "1");
 		return mv;
-	}
+	} 
 	@RequestMapping("ajax")
 	@ResponseBody
 	public String ajax(HttpServletRequest request, HttpServletResponse response){
