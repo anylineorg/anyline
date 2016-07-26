@@ -106,7 +106,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 			return this;
 		}
 		if(condition.contains(":")){
-			ParseResult parser = ConfigParser.parse(condition);
+			ParseResult parser = ConfigParser.parse(condition, false);
 			Object value = ConfigParser.getValues(parser);
 			addCondition(parser.isRequired(),parser.getId(),value,parser.getCompare());
 		}else{

@@ -106,7 +106,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 			return this;
 		}
 		if(condition.contains(":")){
-			ParseResult parser = ConfigParser.parse(condition);
+			ParseResult parser = ConfigParser.parse(condition,false);
 			
 			String id = parser.getId();
 			String var = null;
