@@ -1,9 +1,17 @@
 package org.anyline.config;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.anyline.config.db.SQL;
+import org.anyline.config.http.impl.ConfigImpl;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.WebUtil;
 
 public class ConfigParser {
 	public static ParseResult parse(String config) {
@@ -30,7 +38,7 @@ public class ConfigParser {
 			id = id.substring(0,id.indexOf("."));
 		}else{
 			//默认变量名
-			//variable = id;
+			field = id;
 		}
 		String key = config.substring(config.indexOf(":")+1,config.length());
 		result.setId(id);
@@ -92,6 +100,7 @@ public class ConfigParser {
 			result.setCompare(SQL.COMPARE_TYPE_LITTLE);
 			config = config.substring(1, config.length());
 		} else if (config.startsWith("[") && config.endsWith("]")) {
+			//[1,2,3]或[1,2,3:4,5,6]
 			result.setCompare(SQL.COMPARE_TYPE_IN);
 			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT);
 			config = config.substring(1,config.length()-1);
@@ -124,8 +133,11 @@ public class ConfigParser {
 			result.setKey(tmp[0]);
 			int size = tmp.length;
 			for(int i=1; i<size; i++){
+				if(BasicUtil.isEmpty(tmp[i])){
+					continue;
+				}
 				ParseResult def = new ParseResult();
-				def.setKey(key);
+				def.setKey(tmp[i]);
 				def = parseEncrypt(def);
 				result.addDef(def);
 			}
@@ -166,4 +178,137 @@ public class ConfigParser {
 		result.put("VALUE_ENCRYPT", isValueEncrypt);
 		return result;
 	} 
+	public static List<Object> getValues(HttpServletRequest request, ParseResult parser){
+		List<Object> values = new ArrayList<Object>();
+		try{
+			String key = parser.getKey();
+			//String def = parser.getDef();
+			String className = parser.getClazz();
+			String methodName = parser.getMethod();
+			int fetchValueType = parser.getParamFetchType();
+			boolean isKeyEncrypt = parser.isKeyEncrypt();
+			boolean isValueEncrypt = parser.isValueEncrypt();
+			
+			if(null != className && null != methodName){
+				Class clazz = Class.forName(className);
+				Method method = clazz.getMethod(methodName, String.class);
+				if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
+					Object v = WebUtil.getHttpRequestParam(request,key,isKeyEncrypt, isValueEncrypt);
+					v = method.invoke(clazz, v);
+					values.add(v);
+				}else{
+					List<Object> vs = WebUtil.getHttpRequestParams(request, key,isKeyEncrypt, isValueEncrypt);
+					for(Object v:vs){
+						v = method.invoke(clazz, v);
+						values.add(v);
+					}
+				}		
+			}else{
+				if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
+					Object v = WebUtil.getHttpRequestParam(request,key,isKeyEncrypt, isValueEncrypt);
+					values.add(v);
+				}else{
+					values = WebUtil.getHttpRequestParams(request, key,isKeyEncrypt, isValueEncrypt);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		if(BasicUtil.isEmpty(true, values)){
+			values = getDefValues(request, parser);
+		}
+		return values;
+	}
+	/**
+	 * 默认值
+	 * @param request
+	 * @param parser
+	 * @return
+	 */
+	private static List<Object> getDefValues(HttpServletRequest request, ParseResult parser){
+		List<Object> result = new ArrayList<Object>();
+		List<ParseResult> defs = parser.getDefs();
+		if(null != defs){
+			for(ParseResult def:defs){
+				String key = def.getKey();
+				if(key.startsWith("{") && key.endsWith("}")){
+					// col:value
+					key = key.substring(1, key.length()-1);
+					if(key.startsWith("[") && key.endsWith("]")){
+						key = key.substring(1, key.length()-1);
+						String tmps[] = key.split(",");
+						for(String tmp:tmps){
+							if(BasicUtil.isNotEmpty(tmp)){
+								result.add(tmp);
+							}
+						}
+					}else{
+						if(BasicUtil.isNotEmpty(key)){
+							result.add(key);
+						}
+					}
+				}else{
+					// col:key
+					if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == parser.getParamFetchType()){
+						Object v = WebUtil.getHttpRequestParam(request,key,def.isKeyEncrypt(), def.isValueEncrypt());
+						result.add(v);
+					}else{
+						result = WebUtil.getHttpRequestParams(request, key,def.isKeyEncrypt(), def.isValueEncrypt());
+					}
+				}
+				if(!result.isEmpty()){
+					break;
+				}
+			}
+		}
+		return result;
+	}
+	public static List<Object> getValues(ParseResult parser){
+		List<Object> result = new ArrayList<Object>();
+		String value = parser.getKey();
+		if(BasicUtil.isNotEmpty(value)){
+			if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT == parser.getParamFetchType()){
+				String[] values = value.split(",");
+				for(String tmp:values){
+					if(BasicUtil.isNotEmpty(tmp)){
+						result.add(tmp);
+					}
+				}
+			}else{
+				result.add(parser.getKey());
+			}
+		}
+		if(BasicUtil.isEmpty(true, result)){
+			result = getDefValues(parser);
+		}
+		return result;
+	}
+	private static List<Object> getDefValues(ParseResult parser){
+		List<Object> result = new ArrayList<Object>();
+		List<ParseResult> defs = parser.getDefs();
+		if(null != defs){
+			for(ParseResult def:defs){
+				String key = def.getKey();
+				if(key.startsWith("[") && key.endsWith("]")){
+					key = key.substring(1, key.length()-1);
+				}
+				if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT == parser.getParamFetchType()){
+					String tmps[] = key.split(",");
+					for(String tmp:tmps){
+						if(BasicUtil.isNotEmpty(tmp)){
+							result.add(tmp);
+						}
+					}
+				}else{
+					if(BasicUtil.isNotEmpty(key)){
+						result.add(key);
+					}
+				}
+				if(!result.isEmpty()){
+					break;
+				}
+			}
+		}
+		return result;
+	}
 }

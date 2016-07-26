@@ -110,7 +110,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 			
 			String id = parser.getId();
 			String var = null;
-			String value = parser.getKey();
+			Object value = ConfigParser.getValues(parser);//parser.getKey();
 			if(id.contains(".")){
 				String[] keys = id.split(".");
 				id = keys[0];

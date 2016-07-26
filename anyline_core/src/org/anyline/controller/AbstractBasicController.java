@@ -87,7 +87,7 @@ public class AbstractBasicController{
 					/* 解析属性与request参数对应关系 */
 
 					ParseResult parser = ConfigParser.parse(param);
-					Object value = getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
+					Object value = ConfigParser.getValues(request, parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
 					BeanUtil.setFieldValue(entity, parser.getId(), value);
 				}// end for
 			} else {// end指定属性与request参数对应关系
@@ -131,7 +131,7 @@ public class AbstractBasicController{
 		if (null != params && params.length > 0) {
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param);
-				Object value = getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
+				Object value = ConfigParser.getValues(request, parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
 				row.put(parser.getId().toUpperCase(), value);
 			}
 		}else{
