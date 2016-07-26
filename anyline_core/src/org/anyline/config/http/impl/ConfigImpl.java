@@ -160,92 +160,15 @@ public class ConfigImpl implements Config{
 //		}
 //		return key;
 //	}
-	private List<Object> getDefValues(HttpServletRequest request, ParseResult parser){
-		List<Object> result = new ArrayList<Object>();
-		List<ParseResult> defs = parser.getDefs();
-		if(null != defs){
-			for(ParseResult def:defs){
-				String key = def.getKey();
-				if(key.startsWith("{") && key.endsWith("}")){
-					// col:value
-					key = key.substring(1, key.length()-1);
-					if(key.startsWith("[") && key.endsWith("]")){
-						key = key.substring(1, key.length()-1);
-						String tmps[] = key.split(",");
-						for(String tmp:tmps){
-							if(BasicUtil.isNotEmpty(tmp)){
-								result.add(tmp);
-							}
-						}
-					}else{
-						if(BasicUtil.isNotEmpty(key)){
-							result.add(key);
-						}
-					}
-				}else{
-					// col:key
-					if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == parser.getParamFetchType()){
-						Object v = WebUtil.getHttpRequestParam(request,key,def.isKeyEncrypt(), def.isValueEncrypt());
-						values.add(v);
-					}else{
-						values = WebUtil.getHttpRequestParams(request, key,def.isKeyEncrypt(), def.isValueEncrypt());
-					}
-				}
-				if(!result.isEmpty()){
-					break;
-				}
-			}
-		}
-		return result;
-	}
 	/**
 	 * 赋值
 	 * @param request
 	 */
 	public void setValue(HttpServletRequest request){
-		if(null == values){
-			values = new ArrayList<Object>();
-		}
 		try{
-			String key = parser.getKey();
-			//String def = parser.getDef();
+			values = ConfigParser.getValues(request, parser);
 			
-			String className = parser.getClazz();
-			String methodName = parser.getMethod();
-			int fetchValueType = parser.getParamFetchType();
-			boolean isKeyEncrypt = parser.isKeyEncrypt();
-			boolean isValueEncrypt = parser.isValueEncrypt();
-			
-			List<ParseResult> defs = parser.getDefs();
-//			boolean isDefKeyEncrypt = parser.isDefKeyEncrypt();
-//			boolean isDefValueEncrypt = parser.isDefValueEncrypt();
-			
-			if(null != className && null != methodName){
-				Class clazz = Class.forName(className);
-				Method method = clazz.getMethod(methodName, String.class);
-				if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
-					Object v = WebUtil.getHttpRequestParam(request,key,isKeyEncrypt, isValueEncrypt);
-					v = method.invoke(clazz, v);
-					values.add(v);
-				}else{
-					List<Object> vs = WebUtil.getHttpRequestParams(request, key,isKeyEncrypt, isValueEncrypt);
-					for(Object v:vs){
-						v = method.invoke(clazz, v);
-						values.add(v);
-					}
-				}		
-			}else{
-				if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
-					Object v = WebUtil.getHttpRequestParam(request,key,isKeyEncrypt, isValueEncrypt);
-					values.add(v);
-				}else{
-					values = WebUtil.getHttpRequestParams(request, key,isKeyEncrypt, isValueEncrypt);
-				}
-			}
-			if(null == values || values.isEmpty()){
-				values = getDefValues(request, parser);
-			}
-			empty = values.isEmpty();
+			empty = BasicUtil.isEmpty(true, values);
 		}catch(Exception e){
 			log.error(e);
 		}

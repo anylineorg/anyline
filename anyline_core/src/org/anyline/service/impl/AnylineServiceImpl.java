@@ -71,7 +71,7 @@ public class AnylineServiceImpl implements AnylineService {
 		if(ConfigTable.isSQLDebug()){
 			log.warn("[解析SQL] [src:" + src + "]");
 		}
-		conditions = parseConditions(conditions);
+		//conditions = parseConditions(conditions);
 		try {
 				PageNavi navi =  null;
 				String lazyKey = null;
@@ -127,7 +127,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * 			CD:null		删除
 	 * 			CD:NULL		拼接 IS NULL
 	 */
-	private String[] parseConditions(String[] conditions){
+	private String[] parseConditionsss(String[] conditions){
 		conditions = BasicUtil.compressionSpace(conditions);
 		if(null != conditions){
 			int length = conditions.length;
@@ -550,7 +550,7 @@ public class AnylineServiceImpl implements AnylineService {
 
 	public boolean exists(DataSource ds, String src, ConfigStore configs, String ... conditions){
 		boolean result = false;
-		conditions = parseConditions(conditions);
+		//conditions = parseConditions(conditions);
 		SQL sql = createSQL(src);
 		result = dao.exists(ds, sql, configs, conditions);
 		return result;
@@ -590,7 +590,7 @@ public class AnylineServiceImpl implements AnylineService {
 	public int count(DataSource ds, String src, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try {
-			conditions = parseConditions(conditions);
+			//conditions = parseConditions(conditions);
 			SQL sql = createSQL(src);
 			count = dao.count(ds, sql, configs, conditions);
 		} catch (Exception e) {

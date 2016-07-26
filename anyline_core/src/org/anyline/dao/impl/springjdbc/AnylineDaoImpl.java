@@ -157,7 +157,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8)+"]";
 			log.warn(random + "[TXT:\n" + txt + "]");
-			log.warn(random + "[参数:" + values + "]");
+			String params = "";
+			int idx = 0;
+			if(null != values){
+				for(Object obj:values){
+					params += " param" + idx++ + "=" + obj;
+				}
+			}
+			log.warn(random + "[参数:"+ params + "]");
 		}
 		/*执行SQL*/
 		try{
@@ -225,7 +232,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8)+"]";
 			log.warn(random + "[TXT:\n"+sql + "]");
-			log.warn(random + "[参数:"+values + "]");
+			String params = "";
+			int idx = 0;
+			if(null != values){
+				for(Object tmp:values){
+					params += " param" + idx++ + "=" + tmp;
+				}
+			}
+			log.warn(random + "[参数:"+ params + "]");
 		}
 		/*执行SQL*/
 		try{
@@ -354,7 +368,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8)+"]";
 			log.warn(random + "[TXT:\n"+sql + "]");
-			log.warn(random + "[参数:"+values + "]");
+			String params = "";
+			int idx = 0;
+			if(null != values){
+				for(Object obj:values){
+					params += " param" + idx++ + "=" + obj;
+				}
+			}
+			log.warn(random + "[参数:"+ params + "]");
 		}
 		try{
 			cnt= jdbc.update(new PreparedStatementCreator() {
@@ -524,7 +545,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8)+"]";
 			log.warn(random + "[TXT:\n"+sql + "]");
-			log.warn(random + "[参数:"+values + "]");
+			String params = "";
+			int idx = 0;
+			if(null != values){
+				for(Object obj:values){
+					params += " param" + idx++ + "=" + obj;
+				}
+			}
+			log.warn(random + "[参数:"+ params + "]");
 		}
 		DataSet set = new DataSet();
 		try{
@@ -566,7 +594,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8)+"]";
 			log.warn(random + "[TXT:\n"+txt + "]");
-			log.warn(random + "[参数:"+values + "]");
+			String params = "";
+			int idx = 0;
+			if(null != values){
+				for(Object obj:values){
+					params += " param" + idx++ + "=" + obj;
+				}
+			}
+			log.warn(random + "[参数:"+ params + "]");
 		}
 		try{
 			if(null != values && values.size() > 0){
@@ -612,7 +647,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8)+"]"; 
 			log.warn(random + "[TXT:\n"+procedure.getName() + "]");
-			log.warn(random + "[参数:"+inputValues + "]");
+			String params = "";
+			int idx = 0;
+			if(null != inputValues){
+				for(Object obj:inputValues){
+					params += " param" + idx++ + "=" + obj;
+				}
+			}
+			log.warn(random + "[参数:"+ params + "]");
 		}
 		String sql = "{call "+procedure.getName()+"(";
 		final int sizeIn = null == inputTypes? 0 : inputTypes.size();
@@ -689,7 +731,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8)+"]";
 			log.warn(random + "[TXT:\n"+procedure.getName() + "]");
-			log.warn(random + "[参数:"+inputValues + "]");
+			String params = "";
+			int idx = 0;
+			if(null != inputValues){
+				for(Object obj:inputValues){
+					params += " param" + idx++ + "=" + obj;
+				}
+			}
+			log.warn(random + "[参数:"+ params + "]");
 		}
 		final String rdm = random;
 		DataSet set = null;
@@ -800,7 +849,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8)+"]";
 			log.warn(random + "[TXT:\n" + sql + "]");
-			log.warn(random + "[参数:" + values + "]");
+			String params = "";
+			int idx = 0;
+			if(null != values){
+				for(Object obj:values){
+					params += " param" + idx++ + "=" + obj;
+				}
+			}
+			log.warn(random + "[参数:"+ params + "]");
 		}
 		try{
 			result = jdbc.update(
