@@ -109,7 +109,7 @@ public class ConfigImpl implements Config{
 	 * @return
 	 */
 	public ConfigImpl(String config){
-		parser = ConfigParser.parse(config);
+		parser = ConfigParser.parse(config, true);
 //		join = Condition.CONDITION_JOIN_TYPE_AND;
 //		/*确定id variable require*/
 //		id = config.substring(0,config.indexOf(":"));

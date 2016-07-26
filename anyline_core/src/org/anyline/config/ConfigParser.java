@@ -14,9 +14,9 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
 
 public class ConfigParser {
-	public static ParseResult parse(String config) {
+	public static ParseResult parse(String config, boolean isKey) {
 		ParseResult result = parseInit(config);
-		result = parseCompare(result);
+		result = parseCompare(result, isKey);
 		result = parseClassMethod(result);
 		result = parseDef(result);
 		result = parseEncrypt(result);
@@ -80,9 +80,10 @@ public class ConfigParser {
 	/**
 	 * 解析 比较方式
 	 * @param result
+	 * @param isKey true:parseConfig参数 false:query参数
 	 * @return
 	 */
-	private static ParseResult parseCompare(ParseResult result){
+	private static ParseResult parseCompare(ParseResult result, boolean isKey){
 		String config = result.getKey();
 		if (config.startsWith(">=")) {
 			result.setCompare(SQL.COMPARE_TYPE_GREAT_EQUAL);
@@ -100,10 +101,13 @@ public class ConfigParser {
 			result.setCompare(SQL.COMPARE_TYPE_LITTLE);
 			config = config.substring(1, config.length());
 		} else if (config.startsWith("[") && config.endsWith("]")) {
-			//[1,2,3]或[1,2,3:4,5,6]
+			//[1,2,3]或[1,2,3]:[1,2,3]
+			//id:[id:cd:{[1,2,3]}]
 			result.setCompare(SQL.COMPARE_TYPE_IN);
 			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT);
-			config = config.substring(1,config.length()-1);
+			if(isKey){
+				config = config.substring(1,config.length()-1);
+			}
 			
 		} else if (config.startsWith("%")) {
 			if (config.endsWith("%")) {
@@ -234,8 +238,10 @@ public class ConfigParser {
 				if(key.startsWith("{") && key.endsWith("}")){
 					// col:value
 					key = key.substring(1, key.length()-1);
-					if(key.startsWith("[") && key.endsWith("]")){
-						key = key.substring(1, key.length()-1);
+					if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT == parser.getParamFetchType()){
+						if(key.startsWith("[") && key.endsWith("]")){
+							key = key.substring(1, key.length()-1);
+						}
 						String tmps[] = key.split(",");
 						for(String tmp:tmps){
 							if(BasicUtil.isNotEmpty(tmp)){
@@ -268,6 +274,9 @@ public class ConfigParser {
 		String value = parser.getKey();
 		if(BasicUtil.isNotEmpty(value)){
 			if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT == parser.getParamFetchType()){
+				if(value.startsWith("[") && value.endsWith("]")){
+					value = value.substring(1, value.length()-1);
+				}
 				String[] values = value.split(",");
 				for(String tmp:values){
 					if(BasicUtil.isNotEmpty(tmp)){
@@ -289,10 +298,10 @@ public class ConfigParser {
 		if(null != defs){
 			for(ParseResult def:defs){
 				String key = def.getKey();
-				if(key.startsWith("[") && key.endsWith("]")){
-					key = key.substring(1, key.length()-1);
-				}
 				if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT == parser.getParamFetchType()){
+					if(key.startsWith("[") && key.endsWith("]")){
+						key = key.substring(1, key.length()-1);
+					}
 					String tmps[] = key.split(",");
 					for(String tmp:tmps){
 						if(BasicUtil.isNotEmpty(tmp)){
