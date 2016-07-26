@@ -86,7 +86,7 @@ public class AbstractBasicController{
 				for (String param : params) {
 					/* 解析属性与request参数对应关系 */
 
-					ParseResult parser = ConfigParser.parse(param);
+					ParseResult parser = ConfigParser.parse(param,true);
 					Object value = ConfigParser.getValues(request, parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
 					BeanUtil.setFieldValue(entity, parser.getId(), value);
 				}// end for
@@ -130,7 +130,7 @@ public class AbstractBasicController{
 		}
 		if (null != params && params.length > 0) {
 			for (String param : params) {
-				ParseResult parser = ConfigParser.parse(param);
+				ParseResult parser = ConfigParser.parse(param,true);
 				Object value = ConfigParser.getValues(request, parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
 				row.put(parser.getId().toUpperCase(), value);
 			}
@@ -175,7 +175,7 @@ public class AbstractBasicController{
 
 			Map<String,List<Object>> map = new HashMap<String,List<Object>>();
 			for (String param : params) {
-				ParseResult parser = ConfigParser.parse(param);
+				ParseResult parser = ConfigParser.parse(param,true);
 				map.put(parser.getId().toUpperCase(), getParams(request,param,keyEncrypt, valueEncrypt));
 			}
 			
@@ -183,7 +183,7 @@ public class AbstractBasicController{
 			for(int i=0; i<size; i++){
 				DataRow row = new DataRow();
 				for (String param : params) {
-					ParseResult parser = ConfigParser.parse(param);
+					ParseResult parser = ConfigParser.parse(param,true);
 					List<Object> values = map.get(parser.getId().toUpperCase());
 					row.put(parser.getId(), values.get(i));
 				}
@@ -357,7 +357,7 @@ public class AbstractBasicController{
 				continue;
 			}
 
-			ParseResult parser = ConfigParser.parse(param);
+			ParseResult parser = ConfigParser.parse(param, true);
 			if (BasicUtil.isEmpty(getParam(request, parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt()))) {
 				setMessage(request,"请提供必须参数:" + parser.getId());
 				result = false;

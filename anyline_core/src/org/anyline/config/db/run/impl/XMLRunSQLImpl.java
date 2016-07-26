@@ -139,7 +139,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		//condition赋值
 		if(null != conditions){
 			for(String condition:conditions){
-				ParseResult parser = ConfigParser.parse(condition);
+				ParseResult parser = ConfigParser.parse(condition,false);
 				Object value = ConfigParser.getValues(parser);// parser.getKey();
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT){
 					String[] tmp = value.toString().split(",");
