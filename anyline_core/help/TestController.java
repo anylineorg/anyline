@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +24,16 @@ public class TestController extends BasicController {
 	@RequestMapping("index")
 	public ModelAndView index(HttpServletRequest request, HttpServletResponse response){
 		ModelAndView mv = template("index.jsp");
-		service.query("web.pc.test:GET_MEMBERS","TID.foo:10");
-		DataSet set = service.query("members", parseConfig(true));
-//		set = service.query("members", parseConfig(true, "+mmb_id:%id++:member++"));
+//		service.query("web.pc.test:GET_MEMBERS","TID.foo:10");
+		DataSet set = null;
+		//set = service.query("members", parseConfig(true));
+		//set = service.query("members", parseConfig(true, "+mmb_id:%id++:member++","mmb_name:[name:::{}:{[]}:{[,]}:{[12,23]}]"));
 		mv.addObject("set", set);
-		List<Object> ps = getParams("id",false);
-		service.deleteTable("members", "mmb_id", "1");
-		return mv;
-	} 
+//		List<Object> ps = getParams("id",false);
+//		service.delete("members", "mmb_id", "1");
+		service.query("members","mmb_name:[,]::[6,7]:[11,23]");
+		return null;
+	}
 	@RequestMapping("ajax")
 	@ResponseBody
 	public String ajax(HttpServletRequest request, HttpServletResponse response){
@@ -119,13 +120,14 @@ public class TestController extends BasicController {
 		set = service.query("members", parseConfig(true, "+mmb_id:id-+:member-+"));
 		set = service.query("members", parseConfig(true, "+mmb_id:id:{0}"));
 		set = service.query("members", parseConfig(true, "+mmb_id:id:{[1,2,3]}"));
-		set = service.query("members", parseConfig(true, "+mmb_id:[id:member]"));
+		set = service.query("members", parseConfig(true, "+mmb_id:[id:member:{[1,2,3]}]"));
 		set = service.query("members", parseConfig(true, "+mmb_name:%name:member%"));
 		set = service.query("members", parseConfig(true, "+mmb_name:%name:{ljs}%"));
 		set = service.query("members", parseConfig(true, "+mmb_id:%id++:member++"));
+		set = service.query("members", "mmb_id::1:2");
+		set = service.query("members", "mmb_id:[]:[,][1,2,3]:[3,4,5]");
 		
-		
-		
+
 		//分页 通过parseConfig(true)或parseConfig(10
 		//执行分页查询后,在jsp中通过{navi}或{set.navi}显示分页 
 		//{navi}将生成html.form,parseConfig()解析出来的查询参数会隐藏于form中,
@@ -252,10 +254,9 @@ public class TestController extends BasicController {
 		
 		//删除
 		service.delete(member);//根据主键删除
-		service.delete(member, "mmb_id");	//根据mmb_id删除,忽略主键
-		service.delete("member", member, "mmb_id");	//从member表中删除
-		service.deleteTable("members", "mmb_id", getParams("id"));	//直接根据表与列删除
-		service.deleteTable("members", "mmb_id", "1","2");	//直接根据表与列删除
+		service.delete("member", member);	//从member表中删除
+		service.delete("members", "mmb_id", getParams("id"));	//直接根据表与列删除
+		service.delete("members", "mmb_id", "1","2");	//直接根据表与列删除mmb_id in(1,2)
 		
 		//原生 SQL 特殊情况下才需要执行原生SQL
 		service.query("SELECT * FROM members WHERE mmb_id = 2",parseConfig(true),"mmb_name:ljs");
@@ -384,25 +385,28 @@ public class TestController extends BasicController {
 		 
 		//set的几个方法
 		set.getRow(0);
-		set.getRows("mmb_name:ljs","age:1");				//符合条件的行
-		set.getRows("mmb_name","ljs", "age","1");
+		set.getRows("name:ljs","age:1");				//符合条件的行
+		set.getRows("name","ljs", "age","1");
 		set.getRows(0, 5);
-		set.sum("mmb_id");
-		set.avg("mmb_age");
+		set.sum("id");
+		set.avg("age");
 		set.contains(new DataRow());
-		set.union(new DataSet(),"mmb_id");
+		set.union(new DataSet(),"id");
 		set.unionAll(new DataSet());
-		set.difference(new DataSet(), "mmb_id");
+		set.difference(new DataSet(), "id");
 		set.or(new DataSet());
-		set.distinct("mmb_id","mmb_name");
-		set.fetchValues("mmb_name");
-		set.fetchDistinctValue("mmb_name");
-		set.max("mmb_age");
-		set.min("mmb_age");
+		set.distinct("id","name");
+		set.fetchValues("name");
+		set.fetchDistinctValue("name");
+		set.max("gae");
+		set.min("age");
+		set.minRow("age");
+		set.maxRow("age");
+		set.order("age");
 		set.isExpire(1000*60*60);								//从创建到现在是否已超过ms毫秒 (DataRow有相同函数)
 		set.toJSON();
-		set.dispatchItems(new DataSet(), "mmb_id","mmb_name");
-		set.group("mmb_id", "mmb_name");
+		set.dispatchItems(new DataSet(), "id","name");
+		set.group("id", "name");
 		
 		
 		
