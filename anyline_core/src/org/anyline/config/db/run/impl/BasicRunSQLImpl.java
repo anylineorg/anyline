@@ -274,15 +274,14 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		}else if(condition.contains(":")){
 			//需要解析的SQL
 			ParseResult parser = ConfigParser.parse(condition);
-			addCondition(parser.isRequired(),parser.getId(),parser.getKey(),parser.getCompare());
+			Object value = ConfigParser.getValues(parser);
+			addCondition(parser.isRequired(),parser.getId(),value,parser.getCompare());
 		}else{
 			Condition con = new AutoConditionImpl(condition);
 			conditionChain.addCondition(con);
 		}
 		return this;
 	}
-
-
 	public RunSQL addCondition(Condition condition) {
 		if(null != conditionChain){
 			conditionChain.addCondition(condition);
