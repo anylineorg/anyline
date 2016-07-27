@@ -36,7 +36,8 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataRow extends HashMap<String, Object> implements Serializable{
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -2098827041540802313L;
+
 	private static Logger log = Logger.getLogger(DataRow.class);
 
 	public static String PARENT 		= "PARENT";				//上级数据

@@ -78,7 +78,7 @@ public class AnylineServiceImpl implements AnylineService {
 				if(null != configs){
 					navi = configs.getPageNavi();
 					if(null != navi && navi.isLazy()){
-						lazyKey = createCacheElementKey(false, false, src, configs, conditions);
+						lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
 						int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
 						navi.setTotalRow(total);
 					}
@@ -254,58 +254,7 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet query(String src, int fr, int to, String... conditions) {
 		return query(null, src, fr, to, conditions);
 	}
-	/**
-	 * 创建cache key
-	 * @param page 是否需要拼接分页下标
-	 * @param src
-	 * @param store
-	 * @param conditions
-	 * @return
-	 */
-	private String createCacheElementKey(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
-		conditions = BasicUtil.compressionSpace(conditions);
-		String result = src+"|";
-		if(null != store){
-			ConfigChain chain = store.getConfigChain();
-			if(null != chain){
-				List<Config> configs = chain.getConfigs();
-				if(null != configs){
-					for(Config config:configs){
-						String key = config.getKey();
-						List<Object> values = config.getValues();
-						result += key+ "=";
-						for(Object value:values){
-							result += value.toString()+"|";
-						}
-					}	
-				}
-			}
-			PageNavi navi = store.getPageNavi();
-			if(page && null != navi){
-				result += "page=" + navi.getCurPage()+"|first=" + navi.getFirstRow() + "|last="+navi.getLastRow()+"|";
-			}
-			if(order){
-				OrderStore orders = store.getOrders();
-				if(null != orders){
-					result += orders.getRunText("").toUpperCase() +"|";
-				}
-			}
-		}
-		if(null != conditions){
-			for(String condition:conditions){
-				if(BasicUtil.isNotEmpty(condition)){
-					if(condition.trim().toUpperCase().startsWith("ORDER")){
-						if(order){
-							result += condition.toUpperCase() + "|";
-						}
-					}else{
-						result += condition+"|";
-					}
-				}
-			}
-		}
-		return result;
-	}
+	
 	
 	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 
@@ -320,7 +269,7 @@ public class AnylineServiceImpl implements AnylineService {
 			cache = tmp[0];
 			key += tmp[1]+":";
 		}
-		key += createCacheElementKey(true, true, src, configs, conditions);
+		key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
         	Object value = element.getObjectValue();
@@ -451,7 +400,7 @@ public class AnylineServiceImpl implements AnylineService {
 			cache = tmp[0];
 			key += tmp[1]+":";
 		}
-		key +=  createCacheElementKey(true, true, src, configs, conditions);
+		key +=  CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
             Object value = element.getObjectValue();
@@ -491,7 +440,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 */
 	public boolean removeCache(String cache, String src, ConfigStore configs, String ... conditions){
 		conditions = BasicUtil.compressionSpace(conditions);
-		String key = createCacheElementKey(true, true, src, configs, conditions);
+		String key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
 		CacheUtil.remove(cache, "SET:" + key);
 		CacheUtil.remove(cache, "ROW:" + key);
 		return true;
