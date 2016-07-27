@@ -210,8 +210,6 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	}
 	@Override
 	public void createRunText(StringBuilder builder) {
-		// TODO Auto-generated method stub
-		
 	}
 	@Override
 	public String getDistinct() {
@@ -223,12 +221,10 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	}
 	@Override
 	public String getText() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
 	public List<SQLVariable> getSQLVariables() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
