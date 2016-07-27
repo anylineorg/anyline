@@ -200,7 +200,6 @@ public class TemplateController extends AnylineController {
 		try {
 			superDir = (String)BeanUtil.getFieldValue(getClass().getSuperclass().newInstance(), "dir");
 		} catch (InstantiationException | IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		if(null != dir){
