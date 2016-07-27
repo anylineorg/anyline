@@ -22,6 +22,7 @@ package org.anyline.util.regular;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
@@ -66,13 +67,8 @@ public class RegularUtil {
 	 */
 	public static List<List<String>> fetch(String src, String regx, int mode) throws Exception{
 		List<List<String>> result = null;
-		try{
-			regular = regularList.get(mode);
-			result = regular.fetch(src, regx);
-		}catch(Exception e){
-			log.error(e);
-			throw e;
-		}
+		regular = regularList.get(mode);
+		result = regular.fetch(src, regx);
 		return result;
 	}
 	public static List<List<String>> fetch(String src, String regx) throws Exception{
@@ -80,12 +76,8 @@ public class RegularUtil {
 	}
 	public static List<String> fetch(String src, String regx, int mode, int idx) throws Exception{
 		List<String> result = null;
-		try{
-			regular = regularList.get(mode);
-			result = regular.fetch(src, regx, idx);
-		}catch(Exception e){
-			throw e;
-		}
+		regular = regularList.get(mode);
+		result = regular.fetch(src, regx, idx);
 		return result;
 	}
 	public static List<String> filter(List<String> src, String regx, int regxMode, String filterType){
@@ -142,9 +134,10 @@ public class RegularUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
 			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
-			
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 		}
 		return idx;
 	}
@@ -167,6 +160,9 @@ public class RegularUtil {
 			}
 		}catch(Exception e){
 			log.error("regexpValue:\n"+e);
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
