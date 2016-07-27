@@ -262,23 +262,4 @@ public class RegularUtil {
 		}
 		return list;
 	}
-//	/**
-//	 * 解析并替换变量
-//	 * @param src
-//	 * @param data
-//	 * @return
-//	 */
-//	public static String parseVariable(String src, Object data){	
-//		 String result = src;
-//		 try{
-//			 List<String> keys = fetch(src, REGEX_VARIABLE, RegularUtil.MATCH_MODE_CONTAIN, 1);
-//			 for(String key:keys){
-//				 Object value = BasicUtil.zvl(BeanUtil.getPropertyValue(data, key));
-//				 result = result.replace("{"+key+"}", value.toString());
-//			 }
-//		 }catch(Exception e){
-//			 log.error(e);
-//		 }
-//		 return result;
-//	}
 }
