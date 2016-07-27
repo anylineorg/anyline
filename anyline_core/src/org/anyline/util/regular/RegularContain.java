@@ -22,6 +22,7 @@ package org.anyline.util.regular;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
@@ -53,6 +54,9 @@ public class RegularContain implements Regular{
 			result = matcher.contains(src, pattern);
 		}catch(Exception e){
 			result = false;
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
@@ -79,6 +83,9 @@ public class RegularContain implements Regular{
 			}
 		}catch(Exception e){
 			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 		}
 		return list;
 	}
@@ -102,8 +109,10 @@ public class RegularContain implements Regular{
 				list.add(matchResult.group(idx));
 			}
 		}catch(Exception e){
-			log.error(e);
 			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 			throw e;
 		}
 		return list;
