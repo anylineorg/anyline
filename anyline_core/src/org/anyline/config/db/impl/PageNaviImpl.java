@@ -395,7 +395,6 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	}
 	@Override
 	public String getOrderText(boolean require, OrderStore store) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 	
