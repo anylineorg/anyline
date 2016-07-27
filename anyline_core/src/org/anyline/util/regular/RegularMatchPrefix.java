@@ -22,6 +22,7 @@ package org.anyline.util.regular;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.anyline.util.ConfigTable;
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.PatternCompiler;
@@ -52,6 +53,9 @@ public class RegularMatchPrefix implements Regular{
 			result = matcher.matchesPrefix(src, pattern);
 		}catch(Exception e){
 			result = false;
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}
@@ -77,7 +81,9 @@ public class RegularMatchPrefix implements Regular{
 				list.add(item);
 			}
 		}catch(Exception e){
-			 
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 		}
 		return list;
 	}
@@ -100,7 +106,9 @@ public class RegularMatchPrefix implements Regular{
 				list.add(matchResult.group(idx));
 			}
 		}catch(Exception e){
-			 
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 		}
 		return list;
 	}
