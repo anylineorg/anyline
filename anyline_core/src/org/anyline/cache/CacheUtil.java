@@ -25,6 +25,12 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 
+import org.anyline.config.db.OrderStore;
+import org.anyline.config.db.PageNavi;
+import org.anyline.config.http.Config;
+import org.anyline.config.http.ConfigChain;
+import org.anyline.config.http.ConfigStore;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
@@ -224,4 +230,56 @@ public class CacheUtil {
     	}
     	return result;
     }
+    /**
+	 * 创建cache key
+	 * @param page 是否需要拼接分页下标
+	 * @param src
+	 * @param store
+	 * @param conditions
+	 * @return
+	 */
+	public static String createCacheElementKey(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
+		conditions = BasicUtil.compressionSpace(conditions);
+		String result = src+"|";
+		if(null != store){
+			ConfigChain chain = store.getConfigChain();
+			if(null != chain){
+				List<Config> configs = chain.getConfigs();
+				if(null != configs){
+					for(Config config:configs){
+						String key = config.getKey();
+						List<Object> values = config.getValues();
+						result += key+ "=";
+						for(Object value:values){
+							result += value.toString()+"|";
+						}
+					}	
+				}
+			}
+			PageNavi navi = store.getPageNavi();
+			if(page && null != navi){
+				result += "page=" + navi.getCurPage()+"|first=" + navi.getFirstRow() + "|last="+navi.getLastRow()+"|";
+			}
+			if(order){
+				OrderStore orders = store.getOrders();
+				if(null != orders){
+					result += orders.getRunText("").toUpperCase() +"|";
+				}
+			}
+		}
+		if(null != conditions){
+			for(String condition:conditions){
+				if(BasicUtil.isNotEmpty(condition)){
+					if(condition.trim().toUpperCase().startsWith("ORDER")){
+						if(order){
+							result += condition.toUpperCase() + "|";
+						}
+					}else{
+						result += condition+"|";
+					}
+				}
+			}
+		}
+		return result;
+	}
 }
