@@ -9,6 +9,7 @@ import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataSet;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -97,7 +98,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 				builder.append(") AS T2").append(asc);
 			}else{
 				//2005 及以上
-				if(null == order){
+				if(BasicUtil.isEmpty(order)){
 					order = "ORDER BY "+ ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 				}
 				builder.append("SELECT _TAB_O.* FROM( \n");
