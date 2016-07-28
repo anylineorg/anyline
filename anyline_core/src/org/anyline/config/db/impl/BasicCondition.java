@@ -35,6 +35,7 @@ import org.anyline.config.db.ConditionChain;
  *
  */
 public abstract class BasicCondition implements Condition{
+	private static final long serialVersionUID = -4959462636754773423L;
 	protected boolean required = false;									//是否必须
 	protected boolean active = false;									//是否活动(是否拼接到SQL中)
 	protected int variableType = VARIABLE_FLAG_TYPE_NONE;				//变量标记方式

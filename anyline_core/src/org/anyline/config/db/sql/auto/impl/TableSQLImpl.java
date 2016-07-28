@@ -24,6 +24,8 @@ import java.util.List;
 import org.anyline.config.db.sql.auto.TableSQL;
 
 public class TableSQLImpl extends AutoSQLImpl implements TableSQL{
+	private static final long serialVersionUID = 6290135470325223953L;
+
 	public TableSQLImpl(){
 		super();
 		chain = new AutoConditionChainImpl();

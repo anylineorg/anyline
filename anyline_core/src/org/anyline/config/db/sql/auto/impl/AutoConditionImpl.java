@@ -38,6 +38,7 @@ import org.anyline.util.BasicUtil;
  *
  */
 public class AutoConditionImpl extends BasicCondition implements AutoCondition{
+	private static final long serialVersionUID = 7232219177277303525L;
 	private String column;		//列
 	private Object values;		//参数值
 	private int compare = SQL.COMPARE_TYPE_EQUAL;

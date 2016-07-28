@@ -23,6 +23,7 @@ import org.anyline.config.db.Group;
 
 
 public class GroupImpl implements Group{
+	private static final long serialVersionUID = 5820480420021701152L;
 	private String column;						//排序列
 	
 	public GroupImpl(){}
