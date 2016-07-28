@@ -28,7 +28,6 @@ import net.sf.ehcache.Element;
 
 import org.anyline.cache.CacheUtil;
 import org.anyline.cache.PageLazyStore;
-import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
@@ -37,8 +36,6 @@ import org.anyline.config.db.impl.ProcedureImpl;
 import org.anyline.config.db.impl.SQLStoreImpl;
 import org.anyline.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.config.db.sql.auto.impl.TextSQLImpl;
-import org.anyline.config.http.Config;
-import org.anyline.config.http.ConfigChain;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.config.http.impl.ConfigStoreImpl;
 import org.anyline.dao.AnylineDao;
@@ -73,22 +70,22 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		//conditions = parseConditions(conditions);
 		try {
-				PageNavi navi =  null;
-				String lazyKey = null;
-				if(null != configs){
-					navi = configs.getPageNavi();
-					if(null != navi && navi.isLazy()){
-						lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
-						int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
-						navi.setTotalRow(total);
-					}
-				}
-				SQL sql = createSQL(src);
-				set = dao.query(ds, sql, configs, conditions);
+			PageNavi navi =  null;
+			String lazyKey = null;
+			if(null != configs){
+				navi = configs.getPageNavi();
 				if(null != navi && navi.isLazy()){
-					PageLazyStore.setTotal(lazyKey, navi.getTotalRow());
+					lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
+					int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
+					navi.setTotalRow(total);
 				}
-				set.setService(this);
+			}
+			SQL sql = createSQL(src);
+			set = dao.query(ds, sql, configs, conditions);
+			if(null != navi && navi.isLazy()){
+				PageLazyStore.setTotal(lazyKey, navi.getTotalRow());
+			}
+			set.setService(this);
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
@@ -114,82 +111,6 @@ public class AnylineServiceImpl implements AnylineService {
 		
 	}
 
-	/**
-	 * @param conditions	固定查询条件  
-	 * 			原生SQL(AND GROUP ORDER)
-	 * 			{原生}
-	 * 			+CD:1			拼接
-	 * 			+CD:			拼接 IS NULL
-	 * 			+CD:null		拼接 IS NULL
-	 * 			+CD:NULL		拼接 IS NULL
-	 * 			CD:1		拼接
-	 * 			CD:			删除
-	 * 			CD:null		删除
-	 * 			CD:NULL		拼接 IS NULL
-	 */
-//	private String[] parseConditionsss(String[] conditions){
-//		conditions = BasicUtil.compressionSpace(conditions);
-//		if(null != conditions){
-//			int length = conditions.length;
-//			for(int i=0; i<length; i++){
-//				String condition = conditions[i];
-//				if(null == condition){
-//					condition = "";
-//					continue;
-//				}
-//				if(condition.startsWith("{") && condition.endsWith("}")){
-//					//原生 SQL
-//					continue;
-//				}
-//				if(null == condition || "".equals(condition)){
-//					continue;
-//				}
-//				//CD:1 
-//				//CD:'1' 
-//				//CD=1 
-//				//CD='1' 
-//				//CD:2012-06-06 01:01:01
-//				//CD:'2012-06-06 01:01:01'
-//				//CD:01:01
-//				//CD:'01:01'
-//				//CD ='2012-06-06 01:01:01'  <= < != <> 
-//				//CD IN (1,2)
-//				//CD IN('2012-06-06 01:01:01')
-//				//注意 时间中的: 与分隔符号 冲突(:号之前有运算符号的视为时间) [a-zA-Z]+[a-zA-Z0-9]*:([\\d]{4}-[\\d]{2}-[\\d]{2}\\s+)?\\d{2}:\\d{2}
-///********************************************************* 待处理   时间中的: 与分隔符号 冲突***************************************************************************************/				
-//				if(null != condition && condition.contains(":")){
-//					if(RegularUtil.match(condition, "[a-zA-Z]+\\d{2}:\\d{2}")){
-//						
-//					}
-//					String k = "";
-//					String v = "";
-//					String kv[] = condition.split(":");
-//					if(kv.length > 0){
-//						k = kv[0];
-//					}
-//					if(kv.length > 1){
-//						v = kv[1];
-//					}
-//
-//					if("".equals(k) || "+".equals(k)){
-//						conditions[i] = "";
-//						continue;
-//					}
-//					
-//					if(k.startsWith("+")){
-//						if("null".equalsIgnoreCase(v)){
-//							conditions[i] = k +":NULL";
-//						}
-//					}else{
-//						if("".equals(v) || "null".equals(v)){
-//							conditions[i] = "";
-//						}
-//					}
-//				}
-//			}
-//		}
-//		return conditions;
-//	}
 	private synchronized SQL createSQL(String src){
 		SQL sql = null;
 		src = src.trim();
@@ -965,4 +886,81 @@ public class AnylineServiceImpl implements AnylineService {
 	public int delete(String table, String key, String ... values){
 		return delete(null, table, key, values);
 	}
+
+	/**
+	 * @param conditions	固定查询条件  
+	 * 			原生SQL(AND GROUP ORDER)
+	 * 			{原生}
+	 * 			+CD:1			拼接
+	 * 			+CD:			拼接 IS NULL
+	 * 			+CD:null		拼接 IS NULL
+	 * 			+CD:NULL		拼接 IS NULL
+	 * 			CD:1		拼接
+	 * 			CD:			删除
+	 * 			CD:null		删除
+	 * 			CD:NULL		拼接 IS NULL
+	 */
+//	private String[] parseConditionsss(String[] conditions){
+//		conditions = BasicUtil.compressionSpace(conditions);
+//		if(null != conditions){
+//			int length = conditions.length;
+//			for(int i=0; i<length; i++){
+//				String condition = conditions[i];
+//				if(null == condition){
+//					condition = "";
+//					continue;
+//				}
+//				if(condition.startsWith("{") && condition.endsWith("}")){
+//					//原生 SQL
+//					continue;
+//				}
+//				if(null == condition || "".equals(condition)){
+//					continue;
+//				}
+//				//CD:1 
+//				//CD:'1' 
+//				//CD=1 
+//				//CD='1' 
+//				//CD:2012-06-06 01:01:01
+//				//CD:'2012-06-06 01:01:01'
+//				//CD:01:01
+//				//CD:'01:01'
+//				//CD ='2012-06-06 01:01:01'  <= < != <> 
+//				//CD IN (1,2)
+//				//CD IN('2012-06-06 01:01:01')
+//				//注意 时间中的: 与分隔符号 冲突(:号之前有运算符号的视为时间) [a-zA-Z]+[a-zA-Z0-9]*:([\\d]{4}-[\\d]{2}-[\\d]{2}\\s+)?\\d{2}:\\d{2}
+///********************************************************* 待处理   时间中的: 与分隔符号 冲突***************************************************************************************/				
+//				if(null != condition && condition.contains(":")){
+//					if(RegularUtil.match(condition, "[a-zA-Z]+\\d{2}:\\d{2}")){
+//						
+//					}
+//					String k = "";
+//					String v = "";
+//					String kv[] = condition.split(":");
+//					if(kv.length > 0){
+//						k = kv[0];
+//					}
+//					if(kv.length > 1){
+//						v = kv[1];
+//					}
+//
+//					if("".equals(k) || "+".equals(k)){
+//						conditions[i] = "";
+//						continue;
+//					}
+//					
+//					if(k.startsWith("+")){
+//						if("null".equalsIgnoreCase(v)){
+//							conditions[i] = k +":NULL";
+//						}
+//					}else{
+//						if("".equals(v) || "null".equals(v)){
+//							conditions[i] = "";
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return conditions;
+//	}
 }
