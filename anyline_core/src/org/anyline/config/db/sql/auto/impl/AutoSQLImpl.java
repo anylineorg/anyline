@@ -34,6 +34,7 @@ import org.anyline.config.db.sql.auto.AutoSQL;
 import org.anyline.util.BasicUtil;
 
 public class AutoSQLImpl extends BasicSQL implements AutoSQL{
+	private static final long serialVersionUID = 4804654368819564162L;
 	protected String schema;
 	protected String table;
 	protected List<String> columns;
@@ -48,6 +49,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	}
 	/**
 	 * 设置数据源
+	 * table(c1,c2)[pk1,pk2]
 	 */
 	public SQL setDataSource(String table){
 		if(null == table){

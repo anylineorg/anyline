@@ -36,14 +36,15 @@ import org.anyline.util.Constant;
 import org.apache.log4j.Logger;
 
 public abstract class BasicSQL implements SQL{
+	private static final long serialVersionUID = 4425561226335747225L;
 
 	protected static Logger log = Logger.getLogger(BasicSQL.class);
-
-
 	protected ConditionChain chain;			//查询条件
-	protected OrderStore orders;
+	protected OrderStore orders;			//排序
 	protected GroupStore groups;			//分组条件
 	protected PageNavi navi;				//分页
+	protected List<String> pks;				//主键
+	
 	//运行时参数值
 	protected Vector<Object> runValues;
 	public int getVersion(){

@@ -30,7 +30,7 @@ import org.anyline.config.db.Procedure;
 
 
 public class ProcedureImpl  implements Procedure{
-
+	private static final long serialVersionUID = -1421673036222025241L;
 	private String name;
 	private List<Integer> outputTypes;	//输出参数类型
 	private List<String> inputValues;

@@ -32,6 +32,7 @@ import org.anyline.config.db.ConditionChain;
  *
  */
 public abstract class BasicConditionChain extends BasicCondition implements ConditionChain{
+	private static final long serialVersionUID = 8226224203628527018L;
 	protected List<Condition> conditions = new ArrayList<Condition>();
 	protected int joinSize;
 	

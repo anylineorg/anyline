@@ -27,6 +27,7 @@ import org.anyline.config.db.GroupStore;
 import org.anyline.util.BasicUtil;
 
 public class GroupStoreImpl implements GroupStore{
+	private static final long serialVersionUID = 1257282062069295247L;
 	private List<Group> groups;
 
 	public GroupStoreImpl() {

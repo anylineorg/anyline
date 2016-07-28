@@ -23,6 +23,7 @@ import org.anyline.config.db.Order;
 import org.anyline.util.BasicUtil;
 
 public class OrderImpl implements Order{
+	private static final long serialVersionUID = -765229283714551699L;
 	public static final String ORDER_TYPE_ASC = "ASC";
 	public static final String ORDER_TYPE_DESC = "DESC";
 	private String column;						//排序列

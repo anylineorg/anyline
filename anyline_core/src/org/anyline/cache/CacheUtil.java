@@ -39,7 +39,7 @@ public class CacheUtil {
 	private static CacheManager manager = null;
 	private static Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
 	
-	public static CacheManager create(){
+	public static CacheManager createManager(){
 		long fr = System.currentTimeMillis();
 		if(null == manager){
 			manager = CacheManager.create();
@@ -54,17 +54,17 @@ public class CacheUtil {
 	}
 	
 	public static Cache getCache(String channel){
-		CacheManager manager = create();
+		CacheManager manager = createManager();
 		Cache cache = manager.getCache(channel);
 		if(null == cache){
-			create().addCache(channel);
+			createManager().addCache(channel);
 		}
 		cache = manager.getCache(channel);
 		return cache;
 	}
 	public static List<String> getCacheNames(){
 		List<String> names = new ArrayList<String>();
-		CacheManager manager = create();
+		CacheManager manager = createManager();
 		for(String name:manager.getCacheNames()){
 			names.add(name);
 		}
@@ -72,7 +72,7 @@ public class CacheUtil {
 	}
 	public static List<Cache> getCaches(){
 		List<Cache> caches = new ArrayList<Cache>();
-		CacheManager manager = create();
+		CacheManager manager = createManager();
 		for(String name:manager.getCacheNames()){
 			caches.add(manager.getCache(name));
 		}
@@ -105,9 +105,6 @@ public class CacheUtil {
 	    	}
 		}
 		return result;
-	}
-	public static Object getCache(String channel, String key){
-		return getElement(channel, key);
 	}
 	
 	
@@ -143,7 +140,7 @@ public class CacheUtil {
 	public static boolean clear(String channel){
 		boolean result = true;
 		try{
-			CacheManager manager = create();
+			CacheManager manager = createManager();
 			manager.removeCache(channel);
 	    	if(ConfigTable.isDebug()){
 	    		log.warn("[清空缓存数据] [channel:" + channel + "]");
