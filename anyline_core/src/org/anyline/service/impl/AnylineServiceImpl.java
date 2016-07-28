@@ -127,69 +127,69 @@ public class AnylineServiceImpl implements AnylineService {
 	 * 			CD:null		删除
 	 * 			CD:NULL		拼接 IS NULL
 	 */
-	private String[] parseConditionsss(String[] conditions){
-		conditions = BasicUtil.compressionSpace(conditions);
-		if(null != conditions){
-			int length = conditions.length;
-			for(int i=0; i<length; i++){
-				String condition = conditions[i];
-				if(null == condition){
-					condition = "";
-					continue;
-				}
-				if(condition.startsWith("{") && condition.endsWith("}")){
-					//原生 SQL
-					continue;
-				}
-				if(null == condition || "".equals(condition)){
-					continue;
-				}
-				//CD:1 
-				//CD:'1' 
-				//CD=1 
-				//CD='1' 
-				//CD:2012-06-06 01:01:01
-				//CD:'2012-06-06 01:01:01'
-				//CD:01:01
-				//CD:'01:01'
-				//CD ='2012-06-06 01:01:01'  <= < != <> 
-				//CD IN (1,2)
-				//CD IN('2012-06-06 01:01:01')
-				//注意 时间中的: 与分隔符号 冲突(:号之前有运算符号的视为时间) [a-zA-Z]+[a-zA-Z0-9]*:([\\d]{4}-[\\d]{2}-[\\d]{2}\\s+)?\\d{2}:\\d{2}
-/********************************************************* 待处理   时间中的: 与分隔符号 冲突***************************************************************************************/				
-				if(null != condition && condition.contains(":")){
-					if(RegularUtil.match(condition, "[a-zA-Z]+\\d{2}:\\d{2}")){
-						
-					}
-					String k = "";
-					String v = "";
-					String kv[] = condition.split(":");
-					if(kv.length > 0){
-						k = kv[0];
-					}
-					if(kv.length > 1){
-						v = kv[1];
-					}
-
-					if("".equals(k) || "+".equals(k)){
-						conditions[i] = "";
-						continue;
-					}
-					
-					if(k.startsWith("+")){
-						if("null".equalsIgnoreCase(v)){
-							conditions[i] = k +":NULL";
-						}
-					}else{
-						if("".equals(v) || "null".equals(v)){
-							conditions[i] = "";
-						}
-					}
-				}
-			}
-		}
-		return conditions;
-	}
+//	private String[] parseConditionsss(String[] conditions){
+//		conditions = BasicUtil.compressionSpace(conditions);
+//		if(null != conditions){
+//			int length = conditions.length;
+//			for(int i=0; i<length; i++){
+//				String condition = conditions[i];
+//				if(null == condition){
+//					condition = "";
+//					continue;
+//				}
+//				if(condition.startsWith("{") && condition.endsWith("}")){
+//					//原生 SQL
+//					continue;
+//				}
+//				if(null == condition || "".equals(condition)){
+//					continue;
+//				}
+//				//CD:1 
+//				//CD:'1' 
+//				//CD=1 
+//				//CD='1' 
+//				//CD:2012-06-06 01:01:01
+//				//CD:'2012-06-06 01:01:01'
+//				//CD:01:01
+//				//CD:'01:01'
+//				//CD ='2012-06-06 01:01:01'  <= < != <> 
+//				//CD IN (1,2)
+//				//CD IN('2012-06-06 01:01:01')
+//				//注意 时间中的: 与分隔符号 冲突(:号之前有运算符号的视为时间) [a-zA-Z]+[a-zA-Z0-9]*:([\\d]{4}-[\\d]{2}-[\\d]{2}\\s+)?\\d{2}:\\d{2}
+///********************************************************* 待处理   时间中的: 与分隔符号 冲突***************************************************************************************/				
+//				if(null != condition && condition.contains(":")){
+//					if(RegularUtil.match(condition, "[a-zA-Z]+\\d{2}:\\d{2}")){
+//						
+//					}
+//					String k = "";
+//					String v = "";
+//					String kv[] = condition.split(":");
+//					if(kv.length > 0){
+//						k = kv[0];
+//					}
+//					if(kv.length > 1){
+//						v = kv[1];
+//					}
+//
+//					if("".equals(k) || "+".equals(k)){
+//						conditions[i] = "";
+//						continue;
+//					}
+//					
+//					if(k.startsWith("+")){
+//						if("null".equalsIgnoreCase(v)){
+//							conditions[i] = k +":NULL";
+//						}
+//					}else{
+//						if("".equals(v) || "null".equals(v)){
+//							conditions[i] = "";
+//						}
+//					}
+//				}
+//			}
+//		}
+//		return conditions;
+//	}
 	private synchronized SQL createSQL(String src){
 		SQL sql = null;
 		src = src.trim();
