@@ -20,7 +20,11 @@
 package org.anyline.config.db;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.anyline.util.BasicUtil;
 
 /**
  * V3.0
@@ -140,4 +144,14 @@ public interface SQL extends Cloneable,Serializable {
 	public SQL addCondition(Condition condition);
 	public String getText();
 	public List<SQLVariable> getSQLVariables();
+	
+	
+	
+	public SQL addPrimaryKey(String ... primaryKeys);
+	public SQL addPrimaryKey(Collection<String> primaryKeys);
+	public SQL setPrimaryKey(String ... primaryKeys);
+	public SQL setPrimaryKey(Collection<String> primaryKeys);
+	public List<String> getPrimaryKeys();
+	public String getPrimaryKey();
+	public boolean hasPrimaryKeys();
 }
