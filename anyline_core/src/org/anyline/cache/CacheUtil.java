@@ -30,6 +30,7 @@ import org.anyline.config.db.PageNavi;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
 import org.anyline.config.http.ConfigStore;
+import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
@@ -226,6 +227,23 @@ public class CacheUtil {
     		return System.currentTimeMillis() - fr;
     	}
     	return result;
+    }
+    /**
+     * 创建集中缓存的key
+     * @param table
+     * @param row
+     * @return
+     */
+    public static String crateCachePrimaryKey(String table, DataRow row){
+    	String key = table;
+    	List<String> pks = row.getPrimaryKeys();
+    	if(BasicUtil.isNotEmpty(pks) && null != row){
+    		for(String pk:pks){
+    			String value = row.getString(pk);
+    			key += "|" + pk + "=" + value;
+    		}
+    	}
+    	return key;
     }
     /**
 	 * 创建cache key

@@ -206,15 +206,31 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet query(String src, int fr, int to, String... conditions) {
 		return query(null, src, fr, to, conditions);
 	}
-	
-	
-	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
-
-		//是否启动缓存
-		if(!ConfigTable.getBoolean("IS_USE_CACHE") || null == cache){
+	private DataSet queryFromCacheL2(DataSource ds, DataSet l1, String cache, String src, ConfigStore configs, String ... conditions){
+		DataSet set = null;
+		SQL sql = createSQL(src);
+		if(sql.hasPrimaryKeys()){
+			//必须指定主键
+			List<String> pks = sql.getPrimaryKeys();
+			int size = set.size();
+			for(int i=0; i<size; i++){
+				DataRow row = set.getRow(i);
+				row.setPrimaryKey(pks);
+				String cacheKey = CacheUtil.crateCachePrimaryKey(sql.getTable(), row);
+				Element cacheRowElement = CacheUtil.getElement("", cacheKey);
+				if(null != cacheRowElement){
+					Object cacheRowValue = cacheRowElement.getObjectValue();
+				}
+			}
+		}
+		return set;
+	}
+	private DataSet queryFromCacheL1(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
+		DataSet set = null;
+		//未开启一级缓存
+		if(!ConfigTable.getBoolean("IS_USE_CACHE") && !ConfigTable.getBoolean("IS_USE_CACHE_L1")){
 			return query(ds, src, configs, conditions);
 		}
-		DataSet set = null;
 		String key = "SET:";
 		if(cache.contains(":")){
 			String[] tmp = cache.split(":");
@@ -225,21 +241,35 @@ public class AnylineServiceImpl implements AnylineService {
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
         	Object value = element.getObjectValue();
-        	if(value instanceof DataSet){
+        	if(null != value && value instanceof DataSet){
             	set = (DataSet)value;
-    			SQL sql = createSQL(src);
-    			if(sql.hasPrimaryKeys()){
-    				
-    			}
+            	//是否二级缓存(集中缓存)
+            	if(ConfigTable.getBoolean("IS_USE_CACHE_L2") ){
+        			set = queryFromCacheL2(ds, set, cache, src, configs, conditions);	
+            	}
             	return set;	
         	}else{
         		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
         	}
         }
+
         // 调用实际 的方法
     	set = query(ds, src, configs, conditions);
     	set.setService(null);
     	CacheUtil.put(cache, key, set);
+		return set;
+	}
+	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
+		DataSet set = null;
+		if(null == cache){
+			return query(ds, src, configs, conditions);
+		}
+		if(!ConfigTable.getBoolean("IS_USE_CACHE") && !ConfigTable.getBoolean("IS_USE_CACHE_L1")){
+			set = queryFromCacheL1(ds, cache, src, configs, conditions);
+		}
+		if(null == set){
+			return query(ds, src, configs, conditions);
+		}
 		return set;
 	}
 	public DataSet fetchDataFromCacheByPrimaryKey(SQL sql, String cache, DataSet set){
