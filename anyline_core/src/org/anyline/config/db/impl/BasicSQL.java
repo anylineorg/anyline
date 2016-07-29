@@ -19,6 +19,7 @@
 
 package org.anyline.config.db.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Vector;
@@ -43,7 +44,7 @@ public abstract class BasicSQL implements SQL{
 	protected OrderStore orders;			//排序
 	protected GroupStore groups;			//分组条件
 	protected PageNavi navi;				//分页
-	protected List<String> pks;				//主键
+	protected List<String> primaryKeys;		//主键
 	
 	//运行时参数值
 	protected Vector<Object> runValues;
@@ -216,6 +217,93 @@ public abstract class BasicSQL implements SQL{
 	
 	public ConditionChain getConditionChain(){
 		return this.chain;
+	}
+	
+	
+	public SQL addPrimaryKey(String ... primaryKeys){
+		if(null != primaryKeys){
+			List<String> list = new ArrayList<String>();
+			for(String pk:primaryKeys){
+				list.add(pk);
+			}
+			return addPrimaryKey(list);
+		}
+		return this;
+	}
+	public SQL addPrimaryKey(Collection<String> primaryKeys){
+		if(BasicUtil.isEmpty(primaryKeys)){
+			return this;
+		}
+		
+		/*没有处于容器中时,设置自身主键*/
+		if(null == this.primaryKeys){
+			this.primaryKeys = new ArrayList<String>();
+		}
+		for(String item:primaryKeys){
+			if(BasicUtil.isEmpty(item)){
+				continue;
+			}
+			item = item.toUpperCase();
+			if(!this.primaryKeys.contains(item)){
+				this.primaryKeys.add(item);
+			}
+		}
+		return this;
+	}
+	/**
+	 * 设置主键 先清空之前设置过和主键
+	 * 当前对象处于容器中时,设置容器主键,否则设置自身主键
+	 * @param primary
+	 */
+	public SQL setPrimaryKey(String ... primaryKeys){
+		if(null != primaryKeys){
+			List<String> list = new ArrayList<String>();
+			for(String pk:primaryKeys){
+				list.add(pk);
+			}
+			return setPrimaryKey(list);
+		}
+		return this;
+	}
+	public SQL setPrimaryKey(Collection<String> primaryKeys){
+		if(BasicUtil.isEmpty(primaryKeys)){
+			return this;
+		}
+		
+		/*没有处于容器中时,设置自身主键*/
+		if(null == this.primaryKeys){
+			this.primaryKeys = new ArrayList<String>();
+		}else{
+			this.primaryKeys.clear();
+		}
+		this.addPrimaryKey(primaryKeys);
+		return this;
+	}
+	/**
+	 * 读取主键
+	 * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键
+	 * @return
+	 */
+	public List<String> getPrimaryKeys(){
+		return primaryKeys;
+	}
+	public String getPrimaryKey(){
+		List<String> keys = getPrimaryKeys();
+		if(null != keys && keys.size()>0){
+			return keys.get(0); 
+		}
+		return null;
+	}
+	/**
+	 * 自身是否有主键
+	 * @return
+	 */
+	public boolean hasPrimaryKeys(){
+		if(null != primaryKeys && primaryKeys.size()>0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 }

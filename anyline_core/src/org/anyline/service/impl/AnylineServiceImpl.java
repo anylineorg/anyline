@@ -19,6 +19,7 @@
 
 package org.anyline.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -110,38 +111,68 @@ public class AnylineServiceImpl implements AnylineService {
         return set;
 		
 	}
-
+	/**
+	 * 解析SQL中指定的主键table(col1,col2)[pk1,pk2]
+	 * @param src
+	 * @param pks
+	 * @return
+	 */
+	private String parsePrimaryKey(String src, List<String> pks){
+		if(src.endsWith("]")){
+			int fr = src.lastIndexOf("[");
+			int to = src.lastIndexOf("]");
+			if(fr != -1){
+				String pkstr = src.substring(fr+1,to);
+				src = src.substring(0, fr);
+				String[] tmps = pkstr.split(",");
+				for(String tmp:tmps){
+					pks.add(tmp);
+					if(ConfigTable.isSQLDebug()){
+						log.warn("[解析SQL主键] [KEY:" + tmp + "]");
+					}
+				}
+			}
+		}
+		return src;
+	}
 	private synchronized SQL createSQL(String src){
 		SQL sql = null;
 		src = src.trim();
+		List<String> pks = new ArrayList<String>();
+		//解析主键
 		if (src.startsWith("{") && src.endsWith("}")) {
 			if(ConfigTable.isSQLDebug()){
 				log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:" + src + "]");
 			}
 			src = src.substring(1,src.length()-1);
+			src = parsePrimaryKey(src, pks);
 			sql = new TextSQLImpl(src);
-		} else if (src.toUpperCase().trim().startsWith("SELECT")
+		} else {
+			src = parsePrimaryKey(src, pks);
+			if (src.toUpperCase().trim().startsWith("SELECT")
 				|| src.toUpperCase().trim().startsWith("DELETE")
 				|| src.toUpperCase().trim().startsWith("INSERT")
 				|| src.toUpperCase().trim().startsWith("UPDATE")) {
-			if(ConfigTable.isSQLDebug()){
-				log.warn("[解析SQL类型] [类型:JAVA定义] [src:" + src + "]");
+				if(ConfigTable.isSQLDebug()){
+					log.warn("[解析SQL类型] [类型:JAVA定义] [src:" + src + "]");
+				}
+				sql = new TextSQLImpl(src);
+			}else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
+				/* XML定义 */
+				if(ConfigTable.isSQLDebug()){
+					log.warn("[解析SQL类型] [类型:XML定义] [src:" + src + "]");
+				}
+				sql = SQLStoreImpl.parseSQL(src);
+			} else {
+				/* 自动生成 */
+				if(ConfigTable.isSQLDebug()){
+					log.warn("[解析SQL类型] [类型:auto] [src:" + src + "]");
+				}
+				sql = new TableSQLImpl();
+				sql.setDataSource(src);
 			}
-			sql = new TextSQLImpl(src);
-		}else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
-			/* XML定义 */
-			if(ConfigTable.isSQLDebug()){
-				log.warn("[解析SQL类型] [类型:XML定义] [src:" + src + "]");
-			}
-			sql = SQLStoreImpl.parseSQL(src);
-		} else {
-			/* 自动生成 */
-			if(ConfigTable.isSQLDebug()){
-				log.warn("[解析SQL类型] [类型:auto] [src:" + src + "]");
-			}
-			sql = new TableSQLImpl();
-			sql.setDataSource(src);
 		}
+		sql.setPrimaryKey(pks);
 		return sql;
 	}
 	@Override
@@ -196,6 +227,10 @@ public class AnylineServiceImpl implements AnylineService {
         	Object value = element.getObjectValue();
         	if(value instanceof DataSet){
             	set = (DataSet)value;
+    			SQL sql = createSQL(src);
+    			if(sql.hasPrimaryKeys()){
+    				
+    			}
             	return set;	
         	}else{
         		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
@@ -206,6 +241,13 @@ public class AnylineServiceImpl implements AnylineService {
     	set.setService(null);
     	CacheUtil.put(cache, key, set);
 		return set;
+	}
+	public DataSet fetchDataFromCacheByPrimaryKey(SQL sql, String cache, DataSet set){
+		DataSet result = new DataSet();
+		result.setNavi(set.getNavi());
+		result.setSchema(set.getSchema());
+		result.setTable(set.getTable());
+		return result;
 	}
 	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions){
 		return cache(null, cache, src, configs, conditions);
