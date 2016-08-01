@@ -9,20 +9,20 @@ import org.anyline.config.db.run.RunSQL;
 import org.springframework.stereotype.Repository;
 @Repository
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
-	
+	private static final long serialVersionUID = -2546353102021188959L;
+
 	public SQLCreaterImpl(){
 		disKeyFr = "`";
 		disKeyTo = "`";
 	}
-	/**
-	 * 鏌ヨSQL
-	 * RunSQL 鍙嶈浆璋冪敤
-	 * @param baseTxt
-	 * @return
-	 */
 	@Override
 	public String parseFinalQueryTxt(RunSQL run){
 		String sql = run.getBaseQueryTxt();
+		String cols = run.getFetchColumns();
+		if(!"*".equals(cols)){
+			String reg = "(?i)^select[\\s\\S]+from";
+			sql = sql.replaceAll(reg,"SELECT "+cols+" FROM ");
+		}
 		OrderStore orders = run.getOrderStore();
 		if(null != orders){
 			sql += orders.getRunText(getDisKeyFr()+getDisKeyTo());
