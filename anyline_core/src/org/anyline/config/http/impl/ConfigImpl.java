@@ -187,6 +187,10 @@ public class ConfigImpl implements Config{
 			values.add(value);
 		}
 	}
+	public void setValue(Object value){
+		values = new ArrayList<Object>();
+		addValue(value);
+	}
 	/**
 	 * 解析key 比较方式 及从request取值方式
 	 */

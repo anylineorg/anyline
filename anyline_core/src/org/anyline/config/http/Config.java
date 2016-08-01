@@ -45,6 +45,7 @@ public interface Config {
 	public void setValue(HttpServletRequest request);
 	public List<Object> getValues() ;
 	public void addValue(Object value);
+	public void setValue(Object value);
 
 	/**
 	 * 
