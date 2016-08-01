@@ -44,7 +44,8 @@ public abstract class BasicSQL implements SQL{
 	protected OrderStore orders;			//排序
 	protected GroupStore groups;			//分组条件
 	protected PageNavi navi;				//分页
-	protected List<String> primaryKeys;		//主键
+	protected List<String> primaryKeys = new ArrayList<String>();		//主键
+	protected List<String> fetchKeys   = new ArrayList<String>();		//最终需要封装的列
 	
 	//运行时参数值
 	protected Vector<Object> runValues;
@@ -306,4 +307,61 @@ public abstract class BasicSQL implements SQL{
 		}
 	}
 	
+	
+
+	public SQL addFetchKey(String ... fetchKeys){
+		if(null != fetchKeys){
+			List<String> list = new ArrayList<String>();
+			for(String pk:fetchKeys){
+				list.add(pk);
+			}
+			return addFetchKey(list);
+		}
+		return this;
+	}
+	public SQL addFetchKey(Collection<String> fetchKeys){
+		if(BasicUtil.isEmpty(fetchKeys)){
+			return this;
+		}
+		
+		if(null == this.fetchKeys){
+			this.fetchKeys = new ArrayList<String>();
+		}
+		for(String item:fetchKeys){
+			if(BasicUtil.isEmpty(item)){
+				continue;
+			}
+			item = item.toUpperCase();
+			if(!this.fetchKeys.contains(item)){
+				this.fetchKeys.add(item);
+			}
+		}
+		return this;
+	}
+	public SQL setFetchKey(String ... fetchKeys){
+		if(null != fetchKeys){
+			List<String> list = new ArrayList<String>();
+			for(String pk:fetchKeys){
+				list.add(pk);
+			}
+			return setFetchKey(list);
+		}
+		return this;
+	}
+	public SQL setFetchKey(Collection<String> Fetchys){
+		if(BasicUtil.isEmpty(fetchKeys)){
+			return this;
+		}
+		
+		if(null == this.fetchKeys){
+			this.fetchKeys = new ArrayList<String>();
+		}else{
+			this.fetchKeys.clear();
+		}
+		this.addFetchKey(fetchKeys);
+		return this;
+	}
+	public List<String> getFetchKeys(){
+		return fetchKeys;
+	}
 }

@@ -42,6 +42,7 @@ import org.anyline.config.http.impl.ConfigStoreImpl;
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.exception.SQLQueryException;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -85,7 +86,7 @@ public class AnylineServiceImpl implements AnylineService {
 			set = dao.query(ds, sql, configs, conditions);
 			if(null != navi && navi.isLazy()){
 				PageLazyStore.setTotal(lazyKey, navi.getTotalRow());
-			}
+			} 
 			set.setService(this);
 		} catch (Exception e) {
 			set = new DataSet();
@@ -206,31 +207,36 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet query(String src, int fr, int to, String... conditions) {
 		return query(null, src, fr, to, conditions);
 	}
-	private DataSet queryFromCacheL2(DataSource ds, DataSet l1, String cache, String src, ConfigStore configs, String ... conditions){
-		DataSet set = null;
+	private DataSet queryFromCacheL2(DataSource ds, DataSet l1, String src, ConfigStore configs, String ... conditions){
+		DataSet set = new DataSet();
+		String cache2 = "cache_l2";
 		SQL sql = createSQL(src);
 		if(sql.hasPrimaryKeys()){
 			//必须指定主键
 			List<String> pks = sql.getPrimaryKeys();
-			int size = set.size();
+			int size = l1.size();
 			for(int i=0; i<size; i++){
-				DataRow row = set.getRow(i);
+				DataRow row = l1.getRow(i);
+				DataRow cacheRow = null;
 				row.setPrimaryKey(pks);
-				String cacheKey = CacheUtil.crateCachePrimaryKey(sql.getTable(), row);
-				Element cacheRowElement = CacheUtil.getElement("", cacheKey);
+				String cache2Key = CacheUtil.crateCachePrimaryKey(sql.getTable(), row);
+				Element cacheRowElement = CacheUtil.getElement(cache2, cache2Key);
 				if(null != cacheRowElement){
 					Object cacheRowValue = cacheRowElement.getObjectValue();
+					cacheRow = (DataRow)cacheRowValue;
+				}else{
+					cacheRow = queryRow(ds, src, configs, conditions);
+		        	CacheUtil.put(cache2, cache2Key, set);   
 				}
+				set.add(cacheRow);
 			}
+		}else{
+			throw new SQLQueryException("未指定缓存主键 src="+src);
 		}
 		return set;
 	}
 	private DataSet queryFromCacheL1(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 		DataSet set = null;
-		//未开启一级缓存
-		if(!ConfigTable.getBoolean("IS_USE_CACHE") && !ConfigTable.getBoolean("IS_USE_CACHE_L1")){
-			return query(ds, src, configs, conditions);
-		}
 		String key = "SET:";
 		if(cache.contains(":")){
 			String[] tmp = cache.split(":");
@@ -238,37 +244,44 @@ public class AnylineServiceImpl implements AnylineService {
 			key += tmp[1]+":";
 		}
 		key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
+		//一级缓存数据
 		Element element = CacheUtil.getElement(cache, key);
         if(null != element){
         	Object value = element.getObjectValue();
         	if(null != value && value instanceof DataSet){
             	set = (DataSet)value;
-            	//是否二级缓存(集中缓存)
-            	if(ConfigTable.getBoolean("IS_USE_CACHE_L2") ){
-        			set = queryFromCacheL2(ds, set, cache, src, configs, conditions);	
-            	}
-            	return set;	
         	}else{
         		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
         	}
+        }else{
+        	//从数据库中提取数据填充一级缓存
+			SQL sql = createSQL(src);
+			if(ConfigTable.getBoolean("IS_USE_CACHE_L2") ){
+				//如果二级缓存已开启, 一级缓存只查主键
+				sql.setFetchKey(sql.getPrimaryKeys());
+			}
+			set = dao.query(ds, sql, configs, conditions);
+			
+        	set.setService(null);
+        	CacheUtil.put(cache, key, set);        	
         }
-
-        // 调用实际 的方法
-    	set = query(ds, src, configs, conditions);
-    	set.setService(null);
-    	CacheUtil.put(cache, key, set);
+        
+        //二级缓存数据
+    	if(ConfigTable.getBoolean("IS_USE_CACHE_L2") ){
+			set = queryFromCacheL2(ds, set, src, configs, conditions);	
+    	}
 		return set;
 	}
 	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 		DataSet set = null;
 		if(null == cache){
-			return query(ds, src, configs, conditions);
-		}
-		if(!ConfigTable.getBoolean("IS_USE_CACHE") && !ConfigTable.getBoolean("IS_USE_CACHE_L1")){
-			set = queryFromCacheL1(ds, cache, src, configs, conditions);
-		}
-		if(null == set){
-			return query(ds, src, configs, conditions);
+			set = query(ds, src, configs, conditions);
+		}else{
+			if(ConfigTable.getBoolean("IS_USE_CACHE") || ConfigTable.getBoolean("IS_USE_CACHE_L1")){
+				set = queryFromCacheL1(ds, cache, src, configs, conditions);
+			}else{
+				set = query(ds, src, configs, conditions);
+			}
 		}
 		return set;
 	}
