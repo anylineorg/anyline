@@ -182,6 +182,13 @@ public class ConfigParser {
 		result.put("VALUE_ENCRYPT", isValueEncrypt);
 		return result;
 	} 
+	public static Object getValue(HttpServletRequest request, ParseResult parser){
+		List<Object> values = getValues(request, parser);
+		if(null != values && values.size()>0){
+			return values.get(0);
+		}
+		return null;
+	}
 	public static List<Object> getValues(HttpServletRequest request, ParseResult parser){
 		List<Object> values = new ArrayList<Object>();
 		try{

@@ -146,7 +146,7 @@ public interface SQL extends Cloneable,Serializable {
 	public List<SQLVariable> getSQLVariables();
 	
 	
-	
+
 	public SQL addPrimaryKey(String ... primaryKeys);
 	public SQL addPrimaryKey(Collection<String> primaryKeys);
 	public SQL setPrimaryKey(String ... primaryKeys);
@@ -154,4 +154,11 @@ public interface SQL extends Cloneable,Serializable {
 	public List<String> getPrimaryKeys();
 	public String getPrimaryKey();
 	public boolean hasPrimaryKeys();
+
+	public SQL addFetchKey(String ... fetchKeys);
+	public SQL addFetchKey(Collection<String> fetchKeys);
+	public SQL setFetchKey(String ... fetchKeys);
+	public SQL setFetchKey(Collection<String> fetchKeys);
+	public List<String> getFetchKeys();
+	
 }

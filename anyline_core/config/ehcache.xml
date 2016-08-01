@@ -1246,4 +1246,12 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
          <persistence strategy="localRestartable"/>
      </cache>
      -->
+    <!-- 准备中的标 -->
+     <cache name="cache_l2"
+        maxElementsInMemory="10000"
+        eternal="false"
+        overflowToDisk="false"
+        timeToIdleSeconds="600"
+        timeToLiveSeconds="600"
+        memoryStoreEvictionPolicy="LFU" />
 </ehcache>

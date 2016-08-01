@@ -381,6 +381,24 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public String getExecuteTxt(){
 		return builder.toString();
 	}
+	//需要查询的列 
+	public String getFetchColumns(){
+		String result = "*";
+		if(null != sql){
+			List<String> cols = sql.getFetchKeys();
+			if(null != cols && cols.size()>0){
+				result = null;
+				for(String col:cols){
+					if(null == result){
+						result = creater.getDisKeyFr() + col + creater.getDisKeyTo();
+					}else{
+						result += "," + creater.getDisKeyFr() + col + creater.getDisKeyTo();
+					}
+				}
+			}
+		}
+		return result;
+	}
 }
 
 

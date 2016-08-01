@@ -163,11 +163,6 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 	}
 
-
-
-
-
-
 	/**
 	 * 添加参数值
 	 * @param obj
