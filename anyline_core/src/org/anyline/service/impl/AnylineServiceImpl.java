@@ -225,8 +225,14 @@ public class AnylineServiceImpl implements AnylineService {
 					Object cacheRowValue = cacheRowElement.getObjectValue();
 					cacheRow = (DataRow)cacheRowValue;
 				}else{
+					if(null == configs){
+						configs = new ConfigStoreImpl();
+					}
+					for(String pk:pks){
+						configs.addCondition(pk, row.get(pk), true);
+					}
 					cacheRow = queryRow(ds, src, configs, conditions);
-		        	CacheUtil.put(cache2, cache2Key, set);   
+		        	CacheUtil.put(cache2, cache2Key, cacheRow);   
 				}
 				set.add(cacheRow);
 			}
@@ -246,6 +252,7 @@ public class AnylineServiceImpl implements AnylineService {
 		key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
 		//一级缓存数据
 		Element element = CacheUtil.getElement(cache, key);
+		SQL sql = createSQL(src);
         if(null != element){
         	Object value = element.getObjectValue();
         	if(null != value && value instanceof DataSet){
@@ -255,8 +262,7 @@ public class AnylineServiceImpl implements AnylineService {
         	}
         }else{
         	//从数据库中提取数据填充一级缓存
-			SQL sql = createSQL(src);
-			if(ConfigTable.getBoolean("IS_USE_CACHE_L2") ){
+			if(ConfigTable.getBoolean("IS_USE_CACHE_L2") && sql.hasPrimaryKeys() ){
 				//如果二级缓存已开启, 一级缓存只查主键
 				sql.setFetchKey(sql.getPrimaryKeys());
 			}
@@ -267,7 +273,7 @@ public class AnylineServiceImpl implements AnylineService {
         }
         
         //二级缓存数据
-    	if(ConfigTable.getBoolean("IS_USE_CACHE_L2") ){
+    	if(ConfigTable.getBoolean("IS_USE_CACHE_L2")  && sql.hasPrimaryKeys()){
 			set = queryFromCacheL2(ds, set, src, configs, conditions);	
     	}
 		return set;

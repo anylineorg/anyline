@@ -55,6 +55,7 @@ public interface ConfigStore {
 	public Object getConfigValue(String key);
 	public ConfigStore addConditions(String key, Object value);
 	public ConfigStore addCondition(String key, Object value);
+	public ConfigStore addCondition(String key, Object value, boolean over);
 	/**
 	 * 添加排序
 	 * @param order
