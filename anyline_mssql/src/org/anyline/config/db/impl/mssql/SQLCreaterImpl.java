@@ -17,6 +17,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
+	private static final long serialVersionUID = 43588201817410304L;
 
 	@Autowired(required=false)
 	@Qualifier("anylineDao")
@@ -53,9 +54,8 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	 */
 	@Override
 	public String parseFinalQueryTxt(RunSQL run){
-
 		StringBuilder builder = new StringBuilder();
-
+		String cols = run.getFetchColumns();
 		PageNavi navi = run.getPageNavi();
 		String sql = run.getBaseQueryTxt();
 		OrderStore orders = run.getOrderStore();
@@ -71,7 +71,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 		}
 		if(first == 0 && null != navi){
 			//top
-			builder.append("SELECT TOP ").append(last+1).append(" * FROM(\n");
+			builder.append("SELECT TOP ").append(last+1).append(" "+cols+" FROM(\n");
 			builder.append(sql).append("\n) AS _TAB_O \n");
 			builder.append(order);
 			return builder.toString();
@@ -90,7 +90,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 				String desc = order.replace("ASC", "<A_ORDER>");
 				desc = desc.replace("DESC", "ASC");
 				desc = desc.replace("<A_ORDER>", "DESC");
-				builder.append("SELECT * FROM (\n ");
+				builder.append("SELECT "+cols+" FROM (\n ");
 				builder.append("SELECT TOP ").append(rows).append(" * FROM (\n");
 				builder.append("SELECT TOP ").append(navi.getPageRows()*navi.getCurPage()).append(" * ");
 				builder.append(" FROM (" + sql + ") AS T0 ").append(asc).append("\n");
@@ -101,7 +101,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 				if(BasicUtil.isEmpty(order)){
 					order = "ORDER BY "+ ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 				}
-				builder.append("SELECT _TAB_O.* FROM( \n");
+				builder.append("SELECT "+cols+" FROM( \n");
 				builder.append("SELECT _TAB_I.* ,ROW_NUMBER() OVER(")
 				.append(order)
 				.append(") AS ROW_NUMBER \n");
