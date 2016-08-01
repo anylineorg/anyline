@@ -55,68 +55,14 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		this.orderStore = new OrderStoreImpl();
 		this.groupStore = new GroupStoreImpl();
 	}
+
+	public RunSQL setSql(SQL sql){
+		this.sql = sql;
+		copyParam();
+		return this;
+	}
 	public void init(){
 		super.init();
-		//复制XML SQL 变量
-		List<SQLVariable> xmlVars = sql.getSQLVariables();
-		if(null != xmlVars){
-			if(null == this.variables){
-				variables = new ArrayList<SQLVariable>();
-			}
-			for(SQLVariable var:xmlVars){
-				if(null == var){
-					continue;
-				}
-				try{
-					variables.add((SQLVariable)var.clone());
-				}catch(Exception e){
-					log.error(e);
-				}
-			}
-		}
-		//复制XML SQL 查询条件
-		ConditionChain xmlConditionChain = sql.getConditionChain();
-		if(null != xmlConditionChain){
-			if(null == this.conditionChain){
-				this.conditionChain = new XMLConditionChainImpl();
-			}
-			List<Condition> conditions = xmlConditionChain.getConditions();
-			if(null != conditions){
-				for(Condition condition:conditions){
-					if(null == condition){
-						continue;
-					}
-					try{
-						this.conditionChain.addCondition((Condition)condition.clone());
-					}catch(Exception e){
-						log.error(e);
-					}
-				}
-			}
-		}
-		//复制XML SQL ORDER
-		OrderStore xmlOrderStore = sql.getOrders();
-		if(null != xmlOrderStore){
-			List<Order> xmlOrders = xmlOrderStore.getOrders();
-			if(null != xmlOrders){
-				for(Order order:xmlOrders){
-					this.orderStore.order(order);
-				}
-			}
-		}
-		//复制 XML SQL GROUP
-		GroupStore xmlGroupStore = sql.getGroups();
-		if(null != xmlGroupStore){
-			List<Group> xmlGroups = xmlGroupStore.getGroups();
-			if(null != xmlGroups){
-				for(Group group:xmlGroups){
-					this.groupStore.group(group);
-				}
-			}
-		}
-		
-		
-		
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
 				setConditionValue(conf.getId(), conf.getVariable(), conf.getValues());
@@ -259,6 +205,67 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		appendCondition();
 		appendGroup();
 		//appendOrderStore();
+	}
+
+	private void copyParam(){
+		//复制XML SQL 变量
+		List<SQLVariable> xmlVars = sql.getSQLVariables();
+		if(null != xmlVars){
+			if(null == this.variables){
+				variables = new ArrayList<SQLVariable>();
+			}
+			for(SQLVariable var:xmlVars){
+				if(null == var){
+					continue;
+				}
+				try{
+					variables.add((SQLVariable)var.clone());
+				}catch(Exception e){
+					log.error(e);
+				}
+			}
+		}
+		//复制XML SQL 查询条件
+		ConditionChain xmlConditionChain = sql.getConditionChain();
+		if(null != xmlConditionChain){
+			if(null == this.conditionChain){
+				this.conditionChain = new XMLConditionChainImpl();
+			}
+			List<Condition> conditions = xmlConditionChain.getConditions();
+			if(null != conditions){
+				for(Condition condition:conditions){
+					if(null == condition){
+						continue;
+					}
+					try{
+						this.conditionChain.addCondition((Condition)condition.clone());
+					}catch(Exception e){
+						log.error(e);
+					}
+				}
+			}
+		}
+		//复制XML SQL ORDER
+		OrderStore xmlOrderStore = sql.getOrders();
+		if(null != xmlOrderStore){
+			List<Order> xmlOrders = xmlOrderStore.getOrders();
+			if(null != xmlOrders){
+				for(Order order:xmlOrders){
+					this.orderStore.order(order);
+				}
+			}
+		}
+		//复制 XML SQL GROUP
+		GroupStore xmlGroupStore = sql.getGroups();
+		if(null != xmlGroupStore){
+			List<Group> xmlGroups = xmlGroupStore.getGroups();
+			if(null != xmlGroups){
+				for(Group group:xmlGroups){
+					this.groupStore.group(group);
+				}
+			}
+		}
+				
 	}
 	private void appendGroup(){
 		if(null != groupStore){
@@ -470,14 +477,6 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	}
 	public RunSQL addCondition(boolean requried, String column, Object value, int compare){
 		setConditionValue(column, null, value);
-		return this;
-	}
-	
-	public RunSQL addCondition(String condition){
-		if(null == this.conditions){
-			this.conditions = new ArrayList<String>();
-		}
-		this.conditions.add(condition);
 		return this;
 	}
 	

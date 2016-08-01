@@ -131,7 +131,7 @@ public class AbstractBasicController{
 		if (null != params && params.length > 0) {
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				Object value = ConfigParser.getValues(request, parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
+				Object value = ConfigParser.getValue(request, parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
 				row.put(parser.getId().toUpperCase(), value);
 			}
 		}else{

@@ -99,5 +99,5 @@ public interface RunSQL {
 	public void setPageNavi(PageNavi pageNavi) ;
 	public StringBuilder getBuilder() ;
 	public void setBuilder(StringBuilder builder) ;
-	
+	public String getFetchColumns();
 }
