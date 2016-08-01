@@ -348,7 +348,7 @@ public abstract class BasicSQL implements SQL{
 		}
 		return this;
 	}
-	public SQL setFetchKey(Collection<String> Fetchys){
+	public SQL setFetchKey(Collection<String> fetchKeys){
 		if(BasicUtil.isEmpty(fetchKeys)){
 			return this;
 		}

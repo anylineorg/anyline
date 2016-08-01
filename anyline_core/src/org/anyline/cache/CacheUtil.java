@@ -58,7 +58,7 @@ public class CacheUtil {
 		CacheManager manager = createManager();
 		Cache cache = manager.getCache(channel);
 		if(null == cache){
-			createManager().addCache(channel);
+			manager.addCache(channel);
 		}
 		cache = manager.getCache(channel);
 		return cache;

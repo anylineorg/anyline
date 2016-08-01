@@ -150,7 +150,7 @@ public class ConfigStoreImpl implements ConfigStore{
 		return this;
 	}
 	@Override
-	public ConfigStore addCondition(String key, Object value){
+	public ConfigStore addCondition(String key, Object value, boolean over){
 		Config conf = chain.getConfig(key);
 		if(null == conf){
 			conf = new ConfigImpl();
@@ -158,9 +158,17 @@ public class ConfigStoreImpl implements ConfigStore{
 			conf.setCompare(SQL.COMPARE_TYPE_EQUAL);
 		}
 		conf.setId(key);
-		conf.addValue(value);
+		if(over){
+			conf.setValue(value);
+		}else{
+			conf.addValue(value);
+		}
 		chain.addConfig(conf);
 		return this;
+	}
+	@Override
+	public ConfigStore addCondition(String key, Object value){
+		return addCondition(key, value, false);
 	}
 	/**
 	 * 把httpRequest中的参数存放到navi
