@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.anyline.config.ConfigParser;
-
 import org.anyline.config.ParseResult;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.impl.PageNaviImpl;
@@ -44,7 +43,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 
