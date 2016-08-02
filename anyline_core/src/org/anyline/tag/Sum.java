@@ -46,17 +46,15 @@ public class Sum extends BaseBodyTag {
 						data = data.toString().replace("{", "").replace("}", "");
 					} else {
 						if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) {
-							data = request.getSession().getServletContext()
-									.getAttribute(data.toString());
+							data = request.getSession().getServletContext().getAttribute(data.toString());
 						} else if ("session".equals(scope)) {
-							data = request.getSession().getAttribute(
-									data.toString());
+							data = request.getSession().getAttribute(data.toString());
 						} else {
 							data = request.getAttribute(data.toString());
 						}
 					}
 				}
-				if(! (data instanceof Collection)){
+				if(!(data instanceof Collection)){
 					return EVAL_PAGE;
 				}
 				Collection items = (Collection) data;
