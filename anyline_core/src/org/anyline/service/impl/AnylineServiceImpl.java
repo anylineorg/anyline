@@ -207,9 +207,11 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet query(String src, int fr, int to, String... conditions) {
 		return query(null, src, fr, to, conditions);
 	}
-	private DataSet queryFromCacheL2(DataSource ds, DataSet l1, String src, ConfigStore configs, String ... conditions){
+	private DataSet queryFromCacheL2(DataSource ds, String cache2, DataSet l1, String src, ConfigStore configs, String ... conditions){
+		if(ConfigTable.isDebug()){
+			log.warn("[cache from L2][cache:"+cache2+"][src:"+src+"]");
+		}
 		DataSet set = new DataSet();
-		String cache2 = "cache_l2";
 		SQL sql = createSQL(src);
 		if(sql.hasPrimaryKeys()){
 			//必须指定主键
@@ -241,9 +243,19 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return set;
 	}
-	private DataSet queryFromCacheL1(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
+	private DataSet queryFromCacheL1(DataSource ds, boolean isUseCacheL2, String cache, String src, ConfigStore configs, String ... conditions){
+		if(ConfigTable.isDebug()){
+			log.warn("[cache from L1][cache:"+cache+"][src:"+src+"]");
+		}
 		DataSet set = null;
 		String key = "SET:";
+		String cache2 = "anyline_cache_l2";
+		isUseCacheL2 = isUseCacheL2 && ConfigTable.getBoolean("IS_USE_CACHE_L2");
+		if(cache.contains(">")){
+			String tmp[] = cache.split(">");
+			cache = tmp[0];
+			cache2 = tmp[1];
+		}
 		if(cache.contains(":")){
 			String[] tmp = cache.split(":");
 			cache = tmp[0];
@@ -262,7 +274,7 @@ public class AnylineServiceImpl implements AnylineService {
         	}
         }else{
         	//从数据库中提取数据填充一级缓存
-			if(ConfigTable.getBoolean("IS_USE_CACHE_L2") && sql.hasPrimaryKeys() ){
+			if(isUseCacheL2 && sql.hasPrimaryKeys() ){
 				//如果二级缓存已开启, 一级缓存只查主键
 				sql.setFetchKey(sql.getPrimaryKeys());
 			}
@@ -273,8 +285,8 @@ public class AnylineServiceImpl implements AnylineService {
         }
         
         //二级缓存数据
-    	if(ConfigTable.getBoolean("IS_USE_CACHE_L2")  && sql.hasPrimaryKeys()){
-			set = queryFromCacheL2(ds, set, src, configs, conditions);	
+    	if(isUseCacheL2  && sql.hasPrimaryKeys()){
+			set = queryFromCacheL2(ds, cache2, set, src, configs, conditions);	
     	}
 		return set;
 	}
@@ -284,19 +296,12 @@ public class AnylineServiceImpl implements AnylineService {
 			set = query(ds, src, configs, conditions);
 		}else{
 			if(ConfigTable.getBoolean("IS_USE_CACHE") || ConfigTable.getBoolean("IS_USE_CACHE_L1")){
-				set = queryFromCacheL1(ds, cache, src, configs, conditions);
+				set = queryFromCacheL1(ds, true, cache, src, configs, conditions);
 			}else{
 				set = query(ds, src, configs, conditions);
 			}
 		}
 		return set;
-	}
-	public DataSet fetchDataFromCacheByPrimaryKey(SQL sql, String cache, DataSet set){
-		DataSet result = new DataSet();
-		result.setNavi(set.getNavi());
-		result.setSchema(set.getSchema());
-		result.setTable(set.getTable());
-		return result;
 	}
 	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions){
 		return cache(null, cache, src, configs, conditions);
@@ -321,6 +326,42 @@ public class AnylineServiceImpl implements AnylineService {
 		return cache(null, cache, src, fr, to, conditions);
 	}
 
+	public DataSet cacheL1(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
+		DataSet set = null;
+		if(null == cache){
+			set = query(ds, src, configs, conditions);
+		}else{
+			if(ConfigTable.getBoolean("IS_USE_CACHE") || ConfigTable.getBoolean("IS_USE_CACHE_L1")){
+				set = queryFromCacheL1(ds, false,  cache, src, configs, conditions);
+			}else{
+				set = query(ds, src, configs, conditions);
+			}
+		}
+		return set;
+	}
+	public DataSet cacheL1(String cache, String src, ConfigStore configs, String ... conditions){
+		return cacheL1(null, cache, src, configs, conditions);
+	}
+	public DataSet cacheL1(DataSource ds, String cache, String src, String ... conditions){
+		return cacheL1(ds, cache, src, null, conditions);
+	}
+	public DataSet cacheL1(String cache, String src, String ... conditions){
+		return cacheL1(null, cache, src, null, conditions);
+	}
+	public DataSet cacheL1(DataSource ds, String cache, String src, int fr, int to, String ... conditions){
+		PageNaviImpl navi = new PageNaviImpl();
+		navi.setFirstRow(fr);
+		navi.setLastRow(to);
+		navi.setCalType(1);
+		navi.setTotalRow(to-fr+1);
+		ConfigStore configs = new ConfigStoreImpl();
+		configs.setPageNavi(navi);
+		return cacheL1(ds, cache, src, configs, conditions);
+	}
+	public DataSet cacheL1(String cache, String src, int fr, int to, String ... conditions){
+		return cacheL1(null, cache, src, fr, to, conditions);
+	}
+	
 	
 	@Override
 	public <T> List<T> query(DataSource ds, Class<T> clazz, ConfigStore configs, String... conditions) {
@@ -401,7 +442,7 @@ public class AnylineServiceImpl implements AnylineService {
 		navi.setCalType(1);
 		if (null == configs) {
 			configs = new ConfigStoreImpl();
-		}
+		} 
 		configs.setPageNavi(navi);
 		
 		DataRow row = null;

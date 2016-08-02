@@ -70,7 +70,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		setValues(values);
 		setCompare(compare);
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX);
-		if(BasicUtil.isNotEmpty(true,values)){
+		if(BasicUtil.isNotEmpty(true,values) || required){
 			setActive(true);
 		}
 	}
@@ -152,7 +152,9 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	public Object getValue(){
 		Object value = null;
 		if(values instanceof List){
-			value = ((List)values).get(0);
+			if(((List) values).size()>0){
+				value = ((List)values).get(0);
+			}
 		}else{
 			value = values;
 		}
