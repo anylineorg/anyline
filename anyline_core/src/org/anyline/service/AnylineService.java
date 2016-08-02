@@ -51,7 +51,7 @@ public interface AnylineService{
 	public DataSet query(DataSource ds, String src, int fr, int to, String ... conditions);
 	public DataSet query(String src, int fr, int to, String ... conditions);
 	/**
-	 * 
+	 * 如果二级缓存开启 会从二级缓存中提取数据
 	 * @param ds
 	 * @param cache	对应ehcache缓存配置文件 中的cache.name
 	 * @param src
@@ -65,6 +65,21 @@ public interface AnylineService{
 	public DataSet cache(String cache, String src, String ... conditions);
 	public DataSet cache(DataSource ds, String cache, String src, int fr, int to, String ... conditions);
 	public DataSet cache(String cache, String src, int fr, int to, String ... conditions);
+	/**
+	 * 只用一级缓存 忽略二级缓存
+	 * @param ds
+	 * @param cache
+	 * @param src
+	 * @param configs
+	 * @param conditions
+	 * @return
+	 */
+	public DataSet cacheL1(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
+	public DataSet cacheL1(String cache, String src, ConfigStore configs, String ... conditions);
+	public DataSet cacheL1(DataSource ds, String cache, String src, String ... conditions);
+	public DataSet cacheL1(String cache, String src, String ... conditions);
+	public DataSet cacheL1(DataSource ds, String cache, String src, int fr, int to, String ... conditions);
+	public DataSet cacheL1(String cache, String src, int fr, int to, String ... conditions);
 
 	
 	public <T> List<T> query(DataSource ds, Class<T> clazz, int fr, int to, String ... conditions);
@@ -78,11 +93,12 @@ public interface AnylineService{
 	public DataRow queryRow(String src, ConfigStore configs, String ... conditions);
 	public DataRow queryRow(DataSource ds, String src, String ... conditions);
 	public DataRow queryRow(String src, String ... conditions);
-	
+
 	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
 	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions);
 	public DataRow cacheRow(DataSource ds, String cache, String src, String ... conditions);
 	public DataRow cacheRow(String cache, String src, String ... conditions);
+	
 
 	/**
 	 * 删除缓存 参数保持与查询参数完全一致
