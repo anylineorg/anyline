@@ -206,12 +206,15 @@ public class ConfigTable {
 			line("MinVersion " + minVersion + "[" + time+"]", " ", true);
 			line(""," ", true);
 			line("","*", true);
-			line(" github地址：https://github.com/anylineorg/anyline.git", "", false);
-			line(" github帐号：public@anyline.org(anyline111111)", "", false);
+			line(" github.con  git地址：https://github.com/anylineorg/anyline.git", "", false);
+			line(" github.com  git帐号：public@anyline.org(anyline111111)", "", false);
 			line(" ", " ", false);
-			line(" osc git地址：https://git.oschina.net/anyline/anyline.git", "", false);
-			line(" osc svn地址：svn://git.oschina.net/anyline/anyline", "", false);
-			line(" osc 帐号密码：public@anyline.org(111111)", "", false);
+			line(" oschina.net git地址：https://git.oschina.net/anyline/anyline.git", "", false);
+			line(" oschina.net svn地址：svn://git.oschina.net/anyline/anyline", "", false);
+			line(" oschina.net 帐号密码：public@anyline.org(111111)", "", false);
+			line(" ", " ", false);
+			line(" taobao.org  svn地址：http://code.taobao.org/svn/anyline", "", false);
+			line(" taobao.org  svn帐号密码：public@anyline.org(anyline1)", "", false);
 		
 			line("","*", true);
 			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]", "", false);
