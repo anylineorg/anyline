@@ -841,7 +841,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			for(Object param:params){
 				result += " param" + idx++ + "=";
 				if(null != param){
-					result += param.getClass().getName() + "@";
+					result += param.getClass().getSimpleName() + "@";
 				}
 				result += param;
 			}
