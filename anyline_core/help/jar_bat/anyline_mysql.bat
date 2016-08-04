@@ -4,7 +4,7 @@ del anyline_mysql.jar
 
 rmdir  /s/q anyline_mysql\org
 mkdir anyline_mysql\org
-xcopy E:\develop\git\anyline\anyline_mysql\bin\org anyline_mysql\org /s /e
+xcopy E:\develop\git\osc\anyline\anyline_mysql\bin\org anyline_mysql\org /s /e
 
 cd anyline_mysql
 jar -cvf ..\anyline_mysql.jar *

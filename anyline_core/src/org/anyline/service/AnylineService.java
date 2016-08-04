@@ -108,15 +108,15 @@ public interface AnylineService{
 	 * @param conditions
 	 * @return
 	 */
-	public boolean removeCache(String cache, String src, ConfigStore configs, String ... conditions);
-	public boolean removeCache(String cache, String src, String ... conditions);
-	public boolean removeCache(String cache, String src, int fr, int to, String ... conditions);
+	public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
+	public boolean removeCache(String channel, String src, String ... conditions);
+	public boolean removeCache(String channel, String src, int fr, int to, String ... conditions);
 	/**
 	 * 清空缓存
-	 * @param cache
+	 * @param channel
 	 * @return
 	 */
-	public boolean clearCache(String cache);
+	public boolean clearCache(String channel);
 	
 	public <T> T queryEntity(DataSource ds, Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> T queryEntity(Class<T> clazz, ConfigStore configs, String ... conditions);
