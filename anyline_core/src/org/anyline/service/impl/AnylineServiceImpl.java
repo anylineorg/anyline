@@ -491,17 +491,17 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @param conditions
 	 * @return
 	 */
-	public boolean removeCache(String cache, String src, ConfigStore configs, String ... conditions){
+	public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions){
 		conditions = BasicUtil.compressionSpace(conditions);
 		String key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
-		CacheUtil.remove(cache, "SET:" + key);
-		CacheUtil.remove(cache, "ROW:" + key);
+		CacheUtil.remove(channel, "SET:" + key);
+		CacheUtil.remove(channel, "ROW:" + key);
 		return true;
 	}
-	public boolean removeCache(String cache, String src, String ... conditions){
-		return removeCache(cache, src, null, conditions);
+	public boolean removeCache(String channel, String src, String ... conditions){
+		return removeCache(channel, src, null, conditions);
 	}
-	public boolean removeCache(String cache, String src, int fr, int to, String ... conditions){
+	public boolean removeCache(String channel, String src, int fr, int to, String ... conditions){
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
@@ -509,15 +509,15 @@ public class AnylineServiceImpl implements AnylineService {
 		navi.setTotalRow(to-fr+1);
 		ConfigStore configs = new ConfigStoreImpl();
 		configs.setPageNavi(navi);
-		return removeCache(cache, src, configs, conditions);
+		return removeCache(channel, src, configs, conditions);
 	}
 	/**
 	 * 清空缓存
 	 * @param cache
 	 * @return
 	 */
-	public boolean clearCache(String cache){
-		return CacheUtil.clear(cache);
+	public boolean clearCache(String channel){
+		return CacheUtil.clear(channel);
 	}
 	
 	@Override
