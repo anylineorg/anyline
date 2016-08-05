@@ -163,36 +163,39 @@ public class CacheUtil {
      * @param key
      * @return
      */
-    public static boolean start(String key){
+    public static boolean start(String key, int sec){
     	boolean result = false;
     	Long fr = reflushFlag.get(key);
     	long age = -1;			//已生存
-    	int period = ConfigTable.getInt(key, 120);		//两次刷新最小间隔
     	if(null == fr){
     		result = true;
     	}else{
 	    	age = (System.currentTimeMillis() - fr) / 1000;
-	    	if(age > period){
+	    	if(age > sec){
 	    		result = true;
 	    	}
     	}
     	if(result){
     		reflushFlag.put(key, System.currentTimeMillis());
     		if(ConfigTable.isDebug()){
-    			log.warn("[刷新缓存放行] [key:" + key + "] [间隔:" + age + "/" + period + "]");
+    			log.warn("[刷新缓存放行] [key:" + key + "] [间隔:" + age + "/" + sec + "]");
     		}
     	}else{
     		if(ConfigTable.isDebug()){
-    			log.warn("[刷新缓存拦截] [key:" + key + "] [间隔:" + age + "/" + period + "]");
+    			log.warn("[刷新缓存拦截] [key:" + key + "] [间隔:" + age + "/" + sec + "]");
     		}
     	}
     	return result;
+    }
+    public static boolean start(String key){
+    	int period = ConfigTable.getInt(key, 120);		//两次刷新最小间隔
+    	return start(key, period);
     }
     /**
      * 刷新完成
      * @param key
      */
-    public static void stop(String key){
+    public static void stop(String key, int sec){
     	Long fr = reflushFlag.get(key);
     	if(null == fr){
     		if(ConfigTable.isDebug()){
@@ -201,13 +204,17 @@ public class CacheUtil {
     		return;
     	}
     	long age = (System.currentTimeMillis() - fr)/1000;			//已生存
-    	int period = ConfigTable.getInt(key, 120);					//两次刷新最小间隔
-    	if(age > period){
+    	
+    	if(age > sec){
     		reflushFlag.remove(key);
     	}
 		if(ConfigTable.isDebug()){
-			log.warn("[刷新缓存完成] [key:" + key + "] [间隔:" + age + "/" + period + "]");
+			log.warn("[刷新缓存完成] [key:" + key + "] [间隔:" + age + "/" + sec + "]");
 		}
+    }
+    public static void stop(String key){
+    	int period = ConfigTable.getInt(key, 120);					//两次刷新最小间隔
+    	stop(key,period);
     }
     public boolean isRun(String key){
     	if(null == reflushFlag.get(key)){
