@@ -178,11 +178,11 @@ public class CacheUtil {
     	if(result){
     		reflushFlag.put(key, System.currentTimeMillis());
     		if(ConfigTable.isDebug()){
-    			log.warn("[刷新缓存放行] [key:" + key + "] [间隔:" + age + "/" + sec + "]");
+    			log.warn("[频率控制放行] [key:" + key + "] [间隔:" + age + "/" + sec + "]");
     		}
     	}else{
     		if(ConfigTable.isDebug()){
-    			log.warn("[刷新缓存拦截] [key:" + key + "] [间隔:" + age + "/" + sec + "]");
+    			log.warn("[频率控制拦截] [key:" + key + "] [间隔:" + age + "/" + sec + "]");
     		}
     	}
     	return result;
@@ -199,7 +199,7 @@ public class CacheUtil {
     	Long fr = reflushFlag.get(key);
     	if(null == fr){
     		if(ConfigTable.isDebug()){
-    			log.warn("[刷新缓存完成 有可能key拼写有误] [key:" + key + "]");
+    			log.warn("[频率控制还原完成 有可能key拼写有误] [key:" + key + "]");
     		}
     		return;
     	}
@@ -209,7 +209,7 @@ public class CacheUtil {
     		reflushFlag.remove(key);
     	}
 		if(ConfigTable.isDebug()){
-			log.warn("[刷新缓存完成] [key:" + key + "] [间隔:" + age + "/" + sec + "]");
+			log.warn("[频率控制还原完成] [key:" + key + "] [间隔:" + age + "/" + sec + "]");
 		}
     }
     public static void stop(String key){
