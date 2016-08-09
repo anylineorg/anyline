@@ -840,10 +840,10 @@ public class AnylineDaoImpl implements AnylineDao {
 			int idx = 0;
 			for(Object param:params){
 				result += " param" + idx++ + "=";
-				if(null != param){
-					result += param.getClass().getSimpleName() + "@";
-				}
 				result += param;
+				if(null != param){
+					result += "("+param.getClass().getSimpleName() + ")";
+				}
 			}
 		}
 		return result;
