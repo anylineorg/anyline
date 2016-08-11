@@ -678,6 +678,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public void setService(AnylineService service) {
 		this.service = service;
 	}
+	public void removeService(){
+		this.service = null;
+		if(null != this.container){
+			this.container.removeService();
+		}
+	}
 	public DataRow remove(String key){
 		if(null != key){
 			super.remove(key.toUpperCase());
