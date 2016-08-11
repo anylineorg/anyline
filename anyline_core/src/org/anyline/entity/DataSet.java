@@ -1138,6 +1138,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public void setService(AnylineService service) {
 		this.service = service;
 	}
+	public void removeService(){
+		this.service = null;
+	}
 	public List<DataRow> getRows(){
 		return rows;
 	}
