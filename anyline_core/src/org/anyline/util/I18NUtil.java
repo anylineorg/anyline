@@ -78,7 +78,10 @@ public class I18NUtil {
 	 */
 	public static String get(String lang, String key){
 		Map<String,String> map = messages.get(lang);
-		String value = map.get(key);
+		String value = null;
+		if(null != map){
+			value = map.get(key);
+		}
 		return value;
 	}
 }
