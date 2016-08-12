@@ -499,8 +499,12 @@ public class HttpUtil {
 			log.error(e);
 		} finally {
 			try {
-				bis.close();
-				bos.close();
+				if(null != bis){
+					bis.close();
+				}
+				if(null != bos){
+					bos.close();
+				}
 			} catch (IOException e) {
 				log.error(e);
 			}
