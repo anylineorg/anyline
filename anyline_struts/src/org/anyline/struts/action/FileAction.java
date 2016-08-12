@@ -99,8 +99,12 @@ public class FileAction extends AnylineAction {
 				e.printStackTrace();
 			} finally {
 				try {
-					is.close();
-					fos.close();
+					if(null != is){
+						is.close();
+					}
+					if(null != fos){
+						fos.close();
+					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
