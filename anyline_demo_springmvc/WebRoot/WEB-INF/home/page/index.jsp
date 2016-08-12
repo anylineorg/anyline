@@ -1,0 +1,2 @@
+${set.size}
+${navi}
