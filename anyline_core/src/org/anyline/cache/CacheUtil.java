@@ -98,12 +98,13 @@ public class CacheUtil {
 		    				+ (System.currentTimeMillis() - result.getCreationTime())/1000 + "/" + result.getTimeToLive() + "]");
 		    	}
 		    	result = null;
+			}else{
+				if(ConfigTable.isDebug()){
+		    		log.warn("[缓存数据提取成功并有效] [耗时:"+(System.currentTimeMillis()-fr)+"] [cnannel:"  
+		    				+ channel + "] [key:" + key + "] [命中:" + result.getHitCount() + "] [生存:"
+		    				+ (System.currentTimeMillis() - result.getCreationTime())/1000 + "/" + result.getTimeToLive() + "]");
+		    	}
 			}
-			if(ConfigTable.isDebug()){
-	    		log.warn("[缓存数据提取成功并有效] [耗时:"+(System.currentTimeMillis()-fr)+"] [cnannel:"  
-	    				+ channel + "] [key:" + key + "] [命中:" + result.getHitCount() + "] [生存:"
-	    				+ (System.currentTimeMillis() - result.getCreationTime())/1000 + "/" + result.getTimeToLive() + "]");
-	    	}
 		}
 		return result;
 	}

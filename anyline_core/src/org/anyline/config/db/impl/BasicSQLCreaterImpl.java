@@ -78,13 +78,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}else if(sql instanceof TextSQL){
 			run = new TextRunSQLImpl();
 		}
-		
-		run.setCreater(this);
-		run.setSql(sql);
-		run.setConfigStore(configs);
-		run.addConditions(conditions);
-		run.init();
-
+		if(null != run){
+			run.setCreater(this);
+			run.setSql(sql);
+			run.setConfigStore(configs);
+			run.addConditions(conditions);
+			run.init();
+		}
 		return run;
 	}
 	@Override
@@ -95,11 +95,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}else if(sql instanceof TextSQL){
 			run = new TextRunSQLImpl();
 		}
-		run.setCreater(this);
-		run.setSql(sql);
-		run.setConfigStore(configs);
-		run.addConditions(conditions);
-		run.init();
+		if(null != run){
+			run.setCreater(this);
+			run.setSql(sql);
+			run.setConfigStore(configs);
+			run.addConditions(conditions);
+			run.init();
+		}
 		return run;
 	}
 	@Override

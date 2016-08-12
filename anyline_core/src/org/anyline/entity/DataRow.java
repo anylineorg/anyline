@@ -494,10 +494,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		int result = 0;
 		try{
 			Object val = get(key);
-			if(null != val && val instanceof Boolean && (Boolean)val){
-				result = 1;
-			}else{
-				result = Integer.parseInt(val.toString());
+			if(null != val){
+				if(val instanceof Boolean && (Boolean)val){
+					result = 1;
+				}else{
+					result = Integer.parseInt(val.toString());
+				}
 			}
 		}catch(Exception e){
 			result = 0;
