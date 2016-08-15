@@ -432,7 +432,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 				}
 			}else{
 				if(ConfigTable.isDebug()){
-					LOG.warn("[未设置样式模板] [原因:有可能需要数据url中通过parseJsp合成样式与数据]");
+					log.warn("[未设置样式模板] [原因:有可能需要数据url中通过parseJsp合成样式与数据]");
 				}
 			}
 			request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_STYLE_PATH, DESUtil.getInstance().encrypt(style));
