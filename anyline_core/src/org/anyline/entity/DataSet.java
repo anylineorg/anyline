@@ -58,7 +58,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	private long createTime;
 	
 	@Autowired
-	protected AnylineService service;
+	protected transient AnylineService service;
 	public DataSet() {
 		rows = new ArrayList<DataRow>();
 		createTime = System.currentTimeMillis();
@@ -1137,9 +1137,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public void setService(AnylineService service) {
 		this.service = service;
-	}
-	public void removeService(){
-		this.service = null;
 	}
 	public List<DataRow> getRows(){
 		return rows;

@@ -57,7 +57,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	protected Boolean isNew = false;					//强制新建(适应hibernate主键策略)
 
 	@Autowired
-	protected AnylineService service;
+	protected transient AnylineService service;
 	
 	/**
 	 * 
@@ -679,12 +679,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public void setService(AnylineService service) {
 		this.service = service;
-	}
-	public void removeService(){
-		this.service = null;
-		if(null != this.container){
-			this.container.removeService();
-		}
 	}
 	public DataRow remove(String key){
 		if(null != key){
