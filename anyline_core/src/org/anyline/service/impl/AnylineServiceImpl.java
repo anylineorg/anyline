@@ -280,7 +280,6 @@ public class AnylineServiceImpl implements AnylineService {
 			}
 			set = dao.query(ds, sql, configs, conditions);
 			
-        	set.setService(null);
         	CacheUtil.put(cache, key, set);        	
         }
         
@@ -467,7 +466,6 @@ public class AnylineServiceImpl implements AnylineService {
         // 调用实际 的方法
         row = queryRow(ds, src, configs, conditions);
         if(null != row){
-	    	row.setService(null);
 	    	CacheUtil.put(cache, key, row);
         }
 		return row;
