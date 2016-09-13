@@ -248,7 +248,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			result = orders.getRunText(disKey);
 		}
 		if(require && result.length() == 0){
-			result = "ORDER BY CD";
+			result = "ORDER BY " + ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 		}
 		return result;
 	}
