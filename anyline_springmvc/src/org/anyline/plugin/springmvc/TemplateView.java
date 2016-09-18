@@ -108,7 +108,7 @@ public class TemplateView extends JstlView {
 			if(!file.exists()){
 				//内容文件未指定  或 不存在 
 				log.error("文件不存在:"+content_url);
-				content_url = ConfigTable.getString("DEFAULT_CONTENT_PAGE_PATH","/WEB-INF/wap/vpt/common/error/error.jsp");
+				content_url = ConfigTable.getString("DEFAULT_CONTENT_PAGE_PATH");
 			}
 			request.setAttribute(TEMPLATE_CONTENT_PATH, content_url);
 		}
