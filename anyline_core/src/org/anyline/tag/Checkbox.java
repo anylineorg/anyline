@@ -32,7 +32,12 @@ import javax.servlet.jsp.JspWriter;
 import org.apache.log4j.Logger;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
-
+/**
+ * 
+ * 是否选中 一类的单个复选
+ * <al:checkbox name="role${item.CODE }" data="" head="" headValue="${item.CODE }"></al:checkbox>
+ *
+ */
 public class Checkbox extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
 	private static Logger log = Logger.getLogger(Checkbox.class);
@@ -75,7 +80,11 @@ public class Checkbox extends BaseBodyTag {
 						Map map = new HashMap();
 						String tmp[] = item.split(":");
 						map.put(valueKey, tmp[0]);
-						map.put(textKey, tmp[1]);
+						if(tmp.length>0){
+							map.put(textKey, tmp[1]);
+						}else{
+							map.put(textKey, "");
+						}
 						list.add(map);
 					}
 					data = list;
@@ -162,6 +171,9 @@ public class Checkbox extends BaseBodyTag {
 			out.print(html);
 		} catch (Exception e) {
 			log.error(e);
+			if(ConfigTable.isDebug()){
+				e.printStackTrace();
+			}
 		} finally {
 			release();
 		}
