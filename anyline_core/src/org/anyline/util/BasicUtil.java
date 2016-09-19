@@ -151,10 +151,10 @@ public class BasicUtil {
 	 * @return
 	 */
 	public static int getRandomNumber(int fr, int to) {
-		int result = 0;
-		Random r = new Random();
-		result = fr + r.nextInt(to - fr);
-		return result;
+		return NumberUtil.getRandom(fr, to);
+	}
+	public static double getRandomNumber(double fr, double to) {
+		return NumberUtil.getRandom(fr, to);
 	}
 
 	/**
