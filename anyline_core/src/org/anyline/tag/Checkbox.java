@@ -49,6 +49,7 @@ public class Checkbox extends BaseBodyTag {
 	private String checkKey;
 	private String head;
 	private String headValue;
+	private boolean checked = false;
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext
@@ -80,7 +81,7 @@ public class Checkbox extends BaseBodyTag {
 						Map map = new HashMap();
 						String tmp[] = item.split(":");
 						map.put(valueKey, tmp[0]);
-						if(tmp.length>0){
+						if(tmp.length>1){
 							map.put(textKey, tmp[1]);
 						}else{
 							map.put(textKey, "");
@@ -91,6 +92,9 @@ public class Checkbox extends BaseBodyTag {
 				}
 
 				if (null != this.value) {
+					if(!(this.value instanceof String || this.value instanceof Collection)){
+						this.value = this.value.toString();
+					}
 					if (this.value instanceof String) {
 						if (this.value.toString().endsWith("}")) {
 							this.value = this.value.toString().replace("{", "").replace("}", "");
@@ -129,10 +133,34 @@ public class Checkbox extends BaseBodyTag {
 				if(null != head){
 					String id = name +"_"+ headValue; 
 					html += "<input type='checkbox'";
-					if(null != headValue && headValue.equals(value)){
+					if((null != headValue && headValue.equals(value))
+							|| checked
+							){
 						html += " checked = 'checked'";
 					}
-					html += " name='"+name+"' value='" + headValue + "' id='" + id + "'/>"
+					html += " name='"+name+"' value='" + headValue + "' id='" + id + "'";
+					if(null != clazz){
+						html += " class='" + clazz + "'";
+					}
+					if(null != style){
+						html += " style='" + style + "'";
+					}
+					if(null != onclick){
+						html += " onclick='" + onclick + "'";
+					}
+					if(null != onchange){
+						html += " onchange='" + onchange + "'";
+					}
+					if(null != onblur){
+						html += " onblur='" + onblur + "'";
+					}
+					if(null != onfocus){
+						html += " onfocus='" + onfocus + "'";
+					}
+					if(null != disabled){
+						html += " disabled='" + disabled + "'";
+					}
+					html +="/>"
 							+ "<label for='"+id+ "'>" + head + "</label>\n";
 				}
 				
@@ -254,4 +282,11 @@ public class Checkbox extends BaseBodyTag {
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
+	public boolean isChecked() {
+		return checked;
+	}
+	public void setChecked(boolean checked) {
+		this.checked = checked;
+	}
+	
 }
