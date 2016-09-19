@@ -332,8 +332,10 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	
 	@Override
 	public RunSQL setConditionValue(String condition, String variable, Object value) {
-		/*不指定变量名时,根据condition为SQL主体变量赋值*/
-		if(null != variables && BasicUtil.isEmpty(variable)){
+		/*不指定变量名或condition = variable 时,根据condition为SQL主体变量赋值*/
+		if(null != variables && 
+				(BasicUtil.isEmpty(variable) || condition.equals(variable))
+		){
 			for(SQLVariable v:variables){
 				if(null == v){
 					continue;

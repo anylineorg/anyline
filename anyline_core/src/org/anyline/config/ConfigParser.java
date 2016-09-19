@@ -22,6 +22,11 @@ public class ConfigParser {
 		result = parseEncrypt(result);
 		return result;
 	}
+	/**
+	 * 
+	 * @param config +id.field:key
+	 * @return
+	 */
 	private static ParseResult parseInit(String config){
 		ParseResult result = new ParseResult();
 		boolean required = false;
