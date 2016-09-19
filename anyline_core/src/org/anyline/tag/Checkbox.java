@@ -93,8 +93,7 @@ public class Checkbox extends BaseBodyTag {
 				if (null != this.value) {
 					if (this.value instanceof String) {
 						if (this.value.toString().endsWith("}")) {
-							this.value = this.value.toString().replace("{", "").replace(
-									"}", "");
+							this.value = this.value.toString().replace("{", "").replace("}", "");
 						}
 					}
 					if (this.value instanceof String) {
@@ -129,7 +128,11 @@ public class Checkbox extends BaseBodyTag {
 				}
 				if(null != head){
 					String id = name +"_"+ headValue; 
-					html += "<input type='checkbox' name='"+name+"' value='" + headValue + "' id='" + id + "'/>"
+					html += "<input type='checkbox'";
+					if(null != headValue && headValue.equals(value)){
+						html += " checked = 'checked'";
+					}
+					html += " name='"+name+"' value='" + headValue + "' id='" + id + "'/>"
 							+ "<label for='"+id+ "'>" + head + "</label>\n";
 				}
 				
