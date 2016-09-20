@@ -292,15 +292,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String result = "";
 		if(obj instanceof DataRow){
 			DataRow row = (DataRow)obj;
-			String schema = row.getSchema();
-			String table = row.getTable();
-			if(null != schema){
-				result = getDisKeyFr() + schema +  getDisKeyTo() +".";
-			}
-			if(null == table){
-				return null;
-			}
-			result = result + getDisKeyFr() + table + getDisKeyTo();
+			result = row.getDataSource();
 		}else if(obj instanceof DataSet){
 			DataSet set = (DataSet)obj;
 			if(set.size()>0){
