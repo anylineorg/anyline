@@ -21,6 +21,7 @@ package org.anyline.util;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.Random;
 
 
 public class NumberUtil {
@@ -130,6 +131,18 @@ public class NumberUtil {
 			}
 		}
 		return min;
+	}
+	public static int getRandom(int fr, int to) {
+		int result = 0;
+		Random r = new Random();
+		result = fr + r.nextInt(to - fr);
+		return result;
+	}
+	public static double getRandom(double fr, double to) {
+		double result = 0;
+		Random r = new Random();
+		result = fr + r.nextDouble() * (to - fr);
+		return result;
 	}
 
 }
