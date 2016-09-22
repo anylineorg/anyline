@@ -402,7 +402,7 @@ public class AnylineController extends AbstractBasicController {
 	 * @throws IllegalStateException
 	 * @throws IOException
 	 */
-	public List<File> upload(String dir) throws IllegalStateException, IOException {
+	public List<File> upload(File dir) throws IllegalStateException, IOException {
 		List<File> result = new ArrayList<File>();
 		HttpServletRequest request = getRequest();
 		// 创建一个通用的多部分解析器
@@ -433,6 +433,9 @@ public class AnylineController extends AbstractBasicController {
 
 		}
 		return result;
+	}
+	public List<File> upload(String dir) throws IllegalStateException, IOException {
+		return upload(new File(dir));
 	}
 
 }
