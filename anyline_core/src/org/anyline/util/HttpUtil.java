@@ -37,6 +37,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
@@ -47,7 +48,17 @@ import org.apache.commons.httpclient.UsernamePasswordCredentials;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.ByteArrayBuffer;
 import org.apache.log4j.Logger;
 
 
@@ -120,12 +131,13 @@ public class HttpUtil {
 
 	private synchronized void init() {
 		client = new HttpClient(new MultiThreadedHttpConnectionManager());
+		HttpClientParams params = client.getParams();
 		if (encode != null && !encode.trim().equals("")) {
-			client.getParams().setParameter("http.protocol.content-charset", encode);
-			client.getParams().setContentCharset(encode);
+			params.setParameter("http.protocol.content-charset", encode);
+			params.setContentCharset(encode);
 		}
 		if (timeout > 0) {
-			client.getParams().setSoTimeout(timeout);
+			params.setSoTimeout(timeout);
 		}
 		if (null != proxy) {
 			HostConfiguration hc = new HostConfiguration();
@@ -305,12 +317,6 @@ public class HttpUtil {
 	public synchronized boolean isInitialized() {
 		return initialized;
 	}
-	
-	
-
-
-	
-
 
 	/**
 	 * 提取url根目录
@@ -510,5 +516,101 @@ public class HttpUtil {
 			}
 		}
 	}
-	
+	/**
+	 * 文件上传
+	 * @param url
+	 * @param files	 文件参数
+	 * @param params 文本参数
+	 * @return
+	 */
+	public static String upload(String url, Map<String, File> files, Map<String, String> params) {
+		String result = "";
+		// 封装文件实体
+		MultipartEntityBuilder meb = MultipartEntityBuilder.create();
+		if (null != files) {
+			Iterator<Entry<String, File>> fileIter = files.entrySet().iterator();
+			while (fileIter.hasNext()) {
+				Entry<String, File> entry = fileIter.next();
+				meb.addBinaryBody(entry.getKey(), entry.getValue());
+			}
+		}
+		if (null != params) {
+			Iterator<Entry<String, String>> paramIter = params.entrySet().iterator();
+			while (paramIter.hasNext()) {
+				Entry<String, String> entry = paramIter.next();
+				meb.addTextBody(entry.getKey(), entry.getValue());
+			}
+		}
+
+		HttpEntity reqEntity = meb.build();
+
+		// 请求配置：限定链接超时、请求链接超时
+		RequestConfig config = RequestConfig.custom().setConnectTimeout(2000).setConnectionRequestTimeout(500).build();
+
+		// 创建HttpPost对象，设置请求配置、和上传的文件
+		HttpPost post = new HttpPost(url);
+		post.setConfig(config);
+		post.setEntity(reqEntity);
+
+		CloseableHttpClient client = HttpClients.createDefault();
+		CloseableHttpResponse response = null;
+		try {
+			response = client.execute(post);
+			if (response != null) {
+				// 得到响应结果，如果为响应success表示文件上传成功
+				InputStream is = response.getEntity().getContent();
+				result = parseString(is);
+			}
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (client != null) {
+				try {
+					client.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 将输入流转换成字符串
+	 * 
+	 * @param is
+	 * @return
+	 */
+	public static String parseString(InputStream is) {
+		if (is == null) {
+			return null;
+		}
+		ByteArrayBuffer bab = new ByteArrayBuffer(0);
+		byte[] b = new byte[1024];
+		int len = 0;
+		try {
+			while ((len = is.read(b)) != -1) {
+				bab.append(b, 0, len);
+			}
+			return new String(bab.toByteArray(), "utf-8");
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 }
