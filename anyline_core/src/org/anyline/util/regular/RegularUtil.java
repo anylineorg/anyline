@@ -215,7 +215,7 @@ public class RegularUtil {
 		return null;
 	}
 	public static String cut(String text,String ... tags){
-		if(null == tags || tags.length < 2){
+		if(null == text || null == tags || tags.length < 2){
 			/*没有开始结束标志*/
 			return null;
 		}
