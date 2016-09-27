@@ -32,6 +32,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.anyline.cache.PageLazyStore;
 import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
@@ -118,6 +119,9 @@ public class AnylineDaoImpl implements AnylineDao {
 		set.setSchema(sql.getSchema());
 		set.setTable(sql.getTable());
 		set.setNavi(navi);
+		if(null != navi && navi.isLazy()){
+			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
+		} 
 		return set;
 	}
 	public DataSet query(SQL sql, ConfigStore configs, String ... conditions){

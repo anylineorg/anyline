@@ -33,9 +33,11 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -82,6 +84,9 @@ public class HttpUtil {
 		return post(null, url, encode, params);
 	}
 	public static Source post(HttpProxy proxy, String url, String encode, Map<String, Object> params) {
+		if(ConfigTable.isDebug()){
+			log.warn("post:"+url);
+		}
 		HttpUtil instance = getInstance();
 		instance.setProxy(proxy);
 		instance.setEncode(encode);
@@ -100,13 +105,52 @@ public class HttpUtil {
 		return get(null, url, encode, params);
 	}
 	public static Source get(HttpProxy proxy,String url, String encode,  Map<String, Object> params) {
+		if(ConfigTable.isDebug()){
+			log.warn("get:"+url);
+		}
 		HttpUtil instance = getInstance();
 		instance.setProxy(proxy);
 		instance.setEncode(encode);
 		HttpMethod method = instance.packGet(url, params);
 		return instance.invoke(method);
 	}
-
+	public static String get(String url){
+		if(ConfigTable.isDebug()){
+			log.warn("get:"+url);
+		}
+		StringBuilder builder = new StringBuilder();
+        BufferedReader in = null;
+        try {
+            URL realUrl = new URL(url);
+            // 打开和URL之间的连接
+            URLConnection connection = realUrl.openConnection();
+            // 设置通用的请求属性
+            connection.setRequestProperty("accept", "*/*");
+            //connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            // 建立实际的连接
+            connection.connect();
+            // 定义 BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null) {
+                builder.append(line).append("\n");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 使用finally块来关闭输入流
+        finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+		return builder.toString();
+	}
 	public static HttpUtil getInstance() {
 		if (!instance.initialized) {
 			instance.init();
@@ -317,7 +361,6 @@ public class HttpUtil {
 	public synchronized boolean isInitialized() {
 		return initialized;
 	}
-
 	/**
 	 * 提取url根目录
 	 * 
