@@ -62,6 +62,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private boolean lazy = false;
 	private String flag  = "";				//一个jsp中有多个分页时用来区分
 	private long lazyPeriod = 0;				//总条数懒加载时间间隔(秒)
+	private String lazyKey = null;
 	
 
 //	private String scriptFile = "/common/web/common/script/navi.js";
@@ -377,19 +378,29 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		this.lazyPeriod = ms;
 		return this;
 	}
+	
+	@Override
+	public PageNavi setLazyKey(String key) {
+		this.lazyKey = key;
+		return this;
+	}
+	@Override
+	public String getLazyKey() {
+		return this.lazyKey;
+	}
 	@Override
 	public String createHidParam(String name, Object values) {
 		String html = "";
 		if(null == values){
-			html = "<inpu type='hidden' name='"+name+"' value=''>\n";
+			html = "<input type='hidden' name='"+name+"' value=''>\n";
 		}else{
 			if(values instanceof Collection<?>){
 				Collection<?> list = (Collection<?>)values;
 				for(Object obj:list){
-					html += "<inpu type='hidden' name='"+name+"' value='"+obj+"'>\n";
+					html += "<input type='hidden' name='"+name+"' value='"+obj+"'>\n";
 				}
 			}else{
-				html += "<inpu type='hidden' name='"+name+"' value='"+values+"'>\n";
+				html += "<input type='hidden' name='"+name+"' value='"+values+"'>\n";
 			}
 		}
 		return html;
