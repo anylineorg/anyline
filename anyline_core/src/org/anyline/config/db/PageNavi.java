@@ -139,6 +139,8 @@ public interface PageNavi extends Serializable{
 	 * @return
 	 */
 	public PageNavi setLazyPeriod(long ms);
+	public PageNavi setLazyKey(String key);
+	public String getLazyKey();
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @param period

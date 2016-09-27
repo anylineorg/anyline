@@ -64,7 +64,20 @@ public class AnylineServiceImpl implements AnylineService {
 	public AnylineDao getDao() {
 		return dao;
 	}
-
+	private PageNavi setPageLazy(String src, ConfigStore configs, String ... conditions){
+		PageNavi navi =  null;
+		String lazyKey = null;
+		if(null != configs){
+			navi = configs.getPageNavi();
+			if(null != navi && navi.isLazy()){
+				lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
+				navi.setLazyKey(lazyKey);
+				int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
+				navi.setTotalRow(total);
+			}
+		}
+		return navi;
+	}
 	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
 		if(ConfigTable.isSQLDebug()){
@@ -72,21 +85,9 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		//conditions = parseConditions(conditions);
 		try {
-			PageNavi navi =  null;
-			String lazyKey = null;
-			if(null != configs){
-				navi = configs.getPageNavi();
-				if(null != navi && navi.isLazy()){
-					lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
-					int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
-					navi.setTotalRow(total);
-				}
-			}
+			setPageLazy(src, configs, conditions);
 			SQL sql = createSQL(src);
 			set = dao.query(ds, sql, configs, conditions);
-			if(null != navi && navi.isLazy()){
-				PageLazyStore.setTotal(lazyKey, navi.getTotalRow());
-			} 
 			set.setService(this);
 		} catch (Exception e) {
 			set = new DataSet();
@@ -278,6 +279,8 @@ public class AnylineServiceImpl implements AnylineService {
 				//如果二级缓存已开启, 一级缓存只查主键
 				sql.setFetchKey(sql.getPrimaryKeys());
 			}
+
+			setPageLazy(src, configs, conditions);
 			set = dao.query(ds, sql, configs, conditions);
 			
         	CacheUtil.put(cache, key, set);        	
