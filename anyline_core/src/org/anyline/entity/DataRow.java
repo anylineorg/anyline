@@ -686,4 +686,26 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+	/**
+	 * 将数据从data中复制到this
+	 * @param data
+	 * @param keys this与data中的key不同时 "this.key:data.key"(CD:ORDER_CD)
+	 * @return
+	 */
+	public DataRow copy(DataRow data, String ... keys){
+		if(null == data || null == keys){
+			return this;
+		}
+		for(String key:keys){
+			String key1 = key;
+			String key2 = key;
+			if(key.contains(":")){
+				String tmp[] = key.split(":");
+				key1 = tmp[0];
+				key2 = tmp[1];
+			}
+			this.put(key1, data.get(key2));
+		}
+		return this;
+	}
 }
