@@ -84,14 +84,20 @@ public class HttpUtil {
 		return post(null, url, encode, params);
 	}
 	public static Source post(HttpProxy proxy, String url, String encode, Map<String, Object> params) {
+		String flag = "";
+		long fr = 0;
 		if(ConfigTable.isDebug()){
-			log.warn("post:"+url);
+			flag = System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			fr = System.currentTimeMillis();
+			log.warn("[POST:" + flag + "][URL:" + url + "]");
 		}
 		HttpUtil instance = getInstance();
 		instance.setProxy(proxy);
 		instance.setEncode(encode);
 		HttpMethod method = instance.packPost(url, params);
-		return instance.invoke(method);
+		Source src = instance.invoke(method);;
+		log.warn("[POST:" + flag + "][耗时:" + (System.currentTimeMillis()-fr) + "ms]");
+		return src;
 	}
 
 	public static Source get(HttpProxy proxy, String url, String encode, Object... params) {
@@ -105,18 +111,28 @@ public class HttpUtil {
 		return get(null, url, encode, params);
 	}
 	public static Source get(HttpProxy proxy,String url, String encode,  Map<String, Object> params) {
+		String flag = "";
+		long fr = 0;
 		if(ConfigTable.isDebug()){
-			log.warn("get:"+url);
+			flag = System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			fr = System.currentTimeMillis();
+			log.warn("[POST:" + flag + "][URL:" + url + "]");
 		}
 		HttpUtil instance = getInstance();
 		instance.setProxy(proxy);
 		instance.setEncode(encode);
 		HttpMethod method = instance.packGet(url, params);
-		return instance.invoke(method);
+		Source src = instance.invoke(method);
+		log.warn("[GET:" + flag + "][耗时:" + (System.currentTimeMillis()-fr) + "ms]");
+		return src;
 	}
 	public static String get(String url){
+		String flag = "";
+		long fr = 0;
 		if(ConfigTable.isDebug()){
-			log.warn("get:"+url);
+			flag = System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
+			fr = System.currentTimeMillis();
+			log.warn("[POST:" + flag + "][URL:" + url + "]");
 		}
 		StringBuilder builder = new StringBuilder();
         BufferedReader in = null;
@@ -149,6 +165,7 @@ public class HttpUtil {
                 e2.printStackTrace();
             }
         }
+        log.warn("[GET:" + flag + "][耗时:" + (System.currentTimeMillis()-fr) + "ms]");
 		return builder.toString();
 	}
 	public static HttpUtil getInstance() {
