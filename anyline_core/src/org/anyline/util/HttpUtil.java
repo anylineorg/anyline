@@ -116,7 +116,7 @@ public class HttpUtil {
 		if(ConfigTable.isDebug()){
 			flag = System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
 			fr = System.currentTimeMillis();
-			log.warn("[POST:" + flag + "][URL:" + url + "]");
+			log.warn("[GET:" + flag + "][URL:" + url + "]");
 		}
 		HttpUtil instance = getInstance();
 		instance.setProxy(proxy);
@@ -132,7 +132,7 @@ public class HttpUtil {
 		if(ConfigTable.isDebug()){
 			flag = System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
 			fr = System.currentTimeMillis();
-			log.warn("[POST:" + flag + "][URL:" + url + "]");
+			log.warn("[GET:" + flag + "][URL:" + url + "]");
 		}
 		StringBuilder builder = new StringBuilder();
         BufferedReader in = null;
