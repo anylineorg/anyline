@@ -356,6 +356,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				set.add(src.getRow(i));
 			}
 		}
+
+		set.head = this.head;
+		set.primaryKeys = this.primaryKeys;
+		set.dataSource = this.dataSource;
+		set.schema = this.schema;
+		set.table = this.table;
 		return set;
 	}
 	public DataSet getRows(int fr, int to) {
