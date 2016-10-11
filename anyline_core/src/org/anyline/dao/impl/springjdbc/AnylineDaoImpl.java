@@ -378,7 +378,6 @@ public class AnylineDaoImpl implements AnylineDao {
 					int id = (int)keyholder.getKey().longValue();
 					setPrimaryValue(data, id);
 				}catch(Exception e){
-					log.error(e);
 				}
 			}
 
