@@ -685,7 +685,7 @@ public class DateUtil {
 	 * @param date
 	 * @return
 	 */
-	public static Date getDayOfWeek(int idx, Date date) {
+	public static Date getDateOfWeek(int idx, Date date) {
 		Date result = null;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -695,8 +695,8 @@ public class DateUtil {
 		return result;
 	}
 
-	public static Date getDayOfWeek(int idx) {
-		return getDayOfWeek(idx, new Date());
+	public static Date getDateOfWeek(int idx) {
+		return getDateOfWeek(idx, new Date());
 	}
 
 	/**

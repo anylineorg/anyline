@@ -53,7 +53,7 @@ public class SeoUtil {
 			return src;
 		}
 		//src = src.replace("<br/>", "\n");
-		int week = DateUtil.weekOfYear() + DateUtil.month() ;//第几个星期+月份
+		int week = DateUtil.getWeekOfYear() + DateUtil.month() ;//第几个星期+月份
 		int size = keys.size();
 		for(int i=0; i<size; i++){
 			String key = keys.get(i);
