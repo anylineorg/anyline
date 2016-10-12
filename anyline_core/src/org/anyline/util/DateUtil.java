@@ -685,7 +685,7 @@ public class DateUtil {
 	 * @param date
 	 * @return
 	 */
-	public static Date dayOfWeek(int idx, Date date) {
+	public static Date getDayOfWeek(int idx, Date date) {
 		Date result = null;
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
@@ -695,10 +695,35 @@ public class DateUtil {
 		return result;
 	}
 
-	public static Date dayOfWeek(int idx) {
-		return dayOfWeek(idx, new Date());
+	public static Date getDayOfWeek(int idx) {
+		return getDayOfWeek(idx, new Date());
 	}
 
+	/**
+	 * 星期几(礼拜几)
+	 * 
+	 * @return
+	 */
+	public static int getDayOfWeek(Date date) {
+		calendar.setTime(date);
+		return calendar.get(Calendar.DAY_OF_WEEK) - 1;
+	}
+	public static int getDayOfWeek() {
+		return getDayOfWeek(new Date());
+	}
+
+	/**
+	 * 一年中的第几个星期
+	 * 
+	 * @return
+	 */
+	public static int getWeekOfYear(Date date) {
+		calendar.setTime(date);
+		return calendar.get(Calendar.WEEK_OF_YEAR);
+	}
+	public static int getWeekOfYear() {
+		return getWeekOfYear(new Date());
+	}
 	/**
 	 * 按年加,指定日期
 	 * 
@@ -842,31 +867,6 @@ public class DateUtil {
 		return second(new Date());
 	}
 
-	/**
-	 * 星期几(礼拜几)
-	 * 
-	 * @return
-	 */
-	public static int weekday(Date date) {
-		calendar.setTime(date);
-		return calendar.get(Calendar.DAY_OF_WEEK) - 1;
-	}
-	public static int weekday() {
-		return weekday(new Date());
-	}
-
-	/**
-	 * 一年中的第几个星期
-	 * 
-	 * @return
-	 */
-	public static int weekOfYear(Date date) {
-		calendar.setTime(date);
-		return calendar.get(Calendar.WEEK_OF_YEAR);
-	}
-	public static int weekOfYear() {
-		return weekOfYear(new Date());
-	}
 	/**
 	 * fr > to返回 1 
 	 * @param fr

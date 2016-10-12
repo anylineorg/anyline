@@ -640,8 +640,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @param expire	过期时间(毫秒)
 	 * @return
 	 */
-	public boolean isExpire(int expire){
-		if(System.currentTimeMillis() - createTime > expire){
+	public boolean isExpire(int ms){
+		if(System.currentTimeMillis() - createTime > ms){
 			return true;
 		}
 		return false;
