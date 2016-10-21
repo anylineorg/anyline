@@ -71,7 +71,7 @@ public class BeanUtil {
 		}
 		return true;
 	}
-	public static Field getField(Class<?> clazz, String name){
+	public static Field getField(Class<?> clazz, String name, boolean recursion){
 		Field field = null;
 		try{
 			field = clazz.getField(name);
@@ -83,7 +83,18 @@ public class BeanUtil {
 				
 			}
 		}
+		//递归父类
+		if(null == field && recursion){
+			clazz = clazz.getSuperclass();
+			if(null != clazz){
+				field = getField(clazz, name);
+			}
+		}
 		return field;
+	}
+
+	public static Field getField(Class<?> clazz, String name){
+		return getField(clazz, name, false);
 	}
 	public static Object getFieldValue(Object obj, Field field){
 		Object value = null;
@@ -110,7 +121,7 @@ public class BeanUtil {
 		}
 		return value;
 	}
-	public static Object getFieldValue(Object obj, String field){
+	public static Object getFieldValue(Object obj, String field, boolean recursion){
 		if(null == obj){
 			return null;
 		}
@@ -119,13 +130,16 @@ public class BeanUtil {
 			Map map = (Map)obj;
 			value = map.get(field);
 		}else{
-			Field f = getField(obj.getClass(), field);
+			Field f = getField(obj.getClass(), field, recursion);
 			value = getFieldValue(obj, f);
 		}
 		return value;
 		
 	}
-	
+
+	public static Object getFieldValue(Object obj, String field){
+		return getFieldValue(obj, field, false);
+	}
 	public static List<String> getMapKeys(Map map){
 		List<String> list = new ArrayList<String>();
 		for(Object key:map.keySet()){
