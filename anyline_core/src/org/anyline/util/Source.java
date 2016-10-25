@@ -37,7 +37,8 @@ public class Source {
 	private long lastModified;			//最后修改时间毫秒
 	private String parser;				//解析器CD
 	private String host;
-	
+	private Map<String,String> headers = new HashMap<String,String>();
+	private Map<String,HttpCookie> cookies = new HashMap<String,HttpCookie>();
 
 	private Map<String,String> seed;
 	
@@ -103,6 +104,38 @@ public class Source {
 	public void setUrl(String url) {
 		this.url = url;
 	}
+
+	public Map<String, String> getHeaders() {
+		return headers;
+	}
+	public void setHeaders(Map<String, String> headers) {
+		this.headers = headers;
+	}
+	public Map<String, HttpCookie> getCookies() {
+		return cookies;
+	}
+	public void setCookies(Map<String, HttpCookie> cookies) {
+		this.cookies = cookies;
+	}
+	public HttpCookie getCookie(String key){
+		return cookies.get(key);
+	}
+	public void setCookie(HttpCookie cookie){
+		if(null != cookie){
+			cookies.put(cookie.getKey(), cookie);
+		}
+	}
+	public String getCookieValue(String key){
+		HttpCookie cookie = getCookie(key);
+		if(null != cookie){
+			return cookie.getValue();
+		}
+		return null;
+	}
+	public String getHeader(String key){
+		return headers.get(key);
+	}
+
 	public static List<String> encodeList = new ArrayList<String>();
 	//HTTP 文件类型
 	public final static List<String> httpFileExtend = new ArrayList<String>();
