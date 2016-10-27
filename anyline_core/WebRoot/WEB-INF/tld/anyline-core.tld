@@ -261,6 +261,10 @@
 			<name>disabled</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>encrypt</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>radio</name>
@@ -321,6 +325,10 @@
 		</attribute>
 		<attribute>
 			<name>disabled</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>encrypt</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -396,6 +404,10 @@
 		</attribute>
 		<attribute>
 			<name>disabled</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>encrypt</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
