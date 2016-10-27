@@ -46,6 +46,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String onblur;
 	protected String onfocus;
 	protected String disabled;
+	protected boolean encrypt;	//是否加密
 	
 	public String getDisabled() {
 		return disabled;
@@ -215,4 +216,11 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	public void setOnfocus(String onfocus) {
 		this.onfocus = onfocus;
 	}
+	public boolean isEncrypt() {
+		return encrypt;
+	}
+	public void setEncrypt(boolean encrypt) {
+		this.encrypt = encrypt;
+	}
+	
 }
