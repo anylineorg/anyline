@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.WebUtil;
 import org.anyline.util.regular.RegularUtil;
 
 
@@ -94,10 +95,15 @@ public class Radio extends BaseBodyTag{
 				Collection items = (Collection)data;
 				if(null != items)
 				for(Object item:items){
-					Object value = BeanUtil.getFieldValue(item, valueKey);
+					Object srcValue = BeanUtil.getFieldValue(item, valueKey);
+					Object value = srcValue;
+					if(this.encrypt){
+						value = WebUtil.encryptValue(value+"");
+					}
+					
 					String id = name +"_"+ value;
 					html += "<input type='radio' value='" + value + "' name='"+name+"' id='"+id+"'";
-					if(null != value && null != this.value && value.toString().equals(this.value.toString())){
+					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
 						html += " checked='checked'";
 					}
 					String text = "";

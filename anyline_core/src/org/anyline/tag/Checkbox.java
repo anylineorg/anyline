@@ -31,6 +31,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.WebUtil;
 import org.anyline.util.regular.RegularUtil;
 /**
  * 
@@ -168,10 +169,13 @@ public class Checkbox extends BaseBodyTag {
 				if (null != items)
 					for (Map item : items) {
 						Object val = item.get(valueKey);
+						if(this.encrypt){
+							val = WebUtil.encryptValue(val+"");
+						}
 						String id = name +"_"+ val;
 						html += "<input type='checkbox' value='" + val + "' id='" + id + "'";
 						Object chk = item.get("CHECKED")+"";
-						if("1".equals(chk) || checked(chks,val) ) {
+						if("1".equals(chk) || checked(chks,item.get(valueKey)) ) {
 							html += " checked='checked'";
 						}
 						html +=tag()+ "/>";

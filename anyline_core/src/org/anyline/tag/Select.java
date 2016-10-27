@@ -29,10 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.WebUtil;
 import org.anyline.util.regular.RegularUtil;
+import org.apache.log4j.Logger;
 
 
 public class Select extends BaseBodyTag{
@@ -97,9 +98,13 @@ public class Select extends BaseBodyTag{
 				Collection items = (Collection)data;
 				if(null != items)
 				for(Object item:items){
-					Object value = BeanUtil.getFieldValue(item, valueKey);
+					Object srcValue = BeanUtil.getFieldValue(item, valueKey);
+					Object value = srcValue;
+					if(this.encrypt){
+						value = WebUtil.encryptValue(srcValue+"");
+					}
 					html += "<option value='" + value + "'";
-					if(null != value && null != this.value && value.toString().equals(this.value.toString())){
+					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
 						html += " selected='selected'";
 					}
 					String text = "";
