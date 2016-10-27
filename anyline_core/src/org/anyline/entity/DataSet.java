@@ -677,11 +677,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public String getHtmlString(String key) {
 		return getHtmlString(0, key);
 	}
-	public void put(String key, Object value){
-		for(DataRow row: rows){
-			row.put(key, value);
-		}
-	}
+
 
 	/**
 	 * escape String
@@ -1212,6 +1208,29 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet order(final String ... keys){
 		return asc(keys);
 	}
+	public Object put(String key, Object value, boolean pk, boolean override){
+		for(DataRow row:rows){
+			row.put(key, value, pk, override);
+		}
+		return this;
+	}
+	public Object put(String key, Object value, boolean pk){
+		for(DataRow row:rows){
+			row.put(key, value, pk);
+		}
+		return this;
+	}
+	public Object put(String key, Object value){
+		for(DataRow row:rows){
+			row.put(key, value);
+		}
+		return this;
+	}
+	/**
+	 * 排序
+	 * @param keys
+	 * @return
+	 */
 	public DataSet asc(final String ... keys){
 		Collections.sort(rows, new Comparator<DataRow>() {  
             public int compare(DataRow r1, DataRow r2) {
