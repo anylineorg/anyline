@@ -1110,7 +1110,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * 验证是否过期
 	 * 根据当前时间与创建时间对比
 	 * 过期返回 true
-	 * @param expire	过期时间(秒)
+	 * @param expire	过期时间(毫秒)
 	 * @return
 	 */
 	public boolean isExpire(int expire){
