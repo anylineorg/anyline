@@ -391,6 +391,7 @@ public class TemplateController extends AnylineController {
 	public ModelAndView save(){
 		init();
 		DataRow row = entityRow(columns);
+		row.put(DataRow.PRIMARY_KEY, WebUtil.decryptHttpRequestParamValue(row.getString(DataRow.PRIMARY_KEY)));
 		service.save(table, row);
 		String pk = DataRow.PRIMARY_KEY.toLowerCase();
 		String param = pk+"="+row.getPrimaryValue();
