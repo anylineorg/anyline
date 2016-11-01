@@ -389,6 +389,7 @@ public class TemplateController extends AnylineController {
 	}
 	@RequestMapping("s")
 	public ModelAndView save(){
+		init();
 		DataRow row = entityRow(columns);
 		service.save(table, row);
 		String pk = DataRow.PRIMARY_KEY.toLowerCase();
@@ -399,6 +400,7 @@ public class TemplateController extends AnylineController {
 	}
 	@RequestMapping("v")
 	public ModelAndView view(){
+		init();
 		ModelAndView mv = template("view.jsp");
 		String pk = DataRow.PRIMARY_KEY.toLowerCase();
 		DataRow row = service.queryRow(view, parseConfig("+"+pk+":"+pk+"-+"+":"+pk+"++"));
@@ -412,6 +414,7 @@ public class TemplateController extends AnylineController {
 	@RequestMapping("d")
 	@ResponseBody
 	public String delete(){
+		init();
 		String pk = DataRow.PRIMARY_KEY.toLowerCase();
 		DataRow row = service.queryRow(table, parseConfig("+"+pk+":"+pk+"-+"+":"+pk+"++"));
 		if(null == row){
