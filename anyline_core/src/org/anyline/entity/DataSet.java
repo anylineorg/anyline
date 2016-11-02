@@ -55,7 +55,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	private String dataSource; 				// 数据源(表|视图|XML定义SQL)
 	private String schema;
 	private String table;
-	private long createTime;
+	private long createTime = 0;						//创建时间
+	private long expires = -1;							//过期时间(毫秒) 从创建时刻计时expires毫秒后过期
 	
 	@Autowired
 	protected transient AnylineService service;
@@ -221,6 +222,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public boolean isException() {
 		return null != exception;
 	}
+	
 
 	/**
 	 * 返回数据是否为空
@@ -1125,6 +1127,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return false;
 	}
+
+	public boolean isExpire(){
+		if(getExpires() == -1){
+			return false;
+		}
+		if(System.currentTimeMillis() - createTime > getExpires()){
+			return true;
+		}
+		return false;
+	}
 	public long getCreateTime() {
 		return createTime;
 	}
@@ -1146,6 +1158,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 	/************************** getter setter ***************************************/
 
+	public long getExpires() {
+		return expires;
+	}
+	public void setExpires(long expires) {
+		this.expires = expires;
+	}
+	public void setExpires(int expires) {
+		this.expires = expires;
+	}
 	public boolean isResult() {
 		return result;
 	}
