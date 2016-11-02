@@ -438,6 +438,42 @@ public class WebUtil {
 		url = url.substring(0, url.indexOf("?") + 1) + param;
 		return url;
 	}
+	public static String encryptUrl(String url, boolean union, boolean encryptKey, boolean encryptValue) {
+		if (null == url || !url.contains("?")) {
+			return url;
+		}
+		String param = url.substring(url.indexOf("?") + 1);
+		try {
+			if(union){
+				param = encryptRequestParam(param);
+			}else{
+				String params[] = param.split("&");
+				param = "";
+				for(String p:params){
+					String kv[] = p.split("=");
+					if(kv.length == 2){
+						String k = kv[0];
+						if(encryptKey){
+							k = encryptKey(k);
+						}
+						String v = kv[1];
+						if(encryptValue){
+							v = encryptValue(v);
+						}
+						if(!"".equals(params)){
+							param += "&";
+						}
+						param += k + "=" + v;
+					}
+				}
+			}
+			
+		} catch (Exception e) {
+			log.error(e);
+		}
+		url = url.substring(0, url.indexOf("?") + 1) + param;
+		return url;
+	}
 
 	/**
 	 * 加密htmla标签中的url
