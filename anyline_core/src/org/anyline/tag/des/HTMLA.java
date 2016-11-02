@@ -45,6 +45,9 @@ public class HTMLA extends BaseBodyTag {
 	private String onmouseover;
 	private String onmouseout;
 	private String onclick;
+	private boolean union = true;		//key value合并加密
+	private boolean encryptKey = true;
+	private boolean encryptValue = true;
 
 	public int doEndTag() throws JspException {
 		try {
@@ -57,7 +60,7 @@ public class HTMLA extends BaseBodyTag {
 				buffer.append(" name = \"" + name + "\"");
 			}
 			if (null != href) {
-				buffer.append(" href = \"" + WebUtil.encryptUrl(href) + "\"");
+				buffer.append(" href = \"" + WebUtil.encryptUrl(href, union, encryptKey, encryptValue) + "\"");
 			}
 			if (null != clazz) {
 				buffer.append(" class = \"" + clazz + "\"");
@@ -201,6 +204,30 @@ public class HTMLA extends BaseBodyTag {
 
 	public void setOnclick(String onclick) {
 		this.onclick = onclick;
+	}
+
+	public boolean isEncryptKey() {
+		return encryptKey;
+	}
+
+	public void setEncryptKey(boolean encryptKey) {
+		this.encryptKey = encryptKey;
+	}
+
+	public boolean isEncryptValue() {
+		return encryptValue;
+	}
+
+	public void setEncryptValue(boolean encryptValue) {
+		this.encryptValue = encryptValue;
+	}
+
+	public boolean isUnion() {
+		return union;
+	}
+
+	public void setUnion(boolean union) {
+		this.union = union;
 	}
 
 }
