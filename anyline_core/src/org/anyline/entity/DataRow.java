@@ -52,8 +52,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private String schema;
 	private String table;
 	private Object clientTrace;							//客户端数据
-	private long createTime = 0;
-
+	private long createTime = 0;						//创建时间
+	private long expires = -1;							//过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+	
 	protected Boolean isNew = false;					//强制新建(适应hibernate主键策略)
 
 	@Autowired
@@ -109,6 +110,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public long getCreateTime(){
 		return createTime;
+	}
+	
+	public long getExpires() {
+		return expires;
+	}
+	public void setExpires(long expires) {
+		this.expires = expires;
+	}
+	public void setExpires(int expires) {
+		this.expires = expires;
 	}
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
@@ -657,6 +668,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public boolean isExpire(long expire){
 		if(System.currentTimeMillis() - createTime > expire){
+			return true;
+		}
+		return false;
+	}
+	public boolean isExpire(){
+		if(getExpires() == -1){
+			return false;
+		}
+		if(System.currentTimeMillis() - createTime > getExpires()){
 			return true;
 		}
 		return false;
