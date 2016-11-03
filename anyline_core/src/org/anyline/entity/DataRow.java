@@ -342,11 +342,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 */
 	public String getDataSource() {
 		String ds = table;
-		if(BasicUtil.isEmpty(ds)){
-			ds = dataSource;
-		}
 		if(BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)){
 			ds = schema + "." + ds;
+		}
+		if(BasicUtil.isEmpty(ds)){
+			ds = dataSource;
 		}
 		if(null == ds && null != getContainer()){
 			ds = getContainer().getDataSource();
