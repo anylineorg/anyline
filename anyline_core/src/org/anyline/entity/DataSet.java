@@ -1209,9 +1209,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 
 	public String getDataSource() {
-		String ds = dataSource;
-		if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)) {
+		String ds = table;
+		if(BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)){
 			ds = schema + "." + ds;
+		}
+		if(BasicUtil.isEmpty(ds)){
+			ds = dataSource;
 		}
 		return ds;
 	}
