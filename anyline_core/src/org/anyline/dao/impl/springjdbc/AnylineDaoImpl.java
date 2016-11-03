@@ -116,8 +116,8 @@ public class AnylineDaoImpl implements AnylineDao {
 			set = new DataSet();
 		}
 		set.setDataSource(sql.getDataSource());
-		set.setSchema(sql.getSchema());
-		set.setTable(sql.getTable());
+//		set.setSchema(sql.getSchema());
+//		set.setTable(sql.getTable());
 		set.setNavi(navi);
 		if(null != navi && navi.isLazy()){
 			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
