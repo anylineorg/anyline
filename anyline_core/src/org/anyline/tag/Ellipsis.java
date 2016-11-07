@@ -60,7 +60,7 @@ public class Ellipsis extends BaseBodyTag {
 			}
 			if(result.length() < src.length()){
 				result += replace;
-				result = "<label title='"+src+"'>" + result + "</label>";
+				result = "<label title=\""+src+"\">" + result + "</label>";
 			}
 			writer.print(result);
 		} catch (IOException e) {

@@ -66,7 +66,7 @@ public class Select extends BaseBodyTag{
 			headValue = "";
 		}
 		if(null != head){
-			html += "<option value='"+headValue+"'>"+head+"</option>";
+			html += "<option value=\""+headValue+"\">"+head+"</option>";
 		}
 		try{
 			if(null != data){
@@ -103,9 +103,9 @@ public class Select extends BaseBodyTag{
 					if(this.encrypt){
 						value = WebUtil.encryptValue(srcValue+"");
 					}
-					html += "<option value='" + value + "'";
+					html += "<option value=\"" + value + "\"";
 					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
-						html += " selected='selected'";
+						html += " selected=\"selected\"";
 					}
 					String text = "";
 					if(textKey.contains("{")){
