@@ -133,36 +133,36 @@ public class Checkbox extends BaseBodyTag {
 				}
 				if(null != head){
 					String id = name +"_"+ headValue; 
-					html += "<input type='checkbox'";
+					html += "<input type=\"checkbox\"";
 					if((null != headValue && headValue.equals(value))
 							|| checked
 							){
-						html += " checked = 'checked'";
+						html += " checked = \"checked\"";
 					}
-					html += " name='"+name+"' value='" + headValue + "' id='" + id + "'";
+					html += " name=\""+name+"\" value=\"" + headValue + "\" id=\"" + id + "\"";
 					if(null != clazz){
-						html += " class='" + clazz + "'";
+						html += " class=\"" + clazz + "\"";
 					}
 					if(null != style){
-						html += " style='" + style + "'";
+						html += " style=\"" + style + "\"";
 					}
 					if(null != onclick){
-						html += " onclick='" + onclick + "'";
+						html += " onclick=\"" + onclick + "\"";
 					}
 					if(null != onchange){
-						html += " onchange='" + onchange + "'";
+						html += " onchange=\"" + onchange + "\"";
 					}
 					if(null != onblur){
-						html += " onblur='" + onblur + "'";
+						html += " onblur=\"" + onblur + "\"";
 					}
 					if(null != onfocus){
-						html += " onfocus='" + onfocus + "'";
+						html += " onfocus=\"" + onfocus + "\"";
 					}
 					if(null != disabled){
-						html += " disabled='" + disabled + "'";
+						html += " disabled=\"" + disabled + "\"";
 					}
 					html +="/>"
-							+ "<label for='"+id+ "'>" + head + "</label>\n";
+							+ "<label for=\""+id+ "\">" + head + "</label>\n";
 				}
 				
 				
@@ -173,13 +173,13 @@ public class Checkbox extends BaseBodyTag {
 							val = WebUtil.encryptValue(val+"");
 						}
 						String id = name +"_"+ val;
-						html += "<input type='checkbox' value='" + val + "' id='" + id + "'";
+						html += "<input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
 						Object chk = item.get("CHECKED")+"";
 						if("1".equals(chk) || checked(chks,item.get(valueKey)) ) {
-							html += " checked='checked'";
+							html += " checked=\"checked\"";
 						}
 						html +=tag()+ "/>";
-						String label = "<label for='"+id+ "'>";
+						String label = "<label for=\""+id+ "\">";
 						String text = "";
 						if (textKey.contains("{")) {
 							text = textKey;
