@@ -87,8 +87,8 @@ public class Radio extends BaseBodyTag{
 				}
 				if(null != head){
 					String id = name +"_"+ headValue; 
-					html += "<input type='radio' name='"+name+"' value='" + headValue + "' id='" + id + "'/>"
-							+ "<label for='"+id+ "'>" + head + "</label>";
+					html += "<input type=\"radio\" name=\""+name+"\" value=\"" + headValue + "\" id=\"" + id + "\"/>"
+							+ "<label for=\""+id+ "\">" + head + "</label>";
 				}
 				
 				
@@ -102,9 +102,9 @@ public class Radio extends BaseBodyTag{
 					}
 					
 					String id = name +"_"+ value;
-					html += "<input type='radio' value='" + value + "' name='"+name+"' id='"+id+"'";
+					html += "<input type=\"radio\" value=\"" + value + "\" name=\""+name+"\" id=\""+id+"\"";
 					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
-						html += " checked='checked'";
+						html += " checked=\"checked\"";
 					}
 					String text = "";
 					if(textKey.contains("{")){
@@ -123,7 +123,7 @@ public class Radio extends BaseBodyTag{
 							text = v.toString();
 						}
 					}
-					html += "></input>" + "<label for='"+id+"'>"+text+"</label>";
+					html += "></input>" + "<label for=\""+id+"\">"+text+"</label>";
 				}
 			}
 			html += "</span>";

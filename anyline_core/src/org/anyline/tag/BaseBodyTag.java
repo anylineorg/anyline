@@ -57,34 +57,34 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String tag(){
 		String html = "";
 		if(null != id){
-			html += " id='" + id + "'";
+			html += " id=\"" + id + "\"";
 		}
 		if(null != name){
-			html += " name='" + name + "'";
+			html += " name=\"" + name + "\"";
 		}
 		if(null != value){
-			html += " value='" + value + "'";
+			html += " value=\"" + value + "\"";
 		}
 		if(null != clazz){
-			html += " class='" + clazz + "'";
+			html += " class=\"" + clazz + "\"";
 		}
 		if(null != style){
-			html += " style='" + style + "'";
+			html += " style=\"" + style + "\"";
 		}
 		if(null != onclick){
-			html += " onclick='" + onclick + "'";
+			html += " onclick=\"" + onclick + "\"";
 		}
 		if(null != onchange){
-			html += " onchange='" + onchange + "'";
+			html += " onchange=\"" + onchange + "\"";
 		}
 		if(null != onblur){
-			html += " onblur='" + onblur + "'";
+			html += " onblur=\"" + onblur + "\"";
 		}
 		if(null != onfocus){
-			html += " onfocus='" + onfocus + "'";
+			html += " onfocus=\"" + onfocus + "\"";
 		}
 		if(null != disabled){
-			html += " disabled='" + disabled + "'";
+			html += " disabled=\"" + disabled + "\"";
 		}
 		return html;
 	}
