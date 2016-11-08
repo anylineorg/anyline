@@ -45,14 +45,32 @@ public class ConfigTable {
 		init();
 		debug();
 	}
-	
 	private ConfigTable() {}
-	
+
+	public static void addConfig(String ... files){
+		if(null == files){
+			return;
+		}
+		for(String file:files){
+			loadConfig(new File(file));
+		}
+	}
+	public static void addConfig(File ... files){
+		if(null == files){
+			return;
+		}
+		for(File file:files){
+			loadConfig(file);
+		}
+	}
 	
 	public static String getWebRoot() {
 		return webRoot;
 	}
-
+	public static String getWebClassPath(){
+		String result = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
+		return result;
+	}
 	public static void init() {
 		String path =  "";
 		try{
@@ -105,6 +123,16 @@ public class ConfigTable {
 		try{
 			if(isDebug()){
 				log.info("[加载配置文件] [file:" + file.getName() + "]");
+			}
+			if(!file.exists()){
+				log.info("[配置文件不存在] [file:" + file.getName() + "]");
+				return;
+			}
+			if(file.isDirectory()){
+				List<File> files = FileUtil.getAllChildrenDirectory(file);
+				for(File f:files){
+					loadConfig(f);
+				}
 			}
 			SAXReader reader = new SAXReader();
 			Document document = reader.read(file);
