@@ -19,6 +19,7 @@
 
 package org.anyline.util;
 
+import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -438,5 +439,27 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	
+	/**
+	 * pack包下的所有类 不包括jar包中定义类
+	 * @param pack
+	 * @return
+	 */
+	public static List<Class> getClasses(String pack){
+		List<Class> list = new ArrayList<Class>();
+		File dir = new File(ConfigTable.getWebClassPath()+pack.replace(".", File.separator));
+		List<File> files = FileUtil.getAllChildrenFile(dir,".class");
+		for(File file:files){
+			try{
+				String path = file.getAbsolutePath();
+				path = path.substring(path.indexOf("\\classes\\"));
+				path = path.replace("\\", ".");
+				path = path.replace(".classes.", "").replace(".class", "");
+				Class clazz = Class.forName(path);
+				list.add(clazz);
+			}catch(Exception e){
+				
+			}
+		}
+		return list;
+	}
 }
