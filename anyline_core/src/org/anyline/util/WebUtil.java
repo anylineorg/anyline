@@ -168,6 +168,9 @@ public class WebUtil {
 				log.error(e);
 			}
 		}
+		if(null != ip && ip.contains(",")){
+			ip = ip.substring(0, ip.indexOf(","));
+		}
 		return ip;
 	}
 
