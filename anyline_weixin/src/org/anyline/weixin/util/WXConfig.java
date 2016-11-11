@@ -18,6 +18,7 @@ public class WXConfig {
 	 */
 	 public static String APP_ID = ""				; //AppID(应用ID)
 	 public static String APP_SECRECT = ""			; //AppSecret(应用密钥)
+	 public static String API_SECRECT = ""			; //微信商户平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
 	 public static String MCH_ID = ""				; //商户号
 	 public static String SIGN_TYPE = ""			; //签名加密方式
 	 public static String SERVER_TOKEN = ""			; //服务号的配置token
@@ -100,6 +101,8 @@ public class WXConfig {
 					WXConfig.APP_ID = value;
 				}else if("APP_SECRECT".equalsIgnoreCase(key)){
 					WXConfig.APP_SECRECT = value;
+				}else if("API_SECRECT".equalsIgnoreCase(key)){
+					WXConfig.API_SECRECT = value;
 				}else if("MCH_ID".equalsIgnoreCase(key)){
 					WXConfig.MCH_ID = value;
 				}else if("SIGN_TYPE".equalsIgnoreCase(key)){

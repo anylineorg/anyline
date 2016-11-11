@@ -9,11 +9,11 @@ import java.util.TreeMap;
 
 import net.sf.json.JSONObject;
 
-import org.anylie.util.SHA1Util;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.HttpUtil;
+import org.anyline.util.SHA1Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,13 +24,13 @@ public class WXUtil {
 	private static DataSet accessTokens = new DataSet();
 	private static DataSet jsapiTickets = new DataSet();
 
-	public static void main(String args[]){
-		String token = getAccessToken();
-		System.out.println(token); 
-		String ticket = getJsapiTicket();
-		System.out.println(token);
-		
-	}
+//	public static void main(String args[]){
+//		String token = getAccessToken();
+//		System.out.println(token); 
+//		String ticket = getJsapiTicket();
+//		System.out.println(token);
+//		
+//	}
 	public static String getAccessToken(){
 		return getAccessToken(WXConfig.APP_ID, WXConfig.APP_SECRECT);
 	}
@@ -108,7 +108,7 @@ public class WXUtil {
 	 */
 	public static String createJsapiSign(Map<String,String> params,String encode){
 		String builder = "";
-		SortedMap<String,String> sort=new TreeMap<String,String>(params);  
+		SortedMap<String,String> sort = new TreeMap<String,String>(params);  
 		Set es = sort.entrySet();
 		Iterator it = es.iterator();
 		while(it.hasNext()) {
@@ -120,7 +120,7 @@ public class WXUtil {
 			}
 			builder += k + "=" + v;
 		}
-		return SHA1Util.encrypt(builder);
+		return SHA1Util.sign(builder);
 	}
 	
 	public static Map<String,String> createJsapiSign(String url){
