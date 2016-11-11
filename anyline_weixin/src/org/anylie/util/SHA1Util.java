@@ -5,7 +5,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class SHA1Util {
 	private static MessageDigest digest = null;
-	public static String encrypt(String src){
+	public static String sign(String src){
 		try {
 			if(null == digest){
 				digest = MessageDigest.getInstance("SHA-1");
