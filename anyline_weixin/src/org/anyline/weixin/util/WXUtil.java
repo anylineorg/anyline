@@ -135,6 +135,4 @@ public class WXUtil {
 		return params;
 	}
 	
-	
-	
 }
