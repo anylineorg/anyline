@@ -134,5 +134,4 @@ public class WXUtil {
 		params.put("appid", WXConfig.APP_ID);
 		return params;
 	}
-	
 }
