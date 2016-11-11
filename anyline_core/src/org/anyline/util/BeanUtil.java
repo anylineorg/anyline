@@ -26,8 +26,10 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -35,6 +37,10 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
 
 public class BeanUtil {
@@ -461,5 +467,63 @@ public class BeanUtil {
 			}
 		}
 		return list;
+	}
+	public static <T> T map2object(Map<String,Object> map, Class<T> clazz){
+		T obj = null;
+		try {
+			obj = (T)clazz.newInstance();
+			Set es = map.entrySet();
+			Iterator it = es.iterator();
+			while (it.hasNext()) {
+				Map.Entry entry = (Map.Entry) it.next();
+				String k = (String) entry.getKey();
+				Object v = entry.getValue();
+				BeanUtil.setFieldValue(obj, k, v);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	public static String map2xml(Map<String,Object> map){
+		StringBuffer builder = new StringBuffer();
+		builder.append("<xml>");
+		Set es = map.entrySet();
+		Iterator it = es.iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String key = (String) entry.getKey();
+			Object value = entry.getValue();
+			builder.append("<" + key + ">" + value + "</" + key + ">");
+		}
+		builder.append("</xml>");
+		return builder.toString();
+	}
+	public static <T> T xml2object(String xml, Class<T> clazz){
+		T obj = null;
+		try {
+			Map<String,Object> map = xml2map(xml);
+			obj = map2object(map, clazz);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	public static Map<String,Object> xml2map(String xml){
+		Map<String,Object> map = new HashMap<String,Object>();
+		Document document;
+		try {
+			document =  DocumentHelper.parseText(xml); 
+			Element root = document.getRootElement();
+			for(Iterator<Element> itrProperty=root.elementIterator(); itrProperty.hasNext();){
+				Element element = itrProperty.next();
+				String key = element.getName();
+				String value = element.getTextTrim();
+				map.put(key, value);
+			}
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+		return map;
 	}
 }
