@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.MD5Util;
@@ -29,6 +30,19 @@ public class WXPayUtil {
 //		order.setOpenid("oFQdkwbBHpQG60AuwSwchDonYsXw");
 //		PayOrderResult result = unifiedorder(order);
 //		System.out.println(result.getPrepay_id());
+//		String src = "appid=wx67bc8dd44fdb345f&body=秒降堂-在线支付&mch_id=1385679002&nonce_str=tgtbnynecerlgisvmnyo&notify_url=http://www.3rwz.com/pay/ntf/wx&openid=oFQdkwbBHpQG60AuwSwchDonYsXw&out_trade_no=TC0000000192_OI0000000043&spbill_create_ip=27.219.60.170&total_fee=0&trade_type=JSAPI&key=jE74fQqltm4PmIpsBh2ScJN8mqiwvZj2";
+//		System.out.println(MD5Util.crypto(src).toUpperCase());
+		PayOrder payOrder = new PayOrder();
+		String nonce_str = BasicUtil.getRandomLowerString(20);
+		payOrder.setNonce_str(nonce_str);
+		payOrder.setOut_trade_no("TC0000000181_"+BasicUtil.getRandomNumberString(10));
+		payOrder.setBody("秒降堂-在线支付");
+		payOrder.setTotal_fee("1");
+		payOrder.setSpbill_create_ip("27.219.60.170");
+		payOrder.setTrade_type("JSAPI");
+		payOrder.setOpenid("oFQdkwbBHpQG60AuwSwchDonYsXw");
+		PayOrderResult result = WXPayUtil.unifiedorder(payOrder);
+		System.out.println(result.getErr_code_des());
 	}
 	
 	/**
@@ -39,7 +53,7 @@ public class WXPayUtil {
 	public static PayOrderResult unifiedorder(PayOrder order) {
 		PayOrderResult result = null;
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = sign(map);
+		String sign = WXUtil.sign(map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -49,7 +63,6 @@ public class WXPayUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		System.out.println("xml:"+xml);
 		String rtn = SimpleHttpUtil.post("https://api.mch.weixin.qq.com/pay/unifiedorder", xml);
 
 		if(ConfigTable.isDebug()){
@@ -64,32 +77,5 @@ public class WXPayUtil {
 	}
 
 
-	/**
-	 * 签名
-	 * 
-	 * @param params
-	 * @return
-	 */
-	private static String sign(Map<String, Object> params) {
-		String sign = "";
-		SortedMap<String, Object> sort = new TreeMap<String, Object>(params);
-		Set es = sort.entrySet();
-		Iterator it = es.iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			String k = (String) entry.getKey();
-			Object v = entry.getValue();
-			if ("".equals(v)) {
-				params.remove(k);
-				continue;
-			}
-			if (!"".equals(sign)) {
-				sign += "&";
-			}
-			sign += k + "=" + v;
-		}
-		sign += "&key=" + WXConfig.API_SECRECT;
-		sign = MD5Util.crypto(sign).toUpperCase();
-		return sign;
-	}
+	
 }

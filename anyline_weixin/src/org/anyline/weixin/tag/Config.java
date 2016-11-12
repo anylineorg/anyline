@@ -19,7 +19,6 @@
 
 package org.anyline.weixin.tag;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,21 +54,20 @@ public class Config extends BaseBodyTag {
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
-			String url = request.getScheme() + "://"+ request.getServerName() 
-					+ request.getAttribute("javax.servlet.forward.request_uri");
+			String url = request.getScheme() + "://"+ request.getServerName()+ request.getAttribute("javax.servlet.forward.request_uri");
 			String param = request.getQueryString();
 			if(BasicUtil.isNotEmpty(param)){
 				url += "?" + param;
 			}
-			Map<String,String> map = WXUtil.createJsapiSign(url);
+			Map<String,String> map = WXUtil.jsapiSign(url);
 			
 			String config = "<script language=\"javascript\">\n"; 
 			config += "wx.config({\n";
 			config += "debug:"+debug+",\n";
-			config += "appId:'"+WXConfig.APP_ID+"'\n";
+			config += "appId:'"+WXConfig.APP_ID+"',\n";
 			config += "timestamp:"+map.get("timestamp")+",\n";
-			config += "nonceStr:'"+map.get("noncestr") + "',\n";
-			config += "signature:'"+map.get("signature")+"',\n";
+			config += "noncestr:'"+map.get("noncestr") + "',\n";
+			config += "signature:'"+map.get("sign")+"',\n";
 			config += "jsApiList:[";
 			String apiList[] = apis.split(",");
 			int size = apiList.length;
