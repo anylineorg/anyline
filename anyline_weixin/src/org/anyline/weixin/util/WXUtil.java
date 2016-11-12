@@ -108,29 +108,15 @@ public class WXUtil {
 	 * @param encode
 	 * @return
 	 */
-	public static String jsapiSign(Map<String,String> params){
+	public static String jsapiSign(Map<String,Object> params){
 		String sign = "";
-		SortedMap<String,String> sort = new TreeMap<String,String>(params);  
-		Set es = sort.entrySet();
-		Iterator it = es.iterator();
-		while(it.hasNext()) {
-			Map.Entry entry = (Map.Entry)it.next();
-			String k = (String)entry.getKey();
-			Object v = entry.getValue();
-			if(!"".equals(sign)){
-				sign += "&";
-			}
-			sign += k + "=" + v;
-		}
-		if(ConfigTable.isDebug()){
-			log.warn("JSAPI SIGN SRC:"+sign);
-		}
+		sign = sortParam(params);
 		sign = SHA1Util.sign(sign);
 		return sign;
 	}
 	
-	public static Map<String,String> jsapiSign(String url){
-		Map<String,String> params = new HashMap<String,String>();
+	public static Map<String,Object> jsapiSign(String url){
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("noncestr", BasicUtil.getRandomLowerString(32));
 		params.put("jsapi_ticket", getJsapiTicket());
 		params.put("timestamp", System.currentTimeMillis()+"");
@@ -140,7 +126,6 @@ public class WXUtil {
 		params.put("appid", WXConfig.APP_ID);
 		return params;
 	}
-
 	/**
 	 * 签名
 	 * 
@@ -149,6 +134,14 @@ public class WXUtil {
 	 */
 	public static String sign(Map<String, Object> params) {
 		String sign = "";
+		sign = sortParam(params);
+		sign += "&key=" + WXConfig.API_SECRECT;
+		sign = MD5Util.crypto(sign).toUpperCase();
+		return sign;
+	}
+	
+	public static String sortParam(Map<String,Object> params){
+		String result = "";
 		SortedMap<String, Object> sort = new TreeMap<String, Object>(params);
 		Set es = sort.entrySet();
 		Iterator it = es.iterator();
@@ -160,21 +153,11 @@ public class WXUtil {
 				params.remove(k);
 				continue;
 			}
-			if (!"".equals(sign)) {
-				sign += "&";
+			if (!"".equals(result)) {
+				result += "&";
 			}
-			sign += k + "=" + v;
+			result += k + "=" + v;
 		}
-		sign += "&key=" + WXConfig.API_SECRECT;
-
-		if(ConfigTable.isDebug()){
-			log.warn("SIGN SRC:" + sign);
-		}
-		sign = MD5Util.crypto(sign).toUpperCase();
-
-		if(ConfigTable.isDebug()){
-			log.warn("SIGN:" + sign);
-		}
-		return sign;
+		return result;
 	}
 }
