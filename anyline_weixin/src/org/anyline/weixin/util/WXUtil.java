@@ -26,13 +26,6 @@ public class WXUtil {
 	private static DataSet accessTokens = new DataSet();
 	private static DataSet jsapiTickets = new DataSet();
 
-//	public static void main(String args[]){
-//		String token = getAccessToken();
-//		System.out.println(token); 
-//		String ticket = getJsapiTicket();
-//		System.out.println(token);
-//		
-//	}
 	public static String getAccessToken(){
 		return getAccessToken(WXConfig.APP_ID, WXConfig.APP_SECRECT);
 	}
@@ -51,6 +44,9 @@ public class WXUtil {
 		return result;
 	}
 	private static DataRow newAccessToken(String appid, String secret){
+		if(ConfigTable.isDebug()){
+			log.warn("[CREATE NEW ACCESS TOKEN][appid:"+appid+", secret:"+secret+"]");
+		}
 		DataRow row = new DataRow();
 		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+secret;
 		String text = HttpUtil.get(url,"UTF-8").getText();
@@ -60,7 +56,13 @@ public class WXUtil {
 			row.put("APP_ID", appid);
 			row.put("ACCESS_TOKEN", json.getString("access_token"));
 			row.setExpires(json.getInt("expires_in"));
+			if(ConfigTable.isDebug()){
+				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:"+row.getString("ACCESS_TOKEN")+"]");
+			}
 		}else{
+			if(ConfigTable.isDebug()){
+				log.warn("[CREATE NEW ACCESS TOKEN][FAIL]");
+			}
 			return null;
 		}
 		accessTokens.addRow(row);
@@ -83,6 +85,9 @@ public class WXUtil {
 		return result;
 	}
 	public static DataRow newJsapiTicket(String accessToken){
+		if(ConfigTable.isDebug()){
+			log.warn("[CREATE NEW JSAPI TICKET][token:"+accessToken+"]");
+		}
 		DataRow row = new DataRow();
 		String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+accessToken+"&type=jsapi";
 		String text = HttpUtil.get(url,"UTF-8").getText();
@@ -90,7 +95,11 @@ public class WXUtil {
 		if(json.has("ticket")){
 			row.put("TICKET", json.getString("ticket"));
 			row.setExpires(json.getInt("expires_in"));
+			if(ConfigTable.isDebug()){
+				log.warn("[CREATE NEW JSAPI TICKET][TICKET:"+row.get("TICKET")+"]");
+			}
 		}else{
+			log.warn("[CREATE NEW JSAPI TICKET][FAIL]");
 			return null;
 		}
 		jsapiTickets.addRow(row);
