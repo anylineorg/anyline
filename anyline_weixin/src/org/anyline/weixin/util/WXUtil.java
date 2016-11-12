@@ -12,7 +12,9 @@ import net.sf.json.JSONObject;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
+import org.anyline.util.MD5Util;
 import org.anyline.util.SHA1Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,17 +40,17 @@ public class WXUtil {
 		String result = "";
 		DataRow row = accessTokens.getRow("APP_ID", appid);
 		if(null == row){
-			row = createNewAccessToken(appid, secret);
+			row = newAccessToken(appid, secret);
 		}else if(row.isExpire()){
 			accessTokens.remove(row);
-			row = createNewAccessToken(appid, secret);
+			row = newAccessToken(appid, secret);
 		}
 		if(null != row){
 			result = row.getString("ACCESS_TOKEN");
 		}
 		return result;
 	}
-	private static DataRow createNewAccessToken(String appid, String secret){
+	private static DataRow newAccessToken(String appid, String secret){
 		DataRow row = new DataRow();
 		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+secret;
 		String text = HttpUtil.get(url,"UTF-8").getText();
@@ -70,17 +72,17 @@ public class WXUtil {
 		DataRow row = jsapiTickets.getRow("APP_ID", WXConfig.APP_ID);
 		String accessToken = getAccessToken();
 		if(null == row){
-			row = createNewJsapiTicket(accessToken);
+			row = newJsapiTicket(accessToken);
 		}else if(row.isExpire()){
 			jsapiTickets.remove(row);
-			row = createNewJsapiTicket(accessToken);
+			row = newJsapiTicket(accessToken);
 		}
 		if(null != row){
 			result = row.getString("TICKET");
 		}
 		return result;
 	}
-	public static DataRow createNewJsapiTicket(String accessToken){
+	public static DataRow newJsapiTicket(String accessToken){
 		DataRow row = new DataRow();
 		String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+accessToken+"&type=jsapi";
 		String text = HttpUtil.get(url,"UTF-8").getText();
@@ -106,8 +108,8 @@ public class WXUtil {
 	 * @param encode
 	 * @return
 	 */
-	public static String createJsapiSign(Map<String,String> params,String encode){
-		String builder = "";
+	public static String jsapiSign(Map<String,String> params){
+		String sign = "";
 		SortedMap<String,String> sort = new TreeMap<String,String>(params);  
 		Set es = sort.entrySet();
 		Iterator it = es.iterator();
@@ -115,23 +117,64 @@ public class WXUtil {
 			Map.Entry entry = (Map.Entry)it.next();
 			String k = (String)entry.getKey();
 			Object v = entry.getValue();
-			if(!"".equals(builder)){
-				builder += "&";
+			if(!"".equals(sign)){
+				sign += "&";
 			}
-			builder += k + "=" + v;
+			sign += k + "=" + v;
 		}
-		return SHA1Util.sign(builder);
+		if(ConfigTable.isDebug()){
+			log.warn("JSAPI SIGN SRC:"+sign);
+		}
+		sign = SHA1Util.sign(sign);
+		return sign;
 	}
 	
-	public static Map<String,String> createJsapiSign(String url){
+	public static Map<String,String> jsapiSign(String url){
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("noncestr", BasicUtil.getRandomLowerString(32));
 		params.put("jsapi_ticket", getJsapiTicket());
 		params.put("timestamp", System.currentTimeMillis()+"");
 		params.put("url", url);
-		String sign = createJsapiSign(params, "UTF-8");
-		params.put("signature", sign);
+		String sign = jsapiSign(params);
+		params.put("sign", sign);
 		params.put("appid", WXConfig.APP_ID);
 		return params;
+	}
+
+	/**
+	 * 签名
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public static String sign(Map<String, Object> params) {
+		String sign = "";
+		SortedMap<String, Object> sort = new TreeMap<String, Object>(params);
+		Set es = sort.entrySet();
+		Iterator it = es.iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String k = (String) entry.getKey();
+			Object v = entry.getValue();
+			if ("".equals(v)) {
+				params.remove(k);
+				continue;
+			}
+			if (!"".equals(sign)) {
+				sign += "&";
+			}
+			sign += k + "=" + v;
+		}
+		sign += "&key=" + WXConfig.API_SECRECT;
+
+		if(ConfigTable.isDebug()){
+			log.warn("SIGN SRC:" + sign);
+		}
+		sign = MD5Util.crypto(sign).toUpperCase();
+
+		if(ConfigTable.isDebug()){
+			log.warn("SIGN:" + sign);
+		}
+		return sign;
 	}
 }

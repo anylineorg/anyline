@@ -47,7 +47,7 @@ public class MD5Util {
                 //将得到的字节数组变成字符串返回     
                 result = byteArrayToHexString(results);     
             } catch(Exception ex){     
-                log.debug(ex);     
+                ex.printStackTrace();  
             }     
         }
         return result;     
@@ -77,8 +77,8 @@ public class MD5Util {
 		    }
 		    in.close();
 	    } catch (Exception e) {
-	    	log.error(e);
-	    return null;
+	    	e.printStackTrace();
+	    	return null;
 	    }
 	    BigInteger bigInt = new BigInteger(1, digest.digest());
 	    return bigInt.toString(16);
