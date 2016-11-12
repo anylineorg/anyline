@@ -11,7 +11,6 @@
 		<name>config</name>
 		<tagclass>org.anyline.weixin.tag.Config</tagclass>
 		<bodycontent>JSP</bodycontent>
-		<info>权限验证配置</info>
 		<attribute>
 			<name>debug</name>
 			<required>false</required>
@@ -19,6 +18,32 @@
 		</attribute>
 		<attribute>
 			<name>apis</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>pay</name>
+		<tagclass>org.anyline.weixin.tag.Pay</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>H5调起支付</info>
+		<attribute>
+			<name>debug</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>prepay</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>fail</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>success</name>
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

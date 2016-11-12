@@ -16,22 +16,6 @@ import org.apache.log4j.Logger;
 public class WXPayUtil {
 	private static Logger log = Logger.getLogger(WXPayUtil.class);
 	public static void main(String args[]) {
-//		String nonce_str = BasicUtil.getRandomLowerString(20);
-//		String out_trade_no = BasicUtil.getRandomLowerString(20);
-//
-//
-//		PayOrder order = new PayOrder();
-//		order.setNonce_str(nonce_str);
-//		order.setBody("手机1065");
-//		order.setOut_trade_no(out_trade_no);
-//		order.setTotal_fee("1");
-//		order.setSpbill_create_ip("60.58.123.25");
-//		order.setTrade_type("JSAPI");
-//		order.setOpenid("oFQdkwbBHpQG60AuwSwchDonYsXw");
-//		PayOrderResult result = unifiedorder(order);
-//		System.out.println(result.getPrepay_id());
-//		String src = "appid=wx67bc8dd44fdb345f&body=秒降堂-在线支付&mch_id=1385679002&nonce_str=tgtbnynecerlgisvmnyo&notify_url=http://www.3rwz.com/pay/ntf/wx&openid=oFQdkwbBHpQG60AuwSwchDonYsXw&out_trade_no=TC0000000192_OI0000000043&spbill_create_ip=27.219.60.170&total_fee=0&trade_type=JSAPI&key=jE74fQqltm4PmIpsBh2ScJN8mqiwvZj2";
-//		System.out.println(MD5Util.crypto(src).toUpperCase());
 		PayOrder payOrder = new PayOrder();
 		String nonce_str = BasicUtil.getRandomLowerString(20);
 		payOrder.setNonce_str(nonce_str);
@@ -52,6 +36,7 @@ public class WXPayUtil {
 	 */
 	public static PayOrderResult unifiedorder(PayOrder order) {
 		PayOrderResult result = null;
+		order.setNonce_str(BasicUtil.getRandomString(20));
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.sign(map);
 		map.put("sign", sign);
@@ -63,7 +48,7 @@ public class WXPayUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post("https://api.mch.weixin.qq.com/pay/unifiedorder", xml);
+		String rtn = SimpleHttpUtil.post(WXConfig.UNIFIED_ORDER_URL, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
