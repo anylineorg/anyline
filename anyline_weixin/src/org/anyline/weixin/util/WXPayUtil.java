@@ -1,33 +1,17 @@
 package org.anyline.weixin.util;
 
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.MD5Util;
 import org.anyline.util.SimpleHttpUtil;
+import org.anyline.weixin.entity.PayOrder;
+import org.anyline.weixin.entity.PayOrderResult;
 import org.apache.log4j.Logger;
 
 public class WXPayUtil {
 	private static Logger log = Logger.getLogger(WXPayUtil.class);
-	public static void main(String args[]) {
-		PayOrder payOrder = new PayOrder();
-		String nonce_str = BasicUtil.getRandomLowerString(20);
-		payOrder.setNonce_str(nonce_str);
-		payOrder.setOut_trade_no("TC0000000181_"+BasicUtil.getRandomNumberString(10));
-		payOrder.setBody("秒降堂-在线支付");
-		payOrder.setTotal_fee("1");
-		payOrder.setSpbill_create_ip("27.219.60.170");
-		payOrder.setTrade_type("JSAPI");
-		payOrder.setOpenid("oFQdkwbBHpQG60AuwSwchDonYsXw");
-		PayOrderResult result = WXPayUtil.unifiedorder(payOrder);
-		System.out.println(result.getErr_code_des());
-	}
 	
 	/**
 	 * 统一下单
