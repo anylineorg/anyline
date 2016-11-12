@@ -493,7 +493,10 @@ public class BeanUtil {
 		while (it.hasNext()) {
 			Map.Entry entry = (Map.Entry) it.next();
 			String key = (String) entry.getKey();
-			Object value = entry.getValue();
+			String value = entry.getValue()+"";
+			if("null".equals(value)){
+				value = "";
+			}
 			builder.append("<" + key + ">" + value + "</" + key + ">");
 		}
 		builder.append("</xml>");

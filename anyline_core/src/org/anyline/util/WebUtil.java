@@ -141,6 +141,13 @@ public class WebUtil {
 	 */
 
 	public static String getRemoteIp(HttpServletRequest request) {
+		String ip = getRemoteIps(request);
+		if(null != ip && ip.contains(",")){
+			ip = ip.substring(0, ip.indexOf(","));
+		}
+		return ip;
+	}
+	public static String getRemoteIps(HttpServletRequest request) {
 		String ip = request.getHeader("X-Forwarded-For");
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
 			ip = request.getHeader("Proxy-Client-IP");
@@ -167,9 +174,6 @@ public class WebUtil {
 			} catch (Exception e) {
 				log.error(e);
 			}
-		}
-		if(null != ip && ip.contains(",")){
-			ip = ip.substring(0, ip.indexOf(","));
 		}
 		return ip;
 	}
