@@ -1,4 +1,6 @@
-package org.anyline.weixin.util;
+package org.anyline.weixin.entity;
+
+import org.anyline.weixin.util.WXConfig;
 
 public class PayOrder {
 	//配置文件中已设置
