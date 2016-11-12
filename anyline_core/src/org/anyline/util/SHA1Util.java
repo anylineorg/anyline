@@ -10,7 +10,7 @@ public class SHA1Util {
 	private static MessageDigest digest = null;
 	public static String sign(String src){
 		if(ConfigTable.isDebug()){
-			log.warn("SHA1 SIGN SRC:" + src);
+			log.warn("[SHA1 SIGN][src:" + src+"]");
 		}
 		String result = "";
 		try {
@@ -32,7 +32,7 @@ public class SHA1Util {
 			e.printStackTrace();
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("SHA1 SIGN:" + result);
+			log.warn("[SHA1 SIGN][sign:" + result+"]");
 		}
 		return result;
 	}
