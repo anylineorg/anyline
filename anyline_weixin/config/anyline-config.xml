@@ -55,4 +55,5 @@
 	<property key="UPLOAD_DIR">D:\zmdz\upload</property>
 	<property key="FILE_SERVER">http://file.zhimabnb.com</property>
 	<property key="FILE_SERVER_UPLOAD_PATH">/upload</property>
+	<property key="WEB_SERVER">http://www.3rwz.com</property>
 </properties>

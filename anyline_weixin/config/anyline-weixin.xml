@@ -16,6 +16,4 @@
 	<property key="CERT_PATH">D:/apiclient_cert.p12</property>
 	<property key="SERVER_TOKEN">anylineorg</property>
 	<property key="PAY_NOTIFY_URL">http://www.3rwz.com/pay/ntf/wx</property>
-	<property key="PAY_CALLBACK_URL">http://www.3rwz.com/wxweb/contents/config/pay_success.jsp</property>
-	<property key="OAUTH2_REDIRECT_URI">http://www.3rwz.com/GoMyTrip/a.jsp?port=8016</property>
 </properties>

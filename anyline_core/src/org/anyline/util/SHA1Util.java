@@ -3,9 +3,16 @@ package org.anyline.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import org.apache.log4j.Logger;
+
 public class SHA1Util {
+	private static Logger log = Logger.getLogger(SHA1Util.class);
 	private static MessageDigest digest = null;
 	public static String sign(String src){
+		if(ConfigTable.isDebug()){
+			log.warn("SHA1 SIGN SRC:" + src);
+		}
+		String result = "";
 		try {
 			if(null == digest){
 				digest = MessageDigest.getInstance("SHA-1");
@@ -20,10 +27,13 @@ public class SHA1Util {
 				}
 				hexString.append(shaHex);
 			}
-			return hexString.toString();
+			result = hexString.toString();
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		return null;
+		if(ConfigTable.isDebug()){
+			log.warn("SHA1 SIGN:" + result);
+		}
+		return result;
 	}
 }

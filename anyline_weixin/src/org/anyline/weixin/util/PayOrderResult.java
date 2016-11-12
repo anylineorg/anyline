@@ -80,3 +80,7 @@ public class PayOrderResult {
 		this.code_url = code_url;
 	}
 }
+
+//nonceStr
+//noncestr
+//nonce_str

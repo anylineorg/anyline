@@ -37,7 +37,10 @@ public class MD5Util {
 	 * @return
 	 */
 	public static String crypto(String str){
-		if(null == str) return null;
+		if(ConfigTable.isDebug()){
+			log.warn("MD5 SIGN SRC:" + str);
+		}
+		if(null == str) return "";
 		String result = null;
         if (!"".equals(str)){     
             try{
@@ -50,6 +53,9 @@ public class MD5Util {
                 ex.printStackTrace();  
             }     
         }
+        if(ConfigTable.isDebug()){
+			log.warn("MD5 SIGN:" + result);
+		}
         return result;     
     } 
 	public static String crypto2(String str){
