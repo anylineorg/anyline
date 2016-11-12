@@ -468,7 +468,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
-	public static <T> T map2object(Map<String,Object> map, Class<T> clazz){
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz){
 		T obj = null;
 		try {
 			obj = (T)clazz.newInstance();
@@ -485,7 +485,7 @@ public class BeanUtil {
 		}
 		return obj;
 	}
-	public static String map2xml(Map<String,Object> map){
+	public static String map2xml(Map<String,?> map){
 		StringBuffer builder = new StringBuffer();
 		builder.append("<xml>");
 		Set es = map.entrySet();
@@ -505,14 +505,14 @@ public class BeanUtil {
 	public static <T> T xml2object(String xml, Class<T> clazz){
 		T obj = null;
 		try {
-			Map<String,Object> map = xml2map(xml);
+			Map<String,?> map = xml2map(xml);
 			obj = map2object(map, clazz);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return obj;
 	}
-	public static Map<String,Object> xml2map(String xml){
+	public static Map<String,?> xml2map(String xml){
 		Map<String,Object> map = new HashMap<String,Object>();
 		Document document;
 		try {
