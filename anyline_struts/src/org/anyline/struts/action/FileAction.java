@@ -135,7 +135,7 @@ public class FileAction extends AnylineAction {
 
 	public String img() {
 		String table = getUploadTable(null);
-		DataRow row = service.queryRow(table, parseConfig("+CD:cd"));
+		DataRow row = service.cacheRow("static_1800",table, parseConfig("+CD:cd"));
 		File file = null;
 		if (row != null) {
 			File root = new File(this.request.getSession().getServletContext().getRealPath("/"));
