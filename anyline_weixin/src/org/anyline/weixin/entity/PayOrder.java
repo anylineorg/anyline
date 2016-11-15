@@ -3,10 +3,6 @@ package org.anyline.weixin.entity;
 import org.anyline.weixin.util.WXConfig;
 
 public class PayOrder {
-	public static final String TRADE_TYPE_JSAPI 		= "JSAPI"	;//公众号支付	
-	public static final String TRADE_TYPE_NATIVE 		= "NATIVE"	;//原生扫码支付
-	public static final String TRADE_TYPE_APP 			= "APP"		;//app支付
-	public static final String TRADE_TYPE_MICROPAY 		= "MICROPAY";//刷卡支付
 	//配置文件中已设置
 	private String appid = WXConfig.APP_ID;
 	private String mch_id = WXConfig.MCH_ID;

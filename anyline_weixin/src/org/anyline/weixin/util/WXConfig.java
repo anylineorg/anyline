@@ -16,17 +16,21 @@ public class WXConfig {
 	/**
 	 * 服务号相关信息
 	 */
-	 public static String APP_ID = ""				; //AppID(应用ID)
-	 public static String APP_SECRECT = ""			; //AppSecret(应用密钥)
-	 public static String API_SECRECT = ""			; //微信商户平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
-	 public static String MCH_ID = ""				; //商户号
-	 public static String SIGN_TYPE = ""			; //签名加密方式
-	 public static String SERVER_TOKEN = ""			; //服务号的配置token
-	 public static String CERT_PATH = ""			; //微信支付证书存放路径地址
-	 public static String PAY_NOTIFY_URL = ""		; //微信支付统一接口的回调action
-	 public static String PAY_CALLBACK_URL = ""		; //微信支付成功支付后跳转的地址
-	 public static String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
-	 
+	public static String APP_ID = ""				; //AppID(应用ID)
+	public static String APP_SECRECT = ""			; //AppSecret(应用密钥)
+	public static String API_SECRECT = ""			; //微信商户平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+	public static String MCH_ID = ""				; //商户号
+	public static String SIGN_TYPE = ""				; //签名加密方式
+	public static String SERVER_TOKEN = ""			; //服务号的配置token
+	public static String CERT_PATH = ""				; //微信支付证书存放路径地址
+	public static String PAY_NOTIFY_URL = ""		; //微信支付统一接口的回调action
+	public static String PAY_CALLBACK_URL = ""		; //微信支付成功支付后跳转的地址
+	public static String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
+
+	public static final String TRADE_TYPE_JSAPI 		= "JSAPI"	;//公众号支付	
+	public static final String TRADE_TYPE_NATIVE 		= "NATIVE"	;//原生扫码支付
+	public static final String TRADE_TYPE_APP 			= "APP"		;//app支付
+	public static final String TRADE_TYPE_MICROPAY 		= "MICROPAY";//刷卡支付
 	 /**
 	 * 微信基础接口地址
 	 */
