@@ -27,7 +27,6 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.anyline.config.db.PageNavi;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -49,9 +48,7 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 @Namespace("/al/tmp")
 @Scope("prototype")
 public class TemplateAction extends AnylineAction {
-	@Actions({
-		@Action(value = "load", results = { @Result(type="json")})
-	})
+	@Action(value = "load", results = { @Result(type="json")})
 	public String load(){
 		String path = getParam("path", false, true);
 		String html = "";
