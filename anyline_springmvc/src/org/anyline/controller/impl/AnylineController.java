@@ -316,6 +316,9 @@ public class AnylineController extends AbstractBasicController {
 		map.put("message", message);
 		map.put("data", data);
 		map.put("success", result);
+		if(ConfigTable.isDebug()){
+			log.warn("[Controller Return][result:"+result+"][message:"+message+"]");
+		}
 		JSON json = JSONObject.fromObject(map,config);
 		return json.toString();
 	}
