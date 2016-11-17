@@ -675,6 +675,12 @@ public class AnylineServiceImpl implements AnylineService {
 		return update(sync, null, null, data, columns);
 	}
 	@Override
+	public int update(DataSource ds,String dest, ConfigStore configs, String... conditions) {
+		
+        return 0;
+		
+	}
+	@Override
 	public int save(boolean sync, DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
 		if(sync){
 			final DataSource _ds = ds;

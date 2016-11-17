@@ -849,7 +849,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 //					row.put("UPT_CLIENT_CD", client.getCd());
 //				}
 //			}
-			keys = row.keys();
+			keys = row.getUpdateColumns();
+			if(keys.size() ==0){
+				keys = row.keys();
+			}
 			//是否更新null及""列
 			boolean isUpdateNullColumn = ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN",false);
 			boolean isUpdateEmptyColumn = ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN",false);
