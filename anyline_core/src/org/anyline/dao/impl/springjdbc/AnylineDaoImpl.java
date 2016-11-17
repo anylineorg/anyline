@@ -546,6 +546,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 	        for(Map<String,Object> map:list){
 	        	DataRow row = new DataRow(map);
+	        	row.clearUpdateColumns();
 	        	set.add(row);
 	        }
 			if(showSQL){
