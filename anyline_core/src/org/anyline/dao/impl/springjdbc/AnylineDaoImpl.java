@@ -110,6 +110,10 @@ public class AnylineDaoImpl implements AnylineDao {
 				}
 			}
 		}
+
+		if(showSQL){
+			log.warn("[查询记录总数][行数:"+total + "]");
+		}
 		if(null == navi || total > 0){
 			set = select(ds, run.getFinalQueryTxt(), run.getValues());
 		}else{

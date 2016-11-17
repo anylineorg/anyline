@@ -157,7 +157,7 @@ public interface AnylineService{
 	public int update(String dest, Object data, String ... columns);
 	public int update(DataSource ds, Object data, String ... columns);
 	public int update(Object data, String ... columns);
-	public int update(String dest, ConfigStore configs);
+	public int update(DataSource ds, String dest, ConfigStore configs, String ... conditions);
 	
 	public int update(boolean sync, DataSource ds, String dest, Object data, String ... columns);
 	public int update(boolean sync, String dest, Object data, String ... columns);
