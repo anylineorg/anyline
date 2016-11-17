@@ -47,15 +47,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public static String ITEMS			= "ITEMS";
 	private DataSet container;									//包含当前对象的容器
 
-	private List<String> primaryKeys = new ArrayList<String>();					//主键
-	private String dataSource;							//数据源(表|视图|XML定义SQL)
+	private List<String> primaryKeys = new ArrayList<String>();	//主键
+	private List<String> updateColumns = new ArrayList<String>();
+	private String dataSource;									//数据源(表|视图|XML定义SQL)
 	private String schema;
 	private String table;
-	private Object clientTrace;							//客户端数据
-	private long createTime = 0;						//创建时间
-	private long expires = -1;							//过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+	private Object clientTrace;									//客户端数据
+	private long createTime = 0;								//创建时间
+	private long expires = -1;									//过期时间(毫秒) 从创建时刻计时expires毫秒后过期
 	
-	protected Boolean isNew = false;					//强制新建(适应hibernate主键策略)
+	protected Boolean isNew = false;							//强制新建(适应hibernate主键策略)
 
 	@Autowired
 	protected transient AnylineService service;
@@ -458,6 +459,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != key){
 			super.put(key.toUpperCase(), value);
 		}
+		if(!updateColumns.contains(key.toUpperCase())){
+			updateColumns.add(key.toUpperCase());
+		}
 		return this;
 	}
 	/**
@@ -712,9 +716,39 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public void setService(AnylineService service) {
 		this.service = service;
 	}
+	
+	public List<String> getUpdateColumns() {
+		return updateColumns;
+	}
 	public DataRow remove(String key){
 		if(null != key){
 			super.remove(key.toUpperCase());
+		}
+		return this;
+	}
+	/**
+	 * 清空需要更新的列
+	 * @return
+	 */
+	public DataRow clearUpdateColumns(){
+		updateColumns.clear();
+		return this;
+	}
+	public DataRow removeUpdateColumns(String ... cols){
+		if(null != cols){
+			for(String col:cols){
+				updateColumns.remove(col.toUpperCase());
+			}
+		}
+		return this;
+	}
+	public DataRow addUpdateColumns(String ... cols){
+		if(null != cols){
+			for(String col:cols){
+				if(!updateColumns.contains(col.toUpperCase())){
+					updateColumns.add(col.toUpperCase());
+				}
+			}
 		}
 		return this;
 	}
