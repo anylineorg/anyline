@@ -1127,6 +1127,10 @@ public class WebUtil {
 		};
 		dispatcher.include(request, resp);
 		writer.flush();
-		return os.toString();
+		String result = os.toString();
+		if(ConfigTable.isDebug()){
+			log.warn("[LOAD JSP TEMPLATE][FILE:"+file+"][HTML:"+result+"]");
+		}
+		return result;
 	}
 }

@@ -602,6 +602,9 @@ public class AbstractBasicController{
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("BODY", BasicUtil.escape(html));
 		if(null != navi){
+			if(ConfigTable.isDebug()){
+				log.warn("[LOAD JSP NAVI][ROWS:"+navi.getTotalRow()+"][PAGE:"+navi.getTotalPage()+"]");
+			}
 			map.put("NAVI", BasicUtil.escape(navi.ajaxPage()));
 			map.put("TOTAL_ROW", navi.getTotalRow()+"");
 			map.put("TOTAL_PAGE", navi.getTotalPage()+"");
