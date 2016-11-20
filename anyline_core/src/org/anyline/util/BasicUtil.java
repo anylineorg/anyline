@@ -115,8 +115,22 @@ public class BasicUtil {
 		}
 		return null;
 	}
+	public static Object nvl(boolean recursion, String... values) {
+		if (null == values) {
+			return null;
+		}
+		for (Object item : values) {
+			if ("".equals(item) || isNotEmpty(recursion, item)) {
+				return item;
+			}
+		}
+		return null;
+	}
 
 	public static Object nvl(Object... values) {
+		return nvl(false, values);
+	}
+	public static Object nvl(String... values) {
 		return nvl(false, values);
 	}
 
