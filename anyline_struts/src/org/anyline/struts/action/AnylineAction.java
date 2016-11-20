@@ -338,7 +338,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 				messages.remove(msg);
 			}
 		}
-		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString();
+		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString().trim();
 		if(ConfigTable.isDebug()){
 			log.warn("[Action Return][result:fail][message:"+msg+"]");
 		}
