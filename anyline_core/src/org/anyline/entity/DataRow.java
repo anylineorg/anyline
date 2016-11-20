@@ -37,7 +37,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
-
+	public static void main(String args[]){
+		DataRow row = new DataRow();
+		String s = row.getStringNvl("CD", "s");
+		System.out.println(s);
+	}
 	private static Logger log = Logger.getLogger(DataRow.class);
 
 	public static String PARENT 		= "PARENT";				//上级数据
@@ -500,7 +504,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			if(null == defs || defs.length == 0){
 				result = "";
 			}else{
-				result = BasicUtil.nvl(result,defs).toString();
+				result = BasicUtil.nvl(defs).toString();
 			}
 		}
 		return result;
