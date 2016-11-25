@@ -30,23 +30,18 @@ import org.apache.log4j.Logger;
 
 public class MD5Util {
 	private static Logger log = Logger.getLogger(MD5Util.class); 
-	private final static String[] hexDigits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"}; 
-	/**
-	 * 字符MD5加密
-	 * @param str
-	 * @return
-	 */
-	public static String crypto(String str){
+	private final static String[] hexDigits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
+	public static String sign(String src){
 		if(ConfigTable.isDebug()){
-			log.warn("[MD5 SIGN][src:" + str+"]");
+			log.warn("[MD5 SIGN][src:" + src+"]");
 		}
-		if(null == str) return "";
+		if(null == src) return "";
 		String result = null;
-        if (!"".equals(str)){     
+        if (!"".equals(src)){     
             try{
                 MessageDigest md = MessageDigest.getInstance("MD5"); 
                 //使用指定的字节数组对摘要进行最后更新，然后完成摘要计算     
-                byte[] results = md.digest(str.getBytes());     
+                byte[] results = md.digest(src.getBytes());     
                 //将得到的字节数组变成字符串返回     
                 result = byteArrayToHexString(results);     
             } catch(Exception ex){     
@@ -57,6 +52,14 @@ public class MD5Util {
 			log.warn("[MD5 SIGN][sign:" + result+"]");
 		}
         return result;     
+	}
+	/**
+	 * 字符MD5加密
+	 * @param str
+	 * @return
+	 */
+	public static String crypto(String src){
+		return sign(src);
     } 
 	public static String crypto2(String str){
 		return crypto(crypto(str));
