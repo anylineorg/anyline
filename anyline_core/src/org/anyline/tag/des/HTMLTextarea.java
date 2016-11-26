@@ -41,8 +41,8 @@ public class HTMLTextarea extends ComponentTag{
 	}
 	public void createBody(Object obj){
 		value = BasicUtil.nvl(body,value,"").toString();
-		if(isEncryptValue){
-			value = WebUtil.encryptValue(value);
+		if(encryptValue){
+			value = WebUtil.encryptValue(value+"");
 		}
 		builder.append(value);
 	}
@@ -61,7 +61,7 @@ public class HTMLTextarea extends ComponentTag{
 			}
 		}
 		if(!"text".equalsIgnoreCase(type)){
-			value = WebUtil.encryptHttpRequestParamValue(value);
+			value = WebUtil.encryptHttpRequestParamValue(value+"");
 		}
 		
 	}

@@ -38,7 +38,7 @@ public class HTMLInput extends ComponentTag{
 		}
 		builder.append("\t\t\t<input ");
 		createAttribute();
-		createValue(null);
+		createValue(value);
 		builder.append(">");
 	}
 	public void createBody(Object obj){
@@ -67,8 +67,8 @@ public class HTMLInput extends ComponentTag{
 				log.error(e);
 			}
 		}
-		if(isEncryptValue){
-			value = WebUtil.encryptHttpRequestParamValue(value);
+		if(encryptValue && null != value){
+			value = WebUtil.encryptHttpRequestParamValue(value.toString());
 		}
 		value = BasicUtil.nvl(value,"").toString();
 		builder.append(" value=\"").append(value).append("\"");

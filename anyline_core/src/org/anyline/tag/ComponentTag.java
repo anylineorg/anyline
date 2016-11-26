@@ -41,13 +41,12 @@ public abstract class ComponentTag extends BaseBodyTag{
 
 	protected String title;			//标题
 	protected String property;		//KEY
-	protected String value;			//默认值
 	protected int index;
 	protected String parentId;
 	protected StringBuilder builder;
 	
-	protected boolean isEncryptKey;	//id name是否加密
-	protected boolean isEncryptValue; //value 是否加密  主要针对有默认值 的hidden
+	protected boolean encryptKey;	//id name是否加密
+	protected boolean encryptValue; //value 是否加密  主要针对有默认值 的hidden
 	
 	public int doStartTag() throws JspException {
 		request = (HttpServletRequest)pageContext.getRequest();
@@ -100,7 +99,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		 * @return
 		 */
 		protected abstract void createEnd();
-	public void release() {
+		public void release() {
 		 accesskey					= null; //设置或获取对象的快捷键。										
 		 atomicselection			= null; //指定元素及其内容是否可以一不可见单位统一选择。										
 		 autocomplete				= null; //设置或获取对象的自动完成状态。
@@ -196,7 +195,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		if(BasicUtil.isNotEmpty(parentId)){
 			runId = parentId + "_" + id + "_" + index;
 		}
-		if(isEncryptKey){
+		if(encryptKey){
 			runId = WebUtil.encryptHttpRequestParamKey(runId);
 		}
 		if(null != id						){builder.append(" id=\""						).append(runId					).append("\"");}//获取标识对象的字符串。
@@ -216,7 +215,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		if(null != language					){builder.append(" language=\""					).append(language				).append("\"");}//设置或获取当前脚本编写用的语言。
 		if(null != maxlength				){builder.append(" maxlength=\""				).append(maxlength				).append("\"");}//设置或获取用户可在文本控件中输入的最多字符数。
 		String runName = name;
-		if(isEncryptKey){
+		if(encryptKey){
 			runName = WebUtil.encryptHttpRequestParamKey(runName);
 		}
 		if(null != name						){builder.append(" name=\""						).append(runName				).append("\"");}//设置或获取对象的名称。
@@ -283,7 +282,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		if(null != onmovestart				){builder.append(" onmovestart=\""				).append(onmovestart			).append("\"");}//当对象开始移动时触发。
 		if(null != onpaste					){builder.append(" onpaste=\""					).append(onpaste				).append("\"");}//当用户粘贴数据以便从系统剪贴板向文档传送数据时在目标对象上触发。
 		if(null != onpropertychange			){builder.append(" onpropertychange=\""			).append(onpropertychange		).append("\"");}//当在对象上发生对象上发生属性更改时触发。
-		if(null != onreadyTRAIN_STAGEchange		){builder.append(" onreadyTRAIN_STAGEchange=\""		).append(onreadyTRAIN_STAGEchange		).append("\"");}//当对象状态变更时触发。
+		if(null != onreadyTRAIN_STAGEchange	){builder.append(" onreadyTRAIN_STAGEchange=\""		).append(onreadyTRAIN_STAGEchange		).append("\"");}//当对象状态变更时触发。
 		if(null != onresize					){builder.append(" onresize=\""					).append(onresize				).append("\"");}//当对象的大小将要改变时触发。
 		if(null != onresizeend				){builder.append(" onresizeend=\""				).append(onresizeend			).append("\"");}//当用户更改完控件选中区中对象的尺寸时触发。
 		if(null != onresizestart			){builder.append(" onresizestart=\""			).append(onresizestart			).append("\"");}//当用户开始更改控件选中区中对象的尺寸时触发。
@@ -591,10 +590,10 @@ public abstract class ComponentTag extends BaseBodyTag{
 	public void setUnselectable(String unselectable) {
 		this.unselectable = unselectable;
 	}
-	public String getValue() {
+	public Object getValue() {
 		return value;
 	}
-	public void setValue(String value) {
+	public void setValue(Object value) {
 		this.value = value;
 	}
 	public String getVcard_name() {
@@ -945,11 +944,11 @@ public abstract class ComponentTag extends BaseBodyTag{
 	}
 
 	public boolean isEncryptKey() {
-		return isEncryptKey;
+		return encryptKey;
 	}
 
 	public void setEncryptKey(boolean isEncryptKey) {
-		this.isEncryptKey = isEncryptKey;
+		this.encryptKey = isEncryptKey;
 	}
 
 	public String getChecked() {
@@ -960,10 +959,10 @@ public abstract class ComponentTag extends BaseBodyTag{
 		this.checked = checked;
 	}
 	public boolean isEncryptValue() {
-		return isEncryptValue;
+		return encryptValue;
 	}
 	public void setEncryptValue(boolean isEncryptValue) {
-		this.isEncryptValue = isEncryptValue;
+		this.encryptValue = isEncryptValue;
 	}
 
 }
