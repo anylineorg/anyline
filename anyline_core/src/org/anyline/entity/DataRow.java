@@ -756,6 +756,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+	public DataRow addAllUpdateColumns(){
+		updateColumns.clear();//清空后，sql会根据所有的列生成
+		return this;
+	}
 	/**
 	 * 将数据从data中复制到this
 	 * @param data
