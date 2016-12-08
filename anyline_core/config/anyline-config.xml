@@ -73,6 +73,9 @@
 	<!-- error文件路径 -->
 	<property key="ERROR_FILE_PATH">/WEB-INF/def/web/common/error/error.jsp</property>
 	
+	<property key="UPLOAD_FILE_DIR">D:/upload/</property>
+	<property key="UPLOAD_FILE_TABLE">BS_UPLOAD</property>
+	
 	<property key="IS_USE_CACHE">true</property>
 	<property key="OPEN_EHCACHE">true</property>
 	<property key="OPEN_REDIS">true</property>
