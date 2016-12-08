@@ -561,7 +561,10 @@ public class AbstractBasicController{
 		}
 		String table = ConfigTable.getString("UPLOAD_TABLE_"+cf);
 		if(null == table){
-			table = "dbo.UPLOAD_FILE";
+			table = ConfigTable.getString("UPLOAD_TABLE");
+		}
+		if(null == table){
+			table = "UPLOAD_FILE";
 		}
 		return table;
 	}

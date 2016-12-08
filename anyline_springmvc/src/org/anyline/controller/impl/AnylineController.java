@@ -19,7 +19,9 @@
 package org.anyline.controller.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -44,7 +46,6 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.FileUtil;
@@ -52,15 +53,19 @@ import org.anyline.util.JSONDateFormatProcessor;
 import org.anyline.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.servlet.ModelAndView;
 
+
+@Controller("org.anyline.controller.impl.AnylineController")
+@RequestMapping("/")
+@Scope("prototype")
 public class AnylineController extends AbstractBasicController {
 
 	@Autowired(required = false)
@@ -442,6 +447,42 @@ public class AnylineController extends AbstractBasicController {
 		return result;
 	}
 	public List<File> upload(String dir) throws IllegalStateException, IOException {
+		if(BasicUtil.isEmpty(dir)){
+			return upload();
+		}
 		return upload(new File(dir));
 	}
+	public List<File> upload() throws IllegalStateException, IOException {
+		String dir = ConfigTable.getString("UPLOAD_DIR");
+		return upload(new File(dir));
+	}
+	public List<DataRow> saveFile(File dir){
+		List<DataRow> rows = new ArrayList<DataRow>();
+		try{
+			List<File> files = upload(dir);
+			for(File file:files){
+				String path = file.getAbsolutePath();
+				DataRow row = new DataRow(ConfigTable.getString("UPLOAD_TABLE"));
+				row.put("DIR", file.getParent());
+				row.put("PATH_ABS", path);
+				row.put("PATH_REL", path.replace(file.getParent(), ""));
+				service.save(row);
+				rows.add(row);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return rows;
+	}
+	public List<DataRow> saveFile(String dir){
+		if(BasicUtil.isEmpty(dir)){
+			return saveFile();
+		}
+		return saveFile(new File(dir));
+	}
+	public List<DataRow> saveFile(){
+		String dir = ConfigTable.getString("UPLOAD_DIR");
+		return saveFile(new File(dir));
+	}
+
 }
