@@ -247,10 +247,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		/*设置容器主键*/
 		if(hasContainer()){
 			getContainer().setPrimary(primaryKeys);
-			return this;
 		}
 		
-		/*没有处于容器中时,设置自身主键*/
 		if(null == this.primaryKeys){
 			this.primaryKeys = new ArrayList<String>();
 		}else{
