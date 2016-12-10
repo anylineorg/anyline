@@ -11,7 +11,7 @@ public class PayOrder {
 	private String nonce_str;
 	private String sign;
 	private String body;
-	private String out_trade_no;
+	private String out_trade_no;		//流水号　notify时原样回传　用来对应TRADE_CALL(常用格式 CALL_ID + _ + ORDER_ID)
 	private String total_fee;
 	private String spbill_create_ip;
 	private String trade_type;
