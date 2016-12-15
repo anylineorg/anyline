@@ -29,12 +29,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.anyline.config.db.PageNavi;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.controller.AbstractBasicController;
 import org.anyline.entity.ClientTrace;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.PageNavi;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;

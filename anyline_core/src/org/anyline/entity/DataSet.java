@@ -34,8 +34,6 @@ import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.anyline.config.db.PageNavi;
-import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.EscapeUtil;
@@ -58,11 +56,32 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	private long createTime = 0;						//创建时间
 	private long expires = -1;							//过期时间(毫秒) 从创建时刻计时expires毫秒后过期
 	
-	@Autowired
-	protected transient AnylineService service;
 	public DataSet() {
 		rows = new ArrayList<DataRow>();
 		createTime = System.currentTimeMillis();
+	}
+
+	public static DataSet parseJson(String json, String ... keys){
+		if(null != json){
+			try{
+				return parseJson(JSONArray.fromObject(json));
+			}catch(Exception e){
+				
+			}
+		}
+		return null;
+	}
+	public static DataSet parseJson(JSONArray json, String ...keys){
+		DataSet set = new DataSet();
+		if(null != json){
+			int size = json.size();
+			for(int i=0; i<size; i++){
+				JSONObject item = json.getJSONObject(i);
+				DataRow row = DataRow.parseJson(item, keys);
+				set.add(row);
+			}
+		}
+		return set;
 	}
 	/**
 	 * 添加主键
@@ -1140,18 +1159,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public long getCreateTime() {
 		return createTime;
 	}
-	public int delete(){
-		return service.delete(this);
-	}
-	public int save(){
-		return service.save(this);
-	}
-	public AnylineService getService() {
-		return service;
-	}
-	public void setService(AnylineService service) {
-		this.service = service;
-	}
 	public List<DataRow> getRows(){
 		return rows;
 	}
@@ -1217,17 +1224,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			ds = dataSource;
 		}
 		return ds;
-	}
-	/**
-	 * 清空service与rows中的service
-	 * @return
-	 */
-	public DataSet clearService(){
-		this.service = null;
-		for(DataRow row:rows){
-			row.setService(null);
-		}
-		return this;
 	}
 	public DataSet order(final String ... keys){
 		return asc(keys);

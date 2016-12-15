@@ -2,13 +2,13 @@
 package org.anyline.config.db.impl.mssql;
 
 import org.anyline.config.db.OrderStore;
-import org.anyline.config.db.PageNavi;
 import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.annotation.Autowired;

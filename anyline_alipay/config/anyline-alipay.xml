@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- DTD for properties --> 
+<!DOCTYPE properties [
+    <!ELEMENT properties ( comment?, property* ) >
+    <!ATTLIST properties version CDATA #FIXED "1.0">
+    <!ELEMENT comment (#PCDATA) >
+    <!ELEMENT property (#PCDATA) >
+    <!ATTLIST property key CDATA #REQUIRED>
+]>
+<properties>
+	<property key="PARTNER">2088021683721354</property>
+	<property key="SELLER_ID">xuanzekeji@163.com</property>
+	<property key="KEY">8yrm86a2jasyfx4vyb040wthne9qzwvm</property>
+	<property key="NOTIFY_URL"></property>
+	<property key="CALLBACK_URL"></property>
+	<property key="SIGN_TYPE">MD5</property>
+	<property key="LOG_PATH">D:/log</property>
+	<property key="INPUT_CHARSET">UTF-8</property>
+	<property key="APP_PRIVATE_KEY">MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBANkFtTUp/5wOEbwUPsov80xY7rqfWcbTpJAMiT1/Z40a6/HDgOqS9+u41JdtVTThazKuZeK0Pr18k+jYmcauMivYD4fhI/d+O4oQPwXz1jDPKGz6griUx040Zv8cqlTJi0WLm+ifPVteU7qYoLfCFRCZLDMc9vNxVLpaEWZicitTAgMBAAECgYEA0kDyZxhSWNlUmzeuAWplN1FtsAZUDwnag+hxSdBV/WHYtvhmvFw4rvn5lN9KzpmZppdJhFKF+kRodAztJox7cy+1tYm9JwvPpwJAzgy1VoKbUnukFVbH4ZKzWGVQ7aLWYFzvawYGCs+5gnR9xEqXmIO1GcKIJ8IFOnCKs0U7SoECQQD0N/I49bDuCglGHorYib1gifv5kpuepRQOAmECg4bgh5auqxZu9mH/PP5wRQNLwpwM3M1L0pwUvEdmYDOFELJBAkEA433koPb/pD3MFRfvnIyKsEWMgnxminfIk2/sOfVP/Vfny/y+YLyjjnqcBeiOwACR9boOif2a8LqjVg0BuUfQkwJBAJkJZfRjodfI2j7ibMd8qPuR/CBMytADSintO7VDjoWs8bPK6mfmZUp4gkkANiyHaxp0UwGsnLoxsdxpdF9yMwECQQCmYaEhiQUX3oqwsrzwxml42qUVml50z37HNoiTKzPBmtVRgBzNK6qDvnD2cUxWaRRXoCiaC/2SKy7i9MhZ9og5AkBtS5X/+GBcomin15KAtVfDoUfjJpZ+3fIp+3N5wvSATNfdFfNqZCETvlfSYAupVOZd1Rh2oRo1OYguESSepPh1</property>
+	<property key="APP_PUBLIC_KEY">MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB</property>
+	<property key="ALIPAY_PUBLIC_KEY"></property>
+	<property key="ANTI_PHISHING_KEY"></property>
+	<property key="EXTER_INVOKE_IP"></property>
+</properties>

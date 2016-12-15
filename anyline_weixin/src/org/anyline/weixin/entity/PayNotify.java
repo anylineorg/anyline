@@ -4,7 +4,7 @@ package org.anyline.weixin.entity;
 public class PayNotify {
 	
 	private String appid				; //公众账号ID				是			String(32)			wx8888888888888888			微信分配的公众账号ID（企业号corpid即为此appId）
-	private String mch_id				; //商户号				是			String(32)			1900000109			微信支付分配的商户号
+	private String mch_id				; //商家号				是			String(32)			1900000109			微信支付分配的商家号
 	private String device_info			; //设备号				否			String(32)			013467007045764			微信支付分配的终端设备号，
 	private String nonce_str			; //随机字符串				是			String(32)			5K8264ILTKCH16CQ2502SI8ZNMTM67VS			随机字符串，不长于32位
 	private String sign					; //签名					是			String(32)			C380BEC2BFD727A4B6845133519F3AD6			签名，详见签名算法
@@ -12,7 +12,7 @@ public class PayNotify {
 	private String result_code			; //业务结果				是			String(16)			SUCCESS			SUCCESS/FAIL
 	private String err_code				; //错误代码				否			String(32)			SYSTEMERROR			错误返回的信息描述
 	private String err_code_des			; //错误代码描述			否			String(128)			系统错误			错误返回的信息描述
-	private String openid				; //用户标识				是			String(128)			wxd930ea5d5a258f4f			用户在商户appid下的唯一标识
+	private String openid				; //用户标识				是			String(128)			wxd930ea5d5a258f4f			用户在商家appid下的唯一标识
 	private String is_subscribe			; //是否关注公众账号			否			String(1)			Y			用户是否关注公众账号，Y-关注，N-未关注，仅在公众账号类型支付有效
 	private String trade_type			; //交易类型				是			String(16)			JSAPI			JSAPI、NATIVE、APP
 	private String bank_type			; //付款银行				是			String(16)			CMC			银行类型，采用字符串类型的银行标识，银行类型见银行列表
@@ -27,7 +27,7 @@ public class PayNotify {
 	private String coupon_id_$n			; //代金券ID				否			String(20)			10000			代金券ID,$n为下标，从0开始编号
 	private String coupon_fee_$n		; //单个代金券支付金额		否			Int				100			单个代金券支付金额,$n为下标，从0开始编号
 	private String transaction_id		; //微信支付订单号			是			String(32)			1217752501201407033233368018			微信支付订单号
-	private String out_trade_no			; //商户订单号				是			String(32)			1212321211201407033568112322			商户系统的订单号，与请求一致。
+	private String out_trade_no			; //商家订单号				是			String(32)			1212321211201407033568112322			商家系统的订单号，与请求一致。
 	private String attach				; //商家数据包				否			String(128)			123456			商家数据包，原样返回
 	private String time_end				; //支付完成时间			是			String(14)			20141030133525			支付完成时间，格式为yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010。其他详见时间规则
 	public String getAppid() {
