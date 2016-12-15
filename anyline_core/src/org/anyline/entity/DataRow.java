@@ -27,9 +27,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -39,11 +39,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
-	public static void main(String args[]){
-		DataRow row = new DataRow();
-		String s = row.getStringNvl("CD", "s");
-		System.out.println(s);
-	}
 	private static Logger log = Logger.getLogger(DataRow.class);
 
 	public static String PARENT 		= "PARENT";				//上级数据
@@ -64,8 +59,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	
 	protected Boolean isNew = false;							//强制新建(适应hibernate主键策略)
 
-	@Autowired
-	protected transient AnylineService service;
 	
 	/**
 	 * 
@@ -85,13 +78,48 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		DataRow row = new DataRow();
 		if(null != obj){
-			List<String> fields = BeanUtil.getFieldsName(obj.getClass());
-			for(String field : fields){
-				String col = map.get(field.toUpperCase());
-				if(null == col){
-					col = field;
+			if(obj instanceof JSONObject){
+				row = parseJson((JSONObject)obj);
+			}else{
+				List<String> fields = BeanUtil.getFieldsName(obj.getClass());
+				for(String field : fields){
+					String col = map.get(field.toUpperCase());
+					if(null == col){
+						col = field;
+					}
+					row.put(col, BeanUtil.getFieldValue(obj, field));
 				}
-				row.put(col, BeanUtil.getFieldValue(obj, field));
+			}
+		}
+		return row;
+	}
+	public static DataRow parseJson(String json, String ... keys){
+		if(null != json){
+			try{
+				return parseJson(JSONObject.fromObject(json));
+			}catch(Exception e){
+				
+			}
+		}
+		return null;
+	}
+	public static DataRow parseJson(JSONObject json, String ... keys){
+		DataRow row = new DataRow();
+		if(null == json){
+			return row;
+		}
+		Iterator  itr = json.keys();
+		while(itr.hasNext()){
+			String key = itr.next().toString();
+			Object val = json.get(key);
+			if(null != val){
+				if(val instanceof JSONObject){
+					row.put(key, parseJson((JSONObject)val));
+				}else if(val instanceof JSONArray){
+					row.put(key, DataSet.parseJson((JSONArray)val));
+				}else{
+					row.put(key, val);
+				}
 			}
 		}
 		return row;
@@ -498,6 +526,26 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return result;
 	}
+	public DataRow getRow(String key){
+		if(null == key){
+			return null;
+		}
+		Object obj = get(key);
+		if(null != obj && obj instanceof DataRow){
+			return (DataRow)obj;
+		}
+		return null;
+	}
+	public DataSet getSet(String key){
+		if(null == key){
+			return null;
+		}
+		Object obj = get(key);
+		if(null != obj && obj instanceof DataSet){
+			return (DataSet)obj;
+		}
+		return null;
+	}
 	public String getStringNvl(String key, String ... defs){
 		String result = getString(key);
 		if(BasicUtil.isEmpty(result)){
@@ -710,7 +758,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		row.clientTrace = this.clientTrace;
 		row.createTime = this.createTime;
 		row.isNew = this.isNew;
-		row.service = this.service;
 		return row;
 	}
 	public Boolean getIsNew() {
@@ -719,19 +766,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public void setIsNew(Boolean isNew) {
 		this.isNew = isNew;
 	}
-	public int delete(){
-		return service.delete(this);
-	}
-	public int save(){
-		return service.save(this);
-	}
-	public AnylineService getService() {
-		return service;
-	}
-	public void setService(AnylineService service) {
-		this.service = service;
-	}
-	
 	public List<String> getUpdateColumns() {
 		return updateColumns;
 	}

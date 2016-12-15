@@ -32,7 +32,6 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.apache.log4j.Logger;
@@ -76,9 +75,6 @@ public abstract class BasicEntity implements Serializable{
 	@Transient
 	protected Boolean isNew = false;							//强制新建(适应hibernate主键策略)
 	
-	@Transient
-	@Autowired
-	protected AnylineService service;
 	@Transient
 	protected Object clientTrace;								//客户端数据
 	public Object getClientTrace() {
@@ -296,17 +292,4 @@ public abstract class BasicEntity implements Serializable{
 	public void setUptClientCd(String uptClientCd) {
 		this.uptClientCd = uptClientCd;
 	}
-	public AnylineService getService() {
-		return service;
-	}
-	public void setService(AnylineService service) {
-		this.service = service;
-	}
-	public int save(){
-		return service.save(this);
-	}
-	public int delete(){
-		return service.delete(this);
-	}
-	
 }
