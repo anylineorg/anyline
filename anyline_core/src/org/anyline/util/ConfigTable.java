@@ -39,8 +39,8 @@ public class ConfigTable {
 	private static int reload = 0;			//重新加载间隔
 	private static boolean debug = false;
 	private static boolean sqlDebug = false;
-	private static final String version = "6.X";
-	private static final String minVersion = "0955";
+	private static final String version = "7.X";
+	private static final String minVersion = "0010";
 	static{
 		init();
 		debug();
