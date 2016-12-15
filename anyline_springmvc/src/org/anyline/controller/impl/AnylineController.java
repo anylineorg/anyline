@@ -19,9 +19,8 @@
 package org.anyline.controller.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.OutputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,12 +37,12 @@ import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-import org.anyline.config.db.PageNavi;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.controller.AbstractBasicController;
 import org.anyline.entity.ClientTrace;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.PageNavi;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -286,6 +285,7 @@ public class AnylineController extends AbstractBasicController {
 		// 转换成JSON格式
 		JsonConfig config = new JsonConfig();
 		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());  
+		config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor());
 		
 		String dataType = null; // 数据类型
 		if (null == data) {

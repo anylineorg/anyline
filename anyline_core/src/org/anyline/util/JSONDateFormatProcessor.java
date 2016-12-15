@@ -17,6 +17,7 @@
  */
 package org.anyline.util;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 import net.sf.json.JsonConfig;
@@ -47,11 +48,18 @@ public class JSONDateFormatProcessor implements JsonValueProcessor {
     }  
       
       
-    private Object process(Object value){  
+    private Object process(Object value){ 
+    	if(null == value){
+    		return null;
+    	}
         if(value instanceof Date){    
             String val = DateUtil.format((Date)value, format);
             return val;  
-        }    
+        }
+        if(value instanceof Timestamp){
+            String val = DateUtil.format((Timestamp)value, format);
+            return val;  
+        }
         return value == null ? "" : value.toString();    
     }  
   

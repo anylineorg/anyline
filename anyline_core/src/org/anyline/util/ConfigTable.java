@@ -83,7 +83,9 @@ public class ConfigTable {
 		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
 			path = path.substring(1);
 		}
-		webRoot = path.substring(0,path.indexOf("WEB-INF")-1);
+		if(path.indexOf("WEB-INF") > 0){
+			webRoot = path.substring(0,path.indexOf("WEB-INF")-1);	
+		}
 		
 		//加载配置文件
 		loadConfig();

@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/spring-jdbc-4.1.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/spring-context-4.0.3.RELEASE.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/anyline_web"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

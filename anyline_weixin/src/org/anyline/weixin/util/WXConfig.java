@@ -18,8 +18,8 @@ public class WXConfig {
 	 */
 	public static String APP_ID = ""				; //AppID(应用ID)
 	public static String APP_SECRECT = ""			; //AppSecret(应用密钥)
-	public static String API_SECRECT = ""			; //微信商户平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
-	public static String MCH_ID = ""				; //商户号
+	public static String API_SECRECT = ""			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+	public static String MCH_ID = ""				; //商家号
 	public static String SIGN_TYPE = ""				; //签名加密方式
 	public static String SERVER_TOKEN = ""			; //服务号的配置token
 	public static String CERT_PATH = ""				; //微信支付证书存放路径地址

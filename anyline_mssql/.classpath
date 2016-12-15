@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/anyline_core"/>
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/asm-3.3.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/asm-5.0.2.jar"/>
@@ -46,5 +45,7 @@
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/struts2-core-2.3.24.1.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/struts2-spring-plugin-2.3.24.1.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/xwork-core-2.3.24.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/anyline_core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/anyline_web"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
