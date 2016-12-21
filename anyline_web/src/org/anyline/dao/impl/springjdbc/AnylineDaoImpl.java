@@ -64,11 +64,11 @@ import org.springframework.stereotype.Repository;
 public class AnylineDaoImpl implements AnylineDao {
 	private static Logger log = Logger.getLogger(AnylineDaoImpl.class);
 	
-	@Autowired(required=false)
+	@Autowired(required=true)
 	private SQLCreater creater;
-	@Autowired(required=false)
+	@Autowired(required=true)
 	private JdbcTemplate jdbc;
-	@Autowired(required=false)
+	@Autowired(required=true)
 	private DataSource dataSource;			//数据源
 	
 	
