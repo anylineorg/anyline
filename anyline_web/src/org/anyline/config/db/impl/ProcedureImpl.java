@@ -35,7 +35,7 @@ public class ProcedureImpl  implements Procedure{
 	private List<Integer> outputTypes;	//输出参数类型
 	private List<String> inputValues;
 	private List<Integer> inputTypes;
-	private List<Object> result;	//执行结果
+	private List<Object> result;	//执行结果|输入参数
 	
 	
 	public ProcedureImpl(String name){
@@ -96,6 +96,9 @@ public class ProcedureImpl  implements Procedure{
 	}
 	public void setResult(List<Object> result) {
 		this.result = result;
+	}
+	public List<Object> getOutput(){
+		return result;
 	}
 
 }

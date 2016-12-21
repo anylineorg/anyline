@@ -10,8 +10,8 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 
-public class AlipayConfig {
-	private static Logger log = Logger.getLogger(AlipayConfig.class);
+public class AliPayConfig {
+	private static Logger log = Logger.getLogger(AliPayConfig.class);
 	// 合作身份者ID，签约账号，以2088开头由16位纯数字组成的字符串，查看地址：https://b.alipay.com/order/pidAndKey.htm
 	public static String PARTNER = "";
 	// 收款支付宝账号，以2088开头由16位纯数字组成的字符串，一般情况下收款账号就是签约账号
@@ -79,31 +79,31 @@ public class AlipayConfig {
 				String key = propertyElement.attributeValue("key");
 				String value = propertyElement.getTextTrim();
 				if("PARTNER".equalsIgnoreCase(key)){
-					AlipayConfig.PARTNER = value;
+					AliPayConfig.PARTNER = value;
 				}else if("SELLER_ID".equalsIgnoreCase(key)){
-					AlipayConfig.SELLER_ID = value;
+					AliPayConfig.SELLER_ID = value;
 				}else if("KEY".equalsIgnoreCase(key)){
-					AlipayConfig.KEY = value;
+					AliPayConfig.KEY = value;
 				}else if("APP_PUBLIC_KEY".equalsIgnoreCase(key)){
-					AlipayConfig.APP_PUBLIC_KEY = value;
+					AliPayConfig.APP_PUBLIC_KEY = value;
 				}else if("APP_PRIVATE_KEY".equalsIgnoreCase(key)){
-					AlipayConfig.APP_PRIVATE_KEY = value;
+					AliPayConfig.APP_PRIVATE_KEY = value;
 				}else if("ALIPAY_PUBLIC_KEY".equalsIgnoreCase(key)){
-					AlipayConfig.ALIPAY_PUBLIC_KEY = value;
+					AliPayConfig.ALIPAY_PUBLIC_KEY = value;
 				}else if("NOTIFY_URL".equalsIgnoreCase(key)){
-					AlipayConfig.NOTIFY_URL = value;
+					AliPayConfig.NOTIFY_URL = value;
 				}else if("CALLBACK_URL".equalsIgnoreCase(key)){
-					AlipayConfig.CALLBACK_URL = value;
+					AliPayConfig.CALLBACK_URL = value;
 				}else if("SIGN_TYPE".equalsIgnoreCase(key)){
-					AlipayConfig.SIGN_TYPE = value;
+					AliPayConfig.SIGN_TYPE = value;
 				}else if("LOG_PATH".equalsIgnoreCase(key)){
-					AlipayConfig.LOG_PATH = value;
+					AliPayConfig.LOG_PATH = value;
 				}else if("INPUT_CHARSET".equalsIgnoreCase(key)){
-					AlipayConfig.INPUT_CHARSET = value;
+					AliPayConfig.INPUT_CHARSET = value;
 				}else if("ANTI_PHISHING_KEY".equalsIgnoreCase(key)){
-					AlipayConfig.ANTI_PHISHING_KEY = value;
+					AliPayConfig.ANTI_PHISHING_KEY = value;
 				}else if("EXTER_INVOKE_IP".equalsIgnoreCase(key)){
-					AlipayConfig.EXTER_INVOKE_IP = value;
+					AliPayConfig.EXTER_INVOKE_IP = value;
 				}
 				
 				if(ConfigTable.isDebug()){
