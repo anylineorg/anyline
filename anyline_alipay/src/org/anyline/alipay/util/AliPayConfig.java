@@ -33,6 +33,10 @@ public class AliPayConfig {
 	// 调用的接口名，无需修改
 	public static String SERVICE_WEB = "create_direct_pay_by_user";
 	public static String SERVICE_WAP = "alipay.wap.create.direct.pay.by.user";
+    /**
+     * 支付宝提供给商家的服务接入网关URL(新)
+     */
+    public static final String ALIPAY_GATEWAY_NEW = "https://mapi.alipay.com/gateway.do?";
 	//应用公钥
 	public static String APP_PUBLIC_KEY = "";
 	//应用私钥
