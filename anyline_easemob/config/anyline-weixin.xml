@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- DTD for properties --> 
+<!DOCTYPE properties [
+    <!ELEMENT properties ( comment?, property* ) >
+    <!ATTLIST properties version CDATA #FIXED "1.0">
+    <!ELEMENT comment (#PCDATA) >
+    <!ELEMENT property (#PCDATA) >
+    <!ATTLIST property key CDATA #REQUIRED>
+]>
+<properties>
+	<property key="APP_ID">wx67bc8dd44fdb345f</property>
+	<property key="APP_SECRECT">f013f99ecb0ca4d2656531735473a877</property>
+	<property key="API_SECRECT">jE74fQqltm4PmIpsBh2ScJN8mqiwvZj2</property>
+	<property key="MCH_ID">1385679002</property>
+	<property key="SIGN_TYPE">MD5</property>
+	<property key="CERT_PATH">D:/apiclient_cert.p12</property>
+	<property key="SERVER_TOKEN">anylineorg</property>
+	<property key="PAY_NOTIFY_URL">http://www.anyline.org/pay/ntf/wx</property>
+</properties>
