@@ -191,6 +191,17 @@ public class AbstractBasicController{
 					List<Object> values = map.get(parser.getId().toUpperCase());
 					if(values.size() > i){
 						row.put(parser.getId(), values.get(i));
+					}else{
+						List<ParseResult> defs = parser.getDefs();
+						if(null != defs && defs.size()>0){
+							ParseResult def = defs.get(0);
+							String key = def.getKey();
+							if(null != key && key.startsWith("{") && key.endsWith("}")){
+								// col:value
+								key = key.substring(1, key.length()-1);
+							}
+							row.put(parser.getId(), key);
+						}
 					}
 				}
 
