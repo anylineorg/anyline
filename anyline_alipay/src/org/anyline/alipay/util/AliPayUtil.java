@@ -11,7 +11,7 @@ import java.util.Map;
 public class AliPayUtil {
 
 	/**
-	 * 
+	 * app支付
 	 * @param subject 支付标题
 	 * @param body 支付明细
 	 * @param price 支付价格
@@ -40,6 +40,14 @@ public class AliPayUtil {
 		result = result + "&sign=\"" + sign + "\"&sign_type=\"RSA\"";
 		return result;
 	}
+	/**
+	 * html支付
+	 * @param subject
+	 * @param body
+	 * @param price
+	 * @param order
+	 * @return
+	 */
 	public static String createHtmlOrder(String subject, String body, String price, String order){
 		String result ="";
 		Map<String,String> params = createDefaultParam();
