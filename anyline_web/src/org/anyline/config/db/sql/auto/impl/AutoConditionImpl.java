@@ -128,7 +128,6 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			}else if(compare == SQL.COMPARE_TYPE_LIKE){
 				text += " LIKE "+ creater.concat("'%'", "?" , "'%'");
 			}else if(compare == SQL.COMPARE_TYPE_LIKE_PREFIX){
-				text += " LIKE concat(? , '%')";
 				text += " LIKE "+ creater.concat("?" , "'%'");
 			}else if(compare == SQL.COMPARE_TYPE_LIKE_SUBFIX){
 				text += " LIKE "+ creater.concat("'%'", "?");
