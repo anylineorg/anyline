@@ -666,7 +666,28 @@ public class BasicUtil {
 		}
 		return src.substring(fr, to);
 	}
-
+	public static String collectionToString(Collection<?> objs){
+		if(null == objs){
+			return "";
+		}
+		String result = "";
+		int idx = 0;
+		for(Object obj:objs){
+			result += "[" + idx++ +"]" + obj;
+		}
+		return result;
+	}
+	public static String collectionToString(Object[] objs){
+		if(null == objs){
+			return "";
+		}
+		String result = "";
+		int idx = 0;
+		for(Object obj:objs){
+			result += "[" + idx++ +"]" + obj;
+		}
+		return result;
+	}
 	/**
 	 * 获取本机IP
 	 * @return
