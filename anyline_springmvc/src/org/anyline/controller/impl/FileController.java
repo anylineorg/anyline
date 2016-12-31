@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.anyline.entity.DataRow;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -38,11 +39,28 @@ public class FileController extends AnylineController {
 
 
 	@RequestMapping("ig")
-	public void img(HttpServletRequest request, HttpServletResponse response){
+	public String img(HttpServletRequest request, HttpServletResponse response){
 		ServletContext sc = request.getSession().getServletContext();
 		String table = getUploadTable(getRequest(),null);
 		String pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 		DataRow row = service.cacheRow("static_1800",table, parseConfig("+"+pk+":"+pk.toLowerCase()));
+		if(null == row){
+			return null;
+		}
+		//D:/upload/anyline
+		String uploadDir = ConfigTable.getString("UPLOAD_DIR");
+		String fileServer = ConfigTable.getString("UPLOAD_FILE_SERVER");
+		if(BasicUtil.isNotEmpty(fileServer)){
+			//D:\\upload\\anyline\\tmp\\894\\IMG_20160903_121158.jpg
+			String path = row.getString("PATH_ABS");
+			path = path.replace("\\", "/").replace(uploadDir, "");
+			if(!fileServer.endsWith("/") && !path.startsWith("/")){
+				path = "/" + path;
+			}
+			path = fileServer + path;
+			String redirect =  "redirect:"+path;
+			return redirect;
+		}
 		File file = null;
 		if (row != null) {
 			file = new File(new File(row.getString("DIR")), row.getString("PATH_REL"));
@@ -67,11 +85,12 @@ public class FileController extends AnylineController {
 				if(ConfigTable.isDebug()){
 					log.info("在正传输文件:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
 				}
+				long fr = System.currentTimeMillis();
 				while ((count = in.read(buf)) >= 0) {
 					out.write(buf, 0, count);
 				}
 				if(ConfigTable.isDebug()){
-					log.info("传输完成:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+					log.info("传输完成:" + file.getAbsolutePath() + "[耗时:"+(System.currentTimeMillis()-fr)+"],请求来自" + request.getRequestURL() + "?" + request.getQueryString());
 				}
 			}
 		} catch (Exception e) {
@@ -92,6 +111,7 @@ public class FileController extends AnylineController {
 				}
 			}
 		}
+		return null;
 	}
 
 }
