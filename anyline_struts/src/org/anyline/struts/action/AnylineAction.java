@@ -397,6 +397,42 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		}
 		return result;
 	}
+	public DataRow uploadFile(File file){
+		return uploadFile(file, null);
+	}
+	public DataRow uploadFile(File file, String name){
+		DataRow row = null;
+		if(null == file || !file.exists()){
+			return row;
+		}
+		if(BasicUtil.isEmpty(name)){
+			name = file.getName();
+		}
+		String tarName = DateUtil.format("yyyyMMddhhmmssms")+BasicUtil.getRandomLowerString(10)+"."+FileUtil.getSuffixFileName(name);
+		File dir = new File(ConfigTable.getString("UPLOAD_DIR"));
+		String dateFormat = ConfigTable.getString("UPLOAD_DIR_DATE_FORMAT");
+		if(BasicUtil.isNotEmpty(dateFormat)){
+			dir = new File(dir, DateUtil.format(dateFormat));
+		}
+		if(dir.exists()){
+			dir.mkdirs();
+		}
+		File tar = new File(dir, tarName);
+		try {
+			FileUtils.copyFile(file, tar);
+			row = new DataRow();
+			row.put("TITLE", name);
+			row.put("SRC_NAME", name);
+			row.put("ROOT", request.getSession().getServletContext().getRealPath("/"));
+			row.put("PATH_ABS", tar.getAbsolutePath());
+			row.put("PATH_REL", tar.getAbsolutePath().replace(dir.getAbsolutePath(),""));
+			service.save(getUploadTable(null), row);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return row;
+	}
 	public List<DataRow> upload(String dir) {
 		File root = new File(ConfigTable.getWebRoot()).getParentFile();
 		

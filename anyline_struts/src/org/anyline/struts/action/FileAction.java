@@ -138,9 +138,7 @@ public class FileAction extends AnylineAction {
 		DataRow row = service.cacheRow("static_1800",table, parseConfig("+CD:cd"));
 		File file = null;
 		if (row != null) {
-			File root = new File(this.request.getSession().getServletContext().getRealPath("/"));
-			String dirRel = row.getString("PATH_REL");
-			file = new File(root.getParentFile(), dirRel);
+			file = new File(row.getString("PATH_ABS"));
 		}
 		return success(file);
 	}

@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.anyline.entity.DataRow;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
@@ -35,7 +36,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 
 public class FileResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(FileResult.class);
+	private static Logger log = Logger.getLogger(FileResult.class);
 	private Object data = null;
 
 	protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
@@ -55,9 +56,28 @@ public class FileResult extends StrutsResultSupport {
 				title = file.getName();
 			} else if (data instanceof DataRow) {
 				DataRow row = (DataRow) data;
-				file = new File(row.getString("PATH"));
+				file = new File(row.getString("PATH_ABS"));
 				title = row.getString("NM");
 			}
+			String uploadDir = ConfigTable.getString("UPLOAD_DIR");
+			String fileServer = ConfigTable.getString("FILE_SERVER");
+			if(BasicUtil.isNotEmpty(fileServer)){
+				//D:\\upload\\anyline\\tmp\\894\\IMG_20160903_121158.jpg
+				String path = file.getAbsolutePath();
+				path = path.replace("\\", "/").replace(uploadDir, "");
+				if(fileServer.endsWith("/") && path.startsWith("/")){
+					path = path.substring(1,path.length());
+					path = fileServer + path;
+				}else if(fileServer.endsWith("/") || path.startsWith("/")){
+					path = fileServer + path;
+				}else{
+					path = fileServer + "/" + path;
+				}
+				response.sendRedirect(path);
+				log.info("[文件请求已转发][path:"+ request.getRequestURL() + "?" + request.getQueryString()+"][redirect:"+path+"]");
+				return;
+			}
+			
 			if (null != file && file.exists()) {
 				response.setCharacterEncoding("UTF-8");
 				response.setHeader("Location", title);
@@ -69,17 +89,19 @@ public class FileResult extends StrutsResultSupport {
 				byte[] buf = new byte[1024];
 				int count = 0;
 				if(ConfigTable.isDebug()){
-					LOG.info("在正传输文件:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+					log.info("在正传输文件:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
 				}
 				while ((count = in.read(buf)) >= 0) {
 					out.write(buf, 0, count);
 				}
 				if(ConfigTable.isDebug()){
-					LOG.info("传输完成:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+					log.info("传输完成:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
 				}
+			}else{
+				log.info("文件不存在:" + file.getAbsolutePath());
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			log.error(e);
 		} finally {
 			if (null != in) {
 				in.close();

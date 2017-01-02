@@ -49,16 +49,21 @@ public class FileController extends AnylineController {
 		}
 		//D:/upload/anyline
 		String uploadDir = ConfigTable.getString("UPLOAD_DIR");
-		String fileServer = ConfigTable.getString("UPLOAD_FILE_SERVER");
+		String fileServer = ConfigTable.getString("FILE_SERVER");
 		if(BasicUtil.isNotEmpty(fileServer)){
 			//D:\\upload\\anyline\\tmp\\894\\IMG_20160903_121158.jpg
 			String path = row.getString("PATH_ABS");
 			path = path.replace("\\", "/").replace(uploadDir, "");
-			if(!fileServer.endsWith("/") && !path.startsWith("/")){
-				path = "/" + path;
+			if(fileServer.endsWith("/") && path.startsWith("/")){
+				path = path.substring(1,path.length());
+				path = fileServer + path;
+			}else if(fileServer.endsWith("/") || path.startsWith("/")){
+				path = fileServer + path;
+			}else{
+				path = fileServer + "/" + path;
 			}
-			path = fileServer + path;
 			String redirect =  "redirect:"+path;
+			log.info("[文件请求已转发][ID:"+row.getString(pk)+"][path:"+row.getString("PATH_ABS")+"][redirect:"+path+"]");
 			return redirect;
 		}
 		File file = null;
