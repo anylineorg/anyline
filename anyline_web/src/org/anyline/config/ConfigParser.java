@@ -24,14 +24,20 @@ public class ConfigParser {
 	}
 	/**
 	 * 
-	 * @param config +id.field:key
+	 * @param config +id.field:key | key
+	 * 	             +date.dateFr:dateFr | date
 	 * @return
 	 */
 	private static ParseResult parseInit(String config){
 		ParseResult result = new ParseResult();
 		boolean required = false;
 		String field = null;
-		String id = config.substring(0,config.indexOf(":"));
+		String id = config;
+		String key = config;
+		if(key.contains(":")){
+			id = config.substring(0,config.indexOf(":"));
+			key = config.substring(config.indexOf(":")+1,config.length());
+		}
 		if(id.startsWith("+")){
 			//必须参数
 			required = true;
@@ -45,7 +51,6 @@ public class ConfigParser {
 			//默认变量名
 			field = id;
 		}
-		String key = config.substring(config.indexOf(":")+1,config.length());
 		result.setId(id);
 		result.setRequired(required);
 		result.setField(field);
