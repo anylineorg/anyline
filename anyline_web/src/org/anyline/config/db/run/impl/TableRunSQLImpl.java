@@ -140,6 +140,9 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != groupStore){
 			builder.append(groupStore.getRunText(disKeyFr+disKeyTo));
 		}
+		if(BasicUtil.isNotEmpty(having)){
+			builder.append(" HAVING ").append(having);
+		}
 	}
 	/**
 	 * 拼接查询条件

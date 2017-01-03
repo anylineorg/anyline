@@ -54,6 +54,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	protected ConfigStore configStore;
 	protected OrderStore orderStore;
 	protected GroupStore groupStore;
+	protected String having;
 	protected List<SQLVariable> variables;
 	
 	
@@ -327,6 +328,10 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 						}
 						groupStore.group(item);
 					}
+					continue;
+				}else if(condition.toUpperCase().startsWith("HAVING")){
+					String haveStr = condition.toUpperCase().substring("HAVING".length(), condition.length());
+					this.having = haveStr;
 					continue;
 				}
 				this.addCondition(condition);
