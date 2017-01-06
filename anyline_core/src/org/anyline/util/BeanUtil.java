@@ -450,7 +450,7 @@ public class BeanUtil {
 	 * @param pack
 	 * @return
 	 */
-	public static List<Class> getClasses(String pack){
+	public static List<Class> getClasses(String pack, Class ... bases){
 		List<Class> list = new ArrayList<Class>();
 		File dir = new File(ConfigTable.getWebClassPath()+pack.replace(".", File.separator));
 		List<File> files = FileUtil.getAllChildrenFile(dir,".class");
@@ -461,7 +461,16 @@ public class BeanUtil {
 				path = path.replace("\\", ".");
 				path = path.replace(".classes.", "").replace(".class", "");
 				Class clazz = Class.forName(path);
-				list.add(clazz);
+				if(null != bases){
+					for(Class base:bases){
+						if(base.isAssignableFrom(clazz)){
+							list.add(clazz);
+							continue;
+						}
+					}
+				}else{
+					list.add(clazz);
+				}
 			}catch(Exception e){
 				
 			}
