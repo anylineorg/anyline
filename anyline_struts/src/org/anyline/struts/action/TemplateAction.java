@@ -229,6 +229,7 @@ public class TemplateAction extends AnylineAction {
 		@Action(value = "u", results = { @Result(type = "template", location = "/${dir}/info.jsp") }) 
 		})
 	public String info() {
+		init();
 		String pk = DataRow.PRIMARY_KEY.toLowerCase();
 		DataRow row = service.queryRow(view, parseConfig("+"+pk+":"+pk+"-+"+":"+pk+"++"));
 		WebUtil.encrypt(row, DataRow.PRIMARY_KEY);
@@ -238,6 +239,7 @@ public class TemplateAction extends AnylineAction {
 	
 	@Actions({ @Action(value = "s", results = { @Result(type = "redirectAction", params={"actionName","v","cd","${data}"}) }) })
 	public String save(){
+		init();
 		DataRow row = entityRow(columns);
 		service.save(table, row);
 		data = WebUtil.encryptValue(row.getPrimaryValue()+"");
@@ -246,6 +248,7 @@ public class TemplateAction extends AnylineAction {
 
 	@Actions({ @Action(value = "d", results = { @Result(type = "json") }) })
 	public String delete(){
+		init();
 		String pk = DataRow.PRIMARY_KEY.toLowerCase();
 		DataRow row = service.queryRow(table, parseConfig("+"+pk+":"+pk+"-+"+":"+pk+"++"));
 		if(null == row){
