@@ -75,7 +75,7 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(container)){
 				builder.append("container:'").append(container).append("',");
 			}
-			if(BasicUtil.isNotEmpty(bodyContent)){
+			if(BasicUtil.isNotEmpty(bodyContainer)){
 				builder.append("bodyContainer:'").append(bodyContainer).append("',");
 			}
 			if(BasicUtil.isNotEmpty(naviContainer)){
