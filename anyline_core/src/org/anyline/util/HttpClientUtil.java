@@ -18,6 +18,7 @@
 package org.anyline.util;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -89,30 +90,47 @@ public class HttpClientUtil {
         configBuilder.setStaleConnectionCheckEnabled(true);  
         requestConfig = configBuilder.build();  
     } 
-
 	public static Source post(CloseableHttpClient client, String url, String encode, String... params) {
 		return post(client, null, url, encode, params);
+	}
+	public static Source post(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
+		return post(client, null, url, encode, entitys);
 	}
 
 	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, String... params) {
 		Map<String, String> map = paramToMap(params);
 		return post(client, headers, url, encode, map);
 	}
+	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		List<HttpEntity> list = new ArrayList<HttpEntity>();
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				list.add(entity);
+			}
+		}
+		return post(client, headers, url, encode, list);
+	}
 
 	public static Source post(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
 		return post(client, null, url, encode, params);
 	}
 	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, String> params) {
-		List<NameValuePair> pairs = packPair(params);
-		return post(client, headers, url, encode, pairs);
+		List<HttpEntity> entitys = new ArrayList<HttpEntity>();
+		if(null != params && !params.isEmpty()){
+			List<NameValuePair> pairs = packNameValuePair(params);
+			try {
+				HttpEntity entity = new UrlEncodedFormEntity(pairs);
+				entitys.add(entity);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return post(client, headers, url, encode, entitys);
 	}
 
-	public static Source post(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
-		return post(client, null, url, encode, pairs);
-	}
 
-
-	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
 		if(null == client){
 			if(url.contains("https://")){
 				client = defaultSSLClient();
@@ -122,26 +140,78 @@ public class HttpClientUtil {
 		}
 		Source result = new Source();
 		HttpPost method = new HttpPost(url);
-		CloseableHttpResponse response = null;
-		try {
-			if (null != pairs) {
-				method.setEntity(new UrlEncodedFormEntity(pairs));
-			}
-			setHeader(method, headers);
-			response = client.execute(method);
-			result = getResult(result, response, encode);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				response.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				method.setEntity(entity);
 			}
 		}
+		setHeader(method, headers);
+		result = exe(client, method, encode);
 		return result;
 	}
 
+
+	public static Source put(CloseableHttpClient client, String url, String encode, String... params) {
+		return put(client, null, url, encode, params);
+	}
+	public static Source put(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
+		return put(client, null, url, encode, entitys);
+	}
+
+	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, String... params) {
+		Map<String, String> map = paramToMap(params);
+		return put(client, headers, url, encode, map);
+	}
+	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		List<HttpEntity> list = new ArrayList<HttpEntity>();
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				list.add(entity);
+			}
+		}
+		return put(client, headers, url, encode, list);
+	}
+
+	public static Source put(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
+		return put(client, null, url, encode, params);
+	}
+	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, String> params) {
+		List<HttpEntity> entitys = new ArrayList<HttpEntity>();
+		if(null != params && !params.isEmpty()){
+			List<NameValuePair> pairs = packNameValuePair(params);
+			try {
+				HttpEntity entity = new UrlEncodedFormEntity(pairs);
+				entitys.add(entity);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return put(client, headers, url, encode, entitys);
+	}
+
+
+	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+		if(null == client){
+			if(url.contains("https://")){
+				client = defaultSSLClient();
+			}else{
+				client =  defaultClient();
+			}
+		}
+		Source result = new Source();
+		HttpPut method = new HttpPut(url);
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				method.setEntity(entity);
+			}
+		}
+		setHeader(method, headers);
+
+		setHeader(method, headers);
+		result = exe(client, method, encode);
+		return result;
+	}
 	public static Source get(CloseableHttpClient client, String url, String encode, String... params) {
 		return get(client, null, url, encode, params);
 	}
@@ -156,7 +226,7 @@ public class HttpClientUtil {
 	}
 
 	public static Source get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, String> params) {
-		List<NameValuePair> pairs = packPair(params);
+		List<NameValuePair> pairs = packNameValuePair(params);
 		return get(client, headers, url, encode, pairs);
 	}
 
@@ -190,73 +260,8 @@ public class HttpClientUtil {
 			}
 		}
 		HttpGet method = new HttpGet(url);
-		CloseableHttpResponse response = null;
-		try {
-			setHeader(method, headers);
-
-			response = client.execute(method);
-			result = getResult(result,response, encode);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				response.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
-	}
-
-	public static Source put(CloseableHttpClient client, String url, String encode, String... params) {
-		return put(client, null, url, encode, params);
-	}
-
-	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, String... params) {
-		Map<String, String> map = paramToMap(params);
-		return put(client, headers, url, encode, map);
-	}
-
-	public static Source put(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
-		return put(client, null, url, encode, params);
-	}
-	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, String> params) {
-		List<NameValuePair> pairs = packPair(params);
-		return put(client, headers, url, encode, pairs);
-	}
-
-	public static Source put(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
-		return put(client, null, url, encode, pairs);
-	}
-
-
-	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
-		if(null == client){
-			if(url.contains("https://")){
-				client = defaultSSLClient();
-			}else{
-				client =  defaultClient();
-			}
-		}
-		Source result = new Source();
-		HttpPut method = new HttpPut(url);
-		CloseableHttpResponse response = null;
-		try {
-			if (null != pairs) {
-				method.setEntity(new UrlEncodedFormEntity(pairs));
-			}
-			setHeader(method, headers);
-			response = client.execute(method);
-			result = getResult(result, response, encode);
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				response.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		setHeader(method, headers);
+		result = exe(client, method, encode);
 		return result;
 	}
 
@@ -272,15 +277,15 @@ public class HttpClientUtil {
 	public static Source delete(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
 		return delete(client, null, url, encode, params);
 	}
+
 	public static Source delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, String> params) {
-		List<NameValuePair> pairs = packPair(params);
+		List<NameValuePair> pairs = packNameValuePair(params);
 		return delete(client, headers, url, encode, pairs);
 	}
 
 	public static Source delete(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
 		return delete(client, null, url, encode, pairs);
 	}
-
 
 	public static Source delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
 		if(null == client){
@@ -308,10 +313,15 @@ public class HttpClientUtil {
 			}
 		}
 		HttpDelete method = new HttpDelete(url);
-		CloseableHttpResponse response = null;
-		try {
-			setHeader(method, headers);
+		setHeader(method, headers);
+		result = exe(client, method, encode);
+		return result;
+	}
 
+	private static Source exe(CloseableHttpClient client, HttpRequestBase method, String encode){
+		CloseableHttpResponse response = null;
+		Source result = null;
+		try {
 			response = client.execute(method);
 			result = getResult(result,response, encode);
 		} catch (Exception e) {
@@ -325,6 +335,7 @@ public class HttpClientUtil {
 		}
 		return result;
 	}
+
 	/**
 	 * 设置header
 	 * 
@@ -373,8 +384,7 @@ public class HttpClientUtil {
 		}
 		return src;
 	}
-
-	public static List<NameValuePair> packPair(Map<String,String> params){
+	public static List<NameValuePair> packNameValuePair(Map<String,String> params){
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		if (null != params) {
 			Iterator<String> keys = params.keySet().iterator();
