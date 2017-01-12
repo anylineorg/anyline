@@ -321,6 +321,7 @@ public class AnylineController extends AbstractBasicController {
 		map.put("message", message);
 		map.put("data", data);
 		map.put("success", result);
+		map.put("code", "200");
 		if(ConfigTable.isDebug()){
 			log.warn("[Controller Return][result:"+result+"][message:"+message+"]");
 		}
