@@ -7,13 +7,15 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+import org.anyline.util.ConfigTable;
+import org.anyline.util.HttpClientUtil;
 import org.apache.http.HttpResponse;
 import org.apache.http.util.ByteArrayBuffer;
 import org.apache.log4j.Logger;
 
 public class EasemobUtil {
 	private static Logger log = Logger.getLogger(EasemobUtil.class);
-	private static final String appkey = "1118161112115170#aisousuo";
+	private static final String appkey = ConfigTable.getString("EASEMOB_APP_KEY");
 	private static final String orgName = "1118161112115170";
 	private static final String appName = "aisousuo";
 	private static final String clientId= "YXA6x6A9oKpyEea9rcNB35LujQ";
@@ -84,6 +86,7 @@ public class EasemobUtil {
 		Map<String,String> headers = new HashMap<String,String>();
 		headers.put("Authorization", "Bearer " + getAccessToken());
 		try {
+			HttpClientUtil.delete(null, headers,"URL", "UTF-8");
 			HttpResponse response = HttpUtils.doDelete(host, "/"+orgName+"/"+appName+"/users/" + user, "DELETE", headers, null);
 			log.warn("[DELETE USER][RESULT:"+readResponse(response)+"]");
 		} catch (Exception e) {

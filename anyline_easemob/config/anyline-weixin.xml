@@ -16,4 +16,5 @@
 	<property key="CERT_PATH">D:/apiclient_cert.p12</property>
 	<property key="SERVER_TOKEN">anylineorg</property>
 	<property key="PAY_NOTIFY_URL">http://www.anyline.org/pay/ntf/wx</property>
+	
 </properties>
