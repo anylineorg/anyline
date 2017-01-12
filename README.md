@@ -12,7 +12,8 @@ anyline_struts:sql server支付依赖anyline_web
 anyline_alipay:支付宝支付集成工具
 anyline_weixin:微信支付集成工具
 anyline_jpush:极光推送集成工具
-anyline_easemob:环境集成工具
+anyline_easemob:环信集成工具
+anyline_amap:高德云图
 
 一行代码自我介绍
 ```
