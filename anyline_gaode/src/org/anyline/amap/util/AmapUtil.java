@@ -8,9 +8,14 @@ import net.sf.json.JSONObject;
 import org.anyline.util.HttpClientUtil;
 import org.anyline.util.MD5Util;
 import org.apache.log4j.Logger;
-
+/**
+ * 高德云图
+ * @author Administrator
+ *
+ */
 public class AmapUtil {
 	private static Logger log = Logger.getLogger(AmapUtil.class);
+	
 	/**
 	 * 创建新地图
 	 * @param name
