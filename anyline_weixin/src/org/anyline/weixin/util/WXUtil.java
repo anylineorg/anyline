@@ -119,7 +119,7 @@ public class WXUtil {
 	 */
 	public static String jsapiSign(Map<String,Object> params){
 		String sign = "";
-		sign = sortParam(params);
+		sign = BasicUtil.joinBySort(params);
 		sign = SHA1Util.sign(sign);
 		return sign;
 	}
@@ -143,30 +143,10 @@ public class WXUtil {
 	 */
 	public static String sign(Map<String, Object> params) {
 		String sign = "";
-		sign = sortParam(params);
+		sign = BasicUtil.joinBySort(params);
 		sign += "&key=" + WXConfig.API_SECRECT;
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
 	}
 	
-	public static String sortParam(Map<String,Object> params){
-		String result = "";
-		SortedMap<String, Object> sort = new TreeMap<String, Object>(params);
-		Set es = sort.entrySet();
-		Iterator it = es.iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			String k = (String) entry.getKey();
-			Object v = entry.getValue();
-			if ("".equals(v)) {
-				params.remove(k);
-				continue;
-			}
-			if (!"".equals(result)) {
-				result += "&";
-			}
-			result += k + "=" + v;
-		}
-		return result;
-	}
 }
