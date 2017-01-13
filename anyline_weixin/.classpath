@@ -71,6 +71,6 @@
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/struts2-core-2.3.24.1.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/struts2-spring-plugin-2.3.24.1.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/xwork-core-2.3.24.1.jar"/>
-	<classpathentry kind="lib" path="WebRoot/WEB-INF/lib/anyline_core.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/anyline_web"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>
