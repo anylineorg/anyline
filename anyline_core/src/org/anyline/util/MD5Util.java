@@ -43,13 +43,16 @@ public class MD5Util {
 		}
 		if(null == src) return "";
 		String result = null;
+		
         if (!"".equals(src)){     
             try{
-                MessageDigest md = MessageDigest.getInstance("MD5"); 
-                //使用指定的字节数组对摘要进行最后更新，然后完成摘要计算     
-                byte[] results = md.digest(src.getBytes(encode));     
-                //将得到的字节数组变成字符串返回     
-                result = byteArrayToHexString(results);     
+
+        		MessageDigest md = MessageDigest.getInstance("MD5");
+        		if (BasicUtil.isEmpty(encode))
+        			result = byteArrayToHexString(md.digest(src.getBytes()));
+        		else
+        			result = byteArrayToHexString(md.digest(src.getBytes(encode)));
+        		
             } catch(Exception ex){     
                 ex.printStackTrace();  
             }     
@@ -154,4 +157,5 @@ public class MD5Util {
         int d2 = n % 16;
         return hexDigits[d1] + hexDigits[d2];
     }
+
 }
