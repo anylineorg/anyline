@@ -73,7 +73,4 @@ public class AmapConfig {
 	}
 	private static void debug(){
 	}
-	public static void main(String args[]){
-		debug();
-	}
 }
