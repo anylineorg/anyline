@@ -186,6 +186,12 @@ public class ConfigTable {
 	public static int getInt(String key, int def){
 		return BasicUtil.parseInt(get(key), def);
 	}
+	public static void put(String key, String value){
+		configs.put(key, value);
+		if(isDebug()){
+			log.warn("[ConfigTable动态更新]["+key+":"+value+"]");
+		}
+	}
 	public static String getVersion(){
 		return version;
 	}
