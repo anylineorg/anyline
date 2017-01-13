@@ -31,6 +31,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 
@@ -666,7 +669,12 @@ public class BasicUtil {
 		}
 		return src.substring(fr, to);
 	}
-	public static String collectionToString(Collection<?> objs){
+	/**
+	 * 拼接集合
+	 * @param objs
+	 * @return
+	 */
+	public static String join(Collection<?> objs){
 		if(null == objs){
 			return "";
 		}
@@ -685,6 +693,31 @@ public class BasicUtil {
 		int idx = 0;
 		for(Object obj:objs){
 			result += "[" + idx++ +"]" + obj;
+		}
+		return result;
+	}
+	/**
+	 * 按key升序拼接
+	 * @param params
+	 * @return
+	 */
+	public static String joinBySort(Map<String,?> params){
+		String result = "";
+		SortedMap<String, Object> sort = new TreeMap<String, Object>(params);
+		Set es = sort.entrySet();
+		Iterator it = es.iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String k = (String) entry.getKey();
+			Object v = entry.getValue();
+			if ("".equals(v)) {
+				params.remove(k);
+				continue;
+			}
+			if (!"".equals(result)) {
+				result += "&";
+			}
+			result += k + "=" + v;
 		}
 		return result;
 	}
