@@ -119,7 +119,7 @@ public class HttpClientUtil {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = packNameValuePair(params);
 			try {
-				HttpEntity entity = new UrlEncodedFormEntity(pairs);
+				HttpEntity entity = new UrlEncodedFormEntity(pairs, encode);
 				entitys.add(entity);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
@@ -180,7 +180,7 @@ public class HttpClientUtil {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = packNameValuePair(params);
 			try {
-				HttpEntity entity = new UrlEncodedFormEntity(pairs);
+				HttpEntity entity = new UrlEncodedFormEntity(pairs, encode);
 				entitys.add(entity);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
