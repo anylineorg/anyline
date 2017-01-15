@@ -2,6 +2,7 @@ package org.anyline.amap.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -23,12 +24,111 @@ import org.apache.log4j.Logger;
 public class AmapUtil {
 	private static Logger log = Logger.getLogger(AmapUtil.class);
 
+	private String key = AmapConfig.KEY;
+	private String privateKey = AmapConfig.PRIVATE_KEY;
+	private String table = AmapConfig.TABLE_ID;
+	private static Map<String,AmapUtil> pool = new Hashtable<String,AmapUtil>();
+
+	
+	static{
+		AmapUtil def = new AmapUtil();
+		pool.put(def.table, def);
+	}
+	public static AmapUtil getInstance(String key, String privateKey, String table){
+		AmapUtil util = new AmapUtil();
+		util.key =  key;
+		util.privateKey = privateKey;
+		util.table = table;
+		return util;
+	}
+
+	public static AmapUtil getInstance(String table){
+		AmapUtil util = pool.get(table);
+		if(null ==util){
+			util = new AmapUtil();
+			util.table = table;
+			pool.put(table, util);
+		}
+		return util;
+	}
+	public static AmapUtil defaultInstance(){
+		return pool.get(AmapConfig.TABLE_ID);
+	}
+	
+
+	/**
+	 * 添加记录
+	 * @param name
+	 * @param loctype 1:经纬度 2:地址
+	 * @param lon
+	 * @param lat
+	 * @param address
+	 */
+	public String create(String name, int loctype, String lon, String lat, String address, Map<String, String> extras){
+		String url = "http://yuntuapi.amap.com/datamanage/data/create";
+		Map<String,String> params = new HashMap<String,String>();
+		params.put("key", this.key);
+		params.put("tableid", this.table);
+		params.put("loctype", loctype+"");
+		Map<String,String> data = extras;
+		if(null == data){
+			data = new HashMap<String,String>();
+		}
+		data.put("_name", name);
+		if(BasicUtil.isNotEmpty(lon) && BasicUtil.isNotEmpty(lat)){
+			data.put("_location", lon+","+lat);
+		}
+		if(BasicUtil.isNotEmpty(address)){
+			data.put("_address", address);
+		}
+		params.put("data", JSONObject.fromObject(data).toString());
+		String sign = sign(params);
+		params.put("sig", sign);
+		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String id = null;
+		try{
+			JSONObject json = JSONObject.fromObject(txt);
+			if(json.has("status")){
+				String status = json.getString("status");
+				if("1".equals(status) && json.has("_id")){
+					id = json.getString("_id");
+					log.warn("[添加标注完成][id:"+id+"][name:"+name+"]");
+				}else{
+					log.warn("[添加标注失败][name:"+name+"][info:"+json.getString("info")+"]");
+					log.warn("[param:"+BasicUtil.joinBySort(params)+"]");
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return id;
+	}
+	public String create(String name, String lon, String lat, String address, Map<String,String> extras){
+		return create(name, 1, lon, lat, address, extras);
+	}
+	public String create(String name, String lon, String lat, Map<String,String> extras){
+		return create(name, 1, lon, lat, null, extras);
+	}
+	public String create(String name, int loctype, String lon, String lat, String address){
+		return create(name, loctype, lon, lat, address, null);
+	}
+	public String create(String name, String lon, String lat, String address){
+		return create(name, lon, lat, address, null);
+	}
+	public String create(String name, String lon, String lat){
+		return create(name, lon, lat, null, null);
+	}
+	public String create(String name, String address){
+		return create(name, null, null, address);
+	}
+	
+	
 	/**
 	 * 删除标注
 	 * @param ids
 	 * @return
 	 */
-	public static int delete(String ... ids){
+	public int delete(String ... ids){
 		if(null == ids){
 			return 0;
 		}
@@ -38,7 +138,7 @@ public class AmapUtil {
 		}
 		return delete(list);
 	}
-	public static int delete(List<String> ids){
+	public int delete(List<String> ids){
 		int size = 0;
 		if(null == ids || ids.size() ==0){
 			return size;
@@ -53,8 +153,8 @@ public class AmapUtil {
 			}
 		}
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
+		params.put("key", this.key);
+		params.put("tableid", this.table);
 		params.put("ids", param);
 		params.put("sig", sign(params));
 		String url = "http://yuntuapi.amap.com/datamanage/data/delete";
@@ -81,8 +181,6 @@ public class AmapUtil {
 	}
 	/**
 	 * 更新地图
-	 * 需要清楚的数据设置成null
-	 * 不需要更新的设置成""
 	 * @param id
 	 * @param name
 	 * @param lon
@@ -90,11 +188,11 @@ public class AmapUtil {
 	 * @param address
 	 * @return
 	 */
-	public static boolean update(String id, String name, int loctype, String lon, String lat, String address, Map<String,String> extras){
+	public boolean update(String id, String name, int loctype, String lon, String lat, String address, Map<String,String> extras){
 		String url = "http://yuntuapi.amap.com/datamanage/data/update";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
+		params.put("key", this.key);
+		params.put("tableid", this.table);
 		params.put("loctype", loctype+"");
 		Map<String,String> data = extras;
 		if(null == data){
@@ -131,91 +229,26 @@ public class AmapUtil {
 		}
 		return true;
 	}
-	public static boolean update(String id, String name, String lon, String lat, String address, Map<String,String> extras){
+	public boolean update(String id, String name, String lon, String lat, String address, Map<String,String> extras){
 		return update(id, name, 1, lon, lat, address, extras);
 	}
-	public static boolean update(String id, String name, String lon, String lat, Map<String,String> extras){
+	public boolean update(String id, String name, String lon, String lat, Map<String,String> extras){
 		return update(id, name, 1, lon, lat, null, extras);
 	}
-	public static boolean update(String id, String name, int loctype, String lon, String lat, String address){
+	public boolean update(String id, String name, int loctype, String lon, String lat, String address){
 		return update(id, name, loctype, lon, lat, address, null);
 	}
-	public static boolean update(String id, String name, String lon, String lat, String address){
+	public boolean update(String id, String name, String lon, String lat, String address){
 		return update(id, name, lon, lat, address, null);
 	}
-	public static boolean update(String id, String name, String lon, String lat){
+	public boolean update(String id, String name, String lon, String lat){
 		return update(id, name, lon, lat, null, null);
 	}
-	public static boolean update(String id, String name, String address){
+	public boolean update(String id, String name, String address){
 		return update(id, name, null, null, address);
 	}
-	public static boolean update(String id, String name){
+	public boolean update(String id, String name){
 		return update(id, name, null);
-	}
-	/**
-	 * 添加记录
-	 * @param name
-	 * @param loctype 1:经纬度 2:地址
-	 * @param lon
-	 * @param lat
-	 * @param address
-	 */
-	public static String create(String name, int loctype, String lon, String lat, String address, Map<String, String> extras){
-		String url = "http://yuntuapi.amap.com/datamanage/data/create";
-		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
-		params.put("loctype", loctype+"");
-		Map<String,String> data = extras;
-		if(null == data){
-			data = new HashMap<String,String>();
-		}
-		data.put("_name", name);
-		if(BasicUtil.isNotEmpty(lon) && BasicUtil.isNotEmpty(lat)){
-			data.put("_location", lon+","+lat);
-		}
-		if(BasicUtil.isNotEmpty(address)){
-			data.put("_address", address);
-		}
-		params.put("data", JSONObject.fromObject(data).toString());
-		String sign = sign(params);
-		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
-		String id = null;
-		try{
-			JSONObject json = JSONObject.fromObject(txt);
-			if(json.has("status")){
-				String status = json.getString("status");
-				if("1".equals(status) && json.has("_id")){
-					id = json.getString("_id");
-					log.warn("[添加标注完成][id:"+id+"][name:"+name+"]");
-				}else{
-					log.warn("[添加标注失败][name:"+name+"][info:"+json.getString("info")+"]");
-					log.warn("[param:"+BasicUtil.joinBySort(params)+"]");
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return id;
-	}
-	public static String create(String name, String lon, String lat, String address, Map<String,String> extras){
-		return create(name, 1, lon, lat, address, extras);
-	}
-	public static String create(String name, String lon, String lat, Map<String,String> extras){
-		return create(name, 1, lon, lat, null, extras);
-	}
-	public static String create(String name, int loctype, String lon, String lat, String address){
-		return create(name, loctype, lon, lat, address, null);
-	}
-	public static String create(String name, String lon, String lat, String address){
-		return create(name, lon, lat, address, null);
-	}
-	public static String create(String name, String lon, String lat){
-		return create(name, lon, lat, null, null);
-	}
-	public static String create(String name, String address){
-		return create(name, null, null, address);
 	}
 	
 	/**
@@ -223,11 +256,11 @@ public class AmapUtil {
 	 * @param name
 	 * @return
 	 */
-	public static String createMap(String name){
+	public String createTable(String name){
 		String tableId = null;
 		String url = "http://yuntuapi.amap.com/datamanage/table/create";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
+		params.put("key", this.key);
 		params.put("name", name);
 		String sign = sign(params);
 		params.put("sig", sign);
@@ -251,12 +284,12 @@ public class AmapUtil {
 	 * @param limit
 	 * @param page
 	 */
-	public static DataSet local(String keywords, String city, String filter, String sortrule, int limit, int page){
+	public DataSet local(String keywords, String city, String filter, String sortrule, int limit, int page){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/local";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
+		params.put("key", this.key);
+		params.put("tableid", this.table);
 		params.put("keywords", keywords);
 		if(BasicUtil.isEmpty(city)){
 			city = "全国";
@@ -301,12 +334,12 @@ public class AmapUtil {
 	 * @param page
 	 * @return
 	 */
-	public static DataSet around(String center, String radius, String keywords, String city, String filter, String sortrule, int limit, int page){
+	public DataSet around(String center, String radius, String keywords, String city, String filter, String sortrule, int limit, int page){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/around";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
+		params.put("key", this.key);
+		params.put("tableid", this.table);
 		params.put("center", center);
 		params.put("radius", radius);
 		params.put("keywords", keywords);
@@ -352,12 +385,12 @@ public class AmapUtil {
 	 * @param limit
 	 * @param page
 	 */
-	public static DataSet list(String filter, String sortrule, int limit, int page){
+	public DataSet list(String filter, String sortrule, int limit, int page){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datamanage/data/list";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
+		params.put("key", this.key);
+		params.put("tableid", this.table);
 		params.put("filter", filter);
 		params.put("sortrule", sortrule);
 		limit = NumberUtil.getMin(limit, 100);
@@ -395,8 +428,8 @@ public class AmapUtil {
 		DataRow row = null;
 		String url = "http://yuntuapi.amap.com/datasearch/id";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
+		params.put("key", this.key);
+		params.put("tableid", this.table);
 		params.put("_id", id);
 		String sign = sign(params);
 		params.put("sig", sign);
@@ -426,12 +459,12 @@ public class AmapUtil {
 	 * @praam filter 条件
 	 * @return
 	 */
-	public static DataSet statByProvince(String keywords, String country, String filter){
+	public DataSet statByProvince(String keywords, String country, String filter){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/province";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
+		params.put("key", this.key);
+		params.put("tableid", this.table);
 		params.put("filter", filter);
 		params.put("keywords", keywords);
 		country = BasicUtil.evl(country, "中国")+"";
@@ -465,12 +498,12 @@ public class AmapUtil {
 	 * @praam filter 条件
 	 * @return
 	 */
-	public static DataSet statByCity(String keywords, String province, String filter){
+	public DataSet statByCity(String keywords, String province, String filter){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/city";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
+		params.put("key", this.key);
+		params.put("tableid", this.table);
 		params.put("filter", filter);
 		params.put("keywords", keywords);
 		province = BasicUtil.evl(province, "全国")+"";
@@ -505,12 +538,12 @@ public class AmapUtil {
 	 * @praam filter 条件
 	 * @return
 	 */
-	public static DataSet statByDistrict(String keywords, String province, String city, String filter){
+	public DataSet statByDistrict(String keywords, String province, String city, String filter){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/province";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
-		params.put("tableid", AmapConfig.TABLE_ID);
+		params.put("key", this.key);
+		params.put("tableid", this.table);
 		params.put("filter", filter);
 		params.put("keywords", keywords);
 		params.put("province", province);
@@ -548,7 +581,7 @@ public class AmapUtil {
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/province";
 		Map<String,String> params = new HashMap<String,String>();
-		params.put("key", AmapConfig.KEY);
+		params.put("key", this.key);
 		params.put("center", center);
 		params.put("radius", radius);
 		params.put("searchtype", "0");
@@ -574,24 +607,14 @@ public class AmapUtil {
 		}
 		return set;
 	}
-//	public static void main(String[] args) {
-//		ConfigTable.put("AMAP_CONFIG_FILE", "D:\\develop\\git\\anyline\\anyline_amap\\config\\anyline-amap.xml");
-//		create(BasicUtil.getRandomCnString(3), BasicUtil.getRandomNumber(100, 120)+".00","35.00",BasicUtil.getRandomCnString(15));
-//		create(BasicUtil.getRandomCnString(3), "110.00",BasicUtil.getRandomNumber(25, 40)+".00",BasicUtil.getRandomCnString(15));
-//		//update("9","test","120.00","35.00","山东青岛");
-//		//delete("18");
-//		//createMap("aa");
-//		DataSet set = local("地","","","",100, 1);
-//		System.out.println(set.toJSON());
-//	}
 	/**
 	 * 签名
 	 * @param params
 	 * @return
 	 */
-	public static String sign(Map<String,String> params){
+	public String sign(Map<String,String> params){
 		String sign = "";
-		sign = BasicUtil.joinBySort(params) + AmapConfig.PRIVATE_KEY;
+		sign = BasicUtil.joinBySort(params) + this.privateKey;
 		sign = MD5Util.sign(sign,"UTF-8");
 		return sign;
 	}
