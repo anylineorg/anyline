@@ -360,30 +360,48 @@ public class AmapUtil {
 	 * 周边搜索 在指定tableid的数据表内，搜索指定中心点和半径范围内，符合筛选条件的位置数据
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t2
 	 * @param center
-	 * @param radius
-	 * @param keywords
-	 * @param city
-	 * @param filter
-	 * @param sortrule
-	 * @param limit
-	 * @param page
+	 * @param radius 查询半径
+	 * @param keywords 关键词
+	 * @param filter 过滤条件
+	 * @param sortrule 排序
+	 * @param limit 每页多少条
+	 * @param page 第几页
 	 * @return
 	 */
-	public DataSet around(String center, String radius, String keywords, String city, String filter, String sortrule, int limit, int page){
+	public DataSet around(String center, int radius, String keywords, Map<String,String> filters, String sortrule, int limit, int page){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/around";
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("center", center);
-		params.put("radius", radius);
-		params.put("keywords", keywords);
-		if(BasicUtil.isEmpty(city)){
-			city = "全国";
+		params.put("radius", radius+"");
+		if(BasicUtil.isNotEmpty(keywords)){
+			params.put("keywords", keywords);
 		}
-		params.put("city", city);
-		params.put("filter", filter);
-		params.put("sortrule", sortrule);
+		//过滤条件
+		if(null != filters && !filters.isEmpty()){
+			String filter = "";
+			Iterator<String> keys = filters.keySet().iterator();
+			while(keys.hasNext()){
+				String key = keys.next();
+				String value = filters.get(key);
+				if(BasicUtil.isEmpty(value)){
+					continue;
+				}
+				if("".equals(filter)){
+					filter = key + ":" + value; 
+				}else{
+					filter = filter + "+" + key + ":" + value;
+				}
+			}
+			if(!"".equals(filter)){
+				params.put("filter", filter);
+			}
+		}
+		if(BasicUtil.isNotEmpty(sortrule)){
+			params.put("sortrule", sortrule);
+		}
 		limit = NumberUtil.getMin(limit, 100);
 		params.put("limit", limit+"");
 		page = NumberUtil.getMax(page, 1);
@@ -410,6 +428,35 @@ public class AmapUtil {
 		return set;
 	}
 
+	public DataSet around(String center, int radius, Map<String,String> filters, String sortrule, int limit, int page){
+		return around(center, radius, null, filters, sortrule, limit, page);
+	}
+	public DataSet around(String center, int radius, Map<String,String> filters, int limit, int page){
+		return around(center, radius, null, filters, null, limit, page);
+	}
+	public DataSet around(String center, int radius, Map<String,String> filters, int limit){
+		return around(center, radius, null, filters, null, limit, 1);
+	}
+	public DataSet around(String center, int radius, String keywords, String sortrule, int limit, int page){
+		Map<String,String> filter = new HashMap<String,String>();
+		return around(center, radius, keywords, filter, sortrule, limit, page);
+	}
+	
+	public DataSet around(String center, int radius, String keywords, int limit, int page){
+		return around(center, radius, keywords, "", limit, page);
+	}
+	public DataSet around(String center, int radius, int limit, int page){
+		return around(center, radius, "", limit, page);
+	}
+	public DataSet around(String center, int radius, int limit){
+		return around(center, radius, "", limit, 1);
+	}
+	public DataSet around(String center, int radius){
+		return around(center, radius, "", 100, 1);
+	}
+	public DataSet around(String center){
+		return around(center, ConfigTable.getInt("AMAP_MAX_RADIUS"));
+	}
 	/**
 	 * 按条件检索数据（可遍历整表数据） 根据筛选条件检索指定tableid数据表中的数据
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t5
