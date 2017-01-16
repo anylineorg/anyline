@@ -3,6 +3,7 @@ package org.anyline.amap.util;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import org.anyline.util.HttpClientUtil;
 import org.anyline.util.MD5Util;
 import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
+
 /**
  * 高德云图
  * @author Administrator
@@ -64,15 +66,22 @@ public class AmapUtil {
 	 * @param lat
 	 * @param address
 	 */
-	public String create(String name, int loctype, String lon, String lat, String address, Map<String, String> extras){
+	public String create(String name, int loctype, String lon, String lat, String address, Map<String, Object> extras){
 		String url = "http://yuntuapi.amap.com/datamanage/data/create";
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("loctype", loctype+"");
-		Map<String,String> data = extras;
-		if(null == data){
-			data = new HashMap<String,String>();
+		Map<String,Object> data = new HashMap<String, Object>();
+		if(null != extras){
+			Iterator<String> keys = extras.keySet().iterator();
+			while(keys.hasNext()){
+				String key = keys.next();
+				Object value = extras.get(key);
+				if(BasicUtil.isNotEmpty(value)){
+					data.put(key, value);
+				}
+			}
 		}
 		data.put("_name", name);
 		if(BasicUtil.isNotEmpty(lon) && BasicUtil.isNotEmpty(lat)){
@@ -103,10 +112,10 @@ public class AmapUtil {
 		}
 		return id;
 	}
-	public String create(String name, String lon, String lat, String address, Map<String,String> extras){
+	public String create(String name, String lon, String lat, String address, Map<String,Object> extras){
 		return create(name, 1, lon, lat, address, extras);
 	}
-	public String create(String name, String lon, String lat, Map<String,String> extras){
+	public String create(String name, String lon, String lat, Map<String,Object> extras){
 		return create(name, 1, lon, lat, null, extras);
 	}
 	public String create(String name, int loctype, String lon, String lat, String address){
@@ -139,13 +148,25 @@ public class AmapUtil {
 		return delete(list);
 	}
 	public int delete(List<String> ids){
-		int size = 0;
+		int cnt = 0;
 		if(null == ids || ids.size() ==0){
-			return size;
+			return cnt;
 		}
 		String param = "";
-		int length = ids.size();
-		for(int i=0; i<length; i++){
+		int size = ids.size();
+		if(size > 50){
+			int navi = (size-1)/50 + 1;
+			for(int i=0; i<=navi; i++){			
+				int fr = i*50;
+				int to = i*50 + 49;
+				if(to > size-1){
+					to = size - 1;
+				}
+				List<String> clds = ids.subList(fr, to);
+				cnt += delete(clds);
+			}
+		}
+		for(int i=0; i<size; i++){
 			if(i==0){
 				param += ids.get(i);
 			}else{
@@ -167,17 +188,17 @@ public class AmapUtil {
 			if(json.has("status")){
 				String status = json.getString("status");
 				if("1".equals(status)){
-					size = json.getInt("success");
-					log.warn("[删除标注完成][success:"+size+"][fail:"+json.getInt("fail")+"]");
+					cnt = json.getInt("success");
+					log.warn("[删除标注完成][success:"+cnt+"][fail:"+json.getInt("fail")+"]");
 				}else{
 					log.warn("[更新标注失败][info:"+json.getString("info")+"]");
 				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			size = 0;
+			cnt = 0;
 		}
-		return size;
+		return cnt;
 	}
 	/**
 	 * 更新地图
@@ -188,15 +209,21 @@ public class AmapUtil {
 	 * @param address
 	 * @return
 	 */
-	public boolean update(String id, String name, int loctype, String lon, String lat, String address, Map<String,String> extras){
+	public boolean update(String id, String name, int loctype, String lon, String lat, String address, Map<String,Object> extras){
 		String url = "http://yuntuapi.amap.com/datamanage/data/update";
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("loctype", loctype+"");
-		Map<String,String> data = extras;
-		if(null == data){
-			data = new HashMap<String,String>();
+
+		Map<String,Object> data = new HashMap<String, Object>();
+		if(null != extras){
+			Iterator<String> keys = extras.keySet().iterator();
+			while(keys.hasNext()){
+				String key = keys.next();
+				Object value = extras.get(key);
+				data.put(key, value);
+			}
 		}
 		data.put("_id", id);
 		data.put("_name", name);
@@ -229,10 +256,10 @@ public class AmapUtil {
 		}
 		return true;
 	}
-	public boolean update(String id, String name, String lon, String lat, String address, Map<String,String> extras){
+	public boolean update(String id, String name, String lon, String lat, String address, Map<String,Object> extras){
 		return update(id, name, 1, lon, lat, address, extras);
 	}
-	public boolean update(String id, String name, String lon, String lat, Map<String,String> extras){
+	public boolean update(String id, String name, String lon, String lat, Map<String,Object> extras){
 		return update(id, name, 1, lon, lat, null, extras);
 	}
 	public boolean update(String id, String name, int loctype, String lon, String lat, String address){
