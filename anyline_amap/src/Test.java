@@ -16,7 +16,7 @@ public class Test {
 //		//createMap("aa");
 //		DataSet set = local("地","","","",100, 1);
 //		System.out.println(set.toJSON());
-		Map<String,String> map = new HashMap<String,String>();
+		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("DATA_SORT_ID", "");
 		AmapUtil.defaultInstance().update("99", "新NAMsssssE", "112","22", "山青", map);
 	}
