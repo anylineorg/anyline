@@ -154,9 +154,10 @@ public class AmapUtil {
 		}
 		String param = "";
 		int size = ids.size();
+		//一次删除最多50条 大于50打后拆分数据
 		if(size > 50){
 			int navi = (size-1)/50 + 1;
-			for(int i=0; i<=navi; i++){			
+			for(int i=0; i<navi; i++){			
 				int fr = i*50;
 				int to = i*50 + 49;
 				if(to > size-1){
@@ -165,7 +166,9 @@ public class AmapUtil {
 				List<String> clds = ids.subList(fr, to);
 				cnt += delete(clds);
 			}
+			return cnt;
 		}
+		
 		for(int i=0; i<size; i++){
 			if(i==0){
 				param += ids.get(i);
@@ -196,7 +199,7 @@ public class AmapUtil {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			cnt = 0;
+			cnt = -1;
 		}
 		return cnt;
 	}
@@ -208,8 +211,12 @@ public class AmapUtil {
 	 * @param lat
 	 * @param address
 	 * @return
+	 * 0:更新失败,没有对应的id
+	 * 1:更新完成
+	 * -1:异常
 	 */
-	public boolean update(String id, String name, int loctype, String lon, String lat, String address, Map<String,Object> extras){
+	public int update(String id, String name, int loctype, String lon, String lat, String address, Map<String,Object> extras){
+		int cnt = 0;
 		String url = "http://yuntuapi.amap.com/datamanage/data/update";
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("key", this.key);
@@ -244,37 +251,38 @@ public class AmapUtil {
 			if(json.has("status")){
 				String status = json.getString("status");
 				if("1".equals(status)){
+					cnt = 1;
 					log.warn("[更新标注完成][id:"+id+"][name:"+name+"]");
 				}else{
 					log.warn("[更新标注失败][name:"+name+"][info:"+json.getString("info")+"]");
-					return false;
+					cnt = 0;
 				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			return false;
+			cnt = -1;
 		}
-		return true;
+		return cnt;
 	}
-	public boolean update(String id, String name, String lon, String lat, String address, Map<String,Object> extras){
+	public int update(String id, String name, String lon, String lat, String address, Map<String,Object> extras){
 		return update(id, name, 1, lon, lat, address, extras);
 	}
-	public boolean update(String id, String name, String lon, String lat, Map<String,Object> extras){
+	public int update(String id, String name, String lon, String lat, Map<String,Object> extras){
 		return update(id, name, 1, lon, lat, null, extras);
 	}
-	public boolean update(String id, String name, int loctype, String lon, String lat, String address){
+	public int update(String id, String name, int loctype, String lon, String lat, String address){
 		return update(id, name, loctype, lon, lat, address, null);
 	}
-	public boolean update(String id, String name, String lon, String lat, String address){
+	public int update(String id, String name, String lon, String lat, String address){
 		return update(id, name, lon, lat, address, null);
 	}
-	public boolean update(String id, String name, String lon, String lat){
+	public int update(String id, String name, String lon, String lat){
 		return update(id, name, lon, lat, null, null);
 	}
-	public boolean update(String id, String name, String address){
+	public int update(String id, String name, String address){
 		return update(id, name, null, null, address);
 	}
-	public boolean update(String id, String name){
+	public int update(String id, String name){
 		return update(id, name, null);
 	}
 	
