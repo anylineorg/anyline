@@ -511,16 +511,7 @@ public class BeanUtil {
 		builder.append("</xml>");
 		return builder.toString();
 	}
-	public static <T> T xml2object(String xml, Class<T> clazz){
-		T obj = null;
-		try {
-			Map<String,?> map = xml2map(xml);
-			obj = map2object(map, clazz);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return obj;
-	}
+
 	public static Map<String,?> xml2map(String xml){
 		Map<String,Object> map = new HashMap<String,Object>();
 		Document document;
@@ -537,5 +528,31 @@ public class BeanUtil {
 			e.printStackTrace();
 		}
 		return map;
+	}
+	public static <T> T xml2object(String xml, Class<T> clazz){
+		T obj = null;
+		try {
+			Map<String,?> map = xml2map(xml);
+			obj = map2object(map, clazz);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	public static String object2xml(Object obj){
+		if(null == obj){
+			return null;
+		}
+		StringBuffer builder = new StringBuffer();
+		builder.append("<xml>");
+		List<Field> fields = BeanUtil.getFields(obj.getClass());
+		for(Field field:fields){
+			Object value = BeanUtil.getFieldValue(obj, field);
+			builder.append("<").append(field.getName()).append(">")
+			.append(value)
+			.append("</").append(field.getName()).append(">");
+		}
+		builder.append("</xml>");
+		return builder.toString();
 	}
 }
