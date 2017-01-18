@@ -34,6 +34,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
+import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -200,6 +201,44 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public void putItems(Object obj){
 		put(ITEMS,obj);
+	}
+	/**
+	 * 数字格式化
+	 * @param format
+	 * @param cols
+	 * @return
+	 */
+	public DataRow formatNumber(String format, String ... cols){
+		if(null == cols || BasicUtil.isEmpty(format)){
+			return this;
+		}
+		for(String col:cols){
+			String value = getString(col);
+			if(null != value){
+				value = NumberUtil.format(value, format);
+				put(col, value);
+			}
+		}
+		return this;
+	}
+	/**
+	 * 日期格式化
+	 * @param format
+	 * @param cols
+	 * @return
+	 */
+	public DataRow formatDate(String format, String ... cols){
+		if(null == cols || BasicUtil.isEmpty(format)){
+			return this;
+		}
+		for(String col:cols){
+			String value = getString(col);
+			if(null != value){
+				value = DateUtil.format(value, format);
+				put(col, value);
+			}
+		}
+		return this;
 	}
 	/**
 	 * 保存之前处理
