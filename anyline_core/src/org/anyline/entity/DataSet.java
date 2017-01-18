@@ -36,7 +36,9 @@ import net.sf.json.JSONObject;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
+import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -359,6 +361,42 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			set = filter(set, key, value);
 		}
 		return set;
+	}
+	
+
+	/**
+	 * 数字格式化
+	 * @param format
+	 * @param cols
+	 * @return
+	 */
+	public DataSet formatNumber(String format, String ... cols){
+		if(null == cols || BasicUtil.isEmpty(format)){
+			return this;
+		}
+		int size = size();
+		for(int i=0; i<size; i++){
+			DataRow row = getRow(i);
+			row.formatNumber(format, cols);
+		}
+		return this;
+	}
+	/**
+	 * 日期格式化
+	 * @param format
+	 * @param cols
+	 * @return
+	 */
+	public DataSet formatDate(String format, String ... cols){
+		if(null == cols || BasicUtil.isEmpty(format)){
+			return this;
+		}
+		int size = size();
+		for(int i=0; i<size; i++){
+			DataRow row = getRow(i);
+			row.formatDate(format, cols);
+		}
+		return this;
 	}
 	/**
 	 * 提取符合指定属性值的集合
