@@ -44,6 +44,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -52,6 +53,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 /**
@@ -244,15 +246,7 @@ public class HttpClientUtil {
 		}
 		Source result = new Source();
 		if (null != pairs) {
-			String params = "";
-			for (NameValuePair pair : pairs) {
-				String kv = pair.getName() + "=" + pair.getValue();
-				if ("".equals(params)) {
-					params += kv;
-				} else {
-					params += "&" + kv;
-				}
-			}
+			String params = URLEncodedUtils.format(pairs,encode);
 			if (url.contains("?")) {
 				url += "&" + params;
 			} else {
@@ -297,15 +291,7 @@ public class HttpClientUtil {
 		}
 		Source result = new Source();
 		if (null != pairs) {
-			String params = "";
-			for (NameValuePair pair : pairs) {
-				String kv = pair.getName() + "=" + pair.getValue();
-				if ("".equals(params)) {
-					params += kv;
-				} else {
-					params += "&" + kv;
-				}
-			}
+			String params = URLEncodedUtils.format(pairs,encode);
 			if (url.contains("?")) {
 				url += "&" + params;
 			} else {
@@ -322,8 +308,15 @@ public class HttpClientUtil {
 		CloseableHttpResponse response = null;
 		Source result = null;
 		try {
+			long fr = System.currentTimeMillis();
+			if(ConfigTable.isDebug()){
+				log.warn("[Http Request][URL:"+method.getURI()+"]");
+			}
 			response = client.execute(method);
 			result = getResult(result,response, encode);
+			if(ConfigTable.isDebug()){
+				log.warn("[Http Request][耗时:"+(System.currentTimeMillis() - fr)+"][URL:"+method.getURI()+"]");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -392,6 +385,9 @@ public class HttpClientUtil {
 				String key = keys.next();
 				String value = params.get(key);
 				pairs.add(new BasicNameValuePair(key, value));
+				if(ConfigTable.isDebug()){
+					log.warn("[Request Param][" + key + "=" + value + "]");
+				}
 			}
 		}
 		return pairs;
