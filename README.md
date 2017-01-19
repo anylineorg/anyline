@@ -4,16 +4,16 @@ AnyLine只是间于JS,JSP,Controller,Service,Cache,DB之间的辅助工具，
 AnyLine只是帮助我们更充分的发挥现有工具的优势，是辅助而非替代。
 
 anyline_core:基础包
-anyline_web:javaEE基础,依赖anyline_core
-anyline_struts:strtus2支持,依赖anyline_web
-anyline_springmvc:springmvc支持,依赖anyline_web
-anyline_mysql:mysql支持依赖anyline_web
-anyline_struts:sql server支付依赖anyline_web
+anyline_web:javaEE基础
+anyline_struts:strtus2支持
+anyline_springmvc:springmvc支持
+anyline_mysql:mysql支持
+anyline_struts:sql server支持
 anyline_alipay:支付宝支付集成工具
 anyline_weixin:微信支付集成工具
 anyline_jpush:极光推送集成工具
 anyline_easemob:环信集成工具
-anyline_amap:高德云图
+anyline_amap:高德云图集成工具
 
 一行代码自我介绍
 ```
@@ -50,7 +50,3 @@ service.query("hr.MEMBER(count(0) AS CNT)");	//直接查表或视图
 service.query("SELECT * FROM hr.MEMBER");	//原生SQL
 service.query("oc.web.hr:ALL_LEAVE_MEMBER");	//自定义SQL 像mybatis那种方式
 ```
-
-这是jar包的源码，demo请下载https://git.oschina.net/anyline/anyline_demo
-
-分别基于springmv和struts2实现的 增删改查
