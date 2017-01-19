@@ -36,7 +36,6 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
@@ -99,7 +98,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			try{
 				return parseJson(JSONObject.fromObject(json));
 			}catch(Exception e){
-				
+				e.printStackTrace();
 			}
 		}
 		return null;
@@ -115,15 +114,32 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			Object val = json.get(key);
 			if(null != val){
 				if(val instanceof JSONObject){
-					row.put(key, parseJson((JSONObject)val));
+					row.put(key, parseJson((JSONObject)val, keys));
 				}else if(val instanceof JSONArray){
-					row.put(key, DataSet.parseJson((JSONArray)val));
+					row.put(key, parseJSON((JSONArray)val, keys));
 				}else{
 					row.put(key, val);
 				}
 			}
 		}
 		return row;
+	}
+	public static List<Object> parseJSON(JSONArray array, String ... keys){
+		List<Object> list = new ArrayList<Object>();
+		int size = array.size();
+		for(int i=0; i<size; i++){
+			Object val = array.get(i);
+			if(null != val){
+				if(val instanceof JSONObject){
+					list.add(parseJson((JSONObject)val, keys));
+				}else if(val instanceof JSONArray){
+					list.add(parseJSON((JSONArray)val, keys));
+				}else{
+					list.add(val);
+				}
+			}
+		}
+		return list;
 	}
 	public DataRow(){
 		String pk = PRIMARY_KEY;
@@ -585,6 +601,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return null;
 	}
+	public List<?> getList(String key){
+		if(null == key){
+			return null;
+		}
+		Object obj = get(key);
+		if(null != obj && obj instanceof List){
+			return (List<?>)obj;
+		}
+		return null;
+	}
 	public String getStringNvl(String key, String ... defs){
 		String result = getString(key);
 		if(BasicUtil.isEmpty(result)){
@@ -865,5 +891,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			this.put(key1, data.get(key2));
 		}
 		return this;
+	}
+	public static void main(String[] args) {
+		String txt = "{\"status\":1,\"data\":{\"cardlength\":16,\"cardtype\":\"贷记卡\",\"cardprefixnum\":\"520169\",\"cardname\":\"太平洋双币贷记卡\",\"bankname\":\"交通银行\",\"areainfo\":[\"\"],\"bankinfo\":[{\"servicephone\":\"95559\",\"crediturl\":\"http://creditcard.bankcomm.com/\",\"logourl\":\"http://osspb.datatiny.com/banklogo/boccom.png\",\"bankname\":\"交通银行\",\"bankurl\":\"http://www.bankcomm.com/\",\"servicecreditphone\":\"4008009888\"}],\"isLuhn\":true,\"banknum\":\"\"}}";
+		DataRow.parseJson(txt);
 	}
 }
