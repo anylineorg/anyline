@@ -616,7 +616,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				if(val instanceof Boolean && (Boolean)val){
 					result = 1;
 				}else{
-					result = Integer.parseInt(val.toString());
+					result = (int)getDouble(key);
 				}
 			}
 		}catch(Exception e){

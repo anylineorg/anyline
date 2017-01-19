@@ -36,11 +36,8 @@ import net.sf.json.JSONObject;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
-import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
@@ -255,7 +252,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		if (null == rows) {
 			result = true;
 		} else if (rows instanceof Collection) {
-			result = ((Collection) rows).isEmpty();
+			result = ((Collection<?>) rows).isEmpty();
 		}
 		return result;
 	}
@@ -1116,7 +1113,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return rows.contains(o);
 	}
 
-	public boolean containsAll(Collection c) {
+	public boolean containsAll(Collection<?> c) {
 		return rows.containsAll(c);
 	}
 
@@ -1128,11 +1125,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return rows.remove(o);
 	}
 
-	public boolean removeAll(Collection c) {
+	public boolean removeAll(Collection<?> c) {
 		return rows.removeAll(c);
 	}
 
-	public boolean retainAll(Collection c) {
+	public boolean retainAll(Collection<?> c) {
 		return rows.retainAll(c);
 	}
 
