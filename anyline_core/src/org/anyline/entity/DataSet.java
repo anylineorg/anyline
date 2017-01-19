@@ -75,9 +75,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		if(null != json){
 			int size = json.size();
 			for(int i=0; i<size; i++){
-				JSONObject item = json.getJSONObject(i);
-				DataRow row = DataRow.parseJson(item, keys);
-				set.add(row);
+				Object val = json.get(i);
+				if(null != val){
+					if(val instanceof JSONObject){
+						DataRow row = DataRow.parseJson((JSONObject) val, keys);
+						set.add(row);
+					}
+				}
 			}
 		}
 		return set;

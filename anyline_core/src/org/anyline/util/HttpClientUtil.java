@@ -91,7 +91,7 @@ public class HttpClientUtil {
         // 在提交请求之前 测试连接是否可用  
         configBuilder.setStaleConnectionCheckEnabled(true);  
         requestConfig = configBuilder.build();  
-    } 
+    }
 	public static Source post(CloseableHttpClient client, String url, String encode, String... params) {
 		return post(client, null, url, encode, params);
 	}
@@ -152,6 +152,30 @@ public class HttpClientUtil {
 		return result;
 	}
 
+
+	public static Source post(String url, String encode, String... params) {
+		return post(defaultClient(), url, encode, params);
+	}
+	public static Source post(String url, String encode, HttpEntity... entitys) {
+		return post(defaultClient(), url, encode, entitys);
+	}
+	public static Source post(Map<String, String> headers, String url, String encode, String... params) {
+		return post(defaultClient(), headers, url, encode, params);
+	}
+	public static Source post(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		return post(defaultClient(),headers, url, encode, entitys);
+	}
+	public static Source post(String url, String encode, Map<String, String> params) {
+		return post(defaultClient(), url, encode, params);
+	}
+	public static Source post(Map<String, String> headers, String url, String encode, Map<String, String> params) {
+		return post(defaultClient(), headers, url, encode, params);
+	}
+	public static Source post(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+		return post(defaultClient(),headers, url, encode, entitys);
+	}
+
+	
 
 	public static Source put(CloseableHttpClient client, String url, String encode, String... params) {
 		return put(client, null, url, encode, params);
@@ -214,6 +238,33 @@ public class HttpClientUtil {
 		result = exe(client, method, encode);
 		return result;
 	}
+	
+
+	public static Source put(String url, String encode, String... params) {
+		return put(defaultClient(), url, encode, params);
+	}
+	public static Source put(String url, String encode, HttpEntity... entitys) {
+		return put(defaultClient(), url, encode, entitys);
+	}
+
+	public static Source put(Map<String, String> headers, String url, String encode, String... params) {
+		return put(defaultClient(), headers, url, encode, params);
+	}
+	public static Source put(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		return put(defaultClient(), headers, url, encode, entitys);
+	}
+
+	public static Source put(String url, String encode, Map<String, String> params) {
+		return put(defaultClient(), url, encode, params);
+	}
+	public static Source put(Map<String, String> headers, String url, String encode, Map<String, String> params) {
+		return put(defaultClient(), headers, url, encode, params);
+	}
+	public static Source put(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+		return put(defaultClient(), headers, url, encode, entitys);
+	}
+	
+	
 	public static Source get(CloseableHttpClient client, String url, String encode, String... params) {
 		return get(client, null, url, encode, params);
 	}
@@ -258,6 +309,33 @@ public class HttpClientUtil {
 		result = exe(client, method, encode);
 		return result;
 	}
+	
+
+	public static Source get(String url, String encode, String... params) {
+		return get(defaultClient(), url, encode, params);
+	}
+
+	public static Source get(Map<String, String> headers, String url, String encode, String... params) {
+		return get(defaultClient(), headers, url, encode, params);
+	}
+
+	public static Source get(String url, String encode, Map<String, String> params) {
+		return get(defaultClient(), url, encode, params);
+	}
+
+	public static Source get(Map<String, String> headers, String url, String encode, Map<String, String> params) {
+		return get(defaultClient(), headers, url, encode, params);
+	}
+
+	public static Source get(String url, String encode, List<NameValuePair> pairs) {
+		return get(defaultClient(), url, encode, pairs);
+	}
+
+	public static Source get(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+		return get(defaultClient(), headers, url, encode, pairs);
+	}
+	
+	
 
 	public static Source delete(CloseableHttpClient client, String url, String encode, String... params) {
 		return delete(client, null, url, encode, params);
@@ -304,6 +382,34 @@ public class HttpClientUtil {
 		return result;
 	}
 
+
+	public static Source delete(String url, String encode, String... params) {
+		return delete(defaultClient(), url, encode, params);
+	}
+
+	public static Source delete(Map<String, String> headers, String url, String encode, String... params) {
+		return delete(defaultClient(), headers, url, encode, params);
+	}
+
+	public static Source delete(String url, String encode, Map<String, String> params) {
+		return delete(defaultClient(), url, encode, params);
+	}
+
+	public static Source delete(Map<String, String> headers, String url, String encode, Map<String, String> params) {
+		return delete(defaultClient(), headers, url, encode, params);
+	}
+
+	public static Source delete(String url, String encode, List<NameValuePair> pairs) {
+		return delete(defaultClient(), url, encode, pairs);
+	}
+
+	public static Source delete(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+		return delete(defaultClient(), headers, url, encode, pairs);
+	}
+
+	
+	
+	
 	private static Source exe(CloseableHttpClient client, HttpRequestBase method, String encode){
 		CloseableHttpResponse response = null;
 		Source result = null;

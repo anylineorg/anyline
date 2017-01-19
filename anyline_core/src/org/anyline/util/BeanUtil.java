@@ -35,6 +35,8 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import net.sf.json.JSONObject;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -511,7 +513,10 @@ public class BeanUtil {
 		builder.append("</xml>");
 		return builder.toString();
 	}
-
+	public static String map2json(Map<String,?> map){
+		JSONObject json = JSONObject.fromObject(map);
+		return json.toString();
+	}
 	public static Map<String,?> xml2map(String xml){
 		Map<String,Object> map = new HashMap<String,Object>();
 		Document document;
