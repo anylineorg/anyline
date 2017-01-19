@@ -31,7 +31,6 @@ import javax.servlet.http.HttpSession;
 
 import org.anyline.config.http.ConfigStore;
 import org.anyline.controller.AbstractBasicController;
-import org.anyline.entity.ClientTrace;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -164,13 +163,6 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return isAjaxRequest(request);
 	}
 
-	protected ClientTrace currentClient() {
-		return currentClient(request);
-	}
-
-	protected String currentClientCd() {
-		return currentClientCd(request);
-	}
 
 	protected void setRequestMessage(String key, Object value, String type) {
 		setRequestMessage(request, key, value, type);
