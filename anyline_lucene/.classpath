@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="conf"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/jar/lucene-6.3.0/core/lucene-core-6.3.0.jar"/>
+	<classpathentry kind="lib" path="D:/jar/lucene-6.3.0/queryparser/lucene-queryparser-6.3.0.jar"/>
+	<classpathentry kind="lib" path="D:/jar/lucene-6.3.0/analysis/common/lucene-analyzers-common-6.3.0.jar"/>
+	<classpathentry kind="lib" path="D:/jar/lucene-6.3.0/highlighter/lucene-highlighter-6.3.0.jar"/>
+	<classpathentry kind="lib" path="D:/jar/hanlp/hanlp-1.2.8.jar"/>
+	<classpathentry kind="lib" path="D:/jar/hanlp/hanlp-solr-plugin-1.0.3-sources.jar"/>
+	<classpathentry kind="lib" path="D:/jar/word/commons-pool2-2.0.jar"/>
+	<classpathentry kind="lib" path="D:/jar/word/jedis-2.5.1.jar"/>
+	<classpathentry kind="lib" path="D:/jar/word/logback-classic-0.9.28.jar"/>
+	<classpathentry kind="lib" path="D:/jar/word/logback-core-0.9.28.jar"/>
+	<classpathentry kind="lib" path="D:/jar/word/pinyin4j-2.5.0.jar"/>
+	<classpathentry kind="lib" path="D:/jar/word/slf4j-api-1.6.4.jar"/>
+	<classpathentry kind="lib" path="D:/jar/word/word-1.3.1.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
