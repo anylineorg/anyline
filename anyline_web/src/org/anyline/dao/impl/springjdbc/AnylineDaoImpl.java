@@ -40,7 +40,6 @@ import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.impl.BatchInsertStore;
-import org.anyline.entity.BasicEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -330,8 +329,6 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(obj instanceof DataRow){
 			DataRow row = (DataRow)obj;
 			return row.isNew();
-		}else if(obj instanceof BasicEntity){
-			return ((BasicEntity)obj).isNew();
 		}
 		return false;
 	}
