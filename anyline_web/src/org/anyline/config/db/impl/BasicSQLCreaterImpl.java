@@ -39,7 +39,7 @@ import org.anyline.config.db.sql.auto.TextSQL;
 import org.anyline.config.db.sql.xml.XMLSQL;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.dao.PrimaryCreater;
-import org.anyline.entity.BasicEntity;
+import org.anyline.entity.AnylineEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.exception.SQLException;
@@ -119,8 +119,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		if(obj instanceof DataRow){
 			run = createDeleteRunSQLFromDataRow(dest, (DataRow)obj, columns);
-		}else if(obj instanceof BasicEntity){
-			run = createDeleteRunSQLFromEntity(dest, (BasicEntity)obj, columns);
+		}else if(obj instanceof AnylineEntity){
+			run = createDeleteRunSQLFromEntity(dest, (AnylineEntity)obj, columns);
 		}
 		return run;
 	}
@@ -188,7 +188,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return run;
 	}
 
-	private RunSQL createDeleteRunSQLFromEntity(String dest, BasicEntity obj, String ... columns){
+	private RunSQL createDeleteRunSQLFromEntity(String dest, AnylineEntity obj, String ... columns){
 		TableRunSQLImpl run = new TableRunSQLImpl();
 		run.getBuilder().append("DELETE FROM ").append(dest)
 		.append(" WHERE ").append(getDisKeyFr()).append(getPrimaryKey(obj)).append(getDisKeyTo())
@@ -272,8 +272,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			row.setDataSource(dest);
 			return createInsertTxtFromDataRow(dest,row,checkPrimary, columns);
 		}
-		if(obj instanceof BasicEntity){
-			return createInsertTxtFromEntity(dest,(BasicEntity)obj,checkPrimary, columns);	
+		if(obj instanceof AnylineEntity){
+			return createInsertTxtFromEntity(dest,(AnylineEntity)obj,checkPrimary, columns);	
 		}
 		if(obj instanceof DataSet){
 			DataSet set = (DataSet)obj;
@@ -447,7 +447,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return run;
 	}
 	
-	private RunSQL createInsertTxtFromEntity(String dest, BasicEntity entity, boolean checkPrimary, String ... columns){
+	private RunSQL createInsertTxtFromEntity(String dest, AnylineEntity entity, boolean checkPrimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
 		StringBuilder sql = new StringBuilder();
 		List<Object> values = new ArrayList<Object>();
@@ -500,13 +500,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(obj instanceof DataRow){
 			return createUpdateTxtFromDataRow(dest,(DataRow)obj,checkPrimary, columns);
 		}
-		if(obj instanceof BasicEntity){
-			return createUpdateTxtFromEntity(dest,(BasicEntity)obj,checkPrimary, columns);
+		if(obj instanceof AnylineEntity){
+			return createUpdateTxtFromEntity(dest,(AnylineEntity)obj,checkPrimary, columns);
 		}
 		return null;
 	}
 
-	private RunSQL createUpdateTxtFromEntity(String dest, BasicEntity entity, boolean checkPrimary, String ... columns){
+	private RunSQL createUpdateTxtFromEntity(String dest, AnylineEntity entity, boolean checkPrimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
 //		if(null == entity){
 		
@@ -706,8 +706,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		if(data instanceof DataRow){
 			return confirmInsertColumns(dst, (DataRow)data, columns);
-		}else if(data instanceof BasicEntity){
-			return confirmInsertColumns(dst, (BasicEntity)data, columns);
+		}else if(data instanceof AnylineEntity){
+			return confirmInsertColumns(dst, (AnylineEntity)data, columns);
 		}
 		return null;
 	}
@@ -717,7 +717,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param columns
 	 * @return
 	 */
-	private List<String> confirmInsertColumns(String dst, BasicEntity entity, String ... propertys){
+	private List<String> confirmInsertColumns(String dst, AnylineEntity entity, String ... propertys){
 		List<String> keys = null;/*确定需要插入的列*/
 		if(null == entity){
 			return new ArrayList<String>();
@@ -899,7 +899,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param columns
 	 * @return
 	 */
-	private List<String> confirmUpdateColumns(String dst, BasicEntity entity, String ... propertys){
+	private List<String> confirmUpdateColumns(String dst, AnylineEntity entity, String ... propertys){
 		List<String> keys = null;/*确定需要更新的列*/
 		if(null == entity){
 			return new ArrayList<String>();

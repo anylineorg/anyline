@@ -39,7 +39,6 @@ import net.sf.json.JsonConfig;
 
 import org.anyline.config.http.ConfigStore;
 import org.anyline.controller.AbstractBasicController;
-import org.anyline.entity.ClientTrace;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -202,13 +201,6 @@ public class AnylineController extends AbstractBasicController {
 		return isAjaxRequest(getRequest());
 	}
 
-	protected ClientTrace currentClient() {
-		return currentClient(getRequest());
-	}
-
-	protected String currentClientCd() {
-		return currentClientCd(getRequest());
-	}
 
 	protected void setRequestMessage(String key, Object value, String type) {
 		setRequestMessage(getRequest(), key, value, type);

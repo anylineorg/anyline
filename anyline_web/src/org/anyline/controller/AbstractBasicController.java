@@ -34,7 +34,6 @@ import org.anyline.config.ParseResult;
 import org.anyline.config.db.impl.PageNaviImpl;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.config.http.impl.ConfigStoreImpl;
-import org.anyline.entity.ClientTrace;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -101,13 +100,10 @@ public class AbstractBasicController{
 				}
 			}// end 未指定属性与request参数对应关系
 				// 其他初始化工作("regCd","regTime","uptTime","uptCd","isActive")
-			Object client = request
-					.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
-			if (null == client) {
-				client = new ClientTrace(request);
-			}
+//			Object client = request
+//					.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
 			// BeanUtil.setValue(entity, "clientTrace", client);
-			BeanUtil.setFieldValue(entity, "clientTrace", client);
+			//BeanUtil.setFieldValue(entity, "clientTrace", client);
 		} catch (Exception e) {
 			log.error(e);
 		}
@@ -140,11 +136,11 @@ public class AbstractBasicController{
 				row.put(name, value);
 		    }
 		}
-		Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
-		if (null == client) {
-			client = new ClientTrace(request);
-		}
-		row.setClientTrace(client);
+//		Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
+//		if (null == client) {
+//			client = new ClientTrace(request);
+//		}
+//		row.setClientTrace(client);
 		row.clearUpdateColumns();
 		return row;
 	}
@@ -206,13 +202,13 @@ public class AbstractBasicController{
 					}
 				}
 
-				Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
-				if (null == client) {
-					client = new ClientTrace(request);
-				}
+//				Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
+//				if (null == client) {
+//					client = new ClientTrace(request);
+//				}
 
 				row.clearUpdateColumns();
-				row.setClientTrace(client);
+//				row.setClientTrace(client);
 				set.addRow(row);
 			}
 		}
@@ -433,28 +429,28 @@ public class AbstractBasicController{
 		}
 		return navi;
 	}
-	/**
-	 * 当前操作客户端
-	 * 
-	 * @return
-	 */
-	protected ClientTrace currentClient(HttpServletRequest request) {
-		ClientTrace client = null;
-		client = (ClientTrace) request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
-		if (null == client) {
-			client = new ClientTrace(request);
-			//service.save(ConfigTable.getString("CLIENT_TRACE_TABLE"), client);
-		}
-		return client;
-	}
-	protected String currentClientCd(HttpServletRequest request) {
-		String result = null;
-		ClientTrace client = currentClient(request);
-		if (null != client) {
-			result = client.getCd();
-		}
-		return result;
-	}
+//	/**
+//	 * 当前操作客户端
+//	 * 
+//	 * @return
+//	 */
+//	protected ClientTrace currentClient(HttpServletRequest request) {
+//		ClientTrace client = null;
+//		client = (ClientTrace) request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
+//		if (null == client) {
+//			client = new ClientTrace(request);
+//			//service.save(ConfigTable.getString("CLIENT_TRACE_TABLE"), client);
+//		}
+//		return client;
+//	}
+//	protected String currentClientCd(HttpServletRequest request) {
+//		String result = null;
+//		ClientTrace client = currentClient(request);
+//		if (null != client) {
+//			result = client.getCd();
+//		}
+//		return result;
+//	}
 	/********************************************************************************************************************************
 	 * 
 	 * 提示信息
