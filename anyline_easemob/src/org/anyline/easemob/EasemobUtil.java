@@ -5,31 +5,27 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpUtils;
+
 import net.sf.json.JSONObject;
 
-import org.anyline.util.ConfigTable;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.HttpClientUtil;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.util.ByteArrayBuffer;
 import org.apache.log4j.Logger;
 
 public class EasemobUtil {
 	private static Logger log = Logger.getLogger(EasemobUtil.class);
-	private static final String appkey = ConfigTable.getString("EASEMOB_APP_KEY");
-	private static final String orgName = "1118161112115170";
-	private static final String appName = "aisousuo";
-	private static final String clientId= "YXA6x6A9oKpyEea9rcNB35LujQ";
-	private static final String clisentSecret ="YXA6vW-waLkDUv3nSCilUFKxP2jl-wE";
+	private static final String orgName = EasemobConfig.ORG_NAME;
+	private static final String appName = EasemobConfig.APP_NAME;
+	private static final String clientId= EasemobConfig.CLIENT_ID;
+	private static final String clientSecret = EasemobConfig.CLIENT_SECRET;
 	private static final String host = "https://a1.easemob.com";
 	private static String access_token = null;
 	private static long access_token_expires = 0;
-
-	public static void main(String args[]){
-		//delete("3317");
-		
-		//resetPassword("14803904","123456");
-		reg("zhangsan","12311","张三三");
-	}
 	/**
 	 * 注册用户
 	 * @param user
@@ -39,13 +35,17 @@ public class EasemobUtil {
 	 */
 	public static boolean reg(String user, String password, String nick){
 		boolean result = false;
-		String url = "/"+orgName+"/"+appName+"/users";
+		String url = host + "/"+orgName+"/"+appName+"/users";
 		Map<String,String> headers = new HashMap<String,String>();
 		headers.put("Content-Type", "application/json");
-		String body = "{\"username\": \""+user+"\",\"password\": \""+password+"\",\"nickname\": \""+nick+"\"}";
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("username", user);
+		map.put("password", password);
+		map.put("nickname", nick);
 		try {
-			HttpResponse response = HttpUtils.doPost(host, url, "POST", headers, null, body);
-			log.warn("[REG USER][RESULT:"+readResponse(response)+"]");
+			HttpEntity entity = new StringEntity(BeanUtil.map2json(map));
+			String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), headers, url, "UTF-8", entity).getText();
+			log.warn("[REG USER][RESULT:"+txt+"]");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -63,13 +63,14 @@ public class EasemobUtil {
 	 */
 	public static boolean resetPassword(String user, String password){
 		boolean result = false;
-		String url = "/"+orgName+"/"+appName+"/users/"+user+"/password";
-		String body= "{\"newpassword\":\""+password+"\"}";
+		String url = host + "/"+orgName+"/"+appName+"/users/"+user+"/password";
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("newpassword", password);
 		Map<String,String> headers = new HashMap<String,String>();
 		headers.put("Authorization", "Bearer " + getAccessToken());
 		try {
-			HttpResponse response = HttpUtils.doPut(host, url, "PUT", headers, null, body);
-			log.warn("[RESET PASSWOROD][RESULT:"+readResponse(response)+"]");
+			String txt = HttpClientUtil.put(headers, url,"UTF-8", new StringEntity(BeanUtil.map2json(map))).getText();
+			log.warn("[RESET PASSWOROD][RESULT:"+txt+"]");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -85,10 +86,10 @@ public class EasemobUtil {
 		boolean result = false;
 		Map<String,String> headers = new HashMap<String,String>();
 		headers.put("Authorization", "Bearer " + getAccessToken());
+		String url = host + "/"+orgName+"/"+appName+"/users/" + user;
 		try {
-			HttpClientUtil.delete(null, headers,"URL", "UTF-8");
-			HttpResponse response = HttpUtils.doDelete(host, "/"+orgName+"/"+appName+"/users/" + user, "DELETE", headers, null);
-			log.warn("[DELETE USER][RESULT:"+readResponse(response)+"]");
+			String txt = HttpClientUtil.delete(headers,url, "UTF-8").getText();
+			log.warn("[DELETE USER][RESULT:"+ txt +"]");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -112,10 +113,14 @@ public class EasemobUtil {
 	private static String createNewAccessToken(){
 		Map<String,String> headers = new HashMap<String,String>();
 		headers.put("Content-Type", "application/json");
-		String body = "{\"grant_type\": \"client_credentials\",\"client_id\": \""+clientId+"\",\"client_secret\": \""+clisentSecret+"\"}";
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("grant_type", "client_credentials");
+		map.put("client_id", clientId);
+		map.put("client_secret", clientSecret);
 		try {
-			HttpResponse response = HttpUtils.doPost(host, "/"+orgName+"/"+appName+"/token", "POST", headers, null, body);
-			JSONObject json = JSONObject.fromObject(readResponse(response));
+			String url = host + "/"+orgName+"/"+appName+"/token";
+			String txt = HttpClientUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(map))).getText();
+			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("access_token")){
 				access_token = json.getString("access_token");
 			}
@@ -126,36 +131,5 @@ public class EasemobUtil {
 			e.printStackTrace();
 		}
 		return access_token;
-	}
-	public static String readResponse(HttpResponse response) {
-		InputStream is = null;
-		try {
-			is = response.getEntity().getContent();
-		} catch (UnsupportedOperationException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		if (is == null) {
-			return null;
-		}
-		ByteArrayBuffer bab = new ByteArrayBuffer(0);
-		byte[] b = new byte[1024];
-		int len = 0;
-		try {
-			while ((len = is.read(b)) != -1) {
-				bab.append(b, 0, len);
-			}
-			return new String(bab.toByteArray(), "utf-8");
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
 	}
 }
