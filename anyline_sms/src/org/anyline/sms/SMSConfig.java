@@ -15,6 +15,7 @@ public class SMSConfig {
 
 	public static String ACCESS_KEY= "";
 	public static String ACCESS_SECRET = "";
+	public static String SMS_SIGN = "";
 	
 	static{
 		init();
@@ -58,6 +59,8 @@ public class SMSConfig {
 					ACCESS_KEY = value;
 				}else if("ACCESS_SECRET".equalsIgnoreCase(key)){
 					ACCESS_SECRET = value;
+				}else if("SMS_SIGN".equalsIgnoreCase(key)){
+					SMS_SIGN = value;
 				}
 				
 				if(ConfigTable.isDebug()){
