@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpClientUtil;
 import org.apache.log4j.Logger;
 
@@ -24,6 +25,9 @@ public class SMSClient {
 	public synchronized static SMSClient defaultClient(){
 		if(null == defaultClient){
 			defaultClient = new SMSClient();
+			if(ConfigTable.isDebug()){
+				log.warn("[SMS][create new client]");
+			}
 		}
 		return defaultClient;
 	}
@@ -40,6 +44,9 @@ public class SMSClient {
 			map.put("_sms_param", BeanUtil.map2json(params));
 			String txt = HttpClientUtil.get(sms_server, "UTF-8", map).getText();
 			result = BeanUtil.json2oject(txt, SMSResult.class);
+			if(ConfigTable.isDebug()){
+				log.warn("[SMS SEND][mobile:"+mobile+"][result:"+txt+"]");
+			}
 		}catch(Exception e){
 			result = new SMSResult();
 			result.setMsg(e.getMessage());
