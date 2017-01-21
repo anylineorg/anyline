@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- DTD for properties --> 
+<!DOCTYPE properties [
+    <!ELEMENT properties ( comment?, property* ) >
+    <!ATTLIST properties version CDATA #FIXED "1.0">
+    <!ELEMENT comment (#PCDATA) >
+    <!ELEMENT property (#PCDATA) >
+    <!ATTLIST property key CDATA #REQUIRED>
+]>
+<properties>
+	<!-- https://ak-console.aliyun.com/?spm=5176.doc44366.2.1.Vm6eCb#/accesskey -->
+	<property key="ACCESS_KEY"></property>
+	<property key="ACCESS_SECRET"></property>
+</properties>
