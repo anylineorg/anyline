@@ -8,7 +8,9 @@
     <!ATTLIST property key CDATA #REQUIRED>
 ]>
 <properties>
-	<!-- https://ak-console.aliyun.com/?spm=5176.doc44366.2.1.Vm6eCb#/accesskey -->
+	<!-- 申请地址:https://ak-console.aliyun.com -->
 	<property key="ACCESS_KEY"></property>
 	<property key="ACCESS_SECRET"></property>
+	
+	<property key="SMS_SIGN"></property>
 </properties>
