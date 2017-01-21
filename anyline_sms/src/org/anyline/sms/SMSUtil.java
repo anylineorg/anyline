@@ -67,6 +67,12 @@ public class SMSUtil {
 		}
 		return send(sign, template, mobile, params);
 	}
-	
+
+	public static boolean send(String template, String mobile, Map<String, String> params) {
+		return send(SMSConfig.SMS_SIGN, template, mobile, params);
+	}
+	public static boolean send(String template, List<String> mobile, Map<String, String> params) {
+		return send(SMSConfig.SMS_SIGN, template, mobile, params);
+	}
 
 }
