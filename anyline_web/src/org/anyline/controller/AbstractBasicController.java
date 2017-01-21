@@ -49,7 +49,7 @@ public class AbstractBasicController{
 	protected Logger log = Logger.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
 	protected final String FAIL = "fail";
-	protected final String AJAX = "ajax";
+	protected final String JSON = "json";
 	protected final String SUCCESS = "success";
 
 	
