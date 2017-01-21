@@ -12,11 +12,14 @@ import org.dom4j.io.SAXReader;
 
 public class SMSConfig {
 	private static Logger log = Logger.getLogger(SMSConfig.class);
-
+	//服务器配置
 	public static String ACCESS_KEY= "";
 	public static String ACCESS_SECRET = "";
 	public static String SMS_SIGN = "";
-	
+	//客户端配置
+	public static String SMS_SERVER = "";
+	public static String CLIENT_APP= "";
+	public static String CLIENT_SECRET= "";
 	static{
 		init();
 		debug();
@@ -61,6 +64,12 @@ public class SMSConfig {
 					ACCESS_SECRET = value;
 				}else if("SMS_SIGN".equalsIgnoreCase(key)){
 					SMS_SIGN = value;
+				}else if("SMS_SERVER".equalsIgnoreCase(key)){
+					SMS_SERVER = value;
+				}else if("CLIENT_APP".equalsIgnoreCase(key)){
+					CLIENT_APP = value;
+				}else if("CLIENT_SECRET".equalsIgnoreCase(key)){
+					CLIENT_SECRET = value;
 				}
 				
 				if(ConfigTable.isDebug()){
