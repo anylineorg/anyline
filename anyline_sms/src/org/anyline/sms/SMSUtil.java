@@ -3,6 +3,7 @@ package org.anyline.sms;
 import java.util.List;
 import java.util.Map;
 
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.apache.log4j.Logger;
 
@@ -15,7 +16,7 @@ import com.aliyuncs.sms.model.v20160927.SingleSendSmsRequest;
 import com.aliyuncs.sms.model.v20160927.SingleSendSmsResponse;
 
 /**
- * 高德云图
+ * 短信服务
  * 
  * @author Administrator
  * 
@@ -39,24 +40,29 @@ public class SMSUtil {
         }
 	}
 
-	public static boolean send(String sign, String template, String mobile, Map<String, String> params) {
-		boolean result = false;
+	public static SMSResult send(String sign, String template, String mobile, Map<String, String> params) {
+		SMSResult result = new SMSResult();
 		try {
+			if(BasicUtil.isEmpty(sign)){
+				sign = SMSConfig.SMS_SIGN;
+			}
 			request.setSignName(sign);
 			request.setTemplateCode(template);
 			request.setParamString(BeanUtil.map2json(params));
 			request.setRecNum(mobile);
 			SingleSendSmsResponse response = client.getAcsResponse(request);
 			response.getModel();
-			result = true;
+			result.setResult(true);
 		} catch (ClientException e) {
 			log.error(e);
 			e.printStackTrace();
+			result.setCode(e.getErrCode());
+			result.setMsg(e.getErrMsg());
 		}
 		return result;
 	}
 
-	public static boolean send(String sign, String template, List<String> mobiles, Map<String, String> params) {
+	public static SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) {
 		String mobile = "";
 		for(String item:mobiles){
 			if("".equals(mobile)){
@@ -68,10 +74,10 @@ public class SMSUtil {
 		return send(sign, template, mobile, params);
 	}
 
-	public static boolean send(String template, String mobile, Map<String, String> params) {
+	public static SMSResult send(String template, String mobile, Map<String, String> params) {
 		return send(SMSConfig.SMS_SIGN, template, mobile, params);
 	}
-	public static boolean send(String template, List<String> mobile, Map<String, String> params) {
+	public static SMSResult send(String template, List<String> mobile, Map<String, String> params) {
 		return send(SMSConfig.SMS_SIGN, template, mobile, params);
 	}
 

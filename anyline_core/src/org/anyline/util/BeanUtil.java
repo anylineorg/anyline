@@ -496,6 +496,24 @@ public class BeanUtil {
 		}
 		return obj;
 	}
+	public static <T> T json2oject(JSONObject json, Class<T> clazz){
+		T obj = null;
+		try{
+			obj = (T)clazz.newInstance();
+			Iterator it = json.keys();
+			while (it.hasNext()) {
+				String key = it.next().toString();
+				Object v = json.get(key);
+				BeanUtil.setFieldValue(obj, key, v);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return obj;
+	}
+	public static <T> T json2oject(String json, Class<T> clazz){
+		return json2oject(JSONObject.fromObject(json), clazz);
+	}
 	public static String map2xml(Map<String,?> map){
 		StringBuffer builder = new StringBuffer();
 		builder.append("<xml>");

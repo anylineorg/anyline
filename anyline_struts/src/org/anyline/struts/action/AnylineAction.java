@@ -241,14 +241,14 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		if (result) {
 			return success(request, success);
 		} else {
-			return fail(request, fail);
+			return fail(fail);
 		}
 	}
 
 	protected String result(boolean result, Object success, Object fail) {
 		return result(request, result, success, fail);
 	}
-
+	
 	/**
 	 * 执行成功
 	 * 
@@ -256,6 +256,10 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 * @return
 	 */
 	protected String success(HttpServletRequest request, Object ... data) {
+		return success(null, request, data);
+	}
+
+	protected String success(String type, HttpServletRequest request, Object ... data) {
 		if(null != data){
 			if(data.length ==1){				
 				this.data = data[0];
@@ -263,15 +267,27 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 				this.data = data;
 			}
 		}
-		if (isAjaxRequest(request)) {
+		if (isAjaxRequest(request) || "json".equals(type)) {
 			result = true;
-			return AJAX;
+			return JSON;
 		}
 		return super.SUCCESS;
 	}
-
 	protected String success(Object ... data) {
 		return success(request, data);
+	}
+	protected String json(HttpServletRequest request, boolean result, Object ... data) {
+		this.result = result;
+		if(result){
+			return success("json",request, data);
+		}else{
+			return fail("json",data);
+		}
+		
+	}
+
+	protected String json(boolean result, Object ... data) {
+		return json(request, result,data);
 	}
 	/**
 	 * 加密仅支持String类型 不支持对象加密 
@@ -309,12 +325,16 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return navi(data, page, null);
 	}
 
+
+	protected String fail(Object... msgs) {
+		return fail(null,msgs);
+	}
 	/**
 	 * 执行失败
 	 * 
 	 * @return
 	 */
-	protected String fail(Object... msgs) {
+	protected String fail(String type, Object... msgs) {
 		result = false;
 		if (null != msgs && msgs.length > 0) {
 			for (Object msg : msgs) {
@@ -335,8 +355,8 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			log.warn("[Action Return][result:fail][message:"+msg+"]");
 		}
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
-		if (isAjaxRequest(request)) {
-			return AJAX;
+		if (isAjaxRequest(request) || "json".equals(type)) {
+			return JSON;
 		} else {
 			return FAIL;
 		}
