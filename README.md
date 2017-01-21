@@ -14,6 +14,7 @@ anyline_weixin:微信支付集成工具
 anyline_jpush:极光推送集成工具
 anyline_easemob:环信集成工具
 anyline_amap:高德云图集成工具
+anyline_sms:基于阿里云的短信发送工具
 
 一行代码自我介绍
 ```
