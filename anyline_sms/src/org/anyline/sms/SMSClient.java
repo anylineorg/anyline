@@ -4,12 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.HttpClientUtil;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.log4j.Logger;
 
 /**
@@ -24,6 +20,13 @@ public class SMSClient {
 	private static String sms_server = SMSConfig.SMS_SERVER;
 	private String app = SMSConfig.CLIENT_APP;
 	private String secret = SMSConfig.CLIENT_SECRET;
+	private static SMSClient defaultClient = null;
+	public synchronized static SMSClient defaultClient(){
+		if(null == defaultClient){
+			defaultClient = new SMSClient();
+		}
+		return defaultClient;
+	}
 	
 	public SMSResult send(String sign, String template, String mobile, Map<String, String> params) {
 		SMSResult result = null;
@@ -40,10 +43,10 @@ public class SMSClient {
 		}catch(Exception e){
 			result = new SMSResult();
 			result.setMsg(e.getMessage());
+			log.error(e);
 		}
 		return result;
 	}
-
 	public SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) {
 		String mobile = "";
 		for(String item:mobiles){
