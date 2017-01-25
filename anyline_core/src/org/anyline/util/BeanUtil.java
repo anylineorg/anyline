@@ -578,4 +578,20 @@ public class BeanUtil {
 		builder.append("</xml>");
 		return builder.toString();
 	}
+	public static Map<String, String> craeteMap(String... params) {
+		Map<String, String> result = new HashMap<String, String>();
+		if (null != params) {
+			int size = params.length;
+			for (int i = 0; i < size - 1; i += 2) {
+				String key = params[i];
+				String value = params[i + 1];
+				if (null == value) {
+					value = "";
+				}
+				result.put(key.toString(), value);
+			}
+		}
+		return result;
+	}
+
 }
