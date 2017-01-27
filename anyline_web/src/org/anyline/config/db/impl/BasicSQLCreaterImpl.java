@@ -205,7 +205,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(obj instanceof DataRow){
 			return ((DataRow)obj).getPrimaryKey();
 		}else{
-			return BeanUtil.getPrimaryKey(obj.getClass());
+			return null;
 		}
 	}
 	@Override
@@ -216,7 +216,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(obj instanceof DataRow){
 			return ((DataRow)obj).getPrimaryValue();
 		}else{
-			return BeanUtil.getPrimaryValue(obj);
+			return null;
 		}
 	}
 	/**

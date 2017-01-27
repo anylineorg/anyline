@@ -289,6 +289,7 @@ public class HttpClientUtil {
 	}
 	
 
+	
 	public static Source delete(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
 		return delete(client, null, url, encode, params);
 	}
@@ -300,6 +301,15 @@ public class HttpClientUtil {
 
 	public static Source delete(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
 		return delete(client, null, url, encode, pairs);
+	}
+	public static Source delete(CloseableHttpClient client,Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
+		List<NameValuePair> list = new ArrayList<NameValuePair>();
+		if(null != pairs){
+			for(NameValuePair pair:pairs){
+				list.add(pair);
+			}
+		}
+		return delete(client, headers, url, encode, list);
 	}
 
 	public static Source delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
@@ -341,6 +351,12 @@ public class HttpClientUtil {
 	}
 
 	public static Source delete(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+		return delete(defaultClient(), headers, url, encode, pairs);
+	}
+
+
+
+	public static Source delete(Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
 		return delete(defaultClient(), headers, url, encode, pairs);
 	}
 
