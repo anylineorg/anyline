@@ -363,40 +363,6 @@ public class AnylineServiceImpl implements AnylineService {
 		return cacheL1(null, cache, src, fr, to, conditions);
 	}
 	
-	
-	@Override
-	public <T> List<T> query(DataSource ds, Class<T> clazz, ConfigStore configs, String... conditions) {
-		String src = BeanUtil.checkTable(clazz);
-		DataSet set = query(ds, src, configs, conditions);
-		return set.entity(clazz);
-	}
-
-	@Override
-	public <T> List<T> query(Class<T> clazz, ConfigStore configs, String... conditions) {
-		return query(null, clazz, configs, conditions);
-	}
-
-	@Override
-	public <T> List<T> query(DataSource ds, Class<T> clazz, String... conditions) {
-		return query(ds, clazz, null, conditions);
-	}
-
-	@Override
-	public <T> List<T> query(Class<T> clazz, String... conditions) {
-		return query(null, clazz, null, conditions);
-	}
-
-	@Override
-	public <T> List<T> query(DataSource ds, Class<T> clazz, int fr, int to, String... conditions) {
-		String src = BeanUtil.checkTable(clazz);
-		DataSet set = query(ds, src, fr, to, conditions);
-		return set.entity(clazz);
-	}
-
-	@Override
-	public <T> List<T> query(Class<T> clazz, int fr, int to, String... conditions) {
-		return query(null, clazz, fr, to, conditions);
-	}
 
 	@Override
 	public DataRow queryRow(DataSource ds, String src, ConfigStore store, String... conditions) {
@@ -519,27 +485,6 @@ public class AnylineServiceImpl implements AnylineService {
 		return CacheUtil.clear(channel);
 	}
 	
-	@Override
-	public <T> T queryEntity(DataSource ds, Class<T> clazz, ConfigStore configs, String... conditions) {
-		String src = BeanUtil.checkTable(clazz);
-		DataRow row = queryRow(ds, src, configs, conditions);
-		return row.entity(clazz);
-	}
-
-	@Override
-	public <T> T queryEntity(Class<T> clazz, ConfigStore configs, String... conditions) {
-		return queryEntity(null, clazz, configs, conditions);
-	}
-
-	@Override
-	public <T> T queryEntity(DataSource ds, Class<T> clazz, String... conditions) {
-		return queryEntity(ds, clazz, null, conditions);
-	}
-
-	@Override
-	public <T> T queryEntity(Class<T> clazz, String... conditions) {
-		return queryEntity(null, clazz, null, conditions);
-	}
 
 	 /**
 	 * 检查唯一性

@@ -82,13 +82,6 @@ public interface AnylineService{
 	public DataSet cacheL1(String cache, String src, int fr, int to, String ... conditions);
 
 	
-	public <T> List<T> query(DataSource ds, Class<T> clazz, int fr, int to, String ... conditions);
-	public <T> List<T> query(Class<T> clazz, int fr, int to, String ... conditions);
-	public <T> List<T> query(DataSource ds, Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> List<T> query(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> List<T> query(DataSource ds, Class<T> clazz, String ... conditions);
-	public <T> List<T> query(Class<T> clazz, String ... conditions);
-
 	public DataRow queryRow(DataSource ds, String src, ConfigStore configs, String ... conditions);
 	public DataRow queryRow(String src, ConfigStore configs, String ... conditions);
 	public DataRow queryRow(DataSource ds, String src, String ... conditions);
@@ -118,10 +111,6 @@ public interface AnylineService{
 	 */
 	public boolean clearCache(String channel);
 	
-	public <T> T queryEntity(DataSource ds, Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> T queryEntity(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> T queryEntity(DataSource ds, Class<T> clazz, String ... conditions);
-	public <T> T queryEntity(Class<T> clazz, String ... conditions);
 	/**
 	 * 是否存在
 	 * @param src
