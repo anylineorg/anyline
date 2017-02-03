@@ -1,20 +1,14 @@
 package org.anyline.easemob;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.servlet.http.HttpUtils;
 
 import net.sf.json.JSONObject;
 
 import org.anyline.util.BeanUtil;
 import org.anyline.util.HttpClientUtil;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.util.ByteArrayBuffer;
 import org.apache.log4j.Logger;
 
 public class EasemobUtil {
