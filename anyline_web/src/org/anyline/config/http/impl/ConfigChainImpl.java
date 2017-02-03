@@ -56,7 +56,9 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 		for(String item:configs){
 			ConfigImpl conf = new ConfigImpl(item);
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-			this.configs.add(conf);
+			if(!conf.isEmpty()){
+				this.configs.add(conf);
+			}
 		}
 	}
 	public Config getConfig(String key){
