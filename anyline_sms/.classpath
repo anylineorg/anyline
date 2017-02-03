@@ -4,41 +4,13 @@
 	<classpathentry kind="src" path="conf"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/anyline_core"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/asm-3.3.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/asm-5.0.2.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/asm-commons-3.3.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/chardet.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/commons-beanutils-1.7.0.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/commons-codec-1.10.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/commons-collections-3.1.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/commons-fileupload-1.2.2.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/commons-io-2.0.1.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/commons-lang-2.5.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/commons-lang3-3.2.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/commons.httpclient-3.1.0.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/cpdetector.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/ehcache-2.10.1.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/ezmorph-1.0.5.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/geronimo-jpa_2.0_spec-1.1.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/httpclient-4.3.3.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/httpcore-4.3.2.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/httpmime-4.3.3.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/jakarta-oro-2.0.8.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/javassist-3.11.0.GA.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/javax.servlet.jsp.jstl.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/json-lib-2.3-jdk15.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/jstl.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/mysql-connector-java-5.1.21-bin.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/ognl-3.0.6.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/proxool-0.9.1.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/proxool-cglib.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/slf4j-api-1.7.7.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/WebRoot/WEB-INF/lib/slf4j-jdk14-1.7.7.jar"/>
 	<classpathentry kind="lib" path="D:/jar/aliyun/aliyun-java-sdk-core-2.4.2.jar"/>
 	<classpathentry kind="lib" path="D:/jar/aliyun/aliyun-java-sdk-sms-3.0.0-rc1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/httpclient-4.3.3.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/httpcore-4.3.2.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/httpmime-4.3.3.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/json-lib-2.3-jdk15.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
