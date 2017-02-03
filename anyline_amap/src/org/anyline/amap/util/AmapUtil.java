@@ -93,7 +93,7 @@ public class AmapUtil {
 		params.put("data", JSONObject.fromObject(data).toString());
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		String id = null;
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
@@ -182,7 +182,7 @@ public class AmapUtil {
 		params.put("ids", param);
 		params.put("sig", sign(params));
 		String url = "http://yuntuapi.amap.com/datamanage/data/delete";
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[删除标注][param:"+BasicUtil.joinBySort(params)+"]");
 		}
@@ -242,7 +242,7 @@ public class AmapUtil {
 		}
 		params.put("data", JSONObject.fromObject(data).toString());
 		params.put("sig", sign(params));
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[更新标注][param:"+BasicUtil.joinBySort(params)+"]");
 		}
@@ -299,7 +299,7 @@ public class AmapUtil {
 		params.put("name", name);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		JSONObject json = JSONObject.fromObject(txt);
 		if(json.has("tableid")){
 			tableId = json.getString("tableid");
@@ -338,7 +338,7 @@ public class AmapUtil {
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -408,7 +408,7 @@ public class AmapUtil {
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -481,7 +481,7 @@ public class AmapUtil {
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -515,7 +515,7 @@ public class AmapUtil {
 		params.put("_id", id);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -553,7 +553,7 @@ public class AmapUtil {
 		params.put("country", country);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -592,7 +592,7 @@ public class AmapUtil {
 		params.put("country", province);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -632,7 +632,7 @@ public class AmapUtil {
 		params.put("city", city);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -671,7 +671,7 @@ public class AmapUtil {
 		params.put("timerange", BasicUtil.evl(timerange,"1800")+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(HttpClientUtil.defaultClient(), url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){

@@ -1,6 +1,5 @@
 package org.anyline.alipay.util;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,10 +7,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.httpclient.methods.multipart.FilePartSource;
-import org.apache.commons.httpclient.methods.multipart.PartSource;
 
 /* *
  *类名：AlipayFunction
@@ -99,22 +94,22 @@ public class AlipayCore {
         }
     }
 
-    /** 
-     * 生成文件摘要
-     * @param strFilePath 文件路径
-     * @param file_digest_type 摘要算法
-     * @return 文件摘要结果
-     */
-    public static String getAbstract(String strFilePath, String file_digest_type) throws IOException {
-        PartSource file = new FilePartSource(new File(strFilePath));
-    	if(file_digest_type.equalsIgnoreCase("MD5")){
-    		return DigestUtils.md5Hex(file.createInputStream());
-    	}
-    	else if(file_digest_type.equalsIgnoreCase("SHA")) {
-    		return DigestUtils.sha256Hex(file.createInputStream());
-    	}
-    	else {
-    		return "";
-    	}
-    }
+//    /** 
+//     * 生成文件摘要
+//     * @param strFilePath 文件路径
+//     * @param file_digest_type 摘要算法
+//     * @return 文件摘要结果
+//     */
+//    public static String getAbstract(String strFilePath, String file_digest_type) throws IOException {
+//        PartSource file = new FilePartSource(new File(strFilePath));
+//    	if(file_digest_type.equalsIgnoreCase("MD5")){
+//    		return DigestUtils.md5Hex(file.createInputStream());
+//    	}
+//    	else if(file_digest_type.equalsIgnoreCase("SHA")) {
+//    		return DigestUtils.sha256Hex(file.createInputStream());
+//    	}
+//    	else {
+//    		return "";
+//    	}
+//    }
 }
