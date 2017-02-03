@@ -20,13 +20,9 @@
 package org.anyline.config.db.impl;
 
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import javax.persistence.Table;
 
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLCreater;
@@ -298,19 +294,20 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(set.size()>0){
 				result = getDataSource(set.getRow(0));
 			}
-		}else{
-			try{
-				Annotation annotation = obj.getClass().getAnnotation(Table.class);			//提取Table注解
-				Method method = annotation.annotationType().getMethod("name");				//引用name方法
-				result = (String)method.invoke(annotation);									//执行name方法返回结果
-				result = result.replace(getDisKeyFr(), "").replace(getDisKeyTo(),"");
-			}catch(NoClassDefFoundError e){
-				log.error(e);
-			}catch(Exception e){
-				e.printStackTrace();
-				log.error(e);
-			}
 		}
+//		else{
+//			try{
+//				Annotation annotation = obj.getClass().getAnnotation(Table.class);			//提取Table注解
+//				Method method = annotation.annotationType().getMethod("name");				//引用name方法
+//				result = (String)method.invoke(annotation);									//执行name方法返回结果
+//				result = result.replace(getDisKeyFr(), "").replace(getDisKeyTo(),"");
+//			}catch(NoClassDefFoundError e){
+//				log.error(e);
+//			}catch(Exception e){
+//				e.printStackTrace();
+//				log.error(e);
+//			}
+//		}
 		return result;
 	}
 	private RunSQL createInsertTxtFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
