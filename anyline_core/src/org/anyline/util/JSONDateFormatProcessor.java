@@ -35,13 +35,10 @@ public class JSONDateFormatProcessor implements JsonValueProcessor {
         this.format = format;  
     }  
   
-    @Override  
-    public Object processArrayValue(Object paramObject,  
-            JsonConfig paramJsonConfig) {  
+    public Object processArrayValue(Object paramObject, JsonConfig paramJsonConfig) {  
         return process(paramObject);  
     }  
   
-    @Override  
     public Object processObjectValue(String paramString, Object paramObject,  
             JsonConfig paramJsonConfig) {  
         return process(paramObject);  

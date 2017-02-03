@@ -60,16 +60,12 @@ public class Checkbox extends BaseBodyTag {
 			if (null != data) {
 				if (data instanceof String) {
 					if (data.toString().endsWith("}")) {
-						data = data.toString().replace("{", "")
-								.replace("}", "");
+						data = data.toString().replace("{", "").replace("}", "");
 					} else {
-						if ("servelt".equals(scope)
-								|| "application".equalsIgnoreCase(scope)) {
-							data = request.getSession().getServletContext()
-									.getAttribute(data.toString());
+						if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) {
+							data = request.getSession().getServletContext().getAttribute(data.toString());
 						} else if ("session".equals(scope)) {
-							data = request.getSession().getAttribute(
-									data.toString());
+							data = request.getSession().getAttribute(data.toString());
 						} else {
 							data = request.getAttribute(data.toString());
 						}
@@ -134,9 +130,7 @@ public class Checkbox extends BaseBodyTag {
 				if(null != head){
 					String id = name +"_"+ headValue; 
 					html += "<input type=\"checkbox\"";
-					if((null != headValue && headValue.equals(value))
-							|| checked
-							){
+					if((null != headValue && headValue.equals(value)) || checked){
 						html += " checked = \"checked\"";
 					}
 					html += " name=\""+name+"\" value=\"" + headValue + "\" id=\"" + id + "\"";
@@ -161,8 +155,7 @@ public class Checkbox extends BaseBodyTag {
 					if(null != disabled){
 						html += " disabled=\"" + disabled + "\"";
 					}
-					html +="/>"
-							+ "<label for=\""+id+ "\">" + head + "</label>\n";
+					html +="/>" + "<label for=\""+id+ "\">" + head + "</label>\n";
 				}
 				
 				
@@ -183,11 +176,9 @@ public class Checkbox extends BaseBodyTag {
 						String text = "";
 						if (textKey.contains("{")) {
 							text = textKey;
-							List<String> keys = RegularUtil.fetch(textKey,
-									"\\{\\w+\\}", 2, 0);
+							List<String> keys = RegularUtil.fetch(textKey, "\\{\\w+\\}", 2, 0);
 							for (String key : keys) {
-								Object v = item.get(key.replace("{", "")
-										.replace("}", ""));
+								Object v = item.get(key.replace("{", "").replace("}", ""));
 								if (null != v) {
 									text = text.replace(key, v.toString());
 								}
