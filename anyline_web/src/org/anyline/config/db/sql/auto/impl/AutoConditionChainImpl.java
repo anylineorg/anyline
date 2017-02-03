@@ -20,6 +20,7 @@
 package org.anyline.config.db.sql.auto.impl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
@@ -27,6 +28,7 @@ import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.BasicConditionChain;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
+import org.anyline.util.BasicUtil;
 
 public class AutoConditionChainImpl extends BasicConditionChain implements ConditionChain{
 	private static final long serialVersionUID = -3221296171103784900L;
@@ -59,15 +61,22 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 			if(i>0 /*&& !condition.isContainer()*/){
 				builder.append(condition.getJoin());
 			}
-			builder.append(condition.getRunText(creater));
-			addRunValue(condition.getRunValues());
-			joinSize ++;
+			String txt = condition.getRunText(creater);
+			List<Object> values = condition.getRunValues();
+			if(!BasicUtil.isEmpty(true, values)){
+				builder.append(txt);
+				addRunValue(values);
+				joinSize ++;
+			}
 		}
 
 
 		builder.append(")\n\t");
-		
-		return builder.toString();
+		if(joinSize > 0){
+			return builder.toString();
+		}else{
+			return "";
+		}
 	}
 	private int getContainerJoinSize(){
 		if(hasContainer()){
