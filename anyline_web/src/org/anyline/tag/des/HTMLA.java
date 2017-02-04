@@ -23,6 +23,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.tag.BaseBodyTag;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
 
 /**
@@ -41,6 +42,7 @@ public class HTMLA extends BaseBodyTag {
 	private String style;
 	private String title;
 	private String target;
+	private String params;
 	private String shape;
 	private String onmouseover;
 	private String onmouseout;
@@ -60,7 +62,15 @@ public class HTMLA extends BaseBodyTag {
 				buffer.append(" name = \"" + name + "\"");
 			}
 			if (null != href) {
-				buffer.append(" href = \"" + WebUtil.encryptUrl(href, union, encryptKey, encryptValue) + "\"");
+				String url = href;
+				if(BasicUtil.isNotEmpty(params)){
+					if(url.contains("?")){
+						url = url + "&" + params;
+					}else{
+						url = url + "?" + params;
+					}
+				}
+				buffer.append(" href = \"" + WebUtil.encryptUrl(url, union, encryptKey, encryptValue) + "\"");
 			}
 			if (null != clazz) {
 				buffer.append(" class = \"" + clazz + "\"");
@@ -116,6 +126,7 @@ public class HTMLA extends BaseBodyTag {
 		onmouseout = null;
 		onclick = null;
 		body = null;
+		params = null;
 	}
 
 	public String getId() {
@@ -228,6 +239,14 @@ public class HTMLA extends BaseBodyTag {
 
 	public void setUnion(boolean union) {
 		this.union = union;
+	}
+
+	public String getParams() {
+		return params;
+	}
+
+	public void setParams(String params) {
+		this.params = params;
 	}
 
 }
