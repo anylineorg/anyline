@@ -8,9 +8,9 @@
     <!ATTLIST property key CDATA #REQUIRED>
 ]>
 <properties>
-		<property key="APP_KEY">1118161112115170#aisousuo</property>
-	<property key="ORG_NAME">1118161112115170</property>
-	<property key="APP_NAME">aisousuo</property>
-	<property key="CLIENT_ID">YXA6x6A9oKpyEea9rcNB35LujQ</property>
-	<property key="CLISENT_SECRET">YXA6vW-waLkDUv3nSCilUFKxP2jl-wE</property>
+		<property key="APP_KEY"></property>
+	<property key="ORG_NAME"></property>
+	<property key="APP_NAME"></property>
+	<property key="CLIENT_ID"></property>
+	<property key="CLISENT_SECRET"></property>
 </properties>
