@@ -108,7 +108,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null == json){
 			return row;
 		}
-		Iterator  itr = json.keys();
+		Iterator<?>  itr = json.keys();
 		while(itr.hasNext()){
 			String key = itr.next().toString();
 			Object val = json.get(key);
