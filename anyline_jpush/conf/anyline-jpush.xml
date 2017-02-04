@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- DTD for properties --> 
+<!DOCTYPE properties [
+    <!ELEMENT properties ( comment?, property* ) >
+    <!ATTLIST properties version CDATA #FIXED "1.0">
+    <!ELEMENT comment (#PCDATA) >
+    <!ELEMENT property (#PCDATA) >
+    <!ATTLIST property key CDATA #REQUIRED>
+]>
+<properties>
+		<property key="APP_KEY"></property>
+	<property key="MASTER_SECRET"></property>
+</properties>
