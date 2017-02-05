@@ -86,6 +86,10 @@
    <rtexprvalue>true</rtexprvalue>
   </attribute>
   <attribute>
+   <name>params</name>
+   <rtexprvalue>true</rtexprvalue>
+  </attribute>
+  <attribute>
    <name>clazz</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
@@ -127,10 +131,6 @@
   </attribute>
   <attribute>
    <name>encryptValue</name>
-   <rtexprvalue>true</rtexprvalue>
-  </attribute>
-  <attribute>
-   <name>params</name>
    <rtexprvalue>true</rtexprvalue>
   </attribute>
  </tag>
