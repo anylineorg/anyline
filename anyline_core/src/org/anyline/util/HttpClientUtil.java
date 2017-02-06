@@ -235,6 +235,12 @@ public class HttpClientUtil {
 	}
 	
 
+	public static Source get(CloseableHttpClient client, String url) {
+		return get(client, url, "UTF-8");
+	}
+	public static Source get(CloseableHttpClient client, String url, String encode) {
+		return get(client, url, encode, new HashMap<String,String>());
+	}
 	public static Source get(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
 		return get(client, null, url, encode, params);
 	}
@@ -272,6 +278,12 @@ public class HttpClientUtil {
 	}
 	
 
+	public static Source get(String url) {
+		return get(url, "UTF-8");
+	}
+	public static Source get(String url, String encode) {
+		return get(url, encode, new HashMap<String,String>());
+	}
 	public static Source get(String url, String encode, Map<String, String> params) {
 		return get(defaultClient(), url, encode, params);
 	}
