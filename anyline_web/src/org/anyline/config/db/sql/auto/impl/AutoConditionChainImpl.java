@@ -63,7 +63,7 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 			}
 			String txt = condition.getRunText(creater);
 			List<Object> values = condition.getRunValues();
-			if(!BasicUtil.isEmpty(true, values)){
+			if(condition.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE || !BasicUtil.isEmpty(true, values)){
 				builder.append(txt);
 				addRunValue(values);
 				joinSize ++;
