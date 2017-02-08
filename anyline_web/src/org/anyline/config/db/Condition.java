@@ -68,6 +68,7 @@ public interface Condition extends Cloneable,Serializable{
 	public void init();
 	public void initRunValue();
 	public boolean isActive();
+	public boolean isRequired();
 	public void setActive(boolean active);
 	public int getVariableType();
 	/*************************************************************************************************************
