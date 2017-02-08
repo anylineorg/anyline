@@ -73,7 +73,6 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 			}
 		}
 
-
 		builder.append(")\n\t");
 		if(joinSize > 0){
 			return builder.toString();
