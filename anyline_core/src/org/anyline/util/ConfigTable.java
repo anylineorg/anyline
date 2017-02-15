@@ -33,7 +33,9 @@ import org.dom4j.io.SAXReader;
 
 public class ConfigTable {
 	private static Logger log = Logger.getLogger(ConfigTable.class);
+	private static String root;
 	private static String webRoot;
+	private static String classpath;
 	private static Hashtable<String,String> configs;
 	private static long lastLoadTime = 0;	//最后一次加载时间
 	private static int reload = 0;			//重新加载间隔
@@ -67,6 +69,17 @@ public class ConfigTable {
 	public static String getWebRoot() {
 		return webRoot;
 	}
+	public static void setWebRoot(String webRoot){
+		ConfigTable.webRoot = webRoot;
+		init();
+	}
+	public static String getRoot(){
+		return root;
+	}
+	public static void setRoot(String root){
+		ConfigTable.root = root;
+		init();
+	}
 	public static String getWebClassPath(){
 		String result = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
 		return result;
@@ -83,10 +96,24 @@ public class ConfigTable {
 		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
 			path = path.substring(1);
 		}
-		if(path.indexOf("WEB-INF") > 0){
-			webRoot = path.substring(0,path.indexOf("WEB-INF")-1);	
+
+		if(null == root && null != path){
+			root = path;
+			if(path.indexOf("bin") > 0){
+				root = path.substring(0,path.indexOf("bin")-1);	
+			}
 		}
-		
+		if(null == webRoot && null != path){
+			webRoot = path;
+			if(path.indexOf("WEB-INF") > 0){
+				webRoot = path.substring(0,path.indexOf("WEB-INF")-1);	
+			}
+		}
+		if(path.contains("WEB-INF")){
+			classpath = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
+		}else{
+			classpath = root + File.separator + "bin" + File.separator + "classes" + File.separator;
+		}
 		//加载配置文件
 		loadConfig();
 	}
@@ -100,12 +127,14 @@ public class ConfigTable {
 			if(null == configs){
 				configs = new Hashtable<String,String>();
 			}
-			configs.put("HOME_DIR", webRoot);
+			if(null != root){
+				configs.put("HOME_DIR", root);
+			}
 
-			File file = new File(webRoot , "/WEB-INF/classes/anyline-config.xml");
+			File file = new File(classpath , "anyline-config.xml");
 			loadConfig(file);
 			
-			File dir = new File(ConfigTable.getWebRoot() , "/WEB-INF/classes");
+			File dir = new File(classpath);
 			List<File> files = FileUtil.getChildrenFile(dir, "xml");
 			for(File f:files){
 				String name = f.getName();
@@ -115,6 +144,7 @@ public class ConfigTable {
 			}
 		} catch (Exception e) {
 			log.error("配置文件解析异常:"+e);
+			e.printStackTrace();
 		}
 		lastLoadTime = System.currentTimeMillis();
 		reload = getInt("RELOAD");
@@ -124,10 +154,10 @@ public class ConfigTable {
 	private static void loadConfig(File file){
 		try{
 			if(isDebug()){
-				log.info("[加载配置文件] [file:" + file.getName() + "]");
+				log.info("[加载配置文件] [file:" + file.getAbsolutePath() + "]");
 			}
 			if(!file.exists()){
-				log.info("[配置文件不存在] [file:" + file.getName() + "]");
+				log.info("[配置文件不存在] [file:" + file.getAbsolutePath() + "]");
 				return;
 			}
 			if(file.isDirectory()){

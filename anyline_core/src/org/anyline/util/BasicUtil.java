@@ -191,7 +191,7 @@ public class BasicUtil {
 	}
 
 	public static String getRandomString(int length) {
-		return getRandomString(length,new StringBuffer("_0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+		return getRandomString(length,new StringBuffer("_012356789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 	}
 
 	public static String getRandomLowerString(int length) {
@@ -203,7 +203,7 @@ public class BasicUtil {
 	}
 
 	public static String getRandomNumberString(int length) {
-		return getRandomString(length, new StringBuffer("1234567890"));
+		return getRandomString(length, new StringBuffer("123567890"));
 	}
 	/**
 	 * 随机中文字符(GBK)
