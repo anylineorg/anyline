@@ -3,6 +3,7 @@ package org.anyline.easemob;
 import java.io.File;
 import java.util.Iterator;
 
+import org.anyline.entity.DataRow;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -12,10 +13,12 @@ import org.dom4j.io.SAXReader;
 
 public class EasemobConfig {
 	private static Logger log = Logger.getLogger(EasemobConfig.class);
+	public static String HOST = "";
 	public static String CLIENT_ID ="";
 	public static String CLIENT_SECRET ="";
 	public static String ORG_NAME ="";
 	public static String APP_NAME ="";
+
 		
 	static{
 		init();
@@ -58,6 +61,8 @@ public class EasemobConfig {
 					EasemobConfig.ORG_NAME = value;
 				}else if("APP_NAME".equalsIgnoreCase(key)){
 					EasemobConfig.APP_NAME = value;
+				}else if("HOST".equalsIgnoreCase(key)){
+					EasemobConfig.HOST = value;
 				}
 				if(ConfigTable.isDebug()){
 					log.info("[解析环信配置文件] [" + key + " = " + value+"]");
