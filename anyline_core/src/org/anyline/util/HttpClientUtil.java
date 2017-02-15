@@ -53,9 +53,10 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+
+import com.sun.security.ntlm.Client;
 /**
  * 基于hpptclient4.x
  * 第一个参数用来保持session连接 
@@ -210,8 +211,6 @@ public class HttpClientUtil {
 			}
 		}
 		setHeader(method, headers);
-
-		setHeader(method, headers);
 		result = exe(client, method, encode);
 		return result;
 	}
@@ -290,6 +289,10 @@ public class HttpClientUtil {
 
 	public static Source get(Map<String, String> headers, String url, String encode, Map<String, String> params) {
 		return get(defaultClient(), headers, url, encode, params);
+	}
+
+	public static Source get(Map<String, String> headers, String url, String encode) {
+		return get(defaultClient(), headers, url, encode, new HashMap<String,String>());
 	}
 
 	public static Source get(String url, String encode, List<NameValuePair> pairs) {
@@ -373,13 +376,12 @@ public class HttpClientUtil {
 	}
 
 	
-	
-	
 	private static Source exe(CloseableHttpClient client, HttpRequestBase method, String encode){
 		CloseableHttpResponse response = null;
 		Source result = null;
 		try {
 			long fr = System.currentTimeMillis();
+			method.setHeader("Connection", "close");  
 			if(ConfigTable.isDebug()){
 				log.warn("[Http Request][URL:"+method.getURI()+"]");
 			}
@@ -393,6 +395,7 @@ public class HttpClientUtil {
 		} finally {
 			try {
 				response.close();
+				method.releaseConnection();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

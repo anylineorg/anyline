@@ -533,7 +533,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return entity;
 	}
-	
+	public boolean has(String key){
+		return get(key) != null;
+	}
+	public boolean containsKey(String key){
+		return get(key) != null;
+	}
 	public List<String> keys(){
 		List<String> keys = new ArrayList<String>();
 		for(Iterator<String> itr=this.keySet().iterator(); itr.hasNext();){
@@ -891,9 +896,5 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			this.put(key1, data.get(key2));
 		}
 		return this;
-	}
-	public static void main(String[] args) {
-		String txt = "{\"status\":1,\"data\":{\"cardlength\":16,\"cardtype\":\"贷记卡\",\"cardprefixnum\":\"520169\",\"cardname\":\"太平洋双币贷记卡\",\"bankname\":\"交通银行\",\"areainfo\":[\"\"],\"bankinfo\":[{\"servicephone\":\"95559\",\"crediturl\":\"http://creditcard.bankcomm.com/\",\"logourl\":\"http://osspb.datatiny.com/banklogo/boccom.png\",\"bankname\":\"交通银行\",\"bankurl\":\"http://www.bankcomm.com/\",\"servicecreditphone\":\"4008009888\"}],\"isLuhn\":true,\"banknum\":\"\"}}";
-		DataRow.parseJson(txt);
 	}
 }
