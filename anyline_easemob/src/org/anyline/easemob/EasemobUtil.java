@@ -68,7 +68,7 @@ public class EasemobUtil {
 				}
 			}
 			if(ConfigTable.isDebug()){
-				log.warn("[REG USER][RESULT:"+txt+"]");
+				log.warn("[REG USER][RESULT:" + txt + "]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -114,7 +114,7 @@ public class EasemobUtil {
 				result = row.getSet("entities");
 			}
 			if(ConfigTable.isDebug()){
-				log.warn("[REG USERS][RESULT:"+txt+"]");
+				log.warn("[REG USERS][RESULT:" + txt + "]");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -135,7 +135,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map))).getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[RESET PASSWOROD][RESULT:"+txt+"]");
+				log.warn("[RESET PASSWOROD][RESULT:" + txt + "]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -158,7 +158,7 @@ public class EasemobUtil {
 			String txt = HttpClientUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map))).getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
-				log.warn("[RESET NICKNAME][RESULT:"+txt+"]");
+				log.warn("[RESET NICKNAME][RESULT:" + txt + "]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -227,7 +227,7 @@ public class EasemobUtil {
 		try{
 			String txt = HttpClientUtil.get(defaultHeader(),url, "UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[GET USER LIST][RESULT:"+txt+"]");
+				log.warn("[GET USER LIST][RESULT:" + txt + "]");
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.containsKey("entities")){
@@ -253,7 +253,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[ADD FRIEND][RESULT:\n"+txt+"]");
+				log.warn("[ADD FRIEND][RESULT:\n" + txt + "]");
 			}
 			result = parseUser(txt);
 		} catch (Exception e) {
@@ -272,7 +272,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[GET FRIEND LIST][RESULT:"+txt+"]");
+				log.warn("[GET FRIEND LIST][RESULT:" + txt + "]");
 			}
 			DataRow json = DataRow.parseJson(txt);
 			if(null != json && json.has("data")){
@@ -305,7 +305,7 @@ public class EasemobUtil {
 			String txt = HttpClientUtil.delete(defaultHeader(), url,"UTF-8").getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
-				log.warn("[DELETE FRIEND][RESULT:"+txt+"]");
+				log.warn("[DELETE FRIEND][RESULT:" + txt + "]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -328,7 +328,7 @@ public class EasemobUtil {
 			String params = "{\"usernames\":[\""+block+"\"]} ";
 			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(params)).getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[ADD BLOCKS][RESULT:\n"+txt+"]");
+				log.warn("[ADD BLOCKS][RESULT:\n" + txt + "]");
 			}
 			//封装添加成功的用户username
 		} catch (Exception e) {
@@ -347,7 +347,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[GET BLOCK LIST][RESULT:"+txt+"]");
+				log.warn("[GET BLOCK LIST][RESULT:" + txt + "]");
 			}
 			DataRow json = DataRow.parseJson(txt);
 			if(null != json && json.has("data")){
@@ -380,7 +380,7 @@ public class EasemobUtil {
 			String txt = HttpClientUtil.delete(defaultHeader(), url,"UTF-8").getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
-				log.warn("[DELETE BLOCK][RESULT:"+txt+"]");
+				log.warn("[DELETE BLOCK][RESULT:" + txt + "]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -398,7 +398,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[GET USER STATUS][RESULT:"+txt+"]");
+				log.warn("[GET USER STATUS][RESULT:" + txt + "]");
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){
@@ -425,7 +425,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[GET USER STATUS][RESULT:"+txt+"]");
+				log.warn("[GET USER STATUS][RESULT:" + txt + "]");
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){
@@ -450,7 +450,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[GET USER STATUS][RESULT:"+txt+"]");
+				log.warn("[GET USER STATUS][RESULT:" + txt + "]");
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){
@@ -473,7 +473,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[DEACTIVATE USER][RESULT:"+txt+"]");
+				log.warn("[DEACTIVATE USER][RESULT:" + txt + "]");
 			}
 			result = parseUser(txt);
 		} catch (Exception e) {
@@ -494,7 +494,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[ACTIVATE USER][RESULT:"+txt+"]");
+				log.warn("[ACTIVATE USER][RESULT:" + txt + "]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -511,7 +511,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[DISCONNECT USER][RESULT:"+txt+"]");
+				log.warn("[DISCONNECT USER][RESULT:" + txt + "]");
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){
@@ -525,22 +525,48 @@ public class EasemobUtil {
 		}
 		return result;
 	}
-	
-	
-	
+	/**
+	 * 消息发送
+	 * @param from
+	 * @param msg
+	 * @param to
+	 * @return
+	 */
+	public static boolean send(String from, String msg, String to){
+		boolean result = false;
+		String json = "{\"target_type\":\"users\","
+				+ "\"target\":[\"" + to + "\"],"
+				+ "\"msg\":{\"type\":\"txt\",\"msg\":\"" + msg + "\"},"
+				+ "\"from\":\""+from+"\"}";
+		String url = baseUrl + "/messages";
+		try {
+			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(json)).getText();
+			if(ConfigTable.isDebug()){
+				log.warn("[SEND MESSAGE][RESULT:" + txt + "]");
+			}
+			DataRow row = DataRow.parseJson(txt);
+			if(null != row && row.has("data")){
+				row = row.getRow("data");
+				if(null != row && row.has(to) && "success".equals(row.getString(to))){
+					result = true;
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String args[]){
-		
 		ConfigTable.setRoot("D:\\develop\\git\\anyline\\anyline_easemob");
 		DataSet set;
 		//EasemobUtil.reg("3","123","张三三");
 //		DataRow row = EasemobUtil.addFriend("1", "3");
 //		EasemobUtil.deleteFriend("1","2");
 //		set = EasemobUtil.getFriends("1");
-////		
 //		System.out.println(set);
 //		EasemobUtil.addBlock("1", "3");
 //		EasemobUtil.deleteBlock("1", "3");
@@ -600,7 +626,7 @@ public class EasemobUtil {
 		map.put("client_id", clientId);
 		map.put("client_secret", clientSecret);
 		try {
-			String url = host + "/"+orgName+"/"+appName+"/token";
+			String url = baseUrl + "/token";
 			String txt = HttpClientUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(map))).getText();
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("access_token")){

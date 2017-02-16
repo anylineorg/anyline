@@ -1,7 +1,3 @@
-AnyLine只是间于JS,JSP,Controller,Service,Cache,DB之间的辅助工具，
-以数据操作与传输显示为核心,目的是为了提高开发效率 统一编码规则与结构 降低开发难度与技术要求.
-在使用AnyLine之前我们仍然需要熟悉JS,SpringMVC/Strut2,SQL.
-AnyLine只是帮助我们更充分的发挥现有工具的优势，是辅助而非替代。
 
 anyline_core:基础包
 anyline_web:javaEE基础
