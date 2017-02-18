@@ -18,29 +18,19 @@ import org.apache.log4j.Logger;
 
 public class EasemobUtil {
 	private static Logger log = Logger.getLogger(EasemobUtil.class);
-//	private static final String orgName = EasemobConfig.ORG_NAME;
-//	private static final String appName = EasemobConfig.APP_NAME;
-//	private static final String clientId= EasemobConfig.CLIENT_ID;
-//	private static final String clientSecret = EasemobConfig.CLIENT_SECRET;
-//	private static final String host = EasemobConfig.HOST;
-	/*
-	<property key="HOST">https://a1.easemob.com</property>
-	<property key="APP_KEY">1118161112115170#aisousuo</property>
-	<property key="ORG_NAME">1118161112115170</property>
-	<property key="APP_NAME">aisousuo</property>
-	<property key="CLIENT_ID">YXA6x6A9oKpyEea9rcNB35LujQ</property>
-	<property key="CLISENT_SECRET">YXA6vW-waLkDUv3nSCilUFKxP2jl-wE</property>*/
-	private static final String orgName = "1118161112115170";
-	private static final String appName = "aisousuo";
-	private static final String clientId= "YXA6x6A9oKpyEea9rcNB35LujQ";
-	private static final String clientSecret = "YXA6vW-waLkDUv3nSCilUFKxP2jl-wE";
-	private static final String host = "https://a1.easemob.com";
+
+	
+	private static final String orgName = EasemobConfig.ORG_NAME;
+	private static final String appName = EasemobConfig.APP_NAME;
+	private static final String clientId= EasemobConfig.CLIENT_ID;
+	private static final String clientSecret = EasemobConfig.CLIENT_SECRET;
+	private static final String host = EasemobConfig.HOST;
+	
 	private static final String baseUrl = host + "/"+orgName+"/"+appName;
 	private static String access_token = null;
 	private static long access_token_expires = 0;
 	
 
-	
 	/**
 	 * 注册用户
 	 * @param user
@@ -58,7 +48,7 @@ public class EasemobUtil {
 		Map<String,String> headers = defaultHeader();
 		headers.put("Content-Type", "application/json");
 		try {
-			HttpEntity entity = new StringEntity(BeanUtil.map2json(map));
+			HttpEntity entity = new StringEntity(BeanUtil.map2json(map), "UTF-8");
 			String txt = HttpClientUtil.post(defaultHeader(), url, "UTF-8", entity).getText();
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.containsKey("entities")){
@@ -108,7 +98,7 @@ public class EasemobUtil {
 		Map<String,String> headers = defaultHeader();
 		headers.put("Content-Type", "application/json");
 		try{
-			String txt = HttpClientUtil.post(headers, url,"UTF-8", new StringEntity(json.toString())).getText();
+			String txt = HttpClientUtil.post(headers, url,"UTF-8", new StringEntity(json.toString(), "UTF-8")).getText();
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.containsKey("entities")){
 				result = row.getSet("entities");
@@ -132,10 +122,14 @@ public class EasemobUtil {
 		String url = baseUrl + "/users/"+user+"/password";
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("newpassword", password);
+		String json = BeanUtil.map2json(map);
 		try {
-			String txt = HttpClientUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map))).getText();
+
+			Map<String,String> headers = new HashMap<String,String>();
+			headers.put("Authorization", "Bearer " + getAccessToken());
+			String txt = HttpClientUtil.put(headers, url,"UTF-8", new StringEntity(json, "UTF-8")).getText();
 			if(ConfigTable.isDebug()){
-				log.warn("[RESET PASSWOROD][RESULT:" + txt + "]");
+				log.warn("[RESET PASSWOROD][JSON:"+json+"][RESULT:" + txt + "]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -155,7 +149,7 @@ public class EasemobUtil {
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("nickname", nickname);
 		try {
-			String txt = HttpClientUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map))).getText();
+			String txt = HttpClientUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
 				log.warn("[RESET NICKNAME][RESULT:" + txt + "]");
@@ -326,7 +320,7 @@ public class EasemobUtil {
 		String url = baseUrl + "/users/" + user + "/blocks/users";
 		try {
 			String params = "{\"usernames\":[\""+block+"\"]} ";
-			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(params)).getText();
+			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(params, "UTF-8")).getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[ADD BLOCKS][RESULT:\n" + txt + "]");
 			}
@@ -540,7 +534,7 @@ public class EasemobUtil {
 				+ "\"from\":\""+from+"\"}";
 		String url = baseUrl + "/messages";
 		try {
-			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(json)).getText();
+			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(json, "UTF-8")).getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[SEND MESSAGE][RESULT:" + txt + "]");
 			}
@@ -555,23 +549,6 @@ public class EasemobUtil {
 			e.printStackTrace();
 		}
 		return result;
-	}
-	
-	/**
-	 * @param args
-	 */
-	public static void main(String args[]){
-		ConfigTable.setRoot("D:\\develop\\git\\anyline\\anyline_easemob");
-		DataSet set;
-		//EasemobUtil.reg("3","123","张三三");
-//		DataRow row = EasemobUtil.addFriend("1", "3");
-//		EasemobUtil.deleteFriend("1","2");
-//		set = EasemobUtil.getFriends("1");
-//		System.out.println(set);
-//		EasemobUtil.addBlock("1", "3");
-//		EasemobUtil.deleteBlock("1", "3");
-//		set = EasemobUtil.getBlocks("1");
-		System.out.println(EasemobUtil.offlineMsgCount("1"));
 	}
 	
 	/**
@@ -627,7 +604,7 @@ public class EasemobUtil {
 		map.put("client_secret", clientSecret);
 		try {
 			String url = baseUrl + "/token";
-			String txt = HttpClientUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(map))).getText();
+			String txt = HttpClientUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText();
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("access_token")){
 				access_token = json.getString("access_token");

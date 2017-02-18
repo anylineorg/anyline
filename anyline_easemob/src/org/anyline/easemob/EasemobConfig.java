@@ -55,7 +55,7 @@ public class EasemobConfig {
 				String value = propertyElement.getTextTrim();
 				if("CLIENT_ID".equalsIgnoreCase(key)){
 					EasemobConfig.CLIENT_ID = value;
-				}else if("APP_SECRECT".equalsIgnoreCase(key)){
+				}else if("CLIENT_SECRET".equalsIgnoreCase(key)){
 					EasemobConfig.CLIENT_SECRET = value;
 				}else if("ORG_NAME".equalsIgnoreCase(key)){
 					EasemobConfig.ORG_NAME = value;
