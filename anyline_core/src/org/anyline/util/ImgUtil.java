@@ -14,11 +14,18 @@ import java.awt.image.CropImageFilter;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
 
 /**
  * 图片处理工具类：<br>
@@ -318,5 +325,70 @@ public class ImgUtil {
             e.printStackTrace();
         }
     }
-
+    /**
+     * 根据图片转换为base64编码字符串
+     * @param imgFile
+     * @return
+     */
+    public static String base64Img(File img) {
+    	InputStream in = null;
+    	byte[] data = null;
+        try {
+            in = new FileInputStream(img);
+            data = new byte[in.available()];
+            in.read(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+        	try{
+        		in.close();
+        	}catch(Exception e){
+        		e.printStackTrace();
+        	}
+        }
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(data);
+    }
+    /**
+     * base64 图片转文件
+     * @param imgStr
+     * @param path
+     * @return
+     */
+    public static boolean base64Img(File file, String str) {
+    	if (null == str || null == file) return false;
+    	File dir = file.getParentFile();
+    	if(!dir.exists()){
+    		dir.mkdirs();
+    	}
+    	str = str.replace("data:image/jpeg;base64,", "");
+    	OutputStream  out = null;
+    	try {
+    		BASE64Decoder decoder = new BASE64Decoder();
+    		// 解密
+    		byte[] b = decoder.decodeBuffer(str);
+    		// 处理数据
+    		for (int i = 0; i < b.length; ++i) {
+    			if (b[i] < 0) {
+    				b[i] += 256;
+    			}
+    		}
+    		out = new FileOutputStream(file);
+    		out.write(b);
+    		out.flush();
+    		out.close();
+    		return true;
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    		return false;
+    	} finally{
+    		if(null != out){
+    			try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    		}
+    	}
+    }
 }
