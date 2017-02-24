@@ -49,26 +49,29 @@ public class FileController extends AnylineController {
 		}
 		//D:/upload/anyline
 		String uploadDir = ConfigTable.getString("UPLOAD_DIR");
-		String fileServer = ConfigTable.getString("FILE_SERVER");
+		String fileServer = row.getString("SERVER_HOST");//ConfigTable.getString("FILE_SERVER");
+		//转到到文件服务器(根据URL)
 		if(BasicUtil.isNotEmpty(fileServer)){
 			//D:\\upload\\anyline\\tmp\\894\\IMG_20160903_121158.jpg
-			String path = row.getString("PATH_ABS");
-			path = path.replace("\\", "/").replace(uploadDir, "");
-			if(fileServer.endsWith("/") && path.startsWith("/")){
-				path = path.substring(1,path.length());
-				path = fileServer + path;
-			}else if(fileServer.endsWith("/") || path.startsWith("/")){
-				path = fileServer + path;
+			String url = row.getString("SUB_DIR") + row.getString("FILE_NAME");
+			url = url.replace("\\", "/").replace(uploadDir, "");
+			if(fileServer.endsWith("/") && url.startsWith("/")){
+				url = url.substring(1,url.length());
+				url = fileServer + url;
+			}else if(fileServer.endsWith("/") || url.startsWith("/")){
+				url = fileServer + url;
 			}else{
-				path = fileServer + "/" + path;
+				url = fileServer + "/" + url;
 			}
-			String redirect =  "redirect:"+path;
-			log.info("[文件请求已转发][ID:"+row.getString(pk)+"][path:"+row.getString("PATH_ABS")+"][redirect:"+path+"]");
+			String redirect =  "redirect:"+url;
+			log.info("[文件请求已转发][ID:"+row.getString(pk)+"][path:"+row.getString("PATH_ABS")+"][redirect:"+url+"]");
 			return redirect;
 		}
+		//自处理(根据DIR+FILE_NAME)
 		File file = null;
 		if (row != null) {
-			file = new File(new File(row.getString("DIR")), row.getString("PATH_REL"));
+			File dir = new File(new File(row.getString("DIR")), row.getString("SUB_DIR"));
+			file = new File(dir, row.getString("FILE_NAME"));
 		}
 		FileInputStream in = null;
 		OutputStream out = null;
