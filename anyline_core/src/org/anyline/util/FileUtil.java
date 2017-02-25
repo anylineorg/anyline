@@ -51,7 +51,44 @@ import org.apache.log4j.Logger;
 public class FileUtil {
 	private static Logger log = Logger.getLogger(FileUtil.class);
 	public final static int PATH_TYPE_JAR = 0;
-	
+
+	/**
+	 * 合成path
+	 * @param paths
+	 * @return
+	 */
+	public static String mergePath(String ... paths){
+		String result = null;
+		if(null != paths){
+			for(String path:paths){
+				if(BasicUtil.isEmpty(path)){
+					continue;
+				}
+				if(null == result){
+					result = path;
+				}else{
+					if(result.endsWith("/") || result.endsWith("\\")){
+						if(path.startsWith("/") || path.startsWith("\\")){
+							// "root/" + "/sub" 
+							result += path.substring(1);
+						}else{
+							// "root/" + "sub"
+							result += path;
+						}
+					}else{
+						if(path.startsWith("/") || path.startsWith("\\")){
+							// "root" + "/sub" 
+							result += path;
+						}else{
+							// "root" + "sub"
+							result += "/" + path;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
 	/**
 	 * 目录分隔符
 	 * @return
