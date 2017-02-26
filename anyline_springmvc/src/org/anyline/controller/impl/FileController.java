@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.FileUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
  
@@ -43,26 +44,19 @@ public class FileController extends AnylineController {
 		ServletContext sc = request.getSession().getServletContext();
 		String table = getUploadTable(getRequest(),null);
 		String pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+		if(BasicUtil.isEmpty(pk)){
+			pk = "id";
+		}
 		DataRow row = service.cacheRow("static_1800",table, parseConfig("+"+pk+":"+pk.toLowerCase()));
 		if(null == row){
+			log.info("[文件请求][文件不存在]["+pk+":"+request.getParameter(pk.toLowerCase())+"]");
 			return null;
 		}
 		//D:/upload/anyline
-		String uploadDir = ConfigTable.getString("UPLOAD_DIR");
-		String fileServer = row.getString("SERVER_HOST");//ConfigTable.getString("FILE_SERVER");
+		String fileServer = row.getString("SERVER_HOST");
 		//转到到文件服务器(根据URL)
 		if(BasicUtil.isNotEmpty(fileServer)){
-			//D:\\upload\\anyline\\tmp\\894\\IMG_20160903_121158.jpg
-			String url = row.getString("SUB_DIR") + row.getString("FILE_NAME");
-			url = url.replace("\\", "/").replace(uploadDir, "");
-			if(fileServer.endsWith("/") && url.startsWith("/")){
-				url = url.substring(1,url.length());
-				url = fileServer + url;
-			}else if(fileServer.endsWith("/") || url.startsWith("/")){
-				url = fileServer + url;
-			}else{
-				url = fileServer + "/" + url;
-			}
+			String url = FileUtil.mergePath(fileServer, row.getString("SUB_DIR"), row.getString("FILE_NAME"));
 			String redirect =  "redirect:"+url;
 			log.info("[文件请求已转发][ID:"+row.getString(pk)+"][path:"+row.getString("PATH_ABS")+"][redirect:"+url+"]");
 			return redirect;
@@ -70,8 +64,8 @@ public class FileController extends AnylineController {
 		//自处理(根据DIR+FILE_NAME)
 		File file = null;
 		if (row != null) {
-			File dir = new File(new File(row.getString("DIR")), row.getString("SUB_DIR"));
-			file = new File(dir, row.getString("FILE_NAME"));
+			String path = FileUtil.mergePath(row.getString("ROOT_DIR"), row.getString("SUB_DIR"), row.getString("FILE_NAME"));
+			file = new File(path);
 		}
 		FileInputStream in = null;
 		OutputStream out = null;
