@@ -51,6 +51,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware {
 	protected static Logger LOG = Logger.getLogger(AnylineAction.class);
+	public static int RESULT_TYPE_DEFAULT = 0;
+	public static int RESULT_TYPE_JOSN = 1;
+	
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
 	protected HttpSession session;
@@ -63,6 +66,11 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected boolean result = true; // 执行结果
 	protected String msg; // 返回信息
 	protected String url; // 动态跳转
+	protected int result_type = RESULT_TYPE_DEFAULT;
+	protected String code = "200";
+	
+	
+	
 	protected List<File> upload;
 	protected List<String> uploadContentType;
 	protected List<String> uploadFileName;
@@ -259,7 +267,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return success(null, request, data);
 	}
 
-	protected String success(String type, HttpServletRequest request, Object ... data) {
+	protected String success(int resultType, HttpServletRequest request, Object ... data) {
 		if(null != data){
 			if(data.length ==1){				
 				this.data = data[0];
@@ -267,7 +275,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 				this.data = data;
 			}
 		}
-		if (isAjaxRequest(request) || "json".equals(type)) {
+		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JOSN) {
 			result = true;
 			return JSON;
 		}
@@ -279,9 +287,9 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected String json(HttpServletRequest request, boolean result, Object ... data) {
 		this.result = result;
 		if(result){
-			return success("json",request, data);
+			return success(RESULT_TYPE_JOSN,request, data);
 		}else{
-			return fail("json",data);
+			return fail(RESULT_TYPE_JOSN,data);
 		}
 		
 	}
@@ -325,16 +333,12 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return navi(data, page, null);
 	}
 
-
-	protected String fail(Object... msgs) {
-		return fail(null,msgs);
-	}
 	/**
 	 * 执行失败
 	 * 
 	 * @return
 	 */
-	protected String fail(String type, Object... msgs) {
+	protected String fail(Object... msgs) {
 		result = false;
 		if (null != msgs && msgs.length > 0) {
 			for (Object msg : msgs) {
@@ -355,7 +359,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			log.warn("[Action Return][result:fail][message:"+msg+"]");
 		}
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
-		if (isAjaxRequest(request) || "json".equals(type)) {
+		if (isAjaxRequest(request) || RESULT_TYPE_JOSN == result_type) {
 			return JSON;
 		} else {
 			return FAIL;
