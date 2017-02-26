@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- DTD for properties --> 
+<!DOCTYPE properties [
+    <!ELEMENT properties ( comment?, property* ) >
+    <!ATTLIST properties version CDATA #FIXED "1.0">
+    <!ELEMENT comment (#PCDATA) >
+    <!ELEMENT property (#PCDATA) >
+    <!ATTLIST property key CDATA #REQUIRED>
+]>
+<properties>
+	<property key="HOST">https://a1.easemob.com</property>
+	<property key="APP_KEY">1118161112115170#aisousuo</property>
+	<property key="ORG_NAME">1118161112115170</property>
+	<property key="APP_NAME">aisousuo</property>
+	<property key="CLIENT_ID">YXA6x6A9oKpyEea9rcNB35LujQ</property>
+	<property key="CLIENT_SECRET">YXA6vW-waLkDUv3nSCilUFKxP2jl-wE</property>
+</properties>
