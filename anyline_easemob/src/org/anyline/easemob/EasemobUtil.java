@@ -552,6 +552,43 @@ public class EasemobUtil {
 	}
 	
 	/**
+	 * 创建群
+	 * @param name 名称
+	 * @param des 描述
+	 * @param pub 是否公开
+	 * @param max 最大人数
+	 * @param approve 是否需要审核
+	 * @param owner 群主
+	 * @return
+	 */
+	public static String createGroup(String name, String des, boolean pub, int max, boolean approve, String owner){
+		String result = "";
+		String url = baseUrl + "/chatgroups";
+		try {
+			Map<String,String> params = new HashMap<String,String>();
+			params.put("groupname", name);
+			params.put("desc", des);
+			params.put("public", ""+pub);
+			params.put("maxusers", ""+max);
+			params.put("approval", ""+approve);
+			params.put("owner", owner);
+			String txt = HttpClientUtil.post(defaultHeader(), url, "UTF-8", params).getText();
+			if(ConfigTable.isDebug()){
+				log.warn("[CREATE GROUP][RESULT:" + txt + "]");
+			}
+			DataRow row = DataRow.parseJson(txt);
+			if(null != row && row.has("data")){
+				row = row.getRow("data");
+				if(null != row && row.has("groupid")){
+					result = row.getString("groupid");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	/**
 	 * 根据返回值解析用户数据 
 	 * @param txt
 	 * @return
