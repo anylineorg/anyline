@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- DTD for properties --> 
+<!DOCTYPE properties [
+    <!ELEMENT properties ( comment?, property* ) >
+    <!ATTLIST properties version CDATA #FIXED "1.0">
+    <!ELEMENT comment (#PCDATA) >
+    <!ELEMENT property (#PCDATA) >
+    <!ATTLIST property key CDATA #REQUIRED>
+]>
+<properties>
+	<property key="RELOAD">120</property>
+	<property key="DEBUG">true</property>
+	<property key="MIN_VERSION">21</property>
+	<property key="DATABASE_VERSION">2005</property>
+	<property key="IS_HTTP_CLIENT_TRACE">false</property>
+	<property key="CLIENT_TRACE_TABLE">cm.CLIENT_TRACE</property>
+	<!-- sql 存放根目录 -->
+	<property key="SQL_STORE_DIR">/WEB-INF/classes/sql</property>
+	<!-- 密钥 文件路径 -->
+	<property key="DES_KEY_FILE">/WEB-INF/classes/key.xml</property>
+	<!-- 国际化文本存放目录 -->
+	<property key="I18N_MESSAGE_DIR">/WEB-INF/classes/message</property>
+	<!-- 国际化消息SESSION存放KEY -->
+	<property key="I18N_MESSAGE_SESSION_KEY">I18N_MESSAGE_SESSION_KEY</property>
+	<!-- 国际化消息默认语言 -->
+	<property key="I18N_MESSAGE_DEFAULT_LANG">cn</property>
+	<!-- 默认主键 -->
+	<property key="DEFAULT_PRIMARY_KEY">CD</property>
+	<!-- 自动添加主键 -->
+	<property key="AUTO_CREATE_PRIMARY_KEY">true</property>
+	<!-- 是否显示执行的SQL -->
+	<property key="SHOW_SQL">true</property>
+	<property key="SHOW_SQL_PARAM">true</property>
+	<property key="SHOW_SQL_WHEN_ERROR">false</property>
+	<property key="SHOW_SQL_PARAM_WHEN_ERROR">false</property>
+	
+
+	<!-- 登录验证码图片宽度 -->
+	<property key="VALIDATE_CODE_IMG_WIDTH">60</property>
+	<!-- 登录验证码图片宽度 -->
+	<property key="VALIDATE_CODE_IMG_HEIGHT">20</property>
+	<!-- 登录验证码图片 字符个数 -->
+	<property key="VALIDATE_CODE_IMG_CHAR_SIZE">4</property>
+	<!-- 登录验证码图片 复杂度 -->
+	<property key="VALIDATE_CODE_IMG_COMPLEXITY">10</property>
+	<!-- 是否插入关键词 -->
+	<property key="SEO_INSERT_KEYWORDS">false</property>
+	<property key="SEO_INSERT_KEYWORDS_www.anyline.org">false</property>
+	<!-- 是否更新NULL列 -->
+	<property key="IS_UPDATE_NULL_COLUMN">false</property>
+	<!-- 是否更新空列 -->
+	<property key="IS_UPDATE_EMPTY_COLUMN">false</property>
+	<!-- 生成主键的存储过程 按3个输入参数的格式：表,列,其他-->
+	<property key="AUTO_CREATE_PRIMARY_KEY">true</property>
+	<property key="CREATE_PRIMARY_KEY_PROCEDURE">PROC_CREATE_PRIMARY</property>
+	
+	<!-- 数据库备份位置 -->
+	<property key="DATABASE_BAK_DIR">D:/database/mssql/bak</property>
+	<!-- 本地服务器ip前缀 -->
+	<property key="LOCAL_IP_PREFIX">10.20</property>
+	<!-- 数据库备份连接SN -->
+	<property key="DOWNLOAD_DB_BAK_SN">FTYIOJ_KNBV</property>
+	<!-- 本地数据库备份目录 -->
+	<property key="LOCAL_DB_BAK_DIR">D:\database\mssql\bak\download</property>
+	<!-- 模板文件目录 -->
+	<property key="TEMPLET_FILE_PATH_WEB">/WEB-INF/web/home/template/default.jsp</property>
+	<property key="TEMPLET_FILE_PATH_WAP">/WEB-INF/def/wap/common/templet.jsp</property>
+	<!-- fail文件路径 -->
+	<property key="FAIL_FILE_PATH">/WEB-INF/def/web/common/error/fail.jsp</property>
+	<!-- error文件路径 -->
+	<property key="ERROR_FILE_PATH">/WEB-INF/def/web/common/error/error.jsp</property>
+	<property key="UPLOAD_IMG_LOCAL_DIR">D:/upload_img/wap/upload/img/</property>
+	<property key="UPLOAD_IMG_WEB_DIR">/wap/upload/img/</property>
+	
+	<property key="NAVI_STYLE_FILE_PATH">/wap/common/plugin/navi/skin.css</property>
+	<property key="NAVI_SCRIPT_FILE_PATH">/wap/common/plugin/navi/navi.js</property>
+	<property key="IS_USE_CACHE">true</property>
+	
+</properties>
