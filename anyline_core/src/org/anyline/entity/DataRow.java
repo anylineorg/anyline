@@ -93,7 +93,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return row;
 	}
-	public static DataRow parseJson(String json, String ... keys){
+	public static DataRow parseJson(String json){
 		if(null != json){
 			try{
 				return parseJson(JSONObject.fromObject(json));
@@ -103,7 +103,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return null;
 	}
-	public static DataRow parseJson(JSONObject json, String ... keys){
+	public static DataRow parseJson(JSONObject json){
 		DataRow row = new DataRow();
 		if(null == json){
 			return row;
@@ -114,9 +114,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			Object val = json.get(key);
 			if(null != val){
 				if(val instanceof JSONObject){
-					row.put(key, parseJson((JSONObject)val, keys));
+					row.put(key, parseJson((JSONObject)val));
 				}else if(val instanceof JSONArray){
-					row.put(key, parseJSON((JSONArray)val, keys));
+					row.put(key, parseJSON((JSONArray)val));
 				}else{
 					row.put(key, val);
 				}
@@ -131,9 +131,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			Object val = array.get(i);
 			if(null != val){
 				if(val instanceof JSONObject){
-					list.add(parseJson((JSONObject)val, keys));
+					list.add(parseJson((JSONObject)val));
 				}else if(val instanceof JSONArray){
-					list.add(parseJSON((JSONArray)val, keys));
+					list.add(parseJSON((JSONArray)val));
 				}else{
 					list.add(val);
 				}
