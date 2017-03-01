@@ -185,6 +185,7 @@ public interface Regular {
 	public static final String html_tag_a_regexp = "(<a\\s+([^>h]|h(?!ref\\s))*href[\\s+]?=[\\s+]?('|\"))([^(\\s+|'|\")]*)([^>]*>)(.*?)</a>";
 
 	public static final String html_tag_img_regexp = "<img.+?src[\\s]*=[\\s]*(['\"\\s])([\\S]+)\\1[\\s\\S]*?>";
-	public static final String cn_regexp = "[u4e00-u9fa5]";
+	public static final String cn_regexp = "[\u2E80-\uFE4F]";
+	public static final String en_regexp = "[a-zA-Z]";
 	public static final String html_tag_no_br_regexp = "<(?!br).*?>";
 }

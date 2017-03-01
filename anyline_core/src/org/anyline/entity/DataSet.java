@@ -70,7 +70,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return null;
 	}
-	public static DataSet parseJson(JSONArray json, String ...keys){
+	public static DataSet parseJson(JSONArray json){
 		DataSet set = new DataSet();
 		if(null != json){
 			int size = json.size();
@@ -78,7 +78,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				Object val = json.get(i);
 				if(null != val){
 					if(val instanceof JSONObject){
-						DataRow row = DataRow.parseJson((JSONObject) val, keys);
+						DataRow row = DataRow.parseJson((JSONObject) val);
 						set.add(row);
 					}
 				}
