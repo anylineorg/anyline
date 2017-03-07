@@ -28,10 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
  
- 
 
-@Controller("org.anyline.controller.impl.SimpleTemplateController")
-@RequestMapping("/al/tmp")
 public class SimpleTemplateController extends TemplateController {
 
 
