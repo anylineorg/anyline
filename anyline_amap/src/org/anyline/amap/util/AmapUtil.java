@@ -9,6 +9,7 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+import org.anyline.amap.util.AmapConfig;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
@@ -43,7 +44,9 @@ public class AmapUtil {
 		util.table = table;
 		return util;
 	}
-
+	public static AmapUtil getInstance(){
+		return getInstance(AmapConfig.TABLE_ID);
+	}
 	public static AmapUtil getInstance(String table){
 		AmapUtil util = pool.get(table);
 		if(null ==util){
@@ -194,7 +197,7 @@ public class AmapUtil {
 					cnt = json.getInt("success");
 					log.warn("[删除标注完成][success:"+cnt+"][fail:"+json.getInt("fail")+"]");
 				}else{
-					log.warn("[更新标注失败][info:"+json.getString("info")+"]");
+					log.warn("[删除标注失败][info:"+json.getString("info")+"]");
 				}
 			}
 		}catch(Exception e){
@@ -460,12 +463,15 @@ public class AmapUtil {
 	/**
 	 * 按条件检索数据（可遍历整表数据） 根据筛选条件检索指定tableid数据表中的数据
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t5
-	 * @param keywords
-	 * @param city
-	 * @param filter
-	 * @param sortrule
-	 * @param limit
-	 * @param page
+	 * @param filter 查询条件
+	 * filter=key1:value1+key2:[value2,value3]  
+	 * filter=type:酒店+star:[3,5]  等同于SQL语句的： WHERE type = "酒店" AND star BETWEEN 3 AND 5 
+	 * @param sortrule 排序条件 
+	 * 支持按用户自选的字段（仅支持数值类型字段）升降序排序。1：升序，0：降序 
+	 * 若不填升降序，默认按升序排列。 示例：按年龄age字段升序排序 sortrule = age:1
+	 * @param limit 每页最大记录数为100
+	 * @param page 当前页数 >=1
+	 * AmapUtil.getInstance(TABLE_TENANT).list("tenant_id:1","shop_id:1", 10, 1);
 	 */
 	public DataSet list(String filter, String sortrule, int limit, int page){
 		DataSet set = null;
@@ -474,7 +480,9 @@ public class AmapUtil {
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("filter", filter);
-		params.put("sortrule", sortrule);
+		if(BasicUtil.isNotEmpty(sortrule)){
+			params.put("sortrule", sortrule);
+		}
 		limit = NumberUtil.getMin(limit, 100);
 		params.put("limit", limit+"");
 		page = NumberUtil.getMax(page, 1);
@@ -688,6 +696,76 @@ public class AmapUtil {
 			set.setException(e);
 		}
 		return set;
+	}
+	/**
+	 * 按坐标查地址
+	 * @param location
+	 * @return
+	 */
+	public String regeo(String location){
+		String address = null;
+		String url = "http://restapi.amap.com/v3/geocode/regeo";
+		Map<String,String> params = new HashMap<String,String>();
+		params.put("key", this.key);
+		params.put("location", location);
+		String sign = sign(params);
+		params.put("sig", sign);
+		String txt = HttpClientUtil.get(url, "UTF-8", params).getText();
+		try{
+			DataRow row = DataRow.parseJson(txt);
+			if(null != row){
+				row = row.getRow("regeocode");
+				if(null != row){
+					address = row.getString("formatted_address");
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return address;
+	}
+	/**
+	 * 根据地址查坐标
+	 * @param address
+	 * @param city
+	 * @return
+	 */
+	public DataRow geo(String address, String city){
+		DataRow row = null;
+		String url = "http://restapi.amap.com/v3/geocode/geo";
+		Map<String,String> params = new HashMap<String,String>();
+		params.put("key", this.key);
+		params.put("address", address);
+		if(BasicUtil.isNotEmpty(city)){
+			params.put("city", city);
+		}
+		String sign = sign(params);
+		params.put("sig", sign);
+		String txt = HttpClientUtil.get(url, "UTF-8", params).getText();
+		try{
+			JSONObject json = JSONObject.fromObject(txt);
+			DataSet set = null;
+			if(json.has("geocodes")){
+				set = DataSet.parseJson(json.getJSONArray("geocodes"));
+				if(set.size()>0){
+					row = set.getRow(0);
+					String loncation = row.getString("LOCATION");
+					if(null != loncation && loncation.contains(",")){
+						String tmps[] = loncation.split(",");
+						row.put("LON", tmps[0]);
+						row.put("LAT", tmps[1]);
+						if(ConfigTable.isDebug()){
+							log.warn("[坐标查询完成][ADDRESS:"+address+"][CITY:"+city+"[LON:"+row.getString("LON")+"][LAT:"+row.getString("LAT")+"]");
+						}
+					}
+				}
+			}else{
+				log.warn("[坐标查询失败][info:"+json.getString("info")+"][params:"+BasicUtil.joinBySort(params)+"]");
+			}
+		}catch(Exception e){
+			log.warn("[坐标查询失败][info:"+e.getMessage()+"]");
+		}
+		return row;
 	}
 	/**
 	 * 签名
