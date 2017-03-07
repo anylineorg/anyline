@@ -49,32 +49,40 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 		if(size == 0){
 			return "";
 		}
-		StringBuilder builder = new StringBuilder();
-		if(!hasContainer() || getContainerJoinSize() > 0){
-			builder.append(" AND");
-		}else{
-			builder.append("\n\t");
-		}
-		builder.append("(");
+		
+		StringBuilder subBuilder = new StringBuilder();
+
 		for(int i=0; i<size; i++){
 			Condition condition = conditions.get(i);
-			if(i>0 /*&& !condition.isContainer()*/){
-				builder.append(condition.getJoin());
-			}
 			String txt = condition.getRunText(creater);
+			if(BasicUtil.isEmpty(txt)){
+				continue;
+			}
 			List<Object> values = condition.getRunValues();
 			if(condition.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE 
 					|| !BasicUtil.isEmpty(true, values) 
 					|| condition.isActive()
 					|| condition.isRequired()){
-				builder.append(txt);
+				
+				if(i>0 /*&& !condition.isContainer()*/){
+					subBuilder.append(condition.getJoin());
+				}
+				subBuilder.append(txt);
 				addRunValue(values);
 				joinSize ++;
 			}
 		}
 
-		builder.append(")\n\t");
 		if(joinSize > 0){
+			StringBuilder builder = new StringBuilder();
+			if(!hasContainer() || getContainerJoinSize() > 0){
+				builder.append(" AND");
+			}else{
+				builder.append("\n\t");
+			}
+			builder.append("(");
+			builder.append(subBuilder.toString());
+			builder.append(")\n\t");
 			return builder.toString();
 		}else{
 			return "";

@@ -159,7 +159,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private RunSQL createDeleteRunSQLFromDataRow(String dest, DataRow obj, String ... columns){
 		TableRunSQLImpl run = new TableRunSQLImpl();
 		StringBuilder builder = run.getBuilder();
-		builder.append("DELETE FROM ").append(dest).append(" WHERE ");
+		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
 		List<String> keys = new ArrayList<String>();
 		if(null != columns && columns.length>0){
 			for(String col:columns){
@@ -186,7 +186,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 	private RunSQL createDeleteRunSQLFromEntity(String dest, AnylineEntity obj, String ... columns){
 		TableRunSQLImpl run = new TableRunSQLImpl();
-		run.getBuilder().append("DELETE FROM ").append(dest)
+		run.getBuilder().append("DELETE FROM ").append(parseTable(dest))
 		.append(" WHERE ").append(getDisKeyFr()).append(getPrimaryKey(obj)).append(getDisKeyTo())
 		.append("=?");
 		run.addValue(getPrimaryValue(obj));
@@ -331,7 +331,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null == keys || keys.size() == 0){
 			throw new SQLException("未指定列");
 		}
-		sql.append("INSERT INTO ").append(dest);
+		sql.append("INSERT INTO ").append(parseTable(dest));
 		sql.append("(");
 		param.append(") VALUES (");
 		
@@ -386,7 +386,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null == keys || keys.size() == 0){
 			throw new SQLException("未指定列");
 		}
-		sql.append("INSERT INTO ").append(dest);
+		sql.append("INSERT INTO ").append(parseTable(dest));
 		sql.append("(");
 		
 		int keySize = keys.size();
@@ -463,7 +463,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null == keys || keys.size() == 0){
 			throw new SQLException("未指定列");
 		}
-		sql.append("INSERT INTO ").append(dest);
+		sql.append("INSERT INTO ").append(parseTable(dest));
 		sql.append("(");
 		int size = keys.size();
 		for(int i=0; i<size; i++){
@@ -574,7 +574,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			throw new SQLException("未指定更新列");
 		}
 		/*构造SQL*/
-		sql.append("UPDATE ").append(dest);
+		sql.append("UPDATE ").append(parseTable(dest));
 		sql.append(" SET").append(SQLCreater.BR_TAB);
 		int size = keys.size();
 		for(int i=0; i<size; i++){
@@ -981,5 +981,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		return keys;
 	}
-
+	public String parseTable(String table){
+		if(null == table){
+			return table;
+		}
+		table = table.replace(getDisKeyFr(), "").replace(getDisKeyTo(), "");
+		if(table.contains(".")){
+			String tmps[] = table.split("\\.");
+			table = getDisKeyFr() + tmps[0] + getDisKeyTo() + "." + getDisKeyFr() + tmps[1] + getDisKeyTo();
+		}else{
+			table = getDisKeyFr() + table + getDisKeyTo();
+		}
+		return table;
+	}
 }
