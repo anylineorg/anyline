@@ -60,7 +60,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		createTime = System.currentTimeMillis();
 	}
 
-	public static DataSet parseJson(String json, String ... keys){
+	public static DataSet parseJson(String json){
 		if(null != json){
 			try{
 				return parseJson(JSONArray.fromObject(json));

@@ -33,6 +33,15 @@ public class DateUtil {
 	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.ms";
 	public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 	public static final String FORMAT_DATE = "yyyy-MM-dd";
+	public static final int DATE_PART_YEAR = Calendar.YEAR;
+	public static final int DATE_PART_MONTH = Calendar.MONTH;
+	public static final int DATE_PART_DATE = Calendar.DATE;
+	public static final int DATE_PART_DAY_OF_YEAR = Calendar.DAY_OF_YEAR;
+	public static final int DATE_PART_HOUR = Calendar.HOUR;
+	public static final int DATE_PART_MINUTE = Calendar.MINUTE;
+	public static final int DATE_PART_SECOND = Calendar.SECOND;
+	public static final int DATE_PART_MILLISECOND = Calendar.MILLISECOND;
+	
 	private static Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINESE);
 	public static boolean between( Date cur,Date fr, Date to){
 		if(cur.getTime() >= fr.getTime() && cur.getTime() <= to.getTime()){
