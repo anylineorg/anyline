@@ -128,7 +128,7 @@ public class WXUtil {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("noncestr", BasicUtil.getRandomLowerString(32));
 		params.put("jsapi_ticket", getJsapiTicket());
-		params.put("timestamp", System.currentTimeMillis()+"");
+		params.put("timestamp", System.currentTimeMillis()/1000+"");
 		params.put("url", url);
 		String sign = jsapiSign(params);
 		params.put("sign", sign);
