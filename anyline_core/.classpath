@@ -30,7 +30,7 @@
 	<classpathentry kind="lib" path="lib/jstl.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="lib/mysql-connector-java-5.1.21-bin.jar"/>
-	<classpathentry kind="lib" path="lib/ognl-3.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/ognl-3.0.6.jar" sourcepath="C:/Users/Administrator/.m2/repository/ognl/ognl/3.0.6/ognl-3.0.6-sources.jar"/>
 	<classpathentry kind="lib" path="lib/proxool-0.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/proxool-cglib.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.7.jar"/>

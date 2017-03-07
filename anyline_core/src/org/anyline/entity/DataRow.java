@@ -124,7 +124,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return row;
 	}
-	public static List<Object> parseJSON(JSONArray array, String ... keys){
+	public static List<Object> parseJSON(JSONArray array){
 		List<Object> list = new ArrayList<Object>();
 		int size = array.size();
 		for(int i=0; i<size; i++){
