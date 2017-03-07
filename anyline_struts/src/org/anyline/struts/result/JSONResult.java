@@ -95,6 +95,7 @@ public class JSONResult extends StrutsResultSupport {
         	map.put("success", result);
         	JsonConfig config = new JsonConfig();
     		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
+    		config.registerJsonValueProcessor(java.sql.Timestamp.class, new JSONDateFormatProcessor());
         	JSON json = JSONObject.fromObject(map, config);  
     		
         	writer.print(json.toString());

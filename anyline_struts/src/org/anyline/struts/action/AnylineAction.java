@@ -52,7 +52,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware {
 	protected static Logger LOG = Logger.getLogger(AnylineAction.class);
 	public static int RESULT_TYPE_DEFAULT = 0;
-	public static int RESULT_TYPE_JOSN = 1;
+	public static int RESULT_TYPE_JSON = 1;
 	
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
@@ -264,7 +264,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 * @return
 	 */
 	protected String success(HttpServletRequest request, Object ... data) {
-		return success(null, request, data);
+		return success(RESULT_TYPE_DEFAULT,request, data);
 	}
 
 	protected String success(int resultType, HttpServletRequest request, Object ... data) {
@@ -275,7 +275,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 				this.data = data;
 			}
 		}
-		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JOSN) {
+		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JSON) {
 			result = true;
 			return JSON;
 		}
@@ -287,9 +287,9 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected String json(HttpServletRequest request, boolean result, Object ... data) {
 		this.result = result;
 		if(result){
-			return success(RESULT_TYPE_JOSN,request, data);
+			return success(RESULT_TYPE_JSON,request, data);
 		}else{
-			return fail(RESULT_TYPE_JOSN,data);
+			return fail(RESULT_TYPE_JSON,data);
 		}
 		
 	}
@@ -332,13 +332,18 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	public String navi(DataSet data, String page){
 		return navi(data, page, null);
 	}
-
+	protected String jsonFail(Object... msgs){
+		return fail(RESULT_TYPE_JSON, msgs);
+	}
+	protected String fail(Object... msgs) {
+		return fail(RESULT_TYPE_DEFAULT, msgs);
+	}
 	/**
 	 * 执行失败
 	 * 
 	 * @return
 	 */
-	protected String fail(Object... msgs) {
+	protected String fail(int resultType, Object... msgs) {
 		result = false;
 		if (null != msgs && msgs.length > 0) {
 			for (Object msg : msgs) {
@@ -359,109 +364,14 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			log.warn("[Action Return][result:fail][message:"+msg+"]");
 		}
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
-		if (isAjaxRequest(request) || RESULT_TYPE_JOSN == result_type) {
+		if (isAjaxRequest(request) || RESULT_TYPE_JSON == resultType) {
 			return JSON;
 		} else {
 			return FAIL;
 		}
 	}
-	public DataRow upload(File src, String srcName, String title,File dst){
-		DataRow fileRow = new DataRow();
-		try{
-			FileUtils.copyFile(src, dst);
-			fileRow.put("TITLE", title);
-			fileRow.put("SRC_NAME", srcName);
-			fileRow.put("ROOT", request.getSession().getServletContext().getRealPath("/"));
-			fileRow.put("PATH_ABS", dst.getAbsolutePath());
-			fileRow.put("PATH_REL", dst.getAbsolutePath());
-			service.save(getUploadTable(null), fileRow);
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}
-		return fileRow;
-	}
-	/**
-	 * 上传文件 并保存到数据库中
-	 * upload uploadFileName uploadContentType
-	 * @param dir 
-	 * @returnn
-	 */
-	public List<DataRow> upload(File dir){
-		List<DataRow> result = new ArrayList<DataRow>();
-		if(null == upload){
-			return result;
-		}
-		// 把得到的文件的集合通过循环的方式读取并放在指定的路径下
-		for (int i = 0; i < upload.size(); i++) {
-			try {
-				String dstName = DateUtil.format("yyyyMMddhhmmssms")+BasicUtil.getRandomLowerString(10)+"."+FileUtil.getSuffixFileName(uploadFileName.get(i));
-				File dst = new File(new File(dir, "upload_img"), dstName);
-				FileUtils.copyFile(upload.get(i), dst);
-				DataRow fileRow = new DataRow();
-				fileRow.put("TITLE", dst.getName());
-				fileRow.put("SRC_NAME", uploadFileName.get(i));
-				fileRow.put("ROOT", request.getSession().getServletContext().getRealPath("/"));
-				fileRow.put("PATH_ABS", dst.getAbsolutePath());
-				fileRow.put("PATH_REL", dst.getAbsolutePath().replace(dir.getAbsolutePath(),""));
-				service.save(getUploadTable(null), fileRow);
-				result.add(fileRow);
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return result;
-	}
-	public DataRow uploadFile(File file){
-		return uploadFile(file, null);
-	}
-	public DataRow uploadFile(File file, String name){
-		DataRow row = null;
-		if(null == file || !file.exists()){
-			return row;
-		}
-		if(BasicUtil.isEmpty(name)){
-			name = file.getName();
-		}
-		String tarName = DateUtil.format("yyyyMMddhhmmssms")+BasicUtil.getRandomLowerString(10)+"."+FileUtil.getSuffixFileName(name);
-		File dir = new File(ConfigTable.getString("UPLOAD_DIR"));
-		String dateFormat = ConfigTable.getString("UPLOAD_DIR_DATE_FORMAT");
-		if(BasicUtil.isNotEmpty(dateFormat)){
-			dir = new File(dir, DateUtil.format(dateFormat));
-		}
-		if(dir.exists()){
-			dir.mkdirs();
-		}
-		File tar = new File(dir, tarName);
-		try {
-			FileUtils.copyFile(file, tar);
-			row = new DataRow();
-			row.put("TITLE", name);
-			row.put("SRC_NAME", name);
-			row.put("ROOT", request.getSession().getServletContext().getRealPath("/"));
-			row.put("PATH_ABS", tar.getAbsolutePath());
-			row.put("PATH_REL", tar.getAbsolutePath().replace(dir.getAbsolutePath(),""));
-			service.save(getUploadTable(null), row);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return row;
-	}
-	public List<DataRow> upload(String dir) {
-		File root = new File(ConfigTable.getWebRoot()).getParentFile();
-		
-		if(!BasicUtil.isEmpty(dir)){
-			root = new File(root,dir);
-		}
-		// 如果指定的路径没有就创建
-		if (!root.exists()) {
-			root.mkdirs();
-		}
-		return upload(root);
-	}
 	
+
 	/**
 	 * 
 	 * @param layout 布局path
@@ -512,6 +422,63 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	}
 	
 	
+	public DataRow upload(File src, String srcName){
+		String subDir = "";
+		return upload(subDir, src, srcName);
+	}
+	public DataRow upload(String subDir, File src, String srcName){
+		DataRow row = new DataRow();
+		try {
+			String fileName = BasicUtil.getRandomLowerString(10)+"."+FileUtil.getSuffixFileName(srcName);
+			
+			String rootDir = ConfigTable.getString("UPLOAD_DIR");
+			if(null != rootDir){
+				rootDir = rootDir.replace("/", File.separator).replace("\\", File.separator);
+			}
+			if(BasicUtil.isEmpty(subDir)){
+				subDir = DateUtil.format(ConfigTable.getString("UPLOAD_DIR_DATE_FORMAT")) + File.separator;
+			}else{
+				subDir = FileUtil.mergePath(subDir, DateUtil.format(ConfigTable.getString("UPLOAD_DIR_DATE_FORMAT")) + File.separator);
+			}
+			String filePath = FileUtil.mergePath(rootDir, subDir, fileName);
+			File targetFile = new File(filePath);
+
+			File dir = targetFile.getParentFile();
+			if(!dir.exists()){
+				dir.mkdirs();
+			}
+			FileUtils.copyFile(src, targetFile);
+		
+			row.put("SERVER_HOST", ConfigTable.getString("FILE_SERVER"));
+			row.put("ROOT_DIR", rootDir);
+			row.put("SUB_DIR", subDir);
+			row.put("FILE_NAME", fileName);
+			row.put("SRC_NAME", srcName);
+			service.save(getUploadTable(null),row);
+			log.warn("[上传文件完成 ]["+filePath+"]");
+			
+			
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return row;
+	}
+	public List<DataRow> upload(){
+		return upload("");
+	}
+	public List<DataRow> upload(String subDir){
+		List<DataRow> result = new ArrayList<DataRow>();
+		if(null == upload){
+			return result;
+		}
+		// 把得到的文件的集合通过循环的方式读取并放在指定的路径下
+		for (int i = 0; i < upload.size(); i++) {
+			DataRow row = upload(subDir, upload.get(i), uploadFileName.get(i));
+			result.add(row);
+		}
+		return result;
+	}
+
 	
 	
 	public Object getData() {
@@ -569,5 +536,5 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	public void setUploadFileName(List<String> uploadFileName) {
 		this.uploadFileName = uploadFileName;
 	}
-	
+
 }
