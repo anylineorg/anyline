@@ -38,11 +38,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/")
 public class FileController extends AnylineController {
 
-
 	@RequestMapping("ig")
 	public String img(HttpServletRequest request, HttpServletResponse response){
+		return file(request, response);
+	}
+
+	@RequestMapping("fl")
+	public String file(HttpServletRequest request, HttpServletResponse response){
 		ServletContext sc = request.getSession().getServletContext();
-		String table = getUploadTable(getRequest(),null);
+		String table = getUploadTable(request,null);
 		String pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 		if(BasicUtil.isEmpty(pk)){
 			pk = "id";
@@ -56,7 +60,10 @@ public class FileController extends AnylineController {
 		String fileServer = row.getString("SERVER_HOST");
 		//转到到文件服务器(根据URL)
 		if(BasicUtil.isNotEmpty(fileServer)){
-			String url = FileUtil.mergePath(fileServer, row.getString("SUB_DIR"), row.getString("FILE_NAME"));
+			String url = FileUtil.mergePath(row.getString("SUB_DIR"), row.getString("FILE_NAME"));
+			//注意http:\\中的\
+			url = url.replace("\\", "/").replace("//", "/");
+			url = FileUtil.mergePath(fileServer, url);
 			String redirect =  "redirect:"+url;
 			log.info("[文件请求已转发][ID:"+row.getString(pk)+"][path:"+row.getString("PATH_ABS")+"][redirect:"+url+"]");
 			return redirect;
