@@ -13,8 +13,13 @@
 			<result name="json" type="json"></result>
 		</global-results>
 		<action name="kind_upload" class="org.anyline.struts.action.FileAction" method="upload"></action>
-		<action name="ig" class="org.anyline.struts.action.FileAction" method="img">
+		<action name="ig" class="org.anyline.struts.action.FileAction" method="file">
+			<result name="success" type="file"></result>
+			<result name="redirect" type="redirect">${url}</result>
+		</action>
+		<action name="fl" class="org.anyline.struts.action.FileAction" method="file">
 			<result type="file"></result>
+			<result name="redirect" type="redirect">${url}</result>
 		</action>
 	</package>
 </struts>
