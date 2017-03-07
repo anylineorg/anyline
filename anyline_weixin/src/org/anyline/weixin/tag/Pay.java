@@ -45,7 +45,7 @@ public class Pay extends BaseBodyTag {
 	private String fail = null;
 	public int doEndTag() throws JspException {
 		try{
-			String timestamp = System.currentTimeMillis()+"";
+			String timestamp = System.currentTimeMillis()/1000+"";
 			String random = BasicUtil.getRandomLowerString(20);
 			String pkg = "prepay_id="+prepay;
 			Map<String,Object> params = new HashMap<String,Object>();
