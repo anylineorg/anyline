@@ -173,7 +173,9 @@ public class AnylineServiceImpl implements AnylineService {
 				sql.setDataSource(src);
 			}
 		}
-		sql.setPrimaryKey(pks);
+		if(null != sql){
+			sql.setPrimaryKey(pks);
+		}
 		return sql;
 	}
 	@Override
