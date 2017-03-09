@@ -47,7 +47,7 @@ public class FileAction extends AnylineAction {
 			//注意http:\\中的\
 			url = url.replace("\\", "/").replace("//", "/");
 			url = FileUtil.mergePath(fileServer, url);
-			log.info("[文件请求已转发][ID:"+row.getString(pk)+"][path:"+row.getString("PATH_ABS")+"][redirect:"+url+"]");
+			log.info("[文件请求已转发][ID:"+row.getString(pk)+"][redirect:"+url+"]");
 			return "redirect";
 		}
 		//自处理(根据DIR+FILE_NAME)
