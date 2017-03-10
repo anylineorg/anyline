@@ -21,10 +21,13 @@ package org.anyline.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -1133,4 +1136,59 @@ public class WebUtil {
 		}
 		return result;
 	}
+	/**
+	 * 下载文件
+	 * @param response
+	 * @param request
+	 * @param file
+	 * @param title
+	 */
+	public static boolean writeFile(HttpServletResponse response, HttpServletRequest request, File file, String title){
+		FileInputStream in = null;
+		OutputStream out = null;
+		try {
+			if (null != file && file.exists()) {
+				if(BasicUtil.isEmpty(title)){
+					title = file.getName();
+				}
+				response.setCharacterEncoding("UTF-8");
+				response.setHeader("Location", title);
+				response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(title,"UTF-8"));
+				in = new FileInputStream(file);
+				out = response.getOutputStream();
+				byte[] buf = new byte[1024];
+				int count = 0;
+				if(ConfigTable.isDebug()){
+					log.info("在正传输文件:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+				}
+				long fr = System.currentTimeMillis();
+				while ((count = in.read(buf)) >= 0) {
+					out.write(buf, 0, count);
+				}
+				if(ConfigTable.isDebug()){
+					log.info("传输完成:" + file.getAbsolutePath() + "[耗时:"+(System.currentTimeMillis()-fr)+"],请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+				}
+			}
+		} catch (Exception e) {
+			log.error(e);
+			return false;
+		} finally {
+			if (null != in) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			if (null != out) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return true;
+	}
+	
 }
