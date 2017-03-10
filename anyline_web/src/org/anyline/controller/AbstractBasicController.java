@@ -244,17 +244,19 @@ public class AbstractBasicController{
 	/**
 	 * 解析参数
 	 * 
-	 * @param vol
-	 *            每页多少条记录
+	 * @param vol 
+	 *            每页多少条记录 vol不大于0时不分页
 	 * @param configs
 	 *            参数
 	 * @return
 	 */
 	protected ConfigStore parseConfig(HttpServletRequest request, int vol, String... configs) {
 		ConfigStore store = new ConfigStoreImpl(configs);
-		PageNavi pageNavi = parsePageNavi(request);
-		pageNavi.setPageRows(vol);
-		store.setPageNavi(pageNavi);
+		if(vol >0){
+			PageNavi pageNavi = parsePageNavi(request);
+			pageNavi.setPageRows(vol);
+			store.setPageNavi(pageNavi);
+		}
 		store.setValue(request);
 		return store;
 	}
