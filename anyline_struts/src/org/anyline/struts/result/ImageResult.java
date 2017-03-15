@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.anyline.entity.DataRow;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
 
@@ -40,11 +41,6 @@ public class ImageResult extends StrutsResultSupport {
 
 	protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
 		HttpServletResponse response = (HttpServletResponse) invocation.getInvocationContext().get(HTTP_RESPONSE);
-		HttpServletRequest request = (HttpServletRequest) invocation.getInvocationContext().get(HTTP_REQUEST);
-		ServletContext sc = (ServletContext) invocation.getInvocationContext().get(SERVLET_CONTEXT);
-
-		FileInputStream in = null;
-		OutputStream out = null;
 		try {
 
 			File file = null;
@@ -59,35 +55,10 @@ public class ImageResult extends StrutsResultSupport {
 				title = row.getString("NM");
 			}
 			if (null != file && file.exists()) {
-				response.setCharacterEncoding("UTF-8");
-				response.setHeader("Location", title);
-				response.setHeader("Content-Disposition", "attachment; filename=" + title);
-				String mimeType = sc.getMimeType(file.getAbsolutePath());
-				response.setContentType(mimeType);
-				in = new FileInputStream(file);
-				out = response.getOutputStream();
-				byte[] buf = new byte[1024];
-				int count = 0;
-				if(ConfigTable.isDebug()){
-					LOG.info("在正传输文件:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
-				}
-				while ((count = in.read(buf)) >= 0) {
-					out.write(buf, 0, count);
-				}
-
-				if(ConfigTable.isDebug()){
-					LOG.info("传输完成:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
-				}
+				WebUtil.writeFile(response, file, title);
 			}
 		} catch (Exception e) {
 			LOG.error(e);
-		} finally {
-			if (null != in) {
-				in.close();
-			}
-			if (null != out) {
-				out.close();
-			}
 		}
 	}
 
