@@ -1143,7 +1143,7 @@ public class WebUtil {
 	 * @param file
 	 * @param title
 	 */
-	public static boolean writeFile(HttpServletResponse response, HttpServletRequest request, File file, String title){
+	public static boolean writeFile(HttpServletResponse response, File file, String title){
 		FileInputStream in = null;
 		OutputStream out = null;
 		try {
@@ -1159,14 +1159,14 @@ public class WebUtil {
 				byte[] buf = new byte[1024];
 				int count = 0;
 				if(ConfigTable.isDebug()){
-					log.info("在正传输文件:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+					log.info("[文件下载][开始传输][FILE:" + file.getAbsolutePath()+"]");
 				}
 				long fr = System.currentTimeMillis();
 				while ((count = in.read(buf)) >= 0) {
 					out.write(buf, 0, count);
 				}
 				if(ConfigTable.isDebug()){
-					log.info("传输完成:" + file.getAbsolutePath() + "[耗时:"+(System.currentTimeMillis()-fr)+"],请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+					log.info("[文件下载][传输完成][FILE:" + file.getAbsolutePath() + "][耗时:"+(System.currentTimeMillis()-fr)+"]");
 				}
 			}
 		} catch (Exception e) {

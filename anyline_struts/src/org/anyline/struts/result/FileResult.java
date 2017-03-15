@@ -19,17 +19,14 @@
 package org.anyline.struts.result;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.OutputStream;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
+import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
 
@@ -43,74 +40,39 @@ public class FileResult extends StrutsResultSupport {
 	protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
 		HttpServletResponse response = (HttpServletResponse) invocation.getInvocationContext().get(HTTP_RESPONSE);
 		HttpServletRequest request = (HttpServletRequest) invocation.getInvocationContext().get(HTTP_REQUEST);
-		ServletContext sc = (ServletContext) invocation.getInvocationContext().get(SERVLET_CONTEXT);
 
-		FileInputStream in = null;
-		OutputStream out = null;
 		try {
 
 			File file = null;
 			String title = null;
 			data = invocation.getStack().findValue("data");
-			if (data instanceof File) {
-				file = (File) data;
-				title = file.getName();
-			} else if (data instanceof DataRow) {
-				DataRow row = (DataRow) data;
-				file = new File(row.getString("PATH_ABS"));
-				title = row.getString("NM");
-			}
-			String uploadDir = ConfigTable.getString("UPLOAD_DIR");
-			String fileServer = ConfigTable.getString("FILE_SERVER");
-			if(BasicUtil.isNotEmpty(fileServer)){
-				//D:\\upload\\anyline\\tmp\\894\\IMG_20160903_121158.jpg
-				String path = file.getAbsolutePath();
-				path = path.replace("\\", "/").replace(uploadDir, "");
-				if(fileServer.endsWith("/") && path.startsWith("/")){
-					path = path.substring(1,path.length());
-					path = fileServer + path;
-				}else if(fileServer.endsWith("/") || path.startsWith("/")){
-					path = fileServer + path;
-				}else{
-					path = fileServer + "/" + path;
-				}
-				response.sendRedirect(path);
-				log.info("[文件请求已转发][path:"+ request.getRequestURL() + "?" + request.getQueryString()+"][redirect:"+path+"]");
+			if(null == data){
+				log.warn("[文件下载][文件不存在][URL:" + request.getRequestURL() + "?" + request.getQueryString()+"]");
 				return;
 			}
-			
-			if (null != file && file.exists()) {
-				response.setCharacterEncoding("UTF-8");
-				response.setHeader("Location", title);
-				response.setHeader("Content-Disposition", "attachment; filename=" + title);
-				String mimeType = sc.getMimeType(file.getAbsolutePath());
-				response.setContentType(mimeType);
-				in = new FileInputStream(file);
-				out = response.getOutputStream();
-				byte[] buf = new byte[1024];
-				int count = 0;
-				if(ConfigTable.isDebug()){
-					log.info("在正传输文件:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
+			if (data instanceof File) {
+				file = (File)data;
+				WebUtil.writeFile(response, file, title);
+			} else if (data instanceof DataRow) {
+				DataRow row = (DataRow) data;
+				String fileServer = row.getString("SERVER_HOST");
+				//转到到文件服务器(根据URL)
+				if(BasicUtil.isNotEmpty(fileServer)){
+					String url = FileUtil.mergePath(row.getString("SUB_DIR"), row.getString("FILE_NAME"));
+					//注意http:\\中的\
+					url = url.replace("\\", "/").replace("//", "/");
+					url = FileUtil.mergePath(fileServer, url);
+					log.info("[文件请求已转发][ID:"+row.getPrimaryKey()+"][REDIRECT:"+url+"]");
+					response.sendRedirect(url);
+				}else{
+					String path = FileUtil.mergePath(row.getString("ROOT_DIR"), row.getString("SUB_DIR"), row.getString("FILE_NAME"));
+					file = new File(path);
+					title = row.getString("TITLE");
+					WebUtil.writeFile(response, file, title);
 				}
-				while ((count = in.read(buf)) >= 0) {
-					out.write(buf, 0, count);
-				}
-				if(ConfigTable.isDebug()){
-					log.info("传输完成:" + file.getAbsolutePath() + ",请求来自" + request.getRequestURL() + "?" + request.getQueryString());
-				}
-			}else{
-				log.info("文件不存在:" + file.getAbsolutePath());
 			}
 		} catch (Exception e) {
 			log.error(e);
-		} finally {
-			if (null != in) {
-				in.close();
-			}
-			if (null != out) {
-				out.close();
-			}
 		}
 	}
-
 }
