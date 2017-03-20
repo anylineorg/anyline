@@ -3,9 +3,9 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="config"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/anyline_core"/>
-	<classpathentry kind="lib" path="/anyline_core/lib/log4j-1.2.15.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/lib/commons-codec-1.10.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/alipay-sdk-java20170307171631.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>
