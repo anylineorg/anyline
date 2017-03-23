@@ -130,12 +130,16 @@ public class ConfigTable {
 			if(null != root){
 				configs.put("HOME_DIR", root);
 			}
-
-			File file = new File(classpath , "anyline-config.xml");
-			loadConfig(file);
-			
+			//classpath根目录
 			File dir = new File(classpath);
+			loadConfig(new File(dir , "anyline-config.xml"));
 			List<File> files = FileUtil.getChildrenFile(dir, "xml");
+			
+			//classpath/anyline目录
+			dir = new File(classpath,"anyline");
+			loadConfig(new File(dir, "anyline-config.xml"));
+			files.addAll(FileUtil.getChildrenFile(dir, "xml"));
+			
 			for(File f:files){
 				String name = f.getName();
 				if(name.startsWith("anyline-config") && !"anyline-config.xml".equals(name)){
