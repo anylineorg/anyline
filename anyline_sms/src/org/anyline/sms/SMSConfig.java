@@ -2,9 +2,11 @@ package org.anyline.sms;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.FileUtil;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -35,12 +37,14 @@ public class SMSConfig {
 	 */
 	private synchronized static void loadConfig() {
 		try {
-			String filePath = ConfigTable.getString("SMS_CONFIG_FILE");
-			if(BasicUtil.isEmpty(filePath)){
-				filePath = ConfigTable.getWebRoot() + "/WEB-INF/classes/anyline-sms.xml";
+
+			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
+			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
+			for(File file:files){
+				if("anyline-sms.xml".equals(file.getName())){
+					loadConfig(file);
+				}
 			}
-			File file = new File(filePath);
-			loadConfig(file);
 			
 		} catch (Exception e) {
 			log.error("配置文件解析异常:"+e);

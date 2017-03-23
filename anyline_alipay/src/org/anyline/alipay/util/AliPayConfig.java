@@ -40,6 +40,9 @@ public class AliPayConfig {
 			File file = new File(ConfigTable.getWebRoot() , "/WEB-INF/classes/anyline-alipay.xml");
 			loadConfig(file);
 			
+			file = new File(ConfigTable.getWebRoot() , "/WEB-INF/classes/anyline/anyline-alipay.xml");
+			loadConfig(file);
+			
 		} catch (Exception e) {
 			log.error("配置文件解析异常:"+e);
 		}
@@ -48,6 +51,12 @@ public class AliPayConfig {
 		try{
 			if(ConfigTable.isDebug()){
 				log.info("[加载支付宝配置文件] [file:" + file.getName() + "]");
+			}
+			if(!file.exists()){
+				if(ConfigTable.isDebug()){
+					log.info("[加载支付宝配置文件][文件不存在][file:" + file.getName() + "]");
+				}
+				return;
 			}
 			SAXReader reader = new SAXReader();
 			Document document = reader.read(file);
