@@ -2,8 +2,10 @@ package org.anyline.weixin.util;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 
 import org.anyline.util.ConfigTable;
+import org.anyline.util.FileUtil;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -81,9 +83,13 @@ public class WXConfig {
 	 */
 	private synchronized static void loadConfig() {
 		try {
-
-			File file = new File(ConfigTable.getWebRoot() , "/WEB-INF/classes/anyline-weixin.xml");
-			loadConfig(file);
+			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
+			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
+			for(File file:files){
+				if("anyline-weixin.xml".equals(file.getName())){
+					loadConfig(file);
+				}
+			}
 			
 		} catch (Exception e) {
 			log.error("配置文件解析异常:"+e);
