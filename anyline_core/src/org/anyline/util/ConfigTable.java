@@ -132,14 +132,15 @@ public class ConfigTable {
 			}
 			//classpath根目录
 			File dir = new File(classpath);
-			loadConfig(new File(dir , "anyline-config.xml"));
-			List<File> files = FileUtil.getChildrenFile(dir, "xml");
-			
-			//classpath/anyline目录
-			dir = new File(classpath,"anyline");
-			loadConfig(new File(dir, "anyline-config.xml"));
-			files.addAll(FileUtil.getChildrenFile(dir, "xml"));
-			
+			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
+
+			for(File f:files){
+				String name = f.getName();
+				if("anyline-config.xml".equals(name)){
+					loadConfig(f);
+				}
+			}
+
 			for(File f:files){
 				String name = f.getName();
 				if(name.startsWith("anyline-config") && !"anyline-config.xml".equals(name)){
