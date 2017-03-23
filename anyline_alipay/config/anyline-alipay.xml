@@ -8,6 +8,7 @@
     <!ATTLIST property key CDATA #REQUIRED>
 ]>
 <properties>
+	<!--  -->
 	<property key="PARTNER">2088021683721354</property>
 	<property key="SELLER_ID">xuanzekeji@163.com</property>
 	<property key="KEY">8yrm86a2jasyfx4vyb040wthne9qzwvm</property>
