@@ -438,8 +438,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param key
 	 * @return
 	 */
-	public double sum(int top, String key){
-		BigDecimal result = new BigDecimal("0");
+	public BigDecimal sum(int top, String key){
+		BigDecimal result = BigDecimal.ZERO;
 		int size = rows.size();
 		if(size>top){
 			size = top;
@@ -450,11 +450,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				result = result.add(getDecimal(i, key));
 			}
 		}
-		return result.doubleValue();
+		return result;
 	}
-	public double sum(String key) {
-		double result = 0.0;
-		 result = sum(size(), key);
+	public BigDecimal sum(String key) {
+		BigDecimal result = BigDecimal.ZERO;
+		result = sum(size(), key);
 		return result;
 	}
 	/**
@@ -496,12 +496,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return maxDouble(size(), key);
 	}
 
-	public double max(int top, String key){
+	public BigDecimal max(int top, String key){
 		BigDecimal result = maxDecimal(top, key);
-		return result.doubleValue();
+		return result;
 	}
-	public double max(String key){
-		return maxDouble(size(), key);
+	public BigDecimal max(String key){
+		return maxDecimal(size(), key);
 	}
 	
 	
@@ -546,12 +546,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return minDouble(size(), key);
 	}
 
-	public double min(int top, String key){
+	public BigDecimal min(int top, String key){
 		BigDecimal result = minDecimal(top, key);
-		return result.doubleValue();
+		return result;
 	}
-	public double min(String key){
-		return minDouble(size(), key);
+	public BigDecimal min(String key){
+		return minDecimal(size(), key);
 	}
 	
 	/**
@@ -582,8 +582,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param key
 	 * @return
 	 */
-	public double avg(int top, String key){
-		BigDecimal result = new BigDecimal(0);
+	public BigDecimal avg(int top, String key){
+		BigDecimal result = BigDecimal.ZERO;
 		int size = rows.size();
 		if(size>top){
 			size = top;
@@ -599,11 +599,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		if(count >0){
 			result = result.divide(new BigDecimal(count));
 		}
-		return result.doubleValue();
+		return result;
 	}
-	public double avg(String key){
-		double result = 0.0;
-		result = avg(size(),key);
+	public BigDecimal avg(String key){
+		BigDecimal result = avg(size(),key);
 		return result;
 	}
 	
