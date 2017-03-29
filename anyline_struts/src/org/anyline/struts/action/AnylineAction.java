@@ -41,6 +41,7 @@ import org.anyline.util.Constant;
 import org.anyline.util.DESUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
+import org.anyline.util.ImgUtil;
 import org.anyline.util.WebUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -427,6 +428,9 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return upload(subDir, src, srcName);
 	}
 	public DataRow upload(String subDir, File src, String srcName){
+		return upload(subDir, src, srcName, null);
+	}
+	public DataRow upload(String subDir, File src, String srcName, String title){
 		DataRow row = new DataRow();
 		try {
 			String fileName = BasicUtil.getRandomLowerString(10)+"."+FileUtil.getSuffixFileName(srcName);
@@ -453,9 +457,31 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			row.put("ROOT_DIR", rootDir);
 			row.put("SUB_DIR", subDir);
 			row.put("FILE_NAME", fileName);
+			row.put("TITLE", title);
 			row.put("SRC_NAME", srcName);
 			service.save(getUploadTable(null),row);
-			log.warn("[上传文件完成 ]["+filePath+"]");
+			row.put("URL", FileUtil.mergePath(ConfigTable.getString("FILE_SERVER"),subDir, fileName));
+			
+			String width = getParam("width");
+			String height = getParam("height");
+			int w = 0;
+			int h = 0;
+			if(BasicUtil.isNotEmpty(width)){
+				w = BasicUtil.parseInt(width, w);
+			}
+			if(BasicUtil.isNotEmpty(height)){
+				h = BasicUtil.parseInt(height, h);
+			}
+			if(w == 0){
+				w = h;
+			}
+			if(h == 0){
+				h =w;
+			}
+			if(w != 0 && h != 0){
+				ImgUtil.scale(targetFile, targetFile, w, h, false);
+			}
+			log.warn("[上传文件完成 ]["+filePath+"][TITLE:"+title+"]");
 			
 			
 		} catch (IOException e) {
