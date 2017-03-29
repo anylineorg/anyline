@@ -1,5 +1,7 @@
 package org.anyline.weixin.entity;
 
+import java.math.BigDecimal;
+
 import org.anyline.weixin.util.WXConfig;
 
 public class PayOrder {
@@ -12,7 +14,7 @@ public class PayOrder {
 	private String sign;
 	private String body;
 	private String out_trade_no;		//流水号　notify时原样回传　用来对应TRADE_CALL(常用格式 CALL_ID + _ + ORDER_ID)
-	private String total_fee;
+	private String total_fee;			//支付金额(分)
 	private String spbill_create_ip;
 	private String trade_type;
 	private String openid;
