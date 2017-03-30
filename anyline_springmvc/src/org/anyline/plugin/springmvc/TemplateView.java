@@ -29,10 +29,10 @@ import org.springframework.web.servlet.view.JstlView;
 
 public class TemplateView extends JstlView {
 	private Logger log = Logger.getLogger(this.getClass());
-	public static final String TEMPLATE_NAME				= "template_name";
-	public static final String STYLE_TEMPLATE_DES			= "style_template_des";
-	public static final String TEMPLATE_NAME_DEFAULT		= "default";
-	public static final String TEMPLATE_CONTENT_PATH 		= "template_content_path";
+	public static final String ANYLINE_TEMPLATE_NAME				= "template_name";
+	public static final String ANYLINE_STYLE_TEMPLATE_DES			= "style_template_des";
+	public static final String ANYLINE_TEMPLATE_NAME_DEFAULT		= "default";
+	public static final String ANYLINE_TEMPLATE_CONTENT_PATH 		= "anyline_template_content_path";
 	
 	
 	private String template;
@@ -81,7 +81,7 @@ public class TemplateView extends JstlView {
 		String template = null;
 		if(null != model){
 			//通过ModelAndView.add(TEMPLATE_NAME,"default");形式设置模板
-			template = (String)model.get(TEMPLATE_NAME);
+			template = (String)model.get(ANYLINE_TEMPLATE_NAME);
 		}
 		if(null == template){
 			//通过 new TemplateView(url,template);设置模板
@@ -110,7 +110,8 @@ public class TemplateView extends JstlView {
 				log.error("文件不存在:"+content_url);
 				content_url = ConfigTable.getString("DEFAULT_CONTENT_PAGE_PATH");
 			}
-			request.setAttribute(TEMPLATE_CONTENT_PATH, content_url);
+			request.setAttribute(ANYLINE_TEMPLATE_CONTENT_PATH, content_url);
+			request.setAttribute("template_content_path", content_url);
 		}
 		super.render(model, request, response);
 	}

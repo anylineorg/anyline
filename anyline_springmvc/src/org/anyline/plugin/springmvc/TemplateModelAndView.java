@@ -59,7 +59,7 @@ public class TemplateModelAndView extends ModelAndView{
 		
 		try{
 			String data_template= createFullTemplatePath(template);
-			addObject(TemplateView.STYLE_TEMPLATE_DES, WebUtil.encrypt(data_template));
+			addObject(TemplateView.ANYLINE_STYLE_TEMPLATE_DES, WebUtil.encrypt(data_template));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
