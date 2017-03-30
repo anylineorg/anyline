@@ -246,11 +246,11 @@ public class TemplateController extends AnylineController {
 			}
 		}
 		tv.setViewName(name);
-		tv.addObject(TemplateView.TEMPLATE_NAME, content_template);
+		tv.addObject(TemplateView.ANYLINE_TEMPLATE_NAME, content_template);
 		tv.addObject(TemplateModelAndView.CONTENT_URL,getRequest().getRequestURI());
 		String style_template = name.substring(0,name.lastIndexOf("/")+1).replace("/page/", "/template/style/");
 		try{
-			tv.addObject(TemplateView.STYLE_TEMPLATE_DES, DESUtil.getInstance().encrypt(style_template));
+			tv.addObject(TemplateView.ANYLINE_STYLE_TEMPLATE_DES, DESUtil.getInstance().encrypt(style_template));
 		}catch(Exception e){
 			e.printStackTrace();
 		}
@@ -261,7 +261,7 @@ public class TemplateController extends AnylineController {
 	}
 
 	protected TemplateModelAndView createView(String name){
-		return createView(name,TemplateView.TEMPLATE_NAME_DEFAULT);
+		return createView(name,TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT);
 	}
 	protected TemplateModelAndView template(String name){
 		return createView(name);
