@@ -25,7 +25,15 @@ public class JPushUtil {
 		config.setTimeToLive(60 * 60 * 24);
 		jpush = new JPushClient(masterSecret, appKey, null, config);
 	}
-
+	/**
+	 * 
+	 * @param type 消息类别
+	 * @param title 标题
+	 * @param msg 详细信息
+	 * @param extras 参数
+	 * @param tags 接收人
+	 * @return
+	 */
 	public static boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){
 		boolean result = false;
 		if(null == extras){
@@ -41,6 +49,15 @@ public class JPushUtil {
 		}
 		return result;
 	}
+	/**
+	 * 
+	 * @param type 消息类别
+	 * @param title 标题
+	 * @param msg 详细信息
+	 * @param extras 参数
+	 * @param tags 接收人
+	 * @return
+	 */
 	public static boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){
 		boolean result = false;
 		if(null == extras){
