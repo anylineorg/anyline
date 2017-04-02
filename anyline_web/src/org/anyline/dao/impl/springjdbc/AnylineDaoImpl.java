@@ -67,8 +67,6 @@ public class AnylineDaoImpl implements AnylineDao {
 	private SQLCreater creater;
 	@Autowired(required=true)
 	private JdbcTemplate jdbc;
-	@Autowired(required=true)
-	private DataSource dataSource;			//数据源
 	
 	
 	private BatchInsertStore batchInsertStore = new BatchInsertStore();

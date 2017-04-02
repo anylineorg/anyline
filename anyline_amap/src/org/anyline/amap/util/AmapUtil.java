@@ -702,8 +702,8 @@ public class AmapUtil {
 	 * @param location
 	 * @return
 	 */
-	public String regeo(String location){
-		String address = null;
+	public DataRow regeo(String location){
+		DataRow row = null;
 		String url = "http://restapi.amap.com/v3/geocode/regeo";
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("key", this.key);
@@ -712,17 +712,23 @@ public class AmapUtil {
 		params.put("sig", sign);
 		String txt = HttpClientUtil.get(url, "UTF-8", params).getText();
 		try{
-			DataRow row = DataRow.parseJson(txt);
+			row = DataRow.parseJson(txt);
 			if(null != row){
 				row = row.getRow("regeocode");
 				if(null != row){
-					address = row.getString("formatted_address");
+					DataRow addressComponent = row.getRow("addressComponent");
+					if(null != addressComponent){
+						addressComponent.put("address", row.getString("formatted_address"));
+						row = addressComponent;
+					}else{
+						row.put("address", row.getString("formatted_address"));
+					}
 				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		return address;
+		return row;
 	}
 	/**
 	 * 根据地址查坐标
