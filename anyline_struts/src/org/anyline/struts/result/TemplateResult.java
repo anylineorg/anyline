@@ -95,6 +95,7 @@ public class TemplateResult extends StrutsResultSupport {
 			HttpServletResponse response = ServletActionContext.getResponse();
 			RequestDispatcher dispatcher = request.getRequestDispatcher(template);
 			request.setAttribute("content_page", contentPage);
+			request.setAttribute("anyline_content_page", contentPage);
 			if (dispatcher == null) {
 				response.sendError(404,
 						(new StringBuilder()).append("result '")
