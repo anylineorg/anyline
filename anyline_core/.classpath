@@ -35,5 +35,21 @@
 	<classpathentry kind="lib" path="lib/proxool-cglib.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-api-1.7.7.jar"/>
 	<classpathentry kind="lib" path="lib/slf4j-jdk14-1.7.7.jar"/>
+	<classpathentry kind="lib" path="lib/spring-beans-4.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-context-4.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/alipay-sdk-java20170307171631.jar"/>
+	<classpathentry kind="lib" path="lib/spring-aop-4.1.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-core-4.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-expression-4.1.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-jdbc-4.1.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-tx-4.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-web-4.1.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/spring-webmvc-4.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/sqljdbc.jar"/>
+	<classpathentry kind="lib" path="lib/standard.jar"/>
+	<classpathentry kind="lib" path="lib/struts2-convention-plugin-2.3.24.1.jar"/>
+	<classpathentry kind="lib" path="lib/struts2-core-2.3.24.1.jar"/>
+	<classpathentry kind="lib" path="lib/struts2-spring-plugin-2.3.24.1.jar"/>
+	<classpathentry kind="lib" path="lib/xwork-core-2.3.24.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
