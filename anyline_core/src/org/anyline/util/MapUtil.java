@@ -43,6 +43,14 @@ public class MapUtil {
 			return -1;
 		}
 	}
+	public static String distanceFormat(double lon1, double lat1, double lon2, double lat2) {
+		double distance = distance(lon1, lat1, lon2, lat2);
+		return distanceFormat(distance);
+	}
+	public static String distanceFormatCn(double lon1, double lat1, double lon2, double lat2) {
+		double distance = distance(lon1, lat1, lon2, lat2);
+		return distanceFormatCn(distance);
+	}
 	public static double distance(String lon1, String lat1, String lon2, String lat2) {
 		double distance = -1;
 		try{
@@ -56,5 +64,27 @@ public class MapUtil {
 			e.printStackTrace();
 		}
 		return distance;
+	}
+	public static String distanceFormat(String lon1, String lat1, String lon2, String lat2) {
+		double distance = distance(lon1, lat1, lon2, lat2);
+		return distanceFormat(distance);
+	}
+	public static String distanceFormatCn(String lon1, String lat1, String lon2, String lat2) {
+		double distance = distance(lon1, lat1, lon2, lat2);
+		return distanceFormatCn(distance);
+	}
+	public static String distanceFormat(double distance){
+		String result = distance+"m";
+		if(distance > 1000){
+			result = NumberUtil.format(distance/1000,"0.00") +"km";
+		}
+		return result;
+	}
+	public static String distanceFormatCn(double distance){
+		String result = distance+"米";
+		if(distance > 1000){
+			result = NumberUtil.format(distance/1000,"0.00") +"千米";
+		}
+		return result;
 	}
 }
