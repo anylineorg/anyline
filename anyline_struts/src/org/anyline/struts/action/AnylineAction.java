@@ -460,7 +460,9 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			row.put("TITLE", title);
 			row.put("SRC_NAME", srcName);
 			service.save(getUploadTable(null),row);
-			row.put("URL", FileUtil.mergePath(ConfigTable.getString("FILE_SERVER"),subDir, fileName));
+			String url = FileUtil.mergePath(ConfigTable.getString("FILE_SERVER"),subDir, fileName);
+			url = url.replace("\\", "/");
+			row.put("URL", url);
 			
 			String width = getParam("width");
 			String height = getParam("height");
