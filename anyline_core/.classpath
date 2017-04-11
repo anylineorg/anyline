@@ -22,7 +22,7 @@
 	<classpathentry kind="lib" path="lib/ezmorph-1.0.5.jar"/>
 	<classpathentry kind="lib" path="lib/geronimo-jpa_2.0_spec-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/httpclient-4.3.3.jar" sourcepath="C:/Users/Administrator/.m2/repository/org/apache/httpcomponents/httpclient/4.3.3/httpclient-4.3.3-sources.jar"/>
-	<classpathentry kind="lib" path="lib/httpcore-4.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.3.2.jar" sourcepath="C:/Users/Administrator/.m2/repository/org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2-sources.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.3.3.jar"/>
 	<classpathentry kind="lib" path="lib/jakarta-oro-2.0.8.jar"/>
 	<classpathentry kind="lib" path="lib/javassist-3.11.0.GA.jar"/>
