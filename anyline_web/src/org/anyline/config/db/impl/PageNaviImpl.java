@@ -43,38 +43,45 @@ public class PageNaviImpl implements PageNavi, Serializable{
 //
 //	public static final String PAGE_VOL				= "pageRows"							;
 //	public static final String PAGE_NO				= "pageNo"								;
+
+	private static final String BR = "\n";
+	private static final String TAB = "\t";
+	private static final String BR_TAB = "\n\t";
 	public static final String PAGE_ROWS			= "_anyline_page_rows"					;
 	public static final String PAGE_NO				= "_anyline_page"						;
 	
-	private int totalRow;					//记录总数
-	private int totalPage; 					//最大页数
-	private int curPage=1;					//当前页数
+	private int totalRow					;	//记录总数
+	private int totalPage					;	//最大页数
+	private int curPage=1					;	//当前页数
 	
-	private int pageRange=10;				//显示多少个分页下标
-	private int pageRows=10;				//每页多少条
-	private int displayPageFirst = 0;		//显示的第一页标签
-	private int displayPageLast = 0;		//显示的最后页标签
-	private String baseLink;				//基础URL
-	private OrderStore orders;				//排序依据(根据 orderCol 排序分页)
-	private int calType = 0;				//分页计算方式(0-按页数 1-按开始结束数)
-	private int firstRow = 0;				//第一行
-	private int lastRow = -1;				//最后一行
-	private boolean lazy = false;
-	private String flag  = "";				//一个jsp中有多个分页时用来区分
-	private long lazyPeriod = 0;				//总条数懒加载时间间隔(秒)
-	private String lazyKey = null;
-	
+	private int pageRange=10				;	//显示多少个分页下标
+	private int pageRows=10					;	//每页多少条
+	private int displayPageFirst = 0		;	//显示的第一页标签
+	private int displayPageLast = 0			;	//显示的最后页标签
+	private String baseLink					;	//基础URL
+	private OrderStore orders				;	//排序依据(根据 orderCol 排序分页)
+	private int calType = 0					;	//分页计算方式(0-按页数 1-按开始结束数)
+	private int firstRow = 0				;	//第一行
+	private int lastRow = -1				;	//最后一行
+	private boolean lazy = false			;
+	private String flag  = ""				;	//一个jsp中有多个分页时用来区分
+	private long lazyPeriod = 0				;	//总条数懒加载时间间隔(秒)
+	private String lazyKey = null			;	//懒加载
+	private int range = 10					;	//下标数量
+	private boolean showStat = false		;	//显示统计
+	private boolean showJump = false		;	//显示跳转
+	private int type = 0					;	//分页方式(0:下标 1:加载更多)
+	private String loadMoreFormat = "加载更多"	;
+	private Map<String,List<Object>> params	;	//查询参数
 
-//	private String scriptFile = "/common/web/common/script/navi.js";
-//	private String styleFile = "/common/web/common/style/navi.css";
+	private String statFormat = "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";
+	private String tagFirst = "第一页";
+	private String tagPrev = "上一页";
+	private String tagNext = "下一页";
+	private String tagLast = "最后页";
+	private String tagGo = "确定";
 	
-	private Map<String,List<Object>> params;	//查询参数
 	
-	private static final String BR = "\n";
-	//private static final String TAB = "\t";
-	private static final String BR_TAB = "\n\t";
-	
-	private StringBuilder builder = new StringBuilder();		//分页HTML
 	public PageNaviImpl(int totalRow, int curPage, int pageRows, String baseLink) {
 		this.totalRow = totalRow;
 		this.curPage = curPage;
@@ -91,6 +98,109 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		this.baseLink = baseLink;
 	}
 	public PageNaviImpl(){}
+
+	public String ajaxPage(){
+		return html("ajax");
+	}
+	public String jspPage(){
+		return html("html");
+	}
+	/**
+	 * 
+	 * @return
+	 */
+	public String html(String creater){
+		calculate();
+		StringBuilder builder = new StringBuilder();
+		String configFlag = "";
+		if("ajax".equals(creater)){
+			configFlag = Navi.CONFIG_FLAG_KEY + flag;
+		}
+		if("html".equals(creater)){
+			builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
+			builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
+		}
+		builder.append("<form action=\"" + baseLink + "\" method=\"post\">\n");
+		builder.append("<input type='hidden' name='"+PageNavi.PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
+		if("ajax".equals(creater)){
+			builder.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + configFlag + "'/>");
+		}
+		builder.append(createHidParams());
+		builder.append("<div class=\"anyline_navi\">\n");
+		String stat = ConfigTable.getString("NAVI_STAT_FORMAT",statFormat); 
+		stat = stat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
+		if(ConfigTable.getBoolean("NAVI_SHOW_STAT", true)){
+			builder.append(stat).append("\n");
+		}
+		if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
+			createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
+			createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
+		}
+		int range = ConfigTable.getInt("NAVI_PAGE_RANGE",10);
+		int fr = NumberUtil.getMax(1,curPage - range/2);
+		int to = fr + range - 1;
+		boolean match = false;
+		if(totalPage > range && curPage>range/2){
+			match = ConfigTable.getBoolean("NAVI_PAGE_MATCH", true);
+		}
+		if(match){
+			to = curPage + range/2;
+		}
+		if(totalPage - curPage < range/2){
+			fr = totalPage - range;
+		}
+		fr = NumberUtil.getMax(fr, 1);
+		to = NumberUtil.getMin(to, totalPage);
+		
+		if(type ==0){
+			if(ConfigTable.getBoolean("NAVI_SHOW_INDEX", true)){
+				builder.append("<div class='navi-num-border'>\n");
+				for(int i=fr; i<=to; i++){
+					createPageTag(builder, "navi-num-item", i + "", i, configFlag);
+				}
+				builder.append("</div>\n");
+			}
+	
+			if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
+				createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
+				createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage, configFlag);
+			}
+			if(ConfigTable.getBoolean("NAVI_SHOW_JUMP")){
+				builder.append("转到<input type='text' value='");
+				builder.append(curPage);
+				builder.append("' class='navi-go-txt _anyline_jump_txt'/>页<span class='navi-go-button' onclick='_navi_jump("+configFlag+")'>")
+				.append(ConfigTable.getString("NAVI_TAG_GO",tagGo)).append("</span>\n");
+			}
+		}else if(type == 1){
+			//加载更多
+			String loadMoreFormat = this.loadMoreFormat;
+			if(BasicUtil.isNotEmpty(loadMoreFormat)){
+				loadMoreFormat = ConfigTable.getString("NAVI_LOAD_MORE_FORMAT", "加载更多"); 
+			}
+			createPageTag(builder, "navi-more-button", loadMoreFormat, (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
+		}
+		builder.append("</div>");
+		builder.append("</form>\n");
+		return builder.toString();
+	}
+	private void createPageTag(StringBuilder builder, String clazz, String tag, int page, String configFlag){
+		builder.append("<span class ='").append(clazz);
+		if(page == curPage){
+			builder.append(" navi-disabled");
+			if(clazz.contains("navi-num-item")){
+				builder.append(" navi-num-item-cur");
+			}
+			builder.append("'");
+		}else{
+			builder.append("' onclick='_navi_go(").append(page);
+			if(BasicUtil.isNotEmpty(configFlag)){
+				builder.append(",").append(configFlag);
+			}
+			builder.append(")'");
+		}
+		builder.append(">");
+		builder.append(tag).append("</span>\n");
+	}
 	/**
 	 * 分页计算方式
 	 * @param type	0-按页数 1-按开始结束记录数
@@ -406,108 +516,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		}
 		return html;
 	}
-//	@Override
-//	public String getOrderText(boolean require, OrderStore store) {
-//		return null;
-//	}
 	
-	private String statFormat = "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";
-	private String tagFirst = "第一页";
-	private String tagPrev = "上一页";
-	private String tagNext = "下一页";
-	private String tagLast = "最后页";
-	private String tagGo = "确定";
-	public String ajaxPage(){
-		return html("ajax");
-	}
-	public String jspPage(){
-		return html("html");
-	}
-	/**
-	 * 
-	 * @param script 是否引用js css文件
-	 * @return
-	 */
-	public String html(String type){
-		calculate();
-		StringBuilder builder = new StringBuilder();
-		String configFlag = "";
-		if("ajax".equals(type)){
-			configFlag = Navi.CONFIG_FLAG_KEY + flag;
-		}
-		if("html".equals(type)){
-			builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
-			builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
-		}
-		builder.append("<form action=\"" + baseLink + "\" method=\"post\">\n");
-		builder.append("<input type='hidden' name='"+PageNavi.PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
-		if("ajax".equals(type)){
-			builder.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + configFlag + "'/>");
-		}
-		builder.append(createHidParams());
-		builder.append("<div class=\"anyline_navi\">\n");
-		String stat = ConfigTable.getString("NAVI_STAT_FORMAT",statFormat); 
-		stat = stat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
-		builder.append(stat).append("\n");
-		if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
-			createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
-			createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
-		}
-		int range = ConfigTable.getInt("NAVI_PAGE_RANGE",10);
-		int fr = NumberUtil.getMax(1,curPage - range/2);
-		int to = fr + range - 1;
-		boolean match = false;
-		if(totalPage > range && curPage>range/2){
-			match = ConfigTable.getBoolean("NAVI_PAGE_MATCH", true);
-		}
-		if(match){
-			to = curPage + range/2;
-		}
-		if(totalPage - curPage < range/2){
-			fr = totalPage - range;
-		}
-		fr = NumberUtil.getMax(fr, 1);
-		to = NumberUtil.getMin(to, totalPage);
-		if(ConfigTable.getBoolean("NAVI_SHOW_INDEX", true)){
-			builder.append("<div class='navi-num-border'>\n");
-			for(int i=fr; i<=to; i++){
-				createPageTag(builder, "navi-num-item", i + "", i, configFlag);
-			}
-			builder.append("</div>\n");
-		}
-
-		if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
-			createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
-			createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage, configFlag);
-		}
-		if(ConfigTable.getBoolean("NAVI_SHOW_JUMP")){
-			builder.append("转到<input type='text' value='");
-			builder.append(curPage);
-			builder.append("' class='navi-go-txt _anyline_jump_txt'/>页<span class='navi-go-button' onclick='_navi_jump("+configFlag+")'>")
-			.append(ConfigTable.getString("NAVI_TAG_GO",tagGo)).append("</span>\n");
-		}
-		builder.append("</div>");
-		builder.append("</form>\n");
-		return builder.toString();
-	}
-	private void createPageTag(StringBuilder builder, String clazz, String tag, int page, String configFlag){
-		builder.append("<span class ='").append(clazz);
-		if(page == curPage){
-			builder.append(" navi-disabled");
-			if(clazz.contains("navi-num-item")){
-				builder.append(" navi-num-item-cur");
-			}
-			builder.append("'");
-		}else{
-			builder.append("' onclick='_navi_go(").append(page);
-			if(BasicUtil.isNotEmpty(configFlag)){
-				builder.append(",").append(configFlag);
-			}
-			builder.append(")'");
-		}
-		builder.append(">");
-		builder.append(tag).append("</span>\n");
-	}
 	public String toString(){
 		return html("html");
 	}
@@ -518,5 +527,31 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		this.flag = flag;
 		return this;
 	}
+	public int getRange() {
+		return range;
+	}
+	public void setRange(int range) {
+		this.range = range;
+	}
+	public boolean isShowStat() {
+		return showStat;
+	}
+	public void setShowStat(boolean showStat) {
+		this.showStat = showStat;
+	}
+	public boolean isShowJump() {
+		return showJump;
+	}
+	public void setShowJump(boolean showJump) {
+		this.showJump = showJump;
+	}
+	public int getType() {
+		return type;
+	}
+	public PageNavi setType(int type) {
+		this.type = type;
+		return this;
+	}
+	
 
 }
