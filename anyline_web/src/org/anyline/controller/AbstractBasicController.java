@@ -628,6 +628,12 @@ public class AbstractBasicController{
 			if(ConfigTable.isDebug()){
 				log.warn("[LOAD JSP NAVI][ROWS:"+navi.getTotalRow()+"][PAGE:"+navi.getTotalPage()+"]");
 			}
+			int type = 0;
+			String _type = request.getParameter("_anyline_navi_type");
+			if("1".equals(_type)){
+				type = 1;
+			}
+			navi.setType(type);
 			map.put("NAVI", BasicUtil.escape(navi.ajaxPage()));
 			map.put("TOTAL_ROW", navi.getTotalRow()+"");
 			map.put("TOTAL_PAGE", navi.getTotalPage()+"");

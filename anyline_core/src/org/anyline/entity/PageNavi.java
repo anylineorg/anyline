@@ -150,5 +150,6 @@ public interface PageNavi extends Serializable{
 	public String ajaxPage();
 	public String jspPage();
 	public PageNavi setFlag(String flag);
+	public PageNavi setType(int type);
 
 }
