@@ -13,7 +13,7 @@ import org.anyline.util.regular.RegularUtil;
 public class SQLLogParser {
 	public static void main(String args[]) throws Exception{
 		//修改文件格式:UTF-8
-		List<SQLLog> logs = parse(new File("D:\\sql.txt"));
+		List<SQLLog> logs = parse(new File("D:\\line_an"));
 		Collections.sort(logs, new Comparator<SQLLog>() {  
             public int compare(SQLLog o1, SQLLog o2) {  
                 int result = o1.getExeTime() - o2.getExeTime();  
@@ -35,6 +35,8 @@ public class SQLLogParser {
 		String content = FileUtil.readFile(file).toString();
 		String regex = "\\[SQL:(\\d+?-\\d+?)\\]\\[TXT";
 		List<String> heads = RegularUtil.fetch(content, regex,2,1);
+		int size = heads.size();
+		int idx = 0;
 		for(String head:heads){
 			String tag = "[SQL:"+head+"][TXT:";
 			String txt = RegularUtil.cut(content,tag,"]");
@@ -45,7 +47,7 @@ public class SQLLogParser {
 			tag = "[SQL:"+head+"][封装耗时:";
 			String packTime = RegularUtil.cut(content,tag,"ms");
 			String rows = RegularUtil.cut(content,tag, "行数:","]");
-			
+			System.out.println(idx+++"/"+size + " " +head);
 			SQLLog sql = new SQLLog();
 			sql.setKey(head);
 			sql.setExeTime(exeTime);

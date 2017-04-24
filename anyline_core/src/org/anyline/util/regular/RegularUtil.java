@@ -238,7 +238,7 @@ public class RegularUtil {
 		if(_to <= _fr) {
 			return null;
 		}
-		return text.substring(_fr+frTag.length(),_to).trim();
+		return text.substring(_fr+frTag.length(),_to);
 	}
 	public static List<String> cuts(String text, String ... tags){
 		List<String> list = new ArrayList<String>();
