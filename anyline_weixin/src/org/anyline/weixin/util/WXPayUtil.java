@@ -22,7 +22,7 @@ public class WXPayUtil {
 		PayOrderResult result = null;
 		order.setNonce_str(BasicUtil.getRandomString(20));
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = WXUtil.sign(map);
+		String sign = WXUtil.getInstance().sign(map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
