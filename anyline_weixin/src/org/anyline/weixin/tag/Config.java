@@ -42,6 +42,7 @@ public class Config extends BaseBodyTag {
 	private static Logger log = Logger.getLogger(Config.class);
 	private boolean debug = false;
 	private String apis= "";
+	private String key = "";
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
@@ -56,18 +57,19 @@ public class Config extends BaseBodyTag {
 			if(BasicUtil.isNotEmpty(param)){
 				url += "?" + param;
 			}
-			Map<String,Object> map = WXUtil.jsapiSign(url);
+			WXUtil util = WXUtil.getInstance(key);
+			Map<String,Object> map = util.jsapiSign(url);
 			
 			String config = "<script language=\"javascript\">\n";
 			if(debug){
 				String alert = "请注意url,经过代理的应用有可能造成域名不符(如localhost,127.0.0.1等),请在anyline-config.xml中配置WEB_SERVER=http://www.xx.com\\n";
-				alert += "SIGN SRC: appId=" + WXConfig.APP_ID + ",noncestr="+map.get("noncestr")
+				alert += "SIGN SRC: appId=" + util.getConfig().getString("APP_ID") + ",noncestr="+map.get("noncestr")
 						+",jsapi_ticket="+map.get("jsapi_ticket")+",url="+url+",timestamp="+map.get("timestamp");
 				config += "alert(\""+alert+"\");\n";
 			}
 			config += "wx.config({\n";
 			config += "debug:"+debug+",\n";
-			config += "appId:'"+WXConfig.APP_ID+"',\n";
+			config += "appId:'"+util.getConfig().getString("APP_ID")+"',\n";
 			config += "timestamp:"+map.get("timestamp")+",\n";
 			config += "nonceStr:'"+map.get("noncestr") + "',\n";
 			config += "signature:'"+map.get("sign")+"',\n";
@@ -108,6 +110,12 @@ public class Config extends BaseBodyTag {
 	}
 	public void setApis(String apis) {
 		this.apis = apis;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
 	}
 	
 }

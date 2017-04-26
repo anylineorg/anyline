@@ -43,24 +43,26 @@ public class Pay extends BaseBodyTag {
 	private String prepay= "";
 	private String success = null;
 	private String fail = null;
+	private String key;
 	public int doEndTag() throws JspException {
 		try{
+			WXUtil util = WXUtil.getInstance(key);
 			String timestamp = System.currentTimeMillis()/1000+"";
 			String random = BasicUtil.getRandomLowerString(20);
 			String pkg = "prepay_id="+prepay;
 			Map<String,Object> params = new HashMap<String,Object>();
 			params.put("package", pkg);
 			params.put("timeStamp", timestamp);
-			params.put("appId", WXConfig.APP_ID);
+			params.put("appId", util.getConfig().getString("APP_ID"));
 			params.put("nonceStr", random);
 			params.put("signType", "MD5");
-			String sign = WXUtil.sign(params);
+			String sign = util.sign(params);
 			StringBuilder builder = new StringBuilder();
 			
 			builder.append("<script language=\"javascript\">\n");
 			builder.append("	function onBridgeReady() {\n");
 			builder.append("		WeixinJSBridge.invoke('getBrandWCPayRequest', {\n");
-			builder.append("			'appId':'").append(WXConfig.APP_ID).append("',\n");
+			builder.append("			'appId':'").append(util.getConfig().getString("APP_ID")).append("',\n");
 			builder.append("			'timeStamp':'").append(timestamp).append("',\n");
 			builder.append("			'nonceStr':'").append(random).append("',\n");
 			builder.append("			'package':'").append(pkg).append("',\n");
@@ -124,6 +126,12 @@ public class Pay extends BaseBodyTag {
 	}
 	public void setFail(String fail) {
 		this.fail = fail;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
 	}
 	
 }
