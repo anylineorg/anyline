@@ -1,11 +1,8 @@
 package org.anyline.weixin.util;
 
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Hashtable;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import net.sf.json.JSONObject;
 
@@ -23,13 +20,38 @@ import org.slf4j.LoggerFactory;
 public class WXUtil {
 
 	private static Logger log = LoggerFactory.getLogger(WXUtil.class);
-	private static DataSet accessTokens = new DataSet();
-	private static DataSet jsapiTickets = new DataSet();
+	private DataSet accessTokens = new DataSet();
+	private DataSet jsapiTickets = new DataSet();
+	private WXConfig config = null;
 
-	public static String getAccessToken(){
-		return getAccessToken(WXConfig.APP_ID, WXConfig.APP_SECRECT);
+	private static Hashtable<String,WXUtil> instances = new Hashtable<String,WXUtil>();
+	public static WXUtil getInstance(){
+		return getInstance("default");
 	}
-	public static String getAccessToken(String appid, String secret){
+	public static WXUtil getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
+			key = "default";
+		}
+		WXUtil util = instances.get(key);
+		if(null == util){
+			util = new WXUtil();
+			WXConfig config = WXConfig.getInstance(key);
+			util.config = config;
+			instances.put(key, util);
+		}
+		return util;
+	}
+	
+	public WXConfig getConfig() {
+		return config;
+	}
+	public void setConfig(WXConfig config) {
+		this.config = config;
+	}
+	public String getAccessToken(){
+		return getAccessToken(config.getString("APP_ID"), config.getString("APP_SECRECT"));
+	}
+	public String getAccessToken(String appid, String secret){
 		String result = "";
 		DataRow row = accessTokens.getRow("APP_ID", appid);
 		if(null == row){
@@ -43,7 +65,7 @@ public class WXUtil {
 		}
 		return result;
 	}
-	private static DataRow newAccessToken(String appid, String secret){
+	private DataRow newAccessToken(String appid, String secret){
 		if(ConfigTable.isDebug()){
 			log.warn("[CREATE NEW ACCESS TOKEN][appid:"+appid+", secret:"+secret+"]");
 		}
@@ -69,9 +91,9 @@ public class WXUtil {
 		return row;
 	}
 	
-	public static String getJsapiTicket(){
+	public String getJsapiTicket(){
 		String result = "";
-		DataRow row = jsapiTickets.getRow("APP_ID", WXConfig.APP_ID);
+		DataRow row = jsapiTickets.getRow("APP_ID", config.getString("APP_ID"));
 		String accessToken = getAccessToken();
 		if(null == row){
 			row = newJsapiTicket(accessToken);
@@ -84,7 +106,7 @@ public class WXUtil {
 		}
 		return result;
 	}
-	public static DataRow newJsapiTicket(String accessToken){
+	public DataRow newJsapiTicket(String accessToken){
 		if(ConfigTable.isDebug()){
 			log.warn("[CREATE NEW JSAPI TICKET][token:"+accessToken+"]");
 		}
@@ -117,14 +139,14 @@ public class WXUtil {
 	 * @param encode
 	 * @return
 	 */
-	public static String jsapiSign(Map<String,Object> params){
+	public String jsapiSign(Map<String,Object> params){
 		String sign = "";
 		sign = BasicUtil.joinBySort(params);
 		sign = SHA1Util.sign(sign);
 		return sign;
 	}
 	
-	public static Map<String,Object> jsapiSign(String url){
+	public Map<String,Object> jsapiSign(String url){
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("noncestr", BasicUtil.getRandomLowerString(32));
 		params.put("jsapi_ticket", getJsapiTicket());
@@ -132,7 +154,7 @@ public class WXUtil {
 		params.put("url", url);
 		String sign = jsapiSign(params);
 		params.put("sign", sign);
-		params.put("appid", WXConfig.APP_ID);
+		params.put("appid", config.getString("APP_ID"));
 		return params;
 	}
 	/**
@@ -141,10 +163,10 @@ public class WXUtil {
 	 * @param params
 	 * @return
 	 */
-	public static String sign(Map<String, Object> params) {
+	public String sign(Map<String, Object> params) {
 		String sign = "";
 		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + WXConfig.API_SECRECT;
+		sign += "&key=" + config.getString("API_SECRECT");
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
 	}

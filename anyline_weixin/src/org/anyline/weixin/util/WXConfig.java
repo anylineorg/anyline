@@ -1,9 +1,13 @@
 package org.anyline.weixin.util;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 import org.apache.log4j.Logger;
@@ -14,20 +18,21 @@ import org.dom4j.io.SAXReader;
 
 public class WXConfig {
 	private static Logger log = Logger.getLogger(WXConfig.class);
-
+	private static Hashtable<String, WXConfig> instances = new Hashtable<String,WXConfig>();
+	private Map<String,String> kvs = new HashMap<String,String>();
 	/**
 	 * 服务号相关信息
 	 */
-	public static String APP_ID = ""				; //AppID(应用ID)
-	public static String APP_SECRECT = ""			; //AppSecret(应用密钥)
-	public static String API_SECRECT = ""			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
-	public static String MCH_ID = ""				; //商家号
-	public static String SIGN_TYPE = ""				; //签名加密方式
-	public static String SERVER_TOKEN = ""			; //服务号的配置token
-	public static String CERT_PATH = ""				; //微信支付证书存放路径地址
-	public static String PAY_NOTIFY_URL = ""		; //微信支付统一接口的回调action
-	public static String PAY_CALLBACK_URL = ""		; //微信支付成功支付后跳转的地址
-	public static String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
+//	public static String APP_ID = ""				; //AppID(应用ID)
+//	public static String APP_SECRECT = ""			; //AppSecret(应用密钥)
+//	public static String API_SECRECT = ""			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+//	public static String MCH_ID = ""				; //商家号
+//	public static String SIGN_TYPE = ""				; //签名加密方式
+//	public static String SERVER_TOKEN = ""			; //服务号的配置token
+//	public static String CERT_PATH = ""				; //微信支付证书存放路径地址
+//	public static String PAY_NOTIFY_URL = ""		; //微信支付统一接口的回调action
+//	public static String PAY_CALLBACK_URL = ""		; //微信支付成功支付后跳转的地址
+//	public static String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
 
 	public static final String TRADE_TYPE_JSAPI 		= "JSAPI"	;//公众号支付	
 	public static final String TRADE_TYPE_NATIVE 		= "NATIVE"	;//原生扫码支付
@@ -67,7 +72,7 @@ public class WXConfig {
 	public final static String SHORT_URL = "https://api.mch.weixin.qq.com/tools/shorturl";
 	//接口调用上报接口(POST)
 	public final static String REPORT_URL = "https://api.mch.weixin.qq.com/payitil/report";
-		
+
 	static{
 		init();
 		debug();
@@ -75,6 +80,16 @@ public class WXConfig {
 	public static void init() {
 		//加载配置文件
 		loadConfig();
+	}
+
+	public static WXConfig getInstance(){
+		return instances.get("default");
+	}
+	public static WXConfig getInstance(String key){
+		return instances.get(key);
+	}
+	public String getString(String key){
+		return kvs.get(key);
 	}
 	/**
 	 * 加载配置文件
@@ -100,39 +115,31 @@ public class WXConfig {
 			if(ConfigTable.isDebug()){
 				log.info("[加载微信配置文件] [file:" + file.getName() + "]");
 			}
+
 			SAXReader reader = new SAXReader();
 			Document document = reader.read(file);
 			Element root = document.getRootElement();
-			for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();){
-				Element propertyElement = itrProperty.next();
-				String key = propertyElement.attributeValue("key");
-				String value = propertyElement.getTextTrim();
-				if("APP_ID".equalsIgnoreCase(key)){
-					WXConfig.APP_ID = value;
-				}else if("APP_SECRECT".equalsIgnoreCase(key)){
-					WXConfig.APP_SECRECT = value;
-				}else if("API_SECRECT".equalsIgnoreCase(key)){
-					WXConfig.API_SECRECT = value;
-				}else if("MCH_ID".equalsIgnoreCase(key)){
-					WXConfig.MCH_ID = value;
-				}else if("SIGN_TYPE".equalsIgnoreCase(key)){
-					WXConfig.SIGN_TYPE = value;
-				}else if("SERVER_TOKEN".equalsIgnoreCase(key)){
-					WXConfig.SERVER_TOKEN = value;
-				}else if("CERT_PATH".equalsIgnoreCase(key)){
-					WXConfig.CERT_PATH = value;
-				}else if("PAY_NOTIFY_URL".equalsIgnoreCase(key)){
-					WXConfig.PAY_NOTIFY_URL = value;
-				}else if("PAY_CALLBACK_URL".equalsIgnoreCase(key)){
-					WXConfig.PAY_CALLBACK_URL = value;
-				}else if("OAUTH2_REDIRECT_URI".equalsIgnoreCase(key)){
-					WXConfig.OAUTH2_REDIRECT_URI = value;
+			for(Iterator<Element> itrConfig=root.elementIterator("config"); itrConfig.hasNext();){
+				WXConfig config = new WXConfig();
+				Element configElement = itrConfig.next();
+				String configKey = configElement.attributeValue("key");
+				if(BasicUtil.isEmpty(configKey)){
+					configKey = "default";
 				}
-				
-				if(ConfigTable.isDebug()){
-					log.info("[解析微信配置文件] [" + key + " = " + value+"]");
+				Map<String,String> kvs = new HashMap<String,String>();
+				for(Iterator<Element> itrProperty=configElement.elementIterator("property"); itrProperty.hasNext();){
+					Element propertyElement = itrProperty.next();
+					String key = propertyElement.attributeValue("key");
+					String value = propertyElement.getTextTrim();
+					if(ConfigTable.isDebug()){
+						log.info("[解析微信配置文件] [" + key + " = " + value+"]");
+					}
+					kvs.put(key, value);
 				}
+				config.kvs = kvs;
+				instances.put(configKey, config);
 			}
+			
 		}catch(Exception e){
 			log.error("配置文件解析异常:"+e);
 		}

@@ -1,14 +1,11 @@
 package org.anyline.weixin.entity;
 
-import java.math.BigDecimal;
-
-import org.anyline.weixin.util.WXConfig;
 
 public class PayOrder {
 	//配置文件中已设置
-	private String appid = WXConfig.APP_ID;
-	private String mch_id = WXConfig.MCH_ID;
-	private String notify_url = WXConfig.PAY_NOTIFY_URL;
+	private String appid;
+	private String mch_id;
+	private String notify_url;
 	//必选
 	private String nonce_str;
 	private String sign;
