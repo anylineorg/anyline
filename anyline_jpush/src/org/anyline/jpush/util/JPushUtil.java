@@ -1,7 +1,10 @@
 package org.anyline.jpush.util;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
+
+import org.anyline.util.BasicUtil;
 
 import cn.jiguang.commom.ClientConfig;
 import cn.jpush.api.JPushClient;
@@ -15,15 +18,36 @@ import cn.jpush.api.push.model.notification.Notification;
 
 public class JPushUtil {
 
-	private static final String appKey = JPushConfig.APP_KEY;
-	private static final String masterSecret = JPushConfig.MASTER_SECRET;
-	static ClientConfig config;
-	static JPushClient jpush;
-	static {
-		config = ClientConfig.getInstance();
-		config.setApnsProduction(false); 
-		config.setTimeToLive(60 * 60 * 24);
-		jpush = new JPushClient(masterSecret, appKey, null, config);
+	private JPushConfig config = null;
+	private static Hashtable<String,JPushUtil> instances = new Hashtable<String,JPushUtil>();
+	private JPushClient client;
+	
+	public static JPushUtil getInstance(){
+		return getInstance("default");
+	}
+	public static JPushUtil getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
+			key = "default";
+		}
+		JPushUtil util = instances.get(key);
+		if(null == util){
+			util = new JPushUtil();
+			JPushConfig config = JPushConfig.getInstance(key);
+			util.config = config;
+
+			ClientConfig clientConfig;
+			clientConfig = ClientConfig.getInstance();
+			clientConfig.setApnsProduction(false); 
+			clientConfig.setTimeToLive(60 * 60 * 24);
+			util.client = new JPushClient(config.MASTER_SECRET, config.APP_KEY, null, clientConfig);
+			
+			instances.put(key, util);
+		}
+		return util;
+	}
+	
+	public JPushConfig getConfig() {
+		return config;
 	}
 	/**
 	 * 
@@ -34,14 +58,14 @@ public class JPushUtil {
 	 * @param tags 接收人
 	 * @return
 	 */
-	public static boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){
+	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){
 		boolean result = false;
 		if(null == extras){
 			extras = new HashMap<String,String>();
 		}
 		PushPayload pl = buildPushObject_ios_audienceMore_messageWithExtras(type, title, msg, extras, tags);
 		try {
-			PushResult pr = jpush.sendPush(pl);
+			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -58,14 +82,14 @@ public class JPushUtil {
 	 * @param tags 接收人
 	 * @return
 	 */
-	public static boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){
+	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){
 		boolean result = false;
 		if(null == extras){
 			extras = new HashMap<String,String>();
 		}
 		PushPayload pl = buildPushObject_ios_audienceMore_messageWithExtrasAils(type, title, msg, extras, alias);
 		try {
-			PushResult pr = jpush.sendPush(pl);
+			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -74,7 +98,7 @@ public class JPushUtil {
 		return result;
 	}
 	
-	public static PushPayload buildPushObject_ios_audienceMore_messageWithExtras(String type, String title, String msg, Map<String, String> extras,String ... tags) {
+	private PushPayload buildPushObject_ios_audienceMore_messageWithExtras(String type, String title, String msg, Map<String, String> extras,String ... tags) {
 		return PushPayload.newBuilder()
 				.setPlatform(Platform.android_ios())
 				.setAudience(Audience.newBuilder()
@@ -87,7 +111,7 @@ public class JPushUtil {
 								.setNotification(Notification.android(msg, title, null))
 								.build();
 	}
-	public static PushPayload buildPushObject_ios_audienceMore_messageWithExtrasAils(String type, String title, String msg, Map<String, String> extras,String ... alias) {
+	private PushPayload buildPushObject_ios_audienceMore_messageWithExtrasAils(String type, String title, String msg, Map<String, String> extras,String ... alias) {
 		return PushPayload.newBuilder()
 				.setPlatform(Platform.android_ios())
 				.setAudience(Audience.newBuilder()
