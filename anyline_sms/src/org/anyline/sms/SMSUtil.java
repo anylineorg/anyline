@@ -95,5 +95,7 @@ public class SMSUtil {
 	public SMSResult send(String template, List<String> mobile, Map<String, String> params) {
 		return send(config.SMS_SIGN, template, mobile, params);
 	}
-
+	public SMSConfig getConfig() {
+		return config;
+	}
 }
