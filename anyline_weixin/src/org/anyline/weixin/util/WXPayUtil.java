@@ -18,7 +18,7 @@ public class WXPayUtil {
 	 * @param order
 	 * @return
 	 */
-	public static PayOrderResult unifiedorder(PayOrder order) {
+	public PayOrderResult unifiedorder(PayOrder order) {
 		PayOrderResult result = null;
 		order.setNonce_str(BasicUtil.getRandomString(20));
 		Map<String, Object> map = BeanUtil.toMap(order);
