@@ -1,12 +1,14 @@
 package org.anyline.alipay.util;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -18,19 +20,26 @@ public class AlipayConfig {
 	private static Logger log = Logger.getLogger(AlipayConfig.class);
 	private static Hashtable<String,AlipayConfig> instances = new Hashtable<String,AlipayConfig>();
 	private Map<String,String> kvs = new HashMap<String,String>();
-//	public static String APP_PRIVATE_KEY = "";
-//	public static String ALIPAY_PUBLIC_KEY = "";
-//	public static String APP_ID = "";
-//	public static String DATA_FORMAT = "json";
-//	public static String ENCODE = "utf-8";
-//	public static String SIGN_TYPE = "RSA";
-//	public static String NOTIFY_URL= "";
+	
+	public String APP_PRIVATE_KEY = "";
+	public String ALIPAY_PUBLIC_KEY = "";
+	public String APP_ID = "";
+	public String DATA_FORMAT = "json";
+	public String ENCODE = "utf-8";
+	public String SIGN_TYPE = "RSA";
+	public String NOTIFY_URL= "";
 	
 	static{
 		init();
 		debug();
 	}
+	public static AlipayConfig getInstance(){
+		return getInstance("default");
+	}
 	public static AlipayConfig getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
+			key = "default";
+		}
 		return instances.get(key);
 	}
 	public static void init() {
@@ -85,16 +94,33 @@ public class AlipayConfig {
 					kvs.put(key, value);
 				}
 				config.kvs = kvs;
+				config.setFieldValue();
 				instances.put(configKey, config);
+				//设置属性值
 			}
 		}catch(Exception e){
 			log.error("配置文件解析异常:"+e);
 		}
 	}
-	private static void debug(){
+	private void setFieldValue(){
+		Field[] fields = this.getClass().getDeclaredFields();
+		for(Field field:fields){
+			if(field.getType().getName().equals("java.lang.String")){
+				String name = field.getName();
+				try {
+					String value = kvs.get(name);
+					if(BasicUtil.isNotEmpty(value)){
+						field.set(this, kvs.get(name));
+					}
+				} catch (IllegalArgumentException e) {
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
-	public static void main(String args[]){
-		debug();
+	private static void debug(){
 	}
 	public String getString(String key){
 		return kvs.get(key);
