@@ -1,5 +1,6 @@
 package org.anyline.sms;
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -23,28 +24,42 @@ import com.aliyuncs.sms.model.v20160927.SingleSendSmsResponse;
  */
 public class SMSUtil {
 	private static Logger log = Logger.getLogger(SMSUtil.class);
-
-	private static String access_key = SMSConfig.ACCESS_KEY;
-	private static String access_secret = SMSConfig.ACCESS_SECRET;
-	private static IAcsClient client = null;
-	private static SingleSendSmsRequest request = new SingleSendSmsRequest();
-	static {
-		try {
-			IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", access_key, access_secret);
-			DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", "Sms", "sms.aliyuncs.com");
-			client = new DefaultAcsClient(profile);
-		}
-        catch (Exception e) {
-			log.error(e);
-        	e.printStackTrace();
-        }
+	private SMSConfig config = null;
+	private static Hashtable<String,SMSUtil> instances = new Hashtable<String,SMSUtil>();
+	
+	private IAcsClient client = null;
+	private SingleSendSmsRequest request = new SingleSendSmsRequest();
+	
+	public static SMSUtil getInstance(){
+		return getInstance("default");
 	}
-
-	public static SMSResult send(String sign, String template, String mobile, Map<String, String> params) {
+	public static SMSUtil getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
+			key = "default";
+		}
+		SMSUtil util = instances.get(key);
+		if(null == util){
+			util = new SMSUtil();
+			SMSConfig config = SMSConfig.getInstance(key);
+			util.config = config;
+			try {
+				IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", config.ACCESS_KEY, config.ACCESS_SECRET);
+				DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", "Sms", "sms.aliyuncs.com");
+				util.client = new DefaultAcsClient(profile);
+			}
+	        catch (Exception e) {
+				log.error(e);
+	        	e.printStackTrace();
+	        }
+			instances.put(key, util);
+		}
+		return util;
+	}
+	public SMSResult send(String sign, String template, String mobile, Map<String, String> params) {
 		SMSResult result = new SMSResult();
 		try {
 			if(BasicUtil.isEmpty(sign)){
-				sign = SMSConfig.SMS_SIGN;
+				sign = config.SMS_SIGN;
 			}
 			request.setSignName(sign);
 			request.setTemplateCode(template);
@@ -62,7 +77,7 @@ public class SMSUtil {
 		return result;
 	}
 
-	public static SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) {
+	public SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) {
 		String mobile = "";
 		for(String item:mobiles){
 			if("".equals(mobile)){
@@ -74,11 +89,11 @@ public class SMSUtil {
 		return send(sign, template, mobile, params);
 	}
 
-	public static SMSResult send(String template, String mobile, Map<String, String> params) {
-		return send(SMSConfig.SMS_SIGN, template, mobile, params);
+	public SMSResult send(String template, String mobile, Map<String, String> params) {
+		return send(config.SMS_SIGN, template, mobile, params);
 	}
-	public static SMSResult send(String template, List<String> mobile, Map<String, String> params) {
-		return send(SMSConfig.SMS_SIGN, template, mobile, params);
+	public SMSResult send(String template, List<String> mobile, Map<String, String> params) {
+		return send(config.SMS_SIGN, template, mobile, params);
 	}
 
 }
