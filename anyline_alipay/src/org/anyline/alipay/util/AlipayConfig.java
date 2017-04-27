@@ -96,7 +96,6 @@ public class AlipayConfig {
 				config.kvs = kvs;
 				config.setFieldValue();
 				instances.put(configKey, config);
-				//设置属性值
 			}
 		}catch(Exception e){
 			log.error("配置文件解析异常:"+e);
@@ -120,9 +119,9 @@ public class AlipayConfig {
 			}
 		}
 	}
-	private static void debug(){
-	}
 	public String getString(String key){
 		return kvs.get(key);
+	}
+	private static void debug(){
 	}
 }
