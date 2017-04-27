@@ -45,9 +45,6 @@ public class WXUtil {
 	public WXConfig getConfig() {
 		return config;
 	}
-	public void setConfig(WXConfig config) {
-		this.config = config;
-	}
 	public String getAccessToken(){
 		return getAccessToken(config.getString("APP_ID"), config.getString("APP_SECRECT"));
 	}

@@ -133,7 +133,7 @@ public class WXConfig {
 					String key = propertyElement.attributeValue("key");
 					String value = propertyElement.getTextTrim();
 					if(ConfigTable.isDebug()){
-						log.info("[解析微信配置文件] [" + key + " = " + value+"]");
+						log.info("[解析微信配置文件][key = "  + key + "][" + key + " = " + value+"]");
 					}
 					kvs.put(key, value);
 				}
