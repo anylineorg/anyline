@@ -177,7 +177,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			if(BasicUtil.isNotEmpty(loadMoreFormat)){
 				loadMoreFormat = ConfigTable.getString("NAVI_LOAD_MORE_FORMAT", "加载更多"); 
 			}
-			createPageTag(builder, "navi-more-button", loadMoreFormat, (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
+			createPageTag(builder, "navi-more-button", loadMoreFormat, (int)NumberUtil.getMin(curPage+1, totalPage+1), configFlag);
 		}
 		builder.append("</div>");
 		builder.append("</form>\n");
@@ -185,7 +185,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	}
 	private void createPageTag(StringBuilder builder, String clazz, String tag, int page, String configFlag){
 		builder.append("<span class ='").append(clazz);
-		if(page == curPage){
+		if(page == curPage && 0 == type){
 			builder.append(" navi-disabled");
 			if(clazz.contains("navi-num-item")){
 				builder.append(" navi-num-item-cur");
