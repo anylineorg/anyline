@@ -274,6 +274,29 @@ public class AnylineServiceImpl implements AnylineService {
         	}else{
         		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
         	}
+//        	//开启新线程提前更新缓存(90%时间)
+        	long age =  (System.currentTimeMillis()- element.getCreationTime())/1000;
+        	final int _max = element.getTimeToLive();
+        	if(age > _max*0.9){
+        		if(ConfigTable.isDebug()){
+        			log.warn("[缓存即将到期提前刷新][src:"+src+"] [生存:"  + age + "/" + _max + "]");
+        		}
+        		final String _key = key;
+        		final String _cache = cache;
+        		final SQL _sql = sql;
+        		final ConfigStore _configs = configs; 
+        		final String[] _conditions = conditions;
+        		final DataSource _ds = ds;
+            	new Thread(new Runnable(){
+            		public void run(){
+                		CacheUtil.start(_key, _max/10);
+            			DataSet newSet = dao.query(_ds, _sql, _configs, _conditions);
+                    	CacheUtil.put(_cache, _key, newSet);          	
+                		CacheUtil.stop(_key, _max/10);
+            		}
+            	}).start();	
+        	}
+        	
         }else{
         	//从数据库中提取数据填充一级缓存
 			if(isUseCacheL2 && sql.hasPrimaryKeys() ){
