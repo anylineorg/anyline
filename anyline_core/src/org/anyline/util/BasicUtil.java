@@ -669,6 +669,26 @@ public class BasicUtil {
 		}
 		return src.substring(fr, to);
 	}
+	public static String left(String src, int len){
+		if(null == src){
+			return null;
+		}
+		int max = src.length();
+		if(len > max){
+			len = max;
+		}
+		return src.substring(0, len);
+	}
+	public static String right(String src, int len){
+		if(null == src){
+			return null;
+		}
+		int max = src.length();
+		if(len > max){
+			len = max;
+		}
+		return src.substring(max-len, max);
+	}
 	/**
 	 * 拼接集合
 	 * @param objs
