@@ -1,5 +1,6 @@
 package org.anyline.weixin.util;
 
+import java.util.Hashtable;
 import java.util.Map;
 
 import org.anyline.util.BasicUtil;
@@ -12,7 +13,23 @@ import org.apache.log4j.Logger;
 
 public class WXPayUtil {
 	private static Logger log = Logger.getLogger(WXPayUtil.class);
-	
+	private WXUtil util = null;
+	private static Hashtable<String,WXPayUtil> instances = new Hashtable<String,WXPayUtil>();
+	public static WXPayUtil getInstance(){
+		return getInstance("default");
+	}
+	public static WXPayUtil getInstance(String key){
+		if(BasicUtil.isEmpty(key)){
+			key = "default";
+		}
+		WXPayUtil util = instances.get(key);
+		if(null == util){
+			util = new WXPayUtil();
+			util.util = WXUtil.getInstance(key);
+			instances.put(key, util);
+		}
+		return util;
+	}
 	/**
 	 * 统一下单
 	 * @param order
@@ -22,7 +39,7 @@ public class WXPayUtil {
 		PayOrderResult result = null;
 		order.setNonce_str(BasicUtil.getRandomString(20));
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = WXUtil.getInstance().sign(map);
+		String sign = util.sign(map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
