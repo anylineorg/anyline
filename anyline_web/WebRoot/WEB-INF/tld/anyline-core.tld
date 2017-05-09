@@ -696,6 +696,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>out</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>flag</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
