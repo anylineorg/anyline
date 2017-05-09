@@ -460,7 +460,7 @@ public class HttpClientUtil {
 				String value = params.get(key);
 				pairs.add(new BasicNameValuePair(key, value));
 				if(ConfigTable.isDebug()){
-					log.warn("[Request Param][" + key + "=" + value + "]");
+					log.warn("[Request Param][" + key + "=" + BasicUtil.cut(value,0,20) + "]");
 				}
 			}
 		}

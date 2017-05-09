@@ -37,6 +37,7 @@ public class ImgClip extends BodyTagSupport{
 	private int height = 200;
 	private String callback;
 	private String flag = "";
+	private String out = "full";	//输出 full:全部 script:脚本 html:html内容
 	public int doStartTag() throws JspException {
 		try{
 			StringBuilder builder = new StringBuilder();
@@ -46,36 +47,43 @@ public class ImgClip extends BodyTagSupport{
 				flag = idx+"";
 			}
 			if(idx == 0){
-				builder.append("<script src=\"http://source.deepbit.cn/plugin/photoclip/js/iscroll-zoom.js\"></script>\n");
-				builder.append("<script src=\"http://source.deepbit.cn/plugin/photoclip/js/hammer.js\"></script>\n");
-				builder.append("<script src=\"http://source.deepbit.cn/plugin/photoclip/js/jquery.photoClip.js\"></script>\n");
+				if("full".equals(out) || "script".equals(out)){
+					builder.append("<script src=\"http://source.deepbit.cn/plugin/photoclip/js/iscroll-zoom.js\"></script>\n");
+					builder.append("<script src=\"http://source.deepbit.cn/plugin/photoclip/js/hammer.js\"></script>\n");
+					builder.append("<script src=\"http://source.deepbit.cn/plugin/photoclip/js/jquery.photoClip.js\"></script>\n");
+				}
 			}
-			builder.append("<div id=\"clip_area"+flag+"\" style=\"height: "+(height+100)+"px;\"></div>\n");
-			builder.append("<input type=\"file\" id=\"clip_file"+flag+"\" style=\"display:none;\">\n");
-			builder.append("<label for=\"clip_file"+flag+"\" class=\"clip_btn btn\" style=\"margin: 20px;\">选择图片</label>\n");
-			builder.append("<button id=\"clip_btn"+flag+"\" class=\"clip_btn btn\" style=\"margin: 20px;\">上传图片</button>\n");
-			builder.append("<div id=\"clip_view"+flag+"\"></div>\n");
-			builder.append("<script>\n");
-			builder.append("$(\"#clip_area"+flag+"\").photoClip({\n");
-			builder.append("\twidth: "+width+",\n");
-			builder.append("\theight: "+height+",\n");
-			builder.append("\tfile: \"#clip_file"+flag+"\",\n");
-			builder.append("\tview: \"#clip_view"+flag+"\",\n");
-			builder.append("\tok: \"#clip_btn"+flag+"\",\n");
-			builder.append("\tloadStart: function() {console.log(\"图片读取中\");},\n");
-			builder.append("\tloadComplete: function() {console.log(\"图片读取完成\");},\n");
-			builder.append("\tclipFinish: function(dataURL) {\n");
-			builder.append("\t\tal.ajax({\n");
-			builder.append("\t\t\turl:'"+url+"',\n");
-			builder.append("\t\t\tdata:{str:dataURL},\n");
-			builder.append("\t\t\tcallback:function(result,data,msg){\n");
-			builder.append("\t\t\t\t"+callback+"(result,data,msg);\n");
-			builder.append("\t\t\t}\n");
-			builder.append("\t\t});\n");
-			builder.append("\t}\n");
-			builder.append("});\n");
-			builder.append("\t</script>\n");
-			
+			if("full".equals(out) || "html".equals(out)){
+				builder.append("<div id=\"div_imgclip"+flag+"\">");
+				builder.append("<div id=\"clip_area"+flag+"\" style=\"height: "+(height+100)+"px;\"></div>\n");
+				builder.append("<input type=\"file\" id=\"clip_file"+flag+"\" style=\"display:none;\">\n");
+				builder.append("<label for=\"clip_file"+flag+"\" class=\"clip_btn btn\" style=\"margin: 20px;\">选择图片</label>\n");
+				builder.append("<button id=\"clip_btn"+flag+"\" class=\"clip_btn btn\" style=\"margin: 20px;\">上传图片</button>\n");
+				builder.append("<div id=\"clip_view"+flag+"\"></div>\n");
+				builder.append("</div>");
+			}
+			if("full".equals(out) || "script".equals(out)){
+				builder.append("<script>\n");
+				builder.append("$(\"#clip_area"+flag+"\").photoClip({\n");
+				builder.append("\twidth: "+width+",\n");
+				builder.append("\theight: "+height+",\n");
+				builder.append("\tfile: \"#clip_file"+flag+"\",\n");
+				builder.append("\tview: \"#clip_view"+flag+"\",\n");
+				builder.append("\tok: \"#clip_btn"+flag+"\",\n");
+				builder.append("\tloadStart: function() {console.log(\"图片读取中\");},\n");
+				builder.append("\tloadComplete: function() {console.log(\"图片读取完成\");},\n");
+				builder.append("\tclipFinish: function(dataURL) {\n");
+				builder.append("\t\tal.ajax({\n");
+				builder.append("\t\t\turl:'"+url+"',\n");
+				builder.append("\t\t\tdata:{str:dataURL},\n");
+				builder.append("\t\t\tcallback:function(result,data,msg){\n");
+				builder.append("\t\t\t\t"+callback+"(result,data,msg);\n");
+				builder.append("\t\t\t}\n");
+				builder.append("\t\t});\n");
+				builder.append("\t}\n");
+				builder.append("});\n");
+				builder.append("\t</script>\n");
+			}
 			idx ++;
 			pageContext.getRequest().setAttribute("_anyline_imgclip_tag_idx", idx + "");
 			JspWriter out = pageContext.getOut();
@@ -97,6 +105,7 @@ public class ImgClip extends BodyTagSupport{
 		width = 200;
 		height = 200;
 		flag = null;
+		out = "full";
 	}
 	public String getUrl() {
 		return url;
