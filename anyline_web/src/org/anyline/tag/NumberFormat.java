@@ -31,7 +31,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
 	private static Logger log = Logger.getLogger(NumberFormat.class);
 	private String format;
-	
+	private String def;
 
 	public String getFormat() {
 		return format;
