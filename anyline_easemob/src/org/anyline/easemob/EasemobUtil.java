@@ -34,10 +34,10 @@ public class EasemobUtil {
 	private String access_token = null;
 
 
-	public EasemobUtil getInstance(){
+	public static EasemobUtil getInstance(){
 		return getInstance("default");
 	}
-	public EasemobUtil getInstance(String key){
+	public static EasemobUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
