@@ -832,6 +832,19 @@ public class BasicUtil {
 		}
 		return false;
 	}
+   public static String concat(List<String> list, String connector){
+	   if(null == list){
+		   return "";
+	   }
+	   StringBuffer result = new StringBuffer();
+	   for(String val:list){
+		   if(result.length() ==0){
+			   result.append(connector);
+		   }
+		   result.append(val);
+	   }
+	   return result.toString();
+   }
    public static boolean isWrapClass(Object obj) { 
         try { 
         	return ((Class) obj.getClass().getField("TYPE").get(null)).isPrimitive();

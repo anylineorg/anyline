@@ -617,20 +617,51 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			rows.add(idx, row);
 		}
 	}
-
+	
+	/**
+	 * 合并key值 以connector连接
+	 * @param key
+	 * @param connector
+	 * @return
+	 */
+	public String concat(String key, String connector){
+		return BasicUtil.concat(getStrings(key), connector);
+	}
+	public String concatNvl(String key, String connector){
+		return BasicUtil.concat(getNvlStrings(key), connector);
+	}
+	public String concatWithoutNull(String key, String connector){
+		return BasicUtil.concat(getStringsWithoutNull(key), connector);
+	}
+	public String concatWithoutEmpty(String key, String connector){
+		return BasicUtil.concat(getStringsWithoutEmpty(key), connector);
+	}
+	public String concatNvl(String key){
+		return BasicUtil.concat(getNvlStrings(key), ",");
+	}
+	public String concatWithoutNull(String key){
+		return BasicUtil.concat(getStringsWithoutNull(key), ",");
+	}
+	public String concatWithoutEmpty(String key){
+		return BasicUtil.concat(getStringsWithoutEmpty(key), ",");
+	}
+	public String concat(String key){
+		return BasicUtil.concat(getStrings(key), ",");
+	}
 	/**
 	 * 提取单列值
 	 * 
 	 * @param key
 	 * @return
 	 */
-	public List<String> fetchValues(String key) {
-		List<String> result = new ArrayList<String>();
+	public List<Object> fetchValues(String key) {
+		List<Object> result = new ArrayList<Object>();
 		for (int i = 0; i < size(); i++) {
-			result.add(getString(i, key));
+			result.add(this.getString(i, key));
 		}
 		return result;
 	}
+	
 	/**
 	 * 取单列不重复的值
 	 * @param key
@@ -693,15 +724,64 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			result = row.getString(key);
 		return result;
 	}
+	public Object get(int index, String key){
+		DataRow row = getRow(index);
+		if(null != row){
+			return row.get(key);
+		}
+		return null;
+	}
 
 	public String getString(String key) {
 		return getString(0, key);
 	}
 	public List<String> getStrings(String key){
-		return fetchValues(key);
+		List<String> result = new ArrayList<String>();
+		List<Object> list = fetchValues(key);
+		for(Object val:list){
+			if(null != val){
+				result.add(val.toString());
+			}else{
+				result.add(null);
+			}
+		}
+		return result;
+		
 	}
 	public List<String> getDistinctStrings(String key){
 		return fetchDistinctValue(key);
+	}
+	public List<String> getNvlStrings(String key){
+		List<String> result = new ArrayList<String>();
+		List<Object> list = fetchValues(key);
+		for(Object val:list){
+			if(null != val){
+				result.add(val.toString());
+			}else{
+				result.add("");
+			}
+		}
+		return result;
+	}
+	public List<String> getStringsWithoutEmpty(String key){
+		List<String> result = new ArrayList<String>();
+		List<Object> list = fetchValues(key);
+		for(Object val:list){
+			if(BasicUtil.isNotEmpty(val)){
+				result.add(val.toString());
+			}
+		}
+		return result;
+	}
+	public List<String> getStringsWithoutNull(String key){
+		List<String> result = new ArrayList<String>();
+		List<Object> list = fetchValues(key);
+		for(Object val:list){
+			if(null != val){
+				result.add(val.toString());
+			}
+		}
+		return result;
 	}
 	public BigDecimal getDecimal(int idx, String key){
 		BigDecimal result = null;
