@@ -24,18 +24,19 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSON;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-import org.apache.log4j.Logger;
-import org.apache.struts2.dispatcher.StrutsResultSupport;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.JSONDateFormatProcessor;
+import org.apache.log4j.Logger;
+import org.apache.struts2.dispatcher.StrutsResultSupport;
 
 import com.opensymphony.xwork2.ActionInvocation;
 
@@ -46,9 +47,11 @@ public class JSONResult extends StrutsResultSupport {
 	private Object data = null;
 	private String message = null;
 	private String url = null;
+	private String code = null;
 	
 	
     protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
+        HttpServletRequest request = (HttpServletRequest) invocation.getInvocationContext().get(HTTP_REQUEST);
         HttpServletResponse response = (HttpServletResponse) invocation.getInvocationContext().get(HTTP_RESPONSE);
     	response.setContentType("text/json; charset=UTF-8");
     	response.setCharacterEncoding("UTF-8");
@@ -59,6 +62,8 @@ public class JSONResult extends StrutsResultSupport {
         	result = BasicUtil.parseBoolean(invocation.getStack().findValue("result"),true);
         	message = invocation.getStack().findString("msg");
         	url = invocation.getStack().findString("url");
+        	code = invocation.getStack().findString("code");
+        	
         	//转换成JSON格式
         	//JsonConfig config = new JsonConfig();
         	String dataType   = null; 	//数据类型
@@ -93,6 +98,10 @@ public class JSONResult extends StrutsResultSupport {
         	map.put("data", data);
         	map.put("url", url);
         	map.put("success", result);
+    		map.put("code", code);
+        	map.put("request_time", request.getParameter("_anyline_request_time"));
+        	map.put("response_time_fr", request.getAttribute("_anyline_response_time_fr"));
+        	map.put("response_time_to", System.currentTimeMillis());
         	JsonConfig config = new JsonConfig();
     		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
     		config.registerJsonValueProcessor(java.sql.Timestamp.class, new JSONDateFormatProcessor());
