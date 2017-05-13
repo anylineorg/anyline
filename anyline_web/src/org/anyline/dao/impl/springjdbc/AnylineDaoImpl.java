@@ -220,6 +220,13 @@ public class AnylineDaoImpl implements AnylineDao {
 			throw new SQLUpdateException("更新空数据");
 		}
 		int result = 0;
+		if(obj instanceof DataSet){
+			DataSet set = (DataSet)obj;
+			for(int i=0; i<set.size(); i++){
+				result += update(ds, dest, set.getRow(i), columns);
+			}
+			return result;
+		}
 		//row.processBeforeSave();								//保存之前预处理
 		RunSQL run = creater.createUpdateTxt(dest, obj, false, columns);
 		String sql = run.getUpdateTxt();
