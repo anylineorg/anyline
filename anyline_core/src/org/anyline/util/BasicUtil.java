@@ -838,7 +838,7 @@ public class BasicUtil {
 	   }
 	   StringBuffer result = new StringBuffer();
 	   for(String val:list){
-		   if(result.length() ==0){
+		   if(result.length() > 0){
 			   result.append(connector);
 		   }
 		   result.append(val);
