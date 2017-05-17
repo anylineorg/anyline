@@ -62,32 +62,38 @@ public class JPushUtil {
 	 */
 	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){
 		boolean result = false;
-		if(null == extras){
-			extras = new HashMap<String,String>();
-		}
-		PushPayload pl = buildPushObjectWithExtras(type, title, msg, extras, tags);
-		try {
-			PushResult pr = client.sendPush(pl);
-			result = pr.isResultOK();
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = false;
+		int size = tags.length;
+		int cnt = (size-1) / 1000+1;
+		for(int c=0; c<cnt; c++){
+			int fr = c * 1000;
+			int to = (c+1)*1000-1;
+			if(to > size-1){
+				to = size-1;
+			}
+			String[] args = new String[to-fr+1];
+			for(int i=0; i<= to-fr; i++){
+				args[i] = tags[fr+i];
+			}
+			result = result && sendByTag(type, title, msg, extras, args);
 		}
 		return result;
 	}
 	
 	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, List<String> tags){
 		boolean result = false;
-		if(null == extras){
-			extras = new HashMap<String,String>();
-		}
-		PushPayload pl = buildPushObjectWithExtras(type, title, msg, extras, tags);
-		try {
-			PushResult pr = client.sendPush(pl);
-			result = pr.isResultOK();
-		} catch (Exception e) {
-			e.printStackTrace();
-			result = false;
+		int size = tags.size();
+		int cnt = (size-1) / 1000+1;
+		for(int c=0; c<cnt; c++){
+			int fr = c * 1000;
+			int to = (c+1)*1000-1;
+			if(to > size-1){
+				to = size-1;
+			}
+			String[] args = new String[to-fr+1];
+			for(int i=0; i<= to-fr; i++){
+				args[i] = tags.get(fr+i);
+			}
+			result = result && sendByTag(type, title, msg, extras, args);
 		}
 		return result;
 	}
@@ -102,9 +108,43 @@ public class JPushUtil {
 	 */
 	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){
 		boolean result = false;
-		if(null == extras){
-			extras = new HashMap<String,String>();
+		int size = alias.length;
+		int cnt = (size-1) / 1000+1;
+		for(int c=0; c<cnt; c++){
+			int fr = c * 1000;
+			int to = (c+1)*1000-1;
+			if(to > size-1){
+				to = size-1;
+			}
+			String[] args = new String[to-fr+1];
+			for(int i=0; i<= to-fr; i++){
+				args[i] = alias[fr+i];
+			}
+			result = result && sendByAlias(type, title, msg, extras, args);
 		}
+		return result;
+	}
+
+	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, List<String> alias){
+		boolean result = false;
+		int size = alias.size();
+		int cnt = (size-1) / 1000+1;
+		for(int c=0; c<cnt; c++){
+			int fr = c * 1000;
+			int to = (c+1)*1000-1;
+			if(to > size-1){
+				to = size-1;
+			}
+			String[] args = new String[to-fr+1];
+			for(int i=0; i<= to-fr; i++){
+				args[i] = alias.get(fr+i);
+			}
+			result = result && sendByAlias(type, title, msg, extras, args);
+		}
+		return result;
+	}
+	private boolean sendByAlias(String type, String title, String msg, Map<String,String> extras, String[] alias){
+		boolean result = false;
 		PushPayload pl = buildPushObjectWithExtrasAils(type, title, msg, extras, alias);
 		try {
 			PushResult pr = client.sendPush(pl);
@@ -116,12 +156,9 @@ public class JPushUtil {
 		return result;
 	}
 
-	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, List<String> alias){
+	private boolean sendByTag(String type, String title, String msg, Map<String,String> extras, String[] tags){
 		boolean result = false;
-		if(null == extras){
-			extras = new HashMap<String,String>();
-		}
-		PushPayload pl = buildPushObjectWithExtrasAils(type, title, msg, extras, alias);
+		PushPayload pl = buildPushObjectWithExtras(type, title, msg, extras, tags);
 		try {
 			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
@@ -131,7 +168,10 @@ public class JPushUtil {
 		}
 		return result;
 	}
-	private PushPayload buildPushObjectWithExtras(String type, String title, String msg, Map<String, String> extras,String ... tags) {
+	private PushPayload buildPushObjectWithExtras(String type, String title, String msg, Map<String, String> extras,String[] tags) {
+		if(null == extras){
+			extras = new HashMap<String,String>();
+		}
 		return PushPayload.newBuilder()
 				.setPlatform(Platform.all())
 				.setAudience(Audience.newBuilder()
@@ -143,10 +183,13 @@ public class JPushUtil {
 								.build()).setOptions(Options.newBuilder()
 				                         .setApnsProduction(true)
 				                         .build())
-								.setNotification(Notification.android(msg, title, null))
+								.setNotification(Notification.android(msg, title, extras))
 								.build();
 	}
-	private PushPayload buildPushObjectWithExtrasAils(String type, String title, String msg, Map<String, String> extras,String ... alias) {
+	private PushPayload buildPushObjectWithExtrasAils(String type, String title, String msg, Map<String, String> extras,String[] alias) {
+		if(null == extras){
+			extras = new HashMap<String,String>();
+		}
 		return PushPayload.newBuilder()
 				.setPlatform(Platform.all())
 				.setAudience(Audience.newBuilder()
@@ -158,39 +201,24 @@ public class JPushUtil {
 								.build()).setOptions(Options.newBuilder()
 				                         .setApnsProduction(true)
 				                         .build())
-								.setNotification(Notification.android(msg, title, null))
+								.setNotification(Notification.android(msg, title, extras))
 								.build();
 	}
 	
 	private PushPayload buildPushObjectWithExtras(String type, String title, String msg, Map<String, String> extras,List<String> tags) {
-		return PushPayload.newBuilder()
-				.setPlatform(Platform.all())
-				.setAudience(Audience.newBuilder()
-						.addAudienceTarget(AudienceTarget.tag_and(tags))
-						
-						.build())
-						.setMessage(Message.newBuilder()
-								.setMsgContent(type)
-								.addExtras(extras)
-								.build()).setOptions(Options.newBuilder()
-				                         .setApnsProduction(true)
-				                         .build())
-								.setNotification(Notification.android(msg, title, null))
-								.build();
+		int size = tags.size();
+		String[] args = new String[size];
+		for(int i=0; i<size; i++){
+			args[i] = tags.get(i);
+		}
+		return buildPushObjectWithExtras(type, title, msg, extras, args);
 	}
 	private PushPayload buildPushObjectWithExtrasAils(String type, String title, String msg, Map<String, String> extras,List<String> alias) {
-		return PushPayload.newBuilder()
-				.setPlatform(Platform.all())
-				.setAudience(Audience.newBuilder()
-						.addAudienceTarget(AudienceTarget.alias(alias))
-						.build())
-						.setMessage(Message.newBuilder()
-								.setMsgContent(type)
-								.addExtras(extras)
-								.build()).setOptions(Options.newBuilder()
-				                         .setApnsProduction(true)
-				                         .build())
-								.setNotification(Notification.android(msg, title, null))
-								.build();
+		int size = alias.size();
+		String[] args = new String[size];
+		for(int i=0; i<size; i++){
+			args[i] = alias.get(i);
+		}
+		return buildPushObjectWithExtrasAils(type, title, msg, extras, args);
 	}
 }
