@@ -64,6 +64,7 @@ public class SimpleHttpUtil {
 			conn.disconnect();
 			return buffer.toString();
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		return null;
 	}
