@@ -11,6 +11,7 @@ import cn.jiguang.commom.ClientConfig;
 import cn.jpush.api.JPushClient;
 import cn.jpush.api.push.PushResult;
 import cn.jpush.api.push.model.Message;
+import cn.jpush.api.push.model.Options;
 import cn.jpush.api.push.model.Platform;
 import cn.jpush.api.push.model.PushPayload;
 import cn.jpush.api.push.model.audience.Audience;
@@ -64,7 +65,7 @@ public class JPushUtil {
 		if(null == extras){
 			extras = new HashMap<String,String>();
 		}
-		PushPayload pl = buildPushObject_ios_audienceMore_messageWithExtras(type, title, msg, extras, tags);
+		PushPayload pl = buildPushObjectWithExtras(type, title, msg, extras, tags);
 		try {
 			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
@@ -80,7 +81,7 @@ public class JPushUtil {
 		if(null == extras){
 			extras = new HashMap<String,String>();
 		}
-		PushPayload pl = buildPushObject_ios_audienceMore_messageWithExtras(type, title, msg, extras, tags);
+		PushPayload pl = buildPushObjectWithExtras(type, title, msg, extras, tags);
 		try {
 			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
@@ -104,7 +105,7 @@ public class JPushUtil {
 		if(null == extras){
 			extras = new HashMap<String,String>();
 		}
-		PushPayload pl = buildPushObject_ios_audienceMore_messageWithExtrasAils(type, title, msg, extras, alias);
+		PushPayload pl = buildPushObjectWithExtrasAils(type, title, msg, extras, alias);
 		try {
 			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
@@ -120,7 +121,7 @@ public class JPushUtil {
 		if(null == extras){
 			extras = new HashMap<String,String>();
 		}
-		PushPayload pl = buildPushObject_ios_audienceMore_messageWithExtrasAils(type, title, msg, extras, alias);
+		PushPayload pl = buildPushObjectWithExtrasAils(type, title, msg, extras, alias);
 		try {
 			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
@@ -130,59 +131,66 @@ public class JPushUtil {
 		}
 		return result;
 	}
-	
-	private PushPayload buildPushObject_ios_audienceMore_messageWithExtras(String type, String title, String msg, Map<String, String> extras,String ... tags) {
+	private PushPayload buildPushObjectWithExtras(String type, String title, String msg, Map<String, String> extras,String ... tags) {
 		return PushPayload.newBuilder()
-				.setPlatform(Platform.android_ios())
+				.setPlatform(Platform.all())
 				.setAudience(Audience.newBuilder()
 						.addAudienceTarget(AudienceTarget.tag_and(tags))
 						.build())
 						.setMessage(Message.newBuilder()
 								.setMsgContent(type)
 								.addExtras(extras)
-								.build())
+								.build()).setOptions(Options.newBuilder()
+				                         .setApnsProduction(true)
+				                         .build())
 								.setNotification(Notification.android(msg, title, null))
 								.build();
 	}
-	private PushPayload buildPushObject_ios_audienceMore_messageWithExtrasAils(String type, String title, String msg, Map<String, String> extras,String ... alias) {
+	private PushPayload buildPushObjectWithExtrasAils(String type, String title, String msg, Map<String, String> extras,String ... alias) {
 		return PushPayload.newBuilder()
-				.setPlatform(Platform.android_ios())
+				.setPlatform(Platform.all())
 				.setAudience(Audience.newBuilder()
 						.addAudienceTarget(AudienceTarget.alias(alias))
 						.build())
 						.setMessage(Message.newBuilder()
 								.setMsgContent(type)
 								.addExtras(extras)
-								.build())
+								.build()).setOptions(Options.newBuilder()
+				                         .setApnsProduction(true)
+				                         .build())
 								.setNotification(Notification.android(msg, title, null))
 								.build();
 	}
 	
-	private PushPayload buildPushObject_ios_audienceMore_messageWithExtras(String type, String title, String msg, Map<String, String> extras,List<String> tags) {
+	private PushPayload buildPushObjectWithExtras(String type, String title, String msg, Map<String, String> extras,List<String> tags) {
 		return PushPayload.newBuilder()
-				.setPlatform(Platform.android_ios())
+				.setPlatform(Platform.all())
 				.setAudience(Audience.newBuilder()
 						.addAudienceTarget(AudienceTarget.tag_and(tags))
+						
 						.build())
 						.setMessage(Message.newBuilder()
 								.setMsgContent(type)
 								.addExtras(extras)
-								.build())
+								.build()).setOptions(Options.newBuilder()
+				                         .setApnsProduction(true)
+				                         .build())
 								.setNotification(Notification.android(msg, title, null))
 								.build();
 	}
-	private PushPayload buildPushObject_ios_audienceMore_messageWithExtrasAils(String type, String title, String msg, Map<String, String> extras,List<String> alias) {
+	private PushPayload buildPushObjectWithExtrasAils(String type, String title, String msg, Map<String, String> extras,List<String> alias) {
 		return PushPayload.newBuilder()
-				.setPlatform(Platform.android_ios())
+				.setPlatform(Platform.all())
 				.setAudience(Audience.newBuilder()
 						.addAudienceTarget(AudienceTarget.alias(alias))
 						.build())
 						.setMessage(Message.newBuilder()
 								.setMsgContent(type)
 								.addExtras(extras)
-								.build())
+								.build()).setOptions(Options.newBuilder()
+				                         .setApnsProduction(true)
+				                         .build())
 								.setNotification(Notification.android(msg, title, null))
 								.build();
 	}
-
 }
