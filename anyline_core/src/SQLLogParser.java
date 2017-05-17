@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.regular.RegularUtil;
 
 
