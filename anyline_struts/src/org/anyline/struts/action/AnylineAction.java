@@ -362,7 +362,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		}
 		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString().trim();
 		if(ConfigTable.isDebug()){
-			log.warn("[Action Return][result:fail][message:"+msg+"]");
+			log.warn("[Action Return][Action:"+getClass()+"][url:"+request.getRequestURI()+"][result:fail][message:"+msg+"]");
 		}
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
 		if (isAjaxRequest(request) || RESULT_TYPE_JSON == resultType) {
