@@ -2,6 +2,7 @@ package org.anyline.jpush.util;
 
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.anyline.util.BasicUtil;
@@ -73,6 +74,22 @@ public class JPushUtil {
 		}
 		return result;
 	}
+	
+	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, List<String> tags){
+		boolean result = false;
+		if(null == extras){
+			extras = new HashMap<String,String>();
+		}
+		PushPayload pl = buildPushObject_ios_audienceMore_messageWithExtras(type, title, msg, extras, tags);
+		try {
+			PushResult pr = client.sendPush(pl);
+			result = pr.isResultOK();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
 	/**
 	 * 
 	 * @param type 消息类别
@@ -83,6 +100,22 @@ public class JPushUtil {
 	 * @return
 	 */
 	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){
+		boolean result = false;
+		if(null == extras){
+			extras = new HashMap<String,String>();
+		}
+		PushPayload pl = buildPushObject_ios_audienceMore_messageWithExtrasAils(type, title, msg, extras, alias);
+		try {
+			PushResult pr = client.sendPush(pl);
+			result = pr.isResultOK();
+		} catch (Exception e) {
+			e.printStackTrace();
+			result = false;
+		}
+		return result;
+	}
+
+	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, List<String> alias){
 		boolean result = false;
 		if(null == extras){
 			extras = new HashMap<String,String>();
@@ -112,6 +145,33 @@ public class JPushUtil {
 								.build();
 	}
 	private PushPayload buildPushObject_ios_audienceMore_messageWithExtrasAils(String type, String title, String msg, Map<String, String> extras,String ... alias) {
+		return PushPayload.newBuilder()
+				.setPlatform(Platform.android_ios())
+				.setAudience(Audience.newBuilder()
+						.addAudienceTarget(AudienceTarget.alias(alias))
+						.build())
+						.setMessage(Message.newBuilder()
+								.setMsgContent(type)
+								.addExtras(extras)
+								.build())
+								.setNotification(Notification.android(msg, title, null))
+								.build();
+	}
+	
+	private PushPayload buildPushObject_ios_audienceMore_messageWithExtras(String type, String title, String msg, Map<String, String> extras,List<String> tags) {
+		return PushPayload.newBuilder()
+				.setPlatform(Platform.android_ios())
+				.setAudience(Audience.newBuilder()
+						.addAudienceTarget(AudienceTarget.tag_and(tags))
+						.build())
+						.setMessage(Message.newBuilder()
+								.setMsgContent(type)
+								.addExtras(extras)
+								.build())
+								.setNotification(Notification.android(msg, title, null))
+								.build();
+	}
+	private PushPayload buildPushObject_ios_audienceMore_messageWithExtrasAils(String type, String title, String msg, Map<String, String> extras,List<String> alias) {
 		return PushPayload.newBuilder()
 				.setPlatform(Platform.android_ios())
 				.setAudience(Audience.newBuilder()
