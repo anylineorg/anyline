@@ -61,7 +61,7 @@ public class JPushUtil {
 	 * @return
 	 */
 	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){
-		boolean result = false;
+		boolean result = true;
 		int size = tags.length;
 		int cnt = (size-1) / 1000+1;
 		for(int c=0; c<cnt; c++){
@@ -74,13 +74,13 @@ public class JPushUtil {
 			for(int i=0; i<= to-fr; i++){
 				args[i] = tags[fr+i];
 			}
-			result = result && sendByTag(type, title, msg, extras, args);
+			result = sendByTag(type, title, msg, extras, args) && result;
 		}
 		return result;
 	}
 	
 	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, List<String> tags){
-		boolean result = false;
+		boolean result = true;
 		int size = tags.size();
 		int cnt = (size-1) / 1000+1;
 		for(int c=0; c<cnt; c++){
@@ -93,7 +93,7 @@ public class JPushUtil {
 			for(int i=0; i<= to-fr; i++){
 				args[i] = tags.get(fr+i);
 			}
-			result = result && sendByTag(type, title, msg, extras, args);
+			result = sendByTag(type, title, msg, extras, args) && result;
 		}
 		return result;
 	}
@@ -107,7 +107,7 @@ public class JPushUtil {
 	 * @return
 	 */
 	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){
-		boolean result = false;
+		boolean result = true;
 		int size = alias.length;
 		int cnt = (size-1) / 1000+1;
 		for(int c=0; c<cnt; c++){
@@ -120,13 +120,13 @@ public class JPushUtil {
 			for(int i=0; i<= to-fr; i++){
 				args[i] = alias[fr+i];
 			}
-			result = result && sendByAlias(type, title, msg, extras, args);
+			result = sendByAlias(type, title, msg, extras, args) && result;
 		}
 		return result;
 	}
 
 	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, List<String> alias){
-		boolean result = false;
+		boolean result = true;
 		int size = alias.size();
 		int cnt = (size-1) / 1000+1;
 		for(int c=0; c<cnt; c++){
@@ -139,7 +139,7 @@ public class JPushUtil {
 			for(int i=0; i<= to-fr; i++){
 				args[i] = alias.get(fr+i);
 			}
-			result = result && sendByAlias(type, title, msg, extras, args);
+			result = sendByAlias(type, title, msg, extras, args) && result;
 		}
 		return result;
 	}
@@ -203,22 +203,5 @@ public class JPushUtil {
 				                         .build())
 								.setNotification(Notification.android(msg, title, extras))
 								.build();
-	}
-	
-	private PushPayload buildPushObjectWithExtras(String type, String title, String msg, Map<String, String> extras,List<String> tags) {
-		int size = tags.size();
-		String[] args = new String[size];
-		for(int i=0; i<size; i++){
-			args[i] = tags.get(i);
-		}
-		return buildPushObjectWithExtras(type, title, msg, extras, args);
-	}
-	private PushPayload buildPushObjectWithExtrasAils(String type, String title, String msg, Map<String, String> extras,List<String> alias) {
-		int size = alias.size();
-		String[] args = new String[size];
-		for(int i=0; i<size; i++){
-			args[i] = alias.get(i);
-		}
-		return buildPushObjectWithExtrasAils(type, title, msg, extras, args);
 	}
 }

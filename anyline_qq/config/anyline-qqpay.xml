@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="APP_ID">wx67bc8dd44fdb345f</property>
+		<property key="API_SECRECT">jE74fQqltm4PmIpsBh2ScJN8mqiwvZj2</property>
+		<property key="MCH_ID">1385679002</property>
+		<property key="SIGN_TYPE">MD5</property>
+		<property key="PAY_NOTIFY_URL">http://www.anyline.org/pay/ntf/qq</property>
+	</config>
+</configs> 
