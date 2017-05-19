@@ -38,8 +38,12 @@ public class WXPayUtil {
 	public PayOrderResult unifiedorder(PayOrder order) {
 		PayOrderResult result = null;
 		order.setNonce_str(BasicUtil.getRandomString(20));
-		order.setAppid(util.getConfig().getString("APP_ID"));
-		order.setMch_id(util.getConfig().getString("MCH_ID"));
+		if(BasicUtil.isEmpty(order.getAppid())){
+			order.setAppid(util.getConfig().getString("APP_ID"));
+		}
+		if(BasicUtil.isEmpty(order.getMch_id())){
+			order.setMch_id(util.getConfig().getString("MCH_ID"));
+		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(util.getConfig().getString("PAY_NOTIFY_URL"));
 		}
@@ -67,11 +71,6 @@ public class WXPayUtil {
 		}
 		return result;
 	}
-	public static void main(String args[]){
-		String s = SimpleHttpUtil.post(WXConfig.UNIFIED_ORDER_URL, "<xml><nonce_str>AmI8BbF3P5bGlJb3imJN</nonce_str><sign>4E5BF4DD0F01A21D70220966761EE565</sign><body>爱搜索</body><out_trade_no>1164_1167_GXXYWDYQQQFTMIYQYBZR</out_trade_no><total_fee>100</total_fee><trade_type>APP</trade_type></xml>");
-		System.out.println(":"+s);
-	}
-
 
 	
 }

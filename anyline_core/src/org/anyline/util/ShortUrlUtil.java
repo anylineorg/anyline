@@ -19,9 +19,6 @@
 
 package org.anyline.util;
 
-import java.util.ArrayList;
-
-import org.apache.log4j.Logger;
 
 /**
  * 短URL转换
@@ -66,7 +63,7 @@ public class ShortUrlUtil {
 //     */  
 //   public static void main(String[] args) {  
 //  
-//      String sLongUrl = "http://474515923.qzone.qq.com" ; //长链接  
+//      String sLongUrl = "http://www..com" ; //长链接  
 //      String[] aResult = shortUrl (sLongUrl);  
 //      // 打印出结果  
 //      for ( int i = 0; i < aResult. length ; i++) {  
