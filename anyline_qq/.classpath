@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="config"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-beanutils-1.7.0.jar" sourcepath="C:/Users/Administrator/.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0-sources.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-fileupload-1.2.2.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-io-2.0.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-lang3-3.2.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons.httpclient-3.1.0.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/httpclient-4.3.3.jar" sourcepath="C:/Users/Administrator/.m2/repository/org/apache/httpcomponents/httpclient/4.3.3/httpclient-4.3.3-sources.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/httpcore-4.3.2.jar" sourcepath="C:/Users/Administrator/.m2/repository/org/apache/httpcomponents/httpcore/4.3.2/httpcore-4.3.2-sources.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/httpmime-4.3.3.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/jakarta-oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/json-lib-2.3-jdk15.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/log4j-1.2.15.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/ognl-3.0.6.jar" sourcepath="C:/Users/Administrator/.m2/repository/ognl/ognl/3.0.6/ognl-3.0.6-sources.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/anyline_core"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
