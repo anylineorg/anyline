@@ -571,12 +571,19 @@ public class BeanUtil {
 		List<Field> fields = BeanUtil.getFields(obj.getClass());
 		for(Field field:fields){
 			Object value = BeanUtil.getFieldValue(obj, field);
+			if(null == value){
+				value = "";
+			}
 			builder.append("<").append(field.getName()).append(">")
 			.append(value)
 			.append("</").append(field.getName()).append(">");
 		}
 		builder.append("</xml>");
 		return builder.toString();
+	}
+	public static String object2json(Object obj){
+		JSONObject json = JSONObject.fromObject(obj);
+		return json.toString();
 	}
 	public static Map<String, String> craeteMap(String... params) {
 		Map<String, String> result = new HashMap<String, String>();
