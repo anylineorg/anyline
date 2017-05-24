@@ -3,6 +3,7 @@ package org.anyline.alipay.entity;
 import com.alipay.api.response.AlipayFundTransOrderQueryResponse;
 
 public class TransferQueryResult extends BasicResult{
+	private AlipayFundTransOrderQueryResponse response;
 	private String status			; //转账单据状态。 SUCCESS：成功（配合"单笔转账到银行账户接口"产品使用时, 同一笔单据多次查询有可能从成功变成退票状态）； FAIL：失败（具体失败原因请参见error_code以及fail_reason返回值）； INIT：等待处理； DEALING：处理中； REFUND：退票（仅配合"单笔转账到银行账户接口"产品使用时会涉及, 具体退票原因请参见fail_reason返回值）； UNKNOWN：状态未知。	SUCCESS
 	private String order_id			; //支付宝转账单据号，查询失败不返回。	2912381923
 	private String out_biz_no		; //发起转账来源方定义的转账单据号。 该参数的赋值均以查询结果中 的 out_biz_no 为准。 如果查询失败，不返回该参数。	3142321423432
@@ -16,6 +17,7 @@ public class TransferQueryResult extends BasicResult{
 		
 	}
 	public TransferQueryResult(AlipayFundTransOrderQueryResponse res){
+		response = res;
 		setSuccess(res.isSuccess());
 		setCode(res.getCode());
 		setSub_code(res.getSubCode());
@@ -32,6 +34,12 @@ public class TransferQueryResult extends BasicResult{
 		setError_code(res.getErrorCode());
 	}
 	
+	public AlipayFundTransOrderQueryResponse getResponse() {
+		return response;
+	}
+	public void setResponse(AlipayFundTransOrderQueryResponse response) {
+		this.response = response;
+	}
 	public String getOrder_id() {
 		return order_id;
 	}
