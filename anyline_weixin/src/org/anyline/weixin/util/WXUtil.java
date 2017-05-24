@@ -154,18 +154,4 @@ public class WXUtil {
 		params.put("appid", config.getString("APP_ID"));
 		return params;
 	}
-	/**
-	 * 签名
-	 * 
-	 * @param params
-	 * @return
-	 */
-	public String sign(Map<String, Object> params) {
-		String sign = "";
-		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + config.getString("API_SECRECT");
-		sign = MD5Util.crypto(sign).toUpperCase();
-		return sign;
-	}
-	
 }

@@ -890,6 +890,19 @@ public class WebUtil {
 		return ("127.0.0.1".equals(ip) || "0:0:0:0:0:0:0:1".equals(ip));
 	}
 	/**
+	 * 是否微信调用
+	 * @param request
+	 * @return
+	 */
+	public static boolean isWeixin(HttpServletRequest request){
+		String userAgent = request.getHeader("user-agent").toLowerCase();
+		if(userAgent.indexOf("micromessenger")>-1){
+		    return true;
+		}else{
+		    return false;
+		}
+	}
+	/**
 	 * 加密map
 	 * @param map
 	 * @param mix
