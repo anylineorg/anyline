@@ -2,6 +2,8 @@ package org.anyline.alipay.util;
 
 import java.util.Hashtable;
 
+import org.anyline.alipay.entity.TradeQuery;
+import org.anyline.alipay.entity.TradeQueryResult;
 import org.anyline.alipay.entity.Transfer;
 import org.anyline.alipay.entity.TransferQuery;
 import org.anyline.alipay.entity.TransferQueryResult;
@@ -17,9 +19,11 @@ import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.AlipayFundTransOrderQueryRequest;
 import com.alipay.api.request.AlipayFundTransToaccountTransferRequest;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
+import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayFundTransOrderQueryResponse;
 import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 
 public class AlipayUtil {
 	private static Logger log = Logger.getLogger(AlipayUtil.class);
@@ -102,7 +106,27 @@ public class AlipayUtil {
 		String result = "";
 		return result;
 	}
-
+	/**
+	 * 交易状态查询
+	 * @param query
+	 * @return
+	 */
+	public TradeQueryResult tradeQuery(TradeQuery query){
+		TradeQueryResult result = null; 
+		AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+		String json = BeanUtil.object2json(query);
+		request.setBizContent(json);
+		try {
+			AlipayTradeQueryResponse res = client.execute(request);
+			result = new TradeQueryResult(res);
+		} catch (AlipayApiException e) {
+			result = new TradeQueryResult();
+			e.printStackTrace();
+		}finally{
+			log.warn("[单笔转账到支付宝账户][data:"+json+"][result:"+BeanUtil.object2json(result)+"]");
+		}
+		return result;
+	}
 	/**
 	 * 单笔转账到支付宝账户
 	 * @param transfer
