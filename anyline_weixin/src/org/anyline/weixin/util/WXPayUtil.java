@@ -6,6 +6,7 @@ import java.util.Map;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.MD5Util;
 import org.anyline.util.SimpleHttpUtil;
 import org.anyline.weixin.entity.PayOrder;
 import org.anyline.weixin.entity.PayOrderResult;
@@ -30,6 +31,9 @@ public class WXPayUtil {
 		}
 		return util;
 	}
+	public WXConfig getConfig(){
+		return util.getConfig();
+	}
 	/**
 	 * 统一下单
 	 * @param order
@@ -42,14 +46,14 @@ public class WXPayUtil {
 			order.setAppid(util.getConfig().getString("APP_ID"));
 		}
 		if(BasicUtil.isEmpty(order.getMch_id())){
-			order.setMch_id(util.getConfig().getString("MCH_ID"));
+			order.setMch_id(util.getConfig().getString("PAY_MCH_ID"));
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(util.getConfig().getString("PAY_NOTIFY_URL"));
 		}
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = util.sign(map);
+		String sign = sign(map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -72,5 +76,19 @@ public class WXPayUtil {
 		return result;
 	}
 
+
+	/**
+	 * 签名
+	 * 
+	 * @param params
+	 * @return
+	 */
+	public String sign(Map<String, Object> params) {
+		String sign = "";
+		sign = BasicUtil.joinBySort(params);
+		sign += "&key=" + util.getConfig().getString("PAY_API_SECRECT");
+		sign = MD5Util.crypto(sign).toUpperCase();
+		return sign;
+	}
 	
 }

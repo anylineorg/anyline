@@ -28,8 +28,8 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.tag.BaseBodyTag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.FileUtil;
 import org.anyline.util.HttpUtil;
-import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.apache.log4j.Logger;
 /**
@@ -52,7 +52,7 @@ public class Config extends BaseBodyTag {
 			if(BasicUtil.isEmpty(server)){
 				server = HttpUtil.getHostUrl(request.getHeader("Referer"));
 			}
-			url =  server + request.getAttribute("javax.servlet.forward.request_uri");
+			url =  FileUtil.mergePath(server , request.getAttribute("javax.servlet.forward.request_uri")+"");
 			String param = request.getQueryString();
 			if(BasicUtil.isNotEmpty(param)){
 				url += "?" + param;

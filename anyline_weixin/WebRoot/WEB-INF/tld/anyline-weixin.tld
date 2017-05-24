@@ -8,6 +8,11 @@
  <uri>http://www.anyline.org/weixin</uri>
 	<info>anyline 微信标签</info>
 	<tag>
+		<name>check</name>
+		<tagclass>org.anyline.weixin.tag.WeixinCheck</tagclass>
+		<bodycontent>JSP</bodycontent>
+	</tag>
+	<tag>
 		<name>config</name>
 		<tagclass>org.anyline.weixin.tag.Config</tagclass>
 		<bodycontent>JSP</bodycontent>

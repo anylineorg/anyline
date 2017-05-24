@@ -26,7 +26,7 @@ public class WXConfig {
 	 */
 	public String APP_ID = ""				; //AppID(应用ID)
 	public String APP_SECRECT = ""			; //AppSecret(应用密钥)
-	public String API_SECRECT = ""			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+	public String PAY_API_SECRECT = ""		; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
 	public String MCH_ID = ""				; //商家号
 	public String SIGN_TYPE = ""			; //签名加密方式
 	public String SERVER_TOKEN = ""			; //服务号的配置token
