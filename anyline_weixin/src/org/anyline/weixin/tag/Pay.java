@@ -52,7 +52,7 @@ public class Pay extends BaseBodyTag {
 			Map<String,Object> params = new HashMap<String,Object>();
 			params.put("package", pkg);
 			params.put("timeStamp", timestamp);
-			params.put("appId", util.getConfig().getString("APP_ID"));
+			params.put("appId", util.getConfig().APP_ID);
 			params.put("nonceStr", random);
 			params.put("signType", "MD5");
 			String sign = util.sign(params);
@@ -61,7 +61,7 @@ public class Pay extends BaseBodyTag {
 			builder.append("<script language=\"javascript\">\n");
 			builder.append("	function onBridgeReady() {\n");
 			builder.append("		WeixinJSBridge.invoke('getBrandWCPayRequest', {\n");
-			builder.append("			'appId':'").append(util.getConfig().getString("APP_ID")).append("',\n");
+			builder.append("			'appId':'").append(util.getConfig().APP_ID).append("',\n");
 			builder.append("			'timeStamp':'").append(timestamp).append("',\n");
 			builder.append("			'nonceStr':'").append(random).append("',\n");
 			builder.append("			'package':'").append(pkg).append("',\n");

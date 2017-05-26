@@ -43,13 +43,13 @@ public class WXPayUtil {
 		PayOrderResult result = null;
 		order.setNonce_str(BasicUtil.getRandomString(20));
 		if(BasicUtil.isEmpty(order.getAppid())){
-			order.setAppid(util.getConfig().getString("APP_ID"));
+			order.setAppid(util.getConfig().APP_ID);
 		}
 		if(BasicUtil.isEmpty(order.getMch_id())){
-			order.setMch_id(util.getConfig().getString("PAY_MCH_ID"));
+			order.setMch_id(util.getConfig().PAY_MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
-			order.setNotify_url(util.getConfig().getString("PAY_NOTIFY_URL"));
+			order.setNotify_url(util.getConfig().PAY_NOTIFY_URL);
 		}
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
@@ -86,7 +86,7 @@ public class WXPayUtil {
 	public String sign(Map<String, Object> params) {
 		String sign = "";
 		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + util.getConfig().getString("PAY_API_SECRECT");
+		sign += "&key=" + util.getConfig().PAY_API_SECRECT;
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
 	}
