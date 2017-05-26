@@ -3,31 +3,27 @@ package org.anyline.weixin.util;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 
-public class WXConfig {
-	private static Logger log = Logger.getLogger(WXConfig.class);
-	private static Hashtable<String, WXConfig> instances = new Hashtable<String,WXConfig>();
-	private Map<String,String> kvs = new HashMap<String,String>();
+public class WXConfig extends BasicConfig{
 	/**
 	 * 服务号相关信息
 	 */
 	public String APP_ID = ""				; //AppID(应用ID)
 	public String APP_SECRECT = ""			; //AppSecret(应用密钥)
 	public String PAY_API_SECRECT = ""		; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
-	public String MCH_ID = ""				; //商家号
+	public String PAY_MCH_ID = ""			; //商家号
 	public String SIGN_TYPE = ""			; //签名加密方式
 	public String SERVER_TOKEN = ""			; //服务号的配置token
 	public String CERT_PATH = ""			; //微信支付证书存放路径地址
@@ -84,13 +80,13 @@ public class WXConfig {
 	}
 
 	public static WXConfig getInstance(){
-		return instances.get("default");
+		return getInstance("default");
 	}
 	public static WXConfig getInstance(String key){
-		return instances.get(key);
-	}
-	public String getString(String key){
-		return kvs.get(key);
+		if(BasicUtil.isEmpty(key)){
+			key = "default";
+		}
+		return (WXConfig)instances.get(key);
 	}
 	/**
 	 * 加载配置文件
@@ -103,66 +99,12 @@ public class WXConfig {
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-weixin.xml".equals(file.getName())){
-					loadConfig(file);
+					parseFile(WXConfig.class, file);
 				}
 			}
 			
 		} catch (Exception e) {
 			log.error("配置文件解析异常:"+e);
-		}
-	}
-	private static void loadConfig(File file){
-		try{
-			if(ConfigTable.isDebug()){
-				log.info("[加载微信配置文件] [file:" + file.getName() + "]");
-			}
-
-			SAXReader reader = new SAXReader();
-			Document document = reader.read(file);
-			Element root = document.getRootElement();
-			for(Iterator<Element> itrConfig=root.elementIterator("config"); itrConfig.hasNext();){
-				WXConfig config = new WXConfig();
-				Element configElement = itrConfig.next();
-				String configKey = configElement.attributeValue("key");
-				if(BasicUtil.isEmpty(configKey)){
-					configKey = "default";
-				}
-				Map<String,String> kvs = new HashMap<String,String>();
-				for(Iterator<Element> itrProperty=configElement.elementIterator("property"); itrProperty.hasNext();){
-					Element propertyElement = itrProperty.next();
-					String key = propertyElement.attributeValue("key");
-					String value = propertyElement.getTextTrim();
-					if(ConfigTable.isDebug()){
-						log.info("[解析微信配置文件][key = "  + key + "][" + key + " = " + value+"]");
-					}
-					kvs.put(key, value);
-				}
-				config.kvs = kvs;
-				config.setFieldValue();
-				instances.put(configKey, config);
-			}
-			
-		}catch(Exception e){
-			log.error("配置文件解析异常:"+e);
-		}
-	}
-
-	private void setFieldValue(){
-		Field[] fields = this.getClass().getDeclaredFields();
-		for(Field field:fields){
-			if(field.getType().getName().equals("java.lang.String")){
-				String name = field.getName();
-				try {
-					String value = kvs.get(name);
-					if(BasicUtil.isNotEmpty(value)){
-						field.set(this, kvs.get(name));
-					}
-				} catch (IllegalArgumentException e) {
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 	private static void debug(){

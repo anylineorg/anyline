@@ -40,13 +40,13 @@ public class QQPayUtil {
 		QQPayOrderResult result = null;
 		order.setNonce_str(BasicUtil.getRandomString(20));
 		if(BasicUtil.isEmpty(order.getAppid())){
-			order.setAppid(config.getString("APP_ID"));
+			order.setAppid(config.APP_ID);
 		}
 		if(BasicUtil.isEmpty(order.getMch_id())){
-			order.setMch_id(config.getString("MCH_ID"));
+			order.setMch_id(config.PAY_MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
-			order.setNotify_url(config.getString("PAY_NOTIFY_URL"));
+			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
@@ -81,7 +81,7 @@ public class QQPayUtil {
 	public String sign(Map<String, Object> params) {
 		String sign = "";
 		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + config.getString("API_SECRECT");
+		sign += "&key=" + config.API_SECRECT;
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
 	}

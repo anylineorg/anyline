@@ -46,7 +46,7 @@ public class WXUtil {
 		return config;
 	}
 	public String getAccessToken(){
-		return getAccessToken(config.getString("APP_ID"), config.getString("APP_SECRECT"));
+		return getAccessToken(config.APP_ID, config.APP_SECRECT);
 	}
 	public String getAccessToken(String appid, String secret){
 		String result = "";
@@ -90,7 +90,7 @@ public class WXUtil {
 	
 	public String getJsapiTicket(){
 		String result = "";
-		DataRow row = jsapiTickets.getRow("APP_ID", config.getString("APP_ID"));
+		DataRow row = jsapiTickets.getRow("APP_ID", config.APP_ID);
 		String accessToken = getAccessToken();
 		if(null == row){
 			row = newJsapiTicket(accessToken);
@@ -151,7 +151,7 @@ public class WXUtil {
 		params.put("url", url);
 		String sign = jsapiSign(params);
 		params.put("sign", sign);
-		params.put("appid", config.getString("APP_ID"));
+		params.put("appid", config.APP_ID);
 		return params;
 	}
 }
