@@ -54,10 +54,12 @@ public class BeanUtil {
 		try{
 			if(field.isAccessible()){
 				//可访问属性
+				field.set(obj, value);
 				BeanUtils.setProperty(obj, field.getName(), value);
 			}else{
 				//不可访问属性
 				field.setAccessible(true);
+				field.set(obj, value);
 				BeanUtils.setProperty(obj, field.getName(), value);
 				field.setAccessible(false);
 			}
