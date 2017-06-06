@@ -8,6 +8,7 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.anyline.entity.DataRow;
 import org.anyline.qq.pay.entity.QQPayOrder;
 import org.anyline.qq.pay.entity.QQPayOrderResult;
 import org.anyline.util.BasicUtil;
@@ -94,17 +95,17 @@ public class QQPayUtil {
 	/**
 	 * APP 调用起支付签名
 	 * @param nonce	随机串
-	 * @param token 预支付ID
+	 * @param prepayid 预支付ID
 	 * @return
 	 */
-	public String appSign(String nonce, String token){
+	public String appSign(String prepayid, String nonce){
 		String result = "";
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("appId=").append(config.APP_ID);
         stringBuilder.append("&bargainorId=").append(config.MCH_ID);
         stringBuilder.append("&nonce=").append(nonce);
         stringBuilder.append("&pubAcc=").append("");
-        stringBuilder.append("&tokenId=").append(token);
+        stringBuilder.append("&tokenId=").append(prepayid);
 
         try {
 			byte[] byteKey = (QQPayConfig.getInstance().APP_KEY+"&").getBytes("UTF-8");
@@ -123,5 +124,27 @@ public class QQPayUtil {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	/**
+	 * APP调起支付所需参数
+	 * @param hint	关注手Q公众帐号提示语
+	 * @param prepayid 预支付ID
+	 * @return
+	 */
+	public DataRow appParam(String prepayid, String hint){
+		DataRow row = new DataRow();
+		String nonce = BasicUtil.getRandomLowerString(32);
+		row.put("APPID", QQPayConfig.getInstance().APP_ID);
+		row.put("nonce", nonce);
+		row.put("timeStamp", System.currentTimeMillis()/1000+"");
+		row.put("tokenId", prepayid);
+		row.put("pubAcc", "");
+		row.put("pubAccHint", hint);
+		row.put("bargainorId", QQPayConfig.getInstance().MCH_ID);
+		row.put("sigType", "HMAC-SHA1");
+		String sign = appSign(prepayid, nonce);
+		row.put("SIG", sign);
+		return row;
 	}
 }
