@@ -1,8 +1,10 @@
 package org.anyline.weixin.util;
 
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -90,5 +92,40 @@ public class WXPayUtil {
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
 	}
-	
+
+	/**
+	 * APP 调用起支付签名
+	 * @param nonce	随机串
+	 * @param prepayid 预支付ID
+	 * @return
+	 */
+	public String appSign(String prepayid, String nonce){
+		String sign = "";
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("appid", util.getConfig().APP_ID);
+		params.put("noncestr", nonce);
+		params.put("package", "Sign=WXPay");
+		params.put("partnerid", util.getConfig().PAY_MCH_ID);
+		params.put("prepayid", prepayid);
+		params.put("timestamp", System.currentTimeMillis()/1000+"");
+		sign = sign(params);
+		return sign;
+	}
+	/**
+	 * APP调起支付所需参数
+	 * @return
+	 */
+	public DataRow appParam(String prepayid){
+		DataRow row = new DataRow();
+		String nonce = BasicUtil.getRandomLowerString(32);
+		String sign = appSign(prepayid, nonce);
+		row.put("APPID", util.getConfig().APP_ID);
+		row.put("PARTNERID", util.getConfig().PAY_MCH_ID);
+		row.put("PREPAYID", prepayid);
+		row.put("PACKAGEVALUE", "Sign=WXPay");
+		String noncestr = BasicUtil.getRandomString(32);
+		row.put("NONCESTR", noncestr);
+		row.put("SIGN", sign);
+		return row;
+	}
 }
