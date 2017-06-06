@@ -1,19 +1,12 @@
 package org.anyline.weixin.util;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 
 public class WXConfig extends BasicConfig{
