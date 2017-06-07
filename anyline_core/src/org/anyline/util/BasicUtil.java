@@ -191,7 +191,7 @@ public class BasicUtil {
 	}
 
 	public static String getRandomString(int length) {
-		return getRandomString(length,new StringBuffer("_012356789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+		return getRandomString(length,new StringBuffer("012356789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"));
 	}
 
 	public static String getRandomLowerString(int length) {
