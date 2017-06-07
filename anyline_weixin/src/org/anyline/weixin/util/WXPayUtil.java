@@ -43,7 +43,7 @@ public class WXPayUtil {
 	 */
 	public PayOrderResult unifiedorder(PayOrder order) {
 		PayOrderResult result = null;
-		order.setNonce_str(BasicUtil.getRandomString(20));
+		order.setNonce_str(BasicUtil.getRandomLowerString(20));
 		if(BasicUtil.isEmpty(order.getAppid())){
 			order.setAppid(util.getConfig().APP_ID);
 		}
@@ -99,7 +99,7 @@ public class WXPayUtil {
 	 * @param prepayid 预支付ID
 	 * @return
 	 */
-	public String appSign(String prepayid, String nonce){
+	public String appSign(String prepayid, String nonce, String timestamp){
 		String sign = "";
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("appid", util.getConfig().APP_ID);
@@ -107,7 +107,7 @@ public class WXPayUtil {
 		params.put("package", "Sign=WXPay");
 		params.put("partnerid", util.getConfig().PAY_MCH_ID);
 		params.put("prepayid", prepayid);
-		params.put("timestamp", System.currentTimeMillis()/1000+"");
+		params.put("timestamp", timestamp);
 		sign = sign(params);
 		return sign;
 	}
@@ -117,15 +117,19 @@ public class WXPayUtil {
 	 */
 	public DataRow appParam(String prepayid){
 		DataRow row = new DataRow();
-		String nonce = BasicUtil.getRandomLowerString(32);
-		String sign = appSign(prepayid, nonce);
+		String nonce = BasicUtil.getRandomUpperString(32);
+		String timestamp = System.currentTimeMillis()/1000+"";
+		String sign = appSign(prepayid, nonce, timestamp);
 		row.put("APPID", util.getConfig().APP_ID);
 		row.put("PARTNERID", util.getConfig().PAY_MCH_ID);
 		row.put("PREPAYID", prepayid);
 		row.put("PACKAGEVALUE", "Sign=WXPay");
-		String noncestr = BasicUtil.getRandomString(32);
-		row.put("NONCESTR", noncestr);
+		row.put("NONCESTR", nonce);
+		row.put("TIMESTAMP", timestamp);
 		row.put("SIGN", sign);
+		if(ConfigTable.isDebug()){
+			log.warn("APP调起微信支付参数:" + row.toJSON());
+		}
 		return row;
 	}
 }
