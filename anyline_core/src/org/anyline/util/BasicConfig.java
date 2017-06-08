@@ -14,9 +14,8 @@ import org.dom4j.io.SAXReader;
 
 public class BasicConfig {
 	protected static Logger log = Logger.getLogger(BasicConfig.class);
-	protected static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	protected Map<String,String> kvs = new HashMap<String,String>();
-	protected static void parseFile(Class T, File file){
+	protected static Hashtable<String,BasicConfig> parseFile(Class T, File file, Hashtable<String,BasicConfig> instances){
 		SAXReader reader = new SAXReader();
 		try{
 			Document document = reader.read(file);
@@ -43,6 +42,7 @@ public class BasicConfig {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+		return instances;
 	}
 //	public String getString(String key){
 //		return kvs.get(key);

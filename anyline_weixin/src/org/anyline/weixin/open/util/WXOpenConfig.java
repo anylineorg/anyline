@@ -1,57 +1,54 @@
-package org.anyline.qq.pay;
+package org.anyline.weixin.open.util;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 
-public class QQPayConfig extends BasicConfig{
+public class WXOpenConfig extends BasicConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	/**
 	 * 服务号相关信息
 	 */
 	public String APP_ID = ""				; //AppID(应用ID)
-	public String APP_KEY = ""				; //APPKEY(应用密钥)
 	public String APP_SECRECT = ""			; //AppSecret(应用密钥)
-	public String API_SECRECT = ""			; //商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+	public String API_SECRECT = ""			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
 	public String MCH_ID = ""				; //商家号
 	public String SIGN_TYPE = ""			; //签名加密方式
 	public String SERVER_TOKEN = ""			; //服务号的配置token
-	public String CERT_PATH = ""			; //支付证书存放路径地址
-	public String PAY_NOTIFY_URL = ""		; //支付统一接口的回调action
-	public String PAY_CALLBACK_URL = ""		; //支付成功支付后跳转的地址
+	public String CERT_PATH = ""			; //微信支付证书存放路径地址
+	public String NOTIFY_URL = ""			; //微信支付统一接口的回调action
+	public String CALLBACK_URL = ""			; //微信支付成功支付后跳转的地址
+	public String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
 
 	public static final String TRADE_TYPE_JSAPI 		= "JSAPI"	;//公众号支付	
 	public static final String TRADE_TYPE_NATIVE 		= "NATIVE"	;//原生扫码支付
 	public static final String TRADE_TYPE_APP 			= "APP"		;//app支付
 	public static final String TRADE_TYPE_MICROPAY 		= "MICROPAY";//刷卡支付
 	/**
-	 * 支付接口地址
+	 * 微信支付接口地址
 	 */
-	//支付统一接口(POST)
-	public final static String UNIFIED_ORDER_URL = "https://qpay.qq.com/cgi-bin/pay/qpay_unified_order.cgi";
+	//微信支付统一接口(POST)
+	public final static String UNIFIED_ORDER_URL = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+	//微信退款接口(POST)
+	public final static String REFUND_URL = "https://api.mch.weixin.qq.com/secapi/pay/refund";
 	//订单查询接口(POST)
-	public final static String QUERY_ORDER_URL = "https://qpay.qq.com/cgi-bin/pay/qpay_order_query.cgi";
+	public final static String CHECK_ORDER_URL = "https://api.mch.weixin.qq.com/pay/orderquery";
 	//关闭订单接口(POST)
-	public final static String CLOSE_ORDER_URL = "https://qpay.qq.com/cgi-bin/pay/qpay_close_order.cgi";
-	//退款接口(POST)
-	public final static String REFUND_URL = "https://api.qpay.qq.com/cgi-bin/pay/qpay_refund.cgi";
+	public final static String CLOSE_ORDER_URL = "https://api.mch.weixin.qq.com/pay/closeorder";
 	//退款查询接口(POST)
-	public final static String QUERY_REFUND_URL = "https://qpay.qq.com/cgi-bin/pay/qpay_refund_query.cgi";
+	public final static String CHECK_REFUND_URL = "https://api.mch.weixin.qq.com/pay/refundquery";
 	//对账单接口(POST)
-	public final static String DOWNLOAD_BILL_URL = "https://qpay.qq.com/cgi-bin/sp_download/qpay_mch_statement_down.cgi";
+	public final static String DOWNLOAD_BILL_URL = "https://api.mch.weixin.qq.com/pay/downloadbill";
+	//短链接转换接口(POST)
+	public final static String SHORT_URL = "https://api.mch.weixin.qq.com/tools/shorturl";
+	//接口调用上报接口(POST)
+	public final static String REPORT_URL = "https://api.mch.weixin.qq.com/payitil/report";
 
 	static{
 		init();
@@ -62,14 +59,14 @@ public class QQPayConfig extends BasicConfig{
 		loadConfig();
 	}
 
-	public static QQPayConfig getInstance(){
+	public static WXOpenConfig getInstance(){
 		return getInstance("default");
 	}
-	public static QQPayConfig getInstance(String key){
+	public static WXOpenConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
-		return (QQPayConfig)instances.get(key);
+		return (WXOpenConfig)instances.get(key);
 	}
 	/**
 	 * 加载配置文件
@@ -81,8 +78,8 @@ public class QQPayConfig extends BasicConfig{
 			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
-				if("anyline-qqpay.xml".equals(file.getName())){
-					parseFile(QQPayConfig.class, file, instances);
+				if("anyline-weixin-open.xml".equals(file.getName())){
+					parseFile(WXOpenConfig.class, file, instances);
 				}
 			}
 			

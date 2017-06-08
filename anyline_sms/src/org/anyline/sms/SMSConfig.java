@@ -1,6 +1,7 @@
 package org.anyline.sms;
 
 import java.io.File;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.anyline.util.BasicConfig;
@@ -9,6 +10,7 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 
 public class SMSConfig extends BasicConfig{
+	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	//服务器配置
 	public String ACCESS_KEY= "";
 	public String ACCESS_SECRET = "";
@@ -47,7 +49,7 @@ public class SMSConfig extends BasicConfig{
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-sms.xml".equals(file.getName())){
-					parseFile(SMSConfig.class, file);
+					parseFile(SMSConfig.class, file, instances);
 				}
 			}
 			
