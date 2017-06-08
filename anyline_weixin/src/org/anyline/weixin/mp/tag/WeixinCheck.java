@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.weixin.tag;
+package org.anyline.weixin.mp.tag;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;

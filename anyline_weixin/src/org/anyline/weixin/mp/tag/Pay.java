@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.weixin.tag;
+package org.anyline.weixin.mp.tag;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,7 +28,7 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.tag.BaseBodyTag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.weixin.util.WXPayUtil;
+import org.anyline.weixin.open.util.WXOpenUtil;
 import org.apache.log4j.Logger;
 /**
  * 
@@ -45,7 +45,7 @@ public class Pay extends BaseBodyTag {
 	private String key;
 	public int doEndTag() throws JspException {
 		try{
-			WXPayUtil util = WXPayUtil.getInstance(key);
+			WXOpenUtil util = WXOpenUtil.getInstance(key);
 			String timestamp = System.currentTimeMillis()/1000+"";
 			String random = BasicUtil.getRandomLowerString(20);
 			String pkg = "prepay_id="+prepay;
