@@ -46,8 +46,9 @@ public class Config extends BaseBodyTag {
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
+			WXMPUtil util = WXMPUtil.getInstance(key);
 			//request.getHeader("Referer") http://www.anyline.org/mbr/od/v?cd=v79v01f3c102114ddf5bf7a4c25daeb6ff0d007934692a7a0a39e8f95b41fd3e88f3
-			String server = ConfigTable.getString("WEB_SERVER");
+			String server = util.getConfig().WEB_SERVER;
 			String url = "";
 			if(BasicUtil.isEmpty(server)){
 				server = HttpUtil.getHostUrl(request.getHeader("Referer"));
@@ -57,7 +58,6 @@ public class Config extends BaseBodyTag {
 			if(BasicUtil.isNotEmpty(param)){
 				url += "?" + param;
 			}
-			WXMPUtil util = WXMPUtil.getInstance(key);
 			Map<String,Object> map = util.jsapiSign(url);
 			
 			String config = "<script language=\"javascript\">\n";

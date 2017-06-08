@@ -9,12 +9,12 @@
 	<info>anyline 微信标签</info>
 	<tag>
 		<name>check</name>
-		<tagclass>org.anyline.weixin.tag.WeixinCheck</tagclass>
+		<tagclass>org.anyline.weixin.mp.tag.WeixinCheck</tagclass>
 		<bodycontent>JSP</bodycontent>
 	</tag>
 	<tag>
 		<name>config</name>
-		<tagclass>org.anyline.weixin.tag.Config</tagclass>
+		<tagclass>org.anyline.weixin.mp.tag.Config</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<attribute>
 			<name>debug</name>
@@ -29,7 +29,7 @@
 	</tag>
 	<tag>
 		<name>pay</name>
-		<tagclass>org.anyline.weixin.tag.Pay</tagclass>
+		<tagclass>org.anyline.weixin.mp.tag.Pay</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>H5调起支付</info>
 		<attribute>
