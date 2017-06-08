@@ -1,4 +1,4 @@
-package org.anyline.weixin.entity;
+package org.anyline.weixin.open.entity;
 
 public class PayOrderResult {
 	private String return_code;

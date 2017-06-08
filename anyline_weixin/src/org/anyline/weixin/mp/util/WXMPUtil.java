@@ -1,4 +1,4 @@
-package org.anyline.weixin.util;
+package org.anyline.weixin.mp.util;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -11,38 +11,37 @@ import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
-import org.anyline.util.MD5Util;
 import org.anyline.util.SHA1Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class WXUtil {
+public class WXMPUtil {
 
-	private static Logger log = LoggerFactory.getLogger(WXUtil.class);
+	private static Logger log = LoggerFactory.getLogger(WXMPUtil.class);
 	private DataSet accessTokens = new DataSet();
 	private DataSet jsapiTickets = new DataSet();
-	private WXConfig config = null;
+	private WXMPConfig config = null;
 
-	private static Hashtable<String,WXUtil> instances = new Hashtable<String,WXUtil>();
-	public static WXUtil getInstance(){
+	private static Hashtable<String,WXMPUtil> instances = new Hashtable<String,WXMPUtil>();
+	public static WXMPUtil getInstance(){
 		return getInstance("default");
 	}
-	public static WXUtil getInstance(String key){
+	public static WXMPUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
-		WXUtil util = instances.get(key);
+		WXMPUtil util = instances.get(key);
 		if(null == util){
-			util = new WXUtil();
-			WXConfig config = WXConfig.getInstance(key);
+			util = new WXMPUtil();
+			WXMPConfig config = WXMPConfig.getInstance(key);
 			util.config = config;
 			instances.put(key, util);
 		}
 		return util;
 	}
 	
-	public WXConfig getConfig() {
+	public WXMPConfig getConfig() {
 		return config;
 	}
 	public String getAccessToken(){

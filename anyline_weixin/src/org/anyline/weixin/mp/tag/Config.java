@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.weixin.tag;
+package org.anyline.weixin.mp.tag;
 
 import java.util.Map;
 
@@ -30,7 +30,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 import org.anyline.util.HttpUtil;
-import org.anyline.weixin.util.WXUtil;
+import org.anyline.weixin.mp.util.WXMPUtil;
 import org.apache.log4j.Logger;
 /**
  * 
@@ -57,7 +57,7 @@ public class Config extends BaseBodyTag {
 			if(BasicUtil.isNotEmpty(param)){
 				url += "?" + param;
 			}
-			WXUtil util = WXUtil.getInstance(key);
+			WXMPUtil util = WXMPUtil.getInstance(key);
 			Map<String,Object> map = util.jsapiSign(url);
 			
 			String config = "<script language=\"javascript\">\n";

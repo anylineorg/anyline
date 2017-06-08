@@ -1,6 +1,7 @@
-package org.anyline.weixin.util;
+package org.anyline.weixin.mp.util;
 
 import java.io.File;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.anyline.util.BasicConfig;
@@ -9,40 +10,26 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 
 
-public class WXConfig extends BasicConfig{
+public class WXMPConfig extends BasicConfig{
+	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	/**
 	 * 服务号相关信息
 	 */
 	public String APP_ID = ""				; //AppID(应用ID)
 	public String APP_SECRECT = ""			; //AppSecret(应用密钥)
-	public String PAY_API_SECRECT = ""		; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
-	public String PAY_MCH_ID = ""			; //商家号
+	public String API_SECRECT = ""			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+	public String MCH_ID = ""				; //商家号
 	public String SIGN_TYPE = ""			; //签名加密方式
 	public String SERVER_TOKEN = ""			; //服务号的配置token
 	public String CERT_PATH = ""			; //微信支付证书存放路径地址
-	public String PAY_NOTIFY_URL = ""		; //微信支付统一接口的回调action
-	public String PAY_CALLBACK_URL = ""		; //微信支付成功支付后跳转的地址
+	public String NOTIFY_URL = ""			; //微信支付统一接口的回调action
+	public String CALLBACK_URL = ""			; //微信支付成功支付后跳转的地址
 	public String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
 
 	public static final String TRADE_TYPE_JSAPI 		= "JSAPI"	;//公众号支付	
 	public static final String TRADE_TYPE_NATIVE 		= "NATIVE"	;//原生扫码支付
 	public static final String TRADE_TYPE_APP 			= "APP"		;//app支付
 	public static final String TRADE_TYPE_MICROPAY 		= "MICROPAY";//刷卡支付
-	 /**
-	 * 微信基础接口地址
-	 */
-	 //获取token接口(GET)
-	 public final static String TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
-	 //oauth2授权接口(GET)
-	 public final static String OAUTH2_URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=APPID&secret=SECRET&code=CODE&grant_type=authorization_code";
-	 //刷新access_token接口（GET）
-	 public final static String REFRESH_TOKEN_URL = "https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=APPID&grant_type=refresh_token&refresh_token=REFRESH_TOKEN";
-	// 菜单创建接口（POST）
-	 public final static String MENU_CREATE_URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";
-	// 菜单查询（GET）
-	 public final static String MENU_GET_URL = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token=ACCESS_TOKEN";
-	// 菜单删除（GET）
-	public final static String MENU_DELETE_URL = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=ACCESS_TOKEN";
 	/**
 	 * 微信支付接口地址
 	 */
@@ -72,14 +59,14 @@ public class WXConfig extends BasicConfig{
 		loadConfig();
 	}
 
-	public static WXConfig getInstance(){
+	public static WXMPConfig getInstance(){
 		return getInstance("default");
 	}
-	public static WXConfig getInstance(String key){
+	public static WXMPConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
-		return (WXConfig)instances.get(key);
+		return (WXMPConfig)instances.get(key);
 	}
 	/**
 	 * 加载配置文件
@@ -91,8 +78,8 @@ public class WXConfig extends BasicConfig{
 			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
-				if("anyline-weixin.xml".equals(file.getName())){
-					parseFile(WXConfig.class, file);
+				if("anyline-weixin-mp.xml".equals(file.getName())){
+					parseFile(WXMPConfig.class, file, instances);
 				}
 			}
 			
