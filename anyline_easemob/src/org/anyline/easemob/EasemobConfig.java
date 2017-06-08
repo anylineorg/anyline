@@ -3,6 +3,7 @@ package org.anyline.easemob;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ import org.dom4j.io.SAXReader;
 
 
 public class EasemobConfig extends BasicConfig{
-	
+	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	public String HOST = "";
 	public String CLIENT_ID ="";
 	public String CLIENT_SECRET ="";
@@ -51,7 +52,7 @@ public class EasemobConfig extends BasicConfig{
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-easemob.xml".equals(file.getName())){
-					parseFile(EasemobConfig.class, file);
+					parseFile(EasemobConfig.class, file, instances);
 				}
 			}
 			

@@ -1,6 +1,7 @@
 package org.anyline.amap.util;
 
 import java.io.File;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.anyline.util.BasicConfig;
@@ -9,7 +10,7 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 
 public class AmapConfig extends BasicConfig{
-
+	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	public static String KEY= "";
 	public static String PRIVATE_KEY = "";
 	public static String TABLE_ID = "";
@@ -43,7 +44,7 @@ public class AmapConfig extends BasicConfig{
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-amap.xml".equals(file.getName())){
-					parseFile(AmapConfig.class, file);
+					parseFile(AmapConfig.class, file, instances);
 				}
 			}
 		} catch (Exception e) {

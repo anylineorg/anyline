@@ -3,6 +3,7 @@ package org.anyline.qq.pay;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import org.dom4j.io.SAXReader;
 
 
 public class QQPayConfig extends BasicConfig{
+	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	/**
 	 * 服务号相关信息
 	 */
@@ -80,7 +82,7 @@ public class QQPayConfig extends BasicConfig{
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-qqpay.xml".equals(file.getName())){
-					parseFile(QQPayConfig.class, file);
+					parseFile(QQPayConfig.class, file, instances);
 				}
 			}
 			
