@@ -489,11 +489,14 @@ public class AmapUtil {
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.get(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
 				set = DataSet.parseJson(json.getJSONArray("datas"));
+				if(ConfigTable.isDebug()){
+					log.warn("[条件搜索][结果数量:"+set.size()+"]");	
+				}
 			}else{
 				set = new DataSet();
 				log.warn("[条件搜索失败][info:"+json.getString("info")+"]");
