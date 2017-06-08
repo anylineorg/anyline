@@ -2,6 +2,7 @@ package org.anyline.util;
 
 import java.math.BigDecimal;
 
+import org.anyline.entity.MapLocation;
 import org.apache.log4j.Logger;
 
 public class MapUtil {
@@ -51,6 +52,7 @@ public class MapUtil {
 		double distance = distance(lon1, lat1, lon2, lat2);
 		return distanceFormatCn(distance);
 	}
+	
 	public static double distance(String lon1, String lat1, String lon2, String lat2) {
 		double distance = -1;
 		try{
@@ -73,6 +75,31 @@ public class MapUtil {
 		double distance = distance(lon1, lat1, lon2, lat2);
 		return distanceFormatCn(distance);
 	}
+
+	
+	public static double distance(MapLocation loc1, MapLocation loc2) {
+		double distance = -1;
+		try{
+			distance = distance(
+					BasicUtil.parseDouble(loc1.getLon(), -1.0),
+					BasicUtil.parseDouble(loc1.getLat(), -1.0),
+					BasicUtil.parseDouble(loc2.getLon(), -1.0),
+					BasicUtil.parseDouble(loc2.getLat(), -1.0)
+					);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return distance;
+	}
+	public static String distanceFormat(MapLocation loc1, MapLocation loc2) {
+		double distance = distance(loc1.getLon(), loc1.getLat(), loc2.getLon(), loc2.getLat());
+		return distanceFormat(distance);
+	}
+	public static String distanceFormatCn(MapLocation loc1, MapLocation loc2) {
+		double distance = distance(loc1.getLon(), loc1.getLat(), loc2.getLon(), loc2.getLat());
+		return distanceFormatCn(distance);
+	}
+	
 	public static String distanceFormat(double distance){
 		String result = distance+"m";
 		if(distance > 1000){
