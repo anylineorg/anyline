@@ -7,8 +7,8 @@
 		<property key="CERT_PATH">D:/apiclient_cert.p12</property>
 		<property key="SERVER_TOKEN">anylineorg</property>
 		<!-- 支付相关 -->
-		<property key="PAY_MCH_ID">1385679002</property>
-		<property key="PAY_API_SECRECT">jE74fQqltm4PmIpsBh2ScJN8mqiwvZj2</property>
-		<property key="PAY_NOTIFY_URL">http://www.anyline.org/pay/ntf/wx</property>
+		<property key="MCH_ID">1385679002</property>
+		<property key="API_SECRECT">jE74fQqltm4PmIpsBh2ScJN8mqiwvZj2</property>
+		<property key="NOTIFY_URL">http://www.anyline.org/pay/ntf/wx</property>
 	</config>
 </configs> 
