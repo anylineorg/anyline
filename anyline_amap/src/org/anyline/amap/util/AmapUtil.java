@@ -489,7 +489,7 @@ public class AmapUtil {
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.get(url, "UTF-8", params).getText();
+		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
