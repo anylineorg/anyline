@@ -145,6 +145,9 @@ public class QQPayUtil {
 		row.put("sigType", "HMAC-SHA1");
 		String sign = appSign(prepayid, nonce);
 		row.put("SIG", sign);
+		if(ConfigTable.isDebug()){
+			log.warn("APP调起QQ支付参数:" + row.toJSON());
+		}
 		return row;
 	}
 }
