@@ -260,6 +260,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		Object obj = get(key);
 		return BasicUtil.isEmpty(obj); 
 	}
+	public boolean isNotEmpty(String key){
+		return !isEmpty(key);
+	}
 	/**
 	 * 保存之前处理
 	 * @return

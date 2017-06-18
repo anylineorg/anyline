@@ -267,7 +267,6 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected String success(HttpServletRequest request, Object ... data) {
 		return success(RESULT_TYPE_DEFAULT,request, data);
 	}
-
 	protected String success(int resultType, HttpServletRequest request, Object ... data) {
 		if(null != data){
 			if(data.length ==1){				
@@ -275,6 +274,9 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			}else{
 				this.data = data;
 			}
+		}
+		if(ConfigTable.isDebug()){
+			log.warn("[Action Return][Action:"+getClass().getName()+"][url:"+request.getRequestURI()+"][result:success]");
 		}
 		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JSON) {
 			result = true;
@@ -362,7 +364,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		}
 		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString().trim();
 		if(ConfigTable.isDebug()){
-			log.warn("[Action Return][Action:"+getClass()+"][url:"+request.getRequestURI()+"][result:fail][message:"+msg+"]");
+			log.warn("[Action Return][Action:"+getClass().getName()+"][url:"+request.getRequestURI()+"][result:fail][message:"+msg+"]");
 		}
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
 		if (isAjaxRequest(request) || RESULT_TYPE_JSON == resultType) {

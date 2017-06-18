@@ -902,6 +902,75 @@ public class WebUtil {
 		    return false;
 		}
 	}
+
+	/**
+	 * 是否支付宝调用
+	 * @param request
+	 * @return
+	 */
+	public static boolean isAlipay(HttpServletRequest request){
+		String userAgent = request.getHeader("user-agent").toLowerCase();
+		if(userAgent.indexOf("alipayclient")>-1){
+		    return true;
+		}else{
+		    return false;
+		}
+	}
+	/**
+	 * 是否QQ调用
+	 * @param request
+	 * @return
+	 */
+	public static boolean isQQ(HttpServletRequest request){
+		String userAgent = request.getHeader("user-agent").toLowerCase();
+		if(userAgent.indexOf("qq/")>-1){
+		    return true;
+		}else{
+		    return false;
+		}
+	}
+
+	/**
+	 * 是否android调用
+	 * @param request
+	 * @return
+	 */
+	public static boolean isAndroid(HttpServletRequest request){
+		String userAgent = request.getHeader("user-agent").toLowerCase();
+		if(userAgent.indexOf("android")>-1){
+		    return true;
+		}else{
+		    return false;
+		}
+	}
+	/**
+	 * 是否android调用
+	 * @param request
+	 * @return
+	 */
+	public static boolean isIphone(HttpServletRequest request){
+		String userAgent = request.getHeader("user-agent").toLowerCase();
+		if(userAgent.indexOf("iphone")>-1){
+		    return true;
+		}else{
+		    return false;
+		}
+	}
+	public static String clientType(HttpServletRequest request){
+		String type = "";
+		if(isWeixin(request)){
+			type = "WX";
+		}else if(isQQ(request)){
+			type = "QQ";
+		}else if(isAlipay(request)){
+			type = "ALP";
+		}else if(isWap(request)){
+			type = "WAP";
+		}else{
+			type = "WEB";
+		}
+		return type;
+	}
 	/**
 	 * 加密map
 	 * @param map
