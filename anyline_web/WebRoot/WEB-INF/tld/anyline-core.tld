@@ -670,4 +670,15 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>checkClient</name>
+		<tagclass>org.anyline.tag.CheckClient</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>判断当前浏览器type(WX,QQ,ALP,WAP,WEB)是否包含在指定的type中</info>
+		<attribute>
+			<name>type</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>

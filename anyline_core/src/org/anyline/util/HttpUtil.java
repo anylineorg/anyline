@@ -310,7 +310,21 @@ public class HttpUtil {
 		}
 		return post;
 	}
-
+	public static String mergeUrlParam(String url, String params){
+		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
+			return url;
+		}
+		url = url.trim();
+		if (url.indexOf("?") > -1) {
+			if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
+				url += "&";
+			}
+		} else {
+			url += "?";
+		}
+		url += params;
+		return url;
+	}
 	private GetMethod packGet(String url, Map<String, Object> params) {
 		GetMethod get = null;
 		if (params != null && params.size() > 0) {
