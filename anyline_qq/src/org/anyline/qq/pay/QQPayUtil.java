@@ -100,13 +100,12 @@ public class QQPayUtil {
 	 */
 	public String appSign(String prepayid, String nonce){
 		String result = "";
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("appId=").append(config.APP_ID);
-        stringBuilder.append("&bargainorId=").append(config.MCH_ID);
-        stringBuilder.append("&nonce=").append(nonce);
-        stringBuilder.append("&pubAcc=").append("");
-        stringBuilder.append("&tokenId=").append(prepayid);
-
+        StringBuilder builder = new StringBuilder();
+        builder.append("appId=").append(config.APP_ID);
+        builder.append("&bargainorId=").append(config.MCH_ID);
+        builder.append("&nonce=").append(nonce);
+        builder.append("&pubAcc=").append("");
+        builder.append("&tokenId=").append(prepayid);
         try {
 			byte[] byteKey = (QQPayConfig.getInstance().APP_KEY+"&").getBytes("UTF-8");
         // 根据给定的字节数组构造一个密钥,第二参数指定一个密钥算法的名称
@@ -115,7 +114,7 @@ public class QQPayUtil {
         Mac mac = Mac.getInstance("HmacSHA1");
         // 用给定密钥初始化 Mac 对象
         mac.init(secretKey);
-        byte[] byteSrc = stringBuilder.toString().getBytes("UTF-8");
+        byte[] byteSrc = builder.toString().getBytes("UTF-8");
         // 完成 Mac 操作
         byte[] dst = mac.doFinal(byteSrc);
         // Base64
@@ -123,6 +122,9 @@ public class QQPayUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+        if(ConfigTable.isDebug()){
+			log.warn("[APP调起QQ支付签名][SIGN:"+result+"][APP KEY:"+QQPayConfig.getInstance().APP_KEY+"][SIGN SRC:" + builder.toString()+"]");
+        }
 		return result;
 	}
 
@@ -146,7 +148,7 @@ public class QQPayUtil {
 		String sign = appSign(prepayid, nonce);
 		row.put("SIG", sign);
 		if(ConfigTable.isDebug()){
-			log.warn("APP调起QQ支付参数:" + row.toJSON());
+			log.warn("[APP调起QQ支付][返回参数:" + row.toJSON()+"]");
 		}
 		return row;
 	}
