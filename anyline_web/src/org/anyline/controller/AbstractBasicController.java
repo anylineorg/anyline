@@ -119,8 +119,10 @@ public class AbstractBasicController{
 	}
 
 	public DataRow entityRow(HttpServletRequest request, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		boolean clearUpdateColumns = true;
 		if (null == row) {
 			row = new DataRow();
+			clearUpdateColumns = false;
 		}
 		if (null != params && params.length > 0) {
 			for (String param : params) {
@@ -141,7 +143,9 @@ public class AbstractBasicController{
 //			client = new ClientTrace(request);
 //		}
 //		row.setClientTrace(client);
-		row.clearUpdateColumns();
+		if(clearUpdateColumns){
+			row.clearUpdateColumns();
+		}
 		return row;
 	}
 	

@@ -16,6 +16,10 @@ public class BasicConfig {
 	protected static Logger log = Logger.getLogger(BasicConfig.class);
 	protected Map<String,String> kvs = new HashMap<String,String>();
 	protected static Hashtable<String,BasicConfig> parseFile(Class T, File file, Hashtable<String,BasicConfig> instances){
+		if(null == file || !file.exists()){
+			log.warn("[解析配置文件][文件不存在][file="+file.getName()+"]");
+			return instances;
+		}
 		SAXReader reader = new SAXReader();
 		try{
 			Document document = reader.read(file);

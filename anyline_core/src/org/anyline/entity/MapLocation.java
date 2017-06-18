@@ -24,6 +24,9 @@ public class MapLocation {
 		}
 		return false;
 	}
+	public boolean isNotEmpty(){
+		return !isEmpty();
+	}
 	public String getLon() {
 		return lon;
 	}
