@@ -627,6 +627,11 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>function</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>ajax</name>
@@ -674,10 +679,20 @@
 		<name>checkClient</name>
 		<tagclass>org.anyline.tag.CheckClient</tagclass>
 		<bodycontent>JSP</bodycontent>
-		<info>判断当前浏览器type(WX,QQ,ALP,WAP,WEB)是否包含在指定的type中</info>
+		<info>判断当前浏览器type(WX,QQ,ALP,WAP,WEB)是否包含在指定的type中,是则输入value或boyd否则输出else</info>
 		<attribute>
 			<name>type</name>
 			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>else</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
