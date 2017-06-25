@@ -895,7 +895,7 @@ public class WebUtil {
 	 * @return
 	 */
 	public static boolean isWeixin(HttpServletRequest request){
-		String userAgent = request.getHeader("user-agent").toLowerCase();
+		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
 		if(userAgent.indexOf("micromessenger")>-1){
 		    return true;
 		}else{
@@ -909,7 +909,7 @@ public class WebUtil {
 	 * @return
 	 */
 	public static boolean isAlipay(HttpServletRequest request){
-		String userAgent = request.getHeader("user-agent").toLowerCase();
+		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
 		if(userAgent.indexOf("alipayclient")>-1){
 		    return true;
 		}else{
@@ -922,7 +922,7 @@ public class WebUtil {
 	 * @return
 	 */
 	public static boolean isQQ(HttpServletRequest request){
-		String userAgent = request.getHeader("user-agent").toLowerCase();
+		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
 		if(userAgent.indexOf("qq/")>-1){
 		    return true;
 		}else{
@@ -959,15 +959,15 @@ public class WebUtil {
 	public static String clientType(HttpServletRequest request){
 		String type = "";
 		if(isWeixin(request)){
-			type = "WX";
+			type = "weixin";
 		}else if(isQQ(request)){
-			type = "QQ";
+			type = "qq";
 		}else if(isAlipay(request)){
-			type = "ALP";
+			type = "alipay";
 		}else if(isWap(request)){
-			type = "WAP";
+			type = "wap";
 		}else{
-			type = "WEB";
+			type = "web";
 		}
 		return type;
 	}

@@ -98,15 +98,24 @@ public class Select extends BaseBodyTag{
 				Collection items = (Collection)data;
 				if(null != items)
 				for(Object item:items){
-					Object srcValue = BeanUtil.getFieldValue(item, valueKey);
-					Object value = srcValue;
-					if(this.encrypt){
-						value = WebUtil.encryptValue(srcValue+"");
+					String val = null;
+					if(valueKey.contains("{")){
+						val = valueKey;
+						List<String> keys =RegularUtil.fetch(valueKey, "\\{\\w+\\}",2,0);
+						for(String key:keys){
+							Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
+							if(null == v){
+								v = "";
+							}
+							val = val.replace(key, v.toString());
+						}
+					}else{
+						val = BeanUtil.getFieldValue(item, valueKey)+"";
+						if(encrypt){
+							val = WebUtil.encryptValue(val+"");
+						}
 					}
-					html += "<option value=\"" + value + "\"";
-					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
-						html += " selected=\"selected\"";
-					}
+					
 					String text = "";
 					if(textKey.contains("{")){
 						text = textKey;
@@ -123,6 +132,11 @@ public class Select extends BaseBodyTag{
 						if(null != v){
 							text = v.toString();
 						}
+					}
+
+					html += "<option value=\"" + val + "\"";
+					if(null != val && null != this.value && val.equals(value.toString())){
+						html += " selected=\"selected\"";
 					}
 					html += ">" + text+ "</option>";
 				}

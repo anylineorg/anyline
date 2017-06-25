@@ -119,15 +119,27 @@ public class AbstractBasicController{
 	}
 
 	public DataRow entityRow(HttpServletRequest request, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		boolean clearUpdateColumns = true;
+
+		/**
+		 * 
+			1 数据库查询             clear  X
+			2 entityRow  X      X
+			3 new        X      X
+			4 null       X      X
+		 */
+		
+//		boolean clearUpdateColumns = true;
 		if (null == row) {
 			row = new DataRow();
-			clearUpdateColumns = false;
 		}
+//		if(row.getUpdateColumns().size() == 0){
+//			
+//		}
+		
 		if (null != params && params.length > 0) {
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				Object value = ConfigParser.getValue(request, parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
+				Object value = ConfigParser.getValue(request, parser);
 				row.put(parser.getId().toUpperCase(), value);
 			}
 		}else{
@@ -138,14 +150,9 @@ public class AbstractBasicController{
 				row.put(name, value);
 		    }
 		}
-//		Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
-//		if (null == client) {
-//			client = new ClientTrace(request);
+//		if(clearUpdateColumns){
+//			row.clearUpdateColumns();
 //		}
-//		row.setClientTrace(client);
-		if(clearUpdateColumns){
-			row.clearUpdateColumns();
-		}
 		return row;
 	}
 	
