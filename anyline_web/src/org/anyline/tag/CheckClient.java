@@ -36,6 +36,7 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 	private static Logger log = Logger.getLogger(CheckClient.class);
 	
 	private String type = "";
+	private Object elseValue;
 	public int doEndTag() throws JspException {
 		try{
 			type = (type+"").toLowerCase();
@@ -44,6 +45,9 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 			if(type.contains(curType)){
 				JspWriter out = pageContext.getOut();
 				out.print(BasicUtil.nvl(value,body,""));
+			}else if(null != elseValue){
+				JspWriter out = pageContext.getOut();
+				out.print(elseValue);
 			}
 		}catch(Exception e){
 			log.error(e);
@@ -60,12 +64,18 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 		value = null;
 		body = null;
 		type = null;
+		value = null;
+		elseValue = null;
 	}
 	
 	
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+
+	public void setElse(Object elseValue) {
+		this.elseValue = elseValue;
 	}
 
 

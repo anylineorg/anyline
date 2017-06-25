@@ -9,9 +9,10 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
-import org.anyline.amap.util.AmapConfig;
+import org.anyline.config.db.impl.PageNaviImpl;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpClientUtil;
@@ -412,8 +413,14 @@ public class AmapUtil {
 		String sign = sign(params);
 		params.put("sig", sign);
 		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		PageNavi navi = new PageNaviImpl();
+		navi.setCurPage(page);
+		navi.setPageRows(limit);
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
+			if(json.has("count")){
+				navi.setTotalRow(json.getInt("count"));
+			}
 			if(json.has("datas")){
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
@@ -428,6 +435,7 @@ public class AmapUtil {
 			set = new DataSet();
 			set.setException(e);
 		}
+		set.setNavi(navi);
 		return set;
 	}
 

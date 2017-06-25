@@ -40,6 +40,7 @@ public class Navi extends BodyTagSupport{
 	private String creater = "ajax"	;	//分页方式 ajax | html
 	
 	private String id				;	//一个页面内多个标签时需要id区分
+	private String function			;	//指定function后需主动调用function后加载数据
 	private Boolean intime = false	;	//实时执行,否则放入jqery.ready
 	private String callback			;	//回调函数
 	private String before			;	//渲染之前调用
@@ -101,10 +102,16 @@ public class Navi extends BodyTagSupport{
 			}
 			builder.append("creater:'").append(creater).append("'");
 			builder.append("};\n");
-			if(intime){
-				builder.append("$('#_navi_border_"+confId+"').ready(function(){_navi_init("+confId+");});");
+			if(BasicUtil.isNotEmpty(function)){
+				builder.append("function ").append(function).append("(){\n");
+				builder.append("_navi_init("+confId+");\n");
+				builder.append("}\n");
 			}else{
-				builder.append("$(function(){_navi_init("+confId+");});\n");
+				if(intime){
+					builder.append("$('#_navi_border_"+confId+"').ready(function(){_navi_init("+confId+");});");
+				}else{
+					builder.append("$(function(){_navi_init("+confId+");});\n");
+				}
 			}
 			builder.append("</script>");
 			builder.append("</div>");
@@ -136,6 +143,7 @@ public class Navi extends BodyTagSupport{
 		id 				= null	;
 		after			= null	;
 		before			= null	;
+		function		= null	;
 		type			= 0	;
 		creater			= "ajax";
 	}
@@ -219,5 +227,12 @@ public class Navi extends BodyTagSupport{
 	public void setType(int type) {
 		this.type = type;
 	}
+	public String getFunction() {
+		return function;
+	}
+	public void setFunction(String function) {
+		this.function = function;
+	}
+	
 
 }

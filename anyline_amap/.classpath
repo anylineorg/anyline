@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="/anyline_core/lib/httpcore-4.3.2.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/httpmime-4.3.3.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/dom4j-1.6.1.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/anyline_web"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
