@@ -1,6 +1,6 @@
 package org.anyline.weixin.open.entity;
 
-public class WXPayOrderResult {
+public class WXPayTradeResult {
 	private String return_code;
 	private String return_msg;
 	private String device_info;

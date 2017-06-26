@@ -2,15 +2,15 @@ package org.anyline.alipay.entity;
 
 import com.alipay.api.response.AlipayFundTransToaccountTransferResponse;
 
-public class TransferResult extends BasicResult{
+public class AlipayTransferResult extends BasicResult{
 	private String out_biz_no	; //商户转账唯一订单号：发起转账来源方定义的转账单据号。请求时对应的参数，原样返回。	3142321423432
 	private String order_id		; //支付宝转账单据号，成功一定返回，失败可能不返回也可能返回。	20160627110070001502260006780837
 	private String pay_date		; //支付时间：格式为yyyy-MM-dd HH:mm:ss，仅转账成功返回。	2013-01-01 08:08:08
 	
-	public TransferResult(){
+	public AlipayTransferResult(){
 		
 	}
-	public TransferResult(AlipayFundTransToaccountTransferResponse res){
+	public AlipayTransferResult(AlipayFundTransToaccountTransferResponse res){
 		setSuccess(res.isSuccess());
 		setCode(res.getCode());
 		setSub_code(res.getSubCode());

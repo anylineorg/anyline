@@ -1,7 +1,7 @@
 package org.anyline.weixin.open.entity;
 
 
-public class WXPayNotify {
+public class WXPayTradeNotify {
 	
 	private String appid				; //公众账号ID				是			String(32)			wx8888888888888888			微信分配的公众账号ID（企业号corpid即为此appId）
 	private String mch_id				; //商家号				是			String(32)			1900000109			微信支付分配的商家号
