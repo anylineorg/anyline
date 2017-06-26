@@ -1,6 +1,6 @@
 package org.anyline.qq.pay.entity;
 
-public class QQPayOrder {
+public class QQPayTradeOrder {
 
 	private String mch_id			; //商户号		
 	private String nonce_str		; //随机字符串

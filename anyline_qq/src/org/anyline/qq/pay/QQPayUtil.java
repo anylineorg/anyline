@@ -9,8 +9,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.anyline.entity.DataRow;
-import org.anyline.qq.pay.entity.QQPayOrder;
-import org.anyline.qq.pay.entity.QQPayOrderResult;
+import org.anyline.qq.pay.entity.QQPayTradeOrder;
+import org.anyline.qq.pay.entity.QQPayTradeResult;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -42,8 +42,8 @@ public class QQPayUtil {
 	 * @param order
 	 * @return
 	 */
-	public QQPayOrderResult unifiedorder(QQPayOrder order) {
-		QQPayOrderResult result = null;
+	public QQPayTradeResult unifiedorder(QQPayTradeOrder order) {
+		QQPayTradeResult result = null;
 		order.setNonce_str(BasicUtil.getRandomString(20));
 		if(BasicUtil.isEmpty(order.getAppid())){
 			order.setAppid(config.APP_ID);
@@ -71,7 +71,7 @@ public class QQPayUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
 		}
-		result = BeanUtil.xml2object(rtn, QQPayOrderResult.class);
+		result = BeanUtil.xml2object(rtn, QQPayTradeResult.class);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单PREPAY_ID:" + result.getPrepay_id());

@@ -3,7 +3,7 @@ package org.anyline.alipay.entity;
  * 单笔转账到支付宝账户
  *
  */
-public class Transfer {
+public class AlipayTransfer {
 
 	 //收款方账户类型
 	public static enum PAYEE_TYPE{

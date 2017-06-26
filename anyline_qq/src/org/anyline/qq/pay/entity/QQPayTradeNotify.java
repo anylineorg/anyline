@@ -3,7 +3,7 @@ package org.anyline.qq.pay.entity;
  * notify 结果
  *
  */
-public class QQPayNotify {
+public class QQPayTradeNotify {
 	private String appid			; //应用ID	String(32)	否	腾讯开放平台审核通过的应用APPID或腾讯公众平台审核通过的公众号APPID	1007033799
 	private String mch_id			; //商户号	String(32)	是	QQ钱包分配的商户号	1900000109
 	private String nonce_str		; //随机字符串	String(32)	是	随机字符串，不长于32位	3e5a036cb4bc3a677a38ad9d69eb3feb
