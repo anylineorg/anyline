@@ -16,6 +16,7 @@ public class AlipayConfig extends BasicConfig{
 	public String DATA_FORMAT = "json";
 	public String ENCODE = "utf-8";
 	public String SIGN_TYPE = "RSA";
+	public String RETURN_URL= "";
 	public String NOTIFY_URL= "";
 	static{
 		init();

@@ -2,7 +2,7 @@ package org.anyline.qq.pay.entity;
 /**
  * 统一下单返回结果
  */
-public class QQPayOrderResult {
+public class QQPayTradeResult {
 	private String 	return_code		; //返回状态码
 	private String 	return_msg		; //返回信息
 	private String 	retcode			; //手Q CGI原始错误码
