@@ -4,7 +4,7 @@ import org.anyline.util.DateUtil;
 
 import com.alipay.api.response.AlipayTradeQueryResponse;
 
-public class TradeQueryResult extends BasicResult{
+public class AlipayTradeQueryResult extends BasicResult{
 	private AlipayTradeQueryResponse response;
 	
 	private String trade_no				; //	必填	64	支付宝交易号	2013112011001004330000121536
@@ -27,10 +27,10 @@ public class TradeQueryResult extends BasicResult{
 	private String industry_sepc_detail	; //	选填	4096	行业特殊信息（例如在医保卡支付业务中，向用户返回医疗信息）。	{"registration_order_pay":{"brlx":"1","cblx":"1"}}
 
 
-	public TradeQueryResult(){
+	public AlipayTradeQueryResult(){
 		
 	}
-	public TradeQueryResult(AlipayTradeQueryResponse res){
+	public AlipayTradeQueryResult(AlipayTradeQueryResponse res){
 		this.response = res;
 		setSuccess(res.isSuccess());
 		setCode(res.getCode());

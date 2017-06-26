@@ -1,7 +1,7 @@
 package org.anyline.weixin.open.entity;
 
 
-public class WXPayOrder {
+public class WXPayTradeOrder {
 	//配置文件中已设置
 	private String appid;
 	private String mch_id;
