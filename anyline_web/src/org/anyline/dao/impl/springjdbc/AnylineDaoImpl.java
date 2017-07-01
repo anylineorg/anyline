@@ -611,8 +611,9 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Object> executeProcedure(DataSource ds, Procedure procedure){
-		List<Object> result = new ArrayList<Object>();
+	public boolean executeProcedure(DataSource ds, Procedure procedure){
+		boolean result = false;
+		List<Object> list = new ArrayList<Object>();
 		final List<String> inputValues = procedure.getInputValues();
 		final List<Integer> inputTypes = procedure.getInputTypes();
 		final List<Integer> outputTypes = procedure.getOutputTypes();
@@ -635,7 +636,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		sql += ")}";
 		try{
-			result = (List<Object>)jdbc.execute(sql,new CallableStatementCallback<Object>(){     
+			list = (List<Object>)jdbc.execute(sql,new CallableStatementCallback<Object>(){     
 		        public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
 					final List<Object> result = new ArrayList<Object>();
 					for(int i=1; i<=sizeIn; i++){
@@ -664,10 +665,12 @@ public class AnylineDaoImpl implements AnylineDao {
 
 			if(showSQL){
 				log.warn(random + "[执行耗时:"+(System.currentTimeMillis()-fr)+"ms]");
-				log.warn(random + "[输出参数:" + result + "]");
+				log.warn(random + "[输出参数:" + list + "]");
 			}
-			procedure.setResult(result);
+			procedure.setResult(list);
+			result = true;
 		}catch(Exception e){
+			result = false;
 			log.error(random+":"+e);
 			if(showSQLWhenError){
 				log.error(random + "[异常TXT:\n"+sql + "]");
@@ -679,7 +682,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 
 	@Override
-	public synchronized List<Object> executeProcedure(Procedure procedure){
+	public synchronized boolean executeProcedure(Procedure procedure){
 		return executeProcedure(null, procedure);
 	}
 	/**

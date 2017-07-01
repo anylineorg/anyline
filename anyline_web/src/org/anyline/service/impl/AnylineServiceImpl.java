@@ -834,7 +834,7 @@ public class AnylineServiceImpl implements AnylineService {
 		return batchInsert(ds, dest, data, false, columns);
 	}
 	@Override
-	public List<Object> executeProcedure(DataSource ds, String procedure, String... inputs) {
+	public boolean executeProcedure(DataSource ds, String procedure, String... inputs) {
 		Procedure proc = new ProcedureImpl();
 		proc.setName(procedure);
 		for (String input : inputs) {
@@ -844,19 +844,17 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 
 	@Override
-	public List<Object> executeProcedure(String procedure, String... inputs) {
+	public boolean executeProcedure(String procedure, String... inputs) {
 		return executeProcedure(null, procedure, inputs);
 	}
 
 	@Override
-	public List<Object> executeProcedure(DataSource ds, Procedure procedure) {
-		List<Object> result = null;
-		result = dao.executeProcedure(ds, procedure);
-		return result;
+	public boolean executeProcedure(DataSource ds, Procedure procedure) {
+		return dao.executeProcedure(ds, procedure);
 	}
 
 	@Override
-	public List<Object> executeProcedure(Procedure procedure) {
+	public boolean executeProcedure(Procedure procedure) {
 		return executeProcedure(null, procedure);
 	}
 

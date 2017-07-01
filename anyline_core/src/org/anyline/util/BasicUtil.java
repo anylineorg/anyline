@@ -852,6 +852,26 @@ public class BasicUtil {
             return false; 
         } 
     } 
+   public static String omit(String src, int left, int right){
+	   return omit(src, left, right, "*");
+   }
+   public static String omit(String src, int left, int right, String ellipsis){
+	   String result = "";
+	   if(BasicUtil.isEmpty(src)){
+		   return result;
+	   }
+	   int length = src.length();
+		if(left > length){
+			left = length;
+		}
+		if(right > length - left){
+			right = length - left;
+		}
+		String l = src.substring(0,left);
+		String r = src.substring(length - right);
+		result = l+BasicUtil.fillRChar("", ellipsis, length-left-right)+r;
+		return result;
+   }
    public static String escape(String src) {  
        int i;  
        char j;  
