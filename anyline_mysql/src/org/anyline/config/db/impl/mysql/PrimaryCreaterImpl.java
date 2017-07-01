@@ -37,9 +37,13 @@ public class PrimaryCreaterImpl implements PrimaryCreater {
 		proc.addInput(other);
 		proc.regOutput();
 		try{
-			List<Object> result = dao.executeProcedure(proc);
-			if(null != result && result.size()>0){
-				primary = result.get(0).toString();
+
+			boolean result = dao.executeProcedure(proc);
+			if(result){
+				List<Object> list = proc.getResult();
+				if(null != list && list.size()>0){
+					primary = list.get(0).toString();
+				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
