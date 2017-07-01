@@ -226,10 +226,10 @@ public interface AnylineService{
 	 * @param outputs
 	 * @return
 	 */
-	public List<Object> executeProcedure(DataSource ds, String procedure, String... inputs);
-	public List<Object> executeProcedure(String procedure, String... inputs);
-	public List<Object> executeProcedure(DataSource ds, Procedure procedure);
-	public List<Object> executeProcedure(Procedure procedure);
+	public boolean executeProcedure(DataSource ds, String procedure, String... inputs);
+	public boolean executeProcedure(String procedure, String... inputs);
+	public boolean executeProcedure(DataSource ds, Procedure procedure);
+	public boolean executeProcedure(Procedure procedure);
 	/**
 	 * 根据存储过程查询
 	 * @param procedure
