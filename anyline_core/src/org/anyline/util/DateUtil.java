@@ -181,7 +181,25 @@ public class DateUtil {
 		String hm = format("hh:mm");
 		return convertMinute(hm);
 	}
-
+	/**
+	 * 分钟转换成时间
+	 * @param minute
+	 * @return
+	 */
+	public static String convertMinute(int minute) {
+		String time = "";
+		int h = minute / 60;
+		int m = minute % 60;
+		if(h < 10){
+			time += "0";
+		}
+		time += h + ":";
+		if(m < 10){
+			time += "0";
+		}
+		time += m;
+		return time;
+	}
 	/**
 	 * 根据一个日期，返回是星期几的字符串
 	 * 

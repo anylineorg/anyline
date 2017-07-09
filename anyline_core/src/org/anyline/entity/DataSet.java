@@ -42,19 +42,19 @@ import org.apache.log4j.Logger;
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
 	protected static Logger log = Logger.getLogger(DataSet.class);
-	private boolean result = true; 		// 执行结果
-	private Exception exception; 			// 异常
-	private String message; 				// 提示信息
-	private PageNavi navi; 					// 分页
-	private List<String> head; 				// 表头
-	private List<DataRow> rows; 			// 数据
-	private List<String> primaryKeys; 		// 主键
-	private String dataSource; 				// 数据源(表|视图|XML定义SQL)
-	private String schema;
-	private String table;
-	private long createTime = 0;						//创建时间
-	private long expires = -1;							//过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-	
+	private boolean result 			= true		; // 执行结果
+	private Exception exception		= null		; // 异常
+	private String message			= null		; // 提示信息
+	private PageNavi navi			= null		; // 分页
+	private List<String> head		= null		; // 表头
+	private List<DataRow> rows		= null		; // 数据
+	private List<String> primaryKeys= null		; // 主键
+	private String dataSource		= null		; // 数据源(表|视图|XML定义SQL)
+	private String schema			= null		;
+	private String table			= null		;
+	private long createTime 		= 0			; //创建时间
+	private long expires 			= -1		; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+	private boolean isFromCache		= false		; //是否来自缓存
 	public DataSet() {
 		rows = new ArrayList<DataRow>();
 		createTime = System.currentTimeMillis();
@@ -244,7 +244,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public boolean isException() {
 		return null != exception;
 	}
-	
+
+	public boolean isFromCache(){
+		return isFromCache;
+	}
+	public void setIsFromCache(boolean bol){
+		this.isFromCache = bol;
+	}
 
 	/**
 	 * 返回数据是否为空

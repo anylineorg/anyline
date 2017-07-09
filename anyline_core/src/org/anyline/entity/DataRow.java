@@ -41,24 +41,24 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
 	private static Logger log = Logger.getLogger(DataRow.class);
 
-	public static String PARENT 		= "PARENT";				//上级数据
-	public static String ALL_PARENT 	= "ALL_PARENT";			//所有上级数据
-	public static String CHILDREN 		= "CHILDREN";			//子数据
+	public static String PARENT 		= "PARENT"					; //上级数据
+	public static String ALL_PARENT 	= "ALL_PARENT"				; //所有上级数据
+	public static String CHILDREN 		= "CHILDREN"				; //子数据
 	public static String PRIMARY_KEY	= ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
-	public static String ITEMS			= "ITEMS";
-	private DataSet container;									//包含当前对象的容器
+	public static String ITEMS			= "ITEMS"					;
+	private DataSet container			= null						; //包含当前对象的容器
 
-	private List<String> primaryKeys = new ArrayList<String>();	//主键
-	private List<String> updateColumns = new ArrayList<String>();
-	private String dataSource;									//数据源(表|视图|XML定义SQL)
-	private String schema;
-	private String table;
-	private Object clientTrace;									//客户端数据
-	private long createTime = 0;								//创建时间
-	private long expires = -1;									//过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+	private List<String> primaryKeys 	= new ArrayList<String>()	; //主键
+	private List<String> updateColumns 	= new ArrayList<String>()	;
+	private String dataSource			= null 						; //数据源(表|视图|XML定义SQL)
+	private String schema				= null						;
+	private String table				= null						;
+	private Object clientTrace			= null						; //客户端数据
+	private long createTime 			= 0							; //创建时间
+	private long expires 				= -1						; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
 	
-	protected Boolean isNew = false;							//强制新建(适应hibernate主键策略)
-
+	protected Boolean isNew 			= false						; //强制新建(适应hibernate主键策略)
+	protected boolean isFromCache 		= false						; //是否来自缓存
 	
 	/**
 	 * 
@@ -189,6 +189,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		String pk = getPrimaryKey();
 		String pv = getString(pk);
 		return (null == pv ||(null == isNew)|| isNew || BasicUtil.isEmpty(pv));
+	}
+	public boolean isFromCache(){
+		return isFromCache;
+	}
+	public void setIsFromCache(boolean bol){
+		this.isFromCache = bol;
 	}
 	public String getCd(){
 		return getString("CD");
