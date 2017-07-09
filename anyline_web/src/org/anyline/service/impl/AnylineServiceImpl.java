@@ -228,6 +228,7 @@ public class AnylineServiceImpl implements AnylineService {
 				if(null != cacheRowElement){
 					Object cacheRowValue = cacheRowElement.getObjectValue();
 					cacheRow = (DataRow)cacheRowValue;
+					cacheRow.setIsFromCache(true);
 				}else{
 					if(null == configs){
 						configs = new ConfigStoreImpl();
@@ -271,6 +272,7 @@ public class AnylineServiceImpl implements AnylineService {
         	Object value = element.getObjectValue();
         	if(null != value && value instanceof DataSet){
             	set = (DataSet)value;
+            	set.setIsFromCache(true);
         	}else{
         		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
         	}
@@ -450,6 +452,7 @@ public class AnylineServiceImpl implements AnylineService {
             Object value = element.getObjectValue();
         	if(value instanceof DataRow){
             	row = (DataRow)value;
+            	row.setIsFromCache(true);
             	return row;	
         	}else{
         		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
