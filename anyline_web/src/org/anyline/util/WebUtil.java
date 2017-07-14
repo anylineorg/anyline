@@ -294,7 +294,6 @@ public class WebUtil {
 		}
 		return decrypt(value.trim(), ENCRYPT_TYPE_VALUE);
 	}
-
 	/**
 	 * 加密
 	 * 
@@ -308,6 +307,9 @@ public class WebUtil {
 		String result = null;
 		if (null == src) {
 			return null;
+		}
+		if(isEncrypt(src, type)){
+			return src;
 		}
 		DESUtil des = DESUtil.getInstance(defaultDesKey.getKey(type));
 		try {
@@ -346,6 +348,25 @@ public class WebUtil {
 		return encryptValue(src, false);
 	}
 
+	/**
+	 * 是否已加密 (应该根据规则判断,而不是解一次密)
+	 * @param src
+	 * @return
+	 */
+	public static boolean isEncrypt(String src, String type){
+		if(null == src){
+			return false;
+		}
+		try{
+			String value = decrypt(src, type);
+			if(null != value){
+				return true;
+			}
+			return false;
+		}catch(Exception e){
+			return false;
+		}
+	}
 	/**
 	 * 解密
 	 * 

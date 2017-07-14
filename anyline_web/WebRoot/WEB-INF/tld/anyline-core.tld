@@ -462,6 +462,15 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>minute</name>
+		<tagclass>org.anyline.tag.MinuteFormat</tagclass>
+		<info>分钟转换成时间格式90=01:30</info>
+		<attribute>
+			<name>value</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>number</name>
 		<tagclass>org.anyline.tag.NumberFormat</tagclass>
 		<attribute>

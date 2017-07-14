@@ -556,6 +556,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 		}catch(Exception e){
 			log.error(e);
+			e.printStackTrace();
 			if(showSQLWhenError){
 				log.error(random + "[异常TXT:\n"+sql + "]");
 				log.error(random + "[异常参数:"+paramLogFormat(values) + "]");
