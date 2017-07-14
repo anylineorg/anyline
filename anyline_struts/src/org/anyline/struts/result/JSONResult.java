@@ -35,6 +35,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.JSONDateFormatProcessor;
+import org.anyline.util.JSONStringFormatProcessor;
 import org.apache.log4j.Logger;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
 
@@ -105,9 +106,10 @@ public class JSONResult extends StrutsResultSupport {
         	JsonConfig config = new JsonConfig();
     		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
     		config.registerJsonValueProcessor(java.sql.Timestamp.class, new JSONDateFormatProcessor());
+    		config.registerJsonValueProcessor(Object.class, new JSONStringFormatProcessor());
         	JSON json = JSONObject.fromObject(map, config);  
-    		
-        	writer.print(json.toString());
+    		String str = json.toString();
+        	writer.print(str);
         }catch(Exception e){
         	LOG.error(e);
         }finally {
