@@ -6,6 +6,7 @@
 cnt:${set.size }
 <hr/>	
 checkbox:<al:checkbox name="mbr_chk" data="${set}" textKey="MMB_NAME" valueKey="MMB_ID"></al:checkbox>
+cehckbox 是否:<al:checkbox data="{1:}" name="scan" value="${row.IS_NEED_SCAN_CODE }"></al:checkbox>
 <hr/>
 radio:
 <al:radio name="mbr_rdo" id="rdo" data="${set}" textKey="MMB_NAME" valueKey="MMB_ID"></al:radio>

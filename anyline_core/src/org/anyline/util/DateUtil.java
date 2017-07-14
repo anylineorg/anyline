@@ -170,6 +170,9 @@ public class DateUtil {
 	 */
 	public static int convertMinute(String hm) {
 		int minute = -1;
+		if(!hm.contains(":")){
+			return minute;
+		}
 		String sps[] = hm.split(":");
 		int h = BasicUtil.parseInt(sps[0], 0);
 		int m = BasicUtil.parseInt(sps[1], 0);
