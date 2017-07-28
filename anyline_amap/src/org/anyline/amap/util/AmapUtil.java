@@ -343,8 +343,14 @@ public class AmapUtil {
 		String sign = sign(params);
 		params.put("sig", sign);
 		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		PageNavi navi = new PageNaviImpl();
+		navi.setCurPage(page);
+		navi.setPageRows(limit);
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
+			if(json.has("count")){
+				navi.setTotalRow(json.getInt("count"));
+			}
 			if(json.has("datas")){
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
@@ -358,6 +364,8 @@ public class AmapUtil {
 			set = new DataSet();
 			set.setException(e);
 		}
+		set.setNavi(navi);
+		log.warn("[本地搜索][size:"+navi.getTotalRow()+"]");
 		return set;
 	}
 	/**
@@ -436,6 +444,7 @@ public class AmapUtil {
 			set.setException(e);
 		}
 		set.setNavi(navi);
+		log.warn("[周边搜索][size:"+navi.getTotalRow()+"]");
 		return set;
 	}
 
@@ -498,8 +507,14 @@ public class AmapUtil {
 		String sign = sign(params);
 		params.put("sig", sign);
 		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		PageNavi navi = new PageNaviImpl();
+		navi.setCurPage(page);
+		navi.setPageRows(limit);
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
+			if(json.has("count")){
+				navi.setTotalRow(json.getInt("count"));
+			}
 			if(json.has("datas")){
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 				if(ConfigTable.isDebug()){
@@ -516,6 +531,8 @@ public class AmapUtil {
 			set = new DataSet();
 			set.setException(e);
 		}
+		set.setNavi(navi);
+		log.warn("[条件搜索][size:"+navi.getTotalRow()+"]");
 		return set;
 	}
 	/**
