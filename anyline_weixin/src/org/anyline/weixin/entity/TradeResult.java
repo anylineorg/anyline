@@ -1,18 +1,30 @@
-package org.anyline.weixin.open.entity;
+package org.anyline.weixin.entity;
 
-public class WXPayTradeResult {
-	private String return_code;
-	private String return_msg;
-	private String device_info;
-	private String nonce_str;
-	private String sign;
-	private String result_code;
-	private String err_code;
-	private String err_code_des;
-	private String trade_type;
-	private String prepay_id;
-	private String code_url;
-	
+public class TradeResult {
+	protected String appid;
+	protected String mch_id;
+	protected String return_code;
+	protected String return_msg;
+	protected String device_info;
+	protected String nonce_str;
+	protected String sign;
+	protected String result_code;
+	protected String err_code;
+	protected String err_code_des;
+	protected String trade_type;
+	protected String prepay_id;
+	public String getAppid() {
+		return appid;
+	}
+	public void setAppid(String appid) {
+		this.appid = appid;
+	}
+	public String getMch_id() {
+		return mch_id;
+	}
+	public void setMch_id(String mch_id) {
+		this.mch_id = mch_id;
+	}
 	public String getReturn_code() {
 		return return_code;
 	}
@@ -73,14 +85,5 @@ public class WXPayTradeResult {
 	public void setPrepay_id(String prepay_id) {
 		this.prepay_id = prepay_id;
 	}
-	public String getCode_url() {
-		return code_url;
-	}
-	public void setCode_url(String code_url) {
-		this.code_url = code_url;
-	}
+	
 }
-
-//nonceStr
-//noncestr
-//nonce_str
