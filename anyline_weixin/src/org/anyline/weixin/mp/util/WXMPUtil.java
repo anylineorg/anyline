@@ -9,9 +9,14 @@ import net.sf.json.JSONObject;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SHA1Util;
+import org.anyline.util.SimpleHttpUtil;
+import org.anyline.weixin.mp.entity.WXMPPayTradeOrder;
+import org.anyline.weixin.mp.entity.WXMPPayTradeResult;
+import org.anyline.weixin.util.WXUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,6 +49,51 @@ public class WXMPUtil {
 	public WXMPConfig getConfig() {
 		return config;
 	}
+
+	/**
+	 * 统一下单
+	 * @param order
+	 * @return
+	 */
+	public WXMPPayTradeResult unifiedorder(WXMPPayTradeOrder order) {
+		WXMPPayTradeResult result = null;
+		order.setNonce_str(BasicUtil.getRandomLowerString(20));
+		if(BasicUtil.isEmpty(order.getAppid())){
+			order.setAppid(config.APP_ID);
+		}
+		if(BasicUtil.isEmpty(order.getMch_id())){
+			order.setMch_id(config.MCH_ID);
+		}
+		if(BasicUtil.isEmpty(order.getNotify_url())){
+			order.setNotify_url(config.NOTIFY_URL);
+		}
+		
+		Map<String, Object> map = BeanUtil.toMap(order);
+		String sign = WXUtil.paySign(config.API_SECRECT,map);
+		map.put("sign", sign);
+		if(ConfigTable.isDebug()){
+			log.warn("统一下单SIGN:" + sign);
+		}
+		String xml = BeanUtil.map2xml(map);
+
+		if(ConfigTable.isDebug()){
+			log.warn("统一下单XML:" + xml);
+		}
+		String rtn = SimpleHttpUtil.post(WXMPConfig.UNIFIED_ORDER_URL, xml);
+
+		if(ConfigTable.isDebug()){
+			log.warn("统一下单RETURN:" + rtn);
+		}
+		result = BeanUtil.xml2object(rtn, WXMPPayTradeResult.class);
+
+		if(ConfigTable.isDebug()){
+			log.warn("统一下单PREID:" + result.getPrepay_id());
+		}
+		return result;
+	}
+
+
+	
 	public String getAccessToken(){
 		return getAccessToken(config.APP_ID, config.APP_SECRECT);
 	}

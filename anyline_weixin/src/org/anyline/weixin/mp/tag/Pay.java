@@ -28,7 +28,8 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.tag.BaseBodyTag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.weixin.open.util.WXOpenUtil;
+import org.anyline.weixin.mp.util.WXMPUtil;
+import org.anyline.weixin.util.WXUtil;
 import org.apache.log4j.Logger;
 /**
  * 
@@ -45,7 +46,7 @@ public class Pay extends BaseBodyTag {
 	private String key;
 	public int doEndTag() throws JspException {
 		try{
-			WXOpenUtil util = WXOpenUtil.getInstance(key);
+			WXMPUtil util = WXMPUtil.getInstance(key);
 			String timestamp = System.currentTimeMillis()/1000+"";
 			String random = BasicUtil.getRandomLowerString(20);
 			String pkg = "prepay_id="+prepay;
@@ -55,7 +56,7 @@ public class Pay extends BaseBodyTag {
 			params.put("appId", util.getConfig().APP_ID);
 			params.put("nonceStr", random);
 			params.put("signType", "MD5");
-			String sign = util.sign(params);
+			String sign = WXUtil.paySign(util.getConfig().API_SECRECT, params);
 			StringBuilder builder = new StringBuilder();
 			
 			builder.append("<script language=\"javascript\">\n");

@@ -8,12 +8,10 @@ import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.MD5Util;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.mp.util.WXMPConfig;
-import org.anyline.weixin.mp.util.WXMPUtil;
-import org.anyline.weixin.open.entity.WXPayTradeOrder;
-import org.anyline.weixin.open.entity.WXPayTradeResult;
+import org.anyline.weixin.open.entity.WXOpenPayTradeOrder;
+import org.anyline.weixin.open.entity.WXOpenPayTradeResult;
+import org.anyline.weixin.util.WXUtil;
 import org.apache.log4j.Logger;
 
 public class WXOpenUtil {
@@ -44,8 +42,8 @@ public class WXOpenUtil {
 	 * @param order
 	 * @return
 	 */
-	public WXPayTradeResult unifiedorder(WXPayTradeOrder order) {
-		WXPayTradeResult result = null;
+	public WXOpenPayTradeResult unifiedorder(WXOpenPayTradeOrder order) {
+		WXOpenPayTradeResult result = null;
 		order.setNonce_str(BasicUtil.getRandomLowerString(20));
 		if(BasicUtil.isEmpty(order.getAppid())){
 			order.setAppid(config.APP_ID);
@@ -58,7 +56,7 @@ public class WXOpenUtil {
 		}
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = sign(map);
+		String sign = WXUtil.paySign(config.API_SECRECT,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -73,7 +71,7 @@ public class WXOpenUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
 		}
-		result = BeanUtil.xml2object(rtn, WXPayTradeResult.class);
+		result = BeanUtil.xml2object(rtn, WXOpenPayTradeResult.class);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单PREID:" + result.getPrepay_id());
@@ -82,19 +80,6 @@ public class WXOpenUtil {
 	}
 
 
-	/**
-	 * 签名
-	 * 
-	 * @param params
-	 * @return
-	 */
-	public String sign(Map<String, Object> params) {
-		String sign = "";
-		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + config.API_SECRECT;
-		sign = MD5Util.crypto(sign).toUpperCase();
-		return sign;
-	}
 
 	/**
 	 * APP调起支付所需参数
@@ -108,7 +93,7 @@ public class WXOpenUtil {
 		params.put("package", "Sign=WXPay");
 		params.put("noncestr", BasicUtil.getRandomUpperString(32));
 		params.put("timestamp", System.currentTimeMillis()/1000+"");
-		String sign = sign(params);
+		String sign = WXUtil.paySign(config.API_SECRECT,params);
 		params.put("sign", sign);
 		DataRow row = new DataRow(params);
 		row.put("packagevalue", row.get("package"));
