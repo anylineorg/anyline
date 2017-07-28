@@ -93,6 +93,30 @@ public class WXMPUtil {
 	}
 
 
+	/**
+	 * APP调起支付所需参数
+	 * @return
+	 */
+	public DataRow jsapiParam(String prepayid){
+		String timestamp = System.currentTimeMillis()/1000+"";
+		String random = BasicUtil.getRandomLowerString(20);
+		String pkg = "prepay_id="+prepayid;
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("package", pkg);
+		params.put("timeStamp", timestamp);
+		params.put("appId", getConfig().APP_ID);
+		params.put("nonceStr", random);
+		params.put("signType", "MD5");
+		String sign = WXUtil.paySign(getConfig().API_SECRECT, params);
+		params.put("paySign", sign);
+		
+		DataRow row = new DataRow(params);
+		if(ConfigTable.isDebug()){
+			log.warn("APP调起微信支付参数:" + row.toJSON());
+		}
+		return row;
+	}
+
 	
 	public String getAccessToken(){
 		return getAccessToken(config.APP_ID, config.APP_SECRECT);
