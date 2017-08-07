@@ -17,13 +17,11 @@ import org.anyline.util.SimpleHttpUtil;
 import org.anyline.weixin.mp.entity.WXMPPayTradeOrder;
 import org.anyline.weixin.mp.entity.WXMPPayTradeResult;
 import org.anyline.weixin.util.WXUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 
 public class WXMPUtil {
-
-	private static Logger log = LoggerFactory.getLogger(WXMPUtil.class);
+	private static Logger log = Logger.getLogger(WXMPUtil.class);
 	private DataSet accessTokens = new DataSet();
 	private DataSet jsapiTickets = new DataSet();
 	private WXMPConfig config = null;
@@ -87,7 +85,7 @@ public class WXMPUtil {
 		result = BeanUtil.xml2object(rtn, WXMPPayTradeResult.class);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单PREID:" + result.getPrepay_id());
+			log.warn("统一下单PREPAY ID:" + result.getPrepay_id());
 		}
 		return result;
 	}

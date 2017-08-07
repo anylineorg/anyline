@@ -571,7 +571,7 @@ public class BeanUtil {
 		return obj;
 	}
 	public static <T> T xml2object(String xml, Class<T> clazz){
-		return xml2object(xml,  clazz, false);
+		return xml2object(xml,  clazz, true);
 	}
 	public static String object2xml(Object obj){
 		if(null == obj){
