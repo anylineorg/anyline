@@ -923,6 +923,13 @@ public class WebUtil {
 		    return false;
 		}
 	}
+	public static boolean isApp(HttpServletRequest request){
+		String isApp = request.getSession().getAttribute("_IS_APP")+"";
+		if("1".equals(isApp)){
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * 是否支付宝调用
@@ -979,7 +986,9 @@ public class WebUtil {
 	}
 	public static String clientType(HttpServletRequest request){
 		String type = "";
-		if(isWeixin(request)){
+		if(isApp(request)){
+			type = "app";
+		}else if(isWeixin(request)){
 			type = "weixin";
 		}else if(isQQ(request)){
 			type = "qq";
