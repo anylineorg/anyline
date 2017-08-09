@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="APP_ID">wx67bc8dd44fdb345f</property>
+		<property key="APP_SECRECT">f013f99ecb0ca4d2656531735473a877</property>
+		<!-- 登录成功后回调url -->
+		<property key="OAUTH_REDIRECT_URL">http://www.twoant.net/wap/hm/lg/cb_wx_mp</property>
+	</config>
+</configs> 

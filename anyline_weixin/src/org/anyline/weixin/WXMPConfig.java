@@ -1,4 +1,4 @@
-package org.anyline.weixin.mp.util;
+package org.anyline.weixin;
 
 import java.io.File;
 import java.util.Hashtable;
@@ -25,7 +25,7 @@ public class WXMPConfig extends BasicConfig{
 	public String CERT_PATH = ""			; //微信支付证书存放路径地址
 	public String NOTIFY_URL = ""			; //微信支付统一接口的回调action
 	public String CALLBACK_URL = ""			; //微信支付成功支付后跳转的地址
-	public String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
+	public String OAUTH_REDIRECT_URL = ""	; //oauth2授权时回调action
 	
 	public String WEB_SERVER = ""			;
 	

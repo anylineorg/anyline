@@ -9,6 +9,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SimpleHttpUtil;
+import org.anyline.weixin.WXOpenConfig;
 import org.anyline.weixin.open.entity.WXOpenPayTradeOrder;
 import org.anyline.weixin.open.entity.WXOpenPayTradeResult;
 import org.anyline.weixin.util.WXUtil;
@@ -52,7 +53,7 @@ public class WXOpenUtil {
 			order.setMch_id(config.MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
-			order.setNotify_url(config.NOTIFY_URL);
+			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
