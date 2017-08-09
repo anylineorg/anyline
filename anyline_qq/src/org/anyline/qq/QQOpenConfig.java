@@ -1,4 +1,4 @@
-package org.anyline.qq.pay;
+package org.anyline.qq;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -17,7 +17,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 
-public class QQPayConfig extends BasicConfig{
+public class QQOpenConfig extends BasicConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	/**
 	 * 服务号相关信息
@@ -62,14 +62,14 @@ public class QQPayConfig extends BasicConfig{
 		loadConfig();
 	}
 
-	public static QQPayConfig getInstance(){
+	public static QQOpenConfig getInstance(){
 		return getInstance("default");
 	}
-	public static QQPayConfig getInstance(String key){
+	public static QQOpenConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
-		return (QQPayConfig)instances.get(key);
+		return (QQOpenConfig)instances.get(key);
 	}
 	/**
 	 * 加载配置文件
@@ -81,8 +81,8 @@ public class QQPayConfig extends BasicConfig{
 			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
-				if("anyline-qqpay.xml".equals(file.getName())){
-					parseFile(QQPayConfig.class, file, instances);
+				if("anyline-qq-open.xml".equals(file.getName())){
+					parseFile(QQOpenConfig.class, file, instances);
 				}
 			}
 			
