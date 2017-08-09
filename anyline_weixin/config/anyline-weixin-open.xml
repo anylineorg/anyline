@@ -9,6 +9,6 @@
 		<!-- 支付相关 -->
 		<property key="MCH_ID">1385679002</property>
 		<property key="API_SECRECT">jE74fQqltm4PmIpsBh2ScJN8mqiwvZj2</property>
-		<property key="NOTIFY_URL">http://www.anyline.org/pay/ntf/wx</property>
+		<property key="PAY_NOTIFY_URL">http://www.anyline.org/pay/ntf/wx</property>
 	</config>
 </configs> 

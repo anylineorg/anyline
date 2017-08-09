@@ -26,20 +26,21 @@ import java.util.Map;
 
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.qq.QQMPConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.weixin.mp.util.WXMPConfig;
+import org.anyline.weixin.WXMPConfig;
 import org.apache.log4j.Logger;
-
-//?appid=wxf74b4fc1dd829873&redirect_uri=http://www.twoant.net/wap/hm/lg/g_wx_mp&
-	//response_type=code&scope=snsapi_base&state=STATE#wechat_redirect
 
 public class Auth extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
 	private String wx_host  = "https://open.weixin.qq.com/connect/oauth2/authorize";
+	private String qq_host  = "https://graph.qq.com/oauth2.0/authorize";
 	
 	private String appid;
-	private String type;	//wx:微信
+	private String type;	//wx:微信 qq:QQ
 	private String redirect;
+	private String state;
+	private String scope;
 	private String params;
 	
 	private static Logger log = Logger.getLogger(Auth.class);
@@ -48,7 +49,7 @@ public class Auth extends BaseBodyTag {
 		String result = "";
 		try {
 			writer = pageContext.getOut();
-			if("wx".equals(type)){
+			if("wx".equalsIgnoreCase(type) || "weixin".equalsIgnoreCase(type)){
 				if(BasicUtil.isEmpty(appid)){
 					appid = WXMPConfig.getInstance().APP_ID;
 				}
@@ -62,14 +63,42 @@ public class Auth extends BaseBodyTag {
 						}
 					}
 				}
-				String scope = map.get("scope");
 				if(BasicUtil.isEmpty(scope)){
 					scope = "snsapi_base";
 				}
+				if(BasicUtil.isEmpty(redirect)){
+					redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
+				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				String url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+map.get("state")+"#wechat_redirect";
+				String url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+"#wechat_redirect";
 				
 				result = "<a href=\""+url+"\">" + body + "</a>";
+			}else if("qq".equalsIgnoreCase(type)){
+				if(BasicUtil.isEmpty(appid)){
+					appid = QQMPConfig.getInstance().APP_ID;
+				}
+				Map<String,String> map = new HashMap<String,String>();
+				if(null != params){
+					String[] items = params.split(",");
+					for(String item:items){
+						String[] kv = item.split(":");
+						if(kv.length ==2){
+							map.put(kv[0], kv[1]);
+						}
+					}
+				}
+				String response_type = "code";
+				if(BasicUtil.isEmpty(scope)){
+					scope = "get_user_info";
+				}
+				if(BasicUtil.isEmpty(redirect)){
+					redirect = QQMPConfig.getInstance().OAUTH_REDIRECT_URL;
+				}
+				redirect = URLEncoder.encode(redirect, "UTF-8");
+				String url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state;
+				
+				result = "<a href=\""+url+"\">" + body + "</a>";
+				
 			}
 			writer.print(result);
 		} catch (IOException e) {
@@ -88,6 +117,8 @@ public class Auth extends BaseBodyTag {
 		redirect = null;
 		params = null;
 		body = null;
+		scope = null;
+		state = null;
 	}
 
 	public String getAppid() {
@@ -120,6 +151,22 @@ public class Auth extends BaseBodyTag {
 
 	public void setParams(String params) {
 		this.params = params;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
 	}
 	
 }
