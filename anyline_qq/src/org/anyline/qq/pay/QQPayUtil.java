@@ -9,6 +9,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.anyline.entity.DataRow;
+import org.anyline.qq.QQOpenConfig;
 import org.anyline.qq.pay.entity.QQPayTradeOrder;
 import org.anyline.qq.pay.entity.QQPayTradeResult;
 import org.anyline.util.BasicUtil;
@@ -21,7 +22,7 @@ import org.apache.log4j.Logger;
 public class QQPayUtil {
 	private static Logger log = Logger.getLogger(QQPayUtil.class);
 	private static Hashtable<String,QQPayUtil> instances = new Hashtable<String,QQPayUtil>();
-	private QQPayConfig config = null;
+	private QQOpenConfig config = null;
 	public static QQPayUtil getInstance(){
 		return getInstance("default");
 	}
@@ -32,7 +33,7 @@ public class QQPayUtil {
 		QQPayUtil util = instances.get(key);
 		if(null == util){
 			util = new QQPayUtil();
-			util.config = QQPayConfig.getInstance(key);
+			util.config = QQOpenConfig.getInstance(key);
 			instances.put(key, util);
 		}
 		return util;
@@ -66,7 +67,7 @@ public class QQPayUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(QQPayConfig.UNIFIED_ORDER_URL, xml);
+		String rtn = SimpleHttpUtil.post(QQOpenConfig.UNIFIED_ORDER_URL, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
@@ -107,7 +108,7 @@ public class QQPayUtil {
         builder.append("&pubAcc=").append("");
         builder.append("&tokenId=").append(prepayid);
         try {
-			byte[] byteKey = (QQPayConfig.getInstance().APP_KEY+"&").getBytes("UTF-8");
+			byte[] byteKey = (QQOpenConfig.getInstance().APP_KEY+"&").getBytes("UTF-8");
         // 根据给定的字节数组构造一个密钥,第二参数指定一个密钥算法的名称
         SecretKey secretKey = new SecretKeySpec(byteKey, "HmacSHA1");
         // 生成一个指定 Mac 算法 的 Mac 对象
@@ -123,7 +124,7 @@ public class QQPayUtil {
 			e.printStackTrace();
 		}
         if(ConfigTable.isDebug()){
-			log.warn("[APP调起QQ支付签名][SIGN:"+result+"][APP KEY:"+QQPayConfig.getInstance().APP_KEY+"][SIGN SRC:" + builder.toString()+"]");
+			log.warn("[APP调起QQ支付签名][SIGN:"+result+"][APP KEY:"+QQOpenConfig.getInstance().APP_KEY+"][SIGN SRC:" + builder.toString()+"]");
         }
 		return result;
 	}
@@ -137,13 +138,13 @@ public class QQPayUtil {
 	public DataRow appParam(String prepayid, String hint){
 		DataRow row = new DataRow();
 		String nonce = BasicUtil.getRandomLowerString(32);
-		row.put("APPID", QQPayConfig.getInstance().APP_ID);
+		row.put("APPID", QQOpenConfig.getInstance().APP_ID);
 		row.put("nonce", nonce);
 		row.put("timeStamp", System.currentTimeMillis()/1000+"");
 		row.put("tokenId", prepayid);
 		row.put("pubAcc", "");
 		row.put("pubAccHint", hint);
-		row.put("bargainorId", QQPayConfig.getInstance().MCH_ID);
+		row.put("bargainorId", QQOpenConfig.getInstance().MCH_ID);
 		row.put("sigType", "HMAC-SHA1");
 		String sign = appSign(prepayid, nonce);
 		row.put("SIG", sign);
