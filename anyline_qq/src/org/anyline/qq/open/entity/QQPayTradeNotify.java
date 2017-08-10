@@ -1,4 +1,4 @@
-package org.anyline.qq.pay.entity;
+package org.anyline.qq.open.entity;
 /**
  * notify 结果
  *
