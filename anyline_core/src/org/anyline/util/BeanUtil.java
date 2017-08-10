@@ -596,6 +596,24 @@ public class BeanUtil {
 		JSONObject json = JSONObject.fromObject(obj);
 		return json.toString();
 	}
+	/**
+	 * String 转map
+	 * @param str name:zhang,age:20
+	 * @return
+	 */
+	public static Map<String,String> strign2map(String str){
+		Map<String,String> map = new HashMap<String,String>();
+		if(BasicUtil.isNotEmpty(str)){
+			String[] list = str.split(",");
+			for(String item:list){
+				String[] kv = item.split(":");
+				if(kv.length ==2){
+					map.put(kv[0], kv[1]);
+				}
+			}
+		}
+		return map;
+	} 
 	public static Map<String, String> craeteMap(String... params) {
 		Map<String, String> result = new HashMap<String, String>();
 		if (null != params) {

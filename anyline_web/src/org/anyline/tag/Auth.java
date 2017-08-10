@@ -28,6 +28,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.qq.QQMPConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.WebUtil;
 import org.anyline.weixin.WXMPConfig;
 import org.apache.log4j.Logger;
 
@@ -70,7 +71,7 @@ public class Auth extends BaseBodyTag {
 					redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				String url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+"#wechat_redirect";
+				String url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+WebUtil.encrypt(state)+"#wechat_redirect";
 				
 				result = "<a href=\""+url+"\">" + body + "</a>";
 			}else if("qq".equalsIgnoreCase(type)){
@@ -95,7 +96,7 @@ public class Auth extends BaseBodyTag {
 					redirect = QQMPConfig.getInstance().OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				String url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state;
+				String url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+WebUtil.encrypt(state);
 				
 				result = "<a href=\""+url+"\">" + body + "</a>";
 				
