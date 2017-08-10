@@ -26,7 +26,7 @@ import java.util.Map;
 
 import javax.servlet.jsp.JspWriter;
 
-import org.anyline.qq.QQMPConfig;
+import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.weixin.mp.util.WXMPConfig;
