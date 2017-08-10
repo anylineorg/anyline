@@ -1,4 +1,4 @@
-package org.anyline.qq.open;
+package org.anyline.qq.open.util;
 
 import java.util.Base64;
 import java.util.Hashtable;
@@ -9,7 +9,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.anyline.entity.DataRow;
-import org.anyline.qq.QQOpenConfig;
 import org.anyline.qq.open.entity.QQPayTradeOrder;
 import org.anyline.qq.open.entity.QQPayTradeResult;
 import org.anyline.util.BasicUtil;
