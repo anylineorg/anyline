@@ -9,7 +9,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.WXOpenConfig;
 import org.anyline.weixin.open.entity.WXOpenPayTradeOrder;
 import org.anyline.weixin.open.entity.WXOpenPayTradeResult;
 import org.anyline.weixin.util.WXUtil;

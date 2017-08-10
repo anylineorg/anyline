@@ -14,7 +14,6 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SHA1Util;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.WXMPConfig;
 import org.anyline.weixin.mp.entity.WXMPPayTradeOrder;
 import org.anyline.weixin.mp.entity.WXMPPayTradeResult;
 import org.anyline.weixin.util.WXUtil;
@@ -64,7 +63,7 @@ public class WXMPUtil {
 			order.setMch_id(config.MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
-			order.setNotify_url(config.NOTIFY_URL);
+			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
