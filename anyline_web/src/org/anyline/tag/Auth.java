@@ -29,7 +29,7 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.qq.QQMPConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
-import org.anyline.weixin.WXMPConfig;
+import org.anyline.weixin.mp.util.WXMPConfig;
 import org.apache.log4j.Logger;
 
 public class Auth extends BaseBodyTag {

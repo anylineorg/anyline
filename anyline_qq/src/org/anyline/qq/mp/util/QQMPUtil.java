@@ -1,10 +1,9 @@
-package org.anyline.qq.mp;
+package org.anyline.qq.mp.util;
 
 import java.net.URLEncoder;
 import java.util.Hashtable;
 
 import org.anyline.entity.DataRow;
-import org.anyline.qq.QQMPConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
