@@ -1,4 +1,4 @@
-package org.anyline.qq.pay;
+package org.anyline.qq.open;
 
 import java.util.Base64;
 import java.util.Hashtable;
@@ -10,8 +10,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.anyline.entity.DataRow;
 import org.anyline.qq.QQOpenConfig;
-import org.anyline.qq.pay.entity.QQPayTradeOrder;
-import org.anyline.qq.pay.entity.QQPayTradeResult;
+import org.anyline.qq.open.entity.QQPayTradeOrder;
+import org.anyline.qq.open.entity.QQPayTradeResult;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -19,20 +19,20 @@ import org.anyline.util.MD5Util;
 import org.anyline.util.SimpleHttpUtil;
 import org.apache.log4j.Logger;
 
-public class QQPayUtil {
-	private static Logger log = Logger.getLogger(QQPayUtil.class);
-	private static Hashtable<String,QQPayUtil> instances = new Hashtable<String,QQPayUtil>();
+public class QQOpenUtil {
+	private static Logger log = Logger.getLogger(QQOpenUtil.class);
+	private static Hashtable<String,QQOpenUtil> instances = new Hashtable<String,QQOpenUtil>();
 	private QQOpenConfig config = null;
-	public static QQPayUtil getInstance(){
+	public static QQOpenUtil getInstance(){
 		return getInstance("default");
 	}
-	public static QQPayUtil getInstance(String key){
+	public static QQOpenUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
-		QQPayUtil util = instances.get(key);
+		QQOpenUtil util = instances.get(key);
 		if(null == util){
-			util = new QQPayUtil();
+			util = new QQOpenUtil();
 			util.config = QQOpenConfig.getInstance(key);
 			instances.put(key, util);
 		}
@@ -153,4 +153,6 @@ public class QQPayUtil {
 		}
 		return row;
 	}
+	
+	
 }
