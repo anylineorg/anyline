@@ -1,4 +1,4 @@
-package org.anyline.weixin;
+package org.anyline.weixin.mp.util;
 
 import java.io.File;
 import java.util.Hashtable;
@@ -10,8 +10,9 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 
 
-public class WXOpenConfig extends BasicConfig{
+public class WXMPConfig extends BasicConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
+	
 	/**
 	 * 服务号相关信息
 	 */
@@ -22,10 +23,12 @@ public class WXOpenConfig extends BasicConfig{
 	public String SIGN_TYPE = ""			; //签名加密方式
 	public String SERVER_TOKEN = ""			; //服务号的配置token
 	public String CERT_PATH = ""			; //微信支付证书存放路径地址
-	public String PAY_NOTIFY_URL = ""			; //微信支付统一接口的回调action
+	public String PAY_NOTIFY_URL = ""		; //微信支付统一接口的回调action
 	public String PAY_CALLBACK_URL = ""			; //微信支付成功支付后跳转的地址
-	public String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
-
+	public String OAUTH_REDIRECT_URL = ""	; //oauth2授权时回调action
+	
+	public String WEB_SERVER = ""			;
+	
 	public static final String TRADE_TYPE_JSAPI 		= "JSAPI"	;//公众号支付	
 	public static final String TRADE_TYPE_NATIVE 		= "NATIVE"	;//原生扫码支付
 	public static final String TRADE_TYPE_APP 			= "APP"		;//app支付
@@ -59,14 +62,14 @@ public class WXOpenConfig extends BasicConfig{
 		loadConfig();
 	}
 
-	public static WXOpenConfig getInstance(){
+	public static WXMPConfig getInstance(){
 		return getInstance("default");
 	}
-	public static WXOpenConfig getInstance(String key){
+	public static WXMPConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
-		return (WXOpenConfig)instances.get(key);
+		return (WXMPConfig)instances.get(key);
 	}
 	/**
 	 * 加载配置文件
@@ -78,8 +81,8 @@ public class WXOpenConfig extends BasicConfig{
 			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
-				if("anyline-weixin-open.xml".equals(file.getName())){
-					parseFile(WXOpenConfig.class, file, instances);
+				if("anyline-weixin-mp.xml".equals(file.getName())){
+					parseFile(WXMPConfig.class, file, instances);
 				}
 			}
 			
