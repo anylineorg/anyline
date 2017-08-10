@@ -276,7 +276,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			}
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("[Action Return][Action:"+getClass().getName()+"][url:"+request.getRequestURI()+"][result:success]");
+			log.warn("[result:success][url:"+request.getRequestURI()+"][Action Return][Action:"+getClass().getName()+"]");
 		}
 		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JSON) {
 			result = true;
@@ -364,7 +364,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		}
 		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString().trim();
 		if(ConfigTable.isDebug()){
-			log.warn("[Action Return][Action:"+getClass().getName()+"][url:"+request.getRequestURI()+"][result:fail][message:"+msg+"]");
+			log.warn("[result:fail][message:"+msg+"][url:"+request.getRequestURI()+"][Action Return][Action:"+getClass().getName()+"]");
 		}
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
 		if (isAjaxRequest(request) || RESULT_TYPE_JSON == resultType) {

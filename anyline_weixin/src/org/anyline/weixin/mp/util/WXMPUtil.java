@@ -226,4 +226,14 @@ public class WXMPUtil {
 		params.put("appid", config.APP_ID);
 		return params;
 	}
+	public DataRow getOpenId(String code){
+		DataRow row = new DataRow();
+		String url ="https://api.weixin.qq.com/sns/oauth2/access_token?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String txt = HttpUtil.get(url);
+		row = DataRow.parseJson(txt);
+		return row;
+	}
+	public DataRow getUnionId(String code){
+		return getOpenId(code);
+	}
 }
