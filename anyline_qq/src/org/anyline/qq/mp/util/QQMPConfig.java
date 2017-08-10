@@ -1,4 +1,4 @@
-package org.anyline.qq;
+package org.anyline.qq.mp.util;
 
 import java.io.File;
 import java.lang.reflect.Field;
