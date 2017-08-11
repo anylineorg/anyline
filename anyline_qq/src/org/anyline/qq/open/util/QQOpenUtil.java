@@ -1,5 +1,6 @@
 package org.anyline.qq.open.util;
 
+import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.Hashtable;
 import java.util.Map;
@@ -9,13 +10,16 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.anyline.entity.DataRow;
+import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.qq.open.entity.QQPayTradeOrder;
 import org.anyline.qq.open.entity.QQPayTradeResult;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.HttpUtil;
 import org.anyline.util.MD5Util;
 import org.anyline.util.SimpleHttpUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
 public class QQOpenUtil {
@@ -152,6 +156,23 @@ public class QQOpenUtil {
 		}
 		return row;
 	}
-	
+
+	public DataRow getOpenId(String accessToken){
+		DataRow row = new DataRow();
+		String url = "https://graph.qq.com/oauth2.0/me?access_token="+accessToken+"&unionid=1";
+		String txt = HttpUtil.get(url)+"";
+		if(ConfigTable.isDebug()){
+			log.warn("[QQ登录][get openid][txt:"+txt+"]");
+		}
+		//callback( {"client_id":"1106186286","openid":"0B6D8FD1AF2B686CDF78AC34E981D9C4","unionid":"UID_8687A0501C64D5AD725C283107C5BB83"} );
+		String openid= RegularUtil.cut(txt, "openid",":","\"","\"");
+		String unionid = RegularUtil.cut(txt, "unionid",":","\"","\"");
+		row.put("OPENID", openid);
+		row.put("UNIONID", unionid);
+		return row;
+	} 
+	public DataRow getUnionId(String code){
+		return getOpenId(code);
+	}
 	
 }
