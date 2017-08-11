@@ -8,6 +8,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
 import org.anyline.weixin.open.entity.WXOpenPayTradeOrder;
 import org.anyline.weixin.open.entity.WXOpenPayTradeResult;
@@ -102,5 +103,15 @@ public class WXOpenUtil {
 			log.warn("APP调起微信支付参数:" + row.toJSON());
 		}
 		return row;
+	}
+	public DataRow getOpenId(String code){
+		DataRow row = new DataRow();
+		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String txt = HttpUtil.get(url);
+		row = DataRow.parseJson(txt);
+		return row;
+	}
+	public DataRow getUnionId(String code){
+		return getOpenId(code);
 	}
 }
