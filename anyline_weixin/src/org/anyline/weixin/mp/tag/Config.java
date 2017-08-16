@@ -62,7 +62,7 @@ public class Config extends BaseBodyTag {
 			
 			String config = "<script language=\"javascript\">\n";
 			if(debug){
-				String alert = "请注意url,经过代理的应用有可能造成域名不符(如localhost,127.0.0.1等),请在anyline-config.xml中配置WEB_SERVER=http://www.xx.com\\n";
+				String alert = "请注意url,经过代理的应用有可能造成域名不符(如localhost,127.0.0.1等),请在anyline-weixin-mp.xml中配置WEB_SERVER=http://www.xx.com\\n";
 				alert += "SIGN SRC: appId=" + util.getConfig().APP_ID + ",noncestr="+map.get("noncestr")
 						+",jsapi_ticket="+map.get("jsapi_ticket")+",url="+url+",timestamp="+map.get("timestamp");
 				config += "alert(\""+alert+"\");\n";
