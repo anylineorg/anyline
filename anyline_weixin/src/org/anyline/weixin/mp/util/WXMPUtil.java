@@ -140,6 +140,9 @@ public class WXMPUtil {
 		DataRow row = new DataRow();
 		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+secret;
 		String text = HttpUtil.get(url,"UTF-8").getText();
+		if(ConfigTable.isDebug()){
+			log.warn("[CREATE NEW ACCESS TOKEN][result:"+text+"]");
+		}
 		JSONObject json = JSONObject.fromObject(text);
 		row = new DataRow();
 		if(json.has("access_token")){
@@ -162,11 +165,12 @@ public class WXMPUtil {
 	public String getJsapiTicket(){
 		String result = "";
 		DataRow row = jsapiTickets.getRow("APP_ID", config.APP_ID);
-		String accessToken = getAccessToken();
 		if(null == row){
+			String accessToken = getAccessToken();
 			row = newJsapiTicket(accessToken);
 		}else if(row.isExpire()){
 			jsapiTickets.remove(row);
+			String accessToken = getAccessToken();
 			row = newJsapiTicket(accessToken);
 		}
 		if(null != row){
@@ -179,12 +183,13 @@ public class WXMPUtil {
 			log.warn("[CREATE NEW JSAPI TICKET][token:"+accessToken+"]");
 		}
 		DataRow row = new DataRow();
+		row.put("APP_ID", config.APP_ID);
 		String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+accessToken+"&type=jsapi";
 		String text = HttpUtil.get(url,"UTF-8").getText();
 		JSONObject json = JSONObject.fromObject(text);
 		if(json.has("ticket")){
 			row.put("TICKET", json.getString("ticket"));
-			row.setExpires(json.getInt("expires_in"));
+			row.setExpires(json.getInt("expires_in")*1000);
 			if(ConfigTable.isDebug()){
 				log.warn("[CREATE NEW JSAPI TICKET][TICKET:"+row.get("TICKET")+"]");
 			}
