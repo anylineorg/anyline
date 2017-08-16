@@ -167,11 +167,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public long getExpires() {
 		return expires;
 	}
-	public void setExpires(long expires) {
-		this.expires = expires;
+	public void setExpires(long millisecond) {
+		this.expires = millisecond;
 	}
-	public void setExpires(int expires) {
-		this.expires = expires;
+	public void setExpires(int millisecond) {
+		this.expires = millisecond;
 	}
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
