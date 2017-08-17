@@ -71,7 +71,7 @@ public class Auth extends BaseBodyTag {
 					redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				String url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+WebUtil.encrypt(state)+"#wechat_redirect";
+				String url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+"#wechat_redirect";
 				
 				result = "<a href=\""+url+"\">" + body + "</a>";
 			}else if("qq".equalsIgnoreCase(type)){

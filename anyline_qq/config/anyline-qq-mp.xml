@@ -2,7 +2,7 @@
 <configs>
 	<config key="default">
 		<property key="APP_ID">101420322</property>
-		<property key="API_SECRECT">bd7f56f0fee65e20f39b537aea822566</property>
+		<property key="API_KEY">bd7f56f0fee65e20f39b537aea822566</property>
 		<!-- 登录成功回调url 保持与QQ互联(https://connect.qq.com/manage.html)对应的APP网站回调域一致 -->
 		<property key="OAUTH_REDIRECT_URL">http://www.twoant.net/wap/hm/lg/cb_qq_mp</property>
 	</config>
