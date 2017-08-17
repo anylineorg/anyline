@@ -23,7 +23,7 @@ public class QQMPConfig extends BasicConfig{
 	 * 服务号相关信息
 	 */
 	public String APP_ID = ""				; //AppID(应用ID)
-	public String APP_SECRECT = ""				; //APPKEY(应用密钥)
+	public String API_KEY = ""				; //APPKEY(应用密钥)
 	public String OAUTH_REDIRECT_URL		; //登录成功回调URL
 	static{
 		init();

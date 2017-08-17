@@ -38,7 +38,7 @@ public class QQMPUtil {
 			e.printStackTrace();
 		}
 		//1.获取accesstoken
-		String url = "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=" + config.APP_ID+"&client_secret="+config.APP_SECRECT+"&code="+code+"&redirect_uri="+redirect;
+		String url = "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=" + config.APP_ID+"&client_secret="+config.API_KEY+"&code="+code+"&redirect_uri="+redirect;
 		String txt = HttpUtil.get(url)+"";
 		if(ConfigTable.isDebug()){
 			log.warn("[QQ登录][get accesstoken][txt:"+txt+"]");
