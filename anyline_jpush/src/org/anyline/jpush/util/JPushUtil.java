@@ -61,6 +61,9 @@ public class JPushUtil {
 	 * @return
 	 */
 	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){
+		if(null == extras){
+			extras = new HashMap<String,String>();
+		}
 		boolean result = true;
 		int size = tags.length;
 		int cnt = (size-1) / 1000+1;
@@ -80,6 +83,9 @@ public class JPushUtil {
 	}
 	
 	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, List<String> tags){
+		if(null == extras){
+			extras = new HashMap<String,String>();
+		}
 		boolean result = true;
 		int size = tags.size();
 		int cnt = (size-1) / 1000+1;
@@ -149,7 +155,9 @@ public class JPushUtil {
 			PushPayload pl = buildPushObject_Alias_Android(type, title, msg, extras, alias);
 			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
-			pl = buildPushObject_Alias_IOS(type, title, msg, extras, alias);
+			
+			extras.put("MESSAGE", msg);
+			pl = buildPushObject_Alias_IOS(type, title, extras, alias);
 			pr = client.sendPush(pl);
 			result = pr.isResultOK() && result;
 		} catch (Exception e) {
@@ -166,7 +174,8 @@ public class JPushUtil {
 			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
 			
-			pl = buildPushObjec_Tag_IOS(type, title, msg, extras, tags);
+			extras.put("MESSAGE", msg);
+			pl = buildPushObjec_Tag_IOS(type, title, extras, tags);
 			pr = client.sendPush(pl);
 			result = pr.isResultOK() && result;
 		} catch (Exception e) {
@@ -211,7 +220,7 @@ public class JPushUtil {
 								.setNotification(Notification.android(msg, title, extras))
 								.build();
 	}
-	private PushPayload buildPushObjec_Tag_IOS(String type, String title, String msg, Map<String, String> extras,String[] tags) {
+	private PushPayload buildPushObjec_Tag_IOS(String type, String title,Map<String, String> extras,String[] tags) {
 		if(null == extras){
 			extras = new HashMap<String,String>();
 		}
@@ -226,10 +235,10 @@ public class JPushUtil {
 								.build()).setOptions(Options.newBuilder()
 				                         .setApnsProduction(true)
 				                         .build())
-								.setNotification(Notification.android(msg, title, extras))
+								.setNotification(Notification.ios(title, extras))
 								.build();
 	}
-	private PushPayload buildPushObject_Alias_IOS(String type, String title, String msg, Map<String, String> extras,String[] alias) {
+	private PushPayload buildPushObject_Alias_IOS(String type, String title,Map<String, String> extras,String[] alias) {
 		if(null == extras){
 			extras = new HashMap<String,String>();
 		}
@@ -244,7 +253,7 @@ public class JPushUtil {
 								.build()).setOptions(Options.newBuilder()
 				                         .setApnsProduction(true)
 				                         .build())
-								.setNotification(Notification.android(msg, title, extras))
+								.setNotification(Notification.ios(title, extras))
 								.build();
 	}
 }
