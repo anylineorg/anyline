@@ -152,14 +152,14 @@ public class JPushUtil {
 	private boolean sendByAlias(String type, String title, String msg, Map<String,String> extras, String[] alias){
 		boolean result = false;
 		try {
-			PushPayload pl = buildPushObject_Alias_Android(type, title, msg, extras, alias);
+			PushPayload pl = buildPushObject_Alias(type, title, msg, extras, alias);
 			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
 			
-			extras.put("MESSAGE", msg);
-			pl = buildPushObject_Alias_IOS(type, title, extras, alias);
-			pr = client.sendPush(pl);
-			result = pr.isResultOK() && result;
+//			extras.put("MESSAGE", msg);
+//			pl = buildPushObject_Alias_IOS(type, title, extras, alias);
+//			pr = client.sendPush(pl);
+//			result = pr.isResultOK() && result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = false;
@@ -170,20 +170,61 @@ public class JPushUtil {
 	private boolean sendByTag(String type, String title, String msg, Map<String,String> extras, String[] tags){
 		boolean result = false;
 		try {
+			extras.put("MESSAGE", msg);
+			extras.put("TITLE", title);
+//			
 			PushPayload pl = buildPushObjec_Tag_Android(type, title, msg, extras, tags);
 			PushResult pr = client.sendPush(pl);
 			result = pr.isResultOK();
-			
-			extras.put("MESSAGE", msg);
-			pl = buildPushObjec_Tag_IOS(type, title, extras, tags);
-			pr = client.sendPush(pl);
-			result = pr.isResultOK() && result;
+////			
+//			System.out.println(extras);
+//			pl = buildPushObjec_Tag_IOS(type, title, extras, tags);
+//			pr = client.sendPush(pl);
+//			result = pr.isResultOK() && result;
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = false;
 		}
 		return result;
 	}
+	private PushPayload buildPushObjec_Tag(String type, String title, String msg, Map<String, String> extras,String[] tags) {
+		if(null == extras){
+			extras = new HashMap<String,String>();
+		}
+		return PushPayload.newBuilder()
+				.setPlatform(Platform.all())
+				.setAudience(Audience.newBuilder()
+						.addAudienceTarget(AudienceTarget.tag_and(tags))
+						.build())
+						.setMessage(Message.newBuilder()
+								.setMsgContent(type)
+								.addExtras(extras)
+								.build()).setOptions(Options.newBuilder()
+				                         .setApnsProduction(true)
+				                         .build())
+								.setNotification(Notification.android(msg, title, extras).ios(title, extras))
+								.build();
+	}
+
+	private PushPayload buildPushObject_Alias(String type, String title, String msg, Map<String, String> extras,String[] alias) {
+		if(null == extras){
+			extras = new HashMap<String,String>();
+		}
+		return PushPayload.newBuilder()
+				.setPlatform(Platform.all())
+				.setAudience(Audience.newBuilder()
+						.addAudienceTarget(AudienceTarget.alias(alias))
+						.build())
+						.setMessage(Message.newBuilder()
+								.setMsgContent(type)
+								.addExtras(extras)
+								.build()).setOptions(Options.newBuilder()
+				                         .setApnsProduction(true)
+				                         .build())
+								.setNotification(Notification.android(msg, title, extras).ios(title, extras))
+								.build();
+	}
+	
 	private PushPayload buildPushObjec_Tag_Android(String type, String title, String msg, Map<String, String> extras,String[] tags) {
 		if(null == extras){
 			extras = new HashMap<String,String>();
