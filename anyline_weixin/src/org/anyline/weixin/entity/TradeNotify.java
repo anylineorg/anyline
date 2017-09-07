@@ -32,6 +32,7 @@ public class TradeNotify {
 	protected String out_trade_no			; //商家订单号				是			String(32)			1212321211201407033568112322			商家系统的订单号，与请求一致。
 	protected String attach					; //商家数据包				否			String(128)			123456			商家数据包，原样返回
 	protected String time_end				; //支付完成时间			是			String(14)			20141030133525			支付完成时间，格式为yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010。其他详见时间规则
+
 	public String getReturn_code() {
 		return return_code;
 	}
