@@ -8,6 +8,7 @@ import net.sf.json.JSONObject;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -65,7 +66,7 @@ public class WXMPUtil {
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
-		
+		order.setTrade_type(BasicConfig.TRADE_TYPE_JSAPI);
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.paySign(config.API_SECRECT,map);
 		map.put("sign", sign);

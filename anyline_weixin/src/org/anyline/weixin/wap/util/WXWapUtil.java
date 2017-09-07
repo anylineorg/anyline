@@ -1,4 +1,4 @@
-package org.anyline.weixin.open.util;
+package org.anyline.weixin.wap.util;
 
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -11,32 +11,32 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.open.entity.WXOpenPayTradeOrder;
-import org.anyline.weixin.open.entity.WXOpenPayTradeResult;
 import org.anyline.weixin.util.WXUtil;
+import org.anyline.weixin.wap.entity.WXWapPayTradeOrder;
+import org.anyline.weixin.wap.entity.WXWapPayTradeResult;
 import org.apache.log4j.Logger;
 
-public class WXOpenUtil {
-	private static Logger log = Logger.getLogger(WXOpenUtil.class);
-	private static Hashtable<String,WXOpenUtil> instances = new Hashtable<String,WXOpenUtil>();
-	private WXOpenConfig config;
-	public static WXOpenUtil getInstance(){
+public class WXWapUtil {
+	private static Logger log = Logger.getLogger(WXWapUtil.class);
+	private static Hashtable<String,WXWapUtil> instances = new Hashtable<String,WXWapUtil>();
+	private WXWapConfig config;
+	public static WXWapUtil getInstance(){
 		return getInstance("default");
 	}
-	public static WXOpenUtil getInstance(String key){
+	public static WXWapUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
-		WXOpenUtil util = instances.get(key);
+		WXWapUtil util = instances.get(key);
 		if(null == util){
-			util = new WXOpenUtil();
-			WXOpenConfig config = WXOpenConfig.getInstance(key);
+			util = new WXWapUtil();
+			WXWapConfig config = WXWapConfig.getInstance(key);
 			util.config = config;
 			instances.put(key, util);
 		}
 		return util;
 	}
-	public WXOpenConfig getConfig(){
+	public WXWapConfig getConfig(){
 		return config;
 	}
 	/**
@@ -44,8 +44,8 @@ public class WXOpenUtil {
 	 * @param order
 	 * @return
 	 */
-	public WXOpenPayTradeResult unifiedorder(WXOpenPayTradeOrder order) {
-		WXOpenPayTradeResult result = null;
+	public WXWapPayTradeResult unifiedorder(WXWapPayTradeOrder order) {
+		WXWapPayTradeResult result = null;
 		order.setNonce_str(BasicUtil.getRandomLowerString(20));
 		if(BasicUtil.isEmpty(order.getAppid())){
 			order.setAppid(config.APP_ID);
@@ -56,8 +56,8 @@ public class WXOpenUtil {
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
-
-		order.setTrade_type(BasicConfig.TRADE_TYPE_APP);
+		order.setTrade_type(BasicConfig.TRADE_TYPE_WAP);
+		
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.paySign(config.API_SECRECT,map);
 		map.put("sign", sign);
@@ -69,12 +69,12 @@ public class WXOpenUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(WXOpenConfig.UNIFIED_ORDER_URL, xml);
+		String rtn = SimpleHttpUtil.post(WXWapConfig.UNIFIED_ORDER_URL, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
 		}
-		result = BeanUtil.xml2object(rtn, WXOpenPayTradeResult.class);
+		result = BeanUtil.xml2object(rtn, WXWapPayTradeResult.class);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单PREID:" + result.getPrepay_id());
