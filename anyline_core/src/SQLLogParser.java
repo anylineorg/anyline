@@ -12,7 +12,7 @@ import org.anyline.util.regular.RegularUtil;
 public class SQLLogParser {
 	public static void main(String args[]) throws Exception{
 		//修改文件格式:UTF-8
-		List<SQLLog> logs = parse(new File("D:\\line_an"));
+		List<SQLLog> logs = parse(new File("g:\\log.log"));
 		Collections.sort(logs, new Comparator<SQLLog>() {  
             public int compare(SQLLog o1, SQLLog o2) {  
                 int result = o1.getExeTime() - o2.getExeTime();  
