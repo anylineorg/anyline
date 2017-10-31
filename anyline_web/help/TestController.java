@@ -82,7 +82,7 @@ public class TestController extends BasicController {
 		set = service.query("members");
 		
 		
-		//查询条件通过parseConfig解析 列名:运行符key
+		//查询条件通过parseConfig解析 列名:运算符key
 		//值为"" null "null" 的条件默认不会拼接到SQL
 		//运算符缺省为= parseConfig("ID:>id","ID:<>id","ID:id")
 		
