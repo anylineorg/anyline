@@ -152,6 +152,10 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return getParam(request, key, false, false);
 	}
 
+	protected List<Object> getParams(String key,  boolean keyEncrypt, boolean valueEncrypt) {
+		return getParams(request, key, keyEncrypt, valueEncrypt);
+	}
+
 	protected List<Object> getParams(String key, boolean keyEncrypt) {
 		return getParams(request, key, keyEncrypt, false);
 	}

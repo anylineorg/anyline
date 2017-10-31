@@ -50,6 +50,6 @@
 	<classpathentry kind="lib" path="lib/struts2-convention-plugin-2.3.24.1.jar"/>
 	<classpathentry kind="lib" path="lib/struts2-core-2.3.24.1.jar"/>
 	<classpathentry kind="lib" path="lib/struts2-spring-plugin-2.3.24.1.jar"/>
-	<classpathentry kind="lib" path="lib/xwork-core-2.3.24.1.jar"/>
+	<classpathentry kind="lib" path="lib/xwork-core-2.3.24.1.jar" sourcepath="C:/Users/Administrator/.m2/repository/org/apache/struts/xwork/xwork-core/2.3.24.1/xwork-core-2.3.24.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
