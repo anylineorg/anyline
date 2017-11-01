@@ -171,7 +171,8 @@ public class Checkbox extends BaseBodyTag {
 						if("1".equals(chk) || checked(chks,item.get(valueKey)) ) {
 							html += " checked=\"checked\"";
 						}
-						html +=tag()+ "/>";
+						
+						html += tag() + crateExtraData(item) + "/>";
 						String label = "<label for=\""+id+ "\">";
 						String text = "";
 						if (textKey.contains("{")) {
