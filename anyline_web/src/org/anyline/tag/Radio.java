@@ -123,6 +123,7 @@ public class Radio extends BaseBodyTag{
 							text = v.toString();
 						}
 					}
+					html += crateExtraData(item);
 					html += "></input>" + "<label for=\""+id+"\">"+text+"</label>";
 				}
 			}

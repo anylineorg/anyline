@@ -924,6 +924,12 @@ public class WebUtil {
 		}
 	}
 	public static boolean isApp(HttpServletRequest request){
+		if(null == request){
+			return false;
+		}
+		if(null == request.getSession()){
+			return false;
+		}
 		String isApp = request.getSession().getAttribute("_IS_APP")+"";
 		if("1".equals(isApp)){
 			return true;

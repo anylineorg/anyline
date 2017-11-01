@@ -138,6 +138,7 @@ public class Select extends BaseBodyTag{
 					if(null != val && null != this.value && val.equals(value.toString())){
 						html += " selected=\"selected\"";
 					}
+					html += crateExtraData(item);
 					html += ">" + text+ "</option>";
 				}
 			}
@@ -145,7 +146,7 @@ public class Select extends BaseBodyTag{
 				JspWriter out = pageContext.getOut();
 				out.print(html);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}
