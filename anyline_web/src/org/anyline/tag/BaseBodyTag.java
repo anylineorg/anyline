@@ -28,6 +28,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.apache.log4j.Logger;
 public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	private static final long serialVersionUID = 1L;
@@ -46,8 +48,23 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String onblur;
 	protected String onfocus;
 	protected String disabled;
+	protected String extra;
+	protected String itemExtra;
 	protected boolean encrypt;	//是否加密
 	
+	
+	public String getItemExtra() {
+		return itemExtra;
+	}
+	public void setItemExtra(String itemExtra) {
+		this.itemExtra = itemExtra;
+	}
+	public String getExtra() {
+		return extra;
+	}
+	public void setExtra(String extra) {
+		this.extra = extra;
+	}
 	public String getDisabled() {
 		return disabled;
 	}
@@ -86,6 +103,41 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		if(null != disabled){
 			html += " disabled=\"" + disabled + "\"";
 		}
+		html += crateExtraData();
+		
+		return html;
+	}
+
+	protected String crateExtraData(Object obj){
+		String html = "";
+		if(BasicUtil.isNotEmpty(itemExtra)){
+			String[] list = itemExtra.split(",");
+			for(String item:list){
+				String[] tmps = item.split(":");
+				if(tmps.length>=2){
+					String id = tmps[0];
+					String key = tmps[1];
+					Object value = BeanUtil.getFieldValue(obj, key);
+					if(null == value){
+						value = "";
+					}
+					html += "data-" + id + "=\"" + value + "\"";
+				}
+			}
+		}
+		return html;
+	}
+	protected String crateExtraData(){
+		String html = "";
+		if(BasicUtil.isNotEmpty(extra)){
+			String[] list = extra.split(",");
+			for(String item:list){
+				String[] tmps = item.split(":");
+				if(tmps.length>=2){
+					html += "data-" + tmps[0] + "=\"" + tmps[1] + "\"";
+				}
+			}
+		}
 		return html;
 	}
 	public int doStartTag() throws JspException {
@@ -122,6 +174,8 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		onblur = null;
 		onfocus = null;
 		disabled = null;
+		extra = null;
+		itemExtra = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {

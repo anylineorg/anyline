@@ -28,18 +28,26 @@ import org.anyline.util.BasicUtil;
 public class Random extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
 	private String length;
+	private String begin;
+	private String end;
 	
 	public int doEndTag() {
 
 		JspWriter writer = null;
 		String result = "";
 		try {
-			int size = BasicUtil.parseInt(length, 0);
-			if(size>0){
-				writer = pageContext.getOut();
-				result = BasicUtil.getRandomNumberString(size);
-				writer.print(result);
+			int _begin = BasicUtil.parseInt(begin, 0);
+			int _end = BasicUtil.parseInt(end, 0);
+			if(_begin != _end){
+				result = BasicUtil.getRandomNumber(_begin, _end)+"";
+			}else{
+				int size = BasicUtil.parseInt(length, 0);
+				if(size>0){
+					result = BasicUtil.getRandomNumberString(size);
+				}
 			}
+			writer = pageContext.getOut();
+			writer.print(result);
 		} catch (IOException e) {
 			log.error(e);
 		}finally{
@@ -52,8 +60,26 @@ public class Random extends BaseBodyTag {
 	public void release() {
 		super.release();
 		length = "0";
+		begin = null;
+		end = null;
 	}
 
+
+	public String getBegin() {
+		return begin;
+	}
+
+	public void setBegin(String begin) {
+		this.begin = begin;
+	}
+
+	public String getEnd() {
+		return end;
+	}
+
+	public void setEnd(String end) {
+		this.end = end;
+	}
 
 	public String getLength() {
 		return length;
