@@ -72,7 +72,7 @@ public class FileResult extends StrutsResultSupport {
 				}
 			}
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 	}
 }

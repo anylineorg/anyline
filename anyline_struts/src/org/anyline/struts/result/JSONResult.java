@@ -111,7 +111,7 @@ public class JSONResult extends StrutsResultSupport {
     		String str = json.toString();
         	writer.print(str);
         }catch(Exception e){
-        	LOG.error(e);
+        	e.printStackTrace();
         }finally {
             if (writer != null) {
                 writer.flush();

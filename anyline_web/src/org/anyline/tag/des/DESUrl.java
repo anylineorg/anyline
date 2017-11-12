@@ -54,7 +54,7 @@ public class DESUrl extends BaseBodyTag implements Cloneable{
 				out.print(result);
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

@@ -159,7 +159,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 	}
 

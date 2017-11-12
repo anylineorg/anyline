@@ -44,7 +44,7 @@ public class PageContext extends BaseBodyTag implements Cloneable{
 				pageContext.setAttribute(key, BasicUtil.nvl(value,body));
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

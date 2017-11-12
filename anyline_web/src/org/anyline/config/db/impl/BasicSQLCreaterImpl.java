@@ -302,10 +302,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 //				result = (String)method.invoke(annotation);									//执行name方法返回结果
 //				result = result.replace(getDisKeyFr(), "").replace(getDisKeyTo(),"");
 //			}catch(NoClassDefFoundError e){
-//				log.error(e);
+//				e.printStackTrace();
 //			}catch(Exception e){
 //				e.printStackTrace();
-//				log.error(e);
+//				e.printStackTrace();
 //			}
 //		}
 		return result;

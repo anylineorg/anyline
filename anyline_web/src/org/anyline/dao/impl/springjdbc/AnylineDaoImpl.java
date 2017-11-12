@@ -246,7 +246,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 		//	row.processBeforeDisplay();	//显示之前预处理
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 			if(showSQLWhenError){
 				log.error(random + "[异常TXT:\n"+sql);
 				log.error(random + "[异常参数:"+paramLogFormat(values));
@@ -391,7 +391,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.warn(random + "[执行耗时:"+(System.currentTimeMillis() - fr)+"ms][影响行数:"+cnt + "]");
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 			if(showSQLWhenError){
 				log.error(random + "[异常TXT:\n"+sql + "]");
 				log.error(random + "[异常参数:"+paramLogFormat(values) + "]");
@@ -467,7 +467,7 @@ public class AnylineDaoImpl implements AnylineDao {
 								}
 							}
 						}catch(Exception e){
-							log.error(e);
+							e.printStackTrace();
 						}
 						
 					}
@@ -555,7 +555,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.warn(random + "[封装耗时:"+(System.currentTimeMillis() - mid)+"ms][封装行数:"+list.size() + "]");
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 			e.printStackTrace();
 			if(showSQLWhenError){
 				log.error(random + "[异常TXT:\n"+sql + "]");
@@ -762,7 +762,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.warn(random + "[执行耗时:"+(System.currentTimeMillis() - fr)+"ms]");
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 			if(showSQLWhenError){
 				log.error(random + "[异常TXT:\n"+procedure.getName() + "]");
 				log.error(random + "[异常参数:"+paramLogFormat(inputValues) + "]");

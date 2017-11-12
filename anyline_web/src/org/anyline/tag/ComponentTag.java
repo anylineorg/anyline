@@ -62,7 +62,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 			try{
 				out.print(builder);
 			}catch(Exception e){
-				log.error(e);
+				e.printStackTrace();
 			}finally{
 				try{
 					//out.clear();
@@ -71,7 +71,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 				release();
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

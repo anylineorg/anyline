@@ -102,19 +102,19 @@ public class Watermark {
             ImageIO.write(buffImg, "JPG", os);
 
         } catch (Exception e) {
-            log.error(e);
+            e.printStackTrace();
         } finally {
             try {
                 if (null != is)
                     is.close();
             } catch (Exception e) {
-                log.error(e);
+                e.printStackTrace();
             }
             try {
                 if (null != os)
                     os.close();
             } catch (Exception e) {
-                log.error(e);
+                e.printStackTrace();
             }
         }
     }
@@ -178,13 +178,13 @@ public class Watermark {
             ImageIO.write(buffImg, "JPG", os);
 
         } catch (Exception e) {
-            log.error(e);
+            e.printStackTrace();
         } finally {
             try {
                 if (null != os)
                     os.close();
             } catch (Exception e) {
-                log.error(e);
+                e.printStackTrace();
             }
         }
     }

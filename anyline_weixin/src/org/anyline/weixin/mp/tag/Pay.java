@@ -94,7 +94,7 @@ public class Pay extends BaseBodyTag {
 			JspWriter out = pageContext.getOut();
 			out.println(builder.toString());
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}

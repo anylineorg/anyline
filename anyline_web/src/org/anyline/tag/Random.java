@@ -49,7 +49,7 @@ public class Random extends BaseBodyTag {
 			writer = pageContext.getOut();
 			writer.print(result);
 		} catch (IOException e) {
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

@@ -45,7 +45,7 @@ public class Money extends BaseBodyTag {
 			result = MoneyUtil.format(d);
 			writer.print(result);
 		} catch (IOException e) {
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

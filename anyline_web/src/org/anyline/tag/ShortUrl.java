@@ -84,7 +84,7 @@ public class ShortUrl extends BaseBodyTag {
 //			JspWriter out = pageContext.getOut();
 //			out.print(buffer.toString());
 //		} catch (Exception e) {
-//			log.error(e);
+//			e.printStackTrace();
 //		} finally {
 //			release();
 //		}

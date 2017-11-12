@@ -377,7 +377,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 					where = true;
 				}
 			}catch(Exception e){
-				log.error(e);
+				e.printStackTrace();
 			}
 		}
 		return where;
