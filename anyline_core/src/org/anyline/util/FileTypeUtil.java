@@ -132,9 +132,9 @@ public class FileTypeUtil {
 			filetype = getFileTypeByStream(b);
 			is.close();
 		} catch (FileNotFoundException e) {
-			log.error(e);
+			e.printStackTrace();
 		} catch (IOException e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 		return filetype;
 	}

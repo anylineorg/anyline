@@ -44,7 +44,7 @@ public class Else extends BaseBodyTag implements Cloneable{
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

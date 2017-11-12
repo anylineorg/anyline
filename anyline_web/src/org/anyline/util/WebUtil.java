@@ -117,7 +117,7 @@ public class WebUtil {
 				defaultDesKey.setPrefixParamValue("p298pn6e9o1r5gv");
 			}
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 	}
 
@@ -175,7 +175,7 @@ public class WebUtil {
 				inet = InetAddress.getLocalHost();
 				ip = inet.getHostAddress();
 			} catch (Exception e) {
-				log.error(e);
+				e.printStackTrace();
 			}
 		}
 		return ip;
@@ -444,7 +444,7 @@ public class WebUtil {
 				}
 			}
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 			result = null;
 		}
 		return result;
@@ -464,7 +464,7 @@ public class WebUtil {
 		try {
 			param = encryptRequestParam(param);
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 		url = url.substring(0, url.indexOf("?") + 1) + param;
 		return url;
@@ -500,7 +500,7 @@ public class WebUtil {
 			}
 			
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 		url = url.substring(0, url.indexOf("?") + 1) + param;
 		return url;
@@ -517,7 +517,7 @@ public class WebUtil {
 			String url = RegularUtil.fetchUrl(tag);
 			tag = tag.replace(url, encryptUrl(url));
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 
 		return tag;
@@ -831,7 +831,7 @@ public class WebUtil {
 							+ src.substring(idx + DES_VERSION_LENGTH); // 没有版本号的密文
 				}
 			} catch (Exception e) {
-				log.error(e);
+				e.printStackTrace();
 			}
 		}
 		return result;
@@ -1288,7 +1288,7 @@ public class WebUtil {
 				}
 			}
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 			return false;
 		} finally {
 			if (null != in) {

@@ -148,7 +148,7 @@ public class SQLStoreImpl extends SQLStore{
 			SAXReader reader = new SAXReader();
 			document = reader.read(file);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		return document;
 	}

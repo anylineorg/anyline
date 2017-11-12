@@ -240,7 +240,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		return html;
 	}

@@ -105,7 +105,7 @@ public class AbstractBasicController{
 			// BeanUtil.setValue(entity, "clientTrace", client);
 			//BeanUtil.setFieldValue(entity, "clientTrace", client);
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 		return entity;
 	}
@@ -579,7 +579,7 @@ public class AbstractBasicController{
 			Field field = this.getClass().getField("dir");//子类dir必须public
 			dir = (String)field.get(this);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		return dir;
 	}
@@ -631,7 +631,7 @@ public class AbstractBasicController{
 		try{
 			html = WebUtil.parseJsp(request, response, page);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("BODY", BasicUtil.escape(html));

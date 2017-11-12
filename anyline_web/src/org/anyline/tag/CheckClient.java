@@ -50,7 +50,7 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 				out.print(elseValue);
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

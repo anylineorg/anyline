@@ -43,7 +43,7 @@ public class WeixinCheck extends BaseBodyTag {
 				out.println(body);
 			}
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}

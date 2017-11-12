@@ -761,7 +761,7 @@ public class BasicUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		return ips;
 	}

@@ -64,7 +64,7 @@ public class BeanUtil {
 				field.setAccessible(false);
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -191,10 +191,10 @@ public class BeanUtil {
 			}
 			return column;
 		}catch(NoClassDefFoundError e){
-			log.error(e);
+			e.printStackTrace();
 			return null;
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -203,9 +203,9 @@ public class BeanUtil {
 			Field _field = clazz.getDeclaredField(field);
 			return getColumn(_field, checkInsert, checkUpdate);
 		} catch (SecurityException e) {
-			log.error(e);
+			e.printStackTrace();
 		} catch (NoSuchFieldException e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 		return null;
 	}
@@ -230,7 +230,7 @@ public class BeanUtil {
 			Object value = method.invoke(annotation);
 			return value;
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 			return null;
 		}
 	}
@@ -248,7 +248,7 @@ public class BeanUtil {
 				try{
 					return getFieldValue(obj, field);
 				}catch(Exception e){
-					log.error(e);
+					e.printStackTrace();
 				}
 			}
 		}
@@ -291,7 +291,7 @@ public class BeanUtil {
 			Method method = annotation.annotationType().getMethod("name");				//引用name方法
 			result = (String)method.invoke(annotation);									//执行name方法返回结果
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		return result;
 	}
@@ -312,7 +312,7 @@ public class BeanUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		return list;
 	}

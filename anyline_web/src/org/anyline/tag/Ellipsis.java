@@ -64,7 +64,7 @@ public class Ellipsis extends BaseBodyTag {
 			}
 			writer.print(result);
 		} catch (IOException e) {
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

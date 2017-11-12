@@ -85,7 +85,7 @@ public class SelectText extends BaseBodyTag{
 			JspWriter out = pageContext.getOut();
 			out.print(html);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}
