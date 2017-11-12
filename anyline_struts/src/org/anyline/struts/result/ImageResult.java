@@ -58,7 +58,7 @@ public class ImageResult extends StrutsResultSupport {
 				WebUtil.writeFile(response, file, title);
 			}
 		} catch (Exception e) {
-			LOG.error(e);
+			e.printStackTrace();
 		}
 	}
 
