@@ -536,13 +536,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				BeanUtil.setFieldValue(entity, field, value);
 			}//end 自身属性
 		} catch (InstantiationException e) {
-			log.error(e);
+			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			log.error(e);
+			e.printStackTrace();
 		} catch (SecurityException e) {
-			log.error(e);
+			e.printStackTrace();
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 		return entity;
 	}

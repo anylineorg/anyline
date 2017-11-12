@@ -55,7 +55,7 @@ public class Division extends BodyTagSupport{
 			}
 			out.print(defaultValue);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

@@ -64,9 +64,9 @@ public class I18NUtil {
 					}
 				}
 			} catch (DocumentException e) {
-				log.error(e);
+				e.printStackTrace();
 			}catch(Exception e){
-				log.error(e);
+				e.printStackTrace();
 			}
 		}
 	}

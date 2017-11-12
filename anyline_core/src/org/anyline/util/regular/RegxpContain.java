@@ -102,7 +102,7 @@ public class RegxpContain implements Regular{
 				list.add(matchResult.group(idx));
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
 			throw e;
 		}

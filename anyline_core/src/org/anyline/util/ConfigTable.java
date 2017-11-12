@@ -89,7 +89,7 @@ public class ConfigTable {
 		try{
 			path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		Properties props=System.getProperties(); //获得系统属性集    
 		String osName = props.getProperty("os.name"); //操作系统名称    

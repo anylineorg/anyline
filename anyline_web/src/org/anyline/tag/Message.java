@@ -70,7 +70,7 @@ public class Message extends BodyTagSupport{
 				out.print(message);
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

@@ -166,7 +166,7 @@ public class FileUtil {
                 		inputStream.close();
                 	}
                 }catch(Exception e){
-                	log.error(e);
+                	e.printStackTrace();
                 	e.printStackTrace();
                 }
         }  
@@ -183,7 +183,7 @@ public class FileUtil {
 		try{
 			buffer = readStream(new FileInputStream(file),encode);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		return buffer;
 	}
@@ -193,7 +193,7 @@ public class FileUtil {
 			String encode = getFileEncode(file);
 			buffer = readStream(new FileInputStream(file),encode);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		return buffer;
 	}
@@ -209,7 +209,7 @@ public class FileUtil {
 			fw.write(content);
 			fw.close();  
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 	}
 	public static void writeFile(String content, File file, String encode) {
@@ -221,13 +221,13 @@ public class FileUtil {
 			osw.write(content); 
 			osw.flush(); 
 		} catch (Exception e) { 
-			log.error(e); 
+			e.printStackTrace(); 
 		}finally{
 			try{
 				osw.close();
 				fos.close();
 			}catch(Exception e){
-				log.error(e);
+				e.printStackTrace();
 			}
 		}
 	}
@@ -307,7 +307,7 @@ public class FileUtil {
 			}
 			file.createNewFile();
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 		return true;
 	}
@@ -399,7 +399,7 @@ public class FileUtil {
 		//	detector.add(JChardetFacade.getInstance());
 			charset = detector.detectCodepage(file.toURI().toURL());
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 		if (charset != null) {
 			encode = charset.name();
@@ -485,7 +485,7 @@ public class FileUtil {
 						out.write(buf, 0, len);
 					}
 				}catch(Exception e){
-					log.error(e);
+					e.printStackTrace();
 					e.printStackTrace();
 					result = false;
 				}finally{
@@ -608,7 +608,7 @@ public class FileUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			try {
 				in.close();
@@ -692,7 +692,7 @@ public class FileUtil {
             filetype = getFileTypeByStream(b);     
             is.close();    
         } catch (Exception e) {     
-            log.error(e);     
+            e.printStackTrace();     
         }     
         return filetype;     
     } 
@@ -803,7 +803,7 @@ public class FileUtil {
 			}
 			out.close();
 		} catch (IOException e) {
-			log.error(e);
+			e.printStackTrace();
 		}
 		result = true;
 		return result;

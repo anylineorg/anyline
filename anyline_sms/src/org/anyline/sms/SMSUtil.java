@@ -48,7 +48,7 @@ public class SMSUtil {
 				util.client = new DefaultAcsClient(profile);
 			}
 	        catch (Exception e) {
-				log.error(e);
+				e.printStackTrace();
 	        	e.printStackTrace();
 	        }
 			instances.put(key, util);
@@ -69,7 +69,7 @@ public class SMSUtil {
 			response.getModel();
 			result.setResult(true);
 		} catch (ClientException e) {
-			log.error(e);
+			e.printStackTrace();
 			e.printStackTrace();
 			result.setCode(e.getErrCode());
 			result.setMsg(e.getErrMsg());

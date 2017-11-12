@@ -57,7 +57,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 			JspWriter out = pageContext.getOut();
 			out.print(result);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

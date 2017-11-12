@@ -131,7 +131,7 @@ public class Radio extends BaseBodyTag{
 			JspWriter out = pageContext.getOut();
 			out.print(html);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

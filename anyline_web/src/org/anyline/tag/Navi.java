@@ -120,7 +120,7 @@ public class Navi extends BodyTagSupport{
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

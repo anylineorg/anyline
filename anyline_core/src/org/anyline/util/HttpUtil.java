@@ -515,7 +515,7 @@ public class HttpUtil {
 				os.write(buffer, 0, len);
 			}
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		} finally {
 			if (is != null) {
 				try {
@@ -575,7 +575,7 @@ public class HttpUtil {
 			bis.close();
 			httpUrl.disconnect();
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 		} finally {
 			try {
 				if(null != bis){
@@ -585,7 +585,7 @@ public class HttpUtil {
 					bos.close();
 				}
 			} catch (IOException e) {
-				log.error(e);
+				e.printStackTrace();
 			}
 		}
 	}

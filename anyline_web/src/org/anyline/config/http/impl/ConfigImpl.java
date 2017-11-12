@@ -170,7 +170,7 @@ public class ConfigImpl implements Config{
 			
 			empty = BasicUtil.isEmpty(true, values);
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}
 	}
 

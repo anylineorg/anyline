@@ -42,7 +42,7 @@ public class HtmlAs extends BaseBodyTag implements Cloneable{
 				out.print(WebUtil.encryptHtmlTagA(value));
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}

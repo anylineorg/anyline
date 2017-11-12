@@ -90,7 +90,7 @@ public class Config extends BaseBodyTag {
 			JspWriter out = pageContext.getOut();
 			out.println(config);
 		} catch (Exception e) {
-			log.error(e);
+			e.printStackTrace();
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}

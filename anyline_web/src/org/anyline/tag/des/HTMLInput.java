@@ -64,7 +64,7 @@ public class HTMLInput extends ComponentTag{
 					value = v.toString();
 				}
 			}catch(Exception e){
-				log.error(e);
+				e.printStackTrace();
 			}
 		}
 		if(encryptValue && null != value){

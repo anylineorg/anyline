@@ -79,13 +79,13 @@ public class DESUtil {
 				instance = new DESUtil(key);
 				instances.put(key, instance);
 			}catch(NoSuchPaddingException e){
-				log.error(e);
+				e.printStackTrace();
 			}catch(NoSuchAlgorithmException e){
-				log.error(e);
+				e.printStackTrace();
 			}catch(InvalidKeyException e){
-				log.error(e);
+				e.printStackTrace();
 			}catch(Exception e){
-				log.error(e);
+				e.printStackTrace();
 			}
 		}
 		return instance;

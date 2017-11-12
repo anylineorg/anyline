@@ -43,7 +43,7 @@ public class Evl extends BaseBodyTag implements Cloneable{
 				}
 			}
 		}catch(Exception e){
-			log.error(e);
+			e.printStackTrace();
 		}finally{
 			release();
 		}
