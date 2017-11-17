@@ -486,6 +486,19 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>delay</name>
+		<tagclass>org.anyline.tag.TimeDelay</tagclass>
+		<info>距离现在多长时间</info>
+		<attribute>
+			<name>value</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nvl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>minute</name>
 		<tagclass>org.anyline.tag.MinuteFormat</tagclass>
 		<info>分钟转换成时间格式90=01:30</info>
