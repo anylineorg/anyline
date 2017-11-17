@@ -94,7 +94,7 @@ public class Navi extends BodyTagSupport{
 				builder.append("after:" ).append(after).append(",");
 			}
 			builder.append("type:").append(type).append(",");
-			if(BasicUtil.isEmpty(empty)){
+			if(empty == null){
 				empty = "没有更多内容了";
 			}
 			if(null != empty){
