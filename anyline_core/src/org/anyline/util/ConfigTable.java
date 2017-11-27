@@ -157,7 +157,7 @@ public class ConfigTable {
 		reload = getInt("RELOAD");
 		debug = getBoolean("DEBUG");
 		sqlDebug = getBoolean("SQL_DEBUG");
-		String isUpper = getString("UPPER_KEY");
+		String isUpper = getString("IS_UPPER_KEY");
 		if(null != isUpper){
 			if("false".equals(isUpper.toLowerCase()) || "0".equals(isUpper)){
 				IS_UPPER_KEY = false;
