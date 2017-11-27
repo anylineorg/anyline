@@ -72,7 +72,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			for(String key:keys){
 				String tmp[] = key.split(":");
 				if(null != tmp && tmp.length>1){
-					map.put(tmp[1].trim().toUpperCase(), tmp[0].trim().toUpperCase());
+					map.put(key(tmp[1].trim()), key(tmp[0].trim()));
 				}
 			}
 		}
@@ -83,7 +83,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			}else{
 				List<String> fields = BeanUtil.getFieldsName(obj.getClass());
 				for(String field : fields){
-					String col = map.get(field.toUpperCase());
+					String col = map.get(key(field));
 					if(null == col){
 						col = field;
 					}
@@ -157,7 +157,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
 			String key = itr.next();
 			Object value = map.get(key);
-			put(key.toUpperCase(), value);
+			put(key(key), value);
 		}
 	}
 	public long getCreateTime(){
@@ -316,7 +316,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			if(BasicUtil.isEmpty(item)){
 				continue;
 			}
-			item = item.toUpperCase();
+			item = key(item);
 			if(!this.primaryKeys.contains(item)){
 				this.primaryKeys.add(item);
 			}
@@ -562,10 +562,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	@Override
 	public Object put(String key, Object value){
 		if(null != key){
-			super.put(key.toUpperCase(), value);
+			super.put(key(key), value);
 		}
-		if(!updateColumns.contains(key.toUpperCase())){
-			updateColumns.add(key.toUpperCase());
+		if(!updateColumns.contains(key(key))){
+			updateColumns.add(key(key));
 		}
 		return this;
 	}
@@ -595,7 +595,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public Object get(String key){
 		Object result = null;
 		if(null != key){
-			result = super.get(key.toUpperCase());
+			result = super.get(key(key));
 		}
 		return result;
 	}
@@ -854,7 +854,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public DataRow remove(String key){
 		if(null != key){
-			super.remove(key.toUpperCase());
+			super.remove(key(key));
 		}
 		return this;
 	}
@@ -869,7 +869,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow removeUpdateColumns(String ... cols){
 		if(null != cols){
 			for(String col:cols){
-				updateColumns.remove(col.toUpperCase());
+				updateColumns.remove(key(col));
 			}
 		}
 		return this;
@@ -877,8 +877,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow addUpdateColumns(String ... cols){
 		if(null != cols){
 			for(String col:cols){
-				if(!updateColumns.contains(col.toUpperCase())){
-					updateColumns.add(col.toUpperCase());
+				if(!updateColumns.contains(key(col))){
+					updateColumns.add(key(col));
 				}
 			}
 		}
@@ -909,5 +909,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			this.put(key1, data.get(key2));
 		}
 		return this;
+	}
+
+	private static String key(String key){
+		if(null != key && ConfigTable.IS_UPPER_KEY){
+			key = key.toUpperCase();
+		}
+		return key;
 	}
 }
