@@ -250,7 +250,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null == cons || cons.size()==0){
 			return;
 		}
-		String txt = builder.toString().toUpperCase();
+		String txt = builder.toString();
 		boolean where = hasWhere(txt);
 		if(!where){
 			builder.append(" WHERE ");

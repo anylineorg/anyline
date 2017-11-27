@@ -747,7 +747,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	                while(rs.next()){
 	    				DataRow row = new DataRow();
 	    				for(int i=1; i<=cols; i++){
-	    					row.put(rsmd.getColumnName(i).toUpperCase(), rs.getObject(i));
+	    					row.put(rsmd.getColumnName(i), rs.getObject(i));
 	    				}
 	    				row.processBeforeDisplay();	//显示之前预处理
 	    				set.addRow(row);

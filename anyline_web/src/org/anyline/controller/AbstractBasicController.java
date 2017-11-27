@@ -140,7 +140,7 @@ public class AbstractBasicController{
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
 				Object value = ConfigParser.getValue(request, parser);
-				row.put(parser.getId().toUpperCase(), value);
+				row.put(parser.getId(), value);
 			}
 		}else{
 			Enumeration<String> names = request.getParameterNames();
@@ -183,10 +183,8 @@ public class AbstractBasicController{
 			int size = 0;
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				//map.put(parser.getId().toUpperCase(), getParams(request,param,keyEncrypt, valueEncrypt));
-				
 				List<Object> values = ConfigParser.getValues(request, parser);
-				map.put(parser.getId().toUpperCase(), values);
+				map.put(parser.getId(), values);
 				if(size <= values.size()){
 					size = values.size();
 				}
@@ -196,7 +194,7 @@ public class AbstractBasicController{
 				DataRow row = new DataRow();
 				for (String param : params) {
 					ParseResult parser = ConfigParser.parse(param,true);
-					List<Object> values = map.get(parser.getId().toUpperCase());
+					List<Object> values = map.get(parser.getId());
 					if(values.size() > i){
 						row.put(parser.getId(), values.get(i));
 					}else{
