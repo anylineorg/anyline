@@ -44,7 +44,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public static String PARENT 		= "PARENT"					; //上级数据
 	public static String ALL_PARENT 	= "ALL_PARENT"				; //所有上级数据
 	public static String CHILDREN 		= "CHILDREN"				; //子数据
-	public static String PRIMARY_KEY	= ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+	public static String PRIMARY_KEY	= ConfigTable.getString("DEFAULT_PRIMARY_KEY","id");
 	public static String ITEMS			= "ITEMS"					;
 	private DataSet container			= null						; //包含当前对象的容器
 
@@ -142,7 +142,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return list;
 	}
 	public DataRow(){
-		String pk = PRIMARY_KEY;
+		String pk = key(PRIMARY_KEY);
 		if(null != pk){
 			primaryKeys.add(PRIMARY_KEY);
 		}
@@ -197,22 +197,22 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		this.isFromCache = bol;
 	}
 	public String getCd(){
-		return getString("CD");
+		return getString("cd");
 	}
 	public String getId(){
-		return getString("ID");
+		return getString("id");
 	}
 	public String getCode(){
-		return getString("CODE");
+		return getString("code");
 	}
 	public String getNm(){
-		return getString("NM");
+		return getString("nm");
 	}
 	public String getName(){
-		return getString("NAME");
+		return getString("name");
 	}
 	public String getTitle(){
-		return getString("TITLE");
+		return getString("title");
 	}
 	public DataSet getItems(){
 		Object items = get(ITEMS);

@@ -33,6 +33,7 @@ public class Ellipsis extends BaseBodyTag {
 	private static Logger log = Logger.getLogger(Ellipsis.class);
 	private int length;					//结果长度
 	private String replace = "...";		//替换字符
+	private boolean toggle = false;
 
 	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim();
@@ -59,8 +60,16 @@ public class Ellipsis extends BaseBodyTag {
 				result += chr;
 			}
 			if(result.length() < src.length()){
-				result += replace;
-				result = "<label title=\""+src+"\">" + result + "</label>";
+				if(toggle){
+					//点击显示全部
+					String random = BasicUtil.getRandomLowerString(10);
+					String all = "<span style='display:none;' id='tga_" + random + "'>" + src + "</span>";
+					String sub = "<span id='tgs_" + random + "'><span style='display:inline;' onclick='$(\"tgs_"+random+"\").hide();$(\"tga_"+random+"\").show();'>" + result + "</span></span>";
+					result = all + sub;
+				}else{
+					result += replace;
+					result = "<label title=\""+src+"\">" + result + "</label>";
+				}
 			}
 			writer.print(result);
 		} catch (IOException e) {
