@@ -111,7 +111,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			if (BasicUtil.isEmpty(item)) {
 				continue;
 			}
-			item = item.toUpperCase();
+			item = key(item);
 			if (!this.primaryKeys.contains(item)) {
 				this.primaryKeys.add(item);
 			}
@@ -1440,6 +1440,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
             } 
         }); 
 		return this;
+	}
+
+	private static String key(String key){
+		if(null != key && ConfigTable.IS_UPPER_KEY){
+			key = key.toUpperCase();
+		}
+		return key;
 	}
 }
 
