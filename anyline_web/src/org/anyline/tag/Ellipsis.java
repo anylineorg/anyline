@@ -64,7 +64,7 @@ public class Ellipsis extends BaseBodyTag {
 					//点击显示全部
 					String random = BasicUtil.getRandomLowerString(10);
 					String all = "<span style='display:none;' id='tga_" + random + "'>" + src + "</span>";
-					String sub = "<span id='tgs_" + random + "'><span style='display:inline;' onclick='$(\"tgs_"+random+"\").hide();$(\"tga_"+random+"\").show();'>" + result + "</span></span>";
+					String sub = "<span id='tgs_" + random + "'>"+result+"<span style='display:inline;' onclick=\"$('#tgs_"+random+"').hide();$('#tga_"+random+"').show();\">" + replace + "</span></span>";
 					result = all + sub;
 				}else{
 					result += replace;
@@ -86,6 +86,7 @@ public class Ellipsis extends BaseBodyTag {
 		value = null;
 		length = 0;
 		replace = "...";
+		toggle = false;
 	}
 
 	public int getLength() {
@@ -103,4 +104,13 @@ public class Ellipsis extends BaseBodyTag {
 	public void setReplace(String replace) {
 		this.replace = replace;
 	}
+
+	public boolean isToggle() {
+		return toggle;
+	}
+
+	public void setToggle(boolean toggle) {
+		this.toggle = toggle;
+	}
+	
 }
