@@ -360,7 +360,14 @@ public class AbstractBasicController{
 			flag = flag.replace("'", "").replace("\"", "");
 		}
 		navi.setFlag(flag);
+		boolean showStat = ConfigTable.getBoolean("NAVI_SHOW_STAT");
+		showStat = BasicUtil.parseBoolean(request.getParameter(PageNavi.SHOW_STAT), showStat);
+		navi.setShowStat(showStat);
+		boolean showJump = ConfigTable.getBoolean("NAVI_SHOW_JUMP");
+		showJump = BasicUtil.parseBoolean(request.getParameter(PageNavi.SHOW_JUMP), showJump);
+		navi.setShowJump(showJump);
 		request.setAttribute("navi", navi);
+		
 		return navi;
 	}
 

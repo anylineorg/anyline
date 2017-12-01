@@ -543,14 +543,16 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	public boolean isShowStat() {
 		return showStat;
 	}
-	public void setShowStat(boolean showStat) {
+	public PageNavi setShowStat(boolean showStat) {
 		this.showStat = showStat;
+		return this;
 	}
 	public boolean isShowJump() {
 		return showJump;
 	}
-	public void setShowJump(boolean showJump) {
+	public PageNavi setShowJump(boolean showJump) {
 		this.showJump = showJump;
+		return this;
 	}
 	public int getType() {
 		return type;
@@ -559,6 +561,5 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		this.type = type;
 		return this;
 	}
-	
 
 }
