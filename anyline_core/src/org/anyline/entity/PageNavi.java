@@ -25,8 +25,10 @@ import java.io.Serializable;
 
 
 public interface PageNavi extends Serializable{
-	public static final String PAGE_ROWS			= "_anyline_page_rows"								;
-	public static final String PAGE_NO				= "_anyline_page"								;
+	public static final String PAGE_ROWS			= "_anyline_page_rows"	;
+	public static final String PAGE_NO				= "_anyline_page"		;
+	public static final String SHOW_STAT			= "_anyline_navi_show_stat"	;
+	public static final String SHOW_JUMP			= "_anyline_navi_show_jump"	;
 	
 	/**
 	 * 分页计算方式
