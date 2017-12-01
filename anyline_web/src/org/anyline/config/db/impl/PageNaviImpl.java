@@ -50,29 +50,29 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	public static final String PAGE_ROWS			= "_anyline_page_rows"					;
 	public static final String PAGE_NO				= "_anyline_page"						;
 	
-	private int totalRow					;	//记录总数
-	private int totalPage					;	//最大页数
-	private int curPage=1					;	//当前页数
+	private int totalRow					= 0			;	//记录总数
+	private int totalPage					= 0 		;	//最大页数
+	private int curPage						= 1 		;	//当前页数
 	
-	private int pageRange=10				;	//显示多少个分页下标
-	private int pageRows=10					;	//每页多少条
-	private int displayPageFirst = 0		;	//显示的第一页标签
-	private int displayPageLast = 0			;	//显示的最后页标签
-	private String baseLink					;	//基础URL
-	private OrderStore orders				;	//排序依据(根据 orderCol 排序分页)
-	private int calType = 0					;	//分页计算方式(0-按页数 1-按开始结束数)
-	private int firstRow = 0				;	//第一行
-	private int lastRow = -1				;	//最后一行
-	private boolean lazy = false			;
-	private String flag  = ""				;	//一个jsp中有多个分页时用来区分
-	private long lazyPeriod = 0				;	//总条数懒加载时间间隔(秒)
-	private String lazyKey = null			;	//懒加载
-	private int range = 10					;	//下标数量
-	private boolean showStat = false		;	//显示统计
-	private boolean showJump = false		;	//显示跳转
-	private int type = 0					;	//分页方式(0:下标 1:加载更多)
-	private String loadMoreFormat = "加载更多"	;
-	private Map<String,List<Object>> params	;	//查询参数
+	private int pageRange					= 10		;	//显示多少个分页下标
+	private int pageRows					= 10		;	//每页多少条
+	private int displayPageFirst 			= 0			;	//显示的第一页标签
+	private int displayPageLast 			= 0			;	//显示的最后页标签
+	private String baseLink					= null		;	//基础URL
+	private OrderStore orders				= null 		;	//排序依据(根据 orderCol 排序分页)
+	private int calType 					= 0			;	//分页计算方式(0-按页数 1-按开始结束数)
+	private int firstRow 					= 0			;	//第一行
+	private int lastRow 					= -1		;	//最后一行
+	private boolean lazy 					= false		;
+	private String flag  					= ""		;	//一个jsp中有多个分页时用来区分
+	private long lazyPeriod 				= 0			;	//总条数懒加载时间间隔(秒)
+	private String lazyKey 					= null		;	//懒加载
+	private int range 						= 10		;	//下标数量
+	private boolean showStat 				= false		;	//显示统计
+	private boolean showJump 				= false		;	//显示跳转
+	private int type 						= 0			;	//分页方式(0:下标 1:加载更多)
+	private String loadMoreFormat 			= "加载更多"	;
+	private Map<String,List<Object>> params	= null		;	//查询参数
 
 	private String statFormat = "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";
 	private String tagFirst = "第一页";
@@ -127,14 +127,11 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		}
 		builder.append(createHidParams());
 		builder.append("<div class=\"anyline_navi\">\n");
+		//数据统计
 		String stat = ConfigTable.getString("NAVI_STAT_FORMAT",statFormat); 
 		stat = stat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
-		if(ConfigTable.getBoolean("NAVI_SHOW_STAT", true)){
+		if(ConfigTable.getBoolean("NAVI_SHOW_STAT", showStat)){
 			builder.append(stat).append("\n");
-		}
-		if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
-			createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
-			createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
 		}
 		int range = ConfigTable.getInt("NAVI_PAGE_RANGE",10);
 		int fr = NumberUtil.getMax(1,curPage - range/2);
@@ -153,6 +150,14 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		to = NumberUtil.getMin(to, totalPage);
 		
 		if(type ==0){
+			//下标导航
+
+			//上一页 下一页
+			if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
+				createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
+				createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
+			}
+			
 			if(ConfigTable.getBoolean("NAVI_SHOW_INDEX", true)){
 				builder.append("<div class='navi-num-border'>\n");
 				for(int i=fr; i<=to; i++){
@@ -160,12 +165,12 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				}
 				builder.append("</div>\n");
 			}
-	
+			
 			if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
 				createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
 				createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage, configFlag);
 			}
-			if(ConfigTable.getBoolean("NAVI_SHOW_JUMP")){
+			if(ConfigTable.getBoolean("NAVI_SHOW_JUMP",showJump)){
 				builder.append("转到<input type='text' value='");
 				builder.append(curPage);
 				builder.append("' class='navi-go-txt _anyline_jump_txt'/>页<span class='navi-go-button' onclick='_navi_jump("+configFlag+")'>")
@@ -239,6 +244,8 @@ public class PageNaviImpl implements PageNavi, Serializable{
 					html += createHidParam(key,values);
 				}
 			}
+			html += createHidParam(PageNavi.SHOW_STAT,showStat);
+			html += createHidParam(PageNavi.SHOW_JUMP,showJump);
 		}catch(Exception e){
 			e.printStackTrace();
 		}

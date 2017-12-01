@@ -38,6 +38,8 @@ public class Navi extends BodyTagSupport{
 	private String param			;	//参数收集函数
 	private String container		;	//返回内容容器id
 	private String creater = "ajax"	;	//分页方式 ajax | html
+	private Boolean stat = false	;	//是否显示统计
+	private Boolean jump = false	;	//是否显示跳转
 	
 	private String id				;	//一个页面内多个标签时需要id区分
 	private String function			;	//指定function后需主动调用function后加载数据
@@ -100,18 +102,20 @@ public class Navi extends BodyTagSupport{
 			if(null != empty){
 				builder.append("empty:'" ).append(empty).append("',");
 			}
+
+			builder.append("jump:").append(jump).append(",");
+			builder.append("stat:").append(stat).append(",");
 			builder.append("creater:'").append(creater).append("'");
 			builder.append("};\n");
 			if(BasicUtil.isNotEmpty(function)){
 				builder.append("function ").append(function).append("(){\n");
 				builder.append("_navi_init("+confId+");\n");
 				builder.append("}\n");
-			}else{
 				if(intime){
-					builder.append("$('#_navi_border_"+confId+"').ready(function(){_navi_init("+confId+");});");
-				}else{
 					builder.append("$(function(){_navi_init("+confId+");});\n");
 				}
+			}else{
+				builder.append("$(function(){_navi_init("+confId+");});\n");
 			}
 			builder.append("</script>");
 			builder.append("</div>");
@@ -146,6 +150,8 @@ public class Navi extends BodyTagSupport{
 		function		= null	;
 		type			= 0	;
 		creater			= "ajax";
+		stat			= false;
+		jump			= false;
 	}
 	
 	public String getParam() {
@@ -233,6 +239,17 @@ public class Navi extends BodyTagSupport{
 	public void setFunction(String function) {
 		this.function = function;
 	}
-	
+	public Boolean getStat() {
+		return stat;
+	}
+	public void setStat(Boolean stat) {
+		this.stat = stat;
+	}
+	public Boolean getJump() {
+		return jump;
+	}
+	public void setJump(Boolean jump) {
+		this.jump = jump;
+	}
 
 }

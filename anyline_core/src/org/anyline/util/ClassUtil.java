@@ -31,12 +31,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class ClassUtil {
-	public static List<Class> getClassList(String packageName, boolean recursion, Class ... bases){
-		List<Class> list = new ArrayList<Class>();
+	public static List<Class<?>> getClassList(String packageName, boolean recursion, Class<?> ... bases){
+		List<Class<?>> list = new ArrayList<Class<?>>();
 		List<String> names = getClassNameList(packageName, recursion);
 		for(String name:names){
 			try{
-				Class c = Class.forName(name);
+				Class<?> c = Class.forName(name);
 				if(isInSub(c, bases)){
 					list.add(c);
 				}
@@ -52,11 +52,11 @@ public class ClassUtil {
 	 * @param bases
 	 * @return
 	 */
-	public static boolean isInSub(Class c, Class ... bases){
+	public static boolean isInSub(Class<?> c, Class<?> ... bases){
 		if(null == bases || bases.length == 0){
 			return true;
 		}
-		for(Class base : bases){
+		for(Class<?> base : bases){
 			if(!base.isAssignableFrom(c)){
 				return false;
 			}
@@ -69,11 +69,11 @@ public class ClassUtil {
 	 * @param bases
 	 * @return
 	 */
-	public static boolean isAllSub(Class c, Class ... bases){
+	public static boolean isAllSub(Class<?> c, Class<?> ... bases){
 		if(null == bases || bases.length == 0){
 			return true;
 		}
-		for(Class base : bases){
+		for(Class<?> base : bases){
 			if(base.isAssignableFrom(c)){
 				return true;
 			}
