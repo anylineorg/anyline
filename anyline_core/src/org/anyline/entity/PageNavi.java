@@ -156,4 +156,10 @@ public interface PageNavi extends Serializable{
 	public PageNavi setType(int type);
 	public int getType();
 
+	public PageNavi setShowJump(boolean showJump);
+	public boolean isShowJump();
+	
+	public PageNavi setShowStat(boolean showStat);
+	public boolean isShowStat();
+
 }
