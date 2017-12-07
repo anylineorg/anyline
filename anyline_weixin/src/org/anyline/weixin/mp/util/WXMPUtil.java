@@ -15,6 +15,9 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SHA1Util;
 import org.anyline.util.SimpleHttpUtil;
+import org.anyline.weixin.entity.RefundResult;
+import org.anyline.weixin.mp.entity.WXMPPayRefund;
+import org.anyline.weixin.mp.entity.WXMPPayRefundResult;
 import org.anyline.weixin.mp.entity.WXMPPayTradeOrder;
 import org.anyline.weixin.mp.entity.WXMPPayTradeResult;
 import org.anyline.weixin.util.WXUtil;
@@ -90,7 +93,42 @@ public class WXMPUtil {
 		}
 		return result;
 	}
+	/**
+	 * 退款申请
+	 * @param refund
+	 * @return
+	 */
+	public WXMPPayRefundResult refund(WXMPPayRefund refund){
+		WXMPPayRefundResult result = null;
+		refund.setNonce_str(BasicUtil.getRandomLowerString(20));
+		if(BasicUtil.isEmpty(refund.getAppid())){
+			refund.setAppid(config.APP_ID);
+		}
+		if(BasicUtil.isEmpty(refund.getMch_id())){
+			refund.setMch_id(config.MCH_ID);
+		}
+		Map<String, Object> map = BeanUtil.toMap(refund);
+		String sign = WXUtil.paySign(config.API_SECRECT,map);
+		
+		map.put("sign", sign);
+		
+		if(ConfigTable.isDebug()){
+			log.warn("退款申请SIGN:" + sign);
+		}
+		String xml = BeanUtil.map2xml(map);
 
+		if(ConfigTable.isDebug()){
+			log.warn("退款申请XML:" + xml);
+		}
+		String rtn = SimpleHttpUtil.post(WXMPConfig.REFUND_URL, xml);
+
+		if(ConfigTable.isDebug()){
+			log.warn("退款申请RETURN:" + rtn);
+		}
+		result = BeanUtil.xml2object(rtn, WXMPPayRefundResult.class);
+
+		return result;
+	}
 
 	/**
 	 * APP调起支付所需参数
