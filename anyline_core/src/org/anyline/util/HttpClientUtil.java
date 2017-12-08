@@ -17,9 +17,12 @@
  */
 package org.anyline.util;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
+import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -47,6 +50,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -55,8 +59,6 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-
-import com.sun.security.ntlm.Client;
 /**
  * 基于hpptclient4.x
  * 第一个参数用来保持session连接 
@@ -69,6 +71,8 @@ import com.sun.security.ntlm.Client;
  *
  */
 public class HttpClientUtil {
+	
+	public static String PROTOCOL_TLSV1 = "TLSv1";
 	private static Logger log = Logger.getLogger(HttpClientUtil.class);
 	private static Map<String, CloseableHttpClient> clients = new HashMap<String,CloseableHttpClient>();
     private static PoolingHttpClientConnectionManager connMgr;  
@@ -489,7 +493,30 @@ public class HttpClientUtil {
 	public static CloseableHttpClient defaultSSLClient(){
 		return ceateSSLClient("default");
 	}
-	
+	public static CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
+		CloseableHttpClient httpclient = null;
+		try{
+			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+	        FileInputStream instream = new FileInputStream(keyFile);
+	        try {
+	            keyStore.load(instream, password.toCharArray());
+	        } finally {
+	            instream.close();
+	        }
+	        // Trust own CA and all self-signed certs
+	        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
+	        // Allow TLSv1 protocol only
+	        String[] protocols = new String[] {protocol};
+	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols,null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+	        httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return httpclient;
+	}
+	public static CloseableHttpClient ceateSSLClient(File keyFile, String password){
+		return ceateSSLClient(keyFile, HttpClientUtil.PROTOCOL_TLSV1, password);
+	}
 	public static CloseableHttpClient ceateSSLClient(String key){
 		key = "SSL:"+key;
 		CloseableHttpClient client = clients.get(key);
