@@ -29,7 +29,11 @@ import org.apache.log4j.Logger;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 
-
+/**
+ * 从value|body起到现在经过多少时间
+ * @author Administrator
+ *
+ */
 public class TimeDelay extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
 	private static Logger log = Logger.getLogger(TimeDelay.class);

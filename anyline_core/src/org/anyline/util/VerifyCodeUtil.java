@@ -17,6 +17,7 @@
  */
 package org.anyline.util;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -153,28 +154,8 @@ public class VerifyCodeUtil {
 		g2.setColor(c);// 设置背景色
 		g2.fillRect(0, 2, w, h - 4);
 
-		// 绘制干扰线
-		Random random = new Random();
-		g2.setColor(getRandColor(160, 200));// 设置线条的颜色
-		for (int i = 0; i < 20; i++) {
-			int x = random.nextInt(w - 1);
-			int y = random.nextInt(h - 1);
-			int xl = random.nextInt(6) + 1;
-			int yl = random.nextInt(12) + 1;
-			g2.drawLine(x, y, x + xl + 40, y + yl + 20);
-		}
 
-		// 添加噪点
-		float yawpRate = 0.05f;// 噪声率
-		int area = (int) (yawpRate * w * h);
-		for (int i = 0; i < area; i++) {
-			int x = random.nextInt(w);
-			int y = random.nextInt(h);
-			int rgb = getRandomIntColor();
-			image.setRGB(x, y, rgb);
-		}
-
-		shear(g2, w, h, c);// 使图片扭曲
+		shear(g2, w, h, c);
 
 		g2.setColor(getRandColor(100, 160));
 		int fontSize = h - 4;
@@ -189,6 +170,29 @@ public class VerifyCodeUtil {
 			g2.drawChars(chars, i, 1, ((w - 10) / verifySize) * i + 15, h / 2 + fontSize / 2 - 5);
 		}
 
+		
+		
+		// 绘制干扰线
+		Random random = new Random();
+		g2.setColor(getRandColor(160, 200));// 设置线条的颜色
+		for (int i = 0; i < 20; i++) {
+			//g2.setStroke(new BasicStroke(2));
+			int x = random.nextInt(w - 1);
+			int y = random.nextInt(h - 1);
+			int xl = random.nextInt(6) + 1;
+			int yl = random.nextInt(12) + 1;
+			g2.drawLine(x, y, x + xl + 40, y + yl + 20);
+		}
+
+		// 添加噪点
+		float yawpRate = 0.1f;// 噪声率
+		int area = (int) (yawpRate * w * h);
+		for (int i = 0; i < area; i++) {
+			int x = random.nextInt(w);
+			int y = random.nextInt(h);
+			int rgb = getRandomIntColor();
+			image.setRGB(x, y, rgb);
+		}
 		g2.dispose();
 		return image;
 	}
@@ -280,13 +284,17 @@ public class VerifyCodeUtil {
 
 	}
 
-//	public static void main(String[] args) throws IOException {
-//		File dir = new File("F:/verifies");
-//		int w = 200, h = 80;
-//		for (int i = 0; i < 50; i++) {
-//			String verifyCode = getRandomCode(4);
-//			File file = new File(dir, verifyCode + ".jpg");
-//			outputImage(w, h, file, verifyCode);
-//		}
-//	}
+
+
+	public static void main(String[] args) throws IOException {
+		File dir = new File("F:/verify");
+		FileUtil.deleteDir(dir);
+		dir.mkdirs();
+		int w = 200, h = 80;
+		for (int i = 0; i < 50; i++) {
+			String verifyCode = getRandomCode(4);
+			File file = new File(dir, verifyCode + ".jpg");
+			outputImage(w, h, file, verifyCode);
+		}
+	}
 }

@@ -20,14 +20,12 @@
 package org.anyline.tag;
 
 
-import java.util.Date;
-
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
+import org.apache.log4j.Logger;
 
 /**
  * 分钟数转换成HH:mm
