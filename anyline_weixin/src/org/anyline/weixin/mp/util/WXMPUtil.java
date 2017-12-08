@@ -1,5 +1,6 @@
 package org.anyline.weixin.mp.util;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -12,17 +13,18 @@ import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.HttpClientUtil;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SHA1Util;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.entity.RefundResult;
 import org.anyline.weixin.mp.entity.WXMPPayRefund;
 import org.anyline.weixin.mp.entity.WXMPPayRefundResult;
 import org.anyline.weixin.mp.entity.WXMPPayTradeOrder;
 import org.anyline.weixin.mp.entity.WXMPPayTradeResult;
 import org.anyline.weixin.util.WXUtil;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.log4j.Logger;
-
 
 public class WXMPUtil {
 	private static Logger log = Logger.getLogger(WXMPUtil.class);
@@ -120,13 +122,18 @@ public class WXMPUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("退款申请XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(WXMPConfig.REFUND_URL, xml);
-
-		if(ConfigTable.isDebug()){
-			log.warn("退款申请RETURN:" + rtn);
+		try{
+			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(new File(config.KEY_STORE_FILE), HttpClientUtil.PROTOCOL_TLSV1, config.KEY_STORE_PASSWORD);
+            StringEntity  reqEntity  = new StringEntity(xml);
+            reqEntity.setContentType("application/x-www-form-urlencoded"); 
+            String txt = HttpClientUtil.post(httpclient, WXMPConfig.REFUND_URL, "UTF-8", reqEntity).getText();
+    		if(ConfigTable.isDebug()){
+    			log.warn("退款申请调用结果:" + txt);
+    		}
+            result = BeanUtil.xml2object(txt, WXMPPayRefundResult.class);
+		}catch(Exception e){
+			e.printStackTrace();
 		}
-		result = BeanUtil.xml2object(rtn, WXMPPayRefundResult.class);
-
 		return result;
 	}
 
@@ -178,7 +185,7 @@ public class WXMPUtil {
 		}
 		DataRow row = new DataRow();
 		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+secret;
-		String text = HttpUtil.get(url,"UTF-8").getText();
+		String text = HttpClientUtil.post(url,"UTF-8").getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[CREATE NEW ACCESS TOKEN][result:"+text+"]");
 		}
