@@ -30,5 +30,40 @@
 	<classpathentry kind="lib" path="/anyline_core/lib/httpcore-4.3.2.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/httpmime-4.3.3.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/alipay-sdk-java20170307171631.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/aopalliance-1.0.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/asm-3.3.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/asm-5.0.2.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/asm-commons-3.3.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/chardet.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-beanutils-1.7.0.jar" sourcepath="C:/Users/Administrator/.m2/repository/commons-beanutils/commons-beanutils/1.7.0/commons-beanutils-1.7.0-sources.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-codec-1.10.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-collections-3.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-fileupload-1.2.2.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-io-2.0.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-lang-2.5.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons-lang3-3.2.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/commons.httpclient-3.1.0.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/cpdetector.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/ezmorph-1.0.5.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/geronimo-jpa_2.0_spec-1.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/jakarta-oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/javassist-3.11.0.GA.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/json-lib-2.3-jdk15.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/jstl.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/mysql-connector-java-5.1.21-bin.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/proxool-0.9.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/proxool-cglib.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/slf4j-api-1.7.7.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/slf4j-jdk14-1.7.7.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/spring-aop-4.1.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/spring-expression-4.1.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/spring-webmvc-4.0.3.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/sqljdbc.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/standard.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/struts2-convention-plugin-2.3.24.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/struts2-core-2.3.24.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/struts2-spring-plugin-2.3.24.1.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/xwork-core-2.3.24.1.jar" sourcepath="C:/Users/Administrator/.m2/repository/org/apache/struts/xwork/xwork-core/2.3.24.1/xwork-core-2.3.24.1-sources.jar"/>
 	<classpathentry kind="output" path="WebRoot/WEB-INF/classes"/>
 </classpath>

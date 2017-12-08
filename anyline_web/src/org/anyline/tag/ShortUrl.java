@@ -19,10 +19,6 @@
 
 package org.anyline.tag;
 
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.WebUtil;
 
 public class ShortUrl extends BaseBodyTag {
 
