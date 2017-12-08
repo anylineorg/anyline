@@ -4,7 +4,7 @@ anyline_web:javaEE基础
 anyline_struts:strtus2支持
 anyline_springmvc:springmvc支持
 anyline_mysql:mysql支持
-anyline_struts:sql server支持
+anyline_mssql:sql server支持
 anyline_alipay:支付宝支付集成工具
 anyline_weixin:微信支付集成工具
 anyline_jpush:极光推送集成工具
