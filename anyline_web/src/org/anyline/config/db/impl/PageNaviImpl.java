@@ -154,8 +154,8 @@ public class PageNaviImpl implements PageNavi, Serializable{
 
 			//上一页 下一页
 			if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
-				createPageTag(builder, "navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
-				createPageTag(builder, "navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
+				createPageTag(builder, "navi-button navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
+				createPageTag(builder, "navi-button navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
 			}
 			
 			if(ConfigTable.getBoolean("NAVI_SHOW_INDEX", true)){
@@ -167,8 +167,8 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			}
 			
 			if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
-				createPageTag(builder, "navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
-				createPageTag(builder, "navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage, configFlag);
+				createPageTag(builder, "navi-button navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
+				createPageTag(builder, "navi-button navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage, configFlag);
 			}
 			if(ConfigTable.getBoolean("NAVI_SHOW_JUMP",showJump)){
 				builder.append("转到<input type='text' value='");
