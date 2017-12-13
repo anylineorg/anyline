@@ -298,6 +298,20 @@ public class TemplateController extends AnylineController {
 		view.addObject("bak_url",bak_url);
 		return view;
 	}
+	protected ModelAndView emptyView(String ... msgs){
+		String message ="";
+		String bak_url = getRequest().getHeader("Referer");
+		if(null != msgs){
+			for(String msg:msgs){
+				message += "<br/>"+ msg;
+			}
+		}
+		
+		ModelAndView view = new ModelAndView(ConfigTable.getString("EMPTY_PAGE_PATH"));
+		view.addObject("msg", message);
+		view.addObject("bak_url",bak_url);
+		return view;
+	}
 	protected ModelAndView emptyView(){
 		ModelAndView view = new ModelAndView(ConfigTable.getString("EMPTY_PAGE_PATH"));
 		return view;
