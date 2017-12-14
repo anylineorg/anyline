@@ -45,7 +45,6 @@ import org.anyline.entity.PageNavi;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
