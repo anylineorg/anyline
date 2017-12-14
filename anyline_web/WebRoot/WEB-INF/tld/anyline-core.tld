@@ -802,4 +802,20 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+	<tag>
+		<name>serial</name>
+		<tagclass>org.anyline.tag.SerialNumber</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info>分页数据行数</info>
+		<attribute>
+			<name>data</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>index</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 </taglib>
