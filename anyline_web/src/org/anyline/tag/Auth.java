@@ -42,12 +42,19 @@ public class Auth extends BaseBodyTag {
 	private String redirect;
 	private String state;
 	private String scope;
+	private boolean auto;
+	private String id;
 	private String params;
 	
 	private static Logger log = Logger.getLogger(Auth.class);
 	public int doEndTag() {
 		JspWriter writer = null;
 		String result = "";
+		String url = "";
+		if(BasicUtil.isEmpty(id)){
+			id = BasicUtil.getRandomLowerString(10);
+		}
+		
 		try {
 			writer = pageContext.getOut();
 			if("wx".equalsIgnoreCase(type) || "weixin".equalsIgnoreCase(type)){
@@ -71,9 +78,8 @@ public class Auth extends BaseBodyTag {
 					redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				String url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+"#wechat_redirect";
+				url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+"#wechat_redirect";
 				
-				result = "<a href=\""+url+"\">" + body + "</a>";
 			}else if("qq".equalsIgnoreCase(type)){
 				if(BasicUtil.isEmpty(appid)){
 					appid = QQMPConfig.getInstance().APP_ID;
@@ -96,10 +102,13 @@ public class Auth extends BaseBodyTag {
 					redirect = QQMPConfig.getInstance().OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				String url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+WebUtil.encrypt(state);
+				url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+WebUtil.encrypt(state);
 				
-				result = "<a href=\""+url+"\">" + body + "</a>";
 				
+			}
+			result = "<a href=\""+url+"\" id=\""+id+"\">" + body + "</a>";
+			if(auto){
+				result += "<script>location.href = \""+url+"\";</script>";
 			}
 			writer.print(result);
 		} catch (IOException e) {
@@ -120,6 +129,8 @@ public class Auth extends BaseBodyTag {
 		body = null;
 		scope = null;
 		state = null;
+		auto = false;
+		id = null;
 	}
 
 	public String getAppid() {
@@ -168,6 +179,22 @@ public class Auth extends BaseBodyTag {
 
 	public void setScope(String scope) {
 		this.scope = scope;
+	}
+
+	public boolean isAuto() {
+		return auto;
+	}
+
+	public void setAuto(boolean auto) {
+		this.auto = auto;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 }

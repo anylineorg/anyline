@@ -20,7 +20,6 @@
 package org.anyline.service;
 
 import java.util.Collection;
-import java.util.List;
 
 import javax.sql.DataSource;
 
