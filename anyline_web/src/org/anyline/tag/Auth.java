@@ -106,7 +106,11 @@ public class Auth extends BaseBodyTag {
 				
 				
 			}
-			result = "<a href=\""+url+"\" id=\""+id+"\">" + body + "</a>";
+			result = "<a href=\""+url+"\" id=\""+id+"\">";
+			if(BasicUtil.isNotEmpty(body)){
+				result += body;
+			}
+			result += "</a>";
 			if(auto){
 				result += "<script>location.href = \""+url+"\";</script>";
 			}
