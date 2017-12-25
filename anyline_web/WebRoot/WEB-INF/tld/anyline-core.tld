@@ -802,7 +802,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>auth</name>
+			<name>auto</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
