@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -127,10 +128,12 @@ public class ZipUtil {
 			if (!dir.exists()) {
 				dir.mkdirs();
 			}
-			ZipFile zf = new ZipFile(zipFile);
-			for (Enumeration<?> entries = zf.entries(); entries
-					.hasMoreElements();) {
+			ZipFile zf = new ZipFile(zipFile,Charset.forName("GBK"));
+			for (Enumeration<?> entries = zf.entries(); entries.hasMoreElements();) {
 				ZipEntry entry = ((ZipEntry) entries.nextElement());
+				if(entry.isDirectory()){
+					continue;
+				}
 				InputStream in = zf.getInputStream(entry);
 				File desFile = new File(dir,entry.getName());
 				if (!desFile.exists()) {
@@ -157,70 +160,14 @@ public class ZipUtil {
 		return files;
 	}
 
-	/**
-	 * 解压文件名包含传入文字的文件
-	 * 
-	 * @param zipFile
-	 *            压缩文件
-	 * @param folderPath
-	 *            目标文件夹
-	 * @param nameContains
-	 *            传入的文件匹配名
-	 * @throws ZipException
-	 *             压缩格式有误时抛出
-	 * @throws IOException
-	 *             IO错误时抛出
-	 */
-	public static ArrayList<File> unZipSelectedFile(File zipFile, String folderPath, String nameContains) {
-		ArrayList<File> fileList = new ArrayList<File>();
-		ZipFile zf = null;
-		try {
-
-			File desDir = new File(folderPath);
-			if (!desDir.exists()) {
-				desDir.mkdir();
-			}
-
-			zf = new ZipFile(zipFile);
-			for (Enumeration<?> entries = zf.entries(); entries
-					.hasMoreElements();) {
-				ZipEntry entry = ((ZipEntry) entries.nextElement());
-				if (entry.getName().contains(nameContains)) {
-					InputStream in = zf.getInputStream(entry);
-					String str = folderPath + File.separator + entry.getName();
-					str = new String(str.getBytes("8859_1"), "GB2312");
-					// str.getBytes("GB2312"),"8859_1" 输出
-					// str.getBytes("8859_1"),"GB2312" 输入
-					File desFile = new File(str);
-					if (!desFile.exists()) {
-						File fileParentDir = desFile.getParentFile();
-						if (!fileParentDir.exists()) {
-							fileParentDir.mkdirs();
-						}
-						desFile.createNewFile();
-					}
-					OutputStream out = new FileOutputStream(desFile);
-					byte buffer[] = new byte[BUFF_SIZE];
-					int realLength;
-					while ((realLength = in.read(buffer)) > 0) {
-						out.write(buffer, 0, realLength);
-					}
-					in.close();
-					out.close();
-					fileList.add(desFile);
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}finally{
-			try {
-				zf.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+	public static List<File> unZip(File zipFile) {
+		if(null == zipFile){
+			return new ArrayList<File>();
 		}
-		return fileList;
+		return unZip(zipFile, zipFile.getParentFile());
 	}
+	
+
 
 	/**
 	 * 获得压缩文件内文件列表
@@ -325,8 +272,7 @@ public class ZipUtil {
 	 * @throws IOException
 	 *             当压缩过程出错时抛出
 	 */
-	private static void zipFile(File resFile, ZipOutputStream zipout,
-			String rootpath) {
+	private static void zipFile(File resFile, ZipOutputStream zipout, String rootpath) {
 		try {
 
 			rootpath = rootpath
