@@ -10,8 +10,8 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
 
-public class FtpUtil {
-	private Logger log = Logger.getLogger(FtpUtil.class);
+public class Ftp1Util {
+	private Logger log = Logger.getLogger(Ftp1Util.class);
 	private String host;
 	private int port=21;
 	private String user;
@@ -19,23 +19,52 @@ public class FtpUtil {
 	private FTPClient client;
 	
 	public static void main(String args[]) {
-		String host = "XX";
-		String user = "XX";
+		String host = "XX.XX.XX.XX";
+		String user = "XX@XX.com";
 		String password= "XX";
-		FtpUtil util = new FtpUtil(host, user, password);
-		util.download("img", "img2.gif", "D:\\img",null);
-		util.download("img", "D:\\img");
+		Ftp1Util util = new Ftp1Util(host, user, password);
+		//util.download("img111", "img2.gif", "D:\\zzz",null);
+		//util.download("img", "D:\\img");
+		System.out.println(util.fileSize("/js"));
 	}
 
-	public FtpUtil(String host, String user, String password) {
+	public Ftp1Util(String host, String user, String password) {
 		this(host, user, password, 21);
 	}
-	public FtpUtil(String host, String user, String password, int port) {
+	public Ftp1Util(String host, String user, String password, int port) {
 		this.host = host;
 		this.user = user;
 		this.port = port;
 		this.password = password;
 		client = new FTPClient();
+	}
+	public int fileSize(String dir){
+		int size = 0;
+		try {  
+	        int reply;  
+	        client.connect(host, port);  
+	        client.login(user, password); 
+	        client.enterLocalPassiveMode();
+	        reply = client.getReplyCode();  
+	        if (!FTPReply.isPositiveCompletion(reply)) {  
+	            client.disconnect();  
+	            return 0;
+	        }  
+	        client.changeWorkingDirectory(dir);
+	        client.setFileType(FTPClient.BINARY_FILE_TYPE);
+	        size = client.listFiles().length;
+	        client.logout();  
+	    } catch (IOException e) {  
+	        e.printStackTrace();  
+	    } finally {  
+	        if (client.isConnected()) {  
+	            try {  
+	                client.disconnect();  
+	            } catch (IOException ioe) {  
+	            }  
+	        }  
+	    }
+		return size;
 	}
 	/**
 	 * 下载单个文件

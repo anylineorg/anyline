@@ -26,7 +26,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -733,7 +732,10 @@ public class FileUtil {
 	  * @return
 	  */
 	public static boolean deleteDir(File dir) {
-		if (null != dir && dir.isDirectory()) {
+		if(null == dir){
+			return false;
+		}
+		if (dir.isDirectory()) {
 			String[] children = dir.list();
 			if(null != children){
 				for (int i=0; i<children.length; i++) {
@@ -744,6 +746,7 @@ public class FileUtil {
 				}
 			}
 		}
+		log.warn("[文件删除][file:"+dir.getAbsolutePath()+"]");
 		return dir.delete();
 	}
 	/**
