@@ -172,6 +172,12 @@ public class RegularUtil {
 		}
 		return src.replaceAll(Regular.html_tag_regexp, "");
 	}
+	public static String removeScriptTag(String src){
+		if(null == src){
+			return src;
+		}
+		return src.replaceAll(Regular.html_tag_regexp, "");
+	}
 	/**
 	 * 删除 tags之外的标签"<b>"与"</b>"只写一次 "b"
 	 * @param src

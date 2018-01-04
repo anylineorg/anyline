@@ -10,8 +10,8 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
 
-public class Ftp1Util {
-	private Logger log = Logger.getLogger(Ftp1Util.class);
+public class FTPUtil {
+	private Logger log = Logger.getLogger(FTPUtil.class);
 	private String host;
 	private int port=21;
 	private String user;
@@ -22,16 +22,16 @@ public class Ftp1Util {
 		String host = "XX.XX.XX.XX";
 		String user = "XX@XX.com";
 		String password= "XX";
-		Ftp1Util util = new Ftp1Util(host, user, password);
+		FTPUtil util = new FTPUtil(host, user, password);
 		//util.download("img111", "img2.gif", "D:\\zzz",null);
 		//util.download("img", "D:\\img");
 		System.out.println(util.fileSize("/js"));
 	}
 
-	public Ftp1Util(String host, String user, String password) {
+	public FTPUtil(String host, String user, String password) {
 		this(host, user, password, 21);
 	}
-	public Ftp1Util(String host, String user, String password, int port) {
+	public FTPUtil(String host, String user, String password, int port) {
 		this.host = host;
 		this.user = user;
 		this.port = port;

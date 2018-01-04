@@ -121,6 +121,7 @@ public class WXMPUtil {
 
 		if(ConfigTable.isDebug()){
 			log.warn("退款申请XML:" + xml);
+			log.warn("证书:"+config.KEY_STORE_FILE);
 		}
 		try{
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(new File(config.KEY_STORE_FILE), HttpClientUtil.PROTOCOL_TLSV1, config.KEY_STORE_PASSWORD);
