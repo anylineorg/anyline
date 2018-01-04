@@ -29,7 +29,11 @@ public class XssUtil {
 			}
 		}
 	}
-
+	/**
+	 * 过滤字符
+	 * @param value
+	 * @return
+	 */
 	public static String strip(String value) {
 		if (BasicUtil.isNotEmpty(value)) {
 			Matcher matcher = null;
@@ -43,4 +47,23 @@ public class XssUtil {
 		}
 		return value;
 	}
+
+	/**
+	 * 检测是否存在非法字符 通过(没有非法字条)返回true
+	 * @param value
+	 * @return
+	 */
+	public boolean check(String value) {
+		if (BasicUtil.isNotEmpty(value)) {
+			Matcher matcher = null;
+			for (Pattern pattern : patterns) {
+				matcher = pattern.matcher(value);
+				if (matcher.find()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
 }
