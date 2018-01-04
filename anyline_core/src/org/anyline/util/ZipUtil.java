@@ -84,8 +84,11 @@ public class ZipUtil {
 	 * @throws IOException
 	 *             当压缩过程出错时抛出
 	 */
-	public static void zip(Collection<File> resFileList, File zipFile,
-			String comment) {
+	public static void zip(Collection<File> resFileList, File zipFile, String comment) {
+		long fr = System.currentTimeMillis();
+        if(ConfigTable.isDebug()){
+        	log.warn("[压缩文件][file:"+zipFile.getAbsolutePath()+"][size:"+resFileList.size()+"]");
+        }
 		try{
 			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(
 					new FileOutputStream(zipFile), BUFF_SIZE));
@@ -97,6 +100,9 @@ public class ZipUtil {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+        if(ConfigTable.isDebug()){
+        	log.warn("[压缩完成][time:"+(System.currentTimeMillis()-fr)+"][size:"+resFileList.size()+"]");
+        }
 	}
 
 	/**
@@ -124,6 +130,11 @@ public class ZipUtil {
 	 */
 	public static List<File> unZip(File zipFile, File dir) {
 		List<File> files = new ArrayList<File>();
+		long fr = System.currentTimeMillis();
+        if(ConfigTable.isDebug()){
+        	log.warn("[解压文件][file:"+zipFile.getAbsolutePath()+"][dir:"+dir.getAbsolutePath()+"]");
+        }
+        int size = 0;
 		try {
 			if (!dir.exists()) {
 				dir.mkdirs();
@@ -134,6 +145,7 @@ public class ZipUtil {
 				if(entry.isDirectory()){
 					continue;
 				}
+				size ++;
 				InputStream in = zf.getInputStream(entry);
 				File desFile = new File(dir,entry.getName());
 				if (!desFile.exists()) {
@@ -157,6 +169,9 @@ public class ZipUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+        if(ConfigTable.isDebug()){
+        	log.warn("[解压完成][time:"+(System.currentTimeMillis()-fr)+"][dir:"+dir.getAbsolutePath()+"][size:"+size+"]");
+        }
 		return files;
 	}
 

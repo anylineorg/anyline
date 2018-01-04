@@ -178,7 +178,9 @@ public interface Regular {
 	//匹配由数字、26个英文字母或者下划线组成的字符串      
 	public static final String char_number_underline_regexp = "^\\w+$";  
 	//html标签<(.*)>.*|<(.*) />
-	public static final String html_tag_regexp = "<(.*?)[^>]*>.*?|<.*?/>";
+	public static final String html_tag_regexp = "<(.*?)[^>]*>.*?|<.*?/>";  
+	//html标签 script | style | link | meta
+	public static final String html_script_regexp = "<(.*?)[^>]*>.*?|<.*?/>";
 	//<img> 图片地址取下标2
 	public static final String html_tag_img_src_regexp = "(?i)<img.+?src[\\s]*=[\\s]*(['\"\\s])([\\S]+)\\1[\\s\\S]*?>";
 	//<a>标签 href:4 标签体:6

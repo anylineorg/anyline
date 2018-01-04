@@ -132,7 +132,7 @@ public class WebUtil {
 			return src;
 		}
 		src = src.replace("'", "''").trim();
-		src = RegularUtil.removeAllHtmlTag(src);
+		src = XssUtil.strip(src);
 		return src;
 	}
 
@@ -682,6 +682,7 @@ public class WebUtil {
 					}
 					if (null != value) {
 						value = value.trim();
+						value = filterIllegalChar(value);
 					}
 					result.add(value);
 				}
