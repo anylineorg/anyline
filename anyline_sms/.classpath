@@ -4,13 +4,13 @@
 	<classpathentry kind="src" path="conf"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/anyline_core"/>
-	<classpathentry kind="lib" path="D:/jar/aliyun/aliyun-java-sdk-core-2.4.2.jar"/>
-	<classpathentry kind="lib" path="D:/jar/aliyun/aliyun-java-sdk-sms-3.0.0-rc1.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/log4j-1.2.15.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/httpclient-4.3.3.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/httpcore-4.3.2.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/httpmime-4.3.3.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/json-lib-2.3-jdk15.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/jar/aliyun/aliyun-java-sdk-core-3.3.1.jar"/>
+	<classpathentry kind="lib" path="D:/jar/aliyun/sms/aliyun-java-sdk-dysmsapi-1.0.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -74,12 +74,13 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private String loadMoreFormat 			= "加载更多"	;
 	private Map<String,List<Object>> params	= null		;	//查询参数
 
-	private String statFormat = "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";
-	private String tagFirst = "第一页";
-	private String tagPrev = "上一页";
-	private String tagNext = "下一页";
-	private String tagLast = "最后页";
-	private String tagGo = "确定";
+	private String statFormat 	= "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";
+	private String tagFirst 	= "第一页";
+	private String tagPrev 		= "上一页";
+	private String tagNext 		= "下一页";
+	private String tagLast 		= "最后页";
+	private String tagGo 		= "确定"	;
+	private String style		= ""	; //区分不同的显示格式 配置文件中加前缀 如NAVI_SHOW_STAT, WEB:NAVI_SHOW_STAT,WAP:NAVI_SHOW_STAT
 	
 	
 	public PageNaviImpl(int totalRow, int curPage, int pageRows, String baseLink) {
@@ -110,6 +111,10 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	 * @return
 	 */
 	public String html(String creater){
+		String styleKey = "";
+		if(BasicUtil.isNotEmpty(style)){
+			styleKey = style+":";
+		}
 		calculate();
 		StringBuilder builder = new StringBuilder();
 		String configFlag = "";
@@ -117,8 +122,8 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			configFlag = Navi.CONFIG_FLAG_KEY + flag;
 		}
 		if("html".equals(creater)){
-			builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
-			builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
+			builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString(styleKey+"NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
+			builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString(styleKey+"NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
 		}
 		builder.append("<form action=\"" + baseLink + "\" method=\"post\">\n");
 		builder.append("<input type='hidden' name='"+PageNavi.PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
@@ -128,7 +133,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		builder.append(createHidParams());
 		builder.append("<div class=\"anyline_navi\">\n");
 		//数据统计
-		String stat = ConfigTable.getString("NAVI_STAT_FORMAT",statFormat); 
+		String stat = ConfigTable.getString(styleKey+"NAVI_STAT_FORMAT",statFormat); 
 		stat = stat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
 		if(ConfigTable.getBoolean("NAVI_SHOW_STAT", showStat)){
 			builder.append(stat).append("\n");
@@ -154,8 +159,8 @@ public class PageNaviImpl implements PageNavi, Serializable{
 
 			//上一页 下一页
 			if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
-				createPageTag(builder, "navi-button navi-first-button", ConfigTable.getString("NAVI_TAG_FIRST", tagFirst), 1, configFlag);
-				createPageTag(builder, "navi-button navi-prev-button", ConfigTable.getString("NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
+				createPageTag(builder, "navi-button navi-first-button", ConfigTable.getString(styleKey+"NAVI_TAG_FIRST", tagFirst), 1, configFlag);
+				createPageTag(builder, "navi-button navi-prev-button", ConfigTable.getString(styleKey+"NAVI_TAG_PREV", tagPrev), NumberUtil.getMax(curPage-1,1), configFlag);
 			}
 			
 			if(ConfigTable.getBoolean("NAVI_SHOW_INDEX", true)){
@@ -167,20 +172,20 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			}
 			
 			if(ConfigTable.getBoolean("NAVI_SHOW_BUTTON", true)){
-				createPageTag(builder, "navi-button navi-next-button", ConfigTable.getString("NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
-				createPageTag(builder, "navi-button navi-last-button", ConfigTable.getString("NAVI_TAG_LAST", tagLast), totalPage, configFlag);
+				createPageTag(builder, "navi-button navi-next-button", ConfigTable.getString(styleKey+"NAVI_TAG_NEXT", tagNext), (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
+				createPageTag(builder, "navi-button navi-last-button", ConfigTable.getString(styleKey+"NAVI_TAG_LAST", tagLast), totalPage, configFlag);
 			}
 			if(ConfigTable.getBoolean("NAVI_SHOW_JUMP",showJump)){
 				builder.append("转到<input type='text' value='");
 				builder.append(curPage);
 				builder.append("' class='navi-go-txt _anyline_jump_txt'/>页<span class='navi-go-button' onclick='_navi_jump("+configFlag+")'>")
-				.append(ConfigTable.getString("NAVI_TAG_GO",tagGo)).append("</span>\n");
+				.append(ConfigTable.getString(styleKey+"NAVI_TAG_GO",tagGo)).append("</span>\n");
 			}
 		}else if(type == 1){
 			//加载更多
 			String loadMoreFormat = this.loadMoreFormat;
 			if(BasicUtil.isNotEmpty(loadMoreFormat)){
-				loadMoreFormat = ConfigTable.getString("NAVI_LOAD_MORE_FORMAT", "加载更多"); 
+				loadMoreFormat = ConfigTable.getString(styleKey+"NAVI_LOAD_MORE_FORMAT", "加载更多"); 
 			}
 			createPageTag(builder, "navi-more-button", loadMoreFormat, (int)NumberUtil.getMin(curPage+1, totalPage+1), configFlag);
 		}
@@ -367,7 +372,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			result = orders.getRunText(disKey);
 		}
 		if(require && result.length() == 0){
-			result = "ORDER BY " + ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+			result = "ORDER BY " + ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 		}
 		return result;
 	}
@@ -560,6 +565,12 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	public PageNavi setType(int type) {
 		this.type = type;
 		return this;
+	}
+	public String getStyle() {
+		return style;
+	}
+	public void setStyle(String style) {
+		this.style = style;
 	}
 
 }
