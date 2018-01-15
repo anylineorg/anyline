@@ -33,10 +33,17 @@ public class NumberUtil {
 	 * @return
 	 */
 	public static String format(String src, String pattern) {
-		if (null == src) {
+		if (BasicUtil.isEmpty(src) || BasicUtil.isEmpty(src.trim())) {
 			return "";
 		}
-		return format(new BigDecimal(src), pattern);
+		BigDecimal num = null;
+		try{
+			num = new BigDecimal(src);
+		}catch(Exception e){
+			e.printStackTrace();
+			return "";
+		}
+		return format(num, pattern);
 	}
 
 	/**
