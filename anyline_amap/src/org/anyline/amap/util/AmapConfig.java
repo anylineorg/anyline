@@ -14,6 +14,7 @@ public class AmapConfig extends BasicConfig{
 	public static String KEY= "";
 	public static String PRIVATE_KEY = "";
 	public static String TABLE_ID = "";
+	private static File configDir;
 	
 	static{
 		init();
@@ -23,7 +24,10 @@ public class AmapConfig extends BasicConfig{
 		//加载配置文件
 		loadConfig();
 	}
-
+	public static void setConfigDir(File dir){
+		configDir = dir;
+		init();
+	}
 	public static AmapConfig getInstance(){
 		return getInstance("default");
 	}
@@ -40,7 +44,10 @@ public class AmapConfig extends BasicConfig{
 	 */
 	private synchronized static void loadConfig() {
 		try {
-			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
+			File dir = configDir;
+			if(null == dir){
+				dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
+			}
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-amap.xml".equals(file.getName())){

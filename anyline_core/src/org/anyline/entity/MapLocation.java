@@ -3,8 +3,13 @@ package org.anyline.entity;
 import org.anyline.util.BasicUtil;
 
 public class MapLocation {
+	
 	private String lon;
 	private String lat;
+	private String provinceCode;
+	private String provinceNm;
+	private String cityCode;
+	private String cityNm;
 	public MapLocation(String location){
 		if(BasicUtil.isNotEmpty(location)){
 			String[] tmps = location.split(",");
@@ -44,6 +49,30 @@ public class MapLocation {
 	}
 	public String getCenter(){
 		return getLocation();
+	}
+	public String getProvinceCode() {
+		return provinceCode;
+	}
+	public void setProvinceCode(String provinceCode) {
+		this.provinceCode = provinceCode;
+	}
+	public String getProvinceNm() {
+		return provinceNm;
+	}
+	public void setProvinceNm(String provinceNm) {
+		this.provinceNm = provinceNm;
+	}
+	public String getCityCode() {
+		return cityCode;
+	}
+	public void setCityCode(String cityCode) {
+		this.cityCode = cityCode;
+	}
+	public String getCityNm() {
+		return cityNm;
+	}
+	public void setCityNm(String cityNm) {
+		this.cityNm = cityNm;
 	}
 	
 }
