@@ -1,5 +1,6 @@
 package org.anyline.amap.util;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -12,6 +13,7 @@ import net.sf.json.JSONObject;
 import org.anyline.config.db.impl.PageNaviImpl;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.MapLocation;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -764,8 +766,8 @@ public class AmapUtil {
 	 * @param city
 	 * @return
 	 */
-	public DataRow geo(String address, String city){
-		DataRow row = null;
+	public MapLocation geo(String address, String city){
+		MapLocation location = null;
 		String url = "http://restapi.amap.com/v3/geocode/geo";
 		Map<String,String> params = new HashMap<String,String>();
 		params.put("key", this.key);
@@ -782,16 +784,8 @@ public class AmapUtil {
 			if(json.has("geocodes")){
 				set = DataSet.parseJson(json.getJSONArray("geocodes"));
 				if(set.size()>0){
-					row = set.getRow(0);
-					String loncation = row.getString("LOCATION");
-					if(null != loncation && loncation.contains(",")){
-						String tmps[] = loncation.split(",");
-						row.put("LON", tmps[0]);
-						row.put("LAT", tmps[1]);
-						if(ConfigTable.isDebug()){
-							log.warn("[坐标查询完成][ADDRESS:"+address+"][CITY:"+city+"[LON:"+row.getString("LON")+"][LAT:"+row.getString("LAT")+"]");
-						}
-					}
+					DataRow row = set.getRow(0);
+					location = new MapLocation(row.getString("LOCATION"));
 				}
 			}else{
 				log.warn("[坐标查询失败][info:"+json.getString("info")+"][params:"+BasicUtil.joinBySort(params)+"]");
@@ -799,7 +793,68 @@ public class AmapUtil {
 		}catch(Exception e){
 			log.warn("[坐标查询失败][info:"+e.getMessage()+"]");
 		}
+		return location;
+	}
+	public MapLocation geo(String address){
+		return geo(address, null);
+		
+	}
+	/**
+	 * 驾车路线规划
+	 * @param origin		出发地
+	 * @param destination	目的地
+	 * @param waypoints		途经地
+	 * @param strategy		选路策略  0，不考虑当时路况，返回耗时最短的路线，但是此路线不一定距离最短
+	 *							  1，不走收费路段，且耗时最少的路线
+	 *							  2，不考虑路况，仅走距离最短的路线，但是可能存在穿越小路/小区的情况
+	 * http://lbs.amap.com/api/webservice/guide/api/direction#driving						  
+	 * @return
+	 */
+	public DataRow directionDrive(String origin, String destination, String waypoints, int strategy){
+		DataRow row = null;
+		String url = "http://restapi.amap.com/v3/direction/driving";
+		Map<String,String> params = new HashMap<String,String>();
+		params.put("key", this.key);
+		params.put("origin", origin);
+		params.put("destination", destination);
+		params.put("strategy", strategy+"");
+		if(BasicUtil.isNotEmpty(waypoints)){
+			params.put("waypoints", waypoints);
+		}
+		String sign = sign(params);
+		params.put("sig", sign);
+		String txt = HttpClientUtil.get(url, "UTF-8", params).getText();
+		try{
+			JSONObject json = JSONObject.fromObject(txt);
+			row = DataRow.parseJson(json);
+			DataRow route = row.getRow("route");
+			if(null != route){
+				List paths = route.getList("PATHS");
+				if(paths.size()>0){
+					DataRow path = (DataRow)paths.get(0);
+					row = path;
+					List<DataRow> steps = (List<DataRow>)path.getList("steps");
+					List<String> polylines = new ArrayList<String>();
+					for(DataRow step:steps){
+						String polyline = step.getString("polyline");
+						String[] tmps = polyline.split(";");
+						for(String tmp:tmps){
+							polylines.add(tmp);
+						}
+					}
+					row.put("polylines", polylines);
+				}
+			}
+		}catch(Exception e){
+			log.warn("[线路规划失败][info:"+e.getMessage()+"]");
+		}
 		return row;
+	}
+	public DataRow directionDrive(String origin, String destination){
+		return directionDrive(origin, destination, null, 0);
+	}
+	public DataRow directionDrive(String origin, String destination, String waypoints){
+		return directionDrive(origin, destination, waypoints, 0);
 	}
 	/**
 	 * 签名
@@ -811,5 +866,27 @@ public class AmapUtil {
 		sign = BasicUtil.joinBySort(params) + this.privateKey;
 		sign = MD5Util.sign(sign,"UTF-8");
 		return sign;
+	}
+	public static void main(String args[]){
+		ConfigTable.setDebug(true);
+		AmapConfig.setConfigDir(new File("D:\\develop\\git\\anyline\\anyline_amap\\config\\anyline-amap.xml"));
+		AmapUtil util = AmapUtil.getInstance();
+		MapLocation fr = util.geo("山东省青岛市香港中路11号");
+		MapLocation to = util.geo("山东省青岛市流亭国际机场");
+		MapLocation mid = util.geo("山东省青岛市市南区政府");
+		double distance1 =0;
+		double distance2 =0;
+		DataRow row1 = util.directionDrive(fr.getLocation(),to.getLocation());
+		if(null != row1){
+			distance1 = row1.getDouble("distance");
+		}
+		DataRow row2 = util.directionDrive(fr.getLocation(),to.getLocation(),mid.getLocation());
+		if(null != row2){
+			distance2 = row2.getDouble("distance");
+		}
+		System.out.println("路线1:"+distance1+"米");
+		System.out.println("路线2:"+distance2+"米");
+		System.out.println("相差:"+Math.abs(distance1 - distance2)+"米");
+		
 	}
 }
