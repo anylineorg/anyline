@@ -245,7 +245,9 @@ public class ConfigTable {
 	public static int getReload() {
 		return reload;
 	}
-
+	public static void setDebug(boolean bol){
+		debug = bol;
+	}
 	public static boolean isDebug() {
 		return debug;
 	}

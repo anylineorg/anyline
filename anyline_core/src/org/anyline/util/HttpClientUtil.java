@@ -274,6 +274,9 @@ public class HttpClientUtil {
 				url += "?" + params;
 			}
 		}
+		if(ConfigTable.isDebug()){
+			log.warn("[HTTP GET][url:"+url+"]");
+		}
 		HttpGet method = new HttpGet(url);
 		setHeader(method, headers);
 		result = exe(client, method, encode);

@@ -1079,6 +1079,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		String params[] = packParam(row, keys);
 		return getRows(params).size() > 0;
 	}
+	
 	/**
 	 * 从items中按相应的key提取数据 存入
 	 * @param items
