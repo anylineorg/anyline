@@ -366,6 +366,7 @@ public class AbstractBasicController{
 		boolean showJump = ConfigTable.getBoolean("NAVI_SHOW_JUMP");
 		showJump = BasicUtil.parseBoolean(request.getParameter(PageNavi.SHOW_JUMP), showJump);
 		navi.setShowJump(showJump);
+		navi.setStyle(request.getParameter("style"));
 		request.setAttribute("navi", navi);
 		
 		return navi;

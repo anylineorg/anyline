@@ -44,9 +44,9 @@ public class PageNaviImpl implements PageNavi, Serializable{
 //	public static final String PAGE_VOL				= "pageRows"							;
 //	public static final String PAGE_NO				= "pageNo"								;
 
-	private static final String BR = "\n";
-	private static final String TAB = "\t";
-	private static final String BR_TAB = "\n\t";
+	private static final String BR 					= "\n";
+	private static final String TAB 				= "\t";
+	private static final String BR_TAB 				= "\n\t";
 	public static final String PAGE_ROWS			= "_anyline_page_rows"					;
 	public static final String PAGE_NO				= "_anyline_page"						;
 	
@@ -569,8 +569,9 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	public String getStyle() {
 		return style;
 	}
-	public void setStyle(String style) {
+	public PageNavi setStyle(String style) {
 		this.style = style;
+		return this;
 	}
 
 }
