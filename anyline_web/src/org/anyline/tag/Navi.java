@@ -36,7 +36,7 @@ public class Navi extends BodyTagSupport{
 	private static Logger log = Logger.getLogger(Navi.class);
 	private String url				;	//数据来源
 	private String param			;	//参数收集函数
-	private String container		;	//返回内容容器id
+	private String container		;	//返回内容显示容器id
 	private String creater = "ajax"	;	//分页方式 ajax | html
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
@@ -44,14 +44,16 @@ public class Navi extends BodyTagSupport{
 	private String id				;	//一个页面内多个标签时需要id区分
 	private String function			;	//指定function后需主动调用function后加载数据
 	private Boolean intime = false	;	//实时执行,否则放入jqery.ready
+	private Boolean auto = false	;	//是否加载下一页内容(wap加载更多typ=0模式下划屏到底部时)
 	private String callback			;	//回调函数
 	private String before			;	//渲染之前调用
 	private String after			;	//渲染之后调用			
 	private String bodyContainer	;	//如果body与page分开
 	private String naviContainer	;	//如果body与page分开
 	private String empty			;	//空数据显示内容
-
+	private String style = ""		; 	//样式标记
 	private int type = 0			;	//分页方式(0:下标 1:加载更多)
+
 	
 	public int doStartTag() throws JspException {
 		try{
@@ -96,6 +98,7 @@ public class Navi extends BodyTagSupport{
 				builder.append("after:" ).append(after).append(",");
 			}
 			builder.append("type:").append(type).append(",");
+			builder.append("style:").append(style).append(",");
 			if(empty == null){
 				empty = "没有更多内容了";
 			}
@@ -148,10 +151,12 @@ public class Navi extends BodyTagSupport{
 		after			= null	;
 		before			= null	;
 		function		= null	;
-		type			= 0	;
+		type			= 0		;
 		creater			= "ajax";
-		stat			= false;
-		jump			= false;
+		stat			= false	;
+		jump			= false	;
+		auto			= false	;
+		style			= ""	;
 	}
 	
 	public String getParam() {
@@ -250,6 +255,18 @@ public class Navi extends BodyTagSupport{
 	}
 	public void setJump(Boolean jump) {
 		this.jump = jump;
+	}
+	public Boolean getAuto() {
+		return auto;
+	}
+	public void setAuto(Boolean auto) {
+		this.auto = auto;
+	}
+	public String getStyle() {
+		return style;
+	}
+	public void setStyle(String style) {
+		this.style = style;
 	}
 
 }

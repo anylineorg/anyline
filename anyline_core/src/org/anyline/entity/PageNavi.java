@@ -161,5 +161,8 @@ public interface PageNavi extends Serializable{
 	
 	public PageNavi setShowStat(boolean showStat);
 	public boolean isShowStat();
+	
+	public PageNavi setStyle(String style);
+	public String getStyle();
 
 }
