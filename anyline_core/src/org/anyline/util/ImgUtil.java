@@ -19,13 +19,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.imageio.ImageIO;
+import javax.imageio.spi.ImageReaderSpi;
+import javax.imageio.spi.ImageWriterSpi;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.FileImageOutputStream;
 
 import org.apache.log4j.Logger;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
+
+import com.sun.imageio.plugins.gif.GIFImageReader;
+import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
+import com.sun.imageio.plugins.gif.GIFImageWriter;
+import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
 
 /**
  * 图片处理工具类：<br>
@@ -390,5 +401,41 @@ public class ImgUtil {
 				}
     		}
     	}
+    }
+    /**
+     * 拆分gif
+     * @param file
+     * @param dir 解压目录
+     * @return
+     */
+    public static List<File> splitGif(File file, File dir){
+    	List<File> files = new ArrayList<File>();
+    	FileImageInputStream in = null;
+    	FileImageOutputStream out = null;
+    	try {
+    		if(!dir.exists()){
+    			dir.mkdirs();
+    		}
+    		in = new FileImageInputStream(file);
+    		ImageReaderSpi readerSpi = new GIFImageReaderSpi();
+    		GIFImageReader gifReader = (GIFImageReader) readerSpi.createReaderInstance();
+    		gifReader.setInput(in);
+    		int size = gifReader.getNumImages(true);
+    		ImageWriterSpi writerSpi = new GIFImageWriterSpi();
+    		GIFImageWriter writer = (GIFImageWriter) writerSpi.createWriterInstance();
+    		for (int i = 0; i < size; i++) {
+    			File target = new File(dir, file.getName().replace(".gif", "_"+i+".jpg"));
+    			out = new FileImageOutputStream(target);
+    			writer.setOutput(out);
+    			writer.write(gifReader.read(i));
+    		}
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+    	return files;
+    }
+    public static void main(String args[]){
+    	//splitGif(new File("D:\\a.gif"),new File("D:\\a"));
+    	
     }
 }
