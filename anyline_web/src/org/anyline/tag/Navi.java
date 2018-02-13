@@ -171,6 +171,7 @@ public class Navi extends BodyTagSupport{
 	public void setContainer(String container) {
 		this.container = container;
 	}
+	
 	public String getCallback() {
 		return callback;
 	}
