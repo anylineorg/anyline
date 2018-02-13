@@ -29,7 +29,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
 
@@ -78,7 +80,24 @@ public class SelectText extends BaseBodyTag{
 				for(Map item:items){
 					Object tmp = item.get(valueKey);
 					if(null != tmp && value.toString().equals(tmp.toString())){
-						html += item.get(textKey);
+						String text = "";
+						if(textKey.contains("{")){
+							text = textKey;
+							List<String> keys =RegularUtil.fetch(textKey, "\\{\\w+\\}",2,0);
+							for(String key:keys){
+								Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
+								if(null == v){
+									v = "";
+								}
+								text = text.replace(key, v.toString());
+							}
+						}else{
+							Object v = BeanUtil.getFieldValue(item, textKey);
+							if(null != v){
+								text = v.toString();
+							}
+						}
+						html += text;
 					}
 				}
 			}
