@@ -126,7 +126,8 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString(styleKey+"NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
 		}
 		builder.append("<form action=\"" + baseLink + "\" method=\"post\">\n");
-		builder.append("<input type='hidden' name='"+PageNavi.PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
+		builder.append("<input type='hidden' id='hid_cur_page_"+configFlag+"' name='"+PageNavi.PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
+		builder.append("<input type='hidden' id='hid_total_page_"+configFlag+"' name='"+PageNavi.TOTAL_PAGE+"' class='_anyline_navi_total_page' value='"+totalPage+"'/>\n");
 		if("ajax".equals(creater)){
 			builder.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + configFlag + "'/>");
 		}
