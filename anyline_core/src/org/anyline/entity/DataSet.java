@@ -1082,13 +1082,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	
 	/**
 	 * 从items中按相应的key提取数据 存入
+	 * @param field:默认"ITEMS"
 	 * @param items
 	 * @param keys
 	 * @return
-	 * dispatchItems(items, "DEPAT_CD")
-	 * dispatchItems(items, "CD:BASE_CD")
+	 * dispatchItems("children",items, "DEPAT_CD")
+	 * dispatchItems("children",items, "CD:BASE_CD")
 	 */
-	public DataSet dispatchItems(DataSet items, String ... keys){
+	public DataSet dispatchItems(String field,DataSet items, String ... keys){
 		if(null == items || null == keys || keys.length == 0){
 			return this;
 		}
@@ -1110,9 +1111,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				params[idx++] = key2;
 				params[idx++] = row.getString(key1);
 			}
-			row.putItems(items.getRows(params));
+			if(BasicUtil.isEmpty(field)){
+				field = "ITEMS";
+			}
+			row.put(field,items.getRows(params));
 		}
 		return this;
+	}
+	public DataSet dispatchItems(DataSet items, String ... keys){
+		return dispatchItems("ITEMS",items, keys);
 	}
 	/**
 	 * 按keys分组

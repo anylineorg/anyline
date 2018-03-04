@@ -44,7 +44,7 @@ public class Navi extends BodyTagSupport{
 	private String id				;	//一个页面内多个标签时需要id区分
 	private String function			;	//指定function后需主动调用function后加载数据
 	private Boolean intime = false	;	//实时执行,否则放入jqery.ready
-	private Boolean auto = false	;	//是否加载下一页内容(wap加载更多typ=0模式下划屏到底部时)
+	private Boolean auto = false	;	//是否加载下一页内容(wap加载更多typ=1时 划屏到底部自动加载)
 	private String callback			;	//回调函数
 	private String before			;	//渲染之前调用
 	private String after			;	//渲染之后调用			
@@ -97,6 +97,7 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(after)){
 				builder.append("after:" ).append(after).append(",");
 			}
+			builder.append("auto:").append(auto).append(",");
 			builder.append("type:").append(type).append(",");
 			builder.append("style:'").append(style).append("',");
 			if(empty == null){
@@ -120,6 +121,8 @@ public class Navi extends BodyTagSupport{
 			}else{
 				builder.append("$(function(){_navi_init("+confId+");});\n");
 			}
+			//自动加载
+			builder.append("$(window).scroll(function(){_navi_auto_load("+confId+");});");
 			builder.append("</script>");
 			builder.append("</div>");
 			idx ++;
