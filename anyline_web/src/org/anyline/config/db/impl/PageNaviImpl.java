@@ -128,6 +128,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		builder.append("<form action=\"" + baseLink + "\" method=\"post\">\n");
 		builder.append("<input type='hidden' id='hid_cur_page_"+configFlag+"' name='"+PageNavi.PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
 		builder.append("<input type='hidden' id='hid_total_page_"+configFlag+"' name='"+PageNavi.TOTAL_PAGE+"' class='_anyline_navi_total_page' value='"+totalPage+"'/>\n");
+		builder.append("<input type='hidden' id='hid_total_row_"+configFlag+"' name='"+PageNavi.TOTAL_ROW+"' class='_anyline_navi_total_row' value='"+totalRow+"'/>\n");
 		if("ajax".equals(creater)){
 			builder.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + configFlag + "'/>");
 		}
@@ -185,7 +186,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		}else if(type == 1){
 			//加载更多
 			String loadMoreFormat = this.loadMoreFormat;
-			if(BasicUtil.isNotEmpty(loadMoreFormat)){
+			if(null == loadMoreFormat){
 				loadMoreFormat = ConfigTable.getString(styleKey+"NAVI_LOAD_MORE_FORMAT", "加载更多"); 
 			}
 			createPageTag(builder, "navi-more-button", loadMoreFormat, (int)NumberUtil.getMin(curPage+1, totalPage+1), configFlag);
@@ -572,6 +573,13 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	}
 	public PageNavi setStyle(String style) {
 		this.style = style;
+		return this;
+	}
+	public String getGuide() {
+		return loadMoreFormat;
+	}
+	public PageNavi setGuide(String guide) {
+		this.loadMoreFormat = guide;
 		return this;
 	}
 
