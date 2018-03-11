@@ -50,6 +50,7 @@ public class Navi extends BodyTagSupport{
 	private String after			;	//渲染之后调用			
 	private String bodyContainer	;	//如果body与page分开
 	private String naviContainer	;	//如果body与page分开
+	private String guide			;   //加载更多文本
 	private String empty			;	//空数据显示内容
 	private String style = ""		; 	//样式标记
 	private int type = 0			;	//分页方式(0:下标 1:加载更多)
@@ -96,6 +97,9 @@ public class Navi extends BodyTagSupport{
 			}
 			if(BasicUtil.isNotEmpty(after)){
 				builder.append("after:" ).append(after).append(",");
+			}
+			if(null != guide){
+				builder.append("guide:'" ).append(guide).append("',");
 			}
 			builder.append("auto:").append(auto).append(",");
 			builder.append("type:").append(type).append(",");
@@ -153,6 +157,7 @@ public class Navi extends BodyTagSupport{
 		id 				= null	;
 		after			= null	;
 		before			= null	;
+		guide			= null	;
 		function		= null	;
 		type			= 0		;
 		creater			= "ajax";
@@ -217,6 +222,12 @@ public class Navi extends BodyTagSupport{
 	}
 	public void setId(String id) {
 		this.id = id;
+	}
+	public String getGuide() {
+		return guide;
+	}
+	public void setGuide(String guide) {
+		this.guide = guide;
 	}
 	public String getBefore() {
 		return before;

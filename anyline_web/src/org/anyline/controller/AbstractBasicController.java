@@ -367,6 +367,8 @@ public class AbstractBasicController{
 		showJump = BasicUtil.parseBoolean(request.getParameter(PageNavi.SHOW_JUMP), showJump);
 		navi.setShowJump(showJump);
 		navi.setStyle(request.getParameter("style"));
+		String guide = request.getParameter(PageNavi.GUIDE);
+		navi.setGuide(guide);
 		request.setAttribute("navi", navi);
 		
 		return navi;
