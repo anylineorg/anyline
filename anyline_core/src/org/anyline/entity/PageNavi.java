@@ -28,8 +28,10 @@ public interface PageNavi extends Serializable{
 	public static final String PAGE_ROWS			= "_anyline_page_rows"	;
 	public static final String PAGE_NO				= "_anyline_page"		;
 	public static final String TOTAL_PAGE			= "_anyline_total_page"		;
+	public static final String TOTAL_ROW			= "_anyline_total_row"		;
 	public static final String SHOW_STAT			= "_anyline_navi_show_stat"	;
 	public static final String SHOW_JUMP			= "_anyline_navi_show_jump"	;
+	public static final String GUIDE				= "_anyline_navi_guide"	;
 	
 	/**
 	 * 分页计算方式
@@ -162,8 +164,18 @@ public interface PageNavi extends Serializable{
 	
 	public PageNavi setShowStat(boolean showStat);
 	public boolean isShowStat();
-	
+	/**
+	 * 样式分组
+	 * @param style
+	 * @return
+	 */
 	public PageNavi setStyle(String style);
 	public String getStyle();
-
+	/**
+	 * 加载更多样式
+	 * @param guide
+	 * @return
+	 */
+	public PageNavi setGuide(String guide);
+	public String getGuide();
 }
