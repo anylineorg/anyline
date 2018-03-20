@@ -130,7 +130,7 @@ public class FTPUtil {
 	        client.enterLocalPassiveMode();
 	        reply = client.getReplyCode();  
 	        if (!FTPReply.isPositiveCompletion(reply)) {  
-	            client.disconnect();  
+	            client.disconnect();
 	            return success;
 	        }  
 	        client.changeWorkingDirectory(remoteDir);

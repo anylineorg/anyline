@@ -114,4 +114,25 @@ public class MapUtil {
 		}
 		return result;
 	}
+	/**
+	 * gps转经纬度
+	 * @param gps
+	 * @return
+	 */
+	public static String parseGPS(String gps){
+		String result = null;
+		if(null == gps){
+			return null;
+		}
+		gps = gps.replaceAll("[^0-9.]", "");
+		String d = gps.substring(0, gps.indexOf("."));
+		String m = "";
+		int idx = d.length() - 2;
+		d = gps.substring(0,idx);
+		m = gps.substring(idx);
+		BigDecimal dd = BasicUtil.parseDecimal(d, 0d);
+		BigDecimal dm = BasicUtil.parseDecimal(m, 0d).divide(new BigDecimal(60), 7, BigDecimal.ROUND_UP);
+		result = dd.add(dm).toString();
+		return result;
+	}
 }

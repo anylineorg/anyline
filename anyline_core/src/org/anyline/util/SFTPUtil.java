@@ -4,6 +4,7 @@ package org.anyline.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -254,7 +255,30 @@ public class SFTPUtil {
         list.add(fileName);  
         return list;  
     }  
-  
+    public List<String> files(String dir){
+    	List<String> list = new ArrayList<String>();
+    	try {
+			Vector<LsEntry> files = client.ls(dir);
+			for(LsEntry file:files){
+				String nm = file.getFilename();
+				if(".".equals(nm) || "..".equals(nm)){
+					continue;
+				}
+				list.add(nm);
+			}
+		} catch (SftpException e) {
+		}
+    	return list;
+    }
+    public boolean fileExists(String dir, String file){
+    	List<String> files = files(dir);
+    	for(String item:files){
+    		if(item.equals(file)){
+    			return true;
+    		}
+    	}
+    	return false;
+    }
     /** 
      * 关闭协议-sftp协议.(关闭会导致连接池异常，因此不建议用户自定义关闭) 
      */  
@@ -263,24 +287,34 @@ public class SFTPUtil {
     }  
   
     public static void main(String[] args) throws Exception {  
-    	SFTPUtil sftp = new SFTPUtil("192.168.1.58", 22, "root", "root");  
-         String path = "C:\\test\\ccc\\Foxmail7.zip";  
-         File file = new File(path);  
-         System.out.println("上传文件开始...");  
-         sftp.uploadFile(path);  
-         System.out.println("上传成功，开始删除本地文件...");  
-         file.delete();  
-         System.out.println("删除完成，开始校验本地文件...");  
-         if (!file.exists()) {  
-         System.out.println("文件不存在，开始从远程服务器获取...");  
-         sftp.download(path, path);  
-         System.out.println("下载完成");  
-         } else {  
-         System.out.println("在本地找到文件");  
-         }  
-         sftp.deleteDir("");  
-         sftp.download("E:\\aaa.zip", path);  
+    	//SFTPUtil sftp = new SFTPUtil("192.168.1.58", 22, "root", "root");
+
+		SFTPUtil sftp = new SFTPUtil("172.16.254.101", "zhengchen", "zhengchen@1212");
+    	List<String> files = sftp.files("/media/FCST_OUT");
+    	Collections.sort(files);
+    	for(String file:files){
+    		System.out.println(file);
+    	}
+    	///media/FCST_OUT/wrf_20180317_need.nc
+    	sftp.download("/media/FCST_OUT/roms_20180317_need.nc", "d:\\nc\\roms_20180317_need.nc");
+    	sftp.download("/media/FCST_OUT/wrf_20180317_need.nc", "d:\\nc\\wrf_20180317_need.nc");
+    	
+//         String path = "C:\\test\\ccc\\Foxmail7.zip";  
+//         File file = new File(path);  
+//         System.out.println("上传文件开始...");  
+//         sftp.uploadFile(path);  
+//         System.out.println("上传成功，开始删除本地文件...");  
+//         file.delete();  
+//         System.out.println("删除完成，开始校验本地文件...");  
+//         if (!file.exists()) {  
+//         System.out.println("文件不存在，开始从远程服务器获取...");  
+//         sftp.download(path, path);  
+//         System.out.println("下载完成");  
+//         } else {  
+//         System.out.println("在本地找到文件");  
+//         }  
+//         sftp.deleteDir("");  
+//         sftp.download("E:\\aaa.zip", path);  
          sftp.exit();  
-        System.exit(0);  
     }   
 }
