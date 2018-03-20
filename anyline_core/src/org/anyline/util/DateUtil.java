@@ -136,6 +136,9 @@ public class DateUtil {
 			return "";
 		return new java.text.SimpleDateFormat(format).format(date);
 	}
+	public static void main(String args[]){
+		System.out.println(format(new Date(),"MMMMMM"));
+	}
 
 	public static String format() {
 		return format(new Date(), FORMAT_DATE_TIME);
