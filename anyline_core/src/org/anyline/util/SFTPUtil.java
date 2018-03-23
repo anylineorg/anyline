@@ -4,7 +4,6 @@ package org.anyline.util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,9 @@ import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.ChannelSftp.LsEntry;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
 import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
 
 public class SFTPUtil {
 	private Logger log = Logger.getLogger(SFTPUtil.class);
@@ -95,7 +96,10 @@ public class SFTPUtil {
             if(ConfigTable.isDebug()){
             	log.warn("[文件下载][file:"+list.get(0) + list.get(1)+"]");
             }
-            client.get(list.get(0) + list.get(1), os);  
+            String ftpFilePath = list.get(0) + list.get(1);
+            SftpATTRS attr = client.stat(ftpFilePath);
+            long length = attr.getSize();
+            client.get(ftpFilePath, os, new SFTPProgressMonitor(ftpFilePath, length));  
             if(ConfigTable.isDebug()){
             	log.warn("[文件下载完成][time:"+(System.currentTimeMillis()-fr)+"][file:"+list.get(0) + list.get(1)+"]");
             }
@@ -284,37 +288,70 @@ public class SFTPUtil {
      */  
     private void exit() {  
         client.exit();  
-    }  
-  
-    public static void main(String[] args) throws Exception {  
-    	//SFTPUtil sftp = new SFTPUtil("192.168.1.58", 22, "root", "root");
+    }
+    public static void main(String args[]){
+    	String root = "D:\\java\\matlab1\\";
+		SFTPUtil ftp = new SFTPUtil("172.16.254.101", "zhengchen", "zhengchen@1212");
+		String ymd = "20180319";
+		try {
+			ftp.download("/media/FCST_OUT/roms_"+ymd+"_need.nc", root+"roms_"+ymd+"_need.nc");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+    }
+    
+}
 
-		SFTPUtil sftp = new SFTPUtil("172.16.254.101", "zhengchen", "zhengchen@1212");
-    	List<String> files = sftp.files("/media/FCST_OUT");
-    	Collections.sort(files);
-    	for(String file:files){
-    		System.out.println(file);
-    	}
-    	///media/FCST_OUT/wrf_20180317_need.nc
-    	sftp.download("/media/FCST_OUT/roms_20180317_need.nc", "d:\\nc\\roms_20180317_need.nc");
-    	sftp.download("/media/FCST_OUT/wrf_20180317_need.nc", "d:\\nc\\wrf_20180317_need.nc");
-    	
-//         String path = "C:\\test\\ccc\\Foxmail7.zip";  
-//         File file = new File(path);  
-//         System.out.println("上传文件开始...");  
-//         sftp.uploadFile(path);  
-//         System.out.println("上传成功，开始删除本地文件...");  
-//         file.delete();  
-//         System.out.println("删除完成，开始校验本地文件...");  
-//         if (!file.exists()) {  
-//         System.out.println("文件不存在，开始从远程服务器获取...");  
-//         sftp.download(path, path);  
-//         System.out.println("下载完成");  
-//         } else {  
-//         System.out.println("在本地找到文件");  
-//         }  
-//         sftp.deleteDir("");  
-//         sftp.download("E:\\aaa.zip", path);  
-         sftp.exit();  
-    }   
+class SFTPProgressMonitor implements SftpProgressMonitor {
+	private Logger log = Logger.getLogger(SFTPProgressMonitor.class);
+	private String file="";
+	private double length;		//总长度
+	private double transfered;	//已下载长度
+	private double displayRate;		//最后显示下载比例
+	private long displayTime;		//最后显示下载时间
+
+	public SFTPProgressMonitor(String file, long length){
+		this.file = file;
+		this.length = length;
+	}
+	public SFTPProgressMonitor(long length){
+		this.length = length;
+	}
+	@Override
+	public boolean count(long count) {
+		double curRate = (transfered+count)/length * 100;
+		if(curRate - displayRate  >= 0.5 || System.currentTimeMillis() - displayTime > 1000 * 5){
+			displayRate = curRate; 
+			displayTime = System.currentTimeMillis();
+			String total_title = "";
+			if (transfered < 1024){
+				total_title = "已下载: " + transfered + "/" + length + " bytes("+NumberUtil.format(displayRate, "0.00")+"%)";
+			}else if (transfered >= 1024 && transfered < 1048576){
+				total_title = "已下载: " + NumberUtil.format(transfered / 1024, "0.00") + "MB/" +NumberUtil.format(length/1024,"0.00") + "KB("+NumberUtil.format(displayRate, "0.00")+"%)";
+			}else{
+				total_title = "已下载: " + NumberUtil.format(transfered / 1024 / 1024,"0.00") + "MB/" +NumberUtil.format(length/1024/1024,"0.00") +  "MB("+NumberUtil.format(displayRate, "0.00")+"%)";
+			}
+			if(null != file){
+				total_title = file + " " + total_title;
+			}
+			log.warn(total_title);
+		}
+		transfered = transfered + count;
+		return true;
+
+	}
+
+	@Override
+	public void end() {
+		log.warn("下载完成.");
+	}
+
+	@Override
+	public void init(int arg0, String arg1, String arg2, long arg3) {
+		log.warn("开始下载.");
+	}
+	
+	
 }

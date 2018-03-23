@@ -63,9 +63,9 @@ import org.springframework.stereotype.Repository;
 public class AnylineDaoImpl implements AnylineDao {
 	private static Logger log = Logger.getLogger(AnylineDaoImpl.class);
 	
-	@Autowired(required=true)
+	@Autowired(required=false)
 	private SQLCreater creater;
-	@Autowired(required=true)
+	@Autowired(required=false)
 	private JdbcTemplate jdbc;
 	
 	
