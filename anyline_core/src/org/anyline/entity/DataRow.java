@@ -80,6 +80,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != obj){
 			if(obj instanceof JSONObject){
 				row = parseJson((JSONObject)obj);
+			}else if(obj instanceof DataRow){
+				row = (DataRow)obj;
 			}else{
 				List<String> fields = BeanUtil.getFieldsName(obj.getClass());
 				for(String field : fields){
@@ -614,8 +616,17 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return null;
 		}
 		Object obj = get(key);
-		if(null != obj && obj instanceof DataSet){
-			return (DataSet)obj;
+		if(null != obj){
+			if(obj instanceof DataSet){
+				return (DataSet)obj;
+			}else if(obj instanceof List){
+				List<?> list = (List<?>)obj;
+				DataSet set = new DataSet();
+				for(Object item:list){
+					set.add(DataRow.parse(item));
+				}
+				return set;
+			}
 		}
 		return null;
 	}
@@ -907,6 +918,27 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				key2 = tmp[1];
 			}
 			this.put(key1, data.get(key2));
+		}
+		return this;
+	}
+	public DataRow copyString(DataRow data, String ... keys){
+		if(null == data || null == keys){
+			return this;
+		}
+		for(String key:keys){
+			String key1 = key;
+			String key2 = key;
+			if(key.contains(":")){
+				String tmp[] = key.split(":");
+				key1 = tmp[0];
+				key2 = tmp[1];
+			}
+			Object obj = data.get(key2);
+			if(BasicUtil.isNotEmpty(obj)){
+				this.put(key1, obj.toString());
+			}else{
+				this.put(key1, null);
+			}
 		}
 		return this;
 	}

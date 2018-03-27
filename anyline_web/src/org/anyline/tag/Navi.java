@@ -116,8 +116,10 @@ public class Navi extends BodyTagSupport{
 			builder.append("creater:'").append(creater).append("'");
 			builder.append("};\n");
 			if(BasicUtil.isNotEmpty(function)){
-				builder.append("function ").append(function).append("(){\n");
+				builder.append("function ").append(function).append("(clear){\n");
+				builder.append("if(clear){").append(confId).append("['clear'] = 1;}\n");
 				builder.append("_navi_init("+confId+");\n");
+				builder.append("if(clear){").append(confId).append("['clear'] = 0;}\n");
 				builder.append("}\n");
 				if(intime){
 					builder.append("$(function(){_navi_init("+confId+");});\n");
