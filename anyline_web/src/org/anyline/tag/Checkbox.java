@@ -129,7 +129,7 @@ public class Checkbox extends BaseBodyTag {
 				}
 				if(null != head){
 					String id = name +"_"+ headValue; 
-					html += "<input type=\"checkbox\"";
+					html += "<div class=\"item-border\"><input type=\"checkbox\"";
 					if((null != headValue && headValue.equals(value)) || checked){
 						html += " checked = \"checked\"";
 					}
@@ -155,7 +155,7 @@ public class Checkbox extends BaseBodyTag {
 					if(null != disabled){
 						html += " disabled=\"" + disabled + "\"";
 					}
-					html +="/>" + "<label for=\""+id+ "\">" + head + "</label>\n";
+					html +="/>" + "<label for=\""+id+ "\">" + head + "</label></div>\n";
 				}
 				
 				
@@ -166,7 +166,7 @@ public class Checkbox extends BaseBodyTag {
 							val = WebUtil.encryptValue(val+"");
 						}
 						String id = name +"_"+ val;
-						html += "<input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
+						html += "<div class=\"item-border\"><input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
 						Object chk = item.get("CHECKED")+"";
 						if("1".equals(chk) || checked(chks,item.get(valueKey)) ) {
 							html += " checked=\"checked\"";
@@ -190,7 +190,7 @@ public class Checkbox extends BaseBodyTag {
 								text = v.toString();
 							}
 						}
-						label += text +"</label>\n";
+						label += text +"</label></div>\n";
 						html += label;
 					}
 			}
