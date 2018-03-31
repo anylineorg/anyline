@@ -5,12 +5,12 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.anyline.entity.DataRow;
-import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
+import org.anyline.weixin.entity.WXBasicConfig;
 import org.anyline.weixin.open.entity.WXOpenPayTradeOrder;
 import org.anyline.weixin.open.entity.WXOpenPayTradeResult;
 import org.anyline.weixin.util.WXUtil;
@@ -57,7 +57,7 @@ public class WXOpenUtil {
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
 
-		order.setTrade_type(BasicConfig.TRADE_TYPE_APP);
+		order.setTrade_type(WXBasicConfig.TRADE_TYPE_APP);
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.paySign(config.API_SECRECT,map);
 		map.put("sign", sign);
