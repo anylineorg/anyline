@@ -9,7 +9,6 @@ import net.sf.json.JSONObject;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -17,6 +16,7 @@ import org.anyline.util.HttpClientUtil;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SHA1Util;
 import org.anyline.util.SimpleHttpUtil;
+import org.anyline.weixin.entity.WXBasicConfig;
 import org.anyline.weixin.mp.entity.WXMPPayRefund;
 import org.anyline.weixin.mp.entity.WXMPPayRefundResult;
 import org.anyline.weixin.mp.entity.WXMPPayTradeOrder;
@@ -71,7 +71,7 @@ public class WXMPUtil {
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
-		order.setTrade_type(BasicConfig.TRADE_TYPE_JSAPI);
+		order.setTrade_type(WXBasicConfig.TRADE_TYPE_JSAPI);
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.paySign(config.API_SECRECT,map);
 		map.put("sign", sign);
@@ -83,7 +83,7 @@ public class WXMPUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(WXMPConfig.UNIFIED_ORDER_URL, xml);
+		String rtn = SimpleHttpUtil.post(WXBasicConfig.UNIFIED_ORDER_URL, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
@@ -127,7 +127,7 @@ public class WXMPUtil {
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(new File(config.KEY_STORE_FILE), HttpClientUtil.PROTOCOL_TLSV1, config.KEY_STORE_PASSWORD);
             StringEntity  reqEntity  = new StringEntity(xml);
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXMPConfig.REFUND_URL, "UTF-8", reqEntity).getText();
+            String txt = HttpClientUtil.post(httpclient, WXBasicConfig.REFUND_URL, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("退款申请调用结果:" + txt);
     		}
@@ -195,7 +195,7 @@ public class WXMPUtil {
 		if(json.has("access_token")){
 			row.put("APP_ID", appid);
 			row.put("ACCESS_TOKEN", json.getString("access_token"));
-			row.setExpires(json.getInt("expires_in"));
+			row.setExpires(json.getInt("expires_in")*800);
 			if(ConfigTable.isDebug()){
 				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:"+row.getString("ACCESS_TOKEN")+"]");
 			}
