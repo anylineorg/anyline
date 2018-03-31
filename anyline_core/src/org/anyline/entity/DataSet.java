@@ -808,7 +808,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 
 	/**
-	 * htmlml格式(未实现)
+	 * html格式(未实现)
 	 * 
 	 * @param index
 	 * @param key
@@ -1263,17 +1263,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * 验证是否过期
 	 * 根据当前时间与创建时间对比
 	 * 过期返回 true
-	 * @param expire	过期时间(毫秒)
+	 * @param millisecond	过期时间(毫秒)
 	 * @return
 	 */
-	public boolean isExpire(int expire){
-		if(System.currentTimeMillis() - createTime > expire){
+	public boolean isExpire(int millisecond){
+		if(System.currentTimeMillis() - createTime > millisecond){
 			return true;
 		}
 		return false;
 	}
-	public boolean isExpire(long expire){
-		if(System.currentTimeMillis() - createTime > expire){
+	public boolean isExpire(long millisecond){
+		if(System.currentTimeMillis() - createTime > millisecond){
 			return true;
 		}
 		return false;
@@ -1297,14 +1297,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 	/************************** getter setter ***************************************/
 
+	/**
+	 * 过期时间(毫秒)
+	 * @return
+	 */
 	public long getExpires() {
 		return expires;
 	}
-	public void setExpires(long expires) {
-		this.expires = expires;
+	public void setExpires(long millisecond) {
+		this.expires = millisecond;
 	}
-	public void setExpires(int expires) {
-		this.expires = expires;
+	public void setExpires(int millisecond) {
+		this.expires = millisecond;
 	}
 	public boolean isResult() {
 		return result;

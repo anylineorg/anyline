@@ -53,6 +53,7 @@ import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -69,6 +70,9 @@ import org.apache.log4j.Logger;
  *HttpClientUtil.post(HttpClientUtil.createClient("deep"), "http://www.anyline.org", "UTF-8", "name", "zhang", "age", "20");
  *HttpClientUtil.post(null, "http://www.anyline.org", "UTF-8", "name", "zhang", "age", "20");
  *
+ *
+ *HttpEntity entity = new StringEntity(BeanUtil.map2json(map), "UTF-8");
+ *String txt = HttpClientUtil.post(url, "UTF-8", entity).getText();
  */
 public class HttpClientUtil {
 	

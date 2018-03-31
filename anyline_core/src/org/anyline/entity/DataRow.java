@@ -821,14 +821,19 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @param expire	过期时间(毫秒)
 	 * @return
 	 */
-	public boolean isExpire(int ms){
-		if(System.currentTimeMillis() - createTime > ms){
+	public boolean isExpire(int millisecond){
+		if(System.currentTimeMillis() - createTime > millisecond){
 			return true;
 		}
 		return false;
 	}
-	public boolean isExpire(long expire){
-		if(System.currentTimeMillis() - createTime > expire){
+	/**
+	 * 是否过期
+	 * @param millisecond
+	 * @return
+	 */
+	public boolean isExpire(long millisecond){
+		if(System.currentTimeMillis() - createTime > millisecond){
 			return true;
 		}
 		return false;

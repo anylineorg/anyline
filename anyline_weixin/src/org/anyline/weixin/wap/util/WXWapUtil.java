@@ -5,12 +5,12 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.anyline.entity.DataRow;
-import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
+import org.anyline.weixin.entity.WXBasicConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.anyline.weixin.wap.entity.WXWapPayTradeOrder;
 import org.anyline.weixin.wap.entity.WXWapPayTradeResult;
@@ -56,7 +56,7 @@ public class WXWapUtil {
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
-		order.setTrade_type(BasicConfig.TRADE_TYPE_WAP);
+		order.setTrade_type(WXBasicConfig.TRADE_TYPE_WAP);
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.paySign(config.API_SECRECT,map);
@@ -69,7 +69,7 @@ public class WXWapUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(WXWapConfig.UNIFIED_ORDER_URL, xml);
+		String rtn = SimpleHttpUtil.post(WXBasicConfig.UNIFIED_ORDER_URL, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
