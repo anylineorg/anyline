@@ -16,12 +16,15 @@ import org.anyline.util.HttpClientUtil;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SHA1Util;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.entity.WXBasicConfig;
+import org.anyline.weixin.WXBasicConfig;
+import org.anyline.weixin.entity.TemplateMessage;
+import org.anyline.weixin.entity.TemplateMessageResult;
 import org.anyline.weixin.mp.entity.WXMPPayRefund;
 import org.anyline.weixin.mp.entity.WXMPPayRefundResult;
 import org.anyline.weixin.mp.entity.WXMPPayTradeOrder;
 import org.anyline.weixin.mp.entity.WXMPPayTradeResult;
 import org.anyline.weixin.util.WXUtil;
+import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.log4j.Logger;
@@ -279,12 +282,38 @@ public class WXMPUtil {
 	}
 	public DataRow getOpenId(String code){
 		DataRow row = new DataRow();
-		String url ="https://api.weixin.qq.com/sns/oauth2/access_token?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String url = WXBasicConfig.AUTH_ACCESS_TOKEN_URL + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url);
 		row = DataRow.parseJson(txt);
 		return row;
 	}
 	public DataRow getUnionId(String code){
 		return getOpenId(code);
+	}
+	/**
+	 * 发送样模板消息
+	 * @param msg
+	 * @return
+	 */
+	public TemplateMessageResult sendTemplateMessage(TemplateMessage msg){
+		TemplateMessageResult result = null;
+		String token = getAccessToken();
+		String url = WXBasicConfig.SEND_TEMPLATE_MESSAGE_URL + "?access_token=" + token;
+		String json = BeanUtil.object2json(msg);
+		HttpEntity entity = new StringEntity(json, "UTF-8");
+		String txt = HttpClientUtil.post(url, "UTF-8", entity).getText();
+		result = BeanUtil.json2oject(txt, TemplateMessageResult.class);
+		return result;
+	}
+	public TemplateMessageResult sendTemplateMessage(String openId, TemplateMessage msg){
+		msg.setUser(openId);
+		TemplateMessageResult result = null;
+		String token = getAccessToken();
+		String url = WXBasicConfig.SEND_TEMPLATE_MESSAGE_URL + "?access_token=" + token;
+		String json = BeanUtil.object2json(msg);
+		HttpEntity entity = new StringEntity(json, "UTF-8");
+		String txt = HttpClientUtil.post(url, "UTF-8", entity).getText();
+		result = BeanUtil.json2oject(txt, TemplateMessageResult.class);
+		return result;
 	}
 }
