@@ -10,7 +10,7 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.entity.WXBasicConfig;
+import org.anyline.weixin.WXBasicConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.anyline.weixin.wap.entity.WXWapPayTradeOrder;
 import org.anyline.weixin.wap.entity.WXWapPayTradeResult;
@@ -108,7 +108,7 @@ public class WXWapUtil {
 	}
 	public DataRow getOpenId(String code){
 		DataRow row = new DataRow();
-		String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String url = WXBasicConfig.AUTH_ACCESS_TOKEN_URL + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url);
 		row = DataRow.parseJson(txt);
 		return row;
