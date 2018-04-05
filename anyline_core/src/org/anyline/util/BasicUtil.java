@@ -559,6 +559,20 @@ public class BasicUtil {
 		return result;
 	}
 
+	public static List<String> split(String str, String separator){
+		List<String> list = new ArrayList<String>();
+		if(null !=str && null != separator){
+			String tmps[] = str.split(separator);
+			for(String tmp : tmps){
+				tmp = tmp.trim();
+				System.out.println("["+tmp+"]");
+				if(BasicUtil.isNotEmpty(tmp)){
+					list.add(tmp);
+				}
+			}
+		}
+		return list;
+	}
 	/**
 	 * 合并数组
 	 * 
