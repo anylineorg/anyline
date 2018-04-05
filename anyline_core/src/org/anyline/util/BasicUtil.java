@@ -565,7 +565,6 @@ public class BasicUtil {
 			String tmps[] = str.split(separator);
 			for(String tmp : tmps){
 				tmp = tmp.trim();
-				System.out.println("["+tmp+"]");
 				if(BasicUtil.isNotEmpty(tmp)){
 					list.add(tmp);
 				}
