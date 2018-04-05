@@ -20,6 +20,7 @@
 package org.anyline.config.http.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -131,7 +132,7 @@ public class ConfigStoreImpl implements ConfigStore{
 			conf.setCompare(SQL.COMPARE_TYPE_IN);
 		}
 		conf.setId(key);
-		if(null != values){
+		if(null != values && !(values instanceof Collection)){
 			String s = values.toString();
 			if(s.startsWith("[") && s.endsWith("]")){
 				s = s.substring(1,s.length()-1);
@@ -139,7 +140,7 @@ public class ConfigStoreImpl implements ConfigStore{
 				if(null != ss){
 					List<Object> list = new ArrayList<Object>();
 					for(String item:ss){
-						list.add(item);
+						list.add(item.trim());
 					}
 					values = list;
 				}
