@@ -236,6 +236,7 @@ public class WXMPUtil {
 		row.put("APP_ID", config.APP_ID);
 		String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+accessToken+"&type=jsapi";
 		String text = HttpUtil.get(url,"UTF-8").getText();
+		log.warn("[CREATE NEW JSAPI TICKET][txt:"+text+"]");
 		JSONObject json = JSONObject.fromObject(text);
 		if(json.has("ticket")){
 			row.put("TICKET", json.getString("ticket"));
@@ -284,6 +285,7 @@ public class WXMPUtil {
 		DataRow row = new DataRow();
 		String url = WXBasicConfig.AUTH_ACCESS_TOKEN_URL + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url);
+		log.warn("[get openid][txt:"+txt+"]");
 		row = DataRow.parseJson(txt);
 		return row;
 	}
