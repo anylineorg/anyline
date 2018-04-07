@@ -20,9 +20,12 @@
 package org.anyline.tag;
 
 
+import java.math.BigDecimal;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.util.BasicUtil;
 import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
 
@@ -31,6 +34,8 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
 	private static Logger log = Logger.getLogger(NumberFormat.class);
 	private String format;
+	private Object min;
+	private Object max;
 	private String def;
 
 	public String getFormat() {
@@ -46,16 +51,33 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	public int doEndTag() throws JspException {
 		try{
 			String result = "";
+			log.warn("[number format][value:"+value+"][body:"+body+"][def:"+def+"][max:"+max+"][min:"+min+"]");
 			if(null == value){
 				value = body;
 			}
-			if(value instanceof String){
-				result = NumberUtil.format((String)value,format);
-			}else if(value instanceof Number){
-				result = NumberUtil.format((Number)value,format);
+			if(BasicUtil.isEmpty(value)){
+				value = def;
 			}
-			JspWriter out = pageContext.getOut();
-			out.print(result);
+			if(BasicUtil.isNotEmpty(value)){
+				BigDecimal num = new BigDecimal(value.toString());
+				if(BasicUtil.isNotEmpty(min)){
+					BigDecimal minNum = new BigDecimal(min.toString());
+					if(minNum.compareTo(num) > 0){
+						num = minNum;
+						log.warn("[number format][超过最小值:"+min+"]");
+					}
+				}
+				if(BasicUtil.isNotEmpty(max)){
+					BigDecimal maxNum = new BigDecimal(max.toString());
+					if(maxNum.compareTo(num) < 0){
+						num = maxNum;
+						log.warn("[number format][超过最大值:"+max+"]");
+					}
+				}
+				result = NumberUtil.format(num,format);
+				JspWriter out = pageContext.getOut();
+				out.print(result);
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -71,6 +93,9 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 		value = null;
 		format = null;
 		body = null;
+		def = null;
+		min = null;
+		max = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
