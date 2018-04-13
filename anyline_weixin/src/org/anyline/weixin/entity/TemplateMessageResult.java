@@ -2,13 +2,13 @@ package org.anyline.weixin.entity;
 
 
 public class TemplateMessageResult {
-	private String errcode;
+	private int errcode;
 	private String errmsg;
-	private String msgid;
-	public String getErrcode() {
+	private long msgid;
+	public int getErrcode() {
 		return errcode;
 	}
-	public void setErrcode(String errcode) {
+	public void setErrcode(int errcode) {
 		this.errcode = errcode;
 	}
 	public String getErrmsg() {
@@ -17,10 +17,10 @@ public class TemplateMessageResult {
 	public void setErrmsg(String errmsg) {
 		this.errmsg = errmsg;
 	}
-	public String getMsgid() {
+	public long getMsgid() {
 		return msgid;
 	}
-	public void setMsgid(String msgid) {
+	public void setMsgid(long msgid) {
 		this.msgid = msgid;
 	}
 	

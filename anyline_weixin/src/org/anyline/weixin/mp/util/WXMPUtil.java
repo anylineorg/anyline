@@ -302,20 +302,15 @@ public class WXMPUtil {
 		String token = getAccessToken();
 		String url = WXBasicConfig.SEND_TEMPLATE_MESSAGE_URL + "?access_token=" + token;
 		String json = BeanUtil.object2json(msg);
+		log.warn("[send template message][data:"+json+"]");
 		HttpEntity entity = new StringEntity(json, "UTF-8");
 		String txt = HttpClientUtil.post(url, "UTF-8", entity).getText();
+		log.warn("[send template message][result:"+txt+"]");
 		result = BeanUtil.json2oject(txt, TemplateMessageResult.class);
 		return result;
 	}
 	public TemplateMessageResult sendTemplateMessage(String openId, TemplateMessage msg){
 		msg.setUser(openId);
-		TemplateMessageResult result = null;
-		String token = getAccessToken();
-		String url = WXBasicConfig.SEND_TEMPLATE_MESSAGE_URL + "?access_token=" + token;
-		String json = BeanUtil.object2json(msg);
-		HttpEntity entity = new StringEntity(json, "UTF-8");
-		String txt = HttpClientUtil.post(url, "UTF-8", entity).getText();
-		result = BeanUtil.json2oject(txt, TemplateMessageResult.class);
-		return result;
+		return sendTemplateMessage(msg);
 	}
 }
