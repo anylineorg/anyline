@@ -8,7 +8,7 @@ public class TemplateMessage {
 	private String template_id;
 	private String url;
 	private String topcolor;
-	Map<String,Map<String,String>> datas = new HashMap<String,Map<String,String>>();
+	Map<String,Map<String,String>> data = new HashMap<String,Map<String,String>>();
 	public TemplateMessage setUser(String user){
 		this.touser = user;
 		return this;
@@ -26,14 +26,17 @@ public class TemplateMessage {
 		return this;
 	}
 	public TemplateMessage addData(String key, String value, String color){
-		Map<String,String> data = datas.get(key);
-		if(data == null){
-			data = new HashMap<String,String>();
+		Map<String,String> dt = data.get(key);
+		if(dt == null){
+			dt = new HashMap<String,String>();
 		}
-		data.put("value", value);
-		data.put("color", color);
-		datas.put(key, data);
+		dt.put("value", value);
+		dt.put("color", color);
+		data.put(key, dt);
 		return this;
+	}
+	public TemplateMessage addData(String key, String value){
+		return addData(key, value, "#173177");
 	}
 	
 	public String getTouser() {
@@ -48,7 +51,7 @@ public class TemplateMessage {
 	public String getTopcolor() {
 		return topcolor;
 	}
-	public Map<String, Map<String, String>> getDatas() {
-		return datas;
+	public Map<String, Map<String, String>> getData() {
+		return data;
 	}
 }

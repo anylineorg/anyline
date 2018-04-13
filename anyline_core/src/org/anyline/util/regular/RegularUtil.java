@@ -51,9 +51,25 @@ public class RegularUtil {
 		regularList.add(regularMatchPrefix);
 		regularList.add(regularContain);
 	}
-	public static boolean match(String src, String regx, int mode){
+	public static synchronized boolean match(String src, String regx, int mode){
+		boolean result = false;
+		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
+			log.warn("[match][src:"+src+"][regx:"+regx+"][mode:"+mode+"]");
+		}
+		if(null == src || null == regx ){
+			return result;
+		}
 		regular = regularList.get(mode);
-		return regular.match(src, regx);
+		try{
+			result = regular.match(src, regx);
+		}catch(Exception e){
+			log.warn("[match(src,regx,mode) error][src:"+src+"][regx:"+regx+"][mode:"+mode+"]");
+			e.printStackTrace();
+		}
+		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
+			log.warn("[match][src:"+src+"][regx:"+regx+"][mode:"+mode+"][result:"+result+"]");
+		}
+		return result;
 	}
 	public static boolean match(String src, String regx){
 		return match(src, regx, MATCH_MODE_CONTAIN);
@@ -65,7 +81,7 @@ public class RegularUtil {
 	 * @param regx	表达式
 	 * @return
 	 */
-	public static List<List<String>> fetch(String src, String regx, int mode) throws Exception{
+	public static synchronized List<List<String>> fetch(String src, String regx, int mode) throws Exception{
 		List<List<String>> result = null;
 		regular = regularList.get(mode);
 		result = regular.fetch(src, regx);
@@ -74,7 +90,7 @@ public class RegularUtil {
 	public static List<List<String>> fetch(String src, String regx) throws Exception{
 		return fetch(src, regx, MATCH_MODE_CONTAIN);
 	}
-	public static List<String> fetch(String src, String regx, int mode, int idx) throws Exception{
+	public static synchronized List<String> fetch(String src, String regx, int mode, int idx) throws Exception{
 		List<String> result = null;
 		regular = regularList.get(mode);
 		result = regular.fetch(src, regx, idx);
@@ -95,7 +111,7 @@ public class RegularUtil {
 	 * @param regx
 	 * @return
 	 */
-	public static List<String> pick(List<String> src, String regx, int mode){
+	public static synchronized List<String> pick(List<String> src, String regx, int mode){
 		regular = regularList.get(mode);
 		return regular.pick(src, regx);
 	}
@@ -105,7 +121,7 @@ public class RegularUtil {
 	 * @param regx
 	 * @return
 	 */
-	public static List<String> wipe(List<String> src, String regx, int mode){
+	public static synchronized List<String> wipe(List<String> src, String regx, int mode){
 		regular = regularList.get(mode);
 		return regular.wipe(src, regx);
 	}
@@ -134,10 +150,8 @@ public class RegularUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
-			if(ConfigTable.isDebug()){
-				e.printStackTrace();
-			}
+			log.error("[fetch(String,String) error]"+"[src:"+src+"][regx:"+regx+"]\n"+e);
+			e.printStackTrace();
 		}
 		return idx;
 	}
@@ -159,10 +173,8 @@ public class RegularUtil {
 				result.add(row.get(0));
 			}
 		}catch(Exception e){
-			log.error("regexpValue:\n"+e);
-			if(ConfigTable.isDebug()){
-				e.printStackTrace();
-			}
+			log.error("[regexpValue error][src:"+src+"][regex:"+regex+"][mode:"+mode+"]\n"+e);
+			e.printStackTrace();
 		}
 		return result;
 	}
