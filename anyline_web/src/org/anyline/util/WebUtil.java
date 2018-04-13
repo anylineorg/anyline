@@ -405,6 +405,9 @@ public class WebUtil {
 	 * @return
 	 */
 	private static String decrypt(String src, DESKey key, String type) {
+		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
+			log.warn("[decrypt][start][src:"+src+"][type:"+type+"]");
+		}
 		String result = src;
 		if (null == src) {
 			return null;
@@ -413,6 +416,9 @@ public class WebUtil {
 		if(ENCRYPT_TYPE_VALUE.equals(type)){
 			if(RegularUtil.match(result,"v\\d{5}v", RegularUtil.MATCH_MODE_PREFIX)){
 				result = result.substring(7);
+				if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
+					log.warn("[decrypt][删除混淆码][result:"+result+"]");
+				}
 			}
 		}
 		// 删除前缀
@@ -426,6 +432,9 @@ public class WebUtil {
 				return null;
 			}
 			result = result.substring(sub);
+			if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
+				log.warn("[decrypt][删除前缀][result:"+result+"]");
+			}
 			// 解析版本
 			String tmp[] = parseDESVersion(result);
 			if (null != tmp && tmp.length == 2) {
@@ -446,6 +455,9 @@ public class WebUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 			result = null;
+		}
+		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
+			log.warn("[decrypt][end][result:"+result+"]");
 		}
 		return result;
 	}

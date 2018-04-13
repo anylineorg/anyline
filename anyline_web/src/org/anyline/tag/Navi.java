@@ -78,7 +78,16 @@ public class Navi extends BodyTagSupport{
 				builder.append("url:'").append(url).append("',");
 			}
 			if(BasicUtil.isNotEmpty(param)){
-				builder.append("param:").append(param).append(",");
+				String sign = "'";
+				if(param.contains(")")){
+					//构成成String 每次运行时解析实时value
+					if(param.contains("'")){
+						sign = "\"";
+					}
+					builder.append("param:").append(sign).append(param).append(sign).append(",");
+				}else{
+					builder.append("param:").append(param).append(",");
+				}
 			}
 			if(BasicUtil.isNotEmpty(container)){
 				builder.append("container:'").append(container).append("',");

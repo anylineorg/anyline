@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.anyline.util.ConfigTable;
+import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.PatternCompiler;
@@ -37,6 +38,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
  *
  */
 public class RegularMatch implements Regular{
+	private static Logger log = Logger.getLogger(RegularMatch.class);
 	RegularMatch(){
 		
 	}
@@ -55,9 +57,8 @@ public class RegularMatch implements Regular{
 			result = matcher.matches(src, pattern);
 		}catch(Exception e){
 			result = false;
-			if(ConfigTable.isDebug()){
-				e.printStackTrace();
-			}
+			log.error("[match error][src:"+src+"][regx:"+regx+"]");
+			e.printStackTrace();
 		}
 		return result;
 	}
