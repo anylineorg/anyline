@@ -207,8 +207,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public List<String> getHead() {
 		return head;
 	}
-
-
+	public int indexOf(Object obj){
+		return rows.indexOf(obj);
+	}
+	public DataSet cut(int begin){
+		return cut(begin, rows.size()-1);
+	}
+	public DataSet cut(int begin, int end){
+		if(begin < 0){
+			begin = 0;
+		}
+		if(end >= rows.size()){
+			end = rows.size() - 1;
+		}
+		rows = rows.subList(begin, end);
+		return this;
+	}
 
 	public DataSet(List<Map<String, Object>> list) {
 		rows = new ArrayList<DataRow>();
@@ -301,6 +315,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return null;
 	}
+	public DataRow getRow(int begin, String... params) {
+		DataSet set = getRows(begin, params);
+		if (set.size() > 0) {
+			return set.getRow(0);
+		}
+		return null;
+	}
 	/**
 	 * distinct
 	 * @param keys
@@ -347,7 +368,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param params key1,value1,key2:value2,key3,value3
 	 * @return
 	 */
-	public DataSet getRows(String... params) {
+	public DataSet getRows(int begin, String... params) {
 		DataSet set = this;
 		for (int i = 0; i < params.length; i += 2) {
 			String key = params[i];
@@ -365,9 +386,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					value = params[i + 1];
 				}
 			}
-			set = filter(set, key, value);
+			set = filter(begin, set, key, value);
 		}
 		return set;
+	}
+	public DataSet getRows(String... params) {
+		return getRows(0, params);
 	}
 	
 
@@ -412,10 +436,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param value
 	 * @return
 	 */
-	private DataSet filter(DataSet src, String key, String value) {
+	private DataSet filter(int begin, DataSet src, String key, String value) {
 		DataSet set = new DataSet();
 		String tmpValue;
-		for (int i = 0; i < src.size(); i++) {
+		int size = src.size();
+		if(begin < 0){
+			begin = 0;
+		}
+		for (int i = begin; i < size; i++) {
 			tmpValue = src.getString(i, key);
 			if ((null == value && null == tmpValue)
 					|| (null != value && value.equals(tmpValue))) {
@@ -429,6 +457,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		set.schema = this.schema;
 		set.table = this.table;
 		return set;
+	}
+
+	private DataSet filter(DataSet src, String key, String value) {
+		return filter(0, src, key, value);
 	}
 	public DataSet getRows(int fr, int to) {
 		DataSet set = new DataSet();
