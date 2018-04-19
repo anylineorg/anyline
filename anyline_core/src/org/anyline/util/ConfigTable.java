@@ -43,7 +43,7 @@ public class ConfigTable {
 	private static boolean sqlDebug = false;
 	private static final String version = "7.X";
 	private static final String minVersion = "0090";
-	
+	private static boolean isLoad = false;
 	public static boolean  IS_UPPER_KEY = true;
 	static{
 		init();
@@ -87,6 +87,10 @@ public class ConfigTable {
 		return result;
 	}
 	public static void init() {
+		if(isLoad){
+			return;
+		}
+		isLoad = true;
 		String path =  "";
 		try{
 			path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
@@ -202,6 +206,7 @@ public class ConfigTable {
 		String val = null;
 		if(reload > 0 && (System.currentTimeMillis() - lastLoadTime)/1000 > reload){
 			//重新加载
+			isLoad = false;
 			init();
 		}
 		val = configs.get(key.toUpperCase().trim());
