@@ -87,9 +87,12 @@ public class ConfigTable {
 		return result;
 	}
 	public static void init() {
+		log.warn("IS LOAD:"+isLoad);
 		if(isLoad){
 			return;
 		}
+		//中断递归
+		lastLoadTime = System.currentTimeMillis();
 		isLoad = true;
 		String path =  "";
 		try{
