@@ -824,6 +824,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>state</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>params</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

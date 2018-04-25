@@ -55,6 +55,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	private long createTime 		= 0			; //创建时间
 	private long expires 			= -1		; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
 	private boolean isFromCache		= false		; //是否来自缓存
+	
+	/**
+	 * 创建索引
+	 * @param key
+	 * @return
+	 * crateIndex("ID");
+	 * crateIndex("ID:ASC");
+	 */
+	public DataSet creatIndex(String key){
+		return this;
+	}
 	public DataSet() {
 		rows = new ArrayList<DataRow>();
 		createTime = System.currentTimeMillis();

@@ -26,6 +26,8 @@ import java.util.Map;
 
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
@@ -41,6 +43,7 @@ public class Auth extends BaseBodyTag {
 	private String type;	//wx:微信 qq:QQ
 	private String redirect;
 	private String state;
+	private boolean encode;//是否将state编码后存储到servlet中
 	private String scope;
 	private boolean auto;
 	private String id;
@@ -57,6 +60,30 @@ public class Auth extends BaseBodyTag {
 		
 		try {
 			writer = pageContext.getOut();
+			if(encode){
+				String stateValue = state;
+				state = BasicUtil.getRandomLowerString(20);
+				DataSet states = (DataSet)pageContext.getServletContext().getAttribute("auth_states");
+				if(null == states){
+					states = new DataSet();
+					pageContext.getServletContext().setAttribute("auth_states", states);
+				}else{
+					//清空过期
+					int size = states.size();
+					for(int i=size-1;i>=0; i--){
+						DataRow item = states.getRow(i);
+						if(item.isExpire(1000*60*5)){
+							states.remove(item);
+						}
+					}
+				}
+				DataRow row = new DataRow();
+				row.put("value", stateValue);
+				row.put("key", state);
+				states.add(row);
+				
+			}
+			
 			if("wx".equalsIgnoreCase(type) || "weixin".equalsIgnoreCase(type)){
 				if(BasicUtil.isEmpty(appid)){
 					appid = WXMPConfig.getInstance().APP_ID;
@@ -102,7 +129,7 @@ public class Auth extends BaseBodyTag {
 					redirect = QQMPConfig.getInstance().OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+WebUtil.encrypt(state);
+				url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state;
 				
 				
 			}
@@ -135,6 +162,7 @@ public class Auth extends BaseBodyTag {
 		state = null;
 		auto = false;
 		id = null;
+		encode = false;
 	}
 
 	public String getAppid() {
@@ -199,6 +227,14 @@ public class Auth extends BaseBodyTag {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public boolean isEncode() {
+		return encode;
+	}
+
+	public void setEncode(boolean encode) {
+		this.encode = encode;
 	}
 	
 }
