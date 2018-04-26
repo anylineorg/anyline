@@ -338,7 +338,10 @@ public class AbstractBasicController{
 		int pageVol = ConfigTable.getInt("PAGE_DEFAULT_VOL"); // 每页多少条 默认10
 		// 提取request中请求参数
 		pageVol = BasicUtil.parseInt(request.getAttribute(PageNavi.PAGE_ROWS),pageVol);
-		pageVol = BasicUtil.parseInt(request.getParameter(PageNavi.PAGE_ROWS),pageVol);
+		//是否启用前端设置显示行数
+		if(ConfigTable.getBoolean("CLIENT_SET_PAGE_VOL_ENABLE")){
+			pageVol = BasicUtil.parseInt(request.getParameter(PageNavi.PAGE_ROWS),pageVol);
+		}
 		pageNo = BasicUtil.parseInt(request.getParameter(PageNavi.PAGE_NO),pageNo);
 		String uri = null;
 		if (null == uri) {
