@@ -34,19 +34,21 @@ public class Evl extends BaseBodyTag implements Cloneable{
 	private static Logger log = Logger.getLogger(Evl.class);
 	
 	 public int doEndTag() throws JspException {
-		try{
-			for(Object result:paramList){
-				if(null != result && !result.toString().trim().equals("")){
-					JspWriter out = pageContext.getOut();
-					out.print(result.toString());
-					break;
+		 if(null != paramList){
+			try{
+				for(Object result:paramList){
+					if(null != result && !result.toString().trim().equals("")){
+						JspWriter out = pageContext.getOut();
+						out.print(result.toString());
+						break;
+					}
 				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				release();
 			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
+		 }
         return EVAL_PAGE;   
 	}
 
@@ -54,6 +56,7 @@ public class Evl extends BaseBodyTag implements Cloneable{
 	@Override
 	public void release() {
 		super.release();
+		paramList = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
