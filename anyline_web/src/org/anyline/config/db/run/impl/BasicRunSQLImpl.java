@@ -293,7 +293,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 
 	public Condition getCondition(String name){
 		for(Condition con:conditionChain.getConditions()){
-			if(null != con && con.getId().equalsIgnoreCase(name)){
+			if(null != con && null != con.getId() && con.getId().equalsIgnoreCase(name)){
 				return con;
 			}
 		}

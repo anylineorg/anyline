@@ -142,7 +142,7 @@ public class HttpUtil {
             // 设置通用的请求属性
             connection.setRequestProperty("accept", "*/*");
             //connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            connection.setRequestProperty("user-agent","mozilla/5.0 (windows nt 6.1; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/58.0.3029.110 safari/537.36");
             // 建立实际的连接
             connection.connect();
             // 定义 BufferedReader输入流来读取URL的响应
