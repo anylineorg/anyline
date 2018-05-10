@@ -48,7 +48,7 @@ public class BasicConfig {
 		}
 		return instances;
 	}
-	private void setValue(String key, String value){
+	protected void setValue(String key, String value){
 		try{
 			Field field = this.getClass().getDeclaredField(key);
 			this.setValue(field, value);
@@ -58,12 +58,19 @@ public class BasicConfig {
 	}
 	private void setValue(Field field, String value){
 		if(null != field){
+			Object val = value;
 			try{
+				Class<?> clazz = field.getType();
+				if(clazz== boolean.class || clazz == Boolean.class){
+					val = BasicUtil.parseBoolean(value);
+				}else if(clazz == int.class || clazz == Integer.class){
+					val = BasicUtil.parseInt(value,0);
+				}
 				if(field.isAccessible()){
-					field.set(this, value);
+					field.set(this, val);
 				}else{
 					field.setAccessible(true);
-					field.set(this, value);
+					field.set(this, val);
 					field.setAccessible(false);
 				}
 			}catch(Exception e){

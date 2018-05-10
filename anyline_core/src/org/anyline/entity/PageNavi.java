@@ -21,17 +21,20 @@ package org.anyline.entity;
 
 import java.io.Serializable;
 
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+
 
 
 
 public interface PageNavi extends Serializable{
-	public static final String PAGE_ROWS			= "_anyline_page_rows"	;
-	public static final String PAGE_NO				= "_anyline_page"		;
-	public static final String TOTAL_PAGE			= "_anyline_total_page"		;
-	public static final String TOTAL_ROW			= "_anyline_total_row"		;
-	public static final String SHOW_STAT			= "_anyline_navi_show_stat"	;
-	public static final String SHOW_JUMP			= "_anyline_navi_show_jump"	;
-	public static final String GUIDE				= "_anyline_navi_guide"	;
+//	public static final String PAGE_ROWS			= "_anyline_page_rows"	;
+//	public static final String PAGE_NO				= "_anyline_page"		;
+//	public static final String TOTAL_PAGE			= "_anyline_total_page"		;
+//	public static final String TOTAL_ROW			= "_anyline_total_row"		;
+//	public static final String SHOW_STAT			= "_anyline_navi_show_stat"	;
+//	public static final String SHOW_JUMP			= "_anyline_navi_show_jump"	;
+//	public static final String GUIDE				= "_anyline_navi_guide"		;
 	
 	/**
 	 * 分页计算方式
