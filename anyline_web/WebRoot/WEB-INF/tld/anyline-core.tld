@@ -566,20 +566,6 @@
 		</attribute>
 	</tag>
 	<tag>
-		<name>power</name>
-		<tagclass>org.anyline.tag.Power</tagclass>
-		<info>power</info>
-		<attribute>
-			<name>value</name>
-			<required>true</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>powers</name>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-	</tag>
-	<tag>
 		<name>strip</name>
 		<tagclass>org.anyline.tag.Strip</tagclass>
 		<info>清除html标签</info>

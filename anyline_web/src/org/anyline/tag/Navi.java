@@ -38,8 +38,6 @@ public class Navi extends BodyTagSupport{
 	private String param			;	//参数收集函数
 	private String container		;	//返回内容显示容器id
 	private String creater = "ajax"	;	//分页方式 ajax | html
-	private Boolean stat = false	;	//是否显示统计
-	private Boolean jump = false	;	//是否显示跳转
 	
 	private String id				;	//一个页面内多个标签时需要id区分
 	private String function			;	//指定function后需主动调用function后加载数据
@@ -51,8 +49,12 @@ public class Navi extends BodyTagSupport{
 	private String bodyContainer	;	//如果body与page分开
 	private String naviContainer	;	//如果body与page分开
 	private String guide			;   //加载更多文本
+	
 	private String empty			;	//空数据显示内容
 	private String style = ""		; 	//样式标记
+	private Boolean stat = false	;	//是否显示统计
+	private Boolean jump = false	;	//是否显示跳转
+	
 	private int type = 0			;	//分页方式(0:下标 1:加载更多)
 
 	
