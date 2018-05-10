@@ -37,6 +37,7 @@ import org.anyline.config.http.impl.ConfigStoreImpl;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
+import org.anyline.entity.PageNaviConfig;
 import org.anyline.tag.Navi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -332,17 +333,20 @@ public class AbstractBasicController{
 	 * @return
 	 */
 	private  PageNavi parsePageNavi(HttpServletRequest request) {
-		if (null == request)
+		if (null == request){
 			return null;
-		int pageNo = 1; // 当前页数 默认1
-		int pageVol = ConfigTable.getInt("PAGE_DEFAULT_VOL"); // 每页多少条 默认10
-		// 提取request中请求参数
-		pageVol = BasicUtil.parseInt(request.getAttribute(PageNavi.PAGE_ROWS),pageVol);
-		//是否启用前端设置显示行数
-		if(ConfigTable.getBoolean("CLIENT_SET_PAGE_VOL_ENABLE")){
-			pageVol = BasicUtil.parseInt(request.getParameter(PageNavi.PAGE_ROWS),pageVol);
 		}
-		pageNo = BasicUtil.parseInt(request.getParameter(PageNavi.PAGE_NO),pageNo);
+		String style = request.getParameter("style");
+		PageNaviConfig config = PageNaviConfig.getInstance(style);
+		int pageNo = 1; // 当前页数 默认1
+		int pageVol = config.VAR_PAGE_DEFAULT_VOL; // 每页多少条 默认10
+		// 提取request中请求参数
+		pageVol = BasicUtil.parseInt(request.getAttribute(config.KEY_PAGE_ROWS),pageVol);
+		//是否启用前端设置显示行数
+		if(config.VAR_CLIENT_SET_VOL_ENABLE){
+			pageVol = BasicUtil.parseInt(request.getParameter(config.KEY_PAGE_ROWS),pageVol);
+		}
+		pageNo = BasicUtil.parseInt(request.getParameter(config.KEY_PAGE_NO),pageNo);
 		String uri = null;
 		if (null == uri) {
 			uri = request.getRequestURI();
@@ -363,14 +367,14 @@ public class AbstractBasicController{
 			flag = flag.replace("'", "").replace("\"", "");
 		}
 		navi.setFlag(flag);
-		boolean showStat = ConfigTable.getBoolean("NAVI_SHOW_STAT");
-		showStat = BasicUtil.parseBoolean(request.getParameter(PageNavi.SHOW_STAT), showStat);
+		boolean showStat = config.VAR_SHOW_STAT;
+		showStat = BasicUtil.parseBoolean(request.getParameter(config.KEY_SHOW_STAT), showStat);
 		navi.setShowStat(showStat);
-		boolean showJump = ConfigTable.getBoolean("NAVI_SHOW_JUMP");
-		showJump = BasicUtil.parseBoolean(request.getParameter(PageNavi.SHOW_JUMP), showJump);
+		boolean showJump = config.VAR_SHOW_JUMP;
+		showJump = BasicUtil.parseBoolean(request.getParameter(config.KEY_SHOW_JUMP), showJump);
 		navi.setShowJump(showJump);
-		navi.setStyle(request.getParameter("style"));
-		String guide = request.getParameter(PageNavi.GUIDE);
+		navi.setStyle(style);
+		String guide = BasicUtil.nvl(request.getParameter(config.KEY_GUIDE), config.STYLE_LOAD_MORE_FORMAT).toString();
 		navi.setGuide(guide);
 		request.setAttribute("navi", navi);
 		
