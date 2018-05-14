@@ -38,6 +38,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -811,4 +812,21 @@ public class FileUtil {
 		result = true;
 		return result;
 	}
+    /**
+    * 获取单个文件的MD5值！
+    * @param file
+    * @return
+    */
+	public static String md5(File file){
+		return MD5Util.getFileMD5(file);
+	}
+    /**
+    * 获取文件夹中文件的MD5值
+    * @param file
+    * @param recursion ;true递归子目录中的文件
+    * @return
+    */
+    public static Map<String, String> md5(File file, boolean recursion) {
+    	return MD5Util.getDirMD5(file, recursion);
+    }
 }
