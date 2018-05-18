@@ -5,6 +5,7 @@ import java.util.List;
 import org.anyline.config.db.impl.SQLVariableImpl;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class SQLHelper {
 
@@ -46,6 +47,7 @@ public class SQLHelper {
 					+ "AND TYPE IN ({TYPE}) "
 					+ "AND SORT = '{SORT}' "
 					+ "AND NM LIKE '%{NM}%' "
+					+ "AND NM LIKE '%{NM}' "
 					+ "AND CODE LIKE CONTAT('%', {CODE},'%')";
 			keys = RegularUtil.fetch(text, reg, RegularUtil.MATCH_MODE_CONTAIN);
 			for(List<String> ks:keys){
@@ -84,46 +86,47 @@ public class SQLHelper {
 	public static SQLVariable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar){
 		int varType = -1;
 		int compare = SQL.COMPARE_TYPE_EQUAL;
-		SQLVariable var = new SQLVariableImpl();
-		if(signType ==1){
-			String key = fullKey.replace(":", "");
-			if(fullKey.startsWith("::")){
-				// AND CD = ::CD
-				varType = SQLVariable.VAR_TYPE_REPLACE;
-			}else if(BasicUtil.isNotEmpty(afterChar) && ("'".equals(afterChar) || "%".equals(afterChar))){
-				// AND CD = ':CD'
-				varType = SQLVariable.VAR_TYPE_KEY_REPLACE;
-			}else{
-				// AND CD = :CD
-				varType = SQLVariable.VAR_TYPE_KEY;
-				if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
-					//AND CD IN(:CD)
-					compare = SQL.COMPARE_TYPE_IN;
-				}
-			}
-			var.setKey(key);
-			var.setType(varType);
-			var.setCompare(compare);
-		}else if(signType ==2){
-			String key = fullKey.replace("$", "").replace("{", "").replace("}", "");
-			if(fullKey.startsWith("$")){
-				// AND CD = ${CD}
-				varType = SQLVariable.VAR_TYPE_REPLACE;
-			}else if(BasicUtil.isNotEmpty(afterChar) && ("'".equals(afterChar) || "%".equals(afterChar))){
-				// AND CD = '{CD}' AND CD LIKE '%{CD}%'
-				varType = SQLVariable.VAR_TYPE_KEY_REPLACE;
-			}else{
-				varType = SQLVariable.VAR_TYPE_KEY;
-				if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
-					//AND CD IN({CD})
-					compare = SQL.COMPARE_TYPE_IN;
-				}
-			}
-			var.setSignType(signType);
-			var.setKey(key);
-			var.setType(varType);
-			var.setCompare(compare);
+		if(null == afterChar){
+			afterChar = "";
 		}
+		SQLVariable var = new SQLVariableImpl();
+		String key = null;
+		if(signType ==1){
+			key = fullKey.replace(":", "");
+		}else if(signType ==2){
+			key = fullKey.replace("$", "").replace("{", "").replace("}", "");
+		}
+		
+		if(fullKey.startsWith("$") || fullKey.startsWith("::")){
+			// AND CD = ${CD} 
+			// AND CD = ::CD
+			varType = SQLVariable.VAR_TYPE_REPLACE;
+		}else if("'".equals(afterChar)){
+			// AND CD = '{CD}'
+			// AND CD = ':CD'
+			varType = SQLVariable.VAR_TYPE_KEY_REPLACE;
+		}else if(prefix.endsWith("%") || afterChar.startsWith("%")){
+			//AND CD LIKE '%{CD}%'
+			//AND CD LIKE '%:CD%'
+			varType = SQLVariable.VAR_TYPE_KEY;
+			if(prefix.endsWith("%") && afterChar.startsWith("%")){
+				compare = SQL.COMPARE_TYPE_LIKE;
+			}else if(prefix.endsWith("%")){
+				compare = SQL.COMPARE_TYPE_LIKE_PREFIX;
+			}else if(afterChar.startsWith("%")){
+				compare = SQL.COMPARE_TYPE_LIKE_SUBFIX;
+			}
+		}else{
+			varType = SQLVariable.VAR_TYPE_KEY;
+			if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
+				//AND CD IN({CD})
+				compare = SQL.COMPARE_TYPE_IN;
+			}
+		}
+		var.setSignType(signType);
+		var.setKey(key);
+		var.setType(varType);
+		var.setCompare(compare);
 		return var;
 	}
 }
