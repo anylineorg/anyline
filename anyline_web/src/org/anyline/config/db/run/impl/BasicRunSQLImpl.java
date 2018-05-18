@@ -367,11 +367,11 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 			try{
 				int bSize = 0;//左括号数据
 				if(txt.contains(")")){
-					bSize = RegularUtil.fetch(txt, ")").size();
+					bSize = RegularUtil.fetch(txt, "\\)").size();
 				}
 				int eSize = 0;//右括号数量
 				if(txt.contains("(")){
-					eSize = RegularUtil.fetch(txt, "(").size();
+					eSize = RegularUtil.fetch(txt, "\\(").size();
 				}
 				if(bSize == eSize){
 					where = true;

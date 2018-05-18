@@ -30,7 +30,12 @@ public interface SQLVariable extends Cloneable,Serializable{
 	public static final int VAR_TYPE_KEY			= 1;		//根据KEY区分  CD = :CD
 	public static final int VAR_TYPE_KEY_REPLACE	= 2;		//字符替换 CD=':CD'
 	public static final int VAR_TYPE_REPLACE		= 3;		//字符替换 CD=::CD
+
+	public static final int KEY_TYPE_SIGN_V1				= 1; //以:或::区分
+	public static final int KEY_TYPE_SIGN_V2				= 2; //以{}或${}区分
 	
+	public int getSignType();
+	public void setSignType(int signType);
 	public void init();
 	public int getCompare() ;
 	public void setCompare(int compare) ;
