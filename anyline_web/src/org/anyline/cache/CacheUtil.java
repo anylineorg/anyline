@@ -272,9 +272,11 @@ public class CacheUtil {
 					for(Config config:configs){
 						String key = config.getKey();
 						List<Object> values = config.getValues();
-						result += key+ "=";
-						for(Object value:values){
-							result += value.toString()+"|";
+						if(null != values){
+							result += key+ "=";
+							for(Object value:values){
+								result += value.toString()+"|";
+							}
 						}
 					}	
 				}

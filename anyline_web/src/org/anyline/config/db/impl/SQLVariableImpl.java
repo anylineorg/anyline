@@ -39,7 +39,8 @@ public class SQLVariableImpl implements SQLVariable{
 
 	private String key;				//变量KEY
 	private List<Object> values;	//变量值
-	private int type;				//变量识别方式
+	private int type;				//变量替换方式
+	private int signType = 1;		//变量区分方式
 	private int compare;			//比较方式
 	public Object clone() throws CloneNotSupportedException{
 		SQLVariableImpl clone = (SQLVariableImpl) super.clone();
@@ -100,6 +101,16 @@ public class SQLVariableImpl implements SQLVariable{
 	}
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	@Override
+	public int getSignType() {
+		return this.signType;
+	}
+
+	@Override
+	public void setSignType(int signType) {
+		this.signType = signType;
 	}
 	
 }

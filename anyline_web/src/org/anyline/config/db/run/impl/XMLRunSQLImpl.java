@@ -128,15 +128,24 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 				if(var.getType() == SQLVariable.VAR_TYPE_REPLACE){
 					//CD = ::CD
-					Object varValue = var.getValues();
+					List<Object> varValues = var.getValues();
 					String value = null;
-					if(BasicUtil.isNotEmpty(varValue)){
-						value = varValue.toString();
+					if(BasicUtil.isNotEmpty(true,varValues)){
+						value = (String)varValues.get(0);
+						if(null != value){
+							value = value.replace("'", "").replace("%", "");
+						}
+					}
+					String replaceKey = "";
+					if(var.getSignType() ==1){
+						replaceKey = "::" + var.getKey();
+					}else if(var.getSignType() ==2){
+						replaceKey = "${" + var.getKey() + "}";
 					}
 					if(null != value){
-						result = result.replace("::"+var.getKey(), value);
+						result = result.replace(replaceKey, value);
 					}else{
-						result = result.replace("::"+var.getKey(), "NULL");
+						result = result.replace(replaceKey, "NULL");
 					}
 				}
 			}
@@ -150,11 +159,21 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					String value = null;
 					if(BasicUtil.isNotEmpty(true,varValues)){
 						value = (String)varValues.get(0);
+						if(null != value){
+							value = value.replace("'", "").replace("%", "");
+						}
+					}
+
+					String replaceKey = "";
+					if(var.getSignType() ==1){
+						replaceKey = ":" + var.getKey();
+					}else if(var.getSignType() ==2){
+						replaceKey = "{" + var.getKey() + "}";
 					}
 					if(null != value){
-						result = result.replace(":"+var.getKey(), value);
+						result = result.replace(replaceKey, value);
 					}else{
-						result = result.replace(":"+var.getKey(), "");
+						result = result.replace(replaceKey, "");
 					}
 				}
 			}
@@ -166,19 +185,25 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					// CD = :CD
 					List<Object> varValues = var.getValues();
 					if(BasicUtil.isNotEmpty(true, varValues)){
+
+						String replaceKey = "";
+						if(var.getSignType() ==1){
+							replaceKey = ":" + var.getKey();
+						}else if(var.getSignType() ==2){
+							replaceKey = "{" + var.getKey() + "}";
+						}
 						if(var.getCompare() == SQL.COMPARE_TYPE_IN){
 							//多个值IN
-							String replaceSrc = ":"+var.getKey();
 							String replaceDst = ""; 
 							for(Object tmp:varValues){
 								addValues(tmp);
 								replaceDst += " ?";
 							}
 							replaceDst = replaceDst.trim().replace(" ", ",");
-							result = result.replace(replaceSrc, replaceDst);
+							result = result.replace(replaceKey, replaceDst);
 						}else{
 							//单个值
-							result = result.replace(":"+var.getKey(), "?");
+							result = result.replace(replaceKey, "?");
 							addValues(varValues.get(0));
 						}
 					}
