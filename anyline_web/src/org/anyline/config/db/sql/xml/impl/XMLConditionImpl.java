@@ -113,9 +113,13 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 	 */
 	private void parseText(){
 		try{
+			//AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
 			List<List<String>> keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX, RegularUtil.MATCH_MODE_CONTAIN);
+			if(keys.size() ==0){
+				//AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD}
+				keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX_EL, RegularUtil.MATCH_MODE_CONTAIN);
+			}
 			if(BasicUtil.isNotEmpty(true,keys)){
-				////AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
 				setVariableType(VARIABLE_FLAG_TYPE_KEY);
 				int varType = SQLVariable.VAR_TYPE_INDEX;
 				int compare = SQL.COMPARE_TYPE_EQUAL;

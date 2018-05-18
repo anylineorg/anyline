@@ -23,11 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.anyline.config.ConfigParser;
-
 import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQLHelper;
 import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.BasicSQL;
 import org.anyline.config.db.impl.SQLVariableImpl;
@@ -130,37 +130,18 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 			return;
 		}
 		try{
-			int varType = -1;
-			int compare = SQL.COMPARE_TYPE_EQUAL;
+			
 			List<List<String>> keys = RegularUtil.fetch(text, SQL_PARAM_VAIRABLE_REGEX, RegularUtil.MATCH_MODE_CONTAIN);
+			int type = 1 ;
+			if(keys.size() ==0){
+				keys = RegularUtil.fetch(text, SQL_PARAM_VAIRABLE_REGEX_EL, RegularUtil.MATCH_MODE_CONTAIN);
+				type = 2;
+			}
 			if(BasicUtil.isNotEmpty(true,keys)){
 				//AND CD = :CD
 				for(int i=0; i<keys.size();i++){
 					List<String> keyItem = keys.get(i);
-					String prefix = keyItem.get(1).trim();
-					String fullKey = keyItem.get(2).trim();	// :CD ::CD
-					String typeChar = keyItem.get(3);		//  null || "'" || ")"
-					String key = fullKey.replace(":", "");
-					if(fullKey.startsWith("::")){
-						// AND CD = ::CD
-						varType = SQLVariable.VAR_TYPE_REPLACE;
-					}else if(BasicUtil.isNotEmpty(typeChar) && ("'".equals(typeChar) || "%".equals(typeChar))){
-						// AND CD = ':CD'
-						varType = SQLVariable.VAR_TYPE_KEY_REPLACE;
-					}else{
-						// AND CD = :CD
-						varType = SQLVariable.VAR_TYPE_KEY;
-						// AND CD = :CD
-						varType = SQLVariable.VAR_TYPE_KEY;
-						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
-							//AND CD IN(:CD)
-							compare = SQL.COMPARE_TYPE_IN;
-						}
-					}
-					SQLVariable var = new SQLVariableImpl();
-					var.setKey(key);
-					var.setType(varType);
-					var.setCompare(compare);
+					SQLVariable var = SQLHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
 					addVariable(var);
 				}// end for
 			}else{

@@ -47,16 +47,25 @@ public interface SQL extends Cloneable,Serializable {
 	
 	public static final String PROCEDURE_INPUT_PARAM_TYPE = "INPUT_PARAM_TYPE";			//存储过程输入参数类型
 	public static final String PROCEDURE_INPUT_PARAM_VALUE = "INPUT_PARAM_VALUE";		//存储过程输入参数值
-	
+
+	//以:标识的执行时直接替换
+	//以::标识的执行时以?占位
 	//NAME LIKE :NM + '%'
 	//(NAME = :NM)
 	//NAME = ':NM'
 	//NM IN (:NM)
-	public static final String SQL_PARAM_VAIRABLE_REGEX = "(\\S+)\\s*\\(?(\\s*:+\\w+)(\\+|\\s|'|\\))?";
+	public static final String SQL_PARAM_VAIRABLE_REGEX = "(\\S+)\\s*\\(?(\\s*:+\\w+)(\\s|'|\\)|%|\\,)?";
+	//与上一种方式　二选一不能同时支持
+	//以${}标识的执行时直接替换
+	//以{}标识的执行时以?占位
+	//NM = {NM}
+	//NM = ${NM}
+	//NM LIKE '%{NM}%'    NM LIKE '%${NM}%'
+	//NM IN({NM})
+	public static final String SQL_PARAM_VAIRABLE_REGEX_EL = "([^\\s$]+)\\s*\\(?(\\s*\\$*{\\w+})(\\+|\\s|'|\\)|%)?";
+	
 	//自定义SQL.id格式 文件名:id
 	public static final String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+";
-	
-
 
 	/**
 	 * 设置数据源
