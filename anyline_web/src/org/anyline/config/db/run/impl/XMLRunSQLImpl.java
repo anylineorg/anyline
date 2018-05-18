@@ -127,7 +127,8 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					continue;
 				}
 				if(var.getType() == SQLVariable.VAR_TYPE_REPLACE){
-					//CD = ::CD
+					// CD = ::CD
+					// CD = ${CD}
 					List<Object> varValues = var.getValues();
 					String value = null;
 					if(BasicUtil.isNotEmpty(true,varValues)){
@@ -155,6 +156,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 				if(var.getType() == SQLVariable.VAR_TYPE_KEY_REPLACE){
 					//CD = ':CD'
+					//CD = '{CD}'
 					List<Object> varValues = var.getValues();
 					String value = null;
 					if(BasicUtil.isNotEmpty(true,varValues)){
@@ -183,6 +185,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}
 				if(var.getType() == SQLVariable.VAR_TYPE_KEY){
 					// CD = :CD
+					// CD = {CD}
+					// CD like '%:CD%'
+					// CD like '%{CD}%'
 					List<Object> varValues = var.getValues();
 					if(BasicUtil.isNotEmpty(true, varValues)){
 
@@ -192,7 +197,17 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						}else if(var.getSignType() ==2){
 							replaceKey = "{" + var.getKey() + "}";
 						}
-						if(var.getCompare() == SQL.COMPARE_TYPE_IN){
+						if(var.getCompare() == SQL.COMPARE_TYPE_LIKE){
+							//CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%'
+							result = result.replace("'%"+replaceKey+"%'", creater.concat("'%'","?","'%'"));
+							addValues(varValues.get(0));
+						}else if(var.getCompare() == SQL.COMPARE_TYPE_LIKE_SUBFIX){
+							result = result.replace("'%"+replaceKey+"'", creater.concat("'%'","?"));
+							addValues(varValues.get(0));
+						}else if(var.getCompare() == SQL.COMPARE_TYPE_LIKE_PREFIX){
+							result = result.replace("'"+replaceKey+"%'", creater.concat("?","'%'"));
+							addValues(varValues.get(0));
+						}else if(var.getCompare() == SQL.COMPARE_TYPE_IN){
 							//多个值IN
 							String replaceDst = ""; 
 							for(Object tmp:varValues){
