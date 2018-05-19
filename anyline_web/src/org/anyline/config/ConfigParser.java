@@ -12,6 +12,7 @@ import org.anyline.config.db.SQL;
 import org.anyline.config.http.impl.ConfigImpl;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
+import org.anyline.util.regular.RegularUtil;
 
 public class ConfigParser {
 	public static ParseResult parse(String config, boolean isKey) {
@@ -67,7 +68,8 @@ public class ConfigParser {
 		String config = result.getKey();
 		String className = null;
 		String methodName = null;
-		if(config.contains("(")){
+		String regx = "^[a-z]+[0-9a-zA-Z_]*(\\.[a-z]+[0-9a-zA-Z_]*)*\\.[A-Z]+[0-9a-zA-Z_]*\\.[a-z]+\\S+\\(\\S+\\)$";
+		if(RegularUtil.match(config, regx, RegularUtil.MATCH_MODE_MATCH)){
 			//有预处理方法
 			
 			//解析class.method
