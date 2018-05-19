@@ -50,7 +50,7 @@ public class RegularMatchPrefix implements Regular{
 	public boolean match(String src, String regx){
 		boolean result = false;
 		try{
-			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.CASE_INSENSITIVE_MASK);
+			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK);
 			PatternMatcher matcher = new Perl5Matcher();
 			result = matcher.matchesPrefix(src, pattern);
 		}catch(Exception e){
