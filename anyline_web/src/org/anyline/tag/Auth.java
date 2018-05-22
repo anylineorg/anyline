@@ -39,6 +39,7 @@ public class Auth extends BaseBodyTag {
 	private String wx_host  = "https://open.weixin.qq.com/connect/oauth2/authorize";
 	private String qq_host  = "https://graph.qq.com/oauth2.0/authorize";
 	
+	private String key;
 	private String appid;
 	private String type;	//wx:微信 qq:QQ
 	private String redirect;
@@ -86,7 +87,7 @@ public class Auth extends BaseBodyTag {
 			
 			if("wx".equalsIgnoreCase(type) || "weixin".equalsIgnoreCase(type)){
 				if(BasicUtil.isEmpty(appid)){
-					appid = WXMPConfig.getInstance().APP_ID;
+					appid = WXMPConfig.getInstance(key).APP_ID;
 				}
 				Map<String,String> map = new HashMap<String,String>();
 				if(null != params){
@@ -102,14 +103,14 @@ public class Auth extends BaseBodyTag {
 					scope = "snsapi_base";
 				}
 				if(BasicUtil.isEmpty(redirect)){
-					redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
+					redirect = WXMPConfig.getInstance(key).OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
 				url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+"#wechat_redirect";
 				
 			}else if("qq".equalsIgnoreCase(type)){
 				if(BasicUtil.isEmpty(appid)){
-					appid = QQMPConfig.getInstance().APP_ID;
+					appid = QQMPConfig.getInstance(key).APP_ID;
 				}
 				Map<String,String> map = new HashMap<String,String>();
 				if(null != params){
@@ -126,7 +127,7 @@ public class Auth extends BaseBodyTag {
 					scope = "get_user_info";
 				}
 				if(BasicUtil.isEmpty(redirect)){
-					redirect = QQMPConfig.getInstance().OAUTH_REDIRECT_URL;
+					redirect = QQMPConfig.getInstance(key).OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
 				url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state;
@@ -163,6 +164,15 @@ public class Auth extends BaseBodyTag {
 		auto = false;
 		id = null;
 		encode = false;
+		key = null;
+	}
+
+	public String getKey() {
+		return key;
+	}
+
+	public void setKey(String key) {
+		this.key = key;
 	}
 
 	public String getAppid() {
