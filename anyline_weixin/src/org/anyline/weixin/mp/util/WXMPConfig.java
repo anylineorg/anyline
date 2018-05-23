@@ -56,7 +56,7 @@ public class WXMPConfig extends BasicConfig{
 	 */
 	private synchronized static void loadConfig() {
 		try {
-			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
+			File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-weixin-mp.xml".equals(file.getName())){
