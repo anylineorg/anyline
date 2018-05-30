@@ -1135,14 +1135,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return result;
 	}
-
+	/**
+	 * 是否包含这一行
+	 * @param row
+	 * @param keys
+	 * @return
+	 */
 	public boolean contains(DataRow row, String ... keys) {
 		if (null == rows || rows.size() == 0 || null == row) {
 			return false;
 		}
 		if (null == keys) {
 			keys = new String[1];
-			keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+			keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 		}
 		String params[] = packParam(row, keys);
 		return getRows(params).size() > 0;
@@ -1598,12 +1603,39 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		set.cloneProperty(this);
 		return set;
 	}
-	public DataSet like(String key, String value){
+	/**
+	 * key列的值是否包含value
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public DataSet contains(String key, String value){
 		DataSet set = new DataSet();
 		String tmpValue;
 		for(DataRow row:this){
 			tmpValue = row.getString(key);
 			if (null != tmpValue && tmpValue.contains(value)) {
+				set.add(row);
+			}
+		}
+		set.cloneProperty(this);
+		return set;
+	}
+	/**
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public DataSet like(String key, String pattern){
+		DataSet set = new DataSet();
+		if(null == pattern){
+			return set;
+		}
+		pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
+		String tmpValue;
+		for(DataRow row:this){
+			tmpValue = row.getString(key);
+			if (null != tmpValue && RegularUtil.match(tmpValue, pattern, RegularUtil.MATCH_MODE_MATCH)) {
 				set.add(row);
 			}
 		}
