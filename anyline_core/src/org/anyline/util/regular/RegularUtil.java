@@ -22,6 +22,7 @@ package org.anyline.util.regular;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MatchResult;
@@ -279,5 +280,19 @@ public class RegularUtil {
 			}
 		}
 		return list;
+	}
+	public static boolean isDate(String str){
+		if(BasicUtil.isEmpty(str)){
+			return false;
+		}
+		str = str.replace("/", "-");
+		return regularMatch.match(str, Regular.date_regexp);
+	}
+	public static boolean isDateTime(String str){
+		if(BasicUtil.isEmpty(str)){
+			return false;
+		}
+		str = str.replace("/", "-");
+		return regularMatch.match(str, Regular.date_time_regexp);
 	}
 }

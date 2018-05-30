@@ -35,6 +35,7 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
 public class BasicUtil {
@@ -268,7 +269,24 @@ public class BasicUtil {
 		}
 		return result;
 	}
-
+	public static boolean isDate(Object obj){
+		if(null == obj){
+			return false;
+		}
+		if(obj instanceof Date){
+			return true;
+		}
+		return RegularUtil.isDate(obj.toString());
+	}
+	public static boolean isDateTime(Object obj){
+		if(null == obj){
+			return false;
+		}
+		if(obj instanceof Date){
+			return true;
+		}
+		return RegularUtil.isDateTime(obj.toString());
+	}
 	public static int parseInt(Object value, int def) {
 		if (null == value) {
 			return def;
@@ -840,6 +858,39 @@ public class BasicUtil {
 		}
 		for(Object o : objs){
 			if(obj.equals(o)){
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean contains(Collection<Object> objs, Object obj){
+		if(null == objs || null == obj){
+			return false;
+		}
+		for(Object o : objs){
+			if(obj.equals(o)){
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean containsIgnoreCase(Object[] objs, Object obj){
+		if(null == objs || null == obj){
+			return false;
+		}
+		for(Object o : objs){
+			if(obj.toString().equalsIgnoreCase(o.toString())){
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean containsIgnoreCase(Collection<Object> objs, Object obj){
+		if(null == objs || null == obj){
+			return false;
+		}
+		for(Object o : objs){
+			if(obj.toString().equalsIgnoreCase(o.toString())){
 				return true;
 			}
 		}
