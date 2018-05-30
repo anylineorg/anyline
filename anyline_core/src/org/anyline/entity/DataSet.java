@@ -39,6 +39,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
 public class DataSet implements Collection<DataRow>, Serializable {
@@ -1928,6 +1929,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public DataSet unique(String ... keys){
 		return distinct(keys);
+	}
+	public DataSet regex(String key, String regex, int mode){
+		DataSet set = new DataSet();
+		String tmpValue;
+		for(DataRow row:this){
+			tmpValue = row.getString(key);
+			if(RegularUtil.match(tmpValue, regex, mode)){
+				set.add(row);
+			}
+		}
+		set.cloneProperty(this);
+		return set;
+	}
+	public DataSet regex(String key, String regex){
+		return regex(key, regex, RegularUtil.MATCH_MODE_MATCH);
 	}
 }
 
