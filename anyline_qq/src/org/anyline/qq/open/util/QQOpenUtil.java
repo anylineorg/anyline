@@ -1,6 +1,5 @@
 package org.anyline.qq.open.util;
 
-import java.net.URLEncoder;
 import java.util.Base64;
 import java.util.Hashtable;
 import java.util.Map;
@@ -10,7 +9,6 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.anyline.entity.DataRow;
-import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.qq.open.entity.QQPayTradeOrder;
 import org.anyline.qq.open.entity.QQPayTradeResult;
 import org.anyline.util.BasicUtil;
