@@ -1926,5 +1926,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		int qty = BasicUtil.getRandomNumber(min, max);
 		return randoms(qty);
 	}
+	public DataSet unique(String ... keys){
+		return distinct(keys);
+	}
 }
 
