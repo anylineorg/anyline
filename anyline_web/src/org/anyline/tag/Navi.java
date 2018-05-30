@@ -36,18 +36,20 @@ public class Navi extends BodyTagSupport{
 	private static Logger log = Logger.getLogger(Navi.class);
 	private String url				;	//数据来源
 	private String param			;	//参数收集函数
-	private String container		;	//返回内容显示容器id
+	private String container		;	//返回内容显示容器
+	private String body				;	//返回内容显示容器class或id(如果body与page分开)
+	private String page				;	//返回内容显示容器class或id(如果body与page分开)
+	private String bodyContainer	;	//如果body与page分开(兼容上一版本)
+	private String naviContainer	;	//如果body与page分开(兼容上一版本)
 	private String creater = "ajax"	;	//分页方式 ajax | html
 	
 	private String id				;	//一个页面内多个标签时需要id区分
-	private String function			;	//指定function后需主动调用function后加载数据
-	private Boolean intime = false	;	//实时执行,否则放入jqery.ready
+	private String function			;	//指定function后,需主动调用function后加载数据,查询条件发生变化时可调用些function
+	private Boolean intime = false	;	//实时执行
 	private Boolean auto = false	;	//是否加载下一页内容(wap加载更多typ=1时 划屏到底部自动加载)
 	private String callback			;	//回调函数
 	private String before			;	//渲染之前调用
-	private String after			;	//渲染之后调用			
-	private String bodyContainer	;	//如果body与page分开
-	private String naviContainer	;	//如果body与page分开
+	private String after			;	//渲染之后调用		
 	private String guide			;   //加载更多文本
 	
 	private String empty			;	//空数据显示内容
@@ -94,11 +96,15 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(container)){
 				builder.append("container:'").append(container).append("',");
 			}
-			if(BasicUtil.isNotEmpty(bodyContainer)){
-				builder.append("bodyContainer:'").append(bodyContainer).append("',");
+			body = (String)BasicUtil.evl(body, bodyContainer);
+			page = (String)BasicUtil.evl(page, naviContainer);
+			if(BasicUtil.isNotEmpty(body)){
+				builder.append("body:'").append(naviContainer).append("',");
+				builder.append("bodyContainer:'").append(body).append("',");
 			}
-			if(BasicUtil.isNotEmpty(naviContainer)){
-				builder.append("naviContainer:'" ).append(naviContainer).append("',");
+			if(BasicUtil.isNotEmpty(page)){
+				builder.append("page:'" ).append(page).append("',");
+				builder.append("naviContainer:'" ).append(page).append("',");
 			}
 			if(BasicUtil.isNotEmpty(callback)){
 				builder.append("callback:" ).append(callback).append(",");
@@ -135,10 +141,10 @@ public class Navi extends BodyTagSupport{
 				builder.append("if(clear){").append(confId).append("['clear'] = 0;}\n");
 				builder.append("}\n");
 				if(intime){
-					builder.append("$(function(){_navi_init("+confId+");});\n");
+					builder.append(function).append("(true);\n");
 				}
 			}else{
-				builder.append("$(function(){_navi_init("+confId+");});\n");
+				builder.append("_navi_init("+confId+");\n");
 			}
 			//自动加载
 			builder.append("$(window).scroll(function(){_navi_auto_load("+confId+");});");
@@ -164,6 +170,8 @@ public class Navi extends BodyTagSupport{
 		param 			= null	;	//参数收集函数
 		container 		= null	;	//返回内容容器
 		callback 		= null	;	//回调函数
+		body			= null	;
+		page			= null	;
 		bodyContainer 	= null	;	//如果body与page分开
 		naviContainer 	= null	;	//如果body与page分开
 		empty 			= null	;	//空数据显示内容
@@ -297,6 +305,18 @@ public class Navi extends BodyTagSupport{
 	}
 	public void setStyle(String style) {
 		this.style = style;
+	}
+	public String getBody() {
+		return body;
+	}
+	public void setBody(String body) {
+		this.body = body;
+	}
+	public String getPage() {
+		return page;
+	}
+	public void setPage(String page) {
+		this.page = page;
 	}
 
 }
