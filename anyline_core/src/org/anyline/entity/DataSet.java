@@ -34,11 +34,13 @@ import java.util.Map;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
+import org.anyline.util.JSONDateFormatProcessor;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
@@ -1015,7 +1017,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @return
 	 */
 	public String toJSON(){
-		JSONArray json = JSONArray.fromObject(rows);
+		JsonConfig config = new JsonConfig();  
+        config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor()); // 将对象中的日期进行格式化  
+		JSONArray json = JSONArray.fromObject(rows, config);
 		return json.toString();
 	}
 
