@@ -822,7 +822,7 @@
 		</attribute>
 		<attribute>
 			<name>key</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
