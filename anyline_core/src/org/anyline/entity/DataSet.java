@@ -21,6 +21,7 @@ package org.anyline.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1018,7 +1019,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 */
 	public String toJSON(){
 		JsonConfig config = new JsonConfig();  
-        config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor()); // 将对象中的日期进行格式化  
+        config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
+        config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor());
 		JSONArray json = JSONArray.fromObject(rows, config);
 		return json.toString();
 	}

@@ -19,6 +19,7 @@ package org.anyline.entity;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -742,7 +743,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public String toJSON(){
 		String result = "";
 		JsonConfig config = new JsonConfig();  
-        config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor()); // 将对象中的日期进行格式化  
+        config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
+        config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor());
 		JSONObject json = JSONObject.fromObject(this, config);
 		result = json.toString();
 		return result;
