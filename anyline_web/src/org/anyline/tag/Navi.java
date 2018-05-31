@@ -99,7 +99,7 @@ public class Navi extends BodyTagSupport{
 			body = (String)BasicUtil.evl(body, bodyContainer);
 			page = (String)BasicUtil.evl(page, naviContainer);
 			if(BasicUtil.isNotEmpty(body)){
-				builder.append("body:'").append(naviContainer).append("',");
+				builder.append("body:'").append(body).append("',");
 				builder.append("bodyContainer:'").append(body).append("',");
 			}
 			if(BasicUtil.isNotEmpty(page)){

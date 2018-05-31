@@ -334,7 +334,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			navi = data.getNavi();
 		}
 		Map<String,Object> map = super.navi(request, response, data, navi, page, ext);
-		return json(true,map);
+		return success(map);
 	}
 	public String navi(DataSet data, String page){
 		return navi(data, page, null);
