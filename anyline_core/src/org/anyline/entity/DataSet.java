@@ -325,14 +325,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @return
 	 */
 	public DataRow getRow(String... params) {
-		DataSet set = getRows(params);
-		if (set.size() > 0) {
-			return set.getRow(0);
-		}
-		return null;
+		return getRow(0, params);
 	}
 	public DataRow getRow(int begin, String... params) {
-		DataSet set = getRows(begin, params);
+		DataSet set = getRows(begin,1, params);
 		if (set.size() > 0) {
 			return set.getRow(0);
 		}
@@ -360,6 +356,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				}
 			}
 		}
+		result.cloneProperty(this);
 		return result;
 	}
 	public Object clone(){
@@ -391,34 +388,74 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	/**
 	 * 筛选符合条件的集合
 	 * @param params key1,value1,key2:value2,key3,value3
+	 * @param qty:最多筛选多少个 0表示不限制
 	 * @return
 	 */
-	public DataSet getRows(int begin, String... params) {
-		DataSet set = this;
-		for (int i = 0; i < params.length; i += 2) {
-			String key = params[i];
-			String value = "";
-			if(null == key){
+	public DataSet getRows(int begin, int qty, String... params) {
+		DataSet set = new DataSet();
+		Map<String,String> kvs = new HashMap<String,String>();
+		int len = params.length;
+		int i = 0;
+		while(i<len){
+			String p1 = params[i];
+			if(BasicUtil.isEmpty(p1)){
+				i++;
 				continue;
-			}
-			if(key.contains(":")){
-				String tmp[] = key.split(":");
-				key = tmp[0];
-				value = tmp[1];
+			}else if(p1.contains(":")){
+				String tmp[] = p1.split(":");
+				kvs.put(tmp[0], tmp[1]);
+				i++;
+				continue;
 			}else{
-				if (i + 1 < params.length) {
-					key = params[i];
-					value = params[i + 1];
+				if(i+1<len){
+					String p2 = params[i+1];
+					if(BasicUtil.isEmpty(p2) || !p2.contains(":")){
+						kvs.put(p1, p2); 
+						i+=2;
+						continue;
+					}else{
+						String tmp[] = p2.split(":");
+						kvs.put(tmp[0], tmp[1]);
+						i+=2;
+						continue;
+					}
+				}
+
+			}
+			i++;
+		}
+		int size = size();
+		for(i=0; i<size; i++){
+			DataRow row = getRow(i);
+			boolean chk = true;
+			for(String k : kvs.keySet()){
+				String v = kvs.get(k);
+				String value = row.getString(k);
+				if(null == v && null == value){
+					continue;
+				}
+				if(!v.equals(value)){
+					chk = false;
+					break;
 				}
 			}
-			set = filter(begin, set, key, value);
+			if(chk){
+				set.add(row);
+				if(qty > 0 && set.size() >= qty){
+					break;
+				}
+			}
 		}
+		set.cloneProperty(this);
 		return set;
+	}
+
+	public DataSet getRows(int begin, String... params) {
+		return getRows(begin, 0, params);
 	}
 	public DataSet getRows(String... params) {
 		return getRows(0, params);
 	}
-	
 
 	/**
 	 * 数字格式化
@@ -479,9 +516,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return set;
 	}
 
-	private DataSet filter(DataSet src, String key, String value) {
-		return filter(0, src, key, value);
-	}
 	public DataSet getRows(int fr, int to) {
 		DataSet set = new DataSet();
 		for (int i = fr; i < this.size() && i <= to; i++) {
