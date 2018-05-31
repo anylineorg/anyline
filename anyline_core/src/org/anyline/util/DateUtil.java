@@ -30,7 +30,7 @@ public class DateUtil {
 	private static int MaxDate;// 一月最大天数
 	private static int MaxYear;// 一年最大天数
 	
-	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.ms";
+	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.S";
 	public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 	public static final String FORMAT_DATE = "yyyy-MM-dd";
 	public static final int DATE_PART_YEAR = Calendar.YEAR;
@@ -135,9 +135,6 @@ public class DateUtil {
 		if (null == date || null == format)
 			return "";
 		return new java.text.SimpleDateFormat(format).format(date);
-	}
-	public static void main(String args[]){
-		System.out.println(format(new Date(),"MMMMMM"));
 	}
 
 	public static String format() {
@@ -584,39 +581,44 @@ public class DateUtil {
 			return null;
 		}
 	}
-
 	/**
 	 * 转换成日期(使用默认格式)
 	 * 
 	 * @param dateString
 	 * @return
 	 */
-	public static Date parse(String dateString) {
+	public static Date parse(String str) {
 		Date date = null;
-		SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_FULL);
+		String format = FORMAT_FULL;
+		if(!str.contains(".")){
+			//不带毫秒
+			format = FORMAT_DATE_TIME;
+		}
+		
+		if(!str.contains(":")){
+			//不带时间
+			format = FORMAT_DATE;
+		}else if(!str.contains(" ")){
+			//不带日期
+			format = format.replace("yyyy-MM-dd ", "");
+		}
+		
+		if(str.contains("/")){
+			format = format.replace("-", "/");
+		}
+		if(!str.contains("-") && !str.contains("/")){
+			format = format.replace("-", "").replace("/", "");
+		}
+		
+		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		try {
-			date = sdf.parse(dateString);
+			date = sdf.parse(str);
 		} catch (Exception e) {
 			try {
-				sdf = new SimpleDateFormat(FORMAT_DATE_TIME);
-				date = sdf.parse(dateString);
-			} catch (Exception ex) {
-				try {
-					sdf = new SimpleDateFormat(FORMAT_DATE);
-					date = sdf.parse(dateString);
-				} catch (Exception exc) {
-					try {
-						sdf = new SimpleDateFormat("yyyyMMdd");
-						date = sdf.parse(dateString);
-					} catch (Exception exce) {
-						try {
-							sdf = new SimpleDateFormat();
-							date = sdf.parse(dateString);
-						} catch (Exception excep) {
-							date = null;
-						}
-					}
-				}
+				sdf = new SimpleDateFormat();
+				date = sdf.parse(str);
+			} catch (Exception excep) {
+				date = null;
 			}
 		}
 		return date;
