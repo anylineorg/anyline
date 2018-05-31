@@ -39,7 +39,7 @@ public class Auth extends BaseBodyTag {
 	private String wx_host  = "https://open.weixin.qq.com/connect/oauth2/authorize";
 	private String qq_host  = "https://graph.qq.com/oauth2.0/authorize";
 	
-	private String key;
+	private String key = "default";
 	private String appid;
 	private String type;	//wx:微信 qq:QQ
 	private String redirect;
