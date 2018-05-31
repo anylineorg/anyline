@@ -51,7 +51,6 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	public int doEndTag() throws JspException {
 		try{
 			String result = "";
-			//log.warn("[number format][value:"+value+"][body:"+body+"][def:"+def+"][max:"+max+"][min:"+min+"]");
 			if(null == value){
 				value = body;
 			}
