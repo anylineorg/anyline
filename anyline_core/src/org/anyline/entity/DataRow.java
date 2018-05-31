@@ -29,11 +29,13 @@ import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
+import org.anyline.util.JSONDateFormatProcessor;
 import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
 
@@ -739,7 +741,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 */
 	public String toJSON(){
 		String result = "";
-		JSONObject json = JSONObject.fromObject(this);
+		JsonConfig config = new JsonConfig();  
+        config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor()); // 将对象中的日期进行格式化  
+		JSONObject json = JSONObject.fromObject(this, config);
 		result = json.toString();
 		return result;
 	}
