@@ -501,18 +501,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param value
 	 * @return
 	 */
-	private DataSet filter(int begin, DataSet src, String key, String value) {
+	public DataSet filter(int begin, int end, String key, String value) {
 		DataSet set = new DataSet();
 		String tmpValue;
-		int size = src.size();
+		int size = size();
 		if(begin < 0){
 			begin = 0;
 		}
-		for (int i = begin; i < size; i++) {
-			tmpValue = src.getString(i, key);
+		for (int i = begin; i < size && i<=end; i++) {
+			tmpValue = getString(i, key);
 			if ((null == value && null == tmpValue)
 					|| (null != value && value.equals(tmpValue))) {
-				set.add(src.getRow(i));
+				set.add(getRow(i));
 			}
 		}
 		set.cloneProperty(this);
@@ -533,13 +533,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param key
 	 * @return
 	 */
-	public BigDecimal sum(int top, String key){
+	public BigDecimal sum(int begin, int end, String key){
 		BigDecimal result = BigDecimal.ZERO;
 		int size = rows.size();
-		if(size>top){
-			size = top;
+		if(begin <=0){
+			begin = 0;
 		}
-		for (int i = 0; i < size; i++) {
+		for (int i = begin; i < size && i <=end; i++) {
 			BigDecimal tmp = getDecimal(i, key);
 			if(null != tmp){
 				result = result.add(getDecimal(i, key));
@@ -549,7 +549,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public BigDecimal sum(String key) {
 		BigDecimal result = BigDecimal.ZERO;
-		result = sum(size(), key);
+		result = sum(0,size()-1, key);
 		return result;
 	}
 	/**
@@ -559,14 +559,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @return
 	 */
 	public BigDecimal maxDecimal(int top, String key){
-		BigDecimal result = new BigDecimal(0);
+		BigDecimal result = null;
 		int size = rows.size();
 		if(size>top){
 			size = top;
 		}
 		for (int i = 0; i < size; i++) {
 			BigDecimal tmp = getDecimal(i, key);
-			if(null != tmp && tmp.compareTo(result) > 0){
+			if(null != tmp && (null == result || tmp.compareTo(result) > 0)){
 				result = tmp;
 			}
 		}
@@ -577,6 +577,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public int maxInt(int top, String key){
 		BigDecimal result = maxDecimal(top, key);
+		if(null == result){
+			return 0;
+		}
 		return result.intValue();
 	}
 	public int maxInt(String key){
@@ -585,19 +588,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 	public double maxDouble(int top, String key){
 		BigDecimal result = maxDecimal(top, key);
+		if(null == result){
+			return 0;
+		}
 		return result.doubleValue();
 	}
 	public double maxDouble(String key){
 		return maxDouble(size(), key);
 	}
 
-	public BigDecimal max(int top, String key){
-		BigDecimal result = maxDecimal(top, key);
-		return result;
-	}
-	public BigDecimal max(String key){
-		return maxDecimal(size(), key);
-	}
+//	public BigDecimal max(int top, String key){
+//		BigDecimal result = maxDecimal(top, key);
+//		return result;
+//	}
+//	public BigDecimal max(String key){
+//		return maxDecimal(size(), key);
+//	}
 	
 	
 	
@@ -608,14 +614,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @return
 	 */
 	public BigDecimal minDecimal(int top, String key){
-		BigDecimal result = new BigDecimal(0);
+		BigDecimal result = null;
 		int size = rows.size();
 		if(size>top){
 			size = top;
 		}
 		for (int i = 0; i < size; i++) {
 			BigDecimal tmp = getDecimal(i, key);
-			if(null != tmp && tmp.compareTo(result) < 0){
+			if(null != tmp && (null == result || tmp.compareTo(result) < 0)){
 				result = tmp;
 			}
 		}
@@ -627,6 +633,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 	public int minInt(int top, String key){
 		BigDecimal result = minDecimal(top, key);
+		if(null == result){
+			return 0;
+		}
 		return result.intValue();
 	}
 	public int minInt(String key){
@@ -635,27 +644,29 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 	public double minDouble(int top, String key){
 		BigDecimal result = minDecimal(top, key);
+		if(null == result){
+			return 0;
+		}
 		return result.doubleValue();
 	}
 	public double minDouble(String key){
 		return minDouble(size(), key);
 	}
 
-	public BigDecimal min(int top, String key){
-		BigDecimal result = minDecimal(top, key);
-		return result;
-	}
-	public BigDecimal min(String key){
-		return minDecimal(size(), key);
-	}
+//	public BigDecimal min(int top, String key){
+//		BigDecimal result = minDecimal(top, key);
+//		return result;
+//	}
+//	public BigDecimal min(String key){
+//		return minDecimal(size(), key);
+//	}
 	
 	/**
 	 * key对应的value最大的一行
-	 * max与 maxRow区别:max只对number类型计算 其他类型异常
 	 * @param key
 	 * @return
 	 */
-	public DataRow maxRow(String key){
+	public DataRow max(String key){
 		int size = size();
 		if(size ==0){
 			return null;
@@ -666,12 +677,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}else if(isDesc){
 			row = getRow(0);
 		}else{
-			asc();
+			asc(key);
 			row = getRow(size-1);
 		}
 		return row;
 	}
-	public DataRow minRow(String key){
+	public DataRow min(String key){
 		int size = size();
 		if(size ==0){
 			return null;
@@ -682,7 +693,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}else if(isDesc){
 			row = getRow(size-1);
 		}else{
-			asc();
+			asc(key);
 			row = getRow(0);
 		}
 		return row;
@@ -1327,7 +1338,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return rows.containsAll(c);
 	}
 
-	public Iterator iterator() {
+	public Iterator<DataRow> iterator() {
 		return rows.iterator();
 	}
 
