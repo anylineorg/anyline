@@ -148,3 +148,23 @@ function fnParam(){
 <des:a href="/test/index.do?member=1">加密URL(member=1)</des:a>
 </div>
 <al:text data="${set}" textKey="MMB_NAME" valueKey="MMB_ID" value="0"/>
+<!-- 第三方登录 -->
+<al:checkClient type="app">
+	<!-- 微信APP登录 -->
+	<img src="/common/img/icon/lg_wx.png" style="width:50px;" onclick="fnLogin_WX_APP()">
+	<!-- QQ APP登录 -->
+	<img src="/common/img/icon/lg_qq.png" style="width:50px;display:none;" onclick="fnLogin_QQ_APP()">
+	<al:else>
+	
+	<al:checkClient type="weixin">
+		<!-- 微信公众号登录 -->
+		<al:auth type="wx" state="back:${LOGIN_BACK_URL},action:log,fdt:${SERVER_SESSION_FROM_DISTRIBUTE.ID }">
+		<img src="/common/img/icon/lg_wx.png" style="width:50px;">
+		</al:auth>
+	</al:checkClient>
+	<!-- QQ wap登录 -->
+	<al:auth type="qq" state="back:${LOGIN_BACK_URL},action:log">
+		<img src="/common/img/icon/lg_qq.png" style="width:50px;display:none;">
+	</al:auth>
+	</al:else>
+</al:checkClient>
