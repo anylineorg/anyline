@@ -1812,6 +1812,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		set.cloneProperty(this);
 		return set;
 	}
+	public DataSet isNull(String ... keys){
+		DataSet set = this;
+		if(null != keys){
+			for(String key:keys){
+				set = isNull(key);
+			}
+		}
+		return set;
+	}
 	public DataSet isNotNull(String key){
 		DataSet set = new DataSet();
 		for(DataRow row:this){
@@ -1821,6 +1830,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		set.cloneProperty(this);
 		return set;
+	}
+	
+	public DataSet notNull(String key){
+		return isNotNull(key);
+	}
+	public DataSet isNotNull(String ... keys){
+		DataSet set = this;
+		if(null != keys){
+			for(String key:keys){
+				set = isNotNull(key);
+			}
+		}
+		return set;
+	}
+	public DataSet notNull(String ... keys){
+		return isNotNull(keys);
 	}
 	public DataSet isEmpty(String key){
 		DataSet set = new DataSet();
@@ -1832,6 +1857,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		set.cloneProperty(this);
 		return set;
 	}
+	public DataSet empty(String keys){
+		return isEmpty(keys);
+	}
+	public DataSet isEmpty(String ... keys){
+		DataSet set = this;
+		if(null != keys){
+			for(String key:keys){
+				set = isEmpty(key);
+			}
+		}
+		return set;
+	}
+	public DataSet empty(String ... keys){
+		return isEmpty(keys);
+	}
 	public DataSet isNotEmpty(String key){
 		DataSet set = new DataSet();
 		for(DataRow row:this){
@@ -1841,6 +1881,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		set.cloneProperty(this);
 		return set;
+	}
+	public DataSet notEmpty(String key){
+		return isNotEmpty(key);
+	}
+	public DataSet isNotEmpty(String ... keys){
+		DataSet set = this;
+		if(null != keys){
+			for(String key:keys){
+				set = isNotEmpty(key);
+			}
+		}
+		return set;
+	}
+	public DataSet notEmpty(String ... keys){
+		return isNotEmpty(keys);
 	}
 	public DataSet less(String key, Object value){
 		DataSet set = new DataSet();
@@ -1964,6 +2019,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public DataSet between(String key, Object min, Object max){
 		return greaterEqual(key, min).lessEqual(key, max);
+		
 	}
 	public DataRow random(){
 		DataRow row = null;
