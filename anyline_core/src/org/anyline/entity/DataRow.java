@@ -712,7 +712,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public BigDecimal getDecimal(String key){
 		BigDecimal result = null;
 		try{
-			result = new BigDecimal(getString(key));
+			String str = getString(key);
+			if(BasicUtil.isNotEmpty(str)){
+				result = new BigDecimal(str);
+			}
 		}catch(Exception e){
 			result = null;
 		}
@@ -739,7 +742,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		String date = getStringNvl(key, def);
 		return DateUtil.parse(date);
 	}
-	
+
+	public Date getDate(String key){
+		String date = getString(key);
+		if(null == date){
+			return null;
+		}
+		return DateUtil.parse(date);
+	}
 	/**
 	 * 转换成json格式
 	 * @return
