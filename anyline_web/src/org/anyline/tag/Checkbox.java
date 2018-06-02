@@ -30,6 +30,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.apache.log4j.Logger;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -128,7 +129,10 @@ public class Checkbox extends BaseBodyTag {
 					headValue = "";
 				}
 				if(null != head){
-					String id = name +"_"+ headValue; 
+					String id = this.id;
+					if(BasicUtil.isEmpty(id)){
+						id = name +"_"+ headValue; 
+					}
 					html += "<div class=\"item-border\"><input type=\"checkbox\"";
 					if((null != headValue && headValue.equals(value)) || checked){
 						html += " checked = \"checked\"";
@@ -165,7 +169,10 @@ public class Checkbox extends BaseBodyTag {
 						if(this.encrypt){
 							val = WebUtil.encryptValue(val+"");
 						}
-						String id = name +"_"+ val;
+						String id = this.id;
+						if(BasicUtil.isEmpty(id)){
+							id = name +"_"+ val; 
+						}
 						html += "<div class=\"item-border\"><input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
 						Object chk = item.get("CHECKED")+"";
 						if("1".equals(chk) || checked(chks,item.get(valueKey)) ) {

@@ -570,40 +570,39 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		for(String pk:primaryKeys){
 			keys.remove(pk);
 		}
-		if(BasicUtil.isEmpty(true,keys)){
-			throw new SQLException("未指定更新列");
-		}
 		/*构造SQL*/
-		sql.append("UPDATE ").append(parseTable(dest));
-		sql.append(" SET").append(SQLCreater.BR_TAB);
 		int size = keys.size();
-		for(int i=0; i<size; i++){
-			String key = keys.get(i);
-			Object value = row.get(key);
-			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
-				String str = value.toString();
-				value = str.substring(1, str.length()-1);
-				sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
-			}else{
-				sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
-				if("NULL".equals(value)){
-					values.add(null);
+		if(size > 0){
+			sql.append("UPDATE ").append(parseTable(dest));
+			sql.append(" SET").append(SQLCreater.BR_TAB);
+			for(int i=0; i<size; i++){
+				String key = keys.get(i);
+				Object value = row.get(key);
+				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
+					String str = value.toString();
+					value = str.substring(1, str.length()-1);
+					sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 				}else{
-					values.add(row.get(key));
+					sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					if("NULL".equals(value)){
+						values.add(null);
+					}else{
+						values.add(row.get(key));
+					}
+				}
+				if(i<size-1){
+					sql.append(",");
 				}
 			}
-			if(i<size-1){
-				sql.append(",");
+			sql.append(SQLCreater.BR);
+			sql.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
+			for(String pk:primaryKeys){
+				sql.append(" AND ").append(getDisKeyFr()).append(pk).append(getDisKeyTo()).append(" = ?");
+				values.add(row.get(pk));
 			}
+			run.setBuilder(sql);
+			run.addValues(values);
 		}
-		sql.append(SQLCreater.BR);
-		sql.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
-		for(String pk:primaryKeys){
-			sql.append(" AND ").append(getDisKeyFr()).append(pk).append(getDisKeyTo()).append(" = ?");
-			values.add(row.get(pk));
-		}
-		run.setBuilder(sql);
-		run.addValues(values);
 		return run;
 	}
 	/**
@@ -847,9 +846,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 //				}
 //			}
 			keys = row.getUpdateColumns();
-			if(keys.size() ==0){
-				keys = row.keys();
-			}
 			//是否更新null及""列
 			boolean isUpdateNullColumn = ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN",false);
 			boolean isUpdateEmptyColumn = ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN",false);
