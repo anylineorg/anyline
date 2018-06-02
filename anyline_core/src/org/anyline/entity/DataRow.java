@@ -567,10 +567,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	@Override
 	public Object put(String key, Object value){
 		if(null != key){
-			super.put(key(key), value);
-		}
-		if(!updateColumns.contains(key(key))){
-			updateColumns.add(key(key));
+			key = key(key);
+			String oldValue = getString(key)+"";
+			if(!oldValue.equals(value)){
+				super.put(key, value);
+				if(!updateColumns.contains(key(key))){
+					updateColumns.add(key(key));
+				}				
+			}
 		}
 		return this;
 	}
