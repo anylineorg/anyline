@@ -230,6 +230,10 @@ public class AnylineDaoImpl implements AnylineDao {
 		//row.processBeforeSave();								//保存之前预处理
 		RunSQL run = creater.createUpdateTxt(dest, obj, false, columns);
 		String sql = run.getUpdateTxt();
+		if(BasicUtil.isEmpty(sql)){
+			log.warn("[不具备更新条件][dest:"+dest+"]");
+			return -1;
+		}
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();
 		String random = "";
