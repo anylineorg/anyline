@@ -837,7 +837,7 @@ public class BasicUtil {
 		}
 		List<String> ks = getMapKeys(map);
 		for(String k:ks){
-			if(null == keys || keys.length == 0 || contains(keys, k)){
+			if(null == keys || keys.length == 0 || containsString(keys, k)){
 				Object v = map.get(k);
 				String key = k.toUpperCase();
 				map.remove(k);
@@ -852,7 +852,24 @@ public class BasicUtil {
 	 * @param obj
 	 * @return
 	 */
+	public static boolean containsString(Object[] objs, Object obj){
+		if(null == objs && null == obj){
+			return true;
+		}
+		if(null == objs || null == obj){
+			return false;
+		}
+		for(Object o : objs){
+			if(obj.toString().equals(o.toString())){
+				return true;
+			}
+		}
+		return false;
+	}
 	public static boolean contains(Object[] objs, Object obj){
+		if(null == objs && null == obj){
+			return true;
+		}
 		if(null == objs || null == obj){
 			return false;
 		}
