@@ -870,6 +870,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return result;
 		
 	}
+	public List<Object> getObjects(String key){
+		List<Object> result = new ArrayList<Object>();
+		List<Object> list = fetchValues(key);
+		for(Object val:list){
+			if(null != val){
+				result.add(val);
+			}else{
+				result.add(null);
+			}
+		}
+		return result;
+		
+	}
 	public List<String> getDistinctStrings(String key){
 		return fetchDistinctValue(key);
 	}
@@ -1717,12 +1730,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		set.cloneProperty(this);
 		return set;
 	}
-	public DataSet in(String key, Object ... values){
+	public DataSet in(String key, String ... values){
 		DataSet set = new DataSet();
 		Object tmpValue;
 		for(DataRow row:this){
 			tmpValue = row.get(key);
-			if (null != tmpValue && BasicUtil.contains(values, tmpValue)) {
+			if (null != tmpValue && BasicUtil.containsString(values, tmpValue)) {
 				set.add(row);
 			}
 		}
@@ -1734,14 +1747,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		Object tmpValue;
 		for(DataRow row:this){
 			tmpValue = row.get(key);
-			if (null != tmpValue && BasicUtil.contains(values, tmpValue)) {
+			if (null != tmpValue && BasicUtil.containsString(values, tmpValue)) {
 				set.add(row);
 			}
 		}
 		set.cloneProperty(this);
 		return set;
 	}
-	public DataSet inIgnoreCase(String key, Object ... values){
+	public DataSet inIgnoreCase(String key, String ... values){
 		DataSet set = new DataSet();
 		Object tmpValue;
 		for(DataRow row:this){
@@ -1765,12 +1778,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		set.cloneProperty(this);
 		return set;
 	}
-	public DataSet notIn(String key, Object ... values){
+	public DataSet notIn(String key, String ... values){
 		DataSet set = new DataSet();
 		Object tmpValue;
 		for(DataRow row:this){
 			tmpValue = row.get(key);
-			if (null != tmpValue && !BasicUtil.contains(values, tmpValue)) {
+			if (null != tmpValue && !BasicUtil.containsString(values, tmpValue)) {
 				set.add(row);
 			}
 		}
@@ -1782,14 +1795,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		Object tmpValue;
 		for(DataRow row:this){
 			tmpValue = row.get(key);
-			if (null != tmpValue && !BasicUtil.contains(values, tmpValue)) {
+			if (null != tmpValue && !BasicUtil.containsString(values, tmpValue)) {
 				set.add(row);
 			}
 		}
 		set.cloneProperty(this);
 		return set;
 	}
-	public DataSet notInIgnoreCase(String key, Object ... values){
+	public DataSet notInIgnoreCase(String key, String ... values){
 		DataSet set = new DataSet();
 		Object tmpValue;
 		for(DataRow row:this){
