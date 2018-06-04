@@ -881,11 +881,28 @@ public class BasicUtil {
 		return false;
 	}
 	public static boolean contains(Collection<Object> objs, Object obj){
+		if(null == objs && null == obj){
+			return true;
+		}
 		if(null == objs || null == obj){
 			return false;
 		}
 		for(Object o : objs){
 			if(obj.equals(o)){
+				return true;
+			}
+		}
+		return false;
+	}
+	public static boolean containsString(Collection<Object> objs, Object obj){
+		if(null == objs && null == obj){
+			return true;
+		}
+		if(null == objs || null == obj){
+			return false;
+		}
+		for(Object o : objs){
+			if(obj.toString().equals(o.toString())){
 				return true;
 			}
 		}
