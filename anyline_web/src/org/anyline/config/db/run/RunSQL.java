@@ -27,6 +27,7 @@ import org.anyline.config.db.GroupStore;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.SQLCreater;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.PageNavi;
@@ -65,7 +66,7 @@ public interface RunSQL {
 	 * @param	value 值
 	 * @param	compare 比较方式
 	 */
-	public RunSQL addCondition(boolean requried, String column, Object value, int compare);
+	public RunSQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare);
 	public RunSQL setConditionChain(ConditionChain chain);
 	public RunSQL addConditions(String[] conditions) ;
 	public RunSQL addCondition(String condition);

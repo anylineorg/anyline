@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.SQLVariable;
 
 public class SQLVariableImpl implements SQLVariable{
@@ -41,7 +42,7 @@ public class SQLVariableImpl implements SQLVariable{
 	private List<Object> values;	//变量值
 	private int type;				//变量替换方式
 	private int signType = 1;		//变量区分方式
-	private int compare;			//比较方式
+	private COMPARE_TYPE compare;	//比较方式
 	public Object clone() throws CloneNotSupportedException{
 		SQLVariableImpl clone = (SQLVariableImpl) super.clone();
 		if(null != values){
@@ -60,10 +61,10 @@ public class SQLVariableImpl implements SQLVariable{
 			values.clear();
 		}
 	}
-	public int getCompare() {
+	public COMPARE_TYPE getCompare() {
 		return compare;
 	}
-	public void setCompare(int compare) {
+	public void setCompare(COMPARE_TYPE compare) {
 		this.compare = compare;
 	}
 	public void addValue(Object value){

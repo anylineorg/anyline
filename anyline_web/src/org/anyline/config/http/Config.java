@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 
 public interface Config {
 	//从request 取值方式
@@ -65,9 +66,9 @@ public interface Config {
 
 	public void setKey(String key) ;
 
-	public int getCompare() ;
+	public COMPARE_TYPE getCompare() ;
 
-	public void setCompare(int compare) ;
+	public void setCompare(COMPARE_TYPE compare) ;
 
 	public boolean isEmpty() ;
 

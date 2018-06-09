@@ -98,24 +98,24 @@ public class ConfigParser {
 	private static ParseResult parseCompare(ParseResult result, boolean isKey){
 		String config = result.getKey();
 		if (config.startsWith(">=")) {
-			result.setCompare(SQL.COMPARE_TYPE_GREAT_EQUAL);
+			result.setCompare(SQL.COMPARE_TYPE.GREAT_EQUAL);
 			config = config.substring(2, config.length());
 		} else if (config.startsWith(">")) {
-			result.setCompare(SQL.COMPARE_TYPE_GREAT);
+			result.setCompare(SQL.COMPARE_TYPE.GREAT);
 			config = config.substring(1, config.length());
 		} else if (config.startsWith("<=")) {
-			result.setCompare(SQL.COMPARE_TYPE_LITTLE_EQUAL);
+			result.setCompare(SQL.COMPARE_TYPE.LITTLE_EQUAL);
 			config = config.substring(2, config.length());
 		} else if (config.startsWith("<>") || config.startsWith("!=")) {
-			result.setCompare(SQL.COMPARE_TYPE_NOT_EQUAL);
+			result.setCompare(SQL.COMPARE_TYPE.NOT_EQUAL);
 			config = config.substring(2, config.length());
 		} else if (config.startsWith("<")) {
-			result.setCompare(SQL.COMPARE_TYPE_LITTLE);
+			result.setCompare(SQL.COMPARE_TYPE.LITTLE);
 			config = config.substring(1, config.length());
 		} else if (config.startsWith("[") && config.endsWith("]")) {
 			//[1,2,3]或[1,2,3]:[1,2,3]
 			//id:[id:cd:{[1,2,3]}]
-			result.setCompare(SQL.COMPARE_TYPE_IN);
+			result.setCompare(SQL.COMPARE_TYPE.IN);
 			result.setParamFetchType(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT);
 			if(isKey){
 				config = config.substring(1,config.length()-1);
@@ -123,17 +123,17 @@ public class ConfigParser {
 			
 		} else if (config.startsWith("%")) {
 			if (config.endsWith("%")) {
-				result.setCompare(SQL.COMPARE_TYPE_LIKE);
+				result.setCompare(SQL.COMPARE_TYPE.LIKE);
 				config = config.substring(1, config.length()-1);
 			} else {
-				result.setCompare(SQL.COMPARE_TYPE_LIKE_SUBFIX);
+				result.setCompare(SQL.COMPARE_TYPE.LIKE_SUBFIX);
 				config = config.substring(1, config.length());
 			}
 		} else if (config.endsWith("%")) {
-			result.setCompare(SQL.COMPARE_TYPE_LIKE_PREFIX);
+			result.setCompare(SQL.COMPARE_TYPE.LIKE_PREFIX);
 			config = config.substring(0, config.length()-1);
 		} else {
-			result.setCompare(SQL.COMPARE_TYPE_EQUAL);
+			result.setCompare(SQL.COMPARE_TYPE.EQUAL);
 		}
 		result.setKey(config);
 		return result;

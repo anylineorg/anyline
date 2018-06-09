@@ -27,6 +27,7 @@ import org.anyline.config.db.Group;
 import org.anyline.config.db.GroupStore;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.entity.PageNavi;
 
 
@@ -56,6 +57,7 @@ public interface ConfigStore {
 	public ConfigStore addConditions(String key, Object value);
 	public ConfigStore addCondition(String key, Object value);
 	public ConfigStore addCondition(String key, Object value, boolean over);
+	//public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value);
 	/**
 	 * 添加排序
 	 * @param order
