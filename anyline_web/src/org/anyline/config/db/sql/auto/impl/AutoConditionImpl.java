@@ -111,9 +111,12 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 				text += "<> ?";
 			}else if(compare == SQL.COMPARE_TYPE.LITTLE_EQUAL){
 				text += "<= ?";
-			}else if(compare == SQL.COMPARE_TYPE.IN){
+			}else if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN){
+				if(compare == SQL.COMPARE_TYPE.NOT_IN){
+					text += " NOT";
+				}
+				text += " IN (";
 				if(values instanceof Collection){
-					text += "IN (";
 					Collection<Object> coll = (Collection)values;
 					int size = coll.size();
 					for(int i=0; i<size; i++){
