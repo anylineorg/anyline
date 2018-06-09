@@ -33,6 +33,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.MD5Util;
 import org.apache.log4j.Logger;
 
 public class CacheUtil {
@@ -270,13 +271,9 @@ public class CacheUtil {
 				List<Config> configs = chain.getConfigs();
 				if(null != configs){
 					for(Config config:configs){
-						String key = config.getKey();
 						List<Object> values = config.getValues();
 						if(null != values){
-							result += key+ "=";
-							for(Object value:values){
-								result += value.toString()+"|";
-							}
+							result += config.toString() + "|";
 						}
 					}	
 				}
@@ -305,6 +302,9 @@ public class CacheUtil {
 				}
 			}
 		}
-		return result;
+		if(ConfigTable.isDebug()){
+			log.warn("[create cache key][key:"+result+"]");
+		}
+		return MD5Util.crypto(result);
 	}
 }
