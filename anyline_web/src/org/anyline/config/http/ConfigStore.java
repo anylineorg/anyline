@@ -57,7 +57,7 @@ public interface ConfigStore {
 	public ConfigStore addConditions(String key, Object value);
 	public ConfigStore addCondition(String key, Object value);
 	public ConfigStore addCondition(String key, Object value, boolean over);
-	//public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value);
+	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value);
 	/**
 	 * 添加排序
 	 * @param order
