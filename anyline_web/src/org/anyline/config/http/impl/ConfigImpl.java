@@ -84,16 +84,26 @@ public class ConfigImpl implements Config{
 	}
 	public String toString(){
 		String str = "";
-//		str = "ID:"+ id +",KEY:"+key 
-//				+ ", COMPARE:"+compare
-//				+ ", REQUIRED:"+require
-//				+ ", EMPTY:"+empty
-//				+ ", VALUE:";
-//		if(null != values){
-//			for(Object value:values){
-//				str += " " + value;
-//			}
-//		}
+		str = "ID:"+ this.getId() +",KEY:"+this.getKey() 
+				+ ", COMPARE:"+this.getCompare().getCode()
+				+ ", VALUE:";
+		if(null != values){
+			for(Object value:values){
+				str += " " + value;
+			}
+		}
+		return str;
+	}
+	public String cacheKey(){
+		String str = "";
+		str = "ID:"+ this.getId() 
+				+ ", COMPARE:"+this.getCompare().getCode()
+				+ ", VALUE:";
+		if(null != values){
+			for(Object value:values){
+				str += " " + value;
+			}
+		}
 		return str;
 	}
 

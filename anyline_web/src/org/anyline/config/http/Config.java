@@ -88,4 +88,5 @@ public interface Config {
 	
 	public Object clone();
 	public String toString();
+	public String cacheKey();
 }
