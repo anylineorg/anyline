@@ -31,6 +31,7 @@ import org.anyline.config.db.GroupStore;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.impl.GroupImpl;
 import org.anyline.config.db.impl.GroupStoreImpl;
 import org.anyline.config.db.impl.OrderImpl;
@@ -167,6 +168,21 @@ public class ConfigStoreImpl implements ConfigStore{
 		chain.addConfig(conf);
 		return this;
 	}
+	
+	@Override
+	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value) {
+		Config conf = chain.getConfig(key);
+		if(null == conf){
+			conf = new ConfigImpl();
+			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
+			conf.setCompare(compare);
+		}
+		conf.setId(key);
+		conf.setValue(value);
+		chain.addConfig(conf);
+		return this;
+	}
+
 	@Override
 	public ConfigStore addCondition(String key, Object value){
 		return addCondition(key, value, false);
