@@ -37,13 +37,33 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 	
 	public ConfigChainImpl(){}
 	public String toString(){
-		String str = "";
+		String str = null;
 		if(null != configs){
 			for(Config conf:configs){
 				if(null == conf){
 					continue;
 				}
-				str += "." + conf.toString();
+				if(null == str){
+					str = conf.toString();
+				}else{
+					str += "," + conf.toString();
+				}
+			}
+		}
+		return str;
+	}
+	public String cacheKey(){
+		String str = null;
+		if(null != configs){
+			for(Config conf:configs){
+				if(null == conf){
+					continue;
+				}
+				if(null == str){
+					str = conf.cacheKey();
+				}else{
+					str += "," + conf.cacheKey();
+				}
 			}
 		}
 		return str;
@@ -63,7 +83,8 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 	}
 	public Config getConfig(String key){
 		for(Config conf: configs){
-			if(conf.getId().equals(key)){
+			String id = conf.getId();
+			if(null != id && id.equals(key)){
 				return conf;
 			}
 		}
@@ -73,6 +94,13 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 		configs.add(config);
 	}
 
+	public List<Object> getValues() {
+		List<Object> values = new ArrayList<Object>();
+		for(Config config:configs){
+			values.addAll(config.getValues());
+		}
+		return values;
+	}
 	/**
 	 * 赋值
 	 * @param request
