@@ -25,6 +25,8 @@ package org.anyline.config.db;
 import java.io.Serializable;
 import java.util.List;
 
+import org.anyline.config.db.SQL.COMPARE_TYPE;
+
 public interface SQLVariable extends Cloneable,Serializable{
 	public static final int VAR_TYPE_INDEX			= 0;		//根据下标区分 CD = ?
 	public static final int VAR_TYPE_KEY			= 1;		//根据KEY区分  CD = :CD
@@ -37,8 +39,8 @@ public interface SQLVariable extends Cloneable,Serializable{
 	public int getSignType();
 	public void setSignType(int signType);
 	public void init();
-	public int getCompare() ;
-	public void setCompare(int compare) ;
+	public COMPARE_TYPE getCompare() ;
+	public void setCompare(COMPARE_TYPE compare) ;
 	public void addValue(Object value);
 	public String getKey() ;
 	public void setKey(String key) ;

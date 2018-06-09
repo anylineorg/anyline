@@ -197,17 +197,17 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						}else if(var.getSignType() ==2){
 							replaceKey = "{" + var.getKey() + "}";
 						}
-						if(var.getCompare() == SQL.COMPARE_TYPE_LIKE){
+						if(var.getCompare() == SQL.COMPARE_TYPE.LIKE){
 							//CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%'
 							result = result.replace("'%"+replaceKey+"%'", creater.concat("'%'","?","'%'"));
 							addValues(varValues.get(0));
-						}else if(var.getCompare() == SQL.COMPARE_TYPE_LIKE_SUBFIX){
+						}else if(var.getCompare() == SQL.COMPARE_TYPE.LIKE_SUBFIX){
 							result = result.replace("'%"+replaceKey+"'", creater.concat("'%'","?"));
 							addValues(varValues.get(0));
-						}else if(var.getCompare() == SQL.COMPARE_TYPE_LIKE_PREFIX){
+						}else if(var.getCompare() == SQL.COMPARE_TYPE.LIKE_PREFIX){
 							result = result.replace("'"+replaceKey+"%'", creater.concat("?","'%'"));
 							addValues(varValues.get(0));
-						}else if(var.getCompare() == SQL.COMPARE_TYPE_IN){
+						}else if(var.getCompare() == SQL.COMPARE_TYPE.IN){
 							//多个值IN
 							String replaceDst = ""; 
 							for(Object tmp:varValues){

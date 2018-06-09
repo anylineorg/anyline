@@ -91,7 +91,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	 * @param	compare
 	 * 			比较方式
 	 */
-	public SQL addCondition(boolean requried, String column, Object value, int compare){
+	public SQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare){
 		if(null == chain){
 			chain = new AutoConditionChainImpl();
 		}

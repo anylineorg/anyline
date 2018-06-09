@@ -30,6 +30,7 @@ import org.anyline.config.db.GroupStore;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.GroupStoreImpl;
@@ -249,7 +250,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	 * @param	compare
 	 * 			比较方式
 	 */
-	public RunSQL addCondition(boolean requried, String column, Object value, int compare){
+	public RunSQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare){
 		Condition condition = new AutoConditionImpl(requried,column, value, compare);
 		if(null == conditionChain){
 			conditionChain = new AutoConditionChainImpl();

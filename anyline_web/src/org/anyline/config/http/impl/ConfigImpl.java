@@ -19,7 +19,6 @@
 
 package org.anyline.config.http.impl;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,13 +29,12 @@ import org.anyline.config.ConfigParser;
 import org.anyline.config.ParseResult;
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
-import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 
 public class ConfigImpl implements Config{
@@ -299,11 +297,11 @@ public class ConfigImpl implements Config{
 		parser.setKey(key);
 	}
 
-	public int getCompare() {
+	public COMPARE_TYPE getCompare() {
 		return parser.getCompare();
 	}
 
-	public void setCompare(int compare) {
+	public void setCompare(COMPARE_TYPE compare) {
 		parser.setCompare(compare);
 	}
 

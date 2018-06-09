@@ -129,7 +129,7 @@ public class ConfigStoreImpl implements ConfigStore{
 		if(null == conf){
 			conf = new ConfigImpl();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
-			conf.setCompare(SQL.COMPARE_TYPE_IN);
+			conf.setCompare(SQL.COMPARE_TYPE.IN);
 		}
 		conf.setId(key);
 		if(null != values && !(values instanceof Collection)){
@@ -156,7 +156,7 @@ public class ConfigStoreImpl implements ConfigStore{
 		if(null == conf){
 			conf = new ConfigImpl();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
-			conf.setCompare(SQL.COMPARE_TYPE_EQUAL);
+			conf.setCompare(SQL.COMPARE_TYPE.EQUAL);
 		}
 		conf.setId(key);
 		if(over){

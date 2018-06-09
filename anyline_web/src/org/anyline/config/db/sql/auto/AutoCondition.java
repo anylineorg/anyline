@@ -22,6 +22,7 @@ package org.anyline.config.db.sql.auto;
 import java.util.List;
 
 import org.anyline.config.db.Condition;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 
 
 /**
@@ -36,6 +37,6 @@ public interface AutoCondition extends  Condition{
 	public String getColumn() ;
 	public void setColumn(String column) ;
 	public void setValues(Object values) ;
-	public int getCompare() ;
-	public void setCompare(int compare) ;
+	public COMPARE_TYPE getCompare() ;
+	public void setCompare(COMPARE_TYPE compare) ;
 }

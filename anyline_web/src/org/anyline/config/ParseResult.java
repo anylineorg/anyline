@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 
 public class ParseResult {
 
@@ -28,7 +29,7 @@ public class ParseResult {
 	private boolean setEncrypt = false		; //是否已指定加密方式
 
 	private List<ParseResult> defs = new ArrayList<ParseResult>();	//默认值
-	private int compare = SQL.COMPARE_TYPE_EQUAL				; //比较方式			
+	private COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL				; //比较方式			
 	private String join = Condition.CONDITION_JOIN_TYPE_AND		; //连接方式
 	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE; //request取值方式
 	
@@ -45,10 +46,10 @@ public class ParseResult {
 	public void setRequired(boolean required) {
 		this.required = required;
 	}
-	public int getCompare() {
+	public COMPARE_TYPE getCompare() {
 		return compare;
 	}
-	public void setCompare(int compare) {
+	public void setCompare(COMPARE_TYPE compare) {
 		this.compare = compare;
 	}
 	public String getKey() {
