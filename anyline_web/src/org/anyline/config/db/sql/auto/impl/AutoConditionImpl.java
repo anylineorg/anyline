@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.BasicCondition;
 import org.anyline.config.db.sql.auto.AutoCondition;
@@ -41,7 +42,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	private static final long serialVersionUID = 7232219177277303525L;
 	private String column;		//列
 	private Object values;		//参数值
-	private int compare = SQL.COMPARE_TYPE_EQUAL;
+	private COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL;
 
 
 	public AutoConditionImpl(Config config){
@@ -64,7 +65,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	 * @param	compare
 	 * 			比较方式
 	 */
-	public AutoConditionImpl(boolean required, String column, Object values, int compare){
+	public AutoConditionImpl(boolean required, String column, Object values, COMPARE_TYPE compare){
 		setRequired(required);
 		setColumn(column);
 		setValues(values);
@@ -94,23 +95,23 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			text = this.text;
 		}else{
 			text = disKeyFr + column + diskeyTo;
-			if(compare == SQL.COMPARE_TYPE_EQUAL){
+			if(compare == SQL.COMPARE_TYPE.EQUAL){
 				if(null == getValue() || "NULL".equals(getValue())){
 					text += " IS NULL";
 				}else{
 					text += "= ?";
 				}
-			}else if(compare == SQL.COMPARE_TYPE_GREAT){
+			}else if(compare == SQL.COMPARE_TYPE.GREAT){
 				text += "> ?";
-			}else if(compare == SQL.COMPARE_TYPE_GREAT_EQUAL){
+			}else if(compare == SQL.COMPARE_TYPE.GREAT_EQUAL){
 				text += ">= ?";
-			}else if(compare == SQL.COMPARE_TYPE_LITTLE){
+			}else if(compare == SQL.COMPARE_TYPE.LITTLE){
 				text += "< ?";
-			}else if(compare == SQL.COMPARE_TYPE_NOT_EQUAL){
+			}else if(compare == SQL.COMPARE_TYPE.NOT_EQUAL){
 				text += "<> ?";
-			}else if(compare == SQL.COMPARE_TYPE_LITTLE_EQUAL){
+			}else if(compare == SQL.COMPARE_TYPE.LITTLE_EQUAL){
 				text += "<= ?";
-			}else if(compare == SQL.COMPARE_TYPE_IN){
+			}else if(compare == SQL.COMPARE_TYPE.IN){
 				if(values instanceof Collection){
 					text += "IN (";
 					Collection<Object> coll = (Collection)values;
@@ -125,21 +126,21 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 				}else{
 					text += "= ?";
 				}
-			}else if(compare == SQL.COMPARE_TYPE_LIKE){
+			}else if(compare == SQL.COMPARE_TYPE.LIKE){
 				text += " LIKE "+ creater.concat("'%'", "?" , "'%'");
-			}else if(compare == SQL.COMPARE_TYPE_LIKE_PREFIX){
+			}else if(compare == SQL.COMPARE_TYPE.LIKE_PREFIX){
 				text += " LIKE "+ creater.concat("?" , "'%'");
-			}else if(compare == SQL.COMPARE_TYPE_LIKE_SUBFIX){
+			}else if(compare == SQL.COMPARE_TYPE.LIKE_SUBFIX){
 				text += " LIKE "+ creater.concat("'%'", "?");
 			} 
 			text += "";
 			/*运行时参数*/
-			if(compare == SQL.COMPARE_TYPE_IN){
+			if(compare == SQL.COMPARE_TYPE.IN){
 				runValues = getValues();
 			}else{
 				Object value = getValue();
 				runValues = new ArrayList<Object>();
-				if((null == value || "NULL".equals(value)) && compare == SQL.COMPARE_TYPE_EQUAL){
+				if((null == value || "NULL".equals(value)) && compare == SQL.COMPARE_TYPE.EQUAL){
 				}else{
 					runValues.add(value);
 				}
@@ -185,10 +186,10 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	public void setValues(Object values) {
 		this.values = values;
 	}
-	public int getCompare() {
+	public COMPARE_TYPE getCompare() {
 		return compare;
 	}
-	public void setCompare(int compare) {
+	public void setCompare(COMPARE_TYPE compare) {
 		this.compare = compare;
 	}
 }

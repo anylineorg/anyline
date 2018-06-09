@@ -33,18 +33,33 @@ import org.anyline.entity.PageNavi;
 
 public interface SQL extends Cloneable,Serializable {
 
-	public static int COMPARE_TYPE_EQUAL 			= 10;	// ==
-	public static int COMPARE_TYPE_GREAT 			= 20;	// >
-	public static int COMPARE_TYPE_GREAT_EQUAL		= 21;	// >=
-	public static int COMPARE_TYPE_LITTLE 			= 30;	// <
-	public static int COMPARE_TYPE_LITTLE_EQUAL		= 31;	// <=
-	public static int COMPARE_TYPE_IN				= 40;	// IN
-	public static int COMPARE_TYPE_LIKE				= 50;	// LIKE '%张%'
-	public static int COMPARE_TYPE_LIKE_PREFIX		= 51;	// LIKE '张%'
-	public static int COMPARE_TYPE_LIKE_SUBFIX		= 52;	// LIKE '%张'
-	public static int COMPARE_TYPE_NOT_EQUAL		= 61;	// <>
-	public static int COMPARE_TYPE_NOT_IN			= 62;	// NOT IN
-	
+	public static enum COMPARE_TYPE{
+		EQUAL			{public int getCode(){return 10;} 	public String getName(){return "等于";}},
+		GREAT			{public int getCode(){return 20;} 	public String getName(){return "大于";}},
+		GREAT_EQUAL		{public int getCode(){return 21;} 	public String getName(){return "大于等于";}},
+		LITTLE			{public int getCode(){return 30;} 	public String getName(){return "小于";}},
+		LITTLE_EQUAL	{public int getCode(){return 31;} 	public String getName(){return "小于等于";}},
+		IN				{public int getCode(){return 40;} 	public String getName(){return "in";}},
+		LIKE			{public int getCode(){return 50;} 	public String getName(){return "%like%";}},
+		LIKE_PREFIX		{public int getCode(){return 51;} 	public String getName(){return "%like";}},
+		LIKE_SUBFIX		{public int getCode(){return 52;} 	public String getName(){return "like%";}},
+		NOT_EQUAL		{public int getCode(){return 62;} 	public String getName(){return "不等于";}},
+		NOT_IN			{public int getCode(){return 21;} 	public String getName(){return "不包含";}};
+		public abstract String getName();
+		public abstract int getCode();
+	}
+	//public static int COMPARE_TYPE_EQUAL 			= 10;	// ==
+//	public static int COMPARE_TYPE_GREAT 			= 20;	// >
+//	public static int COMPARE_TYPE_GREAT_EQUAL		= 21;	// >=
+//	public static int COMPARE_TYPE_LITTLE 			= 30;	// <
+//	public static int COMPARE_TYPE_LITTLE_EQUAL		= 31;	// <=
+//	public static int COMPARE_TYPE_IN				= 40;	// IN
+//	public static int COMPARE_TYPE_LIKE				= 50;	// LIKE '%张%'
+//	public static int COMPARE_TYPE_LIKE_PREFIX		= 51;	// LIKE '张%'
+//	public static int COMPARE_TYPE_LIKE_SUBFIX		= 52;	// LIKE '%张'
+//	public static int COMPARE_TYPE_NOT_EQUAL		= 61;	// <>
+//	public static int COMPARE_TYPE_NOT_IN			= 62;	// NOT IN
+//	
 	public static final String PROCEDURE_INPUT_PARAM_TYPE = "INPUT_PARAM_TYPE";			//存储过程输入参数类型
 	public static final String PROCEDURE_INPUT_PARAM_VALUE = "INPUT_PARAM_VALUE";		//存储过程输入参数值
 

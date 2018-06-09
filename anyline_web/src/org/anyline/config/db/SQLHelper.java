@@ -2,10 +2,9 @@ package org.anyline.config.db;
 
 import java.util.List;
 
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.impl.SQLVariableImpl;
-import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class SQLHelper {
 
@@ -85,7 +84,7 @@ public class SQLHelper {
 	 */
 	public static SQLVariable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar){
 		int varType = -1;
-		int compare = SQL.COMPARE_TYPE_EQUAL;
+		COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL;
 		if(null == afterChar){
 			afterChar = "";
 		}
@@ -110,17 +109,17 @@ public class SQLHelper {
 			//AND CD LIKE '%:CD%'
 			varType = SQLVariable.VAR_TYPE_KEY;
 			if(prefix.endsWith("%") && afterChar.startsWith("%")){
-				compare = SQL.COMPARE_TYPE_LIKE;
+				compare = SQL.COMPARE_TYPE.LIKE;
 			}else if(prefix.endsWith("%")){
-				compare = SQL.COMPARE_TYPE_LIKE_PREFIX;
+				compare = SQL.COMPARE_TYPE.LIKE_PREFIX;
 			}else if(afterChar.startsWith("%")){
-				compare = SQL.COMPARE_TYPE_LIKE_SUBFIX;
+				compare = SQL.COMPARE_TYPE.LIKE_SUBFIX;
 			}
 		}else{
 			varType = SQLVariable.VAR_TYPE_KEY;
 			if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
 				//AND CD IN({CD})
-				compare = SQL.COMPARE_TYPE_IN;
+				compare = SQL.COMPARE_TYPE.IN;
 			}
 		}
 		var.setSignType(signType);

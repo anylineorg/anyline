@@ -27,6 +27,7 @@ import org.anyline.config.db.Condition;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.impl.SQLVariableImpl;
@@ -97,7 +98,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		try{
 			int varType = -1;
-			int compare = SQL.COMPARE_TYPE_EQUAL;
+			COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL;
 			List<List<String>> keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX, RegularUtil.MATCH_MODE_CONTAIN);
 			if(BasicUtil.isNotEmpty(true,keys)){
 				//AND CD = :CD
@@ -120,7 +121,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						varType = SQLVariable.VAR_TYPE_KEY;
 						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){
 							//AND CD IN(:CD)
-							compare = SQL.COMPARE_TYPE_IN;
+							compare = SQL.COMPARE_TYPE.IN;
 						}
 					}
 					SQLVariable var = new SQLVariableImpl();
@@ -192,7 +193,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					// CD = :CD
 					List<Object> varValues = var.getValues();
 					if(BasicUtil.isNotEmpty(true, varValues)){
-						if(var.getCompare() == SQL.COMPARE_TYPE_IN){
+						if(var.getCompare() == SQL.COMPARE_TYPE.IN){
 							//多个值IN
 							String replaceSrc = ":"+var.getKey();
 							String replaceDst = ""; 
@@ -399,7 +400,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 * @param	compare
 	 * 			比较方式
 	 */
-	public RunSQL addCondition(boolean requried, String column, Object value, int compare){
+	public RunSQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare){
 		Condition condition = new AutoConditionImpl(requried,column, value, compare);
 		if(null == conditionChain){
 			conditionChain = new AutoConditionChainImpl();
