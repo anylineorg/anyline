@@ -87,7 +87,7 @@ public class ConfigTable {
 		return result;
 	}
 	public static void init() {
-		log.warn("IS LOAD:"+isLoad);
+		//log.warn("IS LOAD:"+isLoad);
 		if(isLoad){
 			return;
 		}

@@ -126,7 +126,7 @@ public class HttpUtil {
 		return src;
 	}
 	public static String get(String url){
-		String flag = "";
+		String flag = url;
 		long fr = 0;
 		if(ConfigTable.isDebug()){
 			flag = System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
@@ -164,7 +164,9 @@ public class HttpUtil {
                 e2.printStackTrace();
             }
         }
-        log.warn("[GET:" + flag + "][耗时:" + (System.currentTimeMillis()-fr) + "ms]");
+        if(ConfigTable.isDebug()){
+        	log.warn("[GET:" + flag + "][耗时:" + (System.currentTimeMillis()-fr) + "ms]");
+        }
 		return builder.toString();
 	}
 	public static HttpUtil getInstance() {
