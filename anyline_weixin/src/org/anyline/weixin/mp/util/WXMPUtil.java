@@ -23,6 +23,7 @@ import org.anyline.weixin.mp.entity.WXMPPayRefund;
 import org.anyline.weixin.mp.entity.WXMPPayRefundResult;
 import org.anyline.weixin.mp.entity.WXMPPayTradeOrder;
 import org.anyline.weixin.mp.entity.WXMPPayTradeResult;
+import org.anyline.weixin.open.entity.WXOpenPayRefundResult;
 import org.anyline.weixin.util.WXUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
@@ -126,8 +127,19 @@ public class WXMPUtil {
 			log.warn("退款申请XML:" + xml);
 			log.warn("证书:"+config.KEY_STORE_FILE);
 		}
+
+		File keyStoreFile = new File(config.KEY_STORE_FILE);
+		if(!keyStoreFile.exists()){
+			log.warn("密钥文件不存在:"+config.KEY_STORE_FILE);
+			return new WXMPPayRefundResult(false,"密钥文件不存在");
+		}
+		String keyStorePassword = config.KEY_STORE_PASSWORD;
+		if(BasicUtil.isEmpty(keyStorePassword)){
+			log.warn("未设置密钥文件密码");
+			return new WXMPPayRefundResult(false,"未设置密钥文件密码");
+		}
 		try{
-			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(new File(config.KEY_STORE_FILE), HttpClientUtil.PROTOCOL_TLSV1, config.KEY_STORE_PASSWORD);
+			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml);
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpClientUtil.post(httpclient, WXBasicConfig.REFUND_URL, "UTF-8", reqEntity).getText();
@@ -137,6 +149,7 @@ public class WXMPUtil {
             result = BeanUtil.xml2object(txt, WXMPPayRefundResult.class);
 		}catch(Exception e){
 			e.printStackTrace();
+			return new WXMPPayRefundResult(false,e.getMessage());
 		}
 		return result;
 	}
