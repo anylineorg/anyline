@@ -1155,7 +1155,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 	}
 
-	public DataSet union(DataSet set, String chkCol) {
+	public DataSet union(DataSet set, String ... keys) {
 		DataSet result = new DataSet();
 		if (null != rows) {
 			int size = rows.size();
@@ -1163,21 +1163,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				result.add(rows.get(i));
 			}
 		}
-		if (null == chkCol) {
-			chkCol = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+		if (null == keys || keys.length==0) {
+			keys = new String[1];
+			keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 		}
 		int size = set.size();
 		for (int i = 0; i < size; i++) {
 			DataRow item = set.getRow(i);
-			if (!result.contains(item, chkCol)) {
+			if (!result.contains(item, keys)) {
 				result.add(item);
 			}
 		}
 		return result;
-	}
-
-	public DataSet union(DataSet set) {
-		return union(set, ConfigTable.getString("DEFAULT_PRIMARY_KEY"));
 	}
 	/**
 	 * 合并
@@ -1268,8 +1265,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		result.dispatchItems(this, keys);
 		return result;
 	}
-	public DataSet or(DataSet set){
-		return this.union(set);
+	public DataSet or(DataSet set, String ... keys){
+		return this.union(set, keys);
 	}
 	/**
 	 * 交集
