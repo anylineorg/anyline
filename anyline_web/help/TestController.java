@@ -439,6 +439,44 @@ public class TestController extends BasicController {
 		set.concatNvl("age",",")						; // 连接字符串 null转换为""
 		set.concatWithoutEmpty("age",",")				; // 不包含null与""
 		set.concatWithoutNull("age",",")				; // 不包含null
+		set.regex("name", "正则表达式")						; //	
+		DataSet.parseJson("json格式")						; //
+		
+		//DataRow 方法
+		row.put("age", 20)								; //
+		row.getString("name")							; //
+		row.getStringNvl("name")						; // 如果name=null返回"abc"
+		row.getBoolean(key, false)						; //
+		row.getDate("date")								; //
+		row.getDecimal("price")							; //
+		row.getDouble("");
+		row.getInt("");
+		row.getLong("");
+		row.getRow("")									; // convert to DataRow
+		row.getList("")									; // convert to List
+		row.getSet("")									; // convert to DataSet
+		row.isEmpty("name")								; // name值是否== null或"" 
+		row.isNotEmpty("name")							; //
+		row.isNull("name")								; // name值是否 == null
+		row.isNotNull("name")							; //
+		row.merge(row,over)								; // 合并, over:是否覆盖
+		row.isExpire(100)								; // 从创建到现在是否超过100毫秒
+		row.containsKey("name")							; // 是否包含name列
+		row.hasKey("name")								; // 是否包含name列
+		row.keys()										; // key列表
+		row.toJSON();
+		row.toXML();
+		row.isFromCache()								; // 是否来自缓存(相对直接从数据库中查询)
+		row.isNew()										; // 是否是新数据(相对从数据库中查询数据)
+		row.addAllUpdateColumns()						; // 手动设置更新所有列
+		row.addUpdateColumns("name","age")				; // 手动增加需要更新的列 
+		row.clearUpdateColumns()						; // 清空需要更新的列(不是清空value,经常用在addUpdateColumns之前)
+		row.setPrimaryKey("id")							; // 设置主键(影响数据库更新操作)
+		row.addPrimaryKey("id")							; // 添加主键
+		row.formatDate("yyyy-MM-dd", "date","birthday")	; // 日期格式化
+		row.formatNumber("0.00", "price")				; // 数字格式化
+		DataRow.parseJson("json格式")						; //
+		
 		//BasicUtil的方法
 		//DateUtil
 		//FileUtil

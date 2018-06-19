@@ -267,6 +267,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+	public boolean isNull(String key){
+		Object obj = get(key);
+		return obj == null;
+	}
+	public boolean isNotNull(String key){
+		return ! isNull(key);
+	}
 	public boolean isEmpty(String key){
 		Object obj = get(key);
 		return BasicUtil.isEmpty(obj); 
@@ -554,8 +561,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public boolean has(String key){
 		return get(key) != null;
 	}
-	public boolean containsKey(String key){
+	public boolean hasValue(String key){
 		return get(key) != null;
+	}
+	public boolean hasKey(String key){
+		return keys().contains(key);
+	}
+	public boolean containsKey(String key){
+		return keys().contains(key);
 	}
 	public List<String> keys(){
 		List<String> keys = new ArrayList<String>();
