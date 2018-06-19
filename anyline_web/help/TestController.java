@@ -384,32 +384,61 @@ public class TestController extends BasicController {
 		
 		 
 		//set的几个方法
+		DataSet set1 = new DataSet();
+		DataRow row = new DataRow();
 		set.getRow(0);
-		set.getRows("name:ljs","age:1");				//符合条件的行
-		set.getRows("name","ljs", "age","1");
-		set.getRows(0, 5);
-		set.sum("id");
-		set.avg("age");
-		set.contains(new DataRow());
-		set.union(new DataSet(),"id");
-		set.unionAll(new DataSet());
-		set.difference(new DataSet(), "id");
-		set.or(new DataSet());
-		set.distinct("id","name");
-		set.fetchValues("name");
-		set.fetchDistinctValue("name");
-		set.max("gae");
-		set.min("age");
-		set.minRow("age");
-		set.maxRow("age");
-		set.order("age");
-		set.isExpire(1000*60*60);								//从创建到现在是否已超过ms毫秒 (DataRow有相同函数)
-		set.toJSON();
-		set.dispatchItems(new DataSet(), "id","name");
-		set.group("id", "name");
+		set.getRows("name:a","age:1")					; // where name = 'a' and age = 1
+		set.getRows("name","a", "age","1")				; // where name = 'a' and age = 1
+		set.getRows(0, 5)								; // 取0-5行
+		set.cut(0,10)									; // 截断集合,会修改set本身
+		set.sum("price")								;
+		set.avg("age")									;
+		set.contains(row)								; // set 中是否包含
+		set.union(set1,"id")							; // 合集(不重复)
+		set.unionAll(set1)								; // 合集(重复)
+		set.difference(set1, "id")						; // 差集
+		set.intersection(set1, "id")					; // 交集
+		set.or(set1,"id")								; // union
+		set.distinct("id","name")						; // select distinct id, name from set
+		set.unique("id","name")							; // select distinct id, name from set
+		set.fetchValues("name")							; // 取单列值集合
+		set.fetchDistinctValue("name")					; // 取单列不重复的值
+		set.max("gae")									; // age最大的一行
+		set.min("age")									; // age最小的一行
+		set.asc("age")									; // 正序
+		set.desc("age")									; // 倒序
+		set.isExpire(1000*60*60)						; // 从创建到现在是否已超过ms毫秒 (DataRow有相同函数)
+		set.toJSON()									;
+		set.dispatchItems("items",set1, "id","name")	; // 按id,name分组,结果存放到items中
+		set.group("id", "name")							; // 按id,name分组set.dispatchItems(set, "id","name")
 		
-		
-		
+		set.equals("id","2")							; // where id = 2
+		set.equalsIgnoreCase("name","abc")				; // 不区分大小 写
+		set.notEquals("id","2")							;
+		set.notEqualsIgnoreCase("id","2")				;				
+		set.contains("name","zh")						; // where name like '%zh%'
+		set.like("name","%zh%")							;
+		set.startWith("name","zh")						;
+		set.endWith("name", "zh")						;
+		set.in("age","11","12")							; // where age in(11,12)
+		set.inIgnoreCase("name","a","b")				;
+		set.notIn("age","11")							;
+		set.notInIgnoreCase("name","a","b")				;
+		set.isNull("name","age")						; // where name is null and age is null
+		set.isNotNull("name")							;
+		set.isEmpty("name")								; // where name is null or name = ''
+		set.isNotEmpty("name")							; // where name is not null and name != ''
+		set.less("age", "11")							; // where age < 11
+		set.lessEqual("age", "11")						; // where age <= 11
+		set.greater("age", "11")						; // where age > 11
+		set.greaterEqual("age", "11")					; // where age >= 11
+		set.between("age", "10", "20")					; // where age >= 10 and age <=20	
+		set.random()									; // 随机取一行
+		set.randoms(10)									; // 随机取10行
+		set.concat("age",",")							; // 连接字符串  11,12,20
+		set.concatNvl("age",",")						; // 连接字符串 null转换为""
+		set.concatWithoutEmpty("age",",")				; // 不包含null与""
+		set.concatWithoutNull("age",",")				; // 不包含null
 		//BasicUtil的方法
 		//DateUtil
 		//FileUtil

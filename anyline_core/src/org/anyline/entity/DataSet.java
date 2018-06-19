@@ -521,8 +521,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 	public DataSet getRows(int fr, int to) {
 		DataSet set = new DataSet();
-		for (int i = fr; i < this.size() && i <= to; i++) {
-			set.addRow(this.getRow(i));
+		int size = this.size();
+		if(fr < 0){
+			fr = 0;
+		}
+		for (int i = fr; i < size && i <= to; i++) {
+			set.addRow(getRow(i));
 		}
 		return set;
 	}
@@ -799,6 +803,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			result.add(value);
 		}
 		return result;
+	}
+	public List<String> fetchDistinctValues(String key) {
+		return fetchDistinctValue(key);
 	}
 
 	/**
