@@ -1885,8 +1885,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		set.cloneProperty(this);
 		return set;
 	}
-	public DataSet empty(String keys){
-		return isEmpty(keys);
+	public DataSet empty(String key){
+		return isEmpty(key);
 	}
 	public DataSet isEmpty(String ... keys){
 		DataSet set = this;
