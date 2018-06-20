@@ -44,24 +44,25 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
 	private static Logger log = Logger.getLogger(DataRow.class);
 
-	public static String PARENT 		= "PARENT"					; //上级数据
-	public static String ALL_PARENT 	= "ALL_PARENT"				; //所有上级数据
-	public static String CHILDREN 		= "CHILDREN"				; //子数据
-	public static String PRIMARY_KEY	= ConfigTable.getString("DEFAULT_PRIMARY_KEY","id");
-	public static String ITEMS			= "ITEMS"					;
-	private DataSet container			= null						; //包含当前对象的容器
+	public static String PARENT 		=	 "PARENT"						; //上级数据
+	public static String ALL_PARENT 		= "ALL_PARENT"					; //所有上级数据
+	public static String CHILDREN 			= "CHILDREN"					; //子数据
+	public static String PRIMARY_KEY		= ConfigTable.getString("DEFAULT_PRIMARY_KEY","id");
+	public static String ITEMS				= "ITEMS"						;
+	private DataSet container				= null							; //包含当前对象的容器
 
-	private List<String> primaryKeys 	= new ArrayList<String>()	; //主键
-	private List<String> updateColumns 	= new ArrayList<String>()	;
-	private String dataSource			= null 						; //数据源(表|视图|XML定义SQL)
-	private String schema				= null						;
-	private String table				= null						;
-	private Object clientTrace			= null						; //客户端数据
-	private long createTime 			= 0							; //创建时间
-	private long expires 				= -1						; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+	private List<String> primaryKeys 		= new ArrayList<String>()		; //主键
+	private List<String> updateColumns 		= new ArrayList<String>()		;
+	private String dataSource				= null 							; //数据源(表|视图|XML定义SQL)
+	private String schema					= null							;
+	private String table					= null							;
+	private Map<String, Object> conditions 	= new HashMap<String,Object>()	;//查询条件
+	private Object clientTrace				= null							; //客户端数据
+	private long createTime 				= 0								; //创建时间
+	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+	protected Boolean isNew 				= false							; //强制新建(适应hibernate主键策略)
+	protected boolean isFromCache 			= false							; //是否来自缓存
 	
-	protected Boolean isNew 			= false						; //强制新建(适应hibernate主键策略)
-	protected boolean isFromCache 		= false						; //是否来自缓存
 	
 	/**
 	 * 
@@ -172,11 +173,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public long getExpires() {
 		return expires;
 	}
-	public void setExpires(long millisecond) {
+	public DataRow setExpires(long millisecond) {
 		this.expires = millisecond;
+		return this;
 	}
-	public void setExpires(int millisecond) {
+	public DataRow setExpires(int millisecond) {
 		this.expires = millisecond;
+		return this;
 	}
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
@@ -198,8 +201,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public boolean isFromCache(){
 		return isFromCache;
 	}
-	public void setIsFromCache(boolean bol){
+	public DataRow setIsFromCache(boolean bol){
 		this.isFromCache = bol;
+		return this;
 	}
 	public String getCd(){
 		return getString("cd");
@@ -226,8 +230,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return null;
 	}
-	public void putItems(Object obj){
+	public DataRow putItems(Object obj){
 		put(ITEMS,obj);
+		return this;
 	}
 	/**
 	 * 数字格式化
@@ -473,9 +478,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * 当前对象处于容器中时,设置容器数据源
 	 * @param dataSource
 	 */
-	public void setDataSource(String dataSource){
+	public DataRow setDataSource(String dataSource){
 		if(null == dataSource){
-			return;
+			return this;
 		}
 		if(null  != getContainer()){
 			getContainer().setDataSource(dataSource);
@@ -486,6 +491,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				table = dataSource.substring(dataSource.indexOf(".") + 1);
 			}
 		}
+		return this;
 	}
 	/**
 	 * 子类
@@ -494,8 +500,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public Object getChildren(){
 		return get(CHILDREN);
 	}
-	public void setChildren(Object children){
+	public DataRow setChildren(Object children){
 		put(CHILDREN, children);
+		return this;
 	}
 	/**
 	 * 父类
@@ -504,8 +511,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public Object getParent(){
 		return get(PARENT);
 	}
-	public void setParent(Object parent){
+	public DataRow setParent(Object parent){
 		put(PARENT,parent);
+		return this;
 	}
 	/**
 	 * 所有上级数据(递归)
@@ -578,7 +586,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return keys;
 	}
 	@Override
-	public Object put(String key, Object value){
+	public DataRow put(String key, Object value){
 		if(null != key){
 			key = key(key);
 			String oldValue = getString(key)+"";
@@ -802,14 +810,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataSet getContainer() {
 		return container;
 	}
-	public void setContainer(DataSet container) {
+	public DataRow setContainer(DataSet container) {
 		this.container = container;
+		return this;
 	}
 	public Object getClientTrace() {
 		return clientTrace;
 	}
-	public void setClientTrace(Object clientTrace) {
+	public DataRow setClientTrace(Object clientTrace) {
 		this.clientTrace = clientTrace;
+		return this;
 	}
 	public String getSchema() {
 		if(null != schema){
@@ -823,8 +833,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			}
 		}
 	}
-	public void setSchema(String schema) {
+	public DataRow setSchema(String schema) {
 		this.schema = schema;
+		return this;
 	}
 	public String getTable() {
 		if(null != table){
@@ -838,7 +849,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			}
 		}
 	}
-	public void setTable(String table) {
+	public DataRow setTable(String table) {
 		if(null != table && table.contains(".")){
 			String[] tbs = table.split("\\.");
 			this.table = tbs[1];
@@ -846,6 +857,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}else{
 			this.table = table;
 		}
+		return this;
 	}
 	/**
 	 * 验证是否过期
@@ -895,8 +907,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public Boolean getIsNew() {
 		return isNew;
 	}
-	public void setIsNew(Boolean isNew) {
+	public DataRow setIsNew(Boolean isNew) {
 		this.isNew = isNew;
+		return this;
 	}
 	public List<String> getUpdateColumns() {
 		return updateColumns;
@@ -986,5 +999,20 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			key = key.toUpperCase();
 		}
 		return key;
+	}
+	public Map<String, Object> getConditions() {
+		return conditions;
+	}
+	public DataRow setConditions(Map<String, Object> conditions) {
+		this.conditions = conditions;
+		return this;
+	}
+	public Object getCondition(String key){
+		return conditions.get(key);
+	}
+
+	public DataRow addCondition(String key, Object condition) {
+		conditions.put(key,condition);
+		return this;
 	}
 }
