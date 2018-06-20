@@ -63,7 +63,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	private boolean isFromCache		= false		; //是否来自缓存
 	private boolean isAsc			= false		;
 	private boolean isDesc			= false		;
-	private Map<String, Object> conditions 	= new HashMap<String,Object>()	;//查询条件
+	private Map<String, Object> queryParams 	= new HashMap<String,Object>()	;//查询条件
 	
 	/**
 	 * 创建索引
@@ -2125,19 +2125,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet regex(String key, String regex){
 		return regex(key, regex, RegularUtil.MATCH_MODE_MATCH);
 	}
-	public Map<String, Object> getConditions() {
-		return conditions;
+	public Map<String, Object> getQueryParams() {
+		return queryParams;
 	}
-	public DataSet setConditions(Map<String, Object> conditions) {
-		this.conditions = conditions;
+	public DataSet setQueryParams(Map<String, Object> params) {
+		this.queryParams = params;
 		return this;
 	}
-	public Object getCondition(String key){
-		return conditions.get(key);
+	public Object getQueryParam(String key){
+		return queryParams.get(key);
 	}
 
-	public DataSet addCondition(String key, Object condition) {
-		conditions.put(key,condition);
+	public DataSet addQueryParam(String key, Object param) {
+		queryParams.put(key,param);
 		return this;
 	}
 }

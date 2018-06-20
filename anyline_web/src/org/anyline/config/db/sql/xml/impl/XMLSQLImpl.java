@@ -357,4 +357,8 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 	public String getTable() {
 		return null;
 	}
+	@Override
+	public List<String> getColumns() {
+		return null;
+	}
 }

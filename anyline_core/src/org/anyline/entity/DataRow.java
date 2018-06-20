@@ -44,7 +44,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
 	private static Logger log = Logger.getLogger(DataRow.class);
 
-	public static String PARENT 		=	 "PARENT"						; //上级数据
+	public static String PARENT 			= "PARENT"						; //上级数据
 	public static String ALL_PARENT 		= "ALL_PARENT"					; //所有上级数据
 	public static String CHILDREN 			= "CHILDREN"					; //子数据
 	public static String PRIMARY_KEY		= ConfigTable.getString("DEFAULT_PRIMARY_KEY","id");
@@ -56,7 +56,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private String dataSource				= null 							; //数据源(表|视图|XML定义SQL)
 	private String schema					= null							;
 	private String table					= null							;
-	private Map<String, Object> conditions 	= new HashMap<String,Object>()	;//查询条件
+	private Map<String, Object> queryParams	= new HashMap<String,Object>()	; //查询条件
 	private Object clientTrace				= null							; //客户端数据
 	private long createTime 				= 0								; //创建时间
 	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
@@ -1000,25 +1000,26 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return key;
 	}
-	public Map<String, Object> getConditions() {
-		if(conditions.isEmpty()){
-			return container.getConditions();
+	public Map<String, Object> getQueryParams() {
+		if(queryParams.isEmpty()){
+			return container.getQueryParams();
 		}
-		return conditions;
+		return queryParams;
 	}
-	public DataRow setConditions(Map<String, Object> conditions) {
-		this.conditions = conditions;
+	public DataRow setQueryParams(Map<String, Object> queryParams) {
+		this.queryParams = queryParams;
 		return this;
 	}
-	public Object getCondition(String key){
-		if(conditions.isEmpty()){
-			return container.getConditions().get(key);
+	public Object getQueryParam(String key){
+		if(queryParams.isEmpty()){
+			return container.getQueryParams().get(key);
 		}
-		return conditions.get(key);
+		return queryParams.get(key);
 	}
 
-	public DataRow addCondition(String key, Object condition) {
-		conditions.put(key,condition);
+	public DataRow addQueryParam(String key, Object param) {
+		queryParams.put(key,param);
 		return this;
 	}
+	
 }

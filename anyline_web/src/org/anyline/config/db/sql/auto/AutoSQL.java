@@ -79,5 +79,4 @@ public interface AutoSQL extends SQL{
 	public void setSchema(String schema) ;
 	public void setTable(String table) ;
 	public String getDistinct();
-	public List<String> getColumns();
 }
