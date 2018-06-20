@@ -271,7 +271,7 @@ public class ConfigStoreImpl implements ConfigStore{
 		}
 		orders.order(order);
 		if(null != navi){
-			navi.order(order.getColumn(), order.getType());
+			navi.order(order.getColumn(), order.getType().getCode());
 		}
 		return this;
 	}

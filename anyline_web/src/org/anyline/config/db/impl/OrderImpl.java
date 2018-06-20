@@ -20,14 +20,13 @@
 package org.anyline.config.db.impl;
 
 import org.anyline.config.db.Order;
+import org.anyline.config.db.SQL;
 import org.anyline.util.BasicUtil;
 
 public class OrderImpl implements Order{
 	private static final long serialVersionUID = -765229283714551699L;
-	public static final String ORDER_TYPE_ASC = "ASC";
-	public static final String ORDER_TYPE_DESC = "DESC";
-	private String column;						//排序列
-	private String type = ORDER_TYPE_ASC;		//排序方式
+	private String column;									//排序列
+	private SQL.ORDER_TYPE type = SQL.ORDER_TYPE.ASC;		//排序方式
 	
 	public OrderImpl(){}
 	public OrderImpl(String str){
@@ -47,7 +46,15 @@ public class OrderImpl implements Order{
 			col = str;
 		}
 		this.column = col;
-		this.type = typ;
+		if(typ.equalsIgnoreCase("ASC")){
+			this.type = SQL.ORDER_TYPE.ASC;
+		}else{
+			this.type = SQL.ORDER_TYPE.DESC;
+		}
+	}
+	public OrderImpl(String column, SQL.ORDER_TYPE type){
+		setColumn(column);
+		setType(type);
 	}
 	public OrderImpl(String column, String type){
 		setColumn(column);
@@ -61,14 +68,23 @@ public class OrderImpl implements Order{
 			this.column = column.trim();
 		}
 	}
-	public String getType() {
+	public SQL.ORDER_TYPE getType() {
 		return type;
 	}
-	public void setType(String type) {
-		this.type = BasicUtil.nvl(type,this.type,"").toString().trim();
+	public void setType(SQL.ORDER_TYPE type) {
+		this.type = type;
 	}
 	public Object clone() throws CloneNotSupportedException{
 		OrderImpl clone = (OrderImpl)super.clone();
 		return clone;
 	}
+	@Override
+	public void setType(String type) {
+		if("DESC".equalsIgnoreCase(type)){
+			this.type = SQL.ORDER_TYPE.DESC;
+		}else{
+			this.type = SQL.ORDER_TYPE.ASC;
+		}
+	}
+	
 }

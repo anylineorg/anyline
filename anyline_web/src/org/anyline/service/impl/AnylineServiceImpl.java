@@ -29,6 +29,8 @@ import net.sf.ehcache.Element;
 
 import org.anyline.cache.CacheUtil;
 import org.anyline.cache.PageLazyStore;
+import org.anyline.config.db.Order;
+import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQL.ORDER_TYPE;
@@ -88,7 +90,6 @@ public class AnylineServiceImpl implements AnylineService {
 			setPageLazy(src, configs, conditions);
 			SQL sql = createSQL(src);
 			set = dao.query(ds, sql, configs, conditions);
-			set.addCondition("query_config", configs).addCondition("query_condition", conditions);
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
@@ -427,7 +428,7 @@ public class AnylineServiceImpl implements AnylineService {
 
 	@Override
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions) {
-		
+		//查询条件
 		if(null == configs){
 			configs = (ConfigStore)row.getCondition("query_config");
 		}
@@ -436,6 +437,18 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		if(null == conditions){
 			conditions = (String[])row.getCondition("query_condition");
+		}
+		//排序列
+		if(BasicUtil.isEmpty(column)){
+			OrderStore orderStore = (OrderStore)row.getCondition("query_orders");
+			if(null != orderStore){
+				List<Order> orders = orderStore.getOrders();
+				if(null != orders && orders.size()>0){
+					Order od = orders.get(0);
+					order = od.getType();
+					column = od.getColumn();
+				}
+			}
 		}
 		if(BasicUtil.isEmpty(column)){
 			column = row.getPrimaryKey();
@@ -471,17 +484,17 @@ public class AnylineServiceImpl implements AnylineService {
 		return next(row, null, order, null, conditions);
 	}
 	@Override
-	public DataRow next(DataRow row, String column, String... conditions) {
-		return next(row, column, SQL.ORDER_TYPE.DESC, null, conditions);
-	}
-	@Override
-	public DataRow next(DataRow row, String... conditions) {
+	public DataRow next(DataRow row,  String... conditions) {
 		return next(row, null, SQL.ORDER_TYPE.DESC, null, conditions);
 	}
 
 	@Override
+	public DataRow next(DataRow row, ConfigStore configs, String... conditions) {
+		return next(row, null, SQL.ORDER_TYPE.DESC, configs, conditions);
+	}
+	@Override
 	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions) {
-		
+		//查询条件
 		if(null == configs){
 			configs = (ConfigStore)row.getCondition("query_config");
 		}
@@ -490,6 +503,18 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		if(null == conditions){
 			conditions = (String[])row.getCondition("query_condition");
+		}
+		//排序列
+		if(BasicUtil.isEmpty(column)){
+			OrderStore orderStore = (OrderStore)row.getCondition("query_orders");
+			if(null != orderStore){
+				List<Order> orders = orderStore.getOrders();
+				if(null != orders && orders.size()>0){
+					Order od = orders.get(0);
+					order = od.getType();
+					column = od.getColumn();
+				}
+			}
 		}
 		if(BasicUtil.isEmpty(column)){
 			column = row.getPrimaryKey();
@@ -525,12 +550,12 @@ public class AnylineServiceImpl implements AnylineService {
 		return prev(row, null, order, null, conditions);
 	}
 	@Override
-	public DataRow prev(DataRow row, String column, String... conditions) {
-		return prev(row, column, SQL.ORDER_TYPE.DESC, null, conditions);
-	}
-	@Override
 	public DataRow prev(DataRow row, String... conditions) {
 		return prev(row, null, SQL.ORDER_TYPE.DESC, null, conditions);
+	}
+	@Override
+	public DataRow prev(DataRow row, ConfigStore configs, String... conditions) {
+		return prev(row, null, SQL.ORDER_TYPE.DESC, configs, conditions);
 	}
 	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 		//是否启动缓存

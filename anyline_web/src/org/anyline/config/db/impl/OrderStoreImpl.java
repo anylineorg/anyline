@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
+import org.anyline.config.db.SQL;
 import org.anyline.util.BasicUtil;
 
 public class OrderStoreImpl implements OrderStore{
@@ -44,7 +45,7 @@ public class OrderStoreImpl implements OrderStore{
 		}
 	}
 
-	public void order(String col, String type) {
+	public void order(String col, SQL.ORDER_TYPE type) {
 		order(new OrderImpl(col, type));
 	}
 	/**
