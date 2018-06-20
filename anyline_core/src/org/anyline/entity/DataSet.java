@@ -63,6 +63,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	private boolean isFromCache		= false		; //是否来自缓存
 	private boolean isAsc			= false		;
 	private boolean isDesc			= false		;
+	private Map<String, Object> conditions 	= new HashMap<String,Object>()	;//查询条件
 	
 	/**
 	 * 创建索引
@@ -110,7 +111,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * 
 	 * @param parmary
 	 */
-	public void addPrimary(String ... pks){
+	public DataSet addPrimary(String ... pks){
 		if(null != pks){
 			List<String> list = new ArrayList<String>();
 			for(String pk:pks){
@@ -118,13 +119,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			}
 			addPrimary(list);
 		}
+		return this;
 	}
-	public void addPrimary(Collection<String> pks) {
+	public DataSet addPrimary(Collection<String> pks) {
 		if (null == this.primaryKeys) {
 			this.primaryKeys = new ArrayList<String>();
 		}
 		if (null == pks) {
-			return;
+			return this;
 		}
 		for (String item : pks) {
 			if (BasicUtil.isEmpty(item)) {
@@ -135,16 +137,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				this.primaryKeys.add(item);
 			}
 		}
+		return this;
 	}
-	public void set(int index, DataRow item){
+	public DataSet set(int index, DataRow item){
 		rows.set(index, item);
+		return this;
 	}
 	/**
 	 * 设置主键
 	 * 
 	 * @param primary
 	 */
-	public void setPrimary(String ... pks){
+	public DataSet setPrimary(String ... pks){
 		if(null != pks){
 			List<String> list = new ArrayList<String>();
 			for(String pk:pks){
@@ -152,13 +156,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			}
 			setPrimary(list);
 		}
+		return this;
 	}
-	public void setPrimary(Collection<String> pks) {
+	public DataSet setPrimary(Collection<String> pks) {
 		if (null == pks) {
-			return;
+			return this;
 		}
 		this.primaryKeys = new ArrayList<String>();
 		addPrimary(pks);
+		return this;
 	}
 
 //	public DataSet toLowerKey() {
@@ -205,17 +211,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * 
 	 * @param col
 	 */
-	public void addHead(String col) {
+	public DataSet addHead(String col) {
 		if (null == head) {
 			head = new ArrayList<String>();
 		}
 		if ("ROW_NUMBER".equals(col)) {
-			return;
+			return this;
 		}
 		if (head.contains(col)) {
-			return;
+			return this;
 		}
 		head.add(col);
+		return this;
 	}
 
 	/**
@@ -281,8 +288,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public boolean isFromCache(){
 		return isFromCache;
 	}
-	public void setIsFromCache(boolean bol){
+	public DataSet setIsFromCache(boolean bol){
 		this.isFromCache = bol;
+		return this;
 	}
 
 	/**
@@ -732,16 +740,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return result;
 	}
 	
-	public void addRow(DataRow row) {
+	public DataSet addRow(DataRow row) {
 		if (null != row) {
 			rows.add(row);
 		}
+		return this;
 	}
 
-	public void addRow(int idx, DataRow row) {
+	public DataSet addRow(int idx, DataRow row) {
 		if (null != row) {
 			rows.add(idx, row);
 		}
+		return this;
 	}
 	
 	/**
@@ -1073,15 +1083,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return getChildren(0);
 	}
 
-	public void setChildren(int idx, Object children) {
+	public DataSet setChildren(int idx, Object children) {
 		DataRow row = getRow(idx);
 		if (null != row) {
 			row.setChildren(children);
 		}
+		return this;
 	}
 
-	public void setChildren(Object children) {
+	public DataSet setChildren(Object children) {
 		setChildren(0, children);
+		return this;
 	}
 
 	/**
@@ -1101,15 +1113,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return getParent(0);
 	}
 
-	public void setParent(int idx, Object parent) {
+	public DataSet setParent(int idx, Object parent) {
 		DataRow row = getRow(idx);
 		if (null != row) {
 			row.setParent(parent);
 		}
+		return this;
 	}
 
-	public void setParent(Object parent) {
+	public DataSet setParent(Object parent) {
 		setParent(0, parent);
+		return this;
 	}
 
 	/**
@@ -1151,15 +1165,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return null;
 	}
 
-	public void setDataSource(String dataSource) {
+	public DataSet setDataSource(String dataSource) {
 		if (null == dataSource) {
-			return;
+			return this;
 		}
 		this.dataSource = dataSource;
 		if (dataSource.contains(".") && !dataSource.contains(":")) {
 			schema = dataSource.substring(0, dataSource.indexOf("."));
 			table = dataSource.substring(dataSource.indexOf(".") + 1);
 		}
+		return this;
 	}
 
 	public DataSet union(DataSet set, String ... keys) {
@@ -1383,15 +1398,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return schema;
 	}
 
-	public void setSchema(String schema) {
+	public DataSet setSchema(String schema) {
 		this.schema = schema;
+		return this;
 	}
 
 	public String getTable() {
 		return table;
 	}
 
-	public void setTable(String table) {
+	public DataSet setTable(String table) {
 		if(null != table && table.contains(".")){
 			String[] tbs = table.split("\\.");
 			this.table = tbs[1];
@@ -1399,6 +1415,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}else{
 			this.table = table;
 		}
+		return this;
 	}
 	/**
 	 * 验证是否过期
@@ -1445,11 +1462,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public long getExpires() {
 		return expires;
 	}
-	public void setExpires(long millisecond) {
+	public DataSet setExpires(long millisecond) {
 		this.expires = millisecond;
+		return this;
 	}
-	public void setExpires(int millisecond) {
+	public DataSet setExpires(int millisecond) {
 		this.expires = millisecond;
+		return this;
 	}
 	public boolean isResult() {
 		return result;
@@ -1459,37 +1478,42 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return result;
 	}
 
-	public void setResult(boolean result) {
+	public DataSet setResult(boolean result) {
 		this.result = result;
+		return this;
 	}
 
 	public Exception getException() {
 		return exception;
 	}
 
-	public void setException(Exception exception) {
+	public DataSet setException(Exception exception) {
 		this.exception = exception;
+		return this;
 	}
 
 	public String getMessage() {
 		return message;
 	}
 
-	public void setMessage(String message) {
+	public DataSet setMessage(String message) {
 		this.message = message;
+		return this;
 	}
 
 	public PageNavi getNavi() {
 		return navi;
 	}
 
-	public void setNavi(PageNavi navi) {
+	public DataSet setNavi(PageNavi navi) {
 		this.navi = navi;
+		return this;
 	}
 
 
-	public void setRows(List<DataRow> rows) {
+	public DataSet setRows(List<DataRow> rows) {
 		this.rows = rows;
+		return this;
 	}
 
 	public String getDataSource() {
@@ -2100,6 +2124,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public DataSet regex(String key, String regex){
 		return regex(key, regex, RegularUtil.MATCH_MODE_MATCH);
+	}
+	public Map<String, Object> getConditions() {
+		return conditions;
+	}
+	public DataSet setConditions(Map<String, Object> conditions) {
+		this.conditions = conditions;
+		return this;
+	}
+	public Object getCondition(String key){
+		return conditions.get(key);
+	}
+
+	public DataSet addCondition(String key, Object condition) {
+		conditions.put(key,condition);
+		return this;
 	}
 }
 
