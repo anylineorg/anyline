@@ -152,15 +152,18 @@ public class ConfigStoreImpl implements ConfigStore{
 		return this;
 	}
 	@Override
-	public ConfigStore addCondition(String key, Object value, boolean over){
-		Config conf = chain.getConfig(key);
+	public ConfigStore addCondition(String key, Object value, boolean overCondition, boolean overValue){
+		Config conf = null;
+		if(overCondition){
+			conf = chain.getConfig(key);
+		}
 		if(null == conf){
 			conf = new ConfigImpl();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 			conf.setCompare(SQL.COMPARE_TYPE.EQUAL);
 		}
 		conf.setId(key);
-		if(over){
+		if(overValue){
 			conf.setValue(value);
 		}else{
 			conf.addValue(value);
@@ -168,24 +171,35 @@ public class ConfigStoreImpl implements ConfigStore{
 		chain.addConfig(conf);
 		return this;
 	}
-	
+
 	@Override
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value) {
-		Config conf = chain.getConfig(key);
+		return addCondition(compare, key, value, false, false);
+	}
+	@Override
+	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue) {
+		Config conf = null;
+		if(overCondition){
+			conf = chain.getConfig(key);
+		}
 		if(null == conf){
 			conf = new ConfigImpl();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 			conf.setCompare(compare);
 		}
 		conf.setId(key);
-		conf.setValue(value);
+		if(overValue){
+			conf.setValue(value);
+		}else{
+			conf.addValue(value);
+		}
 		chain.addConfig(conf);
 		return this;
 	}
 
 	@Override
 	public ConfigStore addCondition(String key, Object value){
-		return addCondition(key, value, false);
+		return addCondition(key, value, false, false);
 	}
 	/**
 	 * 把httpRequest中的参数存放到navi

@@ -24,6 +24,7 @@ import java.util.Collection;
 import javax.sql.DataSource;
 
 import org.anyline.config.db.Procedure;
+import org.anyline.config.db.SQL;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -85,6 +86,18 @@ public interface AnylineService{
 	public DataRow queryRow(String src, ConfigStore configs, String ... conditions);
 	public DataRow queryRow(DataSource ds, String src, String ... conditions);
 	public DataRow queryRow(String src, String ... conditions);
+
+	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
+	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
+	public DataRow next(DataRow row, SQL.ORDER_TYPE order, String ... conditions);
+	public DataRow next(DataRow row, String column, String ... conditions);
+	public DataRow next(DataRow row, String ... conditions);
+	
+	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
+	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
+	public DataRow prev(DataRow row, SQL.ORDER_TYPE order, String ... conditions);
+	public DataRow prev(DataRow row, String column, String ... conditions);
+	public DataRow prev(DataRow row, String ... conditions);
 
 	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
 	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions);
