@@ -37,8 +37,8 @@ public interface SQL extends Cloneable,Serializable {
 		EQUAL			{public int getCode(){return 10;} 	public String getName(){return "等于";}},
 		GREAT			{public int getCode(){return 20;} 	public String getName(){return "大于";}},
 		GREAT_EQUAL		{public int getCode(){return 21;} 	public String getName(){return "大于等于";}},
-		LITTLE			{public int getCode(){return 30;} 	public String getName(){return "小于";}},
-		LITTLE_EQUAL	{public int getCode(){return 31;} 	public String getName(){return "小于等于";}},
+		LESS			{public int getCode(){return 30;} 	public String getName(){return "小于";}},
+		LESS_EQUAL		{public int getCode(){return 31;} 	public String getName(){return "小于等于";}},
 		IN				{public int getCode(){return 40;} 	public String getName(){return "in";}},
 		LIKE			{public int getCode(){return 50;} 	public String getName(){return "%like%";}},
 		LIKE_PREFIX		{public int getCode(){return 51;} 	public String getName(){return "%like";}},
@@ -47,6 +47,12 @@ public interface SQL extends Cloneable,Serializable {
 		NOT_IN			{public int getCode(){return 21;} 	public String getName(){return "不包含";}};
 		public abstract String getName();
 		public abstract int getCode();
+	}
+	public static enum ORDER_TYPE{
+		ASC				{public String getCode(){return "ASC";} 	public String getName(){return "正序";}},
+		DESC			{public String getCode(){return "DESC";} 	public String getName(){return "倒序";}};
+		public abstract String getName();
+		public abstract String getCode();
 	}
 	//public static int COMPARE_TYPE_EQUAL 			= 10;	// ==
 //	public static int COMPARE_TYPE_GREAT 			= 20;	// >

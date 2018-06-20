@@ -105,11 +105,11 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 				text += "> ?";
 			}else if(compare == SQL.COMPARE_TYPE.GREAT_EQUAL){
 				text += ">= ?";
-			}else if(compare == SQL.COMPARE_TYPE.LITTLE){
+			}else if(compare == SQL.COMPARE_TYPE.LESS){
 				text += "< ?";
 			}else if(compare == SQL.COMPARE_TYPE.NOT_EQUAL){
 				text += "<> ?";
-			}else if(compare == SQL.COMPARE_TYPE.LITTLE_EQUAL){
+			}else if(compare == SQL.COMPARE_TYPE.LESS_EQUAL){
 				text += "<= ?";
 			}else if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN){
 				if(compare == SQL.COMPARE_TYPE.NOT_IN){

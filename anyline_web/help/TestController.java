@@ -26,12 +26,18 @@ public class TestController extends BasicController {
 		ModelAndView mv = template("index.jsp");
 //		service.query("web.pc.test:GET_MEMBERS","TID.foo:10");
 		DataSet set = null;
-		//set = service.query("members", parseConfig(true));
-		//set = service.query("members", parseConfig(true, "+mmb_id:%id++:member++","mmb_name:[name:::{}:{[]}:{[,]}:{[12,23]}]"));
+		set = service.query("members", parseConfig(true));
+		
+		//从request中取id如果id为空则取 member
+		//set = service.query("members",  (true, "+mmb_id:id:member"));
+		//set = service.query("members", parseConfig(true, "+mmb_id:%id++:member++"));
+		
+		//从request中取name数组 如果为空则默认12,23,这里的{}是为了表示[12,23]是值而不是key
+		//set = service.query("members", parseConfig(true, "mmb_name:[name:::{}:{[]}:{[,]}:{[12,23]}]"));
 		mv.addObject("set", set);
 //		List<Object> ps = getParams("id",false);
 //		service.delete("members", "mmb_id", "1");
-		service.query("members","mmb_name:[,]::[6,7]:[11,23]");
+//		service.query("members","mmb_name:[,]::[6,7]:[11,23]");
 		return null;
 	}
 	@RequestMapping("ajax")
@@ -47,7 +53,7 @@ public class TestController extends BasicController {
 	}
 	@RequestMapping("tmp")
 	@ResponseBody
-	public String tmp(HttpServletRequest request, HttpServletResponse response){
+	public String template(HttpServletRequest request, HttpServletResponse response){
 		DataSet set = service.query("members", parseConfig(true));
 		request.setAttribute("set", set);
 		String html = "";
@@ -66,29 +72,27 @@ public class TestController extends BasicController {
 		 * anyline只是在 js-jsp-controller-service-cache-jdbc 之间的一个辅助
 		 * 只是为了提高开发效率 统一编写规则 降低开发难度 并不是替代
 		 * 使用之前还是需要先熟悉js jsp springmvc或struts sql
-		 * anyline_core.jar
-		 * anyline_mysql.jar
-		 * anyline_springmvc.jar
 		 */
-		
+		//一定要注意parseConfig方法中中出现的是key,就是request中的key 而query方法中出现的是value
 		//查询主要通过service.query() queryRow()实现
 		//query返回DataSet 相当于一个表一个集合
-		//queryRow返回DataRow 相当于一行 一个Map
+		//queryRow返回DataRow 一行对应一个DataRow
 		//queryRow的结果一定要判断是否为空再调用其方法
-		//所有的查询数据,在DataRow中 key以大写形式保存
+		//所有的查询数据,在DataRow中 key以大写形式保存(配置文件中可配置)
 		
 		
 		//SELECT * FROM MEMBERS
-		set = service.query("members");
+		set = service.query("members","order by rank is null asc, rank asc");
+		
 		
 		
 		//查询条件通过parseConfig解析 列名:运算符key
 		//值为"" null "null" 的条件默认不会拼接到SQL
-		//运算符缺省为= parseConfig("ID:>id","ID:<>id","ID:id")
+		//运算符缺省为= 其他需要指定parseConfig("ID:>id","ID:<>id","ID:id")
 		
-		//SELECT * FROM MEMBERS WHERE MMB_ID = ?(getParam("id")) AND MMB_AGE >= ? (getParam("age"))
+		//SELECT * FROM MEMBERS WHERE MMB_ID = ? AND MMB_AGE >= ?
 		//如果id未传入或传入null "" 则不执行mmb_id = ?
-		set = service.query("members", parseConfig(true, "mmb_id:id"));
+		set = service.query("members(id,)", parseConfig(true, "mmb_id:id"));	//大小 写
 		set = service.query("members", parseConfig(true, "mmb_age:>=age"));
 		
 		//必须参数
@@ -181,7 +185,7 @@ public class TestController extends BasicController {
 		service.query("members", parseConfig(true), "mmb_name like '%ljs%'");
 		service.query("members", parseConfig(true), "mmb_id:%1%");
 		service.query("members", parseConfig(true), "mmb_id:<>1");
-		service.query("members", parseConfig(true), "{reg_tile > '12:00'}");
+		service.query("members", parseConfig(true), "{reg_tile > '12:00'}");	
 		
 		
 		//指定列名(系统实现基本功能后需要完善SQL,特别是对于列数较多的表或视图)
@@ -259,20 +263,21 @@ public class TestController extends BasicController {
 		service.delete("members", "mmb_id", "1","2");	//直接根据表与列删除mmb_id in(1,2)
 		
 		//原生 SQL 特殊情况下才需要执行原生SQL
-		service.query("SELECT * FROM members WHERE mmb_id = 2",parseConfig(true),"mmb_name:ljs");
+		service.query("SELECT * FROM members WHERE mmb_id = 2",parseConfig(true),"age:10");
 		service.execute("UPDATE members SET mmb_name = 'ljs' WHERE mmb_id = 2");
 		
 		
 		
 		//缓存 基于ehcache实现
 		//在query,queryRow基础上 加1个参数 cacheKey(在ehcache.xml中定义)
-		service.cache("cache_key", "members", parseConfig(true));
+		service.cache("static_1800", "members", parseConfig(true));
 		service.cacheRow("cache_key", "members", parseConfig(true));
 		//对于使用同一个cache key的查询可以通过cache_key:flag的形式区分以避免数据覆盖
 		service.cache("cache_key:index", "members", parseConfig(true));
 		
-		//清空缓存
-		service.removeCache("cache_key", "members", parseConfig(true),"name:ljs"); 
+		//清空缓存http://127.0.0.0/index?age=10
+		//member_age = 10 in(1,2,3)
+		service.removeCache("cache_key", "members", parseConfig(true,"member_age:%age%"),"+age:"+getParam("age")); 
 		service.clearCache("cache_key");
 		//总行数查询慢时 设置总行数缓存时间
 		parseConfig().setTotalLazy(1000*10);
@@ -360,7 +365,11 @@ public class TestController extends BasicController {
 		service.query("web.pc.test:GET_MEMBERS", parseConfig("AGE.var:age"));
 		service.query("web.pc.test:GET_MEMBERS", parseConfig("MGR_ID:[mgr]"));
 		service.query("web.pc.test:GET_MEMBERS", parseConfig().addConditions("MGR_ID", "[11,22]"));
-		service.query("web.pc.test:GET_MEMBERS", parseConfig().addConditions("MGR_ID", list));
+		
+		list = set.getStrings("id");
+		service.query("web.pc.test:GET_MEMBERS", parseConfig().addConditions("ID", list));
+		// id in(1,2,3,4,5)
+		
 		service.query("web.pc.test:GET_MEMBERS", parseConfig("MGR_ID:[mgr:{[1,2,3]}]"));
 		service.query("web.pc.test:GET_MEMBERS", parseConfig("MGR_ID:[mgr0:{[1,2,3]}]"));
 		//为什么 parseConfig中需要{}
@@ -387,7 +396,7 @@ public class TestController extends BasicController {
 		DataSet set1 = new DataSet();
 		DataRow row = new DataRow();
 		set.getRow(0);
-		set.getRows("name:a","age:1")					; // where name = 'a' and age = 1
+		set.getRows("age:1")							; // where name = 'a' and age = 1
 		set.getRows("name","a", "age","1")				; // where name = 'a' and age = 1
 		set.getRows(0, 5)								; // 取0-5行
 		set.cut(0,10)									; // 截断集合,会修改set本身

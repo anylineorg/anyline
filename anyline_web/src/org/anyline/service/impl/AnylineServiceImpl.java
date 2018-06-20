@@ -31,6 +31,7 @@ import org.anyline.cache.CacheUtil;
 import org.anyline.cache.PageLazyStore;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQL.ORDER_TYPE;
 import org.anyline.config.db.impl.PageNaviImpl;
 import org.anyline.config.db.impl.ProcedureImpl;
 import org.anyline.config.db.impl.SQLStoreImpl;
@@ -87,6 +88,7 @@ public class AnylineServiceImpl implements AnylineService {
 			setPageLazy(src, configs, conditions);
 			SQL sql = createSQL(src);
 			set = dao.query(ds, sql, configs, conditions);
+			set.addCondition("query_config", configs).addCondition("query_condition", conditions);
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
@@ -233,7 +235,7 @@ public class AnylineServiceImpl implements AnylineService {
 						configs = new ConfigStoreImpl();
 					}
 					for(String pk:pks){
-						configs.addCondition(pk, row.get(pk), true);
+						configs.addCondition(pk, row.get(pk), true, true);
 					}
 					cacheRow = queryRow(ds, src, configs, conditions);
 		        	CacheUtil.put(cache2, cache2Key, cacheRow);   
@@ -423,6 +425,113 @@ public class AnylineServiceImpl implements AnylineService {
 		return queryRow(null, src, null, conditions);
 	}
 
+	@Override
+	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions) {
+		
+		if(null == configs){
+			configs = (ConfigStore)row.getCondition("query_config");
+		}
+		if(null == configs){
+			configs = new ConfigStoreImpl();
+		}
+		if(null == conditions){
+			conditions = (String[])row.getCondition("query_condition");
+		}
+		if(BasicUtil.isEmpty(column)){
+			column = row.getPrimaryKey();
+		}
+		configs.order(column, order.getCode());
+		String pk = row.getPrimaryKey();
+		Object pv = row.getPrimaryValue();
+		SQL.COMPARE_TYPE compare = null;
+		if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv)){
+			if(order == SQL.ORDER_TYPE.DESC){
+				compare = SQL.COMPARE_TYPE.LESS;
+			}else{
+				compare = SQL.COMPARE_TYPE.GREAT;
+			}
+		}else{
+			configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv);
+			if(order == SQL.ORDER_TYPE.DESC){
+				compare = SQL.COMPARE_TYPE.LESS_EQUAL;
+			}else{
+				compare = SQL.COMPARE_TYPE.GREAT_EQUAL;
+			}
+		}
+		configs.addCondition(compare, column, row.get(column));
+		return queryRow(null, row.getDataSource(), configs, conditions);
+	}
+	
+	@Override
+	public DataRow next(DataRow row, String column, ORDER_TYPE order, String... conditions) {
+		return next(row, column, order, null, conditions);
+	}
+	@Override
+	public DataRow next(DataRow row, ORDER_TYPE order, String... conditions) {
+		return next(row, null, order, null, conditions);
+	}
+	@Override
+	public DataRow next(DataRow row, String column, String... conditions) {
+		return next(row, column, SQL.ORDER_TYPE.DESC, null, conditions);
+	}
+	@Override
+	public DataRow next(DataRow row, String... conditions) {
+		return next(row, null, SQL.ORDER_TYPE.DESC, null, conditions);
+	}
+
+	@Override
+	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions) {
+		
+		if(null == configs){
+			configs = (ConfigStore)row.getCondition("query_config");
+		}
+		if(null == configs){
+			configs = new ConfigStoreImpl();
+		}
+		if(null == conditions){
+			conditions = (String[])row.getCondition("query_condition");
+		}
+		if(BasicUtil.isEmpty(column)){
+			column = row.getPrimaryKey();
+		}
+		configs.order(column, order.getCode());
+		String pk = row.getPrimaryKey();
+		Object pv = row.getPrimaryValue();
+		SQL.COMPARE_TYPE compare = null;
+		if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv)){
+			if(order == SQL.ORDER_TYPE.ASC){
+				compare = SQL.COMPARE_TYPE.LESS;
+			}else{
+				compare = SQL.COMPARE_TYPE.GREAT;
+			}
+		}else{
+			configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv);
+			if(order == SQL.ORDER_TYPE.ASC){
+				compare = SQL.COMPARE_TYPE.LESS_EQUAL;
+			}else{
+				compare = SQL.COMPARE_TYPE.GREAT_EQUAL;
+			}
+		}
+		configs.addCondition(compare, column, row.get(column));
+		return queryRow(null, row.getDataSource(), configs, conditions);
+	}
+	
+	@Override
+	public DataRow prev(DataRow row, String column, ORDER_TYPE order, String... conditions) {
+		return prev(row, column, order, null, conditions);
+	}
+	@Override
+	public DataRow prev(DataRow row, ORDER_TYPE order, String... conditions) {
+		return prev(row, null, order, null, conditions);
+	}
+	@Override
+	public DataRow prev(DataRow row, String column, String... conditions) {
+		return prev(row, column, SQL.ORDER_TYPE.DESC, null, conditions);
+	}
+	@Override
+	public DataRow prev(DataRow row, String... conditions) {
+		return prev(row, null, SQL.ORDER_TYPE.DESC, null, conditions);
+	}
 	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 		//是否启动缓存
 		if(!ConfigTable.getBoolean("IS_USE_CACHE") || null == cache){

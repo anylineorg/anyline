@@ -56,8 +56,17 @@ public interface ConfigStore {
 	public Object getConfigValue(String key);
 	public ConfigStore addConditions(String key, Object value);
 	public ConfigStore addCondition(String key, Object value);
-	public ConfigStore addCondition(String key, Object value, boolean over);
+	/**
+	 * 
+	 * @param key
+	 * @param value
+	 * @param overCondition 覆盖相同key的条件
+	 * @param overValue		覆盖条件value
+	 * @return
+	 */
+	public ConfigStore addCondition(String key, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value);
+	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue);
 	/**
 	 * 添加排序
 	 * @param order
