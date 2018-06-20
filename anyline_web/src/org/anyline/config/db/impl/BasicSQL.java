@@ -84,7 +84,7 @@ public abstract class BasicSQL implements SQL{
 		orders.order(order);
 		return this;
 	}
-	public SQL order(String col, String type){
+	public SQL order(String col, SQL.ORDER_TYPE type){
 		if(null == orders){
 			orders = new OrderStoreImpl();
 		}

@@ -115,7 +115,7 @@ public interface SQL extends Cloneable,Serializable {
 	 * @return
 	 */
 	public SQL order(String order);
-	public SQL order(String col, String type);
+	public SQL order(String col, SQL.ORDER_TYPE type);
 	public SQL order(Order order);
 
 	/**

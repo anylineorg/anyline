@@ -117,6 +117,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			set = new DataSet();
 		}
 		set.setDataSource(sql.getDataSource());
+		set.addCondition("query_config", configs).addCondition("query_condition", conditions).addCondition("query_orders", run.getOrderStore());
 //		set.setSchema(sql.getSchema());
 //		set.setTable(sql.getTable());
 		set.setNavi(navi);

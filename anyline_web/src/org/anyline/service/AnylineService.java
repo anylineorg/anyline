@@ -90,13 +90,13 @@ public interface AnylineService{
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
 	public DataRow next(DataRow row, SQL.ORDER_TYPE order, String ... conditions);
-	public DataRow next(DataRow row, String column, String ... conditions);
+	public DataRow next(DataRow row, ConfigStore configs, String ... conditions);
 	public DataRow next(DataRow row, String ... conditions);
 	
 	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
 	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
 	public DataRow prev(DataRow row, SQL.ORDER_TYPE order, String ... conditions);
-	public DataRow prev(DataRow row, String column, String ... conditions);
+	public DataRow prev(DataRow row, ConfigStore configs, String ... conditions);
 	public DataRow prev(DataRow row, String ... conditions);
 
 	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
