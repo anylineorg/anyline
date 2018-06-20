@@ -90,6 +90,7 @@ public class AnylineServiceImpl implements AnylineService {
 			setPageLazy(src, configs, conditions);
 			SQL sql = createSQL(src);
 			set = dao.query(ds, sql, configs, conditions);
+			set.addQueryParam("query_src", src);
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
@@ -430,17 +431,17 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions) {
 		//查询条件
 		if(null == configs){
-			configs = (ConfigStore)row.getCondition("query_config");
+			configs = (ConfigStore)row.getQueryParam("query_config");
 		}
 		if(null == configs){
 			configs = new ConfigStoreImpl();
 		}
 		if(null == conditions){
-			conditions = (String[])row.getCondition("query_condition");
+			conditions = (String[])row.getQueryParam("query_condition");
 		}
 		//排序列
 		if(BasicUtil.isEmpty(column)){
-			OrderStore orderStore = (OrderStore)row.getCondition("query_orders");
+			OrderStore orderStore = (OrderStore)row.getQueryParam("query_order");
 			if(null != orderStore){
 				List<Order> orders = orderStore.getOrders();
 				if(null != orders && orders.size()>0){
@@ -453,6 +454,7 @@ public class AnylineServiceImpl implements AnylineService {
 		if(BasicUtil.isEmpty(column)){
 			column = row.getPrimaryKey();
 		}
+		String src = (String)row.getQueryParam("query_src");
 		configs.order(column, order.getCode());
 		String pk = row.getPrimaryKey();
 		Object pv = row.getPrimaryValue();
@@ -472,7 +474,8 @@ public class AnylineServiceImpl implements AnylineService {
 			}
 		}
 		configs.addCondition(compare, column, row.get(column));
-		return queryRow(null, row.getDataSource(), configs, conditions);
+		
+		return queryRow(null, src, configs, conditions);
 	}
 	
 	@Override
@@ -496,17 +499,17 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions) {
 		//查询条件
 		if(null == configs){
-			configs = (ConfigStore)row.getCondition("query_config");
+			configs = (ConfigStore)row.getQueryParam("query_config");
 		}
 		if(null == configs){
 			configs = new ConfigStoreImpl();
 		}
 		if(null == conditions){
-			conditions = (String[])row.getCondition("query_condition");
+			conditions = (String[])row.getQueryParam("query_condition");
 		}
 		//排序列
 		if(BasicUtil.isEmpty(column)){
-			OrderStore orderStore = (OrderStore)row.getCondition("query_orders");
+			OrderStore orderStore = (OrderStore)row.getQueryParam("query_order");
 			if(null != orderStore){
 				List<Order> orders = orderStore.getOrders();
 				if(null != orders && orders.size()>0){
@@ -519,6 +522,7 @@ public class AnylineServiceImpl implements AnylineService {
 		if(BasicUtil.isEmpty(column)){
 			column = row.getPrimaryKey();
 		}
+		String src = (String)row.getQueryParam("query_src");
 		configs.order(column, order.getCode());
 		String pk = row.getPrimaryKey();
 		Object pv = row.getPrimaryValue();
@@ -538,7 +542,7 @@ public class AnylineServiceImpl implements AnylineService {
 			}
 		}
 		configs.addCondition(compare, column, row.get(column));
-		return queryRow(null, row.getDataSource(), configs, conditions);
+		return queryRow(null, src, configs, conditions);
 	}
 	
 	@Override
