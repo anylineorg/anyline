@@ -55,17 +55,16 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 		if(null == table){
 			return this;
 		}
-		table = table.toUpperCase();
+		//table = table.toUpperCase();
 		if(table.contains("(")){
 			//指定列名
 			setTable(table.substring(0,table.indexOf("(")));
 			int colIdx0 = table.indexOf("(");
 			int colIdx1 = table.lastIndexOf(")");
-			String columns = table.substring(colIdx0+1,colIdx1);
-			if(columns.contains("DISTINCT")){
+			String columns = table.substring(colIdx0+1,colIdx1).trim();
+			if(columns.toUpperCase().contains("DISTINCT")){
 				//distinct
-				columns = columns.replace("DISTINCT","");
-				columns = columns.trim();
+				columns = columns.substring(8).trim();
 				distinct = "DISTINCT";
 			}
 			addColumn(columns);
@@ -74,7 +73,6 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 		}
 		return this;
 	}
-	
 	/*******************************************************************************************
 	 * 
 	 * 										添加条件
