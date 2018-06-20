@@ -104,13 +104,13 @@ public class ConfigParser {
 			result.setCompare(SQL.COMPARE_TYPE.GREAT);
 			config = config.substring(1, config.length());
 		} else if (config.startsWith("<=")) {
-			result.setCompare(SQL.COMPARE_TYPE.LITTLE_EQUAL);
+			result.setCompare(SQL.COMPARE_TYPE.LESS_EQUAL);
 			config = config.substring(2, config.length());
 		} else if (config.startsWith("<>") || config.startsWith("!=")) {
 			result.setCompare(SQL.COMPARE_TYPE.NOT_EQUAL);
 			config = config.substring(2, config.length());
 		} else if (config.startsWith("<")) {
-			result.setCompare(SQL.COMPARE_TYPE.LITTLE);
+			result.setCompare(SQL.COMPARE_TYPE.LESS);
 			config = config.substring(1, config.length());
 		} else if (config.startsWith("[") && config.endsWith("]")) {
 			//[1,2,3]或[1,2,3]:[1,2,3]

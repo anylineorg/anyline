@@ -1001,6 +1001,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return key;
 	}
 	public Map<String, Object> getConditions() {
+		if(conditions.isEmpty()){
+			return container.getConditions();
+		}
 		return conditions;
 	}
 	public DataRow setConditions(Map<String, Object> conditions) {
@@ -1008,6 +1011,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 	public Object getCondition(String key){
+		if(conditions.isEmpty()){
+			return container.getConditions().get(key);
+		}
 		return conditions.get(key);
 	}
 
