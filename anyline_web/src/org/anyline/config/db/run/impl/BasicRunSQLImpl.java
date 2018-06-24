@@ -260,7 +260,15 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		}
 		return this;
 	}
-
+public static void main(String args[]){
+	String condition = "time='12:12:23'";
+	int idx = condition.indexOf(":");
+	
+	String tmp1 = condition.substring(idx-1,idx);
+	String tmp2 = condition.substring(idx+1,idx+2);
+	System.out.println(tmp1);
+	System.out.println(tmp2);
+}
 	/**
 	 * 添加静态文本查询条件
 	 */
@@ -273,15 +281,27 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 			//原生SQL  不处理
 			Condition con = new AutoConditionImpl(condition.substring(1, condition.length()-1));
 			conditionChain.addCondition(con);
-		}else if(condition.contains(":")){
-			//需要解析的SQL
-			ParseResult parser = ConfigParser.parse(condition,false);
-			Object value = ConfigParser.getValues(parser);
-			addCondition(parser.isRequired(),parser.getId(),value,parser.getCompare());
-		}else{
-			Condition con = new AutoConditionImpl(condition);
-			conditionChain.addCondition(con);
+			return this;
 		}
+		if(condition.contains(":")){
+			//:符号是否表示时间
+			boolean isTime = false;
+			int idx = condition.indexOf(":");
+			//''之内
+			if(condition.indexOf("'")<idx && condition.indexOf("'", idx+1) > 0){
+				isTime = true;
+			}
+			if(!isTime){			
+				//需要解析的SQL
+				ParseResult parser = ConfigParser.parse(condition,false);
+				Object value = ConfigParser.getValues(parser);
+				addCondition(parser.isRequired(),parser.getId(),value,parser.getCompare());
+				return this;
+			}
+		}
+		Condition con = new AutoConditionImpl(condition);
+		conditionChain.addCondition(con);
+		
 		return this;
 	}
 	public RunSQL addCondition(Condition condition) {
