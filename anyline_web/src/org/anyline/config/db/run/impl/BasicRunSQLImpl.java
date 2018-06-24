@@ -260,15 +260,6 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		}
 		return this;
 	}
-public static void main(String args[]){
-	String condition = "time='12:12:23'";
-	int idx = condition.indexOf(":");
-	
-	String tmp1 = condition.substring(idx-1,idx);
-	String tmp2 = condition.substring(idx+1,idx+2);
-	System.out.println(tmp1);
-	System.out.println(tmp2);
-}
 	/**
 	 * 添加静态文本查询条件
 	 */
