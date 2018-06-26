@@ -49,6 +49,7 @@ import org.anyline.util.BasicUtil;
 
 public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	private List<String> conditions;
+	private List<String> staticConditions;
 	public XMLRunSQLImpl(){
 		this.conditionChain = new XMLConditionChainImpl();
 		this.configStore = new ConfigStoreImpl();
@@ -114,12 +115,6 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		createRunTxt();
 	}
 	private void createRunTxt(){
-//		if(null != configStore){
-//			for(Config conf:configStore.getConfigChain().getConfigs()){
-//				setConditionValue(conf.getId(), conf.getVariable(), conf.getValues());
-//			}
-//		}
-		
 		String result = sql.getText();
 		if(null != variables){
 			for(SQLVariable var:variables){
@@ -243,6 +238,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		
 		builder.append(result);
 		appendCondition();
+		appendStaticCondition();
 		appendGroup();
 		//appendOrderStore();
 	}
@@ -359,6 +355,21 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		builder.append(conditionChain.getRunText(creater));
 		addValues(conditionChain.getRunValues());
+		if(null != staticConditions){
+			for(String con:staticConditions){
+				builder.append("AND ").append(con);
+			}
+		}
+	}
+	private void appendStaticCondition(){
+		if(!hasWhere(builder.toString())){
+			builder.append(" WHERE 1=1");
+		}
+		if(null != staticConditions){
+			for(String con:staticConditions){
+				builder.append("AND ").append(con);
+			}
+		}
 	}
 	
 	public void setConfigs(ConfigStore configs) {
@@ -400,7 +411,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		return this;
 	}
-	public void setConditions(String[] conditions) {
+	public RunSQL addConditions(String[] conditions) {
 		/*添加查询条件*/
 		if(null != conditions){
 			for(String condition:conditions){
@@ -434,9 +445,45 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				addCondition(condition);
 			}
 		}
+		return this;
 	}
 
-	
+	public void addSatticCondition(String condition){
+		if(null == staticConditions){
+			staticConditions = new ArrayList<String>();
+		}
+		staticConditions.add(condition);
+	}
+	public RunSQL addCondition(String condition) {
+		if(BasicUtil.isEmpty(condition)){
+			return this;
+		}
+
+		if(condition.startsWith("{") && condition.endsWith("}")){
+			//原生SQL  不处理
+			addSatticCondition(condition.substring(1, condition.length()-1));
+			return this;
+		}
+		if(condition.contains(":")){
+			//:符号是否表示时间
+			boolean isTime = false;
+			int idx = condition.indexOf(":");
+			//''之内
+			if(condition.indexOf("'")<idx && condition.indexOf("'", idx+1) > 0){
+				isTime = true;
+			}
+			if(!isTime){			
+				//需要解析的SQL
+				if(null == conditions){
+					conditions = new ArrayList<String>();
+				}
+				conditions.add(condition);
+				return this;
+			}
+		}
+		addSatticCondition(condition);
+		return this;
+	}
 
 
 	/**
