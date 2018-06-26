@@ -38,6 +38,7 @@ import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
+import org.anyline.config.db.sql.xml.impl.XMLConditionImpl;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
@@ -251,12 +252,16 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	 * 			比较方式
 	 */
 	public RunSQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare){
-		Condition condition = new AutoConditionImpl(requried,column, value, compare);
-		if(null == conditionChain){
-			conditionChain = new AutoConditionChainImpl();
-		}
-		if(condition.isActive()){
-			conditionChain.addCondition(condition);
+		if(this instanceof XMLRunSQLImpl){
+			((XMLRunSQLImpl)this).addCondition(column, column, value);
+		}else{
+			Condition condition = new AutoConditionImpl(requried,column, value, compare);
+			if(null == conditionChain){
+				conditionChain = new AutoConditionChainImpl();
+			}
+			if(condition.isActive()){
+				conditionChain.addCondition(condition);
+			}
 		}
 		return this;
 	}
