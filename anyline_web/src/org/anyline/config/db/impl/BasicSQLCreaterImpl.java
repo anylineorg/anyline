@@ -340,7 +340,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			String key = keys.get(i);
 			Object value = row.get(key);
 			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo());
-			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
+			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BasicUtil.isJson(value)){
 				String str = value.toString();
 				value = str.substring(1, str.length()-1);
 				param.append(value);
@@ -420,7 +420,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					sql.append("null");
 				}else if(value instanceof String){
 					String str = value.toString();
-					if(str.startsWith("{") && str.endsWith("}")){
+					if(str.startsWith("{") && str.endsWith("}") && !BasicUtil.isJson(value)){
 						str = str.substring(1, str.length()-1);
 					}else{
 						str = "'" + str.replace("'", "''") + "'";
@@ -578,17 +578,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
 				Object value = row.get(key);
-				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}")){
+				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BasicUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(1, str.length()-1);
 					sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 				}else{
 					sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
 					if("NULL".equals(value)){
-						values.add(null);
-					}else{
-						values.add(row.get(key));
+						value = null;
 					}
+					values.add(value);
 				}
 				if(i<size-1){
 					sql.append(",");
@@ -847,8 +846,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 //			}
 			keys = row.getUpdateColumns();
 			//是否更新null及""列
-			boolean isUpdateNullColumn = ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN",false);
-			boolean isUpdateEmptyColumn = ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN",false);
+			boolean isUpdateNullColumn = ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN",true);
+			boolean isUpdateEmptyColumn = ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN",true);
 			int size = keys.size();
 			for(int i=size-1;i>=0; i--){
 				String key = keys.get(i);
