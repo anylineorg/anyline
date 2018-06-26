@@ -465,7 +465,7 @@ public class AnylineServiceImpl implements AnylineService {
 		String pk = row.getPrimaryKey();
 		Object pv = row.getPrimaryValue();
 		SQL.COMPARE_TYPE compare = null;
-		if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv)){
+		if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv) || column.equalsIgnoreCase(pk)){
 			if(order == SQL.ORDER_TYPE.DESC){
 				compare = SQL.COMPARE_TYPE.LESS;
 				queryOrder = SQL.ORDER_TYPE.DESC;
@@ -544,7 +544,7 @@ public class AnylineServiceImpl implements AnylineService {
 		String pk = row.getPrimaryKey();
 		Object pv = row.getPrimaryValue();
 		SQL.COMPARE_TYPE compare = null;
-		if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv)){
+		if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv) || column.equalsIgnoreCase(pk)){
 			if(order == SQL.ORDER_TYPE.ASC){
 				compare = SQL.COMPARE_TYPE.LESS;
 				queryOrder = SQL.ORDER_TYPE.DESC;
