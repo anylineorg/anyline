@@ -138,7 +138,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			} 
 			text += "";
 			/*运行时参数*/
-			if(compare == SQL.COMPARE_TYPE.IN){
+			if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN){
 				runValues = getValues();
 			}else{
 				Object value = getValue();
