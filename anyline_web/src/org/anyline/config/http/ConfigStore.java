@@ -27,6 +27,7 @@ import org.anyline.config.db.Group;
 import org.anyline.config.db.GroupStore;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
+import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.entity.PageNavi;
 
@@ -52,8 +53,14 @@ public interface ConfigStore {
 	public ConfigStore setValue(HttpServletRequest request);
 	public ConfigChain getConfigChain();
 	public Config getConfig(String key);
+	public ConfigStore removeConfig(String key);
+	public ConfigStore removeConfig(Config config);
 	public List<Object> getConfigValues(String key);
 	public Object getConfigValue(String key);
+	public Config getConfig(String key, SQL.COMPARE_TYPE compare);
+	public ConfigStore removeConfig(String key, SQL.COMPARE_TYPE compare);
+	public List<Object> getConfigValues(String key, SQL.COMPARE_TYPE compare);
+	public Object getConfigValue(String key, SQL.COMPARE_TYPE compare);
 	public ConfigStore addConditions(String key, Object value);
 	public ConfigStore addCondition(String key, Object value);
 	/**
