@@ -35,6 +35,8 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import net.sf.json.JSONObject;
+
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
@@ -944,12 +946,26 @@ public class BasicUtil {
 	   return result.toString();
    }
    public static boolean isWrapClass(Object obj) { 
-        try { 
-        	return ((Class) obj.getClass().getField("TYPE").get(null)).isPrimitive();
-        } catch (Exception e) { 
-            return false; 
-        } 
-    } 
+	    try { 
+	    	return ((Class) obj.getClass().getField("TYPE").get(null)).isPrimitive();
+	    } catch (Exception e) { 
+	        return false; 
+	    } 
+   }
+   public static boolean isJson(Object json){
+	   if(null == json){
+		   return false;
+	   }
+	   if(json instanceof JSONObject){
+		   return true;
+	   }
+	   try{
+		   JSONObject.fromObject(json.toString());
+	   }catch(Exception e){
+		   return false;
+	   }
+	   return true;
+   }
    public static String omit(String src, int left, int right){
 	   return omit(src, left, right, "*");
    }
