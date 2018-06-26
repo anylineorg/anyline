@@ -35,6 +35,9 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+
 import net.sf.json.JSONObject;
 
 import org.anyline.util.regular.RegularUtil;
@@ -1008,6 +1011,18 @@ public class BasicUtil {
        }  
        return tmp.toString();  
    }  
+   public static String escape1(String src){
+	   ScriptEngineManager sem = new ScriptEngineManager();    
+       ScriptEngine engine = sem.getEngineByExtension("js");    
+       try{    
+           //直接解析    
+           Object res = engine.eval("escape("+src+")");
+           return res.toString();
+       }catch(Exception ex){    
+           ex.printStackTrace();    
+       }
+       return null;
+   }
 
    public static String unescape(String src) {  
        StringBuffer tmp = new StringBuffer();  
