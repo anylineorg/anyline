@@ -918,6 +918,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != key){
 			super.remove(key(key));
 		}
+		updateColumns.remove(key(key));
 		return this;
 	}
 	/**
