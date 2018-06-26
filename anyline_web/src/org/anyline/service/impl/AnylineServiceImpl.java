@@ -446,7 +446,9 @@ public class AnylineServiceImpl implements AnylineService {
 				List<Order> orders = orderStore.getOrders();
 				if(null != orders && orders.size()>0){
 					Order od = orders.get(0);
-					order = od.getType();
+					if(null == order){
+						order = od.getType();
+					}
 					column = od.getColumn();
 				}
 			}
@@ -454,27 +456,36 @@ public class AnylineServiceImpl implements AnylineService {
 		if(BasicUtil.isEmpty(column)){
 			column = row.getPrimaryKey();
 		}
+		if(null == order){
+			order = SQL.ORDER_TYPE.DESC;
+		}
 		String src = (String)row.getQueryParam("query_src");
-		configs.order(column, order.getCode());
+		
+		SQL.ORDER_TYPE queryOrder = null;
 		String pk = row.getPrimaryKey();
 		Object pv = row.getPrimaryValue();
 		SQL.COMPARE_TYPE compare = null;
 		if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv)){
 			if(order == SQL.ORDER_TYPE.DESC){
 				compare = SQL.COMPARE_TYPE.LESS;
+				queryOrder = SQL.ORDER_TYPE.DESC;
 			}else{
 				compare = SQL.COMPARE_TYPE.GREAT;
+				queryOrder = SQL.ORDER_TYPE.ASC;
 			}
 		}else{
-			configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv);
+			configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv, true, true);
 			if(order == SQL.ORDER_TYPE.DESC){
 				compare = SQL.COMPARE_TYPE.LESS_EQUAL;
+				queryOrder = SQL.ORDER_TYPE.DESC;
 			}else{
 				compare = SQL.COMPARE_TYPE.GREAT_EQUAL;
+				queryOrder = SQL.ORDER_TYPE.ASC;
 			}
 		}
-		configs.addCondition(compare, column, row.get(column));
-		
+		configs.order(column, queryOrder.getCode());
+		configs.removeConfig(column);
+		configs.addCondition(compare, column, row.get(column), true, true);
 		return queryRow(null, src, configs, conditions);
 	}
 	
@@ -488,12 +499,12 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 	@Override
 	public DataRow next(DataRow row,  String... conditions) {
-		return next(row, null, SQL.ORDER_TYPE.DESC, null, conditions);
+		return next(row, null, null, null, conditions);
 	}
 
 	@Override
 	public DataRow next(DataRow row, ConfigStore configs, String... conditions) {
-		return next(row, null, SQL.ORDER_TYPE.DESC, configs, conditions);
+		return next(row, null, null, configs, conditions);
 	}
 	@Override
 	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions) {
@@ -514,7 +525,9 @@ public class AnylineServiceImpl implements AnylineService {
 				List<Order> orders = orderStore.getOrders();
 				if(null != orders && orders.size()>0){
 					Order od = orders.get(0);
-					order = od.getType();
+					if(null == order){
+						order = od.getType();
+					}
 					column = od.getColumn();
 				}
 			}
@@ -522,26 +535,36 @@ public class AnylineServiceImpl implements AnylineService {
 		if(BasicUtil.isEmpty(column)){
 			column = row.getPrimaryKey();
 		}
+		if(null == order){
+			order = SQL.ORDER_TYPE.DESC;
+		}
 		String src = (String)row.getQueryParam("query_src");
-		configs.order(column, order.getCode());
+
+		SQL.ORDER_TYPE queryOrder = null;
 		String pk = row.getPrimaryKey();
 		Object pv = row.getPrimaryValue();
 		SQL.COMPARE_TYPE compare = null;
 		if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv)){
 			if(order == SQL.ORDER_TYPE.ASC){
 				compare = SQL.COMPARE_TYPE.LESS;
+				queryOrder = SQL.ORDER_TYPE.DESC;
 			}else{
 				compare = SQL.COMPARE_TYPE.GREAT;
+				queryOrder = SQL.ORDER_TYPE.ASC;
 			}
 		}else{
-			configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv);
+			configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv, true, true);
 			if(order == SQL.ORDER_TYPE.ASC){
 				compare = SQL.COMPARE_TYPE.LESS_EQUAL;
+				queryOrder = SQL.ORDER_TYPE.DESC;
 			}else{
 				compare = SQL.COMPARE_TYPE.GREAT_EQUAL;
+				queryOrder = SQL.ORDER_TYPE.ASC;
 			}
 		}
-		configs.addCondition(compare, column, row.get(column));
+		configs.order(column, queryOrder.getCode());
+		configs.removeConfig(column);
+		configs.addCondition(compare, column, row.get(column), true, true);
 		return queryRow(null, src, configs, conditions);
 	}
 	
@@ -555,11 +578,11 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 	@Override
 	public DataRow prev(DataRow row, String... conditions) {
-		return prev(row, null, SQL.ORDER_TYPE.DESC, null, conditions);
+		return prev(row, null, null, null, conditions);
 	}
 	@Override
 	public DataRow prev(DataRow row, ConfigStore configs, String... conditions) {
-		return prev(row, null, SQL.ORDER_TYPE.DESC, configs, conditions);
+		return prev(row, null, null, configs, conditions);
 	}
 	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
 		//是否启动缓存

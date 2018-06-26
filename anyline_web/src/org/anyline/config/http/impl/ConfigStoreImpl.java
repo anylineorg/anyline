@@ -127,7 +127,7 @@ public class ConfigStoreImpl implements ConfigStore{
 
 	@Override
 	public ConfigStore addConditions(String key, Object values){
-		Config conf = chain.getConfig(key);
+		Config conf = chain.getConfig(key,SQL.COMPARE_TYPE.IN);
 		if(null == conf){
 			conf = new ConfigImpl();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
@@ -156,12 +156,13 @@ public class ConfigStoreImpl implements ConfigStore{
 	public ConfigStore addCondition(String key, Object value, boolean overCondition, boolean overValue){
 		Config conf = null;
 		if(overCondition){
-			conf = chain.getConfig(key);
+			conf = chain.getConfig(key,SQL.COMPARE_TYPE.EQUAL);
 		}
 		if(null == conf){
 			conf = new ConfigImpl();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 			conf.setCompare(SQL.COMPARE_TYPE.EQUAL);
+			chain.addConfig(conf);
 		}
 		conf.setId(key);
 		if(overValue){
@@ -169,7 +170,6 @@ public class ConfigStoreImpl implements ConfigStore{
 		}else{
 			conf.addValue(value);
 		}
-		chain.addConfig(conf);
 		return this;
 	}
 
@@ -181,12 +181,13 @@ public class ConfigStoreImpl implements ConfigStore{
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue) {
 		Config conf = null;
 		if(overCondition){
-			conf = chain.getConfig(key);
+			conf = chain.getConfig(key, compare);
 		}
 		if(null == conf){
 			conf = new ConfigImpl();
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 			conf.setCompare(compare);
+			chain.addConfig(conf);
 		}
 		conf.setId(key);
 		if(overValue){
@@ -194,7 +195,6 @@ public class ConfigStoreImpl implements ConfigStore{
 		}else{
 			conf.addValue(value);
 		}
-		chain.addConfig(conf);
 		return this;
 	}
 
@@ -328,6 +328,15 @@ public class ConfigStoreImpl implements ConfigStore{
 	public Config getConfig(String key){
 		return chain.getConfig(key);
 	}
+	public ConfigStore removeConfig(String key){
+		Config config = getConfig(key);
+		return removeConfig(config);
+	}
+	@Override
+	public ConfigStore removeConfig(Config config){
+		chain.removeConfig(config);
+		return this;
+	}
 	@Override
 	public List<Object> getConfigValues(String key){
 		Config config = chain.getConfig(key);
@@ -339,6 +348,35 @@ public class ConfigStoreImpl implements ConfigStore{
 	@Override
 	public Object getConfigValue(String key){
 		Config config = chain.getConfig(key);
+		if(null != config){
+			List<Object> values = config.getValues();
+			if(null != values && values.size() > 0){
+				return values.get(0);
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public Config getConfig(String key, SQL.COMPARE_TYPE compare){
+		return chain.getConfig(key,compare);
+	}
+	@Override
+	public ConfigStore removeConfig(String key, SQL.COMPARE_TYPE compare){
+		Config config = getConfig(key, compare);
+		return removeConfig(config);
+	}
+	@Override
+	public List<Object> getConfigValues(String key, SQL.COMPARE_TYPE compare){
+		Config config = chain.getConfig(key,compare);
+		if(null != config){
+			return config.getValues();
+		}
+		return null;
+	}
+	@Override
+	public Object getConfigValue(String key, SQL.COMPARE_TYPE compare){
+		Config config = chain.getConfig(key,compare);
 		if(null != config){
 			List<Object> values = config.getValues();
 			if(null != values && values.size() > 0){

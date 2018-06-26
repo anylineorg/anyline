@@ -24,10 +24,16 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.SQL;
 
 public interface ConfigChain extends Config{
 	public void addConfig(Config config);
 	public Config getConfig(String key);
+	public Config getConfig(String key, SQL.COMPARE_TYPE type);
+	
+	public ConfigChain removeConfig(Config config);
+	public ConfigChain removeConfig(String key);
+	public ConfigChain removeConfig(String key, SQL.COMPARE_TYPE type);
 
 	/**
 	 * 赋值

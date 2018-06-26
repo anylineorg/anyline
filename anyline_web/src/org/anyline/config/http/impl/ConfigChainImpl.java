@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.SQL;
 import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
@@ -90,6 +91,33 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 		}
 		return null;
 	}
+	public Config getConfig(String key, SQL.COMPARE_TYPE type){
+		for(Config conf: configs){
+			String id = conf.getId();
+			if(null != id && id.equals(key) && conf.getCompare() == type){
+				return conf;
+			}
+		}
+		return null;
+	}
+	
+
+	public ConfigChain removeConfig(String key){
+		Config config = getConfig(key);
+		return removeConfig(config);
+	}
+	public ConfigChain removeConfig(String key, SQL.COMPARE_TYPE type){
+		Config config = getConfig(key, type);
+		return removeConfig(config);
+	}
+	public ConfigChain removeConfig(Config config){
+		if(null != config){
+			configs.remove(config);
+		}
+		return this;
+	}
+	
+	
 	public void addConfig(Config config){
 		configs.add(config);
 	}
