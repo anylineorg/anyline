@@ -39,6 +39,7 @@ import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
 import org.anyline.config.http.ConfigStore;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
@@ -374,6 +375,14 @@ public class ConfigStoreImpl implements ConfigStore{
 			navi.setLazy(ms);
 		}
 		return this;
+	}
+	public ConfigStore clone(){
+		ConfigStore store = new ConfigStoreImpl();
+//		private ConfigChain chain;
+//		private PageNavi navi;
+//		private OrderStore orders;		//排序依据
+//		private GroupStore groups;
+		return store;
 	}
 }
 
