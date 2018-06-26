@@ -59,15 +59,16 @@ public class OrderStoreImpl implements OrderStore{
 		if (BasicUtil.isEmpty(str)) {
 			return;
 		}
-		if (str.toUpperCase().contains("ORDER BY")) {
-			str = str.toUpperCase().replace("ORDER BY", "").trim();
+		str = str.trim();
+		String up = str.toUpperCase().replaceAll("\\s+", " ").trim();
+		if (up.startsWith("ORDER BY")) {
+			str = str.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim();
 		}
 		String[] tmps = str.split(","); // 多列排序
 		for (String tmp : tmps) {
 			order(new OrderImpl(tmp));
 		}
 	}
-
 	public Order getOrder(String order){
 		if(null == order){
 			return null;

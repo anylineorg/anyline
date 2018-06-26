@@ -418,8 +418,10 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				if(null == condition){
 					continue;
 				}
-				if(condition.toUpperCase().contains("ORDER BY")){
-					String orderStr = condition.toUpperCase().replace("ORDER BY", "");
+				condition = condition.trim();
+				String up = condition.toUpperCase().replaceAll("\\s+", " ").trim();
+				if(up.startsWith("ORDER BY")){
+					String orderStr = condition.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim();
 					String orders[] = orderStr.split(",");
 					for(String item:orders){
 						sql.order(item);
@@ -431,8 +433,8 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						}
 					}
 					continue;
-				}else if(condition.toUpperCase().contains("GROUP BY")){
-					String groupStr = condition.toUpperCase().replace("GROUP BY", "");
+				}else if(up.startsWith("GROUP BY")){
+					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim();
 					String groups[] = groupStr.split(",");
 					for(String item:groups){
 						sql.group(item);
