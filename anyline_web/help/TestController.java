@@ -352,6 +352,12 @@ public class TestController extends BasicController {
 					<condition id="BCM_ID">
 					 	BCM_ID IN(:BCM_ID)
 					</condition>
+					<order>
+						ID DESC, CODE ASC
+					</order>
+					<group>
+						SORT_ID HAVING COUNT(1) > 0
+					</group>
 				</sql>
 			</sqls>
 		 * */

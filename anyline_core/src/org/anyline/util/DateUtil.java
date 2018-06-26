@@ -623,7 +623,9 @@ public class DateUtil {
 		}
 		return date;
 	}
-
+	public static boolean isDate(String str){
+		return parse(str) != null;
+	}
 	/**
 	 * 昨天
 	 * 

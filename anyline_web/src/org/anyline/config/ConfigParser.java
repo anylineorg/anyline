@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.anyline.config.db.SQL;
 import org.anyline.config.http.impl.ConfigImpl;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.DateUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.util.regular.RegularUtil;
 
@@ -144,7 +145,7 @@ public class ConfigParser {
 	 */
 	private static ParseResult parseDef(ParseResult result){
 		String key = result.getKey();
-		if(key.contains(":")){
+		if(key.contains(":") && !DateUtil.isDate(key)){
 			String[] tmp = key.split(":");
 			result.setKey(tmp[0]);
 			int size = tmp.length;
