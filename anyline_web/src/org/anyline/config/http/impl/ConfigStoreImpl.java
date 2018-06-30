@@ -19,6 +19,7 @@
 
 package org.anyline.config.http.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,7 +40,6 @@ import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
 import org.anyline.config.http.ConfigStore;
-import org.anyline.entity.DataRow;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
@@ -50,7 +50,8 @@ import org.anyline.util.WebUtil;
  * @author Administrator
  *
  */
-public class ConfigStoreImpl implements ConfigStore{
+public class ConfigStoreImpl implements ConfigStore,Serializable{
+	private static final long serialVersionUID = 1L;
 	private ConfigChain chain;
 	private PageNavi navi;
 	private OrderStore orders;		//排序依据
