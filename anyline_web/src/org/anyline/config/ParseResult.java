@@ -1,5 +1,6 @@
 package org.anyline.config;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +8,8 @@ import org.anyline.config.db.Condition;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQL.COMPARE_TYPE;
 
-public class ParseResult {
-
+public class ParseResult implements Serializable{
+	private static final long serialVersionUID = 1L;
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值
 	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组
 	
