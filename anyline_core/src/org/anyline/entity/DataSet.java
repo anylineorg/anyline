@@ -1235,7 +1235,29 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		String params[] = packParam(row, keys);
 		return getRows(params).size() > 0;
 	}
-	
+
+	public String[] packParam(DataRow row, String ... keys){
+		if(null == keys || null == row){
+			return null;
+		}
+		String params[] = new String[keys.length*2];
+		int idx = 0;
+		for(String key:keys){
+			if(null == key){
+				continue;
+			}
+			String k1 = key;
+			String k2 = key;
+			if(key.contains(":")){
+				String tmp[] = key.split(":");
+				k1 = tmp[0];
+				k2 = tmp[1];
+			}
+			params[idx++] = k1;
+			params[idx++] = row.getString(k2);
+		}
+		return params;
+	}
 	/**
 	 * 从items中按相应的key提取数据 存入
 	 * @param field:默认"ITEMS"
@@ -1250,23 +1272,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return this;
 		}
 		for(DataRow row : rows){
-			String[] params = new String[keys.length*2];
-			int idx = 0;
-			for(String key:keys){
-
-				String key1 = "";
-				String key2 = "";
-				if(key.contains(":")){
-					String ks[] = key.split(":");
-					key1 = ks[0];
-					key2 = ks[1];
-				}else{
-					key1 = key;
-					key2 = key;
-				}
-				params[idx++] = key2;
-				params[idx++] = row.getString(key1);
-			}
+			String[] params = packParam(row, reverseKey(keys));
 			if(BasicUtil.isEmpty(field)){
 				field = "ITEMS";
 			}
@@ -1302,7 +1308,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return result;
 		}
 		for(DataRow row:rows){
-			if(set.contains(row, keys)){
+			if(set.contains(row, reverseKey(keys))){
 				result.add((DataRow)row.clone());
 			}
 		}
@@ -1321,13 +1327,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet difference(DataSet set, String ... keys){
 		DataSet result = new DataSet();
 		for(DataRow row:rows){
-			if(null == set || !set.contains(row, reverseParam(keys))){
+			if(null == set || !set.contains(row, reverseKey(keys))){
 				result.add((DataRow)row.clone());
 			}
 		}
 		return result;
 	}
-	private String[] reverseParam(String[] keys){
+	private String[] reverseKey(String[] keys){
 		if(null == keys){
 			return new String[0];
 		}
@@ -1342,28 +1348,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			result[i] = key;
 		}
 		return result;
-	}
-	public String[] packParam(DataRow row, String ... keys){
-		if(null == keys || null == row){
-			return null;
-		}
-		String params[] = new String[keys.length*2];
-		int idx = 0;
-		for(String key:keys){
-			if(null == key){
-				continue;
-			}
-			String k1 = key;
-			String k2 = key;
-			if(key.contains(":")){
-				String tmp[] = key.split(":");
-				k1 = tmp[0];
-				k2 = tmp[1];
-			}
-			params[idx++] = k1;
-			params[idx++] = row.getString(k2);
-		}
-		return params;
 	}
 	/*********************************************** 实现接口 ************************************************************/
 	public boolean add(DataRow e) {
