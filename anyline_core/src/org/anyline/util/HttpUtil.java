@@ -408,20 +408,17 @@ public class HttpUtil {
 		url = "http://" + url;
 		return url;
 	}
-
+	
 	/**
 	 * 创建完整HTTP路径
-	 * 
-	 * @param srcUrl
-	 * @param dstUrl
 	 * @return
 	 */
 	public static String createFullHttpPath(String host, String url) {
 		// 完整的目标URL
-		if (url.startsWith("http:"))
+		if (url.startsWith("http") || url.startsWith("//") || BasicUtil.isEmpty(host)){
 			return url;
+		}
 		String fullPath = null;
-
 		if (url.startsWith("/")) {// 当前站点的绝对路径
 			fullPath = getHostUrl(host) + url;
 		} else if (url.startsWith("?")) {// 查询参数
