@@ -60,8 +60,13 @@ public class NumberUtil {
 		DecimalFormat df = new DecimalFormat(pattern);
 		return df.format(src);
 	}
-	public static String toUpper(String num){
-		return "";
+	/**
+	 * 中文大写(简体)
+	 * @param num
+	 * @return
+	 */
+	public static String upper(long num){
+		return NumberTextUtil.getInstance(NumberTextUtil.Lang.ChineseSimplified).getText(num);
 	}
 
 	/**
