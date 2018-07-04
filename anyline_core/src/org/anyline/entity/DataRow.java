@@ -1022,5 +1022,4 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		queryParams.put(key,param);
 		return this;
 	}
-	
 }
