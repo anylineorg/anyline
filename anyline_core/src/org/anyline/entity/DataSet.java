@@ -1228,7 +1228,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		if (null == rows || rows.size() == 0 || null == row) {
 			return false;
 		}
-		if (null == keys) {
+		if (null == keys || keys.length==0) {
 			keys = new String[1];
 			keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 		}
@@ -1321,9 +1321,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet difference(DataSet set, String ... keys){
 		DataSet result = new DataSet();
 		for(DataRow row:rows){
-			if(null == set || !set.contains(row, keys)){
+			if(null == set || !set.contains(row, reverseParam(keys))){
 				result.add((DataRow)row.clone());
 			}
+		}
+		return result;
+	}
+	private String[] reverseParam(String[] keys){
+		if(null == keys){
+			return new String[0];
+		}
+		int size = keys.length;
+		String result[] = new String[size];
+		for(int i=0; i<size; i++){
+			String key = keys[i];
+			if(BasicUtil.isNotEmpty(key) && key.contains(":")){
+				String[] ks = key.split(":");
+				key = ks[1] + ":" + ks[0];
+			}
+			result[i] = key;
 		}
 		return result;
 	}
