@@ -27,35 +27,16 @@ import java.util.List;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
 @MappedSuperclass
-public abstract class AnylineEntity implements Serializable{
+public abstract class AnylineEntity extends DataRow implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Transient
 	protected static Logger log = Logger.getLogger(AnylineEntity.class);
 
-	public static String PARENT 		= "PARENT";				//上级数据
-	public static String ALL_PARENT 	= "ALL_PARENT";			//所有上级数据
-	public static String CHILDREN 		= "CHILDREN";			//子数据
-	public static String PRIMARY_KEY	= ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
-	public static String ITEMS			= "ITEMS";
-	private DataSet container;									//包含当前对象的容器
 
-	private List<String> primaryKeys = new ArrayList<String>();	//主键
-	private List<String> updateColumns = new ArrayList<String>();
-	private String dataSource;									//数据源(表|视图|XML定义SQL)
-	private String schema;
-	private String table;
-	private Object clientTrace;									//客户端数据
-	private long createTime = 0;								//创建时间
-	private long expires = -1;									//过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-	
-	protected Boolean isNew = false;							//强制新建(适应hibernate主键策略)
-	
 
 	/**
 	 * 实体类对应的列
@@ -111,50 +92,5 @@ public abstract class AnylineEntity implements Serializable{
 		return BeanUtil.getValueByColumn(this, column);
 	}
 
-	public long getCreateTime(){
-		return createTime;
-	}
-	
-	public long getExpires() {
-		return expires;
-	}
-	public void setExpires(long expires) {
-		this.expires = expires;
-	}
-	public void setExpires(int expires) {
-		this.expires = expires;
-	}
 
-	/**
-	 * 读取数据源
-	 * 数据源为空时,读取容器数据源
-	 * @return
-	 */
-	public String getDataSource() {
-		String ds = table;
-		if(BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)){
-			ds = schema + "." + ds;
-		}
-		if(BasicUtil.isEmpty(ds)){
-			ds = dataSource;
-		}
-		
-		return ds;
-	}
-
-	/**
-	 * 设置数据源
-	 * 当前对象处于容器中时,设置容器数据源
-	 * @param dataSource
-	 */
-	public void setDataSource(String dataSource){
-		if(null == dataSource){
-			return;
-		}
-		this.dataSource = dataSource;
-		if(dataSource.contains(".") && !dataSource.contains(":")){
-			schema = dataSource.substring(0,dataSource.indexOf("."));
-			table = dataSource.substring(dataSource.indexOf(".") + 1);
-		}
-	}
 }
