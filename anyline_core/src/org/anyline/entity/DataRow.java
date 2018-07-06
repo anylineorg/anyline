@@ -62,8 +62,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
 	protected Boolean isNew 				= false							; //强制新建(适应hibernate主键策略)
 	protected boolean isFromCache 			= false							; //是否来自缓存
-	
-	
+
+	private boolean updateNullColumn 		= ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
+	private boolean updateEmptyColumn 		= ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
 	/**
 	 * 
 	 * @param obj
@@ -1022,4 +1023,17 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		queryParams.put(key,param);
 		return this;
 	}
+	public boolean isUpdateNullColumn() {
+		return updateNullColumn;
+	}
+	public void setUpdateNullColumn(boolean updateNullColumn) {
+		this.updateNullColumn = updateNullColumn;
+	}
+	public boolean isUpdateEmptyColumn() {
+		return updateEmptyColumn;
+	}
+	public void setUpdateEmptyColumn(boolean updateEmptyColumn) {
+		this.updateEmptyColumn = updateEmptyColumn;
+	}
+	
 }
