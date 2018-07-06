@@ -56,20 +56,6 @@ public class ImgUtil {
     public static String IMAGE_TYPE_PNG = "png";// 可移植网络图形
     public static String IMAGE_TYPE_PSD = "psd";// Photoshop的专用格式Photoshop
 
-//    public static void main(String args[]){
-//    	File dir = new File("D:\\imgs");
-//    	List<File> files = FileUtil.getAllChildrenFile(dir);
-//    	for(File file:files){
-//    		String src = file.getAbsolutePath();
-//    		File tar = new File(src.replace("imgs", "imgs_960"));
-//    		try{
-//    			if(!tar.exists())
-//    			ImgUtil.scale(file, tar, 960, 436, false);
-//    		}catch(Exception e){
-//    			e.printStackTrace();
-//    		}
-//    	}
-//    }
 
     /**
      * 缩放图像（按比例缩放）
@@ -242,7 +228,18 @@ public class ImgUtil {
             e.printStackTrace();
         }
     }
-
+    public final static float getSizeScale(File file){
+    	float scale = 0;
+		try {
+			 BufferedImage bi = ImageIO.read(file);
+			 float w = bi.getHeight(); // 源图宽度
+			 float h = bi.getWidth(); // 源图高度
+			 scale = w/h;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+         return scale;
+    }
     /**
      * 图像切割（指定切片的宽度和高度）
      * @param srcImageFile 源图像地址
@@ -362,6 +359,9 @@ public class ImgUtil {
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data);
     }
+    public static String base64(File img) {
+    	return base64Img(img);
+    }
     public static String base64Img(URL url) {
     	InputStream in = null;
     	byte[] data = null;
@@ -380,6 +380,9 @@ public class ImgUtil {
         }
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data);
+    }
+    public static String base64(URL url) {
+    	return base64Img(url);
     }
     /**
      * base64 图片转文件
@@ -423,6 +426,9 @@ public class ImgUtil {
     		}
     	}
     }
+    public static boolean base64(File file, String str) {
+    	return base64Img(file, str);
+    }
     /**
      * 拆分gif
      * @param file
@@ -457,6 +463,18 @@ public class ImgUtil {
     }
     public static void main(String args[]){
     	//splitGif(new File("D:\\a.gif"),new File("D:\\a"));
-    	
+
+//      	File dir = new File("D:\\imgs");
+//      	List<File> files = FileUtil.getAllChildrenFile(dir);
+//      	for(File file:files){
+//      		String src = file.getAbsolutePath();
+//      		File tar = new File(src.replace("imgs", "imgs_960"));
+//      		try{
+//      			if(!tar.exists())
+//      			ImgUtil.scale(file, tar, 960, 436, false);
+//      		}catch(Exception e){
+//      			e.printStackTrace();
+//      		}
+//      	}
     }
 }
