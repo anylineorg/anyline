@@ -19,6 +19,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -346,6 +348,25 @@ public class ImgUtil {
     	byte[] data = null;
         try {
             in = new FileInputStream(img);
+            data = new byte[in.available()];
+            in.read(data);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+        	try{
+        		in.close();
+        	}catch(Exception e){
+        		e.printStackTrace();
+        	}
+        }
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(data);
+    }
+    public static String base64Img(URL url) {
+    	InputStream in = null;
+    	byte[] data = null;
+        try {
+            in = url.openStream();
             data = new byte[in.available()];
             in.read(data);
         } catch (IOException e) {
