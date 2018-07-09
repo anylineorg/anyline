@@ -564,7 +564,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		List<String> keys = confirmUpdateColumns(dest, row, columns);
 		List<String> primaryKeys = row.getPrimaryKeys();
 		if(primaryKeys.size() == 0){
-			throw new SQLUpdateException("更新异常:更新条件为空,upate方法不支持更新整表操作.");
+			throw new SQLUpdateException("[更新更新异常][更新条件为空,upate方法不支持更新整表操作]");
 		}
 		/*不更新主键*/
 		for(String pk:primaryKeys){
