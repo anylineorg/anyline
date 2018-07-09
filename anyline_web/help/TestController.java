@@ -208,14 +208,20 @@ public class TestController extends BasicController {
 		service.insert(member);
 		//对于自增长的主键,在保存后需要取主键的情况,需要在插入前指明主键
 		
+		//更新
+		//会更新更新的列:DataRow执行put时如果值与原值不同时
+		//DataRow.clearUpdateColumns() //清空所有需要更新的列(不是清空值)
+		//DataRow.removeUpldateColumns(String ... keys)//清空指定需要更新的列(不是清空值)
+		//DataRow.addUpldateColumns(String ... keys)//添加指定需要更新的列
 		//更新 按形式上的主键执行更新 也可以指定多列
 		// update members set mmb_name = ? where mmb_id = ?
 		member = service.queryRow("members", "mmb_id:1");
 		member.addPrimaryKey("mmb_id");
-		member.put("mmb_name","ljs2");
+		member.put("mmb_name","zhangsan");
 		service.update(member, "name");
-		//update执行时将不对值为""或null的列操作,如果需要强制设置成NULl需要以大写NULL或{null}传入
 		
+		//+表示必须更新这一列,-表示必须不更新这一列 ,?表示只更新非空值
+		service.update(member,"+name","-age","?code");
 		
 		//put同时指定主键 row.put(key,value,是否作为主键, 是否清之前设置的主键:默认true)
 		member.put("mmb_id", "1", true);	//此时的主键为mmb_name
@@ -224,6 +230,7 @@ public class TestController extends BasicController {
 		
 		//save  根据主键是否为空来决定调用insert或update
 		service.save(member);
+		
 		
 		//执行insert save upate时,表名与query不一致的情况
 		//如从视图中查询出数据,修改后保存到表中
