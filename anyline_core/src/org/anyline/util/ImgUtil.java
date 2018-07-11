@@ -13,13 +13,16 @@ import java.awt.image.ColorConvertOp;
 import java.awt.image.CropImageFilter;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.ImageFilter;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -363,21 +366,42 @@ public class ImgUtil {
     	return base64Img(img);
     }
     public static String base64Img(URL url) {
-    	InputStream in = null;
     	byte[] data = null;
-        try {
-            in = url.openStream();
-            data = new byte[in.available()];
-            in.read(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally{
-        	try{
-        		in.close();
-        	}catch(Exception e){
-        		e.printStackTrace();
-        	}
-        }
+
+		HttpURLConnection conn = null;
+        InputStream is = null;
+        BufferedInputStream bis = null;
+        ByteArrayOutputStream baos = null;
+    	try{
+    		conn = (HttpURLConnection) url.openConnection();
+	        is = conn.getInputStream();
+	        bis = new BufferedInputStream(is);
+	        baos = new ByteArrayOutputStream();
+	        final int BUFFER_SIZE = 2*1024;
+	        final int EOF = -1;
+	        int c;
+	        byte[] buf = new byte[BUFFER_SIZE];
+	        while (true) {
+	            c = bis.read(buf);
+	            if (c == EOF){
+	                break;
+	            }
+	            baos.write(buf, 0, c);
+	        }
+	        data = baos.toByteArray();
+	        baos.flush();
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}finally{
+    		try{
+		        conn.disconnect();
+		        is.close();
+		        bis.close();
+		        baos.close();
+    		}catch(Exception e){
+    			e.printStackTrace();
+    		}
+    	}
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data);
     }
@@ -476,5 +500,14 @@ public class ImgUtil {
 //      			e.printStackTrace();
 //      		}
 //      	}
+//    	try {
+//			String base = ImgUtil.base64(new URL("http://10.16.242.62:11100/briefing/common/upload/20180709/210606070422.png"));
+//			base = ImgUtil.base64(new File("D:\\a.png"));
+//			System.out.println(base);
+//		} catch (MalformedURLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+    	
     }
 }
