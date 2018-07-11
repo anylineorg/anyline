@@ -22,7 +22,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +32,7 @@ import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.FileImageOutputStream;
 
+import org.anyline.entity.DataRow;
 import org.apache.log4j.Logger;
 
 import sun.misc.BASE64Decoder;
@@ -484,30 +484,5 @@ public class ImgUtil {
     		e.printStackTrace();
     	}
     	return files;
-    }
-    public static void main(String args[]){
-    	//splitGif(new File("D:\\a.gif"),new File("D:\\a"));
-
-//      	File dir = new File("D:\\imgs");
-//      	List<File> files = FileUtil.getAllChildrenFile(dir);
-//      	for(File file:files){
-//      		String src = file.getAbsolutePath();
-//      		File tar = new File(src.replace("imgs", "imgs_960"));
-//      		try{
-//      			if(!tar.exists())
-//      			ImgUtil.scale(file, tar, 960, 436, false);
-//      		}catch(Exception e){
-//      			e.printStackTrace();
-//      		}
-//      	}
-//    	try {
-//			String base = ImgUtil.base64(new URL("http://10.16.242.62:11100/briefing/common/upload/20180709/210606070422.png"));
-//			base = ImgUtil.base64(new File("D:\\a.png"));
-//			System.out.println(base);
-//		} catch (MalformedURLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-    	
     }
 }
