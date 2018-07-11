@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<configs>
+	<config key="default1">
+		<property key="STYLE_STAT_FORMAT">First</property>
+		<property key="VAR_PAGE_DEFAULT_VOL">10</property>
+		<property key="VAR_CLIENT_SET_VOL_ENABLE">true</property>
+	</config>
+</configs>

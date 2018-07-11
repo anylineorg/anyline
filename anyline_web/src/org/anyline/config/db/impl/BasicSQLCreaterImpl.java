@@ -506,7 +506,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private RunSQL createUpdateTxtFromEntity(String dest, AnylineEntity entity, boolean checkPrimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
 //		if(null == entity){
-		
 //			throw new SQLException("更新空数据");
 //		}
 //		if(null == dest){
@@ -644,13 +643,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		if(each){
-//			if(!dst.equals(ConfigTable.getString("CLIENT_TRACE_TABLE")) && !dst.contains("CLIENT_TRACE")){
-//				ClientTrace client = (ClientTrace)row.getClientTrace();
-//				if(null != client){
-//					row.put("REG_IP", client.getRemoteIP());
-//					row.put("REG_CLIENT_CD", client.getCd());
-//				}
-//			}
 			keys = row.keys();
 			//是否插入null及""列
 			boolean isInsertNullColumn = ConfigTable.getBoolean("IS_INSERT_NULL_COLUMN",false);
@@ -749,13 +741,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		if(each){
-//			if(!dst.equals(ConfigTable.getString("CLIENT_TRACE_TABLE")) && !dst.contains("CLIENT_TRACE")){
-//				ClientTrace client = (ClientTrace)entity.getClientTrace();
-//				if(null != client){
-//					entity.setRegIp(client.getRemoteIP());
-//					entity.setRegClientCd(client.getCd());
-//				}
-//			}
 			keys = entity.getColumns(true, false);
 			//是否插入null及""列
 			boolean isInsertNullColumn = ConfigTable.getBoolean("IS_INSERT_NULL_COLUMN",false);
@@ -837,13 +822,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		if(each){
-//			if(!dst.equals(ConfigTable.getString("CLIENT_TRACE_TABLE")) && !dst.contains("CLIENT_TRACE")){
-//				ClientTrace client = (ClientTrace)row.getClientTrace();
-//				if(null != client){
-//					row.put("UPT_IP", client.getRemoteIP());
-//					row.put("UPT_CLIENT_CD", client.getCd());
-//				}
-//			}
 			keys = row.getUpdateColumns();
 			//是否更新null及""列
 			boolean isUpdateNullColumn = row.isUpdateNullColumn();//ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN",true);
@@ -928,13 +906,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		if(each){
-//			if(!dst.equals(ConfigTable.getString("CLIENT_TRACE_TABLE")) && !dst.contains("CLIENT_TRACE")){
-//				ClientTrace client = (ClientTrace)entity.getClientTrace();
-//				if(null != client){
-//					entity.setUptIp(client.getRemoteIP());
-//					entity.setUptClientCd(client.getCd());
-//				}
-//			}
 			keys = entity.getColumns(false, true);
 			//是否更新null及""列
 			boolean isUpdateNullColumn = entity.isUpdateNullColumn();//ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN",false);
