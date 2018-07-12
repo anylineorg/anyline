@@ -485,4 +485,33 @@ public class ImgUtil {
     	}
     	return files;
     }
+    public static void main(String args[]){
+    	//splitGif(new File("D:\\a.gif"),new File("D:\\a"));
+
+//      	File dir = new File("D:\\imgs");
+//      	List<File> files = FileUtil.getAllChildrenFile(dir);
+//      	for(File file:files){
+//      		String src = file.getAbsolutePath();
+//      		File tar = new File(src.replace("imgs", "imgs_960"));
+//      		try{
+//      			if(!tar.exists())
+//      			ImgUtil.scale(file, tar, 960, 436, false);
+//      		}catch(Exception e){
+//      			e.printStackTrace();
+//      		}
+//      	}
+    	try {
+    		String base = "";
+    		base = FileUtil.md5(new File("D:\\a.jpg"));
+			//base = ImgUtil.base64(new URL("http://10.16.242.62:11100/briefing/common/upload/20180709/202309017634.png"));
+			//System.out.println(base);
+			//base = ImgUtil.base64(new URL("http://10.16.242.62:11100/briefing/common/upload/20180709/201843040059.png"));
+			System.out.println(base);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+    		
+    }
 }

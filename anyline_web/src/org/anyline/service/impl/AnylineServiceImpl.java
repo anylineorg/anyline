@@ -80,7 +80,7 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return navi;
 	}
-	private DataSet queryFromDao(DataSource ds, String src, ConfigStore configs, String... conditions){
+	private DataSet queryFromDao(String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
 		if(ConfigTable.isSQLDebug()){
 			log.warn("[解析SQL] [src:" + src + "]");
@@ -89,7 +89,7 @@ public class AnylineServiceImpl implements AnylineService {
 		try {
 			setPageLazy(src, configs, conditions);
 			SQL sql = createSQL(src);
-			set = dao.query(ds, sql, configs, conditions);
+			set = dao.query(sql, configs, conditions);
 			set.addQueryParam("query_src", src);
 		} catch (Exception e) {
 			set = new DataSet();
@@ -100,20 +100,6 @@ public class AnylineServiceImpl implements AnylineService {
 			log.error("QUERY ERROR:"+e);
 		}
 		return set;
-	}
-	/**
-	 * 按条件查询
-	 * @param ds 数据源
-	 * @param src 表｜视图｜函数｜自定义SQL
-	 * @param configs http参数封装
-	 * @param conditions 固定查询条件
-	 * @return
-	 */
-	@Override
-	public DataSet query(DataSource ds, String src, ConfigStore configs, String... conditions) {
-		DataSet set = queryFromDao(ds,src, configs, conditions);
-        return set;
-		
 	}
 	/**
 	 * 解析SQL中指定的主键table(col1,col2)[pk1,pk2]
@@ -181,23 +167,29 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return sql;
 	}
+	/**
+	 * 按条件查询
+	 * @param ds 数据源
+	 * @param src 表｜视图｜函数｜自定义SQL
+	 * @param configs http参数封装
+	 * @param conditions 固定查询条件
+	 * @return
+	 */
 	@Override
 	public DataSet query(String src, ConfigStore configs, String... conditions) {
-		return query(null, src, configs, conditions);
-	}
-
-	@Override
-	public DataSet query(DataSource ds, String src, String... conditions) {
-		return query(ds, src, null, conditions);
+		DataSet set = queryFromDao(src, configs, conditions);
+        return set;
+		
 	}
 
 	@Override
 	public DataSet query(String src, String... conditions) {
-		return query(null, src, null, conditions);
+		return query(src, null, conditions);
 	}
 
+
 	@Override
-	public DataSet query(DataSource ds, String src, int fr, int to, String... conditions) {
+	public DataSet query(String src, int fr, int to, String... conditions) {
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
@@ -205,14 +197,10 @@ public class AnylineServiceImpl implements AnylineService {
 		navi.setTotalRow(to-fr+1);
 		ConfigStore configs = new ConfigStoreImpl();
 		configs.setPageNavi(navi);
-		return query(ds, src, configs, conditions);
+		return query(src, configs, conditions);
 	}
 
-	@Override
-	public DataSet query(String src, int fr, int to, String... conditions) {
-		return query(null, src, fr, to, conditions);
-	}
-	private DataSet queryFromCacheL2(DataSource ds, String cache2, DataSet l1, String src, ConfigStore configs, String ... conditions){
+	private DataSet queryFromCacheL2(String cache2, DataSet l1, String src, ConfigStore configs, String ... conditions){
 		if(ConfigTable.isDebug()){
 			log.warn("[cache from L2][cache:"+cache2+"][src:"+src+"]");
 		}
@@ -239,7 +227,7 @@ public class AnylineServiceImpl implements AnylineService {
 					for(String pk:pks){
 						configs.addCondition(pk, row.get(pk), true, true);
 					}
-					cacheRow = queryRow(ds, src, configs, conditions);
+					cacheRow = queryRow(src, configs, conditions);
 		        	CacheUtil.put(cache2, cache2Key, cacheRow);   
 				}
 				set.add(cacheRow);
@@ -249,7 +237,7 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return set;
 	}
-	private DataSet queryFromCacheL1(DataSource ds, boolean isUseCacheL2, String cache, String src, ConfigStore configs, String ... conditions){
+	private DataSet queryFromCacheL1(boolean isUseCacheL2, String cache, String src, ConfigStore configs, String ... conditions){
 		if(ConfigTable.isDebug()){
 			log.warn("[cache from L1][cache:"+cache+"][src:"+src+"]");
 		}
@@ -291,11 +279,10 @@ public class AnylineServiceImpl implements AnylineService {
         		final SQL _sql = sql;
         		final ConfigStore _configs = configs; 
         		final String[] _conditions = conditions;
-        		final DataSource _ds = ds;
             	new Thread(new Runnable(){
             		public void run(){
                 		CacheUtil.start(_key, _max/10);
-            			DataSet newSet = dao.query(_ds, _sql, _configs, _conditions);
+            			DataSet newSet = dao.query(_sql, _configs, _conditions);
                     	CacheUtil.put(_cache, _key, newSet);          	
                 		CacheUtil.stop(_key, _max/10);
             		}
@@ -310,40 +297,34 @@ public class AnylineServiceImpl implements AnylineService {
 			}
 
 			setPageLazy(src, configs, conditions);
-			set = dao.query(ds, sql, configs, conditions);
+			set = dao.query(sql, configs, conditions);
 			
         	CacheUtil.put(cache, key, set);        	
         }
         
         //二级缓存数据
     	if(isUseCacheL2  && sql.hasPrimaryKeys()){
-			set = queryFromCacheL2(ds, cache2, set, src, configs, conditions);	
+			set = queryFromCacheL2(cache2, set, src, configs, conditions);	
     	}
 		return set;
 	}
-	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
+	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions){
 		DataSet set = null;
 		if(null == cache){
-			set = query(ds, src, configs, conditions);
+			set = query(src, configs, conditions);
 		}else{
 			if(ConfigTable.getBoolean("IS_USE_CACHE") || ConfigTable.getBoolean("IS_USE_CACHE_L1")){
-				set = queryFromCacheL1(ds, true, cache, src, configs, conditions);
+				set = queryFromCacheL1(true, cache, src, configs, conditions);
 			}else{
-				set = query(ds, src, configs, conditions);
+				set = query(src, configs, conditions);
 			}
 		}
 		return set;
-	}
-	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions){
-		return cache(null, cache, src, configs, conditions);
-	}
-	public DataSet cache(DataSource ds, String cache, String src, String ... conditions){
-		return cache(ds, cache, src, null, conditions);
 	}
 	public DataSet cache(String cache, String src, String ... conditions){
-		return cache(null, cache, src, null, conditions);
+		return cache(cache, src, null, conditions);
 	}
-	public DataSet cache(DataSource ds, String cache, String src, int fr, int to, String ... conditions){
+	public DataSet cache(String cache, String src, int fr, int to, String ... conditions){
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
@@ -351,35 +332,26 @@ public class AnylineServiceImpl implements AnylineService {
 		navi.setTotalRow(to-fr+1);
 		ConfigStore configs = new ConfigStoreImpl();
 		configs.setPageNavi(navi);
-		return cache(ds, cache, src, configs, conditions);
-	}
-	public DataSet cache(String cache, String src, int fr, int to, String ... conditions){
-		return cache(null, cache, src, fr, to, conditions);
+		return cache(cache, src, configs, conditions);
 	}
 
-	public DataSet cacheL1(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
+	public DataSet cacheL1(String cache, String src, ConfigStore configs, String ... conditions){
 		DataSet set = null;
 		if(null == cache){
-			set = query(ds, src, configs, conditions);
+			set = query(src, configs, conditions);
 		}else{
 			if(ConfigTable.getBoolean("IS_USE_CACHE") || ConfigTable.getBoolean("IS_USE_CACHE_L1")){
-				set = queryFromCacheL1(ds, false,  cache, src, configs, conditions);
+				set = queryFromCacheL1(false,  cache, src, configs, conditions);
 			}else{
-				set = query(ds, src, configs, conditions);
+				set = query(src, configs, conditions);
 			}
 		}
 		return set;
 	}
-	public DataSet cacheL1(String cache, String src, ConfigStore configs, String ... conditions){
-		return cacheL1(null, cache, src, configs, conditions);
-	}
-	public DataSet cacheL1(DataSource ds, String cache, String src, String ... conditions){
-		return cacheL1(ds, cache, src, null, conditions);
-	}
 	public DataSet cacheL1(String cache, String src, String ... conditions){
-		return cacheL1(null, cache, src, null, conditions);
+		return cacheL1(cache, src, null, conditions);
 	}
-	public DataSet cacheL1(DataSource ds, String cache, String src, int fr, int to, String ... conditions){
+	public DataSet cacheL1(String cache, String src, int fr, int to, String ... conditions){
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
@@ -387,15 +359,12 @@ public class AnylineServiceImpl implements AnylineService {
 		navi.setTotalRow(to-fr+1);
 		ConfigStore configs = new ConfigStoreImpl();
 		configs.setPageNavi(navi);
-		return cacheL1(ds, cache, src, configs, conditions);
-	}
-	public DataSet cacheL1(String cache, String src, int fr, int to, String ... conditions){
-		return cacheL1(null, cache, src, fr, to, conditions);
+		return cacheL1(cache, src, configs, conditions);
 	}
 	
 
 	@Override
-	public DataRow queryRow(DataSource ds, String src, ConfigStore store, String... conditions) {
+	public DataRow queryRow(String src, ConfigStore store, String... conditions) {
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(0);
 		navi.setLastRow(0);
@@ -404,7 +373,7 @@ public class AnylineServiceImpl implements AnylineService {
 			store = new ConfigStoreImpl();
 		}
 		store.setPageNavi(navi);
-		DataSet set = query(ds, src, store, conditions);
+		DataSet set = query(src, store, conditions);
 		if (null != set && set.size() > 0) {
 			DataRow row = set.getRow(0);
 			return row;
@@ -412,19 +381,10 @@ public class AnylineServiceImpl implements AnylineService {
 		return null;
 	}
 
-	@Override
-	public DataRow queryRow(String src, ConfigStore configs, String... conditions) {
-		return queryRow(null, src, configs, conditions);
-	}
-
-	@Override
-	public DataRow queryRow(DataSource ds, String src, String... conditions) {
-		return queryRow(ds, src, null, conditions);
-	}
 
 	@Override
 	public DataRow queryRow(String src, String... conditions) {
-		return queryRow(null, src, null, conditions);
+		return queryRow(src, null, conditions);
 	}
 
 	@Override
@@ -486,7 +446,7 @@ public class AnylineServiceImpl implements AnylineService {
 		configs.order(column, queryOrder.getCode());
 		configs.removeConfig(column);
 		configs.addCondition(compare, column, row.get(column), true, true);
-		return queryRow(null, src, configs, conditions);
+		return queryRow(src, configs, conditions);
 	}
 	
 	@Override
@@ -565,7 +525,7 @@ public class AnylineServiceImpl implements AnylineService {
 		configs.order(column, queryOrder.getCode());
 		configs.removeConfig(column);
 		configs.addCondition(compare, column, row.get(column), true, true);
-		return queryRow(null, src, configs, conditions);
+		return queryRow(src, configs, conditions);
 	}
 	
 	@Override
@@ -584,10 +544,10 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataRow prev(DataRow row, ConfigStore configs, String... conditions) {
 		return prev(row, null, null, configs, conditions);
 	}
-	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions){
+	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions){
 		//是否启动缓存
 		if(!ConfigTable.getBoolean("IS_USE_CACHE") || null == cache){
-			return queryRow(ds, src, configs, conditions);
+			return queryRow(src, configs, conditions);
 		}
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(0);
@@ -619,20 +579,14 @@ public class AnylineServiceImpl implements AnylineService {
         	}
         }
         // 调用实际 的方法
-        row = queryRow(ds, src, configs, conditions);
+        row = queryRow(src, configs, conditions);
         if(null != row){
 	    	CacheUtil.put(cache, key, row);
         }
 		return row;
 	}
-	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions){
-		return cacheRow(null, cache, src, configs, conditions);
-	}
-	public DataRow cacheRow(DataSource ds, String cache, String src, String ... conditions){
-		return cacheRow(ds, cache, src, null, conditions);
-	}
 	public DataRow cacheRow(String cache, String src, String ... conditions){
-		return cacheRow(null, cache, src, null, conditions);
+		return cacheRow(cache, src, null, conditions);
 	}
 	
 	
@@ -682,21 +636,14 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @return
 	 */
 
-	public boolean exists(DataSource ds, String src, ConfigStore configs, String ... conditions){
+	public boolean exists(String src, ConfigStore configs, String ... conditions){
 		boolean result = false;
-		//conditions = parseConditions(conditions);
 		SQL sql = createSQL(src);
-		result = dao.exists(ds, sql, configs, conditions);
+		result = dao.exists(sql, configs, conditions);
 		return result;
 	}
-	public boolean exists(String src, ConfigStore configs, String ... conditions){
-		return exists(null, src, configs, conditions);
-	}
-	public boolean exists(DataSource ds, String src, String ... conditions){
-		return exists(ds, src, null, conditions);
-	}
 	public boolean exists(String src, String ... conditions){
-		return exists(null, src, null, conditions);
+		return exists(src, null, conditions);
 	}
 	/**
 	 * 只根据主键判断
@@ -710,7 +657,7 @@ public class AnylineServiceImpl implements AnylineService {
 				for(String key: keys){
 					conditions[idx++] = key + ":" + row.getString(key);
 				}
-				return exists(null, src, null, conditions);
+				return exists(src, null, conditions);
 			}
 			return false;
 		}else{
@@ -721,12 +668,12 @@ public class AnylineServiceImpl implements AnylineService {
 		return exists(null, row);
 	}
 	
-	public int count(DataSource ds, String src, ConfigStore configs, String ... conditions){
+	public int count(String src, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try {
 			//conditions = parseConditions(conditions);
 			SQL sql = createSQL(src);
-			count = dao.count(ds, sql, configs, conditions);
+			count = dao.count(sql, configs, conditions);
 		} catch (Exception e) {
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
@@ -735,14 +682,8 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return count;
 	}
-	public int count(String src, ConfigStore configs, String ... conditions){
-		return count(null, src, configs, conditions);
-	}
-	public int count(DataSource ds, String src, String ... conditions){
-		return count(ds, src, null, conditions);
-	}
 	public int count(String src, String ... conditions){
-		return count(null, src, null, conditions);
+		return count(src, null, conditions);
 	}
 	
 	
@@ -756,65 +697,45 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @return
 	 */
 	@Override
-	public int update(boolean sync, DataSource ds, String dest, Object data, String... columns) {
+	public int update(boolean sync, String dest, Object data, String... columns) {
 		final String cols[] = BasicUtil.compressionSpace(columns);
-		final DataSource _ds = ds;
 		final String _dest = dest;
 		final Object _data = data;
 		if(sync){
 			new Thread(new Runnable(){
 				@Override
 				public void run() {
-					dao.update(_ds, _dest, _data, cols);
+					dao.update(_dest, _data, cols);
 				}
 			}).start();
 			return 0;
 		}else{
-			return dao.update(ds, dest, data, cols);
+			return dao.update(dest, data, cols);
 		}
 	}
-	@Override
-	public int update(DataSource ds, String dest, Object data, String... columns) {
-		columns = BasicUtil.compressionSpace(columns);
-		return dao.update(ds, dest, data, columns);
-	}
 
+	@Override
+	public int update(String dest, ConfigStore configs, String... conditions) {
+		return 0;
+	}
 	@Override
 	public int update(String dest, Object data, String... columns) {
-		return update(null, dest, data, columns);
-	}
-	@Override
-	public int update(boolean sync, String dest, Object data, String... columns) {
-		return update(false,null, dest, data, columns);
+		columns = BasicUtil.compressionSpace(columns);
+		return dao.update(dest, data, columns);
 	}
 
-	@Override
-	public int update(DataSource ds, Object data, String... columns) {
-		return update(ds, null, data, columns);
-	}
-	@Override
-	public int update(boolean sync, DataSource ds, Object data, String... columns) {
-		return update(sync, ds, null, data, columns);
-	}
 
 	@Override
 	public int update(Object data, String... columns) {
-		return update(null, null, data, columns);
+		return update(null, data, columns);
 	}
 	@Override
 	public int update(boolean sync, Object data, String... columns) {
-		return update(sync, null, null, data, columns);
+		return update(sync, null, data, columns);
 	}
 	@Override
-	public int update(DataSource ds,String dest, ConfigStore configs, String... conditions) {
-		
-        return 0;
-		
-	}
-	@Override
-	public int save(boolean sync, DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
+	public int save(boolean sync, String dest, Object data, boolean checkPrimary, String... columns) {
 		if(sync){
-			final DataSource _ds = ds;
 			final String _dest = dest;
 			final Object _data = data;
 			final boolean _chk = checkPrimary;
@@ -822,18 +743,18 @@ public class AnylineServiceImpl implements AnylineService {
 			new Thread(new Runnable(){
 				@Override
 				public void run() {
-					save(_ds, _dest, _data, _chk, cols);
+					save(_dest, _data, _chk, cols);
 				}
 				
 			}).start();
 			return 0;
 		}else{
-			return save(ds, dest, data, checkPrimary, columns);
+			return save(dest, data, checkPrimary, columns);
 		}
 		
 	}
 	@Override
-	public int save(DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
+	public int save(String dest, Object data, boolean checkPrimary, String... columns) {
 		if (null == data) {
 			return 0;
 		}
@@ -841,185 +762,110 @@ public class AnylineServiceImpl implements AnylineService {
 			Collection datas = (Collection) data;
 			int cnt = 0;
 			for (Object obj : datas) {
-				cnt += save(ds, dest, obj, checkPrimary, columns);
+				cnt += save(dest, obj, checkPrimary, columns);
 			}
 			return cnt;
 		}
-		return saveObject(ds, dest, data, checkPrimary, columns);
+		return saveObject(dest, data, checkPrimary, columns);
 	}
 
-	@Override
-	public int save(String dest, Object data, boolean checkPrimary, String... columns) {
-		return save(null, dest, data, checkPrimary, columns);
-	}
-	@Override
-	public int save(boolean sync, String dest, Object data, boolean checkPrimary, String... columns) {
-		return save(sync,null, dest, data, checkPrimary, columns);
-	}
-
-	@Override
-	public int save(DataSource ds, Object data, boolean checkPrimary, String... columns) {
-		return save(ds, null, data, checkPrimary, columns);
-	}
-	@Override
-	public int save(boolean sync, DataSource ds, Object data, boolean checkPrimary, String... columns) {
-		return save(sync, ds, null, data, checkPrimary, columns);
-	}
 
 	@Override
 	public int save(Object data, boolean checkPrimary, String... columns) {
-		return save(null, null, data, checkPrimary, columns);
+		return save(null, data, checkPrimary, columns);
 	}
 	@Override
 	public int save(boolean sync, Object data, boolean checkPrimary, String... columns) {
-		return save(sync, null, null, data, checkPrimary, columns);
+		return save(sync, null, data, checkPrimary, columns);
 	}
 
-	@Override
-	public int save(DataSource ds, Object data, String... columns) {
-		return save(ds, null, data, false, columns);
-	}
-
-	@Override
-	public int save(boolean sync, DataSource ds, Object data, String... columns) {
-		return save(sync, ds, null, data, false, columns);
-	}
-
-	@Override
-	public int save(String dest, Object data, String... columns) {
-		return save(null, dest, data, false, columns);
-	}
-	@Override
-	public int save(boolean sync, String dest, Object data, String... columns) {
-		return save(sync, null, dest, data, false, columns);
-	}
 
 	@Override
 	public int save(Object data, String... columns) {
-		return save(null, null, data, false, columns);
+		return save(null, data, false, columns);
 	}
+
 	@Override
 	public int save(boolean sync, Object data, String... columns) {
-		return save(sync, null, null, data, false, columns);
+		return save(sync, null, data, false, columns);
+	}
+
+
+
+	@Override
+	public int save(String dest, Object data, String... columns) {
+		return save(dest, data, false, columns);
 	}
 
 	@Override
-	public int save(DataSource ds, String dest, Object data, String... columns) {
-		return save(ds, dest, data, false, columns);
+	public int save(boolean sync, String dest, Object data, String... columns) {
+		return save(sync, dest, data, false, columns);
 	}
 
-	@Override
-	public int save(boolean sync, DataSource ds, String dest, Object data, String... columns) {
-		return save(sync, ds, dest, data, false, columns);
-	}
-
-	private int saveObject(DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
-		return dao.save(ds, dest, data, checkPrimary, columns);
-	}
-
-	@Override
-	public int insert(DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
-		return dao.insert(ds, dest, data, checkPrimary, columns);
+	private int saveObject(String dest, Object data, boolean checkPrimary, String... columns) {
+		return dao.save(dest, data, checkPrimary, columns);
 	}
 
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, String... columns) {
-		return insert(null, dest, data, checkPrimary, columns);
+		return dao.insert(dest, data, checkPrimary, columns);
 	}
 
-	@Override
-	public int insert(DataSource ds, Object data, boolean checkPrimary, String... columns) {
-		return insert(ds, null, data, checkPrimary, columns);
-	}
 
 	@Override
 	public int insert(Object data, boolean checkPrimary, String... columns) {
-		return insert(null, null, data, checkPrimary, columns);
+		return insert(null, data, checkPrimary, columns);
 	}
 
-	@Override
-	public int insert(DataSource ds, Object data, String... columns) {
-		return insert(ds, null, data, false, columns);
-	}
-
-	@Override
-	public int insert(String dest, Object data, String... columns) {
-		return insert(null, dest, data, false, columns);
-	}
 
 	@Override
 	public int insert(Object data, String... columns) {
-		return insert(null, null, data, false, columns);
+		return insert(null, data, false, columns);
 	}
 
-	@Override
-	public int insert(DataSource ds, String dest, Object data, String... columns) {
-		return insert(ds, dest, data, false, columns);
-	}
+
 
 	@Override
-	public int batchInsert(DataSource ds, String dest, Object data, boolean checkPrimary, String... columns) {
-		return dao.batchInsert(ds, dest, data, checkPrimary, columns);
+	public int insert(String dest, Object data, String... columns) {
+		return insert(dest, data, false, columns);
 	}
 
 	@Override
 	public int batchInsert(String dest, Object data, boolean checkPrimary, String... columns) {
-		return batchInsert(null, dest, data, checkPrimary, columns);
+		return dao.batchInsert(dest, data, checkPrimary, columns);
 	}
 
-	@Override
-	public int batchInsert(DataSource ds, Object data, boolean checkPrimary, String... columns) {
-		return batchInsert(ds, null, data, checkPrimary, columns);
-	}
 
 	@Override
 	public int batchInsert(Object data, boolean checkPrimary, String... columns) {
-		return batchInsert(null, null, data, checkPrimary, columns);
-	}
-
-	@Override
-	public int batchInsert(DataSource ds, Object data, String... columns) {
-		return batchInsert(ds, null, data, false, columns);
-	}
-
-	@Override
-	public int batchInsert(String dest, Object data, String... columns) {
-		return batchInsert(null, dest, data, false, columns);
+		return batchInsert(null, data, checkPrimary, columns);
 	}
 
 	@Override
 	public int batchInsert(Object data, String... columns) {
-		return batchInsert(null, null, data, false, columns);
+		return batchInsert(null, data, false, columns);
 	}
 
+
 	@Override
-	public int batchInsert(DataSource ds, String dest, Object data, String... columns) {
-		return batchInsert(ds, dest, data, false, columns);
+	public int batchInsert(String dest, Object data, String... columns) {
+		return batchInsert(dest, data, false, columns);
 	}
 	@Override
-	public boolean executeProcedure(DataSource ds, String procedure, String... inputs) {
+	public boolean executeProcedure(String procedure, String... inputs) {
 		Procedure proc = new ProcedureImpl();
 		proc.setName(procedure);
 		for (String input : inputs) {
 			proc.addInput(input);
 		}
-		return executeProcedure(ds, proc);
-	}
-
-	@Override
-	public boolean executeProcedure(String procedure, String... inputs) {
-		return executeProcedure(null, procedure, inputs);
-	}
-
-	@Override
-	public boolean executeProcedure(DataSource ds, Procedure procedure) {
-		return dao.executeProcedure(ds, procedure);
+		return executeProcedure(proc);
 	}
 
 	@Override
 	public boolean executeProcedure(Procedure procedure) {
-		return executeProcedure(null, procedure);
+		return dao.executeProcedure(procedure);
 	}
+
 
 	/**
 	 * 根据存储过程查询
@@ -1029,10 +875,10 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @return
 	 */
 	@Override
-	public DataSet queryProcedure(DataSource ds, Procedure procedure) {
+	public DataSet queryProcedure(Procedure procedure) {
 		DataSet set = null;
 		try {
-			set = dao.queryProcedure(ds, procedure);
+			set = dao.queryProcedure(procedure);
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
@@ -1044,66 +890,50 @@ public class AnylineServiceImpl implements AnylineService {
 		return set;
 	}
 
-	@Override
-	public DataSet queryProcedure(Procedure procedure) {
-		return queryProcedure(null, procedure);
-	}
 
 	@Override
-	public DataSet queryProcedure(DataSource ds, String procedure, String... inputs) {
+	public DataSet queryProcedure(String procedure, String... inputs) {
 		Procedure proc = new ProcedureImpl();
 		proc.setName(procedure);
 		for (String input : inputs) {
 			proc.addInput(input);
 		}
-		return queryProcedure(ds, proc);
+		return queryProcedure(proc);
 	}
 
-	@Override
-	public DataSet queryProcedure(String procedure, String... inputs) {
-		return queryProcedure(null, procedure, inputs);
-	}
 
 	@Override
-	public int execute(DataSource ds, String src, ConfigStore store, String... conditions) {
+	public int execute(String src, ConfigStore store, String... conditions) {
 		int result = -1;
 		conditions = BasicUtil.compressionSpace(conditions);
 		SQL sql = createSQL(src);
 		if (null == sql) {
 			return result;
 		}
-		result = dao.execute(ds, sql, store, conditions);
+		result = dao.execute(sql, store, conditions);
 		return result;
 	}
 
-	@Override
-	public int execute(String src, ConfigStore configs, String... conditions) {
-		return execute(null, src, configs, conditions);
-	}
-
-	@Override
-	public int execute(DataSource ds, String src, String... conditions) {
-		return execute(ds, src, null, conditions);
-	}
 
 	@Override
 	public int execute(String src, String... conditions) {
-		return execute(null, src, null, conditions);
+		return execute(src, null, conditions);
 	}
+
 	@Override
-	public int delete(DataSource ds, String dest, Object data) {
+	public int delete(String dest, Object data) {
 		if (null == data) {
 			return 0;
 		}
 		if (data instanceof DataRow) {
-			return deleteRow(ds, dest, (DataRow) data);
+			return deleteRow(dest, (DataRow) data);
 		}
 		if (data instanceof DataSet) {
 			DataSet set = (DataSet) data;
 			int cnt = 0;
 			int size = set.size();
 			for (int i = 0; i < size; i++) {
-				cnt += deleteRow(ds, dest, set.getRow(i));
+				cnt += deleteRow(dest, set.getRow(i));
 			}
 			return cnt;
 		}
@@ -1111,49 +941,36 @@ public class AnylineServiceImpl implements AnylineService {
 			Collection datas = (Collection) data;
 			int cnt = 0;
 			for (Object obj : datas) {
-				cnt += delete(ds, dest, obj);
+				cnt += delete(dest, obj);
 			}
 			return cnt;
 		}
-		return deleteObject(ds, dest, data);
-	}
-
-	@Override
-	public int delete(DataSource ds, Object data) {
-		return delete(ds, null, data);
-	}
-
-	@Override
-	public int delete(String dest, Object data) {
-		return delete(null, dest, data);
+		return deleteObject(dest, data);
 	}
 
 	@Override
 	public int delete(Object data) {
-		return delete(null, null, data);
+		return delete(null, data);
 	}
 
-	private int deleteObject(DataSource ds, String dest, Object data, String... columns) {
+
+
+	private int deleteObject(String dest, Object data, String... columns) {
 		return 0;
 	}
 
-	private int deleteRow(DataSource ds, String dest, DataRow row, String... columns) {
-		return dao.delete(ds, dest, row, columns);
+	private int deleteRow(String dest, DataRow row, String... columns) {
+		return dao.delete(dest, row, columns);
 	}
 	
-	public int delete(DataSource ds, String table, String key, Collection<Object> values){
-		return dao.delete(ds, table, key, values);
-	}
 	public int delete(String table, String key, Collection<Object> values){
-		return delete(null, table, key, values);
+		return dao.delete(table, key, values);
 	}
 	
-	public int delete(DataSource ds, String table, String key, String ... values){
-		return dao.delete(ds, table, key, values);
-	}
 	public int delete(String table, String key, String ... values){
-		return delete(null, table, key, values);
+		return dao.delete(table, key, values);
 	}
+
 
 	/**
 	 * @param conditions	固定查询条件  
