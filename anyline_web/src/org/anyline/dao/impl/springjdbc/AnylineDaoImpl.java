@@ -30,8 +30,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource;
-
 import org.anyline.cache.PageLazyStore;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
@@ -88,7 +86,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * 查询
 	 */
 	@Override
-	public DataSet query(DataSource ds, SQL sql, ConfigStore configs, String ... conditions) {
+	public DataSet query(SQL sql, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
 		PageNavi navi = run.getPageNavi();
@@ -100,7 +98,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}else{
 				//未计数(总数 )
 				if(navi.getTotalRow() ==0){
-					total = getTotal(ds, run.getTotalQueryTxt(), run.getValues());
+					total = getTotal(run.getTotalQueryTxt(), run.getValues());
 					navi.setTotalRow(total);	
 				}else{
 					total = navi.getTotalRow();
@@ -112,7 +110,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			log.warn("[查询记录总数][行数:"+total + "]");
 		}
 		if(null == navi || total > 0){
-			set = select(ds, run.getFinalQueryTxt(), run.getValues());
+			set = select(run.getFinalQueryTxt(), run.getValues());
 		}else{
 			set = new DataSet();
 		}
@@ -129,32 +127,20 @@ public class AnylineDaoImpl implements AnylineDao {
 		} 
 		return set;
 	}
-	public DataSet query(SQL sql, ConfigStore configs, String ... conditions){
-		return query(null, sql , configs, conditions);
-	}
-	public DataSet query(DataSource ds, SQL sql, String ... conditions){
-		return query(ds, sql, null, conditions);
-	}
 	public DataSet query(SQL sql, String ... conditions){
-		return query(null, sql, null, conditions);
+		return query(sql, null, conditions);
 	}
 
-	public int count(DataSource ds, SQL sql, ConfigStore configs, String ... conditions){
+	public int count(SQL sql, ConfigStore configs, String ... conditions){
 		int count = -1;
 		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
-		count = getTotal(ds, run.getTotalQueryTxt(), run.getValues());
+		count = getTotal(run.getTotalQueryTxt(), run.getValues());
 		return count;
 	}
-	public int count(SQL sql, ConfigStore configs, String ... conditions){
-		return count(null, sql, configs, conditions);
-	}
-	public int count(DataSource ds, SQL sql, String ... conditions){
-		return count(ds, sql, null, conditions);
-	}
 	public int count(SQL sql, String ... conditions){
-		return count(null, sql, null, conditions);
+		return count(sql, null, conditions);
 	}
-	public boolean exists(DataSource ds, SQL sql, ConfigStore configs, String ... conditions){
+	public boolean exists(SQL sql, ConfigStore configs, String ... conditions){
 		boolean result = false;
 		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
 		String txt = run.getExistsTxt();
@@ -193,22 +179,16 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		return result;
 	}
-	public boolean exists(SQL sql, ConfigStore configs, String ... conditions){
-		return exists(null, sql, configs, conditions);
-	}
-	public boolean exists(DataSource ds, SQL sql, String ... conditions){
-		return exists(ds, sql, null, conditions);
-	}
 	public boolean exists(SQL sql, String ... conditions){
-		return exists(null, sql, null, conditions);
+		return exists(sql, null, conditions);
 	}
 	/**
 	 * 总记录数
 	 * @return
 	 */
-	private int getTotal(DataSource ds, String sql, List<Object> values) {
+	private int getTotal(String sql, List<Object> values) {
 		int total = 0;
-		DataSet set = select(ds,sql,values);
+		DataSet set = select(sql,values);
 		total = set.getInt("CNT");
 		return total;
 	}
@@ -219,7 +199,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * @return
 	 */
 	@Override
-	public int update(DataSource ds, String dest, Object obj, String ... columns ){
+	public int update(String dest, Object obj, String ... columns ){
 		if(null == obj){
 			throw new SQLUpdateException("更新空数据");
 		}
@@ -227,7 +207,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(obj instanceof DataSet){
 			DataSet set = (DataSet)obj;
 			for(int i=0; i<set.size(); i++){
-				result += update(ds, dest, set.getRow(i), columns);
+				result += update(dest, set.getRow(i), columns);
 			}
 			return result;
 		}
@@ -264,22 +244,14 @@ public class AnylineDaoImpl implements AnylineDao {
 		return result;
 	}
 	@Override
-	public int update(String dest, Object data, String ... columns){
-		return update(null, dest, data, columns);
-	}
-	@Override
-	public int update(DataSource ds, Object data, String ... columns){
-		return update(ds, null, data, columns);
-	}
-	@Override
 	public int update(Object data, String ... columns){
-		return update(null, null, data, columns);
+		return update(null, data, columns);
 	}
 	/**
 	 * 保存(insert|upate)
 	 */
 	@Override
-	public int save(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
+	public int save(String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
 			throw new SQLUpdateException("保存空数据");
 		}
@@ -287,52 +259,36 @@ public class AnylineDaoImpl implements AnylineDao {
 			Collection<?> items = (Collection<?>)data;
 			int cnt = 0;
 			for(Object item:items){
-				cnt += save(ds, dest, item, checkPrimary, columns);
+				cnt += save(dest, item, checkPrimary, columns);
 			}
 			return cnt;
 		}
-		return saveObject(ds, dest, data, checkPrimary, columns);
+		return saveObject(dest, data, checkPrimary, columns);
 		
 	}
 
 	@Override
-	public int save(String dest, Object data, boolean checkPrimary, String ... columns){
-		return save(null, dest, data, checkPrimary, columns);
-	}
-	@Override
-	public int save(DataSource ds, Object data, boolean checkPrimary, String ... columns){
-		return save(ds, null, data, checkPrimary, columns);
-	}
-	@Override
 	public int save(Object data, boolean checkPrimary, String ... columns){
-		return save(null, null, data, checkPrimary, columns);
-	}
-	@Override
-	public int save(DataSource ds, String dest, Object data, String ... columns){
-		return save(ds, dest, data, false, columns);
+		return save(null, data, checkPrimary, columns);
 	}
 	@Override
 	public int save(String dest, Object data, String ... columns){
-		return save(null, dest, data, columns);
-	}
-	@Override
-	public int save(DataSource ds, Object data, String ... columns){
-		return save(ds, null, data, false, columns);
+		return save(dest, data, false, columns);
 	}
 	@Override
 	public int save(Object data, String ... columns){
-		return save(null, null, data, false, columns);
+		return save(null, data, false, columns);
 	}
 	
 
-	private int saveObject(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
+	private int saveObject(String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
 			return 0;
 		}
 		if(checkIsNew(data)){
-			return insert(ds,dest, data, checkPrimary, columns);
+			return insert(dest, data, checkPrimary, columns);
 		}else{
-			return update(ds, dest, data, columns);
+			return update(dest, data, columns);
 		}
 	}
 	private boolean checkIsNew(Object obj){
@@ -357,7 +313,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * @return
 	 */
 	@Override
-	public int insert(DataSource ds, String dest, Object data, boolean checkPrimary, String ... columns){
+	public int insert(String dest, Object data, boolean checkPrimary, String ... columns){
 		RunSQL run = creater.createInsertTxt(dest, data, checkPrimary, columns);
 		if(null == run){
 			return 0;
@@ -410,37 +366,20 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 
 	@Override
-	public int insert(String dest, Object data, boolean checkPrimary, String ... columns){
-		return insert(null, dest, data, checkPrimary, columns);
-	}
-	@Override
-	public int insert(DataSource ds, Object data, boolean checkPrimary, String ... columns){
-		return insert(ds, null, data, checkPrimary, columns);
-	}
-	@Override
 	public int insert(Object data, boolean checkPrimary, String ... columns){
-		return insert(null, null, data, checkPrimary, columns);
-	}
-	@Override
-	public int insert(DataSource ds, String dest, Object data, String ... columns){
-		return insert(ds, dest, data, false, columns);
+		return insert(null, data, checkPrimary, columns);
 	}
 	@Override
 	public int insert(String dest, Object data, String ... columns){
-		return insert(null, dest, data, false, columns);
-	}
-	@Override
-	public int insert(DataSource ds, Object data, String ... columns){
-		return insert(ds, null, data, false, columns);
+		return insert(dest, data, false, columns);
 	}
 	@Override
 	public int insert(Object data, String ... columns){
-		return insert(null, null, data, false, columns);
+		return insert(null, data, false, columns);
 	}
-	
 
 	@Override
-	public int batchInsert(final DataSource ds, final String dest, final Object data, final boolean checkPrimary, final String ... columns){
+	public int batchInsert(final String dest, final Object data, final boolean checkPrimary, final String ... columns){
 		if(null == data){
 			return 0;
 		}
@@ -448,7 +387,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			DataSet set = (DataSet)data;
 			int size = set.size();
 			for(int i=0; i<size; i++){
-				batchInsert(ds, dest, set.getRow(i), checkPrimary, columns);
+				batchInsert(dest, set.getRow(i), checkPrimary, columns);
 			}
 		}
 		String table = creater.getDataSource(data);
@@ -469,7 +408,7 @@ public class AnylineDaoImpl implements AnylineDao {
 							while(true){
 								DataSet list = batchInsertStore.getDatas();
 								if(null != list && list.size()>0){
-									insert(ds, dest, list, checkPrimary, columns);
+									insert(dest, list, checkPrimary, columns);
 								}else{
 									Thread.sleep(1000*10);
 								}
@@ -486,32 +425,16 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 
 	@Override
-	public int batchInsert(String dest, Object data, boolean checkPrimary, String ... columns){
-		return batchInsert(null, dest, data, checkPrimary, columns);
-	}
-	@Override
-	public int batchInsert(DataSource ds, Object data, boolean checkPrimary, String ... columns){
-		return batchInsert(ds, null, data, checkPrimary, columns);
-	}
-	@Override
 	public int batchInsert(Object data, boolean checkPrimary, String ... columns){
-		return batchInsert(null, null, data, checkPrimary, columns);
-	}
-	@Override
-	public int batchInsert(DataSource ds, String dest, Object data, String ... columns){
-		return batchInsert(ds, dest, data, false, columns);
+		return batchInsert(null, data, checkPrimary, columns);
 	}
 	@Override
 	public int batchInsert(String dest, Object data, String ... columns){
-		return batchInsert(null, dest, data, false, columns);
-	}
-	@Override
-	public int batchInsert(DataSource ds, Object data, String ... columns){
-		return batchInsert(ds, null, data, false, columns);
+		return batchInsert(dest, data, false, columns);
 	}
 	@Override
 	public int batchInsert(Object data, String ... columns){
-		return batchInsert(null, null, data, false, columns);
+		return batchInsert(null, data, false, columns);
 	}
 	private void setPrimaryValue(Object obj, int value){
 		if(null == obj){
@@ -531,7 +454,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * @param values
 	 * @return
 	 */
-	private DataSet select(DataSource ds, String sql, List<Object> values){
+	private DataSet select(String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -574,7 +497,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		return set;
 	}
 	@Override
-	public int execute(DataSource ds, SQL sql, ConfigStore configs, String ... conditions){
+	public int execute(SQL sql, ConfigStore configs, String ... conditions){
 		int result = -1;
 		RunSQL run = creater.createExecuteRunSQL(sql, configs, conditions);
 		String txt = run.getExecuteTxt();
@@ -607,20 +530,12 @@ public class AnylineDaoImpl implements AnylineDao {
 		return result; 
 	}
 	@Override
-	public int execute(DataSource ds, SQL sql, String ... conditions){
-		return execute(ds, sql, null, conditions);
-	}
-	@Override
-	public int execute(SQL sql, ConfigStore configs, String ... conditions){
-		return execute(null, sql, configs, conditions);
-	}
-	@Override
 	public int execute(SQL sql, String ... conditions){
-		return execute(null, sql, null, conditions);
+		return execute(sql, null, conditions);
 	}
 	@SuppressWarnings("unchecked")
 	@Override
-	public boolean executeProcedure(DataSource ds, Procedure procedure){
+	public boolean executeProcedure(Procedure procedure){
 		boolean result = false;
 		List<Object> list = new ArrayList<Object>();
 		final List<String> inputValues = procedure.getInputValues();
@@ -690,10 +605,6 @@ public class AnylineDaoImpl implements AnylineDao {
 		return result;
 	}
 
-	@Override
-	public synchronized boolean executeProcedure(Procedure procedure){
-		return executeProcedure(null, procedure);
-	}
 	/**
 	 * 根据存储过程查询(MSSQL AS 后必须加 SET NOCOUNT ON)
 	 * @param procedure
@@ -701,7 +612,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * @return
 	 */
 	@Override
-	public DataSet queryProcedure(DataSource ds, final Procedure procedure){
+	public DataSet queryProcedure(final Procedure procedure){
 		final List<String> inputValues = procedure.getInputValues();
 		final List<Integer> inputTypes = procedure.getInputTypes();
 		final List<Integer> outputTypes = procedure.getOutputTypes();
@@ -779,20 +690,13 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		return set;
 	}
-	@Override
-	public DataSet queryProcedure(Procedure procedure){
-		return queryProcedure(null, procedure);
-	}
 
-	public int delete(DataSource ds, String table, String key, Collection<Object> values){
+	public int delete(String table, String key, Collection<Object> values){
 		RunSQL run = creater.createDeleteRunSQL(table, key, values);
 		int result = exeDelete(run);
 		return result;
 	}
-	public int delete(String table, String key, Collection<Object> values){
-		return delete(null, table, key, values);
-	}
-	public int delete(DataSource ds, String table, String key, String ... values){
+	public int delete(String table, String key, String ... values){
 		List<String> list = new ArrayList<String>();
 		if(null != values){
 			for(String value:values){
@@ -803,11 +707,8 @@ public class AnylineDaoImpl implements AnylineDao {
 		int result = exeDelete(run);
 		return result;
 	}
-	public int delete(String table, String key, String ... values){
-		return delete(null, table, key, values);
-	}
 	@Override
-	public int delete(DataSource ds, String dest, Object data, String... columns) {
+	public int delete(String dest, Object data, String... columns) {
 		RunSQL run = creater.createDeleteRunSQL(dest, data, columns);
 		int result = exeDelete(run);
 		return result;

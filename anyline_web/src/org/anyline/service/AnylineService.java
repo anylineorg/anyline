@@ -44,11 +44,8 @@ public interface AnylineService{
 	 * 			
 	 * @return
 	 */
-	public DataSet query(DataSource ds, String src, ConfigStore configs, String ... conditions);
 	public DataSet query(String src, ConfigStore configs, String ... conditions);
-	public DataSet query(DataSource ds, String src, String ... conditions);
 	public DataSet query(String src, String ... conditions);
-	public DataSet query(DataSource ds, String src, int fr, int to, String ... conditions);
 	public DataSet query(String src, int fr, int to, String ... conditions);
 	/**
 	 * 如果二级缓存开启 会从二级缓存中提取数据
@@ -59,11 +56,8 @@ public interface AnylineService{
 	 * @param conditions
 	 * @return
 	 */
-	public DataSet cache(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
 	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions);
-	public DataSet cache(DataSource ds, String cache, String src, String ... conditions);
 	public DataSet cache(String cache, String src, String ... conditions);
-	public DataSet cache(DataSource ds, String cache, String src, int fr, int to, String ... conditions);
 	public DataSet cache(String cache, String src, int fr, int to, String ... conditions);
 	/**
 	 * 只用一级缓存 忽略二级缓存
@@ -74,17 +68,12 @@ public interface AnylineService{
 	 * @param conditions
 	 * @return
 	 */
-	public DataSet cacheL1(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
 	public DataSet cacheL1(String cache, String src, ConfigStore configs, String ... conditions);
-	public DataSet cacheL1(DataSource ds, String cache, String src, String ... conditions);
 	public DataSet cacheL1(String cache, String src, String ... conditions);
-	public DataSet cacheL1(DataSource ds, String cache, String src, int fr, int to, String ... conditions);
 	public DataSet cacheL1(String cache, String src, int fr, int to, String ... conditions);
 
 	
-	public DataRow queryRow(DataSource ds, String src, ConfigStore configs, String ... conditions);
 	public DataRow queryRow(String src, ConfigStore configs, String ... conditions);
-	public DataRow queryRow(DataSource ds, String src, String ... conditions);
 	public DataRow queryRow(String src, String ... conditions);
 
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
@@ -99,9 +88,7 @@ public interface AnylineService{
 	public DataRow prev(DataRow row, ConfigStore configs, String ... conditions);
 	public DataRow prev(DataRow row, String ... conditions);
 
-	public DataRow cacheRow(DataSource ds, String cache, String src, ConfigStore configs, String ... conditions);
 	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions);
-	public DataRow cacheRow(DataSource ds, String cache, String src, String ... conditions);
 	public DataRow cacheRow(String cache, String src, String ... conditions);
 	
 
@@ -130,16 +117,12 @@ public interface AnylineService{
 	 * @param conditions
 	 * @return
 	 */
-	public boolean exists(DataSource ds, String src, ConfigStore configs, String ... conditions);
 	public boolean exists(String src, ConfigStore configs, String ... conditions);
-	public boolean exists(DataSource ds, String src, String ... conditions);
 	public boolean exists(String src, String ... conditions);
 	public boolean exists(String src, DataRow row);
 	public boolean exists(DataRow row);
 	
-	public int count(DataSource ds, String src, ConfigStore configs, String ... conditions);
 	public int count(String src, ConfigStore configs, String ... conditions);
-	public int count(DataSource ds, String src, String ... conditions);
 	public int count(String src, String ... conditions);
 	
 	
@@ -154,15 +137,11 @@ public interface AnylineService{
 	 * 			表
 	 * @return
 	 */
-	public int update(DataSource ds, String dest, Object data, String ... columns);
 	public int update(String dest, Object data, String ... columns);
-	public int update(DataSource ds, Object data, String ... columns);
 	public int update(Object data, String ... columns);
-	public int update(DataSource ds, String dest, ConfigStore configs, String ... conditions);
+	public int update(String dest, ConfigStore configs, String ... conditions);
 	
-	public int update(boolean sync, DataSource ds, String dest, Object data, String ... columns);
 	public int update(boolean sync, String dest, Object data, String ... columns);
-	public int update(boolean sync, DataSource ds, Object data, String ... columns);
 	public int update(boolean sync, Object data, String ... columns);
 	/**
 	 * 保存(insert|update)
@@ -172,43 +151,27 @@ public interface AnylineService{
 	 * @param dest 表
 	 * @return
 	 */
-	public int save(DataSource ds, String dest, Object data, boolean checkPriamry, String ... columns);
 	public int save(String dest, Object data, boolean checkPriamry, String ... columns);
-	public int save(DataSource ds, Object data, boolean checkPriamry, String ... columns);
 	public int save(Object data, boolean checkPriamry, String ... columns);
-	public int save(DataSource ds, Object data, String ... columns);
-	public int save(String dest, Object data, String ... columns);
 	public int save(Object data, String ... columns);
-	public int save(DataSource ds, String dest, Object data, String ... columns);
+	public int save(String dest, Object data, String ... columns);
 //
-	public int save(boolean sync, DataSource ds, String dest, Object data, boolean checkPriamry, String ... columns);
 	public int save(boolean sync, String dest, Object data, boolean checkPriamry, String ... columns);
-	public int save(boolean sync, DataSource ds, Object data, boolean checkPriamry, String ... columns);
 	public int save(boolean sync, Object data, boolean checkPriamry, String ... columns);
-	public int save(boolean sync, DataSource ds, Object data, String ... columns);
-	public int save(boolean sync, String dest, Object data, String ... columns);
 	public int save(boolean sync, Object data, String ... columns);
-	public int save(boolean sync, DataSource ds, String dest, Object data, String ... columns);
+	public int save(boolean sync, String dest, Object data, String ... columns);
 
 
-	public int insert(DataSource ds, String dest, Object data, boolean checkPriamry, String ... columns);
 	public int insert(String dest, Object data, boolean checkPriamry, String ... columns);
-	public int insert(DataSource ds, Object data, boolean checkPriamry, String ... columns);
 	public int insert(Object data, boolean checkPriamry, String ... columns);
-	public int insert(DataSource ds, Object data, String ... columns);
-	public int insert(String dest, Object data, String ... columns);
 	public int insert(Object data, String ... columns);
-	public int insert(DataSource ds, String dest, Object data, String ... columns);
+	public int insert(String dest, Object data, String ... columns);
 
 
-	public int batchInsert(DataSource ds, String dest, Object data, boolean checkPriamry, String ... columns);
 	public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
-	public int batchInsert(DataSource ds, Object data, boolean checkPriamry, String ... columns);
 	public int batchInsert(Object data, boolean checkPriamry, String ... columns);
-	public int batchInsert(DataSource ds, Object data, String ... columns);
-	public int batchInsert(String dest, Object data, String ... columns);
 	public int batchInsert(Object data, String ... columns);
-	public int batchInsert(DataSource ds, String dest, Object data, String ... columns);
+	public int batchInsert(String dest, Object data, String ... columns);
 	/**
 	 * save insert区别
 	 * 操作单个对象时没有区别
@@ -227,9 +190,7 @@ public interface AnylineService{
 	 * @param conditions
 	 * @return
 	 */
-	public int execute(DataSource ds, String src, ConfigStore configs, String ... conditions);
 	public int execute(String src, ConfigStore configs, String ... conditions);
-	public int execute(DataSource ds, String src, String ... conditions);
 	public int execute(String src, String ... conditions);
 	/**
 	 * 执行存储过程
@@ -238,9 +199,7 @@ public interface AnylineService{
 	 * @param outputs
 	 * @return
 	 */
-	public boolean executeProcedure(DataSource ds, String procedure, String... inputs);
 	public boolean executeProcedure(String procedure, String... inputs);
-	public boolean executeProcedure(DataSource ds, Procedure procedure);
 	public boolean executeProcedure(Procedure procedure);
 	/**
 	 * 根据存储过程查询
@@ -248,9 +207,7 @@ public interface AnylineService{
 	 * @param inputs
 	 * @return
 	 */
-	public DataSet queryProcedure(DataSource ds, String procedure, String ... inputs);
 	public DataSet queryProcedure(String procedure, String ... inputs);
-	public DataSet queryProcedure(DataSource ds, Procedure procedure);
 	public DataSet queryProcedure(Procedure procedure);
 	
 	/**
@@ -260,13 +217,9 @@ public interface AnylineService{
 	 * @param data
 	 * @return
 	 */
-	public int delete(DataSource ds, String dest, Object data);
-	public int delete(DataSource ds, Object data);
 	public int delete(String dest, Object data);
 	public int delete(Object data);
 	
-	public int delete(DataSource ds, String table, String key, Collection<Object> values);
 	public int delete(String table, String key, Collection<Object> values);
-	public int delete(DataSource ds, String table, String key, String ... values);
 	public int delete(String table, String key, String ... values);
 }
