@@ -21,7 +21,7 @@
 	<classpathentry kind="lib" path="/anyline_core/lib/spring-beans-4.0.3.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/ognl-3.0.6.jar"/>
-	<classpathentry kind="lib" path="/anyline_core/lib/spring-jdbc-4.1.4.RELEASE.jar"/>
+	<classpathentry kind="lib" path="/anyline_core/lib/spring-jdbc-4.1.4.RELEASE.jar" sourcepath="D:/jar/spring4"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/spring-context-4.0.3.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/spring-core-4.0.3.RELEASE.jar"/>
 	<classpathentry kind="lib" path="/anyline_core/lib/spring-web-4.1.4.RELEASE.jar"/>

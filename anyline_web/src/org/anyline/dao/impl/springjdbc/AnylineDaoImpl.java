@@ -34,6 +34,7 @@ import org.anyline.cache.PageLazyStore;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLCreater;
+import org.anyline.config.db.ds.DataSourceHolder;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.dao.AnylineDao;
@@ -124,7 +125,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		set.setNavi(navi);
 		if(null != navi && navi.isLazy()){
 			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
-		} 
+		}
+		//自动切换回默认数据源
+		if(DataSourceHolder.isAutoDefault()){
+			DataSourceHolder.clearDataSource();
+		}
 		return set;
 	}
 	public DataSet query(SQL sql, String ... conditions){
@@ -177,6 +182,10 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			throw new SQLQueryException("查询异常:"+e);
 		}
+		//自动切换回默认数据源
+		if(DataSourceHolder.isAutoDefault()){
+			DataSourceHolder.clearDataSource();
+		}
 		return result;
 	}
 	public boolean exists(SQL sql, String ... conditions){
@@ -211,7 +220,6 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			return result;
 		}
-		//row.processBeforeSave();								//保存之前预处理
 		RunSQL run = creater.createUpdateTxt(dest, obj, false, columns);
 		String sql = run.getUpdateTxt();
 		if(BasicUtil.isEmpty(sql)){
@@ -232,7 +240,6 @@ public class AnylineDaoImpl implements AnylineDao {
 			if(showSQL){
 				log.warn(random + "[执行耗时:"+(System.currentTimeMillis() - fr)+"ms][影响行数:"+result + "]");
 			}
-		//	row.processBeforeDisplay();	//显示之前预处理
 		}catch(Exception e){
 			e.printStackTrace();
 			if(showSQLWhenError){
@@ -240,6 +247,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.error(random + "[异常参数:"+paramLogFormat(values));
 			}
 			throw new SQLUpdateException("更新异常:"+e);
+		}finally{
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.clearDataSource();
+			}
 		}
 		return result;
 	}
@@ -361,6 +373,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.error(random + "[异常参数:"+paramLogFormat(values) + "]");
 			}
 			throw new SQLUpdateException("插入异常:"+e);
+		}finally{
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.clearDataSource();
+			}
 		}
 		return cnt;
 	}
@@ -526,6 +543,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.error(random + "[异常参数:"+paramLogFormat(values) + "]");
 			}
 			throw new SQLUpdateException(random + "执行异常:"+e+"\nTXT:"+txt+"\nPARAM:"+values);
+		}finally{
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.clearDataSource();
+			}
 		}
 		return result; 
 	}
@@ -601,6 +623,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.error(random + "[异常参数:"+paramLogFormat(inputValues) + "]");
 			}
 			throw new SQLUpdateException("PROCEDURE执行异常:"+e+"\nPROCEDURE:"+procedure.getName()+"\nPARAM:"+procedure.getInputValues());
+		}finally{
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.clearDataSource();
+			}
 		}
 		return result;
 	}
@@ -687,6 +714,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.error(random + "[异常参数:"+paramLogFormat(inputValues) + "]");
 			}
 			throw new SQLQueryException("查询异常:"+e+"\nPROCEDURE:"+ procedure.getName());
+		}finally{
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.clearDataSource();
+			}
 		}
 		return set;
 	}
@@ -749,6 +781,11 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.error(random + "[异常参数:"+paramLogFormat(values) + "]");
 			}
 			throw new SQLUpdateException("删除异常:"+e);
+		}finally{
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.clearDataSource();
+			}
 		}
 		return result;
 	}
