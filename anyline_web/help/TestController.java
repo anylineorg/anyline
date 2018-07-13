@@ -762,4 +762,5 @@ public class TestController extends BasicController {
 //
 //	public int delete(String dest, Object data, String ... columns);
 //	public int delete(Object data,  String ... columns);
+	
 }
