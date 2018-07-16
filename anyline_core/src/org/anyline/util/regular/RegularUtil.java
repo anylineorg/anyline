@@ -225,6 +225,24 @@ public class RegularUtil {
 		return src;
 	}
 	/**
+	 * 删除标签及标签体
+	 * @param result
+	 * @param src
+	 * @param tags
+	 * @return
+	 */
+	public static String removeHtmlTagWithBody(String src, String ...tags){
+		if(null == tags || tags.length==0){
+			src = removeAllHtmlTag(src);
+		}else{
+			for(String tag:tags){
+				String reg = "(?i)<"+tag+"[^>]*>.*?</"+tag+">";
+				src = src.replaceAll(reg, "");
+			}
+		}
+		return src;
+	}
+	/**
 	 * 删除简单标签外的其他标签
 	 * @param src
 	 * @return
