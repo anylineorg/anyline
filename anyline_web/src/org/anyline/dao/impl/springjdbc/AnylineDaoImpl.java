@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 import org.anyline.cache.PageLazyStore;
 import org.anyline.config.db.Procedure;
@@ -128,7 +129,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		//自动切换回默认数据源
 		if(DataSourceHolder.isAutoDefault()){
-			DataSourceHolder.clearDataSource();
+			DataSourceHolder.setDefaultDataSource();
 		}
 		return set;
 	}
@@ -184,7 +185,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		//自动切换回默认数据源
 		if(DataSourceHolder.isAutoDefault()){
-			DataSourceHolder.clearDataSource();
+			DataSourceHolder.setDefaultDataSource();
 		}
 		return result;
 	}
@@ -250,7 +251,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.clearDataSource();
+				DataSourceHolder.setDefaultDataSource();
 			}
 		}
 		return result;
@@ -376,7 +377,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.clearDataSource();
+				DataSourceHolder.setDefaultDataSource();
 			}
 		}
 		return cnt;
@@ -546,7 +547,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.clearDataSource();
+				DataSourceHolder.setDefaultDataSource();
 			}
 		}
 		return result; 
@@ -626,7 +627,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.clearDataSource();
+				DataSourceHolder.setDefaultDataSource();
 			}
 		}
 		return result;
@@ -717,7 +718,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.clearDataSource();
+				DataSourceHolder.setDefaultDataSource();
 			}
 		}
 		return set;
@@ -784,7 +785,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.clearDataSource();
+				DataSourceHolder.setDefaultDataSource();
 			}
 		}
 		return result;
