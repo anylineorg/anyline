@@ -213,6 +213,17 @@ public class RegularUtil {
 		src = src.replaceAll(reg, "");
 		return src;
 	}
+	public static String removeHtmlTag(String src, String ...tags){
+		if(null == tags || tags.length==0){
+			src = removeAllHtmlTag(src);
+		}else{
+			for(String tag:tags){
+				String reg = "(?i)<"+tag+"[^>]*>.*?|</"+tag+">";
+				src = src.replaceAll(reg, "");
+			}
+		}
+		return src;
+	}
 	/**
 	 * 删除简单标签外的其他标签
 	 * @param src
@@ -271,7 +282,10 @@ public class RegularUtil {
 				int idx = 0;
 				//计算新起点 
 				for(int i=0; i<tags.length; i++){
-					idx = text.indexOf(tags[i], idx+1);
+					if(idx>0){
+						idx += 1;
+					}
+					idx = text.indexOf(tags[i], idx);
 				}
 				if(idx <= 0){
 					break;
