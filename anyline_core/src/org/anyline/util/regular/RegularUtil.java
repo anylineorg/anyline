@@ -242,6 +242,13 @@ public class RegularUtil {
 		}
 		return src;
 	}
+
+	public static String removeHtmlEmptyTag(String src){
+		String reg = "<(.*?)[^>]*>\\s*</.*?>";
+		src = src.replaceAll(reg, "");
+		return src;
+	}
+	
 	/**
 	 * 删除简单标签外的其他标签
 	 * @param src
