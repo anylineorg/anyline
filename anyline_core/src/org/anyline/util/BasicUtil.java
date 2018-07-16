@@ -85,9 +85,10 @@ public class BasicUtil {
 		return isEmpty(false, obj);
 	}
 
-	public static boolean isNotEmpty(boolean recursion, Object obj) {
+	public static boolean isNotEmpty(boolean recursion, Object ... obj) {
 		return !isEmpty(recursion, obj);
 	}
+
 
 	public static boolean isNotEmpty(Object obj) {
 		return isNotEmpty(false, obj);

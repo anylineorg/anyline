@@ -44,7 +44,7 @@ public class ConfigTable {
 	private static final String version = "7.6";
 	private static final String minVersion = "0090";
 	private static boolean isLoad = false;
-	public static boolean  IS_UPPER_KEY = false;
+	public static boolean  IS_UPPER_KEY = true;
 	static{
 		init();
 		debug();
@@ -166,8 +166,8 @@ public class ConfigTable {
 		sqlDebug = getBoolean("SQL_DEBUG");
 		String isUpper = getString("IS_UPPER_KEY");
 		if(null != isUpper){
-			if("true".equals(isUpper.toLowerCase()) || "1".equals(isUpper)){
-				IS_UPPER_KEY = true;
+			if("false".equals(isUpper.toLowerCase()) || "0".equals(isUpper)){
+				IS_UPPER_KEY = false;
 			}
 		}
 	}
