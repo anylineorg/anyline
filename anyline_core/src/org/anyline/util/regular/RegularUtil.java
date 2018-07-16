@@ -244,7 +244,7 @@ public class RegularUtil {
 	}
 
 	public static String removeHtmlEmptyTag(String src){
-		String reg = "<(.*?)[^>]*>\\s*</.*?>";
+		String reg = "(<(\\w+)[^<]*?>)\\s*(</\\2>)";
 		src = src.replaceAll(reg, "");
 		return src;
 	}
