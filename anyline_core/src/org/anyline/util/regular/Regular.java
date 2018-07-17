@@ -178,8 +178,6 @@ public interface Regular {
 	public static final String char_number_underline_regexp = "^\\w+$";  
 	//html标签<(.*)>.*|<(.*) />
 	public static final String html_tag_regexp = "<(.*?)[^>]*>.*?|<.*?/>";  
-	//html标签 script | style | link | meta
-	public static final String html_script_regexp = "<(script?)[^>]*>.*?|<script?/>";
 	//<img> 图片地址取下标2
 	public static final String html_tag_img_src_regexp = "(?i)<img.+?src[\\s]*=[\\s]*(['\"\\s])([\\S]+)\\1[\\s\\S]*?>";
 	//<a>标签 href:4 标签体:6

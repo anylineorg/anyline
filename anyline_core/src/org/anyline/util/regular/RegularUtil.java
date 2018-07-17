@@ -193,12 +193,6 @@ public class RegularUtil {
 	public static String removeAllHtmlTag(String src){
 		return removeAllTag(src);
 	}
-	public static String removeScriptTag(String src){
-		if(null == src){
-			return src;
-		}
-		return src.replaceAll(Regular.html_script_regexp, "");
-	}
 	/**
 	 * 删除 tags之外的标签"<b>"与"</b>"只写一次 "b"
 	 * 只删除标签不删除标签体
@@ -318,6 +312,61 @@ public class RegularUtil {
 			result = fetch(txt, regx);
 		}
 		return result;
+	}
+	/**
+	 * 取出所有属性值
+	 * 0全文  1:属性name 2:引号('|") 3:属性值
+	 * fetchAttributeValues(txt,"id");
+	 * @param txt
+	 * @param tags
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<List<String>> fetchAttributeList(String txt, String tag){
+		List<List<String>> result = new ArrayList<List<String>>();
+		try{
+			String regx = "(?i)(" + tag + ")\\s*=\\s*(['\"])([\\s\\S]*?)\\2";
+			result = fetch(txt, regx);
+		}catch(Exception e){
+			log.error("提取属性异常");
+			e.printStackTrace();
+		}
+		return result;
+	}
+	/**
+	 * 取出所有属性值
+	 * 0全文  1:属性name 2:引号('|") 3:属性值
+	 * fetchAttributeValues(txt,"id","name");
+	 * @param txt
+	 * @param tags
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<String> fetchAttribute(String txt, String tag){
+		List<String> result = new ArrayList<String>();
+		List<List<String>> list = fetchAttributeList(txt, tag);
+		if(list.size() >0){
+			result = list.get(0);
+		}
+		return result;
+	}
+	public static List<String> fetchAttributeValues(String txt, String tag){
+		List<String> result = new ArrayList<String>();
+		List<List<String>> list = fetchAttributeList(txt, tag);
+		for(List<String> attr: list){
+			if(attr.size() > 3 ){
+				result.add(attr.get(3));
+			}
+		}
+		return result;
+	}
+	public static String fetchAttributeValue(String txt, String tag){
+		List<String> values = fetchAttributeValues(txt, tag);
+		if(values.size()>0){
+			return values.get(0);
+		}else{
+			return null;
+		}
 	}
 	/**
 	 * 取tags[i-2]与tags[i-1]之间的文本
