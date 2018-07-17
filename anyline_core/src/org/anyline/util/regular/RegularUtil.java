@@ -179,25 +179,34 @@ public class RegularUtil {
 		}
 		return result;
 	}
-	public static String removeAllHtmlTag(String src){
+	/**
+	 * 清除所有标签
+	 * @param src
+	 * @return
+	 */
+	public static String removeAllTag(String src){
 		if(null == src){
 			return src;
 		}
 		return src.replaceAll(Regular.html_tag_regexp, "");
+	}
+	public static String removeAllHtmlTag(String src){
+		return removeAllTag(src);
 	}
 	public static String removeScriptTag(String src){
 		if(null == src){
 			return src;
 		}
-		return src.replaceAll(Regular.html_tag_regexp, "");
+		return src.replaceAll(Regular.html_script_regexp, "");
 	}
 	/**
 	 * 删除 tags之外的标签"<b>"与"</b>"只写一次 "b"
+	 * 只删除标签不删除标签体
 	 * @param src
 	 * @param tags
 	 * @return
 	 */
-	public static String removeHtmlTagExcept(String src, String ...tags){
+	public static String removeTagExcept(String src, String ...tags){
 		if(null == src || null == tags || tags.length == 0){
 			return src;
 		}
@@ -213,7 +222,16 @@ public class RegularUtil {
 		src = src.replaceAll(reg, "");
 		return src;
 	}
-	public static String removeHtmlTag(String src, String ...tags){
+	public static String removeHtmlTagExcept(String src, String ...tags){
+		return removeTagExcept(src, tags);
+	}
+	/**
+	 * 只删除标签,不删除标签体
+	 * @param src
+	 * @param tags
+	 * @return
+	 */
+	public static String removeTag(String src, String ...tags){
 		if(null == tags || tags.length==0){
 			src = removeAllHtmlTag(src);
 		}else{
@@ -224,6 +242,9 @@ public class RegularUtil {
 		}
 		return src;
 	}
+	public static String removeHtmlTag(String src, String ...tags){
+		return removeTag(src, tags);
+	}
 	/**
 	 * 删除标签及标签体
 	 * @param result
@@ -231,7 +252,7 @@ public class RegularUtil {
 	 * @param tags
 	 * @return
 	 */
-	public static String removeHtmlTagWithBody(String src, String ...tags){
+	public static String removeTagWithBody(String src, String ...tags){
 		if(null == tags || tags.length==0){
 			src = removeAllHtmlTag(src);
 		}else{
@@ -242,11 +263,16 @@ public class RegularUtil {
 		}
 		return src;
 	}
-
-	public static String removeHtmlEmptyTag(String src){
-		String reg = "(<(\\w+)[^<]*?>)\\s*(</\\2>)";
+	public static String removeHtmlTagWithBody(String src, String ...tags){
+		return removeTagWithBody(src, tags);
+	}
+	public static String removeEmptyTag(String src){
+		String reg = "(?i)(<(\\w+)[^<]*?>)\\s*(</\\2>)";
 		src = src.replaceAll(reg, "");
 		return src;
+	}
+	public static String removeHtmlEmptyTag(String src){
+		return removeEmptyTag(src);
 	}
 	
 	/**
@@ -269,6 +295,36 @@ public class RegularUtil {
 		}
 		return null;
 	}
+	/**
+	 * 依次取出p,table,div中的内容 有嵌套时只取外层
+	 * 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 
+	 * @param text
+	 * @param tags
+	 * @return
+	 */
+	public static List<List<String>> fetchTag(String txt,String ... tags) throws Exception{
+		List<List<String>> result = new ArrayList<List<String>>();
+		if(null != tags && tags.length>0){
+			String regx = "(?i)(<(";
+			int size = tags.length;
+			for(int i=0; i<size; i++){
+				if(i==0){
+					regx += tags[i];
+				}else{
+					regx += "|"+tags[i];
+				}
+			}
+			regx +=")[^<]*?>)([\\s\\S]*?)(</\\2>)";
+			result = fetch(txt, regx);
+		}
+		return result;
+	}
+	/**
+	 * 取tags[i-2]与tags[i-1]之间的文本
+	 * @param text
+	 * @param tags
+	 * @return
+	 */
 	public static String cut(String text,String ... tags){
 		if(null == text || null == tags || tags.length < 2){
 			/*没有开始结束标志*/
