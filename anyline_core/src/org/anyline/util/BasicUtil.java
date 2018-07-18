@@ -85,13 +85,12 @@ public class BasicUtil {
 		return isEmpty(false, obj);
 	}
 
-	public static boolean isNotEmpty(boolean recursion, Object ... obj) {
-		return !isEmpty(recursion, obj);
-	}
-
 
 	public static boolean isNotEmpty(Object obj) {
-		return isNotEmpty(false, obj);
+		return !isEmpty(false, obj);
+	}
+	public static boolean isNotEmpty(boolean recursion, Object obj) {
+		return !isEmpty(recursion, obj);
 	}
 
 	public static boolean isEqual(Object obj1, Object obj2) {
@@ -124,6 +123,11 @@ public class BasicUtil {
 			}
 		}
 		return null;
+	}
+	public static void main(String args[]){
+		String s = null;
+		String m = "a";
+		System.out.println(nvl(s,m));
 	}
 	public static Object nvl(boolean recursion, String... values) {
 		if (null == values) {
