@@ -22,6 +22,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import org.anyline.entity.PageNaviConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
@@ -53,7 +54,7 @@ public class Navi extends BodyTagSupport{
 	private String guide			;   //加载更多文本
 	
 	private String empty			;	//空数据显示内容
-	private String style = ""		; 	//样式标记
+	private String style = "default"; 	//样式标记对应anyline-navi.xml中的config.key
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
 	
@@ -62,6 +63,7 @@ public class Navi extends BodyTagSupport{
 	
 	public int doStartTag() throws JspException {
 		try{
+			PageNaviConfig config = PageNaviConfig.getInstance(style);
 			StringBuilder builder = new StringBuilder();
 			int idx = BasicUtil.parseInt((String)pageContext.getRequest().getAttribute("_anyline_navi_tag_idx"), 0);
 			String flag = id;
@@ -72,8 +74,8 @@ public class Navi extends BodyTagSupport{
 			String confId = CONFIG_FLAG_KEY + flag;
 			builder.append("<div id='_navi_border_"+confId+"'>");
 			if(idx == 0){
-				builder.append("<link rel=\"stylesheet\" href=\""+ConfigTable.getString("NAVI_STYLE_FILE_PATH")+"\" type=\"text/css\"/>\n");
-				builder.append("<script type=\"text/javascript\" src=\""+ConfigTable.getString("NAVI_SCRIPT_FILE_PATH")+"\"></script>\n");
+				builder.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n");
+				builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
 			}
 			builder.append("<script>\n");
 			builder.append("var " + confId + " = {");
@@ -187,7 +189,7 @@ public class Navi extends BodyTagSupport{
 		stat			= false	;
 		jump			= false	;
 		auto			= false	;
-		style			= ""	;
+		style			= "default"	;
 	}
 	
 	public String getParam() {

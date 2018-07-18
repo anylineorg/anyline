@@ -69,7 +69,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private int type 						= 0			;	//分页方式(0:下标 1:加载更多)
 	private Map<String,List<Object>> params	= null		;	//查询参数
 
-	private String style		= ""	; //区分不同的显示格式 配置文件中加前缀 如NAVI_SHOW_STAT, WEB:NAVI_SHOW_STAT,WAP:NAVI_SHOW_STAT
+	private String style		= ""	; //样式标记对应anyline-navi.xml中的config.key
 	
 
 	private boolean showStat = false;
