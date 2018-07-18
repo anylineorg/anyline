@@ -27,7 +27,9 @@ public class PageNaviConfig extends BasicConfig{
 	public String STYLE_BUTTON_PREV				= "上一页"		;	//上一页
 	public String STYLE_BUTTON_NEXT				= "下一页"		;	//下一页
 	public String STYLE_BUTTON_LAST				= "最后页"		;	//最后页
-	public String STYLE_BUTTON_GO				= "确定"			;	//跳转到
+	public String STYLE_BUTTON_JUMP				= "确定"			;	//跳转到
+	public String STYLE_LABEL_JUMP				= "转到第"		;	//跳转到
+	public String STYLE_LABEL_JUMP_PAGE			= "页"			;	//跳转到
 	public String STYLE_LOAD_MORE_FORMAT		= "加载更多"		;	//加载更多
 	
 	//变量
@@ -86,8 +88,7 @@ public class PageNaviConfig extends BasicConfig{
 			log.error("配置文件解析异常:"+e);
 		}
 	}
-	private static void debug(){
-	}
+	private static void debug(){}
 	/**
 	 * 兼容旧版本配置文件
 	 */
