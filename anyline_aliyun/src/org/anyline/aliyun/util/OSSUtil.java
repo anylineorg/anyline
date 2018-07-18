@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.Hashtable;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.FileUtil;
 import org.anyline.util.HttpUtil;
 import org.apache.log4j.Logger;
 
@@ -41,13 +42,11 @@ public class OSSUtil {
 	}
 	public String upload(File file, String bucket, String path){
 		client.putObject(bucket, path, file);
-		client.shutdown();
 		return createUrl(bucket, path);
 	}
 	public String upload(URL url, String bucket, String path){
 		try {
 			client.putObject(bucket, path, url.openStream());
-			client.shutdown();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -55,13 +54,13 @@ public class OSSUtil {
 	}
 	public String upload(InputStream in, String bucket, String path){
 		client.putObject(bucket, path, in);
-		client.shutdown();
 		return createUrl(bucket, path);
 	}
 	private String createUrl(String bucket, String path){
 		String result = "";
-		result = config.ENDPOINT.replace("//", bucket+".");
-		result = HttpUtil.mergeUrlParam(result, path);
+		
+		result = "http://"+bucket+"."+config.ENDPOINT.replace("http://", "").replace("https://", "");
+		result = FileUtil.mergePath(result, path);
 		return result;
 	}
 }
