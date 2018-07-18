@@ -166,10 +166,13 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				createPageTag(builder, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configFlag);
 			}
 			if(showJump){
-				builder.append("转到<input type='text' value='");
-				builder.append(curPage);
-				builder.append("' class='navi-go-txt _anyline_jump_txt'/>页<span class='navi-go-button' onclick='_navi_jump("+configFlag+")'>")
-				.append(config.STYLE_BUTTON_GO).append("</span>\n");
+				builder.append(config.STYLE_LABEL_JUMP)
+				.append("<input type='text' value='")
+				.append(curPage)
+				.append("' class='navi-go-txt _anyline_jump_txt'/>")
+				.append(config.STYLE_LABEL_JUMP_PAGE)
+				.append("<span class='navi-go-button' onclick='_navi_jump("+configFlag+")'>")
+				.append(config.STYLE_BUTTON_JUMP).append("</span>\n");
 			}
 		}else if(type == 1){
 			//加载更多
