@@ -10,6 +10,12 @@ public class MapLocation {
 	private String provinceNm;
 	private String cityCode;
 	private String cityNm;
+	private String countyCode;
+	private String countyNm;
+	private String street;
+	private String code;
+	private String level;
+	private String address;
 	public MapLocation(String location){
 		if(BasicUtil.isNotEmpty(location)){
 			String[] tmps = location.split(",");
@@ -73,6 +79,42 @@ public class MapLocation {
 	}
 	public void setCityNm(String cityNm) {
 		this.cityNm = cityNm;
+	}
+	public String getCountyCode() {
+		return countyCode;
+	}
+	public void setCountyCode(String countyCode) {
+		this.countyCode = countyCode;
+	}
+	public String getCountyNm() {
+		return countyNm;
+	}
+	public void setCountyNm(String countyNm) {
+		this.countyNm = countyNm;
+	}
+	public String getStreet() {
+		return street;
+	}
+	public void setStreet(String street) {
+		this.street = street;
+	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public String getLevel() {
+		return level;
+	}
+	public void setLevel(String level) {
+		this.level = level;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 }

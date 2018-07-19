@@ -784,6 +784,16 @@ public class AmapUtil {
 				if(set.size()>0){
 					DataRow row = set.getRow(0);
 					location = new MapLocation(row.getString("LOCATION"));
+					location.setCode(row.getString("ADCODE"));
+					location.setProvinceCode(BasicUtil.cut(row.getString("ADCODE"),0,4));
+					location.setProvinceNm(row.getString("PROVINCE"));
+					location.setCityCode(row.getString("CITYCODE"));
+					location.setCityNm(row.getString("CITY"));
+					location.setCountyCode(row.getString("ADCODE"));
+					location.setCountyNm(row.getString("DISTRICT"));
+					location.setStreet(row.getString("STREET"));
+					location.setAddress(row.getString("FORMATTED_ADDRESS"));
+					location.setLevel(row.getString("LEVEL"));
 				}
 			}else{
 				log.warn("[坐标查询失败][info:"+json.getString("info")+"][params:"+BasicUtil.joinBySort(params)+"]");
@@ -866,11 +876,13 @@ public class AmapUtil {
 		return sign;
 	}
 	public static void main(String args[]){
+		System.out.println(BasicUtil.cut("370212",0,4));
 		ConfigTable.setDebug(true);
 		AmapConfig.setConfigDir(new File("D:\\develop\\git\\anyline\\anyline_amap\\config\\anyline-amap.xml"));
 		System.out.println(AmapUtil.getInstance().regeo("111.86413224156792,10.243679193560395"));
-//		AmapUtil util = AmapUtil.getInstance();
-//		MapLocation fr = util.geo("山东省青岛市香港中路11号");
+		AmapUtil util = AmapUtil.getInstance();
+		MapLocation fr = util.geo("山东省青岛市香港中路11号");
+		
 //		MapLocation to = util.geo("山东省青岛市流亭国际机场");
 //		MapLocation mid1 = util.geo("山东省青岛市市南区延安路1号");
 //		MapLocation mid2 = util.geo("山东省青岛市市南区动漫产业园");
