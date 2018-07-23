@@ -1,4 +1,4 @@
-package org.anyline.aliyun.util;
+package org.anyline.aliyun.oss.util;
 
 import java.io.File;
 import java.util.Hashtable;
@@ -12,9 +12,11 @@ import org.anyline.util.FileUtil;
 public class OSSConfig extends BasicConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	private static File configDir;
-	public String KEY_ID= "";
-	public String KEY_SECRET = "";
-	public String ENDPOINT="";
+	public String ACCESS_ID		= "";
+	public String ACCESS_SECRET = "";
+	public String ENDPOINT		= "";
+	public String BUCKET		= "";
+	public int EXPIRE_SECOND 	= 3600;
 	
 	static{
 		init();
