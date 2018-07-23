@@ -87,7 +87,7 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain,Serializa
 	public Config getConfig(String key){
 		for(Config conf: configs){
 			String id = conf.getId();
-			if(null != id && id.equals(key)){
+			if(null != id && id.equalsIgnoreCase(key)){
 				return conf;
 			}
 		}
@@ -96,7 +96,7 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain,Serializa
 	public Config getConfig(String key, SQL.COMPARE_TYPE type){
 		for(Config conf: configs){
 			String id = conf.getId();
-			if(null != id && id.equals(key) && conf.getCompare() == type){
+			if(null != id && id.equalsIgnoreCase(key) && conf.getCompare() == type){
 				return conf;
 			}
 		}
