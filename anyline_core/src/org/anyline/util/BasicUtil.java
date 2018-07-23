@@ -127,7 +127,7 @@ public class BasicUtil {
 	public static void main(String args[]){
 		String s = null;
 		String m = "a";
-		System.out.println(nvl(s,m));
+		System.out.println(isNotEmpty(null));
 	}
 	public static Object nvl(boolean recursion, String... values) {
 		if (null == values) {
