@@ -70,7 +70,6 @@ public class Navi extends BodyTagSupport{
 			if(null == flag){
 				flag = idx+"";
 			}
-
 			String confId = CONFIG_FLAG_KEY + flag;
 			builder.append("<div id='_navi_border_"+confId+"'>");
 			if(idx == 0){
