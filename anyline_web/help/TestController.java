@@ -348,7 +348,7 @@ public class TestController extends BasicController {
 				</conditions>
 				<sql id="GET_MEMBERS" strict="false">
 					<!-- 
-						strict:是否严格格式(默认true)
+						strict:是否严格格式(默认false)
 						strict=true:所有的查询条件必须在xml中定义
 						strict=false:可从java中拼接临时查询条件,不需要xml中定义,与直接查询table的条件相同格式
 					-->

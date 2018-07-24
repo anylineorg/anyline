@@ -58,7 +58,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	protected GroupStore groupStore;
 	protected String having;
 	protected List<SQLVariable> variables;
-	private boolean strict = true;
+	private boolean strict = false;
 	
 	
 	protected SQLCreater creater;
