@@ -2,6 +2,7 @@ package org.anyline.util;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -58,13 +59,15 @@ public class BasicConfig {
 	}
 	private void setValue(Field field, String value){
 		if(null != field){
-			Object val = value;
+			
 			try{
-				Class<?> clazz = field.getType();
-				if(clazz== boolean.class || clazz == Boolean.class){
+				Object val = value;
+				Type type = field.getGenericType();
+				String typeName = type.getTypeName();
+				if(typeName.contains("int") || typeName.contains("Integer")){
+					val = BasicUtil.parseInt(value, 0);
+				}else if(typeName.contains("boolean") || typeName.contains("Boolean")){
 					val = BasicUtil.parseBoolean(value);
-				}else if(clazz == int.class || clazz == Integer.class){
-					val = BasicUtil.parseInt(value,0);
 				}
 				if(field.isAccessible()){
 					field.set(this, val);
