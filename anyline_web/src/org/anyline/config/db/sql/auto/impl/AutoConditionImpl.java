@@ -94,7 +94,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			//静态文本
 			text = this.text;
 		}else{
-			text = disKeyFr + column.replace(".", disKeyFr+"."+disKeyTo) + disKeyTo;
+			text = disKeyFr + column.replace(".", disKeyTo+"."+disKeyFr) + disKeyTo;
 			if(compare == SQL.COMPARE_TYPE.EQUAL){
 				if(null == getValue() || "NULL".equals(getValue())){
 					text += " IS NULL";
