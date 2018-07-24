@@ -328,13 +328,30 @@ public class TestController extends BasicController {
 		set = service.queryProcedure("proc_members", "input_param");
 		set = service.queryProcedure(proc);
 		
-		
+		//自定义SQL
 		service.query("web.pc.test:GET_MEMBERS", "MMB_ID:1","DATE.FR:2015-01-01","MGR_ID:[1,2]");
 		service.query("web.pc.test:GET_MEMBERS", parseConfig("MMB_ID:id","DATE.FR:fr","MGR_ID:[mgr]"));
-		//自定义SQL
+		
 		//web.pc包下的test.xml中定义的GET_MEMBERS
 		/* <sqls>
-				<sql id="GET_MEMBERS">
+		 * 		<!--如果有大批量相似查询条件 可以统一定义一组条件 condition中通过ref引用-->
+				 <conditions id="gp">
+					<condition id="STORE_ID">
+						AND M.STORE_ID = ?
+					</condition>
+					<condition id="CREATE_START_DATE">
+						AND DATE_FORMAT(M.CREATE_TIME,'%Y-%m-%d') &gt;= :CREATE_START_DATE
+					</condition>
+					<condition id="CREATE_END_DATE">
+						AND DATE_FORMAT(M.CREATE_TIME,'%Y-%m-%d') &lt;= :CREATE_END_DATE
+					</condition>
+				</conditions>
+				<sql id="GET_MEMBERS" strict="false">
+					<!-- 
+						strict:是否严格格式(默认true)
+						strict=true:所有的查询条件必须在xml中定义
+						strict=false:可从java中拼接临时查询条件,不需要xml中定义,与直接查询table的条件相同格式
+					-->
 					<text>
 						SELECT * FROM MEMBERS
 					</text>
@@ -359,6 +376,8 @@ public class TestController extends BasicController {
 					<condition id="BCM_ID">
 					 	BCM_ID IN(:BCM_ID)
 					</condition>
+					
+					<condition ref="gp"></condition><!--引用conditions中定义的id -->
 					<order>
 						ID DESC, CODE ASC
 					</order>
