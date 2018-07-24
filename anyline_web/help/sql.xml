@@ -15,7 +15,7 @@
 		</condition>
 	</conditions>
 	<!-- 订单统计 -->
-	<sql id="SD_MCH_STORE_ORDER_STATISTICS1">
+	<sql id="SD_MCH_STORE_ORDER_STATISTICS1"  strict="false"><!-- false: 可拼接临时查询条件(不需要在xml中定义)-->
 		<text>
 			SELECT
 				*
