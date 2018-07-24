@@ -83,12 +83,12 @@ public class SQLStoreImpl extends SQLStore{
 		}
 		Element root = document.getRootElement();
 		//全局条件分组
-		Map<String,List<Condition>> conditionMap = new HashMap<String,List<Condition>>();
-		for(Iterator<?> itrSql = root.elementIterator("conditions"); itrSql.hasNext();){
-			Element conditionGroupElement = (Element)itrSql.next();
+		Map<String,List<Condition>> gloableConditions = new HashMap<String,List<Condition>>();
+		for(Iterator<?> itrCons = root.elementIterator("conditions"); itrCons.hasNext();){
+			Element conditionGroupElement = (Element)itrCons.next();
 			String groupId = conditionGroupElement.attributeValue("id");
 			List<Condition> conditions = new ArrayList<Condition>();
-			conditionMap.put(groupId, conditions);
+			gloableConditions.put(groupId, conditions);
 			for(Iterator<?> itrParam = conditionGroupElement.elementIterator("condition"); itrParam.hasNext();){
 				conditions.add(parseCondition(null,null,(Element)itrParam.next()));
 			}
@@ -101,7 +101,7 @@ public class SQLStoreImpl extends SQLStore{
 			sql.setDataSource(fileName+":"+sqlId);
 			sql.setText(sqlText);
 			for(Iterator<?> itrParam = sqlElement.elementIterator("condition"); itrParam.hasNext();){
-				parseCondition(sql,conditionMap,(Element)itrParam.next());
+				parseCondition(sql,gloableConditions,(Element)itrParam.next());
 			}
 			String group = sqlElement.elementText("group");
 			String order = sqlElement.elementText("order");
