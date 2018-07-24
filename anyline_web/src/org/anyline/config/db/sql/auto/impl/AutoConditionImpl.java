@@ -87,14 +87,14 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	public String getRunText(SQLCreater creater){
 		
 		String disKeyFr = creater.getDisKeyFr();
-		String diskeyTo = creater.getDisKeyTo();
+		String disKeyTo = creater.getDisKeyTo();
 		runValues = new ArrayList<Object>();
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
 			//静态文本
 			text = this.text;
 		}else{
-			text = disKeyFr + column + diskeyTo;
+			text = disKeyFr + column.replace(".", disKeyFr+"."+disKeyTo) + disKeyTo;
 			if(compare == SQL.COMPARE_TYPE.EQUAL){
 				if(null == getValue() || "NULL".equals(getValue())){
 					text += " IS NULL";

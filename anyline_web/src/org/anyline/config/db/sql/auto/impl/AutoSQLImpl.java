@@ -227,6 +227,12 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	public List<SQLVariable> getSQLVariables() {
 		return null;
 	}
+	@Override
+	public void setStrict(boolean strict) {}
+	@Override
+	public boolean isStrict() {
+		return false;
+	}
 	
 	
 }
