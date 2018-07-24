@@ -12,11 +12,11 @@ public class SQLHelper {
 		try {
 			String reg  =  SQL.SQL_PARAM_VAIRABLE_REGEX;
 			String text = "SELECT * FROM TAB WHERE ID=:ID "
-					+ "AND TYPE IN(:TYPE) "
-					+ "AND SORT = ::SORT "
-					+ "AND NM LIKE ':NM%' "
-					+ "AND CODE LIEK '%' + :CODE + '%' "
-					+ "AND CODE LIEK '%' + ::CODE + '%'";
+					+ "\nAND TYPE IN(:TYPE) "
+					+ "\nAND SORT = ::SORT "
+					+ "\nAND NM LIKE ':NM%' "
+					+ "\nAND CODE LIEK '%' + :CODE + '%' "
+					+ "\nAND CODE LIEK '%' + ::CODE + '%'";
 			List<List<String>> keys = RegularUtil.fetch(text, reg, RegularUtil.MATCH_MODE_CONTAIN);
 			for(List<String> ks:keys){
 				int i = 0;
@@ -28,10 +28,10 @@ public class SQLHelper {
 			System.out.println("======================");
 			reg  = SQL.SQL_PARAM_VAIRABLE_REGEX_EL;
 			text = "SELECT * FROM TAB WHERE ID=${ID} "
-					+ "AND TYPE IN(${TYPE}) "
-					+ "AND SORT = '${SORT}' "
-					+ "AND NM LIKE '%${NM}%' "
-					+ "AND CODE LIKE CONTAT('%', ${CODE},'%')";
+					+ "\nAND TYPE IN(${TYPE}) "
+					+ "\nAND SORT = '${SORT}' "
+					+ "\nAND NM LIKE '%${NM}%' "
+					+ "\nAND CODE LIKE CONTAT('%', ${CODE},'%')";
 			keys = RegularUtil.fetch(text, reg, RegularUtil.MATCH_MODE_CONTAIN);
 			for(List<String> ks:keys){
 				int i = 0;
@@ -43,11 +43,11 @@ public class SQLHelper {
 			System.out.println("----------------------");
 			reg  = SQL.SQL_PARAM_VAIRABLE_REGEX_EL;
 			text = "SELECT * FROM TAB WHERE ID={ID} "
-					+ "AND TYPE IN ({TYPE}) "
-					+ "AND SORT = '{SORT}' "
-					+ "AND NM LIKE '%{NM}%' "
-					+ "AND NM LIKE '%{NM}' "
-					+ "AND CODE LIKE CONTAT('%', {CODE},'%')";
+					+ "\nAND TYPE IN ({TYPE}) "
+					+ "\nAND SORT = '{SORT}' "
+					+ "\nAND NM LIKE '%{NM}%' "
+					+ "\nAND NM LIKE '%{NM}' "
+					+ "\nAND CODE LIKE CONTAT('%', {CODE},'%')";
 			keys = RegularUtil.fetch(text, reg, RegularUtil.MATCH_MODE_CONTAIN);
 			for(List<String> ks:keys){
 				int i = 0;
