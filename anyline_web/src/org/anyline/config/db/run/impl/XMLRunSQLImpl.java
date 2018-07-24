@@ -355,11 +355,11 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		builder.append(conditionChain.getRunText(creater));
 		addValues(conditionChain.getRunValues());
-		if(null != staticConditions){
-			for(String con:staticConditions){
-				builder.append("AND ").append(con);
-			}
-		}
+//		if(null != staticConditions){
+//			for(String con:staticConditions){
+//				builder.append("\nAND ").append(con);
+//			}
+//		}
 	}
 	private void appendStaticCondition(){
 		if(!hasWhere(builder.toString())){
@@ -367,7 +367,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		if(null != staticConditions){
 			for(String con:staticConditions){
-				builder.append("AND ").append(con);
+				builder.append("\nAND ").append(con);
 			}
 		}
 	}

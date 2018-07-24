@@ -121,7 +121,7 @@ public class SQLStoreImpl extends SQLStore{
 			boolean isStatic = BasicUtil.parseBoolean(element.attributeValue("static"),false);	//是否是静态文本
 			String text = element.getText().trim();			//参数文本
 			if(!text.toUpperCase().startsWith("AND")){
-				text =  " AND " + text;
+				text =  "\nAND " + text;
 			}
 			condition = new XMLConditionImpl(id, text, isStatic);
 			String test = element.attributeValue("test");
