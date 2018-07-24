@@ -76,7 +76,7 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 		if(joinSize > 0){
 			StringBuilder builder = new StringBuilder();
 			if(!hasContainer() || getContainerJoinSize() > 0){
-				builder.append(" AND");
+				builder.append("\nAND");
 			}else{
 				builder.append("\n\t");
 			}

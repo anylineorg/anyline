@@ -172,7 +172,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(size >0){
 			for(int i=0; i<size; i++){
 				if(i > 0){
-					builder.append(" AND ");
+					builder.append("\nAND ");
 				}
 				String key = keys.get(i);
 				builder.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ? ");
