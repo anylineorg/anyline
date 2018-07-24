@@ -75,6 +75,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			run = new TextRunSQLImpl();
 		}
 		if(null != run){
+			run.setStrict(sql.isStrict());
 			run.setCreater(this);
 			run.setSql(sql);
 			run.setConfigStore(configs);

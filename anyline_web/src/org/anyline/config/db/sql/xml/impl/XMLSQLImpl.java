@@ -43,6 +43,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 	/*解析XML*/
 	private String id;
 	private String text;
+	private boolean strict = true;	//严格格式, true:不允许添加临时查询条件
 	private List<SQLVariable> variables;
 	
 	public XMLSQLImpl(){
@@ -361,4 +362,11 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 	public List<String> getColumns() {
 		return null;
 	}
+	public boolean isStrict() {
+		return strict;
+	}
+	public void setStrict(boolean strict) {
+		this.strict = strict;
+	}
+	
 }

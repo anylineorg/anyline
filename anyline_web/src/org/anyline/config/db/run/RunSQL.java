@@ -45,7 +45,7 @@ public interface RunSQL {
 	 * @param	value
 	 * 			值
 	 */
-	public RunSQL setConditionValue(String condition, String variable, Object value);
+	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare);
 	public void setGroupStore(GroupStore groups) ;
 	public GroupStore getGroupStore() ;
 	public RunSQL group(String group);
@@ -101,4 +101,6 @@ public interface RunSQL {
 	public StringBuilder getBuilder() ;
 	public void setBuilder(StringBuilder builder) ;
 	public String getFetchColumns();
+	public void setStrict(boolean strict);
+	public boolean isStrict();
 }

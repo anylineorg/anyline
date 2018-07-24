@@ -95,11 +95,13 @@ public class SQLStoreImpl extends SQLStore{
 		}
 		for(Iterator<?> itrSql = root.elementIterator("sql"); itrSql.hasNext();){
 			Element sqlElement = (Element)itrSql.next();
-			String sqlId = fileName +":" +sqlElement.attributeValue("id");			//SQL 主键
-			String sqlText = sqlElement.elementText("text");						//SQL 文本
+			String sqlId = fileName +":" +sqlElement.attributeValue("id");						//SQL 主键
+			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), true);	//是否严格格式
+			String sqlText = sqlElement.elementText("text");									//SQL 文本
 			SQL sql = new XMLSQLImpl();
 			sql.setDataSource(fileName+":"+sqlId);
 			sql.setText(sqlText);
+			sql.setStrict(strict);
 			for(Iterator<?> itrParam = sqlElement.elementIterator("condition"); itrParam.hasNext();){
 				parseCondition(sql,gloableConditions,(Element)itrParam.next());
 			}

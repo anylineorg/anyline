@@ -58,6 +58,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	protected GroupStore groupStore;
 	protected String having;
 	protected List<SQLVariable> variables;
+	private boolean strict = true;
 	
 	
 	protected SQLCreater creater;
@@ -181,7 +182,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	}
 
 	@Override
-	public RunSQL setConditionValue(String condition, String variable, Object value) {
+	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		return this;
 	}
 	@Override
@@ -422,6 +423,13 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 			}
 		}
 		return result;
+	}
+	public boolean isStrict() {
+		return strict;
+	}
+
+	public void setStrict(boolean strict) {
+		this.strict = strict;
 	}
 }
 

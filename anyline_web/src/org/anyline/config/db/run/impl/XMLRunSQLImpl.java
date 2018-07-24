@@ -40,6 +40,7 @@ import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.GroupStoreImpl;
 import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.run.RunSQL;
+import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.config.db.sql.xml.impl.XMLConditionChainImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigStore;
@@ -66,7 +67,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		super.init();
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-				setConditionValue(conf.getId(), conf.getVariable(), conf.getValues());
+				setConditionValue(conf.isRequire(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			}
 			
 			OrderStore orderStore = configStore.getOrders();
@@ -99,7 +100,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					}
 					
 				}
-				setConditionValue(parser.getId(), parser.getField(), value);
+				setConditionValue(parser.isRequired(), parser.getId(), parser.getField(), value, parser.getCompare());
 			}
 		}
 		GroupStore groupStore = sql.getGroups();
@@ -382,7 +383,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 
 	
 	@Override
-	public RunSQL setConditionValue(String condition, String variable, Object value) {
+	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		/*不指定变量名或condition = variable 时,根据condition为SQL主体变量赋值*/
 		if(null != variables && 
 				(BasicUtil.isEmpty(variable) || condition.equals(variable))
@@ -402,6 +403,21 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		Condition con = getCondition(condition);
 		if(null == con){
+			if(this.isStrict()){
+				return this;
+			}else{
+				//生成新条件
+				String column = variable;
+				//String condition, String variable
+				if(BasicUtil.isNotEmpty(condition) && !condition.equals(variable)){
+					column = condition + "." + variable;
+				}
+				Condition newCon = new AutoConditionImpl(required, column, value, compare);
+				conditionChain.addCondition(newCon);
+				if(newCon.isActive()){
+					conditionChain.setActive(true);
+				}
+			}
 			return this;
 		}
 		variable = BasicUtil.nvl(variable, condition).toString();
@@ -454,7 +470,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null == staticConditions){
 			staticConditions = new ArrayList<String>();
 		}
-		staticConditions.add(condition);
+		if(!isStrict()){
+			staticConditions.add(condition);
+		}
 	}
 	public RunSQL addCondition(String condition) {
 		if(BasicUtil.isEmpty(condition)){
@@ -566,8 +584,8 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	public void setConfigStore(ConfigStore configStore) {
 		this.configStore = configStore;
 	}
-	public RunSQL addCondition(boolean requried, String column, Object value, int compare){
-		setConditionValue(column, null, value);
+	public RunSQL addCondition(boolean requried, String column, Object value, SQL.COMPARE_TYPE compare){
+		setConditionValue(requried, column, null, value, compare);
 		return this;
 	}
 	

@@ -47,6 +47,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		this.conditionChain = new AutoConditionChainImpl();
 		this.configStore = new ConfigStoreImpl();
 		this.orderStore = new OrderStoreImpl();
+		setStrict(false);
 	}
 	
 	public RunSQL setSql(SQL sql){
@@ -66,13 +67,13 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						continue;
 					}
 					AutoCondition con = (AutoCondition)condition;
-					setConditionValue(con.getId(), null, con.getValues());
+					setConditionValue(con.isRequired(), con.getId(), null, con.getValues(), con.getCompare());
 				}
 			}
 		}
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-				setConditionValue(conf.getId(), conf.getVariable(), conf.getValues());
+				setConditionValue(conf.isRequire(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			}
 			
 			OrderStore orderStore = configStore.getOrders();
@@ -286,7 +287,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 
 
 	@Override
-	public RunSQL setConditionValue(String condition, String variable, Object value) {
+	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(SQLVariable v:variables){
