@@ -190,5 +190,7 @@ public interface SQL extends Cloneable,Serializable {
 	public SQL setFetchKey(Collection<String> fetchKeys);
 	public List<String> getFetchKeys();
 	public List<String> getColumns();
+	public void setStrict(boolean strict);
+	public boolean isStrict();
 	
 }
