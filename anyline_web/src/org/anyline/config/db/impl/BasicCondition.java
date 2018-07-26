@@ -26,6 +26,8 @@ import java.util.Map;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.SQLVariable;
+import org.anyline.util.BasicUtil;
 
 
 
@@ -37,6 +39,7 @@ import org.anyline.config.db.ConditionChain;
 public abstract class BasicCondition implements Condition{
 	private static final long serialVersionUID = -4959462636754773423L;
 	protected boolean required = false;									//是否必须
+	protected boolean strictRequired = false;							//是否必须
 	protected boolean active = false;									//是否活动(是否拼接到SQL中)
 	protected int variableType = VARIABLE_FLAG_TYPE_NONE;				//变量标记方式
 	protected List<Object> runValues = new ArrayList<Object>();			//运行时参数
@@ -119,8 +122,15 @@ public abstract class BasicCondition implements Condition{
 		return required;
 	}
 
+	public boolean isStrictRequired() {
+		return strictRequired;
+	}
+
 	public void setRequired(boolean required) {
 		this.required = required;
+	}
+	public void setStrictRequired(boolean strictRequired) {
+		this.strictRequired = strictRequired;
 	}
 	/**
 	 * 赋值
@@ -141,5 +151,14 @@ public abstract class BasicCondition implements Condition{
 	@Override
 	public Map<String,Object> getRunValuesMap(){
 		return runValuesMap;
+	}
+	public boolean isValid(){
+		if(strictRequired && BasicUtil.isEmpty(true, runValues)){
+			return false;
+		}
+		return true;
+	}
+	public List<SQLVariable> getVariables(){
+		return null;
 	}
 }

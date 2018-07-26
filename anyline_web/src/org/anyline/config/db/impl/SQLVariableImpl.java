@@ -43,6 +43,9 @@ public class SQLVariableImpl implements SQLVariable{
 	private int type;				//变量替换方式
 	private int signType = 1;		//变量区分方式
 	private COMPARE_TYPE compare;	//比较方式
+	private boolean required;
+	private boolean strictRequired;
+	
 	public Object clone() throws CloneNotSupportedException{
 		SQLVariableImpl clone = (SQLVariableImpl) super.clone();
 		if(null != values){
@@ -83,9 +86,12 @@ public class SQLVariableImpl implements SQLVariable{
 	public List<Object> getValues() {
 		return values;
 	}
-	@SuppressWarnings("unchecked")
 	public void setValue(Object value) {
-		if(null == value){
+		setValue(true, value);
+	}
+	@SuppressWarnings("unchecked")
+	public void setValue(boolean chkNull, Object value) {
+		if(null == value && chkNull){
 			return;
 		}
 		if(null == values){
@@ -112,6 +118,22 @@ public class SQLVariableImpl implements SQLVariable{
 	@Override
 	public void setSignType(int signType) {
 		this.signType = signType;
+	}
+
+	public boolean isRequired() {
+		return required;
+	}
+
+	public void setRequired(boolean required) {
+		this.required = required;
+	}
+
+	public boolean isStrictRequired() {
+		return strictRequired;
+	}
+
+	public void setStrictRequired(boolean strictRequired) {
+		this.strictRequired = strictRequired;
 	}
 	
 }

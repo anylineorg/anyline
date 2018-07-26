@@ -47,8 +47,11 @@ public interface SQLVariable extends Cloneable,Serializable{
 	
 	public List<Object> getValues() ;
 	public void setValue(Object value) ;
+	public void setValue(boolean chkNull, Object value) ;
 	public int getType() ;
 	public void setType(int type) ;
+	public boolean isRequired();
+	public boolean isStrictRequired();
 	public Object clone() throws CloneNotSupportedException;
 	
 }

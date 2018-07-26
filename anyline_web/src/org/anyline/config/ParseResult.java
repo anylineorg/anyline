@@ -13,7 +13,8 @@ public class ParseResult implements Serializable{
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值
 	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组
 	
-	private boolean required				; //是否必须
+	private boolean required				; //是否必须(空值拼接IS NULL)
+	private boolean strictRequired			; //是否严格必须(空值不查询)
 	private String id						; //xml定义中的id
 	private String field					; //实体属性或表列名
 	private String clazz					; //取值后处理类
@@ -131,5 +132,11 @@ public class ParseResult implements Serializable{
 //	public void setDefValueEncrypt(boolean isDefValueEncrypt) {
 //		this.isDefValueEncrypt = isDefValueEncrypt;
 //	}
+	public boolean isStrictRequired() {
+		return strictRequired;
+	}
+	public void setStrictRequired(boolean strictRequired) {
+		this.strictRequired = strictRequired;
+	}
 
 }

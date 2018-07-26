@@ -47,6 +47,7 @@ public interface AutoSQL extends SQL{
 	 * @param	compare
 	 * 			比较方式
 	 */
+	public SQL addCondition(boolean requried, boolean strictRequired, String column, Object value, COMPARE_TYPE compare);
 	public SQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare);
 
 	/**

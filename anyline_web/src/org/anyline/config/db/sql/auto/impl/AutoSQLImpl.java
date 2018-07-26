@@ -89,15 +89,17 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	 * @param	compare
 	 * 			比较方式
 	 */
-	public SQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare){
+	public SQL addCondition(boolean requried, boolean strictRequired, String column, Object value, COMPARE_TYPE compare){
 		if(null == chain){
 			chain = new AutoConditionChainImpl();
 		}
-		Condition condition = new AutoConditionImpl(requried,column, value, compare);
+		Condition condition = new AutoConditionImpl(requried, strictRequired, column, value, compare);
 		chain.addCondition(condition);
 		return this;
 	}
-
+	public SQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare){
+		return addCondition(requried, false, column, value, compare);
+	}
 	/**
 	 * 添加静态文本查询条件
 	 */
@@ -108,7 +110,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 		if(condition.contains(":")){
 			ParseResult parser = ConfigParser.parse(condition, false);
 			Object value = ConfigParser.getValues(parser);
-			addCondition(parser.isRequired(),parser.getId(),value,parser.getCompare());
+			addCondition(parser.isRequired(),parser.isStrictRequired(),parser.getId(),value,parser.getCompare());
 		}else{
 			Condition con = new AutoConditionImpl(condition);
 			chain.addCondition(con);

@@ -45,6 +45,7 @@ public interface RunSQL {
 	 * @param	value
 	 * 			值
 	 */
+	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare);
 	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare);
 	public void setGroupStore(GroupStore groups) ;
 	public GroupStore getGroupStore() ;
@@ -66,6 +67,7 @@ public interface RunSQL {
 	 * @param	value 值
 	 * @param	compare 比较方式
 	 */
+	public RunSQL addCondition(boolean requried, boolean strictRequired, String column, Object value, COMPARE_TYPE compare);
 	public RunSQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare);
 	public RunSQL setConditionChain(ConditionChain chain);
 	public RunSQL addConditions(String[] conditions) ;
@@ -103,4 +105,5 @@ public interface RunSQL {
 	public String getFetchColumns();
 	public void setStrict(boolean strict);
 	public boolean isStrict();
+	public boolean isValid();
 }

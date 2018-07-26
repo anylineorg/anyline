@@ -27,6 +27,7 @@ import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
+import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.run.RunSQL;
@@ -79,7 +80,12 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			}
 		}
 		createRunTxt();
-	
+		checkValid();
+	}
+	private void checkValid(){
+		if(null != conditionChain && !conditionChain.isValid()){
+			this.valid = false;
+		}
 	}
 	private void createRunTxt(){
 		TableSQL sql = (TableSQL)this.getSql();
@@ -185,6 +191,15 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			values.add(obj);
 		}
 		return this;
+	}
+	@Override
+	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, COMPARE_TYPE compare) {
+		return this;
+	}
+
+	@Override
+	public RunSQL setConditionValue(boolean required,  String condition, String variable, Object value, COMPARE_TYPE compare) {
+		return setConditionValue(required,  false, condition, variable, value, compare);
 	}
 
 

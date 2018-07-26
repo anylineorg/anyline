@@ -33,6 +33,7 @@ public class ConfigParser {
 	private static ParseResult parseInit(String config){
 		ParseResult result = new ParseResult();
 		boolean required = false;
+		boolean strictRequired = false;
 		String field = null;
 		String id = config;
 		String key = config;
@@ -45,6 +46,11 @@ public class ConfigParser {
 			required = true;
 			id = id.substring(1,id.length());
 		}
+		if(id.startsWith("+")){
+			//必须参数
+			strictRequired = true;
+			id = id.substring(1,id.length());
+		}
 		if(id.contains(".")){
 			//XML中自定义参数时,同时指定param.id及变量名
 			field = id.substring(id.indexOf(".")+1,id.length());
@@ -55,6 +61,7 @@ public class ConfigParser {
 		}
 		result.setId(id);
 		result.setRequired(required);
+		result.setStrictRequired(strictRequired);
 		result.setField(field);
 		result.setKey(key);
 		return result;
