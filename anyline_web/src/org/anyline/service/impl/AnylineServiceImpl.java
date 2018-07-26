@@ -177,6 +177,8 @@ public class AnylineServiceImpl implements AnylineService {
 	 */
 	@Override
 	public DataSet query(String src, ConfigStore configs, String... conditions) {
+		src = BasicUtil.compressionSpace(src);
+		conditions = BasicUtil.compressionSpace(conditions);
 		DataSet set = queryFromDao(src, configs, conditions);
         return set;
 		
@@ -310,6 +312,8 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions){
 		DataSet set = null;
+		src = BasicUtil.compressionSpace(src);
+		conditions = BasicUtil.compressionSpace(conditions);
 		if(null == cache){
 			set = query(src, configs, conditions);
 		}else{
@@ -601,6 +605,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @return
 	 */
 	public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions){
+		src = BasicUtil.compressionSpace(src);
 		conditions = BasicUtil.compressionSpace(conditions);
 		String key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
 		CacheUtil.remove(channel, "SET:" + key);
@@ -640,6 +645,8 @@ public class AnylineServiceImpl implements AnylineService {
 
 	public boolean exists(String src, ConfigStore configs, String ... conditions){
 		boolean result = false;
+		src = BasicUtil.compressionSpace(src);
+		conditions = BasicUtil.compressionSpace(conditions);
 		SQL sql = createSQL(src);
 		result = dao.exists(sql, configs, conditions);
 		return result;
@@ -674,6 +681,8 @@ public class AnylineServiceImpl implements AnylineService {
 		int count = -1;
 		try {
 			//conditions = parseConditions(conditions);
+			src = BasicUtil.compressionSpace(src);
+			conditions = BasicUtil.compressionSpace(conditions);
 			SQL sql = createSQL(src);
 			count = dao.count(sql, configs, conditions);
 		} catch (Exception e) {
@@ -701,7 +710,7 @@ public class AnylineServiceImpl implements AnylineService {
 	@Override
 	public int update(boolean sync, String dest, Object data, String... columns) {
 		final String cols[] = BasicUtil.compressionSpace(columns);
-		final String _dest = dest;
+		final String _dest = BasicUtil.compressionSpace(dest);;
 		final Object _data = data;
 		if(sync){
 			new Thread(new Runnable(){
@@ -722,6 +731,7 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 	@Override
 	public int update(String dest, Object data, String... columns) {
+		dest = BasicUtil.compressionSpace(dest);
 		columns = BasicUtil.compressionSpace(columns);
 		return dao.update(dest, data, columns);
 	}
@@ -907,6 +917,7 @@ public class AnylineServiceImpl implements AnylineService {
 	@Override
 	public int execute(String src, ConfigStore store, String... conditions) {
 		int result = -1;
+		src = BasicUtil.compressionSpace(src);
 		conditions = BasicUtil.compressionSpace(conditions);
 		SQL sql = createSQL(src);
 		if (null == sql) {
