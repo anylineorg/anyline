@@ -118,14 +118,18 @@ public class SQLStoreImpl extends SQLStore{
 	}
 	private static Condition parseCondition(SQL sql, Map<String,List<Condition>> map, Element element){
 		Condition condition = null;
-		String id = element.attributeValue("id");	//参数主键
+		String id = element.attributeValue("id");	//查询条件id
+		boolean required = BasicUtil.parseBoolean(element.attributeValue("required"), false);
+		boolean strictRequired = BasicUtil.parseBoolean(element.attributeValue("strictRequired"), false);
 		if(null != id){
 			boolean isStatic = BasicUtil.parseBoolean(element.attributeValue("static"),false);	//是否是静态文本
-			String text = element.getText().trim();			//参数文本
+			String text = element.getText().trim();			//查询条件文本
 			if(!text.toUpperCase().startsWith("AND")){
 				text =  "\nAND " + text;
 			}
 			condition = new XMLConditionImpl(id, text, isStatic);
+			condition.setRequired(required);
+			condition.setStrictRequired(strictRequired);
 			String test = element.attributeValue("test");
 			condition.setTest(test);
 			if(null != sql){

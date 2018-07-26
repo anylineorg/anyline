@@ -75,7 +75,7 @@ public interface Config {
 	public void setEmpty(boolean empty) ;
 
 	public boolean isRequire() ;
-
+	public boolean isStrictRequired();
 	public void setRequire(boolean require) ;
 
 	public String getJoin() ;

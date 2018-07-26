@@ -67,13 +67,13 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						continue;
 					}
 					AutoCondition con = (AutoCondition)condition;
-					setConditionValue(con.isRequired(), con.getId(), null, con.getValues(), con.getCompare());
+					setConditionValue(con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
 				}
 			}
 		}
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-				setConditionValue(conf.isRequire(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
+				setConditionValue(conf.isRequire(), conf.isStrictRequired(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			}
 			
 			OrderStore orderStore = configStore.getOrders();
@@ -91,6 +91,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			}
 		}
 		createRunTxt();
+		checkValid();
 	}
 	private void parseText(){
 		String text = sql.getText();
@@ -146,8 +147,12 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			e.printStackTrace();
 		}
 	}
+	private void checkValid(){
+		if(null != conditionChain && !conditionChain.isValid()){
+			this.valid = false;
+		}
+	}
 	private void createRunTxt(){
-		
 		String result = sql.getText();
 		if(null != variables){
 			for(SQLVariable var:variables){
@@ -287,7 +292,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 
 
 	@Override
-	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
+	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/
 		if(null != variables && BasicUtil.isEmpty(variable)){
 			for(SQLVariable v:variables){
@@ -312,7 +317,12 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		return this;
 	}
 
-	
+	@Override
+	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
+		return setConditionValue(required, false, condition, variable, value, compare);
+	}
+
+		
 
 
 	/**
@@ -401,8 +411,8 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 * @param	compare
 	 * 			比较方式
 	 */
-	public RunSQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare){
-		Condition condition = new AutoConditionImpl(requried,column, value, compare);
+	public RunSQL addCondition(boolean requried, boolean strictRequired, String column, Object value, COMPARE_TYPE compare){
+		Condition condition = new AutoConditionImpl(requried,strictRequired,column, value, compare);
 		if(null == conditionChain){
 			conditionChain = new AutoConditionChainImpl();
 		}

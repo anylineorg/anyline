@@ -58,7 +58,8 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	protected GroupStore groupStore;
 	protected String having;
 	protected List<SQLVariable> variables;
-	private boolean strict = false;
+	protected boolean strict = false;
+	protected boolean valid = true;
 	
 	
 	protected SQLCreater creater;
@@ -182,7 +183,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	}
 
 	@Override
-	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
+	public RunSQL setConditionValue(boolean required, boolean strictRequired,  String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		return this;
 	}
 	@Override
@@ -252,11 +253,11 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	 * @param	compare
 	 * 			比较方式
 	 */
-	public RunSQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare){
+	public RunSQL addCondition(boolean requried, boolean strictRequired, String column, Object value, COMPARE_TYPE compare){
 		if(this instanceof XMLRunSQLImpl){
 			((XMLRunSQLImpl)this).addCondition(column, column, value);
 		}else{
-			Condition condition = new AutoConditionImpl(requried,column, value, compare);
+			Condition condition = new AutoConditionImpl(requried,strictRequired,column, value, compare);
 			if(null == conditionChain){
 				conditionChain = new AutoConditionChainImpl();
 			}
@@ -265,6 +266,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 			}
 		}
 		return this;
+	}
+	public RunSQL addCondition(boolean requried, String column, Object value, COMPARE_TYPE compare){
+		return addCondition(requried, false, column, value, compare);
 	}
 	/**
 	 * 添加静态文本查询条件
@@ -292,7 +296,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				//需要解析的SQL
 				ParseResult parser = ConfigParser.parse(condition,false);
 				Object value = ConfigParser.getValues(parser);
-				addCondition(parser.isRequired(),parser.getId(),value,parser.getCompare());
+				addCondition(parser.isRequired(), parser.isStrictRequired(), parser.getId(),value,parser.getCompare());
 				return this;
 			}
 		}
@@ -430,6 +434,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 
 	public void setStrict(boolean strict) {
 		this.strict = strict;
+	}
+	public boolean isValid(){
+		return valid;
 	}
 }
 

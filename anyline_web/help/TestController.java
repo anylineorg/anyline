@@ -96,9 +96,12 @@ public class TestController extends BasicController {
 		set = service.query("members", parseConfig(true, "mmb_age:>=age"));
 		
 		//必须参数
-		//如果id未传入或传入null "" 则执行mmb_id IS NULL
+		//+与自定义SQL.condition中的required="true"作用一致
+		//如果id未传入或传入null "" 则执行mmb_id IS NULL 但是在自定义SQL中会执行 id = null,所以这类情况不要用xml定义
 		set = service.query("members", parseConfig(true, "+mmb_id:id"));
-
+		//++与自定义SQL.condition中的strictRequired="true"作用一致
+		//如果id未传入或传入null "" 当前SQL不执行,返回空DataSet
+		set = service.query("members", parseConfig(true, "++mmb_id:id"));
 		//like 
 		set = service.query("members", parseConfig(true, "mmb_name:%name"));
 		set = service.query("members", parseConfig(true, "mmb_name:name%"));
@@ -130,6 +133,8 @@ public class TestController extends BasicController {
 		set = service.query("members", parseConfig(true, "+mmb_id:%id++:member++"));
 		set = service.query("members", "mmb_id::1:2");
 		set = service.query("members", "mmb_id:[]:[,][1,2,3]:[3,4,5]");
+		
+		
 		
 
 		//分页 通过parseConfig(true)或parseConfig(10

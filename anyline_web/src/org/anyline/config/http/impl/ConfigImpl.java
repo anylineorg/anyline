@@ -329,11 +329,16 @@ public class ConfigImpl implements Config,Serializable{
 	public boolean isRequire() {
 		return parser.isRequired();
 	}
-
+	
 	public void setRequire(boolean require) {
 		parser.setRequired(require);
 	}
-
+	public boolean isStrictRequired() {
+		return parser.isStrictRequired();
+	}
+	public void setStrictRequired(boolean strictRequired) {
+		parser.setStrictRequired(strictRequired);
+	}
 	public String getJoin() {
 		return parser.getJoin();
 	}

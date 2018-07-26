@@ -91,6 +91,12 @@ public class AnylineDaoImpl implements AnylineDao {
 	public DataSet query(SQL sql, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
+		if(!run.isValid()){
+			if(showSQL){
+				log.warn("[valid:false]");
+			}
+			return new DataSet();
+		}
 		PageNavi navi = run.getPageNavi();
 		int total = 0;
 		if(null != navi){
@@ -518,6 +524,12 @@ public class AnylineDaoImpl implements AnylineDao {
 	public int execute(SQL sql, ConfigStore configs, String ... conditions){
 		int result = -1;
 		RunSQL run = creater.createExecuteRunSQL(sql, configs, conditions);
+		if(!run.isValid()){
+			if(showSQL){
+				log.warn("[valid:false]");
+			}
+			return -1;
+		}
 		String txt = run.getExecuteTxt();
 		List<Object> values = run.getValues();
 		long fr = System.currentTimeMillis();

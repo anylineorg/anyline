@@ -70,6 +70,10 @@ public interface Condition extends Cloneable,Serializable{
 	public void initRunValue();
 	public boolean isActive();
 	public boolean isRequired();
+	public void setRequired(boolean required);
+	public boolean isStrictRequired();
+	public void setStrictRequired(boolean strictRequired);
+	public boolean isValid();
 	public void setActive(boolean active);
 	public int getVariableType();
 	/*************************************************************************************************************
@@ -90,4 +94,5 @@ public interface Condition extends Cloneable,Serializable{
 	public void setTest(String test);
 	public String getTest();
 	public Map<String,Object> getRunValuesMap();
+	public List<SQLVariable> getVariables();
 }

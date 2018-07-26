@@ -62,6 +62,8 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				}
 				cVariables.add((SQLVariable)var.clone());
 			}
+			clone.setRequired(this.isRequired());
+			clone.setStrictRequired(this.isStrictRequired());
 			clone.variables = cVariables;
 		}
 		return clone;
@@ -105,10 +107,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 			}
 			if(variable.equalsIgnoreCase(v.getKey())){
 				v.setValue(values);
-				if(BasicUtil.isNotEmpty(true,values)){
+				if(BasicUtil.isNotEmpty(true,values) || v.isRequired() || v.isStrictRequired()){
 					setActive(true);
 				}
-				break;
 			}
 		}
 	}
@@ -295,4 +296,25 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 		return null;
 	}
 
+	public boolean isValid(){
+		if(!super.isValid()){
+			return false;
+		}
+		if(null != variables){
+			for(SQLVariable variable:variables){
+				if(null == variable){
+					continue;
+				}
+				List<Object> values = variable.getValues();
+				if(isStrictRequired() && BasicUtil.isEmpty(true, values)){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	public List<SQLVariable> getVariables(){
+		return variables;
+	}
 }
