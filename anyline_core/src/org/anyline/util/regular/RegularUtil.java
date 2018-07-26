@@ -45,6 +45,9 @@ public class RegularUtil {
 	public static final int MATCH_MODE_PREFIX  = 1;				//前缀匹配
 	public static final int MATCH_MODE_CONTAIN = 2;				//包含匹配
 	public static final String REGEX_VARIABLE = "{(\\w+)}";		//变量{ID}
+
+	public static final String TAG_BEGIN = "{begin}";
+	public static final String TAG_END = "{end}";
 	
 	private static Logger log = Logger.getLogger(RegularUtil.class);
 	static{
@@ -383,22 +386,33 @@ public class RegularUtil {
 		int _to = -1;	//结束下标
 		String frTag = "";
 		String toTag = tags[tags.length-1];
+		int frLength = 0;
 		for(int i=0; i<tags.length-1; i++){
 			frTag = tags[i];
-			if(i>0){
-				_fr= text.indexOf(frTag, _fr+tags[i-1].length());
+			if(frTag.equalsIgnoreCase(TAG_BEGIN)){
+				_fr = 0;
+				frLength = 0;
 			}else{
-				_fr= text.indexOf(frTag, _fr);
-			}
-			if(_fr == -1){
-				return null;
+				if(i>0){
+					_fr= text.indexOf(frTag, _fr+tags[i-1].length());
+				}else{
+					_fr= text.indexOf(frTag, _fr);
+				}
+				if(_fr == -1){
+					return null;
+				}
+				frLength = frTag.length();
 			}
 		}
-		_to = text.indexOf(toTag,_fr+frTag.length());
+		if(frTag.equalsIgnoreCase(TAG_END)){
+			_to = text.length();
+		}else{
+			_to = text.indexOf(toTag,_fr+frLength);
+		}
 		if(_to <= _fr) {
 			return null;
 		}
-		return text.substring(_fr+frTag.length(),_to);
+		return text.substring(_fr+frLength,_to);
 	}
 	public static List<String> cuts(String text, String ... tags){
 		List<String> list = new ArrayList<String>();

@@ -591,7 +591,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != key){
 			key = key(key);
 			String oldValue = getString(key)+"";
-			if(!oldValue.equals(value)){
+			if(!oldValue.equals(value+"")){
 				super.put(key, value);
 				if(!updateColumns.contains(key)){
 					updateColumns.add(key);
