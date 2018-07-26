@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
+import org.anyline.util.BasicUtil;
 
 /**
  * 自动生成的参数
@@ -77,5 +78,13 @@ public abstract class BasicConditionChain extends BasicCondition implements Cond
 	public List<Condition> getConditions() {
 		return conditions;
 	}
-	
+
+	public boolean isValid(){
+		for(Condition con:conditions){
+			if(!con.isValid()){
+				return false;
+			}
+		}
+		return true;
+	}
 }

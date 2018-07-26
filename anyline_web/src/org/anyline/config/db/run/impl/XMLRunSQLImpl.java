@@ -67,7 +67,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		super.init();
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-				setConditionValue(conf.isRequire(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
+				setConditionValue(conf.isRequire(), conf.isStrictRequired(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			}
 			
 			OrderStore orderStore = configStore.getOrders();
@@ -100,7 +100,24 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					}
 					
 				}
-				setConditionValue(parser.isRequired(), parser.getId(), parser.getField(), value, parser.getCompare());
+				setConditionValue(parser.isRequired(), parser.isStrictRequired(), parser.getId(), parser.getField(), value, parser.getCompare());
+			}
+		}
+		//检查必须条件required strictRequired
+		for(Condition con:conditionChain.getConditions()){
+			if(!con.isActive()){//没有根据value激活
+				if(con.isRequired()){
+					con.setActive(true);
+					List<SQLVariable> vars = con.getVariables();
+					if(null != vars){
+						for(SQLVariable var:vars){
+							var.setValue(false,null);
+						}
+					}
+				}
+				if(con.isStrictRequired()){
+					this.valid = false;
+				}
 			}
 		}
 		GroupStore groupStore = sql.getGroups();
@@ -114,6 +131,26 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		checkTest();
 		createRunTxt();
+		checkValid();
+	}
+	private void checkValid(){
+		if(!valid){
+			return;
+		}
+		if(null != variables){
+			for(SQLVariable var:variables){
+				if(var.isRequired() || var.isStrictRequired()){
+					if(BasicUtil.isEmpty(true,var.getValues())){
+						this.valid = false;
+						return;
+					}
+				}
+			}
+		}
+		if(null != conditionChain && !conditionChain.isValid()){
+			this.valid = false;
+			return;
+		}
 	}
 	private void createRunTxt(){
 		String result = sql.getText();
@@ -383,7 +420,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 
 	
 	@Override
-	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
+	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		/*不指定变量名或condition = variable 时,根据condition为SQL主体变量赋值*/
 		if(null != variables && 
 				(BasicUtil.isEmpty(variable) || condition.equals(variable))
@@ -412,7 +449,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				if(BasicUtil.isNotEmpty(condition) && !condition.equals(variable)){
 					column = condition + "." + variable;
 				}
-				Condition newCon = new AutoConditionImpl(required, column, value, compare);
+				Condition newCon = new AutoConditionImpl(required, strictRequired, column, value, compare);
 				conditionChain.addCondition(newCon);
 				if(newCon.isActive()){
 					conditionChain.setActive(true);
@@ -427,6 +464,12 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		return this;
 	}
+	@Override
+	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
+		return setConditionValue(required, false, condition, variable, value, compare);
+	}
+	
+		
 	public RunSQL addConditions(String[] conditions) {
 		/*添加查询条件*/
 		if(null != conditions){
@@ -584,9 +627,12 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	public void setConfigStore(ConfigStore configStore) {
 		this.configStore = configStore;
 	}
-	public RunSQL addCondition(boolean requried, String column, Object value, SQL.COMPARE_TYPE compare){
-		setConditionValue(requried, column, null, value, compare);
+	public RunSQL addCondition(boolean requried, boolean strictRequired, String column, Object value, SQL.COMPARE_TYPE compare){
+		setConditionValue(requried, strictRequired, column, null, value, compare);
 		return this;
+	}
+	public RunSQL addCondition(boolean requried, String column, Object value, SQL.COMPARE_TYPE compare){
+		return addCondition(requried, false, column, value,compare);
 	}
 	
 }

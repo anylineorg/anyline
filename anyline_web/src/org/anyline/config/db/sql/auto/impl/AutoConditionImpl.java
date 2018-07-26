@@ -50,6 +50,8 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		setColumn(config.getId());
 		setValues(config.getValues());
 		setCompare(config.getCompare());
+		setRequired(config.isRequire());
+		setStrictRequired(config.isStrictRequired());
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX);
 		if(config.isRequire()){
 			setActive(true);
@@ -65,8 +67,9 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	 * @param	compare
 	 * 			比较方式
 	 */
-	public AutoConditionImpl(boolean required, String column, Object values, COMPARE_TYPE compare){
+	public AutoConditionImpl(boolean required, boolean strictRequired, String column, Object values, COMPARE_TYPE compare){
 		setRequired(required);
+		setStrictRequired(strictRequired);
 		setColumn(column);
 		setValues(values);
 		setCompare(compare);

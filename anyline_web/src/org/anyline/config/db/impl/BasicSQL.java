@@ -46,6 +46,7 @@ public abstract class BasicSQL implements SQL{
 	protected PageNavi navi;				//分页
 	protected List<String> primaryKeys = new ArrayList<String>();		//主键
 	protected List<String> fetchKeys   = new ArrayList<String>();		//最终需要封装的列
+	protected boolean valid 		   = true;
 	
 	//运行时参数值
 	protected Vector<Object> runValues;
@@ -363,5 +364,11 @@ public abstract class BasicSQL implements SQL{
 	}
 	public List<String> getFetchKeys(){
 		return fetchKeys;
+	}
+	public boolean isValid(){
+		return valid;
+	}
+	public void setValid(boolean valid){
+		this.valid = valid;
 	}
 }

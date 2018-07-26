@@ -192,5 +192,6 @@ public interface SQL extends Cloneable,Serializable {
 	public List<String> getColumns();
 	public void setStrict(boolean strict);
 	public boolean isStrict();
+	public boolean isValid();
 	
 }
