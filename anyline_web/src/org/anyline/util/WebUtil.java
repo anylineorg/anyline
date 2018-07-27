@@ -1262,7 +1262,7 @@ public class WebUtil {
 		dispatcher.include(request, resp);
 		writer.flush();
 		String result = os.toString();
-		if(ConfigTable.isDebug() && !"false".equals(ConfigTable.getString("PARSE_JSP_LOG"))){
+		if(ConfigTable.isDebug() && !"true".equals(ConfigTable.getString("PARSE_JSP_LOG"))){
 			log.warn("[LOAD JSP TEMPLATE][FILE:"+file+"][HTML:"+result+"]");
 		}
 		return result;
