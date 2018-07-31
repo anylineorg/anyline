@@ -80,7 +80,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 		this.value = null;
 		this.body = null;
 		this.format = null;
-		this.nvl = true;
+		this.nvl = false;
 	}
 	public Object getNvl() {
 		return nvl;
