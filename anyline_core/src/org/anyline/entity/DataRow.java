@@ -303,26 +303,24 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 添加主键
-	 * 当前对象处于容器中时,设置容器主键,否则设置自身主键
+	 * @param applyContainer 是否应用到上级容器 默认false
 	 * @param primary
 	 */
-	public DataRow addPrimaryKey(String ... primaryKeys){
-		if(null != primaryKeys){
+	public DataRow addPrimaryKey(boolean applyContainer, String ... pks){
+		if(null != pks){
 			List<String> list = new ArrayList<String>();
-			for(String pk:primaryKeys){
+			for(String pk:pks){
 				list.add(pk);
 			}
-			return addPrimaryKey(list);
+			return addPrimaryKey(applyContainer, list);
 		}
 		return this;
 	}
-	public DataRow addPrimaryKey(Collection<String> primaryKeys){
-		if(BasicUtil.isEmpty(primaryKeys)){
-			return this;
-		}
-		/*设置容器主键*/
-		if(hasContainer()){
-			getContainer().addPrimary(primaryKeys);
+	public DataRow addPrimaryKey(String ... pks){
+		return addPrimaryKey(false, pks);
+	}
+	public DataRow addPrimaryKey(boolean applyContainer, Collection<String> pks){
+		if(BasicUtil.isEmpty(pks)){
 			return this;
 		}
 		
@@ -330,7 +328,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null == this.primaryKeys){
 			this.primaryKeys = new ArrayList<String>();
 		}
-		for(String item:primaryKeys){
+		for(String item:pks){
 			if(BasicUtil.isEmpty(item)){
 				continue;
 			}
@@ -339,30 +337,33 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				this.primaryKeys.add(item);
 			}
 		}
-		return this;
-	}
-	/**
-	 * 设置主键 先清空之前设置过和主键
-	 * 当前对象处于容器中时,设置容器主键,否则设置自身主键
-	 * @param primary
-	 */
-	public DataRow setPrimaryKey(String ... primaryKeys){
-		if(null != primaryKeys){
-			List<String> list = new ArrayList<String>();
-			for(String pk:primaryKeys){
-				list.add(pk);
-			}
-			return setPrimaryKey(list);
+		/*设置容器主键*/
+		if(hasContainer() && applyContainer){
+			getContainer().setPrimaryKey(false, primaryKeys);
 		}
 		return this;
 	}
-	public DataRow setPrimaryKey(Collection<String> primaryKeys){
-		if(BasicUtil.isEmpty(primaryKeys)){
+	
+	public DataRow setPrimaryKey(boolean applyContainer, String ... pks){
+		if(null != pks){
+			List<String> list = new ArrayList<String>();
+			for(String pk:pks){
+				list.add(pk);
+			}
+			return setPrimaryKey(applyContainer, list);
+		}
+		return this;
+	}
+	public DataRow setPrimaryKey(String ... pks){
+		return setPrimaryKey(false, pks);
+	}
+	public DataRow setPrimaryKey(boolean applyContainer, Collection<String> pks){
+		if(BasicUtil.isEmpty(pks)){
 			return this;
 		}
 		/*设置容器主键*/
-		if(hasContainer()){
-			getContainer().setPrimary(primaryKeys);
+		if(hasContainer() && applyContainer){
+			getContainer().setPrimaryKey(pks);
 		}
 		
 		if(null == this.primaryKeys){
@@ -370,8 +371,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}else{
 			this.primaryKeys.clear();
 		}
-		this.addPrimaryKey(primaryKeys);
-		return this;
+		return addPrimaryKey(applyContainer, pks);
+	}
+	public DataRow setPrimaryKey(Collection<String> pks){
+		return setPrimaryKey(false, pks);
 	}
 	/**
 	 * 读取主键

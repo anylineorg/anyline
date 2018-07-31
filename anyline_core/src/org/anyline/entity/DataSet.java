@@ -108,65 +108,82 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	/**
 	 * 添加主键
-	 * 
+	 * @param applyItem:是否应用到集合中的DataRow 默认true
 	 * @param parmary
 	 */
-	public DataSet addPrimary(String ... pks){
+	public DataSet addPrimaryKey(boolean applyItem, String ... pks){
 		if(null != pks){
 			List<String> list = new ArrayList<String>();
 			for(String pk:pks){
 				list.add(pk);
 			}
-			addPrimary(list);
+			addPrimaryKey(applyItem, list);
 		}
 		return this;
 	}
-	public DataSet addPrimary(Collection<String> pks) {
-		if (null == this.primaryKeys) {
-			this.primaryKeys = new ArrayList<String>();
+	public DataSet addPrimaryKey(String ... pks){
+		return addPrimaryKey(true, pks);
+	}
+	public DataSet addPrimaryKey(boolean applyItem, Collection<String> pks) {
+		if (null == primaryKeys) {
+			primaryKeys = new ArrayList<String>();
 		}
 		if (null == pks) {
 			return this;
 		}
-		for (String item : pks) {
-			if (BasicUtil.isEmpty(item)) {
+		for (String pk : pks) {
+			if (BasicUtil.isEmpty(pk)) {
 				continue;
 			}
-			item = key(item);
-			if (!this.primaryKeys.contains(item)) {
-				this.primaryKeys.add(item);
+			pk = key(pk);
+			if (!primaryKeys.contains(pk)) {
+				primaryKeys.add(pk);
+			}
+		}
+		if(applyItem){
+			for(DataRow row : rows){
+				row.setPrimaryKey(false, primaryKeys);
 			}
 		}
 		return this;
 	}
-	public DataSet set(int index, DataRow item){
-		rows.set(index, item);
-		return this;
+	public DataSet addPrimaryKey(Collection<String> pks) {
+		return addPrimaryKey(true, pks);
 	}
 	/**
 	 * 设置主键
 	 * 
 	 * @param primary
 	 */
-	public DataSet setPrimary(String ... pks){
+	public DataSet setPrimaryKey(boolean applyItem, String ... pks){
 		if(null != pks){
 			List<String> list = new ArrayList<String>();
 			for(String pk:pks){
 				list.add(pk);
 			}
-			setPrimary(list);
+			setPrimaryKey(applyItem, list);
 		}
 		return this;
 	}
-	public DataSet setPrimary(Collection<String> pks) {
+	public DataSet setPrimaryKey(String ... pks){
+		return setPrimaryKey(true, pks);
+	}
+	public DataSet setPrimaryKey(boolean applyItem, Collection<String> pks) {
 		if (null == pks) {
 			return this;
 		}
 		this.primaryKeys = new ArrayList<String>();
-		addPrimary(pks);
+		addPrimaryKey(applyItem, pks);
 		return this;
 	}
+	public DataSet setPrimaryKey(Collection<String> pks) {
+		return setPrimaryKey(true, pks);
+	}
 
+	public DataSet set(int index, DataRow item){
+		rows.set(index, item);
+		return this;
+	}
 //	public DataSet toLowerKey() {
 //		for (DataRow row : rows) {
 //			row.toLowerKey();
