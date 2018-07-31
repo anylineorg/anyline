@@ -8,5 +8,6 @@
 		<property key="BUCKET">deepbit</property>
 		<!-- 生成的密钥多长时间有效  -->
 		<property key="EXPIRE_SECOND">300</property>
+		<property key="DIR">test</property>
 	</config>
 </configs>
