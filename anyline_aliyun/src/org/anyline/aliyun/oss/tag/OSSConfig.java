@@ -38,10 +38,13 @@ public class OSSConfig extends BaseBodyTag {
 	private int expire = 0; 
 	private String dir = "";
 	private String key = "default";
-	private String var = "aliyun_oss_config";
+	private String var = "al.config.upload.oss";
 	public int doEndTag() throws JspException {
 		try{
 			OSSUtil util = OSSUtil.getInstance(key);
+			if(BasicUtil.isNotEmpty(dir)){
+				dir = util.getConfig().DIR;
+			}
 			if(BasicUtil.isNotEmpty(dir)){
 				String yyyy = DateUtil.format("yyyy");
 				String yy = DateUtil.format("yy");
@@ -58,11 +61,11 @@ public class OSSConfig extends BaseBodyTag {
 			}
 			Map<String,String> map = util.signature(dir, expire);
 			if(BasicUtil.isEmpty(var)){
-				var = "aliyun_oss_config";
+				var = "al.config.upload.oss";
 			}
 			StringBuffer script = new StringBuffer();
 			script.append("<script>\n");
-			script.append("var ").append(var).append(" = ").append(BeanUtil.map2json(map)).append(";\n");
+			script.append(var).append(" = ").append(BeanUtil.map2json(map)).append(";\n");
 //			script.append("var " + var + " = new FormData();\n");
 //			script.append(var).append(".append('policy',").append("aliyun_oss_config['policy']);\n");
 //			script.append(var).append(".append('OSSAccessKeyId',").append("aliyun_oss_config['accessid']);\n");
