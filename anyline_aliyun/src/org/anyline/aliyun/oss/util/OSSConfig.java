@@ -16,6 +16,7 @@ public class OSSConfig extends BasicConfig{
 	public String ACCESS_SECRET = "";
 	public String ENDPOINT		= "";
 	public String BUCKET		= "";
+	public String DIR			= "";
 	public int EXPIRE_SECOND 	= 3600;
 	
 	static{
