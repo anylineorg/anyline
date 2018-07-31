@@ -38,7 +38,7 @@ public class OSSConfig extends BaseBodyTag {
 	private int expire = 0; 
 	private String dir = "";
 	private String key = "default";
-	private String var = "al.config.upload.oss";
+	private String var = "al.config.oss.aliyun";
 	public int doEndTag() throws JspException {
 		try{
 			OSSUtil util = OSSUtil.getInstance(key);
@@ -61,7 +61,7 @@ public class OSSConfig extends BaseBodyTag {
 			}
 			Map<String,String> map = util.signature(dir, expire);
 			if(BasicUtil.isEmpty(var)){
-				var = "al.config.upload.oss";
+				var = "al.config.oss.aliyun";
 			}
 			StringBuffer script = new StringBuffer();
 			script.append("<script>\n");
