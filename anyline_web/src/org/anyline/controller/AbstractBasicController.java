@@ -217,7 +217,7 @@ public class AbstractBasicController{
 //					client = new ClientTrace(request);
 //				}
 
-				row.clearUpdateColumns();
+				//row.clearUpdateColumns();
 //				row.setClientTrace(client);
 				set.addRow(row);
 			}
