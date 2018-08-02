@@ -824,6 +824,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		if(each){
 			keys = row.getUpdateColumns();
+			for(String k:mastKeys){
+				if(!keys.contains(k)){
+					keys.add(k);
+				}
+			}
 			//是否更新null及""列
 			boolean isUpdateNullColumn = row.isUpdateNullColumn();//ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN",true);
 			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();//ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN",true);
