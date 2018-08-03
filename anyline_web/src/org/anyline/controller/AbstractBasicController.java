@@ -123,25 +123,22 @@ public class AbstractBasicController{
 
 		/**
 		 * 
-			1 数据库查询             clear  X
+			1 数据库查询          clear  X
 			2 entityRow  X      X
 			3 new        X      X
 			4 null       X      X
 		 */
-		
-//		boolean clearUpdateColumns = true;
 		if (null == row) {
 			row = new DataRow();
 		}
-//		if(row.getUpdateColumns().size() == 0){
-//			
-//		}
-		
 		if (null != params && params.length > 0) {
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
 				Object value = ConfigParser.getValue(request, parser);
 				row.put(parser.getId(), value);
+				if(parser.isRequired()){
+					row.addUpdateColumns(parser.getId());
+				}
 			}
 		}else{
 			Enumeration<String> names = request.getParameterNames();
@@ -151,9 +148,6 @@ public class AbstractBasicController{
 				row.put(name, value);
 		    }
 		}
-//		if(clearUpdateColumns){
-//			row.clearUpdateColumns();
-//		}
 		return row;
 	}
 	
@@ -175,6 +169,28 @@ public class AbstractBasicController{
 		return entityRow(request, null, false, false, params);
 	}
 
+
+	public DataRow row(HttpServletRequest request, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entityRow(request, row, keyEncrypt, valueEncrypt, params);
+	}
+	
+	public DataRow row(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
+		return entityRow(request, row, keyEncrypt, params);
+	}
+	public DataRow row(HttpServletRequest request, DataRow row, String... params) {
+		return row(request, row, params);
+	}
+
+	public DataRow row(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entityRow(request, keyEncrypt, valueEncrypt, params);
+	}
+	public DataRow row(HttpServletRequest request, boolean keyEncrypt, String... params) {
+		return entityRow(request, keyEncrypt, params);
+	}
+
+	public DataRow row(HttpServletRequest request, String... params) {
+		return entityRow(request, params);
+	}
 	public DataSet entitySet(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		DataSet set = new DataSet();
 		
@@ -233,7 +249,18 @@ public class AbstractBasicController{
 	public DataSet entitySet(HttpServletRequest request, String... params) {
 		return entitySet(request, false, false, params);
 	}
+	public DataSet set(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entitySet(request, keyEncrypt, valueEncrypt, params);
+	}
+	
 
+	public DataSet set(HttpServletRequest request, boolean keyEncrypt, String... params) {
+		return entitySet(request, keyEncrypt, params);
+	}
+
+	public DataSet set(HttpServletRequest request, String... params) {
+		return entitySet(request, params);
+	}
 	/**
 	 * 解析参数
 	 * 
@@ -294,6 +321,19 @@ public class AbstractBasicController{
 	}
 	protected ConfigStore parseConfig(HttpServletRequest request, String... conditions) {
 		return parseConfig(request, false, conditions);
+	}
+	
+	protected ConfigStore config(HttpServletRequest request, boolean navi, String... configs) {
+		return parseConfig(request, navi, configs);
+	}
+	protected ConfigStore config(HttpServletRequest request, int vol, String... configs) {
+		return parseConfig(request, vol, configs);
+	}
+	protected ConfigStore config(HttpServletRequest request, int fr, int to, String... configs) {
+		return parseConfig(request, fr, to, configs);
+	}
+	protected ConfigStore config(HttpServletRequest request, String... conditions) {
+		return parseConfig(request, conditions);
 	}
 	/**
 	 * rquest.getParameter
