@@ -185,9 +185,10 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private void createPageTag(StringBuilder builder, String clazz, String tag, int page, String configFlag){
 		builder.append("<span class ='").append(clazz);
 		if(page == curPage && 0 == type){
-			builder.append(" navi-disabled");
 			if(clazz.contains("navi-num-item")){
 				builder.append(" navi-num-item-cur");
+			}else{
+				builder.append(" navi-disabled");
 			}
 			builder.append("'");
 		}else{
