@@ -593,12 +593,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow put(String key, Object value){
 		if(null != key){
 			key = key(key);
-			String oldValue = getString(key)+"";
-			if(!oldValue.equals(value+"")){
+			if(key.startsWith("+")){
+				key = key.substring(1);
+				addUpdateColumns(key);
+			}
+			Object oldValue = get(key);
+			if(null == oldValue || !oldValue.equals(value)){
 				super.put(key, value);
-				if(!updateColumns.contains(key)){
-					updateColumns.add(key);
-				}				
+				if(BasicUtil.isNotEmpty(value)){
+					addUpdateColumns(key);
+				}
 			}
 		}
 		return this;
