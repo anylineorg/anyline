@@ -26,7 +26,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>second</name>
+			<name>expire</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

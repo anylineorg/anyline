@@ -39,6 +39,7 @@ public class OSSConfig extends BaseBodyTag {
 	private String dir = "";
 	private String key = "default";
 	private String var = "al.config.oss.aliyun";
+	
 	public int doEndTag() throws JspException {
 		try{
 			OSSUtil util = OSSUtil.getInstance(key);
