@@ -640,7 +640,7 @@ public class BasicUtil {
 	 *            分隔符
 	 * @return
 	 */
-	public static String array2String(List<?> list, String split) {
+	public static String array2string(List<?> list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.size();
@@ -654,7 +654,7 @@ public class BasicUtil {
 		return builder.toString();
 	}
 
-	public static String array2String(Object[] list, String split) {
+	public static String array2string(Object[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -746,7 +746,7 @@ public class BasicUtil {
 		}
 		return result;
 	}
-	public static String collectionToString(Object[] objs){
+	public static String collection2string(Object[] objs){
 		if(null == objs){
 			return "";
 		}
@@ -995,73 +995,10 @@ public class BasicUtil {
 		return result;
    }
    public static String escape(String src) {  
-       int i;  
-       char j;  
-       StringBuffer tmp = new StringBuffer();  
-       tmp.ensureCapacity(src.length() * 6);  
-       for (i = 0; i < src.length(); i++) {  
-           j = src.charAt(i);  
-           if (Character.isDigit(j) || Character.isLowerCase(j)  
-                   || Character.isUpperCase(j))  
-               tmp.append(j);  
-           else if (j < 256) {  
-               tmp.append("%");  
-               if (j < 16)  
-                   tmp.append("0");  
-               tmp.append(Integer.toString(j, 16));  
-           } else {  
-               tmp.append("%u");  
-               tmp.append(Integer.toString(j, 16));  
-           }  
-       }  
-       return tmp.toString();  
+       return CodeUtil.escape(src);
    }  
-   public static String escape1(String src){
-	   ScriptEngineManager sem = new ScriptEngineManager();    
-       ScriptEngine engine = sem.getEngineByExtension("js");    
-       try{    
-           //直接解析    
-           Object res = engine.eval("escape("+src+")");
-           return res.toString();
-       }catch(Exception ex){    
-           ex.printStackTrace();    
-       }
-       return null;
-   }
 
    public static String unescape(String src) {  
-       StringBuffer tmp = new StringBuffer();  
-       tmp.ensureCapacity(src.length());  
-       int lastPos = 0, pos = 0;  
-       char ch;  
-       while (lastPos < src.length()) {  
-           pos = src.indexOf("%", lastPos);  
-           if (pos == lastPos) {  
-               if (src.charAt(pos + 1) == 'u') {  
-                   ch = (char) Integer.parseInt(src  
-                           .substring(pos + 2, pos + 6), 16);  
-                   tmp.append(ch);  
-                   lastPos = pos + 6;  
-               } else {  
-                   ch = (char) Integer.parseInt(src  
-                           .substring(pos + 1, pos + 3), 16);  
-                   tmp.append(ch);  
-                   lastPos = pos + 3;  
-               }  
-           } else {  
-               if (pos == -1) {  
-                   tmp.append(src.substring(lastPos));  
-                   lastPos = src.length();  
-               } else {  
-                   tmp.append(src.substring(lastPos, pos));  
-                   lastPos = pos;  
-               }  
-           }  
-       }  
-       return tmp.toString();  
+       return CodeUtil.unescape(src);  
    } 
-   
-   
-   
-   
 }
