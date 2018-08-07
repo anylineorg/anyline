@@ -5,6 +5,8 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.sql.DataSource;
+
 import org.anyline.config.db.SQLCreater;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -25,10 +27,12 @@ public class SQLCreaterUtil {
 		SQLCreater creater = null;
 		try {
 			if(null != jdbc){
-				Connection con = DataSourceUtils.getConnection(jdbc.getDataSource());
-				String name = con.getMetaData().getDatabaseProductName().toLowerCase();
-				DataSourceUtils.releaseConnection(con, jdbc.getDataSource());
-				
+				DataSource ds = jdbc.getDataSource();
+				Connection con = DataSourceUtils.getConnection(ds);
+				String name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", "");
+				if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+					DataSourceUtils.releaseConnection(con, ds);
+				}
 				SQLCreater.DB_TYPE type = SQLCreater.DB_TYPE.MYSQL;
 				if(name.contains("mysql")){
 					type = SQLCreater.DB_TYPE.MYSQL;

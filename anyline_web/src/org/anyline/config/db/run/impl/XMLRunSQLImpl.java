@@ -419,28 +419,38 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 	}
 
-	
+	private SQLVariable getVariable(String key){
+		if(null != variables){
+			for(SQLVariable v:variables){
+				if(null == v){
+					continue;
+				}
+				if(v.getKey().equalsIgnoreCase(key)){
+					return v;
+				}
+			}
+		}
+		return null;
+	}
 	@Override
 	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		/*不指定变量名或condition = variable 时,根据condition为SQL主体变量赋值*/
 		if(null != variables && 
 				(BasicUtil.isEmpty(variable) || condition.equals(variable))
 		){
-			for(SQLVariable v:variables){
-				if(null == v){
-					continue;
-				}
-				if(v.getKey().equalsIgnoreCase(condition)){
-					v.setValue(value);
-				}
+			SQLVariable var = getVariable(condition);
+			if(null != var){
+				var.setValue(value);
 			}
+			
 		}
 		/*参数赋值*/
 		if(null == condition){
 			return this;
 		}
 		Condition con = getCondition(condition);
-		if(null == con){
+		SQLVariable var = getVariable(condition);
+		if(null == con && null == var){//没有对应的condition也没有对应的text中的变量
 			if(this.isStrict()){
 				return this;
 			}else{
@@ -458,10 +468,12 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			}
 			return this;
 		}
-		variable = BasicUtil.nvl(variable, condition).toString();
-		con.setValue(variable, value);
-		if(con.isActive()){
-			this.conditionChain.setActive(true);
+		if(null != con){
+			variable = BasicUtil.nvl(variable, condition).toString();
+			con.setValue(variable, value);
+			if(con.isActive()){
+				this.conditionChain.setActive(true);
+			}
 		}
 		return this;
 	}

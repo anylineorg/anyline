@@ -67,8 +67,8 @@ public class XssUtil {
 		}
 		return true;
 	}
-	public static void main(String args[]){
-		System.out.println(strip("‘><iframe src=http://www.baidu.com><’"));
-	}
+//	public static void main(String args[]){
+//		System.out.println(strip("‘><iframe src=http://www.baidu.com><’"));
+//	}
 	
 }
