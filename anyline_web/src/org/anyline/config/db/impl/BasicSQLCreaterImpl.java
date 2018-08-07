@@ -325,7 +325,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(null == pk){
 				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 			}
-			row.put(pk, SQLCreaterUtil.getCreater().getPrimaryCreater().createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
+			row.put(pk, getPrimaryCreater().createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
 		}
 		/*确定需要插入的列*/
 		
@@ -411,7 +411,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(null == pk){
 					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 				}
-				row.put(pk, SQLCreaterUtil.getCreater().getPrimaryCreater().createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
+				row.put(pk, getPrimaryCreater().createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
 			}
 			
 			sql.append("(");
