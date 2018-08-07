@@ -133,9 +133,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				for(int i=0; i<keys.size(); i++){
 					List<String> keyItem = keys.get(i);
 					String prefix = keyItem.get(1).trim();		// 前缀
-					String fullKey = keyItem.get(2).trim();		// 完整KEY :CD
+					String fullKey = keyItem.get(2).trim();		// 完整KEY :CD ::CD {CD} ${CD}
 					String typeChar = keyItem.get(3);	// null || "'" || ")"
-					String key = fullKey.replace(":", "");
+					String key = fullKey.replace(":", "").replace("{", "").replace("}", "").replace("$", "");
 					if(fullKey.startsWith("::")){
 						// AND CD = ::CD
 						varType = SQLVariable.VAR_TYPE_REPLACE;
@@ -214,8 +214,10 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				}
 				if(BasicUtil.isNotEmpty(value)){
 					result = result.replace("::"+var.getKey(), value);
+					result = result.replace("${"+var.getKey()+"}", value);
 				}else{
 					result = result.replace("::"+var.getKey(), "NULL");
+					result = result.replace("${"+var.getKey()+"}", "NULL");
 				}
 			}
 		}
@@ -232,8 +234,10 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				}
 				if(null != value){
 					result = result.replace(":"+var.getKey(), value);
+					result = result.replace("{"+var.getKey()+"}", value);
 				}else{
 					result = result.replace(":"+var.getKey(), "");
+					result = result.replace("{"+var.getKey()+"}", "");
 				}
 			}
 		}
@@ -253,9 +257,11 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 						}
 					}
 					result = result.replace(":"+var.getKey(), inParam);
+					result = result.replace("{"+var.getKey()+"}", inParam);
 					runValues.addAll(varValues);	
 				}else{
 					result = result.replace(":"+var.getKey(), "?");
+					result = result.replace("{"+var.getKey()+"}", "?");
 					String value = null;
 					if(BasicUtil.isNotEmpty(true,varValues)){
 						value = varValues.get(0).toString();
