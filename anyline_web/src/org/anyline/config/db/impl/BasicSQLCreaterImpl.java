@@ -43,6 +43,7 @@ import org.anyline.exception.SQLUpdateException;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLCreaterUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -58,9 +59,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	protected static Logger log = Logger.getLogger(BasicSQLCreaterImpl.class);
 	public String disKeyFr = "";
 	public String disKeyTo = "";
-
-	@Autowired(required=false)
-	private PrimaryCreater primaryCreater;
+	public DB_TYPE type(){
+		return null;
+	}
 	/**
 	 * 创建查询SQL
 	 */
@@ -324,7 +325,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(null == pk){
 				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 			}
-			row.put(pk, primaryCreater.createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
+			row.put(pk, SQLCreaterUtil.getCreater().getPrimaryCreater().createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
 		}
 		/*确定需要插入的列*/
 		
@@ -410,7 +411,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(null == pk){
 					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 				}
-				row.put(pk, primaryCreater.createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
+				row.put(pk, SQLCreaterUtil.getCreater().getPrimaryCreater().createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
 			}
 			
 			sql.append("(");

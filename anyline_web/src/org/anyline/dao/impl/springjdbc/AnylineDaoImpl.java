@@ -48,6 +48,7 @@ import org.anyline.exception.SQLUpdateException;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLCreaterUtil;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -63,8 +64,6 @@ import org.springframework.stereotype.Repository;
 public class AnylineDaoImpl implements AnylineDao {
 	private static Logger log = Logger.getLogger(AnylineDaoImpl.class);
 	
-	@Autowired(required=false)
-	private SQLCreater creater;
 	@Autowired(required=false)
 	private JdbcTemplate jdbc;
 	
@@ -90,7 +89,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public DataSet query(SQL sql, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
-		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater().createQueryRunSQL(sql, configs, conditions);
 		if(!run.isValid()){
 			if(showSQL){
 				log.warn("[valid:false]");
@@ -145,7 +144,7 @@ public class AnylineDaoImpl implements AnylineDao {
 
 	public int count(SQL sql, ConfigStore configs, String ... conditions){
 		int count = -1;
-		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater().createQueryRunSQL(sql, configs, conditions);
 		count = getTotal(run.getTotalQueryTxt(), run.getValues());
 		return count;
 	}
@@ -154,7 +153,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 	public boolean exists(SQL sql, ConfigStore configs, String ... conditions){
 		boolean result = false;
-		RunSQL run = creater.createQueryRunSQL(sql, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater().createQueryRunSQL(sql, configs, conditions);
 		String txt = run.getExistsTxt();
 		List<Object> values = run.getValues();
 		
@@ -227,7 +226,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			return result;
 		}
-		RunSQL run = creater.createUpdateTxt(dest, obj, false, columns);
+		RunSQL run = SQLCreaterUtil.getCreater().createUpdateTxt(dest, obj, false, columns);
 		String sql = run.getUpdateTxt();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:"+dest+"]");
@@ -333,7 +332,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, String ... columns){
-		RunSQL run = creater.createInsertTxt(dest, data, checkPrimary, columns);
+		RunSQL run = SQLCreaterUtil.getCreater().createInsertTxt(dest, data, checkPrimary, columns);
 		if(null == run){
 			return 0;
 		}
@@ -414,8 +413,8 @@ public class AnylineDaoImpl implements AnylineDao {
 				batchInsert(dest, set.getRow(i), checkPrimary, columns);
 			}
 		}
-		String table = creater.getDataSource(data);
-		List<String> cols = creater.confirmInsertColumns(dest, data, columns);
+		String table = SQLCreaterUtil.getCreater().getDataSource(data);
+		List<String> cols = SQLCreaterUtil.getCreater().confirmInsertColumns(dest, data, columns);
 		String strCols = "";
 		int size = cols.size();
 		for(int i=0; i<size; i++){
@@ -523,7 +522,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public int execute(SQL sql, ConfigStore configs, String ... conditions){
 		int result = -1;
-		RunSQL run = creater.createExecuteRunSQL(sql, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater().createExecuteRunSQL(sql, configs, conditions);
 		if(!run.isValid()){
 			if(showSQL){
 				log.warn("[valid:false]");
@@ -737,7 +736,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 
 	public int delete(String table, String key, Collection<Object> values){
-		RunSQL run = creater.createDeleteRunSQL(table, key, values);
+		RunSQL run = SQLCreaterUtil.getCreater().createDeleteRunSQL(table, key, values);
 		int result = exeDelete(run);
 		return result;
 	}
@@ -748,13 +747,13 @@ public class AnylineDaoImpl implements AnylineDao {
 				list.add(value);
 			}
 		}
-		RunSQL run = creater.createDeleteRunSQL(table, key, list);
+		RunSQL run = SQLCreaterUtil.getCreater().createDeleteRunSQL(table, key, list);
 		int result = exeDelete(run);
 		return result;
 	}
 	@Override
 	public int delete(String dest, Object data, String... columns) {
-		RunSQL run = creater.createDeleteRunSQL(dest, data, columns);
+		RunSQL run = SQLCreaterUtil.getCreater().createDeleteRunSQL(dest, data, columns);
 		int result = exeDelete(run);
 		return result;
 	}

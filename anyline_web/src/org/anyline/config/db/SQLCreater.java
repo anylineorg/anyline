@@ -24,13 +24,22 @@ import java.util.List;
 
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.http.ConfigStore;
+import org.anyline.dao.PrimaryCreater;
 
 public interface SQLCreater extends Serializable{
-
+	public static enum DB_TYPE{
+		MYSQL			{public String getName(){return "mysql";}},
+		MSSQL			{public String getName(){return "mssql";}},
+		ORACLE			{public String getName(){return "oracle";}},
+		DB2				{public String getName(){return "db2";}};
+		public abstract String getName();
+	}
 	public static final String TAB = "\t";
 	public static final String BR = "\n";
 	public static final String BR_TAB = "\n\t";
 	
+	public DB_TYPE type();
+	public PrimaryCreater getPrimaryCreater();
 	/**
 	 * 创建查询SQL
 	 * @param sql

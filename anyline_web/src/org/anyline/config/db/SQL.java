@@ -34,18 +34,19 @@ import org.anyline.entity.PageNavi;
 public interface SQL extends Cloneable,Serializable {
 
 	public static enum COMPARE_TYPE{
-		EQUAL			{public int getCode(){return 10;} 	public String getName(){return "等于";}},
-		GREAT			{public int getCode(){return 20;} 	public String getName(){return "大于";}},
-		GREAT_EQUAL		{public int getCode(){return 21;} 	public String getName(){return "大于等于";}},
-		LESS			{public int getCode(){return 30;} 	public String getName(){return "小于";}},
-		LESS_EQUAL		{public int getCode(){return 31;} 	public String getName(){return "小于等于";}},
-		IN				{public int getCode(){return 40;} 	public String getName(){return "in";}},
-		LIKE			{public int getCode(){return 50;} 	public String getName(){return "%like%";}},
-		LIKE_PREFIX		{public int getCode(){return 51;} 	public String getName(){return "%like";}},
-		LIKE_SUBFIX		{public int getCode(){return 52;} 	public String getName(){return "like%";}},
-		NOT_EQUAL		{public int getCode(){return 62;} 	public String getName(){return "不等于";}},
-		NOT_IN			{public int getCode(){return 21;} 	public String getName(){return "不包含";}};
+		EQUAL			{public int getCode(){return 10;} public String getSign(){return " = ";} 		public String getName(){return "等于";}},
+		GREAT			{public int getCode(){return 20;} public String getSign(){return " > ";} 		public String getName(){return "大于";}},
+		GREAT_EQUAL		{public int getCode(){return 21;} public String getSign(){return " >= ";} 		public String getName(){return "大于等于";}},
+		LESS			{public int getCode(){return 30;} public String getSign(){return " < ";} 		public String getName(){return "小于";}},
+		LESS_EQUAL		{public int getCode(){return 31;} public String getSign(){return " <= ";} 		public String getName(){return "小于等于";}},
+		IN				{public int getCode(){return 40;} public String getSign(){return " IN ";} 		public String getName(){return "in";}},
+		LIKE			{public int getCode(){return 50;} public String getSign(){return " LIKE ";} 	public String getName(){return "%like%";}},
+		LIKE_PREFIX		{public int getCode(){return 51;} public String getSign(){return " LIKE ";} 	public String getName(){return "%like";}},
+		LIKE_SUBFIX		{public int getCode(){return 52;} public String getSign(){return " LIKE ";} 	public String getName(){return "like%";}},
+		NOT_EQUAL		{public int getCode(){return 62;} public String getSign(){return " != ";} 		public String getName(){return "不等于";}},
+		NOT_IN			{public int getCode(){return 21;} public String getSign(){return " NOT IN ";} 	public String getName(){return "不包含";}};
 		public abstract String getName();
+		public abstract String getSign();
 		public abstract int getCode();
 	}
 	public static enum ORDER_TYPE{
