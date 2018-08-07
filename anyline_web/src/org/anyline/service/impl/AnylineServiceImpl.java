@@ -23,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.sql.DataSource;
-
 import net.sf.ehcache.Element;
 
 import org.anyline.cache.CacheUtil;
@@ -34,6 +32,7 @@ import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQL.ORDER_TYPE;
+import org.anyline.config.db.ds.DataSourceHolder;
 import org.anyline.config.db.impl.PageNaviImpl;
 import org.anyline.config.db.impl.ProcedureImpl;
 import org.anyline.config.db.impl.SQLStoreImpl;
@@ -108,9 +107,9 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @return
 	 */
 	private String parsePrimaryKey(String src, List<String> pks){
-		if(src.endsWith("]")){
-			int fr = src.lastIndexOf("[");
-			int to = src.lastIndexOf("]");
+		if(src.endsWith(">")){
+			int fr = src.lastIndexOf("<");
+			int to = src.lastIndexOf(">");
 			if(fr != -1){
 				String pkstr = src.substring(fr+1,to);
 				src = src.substring(0, fr);
@@ -125,20 +124,40 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return src;
 	}
+	/**
+	 * 解析数据源,并返回修改后的SQL
+	 * <mysql_ds>crm_user
+	 * @param src
+	 * @return
+	 */
+	private String parseDataSource(String src){
+		if(null != src && src.startsWith("<")){
+			int fr = src.indexOf("<");
+			int to = src.indexOf(">");
+			if(fr != -1){
+				String ds = src.substring(fr+1,to);
+				src = src.substring(to+1);
+				DataSourceHolder.setDataSource(ds, true);
+			}
+		}
+		return src;
+	}
 	private synchronized SQL createSQL(String src){
 		SQL sql = null;
 		src = src.trim();
 		List<String> pks = new ArrayList<String>();
-		//解析主键
+		//文本sql
 		if (src.startsWith("{") && src.endsWith("}")) {
 			if(ConfigTable.isSQLDebug()){
 				log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:" + src + "]");
 			}
 			src = src.substring(1,src.length()-1);
-			src = parsePrimaryKey(src, pks);
+			src = parseDataSource(src);//解析数据源
+			src = parsePrimaryKey(src, pks);//解析主键
 			sql = new TextSQLImpl(src);
 		} else {
-			src = parsePrimaryKey(src, pks);
+			src = parseDataSource(src);//解析数据源
+			src = parsePrimaryKey(src, pks);//解析主键
 			if (src.toUpperCase().trim().startsWith("SELECT")
 				|| src.toUpperCase().trim().startsWith("DELETE")
 				|| src.toUpperCase().trim().startsWith("INSERT")
