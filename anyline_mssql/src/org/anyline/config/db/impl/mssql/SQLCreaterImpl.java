@@ -7,6 +7,7 @@ import org.anyline.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.dao.AnylineDao;
+import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
@@ -15,13 +16,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("mssql.creater")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	private static final long serialVersionUID = 43588201817410304L;
-
+	
 	@Autowired(required=false)
 	@Qualifier("anylineDao")
 	private AnylineDao dao;
+
+	private PrimaryCreater pc = new PrimaryCreaterImpl();
+	public DB_TYPE type(){
+		return DB_TYPE.MSSQL;
+	}
 	
 	private static String dbVersion = ConfigTable.getString("DATABASE_VERSION");
 	public SQLCreaterImpl(){
@@ -135,5 +141,9 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		return result;
+	}
+	@Override
+	public PrimaryCreater getPrimaryCreater() {
+		return pc;
 	}
 }
