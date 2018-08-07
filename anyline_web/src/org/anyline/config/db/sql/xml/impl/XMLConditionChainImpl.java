@@ -23,9 +23,11 @@ import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.BasicConditionChain;
+import org.anyline.config.db.sql.auto.AutoCondition;
+import org.anyline.util.BasicUtil;
 
 public class XMLConditionChainImpl extends BasicConditionChain implements ConditionChain{
-
+	private static final long serialVersionUID = 8358028646230427689L;
 	public String getRunText(SQLCreater creater){
 		initRunValue();
 		StringBuilder builder = new StringBuilder();
@@ -34,14 +36,19 @@ public class XMLConditionChainImpl extends BasicConditionChain implements Condit
 				if(null == condition){
 					continue;
 				}
+				String txt = "";
 				if(condition.getVariableType() == VARIABLE_FLAG_TYPE_NONE){
 					builder.append("\n\t");
-					builder.append(condition.getRunText(creater));
+					txt = condition.getRunText(creater);
 				}else if(condition.isActive()){
 					builder.append("\n\t");
-					builder.append(condition.getRunText(creater));
+					txt = condition.getRunText(creater);
 					addRunValue(condition.getRunValues());
 				}
+				if(BasicUtil.isNotEmpty(txt) && condition instanceof AutoCondition){
+					txt = condition.getJoin() + txt;
+				}
+				builder.append(txt);
 			}
 		}
 		return builder.toString();
