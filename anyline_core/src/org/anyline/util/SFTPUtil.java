@@ -3,6 +3,7 @@ package org.anyline.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -109,6 +110,15 @@ public class SFTPUtil {
             os.close();  
         }  
     }  
+	public boolean disconnect(){
+		try {
+			client.disconnect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
     public int fileSize(String remoteDir){
     	int size = 0;
     	try {

@@ -38,6 +38,15 @@ public class FTPUtil {
 		this.password = password;
 		client = new FTPClient();
 	}
+	public boolean disconnect(){
+		try {
+			client.disconnect();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
 	public int fileSize(String dir){
 		int size = 0;
 		try {  
