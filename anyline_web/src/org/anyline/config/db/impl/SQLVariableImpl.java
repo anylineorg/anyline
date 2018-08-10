@@ -36,7 +36,22 @@ public class SQLVariableImpl implements SQLVariable{
 	public static final int VAR_TYPE_KEY_REPLACE	= 2;		//字符替换 CD=':CD'
 	public static final int VAR_TYPE_REPLACE		= 3;		//字符替换 CD=::CD
 	
-
+	public String toString(){
+		String str = "";
+		str = "key:"+this.getKey() 
+				+ ", type:"+type 
+				+ ", sign type:"+signType
+				+ ", compare:"+compare.getCode()
+				+ ", required:"+required
+				+ ", strict required:"+strictRequired
+				+ ", values:";
+		if(null != values){
+			for(Object value:values){
+				str += " " + value;
+			}
+		}
+		return str;
+	}
 
 	private String key;				//变量KEY
 	private List<Object> values;	//变量值
