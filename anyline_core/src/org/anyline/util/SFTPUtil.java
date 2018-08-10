@@ -3,7 +3,6 @@ package org.anyline.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,44 +33,40 @@ public class SFTPUtil {
 	private String user;
 	private String password;
 	private ChannelSftp client;
-	public SFTPUtil(String host, int port, String user, String password){
+	public SFTPUtil(String host, int port, String user, String password) throws Exception{
 		this(host, user, password, 22);
 	}
-	public SFTPUtil(String host, String user, String password){
+	public SFTPUtil(String host, String user, String password) throws Exception{
 		this(host, user, password, 22);
 	}
-	public SFTPUtil(String host, String user, String password, int port){
+	public SFTPUtil(String host, String user, String password, int port) throws Exception{
 		this.host = host;
 		this.user = user;
 		this.password = password;
-		try{
-			Session sshSession = null;  
-	        Channel channel = null;  
-	        String key = host + "," + port + "," + user + "," + password;  
-	        if (null == SFTP_CHANNEL_POOL.get(key)) {  
-	            JSch jsch = new JSch();  
-	            jsch.getSession(user, host, port);  
-	            sshSession = jsch.getSession(user, host, port);  
-	            sshSession.setPassword(password);  
-	            Properties sshConfig = new Properties();  
-	            sshConfig.put("StrictHostKeyChecking", "no");  
-	            sshSession.setConfig(sshConfig);  
-	            sshSession.connect();  
-	            channel = sshSession.openChannel("sftp");  
-	            channel.connect();  
-	            SFTP_CHANNEL_POOL.put(key, channel);  
-	        } else {  
-	            channel = SFTP_CHANNEL_POOL.get(key);  
-	            sshSession = channel.getSession();  
-	            if (!sshSession.isConnected())  
-	                sshSession.connect();  
-	            if (!channel.isConnected())  
-	                channel.connect();  
-	        }  
-	        client = (ChannelSftp) channel;
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+		Session sshSession = null;  
+        Channel channel = null;  
+        String key = host + "," + port + "," + user + "," + password;  
+        if (null == SFTP_CHANNEL_POOL.get(key)) {  
+            JSch jsch = new JSch();  
+            jsch.getSession(user, host, port);  
+            sshSession = jsch.getSession(user, host, port);  
+            sshSession.setPassword(password);  
+            Properties sshConfig = new Properties();  
+            sshConfig.put("StrictHostKeyChecking", "no");  
+            sshSession.setConfig(sshConfig);  
+            sshSession.connect();  
+            channel = sshSession.openChannel("sftp");  
+            channel.connect();  
+            SFTP_CHANNEL_POOL.put(key, channel);  
+        } else {  
+            channel = SFTP_CHANNEL_POOL.get(key);  
+            sshSession = channel.getSession();  
+            if (!sshSession.isConnected())  
+                sshSession.connect();  
+            if (!channel.isConnected())  
+                channel.connect();  
+        }  
+        client = (ChannelSftp) channel;
 	}
 	 /** 
      * 下载文件-sftp协议. 
@@ -298,18 +293,6 @@ public class SFTPUtil {
      */  
     private void exit() {  
         client.exit();  
-    }
-    public static void main(String args[]){
-    	String root = "D:\\java\\matlab1\\";
-		SFTPUtil ftp = new SFTPUtil("172.16.254.101", "zhengchen", "zhengchen@1212");
-		String ymd = "20180319";
-		try {
-			ftp.download("/media/FCST_OUT/roms_"+ymd+"_need.nc", root+"roms_"+ymd+"_need.nc");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		
     }
     
 }
