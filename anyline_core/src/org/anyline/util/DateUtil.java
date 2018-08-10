@@ -856,12 +856,22 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static int day(Date date) {
+	public static int dayOfMonth(Date date) {
 		calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_MONTH);
 	}
+	public static int day(Date date) {
+		return dayOfMonth(date);
+	}
 	public static int day() {
 		return day(new Date());
+	}
+	public static int dayOfYear(Date date){
+		calendar.setTime(date);
+		return calendar.get(Calendar.DAY_OF_YEAR);
+	}
+	public static int dayOfYear(){
+		return dayOfYear(new Date());
 	}
 
 	/**
