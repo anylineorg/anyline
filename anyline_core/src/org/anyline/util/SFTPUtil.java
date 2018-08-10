@@ -276,17 +276,33 @@ public class SFTPUtil {
 				list.add(nm);
 			}
 		} catch (SftpException e) {
+			log.warn("[scan dir error][dir:"+dir+"][msg:"+e.getMessage()+"]");
 		}
+    	if(ConfigTable.isDebug()){
+    		log.warn("[scan dir][dir:"+dir+"][file size:"+list.size()+"]");
+    	}
     	return list;
     }
     public boolean fileExists(String dir, String file){
     	List<String> files = files(dir);
+    	if(ConfigTable.isDebug()){
+    		log.warn("[check file exists][dir:"+dir+"][file:"+file+"]");
+    	}
     	for(String item:files){
     		if(item.equals(file)){
     			return true;
     		}
     	}
     	return false;
+    }
+    public boolean fileExists(String path){
+    	List<String> list = formatPath(path);
+    	String dir = list.get(0);
+    	String file = list.get(1);
+    	if(ConfigTable.isDebug()){
+    		log.warn("[check file exists][path:"+path+"]");
+    	}
+    	return fileExists(dir, file);
     }
     /** 
      * 关闭协议-sftp协议.(关闭会导致连接池异常，因此不建议用户自定义关闭) 

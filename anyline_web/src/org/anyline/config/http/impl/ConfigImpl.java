@@ -87,9 +87,9 @@ public class ConfigImpl implements Config,Serializable{
 	}
 	public String toString(){
 		String str = "";
-		str = "ID:"+ this.getId() +",KEY:"+this.getKey() 
-				+ ", COMPARE:"+this.getCompare().getCode()
-				+ ", VALUE:";
+		str = "id:"+ this.getId() +",key:"+this.getKey() 
+				+ ", compare:"+this.getCompare().getCode()
+				+ ", values:";
 		if(null != values){
 			for(Object value:values){
 				str += " " + value;
@@ -99,9 +99,9 @@ public class ConfigImpl implements Config,Serializable{
 	}
 	public String cacheKey(){
 		String str = "";
-		str = "ID:"+ this.getId() 
-				+ ", COMPARE:"+this.getCompare().getCode()
-				+ ", VALUE:";
+		str = "id:"+ this.getId() 
+				+ ", compare:"+this.getCompare().getCode()
+				+ ", values:";
 		if(null != values){
 			for(Object value:values){
 				str += " " + value;
