@@ -432,17 +432,30 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		return null;
 	}
+	private List<SQLVariable> getVariables(String key){
+		List<SQLVariable> vars = new ArrayList<SQLVariable>();
+		if(null != variables){
+			for(SQLVariable v:variables){
+				if(null == v){
+					continue;
+				}
+				if(v.getKey().equalsIgnoreCase(key)){
+					vars.add(v);
+				}
+			}
+		}
+		return vars;
+	}
 	@Override
 	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		/*不指定变量名或condition = variable 时,根据condition为SQL主体变量赋值*/
 		if(null != variables && 
 				(BasicUtil.isEmpty(variable) || condition.equals(variable))
 		){
-			SQLVariable var = getVariable(condition);
-			if(null != var){
+			List<SQLVariable> vars = getVariables(condition);
+			for(SQLVariable var:vars){
 				var.setValue(value);
 			}
-			
 		}
 		/*参数赋值*/
 		if(null == condition){
