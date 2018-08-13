@@ -137,7 +137,7 @@ public class Checkbox extends BaseBodyTag {
 					if(BasicUtil.isEmpty(id)){
 						id = name +"_"+ headValue; 
 					}
-					html += "<div class=\"item-border\"><input type=\"checkbox\"";
+					html += "<div class=\"al-chk-item-border\"><input type=\"checkbox\"";
 					if((null != headValue && headValue.equals(value)) || checked){
 						html += " checked = \"checked\"";
 					}
@@ -177,9 +177,12 @@ public class Checkbox extends BaseBodyTag {
 						if(BasicUtil.isEmpty(id)){
 							id = name +"_"+ val; 
 						}
-						html += "<div class=\"item-border\"><input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
-						Object chk = item.get("CHECKED")+"";
-						if("1".equals(chk) || checked(chks,item.get(valueKey)) ) {
+						html += "<div class=\"al-chk-item-border\"><input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
+						Object chk = null;
+						if(BasicUtil.isNotEmpty(property)){
+							chk = item.get(property);
+						}
+						if(BasicUtil.parseBoolean(chk+"") || "checked".equals(chk) || checked(chks,item.get(valueKey)) ) {
 							html += " checked=\"checked\"";
 						}
 						
@@ -294,6 +297,9 @@ public class Checkbox extends BaseBodyTag {
 	}
 	public void setChecked(boolean checked) {
 		this.checked = checked;
+	}
+	public void setProperty(String property) {
+		this.property = property;
 	}
 	
 }
