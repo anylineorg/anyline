@@ -37,7 +37,11 @@ import org.anyline.util.regular.RegularUtil;
 /**
  * 
  * 是否选中 一类的单个复选
- * <al:checkbox name="role${item.CODE }" data="" head="" headValue="${item.CODE }"></al:checkbox>
+ * <al:checkbox name="role${item.CODE }" value="1" data="" head="" headValue="${item.CODE }"></al:checkbox>
+ * value:选中值 
+ * value="{1,2,3,4,5}"	 item.get(valueKey)是在1,3,4,5集合中时选中
+ * value="${list}" property="ID"	item.get(valueKey)是在list.items.property 集合中时选中
+ * property="CHK" data.item.CHK  = true或1时选中
  *
  */
 public class Checkbox extends BaseBodyTag {
@@ -48,7 +52,7 @@ public class Checkbox extends BaseBodyTag {
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 	private String textKey = "NM";
 	//private Object checked;	//
-	private String checkKey;
+	private String property;
 	private String head;
 	private String headValue;
 	private boolean checked = false;
@@ -88,7 +92,7 @@ public class Checkbox extends BaseBodyTag {
 					}
 					data = list;
 				}
-
+				//选中值
 				if (null != this.value) {
 					if(!(this.value instanceof String || this.value instanceof Collection)){
 						this.value = this.value.toString();
@@ -108,13 +112,13 @@ public class Checkbox extends BaseBodyTag {
 					}else if(this.value instanceof Collection){
 						List list = new ArrayList();
 						Collection cols = (Collection)this.value;
-						if(null == checkKey){
-							checkKey = valueKey;
+						if(null == property){
+							property = valueKey;
 						}
 						for(Object item:cols){
 							Object val = null;
 							if(item instanceof Map){
-								val = ((Map)item).get(checkKey);
+								val = ((Map)item).get(property);
 							}
 							list.add(val);
 						}
@@ -122,7 +126,7 @@ public class Checkbox extends BaseBodyTag {
 					}
 				}
 				Collection<Map> items = (Collection<Map>) data;
-				Collection chks = (Collection)this.value;
+				Collection<?> chks = (Collection<?>)this.value;
 				
 
 				if(null == headValue){
@@ -213,7 +217,7 @@ public class Checkbox extends BaseBodyTag {
 		}
 		return EVAL_PAGE;
 	}
-	private boolean checked(Collection<Object> chks, Object value){
+	private boolean checked(Collection<?> chks, Object value){
 		if(null != chks){
 			for(Object chk:chks){
 				if(null != chk && null != value && chk.equals(value.toString())){
@@ -227,11 +231,11 @@ public class Checkbox extends BaseBodyTag {
 		return data;
 	}
 
-	public String getCheckKey() {
-		return checkKey;
+	public String getProperty() {
+		return property;
 	}
-	public void setCheckKey(String checkKey) {
-		this.checkKey = checkKey;
+	public void setCheckKey(String property) {
+		this.property = property;
 	}
 	public void setData(Object data) {
 		this.data = data;
@@ -259,7 +263,7 @@ public class Checkbox extends BaseBodyTag {
 		scope = null;
 		data = null;
 		value = null;
-		checkKey = null;
+		property = null;
 		head= null;
 		headValue="";
 		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
