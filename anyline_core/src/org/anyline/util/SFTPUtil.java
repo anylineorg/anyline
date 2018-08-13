@@ -214,11 +214,13 @@ public class SFTPUtil {
      * @return 是否创建成功 
      * @throws SftpException 异常 
      */  
-    public boolean mkdirs(String dir) throws SftpException {  
-        String dirs = dir.substring(1, dir.length() - 1);  
-        String[] dirArr = dirs.split("/");  
+    public boolean mkdirs(String dir) throws SftpException { 
+        String[] dirArr = dir.split("/");  
         String base = "";  
         for (String d : dirArr) {  
+        	if(BasicUtil.isEmpty(d)){
+        		continue;
+        	}
             base += "/" + d;  
             if (dirExist(base + "/")) {  
                 continue;  
