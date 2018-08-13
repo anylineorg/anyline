@@ -415,7 +415,7 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>checkKey</name>
+			<name>property</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
