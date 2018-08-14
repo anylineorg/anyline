@@ -40,6 +40,7 @@ import org.anyline.config.http.ConfigStore;
 import org.anyline.config.http.impl.ConfigStoreImpl;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
 public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
@@ -101,7 +102,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		try{
 			int varType = -1;
 			COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL;
-			List<List<String>> keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX, RegularUtil.MATCH_MODE_CONTAIN);
+			List<List<String>> keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			if(BasicUtil.isNotEmpty(true,keys)){
 				//AND CD = :CD
 				for(int i=0; i<keys.size();i++){
@@ -134,7 +135,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}// end for
 			}else{
 				// AND CD = ?
-				List<String> idxKeys = RegularUtil.fetch(text, "\\?",RegularUtil.MATCH_MODE_CONTAIN,0);
+				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0);
 				if(BasicUtil.isNotEmpty(true,idxKeys)){
 					for(int i=0; i<idxKeys.size(); i++){
 						SQLVariable var = new SQLVariableImpl();

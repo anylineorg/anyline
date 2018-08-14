@@ -47,6 +47,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -414,7 +415,7 @@ public class WebUtil {
 		}
 		//删除随机URL混淆码
 		if(ENCRYPT_TYPE_VALUE.equals(type)){
-			if(RegularUtil.match(result,"v\\d{5}v", RegularUtil.MATCH_MODE_PREFIX)){
+			if(RegularUtil.match(result,"v\\d{5}v", Regular.MATCH_MODE.PREFIX)){
 				result = result.substring(7);
 				if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
 					log.warn("[decrypt][删除混淆码][result:"+result+"]");

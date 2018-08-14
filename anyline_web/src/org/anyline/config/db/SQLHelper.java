@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.impl.SQLVariableImpl;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
 public class SQLHelper {
@@ -17,7 +18,7 @@ public class SQLHelper {
 					+ "\nAND NM LIKE ':NM%' "
 					+ "\nAND CODE LIEK '%' + :CODE + '%' "
 					+ "\nAND CODE LIEK '%' + ::CODE + '%'";
-			List<List<String>> keys = RegularUtil.fetch(text, reg, RegularUtil.MATCH_MODE_CONTAIN);
+			List<List<String>> keys = RegularUtil.fetch(text, reg, Regular.MATCH_MODE.CONTAIN);
 			for(List<String> ks:keys){
 				int i = 0;
 				for(String k:ks){
@@ -32,7 +33,7 @@ public class SQLHelper {
 					+ "\nAND SORT = '${SORT}' "
 					+ "\nAND NM LIKE '%${NM}%' "
 					+ "\nAND CODE LIKE CONTAT('%', ${CODE},'%')";
-			keys = RegularUtil.fetch(text, reg, RegularUtil.MATCH_MODE_CONTAIN);
+			keys = RegularUtil.fetch(text, reg, Regular.MATCH_MODE.CONTAIN);
 			for(List<String> ks:keys){
 				int i = 0;
 				for(String k:ks){
@@ -48,7 +49,7 @@ public class SQLHelper {
 					+ "\nAND NM LIKE '%{NM}%' "
 					+ "\nAND NM LIKE '%{NM}' "
 					+ "\nAND CODE LIKE CONTAT('%', {CODE},'%')";
-			keys = RegularUtil.fetch(text, reg, RegularUtil.MATCH_MODE_CONTAIN);
+			keys = RegularUtil.fetch(text, reg, Regular.MATCH_MODE.CONTAIN);
 			for(List<String> ks:keys){
 				int i = 0;
 				for(String k:ks){

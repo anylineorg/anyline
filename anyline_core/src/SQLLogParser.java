@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
 
@@ -33,7 +34,7 @@ public class SQLLogParser {
 		}
 		String content = FileUtil.readFile(file).toString();
 		String regex = "\\[SQL:(\\d+?-\\d+?)\\]\\[TXT";
-		List<String> heads = RegularUtil.fetch(content, regex,2,1);
+		List<String> heads = RegularUtil.fetch(content, regex,Regular.MATCH_MODE.CONTAIN,1);
 		int size = heads.size();
 		int idx = 0;
 		for(String head:heads){

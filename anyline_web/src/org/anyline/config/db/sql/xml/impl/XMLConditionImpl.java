@@ -30,6 +30,7 @@ import org.anyline.config.db.SQLVariable;
 import org.anyline.config.db.impl.BasicCondition;
 import org.anyline.config.db.impl.SQLVariableImpl;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
@@ -121,10 +122,10 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 	private void parseText(){
 		try{
 			//AND CD = :CD || CD LIKE ':CD' || CD IN (:CD) || CD = ::CD
-			List<List<String>> keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX, RegularUtil.MATCH_MODE_CONTAIN);
+			List<List<String>> keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			if(keys.size() ==0){
 				//AND CD = {CD} || CD LIKE '%{CD}%' || CD IN ({CD}) || CD = ${CD}
-				keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX_EL, RegularUtil.MATCH_MODE_CONTAIN);
+				keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
 			}
 			if(BasicUtil.isNotEmpty(true,keys)){
 				setVariableType(VARIABLE_FLAG_TYPE_KEY);
@@ -156,7 +157,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 					addVariable(var);
 				}
 			}else{
-				List<String> idxKeys = RegularUtil.fetch(text, "\\?",RegularUtil.MATCH_MODE_CONTAIN,0);
+				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0);
 				if(BasicUtil.isNotEmpty(true,idxKeys)){
 					//按下标区分变量
 					this.setVariableType(VARIABLE_FLAG_TYPE_INDEX);
