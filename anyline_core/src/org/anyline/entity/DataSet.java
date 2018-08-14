@@ -42,6 +42,7 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
 import org.anyline.util.JSONDateFormatProcessor;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
@@ -1744,7 +1745,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		String tmpValue;
 		for(DataRow row:this){
 			tmpValue = row.getString(key);
-			if (null != tmpValue && RegularUtil.match(tmpValue, pattern, RegularUtil.MATCH_MODE_MATCH)) {
+			if (null != tmpValue && RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
 				set.add(row);
 			}
 		}
@@ -2127,7 +2128,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet unique(String ... keys){
 		return distinct(keys);
 	}
-	public DataSet regex(String key, String regex, int mode){
+	public DataSet regex(String key, String regex, Regular.MATCH_MODE mode){
 		DataSet set = new DataSet();
 		String tmpValue;
 		for(DataRow row:this){
@@ -2140,7 +2141,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return set;
 	}
 	public DataSet regex(String key, String regex){
-		return regex(key, regex, RegularUtil.MATCH_MODE_MATCH);
+		return regex(key, regex, Regular.MATCH_MODE.MATCH);
 	}
 	public Map<String, Object> getQueryParams() {
 		return queryParams;

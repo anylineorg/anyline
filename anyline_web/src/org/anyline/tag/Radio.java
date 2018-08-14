@@ -34,6 +34,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
 
@@ -109,7 +110,7 @@ public class Radio extends BaseBodyTag{
 					String text = "";
 					if(textKey.contains("{")){
 						text = textKey;
-						List<String> keys =RegularUtil.fetch(textKey, "\\{\\w+\\}",2,0);
+						List<String> keys =RegularUtil.fetch(textKey, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
 						for(String key:keys){
 							Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
 							if(null == v){

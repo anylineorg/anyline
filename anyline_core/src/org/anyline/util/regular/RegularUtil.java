@@ -20,7 +20,9 @@
 package org.anyline.util.regular;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -40,10 +42,7 @@ public class RegularUtil {
 	public static Regular regularMatchPrefix 	= new RegularMatchPrefix();		//前缀匹配模式
 	public static Regular regularContain 		= new RegularContain();			//包含匹配模式
 	
-	private static final List<Regular> regularList = new ArrayList<Regular>();
-	public static final int MATCH_MODE_MATCH   = 0;				//完全匹配
-	public static final int MATCH_MODE_PREFIX  = 1;				//前缀匹配
-	public static final int MATCH_MODE_CONTAIN = 2;				//包含匹配
+	private static final Map<Regular.MATCH_MODE,Regular> regularList = new HashMap<Regular.MATCH_MODE,Regular>();
 	public static final String REGEX_VARIABLE = "{(\\w+)}";		//变量{ID}
 
 	public static final String TAG_BEGIN = "{begin}";
@@ -51,11 +50,11 @@ public class RegularUtil {
 	
 	private static Logger log = Logger.getLogger(RegularUtil.class);
 	static{
-		regularList.add(regularMatch);
-		regularList.add(regularMatchPrefix);
-		regularList.add(regularContain);
+		regularList.put(Regular.MATCH_MODE.MATCH, regularMatch);
+		regularList.put(Regular.MATCH_MODE.PREFIX, regularMatchPrefix);
+		regularList.put(Regular.MATCH_MODE.CONTAIN, regularContain);
 	}
-	public static synchronized boolean match(String src, String regx, int mode){
+	public static synchronized boolean match(String src, String regx, Regular.MATCH_MODE mode){
 		boolean result = false;
 		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
 			log.warn("[match][src:"+src+"][regx:"+regx+"][mode:"+mode+"]");
@@ -76,7 +75,7 @@ public class RegularUtil {
 		return result;
 	}
 	public static boolean match(String src, String regx){
-		return match(src, regx, MATCH_MODE_CONTAIN);
+		return match(src, regx, Regular.MATCH_MODE.CONTAIN);
 	}
 	
 	/**
@@ -85,25 +84,25 @@ public class RegularUtil {
 	 * @param regx	表达式
 	 * @return
 	 */
-	public static synchronized List<List<String>> fetch(String src, String regx, int mode) throws Exception{
+	public static synchronized List<List<String>> fetch(String src, String regx, Regular.MATCH_MODE mode) throws Exception{
 		List<List<String>> result = null;
 		regular = regularList.get(mode);
 		result = regular.fetch(src, regx);
 		return result;
 	}
 	public static List<List<String>> fetch(String src, String regx) throws Exception{
-		return fetch(src, regx, MATCH_MODE_CONTAIN);
+		return fetch(src, regx, Regular.MATCH_MODE.CONTAIN);
 	}
-	public static synchronized List<String> fetch(String src, String regx, int mode, int idx) throws Exception{
+	public static synchronized List<String> fetch(String src, String regx, Regular.MATCH_MODE mode, int idx) throws Exception{
 		List<String> result = null;
 		regular = regularList.get(mode);
 		result = regular.fetch(src, regx, idx);
 		return result;
 	}
-	public static List<String> filter(List<String> src, String regx, int regxMode, String filterType){
-		if(Regular.FILTER_TYPE_PICK.equals(filterType)){
+	public static List<String> filter(List<String> src, String regx, int regxMode, Regular.FILTER_TYPE type){
+		if(Regular.FILTER_TYPE.PICK == type){
 			return pick(src,regx,regxMode);
-		}else if(Regular.FILTER_TYPE_WIPE.equals(filterType)){
+		}else if(Regular.FILTER_TYPE.WIPE == type){
 			return wipe(src,regx,regxMode);
 		}else{
 			return new ArrayList<String>();
@@ -169,7 +168,7 @@ public class RegularUtil {
 	 * @param mode
 	 * @return
 	 */
-	public static List<String> regexpValue(String src, String regex, int mode){
+	public static List<String> regexpValue(String src, String regex, Regular.MATCH_MODE mode){
 		List<String> result = new ArrayList<String>();
 		try{
 			List<List<String>> rs = fetch(src, regex, mode);
@@ -282,7 +281,7 @@ public class RegularUtil {
 	}
 	public static List<String> fetchUrls(String src) throws Exception{
 		List<String> urls = null;
-		urls = fetch(src, Regular.html_tag_a_regexp, MATCH_MODE_CONTAIN, 4);
+		urls = fetch(src, Regular.html_tag_a_regexp, Regular.MATCH_MODE.CONTAIN, 4);
 		return urls;
 	}
 	public static String fetchUrl(String src) throws Exception{
