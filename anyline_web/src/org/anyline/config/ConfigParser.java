@@ -13,6 +13,7 @@ import org.anyline.config.http.impl.ConfigImpl;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.WebUtil;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
 public class ConfigParser {
@@ -77,7 +78,7 @@ public class ConfigParser {
 		String className = null;
 		String methodName = null;
 		String regx = "^[a-z]+[0-9a-zA-Z_]*(\\.[a-z]+[0-9a-zA-Z_]*)*\\.[A-Z]+[0-9a-zA-Z_]*\\.[a-z]+\\S+\\(\\S+\\)$";
-		if(RegularUtil.match(config, regx, RegularUtil.MATCH_MODE_MATCH)){
+		if(RegularUtil.match(config, regx, Regular.MATCH_MODE.MATCH)){
 			//有预处理方法
 			
 			//解析class.method

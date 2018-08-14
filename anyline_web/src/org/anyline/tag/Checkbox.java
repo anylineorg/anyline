@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 /**
  * 
@@ -43,6 +44,7 @@ import org.anyline.util.regular.RegularUtil;
  * value="${list}" property="ID"	item.get(valueKey)是在list.items.property 集合中时选中
  * property="CHK" data.item.CHK  = true或1时选中
  *
+ * text 支持多列 {ID}-{NM}
  */
 public class Checkbox extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
@@ -191,7 +193,7 @@ public class Checkbox extends BaseBodyTag {
 						String text = "";
 						if (textKey.contains("{")) {
 							text = textKey;
-							List<String> keys = RegularUtil.fetch(textKey, "\\{\\w+\\}", 2, 0);
+							List<String> keys = RegularUtil.fetch(textKey, "\\{\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
 							for (String key : keys) {
 								Object v = item.get(key.replace("{", "").replace("}", ""));
 								if (null != v) {
@@ -301,5 +303,4 @@ public class Checkbox extends BaseBodyTag {
 	public void setProperty(String property) {
 		this.property = property;
 	}
-	
 }

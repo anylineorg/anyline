@@ -33,6 +33,7 @@ import org.anyline.config.db.impl.BasicSQL;
 import org.anyline.config.db.impl.SQLVariableImpl;
 import org.anyline.config.db.sql.xml.XMLSQL;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 /**
  * order 需要区分XML定义还是动态添加
@@ -132,10 +133,10 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 		}
 		try{
 			
-			List<List<String>> keys = RegularUtil.fetch(text, SQL_PARAM_VAIRABLE_REGEX, RegularUtil.MATCH_MODE_CONTAIN);
+			List<List<String>> keys = RegularUtil.fetch(text, SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			int type = 1 ;
 			if(keys.size() ==0){
-				keys = RegularUtil.fetch(text, SQL_PARAM_VAIRABLE_REGEX_EL, RegularUtil.MATCH_MODE_CONTAIN);
+				keys = RegularUtil.fetch(text, SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
 				type = 2;
 			}
 			if(BasicUtil.isNotEmpty(true,keys)){
@@ -147,7 +148,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 				}// end for
 			}else{
 				// AND CD = ?
-				List<String> idxKeys = RegularUtil.fetch(text, "\\?",RegularUtil.MATCH_MODE_CONTAIN,0);
+				List<String> idxKeys = RegularUtil.fetch(text, "\\?",Regular.MATCH_MODE.CONTAIN,0);
 				if(BasicUtil.isNotEmpty(true,idxKeys)){
 					for(int i=0; i<idxKeys.size(); i++){
 						SQLVariable var = new SQLVariableImpl();

@@ -44,6 +44,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
@@ -634,7 +635,7 @@ public class FileUtil {
 		for(String type:types){
 			String fileName = file.getName().toUpperCase();
 			type = type.toUpperCase();
-			if(RegularUtil.match(fileName, type,RegularUtil.MATCH_MODE_MATCH)){
+			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)){
 				return true;
 			}
 			if(!type.startsWith(".")){
