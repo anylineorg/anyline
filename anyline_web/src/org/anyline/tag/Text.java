@@ -32,8 +32,11 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.I18NUtil;
+import org.anyline.util.regular.Regular;
+import org.anyline.util.regular.RegularUtil;
 
 
 public class Text extends BaseBodyTag{
@@ -52,7 +55,7 @@ public class Text extends BaseBodyTag{
         return EVAL_BODY_BUFFERED;
     }
 	 public int doEndTag() throws JspException {
-		 String text = "";
+		 String html = "";
 		 if(BasicUtil.isNotEmpty(data)){
 			 if(data instanceof String){
 				if(data.toString().endsWith("}")){
@@ -73,17 +76,38 @@ public class Text extends BaseBodyTag{
 				for(Map item:items){
 					Object tmp = item.get(valueKey);
 					if(null != tmp && value.toString().equals(tmp.toString())){
-						text += item.get(textKey);
+						String text = "";
+						if(textKey.contains("{")){
+							text = textKey;
+							try {
+								List<String> keys = RegularUtil.fetch(textKey, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
+								for(String key:keys){
+									Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
+									if(null == v){
+										v = "";
+									}
+									text = text.replace(key, v.toString());
+								}
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}else{
+							Object v = BeanUtil.getFieldValue(item, textKey);
+							if(null != v){
+								text = v.toString();
+							}
+						}
+						html += text;
 					}
 				}
 			}
 		 }else{
-			 text = I18NUtil.get(lang, key);
+			 html = I18NUtil.get(lang, key);
 		 }
 		//输出
 		JspWriter out = pageContext.getOut();
 		try{
-			out.print(text);
+			out.print(html);
 		}catch(Exception e){
 
 		}finally{
