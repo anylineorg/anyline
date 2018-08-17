@@ -27,9 +27,10 @@ import org.anyline.util.BasicUtil;
 
 public class Random extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private String length;
+	private String length = "10";
 	private String begin;
 	private String end;
+	private String type;
 	
 	public int doEndTag() {
 
@@ -43,7 +44,11 @@ public class Random extends BaseBodyTag {
 			}else{
 				int size = BasicUtil.parseInt(length, 0);
 				if(size>0){
-					result = BasicUtil.getRandomNumberString(size);
+					if("char".equalsIgnoreCase(type) || "string".equalsIgnoreCase(type)){
+						result = BasicUtil.getRandomString(size);
+					}else{
+						result = BasicUtil.getRandomNumberString(size);
+					}
 				}
 			}
 			writer = pageContext.getOut();
@@ -59,11 +64,20 @@ public class Random extends BaseBodyTag {
 	@Override
 	public void release() {
 		super.release();
-		length = "0";
+		length = "10";
 		begin = null;
 		end = null;
+		type="num";
 	}
 
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String getBegin() {
 		return begin;
