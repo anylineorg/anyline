@@ -190,7 +190,7 @@ public class RegularUtil {
 		if(null == src){
 			return src;
 		}
-		return src.replaceAll(Regular.html_tag_regexp, "");
+		return src.replaceAll(Regular.PATTERN.HTML_TAG.getCode(), "");
 	}
 	public static String removeAllHtmlTag(String src){
 		return removeAllTag(src);
@@ -281,7 +281,7 @@ public class RegularUtil {
 	}
 	public static List<String> fetchUrls(String src) throws Exception{
 		List<String> urls = null;
-		urls = fetch(src, Regular.html_tag_a_regexp, Regular.MATCH_MODE.CONTAIN, 4);
+		urls = fetch(src, Regular.PATTERN.HTML_TAG_A.getCode(), Regular.MATCH_MODE.CONTAIN, 4);
 		return urls;
 	}
 	public static String fetchUrl(String src) throws Exception{
@@ -443,13 +443,13 @@ public class RegularUtil {
 			return false;
 		}
 		str = str.replace("/", "-");
-		return regularMatch.match(str, Regular.date_regexp);
+		return regularMatch.match(str, Regular.PATTERN.DATE.getCode());
 	}
 	public static boolean isDateTime(String str){
 		if(BasicUtil.isEmpty(str)){
 			return false;
 		}
 		str = str.replace("/", "-");
-		return regularMatch.match(str, Regular.date_time_regexp);
+		return regularMatch.match(str, Regular.PATTERN.DATE_TIME.getCode());
 	}
 }
