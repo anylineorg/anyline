@@ -49,15 +49,37 @@ import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
  */
 public class ImgUtil {
 	private static Logger log = Logger.getLogger(ImgUtil.class);
-    /**
-     * 几种常见的图片格式
-     */
-    public static String IMAGE_TYPE_GIF = "gif";// 图形交换格式
-    public static String IMAGE_TYPE_JPG = "jpg";// 联合照片专家组
-    public static String IMAGE_TYPE_JPEG = "jpeg";// 联合照片专家组
-    public static String IMAGE_TYPE_BMP = "bmp";// 英文Bitmap（位图）的简写，它是Windows操作系统中的标准图像文件格式
-    public static String IMAGE_TYPE_PNG = "png";// 可移植网络图形
-    public static String IMAGE_TYPE_PSD = "psd";// Photoshop的专用格式Photoshop
+
+	public static enum IMAGE_TYPE{
+		GIF{
+			public String getName(){return "图形交换格式";}
+			public String getCode(){return "gif";}
+		}
+		,JPG{
+			public String getName(){return "联合照片专家组";}
+			public String getCode(){return "jpg";}
+		}
+		,JPEG{
+			public String getName(){return "联合照片专家组";}
+			public String getCode(){return "jpeg";}
+		}
+		,BMP{
+			public String getName(){return "位图,Windows操作系统中的标准图像文件格式";}
+			public String getCode(){return "bmp";}
+		}
+		,PNG{
+			public String getName(){return "可移植网络图形";}
+			public String getCode(){return "png";}
+		}
+		,PSD{
+			public String getName(){return "Photoshop的专用格式Photoshop";}
+			public String getCode(){return "psd";}
+		}
+		;
+		public abstract String getName();
+		public abstract String getCode();
+	};   
+
 
 
     /**
@@ -66,7 +88,7 @@ public class ImgUtil {
      * @param result 缩放后的图像地址
      * @param scale 缩放比例
      */
-    public final static void scale(File src, File tar, float scale) {
+    public static void scale(File src, File tar, float scale) {
         try {
             BufferedImage img = ImageIO.read(src); // 读入文件
             int width = img.getWidth(); // 得到源图宽
@@ -96,7 +118,7 @@ public class ImgUtil {
      * @param width 缩放后的宽度
      * @param fill 比例不对时是否需要补白：true为补白; false为不补白;
      */
-    public final static void scale(File src, File tar, int width, int height, boolean fill) {
+    public static void scale(File src, File tar, int width, int height, boolean fill) {
     	long fr = System.currentTimeMillis();
         try {
             double ratio = 0.0; // 缩放比例
@@ -145,7 +167,7 @@ public class ImgUtil {
      * @param width 目标切片宽度
      * @param height 目标切片高度
      */
-    public final static void cut(File src, File tar, int x, int y, int width, int height) {
+    public static void cut(File src, File tar, int x, int y, int width, int height) {
         try {
             // 读取源图像
             BufferedImage bi = ImageIO.read(src);
@@ -181,7 +203,7 @@ public class ImgUtil {
      * @param rows 目标切片行数。默认2，必须是范围 [1, 20] 之内
      * @param cols 目标切片列数。默认2，必须是范围 [1, 20] 之内
      */
-    public final static void cut2(File src, File dir, int rows, int cols) {
+    public static void cut(File src, File dir, int rows, int cols) {
         try {
             if(rows<=0||rows>20) rows = 2; // 切片行数
             if(cols<=0||cols>20) cols = 2; // 切片列数
@@ -207,7 +229,6 @@ public class ImgUtil {
                     destHeight = (int) Math.floor(srcWidth / rows) + 1;
                 }
                 // 循环建立切片
-                // 改进的想法:是否可用多线程加快切割速度
                 for (int i = 0; i < rows; i++) {
                     for (int j = 0; j < cols; j++) {
                         // 四个参数分别为图像起点坐标和宽高
@@ -231,7 +252,7 @@ public class ImgUtil {
             e.printStackTrace();
         }
     }
-    public final static float getSizeScale(File file){
+    public static float getSizeScale(File file){
     	float scale = 0;
 		try {
 			 BufferedImage bi = ImageIO.read(file);
@@ -250,30 +271,30 @@ public class ImgUtil {
      * @param destWidth 目标切片宽度。默认200
      * @param destHeight 目标切片高度。默认150
      */
-    public final static void cut3(File src, File dir, int destWidth, int destHeight) {
+    public final static void cut3(File src, File dir, int width, int height) {
         try {
-            if(destWidth<=0) destWidth = 200; // 切片宽度
-            if(destHeight<=0) destHeight = 150; // 切片高度
+            if(width<=0) width = 200; // 切片宽度
+            if(height<=0) height = 150; // 切片高度
             // 读取源图像
             BufferedImage bi = ImageIO.read(src);
             int srcWidth = bi.getHeight(); // 源图宽度
             int srcHeight = bi.getWidth(); // 源图高度
-            if (srcWidth > destWidth && srcHeight > destHeight) {
+            if (srcWidth > width && srcHeight > height) {
                 Image img;
                 ImageFilter cropFilter;
                 Image image = bi.getScaledInstance(srcWidth, srcHeight, Image.SCALE_DEFAULT);
                 int cols = 0; // 切片横向数量
                 int rows = 0; // 切片纵向数量
                 // 计算切片的横向和纵向数量
-                if (srcWidth % destWidth == 0) {
-                    cols = srcWidth / destWidth;
+                if (srcWidth % width == 0) {
+                    cols = srcWidth / width;
                 } else {
-                    cols = (int) Math.floor(srcWidth / destWidth) + 1;
+                    cols = (int) Math.floor(srcWidth / width) + 1;
                 }
-                if (srcHeight % destHeight == 0) {
-                    rows = srcHeight / destHeight;
+                if (srcHeight % height == 0) {
+                    rows = srcHeight / height;
                 } else {
-                    rows = (int) Math.floor(srcHeight / destHeight) + 1;
+                    rows = (int) Math.floor(srcHeight / height) + 1;
                 }
                 // 循环建立切片
                 // 改进的想法:是否可用多线程加快切割速度
@@ -281,13 +302,13 @@ public class ImgUtil {
                     for (int j = 0; j < cols; j++) {
                         // 四个参数分别为图像起点坐标和宽高
                         // 即: CropImageFilter(int x,int y,int width,int height)
-                        cropFilter = new CropImageFilter(j * destWidth, i * destHeight,
-                                destWidth, destHeight);
+                        cropFilter = new CropImageFilter(j * width, i * height,
+                                width, height);
                         img = Toolkit.getDefaultToolkit().createImage(
                                 new FilteredImageSource(image.getSource(),
                                         cropFilter));
-                        BufferedImage tag = new BufferedImage(destWidth,
-                                destHeight, BufferedImage.TYPE_INT_RGB);
+                        BufferedImage tag = new BufferedImage(width,
+                                height, BufferedImage.TYPE_INT_RGB);
                         Graphics g = tag.getGraphics();
                         g.drawImage(img, 0, 0, null); // 绘制缩小后的图
                         g.dispose();
@@ -309,14 +330,14 @@ public class ImgUtil {
      * 图像类型转换：GIF->JPG、GIF->PNG、PNG->JPG、PNG->GIF(X)、BMP->PNG
      * @param srcImageFile 源图像地址
      * @param formatName 包含格式非正式名称的 String：如JPG、JPEG、GIF等
-     * @param destImageFile 目标图像地址
+     * @param dest 目标图像地址
      */
-    public final static void convert(File src, String formatName, String destImageFile) {
+    public final static void convert(File src, String format, String dest) {
         try {
             src.canRead();
             src.canWrite();
             BufferedImage img = ImageIO.read(src);
-            ImageIO.write(img, formatName, new File(destImageFile));
+            ImageIO.write(img, format, new File(dest));
         } catch (Exception e) {
             e.printStackTrace();
         }
