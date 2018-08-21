@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="ACCOUNT">admin@qnlm.ac</property>
+		<property key="USERNAME">青岛海洋科学与技术国家实验室</property>
+		<property key="PASSWORD">TtBZCx6dVhBJY7RG</property>
+		<property key="PROTOCOL">smtp</property>
+		<property key="HOST">smtp.qiye.163.com</property>
+		<property key="PORT">25</property>
+	</config>
+</configs>
