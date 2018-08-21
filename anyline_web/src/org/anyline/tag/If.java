@@ -58,6 +58,7 @@ public class If extends BaseBodyTag implements Cloneable{
 		super.release();
 		value = null;
 		body = null;
+		test = false;
 		elseValue = null;
 	}
 	
