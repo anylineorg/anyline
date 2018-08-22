@@ -50,7 +50,7 @@ public class MailUtil {
 		log.warn("[send email][fr:"+fr+"][to:"+to+"][title:"+title+"][centent:"+content+"]");
 		try {
 			Properties props = new Properties();
-			props.put("username", config.USER_NAME);
+			props.put("username", config.ACCOUNT);
 			props.put("password", config.PASSWORD);
 			props.put("mail.transport.protocol", config.PROTOCOL);
 			props.put("mail.smtp.host", config.HOST);
@@ -59,7 +59,7 @@ public class MailUtil {
 			Session mailSession = Session.getDefaultInstance(props);
 
 			Message msg = new MimeMessage(mailSession);
-			msg.setFrom(new InternetAddress(config.USER_NAME,fr));
+			msg.setFrom(new InternetAddress(config.ACCOUNT,fr));
 			msg.addRecipients(Message.RecipientType.TO,
 					InternetAddress.parse(to));
 
@@ -70,7 +70,7 @@ public class MailUtil {
 
 			Transport transport = mailSession.getTransport("smtp");
 			transport.connect(config.HOST,
-					config.USER_NAME,
+					config.ACCOUNT,
 					config.PASSWORD);
 			transport.sendMessage(msg, msg.getAllRecipients());
 			transport.close();
@@ -80,5 +80,8 @@ public class MailUtil {
 		}
 
 		return true;
+	}
+	public boolean send(String to, String title, String content) {
+		return send(config.USERNAME, to, title, content);
 	}
 }
