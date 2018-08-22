@@ -13,8 +13,9 @@ public class MailConfig extends BasicConfig{
 	
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	private static File configDir;
-	public String USER_NAME;
+	public String ACCOUNT;
 	public String PASSWORD;
+	public String USERNAME;
 	public String PROTOCOL = "smtp";
 	public String HOST;
 	public String PORT;
@@ -52,7 +53,7 @@ public class MailConfig extends BasicConfig{
 			}
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
-				if("qnlm-sso.xml".equals(file.getName())){
+				if("anyline-mail.xml".equals(file.getName())){
 					parseFile(MailConfig.class, file, instances);
 				}
 			}
