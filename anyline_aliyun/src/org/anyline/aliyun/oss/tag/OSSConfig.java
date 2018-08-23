@@ -43,7 +43,7 @@ public class OSSConfig extends BaseBodyTag {
 	public int doEndTag() throws JspException {
 		try{
 			OSSUtil util = OSSUtil.getInstance(key);
-			if(BasicUtil.isNotEmpty(dir)){
+			if(BasicUtil.isEmpty(dir)){
 				dir = util.getConfig().DIR;
 			}
 			if(BasicUtil.isNotEmpty(dir)){
