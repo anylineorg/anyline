@@ -107,9 +107,6 @@ public class Radio extends BaseBodyTag{
 					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
 						html += " checked=\"checked\"";
 					}
-					if(null != disabled){
-						html += " disabled=\"" + disabled + "\"";
-					}
 					String text = "";
 					if(textKey.contains("{")){
 						text = textKey;
