@@ -26,6 +26,7 @@ import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -53,7 +54,6 @@ import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -114,10 +114,10 @@ public class HttpClientUtil {
 		return post(client, headers, url, encode, list);
 	}
 
-	public static Source post(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
+	public static Source post(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
 		return post(client, null, url, encode, params);
 	}
-	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, String> params) {
+	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		List<HttpEntity> entitys = new ArrayList<HttpEntity>();
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = packNameValuePair(params);
@@ -160,10 +160,10 @@ public class HttpClientUtil {
 	public static Source post(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
 		return post(defaultClient(),headers, url, encode, entitys);
 	}
-	public static Source post(String url, String encode, Map<String, String> params) {
+	public static Source post(String url, String encode, Map<String, Object> params) {
 		return post(defaultClient(), url, encode, params);
 	}
-	public static Source post(Map<String, String> headers, String url, String encode, Map<String, String> params) {
+	public static Source post(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return post(defaultClient(), headers, url, encode, params);
 	}
 	public static Source post(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
@@ -184,10 +184,10 @@ public class HttpClientUtil {
 		return put(client, headers, url, encode, list);
 	}
 
-	public static Source put(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
+	public static Source put(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
 		return put(client, null, url, encode, params);
 	}
-	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, String> params) {
+	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		List<HttpEntity> entitys = new ArrayList<HttpEntity>();
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = packNameValuePair(params);
@@ -231,10 +231,10 @@ public class HttpClientUtil {
 		return put(defaultClient(), headers, url, encode, entitys);
 	}
 
-	public static Source put(String url, String encode, Map<String, String> params) {
+	public static Source put(String url, String encode, Map<String, Object> params) {
 		return put(defaultClient(), url, encode, params);
 	}
-	public static Source put(Map<String, String> headers, String url, String encode, Map<String, String> params) {
+	public static Source put(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return put(defaultClient(), headers, url, encode, params);
 	}
 	public static Source put(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
@@ -246,13 +246,13 @@ public class HttpClientUtil {
 		return get(client, url, "UTF-8");
 	}
 	public static Source get(CloseableHttpClient client, String url, String encode) {
-		return get(client, url, encode, new HashMap<String,String>());
+		return get(client, url, encode, new HashMap<String,Object>());
 	}
-	public static Source get(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
+	public static Source get(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
 		return get(client, null, url, encode, params);
 	}
 
-	public static Source get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, String> params) {
+	public static Source get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		List<NameValuePair> pairs = packNameValuePair(params);
 		return get(client, headers, url, encode, pairs);
 	}
@@ -292,18 +292,18 @@ public class HttpClientUtil {
 		return get(url, "UTF-8");
 	}
 	public static Source get(String url, String encode) {
-		return get(url, encode, new HashMap<String,String>());
+		return get(url, encode, new HashMap<String,Object>());
 	}
-	public static Source get(String url, String encode, Map<String, String> params) {
+	public static Source get(String url, String encode, Map<String, Object> params) {
 		return get(defaultClient(), url, encode, params);
 	}
 
-	public static Source get(Map<String, String> headers, String url, String encode, Map<String, String> params) {
+	public static Source get(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return get(defaultClient(), headers, url, encode, params);
 	}
 
 	public static Source get(Map<String, String> headers, String url, String encode) {
-		return get(defaultClient(), headers, url, encode, new HashMap<String,String>());
+		return get(defaultClient(), headers, url, encode, new HashMap<String,Object>());
 	}
 
 	public static Source get(String url, String encode, List<NameValuePair> pairs) {
@@ -316,11 +316,11 @@ public class HttpClientUtil {
 	
 
 	
-	public static Source delete(CloseableHttpClient client, String url, String encode, Map<String, String> params) {
+	public static Source delete(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
 		return delete(client, null, url, encode, params);
 	}
 
-	public static Source delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, String> params) {
+	public static Source delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		List<NameValuePair> pairs = packNameValuePair(params);
 		return delete(client, headers, url, encode, pairs);
 	}
@@ -364,11 +364,11 @@ public class HttpClientUtil {
 
 
 
-	public static Source delete(String url, String encode, Map<String, String> params) {
+	public static Source delete(String url, String encode, Map<String, Object> params) {
 		return delete(defaultClient(), url, encode, params);
 	}
 
-	public static Source delete(Map<String, String> headers, String url, String encode, Map<String, String> params) {
+	public static Source delete(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return delete(defaultClient(), headers, url, encode, params);
 	}
 
@@ -462,16 +462,43 @@ public class HttpClientUtil {
 		}
 		return src;
 	}
-	public static List<NameValuePair> packNameValuePair(Map<String,String> params){
+	public static List<NameValuePair> packNameValuePair(Map<String,Object> params){
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		if (null != params) {
 			Iterator<String> keys = params.keySet().iterator();
 			while (keys.hasNext()) {
 				String key = keys.next();
-				String value = params.get(key);
-				pairs.add(new BasicNameValuePair(key, value));
-				if(ConfigTable.isDebug()){
-					log.warn("[Request Param][" + key + "=" + BasicUtil.cut(value,0,20) + "]");
+				Object value = params.get(key);
+				if(null == value){
+					continue;
+				}
+				if(value instanceof String[]){ 
+					String vals[] = (String[])value;
+					for(String val:vals){
+						if(null == val){
+							continue;
+						}
+						pairs.add(new BasicNameValuePair(key, val));
+						if(ConfigTable.isDebug()){
+							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val,0,20) + "]");
+						}						
+					}
+				}else if(value instanceof Collection){
+					Collection vals = (Collection)value;
+					for(Object val:vals){
+						if(null == val){
+							continue;
+						}
+						pairs.add(new BasicNameValuePair(key, val.toString()));
+						if(ConfigTable.isDebug()){
+							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val.toString(),0,20) + "]");
+						}						
+					}
+				}else if(null != value){
+					pairs.add(new BasicNameValuePair(key, value.toString()));
+					if(ConfigTable.isDebug()){
+						log.warn("[Request Param][" + key + "=" + BasicUtil.cut(value.toString(),0,20) + "]");
+					}
 				}
 			}
 		}
