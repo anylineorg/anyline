@@ -811,14 +811,14 @@ public class AmapUtil {
 	 * 驾车路线规划
 	 * @param origin		出发地
 	 * @param destination	目的地
-	 * @param waypoints		途经地 最多支持16个 坐标点之间用";"分隔
+	 * @param points		途经地 最多支持16个 坐标点之间用";"分隔
 	 * @param strategy		选路策略  0，不考虑当时路况，返回耗时最短的路线，但是此路线不一定距离最短
 	 *							  1，不走收费路段，且耗时最少的路线
 	 *							  2，不考虑路况，仅走距离最短的路线，但是可能存在穿越小路/小区的情况
 	 * http://lbs.amap.com/api/webservice/guide/api/direction#driving						  
 	 * @return
 	 */
-	public DataRow directionDrive(String origin, String destination, String waypoints, int strategy){
+	public DataRow directionDrive(String origin, String destination, String points, int strategy){
 		DataRow row = null;
 		String url = "http://restapi.amap.com/v3/direction/driving";
 		Map<String,Object> params = new HashMap<String,Object>();
@@ -826,8 +826,8 @@ public class AmapUtil {
 		params.put("origin", origin);
 		params.put("destination", destination);
 		params.put("strategy", strategy+"");
-		if(BasicUtil.isNotEmpty(waypoints)){
-			params.put("waypoints", waypoints);
+		if(BasicUtil.isNotEmpty(points)){
+			params.put("points", points);
 		}
 		String sign = sign(params);
 		params.put("sig", sign);
@@ -861,8 +861,8 @@ public class AmapUtil {
 	public DataRow directionDrive(String origin, String destination){
 		return directionDrive(origin, destination, null, 0);
 	}
-	public DataRow directionDrive(String origin, String destination, String waypoints){
-		return directionDrive(origin, destination, waypoints, 0);
+	public DataRow directionDrive(String origin, String destination, String points){
+		return directionDrive(origin, destination, points, 0);
 	}
 	/**
 	 * 签名
