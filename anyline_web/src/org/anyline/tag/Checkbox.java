@@ -42,7 +42,7 @@ import org.anyline.util.regular.RegularUtil;
  * value:选中值 
  * value="{1,2,3,4,5}"	 item.get(valueKey)是在1,3,4,5集合中时选中
  * value="${list}" property="ID"	item.get(valueKey)是在list.items.property 集合中时选中
- * property="CHK" data.item.CHK  = true或1时选中
+ * rely="CHK" data.item.CHK  = true或1时选中
  *
  * text 支持多列 {ID}-{NM}
  */
@@ -55,6 +55,7 @@ public class Checkbox extends BaseBodyTag {
 	private String textKey = "NM";
 	//private Object checked;	//
 	private String property;
+	private String rely;
 	private String head;
 	private String headValue;
 	private boolean checked = false;
@@ -114,13 +115,16 @@ public class Checkbox extends BaseBodyTag {
 					}else if(this.value instanceof Collection){
 						List list = new ArrayList();
 						Collection cols = (Collection)this.value;
-						if(null == property){
-							property = valueKey;
+						if(null == rely){
+							rely = property;
+						}
+						if(null == rely){
+							rely = valueKey;
 						}
 						for(Object item:cols){
 							Object val = null;
 							if(item instanceof Map){
-								val = ((Map)item).get(property);
+								val = ((Map)item).get(rely);
 							}
 							list.add(val);
 						}
@@ -273,6 +277,7 @@ public class Checkbox extends BaseBodyTag {
 		headValue="";
 		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 		textKey = "NM";
+		rely = null;
 	}
 
 	public String getHead() {
@@ -303,4 +308,11 @@ public class Checkbox extends BaseBodyTag {
 	public void setProperty(String property) {
 		this.property = property;
 	}
+	public String getRely() {
+		return rely;
+	}
+	public void setRely(String rely) {
+		this.rely = rely;
+	}
+	
 }
