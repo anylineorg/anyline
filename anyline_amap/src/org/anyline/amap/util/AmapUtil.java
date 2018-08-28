@@ -72,7 +72,7 @@ public class AmapUtil {
 	 */
 	public String create(String name, int loctype, String lon, String lat, String address, Map<String, Object> extras){
 		String url = "http://yuntuapi.amap.com/datamanage/data/create";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("loctype", loctype+"");
@@ -180,7 +180,7 @@ public class AmapUtil {
 				param += "," + ids.get(i);
 			}
 		}
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("ids", param);
@@ -222,7 +222,7 @@ public class AmapUtil {
 	public int update(String id, String name, int loctype, String lon, String lat, String address, Map<String,Object> extras){
 		int cnt = 0;
 		String url = "http://yuntuapi.amap.com/datamanage/data/update";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("loctype", loctype+"");
@@ -298,7 +298,7 @@ public class AmapUtil {
 	public String createTable(String name){
 		String tableId = null;
 		String url = "http://yuntuapi.amap.com/datamanage/table/create";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("name", name);
 		String sign = sign(params);
@@ -326,7 +326,7 @@ public class AmapUtil {
 	public DataSet local(String keywords, String city, String filter, String sortrule, int limit, int page){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/local";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("keywords", keywords);
@@ -383,7 +383,7 @@ public class AmapUtil {
 	public DataSet around(String center, int radius, String keywords, Map<String,String> filters, String sortrule, int limit, int page){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/around";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("center", center);
@@ -493,7 +493,7 @@ public class AmapUtil {
 	public DataSet list(String filter, String sortrule, int limit, int page){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datamanage/data/list";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("filter", filter);
@@ -545,7 +545,7 @@ public class AmapUtil {
 	public DataRow info(String id){
 		DataRow row = null;
 		String url = "http://yuntuapi.amap.com/datasearch/id";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("_id", id);
@@ -580,7 +580,7 @@ public class AmapUtil {
 	public DataSet statByProvince(String keywords, String country, String filter){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/province";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("filter", filter);
@@ -619,7 +619,7 @@ public class AmapUtil {
 	public DataSet statByCity(String keywords, String province, String filter){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/city";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("filter", filter);
@@ -659,7 +659,7 @@ public class AmapUtil {
 	public DataSet statByDistrict(String keywords, String province, String city, String filter){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/province";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("tableid", this.table);
 		params.put("filter", filter);
@@ -698,7 +698,7 @@ public class AmapUtil {
 	public DataSet nearby(String center, String radius, int limit, int timerange ){
 		DataSet set = null;
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/province";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("center", center);
 		params.put("radius", radius);
@@ -733,7 +733,7 @@ public class AmapUtil {
 	public DataRow regeo(String location){
 		DataRow row = null;
 		String url = "http://restapi.amap.com/v3/geocode/regeo";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("location", location);
 		String sign = sign(params);
@@ -767,7 +767,7 @@ public class AmapUtil {
 	public MapLocation geo(String address, String city){
 		MapLocation location = null;
 		String url = "http://restapi.amap.com/v3/geocode/geo";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("address", address);
 		if(BasicUtil.isNotEmpty(city)){
@@ -821,7 +821,7 @@ public class AmapUtil {
 	public DataRow directionDrive(String origin, String destination, String waypoints, int strategy){
 		DataRow row = null;
 		String url = "http://restapi.amap.com/v3/direction/driving";
-		Map<String,String> params = new HashMap<String,String>();
+		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", this.key);
 		params.put("origin", origin);
 		params.put("destination", destination);
@@ -869,7 +869,7 @@ public class AmapUtil {
 	 * @param params
 	 * @return
 	 */
-	public String sign(Map<String,String> params){
+	public String sign(Map<String,Object> params){
 		String sign = "";
 		sign = BasicUtil.joinBySort(params) + this.privateKey;
 		sign = MD5Util.sign(sign,"UTF-8");

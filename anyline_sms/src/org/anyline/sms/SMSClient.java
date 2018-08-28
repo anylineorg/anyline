@@ -45,7 +45,7 @@ public class SMSClient {
 	public SMSResult send(String sign, String template, String mobile, Map<String, String> params) {
 		SMSResult result = null;
 		try{
-			Map<String,String> map = new HashMap<String,String>();
+			Map<String,Object> map = new HashMap<String,Object>();
 			map.put("_client_app", config.CLIENT_APP);
 			map.put("_client_secret", config.CLIENT_SECRET);
 			map.put("_sms_sign", sign);
