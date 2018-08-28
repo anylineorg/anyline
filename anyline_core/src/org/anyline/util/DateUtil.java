@@ -98,7 +98,7 @@ public class DateUtil {
 			result = time - calendar.get(Calendar.WEEK_OF_YEAR);
 		}
 		long ms = to.getTime() - fr.getTime();
-		if (Calendar.DAY_OF_YEAR == part) {
+		if (Calendar.DAY_OF_YEAR == part || Calendar.DATE == part) {
 			result = ms / 1000 / 60 / 60 / 24;
 		}else if (Calendar.HOUR == part) {
 			result = ms / 1000 / 60 / 60;
