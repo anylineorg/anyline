@@ -614,7 +614,7 @@ public class BeanUtil {
 		}
 		return map;
 	} 
-	public static Map<String, String> craeteMap(String... params) {
+	public static Map<String, String> createMap(String... params) {
 		Map<String, String> result = new HashMap<String, String>();
 		if (null != params) {
 			int size = params.length;
