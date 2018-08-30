@@ -278,7 +278,8 @@ public class AnylineController extends AbstractBasicController {
 		JsonConfig config = new JsonConfig();
 		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());  
 		config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor());
-		
+
+		Map<String, Object> map = new HashMap<String, Object>();
 		String dataType = null; // 数据类型
 		if (null == data) {
 			message = (String) BasicUtil.nvl(message, "没有返回数据");
@@ -290,6 +291,7 @@ public class AnylineController extends AbstractBasicController {
 			message += (String) BasicUtil.nvl(message, set.getMessage());
 			dataType = "list";
 			data = set.getRows();
+			map.put("navi", set.getNavi());
 		} else if (data instanceof DataRow) {
 			dataType = "map";
 		} else if (data instanceof Map) {
@@ -307,7 +309,6 @@ public class AnylineController extends AbstractBasicController {
 		if (!result && null != data) {
 			message += data.toString();
 		}
-		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("type", dataType);
 		map.put("result", result);
 		map.put("message", message);
