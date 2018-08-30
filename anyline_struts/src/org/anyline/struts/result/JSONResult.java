@@ -68,6 +68,7 @@ public class JSONResult extends StrutsResultSupport {
         	//转换成JSON格式
         	//JsonConfig config = new JsonConfig();
         	String dataType   = null; 	//数据类型
+        	Map<String,Object> map = new HashMap<String,Object>();
         	if(null == data){
         		message = (String)BasicUtil.nvl(message, "没有返回数据");
         		data = false;
@@ -79,6 +80,7 @@ public class JSONResult extends StrutsResultSupport {
         		message = (String)BasicUtil.nvl(message,set.getMessage());
 				dataType = "list";
 				data = set.getRows();
+				map.put("navi", set.getNavi());
 			}else if (data instanceof DataRow) {
 				dataType = "map";
 			}else if(data instanceof Map){
@@ -92,7 +94,6 @@ public class JSONResult extends StrutsResultSupport {
 			}else{
 				dataType = "map";
 			}
-        	Map<String,Object> map = new HashMap<String,Object>();
         	map.put("type", dataType);
         	map.put("result", result);
         	map.put("message", message);
