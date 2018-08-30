@@ -169,6 +169,10 @@ public class Checkbox extends BaseBodyTag {
 					if(null != disabled){
 						html += " disabled=\"" + disabled + "\"";
 					}
+
+					if(null != readonly){
+						html += " readonly=\"" + readonly + "\"";
+					}
 					html +="/>" + "<label for=\""+id+ "\">" + head + "</label></div>\n";
 				}
 				

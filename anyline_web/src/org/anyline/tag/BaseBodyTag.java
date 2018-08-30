@@ -48,6 +48,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String onblur;
 	protected String onfocus;
 	protected String disabled;
+	protected String readonly;
 	protected String extra;
 	protected String itemExtra;
 	protected boolean encrypt;	//是否加密
@@ -176,6 +177,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		disabled = null;
 		extra = null;
 		itemExtra = null;
+		readonly = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
@@ -275,6 +277,12 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	}
 	public void setEncrypt(boolean encrypt) {
 		this.encrypt = encrypt;
+	}
+	public String getReadonly() {
+		return readonly;
+	}
+	public void setReadonly(String readonly) {
+		this.readonly = readonly;
 	}
 	
 }

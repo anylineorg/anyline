@@ -381,6 +381,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>readonly</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>encrypt</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -469,6 +473,10 @@
 		</attribute>
 		<attribute>
 			<name>disabled</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>readonly</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
