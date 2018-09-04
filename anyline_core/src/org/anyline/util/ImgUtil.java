@@ -32,7 +32,7 @@ import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.FileImageOutputStream;
 
-import org.anyline.entity.DataRow;
+import org.anyline.util.img.AnimatedGifEncoder;
 import org.apache.log4j.Logger;
 
 import sun.misc.BASE64Decoder;
@@ -506,6 +506,42 @@ public class ImgUtil {
     	}
     	return files;
     }
+    /**
+     * 
+     * @param delay 播放延迟时间  
+     * @param tar
+     * @param srcs
+     */
+    public synchronized static void createGif(int delay, String tar, String ... srcs) {
+    	List<String> list = new ArrayList<String>();
+    	for(String src:srcs){
+    		list.add(src);
+    	}
+    	createGif(delay, tar, list);
+    }
+    /**
+     * 
+     * @param delay 播放延迟时间  
+     * @param tar
+     * @param srcs
+     */
+    public synchronized static void createGif(int delay, String tar, List<String> srcs) {  
+        try {  
+            AnimatedGifEncoder e = new AnimatedGifEncoder(); 
+            e.setRepeat(0);  
+            e.start(tar);  
+            int size = srcs.size();
+            BufferedImage src[] = new BufferedImage[size];  
+            for (int i = 0; i < size; i++) {  
+                e.setDelay(delay); //设置播放的延迟时间  
+                src[i] = ImageIO.read(new File(srcs.get(i))); // 读入需要播放的jpg文件  
+                e.addFrame(src[i]);  //添加到帧中  
+            }  
+            e.finish();  
+        } catch (Exception e) {  
+            e.printStackTrace();  
+        }  
+    }  
     public static void main(String args[]){
     	//splitGif(new File("D:\\a.gif"),new File("D:\\a"));
 
