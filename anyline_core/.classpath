@@ -53,5 +53,6 @@
 	<classpathentry kind="lib" path="lib/xwork-core-2.3.24.1.jar" sourcepath="C:/Users/Administrator/.m2/repository/org/apache/struts/xwork/xwork-core/2.3.24.1/xwork-core-2.3.24.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/commons-net-3.6.jar"/>
 	<classpathentry kind="lib" path="lib/jsch-0.1.54.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/anyline_ext"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
