@@ -47,6 +47,7 @@ public class Radio extends BaseBodyTag{
 	private String textKey = "NM";
 	private String head;
 	private String headValue;
+	private String border = "true";
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -81,21 +82,60 @@ public class Radio extends BaseBodyTag{
 					}
 					data = list;
 				}
+				//选中值
+				if (null != this.value) {
+					if(!(this.value instanceof String || this.value instanceof Collection)){
+						this.value = this.value.toString();
+					}
+					if (this.value instanceof String) {
+						if (this.value.toString().endsWith("}")) {
+							this.value = this.value.toString().replace("{", "").replace("}", "");
+						}
+					}
+					if (this.value instanceof String) {
+						String items[] = this.value.toString().split(",");
+						List list = new ArrayList();
+						for (String item : items) {
+							list.add(item);
+						}
+						this.value = list;
+					}
+				}
 
+				if(null == headValue){
+					headValue = "";
+				}
 
 				if(null == headValue){
 					headValue = "";
 				}
 				if(null != head){
-					String id = name +"_"+ headValue; 
-					html += "<input type=\"radio\" name=\""+name+"\" value=\"" + headValue + "\" id=\"" + id + "\"/>"
-							+ "<label for=\""+id+ "\">" + head + "</label>";
+					String id = this.id;
+					if(BasicUtil.isEmpty(id)){
+						id = name +"_"+ headValue; 
+					}
+					if("true".equalsIgnoreCase(border)){
+						html += "<div class=\"al-radio-item-border\">";
+					}
+					html += "<input type=\"radio\"";
+					if((null != headValue && headValue.equals(value))){
+						html += " checked = \"checked\"";
+					}
+					Map<String,String> map = new HashMap<String,String>();
+					map.put(valueKey, headValue);
+					html += tag() + crateExtraData(map) + "/>";
+					html += "<label for=\""+id+ "\">" + head + "</label>\n";
+					if("true".equalsIgnoreCase(border)){
+						html += "</div>";
+					}
 				}
 				
 				
-				Collection items = (Collection)data;
+				
+				
+				Collection<Map> items = (Collection<Map>)data;
 				if(null != items)
-				for(Object item:items){
+				for(Map item:items){
 					Object srcValue = BeanUtil.getFieldValue(item, valueKey);
 					Object value = srcValue;
 					if(this.encrypt){
@@ -103,40 +143,38 @@ public class Radio extends BaseBodyTag{
 					}
 					
 					String id = name +"_"+ value;
-					html += "<input type=\"radio\" value=\"" + value + "\" name=\""+name+"\" id=\""+id+"\"";
+					if("true".equalsIgnoreCase(border)){
+						html += "<div class=\"al-radio-item-border\">";
+					}
+					html += "<input type=\"radio\" value=\"" + value + "\" id=\"" + id + "\"";
 					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
 						html += " checked=\"checked\"";
 					}
-
-					if(null != disabled){
-						html += " disabled=\"" + disabled + "\"";
-					}
-
-					if(null != readonly){
-						html += " readonly=\"" + readonly + "\"";
-					}
+					html += tag() + crateExtraData(item) + "/>";
+					String label = "<label for=\""+id+ "\">";
 					String text = "";
-					if(textKey.contains("{")){
+					if (textKey.contains("{")) {
 						text = textKey;
-						List<String> keys =RegularUtil.fetch(textKey, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
-						for(String key:keys){
-							Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
-							if(null == v){
-								v = "";
+						List<String> keys = RegularUtil.fetch(textKey, "\\{\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
+						for (String key : keys) {
+							Object v = item.get(key.replace("{", "").replace("}", ""));
+							if (null != v) {
+								text = text.replace(key, v.toString());
 							}
-							text = text.replace(key, v.toString());
 						}
-					}else{
-						Object v = BeanUtil.getFieldValue(item, textKey);
-						if(null != v){
+					} else {
+						Object v = item.get(textKey);
+						if (null != v) {
 							text = v.toString();
 						}
 					}
-					html += crateExtraData(item);
-					html += "></input>" + "<label for=\""+id+"\">"+text+"</label>";
+					label += text +"</label>\n";
+					html += label;
+					if("true".equalsIgnoreCase(border)){
+						html += "</div>";
+					}
 				}
 			}
-			html += "</span>";
 			JspWriter out = pageContext.getOut();
 			out.print(html);
 		}catch(Exception e){
@@ -150,6 +188,16 @@ public class Radio extends BaseBodyTag{
 
 	public Object getData() {
 		return data;
+	}
+
+
+	public String getBorder() {
+		return border;
+	}
+
+
+	public void setBorder(String border) {
+		this.border = border;
 	}
 
 
@@ -189,6 +237,7 @@ public class Radio extends BaseBodyTag{
 		headValue = null;
 		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 		textKey = "NM";
+		border = "true";
 	}
 
 	public String getScope() {
