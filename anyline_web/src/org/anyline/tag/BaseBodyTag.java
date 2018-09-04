@@ -104,6 +104,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		if(null != disabled){
 			html += " disabled=\"" + disabled + "\"";
 		}
+		if(null != readonly){
+			html += " readonly=\"" + readonly + "\"";
+		}
 		html += crateExtraData();
 		
 		return html;

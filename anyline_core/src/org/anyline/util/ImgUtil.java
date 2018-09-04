@@ -526,10 +526,14 @@ public class ImgUtil {
      * @param srcs
      */
     public synchronized static void createGif(int delay, String tar, List<String> srcs) {  
-        try {  
+        try {
+        	File dir = new File(tar).getParentFile();
+        	if(!dir.exists()){
+        		dir.mkdirs();
+        	}
             AnimatedGifEncoder e = new AnimatedGifEncoder(); 
             e.setRepeat(0);  
-            e.start(tar);  
+            e.start(tar);
             int size = srcs.size();
             BufferedImage src[] = new BufferedImage[size];  
             for (int i = 0; i < size; i++) {  
