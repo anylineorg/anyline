@@ -340,9 +340,9 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 			if (transfered < 1024){
 				total_title = "已下载: " + transfered + "/" + length + " bytes("+NumberUtil.format(displayRate, "0.00")+"%)";
 			}else if (transfered >= 1024 && transfered < 1048576){
-				total_title = "已下载: " + NumberUtil.format(transfered / 1024, "0.00") + "MB/" +NumberUtil.format(length/1024,"0.00") + "KB("+NumberUtil.format(displayRate, "0.00")+"%)";
+				total_title = "已下载: " + NumberUtil.format(transfered / 1024, "0.00") + "/" +NumberUtil.format(length/1024,"0.00") + "KB("+NumberUtil.format(displayRate, "0.00")+"%)";
 			}else{
-				total_title = "已下载: " + NumberUtil.format(transfered / 1024 / 1024,"0.00") + "MB/" +NumberUtil.format(length/1024/1024,"0.00") +  "MB("+NumberUtil.format(displayRate, "0.00")+"%)";
+				total_title = "已下载: " + NumberUtil.format(transfered / 1024 / 1024,"0.00") + "/" +NumberUtil.format(length/1024/1024,"0.00") +  "MB("+NumberUtil.format(displayRate, "0.00")+"%)";
 			}
 			if(null != file){
 				total_title = file + " " + total_title;

@@ -60,6 +60,7 @@ public class FileUtil {
 	 */
 	public static String mergePath(String ... paths){
 		String result = null;
+		String separator = getFileSeparator();
 		if(null != paths){
 			for(String path:paths){
 				if(BasicUtil.isEmpty(path)){
@@ -82,7 +83,7 @@ public class FileUtil {
 							result += path;
 						}else{
 							// "root" + "sub"
-							result += "/" + path;
+							result += separator + path;
 						}
 					}
 				}
@@ -98,10 +99,6 @@ public class FileUtil {
 		return System.getProperty("file.separator");
 	}
 	
-	public static URL createFileUrl(Class dstClass, String filePath){
-		URL url = null;
-		return url;
-	}
 	/**
 	 * 判断当前应用程序的目录类别 0-jar包形式
 	 * @param dstClass

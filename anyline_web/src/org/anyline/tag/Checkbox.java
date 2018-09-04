@@ -59,6 +59,7 @@ public class Checkbox extends BaseBodyTag {
 	private String head;
 	private String headValue;
 	private boolean checked = false;
+	private String border = "true";
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext
@@ -143,37 +144,22 @@ public class Checkbox extends BaseBodyTag {
 					if(BasicUtil.isEmpty(id)){
 						id = name +"_"+ headValue; 
 					}
-					html += "<div class=\"al-chk-item-border\"><input type=\"checkbox\"";
+
+					if("true".equalsIgnoreCase(border)){
+						html += "<div class=\"al-chk-item-border\">";
+					}
+					html += "<input type=\"checkbox\"";
 					if((null != headValue && headValue.equals(value)) || checked){
 						html += " checked = \"checked\"";
 					}
-					html += " name=\""+name+"\" value=\"" + headValue + "\" id=\"" + id + "\"";
-					if(null != clazz){
-						html += " class=\"" + clazz + "\"";
-					}
-					if(null != style){
-						html += " style=\"" + style + "\"";
-					}
-					if(null != onclick){
-						html += " onclick=\"" + onclick + "\"";
-					}
-					if(null != onchange){
-						html += " onchange=\"" + onchange + "\"";
-					}
-					if(null != onblur){
-						html += " onblur=\"" + onblur + "\"";
-					}
-					if(null != onfocus){
-						html += " onfocus=\"" + onfocus + "\"";
-					}
-					if(null != disabled){
-						html += " disabled=\"" + disabled + "\"";
-					}
+					Map<String,String> map = new HashMap<String,String>();
+					map.put(valueKey, headValue);
+					html += tag() + crateExtraData(map) + "/>";
+					html += "<label for=\""+id+ "\">" + head + "</label>\n";
 
-					if(null != readonly){
-						html += " readonly=\"" + readonly + "\"";
+					if("true".equalsIgnoreCase(border)){
+						html += "</div>";
 					}
-					html +="/>" + "<label for=\""+id+ "\">" + head + "</label></div>\n";
 				}
 				
 				
@@ -187,7 +173,10 @@ public class Checkbox extends BaseBodyTag {
 						if(BasicUtil.isEmpty(id)){
 							id = name +"_"+ val; 
 						}
-						html += "<div class=\"al-chk-item-border\"><input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
+						if("true".equalsIgnoreCase(border)){
+							html += "<div class=\"al-chk-item-border\">";
+						}
+						html += "<input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
 						Object chk = null;
 						if(BasicUtil.isNotEmpty(property)){
 							chk = item.get(property);
@@ -214,8 +203,11 @@ public class Checkbox extends BaseBodyTag {
 								text = v.toString();
 							}
 						}
-						label += text +"</label></div>\n";
+						label += text +"</label>\n";
 						html += label;
+						if("true".equalsIgnoreCase(border)){
+							html += "</div>";
+						}
 					}
 			}
 			JspWriter out = pageContext.getOut();
@@ -282,8 +274,15 @@ public class Checkbox extends BaseBodyTag {
 		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 		textKey = "NM";
 		rely = null;
+		border = "true";
 	}
 
+	public String getBorder() {
+		return border;
+	}
+	public void setBorder(String border) {
+		this.border = border;
+	}
 	public String getHead() {
 		return head;
 	}
