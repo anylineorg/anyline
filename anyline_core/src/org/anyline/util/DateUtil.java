@@ -136,7 +136,6 @@ public class DateUtil {
 			return "";
 		return new java.text.SimpleDateFormat(format).format(date);
 	}
-
 	public static String format() {
 		return format(new Date(), FORMAT_DATE_TIME);
 	}
@@ -588,6 +587,10 @@ public class DateUtil {
 	 * @return
 	 */
 	public static Date parse(String str) {
+		if(BasicUtil.isEmpty(str)){
+			return null;
+		}
+		str = str.trim();
 		Date date = null;
 		String format = FORMAT_FULL;
 		if(!str.contains(".")){
@@ -601,6 +604,10 @@ public class DateUtil {
 		}else if(!str.contains(" ")){
 			//不带日期
 			format = format.replace("yyyy-MM-dd ", "");
+		}
+		if(BasicUtil.catSubCharCount(str, ":") ==1){
+			//只有时分 没有秒
+			format = format.replace(":ss", "");
 		}
 		
 		if(str.contains("/")){
