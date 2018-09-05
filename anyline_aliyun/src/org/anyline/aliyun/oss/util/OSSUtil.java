@@ -4,12 +4,11 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
 import org.apache.log4j.Logger;
 
@@ -76,7 +75,7 @@ public class OSSUtil {
 			second = config.EXPIRE_SECOND;
 		}
 		String host = "http://" + config.BUCKET + "." + config.ENDPOINT;
-		Map<String,String> result = BeanUtil.craeteMap();
+		Map<String,String> result = new HashMap<String,String>();
 		try {
 	        String postPolicy = policy(dir,second);
 	        byte[] binaryData = postPolicy.getBytes("utf-8");
