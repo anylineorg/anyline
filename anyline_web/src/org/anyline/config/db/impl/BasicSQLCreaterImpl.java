@@ -796,7 +796,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return new ArrayList<String>();
 		}
 		boolean each = true;//是否需要从row中查找列
-		List<String> mastKeys = new ArrayList<String>();		//必须更新列
+		List<String> mastKeys = row.getUpdateColumns();		//必须更新列
 		List<String> disKeys = new ArrayList<String>();			//必须不更新列
 		List<String> factKeys = new ArrayList<String>();		//根据是否空值
 
@@ -824,7 +824,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		if(each){
-			keys = row.getUpdateColumns();
+			keys = row.keys();
 			for(String k:mastKeys){
 				if(!keys.contains(k)){
 					keys.add(k);
