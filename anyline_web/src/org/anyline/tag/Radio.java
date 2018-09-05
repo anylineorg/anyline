@@ -82,25 +82,6 @@ public class Radio extends BaseBodyTag{
 					}
 					data = list;
 				}
-				//选中值
-				if (null != this.value) {
-					if(!(this.value instanceof String || this.value instanceof Collection)){
-						this.value = this.value.toString();
-					}
-					if (this.value instanceof String) {
-						if (this.value.toString().endsWith("}")) {
-							this.value = this.value.toString().replace("{", "").replace("}", "");
-						}
-					}
-					if (this.value instanceof String) {
-						String items[] = this.value.toString().split(",");
-						List list = new ArrayList();
-						for (String item : items) {
-							list.add(item);
-						}
-						this.value = list;
-					}
-				}
 
 				if(null == headValue){
 					headValue = "";
