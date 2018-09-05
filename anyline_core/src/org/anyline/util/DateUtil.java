@@ -123,7 +123,6 @@ public class DateUtil {
 	public static long diff(int part, String fr) {
 		return diff(part, parse(fr));
 	}
-
 	/**
 	 * 格式化日期
 	 * 
@@ -132,6 +131,11 @@ public class DateUtil {
 	 * @return
 	 */
 	public static String format(Date date, String format) {
+		if (null == date || null == format)
+			return "";
+		return new java.text.SimpleDateFormat(format).format(date);
+	}
+	public static String format(Long date, String format) {
 		if (null == date || null == format)
 			return "";
 		return new java.text.SimpleDateFormat(format).format(date);
@@ -145,6 +149,9 @@ public class DateUtil {
 	}
 
 	public static String format(Date date) {
+		return format(date, FORMAT_FULL);
+	}
+	public static String format(Long date) {
 		return format(date, FORMAT_FULL);
 	}
 
