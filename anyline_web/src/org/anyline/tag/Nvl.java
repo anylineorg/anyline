@@ -20,9 +20,12 @@
 package org.anyline.tag;
 
 
+import java.util.ArrayList;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.util.BasicUtil;
 import org.apache.log4j.Logger;
 
 /**
@@ -38,8 +41,20 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 	
 	 public int doEndTag() throws JspException {
 		try{
+			 if(null == paramList || paramList.size()==0){
+				 if(BasicUtil.isNotEmpty(value)){
+					 String str = value.toString();
+					 if(str.contains(",")){
+						 String[] strs = str.split(",");
+						 paramList = new ArrayList<Object>(); 
+						 for(String item:strs){
+							 paramList.add(item);
+						 }
+					 }
+				 }
+			 }
 			for(Object result:paramList){
-				if(null != result){
+				if(null != result && !result.toString().equals("null")){
 					JspWriter out = pageContext.getOut();
 					out.print(result.toString());
 					break;
@@ -57,6 +72,8 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 	@Override
 	public void release() {
 		super.release();
+		paramList = null;
+		value = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
