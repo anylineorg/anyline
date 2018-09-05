@@ -59,9 +59,16 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 				value = new Date();
 				result = DateUtil.format(new Date(), format);
 			}else if(value instanceof String){
-				result = DateUtil.format((String)value,format);
+				if(((String) value).contains(",")){
+					value = value.toString().replace(",", "");
+					result = DateUtil.format(BasicUtil.parseLong(value, 0L),format);
+				}else{
+					result = DateUtil.format((String)value,format);
+				}
 			}else if(value instanceof Date){
 				result = DateUtil.format((Date)value,format);
+			}else if(value instanceof Long){
+				result = DateUtil.format((Long)value,format);
 			}
 			JspWriter out = pageContext.getOut();
 			out.print(result);
