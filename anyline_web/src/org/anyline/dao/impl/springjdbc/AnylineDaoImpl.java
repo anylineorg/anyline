@@ -505,6 +505,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	        	row.clearUpdateColumns();
 	        	set.add(row);
 	        }
+            set.setDatalink(DataSourceHolder.getDataSource());
 			if(showSQL){
 				log.warn(random + "[封装耗时:"+(System.currentTimeMillis() - mid)+"ms][封装行数:"+list.size() + "]");
 			}
@@ -710,6 +711,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	    				row.processBeforeDisplay();	//显示之前预处理
 	    				set.addRow(row);
 	    			}
+	                set.setDatalink(DataSourceHolder.getDataSource());
 	                if(showSQL){
 	    				log.warn(rdm + "[封装耗时:"+(System.currentTimeMillis() - mid)+"ms][封装行数:"+set.size() + "]");
 	    			}

@@ -291,6 +291,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String result = "";
 		if(obj instanceof DataRow){
 			DataRow row = (DataRow)obj;
+			String link = "";
+			if(BasicUtil.isNotEmpty(link)){
+				DataSourceHolder.setDataSource(link, true);
+			}
 			result = row.getDataSource();
 		}else if(obj instanceof DataSet){
 			DataSet set = (DataSet)obj;
@@ -961,6 +965,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return table;
 		}
 		table = table.replace(getDisKeyFr(), "").replace(getDisKeyTo(), "");
+		table = DataSourceHolder.parseDataSource(table);
 		if(table.contains(".")){
 			String tmps[] = table.split("\\.");
 			table = getDisKeyFr() + tmps[0] + getDisKeyTo() + "." + getDisKeyFr() + tmps[1] + getDisKeyTo();
