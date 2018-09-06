@@ -291,7 +291,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String result = "";
 		if(obj instanceof DataRow){
 			DataRow row = (DataRow)obj;
-			String link = "";
+			String link = row.getDataLink();
 			if(BasicUtil.isNotEmpty(link)){
 				DataSourceHolder.setDataSource(link, true);
 			}
