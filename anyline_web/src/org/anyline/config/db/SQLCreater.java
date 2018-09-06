@@ -22,6 +22,7 @@ package org.anyline.config.db;
 import java.io.Serializable;
 import java.util.List;
 
+import org.anyline.config.db.ds.DataSourceHolder;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.dao.PrimaryCreater;
@@ -82,4 +83,5 @@ public interface SQLCreater extends Serializable{
 	 * @return
 	 */
 	public String concat(String ... args);
+
 }

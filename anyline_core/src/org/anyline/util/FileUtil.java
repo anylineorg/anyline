@@ -91,6 +91,51 @@ public class FileUtil {
 		}
 		return result;
 	}
+
+	/**
+	 * 构建完整路径
+	 * @param dir
+	 * @param fileName
+	 * @return
+	 */
+	public static String crateFullFilePath(String dir, String fileName, String separator){
+		if(null==dir || null==fileName) {
+			return null;
+		}
+		String path = null;
+		if(FileUtil.endWithSeparator(dir)&& FileUtil.startWithSeparator(fileName)){
+			path = dir.substring(0,dir.length()-1) + fileName;
+		}else if(FileUtil.endWithSeparator(dir) || FileUtil.startWithSeparator(fileName)){
+			path = dir + fileName;
+		}else{
+			path = dir + separator + fileName;
+		}
+		return path;
+	}
+	public static String createFullFilePath(String dir, String fileName){
+		return crateFullFilePath(dir,fileName,File.separator);
+	}
+	public static String createFullHttpPath(String srcUrl, String dstUrl){
+		//完整的目标URL
+		if(dstUrl.startsWith("http:")) return dstUrl;
+		String fullPath = null;
+
+		if(dstUrl.startsWith("/")){//当前站点的绝对路径
+			fullPath = getHostUrl(srcUrl) + dstUrl;
+		}else if(dstUrl.startsWith("?")){//查询参数
+			fullPath = fetchPathByUrl(srcUrl)+dstUrl;
+		}else{//当前站点的相对路径
+			srcUrl = fetchDirByUrl(srcUrl);
+			if(srcUrl.endsWith("/")){
+				//src是一个目录
+				fullPath = srcUrl + dstUrl;
+			}else{
+				//src有可能是一个文件 : 需要判断是文件还是目录  文件比例多一些
+				fullPath = srcUrl + "/" + dstUrl;
+			}
+		}
+		return fullPath;
+	}
 	/**
 	 * 目录分隔符
 	 * @return
@@ -228,50 +273,6 @@ public class FileUtil {
 				e.printStackTrace();
 			}
 		}
-	}
-	/**
-	 * 构建完整路径
-	 * @param dir
-	 * @param fileName
-	 * @return
-	 */
-	public static String crateFullFilePath(String dir, String fileName, String separator){
-		if(null==dir || null==fileName) {
-			return null;
-		}
-		String path = null;
-		if(FileUtil.endWithSeparator(dir)&& FileUtil.startWithSeparator(fileName)){
-			path = dir.substring(0,dir.length()-1) + fileName;
-		}else if(FileUtil.endWithSeparator(dir) || FileUtil.startWithSeparator(fileName)){
-			path = dir + fileName;
-		}else{
-			path = dir + separator + fileName;
-		}
-		return path;
-	}
-	public static String createFullFilePath(String dir, String fileName){
-		return crateFullFilePath(dir,fileName,File.separator);
-	}
-	public static String createFullHttpPath(String srcUrl, String dstUrl){
-		//完整的目标URL
-		if(dstUrl.startsWith("http:")) return dstUrl;
-		String fullPath = null;
-
-		if(dstUrl.startsWith("/")){//当前站点的绝对路径
-			fullPath = getHostUrl(srcUrl) + dstUrl;
-		}else if(dstUrl.startsWith("?")){//查询参数
-			fullPath = fetchPathByUrl(srcUrl)+dstUrl;
-		}else{//当前站点的相对路径
-			srcUrl = fetchDirByUrl(srcUrl);
-			if(srcUrl.endsWith("/")){
-				//src是一个目录
-				fullPath = srcUrl + dstUrl;
-			}else{
-				//src有可能是一个文件 : 需要判断是文件还是目录  文件比例多一些
-				fullPath = srcUrl + "/" + dstUrl;
-			}
-		}
-		return fullPath;
 	}
 	/**
 	 * 创建文件

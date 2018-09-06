@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.anyline.config.db.SQL;
 import org.anyline.config.db.SQLCreater;
+import org.anyline.config.db.ds.DataSourceHolder;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.db.run.impl.TableRunSQLImpl;
 import org.anyline.config.db.run.impl.TextRunSQLImpl;
@@ -310,6 +311,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 //				e.printStackTrace();
 //			}
 //		}
+		result = DataSourceHolder.parseDataSource(result);
 		return result;
 	}
 	private RunSQL createInsertTxtFromDataRow(String dest, DataRow row, boolean checkPrimary, String ... columns){
@@ -967,4 +969,5 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		return table;
 	}
+
 }
