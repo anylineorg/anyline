@@ -58,4 +58,23 @@ public class DataSourceHolder {
     	String result = THREAD_AUTO_DEFAULT.get();
     	return BasicUtil.parseBoolean(result, false);
     }
+
+	/**
+	 * 解析数据源,并返回修改后的SQL
+	 * <mysql_ds>crm_user
+	 * @param src
+	 * @return
+	 */
+	public static String parseDataSource(String src){
+		if(null != src && src.startsWith("<")){
+			int fr = src.indexOf("<");
+			int to = src.indexOf(">");
+			if(fr != -1){
+				String ds = src.substring(fr+1,to);
+				src = src.substring(to+1);
+				DataSourceHolder.setDataSource(ds, true);
+			}
+		}
+		return src;
+	}
 }

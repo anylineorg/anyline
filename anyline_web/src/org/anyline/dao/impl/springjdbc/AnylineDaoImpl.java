@@ -820,4 +820,5 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		return result;
 	}
+	
 }

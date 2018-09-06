@@ -124,24 +124,6 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return src;
 	}
-	/**
-	 * 解析数据源,并返回修改后的SQL
-	 * <mysql_ds>crm_user
-	 * @param src
-	 * @return
-	 */
-	private String parseDataSource(String src){
-		if(null != src && src.startsWith("<")){
-			int fr = src.indexOf("<");
-			int to = src.indexOf(">");
-			if(fr != -1){
-				String ds = src.substring(fr+1,to);
-				src = src.substring(to+1);
-				DataSourceHolder.setDataSource(ds, true);
-			}
-		}
-		return src;
-	}
 	private synchronized SQL createSQL(String src){
 		SQL sql = null;
 		src = src.trim();
@@ -152,11 +134,11 @@ public class AnylineServiceImpl implements AnylineService {
 				log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:" + src + "]");
 			}
 			src = src.substring(1,src.length()-1);
-			src = parseDataSource(src);//解析数据源
+			src = DataSourceHolder.parseDataSource(src);//解析数据源
 			src = parsePrimaryKey(src, pks);//解析主键
 			sql = new TextSQLImpl(src);
 		} else {
-			src = parseDataSource(src);//解析数据源
+			src = DataSourceHolder.parseDataSource(src);//解析数据源
 			src = parsePrimaryKey(src, pks);//解析主键
 			if (src.toUpperCase().trim().startsWith("SELECT")
 				|| src.toUpperCase().trim().startsWith("DELETE")
@@ -728,6 +710,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 */
 	@Override
 	public int update(boolean sync, String dest, Object data, String... columns) {
+		dest = DataSourceHolder.parseDataSource(dest);
 		final String cols[] = BasicUtil.compressionSpace(columns);
 		final String _dest = BasicUtil.compressionSpace(dest);;
 		final Object _data = data;
@@ -751,6 +734,7 @@ public class AnylineServiceImpl implements AnylineService {
 	@Override
 	public int update(String dest, Object data, String... columns) {
 		dest = BasicUtil.compressionSpace(dest);
+		dest = DataSourceHolder.parseDataSource(dest);
 		columns = BasicUtil.compressionSpace(columns);
 		return dao.update(dest, data, columns);
 	}
@@ -834,11 +818,13 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 
 	private int saveObject(String dest, Object data, boolean checkPrimary, String... columns) {
+		dest = DataSourceHolder.parseDataSource(dest);
 		return dao.save(dest, data, checkPrimary, columns);
 	}
 
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, String... columns) {
+		dest = DataSourceHolder.parseDataSource(dest);
 		return dao.insert(dest, data, checkPrimary, columns);
 	}
 
@@ -863,6 +849,7 @@ public class AnylineServiceImpl implements AnylineService {
 
 	@Override
 	public int batchInsert(String dest, Object data, boolean checkPrimary, String... columns) {
+		dest = DataSourceHolder.parseDataSource(dest);
 		return dao.batchInsert(dest, data, checkPrimary, columns);
 	}
 
@@ -894,6 +881,7 @@ public class AnylineServiceImpl implements AnylineService {
 
 	@Override
 	public boolean executeProcedure(Procedure procedure) {
+		procedure.setName(DataSourceHolder.parseDataSource(procedure.getName()));
 		return dao.executeProcedure(procedure);
 	}
 
@@ -909,6 +897,7 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataSet queryProcedure(Procedure procedure) {
 		DataSet set = null;
 		try {
+			procedure.setName(DataSourceHolder.parseDataSource(procedure.getName()));
 			set = dao.queryProcedure(procedure);
 		} catch (Exception e) {
 			set = new DataSet();
@@ -937,6 +926,7 @@ public class AnylineServiceImpl implements AnylineService {
 	public int execute(String src, ConfigStore store, String... conditions) {
 		int result = -1;
 		src = BasicUtil.compressionSpace(src);
+		src = DataSourceHolder.parseDataSource(src);
 		conditions = BasicUtil.compressionSpace(conditions);
 		SQL sql = createSQL(src);
 		if (null == sql) {
@@ -992,14 +982,17 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 
 	private int deleteRow(String dest, DataRow row, String... columns) {
+		dest = DataSourceHolder.parseDataSource(dest);
 		return dao.delete(dest, row, columns);
 	}
 	
 	public int delete(String table, String key, Collection<Object> values){
+		table = DataSourceHolder.parseDataSource(table);
 		return dao.delete(table, key, values);
 	}
 	
 	public int delete(String table, String key, String ... values){
+		table = DataSourceHolder.parseDataSource(table);
 		return dao.delete(table, key, values);
 	}
 
