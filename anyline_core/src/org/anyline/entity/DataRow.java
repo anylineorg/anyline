@@ -53,6 +53,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 
 	private List<String> primaryKeys 		= new ArrayList<String>()		; //主键
 	private List<String> updateColumns 		= new ArrayList<String>()		;
+	private String datalink					= null							;
 	private String dataSource				= null 							; //数据源(表|视图|XML定义SQL)
 	private String schema					= null							;
 	private String table					= null							;
@@ -475,6 +476,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		
 		return ds;
+	}
+	public String getDataLink() {
+		if(BasicUtil.isEmpty(datalink) && null != getContainer()){
+			return getContainer().getDatalink();
+		}
+		return datalink;
 	}
 
 	/**

@@ -56,6 +56,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	private List<String> head		= null		; // 表头
 	private List<DataRow> rows		= null		; // 数据
 	private List<String> primaryKeys= null		; // 主键
+	private String datalink			= null		; // 数据连接
 	private String dataSource		= null		; // 数据源(表|视图|XML定义SQL)
 	private String schema			= null		;
 	private String table			= null		;
@@ -409,6 +410,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			to.head = from.head;
 			to.primaryKeys = from.primaryKeys;
 			to.dataSource = from.dataSource;
+			to.datalink = from.datalink;
 			to.schema = from.schema;
 			to.table = from.table;
 		}
@@ -2158,5 +2160,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		queryParams.put(key,param);
 		return this;
 	}
+	public String getDatalink() {
+		return datalink;
+	}
+	public void setDatalink(String datalink) {
+		this.datalink = datalink;
+	}
+	
 }
 
