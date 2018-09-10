@@ -830,7 +830,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		if(each){
-			keys = row.keys();
+			keys = row.getUpdateColumns();
 			for(String k:mastKeys){
 				if(!keys.contains(k)){
 					keys.add(k);

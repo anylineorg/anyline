@@ -509,7 +509,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					String orderStr = condition.substring(up.indexOf("ORDER BY") + "ORDER BY".length()).trim();
 					String orders[] = orderStr.split(",");
 					for(String item:orders){
-						sql.order(item);
+						//sql.order(item);
 						if(null != configStore){
 							configStore.order(item);
 						}
@@ -522,7 +522,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					String groupStr = condition.substring(up.indexOf("GROUP BY") + "GROUP BY".length()).trim();
 					String groups[] = groupStr.split(",");
 					for(String item:groups){
-						sql.group(item);
+						//sql.group(item);
 						if(null != configStore){
 							configStore.group(item);
 						}
