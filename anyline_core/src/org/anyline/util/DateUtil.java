@@ -26,6 +26,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import org.anyline.util.regular.Regular;
+import org.anyline.util.regular.RegularUtil;
+
 public class DateUtil {
 	private static int MaxDate;// 一月最大天数
 	private static int MaxYear;// 一年最大天数
@@ -598,6 +601,10 @@ public class DateUtil {
 			return null;
 		}
 		str = str.trim();
+		if(str.length() <= 5 && 
+				! RegularUtil.match(str, Regular.PATTERN.DATE_TIME.getCode(), Regular.MATCH_MODE.MATCH)){
+			return null;
+		}
 		Date date = null;
 		String format = FORMAT_FULL;
 		if(!str.contains(".")){
