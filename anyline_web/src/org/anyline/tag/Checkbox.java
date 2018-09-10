@@ -60,12 +60,22 @@ public class Checkbox extends BaseBodyTag {
 	private String headValue;
 	private boolean checked = false;
 	private String border = "true";
+	private String borderClazz = "al-chk-item-border";
+	private String labelClazz = "al-chk-item-label";
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext
 				.getRequest();
 		String html = "";
 		try {
+
+			if(null == rely){
+				rely = property;
+			}
+			if(null == rely){
+				rely = valueKey;
+			}
+			
 			if (null != data) {
 				if (data instanceof String) {
 					if (data.toString().endsWith("}")) {
@@ -116,12 +126,6 @@ public class Checkbox extends BaseBodyTag {
 					}else if(this.value instanceof Collection){
 						List list = new ArrayList();
 						Collection cols = (Collection)this.value;
-						if(null == rely){
-							rely = property;
-						}
-						if(null == rely){
-							rely = valueKey;
-						}
 						for(Object item:cols){
 							Object val = null;
 							if(item instanceof Map){
@@ -146,7 +150,7 @@ public class Checkbox extends BaseBodyTag {
 					}
 
 					if("true".equalsIgnoreCase(border)){
-						html += "<div class=\"al-chk-item-border\">";
+						html += "<div class=\""+borderClazz+"\">";
 					}
 					html += "<input type=\"checkbox\"";
 					if((null != headValue && headValue.equals(value)) || checked){
@@ -155,7 +159,7 @@ public class Checkbox extends BaseBodyTag {
 					Map<String,String> map = new HashMap<String,String>();
 					map.put(valueKey, headValue);
 					html += tag() + crateExtraData(map) + "/>";
-					html += "<label for=\""+id+ "\">" + head + "</label>\n";
+					html += "<label for=\""+id+ "\" class=\""+labelClazz+"\">" + head + "</label>\n";
 
 					if("true".equalsIgnoreCase(border)){
 						html += "</div>";
@@ -174,19 +178,19 @@ public class Checkbox extends BaseBodyTag {
 							id = name +"_"+ val; 
 						}
 						if("true".equalsIgnoreCase(border)){
-							html += "<div class=\"al-chk-item-border\">";
+							html += "<div class=\""+borderClazz+"\">";
 						}
 						html += "<input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
 						Object chk = null;
-						if(BasicUtil.isNotEmpty(property)){
-							chk = item.get(property);
+						if(BasicUtil.isNotEmpty(rely)){
+							chk = item.get(rely);
 						}
 						if(BasicUtil.parseBoolean(chk+"") || "checked".equals(chk) || checked(chks,item.get(valueKey)) ) {
 							html += " checked=\"checked\"";
 						}
 						
 						html += tag() + crateExtraData(item) + "/>";
-						String label = "<label for=\""+id+ "\">";
+						String label = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 						String text = "";
 						if (textKey.contains("{")) {
 							text = textKey;
@@ -275,6 +279,8 @@ public class Checkbox extends BaseBodyTag {
 		textKey = "NM";
 		rely = null;
 		border = "true";
+		borderClazz = "";
+		labelClazz = "";
 	}
 
 	public String getBorder() {
@@ -316,6 +322,18 @@ public class Checkbox extends BaseBodyTag {
 	}
 	public void setRely(String rely) {
 		this.rely = rely;
+	}
+	public String getBorderClazz() {
+		return borderClazz;
+	}
+	public void setBorderClazz(String borderClazz) {
+		this.borderClazz = borderClazz;
+	}
+	public String getLabelClazz() {
+		return labelClazz;
+	}
+	public void setLabelClazz(String labelClazz) {
+		this.labelClazz = labelClazz;
 	}
 	
 }

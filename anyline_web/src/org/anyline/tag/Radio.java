@@ -48,6 +48,8 @@ public class Radio extends BaseBodyTag{
 	private String head;
 	private String headValue;
 	private String border = "true";
+	private String borderClazz = "al-radio-item-border";
+	private String labelClazz = "al-radio-item-label";
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -96,7 +98,7 @@ public class Radio extends BaseBodyTag{
 						id = name +"_"+ headValue; 
 					}
 					if("true".equalsIgnoreCase(border)){
-						html += "<div class=\"al-radio-item-border\">";
+						html += "<div class=\""+borderClazz+"\">";
 					}
 					html += "<input type=\"radio\"";
 					if((null != headValue && headValue.equals(value))){
@@ -105,7 +107,7 @@ public class Radio extends BaseBodyTag{
 					Map<String,String> map = new HashMap<String,String>();
 					map.put(valueKey, headValue);
 					html += tag() + crateExtraData(map) + "/>";
-					html += "<label for=\""+id+ "\">" + head + "</label>\n";
+					html += "<label for=\""+id+ "\" class=\""+labelClazz+"\">" + head + "</label>\n";
 					if("true".equalsIgnoreCase(border)){
 						html += "</div>";
 					}
@@ -125,14 +127,14 @@ public class Radio extends BaseBodyTag{
 					
 					String id = name +"_"+ value;
 					if("true".equalsIgnoreCase(border)){
-						html += "<div class=\"al-radio-item-border\">";
+						html += "<div class=\""+borderClazz+"\">";
 					}
 					html += "<input type=\"radio\" value=\"" + value + "\" id=\"" + id + "\"";
 					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
 						html += " checked=\"checked\"";
 					}
 					html += tag() + crateExtraData(item) + "/>";
-					String label = "<label for=\""+id+ "\">";
+					String label = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 					String text = "";
 					if (textKey.contains("{")) {
 						text = textKey;
@@ -219,6 +221,8 @@ public class Radio extends BaseBodyTag{
 		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
 		textKey = "NM";
 		border = "true";
+		borderClazz = "";
+		labelClazz = "";
 	}
 
 	public String getScope() {
@@ -248,4 +252,25 @@ public class Radio extends BaseBodyTag{
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
+
+
+	public String getBorderClazz() {
+		return borderClazz;
+	}
+
+
+	public void setBorderClazz(String borderClazz) {
+		this.borderClazz = borderClazz;
+	}
+
+
+	public String getLabelClazz() {
+		return labelClazz;
+	}
+
+
+	public void setLabelClazz(String labelClazz) {
+		this.labelClazz = labelClazz;
+	}
+	
 }

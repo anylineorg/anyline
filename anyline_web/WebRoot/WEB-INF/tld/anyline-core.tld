@@ -411,6 +411,14 @@
 			<name>itemExtra</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>borderClazz</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>labelClazz</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>checkbox</name>
@@ -511,6 +519,15 @@
 			<name>itemExtra</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>borderClazz</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>labelClazz</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		
 	</tag>
 	<tag>
 		<name>selecttext</name>
