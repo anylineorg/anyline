@@ -50,8 +50,10 @@ public interface SQLVariable extends Cloneable,Serializable{
 	public void setValue(boolean chkNull, Object value) ;
 	public int getType() ;
 	public void setType(int type) ;
+	public void setRequired(boolean required);
 	public boolean isRequired();
 	public boolean isStrictRequired();
+	public void setStrictRequired(boolean strictRequired);
 	public Object clone() throws CloneNotSupportedException;
 	
 }
