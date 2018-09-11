@@ -144,6 +144,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 				for(int i=0; i<keys.size();i++){
 					List<String> keyItem = keys.get(i);
 					SQLVariable var = SQLHelper.buildVariable(type, keyItem.get(0), keyItem.get(1), keyItem.get(2), keyItem.get(3));
+					var.setRequired(true);
 					addVariable(var);
 				}// end for
 			}else{
@@ -153,6 +154,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 					for(int i=0; i<idxKeys.size(); i++){
 						SQLVariable var = new SQLVariableImpl();
 						var.setType(SQLVariable.VAR_TYPE_INDEX);
+						var.setRequired(true);
 						addVariable(var);
 					}
 				}
