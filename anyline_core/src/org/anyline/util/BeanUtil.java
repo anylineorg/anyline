@@ -23,6 +23,7 @@ import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -49,6 +50,9 @@ public class BeanUtil {
 	private static Logger log = Logger.getLogger(BeanUtil.class);
 	public static boolean setFieldValue(Object obj, Field field, Object value){
 		if(null == obj || null == field){
+			return false;
+		}
+		if(Modifier.isStatic(field.getModifiers())){
 			return false;
 		}
 		try{
