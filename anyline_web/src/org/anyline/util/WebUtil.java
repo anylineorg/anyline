@@ -43,6 +43,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
@@ -1321,6 +1322,20 @@ public class WebUtil {
 			}
 		}
 		return true;
+	}
+	public String getCookie(HttpServletRequest request, String key){
+		if(null == key){
+			return null;
+		}
+		Cookie[] cks = request.getCookies();
+		if(null != cks){
+			for(Cookie ck:cks){
+				if(key.equals(ck.getName())){
+					return ck.getValue();
+				}
+			}
+		}
+		return null;
 	}
 	
 }
