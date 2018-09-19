@@ -18,6 +18,7 @@
 package org.anyline.entity;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -560,6 +561,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			/*读取类属性*/
 			List<Field> fields = BeanUtil.getFields(clazz);		
 			for(Field field:fields){
+				if(Modifier.isStatic(field.getModifiers())){
+					continue;
+				}
 				/*取request参数值*/
 				String column = BeanUtil.getColumn(field, false, false);
 				Object value = get(column);
