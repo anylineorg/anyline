@@ -185,7 +185,7 @@ public class Checkbox extends BaseBodyTag {
 						if(BasicUtil.isNotEmpty(rely)){
 							chk = item.get(rely);
 						}
-						if(BasicUtil.parseBoolean(chk+"") || "checked".equals(chk) || checked(chks,item.get(valueKey)) ) {
+						if("true".equalsIgnoreCase(chk+"") || "checked".equalsIgnoreCase(chk+"") || checked(chks,item.get(valueKey)) ) {
 							html += " checked=\"checked\"";
 						}
 						
