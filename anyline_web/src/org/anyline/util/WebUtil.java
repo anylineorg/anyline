@@ -1323,7 +1323,7 @@ public class WebUtil {
 		}
 		return true;
 	}
-	public String getCookie(HttpServletRequest request, String key){
+	public static String getCookie(HttpServletRequest request, String key){
 		if(null == key){
 			return null;
 		}
