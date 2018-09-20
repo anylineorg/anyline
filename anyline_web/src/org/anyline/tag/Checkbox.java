@@ -158,7 +158,7 @@ public class Checkbox extends BaseBodyTag {
 					}
 					Map<String,String> map = new HashMap<String,String>();
 					map.put(valueKey, headValue);
-					html += tag() + crateExtraData(map) + "/>";
+					html += attribute() + crateExtraData(map) + "/>";
 					html += "<label for=\""+id+ "\" class=\""+labelClazz+"\">" + head + "</label>\n";
 
 					if("true".equalsIgnoreCase(border)){
@@ -189,7 +189,7 @@ public class Checkbox extends BaseBodyTag {
 							html += " checked=\"checked\"";
 						}
 						
-						html += tag() + crateExtraData(item) + "/>";
+						html += attribute() + crateExtraData(item) + "/>";
 						String label = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 						String text = "";
 						if (textKey.contains("{")) {

@@ -72,7 +72,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	public void setDisabled(String disabled) {
 		this.disabled = disabled;
 	}
-	protected String tag(){
+	protected String attribute(){
 		String html = "";
 		if(null != id){
 			html += " id=\"" + id + "\"";
@@ -80,9 +80,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		if(null != name){
 			html += " name=\"" + name + "\"";
 		}
-		if(null != value){
-			html += " value=\"" + value + "\"";
-		}
+//		if(null != value){
+//			html += " value=\"" + value + "\"";
+//		}
 		if(null != clazz){
 			html += " class=\"" + clazz + "\"";
 		}

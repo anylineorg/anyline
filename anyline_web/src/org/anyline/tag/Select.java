@@ -59,7 +59,7 @@ public class Select extends BaseBodyTag{
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-		String html = "<select "+tag() + ">";
+		String html = "<select "+attribute() + ">";
 		if(null != body){
 			html += body;
 		}

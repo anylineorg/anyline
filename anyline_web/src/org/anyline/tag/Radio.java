@@ -106,7 +106,7 @@ public class Radio extends BaseBodyTag{
 					}
 					Map<String,String> map = new HashMap<String,String>();
 					map.put(valueKey, headValue);
-					html += tag() + crateExtraData(map) + "/>";
+					html += attribute() + crateExtraData(map) + "/>";
 					html += "<label for=\""+id+ "\" class=\""+labelClazz+"\">" + head + "</label>\n";
 					if("true".equalsIgnoreCase(border)){
 						html += "</div>";
@@ -133,7 +133,7 @@ public class Radio extends BaseBodyTag{
 					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
 						html += " checked=\"checked\"";
 					}
-					html += tag() + crateExtraData(item) + "/>";
+					html += attribute() + crateExtraData(item) + "/>";
 					String label = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 					String text = "";
 					if (textKey.contains("{")) {
