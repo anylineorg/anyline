@@ -933,11 +933,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public List<String> getUpdateColumns() {
 		return updateColumns;
 	}
-	public DataRow remove(String key){
-		if(null != key){
-			super.remove(key(key));
+	public DataRow remove(String ... keys){
+		if(null != keys){
+			for(String key:keys){
+				if(null != key){
+					super.remove(key(key));
+				}
+				updateColumns.remove(key(key));
+			}
 		}
-		updateColumns.remove(key(key));
 		return this;
 	}
 	/**
