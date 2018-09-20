@@ -1194,6 +1194,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			schema = dataSource.substring(0, dataSource.indexOf("."));
 			table = dataSource.substring(dataSource.indexOf(".") + 1);
 		}
+		for(DataRow row:rows){
+			if(BasicUtil.isEmpty(row.getDataSource())){
+				row.setDataSource(dataSource);
+			}
+		}
 		return this;
 	}
 
