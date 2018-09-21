@@ -119,6 +119,9 @@ public class AbstractBasicController{
 		return entity(request, clazz, false, false, params);
 	}
 
+	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entityRow(request, row, keyEncrypt, valueEncrypt, params);
+	}
 	public DataRow entityRow(HttpServletRequest request, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 
 		/**
@@ -150,21 +153,36 @@ public class AbstractBasicController{
 		}
 		return row;
 	}
-	
+
+	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
+		return entityRow(request, row, keyEncrypt,  params);
+	}
 	public DataRow entityRow(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
 		return entityRow(request, row, keyEncrypt, false, params);
+	}
+	public DataRow entity(HttpServletRequest request, DataRow row, String... params) {
+		return entityRow(request, row, params);
 	}
 	public DataRow entityRow(HttpServletRequest request, DataRow row, String... params) {
 		return entityRow(request, row, false, false, params);
 	}
 
+	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entityRow(request, keyEncrypt, valueEncrypt, params);
+	}
 	public DataRow entityRow(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entityRow(request,null, keyEncrypt, valueEncrypt, params);
+	}
+	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, String... params) {
+		return entityRow(request, keyEncrypt, params);
 	}
 	public DataRow entityRow(HttpServletRequest request, boolean keyEncrypt, String... params) {
 		return entityRow(request,null, keyEncrypt, false, params);
 	}
 
+	public DataRow entity(HttpServletRequest request, String... params) {
+		return entityRow(request,params);
+	}
 	public DataRow entityRow(HttpServletRequest request, String... params) {
 		return entityRow(request, null, false, false, params);
 	}
