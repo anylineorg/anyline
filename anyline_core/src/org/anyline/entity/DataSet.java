@@ -458,16 +458,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		int size = size();
 		for(i=0; i<size; i++){
 			DataRow row = getRow(i);
-			boolean chk = true;
+			boolean chk = true;//对比结果
 			for(String k : kvs.keySet()){
 				String v = kvs.get(k);
 				String value = row.getString(k);
-				if(null == v && null == value){
-					continue;
-				}
-				if(!v.equals(value)){
-					chk = false;
-					break;
+//				if(null == v && null == value){
+//					continue;
+//				}
+//				if(!v.equals(value)){
+//					chk = false;
+//					break;
+//				}
+				
+				if(null == v){
+					if(null != value){
+						chk = false;
+						break;
+					}
+				}else{
+					if(!v.equals(value)){
+						chk = false;
+						break;
+					}
 				}
 			}
 			if(chk){
