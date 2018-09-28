@@ -712,7 +712,7 @@ public class AnylineServiceImpl implements AnylineService {
 	public int update(boolean sync, String dest, Object data, String... columns) {
 		dest = DataSourceHolder.parseDataSource(dest);
 		final String cols[] = BasicUtil.compressionSpace(columns);
-		final String _dest = BasicUtil.compressionSpace(dest);;
+		final String _dest = BasicUtil.compressionSpace(dest);
 		final Object _data = data;
 		if(sync){
 			new Thread(new Runnable(){
