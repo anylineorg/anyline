@@ -41,6 +41,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String id;
 	protected String name;
 	protected Object value;
+	protected boolean evl;
 	protected String clazz;
 	protected String style;
 	protected String onclick;
@@ -171,6 +172,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		id = null;
 		name = null;
 		value = null;
+		evl = false;
 		clazz = null;
 		style = null;
 		onclick = null;
@@ -181,6 +183,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		extra = null;
 		itemExtra = null;
 		readonly = null;
+		encrypt = false;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
@@ -218,6 +221,13 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return body;
 	}
 	public void setBody(String body) {
+		if(evl && BasicUtil.isNotEmpty(body)){
+			 String str = body.toString();
+			 if(str.contains(",")){
+				 String[] strs = str.split(",");
+				 value = BasicUtil.evl(strs);
+			 }
+		}
 		this.body = body;
 	}
 	public String getId() {
@@ -237,6 +247,13 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return value;
 	}
 	public void setValue(Object value) {
+		if(evl && BasicUtil.isNotEmpty(value)){
+			 String str = value.toString();
+			 if(str.contains(",")){
+				 String[] strs = str.split(",");
+				 value = BasicUtil.evl(strs);
+			 }
+		}
 		this.value = value;
 	}
 	public String getClazz() {
@@ -286,6 +303,12 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	}
 	public void setReadonly(String readonly) {
 		this.readonly = readonly;
+	}
+	public boolean isEvl() {
+		return evl;
+	}
+	public void setEvl(boolean evl) {
+		this.evl = evl;
 	}
 	
 }
