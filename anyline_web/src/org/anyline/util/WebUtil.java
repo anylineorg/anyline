@@ -319,7 +319,7 @@ public class WebUtil {
 			result = insertDESVersion(result);
 			String pre = defaultDesKey.getPrefix(type);
 			if(mix && ENCRYPT_TYPE_VALUE.equals(type)){
-				//随机URL 避免QQ等工具报警
+				//随机URL 避免QQ等工具报警 每次生成不同URL 扰乱爬虫追溯
 				String rand = "v"+BasicUtil.getRandomNumberString(5)+"v";
 				pre = rand+pre;
 			}
