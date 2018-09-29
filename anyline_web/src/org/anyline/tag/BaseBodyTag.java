@@ -225,7 +225,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 			 String str = body.toString();
 			 if(str.contains(",")){
 				 String[] strs = str.split(",");
-				 value = BasicUtil.evl(strs);
+				 body = (String)BasicUtil.evl(strs);
 			 }
 		}
 		this.body = body;
