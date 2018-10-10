@@ -106,7 +106,7 @@ public class Auth extends BaseBodyTag {
 					redirect = WXMPConfig.getInstance(key).OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+"#wechat_redirect";
+				url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
 				
 			}else if("qq".equalsIgnoreCase(type)){
 				if(BasicUtil.isEmpty(appid)){
@@ -130,9 +130,7 @@ public class Auth extends BaseBodyTag {
 					redirect = QQMPConfig.getInstance(key).OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state;
-				
-				
+				url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state+",app:"+key;
 			}
 			result = "<a href=\""+url+"\" id=\""+id+"\">";
 			if(BasicUtil.isNotEmpty(body)){

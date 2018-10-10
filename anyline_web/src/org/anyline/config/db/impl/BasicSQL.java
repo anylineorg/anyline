@@ -51,7 +51,7 @@ public abstract class BasicSQL implements SQL{
 	//运行时参数值
 	protected Vector<Object> runValues;
 	public int getVersion(){
-		return ConfigTable.getInt("DATABASE_VERSION",Constant.DATABASE_VERSION);
+		return 0;
 	}
 
 	public BasicSQL(){
