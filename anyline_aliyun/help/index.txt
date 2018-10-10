@@ -1,0 +1,24 @@
+引入jar:
+alipay-sdk-java20170307171631.jar
+aliyun-sdk-oss-2.8.2.jar
+anyline_aliyun.jar
+配置文件:
+anyline-aliyun-oss.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="ACCESS_ID">*</property>
+		<property key="ACCESS_SECRET">*</property>
+		<property key="ENDPOINT">oss-cn-shanghai.aliyuncs.com</property>
+		<property key="BUCKET">deepbit</property>
+		<!-- 生成的密钥多长时间有效  -->
+		<property key="EXPIRE_SECOND">300</property>
+	</config>
+</configs>
+jsp中调用:
+<aliyun:oss dir="programe/fulai/tmp"/>
+
+会生成
+<script>
+al.config.oss.aliyun = {"accessid":"LTAIrhfiTAbm81mf","signature":"yzCZ/KNxTYSExrMX9L3Jd22F69w=","expire":"1538553330","host":"http://deepbit.oss-cn-shanghai.aliyuncs.com","dir":"/programe/fulai/tmp","policy":"eyJleHBpcmF0aW9uIjoiMjAxOC0xMC0wM1QwNzo1NTozMC43NTNaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCIvcHJvZ3JhbWUvZnVsYWkvdG1wIl1dfQ=="};
+</script>
