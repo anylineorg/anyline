@@ -59,6 +59,5 @@ public class Constant {
 	public static final String MESSAGE_TYPE_ERROR					= "error"								;//消息类型error
 	public static final String MESSAGE_TYPE_INFO					= "info"								;//消息类型info
 
-	public static final int DATABASE_VERSION 						= 2005;									//数据库版本
 	
 }
