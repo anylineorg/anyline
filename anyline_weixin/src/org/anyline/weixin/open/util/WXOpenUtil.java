@@ -63,7 +63,7 @@ public class WXOpenUtil {
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
 
-		order.setTrade_type(WXBasicConfig.TRADE_TYPE_APP);
+		order.setTrade_type(WXBasicConfig.TRADE_TYPE.APP);
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.paySign(config.API_SECRECT,map);
 		map.put("sign", sign);
