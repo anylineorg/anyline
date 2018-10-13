@@ -1,5 +1,7 @@
 package org.anyline.weixin.entity;
 
+import org.anyline.weixin.WXBasicConfig.TRADE_TYPE;
+
 public class TradeOrder {
 	//配置文件中已设置
 	protected String appid;
@@ -82,8 +84,8 @@ public class TradeOrder {
 	public String getTrade_type() {
 		return trade_type;
 	}
-	public void setTrade_type(String trade_type) {
-		this.trade_type = trade_type;
+	public void setTrade_type(TRADE_TYPE trade_type) {
+		this.trade_type = trade_type.getCode();
 	}
 	public String getDevice_info() {
 		return device_info;

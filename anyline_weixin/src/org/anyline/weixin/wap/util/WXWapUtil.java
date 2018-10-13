@@ -56,7 +56,7 @@ public class WXWapUtil {
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
-		order.setTrade_type(WXBasicConfig.TRADE_TYPE_WAP);
+		order.setTrade_type(WXBasicConfig.TRADE_TYPE.MWEB);
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.paySign(config.API_SECRECT,map);
