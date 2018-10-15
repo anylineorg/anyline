@@ -2162,6 +2162,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet regex(String key, String regex){
 		return regex(key, regex, Regular.MATCH_MODE.MATCH);
 	}
+	public boolean checkRequired(String ... keys){
+		for(DataRow row:rows){
+			if(!row.checkRequired(keys)){
+				return false;
+			}
+		}
+		return true;
+	}
 	public Map<String, Object> getQueryParams() {
 		return queryParams;
 	}
