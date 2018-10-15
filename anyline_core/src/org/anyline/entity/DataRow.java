@@ -1019,6 +1019,25 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 
+	public boolean checkRequired(String ... keys){
+		List<String> ks = new ArrayList<String>();
+		if(null != keys && keys.length >0){
+			for(String key:keys){
+				ks.add(key);
+			}
+		}
+		return checkRequired(ks);
+	}
+	public boolean checkRequired(List<String> keys){
+		if(null != keys){
+			for(String key:keys){
+				if(isEmpty(key)){
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 	private static String key(String key){
 		if(null != key && ConfigTable.IS_UPPER_KEY){
 			key = key.toUpperCase();
