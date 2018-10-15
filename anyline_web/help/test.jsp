@@ -2,7 +2,7 @@
 <div style="line-height:30px;">
 cnt:${set.size }
 <hr/>	
-checkbox:<al:checkbox name="mbr_chk" data="${set}" textKey="MMB_NAME" valueKey="MMB_ID"></al:checkbox>
+checkbox:<al:checkbox name="mbr_chk" data="${set}" textKey="MMB_NAME" valueKey="MMB_ID" value="1"></al:checkbox>
 cehckbox 是否:<al:checkbox data="{1:}" name="scan" value="${row.IS_NEED_SCAN_CODE }"></al:checkbox>
 <hr/>
 radio:

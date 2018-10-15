@@ -1308,11 +1308,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		if(null == items || null == keys || keys.length == 0){
 			return this;
 		}
+		if(BasicUtil.isEmpty(field)){
+			field = "ITEMS";
+		}
 		for(DataRow row : rows){
 			String[] params = packParam(row, reverseKey(keys));
-			if(BasicUtil.isEmpty(field)){
-				field = "ITEMS";
-			}
 			row.put(field,items.getRows(params));
 		}
 		return this;
