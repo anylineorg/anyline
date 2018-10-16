@@ -71,14 +71,14 @@ public class WXMPUtil {
 			order.setAppid(config.APP_ID);
 		}
 		if(BasicUtil.isEmpty(order.getMch_id())){
-			order.setMch_id(config.MCH_ID);
+			order.setMch_id(config.PAY_MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
 		order.setTrade_type(WXBasicConfig.TRADE_TYPE.JSAPI);
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = WXUtil.paySign(config.API_SECRECT,map);
+		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -112,10 +112,10 @@ public class WXMPUtil {
 			refund.setAppid(config.APP_ID);
 		}
 		if(BasicUtil.isEmpty(refund.getMch_id())){
-			refund.setMch_id(config.MCH_ID);
+			refund.setMch_id(config.PAY_MCH_ID);
 		}
 		Map<String, Object> map = BeanUtil.toMap(refund);
-		String sign = WXUtil.paySign(config.API_SECRECT,map);
+		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
 		
 		map.put("sign", sign);
 		
@@ -126,15 +126,15 @@ public class WXMPUtil {
 
 		if(ConfigTable.isDebug()){
 			log.warn("退款申请XML:" + xml);
-			log.warn("证书:"+config.KEY_STORE_FILE);
+			log.warn("证书:"+config.PAY_KEY_STORE_FILE);
 		}
 
-		File keyStoreFile = new File(config.KEY_STORE_FILE);
+		File keyStoreFile = new File(config.PAY_KEY_STORE_FILE);
 		if(!keyStoreFile.exists()){
-			log.warn("密钥文件不存在:"+config.KEY_STORE_FILE);
+			log.warn("密钥文件不存在:"+config.PAY_KEY_STORE_FILE);
 			return new WXMPPayRefundResult(false,"密钥文件不存在");
 		}
-		String keyStorePassword = config.KEY_STORE_PASSWORD;
+		String keyStorePassword = config.PAY_KEY_STORE_PASSWORD;
 		if(BasicUtil.isEmpty(keyStorePassword)){
 			log.warn("未设置密钥文件密码");
 			return new WXMPPayRefundResult(false,"未设置密钥文件密码");
@@ -166,10 +166,10 @@ public class WXMPUtil {
 			pack.setWxappid(config.APP_ID);
 		}
 		if(BasicUtil.isEmpty(pack.getMch_id())){
-			pack.setMch_id(config.MCH_ID);
+			pack.setMch_id(config.PAY_MCH_ID);
 		}
 		Map<String, Object> map = BeanUtil.toMap(pack);
-		String sign = WXUtil.paySign(config.API_SECRECT,map);
+		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
 		
 		map.put("sign", sign);
 		
@@ -180,15 +180,15 @@ public class WXMPUtil {
 
 		if(ConfigTable.isDebug()){
 			log.warn("发送红包XML:" + xml);
-			log.warn("证书:"+config.KEY_STORE_FILE);
+			log.warn("证书:"+config.PAY_KEY_STORE_FILE);
 		}
 
-		File keyStoreFile = new File(config.KEY_STORE_FILE);
+		File keyStoreFile = new File(config.PAY_KEY_STORE_FILE);
 		if(!keyStoreFile.exists()){
-			log.warn("密钥文件不存在:"+config.KEY_STORE_FILE);
+			log.warn("密钥文件不存在:"+config.PAY_KEY_STORE_FILE);
 			return new WXMPRedpackResult(false,"密钥文件不存在");
 		}
-		String keyStorePassword = config.KEY_STORE_PASSWORD;
+		String keyStorePassword = config.PAY_KEY_STORE_PASSWORD;
 		if(BasicUtil.isEmpty(keyStorePassword)){
 			log.warn("未设置密钥文件密码");
 			return new WXMPRedpackResult(false,"未设置密钥文件密码");
@@ -222,7 +222,7 @@ public class WXMPUtil {
 		params.put("appId", getConfig().APP_ID);
 		params.put("nonceStr", random);
 		params.put("signType", "MD5");
-		String sign = WXUtil.paySign(getConfig().API_SECRECT, params);
+		String sign = WXUtil.paySign(getConfig().PAY_API_SECRECT, params);
 		params.put("paySign", sign);
 		
 		DataRow row = new DataRow(params);
