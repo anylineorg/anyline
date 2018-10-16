@@ -121,7 +121,7 @@ public interface Regular {
 		*/  
 		,ID_CARD{
 			public String getName(){return "身份证";}
-			public String getCode(){return "^\\d{10}|\\d{13}|\\d{15}|\\d{18}$";}
+			public String getCode(){return "^[1-9]\\d{5}(18|19|([23]\\d))\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{3}[0-9Xx]$)|(^[1-9]\\d{5}\\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\\d{2}$";}
 		}
 		,ZIP_CODE{
 			public String getName(){return "邮编代码";}
