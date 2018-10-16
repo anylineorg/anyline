@@ -99,11 +99,11 @@ public class RegularUtil {
 		result = regular.fetch(src, regx, idx);
 		return result;
 	}
-	public static List<String> filter(List<String> src, String regx, int regxMode, Regular.FILTER_TYPE type){
+	public static List<String> filter(List<String> src, String regx, Regular.MATCH_MODE mode, Regular.FILTER_TYPE type){
 		if(Regular.FILTER_TYPE.PICK == type){
-			return pick(src,regx,regxMode);
+			return pick(src,regx,mode);
 		}else if(Regular.FILTER_TYPE.WIPE == type){
-			return wipe(src,regx,regxMode);
+			return wipe(src,regx,mode);
 		}else{
 			return new ArrayList<String>();
 		}
@@ -114,7 +114,7 @@ public class RegularUtil {
 	 * @param regx
 	 * @return
 	 */
-	public static synchronized List<String> pick(List<String> src, String regx, int mode){
+	public static synchronized List<String> pick(List<String> src, String regx, Regular.MATCH_MODE mode){
 		regular = regularList.get(mode);
 		return regular.pick(src, regx);
 	}
@@ -124,7 +124,7 @@ public class RegularUtil {
 	 * @param regx
 	 * @return
 	 */
-	public static synchronized List<String> wipe(List<String> src, String regx, int mode){
+	public static synchronized List<String> wipe(List<String> src, String regx, Regular.MATCH_MODE mode){
 		regular = regularList.get(mode);
 		return regular.wipe(src, regx);
 	}
