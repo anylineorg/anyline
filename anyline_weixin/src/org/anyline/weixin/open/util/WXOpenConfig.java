@@ -15,18 +15,19 @@ public class WXOpenConfig extends BasicConfig{
 	/**
 	 * 服务号相关信息
 	 */
-	public String APP_ID = ""				; //AppID(应用ID)
-	public String APP_SECRECT = ""			; //AppSecret(应用密钥)
-	public String API_SECRECT = ""			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
-	public String MCH_ID = ""				; //商家号
-	public String SIGN_TYPE = ""			; //签名加密方式
-	public String SERVER_TOKEN = ""			; //服务号的配置token
-	public String CERT_PATH = ""			; //微信支付证书存放路径地址
-	public String PAY_NOTIFY_URL = ""		; //微信支付统一接口的回调action
-	public String PAY_CALLBACK_URL = ""		; //微信支付成功支付后跳转的地址
-	public String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
-	public String KEY_STORE_FILE = ""		; //证书文件
-	public String KEY_STORE_PASSWORD = ""	; //证书密码
+	public String APP_ID = ""					; //AppID(应用ID)
+	public String APP_SECRECT = ""				; //AppSecret(应用密钥)
+	public String SIGN_TYPE = ""				; //签名加密方式
+	public String SERVER_TOKEN = ""				; //服务号的配置token
+//	public String CERT_PATH = ""				; //微信支付证书存放路径地址
+	public String OAUTH2_REDIRECT_URI = ""		; //oauth2授权时回调action
+
+	public String PAY_API_SECRECT = ""			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+	public String PAY_MCH_ID = ""				; //商家号
+	public String PAY_KEY_STORE_FILE = ""		; //证书文件
+	public String PAY_KEY_STORE_PASSWORD = ""	; //证书密码
+	public String PAY_NOTIFY_URL = ""			; //微信支付统一接口的回调action
+	public String PAY_CALLBACK_URL = ""			; //微信支付成功支付后跳转的地址
 
 	public static final String TRADE_TYPE_JSAPI 		= "JSAPI"	;//公众号支付	
 	public static final String TRADE_TYPE_NATIVE 		= "NATIVE"	;//原生扫码支付

@@ -57,7 +57,7 @@ public class WXOpenUtil {
 			order.setAppid(config.APP_ID);
 		}
 		if(BasicUtil.isEmpty(order.getMch_id())){
-			order.setMch_id(config.MCH_ID);
+			order.setMch_id(config.PAY_MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
@@ -65,7 +65,7 @@ public class WXOpenUtil {
 
 		order.setTrade_type(WXBasicConfig.TRADE_TYPE.APP);
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = WXUtil.paySign(config.API_SECRECT,map);
+		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -101,10 +101,10 @@ public class WXOpenUtil {
 			refund.setAppid(config.APP_ID);
 		}
 		if(BasicUtil.isEmpty(refund.getMch_id())){
-			refund.setMch_id(config.MCH_ID);
+			refund.setMch_id(config.PAY_MCH_ID);
 		}
 		Map<String, Object> map = BeanUtil.toMap(refund);
-		String sign = WXUtil.paySign(config.API_SECRECT,map);
+		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
 		
 		map.put("sign", sign);
 		
@@ -115,14 +115,14 @@ public class WXOpenUtil {
 
 		if(ConfigTable.isDebug()){
 			log.warn("退款申请XML:" + xml);
-			log.warn("证书:"+config.KEY_STORE_FILE);
+			log.warn("证书:"+config.PAY_KEY_STORE_FILE);
 		}
-		File keyStoreFile = new File(config.KEY_STORE_FILE);
+		File keyStoreFile = new File(config.PAY_KEY_STORE_FILE);
 		if(!keyStoreFile.exists()){
-			log.warn("密钥文件不存在:"+config.KEY_STORE_FILE);
+			log.warn("密钥文件不存在:"+config.PAY_KEY_STORE_FILE);
 			return new WXOpenPayRefundResult(false,"密钥文件不存在");
 		}
-		String keyStorePassword = config.KEY_STORE_PASSWORD;
+		String keyStorePassword = config.PAY_KEY_STORE_PASSWORD;
 		if(BasicUtil.isEmpty(keyStorePassword)){
 			log.warn("未设置密钥文件密码");
 			return new WXOpenPayRefundResult(false,"未设置密钥文件密码");
@@ -151,12 +151,12 @@ public class WXOpenUtil {
 	public DataRow appParam(String prepayid){
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("appid", config.APP_ID);
-		params.put("partnerid", config.MCH_ID);
+		params.put("partnerid", config.PAY_MCH_ID);
 		params.put("prepayid", prepayid);
 		params.put("package", "Sign=WXPay");
 		params.put("noncestr", BasicUtil.getRandomUpperString(32));
 		params.put("timestamp", System.currentTimeMillis()/1000+"");
-		String sign = WXUtil.paySign(config.API_SECRECT,params);
+		String sign = WXUtil.paySign(config.PAY_API_SECRECT,params);
 		params.put("sign", sign);
 		DataRow row = new DataRow(params);
 		row.put("packagevalue", row.get("package"));
