@@ -56,7 +56,7 @@ public class Pay extends BaseBodyTag {
 			params.put("appId", util.getConfig().APP_ID);
 			params.put("nonceStr", random);
 			params.put("signType", "MD5");
-			String sign = WXUtil.paySign(util.getConfig().PAY_API_SECRECT, params);
+			String sign = WXUtil.sign(util.getConfig().PAY_API_SECRECT, params);
 			StringBuilder builder = new StringBuilder();
 			
 			builder.append("<script language=\"javascript\">\n");

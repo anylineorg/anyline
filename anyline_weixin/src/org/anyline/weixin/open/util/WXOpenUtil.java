@@ -69,7 +69,7 @@ public class WXOpenUtil {
 
 		order.setTrade_type(WXBasicConfig.TRADE_TYPE.APP);
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -108,7 +108,7 @@ public class WXOpenUtil {
 			refund.setMch_id(config.PAY_MCH_ID);
 		}
 		Map<String, Object> map = BeanUtil.toMap(refund);
-		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
 		
 		map.put("sign", sign);
 		
@@ -160,7 +160,7 @@ public class WXOpenUtil {
 		params.put("package", "Sign=WXPay");
 		params.put("noncestr", BasicUtil.getRandomUpperString(32));
 		params.put("timestamp", System.currentTimeMillis()/1000+"");
-		String sign = WXUtil.paySign(config.PAY_API_SECRECT,params);
+		String sign = WXUtil.sign(config.PAY_API_SECRECT,params);
 		params.put("sign", sign);
 		DataRow row = new DataRow(params);
 		row.put("packagevalue", row.get("package"));
