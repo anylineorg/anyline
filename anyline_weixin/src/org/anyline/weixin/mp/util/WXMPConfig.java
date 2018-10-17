@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
 
-import org.anyline.entity.DataRow;
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -13,9 +12,6 @@ import org.anyline.util.FileUtil;
 
 public class WXMPConfig extends BasicConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
-	public static void main(String args[]){
-		parse(WXMPConfig.class, "", new DataRow(),null);
-	}
 	/**
 	 * 服务号相关信息
 	 */
