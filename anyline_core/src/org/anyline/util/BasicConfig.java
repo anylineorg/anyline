@@ -19,9 +19,10 @@ import org.dom4j.io.SAXReader;
 public class BasicConfig {
 	protected static Logger log = Logger.getLogger(BasicConfig.class);
 	protected Map<String,String> kvs = new HashMap<String,String>();
-	public static Hashtable<String,BasicConfig> parse(Class<?> T, String key, DataRow row, Hashtable<String,BasicConfig> instances){
+	public static <T extends BasicConfig>T parse(Class<? extends BasicConfig> T, String key, DataRow row, Hashtable<String,BasicConfig> instances){
+		T config = null;
 		try {
-			BasicConfig config = (BasicConfig)T.newInstance();
+			config = (T)T.newInstance();
 			List<Field> fields = BeanUtil.getFields(T);
 			for(Field field:fields){
 				String nm = field.getName();
@@ -37,9 +38,9 @@ public class BasicConfig {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return instances;
+		return config;
 	}
-	public static Hashtable<String,BasicConfig> parse(Class<?> T, String column, DataSet set, Hashtable<String,BasicConfig> instances){
+	public static Hashtable<String,BasicConfig> parse(Class<? extends BasicConfig> T, String column, DataSet set, Hashtable<String,BasicConfig> instances){
 		for(DataRow row:set){
 			String key = row.getString(column);
 			parse(T, key, row, instances);

@@ -41,15 +41,17 @@ public class WXMPUtil {
 	public static WXMPUtil getInstance(){
 		return getInstance("default");
 	}
+	public WXMPUtil(WXMPConfig config){
+		this.config = config;
+	}
 	public static WXMPUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
 		WXMPUtil util = instances.get(key);
 		if(null == util){
-			util = new WXMPUtil();
 			WXMPConfig config = WXMPConfig.getInstance(key);
-			util.config = config;
+			util = new WXMPUtil(config);
 			instances.put(key, util);
 		}
 		return util;
