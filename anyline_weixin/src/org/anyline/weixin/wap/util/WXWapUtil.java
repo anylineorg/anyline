@@ -20,6 +20,13 @@ public class WXWapUtil {
 	private static Logger log = Logger.getLogger(WXWapUtil.class);
 	private static Hashtable<String,WXWapUtil> instances = new Hashtable<String,WXWapUtil>();
 	private WXWapConfig config;
+	
+
+	public WXWapUtil(WXWapConfig config){
+		this.config = config;
+	}
+	
+	
 	public static WXWapUtil getInstance(){
 		return getInstance("default");
 	}
@@ -29,9 +36,8 @@ public class WXWapUtil {
 		}
 		WXWapUtil util = instances.get(key);
 		if(null == util){
-			util = new WXWapUtil();
 			WXWapConfig config = WXWapConfig.getInstance(key);
-			util.config = config;
+			util = new WXWapUtil(config);
 			instances.put(key, util);
 		}
 		return util;

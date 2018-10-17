@@ -26,6 +26,11 @@ public class WXOpenUtil {
 	private static Logger log = Logger.getLogger(WXOpenUtil.class);
 	private static Hashtable<String,WXOpenUtil> instances = new Hashtable<String,WXOpenUtil>();
 	private WXOpenConfig config;
+
+	public WXOpenUtil(WXOpenConfig config){
+		this.config = config;
+	}
+	
 	public static WXOpenUtil getInstance(){
 		return getInstance("default");
 	}
@@ -35,9 +40,8 @@ public class WXOpenUtil {
 		}
 		WXOpenUtil util = instances.get(key);
 		if(null == util){
-			util = new WXOpenUtil();
 			WXOpenConfig config = WXOpenConfig.getInstance(key);
-			util.config = config;
+			util = new WXOpenUtil(config);
 			instances.put(key, util);
 		}
 		return util;
@@ -75,7 +79,7 @@ public class WXOpenUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(WXOpenConfig.UNIFIED_ORDER_URL, xml);
+		String rtn = SimpleHttpUtil.post(WXBasicConfig.UNIFIED_ORDER_URL, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
