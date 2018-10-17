@@ -6,8 +6,11 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -16,7 +19,42 @@ import org.dom4j.io.SAXReader;
 public class BasicConfig {
 	protected static Logger log = Logger.getLogger(BasicConfig.class);
 	protected Map<String,String> kvs = new HashMap<String,String>();
-	protected static Hashtable<String,BasicConfig> parseFile(Class T, File file, Hashtable<String,BasicConfig> instances){
+	public static Hashtable<String,BasicConfig> parse(Class<?> T, String key, DataRow row, Hashtable<String,BasicConfig> instances){
+		try {
+			BasicConfig config = (BasicConfig)T.newInstance();
+			List<Field> fields = BeanUtil.getFields(T);
+			for(Field field:fields){
+				String nm = field.getName();
+				if(field.isAccessible() && nm.equals(nm.toUpperCase())){
+					try {
+						config.setValue(key, row.getString(nm));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			instances.put(key, config);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return instances;
+	}
+	public static Hashtable<String,BasicConfig> parse(Class<?> T, String column, DataSet set, Hashtable<String,BasicConfig> instances){
+		for(DataRow row:set){
+			String key = row.getString(column);
+			parse(T, key, row, instances);
+		}
+		return instances;
+	}
+	/**
+	 * 解析配置文件
+	 * @param T
+	 * @param file
+	 * @param instances
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	protected static Hashtable<String,BasicConfig> parseFile(Class<?> T, File file, Hashtable<String,BasicConfig> instances){
 		if(null == file || !file.exists()){
 			log.warn("[解析配置文件][文件不存在][file="+file.getName()+"]");
 			return instances;
