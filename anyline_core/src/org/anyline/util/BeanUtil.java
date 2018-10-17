@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -526,22 +528,40 @@ public class BeanUtil {
 	public static <T> T json2oject(String json, Class<T> clazz){
 		return json2oject(JSONObject.fromObject(json), clazz);
 	}
-	public static String map2xml(Map<String,?> map){
+	public static String map2xml(Map<String,?> map, boolean order){
 		StringBuffer builder = new StringBuffer();
 		builder.append("<xml>");
-		Set es = map.entrySet();
-		Iterator it = es.iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			String key = (String) entry.getKey();
-			String value = entry.getValue()+"";
-			if("null".equals(value)){
-				value = "";
+		if(order){
+			SortedMap<String, Object> sort = new TreeMap<String, Object>(map);
+			Set es = sort.entrySet();
+			Iterator it = es.iterator();
+			while (it.hasNext()) {
+				Map.Entry entry = (Map.Entry) it.next();
+				String k = (String) entry.getKey();
+				String v = entry.getValue()+"";
+				if("null".equals(v)){
+					v = "";
+				}
+				builder.append("<" + k + ">" + v + "</" + k + ">");
 			}
-			builder.append("<" + key + ">" + value + "</" + key + ">");
+		}else{
+			Set es = map.entrySet();
+			Iterator it = es.iterator();
+			while (it.hasNext()) {
+				Map.Entry entry = (Map.Entry) it.next();
+				String key = (String) entry.getKey();
+				String value = entry.getValue()+"";
+				if("null".equals(value)){
+					value = "";
+				}
+				builder.append("<" + key + ">" + value + "</" + key + ">");
+			}
 		}
 		builder.append("</xml>");
 		return builder.toString();
+	}
+	public static String map2xml(Map<String,?> map){
+		return map2xml(map, false);
 	}
 	public static String map2json(Map<String,?> map){
 		JSONObject json = JSONObject.fromObject(map);

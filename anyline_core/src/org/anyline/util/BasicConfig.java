@@ -27,13 +27,14 @@ public class BasicConfig {
 			List<Field> fields = BeanUtil.getFields(T);
 			for(Field field:fields){
 				String nm = field.getName();
+				
 				if(!Modifier.isFinal(field.getModifiers()) 
 						&& !Modifier.isPrivate(field.getModifiers()) 
 						&& !Modifier.isStatic(field.getModifiers()) 
-						&& field.isAccessible() 
+						&& "String".equals(field.getType().getSimpleName())
 						&& nm.equals(nm.toUpperCase())){
 					try {
-						config.setValue(key, row.getString(nm));
+						config.setValue(nm, row.getString(nm));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

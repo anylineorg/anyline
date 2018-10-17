@@ -85,7 +85,7 @@ public class WXMPUtil {
 		}
 		order.setTrade_type(WXBasicConfig.TRADE_TYPE.JSAPI);
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -122,7 +122,7 @@ public class WXMPUtil {
 			refund.setMch_id(config.PAY_MCH_ID);
 		}
 		Map<String, Object> map = BeanUtil.toMap(refund);
-		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
 		
 		map.put("sign", sign);
 		
@@ -148,7 +148,7 @@ public class WXMPUtil {
 		}
 		try{
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
-            StringEntity  reqEntity  = new StringEntity(xml);
+            StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpClientUtil.post(httpclient, WXBasicConfig.REFUND_URL, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
@@ -176,7 +176,7 @@ public class WXMPUtil {
 			pack.setMch_id(config.PAY_MCH_ID);
 		}
 		Map<String, Object> map = BeanUtil.toMap(pack);
-		String sign = WXUtil.paySign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
 		
 		map.put("sign", sign);
 		
@@ -184,7 +184,6 @@ public class WXMPUtil {
 			log.warn("发送红包SIGN:" + sign);
 		}
 		String xml = BeanUtil.map2xml(map);
-
 		if(ConfigTable.isDebug()){
 			log.warn("发送红包XML:" + xml);
 			log.warn("证书:"+config.PAY_KEY_STORE_FILE);
@@ -202,7 +201,7 @@ public class WXMPUtil {
 		}
 		try{
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
-            StringEntity  reqEntity  = new StringEntity(xml);
+            StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpClientUtil.post(httpclient, WXBasicConfig.SEND_REDPACK_URL, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
@@ -229,7 +228,7 @@ public class WXMPUtil {
 		params.put("appId", getConfig().APP_ID);
 		params.put("nonceStr", random);
 		params.put("signType", "MD5");
-		String sign = WXUtil.paySign(getConfig().PAY_API_SECRECT, params);
+		String sign = WXUtil.sign(getConfig().PAY_API_SECRECT, params);
 		params.put("paySign", sign);
 		
 		DataRow row = new DataRow(params);
