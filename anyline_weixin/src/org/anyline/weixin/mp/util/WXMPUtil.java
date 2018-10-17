@@ -44,6 +44,11 @@ public class WXMPUtil {
 	public WXMPUtil(WXMPConfig config){
 		this.config = config;
 	}
+	public WXMPUtil(String key, DataRow config){
+		WXMPConfig conf = WXMPConfig.parse(key, config);
+		this.config = conf;
+		instances.put(key, this);
+	}
 	public static WXMPUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
