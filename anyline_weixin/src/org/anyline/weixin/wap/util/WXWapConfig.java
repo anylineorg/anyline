@@ -4,13 +4,16 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
+import org.anyline.weixin.WXBasicConfig;
 
 
-public class WXWapConfig extends BasicConfig{
+public class WXWapConfig extends WXBasicConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	/**
 	 * 服务号相关信息
@@ -44,6 +47,17 @@ public class WXWapConfig extends BasicConfig{
 			key = "default";
 		}
 		return (WXWapConfig)instances.get(key);
+	}
+
+	public static WXWapConfig parse(String key, DataRow row){
+		return parse(WXWapConfig.class, key, row, instances);
+	}
+	public static Hashtable<String,BasicConfig> parse(String column, DataSet set){
+		for(DataRow row:set){
+			String key = row.getString(column);
+			parse(key, row);
+		}
+		return instances;
 	}
 	/**
 	 * 加载配置文件
