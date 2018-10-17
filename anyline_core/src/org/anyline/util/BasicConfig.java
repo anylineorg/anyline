@@ -2,6 +2,7 @@ package org.anyline.util;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -26,7 +27,11 @@ public class BasicConfig {
 			List<Field> fields = BeanUtil.getFields(T);
 			for(Field field:fields){
 				String nm = field.getName();
-				if(field.isAccessible() && nm.equals(nm.toUpperCase())){
+				if(!Modifier.isFinal(field.getModifiers()) 
+						&& !Modifier.isPrivate(field.getModifiers()) 
+						&& !Modifier.isStatic(field.getModifiers()) 
+						&& field.isAccessible() 
+						&& nm.equals(nm.toUpperCase())){
 					try {
 						config.setValue(key, row.getString(nm));
 					} catch (Exception e) {
