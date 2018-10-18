@@ -10,10 +10,10 @@ import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.anyline.weixin.WXBasicConfig;
+import org.anyline.weixin.util.WXConfig;
 
 
-public class WXMPConfig extends WXBasicConfig{
+public class WXMPConfig extends WXConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	/**
 	 * 服务号相关信息

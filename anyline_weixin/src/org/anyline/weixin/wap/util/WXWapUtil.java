@@ -10,7 +10,7 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.WXBasicConfig;
+import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.anyline.weixin.wap.entity.WXWapPayTradeOrder;
 import org.anyline.weixin.wap.entity.WXWapPayTradeResult;
@@ -62,7 +62,7 @@ public class WXWapUtil {
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY);
 		}
-		order.setTrade_type(WXBasicConfig.TRADE_TYPE.MWEB);
+		order.setTrade_type(WXConfig.TRADE_TYPE.MWEB);
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.sign(config.API_SECRECT,map);
@@ -75,7 +75,7 @@ public class WXWapUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(WXBasicConfig.API_URL_UNIFIED_ORDER, xml);
+		String rtn = SimpleHttpUtil.post(WXConfig.API_URL_UNIFIED_ORDER, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
@@ -114,7 +114,7 @@ public class WXWapUtil {
 	}
 	public DataRow getOpenId(String code){
 		DataRow row = new DataRow();
-		String url = WXBasicConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String url = WXConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url);
 		row = DataRow.parseJson(txt);
 		return row;

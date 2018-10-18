@@ -16,7 +16,6 @@ import org.anyline.util.HttpClientUtil;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SHA1Util;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.WXBasicConfig;
 import org.anyline.weixin.entity.TemplateMessage;
 import org.anyline.weixin.entity.TemplateMessageResult;
 import org.anyline.weixin.mp.entity.WXMPGroupRedpack;
@@ -31,13 +30,14 @@ import org.anyline.weixin.mp.entity.WXMPTransfer;
 import org.anyline.weixin.mp.entity.WXMPTransferBank;
 import org.anyline.weixin.mp.entity.WXMPTransferBankResult;
 import org.anyline.weixin.mp.entity.WXMPTransferResult;
+import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.log4j.Logger;
 
-public class WXMPUtil {
+public class WXMPUtil extends WXUtil{
 	private static Logger log = Logger.getLogger(WXMPUtil.class);
 	private DataSet accessTokens = new DataSet();
 	private DataSet jsapiTickets = new DataSet();
@@ -89,7 +89,7 @@ public class WXMPUtil {
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY);
 		}
-		order.setTrade_type(WXBasicConfig.TRADE_TYPE.JSAPI);
+		order.setTrade_type(WXConfig.TRADE_TYPE.JSAPI);
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
 		map.put("sign", sign);
@@ -101,7 +101,7 @@ public class WXMPUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(WXBasicConfig.API_URL_UNIFIED_ORDER, xml);
+		String rtn = SimpleHttpUtil.post(WXConfig.API_URL_UNIFIED_ORDER, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
@@ -156,7 +156,7 @@ public class WXMPUtil {
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXBasicConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
+            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("退款申请调用结果:" + txt);
     		}
@@ -212,7 +212,7 @@ public class WXMPUtil {
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXBasicConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
+            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("发送红包调用结果:" + txt);
     		}
@@ -269,7 +269,7 @@ public class WXMPUtil {
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXBasicConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
+            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("发送裂变红包调用结果:" + txt);
     		}
@@ -325,7 +325,7 @@ public class WXMPUtil {
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXBasicConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
+            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("付款调用结果:" + txt);
     		}
@@ -378,7 +378,7 @@ public class WXMPUtil {
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXBasicConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
+            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("付款调用结果:" + txt);
     		}
@@ -531,7 +531,7 @@ public class WXMPUtil {
 	}
 	public DataRow getOpenId(String code){
 		DataRow row = new DataRow();
-		String url = WXBasicConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String url = WXConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url);
 		log.warn("[get openid][txt:"+txt+"]");
 		row = DataRow.parseJson(txt);
@@ -548,7 +548,7 @@ public class WXMPUtil {
 	public TemplateMessageResult sendTemplateMessage(TemplateMessage msg){
 		TemplateMessageResult result = null;
 		String token = getAccessToken();
-		String url = WXBasicConfig.API_URL_SEND_TEMPLATE_MESSAGE + "?access_token=" + token;
+		String url = WXConfig.API_URL_SEND_TEMPLATE_MESSAGE + "?access_token=" + token;
 		String json = BeanUtil.object2json(msg);
 		log.warn("[send template message][data:"+json+"]");
 		HttpEntity entity = new StringEntity(json, "UTF-8");

@@ -12,11 +12,11 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpClientUtil;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.WXBasicConfig;
 import org.anyline.weixin.open.entity.WXOpenPayRefund;
 import org.anyline.weixin.open.entity.WXOpenPayRefundResult;
 import org.anyline.weixin.open.entity.WXOpenPayTradeOrder;
 import org.anyline.weixin.open.entity.WXOpenPayTradeResult;
+import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -67,7 +67,7 @@ public class WXOpenUtil {
 			order.setNotify_url(config.PAY_NOTIFY);
 		}
 
-		order.setTrade_type(WXBasicConfig.TRADE_TYPE.APP);
+		order.setTrade_type(WXConfig.TRADE_TYPE.APP);
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
 		map.put("sign", sign);
@@ -79,7 +79,7 @@ public class WXOpenUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(WXBasicConfig.API_URL_UNIFIED_ORDER, xml);
+		String rtn = SimpleHttpUtil.post(WXConfig.API_URL_UNIFIED_ORDER, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
@@ -135,7 +135,7 @@ public class WXOpenUtil {
 			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml);
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXBasicConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
+            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("退款申请调用结果:" + txt);
     		}
@@ -172,7 +172,7 @@ public class WXOpenUtil {
 	}
 	public DataRow getOpenId(String code){
 		DataRow row = new DataRow();
-		String url = WXBasicConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String url = WXConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url);
 		row = DataRow.parseJson(txt);
 		return row;

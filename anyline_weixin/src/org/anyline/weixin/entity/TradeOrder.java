@@ -1,6 +1,6 @@
 package org.anyline.weixin.entity;
 
-import org.anyline.weixin.WXBasicConfig.TRADE_TYPE;
+import org.anyline.weixin.util.WXConfig.TRADE_TYPE;
 
 public class TradeOrder {
 	protected String appid				; //公众号ID(conf)	是	String(32)	wxd678efh567hg6787	微信支付分配的公众账号ID（企业号corpid即为此appId）
