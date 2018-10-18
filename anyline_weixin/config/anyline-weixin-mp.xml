@@ -14,5 +14,7 @@
 		<property key="PAY_CALLBACK_URL"></property>
 		<property key="PAY_KEY_STORE_FILE">D:\\apiclient_cert.p12</property>
 		<property key="PAY_KEY_STORE_PASSWORD">111111</property>
+		<!-- 支付到银行卡公钥文件 -->
+		<property key="PAY_BANK_RSA_PUBLIC_KEY_FILE"></property>
 	</config>
 </configs> 
