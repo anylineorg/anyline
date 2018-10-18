@@ -25,8 +25,8 @@ public class WXWapConfig extends WXBasicConfig{
 	public String SIGN_TYPE = ""			; //签名加密方式
 	public String SERVER_TOKEN = ""			; //服务号的配置token
 	public String CERT_PATH = ""			; //微信支付证书存放路径地址
-	public String PAY_NOTIFY_URL = ""			; //微信支付统一接口的回调action
-	public String PAY_CALLBACK_URL = ""			; //微信支付成功支付后跳转的地址
+	public String PAY_NOTIFY = ""			; //微信支付统一接口的回调action
+	public String PAY_CALLBACK = ""			; //微信支付成功支付后跳转的地址
 	public String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
 
 	
