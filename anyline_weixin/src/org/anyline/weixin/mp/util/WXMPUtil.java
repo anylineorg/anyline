@@ -14,6 +14,7 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpClientUtil;
 import org.anyline.util.HttpUtil;
+import org.anyline.util.RSAUtil;
 import org.anyline.util.SHA1Util;
 import org.anyline.util.SimpleHttpUtil;
 import org.anyline.weixin.entity.TemplateMessage;
@@ -344,6 +345,17 @@ public class WXMPUtil extends WXUtil{
 	public WXMPTransferBankResult transfer(WXMPTransferBank transfer){
 		WXMPTransferBankResult result = new WXMPTransferBankResult();
 		transfer.setNonce_str(BasicUtil.getRandomLowerString(20));
+		String enc_bank_no = transfer.getEnc_bank_no();
+		String enc_true_name = transfer.getEnc_true_name();
+		if(BasicUtil.isEmpty(enc_bank_no)){
+			log.warn("未提供收款卡号");
+			return new WXMPTransferBankResult(false,"未提供收款卡号");
+		}
+		if(BasicUtil.isEmpty(enc_true_name)){
+			log.warn("未提供收款人姓名");
+			return new WXMPTransferBankResult(false,"未提供收款人姓名");
+		}
+		enc_bank_no = RSAUtil.publicEncrypt(enc_bank_no, RSAUtil.getPublicKey(new File(config.PAY_BANK_RSA_PUBLIC_KEY_FILE)));
 		if(BasicUtil.isEmpty(transfer.getMch_id())){
 			transfer.setMch_id(config.PAY_MCH_ID);
 		}
@@ -560,5 +572,18 @@ public class WXMPUtil extends WXUtil{
 	public TemplateMessageResult sendTemplateMessage(String openId, TemplateMessage msg){
 		msg.setUser(openId);
 		return sendTemplateMessage(msg);
+	}
+	/**
+	 * 获取RSA公钥
+	 * @param mch
+	 * @param apiSecret
+	 * @param keyStoreFile
+	 * @param keyStorePassword
+	 * @return
+	 */
+	public String getPublicKey() {
+		String txt = WXUtil.getPublicKey(config.PAY_MCH_ID, config.PAY_API_SECRECT, new File(config.PAY_KEY_STORE_FILE), config.PAY_KEY_STORE_PASSWORD);
+		Map<String,?> map = BeanUtil.xml2map(txt);
+		return (String)map.get("pub_key");
 	}
 }
