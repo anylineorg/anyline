@@ -12,6 +12,27 @@ public class WXConfig extends BasicConfig{
 		MWEB			{public String getCode(){return "MWEB";} 		public String getName(){return "WAP";}};
 		public abstract String getName();
 		public abstract String getCode();
+	};
+	public static enum BANK{
+		工商银行	{public String getCode(){return "1002";}public String getName(){return "工商银行";}},
+		农业银行	{public String getCode(){return "1005";}public String getName(){return "农业银行";}},
+		中国银行	{public String getCode(){return "1026";}public String getName(){return "中国银行";}},
+		建设银行	{public String getCode(){return "1003";}public String getName(){return "建设银行";}},
+		招商银行	{public String getCode(){return "1001";}public String getName(){return "招商银行";}},
+		邮储银行	{public String getCode(){return "1066";}public String getName(){return "邮储银行";}},
+		交通银行	{public String getCode(){return "1020";}public String getName(){return "交通银行";}},
+		浦发银行	{public String getCode(){return "1004";}public String getName(){return "浦发银行";}},
+		民生银行	{public String getCode(){return "1006";}public String getName(){return "民生银行";}},
+		兴业银行	{public String getCode(){return "1009";}public String getName(){return "兴业银行";}},
+		平安银行	{public String getCode(){return "1010";}public String getName(){return "平安银行";}},
+		中信银行	{public String getCode(){return "1021";}public String getName(){return "中信银行";}},
+		华夏银行	{public String getCode(){return "1025";}public String getName(){return "华夏银行";}},
+		广发银行	{public String getCode(){return "1027";}public String getName(){return "广发银行";}},
+		光大银行	{public String getCode(){return "1022";}public String getName(){return "光大银行";}},
+		北京银行	{public String getCode(){return "1032";}public String getName(){return "北京银行";}},
+		宁波银行	{public String getCode(){return "1056";}public String getName(){return "宁波银行";}};
+		public abstract String getName();
+		public abstract String getCode();
 	}
 	/**
 	 * 微信支付接口地址
@@ -40,6 +61,8 @@ public class WXConfig extends BasicConfig{
 	public final static String API_URL_COMPANY_TRANSFER			= "https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers";
 	//付款到银行卡
 	public final static String API_URL_COMPANY_TRANSFER_BANK	= "https://api.mch.weixin.qq.com/mmpaysptrans/pay_bank";
+	//获取RSA公钥
+	public final static String API_URL_GET_PUBLIC_SECRET		= "https://fraud.mch.weixin.qq.com/risk/getpublickey";
 	//发送模板消息
 	public final static String API_URL_SEND_TEMPLATE_MESSAGE	= "https://api.weixin.qq.com/cgi-bin/message/template/send";
 	//oauth2.0授权
