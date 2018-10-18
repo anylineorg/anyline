@@ -175,6 +175,9 @@ public class WXMPUtil {
 		if(BasicUtil.isEmpty(pack.getMch_id())){
 			pack.setMch_id(config.PAY_MCH_ID);
 		}
+		if(BasicUtil.isEmpty(pack.getMch_billno())){
+			pack.setMch_billno(BasicUtil.getRandomLowerString(20));
+		}
 		Map<String, Object> map = BeanUtil.toMap(pack);
 		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
 		
