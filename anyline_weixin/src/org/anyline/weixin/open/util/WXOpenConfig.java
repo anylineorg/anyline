@@ -27,8 +27,8 @@ public class WXOpenConfig extends WXBasicConfig{
 	public String PAY_MCH_ID = ""				; //商家号
 	public String PAY_KEY_STORE_FILE = ""		; //证书文件
 	public String PAY_KEY_STORE_PASSWORD = ""	; //证书密码
-	public String PAY_NOTIFY_URL = ""			; //微信支付统一接口的回调action
-	public String PAY_CALLBACK_URL = ""			; //微信支付成功支付后跳转的地址
+	public String PAY_NOTIFY = ""			; //微信支付统一接口的回调action
+	public String PAY_CALLBACK = ""			; //微信支付成功支付后跳转的地址
 
 
 	static{

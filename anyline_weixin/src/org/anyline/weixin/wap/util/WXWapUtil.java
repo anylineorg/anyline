@@ -60,7 +60,7 @@ public class WXWapUtil {
 			order.setMch_id(config.MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
-			order.setNotify_url(config.PAY_NOTIFY_URL);
+			order.setNotify_url(config.PAY_NOTIFY);
 		}
 		order.setTrade_type(WXBasicConfig.TRADE_TYPE.MWEB);
 		
@@ -75,7 +75,7 @@ public class WXWapUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单XML:" + xml);
 		}
-		String rtn = SimpleHttpUtil.post(WXBasicConfig.UNIFIED_ORDER_URL, xml);
+		String rtn = SimpleHttpUtil.post(WXBasicConfig.API_URL_UNIFIED_ORDER, xml);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
@@ -114,7 +114,7 @@ public class WXWapUtil {
 	}
 	public DataRow getOpenId(String code){
 		DataRow row = new DataRow();
-		String url = WXBasicConfig.AUTH_ACCESS_TOKEN_URL + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String url = WXBasicConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url);
 		row = DataRow.parseJson(txt);
 		return row;

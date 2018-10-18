@@ -13,6 +13,20 @@ public class TradeResult {
 	protected String err_code_des;
 	protected String trade_type;
 	protected String prepay_id;
+
+	public TradeResult(){
+		
+	}
+	public TradeResult(boolean result, String msg){
+		if(result){
+			this.return_code = "SUCCESS";
+		}else{
+			this.return_code = "FAIL";
+		}
+		this.return_msg = msg;
+	}
+	
+	
 	public String getAppid() {
 		return appid;
 	}
