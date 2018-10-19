@@ -10,6 +10,7 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
+import org.anyline.weixin.open.util.WXOpenConfig;
 import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.anyline.weixin.wap.entity.WXWapPayTradeOrder;
@@ -26,7 +27,12 @@ public class WXWapUtil {
 		this.config = config;
 	}
 	
-	
+
+	public WXWapUtil(String key, DataRow config){
+		WXWapConfig conf = WXWapConfig.parse(key, config);
+		this.config = conf;
+		instances.put(key, this);
+	}
 	public static WXWapUtil getInstance(){
 		return getInstance("default");
 	}
