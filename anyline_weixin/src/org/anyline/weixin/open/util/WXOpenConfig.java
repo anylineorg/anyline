@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -13,12 +15,6 @@ import org.anyline.weixin.util.WXConfig;
 
 public class WXOpenConfig extends WXConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
-	/**
-	 * 服务号相关信息
-	 */
-
-
-
 	static{
 		init();
 		debug();
@@ -37,6 +33,17 @@ public class WXOpenConfig extends WXConfig{
 		}
 		return (WXOpenConfig)instances.get(key);
 	}
+
+	public static WXOpenConfig parse(String key, DataRow row){
+		return parse(WXOpenConfig.class, key, row, instances, compatibles);
+	}
+	public static Hashtable<String,BasicConfig> parse(String column, DataSet set){
+		for(DataRow row:set){
+			String key = row.getString(column);
+			parse(key, row);
+		}
+		return instances;
+	}
 	/**
 	 * 加载配置文件
 	 * 首先加载anyline-config.xml
@@ -48,11 +55,7 @@ public class WXOpenConfig extends WXConfig{
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-weixin-open.xml".equals(file.getName())){
-					parseFile(WXOpenConfig.class, file, instances
-							,"PAY_API_SECRECT:API_SECRECT"
-							,"PAY_MCH_ID:MCH_ID"
-							,"PAY_KEY_STORE_FILE:KEY_STORE_FILE"
-							,"PAY_KEY_STORE_PASSWORD:KEY_STORE_PASSWORD");
+					parseFile(WXOpenConfig.class, file, instances,compatibles);
 				}
 			}
 			
