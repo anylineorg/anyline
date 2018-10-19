@@ -15,25 +15,7 @@ import org.anyline.weixin.util.WXConfig;
 
 public class WXWapConfig extends WXConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
-	/**
-	 * 服务号相关信息
-	 */
-	public String APP_ID = ""				; //AppID(应用ID)
-	public String APP_SECRECT = ""			; //AppSecret(应用密钥)
-	public String API_SECRECT = ""			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
-	public String MCH_ID = ""				; //商家号
-	public String SIGN_TYPE = ""			; //签名加密方式
-	public String SERVER_TOKEN = ""			; //服务号的配置token
-	public String CERT_PATH = ""			; //微信支付证书存放路径地址
-	public String PAY_NOTIFY = ""			; //微信支付统一接口的回调action
-	public String PAY_CALLBACK = ""			; //微信支付成功支付后跳转的地址
-	public String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
 
-	private static String[] compatibles = {
-			"PAY_API_SECRECT:API_SECRECT"
-			,"PAY_MCH_ID:MCH_ID"
-			,"PAY_KEY_STORE_FILE:KEY_STORE_FILE"
-			,"PAY_KEY_STORE_PASSWORD:KEY_STORE_PASSWORD"};
 	static{
 		init();
 		debug();

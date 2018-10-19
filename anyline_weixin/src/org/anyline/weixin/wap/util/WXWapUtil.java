@@ -57,7 +57,7 @@ public class WXWapUtil {
 			order.setAppid(config.APP_ID);
 		}
 		if(BasicUtil.isEmpty(order.getMch_id())){
-			order.setMch_id(config.MCH_ID);
+			order.setMch_id(config.PAY_MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY);
@@ -65,7 +65,7 @@ public class WXWapUtil {
 		order.setTrade_type(WXConfig.TRADE_TYPE.MWEB);
 		
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = WXUtil.sign(config.API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -97,12 +97,12 @@ public class WXWapUtil {
 	public DataRow appParam(String prepayid){
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("appid", config.APP_ID);
-		params.put("partnerid", config.MCH_ID);
+		params.put("partnerid", config.PAY_MCH_ID);
 		params.put("prepayid", prepayid);
 		params.put("package", "Sign=WXPay");
 		params.put("noncestr", BasicUtil.getRandomUpperString(32));
 		params.put("timestamp", System.currentTimeMillis()/1000+"");
-		String sign = WXUtil.sign(config.API_SECRECT,params);
+		String sign = WXUtil.sign(config.PAY_API_SECRECT,params);
 		params.put("sign", sign);
 		DataRow row = new DataRow(params);
 		row.put("packagevalue", row.get("package"));
