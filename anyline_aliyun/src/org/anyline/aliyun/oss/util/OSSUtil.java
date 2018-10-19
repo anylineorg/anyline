@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.MatchMode;
+import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PolicyConditions;
 
 public class OSSUtil {
@@ -60,6 +61,23 @@ public class OSSUtil {
 	public String upload(InputStream in, String bucket, String path){
 		client.putObject(bucket, path, in);
 		return createUrl(bucket, path);
+	}
+	public boolean delete(String bucket, String path){
+		boolean result = false;
+		try{
+			client.deleteObject(bucket, path);
+			result = true;
+		}catch(Exception e){
+			result = false;
+		}
+		return result;
+	}
+	public OSSObject get(String bucket, String path){
+		try{
+			return client.getObject(bucket, path);
+		}catch(Exception e){
+			return null;
+		}
 	}
 	private String createUrl(String bucket, String path){
 		String result = "";
