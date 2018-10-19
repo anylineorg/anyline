@@ -59,7 +59,7 @@ public class BasicConfig {
 								String val = row.getString(oldKey);
 								kvs.put(newKey, val);
 								config.setValue(newKey, val);
-								log.warn("[解析配置文件][版本兼容][new key:"+newKey+"][old key:"+oldKey+":"+val+"]");
+								log.warn("[解析配置文件][版本兼容][laster key:"+newKey+"][old key:"+oldKey+":"+val+"]");
 							}
 						}
 					}
@@ -130,7 +130,7 @@ public class BasicConfig {
 								if(null != element){
 									String val = element.getTextTrim();
 									kvs.put(newKey, val);
-									log.warn("[解析配置文件][版本兼容][new key:"+newKey+"][old key:"+oldKey+":"+val+"]");
+									log.warn("[解析配置文件][版本兼容][laster key:"+newKey+"][old key:"+oldKey+":"+val+"]");
 								}
 							}
 						}
