@@ -1,5 +1,10 @@
 package org.anyline.weixin.entity;
-
+/**
+ * 
+每个红包的平均金额必须在1.00元到200.00元之间
+total_num必须介于(包括)3到20之间
+ *
+ */
 public class Redpack {
 	protected String nonce_str		; //随机字符串			是(auto)		5K8264ILTKCH16CQ2502SI8ZNMTM67VS	String(32)	随机字符串，不长于32位
 	protected String sign			; //签名				是(auto)		C380BEC2BFD727A4B6845133519F3AD6	String(32)	详见签名生成算法
@@ -13,7 +18,7 @@ public class Redpack {
 	protected String wishing		; //红包祝福语			是			感谢您参加猜灯谜活动，祝您元宵节快乐！		String(128)	红包祝福语
 	protected String client_ip		; //Ip地址			否			192.168.0.1							String(15)	调用接口的机器Ip地址
 	protected String act_name		; //活动名称			是			猜灯谜抢红包活动						String(32)	活动名称
-	protected String remark			; //备注				是			猜越多得越多，快来抢！					String(256)	备注信息
+	protected String remark			; //备注				否			猜越多得越多，快来抢！					String(256)	备注信息
 	protected String scene_id		; //场景id			否			PRODUCT_8							String(32)	发放红包使用场景，红包金额大于200或者小于1元时必传 PRODUCT_1:商品促销 PRODUCT_2:抽奖 PRODUCT_3:虚拟物品兑奖 PRODUCT_4:企业内部福利PRODUCT_5:渠道分润 PRODUCT_6:保险回馈 PRODUCT_7:彩票派奖 PRODUCT_8:税务刮奖
 	protected String risk_info		; //活动信息			否			posttime%3d123123412%26clientversion%3d234134%26mobile%3d122344545%26deviceid%3dIOS	String(128)	posttime:用户操作的时间戳 mobile:业务系统账号的手机号，国家代码-手机号。不需要+号 deviceid :mac 地址或者设备唯一标识  clientversion :用户操作的客户端版本 把值为非空的信息用key=value进行拼接，再进行urlencode urlencode(posttime=xx& mobile =xx&deviceid=xx) 
 	protected String consume_mch_id	; //资金授权商户号		否			1222000096							String(32)	资金授权商户号 服务商替特约商户发放时使用

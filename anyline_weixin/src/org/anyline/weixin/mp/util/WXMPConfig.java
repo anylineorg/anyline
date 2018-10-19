@@ -1,8 +1,10 @@
 package org.anyline.weixin.mp.util;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -73,7 +75,11 @@ public class WXMPConfig extends WXConfig{
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-weixin-mp.xml".equals(file.getName())){
-					parseFile(WXMPConfig.class, file, instances);
+					parseFile(WXMPConfig.class, file, instances
+							,"PAY_API_SECRECT:API_SECRECT"
+							,"PAY_MCH_ID:MCH_ID"
+							,"PAY_KEY_STORE_FILE:KEY_STORE_FILE"
+							,"PAY_KEY_STORE_PASSWORD:KEY_STORE_PASSWORD");
 				}
 			}
 			
