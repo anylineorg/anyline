@@ -29,7 +29,7 @@ public class WXWapConfig extends WXConfig{
 	public String PAY_CALLBACK = ""			; //微信支付成功支付后跳转的地址
 	public String OAUTH2_REDIRECT_URI = ""	; //oauth2授权时回调action
 
-	private static String[] promotions = {
+	private static String[] compatibles = {
 			"PAY_API_SECRECT:API_SECRECT"
 			,"PAY_MCH_ID:MCH_ID"
 			,"PAY_KEY_STORE_FILE:KEY_STORE_FILE"
@@ -54,7 +54,7 @@ public class WXWapConfig extends WXConfig{
 	}
 
 	public static WXWapConfig parse(String key, DataRow row){
-		return parse(WXWapConfig.class, key, row, instances, promotions);
+		return parse(WXWapConfig.class, key, row, instances, compatibles);
 	}
 	public static Hashtable<String,BasicConfig> parse(String column, DataSet set){
 		for(DataRow row:set){
@@ -74,7 +74,7 @@ public class WXWapConfig extends WXConfig{
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-weixin-wap.xml".equals(file.getName())){
-					parseFile(WXWapConfig.class, file, instances, promotions);
+					parseFile(WXWapConfig.class, file, instances, compatibles);
 				}
 			}
 			
