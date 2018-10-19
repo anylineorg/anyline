@@ -8,8 +8,8 @@ public class TradeOrder {
 	protected String nonce_str			; //随机字符串(auto)	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	随机字符串，长度要求在32位以内。推荐随机数生成算法
 	protected String sign				; //签名(auto)		是	String(32)	C380BEC2BFD727A4B6845133519F3AD6	通过签名算法计算得出的签名值，详见签名生成算法
 	protected String body				; //商品描述			是	String(128)	腾讯充值中心-QQ会员充值	商品简单描述，该字段请按照规范传递，具体请见参数规定
-	protected String out_trade_no		; //商户订单号			是	String(32)	notify时原样回传　用来对应TRADE_CALL(常用格式 CALL_ID + _ + ORDER_ID) 20150806125346	商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|* 且在同一个商户号下唯一。详见商户订单号
-	protected String total_fee			; //标价金额			是	Int			88	订单总金额，单位为分，详见支付金额
+	protected String out_trade_no		; //商户订单号(evl)	是	String(32)	notify时原样回传　用来对应TRADE_CALL(常用格式 CALL_ID + _ + ORDER_ID) 20150806125346	商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|* 且在同一个商户号下唯一。详见商户订单号
+	protected int total_fee				; //标价金额			是	Int			88	订单总金额，单位为分，详见支付金额
 	protected String spbill_create_ip	; //终端IP			是	String(16)	123.12.12.123	APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。
 	protected String notify_url			; //通知地址			是	String(256)	http://www.weixin.qq.com/wxpay/pay.php	异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
 	protected String trade_type			; //交易类型			是	String(16)	JSAPI	 JSAPI 公众号支付 NATIVE 扫码支付 APP APP支付
@@ -67,10 +67,11 @@ public class TradeOrder {
 	public void setOut_trade_no(String out_trade_no) {
 		this.out_trade_no = out_trade_no;
 	}
-	public String getTotal_fee() {
+	
+	public int getTotal_fee() {
 		return total_fee;
 	}
-	public void setTotal_fee(String total_fee) {
+	public void setTotal_fee(int total_fee) {
 		this.total_fee = total_fee;
 	}
 	public String getSpbill_create_ip() {
