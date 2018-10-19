@@ -37,7 +37,7 @@ public class WXMPConfig extends WXConfig{
 	}
 
 	public static WXMPConfig parse(String key, DataRow row){
-		return parse(WXMPConfig.class, key, row, instances);
+		return parse(WXMPConfig.class, key, row, instances,compatibles);
 	}
 	public static Hashtable<String,BasicConfig> parse(String column, DataSet set){
 		for(DataRow row:set){
@@ -57,11 +57,7 @@ public class WXMPConfig extends WXConfig{
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-weixin-mp.xml".equals(file.getName())){
-					parseFile(WXMPConfig.class, file, instances
-							,"PAY_API_SECRECT:API_SECRECT"
-							,"PAY_MCH_ID:MCH_ID"
-							,"PAY_KEY_STORE_FILE:KEY_STORE_FILE"
-							,"PAY_KEY_STORE_PASSWORD:KEY_STORE_PASSWORD");
+					parseFile(WXMPConfig.class, file, instances,compatibles);
 				}
 			}
 			
