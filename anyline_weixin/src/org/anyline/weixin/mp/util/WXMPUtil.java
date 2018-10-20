@@ -88,11 +88,11 @@ public class WXMPUtil extends WXUtil{
 			order.setMch_id(config.PAY_MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
-			order.setNotify_url(config.PAY_NOTIFY);
+			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
 		order.setTrade_type(WXConfig.TRADE_TYPE.JSAPI);
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -129,7 +129,7 @@ public class WXMPUtil extends WXUtil{
 			refund.setMch_id(config.PAY_MCH_ID);
 		}
 		Map<String, Object> map = BeanUtil.toMap(refund);
-		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		
 		map.put("sign", sign);
 		
@@ -186,7 +186,7 @@ public class WXMPUtil extends WXUtil{
 			pack.setMch_billno(BasicUtil.getRandomLowerString(20));
 		}
 		Map<String, Object> map = BeanUtil.toMap(pack);
-		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		
 		map.put("sign", sign);
 		
@@ -243,7 +243,7 @@ public class WXMPUtil extends WXUtil{
 			pack.setMch_billno(BasicUtil.getRandomLowerString(20));
 		}
 		Map<String, Object> map = BeanUtil.toMap(pack);
-		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		
 		map.put("sign", sign);
 		
@@ -299,7 +299,7 @@ public class WXMPUtil extends WXUtil{
 			transfer.setPartner_trade_no(BasicUtil.getRandomLowerString(20));
 		}
 		Map<String, Object> map = BeanUtil.toMap(transfer);
-		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		
 		map.put("sign", sign);
 		
@@ -363,7 +363,7 @@ public class WXMPUtil extends WXUtil{
 			transfer.setPartner_trade_no(BasicUtil.getRandomLowerString(20));
 		}
 		Map<String, Object> map = BeanUtil.toMap(transfer);
-		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		
 		map.put("sign", sign);
 		
@@ -415,7 +415,7 @@ public class WXMPUtil extends WXUtil{
 		params.put("appId", getConfig().APP_ID);
 		params.put("nonceStr", random);
 		params.put("signType", "MD5");
-		String sign = WXUtil.sign(getConfig().PAY_API_SECRECT, params);
+		String sign = WXUtil.sign(getConfig().PAY_API_SECRET, params);
 		params.put("paySign", sign);
 		
 		DataRow row = new DataRow(params);
@@ -427,7 +427,7 @@ public class WXMPUtil extends WXUtil{
 
 	
 	public String getAccessToken(){
-		return getAccessToken(config.APP_ID, config.APP_SECRECT);
+		return getAccessToken(config.APP_ID, config.APP_SECRET);
 	}
 	public String getAccessToken(String appid, String secret){
 		String result = "";
@@ -543,7 +543,7 @@ public class WXMPUtil extends WXUtil{
 	}
 	public DataRow getOpenId(String code){
 		DataRow row = new DataRow();
-		String url = WXConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String url = WXConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRET+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url);
 		log.warn("[get openid][txt:"+txt+"]");
 		row = DataRow.parseJson(txt);
@@ -582,7 +582,7 @@ public class WXMPUtil extends WXUtil{
 	 * @return
 	 */
 	public String getPublicKey() {
-		String txt = WXUtil.getPublicKey(config.PAY_MCH_ID, config.PAY_API_SECRECT, new File(config.PAY_KEY_STORE_FILE), config.PAY_KEY_STORE_PASSWORD);
+		String txt = WXUtil.getPublicKey(config.PAY_MCH_ID, config.PAY_API_SECRET, new File(config.PAY_KEY_STORE_FILE), config.PAY_KEY_STORE_PASSWORD);
 		Map<String,?> map = BeanUtil.xml2map(txt);
 		return (String)map.get("pub_key");
 	}

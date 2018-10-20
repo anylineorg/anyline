@@ -18,22 +18,22 @@ public class WXUtil {
 	/**
 	 * 参数签名
 	 * 
-	 * @param apisecrect
+	 * @param apisecret
 	 * @param params
 	 * @return
 	 */
-	public static String sign(String apisecrect, Map<String, Object> params) {
+	public static String sign(String apisecret, Map<String, Object> params) {
 		String sign = "";
 		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + apisecrect;
+		sign += "&key=" + apisecret;
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
 	}
 
-	public static String jsapiPaySign(String apisecrect, Map<String, Object> params) {
+	public static String jsapiPaySign(String apisecret, Map<String, Object> params) {
 		String sign = "";
 		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + apisecrect;
+		sign += "&key=" + apisecret;
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
 	}

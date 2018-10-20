@@ -70,12 +70,12 @@ public class WXOpenUtil {
 			order.setMch_id(config.PAY_MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
-			order.setNotify_url(config.PAY_NOTIFY);
+			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
 
 		order.setTrade_type(WXConfig.TRADE_TYPE.APP);
 		Map<String, Object> map = BeanUtil.toMap(order);
-		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单SIGN:" + sign);
@@ -114,7 +114,7 @@ public class WXOpenUtil {
 			refund.setMch_id(config.PAY_MCH_ID);
 		}
 		Map<String, Object> map = BeanUtil.toMap(refund);
-		String sign = WXUtil.sign(config.PAY_API_SECRECT,map);
+		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		
 		map.put("sign", sign);
 		
@@ -166,7 +166,7 @@ public class WXOpenUtil {
 		params.put("package", "Sign=WXPay");
 		params.put("noncestr", BasicUtil.getRandomUpperString(32));
 		params.put("timestamp", System.currentTimeMillis()/1000+"");
-		String sign = WXUtil.sign(config.PAY_API_SECRECT,params);
+		String sign = WXUtil.sign(config.PAY_API_SECRET,params);
 		params.put("sign", sign);
 		DataRow row = new DataRow(params);
 		row.put("packagevalue", row.get("package"));
@@ -178,7 +178,7 @@ public class WXOpenUtil {
 	}
 	public DataRow getOpenId(String code){
 		DataRow row = new DataRow();
-		String url = WXConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRECT+"&code="+code+"&grant_type=authorization_code";
+		String url = WXConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRET+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url);
 		row = DataRow.parseJson(txt);
 		return row;
