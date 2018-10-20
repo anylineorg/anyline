@@ -8,7 +8,7 @@
 		<property key="WEB_SERVER">http://wm.twoant.net</property>
 		<property key="OAUTH_REDIRECT_URL">http://wm.twoant.net/wap/hm/lg/cb_wx_mp</property>
 		
-		<property key="PAY_API_SECRECT">oaonhd**********ohvpvbozqqayottvq</property>
+		<property key="PAY_API_SECRET">oaonhd**********ohvpvbozqqayottvq</property>
 		<property key="PAY_MCH_ID">143*****402</property>
 		<property key="PAY_NOTIFY_URL">http://****/js/hm/pay/ntf/wx_mp</property>
 		<property key="PAY_CALLBACK_URL"></property>
