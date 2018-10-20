@@ -46,42 +46,44 @@ public class OSSUtil {
 		}
 		return util;
 	}
-	public String upload(File file, String bucket, String path){
-		client.putObject(bucket, path, file);
-		return createUrl(bucket, path);
+	public String upload(File file, String path){
+		client.putObject(config.BUCKET, path, file);
+		return createUrl(path);
 	}
-	public String upload(URL url, String bucket, String path){
+	public String upload(URL url, String path){
 		try {
-			client.putObject(bucket, path, url.openStream());
+			client.putObject(config.BUCKET, path, url.openStream());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return createUrl(bucket, path);
+		return createUrl(path);
 	}
-	public String upload(InputStream in, String bucket, String path){
-		client.putObject(bucket, path, in);
-		return createUrl(bucket, path);
+	public String upload(InputStream in, String path){
+		client.putObject(config.BUCKET, path, in);
+		return createUrl(path);
 	}
-	public boolean delete(String bucket, String path){
+	public boolean delete(String path){
 		boolean result = false;
 		try{
-			client.deleteObject(bucket, path);
+			path = path.replace("http://"+config.BUCKET+"."+config.ENDPOINT+"/", "");
+			client.deleteObject(config.BUCKET, path);
 			result = true;
 		}catch(Exception e){
 			result = false;
 		}
 		return result;
 	}
-	public OSSObject get(String bucket, String path){
+	public OSSObject get(String path){
 		try{
-			return client.getObject(bucket, path);
+			path = path.replace("http://"+config.BUCKET+"."+config.ENDPOINT+"/", "");
+			return client.getObject(config.BUCKET, path);
 		}catch(Exception e){
 			return null;
 		}
 	}
-	private String createUrl(String bucket, String path){
+	private String createUrl(String path){
 		String result = "";
-		result = "http://"+bucket+"."+config.ENDPOINT;
+		result = "http://"+config.BUCKET+"."+config.ENDPOINT;
 		result = FileUtil.mergePath(result, path);
 		return result;
 	}
