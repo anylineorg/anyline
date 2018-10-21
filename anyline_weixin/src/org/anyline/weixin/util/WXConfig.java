@@ -80,7 +80,7 @@ public class WXConfig extends BasicConfig{
 	public String APP_SECRET 					= "" ; //AppSecret(应用密钥)
 	public String SIGN_TYPE 					= "" ; //签名加密方式
 	public String SERVER_TOKEN 					= "" ; //服务号的配置token
-	public String OAUTH2_REDIRECT_URI 			= "" ; //oauth2授权时回调action
+	public String OAUTH_REDIRECT_URL 			= "" ; //oauth2授权时回调action
 	public String WEB_SERVER 					= "" ;
 	
 	public String PAY_API_SECRET 				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
