@@ -74,8 +74,7 @@ public class WXConfig extends BasicConfig{
 	public final static String API_URL_SEND_TEMPLATE_MESSAGE	= "https://api.weixin.qq.com/cgi-bin/message/template/send";
 	//oauth2.0授权
 	public final static String API_URL_AUTH_ACCESS_TOKEN		= "https://api.weixin.qq.com/sns/oauth2/access_token"; 
-	
-	
+	public final static String OAUTH_URL						= "https://open.weixin.qq.com/connect/oauth2/authorize";
 	public String APP_ID 						= "" ; //AppID(应用ID)
 	public String APP_SECRET 					= "" ; //AppSecret(应用密钥)
 	public String SIGN_TYPE 					= "" ; //签名加密方式
