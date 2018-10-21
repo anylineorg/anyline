@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -126,6 +127,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 					row.put(key, parseJson((JSONObject)val));
 				}else if(val instanceof JSONArray){
 					row.put(key, parseJSON((JSONArray)val));
+				}else if(val instanceof JSONNull){
+					row.put(key, null);
+				}else if(val instanceof String){
+					if("null".equalsIgnoreCase((String)val)){
+						row.put(key, null);
+					}else{
+						row.put(key, val);
+					}
 				}else{
 					row.put(key, val);
 				}
