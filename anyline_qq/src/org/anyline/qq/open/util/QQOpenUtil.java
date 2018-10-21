@@ -20,7 +20,7 @@ import org.anyline.util.SimpleHttpUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
-public class QQOpenUtil {
+public class QQOpenUtil{
 	private static Logger log = Logger.getLogger(QQOpenUtil.class);
 	private static Hashtable<String,QQOpenUtil> instances = new Hashtable<String,QQOpenUtil>();
 	private QQOpenConfig config = null;
@@ -51,7 +51,7 @@ public class QQOpenUtil {
 			order.setAppid(config.APP_ID);
 		}
 		if(BasicUtil.isEmpty(order.getMch_id())){
-			order.setMch_id(config.MCH_ID);
+			order.setMch_id(config.PAY_MCH_ID);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
@@ -89,7 +89,7 @@ public class QQOpenUtil {
 	public String sign(Map<String, Object> params) {
 		String sign = "";
 		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + config.API_SECRET;
+		sign += "&key=" + config.PAY_API_SECRET;
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
 	}
@@ -104,7 +104,7 @@ public class QQOpenUtil {
 		String result = "";
         StringBuilder builder = new StringBuilder();
         builder.append("appId=").append(config.APP_ID);
-        builder.append("&bargainorId=").append(config.MCH_ID);
+        builder.append("&bargainorId=").append(config.PAY_MCH_ID);
         builder.append("&nonce=").append(nonce);
         builder.append("&pubAcc=").append("");
         builder.append("&tokenId=").append(prepayid);
@@ -145,7 +145,7 @@ public class QQOpenUtil {
 		row.put("tokenId", prepayid);
 		row.put("pubAcc", "");
 		row.put("pubAccHint", hint);
-		row.put("bargainorId", QQOpenConfig.getInstance().MCH_ID);
+		row.put("bargainorId", QQOpenConfig.getInstance().PAY_MCH_ID);
 		row.put("sigType", "HMAC-SHA1");
 		String sign = appSign(prepayid, nonce);
 		row.put("SIG", sign);
