@@ -30,7 +30,6 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.WebUtil;
 import org.anyline.weixin.mp.util.WXMPConfig;
 import org.apache.log4j.Logger;
 
