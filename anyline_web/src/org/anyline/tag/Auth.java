@@ -29,14 +29,14 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.qq.mp.util.QQMPConfig;
+import org.anyline.qq.util.QQConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.weixin.mp.util.WXMPConfig;
+import org.anyline.weixin.util.WXConfig;
 import org.apache.log4j.Logger;
 
 public class Auth extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private String wx_host  = "https://open.weixin.qq.com/connect/oauth2/authorize";
-	private String qq_host  = "https://graph.qq.com/oauth2.0/authorize";
 	
 	private String key = "default";
 	private String appid;
@@ -105,7 +105,7 @@ public class Auth extends BaseBodyTag {
 					redirect = WXMPConfig.getInstance(key).OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				url =  wx_host + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
+				url =  WXConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
 				
 			}else if("qq".equalsIgnoreCase(type)){
 				if(BasicUtil.isEmpty(appid)){
@@ -129,7 +129,7 @@ public class Auth extends BaseBodyTag {
 					redirect = QQMPConfig.getInstance(key).OAUTH_REDIRECT_URL;
 				}
 				redirect = URLEncoder.encode(redirect, "UTF-8");
-				url =  qq_host + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state+",app:"+key;
+				url =  QQConfig.URL_OAUTH + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state+",app:"+key;
 			}
 			result = "<a href=\""+url+"\" id=\""+id+"\">";
 			if(BasicUtil.isNotEmpty(body)){
