@@ -20,10 +20,10 @@ import org.springframework.stereotype.Repository;
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	private static final long serialVersionUID = 43588201817410304L;
 	
-	@Autowired(required=false)
+	@Autowired(required = false)
 	@Qualifier("anylineDao")
-	private AnylineDao dao;
-
+	protected AnylineDao dao;
+	
 	private PrimaryCreater pc = new PrimaryCreaterImpl();
 	public DB_TYPE type(){
 		return DB_TYPE.MSSQL;
@@ -146,4 +146,11 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	public PrimaryCreater getPrimaryCreater() {
 		return pc;
 	}
+	public AnylineDao getDao() {
+		return dao;
+	}
+	public void setDao(AnylineDao dao) {
+		this.dao = dao;
+	}
+	
 }
