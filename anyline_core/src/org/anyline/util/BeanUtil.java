@@ -247,14 +247,21 @@ public class BeanUtil {
 	 */
 	public static Object getValueByColumn(Object obj, String column){
 		/*读取类属性*/
-		List<Field> fields = getFields(obj.getClass());					
-		for(Field field:fields){
-			String col = getColumn(field, false, false);
-			if(null != col && col.equals(column)){
-				try{
-					return getFieldValue(obj, field);
-				}catch(Exception e){
-					e.printStackTrace();
+		if(null == obj || null == column){
+			return null;
+		}
+		if(obj instanceof Map){
+			return ((Map)obj).get(column);
+		}else{
+			List<Field> fields = getFields(obj.getClass());					
+			for(Field field:fields){
+				String col = getColumn(field, false, false);
+				if(null != col && col.equals(column)){
+					try{
+						return getFieldValue(obj, field);
+					}catch(Exception e){
+						e.printStackTrace();
+					}
 				}
 			}
 		}
@@ -457,6 +464,75 @@ public class BeanUtil {
 			
 		}
 		return result;
+	}
+	/**
+	 * 参考 DataSet.getRows(String ... kvs);
+	 * @param list
+	 * @param params
+	 * @return
+	 */
+	public static Collection<?> select(Collection<?> list, String ... params){
+		if(null == params || params.length==0){
+			return list;
+		}
+		Map<String,String> kvs = new HashMap<String,String>();
+		int len = params.length;
+		int i = 0;
+		while(i<len){
+			String p1 = params[i];
+			if(BasicUtil.isEmpty(p1)){
+				i++;
+				continue;
+			}else if(p1.contains(":")){
+				String tmp[] = p1.split(":");
+				kvs.put(tmp[0], tmp[1]);
+				i++;
+				continue;
+			}else{
+				if(i+1<len){
+					String p2 = params[i+1];
+					if(BasicUtil.isEmpty(p2) || !p2.contains(":")){
+						kvs.put(p1, p2); 
+						i+=2;
+						continue;
+					}else{
+						String tmp[] = p2.split(":");
+						kvs.put(tmp[0], tmp[1]);
+						i+=2;
+						continue;
+					}
+				}
+
+			}
+			i++;
+		}
+		
+		Object[] items = list.toArray();
+		int size = list.size();
+		for(i=size-1; i>=0; i--){
+			Object obj = items[i];
+			boolean chk = true;//对比结果
+			for(String k : kvs.keySet()){
+				String v = kvs.get(k);
+				Object value = BeanUtil.getValueByColumn(obj, k);
+				
+				if(null == v){
+					if(null != value){
+						chk = false;
+						break;
+					}
+				}else{
+					if(!v.equals(value+"")){
+						chk = false;
+						break;
+					}
+				}
+			}
+			if(!chk){
+				list.remove(obj);
+			}
+		}
+		return list;
 	}
 	/**
 	 * pack包下的所有类 不包括jar包中定义类
