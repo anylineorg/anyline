@@ -476,7 +476,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 						break;
 					}
 				}else{
-					if(!v.equals(value)){
+					if(!v.equals(value+"")){
 						chk = false;
 						break;
 					}
