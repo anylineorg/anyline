@@ -1,17 +1,11 @@
 package org.anyline.weixin.mp.util;
 
-import java.io.File;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.FileUtil;
 import org.anyline.weixin.util.WXConfig;
 
 
@@ -52,18 +46,7 @@ public class WXMPConfig extends WXConfig{
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
 	private synchronized static void loadConfig() {
-		try {
-			File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
-			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-			for(File file:files){
-				if("anyline-weixin-mp.xml".equals(file.getName())){
-					parseFile(WXMPConfig.class, file, instances,compatibles);
-				}
-			}
-			
-		} catch (Exception e) {
-			log.error("配置文件解析异常:"+e);
-		}
+		loadConfig(instances, WXMPConfig.class, "anyline-weixin-mp.xml",compatibles);
 	}
 	private static void debug(){
 	}
