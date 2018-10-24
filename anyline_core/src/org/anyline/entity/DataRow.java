@@ -781,11 +781,19 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return result;
 	}
 	public Date getDate(String key, Date def){
-		String date = getString(key);
+		Object date = get(key);
 		if(null == date){
 			return def;
 		}
-		return DateUtil.parse(date);
+		if(date instanceof Date){
+			return (Date)date;
+		}else if(date instanceof Long){
+			Date d = new Date();
+			d.setTime((Long)date);
+			return d;
+		}else{
+			return DateUtil.parse(date.toString());
+		}
 	}
 	public Date getDate(String key, String def){
 		String date = getStringNvl(key, def);

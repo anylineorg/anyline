@@ -16,7 +16,6 @@
  *          AnyLine以及一切衍生库 不得用于任何与网游相关的系统
  */
 
-
 package org.anyline.util;
 
 import java.io.BufferedInputStream;
@@ -42,8 +41,7 @@ import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Logger;
 
 /**
- * Java utils 实现的Zip工具
- * 不支付RAR格式
+ * Java utils 实现的Zip工具 不支持RAR格式
  * 
  * @author once
  */
@@ -52,102 +50,123 @@ public class ZipUtil {
 	private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte
 
 	/**
-	 * 批量压缩文件（夹）
+	 * 批量压缩文件或文件夹
 	 * 
-	 * @param resFileList
-	 *            要压缩的文件（夹）列表
-	 * @param zipFile
-	 *            生成的压缩文件
+	 * @param files
+	 *            要压缩的文件或文件夹列表
+	 * @param root
+	 *            压缩后文件路径,解压到当前目录时,解压完成后的目录名
+	 * @param zip
+	 *            生成的压缩文件名
 	 */
-	public static void zip(Collection<File> resFileList, File zipFile) {
-		try{
-			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(
-					new FileOutputStream(zipFile), BUFF_SIZE));
-			for (File resFile : resFileList) {
-				zipFile(resFile, zipout, "");
+	public static boolean zip(Collection<File> files, File zip, String root) {
+		boolean result = true;
+		try {
+			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip), BUFF_SIZE));
+			for (File file : files) {
+				if(!zip(file, zipout, root)){
+					result = false;
+				}
 			}
 			zipout.close();
-		}catch(Exception e){
+		} catch (Exception e) {
+			result =false;
 			e.printStackTrace();
 		}
+		return result;
+	}
+	public static boolean zip(Collection<File> files, File zip) {
+		return zip(files, zip, "");
+	}
+	public static void main(String args[]){
+		File zip = new File("D:\\aaa.zip");
+		List<File> files = new ArrayList<File>();
+		files.add(new File("D:\\spark-md5.js"));
+		ZipUtil.zip(files, zip,"cc");
 	}
 
 	/**
 	 * 批量压缩文件（夹）
-	 * 
-	 * @param resFileList
+	 * 如果zip已存在则会覆盖
+	 * @param files
 	 *            要压缩的文件（夹）列表
-	 * @param zipFile
+	 * @param zip
 	 *            生成的压缩文件
+	 * @param root
+	 *            压缩后文件路径,解压到当前目录时,解压完成后的目录名
 	 * @param comment
 	 *            压缩文件的注释
 	 * @throws IOException
 	 *             当压缩过程出错时抛出
 	 */
-	public static void zip(Collection<File> resFileList, File zipFile, String comment) {
+	public static boolean zip(Collection<File> files, File zip, String root, String comment) {
+		boolean result = true;
 		long fr = System.currentTimeMillis();
-        if(ConfigTable.isDebug()){
-        	log.warn("[压缩文件][file:"+zipFile.getAbsolutePath()+"][size:"+resFileList.size()+"]");
-        }
-		try{
-			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(
-					new FileOutputStream(zipFile), BUFF_SIZE));
-			for (File resFile : resFileList) {
-				zipFile(resFile, zipout, "");
+		if (ConfigTable.isDebug()) {
+			log.warn("[压缩文件][file:" + zip.getAbsolutePath() + "][size:" + files.size() + "]");
+		}
+		try {
+			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip), BUFF_SIZE));
+			for (File file : files) {
+				if(!zip(file, zipout, root)){
+					result = false;
+				}
 			}
 			zipout.setComment(comment);
 			zipout.close();
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        if(ConfigTable.isDebug()){
-        	log.warn("[压缩完成][time:"+(System.currentTimeMillis()-fr)+"][size:"+resFileList.size()+"]");
-        }
+		if (ConfigTable.isDebug()) {
+			log.warn("[压缩完成][time:" + (System.currentTimeMillis() - fr) + "][size:" + files.size() + "]");
+		}
+		return result;
 	}
 
 	/**
 	 * 解压缩一个文件
 	 * 
-	 * @param zipFile
+	 * @param zip
 	 *            压缩文件
 	 * @param folderPath
 	 *            解压缩的目标目录
 	 * @throws IOException
 	 *             当解压缩过程出错时抛出
 	 */
-	public static List<File> unZip(File zipFile, String dir) {
-		return unZip(zipFile,new File(dir));
+	public static List<File> unZip(File zip, String dir) {
+		return unZip(zip, new File(dir));
 	}
+
 	/**
 	 * 解压缩一个文件
 	 * 
-	 * @param zipFile
+	 * @param zip
 	 *            压缩文件
 	 * @param folderPath
 	 *            解压缩的目标目录
 	 * @throws IOException
 	 *             当解压缩过程出错时抛出
 	 */
-	public static List<File> unZip(File zipFile, File dir) {
+	public static List<File> unZip(File zip, File dir) {
 		List<File> files = new ArrayList<File>();
 		long fr = System.currentTimeMillis();
-        if(ConfigTable.isDebug()){
-        	log.warn("[解压文件][file:"+zipFile.getAbsolutePath()+"][dir:"+dir.getAbsolutePath()+"]");
-        }
-        int size = 0;
+		if (ConfigTable.isDebug()) {
+			log.warn("[解压文件][file:" + zip.getAbsolutePath() + "][dir:" + dir.getAbsolutePath() + "]");
+		}
+		int size = 0;
 		try {
 			if (!dir.exists()) {
 				dir.mkdirs();
 			}
-			ZipFile zf = new ZipFile(zipFile,Charset.forName("GBK"));
+			ZipFile zf = new ZipFile(zip, Charset.forName("GBK"));
 			for (Enumeration<?> entries = zf.entries(); entries.hasMoreElements();) {
 				ZipEntry entry = ((ZipEntry) entries.nextElement());
-				if(entry.isDirectory()){
+				if (entry.isDirectory()) {
 					continue;
 				}
-				size ++;
+				size++;
 				InputStream in = zf.getInputStream(entry);
-				File desFile = new File(dir,entry.getName());
+				File desFile = new File(dir, entry.getName());
 				if (!desFile.exists()) {
 					File fileParentDir = desFile.getParentFile();
 					if (!fileParentDir.exists()) {
@@ -169,25 +188,29 @@ public class ZipUtil {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        if(ConfigTable.isDebug()){
-        	log.warn("[解压完成][time:"+(System.currentTimeMillis()-fr)+"][dir:"+dir.getAbsolutePath()+"][size:"+size+"]");
-        }
+		if (ConfigTable.isDebug()) {
+			log.warn("[解压完成][time:" + (System.currentTimeMillis() - fr) + "][dir:" + dir.getAbsolutePath() + "][size:" + size + "]");
+		}
 		return files;
 	}
 
-	public static List<File> unZip(File zipFile) {
-		if(null == zipFile){
+	/**
+	 * 解压文件
+	 * 
+	 * @param zip
+	 * @return
+	 */
+	public static List<File> unZip(File zip) {
+		if (null == zip) {
 			return new ArrayList<File>();
 		}
-		return unZip(zipFile, zipFile.getParentFile());
+		return unZip(zip, zip.getParentFile());
 	}
-	
-
 
 	/**
 	 * 获得压缩文件内文件列表
 	 * 
-	 * @param zipFile
+	 * @param zip
 	 *            压缩文件
 	 * @return 压缩文件内文件名称
 	 * @throws ZipException
@@ -195,15 +218,15 @@ public class ZipUtil {
 	 * @throws IOException
 	 *             当解压缩过程出错时抛出
 	 */
-	public static ArrayList<String> getEntriesNames(File zipFile) {
+	public static ArrayList<String> getEntriesNames(File zip) {
 		ArrayList<String> entryNames = new ArrayList<String>();
-		try{
-			Enumeration<?> entries = getEntriesEnumeration(zipFile);
+		try {
+			Enumeration<?> entries = getEntriesEnumeration(zip);
 			while (entries.hasMoreElements()) {
 				ZipEntry entry = ((ZipEntry) entries.nextElement());
 				entryNames.add(new String(getEntryName(entry).getBytes("GB2312"), "8859_1"));
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return entryNames;
@@ -212,7 +235,7 @@ public class ZipUtil {
 	/**
 	 * 获得压缩文件内压缩文件对象以取得其属性
 	 * 
-	 * @param zipFile
+	 * @param zip
 	 *            压缩文件
 	 * @return 返回一个压缩文件列表
 	 * @throws ZipException
@@ -220,13 +243,13 @@ public class ZipUtil {
 	 * @throws IOException
 	 *             IO操作有误时抛出
 	 */
-	public static Enumeration<?> getEntriesEnumeration(File zipFile) {
+	public static Enumeration<?> getEntriesEnumeration(File zip) {
 		ZipFile zf = null;
-		try{
-			zf = new ZipFile(zipFile);
-		}catch(Exception e){
+		try {
+			zf = new ZipFile(zip);
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
+		} finally {
 			try {
 				zf.close();
 			} catch (IOException e) {
@@ -247,9 +270,9 @@ public class ZipUtil {
 	 */
 	public static String getEntryComment(ZipEntry entry) {
 		String result = "";
-		try{
+		try {
 			result = new String(entry.getComment().getBytes("GB2312"), "8859_1");
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -263,11 +286,11 @@ public class ZipUtil {
 	 * @return 压缩文件对象的名称
 	 * @throws UnsupportedEncodingException
 	 */
-	public static String getEntryName(ZipEntry entry){
+	public static String getEntryName(ZipEntry entry) {
 		String result = "";
-		try{
-			result =  new String(entry.getName().getBytes("GB2312"), "8859_1");
-		}catch(Exception e){
+		try {
+			result = new String(entry.getName().getBytes("GB2312"), "8859_1");
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -276,34 +299,33 @@ public class ZipUtil {
 	/**
 	 * 压缩文件
 	 * 
-	 * @param resFile
-	 *            需要压缩的文件（夹）
+	 * @param src
+	 *            需要压缩的文件或文件夹
 	 * @param zipout
 	 *            压缩的目的文件
-	 * @param rootpath
-	 *            压缩的文件路径
+	 * @param root
+	 *            压缩后文件路径,解压到当前目录时,解压完成后的目录名
 	 * @throws FileNotFoundException
 	 *             找不到文件时抛出
 	 * @throws IOException
 	 *             当压缩过程出错时抛出
 	 */
-	private static void zipFile(File resFile, ZipOutputStream zipout, String rootpath) {
+	private static boolean zip(File src, ZipOutputStream zipout, String root) {
 		try {
-
-			rootpath = rootpath
-					+ (rootpath.trim().length() == 0 ? "" : File.separator)
-					+ resFile.getName();
-			rootpath = new String(rootpath.getBytes("8859_1"), "GB2312");
-			if (resFile.isDirectory()) {
-				File[] fileList = resFile.listFiles();
+			String path = src.getName();
+			if(BasicUtil.isNotEmpty(root)){
+				path = root +  File.separator + src.getName();
+			}
+			root = new String(root.getBytes("8859_1"), "GB2312");
+			if (src.isDirectory()) {
+				File[] fileList = src.listFiles();
 				for (File file : fileList) {
-					zipFile(file, zipout, rootpath);
+					zip(file, zipout, path);
 				}
 			} else {
 				byte buffer[] = new byte[BUFF_SIZE];
-				BufferedInputStream in = new BufferedInputStream(
-						new FileInputStream(resFile), BUFF_SIZE);
-				zipout.putNextEntry(new ZipEntry(rootpath));
+				BufferedInputStream in = new BufferedInputStream(new FileInputStream(src), BUFF_SIZE);
+				zipout.putNextEntry(new ZipEntry(path));
 				int realLength;
 				while ((realLength = in.read(buffer)) != -1) {
 					zipout.write(buffer, 0, realLength);
@@ -312,8 +334,10 @@ public class ZipUtil {
 				zipout.flush();
 				zipout.closeEntry();
 			}
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 	}
 }
