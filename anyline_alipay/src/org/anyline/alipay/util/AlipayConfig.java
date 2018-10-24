@@ -1,11 +1,9 @@
 package org.anyline.alipay.util;
 
-import java.io.File;
 import java.util.Hashtable;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 
 
 public class AlipayConfig extends BasicConfig{
@@ -41,17 +39,7 @@ public class AlipayConfig extends BasicConfig{
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
 	private synchronized static void loadConfig() {
-		try {
-
-			File file = new File(ConfigTable.getWebRoot() , "/WEB-INF/classes/anyline-alipay.xml");
-			parseFile(AlipayConfig.class, file, instances);
-			
-			file = new File(ConfigTable.getWebRoot() , "/WEB-INF/classes/anyline/anyline-alipay.xml");
-			parseFile(AlipayConfig.class, file, instances);
-			
-		} catch (Exception e) {
-			log.error("配置文件解析异常:"+e);
-		}
+		loadConfig(instances, AlipayConfig.class, "anyline-alipay.xml");
 	}
 	public String getString(String key){
 		return kvs.get(key);

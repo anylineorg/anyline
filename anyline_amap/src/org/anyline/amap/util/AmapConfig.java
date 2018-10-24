@@ -2,12 +2,9 @@ package org.anyline.amap.util;
 
 import java.io.File;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.FileUtil;
 
 public class AmapConfig extends BasicConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
@@ -39,24 +36,9 @@ public class AmapConfig extends BasicConfig{
 	}
 	/**
 	 * 加载配置文件
-	 * 首先加载anyline-config.xml
-	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
 	private synchronized static void loadConfig() {
-		try {
-			File dir = configDir;
-			if(null == dir){
-				dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
-			}
-			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-			for(File file:files){
-				if("anyline-amap.xml".equals(file.getName())){
-					parseFile(AmapConfig.class, file, instances);
-				}
-			}
-		} catch (Exception e) {
-			log.error("配置文件解析异常:"+e);
-		}
+		loadConfig(instances, AmapConfig.class, "anyline-amap.xml");
 	}
 	private static void debug(){
 	}

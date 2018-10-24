@@ -10,6 +10,7 @@ import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
+import org.anyline.weixin.mp.util.WXMPConfig;
 import org.anyline.weixin.util.WXConfig;
 
 
@@ -46,22 +47,9 @@ public class WXOpenConfig extends WXConfig{
 	}
 	/**
 	 * 加载配置文件
-	 * 首先加载anyline-config.xml
-	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
 	private synchronized static void loadConfig() {
-		try {
-			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
-			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-			for(File file:files){
-				if("anyline-weixin-open.xml".equals(file.getName())){
-					parseFile(WXOpenConfig.class, file, instances,compatibles);
-				}
-			}
-			
-		} catch (Exception e) {
-			log.error("配置文件解析异常:"+e);
-		}
+		loadConfig(instances, WXOpenConfig.class, "anyline-weixin-open.xml",compatibles);
 	}
 	private static void debug(){
 	}

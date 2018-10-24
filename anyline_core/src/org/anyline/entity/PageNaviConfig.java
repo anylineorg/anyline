@@ -98,22 +98,9 @@ public class PageNaviConfig extends BasicConfig{
 	}
 	/**
 	 * 加载配置文件
-	 * 首先加载anyline-config.xml
-	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
 	private synchronized static void loadConfig() {
-		try {
-			File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
-			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-			for(File file:files){
-				if("anyline-navi.xml".equals(file.getName())){
-					parseFile(PageNaviConfig.class, file, instances,compatibles);
-				}
-			}
-			
-		} catch (Exception e) {
-			log.error("配置文件解析异常:"+e);
-		}
+		loadConfig(instances, PageNaviConfig.class, "anyline-navi.xml", compatibles);
 	}
 	private static void debug(){
 	}

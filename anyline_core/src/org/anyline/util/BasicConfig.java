@@ -20,7 +20,22 @@ import org.dom4j.io.SAXReader;
 public class BasicConfig {
 	protected static Logger log = Logger.getLogger(BasicConfig.class);
 	protected Map<String, String> kvs = new HashMap<String, String>();
-
+	
+	protected synchronized static void loadConfig(Hashtable<String,BasicConfig> instances, Class<? extends BasicConfig> clazz, String fileName, String ... compatibles) {
+		try {
+			File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
+			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
+			for(File file:files){
+				if(fileName.equals(file.getName())){
+					parseFile(clazz, file, instances,compatibles);
+				}
+			}
+			
+		} catch (Exception e) {
+			log.error("配置文件解析异常:"+e);
+		}
+	}
+	@SuppressWarnings("unchecked")
 	public static <T extends BasicConfig> T parse(Class<? extends BasicConfig> T, String key, DataRow row, Hashtable<String, BasicConfig> instances, String... compatibles) {
 		T config = null;
 		try {
