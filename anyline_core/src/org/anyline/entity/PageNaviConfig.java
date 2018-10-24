@@ -1,23 +1,16 @@
 package org.anyline.entity;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 
 public class PageNaviConfig extends BasicConfig{
 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 	
 	public String STYLE_FILE_PATH 				= ""		;	//样式文件路径
 	public String SCRIPT_FILE_PATH 				= ""		;	//脚本文件路径
@@ -50,6 +43,31 @@ public class PageNaviConfig extends BasicConfig{
 	public String KEY_SHOW_STAT			= "_anyline_navi_show_stat";
 	public String KEY_SHOW_JUMP			= "_anyline_navi_show_jump";
 	public String KEY_GUIDE				= "_anyline_navi_guide";
+	
+
+	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
+
+	//兼容上一版本 最后一版key:倒数第二版key:倒数第三版key
+	protected static String[] compatibles = {
+		"STYLE_BUTTON_FIRST:NAVI_TAG_FIRST"
+		,"STYLE_BUTTON_PREV:NAVI_TAG_PREV"
+		,"STYLE_BUTTON_NEXT:NAVI_TAG_NEXT"
+		,"STYLE_BUTTON_LAST:NAVI_TAG_LAST"
+		,"STYLE_BUTTON_GO:NAVI_TAG_GO"
+		,"STYLE_LOAD_MORE_FORMAT:NAVI_LOAD_MORE_FORMAT"
+		,"STYLE_STAT_FORMAT:NAVI_STAT_FORMAT"
+		,"STYLE_FILE_PATH:NAVI_STYLE_FILE_PATH"
+		,"VAR_PAGE_RANGE:NAVI_PAGE_RANGE"
+		,"VAR_SHOW_BUTTON:NAVI_SHOW_BUTTON"
+		,"VAR_SHOW_INDEX:NAVI_SHOW_INDEX"
+		,"VAR_SHOW_STAT:NAVI_SHOW_STAT"
+		,"VAR_SHOW_JUMP:NAVI_SHOW_JUMP"
+		,"VAR_PAGE_DEFAULT_VOL:PAGE_DEFAULT_VOL"
+		,"VAR_CLIENT_SET_VOL_ENABLE:CLIENT_SET_PAGE_VOL_ENABLE"
+		,"SCRIPT_FILE_PATH:NAVI_SCRIPT_FILE_PATH"
+		,"STYLE_FILE_PATH:NAVI_STYLE_FILE_PATH"};
+	 
+
 	static{
 		init();
 		debug();
@@ -58,7 +76,6 @@ public class PageNaviConfig extends BasicConfig{
 		//加载配置文件
 		loadConfig();
 	}
-
 	public static PageNaviConfig getInstance(){
 		return getInstance("default");
 	}
@@ -68,19 +85,29 @@ public class PageNaviConfig extends BasicConfig{
 		}
 		return (PageNaviConfig)instances.get(key);
 	}
+
+	public static PageNaviConfig parse(String key, DataRow row){
+		return parse(PageNaviConfig.class, key, row, instances,compatibles);
+	}
+	public static Hashtable<String,BasicConfig> parse(String column, DataSet set){
+		for(DataRow row:set){
+			String key = row.getString(column);
+			parse(key, row);
+		}
+		return instances;
+	}
 	/**
 	 * 加载配置文件
 	 * 首先加载anyline-config.xml
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
 	private synchronized static void loadConfig() {
-		adapt();
 		try {
-			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
+			File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
 			for(File file:files){
 				if("anyline-navi.xml".equals(file.getName())){
-					parseFile(PageNaviConfig.class, file, instances);
+					parseFile(PageNaviConfig.class, file, instances,compatibles);
 				}
 			}
 			
@@ -88,53 +115,6 @@ public class PageNaviConfig extends BasicConfig{
 			log.error("配置文件解析异常:"+e);
 		}
 	}
-	private static void debug(){}
-	/**
-	 * 兼容旧版本配置文件
-	 */
-	private static void adapt(){
-		PageNaviConfig config = new PageNaviConfig();
-		instances.put("default", config);
-		SAXReader reader = new SAXReader();
-		Map<String,String> keys = new HashMap<String,String>();
-		keys.put("NAVI_TAG_FIRST", "STYLE_BUTTON_FIRST");
-		keys.put("NAVI_TAG_PREV", "STYLE_BUTTON_PREV");
-		keys.put("NAVI_TAG_NEXT", "STYLE_BUTTON_NEXT");
-		keys.put("NAVI_TAG_LAST", "STYLE_BUTTON_LAST");
-		keys.put("NAVI_TAG_GO", "STYLE_BUTTON_GO");
-		keys.put("NAVI_LOAD_MORE_FORMAT", "STYLE_LOAD_MORE_FORMAT");
-		keys.put("NAVI_STAT_FORMAT", "STYLE_STAT_FORMAT");
-		keys.put("NAVI_STYLE_FILE_PATH", "STYLE_FILE_PATH");
-		keys.put("NAVI_PAGE_RANGE", "VAR_PAGE_RANGE");
-		keys.put("NAVI_SHOW_BUTTON", "VAR_SHOW_BUTTON");
-		keys.put("NAVI_SHOW_INDEX", "VAR_SHOW_INDEX");
-		keys.put("NAVI_SHOW_STAT", "VAR_SHOW_STAT");
-		keys.put("NAVI_SHOW_JUMP", "VAR_SHOW_JUMP");
-		keys.put("PAGE_DEFAULT_VOL", "VAR_PAGE_DEFAULT_VOL");
-		keys.put("CLIENT_SET_PAGE_VOL_ENABLE", "VAR_CLIENT_SET_VOL_ENABLE");
-		keys.put("NAVI_SCRIPT_FILE_PATH", "SCRIPT_FILE_PATH");
-		keys.put("NAVI_STYLE_FILE_PATH", "STYLE_FILE_PATH");
-
-		try{
-			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
-			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-			for(File file:files){
-				if("anyline-config-navi.xml".equals(file.getName())){
-					Document document = reader.read(file);
-					Element root = document.getRootElement();
-					for(Iterator<Element> item=root.elementIterator("property"); item.hasNext();){
-						Element propertyElement = item.next();
-						String key = propertyElement.attributeValue("key");
-						String value = propertyElement.getTextTrim();
-						key = keys.get(key);
-						if(BasicUtil.isNotEmpty(key)){
-							config.setValue(key,value);
-						}
-					}
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
+	private static void debug(){
 	}
 }

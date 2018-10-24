@@ -334,7 +334,7 @@ public class BeanUtil {
 	 * @param clazz
 	 * @return
 	 */
-	public static String getPrimaryKey(Class clazz){
+	public static String getPrimaryKey(Class<?> clazz){
 		List<Field> fields = searchFieldsByAnnotation(clazz, Id.class);
 		if(fields.size()>0){
 			Field field = fields.get(0);

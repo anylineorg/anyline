@@ -499,7 +499,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet getRows(String... params) {
 		return getRows(0, params);
 	}
-
 	/**
 	 * 数字格式化
 	 * @param format
@@ -1684,432 +1683,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param value
 	 * @return
 	 */
-	public DataSet equals(String key, String value){
-		DataSet set = new DataSet();
-		String tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.getString(key);
-			if (null != tmpValue &&  tmpValue.equals(value)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet equalsIgnoreCase(String key, String value){
-		DataSet set = new DataSet();
-		String tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.getString(key);
-			if (null != tmpValue &&  tmpValue.equalsIgnoreCase(value)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet notEquals(String key, String value){
-		DataSet set = new DataSet();
-		String tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.getString(key);
-			if (null != tmpValue &&  !tmpValue.equals(value)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet notEqualsIgnoreCase(String key, String value){
-		DataSet set = new DataSet();
-		String tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.getString(key);
-			if (null != tmpValue &&  !tmpValue.equalsIgnoreCase(value)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	/**
-	 * key列的值是否包含value
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public DataSet contains(String key, String value){
-		DataSet set = new DataSet();
-		String tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.getString(key);
-			if (null != tmpValue && tmpValue.contains(value)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	/**
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public DataSet like(String key, String pattern){
-		DataSet set = new DataSet();
-		if(null == pattern){
-			return set;
-		}
-		pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
-		String tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.getString(key);
-			if (null != tmpValue && RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet startWith(String key, String prefix){
-		DataSet set = new DataSet();
-		String tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.getString(key);
-			if (null != tmpValue && tmpValue.startsWith(prefix)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet endWith(String key, String suffix){
-		DataSet set = new DataSet();
-		String tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.getString(key);
-			if (null != tmpValue && tmpValue.endsWith(suffix)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet in(String key, String ... values){
-		DataSet set = new DataSet();
-		Object tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.get(key);
-			if (null != tmpValue && BasicUtil.containsString(values, tmpValue)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet in(String key, Collection<Object> values){
-		DataSet set = new DataSet();
-		Object tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.get(key);
-			if (null != tmpValue && BasicUtil.containsString(values, tmpValue)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet inIgnoreCase(String key, String ... values){
-		DataSet set = new DataSet();
-		Object tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.get(key);
-			if (null != tmpValue && BasicUtil.containsIgnoreCase(values, tmpValue)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet inIgnoreCase(String key, Collection<Object> values){
-		DataSet set = new DataSet();
-		Object tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.get(key);
-			if (null != tmpValue && BasicUtil.containsIgnoreCase(values, tmpValue)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet notIn(String key, String ... values){
-		DataSet set = new DataSet();
-		Object tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.get(key);
-			if (null != tmpValue && !BasicUtil.containsString(values, tmpValue)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet notIn(String key, Collection<Object> values){
-		DataSet set = new DataSet();
-		Object tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.get(key);
-			if (null != tmpValue && !BasicUtil.containsString(values, tmpValue)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet notInIgnoreCase(String key, String ... values){
-		DataSet set = new DataSet();
-		Object tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.get(key);
-			if (null != tmpValue && !BasicUtil.containsIgnoreCase(values, tmpValue)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet notInIgnoreCase(String key, Collection<Object> values){
-		DataSet set = new DataSet();
-		Object tmpValue;
-		for(DataRow row:this){
-			tmpValue = row.get(key);
-			if (null != tmpValue && !BasicUtil.containsIgnoreCase(values, tmpValue)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet isNull(String key){
-		DataSet set = new DataSet();
-		for(DataRow row:this){
-			if (null == row.get(key)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet isNull(String ... keys){
-		DataSet set = this;
-		if(null != keys){
-			for(String key:keys){
-				set = isNull(key);
-			}
-		}
-		return set;
-	}
-	public DataSet isNotNull(String key){
-		DataSet set = new DataSet();
-		for(DataRow row:this){
-			if (null != row.get(key)) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
 	
-	public DataSet notNull(String key){
-		return isNotNull(key);
-	}
-	public DataSet isNotNull(String ... keys){
-		DataSet set = this;
-		if(null != keys){
-			for(String key:keys){
-				set = isNotNull(key);
-			}
-		}
-		return set;
-	}
-	public DataSet notNull(String ... keys){
-		return isNotNull(keys);
-	}
-	public DataSet isEmpty(String key){
-		DataSet set = new DataSet();
-		for(DataRow row:this){
-			if (BasicUtil.isEmpty(row.get(key))) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet empty(String key){
-		return isEmpty(key);
-	}
-	public DataSet isEmpty(String ... keys){
-		DataSet set = this;
-		if(null != keys){
-			for(String key:keys){
-				set = isEmpty(key);
-			}
-		}
-		return set;
-	}
-	public DataSet empty(String ... keys){
-		return isEmpty(keys);
-	}
-	public DataSet isNotEmpty(String key){
-		DataSet set = new DataSet();
-		for(DataRow row:this){
-			if (BasicUtil.isNotEmpty(row.get(key))) {
-				set.add(row);
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet notEmpty(String key){
-		return isNotEmpty(key);
-	}
-	public DataSet isNotEmpty(String ... keys){
-		DataSet set = this;
-		if(null != keys){
-			for(String key:keys){
-				set = isNotEmpty(key);
-			}
-		}
-		return set;
-	}
-	public DataSet notEmpty(String ... keys){
-		return isNotEmpty(keys);
-	}
-	public DataSet less(String key, Object value){
-		DataSet set = new DataSet();
-		if(null == value){
-			return set;
-		}
-		if(BasicUtil.isNumber(value)){
-			BigDecimal number = new BigDecimal(value.toString());
-			for(DataRow row:this){
-				if(row.getDecimal(key).compareTo(number) >= 0){
-					set.add(row);
-				}
-			}
-		}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
-			Date date = DateUtil.parse(value.toString());
-			for(DataRow row:this){
-				if(row.isNotEmpty(key) && 
-						DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) < 0){
-					set.add(row);
-				}
-			}
-		}else{
-			for(DataRow row:this){
-				if(row.getString(key).compareTo(value.toString()) >= 0){
-					set.add(row);
-				}
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet lessEqual(String key, Object value){
-		DataSet set = new DataSet();
-		if(null == value){
-			return set;
-		}
-		if(BasicUtil.isNumber(value)){
-			BigDecimal number = new BigDecimal(value.toString());
-			for(DataRow row:this){
-				if(row.getDecimal(key).compareTo(number) >= 0){
-					set.add(row);
-				}
-			}
-		}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
-			Date date = DateUtil.parse(value.toString());
-			for(DataRow row:this){
-				if(row.isNotEmpty(key) && 
-						DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) <= 0){
-					set.add(row);
-				}
-			}
-		}else{
-			for(DataRow row:this){
-				if(row.getString(key).compareTo(value.toString()) >= 0){
-					set.add(row);
-				}
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet greater(String key, Object value){
-		DataSet set = new DataSet();
-		if(null == value){
-			return set;
-		}
-		if(BasicUtil.isNumber(value)){
-			BigDecimal number = new BigDecimal(value.toString());
-			for(DataRow row:this){
-				if(row.getDecimal(key).compareTo(number) >= 0){
-					set.add(row);
-				}
-			}
-		}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
-			Date date = DateUtil.parse(value.toString());
-			for(DataRow row:this){
-				if(row.isNotEmpty(key) && 
-						DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) > 0){
-					set.add(row);
-				}
-			}
-		}else{
-			for(DataRow row:this){
-				if(row.getString(key).compareTo(value.toString()) >= 0){
-					set.add(row);
-				}
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet greaterEqual(String key, Object value){
-		DataSet set = new DataSet();
-		if(null == value){
-			return set;
-		}
-		if(BasicUtil.isNumber(value)){
-			BigDecimal number = new BigDecimal(value.toString());
-			for(DataRow row:this){
-				if(row.getDecimal(key).compareTo(number) >= 0){
-					set.add(row);
-				}
-			}
-		}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
-			Date date = DateUtil.parse(value.toString());
-			for(DataRow row:this){
-				if(row.isNotEmpty(key) && 
-						DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) >= 0){
-					set.add(row);
-				}
-			}
-		}else{
-			for(DataRow row:this){
-				if(row.getString(key).compareTo(value.toString()) >= 0){
-					set.add(row);
-				}
-			}
-		}
-		set.cloneProperty(this);
-		return set;
-	}
-	public DataSet between(String key, Object min, Object max){
-		return greaterEqual(key, min).lessEqual(key, max);
-		
-	}
 	public DataRow random(){
 		DataRow row = null;
 		int size = size();
@@ -2191,6 +1765,527 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public void setDatalink(String datalink) {
 		this.datalink = datalink;
 	}
-	
+	public class Select{
+		public DataSet equals(String key, String value){
+			return equals(DataSet.this, key, value);
+		}
+		private DataSet equals(DataSet src, String key, String value){
+			DataSet set = new DataSet();
+			String tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.getString(key);
+				if (null != tmpValue &&  tmpValue.equals(value)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet equalsIgnoreCase(String key, String value){
+			return equalsIgnoreCase(DataSet.this, key, value);
+		}
+		private DataSet equalsIgnoreCase(DataSet src, String key, String value){
+			DataSet set = new DataSet();
+			String tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.getString(key);
+				if (null != tmpValue &&  tmpValue.equalsIgnoreCase(value)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+
+		public DataSet notEquals(String key, String value){
+			return notEquals(DataSet.this, key, value);
+		}
+		private DataSet notEquals(DataSet src, String key, String value){
+			DataSet set = new DataSet();
+			String tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.getString(key);
+				if (null != tmpValue &&  !tmpValue.equals(value)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet notEqualsIgnoreCase(String key, String value){
+			return notEqualsIgnoreCase(DataSet.this, key, value);
+		}
+		private DataSet notEqualsIgnoreCase(DataSet src, String key, String value){
+			DataSet set = new DataSet();
+			String tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.getString(key);
+				if (null != tmpValue &&  !tmpValue.equalsIgnoreCase(value)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		/**
+		 * key列的值是否包含value
+		 * @param key
+		 * @param value
+		 * @return
+		 */
+		public DataSet contains(String key, String value){
+			return contains(DataSet.this, key, value);
+		}
+		private DataSet contains(DataSet src, String key, String value){
+			DataSet set = new DataSet();
+			String tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.getString(key);
+				if (null != tmpValue && tmpValue.contains(value)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+
+		public DataSet like(String key, String pattern){
+			return like(DataSet.this, key, pattern);
+		}
+		private DataSet like(DataSet src, String key, String pattern){
+			DataSet set = new DataSet();
+			if(null == pattern){
+				return set;
+			}
+			pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
+			String tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.getString(key);
+				if (null != tmpValue && RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+
+		public DataSet startWith(String key, String prefix){
+			return startWith(DataSet.this, key, prefix); 
+		}
+		private DataSet startWith(DataSet src, String key, String prefix){
+			DataSet set = new DataSet();
+			String tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.getString(key);
+				if (null != tmpValue && tmpValue.startsWith(prefix)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+
+		public DataSet endWith(String key, String suffix){
+			return endWith(DataSet.this, key, suffix);
+		}
+		private DataSet endWith(DataSet src, String key, String suffix){
+			DataSet set = new DataSet();
+			String tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.getString(key);
+				if (null != tmpValue && tmpValue.endsWith(suffix)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet in(String key, String ... values){
+			return in(DataSet.this, key, values);
+		}
+		private DataSet in(DataSet src, String key, String ... values){
+			DataSet set = new DataSet();
+			Object tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.get(key);
+				if (null != tmpValue && BasicUtil.containsString(values, tmpValue)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+
+		public DataSet in(String key, Collection<Object> values){
+			return in(DataSet.this, key, values);
+		}
+		private DataSet in(DataSet src, String key, Collection<Object> values){
+			DataSet set = new DataSet();
+			Object tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.get(key);
+				if (null != tmpValue && BasicUtil.containsString(values, tmpValue)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet inIgnoreCase(String key, String ... values){
+			return inIgnoreCase(DataSet.this, key, values);
+		}
+		private DataSet inIgnoreCase(DataSet src, String key, String ... values){
+			DataSet set = new DataSet();
+			Object tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.get(key);
+				if (null != tmpValue && BasicUtil.containsIgnoreCase(values, tmpValue)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet inIgnoreCase(String key, Collection<Object> values){
+			return inIgnoreCase(DataSet.this, key, values);
+		}
+		private DataSet inIgnoreCase(DataSet src, String key, Collection<Object> values){
+			DataSet set = new DataSet();
+			Object tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.get(key);
+				if (null != tmpValue && BasicUtil.containsIgnoreCase(values, tmpValue)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+
+		public DataSet notIn(String key, String ... values){
+			return notIn(DataSet.this, key, values);
+		}
+		public DataSet notIn(DataSet src, String key, String ... values){
+			DataSet set = new DataSet();
+			Object tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.get(key);
+				if (null != tmpValue && !BasicUtil.containsString(values, tmpValue)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet notIn(String key, Collection<Object> values){
+			return notIn(DataSet.this, key, values);
+		}
+		private DataSet notIn(DataSet src, String key, Collection<Object> values){
+			DataSet set = new DataSet();
+			Object tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.get(key);
+				if (null != tmpValue && !BasicUtil.containsString(values, tmpValue)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet notInIgnoreCase(String key, String ... values){
+			return notInIgnoreCase(DataSet.this, key, values);
+		}
+		private DataSet notInIgnoreCase(DataSet src, String key, String ... values){
+			DataSet set = new DataSet();
+			Object tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.get(key);
+				if (null != tmpValue && !BasicUtil.containsIgnoreCase(values, tmpValue)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet notInIgnoreCase(String key, Collection<Object> values){
+			return notInIgnoreCase(DataSet.this, key, values);
+		}
+		public DataSet notInIgnoreCase(DataSet src, String key, Collection<Object> values){
+			DataSet set = new DataSet();
+			Object tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.get(key);
+				if (null != tmpValue && !BasicUtil.containsIgnoreCase(values, tmpValue)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet isNull(String key){
+			return isNull(DataSet.this, key);
+		}
+		private DataSet isNull(DataSet src, String key){
+			DataSet set = new DataSet();
+			for(DataRow row:src){
+				if (null == row.get(key)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet isNull(String ... keys){
+			return isNull(DataSet.this, keys);
+		}
+		private DataSet isNull(DataSet src, String ... keys){
+			DataSet set = src;
+			if(null != keys){
+				for(String key:keys){
+					set = isNull(key);
+				}
+			}
+			return set;
+		}
+		public DataSet isNotNull(String key){
+			return isNotNull(DataSet.this, key);
+		}
+		private DataSet isNotNull(DataSet src, String key){
+			DataSet set = new DataSet();
+			for(DataRow row:src){
+				if (null != row.get(key)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		
+		public DataSet notNull(String key){
+			return isNotNull(key);
+		}
+
+		public DataSet isNotNull(String ... keys){
+			return isNotNull(DataSet.this, keys);
+		}
+		private DataSet isNotNull(DataSet src, String ... keys){
+			DataSet set = src;
+			if(null != keys){
+				for(String key:keys){
+					set = isNotNull(key);
+				}
+			}
+			return set;
+		}
+		public DataSet notNull(String ... keys){
+			return isNotNull(keys);
+		}
+		public DataSet isEmpty(String key){
+			return isEmpty(DataSet.this, key);
+		}
+		private DataSet isEmpty(DataSet src, String key){
+			DataSet set = new DataSet();
+			for(DataRow row:src){
+				if (BasicUtil.isEmpty(row.get(key))) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet empty(String key){
+			return isEmpty(key);
+		}
+		public DataSet isEmpty(String ... keys){
+			return isEmpty(DataSet.this, keys);
+		}
+		private DataSet isEmpty(DataSet src, String ... keys){
+			DataSet set = src;
+			if(null != keys){
+				for(String key:keys){
+					set = isEmpty(key);
+				}
+			}
+			return set;
+		}
+		
+		public DataSet empty(String ... keys){
+			return isEmpty(keys);
+		}
+		public DataSet isNotEmpty(String key){
+			return isNotEmpty(DataSet.this, key);
+		}
+		private DataSet isNotEmpty(DataSet src, String key){
+			DataSet set = new DataSet();
+			for(DataRow row:src){
+				if (BasicUtil.isNotEmpty(row.get(key))) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet notEmpty(String key){
+			return isNotEmpty(key);
+		}
+
+		public DataSet isNotEmpty(String ... keys){
+			return isNotEmpty(DataSet.this, keys);
+		}
+		private DataSet isNotEmpty(DataSet src, String ... keys){
+			DataSet set = src;
+			if(null != keys){
+				for(String key:keys){
+					set = isNotEmpty(key);
+				}
+			}
+			return set;
+		}
+		public DataSet notEmpty(String ... keys){
+			return isNotEmpty(keys);
+		}
+		public DataSet less(String key, Object value){
+			return less(DataSet.this, key, value);
+		}
+		private DataSet less(DataSet src, String key, Object value){
+			DataSet set = new DataSet();
+			if(null == value){
+				return set;
+			}
+			if(BasicUtil.isNumber(value)){
+				BigDecimal number = new BigDecimal(value.toString());
+				for(DataRow row:src){
+					if(row.getDecimal(key).compareTo(number) < 0){
+						set.add(row);
+					}
+				}
+			}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
+				Date date = DateUtil.parse(value.toString());
+				for(DataRow row:src){
+					if(row.isNotEmpty(key) && 
+							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) < 0){
+						set.add(row);
+					}
+				}
+			}else{
+				for(DataRow row:src){
+					if(row.getString(key).compareTo(value.toString()) < 0){
+						set.add(row);
+					}
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet lessEqual(String key, Object value){
+			return lessEqual(DataSet.this, key, value); 
+		}
+		private DataSet lessEqual(DataSet src, String key, Object value){
+			DataSet set = new DataSet();
+			if(null == value){
+				return set;
+			}
+			if(BasicUtil.isNumber(value)){
+				BigDecimal number = new BigDecimal(value.toString());
+				for(DataRow row:src){
+					if(row.getDecimal(key).compareTo(number) <= 0){
+						set.add(row);
+					}
+				}
+			}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
+				Date date = DateUtil.parse(value.toString());
+				for(DataRow row:src){
+					if(row.isNotEmpty(key) && 
+							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) <= 0){
+						set.add(row);
+					}
+				}
+			}else{
+				for(DataRow row:src){
+					if(row.getString(key).compareTo(value.toString()) >= 0){
+						set.add(row);
+					}
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet greater(String key, Object value){
+			return greater(DataSet.this, key, value);
+		}
+		private DataSet greater(DataSet src, String key, Object value){
+			DataSet set = new DataSet();
+			if(null == value){
+				return set;
+			}
+			if(BasicUtil.isNumber(value)){
+				BigDecimal number = new BigDecimal(value.toString());
+				for(DataRow row:src){
+					if(row.getDecimal(key).compareTo(number) > 0){
+						set.add(row);
+					}
+				}
+			}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
+				Date date = DateUtil.parse(value.toString());
+				for(DataRow row:src){
+					if(row.isNotEmpty(key) && 
+							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) > 0){
+						set.add(row);
+					}
+				}
+			}else{
+				for(DataRow row:src){
+					if(row.getString(key).compareTo(value.toString()) > 0){
+						set.add(row);
+					}
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet greaterEqual(String key, Object value){
+			return greaterEqual(DataSet.this, key, value);
+		}
+		private DataSet greaterEqual(DataSet src, String key, Object value){
+			DataSet set = new DataSet();
+			if(null == value){
+				return set;
+			}
+			if(BasicUtil.isNumber(value)){
+				BigDecimal number = new BigDecimal(value.toString());
+				for(DataRow row:src){
+					if(row.getDecimal(key).compareTo(number) >= 0){
+						set.add(row);
+					}
+				}
+			}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
+				Date date = DateUtil.parse(value.toString());
+				for(DataRow row:src){
+					if(row.isNotEmpty(key) && 
+							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) >= 0){
+						set.add(row);
+					}
+				}
+			}else{
+				for(DataRow row:src){
+					if(row.getString(key).compareTo(value.toString()) >= 0){
+						set.add(row);
+					}
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
+		public DataSet between(String key, Object min, Object max){
+			return between(DataSet.this, key, min, max);
+		}
+		private DataSet between(DataSet src, String key, Object min, Object max){
+			DataSet set = greaterEqual(src,key, min);
+			set = lessEqual(set,key, max);
+			return set;
+		}
+		
+	};
+	public Select select = new Select();
 }
 
