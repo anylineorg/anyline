@@ -81,7 +81,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		rows = new ArrayList<DataRow>();
 		createTime = System.currentTimeMillis();
 	}
-
+	public static DataSet parse(Collection<Object> list){
+		DataSet set = new DataSet();
+		if(null != list){
+			for(Object obj:list){
+				DataRow row = DataRow.parse(obj);
+				set.add(row);
+			}
+		}
+		return set;
+	}
 	public static DataSet parseJson(String json){
 		if(null != json){
 			try{
@@ -2042,7 +2051,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			DataSet set = src;
 			if(null != keys){
 				for(String key:keys){
-					set = isNull(key);
+					set = isNull(set,key);
 				}
 			}
 			return set;
@@ -2072,7 +2081,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			DataSet set = src;
 			if(null != keys){
 				for(String key:keys){
-					set = isNotNull(key);
+					set = isNotNull(set,key);
 				}
 			}
 			return set;
@@ -2103,7 +2112,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			DataSet set = src;
 			if(null != keys){
 				for(String key:keys){
-					set = isEmpty(key);
+					set = isEmpty(set,key);
 				}
 			}
 			return set;
@@ -2136,7 +2145,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			DataSet set = src;
 			if(null != keys){
 				for(String key:keys){
-					set = isNotEmpty(key);
+					set = isNotEmpty(set,key);
 				}
 			}
 			return set;
@@ -2155,6 +2164,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			if(BasicUtil.isNumber(value)){
 				BigDecimal number = new BigDecimal(value.toString());
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.getDecimal(key).compareTo(number) < 0){
 						set.add(row);
 					}
@@ -2162,6 +2174,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
 				Date date = DateUtil.parse(value.toString());
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.isNotEmpty(key) && 
 							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) < 0){
 						set.add(row);
@@ -2169,6 +2184,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				}
 			}else{
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.getString(key).compareTo(value.toString()) < 0){
 						set.add(row);
 					}
@@ -2188,6 +2206,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			if(BasicUtil.isNumber(value)){
 				BigDecimal number = new BigDecimal(value.toString());
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.getDecimal(key).compareTo(number) <= 0){
 						set.add(row);
 					}
@@ -2195,6 +2216,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
 				Date date = DateUtil.parse(value.toString());
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.isNotEmpty(key) && 
 							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) <= 0){
 						set.add(row);
@@ -2202,6 +2226,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				}
 			}else{
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.getString(key).compareTo(value.toString()) >= 0){
 						set.add(row);
 					}
@@ -2221,6 +2248,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			if(BasicUtil.isNumber(value)){
 				BigDecimal number = new BigDecimal(value.toString());
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.getDecimal(key).compareTo(number) > 0){
 						set.add(row);
 					}
@@ -2228,6 +2258,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
 				Date date = DateUtil.parse(value.toString());
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.isNotEmpty(key) && 
 							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) > 0){
 						set.add(row);
@@ -2235,6 +2268,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				}
 			}else{
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.getString(key).compareTo(value.toString()) > 0){
 						set.add(row);
 					}
@@ -2254,6 +2290,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			if(BasicUtil.isNumber(value)){
 				BigDecimal number = new BigDecimal(value.toString());
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.getDecimal(key).compareTo(number) >= 0){
 						set.add(row);
 					}
@@ -2261,6 +2300,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			}else if(BasicUtil.isDate(value) || BasicUtil.isDateTime(value)){
 				Date date = DateUtil.parse(value.toString());
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.isNotEmpty(key) && 
 							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) >= 0){
 						set.add(row);
@@ -2268,6 +2310,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				}
 			}else{
 				for(DataRow row:src){
+					if(null == row.get(key)){
+						continue;
+					}
 					if(row.getString(key).compareTo(value.toString()) >= 0){
 						set.add(row);
 					}
