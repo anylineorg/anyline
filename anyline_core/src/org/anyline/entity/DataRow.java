@@ -90,6 +90,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				row = parseJson((JSONObject)obj);
 			}else if(obj instanceof DataRow){
 				row = (DataRow)obj;
+			}else if(obj instanceof Map){
+				Map mp = (Map)obj;
+				List<String> ks = BeanUtil.getMapKeys(mp);
+				for(String k:ks){
+					row.put(k, mp.get(k));
+				}
 			}else{
 				List<String> fields = BeanUtil.getFieldsName(obj.getClass());
 				for(String field : fields){
