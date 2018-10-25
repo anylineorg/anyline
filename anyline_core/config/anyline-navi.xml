@@ -25,8 +25,8 @@
 		<!-- 跳转到 -->
 		<property key="VAR_SHOW_JUMP">false</property>
 		<!-- 加载更多格式 -->
-		<property key="STYLE_LOAD_MORE_FORMAT">None More Data</property>
-		<property key="STYLE_FILE_PATH">/web/plugin/navi/navi.css</property>
-		<property key="SCRIPT_FILE_PATH">/web/plugin/navi/navi.js</property>
+		<property key="STYLE_LOAD_MORE_FORMAT"></property>
+		<property key="STYLE_FILE_PATH">//deepbit.oss-cn-shanghai.aliyuncs.com/plugin/navi/skin.css</property>
+		<property key="SCRIPT_FILE_PATH">//deepbit.oss-cn-shanghai.aliyuncs.com/plugin/navi/navi.js</property>
 	</config>
 </configs>
