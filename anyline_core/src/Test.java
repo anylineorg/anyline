@@ -7,8 +7,9 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.AESUtil;
 import org.anyline.util.DateUtil;
+import org.anyline.util.RSAUtil;
 
-public class DemoTest {
+public class Test {
 
 	public static void main(String args[]) {
 		select();
@@ -21,7 +22,25 @@ public class DemoTest {
 		System.out.println("密文:" + s1);
 		System.out.println("解密:" + AESUtil.decrypt(s1, "1234"));
 	}
-
+	public static void rsa(){
+		Map<String, String> keyMap = RSAUtil.createKeys(1024);
+		String publicKey = keyMap.get("public");
+		String privateKey = keyMap.get("private");
+		System.out.println("公钥:\n" + publicKey);
+		System.out.println("私钥:\n" + privateKey);
+		System.out.println("公钥加密:私钥解密");
+		try {
+			String str = "www.anyline.org+中文&%$";
+			System.out.println("明文:" + str);
+			System.out.println("明文大小:" + str.getBytes().length);
+			String encodedData = RSAUtil.publicEncrypt(str, RSAUtil.getPublicKey(publicKey));
+			System.out.println("密文:" + encodedData);
+			String decodedData = RSAUtil.privateDecrypt(encodedData, RSAUtil.getPrivateKey(privateKey));
+			System.out.println("解密结果:" + decodedData);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 	public static void select() {
 		DataSet set = new DataSet();
 		for (int i = 8; i <= 12; i++) {

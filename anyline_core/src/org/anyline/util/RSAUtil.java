@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.Key;
@@ -12,8 +11,6 @@ import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
@@ -30,7 +27,12 @@ import org.apache.commons.io.IOUtils;
 public class RSAUtil {
 	public static final String CHARSET = "UTF-8";
 	public static final String RSA_ALGORITHM = "RSA";
-
+	
+	/**
+	 * 
+	 * @param keySize 密钥长度
+	 * @return
+	 */
 	public static Map<String, String> createKeys(int keySize) {
 		// 为RSA算法创建一个KeyPairGenerator对象
 		KeyPairGenerator kpg = null;
@@ -259,27 +261,4 @@ public class RSAUtil {
 			}
 			return getPrivateKey(sb.toString());
 	}
-
-
-	public static void main(String args[]){
-		
-		Map<String, String> keyMap = RSAUtil.createKeys(1024);
-		String publicKey = keyMap.get("public");
-		String privateKey = keyMap.get("private");
-		System.out.println("公钥:\n" + publicKey);
-		System.out.println("私钥:\n" + privateKey);
-		System.out.println("公钥加密:私钥解密");
-		try {
-			String str = "www.anyline.org+中文&%$";
-			System.out.println("明文:" + str);
-			System.out.println("明文大小:" + str.getBytes().length);
-			String encodedData = RSAUtil.publicEncrypt(str, RSAUtil.getPublicKey(publicKey));
-			System.out.println("密文:" + encodedData);
-			String decodedData = RSAUtil.privateDecrypt(encodedData, RSAUtil.getPrivateKey(privateKey));
-			System.out.println("解密结果:" + decodedData);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 }
