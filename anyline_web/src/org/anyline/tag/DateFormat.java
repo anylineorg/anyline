@@ -21,19 +21,21 @@ package org.anyline.tag;
 
 
 import java.util.Date;
+import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
+import org.apache.log4j.Logger;
 
 
 public class DateFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
 	private static Logger log = Logger.getLogger(DateFormat.class);
 	private String format;
+	private String lang;
 	private Object nvl = false;	//如果value为空("",null) 是否显示当前时间,默认false
 
 	public String getFormat() {
@@ -55,20 +57,24 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 			if(null == value){
 				value = body;
 			}
+			Locale local = Locale.CHINA;
+			if(BasicUtil.isNotEmpty(lang)){
+				local = new Locale(lang);
+			}
 			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){
 				value = new Date();
-				result = DateUtil.format(new Date(), format);
+				result = DateUtil.format(local,new Date(), format);
 			}else if(value instanceof String){
 				if(((String) value).contains(",")){
 					value = value.toString().replace(",", "");
-					result = DateUtil.format(BasicUtil.parseLong(value, 0L),format);
+					result = DateUtil.format(local,BasicUtil.parseLong(value, 0L),format);
 				}else{
-					result = DateUtil.format((String)value,format);
+					result = DateUtil.format(local,(String)value,format);
 				}
 			}else if(value instanceof Date){
-				result = DateUtil.format((Date)value,format);
+				result = DateUtil.format(local,(Date)value,format);
 			}else if(value instanceof Long){
-				result = DateUtil.format((Long)value,format);
+				result = DateUtil.format(local,(Long)value,format);
 			}
 			JspWriter out = pageContext.getOut();
 			out.print(result);
@@ -88,6 +94,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 		this.body = null;
 		this.format = null;
 		this.nvl = false;
+		this.lang = null;
 	}
 	public Object getNvl() {
 		return nvl;
@@ -96,6 +103,16 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 
 	public void setNvl(Object nvl) {
 		this.nvl = nvl;
+	}
+
+
+	public String getLang() {
+		return lang;
+	}
+
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 
