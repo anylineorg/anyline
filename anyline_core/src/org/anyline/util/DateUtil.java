@@ -133,42 +133,74 @@ public class DateUtil {
 	 * @param format
 	 * @return
 	 */
-	public static String format(Date date, String format) {
+	public static String format(Locale locale, Date date, String format) {
 		if (null == date || null == format)
 			return "";
-		return new java.text.SimpleDateFormat(format).format(date);
+		return new java.text.SimpleDateFormat(format,locale).format(date);
+	}
+	public static String format(Locale locale, Long date, String format) {
+		if (null == date || null == format)
+			return "";
+		return new java.text.SimpleDateFormat(format,locale).format(date);
+	}
+	public static String format(Locale locale) {
+		return format(locale, new Date(), FORMAT_DATE_TIME);
+	}
+
+	public static String format(Locale locale, String format) {
+		return format(locale, new Date(), format);
+	}
+
+	public static String format(Locale locale, Date date) {
+		return format(locale, date, FORMAT_FULL);
+	}
+	public static String format(Locale locale, Long date) {
+		return format(locale, date, FORMAT_FULL);
+	}
+
+	public static String format(Locale locale, String date, String format) {
+		Date d = parse(date);
+		return format(locale, d, format);
+	}
+
+	public static String dateformat(Locale locale, Date date){
+		return format(locale, date, FORMAT_DATE);
+	}
+
+	public static String dateformat(Locale locale){
+		return format(locale, new Date(), FORMAT_DATE);
+	}
+
+	public static String format(Date date, String format) {
+		return format(Locale.CHINA, date, format);
 	}
 	public static String format(Long date, String format) {
-		if (null == date || null == format)
-			return "";
-		return new java.text.SimpleDateFormat(format).format(date);
+		return format(Locale.CHINA, date, format);
 	}
 	public static String format() {
-		return format(new Date(), FORMAT_DATE_TIME);
+		return format(Locale.CHINA);
 	}
-
 	public static String format(String format) {
-		return format(new Date(), format);
+		return format(Locale.CHINA, format);
 	}
-
+	
 	public static String format(Date date) {
-		return format(date, FORMAT_FULL);
+		return format(Locale.CHINA, date);
 	}
 	public static String format(Long date) {
-		return format(date, FORMAT_FULL);
+		return format(Locale.CHINA, date);
 	}
 
 	public static String format(String date, String format) {
-		Date d = parse(date);
-		return format(d, format);
+		return format(Locale.CHINA, date, format);
 	}
 
 	public static String dateformat(Date date){
-		return format(date, FORMAT_DATE);
+		return format(Locale.CHINA, date);
 	}
 
 	public static String dateformat(){
-		return format(new Date(), FORMAT_DATE);
+		return format(Locale.CHINA);
 	}
 	
 	/**

@@ -772,6 +772,26 @@ public class BasicUtil {
 			String k = (String) entry.getKey();
 			Object v = entry.getValue();
 			if ("".equals(v)) {
+				//params.remove(k);
+				continue;
+			}
+			if (!"".equals(result)) {
+				result += "&";
+			}
+			result += k + "=" + v;
+		}
+		return result;
+	}
+	public static String join(Map<String,?> params, boolean clear){
+		String result = "";
+		SortedMap<String, Object> sort = new TreeMap<String, Object>(params);
+		Set es = sort.entrySet();
+		Iterator it = es.iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String k = (String) entry.getKey();
+			Object v = entry.getValue();
+			if ("".equals(v)) {
 				params.remove(k);
 				continue;
 			}
