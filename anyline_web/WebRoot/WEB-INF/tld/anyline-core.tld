@@ -617,6 +617,10 @@
 			<name>evl</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>lang</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>delay</name>
@@ -880,6 +884,11 @@
 		</attribute>
 		<attribute>
 			<name>guide</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>scroll</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

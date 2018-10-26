@@ -24,7 +24,6 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.anyline.entity.PageNaviConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 /**
  * ajax形式分页
@@ -43,6 +42,7 @@ public class Navi extends BodyTagSupport{
 	private String bodyContainer	;	//如果body与page分开(兼容上一版本)
 	private String naviContainer	;	//如果body与page分开(兼容上一版本)
 	private String creater = "ajax"	;	//分页方式 ajax | html
+	private String scroll			;   //自动翻页时 监听的滚动事件源 默认window
 	
 	private String id				;	//一个页面内多个标签时需要id区分
 	private String function			;	//指定function后,需主动调用function后加载数据,查询条件发生变化时可调用些function
@@ -148,7 +148,12 @@ public class Navi extends BodyTagSupport{
 				builder.append("_navi_init("+confId+");\n");
 			}
 			//自动加载
-			builder.append("$(window).scroll(function(){_navi_auto_load("+confId+");});");
+			String scrollEventSrc = "window";
+			if(BasicUtil.isNotEmpty(scroll)){
+				scrollEventSrc = "'" + scroll + "'";
+			}
+			builder.append("var scroll = $('"+scroll+"');\nif(scroll.length==0){scroll = window}else{scroll=scroll[0]}\n");
+			builder.append("$("+scrollEventSrc+").scroll(function(){_navi_auto_load(").append(confId).append(",scroll").append(");});\n");
 			builder.append("</script>");
 			builder.append("</div>");
 			idx ++;
@@ -189,6 +194,7 @@ public class Navi extends BodyTagSupport{
 		jump			= false	;
 		auto			= false	;
 		style			= "default"	;
+		scroll 			= null;
 	}
 	
 	public String getParam() {
@@ -318,6 +324,12 @@ public class Navi extends BodyTagSupport{
 	}
 	public void setPage(String page) {
 		this.page = page;
+	}
+	public String getScroll() {
+		return scroll;
+	}
+	public void setScroll(String scroll) {
+		this.scroll = scroll;
 	}
 
 }
