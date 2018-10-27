@@ -178,6 +178,7 @@ public class TemplateController extends AnylineController {
 	
 	/**
 	 * 创建显示视图
+	 * @param checkClient 是否识别并切换 移动 PC(web,wap)
 	 * @param name
 	 * @param template
 	 * template(page,template) 与createView(page,template); 相同
@@ -189,8 +190,11 @@ public class TemplateController extends AnylineController {
 		内容文件与模板文件 目录结构应该保持一致
 	 * @return
 	 */
+	protected ModelAndView template(boolean checkClient, String name, String template){
+		return createView(checkClient,name, template);
+	}
 	protected ModelAndView template(String name, String template){
-		return createView(name, template);
+		return createView(false,name, template);
 	}
 	/**
 	 * 根据dir构造文件目录(super.dir+this.dir)
@@ -226,7 +230,7 @@ public class TemplateController extends AnylineController {
 		}
 		return result;
 	}
-	protected TemplateModelAndView createView(String name, String template){
+	protected TemplateModelAndView createView(boolean checkClient, String name, String template){
 		TemplateModelAndView tv = new TemplateModelAndView();
 		if(null != name && !name.startsWith("/")){
 			//相对目录
@@ -242,6 +246,22 @@ public class TemplateController extends AnylineController {
 					content_template = name.substring(0, name.indexOf("/page/")) + "/template/layout/" + template;
 				}else{
 					content_template = buildDir() + "template/layout/" + template;
+				}
+			}
+		}
+		if(checkClient){
+			if(null != name){
+				if(WebUtil.isWap(getRequest())){
+					name = name.replace("/web/", "/wap/");
+				}else{
+					name = name.replace("/wap/", "/web/");
+				}
+			}
+			if(null != content_template){
+				if(WebUtil.isWap(getRequest())){
+					content_template = content_template.replace("/web/", "/wap/");
+				}else{
+					content_template = content_template.replace("/wap/", "/web/");
 				}
 			}
 		}
@@ -261,7 +281,7 @@ public class TemplateController extends AnylineController {
 	}
 
 	protected TemplateModelAndView createView(String name){
-		return createView(name,TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT);
+		return createView(false,name,TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT);
 	}
 	protected TemplateModelAndView template(String name){
 		return createView(name);
