@@ -1774,7 +1774,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public void setDatalink(String datalink) {
 		this.datalink = datalink;
 	}
-	public class Select{
+	public class Select implements Serializable{
+		private static final long serialVersionUID = 1L;
 		public DataSet equals(String key, String value){
 			return equals(DataSet.this, key, value);
 		}
