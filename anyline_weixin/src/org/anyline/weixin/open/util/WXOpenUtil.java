@@ -12,7 +12,6 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.HttpClientUtil;
 import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.mp.util.WXMPConfig;
 import org.anyline.weixin.open.entity.WXOpenPayRefund;
 import org.anyline.weixin.open.entity.WXOpenPayRefundResult;
 import org.anyline.weixin.open.entity.WXOpenPayTradeOrder;
@@ -37,6 +36,14 @@ public class WXOpenUtil {
 		this.config = conf;
 		instances.put(key, this);
 	}
+
+	public static WXOpenUtil reg(String key, DataRow config){
+		WXOpenConfig conf = WXOpenConfig.parse(key, config);
+		WXOpenUtil util = new WXOpenUtil(conf);
+		instances.put(key, util);
+		return util;
+	}
+	
 	public static WXOpenUtil getInstance(){
 		return getInstance("default");
 	}
