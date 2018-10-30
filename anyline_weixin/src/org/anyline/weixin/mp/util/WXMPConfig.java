@@ -30,6 +30,9 @@ public class WXMPConfig extends WXConfig{
 		return (WXMPConfig)instances.get(key);
 	}
 
+	public static WXMPConfig reg(String key, DataRow row){
+		return parse(WXMPConfig.class, key, row, instances,compatibles);
+	}
 	public static WXMPConfig parse(String key, DataRow row){
 		return parse(WXMPConfig.class, key, row, instances,compatibles);
 	}
