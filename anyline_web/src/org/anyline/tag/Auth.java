@@ -52,7 +52,8 @@ public class Auth extends BaseBodyTag {
 	private static Logger log = Logger.getLogger(Auth.class);
 	public int doEndTag() {
 		JspWriter writer = null;
-		String result = "";
+		boolean result = true;
+		String html = "";
 		String url = "";
 		if(BasicUtil.isEmpty(id)){
 			id = BasicUtil.getRandomLowerString(10);
@@ -85,67 +86,80 @@ public class Auth extends BaseBodyTag {
 			}
 			
 			if("wx".equalsIgnoreCase(type) || "weixin".equalsIgnoreCase(type)){
-				if(BasicUtil.isEmpty(appid)){
-					WXConfig wxconfig = WXMPConfig.getInstance(key);
-					if(null != wxconfig){
+				WXConfig wxconfig = WXMPConfig.getInstance(key);
+				if(null == wxconfig){
+					result = false;
+				}else{
+					if(BasicUtil.isEmpty(appid)){
 						appid = wxconfig.APP_ID;
 					}
-				}
-				Map<String,String> map = new HashMap<String,String>();
-				if(null != params){
-					String[] items = params.split(",");
-					for(String item:items){
-						String[] kv = item.split(":");
-						if(kv.length ==2){
-							map.put(kv[0], kv[1]);
+					Map<String,String> map = new HashMap<String,String>();
+					if(null != params){
+						String[] items = params.split(",");
+						for(String item:items){
+							String[] kv = item.split(":");
+							if(kv.length ==2){
+								map.put(kv[0], kv[1]);
+							}
 						}
 					}
+					if(BasicUtil.isEmpty(scope)){
+						scope = "snsapi_base";
+					}
+					if(BasicUtil.isEmpty(redirect)){
+						redirect = wxconfig.OAUTH_REDIRECT_URL;
+					}
+					if(BasicUtil.isEmpty(redirect)){
+						redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
+					}
+					redirect = URLEncoder.encode(redirect, "UTF-8");
+					url =  WXConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
 				}
-				if(BasicUtil.isEmpty(scope)){
-					scope = "snsapi_base";
-				}
-				if(BasicUtil.isEmpty(redirect)){
-					redirect = WXMPConfig.getInstance(key).OAUTH_REDIRECT_URL;
-				}
-				redirect = URLEncoder.encode(redirect, "UTF-8");
-				url =  WXConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
-				
 			}else if("qq".equalsIgnoreCase(type)){
-				if(BasicUtil.isEmpty(appid)){
-					QQMPConfig qqconfig = QQMPConfig.getInstance(key);
-					if(null != qqconfig){
+				QQMPConfig qqconfig = QQMPConfig.getInstance(key);
+				if(null == qqconfig){
+					result = false;
+				}else{
+					if(BasicUtil.isEmpty(appid)){
 						appid = qqconfig.APP_ID;
 					}
-				}
-				Map<String,String> map = new HashMap<String,String>();
-				if(null != params){
-					String[] items = params.split(",");
-					for(String item:items){
-						String[] kv = item.split(":");
-						if(kv.length ==2){
-							map.put(kv[0], kv[1]);
+					Map<String,String> map = new HashMap<String,String>();
+					if(null != params){
+						String[] items = params.split(",");
+						for(String item:items){
+							String[] kv = item.split(":");
+							if(kv.length ==2){
+								map.put(kv[0], kv[1]);
+							}
 						}
 					}
+					String response_type = "code";
+					if(BasicUtil.isEmpty(scope)){
+						scope = "get_user_info";
+					}
+					if(BasicUtil.isEmpty(redirect)){
+						redirect = qqconfig.OAUTH_REDIRECT_URL;
+					}
+					if(BasicUtil.isEmpty(redirect)){
+						redirect = QQMPConfig.getInstance().OAUTH_REDIRECT_URL;
+					}
+					redirect = URLEncoder.encode(redirect, "UTF-8");
+					url =  QQConfig.URL_OAUTH + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state+",app:"+key;
 				}
-				String response_type = "code";
-				if(BasicUtil.isEmpty(scope)){
-					scope = "get_user_info";
+			}
+			if(result){
+				html = "<a href=\""+url+"\" id=\""+id+"\">";
+				if(BasicUtil.isNotEmpty(body)){
+					html += body;
 				}
-				if(BasicUtil.isEmpty(redirect)){
-					redirect = QQMPConfig.getInstance(key).OAUTH_REDIRECT_URL;
+				html += "</a>";
+				if(auto){
+					html += "<script>location.href = \""+url+"\";</script>";
 				}
-				redirect = URLEncoder.encode(redirect, "UTF-8");
-				url =  QQConfig.URL_OAUTH + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state+",app:"+key;
+			}else{
+				html = "登录配置异常";
 			}
-			result = "<a href=\""+url+"\" id=\""+id+"\">";
-			if(BasicUtil.isNotEmpty(body)){
-				result += body;
-			}
-			result += "</a>";
-			if(auto){
-				result += "<script>location.href = \""+url+"\";</script>";
-			}
-			writer.print(result);
+			writer.print(html);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally{

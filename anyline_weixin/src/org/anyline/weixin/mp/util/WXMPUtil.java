@@ -56,6 +56,12 @@ public class WXMPUtil extends WXUtil{
 		this.config = conf;
 		instances.put(key, this);
 	}
+	public static WXMPUtil reg(String key, DataRow config){
+		WXMPConfig conf = WXMPConfig.reg(key, config);
+		WXMPUtil util = new WXMPUtil(conf);
+		instances.put(key, util);
+		return util;
+	}
 	public static WXMPUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
