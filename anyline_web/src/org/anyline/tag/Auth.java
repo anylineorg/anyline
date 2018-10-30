@@ -86,7 +86,10 @@ public class Auth extends BaseBodyTag {
 			
 			if("wx".equalsIgnoreCase(type) || "weixin".equalsIgnoreCase(type)){
 				if(BasicUtil.isEmpty(appid)){
-					appid = WXMPConfig.getInstance(key).APP_ID;
+					WXConfig wxconfig = WXMPConfig.getInstance(key);
+					if(null != wxconfig){
+						appid = wxconfig.APP_ID;
+					}
 				}
 				Map<String,String> map = new HashMap<String,String>();
 				if(null != params){
@@ -109,7 +112,10 @@ public class Auth extends BaseBodyTag {
 				
 			}else if("qq".equalsIgnoreCase(type)){
 				if(BasicUtil.isEmpty(appid)){
-					appid = QQMPConfig.getInstance(key).APP_ID;
+					QQMPConfig qqconfig = QQMPConfig.getInstance(key);
+					if(null != qqconfig){
+						appid = qqconfig.APP_ID;
+					}
 				}
 				Map<String,String> map = new HashMap<String,String>();
 				if(null != params){
