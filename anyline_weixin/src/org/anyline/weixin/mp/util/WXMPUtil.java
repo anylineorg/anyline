@@ -96,6 +96,9 @@ public class WXMPUtil extends WXUtil{
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
+		if(BasicUtil.isEmpty(order.getNotify_url())){
+			order.setNotify_url(WXMPConfig.getInstance().PAY_NOTIFY_URL);
+		}
 		if(BasicUtil.isEmpty(order.getOut_trade_no())){
 			throw new Exception("未设置交易单号");
 		}
