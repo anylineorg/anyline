@@ -24,6 +24,16 @@
 		<property key="VAR_SHOW_STAT">true</property>
 		<!-- 跳转到 -->
 		<property key="VAR_SHOW_JUMP">false</property>
+		
+		
+		<!-- 每页默认显示多少条 -->
+		<property key="VAR_PAGE_DEFAULT_VOL">10</property>
+		<!-- 用户端是否可以设置每页多少条 -->
+		<property key="VAR_CLIENT_SET_VOL_ENABLE">true</property>
+		<!-- 用户端指定每页多少条的key -->
+		<property key="KEY_PAGE_ROWS">_anyline_page_rows</property>
+		<!-- 用户端指定当前第几页的key -->
+		<property key="KEY_PAGE_NO">_anyline_page</property>
 		<!-- 加载更多格式 -->
 		<property key="STYLE_LOAD_MORE_FORMAT"></property>
 		<property key="STYLE_FILE_PATH">//deepbit.oss-cn-shanghai.aliyuncs.com/plugin/navi/skin.css</property>

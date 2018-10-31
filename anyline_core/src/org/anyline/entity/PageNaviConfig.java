@@ -36,13 +36,13 @@ public class PageNaviConfig extends BasicConfig{
 	public boolean VAR_SHOW_INDEX				= true		;	//是否显示下标
 	
 	//key
-	public String KEY_PAGE_ROWS			= "_anyline_page_rows";
-	public String KEY_PAGE_NO			= "_anyline_page";
-	public String KEY_TOTAL_PAGE		= "_anyline_total_page";
-	public String KEY_TOTAL_ROW			= "_anyline_total_row";
-	public String KEY_SHOW_STAT			= "_anyline_navi_show_stat";
-	public String KEY_SHOW_JUMP			= "_anyline_navi_show_jump";
-	public String KEY_GUIDE				= "_anyline_navi_guide";
+	public String KEY_PAGE_ROWS			= "_anyline_page_rows"			; //设置每页显示多少条的key
+	public String KEY_PAGE_NO			= "_anyline_page"				; //设置当前第几页的key
+	public String KEY_TOTAL_PAGE		= "_anyline_total_page"			; //显示一共多少页的key
+	public String KEY_TOTAL_ROW			= "_anyline_total_row"			; //显示一共多少条的key
+	public String KEY_SHOW_STAT			= "_anyline_navi_show_stat"		; //设置是否显示统计数据的key
+	public String KEY_SHOW_JUMP			= "_anyline_navi_show_jump"		; //设置是否显示页数跳转key
+	public String KEY_GUIDE				= "_anyline_navi_guide"			; //设置分页样式的key
 	
 
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
