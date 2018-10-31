@@ -578,6 +578,21 @@ public class WXMPUtil extends WXUtil{
 		return row;
 	}
 	/**
+	 * 是否已关注
+	 * @param openid
+	 * @return
+	 */
+	public boolean isSubscribe(String openid){
+		DataRow info = getUserInfo(openid);
+		if(null == info){
+			return false;
+		}
+		if(info.getInt("subscribe") ==1){
+			return true;
+		}
+		return false;
+	}
+	/**
 	 * 发送样模板消息
 	 * @param msg
 	 * @return
