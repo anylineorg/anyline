@@ -84,7 +84,7 @@ public class WXMPUtil extends WXUtil{
 	 * @param order
 	 * @return
 	 */
-	public WXMPPayTradeResult unifiedorder(WXMPPayTradeOrder order) {
+	public WXMPPayTradeResult unifiedorder(WXMPPayTradeOrder order) throws Exception{
 		WXMPPayTradeResult result = null;
 		order.setNonce_str(BasicUtil.getRandomLowerString(20));
 		if(BasicUtil.isEmpty(order.getAppid())){
@@ -95,6 +95,9 @@ public class WXMPUtil extends WXUtil{
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
 			order.setNotify_url(config.PAY_NOTIFY_URL);
+		}
+		if(BasicUtil.isEmpty(order.getOut_trade_no())){
+			throw new Exception("未设置交易单号");
 		}
 		order.setTrade_type(WXConfig.TRADE_TYPE.JSAPI);
 		Map<String, Object> map = BeanUtil.toMap(order);
