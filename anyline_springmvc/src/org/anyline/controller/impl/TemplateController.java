@@ -178,7 +178,7 @@ public class TemplateController extends AnylineController {
 	
 	/**
 	 * 创建显示视图
-	 * @param checkClient 是否识别并切换 移动 PC(web,wap)
+	 * @param adapt 是否识别并切换 移动 PC(web,wap)
 	 * @param name
 	 * @param template
 	 * template(page,template) 与createView(page,template); 相同
@@ -190,8 +190,8 @@ public class TemplateController extends AnylineController {
 		内容文件与模板文件 目录结构应该保持一致
 	 * @return
 	 */
-	protected ModelAndView template(boolean checkClient, String name, String template){
-		return createView(checkClient,name, template);
+	protected ModelAndView template(boolean adapt, String name, String template){
+		return createView(adapt,name, template);
 	}
 	protected ModelAndView template(String name, String template){
 		return createView(false,name, template);
@@ -230,7 +230,7 @@ public class TemplateController extends AnylineController {
 		}
 		return result;
 	}
-	protected TemplateModelAndView createView(boolean checkClient, String name, String template){
+	protected TemplateModelAndView createView(boolean adapt, String name, String template){
 		TemplateModelAndView tv = new TemplateModelAndView();
 		if(null != name && !name.startsWith("/")){
 			//相对目录
@@ -254,14 +254,14 @@ public class TemplateController extends AnylineController {
 			clientType = "wap";
 		}
 		if(null != name){
-			if(checkClient){
+			if(adapt){
 				name = name.replace("/web/", "/"+clientType+"/");
 				name = name.replace("/wap/", "/"+clientType+"/");
 			}
 			name = name.replace("${client_type}", clientType);
 		}
 		if(null != content_template){
-			if(checkClient){
+			if(adapt){
 				content_template = content_template.replace("/web/", "/"+clientType+"/");
 				content_template = content_template.replace("/wap/", "/"+clientType+"/");
 			}
