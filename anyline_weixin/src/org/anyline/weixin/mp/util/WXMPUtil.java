@@ -566,6 +566,11 @@ public class WXMPUtil extends WXUtil{
 	}
 	/**
 	 * 获取用户基本信息
+	 * {"subscribe":1,"openid":"obZk6wq-38hnl4bx2NSOtU12b6fY","nickname":"ZHANG","sex":1,"language":"zh_CN",
+	 * "city":"青岛","province":"山东","country":"中国",
+	 * "headimgurl":"http:\/\/thirdwx.qlogo.cn\/mmopen\/OYSz",
+	 * "subscribe_time":1540301692,"remark":"","groupid":0,"tagid_list":[],
+	 * "subscribe_scene":"ADD_SCENE_SEARCH","qr_scene":0,"qr_scene_str":""}
 	 * @param openid
 	 * @return
 	 */
