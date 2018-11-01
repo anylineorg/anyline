@@ -19,10 +19,12 @@
 
 package org.anyline.util;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -41,6 +43,7 @@ import java.util.regex.Pattern;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
 import javax.servlet.http.Cookie;
@@ -1336,6 +1339,19 @@ public class WebUtil {
 			}
 		}
 		return null;
+	}
+	public static String readRequestContent(HttpServletRequest request){
+    	StringBuilder sb = new StringBuilder();
+    	try{
+    		BufferedReader br = new BufferedReader(new InputStreamReader((ServletInputStream)request.getInputStream()));
+    		String line = null;
+			while((line = br.readLine())!=null){
+			    sb.append(line);
+			}
+    	}catch(Exception e){
+    		e.printStackTrace();
+    	}
+		return sb.toString();
 	}
 	
 }
