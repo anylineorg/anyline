@@ -249,22 +249,26 @@ public class TemplateController extends AnylineController {
 				}
 			}
 		}
-		if(checkClient){
-			if(null != name){
-				if(WebUtil.isWap(getRequest())){
-					name = name.replace("/web/", "/wap/");
-				}else{
-					name = name.replace("/wap/", "/web/");
-				}
-			}
-			if(null != content_template){
-				if(WebUtil.isWap(getRequest())){
-					content_template = content_template.replace("/web/", "/wap/");
-				}else{
-					content_template = content_template.replace("/wap/", "/web/");
-				}
-			}
+		String clientType = "web";
+		if(WebUtil.isWap(getRequest())){
+			clientType = "wap";
 		}
+		if(null != name){
+			if(checkClient){
+				name = name.replace("/web/", "/"+clientType+"/");
+				name = name.replace("/wap/", "/"+clientType+"/");
+			}
+			name = name.replace("${client_type}", clientType);
+		}
+		if(null != content_template){
+			if(checkClient){
+				content_template = content_template.replace("/web/", "/"+clientType+"/");
+				content_template = content_template.replace("/wap/", "/"+clientType+"/");
+			}
+			content_template = content_template.replace("${client_type}", clientType);
+		}
+
+		
 		tv.setViewName(name);
 		tv.addObject(TemplateView.ANYLINE_TEMPLATE_NAME, content_template);
 		tv.addObject(TemplateModelAndView.CONTENT_URL,getRequest().getRequestURI());
