@@ -137,14 +137,7 @@ public class Radio extends BaseBodyTag{
 					String label = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 					String text = "";
 					if (textKey.contains("{")) {
-						text = textKey;
-						List<String> keys = RegularUtil.fetch(textKey, "\\{\\w+\\}", Regular.MATCH_MODE.CONTAIN, 0);
-						for (String key : keys) {
-							Object v = item.get(key.replace("{", "").replace("}", ""));
-							if (null != v) {
-								text = text.replace(key, v.toString());
-							}
-						}
+						text = parseRuntimeValue(item,textKey);
 					} else {
 						Object v = item.get(textKey);
 						if (null != v) {
