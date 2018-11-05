@@ -1,3 +1,4 @@
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,12 +8,18 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.AESUtil;
 import org.anyline.util.DateUtil;
+import org.anyline.util.FileUtil;
+import org.anyline.util.ImgUtil;
 import org.anyline.util.RSAUtil;
 
 public class Test {
 
 	public static void main(String args[]) {
-		select();
+		// select();
+		// fileMD5();
+		// aes();
+		// rsa();
+		createGif();
 	}
 
 	public static void aes() {
@@ -22,7 +29,8 @@ public class Test {
 		System.out.println("密文:" + s1);
 		System.out.println("解密:" + AESUtil.decrypt(s1, "1234"));
 	}
-	public static void rsa(){
+
+	public static void rsa() {
 		Map<String, String> keyMap = RSAUtil.createKeys(1024);
 		String publicKey = keyMap.get("public");
 		String privateKey = keyMap.get("private");
@@ -41,6 +49,7 @@ public class Test {
 			e.printStackTrace();
 		}
 	}
+
 	public static void select() {
 		DataSet set = new DataSet();
 		for (int i = 8; i <= 12; i++) {
@@ -71,5 +80,27 @@ public class Test {
 		map.put("age", "123");
 		list.add(map);
 		System.out.println(DataSet.parse(list));
+	}
+
+	public static void fileMD5() {
+		try {
+			String base = "";
+			base = FileUtil.md5(new File("D:\\a.jpg"));
+			// base = ImgUtil.base64(new
+			// URL("http://10.16.242.62:11100/briefing/common/upload/20180709/202309017634.png"));
+			// System.out.println(base);
+			// base = ImgUtil.base64(new
+			// URL("http://10.16.242.62:11100/briefing/common/upload/20180709/201843040059.png"));
+			System.out.println(base);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void createGif() {
+		List<File> files = FileUtil.getAllChildrenFile(new File("D:\\20181103"));
+		File localGifPath= new File("D:\\a.gif");
+		ImgUtil.createGif(250, localGifPath, files);
 	}
 }

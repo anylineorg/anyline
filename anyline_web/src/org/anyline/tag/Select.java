@@ -119,15 +119,7 @@ public class Select extends BaseBodyTag{
 					
 					String text = "";
 					if(textKey.contains("{")){
-						text = textKey;
-						List<String> keys =RegularUtil.fetch(textKey, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
-						for(String key:keys){
-							Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
-							if(null == v){
-								v = "";
-							}
-							text = text.replace(key, v.toString());
-						}
+						text = parseRuntimeValue(item,textKey);
 					}else{
 						Object v = BeanUtil.getFieldValue(item, textKey);
 						if(null != v){

@@ -513,8 +513,15 @@ public class ImgUtil {
      * @param srcs
      */
     public synchronized static void createGif(int delay, String tar, String ... srcs) {
-    	List<String> list = new ArrayList<String>();
+    	List<File> list = new ArrayList<File>();
     	for(String src:srcs){
+    		list.add(new File(src));
+    	}
+    	createGif(delay, new File(tar), list);
+    }
+    public synchronized static void createGif(int delay, File tar, File ... srcs) {
+    	List<File> list = new ArrayList<File>();
+    	for(File src:srcs){
     		list.add(src);
     	}
     	createGif(delay, tar, list);
@@ -525,54 +532,31 @@ public class ImgUtil {
      * @param tar
      * @param srcs
      */
-    public synchronized static void createGif(int delay, String tar, List<String> srcs) {  
+    public synchronized static void createGif(int delay, File tar, List<File> srcs) {  
         try {
-        	File dir = new File(tar).getParentFile();
+        	long fr = 0;
+        	File dir = tar.getParentFile();
         	if(!dir.exists()){
         		dir.mkdirs();
         	}
             AnimatedGifEncoder e = new AnimatedGifEncoder(); 
             e.setRepeat(0);  
-            e.start(tar);
+            e.start(tar.getAbsolutePath());
             int size = srcs.size();
             BufferedImage src[] = new BufferedImage[size];  
-            for (int i = 0; i < size; i++) {  
+            for (int i = 0; i < size; i++) {
+            	fr = System.currentTimeMillis();
                 e.setDelay(delay); //设置播放的延迟时间  
-                src[i] = ImageIO.read(new File(srcs.get(i))); // 读入需要播放的jpg文件  
+                src[i] = ImageIO.read(srcs.get(i)); // 读入需要播放的jpg文件  
                 e.addFrame(src[i]);  //添加到帧中  
+                if(ConfigTable.isDebug()){
+                	log.warn("[create gif][第"+i+"/"+size+"帧][源文件:"+srcs.get(i).getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+                }
             }  
             e.finish();  
         } catch (Exception e) {  
             e.printStackTrace();  
         }  
     }  
-    public static void main(String args[]){
-    	//splitGif(new File("D:\\a.gif"),new File("D:\\a"));
-
-//      	File dir = new File("D:\\imgs");
-//      	List<File> files = FileUtil.getAllChildrenFile(dir);
-//      	for(File file:files){
-//      		String src = file.getAbsolutePath();
-//      		File tar = new File(src.replace("imgs", "imgs_960"));
-//      		try{
-//      			if(!tar.exists())
-//      			ImgUtil.scale(file, tar, 960, 436, false);
-//      		}catch(Exception e){
-//      			e.printStackTrace();
-//      		}
-//      	}
-    	try {
-    		String base = "";
-    		base = FileUtil.md5(new File("D:\\a.jpg"));
-			//base = ImgUtil.base64(new URL("http://10.16.242.62:11100/briefing/common/upload/20180709/202309017634.png"));
-			//System.out.println(base);
-			//base = ImgUtil.base64(new URL("http://10.16.242.62:11100/briefing/common/upload/20180709/201843040059.png"));
-			System.out.println(base);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-    		
-    }
+    
 }
