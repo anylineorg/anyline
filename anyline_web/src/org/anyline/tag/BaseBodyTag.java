@@ -30,6 +30,9 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.regular.Regular;
+import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	private static final long serialVersionUID = 1L;
@@ -112,7 +115,37 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		
 		return html;
 	}
-
+	protected String parseRuntimeValue(Object obj, String key){
+		String value = key;
+		if(BasicUtil.isNotEmpty(key)){
+			if(key.contains("{")){
+				try{
+					List<String> ks =RegularUtil.fetch(key, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
+					for(String k:ks){
+						Object v = BeanUtil.getFieldValue(obj,k.replace("{", "").replace("}", ""));
+						if(null == v){
+							v = "";
+						}
+						value = value.replace(k, v.toString());
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
+		if(ConfigTable.isDebug()){
+			log.warn("[parse run time value][key:"+key+"][value:"+value+"]");
+		}
+		return value;
+	}
+	/**
+	 * 条目data-*
+	 * itemExtra = "ID:1"
+	 * itemExtra = "ID:{ID}"
+	 * itemExtra = "ID:{ID}-{NM}"
+	 * @param obj
+	 * @return
+	 */
 	protected String crateExtraData(Object obj){
 		String html = "";
 		if(BasicUtil.isNotEmpty(itemExtra)){
@@ -122,7 +155,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 				if(tmps.length>=2){
 					String id = tmps[0];
 					String key = tmps[1];
-					Object value = BeanUtil.getFieldValue(obj, key);
+					String value = parseRuntimeValue(obj,key);
 					if(null == value){
 						value = "";
 					}
