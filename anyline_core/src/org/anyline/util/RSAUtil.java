@@ -11,6 +11,9 @@ import java.security.KeyFactory;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.Signature;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
@@ -27,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 public class RSAUtil {
 	public static final String CHARSET = "UTF-8";
 	public static final String RSA_ALGORITHM = "RSA";
+    public static final String SIGNATURE_ALGORITHM = "MD5withRSA";
 	
 	/**
 	 * 
@@ -188,9 +192,62 @@ public class RSAUtil {
 		IOUtils.closeQuietly(out);
 		return resultDatas;
 	}
-//////////////////////////////////////////////////////////////////////////////
 	
 
+    /**
+     * <p>
+     * 用私钥对信息生成数字签名
+     * </p>
+     * 
+     * @param data 已加密数据
+     * @param privateKey 私钥(BASE64编码)
+     * 
+     * @return
+     * @throws Exception
+     */
+    public static String sign(byte[] data, String privateKey) throws Exception {
+        PrivateKey privateK = getPrivateKey(privateKey);
+        Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
+        signature.initSign(privateK);
+        signature.update(data);
+        return Base64Util.encode(signature.sign());
+        
+		
+    }
+    public static String sign(String data, String privateKey) throws Exception {
+       return sign(data.getBytes(), privateKey);
+    }
+
+    /**
+     * <p>
+     * 校验数字签名
+     * </p>
+     * 
+     * @param data 已加密数据
+     * @param publicKey 公钥(BASE64编码)
+     * @param sign 数字签名
+     * 
+     * @return
+     * @throws Exception
+     * 
+     */
+    public static boolean verify(byte[] data, String publicKey, String sign) throws Exception {
+        PublicKey publicK = getPublicKey(publicKey);
+        Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
+        signature.initVerify(publicK);
+        signature.update(data);
+        return signature.verify(Base64Util.decode(sign));
+    }
+    public static boolean verify(String data, String publicKey, String sign) throws Exception {
+    	return verify(data.getBytes(), publicKey, sign);
+    }
+    
+    /**
+     * 从文件中提取私钥
+     * @param file
+     * @param keyAlgorithm
+     * @return
+     */
 	public static RSAPrivateKey getPrivateKey(File file, String keyAlgorithm) {
 		RSAPrivateKey privateKey = null;
 		InputStream inputStream = null;
