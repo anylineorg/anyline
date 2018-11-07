@@ -15,13 +15,16 @@ import org.anyline.util.RSAUtil;
 public class Test {
 
 	public static void main(String args[]) {
-		// select();
-		// fileMD5();
-		// aes();
-		// rsa();
-		createGif();
+		// select();	//DataSet 模拟sql
+		// fileMD5();	//文件md5验证
+		// aes();		//AES加密解密
+		 rsa();		//RSA加密解密  签名验签 
+		
+		//createGif();	//合成gif文件
 	}
-
+	/**
+	 * aes加密
+	 */
 	public static void aes() {
 		String s = "hello,您好";
 		System.out.println("原文:" + s);
@@ -29,9 +32,11 @@ public class Test {
 		System.out.println("密文:" + s1);
 		System.out.println("解密:" + AESUtil.decrypt(s1, "1234"));
 	}
-
+	/**
+	 * rsa加密
+	 */
 	public static void rsa() {
-		Map<String, String> keyMap = RSAUtil.createKeys(1024);
+		Map<String, String> keyMap = RSAUtil.createKeys(2048);
 		String publicKey = keyMap.get("public");
 		String privateKey = keyMap.get("private");
 		System.out.println("公钥:\n" + publicKey);
@@ -44,12 +49,20 @@ public class Test {
 			String encodedData = RSAUtil.publicEncrypt(str, RSAUtil.getPublicKey(publicKey));
 			System.out.println("密文:" + encodedData);
 			String decodedData = RSAUtil.privateDecrypt(encodedData, RSAUtil.getPrivateKey(privateKey));
-			System.out.println("解密结果:" + decodedData);
+			System.out.println("解密:" + decodedData);
+
+			String sign = RSAUtil.sign(str, privateKey);
+			System.out.println("私钥签名:" + sign);
+	        boolean status = RSAUtil.verify(str, publicKey, sign);
+	        System.err.println("公钥验签:" + status);
+		        
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
+	/**
+	 * DataSet 模拟sql
+	 */
 	public static void select() {
 		DataSet set = new DataSet();
 		for (int i = 8; i <= 12; i++) {
@@ -81,7 +94,9 @@ public class Test {
 		list.add(map);
 		System.out.println(DataSet.parse(list));
 	}
-
+	/**
+	 * 文件md5验证
+	 */
 	public static void fileMD5() {
 		try {
 			String base = "";
