@@ -2,27 +2,6 @@ package org.anyline.util;
 
 
 public class CodeUtil {
-	public static void main(String args[]) {
-		String str = "中s12_*";
-		System.out.println("src\t\t:"+str);
-		str = string2unicode(str);
-		System.out.println("string2unicode\t:"+str);
-		str = unicode2string(str);
-		System.out.println("unicode2string\t:"+str);
-		str = string2ascii(str);
-		System.out.println("string2ascii\t:"+str);
-		str = ascii2string(str);
-		System.out.println("ascii2string\t:"+str);
-		str = BasicUtil.escape(str);
-		System.out.println("escape\t\t:"+str);
-		str = BasicUtil.unescape(str);
-		System.out.println("unescape\t:"+str);
-		String url = "http://www.anyline.org?a=1&b=2&name=张";
-		url = urlEncode(url);
-		System.out.println("urlEncoder\t:"+url);
-		url = urlDecode(url);
-		System.out.println("urlDecoder\t:"+url);
-	}
 	public static String escape(String src) {  
 	       int i;  
 	       char j;  

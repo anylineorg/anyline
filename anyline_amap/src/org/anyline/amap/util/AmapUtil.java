@@ -875,37 +875,4 @@ public class AmapUtil {
 		sign = MD5Util.sign(sign,"UTF-8");
 		return sign;
 	}
-	public static void main(String args[]){
-		System.out.println(BasicUtil.cut("370212",0,4));
-		ConfigTable.setDebug(true);
-		AmapConfig.setConfigDir(new File("D:\\develop\\git\\anyline\\anyline_amap\\config\\anyline-amap.xml"));
-		System.out.println(AmapUtil.getInstance().regeo("111.86413224156792,10.243679193560395"));
-		AmapUtil util = AmapUtil.getInstance();
-		MapLocation fr = util.geo("山东省青岛市香港中路11号");
-		
-//		MapLocation to = util.geo("山东省青岛市流亭国际机场");
-//		MapLocation mid1 = util.geo("山东省青岛市市南区延安路1号");
-//		MapLocation mid2 = util.geo("山东省青岛市市南区动漫产业园");
-//		double distance0 =0;
-//		double distance1 =0;
-//		double distance2 =0;
-//		DataRow row0 = util.directionDrive(fr.getLocation(),to.getLocation());
-//		if(null != row0){
-//			distance0 = row0.getDouble("distance");
-//		}
-//		DataRow row1 = util.directionDrive(fr.getLocation(),to.getLocation(), mid1.getLocation());
-//		if(null != row1){
-//			distance1 = row1.getDouble("distance");
-//		}
-//		DataRow row2 = util.directionDrive(fr.getLocation(),to.getLocation(),mid2.getLocation());
-//		if(null != row2){
-//			distance2 = row2.getDouble("distance");
-//		}
-//		System.out.println("原路线:"+distance0+"米");
-//		System.out.println("路线1:"+distance1+"米");
-//		System.out.println("路线2:"+distance2+"米");
-//		System.out.println("路线1相差:"+Math.abs(distance1 - distance0)+"米");
-//		System.out.println("路线2相差:"+Math.abs(distance2 - distance0)+"米");
-//		
-	}
 }

@@ -78,12 +78,6 @@ public class ZipUtil {
 	public static boolean zip(Collection<File> files, File zip) {
 		return zip(files, zip, "");
 	}
-	public static void main(String args[]){
-		File zip = new File("D:\\aaa.zip");
-		List<File> files = new ArrayList<File>();
-		files.add(new File("D:\\spark-md5.js"));
-		ZipUtil.zip(files, zip,"cc");
-	}
 
 	/**
 	 * 批量压缩文件（夹）

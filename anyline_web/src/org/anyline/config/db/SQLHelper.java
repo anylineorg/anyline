@@ -1,67 +1,10 @@
 package org.anyline.config.db;
 
-import java.util.List;
-
 import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.impl.SQLVariableImpl;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
 
 public class SQLHelper {
 
-	public static void main(String args[]){
-		try {
-			String reg  =  SQL.SQL_PARAM_VAIRABLE_REGEX;
-			String text = "SELECT * FROM TAB WHERE ID=:ID "
-					+ "\nAND TYPE IN(:TYPE) "
-					+ "\nAND SORT = ::SORT "
-					+ "\nAND NM LIKE ':NM%' "
-					+ "\nAND CODE LIEK '%' + :CODE + '%' "
-					+ "\nAND CODE LIEK '%' + ::CODE + '%'";
-			List<List<String>> keys = RegularUtil.fetch(text, reg, Regular.MATCH_MODE.CONTAIN);
-			for(List<String> ks:keys){
-				int i = 0;
-				for(String k:ks){
-					System.out.print(i+++".["+k+"]\t\t");
-				}
-				System.out.println("");
-			}
-			System.out.println("======================");
-			reg  = SQL.SQL_PARAM_VAIRABLE_REGEX_EL;
-			text = "SELECT * FROM TAB WHERE ID=${ID} "
-					+ "\nAND TYPE IN(${TYPE}) "
-					+ "\nAND SORT = '${SORT}' "
-					+ "\nAND NM LIKE '%${NM}%' "
-					+ "\nAND CODE LIKE CONTAT('%', ${CODE},'%')";
-			keys = RegularUtil.fetch(text, reg, Regular.MATCH_MODE.CONTAIN);
-			for(List<String> ks:keys){
-				int i = 0;
-				for(String k:ks){
-					System.out.print(i+++".["+k+"]\t\t");
-				}
-				System.out.println("");
-			}
-			System.out.println("----------------------");
-			reg  = SQL.SQL_PARAM_VAIRABLE_REGEX_EL;
-			text = "SELECT * FROM TAB WHERE ID={ID} "
-					+ "\nAND TYPE IN ({TYPE}) "
-					+ "\nAND SORT = '{SORT}' "
-					+ "\nAND NM LIKE '%{NM}%' "
-					+ "\nAND NM LIKE '%{NM}' "
-					+ "\nAND CODE LIKE CONTAT('%', {CODE},'%')";
-			keys = RegularUtil.fetch(text, reg, Regular.MATCH_MODE.CONTAIN);
-			for(List<String> ks:keys){
-				int i = 0;
-				for(String k:ks){
-					System.out.print(i+++".["+k+"]\t\t");
-				}
-				System.out.println("");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
 	/**
 0.[ID=:ID ]				1.[ID=]				2.[:ID]			3.[ ]		
 0.[IN(:TYPE)]			1.[IN(]				2.[:TYPE]		3.[)]		

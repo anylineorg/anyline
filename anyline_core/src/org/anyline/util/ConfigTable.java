@@ -314,8 +314,5 @@ public class ConfigTable {
 			e.printStackTrace();
 		}
 	}
-	public static void main(String args[]){
-		debug();
-	}
 
 }
