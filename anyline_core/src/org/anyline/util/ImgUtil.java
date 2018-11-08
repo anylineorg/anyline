@@ -519,6 +519,13 @@ public class ImgUtil {
     	}
     	createGif(delay, new File(tar), list);
     }
+    public synchronized static void createGif(int delay, String tar, List<String> srcs) {
+    	List<File> list = new ArrayList<File>();
+    	for(String src:srcs){
+    		list.add(new File(src));
+    	}
+    	createGif(delay, new File(tar), list);
+    }
     public synchronized static void createGif(int delay, File tar, File ... srcs) {
     	List<File> list = new ArrayList<File>();
     	for(File src:srcs){
@@ -550,7 +557,7 @@ public class ImgUtil {
                 src[i] = ImageIO.read(srcs.get(i)); // 读入需要播放的jpg文件  
                 e.addFrame(src[i]);  //添加到帧中  
                 if(ConfigTable.isDebug()){
-                	log.warn("[create gif][第"+i+"/"+size+"帧][源文件:"+srcs.get(i).getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+                	log.warn("[create gif][第"+(i+1)+"/"+size+"帧][源文件:"+srcs.get(i).getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
                 }
             }  
             e.finish();  
