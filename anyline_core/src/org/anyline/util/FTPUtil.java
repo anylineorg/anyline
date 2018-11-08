@@ -18,15 +18,7 @@ public class FTPUtil {
 	private String password;
 	private FTPClient client;
 	
-	public static void main(String args[]) {
-		String host = "XX.XX.XX.XX";
-		String user = "XX@XX.com";
-		String password= "XX";
-		FTPUtil util = new FTPUtil(host, user, password);
-		//util.download("img111", "img2.gif", "D:\\zzz",null);
-		//util.download("img", "D:\\img");
-		System.out.println(util.fileSize("/js"));
-	}
+
 
 	public FTPUtil(String host, String user, String password) {
 		this(host, user, password, 21);

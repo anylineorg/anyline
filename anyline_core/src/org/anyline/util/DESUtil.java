@@ -227,15 +227,6 @@ public class DESUtil {
 			}
 		}
 	}
-//	public static void main(String args[]) throws Exception{
-//		String src = "123中国";
-//		System.out.println(URLEncoder.encode(src, "utf-8"));
-//		String result = src;
-//		result = DESUtil.getInstance().encrypt(src);
-//		System.out.println("加密:"+result);
-//		result = DESUtil.getInstance().decrypt(result);
-//		System.out.println("解密:"+result);
-//	}
 
 }
 

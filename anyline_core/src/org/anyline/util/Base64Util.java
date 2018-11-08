@@ -50,12 +50,6 @@ public class Base64Util {
         }
         return sb.toString();
     }
- 
-    /**
-     * 灏哹ase64瀛楃涓茶В鐮佷负瀛楄妭鏁扮粍
-     *
-     * @param str
-     */
     public static byte[] decode(String str) throws Exception {
         byte[] data = str.getBytes("GBK");
         int len = data.length;
