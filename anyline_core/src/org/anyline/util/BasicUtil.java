@@ -124,11 +124,6 @@ public class BasicUtil {
 		}
 		return null;
 	}
-	public static void main(String args[]){
-		String s = null;
-		String m = "a";
-		System.out.println(isNotEmpty(null));
-	}
 	public static Object nvl(boolean recursion, String... values) {
 		if (null == values) {
 			return null;
