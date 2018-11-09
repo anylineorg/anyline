@@ -131,7 +131,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			}
 		}
 		checkTest();
-		createRunTxt();
+		parseText();
 		checkValid();
 	}
 	private void checkValid(){
@@ -153,7 +153,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			return;
 		}
 	}
-	private void createRunTxt(){
+	protected void parseText(){
 		String result = sql.getText();
 		if(null != variables){
 			for(SQLVariable var:variables){
@@ -580,7 +580,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 * @param obj
 	 * @return
 	 */
-	public XMLRunSQLImpl addValues(Object obj){
+	public RunSQL addValues(Object obj){
 		if(null == obj){
 			return this;
 		}
