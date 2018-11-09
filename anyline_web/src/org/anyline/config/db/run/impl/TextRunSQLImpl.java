@@ -68,15 +68,16 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						continue;
 					}
 					AutoCondition con = (AutoCondition)condition;
-					setConditionValue(con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
+					setConditionValue(
+							con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
 				}
 			}
 		}
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
-				setConditionValue(conf.isRequire(), conf.isStrictRequired(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
+				setConditionValue(
+						conf.isRequire(), conf.isStrictRequired(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			}
-			
 			OrderStore orderStore = configStore.getOrders();
 			if(null != orderStore){
 				List<Order> orders = orderStore.getOrders();
@@ -261,11 +262,22 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		String txt = builder.toString();
 		boolean where = hasWhere(txt);
 		if(!where){
-			builder.append(" WHERE ");
+			builder.append(" WHERE 1=1");
 		}
 		builder.append(conditionChain.getRunText(creater));
 		addValues(conditionChain.getRunValues());
-//		
+		
+//		table sql 中这样实现:
+//		ConditionChain chain = configStore.getConfigChain().createAutoConditionChain();
+//		if(null != chain){
+//			for(Condition condition:chain.getConditions()){
+//				addCondition(condition);
+//			}
+//		}
+		
+		
+		
+////		
 //		int idx = 0;
 //		for(Condition con:cons){
 //			SQLVariable var = getVariable(con.getId());
