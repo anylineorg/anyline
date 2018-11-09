@@ -215,7 +215,12 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	 * 计算分页变量
 	 */
 	public void calculate() {
-		setTotalPage((totalRow - 1) / pageRows + 1);					//总页数
+		int totalPage = (totalRow - 1) / pageRows + 1;
+		//当前页是否超出总页数
+		if(curPage > totalPage){
+			curPage = totalPage;
+		}
+		setTotalPage(totalPage);					//总页数
 		setDisplayPageFirst(curPage - pageRange/2);				//显示的第一页
 		if(displayPageFirst > totalPage - pageRange){
 			setDisplayPageFirst(totalPage - pageRange + 1);
@@ -225,8 +230,9 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		}
 		
 		setDisplayPageLast(displayPageFirst + pageRange - 1);		//显示的最后页
-		if (displayPageLast > totalPage)
+		if (displayPageLast > totalPage){
 			setDisplayPageLast(totalPage);
+		}
 	}
 	//创建隐藏参数
 	private String createHidParams(PageNaviConfig config){
@@ -400,6 +406,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	@Override
 	public PageNavi setTotalRow(int totalRow) {
 		this.totalRow = totalRow;
+		calculate();
 		return this;
 	}
 	/**
