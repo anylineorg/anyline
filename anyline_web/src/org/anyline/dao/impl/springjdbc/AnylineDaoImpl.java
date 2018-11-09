@@ -106,7 +106,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				//未计数(总数 )
 				if(navi.getTotalRow() ==0){
 					total = getTotal(run.getTotalQueryTxt(), run.getValues());
-					navi.setTotalRow(total);	
+					navi.setTotalRow(total);
 				}else{
 					total = navi.getTotalRow();
 				}

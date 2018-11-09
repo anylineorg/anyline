@@ -7,6 +7,7 @@ import java.util.Map;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.AESUtil;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.CodeUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FTPUtil;
@@ -15,8 +16,6 @@ import org.anyline.util.ImgUtil;
 import org.anyline.util.RSAUtil;
 import org.anyline.util.VerifyCodeUtil;
 import org.anyline.util.ZipUtil;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
 
 public class Test {
 
@@ -24,16 +23,34 @@ public class Test {
 		// select();	//DataSet 模拟sql
 		// fileMD5();	//文件md5验证
 		// aes();		//AES加密解密
-		// rsa();		//RSA加密解密  签名验签 
+		// rsa();		//RSA加密解密  签名验签
 		
 		//createGif();	//合成gif文件
-//		 code();		//编码转换 
+//		 code();		//编码转换
 //		 amap();		//高德
 //		 ftp();
 //		 verify();		//验证码
 //		 zip();			//压缩
+//		 dispatchItems();
 	}
-
+	
+	
+	public static void dispatchItems(){
+		DataSet set = new DataSet();
+		for(int i=0; i<10; i++){
+			DataRow row = new DataRow();
+			row.put("ID", i);
+			if(i>0){
+				int base = BasicUtil.getRandomNumber(0, i);
+				if(base != i){
+					row.put("BASE_ID", base);
+				}
+			}
+			set.add(row);
+		}
+		set.dispatchItems(true, "ID:BASE_ID");
+		System.out.println(set.toJSON());
+	}
 	public static void sql(){
 //		try {
 //			String reg  =  SQL.SQL_PARAM_VAIRABLE_REGEX;

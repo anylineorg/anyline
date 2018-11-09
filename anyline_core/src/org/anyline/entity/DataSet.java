@@ -1303,6 +1303,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return params;
 	}
+	
 	/**
 	 * 从items中按相应的key提取数据 存入
 	 * @param field:默认"ITEMS"
@@ -1312,7 +1313,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * dispatchItems("children",items, "DEPAT_CD")
 	 * dispatchItems("children",items, "CD:BASE_CD")
 	 */
-	public DataSet dispatchItems(String field,DataSet items, String ... keys){
+	public DataSet dispatchItems(boolean recursion, String field,DataSet items, String ... keys){
 		if(null == items || null == keys || keys.length == 0){
 			return this;
 		}
@@ -1321,12 +1322,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		for(DataRow row : rows){
 			String[] params = packParam(row, reverseKey(keys));
-			row.put(field,items.getRows(params));
+			DataSet set = items.getRows(params);
+			if(recursion){
+				set.dispatchItems(recursion, field, items, keys);
+			}
+			row.put(field, set);
 		}
 		return this;
 	}
+	public DataSet dispatchItems(String field,DataSet items, String ... keys){
+		return dispatchItems(false, field, items, keys);
+	}
 	public DataSet dispatchItems(DataSet items, String ... keys){
 		return dispatchItems("ITEMS",items, keys);
+	}
+	public DataSet dispatchItems(boolean recursion, String ... keys){
+		return dispatchItems(recursion, "ITEMS",this, keys);
 	}
 	/**
 	 * 按keys分组
