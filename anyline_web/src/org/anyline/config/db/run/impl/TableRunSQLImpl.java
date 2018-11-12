@@ -38,7 +38,7 @@ import org.anyline.config.http.impl.ConfigStoreImpl;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 
-public class TableRunSQLImpl extends XMLRunSQLImpl implements RunSQL{
+public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	private String table;
 	private String author;
 	public TableRunSQLImpl(){
