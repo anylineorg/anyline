@@ -68,18 +68,29 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						continue;
 					}
 					AutoCondition con = (AutoCondition)condition;
-					setConditionValue(con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
+					setConditionValue(
+							con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
+					SQLVariable var = this.getVariable(con.getId());
+					if(null != var){
+						var.setValue(false, con.getValues());
+					}
 				}
 			}
 		}
 		if(null != configStore){
 			for(Config conf:configStore.getConfigChain().getConfigs()){
 				Condition con = getCondition(conf.getId());
+				SQLVariable var = this.getVariable(conf.getId());
 				//sql体中有对应的变量
 				if(null != con){
 					setConditionValue(
 						conf.isRequire(), conf.isStrictRequired(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
-				}else{
+				}
+				if(null != var){
+					var.setValue(false, conf.getValues());
+				}
+				
+				if(null == var && null == con){
 					conditionChain.addCondition(conf.createAutoCondition(conditionChain));
 				}
 			}
