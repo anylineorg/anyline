@@ -1340,6 +1340,11 @@ public class WebUtil {
 		}
 		return null;
 	}
+	public static void setCookie(HttpServletResponse response, String key, String value, int expire){
+		Cookie cookie = new Cookie(key, value);
+		cookie.setMaxAge(expire);
+		response.addCookie(cookie);
+	}
 	public static String readRequestContent(HttpServletRequest request){
     	StringBuilder sb = new StringBuilder();
     	try{
