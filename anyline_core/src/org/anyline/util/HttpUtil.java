@@ -72,6 +72,45 @@ public class HttpUtil {
 	private boolean initialized = false;
 	private HttpProxy proxy;
 
+	/**
+	 * 合成path
+	 * @param paths
+	 * @return
+	 */
+	public static String mergePath(String ... paths){
+		String result = null;
+		String separator = "/";
+		if(null != paths){
+			for(String path:paths){
+				if(BasicUtil.isEmpty(path)){
+					continue;
+				}
+				path = path.replace("\\", "/");
+				if(null == result){
+					result = path;
+				}else{
+					if(result.endsWith("/")){
+						if(path.startsWith("/")){
+							// "root/" + "/sub" 
+							result += path.substring(1);
+						}else{
+							// "root/" + "sub"
+							result += path;
+						}
+					}else{
+						if(path.startsWith("/")){
+							// "root" + "/sub" 
+							result += path;
+						}else{
+							// "root" + "sub"
+							result += separator + path;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
 	public static Source post(HttpProxy proxy, String url, String encode, Object... params) {
 		Map<String, Object> map = paramToMap(params);
 		return post(proxy, url, encode, map);
