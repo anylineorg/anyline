@@ -45,6 +45,7 @@ public class ConfigTable {
 	private static final String minVersion = "0090";
 	private static boolean isLoad = false;
 	public static boolean  IS_UPPER_KEY = true;
+	public static boolean  IS_LOWER_KEY = false;
 	static{
 		init();
 		debug();
