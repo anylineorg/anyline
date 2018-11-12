@@ -1313,7 +1313,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * dispatchItems("children",items, "DEPAT_CD")
 	 * dispatchItems("children",items, "CD:BASE_CD")
 	 */
-	public DataSet dispatchItems(boolean recursion, String field,DataSet items, String ... keys){
+	public DataSet dispatchItems(boolean recursion, String field, DataSet items, String ... keys){
 		if(null == items || null == keys || keys.length == 0){
 			return this;
 		}
@@ -1338,6 +1338,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public DataSet dispatchItems(boolean recursion, String ... keys){
 		return dispatchItems(recursion, "ITEMS",this, keys);
+	}
+	public DataSet toLowerKey(){
+		for(DataRow row:rows){
+			row.toLowerKey();
+		}
+		return this;
+	}
+	public DataSet toUpperKey(){
+		for(DataRow row:rows){
+			row.toUpperKey();
+		}
+		return this;
 	}
 	/**
 	 * 按keys分组

@@ -68,6 +68,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 
 	private boolean updateNullColumn 		= ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
 	private boolean updateEmptyColumn 		= ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
+	private int keyCase 					= 1								; //0根据配置文件 -1小写 1:大写
 	/**
 	 * 
 	 * @param obj
@@ -80,7 +81,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			for(String key:keys){
 				String tmp[] = key.split(":");
 				if(null != tmp && tmp.length>1){
-					map.put(key(tmp[1].trim()), key(tmp[0].trim()));
+					map.put(keyCase(tmp[1].trim()), keyCase(tmp[0].trim()));
 				}
 			}
 		}
@@ -99,7 +100,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			}else{
 				List<String> fields = BeanUtil.getFieldsName(obj.getClass());
 				for(String field : fields){
-					String col = map.get(key(field));
+					String col = map.get(keyCase(field));
 					if(null == col){
 						col = field;
 					}
@@ -250,6 +251,44 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public DataRow putItems(Object obj){
 		put(ITEMS,obj);
+		return this;
+	}
+	public DataRow toLowerKey(String ... keys){
+		if(null != keys){
+			for(String key:keys){
+				Object value = get(key(key));
+				remove(key(key));
+				this.keyCase = -1;
+				put(key.toLowerCase(), value);
+			}
+		}else{
+			for(String key:keys()){
+				Object value = get(key(key));
+				remove(key(key));
+				this.keyCase = -1;
+				put(key.toLowerCase(), value);
+			}
+		}
+		
+		return this;
+	}
+	public DataRow toUpperKey(String ... keys){
+		if(null != keys){
+			for(String key:keys){
+				Object value = get(key(key));
+				remove(key(key));
+				this.keyCase = 1;
+				put(key.toLowerCase(), value);
+			}
+		}else{
+			for(String key:keys()){
+				Object value = get(key(key));
+				remove(key(key));
+				this.keyCase = 1;
+				put(key.toLowerCase(), value);
+			}
+		}
+		
 		return this;
 	}
 	/**
@@ -1061,10 +1100,29 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return true;
 	}
-	private static String key(String key){
-		if(null != key && ConfigTable.IS_UPPER_KEY){
-			key = key.toUpperCase();
+	private static String keyCase(String key){
+		if(null != key){
+			if(ConfigTable.IS_UPPER_KEY){
+				key = key.toUpperCase();
+			}
+			if(ConfigTable.IS_LOWER_KEY){
+				key = key.toUpperCase();
+			}
 		}
+		return key;
+	}
+
+	private String key(String key){
+		if(null != key){
+			if(keyCase == 0){
+				key = keyCase(key);
+			}else if(keyCase == -1){
+				key = key.toLowerCase();
+			}else if(keyCase == 1){
+				key = key.toUpperCase();
+			}
+		}
+		
 		return key;
 	}
 	public Map<String, Object> getQueryParams() {
