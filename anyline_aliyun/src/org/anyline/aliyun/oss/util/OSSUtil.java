@@ -6,10 +6,13 @@ import java.net.URL;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
+import org.anyline.util.HttpUtil;
 import org.apache.log4j.Logger;
 
 import com.aliyun.oss.OSSClient;
@@ -46,9 +49,33 @@ public class OSSUtil {
 		}
 		return util;
 	}
+	/**
+	 * 上传文件或目录
+	 * @param file
+	 * @param path
+	 * @return
+	 */
 	public String upload(File file, String path){
-		client.putObject(config.BUCKET, path, file);
-		return createUrl(path);
+		String result = null;
+		if(null != file && file.exists() && file.isDirectory()){
+			List<File> files = FileUtil.getAllChildrenFile(file);
+			for(File item:files){
+				String itemPath = FileUtil.mergePath(path, item.getAbsolutePath().replace(file.getAbsolutePath(), "")).replace("\\", "/");
+				String url = upload(item, itemPath);
+				if(null == result){
+					result = url;
+				}else{
+					result += "," + url;
+				}
+			}
+		}else{
+			result = createUrl(path);
+			client.putObject(config.BUCKET, path, file);
+			if(ConfigTable.isDebug()){
+				log.warn("[oss upload file][file:"+file.getAbsolutePath()+"][url:"+result+"]");
+			}
+		}
+		return result;
 	}
 	public String upload(URL url, String path){
 		try {
@@ -84,7 +111,7 @@ public class OSSUtil {
 	private String createUrl(String path){
 		String result = "";
 		result = "http://"+config.BUCKET+"."+config.ENDPOINT;
-		result = FileUtil.mergePath(result, path);
+		result = HttpUtil.mergePath(result, path);
 		return result;
 	}
 	public Map<String,String> signature(String dir) {
