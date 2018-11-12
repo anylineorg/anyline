@@ -29,14 +29,6 @@ public class WXUtil {
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
 	}
-
-	public static String jsapiPaySign(String apisecret, Map<String, Object> params) {
-		String sign = "";
-		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + apisecret;
-		sign = MD5Util.crypto(sign).toUpperCase();
-		return sign;
-	}
 	/**
 	 * 获取RSA公钥
 	 * @param mch
