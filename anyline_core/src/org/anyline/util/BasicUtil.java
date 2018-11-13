@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +35,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
-
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 import net.sf.json.JSONObject;
 
@@ -757,7 +755,8 @@ public class BasicUtil {
 	 * @param params
 	 * @return
 	 */
-	public static String joinBySort(Map<String,?> params){
+	@SuppressWarnings("rawtypes")
+	public static String joinBySort(Map<String,?> params, boolean ignoreEmpty){
 		String result = "";
 		SortedMap<String, Object> sort = new TreeMap<String, Object>(params);
 		Set es = sort.entrySet();
@@ -766,16 +765,31 @@ public class BasicUtil {
 			Map.Entry entry = (Map.Entry) it.next();
 			String k = (String) entry.getKey();
 			Object v = entry.getValue();
-			if ("".equals(v)) {
-				//params.remove(k);
+			if(ignoreEmpty && BasicUtil.isEmpty(v)) {
 				continue;
 			}
-			if (!"".equals(result)) {
-				result += "&";
+			if(v instanceof Collection){
+				Collection list = (Collection)v;
+				for(Object item: list){
+					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
+						continue;
+					}
+					if (!"".equals(result)) {
+						result += "&";
+					}
+					result += k + "=" + item;
+				}
+			}else{
+				if (!"".equals(result)) {
+					result += "&";
+				}
+				result += k + "=" + v;
 			}
-			result += k + "=" + v;
 		}
 		return result;
+	}
+	public static String joinBySort(Map<String,?> params){
+		return joinBySort(params, true);
 	}
 	/**
 	 * 获取本机IP
