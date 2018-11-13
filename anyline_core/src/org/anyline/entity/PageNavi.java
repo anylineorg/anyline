@@ -21,9 +21,6 @@ package org.anyline.entity;
 
 import java.io.Serializable;
 
-import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
-
 
 
 
