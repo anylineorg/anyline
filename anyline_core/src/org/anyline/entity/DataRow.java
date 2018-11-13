@@ -46,6 +46,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
 	private static Logger log = Logger.getLogger(DataRow.class);
 
+	public static enum KEY_CASE{
+		DEFAULT				{public String getCode(){return "DEFAULT";} 	public String getName(){return "默认";}},
+		UPPER				{public String getCode(){return "UPPER";} 	public String getName(){return "强制大写";}},
+		LOWER				{public String getCode(){return "LOWER";} 	public String getName(){return "强制小写";}};
+		public abstract String getName();
+		public abstract String getCode();
+	}
 	public static String PARENT 			= "PARENT"						; //上级数据
 	public static String ALL_PARENT 		= "ALL_PARENT"					; //所有上级数据
 	public static String CHILDREN 			= "CHILDREN"					; //子数据
@@ -68,14 +75,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 
 	private boolean updateNullColumn 		= ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
 	private boolean updateEmptyColumn 		= ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
-
-	public static enum KEY_CASE{
-		DEFAULT				{public String getCode(){return "DEFAULT";} 	public String getName(){return "默认";}},
-		UPPER				{public String getCode(){return "UPPER";} 	public String getName(){return "强制大写";}},
-		LOWER				{public String getCode(){return "LOWER";} 	public String getName(){return "强制小写";}};
-		public abstract String getName();
-		public abstract String getCode();
-	}
+	
+	private KEY_CASE keyCase = KEY_CASE.DEFAULT;
 	/**
 	 * 
 	 * @param obj
@@ -88,7 +89,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			for(String key:keys){
 				String tmp[] = key.split(":");
 				if(null != tmp && tmp.length>1){
-					map.put(key(tmp[1].trim()), key(tmp[0].trim()));
+					map.put(keyCase(tmp[1].trim()), keyCase(tmp[0].trim()));
 				}
 			}
 		}
@@ -107,7 +108,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			}else{
 				List<String> fields = BeanUtil.getFieldsName(obj.getClass());
 				for(String field : fields){
-					String col = map.get(key(field));
+					String col = map.get(keyCase(field));
 					if(null == col){
 						col = field;
 					}
@@ -274,7 +275,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				put(KEY_CASE.LOWER, key, value);
 			}
 		}
-		
+		this.keyCase = KEY_CASE.LOWER;
 		return this;
 	}
 	public DataRow toUpperKey(String ... keys){
@@ -291,7 +292,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				put(KEY_CASE.UPPER,key, value);
 			}
 		}
-		
+		this.keyCase = KEY_CASE.UPPER;
 		return this;
 	}
 	/**
@@ -659,7 +660,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public DataRow put(KEY_CASE keyCase, String key, Object value){
 		if(null != key){
-			key = key(key);
+			key = key(keyCase,key);
 			if(key.startsWith("+")){
 				key = key.substring(1);
 				addUpdateColumns(key);
@@ -704,7 +705,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		this.put(KEY_CASE.DEFAULT, key, value, pk , true);
 		return this;
 	}
-	
+	@Override
+	public Object put(String key, Object value){
+		this.put(KEY_CASE.DEFAULT, key, value, false , true);
+		return this;
+	}
 	public Object get(String key){
 		Object result = null;
 		if(null != key){
@@ -1110,7 +1115,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return true;
 	}
-	private static String key(KEY_CASE keyCase, String key){
+	private static String keyCase(KEY_CASE keyCase, String key){
 		if(null != key){
 			if(keyCase == KEY_CASE.DEFAULT){
 				if(ConfigTable.IS_UPPER_KEY){
@@ -1127,8 +1132,17 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return key;
 	}
-	private static String key(String key){
+	private static String keyCase(String key){
+		return keyCase(KEY_CASE.DEFAULT, key);
+	}
+	private String key(String key){
 		return key(KEY_CASE.DEFAULT, key);
+	}
+	private String key(KEY_CASE keyCase, String key){
+		if(keyCase == KEY_CASE.DEFAULT){
+			keyCase = this.keyCase;
+		}
+		return keyCase(keyCase, key);
 	}
 	public Map<String, Object> getQueryParams() {
 		if(queryParams.isEmpty()){
