@@ -195,19 +195,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		rows.set(index, item);
 		return this;
 	}
-//	public DataSet toLowerKey() {
-//		for (DataRow row : rows) {
-//			row.toLowerKey();
-//		}
-//		return this;
-//	}
-//
-//	public DataSet toUpperKey() {
-//		for (DataRow row : rows) {
-//			row.toUpperKey();
-//		}
-//		return this;
-//	}
 
 	/**
 	 * 是否有主键
@@ -1313,7 +1300,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * dispatchItems("children",items, "DEPAT_CD")
 	 * dispatchItems("children",items, "CD:BASE_CD")
 	 */
-	public DataSet dispatchItems(boolean recursion, String field, DataSet items, String ... keys){
+	public DataSet dispatchItems(String field, boolean recursion, DataSet items, String ... keys){
 		if(null == items || null == keys || keys.length == 0){
 			return this;
 		}
@@ -1321,23 +1308,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			field = "ITEMS";
 		}
 		for(DataRow row : rows){
-			String[] params = packParam(row, reverseKey(keys));
-			DataSet set = items.getRows(params);
-			if(recursion){
-				set.dispatchItems(recursion, field, items, keys);
+			if(null == row.get(field)){
+				String[] params = packParam(row, reverseKey(keys));
+				DataSet set = items.getRows(params);
+				if(recursion){
+					set.dispatchItems(field, recursion, items, keys);
+				}
+				row.put(field, set);
 			}
-			row.put(field, set);
 		}
 		return this;
 	}
 	public DataSet dispatchItems(String field,DataSet items, String ... keys){
-		return dispatchItems(false, field, items, keys);
+		return dispatchItems(field, false, items, keys);
 	}
 	public DataSet dispatchItems(DataSet items, String ... keys){
 		return dispatchItems("ITEMS",items, keys);
 	}
 	public DataSet dispatchItems(boolean recursion, String ... keys){
-		return dispatchItems(recursion, "ITEMS",this, keys);
+		return dispatchItems("ITEMS", recursion, this, keys);
+	}
+	public DataSet dispatchItems(String field, boolean recursion, String ... keys){
+		return dispatchItems(field, recursion, this, keys);
 	}
 	public DataSet toLowerKey(){
 		for(DataRow row:rows){
