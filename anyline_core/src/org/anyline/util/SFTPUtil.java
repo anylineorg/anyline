@@ -53,7 +53,7 @@ public class SFTPUtil {
             sshSession.setPassword(password);  
             Properties sshConfig = new Properties();  
             sshConfig.put("StrictHostKeyChecking", "no");  
-            sshSession.setConfig(sshConfig);  
+            sshSession.setConfig(sshConfig);
             sshSession.connect();  
             channel = sshSession.openChannel("sftp");  
             channel.connect();  

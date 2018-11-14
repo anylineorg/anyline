@@ -284,14 +284,14 @@ public class AnylineController extends AbstractBasicController {
 		if (null == data) {
 			message = (String) BasicUtil.nvl(message, "没有返回数据");
 			data = "";
-		} else if (data instanceof Iterable) {
-			dataType = "list";
 		} else if (data instanceof DataSet) {
 			DataSet set = (DataSet) data;
 			message += (String) BasicUtil.nvl(message, set.getMessage());
 			dataType = "list";
 			data = set.getRows();
 			map.put("navi", set.getNavi());
+		} else if (data instanceof Iterable) {
+			dataType = "list";
 		} else if (data instanceof DataRow) {
 			dataType = "map";
 		} else if (data instanceof Map) {
