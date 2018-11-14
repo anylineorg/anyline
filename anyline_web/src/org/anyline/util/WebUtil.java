@@ -1062,9 +1062,6 @@ public class WebUtil {
 		return map;
 	}
 
-	private static Map<String, Object> encryptValue(Map<String, Object> map, String... keys) {
-		return encryptValue(map, false,keys);
-	}
 	/**
 	 * 加密对象
 	 * 
@@ -1109,9 +1106,6 @@ public class WebUtil {
 		return obj;
 	}
 
-	private static Object encryptValue(Object obj, String... keys) {
-		return encryptValue(obj, false, keys);
-	}
 	/**
 	 * 加密集合
 	 * @param list
@@ -1135,12 +1129,9 @@ public class WebUtil {
 		return list;
 	}
 
-	private static Collection<Object> encryptValue(Collection<Object> list, String... keys) {
-		return encryptValue(list, false, keys);
-	}
 	/**
 	 * 加密obj的keys属性值(递归Collection, Map)
-	 * @param mix 是否混淆url 生成随机URL用来防止QQ等工具报警
+	 * @param mix 是否混淆url 生成随机URL用来防止QQ等工具报警,扰乱爬虫
 	 * @param obj
 	 * @param keys
 	 */
@@ -1180,10 +1171,6 @@ public class WebUtil {
 		return map;
 	}
 
-	private static Map<String, Object> encryptKey(Map<String, Object> map, String... keys) {
-		return encryptKey(map, false,keys);
-	}
-
 	
 	/**
 	 * 加密集合
@@ -1211,6 +1198,7 @@ public class WebUtil {
 	 * @param obj
 	 * @param keys
 	 */
+	@SuppressWarnings("unchecked")
 	public static Object encryptKey(Object obj, boolean mix, String... keys) {
 		if (null == obj) {
 			return obj;
