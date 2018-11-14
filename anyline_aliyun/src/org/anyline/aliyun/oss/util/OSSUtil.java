@@ -17,8 +17,12 @@ import org.apache.log4j.Logger;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
+import com.aliyun.oss.model.GetObjectRequest;
+import com.aliyun.oss.model.ListObjectsRequest;
 import com.aliyun.oss.model.MatchMode;
 import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.OSSObjectSummary;
+import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.PolicyConditions;
 
 public class OSSUtil {
@@ -88,6 +92,42 @@ public class OSSUtil {
 	public String upload(InputStream in, String path){
 		client.putObject(config.BUCKET, path, in);
 		return createUrl(path);
+	}
+	public boolean download(File dir){
+		return download(dir,"");
+	}
+	public boolean download(File dir, String prefix){
+		final int maxKeys = 200;
+		String nextMarker = null;
+		ObjectListing objectListing;
+		do {
+		    objectListing = client.listObjects(new ListObjectsRequest(config.BUCKET)
+		    .withPrefix(prefix).withMarker(nextMarker).withMaxKeys(maxKeys));
+		    List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+		    for (OSSObjectSummary s : sums) {
+		    	String key = s.getKey();
+		    	if(key.endsWith("/")){
+		    		continue;
+		    	}
+		        File file = new File(dir, key);
+		        File parent = file.getParentFile();
+		        if(!parent.exists()){
+		        	parent.mkdirs();
+		        }
+		        try{
+		        	client.getObject(new GetObjectRequest(config.BUCKET, key), file);
+		        }catch(Exception e){
+		        	e.printStackTrace();
+		        }
+		        if(ConfigTable.isDebug()){
+		        	log.warn("[oss download file][local file:"+file.getAbsolutePath()+"][remote file:"+key+"]");
+		        }
+		    }
+		    nextMarker = objectListing.getNextMarker();
+		    
+		} while (objectListing.isTruncated());
+
+		return true;
 	}
 	public boolean delete(String path){
 		boolean result = false;
