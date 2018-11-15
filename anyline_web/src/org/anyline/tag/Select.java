@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.entity.DataRow;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
@@ -59,6 +60,8 @@ public class Select extends BaseBodyTag{
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+		valueKey = DataRow.keyCase(valueKey);
+		textKey = DataRow.keyCase(textKey);
 		String html = "<select "+attribute() + ">";
 		if(null != body){
 			html += body;
