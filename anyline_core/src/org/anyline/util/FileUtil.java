@@ -31,9 +31,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -513,10 +513,10 @@ public class FileUtil {
 	 * @param dir
 	 * @return
 	 */
-	public static List<File> getAllChildrenFile(File dir, String ...types){
+	public static List<File> getAllChildrenFile(File dir, String ...subbfixs){
 		List<File> list = new ArrayList<File>();
 		if(dir.isFile()){
-			if(filterByType(dir, types)){
+			if(filterByType(dir, subbfixs)){
 				list.add(dir);
 			}
 			return list;
@@ -530,11 +530,11 @@ public class FileUtil {
 					continue;
 				}
 				if(child.isFile()){
-					if(filterByType(child,types)){
+					if(filterByType(child,subbfixs)){
 						list.add(child);
 					}
 				}else{
-					List<File> tmpList = getAllChildrenFile(child,types);
+					List<File> tmpList = getAllChildrenFile(child,subbfixs);
 					list.addAll(tmpList);
 				}
 			}
@@ -752,29 +752,32 @@ public class FileUtil {
 	/**
 	 * 计算文件行数
 	 * @param file
+	 * @param subbfix 如果file是目录, 只统计其中subbfixs结尾的文件
 	 * @return
 	 */
-	public static int calculateLine(File file){
+	public static int calculateLine(File file, String ... subbfixs){
 		int size = 0;
-		if(null == file || !file.exists() || file.isDirectory()){
+		if(null == file || !file.exists()){
 			return size;
 		}
-		BufferedReader br = null;
+		if(file.isDirectory()){
+			List<File> files = FileUtil.getAllChildrenFile(file, subbfixs);
+			for(File item:files){
+				size += calculateLine(item);
+			}
+		}
 		try{
-			br=new BufferedReader(new FileReader(file));   
-	        while(null != br.readLine()){
-	        	size++;
-	        }
+			LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
+			lineNumberReader.skip(file.length());
+            size += lineNumberReader.getLineNumber();
+            lineNumberReader.close();
         }catch(Exception e){
         	
-        }finally{
-        	try {
-				br.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
         }
         return size;
+	}
+	public static void main(String args[]){
+		System.out.println(FileUtil.calculateLine(new File("D:\\jar")));
 	}
 	/**
 	 * 压缩文件
