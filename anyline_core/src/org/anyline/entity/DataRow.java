@@ -1132,7 +1132,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return key;
 	}
-	private static String keyCase(String key){
+	public static String keyCase(String key){
 		return keyCase(KEY_CASE.DEFAULT, key);
 	}
 	private String key(String key){
