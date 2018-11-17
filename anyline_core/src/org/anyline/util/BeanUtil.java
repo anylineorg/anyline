@@ -643,7 +643,7 @@ public class BeanUtil {
 		JSONObject json = JSONObject.fromObject(map);
 		return json.toString();
 	}
-	public static Map<String,?> xml2map(String xml){
+	public static Map<String,Object> xml2map(String xml){
 		Map<String,Object> map = new HashMap<String,Object>();
 		Document document;
 		try {
