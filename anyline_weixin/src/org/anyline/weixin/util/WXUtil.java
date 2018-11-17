@@ -22,12 +22,24 @@ public class WXUtil {
 	 * @param params
 	 * @return
 	 */
-	public static String sign(String apisecret, Map<String, Object> params) {
+	public static String sign(String secret, Map<String, Object> params) {
 		String sign = "";
 		sign = BasicUtil.joinBySort(params);
-		sign += "&key=" + apisecret;
+		sign += "&key=" + secret;
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
+	}
+	public static boolean validateSign(String secret, Map<String,Object> map){
+		String sign = (String)map.get("sign");
+		if(BasicUtil.isEmpty(sign)){
+			return false;
+		}
+		map.remove("sign");
+		String chkSign = sign(secret, map);
+		return chkSign.equals(sign);
+	}
+	public static boolean validateSign(String secret, String xml){
+		return validateSign(secret,BeanUtil.xml2map(xml));
 	}
 	/**
 	 * 获取RSA公钥
