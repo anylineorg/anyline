@@ -177,26 +177,6 @@ public class TemplateController extends AnylineController {
 	}
 	
 	/**
-	 * 创建显示视图
-	 * @param adapt 是否识别并切换 移动 PC(web,wap)
-	 * @param name
-	 * @param template
-	 * template(page,template) 与createView(page,template); 相同
-		需要注意的是
-		page有两种格式相对与绝对
-		相对目录时,方法内部会将文件名与目录名拼接
-		拼接时,先拼当前类的dir 再拼父类中的dir
-		另外:template不指定时template(page)默认为default.jsp
-		内容文件与模板文件 目录结构应该保持一致
-	 * @return
-	 */
-	protected ModelAndView template(boolean adapt, String name, String template){
-		return createView(adapt,name, template);
-	}
-	protected ModelAndView template(String name, String template){
-		return createView(false,name, template);
-	}
-	/**
 	 * 根据dir构造文件目录(super.dir+this.dir)
 	 * @return
 	 */
@@ -230,7 +210,22 @@ public class TemplateController extends AnylineController {
 		}
 		return result;
 	}
-	protected TemplateModelAndView createView(boolean adapt, String name, String template){
+
+	/**
+	 * 创建显示视图
+	 * @param adapt 是否识别并切换 移动 PC(web,wap)
+	 * @param name
+	 * @param template
+	 * template(page,template) 与createView(page,template); 相同
+		需要注意的是
+		page有两种格式相对与绝对
+		相对目录时,方法内部会将文件名与目录名拼接
+		拼接时,先拼当前类的dir 再拼父类中的dir
+		另外:template不指定时template(page)默认为default.jsp
+		内容文件与模板文件 目录结构应该保持一致
+	 * @return
+	 */
+	protected TemplateModelAndView template(boolean adapt, String name, String template){
 		TemplateModelAndView tv = new TemplateModelAndView();
 		if(null != name && !name.startsWith("/")){
 			//相对目录
@@ -267,7 +262,9 @@ public class TemplateController extends AnylineController {
 			}
 			content_template = content_template.replace("${client_type}", clientType);
 		}
-
+		if(ConfigTable.isDebug() && adapt){
+			log.warn("[create view template][content path:" + content_template + "][template path:" + name + "]");
+		}
 		
 		tv.setViewName(name);
 		tv.addObject(TemplateView.ANYLINE_TEMPLATE_NAME, content_template);
@@ -284,12 +281,18 @@ public class TemplateController extends AnylineController {
 		return tv;
 	}
 
-	protected TemplateModelAndView createView(String name){
-		return createView(false,name,TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT);
+	protected TemplateModelAndView template(boolean adapt, String name){
+		return template(adapt, name, TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT);
 	}
+
 	protected TemplateModelAndView template(String name){
-		return createView(name);
+		return template(false, name, TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT);
 	}
+
+	protected TemplateModelAndView template(String name, String template){
+		return template(false, name, template);
+	}
+	
 	
 	/**
 	 * 加载数据 数据模板中的数据
