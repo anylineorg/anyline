@@ -604,9 +604,11 @@ public class BeanUtil {
 	public static <T> T json2oject(String json, Class<T> clazz){
 		return json2oject(JSONObject.fromObject(json), clazz);
 	}
-	public static String map2xml(Map<String,?> map, boolean order){
+	public static String map2xml(Map<String,?> map, boolean border, boolean order){
 		StringBuffer builder = new StringBuffer();
-		builder.append("<xml>");
+		if(border){
+			builder.append("<xml>");
+		}
 		if(order){
 			SortedMap<String, Object> sort = new TreeMap<String, Object>(map);
 			Set es = sort.entrySet();
@@ -633,11 +635,13 @@ public class BeanUtil {
 				builder.append("<" + key + ">" + value + "</" + key + ">");
 			}
 		}
-		builder.append("</xml>");
+		if(border){
+			builder.append("</xml>");
+		}
 		return builder.toString();
 	}
 	public static String map2xml(Map<String,?> map){
-		return map2xml(map, false);
+		return map2xml(map, true, false);
 	}
 	public static String map2json(Map<String,?> map){
 		JSONObject json = JSONObject.fromObject(map);
