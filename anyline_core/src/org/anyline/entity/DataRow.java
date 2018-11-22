@@ -872,21 +872,35 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return
 	 */
 	public String toJSON(){
-		String result = "";
-		JsonConfig config = new JsonConfig();  
-        config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
-        config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor());
-		JSONObject json = JSONObject.fromObject(this, config);
-		result = json.toString();
-		return result;
+		return BeanUtil.map2json(this);
+	}
+	public DataRow clearEmpty(){
+		List<String> keys = keys();
+		for(String key:keys){
+			if(this.isEmpty(key)){
+				this.remove(key);
+			}
+		}
+		return this;
+	}
+	public DataRow clearNull(){
+		List<String> keys = keys();
+		for(String key:keys){
+			if(null == this.get(key)){
+				this.remove(key);
+			}
+		}
+		return this;
 	}
 	/**
 	 * 轮换成xml格式s
 	 * @return
 	 */
 	public String toXML(){
-		StringBuilder builder = new StringBuilder();
-		return builder.toString();
+		return BeanUtil.map2xml(this);
+	}
+	public String toXML(boolean border, boolean order){
+		return BeanUtil.map2xml(this, border, order);
 	}
 	/**
 	 * 是否处于容器内
