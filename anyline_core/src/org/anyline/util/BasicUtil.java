@@ -63,11 +63,16 @@ public class BasicUtil {
 					return false;
 				}
 			}
-		} else if (obj instanceof Map && recursion) {
+		} else if (obj instanceof Map) {
 			Map map = (Map) obj;
-			for (Iterator itrKey = map.keySet().iterator(); itrKey.hasNext();) {
-				if (!isEmpty(map.get(itrKey.next()))) {
-					return false;
+			if(null == map || map.isEmpty()){
+				return true;
+			}
+			if(recursion){
+				for (Iterator itrKey = map.keySet().iterator(); itrKey.hasNext();) {
+					if (!isEmpty(map.get(itrKey.next()))) {
+						return false;
+					}
 				}
 			}
 		} else {
