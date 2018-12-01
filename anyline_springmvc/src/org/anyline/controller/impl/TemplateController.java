@@ -26,15 +26,13 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.anyline.config.http.ConfigStore;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
 import org.anyline.plugin.springmvc.TemplateModelAndView;
 import org.anyline.plugin.springmvc.TemplateView;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
+import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.springframework.context.ApplicationContext;
@@ -182,28 +180,15 @@ public class TemplateController extends AnylineController {
 	 */
 	private String buildDir(){
 		String result = "";
-		String dir = (String)BeanUtil.getFieldValue(this, "dir");
-		String superDir = null;
 		try {
-			superDir = (String)BeanUtil.getFieldValue(getClass().getSuperclass().newInstance(), "dir");
-		} catch (InstantiationException | IllegalAccessException e) {
+			Class clazz = getClass();
+			while(null != clazz){
+				String dir = (String)BeanUtil.getFieldValue(clazz.newInstance(), "dir");
+				result = HttpUtil.mergePath(dir, result);
+				clazz = clazz.getSuperclass();
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		if(null != dir){
-			result = dir;
-			if(!result.startsWith("/")){
-				if(null != superDir){
-					if(superDir.endsWith("/")){
-						result = superDir + result;
-					}else{
-						result = superDir + "/" + result;
-					}	
-				}
-			}
-		}else{
-			if(null != superDir){
-				result = superDir;
-			}
 		}
 		if(!result.endsWith("/")){
 			result = result + "/";
