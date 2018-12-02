@@ -696,6 +696,21 @@ public class BeanUtil {
 		builder.append("</xml>");
 		return builder.toString();
 	}
+	public static Map<String,Object> object2map(Object obj){
+		if(null == obj){
+			return null;
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Field> fields = BeanUtil.getFields(obj.getClass());
+		for(Field field:fields){
+			Object value = BeanUtil.getFieldValue(obj, field);
+			if(null == value){
+				value = "";
+			}
+			map.put(field.getName(), value);
+		}
+		return map;
+	}
 	public static String object2json(Object obj){
 		JSONObject json = JSONObject.fromObject(obj);
 		return json.toString();
