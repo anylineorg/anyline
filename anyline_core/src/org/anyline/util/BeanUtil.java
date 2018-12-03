@@ -40,6 +40,7 @@ import javax.persistence.Table;
 
 import net.sf.json.JSONObject;
 
+import org.anyline.entity.DataRow;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -749,4 +750,16 @@ public class BeanUtil {
 		return result;
 	}
 
+	public static void clearEmpty(Map<String, Object> map){
+		if(null == map){
+			return;
+		}
+		List<String> keys = BasicUtil.getMapKeys(map);
+		for(String key:keys){
+			Object value = map.get(key);
+			if(BasicUtil.isEmpty(value)){
+				map.remove(key);
+			}
+		}
+	}
 }
