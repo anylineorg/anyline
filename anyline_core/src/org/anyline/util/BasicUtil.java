@@ -74,6 +74,8 @@ public class BasicUtil {
 						return false;
 					}
 				}
+			}else{
+				return false;
 			}
 		} else {
 			String tmp = obj.toString().trim();
