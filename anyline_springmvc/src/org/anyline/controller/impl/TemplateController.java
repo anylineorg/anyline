@@ -183,12 +183,11 @@ public class TemplateController extends AnylineController {
 		try {
 			Class clazz = getClass();
 			while(null != clazz){
-				String dir = (String)BeanUtil.getFieldValue(clazz.newInstance(), "dir");
+				String dir = (String)BeanUtil.getFieldValue(clazz.newInstance(), "dir", false);
 				result = HttpUtil.mergePath(dir, result);
 				clazz = clazz.getSuperclass();
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		if(!result.endsWith("/")){
 			result = result + "/";

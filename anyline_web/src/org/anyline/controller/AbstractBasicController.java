@@ -662,40 +662,15 @@ public class AbstractBasicController{
 	public String getDir() {
 		String dir = null;
 		try{
-			Field field = this.getClass().getField("dir");//子类dir必须public
-			dir = (String)field.get(this);
+			Field[] fields = getClass().getFields();
+			for(Field field:fields){
+				if(field.getName().equals("dir")){
+					dir = (String)field.get(this);
+				}
+			}
 		}catch(Exception e){
-			e.printStackTrace();
 		}
 		return dir;
-	}
-	public String getUploadTable(HttpServletRequest request, String cf){
-		if(null == cf){			
-			cf = getParam(request,"cf");
-		}
-		if(null == cf){
-			cf = (String)request.getSession().getAttribute("upload_config");
-		}
-		String table = ConfigTable.getString("UPLOAD_TABLE_"+cf);
-		if(null == table){
-			table = ConfigTable.getString("UPLOAD_TABLE");
-		}
-		if(null == table){
-			table = "UPLOAD_FILE";
-		}
-		return table;
-	}
-	public String getUploadDir(HttpServletRequest request,String cf){
-		if(null == cf){			
-			cf = getParam(request,"cf");
-		}
-		if(null == cf){
-			cf = (String)request.getSession().getAttribute("upload_config");
-		}
-		if(null == cf){
-			cf = "common";
-		}
-		return cf;
 	}
 	/**
 	 * 
