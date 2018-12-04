@@ -70,11 +70,6 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected int result_type = RESULT_TYPE_DEFAULT;
 	protected String code = "200";
 	
-	
-	
-	protected List<File> upload;
-	protected List<String> uploadContentType;
-	protected List<String> uploadFileName;
 
 	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, clazz, keyEncrypt, valueEncrypt, params);
@@ -420,98 +415,6 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		template(template, null, null);
 	}
 
-	
-	public String getUploadTable(String cf){
-		return getUploadTable(request, cf);
-	}
-	public String getUploadDir(String cf){
-		return getUploadDir(request, cf);
-	}
-	
-	
-	public DataRow upload(File src, String srcName){
-		String subDir = "";
-		return upload(subDir, src, srcName);
-	}
-	public DataRow upload(String subDir, File src, String srcName){
-		return upload(subDir, src, srcName, null);
-	}
-	public DataRow upload(String subDir, File src, String srcName, String title){
-		DataRow row = new DataRow();
-		try {
-			String fileName = BasicUtil.getRandomLowerString(10)+"."+FileUtil.getSuffixFileName(srcName);
-			
-			String rootDir = ConfigTable.getString("UPLOAD_DIR");
-			if(null != rootDir){
-				rootDir = rootDir.replace("/", File.separator).replace("\\", File.separator);
-			}
-			if(BasicUtil.isEmpty(subDir)){
-				subDir = DateUtil.format(ConfigTable.getString("UPLOAD_DIR_DATE_FORMAT")) + File.separator;
-			}else{
-				subDir = FileUtil.mergePath(subDir, DateUtil.format(ConfigTable.getString("UPLOAD_DIR_DATE_FORMAT")) + File.separator);
-			}
-			String filePath = FileUtil.mergePath(rootDir, subDir, fileName);
-			File targetFile = new File(filePath);
-
-			File dir = targetFile.getParentFile();
-			if(!dir.exists()){
-				dir.mkdirs();
-			}
-			FileUtils.copyFile(src, targetFile);
-		
-			row.put("SERVER_HOST", ConfigTable.getString("FILE_SERVER"));
-			row.put("ROOT_DIR", rootDir);
-			row.put("SUB_DIR", subDir);
-			row.put("FILE_NAME", fileName);
-			row.put("TITLE", title);
-			row.put("SRC_NAME", srcName);
-			service.save(getUploadTable(null),row);
-			String url = FileUtil.mergePath(ConfigTable.getString("FILE_SERVER"),subDir, fileName);
-			url = url.replace("\\", "/");
-			row.put("URL", url);
-			
-			String width = getParam("width");
-			String height = getParam("height");
-			int w = 0;
-			int h = 0;
-			if(BasicUtil.isNotEmpty(width)){
-				w = BasicUtil.parseInt(width, w);
-			}
-			if(BasicUtil.isNotEmpty(height)){
-				h = BasicUtil.parseInt(height, h);
-			}
-			if(w == 0){
-				w = h;
-			}
-			if(h == 0){
-				h =w;
-			}
-			if(w != 0 && h != 0){
-				ImgUtil.scale(targetFile, targetFile, w, h, false);
-			}
-			log.warn("[上传文件完成 ]["+filePath+"][TITLE:"+title+"]");
-			
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return row;
-	}
-	public List<DataRow> upload(){
-		return upload("");
-	}
-	public List<DataRow> upload(String subDir){
-		List<DataRow> result = new ArrayList<DataRow>();
-		if(null == upload){
-			return result;
-		}
-		// 把得到的文件的集合通过循环的方式读取并放在指定的路径下
-		for (int i = 0; i < upload.size(); i++) {
-			DataRow row = upload(subDir, upload.get(i), uploadFileName.get(i));
-			result.add(row);
-		}
-		return result;
-	}
 
 	
 	
@@ -547,28 +450,5 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		this.url = url;
 	}
 
-	public List<File> getUpload() {
-		return upload;
-	}
-
-	public void setUpload(List<File> upload) {
-		this.upload = upload;
-	}
-
-	public List<String> getUploadContentType() {
-		return uploadContentType;
-	}
-
-	public void setUploadContentType(List<String> uploadContentType) {
-		this.uploadContentType = uploadContentType;
-	}
-
-	public List<String> getUploadFileName() {
-		return uploadFileName;
-	}
-
-	public void setUploadFileName(List<String> uploadFileName) {
-		this.uploadFileName = uploadFileName;
-	}
 
 }
