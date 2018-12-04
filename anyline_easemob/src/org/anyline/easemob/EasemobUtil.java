@@ -591,7 +591,7 @@ public class EasemobUtil {
 		String result = "";
 		String url = baseUrl + "/chatgroups";
 		try {
-			Map<String,String> params = new HashMap<String,String>();
+			Map<String,Object> params = new HashMap<String,Object>();
 			params.put("groupname", name);
 			params.put("desc", des);
 			params.put("public", ""+pub);
