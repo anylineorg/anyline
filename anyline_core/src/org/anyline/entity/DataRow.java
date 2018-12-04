@@ -141,7 +141,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				if(val instanceof JSONObject){
 					row.put(key, parseJson((JSONObject)val));
 				}else if(val instanceof JSONArray){
-					row.put(key, parseJSON((JSONArray)val));
+					row.put(key, parseJson((JSONArray)val));
 				}else if(val instanceof JSONNull){
 					row.put(key, null);
 				}else if(val instanceof String){
@@ -157,7 +157,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return row;
 	}
-	public static List<Object> parseJSON(JSONArray array){
+	public static List<Object> parseJson(JSONArray array){
 		List<Object> list = new ArrayList<Object>();
 		int size = array.size();
 		for(int i=0; i<size; i++){
@@ -166,7 +166,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				if(val instanceof JSONObject){
 					list.add(parseJson((JSONObject)val));
 				}else if(val instanceof JSONArray){
-					list.add(parseJSON((JSONArray)val));
+					list.add(parseJson((JSONArray)val));
 				}else{
 					list.add(val);
 				}
