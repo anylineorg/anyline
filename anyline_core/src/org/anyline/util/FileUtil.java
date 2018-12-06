@@ -776,9 +776,6 @@ public class FileUtil {
         }
         return size;
 	}
-	public static void main(String args[]){
-		System.out.println(FileUtil.calculateLine(new File("D:\\jar")));
-	}
 	/**
 	 * 压缩文件
 	 * @param zip
