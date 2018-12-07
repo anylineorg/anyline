@@ -23,8 +23,8 @@ import org.anyline.weixin.mp.entity.WXMPGroupRedpack;
 import org.anyline.weixin.mp.entity.WXMPGroupRedpackResult;
 import org.anyline.weixin.mp.entity.WXMPPayRefund;
 import org.anyline.weixin.mp.entity.WXMPPayRefundResult;
-import org.anyline.weixin.mp.entity.WXMPPayTradeOrder;
-import org.anyline.weixin.mp.entity.WXMPPayTradeResult;
+import org.anyline.weixin.mp.entity.WXMPPrePayOrder;
+import org.anyline.weixin.mp.entity.WXMPPrePayResult;
 import org.anyline.weixin.mp.entity.WXMPRedpack;
 import org.anyline.weixin.mp.entity.WXMPRedpackResult;
 import org.anyline.weixin.mp.entity.WXMPTransfer;
@@ -84,8 +84,8 @@ public class WXMPUtil extends WXUtil{
 	 * @param order
 	 * @return
 	 */
-	public WXMPPayTradeResult unifiedorder(WXMPPayTradeOrder order) throws Exception{
-		WXMPPayTradeResult result = null;
+	public WXMPPrePayResult unifiedorder(WXMPPrePayOrder order) throws Exception{
+		WXMPPrePayResult result = null;
 		order.setNonce_str(BasicUtil.getRandomLowerString(20));
 		if(BasicUtil.isEmpty(order.getAppid())){
 			order.setAppid(config.APP_ID);
@@ -119,7 +119,7 @@ public class WXMPUtil extends WXUtil{
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
 		}
-		result = BeanUtil.xml2object(rtn, WXMPPayTradeResult.class);
+		result = BeanUtil.xml2object(rtn, WXMPPrePayResult.class);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单PREPAY ID:" + result.getPrepay_id());

@@ -13,8 +13,8 @@ import org.anyline.util.SimpleHttpUtil;
 import org.anyline.weixin.open.util.WXOpenConfig;
 import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXUtil;
-import org.anyline.weixin.wap.entity.WXWapPayTradeOrder;
-import org.anyline.weixin.wap.entity.WXWapPayTradeResult;
+import org.anyline.weixin.wap.entity.WXWapPrePayOrder;
+import org.anyline.weixin.wap.entity.WXWapPrePayResult;
 import org.apache.log4j.Logger;
 
 public class WXWapUtil {
@@ -56,8 +56,8 @@ public class WXWapUtil {
 	 * @param order
 	 * @return
 	 */
-	public WXWapPayTradeResult unifiedorder(WXWapPayTradeOrder order) {
-		WXWapPayTradeResult result = null;
+	public WXWapPrePayResult unifiedorder(WXWapPrePayOrder order) {
+		WXWapPrePayResult result = null;
 		order.setNonce_str(BasicUtil.getRandomLowerString(20));
 		if(BasicUtil.isEmpty(order.getAppid())){
 			order.setAppid(config.APP_ID);
@@ -86,7 +86,7 @@ public class WXWapUtil {
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单RETURN:" + rtn);
 		}
-		result = BeanUtil.xml2object(rtn, WXWapPayTradeResult.class);
+		result = BeanUtil.xml2object(rtn, WXWapPrePayResult.class);
 
 		if(ConfigTable.isDebug()){
 			log.warn("统一下单PREID:" + result.getPrepay_id());

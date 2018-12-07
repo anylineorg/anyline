@@ -1,6 +1,6 @@
 package org.anyline.weixin.entity;
 
-public class TradeResult {
+public class PerPayResult {
 	protected String appid;
 	protected String mch_id;
 	protected String return_code;
@@ -14,10 +14,10 @@ public class TradeResult {
 	protected String trade_type;
 	protected String prepay_id;
 
-	public TradeResult(){
+	public PerPayResult(){
 		
 	}
-	public TradeResult(boolean result, String msg){
+	public PerPayResult(boolean result, String msg){
 		if(result){
 			this.return_code = "SUCCESS";
 		}else{
