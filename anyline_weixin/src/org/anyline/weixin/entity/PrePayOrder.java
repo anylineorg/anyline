@@ -2,13 +2,13 @@ package org.anyline.weixin.entity;
 
 import org.anyline.weixin.util.WXConfig.TRADE_TYPE;
 
-public class TradeOrder {
+public class PrePayOrder {
 	protected String appid				; //公众号ID(conf)	是	String(32)	wxd678efh567hg6787	微信支付分配的公众账号ID（企业号corpid即为此appId）
 	protected String mch_id				; //商户号(conf)		是	String(32)	1230000109	微信支付分配的商户号
 	protected String nonce_str			; //随机字符串(auto)	是	String(32)	5K8264ILTKCH16CQ2502SI8ZNMTM67VS	随机字符串，长度要求在32位以内。推荐随机数生成算法
 	protected String sign				; //签名(auto)		是	String(32)	C380BEC2BFD727A4B6845133519F3AD6	通过签名算法计算得出的签名值，详见签名生成算法
 	protected String body				; //商品描述			是	String(128)	腾讯充值中心-QQ会员充值	商品简单描述，该字段请按照规范传递，具体请见参数规定
-	protected String out_trade_no		; //商户订单号(evl)	是	String(32)	notify时原样回传　用来对应TRADE_CALL(常用格式 CALL_ID + _ + ORDER_ID) 20150806125346	商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|* 且在同一个商户号下唯一。详见商户订单号
+	protected String out_trade_no		; //商户订单号(evl)		是	String(32)	notify时原样回传　用来对应TRADE_CALL(常用格式 CALL_ID + _ + ORDER_ID) 20150806125346	商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|* 且在同一个商户号下唯一。详见商户订单号
 	protected int total_fee				; //标价金额			是	Int			88	订单总金额，单位为分，详见支付金额
 	protected String spbill_create_ip	; //终端IP			是	String(16)	123.12.12.123	APP和网页支付提交用户端ip，Native支付填调用微信支付API的机器IP。
 	protected String notify_url			; //通知地址			是	String(256)	http://www.weixin.qq.com/wxpay/pay.php	异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
@@ -24,7 +24,7 @@ public class TradeOrder {
 	protected String product_id			; //商品ID			否	String(32)	12235413214070356458058	trade_type=NATIVE时（即扫码支付），此参数必传。此参数为二维码中包含的商品ID，商户自行定义。
 	protected String limit_pay			; //指定支付方式		否	String(32)	no_credit	上传此参数no_credit--可限制用户不能使用信用卡支付
 	protected String openid				; //用户标识			否	String(128)	oUpF8uMuAJO_M2pxb1Q9zNjWeS6o	trade_type=JSAPI时（即公众号支付），此参数必传，此参数为微信用户在商户对应appid下的唯一标识。openid如何获取，可参考【获取openid】。企业号请使用【企业号OAuth2.0接口】获取企业号内成员userid，再调用【企业号userid转openid接口】进行转换
-	protected String scene_info			; //+场景信息			否	String(256)	{"store_info" : {"id": "SZTX001","name": "腾大餐厅","area_code": "440305","address": "科技园中一路腾讯大厦" }}该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
+	protected String scene_info			; //场景信息			否	String(256)	{"store_info" : {"id": "SZTX001","name": "腾大餐厅","area_code": "440305","address": "科技园中一路腾讯大厦" }}该字段用于上报场景信息，目前支持上报实际门店信息。该字段为JSON对象数据，对象格式为{"store_info":{"id": "门店ID","name": "名称","area_code": "编码","address": "地址" }} ，字段详细说明请点击行前的+展开
 	public String getAppid() {
 		return appid;
 	}
