@@ -146,5 +146,20 @@ public class PrePayOrder {
 	public void setScene_info(String scene_info) {
 		this.scene_info = scene_info;
 	}
+	public String getProduct_id() {
+		return product_id;
+	}
+	public void setProduct_id(String product_id) {
+		this.product_id = product_id;
+	}
+	public String getOpenid() {
+		return openid;
+	}
+	public void setOpenid(String openid) {
+		this.openid = openid;
+	}
+	public void setTrade_type(String trade_type) {
+		this.trade_type = trade_type;
+	}
 	
 }

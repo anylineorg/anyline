@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configs>
 	<config key="default">
-		<property key="ACCOUNT">admin@anyline.org</property>
+		<property key="ACCOUNT">server@anyline.org</property>
 		<property key="USERNAME">anyline</property>
-		<property key="PASSWORD">TtBZCx6dVhBJY7RG</property>
+		<property key="PASSWORD">tySb6ZKlo2WY8MWzNBRnwKO5SXXPNZhg</property>
 		<property key="PROTOCOL">smtp</property>
 		<property key="HOST">smtp.anyline.org</property>
 		<property key="PORT">25</property>
