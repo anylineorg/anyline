@@ -34,7 +34,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 
 public class FileResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(FileResult.class);
+	private static final Logger log = Logger.getLogger(FileResult.class);
 	private Object data = null;
 
 	protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {

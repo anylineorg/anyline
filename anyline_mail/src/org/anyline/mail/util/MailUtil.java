@@ -12,7 +12,7 @@ import org.anyline.util.BasicUtil;
 import org.apache.log4j.Logger;
 
 public class MailUtil {
-	private static Logger log = Logger.getLogger(MailUtil.class);
+	private static final Logger log = Logger.getLogger(MailUtil.class);
 	private MailConfig config = null;
 	private static Hashtable<String, MailUtil> instances = new Hashtable<String, MailUtil>();
 	

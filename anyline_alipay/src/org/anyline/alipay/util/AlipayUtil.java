@@ -28,7 +28,7 @@ import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 
 public class AlipayUtil {
-	private static Logger log = Logger.getLogger(AlipayUtil.class);
+	private static final Logger log = Logger.getLogger(AlipayUtil.class);
 	private AlipayClient client = null;
 	private AlipayConfig config = null;
 	private static Hashtable<String, AlipayUtil> instances = new Hashtable<String, AlipayUtil>();

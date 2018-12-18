@@ -26,7 +26,7 @@ import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.PolicyConditions;
 
 public class OSSUtil {
-	private static Logger log = Logger.getLogger(OSSUtil.class);
+	private static final Logger log = Logger.getLogger(OSSUtil.class);
 	private OSSClient client = null;
 	private OSSConfig config = null;
 	private static Hashtable<String, OSSUtil> instances = new Hashtable<String, OSSUtil>();

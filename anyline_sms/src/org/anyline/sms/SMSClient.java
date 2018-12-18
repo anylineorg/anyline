@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
  * 
  */
 public class SMSClient {
-	private static Logger log = Logger.getLogger(SMSClient.class);
+	private static final Logger log = Logger.getLogger(SMSClient.class);
     private SMSConfig config = null;
 	private static Hashtable<String,SMSClient> instances = new Hashtable<String,SMSClient>();
 	
