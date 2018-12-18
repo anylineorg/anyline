@@ -32,7 +32,7 @@ import org.dom4j.io.SAXReader;
 
 
 public class ConfigTable {
-	private static Logger log = Logger.getLogger(ConfigTable.class);
+	private static final Logger log = Logger.getLogger(ConfigTable.class);
 	private static String root;
 	private static String webRoot;
 	private static String classpath;

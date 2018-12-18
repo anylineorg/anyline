@@ -18,7 +18,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 public class BasicConfig {
-	protected static Logger log = Logger.getLogger(BasicConfig.class);
+	protected static final Logger log = Logger.getLogger(BasicConfig.class);
 	protected Map<String, String> kvs = new HashMap<String, String>();
 	
 	protected synchronized static void loadConfig(Hashtable<String,BasicConfig> instances, Class<? extends BasicConfig> clazz, String fileName, String ... compatibles) {

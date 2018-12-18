@@ -48,7 +48,7 @@ import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
  * 功能：缩放图像、切割图像、图像类型转换、彩色转黑白、文字水印、图片水印等
  */
 public class ImgUtil {
-	private static Logger log = Logger.getLogger(ImgUtil.class);
+	private static final Logger log = Logger.getLogger(ImgUtil.class);
 
 	public static enum IMAGE_TYPE{
 		GIF{

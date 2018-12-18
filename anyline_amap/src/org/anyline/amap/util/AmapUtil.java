@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
  *
  */
 public class AmapUtil {
-	private static Logger log = Logger.getLogger(AmapUtil.class);
+	private static final Logger log = Logger.getLogger(AmapUtil.class);
 
 	private String key = AmapConfig.KEY;
 	private String privateKey = AmapConfig.PRIVATE_KEY;

@@ -14,7 +14,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.log4j.Logger;
 
 public class WXUtil {
-	private static Logger log = Logger.getLogger(WXUtil.class);
+	private static final Logger log = Logger.getLogger(WXUtil.class);
 	/**
 	 * 参数签名
 	 * 

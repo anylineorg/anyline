@@ -27,7 +27,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 public class Source {
-	private static Logger log = Logger.getLogger(Source.class);
+	private static final Logger log = Logger.getLogger(Source.class);
 	private String url;					//URL
 	private String backFileCd;			//备份文件CD
 	private String text;				//文本

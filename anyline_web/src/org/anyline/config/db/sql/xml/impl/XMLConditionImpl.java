@@ -46,7 +46,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static Logger log = Logger.getLogger(XMLConditionImpl.class);
+	private static final Logger log = Logger.getLogger(XMLConditionImpl.class);
 	
 	private String text;
 	

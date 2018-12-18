@@ -49,7 +49,7 @@ public class Auth extends BaseBodyTag {
 	private String id;
 	private String params;
 	
-	private static Logger log = Logger.getLogger(Auth.class);
+	private static final Logger log = Logger.getLogger(Auth.class);
 	public int doEndTag() {
 		JspWriter writer = null;
 		boolean result = true;

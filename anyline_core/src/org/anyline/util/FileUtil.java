@@ -50,7 +50,7 @@ import org.apache.log4j.Logger;
 
 
 public class FileUtil {
-	private static Logger log = Logger.getLogger(FileUtil.class);
+	private static final Logger log = Logger.getLogger(FileUtil.class);
 	public final static int PATH_TYPE_JAR = 0;
 
 	/**

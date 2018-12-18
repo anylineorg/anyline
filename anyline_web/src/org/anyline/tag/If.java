@@ -30,7 +30,7 @@ import org.anyline.util.BasicUtil;
 
 public class If extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(If.class);
+	private static final Logger log = Logger.getLogger(If.class);
 	
 	private boolean test;
 	private Object elseValue;

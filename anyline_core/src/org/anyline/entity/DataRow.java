@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
 
 public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
-	private static Logger log = Logger.getLogger(DataRow.class);
+	private static final Logger log = Logger.getLogger(DataRow.class);
 
 	public static enum KEY_CASE{
 		DEFAULT				{public String getCode(){return "DEFAULT";} 	public String getName(){return "默认";}},

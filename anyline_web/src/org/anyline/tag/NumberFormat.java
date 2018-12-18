@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 
 public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(NumberFormat.class);
+	private static final Logger log = Logger.getLogger(NumberFormat.class);
 	private String format;
 	private Object min;
 	private Object max;

@@ -18,7 +18,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.log4j.Logger;
 
 public class EasemobUtil {
-	private static Logger log = Logger.getLogger(EasemobUtil.class);
+	private static final Logger log = Logger.getLogger(EasemobUtil.class);
 	private static Hashtable<String,EasemobUtil> instances = new Hashtable<String,EasemobUtil>();
 	private EasemobConfig config = null;
 	private static long access_token_expires = 0;

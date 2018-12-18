@@ -48,7 +48,7 @@ public class RegularUtil {
 	public static final String TAG_BEGIN = "{begin}";
 	public static final String TAG_END = "{end}";
 	
-	private static Logger log = Logger.getLogger(RegularUtil.class);
+	private static final Logger log = Logger.getLogger(RegularUtil.class);
 	static{
 		regularList.put(Regular.MATCH_MODE.MATCH, regularMatch);
 		regularList.put(Regular.MATCH_MODE.PREFIX, regularMatchPrefix);

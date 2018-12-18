@@ -30,7 +30,7 @@ import com.opensymphony.xwork2.ActionInvocation;
 
 public class StringResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L;
-	private static Logger LOG = Logger.getLogger(StringResult.class);
+	private static final Logger log = Logger.getLogger(StringResult.class);
 	private Object data = null;
 
 

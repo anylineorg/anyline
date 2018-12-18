@@ -32,7 +32,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 public class I18NUtil {
-	static Logger log = Logger.getLogger(I18NUtil.class);
+	static final Logger log = Logger.getLogger(I18NUtil.class);
 	public static final String defaultLang = "cn";
 	private static Map<String,Map<String,String>> messages;
 	

@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 
 public abstract class ComponentTag extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	protected static Logger log = Logger.getLogger(ComponentTag.class);
+	protected static final Logger log = Logger.getLogger(ComponentTag.class);
 	
 	protected HttpServletRequest request; 
 	protected HttpSession session;

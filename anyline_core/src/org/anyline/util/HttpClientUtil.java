@@ -77,7 +77,7 @@ import org.apache.log4j.Logger;
 public class HttpClientUtil {
 	
 	public static String PROTOCOL_TLSV1 = "TLSv1";
-	private static Logger log = Logger.getLogger(HttpClientUtil.class);
+	private static final Logger log = Logger.getLogger(HttpClientUtil.class);
 	private static Map<String, CloseableHttpClient> clients = new HashMap<String,CloseableHttpClient>();
     private static PoolingHttpClientConnectionManager connMgr;  
     private static RequestConfig requestConfig;  

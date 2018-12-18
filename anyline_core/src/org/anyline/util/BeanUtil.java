@@ -50,7 +50,7 @@ import org.dom4j.Element;
 
 
 public class BeanUtil {
-	private static Logger log = Logger.getLogger(BeanUtil.class);
+	private static final Logger log = Logger.getLogger(BeanUtil.class);
 	public static boolean setFieldValue(Object obj, Field field, Object value){
 		if(null == obj || null == field){
 			return false;

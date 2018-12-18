@@ -11,7 +11,7 @@ import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
 
 public class FTPUtil {
-	private Logger log = Logger.getLogger(FTPUtil.class);
+	private final Logger log = Logger.getLogger(FTPUtil.class);
 	private String host;
 	private int port=21;
 	private String user;

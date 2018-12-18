@@ -65,7 +65,7 @@ import org.apache.log4j.Logger;
 
 
 public class HttpUtil {
-	private static Logger log = Logger.getLogger(HttpUtil.class);
+	private static final Logger log = Logger.getLogger(HttpUtil.class);
 	private static HttpUtil instance = new HttpUtil();
 	private HttpClient client = null;
 	private String encode = "UTF-8";

@@ -23,7 +23,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.log4j.Logger;
 
 public class WXOpenUtil {
-	private static Logger log = Logger.getLogger(WXOpenUtil.class);
+	private static final Logger log = Logger.getLogger(WXOpenUtil.class);
 	private static Hashtable<String,WXOpenUtil> instances = new Hashtable<String,WXOpenUtil>();
 	private WXOpenConfig config;
 

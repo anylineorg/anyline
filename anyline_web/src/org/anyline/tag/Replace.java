@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 
 public class Replace extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Replace.class);
+	private static final Logger log = Logger.getLogger(Replace.class);
 	private String from;
 	private String to;
 	 public int doEndTag() throws JspException {
