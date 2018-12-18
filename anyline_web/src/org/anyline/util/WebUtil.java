@@ -33,6 +33,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1346,5 +1347,32 @@ public class WebUtil {
     	}
 		return sb.toString();
 	}
-	
+
+	public static Map<String, Object> packParam(HttpServletRequest request, String... keys) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		if (null == keys || keys.length == 0) {
+			Enumeration<String> names = request.getParameterNames();
+			while (names.hasMoreElements()) {
+				String key = names.nextElement() + "";
+				params.put(key, getParam(request, key));
+			}
+		} else {
+			for (String key : keys) {
+				params.put(key, getParam(request, key));
+			}
+		}
+		return params;
+	}
+	public static Object getParam(HttpServletRequest request, String key){
+		String[] values = request.getParameterValues(key);
+		if(null == values || values.length ==0){
+			return null;
+		}else{
+			if(values.length ==1){
+				return values[0];
+			}else{
+				return values;
+			}
+		}
+	}
 }
