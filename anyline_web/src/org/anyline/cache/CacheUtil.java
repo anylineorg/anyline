@@ -37,7 +37,7 @@ import org.anyline.util.MD5Util;
 import org.apache.log4j.Logger;
 
 public class CacheUtil {
-	private static Logger log = Logger.getLogger(CacheUtil.class);
+	private static final Logger log = Logger.getLogger(CacheUtil.class);
 	private static CacheManager manager = null;
 	private static Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
 	

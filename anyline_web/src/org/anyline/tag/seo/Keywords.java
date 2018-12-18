@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  */
 public class Keywords extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Keywords.class);
+	private static final Logger log = Logger.getLogger(Keywords.class);
 	//<seo:keyword key="java" count="3"/>
 	//<al:param key ="" count="3"/>
 

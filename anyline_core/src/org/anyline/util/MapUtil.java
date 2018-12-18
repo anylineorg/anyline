@@ -6,7 +6,7 @@ import org.anyline.entity.MapLocation;
 import org.apache.log4j.Logger;
 
 public class MapUtil {
-	private static Logger log = Logger.getLogger(MapUtil.class);
+	private static final Logger log = Logger.getLogger(MapUtil.class);
 	private static double EARTH_RADIUS = 6378.137;
 
 	private static double rad(double d) {

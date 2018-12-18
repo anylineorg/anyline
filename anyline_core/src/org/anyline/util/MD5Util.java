@@ -30,7 +30,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 public class MD5Util {
-	private static Logger log = Logger.getLogger(MD5Util.class); 
+	private static final Logger log = Logger.getLogger(MD5Util.class); 
 	private final static String[] hexDigits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
 
 	public static String sign(String src){

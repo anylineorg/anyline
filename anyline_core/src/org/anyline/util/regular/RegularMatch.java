@@ -38,7 +38,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
  *
  */
 public class RegularMatch implements Regular{
-	private static Logger log = Logger.getLogger(RegularMatch.class);
+	private static final Logger log = Logger.getLogger(RegularMatch.class);
 	RegularMatch(){
 		
 	}

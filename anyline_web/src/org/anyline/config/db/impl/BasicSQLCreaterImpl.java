@@ -57,7 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private static final long serialVersionUID = -1280284751032142401L;
-	protected static Logger log = Logger.getLogger(BasicSQLCreaterImpl.class);
+	protected static final Logger log = Logger.getLogger(BasicSQLCreaterImpl.class);
 	public String disKeyFr = "";
 	public String disKeyTo = "";
 	public DB_TYPE type(){

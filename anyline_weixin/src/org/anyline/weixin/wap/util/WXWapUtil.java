@@ -18,7 +18,7 @@ import org.anyline.weixin.wap.entity.WXWapPrePayResult;
 import org.apache.log4j.Logger;
 
 public class WXWapUtil {
-	private static Logger log = Logger.getLogger(WXWapUtil.class);
+	private static final Logger log = Logger.getLogger(WXWapUtil.class);
 	private static Hashtable<String,WXWapUtil> instances = new Hashtable<String,WXWapUtil>();
 	private WXWapConfig config;
 	

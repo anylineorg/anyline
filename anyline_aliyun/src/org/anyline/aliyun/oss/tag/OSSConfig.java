@@ -33,7 +33,7 @@ import org.anyline.util.DateUtil;
 import org.apache.log4j.Logger;
 public class OSSConfig extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(OSSConfig.class);
+	private static final Logger log = Logger.getLogger(OSSConfig.class);
 	private boolean debug = false;
 	private int expire = 0; 
 	private String dir = "";

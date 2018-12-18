@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 public class Navi extends BodyTagSupport{
 	public static final String CONFIG_FLAG_KEY = "_anyline_navi_conf_";
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Navi.class);
+	private static final Logger log = Logger.getLogger(Navi.class);
 	private String url				;	//数据来源
 	private String param			;	//参数收集函数
 	private String container		;	//返回内容显示容器

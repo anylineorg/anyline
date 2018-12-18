@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 
 public class Contains extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Contains.class);
+	private static final Logger log = Logger.getLogger(Contains.class);
 	private Object data;		
 	private String key;
 	private String scope;

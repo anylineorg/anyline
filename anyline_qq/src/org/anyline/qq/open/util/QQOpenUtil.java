@@ -21,7 +21,7 @@ import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
 public class QQOpenUtil{
-	private static Logger log = Logger.getLogger(QQOpenUtil.class);
+	private static final Logger log = Logger.getLogger(QQOpenUtil.class);
 	private static Hashtable<String,QQOpenUtil> instances = new Hashtable<String,QQOpenUtil>();
 	private QQOpenConfig config = null;
 	public static QQOpenUtil getInstance(){

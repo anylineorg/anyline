@@ -23,7 +23,7 @@ import com.aliyuncs.profile.IClientProfile;
  * 
  */
 public class SMSUtil {
-	private static Logger log = Logger.getLogger(SMSUtil.class);
+	private static final Logger log = Logger.getLogger(SMSUtil.class);
 	private SMSConfig config = null;
 	private static Hashtable<String,SMSUtil> instances = new Hashtable<String,SMSUtil>();
 	

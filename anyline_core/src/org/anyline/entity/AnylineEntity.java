@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
 public abstract class AnylineEntity extends DataRow implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@Transient
-	protected static Logger log = Logger.getLogger(AnylineEntity.class);
+	protected static final Logger log = Logger.getLogger(AnylineEntity.class);
 
 
 

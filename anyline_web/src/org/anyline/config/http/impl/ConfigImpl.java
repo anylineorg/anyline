@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
 public class ConfigImpl implements Config,Serializable{
 	private static final long serialVersionUID = 1L;
 
-	protected static Logger log = Logger.getLogger(ConfigImpl.class);
+	protected static final Logger log = Logger.getLogger(ConfigImpl.class);
 	//从request 取值方式
 
 //	private String id;				//id

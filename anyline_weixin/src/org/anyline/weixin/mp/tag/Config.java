@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
  */
 public class Config extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Config.class);
+	private static final Logger log = Logger.getLogger(Config.class);
 	private boolean debug = false;
 	private String apis= "";
 	private String key = "";
