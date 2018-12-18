@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
 
 public class Select extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Select.class);
+	private static final Logger log = Logger.getLogger(Select.class);
 	private String scope;
 	private Object data;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");

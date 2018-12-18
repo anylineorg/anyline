@@ -46,7 +46,7 @@ import org.apache.log4j.Logger;
  * @author once
  */
 public class ZipUtil {
-	static Logger log = Logger.getLogger(ZipUtil.class);
+	static final Logger log = Logger.getLogger(ZipUtil.class);
 	private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte
 
 	/**

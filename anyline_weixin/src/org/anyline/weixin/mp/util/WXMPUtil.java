@@ -39,7 +39,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.log4j.Logger;
 
 public class WXMPUtil extends WXUtil{
-	private static Logger log = Logger.getLogger(WXMPUtil.class);
+	private static final Logger log = Logger.getLogger(WXMPUtil.class);
 	private DataSet accessTokens = new DataSet();
 	private DataSet jsapiTickets = new DataSet();
 	private WXMPConfig config = null;

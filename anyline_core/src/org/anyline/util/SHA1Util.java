@@ -23,7 +23,7 @@ import java.security.NoSuchAlgorithmException;
 import org.apache.log4j.Logger;
 
 public class SHA1Util {
-	private static Logger log = Logger.getLogger(SHA1Util.class);
+	private static final Logger log = Logger.getLogger(SHA1Util.class);
 	private static MessageDigest digest = null;
 	public static String sign(String src){
 		if(ConfigTable.isDebug()){

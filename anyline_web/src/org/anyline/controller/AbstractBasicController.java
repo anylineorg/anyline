@@ -47,7 +47,7 @@ import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 
 public class AbstractBasicController{
-	protected Logger log = Logger.getLogger(this.getClass());
+	protected final Logger log = Logger.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
 	protected final String FAIL = "fail";
 	protected final String JSON = "json";

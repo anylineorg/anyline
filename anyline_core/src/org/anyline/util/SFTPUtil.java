@@ -23,7 +23,7 @@ import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
 
 public class SFTPUtil {
-	private Logger log = Logger.getLogger(SFTPUtil.class);
+	private final Logger log = Logger.getLogger(SFTPUtil.class);
     /** 
      * sftp连接池. 
      */  
@@ -316,7 +316,7 @@ public class SFTPUtil {
 }
 
 class SFTPProgressMonitor implements SftpProgressMonitor {
-	private Logger log = Logger.getLogger(SFTPProgressMonitor.class);
+	private final Logger log = Logger.getLogger(SFTPProgressMonitor.class);
 	private String file="";
 	private double length;		//总长度
 	private double transfered;	//已下载长度

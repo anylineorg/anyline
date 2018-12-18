@@ -36,7 +36,7 @@ import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	protected static Logger log = Logger.getLogger(BaseBodyTag.class);
+	protected static final Logger log = Logger.getLogger(BaseBodyTag.class);
 
 	protected List<Object> paramList = null;
 	protected Map<String,Object> paramMap = null;

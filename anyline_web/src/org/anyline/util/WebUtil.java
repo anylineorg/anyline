@@ -60,7 +60,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 public class WebUtil {
-	static Logger log = Logger.getLogger(WebUtil.class);
+	static final Logger log = Logger.getLogger(WebUtil.class);
 	/*
 	 * public static final String HTTP_REQUEST_PARAM_KEY_PREFIX =
 	 * "wwwanylineorgk"; //参数名加密前缀 public static final String

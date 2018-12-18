@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  */
 public class Pay extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Pay.class);
+	private static final Logger log = Logger.getLogger(Pay.class);
 	private boolean debug = false;
 	private String prepay= "";
 	private String success = null;

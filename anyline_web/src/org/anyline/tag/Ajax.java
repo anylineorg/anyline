@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  */
 public class Ajax extends BodyTagSupport{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Ajax.class);
+	private static final Logger log = Logger.getLogger(Ajax.class);
 	private String url				;	//数据来源
 	private String param			;	//参数收集函数
 	private Boolean intime = false	;	//实时执行,否则放入jqery.ready

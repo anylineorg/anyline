@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
  */
 public class HtmlAs extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(HtmlAs.class);
+	private static final Logger log = Logger.getLogger(HtmlAs.class);
 
 	public int doEndTag() throws JspException {
 		try{

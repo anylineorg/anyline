@@ -39,7 +39,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
  */
 public class RegularMatchPrefix implements Regular{
 
-	private static Logger log = Logger.getLogger(RegularMatchPrefix.class);
+	private static final Logger log = Logger.getLogger(RegularMatchPrefix.class);
 	private static PatternCompiler patternCompiler = new Perl5Compiler();
 	/**
 	 * 配置状态

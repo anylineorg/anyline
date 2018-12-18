@@ -41,7 +41,7 @@ import org.anyline.util.regular.RegularUtil;
 
 public class Radio extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static Logger log = Logger.getLogger(Radio.class);
+	private static final Logger log = Logger.getLogger(Radio.class);
 	private String scope;
 	private Object data;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");

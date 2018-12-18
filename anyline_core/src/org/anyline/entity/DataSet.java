@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
 
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
-	protected static Logger log = Logger.getLogger(DataSet.class);
+	protected static final Logger log = Logger.getLogger(DataSet.class);
 	private boolean result 			= true		; // 执行结果
 	private Exception exception		= null		; // 异常
 	private String message			= null		; // 提示信息

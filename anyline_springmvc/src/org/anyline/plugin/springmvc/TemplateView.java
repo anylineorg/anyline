@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 import org.springframework.web.servlet.view.JstlView;
 
 public class TemplateView extends JstlView {
-	private Logger log = Logger.getLogger(this.getClass());
+	private final Logger log = Logger.getLogger(this.getClass());
 	public static final String ANYLINE_TEMPLATE_NAME				= "template_name";
 	public static final String ANYLINE_STYLE_TEMPLATE_DES			= "style_template_des";
 	public static final String ANYLINE_TEMPLATE_NAME_DEFAULT		= "default";

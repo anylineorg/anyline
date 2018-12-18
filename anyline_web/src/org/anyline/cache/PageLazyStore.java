@@ -6,7 +6,7 @@ import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
 public class PageLazyStore {
-	private static Logger log = Logger.getLogger(PageLazyStore.class);
+	private static final Logger log = Logger.getLogger(PageLazyStore.class);
 	private static Hashtable<String, Integer> lazyTotal = new Hashtable<String,Integer>();		//总数
 	private static Hashtable<String, Long> lazyTime = new Hashtable<String,Long>();		//总数创建时间
 	/**

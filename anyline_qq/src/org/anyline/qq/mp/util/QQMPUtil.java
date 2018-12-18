@@ -11,7 +11,7 @@ import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
 public class QQMPUtil {
-	private static Logger log = Logger.getLogger(QQMPUtil.class);
+	private static final Logger log = Logger.getLogger(QQMPUtil.class);
 	private static Hashtable<String,QQMPUtil> instances = new Hashtable<String,QQMPUtil>();
 	private QQMPConfig config = null;
 	public static QQMPUtil getInstance(){
