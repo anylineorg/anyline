@@ -726,6 +726,9 @@ public class HttpUtil {
 		return result;
 	}
 
+	public static String upload(String url, Map<String, File> files) {
+		return upload(url, files, null);
+	}
 	/**
 	 * 将输入流转换成字符串
 	 * 
