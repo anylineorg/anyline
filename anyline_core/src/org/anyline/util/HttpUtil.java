@@ -669,7 +669,7 @@ public class HttpUtil {
 	 * @param params 文本参数
 	 * @return
 	 */
-	public static String upload(String url, Map<String, File> files, Map<String, String> params) {
+	public static String upload(String url, Map<String, File> files, Map<String, Object> params) {
 		String result = "";
 		// 封装文件实体
 		MultipartEntityBuilder meb = MultipartEntityBuilder.create();
@@ -681,11 +681,7 @@ public class HttpUtil {
 			}
 		}
 		if (null != params) {
-			Iterator<Entry<String, String>> paramIter = params.entrySet().iterator();
-			while (paramIter.hasNext()) {
-				Entry<String, String> entry = paramIter.next();
-				meb.addTextBody(entry.getKey(), entry.getValue());
-			}
+			url = mergeUrlParam(url, params);
 		}
 
 		HttpEntity reqEntity = meb.build();
