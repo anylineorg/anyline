@@ -635,6 +635,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.error(random + "[异常TXT:\n" +sql + "\n]");
 				log.error(random + "[异常参数:" + paramLogFormat(inputValues) + "]");
 			}
+			e.printStackTrace();
 			throw new SQLUpdateException("PROCEDURE执行异常:" + e + "\nPROCEDURE:" + procedure.getName() + "\nPARAM:" + procedure.getInputValues());
 		}finally{
 			//自动切换回默认数据源
