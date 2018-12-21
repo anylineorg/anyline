@@ -12,6 +12,7 @@ import org.anyline.util.CodeUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FTPUtil;
 import org.anyline.util.FileUtil;
+import org.anyline.util.HttpUtil;
 import org.anyline.util.ImgUtil;
 import org.anyline.util.RSAUtil;
 import org.anyline.util.VerifyCodeUtil;
@@ -32,7 +33,16 @@ public class Test {
 		// verify(); //验证码
 		// zip(); //压缩
 		// dispatchItems();
+		upload();
 		
+	}
+	public static void upload(){
+		Map<String,File> files = new HashMap<String,File>();
+		files.put("file", new File("D:\\admin.css"));
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("token", "s");
+		String txt = HttpUtil.upload("http://www.xxx.com", files, params);
+		System.out.println(txt);
 	}
 	public static void dispatchItems() {
 		DataSet set = new DataSet();
