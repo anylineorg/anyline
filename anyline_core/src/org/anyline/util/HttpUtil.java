@@ -392,6 +392,9 @@ public class HttpUtil {
 		}
 		String tmp = null;
 		for(String param:params){
+			if(BasicUtil.isEmpty(param)){
+				continue;
+			}
 			if(null == tmp){
 				tmp = param;
 			}else{
