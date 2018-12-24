@@ -543,7 +543,7 @@ public class BeanUtil {
 	
 	public static List<Class> getClasses(String pack, Class ... bases){
 		List<Class> list = new ArrayList<Class>();
-		File dir = new File(ClassLoader.getSystemResource("").getFile(),pack.replace(".", File.separator));
+		File dir = new File(BeanUtil.class.getResource("/").getFile(),pack.replace(".", File.separator));
 		List<File> files = FileUtil.getAllChildrenFile(dir,".class");
 		for(File file:files){
 			try{
@@ -557,6 +557,9 @@ public class BeanUtil {
 				}
 				if(null != bases && bases.length>0){
 					for(Class base:bases){
+						if(clazz.equals(base)){
+							continue;
+						}
 						if(base.isAssignableFrom(clazz)){
 							list.add(clazz);
 							continue;
