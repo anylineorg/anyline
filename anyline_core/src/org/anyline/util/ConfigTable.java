@@ -20,6 +20,7 @@
 package org.anyline.util;
 
 import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -87,6 +88,13 @@ public class ConfigTable {
 		String result = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
 		return result;
 	}
+	public static void main(String args[]) throws URISyntaxException{
+
+		String path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+		System.out.println(path);
+		path = ConfigTable.class.getResource("/").getPath();
+		System.out.println(path);
+	}
 	public static void init() {
 		//log.warn("IS LOAD:"+isLoad);
 		if(isLoad){
@@ -97,7 +105,8 @@ public class ConfigTable {
 		isLoad = true;
 		String path =  "";
 		try{
-			path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			//path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+			path = ConfigTable.class.getResource("/").getPath();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
