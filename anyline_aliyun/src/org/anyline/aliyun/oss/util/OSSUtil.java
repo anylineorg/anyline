@@ -3,6 +3,7 @@ package org.anyline.aliyun.oss.util;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -96,6 +97,37 @@ public class OSSUtil {
 	public boolean download(File dir){
 		return download(dir,"");
 	}
+	/**
+	 * 文件列表
+	 * @param prefix
+	 * @return
+	 */
+	public List<String> list(String prefix){
+		List<String> list = new ArrayList<String>();
+		final int maxKeys = 200;
+		String nextMarker = null;
+		ObjectListing objectListing;
+		do {
+		    objectListing = client.listObjects(new ListObjectsRequest(config.BUCKET).withPrefix(prefix).withMarker(nextMarker).withMaxKeys(maxKeys));
+		    List<OSSObjectSummary> sums = objectListing.getObjectSummaries();
+		    for (OSSObjectSummary s : sums) {
+		    	String key = s.getKey();
+		    	if(key.endsWith("/")){
+		    		continue;
+		    	}
+		    	list.add(key);
+		    }
+		    nextMarker = objectListing.getNextMarker();
+		    
+		} while (objectListing.isTruncated());
+		return list;
+	}
+	/**
+	 * 下载prefix目录下的所有文件到本地dir目录
+	 * @param dir
+	 * @param prefix
+	 * @return
+	 */
 	public boolean download(File dir, String prefix){
 		final int maxKeys = 200;
 		String nextMarker = null;
@@ -129,6 +161,14 @@ public class OSSUtil {
 
 		return true;
 	}
+	/**
+	 * 文件是否存在
+	 * @param path
+	 * @return
+	 */
+	public boolean exists(String path){
+		return get(path) != null;
+	}
 	public boolean delete(String path){
 		boolean result = false;
 		try{
@@ -148,6 +188,11 @@ public class OSSUtil {
 			return null;
 		}
 	}
+	/**
+	 * 创建完整url
+	 * @param path
+	 * @return
+	 */
 	private String createUrl(String path){
 		String result = "";
 		result = "http://"+config.BUCKET+"."+config.ENDPOINT;
