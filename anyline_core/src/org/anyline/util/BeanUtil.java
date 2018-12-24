@@ -551,8 +551,11 @@ public class BeanUtil {
 				path = path.replace("\\", ".");
 				path = path.replace(".classes.", "").replace(".class", "");
 				Class clazz = Class.forName(path);
-				if(null != bases){
+				if(null != bases && bases.length>0){
 					for(Class base:bases){
+						if(clazz.getName().contains("$")){
+							continue;
+						}
 						if(base.isAssignableFrom(clazz)){
 							list.add(clazz);
 							continue;
