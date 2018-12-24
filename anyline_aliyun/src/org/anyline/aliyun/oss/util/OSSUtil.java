@@ -77,7 +77,7 @@ public class OSSUtil {
 			result = createUrl(path);
 			client.putObject(config.BUCKET, path, file);
 			if(ConfigTable.isDebug()){
-				log.warn("[oss upload file][file:"+file.getAbsolutePath()+"][url:"+result+"]");
+				log.warn("[oss upload file][result:true][file:"+file.getAbsolutePath()+"][url:"+result+"]");
 			}
 		}
 		return result;
@@ -85,6 +85,9 @@ public class OSSUtil {
 	public String upload(URL url, String path){
 		try {
 			client.putObject(config.BUCKET, path, url.openStream());
+			if(ConfigTable.isDebug()){
+				log.warn("[oss upload file][result:true][file:"+path+"]");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -92,6 +95,9 @@ public class OSSUtil {
 	}
 	public String upload(InputStream in, String path){
 		client.putObject(config.BUCKET, path, in);
+		if(ConfigTable.isDebug()){
+			log.warn("[oss upload file][result:true][file:"+path+"]");
+		}
 		return createUrl(path);
 	}
 	public boolean download(File dir){
@@ -183,8 +189,10 @@ public class OSSUtil {
 		try{
 			path = path.replace("http://"+config.BUCKET+"."+config.ENDPOINT+"/", "");
 			client.deleteObject(config.BUCKET, path);
+			log.warn("[oss delete file][result:true][file:"+path+"]");
 			result = true;
 		}catch(Exception e){
+			log.warn("[oss delete file][result:true][file:"+path+"]");
 			result = false;
 		}
 		return result;
