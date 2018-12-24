@@ -569,7 +569,7 @@ public class BeanUtil {
 					list.add(clazz);
 				}
 			}catch(Exception e){
-				
+				e.printStackTrace();
 			}
 		}
 		return list;
