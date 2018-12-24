@@ -10,8 +10,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
 import org.anyline.util.HttpUtil;
 import org.apache.log4j.Logger;
@@ -61,6 +63,12 @@ public class OSSUtil {
 	 * @return
 	 */
 	public String upload(File file, String path){
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
 		String result = null;
 		if(null != file && file.exists() && file.isDirectory()){
 			List<File> files = FileUtil.getAllChildrenFile(file);
@@ -83,6 +91,12 @@ public class OSSUtil {
 		return result;
 	}
 	public String upload(URL url, String path){
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
 		try {
 			client.putObject(config.BUCKET, path, url.openStream());
 			if(ConfigTable.isDebug()){
@@ -94,6 +108,12 @@ public class OSSUtil {
 		return createUrl(path);
 	}
 	public String upload(InputStream in, String path){
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
 		client.putObject(config.BUCKET, path, in);
 		if(ConfigTable.isDebug()){
 			log.warn("[oss upload file][result:true][file:"+path+"]");
@@ -144,6 +164,12 @@ public class OSSUtil {
 	 * @return
 	 */
 	public boolean download(File dir, String prefix){
+		if(null == prefix){
+			prefix = "";
+		}
+		if(prefix.startsWith("/")){
+			prefix = prefix.substring(1);
+		}
 		final int maxKeys = 200;
 		String nextMarker = null;
 		ObjectListing objectListing;
@@ -182,9 +208,21 @@ public class OSSUtil {
 	 * @return
 	 */
 	public boolean exists(String path){
-		return get(path) != null;
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
+		return client.doesObjectExist(config.BUCKET,path);
 	}
 	public boolean delete(String path){
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
 		boolean result = false;
 		try{
 			path = path.replace("http://"+config.BUCKET+"."+config.ENDPOINT+"/", "");
@@ -198,6 +236,12 @@ public class OSSUtil {
 		return result;
 	}
 	public OSSObject get(String path){
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
 		try{
 			path = path.replace("http://"+config.BUCKET+"."+config.ENDPOINT+"/", "");
 			return client.getObject(config.BUCKET, path);
@@ -206,11 +250,79 @@ public class OSSUtil {
 		}
 	}
 	/**
+	 * 最后修改时间
+	 * @param path
+	 * @return
+	 */
+	public Date getLastModified(String path){
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
+		try{
+			path = path.replace("http://"+config.BUCKET+"."+config.ENDPOINT+"/", "");
+			OSSObject obj = client.getObject(config.BUCKET, path);
+			if(null == obj){
+				return null;
+			}else{
+				return obj.getObjectMetadata().getLastModified();
+			}
+		}catch(Exception e){
+			return null;
+		}
+	}
+	/**
+	 * 最后修改时间
+	 * @param path
+	 * @param format 日期格式
+	 * @return
+	 */
+	public String getLastModified(String path, String format){
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
+		Date date = getLastModified(path);
+		if(null == date){
+			return "";
+		}
+		return DateUtil.format(date, format);
+	}
+	/**
+	 * 是否过期
+	 * @param path
+	 * @param millisecond
+	 * @return
+	 */
+	public boolean isExpire(String path, long millisecond){
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
+		Date date = getLastModified(path);
+		if(null == date){
+			return false;
+		}
+		return DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date) > millisecond;
+	}
+	/**
 	 * 创建完整url
 	 * @param path
 	 * @return
 	 */
 	private String createUrl(String path){
+		if(null == path){
+			path = "";
+		}
+		if(path.startsWith("/")){
+			path = path.substring(1);
+		}
 		String result = "";
 		result = "http://"+config.BUCKET+"."+config.ENDPOINT;
 		result = HttpUtil.mergePath(result, path);
