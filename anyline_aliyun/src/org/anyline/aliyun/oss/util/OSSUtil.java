@@ -104,6 +104,12 @@ public class OSSUtil {
 	 */
 	public List<String> list(String prefix){
 		List<String> list = new ArrayList<String>();
+		if(null == prefix){
+			prefix = "";
+		}
+		if(prefix.startsWith("/")){
+			prefix = prefix.substring(1);
+		}
 		final int maxKeys = 200;
 		String nextMarker = null;
 		ObjectListing objectListing;
@@ -121,6 +127,9 @@ public class OSSUtil {
 		    
 		} while (objectListing.isTruncated());
 		return list;
+	}
+	public List<String> list(){
+		return list("");
 	}
 	/**
 	 * 下载prefix目录下的所有文件到本地dir目录
