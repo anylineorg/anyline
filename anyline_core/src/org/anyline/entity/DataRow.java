@@ -77,8 +77,28 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private boolean updateEmptyColumn 		= ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
 	
 	private KEY_CASE keyCase = KEY_CASE.DEFAULT;
+
+	public DataRow(){
+		String pk = key(PRIMARY_KEY);
+		if(null != pk){
+			primaryKeys.add(PRIMARY_KEY);
+		}
+		createTime = System.currentTimeMillis();
+	}
+	public DataRow(String table){
+		this();
+		this.setTable(table);
+	}
+	public DataRow(Map<String,Object> map){
+		this();
+		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
+			String key = itr.next();
+			Object value = map.get(key);
+			put(key(key), value);
+		}
+	}
 	/**
-	 * 
+	 * 解析实体类对象
 	 * @param obj
 	 * @param keys 列名:obj属性名 "ID:memberId"
 	 * @return
@@ -118,6 +138,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return row;
 	}
+	/**
+	 * 解析json结构字符
+	 * @param json
+	 * @return
+	 */
 	public static DataRow parseJson(String json){
 		if(null != json){
 			try{
@@ -128,6 +153,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return null;
 	}
+	/**
+	 * 解析JSONObject
+	 * @param json
+	 * @return
+	 */
 	public static DataRow parseJson(JSONObject json){
 		DataRow row = new DataRow();
 		if(null == json){
@@ -157,6 +187,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return row;
 	}
+	/**
+	 * 解析JSON集合
+	 * @param array
+	 * @return
+	 */
 	public static List<Object> parseJson(JSONArray array){
 		List<Object> list = new ArrayList<Object>();
 		int size = array.size();
@@ -174,32 +209,25 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return list;
 	}
-	public DataRow(){
-		String pk = key(PRIMARY_KEY);
-		if(null != pk){
-			primaryKeys.add(PRIMARY_KEY);
-		}
-		createTime = System.currentTimeMillis();
-	}
-	public DataRow(String table){
-		this();
-		this.setTable(table);
-	}
-	public DataRow(Map<String,Object> map){
-		this();
-		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
-			String key = itr.next();
-			Object value = map.get(key);
-			put(key(key), value);
-		}
-	}
+	/**
+	 * 创建时间
+	 * @return
+	 */
 	public long getCreateTime(){
 		return createTime;
 	}
-	
+	/**
+	 * 过期时间
+	 * @return
+	 */
 	public long getExpires() {
 		return expires;
 	}
+	/**
+	 * 设置过期时间
+	 * @param millisecond
+	 * @return
+	 */
 	public DataRow setExpires(long millisecond) {
 		this.expires = millisecond;
 		return this;
@@ -208,6 +236,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		this.expires = millisecond;
 		return this;
 	}
+	/**
+	 * 合并数据
+	 * @param row 
+	 * @param over key相同时是否覆盖原数据
+	 * @return
+	 */
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
 		for(String key : keys){
@@ -220,14 +254,27 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow merge(DataRow row){
 		return merge(row, false);
 	}
+	/**
+	 * 是否是新数据
+	 * @return
+	 */
 	public Boolean isNew() {
 		String pk = getPrimaryKey();
 		String pv = getString(pk);
 		return (null == pv ||(null == isNew)|| isNew || BasicUtil.isEmpty(pv));
 	}
+	/**
+	 * 是否来自缓存
+	 * @return
+	 */
 	public boolean isFromCache(){
 		return isFromCache;
 	}
+	/**
+	 * 设置是否来自缓存
+	 * @param bol
+	 * @return
+	 */
 	public DataRow setIsFromCache(boolean bol){
 		this.isFromCache = bol;
 		return this;
@@ -250,6 +297,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public String getTitle(){
 		return getString("title");
 	}
+	/**
+	 * 默认子集
+	 * @return
+	 */
 	public DataSet getItems(){
 		Object items = get(ITEMS);
 		if(items instanceof DataSet){
@@ -261,6 +312,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		put(ITEMS,obj);
 		return this;
 	}
+	/**
+	 * key转换成小写
+	 * @param keys
+	 * @return
+	 */
 	public DataRow toLowerKey(String ... keys){
 		if(null != keys && keys.length>0){
 			for(String key:keys){
@@ -278,6 +334,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		this.keyCase = KEY_CASE.LOWER;
 		return this;
 	}
+	/**
+	 * key转换成大写
+	 * @param keys
+	 * @return
+	 */
 	public DataRow toUpperKey(String ... keys){
 		if(null != keys && keys.length>0){
 			for(String key:keys){
@@ -333,6 +394,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+	/**
+	 * 指定列是否为空
+	 * @param key
+	 * @return
+	 */
 	public boolean isNull(String key){
 		Object obj = get(key);
 		return obj == null;
@@ -347,20 +413,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public boolean isNotEmpty(String key){
 		return !isEmpty(key);
 	}
-	/**
-	 * 保存之前处理
-	 * @return
-	 */
-	public boolean processBeforeSave(){
-		return true;
-	}
-	/**
-	 * 显示之前处理
-	 * @return
-	 */
-	public boolean processBeforeDisplay(){
-		return true;
-	}
+	
 	/**
 	 * 添加主键
 	 * @param applyContainer 是否应用到上级容器 默认false
@@ -639,6 +692,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return entity;
 	}
+	/**
+	 * 是否有指定的key
+	 * @param key
+	 * @return
+	 */
 	public boolean has(String key){
 		return get(key) != null;
 	}
@@ -893,7 +951,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 	/**
-	 * 轮换成xml格式s
+	 * 轮换成xml格式
 	 * @return
 	 */
 	public String toXML(){
@@ -1002,6 +1060,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return false;
 	}
+	/**
+	 * 复制数据
+	 */
 	public Object clone(){
 		DataRow row = (DataRow)super.clone();
 		row.container = this.container;
@@ -1024,6 +1085,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public List<String> getUpdateColumns() {
 		return updateColumns;
 	}
+	/**
+	 * 删除指定的key
+	 * @param keys
+	 * @return
+	 */
 	public DataRow remove(String ... keys){
 		if(null != keys){
 			for(String key:keys){
@@ -1051,6 +1117,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+	/**
+	 * 添加需要更新的列
+	 * @param cols
+	 * @return
+	 */
 	public DataRow addUpdateColumns(String ... cols){
 		if(null != cols){
 			for(String col:cols){
@@ -1088,6 +1159,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+	/**
+	 * 复制String类型数据
+	 * @param data
+	 * @param keys
+	 * @return
+	 */
 	public DataRow copyString(DataRow data, String ... keys){
 		if(null == data || null == keys){
 			return this;
@@ -1109,7 +1186,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
-
+	/**
+	 * 检测必选项
+	 * @param keys
+	 * @return
+	 */
 	public boolean checkRequired(String ... keys){
 		List<String> ks = new ArrayList<String>();
 		if(null != keys && keys.length >0){
@@ -1129,6 +1210,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return true;
 	}
+	/**
+	 * key大小写转换
+	 * @param keyCase
+	 * @param key
+	 * @return
+	 */
 	private static String keyCase(KEY_CASE keyCase, String key){
 		if(null != key){
 			if(keyCase == KEY_CASE.DEFAULT){
@@ -1158,12 +1245,21 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return keyCase(keyCase, key);
 	}
+	/**
+	 * 查询条件
+	 * @return
+	 */
 	public Map<String, Object> getQueryParams() {
 		if(queryParams.isEmpty()){
 			return container.getQueryParams();
 		}
 		return queryParams;
 	}
+	/**
+	 * 设置查询条件
+	 * @param queryParams
+	 * @return
+	 */
 	public DataRow setQueryParams(Map<String, Object> queryParams) {
 		this.queryParams = queryParams;
 		return this;
@@ -1179,15 +1275,31 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		queryParams.put(key,param);
 		return this;
 	}
+	/**
+	 * 是否更新null列
+	 * @return
+	 */
 	public boolean isUpdateNullColumn() {
 		return updateNullColumn;
 	}
+	/**
+	 * 设置是否更新null列
+	 * @param updateNullColumn
+	 */
 	public void setUpdateNullColumn(boolean updateNullColumn) {
 		this.updateNullColumn = updateNullColumn;
 	}
+	/**
+	 * 是否更新空列
+	 * @return
+	 */
 	public boolean isUpdateEmptyColumn() {
 		return updateEmptyColumn;
 	}
+	/**
+	 * 设置是否更新空列
+	 * @param updateEmptyColumn
+	 */
 	public void setUpdateEmptyColumn(boolean updateEmptyColumn) {
 		this.updateEmptyColumn = updateEmptyColumn;
 	}
