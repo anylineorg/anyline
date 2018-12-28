@@ -403,7 +403,7 @@ public class AbstractBasicController{
 	 * @param request
 	 * @return
 	 */
-	private  PageNavi parsePageNavi(HttpServletRequest request) {
+	protected  PageNavi parsePageNavi(HttpServletRequest request) {
 		if (null == request){
 			return null;
 		}

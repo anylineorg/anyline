@@ -709,7 +709,6 @@ public class AnylineDaoImpl implements AnylineDao {
 	    				for(int i=1; i<=cols; i++){
 	    					row.put(rsmd.getColumnName(i), rs.getObject(i));
 	    				}
-	    				row.processBeforeDisplay();	//显示之前预处理
 	    				set.addRow(row);
 	    			}
 	                set.setDatalink(DataSourceHolder.getDataSource());
