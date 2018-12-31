@@ -23,13 +23,12 @@ import java.io.IOException;
 
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.MoneyUtil;
+import org.apache.log4j.Logger;
 
-public class Money extends BaseBodyTag {
+public class Escape extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Money.class);
+	private static final Logger log = Logger.getLogger(Escape.class);
 
 	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim();
@@ -38,11 +37,9 @@ public class Money extends BaseBodyTag {
 		}
 
 		JspWriter writer = null;
-		String result = "";
+		String result = BasicUtil.escape(src);
 		try {
 			writer = pageContext.getOut();
-			double d = BasicUtil.parseDouble(src, 0d);
-			result = MoneyUtil.format(d);
 			writer.print(result);
 		} catch (IOException e) {
 			e.printStackTrace();
