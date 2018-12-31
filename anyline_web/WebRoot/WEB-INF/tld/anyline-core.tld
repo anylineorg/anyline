@@ -694,6 +694,32 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>escape</name>
+		<tagclass>org.anyline.tag.Escape</tagclass>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>evl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>unescape</name>
+		<tagclass>org.anyline.tag.UNEscape</tagclass>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>evl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>strip</name>
 		<tagclass>org.anyline.tag.Strip</tagclass>
 		<info>清除html标签</info>
