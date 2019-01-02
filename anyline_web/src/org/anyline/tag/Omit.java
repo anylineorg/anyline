@@ -30,7 +30,8 @@ public class Omit extends BaseBodyTag {
 	private int right;
 	private int left;
 	private String ellipsis = "*";
-	private int length;//最大长度(不小于 right+left+1)
+	private int max;//最大长度(不小于 right+left+1)
+	private int min;//最小长度(不小于 right+left+1)
 	private String value;
 	
 	public int doEndTag() {
@@ -43,21 +44,27 @@ public class Omit extends BaseBodyTag {
 		String result = "";
 		try {
 			writer = pageContext.getOut();
-			int fill = length;
-			if(fill ==0){
-				fill = src.length();
+			if(max <=0 || max>src.length()){
+				max = src.length();
 			}
-			if(fill < right+left+1){
-				fill = right+left+1;
+			if(min <=0 || min>src.length()){
+				min = src.length();
 			}
-			if(left > fill){
-				left = fill;
+			int fill = max - left - right;
+			if(fill < 0){
+				fill = 0;
 			}
-			if(right > fill - left){
-				right = fill - left;
+			if(fill + left + right < min){
+				fill = min - left - right;
+			}
+			if(left > max){
+				left = max;
+			}
+			if(right > max - left){
+				right = max - left;
 			}
 			String l = src.substring(0,left);
-			String r = src.substring(fill - right);
+			String r = src.substring(src.length() - right);
 			
 			result = l+BasicUtil.fillRChar("", ellipsis, fill)+r;
 			writer.print(result);
@@ -76,7 +83,8 @@ public class Omit extends BaseBodyTag {
 		body = null;
 		left = 0;
 		right = 0;
-		length = 0;
+		max = 0;
+		min = 0;
 		ellipsis = "*";
 	}
 
@@ -113,12 +121,22 @@ public class Omit extends BaseBodyTag {
 		this.value = value;
 	}
 
-	public int getLength() {
-		return length;
+	public int getMax() {
+		return max;
 	}
 
-	public void setLength(int length) {
-		this.length = length;
+	public void setMax(int max) {
+		this.max = max;
 	}
+
+	public int getMin() {
+		return min;
+	}
+
+	public void setMin(int min) {
+		this.min = min;
+	}
+
+
 	
 }

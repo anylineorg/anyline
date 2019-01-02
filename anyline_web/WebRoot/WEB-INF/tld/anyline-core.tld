@@ -749,7 +749,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>length</name>
+			<name>max</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>min</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
