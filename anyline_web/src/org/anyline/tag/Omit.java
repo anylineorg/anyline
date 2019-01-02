@@ -44,10 +44,13 @@ public class Omit extends BaseBodyTag {
 		String result = "";
 		try {
 			writer = pageContext.getOut();
-			if(max <=0 || max>src.length()){
+			if(max < 0 || max>src.length()){
 				max = src.length();
 			}
-			if(min <=0 || min>src.length()){
+			if(min < 0){
+				min = 0;
+			}
+			if(min>src.length()){
 				min = src.length();
 			}
 			int fill = max - left - right;
