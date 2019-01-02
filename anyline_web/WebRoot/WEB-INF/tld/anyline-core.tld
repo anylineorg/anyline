@@ -749,6 +749,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>length</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>left</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

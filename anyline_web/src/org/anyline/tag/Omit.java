@@ -30,6 +30,7 @@ public class Omit extends BaseBodyTag {
 	private int right;
 	private int left;
 	private String ellipsis = "*";
+	private int length;//最大长度(不小于 right+left+1)
 	private String value;
 	
 	public int doEndTag() {
@@ -42,16 +43,23 @@ public class Omit extends BaseBodyTag {
 		String result = "";
 		try {
 			writer = pageContext.getOut();
-			int length = src.length();
-			if(left > length){
-				left = length;
+			int fill = length;
+			if(fill ==0){
+				fill = src.length();
 			}
-			if(right > length - left){
-				right = length - left;
+			if(fill < right+left+1){
+				fill = right+left+1;
+			}
+			if(left > fill){
+				left = fill;
+			}
+			if(right > fill - left){
+				right = fill - left;
 			}
 			String l = src.substring(0,left);
-			String r = src.substring(length - right);
-			result = l+BasicUtil.fillRChar("", ellipsis, length-left-right)+r;
+			String r = src.substring(fill - right);
+			
+			result = l+BasicUtil.fillRChar("", ellipsis, fill)+r;
 			writer.print(result);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -68,6 +76,7 @@ public class Omit extends BaseBodyTag {
 		body = null;
 		left = 0;
 		right = 0;
+		length = 0;
 		ellipsis = "*";
 	}
 
@@ -102,6 +111,14 @@ public class Omit extends BaseBodyTag {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public int getLength() {
+		return length;
+	}
+
+	public void setLength(int length) {
+		this.length = length;
 	}
 	
 }
