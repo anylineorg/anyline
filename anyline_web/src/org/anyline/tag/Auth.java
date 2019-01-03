@@ -32,7 +32,9 @@ import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.qq.util.QQConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.weixin.mp.util.WXMPConfig;
+import org.anyline.weixin.mp.util.WXMPUtil;
 import org.anyline.weixin.util.WXConfig;
+import org.anyline.weixin.util.WXConfig.SNSAPI_SCOPE;
 import org.apache.log4j.Logger;
 
 public class Auth extends BaseBodyTag {
@@ -90,30 +92,35 @@ public class Auth extends BaseBodyTag {
 				if(null == wxconfig){
 					result = false;
 				}else{
-					if(BasicUtil.isEmpty(appid)){
-						appid = wxconfig.APP_ID;
+					SNSAPI_SCOPE apiScope = WXConfig.SNSAPI_SCOPE.BASE; 
+					if(WXConfig.SNSAPI_SCOPE.USERINFO.equals(scope)){
+						apiScope = WXConfig.SNSAPI_SCOPE.USERINFO;
 					}
-					Map<String,String> map = new HashMap<String,String>();
-					if(null != params){
-						String[] items = params.split(",");
-						for(String item:items){
-							String[] kv = item.split(":");
-							if(kv.length ==2){
-								map.put(kv[0], kv[1]);
-							}
-						}
-					}
-					if(BasicUtil.isEmpty(scope)){
-						scope = "snsapi_base";
-					}
-					if(BasicUtil.isEmpty(redirect)){
-						redirect = wxconfig.OAUTH_REDIRECT_URL;
-					}
-					if(BasicUtil.isEmpty(redirect)){
-						redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
-					}
-					redirect = URLEncoder.encode(redirect, "UTF-8");
-					url =  WXConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
+					url = WXMPUtil.ceateAuthUrl(key, redirect, apiScope, state);
+//					if(BasicUtil.isEmpty(appid)){
+//						appid = wxconfig.APP_ID;
+//					}
+//					Map<String,String> map = new HashMap<String,String>();
+//					if(null != params){
+//						String[] items = params.split(",");
+//						for(String item:items){
+//							String[] kv = item.split(":");
+//							if(kv.length ==2){
+//								map.put(kv[0], kv[1]);
+//							}
+//						}
+//					}
+//					if(BasicUtil.isEmpty(scope)){
+//						scope = "snsapi_base";
+//					}
+//					if(BasicUtil.isEmpty(redirect)){
+//						redirect = wxconfig.OAUTH_REDIRECT_URL;
+//					}
+//					if(BasicUtil.isEmpty(redirect)){
+//						redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
+//					}
+//					redirect = URLEncoder.encode(redirect, "UTF-8");
+//					url =  WXConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
 				}
 			}else if("qq".equalsIgnoreCase(type)){
 				QQMPConfig qqconfig = QQMPConfig.getInstance(key);
@@ -167,7 +174,6 @@ public class Auth extends BaseBodyTag {
 		}
 		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容
 	}
-
 	@Override
 	public void release() {
 		super.release();

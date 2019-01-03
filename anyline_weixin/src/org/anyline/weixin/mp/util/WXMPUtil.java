@@ -1,6 +1,7 @@
 package org.anyline.weixin.mp.util;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -32,6 +33,7 @@ import org.anyline.weixin.mp.entity.WXMPTransferBank;
 import org.anyline.weixin.mp.entity.WXMPTransferBankResult;
 import org.anyline.weixin.mp.entity.WXMPTransferResult;
 import org.anyline.weixin.util.WXConfig;
+import org.anyline.weixin.util.WXConfig.SNSAPI_SCOPE;
 import org.anyline.weixin.util.WXUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
@@ -618,6 +620,30 @@ public class WXMPUtil extends WXUtil{
 		msg.setUser(openId);
 		return sendTemplateMessage(msg);
 	}
+
+	public static String ceateAuthUrl(String key, String redirect, SNSAPI_SCOPE scope, String state){
+		String url = null;
+		try{
+			WXConfig config = WXMPConfig.getInstance(key);
+			String appid = config.APP_ID;
+			if(BasicUtil.isEmpty(scope)){
+				scope = SNSAPI_SCOPE.BASE;
+			}
+			if(BasicUtil.isEmpty(redirect)){
+				redirect = config.OAUTH_REDIRECT_URL;
+			}
+			if(BasicUtil.isEmpty(redirect)){
+				redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
+			}
+			redirect = URLEncoder.encode(redirect, "UTF-8");
+			url =  WXConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="
+					+scope.getCode()+"&state="+state+",app:"+key+"#wechat_redirect";
+		}catch(Exception e){
+			return null;
+		}
+		return url;
+	}
+	
 	/**
 	 * 获取RSA公钥
 	 * @param mch
@@ -631,4 +657,5 @@ public class WXMPUtil extends WXUtil{
 		Map<String,?> map = BeanUtil.xml2map(txt);
 		return (String)map.get("pub_key");
 	}
+	
 }

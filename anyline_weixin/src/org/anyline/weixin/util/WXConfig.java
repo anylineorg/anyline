@@ -13,6 +13,13 @@ public class WXConfig extends BasicConfig{
 		public abstract String getName();
 		public abstract String getCode();
 	};
+	//登录获取身份信息类别
+	public static enum SNSAPI_SCOPE{
+		BASE		{public String getCode(){return "snsapi_base";} 	public String getName(){return "基础信息";}},
+		USERINFO	{public String getCode(){return "snsapi_userinfo";} public String getName(){return "详细信息";}};
+		public abstract String getName();
+		public abstract String getCode();
+	};
 	public static enum BANK{
 		工商银行	{public String getCode(){return "1002";}public String getName(){return "工商银行";}},
 		农业银行	{public String getCode(){return "1005";}public String getName(){return "农业银行";}},
