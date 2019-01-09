@@ -48,7 +48,6 @@ public class Config extends BaseBodyTag {
 		try{
 			WXMPUtil util = WXMPUtil.getInstance(key);
 			if(null != util){
-				//request.getHeader("Referer") http://www.anyline.org/mbr/od/v?cd=v79v01f3c102114ddf5bf7a4c25daeb6ff0d007934692a7a0a39e8f95b41fd3e88f3
 				String server = util.getConfig().WEB_SERVER;
 				String url = "";
 				if(BasicUtil.isEmpty(server)){
