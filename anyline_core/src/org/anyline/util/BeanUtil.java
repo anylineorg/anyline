@@ -548,9 +548,18 @@ public class BeanUtil {
 		for(File file:files){
 			try{
 				String path = file.getAbsolutePath();
-				path = path.substring(path.indexOf("\\classes\\"));
+				if(ConfigTable.isDebug()){
+					log.warn("[检索类][file:"+path+"]");
+				}
+				path.replace("/", "\\");
+				if(path.contains("\\classes\\")){
+					path = path.substring(path.indexOf("\\classes\\"));
+				}
 				path = path.replace("\\", ".");
 				path = path.replace(".classes.", "").replace(".class", "");
+				if(ConfigTable.isDebug()){
+					log.warn("[检索类][class:"+path+"]");
+				}
 				Class clazz = Class.forName(path);
 				if(clazz.getName().contains("$")){
 					continue;

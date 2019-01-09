@@ -876,6 +876,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public boolean getBoolean(String key, boolean def){
 		return BasicUtil.parseBoolean(getString(key), def);
 	}
+	public boolean getBoolean(String key){
+		return BasicUtil.parseBoolean(getString(key), false);
+	}
 	public BigDecimal getDecimal(String key){
 		BigDecimal result = null;
 		try{
