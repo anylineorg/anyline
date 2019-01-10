@@ -56,7 +56,7 @@ public class Config extends BaseBodyTag {
 				if(BasicUtil.isEmpty(server)){
 					server = HttpUtil.getHostUrl(request.getHeader("Referer"));
 				}
-				url =  FileUtil.mergePath(server , request.getAttribute("javax.servlet.forward.request_uri")+"");
+				url =  FileUtil.mergePath(server , BasicUtil.evl(request.getAttribute("javax.servlet.forward.request_uri"),"")+"");
 				String param = request.getQueryString();
 				if(BasicUtil.isNotEmpty(param)){
 					url += "?" + param;
