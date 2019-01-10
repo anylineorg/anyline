@@ -43,13 +43,16 @@ public class Config extends BaseBodyTag {
 	private boolean debug = false;
 	private String apis= "";
 	private String key = "";
+	private String server = "";
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
 			WXMPUtil util = WXMPUtil.getInstance(key);
 			if(null != util){
-				String server = util.getConfig().WEB_SERVER;
 				String url = "";
+				if(BasicUtil.isEmpty(server)){
+					server = util.getConfig().WEB_SERVER;
+				}
 				if(BasicUtil.isEmpty(server)){
 					server = HttpUtil.getHostUrl(request.getHeader("Referer"));
 				}
@@ -57,6 +60,9 @@ public class Config extends BaseBodyTag {
 				String param = request.getQueryString();
 				if(BasicUtil.isNotEmpty(param)){
 					url += "?" + param;
+				}
+				if(ConfigTable.isDebug()){
+					log.warn("[config init][url:"+url+"]");
 				}
 				Map<String,Object> map = util.jsapiSign(url);
 				
@@ -67,6 +73,7 @@ public class Config extends BaseBodyTag {
 							+",jsapi_ticket="+map.get("jsapi_ticket")+",url="+url+",timestamp="+map.get("timestamp");
 					config += "alert(\""+alert+"\");\n";
 				}
+				config += "";
 				config += "wx.config({\n";
 				config += "debug:"+debug+",\n";
 				config += "appId:'"+util.getConfig().APP_ID+"',\n";
