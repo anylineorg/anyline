@@ -93,7 +93,7 @@ public class Auth extends BaseBodyTag {
 					result = false;
 				}else{
 					SNSAPI_SCOPE apiScope = WXConfig.SNSAPI_SCOPE.BASE; 
-					if(WXConfig.SNSAPI_SCOPE.USERINFO.equals(scope)){
+					if(WXConfig.SNSAPI_SCOPE.USERINFO.getCode().equals(scope) || "info".equals(scope)){
 						apiScope = WXConfig.SNSAPI_SCOPE.USERINFO;
 					}
 					url = WXMPUtil.ceateAuthUrl(key, redirect, apiScope, state);
