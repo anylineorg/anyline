@@ -551,7 +551,7 @@ public class BeanUtil {
 				if(ConfigTable.isDebug()){
 					log.warn("[检索类][file:"+path+"]");
 				}
-				path.replace("/", "\\");
+				path = path.replace("/", "\\");
 				if(path.contains("\\classes\\")){
 					path = path.substring(path.indexOf("\\classes\\"));
 				}
