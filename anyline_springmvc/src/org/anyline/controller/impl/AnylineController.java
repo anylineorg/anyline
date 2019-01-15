@@ -53,17 +53,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-
-@Controller("org.anyline.controller.impl.AnylineController")
-@RequestMapping("/")
-@Scope("prototype")
 public class AnylineController extends AbstractBasicController {
 
 	@Autowired(required = false)
@@ -443,68 +438,6 @@ public class AnylineController extends AbstractBasicController {
 		}
 		return result;
 	}
-	public List<File> upload(String dir) throws IllegalStateException, IOException {
-		if(BasicUtil.isEmpty(dir)){
-			return upload();
-		}
-		return upload(new File(dir));
-	}
-	public List<File> upload() throws IllegalStateException, IOException {
-		String dir = ConfigTable.getString("UPLOAD_DIR");
-		return upload(new File(dir));
-	}
 
-	protected DataRow saveUploadFile(MultipartFile file){
-		if(null == file || file.isEmpty()){
-			return null;
-		}
-		DataRow  result = new DataRow();
-		String fileName = BasicUtil.getRandomLowerString(10) +"."+ FileUtil.getSuffixFileName(file.getOriginalFilename());;// 上传的文件名字
-		File targetFile = new File(ConfigTable.getString("UPLOAD_DIR"), fileName);
-		try {
-			file.transferTo(targetFile);
-			String absPath = targetFile.getAbsolutePath();
-			String dirPath = targetFile.getParent();
-			String relPath = absPath.replace(dirPath, "");
-			DataRow fileRow = new DataRow("BS_UPLOAD");
-			fileRow.put("PATH_ABS", absPath);
-			fileRow.put("PATH_REL", relPath);
-			fileRow.put("DIR", dirPath);
-			service.save(fileRow);
-			
-			result.put("FILE_PATH", "/ig?id="+ fileRow.getId());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return result;
-	}
-	public List<DataRow> saveFile(File dir){
-		List<DataRow> rows = new ArrayList<DataRow>();
-		try{
-			List<File> files = upload(dir);
-			for(File file:files){
-				String path = file.getAbsolutePath();
-				DataRow row = new DataRow(ConfigTable.getString("UPLOAD_TABLE"));
-				row.put("DIR", file.getParent());
-				row.put("PATH_ABS", path);
-				row.put("PATH_REL", path.replace(file.getParent(), ""));
-				service.save(row);
-				rows.add(row);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return rows;
-	}
-	public List<DataRow> saveFile(String dir){
-		if(BasicUtil.isEmpty(dir)){
-			return saveFile();
-		}
-		return saveFile(new File(dir));
-	}
-	public List<DataRow> saveFile(){
-		String dir = ConfigTable.getString("UPLOAD_DIR");
-		return saveFile(new File(dir));
-	}
 
 }
