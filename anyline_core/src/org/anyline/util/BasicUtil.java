@@ -1018,4 +1018,47 @@ public class BasicUtil {
        return CodeUtil.unescape(src);  
    } 
 
+   public static String half2full(String input) {
+       char c[] = input.toCharArray();
+       for (int i = 0; i < c.length; i++) {
+         if (c[i] == ' ') {
+           c[i] = '\u3000';
+         } else if (c[i] < '\177') {
+           c[i] = (char) (c[i] + 65248);
+         }
+       }
+       return new String(c);
+}
+	// 全角转半角的 转换函数
+
+	public static final String full2Half(String QJstr)  {
+		StringBuffer outStrBuf = new StringBuffer("");
+		String str = "";
+		try{
+		byte[] b = null;
+		for (int i = 0; i < QJstr.length(); i++) {
+			str = QJstr.substring(i, i + 1);
+			// 全角空格转换成半角空格
+			if (str.equals("　")) {
+				outStrBuf.append(" ");
+				continue;
+			}
+			b = str.getBytes("unicode");
+			// 得到 unicode 字节数据
+			if (b[2] == -1) {
+				// 表示全角？
+				b[3] = (byte) (b[3] + 32);
+				b[2] = 0;
+				outStrBuf.append(new String(b, "unicode"));
+			} else {
+				outStrBuf.append(str);
+			}
+		} // end for.
+		}catch(Exception e){
+			
+		}
+		return outStrBuf.toString();
+	}
+
+
 }

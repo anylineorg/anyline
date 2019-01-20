@@ -33,7 +33,7 @@ public class Test {
 		// verify(); //验证码
 		// zip(); //压缩
 		// dispatchItems();
-		upload();
+		// upload();
 		
 	}
 	public static void upload(){
