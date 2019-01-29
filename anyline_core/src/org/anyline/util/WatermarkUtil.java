@@ -36,8 +36,8 @@ import javax.swing.ImageIcon;
 
 import org.apache.log4j.Logger;
 
-public class Watermark {
-	protected static final Logger log = Logger.getLogger(Watermark.class);
+public class WatermarkUtil {
+	protected static final Logger log = Logger.getLogger(WatermarkUtil.class);
 	private Integer degree;								//旋转角度
 	private Color color = Color.LIGHT_GRAY;				//水印颜色
 	private String fontName = "宋体";						//字体名称
@@ -47,11 +47,11 @@ public class Watermark {
 	private Integer x;				//坐标X
 	private Integer y;				//坐标Y
 	
-	public Watermark(){
+	public WatermarkUtil(){
 		this.x = 0;
 		this.y = 0;
 	}
-	public Watermark(int x, int y){
+	public WatermarkUtil(int x, int y){
 		this.x = x;
 		this.y = y;
 	}

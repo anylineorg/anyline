@@ -178,4 +178,6 @@ public interface PageNavi extends Serializable{
 	 */
 	public PageNavi setGuide(String guide);
 	public String getGuide();
+	public PageNavi setMethod(String method);
+	public String getMethod();
 }

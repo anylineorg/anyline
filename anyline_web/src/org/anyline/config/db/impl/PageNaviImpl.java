@@ -68,7 +68,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private String lazyKey 					= null		;	//懒加载
 	private int type 						= 0			;	//分页方式(0:下标 1:加载更多)
 	private Map<String,List<Object>> params	= null		;	//查询参数
-
+	private String method					= "post"	;
 	private String style		= ""	; //样式标记对应anyline-navi.xml中的config.key
 	
 
@@ -569,6 +569,13 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	}
 	public PageNavi setGuide(String guide) {
 		this.loadMoreFormat = guide;
+		return this;
+	}
+	public String getMethod() {
+		return method;
+	}
+	public PageNavi setMethod(String method) {
+		this.method = method;
 		return this;
 	}
 

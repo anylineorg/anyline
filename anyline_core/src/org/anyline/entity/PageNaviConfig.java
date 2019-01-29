@@ -34,6 +34,7 @@ public class PageNaviConfig extends BasicConfig{
 	public boolean VAR_SHOW_JUMP				= false		;	//是否显示跳转
 	public boolean VAR_SHOW_BUTTON				= true		;	//是否显示上一页下一页button
 	public boolean VAR_SHOW_INDEX				= true		;	//是否显示下标
+	public String  VAR_FORM_METHOD				= "post"	;
 	
 	//key
 	public String KEY_PAGE_ROWS			= "_anyline_page_rows"			; //设置每页显示多少条的key
