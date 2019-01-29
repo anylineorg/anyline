@@ -551,11 +551,10 @@ public class BeanUtil {
 				if(ConfigTable.isDebug()){
 					log.warn("[检索类][file:"+path+"]");
 				}
-				path = path.replace("/", "\\");
-				if(path.contains("\\classes\\")){
-					path = path.substring(path.indexOf("\\classes\\"));
+				if(path.contains(File.separator+"classes"+File.separator)){
+					path = path.substring(path.indexOf(File.separator+"classes"+File.separator));
 				}
-				path = path.replace("\\", ".");
+				path = path.replace(File.separator, ".");
 				path = path.replace(".classes.", "").replace(".class", "");
 				if(ConfigTable.isDebug()){
 					log.warn("[检索类][class:"+path+"]");
