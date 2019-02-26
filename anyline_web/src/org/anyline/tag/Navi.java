@@ -43,7 +43,7 @@ public class Navi extends BodyTagSupport{
 	private String naviContainer	;	//如果body与page分开(兼容上一版本)
 	private String creater = "ajax"	;	//分页方式 ajax | html
 	private String scroll			;   //自动翻页时 监听的滚动事件源 默认window
-	
+	private String method = "post"	;
 	private String id				;	//一个页面内多个标签时需要id区分
 	private String function			;	//指定function后,需主动调用function后加载数据,查询条件发生变化时可调用些function
 	private Boolean intime = false	;	//实时执行
@@ -330,6 +330,12 @@ public class Navi extends BodyTagSupport{
 	}
 	public void setScroll(String scroll) {
 		this.scroll = scroll;
+	}
+	public String getMethod() {
+		return method;
+	}
+	public void setMethod(String method) {
+		this.method = method;
 	}
 
 }
