@@ -182,7 +182,7 @@ public class RegularUtil {
 		return result;
 	}
 	/**
-	 * 清除所有标签
+	 * 清除所有标签(只清除标签，不清除标签体)
 	 * @param src
 	 * @return
 	 */
@@ -195,6 +195,109 @@ public class RegularUtil {
 	public static String removeAllHtmlTag(String src){
 		return removeAllTag(src);
 	}
+	/*清除所有包括指定属性的标签|包括标签体
+清除所有包括指定属性值的标签|包括标签体
+
+获取所有包括指定属性的标签
+获取所有包括指定属性值的标签*/
+	/**
+	 * 删除所有 包含attribute属性 的标签与标签体
+	 * RegularUtil.removeAllTagAndBodyWithAttribute(str,"class")
+	 * <input type="text" class="a"/>
+	 * <input type="text" class="a"></input>
+	 * <input type="text" class = "a"></input>
+	 * <input type="text" class></input>
+	 * <input type="text" class/>
+	 * <input type="text" a="class"></input>(不匹配)
+	 * @param src
+	 * @param attribute
+	 * @return
+	 */
+	public static String removeAllTagAndBodyWithAttribute(String src, String attribute){
+		String reg = "";
+		reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>";//双标签
+		src = src.replaceAll(reg, "");
+		reg =  "<[\\w-]+[^>]*?\\s"+attribute+"\\b[^>]*?(>|(/>))";//单标签
+		src = src.replaceAll(reg, "");
+		return src;
+	}
+	/**
+	 * RegularUtil.removeAllTagAndBodyWithAttributeValue(s,"class","a")
+	 * 删除所有 包含attribute属性=value值  的标签与标签体
+	 * <input type="text" class="a"/>
+	 * <input type="text" class="a"></input>
+	 * <input type="text" class="a b"></input>如果需要不匹配可以使用"[^\\s]a[^\\s]"
+	 * <input type="text" class="b a"></input>
+	 * <input type="text" class="ab"></input>(不匹配)如果需要匹配可以使用"a.*"
+	 * 
+	 * @param src
+	 * @param attribute
+	 * @return
+	 */
+	public static String removeAllTagAndBodyWithAttributeValue(String src, String attribute, String value){
+		String reg ="";
+		reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";//双标签
+		src = src.replaceAll(reg, "");
+		reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?/>";//单标签
+		src = src.replaceAll(reg, "");
+		return src;
+	}
+
+	/**
+	 * 获取所有 包含attribute属性 的标签与标签体
+	 * [
+	 * 	[整个标签含标签体,tag],
+	 * 	[整个标签含标签体,tag]
+	 * ]
+	 * @param src
+	 * @param attribute
+	 * @return
+	 */
+	public static List<List<String>> getAllTagAndBodyWithAttribute(String src, String attribute) throws Exception{
+		List<List<String>> result = new ArrayList<List<String>>();
+		String reg =  "(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>)"	//双标签
+				+ "|(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?(>|(/>)))";			//单标签
+		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
+		List<List<String>> list = regular.fetch(src, reg);
+		for(List<String> tmp:list){
+			List<String> item = new ArrayList<String>();
+			item.add(tmp.get(0));
+			item.add(tmp.get(4));
+			result.add(item);
+		}
+		return result;
+	}
+	/**
+	 * 获取所有 包含attribute属性=value值  的标签与标签体
+	 * 单标签只匹配有/>结尾的情况，避免与双标签的开始标签混淆
+	 * 如class="a"
+	 * @param src
+	 * @param attribute
+	 * @return
+	 */
+	public static List<List<String>> getAllTagAndBodyWithAttributeValue(String src, String attribute, String value) throws Exception{
+		List<List<String>> result = new ArrayList<List<String>>();
+		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
+		String reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";	//双标签
+		List<List<String>> list = regular.fetch(src, reg);
+		for(List<String> tmp:list){
+			List<String> item = new ArrayList<String>();
+			item.add(tmp.get(0));
+			item.add(tmp.get(1));
+			result.add(item);
+		}
+
+		reg = "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?/>";	//单标签
+		list = regular.fetch(src, reg);
+		for(List<String> tmp:list){
+			List<String> item = new ArrayList<String>();
+			item.add(tmp.get(0));
+			item.add(tmp.get(1));
+			result.add(item);
+		}
+		return result;
+	}
+
 	/**
 	 * 删除 tags之外的标签"<b>"与"</b>"只写一次 "b"
 	 * 只删除标签不删除标签体
