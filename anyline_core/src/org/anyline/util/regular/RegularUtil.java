@@ -509,7 +509,11 @@ public class RegularUtil {
 		if(frTag.equalsIgnoreCase(TAG_END)){
 			_to = text.length();
 		}else{
-			_to = text.indexOf(toTag,_fr+frLength);
+			if(toTag.equalsIgnoreCase(TAG_END)){
+				_to = text.length();
+			}else{
+				_to = text.indexOf(toTag,_fr+frLength);
+			}
 		}
 		if(_to <= _fr) {
 			return null;
