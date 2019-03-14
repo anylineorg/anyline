@@ -140,8 +140,7 @@ public class WatermarkUtil {
         try {
             Image srcImg = ImageIO.read(src);
 
-            BufferedImage buffImg = new BufferedImage(srcImg.getWidth(null),
-                    srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            BufferedImage buffImg = new BufferedImage(srcImg.getWidth(null), srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
 
             // 得到画笔对象
             Graphics2D g = buffImg.createGraphics();
@@ -166,7 +165,7 @@ public class WatermarkUtil {
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,alpha));
 
             // 表示水印图片的位置
-            g.drawImage(img, 150, 300, null);
+            g.drawImage(img, x, y, null);
 
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
 
