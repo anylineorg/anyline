@@ -270,7 +270,7 @@ public class HttpClientUtil {
 			}
 		}
 		Source result = new Source();
-		if (null != pairs) {
+		if (null != pairs && !pairs.isEmpty()) {
 			String params = URLEncodedUtils.format(pairs,encode);
 			if (url.contains("?")) {
 				url += "&" + params;
