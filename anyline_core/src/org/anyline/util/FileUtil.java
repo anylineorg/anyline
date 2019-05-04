@@ -247,7 +247,17 @@ public class FileUtil {
 	 * @param append 追加内容
 	 */
 	public static void writeFile(String content, File file, boolean append){
+		if(null == file || null == content){
+			return;
+		}
+		File dir = file.getParentFile();
+		if(!dir.exists()){
+			dir.mkdirs();
+		}
 		try{
+			if(!file.exists()){
+				file.createNewFile();
+			}
 			FileWriter fw = new FileWriter(file,append);
 			fw.write(content);
 			fw.close();  
