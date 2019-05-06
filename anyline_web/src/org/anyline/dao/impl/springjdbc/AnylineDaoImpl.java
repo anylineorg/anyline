@@ -29,14 +29,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.anyline.cache.PageLazyStore;
+import org.anyline.config.ConfigParser;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
-import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.ds.DataSourceHolder;
 import org.anyline.config.db.run.RunSQL;
+import org.anyline.config.db.sql.auto.TableSQL;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.impl.BatchInsertStore;
@@ -92,7 +92,15 @@ public class AnylineDaoImpl implements AnylineDao {
 		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createQueryRunSQL(sql, configs, conditions);
 		if(!run.isValid()){
 			if(showSQL){
-				log.warn("[valid:false]");
+				String tmp = "[valid:false]";
+				String src = "";
+				if(sql instanceof TableSQL){
+					src = sql.getTable();
+				}else{
+					src = sql.getText();
+				}
+				tmp+="[sql:"+ConfigParser.createSQLSign(false, false, src, configs, conditions)+"]";
+				log.warn(tmp);
 			}
 			return new DataSet();
 		}
