@@ -8,10 +8,17 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.SQL;
+import org.anyline.config.http.Config;
+import org.anyline.config.http.ConfigChain;
+import org.anyline.config.http.ConfigStore;
 import org.anyline.config.http.impl.ConfigImpl;
+import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
+import org.anyline.util.MD5Util;
 import org.anyline.util.WebUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -348,5 +355,47 @@ public class ConfigParser {
 			}
 		}
 		return result;
+	}
+	public static String createSQLSign(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
+		conditions = BasicUtil.compressionSpace(conditions);
+		String result = src+"|";
+		if(null != store){
+			ConfigChain chain = store.getConfigChain();
+			if(null != chain){
+				List<Config> configs = chain.getConfigs();
+				if(null != configs){
+					for(Config config:configs){
+						List<Object> values = config.getValues();
+						if(null != values){
+							result += config.toString() + "|";
+						}
+					}	
+				}
+			}
+			PageNavi navi = store.getPageNavi();
+			if(page && null != navi){
+				result += "page=" + navi.getCurPage()+"|first=" + navi.getFirstRow() + "|last="+navi.getLastRow()+"|";
+			}
+			if(order){
+				OrderStore orders = store.getOrders();
+				if(null != orders){
+					result += orders.getRunText("").toUpperCase() +"|";
+				}
+			}
+		}
+		if(null != conditions){
+			for(String condition:conditions){
+				if(BasicUtil.isNotEmpty(condition)){
+					if(condition.trim().toUpperCase().startsWith("ORDER")){
+						if(order){
+							result += condition.toUpperCase() + "|";
+						}
+					}else{
+						result += condition+"|";
+					}
+				}
+			}
+		}
+		return MD5Util.crypto(result);
 	}
 }
