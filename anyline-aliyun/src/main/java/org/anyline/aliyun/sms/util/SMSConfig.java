@@ -37,7 +37,7 @@ public class SMSConfig extends BasicConfig{
 	 * 加载配置文件
 	 */
 	private synchronized static void loadConfig() {
-		loadConfig(instances, SMSConfig.class, "anyline-sms.xml");
+		loadConfig(instances, SMSConfig.class, "anyline-aliyun-sms.xml");
 	}
 	private static void debug(){
 	}
