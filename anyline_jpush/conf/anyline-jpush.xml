@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configs>
-	<config key="default">
-		<property key="APP_KEY"></property>
-		<property key="MASTER_SECRET"></property>
-	</config>
-</configs>
