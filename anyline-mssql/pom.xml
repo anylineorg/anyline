@@ -19,10 +19,10 @@
 			<artifactId>anyline-web</artifactId>
 			<version>8.0.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>7.2.2.jre8</version>
+		</dependency>
 	</dependencies>
-	<dependency>
-		<groupId>com.microsoft.sqlserver</groupId>
-		<artifactId>mssql-jdbc</artifactId>
-		<version>7.2.2.jre8</version>
-	</dependency>
 </project>

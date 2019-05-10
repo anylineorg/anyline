@@ -32,4 +32,12 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/tld</directory>
+				<targetPath>META-INF</targetPath>
+			</resource>
+		</resources>
+	</build>
 </project>

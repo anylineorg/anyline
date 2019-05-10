@@ -28,14 +28,19 @@ public class BasicConfig {
 				dir = new File(ConfigTable.getWebRoot());
 			}
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
+			int configSize = 0;
 			for(File file:files){
 				if(fileName.equals(file.getName())){
 					parseFile(clazz, file, instances,compatibles);
+					configSize ++;
 				}
+			}
+			if(configSize ==0){
+				log.warn("[解析配置文件][未加载配置文件:"+fileName+"][配置文件模板请参考:http://api.anyline.org/config/index]");
 			}
 			
 		} catch (Exception e) {
-			log.error("配置文件解析异常:"+e);
+			log.error("[解析配置文件][file:"+fileName+"][配置文件解析异常:"+e+"]");
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -107,7 +112,6 @@ public class BasicConfig {
 	 *            兼容上一版本 最后一版key:倒数第二版key:倒数第三版key
 	 * @return
 	 */
-	@SuppressWarnings("unchecked")
 	protected static Hashtable<String, BasicConfig> parseFile(Class<?> T, File file, Hashtable<String, BasicConfig> instances, String... compatibles) {
 		if (null == file || !file.exists()) {
 			log.warn("[解析配置文件][文件不存在][file=" + file.getName() + "]");

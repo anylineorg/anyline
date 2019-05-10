@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<!-- 第一页 -->
+		<property key="STYLE_BUTTON_FIRST">第一页</property>
+		<!-- 上一页 -->
+		<property key="STYLE_BUTTON_PREV">上一页</property>
+		<!-- 下一页 -->
+		<property key="STYLE_BUTTON_NEXT">下一页</property>
+		<!-- 最后页 -->
+		<property key="STYLE_BUTTON_LAST">最后页</property>
+		<!-- 数据统计格式 -->
+		<property key="STYLE_STAT_FORMAT"></property>
+
+		<!-- 下标数量 -->
+		<property key="VAR_PAGE_RANGE">5</property>
+		<!-- 显示上一页下一页 -->
+		<property key="VAR_SHOW_BUTTON">true</property>
+		<!-- 显示下标 -->
+		<property key="VAR_SHOW_INDEX">true</property>
+		<!-- 显示数据统计 -->
+		<property key="VAR_SHOW_STAT">true</property>
+		<!-- 跳转到 -->
+		<property key="VAR_SHOW_JUMP">false</property>
+		<!-- 加载更多格式 -->
+		<property key="STYLE_LOAD_MORE_FORMAT">None More Data</property>
+		<property key="STYLE_FILE_PATH">//file.qnlm.ac/plugin/navi/navi.css</property>
+		<property key="SCRIPT_FILE_PATH">//file.qnlm.ac/plugin/navi/navi.js</property>
+	</config>
+</configs>

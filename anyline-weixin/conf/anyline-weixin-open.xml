@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="APP_ID">wx67***45f</property>
+		<property key="APP_SECRET">f013***5473a877</property>
+		<property key="SIGN_TYPE">MD5</property>
+		<property key="SERVER_TOKEN">any***rg</property>
+		
+		<property key="PAY_API_SECRET">oaonhd**********ohvpvbozqqayottvq</property>
+		<property key="PAY_MCH_ID">143*****402</property>
+		<property key="PAY_NOTIFY_URL">http://****/js/hm/pay/ntf/wx_mp</property>
+		<property key="PAY_CALLBACK_URL"></property>
+		<property key="PAY_KEY_STORE_FILE">D:\\apiclient_cert.p12</property>
+		<property key="PAY_KEY_STORE_PASSWORD">111111</property>
+	</config>
+</configs> 
