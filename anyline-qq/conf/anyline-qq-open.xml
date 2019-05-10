@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="APP_ID">wx67b***b345f</property>
+		<property key="PAY_API_SECRET">jE74f***wvZj2</property>
+		<property key="PAY_MCH_ID">138***02</property>
+		<property key="SIGN_TYPE">MD5</property>
+		<property key="PAY_NOTIFY_URL">http://***</property>
+	</config>
+</configs> 

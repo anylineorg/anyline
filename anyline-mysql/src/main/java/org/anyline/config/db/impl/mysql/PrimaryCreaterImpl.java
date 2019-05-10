@@ -29,7 +29,7 @@ public class PrimaryCreaterImpl implements PrimaryCreater {
 			column = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 		}
 		if(null == column){
-			column = "CD";
+			column = "ID";
 		}
 		if(null == table || null == column){
 			return null;
