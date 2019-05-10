@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN"
+                        "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+ <tlibversion>2.3</tlibversion>
+ <jspversion>1.2</jspversion>
+ <shortname>anyline</shortname>
+ <uri>http://www.anyline.org/seo</uri>
+	<info>anyline SEO标签</info>
+	<tag>
+		<name>head</name>
+		<tagclass>org.anyline.tag.seo.Head</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>html头信息</info>
+		<attribute>
+			<name>title</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>keywords</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>description</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
+		<name>keywords</name>
+		<tagclass>org.anyline.tag.seo.Keywords</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>Seo</info>
+	</tag>
+	<tag>
+		<name>reply</name>
+		<tagclass>org.anyline.tag.seo.ClientReply</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info>客户端回复确认(JS格式)</info>
+	</tag>
+</taglib>
