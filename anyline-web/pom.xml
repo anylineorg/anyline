@@ -54,6 +54,11 @@
 			<artifactId>ognl</artifactId>
 			<version>3.2.10</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>4.3.23.RELEASE</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<resources>
