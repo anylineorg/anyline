@@ -3,46 +3,46 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.anyline</groupId>
+	
+	<parent>
+		<groupId>org.anyline</groupId>
+		<artifactId>anyline-base</artifactId>
+		<version>8.0.0</version>
+	</parent>
+	
 	<artifactId>anyline-web</artifactId>
-	<version>8.0.0</version>
+	<version>${anyline.web.version}</version>
 	<packaging>jar</packaging>
 	<name>anyline-web</name>
 	<url>http://www.anyline.org/web</url>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-core</artifactId>
-			<version>8.0.0</version>
+			<version>${anyline.core.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.0</version>
+			<version>${javax.servlet.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jsp-api</artifactId>
-			<version>2.0</version>
+			<version>${javax.jsp.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
-			<version>4.3.23.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jdbc</artifactId>
-			<version>4.3.23.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
@@ -57,15 +57,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>4.3.23.RELEASE</version>
+			<version>${spring.version}</version>
 		</dependency>
 	</dependencies>
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/tld</directory>
-				<targetPath>META-INF</targetPath>
-			</resource>
-		</resources>
-	</build>
 </project>
