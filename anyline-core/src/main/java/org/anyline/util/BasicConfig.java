@@ -36,7 +36,7 @@ public class BasicConfig {
 				}
 			}
 			if(configSize ==0){
-				log.warn("[解析配置文件][未加载配置文件:"+fileName+"][配置文件模板请参考:http://api.anyline.org/config/index]");
+				log.warn("[解析配置文件][未加载配置文件:"+fileName+"][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/"+fileName+"]");
 			}
 			
 		} catch (Exception e) {
