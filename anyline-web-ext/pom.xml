@@ -11,7 +11,7 @@
 	</parent>
 	
 	<artifactId>anyline-web-ext</artifactId>
-	<version>${anyline.ext.version}</version>
+	<version>${anyline.web.ext.version}</version>
 	<packaging>jar</packaging>
 	<name>anyline-web-ext</name>
 	<url>http://www.anyline.org/web/ext</url>
@@ -30,7 +30,7 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-weixin</artifactId>
-			<version>${anylnie.weixin.version}</version>
+			<version>${anyline.weixin.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.anyline</groupId>
