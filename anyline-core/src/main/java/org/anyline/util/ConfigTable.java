@@ -88,13 +88,6 @@ public class ConfigTable {
 		String result = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
 		return result;
 	}
-	public static void main(String args[]) throws URISyntaxException{
-
-		String path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-		System.out.println(path);
-		path = ConfigTable.class.getResource("/").getPath();
-		System.out.println(path);
-	}
 	public static void init() {
 		//log.warn("IS LOAD:"+isLoad);
 		if(isLoad){
@@ -316,7 +309,6 @@ public class ConfigTable {
 			line(" taobao.org  svn帐号密码：public@anyline.org(anyline1)", "", false);
 		
 			line("","*", true);
-			line(" Debug 环境下输出以上版本信息 QQ群技术支持86020680[提供MinVersion]", "", false);
 			line(" Debug 状态设置在:anyline-config.xml:<property key=\"DEBUG\">false</property>", "", false);
 			line(" =====================生产环境请务必修改密钥文件key.xml==========================", "", false);
 			line("","*", true);

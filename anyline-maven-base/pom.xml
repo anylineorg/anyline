@@ -47,7 +47,7 @@
 		<slf4j.version>1.7.2</slf4j.version>
 		<mssql.jdbc.version>7.2.2.jre8</mssql.jdbc.version>
 		<mysql.jdbc.version>5.1.24</mysql.jdbc.version>
-		
+
 		<spring.version>4.3.23.RELEASE</spring.version>
 
 		<aliyun.oss.version>3.3.0</aliyun.oss.version>
@@ -56,7 +56,7 @@
 		<druid.version>1.1.6</druid.version>
 		<jsch.version>0.1.55</jsch.version>
 		<persistence.version>1.0.2</persistence.version>
-		
+
 	</properties>
 
 	<groupId>org.anyline</groupId>
@@ -77,21 +77,52 @@
 			</resource>
 		</resources>
 		<pluginManagement>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
-				<configuration>
-					<excludes>
-						<excludes>*.xml</excludes>
-						<excludes>*.tld</excludes>
-						<excludes>*.xsd</excludes>
-						<excludes>*.properties</excludes>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.0.2</version>
+					<configuration>
+						<excludes>
+							<excludes>*.xml</excludes>
+							<excludes>*.tld</excludes>
+							<excludes>*.xsd</excludes>
+							<excludes>*.properties</excludes>
+						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-resources-plugin
+										</artifactId>
+										<versionRange>
+											[2.5,)
+										</versionRange>
+										<goals>
+											<goal>resources</goal>
+											<goal>testResources</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
 		</pluginManagement>
 	</build>
 </project>
