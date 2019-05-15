@@ -6,12 +6,12 @@
 	
 	<parent>
 		<groupId>org.anyline</groupId>
-		<artifactId>anyline-base</artifactId>
-		<version>8.0.0</version>
+		<artifactId>anyline-maven</artifactId>
+		<version>1.0.0</version>
 	</parent>
 	
 	<artifactId>anyline-qq</artifactId>
-	<version>${anyline.qq.version}</version>
+	<version>8.0.0</version>
 	<packaging>jar</packaging>
 	<name>anyline-qq</name>
 	<url>http://www.anyline.org/qq</url>
