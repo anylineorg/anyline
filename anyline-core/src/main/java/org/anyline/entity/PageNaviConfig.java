@@ -49,7 +49,7 @@ public class PageNaviConfig extends BasicConfig{
 	public String STYLE_STAT_FORMAT				= "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";	//统计页数
 	//用户选择每页多少条  STYLE_PAGE_ROWS_SET与STYLE_PAGE_ROWS_SET_NUMBERS 会相互覆盖 (以配置文件后设置的为准)
 	//STYLE_PAGE_ROWS_SET_INDEX会引用STYLE_PAGE_ROWS_SET_CLASS所以要先设置STYLE_PAGE_ROWS_SET_CLASS
-	public String STYLE_PAGE_ROWS_SET			= "<select class='navi-rows-set'><option value='10'>10 条/页</option><option value='20'>20 条/页</option><option value='30'>30 条/页</option><option value='40'>40 条/页</option><option value='50'>50 条/页</option><option value='100'>100 条/页</option></select>";
+	public String STYLE_PAGE_ROWS_SET			= "<select class='navi-rows-set' onchange='_navi_change_vol({navi-conf-key})'><option value='10'>10 条/页</option><option value='20'>20 条/页</option><option value='30'>30 条/页</option><option value='40'>40 条/页</option><option value='50'>50 条/页</option><option value='100'>100 条/页</option></select>";
 	public String STYLE_PAGE_ROWS_SET_CLASS		= "navi-rows-set"	;
 	public String STYLE_PAGE_ROWS_SET_INDEX		= "last"			;	//位置:last:最后,page_after:页标之后
 	public String STYLE_PAGE_ROWS_SET_NUMBERS	= ""				; //用户选择每页多少条 10,20,30,40,50,100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select>
@@ -120,7 +120,7 @@ public class PageNaviConfig extends BasicConfig{
 			if(BasicUtil.isEmpty(clazz)){
 				clazz = "navi-rows-set";
 			}
-			String html = "<select class='"+clazz+"'>";
+			String html = "<select class='"+clazz+"' onchange='_navi_change_vol({navi-conf-key})'>";
 			for(String num:nums){
 				html += "<option value='"+num+"'>" + num + " 条/页</option>\n";
 			}
