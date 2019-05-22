@@ -17,9 +17,13 @@ import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-public class BasicConfig {
+public abstract class BasicConfig {
 	protected static final Logger log = Logger.getLogger(BasicConfig.class);
 	protected Map<String, String> kvs = new HashMap<String, String>();
+	
+	protected void afterParse(String key, String value){
+		
+	}
 	
 	protected synchronized static void loadConfig(Hashtable<String,BasicConfig> instances, Class<? extends BasicConfig> clazz, String fileName, String ... compatibles) {
 		try {
@@ -50,15 +54,20 @@ public class BasicConfig {
 			config = (T) T.newInstance();
 			List<Field> fields = BeanUtil.getFields(T);
 			Map<String, String> kvs = new HashMap<String, String>();
+			config.kvs = kvs;
 			for (Field field : fields) {
 				String nm = field.getName();
-				if (!Modifier.isFinal(field.getModifiers()) && !Modifier.isPrivate(field.getModifiers()) && !Modifier.isStatic(field.getModifiers())
-						&& "String".equals(field.getType().getSimpleName()) && nm.equals(nm.toUpperCase())) {
+				if (!Modifier.isFinal(field.getModifiers()) 
+						&& !Modifier.isPrivate(field.getModifiers()) 
+						&& !Modifier.isStatic(field.getModifiers())
+						&& "String".equals(field.getType().getSimpleName()) 
+						&& nm.equals(nm.toUpperCase())) {
 					try {
 						String value = row.getString(nm);
 						config.setValue(nm, value);
 						log.info("[解析配置文件][" + nm + " = " + value + "]");
 						kvs.put(nm, value);
+						config.afterParse(nm, value);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -80,13 +89,13 @@ public class BasicConfig {
 								String val = row.getString(oldKey);
 								kvs.put(newKey, val);
 								config.setValue(newKey, val);
+								config.afterParse(newKey, val);
 								log.warn("[解析配置文件][版本兼容][laster key:" + newKey + "][old key:" + oldKey + ":" + val + "]");
 							}
 						}
 					}
 				}
 			}
-			config.kvs = kvs;
 			instances.put(key, config);
 		} catch (Exception e) {
 			e.printStackTrace();
