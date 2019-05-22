@@ -8,7 +8,7 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<anyline.version>8.0.0</anyline.version>
-		<anyline.core.version>${anyline.version}</anyline.core.version>
+		<anyline.core.version>8.0.1</anyline.core.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
 		<anyline.web.version>8.0.1</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
@@ -61,7 +61,7 @@
 
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-maven-base</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<packaging>pom</packaging>
 	<name>anyline-maven-base</name>
 	<url>http://www.anyline.org</url>
