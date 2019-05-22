@@ -116,9 +116,17 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
 		}
 		builder.append("<form action=\"" + baseLink + "\" method=\"post\">\n");
+		//当前页
 		builder.append("<input type='hidden' id='hid_cur_page_"+configFlag+"' name='"+config.KEY_PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
+		//共多少页
 		builder.append("<input type='hidden' id='hid_total_page_"+configFlag+"' name='"+config.KEY_TOTAL_PAGE+"' class='_anyline_navi_total_page' value='"+totalPage+"'/>\n");
+		//共多少条
 		builder.append("<input type='hidden' id='hid_total_row_"+configFlag+"' name='"+config.KEY_TOTAL_ROW+"' class='_anyline_navi_total_row' value='"+totalRow+"'/>\n");
+		//每页显示多少条
+		if(config.VAR_CLIENT_SET_VOL_ENABLE){
+			builder.append("<input type='hidden' id='hid_page_rows_key_"+configFlag+"'  class='_anyline_navi_page_rows_key' value='"+config.KEY_PAGE_ROWS+"'/>\n");
+			builder.append("<input type='hidden' id='hid_page_rows_"+configFlag+"' name='"+config.KEY_PAGE_ROWS+"' class='_anyline_navi_page_rows' value='"+pageRows+"'/>\n");
+		}
 		if("ajax".equals(creater)){
 			builder.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + configFlag + "'/>");
 		}
@@ -165,6 +173,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.getMin(curPage+1, totalPage), configFlag);
 				createPageTag(builder, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configFlag);
 			}
+			//选择每页多少条
 			if(showJump){
 				builder.append(config.STYLE_LABEL_JUMP)
 				.append("<input type='text' value='")
