@@ -35,14 +35,14 @@
 		<property key="VAR_CLIENT_SET_VOL_ENABLE">true</property>
 		
 		<!-- 用户选择每页多少条 -->
-		<!-- STYLE_PAGE_ROWS_SET与STYLE_PAGE_ROWS_SET_NUMBERS 会相互覆盖 (以配置文件后设置的为准) -->
-		<property key="STYLE_PAGE_ROWS_SET">&lt;select onchange='_navi_change_vol({navi-conf-key})' class='navi-rows-set'&gt;&lt;option value='10'&gt;10 条/页&lt;/option&gt;&lt;option value='20'&gt;20 条/页&lt;/option&gt;&lt;option value='30'&gt;30 条/页&lt;/option&gt;&lt;option value='40'&gt;40 条/页&lt;/option&gt;&lt;option value='50'&gt;50 条/页&lt;/option&gt;&lt;option value='100'&gt;100 条/页&lt;/option&gt;&lt;/select&gt;</property>
+		<!-- STYLE_PAGE_VOL与STYLE_PAGE_VOL_NUMBERS 会相互覆盖 (以配置文件后设置的为准) -->
+		<property key="STYLE_PAGE_VOL">&lt;select onchange='_navi_change_vol({navi-conf})' id='navi_vol_set_{navi-conf-key}' class='navi-vol-set'&gt;&lt;option value='10'&gt;10 条/页&lt;/option&gt;&lt;option value='20'&gt;20 条/页&lt;/option&gt;&lt;option value='30'&gt;30 条/页&lt;/option&gt;&lt;option value='50'&gt;50 条/页&lt;/option&gt;&lt;option value='100'&gt;100 条/页&lt;/option&gt;&lt;/select&gt;</property>
 		<!-- 生成的select.class -->
-		<property key="STYLE_PAGE_ROWS_SET_CLASS">navi-rows-set</property>
-		<!-- 显示位置 last:最后,page_after:页标之后-->
-		<property key="STYLE_PAGE_ROWS_SET_INDEX"></property>
+		<property key="VAR_PAGE_VOL_CLASS">navi-vol-set</property>
+		<!-- 显示位置 last:最后,page:页标之后-->
+		<property key="VAR_PAGE_VOL_INDEX">last</property>
 		<!-- 生成select的option -->
-		<property key="STYLE_PAGE_ROWS_SET_NUMBERS">10,20,30,50,100</property>
+		<property key="VAR_PAGE_VOL_NUMBERS">10,20,30,50,100</property>
 		<!-- 统计样式 -->
 		<property key="STYLE_STAT_FORMAT">&lt;div class='navi-summary'&gt;共&lt;span class='navi-total-row'&gt;{totalRow}&lt;/span&gt;条 第&lt;span class='navi-cur-page'&gt;{curPage}&lt;/span&gt;/&lt;span class='navi-total-page'&gt;{totalPage}&lt;/span&gt;页&lt;/div&gt;</property>
 		

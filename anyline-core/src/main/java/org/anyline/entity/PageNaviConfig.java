@@ -1,13 +1,9 @@
 package org.anyline.entity;
 
-import java.io.File;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.FileUtil;
 
 public class PageNaviConfig extends BasicConfig{
 
@@ -44,15 +40,15 @@ public class PageNaviConfig extends BasicConfig{
 	public String KEY_GUIDE				= "_anyline_navi_guide"			; //设置分页样式的key
 	
 	
-
+	public int CONFIG_PAGE_VAL_SET_SORT = 1;	//1:VAR_PAGE_VOL_NUMBERS 2:STYLE_PAGE_VOL 
 	//样式html
 	public String STYLE_STAT_FORMAT				= "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";	//统计页数
-	//用户选择每页多少条  STYLE_PAGE_ROWS_SET与STYLE_PAGE_ROWS_SET_NUMBERS 会相互覆盖 (以配置文件后设置的为准)
-	//STYLE_PAGE_ROWS_SET_INDEX会引用STYLE_PAGE_ROWS_SET_CLASS所以要先设置STYLE_PAGE_ROWS_SET_CLASS
-	public String STYLE_PAGE_ROWS_SET			= "<select class='navi-rows-set' onchange='_navi_change_vol({navi-conf-key})'><option value='10'>10 条/页</option><option value='20'>20 条/页</option><option value='30'>30 条/页</option><option value='40'>40 条/页</option><option value='50'>50 条/页</option><option value='100'>100 条/页</option></select>";
-	public String STYLE_PAGE_ROWS_SET_CLASS		= "navi-rows-set"	;
-	public String STYLE_PAGE_ROWS_SET_INDEX		= "last"			;	//位置:last:最后,page_after:页标之后
-	public String STYLE_PAGE_ROWS_SET_NUMBERS	= ""				; //用户选择每页多少条 10,20,30,40,50,100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select>
+	//用户选择每页多少条  STYLE_PAGE_VOL与STYLE_PAGE_VOL_NUMBERS 会相互覆盖 (以配置文件后设置的为准)
+	//STYLE_PAGE_VOL_INDEX会引用STYLE_PAGE_VOL_CLASS所以要先设置STYLE_PAGE_VOL_CLASS
+	public String STYLE_PAGE_VOL			= "<select class='navi-vol-set' id='navi_vol_set_{navi-conf-key}' onchange='_navi_change_vol({navi-conf-key})'><option value='10'>10 条/页</option><option value='20'>20 条/页</option><option value='30'>30 条/页</option><option value='40'>40 条/页</option><option value='50'>50 条/页</option><option value='100'>100 条/页</option></select>";
+	public String VAR_PAGE_VOL_CLASS		= "navi-rows-set"	;
+	public String VAR_PAGE_VOL_INDEX		= "last"			;	//位置:last:最后,page:页标之后
+	public String VAR_PAGE_VOL_NUMBERS	= ""				; //用户选择每页多少条 10,20,30,40,50,100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select>
 		
 
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
@@ -114,18 +110,12 @@ public class PageNaviConfig extends BasicConfig{
 	}
 
 	protected void afterParse(String key, String value){
-		if("STYLE_PAGE_ROWS_SET_NUMBERS".equals(key) && BasicUtil.isNotEmpty(value)){
-			String[] nums = value.split(",");
-			String clazz = STYLE_PAGE_ROWS_SET_CLASS;
-			if(BasicUtil.isEmpty(clazz)){
-				clazz = "navi-rows-set";
-			}
-			String html = "<select class='"+clazz+"' onchange='_navi_change_vol({navi-conf-key})'>";
-			for(String num:nums){
-				html += "<option value='"+num+"'>" + num + " 条/页</option>\n";
-			}
-			html += "</select>";
-			STYLE_PAGE_ROWS_SET = html;
+
+		if("VAR_PAGE_VOL_NUMBERS".equals(key) && BasicUtil.isNotEmpty(value)){
+			CONFIG_PAGE_VAL_SET_SORT = 1;
+		}
+		if("STYLE_PAGE_VOL".equals(key) && BasicUtil.isNotEmpty(value)){
+			CONFIG_PAGE_VAL_SET_SORT = 2;
 		}
 	}
 	private static void debug(){
