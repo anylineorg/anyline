@@ -14,16 +14,14 @@ public class PageNaviConfig extends BasicConfig{
 	
 	public String STYLE_FILE_PATH 				= ""		;	//样式文件路径
 	public String SCRIPT_FILE_PATH 				= ""		;	//脚本文件路径
-	//样式html
-	public String STYLE_STAT_FORMAT				= "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";	//统计页数
-	public String STYLE_BUTTON_FIRST			= "第一页"		;	//第一页
-	public String STYLE_BUTTON_PREV				= "上一页"		;	//上一页
-	public String STYLE_BUTTON_NEXT				= "下一页"		;	//下一页
-	public String STYLE_BUTTON_LAST				= "最后页"		;	//最后页
-	public String STYLE_BUTTON_JUMP				= "确定"			;	//跳转到
-	public String STYLE_LABEL_JUMP				= "转到第"		;	//跳转到
-	public String STYLE_LABEL_JUMP_PAGE			= "页"			;	//跳转到
-	public String STYLE_LOAD_MORE_FORMAT		= "加载更多"		;	//加载更多
+	public String STYLE_BUTTON_FIRST			= "第一页"			;	//第一页
+	public String STYLE_BUTTON_PREV				= "上一页"			;	//上一页
+	public String STYLE_BUTTON_NEXT				= "下一页"			;	//下一页
+	public String STYLE_BUTTON_LAST				= "最后页"			;	//最后页
+	public String STYLE_BUTTON_JUMP				= "确定"				;	//跳转到
+	public String STYLE_LABEL_JUMP				= "转到第"			;	//跳转到
+	public String STYLE_LABEL_JUMP_PAGE			= "页"				;	//跳转到
+	public String STYLE_LOAD_MORE_FORMAT		= "加载更多"			;	//加载更多
 	
 	//变量
 	public int VAR_PAGE_RANGE					= 5			;	//下标数量
@@ -37,7 +35,7 @@ public class PageNaviConfig extends BasicConfig{
 	public String  VAR_FORM_METHOD				= "post"	;
 	
 	//key
-	public String KEY_PAGE_ROWS			= "_anyline_page_rows"			; //设置每页显示多少条的key
+	public String KEY_PAGE_ROWS			= "_anyline_page_rows"			; //设置每页显示多少条的key			
 	public String KEY_PAGE_NO			= "_anyline_page"				; //设置当前第几页的key
 	public String KEY_TOTAL_PAGE		= "_anyline_total_page"			; //显示一共多少页的key
 	public String KEY_TOTAL_ROW			= "_anyline_total_row"			; //显示一共多少条的key
@@ -45,6 +43,17 @@ public class PageNaviConfig extends BasicConfig{
 	public String KEY_SHOW_JUMP			= "_anyline_navi_show_jump"		; //设置是否显示页数跳转key
 	public String KEY_GUIDE				= "_anyline_navi_guide"			; //设置分页样式的key
 	
+	
+
+	//样式html
+	public String STYLE_STAT_FORMAT				= "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";	//统计页数
+	//用户选择每页多少条  STYLE_PAGE_ROWS_SET与STYLE_PAGE_ROWS_SET_NUMBERS 会相互覆盖 (以配置文件后设置的为准)
+	//STYLE_PAGE_ROWS_SET_INDEX会引用STYLE_PAGE_ROWS_SET_CLASS所以要先设置STYLE_PAGE_ROWS_SET_CLASS
+	public String STYLE_PAGE_ROWS_SET			= "<select class='navi-rows-set'><option value='10'>10 条/页</option><option value='20'>20 条/页</option><option value='30'>30 条/页</option><option value='40'>40 条/页</option><option value='50'>50 条/页</option><option value='100'>100 条/页</option></select>";
+	public String STYLE_PAGE_ROWS_SET_CLASS		= "navi-rows-set"	;
+	public String STYLE_PAGE_ROWS_SET_INDEX		= "last"			;	//位置:last:最后,page_after:页标之后
+	public String STYLE_PAGE_ROWS_SET_NUMBERS	= ""				; //用户选择每页多少条 10,20,30,40,50,100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select>
+		
 
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 
@@ -102,6 +111,22 @@ public class PageNaviConfig extends BasicConfig{
 	 */
 	private synchronized static void loadConfig() {
 		loadConfig(instances, PageNaviConfig.class, "anyline-navi.xml", compatibles);
+	}
+
+	protected void afterParse(String key, String value){
+		if("STYLE_PAGE_ROWS_SET_NUMBERS".equals(key) && BasicUtil.isNotEmpty(value)){
+			String[] nums = value.split(",");
+			String clazz = STYLE_PAGE_ROWS_SET_CLASS;
+			if(BasicUtil.isEmpty(clazz)){
+				clazz = "navi-rows-set";
+			}
+			String html = "<select class='"+clazz+"'>";
+			for(String num:nums){
+				html += "<option value='"+num+"'>" + num + " 条/页</option>\n";
+			}
+			html += "</select>";
+			STYLE_PAGE_ROWS_SET = html;
+		}
 	}
 	private static void debug(){
 	}
