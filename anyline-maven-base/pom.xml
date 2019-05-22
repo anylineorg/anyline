@@ -10,7 +10,7 @@
 		<anyline.version>8.0.0</anyline.version>
 		<anyline.core.version>${anyline.version}</anyline.core.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
-		<anyline.web.version>${anyline.version}</anyline.web.version>
+		<anyline.web.version>8.0.1</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
 		<anyline.springmvc.version>${anyline.version}</anyline.springmvc.version>
 		<anyline.struts.version>${anyline.version}</anyline.struts.version>
