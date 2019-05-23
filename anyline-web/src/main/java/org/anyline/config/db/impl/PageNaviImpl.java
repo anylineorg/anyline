@@ -116,7 +116,12 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			builder.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n");
 			builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
 		}
-		builder.append("<form action=\"" + baseLink + "\" method=\"post\">\n");
+		if("html".equals(creater)){
+			builder.append("<form class=\"form\" action=\"" + baseLink + "\" method=\"post\">\n");
+		}
+		if("ajax".equals(creater)){
+			builder.append("<div class=\"form\">\n");
+		}
 		//当前页
 		builder.append("<input type='hidden' id='hid_cur_page_"+flag+"' name='"+config.KEY_PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
 		//共多少页
@@ -179,7 +184,6 @@ public class PageNaviImpl implements PageNavi, Serializable{
 					vol_set_html += "</select>";
 				}
 
-				log.warn("[vol set][html:"+vol_set_html+"]");
 			}
 			//上一页 
 			if(config.VAR_SHOW_BUTTON){
@@ -207,7 +211,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				builder.append(config.STYLE_LABEL_JUMP)
 				.append("<input type='text' value='")
 				.append(curPage)
-				.append("' class='navi-go-txt _anyline_jump_txt'/>")
+				.append("' class='navi-go-txt _anyline_jump_txt' id='hid_jump_txt_"+flag+"' onkeydown='_navi_jump_enter("+configVarKey+")'/>")
 				.append(config.STYLE_LABEL_JUMP_PAGE)
 				.append("<span class='navi-go-button' onclick='_navi_jump("+configVarKey+")'>")
 				.append(config.STYLE_BUTTON_JUMP).append("</span>\n");
@@ -220,7 +224,13 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			createPageTag(builder, "navi-more-button", loadMoreFormat, (int)NumberUtil.getMin(curPage+1, totalPage+1), configVarKey);
 		}
 		builder.append("</div>");
-		builder.append("</form>\n");
+
+		if("html".equals(creater)){
+			builder.append("</form>\n");
+		}
+		if("ajax".equals(creater)){
+			builder.append("</div>\n");
+		}
 		return builder.toString();
 	}
 	private void createPageTag(StringBuilder builder, String clazz, String tag, int page, String configFlag){
