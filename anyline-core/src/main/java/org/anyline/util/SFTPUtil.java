@@ -75,27 +75,27 @@ public class SFTPUtil {
      * @return 文件 
      * @throws Exception 异常 
      */  
-    public void download(String remoteFile, String localFile)  throws Exception {  
+    public void download(String remote, String local)  throws Exception {  
         FileOutputStream os = null;  
-        File file = new File(localFile);  
+        File localFile = new File(local);  
         try {  
-            if (!file.exists()) {  
-                File parentFile = file.getParentFile();  
+            if (!localFile.exists()) {  
+                File parentFile = localFile.getParentFile();  
                 if (!parentFile.exists()) {  
                     parentFile.mkdirs();  
                 }  
-                file.createNewFile();  
+                localFile.createNewFile();  
             }  
-            os = new FileOutputStream(file);  
-            List<String> list = formatPath(remoteFile);
+            os = new FileOutputStream(localFile);  
+            List<String> list = formatPath(remote);
             long fr = System.currentTimeMillis();
             if(ConfigTable.isDebug()){
             	log.warn("[文件下载][file:"+list.get(0) + list.get(1)+"]");
             }
-            String ftpFilePath = list.get(0) + list.get(1);
-            SftpATTRS attr = client.stat(ftpFilePath);
+            String remotePath = list.get(0) + list.get(1);
+            SftpATTRS attr = client.stat(remotePath);
             long length = attr.getSize();
-            client.get(ftpFilePath, os, new SFTPProgressMonitor(ftpFilePath, length));  
+            client.get(remotePath, os, new SFTPProgressMonitor(remotePath,local, length));  
             if(ConfigTable.isDebug()){
             	log.warn("[文件下载完成][time:"+(System.currentTimeMillis()-fr)+"][file:"+list.get(0) + list.get(1)+"]");
             }
@@ -317,14 +317,20 @@ public class SFTPUtil {
 
 class SFTPProgressMonitor implements SftpProgressMonitor {
 	private final Logger log = Logger.getLogger(SFTPProgressMonitor.class);
-	private String file="";
+	private String remote = "";
+	private String local = "";
 	private double length;		//总长度
 	private double transfered;	//已下载长度
 	private double displayRate;		//最后显示下载比例
 	private long displayTime;		//最后显示下载时间
 
-	public SFTPProgressMonitor(String file, long length){
-		this.file = file;
+	public SFTPProgressMonitor(String remote, long length){
+		this.remote = remote;
+		this.length = length;
+	}
+	public SFTPProgressMonitor(String remote, String local, long length){
+		this.remote = remote;
+		this.local = local;
 		this.length = length;
 	}
 	public SFTPProgressMonitor(long length){
@@ -338,14 +344,17 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 			displayTime = System.currentTimeMillis();
 			String total_title = "";
 			if (transfered < 1024){
-				total_title = "已下载: " + transfered + "/" + length + " bytes("+NumberUtil.format(displayRate, "0.00")+"%)";
+				total_title = "[已下载: " + transfered + "/" + length + " bytes("+NumberUtil.format(displayRate, "0.00")+"%)]";
 			}else if (transfered >= 1024 && transfered < 1048576){
-				total_title = "已下载: " + NumberUtil.format(transfered / 1024, "0.00") + "/" +NumberUtil.format(length/1024,"0.00") + "KB("+NumberUtil.format(displayRate, "0.00")+"%)";
+				total_title = "[已下载: " + NumberUtil.format(transfered / 1024, "0.00") + "/" +NumberUtil.format(length/1024,"0.00") + "kb("+NumberUtil.format(displayRate, "0.00")+"%)]";
 			}else{
-				total_title = "已下载: " + NumberUtil.format(transfered / 1024 / 1024,"0.00") + "/" +NumberUtil.format(length/1024/1024,"0.00") +  "MB("+NumberUtil.format(displayRate, "0.00")+"%)";
+				total_title = "[已下载: " + NumberUtil.format(transfered / 1024 / 1024,"0.00") + "/" +NumberUtil.format(length/1024/1024,"0.00") +  "mb("+NumberUtil.format(displayRate, "0.00")+"%)]";
 			}
-			if(null != file){
-				total_title = file + " " + total_title;
+			if(null != local){
+				total_title = "[local:"+local+"]" + total_title;
+			}
+			if(null != remote){
+				total_title = "[remote:"+remote+"]"  + total_title;
 			}
 			log.warn(total_title);
 		}
