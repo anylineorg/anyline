@@ -62,10 +62,18 @@ public class WatermarkUtil {
      * @param target
      * @param degree
      */
-    public void markText(String text, File src, File target) {
+    public boolean markText(String text, File src, File target) {
+    	if(null == text || null == src || null == target || !src.exists()){
+    		return false;
+    	}
+    	File dir = target.getParentFile();
+    	if(!dir.exists()){
+    		dir.mkdirs();
+    	}
         // 主图片的路径
         InputStream is = null;
         OutputStream os = null;
+        long fr = System.currentTimeMillis();
         try {
             Image srcImg = ImageIO.read(src);
             BufferedImage buffImg = new BufferedImage(srcImg.getWidth(null),srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
@@ -100,7 +108,7 @@ public class WatermarkUtil {
 
             // 生成图片
             ImageIO.write(buffImg, "JPG", os);
-
+            log.warn("[添加水印][src:"+src.getAbsolutePath()+"][tar:"+target.getAbsoluteFile()+"][耗时:"+(System.currentTimeMillis()-fr)+"ms]");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -117,6 +125,7 @@ public class WatermarkUtil {
                 e.printStackTrace();
             }
         }
+        return true;
     }
     public void markText(String text, String src, String target){
     	markText(text, new File(src), new File(target));
