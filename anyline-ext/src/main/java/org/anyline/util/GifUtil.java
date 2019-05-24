@@ -103,7 +103,7 @@ public class GifUtil {
                 src[i] = ImageIO.read(srcs.get(i)); // 读入需要播放的jpg文件  
                 e.addFrame(src[i]);  //添加到帧中  
                 if(ConfigTable.isDebug()){
-                	log.warn("[create gif][第"+(i+1)+"/"+size+"帧][源文件:"+srcs.get(i).getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+                	log.warn("[合成 gif][第"+(i+1)+"/"+size+"帧][gif:"+tar.getAbsolutePath()+"][源文件:"+srcs.get(i).getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
                 }
             }  
             e.finish();  

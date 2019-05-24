@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-maven-jar</artifactId>
-		<version>1.0.0</version>
+		<version>1.0.2</version>
 	</parent>
 	
 	<artifactId>anyline-jpush</artifactId>
-	<version>8.0.0</version>
+	<version>8.0.2</version>
 	<packaging>jar</packaging>
 	<name>anyline-jpush</name>
 	<url>http://www.anyline.org/jpush</url>
