@@ -30,6 +30,7 @@ public class Source {
 	private static final Logger log = Logger.getLogger(Source.class);
 	private String url;					//URL
 	private String backFileCd;			//备份文件CD
+	private int status;
 	private String text;				//文本
 	private String fileType;			//文件类型
 	private String encode;				//编码
@@ -485,4 +486,11 @@ public class Source {
 	public void setHost(String host) {
 		this.host = host;
 	}
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
+	}
+	
 }
