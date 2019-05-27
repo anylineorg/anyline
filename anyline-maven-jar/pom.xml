@@ -14,8 +14,8 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<anyline.version>8.0.0</anyline.version>
-		<anyline.core.version>8.0.2</anyline.core.version>
-		<anyline.ext.version>${anyline.version}</anyline.ext.version>
+		<anyline.core.version>8.0.3</anyline.core.version>
+		<anyline.ext.version>8.0.3</anyline.ext.version>
 		<anyline.web.version>8.0.2</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
 		<anyline.springmvc.version>${anyline.version}</anyline.springmvc.version>
