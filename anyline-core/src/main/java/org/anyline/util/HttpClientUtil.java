@@ -450,9 +450,8 @@ public class HttpClientUtil {
 				}
 			}
 			src.setHeaders(headers);
-
+			src.setStatus(response.getStatusLine().getStatusCode());
 			HttpEntity entity = response.getEntity();
-
 			if (null != entity) {
 				String text = EntityUtils.toString(entity, encode);
 				src.setText(text);
