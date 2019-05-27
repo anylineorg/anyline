@@ -74,6 +74,7 @@ import org.apache.log4j.Logger;
  *HttpEntity entity = new StringEntity(BeanUtil.map2json(map), "UTF-8");
  *String txt = HttpClientUtil.post(url, "UTF-8", entity).getText();
  */
+@SuppressWarnings("deprecation")
 public class HttpClientUtil {
 	
 	public static String PROTOCOL_TLSV1 = "TLSv1";
@@ -537,7 +538,7 @@ public class HttpClientUtil {
 	            instream.close();
 	        }
 	        // Trust own CA and all self-signed certs
-	        SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
+			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
 	        // Allow TLSv1 protocol only
 	        String[] protocols = new String[] {protocol};
 	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols,null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
@@ -566,7 +567,7 @@ public class HttpClientUtil {
 		}
 		 return client;
 	}
-    private static SSLConnectionSocketFactory createSSLConnSocketFactory() {  
+	private static SSLConnectionSocketFactory createSSLConnSocketFactory() {  
         SSLConnectionSocketFactory sslsf = null;  
         try {  
             SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {  
