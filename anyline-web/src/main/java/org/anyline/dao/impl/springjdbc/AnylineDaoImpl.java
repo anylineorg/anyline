@@ -90,41 +90,39 @@ public class AnylineDaoImpl implements AnylineDao {
 	public DataSet query(SQL sql, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createQueryRunSQL(sql, configs, conditions);
-		if(!run.isValid()){
-			if(showSQL){
-				String tmp = "[valid:false]";
-				String src = "";
-				if(sql instanceof TableSQL){
-					src = sql.getTable();
-				}else{
-					src = sql.getText();
-				}
-				tmp+="[sql:"+ConfigParser.createSQLSign(false, false, src, configs, conditions)+"]";
-				log.warn(tmp);
+		if(showSQL && !sql.isValid()){
+			String tmp = "[valid:false]";
+			String src = "";
+			if(sql instanceof TableSQL){
+				src = sql.getTable();
+			}else{
+				src = sql.getText();
 			}
-			return new DataSet();
+			tmp+="[sql:"+ConfigParser.createSQLSign(false, false, src, configs, conditions)+"]";
+			log.warn(tmp);
 		}
 		PageNavi navi = run.getPageNavi();
 		int total = 0;
-		if(null != navi){
-			if(navi.getLastRow() == 0){
-				//第一条
-				total = 1;
-			}else{
-				//未计数(总数 )
-				if(navi.getTotalRow() ==0){
-					total = getTotal(run.getTotalQueryTxt(), run.getValues());
-					navi.setTotalRow(total);
+		if(sql.isValid()){
+			if(null != navi){
+				if(navi.getLastRow() == 0){
+					//第一条
+					total = 1;
 				}else{
-					total = navi.getTotalRow();
+					//未计数(总数 )
+					if(navi.getTotalRow() ==0){
+						total = getTotal(run.getTotalQueryTxt(), run.getValues());
+						navi.setTotalRow(total);
+					}else{
+						total = navi.getTotalRow();
+					}
 				}
 			}
+			if(showSQL){
+				log.warn("[查询记录总数][行数:" + total + "]");
+			}
 		}
-
-		if(showSQL){
-			log.warn("[查询记录总数][行数:" + total + "]");
-		}
-		if(null == navi || total > 0){
+		if(sql.isValid() &&(null == navi || total > 0)){
 			set = select(run.getFinalQueryTxt(), run.getValues());
 		}else{
 			set = new DataSet();
