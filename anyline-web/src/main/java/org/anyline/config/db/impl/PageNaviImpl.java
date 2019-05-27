@@ -134,7 +134,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			builder.append("<input type='hidden' id='hid_page_rows_"+flag+"' name='"+config.KEY_PAGE_ROWS+"' class='_anyline_navi_page_rows' value='"+pageRows+"'/>\n");
 		}
 		if("ajax".equals(creater)){
-			builder.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + configVarKey + "'/>");
+			builder.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + flag + "'/>");
 		}
 		builder.append(createHidParams(config));
 		builder.append("<div class=\"anyline_navi\">\n");

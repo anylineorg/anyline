@@ -71,7 +71,7 @@ public class Navi extends BodyTagSupport{
 				flag = idx+"";
 			}
 			String confId = CONFIG_FLAG_KEY + flag;
-			builder.append("<div id='_navi_border_"+confId+"'>");
+			builder.append("<div id='_navi_border_"+flag+"'>");
 			if(idx == 0){
 				builder.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n");
 				builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
