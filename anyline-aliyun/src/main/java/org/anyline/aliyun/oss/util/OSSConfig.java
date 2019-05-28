@@ -5,6 +5,7 @@ import java.util.Hashtable;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
 public class OSSConfig extends BasicConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
@@ -35,6 +36,11 @@ public class OSSConfig extends BasicConfig{
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
+
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - OSSConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+			//重新加载
+			loadConfig();
+		}
 		return (OSSConfig)instances.get(key);
 	}
 	/**
@@ -44,6 +50,7 @@ public class OSSConfig extends BasicConfig{
 	 */
 	private synchronized static void loadConfig() {
 		loadConfig(instances, OSSConfig.class, "anyline-aliyun-oss.xml");
+		OSSConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
 	}
