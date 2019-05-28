@@ -1,13 +1,10 @@
 package org.anyline.jpush.util;
 
-import java.io.File;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.FileUtil;
 
 public class JPushConfig extends BasicConfig{
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
@@ -30,24 +27,19 @@ public class JPushConfig extends BasicConfig{
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
+
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - JPushConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+			//重新加载
+			loadConfig();
+		}
 		return (JPushConfig)instances.get(key);
 	}
 	/**
 	 * 加载配置文件
 	 */
 	private synchronized static void loadConfig() {
-		try {
-			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes");
-			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-			for(File file:files){
-				if("anyline-jpush.xml".equals(file.getName())){
-					parseFile(JPushConfig.class, file, instances);
-				}
-			}
-			
-		} catch (Exception e) {
-			log.error("配置文件解析异常:"+e);
-		}
+		loadConfig(instances, JPushConfig.class, "anyline-jpush.xml");
+		JPushConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
 	}
