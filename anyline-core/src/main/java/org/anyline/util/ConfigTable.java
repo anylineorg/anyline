@@ -20,7 +20,6 @@
 package org.anyline.util;
 
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -44,7 +43,7 @@ public class ConfigTable {
 	private static boolean sqlDebug = false;
 	private static final String version = "8.0";
 	private static final String minVersion = "0001";
-	private static boolean isLoad = false;
+	private static boolean isLoading = false;
 	public static boolean  IS_UPPER_KEY = true;
 	public static boolean  IS_LOWER_KEY = false;
 	static{
@@ -90,12 +89,12 @@ public class ConfigTable {
 	}
 	public static void init() {
 		//log.warn("IS LOAD:"+isLoad);
-		if(isLoad){
+		if(isLoading){
 			return;
 		}
 		//中断递归
 		lastLoadTime = System.currentTimeMillis();
-		isLoad = true;
+		isLoading = true;
 		String path =  "";
 		try{
 			//path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
@@ -212,7 +211,7 @@ public class ConfigTable {
 		String val = null;
 		if(reload > 0 && (System.currentTimeMillis() - lastLoadTime)/1000 > reload){
 			//重新加载
-			isLoad = false;
+			isLoading = false;
 			init();
 		}
 		val = configs.get(key.toUpperCase().trim());

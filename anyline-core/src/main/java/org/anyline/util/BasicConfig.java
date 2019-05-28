@@ -18,6 +18,7 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
 public abstract class BasicConfig {
+	protected static long lastLoadTime 	= 0;	//最后一次加载时间
 	protected static final Logger log = Logger.getLogger(BasicConfig.class);
 	protected Map<String, String> kvs = new HashMap<String, String>();
 	
@@ -131,11 +132,15 @@ public abstract class BasicConfig {
 			Document document = reader.read(file);
 			Element root = document.getRootElement();
 			for (Iterator<Element> itrConfig = root.elementIterator("config"); itrConfig.hasNext();) {
-				BasicConfig config = (BasicConfig) T.newInstance();
 				Element configElement = itrConfig.next();
 				String configKey = configElement.attributeValue("key");
 				if (BasicUtil.isEmpty(configKey)) {
 					configKey = "default";
+				}
+
+				BasicConfig config = instances.get(configKey);
+				if(null == config){
+					config = (BasicConfig) T.newInstance();
 				}
 				Map<String, String> kvs = new HashMap<String, String>();
 				Iterator<Element> elements = configElement.elementIterator("property");
@@ -168,7 +173,7 @@ public abstract class BasicConfig {
 						}
 					}
 				}
-
+				//加载时间
 				config.kvs = kvs;
 				instances.put(configKey, config);
 			}
