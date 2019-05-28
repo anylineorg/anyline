@@ -6,6 +6,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.weixin.util.WXConfig;
 
 
@@ -26,6 +27,11 @@ public class WXMPConfig extends WXConfig{
 	public static WXMPConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
+		}
+
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WXMPConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+			//重新加载
+			loadConfig();
 		}
 		return (WXMPConfig)instances.get(key);
 	}
@@ -50,6 +56,7 @@ public class WXMPConfig extends WXConfig{
 	 */
 	private synchronized static void loadConfig() {
 		loadConfig(instances, WXMPConfig.class, "anyline-weixin-mp.xml",compatibles);
+		WXMPConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
 	}
