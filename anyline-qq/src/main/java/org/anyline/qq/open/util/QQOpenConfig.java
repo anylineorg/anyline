@@ -46,6 +46,11 @@ public class QQOpenConfig extends QQConfig{
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
+
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQOpenConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+			//重新加载
+			loadConfig();
+		}
 		return (QQOpenConfig)instances.get(key);
 	}
 	/**
@@ -53,6 +58,7 @@ public class QQOpenConfig extends QQConfig{
 	 */
 	private synchronized static void loadConfig() {
 		loadConfig(instances, QQOpenConfig.class, "anyline-qq-open.xml");
+		QQOpenConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
 	}
