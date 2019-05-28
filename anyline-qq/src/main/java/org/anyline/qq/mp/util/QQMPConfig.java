@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
 
 public class QQMPConfig extends BasicConfig{
@@ -30,6 +31,11 @@ public class QQMPConfig extends BasicConfig{
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
+
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQMPConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+			//重新加载
+			loadConfig();
+		}
 		return (QQMPConfig)instances.get(key);
 	}
 	/**
@@ -39,6 +45,7 @@ public class QQMPConfig extends BasicConfig{
 	 */
 	private synchronized static void loadConfig() {
 		loadConfig(instances, QQMPConfig.class, "anyline-qq-mp.xml");
+		QQMPConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
 	}
