@@ -33,6 +33,10 @@ public class WXWapConfig extends WXConfig{
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WXWapConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+			//重新加载
+			loadConfig();
+		}
 		return (WXWapConfig)instances.get(key);
 	}
 
@@ -51,6 +55,7 @@ public class WXWapConfig extends WXConfig{
 	 */
 	private synchronized static void loadConfig() {
 		loadConfig(instances, WXWapConfig.class, "anyline-weixin-wap.xml",compatibles);
+		WXWapConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
 	}
