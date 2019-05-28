@@ -125,9 +125,6 @@ public class CharUtil {
 				asc = (256 * hightByte + lowByte) - 256 * 256;
 			}
 		} catch (Exception e) {
-			System.out
-					.println("ERROR:ChineseSpelling.class-getChsAscii(String chs)"
-							+ e);
 		}
 		return asc;
 	}

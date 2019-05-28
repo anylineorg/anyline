@@ -637,7 +637,7 @@ public class FileUtil {
 			return true;
 		}
 		for(String type:types){
-			String fileName = file.getName().toUpperCase();
+			String fileName = file.getAbsolutePath().toUpperCase();
 			type = type.toUpperCase();
 			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)){
 				return true;
