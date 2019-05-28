@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
 public class PageNaviConfig extends BasicConfig{
 
@@ -89,6 +90,12 @@ public class PageNaviConfig extends BasicConfig{
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
+
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - PageNaviConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+			//重新加载
+			loadConfig();
+		}
+		
 		return (PageNaviConfig)instances.get(key);
 	}
 
@@ -107,6 +114,7 @@ public class PageNaviConfig extends BasicConfig{
 	 */
 	private synchronized static void loadConfig() {
 		loadConfig(instances, PageNaviConfig.class, "anyline-navi.xml", compatibles);
+		PageNaviConfig.lastLoadTime = System.currentTimeMillis();
 	}
 
 	protected void afterParse(String key, String value){
