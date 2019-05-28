@@ -32,6 +32,11 @@ public class WXOpenConfig extends WXConfig{
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
+
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WXOpenConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+			//重新加载
+			loadConfig();
+		}
 		return (WXOpenConfig)instances.get(key);
 	}
 
@@ -50,6 +55,7 @@ public class WXOpenConfig extends WXConfig{
 	 */
 	private synchronized static void loadConfig() {
 		loadConfig(instances, WXOpenConfig.class, "anyline-weixin-open.xml",compatibles);
+		WXOpenConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
 	}
