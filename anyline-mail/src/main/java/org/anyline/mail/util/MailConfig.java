@@ -5,6 +5,7 @@ import java.util.Hashtable;
 
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
 public class MailConfig extends BasicConfig{
 	
@@ -35,6 +36,10 @@ public class MailConfig extends BasicConfig{
 		if(BasicUtil.isEmpty(key)){
 			key = "default";
 		}
+		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - MailConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
+			//重新加载
+			loadConfig();
+		}
 		return (MailConfig)instances.get(key);
 	}
 	/**
@@ -42,6 +47,7 @@ public class MailConfig extends BasicConfig{
 	 */
 	private synchronized static void loadConfig() {
 		loadConfig(instances, MailConfig.class, "anyline-mail.xml");
+		MailConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
 	}
