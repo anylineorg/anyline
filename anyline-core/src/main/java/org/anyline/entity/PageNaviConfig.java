@@ -19,6 +19,7 @@ public class PageNaviConfig extends BasicConfig{
 	public String STYLE_LABEL_JUMP				= "转到第"			;	//跳转到
 	public String STYLE_LABEL_JUMP_PAGE			= "页"				;	//跳转到
 	public String STYLE_LOAD_MORE_FORMAT		= "加载更多"			;	//加载更多
+	public String STYLE_INDEX_ELLIPSIS			= "..."				;	//下标省略符
 	
 	//变量
 	public int VAR_PAGE_RANGE					= 5			;	//下标数量
@@ -29,6 +30,7 @@ public class PageNaviConfig extends BasicConfig{
 	public boolean VAR_SHOW_JUMP				= false		;	//是否显示跳转
 	public boolean VAR_SHOW_BUTTON				= true		;	//是否显示上一页下一页button
 	public boolean VAR_SHOW_INDEX				= true		;	//是否显示下标
+	public boolean VAR_SHOW_INDEX_ELLIPSIS		= true		;	//是否显示下标省略符
 	public String  VAR_FORM_METHOD				= "post"	;
 	
 	//key
