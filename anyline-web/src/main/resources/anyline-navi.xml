@@ -18,6 +18,9 @@
 		<property key="VAR_SHOW_BUTTON">true</property>
 		<!-- 显示下标 -->
 		<property key="VAR_SHOW_INDEX">true</property>
+		<!-- 显示下标省略符 -->
+		<property key="VAR_SHOW_INDEX_ELLIPSIS">true</property>
+		<property key="STYLE_INDEX_ELLIPSIS">...</property>
 		<!-- 显示数据统计 -->
 		<property key="VAR_SHOW_STAT">true</property>
 		<!-- 跳转到 -->
