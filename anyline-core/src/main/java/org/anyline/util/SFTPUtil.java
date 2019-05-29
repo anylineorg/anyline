@@ -266,11 +266,25 @@ public class SFTPUtil {
         list.add(fileName);  
         return list;  
     }  
+    public static void main(String args[]){
+
+    	try {
+			SFTPUtil ftp = new SFTPUtil("172.16.254.101","zhengchen","zhengchen@1212");
+			ftp.files("/usr");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
     public List<String> files(String dir){
     	List<String> list = new ArrayList<String>();
     	try {
 			Vector<LsEntry> files = client.ls(dir);
 			for(LsEntry file:files){
+				int t = file.getAttrs().getATime();
+				String s= file.getAttrs().getAtimeString();
+				int t1 = file.getAttrs().getMTime();
+				String s1= file.getAttrs().getMtimeString();
 				String nm = file.getFilename();
 				if(".".equals(nm) || "..".equals(nm)){
 					continue;
