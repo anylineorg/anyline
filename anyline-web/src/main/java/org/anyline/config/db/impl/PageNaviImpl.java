@@ -185,10 +185,15 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				}
 
 			}
-			//上一页 
+			//上一页  第一页
 			if(config.VAR_SHOW_BUTTON){
 				createPageTag(builder, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
 				createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.getMax(curPage-1,1), configVarKey);
+			}
+			
+			//config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号
+			if(config.VAR_SHOW_INDEX_ELLIPSIS){
+				
 			}
 			//下标
 			if(config.VAR_SHOW_INDEX){
@@ -198,7 +203,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				}
 				builder.append("</div>\n");
 			}
-			//下一页
+			//下一页 最后页
 			if(config.VAR_SHOW_BUTTON){
 				createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.getMin(curPage+1, totalPage), configVarKey);
 				createPageTag(builder, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey);
