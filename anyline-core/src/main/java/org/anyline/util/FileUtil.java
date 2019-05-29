@@ -168,7 +168,7 @@ public class FileUtil {
 	 * @param encode
 	 * @return
 	 */
-	public static StringBuffer readStream(InputStream inputStream, String encode){
+	public static StringBuffer read(InputStream inputStream, String encode){
 		StringBuffer buffer = new StringBuffer();
 		int BUFFER_SIZE = 1024 * 8;
 		
@@ -217,57 +217,68 @@ public class FileUtil {
 	 * @param file
 	 * @return
 	 */
-	public static StringBuffer readFile(File file,String encode){
+	public static StringBuffer read(File file,String encode){
 		StringBuffer buffer = new StringBuffer();
 		try{
-			buffer = readStream(new FileInputStream(file),encode);
+			buffer = read(new FileInputStream(file),encode);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return buffer;
 	}
-	public static StringBuffer readFile(File file){
+	public static StringBuffer read(File file){
 		StringBuffer buffer = new StringBuffer();
 		try{
 			//String encode = getFileEncode(file);
-			buffer = readStream(new FileInputStream(file),"UTF-8");
+			buffer = read(new FileInputStream(file),"UTF-8");
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return buffer;
 	}
+//	/**
+//	 * 写文件
+//	 * @param content
+//	 * @param file
+//	 * @param append 追加内容
+//	 */
+//	public static void writeFile(String content, File file, boolean append){
+//		if(null == file || null == content){
+//			return;
+//		}
+//		File dir = file.getParentFile();
+//		if(!dir.exists()){
+//			dir.mkdirs();
+//		}
+//		try{
+//			if(!file.exists()){
+//				file.createNewFile();
+//			}
+//			FileWriter fw = new FileWriter(file,append);
+//			fw.write(content);
+//			fw.close();  
+//		}catch(Exception e){
+//			e.printStackTrace();
+//		}
+//	}
 	/**
-	 * 写文件
-	 * @param content
-	 * @param file
-	 * @param append 追加内容
+	 * 
+	 * @param content 写入内容
+	 * @param file 文件
+	 * @param encode 编码
+	 * @param append 是否追加
 	 */
-	public static void writeFile(String content, File file, boolean append){
-		if(null == file || null == content){
-			return;
-		}
-		File dir = file.getParentFile();
-		if(!dir.exists()){
-			dir.mkdirs();
-		}
-		try{
-			if(!file.exists()){
-				file.createNewFile();
-			}
-			FileWriter fw = new FileWriter(file,append);
-			fw.write(content);
-			fw.close();  
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-	}
-	public static void writeFile(String content, File file, String encode) {
+	public static void write(String content, File file, String encode, boolean append) {
 		FileOutputStream fos = null; 
 		OutputStreamWriter osw = null;
 		try { 
-			fos = new FileOutputStream(file);	
+			fos = new FileOutputStream(file, append);	
 			osw = new OutputStreamWriter(fos, encode); 
-			osw.write(content); 
+			if(append){
+				osw.append(content);
+			}else{
+				osw.write(content);
+			}
 			osw.flush(); 
 		} catch (Exception e) { 
 			e.printStackTrace(); 
@@ -280,6 +291,18 @@ public class FileUtil {
 			}
 		}
 	}
+
+	public static void write(String content, File file, String encode) {
+		write(content, file, encode, false);
+	}
+
+	public static void write(String content, File file, boolean append) {
+		write(content, file, "UTF-8", append);
+	}
+	public static void write(String content, File file) {
+		write(content, file, "UTF-8", false);
+	}
+	
 	/**
 	 * 创建文件
 	 * @param fileDir

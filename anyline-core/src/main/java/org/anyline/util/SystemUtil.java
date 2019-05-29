@@ -20,7 +20,7 @@ public class SystemUtil {
 			info.put("MemFree", physicalFree);		//系统空闲内存
 		}else{
 			//String txt = FileUtil.readFile(new File("/proc/meminfo")).toString();
-			String txt = FileUtil.readFile(new File("D:\\info.txt")).toString();
+			String txt = FileUtil.read(new File("D:\\info.txt")).toString();
 			String[] items = txt.split("\n");
 			for(String item:items){
 				String[] kv = item.split(":");
@@ -46,7 +46,7 @@ public class SystemUtil {
 	}
 	public DataRow memoryInfo(){
 		DataRow row = new DataRow();
-		String txt = FileUtil.readFile(new File("/proc/meminfo")).toString();
+		String txt = FileUtil.read(new File("/proc/meminfo")).toString();
 		String[] items = txt.split("\n");
 		for(String item:items){
 			String[] kv = item.split(":");
