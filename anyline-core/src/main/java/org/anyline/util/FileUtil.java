@@ -219,20 +219,24 @@ public class FileUtil {
 	 */
 	public static StringBuffer read(File file,String encode){
 		StringBuffer buffer = new StringBuffer();
-		try{
-			buffer = read(new FileInputStream(file),encode);
-		}catch(Exception e){
-			e.printStackTrace();
+		if(null != file && file.exists()){
+			try{
+				buffer = read(new FileInputStream(file),encode);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		return buffer;
 	}
 	public static StringBuffer read(File file){
 		StringBuffer buffer = new StringBuffer();
-		try{
-			//String encode = getFileEncode(file);
-			buffer = read(new FileInputStream(file),"UTF-8");
-		}catch(Exception e){
-			e.printStackTrace();
+		if(null != file && file.exists()){
+			try{
+				//String encode = getFileEncode(file);
+				buffer = read(new FileInputStream(file),"UTF-8");
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		return buffer;
 	}
@@ -269,6 +273,13 @@ public class FileUtil {
 	 * @param append 是否追加
 	 */
 	public static void write(String content, File file, String encode, boolean append) {
+		if(null == file){
+			return;
+		}
+		File dir = file.getParentFile();
+		if(!dir.exists()){
+			dir.mkdirs();
+		}
 		FileOutputStream fos = null; 
 		OutputStreamWriter osw = null;
 		try { 
