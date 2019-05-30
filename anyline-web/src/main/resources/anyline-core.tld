@@ -467,6 +467,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>checkedValue</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>valueKey</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
