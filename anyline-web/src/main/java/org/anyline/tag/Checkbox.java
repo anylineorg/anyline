@@ -59,6 +59,7 @@ public class Checkbox extends BaseBodyTag {
 	private String rely;
 	private String head;
 	private String headValue;
+	private String checkedValue = "";
 	private boolean checked = false;
 	private String border = "true";
 	private String borderClazz = "al-chk-item-border";
@@ -188,7 +189,7 @@ public class Checkbox extends BaseBodyTag {
 						if(BasicUtil.isNotEmpty(rely)){
 							chk = item.get(rely);
 						}
-						if("true".equalsIgnoreCase(chk+"") || "checked".equalsIgnoreCase(chk+"") || checked(chks,item.get(valueKey)) ) {
+						if(checkedValue.equals(chk) || "true".equalsIgnoreCase(chk+"") || "checked".equalsIgnoreCase(chk+"") || checked(chks,item.get(valueKey)) ) {
 							html += " checked=\"checked\"";
 						}
 						
@@ -330,6 +331,12 @@ public class Checkbox extends BaseBodyTag {
 	}
 	public void setLabelClazz(String labelClazz) {
 		this.labelClazz = labelClazz;
+	}
+	public String getCheckedValue() {
+		return checkedValue;
+	}
+	public void setCheckedValue(String checkedValue) {
+		this.checkedValue = checkedValue;
 	}
 	
 }
