@@ -29,13 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
 import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
+import org.apache.log4j.Logger;
 /**
  * 
  * 是否选中 一类的单个复选

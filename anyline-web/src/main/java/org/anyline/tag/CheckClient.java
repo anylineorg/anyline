@@ -28,13 +28,10 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
-import org.apache.log4j.Logger;
 
 
 public class CheckClient extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(CheckClient.class);
-	
 	private String type = "";
 	private Object elseValue;
 	public int doEndTag() throws JspException {
