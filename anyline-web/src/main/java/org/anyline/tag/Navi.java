@@ -53,7 +53,8 @@ public class Navi extends BodyTagSupport{
 	private String after			;	//渲染之后调用		
 	private String guide			;   //加载更多文本
 	
-	private String empty			;	//空数据显示内容
+	private String empty			;	//查询无数据显示内容
+	private String over				;	//最后一页提示
 	private String style = "default"; 	//样式标记对应anyline-navi.xml中的config.key
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
@@ -123,10 +124,16 @@ public class Navi extends BodyTagSupport{
 			builder.append("type:").append(type).append(",");
 			builder.append("style:'").append(style).append("',");
 			if(empty == null){
-				empty = "没有更多内容了";
+				empty = config.STYLE_DATA_EMPTY;
+			}
+			if(over == null){
+				over = config.STYLE_PAGE_OVER;
 			}
 			if(null != empty){
 				builder.append("empty:'" ).append(empty).append("',");
+			}
+			if(null != over){
+				builder.append("over:'" ).append(over).append("',");
 			}
 
 			builder.append("jump:").append(jump).append(",");
