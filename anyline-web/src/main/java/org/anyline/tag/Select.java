@@ -16,7 +16,6 @@
  *          
  */
 
-
 package org.anyline.tag;
 
 import java.util.ArrayList;
@@ -30,155 +29,129 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.entity.DataRow;
-import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.WebUtil;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
-
-public class Select extends BaseBodyTag{
+public class Select extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
 	private static final Logger log = Logger.getLogger(Select.class);
 	private String scope;
 	private Object data;
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 	private String textKey = "NM";
 	private String head;
 	private String headValue;
-	
+	private String type = "select"; // 如果type=text则只显示选中项的text而不生成<select>
+
 	public String getHead() {
 		return head;
 	}
-
 
 	public void setHead(String head) {
 		this.head = head;
 	}
 
-
 	public int doEndTag() throws JspException {
-		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		valueKey = DataRow.keyCase(valueKey);
 		textKey = DataRow.keyCase(textKey);
-		String html = "<select "+attribute() + ">";
-		if(null != body){
-			html += body;
-		}
-		if(null == headValue){
-			headValue = "";
-		}
-		if(null != head){
-			html += "<option value=\""+headValue+"\">"+head+"</option>";
-		}
-		try{
-			if(null != data){
-				if(data instanceof String){
-					if(data.toString().endsWith("}")){
-						data = data.toString().replace("{", "").replace("}", "");
-					}else{
-						if("servelt".equals(scope) || "application".equalsIgnoreCase(scope)){
-							data = request.getSession().getServletContext().getAttribute(data.toString());
-						}else if("session".equals(scope)){
-							data = request.getSession().getAttribute(data.toString());
-						}else{
-							data = request.getAttribute(data.toString());
-						}
-					}
-				}
-				if(data instanceof String){
-					String items[] = data.toString().split(",");
-					List list = new ArrayList();
-					for(String item:items){
-						Map map = new HashMap();
-						String tmp[] = item.split(":");
-						map.put(valueKey, tmp[0]);
-						map.put(textKey, tmp[1]);
-						list.add(map);
-					}
-					data = list;
-				}
-				Collection items = (Collection)data;
-				if(null != items)
-				for(Object item:items){
-					String val = null;
-					if(valueKey.contains("{")){
-						val = valueKey;
-						List<String> keys =RegularUtil.fetch(valueKey, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
-						for(String key:keys){
-							Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
-							if(null == v){
-								v = "";
-							}
-							val = val.replace(key, v.toString());
-						}
-					}else{
-						val = BeanUtil.getFieldValue(item, valueKey)+"";
-						if(encrypt){
-							val = WebUtil.encryptValue(val+"");
-						}
-					}
-					
-					String text = "";
-					if(textKey.contains("{")){
-						text = parseRuntimeValue(item,textKey);
-					}else{
-						Object v = BeanUtil.getFieldValue(item, textKey);
-						if(null != v){
-							text = v.toString();
-						}
-					}
+		String html = "";
 
-					html += "<option value=\"" + val + "\"";
-					if(null != val && null != this.value && val.equals(value.toString())){
-						html += " selected=\"selected\"";
-					}
-					html += crateExtraData(item);
-					html += ">" + text+ "</option>";
+		if (data instanceof String) {
+			if (data.toString().endsWith("}")) {
+				data = data.toString().replace("{", "").replace("}", "");
+			} else {
+				if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) {
+					data = request.getSession().getServletContext().getAttribute(data.toString());
+				} else if ("session".equals(scope)) {
+					data = request.getSession().getAttribute(data.toString());
+				} else {
+					data = request.getAttribute(data.toString());
 				}
 			}
-			html += "</select>";
-				JspWriter out = pageContext.getOut();
-				out.print(html);
-		}catch(Exception e){
+		}
+		if (data instanceof String) {
+			String items[] = data.toString().split(",");
+			List list = new ArrayList();
+			for (String item : items) {
+				Map map = new HashMap();
+				String tmp[] = item.split(":");
+				map.put(valueKey, tmp[0]);
+				map.put(textKey, tmp[1]);
+				list.add(map);
+			}
+			data = list;
+		}
+		Collection items = (Collection) data;
+		try {
+			if ("text".equals(type)) {
+				if (null != items) {
+					for (Object item : items) {
+						String val = parseRuntimeValue(item, valueKey, encrypt);
+						String text = parseRuntimeValue(item, textKey);
+						if (null != val && null != this.value && val.equals(value.toString())) {
+							html = text;
+						}
+					}
+				}
+			} else {
+				html = "<select " + attribute() + ">";
+				if (null != body) {
+					html += body;
+				}
+				if (null == headValue) {
+					headValue = "";
+				}
+				if (null != head) {
+					html += "<option value=\"" + headValue + "\">" + head + "</option>";
+				}
+				if (null != items) {
+					for (Object item : items) {
+						String val = parseRuntimeValue(item, valueKey, encrypt);
+						String text = parseRuntimeValue(item, textKey);
+						html += "<option value=\"" + val + "\"";
+						if (null != val && null != this.value && val.equals(value.toString())) {
+							html += " selected=\"selected\"";
+						}
+						html += crateExtraData(item);
+						html += ">" + text + "</option>";
+					}
+				}
+				html += "</select>";
+			}
+			JspWriter out = pageContext.getOut();
+			out.print(html);
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
+		} finally {
 			release();
 		}
-        return EVAL_PAGE;   
+		return EVAL_PAGE;
 	}
-
 
 	public Object getData() {
 		return data;
 	}
 
-
 	public void setData(Object data) {
 		this.data = data;
 	}
-
 
 	public String getValueKey() {
 		return valueKey;
 	}
 
-
 	public void setValueKey(String valueKey) {
 		this.valueKey = valueKey;
 	}
-
 
 	public String getTextKey() {
 		return textKey;
 	}
 
-
 	public void setTextKey(String textKey) {
 		this.textKey = textKey;
 	}
-
 
 	@Override
 	public void release() {
@@ -188,22 +161,27 @@ public class Select extends BaseBodyTag{
 		scope = null;
 		head = null;
 		headValue = null;
-		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+		type = "select";
+		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 		textKey = "NM";
-		
-		
+
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 
 	public String getHeadValue() {
 		return headValue;
 	}
 
-
 	public void setHeadValue(String headValue) {
 		this.headValue = headValue;
 	}
-
 
 	public String getScope() {
 		return scope;
