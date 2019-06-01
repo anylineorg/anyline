@@ -1,14 +1,10 @@
 package org.anyline.easemob;
 
-import java.io.File;
 import java.util.Hashtable;
-import java.util.List;
 
-import org.anyline.entity.PageNaviConfig;
 import org.anyline.util.BasicConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.FileUtil;
 
 
 public class EasemobConfig extends BasicConfig{
