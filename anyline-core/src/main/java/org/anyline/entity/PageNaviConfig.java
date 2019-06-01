@@ -11,6 +11,7 @@ public class PageNaviConfig extends BasicConfig{
 	
 	public String STYLE_FILE_PATH 				= ""		;	//样式文件路径
 	public String SCRIPT_FILE_PATH 				= ""		;	//脚本文件路径
+	
 	public String STYLE_BUTTON_FIRST			= "第一页"			;	//第一页
 	public String STYLE_BUTTON_PREV				= "上一页"			;	//上一页
 	public String STYLE_BUTTON_NEXT				= "下一页"			;	//下一页
@@ -20,6 +21,8 @@ public class PageNaviConfig extends BasicConfig{
 	public String STYLE_LABEL_JUMP_PAGE			= "页"				;	//跳转到
 	public String STYLE_LOAD_MORE_FORMAT		= "加载更多"			;	//加载更多
 	public String STYLE_INDEX_ELLIPSIS			= "..."				;	//下标省略符
+	public String STYLE_DATA_EMPTY				= "没有更多内容了"		;	//查询无数据
+	public String STYLE_PAGE_OVER				= "最后一页了"			;	//最后一页
 	
 	//变量
 	public int VAR_PAGE_RANGE					= 5			;	//下标数量

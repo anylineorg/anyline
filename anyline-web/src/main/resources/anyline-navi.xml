@@ -10,8 +10,13 @@
 		<!-- 最后页 -->
 		<property key="STYLE_BUTTON_LAST">最后页</property>
 		<!-- 数据统计格式 -->
+		<!-- 
 		<property key="STYLE_STAT_FORMAT"></property>
-
+		-->
+		<!-- 查询无内容提示 -->
+		<property key="STYLE_DATA_EMPTY"></property>
+		<!-- 最后一页提示 -->
+		<property key="STYLE_PAGE_OVER"></property>
 		<!-- 下标数量 -->
 		<property key="VAR_PAGE_RANGE">5</property>
 		<!-- 显示上一页下一页 -->
