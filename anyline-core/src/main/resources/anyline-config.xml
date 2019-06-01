@@ -10,7 +10,7 @@
 <properties>
 	<!-- 多长时间加载一次配置文件 (秒)-->
 	<property key="RELOAD">120</property>
-	<!-- 存放在servlet context中的key-->
+	<!-- 存放在servlet context中的key(配置文件热重载时不覆盖当前key)(如el表达式中引用${al.RELOAD})-->
 	<property key="SERVLET_ATTRIBUTE_KEY">al</property>
 	<property key="DEBUG">true</property>
 	<!-- sql 存放根目录 -->
