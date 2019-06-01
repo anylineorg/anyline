@@ -5,14 +5,15 @@ import java.util.Map;
 import javax.servlet.ServletContext;
 
 import org.anyline.util.ConfigTable;
+import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 
-@Component("al.config.listener")
-public class ConfigListener implements
-		ApplicationListener<ContextRefreshedEvent> {
+@Component("anyline.config.listener")
+public class ConfigListener implements ApplicationListener<ContextRefreshedEvent> {
+	private Logger log = Logger.getLogger(ConfigListener.class); 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
 		if (event.getApplicationContext().getParent() != null) {
@@ -21,7 +22,8 @@ public class ConfigListener implements
 		WebApplicationContext webApplicationContext = (WebApplicationContext) event.getApplicationContext();
 		ServletContext servlet = webApplicationContext.getServletContext();
 		Map<String, String> configs = ConfigTable.getConfigs();
-		servlet.setAttribute("al", configs);
-
+		String key = ConfigTable.getString("SERVLET_ATTRIBUTE_KEY", "al");
+		servlet.setAttribute(key, configs);
+		log.warn("[配置文件加载至servlet context][key:"+key+"]");
 	}
 }
