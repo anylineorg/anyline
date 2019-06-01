@@ -31,6 +31,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.WebUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
@@ -116,6 +117,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return html;
 	}
 	protected String parseRuntimeValue(Object obj, String key){
+		return parseRuntimeValue(obj, key, false);
+	}
+	protected String parseRuntimeValue(Object obj, String key, boolean encrypt){
 		String value = key;
 		if(BasicUtil.isNotEmpty(key)){
 			if(key.contains("{")){
@@ -130,6 +134,11 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 					}
 				}catch(Exception e){
 					e.printStackTrace();
+				}
+			} else {
+				value = BeanUtil.getFieldValue(obj, key) + "";
+				if (encrypt) {
+					value = WebUtil.encryptValue(value + "");
 				}
 			}
 		}
