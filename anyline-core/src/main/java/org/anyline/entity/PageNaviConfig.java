@@ -51,7 +51,7 @@ public class PageNaviConfig extends BasicConfig{
 	public String STYLE_PAGE_VOL			= "<select class='navi-vol-set' id='navi_vol_set_{navi-conf-key}' onchange='_navi_change_vol({navi-conf-key})'><option value='10'>10 条/页</option><option value='20'>20 条/页</option><option value='30'>30 条/页</option><option value='40'>40 条/页</option><option value='50'>50 条/页</option><option value='100'>100 条/页</option></select>";
 	public String VAR_PAGE_VOL_CLASS		= "navi-rows-set"	;
 	public String VAR_PAGE_VOL_INDEX		= "last"			;	//位置:last:最后,page:页标之后
-	public String VAR_PAGE_VOL_NUMBERS	= ""				; //用户选择每页多少条 10,20,30,40,50,100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select>
+	public String VAR_PAGE_VOL_NUMBERS		= ""				; //用户选择每页多少条 10,20,30,40,50,100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select>
 		
 
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();

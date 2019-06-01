@@ -68,7 +68,9 @@ public class ConfigTable {
 			loadConfig(file);
 		}
 	}
-	
+	public static Hashtable<String,String> getConfigs(){
+		return configs;
+	}
 	public static String getWebRoot() {
 		return webRoot;
 	}
@@ -303,12 +305,8 @@ public class ConfigTable {
 			line(" oschina.net git地址：https://git.oschina.net/anyline/anyline.git", "", false);
 			line(" oschina.net svn地址：svn://git.oschina.net/anyline/anyline", "", false);
 			line(" oschina.net 帐号密码：public@anyline.org(111111)", "", false);
-			line(" ", " ", false);
-			line(" taobao.org  svn地址：http://code.taobao.org/svn/anyline", "", false);
-			line(" taobao.org  svn帐号密码：public@anyline.org(anyline1)", "", false);
-		
 			line("","*", true);
-			line(" Debug 状态设置在:anyline-config.xml:<property key=\"DEBUG\">false</property>", "", false);
+			line(" Debug 状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>", "", false);
 			line(" =====================生产环境请务必修改密钥文件key.xml==========================", "", false);
 			line("","*", true);
 		}catch(Exception e){
