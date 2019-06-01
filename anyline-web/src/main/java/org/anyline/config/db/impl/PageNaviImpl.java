@@ -185,28 +185,52 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				}
 
 			}
-			//上一页  第一页
-			if(config.VAR_SHOW_BUTTON){
-				createPageTag(builder, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
-				createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.getMax(curPage-1,1), configVarKey);
-			}
 			
 			//config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号
+			//1 .. 3 4 5 6 7 8 .. 10
 			if(config.VAR_SHOW_INDEX_ELLIPSIS){
-				
-			}
-			//下标
-			if(config.VAR_SHOW_INDEX){
-				builder.append("<div class='navi-num-border'>\n");
-				for(int i=fr; i<=to; i++){
-					createPageTag(builder, "navi-num-item", i + "", i, configVarKey);
+				if(config.VAR_SHOW_BUTTON){
+					createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.getMax(curPage-1,1), configVarKey);
 				}
-				builder.append("</div>\n");
-			}
-			//下一页 最后页
-			if(config.VAR_SHOW_BUTTON){
-				createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.getMin(curPage+1, totalPage), configVarKey);
-				createPageTag(builder, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey);
+				//下标
+				if(config.VAR_SHOW_INDEX){
+					builder.append("<div class='navi-num-border'>\n");
+					if(fr > 2){
+						createPageTag(builder, "navi-num-item", "1", 1, configVarKey);
+						createPageTag(builder, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
+					}
+					for(int i=fr; i<=to; i++){
+						createPageTag(builder, "navi-num-item", i + "", i, configVarKey);
+					}
+					if(to < totalPage-1){
+						createPageTag(builder, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
+						createPageTag(builder, "navi-num-item", totalPage+"", totalPage, configVarKey);
+					}
+					builder.append("</div>\n");
+				}
+				//下一页 最后页
+				if(config.VAR_SHOW_BUTTON){
+					createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.getMin(curPage+1, totalPage), configVarKey);
+				}
+			}else{
+				//上一页  第一页
+				if(config.VAR_SHOW_BUTTON){
+					createPageTag(builder, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
+					createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.getMax(curPage-1,1), configVarKey);
+				}
+				//下标
+				if(config.VAR_SHOW_INDEX){
+					builder.append("<div class='navi-num-border'>\n");
+					for(int i=fr; i<=to; i++){
+						createPageTag(builder, "navi-num-item", i + "", i, configVarKey);
+					}
+					builder.append("</div>\n");
+				}
+				//下一页 最后页
+				if(config.VAR_SHOW_BUTTON){
+					createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.getMin(curPage+1, totalPage), configVarKey);
+					createPageTag(builder, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey);
+				}
 			}
 			if("page".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)){
 				builder.append(vol_set_html);
@@ -238,6 +262,14 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		}
 		return builder.toString();
 	}
+	/**
+	 * 
+	 * @param builder
+	 * @param clazz 
+	 * @param tag 显示内容
+	 * @param page 跳到第几页
+	 * @param configFlag
+	 */
 	private void createPageTag(StringBuilder builder, String clazz, String tag, int page, String configFlag){
 		builder.append("<span class ='").append(clazz);
 		if(page == curPage && 0 == type){
@@ -248,11 +280,14 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			}
 			builder.append("'");
 		}else{
-			builder.append("' onclick='_navi_go(").append(page);
-			if(BasicUtil.isNotEmpty(configFlag)){
-				builder.append(",").append(configFlag);
+			builder.append("'");
+			if(page>0){
+				builder.append(" onclick='_navi_go(").append(page);
+				if(BasicUtil.isNotEmpty(configFlag)){
+					builder.append(",").append(configFlag);
+				}
+				builder.append(")'");
 			}
-			builder.append(")'");
 		}
 		builder.append(">");
 		builder.append(tag).append("</span>\n");
