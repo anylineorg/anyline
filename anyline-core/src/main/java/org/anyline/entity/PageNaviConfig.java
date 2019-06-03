@@ -33,7 +33,7 @@ public class PageNaviConfig extends BasicConfig{
 	public boolean VAR_SHOW_JUMP				= false		;	//是否显示跳转
 	public boolean VAR_SHOW_BUTTON				= true		;	//是否显示上一页下一页button
 	public boolean VAR_SHOW_INDEX				= true		;	//是否显示下标
-	public boolean VAR_SHOW_INDEX_ELLIPSIS		= true		;	//是否显示下标省略符
+	public boolean VAR_SHOW_INDEX_ELLIPSIS		= false		;	//是否显示下标省略符 (下标不含第2页或倒数第2页时显示省略号)1 .. 3 4 5 6 7 8 .. 10
 	public String  VAR_FORM_METHOD				= "post"	;
 	
 	//key
