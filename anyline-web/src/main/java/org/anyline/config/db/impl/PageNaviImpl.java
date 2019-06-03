@@ -186,7 +186,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 
 			}
 			
-			//config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号(下标不含第2页或倒数第2页时显示省略号)
+			//config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号(不显示第2页或倒数第2页时显示省略号)
 			//1 .. 3 4 5 6 7 8 .. 10
 			if(config.VAR_SHOW_INDEX_ELLIPSIS){
 				if(config.VAR_SHOW_BUTTON){
@@ -211,7 +211,9 @@ public class PageNaviImpl implements PageNavi, Serializable{
 					if(to < totalPage-1){
 						createPageTag(builder, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					}
-					createPageTag(builder, "navi-num-item", totalPage+"", totalPage, configVarKey);
+					if(totalPage >1){//不是只有一页
+						createPageTag(builder, "navi-num-item", totalPage+"", totalPage, configVarKey);
+					}
 					builder.append("</div>\n");
 				}
 				//下一页 最后页
@@ -279,9 +281,9 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private void createPageTag(StringBuilder builder, String clazz, String tag, int page, String configFlag){
 		builder.append("<span class ='").append(clazz);
 		if(page == curPage && 0 == type){
-			if(clazz.contains("navi-num-item")){
+			if(clazz.contains("navi-num-item")){//下标
 				builder.append(" navi-num-item-cur");
-			}else{
+			}else{//btn
 				builder.append(" navi-disabled");
 			}
 			builder.append("'");
