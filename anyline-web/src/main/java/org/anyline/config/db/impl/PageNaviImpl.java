@@ -186,7 +186,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 
 			}
 			
-			//config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号
+			//config.VAR_SHOW_INDEX_ELLIPSIS;是否显示下标省略号(下标不含第2页或倒数第2页时显示省略号)
 			//1 .. 3 4 5 6 7 8 .. 10
 			if(config.VAR_SHOW_INDEX_ELLIPSIS){
 				if(config.VAR_SHOW_BUTTON){
@@ -194,9 +194,15 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				}
 				//下标
 				if(config.VAR_SHOW_INDEX){
+					if(fr<2){
+						fr = 2;
+					}
+					if(to>totalPage-1){
+						to = totalPage-1;
+					}
 					builder.append("<div class='navi-num-border'>\n");
+					createPageTag(builder, "navi-num-item", "1", 1, configVarKey);
 					if(fr > 2){
-						createPageTag(builder, "navi-num-item", "1", 1, configVarKey);
 						createPageTag(builder, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					}
 					for(int i=fr; i<=to; i++){
@@ -204,8 +210,8 @@ public class PageNaviImpl implements PageNavi, Serializable{
 					}
 					if(to < totalPage-1){
 						createPageTag(builder, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
-						createPageTag(builder, "navi-num-item", totalPage+"", totalPage, configVarKey);
 					}
+					createPageTag(builder, "navi-num-item", totalPage+"", totalPage, configVarKey);
 					builder.append("</div>\n");
 				}
 				//下一页 最后页
