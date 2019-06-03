@@ -32,8 +32,6 @@ import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.SQL;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.Constant;
 import org.apache.log4j.Logger;
 
 public abstract class BasicSQL implements SQL{
@@ -366,7 +364,7 @@ public abstract class BasicSQL implements SQL{
 		return fetchKeys;
 	}
 	public boolean isValid(){
-		return valid;
+		return this.valid;
 	}
 	public void setValid(boolean valid){
 		this.valid = valid;

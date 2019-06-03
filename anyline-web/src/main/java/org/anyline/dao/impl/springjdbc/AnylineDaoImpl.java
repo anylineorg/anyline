@@ -90,7 +90,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	public DataSet query(SQL sql, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createQueryRunSQL(sql, configs, conditions);
-		if(showSQL && !sql.isValid()){
+		if(showSQL && !run.isValid()){
 			String tmp = "[valid:false]";
 			String src = "";
 			if(sql instanceof TableSQL){
@@ -103,7 +103,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		PageNavi navi = run.getPageNavi();
 		int total = 0;
-		if(sql.isValid()){
+		if(run.isValid()){
 			if(null != navi){
 				if(navi.getLastRow() == 0){
 					//第一条
@@ -122,7 +122,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.warn("[查询记录总数][行数:" + total + "]");
 			}
 		}
-		if(sql.isValid() &&(null == navi || total > 0)){
+		if(run.isValid() &&(null == navi || total > 0)){
 			set = select(run.getFinalQueryTxt(), run.getValues());
 		}else{
 			set = new DataSet();
