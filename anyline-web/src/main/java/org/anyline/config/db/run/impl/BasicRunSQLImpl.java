@@ -436,7 +436,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		this.strict = strict;
 	}
 	public boolean isValid(){
-		return valid;
+		return this.valid;
 	}
 }
 
