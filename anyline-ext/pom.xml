@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-maven-jar</artifactId>
-		<version>1.0.7</version>
+		<version>1.0.8</version>
 	</parent>
 	
 	<artifactId>anyline-ext</artifactId>
-	<version>8.0.7</version>
+	<version>8.0.8</version>
 	<name>anyline-ext</name>
 	<packaging>jar</packaging>
 	<url>http://www.anyline.org/ext</url>
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-core</artifactId>
-			<version>8.0.3</version>
+			<version>${anyline.core.version}</version>
 		</dependency>
 	</dependencies>
 </project>
