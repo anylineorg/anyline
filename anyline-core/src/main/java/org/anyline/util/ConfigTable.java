@@ -42,7 +42,7 @@ public class ConfigTable {
 	private static boolean debug = false;
 	private static boolean sqlDebug = false;
 	private static final String version = "8.0";
-	private static final String minVersion = "0001";
+	private static final String minVersion = "0007";
 	private static boolean isLoading = false;
 	public static boolean  IS_UPPER_KEY = true;
 	public static boolean  IS_LOWER_KEY = false;
