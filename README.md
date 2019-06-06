@@ -1,6 +1,7 @@
 # Anyline
 
-**Anyline**Anyline是基于Spring对SpringMVC，Struts2等web框架的扩展，<br>
+**Anyline**
+Anyline是基于Spring对SpringMVC，Struts2等web框架的扩展，<br>
 以及对支付工具，阿里云，微信，QQ，高德，极光，环信等第三方平台或插件的集成。<br/>
 旨在简化各种框架，插件或工具的操作复杂度，提升整体应用的稳定性，可用性，扩展性。<br>
 从而实现在保证代码质量的同时，提高开发速度。<br/>
@@ -38,7 +39,7 @@ anyline-mssql       : sql server支持
 anyline-alipay      : 支付宝支付集成工具
 anyline-aliyun      : 阿里云平台相关工具
 anyline-weixin      : 微信支付,微信开放平台，公众平台集成工具
-anyline-qq	    : QQ支付，QQ开放平台，公众平台集成工具
+anyline-qq          : QQ支付，QQ开放平台，公众平台集成工具
 anyline-jpush       : 极光推送集成工具
 anyline-easemob     : 环信集成工具
 anyline-amap        : 高德云图集成工具
