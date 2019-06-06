@@ -10,7 +10,7 @@
  <!-- 加密 -->
  <tag>
   <name>des</name>
-  <tagclass>org.anyline.tag.des.DES</tagclass>
+  <tagclass>org.anyline.web.tag.des.DES</tagclass>
   <bodycontent>JSP</bodycontent>
   <info>加密</info>
   <attribute>
@@ -24,7 +24,7 @@
  </tag>
  <tag>
   <name>key</name>
-  <tagclass>org.anyline.tag.des.DESHttpRequestParamKey</tagclass>
+  <tagclass>org.anyline.web.tag.des.DESHttpRequestParamKey</tagclass>
   <bodycontent>JSP</bodycontent>
   <info>加密http request 请求参数key</info>
   <attribute>
@@ -34,7 +34,7 @@
  </tag>
  <tag>
   <name>value</name>
-  <tagclass>org.anyline.tag.des.DESHttpRequestParamValue</tagclass>
+  <tagclass>org.anyline.web.tag.des.DESHttpRequestParamValue</tagclass>
   <bodycontent>JSP</bodycontent>
   <info>加密http request 请求参数value</info>
   <attribute>
@@ -44,7 +44,7 @@
  </tag>
  <tag>
   <name>param</name>
-  <tagclass>org.anyline.tag.des.DESHttpRequestParam</tagclass>
+  <tagclass>org.anyline.web.tag.des.DESHttpRequestParam</tagclass>
   <bodycontent>JSP</bodycontent>
   <info>加密http request 请求参数key=value</info>
   <attribute>
@@ -54,7 +54,7 @@
  </tag>
  <tag>
   <name>url</name>
-  <tagclass>org.anyline.tag.des.DESUrl</tagclass>
+  <tagclass>org.anyline.web.tag.des.DESUrl</tagclass>
   <bodycontent>JSP</bodycontent>
   <info>加密url</info>
   <attribute>
@@ -64,13 +64,13 @@
  </tag>
  <tag>
   <name>as</name>
-  <tagclass>org.anyline.tag.des.HTMLAS</tagclass>
+  <tagclass>org.anyline.web.tag.des.HTMLAS</tagclass>
   <bodycontent>JSP</bodycontent>
   <info>加密多个html标签a</info>
  </tag>
  <tag>
   <name>a</name>
-  <tagclass>org.anyline.tag.des.HTMLA</tagclass>
+  <tagclass>org.anyline.web.tag.des.HTMLA</tagclass>
   <bodycontent>JSP</bodycontent>
   <info>加密html标签A</info>
   <attribute>
@@ -136,7 +136,7 @@
  </tag>
  <tag>
   <name>input</name>
-  <tagclass>org.anyline.tag.des.HTMLInput</tagclass>
+  <tagclass>org.anyline.web.tag.des.HTMLInput</tagclass>
   <bodycontent>JSP</bodycontent>
   <attribute>
    <name>property</name>
@@ -501,7 +501,7 @@
  </tag>
  <tag>
   <name>textarea</name>
-  <tagclass>org.anyline.tag.des.HTMLTextarea</tagclass>
+  <tagclass>org.anyline.web.tag.des.HTMLTextarea</tagclass>
   <bodycontent>JSP</bodycontent>
   <attribute>
    <name>property</name>

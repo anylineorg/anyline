@@ -38,12 +38,12 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.PageNaviConfig;
-import org.anyline.tag.Navi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.WebUtil;
+import org.anyline.web.tag.Navi;
 import org.apache.log4j.Logger;
 
 public class AbstractBasicController{

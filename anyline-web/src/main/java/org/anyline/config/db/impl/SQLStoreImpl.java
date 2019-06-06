@@ -47,7 +47,7 @@ public class SQLStoreImpl extends SQLStore{
 	private static SQLStoreImpl instance;
 	private static Hashtable<String,SQL> sqls = new Hashtable<String,SQL>();
 	private static final Logger log = Logger.getLogger(SQLStoreImpl.class);
-	private SQLStoreImpl() {}
+	protected SQLStoreImpl() {}
 	private static String sqlDir;
 	private static long lastLoadTime = 0;
 	static{

@@ -39,8 +39,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
  */
 public class RegularMatch implements Regular{
 	private static final Logger log = Logger.getLogger(RegularMatch.class);
-	RegularMatch(){
-		
+	protected RegularMatch(){
 	}
 	private PatternCompiler patternCompiler = new Perl5Compiler();
 	/**
