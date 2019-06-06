@@ -25,15 +25,13 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.aliyun.oss.util.OSSUtil;
-import org.anyline.tag.BaseBodyTag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
-import org.apache.log4j.Logger;
+import org.anyline.web.tag.BaseBodyTag;
 public class OSSConfig extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(OSSConfig.class);
 	private boolean debug = false;
 	private int expire = 0; 
 	private String dir = "";

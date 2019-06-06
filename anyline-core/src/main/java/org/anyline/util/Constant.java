@@ -25,8 +25,6 @@ public class Constant {
 	public static final String SERVLET_ATTR_REQUIRED_TOKEN_URI		= "SERVLET_ATTR_REQUIRED_TOKEN_URI";	//必须验证token的URI
 	public static final String SERVLET_ATTR_REQUIRED_TOKEN_REFER	= "SERVLET_ATTR_REQUIRED_TOKEN_REFER";	//必须验证token的REFFER
 	//session变量
-	public static final String SESSION_ATTR_BEFORE_logIN_URI		= "SESSION_ATTR_BEFORE_logIN_URI"		;//登录前URI
-	public static final String SESSION_ATTR_BEFORE_logIN_PARAM		= "SESSION_ATTR_BEFORE_logIN_PARAM"		;//登录前参数
 
 	public static final String SESSION_ATTR_MESSAGE					= "SESSION_ATTR_MESSAGE"				;//session信息
 	public static final String SESSION_ATTR_TOKEN_VALUE_EMPTY		= "SESSION_ATTR_TOKEN_VALUE_EMPTY"		;//TOKEN空值(已被验证过一次)
