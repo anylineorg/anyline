@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class NumberTextUtil {
-	private NumberTextUtil() {}
+	protected NumberTextUtil() {}
 
 	public abstract String getText(long number);
 	public abstract String getOrdinalText(long number);

@@ -41,8 +41,6 @@ import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
 public class BasicUtil {
-	private static final Logger log = Logger.getLogger(BasicUtil.class);
-
 	/**
 	 * 是否为空或""或"null"(大写字母"NULL"不算空) 集合对象检查是否为空或集合中是否有对象
 	 * 
