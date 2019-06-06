@@ -9,7 +9,7 @@
 	<info>anyline SEO标签</info>
 	<tag>
 		<name>head</name>
-		<tagclass>org.anyline.tag.seo.Head</tagclass>
+		<tagclass>org.anyline.web.tag.seo.Head</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>html头信息</info>
 		<attribute>
@@ -35,13 +35,13 @@
 	</tag>
 	<tag>
 		<name>keywords</name>
-		<tagclass>org.anyline.tag.seo.Keywords</tagclass>
+		<tagclass>org.anyline.web.tag.seo.Keywords</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>Seo</info>
 	</tag>
 	<tag>
 		<name>reply</name>
-		<tagclass>org.anyline.tag.seo.ClientReply</tagclass>
+		<tagclass>org.anyline.web.tag.seo.ClientReply</tagclass>
 		<bodycontent>empty</bodycontent>
 		<info>客户端回复确认(JS格式)</info>
 	</tag>
