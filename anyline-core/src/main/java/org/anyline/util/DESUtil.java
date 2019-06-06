@@ -90,10 +90,10 @@ public class DESUtil {
 		}
 		return instance;
 	}
-	private DESUtil() throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{
+	protected DESUtil() throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{
 		this(DEFAULT_SECRET_KEY);
 	}
-	private DESUtil(String key) throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{
+	protected DESUtil(String key) throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{
 
 		Security.addProvider(new SunJCE());
 		Key _key = getKey(key.getBytes());

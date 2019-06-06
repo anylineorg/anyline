@@ -50,8 +50,7 @@ public class ConfigTable {
 		init();
 		debug();
 	}
-	private ConfigTable() {}
-
+	protected ConfigTable(){}
 	public static void addConfig(String ... files){
 		if(null == files){
 			return;

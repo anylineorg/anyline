@@ -23,9 +23,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.anyline.tag.BaseBodyTag;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
+import org.anyline.web.tag.BaseBodyTag;
 import org.apache.log4j.Logger;
 /**
  * 

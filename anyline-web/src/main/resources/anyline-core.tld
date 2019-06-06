@@ -9,7 +9,7 @@
 	<info>anyline标签</info>
 	<tag>
 		<name>nvl</name>
-		<tagclass>org.anyline.tag.Nvl</tagclass>
+		<tagclass>org.anyline.web.tag.Nvl</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>第一个 != null 的值</info>
 		<attribute>
@@ -20,7 +20,7 @@
 	</tag>
 	<tag>
 		<name>evl</name>
-		<tagclass>org.anyline.tag.Evl</tagclass>
+		<tagclass>org.anyline.web.tag.Evl</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>第一个 != null 并 != "" 的值 </info>
 		<attribute>
@@ -31,7 +31,7 @@
 	</tag>
 	<tag>
 		<name>config</name>
-		<tagclass>org.anyline.tag.Config</tagclass>
+		<tagclass>org.anyline.web.tag.Config</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>第一个 != null 的值</info>
 		<attribute>
@@ -56,7 +56,7 @@
 	</tag>
 	<tag>
 		<name>replace</name>
-		<tagclass>org.anyline.tag.Replace</tagclass>
+		<tagclass>org.anyline.web.tag.Replace</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<attribute>
 			<name>value</name>
@@ -80,7 +80,7 @@
 	</tag>
 	<tag>
 		<name>text</name>
-		<tagclass>org.anyline.tag.Text</tagclass>
+		<tagclass>org.anyline.web.tag.Text</tagclass>
 		<bodycontent>empty</bodycontent>
 		<attribute>
 			<name>data</name>
@@ -118,7 +118,7 @@
 	
 	<tag>
 		<name>contains</name>
-		<tagclass>org.anyline.tag.Contains</tagclass>
+		<tagclass>org.anyline.web.tag.Contains</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>data(String,Collection,Map,其他Object Map与Object取key属性值对比)中是否包含value</info>
 		<attribute>
@@ -143,7 +143,7 @@
 	</tag>
 	<tag>
 		<name>if</name>
-		<tagclass>org.anyline.tag.If</tagclass>
+		<tagclass>org.anyline.web.tag.If</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>if else</info>
 		<attribute>
@@ -162,7 +162,7 @@
 	</tag>
 	<tag>
 		<name>else</name>
-		<tagclass>org.anyline.tag.Else</tagclass>
+		<tagclass>org.anyline.web.tag.Else</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>else</info>
 		<attribute>
@@ -172,7 +172,7 @@
 	</tag>
 	<tag>
 		<name>param</name>
-		<tagclass>org.anyline.tag.Param</tagclass>
+		<tagclass>org.anyline.web.tag.Param</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<attribute>
 			<name>key</name>
@@ -185,7 +185,7 @@
 	</tag>
 	<tag>
 		<name>message</name>
-		<tagclass>org.anyline.tag.Message</tagclass>
+		<tagclass>org.anyline.web.tag.Message</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>消息</info>
 		<attribute>
@@ -202,7 +202,7 @@
 	</tag>
 	<tag>
 		<name>division</name>
-		<tagclass>org.anyline.tag.Division</tagclass>
+		<tagclass>org.anyline.web.tag.Division</tagclass>
 		<bodycontent>empty</bodycontent>
 		<info>除法</info>
 		<attribute>
@@ -226,7 +226,7 @@
 	</tag>
 	<tag>
 		<name>ellipsis</name>
-		<tagclass>org.anyline.tag.Ellipsis</tagclass>
+		<tagclass>org.anyline.web.tag.Ellipsis</tagclass>
 		<info>截取字符</info>
 		<attribute>
 			<name>value</name>
@@ -252,7 +252,7 @@
 	</tag>
 	<tag>
 		<name>pagecontext</name>
-		<tagclass>org.anyline.tag.PageContext</tagclass>
+		<tagclass>org.anyline.web.tag.PageContext</tagclass>
 		<info>pagecontext.setAttribute(key,value)</info>
 		<attribute>
 			<name>key</name>
@@ -266,7 +266,7 @@
 	</tag>
 	<tag>
 		<name>select</name>
-		<tagclass>org.anyline.tag.Select</tagclass>
+		<tagclass>org.anyline.web.tag.Select</tagclass>
 		<attribute>
 			<name>data</name>
 			<required>true</required>
@@ -359,7 +359,7 @@
 	</tag>
 	<tag>
 		<name>radio</name>
-		<tagclass>org.anyline.tag.Radio</tagclass>
+		<tagclass>org.anyline.web.tag.Radio</tagclass>
 		<attribute>
 			<name>data</name>
 			<required>true</required>
@@ -454,7 +454,7 @@
 	</tag>
 	<tag>
 		<name>checkbox</name>
-		<tagclass>org.anyline.tag.Checkbox</tagclass>
+		<tagclass>org.anyline.web.tag.Checkbox</tagclass>
 		<info>复选 框 value:已选中项 1或{1,2}或List</info>
 		<attribute>
 			<name>data</name>
@@ -570,7 +570,7 @@
 	</tag>
 	<tag>
 		<name>selecttext</name>
-		<tagclass>org.anyline.tag.SelectText</tagclass>
+		<tagclass>org.anyline.web.tag.SelectText</tagclass>
 		<attribute>
 			<name>data</name>
 			<required>true</required>
@@ -595,7 +595,7 @@
 	</tag>
 	<tag>
 		<name>substring</name>
-		<tagclass>org.anyline.tag.SubString</tagclass>
+		<tagclass>org.anyline.web.tag.SubString</tagclass>
 		<attribute>
 			<name>begin</name>
 			<rtexprvalue>true</rtexprvalue>
@@ -611,7 +611,7 @@
 	</tag>
 	<tag>
 		<name>date</name>
-		<tagclass>org.anyline.tag.DateFormat</tagclass>
+		<tagclass>org.anyline.web.tag.DateFormat</tagclass>
 		<info>日期格式化 nvl:如果value为空("",null) 是否显示当前时间</info>
 		<attribute>
 			<name>value</name>
@@ -636,7 +636,7 @@
 	</tag>
 	<tag>
 		<name>delay</name>
-		<tagclass>org.anyline.tag.TimeDelay</tagclass>
+		<tagclass>org.anyline.web.tag.TimeDelay</tagclass>
 		<info>距离现在多长时间</info>
 		<attribute>
 			<name>value</name>
@@ -653,7 +653,7 @@
 	</tag>
 	<tag>
 		<name>minute</name>
-		<tagclass>org.anyline.tag.MinuteFormat</tagclass>
+		<tagclass>org.anyline.web.tag.MinuteFormat</tagclass>
 		<info>分钟转换成时间格式90=01:30</info>
 		<attribute>
 			<name>value</name>
@@ -666,7 +666,7 @@
 	</tag>
 	<tag>
 		<name>number</name>
-		<tagclass>org.anyline.tag.NumberFormat</tagclass>
+		<tagclass>org.anyline.web.tag.NumberFormat</tagclass>
 		<attribute>
 			<name>value</name>
 			<rtexprvalue>true</rtexprvalue>
@@ -694,7 +694,7 @@
 	</tag>
 	<tag>
 		<name>money</name>
-		<tagclass>org.anyline.tag.Money</tagclass>
+		<tagclass>org.anyline.web.tag.Money</tagclass>
 		<attribute>
 			<name>value</name>
 			<required>true</required>
@@ -707,7 +707,7 @@
 	</tag>
 	<tag>
 		<name>escape</name>
-		<tagclass>org.anyline.tag.Escape</tagclass>
+		<tagclass>org.anyline.web.tag.Escape</tagclass>
 		<attribute>
 			<name>value</name>
 			<required>false</required>
@@ -720,7 +720,7 @@
 	</tag>
 	<tag>
 		<name>unescape</name>
-		<tagclass>org.anyline.tag.UNEscape</tagclass>
+		<tagclass>org.anyline.web.tag.UNEscape</tagclass>
 		<attribute>
 			<name>value</name>
 			<required>false</required>
@@ -733,7 +733,7 @@
 	</tag>
 	<tag>
 		<name>strip</name>
-		<tagclass>org.anyline.tag.Strip</tagclass>
+		<tagclass>org.anyline.web.tag.Strip</tagclass>
 		<info>清除html标签</info>
 		<attribute>
 			<name>value</name>
@@ -754,7 +754,7 @@
 	</tag>
 	<tag>
 		<name>omit</name>
-		<tagclass>org.anyline.tag.Omit</tagclass>
+		<tagclass>org.anyline.web.tag.Omit</tagclass>
 		<info>622****0130</info>
 		<attribute>
 			<name>value</name>
@@ -787,7 +787,7 @@
 	</tag>
 	<tag>
 		<name>sum</name>
-		<tagclass>org.anyline.tag.Sum</tagclass>
+		<tagclass>org.anyline.web.tag.Sum</tagclass>
 		<info>合计</info>
 		<attribute>
 			<name>data</name>
@@ -801,7 +801,7 @@
 	</tag>
 	<tag>
 		<name>random</name>
-		<tagclass>org.anyline.tag.Random</tagclass>
+		<tagclass>org.anyline.web.tag.Random</tagclass>
 		<info>随机数</info>
 		<attribute>
 			<name>length</name>
@@ -826,7 +826,7 @@
 	</tag>
 	<tag>
 		<name>navi</name>
-		<tagclass>org.anyline.tag.Navi</tagclass>
+		<tagclass>org.anyline.web.tag.Navi</tagclass>
 		<info>分页默认ajax</info>
 		<attribute>
 			<name>url</name>
@@ -941,7 +941,7 @@
 	</tag>
 	<tag>
 		<name>ajax</name>
-		<tagclass>org.anyline.tag.Ajax</tagclass>
+		<tagclass>org.anyline.web.tag.Ajax</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>ajax请求</info>
 		<attribute>
@@ -972,7 +972,7 @@
 	</tag>
 	<tag>
 		<name>des</name>
-		<tagclass>org.anyline.tag.des.DESHttpRequestParamValue</tagclass>
+		<tagclass>org.anyline.web.tag.des.DESHttpRequestParamValue</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>加密http request 请求参数value</info>
 		<attribute>
@@ -987,7 +987,7 @@
 	</tag>
 	<tag>
 		<name>checkClient</name>
-		<tagclass>org.anyline.tag.CheckClient</tagclass>
+		<tagclass>org.anyline.web.tag.CheckClient</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>判断当前浏览器type(WX,QQ,ALP,WAP,WEB)是否包含在指定的type中,是则输入value或boyd否则输出else</info>
 		<attribute>
@@ -1008,7 +1008,7 @@
 	</tag>
 	<tag>
 		<name>auth</name>
-		<tagclass>org.anyline.tag.Auth</tagclass>
+		<tagclass>org.anyline.web.tag.Auth</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>第三方授权(wx,qq,alp)</info>
 		<attribute>
@@ -1064,7 +1064,7 @@
 	</tag>
 	<tag>
 		<name>serial</name>
-		<tagclass>org.anyline.tag.SerialNumber</tagclass>
+		<tagclass>org.anyline.web.tag.SerialNumber</tagclass>
 		<bodycontent>empty</bodycontent>
 		<info>分页数据行数</info>
 		<attribute>
