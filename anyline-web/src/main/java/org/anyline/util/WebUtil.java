@@ -84,28 +84,31 @@ public class WebUtil {
 	static {
 		deskeys = new HashMap<String, DESKey>();
 		try {
-			File keyFile = new File(ConfigTable.getWebRoot(), ConfigTable.get("DES_KEY_FILE"));
-			if (keyFile.exists()) {
-				SAXReader reader = new SAXReader();
-				Document document = reader.read(keyFile);
-				Element root = document.getRootElement();
-				for (Iterator<Element> itrKey = root.elementIterator(); itrKey.hasNext();) {
-					Element element = itrKey.next();
-					DESKey key = new DESKey();
-					String version = element.attributeValue("version");
-					key.setVersion(version);
-					key.setKey(element.elementTextTrim("des-key"));
-					key.setKeyParam(element.elementTextTrim("des-key-param"));
-					key.setKeyParamName(element.elementTextTrim("des-key-param-name"));
-					key.setKeyParamValue(element.elementTextTrim("des-key-param-value"));
-					key.setPrefix(element.elementTextTrim("des-prefix"));
-					key.setPrefixParam(element.elementTextTrim("des-prefix-param"));
-					key.setPrefixParamName(element.elementTextTrim("des-prefix-param-name"));
-					key.setPrefixParamValue(element.elementTextTrim("des-prefix-param-value"));
-					if (null == defaultDesKey) {
-						defaultDesKey = key;
-					} else {
-						deskeys.put(version, key);
+			String keyPath = ConfigTable.get("DES_KEY_FILE");
+			if(BasicUtil.isNotEmpty(keyPath)){
+				File keyFile = new File(ConfigTable.getWebRoot(), keyPath);
+				if (keyFile.exists()) {
+					SAXReader reader = new SAXReader();
+					Document document = reader.read(keyFile);
+					Element root = document.getRootElement();
+					for (Iterator<Element> itrKey = root.elementIterator(); itrKey.hasNext();) {
+						Element element = itrKey.next();
+						DESKey key = new DESKey();
+						String version = element.attributeValue("version");
+						key.setVersion(version);
+						key.setKey(element.elementTextTrim("des-key"));
+						key.setKeyParam(element.elementTextTrim("des-key-param"));
+						key.setKeyParamName(element.elementTextTrim("des-key-param-name"));
+						key.setKeyParamValue(element.elementTextTrim("des-key-param-value"));
+						key.setPrefix(element.elementTextTrim("des-prefix"));
+						key.setPrefixParam(element.elementTextTrim("des-prefix-param"));
+						key.setPrefixParamName(element.elementTextTrim("des-prefix-param-name"));
+						key.setPrefixParamValue(element.elementTextTrim("des-prefix-param-value"));
+						if (null == defaultDesKey) {
+							defaultDesKey = key;
+						} else {
+							deskeys.put(version, key);
+						}
 					}
 				}
 			}
