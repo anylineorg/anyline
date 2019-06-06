@@ -142,7 +142,7 @@
 	<distributionManagement>
 		<repository>
 			<id>nexus-releases</id>
-			<url>http://maven.qihoinfo.com/repository/maven-public</url>
+			<url>http://maven.anyline.org/repository/maven-public</url>
 		</repository>
 	</distributionManagement>
 </project>
