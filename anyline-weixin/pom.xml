@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-maven-jar</artifactId>
-		<version>1.0.8</version>
+		<version>1.0.9</version>
 	</parent>
 	
 	<artifactId>anyline-weixin</artifactId>
-	<version>8.0.8</version>
+	<version>8.0.9</version>
 	<packaging>jar</packaging>
 	<name>anyline-weixin</name>
 	<url>http://www.anyline.org/weixin</url>
