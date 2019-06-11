@@ -8,6 +8,7 @@
 框架核心在于service对数据库的操作(springjdbc)，以及针对service返回的DataSet，DataRow的一系列配套工具<br>
 包括从后台到前台从sql>java>jsp>html/js/ss的完整链路中的数据查询，封装，传递，计算，显示。<br/>
 <br/>
+
 主要特性<br/>
 1.简化<br/>
 尽可能的屏蔽一切与业务无关的技术细节，让开发人员可以专注于业务逻辑。<br/>
@@ -22,6 +23,7 @@
 简单来说就是把spring之类掌握的更透彻深入，将其优势发挥的更充分，把代码写的更优雅；而不仅仅是只会写一个HelloWord<br/>
 AnyLine提供的不仅仅是一个工具，更重要的是编程思想.<br/>
 <br/>
+
 为什么不能另起一个炉灶<br/>
 首先要认清有没有这个能力。<br/>
 写好一个框架一个系统性工程，需要投入海量的精力，优化各种细节，应对千变万化的场景，并不是找到或实现一两个亮点，就能完成一个框架。<br/>
@@ -29,6 +31,7 @@ AnyLine提供的不仅仅是一个工具，更重要的是编程思想.<br/>
 一个框架的生存与发展更离不开一个完整活跃的生态，强如struts，webwork，struts2，jsf也已经被淘汰。<br/>
 spring系统也是从支持struts,hibernate等框架的集成开始，在聚集了大量用户，形成相对完善的生态系统后，才慢慢推出了其他框架的替代产品。<br/>
 虽然我们不支持重造轮子，但我们可以强化轮子，作为一个程序员一定要深入轮子内部，了解其底层设计与实现过程。<br/>
+
 ##### 针对人群:<br/>
 ●架构师，技术经理<br/>
 ●没有构架师和技术经理提供技术支持的项目经理<br/>
@@ -39,7 +42,6 @@ spring系统也是从支持struts,hibernate等框架的集成开始，在聚集�
 继承于AnyLine并针对SpringBoot/SpringCloud环境作了进一步优化。<br/>
 SpringBoot/SpringCloud将各种优秀框架整合在一起，AnyBoot在此基础上提供了一系列的增强和简化的封装。<br/>
 
-<br/>
 ```
 anyline-core        : 基础包
 anyline-web         : javaEE基础
@@ -83,6 +85,6 @@ AGE:age
     age:对应url参数名 
     默认当(null != age值)时，最终会拼成SQL查询条件 WHERE AGE= ?
 ```
-更多方法请看**[API文档](http://doc.anyline.org)**或源码或QQ群
+更多方法请看[API文档](http://doc.anyline.org)或源码或QQ群
 <br/>
 <a target="_blank" href="//shang.qq.com/wpa/qunwpa?idkey=279fe968c371670fa9791a9ff8686f86dbac0b5edba8021a660b313e2dd863ad"><img border="0" src="//pub.idqqimg.com/wpa/images/group.png" alt="AnyLine" title="AnyLine"></a>
