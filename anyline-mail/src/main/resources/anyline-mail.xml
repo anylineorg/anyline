@@ -3,7 +3,7 @@
 	<config key="default">
 		<property key="ACCOUNT">server@anyline.org</property>
 		<property key="USERNAME">anyline</property>
-		<property key="PASSWORD">tySb6ZKlo2WY8MWzNBRnwKO5SXXPNZhg</property>
+		<property key="PASSWORD">tySb6ZK******5SXXPNZhg</property>
 		<property key="PROTOCOL">smtp</property>
 		<property key="HOST">smtp.anyline.org</property>
 		<property key="PORT">25</property>
