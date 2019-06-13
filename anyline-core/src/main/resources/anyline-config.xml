@@ -32,7 +32,12 @@
 	<property key="SHOW_SQL_PARAM">true</property>
 	<property key="SHOW_SQL_WHEN_ERROR">false</property>
 	<property key="SHOW_SQL_PARAM_WHEN_ERROR">false</property>
-	
+	<!-- 强制返回值以大写存储 -->
+	<property key="IS_UPPER_KEY">true</property>
+	<!-- 强制返回值以大写存储 -->
+	<!-- 
+	<property key="IS_LOWER_KEY">true</property>
+	 -->
 
 	<!-- 登录验证码图片宽度 -->
 	<property key="VALIDATE_CODE_IMG_WIDTH">60</property>
