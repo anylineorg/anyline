@@ -155,9 +155,12 @@ public class Checkbox extends BaseBodyTag {
 						html += "<div class=\""+borderClazz+"\">";
 					}
 					html += "<input type=\"checkbox\"";
-					if((null != headValue && headValue.equals(value)) || checked){
-						html += " checked = \"checked\"";
+					if(null != headValue){
+						if(checked || checkedValue.equals(headValue) || "true".equalsIgnoreCase(headValue) || "checked".equalsIgnoreCase(headValue) || checked(value,headValue) ) {
+							html += " checked=\"checked\"";
+						}
 					}
+					
 					Map<String,String> map = new HashMap<String,String>();
 					map.put(valueKey, headValue);
 					html += attribute() + crateExtraData(map) + "/>";
@@ -230,6 +233,16 @@ public class Checkbox extends BaseBodyTag {
 				if(null != chk && null != value && chk.equals(value.toString())){
 					return true;
 				}
+			}
+		}
+		return false;
+	}
+	private boolean checked(Object chks, Object value){
+		if(null != chks){
+			if(chks instanceof Collection){
+				return checked((Collection)chks, value);
+			}else{
+				return chks.equals(value);
 			}
 		}
 		return false;
