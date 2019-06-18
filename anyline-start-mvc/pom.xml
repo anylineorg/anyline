@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.anyline</groupId>
+	<artifactId>anyline-start-mvc</artifactId>
+	<version>1.0.9</version>
+	<packaging>pom</packaging>
+	<name>anyline-start-mvc</name>
+	<url>http://www.anyline.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+
+		<anyline.version>8.0.9</anyline.version>
+		<anyline.core.version>8.0.9</anyline.core.version>
+		<anyline.ext.version>8.0.9</anyline.ext.version>
+		<anyline.web.version>8.0.9</anyline.web.version>
+		<anyline.web.ext.version>8.0.9</anyline.web.ext.version>
+		<anyline.springmvc.version>8.0.9</anyline.springmvc.version>
+
+		<anyline.amap.version>8.0.9</anyline.amap.version>
+		<anyline.alipay.version>8.0.9</anyline.alipay.version>
+		<anyline.aliyun.version>8.0.9</anyline.aliyun.version>
+		<anyline.easemob.version>8.0.9</anyline.easemob.version>
+		<anyline.jpush.version>8.0.9</anyline.jpush.version>
+		<anyline.mail.version>8.0.9</anyline.mail.version>
+		<anyline.mssql.version>8.0.9</anyline.mssql.version>
+		<anyline.mysql.version>8.0.9</anyline.mysql.version>
+		<anyline.qq.version>8.0.9</anyline.qq.version>
+		<anyline.redis.version>8.0.9</anyline.redis.version>
+		<anyline.weixin.version>8.0.9</anyline.weixin.version>
+
+		<javax.servlet.version>4.0.0</javax.servlet.version>
+		<javax.jsp.version>2.0</javax.jsp.version>
+		<javax.jstl.version>1.1.2</javax.jstl.version>
+		<taglibs.standard.version>1.1.2</taglibs.standard.version>
+		<javax.mail.version>1.5.0-b01</javax.mail.version>
+
+		<log4j.version>1.2.17</log4j.version>
+		<json.version>2.4</json.version>
+		<dom4j.version>2.1.1</dom4j.version>
+		<commons.net.version>3.6</commons.net.version>
+		<commons.io.version>2.6</commons.io.version>
+		<commons.httpclient.version>3.1</commons.httpclient.version>
+		<apache.httpcomponents.version>4.5</apache.httpcomponents.version>
+		<apache.struts.version>2.3.24.1</apache.struts.version>
+		<oro.version>2.0.8</oro.version>
+		<ecache.version>2.10.6</ecache.version>
+		<ognl.version>3.2.10</ognl.version>
+		<slf4j.version>1.7.2</slf4j.version>
+		<mssql.jdbc.version>7.2.2.jre8</mssql.jdbc.version>
+		<mysql.jdbc.version>5.1.24</mysql.jdbc.version>
+
+		<spring.version>4.3.23.RELEASE</spring.version>
+
+		<aliyun.oss.version>3.3.0</aliyun.oss.version>
+		<aliyun.sms.version>1.1.0</aliyun.sms.version>
+		<alipay.version>3.7.26.ALL</alipay.version>
+		<druid.version>1.1.6</druid.version>
+		<jsch.version>0.1.55</jsch.version>
+		<persistence.version>1.0.2</persistence.version>
+
+	</properties>
+
+	<dependencies>
+		<!-- 连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+		<!-- mysql -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.jdbc.version}</version>
+		</dependency>
+		<!-- 日志 -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-nop</artifactId>
+			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${javax.jstl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>${taglibs.standard.version}</version>
+		</dependency>
+		<!-- springmvc支持 -->
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-springmvc</artifactId>
+			<version>${anyline.version}</version>
+		</dependency>
+		<!-- mysql支持 -->
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-mysql</artifactId>
+			<version>${anyline.version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>*.tld</include>
+				</includes>
+				<targetPath>META-INF</targetPath>
+			</resource>
+		</resources>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.0.2</version>
+					<configuration>
+						<excludes>
+							<excludes>*.xml</excludes>
+							<excludes>*.tld</excludes>
+							<excludes>*.xsd</excludes>
+							<excludes>*.properties</excludes>
+						</excludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-resources-plugin
+										</artifactId>
+										<versionRange>
+											[2.5,)
+										</versionRange>
+										<goals>
+											<goal>resources</goal>
+											<goal>testResources</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
