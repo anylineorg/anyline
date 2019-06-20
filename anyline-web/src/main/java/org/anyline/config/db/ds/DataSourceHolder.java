@@ -65,6 +65,9 @@ public class DataSourceHolder {
 
     public static void setDefaultDataSource(){
     	clearDataSource();
+    	if(dataSources.contains("default")){
+    		THREAD_SOURCE.set("default");
+    	}
     	THREAD_AUTO_DEFAULT.set("false");
     }
     public static void clearDataSource() {
