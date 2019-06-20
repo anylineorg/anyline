@@ -18,23 +18,23 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 
 		<anyline.version>8.0.9</anyline.version>
-		<anyline.core.version>8.0.9</anyline.core.version>
-		<anyline.ext.version>8.0.9</anyline.ext.version>
-		<anyline.web.version>8.0.9</anyline.web.version>
-		<anyline.web.ext.version>8.0.9</anyline.web.ext.version>
-		<anyline.springmvc.version>8.0.9</anyline.springmvc.version>
+		<anyline.core.version>${anyline.version}</anyline.core.version>
+		<anyline.ext.version>${anyline.version}</anyline.ext.version>
+		<anyline.web.version>${anyline.version}</anyline.web.version>
+		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
+		<anyline.springmvc.version>${anyline.version}</anyline.springmvc.version>
 
-		<anyline.amap.version>8.0.9</anyline.amap.version>
-		<anyline.alipay.version>8.0.9</anyline.alipay.version>
-		<anyline.aliyun.version>8.0.9</anyline.aliyun.version>
-		<anyline.easemob.version>8.0.9</anyline.easemob.version>
-		<anyline.jpush.version>8.0.9</anyline.jpush.version>
-		<anyline.mail.version>8.0.9</anyline.mail.version>
-		<anyline.mssql.version>8.0.9</anyline.mssql.version>
-		<anyline.mysql.version>8.0.9</anyline.mysql.version>
-		<anyline.qq.version>8.0.9</anyline.qq.version>
-		<anyline.redis.version>8.0.9</anyline.redis.version>
-		<anyline.weixin.version>8.0.9</anyline.weixin.version>
+		<anyline.amap.version>${anyline.version}</anyline.amap.version>
+		<anyline.alipay.version>${anyline.version}</anyline.alipay.version>
+		<anyline.aliyun.version>${anyline.version}</anyline.aliyun.version>
+		<anyline.easemob.version>${anyline.version}</anyline.easemob.version>
+		<anyline.jpush.version>${anyline.version}</anyline.jpush.version>
+		<anyline.mail.version>${anyline.version}</anyline.mail.version>
+		<anyline.mssql.version>${anyline.version}</anyline.mssql.version>
+		<anyline.mysql.version>${anyline.version}</anyline.mysql.version>
+		<anyline.qq.version>${anyline.version}</anyline.qq.version>
+		<anyline.redis.version>${anyline.version}</anyline.redis.version>
+		<anyline.weixin.version>${anyline.version}</anyline.weixin.version>
 
 		<javax.servlet.version>4.0.0</javax.servlet.version>
 		<javax.jsp.version>2.0</javax.jsp.version>
