@@ -22,14 +22,15 @@ package org.anyline.config.db.ds;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
 public class DataSourceHolder {
 	public static Logger log = Logger.getLogger(DataSourceHolder.class);
-	//数据源标识
-    private static final ThreadLocal<String> THREAD_SOURCE = new ThreadLocal<String>();
+	//切换前数据源
+    private static final ThreadLocal<String> THREAD_RECALL_SOURCE = new ThreadLocal<String>();
+	//当前数据源
+    private static final ThreadLocal<String> THREAD_CUR_SOURCE = new ThreadLocal<String>();
     //是否还原默认数据源,执行一次操作后还原回默认数据源
     private static final ThreadLocal<Boolean> THREAD_AUTO_DEFAULT = new ThreadLocal<Boolean>();
     private static List<String> dataSources = new ArrayList<String>();
@@ -37,7 +38,7 @@ public class DataSourceHolder {
     	THREAD_AUTO_DEFAULT.set(false);
     }
     public static String getDataSource() {
-        return THREAD_SOURCE.get();
+        return THREAD_CUR_SOURCE.get();
     }
 
     public static void setDataSource(String dataSource) {
@@ -47,7 +48,8 @@ public class DataSourceHolder {
     	if(!dataSources.contains(dataSource)){
     		log.error("[数据源未注册][数据源:"+dataSource+"]");
     	}
-    	THREAD_SOURCE.set(dataSource);
+    	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源
+    	THREAD_CUR_SOURCE.set(dataSource);
     	THREAD_AUTO_DEFAULT.set(false);
     }
 
@@ -55,10 +57,17 @@ public class DataSourceHolder {
     	if(ConfigTable.isDebug()){
     		log.warn("[切换数据源][数据源:"+dataSource+"][auto default:"+auto+"]");
     	}
-    	THREAD_SOURCE.set(dataSource);
+    	if(!dataSources.contains(dataSource)){
+    		log.error("[数据源未注册][数据源:"+dataSource+"]");
+    	}
+    	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源
+    	THREAD_CUR_SOURCE.set(dataSource);
     	THREAD_AUTO_DEFAULT.set(auto);
     }
-
+    //恢复切换前数据源
+    public static void recoverDataSource(){
+    	THREAD_CUR_SOURCE.set(THREAD_RECALL_SOURCE.get());
+    }
     public static void setDefaultDataSource(){
     	clearDataSource();
     	if(dataSources.contains("default")){
@@ -67,7 +76,7 @@ public class DataSourceHolder {
     	THREAD_AUTO_DEFAULT.set(false);
     }
     public static void clearDataSource() {
-    	THREAD_SOURCE.remove();
+    	THREAD_CUR_SOURCE.remove();
     }
     public static boolean isAutoDefault(){
     	return THREAD_AUTO_DEFAULT.get();
@@ -86,7 +95,7 @@ public class DataSourceHolder {
 			if(fr != -1){
 				String ds = src.substring(fr+1,to);
 				src = src.substring(to+1);
-				DataSourceHolder.setDataSource(ds, true);
+				setDataSource(ds, true);
 			}
 		}
 		return src;
