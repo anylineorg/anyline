@@ -19,6 +19,9 @@
 
 package org.anyline.config.db.ds;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.anyline.util.BasicUtil;
 
 public class DataSourceHolder {
@@ -26,6 +29,7 @@ public class DataSourceHolder {
     private static final ThreadLocal<String> THREAD_SOURCE = new ThreadLocal<String>();
     //是否还原默认数据源,执行一次操作后还原回默认数据源
     private static final ThreadLocal<String> THREAD_AUTO_DEFAULT = new ThreadLocal<String>();
+    private static List<String> dataSources = new ArrayList<String>();
     static{
     	THREAD_AUTO_DEFAULT.set("false");
     }
@@ -76,5 +80,13 @@ public class DataSourceHolder {
 			}
 		}
 		return src;
+	}
+	public static void reg(String ds){
+		if(!dataSources.contains(ds)){
+			dataSources.add(ds);
+		}
+	}
+	public static boolean contains(String ds){
+		return dataSources.contains(ds);
 	}
 }

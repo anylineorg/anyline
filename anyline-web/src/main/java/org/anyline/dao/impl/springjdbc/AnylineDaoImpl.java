@@ -61,20 +61,23 @@ import org.springframework.stereotype.Repository;
  
 @Repository("anylineDao")
 public class AnylineDaoImpl implements AnylineDao {
-	private static final Logger log = Logger.getLogger(AnylineDaoImpl.class);
+	protected static final Logger log = Logger.getLogger(AnylineDaoImpl.class);
 	
 	@Autowired(required=false)
-	private JdbcTemplate jdbc;
+	protected JdbcTemplate jdbc;
 	
+	public JdbcTemplate getJdbc(){
+		return jdbc;
+	}
 	
-	private BatchInsertStore batchInsertStore = new BatchInsertStore();
+	protected BatchInsertStore batchInsertStore = new BatchInsertStore();
 	
-	private static boolean showSQL = false;
-	private static boolean showSQLParam = false;
-	private static boolean showSQLWhenError = true;
-	private static boolean showSQLParamWhenError = true;
+	protected static boolean showSQL = false;
+	protected static boolean showSQLParam = false;
+	protected static boolean showSQLWhenError = true;
+	protected static boolean showSQLParamWhenError = true;
 	
-	private static boolean isBatchInsertRun = false;
+	protected static boolean isBatchInsertRun = false;
 	
 	public AnylineDaoImpl(){
 		showSQL = ConfigTable.getBoolean("SHOW_SQL",showSQL);
@@ -88,7 +91,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public DataSet query(SQL sql, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
-		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createQueryRunSQL(sql, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
 		if(showSQL && !run.isValid()){
 			String tmp = "[valid:false]";
 			String src = "";
@@ -149,7 +152,7 @@ public class AnylineDaoImpl implements AnylineDao {
 
 	public int count(SQL sql, ConfigStore configs, String ... conditions){
 		int count = -1;
-		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createQueryRunSQL(sql, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
 		count = getTotal(run.getTotalQueryTxt(), run.getValues());
 		return count;
 	}
@@ -158,7 +161,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 	public boolean exists(SQL sql, ConfigStore configs, String ... conditions){
 		boolean result = false;
-		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createQueryRunSQL(sql, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
 		String txt = run.getExistsTxt();
 		List<Object> values = run.getValues();
 		
@@ -173,9 +176,9 @@ public class AnylineDaoImpl implements AnylineDao {
 		try{
 			Map<String,Object> map = null;
 			if(null != values && values.size()>0){
-				map = jdbc.queryForMap(txt, values.toArray());
+				map = getJdbc().queryForMap(txt, values.toArray());
 			}else{
-				map = jdbc.queryForMap(txt);
+				map = getJdbc().queryForMap(txt);
 			}
 			if(null == map){
 				result = false;
@@ -206,7 +209,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * 总记录数
 	 * @return
 	 */
-	private int getTotal(String sql, List<Object> values) {
+	protected int getTotal(String sql, List<Object> values) {
 		int total = 0;
 		DataSet set = select(sql,values);
 		total = set.getInt("CNT");
@@ -231,7 +234,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			return result;
 		}
-		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createUpdateTxt(dest, obj, false, columns);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createUpdateTxt(dest, obj, false, columns);
 		String sql = run.getUpdateTxt();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:" + dest + "]");
@@ -247,7 +250,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		/*执行SQL*/
 		try{
-			result = jdbc.update(sql, values.toArray());
+			result = getJdbc().update(sql, values.toArray());
 			if(showSQL){
 				log.warn(random + "[执行耗时:" +(System.currentTimeMillis() - fr) + "ms][影响行数:" + result + "]");
 			}
@@ -304,7 +307,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 	
 
-	private int saveObject(String dest, Object data, boolean checkPrimary, String ... columns){
+	protected int saveObject(String dest, Object data, boolean checkPrimary, String ... columns){
 		if(null == data){
 			return 0;
 		}
@@ -314,7 +317,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			return update(dest, data, columns);
 		}
 	}
-	private boolean checkIsNew(Object obj){
+	protected boolean checkIsNew(Object obj){
 		if(null == obj){
 			return false;
 		}
@@ -337,7 +340,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkPrimary, String ... columns){
-		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createInsertTxt(dest, data, checkPrimary, columns);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createInsertTxt(dest, data, checkPrimary, columns);
 		if(null == run){
 			return 0;
 		}
@@ -353,7 +356,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			log.warn(random + "[参数:" + paramLogFormat(values) + "]");
 		}
 		try{
-			cnt= jdbc.update(new PreparedStatementCreator() {
+			cnt= getJdbc().update(new PreparedStatementCreator() {
 				@Override
 				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 					PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -418,8 +421,8 @@ public class AnylineDaoImpl implements AnylineDao {
 				batchInsert(dest, set.getRow(i), checkPrimary, columns);
 			}
 		}
-		String table = SQLCreaterUtil.getCreater(jdbc).getDataSource(data);
-		List<String> cols = SQLCreaterUtil.getCreater(jdbc).confirmInsertColumns(dest, data, columns);
+		String table = SQLCreaterUtil.getCreater(getJdbc()).getDataSource(data);
+		List<String> cols = SQLCreaterUtil.getCreater(getJdbc()).confirmInsertColumns(dest, data, columns);
 		String strCols = "";
 		int size = cols.size();
 		for(int i=0; i<size; i++){
@@ -464,7 +467,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	public int batchInsert(Object data, String ... columns){
 		return batchInsert(null, data, false, columns);
 	}
-	private void setPrimaryValue(Object obj, int value){
+	protected void setPrimaryValue(Object obj, int value){
 		if(null == obj){
 			return;
 		}
@@ -482,7 +485,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * @param values
 	 * @return
 	 */
-	private DataSet select(String sql, List<Object> values){
+	protected DataSet select(String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -497,9 +500,9 @@ public class AnylineDaoImpl implements AnylineDao {
 		try{
 			List<Map<String,Object>> list = null;
 			if(null != values && values.size()>0){
-				list = jdbc.queryForList(sql, values.toArray());
+				list = getJdbc().queryForList(sql, values.toArray());
 			}else{
-				list = jdbc.queryForList(sql);
+				list = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
 			if(showSQL){
@@ -528,7 +531,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public int execute(SQL sql, ConfigStore configs, String ... conditions){
 		int result = -1;
-		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createExecuteRunSQL(sql, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createExecuteRunSQL(sql, configs, conditions);
 		if(!run.isValid()){
 			if(showSQL){
 				log.warn("[valid:false]");
@@ -546,9 +549,9 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		try{
 			if(null != values && values.size() > 0){
-				result = jdbc.update(txt, values.toArray());
+				result = getJdbc().update(txt, values.toArray());
 			}else{
-				result = jdbc.update(txt);
+				result = getJdbc().update(txt);
 			}
 
 			if(showSQL){
@@ -600,7 +603,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		sql += ")}";
 		try{
-			list = (List<Object>)jdbc.execute(sql,new CallableStatementCallback<Object>(){     
+			list = (List<Object>)getJdbc().execute(sql,new CallableStatementCallback<Object>(){     
 		        public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
 					final List<Object> result = new ArrayList<Object>();
 					for(int i=1; i<=sizeIn; i++){
@@ -672,7 +675,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		final String rdm = random;
 		DataSet set = null;
 		try{
-			set = (DataSet)jdbc.execute(new CallableStatementCreator(){  
+			set = (DataSet)getJdbc().execute(new CallableStatementCreator(){  
 	            public CallableStatement createCallableStatement(Connection conn) throws SQLException {  
 	            	String sql = "{call " +procedure.getName()+"(";
 	        		final int sizeIn = null == inputTypes? 0 : inputTypes.size();
@@ -743,7 +746,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 
 	public int delete(String table, String key, Collection<Object> values){
-		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createDeleteRunSQL(table, key, values);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(table, key, values);
 		int result = exeDelete(run);
 		return result;
 	}
@@ -754,17 +757,17 @@ public class AnylineDaoImpl implements AnylineDao {
 				list.add(value);
 			}
 		}
-		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createDeleteRunSQL(table, key, list);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(table, key, list);
 		int result = exeDelete(run);
 		return result;
 	}
 	@Override
 	public int delete(String dest, Object data, String... columns) {
-		RunSQL run = SQLCreaterUtil.getCreater(jdbc).createDeleteRunSQL(dest, data, columns);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(dest, data, columns);
 		int result = exeDelete(run);
 		return result;
 	}
-	private int exeDelete(RunSQL run){
+	protected int exeDelete(RunSQL run){
 		int result = 0;
 		final String sql = run.getDeleteTxt();
 		final List<Object> values = run.getValues();
@@ -776,11 +779,11 @@ public class AnylineDaoImpl implements AnylineDao {
 			log.warn(random + "[参数:" + paramLogFormat(values) + "]");
 		}
 		try{
-			result = jdbc.update(
+			result = getJdbc().update(
 	            new PreparedStatementCreator() {
 	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
 	                {
-	                    PreparedStatement ps = jdbc.getDataSource().getConnection().prepareStatement(sql);
+	                    PreparedStatement ps = getJdbc().getDataSource().getConnection().prepareStatement(sql);
 	                    int idx = 0;
 	                    if(null != values){
 		                    for(Object obj:values){
@@ -813,7 +816,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * @param params
 	 * @return
 	 */
-	private String paramLogFormat(List<?> params){
+	protected String paramLogFormat(List<?> params){
 		String result = "";
 		if(null != params){
 			int idx = 0;

@@ -62,10 +62,7 @@ public class AnylineServiceImpl implements AnylineService {
 	protected AnylineDao dao;
 	
 	
-	public AnylineDao getDao() {
-		return dao;
-	}
-	private PageNavi setPageLazy(String src, ConfigStore configs, String ... conditions){
+	protected PageNavi setPageLazy(String src, ConfigStore configs, String ... conditions){
 		PageNavi navi =  null;
 		String lazyKey = null;
 		if(null != configs){
@@ -79,7 +76,7 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return navi;
 	}
-	private DataSet queryFromDao(String src, ConfigStore configs, String... conditions){
+	protected DataSet queryFromDao(String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
 		if(ConfigTable.isSQLDebug()){
 			log.warn("[解析SQL] [src:" + src + "]");
@@ -106,7 +103,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @param pks
 	 * @return
 	 */
-	private String parsePrimaryKey(String src, List<String> pks){
+	protected String parsePrimaryKey(String src, List<String> pks){
 		if(src.endsWith(">")){
 			int fr = src.lastIndexOf("<");
 			int to = src.lastIndexOf(">");
@@ -124,7 +121,7 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return src;
 	}
-	private synchronized SQL createSQL(String src){
+	protected synchronized SQL createSQL(String src){
 		SQL sql = null;
 		src = src.trim();
 		List<String> pks = new ArrayList<String>();
@@ -203,7 +200,7 @@ public class AnylineServiceImpl implements AnylineService {
 		return query(src, configs, conditions);
 	}
 
-	private DataSet queryFromCacheL2(String cache2, DataSet l1, String src, ConfigStore configs, String ... conditions){
+	protected DataSet queryFromCacheL2(String cache2, DataSet l1, String src, ConfigStore configs, String ... conditions){
 		if(ConfigTable.isDebug()){
 			log.warn("[cache from L2][cache:"+cache2+"][src:"+src+"]");
 		}
@@ -240,7 +237,7 @@ public class AnylineServiceImpl implements AnylineService {
 		}
 		return set;
 	}
-	private DataSet queryFromCacheL1(boolean isUseCacheL2, String cache, String src, ConfigStore configs, String ... conditions){
+	protected DataSet queryFromCacheL1(boolean isUseCacheL2, String cache, String src, ConfigStore configs, String ... conditions){
 		if(ConfigTable.isDebug()){
 			log.warn("[cache from L1][cache:"+cache+"][src:"+src+"]");
 		}
@@ -817,7 +814,7 @@ public class AnylineServiceImpl implements AnylineService {
 		return save(sync, dest, data, false, columns);
 	}
 
-	private int saveObject(String dest, Object data, boolean checkPrimary, String... columns) {
+	protected int saveObject(String dest, Object data, boolean checkPrimary, String... columns) {
 		dest = DataSourceHolder.parseDataSource(dest);
 		return dao.save(dest, data, checkPrimary, columns);
 	}
@@ -977,11 +974,11 @@ public class AnylineServiceImpl implements AnylineService {
 
 
 
-	private int deleteObject(String dest, Object data, String... columns) {
+	protected int deleteObject(String dest, Object data, String... columns) {
 		return 0;
 	}
 
-	private int deleteRow(String dest, DataRow row, String... columns) {
+	protected int deleteRow(String dest, DataRow row, String... columns) {
 		dest = DataSourceHolder.parseDataSource(dest);
 		return dao.delete(dest, row, columns);
 	}
@@ -1010,7 +1007,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * 			CD:null		删除
 	 * 			CD:NULL		拼接 IS NULL
 	 */
-//	private String[] parseConditionsss(String[] conditions){
+//	protected String[] parseConditionsss(String[] conditions){
 //		conditions = BasicUtil.compressionSpace(conditions);
 //		if(null != conditions){
 //			int length = conditions.length;
