@@ -52,21 +52,6 @@ public class AbstractBasicController{
 	protected final String FAIL = "fail";
 	protected final String JSON = "json";
 	protected final String SUCCESS = "success";
-	private static ThreadLocal<DataRow> operator = new ThreadLocal<DataRow>();
-	public static DataRow getOperator(){
-		return operator.get();
-	}
-	public static void setOperator(HttpServletRequest request){
-		if(null == request){
-			return;
-		}
-		DataRow row = new DataRow();
-		DataRow user = (DataRow)request.getSession().getAttribute(ConfigTable.getString("SESSION_ATTR_CUR_USER"));
-		if(null != user){
-			row.copy(user);
-		}
-		operator.set(row);
-	}
 	
 	/******************************************************************************************************************
 	 * 
