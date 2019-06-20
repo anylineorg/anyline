@@ -121,10 +121,14 @@ public class ConfigTable {
 				webRoot = path.substring(0,path.indexOf("WEB-INF")-1);	
 			}
 		}
-		if(path.contains("WEB-INF")){
-			classpath = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
+		if(path.contains("classes")){
+			classpath = path;
 		}else{
-			classpath = root + File.separator + "bin" + File.separator + "classes" + File.separator;
+			if(path.contains("WEB-INF")){
+				classpath = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
+			}else{
+				classpath = root + File.separator + "bin" + File.separator + "classes" + File.separator;
+			}
 		}
 		//加载配置文件
 		loadConfig();
