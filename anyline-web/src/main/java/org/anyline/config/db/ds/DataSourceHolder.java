@@ -44,6 +44,9 @@ public class DataSourceHolder {
     	if(ConfigTable.isDebug()){
     		log.warn("[切换数据源][数据源:"+dataSource+"]");
     	}
+    	if(!dataSources.contains(dataSource)){
+    		log.error("[数据源未注册][数据源:"+dataSource+"]");
+    	}
     	THREAD_SOURCE.set(dataSource);
     	THREAD_AUTO_DEFAULT.set("false");
     }
