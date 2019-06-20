@@ -23,8 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.apache.log4j.Logger;
 
 public class DataSourceHolder {
+	public static Logger log = Logger.getLogger(DataSourceHolder.class);
 	//数据源标识
     private static final ThreadLocal<String> THREAD_SOURCE = new ThreadLocal<String>();
     //是否还原默认数据源,执行一次操作后还原回默认数据源
@@ -38,11 +41,17 @@ public class DataSourceHolder {
     }
 
     public static void setDataSource(String dataSource) {
+    	if(ConfigTable.isDebug()){
+    		log.warn("[切换数据源][数据源:"+dataSource+"]");
+    	}
     	THREAD_SOURCE.set(dataSource);
     	THREAD_AUTO_DEFAULT.set("false");
     }
 
     public static void setDataSource(String dataSource, boolean auto) {
+    	if(ConfigTable.isDebug()){
+    		log.warn("[切换数据源][数据源:"+dataSource+"]");
+    	}
     	THREAD_SOURCE.set(dataSource);
     	if(auto){
     		THREAD_AUTO_DEFAULT.set("true");

@@ -100,7 +100,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}else{
 				src = sql.getText();
 			}
-			tmp+="[sql:"+ConfigParser.createSQLSign(false, false, src, configs, conditions)+"]";
+			tmp+="[SQL:"+ConfigParser.createSQLSign(false, false, src, configs, conditions)+"][ds:"+DataSourceHolder.getDataSource()+"]";
 			log.warn(tmp);
 		}
 		PageNavi navi = run.getPageNavi();
@@ -168,7 +168,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][ds:"+DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[TXT:\n" + txt + "\n]");
 			log.warn(random + "[参数:" + paramLogFormat(values) + "]");
 		}
@@ -244,7 +244,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][ds:"+DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[TXT:\n" +sql + "\n]");
 			log.warn(random + "[参数:" + paramLogFormat(values) + "]");
 		}
@@ -351,7 +351,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][ds:"+DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[TXT:\n" + sql + "\n]");
 			log.warn(random + "[参数:" + paramLogFormat(values) + "]");
 		}
@@ -492,7 +492,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][ds:"+DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[TXT:\n" + sql + "\n]");
 			log.warn(random + "[参数:" + paramLogFormat(values) + "]");
 		}
@@ -543,7 +543,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][ds:"+DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[TXT:\n" + txt + "\n]");
 			log.warn(random + "[参数:" + paramLogFormat(values) + "]");
 		}
@@ -587,7 +587,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "]"; 
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][ds:"+DataSourceHolder.getDataSource()+"]"; 
 			log.warn(random + "[TXT:\n" +procedure.getName() + "]");
 			log.warn(random + "[参数:" + paramLogFormat(inputValues) + "]");
 		}
@@ -668,7 +668,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][ds:"+DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[TXT:\n" + procedure.getName() + "\n]");
 			log.warn(random + "[参数:" + paramLogFormat(inputValues) + "]");
 		}
@@ -774,7 +774,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][ds:"+DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[TXT:\n" + sql + "\n]");
 			log.warn(random + "[参数:" + paramLogFormat(values) + "]");
 		}
