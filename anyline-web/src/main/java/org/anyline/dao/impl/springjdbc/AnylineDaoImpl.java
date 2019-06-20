@@ -142,7 +142,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		//自动切换回默认数据源
 		if(DataSourceHolder.isAutoDefault()){
-			DataSourceHolder.setDefaultDataSource();
+			DataSourceHolder.recoverDataSource();
 		}
 		return set;
 	}
@@ -198,7 +198,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		//自动切换回默认数据源
 		if(DataSourceHolder.isAutoDefault()){
-			DataSourceHolder.setDefaultDataSource();
+			DataSourceHolder.recoverDataSource();
 		}
 		return result;
 	}
@@ -264,7 +264,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.setDefaultDataSource();
+				DataSourceHolder.recoverDataSource();
 			}
 		}
 		return result;
@@ -390,7 +390,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.setDefaultDataSource();
+				DataSourceHolder.recoverDataSource();
 			}
 		}
 		return cnt;
@@ -567,7 +567,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.setDefaultDataSource();
+				DataSourceHolder.recoverDataSource();
 			}
 		}
 		return result; 
@@ -648,7 +648,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.setDefaultDataSource();
+				DataSourceHolder.recoverDataSource();
 			}
 		}
 		return result;
@@ -739,7 +739,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.setDefaultDataSource();
+				DataSourceHolder.recoverDataSource();
 			}
 		}
 		return set;
@@ -806,7 +806,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
-				DataSourceHolder.setDefaultDataSource();
+				DataSourceHolder.recoverDataSource();
 			}
 		}
 		return result;
