@@ -29,6 +29,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.entity.DataRow;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
@@ -42,6 +43,7 @@ public class Select extends BaseBodyTag {
 	private String head;
 	private String headValue;
 	private String type = "select"; // 如果type=text则只显示选中项的text而不生成<select>
+	private String multiple = null;
 
 	public String getHead() {
 		return head;
@@ -95,7 +97,11 @@ public class Select extends BaseBodyTag {
 					}
 				}
 			} else {
-				html = "<select " + attribute() + ">";
+				html = "<select " + attribute();
+				if(BasicUtil.isNotEmpty(multiple)){
+					html += " multiple=\"multiple\"";
+				}
+				html +=  ">";
 				if (null != body) {
 					html += body;
 				}
@@ -164,6 +170,7 @@ public class Select extends BaseBodyTag {
 		type = "select";
 		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 		textKey = "NM";
+		multiple = null;
 
 	}
 
@@ -190,4 +197,13 @@ public class Select extends BaseBodyTag {
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
+
+	public String getMultiple() {
+		return multiple;
+	}
+
+	public void setMultiple(String multiple) {
+		this.multiple = multiple;
+	}
+	
 }
