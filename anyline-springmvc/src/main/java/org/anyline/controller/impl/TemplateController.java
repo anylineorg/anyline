@@ -33,7 +33,7 @@ public class TemplateController extends AnylineController {
 	 * 根据dir构造文件目录(super.dir+this.dir)
 	 * @return
 	 */
-	private String buildDir(){
+	protected String buildDir(){
 		String result = "";
 		try {
 			Class clazz = getClass();
