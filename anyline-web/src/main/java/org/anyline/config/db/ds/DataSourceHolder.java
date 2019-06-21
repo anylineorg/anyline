@@ -79,6 +79,9 @@ public class DataSourceHolder {
     	THREAD_CUR_SOURCE.remove();
     }
     public static boolean isAutoDefault(){
+    	if(null == THREAD_AUTO_DEFAULT || null == THREAD_AUTO_DEFAULT.get()){
+    		return false;
+    	}
     	return THREAD_AUTO_DEFAULT.get();
     }
 
