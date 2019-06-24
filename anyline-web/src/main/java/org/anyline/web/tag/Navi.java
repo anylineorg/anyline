@@ -159,7 +159,7 @@ public class Navi extends BodyTagSupport{
 			//刷新当前页函数
 
 			if(BasicUtil.isNotEmpty(refresh)){
-				builder.append("function ").append(refresh).append("(){\n");
+				builder.append("function ").append(refresh).append("(").append(confId).append("){\n");
 				builder.append("_navi_refresh(").append(confId).append(");\n");
 				builder.append("}\n");
 			}
