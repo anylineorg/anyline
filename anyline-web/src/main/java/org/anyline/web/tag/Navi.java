@@ -46,6 +46,7 @@ public class Navi extends BodyTagSupport{
 	private String method = "post"	;
 	private String id				;	//一个页面内多个标签时需要id区分
 	private String function			;	//指定function后,需主动调用function后加载数据,查询条件发生变化时可调用些function
+	private String refresh			; 	//刷新当前页
 	private Boolean intime = false	;	//实时执行
 	private Boolean auto = false	;	//是否加载下一页内容(wap加载更多typ=1时 划屏到底部自动加载)
 	private String callback			;	//回调函数
@@ -140,6 +141,7 @@ public class Navi extends BodyTagSupport{
 			builder.append("stat:").append(stat).append(",");
 			builder.append("creater:'").append(creater).append("'");
 			builder.append("};\n");
+			//加载数据函数
 			if(BasicUtil.isNotEmpty(function)){
 				builder.append("function ").append(function).append("(clear,hold){\n");
 				builder.append("if(clear){").append(confId).append("['clear'] = 1;}\n");
@@ -153,6 +155,13 @@ public class Navi extends BodyTagSupport{
 				}
 			}else{
 				builder.append("_navi_init("+confId+");\n");
+			}
+			//刷新当前页函数
+
+			if(BasicUtil.isNotEmpty(refresh)){
+				builder.append("function ").append(refresh).append("(){\n");
+				builder.append("_navi_refresh(").append(confId).append(");\n");
+				builder.append("}\n");
 			}
 			//自动加载
 			String scrollEventSrc = "window";
@@ -195,6 +204,7 @@ public class Navi extends BodyTagSupport{
 		before			= null	;
 		guide			= null	;
 		function		= null	;
+		refresh			= null	;
 		type			= 0		;
 		creater			= "ajax";
 		stat			= false	;
@@ -343,6 +353,12 @@ public class Navi extends BodyTagSupport{
 	}
 	public void setMethod(String method) {
 		this.method = method;
+	}
+	public String getRefresh() {
+		return refresh;
+	}
+	public void setRefresh(String refresh) {
+		this.refresh = refresh;
 	}
 
 }
