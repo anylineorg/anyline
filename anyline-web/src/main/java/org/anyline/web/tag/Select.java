@@ -55,8 +55,8 @@ public class Select extends BaseBodyTag {
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		valueKey = DataRow.keyCase(valueKey);
-		textKey = DataRow.keyCase(textKey);
+//		valueKey = DataRow.keyCase(valueKey);
+//		textKey = DataRow.keyCase(textKey);
 		String html = "";
 
 		if (data instanceof String) {
