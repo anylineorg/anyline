@@ -48,8 +48,8 @@ public class SelectText extends BaseBodyTag{
 	 public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		String html = "";
-		valueKey = DataRow.keyCase(valueKey);
-		textKey = DataRow.keyCase(textKey);
+//		valueKey = DataRow.keyCase(valueKey);
+//		textKey = DataRow.keyCase(textKey);
 		try{
 			if(null == data){
 				return EVAL_PAGE;
