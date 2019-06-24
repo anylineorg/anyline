@@ -80,6 +80,9 @@ public class Select extends BaseBodyTag {
 				String tmp[] = item.split(":");
 				map.put(valueKey, tmp[0]);
 				map.put(textKey, tmp[1]);
+				if(tmp.length>2){
+					map.put("CHK", tmp[2]);
+				}
 				list.add(map);
 			}
 			data = list;
