@@ -67,8 +67,8 @@ public class Checkbox extends BaseBodyTag {
 		HttpServletRequest request = (HttpServletRequest) pageContext
 				.getRequest();
 		String html = "";
-		valueKey = DataRow.keyCase(valueKey);
-		textKey = DataRow.keyCase(textKey);
+//		valueKey = DataRow.keyCase(valueKey);
+//		textKey = DataRow.keyCase(textKey);
 		try {
 
 			if(null == rely){
