@@ -104,6 +104,9 @@ public class Checkbox extends BaseBodyTag {
 						}else{
 							map.put(textKey, "");
 						}
+						if(tmp.length>2){
+							map.put("CHK", tmp[2]);
+						}
 						list.add(map);
 					}
 					data = list;
