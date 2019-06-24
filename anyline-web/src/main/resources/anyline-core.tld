@@ -909,6 +909,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>refresh</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>stat</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
