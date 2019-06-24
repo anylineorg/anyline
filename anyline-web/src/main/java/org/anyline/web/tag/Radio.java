@@ -55,8 +55,8 @@ public class Radio extends BaseBodyTag{
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		String html = "";
-		valueKey = DataRow.keyCase(valueKey);
-		textKey = DataRow.keyCase(textKey);
+//		valueKey = DataRow.keyCase(valueKey);
+//		textKey = DataRow.keyCase(textKey);
 		try{
 			if(BasicUtil.isEmpty(name)){
 				name = BasicUtil.getRandomLowerString(10);
