@@ -141,6 +141,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		//数据统计
 		String stat = config.STYLE_STAT_FORMAT; 
 		stat = stat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
+		stat = stat.replace("{total-row}", totalRow+"").replace("{cur-page}", curPage+"").replace("{total-page}", totalPage+"");
 		if(showStat){
 			builder.append(stat).append("\n");
 		}
