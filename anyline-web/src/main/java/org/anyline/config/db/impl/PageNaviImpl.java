@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.anyline.config.db.Order;
 import org.anyline.config.db.OrderStore;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.PageNaviConfig;
 import org.anyline.util.BasicUtil;
@@ -91,6 +92,13 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	public PageNaviImpl(String baseLink){
 		this.curPage = 1;
 		this.baseLink = baseLink;
+	}
+	public PageNavi parse(DataRow row){
+		if(null == row){
+			return null;
+		}
+		PageNavi navi = row.entity(PageNaviImpl.class);
+		return navi;
 	}
 	public PageNaviImpl(){}
 
