@@ -93,7 +93,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		this.curPage = 1;
 		this.baseLink = baseLink;
 	}
-	public PageNavi parse(DataRow row){
+	public static PageNavi parse(DataRow row){
 		if(null == row){
 			return null;
 		}
