@@ -172,6 +172,4 @@ public interface PageNavi extends Serializable{
 	public String getGuide();
 	public PageNavi setMethod(String method);
 	public String getMethod();
-	/*根据DataRow构造PageNavi*/
-	public PageNavi parse(DataRow row);
 }
