@@ -21,8 +21,10 @@ package org.anyline.util;
 
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -87,50 +89,6 @@ public class FileUtil {
 		return result;
 	}
 
-	/**
-	 * 构建完整路径
-	 * @param dir
-	 * @param fileName
-	 * @return
-	 */
-	public static String crateFullFilePath(String dir, String fileName, String separator){
-		if(null==dir || null==fileName) {
-			return null;
-		}
-		String path = null;
-		if(FileUtil.endWithSeparator(dir)&& FileUtil.startWithSeparator(fileName)){
-			path = dir.substring(0,dir.length()-1) + fileName;
-		}else if(FileUtil.endWithSeparator(dir) || FileUtil.startWithSeparator(fileName)){
-			path = dir + fileName;
-		}else{
-			path = dir + separator + fileName;
-		}
-		return path;
-	}
-	public static String createFullFilePath(String dir, String fileName){
-		return crateFullFilePath(dir,fileName,File.separator);
-	}
-	public static String createFullHttpPath(String srcUrl, String dstUrl){
-		//完整的目标URL
-		if(dstUrl.startsWith("http:")) return dstUrl;
-		String fullPath = null;
-
-		if(dstUrl.startsWith("/")){//当前站点的绝对路径
-			fullPath = getHostUrl(srcUrl) + dstUrl;
-		}else if(dstUrl.startsWith("?")){//查询参数
-			fullPath = fetchPathByUrl(srcUrl)+dstUrl;
-		}else{//当前站点的相对路径
-			srcUrl = fetchDirByUrl(srcUrl);
-			if(srcUrl.endsWith("/")){
-				//src是一个目录
-				fullPath = srcUrl + dstUrl;
-			}else{
-				//src有可能是一个文件 : 需要判断是文件还是目录  文件比例多一些
-				fullPath = srcUrl + "/" + dstUrl;
-			}
-		}
-		return fullPath;
-	}
 	/**
 	 * 目录分隔符
 	 * @return
@@ -320,14 +278,14 @@ public class FileUtil {
 	 * @param over 是否清空已存在的同名文件
 	 * @return
 	 */
-	public static boolean createFile(String fileDir, String fileName, boolean over){
-		String filePath = createFullFilePath(fileDir, fileName);
-		return createFile(filePath,over);
+	public static boolean create(String fileDir, String fileName, boolean over){
+		String filePath = mergePath(fileDir, fileName);
+		return create(filePath,over);
 	}
-	public static boolean createFile(String file, boolean over){
-		return createFile(new File(file), over);
+	public static boolean create(String file, boolean over){
+		return create(new File(file), over);
 	}
-	public static boolean createFile(File file, boolean over){
+	public static boolean create(File file, boolean over){
 		if(null == file){
 			return false;
 		}
@@ -412,14 +370,6 @@ public class FileUtil {
 		}
 		url = "http://"+url;
 		return url;
-	}
-	private static boolean endWithSeparator(String path){
-		if(path.endsWith("/") || path.endsWith("\\")) return true;
-		else return false;
-	}
-	private static boolean startWithSeparator(String path){
-		if(path.startsWith("/") || path.startsWith("\\")) return true;
-		else return false;
 	}
 	
 //	/**
@@ -829,26 +779,7 @@ public class FileUtil {
 		return zip(zip,files);
 	}
 	public static boolean zip(File zip, List<File> srcs) {
-		boolean result = false;
-		byte[] buf = new byte[1024];
-		try {
-			ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zip));
-			for (File src:srcs) {
-				FileInputStream in = new FileInputStream(src);
-				out.putNextEntry(new ZipEntry(src.getName()));
-				int len;
-				while ((len = in.read(buf)) > 0) {
-					out.write(buf, 0, len);
-				}
-				out.closeEntry();
-				in.close();
-			}
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		result = true;
-		return result;
+		return ZipUtil.zip(srcs, zip);
 	}
     /**
     * 获取单个文件的MD5值！
@@ -866,5 +797,60 @@ public class FileUtil {
     */
     public static Map<String, String> md5(File file, boolean recursion) {
     	return MD5Util.getDirMD5(file, recursion);
+    }
+
+    /**  
+     * 读取输入流中的数据保存至指定目录  
+     * @param is 输入流  
+     * @param fileName 文件名  
+     * @param destDir 文件存储目录  
+     * @throws FileNotFoundException  
+     * @throws IOException  
+     */  
+    public static boolean save(InputStream is, File file) {  
+    	if (BasicUtil.isEmpty(file)) {
+			return false;
+		}
+    	File dir = file.getParentFile();
+    	if(!dir.exists()){
+    		dir.mkdirs();
+    	}
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos =null;
+		try {
+			bis = new BufferedInputStream(is);  
+			bos = new BufferedOutputStream(new FileOutputStream(file));
+	        int len = -1;  
+	        while ((len = bis.read()) != -1) {  
+	            bos.write(len);  
+	            bos.flush();  
+	        }  
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+				if(null != bos) {
+					bos.close();  
+				}
+			}catch(Exception e){}
+			try{
+				if(null != bis) {
+					bis.close();  
+				}
+			}catch(Exception e){}
+		}
+        return true;
+    }  
+
+    /**  
+     * 读取输入流中的数据保存至指定目录  
+     * @param is 输入流  
+     * @param fileName 文件名  
+     * @param destDir 文件存储目录  
+     * @throws FileNotFoundException  
+     * @throws IOException  
+     */  
+    public static boolean save(InputStream is, String path) {
+    	return save(is, new File(path));
     }
 }
