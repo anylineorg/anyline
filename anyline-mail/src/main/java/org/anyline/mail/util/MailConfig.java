@@ -18,6 +18,7 @@ public class MailConfig extends BasicConfig{
 	public String HOST;
 	public String PORT;
 	public String ATTACHMENT_DIR = "";	//附件下载地址
+	public boolean AUTO_DOWNLOAD_ATTACHMENT = true;
 	static{
 		init();
 		debug();

@@ -27,6 +27,7 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
 import org.anyline.mail.entity.Mail;
+import org.anyline.mail.util.MailConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
@@ -94,15 +95,56 @@ public class Pop3Util {
 
 		return true;
 	}
-
+	public int getMailQty(){
+		int qty = -1;
+		Session session = Session.getInstance(props);
+		Store store = null;
+		Folder folder = null;
+		try{
+			store = session.getStore("pop3");
+			store.connect(config.ACCOUNT, config.PASSWORD);
+			// 收件箱
+			folder = store.getFolder("INBOX");
+			qty = folder.getMessageCount();
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			// 释放资源
+			try {
+				if(null != folder){
+					folder.close(true);
+				}
+			} catch (MessagingException e) {}
+			try {
+				if(null != store){
+					store.close();
+				}
+			} catch (MessagingException e) {}
+		}
+		return qty;
+	}
 	public boolean send(String to, String title, String content) {
 		return send(config.USERNAME, to, title, content);
 	}
 
+	public List<Mail> receive(int qty){
+		return receive(false, false, qty);
+	}
+	public List<Mail> receive(boolean read, boolean delete){
+		return receive(read, delete,1,-1);
+	}
+	public List<Mail> receive(boolean read, boolean delete, int qty){
+		return receive(read, delete, 1, qty);
+	}
 	/**
 	 * 接收邮件
+	 * @param read 是否设置已读
+	 * @param delete 是否删除
+	 * @param fr 下标从1开始
+	 * @param to -1:全部
+	 * @return
 	 */
-	public List<Mail> resceive(){
+	public List<Mail> receive(boolean read, boolean delete, int fr, int to){
 		List<Mail> mails = new ArrayList<Mail>();
 		Session session = Session.getInstance(props);
 		Store store = null;
@@ -114,8 +156,11 @@ public class Pop3Util {
 			folder = store.getFolder("INBOX");
 			folder.open(Folder.READ_WRITE);
 			// 得到收件箱中的所有邮件,并解析
-			Message[] messages = folder.getMessages();
-			mails = parse(messages);
+			if(to == -1){
+				to = folder.getMessageCount();
+			}
+			Message[] messages = folder.getMessages(fr, to);
+			mails = parse(read, delete, messages);
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally{
@@ -138,28 +183,35 @@ public class Pop3Util {
 	 * 解析邮件
 	 * @param messages   要解析的邮件列表
 	 */
-	public List<Mail> parse(Message... messages){
+	public List<Mail> parse( boolean setRead, boolean delete, Message... messages){
 		List<Mail> mails = new ArrayList<Mail>();
 		try{
 		for (Message item:messages) {
 			Mail mail = new Mail();
 			MimeMessage msg = (MimeMessage) item;
-			String sendTime = getSendTime(msg);
+			Date sendTime = msg.getSentDate();
+			Date receiveTime = msg.getReceivedDate();
 			String subject = msg.getSubject();
+			String name = msg.getFileName();
 			boolean isSeen = isSeen(msg);
-					
-			log.info("[解析邮件][subject:" + subject + "][发送时间:" + sendTime + "][是否已读:" + isSeen + "][是否包含附件:" + isContainAttachment(msg) + "]");
+			boolean isContainerAttachment = isContainAttachment(msg);
+			log.info("[解析邮件][subject:" + subject + "][name:"+name+"][发送时间:" + DateUtil.format(sendTime) + "][是否已读:" + isSeen + "][是否包含附件:" + isContainerAttachment+ "]");
 			mail.setSubject(subject);
 			mail.setSendTime(sendTime);
-			boolean isContainerAttachment = isContainAttachment(msg);
-			if (isContainerAttachment) {
-				List<File> attachments = downloadAttachment(msg);
-				mail.setAttachments(attachments);
+			mail.setReceiveTime(receiveTime);
+			if(config.AUTO_DOWNLOAD_ATTACHMENT){
+				if (isContainerAttachment) {
+					String dir = config.ATTACHMENT_DIR.replace("{ymd}", DateUtil.format(sendTime,"yyyyMMdd"));
+					List<File> attachments = downloadAttachment(msg, dir , sendTime, null);
+					mail.setAttachments(attachments);
+				}
 			}
-			if(!isSeen){
+			if(!isSeen && setRead){
 				seen(msg);
 			}
-			delete(msg);
+			if(delete){
+				delete(msg);
+			}
 			mails.add(mail);
 		}
 		}catch(Exception e){
@@ -259,30 +311,6 @@ public class Pop3Util {
 		return false;
 	}
 
-	/**
-	 * 获得邮件发送时间
-	 * 
-	 * @param msg
-	 *            邮件内容
-	 * @return yyyy年mm月dd日 星期X HH:mm
-	 * @throws MessagingException
-	 */
-	public static String getSendTime(MimeMessage msg){
-		return getSendTime(msg, null);
-	}
-
-	public static String getSendTime(MimeMessage msg, String pattern) {
-		String time = "";
-		try {
-			Date date = msg.getSentDate();
-			if (pattern == null || "".equals(pattern))
-				pattern = DateUtil.FORMAT_DATE_TIME;
-			time = DateUtil.format(date, pattern);
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		}
-		return time;
-	}
 
 	/**
 	 * 判断邮件中是否包含附件
@@ -329,20 +357,6 @@ public class Pop3Util {
 	}
 
 	/**
-	 * 下载附件
-	 * 
-	 * @param part
-	 * @return
-	 * @throws UnsupportedEncodingException
-	 * @throws MessagingException
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 */
-	public List<File> downloadAttachment(Part part) throws UnsupportedEncodingException, MessagingException, FileNotFoundException, IOException {
-		return downloadAttachment(part, config.ATTACHMENT_DIR, null);
-	}
-
-	/**
 	 * 保存附件
 	 * 
 	 * @param part
@@ -355,10 +369,12 @@ public class Pop3Util {
 	 * @throws IOException
 	 */
 
-	public static List<File> downloadAttachment(Part part, String dir, List<File> files) throws UnsupportedEncodingException, MessagingException, FileNotFoundException, IOException {
+	public static List<File> downloadAttachment(Part part, String dir, Date sendTime, List<File> files) throws UnsupportedEncodingException, MessagingException, FileNotFoundException, IOException {
 		if (BasicUtil.isEmpty(files)) {
 			files = new ArrayList<File>();
 		}
+		dir = dir.replace("{send_date}", DateUtil.format(sendTime,"yyyyMMdd"));
+		dir = dir.replace("{send_time}", DateUtil.format(sendTime,"yyyyMMddhhmmss"));
 		if (part.isMimeType("multipart/*")) {
 			Multipart multipart = (Multipart) part.getContent(); // 复杂体邮件
 			int partCount = multipart.getCount();
@@ -367,16 +383,20 @@ public class Pop3Util {
 				BodyPart bodyPart = multipart.getBodyPart(i);
 				String disp = bodyPart.getDisposition();
 				String name = decode(bodyPart.getFileName());
-				File file = null;
+				String path = null;
+				if(dir.contains("{file}")){
+					path = dir.replace("{file}", name);
+				}else{
+					path = FileUtil.mergePath(dir, name);
+				}
+				File file =  new File(path);
 				if (BasicUtil.isNotEmpty(name) && disp != null && (disp.equalsIgnoreCase(Part.ATTACHMENT) || disp.equalsIgnoreCase(Part.INLINE))) {
-					file = new File(FileUtil.mergePath(dir, name));
 					result = FileUtil.save(bodyPart.getInputStream(), file);
 				} else if (bodyPart.isMimeType("multipart/*")) {
-					downloadAttachment(bodyPart, dir, files);
+					downloadAttachment(bodyPart, dir, sendTime, files);
 				} else if(BasicUtil.isNotEmpty(name)){
 					String contentType = bodyPart.getContentType();
 					if (contentType.indexOf("name") != -1 || contentType.indexOf("application") != -1) {
-						file = new File(FileUtil.mergePath(dir, name));
 						result = FileUtil.save(bodyPart.getInputStream(), file);
 					}
 				}
@@ -385,7 +405,7 @@ public class Pop3Util {
 				}
 			}
 		} else if (part.isMimeType("message/rfc822")) {
-			downloadAttachment((Part) part.getContent(), dir, files);
+			downloadAttachment((Part) part.getContent(), dir, sendTime, files);
 		}
 		return files;
 	}
