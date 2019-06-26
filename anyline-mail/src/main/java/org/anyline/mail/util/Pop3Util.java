@@ -192,10 +192,9 @@ public class Pop3Util {
 			Date sendTime = msg.getSentDate();
 			Date receiveTime = msg.getReceivedDate();
 			String subject = msg.getSubject();
-			String name = msg.getFileName();
 			boolean isSeen = isSeen(msg);
 			boolean isContainerAttachment = isContainAttachment(msg);
-			log.info("[解析邮件][subject:" + subject + "][name:"+name+"][发送时间:" + DateUtil.format(sendTime) + "][是否已读:" + isSeen + "][是否包含附件:" + isContainerAttachment+ "]");
+			log.info("[解析邮件][subject:" + subject + "][发送时间:" + DateUtil.format(sendTime) + "][是否已读:" + isSeen + "][是否包含附件:" + isContainerAttachment+ "]");
 			mail.setSubject(subject);
 			mail.setSendTime(sendTime);
 			mail.setReceiveTime(receiveTime);
