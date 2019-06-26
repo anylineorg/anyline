@@ -26,7 +26,6 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
-import org.anyline.entity.DataSet;
 import org.anyline.mail.entity.Mail;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
@@ -58,10 +57,9 @@ public class Pop3Util {
 			util.config = config;
 			util.props.put("username", config.ACCOUNT);
 			util.props.put("password", config.PASSWORD);
-			util.props.put("mail.transport.protocol", config.PROTOCOL);
-			util.props.put("mail.smtp.host", config.HOST);
-			util.props.put("mail.smtp.port", config.PORT);
-
+			util.props.put("mail.store.protocol", config.PROTOCOL);
+			util.props.put("mail.pop3.host", config.HOST);
+			util.props.put("mail.pop3.port", config.PORT);
 			instances.put(key, util);
 		}
 		return util;
@@ -119,6 +117,7 @@ public class Pop3Util {
 			Message[] messages = folder.getMessages();
 			mails = parse(messages);
 		}catch(Exception e){
+			e.printStackTrace();
 		}finally{
 			// 释放资源
 			try {
@@ -142,13 +141,14 @@ public class Pop3Util {
 	public List<Mail> parse(Message... messages){
 		List<Mail> mails = new ArrayList<Mail>();
 		try{
-		int size = messages.length;
-		for (int i = size - 1; i <= 0; i--) {
+		for (Message item:messages) {
 			Mail mail = new Mail();
-			MimeMessage msg = (MimeMessage) messages[i];
+			MimeMessage msg = (MimeMessage) item;
 			String sendTime = getSendTime(msg);
 			String subject = msg.getSubject();
-			log.info("[解析邮件][subject:" + subject + "][发送时间:" + sendTime + "][是否已读:" + isSeen(msg) + "][是否包含附件:" + isContainAttachment(msg) + "]");
+			boolean isSeen = isSeen(msg);
+					
+			log.info("[解析邮件][subject:" + subject + "][发送时间:" + sendTime + "][是否已读:" + isSeen + "][是否包含附件:" + isContainAttachment(msg) + "]");
 			mail.setSubject(subject);
 			mail.setSendTime(sendTime);
 			boolean isContainerAttachment = isContainAttachment(msg);
@@ -156,12 +156,14 @@ public class Pop3Util {
 				List<File> attachments = downloadAttachment(msg);
 				mail.setAttachments(attachments);
 			}
-			seen(msg);
+			if(!isSeen){
+				seen(msg);
+			}
 			delete(msg);
 			mails.add(mail);
 		}
 		}catch(Exception e){
-			
+			e.printStackTrace();
 		}
 		return mails;
 	}
@@ -366,12 +368,12 @@ public class Pop3Util {
 				String disp = bodyPart.getDisposition();
 				String name = decode(bodyPart.getFileName());
 				File file = null;
-				if (disp != null && (disp.equalsIgnoreCase(Part.ATTACHMENT) || disp.equalsIgnoreCase(Part.INLINE))) {
+				if (BasicUtil.isNotEmpty(name) && disp != null && (disp.equalsIgnoreCase(Part.ATTACHMENT) || disp.equalsIgnoreCase(Part.INLINE))) {
 					file = new File(FileUtil.mergePath(dir, name));
 					result = FileUtil.save(bodyPart.getInputStream(), file);
 				} else if (bodyPart.isMimeType("multipart/*")) {
 					downloadAttachment(bodyPart, dir, files);
-				} else {
+				} else if(BasicUtil.isNotEmpty(name)){
 					String contentType = bodyPart.getContentType();
 					if (contentType.indexOf("name") != -1 || contentType.indexOf("application") != -1) {
 						file = new File(FileUtil.mergePath(dir, name));
