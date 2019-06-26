@@ -59,11 +59,11 @@ public class ZipUtil {
 	 * @param zip
 	 *            生成的压缩文件名
 	 */
-	public static boolean zip(Collection<File> files, File zip, String root) {
+	public static boolean zip(Collection<File> srcs, File zip, String root) {
 		boolean result = true;
 		try {
 			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip), BUFF_SIZE));
-			for (File file : files) {
+			for (File file : srcs) {
 				if(!zip(file, zipout, root)){
 					result = false;
 				}
@@ -75,8 +75,8 @@ public class ZipUtil {
 		}
 		return result;
 	}
-	public static boolean zip(Collection<File> files, File zip) {
-		return zip(files, zip, "");
+	public static boolean zip(Collection<File> srcs, File zip) {
+		return zip(srcs, zip, "");
 	}
 
 	/**
