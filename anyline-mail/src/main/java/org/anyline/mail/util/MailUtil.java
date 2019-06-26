@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 public class MailUtil {
 	private static final Logger log = Logger.getLogger(MailUtil.class);
 	private MailConfig config = null;
+	private Properties props = new Properties();
 	private static Hashtable<String, MailUtil> instances = new Hashtable<String, MailUtil>();
 	
 	
@@ -33,6 +34,12 @@ public class MailUtil {
 			util = new MailUtil();
 			MailConfig config = MailConfig.getInstance(key);
 			util.config = config;
+			util.props.put("username", config.ACCOUNT);
+			util.props.put("password", config.PASSWORD);
+			util.props.put("mail.transport.protocol", config.PROTOCOL);
+			util.props.put("mail.smtp.host", config.HOST);
+			util.props.put("mail.smtp.port", config.PORT);
+
 			instances.put(key, util);
 		}
 		return util;
@@ -49,25 +56,13 @@ public class MailUtil {
 	public boolean send(String fr, String to, String title, String content) {
 		log.warn("[send email][fr:"+fr+"][to:"+to+"][title:"+title+"][centent:"+content+"]");
 		try {
-			Properties props = new Properties();
-			props.put("username", config.ACCOUNT);
-			props.put("password", config.PASSWORD);
-			props.put("mail.transport.protocol", config.PROTOCOL);
-			props.put("mail.smtp.host", config.HOST);
-			props.put("mail.smtp.port", config.PORT);
-
 			Session mailSession = Session.getDefaultInstance(props);
-
 			Message msg = new MimeMessage(mailSession);
 			msg.setFrom(new InternetAddress(config.ACCOUNT,fr));
-			msg.addRecipients(Message.RecipientType.TO,
-					InternetAddress.parse(to));
-
+			msg.addRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 			msg.setSubject(title + "");
 			msg.setContent(content + "", "text/html;charset=UTF-8");
-
 			msg.saveChanges();
-
 			Transport transport = mailSession.getTransport("smtp");
 			transport.connect(config.HOST,
 					config.ACCOUNT,
