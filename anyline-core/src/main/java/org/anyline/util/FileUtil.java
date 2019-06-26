@@ -807,10 +807,11 @@ public class FileUtil {
      * @throws FileNotFoundException  
      * @throws IOException  
      */  
-    public static boolean save(InputStream is, File file) {  
+    public static boolean save(InputStream is, File file) {
     	if (BasicUtil.isEmpty(file)) {
 			return false;
 		}
+    	long fr = System.currentTimeMillis();
     	File dir = file.getParentFile();
     	if(!dir.exists()){
     		dir.mkdirs();
@@ -838,6 +839,9 @@ public class FileUtil {
 					bis.close();  
 				}
 			}catch(Exception e){}
+		}
+		if(ConfigTable.isDebug()){
+			log.warn("[save file][file:"+file.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 		}
         return true;
     }  
