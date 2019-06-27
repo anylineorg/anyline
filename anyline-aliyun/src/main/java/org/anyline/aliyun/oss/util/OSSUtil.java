@@ -211,10 +211,8 @@ public class OSSUtil {
 		if(null == path){
 			path = "";
 		}
-		if(path.startsWith("/")){
-			path = path.substring(1);
-		}
-		return client.doesObjectExist(config.BUCKET,path);
+		String key = key(path);
+		return client.doesObjectExist(config.BUCKET,key);
 	}
 	public boolean delete(String path){
 		if(null == path){
@@ -225,8 +223,8 @@ public class OSSUtil {
 		}
 		boolean result = false;
 		try{
-			path = path.replace("http://"+config.BUCKET+"."+config.ENDPOINT+"/", "");
-			client.deleteObject(config.BUCKET, path);
+			String key = key(path);
+			client.deleteObject(config.BUCKET, key);
 			log.warn("[oss delete file][result:true][file:"+path+"]");
 			result = true;
 		}catch(Exception e){
@@ -362,5 +360,13 @@ public class OSSUtil {
 	    Date expiration = new Date(expireEndTime);
 	    result = client.generatePostPolicy(expiration, policyConds);
 		return result;
+	}
+	public String key(String key){
+		if(null != key){
+			if(key.contains(config.ENDPOINT)){
+				key = key.substring(key.indexOf(config.ENDPOINT)+config.ENDPOINT.length()+1);
+			}
+		}
+		return key;
 	}
 }
