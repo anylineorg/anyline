@@ -156,8 +156,16 @@ public class Pop3Util {
 			folder = store.getFolder("INBOX");
 			folder.open(Folder.READ_WRITE);
 			// 得到收件箱中的所有邮件,并解析
-			if(to == -1){
-				to = folder.getMessageCount();
+			int cnt = folder.getMessageCount();
+			if(to == -1 || to > cnt){
+				to = cnt;
+			}
+			if(fr == 0){
+				fr = 1;
+				to = to +1;
+			}
+			if(to >cnt){
+				to = cnt;
 			}
 			Message[] messages = folder.getMessages(fr, to);
 			mails = parse(read, delete, messages);
