@@ -10,7 +10,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
@@ -208,11 +207,18 @@ public class OSSUtil {
 	 * @return
 	 */
 	public boolean exists(String path){
+		boolean result = false;
 		if(null == path){
 			path = "";
 		}
 		String key = key(path);
-		return client.doesObjectExist(config.BUCKET,key);
+		try{
+			result = client.doesObjectExist(config.BUCKET,key);
+		}catch(Exception e){}
+		if(ConfigTable.isDebug()){
+			log.warn("[check exists][path:"+path+"][key:"+key+"]");
+		}
+		return result;
 	}
 	public boolean delete(String path){
 		if(null == path){
