@@ -25,7 +25,6 @@ class HttpProxy{
 	private String password;
 	
 	public HttpProxy(String host, int port, String user, String password){
-		
 	}
 
 	public String getHost() {
