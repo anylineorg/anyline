@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2015 www.anyboot.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,23 @@
  *
  *          
  */
-
-
 package org.anyline.util;
-
-
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,44 +39,577 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.httpclient.HostConfiguration;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.NameValuePair;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.conn.ssl.SSLContextBuilder;
+import org.apache.http.conn.ssl.SSLContexts;
+import org.apache.http.conn.ssl.TrustStrategy;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.ByteArrayBuffer;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-
-
+/**
+ * 基于hpptclient4.x
+ * 第一个参数用来保持session连接 
+ * null或default:整个应用使用同一个session 
+ * createClient(name):为不同域名创建各自的session
+ *HttpUtil.post(null, "http://www.anyboot.org", "UTF-8", "name", "zhang", "age", "20");
+ *HttpUtil.post(HttpUtil.defaultClient(), "http://www.anyboot.org", "UTF-8", "name", "zhang", "age", "20");
+ *HttpUtil.post(HttpUtil.createClient("deep"), "http://www.anyboot.org", "UTF-8", "name", "zhang", "age", "20");
+ *HttpUtil.post(null, "http://www.anyboot.org", "UTF-8", "name", "zhang", "age", "20");
+ *
+ *
+ *HttpEntity entity = new StringEntity(BeanUtil.map2json(map), "UTF-8");
+ *String txt = HttpUtil.post(url, "UTF-8", entity).getText();
+ */
+@SuppressWarnings("deprecation")
 public class HttpUtil {
+	
+	public static String PROTOCOL_TLSV1 = "TLSv1";
 	private static final Logger log = Logger.getLogger(HttpUtil.class);
-	private static HttpUtil instance = new HttpUtil();
-	private HttpClient client = null;
-	private String encode = "UTF-8";
-	private int timeout = 60000;
-	private boolean initialized = false;
-	private HttpProxy proxy;
+	private static Map<String, CloseableHttpClient> clients = new HashMap<String,CloseableHttpClient>();
+    private static PoolingHttpClientConnectionManager connMgr;  
+    private static RequestConfig requestConfig;  
+    private static final int MAX_TIMEOUT = 7200; 
+    
+    static {  
+        // 设置连接池  
+        connMgr = new PoolingHttpClientConnectionManager();  
+        // 设置连接池大小  
+        connMgr.setMaxTotal(100);  
+        connMgr.setDefaultMaxPerRoute(connMgr.getMaxTotal());  
+  
+        RequestConfig.Builder configBuilder = RequestConfig.custom();  
+        // 设置连接超时  
+        configBuilder.setConnectTimeout(MAX_TIMEOUT);  
+        // 设置读取超时  
+        configBuilder.setSocketTimeout(MAX_TIMEOUT);  
+        // 设置从连接池获取连接实例的超时  
+        configBuilder.setConnectionRequestTimeout(MAX_TIMEOUT);  
+        // 在提交请求之前 测试连接是否可用  
+        configBuilder.setStaleConnectionCheckEnabled(true);  
+        requestConfig = configBuilder.build();  
+    }
+	public static Source post(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
+		return post(client, null, url, encode, entitys);
+	}
+	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		List<HttpEntity> list = new ArrayList<HttpEntity>();
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				list.add(entity);
+			}
+		}
+		return post(client, headers, url, encode, list);
+	}
+
+	public static Source post(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
+		return post(client, null, url, encode, params);
+	}
+	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		List<HttpEntity> entitys = new ArrayList<HttpEntity>();
+		if(null != params && !params.isEmpty()){
+			List<NameValuePair> pairs = packNameValuePair(params);
+			try {
+				HttpEntity entity = new UrlEncodedFormEntity(pairs, encode);
+				entitys.add(entity);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return post(client, headers, url, encode, entitys);
+	}
+
+
+	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+		if(null == client){
+			if(url.contains("https://")){
+				client = defaultSSLClient();
+			}else{
+				client =  defaultClient();
+			}
+		}
+		Source result = new Source();
+		HttpPost method = new HttpPost(url);
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				method.setEntity(entity);
+			}
+		}
+		setHeader(method, headers);
+		result = exe(client, method, encode);
+		return result;
+	}
+
+
+	public static Source post(String url, String encode, HttpEntity... entitys) {
+		return post(defaultClient(), url, encode, entitys);
+	}
+	public static Source post(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		return post(defaultClient(),headers, url, encode, entitys);
+	}
+	public static Source post(String url, String encode, Map<String, Object> params) {
+		return post(defaultClient(), url, encode, params);
+	}
+	public static Source post(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		return post(defaultClient(), headers, url, encode, params);
+	}
+	public static Source post(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+		return post(defaultClient(),headers, url, encode, entitys);
+	}
+
+	public static Source put(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
+		return put(client, null, url, encode, entitys);
+	}
+
+	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		List<HttpEntity> list = new ArrayList<HttpEntity>();
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				list.add(entity);
+			}
+		}
+		return put(client, headers, url, encode, list);
+	}
+
+	public static Source put(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
+		return put(client, null, url, encode, params);
+	}
+	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		List<HttpEntity> entitys = new ArrayList<HttpEntity>();
+		if(null != params && !params.isEmpty()){
+			List<NameValuePair> pairs = packNameValuePair(params);
+			try {
+				HttpEntity entity = new UrlEncodedFormEntity(pairs, encode);
+				entitys.add(entity);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return put(client, headers, url, encode, entitys);
+	}
+
+
+	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+		if(null == client){
+			if(url.contains("https://")){
+				client = defaultSSLClient();
+			}else{
+				client =  defaultClient();
+			}
+		}
+		Source result = new Source();
+		HttpPut method = new HttpPut(url);
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				method.setEntity(entity);
+			}
+		}
+		setHeader(method, headers);
+		result = exe(client, method, encode);
+		return result;
+	}
+	
+
+	public static Source put(String url, String encode, HttpEntity... entitys) {
+		return put(defaultClient(), url, encode, entitys);
+	}
+	public static Source put(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		return put(defaultClient(), headers, url, encode, entitys);
+	}
+
+	public static Source put(String url, String encode, Map<String, Object> params) {
+		return put(defaultClient(), url, encode, params);
+	}
+	public static Source put(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		return put(defaultClient(), headers, url, encode, params);
+	}
+	public static Source put(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+		return put(defaultClient(), headers, url, encode, entitys);
+	}
+	
+
+	public static Source get(CloseableHttpClient client, String url) {
+		return get(client, url, "UTF-8");
+	}
+	public static Source get(CloseableHttpClient client, String url, String encode) {
+		return get(client, url, encode, new HashMap<String,Object>());
+	}
+	public static Source get(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
+		return get(client, null, url, encode, params);
+	}
+
+	public static Source get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		List<NameValuePair> pairs = packNameValuePair(params);
+		return get(client, headers, url, encode, pairs);
+	}
+
+	public static Source get(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
+		return get(client, null, url, encode, pairs);
+	}
+
+	public static Source get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+		if(null == client){
+			if(url.contains("https://")){
+				client = defaultSSLClient();
+			}else{
+				client =  defaultClient();
+			}
+		}
+		Source result = new Source();
+		if (null != pairs && !pairs.isEmpty()) {
+			String params = URLEncodedUtils.format(pairs,encode);
+			if (url.contains("?")) {
+				url += "&" + params;
+			} else {
+				url += "?" + params;
+			}
+		}
+		if(ConfigTable.isDebug()){
+			log.warn("[HTTP GET][url:"+url+"]");
+		}
+		HttpGet method = new HttpGet(url);
+		setHeader(method, headers);
+		result = exe(client, method, encode);
+		return result;
+	}
+	
+
+	public static Source get(String url) {
+		return get(url, "UTF-8");
+	}
+	public static Source get(String url, String encode) {
+		return get(url, encode, new HashMap<String,Object>());
+	}
+	public static Source get(String url, String encode, Map<String, Object> params) {
+		return get(defaultClient(), url, encode, params);
+	}
+
+	public static Source get(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		return get(defaultClient(), headers, url, encode, params);
+	}
+
+	public static Source get(Map<String, String> headers, String url, String encode) {
+		return get(defaultClient(), headers, url, encode, new HashMap<String,Object>());
+	}
+
+	public static Source get(String url, String encode, List<NameValuePair> pairs) {
+		return get(defaultClient(), url, encode, pairs);
+	}
+
+	public static Source get(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+		return get(defaultClient(), headers, url, encode, pairs);
+	}
+	
+
+	
+	public static Source delete(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
+		return delete(client, null, url, encode, params);
+	}
+
+	public static Source delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		List<NameValuePair> pairs = packNameValuePair(params);
+		return delete(client, headers, url, encode, pairs);
+	}
+
+	public static Source delete(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
+		return delete(client, null, url, encode, pairs);
+	}
+	public static Source delete(CloseableHttpClient client,Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
+		List<NameValuePair> list = new ArrayList<NameValuePair>();
+		if(null != pairs){
+			for(NameValuePair pair:pairs){
+				list.add(pair);
+			}
+		}
+		return delete(client, headers, url, encode, list);
+	}
+
+	public static Source delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+		if(null == client){
+			if(url.contains("https://")){
+				client = defaultSSLClient();
+			}else{
+				client =  defaultClient();
+			}
+		}
+		Source result = new Source();
+		if (null != pairs) {
+			String params = URLEncodedUtils.format(pairs,encode);
+			if (url.contains("?")) {
+				url += "&" + params;
+			} else {
+				url += "?" + params;
+			}
+		}
+		HttpDelete method = new HttpDelete(url);
+		setHeader(method, headers);
+		result = exe(client, method, encode);
+		return result;
+	}
+
+
+
+
+	public static Source delete(String url, String encode, Map<String, Object> params) {
+		return delete(defaultClient(), url, encode, params);
+	}
+
+	public static Source delete(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		return delete(defaultClient(), headers, url, encode, params);
+	}
+
+	public static Source delete(String url, String encode, List<NameValuePair> pairs) {
+		return delete(defaultClient(), url, encode, pairs);
+	}
+
+	public static Source delete(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+		return delete(defaultClient(), headers, url, encode, pairs);
+	}
+
+
+
+	public static Source delete(Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
+		return delete(defaultClient(), headers, url, encode, pairs);
+	}
+
+	
+	private static Source exe(CloseableHttpClient client, HttpRequestBase method, String encode){
+		CloseableHttpResponse response = null;
+		Source result = null;
+		try {
+			long fr = System.currentTimeMillis();
+			method.setHeader("Connection", "close");  
+			if(ConfigTable.isDebug()){
+				log.warn("[Http Request][URL:"+method.getURI()+"]");
+			}
+			response = client.execute(method);
+			result = getResult(result,response, encode);
+			if(ConfigTable.isDebug()){
+				log.warn("[Http Request][耗时:"+(System.currentTimeMillis() - fr)+"][URL:"+method.getURI()+"]");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				response.close();
+				method.releaseConnection();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return result;
+	}
 
 	/**
-	 * 合成path
-	 * @param paths
-	 * @return
+	 * 设置header
+	 * 
+	 * @param method
+	 * @param headers
 	 */
-	public static String mergePath(String ... paths){
+	private static void setHeader(HttpRequestBase method,
+			Map<String, String> headers) {
+		if (null != headers) {
+			Iterator<String> keys = headers.keySet().iterator();
+			while (keys.hasNext()) {
+				String key = keys.next();
+				String value = headers.get(key);
+				method.setHeader(key, value);
+			}
+		}
+	}
+
+	public static Source getResult(Source src, CloseableHttpResponse response,
+			String encode) {
+		if (null == src) {
+			src = new Source();
+		}
+		try {
+			Map<String, String> headers = new HashMap<String, String>();
+			Header[] all = response.getAllHeaders();
+			for (Header header : all) {
+				String key = header.getName();
+				String value = header.getValue();
+				headers.put(key, value);
+				if ("Set-Cookie".equalsIgnoreCase(key)) {
+					HttpCookie c = new HttpCookie(value);
+					src.setCookie(c);
+				}
+			}
+			src.setHeaders(headers);
+			src.setStatus(response.getStatusLine().getStatusCode());
+			HttpEntity entity = response.getEntity();
+			if (null != entity) {
+				String text = EntityUtils.toString(entity, encode);
+				src.setText(text);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return src;
+	}
+	public static List<NameValuePair> packNameValuePair(Map<String,Object> params){
+		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		if (null != params) {
+			Iterator<String> keys = params.keySet().iterator();
+			while (keys.hasNext()) {
+				String key = keys.next();
+				Object value = params.get(key);
+				if(null == value){
+					continue;
+				}
+				if(value instanceof String[]){ 
+					String vals[] = (String[])value;
+					for(String val:vals){
+						if(null == val){
+							continue;
+						}
+						pairs.add(new BasicNameValuePair(key, val));
+						if(ConfigTable.isDebug()){
+							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val,0,20) + "]");
+						}						
+					}
+				}else if(value instanceof Collection){
+					Collection vals = (Collection)value;
+					for(Object val:vals){
+						if(null == val){
+							continue;
+						}
+						pairs.add(new BasicNameValuePair(key, val.toString()));
+						if(ConfigTable.isDebug()){
+							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val.toString(),0,20) + "]");
+						}						
+					}
+				}else if(null != value){
+					pairs.add(new BasicNameValuePair(key, value.toString()));
+					if(ConfigTable.isDebug()){
+						log.warn("[Request Param][" + key + "=" + BasicUtil.cut(value.toString(),0,20) + "]");
+					}
+				}
+			}
+		}
+		return pairs;
+	}
+
+	public static CloseableHttpClient defaultClient(){
+		return createClient("default");
+	}
+	public static CloseableHttpClient createClient(String key){
+		CloseableHttpClient client = clients.get(key);
+		if(null == client){
+			client = HttpClients.createDefault();
+			clients.put(key, client);
+			if(ConfigTable.isDebug()){
+				log.warn("[创建Http Client][KEY:"+key+"]");
+			}
+		}else{
+			if(ConfigTable.isDebug()){
+				log.warn("[Http Client缓存][KEY:"+key+"]");
+			}
+		}
+		return client;
+	}
+	
+	public static CloseableHttpClient defaultSSLClient(){
+		return ceateSSLClient("default");
+	}
+	public static CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
+		CloseableHttpClient httpclient = null;
+		try{
+			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+	        FileInputStream instream = new FileInputStream(keyFile);
+	        try {
+	            keyStore.load(instream, password.toCharArray());
+	        } finally {
+	            instream.close();
+	        }
+	        // Trust own CA and all self-signed certs
+			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
+	        // Allow TLSv1 protocol only
+	        String[] protocols = new String[] {protocol};
+	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols,null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+	        httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return httpclient;
+	}
+	public static CloseableHttpClient ceateSSLClient(File keyFile, String password){
+		return ceateSSLClient(keyFile, HttpUtil.PROTOCOL_TLSV1, password);
+	}
+	public static CloseableHttpClient ceateSSLClient(String key){
+		key = "SSL:"+key;
+		CloseableHttpClient client = clients.get(key);
+		if(null == client){
+			client = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connMgr).setDefaultRequestConfig(requestConfig).build();
+			clients.put(key, client);
+			if(ConfigTable.isDebug()){
+				log.warn("[创建Https Client][KEY:"+key+"]");
+			}
+		}else{
+			if(ConfigTable.isDebug()){
+				log.warn("[Https Client缓存][KEY:"+key+"]");
+			}
+		}
+		 return client;
+	}
+	private static SSLConnectionSocketFactory createSSLConnSocketFactory() {  
+        SSLConnectionSocketFactory sslsf = null;  
+        try {  
+            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {  
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {  
+                    return true;  
+                }  
+            }).build();  
+            sslsf = new SSLConnectionSocketFactory(sslContext, new X509HostnameVerifier() {  
+  
+                public boolean verify(String arg0, SSLSession arg1) {  
+                    return true;  
+                }  
+  
+                public void verify(String host, SSLSocket ssl) throws IOException {  
+                }  
+  
+                public void verify(String host, X509Certificate cert) throws SSLException {  
+                }  
+  
+                public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException {  
+                }  
+            });  
+        } catch (GeneralSecurityException e) {  
+            e.printStackTrace();  
+        }  
+        return sslsf;  
+    }  
+	
+	
+	
+
+    public static String mergePath(String ... paths){
 		String result = null;
 		String separator = "/";
 		if(null != paths){
@@ -112,396 +643,22 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	public static Source post(HttpProxy proxy, String url, String encode, Object... params) {
-		Map<String, Object> map = paramToMap(params);
-		return post(proxy, url, encode, map);
-	}
-	public static Source post(String url, String encode, Object... params) {
-		return post(null, url, encode, params);
-	}
-	public static Source post(String url, String encode, Map<String, Object> params) {
-		return post(null, url, encode, params);
-	}
-	public static Source post(HttpProxy proxy, String url, String encode, Map<String, Object> params) {
-		String flag = "";
-		long fr = 0;
-		if(ConfigTable.isDebug()){
-			flag = System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
-			fr = System.currentTimeMillis();
-			log.warn("[POST:" + flag + "][URL:" + url + "]");
-		}
-		HttpUtil instance = getInstance();
-		instance.setProxy(proxy);
-		instance.setEncode(encode);
-		HttpMethod method = instance.packPost(url, params);
-		Source src = instance.invoke(method);;
-		log.warn("[POST:" + flag + "][耗时:" + (System.currentTimeMillis()-fr) + "ms]");
-		return src;
-	}
-
-	public static Source get(HttpProxy proxy, String url, String encode, Object... params) {
-		Map<String, Object> map = paramToMap(params);
-		return get(proxy, url, encode, map);
-	}
-	public static Source get(String url, String encode, Object... params) {
-		return get(null, url, encode, params);
-	}
-	public static Source get(String url, String encode, Map<String, Object> params) {
-		return get(null, url, encode, params);
-	}
-	public static Source get(HttpProxy proxy,String url, String encode,  Map<String, Object> params) {
-		String flag = "";
-		long fr = 0;
-		if(ConfigTable.isDebug()){
-			flag = System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
-			fr = System.currentTimeMillis();
-			log.warn("[GET:" + flag + "][URL:" + url + "]");
-		}
-		HttpUtil instance = getInstance();
-		instance.setProxy(proxy);
-		instance.setEncode(encode);
-		HttpMethod method = instance.packGet(url, params);
-		Source src = instance.invoke(method);
-		log.warn("[GET:" + flag + "][耗时:" + (System.currentTimeMillis()-fr) + "ms]");
-		return src;
-	}
-	public static String get(String url){
-		String flag = url;
-		long fr = 0;
-		if(ConfigTable.isDebug()){
-			flag = System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8);
-			fr = System.currentTimeMillis();
-			log.warn("[GET:" + flag + "][URL:" + url + "]");
-		}
-		StringBuilder builder = new StringBuilder();
-        BufferedReader in = null;
-        try {
-            URL realUrl = new URL(url);
-            // 打开和URL之间的连接
-            URLConnection connection = realUrl.openConnection();
-            // 设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
-            //connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent","mozilla/5.0 (windows nt 6.1; win64; x64) applewebkit/537.36 (khtml, like gecko) chrome/58.0.3029.110 safari/537.36");
-            // 建立实际的连接
-            connection.connect();
-            // 定义 BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(connection.getInputStream(),"UTF-8"));
-            String line;
-            while ((line = in.readLine()) != null) {
-                builder.append(line).append("\n");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        // 使用finally块来关闭输入流
-        finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        }
-        if(ConfigTable.isDebug()){
-        	log.warn("[GET:" + flag + "][耗时:" + (System.currentTimeMillis()-fr) + "ms]");
-        }
-		return builder.toString();
-	}
-	public static HttpUtil getInstance() {
-		if (!instance.initialized) {
-			instance.init();
-		}
-		return instance;
-	}
-	private static Map<String,Object> paramToMap(Object ... params){
-		Map<String,Object> result = new HashMap<String,Object>();
-		if(null != params){
-			int size = params.length;
-			for(int i=0; i<size-1; i+=2){
-				Object key = params[i];
-				Object value = params[i+1];
-				if(null == value){
-					value = "";
-				}
-				result.put(key.toString(), value);
-			}
-		}
-		return result;
-	}
-
-	private synchronized void init() {
-		client = new HttpClient(new MultiThreadedHttpConnectionManager());
-		HttpClientParams params = client.getParams();
-		if (encode != null && !encode.trim().equals("")) {
-			params.setParameter("http.protocol.content-charset", encode);
-			params.setContentCharset(encode);
-		}
-		if (timeout > 0) {
-			params.setSoTimeout(timeout);
-		}
-		if (null != proxy) {
-			HostConfiguration hc = new HostConfiguration();
-			hc.setProxy(proxy.getHost(), proxy.getPort());
-			client.setHostConfiguration(hc);
-			client.getState().setProxyCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxy.getUser(), proxy.getPassword()));
-		}
-		initialized = true;
-	}
-
-	private Source invoke(HttpMethod method) {
-		Source source = new Source();
-		String result = "";
-		String uri = null;
-		BufferedReader reader = null;
-		try {
-			uri = method.getURI().getURI();
-			client.executeMethod(method);
-			reader = new BufferedReader(new InputStreamReader(method.getResponseBodyAsStream(), encode));
-			String line = null;
-			String html = null;
-			while ((line = reader.readLine()) != null) {
-				if (html == null) {
-					html = "";
-				} else {
-					html += "\r\n";
-				}
-				html += line;
-			}
-			if (html != null) {
-				//result = new String(html.getBytes("ISO-8859-1"), encode);
-				result = html;
-			}
-		} catch (SocketTimeoutException e) {
-			log.error("连接超时[" + uri + "]"+e.getMessage());
-		} catch (java.net.ConnectException e) {
-			log.error("连接失败[" + uri + "]"+e.getMessage());
-		} catch (Exception e) {
-			log.error("连接时出现异常[" + uri + "]"+e.getMessage());
-			e.printStackTrace();
-		} finally {
-			if(null !=reader){
-				try {
-					reader.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (method != null) {
-				try {
-					method.releaseConnection();
-				} catch (Exception e) {
-					log.error("释放网络连接失败[" + uri + "]"+e.getMessage());
-				}
-			}
-		}
-		source.setText(result);
-		return source;
-	}
-
-	private PostMethod packPost(String url, Map<String, Object> params) {
-		PostMethod post = new PostMethod(url);
-		post.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,encode);  
-		if (null != params && params.size() > 0) {
-			Iterator<String> paramKeys = params.keySet().iterator();
-			NameValuePair[] form = new NameValuePair[params.size()];
-			int idx = 0;
-			while (paramKeys.hasNext()) {
-				String key = (String) paramKeys.next();
-				Object value = params.get(key);
-				if (null == value) {
-					value = "";
-				}
-				if (value instanceof String[] && ((String[]) value).length > 0) {
-					NameValuePair[] tempForm = new NameValuePair[form.length + ((String[]) value).length - 1];
-					for (int i = 0; i < idx; i++) {
-						tempForm[i] = form[i];
-					}
-					form = tempForm;
-					for (String v : (String[]) value) {
-						if(null == v){
-							v = "";
-						}
-						form[idx] = new NameValuePair(key, v);
-						idx++;
-					}
-				} else if (value instanceof Collection) {
-					@SuppressWarnings("unchecked")
-					Collection<Object> con = (Collection<Object>)value;
-					if(!con.isEmpty()){
-						NameValuePair[] tempForm = new NameValuePair[form.length + con.size() - 1];
-						for (int i = 0; i < idx; i++) {
-							tempForm[i] = form[i];
-						}
-						form = tempForm;
-						for (Object v : con) {
-							if(null == v){
-								v = "";
-							}
-							form[idx] = new NameValuePair(key, v.toString());
-							idx++;
-						}
-					}
-				}else{
-					form[idx] = new NameValuePair(key, value.toString());
-					idx++;
-				}
-			}
-			post.setRequestBody(form);
-		}
-		return post;
-	}
-	public static String mergeUrlParam(String url, Map<String,Object> params){
-		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
-			return url;
-		}
-		url = url.trim();
-		if (url.indexOf("?") > -1) {
-			if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
-				url += "&";
-			}
-		} else {
-			url += "?";
-		}
-		String tmp = null;
-		List<String> keys = BeanUtil.getMapKeys(params);
-		for(String key:keys){
-			Object val = params.get(key);
-			String param = key+"="+val;
-			if(null == tmp){
-				tmp = param;
-			}else{
-				tmp += "&"+param;
-			}
-		}
-		url += tmp;
-		return url;
-	}
-	public static String mergeUrlParam(String url, String ... params){
-		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
-			return url;
-		}
-		url = url.trim();
-		if (url.indexOf("?") > -1) {
-			if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
-				url += "&";
-			}
-		} else {
-			url += "?";
-		}
-		String tmp = null;
-		for(String param:params){
-			if(BasicUtil.isEmpty(param)){
-				continue;
-			}
-			if(null == tmp){
-				tmp = param;
-			}else{
-				tmp += "&"+param;
-			}
-		}
-		url += tmp;
-		return url;
-	}
-	private GetMethod packGet(String url, Map<String, Object> params) {
-		GetMethod get = null;
-		if (params != null && params.size() > 0) {
-			Iterator<String> paramKeys = params.keySet().iterator();
-			StringBuffer getUrl = new StringBuffer(url.trim());
-			if (url.trim().indexOf("?") > -1) {
-				if (url.trim().indexOf("?") < url.trim().length() - 1 && url.trim().indexOf("&") < url.trim().length() - 1) {
-					getUrl.append("&");
-				}
-			} else {
-				getUrl.append("?");
-			}
-			while (paramKeys.hasNext()) {
-				String key = paramKeys.next();
-				Object value = params.get(key);
-				if (null == value) {
-					value = "";
-				}
-				if (value instanceof String[] && ((String[]) value).length > 0) {
-					for (String v : (String[]) value) {
-						getUrl.append(key).append("=").append(v).append("&");
-					}
-				} else if (value instanceof Collection) {
-					@SuppressWarnings("unchecked")
-					Collection<Object> con = (Collection<Object>)value;
-					for (Object v : con) {
-						if(null == v || "".equals(v.toString())){
-							continue;
-						}
-						getUrl.append(key).append("=").append(v).append("&");
-					}
-				}else{
-					getUrl.append(key).append("=").append(value).append("&");
-				}
-			}
-			if (getUrl.lastIndexOf("&") == getUrl.length() - 1) {
-				url = getUrl.substring(0, getUrl.length() - 1);
-			} else {
-				url = getUrl.toString();
-			}
-		}
-		get = new GetMethod(url);
-		get.getParams().setParameter(HttpMethodParams.HTTP_CONTENT_CHARSET,encode);
-		return get;
-	}
-
-
-	public String getEncode() {
-		return encode;
-	}
-	public void setEncode(String encode) {
-		this.encode = encode;
-	}
-	public HttpProxy getProxy() {
-		return proxy;
-	}
-	public void setProxy(HttpProxy proxy) {
-		this.proxy = proxy;
-	}
-	public void setTimeout(int timeout) {
-		this.timeout = timeout;
-	}
-
-	public synchronized boolean isInitialized() {
-		return initialized;
-	}
-	/**
-	 * 提取url根目录
-	 * 
-	 * @param url
-	 * @return
-	 */
-	public static String getHostUrl(String url) {
-		url = url.replaceAll("http://", "");
-		int idx = url.indexOf("/");
-		if (idx != -1) {
-			url = url.substring(0, idx);
-		}
-		url = "http://" + url;
-		return url;
-	}
-	
 	/**
 	 * 创建完整HTTP路径
 	 * @return
 	 */
-	public static String createFullHttpPath(String host, String url) {
+	public static String createFullPath(String host, String url) {
 		// 完整的目标URL
 		if (url.startsWith("http") || url.startsWith("//") || BasicUtil.isEmpty(host)){
 			return url;
 		}
 		String fullPath = null;
 		if (url.startsWith("/")) {// 当前站点的绝对路径
-			fullPath = getHostUrl(host) + url;
+			fullPath = getHost(host) + url;
 		} else if (url.startsWith("?")) {// 查询参数
-			fullPath = fetchPathByUrl(host) + url;
+			fullPath = getPath(host) + url;
 		} else {// 当前站点的相对路径
-			host = fetchDirByUrl(host);
+			host = getDir(host);
 			if (host.endsWith("/")) {
 				// src是一个目录
 				fullPath = host + url;
@@ -513,112 +670,16 @@ public class HttpUtil {
 		return fullPath;
 	}
 
-	/**
-	 * 从URL中提取文件目录(删除查询参数)
-	 * 
-	 * @param url
-	 * @return
-	 */
-	public static String fetchPathByUrl(String url) {
-		int to = url.indexOf("?");
-		if (to != -1)
-			url = url.substring(0, to);
-		return url;
+	public static boolean download(String url, String dst){
+		return download(url, new File(dst), true);
+	}
+	public static boolean download(String url, String dst, boolean override) {
+		return download(url, new File(dst), override);
 	}
 
-	/**
-	 * 提取一个URL所在的目录
-	 * 
-	 * @param path
-	 * @return
-	 */
-	public static String fetchDirByUrl(String url) {
-		String dir = null;
-		if (url.endsWith("/")) {
-			dir = url;
-		} else if (isHttpFile(url)) {
-			int to = url.lastIndexOf("/");
-			dir = url.substring(0, to);
-		} else {
-			dir = url;
-		}
-		return dir;
+	public static boolean download(String url, File dst) {
+		return download(url, dst, true);
 	}
-
-	/**
-	 * path是否包含文件名
-	 * 
-	 * @param path
-	 * @return
-	 */
-	private static boolean isHttpFile(String path) {
-
-		if (path.endsWith("/")) {
-			return false;
-		}
-		String head = "http://";
-		int fr = head.length();
-		int l1 = path.lastIndexOf("/");
-		int l2 = path.lastIndexOf(".");
-		// int l3 = path.length();
-		if (l1 == -1) {
-			return false;
-		} else if (l2 > l1 && l2 > fr) {
-			return true;
-		}
-		return false;
-	}
-
-
-	public static void download(String url, String dst) {
-		download(url, new File(dst));
-	}
-
-	public static void download(String url, File dst) {
-		
-		OutputStream os = null;
-		InputStream is = null;
-		byte[] buffer = new byte[10];
-		int len = 0;
-		try {
-			File dir = dst.getParentFile();
-			if (!dir.exists()) {
-				dir.mkdirs();
-			}
-			os = new FileOutputStream(dst);
-			is = new URL(url).openStream();
-			while ((len = is.read(buffer)) != -1) {
-				os.write(buffer, 0, len);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (is != null) {
-				try {
-					is.close();
-					is = null;
-				} catch (Exception ex) {
-					log.error(ex);
-					is = null;
-				}
-			}
-			if (os != null) {
-				try {
-					os.close();
-					os = null;
-				} catch (Exception ex) {
-					log.error(ex);
-					os = null;
-				}
-			}
-		}
-
-	}
-
-	public static void downloadFile(String remoteFilePath, String dst) {
-		downloadFile(remoteFilePath, new File(dst));
-	}
-
 	/**
 	 * 下载远程文件并保存到本地
 	 * 
@@ -627,7 +688,16 @@ public class HttpUtil {
 	 * @param localFilePath
 	 *            本地文件路径
 	 */
-	public static void downloadFile(String remoteFilePath, File dst) {
+	public static boolean download(String url, File dst, boolean override) {
+		boolean result = false;
+		long fr = System.currentTimeMillis();
+		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
+			return result;
+		}
+		if(dst.exists() && !override){
+			log.info("[download file][文件已存在][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+			return true;
+		}
 		URL urlfile = null;
 		HttpURLConnection httpUrl = null;
 		BufferedInputStream bis = null;
@@ -637,7 +707,7 @@ public class HttpUtil {
 			parent.mkdirs();
 		}
 		try {
-			urlfile = new URL(remoteFilePath);
+			urlfile = new URL(url);
 			httpUrl = (HttpURLConnection) urlfile.openConnection();
 			httpUrl.connect();
 			bis = new BufferedInputStream(httpUrl.getInputStream());
@@ -650,6 +720,7 @@ public class HttpUtil {
 			bos.flush();
 			bis.close();
 			httpUrl.disconnect();
+			result = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -664,6 +735,10 @@ public class HttpUtil {
 				e.printStackTrace();
 			}
 		}
+		if(ConfigTable.isDebug()){
+			log.info("[download file][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+		}
+		return result;
 	}
 	/**
 	 * 文件上传
@@ -684,7 +759,7 @@ public class HttpUtil {
 			}
 		}
 		if (null != params) {
-			url = mergeUrlParam(url, params);
+			url = mergeParam(url, params);
 		}
 
 		HttpEntity reqEntity = meb.build();
@@ -732,6 +807,7 @@ public class HttpUtil {
 	public static String upload(String url, Map<String, File> files) {
 		return upload(url, files, null);
 	}
+
 	/**
 	 * 将输入流转换成字符串
 	 * 
@@ -760,5 +836,128 @@ public class HttpUtil {
 			}
 		}
 		return null;
+	}
+	/**
+	 * 提取url根目录
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public static String getHost(String url) {
+		url = url.replaceAll("http://", "");
+		int idx = url.indexOf("/");
+		if (idx != -1) {
+			url = url.substring(0, idx);
+		}
+		url = "http://" + url;
+		return url;
+	}
+	/**
+	 * 从URL中提取文件目录(删除查询参数)
+	 * 
+	 * @param url
+	 * @return
+	 */
+	public static String getPath(String url) {
+		int to = url.indexOf("?");
+		if (to != -1)
+			url = url.substring(0, to);
+		return url;
+	}
+
+	/**
+	 * 提取一个URL所在的目录
+	 * 
+	 * @param path
+	 * @return
+	 */
+	public static String getDir(String url) {
+		String dir = null;
+		if (url.endsWith("/")) {
+			dir = url;
+		} else if (isHttpFile(url)) {
+			int to = url.lastIndexOf("/");
+			dir = url.substring(0, to);
+		} else {
+			dir = url;
+		}
+		return dir;
+	}
+
+	/**
+	 * path是否包含文件名
+	 * 
+	 * @param path
+	 * @return
+	 */
+	private static boolean isHttpFile(String path) {
+
+		if (path.endsWith("/")) {
+			return false;
+		}
+		String head = "http://";
+		int fr = head.length();
+		int l1 = path.lastIndexOf("/");
+		int l2 = path.lastIndexOf(".");
+		// int l3 = path.length();
+		if (l1 == -1) {
+			return false;
+		} else if (l2 > l1 && l2 > fr) {
+			return true;
+		}
+		return false;
+	}
+
+	public static String mergeParam(String url, Map<String,Object> params){
+		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
+			return url;
+		}
+		url = url.trim();
+		if (url.indexOf("?") > -1) {
+			if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
+				url += "&";
+			}
+		} else {
+			url += "?";
+		}
+		String tmp = null;
+		List<String> keys = BeanUtil.getMapKeys(params);
+		for(String key:keys){
+			Object val = params.get(key);
+			String param = key+"="+val;
+			if(null == tmp){
+				tmp = param;
+			}else{
+				tmp += "&"+param;
+			}
+		}
+		url += tmp;
+		return url;
+	}
+	public static String mergeParam(String url, String ... params){
+		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
+			return url;
+		}
+		url = url.trim();
+		if (url.indexOf("?") > -1) {
+			if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
+				url += "&";
+			}
+		} else {
+			url += "?";
+		}
+		String tmp = null;
+		for(String param:params){
+			if(BasicUtil.isEmpty(param)){
+				continue;
+			}
+			if(null == tmp){
+				tmp = param;
+			}else{
+				tmp += "&"+param;
+			}
+		}
+		url += tmp;
+		return url;
 	}
 }
