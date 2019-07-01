@@ -558,7 +558,7 @@ public class WXMPUtil extends WXUtil{
 	public DataRow getOpenId(String code){
 		DataRow row = null;
 		String url = WXConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRET+"&code="+code+"&grant_type=authorization_code";
-		String txt = HttpUtil.get(url);
+		String txt = HttpUtil.get(url).getText();
 		log.warn("[get openid][txt:"+txt+"]");
 		row = DataRow.parseJson(txt);
 		return row;
@@ -583,7 +583,7 @@ public class WXMPUtil extends WXUtil{
 	public DataRow getUserInfo(String openid){
 		DataRow row = null;
 		String url = WXConfig.API_URL_GET_USER_INFO + "?access_token="+getAccessToken()+"&openid="+openid;
-		String txt = HttpUtil.get(url);
+		String txt = HttpUtil.get(url).getText();
 		log.warn("[get openid][txt:"+txt+"]");
 		row = DataRow.parseJson(txt);
 		return row;
