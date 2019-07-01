@@ -186,7 +186,7 @@ public class WXOpenUtil {
 	public DataRow getOpenId(String code){
 		DataRow row = new DataRow();
 		String url = WXConfig.API_URL_AUTH_ACCESS_TOKEN + "?appid="+config.APP_ID+"&secret="+config.APP_SECRET+"&code="+code+"&grant_type=authorization_code";
-		String txt = HttpUtil.get(url);
+		String txt = HttpUtil.get(url).getText();
 		row = DataRow.parseJson(txt);
 		return row;
 	}
