@@ -117,6 +117,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return set;
 	}
+	public DataSet setIsNew(boolean bol){
+		for(DataRow row:rows){
+			row.setIsNew(bol);
+		}
+		return this;
+	}
+	public DataSet remove(String key){
+		for(DataRow row:rows){
+			row.remove(key);
+		}
+		return this;
+	}
 	/**
 	 * 添加主键
 	 * @param applyItem:是否应用到集合中的DataRow 默认true
