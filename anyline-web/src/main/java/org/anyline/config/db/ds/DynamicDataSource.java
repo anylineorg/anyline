@@ -10,7 +10,7 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 public class DynamicDataSource extends AbstractRoutingDataSource {
 
     // 保存动态创建的数据源
-    private static final Map<String,DataSource> dsMap = new HashMap<String,DataSource>();
+    private static final Map<String,DataSource> dataSources = new HashMap<String,DataSource>();
 	/**
 	 * 获取当前线程数据源
 	 */
@@ -18,7 +18,22 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 	protected Object determineCurrentLookupKey() {
 		return DataSourceHolder.getDataSource();
 	}
-	public void addDataSource(String key, DataSource ds) {
-        dsMap.put(key, ds);
+	public static void addDataSource(String key, DataSource ds) {
+		dataSources.put(key, ds);
     }
+
+	@Override
+	protected DataSource determineTargetDataSource() {
+		DataSource dataSource = null;
+		Object lookupKey = determineCurrentLookupKey();
+		dataSource = dataSources.get(lookupKey);
+		if(null == dataSource){
+			try{
+				dataSource = super.determineTargetDataSource();
+			}catch(Exception e){
+				
+			}
+		}
+		return dataSource;
+	}
 }

@@ -22,6 +22,8 @@ package org.anyline.config.db.ds;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.anyline.util.ConfigTable;
 import org.apache.log4j.Logger;
 
@@ -110,5 +112,15 @@ public class DataSourceHolder {
 	}
 	public static boolean contains(String ds){
 		return dataSources.contains(ds);
+	}
+	public static void addDataSource(String key, DataSource ds) throws Exception{
+		if(dataSources.contains(key)){
+			throw new Exception("[重复注册][key:"+key+"]");
+		}
+		if(ConfigTable.isDebug()){
+			log.warn("[创建数据源][key:"+key+"]");
+		}
+		DynamicDataSource.addDataSource(key, ds);
+		dataSources.add(key);
 	}
 }
