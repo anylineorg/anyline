@@ -28,14 +28,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.apache.log4j.Logger;
 
 public class Select extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Select.class);
 	private String scope;
 	private Object data;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
