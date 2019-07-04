@@ -24,7 +24,9 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -38,6 +40,7 @@ import java.util.TreeMap;
 import net.sf.json.JSONObject;
 
 import org.anyline.util.regular.RegularUtil;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
 
 public class BasicUtil {
@@ -773,8 +776,22 @@ public class BasicUtil {
 				continue;
 			}
 			if(v instanceof Collection){
-				Collection list = (Collection)v;
+				List list = new ArrayList();
+				list.addAll((Collection)v);
+				Collections.sort(list);
 				for(Object item: list){
+					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
+						continue;
+					}
+					if (!"".equals(result)) {
+						result += "&";
+					}
+					result += k + "=" + item;
+				}
+			}else if(v instanceof String[]){
+				String vals[] = (String[])v;
+				Arrays.sort(vals);
+				for(String item:vals){
 					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
 						continue;
 					}
