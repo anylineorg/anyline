@@ -46,6 +46,7 @@ import javax.net.ssl.SSLSocket;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
@@ -64,6 +65,7 @@ import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
@@ -689,6 +691,9 @@ public class HttpUtil {
 	 *            本地文件路径
 	 */
 	public static boolean download(String url, File dst, boolean override) {
+		return download(url, dst, null, override);
+	}
+	public static boolean download(String url, File dst, Map<String,String> headers, boolean override){
 		boolean result = false;
 		long fr = System.currentTimeMillis();
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
@@ -698,45 +703,63 @@ public class HttpUtil {
 			log.info("[download file][文件已存在][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 			return true;
 		}
-		URL urlfile = null;
-		HttpURLConnection httpUrl = null;
-		BufferedInputStream bis = null;
-		BufferedOutputStream bos = null;
-		File parent = dst.getParentFile();
-		if (!parent.exists()) {
-			parent.mkdirs();
+		HttpClientBuilder builder = HttpClients.custom();
+		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
+		CloseableHttpClient client = builder.build();
+		RequestConfig config =  RequestConfig.custom().build();
+		HttpGet get = new HttpGet(url);
+		get.setConfig(config);
+		if(null != headers){
+			for(String key:headers.keySet()){
+				get.setHeader(key, headers.get(key));
+			}
 		}
 		try {
-			urlfile = new URL(url);
-			httpUrl = (HttpURLConnection) urlfile.openConnection();
-			httpUrl.connect();
-			bis = new BufferedInputStream(httpUrl.getInputStream());
-			bos = new BufferedOutputStream(new FileOutputStream(dst));
-			int len = 2048;
-			byte[] b = new byte[len];
-			while ((len = bis.read(b)) != -1) {
-				bos.write(b, 0, len);
+		    HttpResponse respone = client.execute(get);
+		    if(respone.getStatusLine().getStatusCode() != 200){
+		        return false;
+		    }
+		    HttpEntity entity = respone.getEntity();
+		    if(entity != null) {
+			    double total = entity.getContentLength();
+			    double cur = 0;
+			    int buf = 1024;
+			    double lastRate = 0;
+			    long lastTime = 0;
+		        InputStream is = entity.getContent();
+		        FileOutputStream fos = new FileOutputStream(dst); 
+		        byte[] buffer = new byte[buf];
+		        int len = -1;
+		        while((len = is.read(buffer) )!= -1){
+		        	cur += len;
+		        	if(cur > total){
+		        		cur = total;
+		        	}
+		        	if(ConfigTable.isDebug()){
+		        		double rate = cur/total*100;
+		        		if(rate - lastRate  >= 0.5 || System.currentTimeMillis() - lastTime > 1000 * 5 || rate==100){
+			        		String process = "[文件下载][已完成:"+FileUtil.process(total, cur)+"][耗时:"+(System.currentTimeMillis()-fr)+"ms][url:"+url+"][local:"+dst.getAbsolutePath()+"]";
+			        		log.warn(process);
+			        		lastRate = rate;
+			        		lastTime = System.currentTimeMillis();
+		        		}
+		        	}
+		        }
+		        fos.close();
+		        is.close();
+		    }
+			if(ConfigTable.isDebug()){
+				log.info("[download file][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 			}
-			bos.flush();
-			bis.close();
-			httpUrl.disconnect();
-			result = true;
+		    result = true;
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				if(null != bis){
-					bis.close();
-				}
-				if(null != bos){
-					bos.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		if(ConfigTable.isDebug()){
-			log.info("[download file][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+		    e.printStackTrace();
+		}finally{
+		    try {
+		        client.close();
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
 		}
 		return result;
 	}
