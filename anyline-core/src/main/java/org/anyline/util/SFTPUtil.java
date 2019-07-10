@@ -95,7 +95,8 @@ public class SFTPUtil {
             String remotePath = list.get(0) + list.get(1);
             SftpATTRS attr = client.stat(remotePath);
             long length = attr.getSize();
-            client.get(remotePath, os, new SFTPProgressMonitor(remotePath,local, length));  
+            SFTPProgressMonitor process = new SFTPProgressMonitor(remotePath,local, length);
+            client.get(remotePath, os, process);  
             if(ConfigTable.isDebug()){
             	log.warn("[文件下载完成][time:"+(System.currentTimeMillis()-fr)+"][file:"+list.get(0) + list.get(1)+"]");
             }
@@ -326,19 +327,23 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 	private double length;		//总长度
 	private double transfered;	//已下载长度
 	private double displayRate;		//最后显示下载比例
+	private long startTime = 0;
 	private long displayTime;		//最后显示下载时间
 
 	public SFTPProgressMonitor(String remote, long length){
 		this.remote = remote;
 		this.length = length;
+		this.startTime = System.currentTimeMillis();
 	}
 	public SFTPProgressMonitor(String remote, String local, long length){
 		this.remote = remote;
 		this.local = local;
 		this.length = length;
+		this.startTime = System.currentTimeMillis();
 	}
 	public SFTPProgressMonitor(long length){
 		this.length = length;
+		this.startTime = System.currentTimeMillis();
 	}
 	@Override
 	public boolean count(long count) {
@@ -346,7 +351,8 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 		if(curRate - displayRate  >= 0.5 || System.currentTimeMillis() - displayTime > 1000 * 5 || curRate == 100){
 			displayRate = curRate; 
 			displayTime = System.currentTimeMillis();
-			String total_title = "[已下载:" + FileUtil.process(length, transfered) +"]";
+			long delay = System.currentTimeMillis()-startTime;
+			String total_title = "[已下载:" + FileUtil.process(length, transfered) +"][耗时:"+DateUtil.delay(delay)+"("+FileUtil.size(transfered*1000/delay)+"/s)]";
 			if(null != local){
 				total_title = "[local:"+local+"]" + total_title;
 			}
@@ -368,6 +374,12 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 	@Override
 	public void init(int op, String src, String dest, long max) {
 		log.warn("开始下载.");
+	}
+	public long getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
 	}
 	
 	
