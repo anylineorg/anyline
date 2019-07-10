@@ -266,16 +266,6 @@ public class SFTPUtil {
         list.add(fileName);  
         return list;  
     }  
-    public static void main(String args[]){
-
-    	try {
-			SFTPUtil ftp = new SFTPUtil("172.16.254.101","zhengchen","zhengchen@1212");
-			ftp.files("/usr");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    }
     public List<String> files(String dir){
     	List<String> list = new ArrayList<String>();
     	try {
@@ -353,17 +343,10 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 	@Override
 	public boolean count(long count) {
 		double curRate = (transfered+count)/length * 100;
-		if(curRate - displayRate  >= 0.5 || System.currentTimeMillis() - displayTime > 1000 * 5){
+		if(curRate - displayRate  >= 0.5 || System.currentTimeMillis() - displayTime > 1000 * 5 || curRate == 100){
 			displayRate = curRate; 
 			displayTime = System.currentTimeMillis();
-			String total_title = "";
-			if (transfered < 1024){
-				total_title = "[已下载: " + transfered + "/" + length + " bytes("+NumberUtil.format(displayRate, "0.00")+"%)]";
-			}else if (transfered >= 1024 && transfered < 1048576){
-				total_title = "[已下载: " + NumberUtil.format(transfered / 1024, "0.00") + "/" +NumberUtil.format(length/1024,"0.00") + "kb("+NumberUtil.format(displayRate, "0.00")+"%)]";
-			}else{
-				total_title = "[已下载: " + NumberUtil.format(transfered / 1024 / 1024,"0.00") + "/" +NumberUtil.format(length/1024/1024,"0.00") +  "mb("+NumberUtil.format(displayRate, "0.00")+"%)]";
-			}
+			String total_title = "[已下载:" + FileUtil.process(length, transfered) +"]";
 			if(null != local){
 				total_title = "[local:"+local+"]" + total_title;
 			}
