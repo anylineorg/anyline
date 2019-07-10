@@ -1183,4 +1183,42 @@ public class DateUtil {
 	public static boolean isPm() {
 		return isPm(new Date());
 	}
+	public static String delay(long delay){
+		String result = "";
+		long s = 0;
+		long m = 0;
+		long h = 0;
+		long d = 0;
+		long ms = 0;
+		d = delay / 1000 / 60 / 60 /24;
+		h = (delay - d*24*60*60*1000) / 1000 /60/60;
+		m = (delay - d*24*60*60*1000 - h*60*60*1000) / 1000 /60;
+		s = (delay - d*24*60*60*1000 - h*60*60*1000 - m*60*1000) / 1000;
+		ms = delay %1000;
+		if(d>0){
+			result += d+"天";
+		}
+		if(h>0 
+			|| (d>0 && (m+s+ms>0))
+		){
+			result += h+"时";
+		}
+		if(m>0 
+			|| (h>0 && (s+ms>0)) 
+			|| (d>0  && (s+ms>0))
+		){
+			result += m+"分";
+		}
+		if(s>0
+			||(m>0&&ms>0)
+			||(h>0&&ms>0)
+			||(d>0&&ms>0)
+		){
+			result += s+"秒";
+		}
+		if(ms>0){
+			result += ms+"毫秒";
+		}
+		return result;
+	}
 }

@@ -868,7 +868,7 @@ public class FileUtil {
 		double rate = finish/total*100;
 		if (finish < 1024){
 			title = finish + "/" + total + " bytes("+NumberUtil.format(rate, "0.00")+"%)";
-		}else if (finish >= 1024 && finish < 1048576){
+		}else if (finish < 1048576){
 			title = NumberUtil.format(finish / 1024, "0.00") + "/" +NumberUtil.format(total/1024,"0.00") + "kb("+NumberUtil.format(rate, "0.00")+"%)";
 		}else{
 			title = NumberUtil.format(finish / 1024 / 1024,"0.00") + "/" +NumberUtil.format(total/1024/1024,"0.00") +  "mb("+NumberUtil.format(rate, "0.00")+"%)";
@@ -877,5 +877,22 @@ public class FileUtil {
 	}
 	public static String process(long total, long finish){
 		return process((double)total, (double) finish);
+	}
+	public static String size(double b){
+		String result = "";
+		if(b<1024){
+			result = NumberUtil.format(b,"0.00")+ "byte";
+		}else if(b<1024*1024){
+			result = NumberUtil.format(b/1024,"0.00") + "kb";
+		}else if(b<1024*1024*1024){
+			result = NumberUtil.format(b/1024/1024,"0.00") + "mb";
+		}else if(b<1024*1024*1024*1024){
+			result = NumberUtil.format(b/1024/1024/1024,"0.00") + "gb";
+		}else if(b<1024*1024*1024*1024*1024){
+			result = NumberUtil.format(b/1024/1024/1024/1024,"0.00") + "tb";
+		}else if(b<1024*1024*1024*1024*1024*1024){
+			result = NumberUtil.format(b/1024/1024/1024/1024/1024,"0.00") + "pb";
+		}
+		return result;
 	}
 }

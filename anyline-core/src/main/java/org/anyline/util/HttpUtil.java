@@ -691,6 +691,9 @@ public class HttpUtil {
 	}
 	public static boolean download(String url, File dst, Map<String,String> headers, boolean override){
 		boolean result = false;
+		if(ConfigTable.isDebug()){
+			log.info("[download file][url:"+url+"][local:"+dst.getAbsolutePath()+"]");
+		}
 		long fr = System.currentTimeMillis();
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
 			return result;
@@ -741,7 +744,8 @@ public class HttpUtil {
 		        	if(ConfigTable.isDebug()){
 		        		double rate = cur/total*100;
 		        		if(rate - lastRate  >= 0.5 || System.currentTimeMillis() - lastTime > 1000 * 5 || rate==100){
-			        		String process = "[文件下载][已完成:"+FileUtil.process(total, cur)+"][耗时:"+(System.currentTimeMillis()-fr)+"ms][url:"+url+"][local:"+dst.getAbsolutePath()+"]";
+		        			long delay = System.currentTimeMillis()-fr;
+			        		String process = "[文件下载][已完成:"+FileUtil.process(total, cur)+"][耗时:"+DateUtil.delay(delay)+"("+FileUtil.size(cur*1000/delay)+"/s)][url:"+url+"][local:"+dst.getAbsolutePath()+"]";
 			        		log.warn(process);
 			        		lastRate = rate;
 			        		lastTime = System.currentTimeMillis();
