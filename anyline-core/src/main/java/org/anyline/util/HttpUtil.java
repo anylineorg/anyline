@@ -17,16 +17,12 @@
  */
 package org.anyline.util;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -703,6 +699,10 @@ public class HttpUtil {
 			log.info("[download file][文件已存在][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 			return true;
 		}
+		File parent = dst.getParentFile();
+		if(!parent.exists()){
+			parent.mkdirs();
+		}
 		HttpClientBuilder builder = HttpClients.custom();
 		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
 		CloseableHttpClient client = builder.build();
@@ -714,6 +714,8 @@ public class HttpUtil {
 				get.setHeader(key, headers.get(key));
 			}
 		}
+		 FileOutputStream fos = null;
+		 InputStream is = null;
 		try {
 		    HttpResponse respone = client.execute(get);
 		    if(respone.getStatusLine().getStatusCode() != 200){
@@ -726,11 +728,12 @@ public class HttpUtil {
 			    int buf = 1024;
 			    double lastRate = 0;
 			    long lastTime = 0;
-		        InputStream is = entity.getContent();
-		        FileOutputStream fos = new FileOutputStream(dst); 
+		        is = entity.getContent();
+		        fos = new FileOutputStream(dst); 
 		        byte[] buffer = new byte[buf];
 		        int len = -1;
 		        while((len = is.read(buffer) )!= -1){
+		        	fos.write(buffer, 0, len);
 		        	cur += len;
 		        	if(cur > total){
 		        		cur = total;
@@ -745,8 +748,6 @@ public class HttpUtil {
 		        		}
 		        	}
 		        }
-		        fos.close();
-		        is.close();
 		    }
 			if(ConfigTable.isDebug()){
 				log.info("[download file][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
@@ -755,6 +756,14 @@ public class HttpUtil {
 		} catch (Exception e) {
 		    e.printStackTrace();
 		}finally{
+			try{
+		        fos.close();
+			}catch(Exception e){
+			}
+			try{
+		        is.close();
+			}catch(Exception e){
+			}
 		    try {
 		        client.close();
 		    } catch (IOException e) {
