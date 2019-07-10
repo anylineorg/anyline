@@ -857,4 +857,25 @@ public class FileUtil {
     public static boolean save(InputStream is, String path) {
     	return save(is, new File(path));
     }
+
+	/**
+	 * @param total 全部
+	 * @param finish 已完成
+	 * @return
+	 */
+	public static String process(double total, double finish){
+		String title = "";
+		double rate = finish/total*100;
+		if (finish < 1024){
+			title = finish + "/" + total + " bytes("+NumberUtil.format(rate, "0.00")+"%)";
+		}else if (finish >= 1024 && finish < 1048576){
+			title = NumberUtil.format(finish / 1024, "0.00") + "/" +NumberUtil.format(total/1024,"0.00") + "kb("+NumberUtil.format(rate, "0.00")+"%)";
+		}else{
+			title = NumberUtil.format(finish / 1024 / 1024,"0.00") + "/" +NumberUtil.format(total/1024/1024,"0.00") +  "mb("+NumberUtil.format(rate, "0.00")+"%)";
+		}
+		return title;
+	}
+	public static String process(long total, long finish){
+		return process((double)total, (double) finish);
+	}
 }
