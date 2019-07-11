@@ -866,13 +866,11 @@ public class FileUtil {
 	public static String process(double total, double finish){
 		String title = "";
 		double rate = finish/total*100;
-		if (finish < 1024){
-			title = finish + "/" + total + " bytes("+NumberUtil.format(rate, "0.00")+"%)";
-		}else if (finish < 1048576){
-			title = NumberUtil.format(finish / 1024, "0.00") + "/" +NumberUtil.format(total/1024,"0.00") + "kb("+NumberUtil.format(rate, "0.00")+"%)";
-		}else{
-			title = NumberUtil.format(finish / 1024 / 1024,"0.00") + "/" +NumberUtil.format(total/1024/1024,"0.00") +  "mb("+NumberUtil.format(rate, "0.00")+"%)";
+		String rateTitle = NumberUtil.format(rate, "0.00");
+		if(finish>=total){
+			rateTitle = "100%";
 		}
+		title = size(finish) + "/" + size(total) + "("+rateTitle+"%)";
 		return title;
 	}
 	public static String process(long total, long finish){
