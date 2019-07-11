@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -33,7 +34,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -59,6 +59,8 @@ import org.apache.http.conn.ssl.SSLContextBuilder;
 import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
@@ -785,13 +787,14 @@ public class HttpUtil {
 	 */
 	public static String upload(String url, Map<String, File> files, Map<String, Object> params) {
 		String result = "";
+		
 		// 封装文件实体
-		MultipartEntityBuilder meb = MultipartEntityBuilder.create();
+		MultipartEntityBuilder meb = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
+		meb.setCharset(Charset.forName("utf-8"));
 		if (null != files) {
-			Iterator<Entry<String, File>> fileIter = files.entrySet().iterator();
-			while (fileIter.hasNext()) {
-				Entry<String, File> entry = fileIter.next();
-				meb.addBinaryBody(entry.getKey(), entry.getValue());
+			for(String key:files.keySet()){
+				File file = files.get(key);
+				meb.addBinaryBody(key, file, ContentType.DEFAULT_BINARY, file.getName());
 			}
 		}
 		if (null != params) {
@@ -956,18 +959,7 @@ public class HttpUtil {
 		} else {
 			url += "?";
 		}
-		String tmp = null;
-		List<String> keys = BeanUtil.getMapKeys(params);
-		for(String key:keys){
-			Object val = params.get(key);
-			String param = key+"="+val;
-			if(null == tmp){
-				tmp = param;
-			}else{
-				tmp += "&"+param;
-			}
-		}
-		url += tmp;
+		url += BasicUtil.joinBySort(params);
 		return url;
 	}
 	public static String mergeParam(String url, String ... params){
