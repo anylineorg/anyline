@@ -745,7 +745,7 @@ public class HttpUtil {
 		        		double rate = cur/total*100;
 		        		if(rate - lastRate  >= 0.5 || System.currentTimeMillis() - lastTime > 1000 * 5 || rate==100){
 		        			long delay = System.currentTimeMillis()-fr;
-			        		String process = "[文件下载][已完成:"+FileUtil.process(total, cur)+"][耗时:"+DateUtil.delay(delay)+"("+FileUtil.size(cur*1000/delay)+"/s)][url:"+url+"][local:"+dst.getAbsolutePath()+"]";
+			        		String process = "[文件下载][已下载:"+FileUtil.process(total, cur)+"][耗时:"+DateUtil.delay(delay)+"("+FileUtil.size(cur*1000/delay)+"/s)][url:"+url+"][local:"+dst.getAbsolutePath()+"]";
 			        		log.warn(process);
 			        		lastRate = rate;
 			        		lastTime = System.currentTimeMillis();
