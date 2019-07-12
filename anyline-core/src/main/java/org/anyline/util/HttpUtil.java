@@ -671,15 +671,25 @@ public class HttpUtil {
 		return fullPath;
 	}
 
-	public static boolean download(String url, String dst){
-		return download(url, new File(dst), true);
+	public static boolean download(DownloadProcess process, String url, String dst){
+		return download(process, url, new File(dst), true);
 	}
-	public static boolean download(String url, String dst, boolean override) {
-		return download(url, new File(dst), override);
+	public static boolean download(String url, String dst){
+		return download(null, url, dst);
+	}
+	public static boolean download(DownloadProcess process, String url, String dst, boolean override) {
+		return download(process, url, new File(dst), override);
 	}
 
+	public static boolean download(String url, String dst, boolean override) {
+		return download(null, url, new File(dst), override);
+	}
+
+	public static boolean download(DownloadProcess process, String url, File dst) {
+		return download(process, url, dst, true);
+	}
 	public static boolean download(String url, File dst) {
-		return download(url, dst, true);
+		return download(null, url, dst, true);
 	}
 	/**
 	 * 下载远程文件并保存到本地
@@ -689,10 +699,16 @@ public class HttpUtil {
 	 * @param localFilePath
 	 *            本地文件路径
 	 */
-	public static boolean download(String url, File dst, boolean override) {
-		return download(url, dst, null, override);
+	public static boolean download(DownloadProcess process, String url, File dst, boolean override) {
+		return download(process, url, dst, null, override);
 	}
-	public static boolean download(String url, File dst, Map<String,String> headers, boolean override){
+	public static boolean download(String url, File dst, boolean override) {
+		return download(null, url, dst, null, override);
+	}
+	public static boolean download(DownloadProcess process, String url, File dst, Map<String,String> headers, boolean override){
+		if(null == process){
+			process = new DownloadProcessImpl(url,dst);
+		}
 		boolean result = false;
 		if(null != url && url.startsWith("//")){
 			url = "http:"+url;
@@ -734,32 +750,20 @@ public class HttpUtil {
 		    }
 		    HttpEntity entity = respone.getEntity();
 		    if(entity != null) {
-			    double total = entity.getContentLength();
-			    double cur = 0;
+			    long total = entity.getContentLength();
+			    long finish = 0;
 			    int buf = 1024;
-			    double lastRate = 0;
-			    long lastTime = 0;
 		        is = entity.getContent();
 		        fos = new FileOutputStream(dst); 
 		        byte[] buffer = new byte[buf];
 		        int len = -1;
 		        while((len = is.read(buffer) )!= -1){
 		        	fos.write(buffer, 0, len);
-		        	cur += len;
-		        	if(cur > total){
-		        		cur = total;
+		        	finish += len;
+		        	if(finish > total){
+		        		finish = total;
 		        	}
-		        	if(ConfigTable.isDebug()){
-		        		double rate = cur/total*100;
-		        		if(rate - lastRate  >= 0.5 || System.currentTimeMillis() - lastTime > 1000 * 5 || rate==100){
-		        			long delay = System.currentTimeMillis()-fr;
-		        			double expect = total / (cur/delay);
-			        		String process = "[文件下载][进度:"+FileUtil.process(total, cur)+"][耗时:"+DateUtil.conversion(delay)+"/"+DateUtil.conversion(expect)+"("+FileUtil.size(cur*1000/delay)+"/s)][url:"+url+"][local:"+dst.getAbsolutePath()+"]";
-			        		log.warn(process);
-			        		lastRate = rate;
-			        		lastTime = System.currentTimeMillis();
-		        		}
-		        	}
+        			process.process(total, finish, System.currentTimeMillis()-fr);
 		        }
 		    }
 			if(ConfigTable.isDebug()){
