@@ -1223,10 +1223,16 @@ public class DateUtil {
 			||(h>0&&ms>0)
 			||(d>0&&ms>0)
 		){
-			result += s+"秒";
+			if(ms==0){
+				result += s+"秒";
+			}else{
+				result += s+"."+ms+"秒";
+			}
 		}
-		if(ms>0){
-			result += ms+"毫秒";
+		if(src<1000){
+			if(ms>0){
+				result += ms+"毫秒";
+			}	
 		}
 		return result;
 	}
