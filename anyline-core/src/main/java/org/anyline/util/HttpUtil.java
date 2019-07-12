@@ -658,7 +658,7 @@ public class HttpUtil {
 		} else if (url.startsWith("?")) {// 查询参数
 			fullPath = getPath(host) + url;
 		} else {// 当前站点的相对路径
-			host = getDir(host);
+			host = parseDir(host);
 			if (host.endsWith("/")) {
 				// src是一个目录
 				fullPath = host + url;
@@ -756,7 +756,7 @@ public class HttpUtil {
 		        }
 		    }
 			if(ConfigTable.isDebug()){
-				log.info("[文件下载][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][共耗时:"+(System.currentTimeMillis()-fr)+"]");
+				log.info("[文件下载][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][共耗时:"+DateUtil.delay(System.currentTimeMillis()-fr)+"]");
 			}
 		    result = true;
 		} catch (Exception e) {
@@ -910,8 +910,11 @@ public class HttpUtil {
 	 * @param path
 	 * @return
 	 */
-	public static String getDir(String url) {
+	public static String parseDir(String url) {
 		String dir = null;
+		if(null == url){
+			return dir;
+		}
 		if (url.endsWith("/")) {
 			dir = url;
 		} else if (isHttpFile(url)) {
@@ -921,6 +924,25 @@ public class HttpUtil {
 			dir = url;
 		}
 		return dir;
+	}
+	/**
+	 * 提取一个URL指向的文件名
+	 * 
+	 * @param path
+	 * @return
+	 */
+	public static String parseFileName(String url) {
+		String name = null;
+		if(null != url){
+			url = url.replace("://", "");
+			if(!url.endsWith("/")){
+				name = url.substring(url.lastIndexOf("/")+1);
+				if(name.contains("?")){
+					name = name.substring(0, name.indexOf("?"));
+				}
+			}
+		}
+		return name;
 	}
 
 	/**
