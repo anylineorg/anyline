@@ -694,6 +694,9 @@ public class HttpUtil {
 	}
 	public static boolean download(String url, File dst, Map<String,String> headers, boolean override){
 		boolean result = false;
+		if(null != url && url.startsWith("//")){
+			url = "http:"+url;
+		}
 		if(ConfigTable.isDebug()){
 			log.info("[文件下载][url:"+url+"][local:"+dst.getAbsolutePath()+"]");
 		}
