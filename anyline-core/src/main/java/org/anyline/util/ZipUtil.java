@@ -168,6 +168,7 @@ public class ZipUtil {
 				dir.mkdirs();
 			}
 			ZipFile zf = new ZipFile(zip, Charset.forName("GBK"));
+			int total = zf.size();
 			for (Enumeration<?> entries = zf.entries(); entries.hasMoreElements();) {
 				ZipEntry entry = ((ZipEntry) entries.nextElement());
 				if (entry.isDirectory()) {
@@ -192,13 +193,14 @@ public class ZipUtil {
 				}
 				in.close();
 				out.close();
+				log.warn("[解压完成][进度:"+size+"/"+total+"][耗时:" + DateUtil.conversion(System.currentTimeMillis() - fr) + "][file:" + desFile.getAbsolutePath() + "]");
 			}
 			zf.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (ConfigTable.isDebug()) {
-			log.warn("[解压完成][time:" + (System.currentTimeMillis() - fr) + "][dir:" + dir.getAbsolutePath() + "][size:" + size + "]");
+			log.warn("[解压完成][共耗时:" + DateUtil.conversion(System.currentTimeMillis() - fr) + "][dir:" + dir.getAbsolutePath() + "][size:" + size + "]");
 		}
 		return files;
 	}
@@ -332,6 +334,7 @@ public class ZipUtil {
 					zip(file, zipout, path);
 				}
 			} else {
+				long fr = System.currentTimeMillis();
 				byte buffer[] = new byte[BUFF_SIZE];
 				BufferedInputStream in = new BufferedInputStream(new FileInputStream(src), BUFF_SIZE);
 				zipout.putNextEntry(new ZipEntry(path));
@@ -342,6 +345,9 @@ public class ZipUtil {
 				in.close();
 				zipout.flush();
 				zipout.closeEntry();
+				if(ConfigTable.isDebug()){
+					log.warn("[压缩文件][添加文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:" + src.getAbsolutePath() + "]");
+				}
 			}
 			return true;
 		} catch (Exception e) {
