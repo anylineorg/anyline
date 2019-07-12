@@ -169,6 +169,7 @@ public class FileUtil {
 
 		return buffer;
 	}
+	
 	/**
 	 * 读取文件
 	 * @param file
