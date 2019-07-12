@@ -44,7 +44,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -67,6 +66,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 /**
@@ -798,7 +798,7 @@ public class HttpUtil {
 		if (null != files) {
 			for(String key:files.keySet()){
 				File file = files.get(key);
-				fileLog += "[key:"+file.getAbsolutePath()+"]";
+				fileLog += "["+key+":"+file.getAbsolutePath()+"]";
 				meb.addBinaryBody(key, file, ContentType.DEFAULT_BINARY, file.getName());
 			}
 		}
@@ -819,18 +819,16 @@ public class HttpUtil {
 		post.setConfig(config);
 		post.setEntity(reqEntity);
 
-		CloseableHttpClient client = HttpClients.createDefault();
+		CloseableHttpClient client = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
 			response = client.execute(post);
 			if (response != null) {
 				// 得到响应结果，如果为响应success表示文件上传成功
 				InputStream is = response.getEntity().getContent();
-				result = FileUtil.read(is, "UTF-8").toString();
+				result = read(is, "UTF-8").toString();
 			}
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			if (response != null) {
@@ -851,6 +849,30 @@ public class HttpUtil {
 		return result;
 	}
 
+
+	public static String read(InputStream is, String encode) {
+		if (is == null) {
+			return null;
+		}
+		ByteArrayBuffer bab = new ByteArrayBuffer(0);
+		byte[] b = new byte[1024];
+		int len = 0;
+		try {
+			while ((len = is.read(b)) != -1) {
+				bab.append(b, 0, len);
+			}
+			return new String(bab.toByteArray(), encode);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 	public static String upload(String url, Map<String, File> files) {
 		return upload(url, files, null);
 	}
