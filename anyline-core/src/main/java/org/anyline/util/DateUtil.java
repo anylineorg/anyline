@@ -1183,18 +1183,27 @@ public class DateUtil {
 	public static boolean isPm() {
 		return isPm(new Date());
 	}
-	public static String delay(long delay){
+
+	public static String conversion(double src){
+		return conversion((long)src);
+	}
+	/**
+	 * 
+	 * @param delay
+	 * @return
+	 */
+	public static String conversion(long src){
 		String result = "";
 		long s = 0;
 		long m = 0;
 		long h = 0;
 		long d = 0;
 		long ms = 0;
-		d = delay / 1000 / 60 / 60 /24;
-		h = (delay - d*24*60*60*1000) / 1000 /60/60;
-		m = (delay - d*24*60*60*1000 - h*60*60*1000) / 1000 /60;
-		s = (delay - d*24*60*60*1000 - h*60*60*1000 - m*60*1000) / 1000;
-		ms = delay %1000;
+		d = src / 1000 / 60 / 60 /24;
+		h = (src - d*24*60*60*1000) / 1000 /60/60;
+		m = (src - d*24*60*60*1000 - h*60*60*1000) / 1000 /60;
+		s = (src - d*24*60*60*1000 - h*60*60*1000 - m*60*1000) / 1000;
+		ms = src %1000;
 		if(d>0){
 			result += d+"天";
 		}

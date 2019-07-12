@@ -750,7 +750,8 @@ public class HttpUtil {
 		        		double rate = cur/total*100;
 		        		if(rate - lastRate  >= 0.5 || System.currentTimeMillis() - lastTime > 1000 * 5 || rate==100){
 		        			long delay = System.currentTimeMillis()-fr;
-			        		String process = "[文件下载][已下载:"+FileUtil.process(total, cur)+"][耗时:"+DateUtil.delay(delay)+"("+FileUtil.size(cur*1000/delay)+"/s)][url:"+url+"][local:"+dst.getAbsolutePath()+"]";
+		        			double expect = total / (cur/delay);
+			        		String process = "[文件下载][进度:"+FileUtil.process(total, cur)+"][耗时:"+DateUtil.conversion(delay)+"/"+DateUtil.conversion(expect)+"("+FileUtil.size(cur*1000/delay)+"/s)][url:"+url+"][local:"+dst.getAbsolutePath()+"]";
 			        		log.warn(process);
 			        		lastRate = rate;
 			        		lastTime = System.currentTimeMillis();
@@ -759,7 +760,7 @@ public class HttpUtil {
 		        }
 		    }
 			if(ConfigTable.isDebug()){
-				log.info("[文件下载][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][共耗时:"+DateUtil.delay(System.currentTimeMillis()-fr)+"]");
+				log.info("[文件下载][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][共耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"]");
 			}
 		    result = true;
 		} catch (Exception e) {
