@@ -75,10 +75,20 @@ public class ZipUtil {
 		}
 		return result;
 	}
+	public static boolean zip(File src, File zip, String root) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return zip(files, zip, root);
+	}
 	public static boolean zip(Collection<File> srcs, File zip) {
 		return zip(srcs, zip, "");
 	}
 
+	public static boolean zip(File src, File zip) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return zip(files, zip);
+	}
 	/**
 	 * 批量压缩文件（夹）
 	 * 如果zip已存在则会覆盖
@@ -117,6 +127,11 @@ public class ZipUtil {
 		return result;
 	}
 
+	public static boolean zip(File src, File zip, String root, String comment) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return zip(files, zip, root, comment);
+	}
 	/**
 	 * 解压缩一个文件
 	 * 
