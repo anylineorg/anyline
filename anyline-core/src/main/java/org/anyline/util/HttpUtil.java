@@ -67,7 +67,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 /**
@@ -443,8 +442,7 @@ public class HttpUtil {
 		}
 	}
 
-	public static Source getResult(Source src, CloseableHttpResponse response,
-			String encode) {
+	public static Source getResult(Source src, CloseableHttpResponse response, String encode) {
 		if (null == src) {
 			src = new Source();
 		}
@@ -460,12 +458,15 @@ public class HttpUtil {
 					src.setCookie(c);
 				}
 			}
+			int code = response.getStatusLine().getStatusCode();
 			src.setHeaders(headers);
-			src.setStatus(response.getStatusLine().getStatusCode());
-			HttpEntity entity = response.getEntity();
-			if (null != entity) {
-				String text = EntityUtils.toString(entity, encode);
-				src.setText(text);
+			src.setStatus(code);
+			if(code ==200){
+				HttpEntity entity = response.getEntity();
+				if (null != entity) {
+					String text = EntityUtils.toString(entity, encode);
+					src.setText(text);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -723,7 +724,9 @@ public class HttpUtil {
 		 InputStream is = null;
 		try {
 		    HttpResponse respone = client.execute(get);
-		    if(respone.getStatusLine().getStatusCode() != 200){
+		    int code = respone.getStatusLine().getStatusCode();
+		    if(code != 200){
+				log.info("[文件下载][状态异常][code:"+code+"][url:"+url+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 		        return false;
 		    }
 		    HttpEntity entity = respone.getEntity();
@@ -818,7 +821,7 @@ public class HttpUtil {
 			if (response != null) {
 				// 得到响应结果，如果为响应success表示文件上传成功
 				InputStream is = response.getEntity().getContent();
-				result = parseString(is);
+				result = FileUtil.read(is, "UTF-8").toString();
 			}
 		} catch (ClientProtocolException e) {
 			e.printStackTrace();
@@ -847,35 +850,6 @@ public class HttpUtil {
 		return upload(url, files, null);
 	}
 
-	/**
-	 * 将输入流转换成字符串
-	 * 
-	 * @param is
-	 * @return
-	 */
-	public static String parseString(InputStream is) {
-		if (is == null) {
-			return null;
-		}
-		ByteArrayBuffer bab = new ByteArrayBuffer(0);
-		byte[] b = new byte[1024];
-		int len = 0;
-		try {
-			while ((len = is.read(b)) != -1) {
-				bab.append(b, 0, len);
-			}
-			return new String(bab.toByteArray(), "utf-8");
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				is.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		return null;
-	}
 	/**
 	 * 提取url根目录
 	 * 
