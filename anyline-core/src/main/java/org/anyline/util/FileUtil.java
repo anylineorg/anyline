@@ -868,7 +868,7 @@ public class FileUtil {
 		double rate = finish/total*100;
 		String rateTitle = NumberUtil.format(rate, "0.00");
 		if(finish>=total){
-			rateTitle = "100%";
+			rateTitle = "100";
 		}
 		title = size(finish) + "/" + size(total) + "("+rateTitle+"%)";
 		return title;
