@@ -791,13 +791,14 @@ public class HttpUtil {
 	 */
 	public static String upload(String url, Map<String, File> files, Map<String, Object> params) {
 		String result = "";
-		
 		// 封装文件实体
+		String fileLog =  "";
 		MultipartEntityBuilder meb = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
 		meb.setCharset(Charset.forName("utf-8"));
 		if (null != files) {
 			for(String key:files.keySet()){
 				File file = files.get(key);
+				fileLog += "[key:"+file.getAbsolutePath()+"]";
 				meb.addBinaryBody(key, file, ContentType.DEFAULT_BINARY, file.getName());
 			}
 		}
@@ -805,6 +806,9 @@ public class HttpUtil {
 			url = mergeParam(url, params);
 		}
 
+		if(ConfigTable.isDebug()){
+			log.warn("[文件上传][url:"+url+"]"+fileLog);
+		}
 		HttpEntity reqEntity = meb.build();
 
 		// 请求配置：限定链接超时、请求链接超时
