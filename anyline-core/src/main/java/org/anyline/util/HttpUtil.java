@@ -694,14 +694,14 @@ public class HttpUtil {
 	public static boolean download(String url, File dst, Map<String,String> headers, boolean override){
 		boolean result = false;
 		if(ConfigTable.isDebug()){
-			log.info("[download file][url:"+url+"][local:"+dst.getAbsolutePath()+"]");
+			log.info("[文件下载][url:"+url+"][local:"+dst.getAbsolutePath()+"]");
 		}
 		long fr = System.currentTimeMillis();
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
 			return result;
 		}
 		if(dst.exists() && !override){
-			log.info("[download file][文件已存在][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+			log.info("[文件下载][文件已存在][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 			return true;
 		}
 		File parent = dst.getParentFile();
@@ -756,7 +756,7 @@ public class HttpUtil {
 		        }
 		    }
 			if(ConfigTable.isDebug()){
-				log.info("[download file][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+				log.info("[文件下载][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][共耗时:"+(System.currentTimeMillis()-fr)+"]");
 			}
 		    result = true;
 		} catch (Exception e) {
