@@ -739,8 +739,9 @@ public class HttpUtil {
 				get.setHeader(key, headers.get(key));
 			}
 		}
-		 FileOutputStream fos = null;
-		 InputStream is = null;
+		FileOutputStream fos = null;
+		InputStream is = null;
+		File tmpFile = new File(dst.getParent(), dst.getName()+".downloading");
 		try {
 		    HttpResponse respone = client.execute(get);
 		    int code = respone.getStatusLine().getStatusCode();
@@ -754,7 +755,7 @@ public class HttpUtil {
 			    long finish = 0;
 			    int buf = 1024;
 		        is = entity.getContent();
-		        fos = new FileOutputStream(dst); 
+		        fos = new FileOutputStream(tmpFile); 
 		        byte[] buffer = new byte[buf];
 		        int len = -1;
 		        while((len = is.read(buffer) )!= -1){
@@ -787,8 +788,12 @@ public class HttpUtil {
 		        e.printStackTrace();
 		    }
 		}
+		if(result){
+			tmpFile.renameTo(dst);
+		}
 		return result;
 	}
+	
 	/**
 	 * 文件上传
 	 * @param url
