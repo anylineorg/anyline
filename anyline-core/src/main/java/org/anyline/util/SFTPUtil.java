@@ -324,8 +324,8 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 	private final Logger log = Logger.getLogger(SFTPProgressMonitor.class);
 	private String remote = "";
 	private String local = "";
-	private double length;		//总长度
-	private double transfered;	//已下载长度
+	private long length;		//总长度
+	private long transfered;	//已下载长度
 	private double displayRate;		//最后显示下载比例
 	private long startTime = 0;
 	private long displayTime;		//最后显示下载时间
@@ -353,7 +353,7 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 			displayTime = System.currentTimeMillis();
 			long delay = System.currentTimeMillis()-startTime;
 			double expect = length / (transfered/delay);
-			String total_title = "[文件下载][进度:" + FileUtil.process(length, transfered) +"][耗时:"+DateUtil.conversion(delay)+"/"+DateUtil.conversion(expect)+"("+FileUtil.size(transfered*1000/delay)+"/s)]";
+			String total_title = "[文件下载][进度:" + FileUtil.progress(length, transfered) +"][耗时:"+DateUtil.conversion(delay)+"/"+DateUtil.conversion(expect)+"("+FileUtil.conversion(transfered*1000/delay)+"/s)]";
 			if(null != local){
 				total_title = "[local:"+local+"]" + total_title;
 			}
