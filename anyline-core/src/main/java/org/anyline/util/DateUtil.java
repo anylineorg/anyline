@@ -1234,6 +1234,9 @@ public class DateUtil {
 				result += ms+"毫秒";
 			}	
 		}
+		if(src<=0){
+			result = "0毫秒";
+		}
 		return result;
 	}
 }
