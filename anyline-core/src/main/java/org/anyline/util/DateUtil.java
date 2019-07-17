@@ -1226,7 +1226,7 @@ public class DateUtil {
 			if(ms==0){
 				result += s+"秒";
 			}else{
-				result += s+"."+ms+"秒";
+				result += s+"."+BasicUtil.fillChar(ms+"",3)+"秒";
 			}
 		}
 		if(src<1000){
