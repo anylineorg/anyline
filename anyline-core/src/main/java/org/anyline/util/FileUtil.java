@@ -198,9 +198,6 @@ public class FileUtil {
 		}
 		return buffer;
 	}
-	public static void main(String args[]){
-		
-	}
 	/**
 	 * 
 	 * @param content 写入内容
@@ -842,33 +839,30 @@ public class FileUtil {
 	 * @param finish 已完成
 	 * @return
 	 */
-	public static String process(double total, double finish){
+	public static String progress(long total, long finish){
 		String title = "";
-		double rate = finish/total*100;
+		double rate = finish*100.00/total;
 		String rateTitle = NumberUtil.format(rate, "0.00");
 		if(finish>=total){
 			rateTitle = "100";
 		}
-		title = size(finish) + "/" + size(total) + "("+rateTitle+"%)";
+		title = conversion(finish) + "/" + conversion(total) + "("+rateTitle+"%)";
 		return title;
 	}
-	public static String process(long total, long finish){
-		return process((double)total, (double) finish);
-	}
-	public static String size(double b){
+	public static String conversion(long b){
 		String result = "";
 		if(b<1024){
-			result = NumberUtil.format(b,"0.00")+ "byte";
-		}else if(b<1024*1024){
-			result = NumberUtil.format(b/1024,"0.00") + "kb";
-		}else if(b<1024*1024*1024){
-			result = NumberUtil.format(b/1024/1024,"0.00") + "mb";
-		}else if(b<1024*1024*1024*1024){
-			result = NumberUtil.format(b/1024/1024/1024,"0.00") + "gb";
-		}else if(b<1024*1024*1024*1024*1024){
-			result = NumberUtil.format(b/1024/1024/1024/1024,"0.00") + "tb";
-		}else if(b<1024*1024*1024*1024*1024*1024){
-			result = NumberUtil.format(b/1024/1024/1024/1024/1024,"0.00") + "pb";
+			result = b+ "byte";
+		}else if(b<1024L*1024){
+			result = NumberUtil.format(b/1024.00,"0.00") + "kb";
+		}else if(b<1024L*1024*1024){
+			result = NumberUtil.format(b/1024.00/1024,"0.00") + "mb";
+		}else if(b<1024L*1024*1024*1024){
+			result = NumberUtil.format(b/1024.00/1024/1024,"0.00") + "gb";
+		}else if(b<1024L*1024*1024*1024*1024){
+			result = NumberUtil.format(b/1024.00/1024/1024/1024,"0.00") + "tb";
+		}else if(b<1024L*1024*1024*1024*1024*1024){
+			result = NumberUtil.format(b/1024.00/1024/1024/1024/1024,"0.00") + "pb";
 		}
 		return result;
 	}
