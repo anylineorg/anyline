@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
@@ -40,6 +41,12 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
+import org.anyline.util.FileUtil;
+import org.anyline.util.HttpCookie;
+import org.anyline.util.Source;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -69,6 +76,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 /**
  * 基于hpptclient4.x
  * 第一个参数用来保持session连接 
@@ -606,10 +614,6 @@ public class HttpUtil {
         }  
         return sslsf;  
     }  
-	
-	
-	
-
     public static String mergePath(String ... paths){
 		String result = null;
 		String separator = "/";
@@ -649,7 +653,6 @@ public class HttpUtil {
 	 * @return
 	 */
 	public static String createFullPath(String host, String url) {
-		// 完整的目标URL
 		if (url.startsWith("http") || url.startsWith("//") || BasicUtil.isEmpty(host)){
 			return url;
 		}
@@ -660,55 +663,43 @@ public class HttpUtil {
 			fullPath = getPath(host) + url;
 		} else {// 当前站点的相对路径
 			host = parseDir(host);
-			if (host.endsWith("/")) {
-				// src是一个目录
+			if (host.endsWith("/")) { // src是一个目录
 				fullPath = host + url;
-			} else {
-				// src有可能是一个文件 : 需要判断是文件还是目录 文件比例多一些
+			} else { // src有可能是一个文件 : 需要判断是文件还是目录 文件比例多一些
 				fullPath = host + "/" + url;
 			}
 		}
 		return fullPath;
 	}
 
-	public static boolean download(DownloadProcess process, String url, String dst){
-		return download(process, url, new File(dst), true);
+	public static boolean download(DownloadProgress progress, String url, String dst){
+		return download(progress, url, new File(dst), true);
 	}
 	public static boolean download(String url, String dst){
 		return download(null, url, dst);
 	}
-	public static boolean download(DownloadProcess process, String url, String dst, boolean override) {
-		return download(process, url, new File(dst), override);
+	public static boolean download(DownloadProgress progress, String url, String dst, boolean override) {
+		return download(progress, url, new File(dst), override);
 	}
 
 	public static boolean download(String url, String dst, boolean override) {
 		return download(null, url, new File(dst), override);
 	}
 
-	public static boolean download(DownloadProcess process, String url, File dst) {
-		return download(process, url, dst, true);
+	public static boolean download(DownloadProgress progress, String url, File dst) {
+		return download(progress, url, dst, true);
 	}
 	public static boolean download(String url, File dst) {
 		return download(null, url, dst, true);
 	}
-	/**
-	 * 下载远程文件并保存到本地
-	 * 
-	 * @param remoteFilePath
-	 *            远程文件路径
-	 * @param localFilePath
-	 *            本地文件路径
-	 */
-	public static boolean download(DownloadProcess process, String url, File dst, boolean override) {
-		return download(process, url, dst, null, override);
+	public static boolean download(DownloadProgress progress, String url, File dst, boolean override) {
+		return download(progress, url, dst, null, override);
 	}
 	public static boolean download(String url, File dst, boolean override) {
 		return download(null, url, dst, null, override);
 	}
-	public static boolean download(DownloadProcess process, String url, File dst, Map<String,String> headers, boolean override){
-		if(null == process){
-			process = new DownloadProcessImpl(url,dst);
-		}
+
+	public static boolean downloads(DownloadProgress progress, String url, File dst, Map<String,String> headers, boolean override){
 		boolean result = false;
 		if(null != url && url.startsWith("//")){
 			url = "http:"+url;
@@ -716,14 +707,17 @@ public class HttpUtil {
 		if(ConfigTable.isDebug()){
 			log.info("[文件下载][url:"+url+"][local:"+dst.getAbsolutePath()+"]");
 		}
-		long fr = System.currentTimeMillis();
+		if(null == progress){
+			progress = new DefaultProgress(url,dst);
+		}
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
 			return result;
 		}
 		if(dst.exists() && !override){
-			log.info("[文件下载][文件已存在][url:"+url+"][local:"+dst.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+			log.info("[文件下载][文件已存在][url:"+url+"][local:"+dst.getAbsolutePath()+"]");
 			return true;
 		}
+		long fr = System.currentTimeMillis();
 		File parent = dst.getParentFile();
 		if(!parent.exists()){
 			parent.mkdirs();
@@ -746,25 +740,27 @@ public class HttpUtil {
 		    HttpResponse respone = client.execute(get);
 		    int code = respone.getStatusLine().getStatusCode();
 		    if(code != 200){
-				log.info("[文件下载][状态异常][code:"+code+"][url:"+url+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+				log.info("[文件下载][状态异常][code:"+code+"][url:"+url+"]");
 		        return false;
 		    }
 		    HttpEntity entity = respone.getEntity();
 		    if(entity != null) {
 			    long total = entity.getContentLength();
-			    long finish = 0;
+			    progress.init(url, "", total, 0);
 			    int buf = 1024;
 		        is = entity.getContent();
 		        fos = new FileOutputStream(tmpFile); 
 		        byte[] buffer = new byte[buf];
 		        int len = -1;
+		        int flush = 0;
 		        while((len = is.read(buffer) )!= -1){
 		        	fos.write(buffer, 0, len);
-		        	finish += len;
-		        	if(finish > total){
-		        		finish = total;
+		        	progress.step(url, "", len);
+		        	flush += len;
+		        	if(flush >= buf*10){
+		        		flush = 0;
+		        		fos.flush();
 		        	}
-        			process.process(total, finish, System.currentTimeMillis()-fr);
 		        }
 		    }
 			if(ConfigTable.isDebug()){
@@ -793,14 +789,157 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	
 	/**
-	 * 文件上传
+	 * 读取下载文件长度
 	 * @param url
-	 * @param files	 文件参数
-	 * @param params 文本参数
+	 * @param headers
 	 * @return
 	 */
+	private static long length(String url, Map<String,String> headers){
+		long len = 0;
+		if(null != url && url.startsWith("//")){
+			url = "http:"+url;
+		}
+		if(BasicUtil.isEmpty(url)){
+			return len;
+		}
+		HttpClientBuilder builder = HttpClients.custom();
+		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
+		CloseableHttpClient client = builder.build();
+		RequestConfig requestConfig =  RequestConfig.custom().build();
+		HttpGet get = new HttpGet(url);
+		get.setConfig(requestConfig);
+		if(null != headers){
+			for(String key:headers.keySet()){
+				get.setHeader(key, headers.get(key));
+			}
+		}
+		try{
+			HttpResponse response = client.execute(get);
+		    int code = response.getStatusLine().getStatusCode();
+		    if(code != 200){
+				log.info("[文件下载][状态异常][code:"+code+"][url:"+url+"]");
+		        return len;
+		    }
+		    HttpEntity entity = response.getEntity();
+		    if(entity != null) {
+			    len = entity.getContentLength();
+		    }
+		}catch(Exception e){
+			
+		}
+		return len;
+	}
+	public static boolean download(DownloadProgress progress, String url, File dst, Map<String,String> headers, boolean override){
+		boolean result = false;
+		if(null != url && url.startsWith("//")){
+			url = "http:"+url;
+		}
+		if(null == progress){
+			progress = new DefaultProgress(url,dst);
+		}
+		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
+			return result;
+		}
+		long past = 0;
+		long length = 0;
+		if(dst.exists() && !override){
+			past = dst.length();
+			progress.init(url, "", length, past);
+			progress.finish(url, "");
+			return true;
+		}
+		File parent = dst.getParentFile();
+		if(!parent.exists()){
+			parent.mkdirs();
+		}
+		HttpClientBuilder builder = HttpClients.custom();
+		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
+		CloseableHttpClient client = builder.build();
+		RequestConfig requestConfig =  RequestConfig.custom().build();
+		HttpGet get = new HttpGet(url);
+		get.setConfig(requestConfig);
+		if(null != headers){
+			for(String key:headers.keySet()){
+				get.setHeader(key, headers.get(key));
+			}
+		}
+		RandomAccessFile raf = null;
+		InputStream is = null;
+		File tmpFile = new File(dst.getParent(), dst.getName()+".downloading");
+		File configFile = new File(dst.getParent(), dst.getName()+".downloading.config");
+		String config = "";
+		if(configFile.exists()){
+			config = FileUtil.read(configFile).toString();
+		}else{
+		}
+/*
+0,100,40  开始，结束，已完成
+101,200
+ 
+ 表示头500个字节：bytes=0-499  
+表示第二个500字节：bytes=500-999  
+表示最后500个字节：bytes=-500  
+表示500字节以后的范围：bytes=500-  
+第一个和最后一个字节：bytes=0-0,-1  
+同时指定几个范围：bytes=500-600,601-999
+ */
+		long start=0;
+		if(tmpFile.exists()){//继上次进度下载
+			start = tmpFile.length();
+		}
+		//get.setHeader("Range", "bytes=" + start + "-"  + end);
+		get.setHeader("Range", "bytes=" + start + "-");
+		try {
+		    HttpResponse response = client.execute(get);
+		    int code = response.getStatusLine().getStatusCode();
+		    if(code != 200 && code !=206){
+				progress.error(url, "", code, "状态异常");
+		        return false;
+		    }
+		    HttpEntity entity = response.getEntity();
+		    if(entity != null) {
+			    long total = entity.getContentLength();
+				progress.init(url, "", total, start);
+			    int buf = 1024*1024;
+			    if(buf > total){
+			    	buf = (int)total;
+			    }
+		        is = entity.getContent();
+		        raf = new RandomAccessFile(tmpFile, "rwd");
+		        raf.seek(start);
+		        
+		        byte[] buffer = new byte[buf];
+		        int len = -1;
+		        while((len = is.read(buffer) )!= -1){
+		        	raf.write(buffer, 0, len);
+		        	progress.step(url, "", len);
+		        }
+		        progress.finish(url, "");
+		    }
+		    result = true;
+		} catch (Exception e) {
+		    e.printStackTrace();
+		}finally{
+			try{
+		        raf.close();
+			}catch(Exception e){
+			}
+			try{
+		        is.close();
+			}catch(Exception e){
+			}
+		    try {
+		        client.close();
+		    } catch (IOException e) {
+		        e.printStackTrace();
+		    }
+		}
+		if(result){
+			tmpFile.renameTo(dst);
+		}
+		return result;
+	}
 	public static String upload(String url, Map<String, File> files, Map<String, Object> params) {
 		String result = "";
 		// 封装文件实体
@@ -982,6 +1121,12 @@ public class HttpUtil {
 		return false;
 	}
 
+	/**
+	 * 合并参数
+	 * @param url
+	 * @param params
+	 * @return
+	 */
 	public static String mergeParam(String url, Map<String,Object> params){
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
 			return url;
@@ -997,6 +1142,12 @@ public class HttpUtil {
 		url += BasicUtil.joinBySort(params);
 		return url;
 	}
+	/**
+	 * 合并参数
+	 * @param url
+	 * @param params
+	 * @return
+	 */
 	public static String mergeParam(String url, String ... params){
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
 			return url;
