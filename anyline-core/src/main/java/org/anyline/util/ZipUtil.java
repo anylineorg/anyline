@@ -62,6 +62,10 @@ public class ZipUtil {
 	public static boolean zip(Collection<File> srcs, File zip, String root) {
 		boolean result = true;
 		try {
+			File dir =zip.getParentFile();
+			if(!dir.exists()){
+				dir.mkdirs();
+			}
 			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip), BUFF_SIZE));
 			for (File file : srcs) {
 				if(!zip(file, zipout, root)){
@@ -110,6 +114,10 @@ public class ZipUtil {
 			log.warn("[压缩文件][file:" + zip.getAbsolutePath() + "][size:" + files.size() + "]");
 		}
 		try {
+			File dir =zip.getParentFile();
+			if(!dir.exists()){
+				dir.mkdirs();
+			}
 			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip), BUFF_SIZE));
 			for (File file : files) {
 				if(!zip(file, zipout, root)){
