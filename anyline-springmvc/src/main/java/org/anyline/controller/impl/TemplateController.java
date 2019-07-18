@@ -16,13 +16,13 @@
  *          
  */
 package org.anyline.controller.impl;
+import org.anyline.net.HttpUtil;
 import org.anyline.plugin.springmvc.TemplateModelAndView;
 import org.anyline.plugin.springmvc.TemplateView;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
  
