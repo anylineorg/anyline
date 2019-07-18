@@ -25,10 +25,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.anyline.util.HttpUtil;
 import org.anyline.web.tag.BaseBodyTag;
 import org.anyline.weixin.mp.util.WXMPUtil;
 import org.apache.log4j.Logger;
