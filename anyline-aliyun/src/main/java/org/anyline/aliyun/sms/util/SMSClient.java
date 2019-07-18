@@ -5,10 +5,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.HttpClientUtil;
 import org.apache.log4j.Logger;
 
 /**
@@ -52,7 +52,7 @@ public class SMSClient {
 			map.put("_sms_template", template);
 			map.put("_sms_mobile", mobile);
 			map.put("_sms_param", BeanUtil.map2json(params));
-			String txt = HttpClientUtil.get(config.SMS_SERVER, "UTF-8", map).getText();
+			String txt = HttpUtil.get(config.SMS_SERVER, "UTF-8", map).getText();
 			result = BeanUtil.json2oject(txt, SMSResult.class);
 			if(ConfigTable.isDebug()){
 				log.warn("[SMS SEND][mobile:"+mobile+"][result:"+txt+"]");
