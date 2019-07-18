@@ -3,6 +3,7 @@ package org.anyline.util;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -90,6 +91,33 @@ public class Downloader {
 	public DownloadProgress getProgress() {
 		return progress;
 	}
+	
+	public void setProgress(DownloadProgress progress) {
+		this.progress = progress;
+	}
+	/**
+	 * 清除任务
+	 * @param stop 是否停止未完成的下载任务
+	 */
+	public void clear(boolean stop){
+		List<String> urls = BeanUtil.getMapKeys(tasks);
+		for(String url:urls){
+			DownloadTask task = tasks.get(url);
+			if(stop && task.isRunning()){
+				//停止下载任务
+			}
+			tasks.remove(url);
+		}
+	}
+	public void stop(){
+		
+	}
+	public void stop(String url){
+		DownloadTask task = tasks.get(url);
+		if(null != task){
+			task.stop();
+		}
+	}
 	/**
 	 * 任务数量
 	 * @return
@@ -106,6 +134,20 @@ public class Downloader {
 		for(String url:tasks.keySet()){
 			DownloadTask task = tasks.get(url);
 			if(task.isFinish()){
+				size ++;
+			}
+		}
+		return size;
+	}
+	/**
+	 * 运行中任务数量
+	 * @return
+	 */
+	public int getRunningTaskSize(){
+		int size = 0;
+		for(String url:tasks.keySet()){
+			DownloadTask task = tasks.get(url);
+			if(task.isRunning()){
 				size ++;
 			}
 		}
