@@ -9,12 +9,12 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.anyline.entity.DataRow;
+import org.anyline.net.HttpUtil;
 import org.anyline.qq.open.entity.QQPayTradeOrder;
 import org.anyline.qq.open.entity.QQPayTradeResult;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.MD5Util;
 import org.anyline.util.SimpleHttpUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -158,7 +158,7 @@ public class QQOpenUtil{
 	public DataRow getOpenId(String accessToken){
 		DataRow row = new DataRow();
 		String url = "https://graph.qq.com/oauth2.0/me?access_token="+accessToken+"&unionid=1";
-		String txt = HttpUtil.get(url)+"";
+		String txt = HttpUtil.get(url).getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[QQ登录][get openid][txt:"+txt+"]");
 		}
