@@ -31,4 +31,7 @@ public interface DownloadProgress {
 	 * @param message
 	 */
 	public void error(String url, String thread, int code, String message);
+
+	public void setErrorCallback(DownloadCallback callback);
+	public void setFinishCallback(DownloadCallback callback);
 }
