@@ -832,8 +832,9 @@ public class HttpUtil {
 	}
 	public static boolean download(DownloadProgress progress, String url, File dst, Map<String,String> headers, boolean override){
 		boolean result = false;
-		if(null != url && url.startsWith("//")){
-			url = "http:"+url;
+		String finalUrl = url;
+		if(null != finalUrl && finalUrl.startsWith("//")){
+			finalUrl = "http:"+url;
 		}
 		if(null == progress){
 			progress = new DefaultProgress(url,dst);
@@ -857,7 +858,7 @@ public class HttpUtil {
 		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
 		CloseableHttpClient client = builder.build();
 		RequestConfig requestConfig =  RequestConfig.custom().build();
-		HttpGet get = new HttpGet(url);
+		HttpGet get = new HttpGet(finalUrl);
 		get.setConfig(requestConfig);
 		if(null != headers){
 			for(String key:headers.keySet()){
@@ -915,7 +916,6 @@ public class HttpUtil {
 		        	raf.write(buffer, 0, len);
 		        	progress.step(url, "", len);
 		        }
-		        progress.finish(url, "");
 		    }
 		    result = true;
 		} catch (Exception e) {
@@ -937,6 +937,7 @@ public class HttpUtil {
 		}
 		if(result){
 			tmpFile.renameTo(dst);
+	        progress.finish(url, "");
 		}
 		return result;
 	}
