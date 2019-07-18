@@ -37,6 +37,8 @@ public class SFTPUtil {
 	private String user;
 	private String password;
 	private ChannelSftp client;
+	public SFTPUtil() throws Exception{
+	}
 	public SFTPUtil(String host, int port, String user, String password) throws Exception{
 		this(host, user, password, 22);
 	}

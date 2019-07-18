@@ -20,7 +20,7 @@ public class FTPUtil {
 	private FTPClient client;
 	
 
-
+	public FTPUtil(){}
 	public FTPUtil(String host, String user, String password) {
 		this(host, user, password, 21);
 	}

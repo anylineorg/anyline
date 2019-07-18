@@ -23,6 +23,9 @@ public class HttpCookie {
 	private String expires;
 	private String path;
 	private String domain;
+	public HttpCookie(){
+		
+	}
 	public HttpCookie(String param){
 		//endDate=deleted; expires=Thu, 01-Jan-1970 00:00:01 GMT; path=/; domain=.anyline.org
 		if(null == param){

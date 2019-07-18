@@ -31,7 +31,10 @@ public class DownloadTask {
 
 	private double lastLogRate	; //最后一次日志进度
 	private long lastLogTime	; //量后一次日志时间
-
+	
+	public DownloadTask(){
+		
+	}
 	public DownloadTask(String url, File local){
 		this.url = url;
 		this.local = local;
