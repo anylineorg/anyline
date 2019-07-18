@@ -10,11 +10,10 @@ import net.sf.json.JSONObject;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.HttpClientUtil;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.RSAUtil;
 import org.anyline.util.SHA1Util;
 import org.anyline.util.SimpleHttpUtil;
@@ -168,10 +167,10 @@ public class WXMPUtil extends WXUtil{
 			return new WXMPPayRefundResult(false,"未设置密钥文件密码");
 		}
 		try{
-			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
+			CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("退款申请调用结果:" + txt);
     		}
@@ -224,10 +223,10 @@ public class WXMPUtil extends WXUtil{
 			return new WXMPRedpackResult(false,"未设置密钥文件密码");
 		}
 		try{
-			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
+			CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WXConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("发送红包调用结果:" + txt);
     		}
@@ -281,10 +280,10 @@ public class WXMPUtil extends WXUtil{
 			return new WXMPGroupRedpackResult(false,"未设置密钥文件密码");
 		}
 		try{
-			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
+			CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WXConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("发送裂变红包调用结果:" + txt);
     		}
@@ -337,10 +336,10 @@ public class WXMPUtil extends WXUtil{
 			return new WXMPTransferResult(false,"未设置密钥文件密码");
 		}
 		try{
-			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
+			CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WXConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("付款调用结果:" + txt);
     		}
@@ -401,10 +400,10 @@ public class WXMPUtil extends WXUtil{
 			return new WXMPTransferBankResult(false,"未设置密钥文件密码");
 		}
 		try{
-			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
+			CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WXConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("付款调用结果:" + txt);
     		}
@@ -463,7 +462,7 @@ public class WXMPUtil extends WXUtil{
 		}
 		DataRow row = new DataRow();
 		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+secret;
-		String text = HttpClientUtil.post(url,"UTF-8").getText();
+		String text = HttpUtil.post(url,"UTF-8").getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[CREATE NEW ACCESS TOKEN][result:"+text+"]");
 		}
@@ -615,7 +614,7 @@ public class WXMPUtil extends WXUtil{
 		String json = BeanUtil.object2json(msg);
 		log.warn("[send template message][data:"+json+"]");
 		HttpEntity entity = new StringEntity(json, "UTF-8");
-		String txt = HttpClientUtil.post(url, "UTF-8", entity).getText();
+		String txt = HttpUtil.post(url, "UTF-8", entity).getText();
 		log.warn("[send template message][result:"+txt+"]");
 		result = BeanUtil.json2oject(txt, TemplateMessageResult.class);
 		return result;
