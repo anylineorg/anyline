@@ -4,9 +4,9 @@ import java.net.URLEncoder;
 import java.util.Hashtable;
 
 import org.anyline.entity.DataRow;
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
 
@@ -39,7 +39,7 @@ public class QQMPUtil {
 		}
 		//1.获取accesstoken
 		String url = "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=" + config.APP_ID+"&client_secret="+config.API_KEY+"&code="+code+"&redirect_uri="+redirect;
-		String txt = HttpUtil.get(url)+"";
+		String txt = HttpUtil.get(url).getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[QQ登录][get accesstoken][txt:"+txt+"]");
 		}
@@ -47,7 +47,7 @@ public class QQMPUtil {
 		String accessToken = RegularUtil.cut(txt, "access_token=","&");
 		//2.获取openid unionid
 		url = "https://graph.qq.com/oauth2.0/me?access_token="+accessToken+"&unionid=1";
-		txt = HttpUtil.get(url)+"";
+		txt = HttpUtil.get(url).getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[QQ登录][get openid][txt:"+txt+"]");
 		}
