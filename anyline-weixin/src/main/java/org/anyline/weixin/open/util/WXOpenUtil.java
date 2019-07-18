@@ -6,11 +6,10 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.anyline.entity.DataRow;
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.HttpClientUtil;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
 import org.anyline.weixin.open.entity.WXOpenPayRefund;
 import org.anyline.weixin.open.entity.WXOpenPayRefundResult;
@@ -145,10 +144,10 @@ public class WXOpenUtil {
 			return new WXOpenPayRefundResult(false,"未设置密钥文件密码");
 		}
 		try{
-			CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
+			CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml);
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
-            String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
     			log.warn("退款申请调用结果:" + txt);
     		}

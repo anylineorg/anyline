@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.HttpClientUtil;
 import org.anyline.util.MD5Util;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -57,10 +57,10 @@ public class WXUtil {
 		String sign = WXUtil.sign(apiSecret, parameters);
 		parameters.put("sign", sign);
 		String xml = BeanUtil.map2xml(parameters);
-		CloseableHttpClient httpclient = HttpClientUtil.ceateSSLClient(keyStoreFile, HttpClientUtil.PROTOCOL_TLSV1, keyStorePassword);
+		CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
 		StringEntity reqEntity = new StringEntity(xml, "UTF-8");
 		reqEntity.setContentType("application/x-www-form-urlencoded");
-		String txt = HttpClientUtil.post(httpclient, WXConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
+		String txt = HttpUtil.post(httpclient, WXConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[获取RSA公钥][\n"+txt+"\n]");
 		}

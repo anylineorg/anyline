@@ -5,12 +5,11 @@ import java.util.Hashtable;
 import java.util.Map;
 
 import org.anyline.entity.DataRow;
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.HttpUtil;
 import org.anyline.util.SimpleHttpUtil;
-import org.anyline.weixin.open.util.WXOpenConfig;
 import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.anyline.weixin.wap.entity.WXWapPrePayOrder;
