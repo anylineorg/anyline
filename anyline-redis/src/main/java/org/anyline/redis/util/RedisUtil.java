@@ -9,10 +9,10 @@ import net.sf.json.JSONObject;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.HttpClientUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.log4j.Logger;
@@ -75,7 +75,7 @@ public class RedisUtil {
 		headers.put("Content-Type", "application/json");
 		try {
 			HttpEntity entity = new StringEntity(BeanUtil.map2json(map), "UTF-8");
-			String txt = HttpClientUtil.post(defaultHeader(), url, "UTF-8", entity).getText();
+			String txt = HttpUtil.post(defaultHeader(), url, "UTF-8", entity).getText();
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.containsKey("entities")){
 				DataSet set = row.getSet("entities");
@@ -124,7 +124,7 @@ public class RedisUtil {
 		Map<String,String> headers = defaultHeader();
 		headers.put("Content-Type", "application/json");
 		try{
-			String txt = HttpClientUtil.post(headers, url,"UTF-8", new StringEntity(json.toString(), "UTF-8")).getText();
+			String txt = HttpUtil.post(headers, url,"UTF-8", new StringEntity(json.toString(), "UTF-8")).getText();
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.containsKey("entities")){
 				result = row.getSet("entities");
@@ -153,7 +153,7 @@ public class RedisUtil {
 
 			Map<String,String> headers = new HashMap<String,String>();
 			headers.put("Authorization", "Bearer " + getAccessToken());
-			String txt = HttpClientUtil.put(headers, url,"UTF-8", new StringEntity(json, "UTF-8")).getText();
+			String txt = HttpUtil.put(headers, url,"UTF-8", new StringEntity(json, "UTF-8")).getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[RESET PASSWOROD][JSON:"+json+"][RESULT:" + txt + "]");
 			}
@@ -175,7 +175,7 @@ public class RedisUtil {
 		Map<String,String> map = new HashMap<String,String>();
 		map.put("nickname", nickname);
 		try {
-			String txt = HttpClientUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText();
+			String txt = HttpUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
 				log.warn("[RESET NICKNAME][RESULT:" + txt + "]");
@@ -195,7 +195,7 @@ public class RedisUtil {
 		boolean result = false;
 		String url = baseUrl + "/users/" + user;
 		try {
-			String txt = HttpClientUtil.delete(defaultHeader(),url, "UTF-8").getText();
+			String txt = HttpUtil.delete(defaultHeader(),url, "UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[DELETE USER][RESULT:"+ txt +"]");
 			}
@@ -214,7 +214,7 @@ public class RedisUtil {
 		DataRow result = new DataRow();
 		String url = baseUrl +  "/users/" + user;
 		try{
-			String txt = HttpClientUtil.get(defaultHeader(),url, "UTF-8").getText();
+			String txt = HttpUtil.get(defaultHeader(),url, "UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[GET USER][RESULT:"+ txt +"]");
 			}
@@ -245,7 +245,7 @@ public class RedisUtil {
 			params.put("cursor", cursor);
 		}
 		try{
-			String txt = HttpClientUtil.get(defaultHeader(),url, "UTF-8").getText();
+			String txt = HttpUtil.get(defaultHeader(),url, "UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[GET USER LIST][RESULT:" + txt + "]");
 			}
@@ -271,7 +271,7 @@ public class RedisUtil {
 		DataRow result = null;
 		String url = baseUrl + "/users/" + user + "/contacts/users/" + friend;
 		try {
-			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[ADD FRIEND][RESULT:\n" + txt + "]");
 			}
@@ -290,7 +290,7 @@ public class RedisUtil {
 		DataSet result = new DataSet();
 		String url = baseUrl + "/users/" + user + "/contacts/users";
 		try {
-			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[GET FRIEND LIST][RESULT:" + txt + "]");
 			}
@@ -322,7 +322,7 @@ public class RedisUtil {
 		DataRow result = null;
 		String url = baseUrl + "/users/" + user + "/contacts/users/" + friend;
 		try {
-			String txt = HttpClientUtil.delete(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.delete(defaultHeader(), url,"UTF-8").getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
 				log.warn("[DELETE FRIEND][RESULT:" + txt + "]");
@@ -346,7 +346,7 @@ public class RedisUtil {
 		String url = baseUrl + "/users/" + user + "/blocks/users";
 		try {
 			String params = "{\"usernames\":[\""+block+"\"]} ";
-			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(params, "UTF-8")).getText();
+			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(params, "UTF-8")).getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[ADD BLOCKS][RESULT:\n" + txt + "]");
 			}
@@ -365,7 +365,7 @@ public class RedisUtil {
 		DataSet result = new DataSet();
 		String url = baseUrl + "/users/" + block + "/blocks/users";
 		try {
-			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[GET BLOCK LIST][RESULT:" + txt + "]");
 			}
@@ -397,7 +397,7 @@ public class RedisUtil {
 		DataRow result = null;
 		String url = baseUrl + "/users/" + user + "/blocks/users/" + block;
 		try {
-			String txt = HttpClientUtil.delete(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.delete(defaultHeader(), url,"UTF-8").getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
 				log.warn("[DELETE BLOCK][RESULT:" + txt + "]");
@@ -416,7 +416,7 @@ public class RedisUtil {
 		String result = "0";
 		String url = baseUrl + "/users/" + user + "/status";
 		try {
-			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[GET USER STATUS][RESULT:" + txt + "]");
 			}
@@ -443,7 +443,7 @@ public class RedisUtil {
 		int result = 0;
 		String url = baseUrl + "/users/" + user + "/offline_msg_count";
 		try {
-			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[GET USER STATUS][RESULT:" + txt + "]");
 			}
@@ -468,7 +468,7 @@ public class RedisUtil {
 		String result = "";
 		String url = baseUrl + "/users/" + user + "/offline_msg_status/" + msg;
 		try {
-			String txt = HttpClientUtil.get(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[GET USER STATUS][RESULT:" + txt + "]");
 			}
@@ -491,7 +491,7 @@ public class RedisUtil {
 		DataRow result = null;
 		String url = baseUrl + "/users/" + user + "/deactivate";
 		try {
-			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[DEACTIVATE USER][RESULT:" + txt + "]");
 			}
@@ -512,7 +512,7 @@ public class RedisUtil {
 	public void activate(String user){
 		String url = baseUrl + "/users/" + user + "/activate";
 		try {
-			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[ACTIVATE USER][RESULT:" + txt + "]");
 			}
@@ -529,7 +529,7 @@ public class RedisUtil {
 		boolean result = false;
 		String url = baseUrl + "/users/" + user + "/disconnect";
 		try {
-			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8").getText();
+			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[DISCONNECT USER][RESULT:" + txt + "]");
 			}
@@ -560,7 +560,7 @@ public class RedisUtil {
 				+ "\"from\":\""+from+"\"}";
 		String url = baseUrl + "/messages";
 		try {
-			String txt = HttpClientUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(json, "UTF-8")).getText();
+			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(json, "UTF-8")).getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[SEND MESSAGE][RESULT:" + txt + "]");
 			}
@@ -598,7 +598,7 @@ public class RedisUtil {
 			params.put("maxusers", ""+max);
 			params.put("approval", ""+approve);
 			params.put("owner", owner);
-			String txt = HttpClientUtil.post(defaultHeader(), url, "UTF-8", params).getText();
+			String txt = HttpUtil.post(defaultHeader(), url, "UTF-8", params).getText();
 			if(ConfigTable.isDebug()){
 				log.warn("[CREATE GROUP][RESULT:" + txt + "]");
 			}
@@ -667,7 +667,7 @@ public class RedisUtil {
 		map.put("client_secret", config.CLIENT_SECRET);
 		try {
 			String url = baseUrl + "/token";
-			String txt = HttpClientUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText();
+			String txt = HttpUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText();
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("access_token")){
 				access_token = json.getString("access_token");
