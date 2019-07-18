@@ -24,8 +24,7 @@
 AnyLine提供的不仅仅是一个工具，更重要的是编程思想.<br/>
 <br/>
 
-为什么不能另起一个炉灶<br/>
-首先要认清有没有这个能力。<br/>
+
 写好一个框架一个系统性工程，需要投入海量的精力，优化各种细节，应对千变万化的场景，并不是找到或实现一两个亮点，就能完成一个框架。<br/>
 更困难的是需要长期的维护升级，不是一个人或单个团队所能胜任。<br/>
 一个框架的生存与发展更离不开一个完整活跃的生态，强如struts，webwork，struts2，jsf也已经被淘汰。<br/>
@@ -45,6 +44,7 @@ SpringBoot/SpringCloud将各种优秀框架整合在一起，AnyBoot在此基础
 ```
 anyline-core        : 基础包
 anyline-web         : javaEE基础
+anyline-net         : 多任务下载，下载进度，断点续传，网速计算，耗时预算，下载回调	
 anyline-struts      : strtus2支持
 anyline-springmvc   : springmvc支持
 anyline-mysql       : mysql支持
@@ -57,7 +57,7 @@ anyline-jpush       : 极光推送集成工具
 anyline-easemob     : 环信集成工具
 anyline-amap        : 高德云图集成工具
 anyline-sms         : 基于阿里云的短信发送工具
-anyline-mail        : 邮件
+anyline-mail        : 邮件接收发送
 anyline-redis       : redis
 ```
 一行代码自我介绍
