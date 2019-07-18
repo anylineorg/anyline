@@ -2,6 +2,7 @@ package org.anyline.util;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,6 @@ public class Downloader {
 	public static Downloader getInstance() {
 		return getInstance("default");
 	}
-
 	public static Downloader getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
 			key = "default";
@@ -41,15 +41,23 @@ public class Downloader {
 		return util;
 	}
 	private DownloadProgress progress = new DownloadProgress(){
+		private DownloadCallback finishCallback;
 		@Override
 		public void init(String url, String thread, long total, long past){
-			DownloadTask task = tasks.get(url);
+			DownloadTask task = getTask(url);
+			if(null == task){
+				log.error("[任务不存在][url:"+url+"]");
+				return ;
+			}
 			task.init(total, past);
-			start = System.currentTimeMillis();
 		}
 		@Override
 		public void step(String url, String thread, long len){
-			DownloadTask task = tasks.get(url);
+			DownloadTask task = getTask(url);
+			if(null == task){
+				log.error("[任务不存在][url:"+url+"]");
+				return ;
+			}
 			task.step(len);
 			if(getFinishTaskSize() == getTaskSize()){
 				end = System.currentTimeMillis();
@@ -58,18 +66,36 @@ public class Downloader {
 		}
 		@Override
 		public void finish(String url, String thread){
-			DownloadTask task = tasks.get(url);
+			DownloadTask task = getTask(url);
+			if(null == task){
+				log.error("[任务不存在][url:"+url+"]");
+				return ;
+			}
 			task.finish();
 			log();
 			if(ConfigTable.isDebug()){
 				log.info("[文件下载][下载完成][完成数量:"+getFinishTaskSize()+"/"+getTaskSize()+"][耗时:"+task.getExpendFormat()+"][url:"+url+"][local:"+task.getLocal().getAbsolutePath()+"]");
 			}
+			finishCallback.run(task);
 		}
 		@Override
 		public void error(String url, String thread, int code, String message) {
-			DownloadTask task = tasks.get(url);
+			DownloadTask task = getTask(url);
+			if(null == task){
+				log.error("[任务不存在][url:"+url+"]");
+				return ;
+			}
 			task.error(code, message);
 		}
+		@Override
+		public void setErrorCallback(DownloadCallback callback) {
+			
+		}
+		@Override
+		public void setFinishCallback(DownloadCallback callback) {
+			this.finishCallback = callback;
+		}
+		
 	};
 	private void log(){
 		if(getTaskSize()<=1 || !ConfigTable.isDebug()){
@@ -85,6 +111,15 @@ public class Downloader {
     		lastLogRate = rate;
     		lastLogTime = System.currentTimeMillis();
 		}
+	}
+	public void init(){
+		tasks.clear();
+		maxParallel = 5	;
+		curParallel	= 0	; //当前并行下载数量	
+		lastLogRate	= 0 ; //最后一次日志进度
+		lastLogTime	= 0 ; //量后一次日志时间
+		start = 0		; //下载开始时间
+		end = 0			; //下载结束时间
 	}
 	public String getMessage(){
 		//"[进度:10.12mb/200.11mb(20%)][数量:1/5][耗时:1分3秒/12分2秒][网速:100kb/s]"
@@ -116,20 +151,25 @@ public class Downloader {
 	 * @param stop 是否停止未完成的下载任务
 	 */
 	public void clear(boolean stop){
-		List<String> urls = BeanUtil.getMapKeys(tasks);
-		for(String url:urls){
-			DownloadTask task = tasks.get(url);
+		for(DownloadTask task:tasks.values()){
 			if(stop && task.isRunning()){
 				//停止下载任务
 			}
-			tasks.remove(url);
 		}
+		tasks.clear();
+	}
+	public static void main(String args[]){
+		
 	}
 	public void stop(){
 		
 	}
 	public void stop(String url){
-		DownloadTask task = tasks.get(url);
+		DownloadTask task = getTask(url);
+		if(null == task){
+			log.error("[任务不存在][url:"+url+"]");
+			return ;
+		}
 		if(null != task){
 			task.stop();
 		}
@@ -147,8 +187,7 @@ public class Downloader {
 	 */
 	public int getFinishTaskSize(){
 		int size = 0;
-		for(String url:tasks.keySet()){
-			DownloadTask task = tasks.get(url);
+		for(DownloadTask task:tasks.values()){
 			if(task.isFinish()){
 				size ++;
 			}
@@ -161,8 +200,7 @@ public class Downloader {
 	 */
 	public int getRunningTaskSize(){
 		int size = 0;
-		for(String url:tasks.keySet()){
-			DownloadTask task = tasks.get(url);
+		for(DownloadTask task:tasks.values()){
 			if(task.isRunning()){
 				size ++;
 			}
@@ -175,9 +213,9 @@ public class Downloader {
 	 */
 	public long getSumLength(){
 		long length = 0;
-		for(String url:tasks.keySet()){
-			DownloadTask task = tasks.get(url);
+		for(DownloadTask task:tasks.values()){
 			length += task.getLength();
+			//System.out.println(task.getLengthFormat());
 		}
 		return length;
 	}
@@ -195,8 +233,7 @@ public class Downloader {
 	}
 	public long getSumPast(){
 		long length = 0;
-		for(String url:tasks.keySet()){
-			DownloadTask task = tasks.get(url);
+		for(DownloadTask task:tasks.values()){
 			length += task.getPast();
 		}
 		return length;
@@ -211,8 +248,7 @@ public class Downloader {
 	 */
 	public long getSumFinish(){
 		long length = 0;
-		for(String url:tasks.keySet()){
-			DownloadTask task = tasks.get(url);
+		for(DownloadTask task:tasks.values()){
 			length += task.getFinish();
 		}
 		return length;
@@ -229,7 +265,10 @@ public class Downloader {
 		long length = getSumLength()	; //本次需下载
 		long past = getSumPast()		; //历史已下载
 		long finish = getSumFinish()	; //本次已完成
-		double rate = (finish+past)*100.00/(length+past);
+		double rate = 0;
+		if(length+past>0){
+			rate = (finish+past)*100.00/(length+past);
+		}
 		BigDecimal decimal = new BigDecimal(rate);
 		rate = decimal.setScale(2, BigDecimal.ROUND_HALF_DOWN).doubleValue();  
 		if(rate ==100 && finish < length){
@@ -244,6 +283,9 @@ public class Downloader {
 	public long getSpeed(){
 		long finish = getSumFinish();
 		long expend = getExpend();
+		if(expend==0){
+			return 0;
+		}
 		return finish*1000/expend;
 	}
 	/**
@@ -278,10 +320,9 @@ public class Downloader {
 	 */
 	public long getExpect(){
 		long expect = 0;
-		for(String url:tasks.keySet()){
-			DownloadTask task = tasks.get(url);
-			expect += task.getExpect();
-		}
+		long len = getSumLength()- getSumFinish();
+		long speed = getSpeed(); //秒速(不是毫秒)
+		expect = len*1000/speed;
 		return expect;
 	}
 	public String getExpectFormat(){
@@ -298,25 +339,36 @@ public class Downloader {
 	 * @param local
 	 * @return
 	 */
-	public Downloader add(String url, File local, Map<String,String> headers, Map<String, Object> params){
-		DownloadTask task = tasks.get(url);
+	public Downloader add(String url, File local, Map<String,String> headers, Map<String, Object> params,Map<String, Object> extras){
+		DownloadTask task = getTask(url);
 		if(null == task){
-			task = new DownloadTask(url, local, headers, params);
+			task = new DownloadTask(url, local, headers, params,extras);
 			task.setIndex(tasks.size());
 		}
-		tasks.put(url, task);
-		return this;
+		return add(task);
+	}
+	public Downloader add(String url, File local, Map<String,String> headers, Map<String, Object> params){
+		return add(url, local, null, null, null);
 	}
 	public Downloader add(String url, File local){
 		return add(url, local, null, null);
+	}
+	public Downloader add(DownloadTask task){
+		String url  = task.getUrl();
+		String code = url;
+		log.warn("[add task][code:"+code+"][url:"+task.getUrl()+"]");
+		if(null == tasks.get(code)){
+			tasks.put(code, task);
+			task.setIndex(tasks.size());
+		}
+		return this;
 	}
 	//线程池
 	public void start(){
 		if(start ==0){
 			start = System.currentTimeMillis();
 		}
-		for(String url:tasks.keySet()){
-			final DownloadTask task = tasks.get(url);
+		for(final DownloadTask task:tasks.values()){
 			if(tasks.size() >1){
 				task.closeLog();
 			}
@@ -343,12 +395,19 @@ public class Downloader {
 	public void setCurParallel(int curParallel) {
 		this.curParallel = curParallel;
 	}
-	
+	public DownloadTask getTask(String url){
+		String code = url;
+		DownloadTask task = tasks.get(code);
+		if(null == task){
+			log.error("[任务不存在][code:"+code+"][url:"+url+"]");
+		}
+		return task;
+	}
 }
 class DownloaderThreadPool {
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = Math.max(4, Math.min(CPU_COUNT - 1, 5));
-    private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 2;
+    private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 100;
     private static final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(2000);//超出数量丢弃
     private static ThreadPoolExecutor threadPoolExecutor;
     static {
