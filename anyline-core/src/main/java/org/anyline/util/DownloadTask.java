@@ -2,11 +2,9 @@ package org.anyline.util;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
-import org.anyline.util.FileUtil;
 import org.apache.log4j.Logger;
 
 public class DownloadTask {
@@ -22,6 +20,7 @@ public class DownloadTask {
 	private long end	; //结束时间
 	private Map<String,String> headers;
 	private Map<String,Object> params;
+	private Map<String,Object> extras = new HashMap<String,Object>();	//扩展属性(回调时原样返回)
 	private int index		; //任务下标从0开始
 	private long expend		; //本次已耗时
 	private long expect		; //本次预计剩余时间
@@ -33,6 +32,13 @@ public class DownloadTask {
 	public DownloadTask(String url, File local){
 		this.url = url;
 		this.local = local;
+	}
+	public DownloadTask(String url, File local, Map<String,String> headers, Map<String,Object> params, Map<String,Object> extras){
+		this.url = url;
+		this.local = local;
+		this.headers = headers;
+		this.params = params;
+		this.extras = extras;
 	}
 	public DownloadTask(String url, File local, Map<String,String> headers, Map<String,Object> params){
 		this.url = url;
@@ -226,6 +232,15 @@ public class DownloadTask {
 		this.end = end;
 	}
 
+	public Map<String, Object> getExtras() {
+		return extras;
+	}
+	public void setExtras(Map<String, Object> extras) {
+		this.extras = extras;
+	}
+	public void addExtras(String key, Object value){
+		extras.put(key, value);
+	}
 	/**
 	 * 耗时
 	 * @return
@@ -246,10 +261,25 @@ public class DownloadTask {
 	}
 	/**
 	 * 预计剩余时间
+	 * 没有实际速度时，使用预计速度
 	 * @return
 	 */
+	public long getExpect(long speed) {
+		if(expend>0){
+			expect = (long)(length / (this.finish*1.0/expend) - expend);	//剩余时间=预计总耗时-已耗时
+			if(rate == 100){
+				expect = 0;
+			}
+		}else if(speed>0){
+			expect = (long)(length*1.0 / speed - expend);	//剩余时间=预计总耗时-已耗时
+		}
+		return expect;
+	}
 	public long getExpect() {
 		return expect;
+	}
+	public String getExpectFormat(long speed){
+		return DateUtil.conversion(getExpect(speed));
 	}
 	public String getExpectFormat(){
 		return DateUtil.conversion(getExpect());

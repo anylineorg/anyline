@@ -75,4 +75,13 @@ public class DefaultProgress implements DownloadProgress{
 	public void error(String url, String thread, int code, String message) {
 		
 	}
+	@Override
+	public void setErrorCallback(DownloadCallback callback) {
+		
+	}
+	@Override
+	public void setFinishCallback(DownloadCallback callback) {
+		
+	}
+	
 }
