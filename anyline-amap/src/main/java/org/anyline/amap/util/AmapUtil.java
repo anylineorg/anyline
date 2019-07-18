@@ -14,9 +14,9 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.MapLocation;
 import org.anyline.entity.PageNavi;
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.HttpClientUtil;
 import org.anyline.util.MD5Util;
 import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
@@ -96,7 +96,7 @@ public class AmapUtil {
 		params.put("data", JSONObject.fromObject(data).toString());
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		String id = null;
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
@@ -185,7 +185,7 @@ public class AmapUtil {
 		params.put("ids", param);
 		params.put("sig", sign(params));
 		String url = "http://yuntuapi.amap.com/datamanage/data/delete";
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[删除标注][param:"+BasicUtil.joinBySort(params)+"]");
 		}
@@ -245,7 +245,7 @@ public class AmapUtil {
 		}
 		params.put("data", JSONObject.fromObject(data).toString());
 		params.put("sig", sign(params));
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		if(ConfigTable.isDebug()){
 			log.warn("[更新标注][param:"+BasicUtil.joinBySort(params)+"]");
 		}
@@ -302,7 +302,7 @@ public class AmapUtil {
 		params.put("name", name);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		JSONObject json = JSONObject.fromObject(txt);
 		if(json.has("tableid")){
 			tableId = json.getString("tableid");
@@ -341,7 +341,7 @@ public class AmapUtil {
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		PageNavi navi = new PageNaviImpl();
 		navi.setCurPage(page);
 		navi.setPageRows(limit);
@@ -419,7 +419,7 @@ public class AmapUtil {
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		PageNavi navi = new PageNaviImpl();
 		navi.setCurPage(page);
 		navi.setPageRows(limit);
@@ -505,7 +505,7 @@ public class AmapUtil {
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		PageNavi navi = new PageNaviImpl();
 		navi.setCurPage(page);
 		navi.setPageRows(limit);
@@ -550,7 +550,7 @@ public class AmapUtil {
 		params.put("_id", id);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -588,7 +588,7 @@ public class AmapUtil {
 		params.put("country", country);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -627,7 +627,7 @@ public class AmapUtil {
 		params.put("country", province);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -667,7 +667,7 @@ public class AmapUtil {
 		params.put("city", city);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -706,7 +706,7 @@ public class AmapUtil {
 		params.put("timerange", BasicUtil.evl(timerange,"1800")+"");
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.post(url, "UTF-8", params).getText();
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			if(json.has("datas")){
@@ -737,7 +737,7 @@ public class AmapUtil {
 		params.put("location", location);
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.get(url, "UTF-8", params).getText();
+		String txt = HttpUtil.get(url, "UTF-8", params).getText();
 		try{
 			row = DataRow.parseJson(txt);
 			if(null != row){
@@ -774,7 +774,7 @@ public class AmapUtil {
 		}
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.get(url, "UTF-8", params).getText();
+		String txt = HttpUtil.get(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			DataSet set = null;
@@ -830,7 +830,7 @@ public class AmapUtil {
 		}
 		String sign = sign(params);
 		params.put("sig", sign);
-		String txt = HttpClientUtil.get(url, "UTF-8", params).getText();
+		String txt = HttpUtil.get(url, "UTF-8", params).getText();
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
 			row = DataRow.parseJson(json);
