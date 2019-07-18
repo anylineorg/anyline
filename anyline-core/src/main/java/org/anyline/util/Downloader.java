@@ -23,7 +23,23 @@ public class Downloader {
 	private long start			; //下载开始时间
 	private long end			; //下载结束时间
 	
-	
+
+	private static Hashtable<String,Downloader> instances = new Hashtable<String,Downloader>();
+	public static Downloader getInstance() {
+		return getInstance("default");
+	}
+
+	public static Downloader getInstance(String key) {
+		if (BasicUtil.isEmpty(key)) {
+			key = "default";
+		}
+		Downloader util = instances.get(key);
+		if (null == util) {
+			util = new Downloader();
+			instances.put(key, util);
+		}
+		return util;
+	}
 	private DownloadProgress progress = new DownloadProgress(){
 		@Override
 		public void init(String url, String thread, long total, long past){
