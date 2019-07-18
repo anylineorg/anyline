@@ -10,11 +10,11 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
-import org.anyline.util.HttpUtil;
 import org.apache.log4j.Logger;
 
 import com.aliyun.oss.OSSClient;
