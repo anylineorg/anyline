@@ -23,7 +23,10 @@ class HttpProxy{
 	private int port;
 	private String user;
 	private String password;
-	
+
+	public HttpProxy(){
+	}
+
 	public HttpProxy(String host, int port, String user, String password){
 	}
 
