@@ -41,15 +41,6 @@ public class DownloadTask {
 		this.params = params;
 	}
 
-	public void start(DownloadProgress progress){
-		if(!isRunning()){
-			if(start ==0){
-				start = System.currentTimeMillis();
-			}
-			HttpUtil.download(progress, url, local, false);
-		}
-	}
-
 	public void init(long length, long past){
 		this.length = length;
 		this.past = past;
@@ -107,6 +98,21 @@ public class DownloadTask {
     		lastLogRate = rate;
     		lastLogTime = System.currentTimeMillis();
 		}
+	}
+
+	public void start(DownloadProgress progress){
+		if(!isRunning()){
+			if(start ==0){
+				start = System.currentTimeMillis();
+			}
+			HttpUtil.download(progress, url, local, false);
+		}
+	}
+	/**
+	 * 停止下载任务
+	 */
+	public void stop(){
+		
 	}
 	public boolean isRunning(){
 		if(end !=0 && getExpend()>0){
