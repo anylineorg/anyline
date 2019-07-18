@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-maven-jar</artifactId>
-	<version>1.0.9</version>
+	<version>1.1.0</version>
 	<packaging>pom</packaging>
 	<name>anyline-maven-jar</name>
 	<properties>
@@ -13,8 +13,9 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<anyline.version>8.0.9</anyline.version>
+		<anyline.version>8.1.0</anyline.version>
 		<anyline.core.version>${anyline.version}</anyline.core.version>
+		<anyline.net.version>${anyline.version}</anyline.net.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
 		<anyline.web.version>${anyline.version}</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
