@@ -3,7 +3,9 @@ package org.anyline.net;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
@@ -31,9 +33,44 @@ public class DownloadTask {
 
 	private double lastLogRate	; //最后一次日志进度
 	private long lastLogTime	; //量后一次日志时间
+	private String errorMsg = ""; //异常信息
+	private int errorCode = 0	; //异常编号
 	
+	private Map<Long,Long> records = new HashMap<Long,Long>(); //下载记录
 	public DownloadTask(){
 		
+	}
+
+	/**
+	 * 每秒下载byte
+	 * @return
+	 */
+	public long getSpeed(){
+		Long sum = 0L;
+		Long fr = 0L;
+		Iterator<Entry<Long, Long>> entries = records.entrySet().iterator();  
+		while (entries.hasNext()) {  
+			Map.Entry<Long,Long> entry =  entries.next();   
+			Long key = entry.getKey(); //记录时间
+			Long value = entry.getValue();//记录值
+			if(System.currentTimeMillis() - key> 1000*10){//10秒内的值
+		    	entries.remove();
+		    }else{
+		    	sum += value;
+		    	if(key < fr || fr ==0){
+		    		fr = key;
+		    	}
+		    }
+		}
+		return sum*1000/(System.currentTimeMillis()-fr);
+	}
+	/**
+	 * 下载速度/s
+	 * @return
+	 */
+	public String getSpeedFormat(){
+		long speed = getSpeed();
+		return FileUtil.conversion(speed)+"/s";
 	}
 	public DownloadTask(String url, File local){
 		this.url = url;
@@ -84,9 +121,12 @@ public class DownloadTask {
 				log();
 			}
 		}
+		records.put(System.currentTimeMillis(), len);
 	}
 	public void error(int code, String message){
-		log.error("[文件下载][下载异常]][code:"+code+"][message:"+message+"]");
+		log.error("[文件下载][下载异常]][url:"+url+"][code:"+code+"][message:"+message+"]");
+		this.errorCode = code;
+		this.errorMsg = message;
 	}
 	public void finish(){
 		this.rate = 100.00;
@@ -111,7 +151,7 @@ public class DownloadTask {
     		lastLogTime = System.currentTimeMillis();
 		}
 	}
-
+	
 	public void start(DownloadProgress progress){
 		if(!isRunning()){
 			if(start ==0){
@@ -150,25 +190,6 @@ public class DownloadTask {
 		msg += "/"+getTotalFormat()+"("+getFinishRate()+"%)]"
 				+ "[耗时:"+getExpendFormat()+"/"+getExpectFormat()+"][网速:"+getSpeedFormat()+"][url:"+url+"][local:"+local.getAbsolutePath()+"]";
 		return msg;
-	}
-	/**
-	 * 每秒下载byte
-	 * @return
-	 */
-	public long getSpeed(){
-		long expend = getExpend();
-		if(expend ==0){
-			return 0;
-		}
-		return finish*1000/expend;
-	}
-	/**
-	 * 下载速度/s
-	 * @return
-	 */
-	public String getSpeedFormat(){
-		long speed = getSpeed();
-		return FileUtil.conversion(speed)+"/s";
 	}
 	public String getUrl() {
 		return url;
