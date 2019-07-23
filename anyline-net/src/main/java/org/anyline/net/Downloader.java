@@ -19,13 +19,14 @@ import org.apache.log4j.Logger;
 public class Downloader {
 	private static Logger log = Logger.getLogger(Downloader.class);
 	private Map<String, DownloadTask> tasks = new Hashtable<String, DownloadTask>();
-	private int maxParallel = 5	; //最大并行下载数量
-	private int curParallel		; //当前并行下载数量	
-	private double lastLogRate	; //最后一次日志进度
-	private long lastLogTime	; //量后一次日志时间
-	private long start			; //下载开始时间
-	private long end			; //下载结束时间
-	
+	private int maxParallel = 5		; //最大并行下载数量
+	private int curParallel			; //当前并行下载数量	
+	private double lastLogRate		; //最后一次日志进度
+	private long lastLogTime		; //量后一次日志时间
+	private long start				; //下载开始时间
+	private long end				; //下载结束时间
+	private String errorMsg = ""	; //异常信息
+	private String errorCode = ""	; //异常编号
 
 	private static Hashtable<String,Downloader> instances = new Hashtable<String,Downloader>();
 	public static Downloader getInstance() {
@@ -44,6 +45,7 @@ public class Downloader {
 	}
 	private DownloadProgress progress = new DownloadProgress(){
 		private DownloadCallback finishCallback;
+		private DownloadCallback errorCallback;
 		@Override
 		public void init(String url, String thread, long total, long past){
 			DownloadTask task = getTask(url);
@@ -78,7 +80,9 @@ public class Downloader {
 			if(ConfigTable.isDebug()){
 				log.info("[文件下载][下载完成][完成数量:"+getFinishTaskSize()+"/"+getTaskSize()+"][耗时:"+task.getExpendFormat()+"][url:"+url+"][local:"+task.getLocal().getAbsolutePath()+"]");
 			}
-			finishCallback.run(task);
+			if(null != finishCallback){
+				finishCallback.run(task);
+			}
 		}
 		@Override
 		public void error(String url, String thread, int code, String message) {
@@ -88,10 +92,28 @@ public class Downloader {
 				return ;
 			}
 			task.error(code, message);
+			if(!errorCode.contains(code+"")){
+				if(errorCode.equals("")){
+					errorCode += code;
+				}else{
+					errorCode += ","+code;
+				}
+			}
+			if(!errorMsg.contains(message)){
+				if(errorMsg.equals("")){
+					errorMsg += message;
+				}else{
+					errorMsg += ","+message;
+				}
+			}
+			if(null != errorCallback){
+				errorCallback.run(task);
+			}
+			stop(url);
 		}
 		@Override
 		public void setErrorCallback(DownloadCallback callback) {
-			
+			errorCallback = callback;
 		}
 		@Override
 		public void setFinishCallback(DownloadCallback callback) {
@@ -122,9 +144,10 @@ public class Downloader {
 		lastLogTime	= 0 ; //量后一次日志时间
 		start = 0		; //下载开始时间
 		end = 0			; //下载结束时间
+		errorCode = ""	;
+		errorMsg = ""	;
 	}
 	public String getMessage(){
-		//"[进度:10.12mb/200.11mb(20%)][数量:1/5][耗时:1分3秒/12分2秒][网速:100kb/s]"
 		String msg = "[进度:";
 		if(getSumPast()>0){
 			msg += getSumPastFormat();
@@ -324,7 +347,9 @@ public class Downloader {
 		long expect = 0;
 		long len = getSumLength()- getSumFinish();
 		long speed = getSpeed(); //秒速(不是毫秒)
-		expect = len*1000/speed;
+		if(speed > 0){
+			expect = len*1000/speed;
+		}
 		return expect;
 	}
 	public String getExpectFormat(){
@@ -397,6 +422,19 @@ public class Downloader {
 	public void setCurParallel(int curParallel) {
 		this.curParallel = curParallel;
 	}
+	
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
+	}
+	public String getErrorCode() {
+		return errorCode;
+	}
+	public void setErrorCode(String errorCode) {
+		this.errorCode = errorCode;
+	}
 	public DownloadTask getTask(String url){
 		String code = url;
 		DownloadTask task = tasks.get(code);
@@ -407,9 +445,9 @@ public class Downloader {
 	}
 }
 class DownloaderThreadPool {
-    private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
-    private static final int CORE_POOL_SIZE = Math.max(4, Math.min(CPU_COUNT - 1, 5));
-    private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 100;
+    private static final int CPU_COUNT = 1;//Runtime.getRuntime().availableProcessors();
+    private static final int CORE_POOL_SIZE = 1;//Math.max(4, Math.min(CPU_COUNT - 1, 5));
+    private static final int MAXIMUM_POOL_SIZE = 1;// CPU_COUNT * 2 + 100;
     private static final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(2000);//超出数量丢弃
     private static ThreadPoolExecutor threadPoolExecutor;
     static {
