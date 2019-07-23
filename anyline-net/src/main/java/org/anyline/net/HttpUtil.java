@@ -412,7 +412,7 @@ public class HttpUtil {
 				log.warn("[Http Request][URL:"+method.getURI()+"]");
 			}
 			response = client.execute(method);
-			result = getResult(result,response, encode);
+			result = parseResult(result,response, encode);
 			if(ConfigTable.isDebug()){
 				log.warn("[Http Request][耗时:"+(System.currentTimeMillis() - fr)+"][URL:"+method.getURI()+"]");
 			}
@@ -447,7 +447,7 @@ public class HttpUtil {
 		}
 	}
 
-	public static Source getResult(Source src, CloseableHttpResponse response, String encode) {
+	private static Source parseResult(Source src, CloseableHttpResponse response, String encode) {
 		if (null == src) {
 			src = new Source();
 		}
@@ -655,9 +655,9 @@ public class HttpUtil {
 		}
 		String fullPath = null;
 		if (url.startsWith("/")) {// 当前站点的绝对路径
-			fullPath = getHost(host) + url;
+			fullPath = parseHost(host) + url;
 		} else if (url.startsWith("?")) {// 查询参数
-			fullPath = getPath(host) + url;
+			fullPath = parsePath(host) + url;
 		} else {// 当前站点的相对路径
 			host = parseDir(host);
 			if (host.endsWith("/")) { // src是一个目录
@@ -827,6 +827,9 @@ public class HttpUtil {
 		}
 		return len;
 	}
+	public static void main(String[] args) {
+		HttpUtil.download("//sync.file.qnlm.ac/push/190715/crcm11.json.zip", new File("D:\\test.zip"));
+	}
 	public static boolean download(DownloadProgress progress, String url, File dst, Map<String,String> headers, boolean override){
 		boolean result = false;
 		String finalUrl = url;
@@ -848,13 +851,16 @@ public class HttpUtil {
 			return true;
 		}
 		File parent = dst.getParentFile();
-		if(!parent.exists()){
+		if(null != parent && !parent.exists()){
 			parent.mkdirs();
 		}
 		HttpClientBuilder builder = HttpClients.custom();
 		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
 		CloseableHttpClient client = builder.build();
-		RequestConfig requestConfig =  RequestConfig.custom().build();
+		RequestConfig requestConfig =  RequestConfig.custom()
+				.setConnectTimeout(5000)
+				.setConnectionRequestTimeout(5000)
+				.setSocketTimeout(5000).build();
 		HttpGet get = new HttpGet(finalUrl);
 		get.setConfig(requestConfig);
 		if(null != headers){
@@ -886,11 +892,19 @@ public class HttpUtil {
 		if(tmpFile.exists()){//继上次进度下载
 			start = tmpFile.length();
 		}
-		//get.setHeader("Range", "bytes=" + start + "-"  + end);
-		get.setHeader("Range", "bytes=" + start + "-");
+		String range = "bytes=" + start + "-";
+		log.warn("[文件下载][range:"+range+"]");
+		get.setHeader("Range", range);
+		
 		try {
 		    HttpResponse response = client.execute(get);
 		    int code = response.getStatusLine().getStatusCode();
+		    if(code == 416){
+		    	get.removeHeaders("Range");
+		    	response = client.execute(get);
+		    	code = response.getStatusLine().getStatusCode();
+		    	log.warn("[文件下载][断点设置异常][url:"+url+"]");
+		    }
 		    if(code != 200 && code !=206){
 				progress.error(url, "", code, "状态异常");
 		        return false;
@@ -916,6 +930,7 @@ public class HttpUtil {
 		    }
 		    result = true;
 		} catch (Exception e) {
+			progress.error(url, "", 0, e.getMessage());
 		    e.printStackTrace();
 		}finally{
 			try{
@@ -1032,7 +1047,7 @@ public class HttpUtil {
 	 * @param url
 	 * @return
 	 */
-	public static String getHost(String url) {
+	public static String parseHost(String url) {
 		url = url.replaceAll("http://", "");
 		int idx = url.indexOf("/");
 		if (idx != -1) {
@@ -1047,7 +1062,7 @@ public class HttpUtil {
 	 * @param url
 	 * @return
 	 */
-	public static String getPath(String url) {
+	public static String parsePath(String url) {
 		int to = url.indexOf("?");
 		if (to != -1)
 			url = url.substring(0, to);
