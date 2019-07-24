@@ -183,7 +183,7 @@ public class ConfigTable {
 			if(isDebug()){
 				log.info("[加载配置文件] [file:" + file.getAbsolutePath() + "]");
 			}
-			if(!file.exists()){
+			if(null != file && !file.exists()){
 				log.info("[配置文件不存在] [file:" + file.getAbsolutePath() + "]");
 				return;
 			}
