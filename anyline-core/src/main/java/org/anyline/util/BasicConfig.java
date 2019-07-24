@@ -29,7 +29,7 @@ public abstract class BasicConfig {
 	protected synchronized static void loadConfig(Hashtable<String,BasicConfig> instances, Class<? extends BasicConfig> clazz, String fileName, String ... compatibles) {
 		try {
 			File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
-			if(!dir.exists()){
+			if(null != dir &&  !dir.exists()){
 				dir = new File(ConfigTable.getWebRoot());
 			}
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
