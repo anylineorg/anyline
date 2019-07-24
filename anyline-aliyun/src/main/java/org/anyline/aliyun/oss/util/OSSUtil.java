@@ -183,7 +183,7 @@ public class OSSUtil {
 		    	}
 		        File file = new File(dir, key);
 		        File parent = file.getParentFile();
-		        if(!parent.exists()){
+		        if(null != parent && !parent.exists()){
 		        	parent.mkdirs();
 		        }
 		        try{
