@@ -24,8 +24,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +41,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
@@ -659,7 +662,10 @@ public class BeanUtil {
 		return map2xml(map, true, false);
 	}
 	public static String map2json(Map<String,?> map){
-		JSONObject json = JSONObject.fromObject(map);
+		JsonConfig config = new JsonConfig();
+		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());  
+		config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor());
+		JSONObject json = JSONObject.fromObject(map, config);
 		return json.toString();
 	}
 	public static Map<String,Object> xml2map(String xml){
