@@ -49,6 +49,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -94,16 +95,19 @@ public class HttpUtil {
 	public static String PROTOCOL_TLSV1 = "TLSv1";
 	private static final Logger log = Logger.getLogger(HttpUtil.class);
 	private static Map<String, CloseableHttpClient> clients = new HashMap<String,CloseableHttpClient>();
-    private static PoolingHttpClientConnectionManager connMgr;  
+    private static PoolingHttpClientConnectionManager connManager;  
     private static RequestConfig requestConfig;  
-    private static final int MAX_TIMEOUT = 7200; 
+    private static final int MAX_TIMEOUT = 7200; //秒
+    
+    private CloseableHttpClient client;
+    private Map<String,HttpUtil> instances = new HashMap<String,HttpUtil>(); 
     
     static {  
         // 设置连接池  
-        connMgr = new PoolingHttpClientConnectionManager();  
+    	connManager = new PoolingHttpClientConnectionManager();  
         // 设置连接池大小  
-        connMgr.setMaxTotal(100);  
-        connMgr.setDefaultMaxPerRoute(connMgr.getMaxTotal());  
+    	connManager.setMaxTotal(100);  
+    	connManager.setDefaultMaxPerRoute(connManager.getMaxTotal());  
   
         RequestConfig.Builder configBuilder = RequestConfig.custom();  
         // 设置连接超时  
@@ -116,6 +120,30 @@ public class HttpUtil {
         configBuilder.setStaleConnectionCheckEnabled(true);  
         requestConfig = configBuilder.build();  
     }
+    public HttpUtil getInstance(){
+    	return getInstance("default");
+    }
+    public HttpUtil getInstance(String key){
+    	if(BasicUtil.isEmpty(key)){
+    		key = "default";
+    	}
+    	HttpUtil instance = instances.get(key);
+    	if(null == instance){
+    		instance = new HttpUtil();
+    		instance.client = defaultClient();
+    		instances.put(key, instance);
+    	}
+    	
+    	return instance;
+    }
+    
+    public CloseableHttpClient getClient() {
+		return client;
+	}
+	public void setClient(CloseableHttpClient client) {
+		this.client = client;
+	}
+	/*staic*/
 	public static Source post(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
 		return post(client, null, url, encode, entitys);
 	}
@@ -527,7 +555,10 @@ public class HttpUtil {
 	public static CloseableHttpClient createClient(String key){
 		CloseableHttpClient client = clients.get(key);
 		if(null == client){
-			client = HttpClients.createDefault();
+			HttpClientBuilder builder = HttpClients.custom();
+			builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
+			client = builder.build();
+			
 			clients.put(key, client);
 			if(ConfigTable.isDebug()){
 				log.warn("[创建Http Client][KEY:"+key+"]");
@@ -571,7 +602,7 @@ public class HttpUtil {
 		key = "SSL:"+key;
 		CloseableHttpClient client = clients.get(key);
 		if(null == client){
-			client = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connMgr).setDefaultRequestConfig(requestConfig).build();
+			client = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connManager).setDefaultRequestConfig(requestConfig).build();
 			clients.put(key, client);
 			if(ConfigTable.isDebug()){
 				log.warn("[创建Https Client][KEY:"+key+"]");
@@ -669,34 +700,8 @@ public class HttpUtil {
 		return fullPath;
 	}
 
-	public static boolean download(DownloadProgress progress, String url, String dst){
-		return download(progress, url, new File(dst), true);
-	}
-	public static boolean download(String url, String dst){
-		return download(null, url, dst);
-	}
-	public static boolean download(DownloadProgress progress, String url, String dst, boolean override) {
-		return download(progress, url, new File(dst), override);
-	}
-
-	public static boolean download(String url, String dst, boolean override) {
-		return download(null, url, new File(dst), override);
-	}
-
-	public static boolean download(DownloadProgress progress, String url, File dst) {
-		return download(progress, url, dst, true);
-	}
-	public static boolean download(String url, File dst) {
-		return download(null, url, dst, true);
-	}
-	public static boolean download(DownloadProgress progress, String url, File dst, boolean override) {
-		return download(progress, url, dst, null, override);
-	}
-	public static boolean download(String url, File dst, boolean override) {
-		return download(null, url, dst, null, override);
-	}
-
-	public static boolean downloads(DownloadProgress progress, String url, File dst, Map<String,String> headers, boolean override){
+/*
+	public static boolean download(DownloadProgress progress, String url, File dst, Map<String,String> headers, boolean override){
 		boolean result = false;
 		if(null != url && url.startsWith("//")){
 			url = "http:"+url;
@@ -786,56 +791,49 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	/**
-	 * 读取下载文件长度
-	 * @param url
-	 * @param headers
-	 * @return
-	 */
-	private static long length(String url, Map<String,String> headers){
-		long len = 0;
-		if(null != url && url.startsWith("//")){
-			url = "http:"+url;
-		}
-		if(BasicUtil.isEmpty(url)){
-			return len;
-		}
-		HttpClientBuilder builder = HttpClients.custom();
-		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
-		CloseableHttpClient client = builder.build();
-		RequestConfig requestConfig =  RequestConfig.custom().build();
-		HttpGet get = new HttpGet(url);
-		get.setConfig(requestConfig);
-		if(null != headers){
-			for(String key:headers.keySet()){
-				get.setHeader(key, headers.get(key));
-			}
-		}
-		try{
-			HttpResponse response = client.execute(get);
-		    int code = response.getStatusLine().getStatusCode();
-		    if(code != 200){
-				log.info("[文件下载][状态异常][code:"+code+"][url:"+url+"]");
-		        return len;
-		    }
-		    HttpEntity entity = response.getEntity();
-		    if(entity != null) {
-			    len = entity.getContentLength();
-		    }
-		}catch(Exception e){
-			
-		}
-		return len;
+	*/
+
+	public static boolean download(String url, String dst){
+		File file = new File(dst);
+		return download(defaultClient(), new DefaultProgress(url, file), url, file, null, null, false);
 	}
-	public static void main(String[] args) {
-		HttpUtil.download("//sync.file.qnlm.ac/push/190715/crcm11.json.zip", new File("D:\\test.zip"));
+	public static boolean download(String url, File dst){
+		return download(defaultClient(), new DefaultProgress(url, dst), url, dst, null, null, false);
 	}
-	public static boolean download(DownloadProgress progress, String url, File dst, Map<String,String> headers, boolean override){
+	public static boolean download(String url, String dst, Map<String,String> headers,Map<String,Object> params){
+		File file = new File(dst);
+		return download(defaultClient(), new DefaultProgress(url, file), url, file, headers, params, false);
+	}
+	public static boolean download(String url, File dst, Map<String,String> headers,Map<String,Object> params){
+		return download(defaultClient(), new DefaultProgress(url, dst), url, dst, headers, params, false);
+	}
+	public static boolean download(String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+		File file = new File(dst);
+		return download(defaultClient(), new DefaultProgress(url, file), url, file, headers, params, override);
+	}
+	public static boolean download(String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+		return download(defaultClient(), new DefaultProgress(url, dst), url, dst, headers, params, override);
+	}
+	public static boolean download(DownloadProgress progress, String url, String dst, boolean override){
+		return download(defaultClient(), progress, url, new File(dst), null, null, override);
+	}
+	public static boolean download(DownloadProgress progress, String url, File dst, boolean override){
+		return download(defaultClient(), progress, url, dst, null, null, override);
+	}
+	public static boolean download(DownloadProgress progress, String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+		return download(defaultClient(), progress, url, new File(dst), headers, params, override);
+	}
+	public static boolean download(DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+		return download(defaultClient(), progress, url, dst, headers, params, override);
+	}
+	public static boolean download(CloseableHttpClient client, DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
 		boolean result = false;
 		String finalUrl = url;
 		if(null != finalUrl && finalUrl.startsWith("//")){
 			finalUrl = "http:"+url;
 		}
+
+		finalUrl = mergeParam(finalUrl, params);
 		if(null == progress){
 			progress = new DefaultProgress(url,dst);
 		}
@@ -854,9 +852,6 @@ public class HttpUtil {
 		if(null != parent && !parent.exists()){
 			parent.mkdirs();
 		}
-		HttpClientBuilder builder = HttpClients.custom();
-		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
-		CloseableHttpClient client = builder.build();
 		RequestConfig requestConfig =  RequestConfig.custom()
 				.setConnectTimeout(5000)
 				.setConnectionRequestTimeout(5000)
@@ -880,7 +875,6 @@ public class HttpUtil {
 /*
 0,100,40  开始，结束，已完成
 101,200
- 
  表示头500个字节：bytes=0-499  
 表示第二个500字节：bytes=500-999  
 表示最后500个字节：bytes=-500  
@@ -953,9 +947,14 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	public static String upload(String url, Map<String, File> files, Map<String, Object> params) {
+	public static String upload(String url, Map<String, File> files, Map<String, String> headers, Map<String, Object> params) {
+		return upload(defaultClient(), url, files, headers, params);
+	}
+	public static String upload(String url, Map<String, File> files) {
+		return upload(defaultClient(), url, files, null, null);
+	}
+	public static String upload(CloseableHttpClient client, String url, Map<String, File> files, Map<String, String> headers, Map<String, Object> params) {
 		String result = "";
-		// 封装文件实体
 		String fileLog =  "";
 		MultipartEntityBuilder meb = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
 		meb.setCharset(Charset.forName("utf-8"));
@@ -966,6 +965,10 @@ public class HttpUtil {
 				meb.addBinaryBody(key, file, ContentType.DEFAULT_BINARY, file.getName());
 			}
 		}
+		if(null != url && url.startsWith("//")){
+			url = "http:"+url;
+		}
+
 		if (null != params) {
 			url = mergeParam(url, params);
 		}
@@ -981,9 +984,12 @@ public class HttpUtil {
 		// 创建HttpPost对象，设置请求配置、和上传的文件
 		HttpPost post = new HttpPost(url);
 		post.setConfig(config);
+		if(null != headers){
+			for(String key:headers.keySet()){
+				post.setHeader(key, headers.get(key));
+			}
+		}
 		post.setEntity(reqEntity);
-
-		CloseableHttpClient client = HttpClientBuilder.create().build();
 		CloseableHttpResponse response = null;
 		try {
 			response = client.execute(post);
@@ -1036,9 +1042,6 @@ public class HttpUtil {
 			}
 		}
 		return null;
-	}
-	public static String upload(String url, Map<String, File> files) {
-		return upload(url, files, null);
 	}
 
 	/**
