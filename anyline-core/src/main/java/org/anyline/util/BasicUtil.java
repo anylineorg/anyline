@@ -631,42 +631,6 @@ public class BasicUtil {
 		}
 	}
 
-	/**
-	 * 数组转换成字符串
-	 * 
-	 * @param list
-	 *            数组
-	 * @param split
-	 *            分隔符
-	 * @return
-	 */
-	public static String array2string(List<?> list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.size();
-			for (int i = 0; i < size; i++) {
-				builder.append(list.get(i));
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
-	}
-
-	public static String array2string(Object[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.length;
-			for (int i = 0; i < size; i++) {
-				builder.append(list[i]);
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
-	}
 
 	/**
 	 * 子串出现次数
@@ -736,17 +700,6 @@ public class BasicUtil {
 	 * @return
 	 */
 	public static String join(Collection<?> objs){
-		if(null == objs){
-			return "";
-		}
-		String result = "";
-		int idx = 0;
-		for(Object obj:objs){
-			result += "[" + idx++ +"]" + obj;
-		}
-		return result;
-	}
-	public static String collection2string(Object[] objs){
 		if(null == objs){
 			return "";
 		}
@@ -848,44 +801,6 @@ public class BasicUtil {
 		}
 		return ips;
 	}
-	public static Object toUpperCaseKey(Object obj, String ... keys){
-		if(null == obj){
-			return null;
-		}
-		if (obj instanceof String || obj instanceof Number || obj instanceof Boolean || obj instanceof Date) {
-			return obj;
-		}
-		if(obj instanceof Map){
-			obj = toUpperCaseKey((Map<String,Object>)obj, keys);
-		}else if(obj instanceof Collection){
-			obj = toUpperCaseKey((Collection)obj, keys);
-		}
-		return obj;
-	}
-	public static Collection toUpperCaseKey(Collection con, String ... keys){
-		if(null == con){
-			return con;
-		}
-		for(Object obj :con){
-			obj = toUpperCaseKey(obj, keys);
-		}
-		return con;
-	}
-	public static Map<String,Object> toUpperCaseKey(Map<String,Object> map, String ... keys){
-		if(null == map){
-			return map;
-		}
-		List<String> ks = getMapKeys(map);
-		for(String k:ks){
-			if(null == keys || keys.length == 0 || containsString(keys, k)){
-				Object v = map.get(k);
-				String key = k.toUpperCase();
-				map.remove(k);
-				map.put(key, v);
-			}
-		}
-		return map;
-	}
 	/**
 	 * 数组是否包含
 	 * @param objs
@@ -970,6 +885,12 @@ public class BasicUtil {
 		}
 		return false;
 	}
+	/**
+	 * 拼接字符
+	 * @param list
+	 * @param connector
+	 * @return
+	 */
    public static String concat(List<String> list, String connector){
 	   if(null == list){
 		   return "";
@@ -1031,48 +952,6 @@ public class BasicUtil {
    public static String unescape(String src) {  
        return CodeUtil.unescape(src);  
    } 
-
-   public static String half2full(String input) {
-       char c[] = input.toCharArray();
-       for (int i = 0; i < c.length; i++) {
-         if (c[i] == ' ') {
-           c[i] = '\u3000';
-         } else if (c[i] < '\177') {
-           c[i] = (char) (c[i] + 65248);
-         }
-       }
-       return new String(c);
-}
-	// 全角转半角的 转换函数
-
-	public static final String full2Half(String QJstr)  {
-		StringBuffer outStrBuf = new StringBuffer("");
-		String str = "";
-		try{
-		byte[] b = null;
-		for (int i = 0; i < QJstr.length(); i++) {
-			str = QJstr.substring(i, i + 1);
-			// 全角空格转换成半角空格
-			if (str.equals("　")) {
-				outStrBuf.append(" ");
-				continue;
-			}
-			b = str.getBytes("unicode");
-			// 得到 unicode 字节数据
-			if (b[2] == -1) {
-				// 表示全角？
-				b[3] = (byte) (b[3] + 32);
-				b[2] = 0;
-				outStrBuf.append(new String(b, "unicode"));
-			} else {
-				outStrBuf.append(str);
-			}
-		} // end for.
-		}catch(Exception e){
-			
-		}
-		return outStrBuf.toString();
-	}
 
 
 }

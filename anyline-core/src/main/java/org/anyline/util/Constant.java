@@ -27,14 +27,8 @@ public class Constant {
 	//session变量
 
 	public static final String SESSION_ATTR_MESSAGE					= "SESSION_ATTR_MESSAGE"				;//session信息
-	public static final String SESSION_ATTR_TOKEN_VALUE_EMPTY		= "SESSION_ATTR_TOKEN_VALUE_EMPTY"		;//TOKEN空值(已被验证过一次)
 	public static final String SESSION_ATTR_ERROR_MESSAGE			= "SESSION_ATTR_ERROR_MESSAGE";
 	//request变量及参数
-	public static final String REQUEST_ATTR_HTTP_CLIENT_CD 			= "REQUEST_HTTP_CLIENT_CD"				;//操作客户端CD
-	public static final String REQUEST_ATTR_HTTP_CLIENT				= "REQUEST_HTTP_CLIENT"					;//操作客户端cn.ecool.entity.HttpClient
-	public static final String REQUEST_ATTR_ERROR_MESSAGE_KEY		= "REQUEST_ERROR_MESSAGE_KEY"			;//错误信息KEY
-	public static final String REQUEST_ATTR_REFER_KEY				= "REQUEST_REFER_KEY"					;//来源路径KEY
-	public static final String REQUEST_ATTR_NAVI_LINK_KEY			= "REQUEST_PAGE_NAVI_LINK_KEY"			;//分页基础RUI KEY
 	public static final String REQUEST_ATTR_CURRENT_ACTION			= "REQUEST_ATTR_CURRENT_ACTION"			;//当前请求的action(String)
 	public static final String REQUEST_ATTR_CURRENT_POWER			= "REQUEST_ATTR_CURRENT_POWER"			;//当前请求的action(Power)
 	public static final String REQUEST_ATTR_CURRENT_POWER_CD		= "REQUEST_ATTR_CURRENT_POWER_CD"		;//当前请求的action(String)
@@ -46,7 +40,6 @@ public class Constant {
 	public static final String REQUEST_ATTR_MESSAGE					= "REQUEST_ATTR_MESSAGE"				;//
 	public static final String REQUEST_ATTR_ACTION_URI				= "REQUEST_ATTR_ACTION_URI"				;
 	
-	public static final String HTML_NAME_TOKEN_VALUE				= "MVCTV"								;//token 值
 	public static final String HTML_NAME_TOKEN_KEY					= "MCTK"								;//token 键
 	public static final String HTML_NAME_TOKEN_KEY_PREFIX			= "T"									;//token键 前缀
 	public static final String HTML_POSITION						= "HTML_POSITION"						;//当前位置

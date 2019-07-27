@@ -736,6 +736,83 @@ public class BeanUtil {
 		JSONObject json = JSONObject.fromObject(obj);
 		return json.toString();
 	}
+
+	/**
+	 * 数组转换成字符串
+	 * 
+	 * @param list
+	 *            数组
+	 * @param split
+	 *            分隔符
+	 * @return
+	 */
+	public static String array2string(List<?> list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.size();
+			for (int i = 0; i < size; i++) {
+				builder.append(list.get(i));
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+
+	public static String array2string(Object[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+
+
+	public static Object toUpperCaseKey(Object obj, String ... keys){
+		if(null == obj){
+			return null;
+		}
+		if (obj instanceof String || obj instanceof Number || obj instanceof Boolean || obj instanceof Date) {
+			return obj;
+		}
+		if(obj instanceof Map){
+			obj = toUpperCaseKey((Map<String,Object>)obj, keys);
+		}else if(obj instanceof Collection){
+			obj = toUpperCaseKey((Collection)obj, keys);
+		}
+		return obj;
+	}
+	public static Collection toUpperCaseKey(Collection con, String ... keys){
+		if(null == con){
+			return con;
+		}
+		for(Object obj :con){
+			obj = toUpperCaseKey(obj, keys);
+		}
+		return con;
+	}
+	public static Map<String,Object> toUpperCaseKey(Map<String,Object> map, String ... keys){
+		if(null == map){
+			return map;
+		}
+		List<String> ks = getMapKeys(map);
+		for(String k:ks){
+			if(null == keys || keys.length == 0 || BasicUtil.containsString(keys, k)){
+				Object v = map.get(k);
+				String key = k.toUpperCase();
+				map.remove(k);
+				map.put(key, v);
+			}
+		}
+		return map;
+	}
 	/**
 	 * String 转map
 	 * @param str name:zhang,age:20
