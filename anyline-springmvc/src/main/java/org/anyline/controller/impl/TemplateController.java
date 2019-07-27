@@ -144,7 +144,7 @@ public class TemplateController extends AnylineController {
 	 * @return
 	 */
 	protected String createTemplateData(Object obj, String ... keys){
-		BasicUtil.toUpperCaseKey(obj, keys);
+		BeanUtil.toUpperCaseKey(obj, keys);
 		WebUtil.encryptKey(obj, keys);
 		return success(obj);
 	}
