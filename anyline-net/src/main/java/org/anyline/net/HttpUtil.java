@@ -950,6 +950,9 @@ public class HttpUtil {
 	public static String upload(String url, Map<String, File> files, Map<String, String> headers, Map<String, Object> params) {
 		return upload(defaultClient(), url, files, headers, params);
 	}
+	public static String upload(String url, Map<String, File> files,  Map<String, Object> params) {
+		return upload(defaultClient(), url, files, null, params);
+	}
 	public static String upload(String url, Map<String, File> files) {
 		return upload(defaultClient(), url, files, null, null);
 	}
@@ -994,9 +997,14 @@ public class HttpUtil {
 		try {
 			response = client.execute(post);
 			if (response != null) {
-				// 得到响应结果，如果为响应success表示文件上传成功
-				InputStream is = response.getEntity().getContent();
-				result = read(is, "UTF-8").toString();
+				int code = response.getStatusLine().getStatusCode();
+				if(code == 200){
+					//得到响应结果，如果为响应success表示文件上传成功
+					InputStream is = response.getEntity().getContent();
+					result = read(is, "UTF-8").toString();
+				}else{
+					log.warn("[upload][error][code:"+code+"]");
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
