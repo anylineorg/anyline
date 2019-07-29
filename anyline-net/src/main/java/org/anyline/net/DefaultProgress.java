@@ -8,14 +8,14 @@ import org.apache.log4j.Logger;
 
 public class DefaultProgress implements DownloadProgress{
 	private Logger log = Logger.getLogger(DefaultProgress.class);
-	private String url		; //URL
-	private File local		; //本地文件
-	private long past		; //上次已下载长度
-	private long length		; //本次需下载长度
-	private long finish 	; //本次已下载长度
-	private long start		; //开始时间
-	private long expend		; //已耗时
-	private long expect		; //预计剩余时间
+	private String url			; //URL
+	private File local			; //本地文件
+	private long past			; //上次已下载长度
+	private long length			; //本次需下载长度
+	private long finish 		; //本次已下载长度
+	private long start			; //开始时间
+	private long expend			; //已耗时
+	private long expect			; //预计剩余时间
 	
 	private double lastLogRate	; //最后一次日志进度
 	private long lastLogTime	; //量后一次日志时间
@@ -55,6 +55,9 @@ public class DefaultProgress implements DownloadProgress{
 			log();
 		}
 	}
+	/**
+	 * 设置已完成
+	 */
 	@Override
 	public void finish(String url, String thread) {
 		this.rate= 100.00;
