@@ -19,7 +19,6 @@ package org.anyline.net;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
@@ -43,13 +42,12 @@ import javax.net.ssl.SSLSocket;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
+import org.apache.commons.httpclient.HttpMethod;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -506,200 +504,6 @@ public class HttpUtil {
 		}
 		return src;
 	}
-	public static List<NameValuePair> packNameValuePair(Map<String,Object> params){
-		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		if (null != params) {
-			Iterator<String> keys = params.keySet().iterator();
-			while (keys.hasNext()) {
-				String key = keys.next();
-				Object value = params.get(key);
-				if(null == value){
-					continue;
-				}
-				if(value instanceof String[]){ 
-					String vals[] = (String[])value;
-					for(String val:vals){
-						if(null == val){
-							continue;
-						}
-						pairs.add(new BasicNameValuePair(key, val));
-						if(ConfigTable.isDebug()){
-							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val,0,20) + "]");
-						}						
-					}
-				}else if(value instanceof Collection){
-					Collection vals = (Collection)value;
-					for(Object val:vals){
-						if(null == val){
-							continue;
-						}
-						pairs.add(new BasicNameValuePair(key, val.toString()));
-						if(ConfigTable.isDebug()){
-							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val.toString(),0,20) + "]");
-						}						
-					}
-				}else if(null != value){
-					pairs.add(new BasicNameValuePair(key, value.toString()));
-					if(ConfigTable.isDebug()){
-						log.warn("[Request Param][" + key + "=" + BasicUtil.cut(value.toString(),0,20) + "]");
-					}
-				}
-			}
-		}
-		return pairs;
-	}
-
-	public static CloseableHttpClient defaultClient(){
-		return createClient("default");
-	}
-	public static CloseableHttpClient createClient(String key){
-		CloseableHttpClient client = clients.get(key);
-		if(null == client){
-			HttpClientBuilder builder = HttpClients.custom();
-			builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
-			client = builder.build();
-			
-			clients.put(key, client);
-			if(ConfigTable.isDebug()){
-				log.warn("[创建Http Client][KEY:"+key+"]");
-			}
-		}else{
-			if(ConfigTable.isDebug()){
-				log.warn("[Http Client缓存][KEY:"+key+"]");
-			}
-		}
-		return client;
-	}
-	
-	public static CloseableHttpClient defaultSSLClient(){
-		return ceateSSLClient("default");
-	}
-	public static CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
-		CloseableHttpClient httpclient = null;
-		try{
-			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
-	        FileInputStream instream = new FileInputStream(keyFile);
-	        try {
-	            keyStore.load(instream, password.toCharArray());
-	        } finally {
-	            instream.close();
-	        }
-	        // Trust own CA and all self-signed certs
-			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
-	        // Allow TLSv1 protocol only
-	        String[] protocols = new String[] {protocol};
-	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols,null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
-	        httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return httpclient;
-	}
-	public static CloseableHttpClient ceateSSLClient(File keyFile, String password){
-		return ceateSSLClient(keyFile, HttpUtil.PROTOCOL_TLSV1, password);
-	}
-	public static CloseableHttpClient ceateSSLClient(String key){
-		key = "SSL:"+key;
-		CloseableHttpClient client = clients.get(key);
-		if(null == client){
-			client = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connManager).setDefaultRequestConfig(requestConfig).build();
-			clients.put(key, client);
-			if(ConfigTable.isDebug()){
-				log.warn("[创建Https Client][KEY:"+key+"]");
-			}
-		}else{
-			if(ConfigTable.isDebug()){
-				log.warn("[Https Client缓存][KEY:"+key+"]");
-			}
-		}
-		 return client;
-	}
-	private static SSLConnectionSocketFactory createSSLConnSocketFactory() {  
-        SSLConnectionSocketFactory sslsf = null;  
-        try {  
-            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {  
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {  
-                    return true;  
-                }  
-            }).build();  
-            sslsf = new SSLConnectionSocketFactory(sslContext, new X509HostnameVerifier() {  
-  
-                public boolean verify(String arg0, SSLSession arg1) {  
-                    return true;  
-                }  
-  
-                public void verify(String host, SSLSocket ssl) throws IOException {  
-                }  
-  
-                public void verify(String host, X509Certificate cert) throws SSLException {  
-                }  
-  
-                public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException {  
-                }  
-            });  
-        } catch (GeneralSecurityException e) {  
-            e.printStackTrace();  
-        }  
-        return sslsf;  
-    }  
-    public static String mergePath(String ... paths){
-		String result = null;
-		String separator = "/";
-		if(null != paths){
-			for(String path:paths){
-				if(BasicUtil.isEmpty(path)){
-					continue;
-				}
-				path = path.replace("\\", "/");
-				if(null == result){
-					result = path;
-				}else{
-					if(result.endsWith("/")){
-						if(path.startsWith("/")){
-							// "root/" + "/sub" 
-							result += path.substring(1);
-						}else{
-							// "root/" + "sub"
-							result += path;
-						}
-					}else{
-						if(path.startsWith("/")){
-							// "root" + "/sub" 
-							result += path;
-						}else{
-							// "root" + "sub"
-							result += separator + path;
-						}
-					}
-				}
-			}
-		}
-		return result;
-	}
-	/**
-	 * 创建完整HTTP路径
-	 * @return
-	 */
-	public static String createFullPath(String host, String url) {
-		if (url.startsWith("http") || url.startsWith("//") || BasicUtil.isEmpty(host)){
-			return url;
-		}
-		String fullPath = null;
-		if (url.startsWith("/")) {// 当前站点的绝对路径
-			fullPath = parseHost(host) + url;
-		} else if (url.startsWith("?")) {// 查询参数
-			fullPath = parsePath(host) + url;
-		} else {// 当前站点的相对路径
-			host = parseDir(host);
-			if (host.endsWith("/")) { // src是一个目录
-				fullPath = host + url;
-			} else { // src有可能是一个文件 : 需要判断是文件还是目录 文件比例多一些
-				fullPath = host + "/" + url;
-			}
-		}
-		return fullPath;
-	}
-
 /*
 	public static boolean download(DownloadProgress progress, String url, File dst, Map<String,String> headers, boolean override){
 		boolean result = false;
@@ -947,19 +751,20 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	public static String upload(String url, Map<String, File> files, Map<String, String> headers, Map<String, Object> params) {
+	public static Source upload(String url, Map<String, File> files, Map<String, String> headers, Map<String, Object> params) {
 		return upload(defaultClient(), url, files, headers, params);
 	}
-	public static String upload(String url, Map<String, File> files,  Map<String, Object> params) {
+	public static Source upload(String url, Map<String, File> files,  Map<String, Object> params) {
 		return upload(defaultClient(), url, files, null, params);
 	}
-	public static String upload(String url, Map<String, File> files) {
+	public static Source upload(String url, Map<String, File> files) {
 		return upload(defaultClient(), url, files, null, null);
 	}
-	public static String upload(CloseableHttpClient client, String url, Map<String, File> files, Map<String, String> headers, Map<String, Object> params) {
-		String result = "";
+	public static Source upload(CloseableHttpClient client, String url, Map<String, File> files, Map<String, String> headers, Map<String, Object> params) {
+		Source result = new Source();
 		String fileLog =  "";
 		MultipartEntityBuilder meb = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
+		mergeParam(meb, params);
 		meb.setCharset(Charset.forName("utf-8"));
 		if (null != files) {
 			for(String key:files.keySet()){
@@ -972,9 +777,6 @@ public class HttpUtil {
 			url = "http:"+url;
 		}
 
-		if (null != params) {
-			url = mergeParam(url, params);
-		}
 
 		if(ConfigTable.isDebug()){
 			log.warn("[文件上传][url:"+url+"]"+fileLog);
@@ -998,10 +800,12 @@ public class HttpUtil {
 			response = client.execute(post);
 			if (response != null) {
 				int code = response.getStatusLine().getStatusCode();
+				result.setStatus(code);
 				if(code == 200){
 					//得到响应结果，如果为响应success表示文件上传成功
 					InputStream is = response.getEntity().getContent();
-					result = read(is, "UTF-8").toString();
+					String txt  = read(is, "UTF-8").toString();
+					result.setText(txt);
 				}else{
 					log.warn("[upload][error][code:"+code+"]");
 				}
@@ -1166,6 +970,19 @@ public class HttpUtil {
 		url += BasicUtil.joinBySort(params);
 		return url;
 	}
+	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String,Object> params){
+		if(null != params){
+			String txt = BasicUtil.joinBySort(params);
+			String[] kvs = txt.split("&");
+			for(String kv:kvs){
+				String[] tmps = kv.split("=");
+				if(tmps.length==2){
+					builder.addTextBody(tmps[0], tmps[1]);
+				}
+			}
+		}
+		return builder;
+	}
 	/**
 	 * 合并参数
 	 * @param url
@@ -1198,4 +1015,199 @@ public class HttpUtil {
 		url += tmp;
 		return url;
 	}
+
+	public static List<NameValuePair> packNameValuePair(Map<String,Object> params){
+		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		if (null != params) {
+			Iterator<String> keys = params.keySet().iterator();
+			while (keys.hasNext()) {
+				String key = keys.next();
+				Object value = params.get(key);
+				if(null == value){
+					continue;
+				}
+				if(value instanceof String[]){ 
+					String vals[] = (String[])value;
+					for(String val:vals){
+						if(null == val){
+							continue;
+						}
+						pairs.add(new BasicNameValuePair(key, val));
+						if(ConfigTable.isDebug()){
+							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val,0,20) + "]");
+						}						
+					}
+				}else if(value instanceof Collection){
+					Collection vals = (Collection)value;
+					for(Object val:vals){
+						if(null == val){
+							continue;
+						}
+						pairs.add(new BasicNameValuePair(key, val.toString()));
+						if(ConfigTable.isDebug()){
+							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val.toString(),0,20) + "]");
+						}						
+					}
+				}else if(null != value){
+					pairs.add(new BasicNameValuePair(key, value.toString()));
+					if(ConfigTable.isDebug()){
+						log.warn("[Request Param][" + key + "=" + BasicUtil.cut(value.toString(),0,20) + "]");
+					}
+				}
+			}
+		}
+		return pairs;
+	}
+
+	public static CloseableHttpClient defaultClient(){
+		return createClient("default");
+	}
+	public static CloseableHttpClient createClient(String key){
+		CloseableHttpClient client = clients.get(key);
+		if(null == client){
+			HttpClientBuilder builder = HttpClients.custom();
+			builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
+			client = builder.build();
+			
+			clients.put(key, client);
+			if(ConfigTable.isDebug()){
+				log.warn("[创建Http Client][KEY:"+key+"]");
+			}
+		}else{
+			if(ConfigTable.isDebug()){
+				log.warn("[Http Client缓存][KEY:"+key+"]");
+			}
+		}
+		return client;
+	}
+	
+	public static CloseableHttpClient defaultSSLClient(){
+		return ceateSSLClient("default");
+	}
+	public static CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
+		CloseableHttpClient httpclient = null;
+		try{
+			KeyStore keyStore  = KeyStore.getInstance("PKCS12");
+	        FileInputStream instream = new FileInputStream(keyFile);
+	        try {
+	            keyStore.load(instream, password.toCharArray());
+	        } finally {
+	            instream.close();
+	        }
+	        // Trust own CA and all self-signed certs
+			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
+	        // Allow TLSv1 protocol only
+	        String[] protocols = new String[] {protocol};
+	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols,null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+	        httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return httpclient;
+	}
+	public static CloseableHttpClient ceateSSLClient(File keyFile, String password){
+		return ceateSSLClient(keyFile, HttpUtil.PROTOCOL_TLSV1, password);
+	}
+	public static CloseableHttpClient ceateSSLClient(String key){
+		key = "SSL:"+key;
+		CloseableHttpClient client = clients.get(key);
+		if(null == client){
+			client = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connManager).setDefaultRequestConfig(requestConfig).build();
+			clients.put(key, client);
+			if(ConfigTable.isDebug()){
+				log.warn("[创建Https Client][KEY:"+key+"]");
+			}
+		}else{
+			if(ConfigTable.isDebug()){
+				log.warn("[Https Client缓存][KEY:"+key+"]");
+			}
+		}
+		 return client;
+	}
+	private static SSLConnectionSocketFactory createSSLConnSocketFactory() {  
+        SSLConnectionSocketFactory sslsf = null;  
+        try {  
+            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {  
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {  
+                    return true;  
+                }  
+            }).build();  
+            sslsf = new SSLConnectionSocketFactory(sslContext, new X509HostnameVerifier() {  
+  
+                public boolean verify(String arg0, SSLSession arg1) {  
+                    return true;  
+                }  
+  
+                public void verify(String host, SSLSocket ssl) throws IOException {  
+                }  
+  
+                public void verify(String host, X509Certificate cert) throws SSLException {  
+                }  
+  
+                public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException {  
+                }  
+            });  
+        } catch (GeneralSecurityException e) {  
+            e.printStackTrace();  
+        }  
+        return sslsf;  
+    }  
+    public static String mergePath(String ... paths){
+		String result = null;
+		String separator = "/";
+		if(null != paths){
+			for(String path:paths){
+				if(BasicUtil.isEmpty(path)){
+					continue;
+				}
+				path = path.replace("\\", "/");
+				if(null == result){
+					result = path;
+				}else{
+					if(result.endsWith("/")){
+						if(path.startsWith("/")){
+							// "root/" + "/sub" 
+							result += path.substring(1);
+						}else{
+							// "root/" + "sub"
+							result += path;
+						}
+					}else{
+						if(path.startsWith("/")){
+							// "root" + "/sub" 
+							result += path;
+						}else{
+							// "root" + "sub"
+							result += separator + path;
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+	/**
+	 * 创建完整HTTP路径
+	 * @return
+	 */
+	public static String createFullPath(String host, String url) {
+		if (url.startsWith("http") || url.startsWith("//") || BasicUtil.isEmpty(host)){
+			return url;
+		}
+		String fullPath = null;
+		if (url.startsWith("/")) {// 当前站点的绝对路径
+			fullPath = parseHost(host) + url;
+		} else if (url.startsWith("?")) {// 查询参数
+			fullPath = parsePath(host) + url;
+		} else {// 当前站点的相对路径
+			host = parseDir(host);
+			if (host.endsWith("/")) { // src是一个目录
+				fullPath = host + url;
+			} else { // src有可能是一个文件 : 需要判断是文件还是目录 文件比例多一些
+				fullPath = host + "/" + url;
+			}
+		}
+		return fullPath;
+	}
+
 }
