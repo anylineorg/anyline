@@ -47,9 +47,6 @@ public class DataSourceHolder {
     	if(ConfigTable.isDebug()){
     		log.warn("[切换数据源][数据源:"+dataSource+"]");
     	}
-    	if(!dataSources.contains(dataSource)){
-    		log.error("[数据源未注册][数据源:"+dataSource+"]");
-    	}
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源
     	THREAD_CUR_SOURCE.set(dataSource);
     	THREAD_AUTO_DEFAULT.set(false);
@@ -58,9 +55,6 @@ public class DataSourceHolder {
     public static void setDataSource(String dataSource, boolean auto) {
     	if(ConfigTable.isDebug()){
     		log.warn("[切换数据源][数据源:"+dataSource+"][auto default:"+auto+"]");
-    	}
-    	if(!dataSources.contains(dataSource)){
-    		log.error("[数据源未注册][数据源:"+dataSource+"]");
     	}
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源
     	THREAD_CUR_SOURCE.set(dataSource);
