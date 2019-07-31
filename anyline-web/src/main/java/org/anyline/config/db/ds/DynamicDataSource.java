@@ -5,10 +5,11 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.apache.log4j.Logger;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 public class DynamicDataSource extends AbstractRoutingDataSource {
-
+	private Logger log = Logger.getLogger(DynamicDataSource.class);
     // 保存动态创建的数据源
     private static final Map<String,DataSource> dataSources = new HashMap<String,DataSource>();
 	/**
@@ -33,6 +34,9 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 			}catch(Exception e){
 				
 			}
+		}
+		if(null == dataSource){
+			log.error("[获取数据源失败][key:"+lookupKey+"]");
 		}
 		return dataSource;
 	}
