@@ -733,7 +733,10 @@ public class BeanUtil {
 		return map;
 	}
 	public static String object2json(Object obj){
-		JSONObject json = JSONObject.fromObject(obj);
+		JsonConfig config = new JsonConfig();
+		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());  
+		config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor());
+		JSONObject json = JSONObject.fromObject(obj,config);
 		return json.toString();
 	}
 
