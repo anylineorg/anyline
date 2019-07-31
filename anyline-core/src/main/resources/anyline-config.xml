@@ -52,6 +52,8 @@
 	<property key="IS_UPDATE_NULL_COLUMN">false</property>
 	<!-- 是否更新空列 -->
 	<property key="IS_UPDATE_EMPTY_COLUMN">false</property>
+	<!-- true:参数值为空时不执行SQL false:参数为空时拼接IS NULL-->
+	<property key="CONDITION_VALUE_STRICT">true</property>
 	
 	<!-- 生成主键的存储过程 按3个输入参数的格式：表,列,其他-->
 	<property key="AUTO_CREATE_PRIMARY_KEY">true</property>
