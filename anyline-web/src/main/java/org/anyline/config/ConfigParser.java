@@ -53,6 +53,9 @@ public class ConfigParser {
 			//必须参数
 			required = true;
 			id = id.substring(1,id.length());
+			if(ConfigTable.getBoolean("CONDITION_VALUE_STRICT")){
+				strictRequired = true;
+			}
 		}
 		if(id.startsWith("+")){
 			//必须参数
