@@ -52,6 +52,8 @@ public class AbstractBasicController{
 	protected final String FAIL = "fail";
 	protected final String JSON = "json";
 	protected final String SUCCESS = "success";
+	protected HttpServletRequest request;
+	protected HttpServletResponse response;
 	
 	/******************************************************************************************************************
 	 * 

@@ -69,6 +69,9 @@ public class AnylineController extends AbstractBasicController {
 	 * @return
 	 */
 	protected HttpServletRequest getRequest() {
+		if(null != this.request){
+			return this.request;
+		}
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		try{
 			request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
@@ -77,7 +80,18 @@ public class AnylineController extends AbstractBasicController {
 		}
 		return request;
 	}
+	protected void setRequest(HttpServletRequest request){
+		this.request = request;
+		try{
+			this.request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
+		}catch(Exception e){
+			
+		}
+	}
 	protected HttpServletResponse getResponse() {
+		if(null == this.response){
+			return this.response;
+		}
 		HttpServletResponse response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		try{
 			response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
@@ -86,7 +100,14 @@ public class AnylineController extends AbstractBasicController {
 		}
 		return response;
 	}
-
+	public void setResponse(HttpServletResponse response){
+		this.response = response;
+		try{
+			this.response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
+		}catch(Exception e){
+			
+		}
+	}
 	protected HttpSession getSession() {
 		return getRequest().getSession();
 	}
