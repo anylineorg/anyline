@@ -17,12 +17,20 @@
  */
 package org.anyline.net;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -34,16 +42,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
+import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.apache.commons.httpclient.HttpMethod;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -65,6 +74,7 @@ import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -92,7 +102,6 @@ public class HttpUtil {
 	
 	public static String PROTOCOL_TLSV1 = "TLSv1";
 	private static final Logger log = Logger.getLogger(HttpUtil.class);
-	private static Map<String, CloseableHttpClient> clients = new HashMap<String,CloseableHttpClient>();
     private static PoolingHttpClientConnectionManager connManager;  
     private static RequestConfig requestConfig;  
     private static final int MAX_TIMEOUT = 7200; //秒
@@ -182,6 +191,9 @@ public class HttpUtil {
 				client =  defaultClient();
 			}
 		}
+		if(url.startsWith("//")){
+			url = "http:" + url;
+		}
 		Source result = new Source();
 		HttpPost method = new HttpPost(url);
 		if(null != entitys){
@@ -206,6 +218,9 @@ public class HttpUtil {
 	}
 	public static Source post(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return post(defaultClient(), headers, url, encode, params);
+	}
+	public static Source post(String url,   Map<String, Object> params) {
+		return post(defaultClient(), null, url, "UTF-8", params);
 	}
 	public static Source post(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
 		return post(defaultClient(),headers, url, encode, entitys);
@@ -252,6 +267,9 @@ public class HttpUtil {
 				client =  defaultClient();
 			}
 		}
+		if(url.startsWith("//")){
+			url = "http:" + url;
+		}
 		Source result = new Source();
 		HttpPut method = new HttpPut(url);
 		if(null != entitys){
@@ -274,6 +292,9 @@ public class HttpUtil {
 
 	public static Source put(String url, String encode, Map<String, Object> params) {
 		return put(defaultClient(), url, encode, params);
+	}
+	public static Source put(String url, Map<String, Object> params) {
+		return put(defaultClient(), url, "UTF-8", params);
 	}
 	public static Source put(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return put(defaultClient(), headers, url, encode, params);
@@ -310,6 +331,9 @@ public class HttpUtil {
 				client =  defaultClient();
 			}
 		}
+		if(url.startsWith("//")){
+			url = "http:" + url;
+		}
 		Source result = new Source();
 		if (null != pairs && !pairs.isEmpty()) {
 			String params = URLEncodedUtils.format(pairs,encode);
@@ -337,6 +361,10 @@ public class HttpUtil {
 	}
 	public static Source get(String url, String encode, Map<String, Object> params) {
 		return get(defaultClient(), url, encode, params);
+	}
+
+	public static Source get(String url,  Map<String, Object> params) {
+		return get(defaultClient(), url, "UTF-8", params);
 	}
 
 	public static Source get(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
@@ -386,6 +414,9 @@ public class HttpUtil {
 			}else{
 				client =  defaultClient();
 			}
+		}
+		if(url.startsWith("//")){
+			url = "http:" + url;
 		}
 		Source result = new Source();
 		if (null != pairs) {
@@ -448,6 +479,7 @@ public class HttpUtil {
 			try {
 				response.close();
 				method.releaseConnection();
+				client.close();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -751,87 +783,58 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	public static Source upload(String url, Map<String, File> files, Map<String, String> headers, Map<String, Object> params) {
-		return upload(defaultClient(), url, files, headers, params);
+	public static Source upload(String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params){
+		return upload(defaultClient(), url, files, encode, headers, params);
+	}
+	public static Source upload(String url, Map<String,File> files, Map<String,String> headers, Map<String,Object> params){
+		return upload(url, files, "UTF-8", headers, params);
 	}
 	public static Source upload(String url, Map<String, File> files,  Map<String, Object> params) {
-		return upload(defaultClient(), url, files, null, params);
+		return upload( url, files, null, params);
 	}
 	public static Source upload(String url, Map<String, File> files) {
-		return upload(defaultClient(), url, files, null, null);
+		return upload(url, files, null, null);
 	}
-	public static Source upload(CloseableHttpClient client, String url, Map<String, File> files, Map<String, String> headers, Map<String, Object> params) {
-		Source result = new Source();
-		String fileLog =  "";
-		MultipartEntityBuilder meb = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
-		mergeParam(meb, params);
-		meb.setCharset(Charset.forName("utf-8"));
-		if (null != files) {
-			for(String key:files.keySet()){
-				File file = files.get(key);
-				fileLog += "["+key+":"+file.getAbsolutePath()+"]";
-				meb.addBinaryBody(key, file, ContentType.DEFAULT_BINARY, file.getName());
-			}
-		}
+	public static Source upload(CloseableHttpClient client, String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params) {
 		if(null != url && url.startsWith("//")){
 			url = "http:"+url;
 		}
-
-
-		if(ConfigTable.isDebug()){
-			log.warn("[文件上传][url:"+url+"]"+fileLog);
-		}
-		HttpEntity reqEntity = meb.build();
-
-		// 请求配置：限定链接超时、请求链接超时
+        if(BasicUtil.isEmpty(encode)){
+        	encode = "UTF-8";
+        }
+        String BOUNDARY="-----"+BasicUtil.getRandomLowerString(20);  //设置边界
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
 		RequestConfig config = RequestConfig.custom().setConnectTimeout(2000).setConnectionRequestTimeout(500).build();
-
-		// 创建HttpPost对象，设置请求配置、和上传的文件
 		HttpPost post = new HttpPost(url);
 		post.setConfig(config);
+        builder.setBoundary(BOUNDARY);
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);  //浏览器兼容模式
+        builder.setCharset(Charset.forName(encode));  //设置字符编码集
+        ContentType contentType = ContentType.create("text/plain",Charset.forName(encode));
+
+		mergeParam(builder, params, contentType);
 		if(null != headers){
 			for(String key:headers.keySet()){
 				post.setHeader(key, headers.get(key));
 			}
 		}
-		post.setEntity(reqEntity);
-		CloseableHttpResponse response = null;
-		try {
-			response = client.execute(post);
-			if (response != null) {
-				int code = response.getStatusLine().getStatusCode();
-				result.setStatus(code);
-				if(code == 200){
-					//得到响应结果，如果为响应success表示文件上传成功
-					InputStream is = response.getEntity().getContent();
-					String txt  = read(is, "UTF-8").toString();
-					result.setText(txt);
-				}else{
-					log.warn("[upload][error][code:"+code+"]");
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			if (response != null) {
-				try {
-					response.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			if (client != null) {
-				try {
-					client.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+		String fileLog = "";
+        for(String key:files.keySet()){
+			File file = files.get(key);
+				builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, file.getName());
+			fileLog += "["+key+":"+file.getAbsolutePath()+"]";
 		}
-		return result;
-	}
-
-
+		if(ConfigTable.isDebug()){
+			log.warn("[文件上传][url:"+url+"]"+fileLog);
+		}
+		
+        HttpEntity entity = builder.build();// 生成 HTTP POST 实体
+        post.setEntity(entity);   //post 实体。
+        post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  //表单形式。
+        Source source = exe(client, post, encode);
+		return source;
+     }
+	 
 	public static String read(InputStream is, String encode) {
 		if (is == null) {
 			return null;
@@ -970,14 +973,14 @@ public class HttpUtil {
 		url += BasicUtil.joinBySort(params);
 		return url;
 	}
-	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String,Object> params){
+	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String,Object> params, ContentType contetType){
 		if(null != params){
 			String txt = BasicUtil.joinBySort(params);
 			String[] kvs = txt.split("&");
 			for(String kv:kvs){
 				String[] tmps = kv.split("=");
 				if(tmps.length==2){
-					builder.addTextBody(tmps[0], tmps[1]);
+					builder.addTextBody(tmps[0], tmps[1], contetType);
 				}
 			}
 		}
@@ -1060,30 +1063,13 @@ public class HttpUtil {
 	}
 
 	public static CloseableHttpClient defaultClient(){
-		return createClient("default");
-	}
-	public static CloseableHttpClient createClient(String key){
-		CloseableHttpClient client = clients.get(key);
-		if(null == client){
-			HttpClientBuilder builder = HttpClients.custom();
-			builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
-			client = builder.build();
-			
-			clients.put(key, client);
-			if(ConfigTable.isDebug()){
-				log.warn("[创建Http Client][KEY:"+key+"]");
-			}
-		}else{
-			if(ConfigTable.isDebug()){
-				log.warn("[Http Client缓存][KEY:"+key+"]");
-			}
-		}
+		CloseableHttpClient client = null;
+		HttpClientBuilder builder = HttpClients.custom();
+		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
+		client = builder.build();
 		return client;
 	}
 	
-	public static CloseableHttpClient defaultSSLClient(){
-		return ceateSSLClient("default");
-	}
 	public static CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
 		CloseableHttpClient httpclient = null;
 		try{
@@ -1108,21 +1094,11 @@ public class HttpUtil {
 	public static CloseableHttpClient ceateSSLClient(File keyFile, String password){
 		return ceateSSLClient(keyFile, HttpUtil.PROTOCOL_TLSV1, password);
 	}
-	public static CloseableHttpClient ceateSSLClient(String key){
-		key = "SSL:"+key;
-		CloseableHttpClient client = clients.get(key);
-		if(null == client){
-			client = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connManager).setDefaultRequestConfig(requestConfig).build();
-			clients.put(key, client);
-			if(ConfigTable.isDebug()){
-				log.warn("[创建Https Client][KEY:"+key+"]");
-			}
-		}else{
-			if(ConfigTable.isDebug()){
-				log.warn("[Https Client缓存][KEY:"+key+"]");
-			}
-		}
-		 return client;
+	public static CloseableHttpClient defaultSSLClient(){
+		HttpClientBuilder builder = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connManager).setDefaultRequestConfig(requestConfig);
+		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");   
+		CloseableHttpClient  client = builder.build();
+		return client;
 	}
 	private static SSLConnectionSocketFactory createSSLConnSocketFactory() {  
         SSLConnectionSocketFactory sslsf = null;  
