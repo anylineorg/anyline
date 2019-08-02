@@ -246,7 +246,7 @@ public class Downloader {
 	}
 	public String getSumLengthFormat(){
 		long length = getSumLength();
-		return FileUtil.conversion(length);
+		return FileUtil.length(length);
 	}
 
 	public long getSumTotal(){
@@ -254,7 +254,7 @@ public class Downloader {
 	}
 	public String getSumTotalFormat(){
 		long total = getSumTotal();
-		return FileUtil.conversion(total);
+		return FileUtil.length(total);
 	}
 	public long getSumPast(){
 		long length = 0;
@@ -265,7 +265,7 @@ public class Downloader {
 	}
 	public String getSumPastFormat(){
 		long length = getSumPast();
-		return FileUtil.conversion(length);
+		return FileUtil.length(length);
 	}
 	/**
 	 * 合计已完成
@@ -280,7 +280,7 @@ public class Downloader {
 	}
 	public String getSumFinishFormat(){
 		long length = getSumFinish();
-		return FileUtil.conversion(length);
+		return FileUtil.length(length);
 	}
 	/**
 	 * 完成比例
@@ -319,7 +319,7 @@ public class Downloader {
 	 */
 	public String getSpeedFormat(){
 		long speed = getSpeed();
-		return FileUtil.conversion(speed)+"/s";
+		return FileUtil.length(speed)+"/s";
 	}
 	/**
 	 * 合计已耗时
