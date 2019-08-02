@@ -70,7 +70,7 @@ public class DownloadTask {
 	 */
 	public String getSpeedFormat(){
 		long speed = getSpeed();
-		return FileUtil.conversion(speed)+"/s";
+		return FileUtil.length(speed)+"/s";
 	}
 	public DownloadTask(String url, File local){
 		this.url = url;
@@ -219,7 +219,7 @@ public class DownloadTask {
 		return length;
 	}
 	public String getLengthFormat(){
-		return FileUtil.conversion(getLength());
+		return FileUtil.length(getLength());
 	}
 	public void setLength(long length) {
 		this.length = length;
@@ -228,14 +228,14 @@ public class DownloadTask {
 		return length + past;
 	}
 	public String getTotalFormat(){
-		return FileUtil.conversion(getTotal());
+		return FileUtil.length(getTotal());
 	}
 
 	public long getFinish() {
 		return finish;
 	}
 	public String getFinishFormat(){
-		return FileUtil.conversion(getFinish());
+		return FileUtil.length(getFinish());
 	}
 	
 
@@ -343,7 +343,7 @@ public class DownloadTask {
 		return past;
 	}
 	public String getPastFormat(){
-		return FileUtil.conversion(getPast());
+		return FileUtil.length(getPast());
 	}
 	public void setPast(long past) {
 		this.past = past;
