@@ -32,6 +32,8 @@ import java.io.InputStream;
 import java.io.LineNumberReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,7 +42,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -382,7 +383,9 @@ public class FileUtil {
 		if(null == file) return null;
 		name = file.getName();
 		int idx = name.lastIndexOf(".");
-		name = name.substring(0,idx);
+		if(idx != -1){
+			name = name.substring(0,idx);
+		}
 		return name;
 	}
 	
@@ -402,7 +405,9 @@ public class FileUtil {
 		if(null == file) return null;
 		name = file.getName();
 		int idx = name.lastIndexOf(".");
-		name = name.substring(idx+1);
+		if(idx != -1){
+			name = name.substring(idx+1);
+		}
 		return name;
 	}
 	public static String getSuffixFileName(String file){
@@ -847,10 +852,15 @@ public class FileUtil {
 		if(finish>=total){
 			rateTitle = "100";
 		}
-		title = conversion(finish) + "/" + conversion(total) + "("+rateTitle+"%)";
+		title = length(finish) + "/" + length(total) + "("+rateTitle+"%)";
 		return title;
 	}
-	public static String conversion(long b){
+	/**
+	 * 文件大小格式化
+	 * @param b
+	 * @return
+	 */
+	public static String length(long b){
 		String result = "";
 		if(b<1024){
 			result = b+ "byte";
@@ -866,6 +876,90 @@ public class FileUtil {
 			result = NumberUtil.format(b/1024.00/1024/1024/1024/1024,"0.00") + "pb";
 		}
 		return result;
+	}
+	/**
+	 * 文件拆分
+	 * @param file
+	 * @param count
+	 */
+	public static void split(File file, int count) {
+	    FileInputStream fis = null;
+	    FileOutputStream fos = null;
+	    FileChannel input = null;
+	    FileChannel out = null;
+		try {
+			fis = new FileInputStream(file);
+			input = fis.getChannel();
+			String fileName =  FileUtil.getSimpleFileName(file);
+			String subName = FileUtil.getSuffixFileName(file);
+			if(BasicUtil.isNotEmpty(subName)){
+				subName = "."+subName;
+			}
+		    final long fileSize = input.size();
+		    long average = fileSize / count;//平均值
+		    long bufferSize = 1024; //缓存块大小
+		    ByteBuffer byteBuffer = ByteBuffer.allocate(Integer.valueOf(bufferSize + "")); // 申请一个缓存区
+		    long startPosition = 0; //子文件开始位置
+		    long endPosition = average < bufferSize ? 0 : average - bufferSize;//子文件结束位置
+		    for (int i = 0; i < count; i++) {
+		    	long fr = System.currentTimeMillis();
+		        if (i + 1 != count) {
+		            int read = input.read(byteBuffer, endPosition);// 读取数据
+		            readW:
+		            while (read != -1) {
+		                byteBuffer.flip();//切换读模式
+		                byte[] array = byteBuffer.array();
+		                for (int j = 0; j < array.length; j++) {
+		                    byte b = array[j];
+		                    if (b == 10 || b == 13) { //判断\n\r
+		                        endPosition += j;
+		                        break readW;
+		                    }
+		                }
+		                endPosition += bufferSize;
+		                byteBuffer.clear(); //重置缓存块指针
+		                read = input.read(byteBuffer, endPosition);
+		            }
+		        }else{
+		            endPosition = fileSize; //最后一个文件直接指向文件末尾
+		        }
+		        File item = new File(file.getParent(), fileName+"_"+(i+1)+subName);
+		        try{
+			        fos = new FileOutputStream(item);
+			        out = fos.getChannel();
+			        input.transferTo(startPosition, endPosition - startPosition, out);//通道传输文件数据
+		        }catch(Exception e){
+		        	e.printStackTrace();
+		        }finally{
+		        	try{
+				        out.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+		        	try{
+				        fos.close();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+		        }
+		        startPosition = endPosition + 1;
+		        endPosition += average;
+		        log.warn("[文件分割]["+(i+1)+"/"+count+"][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][src:"+file.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+		    }
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally{
+		    try {
+				input.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		    try {
+				fis.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	//HTTP 文件类型
 		public final static List<String> httpFileExtend = new ArrayList<String>();
