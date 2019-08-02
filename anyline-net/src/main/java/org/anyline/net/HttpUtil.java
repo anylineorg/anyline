@@ -17,20 +17,12 @@
  */
 package org.anyline.net;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.RandomAccessFile;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -42,14 +34,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
-import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
@@ -74,7 +64,6 @@ import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
@@ -104,7 +93,7 @@ public class HttpUtil {
 	private static final Logger log = Logger.getLogger(HttpUtil.class);
     private static PoolingHttpClientConnectionManager connManager;  
     private static RequestConfig requestConfig;  
-    private static final int MAX_TIMEOUT = 7200; //秒
+    private static final int MAX_TIMEOUT = 7200; //毫秒
     
     private CloseableHttpClient client;
     private Map<String,HttpUtil> instances = new HashMap<String,HttpUtil>(); 
@@ -563,9 +552,8 @@ public class HttpUtil {
 		HttpClientBuilder builder = HttpClients.custom();
 		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
 		CloseableHttpClient client = builder.build();
-		RequestConfig config =  RequestConfig.custom().build();
 		HttpGet get = new HttpGet(url);
-		get.setConfig(config);
+		get.setConfig(requestConfig);
 		if(null != headers){
 			for(String key:headers.keySet()){
 				get.setHeader(key, headers.get(key));
@@ -688,10 +676,6 @@ public class HttpUtil {
 		if(null != parent && !parent.exists()){
 			parent.mkdirs();
 		}
-		RequestConfig requestConfig =  RequestConfig.custom()
-				.setConnectTimeout(5000)
-				.setConnectionRequestTimeout(5000)
-				.setSocketTimeout(5000).build();
 		HttpGet get = new HttpGet(finalUrl);
 		get.setConfig(requestConfig);
 		if(null != headers){
@@ -804,9 +788,8 @@ public class HttpUtil {
         }
         String BOUNDARY="-----"+BasicUtil.getRandomLowerString(20);  //设置边界
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create().setMode(HttpMultipartMode.RFC6532);
-		RequestConfig config = RequestConfig.custom().setConnectTimeout(2000).setConnectionRequestTimeout(500).build();
 		HttpPost post = new HttpPost(url);
-		post.setConfig(config);
+		post.setConfig(requestConfig);
         builder.setBoundary(BOUNDARY);
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);  //浏览器兼容模式
         builder.setCharset(Charset.forName(encode));  //设置字符编码集
