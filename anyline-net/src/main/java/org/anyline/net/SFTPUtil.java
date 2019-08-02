@@ -361,7 +361,7 @@ class SFTPProgressMonitor implements SftpProgressMonitor {
 			double expect = 0;
 			if(delay>0 && transfered>0){
 				expect = length / (transfered/delay);
-				String total_title = "[文件下载][进度:" + FileUtil.progress(length, transfered) +"][耗时:"+DateUtil.conversion(delay)+"/"+DateUtil.conversion(expect)+"("+FileUtil.conversion(transfered*1000/delay)+"/s)]";
+				String total_title = "[文件下载][进度:" + FileUtil.progress(length, transfered) +"][耗时:"+DateUtil.conversion(delay)+"/"+DateUtil.conversion(expect)+"("+FileUtil.length(transfered*1000/delay)+"/s)]";
 				if(null != local){
 					total_title = "[local:"+local+"]" + total_title;
 				}
