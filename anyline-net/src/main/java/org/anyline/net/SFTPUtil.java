@@ -4,9 +4,7 @@ package org.anyline.net;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -28,15 +26,12 @@ import com.jcraft.jsch.SftpProgressMonitor;
 
 public class SFTPUtil {
 	private final Logger log = Logger.getLogger(SFTPUtil.class);
-    /** 
-     * sftp连接池. 
-     */  
-    private Map<String, Channel> SFTP_CHANNEL_POOL = new HashMap<String, Channel>();  
 	private String host;
 	private int port=22;
 	private String user;
 	private String password;
 	private ChannelSftp client;
+	private Session session; 
 	public SFTPUtil() throws Exception{
 	}
 	public SFTPUtil(String host, int port, String user, String password) throws Exception{
@@ -49,35 +44,24 @@ public class SFTPUtil {
 		this.host = host;
 		this.user = user;
 		this.password = password;
-		Session sshSession = null;  
-        Channel channel = null;  
-        String key = host + "," + port + "," + user + "," + password;  
-        if (null == SFTP_CHANNEL_POOL.get(key)) {  
-            JSch jsch = new JSch();  
-            jsch.getSession(user, host, port);  
-            sshSession = jsch.getSession(user, host, port);  
-            sshSession.setPassword(password);  
-            Properties sshConfig = new Properties();  
-            sshConfig.put("StrictHostKeyChecking", "no");  
-            sshSession.setConfig(sshConfig);
-            sshSession.connect();  
-            channel = sshSession.openChannel("sftp");  
-            channel.connect();  
-            SFTP_CHANNEL_POOL.put(key, channel);  
-        } else {  
-            channel = SFTP_CHANNEL_POOL.get(key);  
-            sshSession = channel.getSession();  
-            if (!sshSession.isConnected())  
-                sshSession.connect();  
-            if (!channel.isConnected())  
-                channel.connect();  
-        }  
+        Channel channel = null;
+        JSch jsch = new JSch();
+        session = jsch.getSession(this.user, this.host, this.port);  
+        if(BasicUtil.isNotEmpty(this.password)){
+        	session.setPassword(this.password);  
+        }
+        Properties sshConfig = new Properties();  
+        sshConfig.put("StrictHostKeyChecking", "no");  
+        session.setConfig(sshConfig);
+        session.connect();  
+        channel = session.openChannel("sftp");  
+        channel.connect();  
         client = (ChannelSftp) channel;
 	}
 	 /** 
      * 下载文件-sftp协议. 
-     * @param remoteFile 下载的文件 
-     * @param localFile 存在本地的路径 
+     * @param remote 下载的文件 
+     * @param local 存在本地的路径 
      * @return 文件 
      * @throws Exception 异常 
      */  
@@ -93,7 +77,7 @@ public class SFTPUtil {
                 localFile.createNewFile();  
             }  
             os = new FileOutputStream(localFile);  
-            List<String> list = formatPath(remote);
+            List<String> list = FTPUtil.formatPath(remote);
             long fr = System.currentTimeMillis();
             if(ConfigTable.isDebug()){
             	log.warn("[文件下载][file:"+list.get(0) + list.get(1)+"]");
@@ -104,7 +88,7 @@ public class SFTPUtil {
             SFTPProgressMonitor process = new SFTPProgressMonitor(remotePath,local, length);
             client.get(remotePath, os, process);  
             if(ConfigTable.isDebug()){
-            	log.warn("[文件下载完成][time:"+(System.currentTimeMillis()-fr)+"][file:"+list.get(0) + list.get(1)+"]");
+            	log.warn("[文件下载完成][耗时:"+(System.currentTimeMillis()-fr)+"][file:"+list.get(0) + list.get(1)+"]");
             }
         } catch (Exception e) {  
             throw e;  
@@ -112,13 +96,22 @@ public class SFTPUtil {
             os.close();  
         }  
     }  
+    /**
+     * 断开连接
+     * @return
+     */
 	public boolean disconnect(){
-		try {
-			client.disconnect();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
+		if (client != null) {  
+            if (client.isConnected()) {  
+            	client.disconnect();  
+            }
+            client.exit();
+        }  
+        if (session != null) {  
+            if (session.isConnected()) {  
+                session.disconnect();  
+            }  
+        } 
 		return true;
 	}
     public int fileSize(String remoteDir){
@@ -136,7 +129,7 @@ public class SFTPUtil {
      * @throws SftpException 异常 
      */  
     public void deleteFile(String path) throws SftpException {  
-        List<String> list = formatPath(path);  
+        List<String> list = FTPUtil.formatPath(path);  
         String dir = list.get(0);  
         String file = list.get(1);  
         if (dirExist(dir + file)) {  
@@ -194,7 +187,7 @@ public class SFTPUtil {
     public boolean uploadFile(String localFile) throws SftpException {  
         File file = new File(localFile);  
         if (file.exists()) {  
-            List<String> list = formatPath(localFile);  
+            List<String> list = FTPUtil.formatPath(localFile);  
             uploadFile(localFile, list.get(0), list.get(1));  
             return true;  
         }  
@@ -256,23 +249,6 @@ public class SFTPUtil {
         }  
     }  
   
-    /** 
-     * 格式化路径. 
-     * @param srcPath 原路径. /xxx/xxx/xxx.yyy 或 X:/xxx/xxx/xxx.yy 
-     * @return list, 第一个是路径（/xxx/xxx/）,第二个是文件名（xxx.yy） 
-     */  
-    public List<String> formatPath(String srcPath) {  
-        List<String> list = new ArrayList<String>(2);  
-        String repSrc = srcPath.replaceAll("\\\\", "/");  
-        int firstP = repSrc.indexOf("/");  
-        int lastP = repSrc.lastIndexOf("/");  
-        String fileName = lastP + 1 == repSrc.length() ? "" : repSrc.substring(lastP + 1);  
-        String dir = firstP == -1 ? "" : repSrc.substring(firstP, lastP);  
-        dir = (dir.length() == 1 ? dir : (dir + "/"));  
-        list.add(dir);  
-        list.add(fileName);  
-        return list;  
-    }  
     public List<String> files(String dir){
     	List<String> list = new ArrayList<String>();
     	try {
@@ -309,7 +285,7 @@ public class SFTPUtil {
     	return false;
     }
     public boolean fileExists(String path){
-    	List<String> list = formatPath(path);
+    	List<String> list = FTPUtil.formatPath(path);
     	String dir = list.get(0);
     	String file = list.get(1);
     	if(ConfigTable.isDebug()){
@@ -317,13 +293,7 @@ public class SFTPUtil {
     	}
     	return fileExists(dir, file);
     }
-    /** 
-     * 关闭协议-sftp协议.(关闭会导致连接池异常，因此不建议用户自定义关闭) 
-     */  
-    private void exit() {  
-        client.exit();  
-    }
-    
+
 }
 
 class SFTPProgressMonitor implements SftpProgressMonitor {
