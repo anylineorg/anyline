@@ -42,6 +42,7 @@ import javax.net.ssl.SSLSocket;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -313,6 +314,7 @@ public class HttpUtil {
 	}
 
 	public static Source get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+		long fr = System.currentTimeMillis();
 		if(null == client){
 			if(url.contains("https://")){
 				client = defaultSSLClient();
@@ -333,7 +335,7 @@ public class HttpUtil {
 			}
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("[HTTP GET][url:"+url+"]");
+			log.warn("[http get][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][url:"+url+"]");
 		}
 		HttpGet method = new HttpGet(url);
 		setHeader(method, headers);
@@ -455,12 +457,12 @@ public class HttpUtil {
 			long fr = System.currentTimeMillis();
 			method.setHeader("Connection", "close");  
 			if(ConfigTable.isDebug()){
-				log.warn("[Http Request][URL:"+method.getURI()+"]");
+				log.warn("[http request][method:"+method.getMethod()+"][url:"+method.getURI()+"]");
 			}
 			response = client.execute(method);
 			result = parseResult(result,response, encode);
 			if(ConfigTable.isDebug()){
-				log.warn("[Http Request][耗时:"+(System.currentTimeMillis() - fr)+"][URL:"+method.getURI()+"]");
+				log.warn("[http request][method:"+method.getMethod()+"][耗时:"+(System.currentTimeMillis() - fr)+"][url:"+method.getURI()+"]");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -707,7 +709,6 @@ public class HttpUtil {
 			start = tmpFile.length();
 		}
 		String range = "bytes=" + start + "-";
-		log.warn("[文件下载][range:"+range+"]");
 		get.setHeader("Range", range);
 		
 		try {
@@ -717,7 +718,7 @@ public class HttpUtil {
 		    	get.removeHeaders("Range");
 		    	response = client.execute(get);
 		    	code = response.getStatusLine().getStatusCode();
-		    	log.warn("[文件下载][断点设置异常][url:"+url+"]");
+		    	log.warn("[http download][断点设置异常][url:"+url+"]");
 		    }
 		    if(code != 200 && code !=206){
 				progress.error(url, "", code, "状态异常");
@@ -821,7 +822,7 @@ public class HttpUtil {
 			fileLog += "["+key+":"+file.getAbsolutePath()+"]";
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("[文件上传][url:"+url+"]"+fileLog);
+			log.warn("[http upload][url:"+url+"]"+fileLog);
 		}
 		
         HttpEntity entity = builder.build();// 生成 HTTP POST 实体
@@ -1033,7 +1034,7 @@ public class HttpUtil {
 						}
 						pairs.add(new BasicNameValuePair(key, val));
 						if(ConfigTable.isDebug()){
-							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val,0,20) + "]");
+							log.warn("[request param][" + key + "=" + BasicUtil.cut(val,0,20) + "]");
 						}						
 					}
 				}else if(value instanceof Collection){
@@ -1044,13 +1045,13 @@ public class HttpUtil {
 						}
 						pairs.add(new BasicNameValuePair(key, val.toString()));
 						if(ConfigTable.isDebug()){
-							log.warn("[Request Param][" + key + "=" + BasicUtil.cut(val.toString(),0,20) + "]");
+							log.warn("[request param][" + key + "=" + BasicUtil.cut(val.toString(),0,20) + "]");
 						}						
 					}
 				}else if(null != value){
 					pairs.add(new BasicNameValuePair(key, value.toString()));
 					if(ConfigTable.isDebug()){
-						log.warn("[Request Param][" + key + "=" + BasicUtil.cut(value.toString(),0,20) + "]");
+						log.warn("[request param][" + key + "=" + BasicUtil.cut(value.toString(),0,20) + "]");
 					}
 				}
 			}
