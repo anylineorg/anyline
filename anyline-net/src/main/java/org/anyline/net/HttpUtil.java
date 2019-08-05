@@ -940,7 +940,6 @@ public class HttpUtil {
 		int fr = head.length();
 		int l1 = path.lastIndexOf("/");
 		int l2 = path.lastIndexOf(".");
-		// int l3 = path.length();
 		if (l1 == -1) {
 			return false;
 		} else if (l2 > l1 && l2 > fr) {
@@ -1077,9 +1076,7 @@ public class HttpUtil {
 	        } finally {
 	            instream.close();
 	        }
-	        // Trust own CA and all self-signed certs
 			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
-	        // Allow TLSv1 protocol only
 	        String[] protocols = new String[] {protocol};
 	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols,null,SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
 	        httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
