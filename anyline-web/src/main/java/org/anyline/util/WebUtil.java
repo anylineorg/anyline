@@ -20,10 +20,12 @@
 package org.anyline.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
@@ -1271,32 +1273,47 @@ public class WebUtil {
 	 * @param file
 	 * @param title
 	 */
-	public static boolean writeFile(HttpServletResponse response, File file, String title){
-		FileInputStream in = null;
-		OutputStream out = null;
-		try {
+	public static boolean download(HttpServletResponse response, File file, String title){
+		try{
 			if (null != file && file.exists()) {
 				if(BasicUtil.isEmpty(title)){
 					title = file.getName();
 				}
+				return download(response, new FileInputStream(file), title);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public static boolean download(HttpServletResponse response, String txt, String title){
+		try{
+			return download(response, new ByteArrayInputStream(txt.getBytes()), title);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	/**
+	 * 下载文件
+	 * @param response
+	 * @param request
+	 * @param file
+	 * @param title
+	 */
+	public static boolean download(HttpServletResponse response, InputStream in, String title){
+		OutputStream out = null;
+		try {
 				response.setCharacterEncoding("UTF-8");
 				response.setHeader("Location", title);
 				response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(title,"UTF-8"));
-				in = new FileInputStream(file);
 				out = response.getOutputStream();
 				byte[] buf = new byte[1024];
 				int count = 0;
-				if(ConfigTable.isDebug()){
-					log.info("[文件下载][开始传输][FILE:" + file.getAbsolutePath()+"]");
-				}
-				long fr = System.currentTimeMillis();
 				while ((count = in.read(buf)) >= 0) {
 					out.write(buf, 0, count);
 				}
-				if(ConfigTable.isDebug()){
-					log.info("[文件下载][传输完成][FILE:" + file.getAbsolutePath() + "][耗时:"+(System.currentTimeMillis()-fr)+"]");
-				}
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
