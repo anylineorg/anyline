@@ -55,7 +55,7 @@ public class ImageResult extends StrutsResultSupport {
 				title = row.getString("NM");
 			}
 			if (null != file && file.exists()) {
-				WebUtil.writeFile(response, file, title);
+				WebUtil.download(response, file, title);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
