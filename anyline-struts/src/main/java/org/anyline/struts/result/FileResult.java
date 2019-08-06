@@ -52,7 +52,7 @@ public class FileResult extends StrutsResultSupport {
 			}
 			if (data instanceof File) {
 				file = (File)data;
-				WebUtil.writeFile(response, file, title);
+				WebUtil.download(response, file, title);
 			} else if (data instanceof DataRow) {
 				DataRow row = (DataRow) data;
 				String fileServer = row.getString("SERVER_HOST");
@@ -68,7 +68,7 @@ public class FileResult extends StrutsResultSupport {
 					String path = FileUtil.mergePath(row.getString("ROOT_DIR"), row.getString("SUB_DIR"), row.getString("FILE_NAME"));
 					file = new File(path);
 					title = row.getString("TITLE");
-					WebUtil.writeFile(response, file, title);
+					WebUtil.download(response, file, title);
 				}
 			}
 		} catch (Exception e) {
