@@ -41,6 +41,12 @@ public class OSSUtil {
 		return getInstance("default");
 	}
 
+	public OSSClient getClient() {
+		return client;
+	}
+	public void setClient(OSSClient client) {
+		this.client = client;
+	}
 	public static OSSUtil getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
 			key = "default";
@@ -51,7 +57,7 @@ public class OSSUtil {
 			OSSConfig config = OSSConfig.getInstance(key);
 			util.config = config;
 			util.client = new OSSClient(config.ENDPOINT, config.ACCESS_ID, config.ACCESS_SECRET);
-			instances.put(key, util);
+			instances.put(key, util);//get_object_to_file
 		}
 		return util;
 	}
