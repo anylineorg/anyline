@@ -178,7 +178,7 @@ public class SFTPUtil {
         client.cd(dir);  
         client.put(localFile, remoteFile);  
         if(ConfigTable.isDebug()){
-        	log.warn("[文件上传][耗时:"+(System.currentTimeMillis()-fr)+"][local:"+localFile+"][remote:"+dir+"/"+remoteFile+"]");
+        	log.warn("[文件上传][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][local:"+localFile+"][remote:"+dir+"/"+remoteFile+"]");
         }
     }  
   
