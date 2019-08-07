@@ -101,17 +101,17 @@ public class SFTPUtil {
      * @return
      */
 	public boolean disconnect(){
+        if (session != null) {  
+            if (session.isConnected()) {  
+                session.disconnect();  
+            }  
+        } 
 		if (client != null) {  
             if (client.isConnected()) {  
             	client.disconnect();  
             }
             client.exit();
         }  
-        if (session != null) {  
-            if (session.isConnected()) {  
-                session.disconnect();  
-            }  
-        } 
 		return true;
 	}
     public int fileSize(String remoteDir){
