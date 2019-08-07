@@ -172,10 +172,14 @@ public class SFTPUtil {
      * @param fileName 保存文件名 
      * @throws Exception 异常 
      */  
-    public void uploadFile(String localFile, String dir, String remoteFile) throws SftpException {  
+    public void uploadFile(String localFile, String dir, String remoteFile) throws SftpException {
+    	long fr = System.currentTimeMillis();
         mkdir(dir);  
         client.cd(dir);  
         client.put(localFile, remoteFile);  
+        if(ConfigTable.isDebug()){
+        	log.warn("[文件上传][耗时:"+(System.currentTimeMillis()-fr)+"][local:"+localFile+"][remote:"+dir+"/"+remoteFile+"]");
+        }
     }  
   
     /** 
