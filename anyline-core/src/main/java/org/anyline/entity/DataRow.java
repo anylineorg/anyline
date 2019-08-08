@@ -936,6 +936,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public String toJSON(){
 		return BeanUtil.map2json(this);
 	}
+	public String toJson(){
+		return toJSON();
+	}
 	public String getJson(){
 		return BeanUtil.map2json(this);
 	}

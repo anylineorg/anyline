@@ -1097,12 +1097,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * rows 列表中的数据格式化成json格式   不同与toString
 	 * @return
 	 */
-	public String toJSON(){
+	public String toJson(){
 		JsonConfig config = new JsonConfig();  
         config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
         config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor());
 		JSONArray json = JSONArray.fromObject(rows, config);
 		return json.toString();
+	}
+	public String getJson(){
+		return toJSON();
+	}
+
+	public String toJSON(){
+		return toJson();
 	}
 
 	/**
