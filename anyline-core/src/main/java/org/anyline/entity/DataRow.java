@@ -1197,6 +1197,20 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 	/**
+	 * 所有数字列
+	 * @return
+	 */
+	public List<String> numberKeys(){
+		List<String> result = new ArrayList<String>();
+		List<String> keys = keys();
+		for(String key:keys){
+			if(get(key) instanceof Number){
+				result.add(key);
+			}	
+		}
+		return result;
+	}
+	/**
 	 * 检测必选项
 	 * @param keys
 	 * @return
