@@ -605,7 +605,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return result;
 	}
 	/**
-	 * 合计列
+	 * sum
 	 * @param keys
 	 * @return
 	 */
@@ -617,17 +617,36 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					row.put(key, sum(key));
 				}
 			}else{
-				DataRow tmp = getRow(0);
-				List<String> allKeys = tmp.keys();
-				for(String key:allKeys){
-					if(tmp.get(key) instanceof Number){//合计所有数字列
-						row.put(key, sum(key));
-					}	
+				List<String> numberKeys = getRow(0).numberKeys();
+				for(String key:numberKeys){
+					row.put(key, sum(key));
 				}
 			}
 		}
 		return row;
 	}
+	/**
+	 * avg
+	 * @param keys
+	 * @return
+	 */
+	public DataRow avgs(String ... keys){
+		DataRow row = new DataRow();
+		if(size()>0){
+			if(null != keys){
+				for(String key:keys){
+					row.put(key, avg(key));
+				}
+			}else{
+				List<String> numberKeys = getRow(0).numberKeys();
+				for(String key:numberKeys){
+					row.put(key, avg(key));
+				}
+			}
+		}
+		return row;
+	}
+	
 	/**
 	 * 最大值
 	 * @param top 多少行
