@@ -445,9 +445,9 @@ public class Downloader {
 	}
 }
 class DownloaderThreadPool {
-    private static final int CPU_COUNT = 1;//Runtime.getRuntime().availableProcessors();
-    private static final int CORE_POOL_SIZE = 1;//Math.max(4, Math.min(CPU_COUNT - 1, 5));
-    private static final int MAXIMUM_POOL_SIZE = 1;// CPU_COUNT * 2 + 100;
+    private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
+    private static final int CORE_POOL_SIZE = Math.max(4, Math.min(CPU_COUNT - 1, 5));
+    private static final int MAXIMUM_POOL_SIZE =  CPU_COUNT * 2 + 100;
     private static final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(2000);//超出数量丢弃
     private static ThreadPoolExecutor threadPoolExecutor;
     static {
