@@ -38,6 +38,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
@@ -602,6 +603,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		BigDecimal result = BigDecimal.ZERO;
 		result = sum(0,size()-1, key);
 		return result;
+	}
+	public DataRow sums(String ... keys){
+		DataRow row = new DataRow();
+		if(size()>0){
+			if(null != keys){
+				for(String key:keys){
+					row.put(key, sum(key));
+				}
+			}else{
+				DataRow tmp = getRow(0);
+				List<String> allKeys = tmp.keys();
+				for(String key:allKeys){
+					if(tmp.get(key) instanceof Number){//合计所有数字列
+						row.put(key, sum(key));
+					}	
+				}
+			}
+		}
+		return row;
 	}
 	/**
 	 * 最大值
