@@ -604,6 +604,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		result = sum(0,size()-1, key);
 		return result;
 	}
+	/**
+	 * 合计列
+	 * @param keys
+	 * @return
+	 */
 	public DataRow sums(String ... keys){
 		DataRow row = new DataRow();
 		if(size()>0){
