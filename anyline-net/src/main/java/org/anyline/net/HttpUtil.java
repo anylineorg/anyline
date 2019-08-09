@@ -48,6 +48,7 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -495,7 +496,30 @@ public class HttpUtil {
 			}
 		}
 	}
-
+	public static int status(String url){
+		int code = -1;
+		CloseableHttpClient client = defaultSSLClient();
+		CloseableHttpResponse response = null;
+		if(url.startsWith("//")){
+			url = "http:" + url;
+		}
+		HttpGet method = new HttpGet(url);
+		try {
+			response = client.execute(method);
+			code = response.getStatusLine().getStatusCode();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				response.close();
+				method.releaseConnection();
+				client.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return code;
+	}
 	private static Source parseResult(Source src, CloseableHttpResponse response, String encode) {
 		if (null == src) {
 			src = new Source();
@@ -779,19 +803,6 @@ public class HttpUtil {
 	}
 	public static Source upload(String url, Map<String, File> files) {
 		return upload(url, files, null, null);
-	}
-	public static void main(String[] args) {
-//		Map<String,File> files = new HashMap<String,File>();
-//		files.put("file", new File("D:\\0bb17c8d465564bf0ef0d64a73434623.json"));
-//		String url  = "http://144.123.46.102:8123/SeaInfo/index.aspx";
-//		//url  = "http://127.0.0.1/test";
-//		Map<String,Object> params = new HashMap<String,Object>();
-//		params.put("id", System.currentTimeMillis());
-//		params.put("dev", "01_00_001");
-//		params.put("lon", "116.002777");
-//		params.put("lat", "19.325555");
-//		String txt = upload(url, files, params).getText();
-//		System.out.print(txt);
 	}
 	public static Source upload(CloseableHttpClient client, String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params) {
 		if(null != url && url.startsWith("//")){
