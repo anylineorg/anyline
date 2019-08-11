@@ -95,7 +95,7 @@ public class VerifyCodeUtil {
 	 * @param w
 	 * @param h
 	 * @param os
-	 * @param verifySize
+	 * @param verifySize 字符长度
 	 * @return
 	 * @throws IOException
 	 */
@@ -103,6 +103,23 @@ public class VerifyCodeUtil {
 		String verifyCode = getRandomCode(verifySize);
 		outputImage(w, h, os, verifyCode);
 		return verifyCode;
+	}
+	/**
+	 * 输出计算公式
+	 * @param w
+	 * @param h
+	 * @param os
+	 * @return
+	 * @throws IOException
+	 */
+	public static String outputVerifyImageFormula(int w, int h, OutputStream os) throws IOException {
+		String codes[] = createFormula();
+		outputImage(w, h, os, codes[0]);
+		return codes[1];
+	}
+	private static String[] createFormula(){
+		String[] result = new String[2];
+		return result;
 	}
 
 	/**
@@ -167,7 +184,7 @@ public class VerifyCodeUtil {
 			AffineTransform affine = new AffineTransform();
 			affine.setToRotation(Math.PI / 4 * rand.nextDouble() * (rand.nextBoolean() ? 1 : -1), (w / verifySize) * i + fontSize / 2, h / 2);
 			g2.setTransform(affine);
-			g2.drawChars(chars, i, 1, ((w - 10) / verifySize) * i + 15, h / 2 + fontSize / 2 - 5);
+			g2.drawChars(chars, i, 1, ((w - 10) / verifySize) * i, h / 2 + fontSize / 2 - 5);
 		}
 
 		
