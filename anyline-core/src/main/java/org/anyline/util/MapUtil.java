@@ -33,9 +33,9 @@ public class MapUtil {
 			s = s * EARTH_RADIUS;
 			s = Math.round(s * 10000d) / 10000d;
 			s = s * 1000;
-			if(ConfigTable.isDebug()){
-				log.warn("[距离计算][LON1:"+lon1+"][LAT1:"+lat1+"][LON2:"+lon2+"][LAT2:"+lat2+"][DISTANCE:"+s+"]");
-			}
+//			if(ConfigTable.isDebug()){
+//				log.warn("[距离计算][LON1:"+lon1+"][LAT1:"+lat1+"][LON2:"+lon2+"][LAT2:"+lat2+"][DISTANCE:"+s+"]");
+//			}
 			BigDecimal decimal = new BigDecimal(s);  
 			s = decimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();  
 			return s;
