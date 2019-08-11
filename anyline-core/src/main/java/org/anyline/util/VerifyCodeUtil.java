@@ -118,7 +118,21 @@ public class VerifyCodeUtil {
 		return codes[1];
 	}
 	private static String[] createFormula(){
-		String[] result = new String[2];
+		String types[] = new String[]{"加","减","乘"};
+		int d1 = BasicUtil.getRandomNumber(1, 9);
+		int d2 = BasicUtil.getRandomNumber(1, 9);
+		int type = d1%3;
+		if(d1 < d2 && type==1){
+			type = 0;
+		}
+		String str = d1 + types[type] + d2;
+		int cal = d1 + d2;
+		if(type ==1){
+			cal = d1 - d2;
+		}else if(type ==2){
+			cal = d1 * d2;
+		}
+		String[] result = new String[]{str,cal+""};
 		return result;
 	}
 
