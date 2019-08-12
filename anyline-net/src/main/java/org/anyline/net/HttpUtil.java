@@ -866,7 +866,6 @@ public class HttpUtil {
 		}
 		return null;
 	}
-
 	/**
 	 * 提取url根目录
 	 * 
