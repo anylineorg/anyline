@@ -163,6 +163,8 @@ public class VerifyCodeUtil {
 			fos.close();
 		} catch (IOException e) {
 			throw e;
+		}finally{
+			
 		}
 	}
 	public static BufferedImage createImage(String code, int w, int h){
