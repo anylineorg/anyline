@@ -1,11 +1,11 @@
 package org.anyline.util;
 
 import java.io.File;
-
 import java.lang.management.ManagementFactory;
-import com.sun.management.OperatingSystemMXBean;
 
 import org.anyline.entity.DataRow;
+
+import com.sun.management.OperatingSystemMXBean;
 
 public class SystemUtil {
 	private DataRow info = null;
@@ -111,7 +111,18 @@ public class SystemUtil {
 	}
 	
 	public static void main(String[] args) {
-		 
+		while(true){
+		 info();
+		 try {
+			Thread.sleep(2000);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+	}
+	public static void info(){
+
 		// 虚拟机级内存情况查询
 		long vmFree = 0;
 		long vmUse = 0;
@@ -128,7 +139,7 @@ public class SystemUtil {
 		System.out.println("JVM总内存空间为：" + vmTotal + " MB");
 		System.out.println("JVM总内存空间为：" + vmMax + " MB");
  
-		System.out.println("======================================");
+		System.out.println("-----------------------------------------------");
 		// 操作系统级内存情况查询
 		OperatingSystemMXBean osmxb = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 		String os = System.getProperty("os.name");
@@ -148,5 +159,6 @@ public class SystemUtil {
 			totalThread = parentThread.activeCount();
 		}
 		System.out.println("获得线程总数:" + totalThread);
-	}
+		System.out.println("======================================");
+		}
 }
