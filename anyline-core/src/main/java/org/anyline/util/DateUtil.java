@@ -20,8 +20,10 @@ package org.anyline.util;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -888,6 +890,11 @@ public class DateUtil {
 		calendar.add(Calendar.DAY_OF_YEAR, value);
 		return calendar.getTime();
 	}
+	public static String addDay(String date, int value) {
+		calendar.setTime(parse(date));
+		calendar.add(Calendar.DAY_OF_YEAR, value);
+		return DateUtil.format(calendar.getTime(),"yyyy-MM-dd");
+	}
 
 	/**
 	 * 按月加
@@ -959,6 +966,30 @@ public class DateUtil {
 
 	public static int getDayOfWeek() {
 		return getDayOfWeek(new Date());
+	}
+	public List<Date> getDays(Date fr, Date to){
+		List<Date> list = new ArrayList<Date>();
+		list.add(fr);
+		while(true){
+			fr = DateUtil.addDay(fr, 1);
+			if(DateUtil.diff(DATE_PART_DATE, fr, to) >0){
+				break;
+			}
+			list.add(fr);
+		}
+		return list;
+	}
+	public List<String> getDays(String fr, String to){
+		List<String> list = new ArrayList<String>();
+		list.add(fr);
+		while(true){
+			fr = DateUtil.addDay(fr, 1);
+			if(DateUtil.diff(DATE_PART_DATE, fr, to) >0){
+				break;
+			}
+			list.add(fr);
+		}
+		return list;
 	}
 
 	/**
