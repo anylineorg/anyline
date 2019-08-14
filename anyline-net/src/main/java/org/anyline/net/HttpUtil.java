@@ -48,7 +48,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -334,9 +333,6 @@ public class HttpUtil {
 			} else {
 				url += "?" + params;
 			}
-		}
-		if(ConfigTable.isDebug()){
-			log.warn("[http get][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][url:"+url+"]");
 		}
 		HttpGet method = new HttpGet(url);
 		setHeader(method, headers);
