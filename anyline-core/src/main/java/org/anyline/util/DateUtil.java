@@ -967,6 +967,12 @@ public class DateUtil {
 	public static int getDayOfWeek() {
 		return getDayOfWeek(new Date());
 	}
+	/**
+	 * 区间日期
+	 * @param fr
+	 * @param to
+	 * @return
+	 */
 	public List<Date> getDays(Date fr, Date to){
 		List<Date> list = new ArrayList<Date>();
 		list.add(fr);
@@ -991,7 +997,50 @@ public class DateUtil {
 		}
 		return list;
 	}
-
+	public static String max(String ... dates){
+		String result = null;
+		if(null != dates){
+			for(String date:dates){
+				if(null == result || diff(DATE_PART_SECOND, result, date) >0){
+					result = date;
+				}
+			}
+		}
+		return result;
+	}
+	public static String min(String ... dates){
+		String result = null;
+		if(null != dates){
+			for(String date:dates){
+				if(null == result || diff(DATE_PART_SECOND, result, date) <0){
+					result = date;
+				}
+			}
+		}
+		return result;
+	}
+	public static Date max(Date ... dates){
+		Date result = null;
+		if(null != dates){
+			for(Date date:dates){
+				if(null == result || diff(DATE_PART_SECOND, result, date) >0){
+					result = date;
+				}
+			}
+		}
+		return result;
+	}
+	public static Date min(Date ... dates){
+		Date result = null;
+		if(null != dates){
+			for(Date date:dates){
+				if(null == result || diff(DATE_PART_SECOND, result, date) <0){
+					result = date;
+				}
+			}
+		}
+		return result;
+	}
 	/**
 	 * 一年中的第几个星期
 	 * 
