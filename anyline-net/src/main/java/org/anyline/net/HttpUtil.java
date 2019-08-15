@@ -453,9 +453,6 @@ public class HttpUtil {
 		try {
 			long fr = System.currentTimeMillis();
 			method.setHeader("Connection", "close");  
-			if(ConfigTable.isDebug()){
-				log.warn("[http request][method:"+method.getMethod()+"][url:"+method.getURI()+"]");
-			}
 			response = client.execute(method);
 			result = parseResult(result,response, encode);
 			if(ConfigTable.isDebug()){
