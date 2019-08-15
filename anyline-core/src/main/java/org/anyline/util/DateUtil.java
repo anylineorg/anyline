@@ -652,18 +652,42 @@ public class DateUtil {
 	 * 
 	 * @return
 	 */
-	public static int getDaysOfYear(Date date) {
+	public static int countDaysOfYear(Date date) {
 		calendar.setTime(date);
 		calendar.set(Calendar.DAY_OF_YEAR, 1);// 把日期设为当年第一天
 		calendar.roll(Calendar.DAY_OF_YEAR, -1);// 把日期回滚一天。
-		int MaxYear = calendar.get(Calendar.DAY_OF_YEAR);
-		return MaxYear;
+		return calendar.get(Calendar.DAY_OF_YEAR);
 	}
 
-	public static int getDaysOfYear() {
-		return getDaysOfYear(new Date());
+	public static int countDaysOfYear(int year) {
+		Date date = parse(year+"-01-01");
+		return countDaysOfYear(date);
+	}
+	public static int countDaysOfYear() {
+		return countDaysOfYear(new Date());
 	}
 
+	/**
+	 * 一年多少天
+	 * 
+	 * @return
+	 */
+	public static int countDaysOfMonth(Date date) {
+		calendar.setTime(date);
+		calendar.set(Calendar.DAY_OF_MONTH, 1); // 把时间调整为当月的第一天；
+		calendar.add(Calendar.MONTH,1); // 月份调至下个月；
+		calendar.add(Calendar.DAY_OF_MONTH, -1); // 时间减去一天（就等于上个月的最后一天）
+		return calendar.get(Calendar.DAY_OF_MONTH);
+	}
+
+	public static int countDaysOfMonth(String ym) {
+		Date date = parse(ym+"-01");
+		return countDaysOfMonth(date);
+	}
+	public static int countDaysOfMonth() {
+		return countDaysOfMonth(new Date());
+	}
+	
 	private static int getYearPlus(Date date) {
 		calendar.setTime(date);
 		int yearOfNumber = calendar.get(Calendar.DAY_OF_YEAR);// 获得当天是一年中的第几天
@@ -714,7 +738,7 @@ public class DateUtil {
 		String years = dateFormat.format(date);
 		int years_value = Integer.parseInt(years);
 		years_value--;
-		return years_value + "-01--1";
+		return years_value + "-01-01";
 	}
 
 	public static String getPreviousYearFirst(String date) {
@@ -973,7 +997,7 @@ public class DateUtil {
 	 * @param to
 	 * @return
 	 */
-	public List<Date> getDays(Date fr, Date to){
+	public static List<Date> getDays(Date fr, Date to){
 		List<Date> list = new ArrayList<Date>();
 		list.add(fr);
 		while(true){
@@ -985,6 +1009,68 @@ public class DateUtil {
 		}
 		return list;
 	}
+	public static List<Date> getDaysOfYear(int year){
+		return getDaysOfYear(parse(year+"-01-01"));
+	}
+	public static List<Date> getDaysOfYear(String year){
+		String ymd = year + "-01-01";
+		if(year.length()>4){
+			ymd = year;
+		}
+		return getDaysOfYear(parse(ymd));
+	}
+	public static List<Date> getDaysOfYear(Date date){
+		List<Date> list = new ArrayList<Date>();
+		Date start = getFirstDayOfYear(date);
+		int qty = countDaysOfYear(date);
+		for(int i=0; i<qty; i++){
+			list.add(addDay(start, i));
+		}
+		return list;
+	}
+	public static List<Date> getDaysOfMonth(String ym){
+		String ymd = ym+"-01";
+		if(ym.length()>7){
+			ymd = ym;
+		}
+		return getDaysOfMonth(parse(ymd));
+	}
+	public static List<Date> getDaysOfMonth(Date ym){
+		List<Date> list = new ArrayList<Date>();
+		Date start = getFirstDayOfMonth(ym);
+		int qty = countDaysOfMonth(ym);
+		for(int i=0; i<qty; i++){
+			Date date = addDay(start, i);
+			list.add(date);
+		}
+		return list;
+	}
+
+	public static List<Date> getDaysOfWeek(int year, int week){
+		List<Date> list = new ArrayList<Date>();
+		calendar.setTime(new Date());
+		calendar.set(Calendar.YEAR, year);
+		calendar.set(Calendar.WEEK_OF_YEAR, week);
+		calendar.set(Calendar.DAY_OF_WEEK, 1);
+		Date start = getFirstDayOfNextWeek(calendar.getTime());
+		for(int i=0; i<7; i++){
+			Date date = addDay(start, i);
+			list.add(date);
+		}
+		return list;
+	}
+	public static List<Date> getDaysOfWeek(String date){
+		return getDaysOfWeek(parse(date));
+	}
+	public static List<Date> getDaysOfWeek(Date date){
+		List<Date> list = new ArrayList<Date>();
+		Date start = getFirstDayOfWeek(date);
+		for(int i=0; i<7; i++){
+			list.add(addDay(start, i));
+		}
+		return list;
+	}
+	
 	public List<String> getDays(String fr, String to){
 		List<String> list = new ArrayList<String>();
 		list.add(fr);
