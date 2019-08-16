@@ -226,7 +226,7 @@ public class Downloader {
 	public int getRunningTaskSize(){
 		int size = 0;
 		for(DownloadTask task:tasks.values()){
-			if(task.isRunning()){
+			if(!task.isFinish()){
 				size ++;
 			}
 		}
