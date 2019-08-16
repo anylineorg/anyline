@@ -878,6 +878,42 @@ public class FileUtil {
 		return result;
 	}
 	/**
+	 * 合并文件
+	 * @param dst
+	 * @param items
+	 */
+	public static void merge(File dst, List<File> items){
+		FileOutputStream os =null;
+		FileInputStream is = null;
+        try {
+            os = new FileOutputStream(dst);
+            byte[] bytes = new byte[1024];
+            int length = 0;
+            for(File item:items){
+                if(!item.exists())
+                    continue;
+                is = new FileInputStream(item);
+                while ((length = is.read(bytes)) != -1) {
+                    os.write(bytes, 0, length);
+                }
+            }
+        }catch (Exception e){
+        	e.printStackTrace();
+        }finally{
+        	try{
+        		os.close();
+        	}catch(Exception e){
+        		
+        	}
+        }
+    	try{
+    		is.close();
+    	}catch(Exception e){
+    		
+    	}
+    }
+
+	/**
 	 * 文件拆分
 	 * @param file
 	 * @param count
