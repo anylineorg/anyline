@@ -46,6 +46,7 @@ import java.util.zip.ZipInputStream;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 
 public class FileUtil {
@@ -702,23 +703,22 @@ public class FileUtil {
 	  * @param dir
 	  * @return
 	  */
-	public static boolean deleteDir(File dir) {
-		if(null == dir){
-			return false;
+	public static void delete(File file) {
+		if(null == file){
+			return;
 		}
-		if (dir.isDirectory()) {
-			String[] children = dir.list();
-			if(null != children){
-				for (int i=0; i<children.length; i++) {
-					boolean success = deleteDir(new File(dir, children[i]));
-					if (!success) {
-						return false;
-					}
+		if (file.isDirectory()) {
+			File[] children = file.listFiles();
+			if(null != children && children.length>0){
+				for (File child:children) {
+						delete(child);
 				}
 			}
+			file.delete();
+		}else{
+			log.warn("[文件删除][file:"+file.getAbsolutePath()+"]");
+			file.delete();
 		}
-		log.warn("[文件删除][file:"+dir.getAbsolutePath()+"]");
-		return dir.delete();
 	}
 	/**
 	 * 计算文件行数
@@ -890,12 +890,56 @@ public class FileUtil {
             byte[] bytes = new byte[1024];
             int length = 0;
             for(File item:items){
-                if(!item.exists())
+            	
+                if(!item.exists()){
                     continue;
+                }
+                long fr = System.currentTimeMillis();
                 is = new FileInputStream(item);
                 while ((length = is.read(bytes)) != -1) {
                     os.write(bytes, 0, length);
                 }
+                log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dst.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+            }
+        }catch (Exception e){
+        	e.printStackTrace();
+        }finally{
+        	try{
+        		os.close();
+        	}catch(Exception e){
+        		
+        	}
+        }
+    	try{
+    		is.close();
+    	}catch(Exception e){
+    		
+    	}
+    }
+	/**
+	 * 合并文件
+	 * @param dst
+	 * @param items
+	 */
+	public static void merge(File dst, File dir){
+		FileOutputStream os =null;
+		FileInputStream is = null;
+        try {
+            os = new FileOutputStream(dst);
+            byte[] bytes = new byte[1024];
+            int length = 0;
+            List<File> items = getAllChildrenFile(dir);
+            for(File item:items){
+            	
+                if(!item.exists()){
+                    continue;
+                }
+                long fr = System.currentTimeMillis();
+                is = new FileInputStream(item);
+                while ((length = is.read(bytes)) != -1) {
+                    os.write(bytes, 0, length);
+                }
+                log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dst.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
         }catch (Exception e){
         	e.printStackTrace();
