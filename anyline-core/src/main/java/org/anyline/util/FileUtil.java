@@ -961,9 +961,6 @@ public class FileUtil {
 			}
 		}
 	}
-	public static void main(String[] args) {
-		split(new File("D:\\catalina.out"),20);
-	}
 	//HTTP 文件类型
 		public final static List<String> httpFileExtend = new ArrayList<String>();
 		public final static List<String> httpFileType = new ArrayList<String>();
