@@ -41,6 +41,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.CodeUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
@@ -94,6 +95,7 @@ public class HttpUtil {
 	private static final Logger log = Logger.getLogger(HttpUtil.class);
     private static PoolingHttpClientConnectionManager connManager;  
     private static RequestConfig requestConfig;  
+    private static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
     private static final int MAX_TIMEOUT = 7200; //毫秒
     
     private CloseableHttpClient client;
@@ -544,97 +546,6 @@ public class HttpUtil {
 		}
 		return src;
 	}
-/*
-	public static boolean download(DownloadProgress progress, String url, File dst, Map<String,String> headers, boolean override){
-		boolean result = false;
-		if(null != url && url.startsWith("//")){
-			url = "http:"+url;
-		}
-		if(ConfigTable.isDebug()){
-			log.info("[文件下载][url:"+url+"][local:"+dst.getAbsolutePath()+"]");
-		}
-		if(null == progress){
-			progress = new DefaultProgress(url,dst);
-		}
-		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
-			return result;
-		}
-		if(dst.exists() && !override){
-			log.info("[文件下载][文件已存在][url:"+url+"][local:"+dst.getAbsolutePath()+"]");
-			return true;
-		}
-		long fr = System.currentTimeMillis();
-		File parent = dst.getParentFile();
-		if(!parent.exists()){
-			parent.mkdirs();
-		}
-		HttpClientBuilder builder = HttpClients.custom();
-		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
-		CloseableHttpClient client = builder.build();
-		HttpGet get = new HttpGet(url);
-		get.setConfig(requestConfig);
-		if(null != headers){
-			for(String key:headers.keySet()){
-				get.setHeader(key, headers.get(key));
-			}
-		}
-		FileOutputStream fos = null;
-		InputStream is = null;
-		File tmpFile = new File(dst.getParent(), dst.getName()+".downloading");
-		try {
-		    HttpResponse respone = client.execute(get);
-		    int code = respone.getStatusLine().getStatusCode();
-		    if(code != 200){
-				log.info("[文件下载][状态异常][code:"+code+"][url:"+url+"]");
-		        return false;
-		    }
-		    HttpEntity entity = respone.getEntity();
-		    if(entity != null) {
-			    long total = entity.getContentLength();
-			    progress.init(url, "", total, 0);
-			    int buf = 1024;
-		        is = entity.getContent();
-		        fos = new FileOutputStream(tmpFile); 
-		        byte[] buffer = new byte[buf];
-		        int len = -1;
-		        int flush = 0;
-		        while((len = is.read(buffer) )!= -1){
-		        	fos.write(buffer, 0, len);
-		        	progress.step(url, "", len);
-		        	flush += len;
-		        	if(flush >= buf*10){
-		        		flush = 0;
-		        		fos.flush();
-		        	}
-		        }
-		    }
-			if(ConfigTable.isDebug()){
-				log.info("[文件下载][result:"+result+"][url:"+url+"][local:"+dst.getAbsolutePath()+"][共耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"]");
-			}
-		    result = true;
-		} catch (Exception e) {
-		    e.printStackTrace();
-		}finally{
-			try{
-		        fos.close();
-			}catch(Exception e){
-			}
-			try{
-		        is.close();
-			}catch(Exception e){
-			}
-		    try {
-		        client.close();
-		    } catch (IOException e) {
-		        e.printStackTrace();
-		    }
-		}
-		if(result){
-			tmpFile.renameTo(dst);
-		}
-		return result;
-	}
-	*/
 
 	public static boolean download(String url, String dst){
 		File file = new File(dst);
@@ -1064,11 +975,10 @@ public class HttpUtil {
 	public static CloseableHttpClient defaultClient(){
 		CloseableHttpClient client = null;
 		HttpClientBuilder builder = HttpClients.custom();
-		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");       
+		builder.setUserAgent(userAgent);
 		client = builder.build();
 		return client;
 	}
-	
 	public static CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){
 		CloseableHttpClient httpclient = null;
 		try{
@@ -1093,7 +1003,7 @@ public class HttpUtil {
 	}
 	public static CloseableHttpClient defaultSSLClient(){
 		HttpClientBuilder builder = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connManager).setDefaultRequestConfig(requestConfig);
-		builder.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36");   
+		builder.setUserAgent(userAgent);   
 		CloseableHttpClient  client = builder.build();
 		return client;
 	}
@@ -1182,5 +1092,7 @@ public class HttpUtil {
 		}
 		return fullPath;
 	}
-
+	public void setUserAgent(String agent){
+		HttpUtil.userAgent = agent;
+	}
 }
