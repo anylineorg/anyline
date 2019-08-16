@@ -1092,7 +1092,7 @@ public class HttpUtil {
 		}
 		return fullPath;
 	}
-	public void setUserAgent(String agent){
+	public static void setUserAgent(String agent){
 		HttpUtil.userAgent = agent;
 	}
 }
