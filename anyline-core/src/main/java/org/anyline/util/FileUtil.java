@@ -709,15 +709,14 @@ public class FileUtil {
 		}
 		if (file.isDirectory()) {
 			File[] children = file.listFiles();
-			if(null != children && children.length>0){
+			if(null != children){
 				for (File child:children) {
 						delete(child);
 				}
 			}
-			file.delete();
+			log.warn("[目录删除][result:"+file.delete()+"][file:"+file.getAbsolutePath()+"]");
 		}else{
-			log.warn("[文件删除][file:"+file.getAbsolutePath()+"]");
-			file.delete();
+			log.warn("[文件删除][result:"+file.delete()+"][file:"+file.getAbsolutePath()+"]");
 		}
 	}
 	/**
@@ -945,7 +944,13 @@ public class FileUtil {
         	e.printStackTrace();
         }finally{
         	try{
+        		os.flush();
         		os.close();
+        	}catch(Exception e){
+        		
+        	}
+        	try{
+        		is.close();
         	}catch(Exception e){
         		
         	}
