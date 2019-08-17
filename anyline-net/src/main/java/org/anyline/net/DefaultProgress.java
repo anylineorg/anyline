@@ -86,5 +86,4 @@ public class DefaultProgress implements DownloadProgress{
 	public void setFinishCallback(DownloadCallback callback) {
 		
 	}
-	
 }
