@@ -547,40 +547,40 @@ public class HttpUtil {
 		return src;
 	}
 
-	public static boolean download(String url, String dst){
+	public static DownloadTask download(String url, String dst){
 		File file = new File(dst);
 		return download(defaultClient(), new DefaultProgress(url, file), url, file, null, null, false);
 	}
-	public static boolean download(String url, File dst){
+	public static DownloadTask download(String url, File dst){
 		return download(defaultClient(), new DefaultProgress(url, dst), url, dst, null, null, false);
 	}
-	public static boolean download(String url, String dst, Map<String,String> headers,Map<String,Object> params){
+	public static DownloadTask download(String url, String dst, Map<String,String> headers,Map<String,Object> params){
 		File file = new File(dst);
 		return download(defaultClient(), new DefaultProgress(url, file), url, file, headers, params, false);
 	}
-	public static boolean download(String url, File dst, Map<String,String> headers,Map<String,Object> params){
+	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params){
 		return download(defaultClient(), new DefaultProgress(url, dst), url, dst, headers, params, false);
 	}
-	public static boolean download(String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){
 		File file = new File(dst);
 		return download(defaultClient(), new DefaultProgress(url, file), url, file, headers, params, override);
 	}
-	public static boolean download(String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
 		return download(defaultClient(), new DefaultProgress(url, dst), url, dst, headers, params, override);
 	}
-	public static boolean download(DownloadProgress progress, String url, String dst, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, String dst, boolean override){
 		return download(defaultClient(), progress, url, new File(dst), null, null, override);
 	}
-	public static boolean download(DownloadProgress progress, String url, File dst, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override){
 		return download(defaultClient(), progress, url, dst, null, null, override);
 	}
-	public static boolean download(DownloadProgress progress, String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){
 		return download(defaultClient(), progress, url, new File(dst), headers, params, override);
 	}
-	public static boolean download(DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
 		return download(defaultClient(), progress, url, dst, headers, params, override);
 	}
-	public static boolean download(CloseableHttpClient client, DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+	public static DownloadTask download(CloseableHttpClient client, DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
 		DownloadTask task = new DownloadTask();
 		task.setProgress(progress);
 		task.setLocal(dst);
@@ -588,7 +588,12 @@ public class HttpUtil {
 		task.setHeaders(headers);
 		task.setParams(params);
 		task.setOverride(override);
-		return download(client, task);
+		download(client, task);
+		return task;
+	}
+
+	public static boolean download(DownloadTask task){
+		return download(defaultClient(), task);
 	}
 	public static boolean download(CloseableHttpClient client, DownloadTask task){
 		boolean result = false;
