@@ -169,7 +169,7 @@ public class DownloadTask {
 			if(start ==0){
 				start = System.currentTimeMillis();
 			}
-			HttpUtil.download(progress, url, local, false);
+			HttpUtil.download(this);
 		}
 	}
 	/**
