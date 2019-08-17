@@ -703,10 +703,11 @@ public class FileUtil {
 	  * @param dir
 	  * @return
 	  */
-	public static void delete(File file) {
+	public static boolean delete(File file) {
 		if(null == file){
-			return;
+			return false;
 		}
+		boolean result = true;
 		if (file.isDirectory()) {
 			File[] children = file.listFiles();
 			if(null != children){
@@ -714,10 +715,13 @@ public class FileUtil {
 						delete(child);
 				}
 			}
-			log.warn("[目录删除][result:"+file.delete()+"][file:"+file.getAbsolutePath()+"]");
+			result = file.delete();
+			log.warn("[目录删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
 		}else{
-			log.warn("[文件删除][result:"+file.delete()+"][file:"+file.getAbsolutePath()+"]");
+			result = file.delete();
+			log.warn("[文件删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
 		}
+		return result;
 	}
 	/**
 	 * 计算文件行数
