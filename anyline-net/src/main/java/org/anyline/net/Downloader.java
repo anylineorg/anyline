@@ -179,15 +179,15 @@ public class Downloader {
 		for(DownloadTask task:tasks.values()){
 			if(stop && task.isRunning()){
 				//停止下载任务
+				task.stop();
 			}
 		}
 		tasks.clear();
 	}
-	public static void main(String args[]){
-		
-	}
 	public void stop(){
-		
+		for(DownloadTask task:tasks.values()){
+			task.stop();
+		}
 	}
 	public void stop(String url){
 		DownloadTask task = getTask(url);

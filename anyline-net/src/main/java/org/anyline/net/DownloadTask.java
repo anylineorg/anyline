@@ -35,8 +35,20 @@ public class DownloadTask {
 	private long lastLogTime	; //量后一次日志时间
 	private String errorMsg = ""; //异常信息
 	private int errorCode = 0	; //异常编号
+	private int status =1		; //1正常执行 0中断
 	
 	private Map<Long,Long> records = new HashMap<Long,Long>(); //下载记录
+	private DownloadProgress progress = null;
+	private boolean override = false;
+	
+	public boolean isOverride() {
+		return override;
+	}
+
+	public void setOverride(boolean override) {
+		this.override = override;
+	}
+
 	public DownloadTask(){
 		
 	}
@@ -164,7 +176,10 @@ public class DownloadTask {
 	 * 停止下载任务
 	 */
 	public void stop(){
-		
+		status =0;
+	}
+	public int getStatus(){
+		return status;
 	}
 	public boolean isRunning(){
 		if(end !=0 && getExpend()>0){
@@ -360,4 +375,13 @@ public class DownloadTask {
 	public void closeLog(){
 		this.openLog = false;
 	}
+
+	public DownloadProgress getProgress() {
+		return progress;
+	}
+
+	public void setProgress(DownloadProgress progress) {
+		this.progress = progress;
+	}
+	
 }
