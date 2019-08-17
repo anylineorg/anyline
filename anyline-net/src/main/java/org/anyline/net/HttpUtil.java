@@ -581,13 +581,26 @@ public class HttpUtil {
 		return download(defaultClient(), progress, url, dst, headers, params, override);
 	}
 	public static boolean download(CloseableHttpClient client, DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){
+		DownloadTask task = new DownloadTask();
+		task.setProgress(progress);
+		task.setLocal(dst);
+		task.setUrl(url);
+		task.setHeaders(headers);
+		task.setParams(params);
+		task.setOverride(override);
+		return download(client, task);
+	}
+	public static boolean download(CloseableHttpClient client, DownloadTask task){
 		boolean result = false;
+		String url = task.getUrl();
 		String finalUrl = url;
 		if(null != finalUrl && finalUrl.startsWith("//")){
 			finalUrl = "http:"+url;
 		}
 
-		finalUrl = mergeParam(finalUrl, params);
+		finalUrl = mergeParam(finalUrl, task.getParams());
+		DownloadProgress progress = task.getProgress();
+		File dst = task.getLocal();
 		if(null == progress){
 			progress = new DefaultProgress(url,dst);
 		}
@@ -596,6 +609,7 @@ public class HttpUtil {
 		}
 		long past = 0;
 		long length = 0;
+		boolean override = task.isOverride();
 		if(dst.exists() && !override){
 			past = dst.length();
 			progress.init(url, "", length, past);
@@ -608,6 +622,7 @@ public class HttpUtil {
 		}
 		HttpGet get = new HttpGet(finalUrl);
 		get.setConfig(requestConfig);
+		Map<String,String> headers = task.getHeaders();
 		if(null != headers){
 			for(String key:headers.keySet()){
 				get.setHeader(key, headers.get(key));
@@ -667,6 +682,9 @@ public class HttpUtil {
 		        byte[] buffer = new byte[buf];
 		        int len = -1;
 		        while((len = is.read(buffer) )!= -1){
+		        	if(task.getStatus() !=1){
+		        		break;
+		        	}
 		        	raf.write(buffer, 0, len);
 		        	progress.step(url, "", len);
 		        }
@@ -679,10 +697,12 @@ public class HttpUtil {
 			try{
 		        raf.close();
 			}catch(Exception e){
+				e.printStackTrace();
 			}
 			try{
 		        is.close();
 			}catch(Exception e){
+				e.printStackTrace();
 			}
 		    try {
 		        client.close();
