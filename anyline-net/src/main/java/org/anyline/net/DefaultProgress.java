@@ -21,6 +21,7 @@ public class DefaultProgress implements DownloadProgress{
 	private long lastLogTime	; //量后一次日志时间
 	private String message		; //进度提示
 	private double rate			; //完成百分比rate%
+	private int action = 1		; //1开始 0中断
 	public DefaultProgress(){
 		this.start = System.currentTimeMillis();
 	}
@@ -79,11 +80,18 @@ public class DefaultProgress implements DownloadProgress{
 		
 	}
 	@Override
-	public void setErrorCallback(DownloadCallback callback) {
+	public void setErrorListener(DownloadListener listener) {
 		
 	}
 	@Override
-	public void setFinishCallback(DownloadCallback callback) {
+	public void setFinishListener(DownloadListener listener) {
 		
 	}
+	public int getAction() {
+		return action;
+	}
+	public void stop(){
+		this.action = 0;
+	}
+	
 }
