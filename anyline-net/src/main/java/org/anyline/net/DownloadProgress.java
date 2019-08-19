@@ -32,6 +32,8 @@ public interface DownloadProgress {
 	 */
 	public void error(String url, String thread, int code, String message);
 
-	public void setErrorCallback(DownloadCallback callback);
-	public void setFinishCallback(DownloadCallback callback);
+	public void setErrorListener(DownloadListener listener);
+	public void setFinishListener(DownloadListener listener);
+	public int getAction();
+	public void stop();
 }
