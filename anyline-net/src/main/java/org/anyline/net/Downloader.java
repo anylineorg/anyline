@@ -27,11 +27,13 @@ public class Downloader {
 	private long end				; //下载结束时间
 	private String errorMsg = ""	; //异常信息
 	private String errorCode = ""	; //异常编号
+	private int status = 0			; //0初始 1下载中  2结束
 
 	private static Hashtable<String,Downloader> instances = new Hashtable<String,Downloader>();
 	public static Downloader getInstance() {
 		return getInstance("default");
 	}
+	
 	public static Downloader getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
 			key = "default";
@@ -43,84 +45,84 @@ public class Downloader {
 		}
 		return util;
 	}
-	private DownloadProgress progress = new DownloadProgress(){
-		private DownloadCallback finishCallback;
-		private DownloadCallback errorCallback;
-		@Override
-		public void init(String url, String thread, long total, long past){
-			DownloadTask task = getTask(url);
-			if(null == task){
-				log.error("[任务不存在][url:"+url+"]");
-				return ;
-			}
-			task.init(total, past);
-		}
-		@Override
-		public void step(String url, String thread, long len){
-			DownloadTask task = getTask(url);
-			if(null == task){
-				log.error("[任务不存在][url:"+url+"]");
-				return ;
-			}
-			task.step(len);
-			if(getFinishTaskSize() == getTaskSize()){
-				end = System.currentTimeMillis();
-			}
-			log();
-		}
-		@Override
-		public void finish(String url, String thread){
-			DownloadTask task = getTask(url);
-			if(null == task){
-				log.error("[任务不存在][url:"+url+"]");
-				return ;
-			}
-			task.finish();
-			log();
-			if(ConfigTable.isDebug()){
-				log.info("[文件下载][下载完成][完成数量:"+getFinishTaskSize()+"/"+getTaskSize()+"][耗时:"+task.getExpendFormat()+"][url:"+url+"][local:"+task.getLocal().getAbsolutePath()+"]");
-			}
-			if(null != finishCallback){
-				finishCallback.run(task);
-			}
-		}
-		@Override
-		public void error(String url, String thread, int code, String message) {
-			DownloadTask task = getTask(url);
-			if(null == task){
-				log.error("[任务不存在][url:"+url+"]");
-				return ;
-			}
-			task.error(code, message);
-			if(!errorCode.contains(code+"")){
-				if(errorCode.equals("")){
-					errorCode += code;
-				}else{
-					errorCode += ","+code;
-				}
-			}
-			if(!errorMsg.contains(message)){
-				if(errorMsg.equals("")){
-					errorMsg += message;
-				}else{
-					errorMsg += ","+message;
-				}
-			}
-			if(null != errorCallback){
-				errorCallback.run(task);
-			}
-			stop(url);
-		}
-		@Override
-		public void setErrorCallback(DownloadCallback callback) {
-			errorCallback = callback;
-		}
-		@Override
-		public void setFinishCallback(DownloadCallback callback) {
-			this.finishCallback = callback;
-		}
-		
-	};
+//	private DownloadProgress progress = new DownloadProgress(){
+//		private DownloadListener finishCallback;
+//		private DownloadListener errorCallback;
+//		@Override
+//		public void init(String url, String thread, long total, long past){
+//			DownloadTask task = getTask(url);
+//			if(null == task){
+//				log.error("[任务不存在][url:"+url+"]");
+//				return ;
+//			}
+//			task.init(total, past);
+//		}
+//		@Override
+//		public void step(String url, String thread, long len){
+//			DownloadTask task = getTask(url);
+//			if(null == task){
+//				log.error("[任务不存在][url:"+url+"]");
+//				return ;
+//			}
+//			task.step(len);
+//			if(getFinishTaskSize() == getTaskSize()){
+//				end = System.currentTimeMillis();
+//			}
+//			log();
+//		}
+//		@Override
+//		public void finish(String url, String thread){
+//			DownloadTask task = getTask(url);
+//			if(null == task){
+//				log.error("[任务不存在][url:"+url+"]");
+//				return ;
+//			}
+//			task.finish();
+//			log();
+//			if(ConfigTable.isDebug()){
+//				log.info("[文件下载][下载完成][完成数量:"+getFinishTaskSize()+"/"+getTaskSize()+"][耗时:"+task.getExpendFormat()+"][url:"+url+"][local:"+task.getLocal().getAbsolutePath()+"]");
+//			}
+//			if(null != finishCallback){
+//				finishCallback.run(task);
+//			}
+//		}
+//		@Override
+//		public void error(String url, String thread, int code, String message) {
+//			DownloadTask task = getTask(url);
+//			if(null == task){
+//				log.error("[任务不存在][url:"+url+"]");
+//				return ;
+//			}
+//			task.error(code, message);
+//			if(!errorCode.contains(code+"")){
+//				if(errorCode.equals("")){
+//					errorCode += code;
+//				}else{
+//					errorCode += ","+code;
+//				}
+//			}
+//			if(!errorMsg.contains(message)){
+//				if(errorMsg.equals("")){
+//					errorMsg += message;
+//				}else{
+//					errorMsg += ","+message;
+//				}
+//			}
+//			if(null != errorCallback){
+//				errorCallback.run(task);
+//			}
+//			stop(url);
+//		}
+//		@Override
+//		public void setErrorCallback(DownloadListener callback) {
+//			errorCallback = callback;
+//		}
+//		@Override
+//		public void setFinishCallback(DownloadListener callback) {
+//			this.finishCallback = callback;
+//		}
+//		
+//	};
 	private void log(){
 		if(getTaskSize()<=1 || !ConfigTable.isDebug()){
 			return;
@@ -158,30 +160,33 @@ public class Downloader {
 		if(getSumFinish()>0){
 			msg += getSumFinishFormat();
 		}
-		msg += "/"+getSumTotalFormat()+"("+getFinishRate()+"%)]"
-				+ "[完成数量:"+getFinishTaskSize()+"/"+getTaskSize()+"]"
-				+ "[耗时:"+getExpendFormat()+"/"+getExpectFormat()+"][网速:"+getSpeedFormat()+"]";
+		int errorSize = getErrorTaskSize();
+		msg += "/"+getSumTotalFormat()+"("+getFinishRate()+"%)]" + "[完成数量:"+getFinishTaskSize();
+		if(errorSize>0){
+			msg += "(异常:"+errorSize+")";
+		}
+		msg += "/"+getTaskSize()+"]" + "[耗时:"+getExpendFormat()+"/"+getExpectFormat()+"][网速:"+getSpeedFormat()+"]";
 		return msg;
 	}
 	
-	public DownloadProgress getProgress() {
-		return progress;
-	}
-	
-	public void setProgress(DownloadProgress progress) {
-		this.progress = progress;
-	}
+//	public DownloadProgress getProgress() {
+//		return progress;
+//	}
+//	
+//	public void setProgress(DownloadProgress progress) {
+//		this.progress = progress;
+//	}
 	/**
 	 * 清除任务
 	 * @param stop 是否停止未完成的下载任务
 	 */
 	public void clear(boolean stop){
 		for(DownloadTask task:tasks.values()){
-			if(stop && task.isRunning()){
-				//停止下载任务
+			if(stop){
 				task.stop();
 			}
 		}
+		status = 0;
 		tasks.clear();
 	}
 	public void stop(){
@@ -214,6 +219,19 @@ public class Downloader {
 		int size = 0;
 		for(DownloadTask task:tasks.values()){
 			if(task.isFinish()){
+				size ++;
+			}
+		}
+		return size;
+	}
+	/**
+	 * 异常任务数量
+	 * @return
+	 */
+	public int getErrorTaskSize(){
+		int size = 0;
+		for(DownloadTask task:tasks.values()){
+			if(task.getErrorCode() != 0){
 				size ++;
 			}
 		}
@@ -266,6 +284,13 @@ public class Downloader {
 	public String getSumPastFormat(){
 		long length = getSumPast();
 		return FileUtil.length(length);
+	}
+	
+	public int getStatus() {
+		return status;
+	}
+	public void setStatus(int status) {
+		this.status = status;
 	}
 	/**
 	 * 合计已完成
@@ -391,7 +416,8 @@ public class Downloader {
 		return this;
 	}
 	//线程池
-	public void start(){
+	public void start(int threads){
+		status = 1;
 		if(start ==0){
 			start = System.currentTimeMillis();
 		}
@@ -404,11 +430,15 @@ public class Downloader {
 			}
 			Thread thread = new Thread(new Runnable(){
 				public void run(){
-					task.start(progress);
+					task.start();
 				}
 			});
-			DownloaderThreadPool.execute(thread);
+			DownloaderThreadPool.execute(thread,threads);
 		}
+	}
+	//线程池
+	public void start(){
+		start(Math.max(4, Math.min(Runtime.getRuntime().availableProcessors() - 1, 5)));
 	}
 	public int getMaxParallel() {
 		return maxParallel;
@@ -465,6 +495,10 @@ class DownloaderThreadPool {
                     }
                 });
         threadPoolExecutor.allowCoreThreadTimeOut(true);
+    }
+    public static void execute(Runnable runnable, int threads){
+    	threadPoolExecutor.setCorePoolSize(threads);
+    	threadPoolExecutor.execute(runnable);
     }
     public static void execute(Runnable runnable){
     	threadPoolExecutor.execute(runnable);
