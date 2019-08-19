@@ -520,25 +520,27 @@ public class HttpUtil {
 			src = new Source();
 		}
 		try {
-			Map<String, String> headers = new HashMap<String, String>();
-			Header[] all = response.getAllHeaders();
-			for (Header header : all) {
-				String key = header.getName();
-				String value = header.getValue();
-				headers.put(key, value);
-				if ("Set-Cookie".equalsIgnoreCase(key)) {
-					HttpCookie c = new HttpCookie(value);
-					src.setCookie(c);
+			if(null != response){
+				Map<String, String> headers = new HashMap<String, String>();
+				Header[] all = response.getAllHeaders();
+				for (Header header : all) {
+					String key = header.getName();
+					String value = header.getValue();
+					headers.put(key, value);
+					if ("Set-Cookie".equalsIgnoreCase(key)) {
+						HttpCookie c = new HttpCookie(value);
+						src.setCookie(c);
+					}
 				}
-			}
-			int code = response.getStatusLine().getStatusCode();
-			src.setHeaders(headers);
-			src.setStatus(code);
-			if(code ==200){
-				HttpEntity entity = response.getEntity();
-				if (null != entity) {
-					String text = EntityUtils.toString(entity, encode);
-					src.setText(text);
+				int code = response.getStatusLine().getStatusCode();
+				src.setHeaders(headers);
+				src.setStatus(code);
+				if(code ==200){
+					HttpEntity entity = response.getEntity();
+					if (null != entity) {
+						String text = EntityUtils.toString(entity, encode);
+						src.setText(text);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -604,11 +606,8 @@ public class HttpUtil {
 		}
 
 		finalUrl = mergeParam(finalUrl, task.getParams());
-		DownloadProgress progress = task.getProgress();
+		//DownloadProgress progress = task.getProgress();
 		File dst = task.getLocal();
-		if(null == progress){
-			progress = new DefaultProgress(url,dst);
-		}
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
 			return result;
 		}
@@ -617,8 +616,10 @@ public class HttpUtil {
 		boolean override = task.isOverride();
 		if(dst.exists() && !override){
 			past = dst.length();
-			progress.init(url, "", length, past);
-			progress.finish(url, "");
+			task.init(length, past);
+			task.finish();
+//			progress.init(url, "", length, past);
+//			progress.finish(url, "");
 			return true;
 		}
 		File parent = dst.getParentFile();
@@ -669,14 +670,16 @@ public class HttpUtil {
 		    	log.warn("[http download][断点设置异常][url:"+url+"]");
 		    }
 		    if(code != 200 && code !=206){
-				progress.error(url, "", code, "状态异常");
+				//progress.error(url, "", code, "状态异常");
+				task.error(code, "状态异常");
 		        return false;
 		    }
 		    HttpEntity entity = response.getEntity();
 		    if(entity != null) {
 			    long total = entity.getContentLength();
-				progress.init(url, "", total, start);
-			    int buf = 1024*1024;
+				//progress.init(url, "", total, start);
+				task.init(total, past);
+			    int buf = 1024*1024*10;
 			    if(buf > total){
 			    	buf = (int)total;
 			    }
@@ -687,27 +690,36 @@ public class HttpUtil {
 		        byte[] buffer = new byte[buf];
 		        int len = -1;
 		        while((len = is.read(buffer) )!= -1){
-		        	if(task.getStatus() !=1){
+		        	if(task.getAction() !=1){
+		    	    	log.warn("[http download][break][url:"+url+"]");
 		        		break;
 		        	}
 		        	raf.write(buffer, 0, len);
-		        	progress.step(url, "", len);
+		        	
+		        	//progress.step(url, "", len);
+		        	task.step(len);
 		        }
 		    }
 		    result = true;
 		} catch (Exception e) {
-			progress.error(url, "", 0, e.getMessage());
+			//progress.error(url, "", 0, e.getMessage());
+			task.error(-1, e.getMessage());
+	    	log.warn("[http download][下载异常][url:"+url+"]");
 		    e.printStackTrace();
 		}finally{
-			try{
-		        raf.close();
-			}catch(Exception e){
-				e.printStackTrace();
+			if(null != raf){
+				try{
+			        raf.close();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			}
-			try{
-		        is.close();
-			}catch(Exception e){
-				e.printStackTrace();
+			if(null != is){
+				try{
+			        is.close();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
 			}
 		    try {
 		        client.close();
@@ -717,7 +729,8 @@ public class HttpUtil {
 		}
 		if(result){
 			tmpFile.renameTo(dst);
-	        progress.finish(url, "");
+	        //progress.finish(url, "");
+			task.finish();
 		}
 		return result;
 	}
