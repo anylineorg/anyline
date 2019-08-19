@@ -35,12 +35,18 @@ public class DownloadTask {
 	private long lastLogTime	; //量后一次日志时间
 	private String errorMsg = ""; //异常信息
 	private int errorCode = 0	; //异常编号
-	private int status =1		; //1正常执行 0中断
+	private int action =1		; //1正常执行 0中断
+	private int status = 0		; //0初始 1执行中 2暂停 -1异常 9已完成
 	
 	private Map<Long,Long> records = new HashMap<Long,Long>(); //下载记录
-	private DownloadProgress progress = null;
+	private DownloadProgress progress = new DefaultProgress();
+	private DownloadListener listener;
 	private boolean override = false;
 	
+	/**
+	 * 是否覆盖已存在文件
+	 * @return
+	 */
 	public boolean isOverride() {
 		return override;
 	}
@@ -50,7 +56,6 @@ public class DownloadTask {
 	}
 
 	public DownloadTask(){
-		
 	}
 
 	/**
@@ -106,6 +111,7 @@ public class DownloadTask {
 		this.length = length;
 		this.past = past;
 		this.start = System.currentTimeMillis();
+		this.status = 0;
 	}
 	public void step(long len){
 		this.finish +=  len;
@@ -134,18 +140,29 @@ public class DownloadTask {
 			}
 		}
 		records.put(System.currentTimeMillis(), len);
+		if(rate >=100){
+			finish();
+		}
 	}
 	public void error(int code, String message){
+		status = -1;
 		log.error("[文件下载][下载异常]][url:"+url+"][code:"+code+"][message:"+message+"]");
 		this.errorCode = code;
 		this.errorMsg = message;
+		if(null != listener){
+			listener.error(this);
+		}
 	}
 	public void finish(){
+		status = 9;
 		this.rate = 100.00;
 		this.end = System.currentTimeMillis();
 		log();
 		if(ConfigTable.isDebug()){
-			log.info("[文件下载][下载完成][耗时:"+getExpendFormat()+"][url:"+url+"][local:"+getLocal().getAbsolutePath()+"]");
+			log.info("[文件下载]"+"[下载完成][耗时:"+getExpendFormat()+"][url:"+url+"][local:"+getLocal().getAbsolutePath()+"]");
+		}
+		if(null != listener){
+			listener.finish(this);
 		}
 	}
 	private void log(){
@@ -164,29 +181,35 @@ public class DownloadTask {
 		}
 	}
 	
-	public void start(DownloadProgress progress){
-		if(!isRunning()){
+	public void start(){
+		if(!isRunning() &&  action != 1){
+			action = 1;
+			status = 1;
 			if(start ==0){
 				start = System.currentTimeMillis();
 			}
 			HttpUtil.download(this);
+		}else{
+			action = 1;
+			status = 1;
 		}
 	}
 	/**
 	 * 停止下载任务
 	 */
 	public void stop(){
-		status =0;
+		action =0;
+		status = 2;
 	}
-	public int getStatus(){
-		return status;
+	public int getAction(){
+		return action;
 	}
-	public boolean isRunning(){
-		if(end !=0 && getExpend()>0){
-			return true;
-		}
-		return false;
-	}
+//	public boolean isRunning(){
+//		if(end !=0 && getExpend()>0){
+//			return true;
+//		}
+//		return false;
+//	}
 	public double getFinishRate(){
 		return this.rate;
 	}
@@ -345,9 +368,9 @@ public class DownloadTask {
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
 	}
-	public boolean isFinish(){
-		return rate == 100;
-	}
+//	public boolean isFinish(){
+//		return rate == 100;
+//	}
 	public int getIndex() {
 		return index;
 	}
@@ -383,5 +406,43 @@ public class DownloadTask {
 	public void setProgress(DownloadProgress progress) {
 		this.progress = progress;
 	}
-	
+
+	public String getErrorMsg() {
+		return errorMsg;
+	}
+
+	public void setErrorMsg(String errorMsg) {
+		this.errorMsg = errorMsg;
+	}
+
+	public int getErrorCode() {
+		return errorCode;
+	}
+
+	public void setErrorCode(int errorCode) {
+		this.errorCode = errorCode;
+	}
+
+	public void setListener(DownloadListener listener) {
+		this.listener = listener;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+	public boolean isInit(){
+		return status == 0;
+	}
+	public boolean isStop(){
+		return status == 2;
+	}
+	public boolean isRunning(){
+		return status == 1;
+	}
+	public boolean isError(){
+		return status == -1;
+	}
+	public boolean isFinish(){
+		return status == 9;
+	}
 }
