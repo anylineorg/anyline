@@ -85,6 +85,10 @@ public class VideoUtil {
 	public static boolean frame(File video, File img) {
 		boolean result = false;
 		try {
+			File dir = img.getParentFile();
+			if(!dir.exists()){
+				dir.mkdirs();
+			}
 			result = frame(video, new FileOutputStream(img));
 			if(null != img){
 				log.warn("[视频截图][截图文件:"+img.getAbsolutePath()+"]");
