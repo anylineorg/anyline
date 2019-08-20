@@ -17,6 +17,9 @@ import org.bytedeco.javacv.Java2DFrameConverter;
 
 public class VideoUtil {
 	private static Logger log = Logger.getLogger(VideoUtil.class);
+	public static void main(String args[]){
+		frame(new File("D:\\b.m3u8"), new File("D:\\b.jpg"));
+	}
 	/**
 	 * 截取视频获得指定帧的图片
 	 * @param video 视频
