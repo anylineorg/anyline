@@ -17,7 +17,6 @@
  */
 package org.anyline.util;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -99,10 +98,14 @@ public class VerifyCodeUtil {
 	 * @return
 	 * @throws IOException
 	 */
-	public static String outputVerifyImage(int w, int h, OutputStream os, int verifySize) throws IOException {
+	public static String outputVerifyImage(int w, int h, OutputStream os, int verifySize, boolean trouble) throws IOException {
 		String verifyCode = getRandomCode(verifySize);
-		outputImage(w, h, os, verifyCode);
+		outputImage(w, h, os, verifyCode, trouble);
 		return verifyCode;
+	}
+
+	public static String outputVerifyImage(int w, int h, OutputStream os, int verifySize) throws IOException {
+		return outputVerifyImage(w, h, os, verifySize, true);
 	}
 	/**
 	 * 输出计算公式
@@ -168,6 +171,9 @@ public class VerifyCodeUtil {
 		}
 	}
 	public static BufferedImage createImage(String code, int w, int h){
+		return createImage(code, w, h, true);
+	}
+	public static BufferedImage createImage(String code, int w, int h, boolean trouble){
 		int verifySize = code.length();
 		BufferedImage image = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 		Random rand = new Random();
@@ -190,9 +196,9 @@ public class VerifyCodeUtil {
 		g2.setColor(c);// 设置背景色
 		g2.fillRect(0, 2, w, h - 4);
 
-
-		shear(g2, w, h, c);
-
+		if(trouble){//干扰线
+			shear(g2, w, h, c);
+		}
 		g2.setColor(getRandColor(100, 160));
 		int fontSize = h - 4;
 		Font font = new Font("Algerian", Font.ITALIC, fontSize);
@@ -200,34 +206,37 @@ public class VerifyCodeUtil {
 		char[] chars = code.toCharArray();
 		for (int i = 0; i < verifySize; i++) {
 			g2.setColor(getRandColor(0,160));
-			AffineTransform affine = new AffineTransform();
-			affine.setToRotation(Math.PI / 4 * rand.nextDouble() * (rand.nextBoolean() ? 1 : -1), (w / verifySize) * i + fontSize / 2, h / 2);
-			g2.setTransform(affine);
+			if(trouble){//倾斜
+				AffineTransform affine = new AffineTransform();
+				affine.setToRotation(Math.PI / 4 * rand.nextDouble() * (rand.nextBoolean() ? 1 : -1), (w / verifySize) * i + fontSize / 2, h / 2);
+				g2.setTransform(affine);
+			}
 			g2.drawChars(chars, i, 1, ((w - 10) / verifySize) * i, h / 2 + fontSize / 2 - 5);
 		}
 
 		
-		
-		// 绘制干扰线
-		Random random = new Random();
-		g2.setColor(getRandColor(160, 200));// 设置线条的颜色
-		for (int i = 0; i < 20; i++) {
-			//g2.setStroke(new BasicStroke(2));
-			int x = random.nextInt(w - 1);
-			int y = random.nextInt(h - 1);
-			int xl = random.nextInt(6) + 1;
-			int yl = random.nextInt(12) + 1;
-			g2.drawLine(x, y, x + xl + 40, y + yl + 20);
-		}
-
-		// 添加噪点
-		float yawpRate = 0.1f;// 噪声率
-		int area = (int) (yawpRate * w * h);
-		for (int i = 0; i < area; i++) {
-			int x = random.nextInt(w);
-			int y = random.nextInt(h);
-			int rgb = getRandomIntColor();
-			image.setRGB(x, y, rgb);
+		if(trouble){
+			// 绘制干扰线
+			Random random = new Random();
+			g2.setColor(getRandColor(160, 200));// 设置线条的颜色
+			for (int i = 0; i < 20; i++) {
+				//g2.setStroke(new BasicStroke(2));
+				int x = random.nextInt(w - 1);
+				int y = random.nextInt(h - 1);
+				int xl = random.nextInt(6) + 1;
+				int yl = random.nextInt(12) + 1;
+				g2.drawLine(x, y, x + xl + 40, y + yl + 20);
+			}
+	
+			// 添加噪点
+			float yawpRate = 0.1f;// 噪声率
+			int area = (int) (yawpRate * w * h);
+			for (int i = 0; i < area; i++) {
+				int x = random.nextInt(w);
+				int y = random.nextInt(h);
+				int rgb = getRandomIntColor();
+				image.setRGB(x, y, rgb);
+			}
 		}
 		g2.dispose();
 		return image;
@@ -242,8 +251,10 @@ public class VerifyCodeUtil {
 	 * @throws IOException
 	 */
 	public static void outputImage(int w, int h, OutputStream os, String code) throws IOException {
-		
-		ImageIO.write(createImage(code, w, h), "jpg", os);
+		ImageIO.write(createImage(code, w, h, true), "jpg", os);
+	}
+	public static void outputImage(int w, int h, OutputStream os, String code, boolean trouble) throws IOException {
+		ImageIO.write(createImage(code, w, h, trouble), "jpg", os);
 	}
 
 	private static Color getRandColor(int fc, int bc) {
