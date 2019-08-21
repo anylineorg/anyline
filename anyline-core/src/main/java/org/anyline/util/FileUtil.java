@@ -889,11 +889,14 @@ public class FileUtil {
 		FileOutputStream os =null;
 		FileInputStream is = null;
         try {
+        	File dir = dst.getParentFile();
+        	if(!dir.exists()){
+        		dir.mkdirs();
+        	}
             os = new FileOutputStream(dst);
             byte[] bytes = new byte[1024];
             int length = 0;
             for(File item:items){
-            	
                 if(!item.exists()){
                     continue;
                 }
@@ -928,12 +931,15 @@ public class FileUtil {
 		FileOutputStream os =null;
 		FileInputStream is = null;
         try {
+        	File root = dst.getParentFile();
+        	if(!root.exists()){
+        		root.mkdirs();
+        	}
             os = new FileOutputStream(dst);
             byte[] bytes = new byte[1024];
             int length = 0;
             List<File> items = getAllChildrenFile(dir);
             for(File item:items){
-            	
                 if(!item.exists()){
                     continue;
                 }
