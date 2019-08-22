@@ -79,7 +79,12 @@ public class DownloadTask {
 		    	}
 		    }
 		}
-		return sum*1000/(System.currentTimeMillis()-fr);
+		long time =System.currentTimeMillis();
+		if(time >0){
+			return sum*1000/(time);
+		}else{
+			return sum*10000;
+		}
 	}
 	/**
 	 * 下载速度/s
@@ -174,15 +179,17 @@ public class DownloadTask {
 		}
 		double rate = getFinishRate();
 		//进度>0.5%或时间超过5秒或全部完成
-		if(lastLogTime==0 || rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100){
-			log.warn("[文件下载]"+getMessage());
-    		lastLogRate = rate;
-    		lastLogTime = System.currentTimeMillis();
+		if(openLog){
+			if(lastLogTime==0 || rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100){
+				log.warn("[文件下载]"+getMessage());
+	    		lastLogRate = rate;
+	    		lastLogTime = System.currentTimeMillis();
+			}
 		}
 	}
 	
 	public void start(){
-		if(!isRunning() &&  action != 1){
+		if(!isRunning() &&  action == 1){
 			action = 1;
 			status = 1;
 			if(start ==0){

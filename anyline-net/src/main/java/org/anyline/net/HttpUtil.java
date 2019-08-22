@@ -96,12 +96,13 @@ public class HttpUtil {
     private static PoolingHttpClientConnectionManager connManager;  
     private static RequestConfig requestConfig;  
     private static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
-    private static final int MAX_TIMEOUT = 7200; //毫秒
+    private static int MAX_TIMEOUT = 7200; //毫秒
     
     private CloseableHttpClient client;
     private Map<String,HttpUtil> instances = new HashMap<String,HttpUtil>(); 
     
     static {  
+    	MAX_TIMEOUT = ConfigTable.getInt("HTTP_MAX_TIMEOUT", 7200);
         // 设置连接池  
     	connManager = new PoolingHttpClientConnectionManager();  
         // 设置连接池大小  
@@ -143,10 +144,10 @@ public class HttpUtil {
 		this.client = client;
 	}
 	/*staic*/
-	public static Source post(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
+	public static HttpResult post(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
 		return post(client, null, url, encode, entitys);
 	}
-	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+	public static HttpResult post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
 		List<HttpEntity> list = new ArrayList<HttpEntity>();
 		if(null != entitys){
 			for(HttpEntity entity:entitys){
@@ -156,10 +157,10 @@ public class HttpUtil {
 		return post(client, headers, url, encode, list);
 	}
 
-	public static Source post(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
+	public static HttpResult post(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
 		return post(client, null, url, encode, params);
 	}
-	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResult post(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		List<HttpEntity> entitys = new ArrayList<HttpEntity>();
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = packNameValuePair(params);
@@ -175,7 +176,7 @@ public class HttpUtil {
 	}
 
 
-	public static Source post(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+	public static HttpResult post(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
 		if(null == client){
 			if(url.contains("https://")){
 				client = defaultSSLClient();
@@ -186,7 +187,7 @@ public class HttpUtil {
 		if(url.startsWith("//")){
 			url = "http:" + url;
 		}
-		Source result = new Source();
+		HttpResult result = new HttpResult();
 		HttpPost method = new HttpPost(url);
 		if(null != entitys){
 			for(HttpEntity entity:entitys){
@@ -199,30 +200,30 @@ public class HttpUtil {
 	}
 
 
-	public static Source post(String url, String encode, HttpEntity... entitys) {
+	public static HttpResult post(String url, String encode, HttpEntity... entitys) {
 		return post(defaultClient(), url, encode, entitys);
 	}
-	public static Source post(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+	public static HttpResult post(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
 		return post(defaultClient(),headers, url, encode, entitys);
 	}
-	public static Source post(String url, String encode, Map<String, Object> params) {
+	public static HttpResult post(String url, String encode, Map<String, Object> params) {
 		return post(defaultClient(), url, encode, params);
 	}
-	public static Source post(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResult post(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return post(defaultClient(), headers, url, encode, params);
 	}
-	public static Source post(String url,   Map<String, Object> params) {
+	public static HttpResult post(String url,   Map<String, Object> params) {
 		return post(defaultClient(), null, url, "UTF-8", params);
 	}
-	public static Source post(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+	public static HttpResult post(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
 		return post(defaultClient(),headers, url, encode, entitys);
 	}
 
-	public static Source put(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
+	public static HttpResult put(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
 		return put(client, null, url, encode, entitys);
 	}
 
-	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+	public static HttpResult put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
 		List<HttpEntity> list = new ArrayList<HttpEntity>();
 		if(null != entitys){
 			for(HttpEntity entity:entitys){
@@ -232,10 +233,10 @@ public class HttpUtil {
 		return put(client, headers, url, encode, list);
 	}
 
-	public static Source put(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
+	public static HttpResult put(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
 		return put(client, null, url, encode, params);
 	}
-	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResult put(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		List<HttpEntity> entitys = new ArrayList<HttpEntity>();
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = packNameValuePair(params);
@@ -251,7 +252,7 @@ public class HttpUtil {
 	}
 
 
-	public static Source put(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+	public static HttpResult put(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
 		if(null == client){
 			if(url.contains("https://")){
 				client = defaultSSLClient();
@@ -262,7 +263,7 @@ public class HttpUtil {
 		if(url.startsWith("//")){
 			url = "http:" + url;
 		}
-		Source result = new Source();
+		HttpResult result = new HttpResult();
 		HttpPut method = new HttpPut(url);
 		if(null != entitys){
 			for(HttpEntity entity:entitys){
@@ -275,47 +276,47 @@ public class HttpUtil {
 	}
 	
 
-	public static Source put(String url, String encode, HttpEntity... entitys) {
+	public static HttpResult put(String url, String encode, HttpEntity... entitys) {
 		return put(defaultClient(), url, encode, entitys);
 	}
-	public static Source put(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+	public static HttpResult put(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
 		return put(defaultClient(), headers, url, encode, entitys);
 	}
 
-	public static Source put(String url, String encode, Map<String, Object> params) {
+	public static HttpResult put(String url, String encode, Map<String, Object> params) {
 		return put(defaultClient(), url, encode, params);
 	}
-	public static Source put(String url, Map<String, Object> params) {
+	public static HttpResult put(String url, Map<String, Object> params) {
 		return put(defaultClient(), url, "UTF-8", params);
 	}
-	public static Source put(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResult put(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return put(defaultClient(), headers, url, encode, params);
 	}
-	public static Source put(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+	public static HttpResult put(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
 		return put(defaultClient(), headers, url, encode, entitys);
 	}
 	
 
-	public static Source get(CloseableHttpClient client, String url) {
+	public static HttpResult get(CloseableHttpClient client, String url) {
 		return get(client, url, "UTF-8");
 	}
-	public static Source get(CloseableHttpClient client, String url, String encode) {
+	public static HttpResult get(CloseableHttpClient client, String url, String encode) {
 		return get(client, url, encode, new HashMap<String,Object>());
 	}
-	public static Source get(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
+	public static HttpResult get(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
 		return get(client, null, url, encode, params);
 	}
 
-	public static Source get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResult get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		List<NameValuePair> pairs = packNameValuePair(params);
 		return get(client, headers, url, encode, pairs);
 	}
 
-	public static Source get(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResult get(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
 		return get(client, null, url, encode, pairs);
 	}
 
-	public static Source get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResult get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
 		long fr = System.currentTimeMillis();
 		if(null == client){
 			if(url.contains("https://")){
@@ -327,7 +328,7 @@ public class HttpUtil {
 		if(url.startsWith("//")){
 			url = "http:" + url;
 		}
-		Source result = new Source();
+		HttpResult result = new HttpResult();
 		if (null != pairs && !pairs.isEmpty()) {
 			String params = URLEncodedUtils.format(pairs,encode);
 			if (url.contains("?")) {
@@ -343,51 +344,51 @@ public class HttpUtil {
 	}
 	
 
-	public static Source get(String url) {
+	public static HttpResult get(String url) {
 		return get(url, "UTF-8");
 	}
-	public static Source get(String url, String encode) {
+	public static HttpResult get(String url, String encode) {
 		return get(url, encode, new HashMap<String,Object>());
 	}
-	public static Source get(String url, String encode, Map<String, Object> params) {
+	public static HttpResult get(String url, String encode, Map<String, Object> params) {
 		return get(defaultClient(), url, encode, params);
 	}
 
-	public static Source get(String url,  Map<String, Object> params) {
+	public static HttpResult get(String url,  Map<String, Object> params) {
 		return get(defaultClient(), url, "UTF-8", params);
 	}
 
-	public static Source get(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResult get(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return get(defaultClient(), headers, url, encode, params);
 	}
 
-	public static Source get(Map<String, String> headers, String url, String encode) {
+	public static HttpResult get(Map<String, String> headers, String url, String encode) {
 		return get(defaultClient(), headers, url, encode, new HashMap<String,Object>());
 	}
 
-	public static Source get(String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResult get(String url, String encode, List<NameValuePair> pairs) {
 		return get(defaultClient(), url, encode, pairs);
 	}
 
-	public static Source get(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResult get(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
 		return get(defaultClient(), headers, url, encode, pairs);
 	}
 	
 
 	
-	public static Source delete(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
+	public static HttpResult delete(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
 		return delete(client, null, url, encode, params);
 	}
 
-	public static Source delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResult delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		List<NameValuePair> pairs = packNameValuePair(params);
 		return delete(client, headers, url, encode, pairs);
 	}
 
-	public static Source delete(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResult delete(CloseableHttpClient client, String url, String encode, List<NameValuePair> pairs) {
 		return delete(client, null, url, encode, pairs);
 	}
-	public static Source delete(CloseableHttpClient client,Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
+	public static HttpResult delete(CloseableHttpClient client,Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
 		List<NameValuePair> list = new ArrayList<NameValuePair>();
 		if(null != pairs){
 			for(NameValuePair pair:pairs){
@@ -397,7 +398,7 @@ public class HttpUtil {
 		return delete(client, headers, url, encode, list);
 	}
 
-	public static Source delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResult delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
 		if(null == client){
 			if(url.contains("https://")){
 				client = defaultSSLClient();
@@ -408,7 +409,7 @@ public class HttpUtil {
 		if(url.startsWith("//")){
 			url = "http:" + url;
 		}
-		Source result = new Source();
+		HttpResult result = new HttpResult();
 		if (null != pairs) {
 			String params = URLEncodedUtils.format(pairs,encode);
 			if (url.contains("?")) {
@@ -426,32 +427,32 @@ public class HttpUtil {
 
 
 
-	public static Source delete(String url, String encode, Map<String, Object> params) {
+	public static HttpResult delete(String url, String encode, Map<String, Object> params) {
 		return delete(defaultClient(), url, encode, params);
 	}
 
-	public static Source delete(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResult delete(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return delete(defaultClient(), headers, url, encode, params);
 	}
 
-	public static Source delete(String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResult delete(String url, String encode, List<NameValuePair> pairs) {
 		return delete(defaultClient(), url, encode, pairs);
 	}
 
-	public static Source delete(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResult delete(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
 		return delete(defaultClient(), headers, url, encode, pairs);
 	}
 
 
 
-	public static Source delete(Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
+	public static HttpResult delete(Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
 		return delete(defaultClient(), headers, url, encode, pairs);
 	}
 
 	
-	private static Source exe(CloseableHttpClient client, HttpRequestBase method, String encode){
+	private static HttpResult exe(CloseableHttpClient client, HttpRequestBase method, String encode){
 		CloseableHttpResponse response = null;
-		Source result = null;
+		HttpResult result = null;
 		try {
 			long fr = System.currentTimeMillis();
 			method.setHeader("Connection", "close");  
@@ -515,9 +516,9 @@ public class HttpUtil {
 		}
 		return code;
 	}
-	private static Source parseResult(Source src, CloseableHttpResponse response, String encode) {
+	private static HttpResult parseResult(HttpResult src, CloseableHttpResponse response, String encode) {
 		if (null == src) {
-			src = new Source();
+			src = new HttpResult();
 		}
 		try {
 			if(null != response){
@@ -734,19 +735,19 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	public static Source upload(String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params){
+	public static HttpResult upload(String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params){
 		return upload(defaultClient(), url, files, encode, headers, params);
 	}
-	public static Source upload(String url, Map<String,File> files, Map<String,String> headers, Map<String,Object> params){
+	public static HttpResult upload(String url, Map<String,File> files, Map<String,String> headers, Map<String,Object> params){
 		return upload(url, files, "UTF-8", headers, params);
 	}
-	public static Source upload(String url, Map<String, File> files,  Map<String, Object> params) {
+	public static HttpResult upload(String url, Map<String, File> files,  Map<String, Object> params) {
 		return upload( url, files, null, params);
 	}
-	public static Source upload(String url, Map<String, File> files) {
+	public static HttpResult upload(String url, Map<String, File> files) {
 		return upload(url, files, null, null);
 	}
-	public static Source upload(CloseableHttpClient client, String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params) {
+	public static HttpResult upload(CloseableHttpClient client, String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params) {
 		if(null != url && url.startsWith("//")){
 			url = "http:"+url;
 		}
@@ -781,7 +782,7 @@ public class HttpUtil {
         HttpEntity entity = builder.build();// 生成 HTTP POST 实体
         post.setEntity(entity);   //post 实体。
         post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  //表单形式。
-        Source source = exe(client, post, encode);
+        HttpResult source = exe(client, post, encode);
 		return source;
      }
 	 
@@ -1012,7 +1013,7 @@ public class HttpUtil {
 
 	public static CloseableHttpClient defaultClient(){
 		CloseableHttpClient client = null;
-		HttpClientBuilder builder = HttpClients.custom();
+		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(requestConfig);
 		builder.setUserAgent(userAgent);
 		client = builder.build();
 		return client;

@@ -2,6 +2,7 @@ package org.anyline.net;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -211,6 +212,9 @@ public class Downloader {
 	public int getTaskSize(){
 		return tasks.size();
 	}
+	public int getTaskSize(String extKey, Object extVal){
+		return getTasks(extKey, extVal).size();
+	}
 	/**
 	 * 已完成任务数量
 	 * @return
@@ -223,6 +227,31 @@ public class Downloader {
 			}
 		}
 		return size;
+	}
+	public int getFinishTaskSize(String extKey, Object extVal){
+		int size = 0;
+		Map<String,DownloadTask> tasks = getTasks(extKey,extVal);
+		for(DownloadTask task:tasks.values()){
+			if(task.isFinish()){
+				size ++;
+			}
+		}
+		return size;
+	}
+	public Map<String,DownloadTask> getTasks(String extKey, Object extVal){
+		Map<String, DownloadTask> result = new HashMap<String,DownloadTask>();
+		synchronized (tasks){
+		for(DownloadTask task:tasks.values()){
+			Map<String,Object> extras = task.getExtras();
+			if(null != extras){
+				Object val = extras.get(extKey);
+				if(val.equals(extVal)){
+					result.put(task.getUrl(), task);
+				}
+			}
+		}
+		}
+		return result;
 	}
 	/**
 	 * 异常任务数量
@@ -237,6 +266,15 @@ public class Downloader {
 		}
 		return size;
 	}
+	public int getErrorTaskSize(String extKey, Object extVal){
+		int size = 0;
+		for(DownloadTask task:getTasks(extKey, extVal).values()){
+			if(task.getErrorCode() != 0){
+				size ++;
+			}
+		}
+		return size;
+	}
 	/**
 	 * 运行中任务数量
 	 * @return
@@ -244,6 +282,15 @@ public class Downloader {
 	public int getRunningTaskSize(){
 		int size = 0;
 		for(DownloadTask task:tasks.values()){
+			if(!task.isFinish()){
+				size ++;
+			}
+		}
+		return size;
+	}
+	public int getRunningTaskSize(String extKey, Object extVal){
+		int size = 0;
+		for(DownloadTask task:getTasks(extKey, extVal).values()){
 			if(!task.isFinish()){
 				size ++;
 			}
@@ -478,7 +525,7 @@ class DownloaderThreadPool {
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = Math.max(4, Math.min(CPU_COUNT - 1, 5));
     private static final int MAXIMUM_POOL_SIZE =  CPU_COUNT * 2 + 100;
-    private static final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(2000);//超出数量丢弃
+    private static final BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<>(200000);//超出数量丢弃
     private static ThreadPoolExecutor threadPoolExecutor;
     static {
         threadPoolExecutor = new ThreadPoolExecutor(
