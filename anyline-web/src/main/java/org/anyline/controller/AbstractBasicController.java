@@ -196,7 +196,7 @@ public class AbstractBasicController{
 		return entityRow(request, row, keyEncrypt, params);
 	}
 	public DataRow row(HttpServletRequest request, DataRow row, String... params) {
-		return row(request, row, params);
+		return entityRow(request, row, params);
 	}
 
 	public DataRow row(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
