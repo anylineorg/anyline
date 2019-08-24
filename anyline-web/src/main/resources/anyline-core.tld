@@ -88,30 +88,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>valueKey</name>
+			<name>index</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>textKey</name>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>value</name>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		
-		<attribute>
-			<name>lang</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>key</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-		</attribute>
-		<attribute>
-			<name>evl</name>
+			<name>property</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
