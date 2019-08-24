@@ -49,13 +49,13 @@ public class Text extends BaseBodyTag{
 			Object result ="";
 			if(data instanceof DataSet){
 				DataSet set = (DataSet)data;
-				if(index != -1 && index<set.size()){
+				if(index > -1 && index<set.size()){
 					DataRow row = set.getRow(index);
 					result = row.get(property);
 				}
 			}else if(data instanceof List){
 				List list = (List)data;
-				if(index != -1 && index<list.size()){
+				if(index > -1 && index<list.size()){
 					result = BeanUtil.getValueByColumn(list.get(index), property);
 				}
 			}else{
