@@ -1671,6 +1671,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return this;
 	}
 	/**
+	 * 行转列
+	 * @param pk		唯一标识key(如姓名)
+	 * @param classKey  分类key(如科目)
+	 * @param valueKey	取值key(如分数)
+	 * @return
+	 */
+	public DataSet pivot(String pk, String classKey, String valueKey){
+		DataSet result = distinct(pk);
+		for(DataRow row:result){
+			List<String> classValues = getDistinctStrings(classKey);
+			for(String classValue:classValues){
+				DataRow valueRow = getRow(pk, row.getString(pk), classKey, classValue);
+				if(null != valueRow){
+					row.put(classValue, valueRow.get(valueKey));
+				}else{
+					row.put(classValue, null);
+				}
+			}
+		}
+		return result;
+	}
+	/**
 	 * 排序
 	 * @param keys
 	 * @return
