@@ -28,6 +28,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
 
@@ -60,7 +61,9 @@ public class Text extends BaseBodyTag{
 			}else{
 				result = BeanUtil.getValueByColumn(data,property);
 			}
-			out.print(result);
+			if(BasicUtil.isNotEmpty(result)){
+				out.print(result);
+			}
 		}catch(Exception e){
 		
 		}finally{
