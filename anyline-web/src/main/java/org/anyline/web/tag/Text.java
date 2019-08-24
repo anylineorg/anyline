@@ -20,172 +20,78 @@
 package org.anyline.web.tag;
 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.Set;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.anyline.util.BasicUtil;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.I18NUtil;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
 
 
 public class Text extends BaseBodyTag{
 	private static final long serialVersionUID = 1554109844585627661L;
 	
 	private Object data;
-	private String lang;			//语言
-	private String key;
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
-	private String textKey = "NM";
-	private HttpServletRequest request; 
+	private int index = -1;
+	private String property;
 	
 	public int doStartTag() throws JspException {
-		request = (HttpServletRequest)pageContext.getRequest();
-		checkLang();
         return EVAL_BODY_BUFFERED;
     }
 	 public int doEndTag() throws JspException {
-		 String html = "";
-		 if(BasicUtil.isNotEmpty(data)){
-			 if(data instanceof String){
-				if(data.toString().endsWith("}")){
-					String items[] = data.toString().replace("{", "").replace("}", "").toString().split(",");
-					List list = new ArrayList();
-					for(String item:items){
-						Map map = new HashMap();
-						String tmp[] = item.split(":");
-						map.put(valueKey, tmp[0]);
-						map.put(textKey, tmp[1]);
-						list.add(map);
-					}
-					data = list;
-				}
-			}
-			Collection<Map> items = (Collection<Map>)data;
-			if(null != value){
-				for(Map item:items){
-					Object tmp = item.get(valueKey);
-					if(null != tmp && value.toString().equals(tmp.toString())){
-						String text = "";
-						if(textKey.contains("{")){
-							text = textKey;
-							try {
-								List<String> keys = RegularUtil.fetch(textKey, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
-								for(String key:keys){
-									Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
-									if(null == v){
-										v = "";
-									}
-									text = text.replace(key, v.toString());
-								}
-							} catch (Exception e) {
-								e.printStackTrace();
-							}
-						}else{
-							Object v = BeanUtil.getFieldValue(item, textKey);
-							if(null != v){
-								text = v.toString();
-							}
-						}
-						html += text;
-					}
-				}
-			}
-		 }else{
-			 html = I18NUtil.get(lang, key);
-		 }
 		//输出
 		JspWriter out = pageContext.getOut();
 		try{
-			out.print(html);
+			Object result ="";
+			if(data instanceof DataSet){
+				DataSet set = (DataSet)data;
+				if(index != -1 && index<set.size()){
+					DataRow row = set.getRow(index);
+					result = row.get(property);
+				}
+			}else if(data instanceof List){
+				List list = (List)data;
+				if(index != -1 && index<list.size()){
+					result = BeanUtil.getValueByColumn(list.get(index), property);
+				}
+			}else{
+				result = BeanUtil.getValueByColumn(data,property);
+			}
+			out.print(result);
 		}catch(Exception e){
-
+		
 		}finally{
 			release();
 		}
-        return EVAL_PAGE;   
+		return EVAL_PAGE;   
 	}
 	@Override
     public void release(){
 		super.release();
 		data = null;
-		textKey = null;
-		valueKey = null;
-		value = null;
-		
-    	key = null;
-    	lang = null;
+		property = null;
+		index = -1;
     }
-	/**
-	 * 确认语言环境
-	 */
-	private void checkLang(){
-		if(BasicUtil.isEmpty(lang)){
-			lang = (String)request.getSession().getAttribute(ConfigTable.getString("I18N_MESSAGE_SESSION_KEY"));
-		}
-		if(BasicUtil.isEmpty(lang)){
-			//配置文件默认
-			lang = ConfigTable.getString("I18N_MESSAGE_DEFAULT_LANG");
-		}
-		if(BasicUtil.isEmpty(lang)){
-			//struts
-			lang = (String)request.getSession().getAttribute("WW_TRANS_I18N_LOCALE");
-		}
-		if(BasicUtil.isEmpty(lang)){
-			//Local
-			lang = Locale.getDefault().getCountry().toLowerCase();
-		}
-		if(BasicUtil.isEmpty(lang)){
-			lang = I18NUtil.defaultLang;
-		}
-	}
-
-	public String getLang() {
-		return lang;
-	}
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
-	public String getKey() {
-		return key;
-	}
-	public void setKey(String key) {
-		this.key = key;
-	}
-	public HttpServletRequest getRequest() {
-		return request;
-	}
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
-	}
 	public Object getData() {
 		return data;
 	}
 	public void setData(Object data) {
 		this.data = data;
 	}
-	public String getValueKey() {
-		return valueKey;
+	public int getIndex() {
+		return index;
 	}
-	public void setValueKey(String valueKey) {
-		this.valueKey = valueKey;
+	public void setIndex(int index) {
+		this.index = index;
 	}
-	public String getTextKey() {
-		return textKey;
+	public String getProperty() {
+		return property;
 	}
-	public void setTextKey(String textKey) {
-		this.textKey = textKey;
+	public void setProperty(String property) {
+		this.property = property;
 	}
-	
 
 }
