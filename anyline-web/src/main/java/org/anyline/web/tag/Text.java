@@ -21,7 +21,6 @@ package org.anyline.web.tag;
 
 
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -54,6 +53,7 @@ public class Text extends BaseBodyTag{
 					result = row.get(property);
 				}
 			}else if(data instanceof List){
+				@SuppressWarnings("rawtypes")
 				List list = (List)data;
 				if(index > -1 && index<list.size()){
 					result = BeanUtil.getValueByColumn(list.get(index), property);
