@@ -33,17 +33,17 @@ import org.dom4j.io.SAXReader;
 
 public class ConfigTable {
 	private static final Logger log = Logger.getLogger(ConfigTable.class);
-	private static String root;
-	private static String webRoot;
-	private static String classpath;
-	private static Hashtable<String,String> configs;
-	private static long lastLoadTime = 0;	//最后一次加载时间
-	private static int reload = 0;			//重新加载间隔
-	private static boolean debug = false;
-	private static boolean sqlDebug = false;
-	private static final String version = "8.0";
-	private static final String minVersion = "0007";
-	private static boolean isLoading = false;
+	protected static String root;
+	protected static String webRoot;
+	protected static String classpath;
+	protected static Hashtable<String,String> configs;
+	protected static long lastLoadTime = 0;	//最后一次加载时间
+	protected static int reload = 0;			//重新加载间隔
+	protected static boolean debug = false;
+	protected static boolean sqlDebug = false;
+	protected static final String version = "8.0";
+	protected static final String minVersion = "0007";
+	protected static boolean isLoading = false;
 	public static boolean  IS_UPPER_KEY = true;
 	public static boolean  IS_LOWER_KEY = false;
 	static{
@@ -138,7 +138,7 @@ public class ConfigTable {
 	 * 首先加载anyline-config.xml
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
-	private synchronized static void loadConfig() {
+	protected synchronized static void loadConfig() {
 		try {
 			if(null == configs){
 				configs = new Hashtable<String,String>();
@@ -178,7 +178,7 @@ public class ConfigTable {
 			}
 		}
 	}
-	private static void loadConfig(File file){
+	protected static void loadConfig(File file){
 		try{
 			if(isDebug()){
 				log.info("[加载配置文件] [file:" + file.getAbsolutePath() + "]");
@@ -272,7 +272,7 @@ public class ConfigTable {
 	
 	
 	
-	private static void line(String src, String chr, boolean center){
+	protected static void line(String src, String chr, boolean center){
 		int len = 80;
 		int fill = 0 ;
 		String line = "";
@@ -286,7 +286,7 @@ public class ConfigTable {
 		System.out.println(line);
 	}
 	
-	private static void debug(){
+	protected static void debug(){
 		if(!isDebug()){
 			return;
 		}
