@@ -88,7 +88,10 @@ public class ConfigTable {
 		String result = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
 		return result;
 	}
-	public static void init() {
+	public static void init(){
+		init("anyline");
+	}
+	public static void init(String flag) {
 		//log.warn("IS LOAD:"+isLoad);
 		if(isLoading){
 			return;
@@ -131,14 +134,14 @@ public class ConfigTable {
 			}
 		}
 		//加载配置文件
-		loadConfig();
+		loadConfig(flag);
 	}
 	/**
 	 * 加载配置文件
 	 * 首先加载anyline-config.xml
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
 	 */
-	protected synchronized static void loadConfig() {
+	protected synchronized static void loadConfig(String flag) {
 		try {
 			if(null == configs){
 				configs = new Hashtable<String,String>();
@@ -152,14 +155,14 @@ public class ConfigTable {
 
 			for(File f:files){
 				String name = f.getName();
-				if("anyline-config.xml".equals(name)){
+				if((flag+"-config.xml").equals(name)){
 					loadConfig(f);
 				}
 			}
 
 			for(File f:files){
 				String name = f.getName();
-				if(name.startsWith("anyline-config") && !"anyline-config.xml".equals(name)){
+				if(name.startsWith(flag+"-config") && !(flag+"-config.xml").equals(name)){
 					loadConfig(f);
 				}
 			}
