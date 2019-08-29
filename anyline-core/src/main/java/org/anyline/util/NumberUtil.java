@@ -156,5 +156,10 @@ public class NumberUtil {
 		result = fr + r.nextDouble() * (to - fr);
 		return result;
 	}
-
+	public static boolean isInt(double src){
+		return src == (int)src;
+	}
+	public static boolean isInt(float src){
+		return src == (int)src;
+	}
 }
