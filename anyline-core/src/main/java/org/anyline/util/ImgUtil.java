@@ -35,6 +35,7 @@ import sun.misc.BASE64Encoder;
  * 图片处理工具类：<br>
  * 功能：缩放图像、切割图像、图像类型转换、彩色转黑白、文字水印、图片水印等
  */
+@SuppressWarnings("restriction")
 public class ImgUtil {
 	private static final Logger log = Logger.getLogger(ImgUtil.class);
 
@@ -111,7 +112,7 @@ public class ImgUtil {
         try {
             double ratio = 0.0; // 缩放比例
             BufferedImage bi = ImageIO.read(src);
-            Image itemp = bi.getScaledInstance(width, height, bi.SCALE_SMOOTH);
+            Image itemp = bi.getScaledInstance(width, height, BufferedImage.SCALE_SMOOTH);
             // 计算比例
             if ((bi.getHeight() > height) || (bi.getWidth() > width)) {
                 if (bi.getHeight() > bi.getWidth()) {
@@ -462,5 +463,35 @@ public class ImgUtil {
     public static boolean base64(File file, String str) {
     	return base64Img(file, str);
     } 
-    
+    /**
+     * 获取文件宽高
+     * @param img
+     * @return
+     */
+	public static int[] size(File img){
+    	int width = -1;
+    	int height = -1;
+    	BufferedImage bi = null;
+		try {
+			bi = ImageIO.read(img);
+	        width = bi.getWidth(); // 得到源图宽
+	        height = bi.getHeight(); // 得到源图长
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+				bi.flush();
+			}catch(Exception e){
+				
+			}
+		}
+        int[] result = {width,height};
+    	return result;
+    }
+	public static int width(File img){
+		return size(img)[0];
+	}
+	public static int height(File img){
+		return size(img)[1];
+	}
 }
