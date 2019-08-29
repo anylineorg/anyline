@@ -38,14 +38,15 @@ import org.apache.log4j.Logger;
 
 public class WatermarkUtil {
 	protected static final Logger log = Logger.getLogger(WatermarkUtil.class);
-	private Integer degree;								//旋转角度
+	private int degree = 0;								//旋转角度
 	private Color color = Color.LIGHT_GRAY;				//水印颜色
 	private String fontName = "宋体";						//字体名称
 	private int fontStyle = Font.BOLD + Font.ITALIC;	//字体样式
 	private int fontSize = 30;							//字体大小
 	private float alpha = 0.3f;							//透明度
-	private Integer x;				//坐标X
-	private Integer y;				//坐标Y
+	private float x = 0;								//坐标X如果x<0,x=width+x
+	private float y = 0;								//坐标Y
+	//xy按百分比
 	
 	public WatermarkUtil(){
 		this.x = 0;
@@ -55,6 +56,11 @@ public class WatermarkUtil {
 		this.x = x;
 		this.y = y;
 	}
+	public WatermarkUtil(float x, float y){
+		this.x = x;
+		this.y = y;
+	}
+	
 	 /**
      * 给图片添加水印、可设置水印的旋转角度
      * @param text
@@ -66,6 +72,7 @@ public class WatermarkUtil {
     	if(null == text || null == src || null == target || !src.exists()){
     		return false;
     	}
+    	long fr = System.currentTimeMillis();
     	File dir = target.getParentFile();
     	if(!dir.exists()){
     		dir.mkdirs();
@@ -73,45 +80,42 @@ public class WatermarkUtil {
         // 主图片的路径
         InputStream is = null;
         OutputStream os = null;
-        long fr = System.currentTimeMillis();
+        BufferedImage buffImg = null;
         try {
             Image srcImg = ImageIO.read(src);
-            BufferedImage buffImg = new BufferedImage(srcImg.getWidth(null),srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
-
+            buffImg = new BufferedImage(srcImg.getWidth(null),srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            int width = buffImg.getWidth();
+            int height = buffImg.getHeight();
+           
             // 得到画笔对象
             Graphics2D g = buffImg.createGraphics();
-
             // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
             g.drawImage(srcImg.getScaledInstance(srcImg.getWidth(null), srcImg.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null);
-
-            if (null != degree) {
+            if (degree != 0) {
                 // 设置水印旋转
-                g.rotate(Math.toRadians(degree),(double) buffImg.getWidth() / 2, (double) buffImg.getHeight() / 2);
+                g.rotate(Math.toRadians(degree),(double) width / 2, (double) height / 2);
             }
-
             // 设置颜色
             g.setColor(color);
-
             // 设置 Font
             g.setFont(new Font(fontName, fontStyle, fontSize));
-
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,alpha));
-
-            // 第一参数->设置的内容，后面两个参数->文字在图片上的坐标位置(x,y) .
-            g.drawString(text, x, y);
-
+            int[] offset = finalOffset(width,height);
+            g.drawString(text, offset[0], offset[1]);
             g.dispose();
-
             os = new FileOutputStream(target);
-
             // 生成图片
             ImageIO.write(buffImg, "JPG", os);
-            log.warn("[添加水印][src:"+src.getAbsolutePath()+"][tar:"+target.getAbsoluteFile()+"][耗时:"+(System.currentTimeMillis()-fr)+"ms]");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            try {
+                if (null != buffImg)
+                	buffImg.flush();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             try {
                 if (null != is)
                     is.close();
@@ -125,6 +129,7 @@ public class WatermarkUtil {
                 e.printStackTrace();
             }
         }
+        log.warn("[添加水印][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][text:"+text+"][src:"+src.getAbsolutePath()+"][target:"+target.getAbsolutePath()+"]");
         return true;
     }
     public void markText(String text, String src, String target){
@@ -136,7 +141,6 @@ public class WatermarkUtil {
     public void markText(String text, String src){
     	markText(text, src, src);
     }
-
     /**
      * 给图片添加水印、可设置水印图片旋转角度
      * @param icon 水印图片路径
@@ -146,48 +150,42 @@ public class WatermarkUtil {
      */
     public void markIcon(File icon, File src, File target) {
         OutputStream os = null;
+        BufferedImage buffImg = null;
+        long fr = System.currentTimeMillis();
         try {
             Image srcImg = ImageIO.read(src);
-
-            BufferedImage buffImg = new BufferedImage(srcImg.getWidth(null), srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
-
+            buffImg = new BufferedImage(srcImg.getWidth(null), srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
+            int width = buffImg.getWidth();
+            int height = buffImg.getHeight();
             // 得到画笔对象
             Graphics2D g = buffImg.createGraphics();
-
             // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-
             g.drawImage(srcImg.getScaledInstance(srcImg.getWidth(null), srcImg.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null);
-
-            if (null != degree) {
+            if (degree !=0) {
                 // 设置水印旋转
-                g.rotate(Math.toRadians(degree),(double) buffImg.getWidth() / 2, (double) buffImg.getHeight() / 2);
+                g.rotate(Math.toRadians(degree),(double) width / 2, (double) height / 2);
             }
-
             // 水印图象的路径 水印一般为gif或者png的，这样可设置透明度
             ImageIcon imgIcon = new ImageIcon(icon.getAbsolutePath());
-
             // 得到Image对象。
             Image img = imgIcon.getImage();
-
             float alpha = 0.5f; // 透明度
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,alpha));
-
-            // 表示水印图片的位置
-            g.drawImage(img, x, y, null);
-
+            int[] offset = finalOffset(width,height);
+            g.drawImage(img, offset[0], offset[1], null);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
-
             g.dispose();
-
             os = new FileOutputStream(target);
-
             // 生成图片
             ImageIO.write(buffImg, "JPG", os);
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+        	try{
+        		buffImg.flush();
+        	}catch(Exception e){
+        	}
             try {
                 if (null != os)
                     os.close();
@@ -195,6 +193,44 @@ public class WatermarkUtil {
                 e.printStackTrace();
             }
         }
+        log.warn("[添加水印][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][icon:"+icon.getAbsolutePath()+"][src:"+src.getAbsolutePath()+"][target:"+target.getAbsolutePath()+"]");
+    }
+
+    private int[] finalOffset(int width, int height){
+    	 float x = this.x;
+         float y = this.y;
+         if(!NumberUtil.isInt(x)){
+        	 x = width * x;
+         }
+         if(!NumberUtil.isInt(y)){
+        	 y = height * y;
+         }
+         if(x<0){
+        	 x = width + x;
+         }
+         if(y<0){
+        	 y = height + y;
+         }
+     	int result[] = {(int)x,(int)y};
+    	return result;
+    }
+    /**
+     * 水印偏移
+     * @param x
+     * @param y
+     */
+    public void offset(int x, int y){
+    	this.x = x;
+    	this.y = y;
+    }
+    /**
+     * 水印偏移
+     * @param x%
+     * @param y%
+     */
+    public void offset(float x, float y){
+    	this.x = x;
+    	this.y = y;
     }
     public void markIcon(String icon, String src, String target){
     	markIcon(new File(icon), new File(src), new File(target));
@@ -241,17 +277,4 @@ public class WatermarkUtil {
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 	}
-	public Integer getX() {
-		return x;
-	}
-	public void setX(Integer x) {
-		this.x = x;
-	}
-	public Integer getY() {
-		return y;
-	}
-	public void setY(Integer y) {
-		this.y = y;
-	}
-
 }
