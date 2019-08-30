@@ -113,15 +113,13 @@ public class ImgUtil {
             BufferedImage bi = ImageIO.read(src);
             Image itemp = bi.getScaledInstance(width, height, BufferedImage.SCALE_SMOOTH);
             // 计算比例
-            if ((bi.getHeight() > height) || (bi.getWidth() > width)) {
-                if (bi.getHeight() > bi.getWidth()) {
-                    ratio = (new Integer(height)).doubleValue() / bi.getHeight();
-                } else {
-                    ratio = (new Integer(width)).doubleValue() / bi.getWidth();
-                }
-                AffineTransformOp op = new AffineTransformOp(AffineTransform .getScaleInstance(ratio, ratio), null);
-                itemp = op.filter(bi, null);
+            if (bi.getHeight() > bi.getWidth()) {
+                ratio = (new Integer(height)).doubleValue() / bi.getHeight();
+            } else {
+                ratio = (new Integer(width)).doubleValue() / bi.getWidth();
             }
+            AffineTransformOp op = new AffineTransformOp(AffineTransform .getScaleInstance(ratio, ratio), null);
+            itemp = op.filter(bi, null);
             if (fill) {//补白
                 BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
                 Graphics2D g = image.createGraphics();
@@ -140,13 +138,16 @@ public class ImgUtil {
             	dir.mkdirs();
             }
            // ImageIO.write((BufferedImage) itemp, "JPEG", tar);
-            ImageIO.write((BufferedImage) itemp, format, tar);
+            ImageIO.write((BufferedImage)itemp, format, tar);
         } catch (IOException e) {
             e.printStackTrace();
         }
         log.warn("[压缩图片][耗时:"+(System.currentTimeMillis()-fr)+"][source:"+src+"][target:"+tar+"]");
     }
 
+    public static void scale(File src, File tar, String format, int width, int height) {
+    	scale(src, tar, format, width, height, false);
+    }
 	public static void scale(File src, File tar, int width, int height, boolean fill) {
 		scale(src, tar, "jpeg", width, height, fill);
 	}
