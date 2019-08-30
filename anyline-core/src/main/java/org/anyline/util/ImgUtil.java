@@ -98,7 +98,6 @@ public class ImgUtil {
             e.printStackTrace();
         }
     }
-
     /**
      * 缩放图像（按高度和宽度缩放）
      * @param srcImageFile 源图像文件地址
@@ -107,7 +106,7 @@ public class ImgUtil {
      * @param width 缩放后的宽度
      * @param fill 比例不对时是否需要补白：true为补白; false为不补白;
      */
-    public static void scale(File src, File tar, int width, int height, boolean fill) {
+    public static void scale(File src, File tar, String format, int width, int height, boolean fill) {
     	long fr = System.currentTimeMillis();
         try {
             double ratio = 0.0; // 缩放比例
@@ -140,13 +139,17 @@ public class ImgUtil {
             if(!dir.exists()){
             	dir.mkdirs();
             }
-            ImageIO.write((BufferedImage) itemp, "JPEG", tar);
+           // ImageIO.write((BufferedImage) itemp, "JPEG", tar);
+            ImageIO.write((BufferedImage) itemp, format, tar);
         } catch (IOException e) {
             e.printStackTrace();
         }
         log.warn("[压缩图片][耗时:"+(System.currentTimeMillis()-fr)+"][source:"+src+"][target:"+tar+"]");
     }
-    
+
+	public static void scale(File src, File tar, int width, int height, boolean fill) {
+		scale(src, tar, "jpeg", width, height, fill);
+	}
     /**
      * 图像切割(按指定起点坐标和宽高切割)
      * @param srcImageFile 源图像地址
