@@ -35,7 +35,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 
 public class WatermarkUtil {
 	protected static final Logger log = Logger.getLogger(WatermarkUtil.class);
@@ -106,8 +105,12 @@ public class WatermarkUtil {
             g.drawString(text, offset[0], offset[1]);
             g.dispose();
             os = new FileOutputStream(target);
-            // 生成图片
-            ImageIO.write(buffImg, "JPG", os);
+            // 生成图片// 生成图片
+            String format = "jpg";
+            if(target.getName().toLowerCase().endsWith("png")){
+            	format = "png";
+            }
+            ImageIO.write(buffImg, format, os);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -149,7 +152,7 @@ public class WatermarkUtil {
      * @param target 目标图片路径
      * @param degree 水印图片旋转角度
      */
-    public void markIcon(File icon, File src, File target) {
+    public void markIcon(File icon, int iconWidth, int iconHeight, File src, File target) {
         OutputStream os = null;
         BufferedImage buffImg = null;
         long fr = System.currentTimeMillis();
@@ -160,9 +163,9 @@ public class WatermarkUtil {
             buffImg = new BufferedImage(srcImg.getWidth(null), srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
             int width = buffImg.getWidth();
             int height = buffImg.getHeight();
-            int[] iconOffset = ImgUtil.size(icon);
-            int icon_width = iconOffset[0];
-            int icon_height = iconOffset[1];
+
+            int icon_width = iconWidth;
+            int icon_height = iconHeight;
             // 得到画笔对象
             Graphics2D g = buffImg.createGraphics();
             // 设置对线段的锯齿状边缘处理
@@ -187,12 +190,16 @@ public class WatermarkUtil {
             if(_y<0){
             	_y = 0;
             }
-            g.drawImage(img, _x, _y, null);
+            g.drawImage(img, _x, _y, icon_width, icon_height, null);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
             g.dispose();
             os = new FileOutputStream(target);
             // 生成图片
-            ImageIO.write(buffImg, "JPG", os);
+            String format = "jpg";
+            if(target.getName().toLowerCase().endsWith("png")){
+            	format = "png";
+            }
+            ImageIO.write(buffImg, format, os);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -210,6 +217,12 @@ public class WatermarkUtil {
         log.warn("[添加水印][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][x:"+_x+"][y:"+_y+"][icon:"+icon.getAbsolutePath()+"][src:"+src.getAbsolutePath()+"][target:"+target.getAbsolutePath()+"]");
     }
 
+    public void markIcon(File icon, File src, File target) {
+        int[] iconOffset = ImgUtil.size(icon);
+        int icon_width = iconOffset[0];
+        int icon_height = iconOffset[1];
+        markIcon(icon, icon_width, icon_height, src, target);
+    }
     private int[] finalOffset(int width, int height){
     	 float x = this.x;
          float y = this.y;
