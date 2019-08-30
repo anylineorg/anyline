@@ -96,13 +96,13 @@ public class HttpUtil {
     private static PoolingHttpClientConnectionManager connManager;  
     private static RequestConfig requestConfig;  
     private static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
-    private static int MAX_TIMEOUT = 7200; //毫秒
+    private static int MAX_TIMEOUT = 72000; //毫秒
     
     private CloseableHttpClient client;
     private Map<String,HttpUtil> instances = new HashMap<String,HttpUtil>(); 
     
     static {  
-    	MAX_TIMEOUT = ConfigTable.getInt("HTTP_MAX_TIMEOUT", 7200);
+    	MAX_TIMEOUT = ConfigTable.getInt("HTTP_MAX_TIMEOUT", 72000);
         // 设置连接池  
     	connManager = new PoolingHttpClientConnectionManager();  
         // 设置连接池大小  
@@ -455,6 +455,9 @@ public class HttpUtil {
 		HttpResult result = null;
 		try {
 			long fr = System.currentTimeMillis();
+			if(ConfigTable.isDebug()){
+				log.warn("[http request][method:"+method.getMethod()+"][url:"+method.getURI()+"]");
+			}
 			method.setHeader("Connection", "close");  
 			response = client.execute(method);
 			result = parseResult(result,response, encode);
