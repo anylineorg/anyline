@@ -58,6 +58,8 @@ anyline-easemob     : 环信集成工具
 anyline-amap        : 高德云图集成工具
 anyline-sms         : 基于阿里云的短信发送工具
 anyline-mail        : 邮件接收发送
+anyline-video       : 视频处理
+anyline-ext         : 水印,动画等扩展功能
 anyline-redis       : redis
 ```
 一行代码自我介绍
