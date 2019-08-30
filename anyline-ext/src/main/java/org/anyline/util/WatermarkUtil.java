@@ -35,6 +35,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 public class WatermarkUtil {
 	protected static final Logger log = Logger.getLogger(WatermarkUtil.class);
@@ -152,11 +153,16 @@ public class WatermarkUtil {
         OutputStream os = null;
         BufferedImage buffImg = null;
         long fr = System.currentTimeMillis();
+        int _x = 0;
+        int _y = 0;
         try {
             Image srcImg = ImageIO.read(src);
             buffImg = new BufferedImage(srcImg.getWidth(null), srcImg.getHeight(null), BufferedImage.TYPE_INT_RGB);
             int width = buffImg.getWidth();
             int height = buffImg.getHeight();
+            int[] iconOffset = ImgUtil.size(icon);
+            int icon_width = iconOffset[0];
+            int icon_height = iconOffset[1];
             // 得到画笔对象
             Graphics2D g = buffImg.createGraphics();
             // 设置对线段的锯齿状边缘处理
@@ -173,7 +179,15 @@ public class WatermarkUtil {
             float alpha = 0.5f; // 透明度
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,alpha));
             int[] offset = finalOffset(width,height);
-            g.drawImage(img, offset[0], offset[1], null);
+            _x = offset[0]-icon_width;
+            _y = offset[1]-icon_height;
+            if(_x<0){
+            	_x = 0;
+            }
+            if(_y<0){
+            	_y = 0;
+            }
+            g.drawImage(img, _x, _y, null);
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER));
             g.dispose();
             os = new FileOutputStream(target);
@@ -193,7 +207,7 @@ public class WatermarkUtil {
                 e.printStackTrace();
             }
         }
-        log.warn("[添加水印][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][icon:"+icon.getAbsolutePath()+"][src:"+src.getAbsolutePath()+"][target:"+target.getAbsolutePath()+"]");
+        log.warn("[添加水印][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][x:"+_x+"][y:"+_y+"][icon:"+icon.getAbsolutePath()+"][src:"+src.getAbsolutePath()+"][target:"+target.getAbsolutePath()+"]");
     }
 
     private int[] finalOffset(int width, int height){
