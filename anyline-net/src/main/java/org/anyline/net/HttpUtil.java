@@ -911,8 +911,11 @@ public class HttpUtil {
 	 * @return
 	 */
 	public static String mergeParam(String url, Map<String,Object> params){
-		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
+		if(BasicUtil.isEmpty(params)){
 			return url;
+		}
+		if(null == url){
+			url = "";
 		}
 		url = url.trim();
 		if (url.indexOf("?") > -1) {
