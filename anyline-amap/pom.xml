@@ -7,12 +7,12 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-maven-jar</artifactId>
-		<version>1.1.0</version>
+		<version>1.1.2</version>
 	</parent>
 	
 	<artifactId>anyline-amap</artifactId>
 	<packaging>jar</packaging>
-	<version>8.1.0</version>
+	<version>8.1.2</version>
 	<name>anyline-amap</name>
 	<url>http://www.anyline.org/amap</url>
 	
