@@ -409,14 +409,7 @@ public class AbstractBasicController{
 		if (null == uri) {
 			uri = request.getRequestURI();
 		}
-		PageNavi navi = (PageNavi) request.getAttribute("navi");
-		if (null == navi) {
-			navi = new PageNaviImpl(pageNo, pageVol, uri);
-		} else {
-			navi.setPageRows(pageVol);
-			navi.setCurPage(pageNo);
-			navi.setBaseLink(uri);
-		}
+		PageNavi navi = new PageNaviImpl(pageNo, pageVol, uri);
 		String flag = (String)request.getAttribute(Navi.CONFIG_FLAG_KEY);
 		if(null == flag){
 			flag = request.getParameter(Navi.CONFIG_FLAG_KEY);
