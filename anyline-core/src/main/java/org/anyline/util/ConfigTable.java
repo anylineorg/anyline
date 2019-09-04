@@ -41,7 +41,7 @@ public class ConfigTable {
 	protected static int reload = 0;			//重新加载间隔
 	protected static boolean debug = false;
 	protected static boolean sqlDebug = false;
-	protected static final String version = "8.1";
+	protected static final String version = "8.1.2";
 	protected static final String minVersion = "0007";
 	protected static boolean isLoading = false;
 	public static boolean  IS_UPPER_KEY = true;
@@ -305,14 +305,14 @@ public class ConfigTable {
 			line("MinVersion " + minVersion + "[" + time+"]", " ", true);
 			line(""," ", true);
 			line("","*", true);
-			line(" github.con  git地址：https://github.com/anylineorg/anyline.git", "", false);
-			//line(" github.com  git帐号：public@anyline.org(anyline111111)", "", false);
-			line(" ", " ", false);
-			line(" oschina.net git地址：https://git.oschina.net/anyline/anyline.git", "", false);
-			line(" oschina.net svn地址：svn://git.oschina.net/anyline/anyline", "", false);
+//			line(" github.con  git地址：https://github.com/anylineorg/anyline.git", "", false);
+//			//line(" github.com  git帐号：public@anyline.org(anyline111111)", "", false);
+//			line(" ", " ", false);
+//			line(" oschina.net git地址：https://git.oschina.net/anyline/anyline.git", "", false);
+//			line(" oschina.net svn地址：svn://git.oschina.net/anyline/anyline", "", false);
 			//line(" oschina.net 帐号密码：public@anyline.org(111111)", "", false);
 			line("","*", true);
-			line(" Debug 状态设置:anyline-config.xml:<property key=\"DEBUG\">false</property>", "", false);
+			line(" Debug 状态设置:anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", false);
 			line(" =====================生产环境请务必修改密钥文件key.xml==========================", "", false);
 			line("","*", true);
 		}catch(Exception e){
