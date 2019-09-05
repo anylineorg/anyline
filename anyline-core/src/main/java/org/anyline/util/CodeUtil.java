@@ -192,7 +192,7 @@ public class CodeUtil {
 	/**
 	 * 全角转半角
 	 * 
-	 * @param QJstr
+	 * @param src
 	 * @return
 	 */
 	public static final String full2Half(String src) {
