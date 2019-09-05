@@ -961,6 +961,19 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 	/**
+	 * null值替换成""
+	 * @return
+	 */
+	public DataRow nvl(){
+		List<String> keys = keys();
+		for(String key:keys){
+			if(null == get(key)){
+				put(key,"");
+			}
+		}
+		return this;
+	}
+	/**
 	 * 轮换成xml格式
 	 * @return
 	 */
