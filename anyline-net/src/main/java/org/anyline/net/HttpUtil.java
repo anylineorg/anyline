@@ -903,7 +903,6 @@ public class HttpUtil {
 		}
 		return false;
 	}
-
 	/**
 	 * 合并参数
 	 * @param url
@@ -918,14 +917,17 @@ public class HttpUtil {
 			url = "";
 		}
 		url = url.trim();
-		if (url.indexOf("?") > -1) {
-			if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
-				url += "&";
+		String kv = BasicUtil.joinBySort(params);
+		if(BasicUtil.isNotEmpty(kv)){
+			if (url.indexOf("?") > -1) {
+				if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
+					url += "&";
+				}
+			} else {
+				url += "?";
 			}
-		} else {
-			url += "?";
+			url += kv;
 		}
-		url += BasicUtil.joinBySort(params);
 		return url;
 	}
 	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String,Object> params, ContentType contetType){
