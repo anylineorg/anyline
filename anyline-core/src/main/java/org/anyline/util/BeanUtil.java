@@ -776,8 +776,60 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
+	public static String array2string(short[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+	public static String array2string(int[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
 
+	public static String array2string(long[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
 
+	public static String array2string(double[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
 	public static Object toUpperCaseKey(Object obj, String ... keys){
 		if(null == obj){
 			return null;
