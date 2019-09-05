@@ -1472,6 +1472,26 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return result;
 	}
+	/**
+	 * 清除空列
+	 * @return
+	 */
+	public DataSet clearEmpty(){
+		for(DataRow row:rows){
+			row.clearEmpty();
+		}
+		return this;
+	}
+	/**
+	 * NULL > ""
+	 * @return
+	 */
+	public DataSet nvl(){
+		for(DataRow row:rows){
+			row.nvl();
+		}
+		return this;
+	}
 	/*********************************************** 实现接口 ************************************************************/
 	public boolean add(DataRow e) {
 		return rows.add((DataRow) e);
