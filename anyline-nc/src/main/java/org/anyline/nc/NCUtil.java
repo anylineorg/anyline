@@ -62,4 +62,14 @@ public class NCUtil {
 	public Variable findVariable(String var){
 		return nc.findVariable(var);
 	}
+	public Array getVariableValues(String var){
+		Array array = null;
+		try {
+			Variable variable = findVariable(var);
+			array = variable.read();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return array;
+	}
 }
