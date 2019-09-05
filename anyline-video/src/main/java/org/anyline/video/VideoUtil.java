@@ -72,6 +72,12 @@ public class VideoUtil {
 		}
 		
 	}
+	/***
+	 * 截取视频中间帧图片
+	 * @param video
+	 * @param out
+	 * @return
+	 */
 	public static boolean frame(File video, OutputStream out) {
 		return frame(video, out, -1);
 	}
