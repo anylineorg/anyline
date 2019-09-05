@@ -322,6 +322,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>extraPrefix</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>itemExtra</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -414,6 +418,10 @@
 		</attribute>
 		<attribute>
 			<name>extra</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>extraPrefix</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -530,6 +538,10 @@
 		</attribute>
 		<attribute>
 			<name>extra</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>extraPrefix</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
