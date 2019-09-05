@@ -1,12 +1,12 @@
 package org.anyline.nc;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.anyline.util.BeanUtil;
 
+import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
@@ -36,9 +36,17 @@ public class NCUtil {
 			return false;
 		}
 	}
+	/**
+	 * 变量列表
+	 * @return
+	 */
 	public List<Variable> getVariables(){
 		return nc.getVariables();
 	}
+	/**
+	 * 变量名称列表
+	 * @return
+	 */
 	public List<String> getVariableNames(){
 		List<String> list = new ArrayList<String>();
 		List<Variable> variables = getVariables();
@@ -48,4 +56,10 @@ public class NCUtil {
 		return list;
 	}
 	
+	public String info(){
+		return nc.getDetailInfo();
+	}
+	public Variable findVariable(String var){
+		return nc.findVariable(var);
+	}
 }
