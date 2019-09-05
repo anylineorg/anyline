@@ -56,7 +56,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String readonly;
 	protected String extra;
 	protected String extraPrefix = "data-";
-	protected Object extraPreData;
+	protected Object extraData;
 	protected String itemExtra;
 	protected boolean encrypt;	//是否加密
 	
@@ -122,6 +122,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return parseRuntimeValue(obj, key, false);
 	}
 	protected String parseRuntimeValue(Object obj, String key, boolean encrypt){
+		if(null == obj){
+			return key;
+		}
 		String value = key;
 		if(BasicUtil.isNotEmpty(key)){
 			if(key.contains("{")){
@@ -183,7 +186,8 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 			for(String item:list){
 				String[] tmps = item.split(":");
 				if(tmps.length>=2){
-					html += extraPrefix + tmps[0] + "=\"" + tmps[1] + "\"";
+					String value = parseRuntimeValue(extraData, tmps[1]);
+					html += extraPrefix + tmps[0] + "=\"" + value + "\"";
 				}
 			}
 		}
@@ -229,6 +233,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		readonly = null;
 		encrypt = false;
 		extraPrefix ="data-";
+		extraData = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {
@@ -361,11 +366,11 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	public void setExtraPrefix(String extraPrefix) {
 		this.extraPrefix = extraPrefix;
 	}
-	public Object getExtraPreData() {
-		return extraPreData;
+	public Object getExtraData() {
+		return extraData;
 	}
-	public void setExtraPreData(Object extraPreData) {
-		this.extraPreData = extraPreData;
+	public void setExtraData(Object extraData) {
+		this.extraData = extraData;
 	}
 	
 }
