@@ -56,6 +56,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String readonly;
 	protected String extra;
 	protected String extraPrefix = "data-";
+	protected Object extraPreData;
 	protected String itemExtra;
 	protected boolean encrypt;	//是否加密
 	
@@ -359,6 +360,12 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	}
 	public void setExtraPrefix(String extraPrefix) {
 		this.extraPrefix = extraPrefix;
+	}
+	public Object getExtraPreData() {
+		return extraPreData;
+	}
+	public void setExtraPreData(Object extraPreData) {
+		this.extraPreData = extraPreData;
 	}
 	
 }
