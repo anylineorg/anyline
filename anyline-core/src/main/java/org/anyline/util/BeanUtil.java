@@ -26,6 +26,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -763,7 +764,7 @@ public class BeanUtil {
 		return builder.toString();
 	}
 
-	public static String array2string(Object[] list, String split) {
+	public static String array2string(String[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -953,7 +954,10 @@ public class BeanUtil {
 		}
 		return result;
 	}
-
+	/**
+	 * 删除空值 
+	 * @param map
+	 */
 	public static void clearEmpty(Map<String, Object> map){
 		if(null == map){
 			return;
@@ -965,5 +969,131 @@ public class BeanUtil {
 				map.remove(key);
 			}
 		}
+	}
+	/**
+	 * 多个数组合并成一个数组
+	 * @param first
+	 * @param rest
+	 * @return
+	 */
+	public static short[] union(short[] first, short[]... rest) {
+		int len = first.length;
+		for (short[] array : rest) {
+			len += array.length;
+		}
+		short[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (short[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+	public static Short[] union(Short[] first, Short[]... rest) {
+		int len = first.length;
+		for (Short[] array : rest) {
+			len += array.length;
+		}
+		Short[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (Short[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+
+	public static int[] union(int[] first, int[]... rest) {
+		int len = first.length;
+		for (int[] array : rest) {
+			len += array.length;
+		}
+		int[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (int[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+	public static Integer[] union(Integer[] first, Integer[]... rest) {
+		int len = first.length;
+		for (Integer[] array : rest) {
+			len += array.length;
+		}
+		Integer[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (Integer[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+
+	public static long[] union(long[] first, long[]... rest) {
+		int len = first.length;
+		for (long[] array : rest) {
+			len += array.length;
+		}
+		long[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (long[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+	public static Long[] union(Long[] first, Long[]... rest) {
+		int len = first.length;
+		for (Long[] array : rest) {
+			len += array.length;
+		}
+		Long[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (Long[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+	public static double[] union(double[] first, double[]... rest) {
+		int len = first.length;
+		for (double[] array : rest) {
+			len += array.length;
+		}
+		double[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (double[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+	public static Double[] union(Double[] first, Double[]... rest) {
+		int len = first.length;
+		for (Double[] array : rest) {
+			len += array.length;
+		}
+		Double[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (Double[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+	
+	public static <T> T[] union(T[] first, T[]... rest) {
+		int len = first.length;
+		for (T[] array : rest) {
+			len += array.length;
+		}
+		T[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (T[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
 	}
 }
