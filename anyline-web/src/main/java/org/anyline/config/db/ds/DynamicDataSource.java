@@ -36,7 +36,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 			}
 		}
 		if(null == dataSource){
-			log.error("[获取数据源失败][key:"+lookupKey+"]");
+			log.error("[获取数据源失败][thread:"+Thread.currentThread().getId()+"][key:"+lookupKey+"]");
 		}
 		return dataSource;
 	}
