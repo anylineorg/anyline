@@ -1108,6 +1108,10 @@ public class BeanUtil {
 		int dif = -1;
 		int len = array.length;
 		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
 			int abs = Math.abs(array[i]-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1121,6 +1125,10 @@ public class BeanUtil {
 		int dif = -1;
 		int len = array.length;
 		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
 			int abs = Math.abs(array[i]-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1134,6 +1142,10 @@ public class BeanUtil {
 		int dif = -1;
 		int len = array.size();
 		for(int i=0; i<len; i++){
+			if(array.get(i)==value){
+				index = i;
+				break;
+			}
 			int abs = Math.abs(array.get(i)-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1148,6 +1160,10 @@ public class BeanUtil {
 		int dif = -1;
 		int len = array.length;
 		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
 			int abs = Math.abs(array[i]-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1161,6 +1177,10 @@ public class BeanUtil {
 		int dif = -1;
 		int len = array.length;
 		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
 			int abs = Math.abs(array[i]-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1174,6 +1194,10 @@ public class BeanUtil {
 		int dif = -1;
 		int len = array.size();
 		for(int i=0; i<len; i++){
+			if(array.get(i)==value){
+				index = i;
+				break;
+			}
 			int abs = Math.abs(array.get(i)-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1188,6 +1212,10 @@ public class BeanUtil {
 		long dif = -1;
 		int len = array.length;
 		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
 			long abs = Math.abs(array[i]-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1201,6 +1229,10 @@ public class BeanUtil {
 		long dif = -1;
 		int len = array.length;
 		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
 			long abs = Math.abs(array[i]-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1214,6 +1246,10 @@ public class BeanUtil {
 		long dif = -1;
 		int len = array.size();
 		for(int i=0; i<len; i++){
+			if(array.get(i)==value){
+				index = i;
+				break;
+			}
 			long abs = Math.abs(array.get(i)-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1228,6 +1264,10 @@ public class BeanUtil {
 		double dif = -1;
 		int len = array.length;
 		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
 			double abs = Math.abs(array[i]-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1241,11 +1281,16 @@ public class BeanUtil {
 		double dif = -1;
 		int len = array.length;
 		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
 			double abs = Math.abs(array[i]-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
 				index = i;
 			}
+			
 		}
 		return index;
 	}
@@ -1254,6 +1299,10 @@ public class BeanUtil {
 		double dif = -1;
 		int len = array.size();
 		for(int i=0; i<len; i++){
+			if(array.get(i)==value){
+				index = i;
+				break;
+			}
 			double abs = Math.abs(array.get(i)-value);
 			if(dif == -1 || dif > abs){
 				dif = abs;
@@ -1269,6 +1318,10 @@ public class BeanUtil {
 		int len = array.length;
 		for(int i=0; i<len; i++){
 			double abs = Math.abs(array[i].subtract(value).doubleValue());
+			if(abs==0){
+				index = i;
+				break;
+			}
 			if(dif == -1 || dif > abs){
 				dif = abs;
 				index = i;
@@ -1282,6 +1335,10 @@ public class BeanUtil {
 		int len = array.size();
 		for(int i=0; i<len; i++){
 			double abs = Math.abs(array.get(i).subtract(value).doubleValue());
+			if(abs==0){
+				index = i;
+				break;
+			}
 			if(dif == -1 || dif > abs){
 				dif = abs;
 				index = i;
