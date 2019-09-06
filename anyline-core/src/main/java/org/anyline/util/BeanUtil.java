@@ -24,6 +24,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -1095,5 +1096,197 @@ public class BeanUtil {
 			offset += array.length;
 		}
 		return result;
+	}
+	/**
+	 * 差值最小的成员下标
+	 * @param array
+	 * @param value
+	 * @return
+	 */
+	public static int closest(short[] array, short value){
+		int index = 0;
+		int dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			int abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(Short[] array, short value){
+		int index = 0;
+		int dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			int abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(List<Short> array, short value){
+		int index = 0;
+		int dif = -1;
+		int len = array.size();
+		for(int i=0; i<len; i++){
+			int abs = Math.abs(array.get(i)-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+
+	public static int closest(int[] array, int value){
+		int index = 0;
+		int dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			int abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(Integer[] array, int value){
+		int index = 0;
+		int dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			int abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(List<Integer> array, int value){
+		int index = 0;
+		int dif = -1;
+		int len = array.size();
+		for(int i=0; i<len; i++){
+			int abs = Math.abs(array.get(i)-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+
+	public static int closest(long[] array, long value){
+		int index = 0;
+		long dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			long abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(Long[] array, long value){
+		int index = 0;
+		long dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			long abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(List<Long> array, long value){
+		int index = 0;
+		long dif = -1;
+		int len = array.size();
+		for(int i=0; i<len; i++){
+			long abs = Math.abs(array.get(i)-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+
+	public static int closest(double[] array, double value){
+		int index = 0;
+		double dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			double abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(Double[] array, double value){
+		int index = 0;
+		double dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			double abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(List<Double> array, double value){
+		int index = 0;
+		double dif = -1;
+		int len = array.size();
+		for(int i=0; i<len; i++){
+			double abs = Math.abs(array.get(i)-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+
+	public static int closest(BigDecimal[] array, BigDecimal value){
+		int index = 0;
+		double dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			double abs = Math.abs(array[i].subtract(value).doubleValue());
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(List<BigDecimal> array, BigDecimal value){
+		int index = 0;
+		double dif = -1;
+		int len = array.size();
+		for(int i=0; i<len; i++){
+			double abs = Math.abs(array.get(i).subtract(value).doubleValue());
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
 	}
 }
