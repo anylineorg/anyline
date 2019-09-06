@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.anyline.util.BeanUtil;
-
 import ucar.ma2.Array;
 import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
@@ -18,6 +16,10 @@ public class NCUtil {
 	public NCUtil(String file){
 		this.file = file;
 	}
+	/**
+	 * 打开源文件
+	 * @return
+	 */
 	public boolean open(){
 		try{
 			nc = NetcdfFile.open(file);
@@ -27,6 +29,10 @@ public class NCUtil {
 			return false;
 		}
 	}
+	/**
+	 * 释放源文件
+	 * @return
+	 */
 	public boolean close(){
 		try{
 			nc.close();
@@ -55,13 +61,26 @@ public class NCUtil {
 		}
 		return list;
 	}
-	
+	/**
+	 * 内容概要
+	 * @return
+	 */
 	public String info(){
 		return nc.getDetailInfo();
 	}
+	/**
+	 * 查询变量
+	 * @param var
+	 * @return
+	 */
 	public Variable findVariable(String var){
 		return nc.findVariable(var);
 	}
+	/**
+	 * 查询变量值
+	 * @param var
+	 * @return
+	 */
 	public Array getVariableValues(String var){
 		Array array = null;
 		try {
@@ -72,4 +91,5 @@ public class NCUtil {
 		}
 		return array;
 	}
+
 }
