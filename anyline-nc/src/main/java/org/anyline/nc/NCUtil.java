@@ -1,17 +1,30 @@
 package org.anyline.nc;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
+import org.anyline.util.MD5Util;
+
 import ucar.ma2.Array;
-import ucar.ma2.InvalidRangeException;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 public class NCUtil {
 	private String file;
 	private NetcdfFile nc;
+
+	private static Hashtable<String, NCUtil> instances = new Hashtable<String, NCUtil>();
+	
+	public static NCUtil getInstance(String file) {
+		String key = MD5Util.crypto(file);
+		NCUtil util = instances.get(key);
+		if (null == util) {
+			util = new NCUtil(file);
+			instances.put(key, util);
+		}
+		return util;
+	}
 	
 	public NCUtil(String file){
 		this.file = file;
