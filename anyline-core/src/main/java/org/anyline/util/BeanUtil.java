@@ -1285,6 +1285,59 @@ public class BeanUtil {
 		return index;
 	}
 
+	public static int closest(float[] array, float value){
+		int index = 0;
+		float dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
+			float abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+	public static int closest(Float[] array, float value){
+		int index = 0;
+		float dif = -1;
+		int len = array.length;
+		for(int i=0; i<len; i++){
+			if(array[i]==value){
+				index = i;
+				break;
+			}
+			float abs = Math.abs(array[i]-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+			
+		}
+		return index;
+	}
+	public static int closest(List<Float> array, float value){
+		int index = 0;
+		float dif = -1;
+		int len = array.size();
+		for(int i=0; i<len; i++){
+			if(array.get(i)==value){
+				index = i;
+				break;
+			}
+			float abs = Math.abs(array.get(i)-value);
+			if(dif == -1 || dif > abs){
+				dif = abs;
+				index = i;
+			}
+		}
+		return index;
+	}
+
 	public static int closest(double[] array, double value){
 		int index = 0;
 		double dif = -1;
