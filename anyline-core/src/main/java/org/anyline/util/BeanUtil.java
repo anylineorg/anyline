@@ -789,12 +789,38 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
+	public static String array2string(Short[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i].shortValue());
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
 	public static String array2string(int[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
 			for (int i = 0; i < size; i++) {
 				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+	public static String array2string(Integer[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i].intValue());
 				if (i < size - 1) {
 					builder.append(split);
 				}
@@ -816,6 +842,19 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
+	public static String array2string(Long[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i].longValue());
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
 
 	public static String array2string(double[] list, String split) {
 		StringBuilder builder = new StringBuilder();
@@ -823,6 +862,19 @@ public class BeanUtil {
 			int size = list.length;
 			for (int i = 0; i < size; i++) {
 				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+	public static String array2string(Double[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i].doubleValue());
 				if (i < size - 1) {
 					builder.append(split);
 				}
