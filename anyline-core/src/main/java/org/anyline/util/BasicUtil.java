@@ -319,6 +319,16 @@ public class BasicUtil {
 		}
 	}
 
+	public static Float parseFloat(Object value, Float def) {
+		if (null == value) {
+			return def;
+		}
+		try {
+			return Float.parseFloat(value.toString());
+		} catch (Exception e) {
+			return def;
+		}
+	}
 	public static Double parseDouble(Object value, Double def) {
 		if (null == value) {
 			return def;
