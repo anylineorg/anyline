@@ -85,7 +85,27 @@ public class NCUtil {
 		Array array = null;
 		try {
 			Variable variable = findVariable(var);
-			array = variable.read();
+			if(null != variable){
+				array = variable.read();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return array;
+	}
+	/**
+	 * 查询变量值
+	 * @param origin 起点
+	 * @param shape 长度
+	 * @return
+	 */
+	public Array getVariableValues(String var, int[] origin, int[] shape){
+		Array array = null;
+		try {
+			Variable variable = findVariable(var);
+			if(null != variable){
+				array = variable.read(origin, shape);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
