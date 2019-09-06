@@ -1057,6 +1057,32 @@ public class BeanUtil {
 		}
 		return result;
 	}
+	public static float[] union(float[] first, float[]... rest) {
+		int len = first.length;
+		for (float[] array : rest) {
+			len += array.length;
+		}
+		float[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (float[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
+	public static Float[] union(Float[] first, Float[]... rest) {
+		int len = first.length;
+		for (Float[] array : rest) {
+			len += array.length;
+		}
+		Float[] result = Arrays.copyOf(first, len);
+		int offset = first.length;
+		for (Float[] array : rest) {
+			System.arraycopy(array, 0, result, offset, array.length);
+			offset += array.length;
+		}
+		return result;
+	}
 	public static double[] union(double[] first, double[]... rest) {
 		int len = first.length;
 		for (double[] array : rest) {
