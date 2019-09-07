@@ -63,6 +63,7 @@ public class Auth extends BaseBodyTag {
 		}
 		
 		try {
+			log.error("[第三方登录][type:"+type+"]");
 			writer = pageContext.getOut();
 			if(encode){
 				String stateValue = state;
@@ -165,6 +166,7 @@ public class Auth extends BaseBodyTag {
 					html += "<script>location.href = \""+url+"\";</script>";
 				}
 			}else{
+				log.error("[第三方登录][登录配置异常]");
 				html = "登录配置异常";
 			}
 			writer.print(html);
