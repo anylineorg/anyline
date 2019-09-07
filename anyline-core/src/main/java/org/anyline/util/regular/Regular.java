@@ -214,6 +214,10 @@ public interface Regular {
 			public String getName(){return "负浮点数";}
 			public String getCode(){return "^(-(([0-9]+\\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\\.[0-9]+)|([0-9]*[1-9][0-9]*)))$";}
 		}
+		,IP{
+			public String getName(){return "IP地址";}
+			public String getCode(){return "^([1-9]|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])(\\.(\\d|[1-9]\\d|1\\d{2}|2[0-4]\\d|25[0-5])){3}$";}
+		}
 		;
 		public abstract String getName();
 		public abstract String getCode();
