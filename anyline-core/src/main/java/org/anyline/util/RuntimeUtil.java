@@ -34,4 +34,7 @@ public class RuntimeUtil {
         log.warn("[runtime][cmd:"+cmd+"][result:"+result+"]");
 		return result;
 	}
+	public static String run(String cmd){
+		return run(cmd, true);
+	}
 }
