@@ -96,6 +96,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>nvl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>property</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
