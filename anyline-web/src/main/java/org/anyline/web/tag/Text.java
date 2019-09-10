@@ -37,6 +37,7 @@ public class Text extends BaseBodyTag{
 	private Object data;
 	private int index = -1;
 	private String property;
+	private String selector;
 	
 	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED;
@@ -57,6 +58,13 @@ public class Text extends BaseBodyTag{
 				List list = (List)data;
 				if(index > -1 && index<list.size()){
 					result = BeanUtil.getValueByColumn(list.get(index), property);
+				}
+				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
+					DataSet set = (DataSet)data;
+					DataRow row = set.getRow(selector.split(","));
+					if(null != row){
+						result = row.get(property);
+					}
 				}
 			}else{
 				result = BeanUtil.getValueByColumn(data,property);
