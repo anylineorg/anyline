@@ -811,6 +811,10 @@
 			<name>key</name>			
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>selector</name>			
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>random</name>
