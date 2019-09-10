@@ -38,6 +38,7 @@ public class Text extends BaseBodyTag{
 	private int index = -1;
 	private String property;
 	private String selector;
+	private String nvl="";
 	
 	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED;
@@ -52,6 +53,11 @@ public class Text extends BaseBodyTag{
 				if(index > -1 && index<set.size()){
 					DataRow row = set.getRow(index);
 					result = row.get(property);
+				}else if(BasicUtil.isNotEmpty(selector)){
+					DataRow row = set.getRow(selector.split(","));
+					if(null != row){
+						result = row.get(property);
+					}
 				}
 			}else if(data instanceof List){
 				@SuppressWarnings("rawtypes")
@@ -59,18 +65,11 @@ public class Text extends BaseBodyTag{
 				if(index > -1 && index<list.size()){
 					result = BeanUtil.getValueByColumn(list.get(index), property);
 				}
-				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
-					DataSet set = (DataSet)data;
-					DataRow row = set.getRow(selector.split(","));
-					if(null != row){
-						result = row.get(property);
-					}
-				}
 			}else{
 				result = BeanUtil.getValueByColumn(data,property);
 			}
 			if(BasicUtil.isNotEmpty(result)){
-				out.print(result);
+				out.print(BasicUtil.nvl(result,nvl));
 			}
 		}catch(Exception e){
 		
@@ -85,6 +84,7 @@ public class Text extends BaseBodyTag{
 		data = null;
 		property = null;
 		index = -1;
+		selector = null;
     }
 	public Object getData() {
 		return data;
@@ -103,6 +103,18 @@ public class Text extends BaseBodyTag{
 	}
 	public void setProperty(String property) {
 		this.property = property;
+	}
+	public String getSelector() {
+		return selector;
+	}
+	public void setSelector(String selector) {
+		this.selector = selector;
+	}
+	public String getNvl() {
+		return nvl;
+	}
+	public void setNvl(String nvl) {
+		this.nvl = nvl;
 	}
 
 }
