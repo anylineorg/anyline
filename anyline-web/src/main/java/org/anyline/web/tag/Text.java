@@ -38,7 +38,8 @@ public class Text extends BaseBodyTag{
 	private int index = -1;
 	private String property;
 	private String selector;
-	private String nvl="";
+	private String nvl = null;
+	private String evl = null;
 	
 	public int doStartTag() throws JspException {
         return EVAL_BODY_BUFFERED;
@@ -47,7 +48,7 @@ public class Text extends BaseBodyTag{
 		//输出
 		JspWriter out = pageContext.getOut();
 		try{
-			Object result ="";
+			Object result = null;
 			if(data instanceof DataSet){
 				DataSet set = (DataSet)data;
 				if(index > -1 && index<set.size()){
@@ -68,7 +69,15 @@ public class Text extends BaseBodyTag{
 			}else{
 				result = BeanUtil.getValueByColumn(data,property);
 			}
-			out.print(BasicUtil.nvl(result,nvl,""));
+			if(null != nvl){
+				result = BasicUtil.nvl(result,nvl); 
+			}
+
+			if(null != evl){
+				result = BasicUtil.evl(result,evl); 
+			}
+			
+			out.print(result);
 		}catch(Exception e){
 		
 		}finally{
@@ -83,6 +92,8 @@ public class Text extends BaseBodyTag{
 		property = null;
 		index = -1;
 		selector = null;
+		nvl = null;
+		evl = null;
     }
 	public Object getData() {
 		return data;
@@ -113,6 +124,12 @@ public class Text extends BaseBodyTag{
 	}
 	public void setNvl(String nvl) {
 		this.nvl = nvl;
+	}
+	public String getEvl() {
+		return evl;
+	}
+	public void setEvl(String evl) {
+		this.evl = evl;
 	}
 
 }
