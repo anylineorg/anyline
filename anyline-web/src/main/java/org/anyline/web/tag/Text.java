@@ -68,9 +68,7 @@ public class Text extends BaseBodyTag{
 			}else{
 				result = BeanUtil.getValueByColumn(data,property);
 			}
-			if(BasicUtil.isNotEmpty(result)){
-				out.print(BasicUtil.nvl(result,nvl));
-			}
+			out.print(BasicUtil.nvl(result,nvl,""));
 		}catch(Exception e){
 		
 		}finally{
