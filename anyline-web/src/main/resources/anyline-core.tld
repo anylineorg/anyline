@@ -30,6 +30,37 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>set</name>
+		<tagclass>org.anyline.web.tag.Set</tagclass>
+		<bodycontent>JSP</bodycontent>
+		<info>设置变量</info>
+		<attribute>
+			<name>data</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>index</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>selector</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>scope</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>config</name>
 		<tagclass>org.anyline.web.tag.Config</tagclass>
 		<bodycontent>JSP</bodycontent>
