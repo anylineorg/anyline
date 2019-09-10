@@ -92,6 +92,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>selector</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>property</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
