@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.entity.DataSet;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.apache.log4j.Logger;
 
@@ -34,6 +36,7 @@ public class Sum extends BaseBodyTag {
 	private static final Logger log = Logger.getLogger(Sum.class);
 	private String scope;
 	private Object data;
+	private String selector;
 	private String key;
 
 	public int doEndTag() throws JspException {
@@ -56,6 +59,10 @@ public class Sum extends BaseBodyTag {
 				}
 				if(!(data instanceof Collection)){
 					return EVAL_PAGE;
+				}
+				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
+					DataSet set = (DataSet)data;
+					data = set.getRows(selector.split(","));
 				}
 				Collection items = (Collection) data;
 				BigDecimal result = new BigDecimal(0);
@@ -114,6 +121,7 @@ public class Sum extends BaseBodyTag {
 		scope = null;
 		data = null;
 		key = null;
+		selector = null;
 	}
 
 	public String getScope() {
@@ -123,4 +131,15 @@ public class Sum extends BaseBodyTag {
 	public void setScope(String scope) {
 		this.scope = scope;
 	}
+
+
+	public String getSelector() {
+		return selector;
+	}
+
+
+	public void setSelector(String selector) {
+		this.selector = selector;
+	}
+	
 }
