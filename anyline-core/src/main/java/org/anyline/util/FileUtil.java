@@ -441,11 +441,13 @@ public class FileUtil {
 				InputStream in = null;
 				OutputStream out = null;
 				try{
-					if(dstPath.isDirectory()){
+					if(!dstPath.isDirectory()){
 						File dirs = dstPath.getParentFile();
 						if(!dirs.exists()){
 							dirs.mkdirs();
 						}
+					}else{
+						dstPath = new File(dstPath, srcPath.getName());
 					}
 					dstPath.createNewFile();
 					in = new FileInputStream(srcPath);
@@ -456,7 +458,6 @@ public class FileUtil {
 						out.write(buf, 0, len);
 					}
 				}catch(Exception e){
-					e.printStackTrace();
 					e.printStackTrace();
 					result = false;
 				}finally{
