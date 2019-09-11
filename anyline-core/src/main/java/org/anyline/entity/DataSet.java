@@ -1799,13 +1799,31 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		isDesc = true;
 		return this;
 	}
-
+	public DataSet addAllUpdateColumns(){
+		for(DataRow row:rows){
+			row.addAllUpdateColumns();
+		}
+		return this;
+	}
+	public DataSet clearUpdateColumns(){
+		for(DataRow row:rows){
+			row.clearUpdateColumns();
+		}
+		return this;
+	}
+	public DataSet clearNull(){
+		for(DataRow row:rows){
+			row.clearNull();
+		}
+		return this;
+	}
 	private static String key(String key){
 		if(null != key && ConfigTable.IS_UPPER_KEY){
 			key = key.toUpperCase();
 		}
 		return key;
 	}
+	
 	/************************** 类sql操作 ***************************************/
 	/**
 	 * @param key
