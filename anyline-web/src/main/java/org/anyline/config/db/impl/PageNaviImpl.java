@@ -154,7 +154,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			builder.append(stat).append("\n");
 		}
 		int range = config.VAR_PAGE_RANGE;
-		int fr = NumberUtil.getMax(1,curPage - range/2);
+		int fr = NumberUtil.max(1,curPage - range/2);
 		int to = fr + range - 1;
 		boolean match = false;
 		if(totalPage > range && curPage>range/2){
@@ -166,8 +166,8 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		if(totalPage - curPage < range/2){
 			fr = totalPage - range;
 		}
-		fr = NumberUtil.getMax(fr, 1);
-		to = NumberUtil.getMin(to, totalPage);
+		fr = NumberUtil.max(fr, 1);
+		to = NumberUtil.min(to, totalPage);
 		
 		if(type ==0){ //下标导航
 			//每页多少条
@@ -199,7 +199,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			//1 .. 3 4 5 6 7 8 .. 10
 			if(config.VAR_SHOW_INDEX_ELLIPSIS){
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.getMax(curPage-1,1), configVarKey);
+					createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
 				}
 				//下标
 				if(config.VAR_SHOW_INDEX){
@@ -227,13 +227,13 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				}
 				//下一页 最后页
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.getMin(curPage+1, totalPage), configVarKey);
+					createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
 				}
 			}else{
 				//上一页  第一页
 				if(config.VAR_SHOW_BUTTON){
 					createPageTag(builder, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
-					createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.getMax(curPage-1,1), configVarKey);
+					createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
 				}
 				//下标
 				if(config.VAR_SHOW_INDEX){
@@ -245,7 +245,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				}
 				//下一页 最后页
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.getMin(curPage+1, totalPage), configVarKey);
+					createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
 					createPageTag(builder, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey);
 				}
 			}
@@ -267,7 +267,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			}
 		}else if(type == 1){
 			//加载更多
-			createPageTag(builder, "navi-more-button", loadMoreFormat, (int)NumberUtil.getMin(curPage+1, totalPage+1), configVarKey);
+			createPageTag(builder, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey);
 		}
 		builder.append("</div>");
 
