@@ -335,9 +335,9 @@ public class AmapUtil {
 		params.put("city", city);
 		params.put("filter", filter);
 		params.put("sortrule", sortrule);
-		limit = NumberUtil.getMin(limit, 100);
+		limit = NumberUtil.min(limit, 100);
 		params.put("limit", limit+"");
-		page = NumberUtil.getMax(page, 1);
+		page = NumberUtil.max(page, 1);
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
@@ -413,9 +413,9 @@ public class AmapUtil {
 		if(BasicUtil.isNotEmpty(sortrule)){
 			params.put("sortrule", sortrule);
 		}
-		limit = NumberUtil.getMin(limit, 100);
+		limit = NumberUtil.min(limit, 100);
 		params.put("limit", limit+"");
-		page = NumberUtil.getMax(page, 1);
+		page = NumberUtil.max(page, 1);
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
@@ -499,9 +499,9 @@ public class AmapUtil {
 		if(BasicUtil.isNotEmpty(sortrule)){
 			params.put("sortrule", sortrule);
 		}
-		limit = NumberUtil.getMin(limit, 100);
+		limit = NumberUtil.min(limit, 100);
 		params.put("limit", limit+"");
-		page = NumberUtil.getMax(page, 1);
+		page = NumberUtil.max(page, 1);
 		params.put("page", page+"");
 		String sign = sign(params);
 		params.put("sig", sign);
@@ -702,7 +702,7 @@ public class AmapUtil {
 		params.put("center", center);
 		params.put("radius", radius);
 		params.put("searchtype", "0");
-		params.put("limit", NumberUtil.getMin(limit, 100)+"");
+		params.put("limit", NumberUtil.min(limit, 100)+"");
 		params.put("timerange", BasicUtil.evl(timerange,"1800")+"");
 		String sign = sign(params);
 		params.put("sig", sign);
