@@ -75,7 +75,7 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static double getMax(double num, double... nums) {
+	public static double max(double num, double... nums) {
 		double max = num;
 		if (null != nums) {
 			int size = nums.length;
@@ -94,7 +94,7 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static double getMin(double num, double... nums) {
+	public static double min(double num, double... nums) {
 		double min = num;
 		if (null != nums) {
 			int size = nums.length;
@@ -113,7 +113,7 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static int getMax(int num, int... nums) {
+	public static int max(int num, int... nums) {
 		int max = num;
 		if (null != nums) {
 			int size = nums.length;
@@ -132,7 +132,7 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static int getMin(int num, int... nums) {
+	public static int min(int num, int... nums) {
 		int min = num;
 		if (null != nums) {
 			int size = nums.length;
@@ -144,13 +144,127 @@ public class NumberUtil {
 		}
 		return min;
 	}
-	public static int getRandom(int fr, int to) {
+
+	/**
+	 * 选取最大数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static long max(long num, long... nums) {
+		long max = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (max < nums[i]) {
+					max = nums[i];
+				}
+			}
+		}
+		return max;
+	}
+
+	/**
+	 * 选取最小数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static long min(long num, long... nums) {
+		long min = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (min > nums[i]) {
+					min = nums[i];
+				}
+			}
+		}
+		return min;
+	}
+
+	/**
+	 * 选取最大数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static float max(float num, float... nums) {
+		float max = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (max < nums[i]) {
+					max = nums[i];
+				}
+			}
+		}
+		return max;
+	}
+
+	/**
+	 * 选取最小数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static float min(float num, float... nums) {
+		float min = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (min > nums[i]) {
+					min = nums[i];
+				}
+			}
+		}
+		return min;
+	}
+
+	/**
+	 * 选取最大数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static short max(short num, short... nums) {
+		short max = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (max < nums[i]) {
+					max = nums[i];
+				}
+			}
+		}
+		return max;
+	}
+
+	/**
+	 * 选取最小数
+	 * 
+	 * @param num
+	 * @return
+	 */
+	public static short min(short num, short... nums) {
+		short min = num;
+		if (null != nums) {
+			int size = nums.length;
+			for (int i = 0; i < size; i++) {
+				if (min > nums[i]) {
+					min = nums[i];
+				}
+			}
+		}
+		return min;
+	}
+	public static int random(int fr, int to) {
 		int result = 0;
 		Random r = new Random();
 		result = fr + r.nextInt(to - fr);
 		return result;
 	}
-	public static double getRandom(double fr, double to) {
+	public static double random(double fr, double to) {
 		double result = 0;
 		Random r = new Random();
 		result = fr + r.nextDouble() * (to - fr);
