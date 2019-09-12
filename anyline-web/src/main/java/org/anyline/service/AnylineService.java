@@ -168,6 +168,14 @@ public interface AnylineService{
 	public int insert(String dest, Object data, String ... columns);
 
 
+	/**
+	 * 异步插入
+	 * @param dest
+	 * @param data
+	 * @param checkPriamry
+	 * @param columns
+	 * @return
+	 */
 	public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
 	public int batchInsert(Object data, boolean checkPriamry, String ... columns);
 	public int batchInsert(Object data, String ... columns);
