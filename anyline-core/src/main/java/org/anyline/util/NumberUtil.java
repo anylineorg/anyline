@@ -75,33 +75,28 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static double max(double num, double... nums) {
-		double max = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (max < nums[i]) {
-					max = nums[i];
-				}
+	public static double max(double... nums) {
+		double max = nums[0];
+		int size = nums.length;
+		for (int i = 0; i < size; i++) {
+			if (max < nums[i]) {
+				max = nums[i];
 			}
 		}
 		return max;
 	}
-
 	/**
 	 * 选取最小数
 	 * 
 	 * @param num
 	 * @return
 	 */
-	public static double min(double num, double... nums) {
-		double min = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (min > nums[i]) {
-					min = nums[i];
-				}
+	public static double min(double... nums) {
+		double min = nums[0];
+		int size = nums.length;
+		for (int i = 0; i < size; i++) {
+			if (min > nums[i]) {
+				min = nums[i];
 			}
 		}
 		return min;
@@ -113,14 +108,12 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static int max(int num, int... nums) {
-		int max = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (max < nums[i]) {
-					max = nums[i];
-				}
+	public static int max(int... nums) {
+		int max = nums[0];
+		int size = nums.length;
+		for (int i = 0; i < size; i++) {
+			if (max < nums[i]) {
+				max = nums[i];
 			}
 		}
 		return max;
@@ -132,14 +125,12 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static int min(int num, int... nums) {
-		int min = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (min > nums[i]) {
-					min = nums[i];
-				}
+	public static int min(int... nums) {
+		int min = nums[0];
+		int size = nums.length;
+		for (int i = 0; i < size; i++) {
+			if (min > nums[i]) {
+				min = nums[i];
 			}
 		}
 		return min;
@@ -151,14 +142,12 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static long max(long num, long... nums) {
-		long max = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (max < nums[i]) {
-					max = nums[i];
-				}
+	public static long max(long... nums) {
+		long max = nums[0];
+		int size = nums.length;
+		for (int i = 0; i < size; i++) {
+			if (max < nums[i]) {
+				max = nums[i];
 			}
 		}
 		return max;
@@ -170,14 +159,12 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static long min(long num, long... nums) {
-		long min = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (min > nums[i]) {
-					min = nums[i];
-				}
+	public static long min(long... nums) {
+		long min = nums[0];
+		int size = nums.length;
+		for (int i = 0; i < size; i++) {
+			if (min > nums[i]) {
+				min = nums[i];
 			}
 		}
 		return min;
@@ -189,14 +176,12 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static float max(float num, float... nums) {
-		float max = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (max < nums[i]) {
-					max = nums[i];
-				}
+	public static float max(float... nums) {
+		float max = nums[0];
+		int size = nums.length;
+		for (int i = 0; i < size; i++) {
+			if (max < nums[i]) {
+				max = nums[i];
 			}
 		}
 		return max;
@@ -208,14 +193,12 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static float min(float num, float... nums) {
-		float min = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (min > nums[i]) {
-					min = nums[i];
-				}
+	public static float min(float... nums) {
+		float min = nums[0];
+		int size = nums.length;
+		for (int i = 1; i < size; i++) {
+			if (min > nums[i]) {
+				min = nums[i];
 			}
 		}
 		return min;
@@ -227,14 +210,12 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static short max(short num, short... nums) {
-		short max = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (max < nums[i]) {
-					max = nums[i];
-				}
+	public static short max(short... nums) {
+		short max = nums[0];
+		int size = nums.length;
+		for (int i = 1; i < size; i++) {
+			if (max < nums[i]) {
+				max = nums[i];
 			}
 		}
 		return max;
@@ -246,14 +227,12 @@ public class NumberUtil {
 	 * @param num
 	 * @return
 	 */
-	public static short min(short num, short... nums) {
-		short min = num;
-		if (null != nums) {
-			int size = nums.length;
-			for (int i = 0; i < size; i++) {
-				if (min > nums[i]) {
-					min = nums[i];
-				}
+	public static short min(short... nums) {
+		short min = nums[0];
+		int size = nums.length;
+		for (int i = 1; i < size; i++) {
+			if (min > nums[i]) {
+				min = nums[i];
 			}
 		}
 		return min;
