@@ -179,10 +179,10 @@ public class BasicUtil {
 	 * @return
 	 */
 	public static int getRandomNumber(int fr, int to) {
-		return NumberUtil.getRandom(fr, to);
+		return NumberUtil.random(fr, to);
 	}
 	public static double getRandomNumber(double fr, double to) {
-		return NumberUtil.getRandom(fr, to);
+		return NumberUtil.random(fr, to);
 	}
 
 	/**
