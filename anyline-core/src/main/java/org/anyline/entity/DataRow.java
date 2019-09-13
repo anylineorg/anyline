@@ -1342,6 +1342,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		this.updateEmptyColumn = updateEmptyColumn;
 		return this;
 	}
+	/**
+	 * 替换所有NULL值
+	 * @param value
+	 * @return
+	 */
 	public DataRow replaceNull(String value){
 		List<String> keys = keys();
 		for(String key:keys){
@@ -1352,6 +1357,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 
+	/**
+	 * 替换所有空值
+	 * @param value
+	 * @return
+	 */
 	public DataRow replaceEmpty(String value){
 		List<String> keys = keys();
 		for(String key:keys){
