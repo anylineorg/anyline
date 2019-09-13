@@ -1823,7 +1823,30 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return key;
 	}
-	
+
+	/**
+	 * 替换所有NULL值
+	 * @param value
+	 * @return
+	 */
+	public DataSet replaceNull(String value){
+		for(DataRow row:rows){
+			row.replaceNull(value);
+		}
+		return this;
+	}
+
+	/**
+	 * 替换所有空值
+	 * @param value
+	 * @return
+	 */
+	public DataSet replaceEmpty(String value){
+		for(DataRow row:rows){
+			row.replaceEmpty(value);
+		}
+		return this;
+	}
 	/************************** 类sql操作 ***************************************/
 	/**
 	 * @param key
