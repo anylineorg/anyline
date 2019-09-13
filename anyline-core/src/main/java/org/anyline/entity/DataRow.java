@@ -1323,8 +1323,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * 设置是否更新null列
 	 * @param updateNullColumn
 	 */
-	public void setUpdateNullColumn(boolean updateNullColumn) {
+	public DataRow setUpdateNullColumn(boolean updateNullColumn) {
 		this.updateNullColumn = updateNullColumn;
+		return this;
 	}
 	/**
 	 * 是否更新空列
@@ -1337,8 +1338,27 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * 设置是否更新空列
 	 * @param updateEmptyColumn
 	 */
-	public void setUpdateEmptyColumn(boolean updateEmptyColumn) {
+	public DataRow setUpdateEmptyColumn(boolean updateEmptyColumn) {
 		this.updateEmptyColumn = updateEmptyColumn;
+		return this;
 	}
-	
+	public DataRow replaceNull(String value){
+		List<String> keys = keys();
+		for(String key:keys){
+			if(null == get(key)){
+				put(key,value);
+			}
+		}
+		return this;
+	}
+
+	public DataRow replaceEmpty(String value){
+		List<String> keys = keys();
+		for(String key:keys){
+			if(isEmpty(key)){
+				put(key,value);
+			}
+		}
+		return this;
+	}
 }
