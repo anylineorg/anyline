@@ -25,6 +25,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
+import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -168,8 +169,10 @@ public class WatermarkUtil {
             int icon_height = iconHeight;
             // 得到画笔对象
             Graphics2D g = buffImg.createGraphics();
-            //填充整个屏幕
-            g.fillRect(0,0,600,600);
+            buffImg = g.getDeviceConfiguration()
+                    .createCompatibleImage(width, height, Transparency.TRANSLUCENT);
+            g.dispose();
+            g = buffImg.createGraphics();
             // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.drawImage(srcImg.getScaledInstance(srcImg.getWidth(null), srcImg.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null);
