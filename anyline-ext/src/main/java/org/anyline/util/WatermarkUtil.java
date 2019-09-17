@@ -168,6 +168,8 @@ public class WatermarkUtil {
             int icon_height = iconHeight;
             // 得到画笔对象
             Graphics2D g = buffImg.createGraphics();
+            //填充整个屏幕
+            g.fillRect(0,0,600,600);
             // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             g.drawImage(srcImg.getScaledInstance(srcImg.getWidth(null), srcImg.getHeight(null), Image.SCALE_SMOOTH), 0, 0, null);
@@ -303,5 +305,17 @@ public class WatermarkUtil {
 	}
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
+	}
+	public static void main(String[] args) {
+		WatermarkUtil util = new WatermarkUtil();
+		File icon = new File(FileUtil.mergePath("D:","logo.png"));
+		File targetFile = new File("D://1.png");
+		int width = ImgUtil.width(targetFile);
+		int x = -width/60;
+		int y = -width/60;
+		int icon_width = width/20;
+		int icon_height = width/20;
+		util.offset(x, y);
+		util.markIcon(icon, icon_width, icon_height, targetFile, targetFile);
 	}
 }
