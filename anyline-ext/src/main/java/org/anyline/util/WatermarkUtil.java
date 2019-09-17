@@ -309,16 +309,4 @@ public class WatermarkUtil {
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 	}
-	public static void main(String[] args) {
-		WatermarkUtil util = new WatermarkUtil();
-		File icon = new File(FileUtil.mergePath("D:","logo.png"));
-		File targetFile = new File("D://1.png");
-		int width = ImgUtil.width(targetFile);
-		int x = -width/60;
-		int y = -width/60;
-		int icon_width = width/20;
-		int icon_height = width/20;
-		util.offset(x, y);
-		util.markIcon(icon, icon_width, icon_height, targetFile, targetFile);
-	}
 }
