@@ -170,8 +170,8 @@ public class WatermarkUtil {
             // 得到画笔对象
             Graphics2D g = buffImg.createGraphics();
             buffImg = g.getDeviceConfiguration()
-                    .createCompatibleImage(width, height, Transparency.TRANSLUCENT);
-            g.dispose();
+                    .createCompatibleImage(srcImg.getWidth(null), srcImg.getHeight(null), Transparency.TRANSLUCENT);
+            //g.dispose();
             g = buffImg.createGraphics();
             // 设置对线段的锯齿状边缘处理
             g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,RenderingHints.VALUE_INTERPOLATION_BILINEAR);
