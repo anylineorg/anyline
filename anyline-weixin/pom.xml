@@ -11,7 +11,7 @@
 	</parent>
 	
 	<artifactId>anyline-weixin</artifactId>
-	<version>8.1.2</version>
+	<version>8.1.3</version>
 	<packaging>jar</packaging>
 	<name>anyline-weixin</name>
 	<url>http://www.anyline.org/weixin</url>
