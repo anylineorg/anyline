@@ -140,10 +140,4 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<distributionManagement>
-		<repository>
-			<id>nexus-releases</id>
-			<url>http://maven.anyline.org/repository/maven-public</url>
-		</repository>
-	</distributionManagement>
 </project>
