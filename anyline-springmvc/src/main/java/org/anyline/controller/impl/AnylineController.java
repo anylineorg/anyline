@@ -69,8 +69,8 @@ public class AnylineController extends AbstractBasicController {
 	 * @return
 	 */
 	protected HttpServletRequest getRequest() {
-		if(null != this.request){
-			return this.request;
+		if(null != this.httpRequest){
+			return this.httpRequest;
 		}
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		try{
@@ -81,16 +81,16 @@ public class AnylineController extends AbstractBasicController {
 		return request;
 	}
 	protected void setRequest(HttpServletRequest request){
-		this.request = request;
+		this.httpRequest = request;
 		try{
-			this.request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
+			this.httpRequest.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
 			
 		}
 	}
 	protected HttpServletResponse getResponse() {
-		if(null == this.response){
-			return this.response;
+		if(null == this.httpResponse){
+			return this.httpResponse;
 		}
 		HttpServletResponse response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		try{
@@ -101,9 +101,9 @@ public class AnylineController extends AbstractBasicController {
 		return response;
 	}
 	public void setResponse(HttpServletResponse response){
-		this.response = response;
+		this.httpResponse = response;
 		try{
-			this.response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
+			this.httpResponse.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
 			
 		}
