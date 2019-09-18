@@ -11,7 +11,7 @@
 	</parent>
 	
 	<artifactId>anyline-mail</artifactId>
-	<version>8.1.2</version>
+	<version>8.1.3</version>
 	<packaging>jar</packaging>
 	<name>anyline-mail</name>
 	<url>http://www.anyline.org/mail</url>
