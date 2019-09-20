@@ -144,20 +144,20 @@ public class Navi extends BodyTagSupport{
 			//加载数据函数
 			if(BasicUtil.isNotEmpty(function)){
 				builder.append("function ").append(function).append("(clear,hold){\n");
-				builder.append("if(clear){").append(confId).append("['clear'] = 1;}\n");
-				builder.append("var _cur_page = 1;\n");
-				builder.append("if(hold){_cur_page = $('#hid_cur_page_"+confId+"').val()}\n");
-				builder.append("_navi_init("+confId+",_cur_page);\n");
-				builder.append("if(clear){").append(confId).append("['clear'] = 0;}\n");
+				builder.append("\t_navi_set_hash('page',1);\n");
+				builder.append("\tif(clear){").append(confId).append("['clear'] = 1;}\n");
+				builder.append("\tvar _cur_page = 1;\n");
+				builder.append("\tif(hold){_cur_page = $('#hid_cur_page_").append(confId).append("').val()}\n");
+				builder.append("\t_navi_init("+confId+",_cur_page);\n");
+				builder.append("\tif(clear){").append(confId).append("['clear'] = 0;}\n");
 				builder.append("}\n");
 				if(intime){
 					builder.append(function).append("(true);\n");
 				}
 			}else{
-				builder.append("_navi_init("+confId+");\n");
+				builder.append("_navi_init(").append(confId).append(");\n");
 			}
 			//刷新当前页函数
-
 			if(BasicUtil.isNotEmpty(refresh)){
 				builder.append("function ").append(refresh).append("(){\n");
 				builder.append("_navi_refresh(").append(confId).append(");\n");
