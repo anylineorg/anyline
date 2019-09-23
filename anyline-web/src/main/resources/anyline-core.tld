@@ -839,7 +839,8 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>key</name>			
+			<name>property</name>		
+			<required>true</required>	
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
