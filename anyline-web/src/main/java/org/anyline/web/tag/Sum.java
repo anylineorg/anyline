@@ -37,7 +37,7 @@ public class Sum extends BaseBodyTag {
 	private String scope;
 	private Object data;
 	private String selector;
-	private String key;
+	private String property;
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -75,7 +75,7 @@ public class Sum extends BaseBodyTag {
 						if(item instanceof Number){
 							val = item;
 						}else{
-							val = BeanUtil.getFieldValue(item, key);
+							val = BeanUtil.getFieldValue(item, property);
 						}
 						if(null != val){
 							result = result.add(new BigDecimal(val.toString()));
@@ -105,13 +105,15 @@ public class Sum extends BaseBodyTag {
 	}
 
 
-	public String getKey() {
-		return key;
+
+
+	public String getProperty() {
+		return property;
 	}
 
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setProperty(String property) {
+		this.property = property;
 	}
 
 
@@ -120,7 +122,7 @@ public class Sum extends BaseBodyTag {
 		super.release();
 		scope = null;
 		data = null;
-		key = null;
+		property = null;
 		selector = null;
 	}
 
