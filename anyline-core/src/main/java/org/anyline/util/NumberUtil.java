@@ -21,6 +21,8 @@ package org.anyline.util;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -249,6 +251,80 @@ public class NumberUtil {
 		result = fr + r.nextDouble() * (to - fr);
 		return result;
 	}
+	public static long random(long fr, long to) {
+		long result = 0;
+		Random r = new Random();
+		result = fr + r.nextLong() * (to - fr);
+		return result;
+	}
+	public static float random(float fr, float to) {
+		float result = 0;
+		Random r = new Random();
+		result = fr + r.nextFloat() * (to - fr);
+		return result;
+	}
+
+	public static List<Integer> random(int fr, int to, int qty) {
+		List<Integer> list = new ArrayList<Integer>();
+		Random r = new Random();
+		while(true){
+			int rdm = fr + r.nextInt(to - fr);
+			if(list.contains(rdm)){
+				continue;
+			}
+			list.add(rdm);
+			if(list.size() == qty){
+				break;
+			}
+		}
+		return list;
+	}
+	public static List<Double> random(double fr, double to, int qty) {
+		List<Double> list = new ArrayList<Double>();
+		Random r = new Random();
+		while(true){
+			double rdm = fr + r.nextDouble() * (to - fr);
+			if(list.contains(rdm)){
+				continue;
+			}
+			list.add(rdm);
+			if(list.size() == qty){
+				break;
+			}
+		}
+		return list;
+	}
+	public static List<Float> random(float fr, float to, int qty) {
+		List<Float> list = new ArrayList<Float>();
+		Random r = new Random();
+		while(true){
+			float rdm = fr + r.nextFloat() * (to - fr);
+			if(list.contains(rdm)){
+				continue;
+			}
+			list.add(rdm);
+			if(list.size() == qty){
+				break;
+			}
+		}
+		return list;
+	}
+	public static List<Long> random(long fr, long to, int qty) {
+		List<Long> list = new ArrayList<Long>();
+		Random r = new Random();
+		while(true){
+			long rdm = fr + r.nextLong() * (to - fr);
+			if(list.contains(rdm)){
+				continue;
+			}
+			list.add(rdm);
+			if(list.size() == qty){
+				break;
+			}
+		}
+		return list;
+	}
+	
 	public static boolean isInt(double src){
 		return src == (int)src;
 	}
