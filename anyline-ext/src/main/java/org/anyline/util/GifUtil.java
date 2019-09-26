@@ -112,5 +112,33 @@ public class GifUtil {
             e.printStackTrace();  
         }  
     }  
-    
+
+    public synchronized static void createGif(int delay0, int delay1, File tar, List<File> srcs) {  
+        try {
+        	long fr = 0;
+        	File dir = tar.getParentFile();
+        	if(!dir.exists()){
+        		dir.mkdirs();
+        	}
+            AnimatedGifEncoder e = new AnimatedGifEncoder(); 
+            e.setRepeat(0);  
+            e.start(tar.getAbsolutePath());
+            int size = srcs.size();
+            BufferedImage src[] = new BufferedImage[size];  
+            for (int i = 0; i < size; i++) {
+            	File item = srcs.get(i);
+            	fr = System.currentTimeMillis();
+            	int delay = NumberUtil.random(delay0, delay1);
+                e.setDelay(delay); //设置播放的延迟时间  
+                src[i] = ImageIO.read(item); // 读入需要播放的jpg文件  
+                e.addFrame(src[i]);  //添加到帧中  
+                if(ConfigTable.isDebug()){
+                	log.warn("[合成 gif][第"+(i+1)+"/"+size+"帧][gif:"+tar.getAbsolutePath()+"][源文件:"+item.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+                }
+            }  
+            e.finish();  
+        } catch (Exception e) {
+            e.printStackTrace();  
+        }  
+    }  
 }
