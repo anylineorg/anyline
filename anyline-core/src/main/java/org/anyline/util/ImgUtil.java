@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
@@ -23,8 +24,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Iterator;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 import org.apache.log4j.Logger;
 
@@ -160,34 +165,39 @@ public class ImgUtil {
      * @param width 目标切片宽度
      * @param height 目标切片高度
      */
-    public static void cut(File src, File tar, int x, int y, int width, int height) {
-        try {
-            // 读取源图像
-            BufferedImage bi = ImageIO.read(src);
-            int srcWidth = bi.getHeight(); // 源图宽度
-            int srcHeight = bi.getWidth(); // 源图高度
-            if (srcWidth > 0 && srcHeight > 0) {
-                Image image = bi.getScaledInstance(srcWidth, srcHeight, Image.SCALE_DEFAULT);
-                // 四个参数分别为图像起点坐标和宽高
-                // 即: CropImageFilter(int x,int y,int width,int height)
-                ImageFilter cropFilter = new CropImageFilter(x, y, width, height);
-                Image img = Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(image.getSource(), cropFilter));
-                BufferedImage tag = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-                Graphics g = tag.getGraphics();
-                g.drawImage(img, 0, 0, width, height, null); // 绘制切割后的图
-                g.dispose();
-                // 输出为文件
 
-                File dir = tar.getParentFile();
-                if(!dir.exists()){
-                	dir.mkdirs();
-                }
-                ImageIO.write(tag, "JPEG", tar);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	public static void cut(File src, File tar,int x, int y,  int w, int h) {
+		ImageReader reader = null;
+		ImageInputStream iis = null;
+	    try {
+	    	String format = "JPEG";
+	    	if(src.getName().toLowerCase().endsWith("png")){
+	    		format = "PNG";
+	    	}
+	        Iterator<ImageReader> iterator = ImageIO.getImageReadersByFormatName(format);/*JPEG,PNG,BMP*/  
+	        reader = (ImageReader)iterator.next();/*获取图片尺寸*/
+	        iis = ImageIO.createImageInputStream(src);  
+	        reader.setInput(iis, true);  
+	        ImageReadParam param = reader.getDefaultReadParam();  
+	        Rectangle rectangle = new Rectangle(x,y, w, h);/*指定截取范围*/   
+	        param.setSourceRegion(rectangle);  
+	        BufferedImage bi = reader.read(0,param);
+	        format = "JPEG";
+	    	if(tar.getName().toLowerCase().endsWith("png")){
+	    		format = "PNG";
+	    	}
+	        ImageIO.write(bi, format, tar);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }finally{
+	    	try {
+				iis.close();
+				reader.dispose();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	    }
+	}
     
     /**
      * 图像切割（指定切片的行数和列数）
