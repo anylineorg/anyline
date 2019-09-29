@@ -102,18 +102,26 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 				if(null == getValue() || "NULL".equals(getValue())){
 					text += " IS NULL";
 				}else{
-					text += "= ?";
+					text += compare.getSql();
 				}
 			}else if(compare == SQL.COMPARE_TYPE.GREAT){
-				text += "> ?";
+				//text += "> ?";
+				text += compare.getSql();
 			}else if(compare == SQL.COMPARE_TYPE.GREAT_EQUAL){
-				text += ">= ?";
+				//text += ">= ?";
+				text += compare.getSql();
 			}else if(compare == SQL.COMPARE_TYPE.LESS){
-				text += "< ?";
+				//text += "< ?";
+				text += compare.getSql();
 			}else if(compare == SQL.COMPARE_TYPE.NOT_EQUAL){
-				text += "<> ?";
+				//text += "<> ?";
+				text += compare.getSql();
 			}else if(compare == SQL.COMPARE_TYPE.LESS_EQUAL){
-				text += "<= ?";
+				//text += "<= ?";
+				text += compare.getSql();
+			}else if(compare == SQL.COMPARE_TYPE.BETWEEN){
+				//text += " BETWEEN ? AND ?";
+				text += compare.getSql();
 			}else if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN){
 				if(compare == SQL.COMPARE_TYPE.NOT_IN){
 					text += " NOT";
@@ -141,7 +149,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			} 
 			text += "";
 			/*运行时参数*/
-			if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN){
+			if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN || compare == SQL.COMPARE_TYPE.BETWEEN){
 				runValues = getValues();
 			}else{
 				Object value = getValue();
