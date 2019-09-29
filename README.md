@@ -56,6 +56,7 @@ anyline-video       : 视频处理
 anyline-ext         : 水印,动画等扩展功能
 anyline-redis       : redis
 anyline-nc	    : netcdf解析
+anyline-poi	    : 基于poi的msoffice文件操作
 ```
 一行代码自我介绍
 ```
