@@ -44,7 +44,7 @@ public interface SQL extends Cloneable,Serializable {
 		LIKE_PREFIX		{public int getCode(){return 51;} public String getSign(){return " LIKE ";} 	public String getName(){return "%like";}},
 		LIKE_SUBFIX		{public int getCode(){return 52;} public String getSign(){return " LIKE ";} 	public String getName(){return "like%";}},
 		NOT_EQUAL		{public int getCode(){return 62;} public String getSign(){return " != ";} 		public String getName(){return "不等于";}},
-		NOT_IN			{public int getCode(){return 21;} public String getSign(){return " NOT IN ";} 	public String getName(){return "不包含";}};
+		NOT_IN			{public int getCode(){return 72;} public String getSign(){return " NOT IN ";} 	public String getName(){return "不包含";}};
 		public abstract String getName();
 		public abstract String getSign();
 		public abstract int getCode();
