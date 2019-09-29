@@ -124,9 +124,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return this;
 	}
-	public DataSet remove(String key){
+	public DataSet remove(String ... keys){
 		for(DataRow row:rows){
-			row.remove(key);
+			for(String key:keys){
+				row.remove(key);
+			}
 		}
 		return this;
 	}
