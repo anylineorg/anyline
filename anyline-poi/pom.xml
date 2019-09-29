@@ -10,7 +10,7 @@
 		<version>8.1.4</version>
 	</parent>
 	
-	<artifactId>anyline-weixin</artifactId>
+	<artifactId>anyline-poi</artifactId>
 	<version>8.1.4</version>
 	<packaging>jar</packaging>
 	<name>anyline-poi</name>
