@@ -972,7 +972,7 @@ public class BeanUtil {
 		}
 	}
 	/**
-	 * 多个数组合并成一个数组
+	 * 多个数组合并成一个数组(二维数组合成一维数组)
 	 * @param first
 	 * @param rest
 	 * @return
