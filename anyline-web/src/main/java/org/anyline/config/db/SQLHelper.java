@@ -2,6 +2,7 @@ package org.anyline.config.db;
 
 import org.anyline.config.db.SQL.COMPARE_TYPE;
 import org.anyline.config.db.impl.SQLVariableImpl;
+import org.anyline.util.BasicUtil;
 
 public class SQLHelper {
 
@@ -71,5 +72,24 @@ public class SQLHelper {
 		var.setType(varType);
 		var.setCompare(compare);
 		return var;
+	}
+	public static SQL.COMPARE_TYPE parseCompare(int code){
+		for (COMPARE_TYPE type : COMPARE_TYPE.values()) {
+			if(type.getCode() == code){
+				return type;
+			}
+        }
+		return null;
+	}
+	public static SQL.COMPARE_TYPE parseCompare(String code){
+		if(BasicUtil.isEmpty(code)){
+			return null;
+		}
+		for (COMPARE_TYPE type : COMPARE_TYPE.values()) {
+			if(code.equals(type.getCode()+"")){
+				return type;
+			}
+        }
+		return null;
 	}
 }
