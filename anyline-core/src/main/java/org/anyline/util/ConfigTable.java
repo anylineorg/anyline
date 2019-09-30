@@ -346,9 +346,9 @@ public class ConfigTable {
 			//line(" oschina.net 帐号密码：public@anyline.org(111111)", "", false);
 			line("","*", true);
 			if(null != project){
-				line(" project > " + project, "", false);
+				line(" project root > " + project, "", false);
 			}
-			line(" debug状态 > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", false);
+			line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", false);
 			line(" =====================生产环境请务必修改密钥文件key.xml==========================", "", false);
 			line("","*", true);
 		}catch(Exception e){
