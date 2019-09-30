@@ -991,6 +991,9 @@ public class DateUtil {
 	public static int getDayOfWeek() {
 		return getDayOfWeek(new Date());
 	}
+	public static int getDayOfWeek(String date){
+		return getDayOfWeek(parse(date));
+	}
 	/**
 	 * 区间日期
 	 * @param fr
@@ -1231,17 +1234,50 @@ public class DateUtil {
 	public static int month() {
 		return month(new Date());
 	}
+	/**
+	 * 星期几(礼拜几)
+	 * 
+	 * @return
+	 */
+	public static int dayOfWeek(Date date) {
+		return getDayOfWeek(date);
+	}
 
+	public static int dayOfWeek() {
+		return getDayOfWeek();
+	}
+	public static int dayOfWeek(String date){
+		return getDayOfWeek(date);
+	}
 	/**
 	 * 日(号)
 	 * 
 	 * @return
 	 */
 	public static int dayOfMonth(Date date) {
+		return getDayOfMonth(date);
+	}
+	public static int dayOfMonth(String date){
+		return getDayOfMonth(date);
+	}
+
+	public static int dayOfMonth() {
+		return getDayOfMonth();
+	}
+	public static int getDayOfMonth(Date date){
 		calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_MONTH);
 	}
 
+	public static int getDayOfMonth(String date){
+		return getDayOfMonth(parse(date));
+	}
+
+	public static int getDayOfMonth(){
+		return getDayOfMonth(new Date());
+	}
+	
+	
 	public static int day(Date date) {
 		return dayOfMonth(date);
 	}
@@ -1251,14 +1287,31 @@ public class DateUtil {
 	}
 
 	public static int dayOfYear(Date date) {
+		return getDayOfYear(date);
+	}
+
+	public static int dayOfYear(String date) {
+		return getDayOfYear(date);
+	}
+
+	public static int dayOfYear() {
+		return getDayOfYear();
+	}
+
+	public static int getDayOfYear(Date date) {
 		calendar.setTime(date);
 		return calendar.get(Calendar.DAY_OF_YEAR);
 	}
 
-	public static int dayOfYear() {
-		return dayOfYear(new Date());
+	public static int getDayOfYear(String date) {
+		return getDayOfYear(parse(date));
 	}
 
+
+	public static int getDayOfYear() {
+		return dayOfYear(new Date());
+	}
+	
 	/**
 	 * 小时(点)
 	 * 
