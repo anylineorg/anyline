@@ -48,7 +48,9 @@ public class DateUtil {
 
 	private static Calendar calendar = Calendar.getInstance(
 			TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINESE);
-
+	public void setTimeZone(TimeZone zone, Locale local){
+		calendar = Calendar.getInstance(zone, local);
+	}
 	public static boolean between(Date cur, Date fr, Date to) {
 		if (cur.getTime() >= fr.getTime() && cur.getTime() <= to.getTime()) {
 			return true;
@@ -944,6 +946,9 @@ public class DateUtil {
 		calendar.add(Calendar.MONTH, value);
 		return calendar.getTime();
 	}
+	public static Date addMonth(String date, int value) {
+		return addMonth(parse(date), value);
+	}
 
 	/**
 	 * 按年加
@@ -1156,6 +1161,9 @@ public class DateUtil {
 		calendar.add(Calendar.YEAR, value);
 		return calendar.getTime();
 	}
+	public static Date addYear(String date, int value) {
+		return addYear(parse(date), value);
+	}
 
 	/**
 	 * 按小时加
@@ -1181,6 +1189,9 @@ public class DateUtil {
 		calendar.add(Calendar.HOUR_OF_DAY, value);
 		return calendar.getTime();
 	}
+	public static Date addHour(String date, int value) {
+		return addHour(parse(date), value);
+	}
 
 	/**
 	 * 按分钟加
@@ -1205,6 +1216,9 @@ public class DateUtil {
 		calendar.setTime(date);
 		calendar.add(Calendar.MINUTE, value);
 		return calendar.getTime();
+	}
+	public static Date addMinute(String date, int value) {
+		return addMinute(parse(date), value);
 	}
 
 	/**
