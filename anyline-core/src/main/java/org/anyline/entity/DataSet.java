@@ -1443,6 +1443,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return intersection(set, keys);
 	}
 	/**
+	 * 补集
+	 * 在this中，但不在set中
+	 * this作为超集 set作为子集
+	 * @param set
+	 * @param keys
+	 */
+	public DataSet complement(DataSet set, String ... keys){
+		DataSet result = new DataSet();
+		for(DataRow row:rows){
+			if(null == set || !set.contains(row, reverseKey(keys))){
+				result.add((DataRow)row.clone());
+			}
+		}
+		return result;
+	}
+	/**
 	 * 差集
 	 * 从当前集合中删除set中存在的row
 	 * @param set
