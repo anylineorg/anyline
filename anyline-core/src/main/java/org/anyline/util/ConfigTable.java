@@ -326,7 +326,8 @@ public class ConfigTable {
 			}catch(Exception e){
 				
 			}
-			
+
+			System.out.println();
 			line("","*", true);
 			line("Anyline Core " + version, " ", true);
 			line("anyline.org ", " ", true);
@@ -349,8 +350,9 @@ public class ConfigTable {
 				line(" project root > " + project, "", false);
 			}
 			line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", false);
-			line(" =====================生产环境请务必修改密钥文件key.xml==========================", "", false);
+			line(" =================== 生产环境请务必修改密钥文件key.xml ========================", "", false);
 			line("","*", true);
+			System.out.println();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
