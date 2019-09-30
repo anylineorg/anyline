@@ -20,9 +20,12 @@
 package org.anyline.util;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -41,7 +44,7 @@ public class ConfigTable {
 	protected static int reload = 0;			//重新加载间隔
 	protected static boolean debug = false;
 	protected static boolean sqlDebug = false;
-	protected static final String version = "8.1.2";
+	protected static final String version = "8.1.5";
 	protected static final String minVersion = "0007";
 	protected static boolean isLoading = false;
 	public static boolean  IS_UPPER_KEY = true;
@@ -294,15 +297,45 @@ public class ConfigTable {
 			return;
 		}
 		try{
-			String path =ConfigTable.class.getResource("").getPath();
 			
-			//path = path.substring(path.indexOf("/"),path.indexOf("!"));
-			String time = new File(path).lastModified()+"";
+			String time = null;
+			String version = ConfigTable.version;
+			String project = null;
+			try{
+				String path =ConfigTable.class.getResource("").getPath();
+				if(path.startsWith("file:")){
+					path = path.substring(path.indexOf(":")+1);
+				}
+				Properties props=System.getProperties(); //获得系统属性集    
+				String osName = props.getProperty("os.name"); //操作系统名称
+				if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
+					path = path.substring(1);
+				}
+				if(path.contains("!")){
+					path = path.substring(0,path.indexOf("!"));
+				}
+				if(path.contains("/WEB-INF")){
+					project = path.substring(0, path.indexOf("/WEB-INF"));
+				}
+				File file = new File(path);
+				String fileName = file.getName();
+				if(fileName.endsWith("jar") && fileName.contains("-")){
+					version = fileName.substring(fileName.lastIndexOf("-")+1, fileName.indexOf(".jar"));
+				}
+				time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(new Date(file.lastModified()));
+			}catch(Exception e){
+				
+			}
+			
 			line("","*", true);
 			line("Anyline Core " + version, " ", true);
 			line("anyline.org ", " ", true);
 			line(""," ", true);
-			line("MinVersion " + minVersion + "[" + time+"]", " ", true);
+			if(null != time && time.startsWith("2")){
+				line("Last Modified " + "[" + time +"] ", " ", true);
+			}else{
+				line("MinVersion " +  "[" + minVersion + "]", " ", true);
+			}
 			line(""," ", true);
 			line("","*", true);
 //			line(" github.con  git地址：https://github.com/anylineorg/anyline.git", "", false);
@@ -312,12 +345,14 @@ public class ConfigTable {
 //			line(" oschina.net svn地址：svn://git.oschina.net/anyline/anyline", "", false);
 			//line(" oschina.net 帐号密码：public@anyline.org(111111)", "", false);
 			line("","*", true);
-			line(" Debug 状态设置:anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", false);
+			if(null != project){
+				line(" project > " + project, "", false);
+			}
+			line(" debug状态 > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", false);
 			line(" =====================生产环境请务必修改密钥文件key.xml==========================", "", false);
 			line("","*", true);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 	}
-
 }
