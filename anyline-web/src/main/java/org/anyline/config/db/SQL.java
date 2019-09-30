@@ -34,17 +34,17 @@ import org.anyline.entity.PageNavi;
 public interface SQL extends Cloneable,Serializable {
 
 	public static enum COMPARE_TYPE{
-		EQUAL			{public int getCode(){return 10;} public String getSql(){return " = ?";} 		public String getName(){return "等于";}},
-		GREAT			{public int getCode(){return 20;} public String getSql(){return " > ?";} 		public String getName(){return "大于";}},
-		GREAT_EQUAL		{public int getCode(){return 21;} public String getSql(){return " >= ?";} 		public String getName(){return "大于等于";}},
-		LESS			{public int getCode(){return 30;} public String getSql(){return " < ?";} 		public String getName(){return "小于";}},
-		LESS_EQUAL		{public int getCode(){return 31;} public String getSql(){return " <= ?";} 		public String getName(){return "小于等于";}},
-		IN				{public int getCode(){return 40;} public String getSql(){return " IN ";} 		public String getName(){return "in";}},
-		LIKE			{public int getCode(){return 50;} public String getSql(){return " LIKE ";} 	public String getName(){return "%like%";}},
-		LIKE_PREFIX		{public int getCode(){return 51;} public String getSql(){return " LIKE ";} 	public String getName(){return "%like";}},
-		LIKE_SUBFIX		{public int getCode(){return 52;} public String getSql(){return " LIKE ";} 	public String getName(){return "like%";}},
-		NOT_EQUAL		{public int getCode(){return 62;} public String getSql(){return " != ?";} 		public String getName(){return "不等于";}},
-		NOT_IN			{public int getCode(){return 72;} public String getSql(){return " NOT IN ";} 	public String getName(){return "不包含";}},
+		EQUAL			{public int getCode(){return 10;} public String getSql(){return " = ?";} 				public String getName(){return "等于";}},
+		GREAT			{public int getCode(){return 20;} public String getSql(){return " > ?";} 				public String getName(){return "大于";}},
+		GREAT_EQUAL		{public int getCode(){return 21;} public String getSql(){return " >= ?";} 				public String getName(){return "大于等于";}},
+		LESS			{public int getCode(){return 30;} public String getSql(){return " < ?";} 				public String getName(){return "小于";}},
+		LESS_EQUAL		{public int getCode(){return 31;} public String getSql(){return " <= ?";} 				public String getName(){return "小于等于";}},
+		IN				{public int getCode(){return 40;} public String getSql(){return " IN ";} 				public String getName(){return "in";}},
+		LIKE			{public int getCode(){return 50;} public String getSql(){return " LIKE ";} 				public String getName(){return "%like%";}},
+		LIKE_PREFIX		{public int getCode(){return 51;} public String getSql(){return " LIKE ";} 				public String getName(){return "%like";}},
+		LIKE_SUBFIX		{public int getCode(){return 52;} public String getSql(){return " LIKE ";} 				public String getName(){return "like%";}},
+		NOT_EQUAL		{public int getCode(){return 62;} public String getSql(){return " != ?";} 				public String getName(){return "不等于";}},
+		NOT_IN			{public int getCode(){return 72;} public String getSql(){return " NOT IN ";} 			public String getName(){return "不包含";}},
 		BETWEEN			{public int getCode(){return 80;} public String getSql(){return " BETWEEN ? AND ? ";} 	public String getName(){return "区间";}};
 		public abstract String getName();
 		public abstract String getSql();
