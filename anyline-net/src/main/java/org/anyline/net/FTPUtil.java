@@ -9,9 +9,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
 import org.anyline.util.regular.RegularUtil;
@@ -20,17 +21,18 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
   
 public class FTPUtil {  
       
-    private static Logger log = Logger.getLogger(FTPUtil.class);  
+    private static Logger log = Logger.getLogger(FTPUtil.class);
+    private static Map<String,FTPUtil> instances = new HashMap<String,FTPUtil>();
     private FTPClient client;  
 	private String host;
 	private int port=21;
 	private String account;
 	private String password;
 	private String dir;
+	
   
     public FTPUtil() {  
         client = new FTPClient();  
@@ -52,6 +54,18 @@ public class FTPUtil {
     	this.password = password;
         client.setControlEncoding("UTF-8");  
 		connect();
+    }
+
+    public static FTPUtil getInstance (String host, String account, String password, int port){
+    	String key = "host:"+host+",account:"+account+",password:"+password+",port:"+port;
+    	FTPUtil util = instances.get(key);
+    	if(null == util){
+    		util = new FTPUtil(host, account, password, port);
+    	}
+    	return util;
+    }  
+    public static FTPUtil getInstance(String host, String account, String password){
+    	return getInstance(host, account, password, 21);
     }
       
     public void setTimeOut(int defaultTimeoutSecond, int connectTimeoutSecond, int dataTimeoutSecond){  
