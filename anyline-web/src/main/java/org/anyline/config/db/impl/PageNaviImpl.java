@@ -117,6 +117,9 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		calculate();
 		StringBuilder builder = new StringBuilder();
 		String configVarKey = "";
+		if(null == flag){
+			flag = "";
+		}
 		if("ajax".equals(creater)){
 			configVarKey = Navi.CONFIG_FLAG_KEY + flag;	//_anyline_navi_conf_0
 		}
