@@ -353,6 +353,19 @@ public class AbstractBasicController{
 	protected ConfigStore config(HttpServletRequest request, String... conditions) {
 		return parseConfig(request, conditions);
 	}
+
+	protected ConfigStore condition(HttpServletRequest request, boolean navi, String... configs) {
+		return parseConfig(request, navi, configs);
+	}
+	protected ConfigStore condition(HttpServletRequest request, int vol, String... configs) {
+		return parseConfig(request, vol, configs);
+	}
+	protected ConfigStore condition(HttpServletRequest request, int fr, int to, String... configs) {
+		return parseConfig(request, fr, to, configs);
+	}
+	protected ConfigStore condition(HttpServletRequest request, String... conditions) {
+		return parseConfig(request, conditions);
+	}
 	/**
 	 * rquest.getParameter
 	 * 
