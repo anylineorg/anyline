@@ -4,7 +4,9 @@ package org.anyline.net;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Vector;
 
@@ -26,6 +28,7 @@ import com.jcraft.jsch.SftpProgressMonitor;
 
 public class SFTPUtil {
 	private final Logger log = Logger.getLogger(SFTPUtil.class);
+    private static Map<String,SFTPUtil> instances = new HashMap<String,SFTPUtil>();
 	private String host;
 	private int port=22;
 	private String user;
@@ -58,6 +61,23 @@ public class SFTPUtil {
         channel.connect();  
         client = (ChannelSftp) channel;
 	}
+
+    public static SFTPUtil getInstance (String host, String account, String password, int port){
+    	String key = "host:"+host+",account:"+account+",password:"+password+",port:"+port;
+    	SFTPUtil util = instances.get(key);
+    	if(null == util){
+    		try {
+				util = new SFTPUtil(host, account, password, port);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+    	}
+    	return util;
+    }  
+    public static SFTPUtil getInstance(String host, String account, String password){
+    	return getInstance(host, account, password, 22);
+    }
+      
 	 /** 
      * 下载文件-sftp协议. 
      * @param remote 下载的文件 
