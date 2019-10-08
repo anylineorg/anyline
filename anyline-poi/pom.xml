@@ -22,5 +22,10 @@
 			<artifactId>anyline-core</artifactId>
 			<version>${anyline.core.version}</version>
 		</dependency>
+		<dependency>
+		    <groupId>com.alibaba</groupId>
+		    <artifactId>easyexcel</artifactId>
+		    <version>2.0.5</version>
+		</dependency>
 	</dependencies>
 </project>
