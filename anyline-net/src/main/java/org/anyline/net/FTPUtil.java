@@ -244,7 +244,7 @@ public class FTPUtil {
         }  
     }  
 
-    public boolean  uploadFile(String remote, File local) {
+    public boolean  uploadFile(File local, String remote) {
     	boolean result = false;
     	long fr = System.currentTimeMillis();
     	 InputStream in = null;  
@@ -262,8 +262,11 @@ public class FTPUtil {
              } catch (IOException ex) {  
              }  
          } 
-         log.warn("[ftp upload file][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][length:"+FileUtil.length(local.length())+"][remote:"+remote+"][local:"+local.getAbsolutePath()+"]");
+        log.warn("[ftp upload file][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][length:"+FileUtil.length(local.length())+"][remote:"+remote+"][local:"+local.getAbsolutePath()+"]");
         return result;
+    }
+    public boolean  uploadFile(String remote, File local) {
+    	return uploadFile(local, remote);
     }
     public boolean  upload(String remote, File local) {
     	boolean result = false;
