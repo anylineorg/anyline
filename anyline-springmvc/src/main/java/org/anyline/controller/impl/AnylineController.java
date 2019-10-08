@@ -180,6 +180,23 @@ public class AnylineController extends AbstractBasicController {
 		return parseConfig(getRequest(), false, conditions);
 	}
 
+
+	protected ConfigStore condition(boolean navi, String... configs) {
+		return parseConfig(getRequest(), navi, configs);
+	}
+
+	protected ConfigStore condition(int vol, String... configs) {
+		return parseConfig(getRequest(), vol, configs);
+	}
+
+	protected ConfigStore condition(int fr, int to, String... configs) {
+		return parseConfig(getRequest(), fr, to, configs);
+	}
+
+	protected ConfigStore condition(String... conditions) {
+		return parseConfig(getRequest(), false, conditions);
+	}
+
 	protected String getParam(String key, boolean keyEncrypt, boolean valueEncrypt) {
 		return getParam(getRequest(), key, keyEncrypt, valueEncrypt);
 	}
