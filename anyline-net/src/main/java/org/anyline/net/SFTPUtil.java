@@ -168,18 +168,21 @@ public class SFTPUtil {
     /** 
      * 上传文件-sftp协议. 
      * @param localFile 源文件 
-     * @param dir 保存路径 
-     * @param fileName 保存文件名 
+     * @param remoteDir 远程保存路径 
+     * @param remoteFile 远程保存文件名 
      * @throws Exception 异常 
      */  
-    public void uploadFile(String localFile, String dir, String remoteFile) throws SftpException {
+    public void uploadFile(String localFile, String remoteDir, String remoteFile) throws SftpException {
     	long fr = System.currentTimeMillis();
-        mkdir(dir);  
-        client.cd(dir);  
+        mkdir(remoteDir);  
+        client.cd(remoteDir);  
         client.put(localFile, remoteFile);  
         if(ConfigTable.isDebug()){
-        	log.warn("[文件上传][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][local:"+localFile+"][remote:"+dir+"/"+remoteFile+"]");
+        	log.warn("[文件上传][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][local:"+localFile+"][remote:"+remoteDir+"/"+remoteFile+"]");
         }
+    }  
+    public void uploadFile(File localFile, String remoteDir, String remoteFile) throws SftpException {
+    	uploadFile(localFile.getAbsoluteFile(), remoteDir, remoteFile);
     }  
   
     /** 
