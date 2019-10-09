@@ -6,11 +6,11 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-maven-jar</artifactId>
-		<version>8.1.5</version>
+		<version>8.1.6</version>
 	</parent>
 	
 	<artifactId>anyline-nc</artifactId>
-	<version>8.1.5</version>
+	<version>8.1.6</version>
 	<name>anyline-nc</name>
 	<packaging>jar</packaging>
 	<url>http://www.anyline.org/nc</url>
