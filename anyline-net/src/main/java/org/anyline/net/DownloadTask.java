@@ -375,6 +375,12 @@ public class DownloadTask {
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
 	}
+	public void addParam(String key, String value) {
+		if(null == params){
+			params = new HashMap<String,Object>();
+		}
+		params.put(key, value);
+	}
 //	public boolean isFinish(){
 //		return rate == 100;
 //	}
