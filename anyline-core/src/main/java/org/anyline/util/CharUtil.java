@@ -185,4 +185,9 @@ public class CharUtil {
 		}
 		return buffer.toString();
 	}
+	public static void main(String[] args) {
+		String str = "高倩";
+		str = pinyin(str);
+		System.out.println(str);
+	}
 }
