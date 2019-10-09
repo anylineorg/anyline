@@ -74,6 +74,8 @@ public class Navi extends BodyTagSupport{
 			}
 			String confId = CONFIG_FLAG_KEY + flag;
 			builder.append("<div id='_navi_border_"+flag+"'>");
+			//放到form里 实现后退时值不被重置
+			builder.append("<form><input type='text' style='display:none;' id='_navi_cache_page_"+flag+"'><input type='text' style='display:none;' id='_navi_cache_vol_"+flag+"'></form>");
 			if(idx == 0){
 				builder.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n");
 				builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
@@ -143,11 +145,12 @@ public class Navi extends BodyTagSupport{
 			builder.append("};\n");
 			//加载数据函数
 			if(BasicUtil.isNotEmpty(function)){
+				//clear:清空上一页内容  hold:保持当前页
 				builder.append("function ").append(function).append("(clear,hold){\n");
 				builder.append("\tif(clear){").append(confId).append("['clear'] = 1;}\n");
 				builder.append("\tvar _cur_page = 1;\n");
-				builder.append("\tif(hold){_cur_page = _navi_get_hash('page') || $('#hid_cur_page_").append(confId).append("').val();_navi_go(_cur_page,"+confId+");}else{\n");
-				builder.append("\t_navi_init("+confId+");}\n");
+				builder.append("\tif(hold){\n\t\t_cur_page = $('#_navi_cache_page_").append(flag).append("').val() || $('#hid_cur_page_").append(flag).append("').val() || _cur_page;\n\t\t_navi_go(_cur_page,"+confId+");\n\t}else{\n");
+				builder.append("\t\t_navi_init(").append(confId).append(");\n\t}\n");
 				builder.append("\tif(clear){").append(confId).append("['clear'] = 0;}\n");
 				builder.append("}\n");
 				if(intime){
