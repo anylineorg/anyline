@@ -150,24 +150,32 @@ public class DownloadTask {
 		}
 	}
 	public void error(int code, String message){
-		status = -1;
-		log.error("[文件下载][下载异常]][url:"+url+"][code:"+code+"][message:"+message+"]");
-		this.errorCode = code;
-		this.errorMsg = message;
-		if(null != listener){
-			listener.error(this);
+		try{
+			status = -1;
+			log.error("[文件下载][下载异常]][url:"+url+"][code:"+code+"][message:"+message+"]");
+			this.errorCode = code;
+			this.errorMsg = message;
+			if(null != listener){
+				listener.error(this);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 	public void finish(){
-		status = 9;
-		this.rate = 100.00;
-		this.end = System.currentTimeMillis();
-		log();
-		if(ConfigTable.isDebug()){
-			log.info("[文件下载]"+"[下载完成][耗时:"+getExpendFormat()+"][url:"+url+"][local:"+getLocal().getAbsolutePath()+"]");
-		}
-		if(null != listener){
-			listener.finish(this);
+		try{
+			status = 9;
+			this.rate = 100.00;
+			this.end = System.currentTimeMillis();
+			log();
+			if(ConfigTable.isDebug()){
+				log.info("[文件下载]"+"[下载完成][耗时:"+getExpendFormat()+"][url:"+url+"][local:"+getLocal().getAbsolutePath()+"]");
+			}
+			if(null != listener){
+				listener.finish(this);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}
 	}
 	private void log(){
