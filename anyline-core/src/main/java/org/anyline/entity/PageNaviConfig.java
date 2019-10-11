@@ -59,7 +59,8 @@ public class PageNaviConfig extends BasicConfig{
 
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 
-	//兼容上一版本 最后一版key:倒数第二版key:倒数第三版key
+	//兼容上一版本 
+	//最后一版key:倒数第二版key:倒数第三版key
 	protected static String[] compatibles = {
 		"STYLE_BUTTON_FIRST:NAVI_TAG_FIRST"
 		,"STYLE_BUTTON_PREV:NAVI_TAG_PREV"
