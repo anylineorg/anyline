@@ -468,7 +468,9 @@ public class HttpUtil {
 			e.printStackTrace();
 		} finally {
 			try {
-				response.close();
+				if(null != response){
+					response.close();
+				}
 				method.releaseConnection();
 				client.close();
 			} catch (Exception e) {
