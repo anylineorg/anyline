@@ -465,6 +465,7 @@ public class HttpUtil {
 				log.warn("[http request][method:"+method.getMethod()+"][耗时:"+(System.currentTimeMillis() - fr)+"][url:"+method.getURI()+"]");
 			}
 		} catch (Exception e) {
+			result = new HttpResult();
 			e.printStackTrace();
 		} finally {
 			try {
