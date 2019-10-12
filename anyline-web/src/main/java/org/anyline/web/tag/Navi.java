@@ -147,7 +147,7 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(function)){
 				//clear:清空上一页内容  hold:保持当前页
 				builder.append("function ").append(function).append("(clear,hold){\n");
-				builder.append("\tif(clear){").append(confId).append("['clear'] = 1;}\n");
+				builder.append("\tif(clear){\n\t").append(confId).append("['clear'] = 1;\n\t").append(confId).append("['flush'] = true;\n}\n");
 				builder.append("\tvar _cur_page = 1;\n");
 				builder.append("\tif(hold){\n\t\t_cur_page = $('#_navi_cache_page_").append(flag).append("').val() || $('#hid_cur_page_").append(flag).append("').val() || _cur_page;\n\t\t_navi_go(_cur_page,"+confId+");\n\t}else{\n");
 				builder.append("\t\t_navi_init(").append(confId).append(");\n\t}\n");
