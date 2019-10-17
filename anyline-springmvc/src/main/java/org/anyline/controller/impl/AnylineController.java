@@ -197,6 +197,25 @@ public class AnylineController extends AbstractBasicController {
 		return parseConfig(getRequest(), false, conditions);
 	}
 
+	
+
+	protected ConfigStore where(boolean navi, String... configs) {
+		return parseConfig(getRequest(), navi, configs);
+	}
+
+	protected ConfigStore where(int vol, String... configs) {
+		return parseConfig(getRequest(), vol, configs);
+	}
+
+	protected ConfigStore where(int fr, int to, String... configs) {
+		return parseConfig(getRequest(), fr, to, configs);
+	}
+
+	protected ConfigStore where(String... conditions) {
+		return parseConfig(getRequest(), false, conditions);
+	}
+	
+	
 	protected String getParam(String key, boolean keyEncrypt, boolean valueEncrypt) {
 		return getParam(getRequest(), key, keyEncrypt, valueEncrypt);
 	}
