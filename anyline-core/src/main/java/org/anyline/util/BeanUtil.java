@@ -45,6 +45,8 @@ import javax.persistence.Table;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import org.anyline.util.regular.Regular;
+import org.anyline.util.regular.RegularUtil;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.dom4j.Document;
@@ -1424,5 +1426,31 @@ public class BeanUtil {
 			}
 		}
 		return index;
+	}
+
+	public static String parseFinalValue(Object obj, String key){
+		if(null == obj){
+			return key;
+		}
+		String value = key;
+		if(BasicUtil.isNotEmpty(key)){
+			if(key.contains("{")){
+				try{
+					List<String> ks =RegularUtil.fetch(key, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
+					for(String k:ks){
+						Object v = BeanUtil.getFieldValue(obj,k.replace("{", "").replace("}", ""));
+						if(null == v){
+							v = "";
+						}
+						value = value.replace(k, v.toString());
+					}
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			} else {
+				value = BeanUtil.getFieldValue(obj, key) + "";
+			}
+		}
+		return value;
 	}
 }
