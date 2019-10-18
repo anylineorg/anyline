@@ -1121,7 +1121,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	/**
 	 * rows 列表中的数据格式化成json格式   不同与toJSON
-	 * map.put("type", "list");
+	 *  map.put("type", "list");
     	map.put("result", result);
     	map.put("message", message);
     	map.put("rows", rows);
@@ -1157,7 +1157,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public String toJSON(){
 		return toJson();
 	}
-
+	/**
+	 * 根据指定列生成map
+	 * @param key  ID,{ID}_{NM}
+	 * @return
+	 */
+	public Map<String,DataRow> toMap(String key){
+		Map<String,DataRow> maps = new HashMap<String,DataRow>();
+		for(DataRow row:rows){
+			maps.put(row.getString(key), row);
+		}
+		return maps;
+	}
 	/**
 	 * 子类
 	 * 
