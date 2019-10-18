@@ -828,9 +828,17 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public String getString(String key){
 		String result = null;
-		Object value = get(key);
-		if(null != value)
-			result = value.toString();
+		if(null == key){
+			return result;
+		}
+		if(key.contains("{") && key.contains("}")){
+			result = BeanUtil.parseFinalValue(this,key);
+		}else{
+			Object value = get(key);
+			if(null != value){
+				result = value.toString();
+			}
+		}
 		return result;
 	}
 	/**
