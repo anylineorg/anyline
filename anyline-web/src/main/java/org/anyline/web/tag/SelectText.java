@@ -86,15 +86,7 @@ public class SelectText extends BaseBodyTag{
 					if(null != tmp && value.toString().equals(tmp.toString())){
 						String text = "";
 						if(textKey.contains("{")){
-							text = textKey;
-							List<String> keys =RegularUtil.fetch(textKey, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
-							for(String key:keys){
-								Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
-								if(null == v){
-									v = "";
-								}
-								text = text.replace(key, v.toString());
-							}
+							text = BeanUtil.parseFinalValue(item, textKey);
 						}else{
 							Object v = BeanUtil.getFieldValue(item, textKey);
 							if(null != v){
