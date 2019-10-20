@@ -62,17 +62,19 @@ public class AnylineController extends AbstractBasicController {
 	@Autowired(required = false)
 	@Qualifier("anylineService")
 	protected AnylineService service;
-
+	@Autowired
+	protected HttpServletRequest request;
+	@Autowired
+	protected HttpServletResponse response;
 	/**
 	 * 当前线程下的request
 	 * 
 	 * @return
 	 */
 	protected HttpServletRequest getRequest() {
-		if(null != this.httpRequest){
-			return this.httpRequest;
+		if(null == request){
+			request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		}
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		try{
 			request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
@@ -81,18 +83,17 @@ public class AnylineController extends AbstractBasicController {
 		return request;
 	}
 	protected void setRequest(HttpServletRequest request){
-		this.httpRequest = request;
+		this.request = request;
 		try{
-			this.httpRequest.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
+			this.request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
 			
 		}
 	}
 	protected HttpServletResponse getResponse() {
-		if(null == this.httpResponse){
-			return this.httpResponse;
+		if(null == response){
+			response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		}
-		HttpServletResponse response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		try{
 			response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
@@ -101,9 +102,9 @@ public class AnylineController extends AbstractBasicController {
 		return response;
 	}
 	public void setResponse(HttpServletResponse response){
-		this.httpResponse = response;
+		this.response = response;
 		try{
-			this.httpResponse.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
+			this.response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){
 			
 		}
