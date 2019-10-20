@@ -62,9 +62,7 @@ public class AnylineController extends AbstractBasicController {
 	@Autowired(required = false)
 	@Qualifier("anylineService")
 	protected AnylineService service;
-	@Autowired
 	protected HttpServletRequest request;
-	@Autowired
 	protected HttpServletResponse response;
 	/**
 	 * 当前线程下的request
@@ -75,13 +73,9 @@ public class AnylineController extends AbstractBasicController {
 		if(null == request){
 			request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		}
-		try{
-			request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
-		}catch(Exception e){
-			
-		}
 		return request;
 	}
+	@Autowired
 	protected void setRequest(HttpServletRequest request){
 		this.request = request;
 		try{
@@ -94,13 +88,9 @@ public class AnylineController extends AbstractBasicController {
 		if(null == response){
 			response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		}
-		try{
-			response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
-		}catch(Exception e){
-			
-		}
 		return response;
 	}
+	@Autowired
 	public void setResponse(HttpServletResponse response){
 		this.response = response;
 		try{
