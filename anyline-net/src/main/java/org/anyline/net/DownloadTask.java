@@ -4,6 +4,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -38,7 +39,7 @@ public class DownloadTask {
 	private int action =1		; //1正常执行 0中断
 	private int status = 0		; //0初始 1执行中 2暂停 -1异常 9已完成
 	
-	private Map<Long,Long> records = new HashMap<Long,Long>(); //下载记录
+	private Map<Long,Long> records = new LinkedHashMap<Long,Long>(); //下载记录
 	private DownloadProgress progress = new DefaultProgress();
 	private DownloadListener listener;
 	private boolean override = false;
@@ -59,10 +60,10 @@ public class DownloadTask {
 	}
 
 	/**
-	 * 每秒下载byte
+	 * 平均每秒下载byte
 	 * @return
 	 */
-	public long getSpeed(){
+	public long getAvgSpeed(){
 		Long sum = 0L;
 		Long fr = 0L;
 		Iterator<Entry<Long, Long>> entries = records.entrySet().iterator();  
@@ -87,7 +88,44 @@ public class DownloadTask {
 		}
 	}
 	/**
-	 * 下载速度/s
+	 * 瞬时每秒下载byte(只计算最后一次)
+	 * @return
+	 */
+	public long getSpeed(){
+		if(!this.isRunning()){
+			return 0L;
+		}
+		Long len = 0L;	//最后一次下载长度
+		Long time = 0L;
+		Long curTime = 0L;
+		Iterator<Entry<Long, Long>> entries = records.entrySet().iterator();  
+		while (entries.hasNext()) {
+			Map.Entry<Long,Long> entry =  entries.next();   
+			Long key = entry.getKey(); //记录时间
+			Long value = entry.getValue();//记录值
+			curTime = key;
+			//最后一组
+			if(!entries.hasNext()){
+				len = value;
+				time = key - curTime;
+			}
+		}
+		if(time >0){
+			return len*1000/(time);
+		}else{
+			return len*10000;
+		}
+	}
+	/**
+	 * 平均下载速度/s
+	 * @return
+	 */
+	public String getAvgSpeedFormat(){
+		long speed = getSpeed();
+		return FileUtil.length(speed)+"/s";
+	}
+	/**
+	 * 瞬时下载速度/s
 	 * @return
 	 */
 	public String getSpeedFormat(){
@@ -241,7 +279,7 @@ public class DownloadTask {
 			msg += getFinishFormat();
 		}
 		msg += "/"+getTotalFormat()+"("+getFinishRate()+"%)]"
-				+ "[耗时:"+getExpendFormat()+"/"+getExpectFormat()+"][网速:"+getSpeedFormat()+"][url:"+url+"][local:"+local.getAbsolutePath()+"]";
+				+ "[耗时:"+getExpendFormat()+"/"+getExpectFormat()+"][瞬时:"+getSpeedFormat()+"/平均:"+getAvgSpeedFormat()+"][url:"+url+"][local:"+local.getAbsolutePath()+"]";
 		return msg;
 	}
 	public String getUrl() {
