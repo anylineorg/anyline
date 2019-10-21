@@ -374,10 +374,10 @@ public class Downloader {
 		return rate;
 	}
 	/**
-	 * 每秒下载byte
+	 * 平均每秒下载byte
 	 * @return
 	 */
-	public long getSpeed(){
+	public long getAvgSpeed(){
 		long finish = getSumFinish();
 		long expend = getExpend();
 		if(expend==0){
@@ -386,11 +386,30 @@ public class Downloader {
 		return finish*1000/expend;
 	}
 	/**
-	 * 下载速度byte/s
+	 * 平均下载速度byte/s
 	 * @return
 	 */
 	public String getSpeedFormat(){
 		long speed = getSpeed();
+		return FileUtil.length(speed)+"/s";
+	}
+	/**
+	 * 平均每秒下载byte
+	 * @return
+	 */
+	public long getSpeed(){
+		long speed = 0L;
+		for(DownloadTask task:tasks.values()){
+			speed += task.getSpeed();
+		}
+		return speed;
+	}
+	/**
+	 * 平均下载速度byte/s
+	 * @return
+	 */
+	public String getAvgSpeedFormat(){
+		long speed = getAvgSpeed();
 		return FileUtil.length(speed)+"/s";
 	}
 	/**
