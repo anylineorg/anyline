@@ -1,5 +1,6 @@
 package org.anyline.util;
 
+import java.net.URI;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -117,7 +118,12 @@ public class CodeUtil {
 		}
 		return sbu.toString();
 	}
-
+	/**
+	 * 整个url解码
+	 * @param url
+	 * @param encode
+	 * @return
+	 */
 	public static String urlDecode(String url, String encode) {
 		if (BasicUtil.isEmpty(url)) {
 			return "";
@@ -134,7 +140,12 @@ public class CodeUtil {
 	public static String urlDecode(String url) {
 		return urlDecode(url, "utf-8");
 	}
-
+	/**
+	 * 整个url编码
+	 * @param url
+	 * @param encode
+	 * @return
+	 */
 	public static String urlEncode(String url, String encode) {
 		if (BasicUtil.isEmpty(url)) {
 			return "";
@@ -147,11 +158,57 @@ public class CodeUtil {
 		}
 		return result;
 	}
-
+	
 	public static String urlEncode(String url) {
 		return urlEncode(url, "utf-8");
 	}
 
+	/**
+	 * url参数部分编码
+	 * @param url
+	 * @param encode
+	 * @return
+	 */
+	public static String urlParamEncode(String url, String encode) {
+		if (BasicUtil.isEmpty(url)) {
+			return "";
+		}
+		String result = url;
+		try {
+			int idx = url.indexOf("?");
+			if(idx != -1){
+				String param = url.substring(idx+1);
+				url = url.substring(0,idx+1);
+				param = java.net.URLEncoder.encode(param, encode);
+				result = url + param;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	public static String urlParamEncode(String url) {
+		return urlParamEncode(url, "utf-8");
+	}
+
+	/**
+	 * url参数部分编码
+	 * @param url
+	 * @param encode
+	 * @return
+	 */
+	public static String urlAsciiEncode(String url) {
+		if (BasicUtil.isEmpty(url)) {
+			return "";
+		}
+		String result = "";
+		try {
+			result = new URI(url).toASCIIString();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 	public static String unicode2String(String str) {
 		if (BasicUtil.isEmpty(str)) {
 			return "";
@@ -167,7 +224,6 @@ public class CodeUtil {
 		}
 		return str;
 	}
-
 	/**
 	 * 半角转全角
 	 * 
