@@ -16,11 +16,11 @@
  *          
  */
 package org.anyline.entity;
+import java.io.File;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -32,15 +32,18 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONNull;
 import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
-import org.anyline.util.JSONDateFormatProcessor;
+import org.anyline.util.FileUtil;
 import org.anyline.util.NumberUtil;
 import org.apache.log4j.Logger;
+import org.dom4j.Attribute;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
 public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
@@ -67,6 +70,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private String schema					= null							;
 	private String table					= null							;
 	private Map<String, Object> queryParams	= new HashMap<String,Object>()	; //查询条件
+	private Map<String, Object> attributes 	= new HashMap<String,Object>()	; //属性
 	private Object clientTrace				= null							; //客户端数据
 	private long createTime 				= 0								; //创建时间
 	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
@@ -193,6 +197,93 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return
 	 */
 	public static List<Object> parseJson(JSONArray array){
+		List<Object> list = new ArrayList<Object>();
+		int size = array.size();
+		for(int i=0; i<size; i++){
+			Object val = array.get(i);
+			if(null != val){
+				if(val instanceof JSONObject){
+					list.add(parseJson((JSONObject)val));
+				}else if(val instanceof JSONArray){
+					list.add(parseJson((JSONArray)val));
+				}else{
+					list.add(val);
+				}
+			}
+		}
+		return list;
+	}
+
+
+	/**
+	 * 解析json结构字符
+	 * @param json
+	 * @return
+	 */
+	public static DataRow parseXml(String xml){
+		if(null != xml){
+			try{
+				Document doc=DocumentHelper.parseText(xml);
+				return parseXml(doc.getRootElement());
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	/**
+	 * 解析JSONObject
+	 * @param json
+	 * @return
+	 */
+	public static DataRow parseXml(Element element){
+		DataRow row = new DataRow();
+		if(null == element){
+			return row;
+		}
+		String key = element.getName();
+		if(element.isTextOnly()){
+			row.put(key, element.getTextTrim());
+		}else{
+			Iterator<Element> childs=element.elementIterator();
+			while(childs.hasNext()){
+				Element child = childs.next();
+				String childName = child.getName();
+				DataRow childRow = parseXml(child);
+				Object childStore = row.get(childName);
+				if(null == childStore){
+					row.put(childName, childRow);
+				}else{
+					if(childStore instanceof DataRow){
+						DataSet childSet = new DataSet();
+						childSet.add((DataRow)childStore);
+						childSet.add(childRow);
+						row.put(childName, childSet);
+					}else if(childStore instanceof DataSet){
+						((DataSet)childStore).add(childRow);
+					}
+				}
+			}	
+		}
+		Iterator<Attribute> attrs = element.attributeIterator();
+		while(attrs.hasNext()){
+			Attribute attr = attrs.next();
+			row.attr(attr.getName(), attr.getValue());
+		}
+		return row;
+	}
+	public static void main(String[] args) throws Exception {
+		String txt = FileUtil.read(new File("D:\\a.xml")).toString();
+		DataRow row = parseXml(txt);
+		System.out.println(row.toJson());
+		
+	}
+	/**
+	 * 解析JSON集合
+	 * @param array
+	 * @return
+	 */
+	public static List<Object> parseXml(JSONArray array){
 		List<Object> list = new ArrayList<Object>();
 		int size = array.size();
 		for(int i=0; i<size; i++){
@@ -768,6 +859,22 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public Object put(String key, Object value){
 		this.put(KEY_CASE.DEFAULT, key, value, false , true);
 		return this;
+	}
+	public Object attr(String key, Object value){
+		attributes.put(key, value);
+		return this;
+	}
+	public Object setAttribute(String key, Object value){
+		attributes.put(key, value);
+		return this;
+	}
+	
+	public Object attr(String key){
+		return attributes.get(key);
+	}
+
+	public Object getAttribute(String key){
+		return attributes.get(key);
 	}
 	public Object get(String key){
 		Object result = null;
