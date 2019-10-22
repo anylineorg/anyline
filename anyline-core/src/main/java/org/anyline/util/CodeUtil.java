@@ -201,9 +201,10 @@ public class CodeUtil {
 		if (BasicUtil.isEmpty(url)) {
 			return "";
 		}
-		String result = "";
+		String result = url;
 		try {
-			result = new URI(url).toASCIIString();
+			result = result.replace(" ", "%20");
+			result = new URI(result).toASCIIString();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
