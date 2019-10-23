@@ -241,28 +241,36 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null == element){
 			return row;
 		}
+		Iterator<Element> childs=element.elementIterator();
 		String key = element.getName();
-		if(element.isTextOnly()){
+		String namespace = element.getNamespacePrefix();
+		if(BasicUtil.isNotEmpty(namespace)){
+			key = namespace + ":" + key;
+		}
+		if(element.isTextOnly() || !childs.hasNext()){
 			row.put(key, element.getTextTrim());
 		}else{
-			Iterator<Element> childs=element.elementIterator();
 			while(childs.hasNext()){
 				Element child = childs.next();
-				String childName = child.getName();
-				if(child.isTextOnly()){
-					row.put(childName, child.getTextTrim());
+				String childKey = child.getName();
+				String childNamespace = child.getNamespacePrefix();
+				if(BasicUtil.isNotEmpty(childNamespace)){
+					childKey = childNamespace + ":" + childKey;
+				}
+				if(child.isTextOnly() || !child.elementIterator().hasNext()){
+					row.put(childKey, child.getTextTrim());
 					continue;
 				}
 				DataRow childRow = parseXml(child);
-				Object childStore = row.get(childName);
+				Object childStore = row.get(childKey);
 				if(null == childStore){
-					row.put(childName, childRow);
+					row.put(childKey, childRow);
 				}else{
 					if(childStore instanceof DataRow){
 						DataSet childSet = new DataSet();
 						childSet.add((DataRow)childStore);
 						childSet.add(childRow);
-						row.put(childName, childSet);
+						row.put(childKey, childSet);
 					}else if(childStore instanceof DataSet){
 						((DataSet)childStore).add(childRow);
 					}
