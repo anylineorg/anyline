@@ -249,6 +249,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			while(childs.hasNext()){
 				Element child = childs.next();
 				String childName = child.getName();
+				if(child.isTextOnly()){
+					row.put(childName, child.getTextTrim());
+					continue;
+				}
 				DataRow childRow = parseXml(child);
 				Object childStore = row.get(childName);
 				if(null == childStore){
