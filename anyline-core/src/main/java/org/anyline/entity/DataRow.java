@@ -284,12 +284,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return row;
 	}
-	public static void main(String[] args) throws Exception {
-		String txt = FileUtil.read(new File("D:\\a.xml")).toString();
-		DataRow row = parseXml(txt);
-		System.out.println(row.toJson());
-		
-	}
 	/**
 	 * 解析JSON集合
 	 * @param array
