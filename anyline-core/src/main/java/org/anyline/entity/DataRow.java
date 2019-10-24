@@ -193,6 +193,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 解析JSON集合
+	 * 集合中条目不一定是key-value形式的json对象,有可能只是简单的String
+	 * 所以不能解析DataRow,所以条目不能放入DataSet中
+	 * {keys:[1,2,3]}
+	 * {user:[{code:1},[code:2]]}
 	 * @param array
 	 * @return
 	 */
