@@ -38,7 +38,6 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
