@@ -152,8 +152,15 @@ public class AnylineDaoImpl implements AnylineDao {
 
 	public int count(SQL sql, ConfigStore configs, String ... conditions){
 		int count = -1;
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
-		count = getTotal(run.getTotalQueryTxt(), run.getValues());
+		try{
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			count = getTotal(run.getTotalQueryTxt(), run.getValues());
+		}finally{
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.recoverDataSource();
+			}
+		}
 		return count;
 	}
 	public int count(SQL sql, String ... conditions){
