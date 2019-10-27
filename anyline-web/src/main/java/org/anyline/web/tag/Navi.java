@@ -52,7 +52,7 @@ public class Navi extends BodyTagSupport{
 	private String callback			;	//回调函数
 	private String before			;	//渲染之前调用
 	private String after			;	//渲染之后调用		
-	private String guide			;   //加载更多文本
+	private String guide			;   //加载更多文本提示
 	
 	private String empty			;	//查询无数据显示内容
 	private String over				;	//最后一页提示
@@ -60,7 +60,7 @@ public class Navi extends BodyTagSupport{
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
 	
-	private int type = 0			;	//分页方式(0:下标 1:加载更多)
+	private int type = 0			;	//分页方式(0:下标 1:加载更多 2:根据浏览器状态 web:1,wap:2)
 
 	
 	public int doStartTag() throws JspException {
