@@ -133,5 +133,25 @@ public class Set extends BaseBodyTag {
 	public void setSelector(String selector) {
 		this.selector = selector;
 	}
+
+
+	public String getVar() {
+		return var;
+	}
+
+
+	public void setVar(String var) {
+		this.var = var;
+	}
+
+
+	public int getIndex() {
+		return index;
+	}
+
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
 	
 }
