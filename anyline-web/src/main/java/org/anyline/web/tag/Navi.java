@@ -18,12 +18,14 @@
 
 
 package org.anyline.web.tag;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.anyline.entity.PageNaviConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.WebUtil;
 import org.apache.log4j.Logger;
 /**
  * ajax形式分页
@@ -60,7 +62,7 @@ public class Navi extends BodyTagSupport{
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
 	
-	private int type = 0			;	//分页方式(0:下标 1:加载更多 2:根据浏览器状态 web:1,wap:2)
+	private int type = 0			;	//分页方式(0:下标 1:加载更多 2:根据浏览器状态 web:0,wap:1)
 
 	
 	public int doStartTag() throws JspException {
@@ -81,6 +83,15 @@ public class Navi extends BodyTagSupport{
 				builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
 			}
 			builder.append("<script>\n");
+			
+			if(type ==2){
+				if(WebUtil.isWap((HttpServletRequest)pageContext.getRequest())){
+					type = 1;
+				}else{
+					type = 2;
+				}
+				
+			}
 			builder.append("var " + confId + " = {");
 			builder.append(CONFIG_FLAG_KEY).append(":'").append(flag).append("',");
 			if(BasicUtil.isNotEmpty(url)){
