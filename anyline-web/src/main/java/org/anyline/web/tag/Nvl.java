@@ -20,12 +20,15 @@
 package org.anyline.web.tag;
 
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.Tag;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.apache.log4j.Logger;
 
 /**
@@ -53,12 +56,23 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 					 }
 				 }
 			 }
-			for(Object result:paramList){
-				if(null != result && !result.toString().equals("null")){
-					JspWriter out = pageContext.getOut();
-					out.print(result.toString());
+			String result = "";
+			for(Object param:paramList){
+				if(null != param && !param.toString().equals("null")){
+					result = param.toString();
 					break;
 				}
+			}
+			result = BasicUtil.nvl(result,body,"").toString();
+			Tag parent = this.getParent();
+			if(null != parent && null != parent.getClass().getMethod("setNvl", String.class)){
+				Method method = parent.getClass().getMethod("setNvl", String.class);
+				if(null != method){
+					method.invoke(parent, result);
+				}
+			}else{
+				JspWriter out = pageContext.getOut();
+				out.print(result);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
