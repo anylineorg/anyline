@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
 
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
@@ -38,6 +39,13 @@ public class Set extends BaseBodyTag {
 	private int index = -1;
 
 	public int doEndTag() throws JspException {
+		Tag parent = getParent();
+		if(null != parent && parent instanceof If){
+			If iftag = (If)parent;
+			if(!iftag.getTest()){
+				return EVAL_PAGE;
+			}
+		}
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try {
 			if (null != data) {
@@ -49,37 +57,37 @@ public class Set extends BaseBodyTag {
 							data = request.getSession().getServletContext().getAttribute(data.toString());
 						} else if ("session".equals(scope)) {
 							data = request.getSession().getAttribute(data.toString());
-						}  else if ("session".equals(scope)) {
+						}  else if ("request".equals(scope)) {
 							data = request.getAttribute(data.toString());
-						}else {
+						}else if ("page".equals(scope)){
 							data = pageContext.getAttribute(data.toString());
 						}
 					}
 				}
-				if(!(data instanceof Collection)){
-					return EVAL_PAGE;
-				}
-				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
-					DataSet set = (DataSet)data;
-					data = set.getRows(selector.split(","));
-				}
-
-				if(index !=-1 && data instanceof Collection){
-					Collection items = (Collection) data;
-					int i = 0;
-					for(Object item:items){
-						if(index ==i){
-							data = item;
-							break;
+				if(data instanceof Collection){
+					if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
+						DataSet set = (DataSet)data;
+						data = set.getRows(selector.split(","));
+					}
+	
+					if(index !=-1){
+						Collection items = (Collection) data;
+						int i = 0;
+						for(Object item:items){
+							if(index ==i){
+								data = item;
+								break;
+							}
+							i ++;
 						}
-						i ++;
 					}
 				}
+				
 				if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) {
 					request.getSession().getServletContext().setAttribute(var,data);
 				} else if ("session".equals(scope)) {
 					request.getSession().setAttribute(var,data);
-				}  else if ("session".equals(scope)) {
+				}  else if ("request".equals(scope)) {
 					request.setAttribute(var,data);
 				}else {
 					pageContext.setAttribute(var,data);
