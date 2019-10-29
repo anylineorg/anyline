@@ -49,7 +49,10 @@ public class If extends BaseBodyTag implements Cloneable{
 		}finally{
 			release();
 		}
-        return EVAL_PAGE;   
+        if (test)
+            return EVAL_BODY_INCLUDE;
+        else
+            return SKIP_BODY;
 	}
 
 
@@ -67,6 +70,9 @@ public class If extends BaseBodyTag implements Cloneable{
 	}
 	public void setElse(Object elseValue) {
 		this.elseValue = elseValue;
+	}
+	public boolean getTest(){
+		return test;
 	}
 	
 	@Override
