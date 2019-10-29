@@ -20,10 +20,12 @@
 package org.anyline.web.tag;
 
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.Tag;
 
 import org.anyline.util.BasicUtil;
 import org.apache.log4j.Logger;
@@ -51,13 +53,27 @@ public class Evl extends BaseBodyTag implements Cloneable{
 		 }
 		 if(null != paramList){
 			try{
-				for(Object result:paramList){
-					if(null != result && !result.toString().equals("null") && !result.toString().trim().equals("")){
-						JspWriter out = pageContext.getOut();
-						out.print(result.toString());
+				String result = "";
+				for(Object param:paramList){
+					if(null != param && !param.toString().equals("null") && !param.toString().trim().equals("")){
+
+						result = param.toString();
 						break;
 					}
 				}
+
+				result = BasicUtil.evl(result,body,"").toString();
+				Tag parent = this.getParent();
+				if(null != parent && null != parent.getClass().getMethod("setEvl", String.class)){
+					Method method = parent.getClass().getMethod("setEvl", String.class);
+					if(null != method){
+						method.invoke(parent, result);
+					}
+				}else{
+					JspWriter out = pageContext.getOut();
+					out.print(result);
+				}
+				
 			}catch(Exception e){
 				e.printStackTrace();
 			}finally{
