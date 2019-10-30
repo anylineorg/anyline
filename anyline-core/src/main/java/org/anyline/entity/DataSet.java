@@ -430,6 +430,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	/**
 	 * 筛选符合条件的集合
 	 * @param params key1,value1,key2:value2,key3,value3
+	 * "NM:zh%","AGE:>20","NM","%zh%"
 	 * @param qty:最多筛选多少个 0表示不限制
 	 * @return
 	 */
@@ -487,41 +488,100 @@ public class DataSet implements Collection<DataRow>, Serializable {
 						break;
 					}
 				}else{
-					String compare = "";
+					//与SQL.COMPARE_TYPE保持一致
+					int compare = 10;
 					if(v.startsWith("=")){
-						compare = "=";
+						compare = 10;
+						v = v.substring(1);
+					}else if(v.startsWith(">")){
+						compare = 20;
 						v = v.substring(1);
 					}else if(v.startsWith(">=")){
-						compare = ">=";
+						compare = 21;
 						v = v.substring(2);
 					}else if(v.startsWith("<")){
-						
+						compare = 30;
+						v = v.substring(1);
+					}else if(v.startsWith("<=")){
+						compare = 31;
+						v = v.substring(2);
+					}else if(v.startsWith("%") && v.endsWith("%")){
+						compare = 50;
+						v = v.substring(1,v.length()-1);
+					}else if(v.endsWith("%")){
+						compare = 51;
+						v = v.substring(0,v.length()-1);
+					}else if(v.startsWith("%")){
+						compare = 52;
+						v = v.substring(1);
 					}
 					
-					//判断数据类型
 					if(BasicUtil.isNumber(value)){
+						//数字类型
 						if(BasicUtil.isNumber(v)){
-							if(BasicUtil.parseDouble(v, 0d) == BasicUtil.parseDouble(value, 0d)){
-								chk = true;
-								break;
+							double d1 = BasicUtil.parseDouble(value, 0d); 
+							double d2 =BasicUtil.parseDouble(v, 0d);
+							if(compare == 10){
+								if(d1 != d2){
+									chk = false;
+									break;
+								}
+							}else if(compare == 20){
+								if(!(d1 > d2)){
+									chk = false;
+									break;
+								}
+							}else if(compare == 21){
+								if(!(d1 >= d2)){
+									chk = false;
+									break;
+								}
+							}else if(compare == 30){
+								if(!(d1 < d2)){
+									chk = false;
+									break;
+								}
+							}else if(compare == 31){
+								if(!(d1 <= d2)){
+									chk = false;
+									break;
+								}
 							}
 						}
 					}
 					String str = value + "";
-					//判断 > = < like 
-					if(!v.equals(str)){
-						chk = false;
-						break;
+					str = str.toLowerCase();
+					v = v.toLowerCase();
+					if(compare ==10){
+						if(!v.equals(str)){
+							chk = false;
+							break;
+						}
+					}else if(compare == 50){
+						if(!str.contains(v)){
+							chk = false;
+							break;
+						}
+					}else if(compare == 51){
+						if(!str.startsWith(v)){
+							chk = false;
+							break;
+						}
+					}else if(compare == 52){
+						if(!str.endsWith(v)){
+							chk = false;
+							break;
+						}
 					}
 				}
-			}
+			}//end for kvs
 			if(chk){
 				set.add(row);
 				if(qty > 0 && set.size() >= qty){
 					break;
 				}
 			}
-		}
+		}//end for rows
 		set.cloneProperty(this);
 		return set;
 	}
