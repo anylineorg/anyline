@@ -19,6 +19,7 @@
 
 package org.anyline.util.regular;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.Map;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.FileUtil;
 import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
@@ -395,10 +397,12 @@ public class RegularUtil {
 		return null;
 	}
 	/**
-	 * 依次取出p,table,div中的内容 有嵌套时只取外层
+	 * 依次取出p,table,div中的内容 有嵌套时只取外层 
+	 * 只能提取同时有 开始结束标签的内容，不能提取单标签内容如<img> <br/>
+	 * 不区分大小写
 	 * 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 
 	 * @param text
-	 * @param tags
+	 * @param tags标签名,如div,span
 	 * @return
 	 */
 	public static List<List<String>> fetchTag(String txt,String ... tags) throws Exception{
@@ -414,6 +418,32 @@ public class RegularUtil {
 				}
 			}
 			regx +=")[^<]*?>)([\\s\\S]*?)(</\\2>)";
+			result = fetch(txt, regx);
+		}
+		return result;
+	}
+	/**
+	 * 提取单标签 如<img> <br/>
+	 * 如果传入div等带有结束标签的参数 则只取出开始标签 <div>
+	 * 不区分大小写
+	 * 0:全文 1::标签name 
+	 * @param text
+	 * @param tags标签名,如img br
+	 * @return
+	 */
+	public static List<List<String>> fetchSingleTag(String txt,String ... tags) throws Exception{
+		List<List<String>> result = new ArrayList<List<String>>();
+		if(null != tags && tags.length>0){
+			String regx = "(?i)<(";
+			int size = tags.length;
+			for(int i=0; i<size; i++){
+				if(i==0){
+					regx += tags[i];
+				}else{
+					regx += "|"+tags[i];
+				}
+			}
+			regx +=")[\\s\\S]*?>";
 			result = fetch(txt, regx);
 		}
 		return result;
@@ -439,7 +469,7 @@ public class RegularUtil {
 		return result;
 	}
 	/**
-	 * 取出所有属性值
+	 * 取出d属性值
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
 	 * fetchAttributeValues(txt,"id","name");
 	 * @param txt
