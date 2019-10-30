@@ -42,6 +42,7 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
 import org.anyline.util.JSONDateFormatProcessor;
+import org.anyline.util.NumberUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.log4j.Logger;
@@ -471,7 +472,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			boolean chk = true;//对比结果
 			for(String k : kvs.keySet()){
 				String v = kvs.get(k);
-				String value = row.getString(k);
+				Object value = row.get(k);// DataSet item value
 //				if(null == v && null == value){
 //					continue;
 //				}
@@ -486,7 +487,29 @@ public class DataSet implements Collection<DataRow>, Serializable {
 						break;
 					}
 				}else{
-					if(!v.equals(value+"")){
+					String compare = "";
+					if(v.startsWith("=")){
+						compare = "=";
+						v = v.substring(1);
+					}else if(v.startsWith(">=")){
+						compare = ">=";
+						v = v.substring(2);
+					}else if(v.startsWith("<")){
+						
+					}
+					
+					//判断数据类型
+					if(BasicUtil.isNumber(value)){
+						if(BasicUtil.isNumber(v)){
+							if(BasicUtil.parseDouble(v, 0d) == BasicUtil.parseDouble(value, 0d)){
+								chk = true;
+								break;
+							}
+						}
+					}
+					String str = value + "";
+					//判断 > = < like 
+					if(!v.equals(str)){
 						chk = false;
 						break;
 					}
