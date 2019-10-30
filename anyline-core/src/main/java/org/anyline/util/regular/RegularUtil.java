@@ -397,6 +397,7 @@ public class RegularUtil {
 		return null;
 	}
 	/**
+	 * 提取双标签<div>content<div>
 	 * 依次取出p,table,div中的内容 有嵌套时只取外层 
 	 * 只能提取同时有 开始结束标签的内容，不能提取单标签内容如<img> <br/>
 	 * 不区分大小写
@@ -405,19 +406,19 @@ public class RegularUtil {
 	 * @param tags标签名,如div,span
 	 * @return
 	 */
-	public static List<List<String>> fetchTag(String txt,String ... tags) throws Exception{
+	public static List<List<String>> fetchPairedTag(String txt,String ... tags) throws Exception{
 		List<List<String>> result = new ArrayList<List<String>>();
 		if(null != tags && tags.length>0){
-			String regx = "(?i)(<(";
+			String tagNames = "";
 			int size = tags.length;
 			for(int i=0; i<size; i++){
 				if(i==0){
-					regx += tags[i];
+					tagNames += tags[i];
 				}else{
-					regx += "|"+tags[i];
+					tagNames += "|"+tags[i];
 				}
 			}
-			regx +=")[^<]*?>)([\\s\\S]*?)(</\\2>)";
+			String regx = "(?i)(<(" + tagNames + ")[^<]*?>)([\\s\\S]*?)(</\\2>)";
 			result = fetch(txt, regx);
 		}
 		return result;
@@ -434,17 +435,62 @@ public class RegularUtil {
 	public static List<List<String>> fetchSingleTag(String txt,String ... tags) throws Exception{
 		List<List<String>> result = new ArrayList<List<String>>();
 		if(null != tags && tags.length>0){
-			String regx = "(?i)<(";
+			String tagNames = "";
 			int size = tags.length;
 			for(int i=0; i<size; i++){
 				if(i==0){
-					regx += tags[i];
+					tagNames += tags[i];
 				}else{
-					regx += "|"+tags[i];
+					tagNames += "|"+tags[i];
 				}
 			}
-			regx +=")[\\s\\S]*?>";
+			String regx = "(?i)<(" +tagNames+")[\\s\\S]*?>";
 			result = fetch(txt, regx);
+		}
+		return result;
+	}
+	/**
+	 * 提取单标签+双标签
+	 * 不区分大小写
+	 * 0:全文 1:开始标签 2:标签name 3:标签体 (单标签时null) 4:结束标签 (单标签时null)
+	 * @param text
+	 * @param tags标签名
+	 * @return
+	 */
+	public static List<List<String>> fetchAllTag(String txt,String ... tags) throws Exception{
+		List<List<String>> result = new ArrayList<List<String>>();
+		List<List<String>> items = new ArrayList<List<String>>();
+		if(null != tags && tags.length>0){
+			String tagNames = "";
+			int size = tags.length;
+			for(int i=0; i<size; i++){
+				if(i==0){
+					tagNames += tags[i];
+				}else{
+					tagNames += "|"+tags[i];
+				}
+			}
+			String regx = "(?i)((<(" + tagNames + ")[^<]*?>)([\\s\\S]*?)(</\\3>))|(<(" +tagNames+")[\\s\\S]*?>)";
+			items = fetch(txt, regx);
+			for(List<String> item:items){
+				List<String> rtn = new ArrayList<String>();
+				if(null == item.get(7)){
+					//双标签 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 (单标签时null)
+					rtn.add(item.get(0));
+					rtn.add(item.get(2));
+					rtn.add(item.get(3));
+					rtn.add(item.get(4));
+					rtn.add(item.get(5));
+				}else{
+					//单标签  0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 (单标签时null)
+					rtn.add(item.get(0));
+					rtn.add(item.get(0));
+					rtn.add(item.get(7));
+					rtn.add(null);
+					rtn.add(null);
+				}
+				result.add(rtn);
+			}
 		}
 		return result;
 	}
