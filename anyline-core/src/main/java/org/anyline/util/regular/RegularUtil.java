@@ -400,6 +400,7 @@ public class RegularUtil {
 	 * 提取双标签<div>content<div>
 	 * 依次取出p,table,div中的内容 有嵌套时只取外层 
 	 * 只能提取同时有 开始结束标签的内容，不能提取单标签内容如<img> <br/>
+	 * 支持不同标签嵌套，但不支持相同标签嵌套
 	 * 不区分大小写
 	 * 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 
 	 * @param text
@@ -423,6 +424,8 @@ public class RegularUtil {
 		}
 		return result;
 	}
+
+	
 	/**
 	 * 提取单标签 如<img> <br/>
 	 * 如果传入div等带有结束标签的参数 则只取出开始标签 <div>
