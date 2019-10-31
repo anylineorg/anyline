@@ -201,7 +201,9 @@ public class ZipUtil {
 				}
 				in.close();
 				out.close();
-				log.warn("[解压完成][进度:"+size+"/"+total+"][耗时:" + DateUtil.conversion(System.currentTimeMillis() - fr) + "][file:" + desFile.getAbsolutePath() + "]");
+				if (ConfigTable.isDebug()) {
+					log.warn("[解压完成][进度:"+size+"/"+total+"][耗时:" + DateUtil.conversion(System.currentTimeMillis() - fr) + "][file:" + desFile.getAbsolutePath() + "]");
+				}
 			}
 			zf.close();
 		} catch (Exception e) {
