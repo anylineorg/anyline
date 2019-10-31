@@ -71,13 +71,13 @@ public class Contains extends BaseBodyTag {
 						if(null == item){
 							continue;
 						}else if(item instanceof String || item instanceof Number || item instanceof Boolean || item instanceof Date) {
-							if(value.equals(item)){
+							if(value.toString().equals(item.toString())){
 								contains = true;
 								break;
 							}
 						}else{
 							Object v = BeanUtil.getFieldValue(item, key);
-							if(value.equals(v)){
+							if(value.toString().equals(v.toString())){
 								contains = true;
 								break;
 							}
