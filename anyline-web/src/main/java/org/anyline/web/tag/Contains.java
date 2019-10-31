@@ -76,8 +76,8 @@ public class Contains extends BaseBodyTag {
 								break;
 							}
 						}else{
-							Object v = BeanUtil.getFieldValue(item, key);
-							if(value.toString().equals(v.toString())){
+							Object v = BeanUtil.getFieldValue(item, key)+"";
+							if(value.toString().equals(v)){
 								contains = true;
 								break;
 							}
