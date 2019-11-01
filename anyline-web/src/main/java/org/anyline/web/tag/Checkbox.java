@@ -59,14 +59,13 @@ public class Checkbox extends BaseBodyTag {
 	private String headValue;
 	private String checkedValue = "";
 	private boolean checked = false;
-	private String border = "true";
-	private String borderClazz = "al-chk-item-border";
+	private String border = "true";//条目border(内部包含checkox,label) true, false, div, li, dd
+	private String borderClazz = "al-chk-item-border";//
 	private String labelClazz = "al-chk-item-label";
 
 	public int doEndTag() throws JspException {
-		HttpServletRequest request = (HttpServletRequest) pageContext
-				.getRequest();
-		String html = "";
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
+		StringBuilder html = new StringBuilder();
 //		valueKey = DataRow.keyCase(valueKey);
 //		textKey = DataRow.keyCase(textKey);
 		try {
@@ -144,7 +143,22 @@ public class Checkbox extends BaseBodyTag {
 				Collection<Map> items = (Collection<Map>) data;
 				Collection<?> chks = (Collection<?>)this.value;
 				
-
+				//条目边框
+				String itemBorderTagName ="";
+				String itemBorderStartTag = "";
+				String itemBorderEndTag = "";
+				
+				if(BasicUtil.isNotEmpty(border) && !"false".equals(border)){
+					if("true".equalsIgnoreCase(border)){
+						itemBorderTagName = "div";
+					}else{
+						itemBorderTagName = border;
+					}
+					itemBorderStartTag = "<"+itemBorderTagName+" class=\""+borderClazz+"\">";
+					itemBorderEndTag = "</"+itemBorderTagName+">";
+				}
+				
+				
 				if(null == headValue){
 					headValue = "";
 				}
@@ -153,25 +167,20 @@ public class Checkbox extends BaseBodyTag {
 					if(BasicUtil.isEmpty(id)){
 						id = name +"_"+ headValue; 
 					}
-
-					if("true".equalsIgnoreCase(border)){
-						html += "<div class=\""+borderClazz+"\">";
-					}
-					html += "<input type=\"checkbox\"";
+					html.append(itemBorderStartTag);
+					html.append("<input type=\"checkbox\"");
 					if(null != headValue){
 						if(checked || checkedValue.equals(headValue) || "true".equalsIgnoreCase(headValue) || "checked".equalsIgnoreCase(headValue) || checked(value,headValue) ) {
-							html += " checked=\"checked\"";
+							html.append(" checked=\"checked\"");
 						}
 					}
 					
 					Map<String,String> map = new HashMap<String,String>();
 					map.put(valueKey, headValue);
-					html += attribute() + crateExtraData(map) + "/>";
-					html += "<label for=\""+id+ "\" class=\""+labelClazz+"\">" + head + "</label>\n";
+					html.append(attribute() + crateExtraData(map) + "/>");
+					html.append("<label for=\"").append(id).append("\" class=\""+labelClazz+"\">").append(head).append("</label>\n");
 
-					if("true".equalsIgnoreCase(border)){
-						html += "</div>";
-					}
+					html.append(itemBorderEndTag);
 				}
 				
 				
@@ -185,10 +194,8 @@ public class Checkbox extends BaseBodyTag {
 						if(BasicUtil.isEmpty(id)){
 							id = name +"_"+ val; 
 						}
-						if("true".equalsIgnoreCase(border)){
-							html += "<div class=\""+borderClazz+"\">";
-						}
-						html += "<input type=\"checkbox\" value=\"" + val + "\" id=\"" + id + "\"";
+						html.append(itemBorderStartTag);
+						html.append("<input type=\"checkbox\" value=\"").append(val).append("\" id=\"").append(id).append("\"");
 						Object chk = null;
 						if(BasicUtil.isNotEmpty(rely)){
 							chk = item.get(rely);
@@ -197,10 +204,10 @@ public class Checkbox extends BaseBodyTag {
 							}
 						}
 						if(checkedValue.equals(chk) || "true".equalsIgnoreCase(chk+"") || "checked".equalsIgnoreCase(chk+"") || checked(chks,item.get(valueKey)) ) {
-							html += " checked=\"checked\"";
+							html.append(" checked=\"checked\"");
 						}
 						
-						html += attribute() + crateExtraData(item) + "/>";
+						html.append(attribute()).append(crateExtraData(item)).append("/>");
 						String label = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 						String text = "";
 						if (textKey.contains("{")) {
@@ -212,14 +219,12 @@ public class Checkbox extends BaseBodyTag {
 							}
 						}
 						label += text +"</label>\n";
-						html += label;
-						if("true".equalsIgnoreCase(border)){
-							html += "</div>";
-						}
+						html.append(label);
+						html.append(itemBorderEndTag);
 					}
 			}
 			JspWriter out = pageContext.getOut();
-			out.print(html);
+			out.print(html.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 			if(ConfigTable.isDebug()){
