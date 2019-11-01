@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.apache.log4j.Logger;
@@ -60,32 +61,28 @@ public class ZipUtil {
 	 *            生成的压缩文件名
 	 */
 	public static boolean zip(Collection<File> srcs, File zip, String root) {
-		boolean result = true;
-		try {
-			File dir =zip.getParentFile();
-			if(!dir.exists()){
-				dir.mkdirs();
-			}
-			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip), BUFF_SIZE));
-			for (File file : srcs) {
-				if(!zip(file, zipout, root)){
-					result = false;
-				}
-			}
-			zipout.close();
-		} catch (Exception e) {
-			result =false;
-			e.printStackTrace();
-		}
-		return result;
+		return zip(srcs, zip, root, null);
 	}
+	public static boolean append(Collection<File> srcs, File zip, String root) {
+		return append(srcs, zip, root, null);
+	}
+
 	public static boolean zip(File src, File zip, String root) {
 		List<File> files = new ArrayList<File>();
 		files.add(src);
 		return zip(files, zip, root);
 	}
+	public static boolean append(File src, File zip, String root) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return append(files, zip, root);
+	}
+
 	public static boolean zip(Collection<File> srcs, File zip) {
 		return zip(srcs, zip, "");
+	}
+	public static boolean append(Collection<File> srcs, File zip) {
+		return append(srcs, zip, "");
 	}
 
 	public static boolean zip(File src, File zip) {
@@ -93,9 +90,15 @@ public class ZipUtil {
 		files.add(src);
 		return zip(files, zip);
 	}
+	public static boolean append(File src, File zip) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return append(files, zip);
+	}
+
 	/**
-	 * 批量压缩文件（夹）
-	 * 如果zip已存在则会覆盖
+	 * 批量压缩文件（夹） 如果zip已存在则会覆盖
+	 * 
 	 * @param files
 	 *            要压缩的文件（夹）列表
 	 * @param zip
@@ -107,39 +110,146 @@ public class ZipUtil {
 	 * @throws IOException
 	 *             当压缩过程出错时抛出
 	 */
-	public static boolean zip(Collection<File> files, File zip, String root, String comment) {
+	public static boolean zip(Collection<File> files, File zip, String root, String comment, boolean append) {
 		boolean result = true;
 		long fr = System.currentTimeMillis();
 		if (ConfigTable.isDebug()) {
 			log.warn("[压缩文件][file:" + zip.getAbsolutePath() + "][size:" + files.size() + "]");
 		}
 		try {
-			File dir =zip.getParentFile();
-			if(!dir.exists()){
+			File dir = zip.getParentFile();
+			if (!dir.exists()) {
 				dir.mkdirs();
 			}
-			ZipOutputStream zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip), BUFF_SIZE));
+			ZipOutputStream zipout = null;
+			if (append && zip.exists()) {
+				//追加文件
+				File tempFile = File.createTempFile(zip.getName(), null);
+				tempFile.delete();
+				boolean renameOk = zip.renameTo(tempFile);
+				if (!renameOk) {
+					throw new RuntimeException("重命名失败 "
+							+ zip.getAbsolutePath() + " > "
+							+ tempFile.getAbsolutePath());
+				}
+				byte[] buf = new byte[1024];
+				ZipInputStream zin = new ZipInputStream(new FileInputStream(tempFile));
+				zipout = new ZipOutputStream(new FileOutputStream(zip));
+				ZipEntry entry = zin.getNextEntry();
+				while (entry != null) {
+					String name = entry.getName();
+					boolean notInFiles = true;
+					for (File f : files) {
+						if (f.getName().equals(name)) {
+							notInFiles = false;
+							break;
+						}
+					}
+					if (notInFiles) {
+						zipout.putNextEntry(new ZipEntry(name));
+						int len;
+						while ((len = zin.read(buf)) > 0) {
+							zipout.write(buf, 0, len);
+						}
+					}
+					entry = zin.getNextEntry();
+				}
+				zin.close();
+			}else{
+				zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip),BUFF_SIZE));
+			}
 			for (File file : files) {
-				if(!zip(file, zipout, root)){
+				if (!zip(file, zipout, root)) {
 					result = false;
 				}
 			}
-			zipout.setComment(comment);
+			if(null !=comment){
+				zipout.setComment(comment);
+			}
 			zipout.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		if (ConfigTable.isDebug()) {
-			log.warn("[压缩完成][time:" + (System.currentTimeMillis() - fr) + "][size:" + files.size() + "]");
+			log.warn("[压缩完成][time:" + (System.currentTimeMillis() - fr)
+					+ "][size:" + files.size() + "]");
 		}
 		return result;
 	}
 
+	public static boolean zip(Collection<File> files, File zip, String root, String comment) {
+		return zip(files, zip, root, comment, false);
+	}
+
+	public static boolean append(Collection<File> files, File zip, String root, String comment){
+		return zip(files, zip, root, comment, true);
+	}
+	
 	public static boolean zip(File src, File zip, String root, String comment) {
 		List<File> files = new ArrayList<File>();
 		files.add(src);
 		return zip(files, zip, root, comment);
 	}
+	public static boolean append(File src, File zip, String root, String comment) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return append(files, zip, root, comment);
+	}
+
+
+	/**
+	 * 压缩文件
+	 * 
+	 * @param src
+	 *            需要压缩的文件或文件夹
+	 * @param zipout
+	 *            压缩的目的文件
+	 * @param root
+	 *            压缩后文件路径,解压到当前目录时,解压完成后的目录名
+	 * @throws FileNotFoundException
+	 *             找不到文件时抛出
+	 * @throws IOException
+	 *             当压缩过程出错时抛出
+	 */
+	private static boolean zip(File src, ZipOutputStream zipout, String root) {
+		try {
+			String path = src.getName();
+			if (BasicUtil.isNotEmpty(root)) {
+				path = root + File.separator + src.getName();
+			}
+			root = new String(root.getBytes("8859_1"), "GB2312");
+			if (src.isDirectory()) {
+				File[] fileList = src.listFiles();
+				for (File file : fileList) {
+					zip(file, zipout, path);
+				}
+			} else {
+				long fr = System.currentTimeMillis();
+				byte buffer[] = new byte[BUFF_SIZE];
+				BufferedInputStream in = new BufferedInputStream(
+						new FileInputStream(src), BUFF_SIZE);
+				zipout.putNextEntry(new ZipEntry(path));
+				int realLength;
+				while ((realLength = in.read(buffer)) != -1) {
+					zipout.write(buffer, 0, realLength);
+				}
+				in.close();
+				zipout.flush();
+				zipout.closeEntry();
+				if (ConfigTable.isDebug()) {
+					log.warn("[压缩文件][添加文件][耗时:"
+							+ DateUtil.conversion(System.currentTimeMillis()
+									- fr) + "][file:" + src.getAbsolutePath()
+							+ "]");
+				}
+			}
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
 	/**
 	 * 解压缩一个文件
 	 * 
@@ -168,7 +278,8 @@ public class ZipUtil {
 		List<File> files = new ArrayList<File>();
 		long fr = System.currentTimeMillis();
 		if (ConfigTable.isDebug()) {
-			log.warn("[解压文件][file:" + zip.getAbsolutePath() + "][dir:" + dir.getAbsolutePath() + "]");
+			log.warn("[解压文件][file:" + zip.getAbsolutePath() + "][dir:"
+					+ dir.getAbsolutePath() + "]");
 		}
 		int size = 0;
 		try {
@@ -177,7 +288,8 @@ public class ZipUtil {
 			}
 			ZipFile zf = new ZipFile(zip, Charset.forName("GBK"));
 			int total = zf.size();
-			for (Enumeration<?> entries = zf.entries(); entries.hasMoreElements();) {
+			for (Enumeration<?> entries = zf.entries(); entries
+					.hasMoreElements();) {
 				ZipEntry entry = ((ZipEntry) entries.nextElement());
 				if (entry.isDirectory()) {
 					continue;
@@ -202,7 +314,14 @@ public class ZipUtil {
 				in.close();
 				out.close();
 				if (ConfigTable.isDebug()) {
-					log.warn("[解压完成][进度:"+size+"/"+total+"][耗时:" + DateUtil.conversion(System.currentTimeMillis() - fr) + "][file:" + desFile.getAbsolutePath() + "]");
+					log.warn("[解压完成][进度:"
+							+ size
+							+ "/"
+							+ total
+							+ "][耗时:"
+							+ DateUtil.conversion(System.currentTimeMillis()
+									- fr) + "][file:"
+							+ desFile.getAbsolutePath() + "]");
 				}
 			}
 			zf.close();
@@ -210,7 +329,9 @@ public class ZipUtil {
 			e.printStackTrace();
 		}
 		if (ConfigTable.isDebug()) {
-			log.warn("[解压完成][共耗时:" + DateUtil.conversion(System.currentTimeMillis() - fr) + "][dir:" + dir.getAbsolutePath() + "][size:" + size + "]");
+			log.warn("[解压完成][共耗时:"
+					+ DateUtil.conversion(System.currentTimeMillis() - fr)
+					+ "][dir:" + dir.getAbsolutePath() + "][size:" + size + "]");
 		}
 		return files;
 	}
@@ -245,7 +366,8 @@ public class ZipUtil {
 			Enumeration<?> entries = getEntriesEnumeration(zip);
 			while (entries.hasMoreElements()) {
 				ZipEntry entry = ((ZipEntry) entries.nextElement());
-				entryNames.add(new String(getEntryName(entry).getBytes("GB2312"), "8859_1"));
+				entryNames.add(new String(getEntryName(entry)
+						.getBytes("GB2312"), "8859_1"));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -315,54 +437,5 @@ public class ZipUtil {
 			e.printStackTrace();
 		}
 		return result;
-	}
-
-	/**
-	 * 压缩文件
-	 * 
-	 * @param src
-	 *            需要压缩的文件或文件夹
-	 * @param zipout
-	 *            压缩的目的文件
-	 * @param root
-	 *            压缩后文件路径,解压到当前目录时,解压完成后的目录名
-	 * @throws FileNotFoundException
-	 *             找不到文件时抛出
-	 * @throws IOException
-	 *             当压缩过程出错时抛出
-	 */
-	private static boolean zip(File src, ZipOutputStream zipout, String root) {
-		try {
-			String path = src.getName();
-			if(BasicUtil.isNotEmpty(root)){
-				path = root +  File.separator + src.getName();
-			}
-			root = new String(root.getBytes("8859_1"), "GB2312");
-			if (src.isDirectory()) {
-				File[] fileList = src.listFiles();
-				for (File file : fileList) {
-					zip(file, zipout, path);
-				}
-			} else {
-				long fr = System.currentTimeMillis();
-				byte buffer[] = new byte[BUFF_SIZE];
-				BufferedInputStream in = new BufferedInputStream(new FileInputStream(src), BUFF_SIZE);
-				zipout.putNextEntry(new ZipEntry(path));
-				int realLength;
-				while ((realLength = in.read(buffer)) != -1) {
-					zipout.write(buffer, 0, realLength);
-				}
-				in.close();
-				zipout.flush();
-				zipout.closeEntry();
-				if(ConfigTable.isDebug()){
-					log.warn("[压缩文件][添加文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:" + src.getAbsolutePath() + "]");
-				}
-			}
-			return true;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
 	}
 }
