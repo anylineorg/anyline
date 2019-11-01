@@ -54,11 +54,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-@Service("anylineService")
+@Service("anyline.service")
 public class AnylineServiceImpl implements AnylineService {
 	protected final Logger log = Logger.getLogger(this.getClass());
 	@Autowired(required = false)
-	@Qualifier("anylineDao")
+	@Qualifier("anyline.dao")
 	protected AnylineDao dao;
 	
 	
