@@ -48,13 +48,13 @@ public class Radio extends BaseBodyTag{
 	private String textKey = "NM";
 	private String head;
 	private String headValue;
-	private String border = "true";
+	private String border = "true";//条目border(内部包含checkox,label) true, false, div, li, dd
 	private String borderClazz = "al-radio-item-border";
 	private String labelClazz = "al-radio-item-label";
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-		String html = "";
+		StringBuilder html = new StringBuilder();
 //		valueKey = DataRow.keyCase(valueKey);
 //		textKey = DataRow.keyCase(textKey);
 		try{
@@ -88,6 +88,19 @@ public class Radio extends BaseBodyTag{
 					data = list;
 				}
 
+				//条目边框
+				String itemBorderTagName ="";
+				String itemBorderStartTag = "";
+				String itemBorderEndTag = "";
+				if(BasicUtil.isNotEmpty(border) && !"false".equals(border)){
+					if("true".equalsIgnoreCase(border)){
+						itemBorderTagName = "div";
+					}else{
+						itemBorderTagName = border;
+					}
+					itemBorderStartTag = "<"+itemBorderTagName+" class=\""+borderClazz+"\">";
+					itemBorderEndTag = "</"+itemBorderTagName+">";
+				}
 				if(null == headValue){
 					headValue = "";
 				}
@@ -100,20 +113,16 @@ public class Radio extends BaseBodyTag{
 					if(BasicUtil.isEmpty(id)){
 						id = name +"_"+ headValue; 
 					}
-					if("true".equalsIgnoreCase(border)){
-						html += "<div class=\""+borderClazz+"\">";
-					}
-					html += "<input type=\"radio\"";
+					html.append(itemBorderStartTag);
+					html.append("<input type=\"radio\"");
 					if((null != headValue && headValue.equals(value))){
-						html += " checked = \"checked\"";
+						html.append(" checked = \"checked\"");
 					}
 					Map<String,String> map = new HashMap<String,String>();
 					map.put(valueKey, headValue);
-					html += attribute() + crateExtraData(map) + "/>";
-					html += "<label for=\""+id+ "\" class=\""+labelClazz+"\">" + head + "</label>\n";
-					if("true".equalsIgnoreCase(border)){
-						html += "</div>";
-					}
+					html.append(attribute()).append(crateExtraData(map)).append("/>");
+					html.append("<label for=\"").append(id).append("\" class=\"").append(labelClazz).append("\">").append(head).append("</label>\n");
+					html.append(itemBorderEndTag);
 				}
 				
 				
@@ -129,14 +138,12 @@ public class Radio extends BaseBodyTag{
 					}
 					
 					String id = name +"_"+ value;
-					if("true".equalsIgnoreCase(border)){
-						html += "<div class=\""+borderClazz+"\">";
-					}
-					html += "<input type=\"radio\" value=\"" + value + "\" id=\"" + id + "\"";
+					html.append(itemBorderStartTag);
+					html.append("<input type=\"radio\" value=\"").append(value).append("\" id=\"").append(id).append("\"");
 					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
-						html += " checked=\"checked\"";
+						html.append(" checked=\"checked\"");
 					}
-					html += attribute() + crateExtraData(item) + "/>";
+					html.append(attribute()).append(crateExtraData(item)).append("/>");
 					String label = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 					String text = "";
 					if (textKey.contains("{")) {
@@ -148,10 +155,8 @@ public class Radio extends BaseBodyTag{
 						}
 					}
 					label += text +"</label>\n";
-					html += label;
-					if("true".equalsIgnoreCase(border)){
-						html += "</div>";
-					}
+					html.append(label);
+					html.append(itemBorderEndTag);
 				}
 			}
 			JspWriter out = pageContext.getOut();
