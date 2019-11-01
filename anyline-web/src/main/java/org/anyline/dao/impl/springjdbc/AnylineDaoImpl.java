@@ -59,7 +59,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
  
-@Repository("anylineDao")
+@Repository("anyline.dao")
 public class AnylineDaoImpl implements AnylineDao {
 	protected static final Logger log = Logger.getLogger(AnylineDaoImpl.class);
 	
