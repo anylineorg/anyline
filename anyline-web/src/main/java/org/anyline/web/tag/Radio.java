@@ -29,14 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
-import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
+import org.apache.log4j.Logger;
 
 
 public class Radio extends BaseBodyTag{
@@ -51,6 +48,7 @@ public class Radio extends BaseBodyTag{
 	private String border = "true";//条目border(内部包含checkox,label) true, false, div, li, dd
 	private String borderClazz = "al-radio-item-border";
 	private String labelClazz = "al-radio-item-label";
+	private String label = "";//label标签体，如果未定义label则生成默认label标签体{textKey}
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -144,18 +142,28 @@ public class Radio extends BaseBodyTag{
 						html.append(" checked=\"checked\"");
 					}
 					html.append(attribute()).append(crateExtraData(item)).append("/>");
-					String label = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
-					String text = "";
-					if (textKey.contains("{")) {
-						text = parseRuntimeValue(item,textKey);
-					} else {
-						Object v = item.get(textKey);
-						if (null != v) {
-							text = v.toString();
+					
+					if(BasicUtil.isEmpty(label)){
+						String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
+						String labelBody = "";
+						if (textKey.contains("{")) {
+							labelBody = parseRuntimeValue(item,textKey);
+						} else {
+							Object v = item.get(textKey);
+							if (null != v) {
+								labelBody = v.toString();
+							}
 						}
+						labelHtml += labelBody +"</label>\n";
+						html.append(labelHtml);
+					}else{//指定label文本
+						String labelHtml = label;
+						if(labelHtml.contains("{") && labelHtml.contains("}")){
+							labelHtml = parseRuntimeValue(item,labelHtml);
+						}
+						html.append(labelHtml);
 					}
-					label += text +"</label>\n";
-					html.append(label);
+					
 					html.append(itemBorderEndTag);
 				}
 			}
@@ -224,6 +232,7 @@ public class Radio extends BaseBodyTag{
 		border = "true";
 		borderClazz = "";
 		labelClazz = "";
+		label = "";
 	}
 
 	public String getScope() {
@@ -272,6 +281,16 @@ public class Radio extends BaseBodyTag{
 
 	public void setLabelClazz(String labelClazz) {
 		this.labelClazz = labelClazz;
+	}
+
+
+	public String getLabel() {
+		return label;
+	}
+
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 	
 }
