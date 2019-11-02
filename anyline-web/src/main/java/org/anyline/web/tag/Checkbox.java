@@ -62,6 +62,7 @@ public class Checkbox extends BaseBodyTag {
 	private String border = "true";//条目border(内部包含checkox,label) true, false, div, li, dd
 	private String borderClazz = "al-chk-item-border";//
 	private String labelClazz = "al-chk-item-label";
+	private String label = "";//label标签体，如果未定义label则生成默认label标签体{textKey}
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -208,18 +209,26 @@ public class Checkbox extends BaseBodyTag {
 						}
 						
 						html.append(attribute()).append(crateExtraData(item)).append("/>");
-						String label = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
-						String text = "";
-						if (textKey.contains("{")) {
-							text = parseRuntimeValue(item,textKey);
-						} else {
-							Object v = item.get(textKey);
-							if (null != v) {
-								text = v.toString();
+						if(BasicUtil.isEmpty(label)){
+							String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
+							String labelBody = "";
+							if (textKey.contains("{")) {
+								labelBody = parseRuntimeValue(item,textKey);
+							} else {
+								Object v = item.get(textKey);
+								if (null != v) {
+									labelBody = v.toString();
+								}
 							}
+							labelHtml += labelBody +"</label>\n";
+							html.append(labelHtml);
+						}else{//指定label文本
+							String labelHtml = label;
+							if(labelHtml.contains("{") && labelHtml.contains("}")){
+								labelHtml = parseRuntimeValue(item,labelHtml);
+							}
+							html.append(labelHtml);
 						}
-						label += text +"</label>\n";
-						html.append(label);
 						html.append(itemBorderEndTag);
 					}
 			}
@@ -294,12 +303,13 @@ public class Checkbox extends BaseBodyTag {
 		property = null;
 		head= null;
 		headValue="";
-		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 		textKey = "NM";
 		rely = null;
 		border = "true";
 		borderClazz = "";
 		labelClazz = "";
+		label = "";
 	}
 
 	public String getBorder() {
@@ -359,6 +369,12 @@ public class Checkbox extends BaseBodyTag {
 	}
 	public void setCheckedValue(String checkedValue) {
 		this.checkedValue = checkedValue;
+	}
+	public String getLabel() {
+		return label;
+	}
+	public void setLabel(String label) {
+		this.label = label;
 	}
 	
 }
