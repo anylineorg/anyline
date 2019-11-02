@@ -60,7 +60,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected HttpSession session;
 	protected ServletContext servlet;
 	@Autowired(required = false)
-	@Qualifier("anylineService")
+	@Qualifier("anyline.service")
 	protected AnylineService service;
 
 	protected Object data; // 返回数据
