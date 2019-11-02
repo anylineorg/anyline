@@ -60,7 +60,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 public class AnylineController extends AbstractBasicController {
 
 	@Autowired(required = false)
-	@Qualifier("anylineService")
+	@Qualifier("anyline.service")
 	protected AnylineService service;
 	protected HttpServletRequest request;
 	protected HttpServletResponse response;
