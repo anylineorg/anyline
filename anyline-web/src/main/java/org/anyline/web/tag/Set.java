@@ -23,7 +23,6 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
 
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
@@ -39,13 +38,6 @@ public class Set extends BaseBodyTag {
 	private int index = -1;
 
 	public int doEndTag() throws JspException {
-		Tag parent = getParent();
-		if(null != parent && parent instanceof If){
-			If iftag = (If)parent;
-			if(!iftag.getTest()){
-				return EVAL_PAGE;
-			}
-		}
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try {
 			if (null != data) {
