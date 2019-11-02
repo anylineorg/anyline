@@ -199,6 +199,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>property</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>value</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -487,6 +491,10 @@
 			<name>evl</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>label</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>checkbox</name>
@@ -609,6 +617,10 @@
 		</attribute>
 		<attribute>
 			<name>evl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>label</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
