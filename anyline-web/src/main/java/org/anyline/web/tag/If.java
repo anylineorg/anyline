@@ -37,7 +37,7 @@ public class If extends BaseBodyTag implements Cloneable{
 
 	public int doStartTag(){
         if (test){
-            return EVAL_BODY_INCLUDE;
+            return EVAL_BODY_BUFFERED;
         }else{
             return SKIP_BODY;
         }
