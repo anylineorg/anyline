@@ -35,6 +35,13 @@ public class If extends BaseBodyTag implements Cloneable{
 	private boolean test;
 	private Object elseValue;
 
+	public int doStartTag(){
+        if (test){
+            return EVAL_BODY_INCLUDE;
+        }else{
+            return SKIP_BODY;
+        }
+	}
 	 public int doEndTag() throws JspException {
 		try{
 			if(test){
@@ -49,10 +56,7 @@ public class If extends BaseBodyTag implements Cloneable{
 		}finally{
 			release();
 		}
-        if (test)
-            return EVAL_BODY_INCLUDE;
-        else
-            return SKIP_BODY;
+		return EVAL_PAGE ;
 	}
 
 
