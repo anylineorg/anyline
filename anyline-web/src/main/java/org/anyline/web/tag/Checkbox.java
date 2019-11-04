@@ -50,7 +50,7 @@ public class Checkbox extends BaseBodyTag {
 	private static final Logger log = Logger.getLogger(Checkbox.class);
 	private String scope;
 	private Object data;
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 	private String textKey = "NM";
 	//private Object checked;	//
 	private String property;
@@ -306,9 +306,10 @@ public class Checkbox extends BaseBodyTag {
 		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 		textKey = "NM";
 		rely = null;
+		checked = false;
 		border = "true";
-		borderClazz = "";
-		labelClazz = "";
+		borderClazz = "al-chk-item-border";
+		labelClazz = "al-chk-item-label";
 		label = "";
 	}
 
