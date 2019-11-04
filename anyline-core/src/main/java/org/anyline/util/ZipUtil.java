@@ -204,20 +204,20 @@ public class ZipUtil {
 	 *            需要压缩的文件或文件夹
 	 * @param zipout
 	 *            压缩的目的文件
-	 * @param root
+	 * @param dir
 	 *            压缩后文件路径,解压到当前目录时,解压完成后的目录名
 	 * @throws FileNotFoundException
 	 *             找不到文件时抛出
 	 * @throws IOException
 	 *             当压缩过程出错时抛出
 	 */
-	private static boolean zip(File src, ZipOutputStream zipout, String root) {
+	private static boolean zip(File src, ZipOutputStream zipout, String dir) {
 		try {
 			String path = src.getName();
-			if (BasicUtil.isNotEmpty(root)) {
-				path = root + File.separator + src.getName();
+			if (BasicUtil.isNotEmpty(dir)) {
+				path = dir + File.separator + src.getName();
 			}
-			root = new String(root.getBytes("8859_1"), "GB2312");
+			dir = new String(dir.getBytes("8859_1"), "GB2312");
 			if (src.isDirectory()) {
 				File[] fileList = src.listFiles();
 				for (File file : fileList) {
