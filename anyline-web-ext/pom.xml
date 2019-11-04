@@ -7,11 +7,10 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-maven-jar</artifactId>
-		<version>8.1.8</version>
+		<version>8.1.9</version>
 	</parent>
 	
 	<artifactId>anyline-web-ext</artifactId>
-	<version>8.1.8</version>
 	<packaging>jar</packaging>
 	<name>anyline-web-ext</name>
 	<url>http://www.anyline.org/web/ext</url>
