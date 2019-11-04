@@ -41,7 +41,7 @@ public class Radio extends BaseBodyTag{
 	private static final Logger log = Logger.getLogger(Radio.class);
 	private String scope;
 	private Object data;
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 	private String textKey = "NM";
 	private String head;
 	private String headValue;
@@ -227,11 +227,11 @@ public class Radio extends BaseBodyTag{
 		body = null;
 		head = null;
 		headValue = null;
-		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 		textKey = "NM";
 		border = "true";
-		borderClazz = "";
-		labelClazz = "";
+		borderClazz = "al-radio-item-border";
+		labelClazz = "al-radio-item-label";
 		label = "";
 	}
 
