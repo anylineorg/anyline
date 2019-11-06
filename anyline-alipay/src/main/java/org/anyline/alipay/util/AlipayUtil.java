@@ -11,7 +11,8 @@ import org.anyline.alipay.entity.AlipayTransferQueryResult;
 import org.anyline.alipay.entity.AlipayTransferResult;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
@@ -28,7 +29,8 @@ import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
 
 public class AlipayUtil {
-	private static final Logger log = Logger.getLogger(AlipayUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(AlipayUtil.class);
+
 	private AlipayClient client = null;
 	private AlipayConfig config = null;
 	private static Hashtable<String, AlipayUtil> instances = new Hashtable<String, AlipayUtil>();
@@ -145,7 +147,7 @@ public class AlipayUtil {
 			result = new AlipayTradeQueryResult();
 			e.printStackTrace();
 		}finally{
-			log.warn("[单笔转账到支付宝账户][data:"+json+"][result:"+BeanUtil.object2json(result)+"]");
+			log.warn("[单笔转账到支付宝账户][data:{}][result:{}]", json,BeanUtil.object2json(result));
 		}
 		return result;
 	}
@@ -166,7 +168,7 @@ public class AlipayUtil {
 			result = new AlipayTransferResult();
 			e.printStackTrace();
 		}finally{
-			log.warn("[单笔转账到支付宝账户][data:"+json+"][result:"+BeanUtil.object2json(result)+"]");
+			log.warn("[单笔转账到支付宝账户][data:{}][result:{}]", json,BeanUtil.object2json(result));
 		}
 		return result;
 	}
@@ -187,7 +189,7 @@ public class AlipayUtil {
 			result = new AlipayTransferQueryResult();
 			e.printStackTrace();
 		}finally{
-			log.warn("[单笔转账到支付宝账户查询][data:"+json+"][result:"+BeanUtil.object2json(result)+"]");
+			log.warn("[单笔转账到支付宝账户查询][data:{}][result:{}]", json,BeanUtil.object2json(result));
 		}
 		return result;
 	}
