@@ -31,12 +31,12 @@ import org.anyline.entity.DataSet;
 import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.qq.util.QQConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.web.tag.BaseBodyTag;
 import org.anyline.weixin.mp.util.WXMPConfig;
 import org.anyline.weixin.mp.util.WXMPUtil;
 import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXConfig.SNSAPI_SCOPE;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Auth extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
@@ -52,7 +52,7 @@ public class Auth extends BaseBodyTag {
 	private String id;
 	private String params;
 	
-	private static final Logger log = Logger.getLogger(Auth.class);
+	private static final Logger log = LoggerFactory.getLogger(Auth.class);
 	public int doEndTag() {
 		JspWriter writer = null;
 		boolean result = true;
@@ -63,7 +63,7 @@ public class Auth extends BaseBodyTag {
 		}
 		
 		try {
-			log.error("[第三方登录][type:"+type+"]");
+			log.error("[第三方登录][type:{}]",type);
 			writer = pageContext.getOut();
 			if(encode){
 				String stateValue = state;
