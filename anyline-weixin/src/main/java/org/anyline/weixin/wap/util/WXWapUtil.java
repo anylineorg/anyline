@@ -6,18 +6,19 @@ import java.util.Map;
 
 import org.anyline.entity.DataRow;
 import org.anyline.net.HttpUtil;
+import org.anyline.net.SimpleHttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.SimpleHttpUtil;
 import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.anyline.weixin.wap.entity.WXWapPrePayOrder;
 import org.anyline.weixin.wap.entity.WXWapPrePayResult;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WXWapUtil {
-	private static final Logger log = Logger.getLogger(WXWapUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(WXWapUtil.class);
 	private static Hashtable<String,WXWapUtil> instances = new Hashtable<String,WXWapUtil>();
 	private WXWapConfig config;
 	
@@ -73,22 +74,22 @@ public class WXWapUtil {
 		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单SIGN:" + sign);
+			log.warn("[统一下单][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单XML:" + xml);
+			log.warn("[统一下单][xml:{}]", xml);
 		}
 		String rtn = SimpleHttpUtil.post(WXConfig.API_URL_UNIFIED_ORDER, xml);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单RETURN:" + rtn);
+			log.warn("[统一下单][return:{}]", rtn);
 		}
 		result = BeanUtil.xml2object(rtn, WXWapPrePayResult.class);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单PREID:" + result.getPrepay_id());
+			log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());
 		}
 		return result;
 	}
@@ -113,7 +114,7 @@ public class WXWapUtil {
 		row.put("packagevalue", row.get("package"));
 		row.remove("package");
 		if(ConfigTable.isDebug()){
-			log.warn("APP调起微信支付参数:" + row.toJSON());
+			log.warn("[APP调起微信支付][参数:{}]", row.toJSON());
 		}
 		return row;
 	}

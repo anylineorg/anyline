@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.anyline.entity.DataRow;
 import org.anyline.net.HttpUtil;
+import org.anyline.net.SimpleHttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.SimpleHttpUtil;
 import org.anyline.weixin.open.entity.WXOpenPayRefund;
 import org.anyline.weixin.open.entity.WXOpenPayRefundResult;
 import org.anyline.weixin.open.entity.WXOpenPrePayOrder;
@@ -19,10 +19,11 @@ import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXUtil;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WXOpenUtil {
-	private static final Logger log = Logger.getLogger(WXOpenUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(WXOpenUtil.class);
 	private static Hashtable<String,WXOpenUtil> instances = new Hashtable<String,WXOpenUtil>();
 	private WXOpenConfig config;
 
@@ -84,22 +85,22 @@ public class WXOpenUtil {
 		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单SIGN:" + sign);
+			log.warn("统一下单][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单XML:" + xml);
+			log.warn("统一下单][xml:{}]", xml);
 		}
 		String rtn = SimpleHttpUtil.post(WXConfig.API_URL_UNIFIED_ORDER, xml);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单RETURN:" + rtn);
+			log.warn("[统一下单][return:{}]", rtn);
 		}
 		result = BeanUtil.xml2object(rtn, WXOpenPrePayResult.class);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单PREID:" + result.getPrepay_id());
+			log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());
 		}
 		return result;
 	}
@@ -125,17 +126,17 @@ public class WXOpenUtil {
 		map.put("sign", sign);
 		
 		if(ConfigTable.isDebug()){
-			log.warn("退款申请SIGN:" + sign);
+			log.warn("[退款申请][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
 		if(ConfigTable.isDebug()){
-			log.warn("退款申请XML:" + xml);
-			log.warn("证书:"+config.PAY_KEY_STORE_FILE);
+			log.warn("[退款申请][xml:{}]", xml);
+			log.warn("[退款申请][证书:{}]", config.PAY_KEY_STORE_FILE);
 		}
 		File keyStoreFile = new File(config.PAY_KEY_STORE_FILE);
 		if(!keyStoreFile.exists()){
-			log.warn("密钥文件不存在:"+config.PAY_KEY_STORE_FILE);
+			log.warn("[密钥文件不存在][file:{}]",config.PAY_KEY_STORE_FILE);
 			return new WXOpenPayRefundResult(false,"密钥文件不存在");
 		}
 		String keyStorePassword = config.PAY_KEY_STORE_PASSWORD;
@@ -149,7 +150,7 @@ public class WXOpenUtil {
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
-    			log.warn("退款申请调用结果:" + txt);
+    			log.warn("[退款申请调用][result:{}", txt);
     		}
             result = BeanUtil.xml2object(txt, WXOpenPayRefundResult.class);
 		}catch(Exception e){
@@ -178,7 +179,7 @@ public class WXOpenUtil {
 		row.put("packagevalue", row.get("package"));
 		row.remove("package");
 		if(ConfigTable.isDebug()){
-			log.warn("APP调起微信支付参数:" + row.toJSON());
+			log.warn("[APP调起微信支付][参数:{}]", row.toJSON());
 		}
 		return row;
 	}

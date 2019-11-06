@@ -26,7 +26,8 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
 import org.anyline.web.tag.BaseBodyTag;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  *是否支付微信JS
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
  */
 public class WeixinCheck extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(WeixinCheck.class);
+	private static final Logger log = LoggerFactory.getLogger(WeixinCheck.class);
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
