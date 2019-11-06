@@ -6,7 +6,8 @@ import java.util.Map;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aliyuncs.DefaultAcsClient;
 import com.aliyuncs.IAcsClient;
@@ -23,7 +24,7 @@ import com.aliyuncs.profile.IClientProfile;
  * 
  */
 public class SMSUtil {
-	private static final Logger log = Logger.getLogger(SMSUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(SMSUtil.class);
 	private SMSConfig config = null;
 	private static Hashtable<String,SMSUtil> instances = new Hashtable<String,SMSUtil>();
 	
