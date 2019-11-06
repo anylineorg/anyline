@@ -25,12 +25,13 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SerialNumber extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(SerialNumber.class);
+	private static final Logger log = LoggerFactory.getLogger(SerialNumber.class);
 	private Object data;		//分页数据 DataSete 或PageNavi
 	private int index;	//当前页下标 varStatus.index
 

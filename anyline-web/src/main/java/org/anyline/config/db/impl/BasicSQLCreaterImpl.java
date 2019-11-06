@@ -35,7 +35,6 @@ import org.anyline.config.db.sql.auto.TableSQL;
 import org.anyline.config.db.sql.auto.TextSQL;
 import org.anyline.config.db.sql.xml.XMLSQL;
 import org.anyline.config.http.ConfigStore;
-import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.AnylineEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -44,9 +43,8 @@ import org.anyline.exception.SQLUpdateException;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.SQLCreaterUtil;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -57,7 +55,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private static final long serialVersionUID = -1280284751032142401L;
-	protected static final Logger log = Logger.getLogger(BasicSQLCreaterImpl.class);
+	protected static final Logger log = LoggerFactory.getLogger(BasicSQLCreaterImpl.class);
 	public String disKeyFr = "";
 	public String disKeyTo = "";
 	public DB_TYPE type(){

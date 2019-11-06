@@ -25,14 +25,14 @@ import java.lang.reflect.Method;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 
-import org.apache.log4j.Logger;
-
 import org.anyline.util.BasicUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Else extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Else.class);
+	private static final Logger log = LoggerFactory.getLogger(Else.class);
 	
 	 public int doEndTag() throws JspException {
 		try{

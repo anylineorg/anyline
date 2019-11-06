@@ -28,12 +28,13 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class DateFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(DateFormat.class);
+	private static final Logger log = LoggerFactory.getLogger(DateFormat.class);
 	private String format;
 	private String lang;
 	private Object nvl = false;	//如果value为空("",null) 是否显示当前时间,默认false

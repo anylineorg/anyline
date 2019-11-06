@@ -27,12 +27,13 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.NumberUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(NumberFormat.class);
+	private static final Logger log = LoggerFactory.getLogger(NumberFormat.class);
 	private String format;
 	private Object min;
 	private Object max;
@@ -63,14 +64,14 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 					BigDecimal minNum = new BigDecimal(min.toString());
 					if(minNum.compareTo(num) > 0){
 						num = minNum;
-						log.warn("[number format][超过最小值:"+min+"]");
+						log.warn("[number format][超过最小值:{}]", min);
 					}
 				}
 				if(BasicUtil.isNotEmpty(max)){
 					BigDecimal maxNum = new BigDecimal(max.toString());
 					if(maxNum.compareTo(num) < 0){
 						num = maxNum;
-						log.warn("[number format][超过最大值:"+max+"]");
+						log.warn("[number format][超过最大值:{}]", max);
 					}
 				}
 				result = NumberUtil.format(num,format);

@@ -28,7 +28,8 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
 
 import org.anyline.util.BasicUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -36,7 +37,7 @@ import org.apache.log4j.Logger;
  */
 public class Evl extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Evl.class);
+	private static final Logger log = LoggerFactory.getLogger(Evl.class);
 	
 	 public int doEndTag() throws JspException {
 		 if(null == paramList || paramList.size()==0){

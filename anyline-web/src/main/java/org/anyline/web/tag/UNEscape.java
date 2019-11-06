@@ -24,11 +24,12 @@ import java.io.IOException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class UNEscape extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(UNEscape.class);
+	private static final Logger log = LoggerFactory.getLogger(UNEscape.class);
 
 	public int doEndTag() {
 		String src = BasicUtil.nvl(value,body,"").toString().trim();

@@ -32,7 +32,8 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.SeoUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.web.tag.BaseBodyTag;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 随机插入关键词
@@ -42,7 +43,7 @@ import org.apache.log4j.Logger;
  */
 public class Keywords extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Keywords.class);
+	private static final Logger log = LoggerFactory.getLogger(Keywords.class);
 	//<seo:keyword key="java" count="3"/>
 	//<al:param key ="" count="3"/>
 

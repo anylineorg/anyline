@@ -32,12 +32,13 @@ import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.SQL;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BasicSQL implements SQL{
 	private static final long serialVersionUID = 4425561226335747225L;
 
-	protected static final Logger log = Logger.getLogger(BasicSQL.class);
+	protected static final Logger log = LoggerFactory.getLogger(BasicSQL.class);
 	protected ConditionChain chain;			//查询条件
 	protected OrderStore orders;			//排序
 	protected GroupStore groups;			//分组条件

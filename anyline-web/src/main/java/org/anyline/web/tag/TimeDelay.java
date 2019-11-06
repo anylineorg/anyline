@@ -25,9 +25,10 @@ import java.util.Date;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 从value|body起到现在经过多少时间
@@ -36,7 +37,7 @@ import org.anyline.util.DateUtil;
  */
 public class TimeDelay extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(TimeDelay.class);
+	private static final Logger log = LoggerFactory.getLogger(TimeDelay.class);
 	private Object nvl = false;	//如果value为空("",null) 是否显示当时间,默认false
 
 	public int doEndTag() throws JspException {
