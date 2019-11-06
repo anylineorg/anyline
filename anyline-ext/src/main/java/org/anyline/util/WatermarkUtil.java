@@ -35,10 +35,11 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WatermarkUtil {
-	protected static final Logger log = Logger.getLogger(WatermarkUtil.class);
+	protected static final Logger log = LoggerFactory.getLogger(WatermarkUtil.class);
 	private int degree = 0;								//旋转角度
 	private Color color = Color.LIGHT_GRAY;				//水印颜色
 	private String fontName = "宋体";						//字体名称
@@ -134,7 +135,7 @@ public class WatermarkUtil {
                 e.printStackTrace();
             }
         }
-        log.warn("[添加水印][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][text:"+text+"][src:"+src.getAbsolutePath()+"][target:"+target.getAbsolutePath()+"]");
+        log.warn("[添加水印][耗时:{}][text:{}][src:{}][target:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),text, src.getAbsoluteFile(), target.getAbsoluteFile());
         return true;
     }
     public void markText(String text, String src, String target){
@@ -219,7 +220,7 @@ public class WatermarkUtil {
                 e.printStackTrace();
             }
         }
-        log.warn("[添加水印][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][x:"+_x+"][y:"+_y+"][icon:"+icon.getAbsolutePath()+"][src:"+src.getAbsolutePath()+"][target:"+target.getAbsolutePath()+"]");
+        log.warn("[添加水印][耗时:{}][x:{}][y:{}][icon:{}][src:{}][target:{}]",DateUtil.conversion(System.currentTimeMillis()-fr), _x,_y,icon.getAbsoluteFile(), src.getAbsoluteFile(), target.getAbsoluteFile());
     }
 
     public void markIcon(File icon, File src, File target) {
