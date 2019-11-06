@@ -9,7 +9,8 @@ import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 短信服务
@@ -18,7 +19,7 @@ import org.apache.log4j.Logger;
  * 
  */
 public class SMSClient {
-	private static final Logger log = Logger.getLogger(SMSClient.class);
+	private static final Logger log = LoggerFactory.getLogger(SMSClient.class);
     private SMSConfig config = null;
 	private static Hashtable<String,SMSClient> instances = new Hashtable<String,SMSClient>();
 	
@@ -55,7 +56,7 @@ public class SMSClient {
 			String txt = HttpUtil.get(config.SMS_SERVER, "UTF-8", map).getText();
 			result = BeanUtil.json2oject(txt, SMSResult.class);
 			if(ConfigTable.isDebug()){
-				log.warn("[SMS SEND][mobile:"+mobile+"][result:"+txt+"]");
+				log.warn("[SMS SEND][mobile:{}][result:{}]",mobile,txt);
 			}
 		}catch(Exception e){
 			result = new SMSResult();
