@@ -27,14 +27,14 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimeUtility;
 
 import org.anyline.mail.entity.Mail;
-import org.anyline.mail.util.MailConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Pop3Util {
-	private static final Logger log = Logger.getLogger(Pop3Util.class);
+	private static final Logger log = LoggerFactory.getLogger(Pop3Util.class);
 	private MailConfig config = null;
 	private Properties props = new Properties();
 	private static Hashtable<String, Pop3Util> instances = new Hashtable<String, Pop3Util>();
@@ -75,7 +75,7 @@ public class Pop3Util {
 	 * @return
 	 */
 	public boolean send(String fr, String to, String title, String content) {
-		log.warn("[send email][fr:" + fr + "][to:" + to + "][title:" + title + "][centent:" + content + "]");
+		log.warn("[send email][fr:{}][to:{}][title:{}][centent:{}]", fr, to, title, content);
 		try {
 			Session mailSession = Session.getDefaultInstance(props);
 			Message msg = new MimeMessage(mailSession);
@@ -202,7 +202,7 @@ public class Pop3Util {
 			String subject = msg.getSubject();
 			boolean isSeen = isSeen(msg);
 			boolean isContainerAttachment = isContainAttachment(msg);
-			log.info("[解析邮件][subject:" + subject + "][发送时间:" + DateUtil.format(sendTime) + "][是否已读:" + isSeen + "][是否包含附件:" + isContainerAttachment+ "]");
+			log.info("[解析邮件][subject:{}][发送时间:{}][是否已读:{}][是否包含附件:{}]",subject,DateUtil.format(sendTime),isSeen,isContainerAttachment);
 			mail.setSubject(subject);
 			mail.setSendTime(sendTime);
 			mail.setReceiveTime(receiveTime);
@@ -240,7 +240,7 @@ public class Pop3Util {
 			try {
 				subject = message.getSubject();
 	            message.setFlag(Flags.Flag.DELETED, true);
-	            log.warn("[删除邮件][subject:"+subject+"]");
+	            log.warn("[删除邮件][subject:{}]",subject);
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}
@@ -260,7 +260,7 @@ public class Pop3Util {
 			try {
 				subject = message.getSubject();
 	            message.setFlag(Flags.Flag.SEEN, true);
-	            log.warn("[标记为已读][subject:" + subject+"]");   
+	            log.warn("[标记为已读][subject:{}]",subject);   
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			} 
