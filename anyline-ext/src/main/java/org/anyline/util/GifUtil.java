@@ -11,7 +11,8 @@ import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.FileImageOutputStream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.imageio.plugins.gif.GIFImageReader;
 import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
@@ -19,7 +20,7 @@ import com.sun.imageio.plugins.gif.GIFImageWriter;
 import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
 
 public class GifUtil {
-	private static Logger log = Logger.getLogger(GifUtil.class);
+	private static Logger log = LoggerFactory.getLogger(GifUtil.class);
     /**
      * 拆分gif
      * @param file
@@ -104,7 +105,7 @@ public class GifUtil {
                 src[i] = ImageIO.read(item); // 读入需要播放的jpg文件  
                 e.addFrame(src[i]);  //添加到帧中  
                 if(ConfigTable.isDebug()){
-                	log.warn("[合成 gif][第"+(i+1)+"/"+size+"帧][gif:"+tar.getAbsolutePath()+"][源文件:"+item.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+                	log.warn("[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsolutePath(), item.getAbsoluteFile(),System.currentTimeMillis()-fr);
                 }
             }  
             e.finish();  
@@ -133,7 +134,7 @@ public class GifUtil {
                 src[i] = ImageIO.read(item); // 读入需要播放的jpg文件  
                 e.addFrame(src[i]);  //添加到帧中  
                 if(ConfigTable.isDebug()){
-                	log.warn("[合成 gif][第"+(i+1)+"/"+size+"帧][gif:"+tar.getAbsolutePath()+"][源文件:"+item.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+                	log.warn("[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsoluteFile(),item.getAbsoluteFile(),System.currentTimeMillis()-fr);
                 }
             }  
             e.finish();  
