@@ -21,5 +21,10 @@
 			<artifactId>anyline-core</artifactId>
 			<version>${anyline.core.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>${jsch.version}</version>
+		</dependency>
 	</dependencies>
 </project>
