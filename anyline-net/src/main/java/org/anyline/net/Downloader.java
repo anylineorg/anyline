@@ -15,10 +15,11 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Downloader {
-	private static Logger log = Logger.getLogger(Downloader.class);
+	private static Logger log = LoggerFactory.getLogger(Downloader.class);
 	private Map<String, DownloadTask> tasks = new Hashtable<String, DownloadTask>();
 	private int maxParallel = 5		; //最大并行下载数量
 	private int curParallel			; //当前并行下载数量	
@@ -53,7 +54,7 @@ public class Downloader {
 //		public void init(String url, String thread, long total, long past){
 //			DownloadTask task = getTask(url);
 //			if(null == task){
-//				log.error("[任务不存在][url:"+url+"]");
+//				log.error("[任务不存在][url:{}]",url);
 //				return ;
 //			}
 //			task.init(total, past);
@@ -62,7 +63,7 @@ public class Downloader {
 //		public void step(String url, String thread, long len){
 //			DownloadTask task = getTask(url);
 //			if(null == task){
-//				log.error("[任务不存在][url:"+url+"]");
+//				log.error("[任务不存在][url:{}]",url);
 //				return ;
 //			}
 //			task.step(len);
@@ -75,7 +76,7 @@ public class Downloader {
 //		public void finish(String url, String thread){
 //			DownloadTask task = getTask(url);
 //			if(null == task){
-//				log.error("[任务不存在][url:"+url+"]");
+//				log.error("[任务不存在][url:{}]",url);
 //				return ;
 //			}
 //			task.finish();
@@ -198,7 +199,7 @@ public class Downloader {
 	public void stop(String url){
 		DownloadTask task = getTask(url);
 		if(null == task){
-			log.error("[任务不存在][url:"+url+"]");
+			log.error("[任务不存在][url:{}]",url);
 			return ;
 		}
 		if(null != task){
@@ -474,7 +475,7 @@ public class Downloader {
 	public Downloader add(DownloadTask task){
 		String url  = task.getUrl();
 		String code = url;
-		log.warn("[add task][code:"+code+"][url:"+task.getUrl()+"]");
+		log.warn("[add task][code:{}][url:{}]", code, task.getUrl());
 		if(null == tasks.get(code)){
 			tasks.put(code, task);
 			task.setIndex(tasks.size());
@@ -535,7 +536,7 @@ public class Downloader {
 		String code = url;
 		DownloadTask task = tasks.get(code);
 		if(null == task){
-			log.error("[任务不存在][code:"+code+"][url:"+url+"]");
+			log.error("[任务不存在][code:{}][url:{}]",code,url);
 		}
 		return task;
 	}

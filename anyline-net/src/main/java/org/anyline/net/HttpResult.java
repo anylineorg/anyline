@@ -25,10 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.anyline.util.FileUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class HttpResult {
-	private static final Logger log = Logger.getLogger(HttpResult.class);
+	private static final Logger log = LoggerFactory.getLogger(HttpResult.class);
 	private String url				;//URL
 	private String backFileCd		; //备份文件CD
 	private int status				;
@@ -53,7 +54,7 @@ public class HttpResult {
 			fileType = contentType.split(";")[0];
 		}catch(Exception e){
 			fileType = "text/html";
-			log.error("setContentType$parse content type("+contentType+")");
+			log.error("setContentType$parse content type({})",contentType);
 		}
 		try{
 			String tmps[] = contentType.split("=");
@@ -77,7 +78,6 @@ public class HttpResult {
 			fileType = fileType.toLowerCase();
 			fileType = FileUtil.httpFileExtend.get(FileUtil.httpFileType.indexOf(fileType));
 		}catch(Exception e){
-			log.error("parseHttpFileType:\n"+e);
 			fileType = "";
 		}
 		return fileType;
