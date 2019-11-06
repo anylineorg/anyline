@@ -36,14 +36,15 @@ import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.JSONDateFormatProcessor;
 import org.anyline.util.JSONStringFormatProcessor;
-import org.apache.log4j.Logger;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionInvocation;
 
 public class JSONResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(JSONResult.class);
+	private static final Logger log = LoggerFactory.getLogger(JSONResult.class);
 	private boolean result = true;
 	private Object data = null;
 	private String message = null;
