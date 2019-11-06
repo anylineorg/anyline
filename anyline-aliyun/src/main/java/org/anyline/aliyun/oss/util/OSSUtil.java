@@ -15,7 +15,8 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
@@ -28,7 +29,7 @@ import com.aliyun.oss.model.ObjectListing;
 import com.aliyun.oss.model.PolicyConditions;
 
 public class OSSUtil {
-	private static final Logger log = Logger.getLogger(OSSUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(OSSUtil.class);
 	private OSSClient client = null;
 	private OSSConfig config = null;
 	private static Hashtable<String, OSSUtil> instances = new Hashtable<String, OSSUtil>();
@@ -90,7 +91,7 @@ public class OSSUtil {
 			result = createUrl(path);
 			client.putObject(config.BUCKET, path, file);
 			if(ConfigTable.isDebug()){
-				log.warn("[oss upload file][result:true][file:"+file.getAbsolutePath()+"][url:"+result+"]");
+				log.warn("[oss upload file][result:true][file:{}][url:{}]",file.getAbsolutePath(), result);
 			}
 		}
 		return result;
@@ -105,7 +106,7 @@ public class OSSUtil {
 		try {
 			client.putObject(config.BUCKET, path, url.openStream());
 			if(ConfigTable.isDebug()){
-				log.warn("[oss upload file][result:true][file:"+path+"]");
+				log.warn("[oss upload file][result:true][file:{}]",path);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -121,7 +122,7 @@ public class OSSUtil {
 		}
 		client.putObject(config.BUCKET, path, in);
 		if(ConfigTable.isDebug()){
-			log.warn("[oss upload file][result:true][file:"+path+"]");
+			log.warn("[oss upload file][result:true][file:{}]",path);
 		}
 		return createUrl(path);
 	}
@@ -198,7 +199,7 @@ public class OSSUtil {
 		        	e.printStackTrace();
 		        }
 		        if(ConfigTable.isDebug()){
-		        	log.warn("[oss download file][local file:"+file.getAbsolutePath()+"][remote file:"+key+"]");
+		        	log.warn("[oss download file][local:{}][remote:{}]",file.getAbsolutePath(),key);
 		        }
 		    }
 		    nextMarker = objectListing.getNextMarker();
@@ -222,7 +223,7 @@ public class OSSUtil {
 			result = client.doesObjectExist(config.BUCKET,key);
 		}catch(Exception e){}
 		if(ConfigTable.isDebug()){
-			log.warn("[check exists][path:"+path+"][key:"+key+"]");
+			log.warn("[check exists][path:{}][key:{}]", path, key);
 		}
 		return result;
 	}
@@ -237,10 +238,10 @@ public class OSSUtil {
 		try{
 			String key = key(path);
 			client.deleteObject(config.BUCKET, key);
-			log.warn("[oss delete file][result:true][file:"+path+"]");
+			log.warn("[oss delete file][result:true][file:{}]", path);
 			result = true;
 		}catch(Exception e){
-			log.warn("[oss delete file][result:true][file:"+path+"]");
+			log.warn("[oss delete file][result:true][file:{}]",path);
 			result = false;
 		}
 		return result;
