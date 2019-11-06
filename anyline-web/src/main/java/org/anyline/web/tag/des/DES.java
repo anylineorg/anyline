@@ -20,9 +20,7 @@
 package org.anyline.web.tag.des;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import org.apache.log4j.Logger;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DESUtil;
 import org.anyline.web.tag.BaseBodyTag;

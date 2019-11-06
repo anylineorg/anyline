@@ -56,13 +56,14 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WebUtil {
-	static final Logger log = Logger.getLogger(WebUtil.class);
+	static final Logger log = LoggerFactory.getLogger(WebUtil.class);
 	/*
 	 * public static final String HTTP_REQUEST_PARAM_KEY_PREFIX =
 	 * "wwwanylineorgk"; //参数名加密前缀 public static final String
@@ -417,7 +418,7 @@ public class WebUtil {
 	 */
 	private static String decrypt(String src, DESKey key, String type) {
 		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-			log.warn("[decrypt][start][src:"+src+"][type:"+type+"]");
+			log.warn("[decrypt][start][src:{}][type:{}]", src, type);
 		}
 		String result = src;
 		if (null == src) {
@@ -428,7 +429,7 @@ public class WebUtil {
 			if(RegularUtil.match(result,"v\\d{5}v", Regular.MATCH_MODE.PREFIX)){
 				result = result.substring(7);
 				if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-					log.warn("[decrypt][删除混淆码][result:"+result+"]");
+					log.warn("[decrypt][删除混淆码][result:{}]",result);
 				}
 			}
 		}
@@ -444,7 +445,7 @@ public class WebUtil {
 			}
 			result = result.substring(sub);
 			if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-				log.warn("[decrypt][删除前缀][result:"+result+"]");
+				log.warn("[decrypt][删除前缀][result:{}]",result);
 			}
 			// 解析版本
 			String tmp[] = parseDESVersion(result);
@@ -468,7 +469,7 @@ public class WebUtil {
 			result = null;
 		}
 		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-			log.warn("[decrypt][end][result:"+result+"]");
+			log.warn("[decrypt][end][result:{}]",result);
 		}
 		return result;
 	}
@@ -1262,7 +1263,7 @@ public class WebUtil {
 		writer.flush();
 		String result = os.toString();
 		if(ConfigTable.isDebug() && ConfigTable.getBoolean("PARSE_JSP_LOG")){
-			log.warn("[LOAD JSP TEMPLATE][FILE:"+file+"][HTML:"+result+"]");
+			log.warn("[LOAD JSP TEMPLATE][FILE:{}][HTML:{}]", file, result);
 		}
 		return result;
 	}

@@ -49,14 +49,15 @@ import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service("anyline.service")
 public class AnylineServiceImpl implements AnylineService {
-	protected final Logger log = Logger.getLogger(this.getClass());
+	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 	@Autowired(required = false)
 	@Qualifier("anyline.dao")
 	protected AnylineDao dao;
@@ -79,7 +80,7 @@ public class AnylineServiceImpl implements AnylineService {
 	protected DataSet queryFromDao(String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
 		if(ConfigTable.isSQLDebug()){
-			log.warn("[解析SQL] [src:" + src + "]");
+			log.warn("[解析SQL][src:{}]", src);
 		}
 		//conditions = parseConditions(conditions);
 		try {
@@ -114,7 +115,7 @@ public class AnylineServiceImpl implements AnylineService {
 				for(String tmp:tmps){
 					pks.add(tmp);
 					if(ConfigTable.isSQLDebug()){
-						log.warn("[解析SQL主键] [KEY:" + tmp + "]");
+						log.warn("[解析SQL主键] [KEY:{}]",tmp);
 					}
 				}
 			}
@@ -128,7 +129,7 @@ public class AnylineServiceImpl implements AnylineService {
 		//文本sql
 		if (src.startsWith("{") && src.endsWith("}")) {
 			if(ConfigTable.isSQLDebug()){
-				log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:" + src + "]");
+				log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:{}]",src);
 			}
 			src = src.substring(1,src.length()-1);
 			src = DataSourceHolder.parseDataSource(src);//解析数据源
@@ -142,19 +143,19 @@ public class AnylineServiceImpl implements AnylineService {
 				|| src.toUpperCase().trim().startsWith("INSERT")
 				|| src.toUpperCase().trim().startsWith("UPDATE")) {
 				if(ConfigTable.isSQLDebug()){
-					log.warn("[解析SQL类型] [类型:JAVA定义] [src:" + src + "]");
+					log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
 				}
 				sql = new TextSQLImpl(src);
 			}else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
 				/* XML定义 */
 				if(ConfigTable.isSQLDebug()){
-					log.warn("[解析SQL类型] [类型:XML定义] [src:" + src + "]");
+					log.warn("[解析SQL类型] [类型:XML定义] [src:{}]", src);
 				}
 				sql = SQLStoreImpl.parseSQL(src);
 			} else {
 				/* 自动生成 */
 				if(ConfigTable.isSQLDebug()){
-					log.warn("[解析SQL类型] [类型:auto] [src:" + src + "]");
+					log.warn("[解析SQL类型] [类型:auto] [src:{}]", src);
 				}
 				sql = new TableSQLImpl();
 				sql.setDataSource(src);
@@ -202,7 +203,7 @@ public class AnylineServiceImpl implements AnylineService {
 
 	protected DataSet queryFromCacheL2(String cache2, DataSet l1, String src, ConfigStore configs, String ... conditions){
 		if(ConfigTable.isDebug()){
-			log.warn("[cache from L2][cache:"+cache2+"][src:"+src+"]");
+			log.warn("[cache from L2][cache:{}][src:{}]", cache2, src);
 		}
 		DataSet set = new DataSet();
 		SQL sql = createSQL(src);
@@ -239,7 +240,7 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 	protected DataSet queryFromCacheL1(boolean isUseCacheL2, String cache, String src, ConfigStore configs, String ... conditions){
 		if(ConfigTable.isDebug()){
-			log.warn("[cache from L1][cache:"+cache+"][src:"+src+"]");
+			log.warn("[cache from L1][cache:{}][src:{}]", cache, src);
 		}
 		DataSet set = null;
 		String key = "SET:";
@@ -265,14 +266,14 @@ public class AnylineServiceImpl implements AnylineService {
             	set = (DataSet)value;
             	set.setIsFromCache(true);
         	}else{
-        		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
+        		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]",cache);
         	}
 //        	//开启新线程提前更新缓存(90%时间)
         	long age =  (System.currentTimeMillis()- element.getCreationTime())/1000;
         	final int _max = element.getTimeToLive();
         	if(age > _max*0.9){
         		if(ConfigTable.isDebug()){
-        			log.warn("[缓存即将到期提前刷新][src:"+src+"] [生存:"  + age + "/" + _max + "]");
+        			log.warn("[缓存即将到期提前刷新][src:{}] [生存:{}/{}]",src, age, _max);
         		}
         		final String _key = key;
         		final String _cache = cache;
@@ -579,7 +580,7 @@ public class AnylineServiceImpl implements AnylineService {
             	row.setIsFromCache(true);
             	return row;	
         	}else{
-        		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:"+cache+"]");
+        		log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]",cache);
         	}
         }
         // 调用实际 的方法

@@ -44,10 +44,11 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.WebUtil;
 import org.anyline.web.tag.Navi;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class AbstractBasicController{
-	protected final Logger log = Logger.getLogger(this.getClass());
+	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
 	protected final String FAIL = "fail";
 	protected final String JSON = "json";
@@ -689,7 +690,7 @@ public class AbstractBasicController{
 		map.put("BODY", BasicUtil.escape(html));
 		if(null != navi){
 			if(ConfigTable.isDebug()){
-				log.warn("[LOAD JSP NAVI][ROWS:"+navi.getTotalRow()+"][PAGE:"+navi.getTotalPage()+"]");
+				log.warn("[load jsp navi][rows:{}][page:{}]",navi.getTotalRow(),navi.getTotalPage());
 			}
 			int type = 0;
 			String _type = request.getParameter("_anyline_navi_type");

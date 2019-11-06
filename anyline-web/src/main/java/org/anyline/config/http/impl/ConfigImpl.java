@@ -36,12 +36,13 @@ import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
 import org.anyline.util.BasicUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConfigImpl implements Config,Serializable{
 	private static final long serialVersionUID = 1L;
 
-	protected static final Logger log = Logger.getLogger(ConfigImpl.class);
+	protected static final Logger log = LoggerFactory.getLogger(ConfigImpl.class);
 	//从request 取值方式
 
 //	private String id;				//id

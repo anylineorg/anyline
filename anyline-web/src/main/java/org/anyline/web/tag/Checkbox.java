@@ -29,11 +29,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * 是否选中 一类的单个复选
@@ -47,7 +47,7 @@ import org.apache.log4j.Logger;
  */
 public class Checkbox extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Checkbox.class);
+	private static final Logger log = LoggerFactory.getLogger(Checkbox.class);
 	private String scope;
 	private Object data;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
