@@ -30,7 +30,8 @@ import org.anyline.util.ConfigTable;
 import org.anyline.web.tag.BaseBodyTag;
 import org.anyline.weixin.mp.util.WXMPUtil;
 import org.anyline.weixin.util.WXUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * 微信 wx.config
@@ -38,7 +39,7 @@ import org.apache.log4j.Logger;
  */
 public class Pay extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Pay.class);
+	private static final Logger log = LoggerFactory.getLogger(Pay.class);
 	private boolean debug = false;
 	private String prepay= "";
 	private String success = null;
