@@ -24,11 +24,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.anyline.util.ConfigTable;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.view.JstlView;
 
 public class TemplateView extends JstlView {
-	private final Logger log = Logger.getLogger(this.getClass());
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	public static final String ANYLINE_TEMPLATE_NAME				= "template_name";
 	public static final String ANYLINE_STYLE_TEMPLATE_DES			= "style_template_des";
 	public static final String ANYLINE_TEMPLATE_NAME_DEFAULT		= "default";
@@ -107,7 +108,7 @@ public class TemplateView extends JstlView {
 			File file = new File(ConfigTable.getWebRoot(), content_url);
 			if(!file.exists()){
 				//内容文件未指定  或 不存在 
-				log.error("文件不存在:"+content_url);
+				log.error("[文件不存在]:[url:{}]", content_url);
 				content_url = ConfigTable.getString("DEFAULT_CONTENT_PAGE_PATH");
 			}
 			request.setAttribute(ANYLINE_TEMPLATE_CONTENT_PATH, content_url);
