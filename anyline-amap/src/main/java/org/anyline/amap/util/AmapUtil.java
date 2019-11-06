@@ -19,14 +19,15 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.MD5Util;
 import org.anyline.util.NumberUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 高德云图
  * @author Administrator
  *
  */
 public class AmapUtil {
-	private static final Logger log = Logger.getLogger(AmapUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(AmapUtil.class);
 
 	private String key = AmapConfig.KEY;
 	private String privateKey = AmapConfig.PRIVATE_KEY;
@@ -104,10 +105,10 @@ public class AmapUtil {
 				String status = json.getString("status");
 				if("1".equals(status) && json.has("_id")){
 					id = json.getString("_id");
-					log.warn("[添加标注完成][id:"+id+"][name:"+name+"]");
+					log.warn("[添加标注完成][id:{}][name:{}]",id,name);
 				}else{
-					log.warn("[添加标注失败][name:"+name+"][info:"+json.getString("info")+"]");
-					log.warn("[param:"+BasicUtil.joinBySort(params)+"]");
+					log.warn("[添加标注失败][name:{}][info:{}]", name,json.getString("info"));
+					log.warn("[param:{}]",BasicUtil.joinBySort(params));
 				}
 			}
 		}catch(Exception e){
@@ -187,7 +188,7 @@ public class AmapUtil {
 		String url = "http://yuntuapi.amap.com/datamanage/data/delete";
 		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		if(ConfigTable.isDebug()){
-			log.warn("[删除标注][param:"+BasicUtil.joinBySort(params)+"]");
+			log.warn("[删除标注][param:{}]",BasicUtil.joinBySort(params));
 		}
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
@@ -195,9 +196,9 @@ public class AmapUtil {
 				String status = json.getString("status");
 				if("1".equals(status)){
 					cnt = json.getInt("success");
-					log.warn("[删除标注完成][success:"+cnt+"][fail:"+json.getInt("fail")+"]");
+					log.warn("[删除标注完成][success:{}][fail:{}]", cnt,json.getInt("fail"));
 				}else{
-					log.warn("[删除标注失败][info:"+json.getString("info")+"]");
+					log.warn("[删除标注失败][info:{}]",json.getString("info"));
 				}
 			}
 		}catch(Exception e){
@@ -247,7 +248,7 @@ public class AmapUtil {
 		params.put("sig", sign(params));
 		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		if(ConfigTable.isDebug()){
-			log.warn("[更新标注][param:"+BasicUtil.joinBySort(params)+"]");
+			log.warn("[更新标注][param:{}]",BasicUtil.joinBySort(params));
 		}
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
@@ -255,9 +256,9 @@ public class AmapUtil {
 				String status = json.getString("status");
 				if("1".equals(status)){
 					cnt = 1;
-					log.warn("[更新标注完成][id:"+id+"][name:"+name+"]");
+					log.warn("[更新标注完成][id:{}][name:{}]",id,name);
 				}else{
-					log.warn("[更新标注失败][name:"+name+"][info:"+json.getString("info")+"]");
+					log.warn("[更新标注失败][name:{}][info:{}]",name,json.getString("info"));
 					cnt = 0;
 				}
 			}
@@ -306,9 +307,9 @@ public class AmapUtil {
 		JSONObject json = JSONObject.fromObject(txt);
 		if(json.has("tableid")){
 			tableId = json.getString("tableid");
-			log.warn("[创建地图完成][tableid:"+tableId+"]");
+			log.warn("[创建地图完成][tableid:{}]",tableId);
 		}else{
-			log.warn("[创建地图失败][info:"+txt+"][param:"+BasicUtil.joinBySort(params)+"]");
+			log.warn("[创建地图失败][info:{}][param:{}]",txt,BasicUtil.joinBySort(params));
 		}
 		return tableId;
 	}
@@ -354,17 +355,17 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("[本地搜索失败][info:"+json.getString("info")+"]");
-				log.warn("[本地搜索失败][params:"+BasicUtil.joinBySort(params)+"]");
+				log.warn("[本地搜索失败][info:{}]",json.getString("info"));
+				log.warn("[本地搜索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("[本地搜索失败][info:"+e.getMessage()+"]");
+			log.warn("[本地搜索失败][info:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
 		set.setNavi(navi);
-		log.warn("[本地搜索][size:"+navi.getTotalRow()+"]");
+		log.warn("[本地搜索][size:{}]",navi.getTotalRow());
 		return set;
 	}
 	/**
@@ -431,19 +432,19 @@ public class AmapUtil {
 			if(json.has("datas")){
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
-				log.warn("[周边搜索失败][info:"+json.getString("info")+"]");
-				log.warn("[周边搜索失败][params:"+BasicUtil.joinBySort(params)+"]");
+				log.warn("[周边搜索失败][info:{}]",json.getString("info"));
+				log.warn("[周边搜索失败][params:{}]",BasicUtil.joinBySort(params));
 				set = new DataSet();
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("[周边搜索失败][params:"+e.getMessage()+"]");
+			log.warn("[周边搜索失败][error:{}]",e.getMessage());
 			e.printStackTrace();
 			set = new DataSet();
 			set.setException(e);
 		}
 		set.setNavi(navi);
-		log.warn("[周边搜索][size:"+navi.getTotalRow()+"]");
+		log.warn("[周边搜索][size:{}]",navi.getTotalRow());
 		return set;
 	}
 
@@ -517,21 +518,21 @@ public class AmapUtil {
 			if(json.has("datas")){
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 				if(ConfigTable.isDebug()){
-					log.warn("[条件搜索][结果数量:"+set.size()+"]");	
+					log.warn("[条件搜索][结果数量:{}]",set.size());	
 				}
 			}else{
 				set = new DataSet();
-				log.warn("[条件搜索失败][info:"+json.getString("info")+"]");
-				log.warn("[条件搜索失败][params:"+BasicUtil.joinBySort(params)+"]");
+				log.warn("[条件搜索失败][info:{}]",json.getString("info"));
+				log.warn("[条件搜索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("[条件搜索失败][info:"+e.getMessage()+"]");
+			log.warn("[条件搜索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
 		set.setNavi(navi);
-		log.warn("[条件搜索][size:"+navi.getTotalRow()+"]");
+		log.warn("[条件搜索][size:{}]",navi.getTotalRow());
 		return set;
 	}
 	/**
@@ -559,11 +560,11 @@ public class AmapUtil {
 					row = set.getRow(0);
 				}
 			}else{
-				log.warn("[周边搜索失败][info:"+json.getString("info")+"]");
-				log.warn("[周边搜索失败][params:"+BasicUtil.joinBySort(params)+"]");
+				log.warn("[周边搜索失败][info:{}]",json.getString("info"));
+				log.warn("[周边搜索失败][params:{}]",BasicUtil.joinBySort(params));
 			}
 		}catch(Exception e){
-			log.warn("[周边搜索失败][params:"+e.getMessage()+"]");
+			log.warn("[周边搜索失败][error:{}]",e.getMessage());
 			e.printStackTrace();
 		}
 		return row;
@@ -595,12 +596,12 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("[数据分布检索失败][info:"+json.getString("info")+"]");
-				log.warn("[数据分布检索失败][params:"+BasicUtil.joinBySort(params)+"]");
+				log.warn("[数据分布检索失败][info:{}]",json.getString("info"));
+				log.warn("[数据分布检索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("[数据分布检索失败][info:"+e.getMessage()+"]");
+			log.warn("[数据分布检索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
@@ -634,12 +635,12 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("[数据分布检索失败][info:"+json.getString("info")+"]");
-				log.warn("[数据分布检索失败][params:"+BasicUtil.joinBySort(params)+"]");
+				log.warn("[数据分布检索失败][info:{}]",json.getString("info"));
+				log.warn("[数据分布检索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("[数据分布检索失败][info:"+e.getMessage()+"]");
+			log.warn("[数据分布检索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
@@ -674,12 +675,12 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("[数据分布检索失败][info:"+json.getString("info")+"]");
-				log.warn("[数据分布检索失败][params:"+BasicUtil.joinBySort(params)+"]");
+				log.warn("[数据分布检索失败][info:{}]",json.getString("info"));
+				log.warn("[数据分布检索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("[数据分布检索失败][info:"+e.getMessage()+"]");
+			log.warn("[数据分布检索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
@@ -713,12 +714,12 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("[附近检索失败][info:"+json.getString("info")+"]");
-				log.warn("[附近检索失败][params:"+BasicUtil.joinBySort(params)+"]");
+				log.warn("[附近检索失败][info:}{}]",json.getString("info"));
+				log.warn("[附近检索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("[附近检索失败][info:"+e.getMessage()+"]");
+			log.warn("[附近检索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
@@ -795,10 +796,10 @@ public class AmapUtil {
 					location.setLevel(row.getString("LEVEL"));
 				}
 			}else{
-				log.warn("[坐标查询失败][info:"+json.getString("info")+"][params:"+BasicUtil.joinBySort(params)+"]");
+				log.warn("[坐标查询失败][info:{}][params:{}]",json.getString("info"),BasicUtil.joinBySort(params));
 			}
 		}catch(Exception e){
-			log.warn("[坐标查询失败][info:"+e.getMessage()+"]");
+			log.warn("[坐标查询失败][error:{}]",e.getMessage());
 		}
 		return location;
 	}
@@ -853,7 +854,7 @@ public class AmapUtil {
 				}
 			}
 		}catch(Exception e){
-			log.warn("[线路规划失败][info:"+e.getMessage()+"]");
+			log.warn("[线路规划失败][error:{}]",e.getMessage());
 		}
 		return row;
 	}
