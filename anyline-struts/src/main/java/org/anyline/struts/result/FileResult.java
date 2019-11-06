@@ -27,14 +27,15 @@ import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.FileUtil;
 import org.anyline.util.WebUtil;
-import org.apache.log4j.Logger;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionInvocation;
 
 public class FileResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(FileResult.class);
+	private static final Logger log = LoggerFactory.getLogger(FileResult.class);
 	private Object data = null;
 
 	protected void doExecute(String finalLocation, ActionInvocation invocation) throws Exception {
@@ -47,7 +48,7 @@ public class FileResult extends StrutsResultSupport {
 			String title = null;
 			data = invocation.getStack().findValue("data");
 			if(null == data){
-				log.warn("[文件下载][文件不存在][URL:" + request.getRequestURL() + "?" + request.getQueryString()+"]");
+				log.warn("[文件下载][文件不存在][URL:{}?{}",request.getRequestURL(),request.getQueryString());
 				return;
 			}
 			if (data instanceof File) {
@@ -62,7 +63,7 @@ public class FileResult extends StrutsResultSupport {
 					//注意http:\\中的\
 					url = url.replace("\\", "/").replace("//", "/");
 					url = FileUtil.mergePath(fileServer, url);
-					log.info("[文件请求已转发][ID:"+row.getPrimaryKey()+"][REDIRECT:"+url+"]");
+					log.info("[文件请求已转发][id:{}][redirect:{}]",row.getPrimaryKey(),url);
 					response.sendRedirect(url);
 				}else{
 					String path = FileUtil.mergePath(row.getString("ROOT_DIR"), row.getString("SUB_DIR"), row.getString("FILE_NAME"));

@@ -18,9 +18,6 @@
 
 package org.anyline.struts.action;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,19 +36,16 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.DESUtil;
-import org.anyline.util.DateUtil;
-import org.anyline.util.FileUtil;
-import org.anyline.util.ImgUtil;
 import org.anyline.util.WebUtil;
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware {
-	protected static final Logger log = Logger.getLogger(AnylineAction.class);
+	protected static final Logger log = LoggerFactory.getLogger(AnylineAction.class);
 	public static int RESULT_TYPE_DEFAULT = 0;
 	public static int RESULT_TYPE_JSON = 1;
 	
@@ -275,7 +269,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			}
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("[result:success][url:"+request.getRequestURI()+"][Action Return][Action:"+getClass().getName()+"]");
+			log.warn("[result:success][url:{}][action return][action:{}]",request.getRequestURI(),getClass().getName());
 		}
 		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JSON) {
 			result = true;
@@ -363,7 +357,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		}
 		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString().trim();
 		if(ConfigTable.isDebug()){
-			log.warn("[result:fail][message:"+msg+"][url:"+request.getRequestURI()+"][Action Return][Action:"+getClass().getName()+"]");
+			log.warn("[result:fail][message:{}][url:{}][action return][action:{}]",msg, request.getRequestURI(),getClass().getName());
 		}
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
 		if (isAjaxRequest(request) || RESULT_TYPE_JSON == resultType) {
