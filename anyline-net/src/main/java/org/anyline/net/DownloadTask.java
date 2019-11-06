@@ -11,10 +11,11 @@ import java.util.Map.Entry;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DownloadTask {
-	private Logger log = Logger.getLogger(DownloadTask.class);
+	private Logger log = LoggerFactory.getLogger(DownloadTask.class);
 	private boolean openLog = true;
 	private String url	; //url
 	private File local	; //本地文件
@@ -190,7 +191,7 @@ public class DownloadTask {
 	public void error(int code, String message){
 		try{
 			status = -1;
-			log.error("[文件下载][下载异常]][url:"+url+"][code:"+code+"][message:"+message+"]");
+			log.error("[文件下载][下载异常]][url:{}][code:{}][message:{}]",url,code,message);
 			this.errorCode = code;
 			this.errorMsg = message;
 			if(null != listener){
@@ -207,7 +208,7 @@ public class DownloadTask {
 			this.end = System.currentTimeMillis();
 			log();
 			if(ConfigTable.isDebug()){
-				log.info("[文件下载]"+"[下载完成][耗时:"+getExpendFormat()+"][url:"+url+"][local:"+getLocal().getAbsolutePath()+"]");
+				log.info("[文件下载]"+"[下载完成][耗时:{}][url:{}][local:{}]",getExpendFormat(),url, getLocal().getAbsolutePath());
 			}
 			if(null != listener){
 				listener.finish(this);

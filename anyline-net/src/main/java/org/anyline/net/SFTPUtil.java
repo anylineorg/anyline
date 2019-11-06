@@ -15,7 +15,8 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
@@ -27,7 +28,7 @@ import com.jcraft.jsch.SftpException;
 import com.jcraft.jsch.SftpProgressMonitor;
 
 public class SFTPUtil {
-	private final Logger log = Logger.getLogger(SFTPUtil.class);
+	private final Logger log = LoggerFactory.getLogger(SFTPUtil.class);
     private static Map<String,SFTPUtil> instances = new HashMap<String,SFTPUtil>();
 	private String host;
 	private int port=22;
@@ -100,7 +101,7 @@ public class SFTPUtil {
             List<String> list = FTPUtil.formatPath(remote);
             long fr = System.currentTimeMillis();
             if(ConfigTable.isDebug()){
-            	log.warn("[文件下载][file:"+list.get(0) + list.get(1)+"]");
+            	log.warn("[文件下载][file:{}]",list.get(0) + list.get(1));
             }
             String remotePath = list.get(0) + list.get(1);
             SftpATTRS attr = client.stat(remotePath);
@@ -108,7 +109,7 @@ public class SFTPUtil {
             SFTPProgressMonitor process = new SFTPProgressMonitor(remotePath,local, length);
             client.get(remotePath, os, process);  
             if(ConfigTable.isDebug()){
-            	log.warn("[文件下载完成][耗时:"+(System.currentTimeMillis()-fr)+"][file:"+list.get(0) + list.get(1)+"]");
+            	log.warn("[文件下载完成][耗时:{}][file:{}]",System.currentTimeMillis()-fr,list.get(0) + list.get(1));
             }
         } catch (Exception e) {  
             throw e;  
@@ -198,7 +199,7 @@ public class SFTPUtil {
         client.cd(remoteDir);  
         client.put(localFile, remoteFile);  
         if(ConfigTable.isDebug()){
-        	log.warn("[文件上传][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][local:"+localFile+"][remote:"+remoteDir+"/"+remoteFile+"]");
+        	log.warn("[文件上传][耗时:{}][local:{}][remote:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),localFile,remoteDir+"/"+remoteFile);
         }
     }  
     public void uploadFile(File localFile, String remoteDir, String remoteFile) throws SftpException {
@@ -292,17 +293,17 @@ public class SFTPUtil {
 				list.add(nm);
 			}
 		} catch (SftpException e) {
-			log.warn("[scan dir error][dir:"+dir+"][msg:"+e.getMessage()+"]");
+			log.warn("[scan dir error][dir:{}][error:{}]",dir,e.getMessage());
 		}
     	if(ConfigTable.isDebug()){
-    		log.warn("[scan dir][dir:"+dir+"][file size:"+list.size()+"]");
+    		log.warn("[scan dir][dir:{}][file size:{}]",dir,list.size());
     	}
     	return list;
     }
     public boolean fileExists(String dir, String file){
     	List<String> files = files(dir);
     	if(ConfigTable.isDebug()){
-    		log.warn("[check file exists][dir:"+dir+"][file:"+file+"]");
+    		log.warn("[check file exists][dir:{}][file:{}]",dir,file);
     	}
     	for(String item:files){
     		if(item.equals(file)){
@@ -324,7 +325,7 @@ public class SFTPUtil {
 }
 
 class SFTPProgressMonitor implements SftpProgressMonitor {
-	private final Logger log = Logger.getLogger(SFTPProgressMonitor.class);
+	private final Logger log = LoggerFactory.getLogger(SFTPProgressMonitor.class);
 	private String remote = "";
 	private String local = "";
 	private long length;		//总长度
