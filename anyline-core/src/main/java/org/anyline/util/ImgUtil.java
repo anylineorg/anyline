@@ -31,7 +31,8 @@ import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
@@ -42,7 +43,7 @@ import sun.misc.BASE64Encoder;
  */
 @SuppressWarnings("restriction")
 public class ImgUtil {
-	private static final Logger log = Logger.getLogger(ImgUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(ImgUtil.class);
 
 	public static enum IMAGE_TYPE{
 		GIF{
@@ -147,7 +148,7 @@ public class ImgUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.warn("[压缩图片][耗时:"+(System.currentTimeMillis()-fr)+"][source:"+src+"][target:"+tar+"]");
+        log.warn("[压缩图片][耗时:{}][source:{}][target:{}]",(System.currentTimeMillis()-fr), src, tar);
     }
 
     public static void scale(File src, File tar, String format, int width, int height) {

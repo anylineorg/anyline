@@ -34,7 +34,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
 
-import org.apache.log4j.Logger;
 
 public class FileTypeUtil {
 	public final static Map<String, String> FILE_TYPE_MAP = new HashMap<String, String>();

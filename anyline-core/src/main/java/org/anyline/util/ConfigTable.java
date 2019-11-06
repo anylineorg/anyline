@@ -28,14 +28,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class ConfigTable {
-	private static final Logger log = Logger.getLogger(ConfigTable.class);
+	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
 	protected static String root;
 	protected static String webRoot;
 	protected static String classpath;
@@ -95,7 +96,6 @@ public class ConfigTable {
 		init("anyline");
 	}
 	public static void init(String flag) {
-		//log.warn("IS LOAD:"+isLoad);
 		if(isLoading){
 			return;
 		}
@@ -187,10 +187,10 @@ public class ConfigTable {
 	protected static void loadConfig(File file){
 		try{
 			if(isDebug()){
-				log.info("[加载配置文件] [file:" + file.getAbsolutePath() + "]");
+				log.info("[加载配置文件] [file:{}]",file);
 			}
 			if(null != file && !file.exists()){
-				log.info("[配置文件不存在] [file:" + file.getAbsolutePath() + "]");
+				log.info("[配置文件不存在] [file:{}]",file.getAbsolutePath());
 				return;
 			}
 			if(file.isDirectory()){
@@ -208,7 +208,7 @@ public class ConfigTable {
 				String value = propertyElement.getTextTrim();
 				configs.put(key.toUpperCase().trim(), value);
 				if(isDebug()){
-					log.info("[解析配置文件] [" + key + " = " + value+"]");
+					log.info("[解析配置文件][{}={}]",key,value);
 				}
 			}
 		}catch(Exception e){
@@ -253,7 +253,7 @@ public class ConfigTable {
 	public static void put(String key, String value){
 		configs.put(key, value);
 		if(isDebug()){
-			log.warn("[ConfigTable动态更新]["+key+":"+value+"]");
+			log.warn("[ConfigTable动态更新][{}={}]",key,value);
 		}
 	}
 	public static String getVersion(){
