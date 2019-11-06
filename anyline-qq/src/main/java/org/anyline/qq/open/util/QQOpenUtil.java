@@ -10,18 +10,19 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.anyline.entity.DataRow;
 import org.anyline.net.HttpUtil;
+import org.anyline.net.SimpleHttpUtil;
 import org.anyline.qq.open.entity.QQPayTradeOrder;
 import org.anyline.qq.open.entity.QQPayTradeResult;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.MD5Util;
-import org.anyline.util.SimpleHttpUtil;
 import org.anyline.util.regular.RegularUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class QQOpenUtil{
-	private static final Logger log = Logger.getLogger(QQOpenUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(QQOpenUtil.class);
 	private static Hashtable<String,QQOpenUtil> instances = new Hashtable<String,QQOpenUtil>();
 	private QQOpenConfig config = null;
 	public static QQOpenUtil getInstance(){
@@ -61,22 +62,22 @@ public class QQOpenUtil{
 		String sign = sign(map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单SIGN:" + sign);
+			log.warn("[统一下单][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单XML:" + xml);
+			log.warn("[统一下单][xml:{}]", xml);
 		}
 		String rtn = SimpleHttpUtil.post(QQOpenConfig.UNIFIED_ORDER_URL, xml);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单RETURN:" + rtn);
+			log.warn("[统一下单][return:{}]", rtn);
 		}
 		result = BeanUtil.xml2object(rtn, QQPayTradeResult.class);
 
 		if(ConfigTable.isDebug()){
-			log.warn("统一下单PREPAY_ID:" + result.getPrepay_id());
+			log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());
 		}
 		return result;
 	}
@@ -125,7 +126,7 @@ public class QQOpenUtil{
 			e.printStackTrace();
 		}
         if(ConfigTable.isDebug()){
-			log.warn("[APP调起QQ支付签名][SIGN:"+result+"][APP KEY:"+QQOpenConfig.getInstance().APP_KEY+"][SIGN SRC:" + builder.toString()+"]");
+			log.warn("[APP调起QQ支付签名][sign:{}][app key:{}][sign src:{}]", result, QQOpenConfig.getInstance().APP_KEY,builder.toString());
         }
 		return result;
 	}
@@ -150,7 +151,7 @@ public class QQOpenUtil{
 		String sign = appSign(prepayid, nonce);
 		row.put("SIG", sign);
 		if(ConfigTable.isDebug()){
-			log.warn("[APP调起QQ支付][返回参数:" + row.toJSON()+"]");
+			log.warn("[APP调起QQ支付][返回参数:{}]",row.toJSON());
 		}
 		return row;
 	}
