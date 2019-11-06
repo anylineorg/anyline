@@ -31,11 +31,12 @@ import org.anyline.config.db.SQL;
 import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConfigChainImpl extends ConfigImpl implements ConfigChain,Serializable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(ConfigChainImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(ConfigChainImpl.class);
 	private List<Config> configs = new ArrayList<Config>();
 	
 	public ConfigChainImpl(){}

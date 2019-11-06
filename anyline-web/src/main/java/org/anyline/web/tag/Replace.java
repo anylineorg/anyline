@@ -26,11 +26,12 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Replace extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Replace.class);
+	private static final Logger log = LoggerFactory.getLogger(Replace.class);
 	private String from;
 	private String to;
 	 public int doEndTag() throws JspException {

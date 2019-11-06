@@ -26,11 +26,12 @@ import javax.servlet.jsp.JspException;
 
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Set extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Set.class);
+	private static final Logger log = LoggerFactory.getLogger(Set.class);
 	private String scope;
 	private Object data;
 	private String selector;

@@ -25,7 +25,8 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 分钟数转换成HH:mm
@@ -34,7 +35,7 @@ import org.apache.log4j.Logger;
  */
 public class MinuteFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(MinuteFormat.class);
+	private static final Logger log = LoggerFactory.getLogger(MinuteFormat.class);
 
 	public int doEndTag() throws JspException {
 		try{
