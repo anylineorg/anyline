@@ -4,10 +4,11 @@ import java.io.File;
 
 import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DefaultProgress implements DownloadProgress{
-	private Logger log = Logger.getLogger(DefaultProgress.class);
+	private Logger log = LoggerFactory.getLogger(DefaultProgress.class);
 	private String url			; //URL
 	private File local			; //本地文件
 	private long past			; //上次已下载长度
@@ -69,8 +70,7 @@ public class DefaultProgress implements DownloadProgress{
 			long time = System.currentTimeMillis() - start;
 			message = "[进度:"+FileUtil.progress(length, finish)+"]"
     				+ "[耗时:"+DateUtil.conversion(time)+"/"+DateUtil.conversion(expect)+"("+FileUtil.length(finish*1000/time)+"/s)]";
-    		String txt = "[文件下载]"+ message + "[url:"+url+"][local:"+local.getAbsolutePath()+"]";
-    		log.warn(txt);
+    		log.warn("[文件下载]{}[url:{}][local:{}]",message, url, local.getAbsolutePath());
     		lastLogRate = rate;
     		lastLogTime = System.currentTimeMillis();
 		}
