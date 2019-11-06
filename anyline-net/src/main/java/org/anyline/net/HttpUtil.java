@@ -97,7 +97,7 @@ public class HttpUtil {
     private static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
     private static int MAX_TIMEOUT = 72000; //毫秒
     
-    private CloseableHttpClient client;
+    private static CloseableHttpClient client;
     private Map<String,HttpUtil> instances = new HashMap<String,HttpUtil>(); 
     
     static {  
@@ -129,19 +129,12 @@ public class HttpUtil {
     	HttpUtil instance = instances.get(key);
     	if(null == instance){
     		instance = new HttpUtil();
-    		instance.client = defaultClient();
     		instances.put(key, instance);
     	}
     	
     	return instance;
     }
     
-    public CloseableHttpClient getClient() {
-		return client;
-	}
-	public void setClient(CloseableHttpClient client) {
-		this.client = client;
-	}
 	/*staic*/
 	public static HttpResult post(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
 		return post(client, null, url, encode, entitys);
@@ -472,7 +465,9 @@ public class HttpUtil {
 					response.close();
 				}
 				method.releaseConnection();
-				client.close();
+				if(client == HttpUtil.client){
+					client.close();
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -1021,7 +1016,20 @@ public class HttpUtil {
 		return pairs;
 	}
 
-	public static CloseableHttpClient defaultClient(){
+	private static CloseableHttpClient defaultClient(){
+		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(requestConfig);
+		builder.setUserAgent(userAgent);
+		client = builder.build();
+		return client;
+	}
+	public static CloseableHttpClient createClient(String userAgent){
+		CloseableHttpClient client = null;
+		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(requestConfig);
+		builder.setUserAgent(userAgent);
+		client = builder.build();
+		return client;
+	}
+	public static CloseableHttpClient createClient(){
 		CloseableHttpClient client = null;
 		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(requestConfig);
 		builder.setUserAgent(userAgent);
@@ -1051,9 +1059,11 @@ public class HttpUtil {
 		return ceateSSLClient(keyFile, HttpUtil.PROTOCOL_TLSV1, password);
 	}
 	public static CloseableHttpClient defaultSSLClient(){
-		HttpClientBuilder builder = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connManager).setDefaultRequestConfig(requestConfig);
-		builder.setUserAgent(userAgent);   
-		CloseableHttpClient  client = builder.build();
+		if(null == client){
+			HttpClientBuilder builder = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connManager).setDefaultRequestConfig(requestConfig);
+			builder.setUserAgent(userAgent);   
+			client = builder.build();
+		}
 		return client;
 	}
 	private static SSLConnectionSocketFactory createSSLConnSocketFactory() {  
