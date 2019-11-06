@@ -7,14 +7,15 @@ import java.util.List;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.MD5Util;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import ucar.ma2.Array;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 
 public class NCUtil {
-	private static Logger log = Logger.getLogger(NCUtil.class);
+	private static Logger log = LoggerFactory.getLogger(NCUtil.class);
 	private String file;
 	private NetcdfFile nc;
 
@@ -42,7 +43,7 @@ public class NCUtil {
 			long fr = System.currentTimeMillis();
 			nc = NetcdfFile.open(file);
 			if(ConfigTable.isDebug()){
-				log.warn("[open file][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+file+"]");
+				log.warn("[open file][耗时:{}][file:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),file);
 			}
 			return true;
 		}catch(Exception e){
