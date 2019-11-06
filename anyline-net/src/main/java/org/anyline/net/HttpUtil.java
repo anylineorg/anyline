@@ -41,9 +41,7 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.CodeUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -73,7 +71,8 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 基于hpptclient4.x
  * 第一个参数用来保持session连接 
@@ -92,7 +91,7 @@ import org.apache.log4j.Logger;
 public class HttpUtil {
 	
 	public static String PROTOCOL_TLSV1 = "TLSv1";
-	private static final Logger log = Logger.getLogger(HttpUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(HttpUtil.class);
     private static PoolingHttpClientConnectionManager connManager;  
     private static RequestConfig requestConfig;  
     private static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
@@ -456,13 +455,13 @@ public class HttpUtil {
 		try {
 			long fr = System.currentTimeMillis();
 			if(ConfigTable.isDebug()){
-				log.warn("[http request][method:"+method.getMethod()+"][url:"+method.getURI()+"]");
+				log.warn("[http request][method:{}][url:{}]",method.getMethod(),method.getURI());
 			}
 			method.setHeader("Connection", "close");  
 			response = client.execute(method);
 			result = parseResult(result,response, encode);
 			if(ConfigTable.isDebug()){
-				log.warn("[http request][method:"+method.getMethod()+"][耗时:"+(System.currentTimeMillis() - fr)+"][url:"+method.getURI()+"]");
+				log.warn("[http request][method:{}][耗时:{}][url:{}]",method.getMethod(),System.currentTimeMillis() - fr, method.getURI());
 			}
 		} catch (Exception e) {
 			result = new HttpResult();
@@ -674,7 +673,7 @@ public class HttpUtil {
 		    	get.removeHeaders("Range");
 		    	response = client.execute(get);
 		    	code = response.getStatusLine().getStatusCode();
-		    	log.warn("[http download][断点设置异常][url:"+url+"]");
+		    	log.warn("[http download][断点设置异常][url:{}]",url);
 		    }
 		    if(code != 200 && code !=206){
 				//progress.error(url, "", code, "状态异常");
@@ -698,7 +697,7 @@ public class HttpUtil {
 		        int len = -1;
 		        while((len = is.read(buffer) )!= -1){
 		        	if(task.getAction() !=1){
-		    	    	log.warn("[http download][break][url:"+url+"]");
+		    	    	log.warn("[http download][break][url:{}]",url);
 		        		break;
 		        	}
 		        	raf.write(buffer, 0, len);
@@ -711,7 +710,7 @@ public class HttpUtil {
 		} catch (Exception e) {
 			//progress.error(url, "", 0, e.getMessage());
 			task.error(-1, e.getMessage());
-	    	log.warn("[http download][下载异常][url:"+url+"]");
+	    	log.warn("[http download][下载异常][url:{}]",url);
 		    e.printStackTrace();
 		}finally{
 			if(null != raf){
@@ -782,7 +781,7 @@ public class HttpUtil {
 			fileLog += "["+key+":"+file.getAbsolutePath()+"]";
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("[http upload][url:"+url+"]"+fileLog);
+			log.warn("[http upload][url:{}]"+fileLog,url);
 		}
 		
         HttpEntity entity = builder.build();// 生成 HTTP POST 实体
@@ -997,7 +996,7 @@ public class HttpUtil {
 						}
 						pairs.add(new BasicNameValuePair(key, val));
 						if(ConfigTable.isDebug()){
-							log.warn("[request param][" + key + "=" + BasicUtil.cut(val,0,20) + "]");
+							log.warn("[request param][{}={}]", key,BasicUtil.cut(val,0,20));
 						}						
 					}
 				}else if(value instanceof Collection){
@@ -1008,13 +1007,13 @@ public class HttpUtil {
 						}
 						pairs.add(new BasicNameValuePair(key, val.toString()));
 						if(ConfigTable.isDebug()){
-							log.warn("[request param][" + key + "=" + BasicUtil.cut(val.toString(),0,20) + "]");
+							log.warn("[request param][{}={}]",key,BasicUtil.cut(val.toString(),0,20));
 						}						
 					}
 				}else if(null != value){
 					pairs.add(new BasicNameValuePair(key, value.toString()));
 					if(ConfigTable.isDebug()){
-						log.warn("[request param][" + key + "=" + BasicUtil.cut(value.toString(),0,20) + "]");
+						log.warn("[request param][{}={}]",key,BasicUtil.cut(value.toString(),0,20));
 					}
 				}
 			}
