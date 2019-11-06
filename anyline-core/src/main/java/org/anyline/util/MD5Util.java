@@ -27,10 +27,11 @@ import java.security.MessageDigest;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MD5Util {
-	private static final Logger log = Logger.getLogger(MD5Util.class); 
+	private static final Logger log = LoggerFactory.getLogger(MD5Util.class); 
 	private final static String[] hexDigits = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
 
 	public static String sign(String src){
@@ -39,7 +40,7 @@ public class MD5Util {
 	
 	public static String sign(String src, String encode){
 		if(ConfigTable.isDebug()){
-			log.warn("[MD5 SIGN][src:" + src+"]");
+			log.warn("[MD5 SIGN][src:{}]", src);
 		}
 		if(null == src) return "";
 		String result = null;
@@ -58,7 +59,7 @@ public class MD5Util {
             }     
         }
         if(ConfigTable.isDebug()){
-			log.warn("[MD5 SIGN][sign:" + result+"]");
+			log.warn("[MD5 SIGN][sign:{}]", result);
 		}
         return result;     
 	}

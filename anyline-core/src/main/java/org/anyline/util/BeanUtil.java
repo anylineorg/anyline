@@ -48,15 +48,16 @@ import net.sf.json.JsonConfig;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class BeanUtil {
-	private static final Logger log = Logger.getLogger(BeanUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(BeanUtil.class);
 	public static boolean setFieldValue(Object obj, Field field, Object value){
 		if(null == obj || null == field){
 			return false;
@@ -555,7 +556,7 @@ public class BeanUtil {
 			try{
 				String path = file.getAbsolutePath();
 				if(ConfigTable.isDebug()){
-					log.warn("[检索类][file:"+path+"]");
+					log.warn("[检索类][file:{}]",path);
 				}
 				if(path.contains(File.separator+"classes"+File.separator)){
 					path = path.substring(path.indexOf(File.separator+"classes"+File.separator));
@@ -563,7 +564,7 @@ public class BeanUtil {
 				path = path.replace(File.separator, ".");
 				path = path.replace(".classes.", "").replace(".class", "");
 				if(ConfigTable.isDebug()){
-					log.warn("[检索类][class:"+path+"]");
+					log.warn("[检索类][class:{}]",path);
 				}
 				Class clazz = Class.forName(path);
 				if(clazz.getName().contains("$")){
@@ -654,7 +655,7 @@ public class BeanUtil {
 				if("null".equals(value)){
 					value = "";
 				}
-				builder.append("<" + key + ">" + value + "</" + key + ">");
+				builder.append("<").append(key).append(">").append(value).append("</").append(key).append(">");
 			}
 		}
 		if(border){

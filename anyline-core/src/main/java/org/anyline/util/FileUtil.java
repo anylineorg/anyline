@@ -45,12 +45,12 @@ import java.util.zip.ZipInputStream;
 
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class FileUtil {
-	private static final Logger log = Logger.getLogger(FileUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
 	public final static int PATH_TYPE_JAR = 0;
 
 	/**
@@ -154,7 +154,7 @@ public class FileUtil {
             	}
             }
          }catch(Exception ex){
-        	log.error(ex);
+        	log.error(ex.getMessage());
         	ex.printStackTrace();
          } finally  {
                 try{
@@ -465,14 +465,14 @@ public class FileUtil {
 						try{
 							in.close();
 						}catch(Exception ex){
-							log.error(ex);
+							log.error(ex.getMessage());
 						}
 					}
 					if(null != out){
 						try{
 							out.close();
 						}catch(Exception ex){
-							log.error(ex);
+							log.error(ex.getMessage());
 						}
 					}
 				}

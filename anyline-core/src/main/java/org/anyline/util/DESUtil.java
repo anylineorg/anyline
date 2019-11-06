@@ -34,12 +34,13 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.crypto.provider.SunJCE;
 
 public class DESUtil {
-	static final Logger log = Logger.getLogger(DESUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(DESUtil.class);
 	public static final String DEFAULT_SECRET_KEY = "L~@L$^N*)E+";	//默认密钥
 	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";	//盐值
 	private Cipher encryptCipher = null;					//加密

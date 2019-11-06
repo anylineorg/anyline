@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.anyline.util.ConfigTable;
-import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.PatternCompiler;
@@ -31,6 +30,8 @@ import org.apache.oro.text.regex.PatternMatcher;
 import org.apache.oro.text.regex.PatternMatcherInput;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -38,7 +39,7 @@ import org.apache.oro.text.regex.Perl5Matcher;
  *
  */
 public class RegularContain implements Regular{
-	private static final Logger log = Logger.getLogger(RegularContain.class);
+	private static final Logger log = LoggerFactory.getLogger(RegularContain.class);
 	private static PatternCompiler patternCompiler = new Perl5Compiler();
 	/**
 	 * 配置状态
@@ -82,7 +83,7 @@ public class RegularContain implements Regular{
 				list.add(item);
 			}
 		}catch(Exception e){
-			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
+			log.error("[提取异常][src:{}][reg:{}]", src, regx);
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}
@@ -109,7 +110,7 @@ public class RegularContain implements Regular{
 				list.add(matchResult.group(idx));
 			}
 		}catch(Exception e){
-			log.error("fetch(String,String):\n"+"src="+src+"\regx="+regx+"\n"+e);
+			log.error("[提取异常][src:{}][reg:{}]", src, regx);
 			if(ConfigTable.isDebug()){
 				e.printStackTrace();
 			}

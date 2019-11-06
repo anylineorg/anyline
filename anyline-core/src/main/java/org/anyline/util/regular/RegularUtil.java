@@ -19,7 +19,6 @@
 
 package org.anyline.util.regular;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,8 +26,6 @@ import java.util.Map;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.FileUtil;
-import org.apache.log4j.Logger;
 import org.apache.oro.text.regex.MatchResult;
 import org.apache.oro.text.regex.Pattern;
 import org.apache.oro.text.regex.PatternCompiler;
@@ -36,6 +33,8 @@ import org.apache.oro.text.regex.PatternMatcher;
 import org.apache.oro.text.regex.PatternMatcherInput;
 import org.apache.oro.text.regex.Perl5Compiler;
 import org.apache.oro.text.regex.Perl5Matcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class RegularUtil {
@@ -50,7 +49,7 @@ public class RegularUtil {
 	public static final String TAG_BEGIN = "{begin}";
 	public static final String TAG_END = "{end}";
 	
-	private static final Logger log = Logger.getLogger(RegularUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(RegularUtil.class);
 	static{
 		regularList.put(Regular.MATCH_MODE.MATCH, regularMatch);
 		regularList.put(Regular.MATCH_MODE.PREFIX, regularMatchPrefix);
@@ -59,7 +58,7 @@ public class RegularUtil {
 	public static synchronized boolean match(String src, String regx, Regular.MATCH_MODE mode){
 		boolean result = false;
 		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
-			log.warn("[match][src:"+src+"][regx:"+regx+"][mode:"+mode+"]");
+			log.warn("[match][src:{}][regx:{}][mode:{}]",src, regx, mode);
 		}
 		if(null == src || null == regx ){
 			return result;
@@ -68,11 +67,11 @@ public class RegularUtil {
 		try{
 			result = regular.match(src, regx);
 		}catch(Exception e){
-			log.warn("[match(src,regx,mode) error][src:"+src+"][regx:"+regx+"][mode:"+mode+"]");
+			log.warn("[match(src,regx,mode) error][src:{}][regx:{}][mode:{}]", src, regx, mode);
 			e.printStackTrace();
 		}
 		if(ConfigTable.getBoolean("IS_REGULAR_LOG")){
-			log.warn("[match][src:"+src+"][regx:"+regx+"][mode:"+mode+"][result:"+result+"]");
+			log.warn("[match][src:{}][regx:{}][mode:{}][result:{}]", src, regx, mode, result);
 		}
 		return result;
 	}
@@ -155,7 +154,7 @@ public class RegularUtil {
 				}
 			}
 		}catch(Exception e){
-			log.error("[fetch(String,String) error]"+"[src:"+src+"][regx:"+regx+"]\n"+e);
+			log.error("[提取异常][src:{}][regx:{}]", src, regx);
 			e.printStackTrace();
 		}
 		return idx;
@@ -178,7 +177,7 @@ public class RegularUtil {
 				result.add(row.get(0));
 			}
 		}catch(Exception e){
-			log.error("[regexpValue error][src:"+src+"][regex:"+regex+"][mode:"+mode+"]\n"+e);
+			log.error("[提取异常][src:{}][reg:{}][mode:{}]", src, regex, mode);
 			e.printStackTrace();
 		}
 		return result;
@@ -512,7 +511,6 @@ public class RegularUtil {
 			String regx = "(?i)(" + tag + ")\\s*=\\s*(['\"])([\\s\\S]*?)\\2";
 			result = fetch(txt, regx);
 		}catch(Exception e){
-			log.error("提取属性异常");
 			e.printStackTrace();
 		}
 		return result;
