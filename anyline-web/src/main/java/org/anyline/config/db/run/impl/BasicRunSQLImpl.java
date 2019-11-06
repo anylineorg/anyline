@@ -38,16 +38,16 @@ import org.anyline.config.db.impl.OrderStoreImpl;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
-import org.anyline.config.db.sql.xml.impl.XMLConditionImpl;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public abstract class BasicRunSQLImpl implements RunSQL {
-	protected static final Logger log = Logger.getLogger(BasicRunSQLImpl.class);
+	protected static final Logger log = LoggerFactory.getLogger(BasicRunSQLImpl.class);
 	protected SQL sql;
 	protected List<Object> values;
 	protected PageNavi pageNavi;

@@ -36,17 +36,18 @@ import org.anyline.config.db.sql.xml.impl.XMLSQLImpl;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SQLStoreImpl extends SQLStore{
 
 	private static SQLStoreImpl instance;
 	private static Hashtable<String,SQL> sqls = new Hashtable<String,SQL>();
-	private static final Logger log = Logger.getLogger(SQLStoreImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(SQLStoreImpl.class);
 	protected SQLStoreImpl() {}
 	private static String sqlDir;
 	private static long lastLoadTime = 0;
@@ -58,7 +59,7 @@ public class SQLStoreImpl extends SQLStore{
 		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),sqlDir),"xml");
 		for(File file:files){
 			if(ConfigTable.isSQLDebug()){
-				log.warn("[解析SQL] [FILE:" + file.getAbsolutePath() + "]");
+				log.warn("[解析SQL] [FILE:{}]",file.getAbsolutePath());
 			}
 			sqls.putAll(parseSQLFile(file));
 		}
@@ -110,7 +111,7 @@ public class SQLStoreImpl extends SQLStore{
 			sql.group(group);
 			sql.order(order);
 			if(ConfigTable.isSQLDebug()){
-				log.warn("[解析SQL] [ID:" + sqlId + "]\n[TEXT:" + sqlText + "]");
+				log.warn("[解析SQL][id:{}]\n[text:{}]",sqlId, sqlText);
 			}
 			result.put(sqlId, sql);
 		}
@@ -172,11 +173,11 @@ public class SQLStoreImpl extends SQLStore{
 		}
 		try{
 			if(ConfigTable.isSQLDebug()){
-				log.warn("[提取SQL] [ID:" + id + "]");
+				log.warn("[提取SQL][id:{}]",id);
 			}
 			sql = sqls.get(id);
 		}catch(Exception e){
-			log.error("[SQL提取失败] [ID:" + id + "]");
+			log.error("[SQL提取失败][id:{}]",id);
 		} 
 		return sql;
 	}

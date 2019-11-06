@@ -23,7 +23,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.web.tag.ComponentTag;
-import org.apache.log4j.Logger;
 /**
  * 加密textarea
  * @author Administrator

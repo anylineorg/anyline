@@ -29,11 +29,12 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class ComponentTag extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	protected static final Logger log = Logger.getLogger(ComponentTag.class);
+	protected static final Logger log = LoggerFactory.getLogger(ComponentTag.class);
 	
 	protected HttpServletRequest request; 
 	protected HttpSession session;

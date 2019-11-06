@@ -24,16 +24,16 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
-import org.apache.log4j.Logger;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.Constant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Message extends BodyTagSupport{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Message.class);
+	private static final Logger log = LoggerFactory.getLogger(Message.class);
 	private String scope;
 	private String key;
 	private boolean clean = true;		//显示后清除

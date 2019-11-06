@@ -26,7 +26,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.anyline.entity.PageNaviConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * ajax形式分页
  * @author Administrator
@@ -35,7 +36,7 @@ import org.apache.log4j.Logger;
 public class Navi extends BodyTagSupport{
 	public static final String CONFIG_FLAG_KEY = "_anyline_navi_conf_";
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Navi.class);
+	private static final Logger log = LoggerFactory.getLogger(Navi.class);
 	private String url				;	//数据来源
 	private String param			;	//参数收集函数
 	private String container		;	//返回内容显示容器

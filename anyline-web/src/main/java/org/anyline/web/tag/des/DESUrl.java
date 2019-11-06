@@ -21,10 +21,11 @@ package org.anyline.web.tag.des;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.web.tag.BaseBodyTag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 整体加密url
  * @author Administrator
@@ -32,7 +33,7 @@ import org.anyline.web.tag.BaseBodyTag;
  */
 public class DESUrl extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(DESUrl.class);
+	private static final Logger log = LoggerFactory.getLogger(DESUrl.class);
 	private String value;		//被加密数据
 
 	public int doEndTag() throws JspException {

@@ -23,7 +23,8 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.WebUtil;
 import org.anyline.web.tag.BaseBodyTag;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 整体加密
  * @author Administrator
@@ -31,7 +32,7 @@ import org.apache.log4j.Logger;
  */
 public class HtmlAs extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(HtmlAs.class);
+	private static final Logger log = LoggerFactory.getLogger(HtmlAs.class);
 
 	public int doEndTag() throws JspException {
 		try{
