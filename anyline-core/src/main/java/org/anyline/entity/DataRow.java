@@ -37,15 +37,16 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.NumberUtil;
-import org.apache.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DataRow extends HashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
-	private static final Logger log = Logger.getLogger(DataRow.class);
+	protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
 
 	public static enum KEY_CASE{
 		DEFAULT				{public String getCode(){return "DEFAULT";} 	public String getName(){return "默认";}},

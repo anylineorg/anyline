@@ -12,14 +12,15 @@ import java.util.Map;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BasicConfig {
 	protected static long lastLoadTime 	= 0;	//最后一次加载时间
-	protected static final Logger log = Logger.getLogger(BasicConfig.class);
+	protected static final Logger log = LoggerFactory.getLogger(BasicConfig.class);
 	protected Map<String, String> kvs = new HashMap<String, String>();
 	
 	protected void afterParse(String key, String value){
@@ -41,11 +42,11 @@ public abstract class BasicConfig {
 				}
 			}
 			if(configSize ==0){
-				log.warn("[解析配置文件][未加载配置文件:"+fileName+"][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/"+fileName+"]");
+				log.warn("[解析配置文件][未加载配置文件:{}][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/{}]",fileName,fileName);
 			}
 			
 		} catch (Exception e) {
-			log.error("[解析配置文件][file:"+fileName+"][配置文件解析异常:"+e+"]");
+			log.error("[解析配置文件][file:{}][配置文件解析异常:{}]",fileName,e);
 		}
 	}
 	@SuppressWarnings("unchecked")
@@ -66,7 +67,7 @@ public abstract class BasicConfig {
 					try {
 						String value = row.getString(nm);
 						config.setValue(nm, value);
-						log.info("[解析配置文件][" + nm + " = " + value + "]");
+						log.info("[解析配置文件][{}={}]",nm,value);
 						kvs.put(nm, value);
 						config.afterParse(nm, value);
 					} catch (Exception e) {
@@ -91,7 +92,7 @@ public abstract class BasicConfig {
 								kvs.put(newKey, val);
 								config.setValue(newKey, val);
 								config.afterParse(newKey, val);
-								log.warn("[解析配置文件][版本兼容][laster key:" + newKey + "][old key:" + oldKey + ":" + val + "]");
+								log.warn("[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]",newKey,oldKey,val);
 							}
 						}
 					}
@@ -103,7 +104,6 @@ public abstract class BasicConfig {
 		}
 		return config;
 	}
-
 	public static Hashtable<String, BasicConfig> parse(Class<? extends BasicConfig> T, String column, DataSet set, Hashtable<String, BasicConfig> instances, String... compatibles) {
 		for (DataRow row : set) {
 			String key = row.getString(column);
@@ -124,7 +124,7 @@ public abstract class BasicConfig {
 	 */
 	protected static Hashtable<String, BasicConfig> parseFile(Class<?> T, File file, Hashtable<String, BasicConfig> instances, String... compatibles) {
 		if (null == file || !file.exists()) {
-			log.warn("[解析配置文件][文件不存在][file=" + file.getName() + "]");
+			log.warn("[解析配置文件][文件不存在][file:{}]",file);
 			return instances;
 		}
 		SAXReader reader = new SAXReader();
@@ -148,7 +148,7 @@ public abstract class BasicConfig {
 					Element element = elements.next();
 					String key = element.attributeValue("key");
 					String value = element.getTextTrim();
-					log.info("[解析配置文件][file=" + file.getName() + "][key = " + configKey + "] [" + key + " = " + value + "]");
+					log.info("[解析配置文件][file:{}][key:{}][{}={}]",file, configKey, key,value);
 					kvs.put(key, value);
 					config.setValue(key, value);
 				}
@@ -167,7 +167,7 @@ public abstract class BasicConfig {
 								if (null != element) {
 									String val = element.getTextTrim();
 									kvs.put(newKey, val);
-									log.warn("[解析配置文件][版本兼容][laster key:" + newKey + "][old key:" + oldKey + ":" + val + "]");
+									log.warn("[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]", newKey, oldKey, val);
 								}
 							}
 						}

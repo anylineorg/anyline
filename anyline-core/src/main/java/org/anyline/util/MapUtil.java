@@ -3,10 +3,11 @@ package org.anyline.util;
 import java.math.BigDecimal;
 
 import org.anyline.entity.MapLocation;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MapUtil {
-	private static final Logger log = Logger.getLogger(MapUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(MapUtil.class);
 	private static double EARTH_RADIUS = 6378.137;
 
 	private static double rad(double d) {

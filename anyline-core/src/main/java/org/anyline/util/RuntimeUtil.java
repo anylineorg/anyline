@@ -3,10 +3,11 @@ package org.anyline.util;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RuntimeUtil {
-	private static Logger log = Logger.getLogger(RuntimeUtil.class);
+	private static Logger log = LoggerFactory.getLogger(RuntimeUtil.class);
 	
 	public static String run(String cmd, boolean wait){
 		String result = "";
