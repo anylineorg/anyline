@@ -42,14 +42,14 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
 import org.anyline.util.JSONDateFormatProcessor;
-import org.anyline.util.NumberUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
-	protected static final Logger log = Logger.getLogger(DataSet.class);
+	protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
 	private boolean result 			= true		; // 执行结果
 	private Exception exception		= null		; // 异常
 	private String message			= null		; // 提示信息

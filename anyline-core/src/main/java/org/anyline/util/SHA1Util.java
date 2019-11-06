@@ -20,14 +20,15 @@ package org.anyline.util;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SHA1Util {
-	private static final Logger log = Logger.getLogger(SHA1Util.class);
+	private static final Logger log = LoggerFactory.getLogger(SHA1Util.class);
 	private static MessageDigest digest = null;
 	public static String sign(String src){
 		if(ConfigTable.isDebug()){
-			log.warn("[SHA1 SIGN][src:" + src+"]");
+			log.warn("[SHA1 SIGN][src:{}]", src);
 		}
 		String result = "";
 		try {
@@ -49,7 +50,7 @@ public class SHA1Util {
 			e.printStackTrace();
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("[SHA1 SIGN][sign:" + result+"]");
+			log.warn("[SHA1 SIGN][sign:{}]",result);
 		}
 		return result;
 	}

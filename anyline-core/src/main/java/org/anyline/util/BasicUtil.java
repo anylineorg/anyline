@@ -40,8 +40,6 @@ import java.util.TreeMap;
 import net.sf.json.JSONObject;
 
 import org.anyline.util.regular.RegularUtil;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.log4j.Logger;
 
 public class BasicUtil {
 	/**

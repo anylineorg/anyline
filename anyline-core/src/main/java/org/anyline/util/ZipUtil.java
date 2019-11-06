@@ -39,7 +39,8 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Java utils 实现的Zip工具 不支持RAR格式
@@ -47,7 +48,7 @@ import org.apache.log4j.Logger;
  * @author once
  */
 public class ZipUtil {
-	static final Logger log = Logger.getLogger(ZipUtil.class);
+	static final Logger log = LoggerFactory.getLogger(ZipUtil.class);
 	private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte
 
 	/**
@@ -114,7 +115,7 @@ public class ZipUtil {
 		boolean result = true;
 		long fr = System.currentTimeMillis();
 		if (ConfigTable.isDebug()) {
-			log.warn("[压缩文件][file:" + zip.getAbsolutePath() + "][size:" + files.size() + "]");
+			log.warn("[压缩文件][file:{}][size:{}]", zip.getAbsolutePath(), files.size());
 		}
 		try {
 			File dir = zip.getParentFile();
@@ -171,8 +172,7 @@ public class ZipUtil {
 			e.printStackTrace();
 		}
 		if (ConfigTable.isDebug()) {
-			log.warn("[压缩完成][time:" + (System.currentTimeMillis() - fr)
-					+ "][size:" + files.size() + "]");
+			log.warn("[压缩完成][time:{}][size:{}]",(System.currentTimeMillis() - fr), files.size());
 		}
 		return result;
 	}
@@ -237,10 +237,7 @@ public class ZipUtil {
 				zipout.flush();
 				zipout.closeEntry();
 				if (ConfigTable.isDebug()) {
-					log.warn("[压缩文件][添加文件][耗时:"
-							+ DateUtil.conversion(System.currentTimeMillis()
-									- fr) + "][file:" + src.getAbsolutePath()
-							+ "]");
+					log.warn("[压缩文件][添加文件][耗时:{}][file:{}]",DateUtil.conversion(System.currentTimeMillis()- fr), src.getAbsolutePath());
 				}
 			}
 			return true;
@@ -278,8 +275,7 @@ public class ZipUtil {
 		List<File> files = new ArrayList<File>();
 		long fr = System.currentTimeMillis();
 		if (ConfigTable.isDebug()) {
-			log.warn("[解压文件][file:" + zip.getAbsolutePath() + "][dir:"
-					+ dir.getAbsolutePath() + "]");
+			log.warn("[解压文件][file:{}][dir:{}]", zip.getAbsolutePath(), dir.getAbsolutePath());
 		}
 		int size = 0;
 		try {
@@ -314,14 +310,7 @@ public class ZipUtil {
 				in.close();
 				out.close();
 				if (ConfigTable.isDebug()) {
-					log.warn("[解压完成][进度:"
-							+ size
-							+ "/"
-							+ total
-							+ "][耗时:"
-							+ DateUtil.conversion(System.currentTimeMillis()
-									- fr) + "][file:"
-							+ desFile.getAbsolutePath() + "]");
+					log.warn("[解压完成][进度:{}/{}][耗时:{}][file:{}]", size,total,DateUtil.conversion(System.currentTimeMillis()- fr),desFile.getAbsolutePath());
 				}
 			}
 			zf.close();
@@ -329,9 +318,7 @@ public class ZipUtil {
 			e.printStackTrace();
 		}
 		if (ConfigTable.isDebug()) {
-			log.warn("[解压完成][共耗时:"
-					+ DateUtil.conversion(System.currentTimeMillis() - fr)
-					+ "][dir:" + dir.getAbsolutePath() + "][size:" + size + "]");
+			log.warn("[解压完成][共耗时:{}][dir:{}][size:{}]",DateUtil.conversion(System.currentTimeMillis() - fr), dir.getAbsolutePath(), size);
 		}
 		return files;
 	}
