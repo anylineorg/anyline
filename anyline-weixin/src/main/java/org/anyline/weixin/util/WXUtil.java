@@ -11,10 +11,11 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.MD5Util;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WXUtil {
-	private static final Logger log = Logger.getLogger(WXUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(WXUtil.class);
 	/**
 	 * 参数签名
 	 * 
@@ -62,7 +63,7 @@ public class WXUtil {
 		reqEntity.setContentType("application/x-www-form-urlencoded");
 		String txt = HttpUtil.post(httpclient, WXConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
 		if(ConfigTable.isDebug()){
-			log.warn("[获取RSA公钥][\n"+txt+"\n]");
+			log.warn("[获取RSA公钥][\n{}\n]",txt);
 		}
 		return txt;
 	}
