@@ -9,32 +9,32 @@ import org.anyline.util.ConfigTable;
 public class PageNaviConfig extends BasicConfig{
 
 	
-	public String STYLE_FILE_PATH 				= ""		;	//样式文件路径
-	public String SCRIPT_FILE_PATH 				= ""		;	//脚本文件路径
+	public String STYLE_FILE_PATH 				= ""					; //样式文件路径
+	public String SCRIPT_FILE_PATH 				= ""					; //脚本文件路径
 	
-	public String STYLE_BUTTON_FIRST			= "第一页"			;	//第一页
-	public String STYLE_BUTTON_PREV				= "上一页"			;	//上一页
-	public String STYLE_BUTTON_NEXT				= "下一页"			;	//下一页
-	public String STYLE_BUTTON_LAST				= "最后页"			;	//最后页
-	public String STYLE_BUTTON_JUMP				= "确定"				;	//跳转到
-	public String STYLE_LABEL_JUMP				= "转到第"			;	//跳转到
-	public String STYLE_LABEL_JUMP_PAGE			= "页"				;	//跳转到
-	public String STYLE_LOAD_MORE_FORMAT		= "加载更多"			;	//加载更多
-	public String STYLE_INDEX_ELLIPSIS			= "..."				;	//下标省略符
-	public String STYLE_DATA_EMPTY				= "没有更多内容了"		;	//查询无数据
-	public String STYLE_PAGE_OVER				= "最后一页了"			;	//最后一页
+	public String STYLE_BUTTON_FIRST			= "第一页"				; //第一页
+	public String STYLE_BUTTON_PREV				= "上一页"				; //上一页
+	public String STYLE_BUTTON_NEXT				= "下一页"				; //下一页
+	public String STYLE_BUTTON_LAST				= "最后页"				; //最后页
+	public String STYLE_BUTTON_JUMP				= "确定"					; //跳转到
+	public String STYLE_LABEL_JUMP				= "转到第"				; //跳转到
+	public String STYLE_LABEL_JUMP_PAGE			= "页"					; //跳转到
+	public String STYLE_LOAD_MORE_FORMAT		= "加载更多"				; //加载更多
+	public String STYLE_INDEX_ELLIPSIS			= "..."					; //下标省略符
+	public String STYLE_DATA_EMPTY				= "没有更多内容了"			; //查询无数据
+	public String STYLE_PAGE_OVER				= "最后一页了"				; //最后一页
 	
 	//变量
-	public int VAR_PAGE_RANGE					= 5			;	//下标数量
-	public int VAR_PAGE_DEFAULT_VOL				= 10		;	//每页多少条
-	public int VAR_PAGE_MAX_VOL					= 100		;	//每页最多多少条
-	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= false		; 	//前端是否可设置每页多少条
-	public boolean VAR_SHOW_STAT				= false		;	//是否显示分布统计
-	public boolean VAR_SHOW_JUMP				= false		;	//是否显示跳转
-	public boolean VAR_SHOW_BUTTON				= true		;	//是否显示上一页下一页button
-	public boolean VAR_SHOW_INDEX				= true		;	//是否显示下标
-	public boolean VAR_SHOW_INDEX_ELLIPSIS		= false		;	//是否显示下标省略符 (下标不含第2页或倒数第2页时显示省略号)1 .. 3 4 5 6 7 8 .. 10
-	public String  VAR_FORM_METHOD				= "post"	;
+	public int VAR_PAGE_RANGE					= 5						; //下标数量
+	public int VAR_PAGE_DEFAULT_VOL				= 10					; //每页多少条
+	public int VAR_PAGE_MAX_VOL					= 100					; //每页最多多少条
+	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= false					; //前端是否可设置每页多少条
+	public boolean VAR_SHOW_STAT				= false					; //是否显示分布统计
+	public boolean VAR_SHOW_JUMP				= false					; //是否显示跳转
+	public boolean VAR_SHOW_BUTTON				= true					; //是否显示上一页下一页button
+	public boolean VAR_SHOW_INDEX				= true					; //是否显示下标
+	public boolean VAR_SHOW_INDEX_ELLIPSIS		= false					; //是否显示下标省略符 (下标不含第2页或倒数第2页时显示省略号)1 .. 3 4 5 6 7 8 .. 10
+	public String  VAR_FORM_METHOD				= "post"				;
 	
 	//key
 	public String KEY_PAGE_ROWS			= "_anyline_page_rows"			; //设置每页显示多少条的key			
