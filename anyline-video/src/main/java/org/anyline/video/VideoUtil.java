@@ -9,13 +9,14 @@ import java.io.OutputStream;
 import javax.imageio.ImageIO;
 
 import org.anyline.util.DateUtil;
-import org.apache.log4j.Logger;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class VideoUtil {
-	private static Logger log = Logger.getLogger(VideoUtil.class);
+	private static Logger log = LoggerFactory.getLogger(VideoUtil.class);
 	/**
 	 * 截取视频获得指定帧的图片
 	 * @param video 视频
@@ -54,7 +55,7 @@ public class VideoUtil {
 			thumbnailImage.getGraphics().drawImage(srcImage.getScaledInstance(srcImageWidth, srcImageHeight, 1), 0, 0, null);
 			ImageIO.write(thumbnailImage, "jpg", out);
 			ff.stop();
-			log.warn("[视频截图][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][video:"+video.getAbsolutePath()+"]");
+			log.warn("[视频截图][耗时:{}][video:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),video.getAbsolutePath());
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -90,7 +91,7 @@ public class VideoUtil {
 			}
 			result = frame(video, new FileOutputStream(img));
 			if(null != img){
-				log.warn("[视频截图][截图文件:"+img.getAbsolutePath()+"]");
+				log.warn("[视频截图][截图文件:{}]", img.getAbsolutePath());
 			}
 			return result;
 		} catch (FileNotFoundException e) {
