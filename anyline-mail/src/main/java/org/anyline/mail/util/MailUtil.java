@@ -2,6 +2,7 @@ package org.anyline.mail.util;
 
 import java.util.Hashtable;
 import java.util.Properties;
+
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -9,10 +10,11 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.anyline.util.BasicUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MailUtil {
-	private static final Logger log = Logger.getLogger(MailUtil.class);
+	private static final Logger log = LoggerFactory.getLogger(MailUtil.class);
 	private MailConfig config = null;
 	private Properties props = new Properties();
 	private static Hashtable<String, MailUtil> instances = new Hashtable<String, MailUtil>();
@@ -54,7 +56,7 @@ public class MailUtil {
 	 * @return
 	 */
 	public boolean send(String fr, String to, String title, String content) {
-		log.warn("[send email][fr:"+fr+"][to:"+to+"][title:"+title+"][centent:"+content+"]");
+		log.warn("[send email][fr:{}][to:{}][title:{}][centent:{}]", fr,to,title,content);
 		try {
 			Session mailSession = Session.getDefaultInstance(props);
 			Message msg = new MimeMessage(mailSession);
