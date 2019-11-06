@@ -25,21 +25,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class I18NUtil {
-	static final Logger log = Logger.getLogger(I18NUtil.class);
+	static final Logger log = LoggerFactory.getLogger(I18NUtil.class);
 	public static final String defaultLang = "cn";
 	private static Map<String,Map<String,String>> messages;
 	
 	static{
 		init();
 	}
-	@SuppressWarnings("unchecked")
 	private static void init(){
 		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),ConfigTable.get("I18N_MESSAGE_DIR")), "xml");
 		messages = new Hashtable<String,Map<String,String>>();

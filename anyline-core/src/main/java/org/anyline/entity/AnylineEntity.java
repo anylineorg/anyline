@@ -25,11 +25,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.anyline.util.BeanUtil;
-import org.apache.log4j.Logger;
 
 public abstract class AnylineEntity extends DataRow implements Serializable{
 	private static final long serialVersionUID = 1L;
-	protected static final Logger log = Logger.getLogger(AnylineEntity.class);
 
 
 
