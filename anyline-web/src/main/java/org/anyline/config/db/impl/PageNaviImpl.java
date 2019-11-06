@@ -36,12 +36,13 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.NumberUtil;
 import org.anyline.web.tag.Navi;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class PageNaviImpl implements PageNavi, Serializable{
 	private static final long serialVersionUID = 3593100423479113410L;
-	private static final Logger log = Logger.getLogger(PageNaviImpl.class);
+	private static final Logger log = LoggerFactory.getLogger(PageNaviImpl.class);
 //
 //	public static final String PAGE_VOL				= "pageRows"							;
 //	public static final String PAGE_NO				= "pageNo"								;
@@ -174,7 +175,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		
 		if(type ==0){ //下标导航
 			//每页多少条
-			log.warn("[vol set][enable:"+config.VAR_CLIENT_SET_VOL_ENABLE+"][index:"+config.VAR_PAGE_VOL_INDEX+"][vol:"+pageRows+"][sort:"+config.CONFIG_PAGE_VAL_SET_SORT+"]");
+			log.warn("[vol set][enable:{}][index:{}][vol:{}][sort:{}]",config.VAR_CLIENT_SET_VOL_ENABLE,config.VAR_PAGE_VOL_INDEX,pageRows,config.CONFIG_PAGE_VAL_SET_SORT);
 			String vol_set_html = "";
 			if(config.VAR_CLIENT_SET_VOL_ENABLE){
 				if(config.CONFIG_PAGE_VAL_SET_SORT == 2){

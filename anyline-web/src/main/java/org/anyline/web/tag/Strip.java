@@ -23,9 +23,9 @@ package org.anyline.web.tag;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.log4j.Logger;
-
 import org.anyline.util.regular.RegularUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 清除html标签
  * @author Administrator
@@ -34,7 +34,7 @@ import org.anyline.util.regular.RegularUtil;
 
 public class Strip extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Strip.class);
+	private static final Logger log = LoggerFactory.getLogger(Strip.class);
 
 	private int length = -1;
 	private String ellipsis="...";

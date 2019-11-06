@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+LoggerFactory * Copyright 2006-2015 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,11 +29,12 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BeanUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Contains extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Contains.class);
+	private static final Logger log = LoggerFactory.getLogger(Contains.class);
 	private Object data;		
 	private String key;
 	private String scope;

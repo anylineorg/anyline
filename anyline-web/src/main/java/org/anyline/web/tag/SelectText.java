@@ -29,17 +29,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.anyline.entity.DataRow;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class SelectText extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(SelectText.class);
+	private static final Logger log = LoggerFactory.getLogger(SelectText.class);
 	private String scope;
 	private Object data;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");

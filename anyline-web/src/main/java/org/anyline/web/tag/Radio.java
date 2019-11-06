@@ -33,12 +33,13 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Radio extends BaseBodyTag{
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Radio.class);
+	private static final Logger log = LoggerFactory.getLogger(Radio.class);
 	private String scope;
 	private Object data;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
