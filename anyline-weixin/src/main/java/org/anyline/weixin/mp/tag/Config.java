@@ -31,7 +31,8 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 import org.anyline.web.tag.BaseBodyTag;
 import org.anyline.weixin.mp.util.WXMPUtil;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * 
  * 微信 wx.config
@@ -39,7 +40,7 @@ import org.apache.log4j.Logger;
  */
 public class Config extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = Logger.getLogger(Config.class);
+	private static final Logger log = LoggerFactory.getLogger(Config.class);
 	private boolean debug = false;
 	private String apis= "";
 	private String key = "";
@@ -62,7 +63,7 @@ public class Config extends BaseBodyTag {
 					url += "?" + param;
 				}
 				if(ConfigTable.isDebug()){
-					log.warn("[config init][url:"+url+"]");
+					log.warn("[config init][url:{}]",url);
 				}
 				Map<String,Object> map = util.jsapiSign(url);
 				
