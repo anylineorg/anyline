@@ -148,7 +148,7 @@ public class ImgUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        log.warn("[压缩图片][耗时:{}][source:{}][target:{}]",(System.currentTimeMillis()-fr), src, tar);
+        log.warn("\n\t[压缩图片][耗时:{}][source:{}][target:{}]",(System.currentTimeMillis()-fr), src, tar);
     }
 
     public static void scale(File src, File tar, String format, int width, int height) {
