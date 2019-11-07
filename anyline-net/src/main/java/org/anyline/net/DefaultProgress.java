@@ -70,7 +70,7 @@ public class DefaultProgress implements DownloadProgress{
 			long time = System.currentTimeMillis() - start;
 			message = "[进度:"+FileUtil.progress(length, finish)+"]"
     				+ "[耗时:"+DateUtil.conversion(time)+"/"+DateUtil.conversion(expect)+"("+FileUtil.length(finish*1000/time)+"/s)]";
-    		log.warn("[文件下载]{}[url:{}][local:{}]",message, url, local.getAbsolutePath());
+    		log.warn("\n\t[文件下载]{}[url:{}][local:{}]",message, url, local.getAbsolutePath());
     		lastLogRate = rate;
     		lastLogTime = System.currentTimeMillis();
 		}
