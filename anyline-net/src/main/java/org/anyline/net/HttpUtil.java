@@ -448,13 +448,13 @@ public class HttpUtil {
 		try {
 			long fr = System.currentTimeMillis();
 			if(ConfigTable.isDebug()){
-				log.warn("[http request][method:{}][url:{}]",method.getMethod(),method.getURI());
+				log.warn("\n\t[http request][method:{}][url:{}]",method.getMethod(),method.getURI());
 			}
 			method.setHeader("Connection", "close");  
 			response = client.execute(method);
 			result = parseResult(result,response, encode);
 			if(ConfigTable.isDebug()){
-				log.warn("[http request][method:{}][耗时:{}][url:{}]",method.getMethod(),System.currentTimeMillis() - fr, method.getURI());
+				log.warn("\n\t[http request][method:{}][status:{}][耗时:{}][url:{}]",method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
 			}
 		} catch (Exception e) {
 			result = new HttpResult();
@@ -668,7 +668,7 @@ public class HttpUtil {
 		    	get.removeHeaders("Range");
 		    	response = client.execute(get);
 		    	code = response.getStatusLine().getStatusCode();
-		    	log.warn("[http download][断点设置异常][url:{}]",url);
+		    	log.warn("\n\t[http download][断点设置异常][url:{}]",url);
 		    }
 		    if(code != 200 && code !=206){
 				//progress.error(url, "", code, "状态异常");
@@ -692,7 +692,7 @@ public class HttpUtil {
 		        int len = -1;
 		        while((len = is.read(buffer) )!= -1){
 		        	if(task.getAction() !=1){
-		    	    	log.warn("[http download][break][url:{}]",url);
+		    	    	log.warn("\n\t[http download][break][url:{}]",url);
 		        		break;
 		        	}
 		        	raf.write(buffer, 0, len);
@@ -705,7 +705,7 @@ public class HttpUtil {
 		} catch (Exception e) {
 			//progress.error(url, "", 0, e.getMessage());
 			task.error(-1, e.getMessage());
-	    	log.warn("[http download][下载异常][url:{}]",url);
+	    	log.warn("\n\t[http download][下载异常][url:{}]",url);
 		    e.printStackTrace();
 		}finally{
 			if(null != raf){
@@ -776,7 +776,7 @@ public class HttpUtil {
 			fileLog += "["+key+":"+file.getAbsolutePath()+"]";
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("[http upload][url:{}]"+fileLog,url);
+			log.warn("\n\t[http upload][url:{}]"+fileLog,url);
 		}
 		
         HttpEntity entity = builder.build();// 生成 HTTP POST 实体
@@ -880,7 +880,6 @@ public class HttpUtil {
 
 	/**
 	 * path是否包含文件名
-	 * 
 	 * @param path
 	 * @return
 	 */
@@ -991,7 +990,7 @@ public class HttpUtil {
 						}
 						pairs.add(new BasicNameValuePair(key, val));
 						if(ConfigTable.isDebug()){
-							log.warn("[request param][{}={}]", key,BasicUtil.cut(val,0,20));
+							log.warn("\n\t[request param][{}={}]", key,BasicUtil.cut(val,0,20));
 						}						
 					}
 				}else if(value instanceof Collection){
@@ -1002,13 +1001,13 @@ public class HttpUtil {
 						}
 						pairs.add(new BasicNameValuePair(key, val.toString()));
 						if(ConfigTable.isDebug()){
-							log.warn("[request param][{}={}]",key,BasicUtil.cut(val.toString(),0,20));
+							log.warn("\n\t[request param][{}={}]",key,BasicUtil.cut(val.toString(),0,20));
 						}						
 					}
 				}else if(null != value){
 					pairs.add(new BasicNameValuePair(key, value.toString()));
 					if(ConfigTable.isDebug()){
-						log.warn("[request param][{}={}]",key,BasicUtil.cut(value.toString(),0,20));
+						log.warn("\n\t[request param][{}={}]",key,BasicUtil.cut(value.toString(),0,20));
 					}
 				}
 			}
