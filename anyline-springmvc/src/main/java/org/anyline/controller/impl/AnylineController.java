@@ -386,7 +386,7 @@ public class AnylineController extends AbstractBasicController {
     	map.put("response_time_fr", getRequest().getAttribute("_anyline_response_time_fr"));
     	map.put("response_time_to", System.currentTimeMillis());
 		if(ConfigTable.isDebug()){
-			log.warn("[controller return][result:{}][message:{}]",result,message);
+			log.warn("\n\t[controller return][result:{}][message:{}]",result,message);
 		}
 		JSON json = JSONObject.fromObject(map,config);
 		return json.toString();
