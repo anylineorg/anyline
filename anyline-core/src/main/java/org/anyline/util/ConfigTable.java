@@ -253,7 +253,7 @@ public class ConfigTable {
 	public static void put(String key, String value){
 		configs.put(key, value);
 		if(isDebug()){
-			log.warn("[ConfigTable动态更新][{}={}]",key,value);
+			log.warn("\n\t[ConfigTable动态更新][{}={}]",key,value);
 		}
 	}
 	public static String getVersion(){
