@@ -136,7 +136,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 			}
 		}
 		if(ConfigTable.isDebug()){
-			//log.warn("[parse run time value][key:"+key+"][value:"+value+"]");
+			//log.warn("\n\t[parse run time value][key:"+key+"][value:"+value+"]");
 		}
 		return value;
 	}

@@ -122,7 +122,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				}
 			}
 			if(showSQL){
-				log.warn("[查询记录总数][行数:{}]",total);
+				log.warn("\n\t[查询记录总数][行数:{}]",total);
 			}
 		}
 		if(run.isValid() &&(null == navi || total > 0)){
@@ -245,7 +245,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createUpdateTxt(dest, obj, false, columns);
 		String sql = run.getUpdateTxt();
 		if(BasicUtil.isEmpty(sql)){
-			log.warn("[不具备更新条件][dest:{}]",dest);
+			log.warn("\n\t[不具备更新条件][dest:{}]",dest);
 			return -1;
 		}
 		List<Object> values = run.getValues();
@@ -542,7 +542,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createExecuteRunSQL(sql, configs, conditions);
 		if(!run.isValid()){
 			if(showSQL){
-				log.warn("[valid:false]");
+				log.warn("\n\t[valid:false]");
 			}
 			return -1;
 		}
