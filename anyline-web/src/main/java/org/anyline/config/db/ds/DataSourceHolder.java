@@ -46,7 +46,7 @@ public class DataSourceHolder {
 
     public static void setDataSource(String dataSource) {
     	if(ConfigTable.isDebug()){
-    		log.warn("[切换数据源][thread:{}][数据源:{}]",Thread.currentThread().getId(),dataSource);
+    		log.warn("\n\t[切换数据源][thread:{}][数据源:{}]",Thread.currentThread().getId(),dataSource);
     	}
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源
     	THREAD_CUR_SOURCE.set(dataSource);
@@ -55,7 +55,7 @@ public class DataSourceHolder {
 
     public static void setDataSource(String dataSource, boolean auto) {
     	if(ConfigTable.isDebug()){
-    		log.warn("[切换数据源][thread:{}][数据源:{}][auto default:{}]",Thread.currentThread().getId(),dataSource,auto);
+    		log.warn("\n\t[切换数据源][thread:{}][数据源:{}][auto default:{}]",Thread.currentThread().getId(),dataSource,auto);
     	}
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源
     	THREAD_CUR_SOURCE.set(dataSource);
@@ -113,7 +113,7 @@ public class DataSourceHolder {
 			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key);
+			log.warn("\n\t[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key);
 		}
 		DynamicDataSource.addDataSource(key, ds);
 		dataSources.add(key);
