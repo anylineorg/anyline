@@ -717,10 +717,10 @@ public class FileUtil {
 				}
 			}
 			result = file.delete();
-			log.warn("[目录删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
+			log.warn("\n\t[目录删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
 		}else{
 			result = file.delete();
-			log.warn("[文件删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
+			log.warn("\n\t[文件删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
 		}
 		return result;
 	}
@@ -827,7 +827,7 @@ public class FileUtil {
 			}catch(Exception e){}
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("[save file][file:"+file.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
+			log.warn("\n\t[save file][file:"+file.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 		}
         return true;
     }  
@@ -906,7 +906,7 @@ public class FileUtil {
                 while ((length = is.read(bytes)) != -1) {
                     os.write(bytes, 0, length);
                 }
-                log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dst.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+                log.warn("\n\t[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dst.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
         }catch (Exception e){
         	e.printStackTrace();
@@ -949,7 +949,7 @@ public class FileUtil {
                 while ((length = is.read(bytes)) != -1) {
                     os.write(bytes, 0, length);
                 }
-                log.warn("[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dst.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+                log.warn("\n\t[合并文件][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][file:"+dst.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
             }
         }catch (Exception e){
         	e.printStackTrace();
@@ -1040,7 +1040,7 @@ public class FileUtil {
 		        }
 		        startPosition = endPosition + 1;
 		        endPosition += average;
-		        log.warn("[文件分割]["+(i+1)+"/"+count+"][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][src:"+file.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
+		        log.warn("\n\t[文件分割]["+(i+1)+"/"+count+"][耗时:"+DateUtil.conversion(System.currentTimeMillis()-fr)+"][src:"+file.getAbsolutePath()+"][item:"+item.getAbsolutePath()+"]");
 		    }
 		} catch (Exception e) {
 			e.printStackTrace();
