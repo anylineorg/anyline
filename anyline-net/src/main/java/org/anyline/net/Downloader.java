@@ -135,7 +135,7 @@ public class Downloader {
 		double rate = getFinishRate();
 		//第一次进度或进度>0.5%或时间超过5秒或全部完成
 		if(lastLogTime==0 || rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100){
-			log.warn("[文件下载]"+getMessage());
+			log.warn("\n\t[文件下载]"+getMessage());
     		lastLogRate = rate;
     		lastLogTime = System.currentTimeMillis();
 		}
@@ -475,7 +475,7 @@ public class Downloader {
 	public Downloader add(DownloadTask task){
 		String url  = task.getUrl();
 		String code = url;
-		log.warn("[add task][code:{}][url:{}]", code, task.getUrl());
+		log.warn("\n\t[add task][code:{}][url:{}]", code, task.getUrl());
 		if(null == tasks.get(code)){
 			tasks.put(code, task);
 			task.setIndex(tasks.size());
