@@ -74,22 +74,22 @@ public class WXWapUtil {
 		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		map.put("sign", sign);
 		if(ConfigTable.isDebug()){
-			log.warn("[统一下单][sign:{}]", sign);
+			log.warn("\n\t[统一下单][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
 		if(ConfigTable.isDebug()){
-			log.warn("[统一下单][xml:{}]", xml);
+			log.warn("\n\t[统一下单][xml:{}]", xml);
 		}
 		String rtn = SimpleHttpUtil.post(WXConfig.API_URL_UNIFIED_ORDER, xml);
 
 		if(ConfigTable.isDebug()){
-			log.warn("[统一下单][return:{}]", rtn);
+			log.warn("\n\t[统一下单][return:{}]", rtn);
 		}
 		result = BeanUtil.xml2object(rtn, WXWapPrePayResult.class);
 
 		if(ConfigTable.isDebug()){
-			log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());
+			log.warn("\n\t[统一下单][prepay id:{}]", result.getPrepay_id());
 		}
 		return result;
 	}
@@ -114,7 +114,7 @@ public class WXWapUtil {
 		row.put("packagevalue", row.get("package"));
 		row.remove("package");
 		if(ConfigTable.isDebug()){
-			log.warn("[APP调起微信支付][参数:{}]", row.toJSON());
+			log.warn("\n\t[APP调起微信支付][参数:{}]", row.toJSON());
 		}
 		return row;
 	}
