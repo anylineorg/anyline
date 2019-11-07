@@ -107,7 +107,7 @@ public class TemplateController extends AnylineController {
 			content_template = content_template.replace("${client_type}", clientType);
 		}
 		if(ConfigTable.isDebug() && adapt){
-			log.warn("[create view template][content path:" + content_template + "][template path:" + name + "]");
+			log.warn("\n\t[create view template][content path:" + content_template + "][template path:" + name + "]");
 		}
 		
 		tv.setViewName(name);
