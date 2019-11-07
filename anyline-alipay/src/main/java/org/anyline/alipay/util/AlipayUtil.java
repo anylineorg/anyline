@@ -147,7 +147,7 @@ public class AlipayUtil {
 			result = new AlipayTradeQueryResult();
 			e.printStackTrace();
 		}finally{
-			log.warn("[单笔转账到支付宝账户][data:{}][result:{}]", json,BeanUtil.object2json(result));
+			log.warn("\n\t[单笔转账到支付宝账户][data:{}][result:{}]", json,BeanUtil.object2json(result));
 		}
 		return result;
 	}
@@ -168,7 +168,7 @@ public class AlipayUtil {
 			result = new AlipayTransferResult();
 			e.printStackTrace();
 		}finally{
-			log.warn("[单笔转账到支付宝账户][data:{}][result:{}]", json,BeanUtil.object2json(result));
+			log.warn("\n\t[单笔转账到支付宝账户][data:{}][result:{}]", json,BeanUtil.object2json(result));
 		}
 		return result;
 	}
@@ -189,7 +189,7 @@ public class AlipayUtil {
 			result = new AlipayTransferQueryResult();
 			e.printStackTrace();
 		}finally{
-			log.warn("[单笔转账到支付宝账户查询][data:{}][result:{}]", json,BeanUtil.object2json(result));
+			log.warn("\n\t[单笔转账到支付宝账户查询][data:{}][result:{}]", json,BeanUtil.object2json(result));
 		}
 		return result;
 	}
