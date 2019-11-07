@@ -63,7 +63,7 @@ public class Config extends BaseBodyTag {
 					url += "?" + param;
 				}
 				if(ConfigTable.isDebug()){
-					log.warn("[config init][url:{}]",url);
+					log.warn("\n\t[config init][url:{}]",url);
 				}
 				Map<String,Object> map = util.jsapiSign(url);
 				
