@@ -1594,6 +1594,33 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return this;
 	}
 	/**
+	 * 清除指定列全为空的行,如果不指定则清除所有列为空的行
+	 * @return
+	 */
+	public DataSet clearEmptyRow(String ... keys){
+		int size = this.size();
+		for(int i=size-1; i>=0; i--){
+			DataRow row = getRow(i);
+			if(null == keys || keys.length==0){
+				if(row.isEmpty()){
+					this.remove(row);
+				}
+			}else{
+				boolean isEmpty = true;
+				for(String key:keys){
+					if(row.isNotEmpty(key)){
+						isEmpty = false;
+						break;
+					}
+				}
+				if(isEmpty){
+					this.remove(row);
+				}
+			}
+		}
+		return this;
+	}
+	/**
 	 * NULL > ""
 	 * @return
 	 */
