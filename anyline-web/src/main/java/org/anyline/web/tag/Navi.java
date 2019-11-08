@@ -48,13 +48,13 @@ public class Navi extends BodyTagSupport{
 	private String scroll			;   //自动翻页时 监听的滚动事件源 默认window
 	private String method = "post"	;
 	private String id				;	//一个页面内多个标签时需要id区分
-	private String function			;	//指定function后,需主动调用function后加载数据,查询条件发生变化时可调用些function
-	private String refresh			; 	//刷新当前页
-	private Boolean intime = false	;	//实时执行
-	private Boolean auto = false	;	//是否加载下一页内容(wap加载更多typ=1时 划屏到底部自动加载)
-	private String callback			;	//回调函数
+	private String function			;	//指定function后,需主动调用function后加载数据,查询条件发生变化时可调用function
+	private String refresh			; 	//刷新当前页的函数
 	private String before			;	//渲染之前调用
-	private String after			;	//渲染之后调用		
+	private String after			;	//渲染之后调用	
+	private Boolean intime = false	;	//实时执行
+	private Boolean auto = false	;	//是否加载下一页内容(swap加载更多typ=1时 划屏到底部自动加载)
+	private String callback			;	//回调函数	
 	private String guide			;   //加载更多文本提示
 	
 	private String empty			;	//查询无数据显示内容
@@ -63,7 +63,7 @@ public class Navi extends BodyTagSupport{
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
 	
-	private int type = 0			;	//分页方式(0:下标 1:加载更多 2:根据浏览器状态 web:0,wap:1)
+	private int type = 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
 
 	
 	public int doStartTag() throws JspException {
@@ -89,7 +89,7 @@ public class Navi extends BodyTagSupport{
 				if(WebUtil.isWap((HttpServletRequest)pageContext.getRequest())){
 					type = 1;
 				}else{
-					type = 2;
+					type = 0;
 				}
 				
 			}
@@ -126,9 +126,11 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(callback)){
 				builder.append("callback:" ).append(callback).append(",");
 			}
+			before = BasicUtil.evl(before, config.EVENT_BEFORE,"").toString();
 			if(BasicUtil.isNotEmpty(before)){
 				builder.append("before:" ).append(before).append(",");
 			}
+			after = BasicUtil.evl(before, config.EVENT_AFTER,"").toString();
 			if(BasicUtil.isNotEmpty(after)){
 				builder.append("after:" ).append(after).append(",");
 			}
@@ -172,6 +174,7 @@ public class Navi extends BodyTagSupport{
 				builder.append("_navi_init(").append(confId).append(");\n");
 			}
 			//刷新当前页函数
+			refresh = BasicUtil.evl(refresh, config.EVENT_REFRESH,"").toString();
 			if(BasicUtil.isNotEmpty(refresh)){
 				builder.append("function ").append(refresh).append("(){\n");
 				builder.append("_navi_refresh(").append(confId).append(");\n");
