@@ -68,7 +68,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	private String flag  					= ""		;	//一个jsp中有多个分页时用来区分
 	private long lazyPeriod 				= 0			;	//总条数懒加载时间间隔(秒)
 	private String lazyKey 					= null		;	//懒加载
-	private int type 						= 0			;	//分页方式(0:下标 1:加载更多 2:根据浏览器状态 web:1,wap:2)
+	private int type 						= 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
 	private Map<String,List<Object>> params	= null		;	//查询参数
 	private String method					= "post"	;
 	private String style		= ""	; //样式标记对应anyline-navi.xml中的config.key

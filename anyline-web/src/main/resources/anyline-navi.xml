@@ -52,5 +52,10 @@
 		<!-- 统计样式 -->
 		<property key="STYLE_STAT_FORMAT">&lt;div class='navi-summary'&gt;共&lt;span class='navi-total-row'&gt;{totalRow}&lt;/span&gt;条 第&lt;span class='navi-cur-page'&gt;{curPage}&lt;/span&gt;/&lt;span class='navi-total-page'&gt;{totalPage}&lt;/span&gt;页&lt;/div&gt;</property>
 		
+		<property key="EVENT_BEFORE"></property>
+		<property key="EVENT_AFTER"></property>
+		<property key="EVENT_REFRESH"></property>
+		
+		
 	</config>
 </configs>
