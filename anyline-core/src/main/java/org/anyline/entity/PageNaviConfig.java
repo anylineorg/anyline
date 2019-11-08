@@ -56,6 +56,9 @@ public class PageNaviConfig extends BasicConfig{
 	public String VAR_PAGE_VOL_INDEX		= "last"			;	//位置:last:最后,page:页标之后
 	public String VAR_PAGE_VOL_NUMBERS		= ""				; //用户选择每页多少条 10,20,30,40,50,100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select>
 		
+	public String EVENT_BEFORE				= "";
+	public String EVENT_AFTER				= "";
+	public String EVENT_REFRESH				= "";
 
 	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>();
 
