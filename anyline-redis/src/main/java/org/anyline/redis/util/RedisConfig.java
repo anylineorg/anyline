@@ -50,7 +50,7 @@ public class RedisConfig extends BasicConfig{
 			}
 			
 		} catch (Exception e) {
-			log.error("配置文件解析异常:"+e);
+			log.error("[配置文件解析异常][msg:{}]",e);
 		}
 	}
 	
