@@ -24,7 +24,7 @@ public class VideoUtil {
 	 */
 	public static boolean frame(File video, OutputStream out, int index) {
 		if(null == video || null == out || !video.exists()){
-			log.warn("\n\t[视频截图][文件异常]");
+			log.warn("[视频截图][文件异常]");
 			return false;
 		}
 		long fr = System.currentTimeMillis();
@@ -55,7 +55,7 @@ public class VideoUtil {
 			thumbnailImage.getGraphics().drawImage(srcImage.getScaledInstance(srcImageWidth, srcImageHeight, 1), 0, 0, null);
 			ImageIO.write(thumbnailImage, "jpg", out);
 			ff.stop();
-			log.warn("\n\t[视频截图][耗时:{}][video:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),video.getAbsolutePath());
+			log.warn("[视频截图][耗时:{}][video:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),video.getAbsolutePath());
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -91,7 +91,7 @@ public class VideoUtil {
 			}
 			result = frame(video, new FileOutputStream(img));
 			if(null != img){
-				log.warn("\n\t[视频截图][截图文件:{}]", img.getAbsolutePath());
+				log.warn("[视频截图][截图文件:{}]", img.getAbsolutePath());
 			}
 			return result;
 		} catch (FileNotFoundException e) {

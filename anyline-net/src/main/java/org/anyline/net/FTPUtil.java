@@ -115,7 +115,7 @@ public class FTPUtil {
 	    } catch (IOException e) {  
 	        e.printStackTrace();  
 	    }
-	    log.warn("\n\t[ftp download file][耗时:{}][length:{}][remote:{}][local:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),FileUtil.length(local.length()),remote, local.getAbsolutePath());
+	    log.warn("[ftp download file][耗时:{}][length:{}][remote:{}][local:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),FileUtil.length(local.length()),remote, local.getAbsolutePath());
 	    return success;  
 	}
 	/////////////////////////////
@@ -277,7 +277,7 @@ public class FTPUtil {
              } catch (IOException ex) {  
              }  
          } 
-        log.warn("\n\t[ftp upload file][耗时:{}][length:{}][remote:{}][local:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),FileUtil.length(local.length()),remote,local.getAbsolutePath());
+        log.warn("[ftp upload file][耗时:{}][length:{}][remote:{}][local:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),FileUtil.length(local.length()),remote,local.getAbsolutePath());
         return result;
     }
     public boolean  uploadFile(String remote, File local) {
@@ -303,7 +303,7 @@ public class FTPUtil {
      * @throws IOException 
      */  
     public void uploadDir(String remotePath, File local){  
-    	log.warn("\n\t[ftp upload dir][remote:{}][local:{}]",remotePath,local.getAbsolutePath());
+    	log.warn("[ftp upload dir][remote:{}][local:{}]",remotePath,local.getAbsolutePath());
         if (null != local &&local.exists()) {  
             if(!cd(remotePath)){  
                 try {
@@ -333,7 +333,7 @@ public class FTPUtil {
 	 */
 	public boolean downloadDir(String remoteDir, File localDir) {
 	    boolean success = false;  
-	    log.warn("\n\t[ftp download dir][remote:{}][local:{}]",remoteDir,localDir.getAbsolutePath());
+	    log.warn("[ftp download dir][remote:{}][local:{}]",remoteDir,localDir.getAbsolutePath());
 	    try {  
 	        cd(remoteDir);
 	        client.setFileType(FTPClient.BINARY_FILE_TYPE);
@@ -350,7 +350,7 @@ public class FTPUtil {
 			result = client.changeWorkingDirectory(dir);
 			String path = client.doCommandAsStrings("pwd","")[0];
 			this.dir = RegularUtil.cut(path, "\"", "\"");
-			log.warn("\n\t[ftp change directory][directory:{}]", this.dir);
+			log.warn("[ftp change directory][directory:{}]", this.dir);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
