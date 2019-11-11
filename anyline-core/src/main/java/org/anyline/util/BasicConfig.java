@@ -42,7 +42,7 @@ public abstract class BasicConfig {
 				}
 			}
 			if(configSize ==0){
-				log.warn("\n\t[解析配置文件][未加载配置文件:{}][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/{}]",fileName,fileName);
+				log.warn("[解析配置文件][未加载配置文件:{}][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/{}]",fileName,fileName);
 			}
 			
 		} catch (Exception e) {
@@ -92,7 +92,7 @@ public abstract class BasicConfig {
 								kvs.put(newKey, val);
 								config.setValue(newKey, val);
 								config.afterParse(newKey, val);
-								log.warn("\n\t[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]",newKey,oldKey,val);
+								log.warn("[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]",newKey,oldKey,val);
 							}
 						}
 					}
@@ -124,7 +124,7 @@ public abstract class BasicConfig {
 	 */
 	protected static Hashtable<String, BasicConfig> parseFile(Class<?> T, File file, Hashtable<String, BasicConfig> instances, String... compatibles) {
 		if (null == file || !file.exists()) {
-			log.warn("\n\t[解析配置文件][文件不存在][file:{}]",file);
+			log.warn("[解析配置文件][文件不存在][file:{}]",file);
 			return instances;
 		}
 		SAXReader reader = new SAXReader();
@@ -167,7 +167,7 @@ public abstract class BasicConfig {
 								if (null != element) {
 									String val = element.getTextTrim();
 									kvs.put(newKey, val);
-									log.warn("\n\t[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]", newKey, oldKey, val);
+									log.warn("[解析配置文件][版本兼容][laster key:{}][old key:{}][value:{}]", newKey, oldKey, val);
 								}
 							}
 						}

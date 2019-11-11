@@ -80,7 +80,7 @@ public class AnylineServiceImpl implements AnylineService {
 	protected DataSet queryFromDao(String src, ConfigStore configs, String... conditions){
 		DataSet set = null;
 		if(ConfigTable.isSQLDebug()){
-			log.warn("\n\t[解析SQL][src:{}]", src);
+			log.warn("[解析SQL][src:{}]", src);
 		}
 		//conditions = parseConditions(conditions);
 		try {
@@ -115,7 +115,7 @@ public class AnylineServiceImpl implements AnylineService {
 				for(String tmp:tmps){
 					pks.add(tmp);
 					if(ConfigTable.isSQLDebug()){
-						log.warn("\n\t[解析SQL主键] [KEY:{}]",tmp);
+						log.warn("[解析SQL主键] [KEY:{}]",tmp);
 					}
 				}
 			}
@@ -129,7 +129,7 @@ public class AnylineServiceImpl implements AnylineService {
 		//文本sql
 		if (src.startsWith("{") && src.endsWith("}")) {
 			if(ConfigTable.isSQLDebug()){
-				log.warn("\n\t[解析SQL类型] [类型:{JAVA定义}] [src:{}]",src);
+				log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:{}]",src);
 			}
 			src = src.substring(1,src.length()-1);
 			src = DataSourceHolder.parseDataSource(src);//解析数据源
@@ -143,19 +143,19 @@ public class AnylineServiceImpl implements AnylineService {
 				|| src.toUpperCase().trim().startsWith("INSERT")
 				|| src.toUpperCase().trim().startsWith("UPDATE")) {
 				if(ConfigTable.isSQLDebug()){
-					log.warn("\n\t[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
+					log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
 				}
 				sql = new TextSQLImpl(src);
 			}else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
 				/* XML定义 */
 				if(ConfigTable.isSQLDebug()){
-					log.warn("\n\t[解析SQL类型] [类型:XML定义] [src:{}]", src);
+					log.warn("[解析SQL类型] [类型:XML定义] [src:{}]", src);
 				}
 				sql = SQLStoreImpl.parseSQL(src);
 			} else {
 				/* 自动生成 */
 				if(ConfigTable.isSQLDebug()){
-					log.warn("\n\t[解析SQL类型] [类型:auto] [src:{}]", src);
+					log.warn("[解析SQL类型] [类型:auto] [src:{}]", src);
 				}
 				sql = new TableSQLImpl();
 				sql.setDataSource(src);
@@ -203,7 +203,7 @@ public class AnylineServiceImpl implements AnylineService {
 
 	protected DataSet queryFromCacheL2(String cache2, DataSet l1, String src, ConfigStore configs, String ... conditions){
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[cache from L2][cache:{}][src:{}]", cache2, src);
+			log.warn("[cache from L2][cache:{}][src:{}]", cache2, src);
 		}
 		DataSet set = new DataSet();
 		SQL sql = createSQL(src);
@@ -240,7 +240,7 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 	protected DataSet queryFromCacheL1(boolean isUseCacheL2, String cache, String src, ConfigStore configs, String ... conditions){
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[cache from L1][cache:{}][src:{}]", cache, src);
+			log.warn("[cache from L1][cache:{}][src:{}]", cache, src);
 		}
 		DataSet set = null;
 		String key = "SET:";
@@ -273,7 +273,7 @@ public class AnylineServiceImpl implements AnylineService {
         	final int _max = element.getTimeToLive();
         	if(age > _max*0.9){
         		if(ConfigTable.isDebug()){
-        			log.warn("\n\t[缓存即将到期提前刷新][src:{}] [生存:{}/{}]",src, age, _max);
+        			log.warn("[缓存即将到期提前刷新][src:{}] [生存:{}/{}]",src, age, _max);
         		}
         		final String _key = key;
         		final String _cache = cache;

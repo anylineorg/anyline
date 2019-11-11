@@ -48,7 +48,7 @@ public class FileResult extends StrutsResultSupport {
 			String title = null;
 			data = invocation.getStack().findValue("data");
 			if(null == data){
-				log.warn("\n\t[文件下载][文件不存在][URL:{}?{}",request.getRequestURL(),request.getQueryString());
+				log.warn("[文件下载][文件不存在][URL:{}?{}",request.getRequestURL(),request.getQueryString());
 				return;
 			}
 			if (data instanceof File) {

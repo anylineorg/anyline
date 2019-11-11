@@ -29,7 +29,7 @@ public class ConfigListener implements ApplicationListener<ContextRefreshedEvent
 			Map<String, String> configs = ConfigTable.getConfigs();
 			String key = ConfigTable.getString("SERVLET_ATTRIBUTE_KEY", "al");
 			servlet.setAttribute(key, configs);
-			log.warn("\n\t[配置文件加载至servlet context][key:{}]",key);
+			log.warn("[配置文件加载至servlet context][key:{}]",key);
 		}
 	}
 }

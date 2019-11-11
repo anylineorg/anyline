@@ -105,10 +105,10 @@ public class AmapUtil {
 				String status = json.getString("status");
 				if("1".equals(status) && json.has("_id")){
 					id = json.getString("_id");
-					log.warn("\n\t[添加标注完成][id:{}][name:{}]",id,name);
+					log.warn("[添加标注完成][id:{}][name:{}]",id,name);
 				}else{
-					log.warn("\n\t[添加标注失败][name:{}][info:{}]", name,json.getString("info"));
-					log.warn("\n\t[param:{}]",BasicUtil.joinBySort(params));
+					log.warn("[添加标注失败][name:{}][info:{}]", name,json.getString("info"));
+					log.warn("[param:{}]",BasicUtil.joinBySort(params));
 				}
 			}
 		}catch(Exception e){
@@ -188,7 +188,7 @@ public class AmapUtil {
 		String url = "http://yuntuapi.amap.com/datamanage/data/delete";
 		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[删除标注][param:{}]",BasicUtil.joinBySort(params));
+			log.warn("[删除标注][param:{}]",BasicUtil.joinBySort(params));
 		}
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
@@ -196,9 +196,9 @@ public class AmapUtil {
 				String status = json.getString("status");
 				if("1".equals(status)){
 					cnt = json.getInt("success");
-					log.warn("\n\t[删除标注完成][success:{}][fail:{}]", cnt,json.getInt("fail"));
+					log.warn("[删除标注完成][success:{}][fail:{}]", cnt,json.getInt("fail"));
 				}else{
-					log.warn("\n\t[删除标注失败][info:{}]",json.getString("info"));
+					log.warn("[删除标注失败][info:{}]",json.getString("info"));
 				}
 			}
 		}catch(Exception e){
@@ -248,7 +248,7 @@ public class AmapUtil {
 		params.put("sig", sign(params));
 		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[更新标注][param:{}]",BasicUtil.joinBySort(params));
+			log.warn("[更新标注][param:{}]",BasicUtil.joinBySort(params));
 		}
 		try{
 			JSONObject json = JSONObject.fromObject(txt);
@@ -256,9 +256,9 @@ public class AmapUtil {
 				String status = json.getString("status");
 				if("1".equals(status)){
 					cnt = 1;
-					log.warn("\n\t[更新标注完成][id:{}][name:{}]",id,name);
+					log.warn("[更新标注完成][id:{}][name:{}]",id,name);
 				}else{
-					log.warn("\n\t[更新标注失败][name:{}][info:{}]",name,json.getString("info"));
+					log.warn("[更新标注失败][name:{}][info:{}]",name,json.getString("info"));
 					cnt = 0;
 				}
 			}
@@ -307,9 +307,9 @@ public class AmapUtil {
 		JSONObject json = JSONObject.fromObject(txt);
 		if(json.has("tableid")){
 			tableId = json.getString("tableid");
-			log.warn("\n\t[创建地图完成][tableid:{}]",tableId);
+			log.warn("[创建地图完成][tableid:{}]",tableId);
 		}else{
-			log.warn("\n\t[创建地图失败][info:{}][param:{}]",txt,BasicUtil.joinBySort(params));
+			log.warn("[创建地图失败][info:{}][param:{}]",txt,BasicUtil.joinBySort(params));
 		}
 		return tableId;
 	}
@@ -355,17 +355,17 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("\n\t[本地搜索失败][info:{}]",json.getString("info"));
-				log.warn("\n\t[本地搜索失败][params:{}]",BasicUtil.joinBySort(params));
+				log.warn("[本地搜索失败][info:{}]",json.getString("info"));
+				log.warn("[本地搜索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("\n\t[本地搜索失败][info:{}]",e.getMessage());
+			log.warn("[本地搜索失败][info:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
 		set.setNavi(navi);
-		log.warn("\n\t[本地搜索][size:{}]",navi.getTotalRow());
+		log.warn("[本地搜索][size:{}]",navi.getTotalRow());
 		return set;
 	}
 	/**
@@ -432,19 +432,19 @@ public class AmapUtil {
 			if(json.has("datas")){
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
-				log.warn("\n\t[周边搜索失败][info:{}]",json.getString("info"));
-				log.warn("\n\t[周边搜索失败][params:{}]",BasicUtil.joinBySort(params));
+				log.warn("[周边搜索失败][info:{}]",json.getString("info"));
+				log.warn("[周边搜索失败][params:{}]",BasicUtil.joinBySort(params));
 				set = new DataSet();
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("\n\t[周边搜索失败][error:{}]",e.getMessage());
+			log.warn("[周边搜索失败][error:{}]",e.getMessage());
 			e.printStackTrace();
 			set = new DataSet();
 			set.setException(e);
 		}
 		set.setNavi(navi);
-		log.warn("\n\t[周边搜索][size:{}]",navi.getTotalRow());
+		log.warn("[周边搜索][size:{}]",navi.getTotalRow());
 		return set;
 	}
 
@@ -518,21 +518,21 @@ public class AmapUtil {
 			if(json.has("datas")){
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 				if(ConfigTable.isDebug()){
-					log.warn("\n\t[条件搜索][结果数量:{}]",set.size());	
+					log.warn("[条件搜索][结果数量:{}]",set.size());	
 				}
 			}else{
 				set = new DataSet();
-				log.warn("\n\t[条件搜索失败][info:{}]",json.getString("info"));
-				log.warn("\n\t[条件搜索失败][params:{}]",BasicUtil.joinBySort(params));
+				log.warn("[条件搜索失败][info:{}]",json.getString("info"));
+				log.warn("[条件搜索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("\n\t[条件搜索失败][error:{}]",e.getMessage());
+			log.warn("[条件搜索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
 		set.setNavi(navi);
-		log.warn("\n\t[条件搜索][size:{}]",navi.getTotalRow());
+		log.warn("[条件搜索][size:{}]",navi.getTotalRow());
 		return set;
 	}
 	/**
@@ -560,11 +560,11 @@ public class AmapUtil {
 					row = set.getRow(0);
 				}
 			}else{
-				log.warn("\n\t[周边搜索失败][info:{}]",json.getString("info"));
-				log.warn("\n\t[周边搜索失败][params:{}]",BasicUtil.joinBySort(params));
+				log.warn("[周边搜索失败][info:{}]",json.getString("info"));
+				log.warn("[周边搜索失败][params:{}]",BasicUtil.joinBySort(params));
 			}
 		}catch(Exception e){
-			log.warn("\n\t[周边搜索失败][error:{}]",e.getMessage());
+			log.warn("[周边搜索失败][error:{}]",e.getMessage());
 			e.printStackTrace();
 		}
 		return row;
@@ -596,12 +596,12 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("\n\t[数据分布检索失败][info:{}]",json.getString("info"));
-				log.warn("\n\t[数据分布检索失败][params:{}]",BasicUtil.joinBySort(params));
+				log.warn("[数据分布检索失败][info:{}]",json.getString("info"));
+				log.warn("[数据分布检索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("\n\t[数据分布检索失败][error:{}]",e.getMessage());
+			log.warn("[数据分布检索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
@@ -635,12 +635,12 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("\n\t[数据分布检索失败][info:{}]",json.getString("info"));
-				log.warn("\n\t[数据分布检索失败][params:{}]",BasicUtil.joinBySort(params));
+				log.warn("[数据分布检索失败][info:{}]",json.getString("info"));
+				log.warn("[数据分布检索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("\n\t[数据分布检索失败][error:{}]",e.getMessage());
+			log.warn("[数据分布检索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
@@ -675,12 +675,12 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("\n\t[数据分布检索失败][info:{}]",json.getString("info"));
-				log.warn("\n\t[数据分布检索失败][params:{}]",BasicUtil.joinBySort(params));
+				log.warn("[数据分布检索失败][info:{}]",json.getString("info"));
+				log.warn("[数据分布检索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("\n\t[数据分布检索失败][error:{}]",e.getMessage());
+			log.warn("[数据分布检索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
@@ -714,12 +714,12 @@ public class AmapUtil {
 				set = DataSet.parseJson(json.getJSONArray("datas"));
 			}else{
 				set = new DataSet();
-				log.warn("\n\t[附近检索失败][info:}{}]",json.getString("info"));
-				log.warn("\n\t[附近检索失败][params:{}]",BasicUtil.joinBySort(params));
+				log.warn("[附近检索失败][info:}{}]",json.getString("info"));
+				log.warn("[附近检索失败][params:{}]",BasicUtil.joinBySort(params));
 				set.setException(new Exception(json.getString("info")));
 			}
 		}catch(Exception e){
-			log.warn("\n\t[附近检索失败][error:{}]",e.getMessage());
+			log.warn("[附近检索失败][error:{}]",e.getMessage());
 			set = new DataSet();
 			set.setException(e);
 		}
@@ -796,10 +796,10 @@ public class AmapUtil {
 					location.setLevel(row.getString("LEVEL"));
 				}
 			}else{
-				log.warn("\n\t[坐标查询失败][info:{}][params:{}]",json.getString("info"),BasicUtil.joinBySort(params));
+				log.warn("[坐标查询失败][info:{}][params:{}]",json.getString("info"),BasicUtil.joinBySort(params));
 			}
 		}catch(Exception e){
-			log.warn("\n\t[坐标查询失败][error:{}]",e.getMessage());
+			log.warn("[坐标查询失败][error:{}]",e.getMessage());
 		}
 		return location;
 	}
@@ -854,7 +854,7 @@ public class AmapUtil {
 				}
 			}
 		}catch(Exception e){
-			log.warn("\n\t[线路规划失败][error:{}]",e.getMessage());
+			log.warn("[线路规划失败][error:{}]",e.getMessage());
 		}
 		return row;
 	}

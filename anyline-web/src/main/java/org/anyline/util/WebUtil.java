@@ -418,7 +418,7 @@ public class WebUtil {
 	 */
 	private static String decrypt(String src, DESKey key, String type) {
 		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-			log.warn("\n\t[decrypt][start][src:{}][type:{}]", src, type);
+			log.warn("[decrypt][start][src:{}][type:{}]", src, type);
 		}
 		String result = src;
 		if (null == src) {
@@ -429,7 +429,7 @@ public class WebUtil {
 			if(RegularUtil.match(result,"v\\d{5}v", Regular.MATCH_MODE.PREFIX)){
 				result = result.substring(7);
 				if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-					log.warn("\n\t[decrypt][删除混淆码][result:{}]",result);
+					log.warn("[decrypt][删除混淆码][result:{}]",result);
 				}
 			}
 		}
@@ -445,7 +445,7 @@ public class WebUtil {
 			}
 			result = result.substring(sub);
 			if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-				log.warn("\n\t[decrypt][删除前缀][result:{}]",result);
+				log.warn("[decrypt][删除前缀][result:{}]",result);
 			}
 			// 解析版本
 			String tmp[] = parseDESVersion(result);
@@ -469,7 +469,7 @@ public class WebUtil {
 			result = null;
 		}
 		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
-			log.warn("\n\t[decrypt][end][result:{}]",result);
+			log.warn("[decrypt][end][result:{}]",result);
 		}
 		return result;
 	}
@@ -1263,7 +1263,7 @@ public class WebUtil {
 		writer.flush();
 		String result = os.toString();
 		if(ConfigTable.isDebug() && ConfigTable.getBoolean("PARSE_JSP_LOG")){
-			log.warn("\n\t[LOAD JSP TEMPLATE][FILE:{}][HTML:{}]", file, result);
+			log.warn("[LOAD JSP TEMPLATE][FILE:{}][HTML:{}]", file, result);
 		}
 		return result;
 	}
