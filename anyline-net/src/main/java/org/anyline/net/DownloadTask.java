@@ -228,7 +228,7 @@ public class DownloadTask {
 		//进度>0.5%或时间超过5秒或全部完成
 		if(openLog){
 			if(lastLogTime==0 || rate - lastLogRate  >= 0.5 || System.currentTimeMillis() - lastLogTime > 1000 * 5 || rate==100){
-				log.warn("\n\t[文件下载]"+getMessage());
+				log.warn("[文件下载]"+getMessage());
 	    		lastLogRate = rate;
 	    		lastLogTime = System.currentTimeMillis();
 			}

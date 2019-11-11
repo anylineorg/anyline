@@ -26,14 +26,14 @@ public class PageLazyStore {
 				lazyTotal.remove(key);
 				lazyTime.remove(key);
 				if(ConfigTable.isDebug()){
-					log.warn("\n\t[记录总数过期][key:{}][生存:{}/{}]", key, age, period);
+					log.warn("[记录总数过期][key:{}][生存:{}/{}]", key, age, period);
 				}
 				return 0;
 			}
 		}
 		Integer result = lazyTotal.get(key);
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[提取记录总数][key:{}][total:{}][生存:{}/{}]", key, result, age, period);
+			log.warn("[提取记录总数][key:{}][total:{}][生存:{}/{}]", key, result, age, period);
 		}
 		if(null == result){
 			return 0;
@@ -47,11 +47,11 @@ public class PageLazyStore {
 			lazyTime.put(key, System.currentTimeMillis());
 			lazyTotal.put(key, total);
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[重置记录总数][key:{}][old:{}]" + "[new:{}]", key, old, total);
+				log.warn("[重置记录总数][key:{}][old:{}]" + "[new:{}]", key, old, total);
 			}
 		}else{
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[缓存记录总数][key:{}][total:{}]", key, total);
+				log.warn("[缓存记录总数][key:{}][total:{}]", key, total);
 			}
 		}
 	}

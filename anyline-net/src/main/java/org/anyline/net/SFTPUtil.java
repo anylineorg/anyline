@@ -101,7 +101,7 @@ public class SFTPUtil {
             List<String> list = FTPUtil.formatPath(remote);
             long fr = System.currentTimeMillis();
             if(ConfigTable.isDebug()){
-            	log.warn("\n\t[文件下载][file:{}]",list.get(0) + list.get(1));
+            	log.warn("[文件下载][file:{}]",list.get(0) + list.get(1));
             }
             String remotePath = list.get(0) + list.get(1);
             SftpATTRS attr = client.stat(remotePath);
@@ -109,7 +109,7 @@ public class SFTPUtil {
             SFTPProgressMonitor process = new SFTPProgressMonitor(remotePath,local, length);
             client.get(remotePath, os, process);  
             if(ConfigTable.isDebug()){
-            	log.warn("\n\t[文件下载完成][耗时:{}][file:{}]",System.currentTimeMillis()-fr,list.get(0) + list.get(1));
+            	log.warn("[文件下载完成][耗时:{}][file:{}]",System.currentTimeMillis()-fr,list.get(0) + list.get(1));
             }
         } catch (Exception e) {  
             throw e;  
@@ -199,7 +199,7 @@ public class SFTPUtil {
         client.cd(remoteDir);  
         client.put(localFile, remoteFile);  
         if(ConfigTable.isDebug()){
-        	log.warn("\n\t[文件上传][耗时:{}][local:{}][remote:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),localFile,remoteDir+"/"+remoteFile);
+        	log.warn("[文件上传][耗时:{}][local:{}][remote:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),localFile,remoteDir+"/"+remoteFile);
         }
     }  
     public void uploadFile(File localFile, String remoteDir, String remoteFile) throws SftpException {
@@ -293,17 +293,17 @@ public class SFTPUtil {
 				list.add(nm);
 			}
 		} catch (SftpException e) {
-			log.warn("\n\t[scan dir error][dir:{}][error:{}]",dir,e.getMessage());
+			log.warn("[scan dir error][dir:{}][error:{}]",dir,e.getMessage());
 		}
     	if(ConfigTable.isDebug()){
-    		log.warn("\n\t[scan dir][dir:{}][file size:{}]",dir,list.size());
+    		log.warn("[scan dir][dir:{}][file size:{}]",dir,list.size());
     	}
     	return list;
     }
     public boolean fileExists(String dir, String file){
     	List<String> files = files(dir);
     	if(ConfigTable.isDebug()){
-    		log.warn("\n\t[check file exists][dir:{}][file:{}]",dir,file);
+    		log.warn("[check file exists][dir:{}][file:{}]",dir,file);
     	}
     	for(String item:files){
     		if(item.equals(file)){
@@ -317,7 +317,7 @@ public class SFTPUtil {
     	String dir = list.get(0);
     	String file = list.get(1);
     	if(ConfigTable.isDebug()){
-    		log.warn("\n\t[check file exists][path:"+path+"]");
+    		log.warn("[check file exists][path:"+path+"]");
     	}
     	return fileExists(dir, file);
     }
