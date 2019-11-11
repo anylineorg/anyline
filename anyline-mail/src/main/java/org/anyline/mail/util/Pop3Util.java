@@ -75,7 +75,7 @@ public class Pop3Util {
 	 * @return
 	 */
 	public boolean send(String fr, String to, String title, String content) {
-		log.warn("\n\t[send email][fr:{}][to:{}][title:{}][centent:{}]", fr, to, title, content);
+		log.warn("[send email][fr:{}][to:{}][title:{}][centent:{}]", fr, to, title, content);
 		try {
 			Session mailSession = Session.getDefaultInstance(props);
 			Message msg = new MimeMessage(mailSession);
@@ -240,7 +240,7 @@ public class Pop3Util {
 			try {
 				subject = message.getSubject();
 	            message.setFlag(Flags.Flag.DELETED, true);
-	            log.warn("\n\t[删除邮件][subject:{}]",subject);
+	            log.warn("[删除邮件][subject:{}]",subject);
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			}
@@ -260,7 +260,7 @@ public class Pop3Util {
 			try {
 				subject = message.getSubject();
 	            message.setFlag(Flags.Flag.SEEN, true);
-	            log.warn("\n\t[标记为已读][subject:{}]",subject);   
+	            log.warn("[标记为已读][subject:{}]",subject);   
 			} catch (MessagingException e) {
 				e.printStackTrace();
 			} 

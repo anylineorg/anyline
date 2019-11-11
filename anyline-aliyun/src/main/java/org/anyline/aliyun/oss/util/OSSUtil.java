@@ -91,7 +91,7 @@ public class OSSUtil {
 			result = createUrl(path);
 			client.putObject(config.BUCKET, path, file);
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[oss upload file][result:true][file:{}][url:{}]",file.getAbsolutePath(), result);
+				log.warn("[oss upload file][result:true][file:{}][url:{}]",file.getAbsolutePath(), result);
 			}
 		}
 		return result;
@@ -106,7 +106,7 @@ public class OSSUtil {
 		try {
 			client.putObject(config.BUCKET, path, url.openStream());
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[oss upload file][result:true][file:{}]",path);
+				log.warn("[oss upload file][result:true][file:{}]",path);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -122,7 +122,7 @@ public class OSSUtil {
 		}
 		client.putObject(config.BUCKET, path, in);
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[oss upload file][result:true][file:{}]",path);
+			log.warn("[oss upload file][result:true][file:{}]",path);
 		}
 		return createUrl(path);
 	}
@@ -199,7 +199,7 @@ public class OSSUtil {
 		        	e.printStackTrace();
 		        }
 		        if(ConfigTable.isDebug()){
-		        	log.warn("\n\t[oss download file][local:{}][remote:{}]",file.getAbsolutePath(),key);
+		        	log.warn("[oss download file][local:{}][remote:{}]",file.getAbsolutePath(),key);
 		        }
 		    }
 		    nextMarker = objectListing.getNextMarker();
@@ -223,7 +223,7 @@ public class OSSUtil {
 			result = client.doesObjectExist(config.BUCKET,key);
 		}catch(Exception e){}
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[check exists][path:{}][key:{}]", path, key);
+			log.warn("[check exists][path:{}][key:{}]", path, key);
 		}
 		return result;
 	}
@@ -238,10 +238,10 @@ public class OSSUtil {
 		try{
 			String key = key(path);
 			client.deleteObject(config.BUCKET, key);
-			log.warn("\n\t[oss delete file][result:true][file:{}]", path);
+			log.warn("[oss delete file][result:true][file:{}]", path);
 			result = true;
 		}catch(Exception e){
-			log.warn("\n\t[oss delete file][result:true][file:{}]",path);
+			log.warn("[oss delete file][result:true][file:{}]",path);
 			result = false;
 		}
 		return result;

@@ -85,7 +85,7 @@ public class EasemobUtil {
 				}
 			}
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[reg user][result:{}]",txt);
+				log.warn("[reg user][result:{}]",txt);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -131,7 +131,7 @@ public class EasemobUtil {
 				result = row.getSet("entities");
 			}
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[reg users][result:{}]",txt);
+				log.warn("[reg users][result:{}]",txt);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -156,7 +156,7 @@ public class EasemobUtil {
 			headers.put("Authorization", "Bearer " + getAccessToken());
 			String txt = HttpUtil.put(headers, url,"UTF-8", new StringEntity(json, "UTF-8")).getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[reset passworod][json:{}][result:{}]",json,txt);
+				log.warn("[reset passworod][json:{}][result:{}]",json,txt);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -179,7 +179,7 @@ public class EasemobUtil {
 			String txt = HttpUtil.put(defaultHeader(), url,"UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[reset nickname][result:{}]",txt);
+				log.warn("[reset nickname][result:{}]",txt);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -198,7 +198,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.delete(defaultHeader(),url, "UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[delete user][result:{}]",txt);
+				log.warn("[delete user][result:{}]",txt);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -217,7 +217,7 @@ public class EasemobUtil {
 		try{
 			String txt = HttpUtil.get(defaultHeader(),url, "UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[get user][result:{}]",txt);
+				log.warn("[get user][result:{}]",txt);
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.containsKey("entities")){
@@ -248,7 +248,7 @@ public class EasemobUtil {
 		try{
 			String txt = HttpUtil.get(defaultHeader(),url, "UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[get user list][result:{}]",txt);
+				log.warn("[get user list][result:{}]",txt);
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.containsKey("entities")){
@@ -274,7 +274,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[add friend][result:{}]",txt);
+				log.warn("[add friend][result:{}]",txt);
 			}
 			result = parseUser(txt);
 		} catch (Exception e) {
@@ -293,7 +293,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[get friend list][result:{}]",txt);
+				log.warn("[get friend list][result:{}]",txt);
 			}
 			DataRow json = DataRow.parseJson(txt);
 			if(null != json && json.has("data")){
@@ -302,7 +302,7 @@ public class EasemobUtil {
 					DataRow row = new DataRow();
 					row.put("username", data);
 					if(ConfigTable.isDebug()){
-						log.warn("\n\t[get friend][friend username:{}]",data);
+						log.warn("[get friend][friend username:{}]",data);
 					}
 					result.add(row);
 				}
@@ -326,7 +326,7 @@ public class EasemobUtil {
 			String txt = HttpUtil.delete(defaultHeader(), url,"UTF-8").getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[delete friend][result:{}]",txt);
+				log.warn("[delete friend][result:{}]",txt);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -349,7 +349,7 @@ public class EasemobUtil {
 			String params = "{\"usernames\":[\""+block+"\"]} ";
 			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(params, "UTF-8")).getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[add blocks][result:{}]",txt);
+				log.warn("[add blocks][result:{}]",txt);
 			}
 			//封装添加成功的用户username
 		} catch (Exception e) {
@@ -368,7 +368,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[get block list][result:{}]",txt);
+				log.warn("[get block list][result:{}]",txt);
 			}
 			DataRow json = DataRow.parseJson(txt);
 			if(null != json && json.has("data")){
@@ -377,7 +377,7 @@ public class EasemobUtil {
 					DataRow row = new DataRow();
 					row.put("username", data);
 					if(ConfigTable.isDebug()){
-						log.warn("\n\t[get block][block username:{}]",data);
+						log.warn("[get block][block username:{}]",data);
 					}
 					result.add(row);
 				}
@@ -401,7 +401,7 @@ public class EasemobUtil {
 			String txt = HttpUtil.delete(defaultHeader(), url,"UTF-8").getText();
 			result = parseUser(txt);
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[delete block][result:{}]",txt);
+				log.warn("[delete block][result:{}]",txt);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -419,13 +419,13 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[get user status][result:{}]",txt);
+				log.warn("[get user status][result:{}]",txt);
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){
 				row = row.getRow("data");
 				String status = row.getString(user);
-				log.warn("\n\t[get user status][status:{}]",status);
+				log.warn("[get user status][status:{}]",status);
 				if("online".equals(status)){
 					result = "1";
 				}
@@ -446,7 +446,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[get user status][result:{}]",txt);
+				log.warn("[get user status][result:{}]",txt);
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){
@@ -471,7 +471,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[get user status][result:{}]",txt);
+				log.warn("[get user status][result:{}]",txt);
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){
@@ -494,7 +494,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[deactivate user][result:{}]",txt);
+				log.warn("[deactivate user][result:{}]",txt);
 			}
 			result = parseUser(txt);
 		} catch (Exception e) {
@@ -515,7 +515,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[activate user][result:{}]",txt);
+				log.warn("[activate user][result:{}]",txt);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -532,7 +532,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[disconnect user][result:{}]",txt);
+				log.warn("[disconnect user][result:{}]",txt);
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){
@@ -563,7 +563,7 @@ public class EasemobUtil {
 		try {
 			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8", new StringEntity(json, "UTF-8")).getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[send message][result:" + txt + "]");
+				log.warn("[send message][result:" + txt + "]");
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){
@@ -601,7 +601,7 @@ public class EasemobUtil {
 			params.put("owner", owner);
 			String txt = HttpUtil.post(defaultHeader(), url, "UTF-8", params).getText();
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[create group][result:" + txt + "]");
+				log.warn("[create group][result:" + txt + "]");
 			}
 			DataRow row = DataRow.parseJson(txt);
 			if(null != row && row.has("data")){

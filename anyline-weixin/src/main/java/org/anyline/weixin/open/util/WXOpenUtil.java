@@ -95,12 +95,12 @@ public class WXOpenUtil {
 		String rtn = SimpleHttpUtil.post(WXConfig.API_URL_UNIFIED_ORDER, xml);
 
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[统一下单][return:{}]", rtn);
+			log.warn("[统一下单][return:{}]", rtn);
 		}
 		result = BeanUtil.xml2object(rtn, WXOpenPrePayResult.class);
 
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[统一下单][prepay id:{}]", result.getPrepay_id());
+			log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());
 		}
 		return result;
 	}
@@ -126,17 +126,17 @@ public class WXOpenUtil {
 		map.put("sign", sign);
 		
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[退款申请][sign:{}]", sign);
+			log.warn("[退款申请][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[退款申请][xml:{}]", xml);
-			log.warn("\n\t[退款申请][证书:{}]", config.PAY_KEY_STORE_FILE);
+			log.warn("[退款申请][xml:{}]", xml);
+			log.warn("[退款申请][证书:{}]", config.PAY_KEY_STORE_FILE);
 		}
 		File keyStoreFile = new File(config.PAY_KEY_STORE_FILE);
 		if(!keyStoreFile.exists()){
-			log.warn("\n\t[密钥文件不存在][file:{}]",config.PAY_KEY_STORE_FILE);
+			log.warn("[密钥文件不存在][file:{}]",config.PAY_KEY_STORE_FILE);
 			return new WXOpenPayRefundResult(false,"密钥文件不存在");
 		}
 		String keyStorePassword = config.PAY_KEY_STORE_PASSWORD;
@@ -150,7 +150,7 @@ public class WXOpenUtil {
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
     		if(ConfigTable.isDebug()){
-    			log.warn("\n\t[退款申请调用][result:{}", txt);
+    			log.warn("[退款申请调用][result:{}", txt);
     		}
             result = BeanUtil.xml2object(txt, WXOpenPayRefundResult.class);
 		}catch(Exception e){
@@ -179,7 +179,7 @@ public class WXOpenUtil {
 		row.put("packagevalue", row.get("package"));
 		row.remove("package");
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[APP调起微信支付][参数:{}]", row.toJSON());
+			log.warn("[APP调起微信支付][参数:{}]", row.toJSON());
 		}
 		return row;
 	}
