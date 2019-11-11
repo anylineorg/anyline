@@ -105,7 +105,7 @@ public class GifUtil {
                 src[i] = ImageIO.read(item); // 读入需要播放的jpg文件  
                 e.addFrame(src[i]);  //添加到帧中  
                 if(ConfigTable.isDebug()){
-                	log.warn("\n\t[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsolutePath(), item.getAbsoluteFile(),System.currentTimeMillis()-fr);
+                	log.warn("[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsolutePath(), item.getAbsoluteFile(),System.currentTimeMillis()-fr);
                 }
             }  
             e.finish();  
@@ -134,7 +134,7 @@ public class GifUtil {
                 src[i] = ImageIO.read(item); // 读入需要播放的jpg文件  
                 e.addFrame(src[i]);  //添加到帧中  
                 if(ConfigTable.isDebug()){
-                	log.warn("\n\t[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsoluteFile(),item.getAbsoluteFile(),System.currentTimeMillis()-fr);
+                	log.warn("[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsoluteFile(),item.getAbsoluteFile(),System.currentTimeMillis()-fr);
                 }
             }  
             e.finish();  

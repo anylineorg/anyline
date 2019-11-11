@@ -269,7 +269,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			}
 		}
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[result:success][url:{}][action return][action:{}]",request.getRequestURI(),getClass().getName());
+			log.warn("[result:success][url:{}][action return][action:{}]",request.getRequestURI(),getClass().getName());
 		}
 		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JSON) {
 			result = true;
@@ -357,7 +357,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		}
 		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString().trim();
 		if(ConfigTable.isDebug()){
-			log.warn("\n\t[result:fail][message:{}][url:{}][action return][action:{}]",msg, request.getRequestURI(),getClass().getName());
+			log.warn("[result:fail][message:{}][url:{}][action return][action:{}]",msg, request.getRequestURI(),getClass().getName());
 		}
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
 		if (isAjaxRequest(request) || RESULT_TYPE_JSON == resultType) {
@@ -393,7 +393,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 				}
 			}else{
 				if(ConfigTable.isDebug()){
-					log.warn("\n\t[未设置样式模板] [原因:有可能需要数据url中通过parseJsp合成样式与数据]");
+					log.warn("[未设置样式模板] [原因:有可能需要数据url中通过parseJsp合成样式与数据]");
 				}
 			}
 			request.setAttribute(Constant.REQUEST_ATTR_TEMPLATE_STYLE_PATH, DESUtil.getInstance().encrypt(style));

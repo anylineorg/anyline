@@ -43,7 +43,7 @@ public class NCUtil {
 			long fr = System.currentTimeMillis();
 			nc = NetcdfFile.open(file);
 			if(ConfigTable.isDebug()){
-				log.warn("\n\t[open file][耗时:{}][file:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),file);
+				log.warn("[open file][耗时:{}][file:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),file);
 			}
 			return true;
 		}catch(Exception e){
