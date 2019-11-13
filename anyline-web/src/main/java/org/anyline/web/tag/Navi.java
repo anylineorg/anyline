@@ -113,8 +113,8 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(container)){
 				builder.append("container:'").append(container).append("',");
 			}
-			body = (String)BasicUtil.evl(body, bodyContainer);
-			page = (String)BasicUtil.evl(page, naviContainer);
+			body = (String)BasicUtil.nvl(body, bodyContainer);
+			page = (String)BasicUtil.nvl(page, naviContainer);
 			if(BasicUtil.isNotEmpty(body)){
 				builder.append("body:'").append(body).append("',");
 				builder.append("bodyContainer:'").append(body).append("',");
@@ -126,11 +126,11 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(callback)){
 				builder.append("callback:" ).append(callback).append(",");
 			}
-			before = BasicUtil.evl(before, config.EVENT_BEFORE,"").toString();
+			before = BasicUtil.nvl(before, config.EVENT_BEFORE,"").toString();
 			if(BasicUtil.isNotEmpty(before)){
 				builder.append("before:" ).append(before).append(",");
 			}
-			after = BasicUtil.evl(before, config.EVENT_AFTER,"").toString();
+			after = BasicUtil.nvl(before, config.EVENT_AFTER,"").toString();
 			if(BasicUtil.isNotEmpty(after)){
 				builder.append("after:" ).append(after).append(",");
 			}
@@ -174,7 +174,7 @@ public class Navi extends BodyTagSupport{
 				builder.append("_navi_init(").append(confId).append(");\n");
 			}
 			//刷新当前页函数
-			refresh = BasicUtil.evl(refresh, config.EVENT_REFRESH,"").toString();
+			refresh = BasicUtil.nvl(refresh, config.EVENT_REFRESH,"").toString();
 			if(BasicUtil.isNotEmpty(refresh)){
 				builder.append("function ").append(refresh).append("(){\n");
 				builder.append("_navi_refresh(").append(confId).append(");\n");
