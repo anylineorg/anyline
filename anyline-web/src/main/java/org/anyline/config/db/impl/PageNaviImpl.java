@@ -116,7 +116,12 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	public String html(String creater){
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
 		calculate();
-		StringBuilder builder = new StringBuilder();
+		StringBuilder navi = new StringBuilder();
+		StringBuilder layout = new StringBuilder();
+		StringBuilder index = new StringBuilder();
+		StringBuilder stat = new StringBuilder();
+		StringBuilder vol = new StringBuilder();
+		StringBuilder jump = new StringBuilder();
 		String configVarKey = "";
 		if(null == flag){
 			flag = "";
@@ -125,37 +130,37 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			configVarKey = Navi.CONFIG_FLAG_KEY + flag;	//_anyline_navi_conf_0
 		}
 		if("html".equals(creater)){
-			builder.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n");
-			builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
+			navi.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n");
+			navi.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
 		}
 		if("html".equals(creater)){
-			builder.append("<form class=\"form\" action=\"" + baseLink + "\" method=\"post\">\n");
+			navi.append("<form class=\"form\" action=\"" + baseLink + "\" method=\"post\">\n");
 		}
 		if("ajax".equals(creater)){
-			builder.append("<div class=\"form\">\n");
+			navi.append("<div class=\"form\">\n");
 		}
 		//当前页
-		builder.append("<input type='hidden' id='hid_cur_page_"+flag+"' name='"+config.KEY_PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
+		navi.append("<input type='hidden' id='hid_cur_page_"+flag+"' name='"+config.KEY_PAGE_NO+"' class='_anyline_navi_cur_page' value='"+curPage+"'/>\n");
 		//共多少页
-		builder.append("<input type='hidden' id='hid_total_page_"+flag+"' name='"+config.KEY_TOTAL_PAGE+"' class='_anyline_navi_total_page' value='"+totalPage+"'/>\n");
+		navi.append("<input type='hidden' id='hid_total_page_"+flag+"' name='"+config.KEY_TOTAL_PAGE+"' class='_anyline_navi_total_page' value='"+totalPage+"'/>\n");
 		//共多少条
-		builder.append("<input type='hidden' id='hid_total_row_"+flag+"' name='"+config.KEY_TOTAL_ROW+"' class='_anyline_navi_total_row' value='"+totalRow+"'/>\n");
+		navi.append("<input type='hidden' id='hid_total_row_"+flag+"' name='"+config.KEY_TOTAL_ROW+"' class='_anyline_navi_total_row' value='"+totalRow+"'/>\n");
 		//每页显示多少条
 		if(config.VAR_CLIENT_SET_VOL_ENABLE){
-			builder.append("<input type='hidden' id='hid_page_rows_key_"+flag+"'  class='_anyline_navi_page_rows_key' value='"+config.KEY_PAGE_ROWS+"'/>\n");
-			builder.append("<input type='hidden' id='hid_page_rows_"+flag+"' name='"+config.KEY_PAGE_ROWS+"' class='_anyline_navi_page_rows' value='"+pageRows+"'/>\n");
+			navi.append("<input type='hidden' id='hid_page_rows_key_"+flag+"'  class='_anyline_navi_page_rows_key' value='"+config.KEY_PAGE_ROWS+"'/>\n");
+			navi.append("<input type='hidden' id='hid_page_rows_"+flag+"' name='"+config.KEY_PAGE_ROWS+"' class='_anyline_navi_page_rows' value='"+pageRows+"'/>\n");
 		}
 		if("ajax".equals(creater)){
-			builder.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + flag + "'/>");
+			navi.append("<input type='hidden' class='"+Navi.CONFIG_FLAG_KEY+"' value='" + flag + "'/>");
 		}
-		builder.append(createHidParams(config));
-		builder.append("<div class=\"anyline_navi\">\n");
+		navi.append(createHidParams(config));
+		navi.append("<div class=\"anyline_navi\">\n");
 		//数据统计
-		String stat = config.STYLE_STAT_FORMAT; 
-		stat = stat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
-		stat = stat.replace("{total-row}", totalRow+"").replace("{cur-page}", curPage+"").replace("{total-page}", totalPage+"");
+		String statFormat = config.STYLE_STAT_FORMAT; 
+		statFormat = statFormat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+"");
+		statFormat = statFormat.replace("{total-row}", totalRow+"").replace("{cur-page}", curPage+"").replace("{total-page}", totalPage+"");
 		if(showStat){
-			builder.append(stat).append("\n");
+			stat.append(statFormat).append("\n");
 		}
 		int range = config.VAR_PAGE_RANGE;
 		int fr = NumberUtil.max(1,curPage - range/2);
@@ -175,26 +180,27 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		
 		if(type ==0){ //下标导航
 			//每页多少条
-			log.warn("[vol set][enable:{}][index:{}][vol:{}][sort:{}]",config.VAR_CLIENT_SET_VOL_ENABLE,config.VAR_PAGE_VOL_INDEX,pageRows,config.CONFIG_PAGE_VAL_SET_SORT);
-			String vol_set_html = "";
+			if(ConfigTable.isDebug()){
+				log.warn("[vol set][enable:{}][index:{}][vol:{}][sort:{}]",config.VAR_CLIENT_SET_VOL_ENABLE,config.VAR_PAGE_VOL_INDEX,pageRows,config.CONFIG_PAGE_VAL_SET_SORT);
+			}
 			if(config.VAR_CLIENT_SET_VOL_ENABLE){
 				if(config.CONFIG_PAGE_VAL_SET_SORT == 2){
-					vol_set_html = config.STYLE_PAGE_VOL.replace("{navi-conf}", configVarKey).replace("{navi-conf-key}", flag);
+					vol.append(config.STYLE_PAGE_VOL.replace("{navi-conf}", configVarKey).replace("{navi-conf-key}", flag));
 				}else{
 					String[] nums = config.VAR_PAGE_VOL_NUMBERS.split(",");
 					String clazz = config.VAR_PAGE_VOL_CLASS;
 					if(BasicUtil.isEmpty(clazz)){
 						clazz = "navi-rows-set";
 					}
-					vol_set_html = "<select class='"+clazz+"' id='navi_val_set_" + flag + "' onchange='_navi_change_vol("+configVarKey+")'>";
+					vol.append("<select class='").append(clazz).append("' id='navi_val_set_").append(flag).append("' onchange='_navi_change_vol(").append(configVarKey).append(")'>");
 					for(String num:nums){
-						vol_set_html += "<option value='"+num+"' id='navi_val_set_" + flag + "_item_" + num + "'";
+						vol.append("<option value='").append(num).append("' id='navi_val_set_").append(flag).append("_item_").append(num).append("'");
 						if(pageRows == BasicUtil.parseInt(num, 0)){
-							vol_set_html += " selected=\"selected\"";
+							vol.append(" selected=\"selected\"");
 						}
-						vol_set_html += ">" + num + " 条/页</option>\n";
+						vol.append(">").append(num).append(" 条/页</option>\n");
 					}
-					vol_set_html += "</select>";
+					vol.append("</select>");
 				}
 
 			}
@@ -203,7 +209,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 			//1 .. 3 4 5 6 7 8 .. 10
 			if(config.VAR_SHOW_INDEX_ELLIPSIS){
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
+					createPageTag(index, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
 				}
 				//下标
 				if(config.VAR_SHOW_INDEX){
@@ -213,52 +219,53 @@ public class PageNaviImpl implements PageNavi, Serializable{
 					if(to>totalPage-1){
 						to = totalPage-1;
 					}
-					builder.append("<div class='navi-num-border'>\n");
-					createPageTag(builder, "navi-num-item", "1", 1, configVarKey);
+					index.append("<div class='navi-num-border'>\n");
+					createPageTag(index, "navi-num-item", "1", 1, configVarKey);
 					if(fr > 2){
-						createPageTag(builder, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
+						createPageTag(index, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					}
 					for(int i=fr; i<=to; i++){
-						createPageTag(builder, "navi-num-item", i + "", i, configVarKey);
+						createPageTag(index, "navi-num-item", i + "", i, configVarKey);
 					}
 					if(to < totalPage-1){
-						createPageTag(builder, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
+						createPageTag(index, "navi-num-item", config.STYLE_INDEX_ELLIPSIS, 0, configVarKey);
 					}
 					if(totalPage >1){//不是只有一页
-						createPageTag(builder, "navi-num-item", totalPage+"", totalPage, configVarKey);
+						createPageTag(index, "navi-num-item", totalPage+"", totalPage, configVarKey);
 					}
-					builder.append("</div>\n");
+					index.append("</div>\n");
 				}
 				//下一页 最后页
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
+					createPageTag(index, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
 				}
 			}else{
 				//上一页  第一页
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(builder, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
-					createPageTag(builder, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
+					createPageTag(index, "navi-button navi-first-button", config.STYLE_BUTTON_FIRST, 1, configVarKey);
+					createPageTag(index, "navi-button navi-prev-button", config.STYLE_BUTTON_PREV, NumberUtil.max(curPage-1,1), configVarKey);
 				}
 				//下标
 				if(config.VAR_SHOW_INDEX){
-					builder.append("<div class='navi-num-border'>\n");
+					index.append("<div class='navi-num-border'>\n");
 					for(int i=fr; i<=to; i++){
-						createPageTag(builder, "navi-num-item", i + "", i, configVarKey);
+						createPageTag(index, "navi-num-item", i + "", i, configVarKey);
 					}
-					builder.append("</div>\n");
+					index.append("</div>\n");
 				}
 				//下一页 最后页
 				if(config.VAR_SHOW_BUTTON){
-					createPageTag(builder, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
-					createPageTag(builder, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey);
+					createPageTag(index, "navi-button navi-next-button", config.STYLE_BUTTON_NEXT, (int)NumberUtil.min(curPage+1, totalPage), configVarKey);
+					createPageTag(index, "navi-button navi-last-button", config.STYLE_BUTTON_LAST, totalPage, configVarKey);
 				}
 			}
-			if("page".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)){
-				builder.append(vol_set_html);
-			}
+			//VOL位置:下标之后
+//			if("page".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)){
+//				builder.append(vol);
+//			}
 			//跳转到
 			if(showJump){
-				builder.append(config.STYLE_LABEL_JUMP)
+				jump.append(config.STYLE_LABEL_JUMP)
 				.append("<input type='text' value='")
 				.append(curPage)
 				.append("' class='navi-go-txt _anyline_jump_txt' id='hid_jump_txt_"+flag+"' onkeydown='_navi_jump_enter("+configVarKey+")'/>")
@@ -266,22 +273,34 @@ public class PageNaviImpl implements PageNavi, Serializable{
 				.append("<span class='navi-go-button' onclick='_navi_jump("+configVarKey+")'>")
 				.append(config.STYLE_BUTTON_JUMP).append("</span>\n");
 			}
-			if("last".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)){
-				builder.append(vol_set_html);
-			}
+			//VOL位置:最后
+//			if("last".equalsIgnoreCase(config.VAR_PAGE_VOL_INDEX)){
+//				builder.append(vol);
+//			}
 		}else if(type == 1){
 			//加载更多
-			createPageTag(builder, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey);
+			createPageTag(index, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey);
 		}
-		builder.append("</div>");
+		
+		
+		String layout_html = config.VAR_COMPONENT_LAYOUT;
+		if(null == layout_html){
+			layout_html = "{stat}{index}{vol}{jump}";
+		}
+		layout_html = layout_html.replace("{stat}", stat.toString());
+		layout_html = layout_html.replace("{index}", index.toString());
+		layout_html = layout_html.replace("{vol}", vol.toString());
+		layout_html = layout_html.replace("{jump}", jump.toString());
+		navi.append(layout_html);
+		navi.append("</div>");
 
 		if("html".equals(creater)){
-			builder.append("</form>\n");
+			navi.append("</form>\n");
 		}
 		if("ajax".equals(creater)){
-			builder.append("</div>\n");
+			navi.append("</div>\n");
 		}
-		return builder.toString();
+		return navi.toString();
 	}
 	/**
 	 * 
