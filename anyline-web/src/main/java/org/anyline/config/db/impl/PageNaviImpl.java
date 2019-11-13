@@ -181,7 +181,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		if(type ==0){ //下标导航
 			//每页多少条
 			if(ConfigTable.isDebug()){
-				log.warn("[vol set][enable:{}][index:{}][vol:{}][sort:{}]",config.VAR_CLIENT_SET_VOL_ENABLE,config.VAR_PAGE_VOL_INDEX,pageRows,config.CONFIG_PAGE_VAL_SET_SORT);
+				log.warn("[vol set][enable:{}][vol:{}][sort:{}]",config.VAR_CLIENT_SET_VOL_ENABLE,pageRows,config.CONFIG_PAGE_VAL_SET_SORT);
 			}
 			if(config.VAR_CLIENT_SET_VOL_ENABLE){
 				if(config.CONFIG_PAGE_VAL_SET_SORT == 2){
