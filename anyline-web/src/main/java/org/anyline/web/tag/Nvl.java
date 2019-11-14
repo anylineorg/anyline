@@ -28,6 +28,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +66,8 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 			}
 			result = BasicUtil.nvl(result,body,"").toString();
 			Tag parent = this.getParent();
-			if(null != parent && null != parent.getClass().getMethod("setNvl", String.class)){
-				Method method = parent.getClass().getMethod("setNvl", String.class);
+			Method method = BeanUtil.getMethod(parent.getClass(), "setNvl", String.class);
+			if(null != parent && null != method){
 				if(null != method){
 					method.invoke(parent, result);
 				}

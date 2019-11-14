@@ -28,6 +28,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +53,7 @@ public class Evl extends BaseBodyTag implements Cloneable{
 				 }
 			 }
 		 }
-		 if(null != paramList){
+		 if(null != paramList && paramList.size()>0){
 			try{
 				String result = "";
 				for(Object param:paramList){
@@ -65,8 +66,8 @@ public class Evl extends BaseBodyTag implements Cloneable{
 
 				result = BasicUtil.evl(result,body,"").toString();
 				Tag parent = this.getParent();
-				if(null != parent && null != parent.getClass().getMethod("setEvl", String.class)){
-					Method method = parent.getClass().getMethod("setEvl", String.class);
+				Method method = BeanUtil.getMethod(parent.getClass(), "setEvl", String.class);
+				if(null != parent && null !=method){
 					if(null != method){
 						method.invoke(parent, result);
 					}
