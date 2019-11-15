@@ -39,6 +39,7 @@ import org.slf4j.LoggerFactory;
 public class Evl extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
 	private static final Logger log = LoggerFactory.getLogger(Evl.class);
+	private String target = null;
 	
 	 public int doEndTag() throws JspException {
 		 if(null == paramList || paramList.size()==0){
@@ -66,8 +67,8 @@ public class Evl extends BaseBodyTag implements Cloneable{
 
 				result = BasicUtil.evl(result,body,"").toString();
 				Tag parent = this.getParent();
-				Method method = BeanUtil.getMethod(parent.getClass(), "setEvl", String.class);
-				if(null != parent && null !=method){
+				if("".equals(target) && null != parent){
+					Method method = BeanUtil.getMethod(parent.getClass(), "setEvl", String.class);
 					if(null != method){
 						method.invoke(parent, result);
 					}
@@ -91,6 +92,7 @@ public class Evl extends BaseBodyTag implements Cloneable{
 		super.release();
 		paramList = null;
 		value = null;
+		target = null;
 	}
 	@Override
 	protected Object clone() throws CloneNotSupportedException {

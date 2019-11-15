@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-maven-jar</artifactId>
-		<version>8.2.2</version>
+		<version>8.2.5</version>
 	</parent>
 	
 	<artifactId>anyline-net</artifactId>
@@ -20,6 +20,26 @@
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-core</artifactId>
 			<version>${anyline.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-net</groupId>
+			<artifactId>commons-net</artifactId>
+			<version>${commons.net.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${apache.httpcomponents.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpmime</artifactId>
+			<version>${apache.httpcomponents.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>${commons.httpclient.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jcraft</groupId>

@@ -1,4 +1,4 @@
-package org.anyline.util;
+package org.anyline.net;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.crypto.Cipher;
 
+import org.anyline.util.Base64Util;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 
