@@ -7,7 +7,7 @@
 
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-start-mvc</artifactId>
-	<version>8.2.2</version>
+	<version>8.2.5</version>
 	<packaging>pom</packaging>
 	<name>anyline-start-mvc</name>
 	<url>http://www.anyline.org</url>
@@ -17,7 +17,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<anyline.version>8.2.2</anyline.version>
+		<anyline.version>8.2.5</anyline.version>
 		<anyline.core.version>${anyline.version}</anyline.core.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
 		<anyline.web.version>${anyline.version}</anyline.web.version>
@@ -42,7 +42,8 @@
 		<taglibs.standard.version>1.1.2</taglibs.standard.version>
 		<javax.mail.version>1.5.0-b01</javax.mail.version>
 
-		<log4j.version>1.2.17</log4j.version>
+		<slf4j.version>1.7.25</slf4j.version>
+		<logback.version>1.2.3</logback.version>
 		<json.version>2.4</json.version>
 		<dom4j.version>2.1.1</dom4j.version>
 		<commons.net.version>3.6</commons.net.version>
@@ -53,7 +54,6 @@
 		<oro.version>2.0.8</oro.version>
 		<ecache.version>2.10.6</ecache.version>
 		<ognl.version>3.2.10</ognl.version>
-		<slf4j.version>1.7.2</slf4j.version>
 		<mssql.jdbc.version>7.2.2.jre8</mssql.jdbc.version>
 		<mysql.jdbc.version>5.1.24</mysql.jdbc.version>
 
@@ -82,11 +82,6 @@
 			<version>${mysql.jdbc.version}</version>
 		</dependency>
 		<!-- 日志 -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-nop</artifactId>
-			<version>${slf4j.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>

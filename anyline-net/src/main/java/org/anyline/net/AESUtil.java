@@ -16,20 +16,23 @@
  *          
  */
 
-package org.anyline.util;
+package org.anyline.net;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.commons.codec.binary.Base64;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class AESUtil {
-
+	private static Logger log = LoggerFactory.getLogger(AESUtil.class);
 	private static final String KEY_ALGORITHM = "AES";
 	private static final String DEFAULT_CIPHER_ALGORITHM = "AES/ECB/PKCS5Padding";// 默认的加密算法
 
@@ -50,7 +53,7 @@ public class AESUtil {
 			byte[] result = cipher.doFinal(byteContent);// 加密
 			return Base64.encodeBase64String(result);// 通过Base64转码返回
 		} catch (Exception ex) {
-			Logger.getLogger(AESUtil.class.getName()).log(Level.SEVERE, null, ex);
+			log.error(ex.getMessage());
 		}
 		return null;
 	}
@@ -72,7 +75,7 @@ public class AESUtil {
 			byte[] result = cipher.doFinal(Base64.decodeBase64(content));
 			return new String(result, "utf-8");
 		} catch (Exception ex) {
-			Logger.getLogger(AESUtil.class.getName()).log(Level.SEVERE, null, ex);
+			log.error(ex.getMessage());
 		}
 		return null;
 	}
@@ -93,7 +96,7 @@ public class AESUtil {
 			SecretKey secretKey = kg.generateKey();
 			return new SecretKeySpec(secretKey.getEncoded(), KEY_ALGORITHM);// 转换为AES专用密钥
 		} catch (NoSuchAlgorithmException ex) {
-			Logger.getLogger(AESUtil.class.getName()).log(Level.SEVERE, null, ex);
+			log.error(ex.getMessage());
 		}
 		return null;
 	}
