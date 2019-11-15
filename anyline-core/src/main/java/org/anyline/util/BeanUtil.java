@@ -99,6 +99,31 @@ public class BeanUtil {
 	public static boolean setFieldValue(Object obj, String field, Object value){
 		return setFieldValue(obj, field, value, true);
 	}
+	public static Method getMethod(Class<?> clazz, String name, boolean recursion, Class<?>... parameterTypes){
+		Method method = null;
+		try{
+			method = clazz.getMethod(name, parameterTypes);
+		}catch(Exception e){}
+		if(null == method){
+			try{
+				method = clazz.getDeclaredMethod(name, parameterTypes);
+			}catch(Exception e){
+				
+			}
+		}
+		//递归父类
+		if(null == method && recursion){
+			clazz = clazz.getSuperclass();
+			if(null != clazz){
+				method = getMethod(clazz, name, recursion, parameterTypes);
+			}
+		}
+		return method;
+	}
+
+	public static Method getMethod(Class<?> clazz, String name, Class<?>... parameterTypes){
+		return getMethod(clazz, name, false, parameterTypes);
+	}
 	public static Field getField(Class<?> clazz, String name, boolean recursion){
 		Field field = null;
 		try{
