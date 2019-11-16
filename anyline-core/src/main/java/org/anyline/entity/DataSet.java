@@ -2178,6 +2178,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return set;
 		}
 
+		public DataSet notLike(String key, String pattern){
+			return notLike(DataSet.this, key, pattern);
+		}
+		private DataSet notLike(DataSet src, String key, String pattern){
+			DataSet set = new DataSet();
+			if(null == pattern){
+				return set;
+			}
+			pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
+			String tmpValue;
+			for(DataRow row:src){
+				tmpValue = row.getString(key);
+				if (null == tmpValue || !RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
+					set.add(row);
+				}
+			}
+			set.cloneProperty(src);
+			return set;
+		}
 		public DataSet startWith(String key, String prefix){
 			return startWith(DataSet.this, key, prefix); 
 		}
@@ -2240,6 +2259,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			set.cloneProperty(src);
 			return set;
 		}
+		
 		public DataSet inIgnoreCase(String key, String ... values){
 			return inIgnoreCase(DataSet.this, key, values);
 		}
