@@ -48,7 +48,7 @@ public class PageNaviConfig extends BasicConfig{
 	
 	public int CONFIG_PAGE_VAL_SET_SORT = 1;	//1:VAR_PAGE_VOL_NUMBERS 2:STYLE_PAGE_VOL 
 	//样式html
-	public String STYLE_STAT_FORMAT				= "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";	//统计页数
+	public String STYLE_STAT_FORMAT			= "<div class='navi-summary'>共<span class='navi-total-row'>{totalRow}</span>条 第<span class='navi-cur-page'>{curPage}</span>/<span class='navi-total-page'>{totalPage}</span>页</div>";	//统计页数
 	//用户选择每页多少条  STYLE_PAGE_VOL与STYLE_PAGE_VOL_NUMBERS 会相互覆盖 (以配置文件后设置的为准)
 	//STYLE_PAGE_VOL_INDEX会引用STYLE_PAGE_VOL_CLASS所以要先设置STYLE_PAGE_VOL_CLASS
 	public String STYLE_PAGE_VOL			= "<select class='navi-vol-set' id='navi_vol_set_{navi-conf-key}' onchange='_navi_change_vol({navi-conf-key})'><option value='10'>10 条/页</option><option value='20'>20 条/页</option><option value='30'>30 条/页</option><option value='40'>40 条/页</option><option value='50'>50 条/页</option><option value='100'>100 条/页</option></select>";
