@@ -43,9 +43,9 @@ public interface SQL extends Cloneable,Serializable {
 		LIKE			{public int getCode(){return 50;} public String getSql(){return " LIKE ";} 				public String getName(){return "%like%";}},
 		LIKE_PREFIX		{public int getCode(){return 51;} public String getSql(){return " LIKE ";} 				public String getName(){return "%like";}},
 		LIKE_SUBFIX		{public int getCode(){return 52;} public String getSql(){return " LIKE ";} 				public String getName(){return "like%";}},
-		NOT_EQUAL		{public int getCode(){return 62;} public String getSql(){return " != ?";} 				public String getName(){return "不等于";}},
-		NOT_IN			{public int getCode(){return 72;} public String getSql(){return " NOT IN ";} 			public String getName(){return "不包含";}},
-		BETWEEN			{public int getCode(){return 80;} public String getSql(){return " BETWEEN ? AND ? ";} 	public String getName(){return "区间";}};
+		BETWEEN			{public int getCode(){return 80;} public String getSql(){return " BETWEEN ? AND ? ";} 	public String getName(){return "区间";}},
+		NOT_EQUAL		{public int getCode(){return 110;} public String getSql(){return " != ?";} 				public String getName(){return "不等于";}},
+		NOT_IN			{public int getCode(){return 140;} public String getSql(){return " NOT IN ";} 			public String getName(){return "不包含";}};
 		public abstract String getName();
 		public abstract String getSql();
 		public abstract int getCode();
