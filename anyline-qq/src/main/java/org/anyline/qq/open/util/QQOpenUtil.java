@@ -61,22 +61,22 @@ public class QQOpenUtil{
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = sign(map);
 		map.put("sign", sign);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][xml:{}]", xml);
 		}
 		String rtn = SimpleHttpUtil.post(QQOpenConfig.UNIFIED_ORDER_URL, xml);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][return:{}]", rtn);
 		}
 		result = BeanUtil.xml2object(rtn, QQPayTradeResult.class);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());
 		}
 		return result;
@@ -125,7 +125,7 @@ public class QQOpenUtil{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        if(ConfigTable.isDebug()){
+        if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[APP调起QQ支付签名][sign:{}][app key:{}][sign src:{}]", result, QQOpenConfig.getInstance().APP_KEY,builder.toString());
         }
 		return result;
@@ -150,7 +150,7 @@ public class QQOpenUtil{
 		row.put("sigType", "HMAC-SHA1");
 		String sign = appSign(prepayid, nonce);
 		row.put("SIG", sign);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[APP调起QQ支付][返回参数:{}]",row.toJSON());
 		}
 		return row;
@@ -160,7 +160,7 @@ public class QQOpenUtil{
 		DataRow row = new DataRow();
 		String url = "https://graph.qq.com/oauth2.0/me?access_token="+accessToken+"&unionid=1";
 		String txt = HttpUtil.get(url).getText();
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[QQ登录][get openid][txt:"+txt+"]");
 		}
 		//callback( {"client_id":"1106186286","openid":"0B6D8FD1AF2B686CDF78AC34E981D9C4","unionid":"UID_8687A0501C64D5AD725C283107C5BB83"} );

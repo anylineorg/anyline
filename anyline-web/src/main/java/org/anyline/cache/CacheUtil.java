@@ -46,7 +46,7 @@ public class CacheUtil {
 		long fr = System.currentTimeMillis();
 		if(null == manager){
 			manager = CacheManager.create();
-	    	if(ConfigTable.isDebug()){
+	    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
 	    		log.warn("[加载ehcache配置文件][耗时:{}",System.currentTimeMillis() - fr);
 	    		for(String name:manager.getCacheNames()){
 	    			log.warn("[解析ehcache配置文件] [name:{}]",name);
@@ -88,18 +88,18 @@ public class CacheUtil {
 		if(null != cache){
 			result = cache.get(key);
 			if(null == result){
-		    	if(ConfigTable.isDebug()){
+		    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
 		    		log.warn("[缓存不存在][cnannel:{}][key:{}][生存:-1/{}]",channel, key,cache.getCacheConfiguration().getTimeToLiveSeconds());
 		    	}
 				return null;
 			}
 			if(result.isExpired()){
-		    	if(ConfigTable.isDebug()){
+		    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
 		    		log.warn("[缓存数据提取成功但已过期][耗时:{}][cnannel:{}][key:{}][命中:{}][生存:{}/{}]",System.currentTimeMillis()-fr,channel,key,result.getHitCount(),(System.currentTimeMillis() - result.getCreationTime())/1000,result.getTimeToLive());
 		    	}
 		    	result = null;
 			}else{
-				if(ConfigTable.isDebug()){
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
 		    		log.warn("[缓存数据提取成功并有效][耗时:{}][cnannel:{}][key:{}][命中:{}][生存:{}/{}]",System.currentTimeMillis()-fr,channel,key,result.getHitCount(),(System.currentTimeMillis() - result.getCreationTime())/1000,result.getTimeToLive());
 		    	}
 			}
@@ -116,7 +116,7 @@ public class CacheUtil {
 		Cache cache = getCache(channel);
 		if(null != cache){
 			cache.put(element);
-	    	if(ConfigTable.isDebug()){
+	    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
 	    		log.warn("[存储缓存数据][channel:{}][key:{}][生存:0/{}]",channel,element.getObjectKey(),cache.getCacheConfiguration().getTimeToLiveSeconds());
 	    	}
 		}
@@ -129,7 +129,7 @@ public class CacheUtil {
 			if(null != cache){
 				cache.remove(key);
 			}
-	    	if(ConfigTable.isDebug()){
+	    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
 	    		log.warn("[删除缓存数据] [channel:{}][key:{}]",channel, key);
 	    	}
 		}catch(Exception e){
@@ -142,7 +142,7 @@ public class CacheUtil {
 		try{
 			CacheManager manager = createManager();
 			manager.removeCache(channel);
-	    	if(ConfigTable.isDebug()){
+	    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
 	    		log.warn("[清空缓存数据] [channel:{}]",channel);
 	    	}
 		}catch(Exception e){
@@ -176,11 +176,11 @@ public class CacheUtil {
     	}
     	if(result){
     		reflushFlag.put(key, System.currentTimeMillis());
-    		if(ConfigTable.isDebug()){
+    		if(ConfigTable.isDebug() && log.isWarnEnabled()){
     			log.warn("[频率控制放行][key:{}][间隔:{}/{}]", key, age, sec);
     		}
     	}else{
-    		if(ConfigTable.isDebug()){
+    		if(ConfigTable.isDebug() && log.isWarnEnabled()){
     			log.warn("[频率控制拦截][key:{}][间隔:{}/{}]", key, age, sec);
     		}
     	}
@@ -197,7 +197,7 @@ public class CacheUtil {
     public static void stop(String key, int sec){
     	Long fr = reflushFlag.get(key);
     	if(null == fr){
-    		if(ConfigTable.isDebug()){
+    		if(ConfigTable.isDebug() && log.isWarnEnabled()){
     			log.warn("[频率控制还原完成 有可能key拼写有误][key:{}]",key);
     		}
     		return;
@@ -207,7 +207,7 @@ public class CacheUtil {
     	if(age > sec){
     		reflushFlag.remove(key);
     	}
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[频率控制还原完成][key:{}][间隔:{}/{}]", key, age, sec);
 		}
     }
@@ -299,7 +299,7 @@ public class CacheUtil {
 				}
 			}
 		}
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[create cache key][key:{}]",result);
 		}
 		return MD5Util.crypto(result);

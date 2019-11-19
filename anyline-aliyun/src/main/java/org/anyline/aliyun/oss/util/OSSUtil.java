@@ -90,7 +90,7 @@ public class OSSUtil {
 		}else{
 			result = createUrl(path);
 			client.putObject(config.BUCKET, path, file);
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[oss upload file][result:true][file:{}][url:{}]",file.getAbsolutePath(), result);
 			}
 		}
@@ -105,7 +105,7 @@ public class OSSUtil {
 		}
 		try {
 			client.putObject(config.BUCKET, path, url.openStream());
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[oss upload file][result:true][file:{}]",path);
 			}
 		} catch (Exception e) {
@@ -121,7 +121,7 @@ public class OSSUtil {
 			path = path.substring(1);
 		}
 		client.putObject(config.BUCKET, path, in);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[oss upload file][result:true][file:{}]",path);
 		}
 		return createUrl(path);
@@ -198,7 +198,7 @@ public class OSSUtil {
 		        }catch(Exception e){
 		        	e.printStackTrace();
 		        }
-		        if(ConfigTable.isDebug()){
+		        if(ConfigTable.isDebug() && log.isWarnEnabled()){
 		        	log.warn("[oss download file][local:{}][remote:{}]",file.getAbsolutePath(),key);
 		        }
 		    }
@@ -222,7 +222,7 @@ public class OSSUtil {
 		try{
 			result = client.doesObjectExist(config.BUCKET,key);
 		}catch(Exception e){}
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[check exists][path:{}][key:{}]", path, key);
 		}
 		return result;

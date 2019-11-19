@@ -84,22 +84,22 @@ public class WXOpenUtil {
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		map.put("sign", sign);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("统一下单][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("统一下单][xml:{}]", xml);
 		}
 		String rtn = SimpleHttpUtil.post(WXConfig.API_URL_UNIFIED_ORDER, xml);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][return:{}]", rtn);
 		}
 		result = BeanUtil.xml2object(rtn, WXOpenPrePayResult.class);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());
 		}
 		return result;
@@ -125,12 +125,12 @@ public class WXOpenUtil {
 		
 		map.put("sign", sign);
 		
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[退款申请][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[退款申请][xml:{}]", xml);
 			log.warn("[退款申请][证书:{}]", config.PAY_KEY_STORE_FILE);
 		}
@@ -149,7 +149,7 @@ public class WXOpenUtil {
             StringEntity  reqEntity  = new StringEntity(xml);
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
-    		if(ConfigTable.isDebug()){
+    		if(ConfigTable.isDebug() && log.isWarnEnabled()){
     			log.warn("[退款申请调用][result:{}", txt);
     		}
             result = BeanUtil.xml2object(txt, WXOpenPayRefundResult.class);
@@ -178,7 +178,7 @@ public class WXOpenUtil {
 		DataRow row = new DataRow(params);
 		row.put("packagevalue", row.get("package"));
 		row.remove("package");
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[APP调起微信支付][参数:{}]", row.toJSON());
 		}
 		return row;

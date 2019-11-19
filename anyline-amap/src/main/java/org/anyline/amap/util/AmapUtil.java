@@ -187,7 +187,7 @@ public class AmapUtil {
 		params.put("sig", sign(params));
 		String url = "http://yuntuapi.amap.com/datamanage/data/delete";
 		String txt = HttpUtil.post(url, "UTF-8", params).getText();
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[删除标注][param:{}]",BasicUtil.joinBySort(params));
 		}
 		try{
@@ -247,7 +247,7 @@ public class AmapUtil {
 		params.put("data", JSONObject.fromObject(data).toString());
 		params.put("sig", sign(params));
 		String txt = HttpUtil.post(url, "UTF-8", params).getText();
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[更新标注][param:{}]",BasicUtil.joinBySort(params));
 		}
 		try{
@@ -517,7 +517,7 @@ public class AmapUtil {
 			}
 			if(json.has("datas")){
 				set = DataSet.parseJson(json.getJSONArray("datas"));
-				if(ConfigTable.isDebug()){
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
 					log.warn("[条件搜索][结果数量:{}]",set.size());	
 				}
 			}else{
