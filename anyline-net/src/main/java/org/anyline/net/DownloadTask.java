@@ -207,7 +207,7 @@ public class DownloadTask {
 			this.rate = 100.00;
 			this.end = System.currentTimeMillis();
 			log();
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.info("[文件下载]"+"[下载完成][耗时:{}][url:{}][local:{}]",getExpendFormat(),url, getLocal().getAbsolutePath());
 			}
 			if(null != listener){

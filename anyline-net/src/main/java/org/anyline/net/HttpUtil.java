@@ -447,13 +447,13 @@ public class HttpUtil {
 		HttpResult result = null;
 		try {
 			long fr = System.currentTimeMillis();
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[http request][method:{}][url:{}]",method.getMethod(),method.getURI());
 			}
 			method.setHeader("Connection", "close");  
 			response = client.execute(method);
 			result = parseResult(result,response, encode);
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[http request][method:{}][status:{}][耗时:{}][url:{}]",method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
 			}
 		} catch (Exception e) {
@@ -775,7 +775,7 @@ public class HttpUtil {
 				builder.addBinaryBody(key, file, ContentType.MULTIPART_FORM_DATA, file.getName());
 			fileLog += "["+key+":"+file.getAbsolutePath()+"]";
 		}
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[http upload][url:{}]"+fileLog,url);
 		}
 		
@@ -989,7 +989,7 @@ public class HttpUtil {
 							continue;
 						}
 						pairs.add(new BasicNameValuePair(key, val));
-						if(ConfigTable.isDebug()){
+						if(ConfigTable.isDebug() && log.isWarnEnabled()){
 							log.warn("[request param][{}={}]", key,BasicUtil.cut(val,0,20));
 						}						
 					}
@@ -1000,13 +1000,13 @@ public class HttpUtil {
 							continue;
 						}
 						pairs.add(new BasicNameValuePair(key, val.toString()));
-						if(ConfigTable.isDebug()){
+						if(ConfigTable.isDebug() && log.isWarnEnabled()){
 							log.warn("[request param][{}={}]",key,BasicUtil.cut(val.toString(),0,20));
 						}						
 					}
 				}else if(null != value){
 					pairs.add(new BasicNameValuePair(key, value.toString()));
-					if(ConfigTable.isDebug()){
+					if(ConfigTable.isDebug() && log.isWarnEnabled()){
 						log.warn("[request param][{}={}]",key,BasicUtil.cut(value.toString(),0,20));
 					}
 				}

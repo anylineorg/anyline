@@ -62,7 +62,7 @@ public class WXUtil {
 		StringEntity reqEntity = new StringEntity(xml, "UTF-8");
 		reqEntity.setContentType("application/x-www-form-urlencoded");
 		String txt = HttpUtil.post(httpclient, WXConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[获取RSA公钥][\n{}\n]",txt);
 		}
 		return txt;

@@ -39,7 +39,7 @@ public class MD5Util {
 	}
 	
 	public static String sign(String src, String encode){
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[MD5 SIGN][src:{}]", src);
 		}
 		if(null == src) return "";
@@ -58,7 +58,7 @@ public class MD5Util {
                 ex.printStackTrace();  
             }     
         }
-        if(ConfigTable.isDebug()){
+        if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[MD5 SIGN][sign:{}]", result);
 		}
         return result;     

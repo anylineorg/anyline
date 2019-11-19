@@ -268,7 +268,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 				this.data = data;
 			}
 		}
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[result:success][url:{}][action return][action:{}]",request.getRequestURI(),getClass().getName());
 		}
 		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JSON) {
@@ -356,7 +356,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			}
 		}
 		msg = BasicUtil.nvl(msg, "").toString() + BasicUtil.nvl(html, "").toString().trim();
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[result:fail][message:{}][url:{}][action return][action:{}]",msg, request.getRequestURI(),getClass().getName());
 		}
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg);
@@ -392,7 +392,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 					}
 				}
 			}else{
-				if(ConfigTable.isDebug()){
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
 					log.warn("[未设置样式模板] [原因:有可能需要数据url中通过parseJsp合成样式与数据]");
 				}
 			}

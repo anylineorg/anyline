@@ -580,7 +580,7 @@ public class BeanUtil {
 		for(File file:files){
 			try{
 				String path = file.getAbsolutePath();
-				if(ConfigTable.isDebug()){
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
 					log.warn("[检索类][file:{}]",path);
 				}
 				if(path.contains(File.separator+"classes"+File.separator)){
@@ -588,7 +588,7 @@ public class BeanUtil {
 				}
 				path = path.replace(File.separator, ".");
 				path = path.replace(".classes.", "").replace(".class", "");
-				if(ConfigTable.isDebug()){
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
 					log.warn("[检索类][class:{}]",path);
 				}
 				Class clazz = Class.forName(path);
