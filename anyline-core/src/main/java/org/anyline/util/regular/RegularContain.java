@@ -55,7 +55,7 @@ public class RegularContain implements Regular{
 			result = matcher.contains(src, pattern);
 		}catch(Exception e){
 			result = false;
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 		}
@@ -84,7 +84,7 @@ public class RegularContain implements Regular{
 			}
 		}catch(Exception e){
 			log.error("[提取异常][src:{}][reg:{}]", src, regx);
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 		}
@@ -111,7 +111,7 @@ public class RegularContain implements Regular{
 			}
 		}catch(Exception e){
 			log.error("[提取异常][src:{}][reg:{}]", src, regx);
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 			throw e;

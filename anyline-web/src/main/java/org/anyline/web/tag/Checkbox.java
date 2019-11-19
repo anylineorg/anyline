@@ -236,7 +236,7 @@ public class Checkbox extends BaseBodyTag {
 			out.print(html.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 		} finally {

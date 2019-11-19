@@ -826,7 +826,7 @@ public class FileUtil {
 				}
 			}catch(Exception e){}
 		}
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[save file][file:"+file.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 		}
         return true;

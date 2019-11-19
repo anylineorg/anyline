@@ -81,7 +81,7 @@ public class Downloader {
 //			}
 //			task.finish();
 //			log();
-//			if(ConfigTable.isDebug()){
+//			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 //				log.info("[文件下载][下载完成][完成数量:"+getFinishTaskSize()+"/"+getTaskSize()+"][耗时:"+task.getExpendFormat()+"][url:"+url+"][local:"+task.getLocal().getAbsolutePath()+"]");
 //			}
 //			if(null != finishCallback){
