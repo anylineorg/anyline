@@ -96,7 +96,7 @@ public class Pay extends BaseBodyTag {
 			out.println(builder.toString());
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 		} finally {

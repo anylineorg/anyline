@@ -108,22 +108,22 @@ public class WXMPUtil extends WXUtil{
 		Map<String, Object> map = BeanUtil.toMap(order);
 		String sign = WXUtil.sign(config.PAY_API_SECRET,map);
 		map.put("sign", sign);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][sign:{}}", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][xml:{}]", xml);
 		}
 		String rtn = SimpleHttpUtil.post(WXConfig.API_URL_UNIFIED_ORDER, xml);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][return:{}]", rtn);
 		}
 		result = BeanUtil.xml2object(rtn, WXMPPrePayResult.class);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());
 		}
 		return result;
@@ -147,12 +147,12 @@ public class WXMPUtil extends WXUtil{
 		
 		map.put("sign", sign);
 		
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[退款申请][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
 
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[退款申请][xml:{}]", xml);
 			log.warn("[退款申请][证书:{}]",config.PAY_KEY_STORE_FILE);
 		}
@@ -172,7 +172,7 @@ public class WXMPUtil extends WXUtil{
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpUtil.post(httpclient, WXConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
-    		if(ConfigTable.isDebug()){
+    		if(ConfigTable.isDebug() && log.isWarnEnabled()){
     			log.warn("[退款申请调用][result:{}]", txt);
     		}
             result = BeanUtil.xml2object(txt, WXMPPayRefundResult.class);
@@ -204,11 +204,11 @@ public class WXMPUtil extends WXUtil{
 		
 		map.put("sign", sign);
 		
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[发送红包[sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[发送红包][xml:{}]", xml);
 			log.warn("[发送红包][证书:{}]", config.PAY_KEY_STORE_FILE);
 		}
@@ -228,7 +228,7 @@ public class WXMPUtil extends WXUtil{
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpUtil.post(httpclient, WXConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
-    		if(ConfigTable.isDebug()){
+    		if(ConfigTable.isDebug() && log.isWarnEnabled()){
     			log.warn("[发送红包调用][result:{}]", txt);
     		}
             result = BeanUtil.xml2object(txt, WXMPRedpackResult.class);
@@ -261,11 +261,11 @@ public class WXMPUtil extends WXUtil{
 		
 		map.put("sign", sign);
 		
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[发送裂变红包][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[发送裂变红包][xml:{}]", xml);
 			log.warn("[发送裂变红包][证书:{}]", config.PAY_KEY_STORE_FILE);
 		}
@@ -285,7 +285,7 @@ public class WXMPUtil extends WXUtil{
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpUtil.post(httpclient, WXConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
-    		if(ConfigTable.isDebug()){
+    		if(ConfigTable.isDebug() && log.isWarnEnabled()){
     			log.warn("[发送裂变红包调用][result:{}]", txt);
     		}
             result = BeanUtil.xml2object(txt, WXMPGroupRedpackResult.class);
@@ -317,11 +317,11 @@ public class WXMPUtil extends WXUtil{
 		
 		map.put("sign", sign);
 		
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[付款][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[付款][xml:{}]", xml);
 			log.warn("[付款][证书:{}]", config.PAY_KEY_STORE_FILE);
 		}
@@ -341,7 +341,7 @@ public class WXMPUtil extends WXUtil{
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpUtil.post(httpclient, WXConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
-    		if(ConfigTable.isDebug()){
+    		if(ConfigTable.isDebug() && log.isWarnEnabled()){
     			log.warn("[付款调用][result:{}]", txt);
     		}
             result = BeanUtil.xml2object(txt, WXMPTransferResult.class);
@@ -381,11 +381,11 @@ public class WXMPUtil extends WXUtil{
 		
 		map.put("sign", sign);
 		
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[付款][sign:{}]", sign);
 		}
 		String xml = BeanUtil.map2xml(map);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[付款][xml:{}]", xml);
 			log.warn("[付款][证书:{}]", config.PAY_KEY_STORE_FILE);
 		}
@@ -405,7 +405,7 @@ public class WXMPUtil extends WXUtil{
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded"); 
             String txt = HttpUtil.post(httpclient, WXConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
-    		if(ConfigTable.isDebug()){
+    		if(ConfigTable.isDebug() && log.isWarnEnabled()){
     			log.warn("[付款调用][result:{}]", txt);
     		}
             result = BeanUtil.xml2object(txt, WXMPTransferBankResult.class);
@@ -433,7 +433,7 @@ public class WXMPUtil extends WXUtil{
 		params.put("paySign", sign);
 		
 		DataRow row = new DataRow(params);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[APP调起微信支付][参数:{}]", row.toJSON());
 		}
 		return row;
@@ -458,13 +458,13 @@ public class WXMPUtil extends WXUtil{
 		return result;
 	}
 	private DataRow newAccessToken(String appid, String secret){
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[CREATE NEW ACCESS TOKEN][appid:{}][secret:{}]",appid, secret);
 		}
 		DataRow row = new DataRow();
 		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+secret;
 		String text = HttpUtil.post(url,"UTF-8").getText();
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[CREATE NEW ACCESS TOKEN][result:{}]",text);
 		}
 		JSONObject json = JSONObject.fromObject(text);
@@ -473,11 +473,11 @@ public class WXMPUtil extends WXUtil{
 			row.put("APP_ID", appid);
 			row.put("ACCESS_TOKEN", json.getString("access_token"));
 			row.setExpires(json.getInt("expires_in")*800);
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:{}]",row.getString("ACCESS_TOKEN"));
 			}
 		}else{
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[CREATE NEW ACCESS TOKEN][FAIL]");
 			}
 			return null;
@@ -503,7 +503,7 @@ public class WXMPUtil extends WXUtil{
 		return result;
 	}
 	public DataRow newJsapiTicket(String accessToken){
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[CREATE NEW JSAPI TICKET][token:{}]",accessToken);
 		}
 		DataRow row = new DataRow();
@@ -515,7 +515,7 @@ public class WXMPUtil extends WXUtil{
 		if(json.has("ticket")){
 			row.put("TICKET", json.getString("ticket"));
 			row.setExpires(json.getInt("expires_in")*1000);
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[CREATE NEW JSAPI TICKET][TICKET:{}]",row.get("TICKET"));
 			}
 		}else{

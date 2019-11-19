@@ -27,7 +27,7 @@ public class SHA1Util {
 	private static final Logger log = LoggerFactory.getLogger(SHA1Util.class);
 	private static MessageDigest digest = null;
 	public static String sign(String src){
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[SHA1 SIGN][src:{}]", src);
 		}
 		String result = "";
@@ -49,7 +49,7 @@ public class SHA1Util {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[SHA1 SIGN][sign:{}]",result);
 		}
 		return result;

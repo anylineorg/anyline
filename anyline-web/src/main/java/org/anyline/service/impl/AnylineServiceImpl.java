@@ -91,7 +91,7 @@ public class AnylineServiceImpl implements AnylineService {
 		} catch (Exception e) {
 			set = new DataSet();
 			set.setException(e);
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 			log.error("QUERY ERROR:"+e);
@@ -202,7 +202,7 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 
 	protected DataSet queryFromCacheL2(String cache2, DataSet l1, String src, ConfigStore configs, String ... conditions){
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[cache from L2][cache:{}][src:{}]", cache2, src);
 		}
 		DataSet set = new DataSet();
@@ -239,7 +239,7 @@ public class AnylineServiceImpl implements AnylineService {
 		return set;
 	}
 	protected DataSet queryFromCacheL1(boolean isUseCacheL2, String cache, String src, ConfigStore configs, String ... conditions){
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[cache from L1][cache:{}][src:{}]", cache, src);
 		}
 		DataSet set = null;
@@ -272,7 +272,7 @@ public class AnylineServiceImpl implements AnylineService {
         	long age =  (System.currentTimeMillis()- element.getCreationTime())/1000;
         	final int _max = element.getTimeToLive();
         	if(age > _max*0.9){
-        		if(ConfigTable.isDebug()){
+        		if(ConfigTable.isDebug() && log.isWarnEnabled()){
         			log.warn("[缓存即将到期提前刷新][src:{}] [生存:{}/{}]",src, age, _max);
         		}
         		final String _key = key;
@@ -685,7 +685,7 @@ public class AnylineServiceImpl implements AnylineService {
 			SQL sql = createSQL(src);
 			count = dao.count(sql, configs, conditions);
 		} catch (Exception e) {
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 			log.error("COUNT ERROR:"+e);
@@ -901,7 +901,7 @@ public class AnylineServiceImpl implements AnylineService {
 			set = new DataSet();
 			set.setException(e);
 			log.error("QUERY ERROR:"+e);
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 		}
