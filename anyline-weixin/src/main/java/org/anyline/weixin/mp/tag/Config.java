@@ -62,7 +62,7 @@ public class Config extends BaseBodyTag {
 				if(BasicUtil.isNotEmpty(param)){
 					url += "?" + param;
 				}
-				if(ConfigTable.isDebug()){
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
 					log.warn("[config init][url:{}]",url);
 				}
 				Map<String,Object> map = util.jsapiSign(url);
@@ -100,7 +100,7 @@ public class Config extends BaseBodyTag {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 		} finally {

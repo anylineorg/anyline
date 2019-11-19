@@ -85,7 +85,7 @@ public class RegularMatch implements Regular{
 				list.add(item);
 			}
 		}catch(Exception e){
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 		}
@@ -110,7 +110,7 @@ public class RegularMatch implements Regular{
 				list.add(matchResult.group(idx));
 			}
 		}catch(Exception e){
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 		}

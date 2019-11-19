@@ -78,7 +78,7 @@ public class OSSConfig extends BaseBodyTag {
 			out.println(script);
 		} catch (Exception e) {
 			e.printStackTrace();
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
 			}
 		} finally {

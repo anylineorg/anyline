@@ -25,14 +25,14 @@ public class PageLazyStore {
 				//过期
 				lazyTotal.remove(key);
 				lazyTime.remove(key);
-				if(ConfigTable.isDebug()){
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
 					log.warn("[记录总数过期][key:{}][生存:{}/{}]", key, age, period);
 				}
 				return 0;
 			}
 		}
 		Integer result = lazyTotal.get(key);
-		if(ConfigTable.isDebug()){
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[提取记录总数][key:{}][total:{}][生存:{}/{}]", key, result, age, period);
 		}
 		if(null == result){
@@ -46,11 +46,11 @@ public class PageLazyStore {
 			//新计数 或 更新计数
 			lazyTime.put(key, System.currentTimeMillis());
 			lazyTotal.put(key, total);
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[重置记录总数][key:{}][old:{}]" + "[new:{}]", key, old, total);
 			}
 		}else{
-			if(ConfigTable.isDebug()){
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[缓存记录总数][key:{}][total:{}]", key, total);
 			}
 		}
