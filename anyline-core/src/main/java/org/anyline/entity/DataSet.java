@@ -960,7 +960,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public List<Object> fetchValues(String key) {
 		List<Object> result = new ArrayList<Object>();
 		for (int i = 0; i < size(); i++) {
-			result.add(this.getString(i, key));
+			result.add(get(i, key));
 		}
 		return result;
 	}
@@ -1043,26 +1043,24 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public List<String> getStrings(String key){
 		List<String> result = new ArrayList<String>();
-		List<Object> list = fetchValues(key);
-		for(Object val:list){
-			if(null != val){
-				result.add(val.toString());
-			}else{
-				result.add(null);
-			}
+		for(DataRow row:rows){
+			result.add(row.getString(key));
+		}
+		return result;
+		
+	}
+	public List<Integer> getInts(String key){
+		List<Integer> result = new ArrayList<Integer>();
+		for(DataRow row:rows){
+			result.add(row.getInt(key));
 		}
 		return result;
 		
 	}
 	public List<Object> getObjects(String key){
 		List<Object> result = new ArrayList<Object>();
-		List<Object> list = fetchValues(key);
-		for(Object val:list){
-			if(null != val){
-				result.add(val);
-			}else{
-				result.add(null);
-			}
+		for(DataRow row:rows){
+			result.add(row.get(key));
 		}
 		return result;
 		
