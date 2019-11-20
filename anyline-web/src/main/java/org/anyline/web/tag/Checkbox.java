@@ -247,7 +247,7 @@ public class Checkbox extends BaseBodyTag {
 	private boolean checked(Collection<?> chks, Object value){
 		if(null != chks){
 			for(Object chk:chks){
-				if(null != chk && null != value && chk.equals(value.toString())){
+				if(null != chk && null != value && chk.toString().equals(value.toString())){
 					return true;
 				}
 			}
