@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-maven-jar</artifactId>
-		<version>8.2.6</version>
+		<version>8.2.7</version>
 	</parent>
 	
 	<artifactId>anyline-mssql</artifactId>
-	<version>8.2.6</version>
+	<version>8.2.7</version>
 	<packaging>jar</packaging>
 	<name>anyline-mssql</name>
 	<url>http://www.anyline.org/mssql</url>
