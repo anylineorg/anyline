@@ -130,7 +130,7 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(before)){
 				builder.append("before:" ).append(before).append(",");
 			}
-			after = BasicUtil.nvl(before, config.EVENT_AFTER,"").toString();
+			after = BasicUtil.nvl(after, config.EVENT_AFTER,"").toString();
 			if(BasicUtil.isNotEmpty(after)){
 				builder.append("after:" ).append(after).append(",");
 			}
