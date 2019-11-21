@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * value:选中值 
  * value="{1,2,3,4,5}"	 item.get(valueKey)是在1,3,4,5集合中时选中
  * value="${list}" property="ID"	item.get(valueKey)是在list.items.property 集合中时选中
- * rely="CHK" data.item.CHK  = true或1时选中
+ * rely="CHK" data.item.CHK  = true或1时选中 根据rely列的值 判断是否选中
  *
  * text 支持多列 {ID}-{NM}
  */
