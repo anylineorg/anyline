@@ -132,7 +132,7 @@ public class Checkbox extends BaseBodyTag {
 						List list = new ArrayList();
 						Collection cols = (Collection)this.value;
 						for(Object item:cols){
-							Object val = null;
+							Object val = item;
 							if(item instanceof Map){
 								val = ((Map)item).get(rely);
 							}
