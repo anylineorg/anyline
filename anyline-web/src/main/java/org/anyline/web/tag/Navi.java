@@ -41,6 +41,7 @@ public class Navi extends BodyTagSupport{
 	private String param			;	//参数收集函数
 	private String container		;	//返回内容显示容器
 	private String body				;	//返回内容显示容器class或id(如果body与page分开)
+	private String cur = "1"		;   //当前页
 	private String page				;	//返回内容显示容器class或id(如果body与page分开)
 	private String bodyContainer	;	//如果body与page分开(兼容上一版本)
 	private String naviContainer	;	//如果body与page分开(兼容上一版本)
@@ -157,12 +158,13 @@ public class Navi extends BodyTagSupport{
 			builder.append("stat:").append(stat).append(",");
 			builder.append("creater:'").append(creater).append("'");
 			builder.append("};\n");
+			int curPage = BasicUtil.parseInt(cur, 1);
 			//加载数据函数
 			if(BasicUtil.isNotEmpty(function)){
 				//clear:清空上一页内容  hold:保持当前页
 				builder.append("function ").append(function).append("(clear,hold){\n");
 				builder.append("\tif(clear){\n\t").append(confId).append("['clear'] = 1;\n\t").append(confId).append("['flush'] = true;\n}\n");
-				builder.append("\tvar _cur_page = 1;\n");
+				builder.append("\tvar _cur_page = ").append(curPage).append(";\n");
 				builder.append("\tif(hold){\n\t\t_cur_page = $('#_navi_cache_page_").append(flag).append("').val() || $('#hid_cur_page_").append(flag).append("').val() || _cur_page;\n\t\t_navi_go(_cur_page,"+confId+");\n\t}else{\n");
 				builder.append("\t\t_navi_init(").append(confId).append(");\n\t}\n");
 				builder.append("\tif(clear){").append(confId).append("['clear'] = 0;}\n");
@@ -229,6 +231,7 @@ public class Navi extends BodyTagSupport{
 		auto			= false	;
 		style			= "default"	;
 		scroll 			= null;
+		cur 			= "1";
 	}
 	
 	public String getParam() {
