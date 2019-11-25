@@ -158,6 +158,9 @@ public class Navi extends BodyTagSupport{
 			builder.append("stat:").append(stat).append(",");
 			builder.append("creater:'").append(creater).append("'");
 			builder.append("};\n");
+			if(null == cur){
+				cur = pageContext.getRequest().getParameter(config.KEY_PAGE_NO);
+			}
 			int curPage = BasicUtil.parseInt(cur, 1);
 			//加载数据函数
 			if(BasicUtil.isNotEmpty(function)){
