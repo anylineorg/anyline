@@ -383,5 +383,17 @@ public class Navi extends BodyTagSupport{
 	public void setRefresh(String refresh) {
 		this.refresh = refresh;
 	}
+	public String getCur() {
+		return cur;
+	}
+	public void setCur(String cur) {
+		this.cur = cur;
+	}
+	public String getOver() {
+		return over;
+	}
+	public void setOver(String over) {
+		this.over = over;
+	}
 
 }
