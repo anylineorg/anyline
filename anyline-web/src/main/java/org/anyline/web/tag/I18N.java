@@ -63,9 +63,9 @@ public class I18N extends BaseBodyTag{
 					List list = new ArrayList();
 					for(String item:items){
 						Map map = new HashMap();
-						String tmp[] = item.split(":");
-						map.put(valueKey, tmp[0]);
-						map.put(textKey, tmp[1]);
+						String ks[] = BeanUtil.parseKeyValue(item);
+						map.put(valueKey, ks[0]);
+						map.put(textKey, ks[1]);
 						list.add(map);
 					}
 					data = list;

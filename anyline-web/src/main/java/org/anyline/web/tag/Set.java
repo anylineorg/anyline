@@ -42,7 +42,6 @@ public class Set extends BaseBodyTag {
 	private int begin = -1;
 	private int end = -1;
 	private int qty = -1;
-
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try {
@@ -67,10 +66,11 @@ public class Set extends BaseBodyTag {
 						DataSet set = (DataSet)data;
 						data = set.getRows(selector.split(","));
 					}
-	
+
 					if(index !=-1){
 						Collection items = (Collection) data;
 						int i = 0;
+						data = null;
 						for(Object item:items){
 							if(index ==i){
 								data = item;
