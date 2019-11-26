@@ -1295,14 +1295,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return this;
 		}
 		for(String key:keys){
-			String key1 = key;
-			String key2 = key;
-			if(key.contains(":")){
-				String tmp[] = key.split(":");
-				key1 = tmp[0];
-				key2 = tmp[1];
-			}
-			this.put(key1, data.get(key2));
+			String ks[] = BeanUtil.parseKeyValue(key);
+			this.put(ks[0], data.get(ks[1]));
 		}
 		return this;
 	}
@@ -1317,18 +1311,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return this;
 		}
 		for(String key:keys){
-			String key1 = key;
-			String key2 = key;
-			if(key.contains(":")){
-				String tmp[] = key.split(":");
-				key1 = tmp[0];
-				key2 = tmp[1];
-			}
-			Object obj = data.get(key2);
+			String ks[] = BeanUtil.parseKeyValue(key);
+			Object obj = data.get(ks[1]);
 			if(BasicUtil.isNotEmpty(obj)){
-				this.put(key1, obj.toString());
+				this.put(ks[0], obj.toString());
 			}else{
-				this.put(key1, null);
+				this.put(ks[0], null);
 			}
 		}
 		return this;

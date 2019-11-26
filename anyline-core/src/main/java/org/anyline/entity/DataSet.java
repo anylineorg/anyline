@@ -38,6 +38,7 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
@@ -445,8 +446,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				i++;
 				continue;
 			}else if(p1.contains(":")){
-				String tmp[] = p1.split(":");
-				kvs.put(tmp[0], tmp[1]);
+				String ks[] = BeanUtil.parseKeyValue(p1);
+				kvs.put(ks[0], ks[1]);
 				i++;
 				continue;
 			}else{
@@ -457,8 +458,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 						i+=2;
 						continue;
 					}else{
-						String tmp[] = p2.split(":");
-						kvs.put(tmp[0], tmp[1]);
+						String ks[] = BeanUtil.parseKeyValue(p2);
+						kvs.put(ks[0], ks[1]);
 						i+=2;
 						continue;
 					}
@@ -1434,15 +1435,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			if(null == key){
 				continue;
 			}
-			String k1 = key;
-			String k2 = key;
-			if(key.contains(":")){
-				String tmp[] = key.split(":");
-				k1 = tmp[0];
-				k2 = tmp[1];
-			}
-			params[idx++] = k1;
-			params[idx++] = row.getString(k2);
+			String ks[] = BeanUtil.parseKeyValue(key);
+			params[idx++] = ks[0];
+			params[idx++] = row.getString(ks[1]);
 		}
 		return params;
 	}
@@ -1574,7 +1569,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		for(int i=0; i<size; i++){
 			String key = keys[i];
 			if(BasicUtil.isNotEmpty(key) && key.contains(":")){
-				String[] ks = key.split(":");
+				String ks[] = BeanUtil.parseKeyValue(key);
 				key = ks[1] + ":" + ks[0];
 			}
 			result[i] = key;
