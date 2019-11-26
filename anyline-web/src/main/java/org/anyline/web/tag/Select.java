@@ -29,6 +29,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 
 public class Select extends BaseBodyTag {
@@ -74,11 +75,11 @@ public class Select extends BaseBodyTag {
 			List list = new ArrayList();
 			for (String item : items) {
 				Map map = new HashMap();
-				String tmp[] = item.split(":");
-				map.put(valueKey, tmp[0]);
-				map.put(textKey, tmp[1]);
-				if(tmp.length>2){
-					map.put("CHK", tmp[2]);
+				String ks[] = BeanUtil.parseKeyValue(item);
+				map.put(valueKey, ks[0]);
+				map.put(textKey, ks[1]);
+				if(ks.length>2){
+					map.put("CHK", ks[2]);
 				}
 				list.add(map);
 			}
