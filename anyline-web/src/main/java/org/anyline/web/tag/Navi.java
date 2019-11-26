@@ -41,7 +41,7 @@ public class Navi extends BodyTagSupport{
 	private String param			;	//参数收集函数
 	private String container		;	//返回内容显示容器
 	private String body				;	//返回内容显示容器class或id(如果body与page分开)
-	private String cur = "1"		;   //当前页
+	private String cur				;   //当前页
 	private String page				;	//返回内容显示容器class或id(如果body与page分开)
 	private String bodyContainer	;	//如果body与page分开(兼容上一版本)
 	private String naviContainer	;	//如果body与page分开(兼容上一版本)
@@ -234,7 +234,7 @@ public class Navi extends BodyTagSupport{
 		auto			= false	;
 		style			= "default"	;
 		scroll 			= null;
-		cur 			= "1";
+		cur 			= null;
 	}
 	
 	public String getParam() {
