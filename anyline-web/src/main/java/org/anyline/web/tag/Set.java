@@ -62,13 +62,11 @@ public class Set extends BaseBodyTag {
 					}
 				}
 				if(data instanceof Collection){
-					if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
-						DataSet set = (DataSet)data;
-						data = set.getRows(selector.split(","));
+					Collection items = (Collection) data;
+					if(BasicUtil.isNotEmpty(selector)){
+						data = BeanUtil.select(items,selector.split(","));
 					}
-
 					if(index !=-1){
-						Collection items = (Collection) data;
 						int i = 0;
 						data = null;
 						for(Object item:items){

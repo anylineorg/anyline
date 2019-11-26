@@ -61,11 +61,10 @@ public class Sum extends BaseBodyTag {
 				if(!(data instanceof Collection)){
 					return EVAL_PAGE;
 				}
-				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
-					DataSet set = (DataSet)data;
-					data = set.getRows(selector.split(","));
-				}
 				Collection items = (Collection) data;
+				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
+					data = BeanUtil.select(items,selector.split(","));
+				}
 				BigDecimal result = new BigDecimal(0);
 				if (null != items){
 					for (Object item : items) {
