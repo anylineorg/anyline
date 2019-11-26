@@ -47,6 +47,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
@@ -252,9 +253,9 @@ public class AnylineServiceImpl implements AnylineService {
 			cache2 = tmp[1];
 		}
 		if(cache.contains(":")){
-			String[] tmp = cache.split(":");
-			cache = tmp[0];
-			key += tmp[1]+":";
+			String ks[] = BeanUtil.parseKeyValue(cache);
+			cache = ks[0];
+			key += ks[1]+":";
 		}
 		key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
 		//一级缓存数据
@@ -567,9 +568,9 @@ public class AnylineServiceImpl implements AnylineService {
 		String key = "ROW:";
 
 		if(cache.contains(":")){
-			String[] tmp = cache.split(":");
-			cache = tmp[0];
-			key += tmp[1]+":";
+			String ks[] = BeanUtil.parseKeyValue(cache);
+			cache = ks[0];
+			key += ks[1]+":";
 		}
 		key +=  CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
 		Element element = CacheUtil.getElement(cache, key);
