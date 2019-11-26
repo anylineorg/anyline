@@ -153,7 +153,7 @@
 		<info>data(String,Collection,Map,其他Object Map与Object取key属性值对比)中是否包含value</info>
 		<attribute>
 			<name>data</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -303,7 +303,7 @@
 		<tagclass>org.anyline.web.tag.Select</tagclass>
 		<attribute>
 			<name>data</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -404,7 +404,7 @@
 		<tagclass>org.anyline.web.tag.Radio</tagclass>
 		<attribute>
 			<name>data</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -512,7 +512,7 @@
 		<info>复选 框 value:已选中项 1或{1,2}或List</info>
 		<attribute>
 			<name>data</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -639,7 +639,7 @@
 		<tagclass>org.anyline.web.tag.SelectText</tagclass>
 		<attribute>
 			<name>data</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
@@ -857,7 +857,7 @@
 		<info>合计</info>
 		<attribute>
 			<name>data</name>
-			<required>true</required>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
