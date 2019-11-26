@@ -45,6 +45,7 @@ import javax.persistence.Table;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import org.anyline.entity.DataSet;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.apache.commons.beanutils.BeanUtils;
@@ -442,15 +443,15 @@ public class BeanUtil {
 	 * @param objs
 	 * @param keys
 	 */
-	public static void filter(Collection<Object> objs, String ... keys){
+	public static void removeProperty(Collection<Object> objs, String ... keys){
 		if(null == keys || null == objs){
 			return;
 		}
 		for(String key:keys){
-			filter(objs, key);
+			removeProperty(objs, key);
 		}
 	}
-	public static void filter(Object obj, String key){
+	public static void removeProperty(Object obj, String key){
 		if(null == obj || null == key){
 			return;
 		}
@@ -460,6 +461,7 @@ public class BeanUtil {
 			setFieldValue(obj, key, null);
 		}
 	}
+
 	/**
 	 * 提取指定属性值
 	 * @param objs
@@ -505,8 +507,11 @@ public class BeanUtil {
 	 * @return
 	 */
 	public static Collection<?> select(Collection<?> list, String ... params){
-		if(null == params || params.length==0){
+		if(null == list || null == params || params.length==0){
 			return list;
+		}
+		if(list instanceof DataSet){
+			return ((DataSet)list).getRows(params);
 		}
 		Map<String,String> kvs = new HashMap<String,String>();
 		int len = params.length;
@@ -1479,6 +1484,13 @@ public class BeanUtil {
 		}
 		return value;
 	}
+	/**
+	 * 集合截取
+	 * @param list
+	 * @param begin
+	 * @param end
+	 * @return
+	 */
 	public static List<Object> cuts(Collection<Object> list, int begin, int end){
 		List<Object> result = new ArrayList<Object>();
 		if(null != list){
@@ -1498,6 +1510,8 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
+	
 	/**
 	 * 解析 key:vlue形式参数age:20
 	 * 返回数组["age","20"]
