@@ -517,8 +517,8 @@ public class BeanUtil {
 				i++;
 				continue;
 			}else if(p1.contains(":")){
-				String tmp[] = p1.split(":");
-				kvs.put(tmp[0], tmp[1]);
+				String ks[] = BeanUtil.parseKeyValue(p1);
+				kvs.put(ks[0], ks[1]);
 				i++;
 				continue;
 			}else{
@@ -529,8 +529,8 @@ public class BeanUtil {
 						i+=2;
 						continue;
 					}else{
-						String tmp[] = p2.split(":");
-						kvs.put(tmp[0], tmp[1]);
+						String ks[] = BeanUtil.parseKeyValue(p2);
+						kvs.put(ks[0], ks[1]);
 						i+=2;
 						continue;
 					}
@@ -1496,6 +1496,42 @@ public class BeanUtil {
 			}
 			idx ++;
 		}
+		return result;
+	}
+	/**
+	 * 解析 key:vlue形式参数age:20
+	 * 返回数组["age","20"]
+	 * 如果值为空返回["age",""]
+	 * 如果没有分隔符返回["age","age"]
+	 * @param src
+	 * @return
+	 */
+	public static String[] parseKeyValue(String src){
+		if(BasicUtil.isEmpty(src)){
+			return null;
+		}
+		int len = 2;
+		String[] result = null;
+		String key1 = src;
+		String key2 = src;
+		if(src.contains(":")){
+			String tmp[] = src.split(":");
+			len = NumberUtil.max(len, tmp.length);
+			result = new String[len];
+			key1 = tmp[0];
+			if(tmp.length>1){
+				key2 = tmp[1];
+			}else{
+				key2 = "";
+			}
+			for(int i=2; i<len; i++){
+				result[i] = tmp[i];
+			}
+		}else{
+			result = new String[2];
+		}
+		result[0] = key1;
+		result[1] = key2;
 		return result;
 	}
 }
