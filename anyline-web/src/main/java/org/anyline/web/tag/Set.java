@@ -23,9 +23,11 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
 
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +39,9 @@ public class Set extends BaseBodyTag {
 	private String selector;
 	private String var;
 	private int index = -1;
+	private int begin = -1;
+	private int end = -1;
+	private int qty = -1;
 
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -73,6 +78,13 @@ public class Set extends BaseBodyTag {
 							}
 							i ++;
 						}
+					}else{
+						if(begin != -1){
+							if(qty != -1){
+								end = begin + qty;
+							}
+							data = BeanUtil.cuts((Collection)data, begin, end);
+						}
 					}
 				}
 				
@@ -82,6 +94,11 @@ public class Set extends BaseBodyTag {
 					request.getSession().setAttribute(var,data);
 				}  else if ("request".equals(scope)) {
 					request.setAttribute(var,data);
+				}  else if ("parent".equals(scope)) {
+					Tag parent = this.getParent();
+					if(null != parent){
+						BeanUtil.setFieldValue(parent, var, data);
+					}
 				}else {
 					pageContext.setAttribute(var,data);
 				}
