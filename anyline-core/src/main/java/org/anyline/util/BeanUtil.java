@@ -1479,4 +1479,23 @@ public class BeanUtil {
 		}
 		return value;
 	}
+	public static List<Object> cuts(Collection<Object> list, int begin, int end){
+		List<Object> result = new ArrayList<Object>();
+		if(null != list){
+			if(begin <=0){
+				begin = 0;
+			}
+			if(end < 0 || end >= list.size()){
+				end = list.size()-1;
+			}
+		}
+		int idx = 0;
+		for(Object obj:list){
+			if(idx >= begin && idx <= end){
+				result.add(obj);
+			}
+			idx ++;
+		}
+		return result;
+	}
 }
