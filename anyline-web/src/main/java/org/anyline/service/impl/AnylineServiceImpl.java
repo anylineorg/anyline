@@ -176,7 +176,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @return
 	 */
 	@Override
-	public DataSet query(String src, ConfigStore configs, String... conditions) {
+	public DataSet querys(String src, ConfigStore configs, String... conditions) {
 		src = BasicUtil.compressionSpace(src);
 		conditions = BasicUtil.compressionSpace(conditions);
 		DataSet set = queryFromDao(src, configs, conditions);
@@ -185,13 +185,13 @@ public class AnylineServiceImpl implements AnylineService {
 	}
 
 	@Override
-	public DataSet query(String src, String... conditions) {
-		return query(src, null, conditions);
+	public DataSet querys(String src, String... conditions) {
+		return querys(src, null, conditions);
 	}
 
 
 	@Override
-	public DataSet query(String src, int fr, int to, String... conditions) {
+	public DataSet querys(String src, int fr, int to, String... conditions) {
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
@@ -199,7 +199,7 @@ public class AnylineServiceImpl implements AnylineService {
 		navi.setTotalRow(to-fr+1);
 		ConfigStore configs = new ConfigStoreImpl();
 		configs.setPageNavi(navi);
-		return query(src, configs, conditions);
+		return querys(src, configs, conditions);
 	}
 
 	protected DataSet queryFromCacheL2(String cache2, DataSet l1, String src, ConfigStore configs, String ... conditions){
@@ -214,14 +214,14 @@ public class AnylineServiceImpl implements AnylineService {
 			int size = l1.size();
 			for(int i=0; i<size; i++){
 				DataRow row = l1.getRow(i);
-				DataRow cacheRow = null;
+				DataRow cache = null;
 				row.setPrimaryKey(pks);
 				String cache2Key = CacheUtil.crateCachePrimaryKey(sql.getTable(), row);
-				Element cacheRowElement = CacheUtil.getElement(cache2, cache2Key);
-				if(null != cacheRowElement){
-					Object cacheRowValue = cacheRowElement.getObjectValue();
-					cacheRow = (DataRow)cacheRowValue;
-					cacheRow.setIsFromCache(true);
+				Element cacheElement = CacheUtil.getElement(cache2, cache2Key);
+				if(null != cacheElement){
+					Object cacheValue = cacheElement.getObjectValue();
+					cache = (DataRow)cacheValue;
+					cache.setIsFromCache(true);
 				}else{
 					if(null == configs){
 						configs = new ConfigStoreImpl();
@@ -229,10 +229,10 @@ public class AnylineServiceImpl implements AnylineService {
 					for(String pk:pks){
 						configs.addCondition(pk, row.get(pk), true, true);
 					}
-					cacheRow = queryRow(src, configs, conditions);
-		        	CacheUtil.put(cache2, cache2Key, cacheRow);   
+					cache = query(src, configs, conditions);
+		        	CacheUtil.put(cache2, cache2Key, cache);   
 				}
-				set.add(cacheRow);
+				set.add(cache);
 			}
 		}else{
 			throw new SQLQueryException("未指定缓存主键 src="+src);
@@ -310,25 +310,25 @@ public class AnylineServiceImpl implements AnylineService {
     	}
 		return set;
 	}
-	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions){
+	public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions){
 		DataSet set = null;
 		src = BasicUtil.compressionSpace(src);
 		conditions = BasicUtil.compressionSpace(conditions);
 		if(null == cache){
-			set = query(src, configs, conditions);
+			set = querys(src, configs, conditions);
 		}else{
 			if(ConfigTable.getBoolean("IS_USE_CACHE") || ConfigTable.getBoolean("IS_USE_CACHE_L1")){
 				set = queryFromCacheL1(true, cache, src, configs, conditions);
 			}else{
-				set = query(src, configs, conditions);
+				set = querys(src, configs, conditions);
 			}
 		}
 		return set;
 	}
-	public DataSet cache(String cache, String src, String ... conditions){
-		return cache(cache, src, null, conditions);
+	public DataSet caches(String cache, String src, String ... conditions){
+		return caches(cache, src, null, conditions);
 	}
-	public DataSet cache(String cache, String src, int fr, int to, String ... conditions){
+	public DataSet caches(String cache, String src, int fr, int to, String ... conditions){
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
@@ -336,18 +336,18 @@ public class AnylineServiceImpl implements AnylineService {
 		navi.setTotalRow(to-fr+1);
 		ConfigStore configs = new ConfigStoreImpl();
 		configs.setPageNavi(navi);
-		return cache(cache, src, configs, conditions);
+		return caches(cache, src, configs, conditions);
 	}
 
 	public DataSet cacheL1(String cache, String src, ConfigStore configs, String ... conditions){
 		DataSet set = null;
 		if(null == cache){
-			set = query(src, configs, conditions);
+			set = querys(src, configs, conditions);
 		}else{
 			if(ConfigTable.getBoolean("IS_USE_CACHE") || ConfigTable.getBoolean("IS_USE_CACHE_L1")){
 				set = queryFromCacheL1(false,  cache, src, configs, conditions);
 			}else{
-				set = query(src, configs, conditions);
+				set = querys(src, configs, conditions);
 			}
 		}
 		return set;
@@ -368,7 +368,7 @@ public class AnylineServiceImpl implements AnylineService {
 	
 
 	@Override
-	public DataRow queryRow(String src, ConfigStore store, String... conditions) {
+	public DataRow query(String src, ConfigStore store, String... conditions) {
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(0);
 		navi.setLastRow(0);
@@ -377,7 +377,7 @@ public class AnylineServiceImpl implements AnylineService {
 			store = new ConfigStoreImpl();
 		}
 		store.setPageNavi(navi);
-		DataSet set = query(src, store, conditions);
+		DataSet set = querys(src, store, conditions);
 		if (null != set && set.size() > 0) {
 			DataRow row = set.getRow(0);
 			return row;
@@ -387,8 +387,8 @@ public class AnylineServiceImpl implements AnylineService {
 
 
 	@Override
-	public DataRow queryRow(String src, String... conditions) {
-		return queryRow(src, null, conditions);
+	public DataRow query(String src, String... conditions) {
+		return query(src, null, conditions);
 	}
 
 	@Override
@@ -451,7 +451,7 @@ public class AnylineServiceImpl implements AnylineService {
 		configs.order(column, queryOrder.getCode());
 		configs.removeConfig(column);
 		configs.addCondition(compare, column, row.get(column), true, true);
-		return queryRow(src, configs, conditions);
+		return query(src, configs, conditions);
 	}
 	
 	@Override
@@ -531,7 +531,7 @@ public class AnylineServiceImpl implements AnylineService {
 		configs.order(column, queryOrder.getCode());
 		configs.removeConfig(column);
 		configs.addCondition(compare, column, row.get(column), true, true);
-		return queryRow(src, configs, conditions);
+		return query(src, configs, conditions);
 	}
 	
 	@Override
@@ -550,10 +550,10 @@ public class AnylineServiceImpl implements AnylineService {
 	public DataRow prev(DataRow row, ConfigStore configs, String... conditions) {
 		return prev(row, null, null, configs, conditions);
 	}
-	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions){
+	public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions){
 		//是否启动缓存
 		if(!ConfigTable.getBoolean("IS_USE_CACHE") || null == cache){
-			return queryRow(src, configs, conditions);
+			return query(src, configs, conditions);
 		}
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(0);
@@ -585,14 +585,14 @@ public class AnylineServiceImpl implements AnylineService {
         	}
         }
         // 调用实际 的方法
-        row = queryRow(src, configs, conditions);
+        row = query(src, configs, conditions);
         if(null != row){
 	    	CacheUtil.put(cache, key, row);
         }
 		return row;
 	}
-	public DataRow cacheRow(String cache, String src, String ... conditions){
-		return cacheRow(cache, src, null, conditions);
+	public DataRow cache(String cache, String src, String ... conditions){
+		return cache(cache, src, null, conditions);
 	}
 	
 	

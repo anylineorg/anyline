@@ -29,12 +29,9 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Sum extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(Sum.class);
 	private String scope;
 	private Object data;
 	private String selector;

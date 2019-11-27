@@ -44,9 +44,9 @@ public interface AnylineService{
 	 * 			
 	 * @return
 	 */
-	public DataSet query(String src, ConfigStore configs, String ... conditions);
-	public DataSet query(String src, String ... conditions);
-	public DataSet query(String src, int fr, int to, String ... conditions);
+	public DataSet querys(String src, ConfigStore configs, String ... conditions);
+	public DataSet querys(String src, String ... conditions);
+	public DataSet querys(String src, int fr, int to, String ... conditions);
 	/**
 	 * 如果二级缓存开启 会从二级缓存中提取数据
 	 * @param ds
@@ -56,9 +56,9 @@ public interface AnylineService{
 	 * @param conditions
 	 * @return
 	 */
-	public DataSet cache(String cache, String src, ConfigStore configs, String ... conditions);
-	public DataSet cache(String cache, String src, String ... conditions);
-	public DataSet cache(String cache, String src, int fr, int to, String ... conditions);
+	public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions);
+	public DataSet caches(String cache, String src, String ... conditions);
+	public DataSet caches(String cache, String src, int fr, int to, String ... conditions);
 	/**
 	 * 只用一级缓存 忽略二级缓存
 	 * @param ds
@@ -73,8 +73,8 @@ public interface AnylineService{
 	public DataSet cacheL1(String cache, String src, int fr, int to, String ... conditions);
 
 	
-	public DataRow queryRow(String src, ConfigStore configs, String ... conditions);
-	public DataRow queryRow(String src, String ... conditions);
+	public DataRow query(String src, ConfigStore configs, String ... conditions);
+	public DataRow query(String src, String ... conditions);
 
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
@@ -88,8 +88,8 @@ public interface AnylineService{
 	public DataRow prev(DataRow row, ConfigStore configs, String ... conditions);
 	public DataRow prev(DataRow row, String ... conditions);
 
-	public DataRow cacheRow(String cache, String src, ConfigStore configs, String ... conditions);
-	public DataRow cacheRow(String cache, String src, String ... conditions);
+	public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions);
+	public DataRow cache(String cache, String src, String ... conditions);
 	
 
 	/**
