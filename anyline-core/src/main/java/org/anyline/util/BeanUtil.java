@@ -774,17 +774,87 @@ public class BeanUtil {
 		JSONObject json = JSONObject.fromObject(obj,config);
 		return json.toString();
 	}
-
+	
+	public static List<Object> values(Collection<Object> list, String key){
+		List<Object> values = new ArrayList<Object>();
+		if(null != list){
+			for(Object obj:list){
+				Object value = BeanUtil.getFieldValue(obj, key);
+				list.add(value);
+			}
+		}
+		return values;
+	}
 	/**
-	 * 数组转换成字符串
-	 * 
+	 * 去重
 	 * @param list
-	 *            数组
-	 * @param split
-	 *            分隔符
+	 * @param keys 根据keys列或属性值比较
 	 * @return
 	 */
-	public static String array2string(List<?> list, String split) {
+	public static <T> Collection<T> distinct(Collection<T> list, String ... keys){
+		List<T> result = new ArrayList<T>();
+		if(null != list){
+			for(T obj:list){
+				if(null == keys || keys.length==0){
+					if(!result.contains(obj)){
+						result.add(obj);
+					}
+				}else{
+					if(contain(result, obj, keys)){
+						result.add(obj);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	/**
+	 * 是否包含
+	 * @param list
+	 * @param obj
+	 * @param keys 只比较keys列,基础类型不需要指定列
+	 * @return
+	 */
+	public static <T> boolean contain(Collection<T> list, T obj, String ... keys){
+		for(T item:list){
+			if(equals(item, obj)){
+				return true;
+			}
+		}
+		return false;
+	}
+	public static <T> boolean equals(T obj1, T obj2, String ... keys){
+		if(null == keys || keys.length == 0){
+			if(null == obj1){
+				if(null == obj2){
+					return true;
+				}else{
+					return false;
+				}
+			}else if(!BasicUtil.isWrapClass(obj1)){
+				if(null == obj2){
+					return false;
+				}else{
+					if(obj1.toString().equals(obj2.toString())){
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		for(String key:keys){
+			Object v1 = BeanUtil.getFieldValue(obj1, key);
+			Object v2 = BeanUtil.getFieldValue(obj2, key);
+			if(!equals(v1,v2)){
+				return false;
+			}
+			
+		}
+		return true;
+	}
+
+	public static String array2string(List<?> list, String key, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.size();
@@ -1486,13 +1556,14 @@ public class BeanUtil {
 	}
 	/**
 	 * 集合截取
+	 * @param <T>
 	 * @param list
 	 * @param begin
 	 * @param end
 	 * @return
 	 */
-	public static List<Object> cuts(Collection<Object> list, int begin, int end){
-		List<Object> result = new ArrayList<Object>();
+	public static <T> List<T> cuts(Collection<T> list, int begin, int end){
+		List<T> result = new ArrayList<T>();
 		if(null != list){
 			if(begin <=0){
 				begin = 0;
@@ -1502,7 +1573,7 @@ public class BeanUtil {
 			}
 		}
 		int idx = 0;
-		for(Object obj:list){
+		for(T obj:list){
 			if(idx >= begin && idx <= end){
 				result.add(obj);
 			}
