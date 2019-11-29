@@ -1045,7 +1045,7 @@ public class BeanUtil {
 	 * @param str name:zhang,age:20
 	 * @return
 	 */
-	public static Map<String,String> strign2map(String str){
+	public static Map<String,String> string2map(String str){
 		Map<String,String> map = new HashMap<String,String>();
 		if(BasicUtil.isNotEmpty(str)){
 			String[] list = str.split(",");
