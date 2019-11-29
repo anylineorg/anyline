@@ -731,6 +731,22 @@ public class BeanUtil {
 	 *            分隔符
 	 * @return
 	 */
+
+	public static String array2string(List<?> list, String key, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.size();
+			for (int i = 0; i < size; i++) {
+				Object obj = list.get(i);
+				Object val = getFieldValue(obj, key);
+				builder.append(val);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
 	public static String array2string(List<?> list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
