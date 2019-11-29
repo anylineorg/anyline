@@ -775,12 +775,12 @@ public class BeanUtil {
 		return json.toString();
 	}
 	
-	public static List<Object> values(Collection<Object> list, String key){
+	public static List<Object> values(Collection<?> list, String key){
 		List<Object> values = new ArrayList<Object>();
 		if(null != list){
 			for(Object obj:list){
 				Object value = BeanUtil.getFieldValue(obj, key);
-				list.add(value);
+				values.add(value);
 			}
 		}
 		return values;
