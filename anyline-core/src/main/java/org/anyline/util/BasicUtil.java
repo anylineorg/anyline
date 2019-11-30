@@ -724,7 +724,7 @@ public class BasicUtil {
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public static String joinBySort(Map<String,?> params, boolean ignoreEmpty){
+	public static String joinParamBySort(Map<String,?> params, boolean ignoreEmpty){
 		String result = "";
 		SortedMap<String, Object> sort = new TreeMap<String, Object>(params);
 		Set es = sort.entrySet();
@@ -770,8 +770,8 @@ public class BasicUtil {
 		}
 		return result;
 	}
-	public static String joinBySort(Map<String,?> params){
-		return joinBySort(params, true);
+	public static String joinParamBySort(Map<String,?> params){
+		return joinParamBySort(params, true);
 	}
 	/**
 	 * 获取本机IP
