@@ -644,7 +644,14 @@ public class BeanUtil {
 		return JSON.toJSONString(obj);
 	}
 
-	public static List<Object> values(Collection<?> list, String key){
+
+	/**
+	 * 提取集合中每个条目的key属性的值
+	 * @param list
+	 * @param key
+	 * @return
+	 */
+	public static List<Object> extract(Collection<?> list, String key){
 		List<Object> values = new ArrayList<Object>();
 		if(null != list){
 			for(Object obj:list){
@@ -653,6 +660,22 @@ public class BeanUtil {
 			}
 		}
 		return values;
+	}
+	public static List<Map<String,Object>> extracts(Collection<?> list, String ... keys){
+		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
+		if(null != list){
+			for(Object obj:list){
+				Map<String,Object> map = new HashMap<String,Object>();
+				if(null !=keys){
+					for(String key:keys){
+						Object value = BeanUtil.getFieldValue(obj, key);
+						map.put(key, value);
+					}
+					result.add(map);
+				}
+			}
+		}
+		return result;
 	}
 	/**
 	 * 去重
@@ -692,6 +715,13 @@ public class BeanUtil {
 		}
 		return false;
 	}
+	/**
+	 * obj1 obj2是否相等，只比较keys列
+	 * @param obj1
+	 * @param obj2
+	 * @param keys
+	 * @return
+	 */
 	public static <T> boolean equals(T obj1, T obj2, String ... keys){
 		if(null == keys || keys.length == 0){
 			if(null == obj1){
@@ -723,7 +753,7 @@ public class BeanUtil {
 		return true;
 	}
 	/**
-	 * 数组转换成字符串
+	 * 数组拼接成字符串
 	 * 
 	 * @param list
 	 *            数组
@@ -732,7 +762,7 @@ public class BeanUtil {
 	 * @return
 	 */
 
-	public static String array2string(List<?> list, String key, String split) {
+	public static String join(List<?> list, String key, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.size();
@@ -747,7 +777,7 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String array2string(List<?> list, String split) {
+	public static String join(List<?> list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.size();
@@ -761,7 +791,7 @@ public class BeanUtil {
 		return builder.toString();
 	}
 
-	public static String array2string(String[] list, String split) {
+	public static String join(String[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -774,7 +804,7 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String array2string(short[] list, String split) {
+	public static String join(short[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -787,7 +817,7 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String array2string(Short[] list, String split) {
+	public static String join(Short[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -800,7 +830,7 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String array2string(int[] list, String split) {
+	public static String join(int[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -813,7 +843,7 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String array2string(Integer[] list, String split) {
+	public static String join(Integer[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -827,7 +857,7 @@ public class BeanUtil {
 		return builder.toString();
 	}
 
-	public static String array2string(long[] list, String split) {
+	public static String join(long[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -840,7 +870,7 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String array2string(Long[] list, String split) {
+	public static String join(Long[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -854,7 +884,7 @@ public class BeanUtil {
 		return builder.toString();
 	}
 
-	public static String array2string(double[] list, String split) {
+	public static String join(double[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -867,7 +897,7 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String array2string(Double[] list, String split) {
+	public static String join(Double[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
