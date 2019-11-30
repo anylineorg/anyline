@@ -702,77 +702,22 @@ public class BasicUtil {
 		}
 		return src.substring(max-len, max);
 	}
-	/**
-	 * 拼接集合
-	 * @param objs
-	 * @return
-	 */
-	public static String join(Collection<?> objs){
-		if(null == objs){
-			return "";
-		}
-		String result = "";
-		int idx = 0;
-		for(Object obj:objs){
-			result += "[" + idx++ +"]" + obj;
-		}
-		return result;
-	}
-	/**
-	 * 按key升序拼接
-	 * @param params
-	 * @return
-	 */
-	@SuppressWarnings("rawtypes")
-	public static String joinParamBySort(Map<String,?> params, boolean ignoreEmpty){
-		String result = "";
-		SortedMap<String, Object> sort = new TreeMap<String, Object>(params);
-		Set es = sort.entrySet();
-		Iterator it = es.iterator();
-		while (it.hasNext()) {
-			Map.Entry entry = (Map.Entry) it.next();
-			String k = (String) entry.getKey();
-			Object v = entry.getValue();
-			if(ignoreEmpty && BasicUtil.isEmpty(v)) {
-				continue;
-			}
-			if(v instanceof Collection){
-				List list = new ArrayList();
-				list.addAll((Collection)v);
-				Collections.sort(list);
-				for(Object item: list){
-					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
-						continue;
-					}
-					if (!"".equals(result)) {
-						result += "&";
-					}
-					result += k + "=" + item;
-				}
-			}else if(v instanceof String[]){
-				String vals[] = (String[])v;
-				Arrays.sort(vals);
-				for(String item:vals){
-					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
-						continue;
-					}
-					if (!"".equals(result)) {
-						result += "&";
-					}
-					result += k + "=" + item;
-				}
-			}else{
-				if (!"".equals(result)) {
-					result += "&";
-				}
-				result += k + "=" + v;
-			}
-		}
-		return result;
-	}
-	public static String joinParamBySort(Map<String,?> params){
-		return joinParamBySort(params, true);
-	}
+//	/**
+//	 * 拼接集合
+//	 * @param objs
+//	 * @return
+//	 */
+//	public static String join(Collection<?> objs){
+//		if(null == objs){
+//			return "";
+//		}
+//		String result = "";
+//		int idx = 0;
+//		for(Object obj:objs){
+//			result += "[" + idx++ +"]" + obj;
+//		}
+//		return result;
+//	}
 	/**
 	 * 获取本机IP
 	 * @return
