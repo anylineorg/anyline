@@ -876,6 +876,17 @@ public class BeanUtil {
 		return true;
 	}
 
+
+	/**
+	 * 数组拼接成字符串
+	 * 
+	 * @param list
+	 *            数组
+	 * @param split
+	 *            分隔符
+	 * @return
+	 */
+
 	public static String join(List<?> list, String key, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
@@ -904,74 +915,29 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-
-	public static String join(String[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.length;
-			for (int i = 0; i < size; i++) {
-				builder.append(list[i]);
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
-	}
-	public static String join(short[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.length;
-			for (int i = 0; i < size; i++) {
-				builder.append(list[i]);
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
-	}
-	public static String join(Short[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.length;
-			for (int i = 0; i < size; i++) {
-				builder.append(list[i].shortValue());
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
-	}
-	public static String join(int[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.length;
-			for (int i = 0; i < size; i++) {
-				builder.append(list[i]);
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
-	}
-	public static String join(Integer[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.length;
-			for (int i = 0; i < size; i++) {
-				builder.append(list[i].intValue());
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
+	public static String join(List<?> list) {
+		return join(list,",");
 	}
 
-	public static String join(long[] list, String split) {
+	
+	
+
+	public static <T> String join(T[] list, String key, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				Object obj = list[i];
+				Object val = getFieldValue(obj, key);
+				builder.append(val);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+	public static <T> String join(T[] list, String split) {
 		StringBuilder builder = new StringBuilder();
 		if (null != list) {
 			int size = list.length;
@@ -984,46 +950,11 @@ public class BeanUtil {
 		}
 		return builder.toString();
 	}
-	public static String join(Long[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.length;
-			for (int i = 0; i < size; i++) {
-				builder.append(list[i].longValue());
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
+	public static <T> String join(T[] list) {
+		return join(list,",");
 	}
 
-	public static String join(double[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.length;
-			for (int i = 0; i < size; i++) {
-				builder.append(list[i]);
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
-	}
-	public static String join(Double[] list, String split) {
-		StringBuilder builder = new StringBuilder();
-		if (null != list) {
-			int size = list.length;
-			for (int i = 0; i < size; i++) {
-				builder.append(list[i].doubleValue());
-				if (i < size - 1) {
-					builder.append(split);
-				}
-			}
-		}
-		return builder.toString();
-	}
+	
 	public static Object toUpperCaseKey(Object obj, String ... keys){
 		if(null == obj){
 			return null;
