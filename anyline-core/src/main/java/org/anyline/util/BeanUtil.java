@@ -1001,6 +1001,9 @@ public class BeanUtil {
 	public static Map<String,String> string2map(String str){
 		Map<String,String> map = new HashMap<String,String>();
 		if(BasicUtil.isNotEmpty(str)){
+			if(str.startsWith("{") && str.endsWith("}")){
+				str = str.substring(1, str.length()-1);
+			}
 			String[] list = str.split(",");
 			for(String item:list){
 				String[] kv = item.split(":");
@@ -1044,143 +1047,11 @@ public class BeanUtil {
 	}
 	/**
 	 * 多个数组合并成一个数组(二维数组合成一维数组)
+	 * @param <T>
 	 * @param first
 	 * @param rest
 	 * @return
 	 */
-	public static short[] union(short[] first, short[]... rest) {
-		int len = first.length;
-		for (short[] array : rest) {
-			len += array.length;
-		}
-		short[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (short[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-	public static Short[] union(Short[] first, Short[]... rest) {
-		int len = first.length;
-		for (Short[] array : rest) {
-			len += array.length;
-		}
-		Short[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (Short[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-
-	public static int[] union(int[] first, int[]... rest) {
-		int len = first.length;
-		for (int[] array : rest) {
-			len += array.length;
-		}
-		int[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (int[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-	public static Integer[] union(Integer[] first, Integer[]... rest) {
-		int len = first.length;
-		for (Integer[] array : rest) {
-			len += array.length;
-		}
-		Integer[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (Integer[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-
-	public static long[] union(long[] first, long[]... rest) {
-		int len = first.length;
-		for (long[] array : rest) {
-			len += array.length;
-		}
-		long[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (long[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-	public static Long[] union(Long[] first, Long[]... rest) {
-		int len = first.length;
-		for (Long[] array : rest) {
-			len += array.length;
-		}
-		Long[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (Long[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-	public static float[] union(float[] first, float[]... rest) {
-		int len = first.length;
-		for (float[] array : rest) {
-			len += array.length;
-		}
-		float[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (float[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-	public static Float[] union(Float[] first, Float[]... rest) {
-		int len = first.length;
-		for (Float[] array : rest) {
-			len += array.length;
-		}
-		Float[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (Float[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-	public static double[] union(double[] first, double[]... rest) {
-		int len = first.length;
-		for (double[] array : rest) {
-			len += array.length;
-		}
-		double[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (double[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-	public static Double[] union(Double[] first, Double[]... rest) {
-		int len = first.length;
-		for (Double[] array : rest) {
-			len += array.length;
-		}
-		Double[] result = Arrays.copyOf(first, len);
-		int offset = first.length;
-		for (Double[] array : rest) {
-			System.arraycopy(array, 0, result, offset, array.length);
-			offset += array.length;
-		}
-		return result;
-	}
-	
 	public static <T> T[] union(T[] first, T[]... rest) {
 		int len = first.length;
 		for (T[] array : rest) {
@@ -1194,6 +1065,8 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
+
 	/**
 	 * 差值最小的成员下标
 	 * @param array
