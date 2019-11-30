@@ -25,7 +25,7 @@ public class WXUtil {
 	 */
 	public static String sign(String secret, Map<String, Object> params) {
 		String sign = "";
-		sign = BasicUtil.joinBySort(params);
+		sign = BasicUtil.joinParamBySort(params);
 		sign += "&key=" + secret;
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;

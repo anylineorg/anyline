@@ -539,7 +539,7 @@ public class WXMPUtil extends WXUtil{
 	 */
 	public String jsapiSign(Map<String,Object> params){
 		String sign = "";
-		sign = BasicUtil.joinBySort(params);
+		sign = BasicUtil.joinParamBySort(params);
 		sign = SHA1Util.sign(sign);
 		return sign;
 	}
