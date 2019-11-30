@@ -29,11 +29,16 @@ import java.security.KeyStore;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLException;
@@ -913,7 +918,7 @@ public class HttpUtil {
 			url = "";
 		}
 		url = url.trim();
-		String kv = BasicUtil.joinBySort(params);
+		String kv = BasicUtil.joinParamBySort(params);
 		if(BasicUtil.isNotEmpty(kv)){
 			if (url.indexOf("?") > -1) {
 				if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
@@ -928,7 +933,7 @@ public class HttpUtil {
 	}
 	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String,Object> params, ContentType contetType){
 		if(null != params){
-			String txt = BasicUtil.joinBySort(params);
+			String txt = BasicUtil.joinParamBySort(params);
 			String[] kvs = txt.split("&");
 			for(String kv:kvs){
 				String[] tmps = kv.split("=");
@@ -1152,5 +1157,68 @@ public class HttpUtil {
 	}
 	public static void setUserAgent(String agent){
 		HttpUtil.userAgent = agent;
+	}
+
+	/**
+	 * 按key升序拼接
+	 * @param params
+	 * @param ignoreEmpty 忽略空值
+	 * @param sort 排序
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static String params(Map<String,?> params, boolean ignoreEmpty, boolean sort){
+		String result = "";
+		Set es = null;
+		if(sort){
+			SortedMap<String, Object> wrap = new TreeMap<String, Object>(params);
+			es = wrap.entrySet();
+		}else{
+			es = params.entrySet();
+		}
+		Iterator it = es.iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String k = (String) entry.getKey();
+			Object v = entry.getValue();
+			if(ignoreEmpty && BasicUtil.isEmpty(v)) {
+				continue;
+			}
+			if(v instanceof Collection){
+				List list = new ArrayList();
+				list.addAll((Collection)v);
+				Collections.sort(list);
+				for(Object item: list){
+					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
+						continue;
+					}
+					if (!"".equals(result)) {
+						result += "&";
+					}
+					result += k + "=" + item;
+				}
+			}else if(v instanceof String[]){
+				String vals[] = (String[])v;
+				Arrays.sort(vals);
+				for(String item:vals){
+					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
+						continue;
+					}
+					if (!"".equals(result)) {
+						result += "&";
+					}
+					result += k + "=" + item;
+				}
+			}else{
+				if (!"".equals(result)) {
+					result += "&";
+				}
+				result += k + "=" + v;
+			}
+		}
+		return result;
+	}
+	public static String params(Map<String,?> params){
+		return params(params, true, true);
 	}
 }
