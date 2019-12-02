@@ -89,7 +89,7 @@ public class QQOpenUtil{
 	 */
 	public String sign(Map<String, Object> params) {
 		String sign = "";
-		sign = BasicUtil.joinParamBySort(params);
+		sign = HttpUtil.param(params);
 		sign += "&key=" + config.PAY_API_SECRET;
 		sign = MD5Util.crypto(sign).toUpperCase();
 		return sign;
