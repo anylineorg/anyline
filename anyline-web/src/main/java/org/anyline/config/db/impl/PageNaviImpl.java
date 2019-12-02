@@ -285,12 +285,17 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		
 		String layout_html = config.VAR_COMPONENT_LAYOUT;
 		if(null == layout_html){
-			layout_html = "{stat}{index}{vol}{jump}";
+			layout_html = "{navi-stat}{navi-index}{navi-vol}{navi-jump}";
 		}
 		layout_html = layout_html.replace("{stat}", stat.toString());
 		layout_html = layout_html.replace("{index}", index.toString());
 		layout_html = layout_html.replace("{vol}", vol.toString());
 		layout_html = layout_html.replace("{jump}", jump.toString());
+
+		layout_html = layout_html.replace("{navi-stat}", stat.toString());
+		layout_html = layout_html.replace("{navi-index}", index.toString());
+		layout_html = layout_html.replace("{navi-vol}", vol.toString());
+		layout_html = layout_html.replace("{navi-jump}", jump.toString());
 		navi.append(layout_html);
 		navi.append("</div>");
 
