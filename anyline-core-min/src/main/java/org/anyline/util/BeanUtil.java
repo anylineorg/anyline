@@ -830,6 +830,92 @@ public class BeanUtil {
 	}
 
 
+	public static String join(int[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+	public static String join(int[] list) {
+		return join(list,",");
+	}
+
+	public static String join(long[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+	public static String join(long[] list) {
+		return join(list,",");
+	}
+
+	public static String join(double[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+	public static String join(double[] list) {
+		return join(list,",");
+	}
+
+	public static String join(float[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+	public static String join(float[] list) {
+		return join(list,",");
+	}
+
+	public static String join(short[] list, String split) {
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			int size = list.length;
+			for (int i = 0; i < size; i++) {
+				builder.append(list[i]);
+				if (i < size - 1) {
+					builder.append(split);
+				}
+			}
+		}
+		return builder.toString();
+	}
+	public static String join(short[] list) {
+		return join(list,",");
+	}
+	
+
 	
 	public static Object toUpperCaseKey(Object obj, String ... keys){
 		if(null == obj){
