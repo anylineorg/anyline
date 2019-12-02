@@ -918,7 +918,7 @@ public class HttpUtil {
 			url = "";
 		}
 		url = url.trim();
-		String kv = BasicUtil.joinParamBySort(params);
+		String kv = HttpUtil.param(params);
 		if(BasicUtil.isNotEmpty(kv)){
 			if (url.indexOf("?") > -1) {
 				if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) {
@@ -933,7 +933,7 @@ public class HttpUtil {
 	}
 	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String,Object> params, ContentType contetType){
 		if(null != params){
-			String txt = BasicUtil.joinParamBySort(params);
+			String txt = HttpUtil.param(params);
 			String[] kvs = txt.split("&");
 			for(String kv:kvs){
 				String[] tmps = kv.split("=");
@@ -1167,7 +1167,7 @@ public class HttpUtil {
 	 * @return
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static String params(Map<String,?> params, boolean ignoreEmpty, boolean sort){
+	public static String param(Map<String,?> params, boolean ignoreEmpty, boolean sort){
 		String result = "";
 		Set es = null;
 		if(sort){
@@ -1218,7 +1218,7 @@ public class HttpUtil {
 		}
 		return result;
 	}
-	public static String params(Map<String,?> params){
-		return params(params, true, true);
+	public static String param(Map<String,?> params){
+		return param(params, true, true);
 	}
 }
