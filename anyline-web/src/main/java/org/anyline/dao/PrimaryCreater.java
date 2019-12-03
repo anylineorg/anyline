@@ -22,6 +22,5 @@ package org.anyline.dao;
 import org.anyline.config.db.SQLCreater.DB_TYPE;
 
 public interface PrimaryCreater {
-	public Object createPrimary(String table, String column, String other);
-	public DB_TYPE type();
+	public Object createPrimary(DB_TYPE type,String table, String column, String other);
 }
