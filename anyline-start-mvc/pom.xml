@@ -101,7 +101,7 @@
 		<!-- mysql支持 -->
 		<dependency>
 			<groupId>org.anyline</groupId>
-			<artifactId>anyline-mysql</artifactId>
+			<artifactId>anyline-jdbc-mysql</artifactId>
 			<version>${anyline.version}</version>
 		</dependency>
 	</dependencies>
