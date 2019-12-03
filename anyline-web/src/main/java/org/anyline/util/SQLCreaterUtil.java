@@ -62,7 +62,6 @@ public class SQLCreaterUtil {
 			if(null == creater){
 				creater = SpringContextUtil.getBean(SQLCreater.class);
 			}
-			creater.set
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
