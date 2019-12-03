@@ -10,9 +10,9 @@
 		<version>8.3.0</version>
 	</parent>
 
-	<artifactId>anyline-postgresql</artifactId>
+	<artifactId>anyline-jdbc-postgresql</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-jdbc-mysql</name>
+	<name>anyline-jdbc-postgresql</name>
 	<url>http://www.anyline.org/postgresql</url>
 
 	<dependencies>

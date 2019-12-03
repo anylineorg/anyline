@@ -13,7 +13,6 @@
 	<name>anyline-nc</name>
 	<packaging>jar</packaging>
 	<url>http://www.anyline.org/nc</url>
-	
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>
