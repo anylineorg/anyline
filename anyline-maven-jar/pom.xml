@@ -29,11 +29,17 @@
 		<anyline.easemob.version>${anyline.version}</anyline.easemob.version>
 		<anyline.jpush.version>${anyline.version}</anyline.jpush.version>
 		<anyline.mail.version>${anyline.version}</anyline.mail.version>
-		<anyline.mssql.version>${anyline.version}</anyline.mssql.version>
-		<anyline.mysql.version>${anyline.version}</anyline.mysql.version>
 		<anyline.qq.version>${anyline.version}</anyline.qq.version>
 		<anyline.redis.version>${anyline.version}</anyline.redis.version>
 		<anyline.weixin.version>${anyline.version}</anyline.weixin.version>
+		
+		<anyline.jdbc.mssql.version>${anyline.version}</anyline.jdbc.mssql.version>
+		<anyline.jdbc.mysql.version>${anyline.version}</anyline.jdbc.mysql.version>
+		<anyline.jdbc.db2.version>${anyline.version}</anyline.jdbc.db2.version>
+		<anyline.jdbc.oracle.version>${anyline.version}</anyline.jdbc.oracle.version>
+		<anyline.jdbc.postgresql.version>${anyline.version}</anyline.jdbc.postgresql.version>
+		<anyline.jdbc.hgdb.version>${anyline.version}</anyline.jdbc.hgdb.version>
+		
 
 		<javax.servlet.version>4.0.0</javax.servlet.version>
 		<javax.jsp.version>2.0</javax.jsp.version>

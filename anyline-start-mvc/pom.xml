@@ -30,8 +30,8 @@
 		<anyline.easemob.version>${anyline.version}</anyline.easemob.version>
 		<anyline.jpush.version>${anyline.version}</anyline.jpush.version>
 		<anyline.mail.version>${anyline.version}</anyline.mail.version>
-		<anyline.mssql.version>${anyline.version}</anyline.mssql.version>
-		<anyline.mysql.version>${anyline.version}</anyline.mysql.version>
+		<anyline.jdbc.mssql.version>${anyline.version}</anyline.jdbc.mssql.version>
+		<anyline.jdbc.mysql.version>${anyline.version}</anyline.jdbc.mysql.version>
 		<anyline.qq.version>${anyline.version}</anyline.qq.version>
 		<anyline.redis.version>${anyline.version}</anyline.redis.version>
 		<anyline.weixin.version>${anyline.version}</anyline.weixin.version>
