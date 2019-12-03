@@ -12,7 +12,7 @@
 
 	<artifactId>anyline-postgresql</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-mysql</name>
+	<name>anyline-jdbc-mysql</name>
 	<url>http://www.anyline.org/postgresql</url>
 
 	<dependencies>
