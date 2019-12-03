@@ -17,7 +17,7 @@ import org.springframework.stereotype.Repository;
 public class PrimaryCreaterImpl implements PrimaryCreater {
 
 	@Autowired(required=false)
-	@Qualifier("anylineDao")
+	@Qualifier("anyline.dao")
 	private AnylineDao dao;
 
 	public DB_TYPE type(){

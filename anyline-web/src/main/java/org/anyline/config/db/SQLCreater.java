@@ -32,7 +32,9 @@ public interface SQLCreater extends Serializable{
 		MYSQL			{public String getName(){return "mysql";}},
 		MSSQL			{public String getName(){return "mssql";}},
 		ORACLE			{public String getName(){return "oracle";}},
-		DB2				{public String getName(){return "db2";}};
+		DB2				{public String getName(){return "db2";}},
+		PostgreSQL 		{public String getName(){return "PostgreSQL";}},
+		HighGo			{public String getName(){return "HighGo";}};
 		public abstract String getName();
 	}
 	public static final String TAB = "\t";
