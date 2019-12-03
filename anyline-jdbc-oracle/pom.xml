@@ -21,6 +21,5 @@
 			<artifactId>anyline-web</artifactId>
 			<version>${anyline.web.version}</version>
 		</dependency>
-		
 	</dependencies>
 </project>
