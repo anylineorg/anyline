@@ -42,6 +42,10 @@ public class SQLCreaterUtil {
 					type = SQLCreater.DB_TYPE.ORACLE;
 				}else if(name.contains("db2")){
 					type = SQLCreater.DB_TYPE.DB2;
+				}else if(name.contains("postgresql")){
+					type = SQLCreater.DB_TYPE.PostgreSQL;
+				}else if(name.contains("highgo")){
+					type = SQLCreater.DB_TYPE.HighGo;
 				}
 				creater = creaters.get(name);
 				if(null == creater){

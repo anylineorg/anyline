@@ -16,12 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
-@Repository("mssql.creater")
+@Repository("anyline.mssql.creater")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	private static final long serialVersionUID = 43588201817410304L;
 	
 	@Autowired(required = false)
-	@Qualifier("anylineDao")
+	@Qualifier("anyline.dao")
 	protected AnylineDao dao;
 	
 	private PrimaryCreater pc = new PrimaryCreaterImpl();
@@ -135,7 +135,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			for(int i=0; i<size; i++){
 				String arg = args[i];
 				if(i>0){
-					result += "+";
+					result += " + ";
 				}
 				result += arg;
 			}
