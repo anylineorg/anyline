@@ -21,10 +21,5 @@
 			<artifactId>anyline-web</artifactId>
 			<version>${anyline.web.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>mssql-jdbc</artifactId>
-			<version>${mssql.jdbc.version}</version>
-		</dependency>
 	</dependencies>
 </project>
