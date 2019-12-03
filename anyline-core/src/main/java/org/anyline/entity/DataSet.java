@@ -1448,7 +1448,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param items
 	 * @param keys
 	 * @return
-	 * dispatchItems("children",items, "DEPAT_CD")
+	 * dispatchItem("children",items, "DEPAT_CD")
 	 * dispatchItems("children",items, "CD:BASE_CD")
 	 */
 	public DataSet dispatchItems(String field, boolean recursion, DataSet items, String ... keys){
@@ -1482,6 +1482,35 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet dispatchItems(String field, boolean recursion, String ... keys){
 		return dispatchItems(field, recursion, this, keys);
 	}
+
+	public DataSet dispatchItem(String field, boolean recursion, DataSet items, String ... keys){
+		if(null == items || null == keys || keys.length == 0){
+			return this;
+		}
+		if(BasicUtil.isEmpty(field)){
+			field = "ITEM";
+		}
+		for(DataRow row : rows){
+			if(null == row.get(field)){
+				String[] params = packParam(row, reverseKey(keys));
+				DataRow result = items.getRow(params);
+				row.put(field, result);
+			}
+		}
+		return this;
+	}
+	public DataSet dispatchItem(String field,DataSet items, String ... keys){
+		return dispatchItem(field, false, items, keys);
+	}
+	public DataSet dispatchItem(DataSet items, String ... keys){
+		return dispatchItem("ITEM",items, keys);
+	}
+	public DataSet dispatchItem(boolean recursion, String ... keys){
+		return dispatchItem("ITEM", recursion, this, keys);
+	}
+	public DataSet dispatchItem(String field, boolean recursion, String ... keys){
+		return dispatchItem(field, recursion, this, keys);
+	}
 	public DataSet toLowerKey(){
 		for(DataRow row:rows){
 			row.toLowerKey();
@@ -1501,7 +1530,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 */
 	public DataSet group(String ... keys){
 		DataSet result = distinct(keys);
-		result.dispatchItems(this, keys);
+		result.dispatchItem(this, keys);
 		return result;
 	}
 	public DataSet or(DataSet set, String ... keys){
