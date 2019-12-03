@@ -10,9 +10,9 @@
 		<version>8.3.0</version>
 	</parent>
 
-	<artifactId>anyline-mysql</artifactId>
+	<artifactId>anyline-jdbc-mysql</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-mysql</name>
+	<name>anyline-jdbc-mysql</name>
 	<url>http://www.anyline.org/mysql</url>
 
 	<dependencies>
