@@ -6,7 +6,6 @@ import org.anyline.config.db.SQLCreater;
 import org.anyline.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.dao.AnylineDao;
-import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.PageNavi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,7 +19,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	@Qualifier("anyline.dao")
 	protected AnylineDao dao;
 	
-	private PrimaryCreater pc = new PrimaryCreaterImpl();
 	public DB_TYPE type(){
 		return DB_TYPE.ORACLE;
 	}
@@ -76,9 +74,5 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		return result;
-	}
-	@Override
-	public PrimaryCreater getPrimaryCreater() {
-		return pc;
 	}
 }
