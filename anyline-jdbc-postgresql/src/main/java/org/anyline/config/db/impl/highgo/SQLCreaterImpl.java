@@ -8,7 +8,7 @@ import org.anyline.config.db.run.RunSQL;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.PageNavi;
 import org.springframework.stereotype.Repository;
-@Repository("anyline.postgresql.creater")
+@Repository("anyline.jdbc.creater.postgresql")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	private static final long serialVersionUID = -2546353102021188959L;
 
