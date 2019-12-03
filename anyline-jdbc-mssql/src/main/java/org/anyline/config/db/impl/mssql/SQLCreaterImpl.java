@@ -17,7 +17,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository("anyline.jdbc.creater.mssql")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
-	private static final long serialVersionUID = 43588201817410304L;
 	
 	@Autowired(required = false)
 	@Qualifier("anyline.dao")
