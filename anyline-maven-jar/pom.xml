@@ -57,9 +57,12 @@
 		<!-- jdbc -->
 		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
 		<mysql.version>5.1.24</mysql.version>
-		<db2-jdbc.version>5.1.24</db2-jdbc.version>
+		<db2-jdbc.version>11.5.0.0</db2-jdbc.version>
 		<ojdbc.version>19.3.0.0</ojdbc.version><!-- oracle -->
 		<postgresql.version>42.2.8</postgresql.version>
+		<hgdb.version>4.0-jdbc42</hgdb.version>
+		<mariadb.version>2.4.4</mariadb.version>
+		
 		<spring.version>4.3.23.RELEASE</spring.version>
 
 		<aliyun.oss.version>3.3.0</aliyun.oss.version>
