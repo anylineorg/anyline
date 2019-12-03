@@ -1,5 +1,5 @@
 
-package org.anyline.config.db.impl.mssql;
+package org.anyline.config.db.impl.oracle;
 
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.SQLCreater;

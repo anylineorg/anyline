@@ -10,9 +10,9 @@
 		<version>8.3.0</version>
 	</parent>
 
-	<artifactId>anyline-oracle</artifactId>
+	<artifactId>anyline-jdbc-oracle</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-oracle</name>
+	<name>anyline-jdbc-oracle</name>
 	<url>http://www.anyline.org/oracle</url>
 
 	<dependencies>

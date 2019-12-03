@@ -1,5 +1,5 @@
 
-package org.anyline.config.db.impl.highgo;
+package org.anyline.config.db.impl.hgdb;
 
 import org.anyline.config.db.OrderStore;
 import org.anyline.config.db.SQLCreater;
@@ -7,11 +7,11 @@ import org.anyline.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.entity.PageNavi;
 import org.springframework.stereotype.Repository;
-@Repository("anyline.jdbc.creater.postgresql")
+@Repository("anyline.jdbc.creater.highgo")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 
 	public DB_TYPE type(){
-		return DB_TYPE.PostgreSQL;
+		return DB_TYPE.HighGo;
 	}
 	public SQLCreaterImpl(){
 		disKeyFr = "\"";

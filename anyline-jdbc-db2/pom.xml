@@ -10,9 +10,9 @@
 		<version>8.3.0</version>
 	</parent>
 
-	<artifactId>anyline-db2</artifactId>
+	<artifactId>anyline-jdbc-db2</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-db2</name>
+	<name>anyline-jdbc-db2</name>
 	<url>http://www.anyline.org/db2</url>
 
 	<dependencies>

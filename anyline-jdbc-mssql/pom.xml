@@ -10,9 +10,9 @@
 		<version>8.3.0</version>
 	</parent>
 
-	<artifactId>anyline-mssql</artifactId>
+	<artifactId>anyline-jdbc-mssql</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-mssql</name>
+	<name>anyline-jdbc-mssql</name>
 	<url>http://www.anyline.org/mssql</url>
 
 	<dependencies>

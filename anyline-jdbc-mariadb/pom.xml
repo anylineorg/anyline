@@ -10,9 +10,9 @@
 		<version>8.3.0</version>
 	</parent>
 
-	<artifactId>anyline-mariadb</artifactId>
+	<artifactId>anyline-jdbc-mariadb</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-mariadb</name>
+	<name>anyline-jdbc-mariadb</name>
 	<url>http://www.anyline.org/mariadb</url>
 
 	<dependencies>
