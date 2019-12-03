@@ -9,8 +9,6 @@ import org.anyline.entity.PageNavi;
 import org.springframework.stereotype.Repository;
 @Repository("anyline.jdbc.creater.db2")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
-	private static final long serialVersionUID = -2546353102021188959L;
-
 	public DB_TYPE type(){
 		return DB_TYPE.DB2;
 	}
