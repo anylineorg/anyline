@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	private static final long serialVersionUID = -2546353102021188959L;
 
-	private PrimaryCreater pc = new PrimaryCreaterImpl();
 	public DB_TYPE type(){
 		return DB_TYPE.MYSQL;
 	}
@@ -59,9 +58,5 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			result += ")";
 		}
 		return result;
-	}
-	@Override
-	public PrimaryCreater getPrimaryCreater() {
-		return pc;
 	}
 }
