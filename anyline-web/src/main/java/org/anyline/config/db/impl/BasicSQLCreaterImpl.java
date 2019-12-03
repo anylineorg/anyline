@@ -35,6 +35,7 @@ import org.anyline.config.db.sql.auto.TableSQL;
 import org.anyline.config.db.sql.auto.TextSQL;
 import org.anyline.config.db.sql.xml.XMLSQL;
 import org.anyline.config.http.ConfigStore;
+import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.AnylineEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -45,6 +46,7 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -56,6 +58,8 @@ import org.slf4j.LoggerFactory;
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private static final long serialVersionUID = -1280284751032142401L;
 	protected static final Logger log = LoggerFactory.getLogger(BasicSQLCreaterImpl.class);
+	@Autowired
+	protected PrimaryCreater primaryCreater;
 	public String disKeyFr = "";
 	public String disKeyTo = "";
 	public DB_TYPE type(){
@@ -329,7 +333,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(null == pk){
 				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 			}
-			row.put(pk, getPrimaryCreater().createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
+			row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
 		}
 		/*确定需要插入的列*/
 		
@@ -415,7 +419,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(null == pk){
 					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 				}
-				row.put(pk, getPrimaryCreater().createPrimary(dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
+				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
 			}
 			
 			sql.append("(");
