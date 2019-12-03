@@ -7,7 +7,6 @@ import org.anyline.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.dao.AnylineDao;
-import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
@@ -24,7 +23,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	@Qualifier("anyline.dao")
 	protected AnylineDao dao;
 	
-	private PrimaryCreater pc = new PrimaryCreaterImpl();
 	public DB_TYPE type(){
 		return DB_TYPE.MSSQL;
 	}
@@ -141,16 +139,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		return result;
-	}
-	@Override
-	public PrimaryCreater getPrimaryCreater() {
-		return pc;
-	}
-	public AnylineDao getDao() {
-		return dao;
-	}
-	public void setDao(AnylineDao dao) {
-		this.dao = dao;
 	}
 	
 }
