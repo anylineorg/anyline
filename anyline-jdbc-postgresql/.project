@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>anyline-jdbc-mysql</name>
+	<name>anyline-jdbc-postgresql</name>
 	<comment></comment>
 	<projects>
 	</projects>

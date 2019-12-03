@@ -53,9 +53,13 @@
 		<ecache.version>2.10.6</ecache.version>
 		<ognl.version>3.2.10</ognl.version>
 		<slf4j.version>1.7.25</slf4j.version>
-		<mssql.jdbc.version>7.2.2.jre8</mssql.jdbc.version>
-		<mysql.jdbc.version>5.1.24</mysql.jdbc.version>
-
+		
+		<!-- jdbc -->
+		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
+		<mysql.version>5.1.24</mysql.version>
+		<db2-jdbc.version>5.1.24</db2-jdbc.version>
+		<ojdbc.version>19.3.0.0</ojdbc.version><!-- oracle -->
+		<postgresql.version>42.2.8</postgresql.version>
 		<spring.version>4.3.23.RELEASE</spring.version>
 
 		<aliyun.oss.version>3.3.0</aliyun.oss.version>
