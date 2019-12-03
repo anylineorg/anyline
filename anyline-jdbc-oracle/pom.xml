@@ -10,10 +10,10 @@
 		<version>8.3.0</version>
 	</parent>
 
-	<artifactId>anyline-mssql</artifactId>
+	<artifactId>anyline-oracle</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-mssql</name>
-	<url>http://www.anyline.org/mssql</url>
+	<name>anyline-oracle</name>
+	<url>http://www.anyline.org/oracle</url>
 
 	<dependencies>
 		<dependency>
@@ -21,10 +21,6 @@
 			<artifactId>anyline-web</artifactId>
 			<version>${anyline.web.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>mssql-jdbc</artifactId>
-			<version>${mssql-jdbc.version}</version>
-		</dependency>
+		
 	</dependencies>
 </project>

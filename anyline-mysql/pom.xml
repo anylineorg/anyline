@@ -21,5 +21,8 @@
 			<artifactId>anyline-web</artifactId>
 			<version>${anyline.web.version}</version>
 		</dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${mysql.version}</version>
 	</dependencies>
 </project>
