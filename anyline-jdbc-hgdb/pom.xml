@@ -24,7 +24,7 @@
 		
 		<!-- 
 		<dependency>
-			<groupId>com.highgo</groupId>
+			<groupId>com.hgdb</groupId>
 			<artifactId>hgdb</artifactId>
 			<version>${hgdb.version}</version>
 		</dependency>
