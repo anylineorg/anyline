@@ -7,7 +7,7 @@ import org.anyline.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.entity.PageNavi;
 import org.springframework.stereotype.Repository;
-@Repository("anyline.jdbc.creater.highgo")
+@Repository("anyline.jdbc.creater.hgdb")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 
 	public DB_TYPE type(){
