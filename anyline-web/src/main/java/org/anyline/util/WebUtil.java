@@ -143,7 +143,6 @@ public class WebUtil {
 		if (null == src) {
 			return src;
 		}
-		src = src.replace("'", "''").trim();
 		src = XssUtil.strip(src);
 		return src;
 	}
