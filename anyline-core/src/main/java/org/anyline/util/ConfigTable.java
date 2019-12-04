@@ -45,7 +45,7 @@ public class ConfigTable {
 	protected static int reload = 0;			//重新加载间隔
 	protected static boolean debug = false;
 	protected static boolean sqlDebug = false;
-	protected static final String version = "8.3.0";
+	protected static final String version = "8.3.1";
 	protected static final String minVersion = "0007";
 	protected static boolean isLoading = false;
 	public static boolean  IS_UPPER_KEY = true;
