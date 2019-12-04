@@ -56,9 +56,8 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
-	private static final long serialVersionUID = -1280284751032142401L;
 	protected static final Logger log = LoggerFactory.getLogger(BasicSQLCreaterImpl.class);
-	@Autowired
+	@Autowired(required=false)
 	protected PrimaryCreater primaryCreater;
 	public String disKeyFr = "";
 	public String disKeyTo = "";
@@ -328,7 +327,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			throw new SQLException("未指定表");
 		}
 		StringBuilder param = new StringBuilder();
-		if(row.hasPrimaryKeys() && ConfigTable.getBoolean("AUTO_CREATE_PRIMARY_KEY") && BasicUtil.isEmpty(row.get(row.getPrimaryKey()))){
+		if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
 			String pk = row.getPrimaryKey();
 			if(null == pk){
 				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
@@ -414,7 +413,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(null == row){
 				continue;
 			}
-			if(row.hasPrimaryKeys() && ConfigTable.getBoolean("AUTO_CREATE_PRIMARY_KEY") && BasicUtil.isEmpty(row.get(row.getPrimaryKey()))){
+			if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
 				String pk = row.getPrimaryKey();
 				if(null == pk){
 					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
