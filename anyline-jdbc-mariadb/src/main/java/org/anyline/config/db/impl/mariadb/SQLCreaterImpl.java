@@ -13,10 +13,12 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	public DB_TYPE type(){
 		return DB_TYPE.MYSQL;
 	}
+	
 	public SQLCreaterImpl(){
 		disKeyFr = "`";
 		disKeyTo = "`";
 	}
+	
 	@Override
 	public String parseFinalQueryTxt(RunSQL run){
 		String sql = run.getBaseQueryTxt();
