@@ -58,7 +58,7 @@ TYPE_CODE IN(?,?,?)中的占位符数量根据http中type参数数量生成
 
  **- 标准数据结构与计算函数** 
 
-AnyLine默认提供DataRow (类似于Map)与DataSet(类似于Collection<datarow>）两种数据结构用来实现MVC各层之间的数据传输，  
+AnyLine默认提供DataRow (类似于Map)与DataSet(类似于Collection&lt;datarow&gt;）两种数据结构用来实现MVC各层之间的数据传输，  
 DataRow,DataSet一般是通过http参数直接构造，或AnylineSevice.query()函数返回，或通过json,xml等数据格式构造，也可以new实例后执行put,add等赋值操作。  
 AnyLine支持但不推荐实体Bean的形式  
 因为DataRow/DataSet上可以统一附加开发中常用的计算函数，但实体Bean不方便，如：  
@@ -67,8 +67,8 @@ AnyLine支持但不推荐实体Bean的形式
  **- 附加功能** 
 
 针对view层提供了大量的JSP自定义标签用来简化前端操作。  
-如<al:navi/>用来配合后台的condition函数快速实现ajax分页查询  
-<al:select/><al:checkbox/>用来根据DataSet数据源生成<select>/<input type="checkbox">标签，并根据条件设置默认选中值。  
+如&lt;al:navi/&gt;用来配合后台的condition函数快速实现ajax分页查询  
+&lt;al:select/&gt;&lt;al:checkbox/&gt;用来根据DataSet数据源生成&lt;select&gt;/&lt;input type="checkbox"&gt;标签，并根据条件设置默认选中值。  
 其他如 nvl,evl,date,escape,text,set,if,else等  
 以及对支付工具，阿里云，微信，QQ，高德，极光，环信等第三方平台或插件的集成。  
 同时提供了常用的图片，HTTP，FTP，加密解密，签名验签，压缩，File，Date，正则，反射等常用工具  
