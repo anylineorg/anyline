@@ -294,10 +294,12 @@ public class ConfigParser {
 					}
 				}else{
 					// col:key
-					if(ConfigImpl.FETCH_REQUEST_VALUE_TYPE_SINGLE == parser.getParamFetchType()){
+					if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == parser.getParamFetchType()){//单值
 						Object v = WebUtil.getHttpRequestParam(request,key,def.isKeyEncrypt(), def.isValueEncrypt());
-						result.add(v);
-					}else{
+						if(BasicUtil.isNotEmpty(v)){
+							result.add(v);
+						}
+					}else{//多值
 						result = WebUtil.getHttpRequestParams(request, key,def.isKeyEncrypt(), def.isValueEncrypt());
 					}
 				}
@@ -331,6 +333,11 @@ public class ConfigParser {
 		}
 		return result;
 	}
+	/**
+	 * 默认值
+	 * @param parser
+	 * @return
+	 */
 	private static List<Object> getDefValues(ParseResult parser){
 		List<Object> result = new ArrayList<Object>();
 		List<ParseResult> defs = parser.getDefs();
@@ -359,6 +366,15 @@ public class ConfigParser {
 		}
 		return result;
 	}
+	/**
+	 * 生成SQL签名，用来唯一标签一条SQL
+	 * @param page
+	 * @param order
+	 * @param src
+	 * @param store
+	 * @param conditions
+	 * @return
+	 */
 	public static String createSQLSign(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
 		conditions = BasicUtil.compressionSpace(conditions);
 		String result = src+"|";
