@@ -79,12 +79,17 @@
 		<persistence.version>1.0.2</persistence.version>
 
 	</properties>
+
 	<distributionManagement>
 		<repository>
-			<id>anyline-releases</id>
-			<name>releases</name>
-			<url>http://maven.anyline.org/repository/maven-releases/</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
+			</url>
 		</repository>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 	</distributionManagement>
 	<build>
 		<resources>
