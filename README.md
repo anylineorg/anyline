@@ -12,7 +12,19 @@
 再把参数依次传到service、dao，最后返回一个实现bean。这整个过程中经常有各种小细节容易忽略而导致异常，如空值处理，IN条件生成等。  
 而在整个项目中这些过程又是大量重复或类似的。这不但影响开发速度与代码质量，更影响心情。  
 所以AnyLine提供了一个统一约定格式来实现这些繁琐的操作,格式大致如下  
-![输入图片说明](https://images.gitee.com/uploads/images/2019/1205/131120_f326a5f3_580913.png "fmt.png")
+序号|约定格式|最终SQL(实际SQL根据数据库类型略有不同)|备注
+---|-------------|---|---
+1|CODE:cd|CODE = ?(cd没有值，则不生成)|如果http中有cd或cd值为空，则生成以上SQL,否则不生成SQL,其他格式同样适用(+开头除外)
+2|CODE:%id|CODE LIKE '%?'|
+3|CODE:%id%|CODE LIKE '%?%'|
+4|CODE:[id]|CODE IN(?,?,?,?,?,?,?,?)|占位符数量根据http参数数量生成
+5|CODE: cd: code|CODE = ?|如果http参数中有cd或cd值不为空,则根据cd取值，否则根据code取值,如果都没有值,则不生成SQL
+6|CODE: cd: id: code:{1}|CODE = ?|依次根据cd,id,code从http中取值，如果都没有值，则取默认值1，{}表示其中是value，而不是key
+7|CODE:cd\|CODE:code|(CODE = ? OR CODE = ?)|如果cd,code都有值则生成OR条件，如果仅一个有值则只生成CODE=?，如果都没有值则不生成SQL
+8|CODE:cd+|CODE = ?|cd+后加号表示http中cd值已加密，在生成SQL时需要先解密
+9|+CODE:cd|CODE = ? 或 CODE IS NULL|如果http中没有cd或cd值为空,则生成CODE IS NULL
+10|++CODE:cd|CODE = ? 或 整个SQL不执行|如果http中没有cd或cd值为空,整个SQL不执行，如果是查询SQL，则返回长度为0的集合
+
 
 以上格式仅提供给condition(String)函数用来指定从http中取值的方式，其他形式(如直接提供值，而不是从http中取值)参考AnylineService或AnylineDao  
 
