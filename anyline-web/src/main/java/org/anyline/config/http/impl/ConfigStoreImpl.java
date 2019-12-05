@@ -79,6 +79,8 @@ public class ConfigStoreImpl implements ConfigStore,Serializable{
 	 * 解析查询配置参数
 	 * @param configs	
 	 * 			"COMPANY_CD:company","NM:nmEn% | NM:nmCn%","STATUS_VALUE:[status]"
+	 * "NM:nmEn% | NM:nmCn%" 生成 NM={nmEn} OR NM = {nmCn}
+	 * "NM:nmEn:nmCn" 根据参数值生成NM = {nmEn}或生成 NM={nmCn}  
 	 * @return
 	 */
 	@Override
