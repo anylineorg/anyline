@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-maven-jar</artifactId>
 	<version>8.3.1</version>
 	<packaging>pom</packaging>
-	<name>anyline-maven-jar</name>
+	<name>AnyLine</name>
+	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
+	<url>http://www.anyline.org</url>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>AnyLine</name>
+			<email>service@anyline.org</email>
+			<organization>org.anyline</organization>
+			<organizationUrl>http://www.anyline.org</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git://github.com/anylineorg/anyline.git</connection>
+		<developerConnection>scm:git:ssh://github.com:anylineorg/anyline.git</developerConnection>
+		<url>https://github.com/anylineorg/anyline</url>
+	</scm>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -32,14 +52,14 @@
 		<anyline.qq.version>${anyline.version}</anyline.qq.version>
 		<anyline.redis.version>${anyline.version}</anyline.redis.version>
 		<anyline.weixin.version>${anyline.version}</anyline.weixin.version>
-		
+
 		<anyline.jdbc.mssql.version>${anyline.version}</anyline.jdbc.mssql.version>
 		<anyline.jdbc.mysql.version>${anyline.version}</anyline.jdbc.mysql.version>
 		<anyline.jdbc.db2.version>${anyline.version}</anyline.jdbc.db2.version>
 		<anyline.jdbc.oracle.version>${anyline.version}</anyline.jdbc.oracle.version>
 		<anyline.jdbc.postgresql.version>${anyline.version}</anyline.jdbc.postgresql.version>
 		<anyline.jdbc.hgdb.version>${anyline.version}</anyline.jdbc.hgdb.version>
-		
+
 
 		<javax.servlet.version>4.0.0</javax.servlet.version>
 		<javax.jsp.version>2.0</javax.jsp.version>
@@ -59,7 +79,7 @@
 		<ecache.version>2.10.6</ecache.version>
 		<ognl.version>3.2.10</ognl.version>
 		<slf4j.version>1.7.25</slf4j.version>
-		
+
 		<!-- jdbc -->
 		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
 		<mysql.version>5.1.24</mysql.version>
@@ -68,7 +88,7 @@
 		<postgresql.version>42.2.8</postgresql.version>
 		<hgdb.version>4.0-jdbc42</hgdb.version>
 		<mariadb.version>2.4.4</mariadb.version>
-		
+
 		<spring.version>4.3.23.RELEASE</spring.version>
 
 		<aliyun.oss.version>3.3.0</aliyun.oss.version>
@@ -112,8 +132,35 @@
 					<executions>
 						<execution>
 							<id>attach-sources</id>
+							<phase>compile</phase>
 							<goals>
 								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-gpg-plugin</artifactId>
+					<version>1.5</version>
+					<executions>
+						<execution>
+							<id>sign-artifacts</id>
+							<phase>verify</phase>
+							<goals>
+								<goal>sign</goal>
 							</goals>
 						</execution>
 					</executions>
@@ -131,38 +178,6 @@
 						</excludes>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											org.apache.maven.plugins
-										</groupId>
-										<artifactId>
-											maven-resources-plugin
-										</artifactId>
-										<versionRange>
-											[2.5,)
-										</versionRange>
-										<goals>
-											<goal>resources</goal>
-											<goal>testResources</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore></ignore>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-
 			</plugins>
 		</pluginManagement>
 	</build>
