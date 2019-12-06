@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.weixin.mp.tag;
-
+package org.anyline.weixin.mp.tag; 
+ 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -32,11 +32,11 @@ import org.slf4j.LoggerFactory;
  * 
  *是否支付微信JS
  *
- */
-public class WeixinCheck extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(WeixinCheck.class);
-	public int doEndTag() throws JspException {
+ */ 
+public class WeixinCheck extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(WeixinCheck.class); 
+	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
 			if(WebUtil.isWeixin(request)){
@@ -47,11 +47,11 @@ public class WeixinCheck extends BaseBodyTag {
 			e.printStackTrace();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
-			}
-		} finally {
-			release();
-		}
-		return EVAL_PAGE;
+			} 
+		} finally { 
+			release(); 
+		} 
+		return EVAL_PAGE; 
 	}
-	
+	 
 }

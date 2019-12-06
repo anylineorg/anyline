@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.weixin.mp.tag;
-
+package org.anyline.weixin.mp.tag; 
+ 
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,16 +36,16 @@ import org.slf4j.LoggerFactory;
  * 
  * 微信 wx.config
  *
- */
-public class Pay extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(Pay.class);
+ */ 
+public class Pay extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(Pay.class); 
 	private boolean debug = false;
 	private String prepay= "";
 	private String success = null;
 	private String fail = null;
-	private String key;
-	public int doEndTag() throws JspException {
+	private String key; 
+	public int doEndTag() throws JspException { 
 		try{
 			WXMPUtil util = WXMPUtil.getInstance(key);
 			String timestamp = System.currentTimeMillis()/1000+"";
@@ -98,11 +98,11 @@ public class Pay extends BaseBodyTag {
 			e.printStackTrace();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
-			}
-		} finally {
-			release();
-		}
-		return EVAL_PAGE;
+			} 
+		} finally { 
+			release(); 
+		} 
+		return EVAL_PAGE; 
 	}
 	public boolean isDebug() {
 		return debug;
@@ -134,5 +134,5 @@ public class Pay extends BaseBodyTag {
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
+	 
 }
