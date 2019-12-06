@@ -17,22 +17,22 @@
  */
 
 
-package org.anyline.util;
+package org.anyline.util; 
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-
+ 
+ 
 public class NumberUtil {
 	/**
 	 * 数据格式化
 	 * 
-	 * @param src
-	 * @param pattern
-	 * @return
+	 * @param src src
+	 * @param pattern pattern
+	 * @return return
 	 */
 	public static String format(String src, String pattern) {
 		if (BasicUtil.isEmpty(src) || BasicUtil.isEmpty(src.trim())) {
@@ -51,9 +51,9 @@ public class NumberUtil {
 	/**
 	 * 数字格式化
 	 * 
-	 * @param src
-	 * @param pattern
-	 * @return
+	 * @param src src
+	 * @param pattern pattern
+	 * @return return
 	 */
 	public static String format(Number src, String pattern) {
 		if (null == src) {
@@ -64,9 +64,9 @@ public class NumberUtil {
 	}
 	/**
 	 * 中文大写(简体)
-	 * @param num
-	 * @return
-	 */
+	 * @param num num
+	 * @return return
+	 */ 
 	public static String upper(long num){
 		return NumberTextUtil.getInstance(NumberTextUtil.Lang.ChineseSimplified).getText(num);
 	}
@@ -74,8 +74,8 @@ public class NumberUtil {
 	/**
 	 * 选取最大数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static double max(double... nums) {
 		double max = nums[0];
@@ -90,8 +90,8 @@ public class NumberUtil {
 	/**
 	 * 选取最小数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static double min(double... nums) {
 		double min = nums[0];
@@ -107,8 +107,8 @@ public class NumberUtil {
 	/**
 	 * 选取最大数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static int max(int... nums) {
 		int max = nums[0];
@@ -124,8 +124,8 @@ public class NumberUtil {
 	/**
 	 * 选取最小数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static int min(int... nums) {
 		int min = nums[0];
@@ -141,8 +141,8 @@ public class NumberUtil {
 	/**
 	 * 选取最大数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static long max(long... nums) {
 		long max = nums[0];
@@ -158,8 +158,8 @@ public class NumberUtil {
 	/**
 	 * 选取最小数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static long min(long... nums) {
 		long min = nums[0];
@@ -175,8 +175,8 @@ public class NumberUtil {
 	/**
 	 * 选取最大数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static float max(float... nums) {
 		float max = nums[0];
@@ -192,8 +192,8 @@ public class NumberUtil {
 	/**
 	 * 选取最小数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static float min(float... nums) {
 		float min = nums[0];
@@ -209,8 +209,8 @@ public class NumberUtil {
 	/**
 	 * 选取最大数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static short max(short... nums) {
 		short max = nums[0];
@@ -226,8 +226,8 @@ public class NumberUtil {
 	/**
 	 * 选取最小数
 	 * 
-	 * @param num
-	 * @return
+	 * @param nums nums
+	 * @return return
 	 */
 	public static short min(short... nums) {
 		short min = nums[0];
@@ -331,4 +331,4 @@ public class NumberUtil {
 	public static boolean isInt(float src){
 		return src == (int)src;
 	}
-}
+} 
