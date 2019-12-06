@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.aliyun.oss.tag;
-
+package org.anyline.aliyun.oss.tag; 
+ 
 import java.util.Map;
 
 import javax.servlet.jsp.JspException;
@@ -30,15 +30,15 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.web.tag.BaseBodyTag;
-public class OSSConfig extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
+public class OSSConfig extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
 	private boolean debug = false;
 	private int expire = 0; 
 	private String dir = "";
 	private String key = "default";
 	private String var = "al.config.oss.aliyun";
-	
-	public int doEndTag() throws JspException {
+	 
+	public int doEndTag() throws JspException { 
 		try{
 			OSSUtil util = OSSUtil.getInstance(key);
 			if(BasicUtil.isEmpty(dir)){
@@ -80,11 +80,11 @@ public class OSSConfig extends BaseBodyTag {
 			e.printStackTrace();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
-			}
-		} finally {
-			release();
-		}
-		return EVAL_PAGE;
+			} 
+		} finally { 
+			release(); 
+		} 
+		return EVAL_PAGE; 
 	}
 	public boolean isDebug() {
 		return debug;
@@ -117,5 +117,5 @@ public class OSSConfig extends BaseBodyTag {
 	public void setVar(String var) {
 		this.var = var;
 	}
-	
+	 
 }
