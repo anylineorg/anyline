@@ -15,7 +15,7 @@
  *
  *          
  */
-package org.anyline.controller.impl.ext;
+package org.anyline.controller.impl.ext; 
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -36,25 +36,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.support.WebApplicationContextUtils;
- 
- 
+  
+  
 
 @Controller("org.anyline.controller.impl.ext.TemplateController")
 @RequestMapping("/al/tmp")
-public class TemplateController extends AnylineController {
+public class TemplateController extends AnylineController { 
 
 	/**
 	 * 加载服务器端文件
-	 * path必须以密文提交 <al:des>/WEB-INF/template/a.jsp</al:des>
+	 * path必须以密文提交 &lt;al:des&gt;/WEB-INF/template/a.jsp &lt;/al:des&gt;
 	 * 以WEB-INF为相对目录根目录
 	 * al.template('/WEB-INF/template/a.jsp',function(result,data,msg){alert(data)});
 	 * al.template({path:'template/a.jsp', id:'1'},function(result,data,msg){});
 	 * 模板文件中以${param.id}的形式接收参数
 	 * 
 	 * 对于复杂模板(如解析前需要查询数据)需要自行实现解析方法js中 通过{parser:'/al/tmp/load1.do'}形式指定
-	 * @param request
-	 * @param response
-	 * @return
+	 * @param request request
+	 * @param response response
+	 * @return return
 	 */
 	@RequestMapping("load")
 	@ResponseBody
@@ -79,7 +79,9 @@ public class TemplateController extends AnylineController {
 	 * 加载样式模板
 	 * 与load区别是{KEY}形式的变量KEY会加密
 	 * 并有可能调用controller方法为模板准备数据(参考parseTemplate)
-	 * @return
+	 * @param request request
+	 * @param response response
+	 * @return return
 	 */
 	@RequestMapping("load_style")
 	@ResponseBody
@@ -168,5 +170,5 @@ public class TemplateController extends AnylineController {
         }
 		return result;
 	}
-	
+	 
 }
