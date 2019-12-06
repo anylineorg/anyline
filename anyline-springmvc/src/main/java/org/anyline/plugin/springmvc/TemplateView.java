@@ -15,8 +15,8 @@
  *
  *          
  */
-package org.anyline.plugin.springmvc;
-
+package org.anyline.plugin.springmvc; 
+ 
 import java.io.File;
 import java.util.Map;
 
@@ -27,7 +27,7 @@ import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.view.JstlView;
-
+ 
 public class TemplateView extends JstlView {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	public static final String ANYLINE_TEMPLATE_NAME				= "template_name";
@@ -115,5 +115,5 @@ public class TemplateView extends JstlView {
 			request.setAttribute("template_content_path", content_url);
 		}
 		super.render(model, request, response);
-	}
-}
+	} 
+} 
