@@ -17,20 +17,20 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-
-
-public class If extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
-	
-	private boolean test;
-	private Object elseValue;
+ 
+ 
+public class If extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
+	 
+	private boolean test; 
+	private Object elseValue; 
 
 	public int doStartTag(){
         if (test || null != elseValue){
@@ -38,46 +38,46 @@ public class If extends BaseBodyTag implements Cloneable{
         }else{
             return SKIP_BODY;
         }
-	}
-	 public int doEndTag() throws JspException {
+	} 
+	 public int doEndTag() throws JspException { 
 		try{
 			if(test){
-				JspWriter out = pageContext.getOut();
-				out.print(BasicUtil.nvl(value,body,""));
-			}else if(null != elseValue){
-				JspWriter out = pageContext.getOut();
-				out.print(elseValue);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
+				JspWriter out = pageContext.getOut(); 
+				out.print(BasicUtil.nvl(value,body,"")); 
+			}else if(null != elseValue){ 
+				JspWriter out = pageContext.getOut(); 
+				out.print(elseValue); 
+			} 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
 		}
-		return EVAL_PAGE ;
-	}
-
-
-	@Override
-	public void release() {
-		super.release();
+		return EVAL_PAGE ; 
+	} 
+ 
+ 
+	@Override 
+	public void release() { 
+		super.release(); 
 		value = null;
 		body = null;
-		test = false;
-		elseValue = null;
-	}
-	
-	public void setTest(boolean test) {
-		this.test = test;
-	}
-	public void setElse(Object elseValue) {
-		this.elseValue = elseValue;
+		test = false; 
+		elseValue = null; 
+	} 
+	 
+	public void setTest(boolean test) { 
+		this.test = test; 
+	} 
+	public void setElse(Object elseValue) { 
+		this.elseValue = elseValue; 
 	}
 	public boolean getTest(){
 		return test;
-	}
-	
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+	} 
+	 
+	@Override 
+	protected Object clone() throws CloneNotSupportedException { 
+		return super.clone(); 
+	} 
 }

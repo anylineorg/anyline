@@ -17,14 +17,14 @@
  */
 
 
-package org.anyline.config.db;
-
+package org.anyline.config.db; 
+ 
 import java.util.List;
 
 import org.anyline.config.db.run.RunSQL;
 import org.anyline.config.http.ConfigStore;
-
-public interface SQLCreater{
+ 
+public interface SQLCreater{ 
 	public static enum DB_TYPE{
 		MYSQL			{public String getName(){return "mysql";}},
 		MSSQL			{public String getName(){return "mssql";}},
@@ -33,52 +33,52 @@ public interface SQLCreater{
 		PostgreSQL 		{public String getName(){return "PostgreSQL";}},
 		HighGo			{public String getName(){return "HighGo";}};
 		public abstract String getName();
-	}
-	public static final String TAB = "\t";
-	public static final String BR = "\n";
-	public static final String BR_TAB = "\n\t";
+	} 
+	public static final String TAB = "\t"; 
+	public static final String BR = "\n"; 
+	public static final String BR_TAB = "\n\t"; 
 	
 	public DB_TYPE type();
-	/**
-	 * 创建查询SQL
-	 * @param sql
-	 * @param configs
-	 * @param conditions
-	 * @return
-	 */
-	public RunSQL createQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions);
-	
+	/** 
+	 * 创建查询SQL 
+	 * @param sql  sql
+	 * @param configs  configs
+	 * @param conditions  conditions
+	 * @return return
+	 */ 
+	public RunSQL createQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions); 
+	 
 	public RunSQL createDeleteRunSQL(String dest, Object obj, String ... columns);
 	public RunSQL createDeleteRunSQL(String table, String key, Object values);
-	public RunSQL createExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions);
-	
-	public String parseBaseQueryTxt(RunSQL run);
-	/**
-	 * 求总数SQL
-	 * @param txt
-	 * @return
-	 */
-	public String parseTotalQueryTxt(RunSQL run);
-	
-	public String parseExistsTxt(RunSQL run);
-	/**
-	 * 查询SQL
-	 * @param baseTxt
-	 * @return
-	 */
-	public String parseFinalQueryTxt(RunSQL run);
-	public RunSQL createInsertTxt(String dest, Object obj, boolean checkPrimary, String ... columns);
-	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkPrimary, String ... columns);
-	public String getDisKeyFr();
-	public String getDisKeyTo();
-	public String getDataSource(Object obj);
-	public String getPrimaryKey(Object obj);
+	public RunSQL createExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions); 
+	 
+	public String parseBaseQueryTxt(RunSQL run); 
+	/** 
+	 * 求总数SQL 
+	 * @param run  run
+	 * @return return
+	 */ 
+	public String parseTotalQueryTxt(RunSQL run); 
+	 
+	public String parseExistsTxt(RunSQL run); 
+	/** 
+	 * 查询SQL 
+	 * @param run  run
+	 * @return return
+	 */ 
+	public String parseFinalQueryTxt(RunSQL run); 
+	public RunSQL createInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns); 
+	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns); 
+	public String getDisKeyFr(); 
+	public String getDisKeyTo(); 
+	public String getDataSource(Object obj); 
+	public String getPrimaryKey(Object obj); 
 	public Object getPrimaryValue(Object obj);
 	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
 	/**
 	 * 拼接字符串
-	 * @param args
-	 * @return
+	 * @param args args
+	 * @return return
 	 */
 	public String concat(String ... args);
 

@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.web.tag;
-
+package org.anyline.web.tag; 
+ 
 import java.math.BigDecimal;
 import java.util.Collection;
 
@@ -29,32 +29,32 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-
-public class Sum extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
-	private String scope;
+ 
+public class Sum extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
+	private String scope; 
 	private Object data;
-	private String selector;
-	private String property;
-
-	public int doEndTag() throws JspException {
-		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-		String html = "";
-		try {
-			if (null != data) {
-				if (data instanceof String) {
-					if (data.toString().endsWith("}")) {
-						data = data.toString().replace("{", "").replace("}", "");
-					} else {
-						if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) {
-							data = request.getSession().getServletContext().getAttribute(data.toString());
-						} else if ("session".equals(scope)) {
-							data = request.getSession().getAttribute(data.toString());
-						} else {
-							data = request.getAttribute(data.toString());
-						}
-					}
-				}
+	private String selector; 
+	private String property; 
+ 
+	public int doEndTag() throws JspException { 
+		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
+		String html = ""; 
+		try { 
+			if (null != data) { 
+				if (data instanceof String) { 
+					if (data.toString().endsWith("}")) { 
+						data = data.toString().replace("{", "").replace("}", ""); 
+					} else { 
+						if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) { 
+							data = request.getSession().getServletContext().getAttribute(data.toString()); 
+						} else if ("session".equals(scope)) { 
+							data = request.getSession().getAttribute(data.toString()); 
+						} else { 
+							data = request.getAttribute(data.toString()); 
+						} 
+					} 
+				} 
 				if(!(data instanceof Collection)){
 					return EVAL_PAGE;
 				}
@@ -62,8 +62,8 @@ public class Sum extends BaseBodyTag {
 				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
 					data = BeanUtil.select(items,selector.split(","));
 				}
-				BigDecimal result = new BigDecimal(0);
-				if (null != items){
+				BigDecimal result = new BigDecimal(0); 
+				if (null != items){ 
 					for (Object item : items) {
 						if(null == item){
 							continue;
@@ -79,19 +79,19 @@ public class Sum extends BaseBodyTag {
 						}
 					}
 					html = result.toString();
-				}
-			}
-			JspWriter out = pageContext.getOut();
-			out.print(html);
+				} 
+			} 
+			JspWriter out = pageContext.getOut(); 
+			out.print(html); 
 		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			release();
-		}
-		return EVAL_PAGE;
-	}
-
-
+			e.printStackTrace(); 
+		} finally { 
+			release(); 
+		} 
+		return EVAL_PAGE; 
+	} 
+ 
+ 
 	public Object getData() {
 		return data;
 	}
@@ -114,21 +114,21 @@ public class Sum extends BaseBodyTag {
 	}
 
 
-	@Override
+	@Override 
 	public void release() {
-		super.release();
-		scope = null;
+		super.release(); 
+		scope = null; 
 		data = null;
 		property = null;
-		selector = null;
-	}
-
-	public String getScope() {
-		return scope;
-	}
-
-	public void setScope(String scope) {
-		this.scope = scope;
+		selector = null; 
+	} 
+ 
+	public String getScope() { 
+		return scope; 
+	} 
+ 
+	public void setScope(String scope) { 
+		this.scope = scope; 
 	}
 
 
@@ -140,5 +140,5 @@ public class Sum extends BaseBodyTag {
 	public void setSelector(String selector) {
 		this.selector = selector;
 	}
-	
+	 
 }

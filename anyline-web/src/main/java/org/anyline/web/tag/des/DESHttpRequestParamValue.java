@@ -17,46 +17,46 @@
  */
 
 
-package org.anyline.web.tag.des;
+package org.anyline.web.tag.des; 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.web.tag.BaseBodyTag;
-/**
- * http request 请求参数值加密
- * @author Administrator
- *
- */
-public class DESHttpRequestParamValue extends BaseBodyTag{
-	private static final long serialVersionUID = 1L;
-	private String value;		//被加密数据
-
-	public int doEndTag() throws JspException {
-		try{
-			JspWriter out = pageContext.getOut();
-			out.print(WebUtil.encryptHttpRequestParamValue(BasicUtil.nvl(value,body,"").toString()));
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-		return EVAL_PAGE;
-	}
-	@Override
-	public void release() {
-		super.release();
+/** 
+ * http request 请求参数值加密 
+ * @author zh 
+ * 
+ */ 
+public class DESHttpRequestParamValue extends BaseBodyTag{ 
+	private static final long serialVersionUID = 1L; 
+	private String value;		//被加密数据 
+ 
+	public int doEndTag() throws JspException { 
+		try{ 
+			JspWriter out = pageContext.getOut(); 
+			out.print(WebUtil.encryptHttpRequestParamValue(BasicUtil.nvl(value,body,"").toString())); 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+		return EVAL_PAGE; 
+	} 
+	@Override 
+	public void release() { 
+		super.release(); 
 		value = null;
-		body = null;
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
+		body = null; 
+	} 
+ 
+	public String getValue() { 
+		return value; 
+	} 
+ 
+	public void setValue(String value) { 
+		this.value = value; 
+	} 
+ 
 }

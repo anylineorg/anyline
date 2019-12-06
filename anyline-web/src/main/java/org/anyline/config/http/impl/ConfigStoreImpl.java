@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.config.http.impl;
-
+package org.anyline.config.http.impl; 
+ 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,19 +43,19 @@ import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
-
-
-/**
- * 查询参数
- * @author Administrator
- *
- */
-public class ConfigStoreImpl implements ConfigStore,Serializable{
+ 
+ 
+/** 
+ * 查询参数 
+ * @author zh 
+ * 
+ */ 
+public class ConfigStoreImpl implements ConfigStore,Serializable{ 
 	private static final long serialVersionUID = 1L;
-	private ConfigChain chain;
-	private PageNavi navi;
-	private OrderStore orders;		//排序依据
-	private GroupStore groups;
+	private ConfigChain chain; 
+	private PageNavi navi; 
+	private OrderStore orders;		//排序依据 
+	private GroupStore groups; 
 
 	@Override
 	public String toString(){
@@ -73,28 +73,28 @@ public class ConfigStoreImpl implements ConfigStore,Serializable{
 			str += "." + groups.getRunText("");
 		}
 		return str;
-	}
-	
-	/**
-	 * 解析查询配置参数
-	 * @param configs	
+	} 
+	 
+	/** 
+	 * 解析查询配置参数 
+	 * @param config	  configs
 	 * 			"COMPANY_CD:company","NM:nmEn% | NM:nmCn%","STATUS_VALUE:[status]"
 	 * "NM:nmEn% | NM:nmCn%" 生成 NM={nmEn} OR NM = {nmCn}
-	 * "NM:nmEn:nmCn" 根据参数值生成NM = {nmEn}或生成 NM={nmCn}  
-	 * @return
+	 * "NM:nmEn:nmCn" 根据参数值生成NM = {nmEn}或生成 NM={nmCn}   
+	 * @return return
 	 */
-	@Override
-	public Config parseConfig(String config){
-		if(null == config){
-			return null;
-		}
-		ConfigImpl conf = null;
-		if(config.indexOf("|") != -1){
-			conf = new ConfigChainImpl(config);
-		}else{
-			conf = new ConfigImpl(config);
-		}
-		return conf;
+	@Override 
+	public Config parseConfig(String config){ 
+		if(null == config){ 
+			return null; 
+		} 
+		ConfigImpl conf = null; 
+		if(config.indexOf("|") != -1){ 
+			conf = new ConfigChainImpl(config); 
+		}else{ 
+			conf = new ConfigImpl(config); 
+		} 
+		return conf; 
 	}
 	@Override
 	public ConfigStore setPageNavi(PageNavi navi){
@@ -120,12 +120,12 @@ public class ConfigStoreImpl implements ConfigStore,Serializable{
 		return this;
 	}
 	
-	public ConfigStoreImpl(String ... configs){
-		configs = BasicUtil.compressionSpace(configs);
-		chain = new ConfigChainImpl();
-		for(String config:configs){
-			chain.addConfig(parseConfig(config));
-		}
+	public ConfigStoreImpl(String ... configs){ 
+		configs = BasicUtil.compressionSpace(configs); 
+		chain = new ConfigChainImpl(); 
+		for(String config:configs){ 
+			chain.addConfig(parseConfig(config)); 
+		} 
 	}        
 
 	@Override
@@ -204,127 +204,127 @@ public class ConfigStoreImpl implements ConfigStore,Serializable{
 	@Override
 	public ConfigStore addCondition(String key, Object value){
 		return addCondition(key, value, false, false);
-	}
-	/**
-	 * 把httpRequest中的参数存放到navi
-	 */
-	private void setNaviParam(){
-		if(null == chain || null == navi){
-			return;
-		}
-		
-		List<Config> configs = chain.getConfigs();
+	} 
+	/** 
+	 * 把httpRequest中的参数存放到navi 
+	 */ 
+	private void setNaviParam(){ 
+		if(null == chain || null == navi){ 
+			return; 
+		} 
+		 
+		List<Config> configs = chain.getConfigs(); 
 		for(Config config:configs){
 			if(null == config){
 				continue;
-			}
-			String key = config.getKey();
-			List<Object> values = new ArrayList<Object>();
-			List<Object> srcValues = config.getValues();
-			if(config.isKeyEncrypt()){
-				key = WebUtil.encryptHttpRequestParamKey(key);
-			}
-			if(config.isValueEncrypt()){
-				for(Object value:srcValues){
-					if(null != value){
-						value = WebUtil.encryptHttpRequestParamValue(value.toString());
-						values.add(value);
-					}
-				}
-			}else{
-				values = srcValues;
-			}
-			navi.addParam(key, values);
-		}
+			} 
+			String key = config.getKey(); 
+			List<Object> values = new ArrayList<Object>(); 
+			List<Object> srcValues = config.getValues(); 
+			if(config.isKeyEncrypt()){ 
+				key = WebUtil.encryptHttpRequestParamKey(key); 
+			} 
+			if(config.isValueEncrypt()){ 
+				for(Object value:srcValues){ 
+					if(null != value){ 
+						value = WebUtil.encryptHttpRequestParamValue(value.toString()); 
+						values.add(value); 
+					} 
+				} 
+			}else{ 
+				values = srcValues; 
+			} 
+			navi.addParam(key, values); 
+		} 
 	}
-	@Override
-	public ConfigStore addParam(String key, String value){
-		if(null != navi){
-			navi.addParam(key, value);
-		}
-		return this;
+	@Override 
+	public ConfigStore addParam(String key, String value){ 
+		if(null != navi){ 
+			navi.addParam(key, value); 
+		} 
+		return this; 
 	}
-	@Override
-	public ConfigStore setValue(HttpServletRequest request){
-		if(null == chain){
-			return this;
-		}
-		List<Config> configs = chain.getConfigs();
+	@Override 
+	public ConfigStore setValue(HttpServletRequest request){ 
+		if(null == chain){ 
+			return this; 
+		} 
+		List<Config> configs = chain.getConfigs(); 
 		for(Config config:configs){
 			if(null == config){
 				continue;
-			}
-			config.setValue(request);
-		}
+			} 
+			config.setValue(request); 
+		} 
 		setNaviParam();
-		return this;
+		return this; 
 	}
-	@Override
-	public ConfigChain getConfigChain(){
-		return chain;
-	}
-	/**
-	 * 添加排序
-	 * @param order
-	 * @return
+	@Override 
+	public ConfigChain getConfigChain(){ 
+		return chain; 
+	} 
+	/** 
+	 * 添加排序 
+	 * @param order  order
+	 * @return return
 	 */
-	@Override
-	public ConfigStore order(Order order){
-		if(null == orders){
-			orders = new OrderStoreImpl();
-		}
-		orders.order(order);
-		if(null != navi){
-			navi.order(order.getColumn(), order.getType().getCode());
-		}
-		return this;
-	}
-
-	@Override
-	public ConfigStore order(String column, String type){
-		return order(new OrderImpl(column,type));
-	}
-	@Override
-	public ConfigStore order(String order){
-		return order(new OrderImpl(order));
-	}
-	@Override
-	public OrderStore getOrders() {
-		return orders;
-	}
-	@Override
-	public ConfigStore setOrders(OrderStore orders) {
+	@Override 
+	public ConfigStore order(Order order){ 
+		if(null == orders){ 
+			orders = new OrderStoreImpl(); 
+		} 
+		orders.order(order); 
+		if(null != navi){ 
+			navi.order(order.getColumn(), order.getType().getCode()); 
+		} 
+		return this; 
+	} 
+ 
+	@Override 
+	public ConfigStore order(String column, String type){ 
+		return order(new OrderImpl(column,type)); 
+	} 
+	@Override 
+	public ConfigStore order(String order){ 
+		return order(new OrderImpl(order)); 
+	} 
+	@Override 
+	public OrderStore getOrders() { 
+		return orders; 
+	} 
+	@Override 
+	public ConfigStore setOrders(OrderStore orders) { 
 		this.orders = orders;
-		return this;
-	}
-	/**
-	 * 添加分组
-	 * @param group
-	 * @return
+		return this; 
+	} 
+	/** 
+	 * 添加分组 
+	 * @param group  group
+	 * @return return
 	 */
-	@Override
-	public ConfigStore group(Group group){
-		if(null == groups){
-			groups = new GroupStoreImpl();
-		}
-		groups.group(group);
-		return this;
-	}
+	@Override 
+	public ConfigStore group(Group group){ 
+		if(null == groups){ 
+			groups = new GroupStoreImpl(); 
+		} 
+		groups.group(group); 
+		return this; 
+	} 
 
-	@Override
-	public ConfigStore group(String group){
-		return group(new GroupImpl(group));
-	}
-	public GroupStore getGroups() {
-		return groups;
-	}
-	public ConfigStore setGroups(GroupStore groups) {
+	@Override 
+	public ConfigStore group(String group){ 
+		return group(new GroupImpl(group)); 
+	} 
+	public GroupStore getGroups() { 
+		return groups; 
+	} 
+	public ConfigStore setGroups(GroupStore groups) { 
 		this.groups = groups;
-		return this;
-	}
-	@Override
-	public PageNavi getPageNavi() {
-		return navi;
+		return this; 
+	} 
+	@Override 
+	public PageNavi getPageNavi() { 
+		return navi; 
 	}
 
 	@Override
@@ -409,7 +409,7 @@ public class ConfigStoreImpl implements ConfigStore,Serializable{
 	/**
 	 * 开启记录总数懒加载 
 	 * @param ms 缓存有效期(毫秒)
-	 * @return
+	 * @return return
 	 */
 	public ConfigStore setTotalLazy(long ms){
 		if(null != navi){
@@ -424,7 +424,7 @@ public class ConfigStoreImpl implements ConfigStore,Serializable{
 //		private OrderStore orders;		//排序依据
 //		private GroupStore groups;
 		return store;
-	}
-}
-
-
+	} 
+} 
+ 
+ 

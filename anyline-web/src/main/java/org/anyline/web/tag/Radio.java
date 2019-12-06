@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.web.tag;
-
+package org.anyline.web.tag; 
+ 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -35,56 +35,56 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-public class Radio extends BaseBodyTag{
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(Radio.class);
-	private String scope;
-	private Object data;
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
-	private String textKey = "NM";
+ 
+ 
+public class Radio extends BaseBodyTag{ 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(Radio.class); 
+	private String scope; 
+	private Object data; 
+	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID"); 
+	private String textKey = "NM"; 
 	private String head;
 	private String headValue;
 	private String border = "true";//条目border(内部包含checkox,label) true, false, div, li, dd
 	private String borderClazz = "al-radio-item-border";
 	private String labelClazz = "al-radio-item-label";
-	private String label = "";//label标签体，如果未定义label则生成默认label标签体{textKey}
-
-	public int doEndTag() throws JspException {
-		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+	private String label = "";//label标签体，如果未定义label则生成默认label标签体{textKey} 
+ 
+	public int doEndTag() throws JspException { 
+		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		StringBuilder html = new StringBuilder();
 //		valueKey = DataRow.keyCase(valueKey);
-//		textKey = DataRow.keyCase(textKey);
+//		textKey = DataRow.keyCase(textKey); 
 		try{
 			if(BasicUtil.isEmpty(name)){
 				name = BasicUtil.getRandomLowerString(10);
-			}
-			if(null != data){
-				if(data instanceof String){
-					if(data.toString().endsWith("}")){
-						data = data.toString().replace("{", "").replace("}", "");
-					}else{
-						if("servelt".equals(scope) || "application".equalsIgnoreCase(scope)){
-							data = request.getSession().getServletContext().getAttribute(data.toString());
-						}else if("session".equals(scope)){
-							data = request.getSession().getAttribute(data.toString());
-						}else{
-							data = request.getAttribute(data.toString());
-						}
-					}
-				}
-				if(data instanceof String){
-					String items[] = data.toString().split(",");
-					List list = new ArrayList();
-					for(String item:items){
-						Map map = new HashMap();
-						String ks[] = BeanUtil.parseKeyValue(item);
-						map.put(valueKey, ks[0]);
-						map.put(textKey, ks[1]);
-						list.add(map);
-					}
-					data = list;
+			} 
+			if(null != data){ 
+				if(data instanceof String){ 
+					if(data.toString().endsWith("}")){ 
+						data = data.toString().replace("{", "").replace("}", ""); 
+					}else{ 
+						if("servelt".equals(scope) || "application".equalsIgnoreCase(scope)){ 
+							data = request.getSession().getServletContext().getAttribute(data.toString()); 
+						}else if("session".equals(scope)){ 
+							data = request.getSession().getAttribute(data.toString()); 
+						}else{ 
+							data = request.getAttribute(data.toString()); 
+						} 
+					} 
+				} 
+				if(data instanceof String){ 
+					String items[] = data.toString().split(","); 
+					List list = new ArrayList(); 
+					for(String item:items){ 
+						Map map = new HashMap(); 
+						String ks[] = BeanUtil.parseKeyValue(item); 
+						map.put(valueKey, ks[0]); 
+						map.put(textKey, ks[1]); 
+						list.add(map); 
+					} 
+					data = list; 
 				}
 
 				//条目边框
@@ -126,9 +126,9 @@ public class Radio extends BaseBodyTag{
 				
 				
 				
-				
+				 
 				Collection<Map> items = (Collection<Map>)data;
-				if(null != items)
+				if(null != items) 
 				for(Map item:items){
 					Object srcValue = BeanUtil.getFieldValue(item, valueKey);
 					Object value = srcValue;
@@ -139,8 +139,8 @@ public class Radio extends BaseBodyTag{
 					String id = name +"_"+ value;
 					html.append(itemBorderStartTag);
 					html.append("<input type=\"radio\" value=\"").append(value).append("\" id=\"").append(id).append("\"");
-					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){
-						html.append(" checked=\"checked\"");
+					if(null != srcValue && null != this.value && srcValue.toString().equals(this.value.toString())){ 
+						html.append(" checked=\"checked\""); 
 					}
 					html.append(attribute()).append(crateExtraData(item)).append("/>");
 					
@@ -166,24 +166,24 @@ public class Radio extends BaseBodyTag{
 					}
 					
 					html.append(itemBorderEndTag);
-				}
-			}
-			JspWriter out = pageContext.getOut();
-			out.print(html);
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_PAGE;   
-	}
-
-
-	public Object getData() {
-		return data;
-	}
-
-
+				} 
+			} 
+			JspWriter out = pageContext.getOut(); 
+			out.print(html); 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_PAGE;    
+	} 
+ 
+ 
+	public Object getData() { 
+		return data; 
+	} 
+ 
+ 
 	public String getBorder() {
 		return border;
 	}
@@ -194,35 +194,35 @@ public class Radio extends BaseBodyTag{
 	}
 
 
-	public void setData(Object data) {
-		this.data = data;
-	}
-
-
-	public String getValueKey() {
-		return valueKey;
-	}
-
-
-	public void setValueKey(String valueKey) {
-		this.valueKey = valueKey;
-	}
-
-
-	public String getTextKey() {
-		return textKey;
-	}
-
-
-	public void setTextKey(String textKey) {
-		this.textKey = textKey;
-	}
-
-
-	@Override
+	public void setData(Object data) { 
+		this.data = data; 
+	} 
+ 
+ 
+	public String getValueKey() { 
+		return valueKey; 
+	} 
+ 
+ 
+	public void setValueKey(String valueKey) { 
+		this.valueKey = valueKey; 
+	} 
+ 
+ 
+	public String getTextKey() { 
+		return textKey; 
+	} 
+ 
+ 
+	public void setTextKey(String textKey) { 
+		this.textKey = textKey; 
+	} 
+ 
+ 
+	@Override 
 	public void release() {
-		super.release();
-		scope = null;
+		super.release(); 
+		scope = null; 
 		data = null;
 		value = null;
 		body = null;
@@ -233,13 +233,13 @@ public class Radio extends BaseBodyTag{
 		border = "true";
 		borderClazz = "al-radio-item-border";
 		labelClazz = "al-radio-item-label";
-		label = "";
-	}
-
-	public String getScope() {
-		return scope;
-	}
-
+		label = ""; 
+	} 
+ 
+	public String getScope() { 
+		return scope; 
+	} 
+ 
 	public String getHead() {
 		return head;
 	}
@@ -260,8 +260,8 @@ public class Radio extends BaseBodyTag{
 	}
 
 
-	public void setScope(String scope) {
-		this.scope = scope;
+	public void setScope(String scope) { 
+		this.scope = scope; 
 	}
 
 
@@ -293,5 +293,5 @@ public class Radio extends BaseBodyTag{
 	public void setLabel(String label) {
 		this.label = label;
 	}
-	
+	 
 }

@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.web.tag;
-
+package org.anyline.web.tag; 
+ 
 import java.io.IOException;
 
 import javax.servlet.jsp.JspWriter;
@@ -26,39 +26,39 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-public class Ellipsis extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
-	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() ";
-	private static final Logger log = LoggerFactory.getLogger(Ellipsis.class);
-	private int length;					//结果长度
+ 
+public class Ellipsis extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
+	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() "; 
+	private static final Logger log = LoggerFactory.getLogger(Ellipsis.class); 
+	private int length;					//结果长度 
 	private String replace = "...";		//替换字符
-	private boolean toggle = false;
-
-	public int doEndTag() {
-		String src = BasicUtil.nvl(value,body,"").toString().trim();
-		if("".equals(src)){
-			return EVAL_BODY_INCLUDE;
-		}
-
-		JspWriter writer = null;
-		String result = "";
-		try {
-			writer = pageContext.getOut();
-			int size = length * 2;
-			String chrs[] = src.split("");
-			int cnt = 0;
-			for(String chr:chrs){
-				if(cnt >= size){
-					break;
-				}
-				if(SINGLE_CHAR.contains(chr.toLowerCase())){
-					cnt += 1;
-				}else{
-					cnt += 2;
-				}
-				result += chr;
-			}
+	private boolean toggle = false; 
+ 
+	public int doEndTag() { 
+		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
+		if("".equals(src)){ 
+			return EVAL_BODY_INCLUDE; 
+		} 
+ 
+		JspWriter writer = null; 
+		String result = ""; 
+		try { 
+			writer = pageContext.getOut(); 
+			int size = length * 2; 
+			String chrs[] = src.split(""); 
+			int cnt = 0; 
+			for(String chr:chrs){ 
+				if(cnt >= size){ 
+					break; 
+				} 
+				if(SINGLE_CHAR.contains(chr.toLowerCase())){ 
+					cnt += 1; 
+				}else{ 
+					cnt += 2; 
+				} 
+				result += chr; 
+			} 
 			if(result.length() < src.length()){
 				if(toggle){
 					//点击显示全部
@@ -66,45 +66,45 @@ public class Ellipsis extends BaseBodyTag {
 					String all = "<span style='display:none;' id='tga_" + random + "'>" + src + "</span>";
 					String sub = "<span id='tgs_" + random + "'>"+result+"<span style='display:inline;' onclick=\"$('#tgs_"+random+"').hide();$('#tga_"+random+"').show();\">" + replace + "</span></span>";
 					result = all + sub;
-				}else{
-					result += replace;
+				}else{ 
+					result += replace; 
 					result = "<label title=\""+src+"\">" + result + "</label>";
-				}
+				} 
 			}else{
 				result = "<label title=\""+src+"\">" + src + "</label>";
-			}
-			writer.print(result);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容
-	}
-
-	@Override
-	public void release() {
-		super.release();
-		value = null;
-		length = 0;
+			} 
+			writer.print(result); 
+		} catch (IOException e) { 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
+	} 
+ 
+	@Override 
+	public void release() { 
+		super.release(); 
+		value = null; 
+		length = 0; 
 		replace = "...";
-		toggle = false;
-	}
-
-	public int getLength() {
-		return length;
-	}
-
-	public void setLength(int length) {
-		this.length = length;
-	}
-
-	public String getReplace() {
-		return replace;
-	}
-
-	public void setReplace(String replace) {
-		this.replace = replace;
+		toggle = false; 
+	} 
+ 
+	public int getLength() { 
+		return length; 
+	} 
+ 
+	public void setLength(int length) { 
+		this.length = length; 
+	} 
+ 
+	public String getReplace() { 
+		return replace; 
+	} 
+ 
+	public void setReplace(String replace) { 
+		this.replace = replace; 
 	}
 
 	public boolean isToggle() {
@@ -114,5 +114,5 @@ public class Ellipsis extends BaseBodyTag {
 	public void setToggle(boolean toggle) {
 		this.toggle = toggle;
 	}
-	
-}
+	 
+} 
