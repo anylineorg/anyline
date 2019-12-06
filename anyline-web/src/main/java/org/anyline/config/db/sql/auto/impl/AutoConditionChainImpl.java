@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.config.db.sql.auto.impl;
-
+package org.anyline.config.db.sql.auto.impl; 
+ 
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +29,7 @@ import org.anyline.config.db.impl.BasicConditionChain;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
 import org.anyline.util.BasicUtil;
-
+ 
 public class AutoConditionChainImpl extends BasicConditionChain implements ConditionChain{
 	private static final long serialVersionUID = -3221296171103784900L;
 	public AutoConditionChainImpl(){}
@@ -40,12 +40,12 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 		for(Config config:chain.getConfigs()){
 			conditions.add(new AutoConditionImpl(config));
 		}
-	}
-	public String getRunText(SQLCreater creater){
-		runValues = new ArrayList<Object>();
-		int size = conditions.size();
-		if(size == 0){
-			return "";
+	} 
+	public String getRunText(SQLCreater creater){ 
+		runValues = new ArrayList<Object>(); 
+		int size = conditions.size(); 
+		if(size == 0){ 
+			return ""; 
 		}
 		
 		StringBuilder subBuilder = new StringBuilder();
@@ -70,7 +70,7 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 				joinSize ++;
 			}
 		}
-
+ 
 		if(joinSize > 0){
 			StringBuilder builder = new StringBuilder();
 			if(!hasContainer() || getContainerJoinSize() > 0){
@@ -81,17 +81,17 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 			builder.append("(");
 			builder.append(subBuilder.toString());
 			builder.append(")\n\t");
-			return builder.toString();
+			return builder.toString(); 
 		}else{
 			return "";
-		}
+		} 
+	} 
+	private int getContainerJoinSize(){ 
+		if(hasContainer()){ 
+			return getContainer().getJoinSize(); 
+		}else{ 
+			return 0; 
+		} 
 	}
-	private int getContainerJoinSize(){
-		if(hasContainer()){
-			return getContainer().getJoinSize();
-		}else{
-			return 0;
-		}
-	}
-
-}
+ 
+} 

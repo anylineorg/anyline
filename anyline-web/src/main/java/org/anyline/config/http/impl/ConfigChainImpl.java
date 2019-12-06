@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.config.http.impl;
-
+package org.anyline.config.http.impl; 
+ 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,12 +33,12 @@ import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-public class ConfigChainImpl extends ConfigImpl implements ConfigChain,Serializable{
+ 
+public class ConfigChainImpl extends ConfigImpl implements ConfigChain,Serializable{ 
 	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(ConfigChainImpl.class);
-	private List<Config> configs = new ArrayList<Config>();
-	
+	private static final Logger log = LoggerFactory.getLogger(ConfigChainImpl.class); 
+	private List<Config> configs = new ArrayList<Config>(); 
+	 
 	public ConfigChainImpl(){}
 	public String toString(){
 		String str = null;
@@ -71,19 +71,19 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain,Serializa
 			}
 		}
 		return str;
-	}
-	public ConfigChainImpl(String config){
-		if(null == config){
-			return;
-		}
-		String[] configs = config.split("\\|");
-		for(String item:configs){
-			ConfigImpl conf = new ConfigImpl(item);
+	} 
+	public ConfigChainImpl(String config){ 
+		if(null == config){ 
+			return; 
+		} 
+		String[] configs = config.split("\\|"); 
+		for(String item:configs){ 
+			ConfigImpl conf = new ConfigImpl(item); 
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-			if(!conf.isEmpty()){
+			if(!conf.isEmpty()){ 
 				this.configs.add(conf);
-			}
-		}
+			} 
+		} 
 	}
 	public Config getConfig(String key){
 		for(Config conf: configs){
@@ -120,10 +120,10 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain,Serializa
 		return this;
 	}
 	
-	
-	public void addConfig(Config config){
-		configs.add(config);
-	}
+	 
+	public void addConfig(Config config){ 
+		configs.add(config); 
+	} 
 
 	public List<Object> getValues() {
 		List<Object> values = new ArrayList<Object>();
@@ -131,30 +131,30 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain,Serializa
 			values.addAll(config.getValues());
 		}
 		return values;
-	}
-	/**
-	 * 赋值
-	 * @param request
-	 */
-	public void setValue(HttpServletRequest request){
-		for(Config config:configs){
-			config.setValue(request);
-		}
-//		if(items.size()>0){
-//			setCompare(items.get(0).getCompareType());
-//		}
-	}
-	public List<Config> getConfigs(){
-		return configs;
-	}
-	public ConditionChain createAutoConditionChain(){
-		ConditionChain chain = new AutoConditionChainImpl();
-		for(Config config:configs){
-			Condition condition = config.createAutoCondition(chain);
-			if(null != condition){
-				chain.addCondition(condition);
-			}
-		}
-		return chain;
-	}
+	} 
+	/** 
+	 * 赋值 
+	 * @param request  request
+	 */ 
+	public void setValue(HttpServletRequest request){ 
+		for(Config config:configs){ 
+			config.setValue(request); 
+		} 
+//		if(items.size()>0){ 
+//			setCompare(items.get(0).getCompareType()); 
+//		} 
+	} 
+	public List<Config> getConfigs(){ 
+		return configs; 
+	} 
+	public ConditionChain createAutoConditionChain(){ 
+		ConditionChain chain = new AutoConditionChainImpl(); 
+		for(Config config:configs){ 
+			Condition condition = config.createAutoCondition(chain); 
+			if(null != condition){ 
+				chain.addCondition(condition); 
+			} 
+		} 
+		return chain; 
+	} 
 }

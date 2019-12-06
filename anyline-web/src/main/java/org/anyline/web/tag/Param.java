@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import java.lang.reflect.Method;
 
 import javax.servlet.jsp.JspException;
@@ -30,61 +30,61 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-/**
- * 为上级标签添加参数list 或map格式
- * @author Administrator
- *
- */
-public class Param extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
+ 
+/** 
+ * 为上级标签添加参数list 或map格式 
+ * @author zh 
+ * 
+ */ 
+public class Param extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
 	private static final Logger log = LoggerFactory.getLogger(Param.class);
-	private String property; //如果设置的property则调用父标签的setProperty(value)方法
-	private String key; //未设置property的前提下 如果指定了key则添加到父标签的paramMap中 未指定则添加到父标签的paramList中
-	
-	 public int doEndTag() throws JspException {
-		try{
-			Tag parent = this.getParent();
+	private String property; //如果设置的property则调用父标签的setProperty(value)方法 
+	private String key; //未设置property的前提下 如果指定了key则添加到父标签的paramMap中 未指定则添加到父标签的paramList中 
+	 
+	 public int doEndTag() throws JspException { 
+		try{ 
+			Tag parent = this.getParent(); 
 			if(null != parent){
 				value = BasicUtil.nvl(value,body);
-				if(BasicUtil.isEmpty(property)){
-					Method method = parent.getClass().getMethod("addParam",String.class, Object.class);
-					if(null != method){
+				if(BasicUtil.isEmpty(property)){ 
+					Method method = parent.getClass().getMethod("addParam",String.class, Object.class); 
+					if(null != method){ 
 						method.invoke(parent, key, value);
 						if(ConfigTable.isDebug() && log.isWarnEnabled()){
 							log.warn("[set parent param map][key:"+key+"][value:"+value+"]");
-						}
+						} 
 					}
 				}else{
 					BeanUtil.setFieldValue(parent, property, value);
 					if(ConfigTable.isDebug() && log.isWarnEnabled()){
 						log.warn("[set parent property][property:"+property+"][value:"+value+"]");
 					}
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_PAGE;   
-	}
-
-
-	@Override
-	public void release() {
+				} 
+			} 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_PAGE;    
+	} 
+ 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		value = null;
-		body = null;
+		body = null; 
 		key = null;
-		property = null;
-	}
-
-	public String getKey() {
-		return key;
-	}
-	public void setKey(String key) {
-		this.key = key;
+		property = null; 
+	} 
+ 
+	public String getKey() { 
+		return key; 
+	} 
+	public void setKey(String key) { 
+		this.key = key; 
 	}
 
 
@@ -97,5 +97,5 @@ public class Param extends BaseBodyTag implements Cloneable{
 		this.property = property;
 	}
 	
-	
+	 
 }

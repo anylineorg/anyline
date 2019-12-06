@@ -17,12 +17,12 @@
  */
 
 
-package org.anyline.config.db;
+package org.anyline.config.db; 
 
 import java.io.Serializable;
-
-
-public interface Group extends Cloneable,Serializable{
-	public String getColumn() ;
-	public void setColumn(String column) ;
-}
+ 
+ 
+public interface Group extends Cloneable,Serializable{ 
+	public String getColumn() ; 
+	public void setColumn(String column) ; 
+} 

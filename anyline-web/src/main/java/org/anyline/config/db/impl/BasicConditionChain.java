@@ -17,67 +17,67 @@
  */
 
 
-package org.anyline.config.db.impl;
+package org.anyline.config.db.impl; 
+ 
+import java.util.ArrayList; 
+import java.util.Collection; 
+import java.util.List; 
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.anyline.config.db.Condition;
-import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.Condition; 
+import org.anyline.config.db.ConditionChain; 
 import org.anyline.util.BasicUtil;
-
-/**
- * 自动生成的参数
- * @author Administrator
- *
- */
-public abstract class BasicConditionChain extends BasicCondition implements ConditionChain{
+ 
+/** 
+ * 自动生成的参数 
+ * @author zh 
+ * 
+ */ 
+public abstract class BasicConditionChain extends BasicCondition implements ConditionChain{ 
 	private static final long serialVersionUID = 8226224203628527018L;
-	protected List<Condition> conditions = new ArrayList<Condition>();
-	protected int joinSize;
-	
-	public void init(){
+	protected List<Condition> conditions = new ArrayList<Condition>(); 
+	protected int joinSize; 
+	 
+	public void init(){ 
 		for(Condition condition:conditions){
 			if(null == condition){
 				continue;
-			}
-			condition.init();
-		}
-	}
-	/**
-	 * 附加条件
-	 * @param condition
-	 * @return
-	 */
-	public ConditionChain addCondition(Condition condition){
-		conditions.add(condition);
-		return this;
-	}
-	
-	@SuppressWarnings("unchecked")
-	protected void addRunValue(Object value){
-		if(null == value){
-			return;
-		}
-		if(value instanceof Collection){
-			runValues.addAll((Collection<Object>)value);
-		}else{
-			runValues.add(value);
-		}
-	}
-	public List<Object> getRunValues(){
-		return runValues;
-	}
-	public String getJoin(){
-		return Condition.CONDITION_JOIN_TYPE_AND;
-	}
-	public int getJoinSize(){
-		return joinSize;
-	}
-	public List<Condition> getConditions() {
-		return conditions;
-	}
+			} 
+			condition.init(); 
+		} 
+	} 
+	/** 
+	 * 附加条件 
+	 * @param condition  condition
+	 * @return return
+	 */ 
+	public ConditionChain addCondition(Condition condition){ 
+		conditions.add(condition); 
+		return this; 
+	} 
+	 
+	@SuppressWarnings("unchecked") 
+	protected void addRunValue(Object value){ 
+		if(null == value){ 
+			return; 
+		} 
+		if(value instanceof Collection){ 
+			runValues.addAll((Collection<Object>)value); 
+		}else{ 
+			runValues.add(value); 
+		} 
+	} 
+	public List<Object> getRunValues(){ 
+		return runValues; 
+	} 
+	public String getJoin(){ 
+		return Condition.CONDITION_JOIN_TYPE_AND; 
+	} 
+	public int getJoinSize(){ 
+		return joinSize; 
+	} 
+	public List<Condition> getConditions() { 
+		return conditions; 
+	} 
 
 	public boolean isValid(){
 		for(Condition con:conditions){
@@ -86,5 +86,5 @@ public abstract class BasicConditionChain extends BasicCondition implements Cond
 			}
 		}
 		return true;
-	}
-}
+	} 
+} 

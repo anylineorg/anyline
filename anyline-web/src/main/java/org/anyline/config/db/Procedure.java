@@ -17,39 +17,39 @@
  */
 
 
-package org.anyline.config.db;
-/**
- * V3.0
- */
+package org.anyline.config.db; 
+/** 
+ * V3.0 
+ */ 
 import java.io.Serializable;
 import java.util.List;
-
-
-
-public interface Procedure extends Serializable{
-	/**
-	 * 添加输入参数
-	 * @param value	值
-	 * @param type	类型
-	 * @return
-	 */
-	public Procedure addInput(String value, Integer type);
-	public Procedure addInput(String value);
-	
-	public List<String> getInputValues();
-	public List<Integer> getInputTypes() ;
-	
-	/**
-	 * 注册输出参数
-	 * @param type	类型
-	 * @return
-	 */
-	public Procedure regOutput(Integer type);
-	public Procedure regOutput();
-	public String getName() ;
-	public void setName(String name) ;
+ 
+ 
+ 
+public interface Procedure extends Serializable{ 
+	/** 
+	 * 添加输入参数 
+	 * @param value	值  value	值
+	 * @param type	类型  type	类型
+	 * @return return
+	 */ 
+	public Procedure addInput(String value, Integer type); 
+	public Procedure addInput(String value); 
+	 
+	public List<String> getInputValues(); 
+	public List<Integer> getInputTypes() ; 
+	 
+	/** 
+	 * 注册输出参数 
+	 * @param type	类型  type	类型
+	 * @return return
+	 */ 
+	public Procedure regOutput(Integer type); 
+	public Procedure regOutput(); 
+	public String getName() ; 
+	public void setName(String name) ; 
 	public List<Integer> getOutputTypes() ;
 	public void setResult(List<Object> result);
-	public List<Object> getResult();
-
-}
+	public List<Object> getResult(); 
+ 
+} 

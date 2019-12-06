@@ -17,31 +17,31 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import javax.servlet.jsp.JspException;
 
 import org.anyline.util.BasicUtil;
-
-
-public class Split extends BaseBodyTag{
-	private static final long serialVersionUID = 1554109844585627661L;
-	
-	private String regex;
+ 
+ 
+public class Split extends BaseBodyTag{ 
+	private static final long serialVersionUID = 1554109844585627661L; 
+	 
+	private String regex; 
 	private String var;
 	private String scope = "page"; 
-	private String text = null;
-	
-	public int doStartTag() throws JspException {
-        return EVAL_BODY_BUFFERED;
-    }
+	private String text = null; 
+	 
+	public int doStartTag() throws JspException { 
+        return EVAL_BODY_BUFFERED; 
+    } 
 	 public int doEndTag() throws JspException {
-		if(BasicUtil.isEmpty(text)){
+		if(BasicUtil.isEmpty(text)){ 
 			text = body;
-		}
-		if(null != text && null != var){
-			try{
+		} 
+		if(null != text && null != var){ 
+			try{ 
 				String[] result = text.split(regex);
 				if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) {
 					pageContext.getServletContext().setAttribute(var, result);
@@ -52,23 +52,23 @@ public class Split extends BaseBodyTag{
 				}else if ("page".equals(scope)){
 					pageContext.setAttribute(var, result);
 				}
-			}catch(Exception e){
-	
-			}finally{
-				release();
-			}
-		}
-        return EVAL_PAGE;   
-	}
-	@Override
-    public void release(){
-		super.release();
+			}catch(Exception e){ 
+	 
+			}finally{ 
+				release(); 
+			} 
+		} 
+        return EVAL_PAGE;    
+	} 
+	@Override 
+    public void release(){ 
+		super.release(); 
 		regex = null;
 		var = null;
     	value = null;
     	body = null;
     	scope = "page";
-    			
+    			 
     }
 	public String getRegex() {
 		return regex;
@@ -87,6 +87,6 @@ public class Split extends BaseBodyTag{
 	}
 	public void setScope(String scope) {
 		this.scope = scope;
-	}
-
+	} 
+ 
 }

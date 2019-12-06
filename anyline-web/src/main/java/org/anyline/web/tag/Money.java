@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.web.tag;
-
+package org.anyline.web.tag; 
+ 
 import java.io.IOException;
 
 import javax.servlet.jsp.JspWriter;
@@ -27,37 +27,37 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.MoneyUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-public class Money extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(Money.class);
-
-	public int doEndTag() {
-		String src = BasicUtil.nvl(value,body,"").toString().trim();
-		if("".equals(src)){
-			return EVAL_BODY_INCLUDE;
-		}
-
-		JspWriter writer = null;
-		String result = "";
-		try {
-			writer = pageContext.getOut();
-			double d = BasicUtil.parseDouble(src, 0d);
-			result = MoneyUtil.format(d);
-			writer.print(result);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容
-	}
-
-	@Override
-	public void release() {
-		super.release();
+ 
+public class Money extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(Money.class); 
+ 
+	public int doEndTag() { 
+		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
+		if("".equals(src)){ 
+			return EVAL_BODY_INCLUDE; 
+		} 
+ 
+		JspWriter writer = null; 
+		String result = ""; 
+		try { 
+			writer = pageContext.getOut(); 
+			double d = BasicUtil.parseDouble(src, 0d); 
+			result = MoneyUtil.format(d); 
+			writer.print(result); 
+		} catch (IOException e) { 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
+	} 
+ 
+	@Override 
+	public void release() { 
+		super.release(); 
 		value = null;
-		body = null;
-	}
-	
-}
+		body = null; 
+	} 
+	 
+} 

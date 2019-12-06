@@ -17,20 +17,15 @@
  */
 
 
-package org.anyline.config.db;
-
-
-
-
-public abstract class SQLStore{
-
-	public static void loadSQL(){}
-
-	/**
-	 * 解析sql.xml文件
-	 * @param file
-	 * @return
-	 */
-	public static synchronized SQLStore getInstance() {return null; }
-	public static SQL parseSQL(String id){return null;}
+package org.anyline.config.db; 
+ 
+ 
+ 
+ 
+public abstract class SQLStore{ 
+ 
+	public static void loadSQL(){} 
+ 
+	public static synchronized SQLStore getInstance() {return null; } 
+	public static SQL parseSQL(String id){return null;} 
 }

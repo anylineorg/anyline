@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -31,16 +31,16 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+ 
 
 /**
  * 第一个 !=null 并 != "" 的值
- */
-public class Evl extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
+ */ 
+public class Evl extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
 	private static final Logger log = LoggerFactory.getLogger(Evl.class);
-	private String target = null;
-	
+	private String target = null; 
+	 
 	 public int doEndTag() throws JspException {
 		 if(null == paramList || paramList.size()==0){
 			 if(BasicUtil.isNotEmpty(value)){
@@ -54,15 +54,15 @@ public class Evl extends BaseBodyTag implements Cloneable{
 				 }
 			 }
 		 }
-		 if(null != paramList && paramList.size()>0){
+		 if(null != paramList && paramList.size()>0){ 
 			try{
 				String result = "";
-				for(Object param:paramList){
-					if(null != param && !param.toString().equals("null") && !param.toString().trim().equals("")){
+				for(Object param:paramList){ 
+					if(null != param && !param.toString().equals("null") && !param.toString().trim().equals("")){ 
 
 						result = param.toString();
-						break;
-					}
+						break; 
+					} 
 				}
 
 				result = BasicUtil.evl(result,body,"").toString();
@@ -76,26 +76,26 @@ public class Evl extends BaseBodyTag implements Cloneable{
 					JspWriter out = pageContext.getOut();
 					out.print(result);
 				}
-				
-			}catch(Exception e){
-				e.printStackTrace();
-			}finally{
-				release();
+				 
+			}catch(Exception e){ 
+				e.printStackTrace(); 
+			}finally{ 
+				release(); 
 			}
-		 }
-        return EVAL_PAGE;   
-	}
-
-
-	@Override
-	public void release() {
+		 } 
+        return EVAL_PAGE;    
+	} 
+ 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		paramList = null;
 		value = null;
-		target = null;
-	}
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+		target = null; 
+	} 
+	@Override 
+	protected Object clone() throws CloneNotSupportedException { 
+		return super.clone(); 
+	} 
 }

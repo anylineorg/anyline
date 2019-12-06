@@ -17,20 +17,15 @@
  */
 
 
-package org.anyline.dao;
-
+package org.anyline.dao; 
+ 
 import java.util.Collection;
 import org.anyline.config.db.Procedure;
 import org.anyline.config.db.SQL;
 import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.DataSet;
-
-public interface AnylineDao{
-	/**
-	 * 查询
-	 * @param sql
-	 * @return
-	 */
+ 
+public interface AnylineDao{ 
 	public DataSet query(SQL sql, ConfigStore configs, String ... conditions);
 	public DataSet query(SQL sql, String ... conditions);
 
@@ -39,76 +34,67 @@ public interface AnylineDao{
 	
 	public boolean exists(SQL sql, ConfigStore configs, String ... conditions);
 	public boolean exists(SQL sql, String ... conditions);
-	/**
-	 * 更新
-	 * @param	row
-	 * 			需要更新的数据
-	 * @param	columns
-	 * 			需要更新的列
-	 * @param	dst
-	 * 			表
-	 * @return
+	/** 
+	 * 更新 
+	 * @param	columns  需要更新的列 
+	 * @param	dst  表 
+	 * @param	data data
+	 * @return return
+	 */ 
+	public int update(String dst, Object data, String ... columns); 
+	public int update(Object data, String ... columns); 
+	 
+	/** 
+	 * 添加 
+	 * @param data 需要插入的数据 
+	 * @param checkParimary   是否需要检查重复主键,默认不检查 
+	 * @param columns  需要插入的列 
+	 * @param dst 表 
+	 * @return return
 	 */
-	public int update(String dst, Object data, String ... columns);
-	public int update(Object data, String ... columns);
-	
-	/**
-	 * 添加
-	 * @param data
-	 * 			需要插入的数据
-	 * @param checkParimary
-	 * 			是否需要检查重复主键,默认不检查
-	 * @param columns
-	 * 			需要插入的列
-	 * @param dst
-	 * 			表
-	 * @return
-	 */
-	public int insert(String dst, Object data, boolean checkPrimary, String ... columns);
-	public int insert(Object data, boolean checkPrimary, String ... columns);
-	public int insert(String dst, Object data, String ... columns);
-	public int insert(Object data, String ... columns);
+	public int insert(String dst, Object data, boolean checkParimary, String ... columns);
+	public int insert(Object data, boolean checkParimary, String ... columns); 
+	public int insert(String dst, Object data, String ... columns); 
+	public int insert(Object data, String ... columns); 
 	
 
-	public int batchInsert(String dst, Object data, boolean checkPrimary, String ... columns);
-	public int batchInsert(Object data, boolean checkPrimary, String ... columns);
+	public int batchInsert(String dst, Object data, boolean checkParimary, String ... columns);
+	public int batchInsert(Object data, boolean checkParimary, String ... columns);
 	public int batchInsert(String dst, Object data, String ... columns);
 	public int batchInsert(Object data, String ... columns);
-	/**
-	 * 保存(insert|update)
-	 * @param data
-	 * @param checkPrimary 是否检查主键
-	 * @param columns
-	 * @return
-	 */
-	public int save(String dst, Object data, boolean checkPrimary, String ... columns);
-	public int save(Object data, boolean checkPrimary, String ... columns);
-	public int save(String dst, Object data, String ... columns);
-	public int save(Object data, String ... columns);
-
+	/** 
+	 * 保存(insert|update) 
+	 * @param dst  dst
+	 * @param data  data
+	 * @param checkParimary 是否检查主键 
+	 * @param columns  columns
+	 * @return return
+	 */ 
+	public int save(String dst, Object data, boolean checkParimary, String ... columns); 
+	public int save(Object data, boolean checkParimary, String ... columns); 
+	public int save(String dst, Object data, String ... columns); 
+	public int save(Object data, String ... columns); 
+ 
 
 	public int execute(SQL sql, ConfigStore configs, String ... conditions);
 	public int execute(SQL sql, String ... conditions);
 	
 	
-
-
-	/**
-	 * 执行存储过程
-	 * @param procedure
-	 * @param inputs
-	 * @param outputs
-	 * @return
-	 */
-	public boolean executeProcedure(Procedure procedure);
-	/**
-	 * 根据存储过程查询
-	 * @param procedure
-	 * @param inputs
-	 * @return
-	 */
-	public DataSet queryProcedure(Procedure procedure);
+ 
+ 
+	/** 
+	 * 执行存储过程 
+	 * @param procedure  procedure
+	 * @return return
+	 */ 
+	public boolean executeProcedure(Procedure procedure); 
+	/** 
+	 * 根据存储过程查询 
+	 * @param procedure  procedure
+	 * @return return
+	 */ 
+	public DataSet queryProcedure(Procedure procedure); 
 	public int delete(String dest, Object data, String ... columns);
 	public int delete(String table, String key, Collection<Object> values);
 	public int delete(String table, String key, String ... values);
-}
+} 

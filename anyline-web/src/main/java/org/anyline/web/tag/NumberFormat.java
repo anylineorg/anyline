@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import java.math.BigDecimal;
 
 import javax.servlet.jsp.JspException;
@@ -29,30 +29,30 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-public class NumberFormat extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(NumberFormat.class);
+ 
+ 
+public class NumberFormat extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(NumberFormat.class); 
 	private String format;
 	private Object min;
-	private Object max;
-	private String def;
-
-	public String getFormat() {
-		return format;
-	}
-
-
-	public void setFormat(String format) {
-		this.format = format;
-	}
-
-
-	public int doEndTag() throws JspException {
-		try{
-			String result = "";
-			if(null == value){
+	private Object max; 
+	private String def; 
+ 
+	public String getFormat() { 
+		return format; 
+	} 
+ 
+ 
+	public void setFormat(String format) { 
+		this.format = format; 
+	} 
+ 
+ 
+	public int doEndTag() throws JspException { 
+		try{ 
+			String result = ""; 
+			if(null == value){ 
 				value = body;
 			}
 			if(BasicUtil.isEmpty(value)){
@@ -73,32 +73,32 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 						num = maxNum;
 						log.warn("[number format][超过最大值:{}]", max);
 					}
-				}
-				result = NumberUtil.format(num,format);
-				JspWriter out = pageContext.getOut();
+				} 
+				result = NumberUtil.format(num,format); 
+				JspWriter out = pageContext.getOut(); 
 				out.print(result);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_PAGE;   
-	}
-
-
-	@Override
-	public void release() {
+			} 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_PAGE;    
+	} 
+ 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		value = null;
 		format = null;
 		body = null;
 		def = null;
 		min = null;
-		max = null;
-	}
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+		max = null; 
+	} 
+	@Override 
+	protected Object clone() throws CloneNotSupportedException { 
+		return super.clone(); 
+	} 
 }

@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.dao.impl.springjdbc;
-
+package org.anyline.dao.impl.springjdbc; 
+ 
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -59,7 +59,7 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
- 
+  
 @Repository("anyline.dao")
 public class AnylineDaoImpl implements AnylineDao {
 	protected static final Logger log = LoggerFactory.getLogger(AnylineDaoImpl.class);
@@ -72,26 +72,26 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 	
 	protected BatchInsertStore batchInsertStore = new BatchInsertStore();
-	
-	protected static boolean showSQL = false;
-	protected static boolean showSQLParam = false;
-	protected static boolean showSQLWhenError = true;
+	 
+	protected static boolean showSQL = false; 
+	protected static boolean showSQLParam = false; 
+	protected static boolean showSQLWhenError = true; 
 	protected static boolean showSQLParamWhenError = true;
 	
-	protected static boolean isBatchInsertRun = false;
-	
+	protected static boolean isBatchInsertRun = false; 
+	 
 	public AnylineDaoImpl(){
-		showSQL = ConfigTable.getBoolean("SHOW_SQL",showSQL);
-		showSQLParam = ConfigTable.getBoolean("SHOW_SQL_PARAM",showSQLParam);
-		showSQLWhenError = ConfigTable.getBoolean("SHOW_SQL_WHEN_ERROR",showSQLWhenError);
+		showSQL = ConfigTable.getBoolean("SHOW_SQL",showSQL); 
+		showSQLParam = ConfigTable.getBoolean("SHOW_SQL_PARAM",showSQLParam); 
+		showSQLWhenError = ConfigTable.getBoolean("SHOW_SQL_WHEN_ERROR",showSQLWhenError); 
 		showSQLParamWhenError = ConfigTable.getBoolean("SHOW_SQL_PARAM_WHEN_ERROR",showSQLParamWhenError);
-	}
-	/**
-	 * 查询
-	 */
-	@Override
-	public DataSet query(SQL sql, ConfigStore configs, String ... conditions) {
-		DataSet set = null;
+	} 
+	/** 
+	 * 查询 
+	 */ 
+	@Override 
+	public DataSet query(SQL sql, ConfigStore configs, String ... conditions) { 
+		DataSet set = null; 
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
 		if(showSQL && !run.isValid()){
 			String tmp = "[valid:false]";
@@ -106,7 +106,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		PageNavi navi = run.getPageNavi();
 		int total = 0;
-		if(run.isValid()){
+		if(run.isValid()){ 
 			if(null != navi){
 				if(navi.getLastRow() == 0){
 					//第一条
@@ -119,24 +119,24 @@ public class AnylineDaoImpl implements AnylineDao {
 					}else{
 						total = navi.getTotalRow();
 					}
-				}
+				} 
 			}
 			if(showSQL){
 				log.warn("[查询记录总数][行数:{}]",total);
 			}
-		}
-		if(run.isValid() &&(null == navi || total > 0)){
-			set = select(run.getFinalQueryTxt(), run.getValues());
-		}else{
-			set = new DataSet();
-		}
+		} 
+		if(run.isValid() &&(null == navi || total > 0)){ 
+			set = select(run.getFinalQueryTxt(), run.getValues()); 
+		}else{ 
+			set = new DataSet(); 
+		} 
 		set.setDataSource(sql.getDataSource());
 		set.addQueryParam("query_config", configs)
 		.addQueryParam("query_condition", conditions)
 		.addQueryParam("query_order", run.getOrderStore())
 		.addQueryParam("query_column", sql.getColumns());
-//		set.setSchema(sql.getSchema());
-//		set.setTable(sql.getTable());
+//		set.setSchema(sql.getSchema()); 
+//		set.setTable(sql.getTable()); 
 		set.setNavi(navi);
 		if(null != navi && navi.isLazy()){
 			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
@@ -144,9 +144,9 @@ public class AnylineDaoImpl implements AnylineDao {
 		//自动切换回默认数据源
 		if(DataSourceHolder.isAutoDefault()){
 			DataSourceHolder.recoverDataSource();
-		}
-		return set;
-	}
+		} 
+		return set; 
+	} 
 	public DataSet query(SQL sql, String ... conditions){
 		return query(sql, null, conditions);
 	}
@@ -213,26 +213,29 @@ public class AnylineDaoImpl implements AnylineDao {
 	public boolean exists(SQL sql, String ... conditions){
 		return exists(sql, null, conditions);
 	}
-	/**
-	 * 总记录数
-	 * @return
+	/** 
+	 * 总记录数 
+	 * @param sql sql
+	 * @param values values
+	 * @return return
+	 */ 
+	protected int getTotal(String sql, List<Object> values) { 
+		int total = 0; 
+		DataSet set = select(sql,values); 
+		total = set.getInt("CNT"); 
+		return total; 
+	} 
+	/** 
+	 * 更新记录 
+	 * @param obj		需要更新的数据  row		需要更新的数据
+	 * @param dest	dest
+	 * @param columns	需要更新的列  columns	需要更新的列
+	 * @return return
 	 */
-	protected int getTotal(String sql, List<Object> values) {
-		int total = 0;
-		DataSet set = select(sql,values);
-		total = set.getInt("CNT");
-		return total;
-	}
-	/**
-	 * 更新记录
-	 * @param row		需要更新的数据
-	 * @param columns	需要更新的列
-	 * @return
-	 */
-	@Override
-	public int update(String dest, Object obj, String ... columns ){
-		if(null == obj){
-			throw new SQLUpdateException("更新空数据");
+	@Override 
+	public int update(String dest, Object obj, String ... columns ){ 
+		if(null == obj){ 
+			throw new SQLUpdateException("更新空数据"); 
 		}
 		int result = 0;
 		if(obj instanceof DataSet){
@@ -242,7 +245,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			return result;
 		}
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createUpdateTxt(dest, obj, false, columns);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createUpdateTxt(dest, obj, false, columns); 
 		String sql = run.getUpdateTxt();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:{}]",dest);
@@ -256,12 +259,12 @@ public class AnylineDaoImpl implements AnylineDao {
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
 		}
-		/*执行SQL*/
+		/*执行SQL*/ 
 		try{
 			result = getJdbc().update(sql, values.toArray());
 			if(showSQL){
 				log.warn(random + "[执行耗时:{}ms][影响行数:{}]",System.currentTimeMillis() - fr,result);
-			}
+			} 
 		}catch(Exception e){
 			e.printStackTrace();
 			if(showSQLWhenError){
@@ -274,36 +277,36 @@ public class AnylineDaoImpl implements AnylineDao {
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
-		}
-		return result;
+		} 
+		return result; 
 	}
 	@Override
 	public int update(Object data, String ... columns){
 		return update(null, data, columns);
 	}
-	/**
-	 * 保存(insert|upate)
-	 */
-	@Override
-	public int save(String dest, Object data, boolean checkPrimary, String ... columns){
-		if(null == data){
-			throw new SQLUpdateException("保存空数据");
-		}
-		if(data instanceof Collection){
-			Collection<?> items = (Collection<?>)data;
-			int cnt = 0;
-			for(Object item:items){
-				cnt += save(dest, item, checkPrimary, columns);
-			}
-			return cnt;
-		}
-		return saveObject(dest, data, checkPrimary, columns);
-		
-	}
+	/** 
+	 * 保存(insert|upate) 
+	 */ 
+	@Override 
+	public int save(String dest, Object data, boolean checkParimary, String ... columns){ 
+		if(null == data){ 
+			throw new SQLUpdateException("保存空数据"); 
+		} 
+		if(data instanceof Collection){ 
+			Collection<?> items = (Collection<?>)data; 
+			int cnt = 0; 
+			for(Object item:items){ 
+				cnt += save(dest, item, checkParimary, columns); 
+			} 
+			return cnt; 
+		} 
+		return saveObject(dest, data, checkParimary, columns); 
+		 
+	} 
 
 	@Override
-	public int save(Object data, boolean checkPrimary, String ... columns){
-		return save(null, data, checkPrimary, columns);
+	public int save(Object data, boolean checkParimary, String ... columns){
+		return save(null, data, checkParimary, columns);
 	}
 	@Override
 	public int save(String dest, Object data, String ... columns){
@@ -313,42 +316,40 @@ public class AnylineDaoImpl implements AnylineDao {
 	public int save(Object data, String ... columns){
 		return save(null, data, false, columns);
 	}
-	
-
-	protected int saveObject(String dest, Object data, boolean checkPrimary, String ... columns){
-		if(null == data){
-			return 0;
-		}
-		if(checkIsNew(data)){
-			return insert(dest, data, checkPrimary, columns);
-		}else{
-			return update(dest, data, columns);
-		}
-	}
-	protected boolean checkIsNew(Object obj){
-		if(null == obj){
-			return false;
-		}
-		if(obj instanceof DataRow){
-			DataRow row = (DataRow)obj;
-			return row.isNew();
-		}
-		return false;
-	}
-
-	/**
-	 * 添加
-	 * @param row
-	 * 			需要插入的数据
-	 * @param checkParimary
-	 * 			是否需要检查重复主键,默认不检查
-	 * @param columns
-	 * 			需要插入的列
-	 * @return
+	 
+ 
+	protected int saveObject(String dest, Object data, boolean checkParimary, String ... columns){ 
+		if(null == data){ 
+			return 0; 
+		} 
+		if(checkIsNew(data)){ 
+			return insert(dest, data, checkParimary, columns); 
+		}else{ 
+			return update(dest, data, columns); 
+		} 
+	} 
+	protected boolean checkIsNew(Object obj){ 
+		if(null == obj){ 
+			return false; 
+		} 
+		if(obj instanceof DataRow){ 
+			DataRow row = (DataRow)obj; 
+			return row.isNew(); 
+		} 
+		return false; 
+	} 
+ 
+	/** 
+	 * 添加 
+	 * @param checkParimary   是否需要检查重复主键,默认不检查 
+	 * @param columns  需要插入的列 
+	 * @param dest  dest
+	 * @param data  data
+	 * @return return
 	 */
-	@Override
-	public int insert(String dest, Object data, boolean checkPrimary, String ... columns){
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createInsertTxt(dest, data, checkPrimary, columns);
+	@Override 
+	public int insert(String dest, Object data, boolean checkParimary, String ... columns){
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createInsertTxt(dest, data, checkParimary, columns);
 		if(null == run){
 			return 0;
 		}
@@ -401,12 +402,12 @@ public class AnylineDaoImpl implements AnylineDao {
 				DataSourceHolder.recoverDataSource();
 			}
 		}
-		return cnt;
+		return cnt; 
 	}
 
 	@Override
-	public int insert(Object data, boolean checkPrimary, String ... columns){
-		return insert(null, data, checkPrimary, columns);
+	public int insert(Object data, boolean checkParimary, String ... columns){
+		return insert(null, data, checkParimary, columns);
 	}
 	@Override
 	public int insert(String dest, Object data, String ... columns){
@@ -418,7 +419,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 
 	@Override
-	public int batchInsert(final String dest, final Object data, final boolean checkPrimary, final String ... columns){
+	public int batchInsert(final String dest, final Object data, final boolean checkParimary, final String ... columns){
 		if(null == data){
 			return 0;
 		}
@@ -426,7 +427,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			DataSet set = (DataSet)data;
 			int size = set.size();
 			for(int i=0; i<size; i++){
-				batchInsert(dest, set.getRow(i), checkPrimary, columns);
+				batchInsert(dest, set.getRow(i), checkParimary, columns);
 			}
 		}
 		String table = SQLCreaterUtil.getCreater(getJdbc()).getDataSource(data);
@@ -447,7 +448,7 @@ public class AnylineDaoImpl implements AnylineDao {
 							while(true){
 								DataSet list = batchInsertStore.getDatas();
 								if(null != list && list.size()>0){
-									insert(dest, list, checkPrimary, columns);
+									insert(dest, list, checkParimary, columns);
 								}else{
 									Thread.sleep(1000*10);
 								}
@@ -464,8 +465,8 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 
 	@Override
-	public int batchInsert(Object data, boolean checkPrimary, String ... columns){
-		return batchInsert(null, data, checkPrimary, columns);
+	public int batchInsert(Object data, boolean checkParimary, String ... columns){
+		return batchInsert(null, data, checkParimary, columns);
 	}
 	@Override
 	public int batchInsert(String dest, Object data, String ... columns){
@@ -475,51 +476,51 @@ public class AnylineDaoImpl implements AnylineDao {
 	public int batchInsert(Object data, String ... columns){
 		return batchInsert(null, data, false, columns);
 	}
-	protected void setPrimaryValue(Object obj, int value){
-		if(null == obj){
-			return;
-		}
-		if(obj instanceof DataRow){
-			DataRow row = (DataRow)obj;
-			row.put(row.getPrimaryKey(), value);
-		}else{
-//			String key = BeanUtil.getPrimaryKey(obj.getClass());
-//			BeanUtil.setFieldValue(obj, key, value);
-		}
-	}
-	/**
-	 * 查询
-	 * @param sql
-	 * @param values
-	 * @return
-	 */
-	protected DataSet select(String sql, List<Object> values){
-		if(BasicUtil.isEmpty(sql)){
-			throw new SQLQueryException("未指定SQL");
+	protected void setPrimaryValue(Object obj, int value){ 
+		if(null == obj){ 
+			return; 
+		} 
+		if(obj instanceof DataRow){ 
+			DataRow row = (DataRow)obj; 
+			row.put(row.getPrimaryKey(), value); 
+		}else{ 
+//			String key = BeanUtil.getPrimaryKey(obj.getClass()); 
+//			BeanUtil.setFieldValue(obj, key, value); 
+		} 
+	} 
+	/** 
+	 * 查询 
+	 * @param sql  sql
+	 * @param values  values
+	 * @return return
+	 */ 
+	protected DataSet select(String sql, List<Object> values){ 
+		if(BasicUtil.isEmpty(sql)){ 
+			throw new SQLQueryException("未指定SQL"); 
 		}
 		long fr = System.currentTimeMillis();
-		String random = "";
+		String random = ""; 
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
-		}
-		DataSet set = new DataSet();
+		} 
+		DataSet set = new DataSet(); 
 		try{
-			List<Map<String,Object>> list = null;
-			if(null != values && values.size()>0){
-				list = getJdbc().queryForList(sql, values.toArray());
-			}else{
-				list = getJdbc().queryForList(sql);
+			List<Map<String,Object>> list = null; 
+			if(null != values && values.size()>0){ 
+				list = getJdbc().queryForList(sql, values.toArray()); 
+			}else{ 
+				list = getJdbc().queryForList(sql); 
 			}
 			long mid = System.currentTimeMillis();
 			if(showSQL){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
-			}
-	        for(Map<String,Object> map:list){
+			} 
+	        for(Map<String,Object> map:list){ 
 	        	DataRow row = new DataRow(map);
-	        	row.clearUpdateColumns();
-	        	set.add(row);
+	        	row.clearUpdateColumns(); 
+	        	set.add(row); 
 	        }
             set.setDatalink(DataSourceHolder.getDataSource());
 			if(showSQL){
@@ -533,8 +534,8 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
 			}
 			throw new SQLQueryException("查询异常:" + e + "\ntxt:" + sql + "\nparam:" + values);
-		}
-		return set;
+		} 
+		return set; 
 	}
 	@Override
 	public int execute(SQL sql, ConfigStore configs, String ... conditions){
@@ -585,12 +586,12 @@ public class AnylineDaoImpl implements AnylineDao {
 		return execute(sql, null, conditions);
 	}
 	@SuppressWarnings("unchecked")
-	@Override
+	@Override 
 	public boolean executeProcedure(Procedure procedure){
-		boolean result = false;
-		List<Object> list = new ArrayList<Object>();
-		final List<String> inputValues = procedure.getInputValues();
-		final List<Integer> inputTypes = procedure.getInputTypes();
+		boolean result = false; 
+		List<Object> list = new ArrayList<Object>(); 
+		final List<String> inputValues = procedure.getInputValues(); 
+		final List<Integer> inputTypes = procedure.getInputTypes(); 
 		final List<Integer> outputTypes = procedure.getOutputTypes();
 		long fr = System.currentTimeMillis();
 		String random = "";
@@ -658,18 +659,17 @@ public class AnylineDaoImpl implements AnylineDao {
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
-		}
-		return result;
-	}
-
-	/**
-	 * 根据存储过程查询(MSSQL AS 后必须加 SET NOCOUNT ON)
-	 * @param procedure
-	 * @param inputs
-	 * @return
-	 */
-	@Override
-	public DataSet queryProcedure(final Procedure procedure){
+		} 
+		return result; 
+	} 
+ 
+	/** 
+	 * 根据存储过程查询(MSSQL AS 后必须加 SET NOCOUNT ON) 
+	 * @param procedure  procedure
+	 * @return return
+	 */ 
+	@Override 
+	public DataSet queryProcedure(final Procedure procedure){ 
 		final List<String> inputValues = procedure.getInputValues();
 		final List<Integer> inputTypes = procedure.getInputTypes();
 		final List<Integer> outputTypes = procedure.getOutputTypes();
@@ -749,9 +749,9 @@ public class AnylineDaoImpl implements AnylineDao {
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
-		}
-		return set;
-	}
+		} 
+		return set; 
+	} 
 
 	public int delete(String table, String key, Collection<Object> values){
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(table, key, values);
@@ -769,11 +769,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		int result = exeDelete(run);
 		return result;
 	}
-	@Override
-	public int delete(String dest, Object data, String... columns) {
+	@Override 
+	public int delete(String dest, Object data, String... columns) { 
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(dest, data, columns);
-		int result = exeDelete(run);
-		return result;
+		int result = exeDelete(run); 
+		return result; 
 	}
 	protected int exeDelete(RunSQL run){
 		int result = 0;
@@ -821,8 +821,8 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 	/**
 	 * 参数日志格式化
-	 * @param params
-	 * @return
+	 * @param params params
+	 * @return return
 	 */
 	protected String paramLogFormat(List<?> params){
 		String result = "";

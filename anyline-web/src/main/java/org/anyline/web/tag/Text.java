@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import java.util.List;
 
 import javax.servlet.jsp.JspException;
@@ -29,26 +29,26 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-
-
-public class Text extends BaseBodyTag{
-	private static final long serialVersionUID = 1554109844585627661L;
-	
+ 
+ 
+public class Text extends BaseBodyTag{ 
+	private static final long serialVersionUID = 1554109844585627661L; 
+	 
 	private Object data;
-	private int index = -1;
+	private int index = -1; 
 	private String property;
 	private String selector;
 	private String nvl = null;
-	private String evl = null;
-	
-	public int doStartTag() throws JspException {
-        return EVAL_BODY_BUFFERED;
-    }
+	private String evl = null; 
+	 
+	public int doStartTag() throws JspException { 
+        return EVAL_BODY_BUFFERED; 
+    } 
 	 public int doEndTag() throws JspException {
-		//输出
+		//输出 
 		JspWriter out = pageContext.getOut();
 		try{
-			Object result = null;
+			Object result = null; 
 			if(data instanceof DataSet){
 				DataSet set = (DataSet)data;
 				if(index > -1 && index<set.size()){
@@ -81,15 +81,15 @@ public class Text extends BaseBodyTag{
 			}
 			
 			out.print(result);
-		}catch(Exception e){
-		
-		}finally{
-			release();
-		}
-		return EVAL_PAGE;   
-	}
-	@Override
-    public void release(){
+		}catch(Exception e){ 
+		 
+		}finally{ 
+			release(); 
+		} 
+		return EVAL_PAGE;    
+	} 
+	@Override 
+    public void release(){ 
 		super.release();
 		data = null;
 		property = null;
@@ -133,6 +133,6 @@ public class Text extends BaseBodyTag{
 	}
 	public void setEvl(String evl) {
 		this.evl = evl;
-	}
-
+	} 
+ 
 }
