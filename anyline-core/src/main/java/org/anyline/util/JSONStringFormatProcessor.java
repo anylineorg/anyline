@@ -15,36 +15,36 @@
  *
  *          
  */
-package org.anyline.util;
-
+package org.anyline.util; 
+ 
 import java.sql.Timestamp;
 import java.util.Date;
 
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
-
-public class JSONStringFormatProcessor implements JsonValueProcessor {  
-      
-    public JSONStringFormatProcessor() {  
-        super();  
-    }  
-      
-    public JSONStringFormatProcessor(String format) {  
-        super();  
-    }  
-  
-    public Object processArrayValue(Object paramObject, JsonConfig paramJsonConfig) {  
-        return process(paramObject);  
-    }  
-  
-    public Object processObjectValue(String paramString, Object paramObject,  
-            JsonConfig paramJsonConfig) {  
-        return process(paramObject);  
-    }  
-      
-      
+ 
+public class JSONStringFormatProcessor implements JsonValueProcessor {   
+       
+    public JSONStringFormatProcessor() {   
+        super();   
+    }   
+       
+    public JSONStringFormatProcessor(String format) {   
+        super();   
+    }   
+   
+    public Object processArrayValue(Object paramObject, JsonConfig paramJsonConfig) {   
+        return process(paramObject);   
+    }   
+   
+    public Object processObjectValue(String paramString, Object paramObject,   
+            JsonConfig paramJsonConfig) {   
+        return process(paramObject);   
+    }   
+       
+       
     private Object process(Object value){ 
-        return value == null ? "" : value;    
-    }  
-  
+        return value == null ? "" : value;     
+    }   
+   
 }  

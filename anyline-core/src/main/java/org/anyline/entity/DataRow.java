@@ -15,7 +15,7 @@
  *
  *          
  */
-package org.anyline.entity;
+package org.anyline.entity; 
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -43,10 +43,10 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-public class DataRow extends HashMap<String, Object> implements Serializable{
+ 
+public class DataRow extends HashMap<String, Object> implements Serializable{ 
 	private static final long serialVersionUID = -2098827041540802313L;
-	protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
+	protected static final Logger log = LoggerFactory.getLogger(DataRow.class); 
 
 	public static enum KEY_CASE{
 		DEFAULT				{public String getCode(){return "DEFAULT";} 	public String getName(){return "默认";}},
@@ -54,26 +54,26 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		LOWER				{public String getCode(){return "LOWER";} 	public String getName(){return "强制小写";}};
 		public abstract String getName();
 		public abstract String getCode();
-	}
-	public static String PARENT 			= "PARENT"						; //上级数据
-	public static String ALL_PARENT 		= "ALL_PARENT"					; //所有上级数据
-	public static String CHILDREN 			= "CHILDREN"					; //子数据
-	public static String PRIMARY_KEY		= ConfigTable.getString("DEFAULT_PRIMARY_KEY","id");
-	public static String ITEMS				= "ITEMS"						;
-	private DataSet container				= null							; //包含当前对象的容器
-
+	} 
+	public static String PARENT 			= "PARENT"						; //上级数据 
+	public static String ALL_PARENT 		= "ALL_PARENT"					; //所有上级数据 
+	public static String CHILDREN 			= "CHILDREN"					; //子数据 
+	public static String PRIMARY_KEY		= ConfigTable.getString("DEFAULT_PRIMARY_KEY","id"); 
+	public static String ITEMS				= "ITEMS"						; 
+	private DataSet container				= null							; //包含当前对象的容器 
+ 
 	private List<String> primaryKeys 		= new ArrayList<String>()		; //主键
 	private List<String> updateColumns 		= new ArrayList<String>()		;
-	private String datalink					= null							;
-	private String dataSource				= null 							; //数据源(表|视图|XML定义SQL)
-	private String schema					= null							;
+	private String datalink					= null							; 
+	private String dataSource				= null 							; //数据源(表|视图|XML定义SQL) 
+	private String schema					= null							; 
 	private String table					= null							;
 	private Map<String, Object> queryParams	= new HashMap<String,Object>()	; //查询条件
-	private Map<String, Object> attributes 	= new HashMap<String,Object>()	; //属性
+	private Map<String, Object> attributes 	= new HashMap<String,Object>()	; //属性 
 	private Object clientTrace				= null							; //客户端数据
 	private long createTime 				= 0								; //创建时间
-	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-	protected Boolean isNew 				= false							; //强制新建(适应hibernate主键策略)
+	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期 
+	protected Boolean isNew 				= false							; //强制新建(适应hibernate主键策略) 
 	protected boolean isFromCache 			= false							; //是否来自缓存
 
 	private boolean updateNullColumn 		= ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
@@ -102,9 +102,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 解析实体类对象
-	 * @param obj
+	 * @param obj obj
 	 * @param keys 列名:obj属性名 "ID:memberId"
-	 * @return
+	 * @return return
 	 */
 	public static DataRow parse(Object obj, String ... keys){
 		Map<String,String> map = new HashMap<String,String>();
@@ -143,8 +143,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 解析json结构字符
-	 * @param json
-	 * @return
+	 * @param json json
+	 * @return return
 	 */
 	public static DataRow parseJson(String json){
 		if(null != json){
@@ -158,8 +158,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 解析JSONObject
-	 * @param json
-	 * @return
+	 * @param json json
+	 * @return return
 	 */
 	public static DataRow parseJson(JSONObject json){
 		DataRow row = new DataRow();
@@ -196,8 +196,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * 所以不能解析DataRow,所以条目不能放入DataSet中
 	 * {keys:[1,2,3]}
 	 * {user:[{code:1},[code:2]]}
-	 * @param array
-	 * @return
+	 * @param array array
+	 * @return return
 	 */
 	public static List<Object> parseJson(JSONArray array){
 		List<Object> list = new ArrayList<Object>();
@@ -219,9 +219,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 
 
 	/**
-	 * 解析json结构字符
-	 * @param json
-	 * @return
+	 * 解析xml结构字符
+	 * @param xml xml
+	 * @return return
 	 */
 	public static DataRow parseXml(String xml){
 		if(null != xml){
@@ -235,9 +235,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return null;
 	}
 	/**
-	 * 解析JSONObject
-	 * @param json
-	 * @return
+	 * 解析xml
+	 * @param element element
+	 * @return return
 	 */
 	public static DataRow parseXml(Element element){
 		DataRow row = new DataRow();
@@ -289,8 +289,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 解析JSON集合
-	 * @param array
-	 * @return
+	 * @param array array
+	 * @return return
 	 */
 	public static List<Object> parseXml(JSONArray array){
 		List<Object> list = new ArrayList<Object>();
@@ -311,22 +311,22 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 创建时间
-	 * @return
-	 */
+	 * @return return
+	 */ 
 	public long getCreateTime(){
 		return createTime;
 	}
 	/**
 	 * 过期时间
-	 * @return
+	 * @return return
 	 */
 	public long getExpires() {
 		return expires;
 	}
 	/**
 	 * 设置过期时间
-	 * @param millisecond
-	 * @return
+	 * @param millisecond millisecond
+	 * @return return
 	 */
 	public DataRow setExpires(long millisecond) {
 		this.expires = millisecond;
@@ -338,9 +338,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 合并数据
-	 * @param row 
+	 * @param row  row
 	 * @param over key相同时是否覆盖原数据
-	 * @return
+	 * @return return
 	 */
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
@@ -356,37 +356,37 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 是否是新数据
-	 * @return
-	 */
-	public Boolean isNew() {
-		String pk = getPrimaryKey();
-		String pv = getString(pk);
-		return (null == pv ||(null == isNew)|| isNew || BasicUtil.isEmpty(pv));
+	 * @return return
+	 */ 
+	public Boolean isNew() { 
+		String pk = getPrimaryKey(); 
+		String pv = getString(pk); 
+		return (null == pv ||(null == isNew)|| isNew || BasicUtil.isEmpty(pv)); 
 	}
 	/**
 	 * 是否来自缓存
-	 * @return
+	 * @return return
 	 */
 	public boolean isFromCache(){
 		return isFromCache;
 	}
 	/**
 	 * 设置是否来自缓存
-	 * @param bol
-	 * @return
+	 * @param bol bol
+	 * @return return
 	 */
 	public DataRow setIsFromCache(boolean bol){
 		this.isFromCache = bol;
 		return this;
-	}
-	public String getCd(){
-		return getString("cd");
+	} 
+	public String getCd(){ 
+		return getString("cd"); 
 	}
 	public String getId(){
 		return getString("id");
-	}
-	public String getCode(){
-		return getString("code");
+	} 
+	public String getCode(){ 
+		return getString("code"); 
 	}
 	public String getNm(){
 		return getString("nm");
@@ -399,23 +399,23 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 默认子集
-	 * @return
-	 */
-	public DataSet getItems(){
-		Object items = get(ITEMS);
-		if(items instanceof DataSet){
-			return (DataSet)items;
-		}
-		return null;
-	}
-	public DataRow putItems(Object obj){
+	 * @return return
+	 */ 
+	public DataSet getItems(){ 
+		Object items = get(ITEMS); 
+		if(items instanceof DataSet){ 
+			return (DataSet)items; 
+		} 
+		return null; 
+	} 
+	public DataRow putItems(Object obj){ 
 		put(ITEMS,obj);
-		return this;
+		return this; 
 	}
 	/**
 	 * key转换成小写
-	 * @param keys
-	 * @return
+	 * @param keys keys
+	 * @return return
 	 */
 	public DataRow toLowerKey(String ... keys){
 		if(null != keys && keys.length>0){
@@ -436,8 +436,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * key转换成大写
-	 * @param keys
-	 * @return
+	 * @param keys keys
+	 * @return return
 	 */
 	public DataRow toUpperKey(String ... keys){
 		if(null != keys && keys.length>0){
@@ -458,9 +458,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 数字格式化
-	 * @param format
-	 * @param cols
-	 * @return
+	 * @param format format
+	 * @param cols cols
+	 * @return return
 	 */
 	public DataRow formatNumber(String format, String ... cols){
 		if(null == cols || BasicUtil.isEmpty(format)){
@@ -477,9 +477,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 日期格式化
-	 * @param format
-	 * @param cols
-	 * @return
+	 * @param format format
+	 * @param cols cols
+	 * @return return
 	 */
 	public DataRow formatDate(String format, String ... cols){
 		if(null == cols || BasicUtil.isEmpty(format)){
@@ -496,8 +496,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 指定列是否为空
-	 * @param key
-	 * @return
+	 * @param key key
+	 * @return return
 	 */
 	public boolean isNull(String key){
 		Object obj = get(key);
@@ -512,12 +512,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public boolean isNotEmpty(String key){
 		return !isEmpty(key);
-	}
+	} 
 	
 	/**
 	 * 添加主键
 	 * @param applyContainer 是否应用到上级容器 默认false
-	 * @param primary
+	 * @param pks pks
+	 * @return return
 	 */
 	public DataRow addPrimaryKey(boolean applyContainer, String ... pks){
 		if(null != pks){
@@ -588,92 +589,92 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public DataRow setPrimaryKey(Collection<String> pks){
 		return setPrimaryKey(false, pks);
-	}
-	/**
-	 * 读取主键
-	 * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键
-	 * @return
-	 */
-	public List<String> getPrimaryKeys(){
-		/*有主键直接返回*/
-		if(hasSelfPrimaryKeys()){
-			return primaryKeys;
-		}
-		
-		/*处于容器中并且容器有主键,返回容器主键*/
-		if(hasContainer() && getContainer().hasPrimaryKeys()){
-			return getContainer().getPrimaryKeys();
-		}
-		
-		/*本身与容器都没有主键 返回默认主键*/
-		List<String> defaultPrimary = new ArrayList<String>();
-		String configKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
-		if(null != configKey && !configKey.trim().equals("")){
-			defaultPrimary.add(configKey);	
-		}
-
-		return defaultPrimary;
-	}
-	public String getPrimaryKey(){
-		List<String> keys = getPrimaryKeys();
-		if(null != keys && keys.size()>0){
-			return keys.get(0); 
-		}
-		return null;
-	}
-	/**
-	 * 主键值
-	 * @return
-	 */
-	public List<Object> getPrimaryValues(){
-		List<Object> values = new ArrayList<Object>();
-		List<String> keys = getPrimaryKeys();
-		if(null != keys){
-			for(String key:keys){
-				values.add(get(key));
-			}
-		}
-		return values;
-	}
-	public Object getPrimaryValue(){
-		String key = getPrimaryKey();
-		if(null != key){
-			return get(key);
-		}
-		return null;
-	}
-	/**
-	 * 是否有主键
-	 * @return
-	 */
-	public boolean hasPrimaryKeys(){
-		if(hasSelfPrimaryKeys()){
-			return true;
-		}
-		if(null != getContainer()){
-			return getContainer().hasPrimaryKeys();
-		}
-		if(keys().contains(ConfigTable.getString("DEFAULT_PRIMARY_KEY"))){
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * 自身是否有主键
-	 * @return
-	 */
-	public boolean hasSelfPrimaryKeys(){
-		if(null != primaryKeys && primaryKeys.size()>0){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	
-	/**
-	 * 读取数据源
-	 * 数据源为空时,读取容器数据源
-	 * @return
+	} 
+	/** 
+	 * 读取主键 
+	 * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键 
+	 * @return return
+	 */ 
+	public List<String> getPrimaryKeys(){ 
+		/*有主键直接返回*/ 
+		if(hasSelfPrimaryKeys()){ 
+			return primaryKeys; 
+		} 
+		 
+		/*处于容器中并且容器有主键,返回容器主键*/ 
+		if(hasContainer() && getContainer().hasPrimaryKeys()){ 
+			return getContainer().getPrimaryKeys(); 
+		} 
+		 
+		/*本身与容器都没有主键 返回默认主键*/ 
+		List<String> defaultPrimary = new ArrayList<String>(); 
+		String configKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY"); 
+		if(null != configKey && !configKey.trim().equals("")){ 
+			defaultPrimary.add(configKey);	 
+		} 
+ 
+		return defaultPrimary; 
+	} 
+	public String getPrimaryKey(){ 
+		List<String> keys = getPrimaryKeys(); 
+		if(null != keys && keys.size()>0){ 
+			return keys.get(0);  
+		} 
+		return null; 
+	} 
+	/** 
+	 * 主键值 
+	 * @return return
+	 */ 
+	public List<Object> getPrimaryValues(){ 
+		List<Object> values = new ArrayList<Object>(); 
+		List<String> keys = getPrimaryKeys(); 
+		if(null != keys){ 
+			for(String key:keys){ 
+				values.add(get(key)); 
+			} 
+		} 
+		return values; 
+	} 
+	public Object getPrimaryValue(){ 
+		String key = getPrimaryKey(); 
+		if(null != key){ 
+			return get(key); 
+		} 
+		return null; 
+	} 
+	/** 
+	 * 是否有主键 
+	 * @return return
+	 */ 
+	public boolean hasPrimaryKeys(){ 
+		if(hasSelfPrimaryKeys()){ 
+			return true; 
+		} 
+		if(null != getContainer()){ 
+			return getContainer().hasPrimaryKeys(); 
+		} 
+		if(keys().contains(ConfigTable.getString("DEFAULT_PRIMARY_KEY"))){ 
+			return true; 
+		} 
+		return false; 
+	} 
+	/** 
+	 * 自身是否有主键 
+	 * @return return
+	 */ 
+	public boolean hasSelfPrimaryKeys(){ 
+		if(null != primaryKeys && primaryKeys.size()>0){ 
+			return true; 
+		}else{ 
+			return false; 
+		} 
+	} 
+	 
+	/** 
+	 * 读取数据源 
+	 * 数据源为空时,读取容器数据源 
+	 * @return return
 	 */
 	public String getDataSource() {
 		String ds = table;
@@ -694,109 +695,111 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return getContainer().getDatalink();
 		}
 		return datalink;
-	}
-
-	/**
-	 * 设置数据源
-	 * 当前对象处于容器中时,设置容器数据源
-	 * @param dataSource
-	 */
-	public DataRow setDataSource(String dataSource){
-		if(null == dataSource){
-			return this;
+	} 
+ 
+	/** 
+	 * 设置数据源 
+	 * 当前对象处于容器中时,设置容器数据源 
+	 * @param dataSource  dataSource
+	 * @return return
+	 */ 
+	public DataRow setDataSource(String dataSource){ 
+		if(null == dataSource){ 
+			return this; 
+		} 
+		if(null  != getContainer()){ 
+			getContainer().setDataSource(dataSource); 
+		}else{ 
+			this.dataSource = dataSource; 
+			if(dataSource.contains(".") && !dataSource.contains(":")){ 
+				schema = dataSource.substring(0,dataSource.indexOf(".")); 
+				table = dataSource.substring(dataSource.indexOf(".") + 1); 
+			} 
 		}
-		if(null  != getContainer()){
-			getContainer().setDataSource(dataSource);
-		}else{
-			this.dataSource = dataSource;
-			if(dataSource.contains(".") && !dataSource.contains(":")){
-				schema = dataSource.substring(0,dataSource.indexOf("."));
-				table = dataSource.substring(dataSource.indexOf(".") + 1);
-			}
-		}
-		return this;
-	}
-	/**
-	 * 子类
-	 * @return
-	 */
-	public Object getChildren(){
-		return get(CHILDREN);
-	}
-	public DataRow setChildren(Object children){
+		return this; 
+	} 
+	/** 
+	 * 子类 
+	 * @return return
+	 */ 
+	public Object getChildren(){ 
+		return get(CHILDREN); 
+	} 
+	public DataRow setChildren(Object children){ 
 		put(CHILDREN, children);
-		return this;
-	}
-	/**
-	 * 父类
-	 * @return
-	 */
-	public Object getParent(){
-		return get(PARENT);
-	}
-	public DataRow setParent(Object parent){
+		return this; 
+	} 
+	/** 
+	 * 父类 
+	 * @return return
+	 */ 
+	public Object getParent(){ 
+		return get(PARENT); 
+	} 
+	public DataRow setParent(Object parent){ 
 		put(PARENT,parent);
-		return this;
-	}
-	/**
-	 * 所有上级数据(递归)
-	 * @return
-	 */
-	public List<Object> getAllParent(){
-		if(null != get(ALL_PARENT)){
-			return (List<Object>)get(ALL_PARENT);
-		}
-		List<Object> parents = new ArrayList<Object>();
-		Object parent = getParent();
-		if(null != parent){
-			parents.add(parent);
-			if(parent instanceof DataRow){
-				DataRow tmp = (DataRow)parent;
-				parents.addAll(tmp.getAllParent());
-			}
-		}
-		return parents;
-	}
-	/**
-	 * 转换成对象
-	 * @param clazz
-	 * @return
-	 */
-	public <T> T entity(Class<T> clazz){
-		T entity = null;
-		if(null == clazz){
-			return entity;
-		}
-		try {
-			entity = (T)clazz.newInstance();
-			/*读取类属性*/
-			List<Field> fields = BeanUtil.getFields(clazz);		
+		return this; 
+	} 
+	/** 
+	 * 所有上级数据(递归) 
+	 * @return return
+	 */ 
+	public List<Object> getAllParent(){ 
+		if(null != get(ALL_PARENT)){ 
+			return (List<Object>)get(ALL_PARENT); 
+		} 
+		List<Object> parents = new ArrayList<Object>(); 
+		Object parent = getParent(); 
+		if(null != parent){ 
+			parents.add(parent); 
+			if(parent instanceof DataRow){ 
+				DataRow tmp = (DataRow)parent; 
+				parents.addAll(tmp.getAllParent()); 
+			} 
+		} 
+		return parents; 
+	} 
+	/** 
+	 * 转换成对象 
+	 * @param <T>  T
+	 * @param clazz  clazz
+	 * @return return
+	 */ 
+	public <T> T entity(Class<T> clazz){ 
+		T entity = null; 
+		if(null == clazz){ 
+			return entity; 
+		} 
+		try { 
+			entity = (T)clazz.newInstance(); 
+			/*读取类属性*/ 
+			List<Field> fields = BeanUtil.getFields(clazz);		 
 			for(Field field:fields){
 				if(Modifier.isStatic(field.getModifiers())){
 					continue;
-				}
-				/*取request参数值*/
-//				String column = BeanUtil.getColumn(field, false, false);
+				} 
+				/*取request参数值*/ 
+//				String column = BeanUtil.getColumn(field, false, false); 
 //				Object value = get(column);
-				Object value = get(field.getName());
-				/*属性赋值*/
-				BeanUtil.setFieldValue(entity, field, value);
-			}//end 自身属性
-		} catch (InstantiationException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return entity;
+				Object value = get(field.getName()); 
+				/*属性赋值*/ 
+				BeanUtil.setFieldValue(entity, field, value); 
+			}//end 自身属性 
+		} catch (InstantiationException e) { 
+			e.printStackTrace(); 
+		} catch (IllegalAccessException e) { 
+			e.printStackTrace(); 
+		} catch (SecurityException e) { 
+			e.printStackTrace(); 
+		} catch (Exception e) { 
+			e.printStackTrace(); 
+		} 
+		return entity; 
 	}
 	/**
 	 * 是否有指定的key
-	 * @param key
-	 * @return
+	 * @param key key
+	 * @return return
 	 */
 	public boolean has(String key){
 		return get(key) != null;
@@ -809,13 +812,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public boolean containsKey(String key){
 		return keys().contains(key);
-	}
-	public List<String> keys(){
-		List<String> keys = new ArrayList<String>();
-		for(Iterator<String> itr=this.keySet().iterator(); itr.hasNext();){
-			keys.add(itr.next());
-		}
-		return keys;
+	} 
+	public List<String> keys(){ 
+		List<String> keys = new ArrayList<String>(); 
+		for(Iterator<String> itr=this.keySet().iterator(); itr.hasNext();){ 
+			keys.add(itr.next()); 
+		} 
+		return keys; 
 	}
 	public DataRow put(KEY_CASE keyCase, String key, Object value){
 		if(null != key){
@@ -830,18 +833,19 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				if(BasicUtil.isNotEmpty(value)){
 					addUpdateColumns(key);
 				}
-			}
+			} 
 		}
-		return this;
+		return this; 
 	}
 
 	/**
 	 * 
-	 * @param key
-	 * @param value
-	 * @param pk		是否是主键
+	 * @param keyCase keyCase
+	 * @param key key
+	 * @param value value
+	 * @param pk		是否是主键 pk		是否是主键
 	 * @param override	是否覆盖之前的主键(追加到primaryKeys) 默认覆盖(单一主键)
-	 * @return
+	 * @return return
 	 */
 	public Object put(KEY_CASE keyCase, String key, Object value, boolean pk, boolean override){
 		if(pk){
@@ -885,12 +889,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public Object getAttribute(String key){
 		return attributes.get(key);
 	}
-	public Object get(String key){
-		Object result = null;
-		if(null != key){
-			result = super.get(key(key));
-		}
-		return result;
+	public Object get(String key){ 
+		Object result = null; 
+		if(null != key){ 
+			result = super.get(key(key)); 
+		} 
+		return result; 
 	}
 	public DataRow getRow(String key){
 		if(null == key){
@@ -930,63 +934,63 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return (List<?>)obj;
 		}
 		return null;
-	}
-	public String getStringNvl(String key, String ... defs){
-		String result = getString(key);
-		if(BasicUtil.isEmpty(result)){
-			if(null == defs || defs.length == 0){
-				result = "";
-			}else{
-				result = BasicUtil.nvl(defs).toString();
-			}
-		}
-		return result;
-	}
-	public String getString(String key){
+	} 
+	public String getStringNvl(String key, String ... defs){ 
+		String result = getString(key); 
+		if(BasicUtil.isEmpty(result)){ 
+			if(null == defs || defs.length == 0){ 
+				result = ""; 
+			}else{ 
+				result = BasicUtil.nvl(defs).toString(); 
+			} 
+		} 
+		return result; 
+	} 
+	public String getString(String key){ 
 		String result = null;
 		if(null == key){
 			return result;
 		}
 		if(key.contains("{") && key.contains("}")){
 			result = BeanUtil.parseFinalValue(this,key);
-		}else{
+		}else{ 
 			Object value = get(key);
 			if(null != value){
 				result = value.toString();
 			}
-		}
-		return result;
+		} 
+		return result; 
 	}
 	/**
 	 * boolean类型true 解析成 1
-	 * @param key
-	 * @return
-	 */
-	public int getInt(String key){
-		int result = 0;
+	 * @param key key
+	 * @return return
+	 */ 
+	public int getInt(String key){ 
+		int result = 0; 
 		try{
 			Object val = get(key);
 			if(null != val){
 				if(val instanceof Boolean && (Boolean)val){
 					result = 1;
-				}else{
+				}else{ 
 					result = (int)getDouble(key);
 				}
-			}
-		}catch(Exception e){
-			result = 0;
-		}
-		return result;
-	}
-	public double getDouble(String key){
-		double result = 0;
-		Object value = get(key);
-		try{
-			result = Double.parseDouble(value.toString());
-		}catch(Exception e){
-			result = 0;
-		}
-		return result;
+			} 
+		}catch(Exception e){ 
+			result = 0; 
+		} 
+		return result; 
+	} 
+	public double getDouble(String key){ 
+		double result = 0; 
+		Object value = get(key); 
+		try{ 
+			result = Double.parseDouble(value.toString()); 
+		}catch(Exception e){ 
+			result = 0; 
+		} 
+		return result; 
 	}
 	public long getLong(String key){
 		long result = 0;
@@ -1052,10 +1056,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return null;
 		}
 		return DateUtil.parse(date);
-	}
-	/**
-	 * 转换成json格式
-	 * @return
+	} 
+	/** 
+	 * 转换成json格式 
+	 * @return return
 	 */
 	public String toJSON(){
 		return BeanUtil.map2json(this);
@@ -1086,7 +1090,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * null值替换成""
-	 * @return
+	 * @return return
 	 */
 	public DataRow nvl(){
 		List<String> keys = keys();
@@ -1097,74 +1101,74 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
-	/**
-	 * 轮换成xml格式
-	 * @return
+	/** 
+	 * 轮换成xml格式 
+	 * @return return
 	 */
 	public String toXML(){
 		return BeanUtil.map2xml(this);
 	}
 	public String toXML(boolean border, boolean order){
 		return BeanUtil.map2xml(this, border, order);
-	}
-	/**
-	 * 是否处于容器内
-	 * @return
-	 */
-	public boolean hasContainer(){
-		if(null != getContainer()){
-			return true;
-		}else{
-			return false;
-		}
-	}
-	/**
-	 * 包含当前对象的容器
-	 * @return
-	 */
-	public DataSet getContainer() {
-		return container;
-	}
-	public DataRow setContainer(DataSet container) {
+	} 
+	/** 
+	 * 是否处于容器内 
+	 * @return return
+	 */ 
+	public boolean hasContainer(){ 
+		if(null != getContainer()){ 
+			return true; 
+		}else{ 
+			return false; 
+		} 
+	} 
+	/** 
+	 * 包含当前对象的容器 
+	 * @return return
+	 */ 
+	public DataSet getContainer() { 
+		return container; 
+	} 
+	public DataRow setContainer(DataSet container) { 
 		this.container = container;
-		return this;
-	}
-	public Object getClientTrace() {
-		return clientTrace;
-	}
-	public DataRow setClientTrace(Object clientTrace) {
+		return this; 
+	} 
+	public Object getClientTrace() { 
+		return clientTrace; 
+	} 
+	public DataRow setClientTrace(Object clientTrace) { 
 		this.clientTrace = clientTrace;
-		return this;
-	}
-	public String getSchema() {
-		if(null != schema){
-			return schema;
+		return this; 
+	} 
+	public String getSchema() { 
+		if(null != schema){ 
+			return schema; 
 		}else{
 			DataSet container = getContainer();
 			if(null != container){
-				return container.getSchema();
+				return container.getSchema(); 
 			}else{
 				return null;
-			}
-		}
-	}
-	public DataRow setSchema(String schema) {
+			} 
+		} 
+	} 
+	public DataRow setSchema(String schema) { 
 		this.schema = schema;
-		return this;
-	}
-	public String getTable() {
-		if(null != table){
-			return table;
-		}else{
+		return this; 
+	} 
+	public String getTable() { 
+		if(null != table){ 
+			return table; 
+		}else{ 
 			DataSet container = getContainer();
 			if(null != container){
 				return container.getTable();
 			}else{
 				return null;
-			}
-		}
-	}
-	public DataRow setTable(String table) {
+			} 
+		} 
+	} 
+	public DataRow setTable(String table) { 
 		if(null != table && table.contains(".")){
 			String[] tbs = table.split("\\.");
 			this.table = tbs[1];
@@ -1172,14 +1176,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}else{
 			this.table = table;
 		}
-		return this;
+		return this; 
 	}
 	/**
 	 * 验证是否过期
 	 * 根据当前时间与创建时间对比
 	 * 过期返回 true
-	 * @param expire	过期时间(毫秒)
-	 * @return
+	 * @param millisecond	过期时间(毫秒) millisecond 
+	 * @return return
 	 */
 	public boolean isExpire(int millisecond){
 		if(System.currentTimeMillis() - createTime > millisecond){
@@ -1189,8 +1193,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 是否过期
-	 * @param millisecond
-	 * @return
+	 * @param millisecond millisecond
+	 * @return return
 	 */
 	public boolean isExpire(long millisecond){
 		if(System.currentTimeMillis() - createTime > millisecond){
@@ -1221,21 +1225,21 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		row.createTime = this.createTime;
 		row.isNew = this.isNew;
 		return row;
-	}
-	public Boolean getIsNew() {
-		return isNew;
-	}
-	public DataRow setIsNew(Boolean isNew) {
+	} 
+	public Boolean getIsNew() { 
+		return isNew; 
+	} 
+	public DataRow setIsNew(Boolean isNew) { 
 		this.isNew = isNew;
-		return this;
-	}
+		return this; 
+	} 
 	public List<String> getUpdateColumns() {
 		return updateColumns;
 	}
 	/**
 	 * 删除指定的key
-	 * @param keys
-	 * @return
+	 * @param keys keys
+	 * @return return
 	 */
 	public DataRow remove(String ... keys){
 		if(null != keys){
@@ -1250,7 +1254,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 清空需要更新的列
-	 * @return
+	 * @return return
 	 */
 	public DataRow clearUpdateColumns(){
 		updateColumns.clear();
@@ -1266,8 +1270,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 添加需要更新的列
-	 * @param cols
-	 * @return
+	 * @param cols cols
+	 * @return return
 	 */
 	public DataRow addUpdateColumns(String ... cols){
 		if(null != cols){
@@ -1286,9 +1290,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 将数据从data中复制到this
-	 * @param data
+	 * @param data data
 	 * @param keys this与data中的key不同时 "this.key:data.key"(CD:ORDER_CD)
-	 * @return
+	 * @return return
 	 */
 	public DataRow copy(DataRow data, String ... keys){
 		if(null == data || null == keys){
@@ -1302,9 +1306,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 复制String类型数据
-	 * @param data
-	 * @param keys
-	 * @return
+	 * @param data data
+	 * @param keys keys
+	 * @return return
 	 */
 	public DataRow copyString(DataRow data, String ... keys){
 		if(null == data || null == keys){
@@ -1323,7 +1327,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 所有数字列
-	 * @return
+	 * @return return
 	 */
 	public List<String> numberKeys(){
 		List<String> result = new ArrayList<String>();
@@ -1337,8 +1341,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 检测必选项
-	 * @param keys
-	 * @return
+	 * @param keys keys
+	 * @return return
 	 */
 	public boolean checkRequired(String ... keys){
 		List<String> ks = new ArrayList<String>();
@@ -1361,9 +1365,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * key大小写转换
-	 * @param keyCase
-	 * @param key
-	 * @return
+	 * @param keyCase keyCase
+	 * @param key key
+	 * @return return
 	 */
 	private static String keyCase(KEY_CASE keyCase, String key){
 		if(null != key){
@@ -1396,7 +1400,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 查询条件
-	 * @return
+	 * @return return
 	 */
 	public Map<String, Object> getQueryParams() {
 		if(queryParams.isEmpty()){
@@ -1406,8 +1410,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 设置查询条件
-	 * @param queryParams
-	 * @return
+	 * @param queryParams queryParams
+	 * @return return
 	 */
 	public DataRow setQueryParams(Map<String, Object> queryParams) {
 		this.queryParams = queryParams;
@@ -1426,14 +1430,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 是否更新null列
-	 * @return
+	 * @return return
 	 */
 	public boolean isUpdateNullColumn() {
 		return updateNullColumn;
 	}
 	/**
 	 * 设置是否更新null列
-	 * @param updateNullColumn
+	 * @param updateNullColumn updateNullColumn
+	 * @return return
 	 */
 	public DataRow setUpdateNullColumn(boolean updateNullColumn) {
 		this.updateNullColumn = updateNullColumn;
@@ -1441,14 +1446,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 是否更新空列
-	 * @return
+	 * @return return
 	 */
 	public boolean isUpdateEmptyColumn() {
 		return updateEmptyColumn;
 	}
 	/**
 	 * 设置是否更新空列
-	 * @param updateEmptyColumn
+	 * @param updateEmptyColumn updateEmptyColumn
+	 * @return return
 	 */
 	public DataRow setUpdateEmptyColumn(boolean updateEmptyColumn) {
 		this.updateEmptyColumn = updateEmptyColumn;
@@ -1456,8 +1462,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 替换所有NULL值
-	 * @param value
-	 * @return
+	 * @param value value
+	 * @return return
 	 */
 	public DataRow replaceNull(String value){
 		List<String> keys = keys();
@@ -1471,8 +1477,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 
 	/**
 	 * 替换所有空值
-	 * @param value
-	 * @return
+	 * @param value value
+	 * @return return
 	 */
 	public DataRow replaceEmpty(String value){
 		List<String> keys = keys();
@@ -1483,4 +1489,4 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
-}
+} 

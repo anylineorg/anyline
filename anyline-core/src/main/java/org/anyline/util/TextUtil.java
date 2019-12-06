@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.util;
-
+package org.anyline.util; 
+ 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Iterator;

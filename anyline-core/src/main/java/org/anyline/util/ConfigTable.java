@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.util;
-
+package org.anyline.util; 
+ 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,14 +33,14 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-public class ConfigTable {
-	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
+ 
+ 
+public class ConfigTable { 
+	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class); 
 	protected static String root;
 	protected static String webRoot;
-	protected static String classpath;
-	protected static Hashtable<String,String> configs;
+	protected static String classpath; 
+	protected static Hashtable<String,String> configs; 
 	protected static long lastLoadTime = 0;	//最后一次加载时间
 	protected static int reload = 0;			//重新加载间隔
 	protected static boolean debug = false;
@@ -70,12 +70,12 @@ public class ConfigTable {
 		for(File file:files){
 			loadConfig(file);
 		}
-	}
+	} 
 	public static Hashtable<String,String> getConfigs(){
 		return configs;
 	}
-	public static String getWebRoot() {
-		return webRoot;
+	public static String getWebRoot() { 
+		return webRoot; 
 	}
 	public static void setWebRoot(String webRoot){
 		ConfigTable.webRoot = webRoot;
@@ -87,7 +87,7 @@ public class ConfigTable {
 	public static void setRoot(String root){
 		ConfigTable.root = root;
 		init();
-	}
+	} 
 	public static String getWebClassPath(){
 		String result = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
 		return result;
@@ -102,17 +102,17 @@ public class ConfigTable {
 		//中断递归
 		lastLoadTime = System.currentTimeMillis();
 		isLoading = true;
-		String path =  "";
-		try{
+		String path =  ""; 
+		try{ 
 			//path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 			path = ConfigTable.class.getResource("/").getPath();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		Properties props=System.getProperties(); //获得系统属性集    
-		String osName = props.getProperty("os.name"); //操作系统名称    
-		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
-			path = path.substring(1);
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		} 
+		Properties props=System.getProperties(); //获得系统属性集     
+		String osName = props.getProperty("os.name"); //操作系统名称     
+		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){ 
+			path = path.substring(1); 
 		}
 
 		if(null == root && null != path){
@@ -135,21 +135,22 @@ public class ConfigTable {
 			}else{
 				classpath = root + File.separator + "bin" + File.separator + "classes" + File.separator;
 			}
-		}
-		//加载配置文件
-		loadConfig(flag);
-	}
-	/**
+		} 
+		//加载配置文件 
+		loadConfig(flag); 
+	} 
+	/** 
 	 * 加载配置文件
 	 * 首先加载anyline-config.xml
-	 * 然后加载anyline开头的xml文件并覆盖先加载的配置
-	 */
-	protected synchronized static void loadConfig(String flag) {
-		try {
-			if(null == configs){
-				configs = new Hashtable<String,String>();
+	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
+	 * @param flag flag
+	 */ 
+	protected synchronized static void loadConfig(String flag) { 
+		try { 
+			if(null == configs){ 
+				configs = new Hashtable<String,String>(); 
 			}
-			if(null != root){
+			if(null != root){ 
 				configs.put("HOME_DIR", root);
 			}
 			//classpath根目录
@@ -168,10 +169,10 @@ public class ConfigTable {
 				if(name.startsWith(flag+"-config") && !(flag+"-config.xml").equals(name)){
 					loadConfig(f);
 				}
-			}
+			} 
 		} catch (Exception e) {
 			log.error("配置文件解析异常:"+e);
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 		lastLoadTime = System.currentTimeMillis();
 		reload = getInt("RELOAD");
@@ -182,7 +183,7 @@ public class ConfigTable {
 			if("false".equals(isUpper.toLowerCase()) || "0".equals(isUpper)){
 				IS_UPPER_KEY = false;
 			}
-		}
+		} 
 	}
 	protected static void loadConfig(File file){
 		try{
@@ -214,7 +215,7 @@ public class ConfigTable {
 		}catch(Exception e){
 			log.error("配置文件解析异常:"+e);
 		}
-	}
+	} 
 	public static String get(String key){
 		if(null == key){
 			return null;
@@ -226,10 +227,10 @@ public class ConfigTable {
 			init();
 		}
 		val = configs.get(key.toUpperCase().trim());
-		return val;
-	}
-	public static String getString(String key) {
-		return get(key);
+		return val; 
+	} 
+	public static String getString(String key) { 
+		return get(key); 
 	}
 	public static String getString(String key, String def){
 		String val = getString(key);
@@ -237,18 +238,18 @@ public class ConfigTable {
 			val = def;
 		}
 		return val;
-	}
-	public static boolean getBoolean(String key){
-		return getBoolean(key,false);
-	}
-	public static boolean getBoolean(String key, boolean def){
-		return BasicUtil.parseBoolean(get(key), def);
-	}
-	public static int getInt(String key) {
-		return BasicUtil.parseInt(get(key),0);
-	}
-	public static int getInt(String key, int def){
-		return BasicUtil.parseInt(get(key), def);
+	} 
+	public static boolean getBoolean(String key){ 
+		return getBoolean(key,false); 
+	} 
+	public static boolean getBoolean(String key, boolean def){ 
+		return BasicUtil.parseBoolean(get(key), def); 
+	} 
+	public static int getInt(String key) { 
+		return BasicUtil.parseInt(get(key),0); 
+	} 
+	public static int getInt(String key, int def){ 
+		return BasicUtil.parseInt(get(key), def); 
 	}
 	public static void put(String key, String value){
 		configs.put(key, value);
@@ -358,4 +359,4 @@ public class ConfigTable {
 			e.printStackTrace();
 		}
 	}
-}
+} 
