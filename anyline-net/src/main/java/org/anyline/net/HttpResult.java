@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.net;
-
+package org.anyline.net; 
+ 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,84 +27,84 @@ import java.util.Map;
 import org.anyline.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-public class HttpResult {
-	private static final Logger log = LoggerFactory.getLogger(HttpResult.class);
-	private String url				;//URL
+ 
+public class HttpResult { 
+	private static final Logger log = LoggerFactory.getLogger(HttpResult.class); 
+	private String url				;//URL 
 	private String backFileCd		; //备份文件CD
-	private int status				;
-	private String text				; //文本
-	private String fileType			; //文件类型
-	private String encode			; //编码
-	private String contentType		; //
-	private long lastModified		; //最后修改时间毫秒
-	private String parser			; //解析器CD
+	private int status				; 
+	private String text				; //文本 
+	private String fileType			; //文件类型 
+	private String encode			; //编码 
+	private String contentType		; // 
+	private long lastModified		; //最后修改时间毫秒 
+	private String parser			; //解析器CD 
 	private String host				;
 	private Map<String,String> headers = new HashMap<String,String>();
-	private Map<String,HttpCookie> cookies = new HashMap<String,HttpCookie>();
-
-	private Map<String,String> seed;
-	
-	public String getContentType() {
-		return contentType;
+	private Map<String,HttpCookie> cookies = new HashMap<String,HttpCookie>(); 
+ 
+	private Map<String,String> seed; 
+	 
+	public String getContentType() { 
+		return contentType; 
+	} 
+	public void setContentType(String contentType) { 
+		this.contentType = contentType; 
+		try{ 
+			fileType = contentType.split(";")[0]; 
+		}catch(Exception e){ 
+			fileType = "text/html"; 
+			log.error("setContentType$parse content type({})",contentType); 
+		} 
+		try{ 
+			String tmps[] = contentType.split("="); 
+			if(tmps.length>1){ 
+				encode = tmps[1].trim(); 
+			} 
+		}catch(Exception e){ 
+			encode =null; 
+		} 
+		 
+	} 
+	/** 
+	 * 根据http文件头信息 解析文件类型 
+	 * @param contentType  contentType
+	 * @return return
+	 */ 
+	public static String parseHttpFileExtend(String contentType){ 
+		String fileType = null; 
+		try{ 
+			fileType = contentType.split(";")[0]; 
+			fileType = fileType.toLowerCase(); 
+			fileType = FileUtil.httpFileExtend.get(FileUtil.httpFileType.indexOf(fileType)); 
+		}catch(Exception e){ 
+			fileType = ""; 
+		} 
+		return fileType; 
+	} 
+	public String getText() { 
+		return text; 
 	}
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-		try{
-			fileType = contentType.split(";")[0];
-		}catch(Exception e){
-			fileType = "text/html";
-			log.error("setContentType$parse content type({})",contentType);
-		}
-		try{
-			String tmps[] = contentType.split("=");
-			if(tmps.length>1){
-				encode = tmps[1].trim();
-			}
-		}catch(Exception e){
-			encode =null;
-		}
-		
-	}
-	/**
-	 * 根据http文件头信息 解析文件类型
-	 * @param contentType
-	 * @return
-	 */
-	public static String parseHttpFileExtend(String contentType){
-		String fileType = null;
-		try{
-			fileType = contentType.split(";")[0];
-			fileType = fileType.toLowerCase();
-			fileType = FileUtil.httpFileExtend.get(FileUtil.httpFileType.indexOf(fileType));
-		}catch(Exception e){
-			fileType = "";
-		}
-		return fileType;
-	}
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
-	public String getFileType() {
-		return fileType;
-	}
-	public void setFileType(String fileType) {
-		this.fileType = fileType;
-	}
-	public String getEncode() {
-		return encode;
-	}
-	public void setEncode(String encode) {
-		this.encode = encode;
-	}
-	public String getUrl() {
-		return url;
-	}
-	public void setUrl(String url) {
-		this.url = url;
+	public void setText(String text) { 
+		this.text = text; 
+	} 
+	public String getFileType() { 
+		return fileType; 
+	} 
+	public void setFileType(String fileType) { 
+		this.fileType = fileType; 
+	} 
+	public String getEncode() { 
+		return encode; 
+	} 
+	public void setEncode(String encode) { 
+		this.encode = encode; 
+	} 
+	public String getUrl() { 
+		return url; 
+	} 
+	public void setUrl(String url) { 
+		this.url = url; 
 	}
 
 	public Map<String, String> getHeaders() {
@@ -138,38 +138,38 @@ public class HttpResult {
 		return headers.get(key);
 	}
 
-	public static List<String> encodeList = new ArrayList<String>();
-	
-	public long getLastModified() {
-		return lastModified;
-	}
-	public void setLastModified(long lastModified) {
-		this.lastModified = lastModified;
-	}
-	public String getBackFileCd() {
-		return backFileCd;
-	}
-	public void setBackFileCd(String backFileCd) {
-		this.backFileCd = backFileCd;
-	}
-
-	public Map<String,String> getSeed() {
-		return seed;
-	}
-	public void setSeed(Map<String,String> seed) {
-		this.seed = seed;
-	}
-	public String getParser() {
-		return parser;
-	}
-	public void setParser(String parser) {
-		this.parser = parser;
-	}
-	public String getHost() {
-		return host;
-	}
-	public void setHost(String host) {
-		this.host = host;
+	public static List<String> encodeList = new ArrayList<String>(); 
+	 
+	public long getLastModified() { 
+		return lastModified; 
+	} 
+	public void setLastModified(long lastModified) { 
+		this.lastModified = lastModified; 
+	} 
+	public String getBackFileCd() { 
+		return backFileCd; 
+	} 
+	public void setBackFileCd(String backFileCd) { 
+		this.backFileCd = backFileCd; 
+	} 
+ 
+	public Map<String,String> getSeed() { 
+		return seed; 
+	} 
+	public void setSeed(Map<String,String> seed) { 
+		this.seed = seed; 
+	} 
+	public String getParser() { 
+		return parser; 
+	} 
+	public void setParser(String parser) { 
+		this.parser = parser; 
+	} 
+	public String getHost() { 
+		return host; 
+	} 
+	public void setHost(String host) { 
+		this.host = host; 
 	}
 	public int getStatus() {
 		return status;
@@ -177,5 +177,5 @@ public class HttpResult {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	
+	 
 }
