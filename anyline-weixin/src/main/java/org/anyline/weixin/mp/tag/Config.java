@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.weixin.mp.tag;
-
+package org.anyline.weixin.mp.tag; 
+ 
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,15 +37,15 @@ import org.slf4j.LoggerFactory;
  * 
  * 微信 wx.config
  *
- */
-public class Config extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(Config.class);
+ */ 
+public class Config extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(Config.class); 
 	private boolean debug = false;
 	private String apis= "";
 	private String key = "";
-	private String server = "";
-	public int doEndTag() throws JspException {
+	private String server = ""; 
+	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
 			WXMPUtil util = WXMPUtil.getInstance(key);
@@ -102,11 +102,11 @@ public class Config extends BaseBodyTag {
 			e.printStackTrace();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				e.printStackTrace();
-			}
-		} finally {
-			release();
-		}
-		return EVAL_PAGE;
+			} 
+		} finally { 
+			release(); 
+		} 
+		return EVAL_PAGE; 
 	}
 	public boolean isDebug() {
 		return debug;
@@ -126,5 +126,5 @@ public class Config extends BaseBodyTag {
 	public void setKey(String key) {
 		this.key = key;
 	}
-	
+	 
 }
