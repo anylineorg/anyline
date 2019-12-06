@@ -15,49 +15,49 @@
  *
  *          
  */
-package org.anyline.util;
-
+package org.anyline.util; 
+ 
 import java.sql.Timestamp;
 import java.util.Date;
 
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
-
-public class JSONDateFormatProcessor implements JsonValueProcessor {  
-    private String format ="yyyy-MM-dd HH:mm:ss";  
-      
-    public JSONDateFormatProcessor() {  
-        super();  
-    }  
-      
-    public JSONDateFormatProcessor(String format) {  
-        super();  
-        this.format = format;  
-    }  
-  
-    public Object processArrayValue(Object paramObject, JsonConfig paramJsonConfig) {  
-        return process(paramObject);  
-    }  
-  
-    public Object processObjectValue(String paramString, Object paramObject,  
-            JsonConfig paramJsonConfig) {  
-        return process(paramObject);  
-    }  
-      
-      
+ 
+public class JSONDateFormatProcessor implements JsonValueProcessor {   
+    private String format ="yyyy-MM-dd HH:mm:ss";   
+       
+    public JSONDateFormatProcessor() {   
+        super();   
+    }   
+       
+    public JSONDateFormatProcessor(String format) {   
+        super();   
+        this.format = format;   
+    }   
+   
+    public Object processArrayValue(Object paramObject, JsonConfig paramJsonConfig) {   
+        return process(paramObject);   
+    }   
+   
+    public Object processObjectValue(String paramString, Object paramObject,   
+            JsonConfig paramJsonConfig) {   
+        return process(paramObject);   
+    }   
+       
+       
     private Object process(Object value){ 
     	if(null == value){
     		return null;
-    	}
-        if(value instanceof Date){    
-            String val = DateUtil.format((Date)value, format);
-            return val;  
+    	} 
+        if(value instanceof Date){     
+            String val = DateUtil.format((Date)value, format); 
+            return val;   
         }
         if(value instanceof Timestamp){
             String val = DateUtil.format((Timestamp)value, format);
             return val;  
-        }
-        return value == null ? "" : value.toString();    
-    }  
-  
+        } 
+        return value == null ? "" : value.toString();     
+    }   
+   
 }  

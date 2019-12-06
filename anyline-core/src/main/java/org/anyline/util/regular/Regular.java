@@ -17,11 +17,11 @@
  */
 
 
-package org.anyline.util.regular;
-
-import java.util.List;
-
-public interface Regular {
+package org.anyline.util.regular; 
+ 
+import java.util.List; 
+ 
+public interface Regular { 
 	public static enum FILTER_TYPE{WIPE,PICK};//过滤方式 WIPE:删除匹配项|PICK:保留匹配项
 	public static enum MATCH_MODE{MATCH,PREFIX,CONTAIN};//匹配方式 MATCH:完全匹配 PREFIX:前缀匹配 CONTAIN:包含匹配
 	public static enum PATTERN{
@@ -223,42 +223,44 @@ public interface Regular {
 		public abstract String getCode();
 	};   
 
-	/**
-	* 匹配状态
-	* @param src
-	* @param regx
-	* @return
-	*/
-	public boolean match(String src, String regx);
-
-	/**
-	* 提取子串
-	* @param src	输入字符串
-	* @param regx	表达式
-	* @return
-	*/
-	public List<List<String>> fetch(String src, String regx) throws Exception;
-	/**
-	* 提取子串
-	* @param src		输入字符串
-	* @param regx		表达式
-	* @param idx		指定提取位置
-	* @return
-	*/
-	public List<String> fetch(String src, String regx, int idx) throws Exception;
-	/**
-	* 过滤  仅保留匹配项
-	* @param src
-	* @param regx
-	* @return
+	/** 
+	* 匹配状态 
+	* @param src  src
+	* @param regx  regx
+	* @return return
+	*/ 
+	public boolean match(String src, String regx); 
+ 
+	/** 
+	* 提取子串 
+	* @param src	输入字符串  src	输入字符串
+	* @param regx	表达式  regx	表达式
+	* @return return
+	 * @throws Exception Exception
+	*/ 
+	public List<List<String>> fetch(String src, String regx) throws Exception; 
+	/** 
+	* 提取子串 
+	* @param src		输入字符串  src		输入字符串
+	* @param regx		表达式  regx		表达式
+	* @param idx		指定提取位置  idx		指定提取位置
+	* @return return
+	 * @throws Exception Exception
+	*/ 
+	public List<String> fetch(String src, String regx, int idx) throws Exception; 
+	/** 
+	* 过滤  仅保留匹配项 
+	* @param src  src
+	* @param regx  regx
+	* @return return
 	*/
 	public List<String> pick(List<String> src, String regx);
-	/**
-	* 过滤 删除匹配项
-	* @param src
-	* @param regx
-	* @return
+	/** 
+	* 过滤 删除匹配项 
+	* @param src  src
+	* @param regx  regx
+	* @return return
 	*/
 	public List<String> wipe(List<String> src, String regx);
-
-}
+ 
+} 

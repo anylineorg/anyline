@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.util;
-
-
+package org.anyline.util; 
+ 
+ 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -47,16 +47,16 @@ import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-public class FileUtil {
-	private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
-	public final static int PATH_TYPE_JAR = 0;
+ 
+ 
+public class FileUtil { 
+	private static final Logger log = LoggerFactory.getLogger(FileUtil.class); 
+	public final static int PATH_TYPE_JAR = 0; 
 
 	/**
 	 * 合成path
-	 * @param paths
-	 * @return
+	 * @param paths paths
+	 * @return return
 	 */
 	public static String mergePath(String ... paths){
 		String result = null;
@@ -91,115 +91,115 @@ public class FileUtil {
 		}
 		return result;
 	}
-
-	/**
-	 * 目录分隔符
-	 * @return
-	 */
-	public static String getFileSeparator(){
-		return System.getProperty("file.separator");
-	}
-	
-	/**
-	 * 判断当前应用程序的目录类别 0-jar包形式
-	 * @param dstClass
-	 * @return
-	 */
-	public static int getPathType(Class dstClass){
-		int type = -1;
-		try{
-			String path = dstClass.getResource("").getPath();
-			//file:/D:/gather.jar!/com/sec/
-			if(path.indexOf(".jar!") != -1){
-				//jar 目录
-				type = 0;
-			}else{
-				//其他目录
-				type = 1;
-			}
-		}catch(Exception e){
-			type = -1;
-		}
-		return type;
-	}
-	/**
-	 * 读取输入流
-	 * @param inputStream
-	 * @param encode
-	 * @return
-	 */
-	public static StringBuffer read(InputStream inputStream, String encode){
-		StringBuffer buffer = new StringBuffer();
-		int BUFFER_SIZE = 1024 * 8;
-		
-		BufferedInputStream in = null ;
-        
-         try  {
-        	 if(inputStream.available() <=0){
-        		 return buffer;
-        	 }
-        	 if(BUFFER_SIZE>inputStream.available()){
-        		 BUFFER_SIZE = inputStream.available();
-        	 }
-             in = new BufferedInputStream(inputStream, BUFFER_SIZE);
-             inputStream.available();
-             byte [] by = new byte [BUFFER_SIZE];
-             int size = 0;
-             while ((size=in.read(by)) != -1 ){
-            	if(null == encode){
-            		buffer.append(new String(by,0,size));
-            	}
-            	else{
-            		buffer.append(new String(by,0,size,encode));
-            	}
-            }
-         }catch(Exception ex){
+ 
+	/** 
+	 * 目录分隔符 
+	 * @return return
+	 */ 
+	public static String getFileSeparator(){ 
+		return System.getProperty("file.separator"); 
+	} 
+	 
+	/** 
+	 * 判断当前应用程序的目录类别 0-jar包形式 
+	 * @param dst  dst
+	 * @return return
+	 */ 
+	public static int getPathType(Class dst){ 
+		int type = -1; 
+		try{ 
+			String path = dst.getResource("").getPath(); 
+			if(path.indexOf(".jar!") != -1){ 
+				//jar 目录 
+				type = 0; 
+			}else{ 
+				//其他目录 
+				type = 1; 
+			} 
+		}catch(Exception e){ 
+			type = -1; 
+		} 
+		return type; 
+	} 
+	/** 
+	 * 读取输入流 
+	 * @param input  input
+	 * @param encode  encode
+	 * @return return
+	 */ 
+	public static StringBuffer read(InputStream input, String encode){ 
+		StringBuffer buffer = new StringBuffer(); 
+		int BUFFER_SIZE = 1024 * 8; 
+		 
+		BufferedInputStream in = null ; 
+         
+         try  { 
+        	 if(input.available() <=0){ 
+        		 return buffer; 
+        	 } 
+        	 if(BUFFER_SIZE>input.available()){ 
+        		 BUFFER_SIZE = input.available(); 
+        	 } 
+             in = new BufferedInputStream(input, BUFFER_SIZE); 
+             input.available(); 
+             byte [] by = new byte [BUFFER_SIZE]; 
+             int size = 0; 
+             while ((size=in.read(by)) != -1 ){ 
+            	if(null == encode){ 
+            		buffer.append(new String(by,0,size)); 
+            	} 
+            	else{ 
+            		buffer.append(new String(by,0,size,encode)); 
+            	} 
+            } 
+         }catch(Exception ex){ 
         	log.error(ex.getMessage());
-        	ex.printStackTrace();
-         } finally  {
-                try{
+        	ex.printStackTrace(); 
+         } finally  { 
+                try{ 
                 	if(null != in) {
                 		in.close();
-                	}
-                	if(null != inputStream){
-                		inputStream.close();
-                	}
-                }catch(Exception e){
+                	} 
+                	if(null != input){
+                		input.close();
+                	} 
+                }catch(Exception e){ 
                 	e.printStackTrace();
-                	e.printStackTrace();
-                }
-        }  
-
-		return buffer;
+                	e.printStackTrace(); 
+                } 
+        }   
+ 
+		return buffer; 
 	}
-	
-	/**
-	 * 读取文件
-	 * @param file
-	 * @return
-	 */
-	public static StringBuffer read(File file,String encode){
+	 
+	/** 
+	 * 读取文件 
+	 * @param file  file
+	 * @param encode  encode
+	 * @return return
+	 */ 
+	public static StringBuffer read(File file,String encode){ 
 		StringBuffer buffer = new StringBuffer();
-		if(null != file && file.exists()){
-			try{
-				buffer = read(new FileInputStream(file),encode);
-			}catch(Exception e){
-				e.printStackTrace();
+		if(null != file && file.exists()){ 
+			try{ 
+				buffer = read(new FileInputStream(file),encode); 
+			}catch(Exception e){ 
+				e.printStackTrace(); 
 			}
-		}
-		return buffer;
-	}
-	public static StringBuffer read(File file){
+		} 
+		return buffer; 
+	} 
+	public static StringBuffer read(File file){ 
 		StringBuffer buffer = new StringBuffer();
-		if(null != file && file.exists()){
-			try{
-				//String encode = getFileEncode(file);
-				buffer = read(new FileInputStream(file),"UTF-8");
-			}catch(Exception e){
-				e.printStackTrace();
+		if(null != file && file.exists()){ 
+			try{ 
+				//String encode = getFileEncode(file); 
+				buffer = read(new FileInputStream(file),"UTF-8"); 
+			}catch(Exception e){ 
+				e.printStackTrace(); 
 			}
-		}
-		return buffer;
+		} 
+		return buffer; 
 	}
 	/**
 	 * 
@@ -216,27 +216,27 @@ public class FileUtil {
 		if(!dir.exists()){
 			dir.mkdirs();
 		}
-		FileOutputStream fos = null; 
-		OutputStreamWriter osw = null;
-		try { 
-			fos = new FileOutputStream(file, append);	
+		FileOutputStream fos = null;  
+		OutputStreamWriter osw = null; 
+		try {  
+			fos = new FileOutputStream(file, append);	 
 			osw = new OutputStreamWriter(fos, encode); 
 			if(append){
 				osw.append(content);
-			}else{
+			}else{ 
 				osw.write(content);
-			}
-			osw.flush(); 
-		} catch (Exception e) { 
-			e.printStackTrace(); 
-		}finally{
-			try{
-				osw.close();
-				fos.close();
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}
+			} 
+			osw.flush();  
+		} catch (Exception e) {  
+			e.printStackTrace();  
+		}finally{ 
+			try{ 
+				osw.close(); 
+				fos.close(); 
+			}catch(Exception e){ 
+				e.printStackTrace(); 
+			} 
+		} 
 	}
 
 	public static void write(String content, File file, String encode) {
@@ -249,157 +249,157 @@ public class FileUtil {
 	public static void write(String content, File file) {
 		write(content, file, "UTF-8", false);
 	}
-	
-	/**
-	 * 创建文件
-	 * @param fileDir
-	 * @param fileName
-	 * @param over 是否清空已存在的同名文件
-	 * @return
-	 */
-	public static boolean create(String fileDir, String fileName, boolean over){
-		String filePath = mergePath(fileDir, fileName);
-		return create(filePath,over);
-	}
-	public static boolean create(String file, boolean over){
-		return create(new File(file), over);
-	}
-	public static boolean create(File file, boolean over){
-		if(null == file){
-			return false;
-		}
-		try{
-			File dir = file.getParentFile();
-			if(!dir.exists()){
-				dir.mkdirs();
-			}
-			if(file.exists()){
-				if(over){
-					file.delete();
-				}else{
-					return true;
-				}
-			}
-			file.createNewFile();
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return true;
-	}
-	/**
-	 * 从URL中提取文件目录(删除查询参数)
-	 * @param url
-	 * @return
-	 */
-	public static String fetchPathByUrl(String url){
-		int to = url.indexOf("?");
-		if(to != -1)
-			url = url.substring(0,to);
-		return url;
-	}
-	/**
-	 * 提取一个URL所在的目录
-	 * @param path
-	 * @return
-	 */
-	public static String fetchDirByUrl(String url){
-		String dir = null;
-		if(url.endsWith("/")){
-			dir = url;
-		}else if(isHttpFile(url)){
-			int to = url.lastIndexOf("/");
-			dir = url.substring(0,to);
-		}else{
-			dir = url;
-		}
-		return dir;
-	}
-	/**
-	 * path是否包含文件名
-	 * @param path
-	 * @return
-	 */
-	private static boolean isHttpFile(String path){
-
-		if(path.endsWith("/")){
-			return false;
-		}
-		String head = "http://";
-		int fr = head.length();
-		int l1 = path.lastIndexOf("/");
-		int l2 = path.lastIndexOf(".");
-		//int l3 = path.length();
-		if(l1 == -1){
-			return false;
-		}else if(l2>l1 && l2>fr){
-			return true;
-		}
-		return false;
-	}
-	/**
-	 * 提取url根目录
-	 * @param url
-	 * @return
-	 */
-	public static String getHostUrl(String url){
-		url = url.replaceAll("http://","");
-		int idx = url.indexOf("/");
-		if(idx != -1){
-			url = url.substring(0,idx);
-		}
-		url = "http://"+url;
-		return url;
-	}
-	
-//	/**
-//	 * 获取文件编码格式
-//	 * 需要包antlr.jar cpdetector.jar chardet.jar
-//	 * @param file
-//	 * @return
-//	 */
-//	public static String getFileEncode(File file){
-//		String encode = "UTF-8";
-//
-//		Charset charset = null;
-//		try {
-//			CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance();
-//		//	detector.add(JChardetFacade.getInstance());
-//			charset = detector.detectCodepage(file.toURI().toURL());
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		if (charset != null) {
-//			encode = charset.name();
-//		}
-//
-//		return encode;
+	 
+	/** 
+	 * 创建文件 
+	 * @param fileDir  fileDir
+	 * @param fileName  fileName
+	 * @param over 是否清空已存在的同名文件 
+	 * @return return
+	 */ 
+	public static boolean create(String fileDir, String fileName, boolean over){ 
+		String filePath = mergePath(fileDir, fileName); 
+		return create(filePath,over); 
+	} 
+	public static boolean create(String file, boolean over){ 
+		return create(new File(file), over); 
+	} 
+	public static boolean create(File file, boolean over){ 
+		if(null == file){ 
+			return false; 
+		} 
+		try{ 
+			File dir = file.getParentFile(); 
+			if(!dir.exists()){ 
+				dir.mkdirs(); 
+			} 
+			if(file.exists()){ 
+				if(over){ 
+					file.delete(); 
+				}else{ 
+					return true; 
+				} 
+			} 
+			file.createNewFile(); 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		} 
+		return true; 
+	} 
+	/** 
+	 * 从URL中提取文件目录(删除查询参数) 
+	 * @param url  url
+	 * @return return
+	 */ 
+	public static String fetchPathByUrl(String url){ 
+		int to = url.indexOf("?"); 
+		if(to != -1) 
+			url = url.substring(0,to); 
+		return url; 
+	} 
+	/** 
+	 * 提取一个URL所在的目录 
+	 * @param url  url
+	 * @return return
+	 */ 
+	public static String fetchDirByUrl(String url){ 
+		String dir = null; 
+		if(url.endsWith("/")){ 
+			dir = url; 
+		}else if(isHttpFile(url)){ 
+			int to = url.lastIndexOf("/"); 
+			dir = url.substring(0,to); 
+		}else{ 
+			dir = url; 
+		} 
+		return dir; 
+	} 
+	/** 
+	 * path是否包含文件名 
+	 * @param path  path
+	 * @return return
+	 */ 
+	private static boolean isHttpFile(String path){ 
+ 
+		if(path.endsWith("/")){ 
+			return false; 
+		} 
+		String head = "http://"; 
+		int fr = head.length(); 
+		int l1 = path.lastIndexOf("/"); 
+		int l2 = path.lastIndexOf("."); 
+		//int l3 = path.length(); 
+		if(l1 == -1){ 
+			return false; 
+		}else if(l2>l1 && l2>fr){ 
+			return true; 
+		} 
+		return false; 
+	} 
+	/** 
+	 * 提取url根目录 
+	 * @param url  url
+	 * @return return
+	 */ 
+	public static String getHostUrl(String url){ 
+		url = url.replaceAll("http://",""); 
+		int idx = url.indexOf("/"); 
+		if(idx != -1){ 
+			url = url.substring(0,idx); 
+		} 
+		url = "http://"+url; 
+		return url; 
+	} 
+	 
+//	/** 
+//	 * 获取文件编码格式 
+//	 * 需要包antlr.jar cpdetector.jar chardet.jar 
+//	 * @param file  file
+//	 * @return return
+//	 */ 
+//	public static String getFileEncode(File file){ 
+//		String encode = "UTF-8"; 
+// 
+//		Charset charset = null; 
+//		try { 
+//			CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance(); 
+//		//	detector.add(JChardetFacade.getInstance()); 
+//			charset = detector.detectCodepage(file.toURI().toURL()); 
+//		} catch (Exception e) { 
+//			e.printStackTrace(); 
+//		} 
+//		if (charset != null) { 
+//			encode = charset.name(); 
+//		} 
+// 
+//		return encode; 
 //	}
 	/**
 	 * 不含后缀的文件名
-	 * @param file
-	 * @return
-	 */
-	public static String getSimpleFileName(File file){
-		String name = null;
-		if(null == file) return null;
-		name = file.getName();
+	 * @param file file
+	 * @return return
+	 */ 
+	public static String getSimpleFileName(File file){ 
+		String name = null; 
+		if(null == file) return null; 
+		name = file.getName(); 
 		int idx = name.lastIndexOf(".");
-		if(idx != -1){
+		if(idx != -1){ 
 			name = name.substring(0,idx);
-		}
-		return name;
+		} 
+		return name; 
 	}
-	
-	public static String getSimpleFileName(String file){
-		return getSimpleFileName(new File(file));
-	}
-	public static String getFileName(String file){
-		return getFileName(new File(file));
-	}
-	public static String getFileName(File file){
-		if(null != file)
-			return file.getName();
-		return null;
+	 
+	public static String getSimpleFileName(String file){ 
+		return getSimpleFileName(new File(file)); 
+	} 
+	public static String getFileName(String file){ 
+		return getFileName(new File(file)); 
+	} 
+	public static String getFileName(File file){ 
+		if(null != file) 
+			return file.getName(); 
+		return null; 
 	}
 	public static String getSuffixFileName(File file){
 		String name = null;
@@ -414,326 +414,327 @@ public class FileUtil {
 	public static String getSuffixFileName(String file){
 		return getSuffixFileName(new File(file));
 	}
-	/**
-	 * 复制文件  源文件  目标文件
-	 * @param src
-	 * @param dst
-	 * @return
-	 */
-	public static boolean copy(File srcPath, File dstPath){
-		boolean result = true;
-		if (srcPath.isDirectory()){
-			if (!dstPath.exists()){
-				result = dstPath.mkdirs();
-			}
-			String[] files = srcPath.list();
-			for(int i = 0; i < files.length; i++){
-				copy(new File(srcPath, files[i]), new File(dstPath, files[i]));
-			}
-		} else{
-			if(!srcPath.exists()){
-				result = false;
+	/** 
+	 * 复制文件  源文件  目标文件 
+	 * @param src  src
+	 * @param dst  dst
+	 * @return return
+	 */ 
+	public static boolean copy(File src, File dst){ 
+		boolean result = true; 
+		if (src.isDirectory()){ 
+			if (!dst.exists()){ 
+				result = dst.mkdirs(); 
+			} 
+			String[] files = src.list(); 
+			for(int i = 0; i < files.length; i++){ 
+				copy(new File(src, files[i]), new File(dst, files[i])); 
+			} 
+		} else{ 
+			if(!src.exists()){ 
+				result = false; 
 			}else{
-				File dir = dstPath.getParentFile();
+				File dir = dst.getParentFile();
 				if(!dir.exists()){
 					dir.mkdirs();
-				}
-				InputStream in = null;
-				OutputStream out = null;
-				try{
-					if(!dstPath.isDirectory()){
-						File dirs = dstPath.getParentFile();
-						if(!dirs.exists()){
-							dirs.mkdirs();
-						}
+				} 
+				InputStream in = null; 
+				OutputStream out = null; 
+				try{ 
+					if(!dst.isDirectory()){ 
+						File dirs = dst.getParentFile(); 
+						if(!dirs.exists()){ 
+							dirs.mkdirs(); 
+						} 
 					}else{
-						dstPath = new File(dstPath, srcPath.getName());
-					}
-					dstPath.createNewFile();
-					in = new FileInputStream(srcPath);
-					out = new FileOutputStream(dstPath);
-					byte[] buf = new byte[1024];
-					int len;
-					while ((len = in.read(buf)) > 0) {
-						out.write(buf, 0, len);
-					}
-				}catch(Exception e){
+						dst = new File(dst, src.getName());
+					} 
+					dst.createNewFile(); 
+					in = new FileInputStream(src); 
+					out = new FileOutputStream(dst); 
+					byte[] buf = new byte[1024]; 
+					int len; 
+					while ((len = in.read(buf)) > 0) { 
+						out.write(buf, 0, len); 
+					} 
+				}catch(Exception e){ 
 					e.printStackTrace();
-					result = false;
-				}finally{
-					if(null != in){
-						try{
-							in.close();
-						}catch(Exception ex){
-							log.error(ex.getMessage());
-						}
-					}
-					if(null != out){
-						try{
-							out.close();
-						}catch(Exception ex){
-							log.error(ex.getMessage());
-						}
-					}
-				}
-			}
-		}
-		return result;
-	}
-    
-	/**
-	 * 读取当前目录及子目录下所有文件
-	 * @param dir
-	 * @return
-	 */
-	public static List<File> getAllChildrenFile(File dir, String ...subbfixs){
-		List<File> list = new ArrayList<File>();
-		if(dir.isFile()){
-			if(filterByType(dir, subbfixs)){
-				list.add(dir);
-			}
-			return list;
-		}
+					result = false; 
+				}finally{ 
+					if(null != in){ 
+						try{ 
+							in.close(); 
+						}catch(Exception ex){ 
+							log.error(ex.getMessage()); 
+						} 
+					} 
+					if(null != out){ 
+						try{ 
+							out.close(); 
+						}catch(Exception ex){ 
+							log.error(ex.getMessage()); 
+						} 
+					} 
+				} 
+			} 
+		} 
+		return result; 
+	} 
+     
+	/** 
+	 * 读取当前目录及子目录下所有文件 
+	 * @param dir  dir
+	 * @param subbfixs  subbfixs
+	 * @return return
+	 */ 
+	public static List<File> getAllChildrenFile(File dir, String ...subbfixs){ 
+		List<File> list = new ArrayList<File>(); 
+		if(dir.isFile()){ 
+			if(filterByType(dir, subbfixs)){ 
+				list.add(dir); 
+			} 
+			return list; 
+		} 
 		File[] children = dir.listFiles();
-		if(null != children){
-			int size = children.length;
-			for(int i=0; i<size; i++){
-				File child = children[i];
-				if(child.isHidden()){
-					continue;
-				}
-				if(child.isFile()){
-					if(filterByType(child,subbfixs)){
-						list.add(child);
-					}
-				}else{
-					List<File> tmpList = getAllChildrenFile(child,subbfixs);
-					list.addAll(tmpList);
-				}
+		if(null != children){ 
+			int size = children.length; 
+			for(int i=0; i<size; i++){ 
+				File child = children[i]; 
+				if(child.isHidden()){ 
+					continue; 
+				} 
+				if(child.isFile()){ 
+					if(filterByType(child,subbfixs)){ 
+						list.add(child); 
+					} 
+				}else{ 
+					List<File> tmpList = getAllChildrenFile(child,subbfixs); 
+					list.addAll(tmpList); 
+				} 
 			}
-		}
-		return list;
-	}
-	/**
-	 * 读取当前目录及子目录下所有子目录
-	 * @param dir
-	 * @return
-	 */
-	public static List<File> getAllChildrenDirectory(File dir){
-		List<File> list = new ArrayList<File>();
-		if(dir.isFile()){
-			return list;
-		}
+		} 
+		return list; 
+	} 
+	/** 
+	 * 读取当前目录及子目录下所有子目录 
+	 * @param dir  dir
+	 * @return return
+	 */ 
+	public static List<File> getAllChildrenDirectory(File dir){ 
+		List<File> list = new ArrayList<File>(); 
+		if(dir.isFile()){ 
+			return list; 
+		} 
 		File[] children = dir.listFiles();
-		if(null != children){
-			int size = children.length;
-			for(int i=0; i<size; i++){
-				File child = children[i];
-				if(child.isHidden()){
-					continue;
-				}
-				if(child.isDirectory()){
-					if(null == child.listFiles() || child.listFiles().length == 0){
-						list.add(child);
-					}else{
-						list.addAll(getAllChildrenDirectory(child));
-					}
-				}
+		if(null != children){ 
+			int size = children.length; 
+			for(int i=0; i<size; i++){ 
+				File child = children[i]; 
+				if(child.isHidden()){ 
+					continue; 
+				} 
+				if(child.isDirectory()){ 
+					if(null == child.listFiles() || child.listFiles().length == 0){ 
+						list.add(child); 
+					}else{ 
+						list.addAll(getAllChildrenDirectory(child)); 
+					} 
+				} 
 			}
-		}
-		return list;
-	}
-	/**
-	 * 
-	 * @param dir
-	 * @param types
-	 * @return
-	 */
-	public static List<File> getChildrenFile(File dir, String ...types){
-		List<File> list = new ArrayList<File>();
+		} 
+		return list; 
+	} 
+	/** 
+	 *  
+	 * @param dir  dir
+	 * @param types  types
+	 * @return return
+	 */ 
+	public static List<File> getChildrenFile(File dir, String ...types){ 
+		List<File> list = new ArrayList<File>(); 
 		File files[] = dir.listFiles();
-		if(null != files){
-			for(File file:files){
-				if(file.isFile() && filterByType(file,types))
-					list.add(file);
+		if(null != files){ 
+			for(File file:files){ 
+				if(file.isFile() && filterByType(file,types)) 
+					list.add(file); 
 			}
-		}
-		return list;
-	}
-	/**
-	 * ZIP文件中的所有子文件
-	 * @param zip
-	 * @param types
-	 * @return
-	 */
-	public static List<File> getZipAllChildrenFile(File zip, String ...types){
-		List<File> list = new ArrayList<File>();
-		ZipInputStream in = null;
-		try{
-			in = new ZipInputStream(new FileInputStream(zip));
-			ZipEntry entry = null;
-			while((entry=in.getNextEntry()) != null){
-				String path = zip.getAbsolutePath() + "!/" + entry.getName();
-				File file = new File(path);
-				if(filterByType(file, types)){
-					list.add(file);
-				}
-			}
-		}catch(Exception e){
-			e.printStackTrace();
+		} 
+		return list; 
+	} 
+	/** 
+	 * ZIP文件中的所有子文件 
+	 * @param zip  zip
+	 * @param types  types
+	 * @return return
+	 */ 
+	public static List<File> getZipAllChildrenFile(File zip, String ...types){ 
+		List<File> list = new ArrayList<File>(); 
+		ZipInputStream in = null; 
+		try{ 
+			in = new ZipInputStream(new FileInputStream(zip)); 
+			ZipEntry entry = null; 
+			while((entry=in.getNextEntry()) != null){ 
+				String path = zip.getAbsolutePath() + "!/" + entry.getName(); 
+				File file = new File(path); 
+				if(filterByType(file, types)){ 
+					list.add(file); 
+				} 
+			} 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
 		}finally{
 			try {
 				in.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		return list;
-	}
-	/**
-	 * 按类型(后缀)过滤文件
-	 * @param file
-	 * @param types
-	 * @return
-	 */
-	public static boolean filterByType(File file, String ... types){
-		if(null == file){
-			return false;
-		}
-		if(null == types || types.length == 0){
-			return true;
-		}
-		for(String type:types){
-			String fileName = file.getAbsolutePath().toUpperCase();
-			type = type.toUpperCase();
-			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)){
-				return true;
-			}
-			if(!type.startsWith(".")){
-				type = "." + type;
-			}
-			if(fileName.endsWith(type)){
-				return true;
-			}
-		}
-		return false;
-	}
-	/**
-	 * 后缀名
-	 * @param fileName
-	 * @return
-	 */
-	public static String parseSubName(String fileName){
-		String result = null;
-		if(null == fileName) return null;
-		int idx = fileName.lastIndexOf(".");
-		if(idx >0){
-			result = fileName.substring(idx+1);
-		}
-		return result;
-	}
-	public static boolean exists(File file){
-		if(null == file){
-			return false;
-		}
-		return file.exists();
-	}
-	public static boolean exists(String file){
-		return exists(new File(file));
+		} 
+		return list; 
 	} 
-	public static boolean isFile(File file){
-		if(null == file){
-			return false;
-		}
-		return file.isFile();
+	/** 
+	 * 按类型(后缀)过滤文件 
+	 * @param file  file
+	 * @param types  types
+	 * @return return
+	 */ 
+	public static boolean filterByType(File file, String ... types){ 
+		if(null == file){ 
+			return false; 
+		} 
+		if(null == types || types.length == 0){ 
+			return true; 
+		} 
+		for(String type:types){
+			String fileName = file.getAbsolutePath().toUpperCase(); 
+			type = type.toUpperCase(); 
+			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)){ 
+				return true; 
+			} 
+			if(!type.startsWith(".")){ 
+				type = "." + type; 
+			} 
+			if(fileName.endsWith(type)){ 
+				return true; 
+			}
+		} 
+		return false; 
 	}
-	public static boolean isFile(String file){
-		return isFile(new File(file));
-	}
-	/**
-	 * 识别文件类型(文件格式)
-	 * @param file
-	 * @return
-	 */
-	public static String parseSubName(File file) {    
-        String filetype = null;     
-        byte[] b = new byte[50];     
-        try {     
-            InputStream is = new FileInputStream(file);     
-            is.read(b);     
-            filetype = getFileTypeByStream(b);     
+	/** 
+	 * 后缀名 
+	 * @param fileName  fileName
+	 * @return return
+	 */ 
+	public static String parseSubName(String fileName){ 
+		String result = null; 
+		if(null == fileName) return null; 
+		int idx = fileName.lastIndexOf("."); 
+		if(idx >0){ 
+			result = fileName.substring(idx+1); 
+		} 
+		return result; 
+	} 
+	public static boolean exists(File file){ 
+		if(null == file){ 
+			return false; 
+		} 
+		return file.exists(); 
+	} 
+	public static boolean exists(String file){ 
+		return exists(new File(file)); 
+	}  
+	public static boolean isFile(File file){ 
+		if(null == file){ 
+			return false; 
+		} 
+		return file.isFile(); 
+	} 
+	public static boolean isFile(String file){ 
+		return isFile(new File(file)); 
+	} 
+	/** 
+	 * 识别文件类型(文件格式) 
+	 * @param file  file
+	 * @return return
+	 */ 
+	public static String parseSubName(File file) {     
+        String filetype = null;      
+        byte[] b = new byte[50];      
+        try {      
+            InputStream is = new FileInputStream(file);      
+            is.read(b);      
+            filetype = getFileTypeByStream(b);      
             is.close();    
-        } catch (Exception e) {     
-            e.printStackTrace();     
-        }     
-        return filetype;     
-    } 
-	public final static String getFileTypeByStream(byte[] b){     
-        String filetypeHex = String.valueOf(getFileHexString(b));     
-        Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();     
-        while (entryiterator.hasNext()) {     
-            Entry<String,String> entry =  entryiterator.next();     
-            String fileTypeHexValue = entry.getValue();     
-            if (filetypeHex.toUpperCase().startsWith(fileTypeHexValue)) {     
-                return entry.getKey();     
-            }     
-        }     
-        return null;     
-    }     
-	 public final static String getFileHexString(byte[] b)     
-	    {     
-	        StringBuilder stringBuilder = new StringBuilder();     
-	        if (b == null || b.length <= 0)     
-	        {     
-	            return null;     
-	        }     
-	        for (int i = 0; i < b.length; i++)     
-	        {     
-	            int v = b[i] & 0xFF;     
-	            String hv = Integer.toHexString(v);     
-	            if (hv.length() < 2)     
-	            {     
-	                stringBuilder.append(0);     
-	            }     
-	            stringBuilder.append(hv);     
-	        }     
-	        return stringBuilder.toString();     
-	    }   
-	 /**
-	  * 删除目录
-	  * @param dir
-	  * @return
-	  */
+        } catch (Exception e) {      
+            e.printStackTrace();      
+        }      
+        return filetype;      
+    }  
+	public final static String getFileTypeByStream(byte[] b){      
+        String filetypeHex = String.valueOf(getFileHexString(b));      
+        Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();      
+        while (entryiterator.hasNext()) {      
+            Entry<String,String> entry =  entryiterator.next();      
+            String fileTypeHexValue = entry.getValue();      
+            if (filetypeHex.toUpperCase().startsWith(fileTypeHexValue)) {      
+                return entry.getKey();      
+            }      
+        }      
+        return null;      
+    }      
+	 public final static String getFileHexString(byte[] b)      
+	    {      
+	        StringBuilder stringBuilder = new StringBuilder();      
+	        if (b == null || b.length <= 0)      
+	        {      
+	            return null;      
+	        }      
+	        for (int i = 0; i < b.length; i++)      
+	        {      
+	            int v = b[i] & 0xFF;      
+	            String hv = Integer.toHexString(v);      
+	            if (hv.length() < 2)      
+	            {      
+	                stringBuilder.append(0);      
+	            }      
+	            stringBuilder.append(hv);      
+	        }      
+	        return stringBuilder.toString();      
+	    }    
+	 /** 
+	  * 删除目录 
+	  * @param file  file
+	  * @return return
+	  */ 
 	public static boolean delete(File file) {
 		if(null == file){
 			return false;
 		}
-		boolean result = true;
-		if (file.isDirectory()) {
+		boolean result = true; 
+		if (file.isDirectory()) { 
 			File[] children = file.listFiles();
-			if(null != children){
+			if(null != children){ 
 				for (File child:children) {
-						delete(child);
+						delete(child); 
 				}
 			}
 			result = file.delete();
-			log.warn("[目录删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
+			log.warn("[目录删除][result:"+result+"][file:"+file.getAbsolutePath()+"]"); 
 		}else{
 			result = file.delete();
 			log.warn("[文件删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
 		}
 		return result;
-	}
-	/**
-	 * 计算文件行数
-	 * @param file
-	 * @param subbfix 如果file是目录, 只统计其中subbfixs结尾的文件
-	 * @return
-	 */
-	public static int calculateLine(File file, String ... subbfixs){
-		int size = 0;
-		if(null == file || !file.exists()){
-			return size;
+	} 
+	/** 
+	 * 计算文件行数 
+	 * @param file file
+	 * @param subbfixs 如果file是目录, 只统计其中subbfixs结尾的文件 
+	 * @return return
+	 */ 
+	public static int calculateLine(File file, String ... subbfixs){ 
+		int size = 0; 
+		if(null == file || !file.exists()){ 
+			return size; 
 		}
 		if(file.isDirectory()){
 			List<File> files = FileUtil.getAllChildrenFile(file, subbfixs);
@@ -741,45 +742,45 @@ public class FileUtil {
 				size += calculateLine(item);
 			}
 		}
-		try{
+		try{ 
 			LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
 			lineNumberReader.skip(file.length());
             size += lineNumberReader.getLineNumber();
             lineNumberReader.close();
-        }catch(Exception e){
-        	
-        }
-        return size;
+        }catch(Exception e){ 
+        	 
+        } 
+        return size; 
 	}
-	/**
-	 * 压缩文件
-	 * @param zip
-	 * @param srcs
-	 * @return
-	 */
-	public static boolean zip(File zip, File... srcs) {
-		List<File> files = new ArrayList<File>();
-		for (File src:srcs) {
-			files.add(src);
-		}
-		return zip(zip,files);
-	}
-	public static boolean zip(File zip, List<File> srcs) {
-		return ZipUtil.zip(srcs, zip);
+	/** 
+	 * 压缩文件 
+	 * @param zip  zip
+	 * @param srcs  srcs
+	 * @return return
+	 */ 
+	public static boolean zip(File zip, File... srcs) { 
+		List<File> files = new ArrayList<File>(); 
+		for (File src:srcs) { 
+			files.add(src); 
+		} 
+		return zip(zip,files); 
+	} 
+	public static boolean zip(File zip, List<File> srcs) { 
+		return ZipUtil.zip(srcs, zip); 
 	}
     /**
     * 获取单个文件的MD5值！
-    * @param file
-    * @return
+    * @param file file
+    * @return return
     */
 	public static String md5(File file){
 		return MD5Util.getFileMD5(file);
 	}
     /**
     * 获取文件夹中文件的MD5值
-    * @param file
-    * @param recursion ;true递归子目录中的文件
-    * @return
+    * @param file file
+    * @param recursion  true递归子目录中的文件
+    * @return return
     */
     public static Map<String, String> md5(File file, boolean recursion) {
     	return MD5Util.getDirMD5(file, recursion);
@@ -788,10 +789,8 @@ public class FileUtil {
     /**  
      * 读取输入流中的数据保存至指定目录  
      * @param is 输入流  
-     * @param fileName 文件名  
-     * @param destDir 文件存储目录  
-     * @throws FileNotFoundException  
-     * @throws IOException  
+     * @param file 文件名  
+	 * @return return
      */  
     public static boolean save(InputStream is, File file) {
     	if (BasicUtil.isEmpty(file)) {
@@ -835,10 +834,8 @@ public class FileUtil {
     /**  
      * 读取输入流中的数据保存至指定目录  
      * @param is 输入流  
-     * @param fileName 文件名  
-     * @param destDir 文件存储目录  
-     * @throws FileNotFoundException  
-     * @throws IOException  
+     * @param path 文件存储目录  
+	 * @return return
      */  
     public static boolean save(InputStream is, String path) {
     	return save(is, new File(path));
@@ -847,7 +844,7 @@ public class FileUtil {
 	/**
 	 * @param total 全部
 	 * @param finish 已完成
-	 * @return
+	 * @return return
 	 */
 	public static String progress(long total, long finish){
 		String title = "";
@@ -861,8 +858,8 @@ public class FileUtil {
 	}
 	/**
 	 * 文件大小格式化
-	 * @param b
-	 * @return
+	 * @param b b
+	 * @return return
 	 */
 	public static String length(long b){
 		String result = "";
@@ -883,8 +880,8 @@ public class FileUtil {
 	}
 	/**
 	 * 合并文件
-	 * @param dst
-	 * @param items
+	 * @param dst dst
+	 * @param items items
 	 */
 	public static void merge(File dst, List<File> items){
 		FileOutputStream os =null;
@@ -925,8 +922,8 @@ public class FileUtil {
     }
 	/**
 	 * 合并文件
-	 * @param dst
-	 * @param items
+	 * @param dst dst
+	 * @param dir dir
 	 */
 	public static void merge(File dst, File dir){
 		FileOutputStream os =null;
@@ -975,8 +972,8 @@ public class FileUtil {
 
 	/**
 	 * 文件拆分
-	 * @param file
-	 * @param count
+	 * @param file file
+	 * @param count count
 	 */
 	public static void split(File file, int count) {
 	    FileInputStream fis = null;
