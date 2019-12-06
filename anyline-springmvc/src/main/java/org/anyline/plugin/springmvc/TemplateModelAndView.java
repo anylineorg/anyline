@@ -15,11 +15,11 @@
  *
  *          
  */
-package org.anyline.plugin.springmvc;
-
+package org.anyline.plugin.springmvc; 
+ 
 import org.anyline.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
-
+ 
 public class TemplateModelAndView extends ModelAndView{
 	public static final String DATA_URL 		= "anyline_template_data_url";			//加载数据URL 
 	public static final String STYLE_URL	 	= "anyline_template_style_url"; 	//加载数据模板文件URL
@@ -52,8 +52,8 @@ public class TemplateModelAndView extends ModelAndView{
 	 * 数据模板目录
 	 * 文件名:方法名(String)
 	 * 或文件名:类名.方法名(String)
-	 * @param template
-	 * @return
+	 * @param template template
+	 * @return return
 	 */
 	public TemplateModelAndView setStyle(String template){
 		
@@ -67,8 +67,8 @@ public class TemplateModelAndView extends ModelAndView{
 	}
 	/**
 	 * 构造完整path
-	 * @param path
-	 * @return
+	 * @param path path
+	 * @return return
 	 */
 	public String createFullTemplatePath(String path){
 		String viewName = this.getViewName();
@@ -102,6 +102,6 @@ public class TemplateModelAndView extends ModelAndView{
 	public void setFromClass(String fromClass) {
 		this.fromClass = fromClass;
 	}
-	
-	
-}
+	 
+	 
+} 

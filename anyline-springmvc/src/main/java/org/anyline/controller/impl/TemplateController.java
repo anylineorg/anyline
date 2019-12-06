@@ -15,7 +15,7 @@
  *
  *          
  */
-package org.anyline.controller.impl;
+package org.anyline.controller.impl; 
 import org.anyline.net.HttpUtil;
 import org.anyline.plugin.springmvc.TemplateModelAndView;
 import org.anyline.plugin.springmvc.TemplateView;
@@ -25,13 +25,13 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
 import org.anyline.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
- 
- 
+  
+  
 
-public class TemplateController extends AnylineController {
+public class TemplateController extends AnylineController { 
 	/**
 	 * 根据dir构造文件目录(super.dir+this.dir)
-	 * @return
+	 * @return return
 	 */
 	protected String buildDir(){
 		String result = "";
@@ -58,8 +58,8 @@ public class TemplateController extends AnylineController {
 	/**
 	 * 创建显示视图
 	 * @param adapt 是否识别并切换 移动 PC(web,wap)
-	 * @param name
-	 * @param template
+	 * @param name name
+	 * @param template template
 	 * template(page,template) 与createView(page,template); 相同
 		需要注意的是
 		page有两种格式相对与绝对
@@ -67,7 +67,7 @@ public class TemplateController extends AnylineController {
 		拼接时,先拼当前类的dir 再拼父类中的dir
 		另外:template不指定时template(page)默认为default.jsp
 		内容文件与模板文件 目录结构应该保持一致
-	 * @return
+	 * @return return
 	 */
 	protected TemplateModelAndView template(boolean adapt, String name, String template){
 		TemplateModelAndView tv = new TemplateModelAndView();
@@ -137,37 +137,38 @@ public class TemplateController extends AnylineController {
 		return template(false, name, template);
 	}
 	
-	
-	/**
-	 * 加载数据 数据模板中的数据
-	 * @param objects
-	 * @return
-	 */
-	protected String createTemplateData(Object obj, String ... keys){
-		BeanUtil.toUpperCaseKey(obj, keys);
-		WebUtil.encryptKey(obj, keys);
-		return success(obj);
-	}
-	protected String loadData(Object obj, String ...keys){
-		return createTemplateData(obj, keys);
-	}
-	
-	protected ModelAndView error(String ... msgs ){
-		return errorView(msgs);
-	}
-	protected ModelAndView errorView(String ... msgs){
-		String message ="";
-		String bak_url = getRequest().getHeader("Referer");
-		if(null != msgs){
-			for(String msg:msgs){
-				message += "<br/>"+ msg;
-			}
-		}
-		
-		ModelAndView view = new ModelAndView(ConfigTable.getString("ERROR_PAGE_PATH"));
-		view.addObject("msg", message);
-		view.addObject("bak_url",bak_url);
-		return view;
+	 
+	/** 
+	 * 加载数据 数据模板中的数据 
+	 * @param keys  keys
+	 * @param obj  obj
+	 * @return return
+	 */ 
+	protected String createTemplateData(Object obj, String ... keys){ 
+		BeanUtil.toUpperCaseKey(obj, keys); 
+		WebUtil.encryptKey(obj, keys); 
+		return success(obj); 
+	} 
+	protected String loadData(Object obj, String ...keys){ 
+		return createTemplateData(obj, keys); 
+	} 
+	 
+	protected ModelAndView error(String ... msgs ){ 
+		return errorView(msgs); 
+	} 
+	protected ModelAndView errorView(String ... msgs){ 
+		String message =""; 
+		String bak_url = getRequest().getHeader("Referer"); 
+		if(null != msgs){ 
+			for(String msg:msgs){ 
+				message += "<br/>"+ msg; 
+			} 
+		} 
+		 
+		ModelAndView view = new ModelAndView(ConfigTable.getString("ERROR_PAGE_PATH")); 
+		view.addObject("msg", message); 
+		view.addObject("bak_url",bak_url); 
+		return view; 
 	}
 	protected ModelAndView emptyView(String ... msgs){
 		String message ="";
@@ -182,10 +183,10 @@ public class TemplateController extends AnylineController {
 		view.addObject("msg", message);
 		view.addObject("bak_url",bak_url);
 		return view;
+	} 
+	protected ModelAndView emptyView(){ 
+		ModelAndView view = new ModelAndView(ConfigTable.getString("EMPTY_PAGE_PATH")); 
+		return view; 
 	}
-	protected ModelAndView emptyView(){
-		ModelAndView view = new ModelAndView(ConfigTable.getString("EMPTY_PAGE_PATH"));
-		return view;
-	}
-
+ 
 }
