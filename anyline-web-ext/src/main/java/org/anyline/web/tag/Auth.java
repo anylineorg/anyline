@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.web.tag;
-
+package org.anyline.web.tag; 
+ 
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -38,7 +38,7 @@ import org.anyline.weixin.util.WXConfig.SNSAPI_SCOPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Auth extends BaseBodyTag {
+public class Auth extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L;
 	
 	private String key = "default";
@@ -51,19 +51,19 @@ public class Auth extends BaseBodyTag {
 	private boolean auto;
 	private String id;
 	private String params;
-	
-	private static final Logger log = LoggerFactory.getLogger(Auth.class);
-	public int doEndTag() {
+	 
+	private static final Logger log = LoggerFactory.getLogger(Auth.class); 
+	public int doEndTag() { 
 		JspWriter writer = null;
-		boolean result = true;
+		boolean result = true; 
 		String html = "";
 		String url = "";
 		if(BasicUtil.isEmpty(id)){
 			id = BasicUtil.getRandomLowerString(10);
 		}
-		
+		 
 		try {
-			log.error("[第三方登录][type:{}]",type);
+			log.error("[第三方登录][type:{}]",type); 
 			writer = pageContext.getOut();
 			if(encode){
 				String stateValue = state;
@@ -168,18 +168,18 @@ public class Auth extends BaseBodyTag {
 			}else{
 				log.error("[第三方登录][登录配置异常]");
 				html = "登录配置异常";
-			}
-			writer.print(html);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容
-	}
-	@Override
-	public void release() {
-		super.release();
+			} 
+			writer.print(html); 
+		} catch (IOException e) { 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
+	} 
+	@Override 
+	public void release() { 
+		super.release(); 
 		type = null;
 		appid = null;
 		redirect = null;
@@ -190,7 +190,7 @@ public class Auth extends BaseBodyTag {
 		auto = false;
 		id = null;
 		encode = false;
-		key = null;
+		key = null; 
 	}
 
 	public String getKey() {
@@ -271,6 +271,6 @@ public class Auth extends BaseBodyTag {
 
 	public void setEncode(boolean encode) {
 		this.encode = encode;
-	}
-	
-}
+	} 
+	 
+} 
