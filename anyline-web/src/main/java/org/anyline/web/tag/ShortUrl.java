@@ -17,10 +17,10 @@
  */
 
 
-package org.anyline.web.tag;
-
-
-public class ShortUrl extends BaseBodyTag {
+package org.anyline.web.tag; 
+ 
+ 
+public class ShortUrl extends BaseBodyTag { 
 
 //	private static final long serialVersionUID = 1L;
 //	private String id;
@@ -190,5 +190,5 @@ public class ShortUrl extends BaseBodyTag {
 //	public void setOnclick(String onclick) {
 //		this.onclick = onclick;
 //	}
-
+ 
 }

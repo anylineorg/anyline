@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import java.util.Date;
 import java.util.Locale;
 
@@ -30,73 +30,73 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-public class DateFormat extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(DateFormat.class);
+ 
+ 
+public class DateFormat extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(DateFormat.class); 
 	private String format;
 	private String lang;
-	private Object nvl = false;	//如果value为空("",null) 是否显示当前时间,默认false
-
-	public String getFormat() {
-		return format;
-	}
-
-
-	public void setFormat(String format) {
-		this.format = format;
-	}
-
-
-	public int doEndTag() throws JspException {
+	private Object nvl = false;	//如果value为空("",null) 是否显示当前时间,默认false 
+ 
+	public String getFormat() { 
+		return format; 
+	} 
+ 
+ 
+	public void setFormat(String format) { 
+		this.format = format; 
+	} 
+ 
+ 
+	public int doEndTag() throws JspException { 
 		try{
-			String result = "";
-			if(null == format){
-				format = "yyyy-MM-dd";
-			}
-			if(null == value){
-				value = body;
+			String result = ""; 
+			if(null == format){ 
+				format = "yyyy-MM-dd"; 
+			} 
+			if(null == value){ 
+				value = body; 
 			}
 			Locale local = Locale.CHINA;
 			if(BasicUtil.isNotEmpty(lang)){
 				local = new Locale(lang);
-			}
-			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){
-				value = new Date();
-				result = DateUtil.format(local,new Date(), format);
+			} 
+			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){ 
+				value = new Date(); 
+				result = DateUtil.format(local,new Date(), format); 
 			}else if(value instanceof String){
 				if(((String) value).contains(",")){
 					value = value.toString().replace(",", "");
 					result = DateUtil.format(local,BasicUtil.parseLong(value, 0L),format);
-				}else{
+				}else{ 
 					result = DateUtil.format(local,(String)value,format);
-				}
+				} 
 			}else if(value instanceof Date){
 				result = DateUtil.format(local,(Date)value,format);
 			}else if(value instanceof Long){
 				result = DateUtil.format(local,(Long)value,format);
-			}
-			JspWriter out = pageContext.getOut();
-			out.print(result);
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_PAGE;   
-	}
-
-
-	@Override
-	public void release() {
+			} 
+			JspWriter out = pageContext.getOut(); 
+			out.print(result); 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_PAGE;    
+	} 
+ 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		this.value = null;
 		this.body = null;
 		this.format = null;
 		this.nvl = false;
-		this.lang = null;
-	}
+		this.lang = null; 
+	} 
 	public Object getNvl() {
 		return nvl;
 	}
@@ -117,8 +117,8 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 	}
 
 
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+	@Override 
+	protected Object clone() throws CloneNotSupportedException { 
+		return super.clone(); 
+	} 
 }

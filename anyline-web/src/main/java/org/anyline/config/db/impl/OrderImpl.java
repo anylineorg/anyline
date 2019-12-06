@@ -17,40 +17,40 @@
  */
 
 
-package org.anyline.config.db.impl;
-
-import org.anyline.config.db.Order;
+package org.anyline.config.db.impl; 
+ 
+import org.anyline.config.db.Order; 
 import org.anyline.config.db.SQL;
-import org.anyline.util.BasicUtil;
-
-public class OrderImpl implements Order{
+import org.anyline.util.BasicUtil; 
+ 
+public class OrderImpl implements Order{ 
 	private static final long serialVersionUID = -765229283714551699L;
-	private String column;									//排序列
-	private SQL.ORDER_TYPE type = SQL.ORDER_TYPE.ASC;		//排序方式
-	
-	public OrderImpl(){}
-	public OrderImpl(String str){
-		if(null == str){
-			return;
-		}
-		str = str.trim();
-		String col = null;
-		String typ = "ASC";
-		if (str.contains(" ")) { // 指明正序或倒序
-			String[] keys = str.split("\\s+");
-			col = keys[0];
-			if (keys.length > 1) {
-				typ = keys[1];
-			}
-		} else {
-			col = str;
-		}
+	private String column;									//排序列 
+	private SQL.ORDER_TYPE type = SQL.ORDER_TYPE.ASC;		//排序方式 
+	 
+	public OrderImpl(){} 
+	public OrderImpl(String str){ 
+		if(null == str){ 
+			return; 
+		} 
+		str = str.trim(); 
+		String col = null; 
+		String typ = "ASC"; 
+		if (str.contains(" ")) { // 指明正序或倒序 
+			String[] keys = str.split("\\s+"); 
+			col = keys[0]; 
+			if (keys.length > 1) { 
+				typ = keys[1]; 
+			} 
+		} else { 
+			col = str; 
+		} 
 		this.column = col;
 		if(typ.equalsIgnoreCase("ASC")){
 			this.type = SQL.ORDER_TYPE.ASC;
 		}else{
 			this.type = SQL.ORDER_TYPE.DESC;
-		}
+		} 
 	}
 	public OrderImpl(String column, SQL.ORDER_TYPE type){
 		setColumn(column);
@@ -59,24 +59,24 @@ public class OrderImpl implements Order{
 	public OrderImpl(String column, String type){
 		setColumn(column);
 		setType(type);
-	}
-	public String getColumn() {
-		return column;
-	}
-	public void setColumn(String column) {
-		if(null != column){
-			this.column = column.trim();
-		}
-	}
-	public SQL.ORDER_TYPE getType() {
-		return type;
-	}
-	public void setType(SQL.ORDER_TYPE type) {
-		this.type = type;
-	}
-	public Object clone() throws CloneNotSupportedException{
-		OrderImpl clone = (OrderImpl)super.clone();
-		return clone;
+	} 
+	public String getColumn() { 
+		return column; 
+	} 
+	public void setColumn(String column) { 
+		if(null != column){ 
+			this.column = column.trim(); 
+		} 
+	} 
+	public SQL.ORDER_TYPE getType() { 
+		return type; 
+	} 
+	public void setType(SQL.ORDER_TYPE type) { 
+		this.type = type; 
+	} 
+	public Object clone() throws CloneNotSupportedException{ 
+		OrderImpl clone = (OrderImpl)super.clone(); 
+		return clone; 
 	}
 	@Override
 	public void setType(String type) {
@@ -86,5 +86,5 @@ public class OrderImpl implements Order{
 			this.type = SQL.ORDER_TYPE.ASC;
 		}
 	}
-	
-}
+	 
+} 

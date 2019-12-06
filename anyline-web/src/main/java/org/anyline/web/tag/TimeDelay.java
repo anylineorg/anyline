@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import java.util.Date;
 
 import javax.servlet.jsp.JspException;
@@ -29,27 +29,27 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+ 
 /**
  * 从value|body起到现在经过多少时间
- * @author Administrator
+ * @author zh
  *
- */
-public class TimeDelay extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(TimeDelay.class);
-	private Object nvl = false;	//如果value为空("",null) 是否显示当时间,默认false
-
-	public int doEndTag() throws JspException {
-		try{
-			String result = "";
-			if(null == value){
-				value = body;
-			}
-			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){
-				value = new Date();
-			}else if(value instanceof String){
-				value = DateUtil.parse((String)value);
+ */ 
+public class TimeDelay extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(TimeDelay.class); 
+	private Object nvl = false;	//如果value为空("",null) 是否显示当时间,默认false 
+ 
+	public int doEndTag() throws JspException { 
+		try{ 
+			String result = ""; 
+			if(null == value){ 
+				value = body; 
+			} 
+			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){ 
+				value = new Date(); 
+			}else if(value instanceof String){ 
+				value = DateUtil.parse((String)value); 
 			}
 			Date date = (Date)value;
 			long fr = date.getTime()/1000;
@@ -69,25 +69,25 @@ public class TimeDelay extends BaseBodyTag implements Cloneable{
 				result = dif/60/60/24/30 + "月";
 			}else{
 				result = dif/60/60/24/365 + "年";
-			}
-			JspWriter out = pageContext.getOut();
-			out.print(result);
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_PAGE;   
-	}
-
-
-	@Override
-	public void release() {
+			} 
+			JspWriter out = pageContext.getOut(); 
+			out.print(result); 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_PAGE;    
+	} 
+ 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		this.value = null;
 		this.body = null;
-		this.nvl = true;
-	}
+		this.nvl = true; 
+	} 
 	public Object getNvl() {
 		return nvl;
 	}
@@ -98,8 +98,8 @@ public class TimeDelay extends BaseBodyTag implements Cloneable{
 	}
 
 
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+	@Override 
+	protected Object clone() throws CloneNotSupportedException { 
+		return super.clone(); 
+	} 
 }

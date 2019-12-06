@@ -17,31 +17,31 @@
  */
 
 
-package org.anyline.web.tag;
-
+package org.anyline.web.tag; 
+ 
 import java.io.IOException;
 
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-
-public class Random extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
+ 
+public class Random extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
 	private String length = "10";
 	private String begin;
 	private String end;
 	private String type;
-	
-	public int doEndTag() {
-
-		JspWriter writer = null;
-		String result = "";
+	 
+	public int doEndTag() { 
+ 
+		JspWriter writer = null; 
+		String result = ""; 
 		try {
 			int _begin = BasicUtil.parseInt(begin, 0);
 			int _end = BasicUtil.parseInt(end, 0);
 			if(_begin != _end){
 				result = BasicUtil.getRandomNumber(_begin, _end)+"";
-			}else{
+			}else{ 
 				int size = BasicUtil.parseInt(length, 0);
 				if(size>0){
 					if("char".equalsIgnoreCase(type) || "string".equalsIgnoreCase(type)){
@@ -52,22 +52,22 @@ public class Random extends BaseBodyTag {
 				}
 			}
 			writer = pageContext.getOut();
-			writer.print(result);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容
-	}
-
-	@Override
-	public void release() {
+			writer.print(result); 
+		} catch (IOException e) { 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
+	} 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		length = "10";
 		begin = null;
 		end = null;
-		type="num";
+		type="num"; 
 	}
 
 
@@ -101,6 +101,6 @@ public class Random extends BaseBodyTag {
 
 	public void setLength(String length) {
 		this.length = length;
-	}
-	
-}
+	} 
+	 
+} 

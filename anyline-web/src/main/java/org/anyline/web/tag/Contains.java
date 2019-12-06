@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.web.tag;
-
+package org.anyline.web.tag; 
+ 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -31,15 +31,15 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-public class Contains extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(Contains.class);
+ 
+public class Contains extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(Contains.class); 
 	private Object data;		
 	private String key;
 	private String scope;
 	private Object elseValue;
-	public int doEndTag() throws JspException {
+	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		String html = "";
 		try{
@@ -104,7 +104,7 @@ public class Contains extends BaseBodyTag {
 		}finally{
 			release();
 		}
-        return EVAL_PAGE;   
+        return EVAL_PAGE;    
 	}
 	@Override
 	public void release() {
@@ -145,5 +145,5 @@ public class Contains extends BaseBodyTag {
 	public void setElse(Object elseValue) {
 		this.elseValue = elseValue;
 	}
-	
+	 
 }

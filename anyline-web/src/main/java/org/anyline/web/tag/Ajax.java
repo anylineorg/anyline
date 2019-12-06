@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.web.tag;
+package org.anyline.web.tag; 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -25,21 +25,21 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/**
- * ajax形式分页
- * @author Administrator
- *
- */
+/** 
+ * ajax形式分页 
+ * @author zh 
+ * 
+ */ 
 public class Ajax extends BodyTagSupport{
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L; 
 	private static final Logger log = LoggerFactory.getLogger(Ajax.class);
-	private String url				;	//数据来源
+	private String url				;	//数据来源 
 	private String param			;	//参数收集函数
 	private Boolean intime = false	;	//实时执行,否则放入jqery.ready
 	private String callback			;	//回调函数
 	private boolean async = true		;
 
-	public int doStartTag() throws JspException {
+	public int doStartTag() throws JspException { 
 		try{
 			StringBuilder builder = new StringBuilder();
 			builder.append("<script>\n");
@@ -63,19 +63,19 @@ public class Ajax extends BodyTagSupport{
 			builder.append("</script>");
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_BODY_INCLUDE;
-    }   
-	public int doEndTag() throws JspException {   
-	        return EVAL_PAGE;   
-	}
-	@Override
-	public void release() {
-		super.release();
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_BODY_INCLUDE; 
+    }    
+	public int doEndTag() throws JspException {    
+	        return EVAL_PAGE;    
+	} 
+	@Override 
+	public void release() { 
+		super.release(); 
 		param 			= null	;	//参数收集函数
 		callback 		= null	;	//回调函数
 		intime 			= false	;
@@ -115,5 +115,5 @@ public class Ajax extends BodyTagSupport{
 	public void setId(String id) {
 		this.id = id;
 	}
-
-}
+ 
+} 

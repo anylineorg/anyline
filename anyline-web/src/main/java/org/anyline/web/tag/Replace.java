@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import java.io.IOException;
 
 import javax.servlet.jsp.JspException;
@@ -28,10 +28,10 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-public class Replace extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(Replace.class);
+ 
+public class Replace extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(Replace.class); 
 	private String from;
 	private String to;
 	 public int doEndTag() throws JspException {
@@ -52,19 +52,19 @@ public class Replace extends BaseBodyTag implements Cloneable{
 				release();
 			}
 			return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容
-	}
-
-
-	@Override
-	public void release() {
+	} 
+ 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		value = null;
 		from = null;
-		to = null;
-	}
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
+		to = null; 
+	} 
+	@Override 
+	protected Object clone() throws CloneNotSupportedException { 
+		return super.clone(); 
 	}
 
 
@@ -86,5 +86,5 @@ public class Replace extends BaseBodyTag implements Cloneable{
 	public void setTo(String to) {
 		this.to = to;
 	}
-	
+	 
 }

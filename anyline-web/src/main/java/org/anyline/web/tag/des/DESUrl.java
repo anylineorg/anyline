@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.web.tag.des;
+package org.anyline.web.tag.des; 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
@@ -26,56 +26,56 @@ import org.anyline.util.WebUtil;
 import org.anyline.web.tag.BaseBodyTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/**
- * 整体加密url
- * @author Administrator
- *
- */
-public class DESUrl extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(DESUrl.class);
-	private String value;		//被加密数据
-
-	public int doEndTag() throws JspException {
-		try{
-			value = BasicUtil.nvl(value,body,"").toString().trim();
-			if(null != value && !"".equals(value)){
-				String result = "";
-				String url = value;
-				String split = "";
-				String param = "";
-				if(value.contains("?")){
-					url = value.substring(0, value.indexOf("?"));
-					param = value.substring(value.indexOf("?")+1);
-					split = "?";
-				}
-				result = url + split + WebUtil.encryptRequestParam(param);
-				JspWriter out = pageContext.getOut();
-				out.print(result);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-		return EVAL_PAGE;   
-	}
-	@Override
-	public void release() {
-		super.release();
+/** 
+ * 整体加密url 
+ * @author zh 
+ * 
+ */ 
+public class DESUrl extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(DESUrl.class); 
+	private String value;		//被加密数据 
+ 
+	public int doEndTag() throws JspException { 
+		try{ 
+			value = BasicUtil.nvl(value,body,"").toString().trim(); 
+			if(null != value && !"".equals(value)){ 
+				String result = ""; 
+				String url = value; 
+				String split = ""; 
+				String param = ""; 
+				if(value.contains("?")){ 
+					url = value.substring(0, value.indexOf("?")); 
+					param = value.substring(value.indexOf("?")+1); 
+					split = "?"; 
+				} 
+				result = url + split + WebUtil.encryptRequestParam(param); 
+				JspWriter out = pageContext.getOut(); 
+				out.print(result); 
+			} 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+		return EVAL_PAGE;    
+	} 
+	@Override 
+	public void release() { 
+		super.release(); 
 		value = null;
-		body = null;
-	}
-	public String getValue() {
-		return value;
-	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
-
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
-}
+		body = null; 
+	} 
+	public String getValue() { 
+		return value; 
+	} 
+ 
+	public void setValue(String value) { 
+		this.value = value; 
+	} 
+ 
+	@Override 
+	protected Object clone() throws CloneNotSupportedException { 
+		return super.clone(); 
+	} 
+} 

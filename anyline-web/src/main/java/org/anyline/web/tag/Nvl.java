@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
@@ -31,20 +31,20 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+ 
 /**
  * 第一个 != null 的值
- * <al:nvl>
- * <al:param>1</al:param>
- * <al:param>2</al:param>
- * </al:nvl>
- */
-public class Nvl extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
+ * &lt;al:nvl&gt;
+ * &lt;al:param&gt;1&lt;/al:param&gt;
+ * &lt;al:param&gt;2&lt;/al:param&gt;
+ * &lt;/al:nvl&gt;
+ */ 
+public class Nvl extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
 	private static final Logger log = LoggerFactory.getLogger(Nvl.class);
-	private String target = null;
-	
-	 public int doEndTag() throws JspException {
+	private String target = null; 
+	 
+	 public int doEndTag() throws JspException { 
 		try{
 			 if(null == paramList || paramList.size()==0){
 				 if(BasicUtil.isNotEmpty(value)){
@@ -59,11 +59,11 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 				 }
 			 }
 			String result = "";
-			for(Object param:paramList){
+			for(Object param:paramList){ 
 				if(null != param && !param.toString().equals("null")){
-					result = param.toString();
-					break;
-				}
+					result = param.toString(); 
+					break; 
+				} 
 			}
 			result = BasicUtil.nvl(result,body,"").toString();
 			Tag parent = this.getParent();
@@ -75,25 +75,25 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 			}else{
 				JspWriter out = pageContext.getOut();
 				out.print(result);
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_PAGE;   
-	}
-
-
-	@Override
-	public void release() {
+			} 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_PAGE;    
+	} 
+ 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		paramList = null;
 		value = null;
-		target = null;
-	}
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+		target = null; 
+	} 
+	@Override 
+	protected Object clone() throws CloneNotSupportedException { 
+		return super.clone(); 
+	} 
 }

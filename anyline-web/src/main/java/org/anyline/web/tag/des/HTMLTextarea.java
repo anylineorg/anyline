@@ -17,51 +17,51 @@
  */
 
 
-package org.anyline.web.tag.des;
-
+package org.anyline.web.tag.des; 
+ 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.WebUtil;
 import org.anyline.web.tag.ComponentTag;
-/**
- * 加密textarea
- * @author Administrator
- *
- */
-public class HTMLTextarea extends ComponentTag{
-	private static final long serialVersionUID = 1L;
+/** 
+ * 加密textarea 
+ * @author zh 
+ * 
+ */ 
+public class HTMLTextarea extends ComponentTag{ 
+	private static final long serialVersionUID = 1L; 
 
-	public void createHead(Object obj){
-		setEncryptKey(true);
-		builder.append("\t\t\t<textarea ");
-		createAttribute();
-		createValue(null);
-		builder.append("/>");
-	}
-	public void createBody(Object obj){
+	public void createHead(Object obj){ 
+		setEncryptKey(true); 
+		builder.append("\t\t\t<textarea "); 
+		createAttribute(); 
+		createValue(null); 
+		builder.append("/>"); 
+	} 
+	public void createBody(Object obj){ 
 		value = BasicUtil.nvl(body,value,"").toString();
 		if(encryptValue){
 			value = WebUtil.encryptValue(value+"");
-		}
-		builder.append(value);
-	}
-	public void createEnd(){
-		builder.append("</textarea>");
-	}
-	private void createValue(Object data){
-		if(null != data && null != property){
-			try{
-				Object v = BeanUtil.getFieldValue(data, property);
-				if(null != v){
-					value = v.toString();
-				}
+		} 
+		builder.append(value); 
+	} 
+	public void createEnd(){ 
+		builder.append("</textarea>"); 
+	} 
+	private void createValue(Object data){ 
+		if(null != data && null != property){ 
+			try{ 
+				Object v = BeanUtil.getFieldValue(data, property); 
+				if(null != v){ 
+					value = v.toString(); 
+				} 
 			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}
-		if(!"text".equalsIgnoreCase(type)){
-			value = WebUtil.encryptHttpRequestParamValue(value+"");
-		}
-		
-	}
+				e.printStackTrace(); 
+			} 
+		} 
+		if(!"text".equalsIgnoreCase(type)){ 
+			value = WebUtil.encryptHttpRequestParamValue(value+""); 
+		} 
+		 
+	} 
 }
