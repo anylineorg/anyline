@@ -17,20 +17,20 @@
  */
 
 
-package org.anyline.config.db.sql.auto.impl;
-
-import org.anyline.config.db.sql.auto.TextSQL;
-
-public class TextSQLImpl extends AutoSQLImpl implements TextSQL{
+package org.anyline.config.db.sql.auto.impl; 
+ 
+import org.anyline.config.db.sql.auto.TextSQL; 
+ 
+public class TextSQLImpl extends AutoSQLImpl implements TextSQL{ 
 	private static final long serialVersionUID = 7586751724724062851L;
-	private String text;
-	public TextSQLImpl(String text){
-		super();
-		this.text = text;
-		chain = new AutoConditionChainImpl();
-	}
-	public String getText(){
-		return this.text;
-	}
-	
-}
+	private String text; 
+	public TextSQLImpl(String text){ 
+		super(); 
+		this.text = text; 
+		chain = new AutoConditionChainImpl(); 
+	} 
+	public String getText(){ 
+		return this.text; 
+	} 
+	 
+} 

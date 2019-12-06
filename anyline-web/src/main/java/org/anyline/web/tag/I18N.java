@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,25 +37,25 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.I18NUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-
-
-public class I18N extends BaseBodyTag{
-	private static final long serialVersionUID = 1554109844585627661L;
-	
-	private Object data;
-	private String lang;			//语言
+ 
+ 
+public class I18N extends BaseBodyTag{ 
+	private static final long serialVersionUID = 1554109844585627661L; 
+	 
+	private Object data; 
+	private String lang;			//语言 
 	private String key;
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
-	private String textKey = "NM";
-	private HttpServletRequest request; 
-	
-	public int doStartTag() throws JspException {
-		request = (HttpServletRequest)pageContext.getRequest();
-		checkLang();
-        return EVAL_BODY_BUFFERED;
-    }
-	 public int doEndTag() throws JspException {
-		 String html = "";
+	private String textKey = "NM"; 
+	private HttpServletRequest request;  
+	 
+	public int doStartTag() throws JspException { 
+		request = (HttpServletRequest)pageContext.getRequest(); 
+		checkLang(); 
+        return EVAL_BODY_BUFFERED; 
+    } 
+	 public int doEndTag() throws JspException { 
+		 String html = ""; 
 		 if(BasicUtil.isNotEmpty(data)){
 			 if(data instanceof String){
 				if(data.toString().endsWith("}")){
@@ -100,79 +100,79 @@ public class I18N extends BaseBodyTag{
 						html += text;
 					}
 				}
-			}
-		 }else{
-			 html = I18NUtil.get(lang, key);
-		 }
-		//输出
-		JspWriter out = pageContext.getOut();
-		try{
-			out.print(html);
-		}catch(Exception e){
-
-		}finally{
-			release();
-		}
-        return EVAL_PAGE;   
-	}
-	@Override
-    public void release(){
+			} 
+		 }else{ 
+			 html = I18NUtil.get(lang, key); 
+		 } 
+		//输出 
+		JspWriter out = pageContext.getOut(); 
+		try{ 
+			out.print(html); 
+		}catch(Exception e){ 
+ 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_PAGE;    
+	} 
+	@Override 
+    public void release(){ 
 		super.release();
 		data = null;
 		textKey = null;
 		valueKey = null;
 		value = null;
-		
+		 
     	key = null;
     	lang = null;
-    }
-	/**
-	 * 确认语言环境
-	 */
-	private void checkLang(){
-		if(BasicUtil.isEmpty(lang)){
-			lang = (String)request.getSession().getAttribute(ConfigTable.getString("I18N_MESSAGE_SESSION_KEY"));
-		}
-		if(BasicUtil.isEmpty(lang)){
-			//配置文件默认
-			lang = ConfigTable.getString("I18N_MESSAGE_DEFAULT_LANG");
-		}
-		if(BasicUtil.isEmpty(lang)){
-			//struts
-			lang = (String)request.getSession().getAttribute("WW_TRANS_I18N_LOCALE");
-		}
-		if(BasicUtil.isEmpty(lang)){
-			//Local
-			lang = Locale.getDefault().getCountry().toLowerCase();
-		}
-		if(BasicUtil.isEmpty(lang)){
-			lang = I18NUtil.defaultLang;
-		}
-	}
-
-	public String getLang() {
-		return lang;
-	}
-	public void setLang(String lang) {
-		this.lang = lang;
-	}
-	public String getKey() {
-		return key;
-	}
-	public void setKey(String key) {
-		this.key = key;
-	}
-	public HttpServletRequest getRequest() {
-		return request;
-	}
-	public void setRequest(HttpServletRequest request) {
-		this.request = request;
-	}
-	public Object getData() {
-		return data;
-	}
-	public void setData(Object data) {
-		this.data = data;
+    } 
+	/** 
+	 * 确认语言环境 
+	 */ 
+	private void checkLang(){ 
+		if(BasicUtil.isEmpty(lang)){ 
+			lang = (String)request.getSession().getAttribute(ConfigTable.getString("I18N_MESSAGE_SESSION_KEY")); 
+		} 
+		if(BasicUtil.isEmpty(lang)){ 
+			//配置文件默认 
+			lang = ConfigTable.getString("I18N_MESSAGE_DEFAULT_LANG"); 
+		} 
+		if(BasicUtil.isEmpty(lang)){ 
+			//struts 
+			lang = (String)request.getSession().getAttribute("WW_TRANS_I18N_LOCALE"); 
+		} 
+		if(BasicUtil.isEmpty(lang)){ 
+			//Local 
+			lang = Locale.getDefault().getCountry().toLowerCase(); 
+		} 
+		if(BasicUtil.isEmpty(lang)){ 
+			lang = I18NUtil.defaultLang; 
+		} 
+	} 
+ 
+	public String getLang() { 
+		return lang; 
+	} 
+	public void setLang(String lang) { 
+		this.lang = lang; 
+	} 
+	public String getKey() { 
+		return key; 
+	} 
+	public void setKey(String key) { 
+		this.key = key; 
+	} 
+	public HttpServletRequest getRequest() { 
+		return request; 
+	} 
+	public void setRequest(HttpServletRequest request) { 
+		this.request = request; 
+	} 
+	public Object getData() { 
+		return data; 
+	} 
+	public void setData(Object data) { 
+		this.data = data; 
 	}
 	public String getValueKey() {
 		return valueKey;
@@ -186,6 +186,6 @@ public class I18N extends BaseBodyTag{
 	public void setTextKey(String textKey) {
 		this.textKey = textKey;
 	}
-	
-
+	 
+ 
 }

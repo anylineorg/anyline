@@ -17,51 +17,51 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import javax.servlet.jsp.JspException;
 
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-/**
- * 
- * @author Administrator
- * pageContext.setAttribute(key,value);
- */
-public class PageContext extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(PageContext.class);
-
-	private String key;
-	
-	
-	public int doEndTag() throws JspException {
-		try{
-			if(null != key){
+ 
+/** 
+ *  
+ * @author zh 
+ * pageContext.setAttribute(key,value); 
+ */ 
+public class PageContext extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(PageContext.class); 
+ 
+	private String key; 
+	 
+	 
+	public int doEndTag() throws JspException { 
+		try{ 
+			if(null != key){ 
 				pageContext.setAttribute(key, BasicUtil.nvl(value,body));
-			}
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_PAGE;   
-	}
-
-	@Override
-	public void release() {
+			} 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_PAGE;    
+	} 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		value = null;
-		body = null;
-		key = null;
-	}
-	public String getKey() {
-		return key;
-	}
-	public void setKey(String key) {
-		this.key = key;
-	}
+		body = null; 
+		key = null; 
+	} 
+	public String getKey() { 
+		return key; 
+	} 
+	public void setKey(String key) { 
+		this.key = key; 
+	} 
 }

@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.web.tag;
+package org.anyline.web.tag; 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -28,16 +28,16 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/**
- * ajax形式分页
- * @author Administrator
- *
- */
+/** 
+ * ajax形式分页 
+ * @author zh 
+ * 
+ */ 
 public class Navi extends BodyTagSupport{
-	public static final String CONFIG_FLAG_KEY = "_anyline_navi_conf_";
-	private static final long serialVersionUID = 1L;
+	public static final String CONFIG_FLAG_KEY = "_anyline_navi_conf_"; 
+	private static final long serialVersionUID = 1L; 
 	private static final Logger log = LoggerFactory.getLogger(Navi.class);
-	private String url				;	//数据来源
+	private String url				;	//数据来源 
 	private String param			;	//参数收集函数
 	private String container		;	//返回内容显示容器
 	private String body				;	//返回内容显示容器class或id(如果body与page分开)
@@ -57,7 +57,7 @@ public class Navi extends BodyTagSupport{
 	private Boolean auto = false	;	//是否加载下一页内容(swap加载更多typ=1时 划屏到底部自动加载)
 	private String callback			;	//回调函数	
 	private String guide			;   //加载更多文本提示
-	
+	 
 	private String empty			;	//查询无数据显示内容
 	private String over				;	//最后一页提示
 	private String style = "default"; 	//样式标记对应anyline-navi.xml中的config.key
@@ -67,7 +67,7 @@ public class Navi extends BodyTagSupport{
 	private int type = 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
 
 	
-	public int doStartTag() throws JspException {
+	public int doStartTag() throws JspException { 
 		try{
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
 			StringBuilder builder = new StringBuilder();
@@ -198,19 +198,19 @@ public class Navi extends BodyTagSupport{
 			pageContext.getRequest().setAttribute("_anyline_navi_tag_idx", idx + "");
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_BODY_INCLUDE;
-    }   
-	public int doEndTag() throws JspException {   
-	        return EVAL_PAGE;   
-	}
-	@Override
-	public void release() {
-		super.release();
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_BODY_INCLUDE; 
+    }    
+	public int doEndTag() throws JspException {    
+	        return EVAL_PAGE;    
+	} 
+	@Override 
+	public void release() { 
+		super.release(); 
 		param 			= null	;	//参数收集函数
 		container 		= null	;	//返回内容容器
 		callback 		= null	;	//回调函数
@@ -395,5 +395,5 @@ public class Navi extends BodyTagSupport{
 	public void setOver(String over) {
 		this.over = over;
 	}
-
-}
+ 
+} 

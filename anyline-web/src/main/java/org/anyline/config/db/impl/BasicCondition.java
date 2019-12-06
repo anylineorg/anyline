@@ -17,8 +17,8 @@
  */
 
 
-package org.anyline.config.db.impl;
-
+package org.anyline.config.db.impl; 
+ 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,95 +28,95 @@ import org.anyline.config.db.Condition;
 import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.SQLVariable;
 import org.anyline.util.BasicUtil;
-
-
-
-/**
- * 自动生成的参数
- * @author Administrator
- *
- */
-public abstract class BasicCondition implements Condition{
+ 
+ 
+ 
+/** 
+ * 自动生成的参数 
+ * @author zh 
+ * 
+ */ 
+public abstract class BasicCondition implements Condition{ 
 	private static final long serialVersionUID = -4959462636754773423L;
 	protected boolean required = false;									//是否必须
-	protected boolean strictRequired = false;							//是否必须
-	protected boolean active = false;									//是否活动(是否拼接到SQL中)
-	protected int variableType = VARIABLE_FLAG_TYPE_NONE;				//变量标记方式
+	protected boolean strictRequired = false;							//是否必须 
+	protected boolean active = false;									//是否活动(是否拼接到SQL中) 
+	protected int variableType = VARIABLE_FLAG_TYPE_NONE;				//变量标记方式 
 	protected List<Object> runValues = new ArrayList<Object>();			//运行时参数
-	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();//运行时参数
-	protected String join = Condition.CONDITION_JOIN_TYPE_AND;			//连接方式
-	protected ConditionChain container;									//当前条件所处容器
-	protected String id;
+	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();//运行时参数 
+	protected String join = Condition.CONDITION_JOIN_TYPE_AND;			//连接方式 
+	protected ConditionChain container;									//当前条件所处容器 
+	protected String id; 
 	protected String text;												//静态条件
-	protected String test;												//判断条件
-	public Object clone() throws CloneNotSupportedException{
-		BasicCondition clone = (BasicCondition)super.clone();
-		if(null != runValues){
-			List<Object> cRunValues = new ArrayList<Object>();
-			for(Object obj:runValues){
-				Object tmp = obj;
-				cRunValues.add(tmp);
-			}
-			clone.runValues = cRunValues;
-		}
-		if(null != container){
-			clone.container = (ConditionChain)container.clone();
-		}
-		return clone;
+	protected String test;												//判断条件 
+	public Object clone() throws CloneNotSupportedException{ 
+		BasicCondition clone = (BasicCondition)super.clone(); 
+		if(null != runValues){ 
+			List<Object> cRunValues = new ArrayList<Object>(); 
+			for(Object obj:runValues){ 
+				Object tmp = obj; 
+				cRunValues.add(tmp); 
+			} 
+			clone.runValues = cRunValues; 
+		} 
+		if(null != container){ 
+			clone.container = (ConditionChain)container.clone(); 
+		} 
+		return clone; 
+	} 
+	 
+	public void init(){ 
+	} 
+	public void initRunValue(){ 
+		if(null == runValues){ 
+			runValues = new ArrayList<Object>(); 
+		}else{ 
+			runValues.clear(); 
+		} 
+ 
 	}
-	
-	public void init(){
-	}
-	public void initRunValue(){
-		if(null == runValues){
-			runValues = new ArrayList<Object>();
-		}else{
-			runValues.clear();
-		}
-
-	}
-	@Override
-	public void setActive(boolean active){
-		this.active = active;
-	}
-	public boolean isActive(){
-		return active;
-	}
-	public List<Object> getRunValues(){
-		return runValues;
-	}
-	
-	public Condition setJoin(String join){
-		this.join = join;
-		return this;
-	}
-
-	public String getJoin(){
-		return join;
-	}
-	public ConditionChain getContainer() {
-		return container;
-	}
-	public Condition setContainer(ConditionChain container) {
-		this.container = container;
-		return this;
-	}
-	public boolean hasContainer(){
-		return (null != container);
-	}
-	public boolean isContainer(){
-		return (this instanceof ConditionChain);
-	}
-	public String getId(){
-		return id;
-	}
-	public int getVariableType() {
-		return variableType;
-	}
-
-	public void setVariableType(int variableType) {
-		this.variableType = variableType;
-	}
+	@Override 
+	public void setActive(boolean active){ 
+		this.active = active; 
+	} 
+	public boolean isActive(){ 
+		return active; 
+	} 
+	public List<Object> getRunValues(){ 
+		return runValues; 
+	} 
+	 
+	public Condition setJoin(String join){ 
+		this.join = join; 
+		return this; 
+	} 
+ 
+	public String getJoin(){ 
+		return join; 
+	} 
+	public ConditionChain getContainer() { 
+		return container; 
+	} 
+	public Condition setContainer(ConditionChain container) { 
+		this.container = container; 
+		return this; 
+	} 
+	public boolean hasContainer(){ 
+		return (null != container); 
+	} 
+	public boolean isContainer(){ 
+		return (this instanceof ConditionChain); 
+	} 
+	public String getId(){ 
+		return id; 
+	} 
+	public int getVariableType() { 
+		return variableType; 
+	} 
+ 
+	public void setVariableType(int variableType) { 
+		this.variableType = variableType; 
+	} 
 
 	public boolean isRequired() {
 		return required;
@@ -131,13 +131,13 @@ public abstract class BasicCondition implements Condition{
 	}
 	public void setStrictRequired(boolean strictRequired) {
 		this.strictRequired = strictRequired;
-	}
-	/**
-	 * 赋值
-	 * @param variable
-	 * @param values
-	 */
-	public void setValue(String variable, Object values){
+	} 
+	/** 
+	 * 赋值 
+	 * @param variable  variable
+	 * @param values  values
+	 */ 
+	public void setValue(String variable, Object values){ 
 	}
 
 	@Override
@@ -160,5 +160,5 @@ public abstract class BasicCondition implements Condition{
 	}
 	public List<SQLVariable> getVariables(){
 		return null;
-	}
-}
+	} 
+} 

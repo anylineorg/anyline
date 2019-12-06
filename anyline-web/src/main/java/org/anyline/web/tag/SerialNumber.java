@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.web.tag;
-
-
+package org.anyline.web.tag; 
+ 
+ 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
@@ -27,17 +27,17 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-
-public class SerialNumber extends BaseBodyTag implements Cloneable{
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(SerialNumber.class);
+ 
+ 
+public class SerialNumber extends BaseBodyTag implements Cloneable{ 
+	private static final long serialVersionUID = 1L; 
+	private static final Logger log = LoggerFactory.getLogger(SerialNumber.class); 
 	private Object data;		//分页数据 DataSete 或PageNavi
-	private int index;	//当前页下标 varStatus.index
-
-
-	public int doEndTag() throws JspException {
-		try{
+	private int index;	//当前页下标 varStatus.index 
+ 
+ 
+	public int doEndTag() throws JspException { 
+		try{ 
 			String result = "";
 			PageNavi navi = null;
 			if(null != data){
@@ -64,24 +64,24 @@ public class SerialNumber extends BaseBodyTag implements Cloneable{
 				index += navi.getPageRows() * (navi.getCurPage()-1);
 			}
 			index ++;
-			result = index+"";
-			JspWriter out = pageContext.getOut();
-			out.print(result);
-		}catch(Exception e){
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-        return EVAL_PAGE;   
-	}
-
-
-	@Override
-	public void release() {
+			result = index+""; 
+			JspWriter out = pageContext.getOut(); 
+			out.print(result); 
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+        return EVAL_PAGE;    
+	} 
+ 
+ 
+	@Override 
+	public void release() { 
 		super.release();
 		this.data = null;
 		this.index = 0;
-	}
+	} 
 
 
 	public Object getData() {
@@ -104,8 +104,8 @@ public class SerialNumber extends BaseBodyTag implements Cloneable{
 	}
 
 
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
-	}
+	@Override 
+	protected Object clone() throws CloneNotSupportedException { 
+		return super.clone(); 
+	} 
 }

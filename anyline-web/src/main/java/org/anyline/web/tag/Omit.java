@@ -17,32 +17,32 @@
  */
 
 
-package org.anyline.web.tag;
-
+package org.anyline.web.tag; 
+ 
 import java.io.IOException;
 
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-
-public class Omit extends BaseBodyTag {
-	private static final long serialVersionUID = 1L;
+ 
+public class Omit extends BaseBodyTag { 
+	private static final long serialVersionUID = 1L; 
 	private int right;
 	private int left;
 	private String ellipsis = "*";
 	private int max;//最大长度(不小于 right+left+1)
 	private int min;//最小长度(不小于 right+left+1)
 	private String value;
-	
-	public int doEndTag() {
-		String src = BasicUtil.nvl(value,body,"").toString().trim();
-		if("".equals(src)){
-			return EVAL_BODY_INCLUDE;
-		}
-
-		JspWriter writer = null;
-		String result = "";
-		try {
+	 
+	public int doEndTag() { 
+		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
+		if("".equals(src)){ 
+			return EVAL_BODY_INCLUDE; 
+		} 
+ 
+		JspWriter writer = null; 
+		String result = ""; 
+		try { 
 			writer = pageContext.getOut();
 			if(max < 0 || max>src.length()){
 				max = src.length();
@@ -69,26 +69,26 @@ public class Omit extends BaseBodyTag {
 			String l = src.substring(0,left);
 			String r = src.substring(src.length() - right);
 			
-			result = l+BasicUtil.fillRChar("", ellipsis, fill)+r;
-			writer.print(result);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}finally{
-			release();
-		}
-		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容
-	}
-
-	@Override
-	public void release() {
-		super.release();
+			result = l+BasicUtil.fillRChar("", ellipsis, fill)+r; 
+			writer.print(result); 
+		} catch (IOException e) { 
+			e.printStackTrace(); 
+		}finally{ 
+			release(); 
+		} 
+		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容 
+	} 
+ 
+	@Override 
+	public void release() { 
+		super.release(); 
 		value = null;
 		body = null;
 		left = 0;
 		right = 0;
 		max = 0;
 		min = 0;
-		ellipsis = "*";
+		ellipsis = "*"; 
 	}
 
 	public int getRight() {
@@ -141,5 +141,5 @@ public class Omit extends BaseBodyTag {
 	}
 
 
-	
-}
+	 
+} 

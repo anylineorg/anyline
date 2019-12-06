@@ -17,19 +17,19 @@
  */
 
 
-package org.anyline.config.db.impl;
+package org.anyline.config.db.impl; 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.List; 
+ 
 
-
-/**
- * V3.0
- */
-import org.anyline.config.db.Procedure;
-
-
-
-public class ProcedureImpl  implements Procedure{
+/** 
+ * V3.0 
+ */ 
+import org.anyline.config.db.Procedure; 
+ 
+ 
+ 
+public class ProcedureImpl  implements Procedure{ 
 	private static final long serialVersionUID = -1421673036222025241L;
 	private String name;
 	private List<Integer> outputTypes;	//输出参数类型
@@ -49,9 +49,9 @@ public class ProcedureImpl  implements Procedure{
 	}
 	/**
 	 * 添加输入参数
-	 * @param value	值
-	 * @param type	类型
-	 * @return
+	 * @param value	值 value	值
+	 * @param type	类型 type	类型
+	 * @return return
 	 */
 	public Procedure addInput(String value, Integer type){
 		inputValues.add(value);
@@ -71,8 +71,8 @@ public class ProcedureImpl  implements Procedure{
 	
 	/**
 	 * 注册输出参数
-	 * @param type	类型
-	 * @return
+	 * @param type	类型 type	类型
+	 * @return return
 	 */
 	public Procedure regOutput(Integer type){
 		outputTypes.add(type);
@@ -99,6 +99,6 @@ public class ProcedureImpl  implements Procedure{
 	}
 	public List<Object> getOutput(){
 		return result;
-	}
-
-}
+	} 
+ 
+} 

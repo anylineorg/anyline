@@ -15,7 +15,7 @@
  *
  *          
  */
-package org.anyline.cache;
+package org.anyline.cache; 
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -36,7 +36,7 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.MD5Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+ 
 public class CacheUtil {
 	private static final Logger log = LoggerFactory.getLogger(CacheUtil.class);
 	private static CacheManager manager = null;
@@ -149,7 +149,7 @@ public class CacheUtil {
 			result = false;
 		}
 		return result;
-	}
+	} 
 	/*
 	 * 辅助缓存刷新控制, N秒内只接收一次刷新操作
 	 * 调用刷新方法前,先调用start判断是否可刷新,刷新完成后调用stop
@@ -159,8 +159,9 @@ public class CacheUtil {
     /**
      * 开始刷新
      * 如果不符合刷新条件返回false
-     * @param key
-     * @return
+     * @param key key
+     * @param sec sec
+     * @return return
      */
     public static boolean start(String key, int sec){
     	boolean result = false;
@@ -192,7 +193,8 @@ public class CacheUtil {
     }
     /**
      * 刷新完成
-     * @param key
+     * @param key key
+     * @param sec sec
      */
     public static void stop(String key, int sec){
     	Long fr = reflushFlag.get(key);
@@ -223,8 +225,8 @@ public class CacheUtil {
     }
     /**
      * 已执行时间
-     * @param key
-     * @return
+     * @param key key
+     * @return return
      */
     public long getRunTime(String key){
     	long result = -1;
@@ -236,9 +238,9 @@ public class CacheUtil {
     }
     /**
      * 创建集中缓存的key
-     * @param table
-     * @param row
-     * @return
+     * @param table table
+     * @param row row
+     * @return return
      */
     public static String crateCachePrimaryKey(String table, DataRow row){
     	String key = table;
@@ -254,10 +256,11 @@ public class CacheUtil {
     /**
 	 * 创建cache key
 	 * @param page 是否需要拼接分页下标
-	 * @param src
-	 * @param store
-	 * @param conditions
-	 * @return
+	 * @param order order
+	 * @param src src
+	 * @param store store
+	 * @param conditions conditions
+	 * @return return
 	 */
 	public static String createCacheElementKey(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
 		conditions = BasicUtil.compressionSpace(conditions);
@@ -303,5 +306,5 @@ public class CacheUtil {
 			log.warn("[create cache key][key:{}]",result);
 		}
 		return MD5Util.crypto(result);
-	}
-}
+	} 
+} 
