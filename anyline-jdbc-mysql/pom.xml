@@ -6,8 +6,8 @@
 
 	<parent>
 		<groupId>org.anyline</groupId>
-		<artifactId>anyline-maven-jar</artifactId>
-		<version>8.3.1</version>
+		<artifactId>anyline-dependency</artifactId>
+		<version>8.3.2</version>
 	</parent>
 
 	<artifactId>anyline-jdbc-mysql</artifactId>
