@@ -52,7 +52,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	/** 
 	 * 查询SQL 
 	 * RunSQL 反转调用 
-	 * @param baseTxt  baseTxt
+	 * @param run  run
 	 * @return return
 	 */ 
 	@Override 
