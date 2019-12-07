@@ -33,7 +33,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	} 
 	private String getDbVersion(){ 
 		if(null == dbVersion){ 
-			DataSet set = dao.query(new TextSQLImpl("SELECT @@VERSION AS VS")); 
+			DataSet set = dao.querys(new TextSQLImpl("SELECT @@VERSION AS VS")); 
 			if(set.size()>0){ 
 				dbVersion = set.getString("VS")+""; 
 				dbVersion = dbVersion.toUpperCase().replaceAll("\\s{2,}", ""); 
