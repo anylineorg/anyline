@@ -238,7 +238,7 @@ public interface Regular {
 	* @return return
 	 * @throws Exception Exception
 	*/ 
-	public List<List<String>> fetch(String src, String regx) throws Exception; 
+	public List<List<String>> fetchs(String src, String regx) throws Exception; 
 	/** 
 	* 提取子串 
 	* @param src		输入字符串  src		输入字符串
@@ -247,7 +247,15 @@ public interface Regular {
 	* @return return
 	 * @throws Exception Exception
 	*/ 
-	public List<String> fetch(String src, String regx, int idx) throws Exception; 
+	public List<String> fetch(String src, String regx, int idx) throws Exception;
+	/**
+	 * 默认返回第0个(整串)
+	 * @param src 输入字符
+	 * @param regx 表达式
+	 * @return 返回整串
+	 * @throws Exception 异常
+	 */
+	public List<String> fetch(String src, String regx) throws Exception; 
 	/** 
 	* 过滤  仅保留匹配项 
 	* @param src  src

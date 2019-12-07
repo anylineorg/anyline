@@ -69,7 +69,7 @@ public class RegularMatch implements Regular{
 	 * @param regx	表达式  regx	表达式
 	 * @return return
 	 */ 
-	public List<List<String>> fetch(String src, String regx){ 
+	public List<List<String>> fetchs(String src, String regx){ 
 		List<List<String>> list = new ArrayList<List<String>>(); 
 		try{ 
 			Pattern pattern = patternCompiler.compile(regx, Perl5Compiler.DEFAULT_MASK); 
@@ -116,6 +116,9 @@ public class RegularMatch implements Regular{
 		} 
 		return list; 
 	} 
+	public List<String> fetch(String src, String regx) throws Exception{ 
+		return fetch(src, regx, 0);
+	}
 	/** 
 	 * 过滤 保留匹配项 
 	 * @param src  src
