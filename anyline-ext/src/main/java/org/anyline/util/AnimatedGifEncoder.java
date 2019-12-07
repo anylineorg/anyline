@@ -455,7 +455,8 @@ public class AnimatedGifEncoder {
   } 
  
   /** 
-   * Write 16-bit value to output stream, LSB first 
+   * Write 16-bit value to output stream, LSB first
+   * @param value value 
    * @throws IOException IOException
    */
   protected void writeShort(int value) throws IOException { 
