@@ -98,7 +98,7 @@ public class TemplateController extends AnylineController {
 			log.warn("样式模板:"+template_path);
 		}
 		try{
-			List<List<String>> vars= RegularUtil.fetch(content, "{([\\w.]+)}");//RegularUtil.REGEX_VARIABLE
+			List<List<String>> vars= RegularUtil.fetchs(content, "{([\\w.]+)}");//RegularUtil.REGEX_VARIABLE
 			for(List<String> var:vars){
 				String fullVar = var.get(0);
 				String simVar = var.get(1).toUpperCase().trim();
