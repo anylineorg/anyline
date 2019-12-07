@@ -22,9 +22,9 @@ package org.anyline.service.impl;
 import java.util.ArrayList; 
 import java.util.Collection; 
 import java.util.List; 
- 
+
 import net.sf.ehcache.Element; 
- 
+
 import org.anyline.cache.CacheUtil; 
 import org.anyline.cache.PageLazyStore; 
 import org.anyline.config.db.Order; 
@@ -63,7 +63,36 @@ public class AnylineServiceImpl implements AnylineService {
 	@Qualifier("anyline.dao") 
 	protected AnylineDao dao; 
 	 
+	
 	 
+	@Override
+	public DataSet selects(String src, ConfigStore configs, String... conditions) {
+		return querys(src, configs, conditions);
+	}
+	@Override
+	public DataSet selects(String src, String... conditions) {
+		return querys(src, conditions);
+	}
+	@Override
+	public DataSet selects(String src, int fr, int to, String... conditions) {
+		return querys(src, fr, to, conditions);
+	}
+	@Override
+	public DataRow select(String src, ConfigStore configs, String... conditions) {
+		return query(src, configs, conditions);
+	}
+	@Override
+	public DataRow select(String src, String... conditions) {
+		return query(src, conditions);
+	}
+	@Override
+	public DataSet selectProcedure(String procedure, String... inputs) {
+		return queryProcedure(procedure, inputs);
+	}
+	@Override
+	public DataSet select(Procedure procedure) {
+		return query(procedure);
+	}
 	protected PageNavi setPageLazy(String src, ConfigStore configs, String ... conditions){ 
 		PageNavi navi =  null; 
 		String lazyKey = null; 
@@ -87,7 +116,7 @@ public class AnylineServiceImpl implements AnylineService {
 		try { 
 			setPageLazy(src, configs, conditions); 
 			SQL sql = createSQL(src); 
-			set = dao.query(sql, configs, conditions); 
+			set = dao.querys(sql, configs, conditions); 
 			set.addQueryParam("query_src", src); 
 		} catch (Exception e) { 
 			set = new DataSet(); 
@@ -283,7 +312,7 @@ public class AnylineServiceImpl implements AnylineService {
             	new Thread(new Runnable(){ 
             		public void run(){ 
                 		CacheUtil.start(_key, _max/10); 
-            			DataSet newSet = dao.query(_sql, _configs, _conditions); 
+            			DataSet newSet = dao.querys(_sql, _configs, _conditions); 
                     	CacheUtil.put(_cache, _key, newSet);          	 
                 		CacheUtil.stop(_key, _max/10); 
             		} 
@@ -298,7 +327,7 @@ public class AnylineServiceImpl implements AnylineService {
 			} 
  
 			setPageLazy(src, configs, conditions); 
-			set = dao.query(sql, configs, conditions); 
+			set = dao.querys(sql, configs, conditions); 
 			 
         	CacheUtil.put(cache, key, set);        	 
         } 
@@ -891,7 +920,7 @@ public class AnylineServiceImpl implements AnylineService {
 	 * @return return
 	 */ 
 	@Override 
-	public DataSet queryProcedure(Procedure procedure) { 
+	public DataSet query(Procedure procedure) { 
 		DataSet set = null; 
 		try { 
 			procedure.setName(DataSourceHolder.parseDataSource(procedure.getName())); 
@@ -915,7 +944,7 @@ public class AnylineServiceImpl implements AnylineService {
 		for (String input : inputs) { 
 			proc.addInput(input); 
 		} 
-		return queryProcedure(proc); 
+		return query(proc); 
 	} 
  
  

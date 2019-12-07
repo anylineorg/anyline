@@ -47,6 +47,15 @@ public interface AnylineService{
 	public DataSet querys(String src, ConfigStore configs, String ... conditions);
 	public DataSet querys(String src, String ... conditions);
 	public DataSet querys(String src, int fr, int to, String ... conditions);
+	public DataRow query(String src, ConfigStore configs, String ... conditions);
+	public DataRow query(String src, String ... conditions);
+
+	//实现与query相同的功能
+	public DataSet selects(String src, ConfigStore configs, String ... conditions);
+	public DataSet selects(String src, String ... conditions);
+	public DataSet selects(String src, int fr, int to, String ... conditions);
+	public DataRow select(String src, ConfigStore configs, String ... conditions);
+	public DataRow select(String src, String ... conditions);
 	/**
 	 * 如果二级缓存开启 会从二级缓存中提取数据
 	 * @param cache	对应ehcache缓存配置文件 中的cache.name
@@ -71,9 +80,6 @@ public interface AnylineService{
 	public DataSet cacheL1(String cache, String src, int fr, int to, String ... conditions);
 
 	 
-	public DataRow query(String src, ConfigStore configs, String ... conditions);
-	public DataRow query(String src, String ... conditions);
-
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
 	public DataRow next(DataRow row, SQL.ORDER_TYPE order, String ... conditions);
@@ -210,7 +216,10 @@ public interface AnylineService{
 	 * @return return
 	 */ 
 	public DataSet queryProcedure(String procedure, String ... inputs); 
-	public DataSet queryProcedure(Procedure procedure); 
+	public DataSet query(Procedure procedure); 
+	
+	public DataSet selectProcedure(String procedure, String ... inputs); 
+	public DataSet select(Procedure procedure); 
 	 
 	/**
 	 * 删除 根据主键删除
