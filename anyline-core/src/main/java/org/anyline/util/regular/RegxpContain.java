@@ -41,9 +41,9 @@ public class RegxpContain implements Regular{
 	private static final Logger log = LoggerFactory.getLogger(RegxpContain.class); 
 	private static PatternCompiler patternCompiler = new Perl5Compiler(); 
 	/** 
-	 * 配置状态 
+	 * 匹配状态 
 	 * @param src  src
-	 * @param regx  regx
+	 * @param regx 表达式
 	 * @return return
 	 */ 
 	public boolean match(String src, String regx){ 
@@ -113,7 +113,7 @@ public class RegxpContain implements Regular{
 	/** 
 	 * 过滤 保留匹配项 
 	 * @param src  src
-	 * @param regx  regx
+	 * @param regx 表达式
 	 * @return return
 	 */ 
 	public List<String> pick(List<String> src, String regx){ 
@@ -128,7 +128,7 @@ public class RegxpContain implements Regular{
 	/** 
 	 * 过滤 删除匹配项 
 	 * @param src  src
-	 * @param regx  regx
+	 * @param regx 表达式
 	 * @return return
 	 */ 
 	public List<String> wipe(List<String> src, String regx){ 
