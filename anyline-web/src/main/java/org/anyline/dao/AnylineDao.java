@@ -26,8 +26,10 @@ import org.anyline.config.http.ConfigStore;
 import org.anyline.entity.DataSet;
  
 public interface AnylineDao{ 
-	public DataSet query(SQL sql, ConfigStore configs, String ... conditions);
-	public DataSet query(SQL sql, String ... conditions);
+	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
+	public DataSet querys(SQL sql, String ... conditions);
+	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions);
+	public DataSet selects(SQL sql, String ... conditions);
 
 	public int count(SQL sql, ConfigStore configs, String ... conditions);
 	public int count(SQL sql, String ... conditions);

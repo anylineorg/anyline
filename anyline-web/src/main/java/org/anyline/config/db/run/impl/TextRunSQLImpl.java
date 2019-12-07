@@ -120,7 +120,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		try{ 
 			int varType = -1; 
 			COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL; 
-			List<List<String>> keys = RegularUtil.fetch(text, SQL.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN); 
+			List<List<String>> keys = RegularUtil.fetchs(text, SQL.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN); 
 			if(BasicUtil.isNotEmpty(true,keys)){ 
 				//AND CD = :CD 
 				for(int i=0; i<keys.size();i++){ 
