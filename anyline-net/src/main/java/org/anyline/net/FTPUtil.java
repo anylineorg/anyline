@@ -434,6 +434,7 @@ public class FTPUtil {
     /**  
      * 创建目录  
      * @param path   path
+     * @return return
      * @throws IOException   IOException
      */   
     public boolean makeDir(String path) throws IOException {   
