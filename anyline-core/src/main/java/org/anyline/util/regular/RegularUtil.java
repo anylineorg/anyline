@@ -87,19 +87,28 @@ public class RegularUtil {
 	 * @return return
 	 * @throws Exception Exception
 	 */ 
-	public static synchronized List<List<String>> fetch(String src, String regx, Regular.MATCH_MODE mode) throws Exception{ 
+	public static synchronized List<List<String>> fetchs(String src, String regx, Regular.MATCH_MODE mode) throws Exception{ 
 		List<List<String>> result = null; 
 		regular = regularList.get(mode); 
-		result = regular.fetch(src, regx); 
+		result = regular.fetchs(src, regx); 
 		return result; 
 	} 
-	public static List<List<String>> fetch(String src, String regx) throws Exception{ 
+	public static List<List<String>> fetchs(String src, String regx) throws Exception{ 
+		return fetchs(src, regx, Regular.MATCH_MODE.CONTAIN); 
+	} 
+	public static List<String> fetch(String src, String regx) throws Exception{ 
 		return fetch(src, regx, Regular.MATCH_MODE.CONTAIN); 
 	} 
 	public static synchronized List<String> fetch(String src, String regx, Regular.MATCH_MODE mode, int idx) throws Exception{ 
 		List<String> result = null; 
 		regular = regularList.get(mode); 
 		result = regular.fetch(src, regx, idx); 
+		return result; 
+	} 
+	public static synchronized List<String> fetch(String src, String regx, Regular.MATCH_MODE mode) throws Exception{ 
+		List<String> result = null; 
+		regular = regularList.get(mode); 
+		result = regular.fetch(src, regx); 
 		return result; 
 	} 
 	public static List<String> filter(List<String> src, String regx, Regular.MATCH_MODE mode, Regular.FILTER_TYPE type){ 
@@ -175,7 +184,7 @@ public class RegularUtil {
 	public static List<String> regexpValue(String src, String regex, Regular.MATCH_MODE mode){ 
 		List<String> result = new ArrayList<String>(); 
 		try{ 
-			List<List<String>> rs = fetch(src, regex, mode); 
+			List<List<String>> rs = fetchs(src, regex, mode); 
 			for(List<String> row:rs){ 
 				result.add(row.get(0)); 
 			} 
@@ -264,7 +273,7 @@ public class RegularUtil {
 		String reg =  "(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>)"	//双标签
 				+ "|(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?(>|(/>)))";			//单标签
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
-		List<List<String>> list = regular.fetch(src, reg);
+		List<List<String>> list = regular.fetchs(src, reg);
 		for(List<String> tmp:list){
 			List<String> item = new ArrayList<String>();
 			item.add(tmp.get(0));
@@ -287,7 +296,7 @@ public class RegularUtil {
 		List<List<String>> result = new ArrayList<List<String>>();
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
 		String reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";	//双标签
-		List<List<String>> list = regular.fetch(src, reg);
+		List<List<String>> list = regular.fetchs(src, reg);
 		for(List<String> tmp:list){
 			List<String> item = new ArrayList<String>();
 			item.add(tmp.get(0));
@@ -296,7 +305,7 @@ public class RegularUtil {
 		}
 
 		reg = "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?/>";	//单标签
-		list = regular.fetch(src, reg);
+		list = regular.fetchs(src, reg);
 		for(List<String> tmp:list){
 			List<String> item = new ArrayList<String>();
 			item.add(tmp.get(0));
@@ -426,7 +435,7 @@ public class RegularUtil {
 				}
 			}
 			String regx = "(?i)(<(" + tagNames + ")[^<]*?>)([\\s\\S]*?)(</\\2>)";
-			result = fetch(txt, regx);
+			result = fetchs(txt, regx);
 		}
 		return result;
 	}
@@ -455,7 +464,7 @@ public class RegularUtil {
 				}
 			}
 			String regx = "(?i)<(" +tagNames+")[\\s\\S]*?>";
-			result = fetch(txt, regx);
+			result = fetchs(txt, regx);
 		}
 		return result;
 	}
@@ -482,7 +491,7 @@ public class RegularUtil {
 				}
 			}
 			String regx = "(?i)((<(" + tagNames + ")[^<]*?>)([\\s\\S]*?)(</\\3>))|(<(" +tagNames+")[\\s\\S]*?>)";
-			items = fetch(txt, regx);
+			items = fetchs(txt, regx);
 			for(List<String> item:items){
 				List<String> rtn = new ArrayList<String>();
 				if(null == item.get(7)){
@@ -517,7 +526,7 @@ public class RegularUtil {
 		List<List<String>> result = new ArrayList<List<String>>();
 		try{
 			String regx = "(?i)(" + tag + ")\\s*=\\s*(['\"])([\\s\\S]*?)\\2";
-			result = fetch(txt, regx);
+			result = fetchs(txt, regx);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
