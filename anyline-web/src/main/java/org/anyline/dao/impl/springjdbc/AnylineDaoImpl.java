@@ -90,7 +90,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * 查询 
 	 */ 
 	@Override 
-	public DataSet query(SQL sql, ConfigStore configs, String ... conditions) { 
+	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions) { 
 		DataSet set = null; 
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
 		if(showSQL && !run.isValid()){
@@ -147,10 +147,20 @@ public class AnylineDaoImpl implements AnylineDao {
 		} 
 		return set; 
 	} 
-	public DataSet query(SQL sql, String ... conditions){
-		return query(sql, null, conditions);
+	public DataSet querys(SQL sql, String ... conditions){
+		return querys(sql, null, conditions);
 	}
 
+	/** 
+	 * 查询 
+	 */ 
+	@Override 
+	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions) { 
+		return querys(sql, configs, conditions);
+	} 
+	public DataSet selects(SQL sql, String ... conditions){
+		return querys(sql, null, conditions);
+	}
 	public int count(SQL sql, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try{

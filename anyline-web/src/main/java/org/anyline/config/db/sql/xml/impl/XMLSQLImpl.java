@@ -133,10 +133,10 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 		} 
 		try{
 			 
-			List<List<String>> keys = RegularUtil.fetch(text, SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
+			List<List<String>> keys = RegularUtil.fetchs(text, SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN);
 			int type = 1 ;
 			if(keys.size() ==0){
-				keys = RegularUtil.fetch(text, SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
+				keys = RegularUtil.fetchs(text, SQL_PARAM_VAIRABLE_REGEX_EL, Regular.MATCH_MODE.CONTAIN);
 				type = 2;
 			} 
 			if(BasicUtil.isNotEmpty(true,keys)){ 
