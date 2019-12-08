@@ -40,7 +40,7 @@
 		<anyline.nc.version>${anyline.version}</anyline.nc.version>
 		<anyline.web.version>${anyline.version}</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
-		<anyline.springmvc.version>${anyline.version}</anyline.springmvc.version>
+		<anyline.mvc.version>${anyline.version}</anyline.mvc.version>
 		<anyline.struts.version>${anyline.version}</anyline.struts.version>
 
 		<anyline.amap.version>${anyline.version}</anyline.amap.version>
