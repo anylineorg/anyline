@@ -95,7 +95,7 @@
 		<!-- springmvc支持 -->
 		<dependency>
 			<groupId>org.anyline</groupId>
-			<artifactId>anyline-springmvc</artifactId>
+			<artifactId>anyline-mvc</artifactId>
 			<version>${anyline.version}</version>
 		</dependency>
 		<!-- mysql支持 -->
