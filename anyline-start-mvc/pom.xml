@@ -22,7 +22,7 @@
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
 		<anyline.web.version>${anyline.version}</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
-		<anyline.springmvc.version>${anyline.version}</anyline.springmvc.version>
+		<anyline.mvc.version>${anyline.version}</anyline.mvc.version>
 
 		<anyline.amap.version>${anyline.version}</anyline.amap.version>
 		<anyline.alipay.version>${anyline.version}</anyline.alipay.version>
