@@ -137,7 +137,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 必须配置 javadoc -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -151,19 +150,18 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- 必须配置 sonatype -->
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
 				<version>1.6.7</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId> <!-- 等于上面Settings中server的id值。 -->
+					<serverId>ossrh</serverId> <!-- 对应Settings中server的id值。 -->
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
-			<!-- 必须配置 GPG -->
+			<!-- GPG -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
