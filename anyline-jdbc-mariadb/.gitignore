@@ -5,7 +5,7 @@
 .apt_generated
 *.classpath
 .factorypath
-*.project
+
 .settings
 .springBeans
 
@@ -16,7 +16,7 @@
 *.ipr
 ## eclipse ##
 *.classpath
-*.project
+
 /.settings
 
 
