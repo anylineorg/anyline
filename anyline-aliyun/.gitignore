@@ -1,11 +1,11 @@
-target/
+/target
 !.mvn/wrapper/maven-wrapper.jar
 
 ## STS ##
 .apt_generated
-.classpath
+*.classpath
 .factorypath
-.project
+*.project
 .settings
 .springBeans
 
@@ -15,9 +15,9 @@ target/
 *.iml
 *.ipr
 ## eclipse ##
-.classpath
-.project
-.settings/
+*.classpath
+*.project
+/.settings
 
 
 ## JRebel ##
@@ -27,6 +27,6 @@ rebel.xml
 .DS_Store
 
 ## Other ##
-log/
-logs/
-temp/
+/log
+/logs
+/temp
