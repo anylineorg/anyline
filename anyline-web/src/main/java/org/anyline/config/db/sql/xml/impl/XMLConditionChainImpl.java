@@ -19,14 +19,22 @@
 
 package org.anyline.config.db.sql.xml.impl; 
  
-import org.anyline.config.db.Condition; 
-import org.anyline.config.db.ConditionChain; 
+import java.util.List;
+
+import org.anyline.config.db.Condition;
+import org.anyline.config.db.ConditionChain;
 import org.anyline.config.db.SQLCreater;
-import org.anyline.config.db.impl.BasicConditionChain; 
+import org.anyline.config.db.impl.BasicConditionChain;
 import org.anyline.config.db.sql.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.regular.RegularUtil;
  
 public class XMLConditionChainImpl extends BasicConditionChain implements ConditionChain{ 
+	public static void main(String[] args) {
+		String txt = "ID = ?";
+		System.out.print(RegularUtil.match(txt, "=\\s*\\?"));
+		System.out.print(txt.replaceAll("=\\s*\\?", " IS NULL"));
+	}
 	public String getRunText(SQLCreater creater){ 
 		initRunValue(); 
 		StringBuilder builder = new StringBuilder(); 
@@ -42,7 +50,15 @@ public class XMLConditionChainImpl extends BasicConditionChain implements Condit
 				}else if(condition.isActive()){ 
 					builder.append("\n\t");
 					txt = condition.getRunText(creater); 
-					addRunValue(condition.getRunValues()); 
+					List<Object> values = condition.getRunValues();
+					if(BasicUtil.isEmpty(true, values)){
+						String reg = "=\\s*\\?";
+						if(RegularUtil.match(txt, reg)){
+							txt = txt.replaceAll(reg, " IS NULL ");
+						}
+					}else{
+						addRunValue(values);
+					}
 				}
 				if(BasicUtil.isNotEmpty(txt) && condition instanceof AutoCondition){
 					txt = condition.getJoin() + txt;
