@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
-	<version>8.3.2</version>
+	<version>8.3.3</version>
 	<packaging>pom</packaging>
 	<name>AnyLine</name>
 	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
@@ -33,7 +33,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<anyline.version>8.3.2</anyline.version>
+		<anyline.version>8.3.3</anyline.version>
 		<anyline.core.version>${anyline.version}</anyline.core.version>
 		<anyline.net.version>${anyline.version}</anyline.net.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
@@ -112,12 +112,30 @@
 		</snapshotRepository>
 	</distributionManagement>
 	<build>
+		<resources>
+			<resource>
+				<directory>src/main/java</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<includes>
+					<include>*.tld</include>
+				</includes>
+				<targetPath>META-INF</targetPath>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>3.0.2</version>
 				<configuration>
+					<excludes>
+						<excludes>*.xml</excludes>
+						<excludes>*.tld</excludes>
+						<excludes>*.xsd</excludes>
+						<excludes>*.properties</excludes>
+					</excludes>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
 					</archive>
