@@ -37,7 +37,6 @@ import org.anyline.util.BasicUtil;
  * 
  */ 
 public abstract class BasicCondition implements Condition{ 
-	private static final long serialVersionUID = -4959462636754773423L;
 	protected boolean required = false;									//是否必须
 	protected boolean strictRequired = false;							//是否必须 
 	protected boolean active = false;									//是否活动(是否拼接到SQL中) 

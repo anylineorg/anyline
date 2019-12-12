@@ -21,6 +21,7 @@ package org.anyline.config.db.run.impl;
  
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -361,9 +362,22 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
  
 				if(null != test){ 
 					Map<String,Object> map = con.getRunValuesMap(); 
+					Map<String,Object> runtimeValues = new HashMap<String,Object>();
+					//如果是数组只取第0个值 ognl不支持数组
+					for(Map.Entry<String, Object> entry : map.entrySet()){
+					    String mapKey = entry.getKey();
+					    Object mapValue = entry.getValue();
+					    if(null != mapValue && mapValue instanceof Collection){
+					    	Collection cols = (Collection)mapValue;
+					    	for(Object obj:cols){
+					    		runtimeValues.put(mapKey, obj);
+					    		break;
+					    	}
+					    }
+					}
 					try { 
 						OgnlContext context = new OgnlContext(null, null, new DefaultMemberAccess(true));
-						Boolean result = (Boolean) Ognl.getValue(test,context, map); 
+						Boolean result = (Boolean) Ognl.getValue(test,context, runtimeValues); 
 						if(!result){ 
 							con.setActive(false); 
 						}else{ 
