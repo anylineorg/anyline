@@ -65,14 +65,25 @@ public interface ConfigStore {
 	/**
 	 * 
 	 * @param key key
+	 * @param var XML自定义SQL条件中指定变量赋值
 	 * @param value value
 	 * @param overCondition 覆盖相同key的条件
 	 * @param overValue		覆盖条件value overValue		覆盖条件value
 	 * @return return
 	 */
+	public ConfigStore addCondition(String key, String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore addCondition(String key, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue); 
+
+	/**
+	 * XML自定义SQL条件中指定变量赋值
+	 * @param key condition.id
+	 * @param var condition.var
+	 * @param value value
+	 * @return return
+	 */
+	public ConfigStore addCondition(String key, String var, Object value);
 	/** 
 	 * 添加排序 
 	 * @param order  order

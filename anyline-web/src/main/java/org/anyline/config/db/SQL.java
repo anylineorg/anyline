@@ -31,7 +31,7 @@ import org.anyline.entity.PageNavi;
  
  
  
-public interface SQL extends Cloneable,Serializable { 
+public interface SQL extends Cloneable { 
 
 	public static enum COMPARE_TYPE{
 		EQUAL			{public int getCode(){return 10;} public String getSql(){return " = ?";} 				public String getName(){return "等于";}},

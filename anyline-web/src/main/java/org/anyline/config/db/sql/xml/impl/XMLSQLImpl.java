@@ -35,16 +35,11 @@ import org.anyline.config.db.sql.xml.XMLSQL;
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil; 
-/** 
- * order 需要区分XML定义还是动态添加 
- * @author zh 
- * 
- */ 
 public class XMLSQLImpl extends BasicSQL implements XMLSQL{ 
 	/*解析XML*/ 
 	private String id; 
 	private String text;
-	private boolean strict = true;	//严格格式, true:不允许添加临时查询条件 
+	private boolean strict = true;	//严格格式, true:不允许添加XML定义之外 的临时查询条件
 	private List<SQLVariable> variables; 
 	 
 	public XMLSQLImpl(){ 

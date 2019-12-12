@@ -19,7 +19,6 @@
 
 package org.anyline.config.http.impl; 
  
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -39,9 +38,7 @@ import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
-public class ConfigImpl implements Config,Serializable{
-	private static final long serialVersionUID = 1L;
-
+public class ConfigImpl implements Config{
 	protected static final Logger log = LoggerFactory.getLogger(ConfigImpl.class); 
 	//从request 取值方式 
  
