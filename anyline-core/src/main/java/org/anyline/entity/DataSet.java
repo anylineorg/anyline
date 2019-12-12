@@ -1503,6 +1503,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet dispatchItem(String field, boolean recursion, String ... keys){
 		return dispatchItem(field, recursion, this, keys);
 	}
+	
+	
+	
+	/**
+	 * 根据keys列建立关联，并将关联出来的结果拼接到集合的条目上，如果有重复则覆盖条目
+	 * @param items 被查询的集合
+	 * @param keys 关联条件列
+	 * @return return
+	 */
+	public DataSet join(DataSet items, String ... keys){
+		if(null == items || null == keys || keys.length == 0){
+			return this;
+		}
+		for(DataRow row : rows){
+			String[] params = packParam(row, reverseKey(keys));
+			DataRow result = items.getRow(params);
+			row.copy(result, result.keys());
+		}
+		return this;
+	}
+
+
 	public DataSet toLowerKey(){
 		for(DataRow row:rows){
 			row.toLowerKey();
