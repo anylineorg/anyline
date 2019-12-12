@@ -1304,6 +1304,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+	public DataRow copy(DataRow data, List<String> keys){
+		if(null == data || null == keys){
+			return this;
+		}
+		for(String key:keys){
+			String ks[] = BeanUtil.parseKeyValue(key);
+			this.put(ks[0], data.get(ks[1]));
+		}
+		return this;
+	}
 	/**
 	 * 复制String类型数据
 	 * @param data data
