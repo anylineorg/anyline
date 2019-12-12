@@ -19,34 +19,36 @@
  
 package org.anyline.config.db.run.impl; 
  
-import java.util.ArrayList; 
-import java.util.Collection; 
-import java.util.List; 
-import java.util.Map; 
- 
-import ognl.Ognl; 
-import ognl.OgnlException; 
- 
-import org.anyline.config.ConfigParser; 
-import org.anyline.config.ParseResult; 
-import org.anyline.config.db.Condition; 
-import org.anyline.config.db.ConditionChain; 
-import org.anyline.config.db.Group; 
-import org.anyline.config.db.GroupStore; 
-import org.anyline.config.db.Order; 
-import org.anyline.config.db.OrderStore; 
-import org.anyline.config.db.SQL; 
-import org.anyline.config.db.SQLVariable; 
-import org.anyline.config.db.impl.GroupStoreImpl; 
-import org.anyline.config.db.impl.OrderStoreImpl; 
-import org.anyline.config.db.run.RunSQL; 
-import org.anyline.config.db.sql.auto.impl.AutoConditionImpl; 
-import org.anyline.config.db.sql.xml.impl.XMLConditionChainImpl; 
-import org.anyline.config.http.Config; 
-import org.anyline.config.http.ConfigStore; 
-import org.anyline.config.http.impl.ConfigStoreImpl; 
-import org.anyline.entity.PageNavi; 
-import org.anyline.util.BasicUtil; 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
+import ognl.Ognl;
+import ognl.OgnlContext;
+import ognl.OgnlException;
+
+import org.anyline.config.ConfigParser;
+import org.anyline.config.ParseResult;
+import org.anyline.config.db.Condition;
+import org.anyline.config.db.ConditionChain;
+import org.anyline.config.db.Group;
+import org.anyline.config.db.GroupStore;
+import org.anyline.config.db.Order;
+import org.anyline.config.db.OrderStore;
+import org.anyline.config.db.SQL;
+import org.anyline.config.db.SQLVariable;
+import org.anyline.config.db.impl.GroupStoreImpl;
+import org.anyline.config.db.impl.OrderStoreImpl;
+import org.anyline.config.db.run.RunSQL;
+import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
+import org.anyline.config.db.sql.xml.impl.XMLConditionChainImpl;
+import org.anyline.config.http.Config;
+import org.anyline.config.http.ConfigStore;
+import org.anyline.config.http.impl.ConfigStoreImpl;
+import org.anyline.entity.PageNavi;
+import org.anyline.ognl.DefaultMemberAccess;
+import org.anyline.util.BasicUtil;
  
 public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{ 
 	private List<String> conditions; 
@@ -117,6 +119,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					} 
 				} 
 				if(con.isStrictRequired()){ 
+					log.warn("[valid:false][con:{}]",con.getId());
 					this.valid = false; 
 				} 
 			} 
@@ -142,6 +145,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			for(SQLVariable var:variables){ 
 				if(var.isRequired() || var.isStrictRequired()){ 
 					if(BasicUtil.isEmpty(true,var.getValues())){ 
+						log.warn("[valid:false][var:{}]",var.getKey());
 						this.valid = false; 
 						return; 
 					} 
@@ -358,7 +362,8 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				if(null != test){ 
 					Map<String,Object> map = con.getRunValuesMap(); 
 					try { 
-						Boolean result = (Boolean) Ognl.getValue(test,map); 
+						OgnlContext context = new OgnlContext(null, null, new DefaultMemberAccess(true));
+						Boolean result = (Boolean) Ognl.getValue(test,context, map); 
 						if(!result){ 
 							con.setActive(false); 
 						}else{ 
@@ -446,7 +451,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		} 
 		return vars; 
 	} 
-	@Override 
+	@Override
 	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) { 
 		/*不指定变量名或condition = variable 时,根据condition为SQL主体变量赋值*/ 
 		if(null != variables &&  
