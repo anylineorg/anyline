@@ -50,8 +50,7 @@ import org.anyline.util.WebUtil;
  * @author zh 
  * 
  */ 
-public class ConfigStoreImpl implements ConfigStore,Serializable{ 
-	private static final long serialVersionUID = 1L;
+public class ConfigStoreImpl implements ConfigStore{ 
 	private ConfigChain chain; 
 	private PageNavi navi; 
 	private OrderStore orders;		//排序依据 
@@ -157,6 +156,10 @@ public class ConfigStoreImpl implements ConfigStore,Serializable{
 	}
 	@Override
 	public ConfigStore addCondition(String key, Object value, boolean overCondition, boolean overValue){
+		return addCondition(key, null, overCondition, overValue);
+	}
+	@Override
+	public ConfigStore addCondition(String key, String var, Object value, boolean overCondition, boolean overValue){
 		Config conf = null;
 		if(overCondition){
 			conf = chain.getConfig(key,SQL.COMPARE_TYPE.EQUAL);
@@ -168,6 +171,9 @@ public class ConfigStoreImpl implements ConfigStore,Serializable{
 			chain.addConfig(conf);
 		}
 		conf.setId(key);
+		if(BasicUtil.isNotEmpty(var)){
+			conf.setVariable(var);
+		}
 		if(overValue){
 			conf.setValue(value);
 		}else{
@@ -179,6 +185,10 @@ public class ConfigStoreImpl implements ConfigStore,Serializable{
 	@Override
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value) {
 		return addCondition(compare, key, value, false, false);
+	}
+	@Override
+	public ConfigStore addCondition(String key, String var, Object value) {
+		return addCondition(key, var, value, false, false);
 	}
 	@Override
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue) {

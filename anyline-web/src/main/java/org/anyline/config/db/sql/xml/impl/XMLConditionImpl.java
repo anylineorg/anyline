@@ -32,8 +32,6 @@ import org.anyline.config.db.impl.SQLVariableImpl;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
  
  
 /** 
@@ -42,15 +40,7 @@ import org.slf4j.LoggerFactory;
  * 
  */ 
 public class XMLConditionImpl extends BasicCondition implements Condition{ 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
-	private static final Logger log = LoggerFactory.getLogger(XMLConditionImpl.class); 
-	 
 	private String text; 
-	 
 	private List<SQLVariable> variables;	//变量 
 	 
 	 

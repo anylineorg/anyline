@@ -19,7 +19,6 @@
 
 package org.anyline.config.http.impl; 
  
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +30,8 @@ import org.anyline.config.db.SQL;
 import org.anyline.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
  
-public class ConfigChainImpl extends ConfigImpl implements ConfigChain,Serializable{ 
-	private static final long serialVersionUID = 1L;
-	private static final Logger log = LoggerFactory.getLogger(ConfigChainImpl.class); 
+public class ConfigChainImpl extends ConfigImpl implements ConfigChain{ 
 	private List<Config> configs = new ArrayList<Config>(); 
 	 
 	public ConfigChainImpl(){}

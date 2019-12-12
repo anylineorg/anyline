@@ -111,7 +111,7 @@ public abstract class BasicCondition implements Condition{
 		return id; 
 	} 
 	public int getVariableType() { 
-		return variableType; 
+		return variableType;
 	} 
  
 	public void setVariableType(int variableType) { 

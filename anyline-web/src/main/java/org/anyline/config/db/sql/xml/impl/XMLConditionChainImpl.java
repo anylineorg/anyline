@@ -27,7 +27,6 @@ import org.anyline.config.db.sql.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
  
 public class XMLConditionChainImpl extends BasicConditionChain implements ConditionChain{ 
-	private static final long serialVersionUID = 8358028646230427689L;
 	public String getRunText(SQLCreater creater){ 
 		initRunValue(); 
 		StringBuilder builder = new StringBuilder(); 
@@ -48,7 +47,9 @@ public class XMLConditionChainImpl extends BasicConditionChain implements Condit
 				if(BasicUtil.isNotEmpty(txt) && condition instanceof AutoCondition){
 					txt = condition.getJoin() + txt;
 				} 
-				builder.append(txt); 
+				if(condition.isActive()){
+					builder.append(txt); 
+				}
 			} 
 		} 
 		return builder.toString(); 

@@ -31,7 +31,6 @@ import org.anyline.config.http.ConfigChain;
 import org.anyline.util.BasicUtil;
  
 public class AutoConditionChainImpl extends BasicConditionChain implements ConditionChain{
-	private static final long serialVersionUID = -3221296171103784900L;
 	public AutoConditionChainImpl(){}
 	public AutoConditionChainImpl(ConfigChain chain){
 		if(null == chain){
