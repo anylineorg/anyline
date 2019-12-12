@@ -97,7 +97,7 @@ public class SQLStoreImpl extends SQLStore{
 		for(Iterator<?> itrSql = root.elementIterator("sql"); itrSql.hasNext();){ 
 			Element sqlElement = (Element)itrSql.next(); 
 			String sqlId = fileName +":" +sqlElement.attributeValue("id");						//SQL 主键
-			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);	//是否严格格式 
+			boolean strict = BasicUtil.parseBoolean(sqlElement.attributeValue("strict"), false);	//是否严格格式  true:java中不允许添加XML定义之外的临时条件
 			String sqlText = sqlElement.elementText("text");									//SQL 文本 
 			SQL sql = new XMLSQLImpl(); 
 			sql.setDataSource(fileName+":"+sqlId); 
@@ -137,7 +137,7 @@ public class SQLStoreImpl extends SQLStore{
 				sql.addCondition(condition);
 			}
 		}else{
-			String ref = element.attributeValue("ref");
+			String ref = element.attributeValue("ref");//ref对应conditions.id
 			if(null != ref && null != sql && null != map){
 				List<Condition> conditions = map.get(ref);
 				if(null != conditions){
