@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.anyline</groupId>
+		<artifactId>anyline-dependency</artifactId>
+		<version>8.3.3</version>
+	</parent>
+	<artifactId>anyline-start-mvc-jsp</artifactId>
+	<packaging>pom</packaging>
+	<name>anyline-start-mvc-jsp</name>
+	<url>http://www.anyline.org</url>
+
+	<dependencies>
+		<!-- springmvc支持 -->
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-mvc</artifactId>
+			<version>${anyline.version}</version>
+		</dependency>
+		<!-- end springmvc -->
+		
+		<!-- jsp -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>${javax.jstl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>${taglibs.standard.version}</version>
+		</dependency>
+		<!-- end jsp -->
+		
+		<!-- 连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+		<!-- end 连接池 -->
+		
+		<!-- mysql支持 -->
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-jdbc-mysql</artifactId>
+			<version>${anyline.jdbc.mysql.version}</version>
+		</dependency>
+		<!-- end mysql -->
+		
+	</dependencies>
+</project>
