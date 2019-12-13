@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
 	<version>8.3.3</version>
@@ -9,6 +10,7 @@
 	<name>AnyLine</name>
 	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
 	<url>http://www.anyline.org</url>
+	
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
