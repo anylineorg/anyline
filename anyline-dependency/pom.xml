@@ -5,7 +5,7 @@
 	
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
-	<version>8.3.3</version>
+	<version>8.3.5</version>
 	<packaging>pom</packaging>
 	<name>AnyLine</name>
 	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
@@ -35,7 +35,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 
-		<anyline.version>8.3.3</anyline.version>
+		<anyline.version>8.3.5</anyline.version>
 		<anyline.core.version>${anyline.version}</anyline.core.version>
 		<anyline.net.version>${anyline.version}</anyline.net.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
@@ -105,8 +105,7 @@
 	<distributionManagement>
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
-			</url>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 		<snapshotRepository>
 			<id>ossrh</id>
@@ -143,7 +142,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- 必须配置 source -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -176,7 +174,7 @@
 				<version>1.6.7</version>
 				<extensions>true</extensions>
 				<configuration>
-					<serverId>ossrh</serverId> <!-- 对应Settings中server的id值。 -->
+					<serverId>ossrh</serverId>
 					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
