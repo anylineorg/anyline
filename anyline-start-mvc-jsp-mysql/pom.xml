@@ -7,11 +7,11 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.3.3</version>
+		<version>8.3.1</version>
 	</parent>
-	<artifactId>anyline-start-mvc-jsp</artifactId>
+	<artifactId>anyline-start-mvc-jsp-mysql</artifactId>
 	<packaging>pom</packaging>
-	<name>anyline-start-mvc-jsp</name>
+	<name>anyline-start-mvc-jsp-mysql</name>
 	<url>http://www.anyline.org</url>
 
 	<dependencies>
