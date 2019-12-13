@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.3.3</version>
+		<version>8.3.5</version>
 	</parent>
 	
 	<artifactId>anyline-web-ext</artifactId>
@@ -25,6 +25,13 @@
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-qq</artifactId>
 			<version>${anyline.qq.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet.version}</version>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>
