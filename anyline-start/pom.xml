@@ -15,7 +15,10 @@
 	<name>anyline-start</name>
 	<url>http://www.anyline.org</url>
 	
-	<!-- 以下依赖根据实现情况修改 mvc,数据库,连接池jsp -->
+	<!-- 
+		以下依赖根据实现情况修改 mvc,数据库,连接池jsp
+		实现项目一般依赖anyline-dependency并创建与anyline-dependency相同key的properties用来覆盖依赖版本号
+	 -->
 	<dependencies>
 		<!-- springmvc支持 -->
 		<dependency>
