@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 
 public class Auth extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L;
-	
 	private String key = "default";
 	private String appid;
 	private String type;	//wx:微信 qq:QQ
