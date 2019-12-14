@@ -1079,7 +1079,7 @@ public class HttpUtil {
             }).build();   
             sslsf = new SSLConnectionSocketFactory(sslContext, new X509HostnameVerifier() {   
    
-                public boolean verify(String arg0, SSLSession arg1) {   
+                public boolean verify(String host, SSLSession sslSession) {   
                     return true;   
                 }   
    
