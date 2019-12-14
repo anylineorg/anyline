@@ -35,7 +35,8 @@ import org.anyline.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 public class BaseBodyTag extends BodyTagSupport implements Cloneable{ 
-	private static final long serialVersionUID = 1L; 
+	private static final long serialVersionUID = 1L;
+
 	protected final Logger log = LoggerFactory.getLogger(this.getClass()); 
  
 	protected List<Object> paramList = null; 
