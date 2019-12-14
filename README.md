@@ -1,3 +1,5 @@
+ 代码已迁至[https://github.com/anylineorg/anyline](http://https://github.com/anylineorg/anyline)
+ 
  **AnyLine**  是一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具。
 
 其核心是  
