@@ -93,8 +93,8 @@
 
 		<spring.version>4.3.23.RELEASE</spring.version>
 
-		<aliyun.oss.version>3.3.0</aliyun.oss.version>
-		<aliyun.sms.version>1.1.0</aliyun.sms.version>
+		<aliyun.oss.version>3.8.0</aliyun.oss.version>
+		<aliyun.sms.version>2.1.0</aliyun.sms.version>
 		<alipay.version>3.7.26.ALL</alipay.version>
 		<druid.version>1.1.6</druid.version>
 		<jsch.version>0.1.55</jsch.version>

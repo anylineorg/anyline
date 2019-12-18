@@ -65,15 +65,11 @@ public class AlipayUtil {
 	/** 
 	 * app支付 
 	 *  
-	 * @param subject  subject
-	 *            支付标题 
-	 * @param body  body
-	 *            支付明细 
-	 * @param price  price
-	 *            支付价格(元) 
-	 * @param order  order
-	 *            系统订单号 
-	 * @return return
+	 * @param subject 支付标题 
+	 * @param body  支付明细 
+	 * @param price  支付价格(元) 
+	 * @param order  系统订单号 
+	 * @return String
 	 */ 
 	public String createAppOrder(String subject, String body, String price, String order) { 
 		String result = ""; 
@@ -99,11 +95,11 @@ public class AlipayUtil {
 	/** 
 	 * html支付 
 	 *  
-	 * @param subject  subject
-	 * @param body  body
-	 * @param price  price
-	 * @param order  order
-	 * @return return
+	 * @param subject  支付标题 
+	 * @param body  支付明细
+	 * @param price  支付金额(元)
+	 * @param order  系统订单号
+	 * @return String
 	 */ 
 	public String createWebOrder(String subject, String body, String price, String order) { 
 		String result = ""; 
@@ -132,7 +128,7 @@ public class AlipayUtil {
 	} 
 	/** 
 	 * 交易状态查询 
-	 * @param query  query
+	 * @param query 查询参数
 	 * @return return
 	 */ 
 	public AlipayTradeQueryResult tradeQuery(AlipayTradeQuery query){ 
@@ -153,7 +149,7 @@ public class AlipayUtil {
 	} 
 	/** 
 	 * 单笔转账到支付宝账户 
-	 * @param transfer  transfer
+	 * @param transfer  转帐参数
 	 * @return return
 	 */ 
 	public AlipayTransferResult transfer(AlipayTransfer transfer) { 
@@ -174,7 +170,7 @@ public class AlipayUtil {
 	} 
 	/** 
 	 * 单笔转账到支付宝账户  结果查询 
-	 * @param query  query
+	 * @param query  查询参数
 	 * @return return
 	 */ 
 	public AlipayTransferQueryResult transferQuery(AlipayTransferQuery query) { 
