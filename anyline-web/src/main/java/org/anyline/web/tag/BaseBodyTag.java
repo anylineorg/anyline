@@ -32,6 +32,7 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.WebUtil;
+import org.apache.jasper.tagplugins.jstl.core.Out;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 public class BaseBodyTag extends BodyTagSupport implements Cloneable{ 
@@ -171,12 +172,25 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String crateExtraData(){
 		String html = "";
 		if(BasicUtil.isNotEmpty(extra)){
-			String[] list = extra.split(",");
-			for(String item:list){
-				String[] tmps = item.split(":");
-				if(tmps.length>=2){
-					String value = parseRuntimeValue(extraData, tmps[1]);
-					html += extraPrefix + tmps[0] + "=\"" + value + "\"";
+			if(extra.startsWith("{") && extra.endsWith("}")){
+				//{ID:1,NM:2}
+				extra = extra.substring(1,extra.length()-1);
+				String[] list = extra.split(",");
+				for(String item:list){
+					String[] tmps = item.split(":");
+					if(tmps.length>=2){
+						html += extraPrefix + tmps[0] + "=\"" + tmps[1] + "\"";
+					}
+				}
+			}else{
+				//ID:ID,USER-NAME:NM
+				String[] list = extra.split(",");
+				for(String item:list){
+					String[] tmps = item.split(":");
+					if(tmps.length>=2){
+						String value = parseRuntimeValue(extraData, tmps[1]);
+						html += extraPrefix + tmps[0] + "=\"" + value + "\"";
+					}
 				}
 			}
 		}
