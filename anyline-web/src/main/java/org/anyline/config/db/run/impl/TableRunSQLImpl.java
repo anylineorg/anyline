@@ -55,7 +55,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			this.table = table.substring(table.indexOf(".") + 1); 
 		} 
 	} 
-	public void init(){ 
+	public void init(){
 		super.init(); 
 		parseDataSource(); 
 		if(null != configStore){ 

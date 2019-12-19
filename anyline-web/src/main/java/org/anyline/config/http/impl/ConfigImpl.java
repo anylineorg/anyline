@@ -21,7 +21,9 @@ package org.anyline.config.http.impl;
  
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,6 +37,7 @@ import org.anyline.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.config.http.Config;
 import org.anyline.config.http.ConfigChain;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
@@ -84,28 +87,20 @@ public class ConfigImpl implements Config{
 		this.parser = new ParseResult();
 	} 
 	public String toString(){ 
-		String str = ""; 
-		str = "id:"+ this.getId() +",key:"+this.getKey()  
-				+ ", compare:"+this.getCompare().getCode() 
-				+ ", values:"; 
-		if(null != values){ 
-			for(Object value:values){ 
-				str += " " + value; 
-			} 
-		} 
-		return str; 
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("join", this.getJoin());
+		map.put("id", this.getId());
+		map.put("key", this.getKey());
+		map.put("compare", this.getCompare().getCode());
+		map.put("values", values);
+		return BeanUtil.map2json(map);
 	}
 	public String cacheKey(){
-		String str = "";
-		str = "id:"+ this.getId() 
-				+ ", compare:"+this.getCompare().getCode()
-				+ ", values:";
-		if(null != values){
-			for(Object value:values){
-				str += " " + value;
-			}
-		}
-		return str;
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("id", this.getId());
+		map.put("compare", this.getCompare().getCode());
+		map.put("values", values);
+		return BeanUtil.map2json(map);
 	} 
  
 	/** 
