@@ -19,7 +19,6 @@
 
 package org.anyline.config.http.impl; 
  
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -212,9 +211,79 @@ public class ConfigStoreImpl implements ConfigStore{
 	}
 
 	@Override
+	public ConfigStore addCondition(Config conf) {
+		chain.addConfig(conf);
+		return this;
+	}
+	@Override
 	public ConfigStore addCondition(String key, Object value){
 		return addCondition(key, value, false, false);
 	} 
+	@Override
+	public ConfigStore and(String key, Object value){
+		return addCondition(key, value, false, false);
+	} 
+	@Override
+	public ConfigStore and(COMPARE_TYPE compare, String key, Object value) {
+		return addCondition(compare, key, value, false, false);
+	}
+
+	@Override
+	public ConfigStore or(String key, Object value){
+		return or(COMPARE_TYPE.EQUAL, key, value);
+	} 
+	@Override
+	public ConfigStore or(COMPARE_TYPE compare, String key, Object value) {
+		List<Config> configs = chain.getConfigs();
+		//如果当前没有其他条件
+		if(configs.size()==0){
+			and(compare, key, value);
+		}else{
+			ConfigChain orChain = new ConfigChainImpl();
+			Config last = configs.get(configs.size()-1);
+			configs.remove(last);
+			
+			if(last instanceof ConfigChain){
+				ConfigChain lastChain = (ConfigChain)last;
+				List<Config> lastItems = lastChain.getConfigs();
+				for(Config lastItem:lastItems){
+					orChain.addConfig(lastItem);
+				}
+			}else{
+				orChain.addConfig(last);
+			}
+			Config conf = new ConfigImpl();
+			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+			conf.setCompare(compare);
+			conf.setId(key);
+			conf.setValue(value);
+			
+			orChain.addConfig(conf);
+			chain.addConfig(orChain);
+		}
+		return this;
+	}
+	@Override
+	public ConfigStore ors(String key, Object value){
+		return ors(COMPARE_TYPE.EQUAL, key, value);
+	} 
+	@Override
+	public ConfigStore ors(COMPARE_TYPE compare, String key, Object value) {
+		ConfigChain newChain = new ConfigChainImpl();
+		newChain.addConfig(chain);
+		
+		Config conf = new ConfigImpl();
+		conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
+		conf.setCompare(compare);
+		conf.setId(key);
+		conf.setValue(value);
+		
+		newChain.addConfig(conf);
+		
+		chain = newChain;
+		return this;
+	}
+	
 	/** 
 	 * 把httpRequest中的参数存放到navi 
 	 */ 
