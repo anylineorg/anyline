@@ -101,16 +101,29 @@
 		<persistence.version>1.0.2</persistence.version>
 
 	</properties>
-
+<profiles>
+	<profile>
+		<id>ossrh</id>
+	</profile>
+</profiles>
 	<distributionManagement>
+	<!-- 
 		<repository>
 			<id>ossrh</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
+			</url>
 		</repository>
 		<snapshotRepository>
 			<id>ossrh</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
+	 -->
+	 
+		<repository>
+			<id>anyline-releases</id>
+			<name>releases</name>
+			<url>http://maven.anyline.org/repository/maven-releases/</url>
+		</repository>
 	</distributionManagement>
 	<build>
 		<resources>
@@ -168,6 +181,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!-- 
 			<plugin>
 				<groupId>org.sonatype.plugins</groupId>
 				<artifactId>nexus-staging-maven-plugin</artifactId>
@@ -179,6 +193,7 @@
 					<autoReleaseAfterClose>true</autoReleaseAfterClose>
 				</configuration>
 			</plugin>
+			 -->
 			<!-- GPG -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
