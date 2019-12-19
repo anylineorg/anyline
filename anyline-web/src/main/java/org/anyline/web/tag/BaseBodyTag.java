@@ -173,7 +173,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		String html = "";
 		if(BasicUtil.isNotEmpty(extra)){
 			if(extra.startsWith("{") && extra.endsWith("}")){
-				//{ID:1,NM:2}
+				//{id:1,nm:2} > data-id=1,data-nm=2 
 				extra = extra.substring(1,extra.length()-1);
 				String[] list = extra.split(",");
 				for(String item:list){
@@ -183,7 +183,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 					}
 				}
 			}else{
-				//ID:ID,USER-NAME:NM
+				//id:ID,name:{NM}-{CODE} > data-id=extraData.get("ID"),data-NAME=extraData.get("NM")-extraData.get("CODE")
 				String[] list = extra.split(",");
 				for(String item:list){
 					String[] tmps = item.split(":");
