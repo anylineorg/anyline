@@ -87,7 +87,6 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	 */ 
 	@SuppressWarnings("unchecked") 
 	public String getRunText(SQLCreater creater){ 
-		System.out.println(":::::::::::::::::"+this.toString());
 		String disKeyFr = creater.getDisKeyFr(); 
 		String disKeyTo = creater.getDisKeyTo(); 
 		runValues = new ArrayList<Object>(); 
