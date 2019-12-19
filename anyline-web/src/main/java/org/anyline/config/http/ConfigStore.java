@@ -76,6 +76,25 @@ public interface ConfigStore {
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue); 
 
+
+	public ConfigStore and(String key, Object value);
+	public ConfigStore and(COMPARE_TYPE compare, String key, Object value);
+	/**
+	 * 与ConfigStore中前一个条件合成or
+	 * @param key key
+	 * @param value value
+	 * @return ConfigStore
+	 */
+	public ConfigStore or(String key, Object value);
+	public ConfigStore or(COMPARE_TYPE compare, String key, Object value);
+	/**
+	 * 与ConfigStore中当前所有的条件合成or
+	 * @param key key
+	 * @param value value
+	 * @return ConfigStore
+	 */
+	public ConfigStore ors(String key, Object value);
+	public ConfigStore ors(COMPARE_TYPE compare, String key, Object value);
 	/**
 	 * XML自定义SQL条件中指定变量赋值
 	 * @param key condition.id
@@ -84,6 +103,8 @@ public interface ConfigStore {
 	 * @return return
 	 */
 	public ConfigStore addCondition(String key, String var, Object value);
+	
+	public ConfigStore addCondition(Config config);
 	/** 
 	 * 添加排序 
 	 * @param order  order

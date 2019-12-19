@@ -37,7 +37,11 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 			return;
 		}
 		for(Config config:chain.getConfigs()){
-			conditions.add(new AutoConditionImpl(config));
+			if(config instanceof ConfigChain){
+				conditions.add(new AutoConditionChainImpl((ConfigChain)config));
+			}else{
+				conditions.add(new AutoConditionImpl(config));
+			}
 		}
 	} 
 	public String getRunText(SQLCreater creater){ 
@@ -46,12 +50,15 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 		if(size == 0){ 
 			return ""; 
 		}
-		
 		StringBuilder subBuilder = new StringBuilder();
-
+		String txt = "";
 		for(int i=0; i<size; i++){
 			Condition condition = conditions.get(i);
-			String txt = condition.getRunText(creater);
+			if(condition instanceof ConditionChain){
+				txt = ((ConditionChain) condition).getRunText(creater);
+			}else{
+				txt = condition.getRunText(creater);
+			}
 			if(BasicUtil.isEmpty(txt)){
 				continue;
 			}
@@ -60,8 +67,9 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 					|| !BasicUtil.isEmpty(true, values) 
 					|| condition.isActive()
 					|| condition.isRequired()){
-				
-				if(i>0 /*&& !condition.isContainer()*/){
+				//condition instanceof ConditionChain
+				//if(i>0 /*&& !condition.isContainer()*/){
+				if(i>0 && !(condition instanceof ConditionChain)){
 					subBuilder.append(condition.getJoin());
 				}
 				subBuilder.append(txt);
@@ -92,5 +100,18 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 			return 0; 
 		} 
 	}
- 
+
+	public String toString(){
+		int size = conditions.size();
+		String txt = "[";
+		for(int i=0;i<size; i++){
+			if(i==0){
+				txt += conditions.get(i).toString();
+			}else{
+				txt += ","+conditions.get(i).toString();
+			}
+		}
+		txt += "]";
+		return txt;
+	}
 } 

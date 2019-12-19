@@ -49,7 +49,7 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 				}
 			}
 		}
-		return str;
+		return "["+str+"]";
 	}
 	public String cacheKey(){
 		String str = null;
