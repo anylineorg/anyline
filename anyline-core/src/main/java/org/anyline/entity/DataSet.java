@@ -1544,7 +1544,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 */
 	public DataSet group(String ... keys){
 		DataSet result = distinct(keys);
-		result.dispatchItem(this, keys);
+		result.dispatchItems(this, keys);
 		return result;
 	}
 	public DataSet or(DataSet set, String ... keys){
