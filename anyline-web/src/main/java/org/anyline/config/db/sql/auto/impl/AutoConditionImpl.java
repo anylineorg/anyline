@@ -21,7 +21,9 @@ package org.anyline.config.db.sql.auto.impl;
  
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.anyline.config.db.Condition;
 import org.anyline.config.db.SQL;
@@ -31,6 +33,7 @@ import org.anyline.config.db.impl.BasicCondition;
 import org.anyline.config.db.sql.auto.AutoCondition;
 import org.anyline.config.http.Config;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
  
  
 /** 
@@ -84,13 +87,13 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	 */ 
 	@SuppressWarnings("unchecked") 
 	public String getRunText(SQLCreater creater){ 
-		 
+		System.out.println(":::::::::::::::::"+this.toString());
 		String disKeyFr = creater.getDisKeyFr(); 
 		String disKeyTo = creater.getDisKeyTo(); 
 		runValues = new ArrayList<Object>(); 
 		String text = ""; 
 		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){ 
-			//静态文本 
+			//static txt
 			text = this.text; 
 		}else{ 
 			text = disKeyFr + column.replace(".", disKeyTo+"."+disKeyFr) + disKeyTo; 
@@ -144,7 +147,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 				text += " LIKE "+ creater.concat("'%'", "?"); 
 			}  
 			text += ""; 
-			/*运行时参数*/ 
+			//runtime value
 			if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN || compare == SQL.COMPARE_TYPE.BETWEEN){ 
 				runValues = getValues(); 
 			}else{ 
@@ -202,4 +205,12 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	public void setCompare(COMPARE_TYPE compare) { 
 		this.compare = compare; 
 	} 
+	public String toString(){
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("join", this.getJoin());
+		map.put("column", column);
+		map.put("compare", compare.getName());
+		map.put("values", values);
+		return BeanUtil.map2json(map);
+	}
 } 
