@@ -54,11 +54,12 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 		String txt = "";
 		for(int i=0; i<size; i++){
 			Condition condition = conditions.get(i);
-			if(condition instanceof ConditionChain){
-				txt = ((ConditionChain) condition).getRunText(creater);
-			}else{
-				txt = condition.getRunText(creater);
-			}
+//			if(condition.isContainer()){
+//				txt = ((ConditionChain) condition).getRunText(creater);
+//			}else{
+//				txt = condition.getRunText(creater);
+//			}
+			txt = condition.getRunText(creater);
 			if(BasicUtil.isEmpty(txt)){
 				continue;
 			}
@@ -69,8 +70,11 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 					|| condition.isRequired()){
 				//condition instanceof ConditionChain
 				//if(i>0 /*&& !condition.isContainer()*/){
-				if(i>0 && !(condition instanceof ConditionChain)){
-					subBuilder.append(condition.getJoin());
+				if(i>0){
+					String chk = txt.toLowerCase().trim();
+					if(!chk.startsWith("and") && !chk.startsWith("or")){
+						subBuilder.append(condition.getJoin());
+					}
 				}
 				subBuilder.append(txt);
 				addRunValue(values);
