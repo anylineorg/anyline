@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
 	<version>8.3.6</version>
@@ -10,7 +8,6 @@
 	<name>AnyLine</name>
 	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
 	<url>http://www.anyline.org</url>
-	
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
@@ -34,8 +31,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-
 		<anyline.version>8.3.6</anyline.version>
+		
 		<anyline.core.version>${anyline.version}</anyline.core.version>
 		<anyline.net.version>${anyline.version}</anyline.net.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
@@ -44,7 +41,6 @@
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
 		<anyline.mvc.version>${anyline.version}</anyline.mvc.version>
 		<anyline.struts.version>${anyline.version}</anyline.struts.version>
-
 		<anyline.amap.version>${anyline.version}</anyline.amap.version>
 		<anyline.alipay.version>${anyline.version}</anyline.alipay.version>
 		<anyline.aliyun.version>${anyline.version}</anyline.aliyun.version>
@@ -54,7 +50,6 @@
 		<anyline.qq.version>${anyline.version}</anyline.qq.version>
 		<anyline.redis.version>${anyline.version}</anyline.redis.version>
 		<anyline.weixin.version>${anyline.version}</anyline.weixin.version>
-
 		<!-- jdbc -->
 		<anyline.jdbc.mssql.version>${anyline.version}</anyline.jdbc.mssql.version>
 		<anyline.jdbc.mysql.version>${anyline.version}</anyline.jdbc.mysql.version>
@@ -62,15 +57,14 @@
 		<anyline.jdbc.oracle.version>${anyline.version}</anyline.jdbc.oracle.version>
 		<anyline.jdbc.postgresql.version>${anyline.version}</anyline.jdbc.postgresql.version>
 		<anyline.jdbc.hgdb.version>${anyline.version}</anyline.jdbc.hgdb.version>
-
 		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
 		<mysql.version>5.1.24</mysql.version>
 		<db2-jdbc.version>11.5.0.0</db2-jdbc.version>
-		<ojdbc.version>19.3.0.0</ojdbc.version><!-- oracle -->
+		<ojdbc.version>19.3.0.0</ojdbc.version>
+		<!-- oracle -->
 		<postgresql.version>42.2.8</postgresql.version>
 		<hgdb.version>4.0-jdbc42</hgdb.version>
 		<mariadb.version>2.4.4</mariadb.version>
-
 		<javax.servlet.version>4.0.0</javax.servlet.version>
 		<javax.jsp.version>2.0</javax.jsp.version>
 		<javax.jstl.version>1.1.2</javax.jstl.version>
@@ -89,24 +83,17 @@
 		<ecache.version>2.10.6</ecache.version>
 		<ognl.version>3.2.10</ognl.version>
 		<slf4j.version>1.7.25</slf4j.version>
-
-
 		<spring.version>4.3.23.RELEASE</spring.version>
-
 		<aliyun.oss.version>3.8.0</aliyun.oss.version>
 		<aliyun.sms.version>2.1.0</aliyun.sms.version>
 		<alipay.version>3.7.26.ALL</alipay.version>
 		<druid.version>1.1.6</druid.version>
 		<jsch.version>0.1.55</jsch.version>
 		<persistence.version>1.0.2</persistence.version>
-
 	</properties>
 	<profiles>
 		<profile>
 			<id>central</id>
-			<activation>
-            	<activeByDefault>true</activeByDefault>
-			</activation>
 			<distributionManagement>
 				<repository>
 					<id>ossrh</id>
@@ -118,33 +105,59 @@
 				</snapshotRepository>
 			</distributionManagement>
 			<build>
-			<plugins>
-				<plugin>
-					<groupId>org.sonatype.plugins</groupId>
-					<artifactId>nexus-staging-maven-plugin</artifactId>
-					<version>1.6.7</version>
-					<extensions>true</extensions>
-					<configuration>
-						<serverId>ossrh</serverId>
-						<nexusUrl>https://oss.sonatype.org/</nexusUrl>
-						<autoReleaseAfterClose>true</autoReleaseAfterClose>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-gpg-plugin</artifactId>
-					<version>1.6</version>
-					<executions>
-						<execution>
-							<id>sign-artifacts</id>
-							<phase>verify</phase>
-							<goals>
-								<goal>sign</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.10.3</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.sonatype.plugins</groupId>
+						<artifactId>nexus-staging-maven-plugin</artifactId>
+						<version>1.6.7</version>
+						<extensions>true</extensions>
+						<configuration>
+							<serverId>ossrh</serverId>
+							<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+							<autoReleaseAfterClose>true</autoReleaseAfterClose>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
 			</build>
 		</profile>
 		<profile>
@@ -156,6 +169,36 @@
 					<url>http://maven.anyline.org/repository/maven-releases/</url>
 				</repository>
 			</distributionManagement>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.2.1</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar-no-fork</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.10.3</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 		</profile>
 	</profiles>
 	<build>
@@ -188,34 +231,6 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.10.3</version>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			
 		</plugins>
 	</build>
 </project>
-
