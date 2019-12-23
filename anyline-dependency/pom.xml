@@ -208,8 +208,20 @@
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
 				<includes>
-					<include>*.tld</include>
+						<include>*.tld</include>
+						<include>*.xsd</include>
+				</includes>
+				<targetPath>META-INF</targetPath>
+			</resource>
+			<resource>
+				<directory>/src/main/webapp/WEB-INF</directory>
+				<includes>
+						<include>*.tld</include>
+						<include>*.xsd</include>
 				</includes>
 				<targetPath>META-INF</targetPath>
 			</resource>
