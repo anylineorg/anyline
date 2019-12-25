@@ -3,7 +3,7 @@ package org.anyline.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.anyline.jdbc.config.db.ds.DataSourceHolder;
+import org.anyline.jdbc.ds.DataSourceHolder;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  
  
