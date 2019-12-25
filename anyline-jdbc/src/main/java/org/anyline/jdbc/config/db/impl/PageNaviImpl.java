@@ -40,43 +40,43 @@ import org.slf4j.LoggerFactory;
  
  
 public class PageNaviImpl implements PageNavi, Serializable{ 
-	private static final long serialVersionUID = 3593100423479113410L; 
-	private static final Logger log = LoggerFactory.getLogger(PageNaviImpl.class); 
+	protected static final long serialVersionUID = 3593100423479113410L; 
+	protected static final Logger log = LoggerFactory.getLogger(PageNaviImpl.class); 
 // 
 //	public static final String PAGE_VOL				= "pageRows"							; 
 //	public static final String PAGE_NO				= "pageNo"								; 
  
-	private static final String BR 					= "\n"; 
-	private static final String TAB 				= "\t"; 
-	private static final String BR_TAB 				= "\n\t"; 
+	protected static final String BR 					= "\n"; 
+	protected static final String TAB 				= "\t"; 
+	protected static final String BR_TAB 				= "\n\t"; 
 	 
-	private int totalRow					= 0			;	//记录总数 
-	private int totalPage					= 0 		;	//最大页数 
-	private int curPage						= 1 		;	//当前页数 
+	protected int totalRow					= 0			;	//记录总数 
+	protected int totalPage					= 0 		;	//最大页数 
+	protected int curPage						= 1 		;	//当前页数 
 	 
-	private int pageRange					= 10		;	//显示多少个分页下标 
-	private int pageRows					= 10		;	//每页多少条 
-	private int displayPageFirst 			= 0			;	//显示的第一页标签 
-	private int displayPageLast 			= 0			;	//显示的最后页标签 
-	private String baseLink					= null		;	//基础URL 
-	private OrderStore orders				= null 		;	//排序依据(根据 orderCol 排序分页) 
-	private int calType 					= 0			;	//分页计算方式(0-按页数 1-按开始结束数) 
-	private int firstRow 					= 0			;	//第一行 
-	private int lastRow 					= -1		;	//最后一行 
-	private boolean lazy 					= false		; 
-	private String flag  					= ""		;	//一个jsp中有多个分页时用来区分 
-	private long lazyPeriod 				= 0			;	//总条数懒加载时间间隔(秒) 
-	private String lazyKey 					= null		;	//懒加载 
-	private int type 						= 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1) 
-	private Map<String,List<Object>> params	= null		;	//查询参数 
-	private String method					= "post"	; 
-	private String style		= ""	; //样式标记对应anyline-navi.xml中的config.key 
+	protected int pageRange					= 10		;	//显示多少个分页下标 
+	protected int pageRows					= 10		;	//每页多少条 
+	protected int displayPageFirst 			= 0			;	//显示的第一页标签 
+	protected int displayPageLast 			= 0			;	//显示的最后页标签 
+	protected String baseLink					= null		;	//基础URL 
+	protected OrderStore orders				= null 		;	//排序依据(根据 orderCol 排序分页) 
+	protected int calType 					= 0			;	//分页计算方式(0-按页数 1-按开始结束数) 
+	protected int firstRow 					= 0			;	//第一行 
+	protected int lastRow 					= -1		;	//最后一行 
+	protected boolean lazy 					= false		; 
+	protected String flag  					= ""		;	//一个jsp中有多个分页时用来区分 
+	protected long lazyPeriod 				= 0			;	//总条数懒加载时间间隔(秒) 
+	protected String lazyKey 					= null		;	//懒加载 
+	protected int type 						= 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1) 
+	protected Map<String,List<Object>> params	= null		;	//查询参数 
+	protected String method					= "post"	; 
+	protected String style		= ""	; //样式标记对应anyline-navi.xml中的config.key 
 	 
  
-	private boolean showStat = false; 
-	private boolean showJump = false; 
-	private boolean volEnable = false; 
-	private String loadMoreFormat = ""; 
+	protected boolean showStat = false; 
+	protected boolean showJump = false; 
+	protected boolean showVol = true; 
+	protected String loadMoreFormat = ""; 
 	 
 	public PageNaviImpl(int totalRow, int curPage, int pageRows, String baseLink) { 
 		this.totalRow = totalRow; 
@@ -474,6 +474,13 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	public PageNavi setMethod(String method) { 
 		this.method = method; 
 		return this; 
+	}
+	public boolean isShowVol() {
+		return showVol;
+	}
+	public PageNavi setShowVol(boolean showVol) {
+		this.showVol = showVol;
+		return this;
 	} 
  
 }
