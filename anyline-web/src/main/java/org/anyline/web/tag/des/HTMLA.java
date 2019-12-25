@@ -19,12 +19,12 @@
  
 package org.anyline.web.tag.des; 
  
-import javax.servlet.jsp.JspException; 
-import javax.servlet.jsp.JspWriter; 
- 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.WebUtil; 
-import org.anyline.web.tag.BaseBodyTag; 
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+
+import org.anyline.util.BasicUtil;
+import org.anyline.util.DESUtil;
+import org.anyline.web.tag.BaseBodyTag;
  
 /** 
  * 加密 
@@ -70,7 +70,7 @@ public class HTMLA extends BaseBodyTag {
 						url = url + "?" + params; 
 					} 
 				} 
-				buffer.append(" href = \"" + WebUtil.encryptUrl(url, union, encryptKey, encryptValue) + "\""); 
+				buffer.append(" href = \"" + DESUtil.encryptUrl(url, union, encryptKey, encryptValue) + "\""); 
 			} 
 			if (null != clazz) { 
 				buffer.append(" class = \"" + clazz + "\""); 

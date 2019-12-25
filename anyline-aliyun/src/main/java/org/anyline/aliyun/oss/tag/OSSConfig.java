@@ -65,14 +65,6 @@ public class OSSConfig extends BaseBodyTag {
 			StringBuffer script = new StringBuffer();
 			script.append("<script>\n");
 			script.append(var).append(" = ").append(BeanUtil.map2json(map)).append(";\n");
-//			script.append("var " + var + " = new FormData();\n");
-//			script.append(var).append(".append('policy',").append("aliyun_oss_config['policy']);\n");
-//			script.append(var).append(".append('OSSAccessKeyId',").append("aliyun_oss_config['accessid']);\n");
-//			script.append(var).append(".append('signature',").append("aliyun_oss_config['signature']);\n");
-//			script.append(var).append(".append('dir',").append("aliyun_oss_config['dir']);\n");
-//			script.append(var).append(".append('policy',").append("aliyun_oss_config['policy']);\n");
-//			script.append(var).append(".append('policy',").append("aliyun_oss_config['policy']);\n");
-//			script.append(var).append(".append('success_action_status','200');\n");
 			script.append("</script>\n");
 			JspWriter out = pageContext.getOut();
 			out.println(script);

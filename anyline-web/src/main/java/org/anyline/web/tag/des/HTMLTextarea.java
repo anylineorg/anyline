@@ -21,8 +21,9 @@ package org.anyline.web.tag.des;
  
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
 import org.anyline.web.tag.ComponentTag;
+import org.anyline.web.util.WebUtil;
 /** 
  * 加密textarea 
  * @author zh 
@@ -41,7 +42,7 @@ public class HTMLTextarea extends ComponentTag{
 	public void createBody(Object obj){ 
 		value = BasicUtil.nvl(body,value,"").toString();
 		if(encryptValue){
-			value = WebUtil.encryptValue(value+"");
+			value = DESUtil.encryptParamValue(value+"");
 		} 
 		builder.append(value); 
 	} 
@@ -60,7 +61,7 @@ public class HTMLTextarea extends ComponentTag{
 			} 
 		} 
 		if(!"text".equalsIgnoreCase(type)){ 
-			value = WebUtil.encryptHttpRequestParamValue(value+""); 
+			value = DESUtil.encryptParamValue(value+""); 
 		} 
 		 
 	} 

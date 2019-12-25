@@ -18,20 +18,19 @@
  
 package org.anyline.struts.result; 
  
-import javax.servlet.RequestDispatcher; 
-import javax.servlet.http.HttpServletRequest; 
-import javax.servlet.http.HttpServletResponse; 
-import javax.servlet.jsp.PageContext; 
- 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.Constant; 
-import org.anyline.util.WebUtil; 
-import org.apache.struts2.ServletActionContext; 
-import org.apache.struts2.dispatcher.StrutsResultSupport; 
- 
- 
-import com.opensymphony.xwork2.ActionInvocation; 
-import com.opensymphony.xwork2.Result; 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.PageContext;
+
+import org.anyline.util.ConfigTable;
+import org.anyline.util.Constant;
+import org.anyline.web.util.WebUtil;
+import org.apache.struts2.ServletActionContext;
+import org.apache.struts2.dispatcher.StrutsResultSupport;
+
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.Result;
 public class TemplateResult extends StrutsResultSupport { 
 	private static final long serialVersionUID = 0xe4a6cfd5319c8fc5L; 
 	private String contentPage = null; 

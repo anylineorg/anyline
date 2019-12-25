@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
 import org.anyline.web.tag.BaseBodyTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +49,7 @@ public class DESUrl extends BaseBodyTag implements Cloneable{
 					param = value.substring(value.indexOf("?")+1); 
 					split = "?"; 
 				} 
-				result = url + split + WebUtil.encryptRequestParam(param); 
+				result = url + split + DESUtil.encryptParam(param); 
 				JspWriter out = pageContext.getOut(); 
 				out.print(result); 
 			} 

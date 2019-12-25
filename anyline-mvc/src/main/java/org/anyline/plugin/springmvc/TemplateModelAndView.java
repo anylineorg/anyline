@@ -17,7 +17,7 @@
  */
 package org.anyline.plugin.springmvc; 
  
-import org.anyline.util.WebUtil;
+import org.anyline.web.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
  
 public class TemplateModelAndView extends ModelAndView{

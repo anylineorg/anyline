@@ -18,31 +18,32 @@
  
 package org.anyline.struts.action; 
  
-import java.util.List; 
-import java.util.Map; 
- 
-import javax.servlet.ServletContext; 
-import javax.servlet.http.HttpServletRequest; 
-import javax.servlet.http.HttpServletResponse; 
-import javax.servlet.http.HttpSession; 
- 
-import org.anyline.config.http.ConfigStore; 
-import org.anyline.controller.AbstractBasicController; 
-import org.anyline.entity.DataRow; 
-import org.anyline.entity.DataSet; 
-import org.anyline.entity.PageNavi; 
-import org.anyline.service.AnylineService; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.Constant; 
-import org.anyline.util.DESUtil; 
-import org.anyline.util.WebUtil; 
-import org.apache.struts2.interceptor.ServletRequestAware; 
-import org.apache.struts2.interceptor.ServletResponseAware; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
-import org.springframework.beans.factory.annotation.Autowired; 
-import org.springframework.beans.factory.annotation.Qualifier; 
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.ConfigStore;
+import org.anyline.jdbc.service.AnylineService;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.Constant;
+import org.anyline.util.DESUtil;
+import org.anyline.util.DESUtil;
+import org.anyline.web.controller.AbstractBasicController;
+import org.anyline.web.util.WebUtil;
+import org.apache.struts2.interceptor.ServletRequestAware;
+import org.apache.struts2.interceptor.ServletResponseAware;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
  
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware { 
 	protected static final Logger log = LoggerFactory.getLogger(AnylineAction.class); 
@@ -301,7 +302,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 */ 
 	protected String success(Object data, boolean encrypt) { 
 		if(encrypt && null != data){ 
-			return result(true,WebUtil.encryptHttpRequestParamValue(data.toString()),null); 
+			return result(true,DESUtil.encryptParamValue(data.toString()),null); 
 		} 
 		return success(request, data); 
 	} 

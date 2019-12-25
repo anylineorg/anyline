@@ -1,10 +1,10 @@
 package org.anyline.interceptor; 
  
-import javax.servlet.http.HttpServletRequest; 
-import javax.servlet.http.HttpServletResponse; 
- 
-import org.anyline.config.db.ds.DataSourceHolder; 
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter; 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.anyline.jdbc.config.db.ds.DataSourceHolder;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  
  
 public class DataSourceInterceptor  extends HandlerInterceptorAdapter{ 

@@ -30,8 +30,8 @@ import javax.servlet.jsp.tagext.BodyContent;
 
 import org.anyline.util.ConfigTable;
 import org.anyline.util.SeoUtil;
-import org.anyline.util.WebUtil;
 import org.anyline.web.tag.BaseBodyTag;
+import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
