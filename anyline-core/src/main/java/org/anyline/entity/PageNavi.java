@@ -154,9 +154,20 @@ public interface PageNavi extends Serializable{
 	public String getFlag();
 	public PageNavi setType(int type);
 	public int getType();
-
+	/**
+	 * 是否显示跳到指定页
+	 * @param showJump 是否
+	 * @return PageNavi
+	 */
 	public PageNavi setShowJump(boolean showJump);
 	public boolean isShowJump();
+	/**
+	 * 是否显示每页多少条设置
+	 * @param showVol 是否
+	 * @return PageNavi
+	 */
+	public PageNavi setShowVol(boolean showVol);
+	public boolean isShowVol();
 	
 	public PageNavi setShowStat(boolean showStat);
 	public boolean isShowStat();
