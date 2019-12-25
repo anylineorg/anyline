@@ -63,6 +63,7 @@ public class Navi extends BodyTagSupport{
 	private String style = "default"; 	//样式标记对应anyline-navi.xml中的config.key
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
+	private Boolean vol = true		;   //是否显示每页多少条(配置文件开启的情况下有效)
 	
 	private int type = 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
 
@@ -138,6 +139,7 @@ public class Navi extends BodyTagSupport{
 			if(null != guide){
 				builder.append("guide:'" ).append(guide).append("',");
 			}
+			builder.append("vol:").append(vol).append(",");
 			builder.append("auto:").append(auto).append(",");
 			builder.append("type:").append(type).append(",");
 			builder.append("style:'").append(style).append("',");
@@ -233,8 +235,9 @@ public class Navi extends BodyTagSupport{
 		jump			= false	;
 		auto			= false	;
 		style			= "default"	;
-		scroll 			= null;
-		cur 			= null;
+		scroll 			= null	;
+		cur 			= null	;
+		vol				= true	;
 	}
 	
 	public String getParam() {
@@ -394,6 +397,12 @@ public class Navi extends BodyTagSupport{
 	}
 	public void setOver(String over) {
 		this.over = over;
+	}
+	public Boolean getVol() {
+		return vol;
+	}
+	public void setVol(Boolean vol) {
+		this.vol = vol;
 	}
  
 } 

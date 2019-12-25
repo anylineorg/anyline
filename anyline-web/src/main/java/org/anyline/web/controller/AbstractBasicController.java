@@ -437,6 +437,11 @@ public class AbstractBasicController{
 		boolean showJump = config.VAR_SHOW_JUMP;
 		showJump = BasicUtil.parseBoolean(request.getParameter(config.KEY_SHOW_JUMP), showJump);
 		navi.setShowJump(showJump);
+
+		boolean showVol = config.VAR_SHOW_VOL;
+		showJump = BasicUtil.parseBoolean(request.getParameter(config.KEY_SHOW_VOL), showVol);
+		navi.setShowVol(showVol);
+		
 		navi.setStyle(style);
 		String guide = BasicUtil.nvl(request.getParameter(config.KEY_GUIDE), config.STYLE_LOAD_MORE_FORMAT,"").toString();
 		navi.setGuide(guide);
