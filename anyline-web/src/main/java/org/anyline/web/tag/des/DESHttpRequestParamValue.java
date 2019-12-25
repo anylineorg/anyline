@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
 import org.anyline.web.tag.BaseBodyTag;
 /** 
  * http request 请求参数值加密 
@@ -36,7 +36,7 @@ public class DESHttpRequestParamValue extends BaseBodyTag{
 	public int doEndTag() throws JspException { 
 		try{ 
 			JspWriter out = pageContext.getOut(); 
-			out.print(WebUtil.encryptHttpRequestParamValue(BasicUtil.nvl(value,body,"").toString())); 
+			out.print(DESUtil.encryptParamValue(BasicUtil.nvl(value,body,"").toString())); 
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		}finally{ 

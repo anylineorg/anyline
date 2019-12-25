@@ -23,7 +23,8 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
+import org.anyline.web.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
   
   
@@ -146,7 +147,7 @@ public class TemplateController extends AnylineController {
 	 */ 
 	protected String createTemplateData(Object obj, String ... keys){ 
 		BeanUtil.toUpperCaseKey(obj, keys); 
-		WebUtil.encryptKey(obj, keys); 
+		DESUtil.encryptKey(obj, keys); 
 		return success(obj); 
 	} 
 	protected String loadData(Object obj, String ...keys){ 

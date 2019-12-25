@@ -32,7 +32,7 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
@@ -133,7 +133,7 @@ public class Radio extends BaseBodyTag{
 					Object srcValue = BeanUtil.getFieldValue(item, valueKey);
 					Object value = srcValue;
 					if(this.encrypt){
-						value = WebUtil.encryptValue(value+"");
+						value = DESUtil.encryptValue(value+"");
 					}
 					
 					String id = name +"_"+ value;

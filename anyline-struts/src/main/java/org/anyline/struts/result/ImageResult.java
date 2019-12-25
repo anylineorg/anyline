@@ -18,17 +18,17 @@
  
 package org.anyline.struts.result; 
  
-import java.io.File; 
- 
-import javax.servlet.http.HttpServletResponse; 
- 
-import org.anyline.entity.DataRow; 
-import org.anyline.util.WebUtil; 
-import org.apache.struts2.dispatcher.StrutsResultSupport; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
- 
-import com.opensymphony.xwork2.ActionInvocation; 
+import java.io.File;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.anyline.entity.DataRow;
+import org.anyline.web.util.WebUtil;
+import org.apache.struts2.dispatcher.StrutsResultSupport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.opensymphony.xwork2.ActionInvocation;
  
 public class ImageResult extends StrutsResultSupport { 
 	private static final long serialVersionUID = 1L; 

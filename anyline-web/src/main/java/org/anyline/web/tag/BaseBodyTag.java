@@ -31,7 +31,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
+import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 public class BaseBodyTag extends BodyTagSupport implements Cloneable{ 
@@ -132,7 +133,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 			} else {
 				value = BeanUtil.getFieldValue(obj, key) + "";
 				if (encrypt) {
-					value = WebUtil.encryptValue(value + "");
+					value = DESUtil.encryptValue(value + "");
 				}
 			}
 		}

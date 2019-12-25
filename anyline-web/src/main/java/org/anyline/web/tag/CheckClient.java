@@ -27,7 +27,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.WebUtil;
+import org.anyline.web.util.WebUtil;
  
  
 public class CheckClient extends BaseBodyTag implements Cloneable{ 

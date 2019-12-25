@@ -18,44 +18,45 @@
  
 package org.anyline.controller.impl; 
  
-import java.io.File; 
-import java.io.IOException; 
-import java.sql.Timestamp; 
-import java.util.ArrayList; 
-import java.util.Date; 
-import java.util.HashMap; 
-import java.util.Iterator; 
-import java.util.List; 
-import java.util.Map; 
- 
-import javax.servlet.ServletContext; 
-import javax.servlet.http.HttpServletRequest; 
-import javax.servlet.http.HttpServletResponse; 
-import javax.servlet.http.HttpSession; 
- 
-import net.sf.json.JSON; 
-import net.sf.json.JSONObject; 
-import net.sf.json.JsonConfig; 
- 
-import org.anyline.config.http.ConfigStore; 
-import org.anyline.controller.AbstractBasicController; 
-import org.anyline.entity.DataRow; 
-import org.anyline.entity.DataSet; 
-import org.anyline.entity.PageNavi; 
-import org.anyline.service.AnylineService; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.Constant; 
-import org.anyline.util.FileUtil; 
-import org.anyline.util.JSONDateFormatProcessor; 
-import org.anyline.util.WebUtil; 
-import org.springframework.beans.factory.annotation.Autowired; 
-import org.springframework.beans.factory.annotation.Qualifier; 
-import org.springframework.web.context.request.RequestContextHolder; 
-import org.springframework.web.context.request.ServletRequestAttributes; 
-import org.springframework.web.multipart.MultipartFile; 
-import org.springframework.web.multipart.MultipartHttpServletRequest; 
-import org.springframework.web.multipart.commons.CommonsMultipartResolver; 
+import java.io.File;
+import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.ConfigStore;
+import org.anyline.jdbc.service.AnylineService;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.Constant;
+import org.anyline.util.DESUtil;
+import org.anyline.util.FileUtil;
+import org.anyline.util.JSONDateFormatProcessor;
+import org.anyline.web.controller.AbstractBasicController;
+import org.anyline.web.util.WebUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
  
 public class AnylineController extends AbstractBasicController { 
  
@@ -397,7 +398,7 @@ public class AnylineController extends AbstractBasicController {
 	 */ 
 	protected String fail(String msg, boolean encrypt) { 
 		if(encrypt){ 
-			msg = WebUtil.encryptHttpRequestParamValue(msg); 
+			msg = DESUtil.encryptParamValue(msg); 
 		} 
 		return result(false, null, msg); 
 	} 
@@ -417,7 +418,7 @@ public class AnylineController extends AbstractBasicController {
 	 */ 
 	protected String success(Object data, boolean encrypt) { 
 		if(encrypt && null != data){ 
-			return result(true,WebUtil.encryptHttpRequestParamValue(data.toString()),null); 
+			return result(true,DESUtil.encryptParamValue(data.toString()),null); 
 		} 
 		return result(true, data, null); 
 	} 

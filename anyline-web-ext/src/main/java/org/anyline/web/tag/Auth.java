@@ -31,6 +31,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.qq.util.QQConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.web.tag.BaseBodyTag;
 import org.anyline.weixin.mp.util.WXMPConfig;
 import org.anyline.weixin.mp.util.WXMPUtil;
 import org.anyline.weixin.util.WXConfig;

@@ -24,8 +24,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.ConfigTable;
-import org.anyline.util.WebUtil;
 import org.anyline.web.tag.BaseBodyTag;
+import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**

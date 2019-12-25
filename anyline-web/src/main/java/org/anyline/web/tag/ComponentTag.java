@@ -28,7 +28,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
+import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
@@ -196,7 +197,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 			runId = parentId + "_" + id + "_" + index; 
 		} 
 		if(encryptKey){ 
-			runId = WebUtil.encryptHttpRequestParamKey(runId); 
+			runId = DESUtil.encryptParamKey(runId); 
 		} 
 		if(null != id						){builder.append(" id=\""						).append(runId					).append("\"");}//获取标识对象的字符串。 
 		if(null != accesskey				){builder.append(" accesskey=\""				).append(accesskey				).append("\"");}//设置或获取对象的快捷键。										 
@@ -216,7 +217,7 @@ public abstract class ComponentTag extends BaseBodyTag{
 		if(null != maxlength				){builder.append(" maxlength=\""				).append(maxlength				).append("\"");}//设置或获取用户可在文本控件中输入的最多字符数。 
 		String runName = name; 
 		if(encryptKey){ 
-			runName = WebUtil.encryptHttpRequestParamKey(runName); 
+			runName = DESUtil.encryptParamKey(runName); 
 		} 
 		if(null != name						){builder.append(" name=\""						).append(runName				).append("\"");}//设置或获取对象的名称。 
 		if(null != checked					){builder.append(" checked=\"checked\"");													   }//选中 
