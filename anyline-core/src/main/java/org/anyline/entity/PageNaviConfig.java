@@ -31,6 +31,7 @@ public class PageNaviConfig extends BasicConfig{
 	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= false					; //前端是否可设置每页多少条 
 	public boolean VAR_SHOW_STAT				= false					; //是否显示分布统计 
 	public boolean VAR_SHOW_JUMP				= false					; //是否显示跳转 
+	public boolean VAR_SHOW_VOL					= true					; //是否显示每页条数设置 
 	public boolean VAR_SHOW_BUTTON				= true					; //是否显示上一页下一页button 
 	public boolean VAR_SHOW_INDEX				= true					; //是否显示下标 
 	public boolean VAR_SHOW_INDEX_ELLIPSIS		= false					; //是否显示下标省略符 (下标不含第2页或倒数第2页时显示省略号)1 .. 3 4 5 6 7 8 .. 10 
@@ -43,6 +44,7 @@ public class PageNaviConfig extends BasicConfig{
 	public String KEY_TOTAL_ROW			= "_anyline_total_row"			; //显示一共多少条的key 
 	public String KEY_SHOW_STAT			= "_anyline_navi_show_stat"		; //设置是否显示统计数据的key 
 	public String KEY_SHOW_JUMP			= "_anyline_navi_show_jump"		; //设置是否显示页数跳转key 
+	public String KEY_SHOW_VOL			= "_anyline_navi_show_vol"		; //设置是否显示每页条数设置key 
 	public String KEY_GUIDE				= "_anyline_navi_guide"			; //设置分页样式的key 
 	 
 	 
