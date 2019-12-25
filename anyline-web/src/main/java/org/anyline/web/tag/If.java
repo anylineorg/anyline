@@ -30,13 +30,14 @@ public class If extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	 
 	private boolean test; 
+	private boolean skip = false;//如果test=false时是否跳过body体(不再执行boyd中的子标签)
 	private Object elseValue; 
 
 	public int doStartTag(){
-        if (test || null != elseValue){
-            return EVAL_BODY_BUFFERED;
-        }else{
+		if(skip && !test){
             return SKIP_BODY;
+		}else {
+            return EVAL_BODY_BUFFERED;
         }
 	} 
 	 public int doEndTag() throws JspException { 
@@ -64,6 +65,7 @@ public class If extends BaseBodyTag implements Cloneable{
 		body = null;
 		test = false; 
 		elseValue = null; 
+		skip = false;
 	} 
 	 
 	public void setTest(boolean test) { 
@@ -76,6 +78,12 @@ public class If extends BaseBodyTag implements Cloneable{
 		return test;
 	} 
 	 
+	public boolean isSkip() {
+		return skip;
+	}
+	public void setSkip(boolean skip) {
+		this.skip = skip;
+	}
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
 		return super.clone(); 
