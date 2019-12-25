@@ -29,6 +29,7 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.NumberUtil;
  
 public class Sum extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
@@ -36,6 +37,7 @@ public class Sum extends BaseBodyTag {
 	private Object data;
 	private String selector; 
 	private String property; 
+	private String format;
  
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
@@ -78,7 +80,11 @@ public class Sum extends BaseBodyTag {
 							result = result.add(new BigDecimal(val.toString()));
 						}
 					}
-					html = result.toString();
+					if(BasicUtil.isNotEmpty(format)){
+						html = NumberUtil.format(result,format); 
+					}else{
+						html = result.toString();
+					}
 				} 
 			} 
 			JspWriter out = pageContext.getOut(); 
@@ -121,6 +127,7 @@ public class Sum extends BaseBodyTag {
 		data = null;
 		property = null;
 		selector = null; 
+		format = null;
 	} 
  
 	public String getScope() { 
@@ -139,6 +146,16 @@ public class Sum extends BaseBodyTag {
 
 	public void setSelector(String selector) {
 		this.selector = selector;
+	}
+
+
+	public String getFormat() {
+		return format;
+	}
+
+
+	public void setFormat(String format) {
+		this.format = format;
 	}
 	 
 }

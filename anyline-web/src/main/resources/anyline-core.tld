@@ -873,6 +873,10 @@
 			<name>selector</name>			
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>format</name>			
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>random</name>
