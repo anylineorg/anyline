@@ -1,19 +1,19 @@
  
-package org.anyline.config.db.impl.mssql; 
+package org.anyline.jdbc.config.db.impl.mssql; 
  
-import org.anyline.config.db.OrderStore; 
-import org.anyline.config.db.SQLCreater; 
-import org.anyline.config.db.impl.BasicSQLCreaterImpl; 
-import org.anyline.config.db.run.RunSQL; 
-import org.anyline.config.db.sql.auto.impl.TextSQLImpl; 
-import org.anyline.dao.AnylineDao; 
-import org.anyline.entity.DataSet; 
-import org.anyline.entity.PageNavi; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
-import org.springframework.beans.factory.annotation.Autowired; 
-import org.springframework.beans.factory.annotation.Qualifier; 
-import org.springframework.stereotype.Repository; 
+import org.anyline.entity.DataSet;
+import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.db.OrderStore;
+import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
+import org.anyline.jdbc.dao.AnylineDao;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Repository;
  
 @Repository("anyline.jdbc.creater.mssql") 
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
