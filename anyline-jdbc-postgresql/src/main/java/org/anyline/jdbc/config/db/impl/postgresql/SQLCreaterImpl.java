@@ -1,12 +1,12 @@
  
-package org.anyline.config.db.impl.postgresql; 
+package org.anyline.jdbc.config.db.impl.postgresql; 
  
-import org.anyline.config.db.OrderStore; 
-import org.anyline.config.db.SQLCreater; 
-import org.anyline.config.db.impl.BasicSQLCreaterImpl; 
-import org.anyline.config.db.run.RunSQL; 
-import org.anyline.entity.PageNavi; 
-import org.springframework.stereotype.Repository; 
+import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.db.OrderStore;
+import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.run.RunSQL;
+import org.springframework.stereotype.Repository;
 @Repository("anyline.jdbc.creater.postgresql") 
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
  
