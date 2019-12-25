@@ -22,7 +22,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
 import org.anyline.web.tag.BaseBodyTag;
 /** 
  * http request 请求参数名=参数名加密 
@@ -55,7 +55,7 @@ public class DESHttpRequestParam extends BaseBodyTag implements Cloneable{
 					String param = params[i]; 
 					String[] keys = param.split("="); 
 					if(keys.length == 2){ 
-						result += WebUtil.encryptHttpRequestParamKey(keys[0]) + "=" + WebUtil.encryptHttpRequestParamValue(keys[1]); 
+						result += DESUtil.encryptParamKey(keys[0]) + "=" + DESUtil.encryptParamValue(keys[1]); 
 						if(i<size-1){ 
 							result += "&"; 
 						} 

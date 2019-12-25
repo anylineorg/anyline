@@ -21,7 +21,7 @@ package org.anyline.web.tag.des;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
 import org.anyline.web.tag.BaseBodyTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class HtmlAs extends BaseBodyTag implements Cloneable{
 			if(null != value && !"".equals(value.trim())){ 
 				value = value.trim(); 
 				JspWriter out = pageContext.getOut(); 
-				out.print(WebUtil.encryptHtmlTagA(value)); 
+				out.print(DESUtil.encryptHtmlTagA(value)); 
 			} 
 		}catch(Exception e){ 
 			e.printStackTrace(); 

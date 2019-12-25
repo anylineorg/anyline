@@ -32,7 +32,7 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -186,7 +186,7 @@ public class Checkbox extends BaseBodyTag {
 					for (Map item : items) { 
 						Object val = item.get(valueKey);
 						if(this.encrypt){
-							val = WebUtil.encryptValue(val+"");
+							val = DESUtil.encryptValue(val+"");
 						}
 						String id = this.id;
 						if(BasicUtil.isEmpty(id)){

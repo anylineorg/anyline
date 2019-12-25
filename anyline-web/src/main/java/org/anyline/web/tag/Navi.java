@@ -25,7 +25,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.anyline.entity.PageNaviConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.WebUtil;
+import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /** 

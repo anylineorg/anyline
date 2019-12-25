@@ -21,7 +21,7 @@ package org.anyline.web.tag.des;
  
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
 import org.anyline.web.tag.ComponentTag;
 /** 
  * 加密 
@@ -49,7 +49,7 @@ public class HTMLInput extends ComponentTag{
 		if("checkbox".equalsIgnoreCase(type) || "radio".equals(type)){ 
 			if(BasicUtil.isNotEmpty(body)){ 
 				builder.append("<label for=\""); 
-				builder.append(WebUtil.encryptHttpRequestParamKey(id)); 
+				builder.append(DESUtil.encryptParamKey(id)); 
 				builder.append("\">"); 
 				builder.append(body); 
 				builder.append("</label>"); 
@@ -68,7 +68,7 @@ public class HTMLInput extends ComponentTag{
 			} 
 		} 
 		if(encryptValue && null != value){ 
-			value = WebUtil.encryptHttpRequestParamValue(value.toString()); 
+			value = DESUtil.encryptParamValue(value.toString()); 
 		} 
 		value = BasicUtil.nvl(value,"").toString(); 
 		builder.append(" value=\"").append(value).append("\""); 

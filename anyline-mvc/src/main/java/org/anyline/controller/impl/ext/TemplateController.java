@@ -29,8 +29,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.anyline.controller.impl.AnylineController;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.WebUtil;
+import org.anyline.util.DESUtil;
 import org.anyline.util.regular.RegularUtil;
+import org.anyline.web.util.WebUtil;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -108,9 +109,9 @@ public class TemplateController extends AnylineController {
 				if(simVar.contains(".")){
 					String pre = simVar.substring(0,simVar.lastIndexOf("."));
 					String suf = simVar.substring(simVar.lastIndexOf(".")+1);
-					simVar = pre + "." + WebUtil.encryptKey(suf).toUpperCase(); 
+					simVar = pre + "." + DESUtil.encryptKey(suf).toUpperCase(); 
 				}else{
-					simVar = WebUtil.encryptKey(simVar).toUpperCase();
+					simVar = DESUtil.encryptKey(simVar).toUpperCase();
 				}
 				content = content.replace(fullVar, "{"+simVar+"}");
 			}
