@@ -41,7 +41,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.service.AnylineService;
+import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;

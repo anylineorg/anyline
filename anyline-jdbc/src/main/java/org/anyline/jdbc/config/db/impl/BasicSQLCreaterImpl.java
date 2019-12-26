@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.AnylineEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -37,7 +38,6 @@ import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.TextSQL;
 import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.dao.PrimaryCreater;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLException;
 import org.anyline.jdbc.exception.SQLUpdateException;

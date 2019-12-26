@@ -17,7 +17,7 @@
  */ 
  
  
-package org.anyline.jdbc.service.impl; 
+package org.anyline.service.impl; 
  
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +25,7 @@ import java.util.List;
 
 import net.sf.ehcache.Element;
 
+import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -42,10 +43,9 @@ import org.anyline.jdbc.config.db.impl.SQLStoreImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
-import org.anyline.jdbc.dao.AnylineDao;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLQueryException;
-import org.anyline.jdbc.service.AnylineService;
+import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
