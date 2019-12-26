@@ -99,6 +99,9 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			if(compare == SQL.COMPARE_TYPE.EQUAL){ 
 				if(null == getValue() || "NULL".equals(getValue())){ 
 					text += " IS NULL"; 
+					if("NULL".equals(getValue())){
+						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+					}
 				}else{
 					text += compare.getSql(); 
 				} 

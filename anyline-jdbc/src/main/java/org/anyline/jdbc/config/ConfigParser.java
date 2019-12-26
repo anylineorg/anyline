@@ -899,41 +899,45 @@ public class ConfigParser {
 		if (null == values || null == key) { 
 			return null; 
 		} 
-		if (keyEncrypt) { 
-			// key已加密 
-			result = getRuntimeValuesFormDecryptMap(values, key, valueEncrypt); 
-		} else { 
-			// key未加密 
-			Object obj = values.get(key);
-			if(null != obj){
-				if (obj instanceof Collection) {
-					Collection cols = (Collection)obj;
-					for (Object value : cols) { 
-						if (null == value) { 
-							result.add(""); 
-						}else{
-							if (valueEncrypt) { 
-								value = decryptParamValue(value.toString());
-								value = filterIllegalChar(value.toString()); 
-							} 
-							if (null != value) { 
-								value = value.toString().trim();
-								value = filterIllegalChar(value.toString()); 
-							} 
-						}
-						result.add(value); 
-					} 
-				}else{
-					if (valueEncrypt) { 
-						result.add(decryptParamValue(obj.toString()));
+		if(key.startsWith("{") && key.endsWith("}")){
+			result.add(key.substring(1, key.length()-1));
+		}else{
+			if (keyEncrypt) { 
+				// key已加密 
+				result = getRuntimeValuesFormDecryptMap(values, key, valueEncrypt); 
+			} else { 
+				// key未加密 
+				Object obj = values.get(key);
+				if(null != obj){
+					if (obj instanceof Collection) {
+						Collection cols = (Collection)obj;
+						for (Object value : cols) { 
+							if (null == value) { 
+								result.add(""); 
+							}else{
+								if (valueEncrypt) { 
+									value = decryptParamValue(value.toString());
+									value = filterIllegalChar(value.toString()); 
+								} 
+								if (null != value) { 
+									value = value.toString().trim();
+									value = filterIllegalChar(value.toString()); 
+								} 
+							}
+							result.add(value); 
+						} 
 					}else{
-						result.add(obj.toString());
+						if (valueEncrypt) { 
+							result.add(decryptParamValue(obj.toString()));
+						}else{
+							result.add(obj.toString());
+						}
 					}
+				}else{
+					result.add("");
 				}
-			}else{
-				result.add("");
-			}
-		} 
+			} 
+		}
 		return result; 
 	} 
  
