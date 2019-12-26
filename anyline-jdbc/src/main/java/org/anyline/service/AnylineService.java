@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.service; 
+package org.anyline.service; 
  
 import java.util.Collection;
 

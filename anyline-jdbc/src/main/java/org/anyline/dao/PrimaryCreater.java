@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.dao; 
+package org.anyline.dao; 
 
 import org.anyline.jdbc.config.db.SQLCreater.DB_TYPE;
  
