@@ -924,7 +924,11 @@ public class ConfigParser {
 						result.add(value); 
 					} 
 				}else{
-					result.add(decryptParamValue(obj.toString()));
+					if (valueEncrypt) { 
+						result.add(decryptParamValue(obj.toString()));
+					}else{
+						result.add(obj.toString());
+					}
 				}
 			}else{
 				result.add("");
