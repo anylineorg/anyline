@@ -320,7 +320,6 @@ public class ConfigTable {
 				}
 				File file = new File(path);
 				String fileName = file.getName();
-				System.out.println("jar path:"+path);
 				if(fileName.endsWith("jar") && fileName.contains("-")){
 					version = fileName.substring(fileName.lastIndexOf("-")+1, fileName.indexOf(".jar"));
 				}
