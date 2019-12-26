@@ -41,7 +41,7 @@ public class LDAPUtil {
         try{
         	 ctx = new InitialLdapContext(env, null);//连接
         }catch(NamingException e){
-        	log.warn("[ldap login][result:false][msg:{}]", e.getMessage());
+        	log.warn("[ldap connect][result:false][msg:{}]", e.getMessage());
         	throw e;
         }
         return ctx;
