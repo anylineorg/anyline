@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.dao.impl.springjdbc; 
+package org.anyline.dao.impl.springjdbc; 
  
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.anyline.dao.AnylineDao;
+import org.anyline.dao.impl.BatchInsertStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -40,8 +42,6 @@ import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.dao.AnylineDao;
-import org.anyline.jdbc.dao.impl.BatchInsertStore;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLQueryException;
 import org.anyline.jdbc.exception.SQLUpdateException;

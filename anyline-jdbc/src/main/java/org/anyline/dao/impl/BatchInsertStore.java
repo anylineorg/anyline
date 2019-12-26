@@ -15,7 +15,7 @@
  *
  *          
  */
-package org.anyline.jdbc.dao.impl; 
+package org.anyline.dao.impl; 
  
 import java.util.concurrent.ConcurrentHashMap; 
 import java.util.concurrent.ConcurrentLinkedDeque; 

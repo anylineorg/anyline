@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.jdbc.dao; 
+package org.anyline.dao; 
  
 import java.util.Collection;
 
