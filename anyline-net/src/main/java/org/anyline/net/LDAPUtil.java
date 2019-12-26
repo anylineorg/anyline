@@ -15,7 +15,7 @@ public class LDAPUtil {
 	private static Logger log = LoggerFactory.getLogger(LDAPUtil.class);
     public boolean login(String url, String account, String password) {
         try{
-        	connect(url, account, password);
+        	connect(url, account, password).close();
         }catch(Exception e){
         	log.warn("[ldap login][result:false][msg:{}]", e.getMessage());
         	return false;
