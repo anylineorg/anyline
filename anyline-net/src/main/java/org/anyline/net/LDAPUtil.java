@@ -18,10 +18,19 @@ public class LDAPUtil {
 	 * @param url 登录地址 如 http://ladp.anyline.org:389
 	 * @param account 登录帐号 如 admin@anyline.org
 	 * @param password 登录密码
-	 * @return LdapContext
+	 * @return boolean
 	 * @throws NamingException 如果抛出异常表示登录失败
 	 */
-    public LdapContext login(String url, String account, String password) throws NamingException {
+    public boolean login(String url, String account, String password) {
+        try{
+        	connect(url, account, password);
+        }catch(NamingException e){
+        	log.warn("[ldap login][result:false][msg:{}]", e.getMessage());
+        	return false;
+        }
+        return true;
+    }
+    public LdapContext connect(String url, String account, String password) throws NamingException {
         Hashtable<String, Object> env = new Hashtable<String, Object>();
         env.put(Context.SECURITY_PRINCIPAL, account);//用户名
         env.put(Context.SECURITY_CREDENTIALS, password);//密码
