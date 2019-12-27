@@ -321,9 +321,11 @@ public class Pop3Util {
 	 *  
 	 * @param part part 
 	 * @return 邮件中存在附件返回true，不存在返回false 
-	 */ 
-	public static boolean isContainAttachment(Part part) 
-			throws MessagingException, IOException { 
+	 * @throws MessagingException MessagingException
+	 * @throws IOException IOException
+	 * @return boolean
+	 */
+	public static boolean isContainAttachment(Part part)  throws MessagingException, IOException { 
 		boolean flag = false; 
 		if (part.isMimeType("multipart/*")) { 
 			MimeMultipart multipart = (MimeMultipart) part.getContent(); 
@@ -368,6 +370,7 @@ public class Pop3Util {
 	 * @throws MessagingException MessagingException 
 	 * @throws FileNotFoundException FileNotFoundException 
 	 * @throws IOException  IOException
+	 * @return List
 	 */ 
  
 	public static List<File> downloadAttachment(Part part, String dir, Date sendTime, List<File> files) throws UnsupportedEncodingException, MessagingException, FileNotFoundException, IOException { 
