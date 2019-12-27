@@ -1,16 +1,16 @@
  代码已迁至[https://github.com/anylineorg/anyline](http://https://github.com/anylineorg/anyline)
  
- **AnyLine**  是一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具。
+ **AnyLine**  是一个针对http/rpc环境的，基于spring-jdbc的，快捷数据库操作工具。
 
 其核心是  
-   1、提供了一个约定格式的函数，用来实现http参数到jdbc参数的转换。  
+   1、提供了一个约定格式的函数，用来实现http/rpc参数到jdbc参数的转换。  
    2、提供了一对基础的service和dao，用来实现常规的数据库操作。  
    3、提供了一对标准的数据结构(DataSet/DataRow)，用来实现MVC各层之间的数据传输，  
     并在其上附加了开发常用的计算函数(如求和、分组、交集、筛选，行转列等)。  
 
  **- http参数到jdbc参数的转换** 
 
-在实际开发中，业务开发人员经常需要大量的时间，不厌其烦的从http中提取参数，判断验证，生成jdbc要求格式的参数，  
+在实际开发中，业务开发人员经常需要大量的时间，不厌其烦的从http/rpc中提取参数，判断验证，生成jdbc要求格式的参数，  
 再把参数依次传到service、dao，最后返回一个实现bean。这整个过程中经常有各种小细节容易忽略而导致异常，如空值处理，IN条件生成等。  
 而在整个项目中这些过程又是大量重复或类似的。这不但影响开发速度与代码质量，更影响心情。  
 所以AnyLine提供了一个统一约定格式来实现这些繁琐的操作,格式大致如下 
@@ -29,7 +29,7 @@
 10|++CODE:cd|CODE = ? 或 整个SQL不执行|如果http中没有cd或cd值为空,整个SQL不执行，如果是查询SQL，则返回长度为0的集合
 
 
-以上格式仅提供给condition(String)函数用来指定从http中取值的方式，其他形式(如直接提供值，而不是从http中取值)参考AnylineService或AnylineDao  
+以上格式仅提供给condition(String)函数用来指定从http/rpc中取值的方式，其他形式(如直接提供值，而不是从http/rpc中取值)参考AnylineService或AnylineDao  
 
  **- 常规数据库操作** 
 
@@ -95,6 +95,7 @@ anyline-web            : javaEE基础
 anyline-net            : 多任务下载，下载进度，断点续传，网速计算，耗时预算，下载回调	
 anyline-struts         : strtus2支持
 anyline-springmvc      : springmvc支持
+anyline-jdbc		: jdbc基础
 anyline-jdbc-mysql     : mysql支持
 anyline-jdbc-mssql     : sql server支持
 anyline-jdbc-db2       : db2支持
