@@ -24,7 +24,7 @@ public class LDAPUtil {
     }
 	/**
 	 * 连接
-	 * @param url 登录地址 如 http://ladp.anyline.org:389
+	 * @param url 登录地址 如 ldap://ad.anyline.org:389
 	 * @param account 登录帐号 如 admin@anyline.org
 	 * @param password 登录密码
 	 * @return LdapContext
