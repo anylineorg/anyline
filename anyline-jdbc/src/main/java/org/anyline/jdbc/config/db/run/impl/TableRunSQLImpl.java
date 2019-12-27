@@ -199,7 +199,4 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	public RunSQL setConditionValue(boolean required,  String condition, String variable, Object value, COMPARE_TYPE compare) {
 		return setConditionValue(required,  false, condition, variable, value, compare);
 	}
- 
- 
-	 
 } 
