@@ -35,7 +35,7 @@ public interface PageNavi extends Serializable{
 	 * 计算分页变量 
 	 */ 
 	public void calculate() ; 
-	public String createHidParam(String name, Object values); 
+//	public String createHidParam(String name, Object values); 
  
 	/** 
 	 * 第一行 
@@ -148,8 +148,6 @@ public interface PageNavi extends Serializable{
 	 * @return return
 	 */
 	public PageNavi setLazy(long ms);
-	public String ajaxPage();
-	public String jspPage();
 	public PageNavi setFlag(String flag);
 	public String getFlag();
 	public PageNavi setType(int type);
