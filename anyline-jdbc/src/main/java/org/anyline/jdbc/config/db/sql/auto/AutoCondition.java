@@ -30,7 +30,7 @@ import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
  * @author zh 
  * 
  */ 
-public interface AutoCondition extends  Condition{ 
+public interface AutoCondition extends Condition{ 
 	public Object getValue(); 
 	public List<Object> getValues(); 
 	public String getId(); 
@@ -38,5 +38,6 @@ public interface AutoCondition extends  Condition{
 	public void setColumn(String column) ; 
 	public void setValues(Object values) ; 
 	public COMPARE_TYPE getCompare() ; 
-	public void setCompare(COMPARE_TYPE compare) ; 
+	public AutoCondition setCompare(COMPARE_TYPE compare) ; 
+	public AutoCondition setOrCompare(COMPARE_TYPE compare) ; 
 } 

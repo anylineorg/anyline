@@ -42,7 +42,9 @@ public abstract class BasicCondition implements Condition{
 	protected boolean active = false;									//是否活动(是否拼接到SQL中) 
 	protected int variableType = VARIABLE_FLAG_TYPE_NONE;				//变量标记方式 
 	protected List<Object> runValues = new ArrayList<Object>();			//运行时参数
-	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();//运行时参数 
+	protected List<Object> runOrValues = new ArrayList<Object>();		//运行时参数(or)
+	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();//运行时参数
+	protected Map<String,Object> runOrValuesMap = new HashMap<String,Object>();//运行时参数(or) 
 	protected String join = Condition.CONDITION_JOIN_TYPE_AND;			//连接方式 
 	protected ConditionChain container;									//当前条件所处容器 
 	protected String id; 
