@@ -139,7 +139,10 @@ public class SFTPUtil {
     	try { 
 			Vector<?> files = client.ls(remoteDir); 
 			size = files.size(); 
-		} catch (SftpException e) { 
+		} catch (Exception e) {
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+            	log.warn("[检测文件数量][result:fail][msg:{}]", e.getMessage()); 
+            } 
 		} 
     	return size; 
     } 
@@ -281,17 +284,17 @@ public class SFTPUtil {
     	try { 
 			Vector<LsEntry> files = client.ls(dir); 
 			for(LsEntry file:files){ 
-				int t = file.getAttrs().getATime(); 
-				String s= file.getAttrs().getAtimeString(); 
-				int t1 = file.getAttrs().getMTime(); 
-				String s1= file.getAttrs().getMtimeString(); 
+//				int t = file.getAttrs().getATime(); 
+//				String s= file.getAttrs().getAtimeString(); 
+//				int t1 = file.getAttrs().getMTime(); 
+//				String s1= file.getAttrs().getMtimeString(); 
 				String nm = file.getFilename(); 
 				if(".".equals(nm) || "..".equals(nm)){ 
 					continue; 
 				} 
 				list.add(nm); 
 			} 
-		} catch (SftpException e) { 
+		} catch (Exception e) { 
 			log.warn("[scan dir error][dir:{}][error:{}]",dir,e.getMessage()); 
 		} 
     	if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
