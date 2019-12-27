@@ -32,6 +32,7 @@ public interface Config {
 	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组 
 	public void setValue(Map<String,Object> values); 
 	public List<Object> getValues() ; 
+	public List<Object> getOrValues() ; 
 	public void addValue(Object value);
 	public void setValue(Object value); 
  
@@ -52,10 +53,12 @@ public interface Config {
 	public String getKey() ; 
  
 	public void setKey(String key) ; 
- 
+
 	public COMPARE_TYPE getCompare() ; 
- 
 	public void setCompare(COMPARE_TYPE compare) ; 
+	
+	public COMPARE_TYPE getOrCompare() ; 
+	public void setOrCompare(COMPARE_TYPE compare) ; 
  
 	public boolean isEmpty() ; 
  

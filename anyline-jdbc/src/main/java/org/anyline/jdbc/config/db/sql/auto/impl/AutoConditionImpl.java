@@ -25,13 +25,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicCondition;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
-import org.anyline.jdbc.config.Config;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
  
@@ -44,13 +44,16 @@ import org.anyline.util.BeanUtil;
 public class AutoConditionImpl extends BasicCondition implements AutoCondition{ 
 	private String column;		//列 
 	private Object values;		//参数值 
+	private Object orValues;		//参数值 
 	private COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL; 
+	private COMPARE_TYPE orCompare = SQL.COMPARE_TYPE.EQUAL; 
  
  
 	public AutoConditionImpl(Config config){
 		setJoin(config.getJoin());
 		setColumn(config.getId()); 
 		setValues(config.getValues()); 
+		setOrValues(config.getOrValues());
 		setCompare(config.getCompare());
 		setRequired(config.isRequire());
 		setStrictRequired(config.isStrictRequired()); 
@@ -82,22 +85,129 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		this.active = true; 
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_NONE); 
 	} 
+
+//	@SuppressWarnings("unchecked") 
+//	public String getRunText(SQLCreater creater){ 
+//		String disKeyFr = creater.getDisKeyFr(); 
+//		String disKeyTo = creater.getDisKeyTo(); 
+//		runValues = new ArrayList<Object>(); /////////////////////////////////////////////////////////////////////////////
+//		String text = ""; 
+//		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){  /////////////////////////////////////////////////////////////////////////////
+//			//static txt
+//			text = this.text; 
+//		}else{ 
+//			text = disKeyFr + column.replace(".", disKeyTo+"."+disKeyFr) + disKeyTo; 
+//			
+//			if(compare == SQL.COMPARE_TYPE.EQUAL){ 
+//				if(null == getValue() || "NULL".equals(getValue())){ 
+//					text += " IS NULL"; 
+//					if("NULL".equals(getValue())){
+//						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
+//					}
+//				}else{
+//					text += compare.getSql(); 
+//				} 
+//			}else if(compare == SQL.COMPARE_TYPE.GREAT){ 
+//				//text += "> ?";
+//				text += compare.getSql(); 
+//			}else if(compare == SQL.COMPARE_TYPE.GREAT_EQUAL){ 
+//				//text += ">= ?";
+//				text += compare.getSql(); 
+//			}else if(compare == SQL.COMPARE_TYPE.LESS){ 
+//				//text += "< ?";
+//				text += compare.getSql(); 
+//			}else if(compare == SQL.COMPARE_TYPE.NOT_EQUAL){ 
+//				//text += "<> ?";
+//				text += compare.getSql(); 
+//			}else if(compare == SQL.COMPARE_TYPE.LESS_EQUAL){
+//				//text += "<= ?";
+//				text += compare.getSql();
+//			}else if(compare == SQL.COMPARE_TYPE.BETWEEN){
+//				//text += " BETWEEN ? AND ?";
+//				text += compare.getSql();
+//			}else if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN){
+//				if(compare == SQL.COMPARE_TYPE.NOT_IN){
+//					text += " NOT";
+//				}
+//				text += " IN ("; 
+//				if(values instanceof Collection){ 
+//					Collection<Object> coll = (Collection)values; 
+//					int size = coll.size(); 
+//					for(int i=0; i<size; i++){ 
+//						text += "?"; 
+//						if(i < size-1){ 
+//							text += ","; 
+//						} 
+//					} 
+//					text += ")"; 
+//				}else{ 
+//					text += "= ?"; 
+//				} 
+//			}else if(compare == SQL.COMPARE_TYPE.LIKE){
+//				text += " LIKE "+ creater.concat("'%'", "?" , "'%'"); 
+//			}else if(compare == SQL.COMPARE_TYPE.LIKE_PREFIX){ 
+//				text += " LIKE "+ creater.concat("?" , "'%'"); 
+//			}else if(compare == SQL.COMPARE_TYPE.LIKE_SUBFIX){ 
+//				text += " LIKE "+ creater.concat("'%'", "?"); 
+//			}  
+//			text += ""; 
+//			//runtime value
+//			if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN || compare == SQL.COMPARE_TYPE.BETWEEN){ 
+//				runValues = getValues(); 
+//			}else{ 
+//				Object value = getValue(); 
+//				runValues = new ArrayList<Object>(); 
+//				if((null == value || "NULL".equals(value)) && compare == SQL.COMPARE_TYPE.EQUAL){ 
+//				}else{ 
+//					runValues.add(value); 
+//				} 
+//			} 
+//		} 
+//		return text; 
+//	} 
+
 	/** 
-	 * 运行时文本 
+	 * 运行时文本
+	 * @param creater creater
+	 * @return String
 	 */ 
-	@SuppressWarnings("unchecked") 
 	public String getRunText(SQLCreater creater){ 
-		String disKeyFr = creater.getDisKeyFr(); 
-		String disKeyTo = creater.getDisKeyTo(); 
-		runValues = new ArrayList<Object>(); 
+		runValues = new ArrayList<Object>();
 		String text = ""; 
-		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){ 
-			//static txt
+		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
 			text = this.text; 
 		}else{ 
+			String txt = "";
+
+			if(BasicUtil.isNotEmpty(true, values)){
+				txt = getRunText(creater, values, compare);
+				if(BasicUtil.isNotEmpty(txt)){
+					text = txt;
+				}
+				if(BasicUtil.isNotEmpty(true, orValues)){
+					txt = getRunText(creater, orValues, orCompare);
+					if(BasicUtil.isNotEmpty(txt)){
+						if(BasicUtil.isEmpty(text)){
+							text = txt;
+						}else{
+							text = "(" + text +" OR " + txt + ")";
+						}
+					}
+				}
+			}
+			
+		} 
+		return text; 
+	} 
+
+	public String getRunText(SQLCreater creater, Object vvv, COMPARE_TYPE compare){ 
+		String disKeyFr = creater.getDisKeyFr(); 
+		String disKeyTo = creater.getDisKeyTo(); 
+		String text = ""; 
 			text = disKeyFr + column.replace(".", disKeyTo+"."+disKeyFr) + disKeyTo; 
 			if(compare == SQL.COMPARE_TYPE.EQUAL){ 
-				if(null == getValue() || "NULL".equals(getValue())){ 
+				Object v = getValue(vvv);
+				if(null == v || "NULL".equals(v.toString())){ 
 					text += " IS NULL"; 
 					if("NULL".equals(getValue())){
 						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
@@ -128,8 +238,8 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 					text += " NOT";
 				}
 				text += " IN ("; 
-				if(values instanceof Collection){ 
-					Collection<Object> coll = (Collection)values; 
+				if(vvv instanceof Collection){ 
+					Collection<Object> coll = (Collection)vvv; 
 					int size = coll.size(); 
 					for(int i=0; i<size; i++){ 
 						text += "?"; 
@@ -151,40 +261,54 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			text += ""; 
 			//runtime value
 			if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN || compare == SQL.COMPARE_TYPE.BETWEEN){ 
-				runValues = getValues(); 
+				runValues.addAll(getValues(vvv)); 
 			}else{ 
-				Object value = getValue(); 
-				runValues = new ArrayList<Object>(); 
+				Object value = getValue(vvv); 
 				if((null == value || "NULL".equals(value)) && compare == SQL.COMPARE_TYPE.EQUAL){ 
 				}else{ 
 					runValues.add(value); 
 				} 
 			} 
-		} 
 		return text; 
 	} 
+
 	@SuppressWarnings("unchecked") 
-	public Object getValue(){ 
+	public Object getValue(Object src){ 
 		Object value = null; 
-		if(values instanceof List){
-			if(((List) values).size()>0){
-				value = ((List)values).get(0); 
+		if(null != src){
+			if(src instanceof List){
+				if(((List) src).size()>0){
+					value = ((List)src).get(0); 
+				} 
+			}else{ 
+				value = src; 
 			} 
-		}else{ 
-			value = values; 
-		} 
+		}
 		return value; 
 	} 
 	@SuppressWarnings("unchecked") 
-	public List<Object> getValues(){ 
-		List<Object> values; 
-		if(this.values instanceof List){ 
-			values = (List)this.values; 
-		}else{ 
-			values = new ArrayList<Object>(); 
-			values.add(this.values); 
-		} 
+	public List<Object> getValues(Object src){ 
+		List<Object> values = new ArrayList<Object>(); 
+		if(null != src){
+			if(src instanceof List){ 
+				values = (List)src; 
+			}else{ 
+				values.add(src); 
+			} 
+		}
 		return values; 
+	} 
+	public Object getValue(){ 
+		return getValue(values);
+	} 
+	public List<Object> getValues(){ 
+		return getValues(values);
+	} 
+	public Object getOrValue(){ 
+		return getValue(orValues);
+	} 
+	public List<Object> getOrValues(){ 
+		return getValues(orValues);
 	} 
  
 	public String getId(){ 
@@ -197,16 +321,28 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	public void setColumn(String column) { 
 		this.column = column; 
 	} 
- 
+
 	public void setValues(Object values) { 
 		this.values = values; 
+	} 
+	public void setOrValues(Object values) { 
+		this.orValues = values; 
 	} 
 	public COMPARE_TYPE getCompare() { 
 		return compare; 
 	} 
-	public void setCompare(COMPARE_TYPE compare) { 
+	public AutoCondition setCompare(COMPARE_TYPE compare) { 
 		this.compare = compare; 
+		return this;
 	} 
+	
+	public COMPARE_TYPE getOrCompare() {
+		return orCompare;
+	}
+	public AutoCondition setOrCompare(COMPARE_TYPE orCompare) {
+		this.orCompare = orCompare;
+		return this;
+	}
 	public String toString(){
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("join", this.getJoin());

@@ -76,7 +76,9 @@ public class ConfigStoreImpl implements ConfigStore{
 	 * 解析查询配置参数 
 	 * @param config	  configs
 	 * 			"COMPANY_CD:company","NM:nmEn% | NM:nmCn%","STATUS_VALUE:[status]"
-	 * "NM:nmEn% | NM:nmCn%" 生成 NM={nmEn} OR NM = {nmCn}
+	 * "NM:nmEn|NM:nmCn" 生成 NM={nmEn} OR NM = {nmCn}
+	 * "NM:nmEn|nmCn" 生成 NM={nmEn} OR NM = {nmCn} nmEn为空时当前条件不生效
+	 * "NM:nmEn|{1}" 
 	 * "NM:nmEn:nmCn" 根据参数值生成NM = {nmEn}或生成 NM={nmCn}   
 	 * @return return
 	 */
@@ -505,5 +507,3 @@ public class ConfigStoreImpl implements ConfigStore{
 		return this; 
 	}
 } 
- 
- 

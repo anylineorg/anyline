@@ -71,12 +71,23 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 			return; 
 		} 
 		String[] configs = config.split("\\|"); 
-		for(String item:configs){ 
-			ConfigImpl conf = new ConfigImpl(item); 
+		int size = configs.length;
+		for(int i=0; i<size; i++){
+			String item = configs[i];
+			if(i+1 <size){
+				String next = configs[i+1];
+				if(!next.contains(":")){
+					//NM:nm|title
+					item = item+"|"+next;
+					i ++;
+				}
+			}
+			
+			ConfigImpl conf = new ConfigImpl(item);
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
 			if(!conf.isEmpty()){ 
 				this.configs.add(conf);
-			} 
+			}
 		} 
 	}
 	public Config getConfig(String key){
