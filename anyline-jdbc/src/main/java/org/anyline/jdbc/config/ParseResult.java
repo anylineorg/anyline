@@ -24,16 +24,13 @@ public class ParseResult implements Serializable{
 	private boolean isKeyEncrypt			; //key是否加密 
 	private boolean isValueEncrypt			; //value是否加密 
 	 
-//	private String def						; //默认值 
-//	private boolean isDefKeyEncrypt			; //key是否加密 
-//	private boolean isDefValueEncrypt		; //value是否加密 
-//	 
 	private boolean setEncrypt = false		; //是否已指定加密方式 
  
 	private List<ParseResult> defs = new ArrayList<ParseResult>();	//默认值 
-	private COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL				; //比较方式			 
-	private String join = Condition.CONDITION_JOIN_TYPE_AND		; //连接方式 
-	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE; //request取值方式 
+	private ParseResult or = null;	//or 只有value或defs有值时 ors才生效
+	private COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL			; //比较方式			 
+	private String join = Condition.CONDITION_JOIN_TYPE_AND			; //连接方式 
+	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE	; //request取值方式 
 	 
 	public List<ParseResult> getDefs(){ 
 		return defs; 
@@ -42,6 +39,12 @@ public class ParseResult implements Serializable{
 		defs.add(def); 
 	} 
 	 
+	public ParseResult getOr() {
+		return or;
+	}
+	public void setOr(ParseResult or) {
+		this.or = or;
+	}
 	public boolean isRequired() { 
 		return required; 
 	} 
@@ -66,12 +69,6 @@ public class ParseResult implements Serializable{
 	public void setField(String field) { 
 		this.field = field; 
 	} 
-//	public String getDef() { 
-//		return def; 
-//	} 
-//	public void setDef(String def) { 
-//		this.def = def; 
-//	} 
 	public String getClazz() { 
 		return clazz; 
 	} 
@@ -120,18 +117,6 @@ public class ParseResult implements Serializable{
 	public void setJoin(String join) { 
 		this.join = join; 
 	} 
-//	public boolean isDefKeyEncrypt() { 
-//		return isDefKeyEncrypt; 
-//	} 
-//	public void setDefKeyEncrypt(boolean isDefKeyEncrypt) { 
-//		this.isDefKeyEncrypt = isDefKeyEncrypt; 
-//	} 
-//	public boolean isDefValueEncrypt() { 
-//		return isDefValueEncrypt; 
-//	} 
-//	public void setDefValueEncrypt(boolean isDefValueEncrypt) { 
-//		this.isDefValueEncrypt = isDefValueEncrypt; 
-//	} 
 	public boolean isStrictRequired() { 
 		return strictRequired; 
 	} 

@@ -41,39 +41,15 @@ import org.slf4j.LoggerFactory;
  
 public class ConfigImpl implements Config{
 	protected static final Logger log = LoggerFactory.getLogger(ConfigImpl.class); 
-	//从request 取值方式 
- 
-//	private String id;				//id 
-//	private String variable;		//变量名(id.variable:request参数名) 
-//	private String key;				//http参数key 
 	private List<Object> values;	//VALUE 
-//	private int compare;			//比较方式 
-//	private String className;		//预处理类 
-//	private String methodName;		//预处理方法 
+	private List<Object> orValues;
 	private boolean empty;			//是否值为空 
-//	private boolean require;		//是否必须参数 
-//	private String join = Condition.CONDITION_JOIN_TYPE_AND;			//拼接方式 
-	 
-//	private boolean isKeyEncrypt;	//是否HTTP参数名经过加密 
-//	private boolean isValueEncrypt;	//是否HTTP参数值经过加密 
-//	 
-//	int fetchValueType = FETCH_REQUEST_VALUE_TYPE_SINGLE;	//从request取值方式 单个||数组
 	protected ParseResult parser;
 	@Override
 	public Object clone(){
 		ConfigImpl config = new ConfigImpl();
 		config.parser = this.parser;
-//		config.id = this.id;
-//		config.variable = this.variable;
-//		config.key = this.key;
-//		config.compare = this.compare;
-//		config.join = this.join;
-//		config.className = this.className;
-//		config.methodName = this.methodName;
 		config.empty = this.empty;
-//		config.require = this.require;
-//		config.isKeyEncrypt = this.isKeyEncrypt; 
-//		config.isValueEncrypt = this.isValueEncrypt;
 		List<Object> values = new ArrayList<Object>();
 		for(Object value:this.values){
 			values.add(value);
@@ -111,67 +87,29 @@ public class ConfigImpl implements Config{
 	 */ 
 	public ConfigImpl(String config){
 		parser = ConfigParser.parse(config, true); 
-//		join = Condition.CONDITION_JOIN_TYPE_AND; 
-//		/*确定id variable require*/ 
-//		id = config.substring(0,config.indexOf(":")); 
-//		if(id.startsWith("+")){ 
-//			//必须参数 
-//			require = true; 
-//			id = id.substring(1,id.length()); 
-//		} 
-//		if(id.contains(".")){ 
-//			//XML中自定义参数时,同时指定param.id及变量名 
-//			variable = id.substring(id.indexOf(".")+1,id.length()); 
-//			id = id.substring(0,id.indexOf(".")); 
-//		}else{ 
-//			//默认变量名 
-//			//variable = id; 
-//		} 
-//		 
-//		/*取值配置*/ 
-//		String valueConfig = config.substring(config.indexOf(":")+1,config.length()); 
-//		valueConfig = parseCompareType(valueConfig);
-//		//解析预处理类.方法 
-//		valueConfig = parseClassMethod(valueConfig); 
-//		 
-//		key = valueConfig; 
-//		//加密配置 
-//		key = parseEncrypt(); 
 	}
-//	/** 
-//	 * 参数加密配置 默认不加密 
-//	 * @param config 参数名　参数名是否加密　参数值是否加密 
-//	 * 只设置一项时　默认为设置参数名加密状态 
-//	 * @return return
-//	 */ 
-//	public String parseEncrypt(){ 
-//		if(null == key){ 
-//			return null; 
-//		} 
-//		if(key.endsWith("+") || key.endsWith("-")){ 
-//			String paramEncrypt = key.substring(key.length()-2,key.length()-1); 
-//			String valueEncrypt = key.substring(key.length()-1); 
-//			if("+".equals(paramEncrypt)){ 
-//				isKeyEncrypt = true; 
-//			} 
-//			if("+".equals(valueEncrypt)){ 
-//				isValueEncrypt = true; 
-//			} 
-//			key = key.replace("+", "").replace("-", ""); 
-//		} 
-//		return key; 
-//	} 
 	public void setValue(Map<String,Object> values){ 
 		try{
 			this.values = ConfigParser.getValues(values, parser);
 			empty = BasicUtil.isEmpty(true, this.values); 
+			setOrValue(values);
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		} 
 	} 
- 
+	public void setOrValue(Map<String,Object> values){ 
+		try{
+			this.orValues = ConfigParser.getValues(values, parser.getOr());
+		}catch(Exception e){ 
+			e.printStackTrace(); 
+		} 
+	} 
+
 	public List<Object> getValues() { 
 		return values; 
+	} 
+	public List<Object> getOrValues() { 
+		return orValues; 
 	} 
 	public void addValue(Object value){
 		if(null == values){
@@ -187,72 +125,12 @@ public class ConfigImpl implements Config{
 		values = new ArrayList<Object>();
 		addValue(value);
 	} 
+	public void setOrValue(Object value){
+		orValues = new ArrayList<Object>();
+		addValue(value);
+	} 
 	/** 
-	 * 解析key 比较方式 及从request取值方式 
-	 */ 
-//	private String parseCompareType1(String config){ 
-//		if(config.startsWith(">=")){ 
-//			compare = SQL.COMPARE_TYPE_GREAT_EQUAL; 
-//			config = config.replace(">=", ""); 
-//		}else if(config.startsWith(">")){ 
-//			compare = SQL.COMPARE_TYPE_GREAT; 
-//			config = config.replace(">", ""); 
-//		}else if(config.startsWith("<=")){ 
-//			compare = SQL.COMPARE_TYPE_LITTLE_EQUAL; 
-//			config = config.replace("<=", ""); 
-//		}else if(config.startsWith("<>") || config.startsWith("!=")){ 
-//			compare = SQL.COMPARE_TYPE_NOT_EQUAL; 
-//			config = config.replace("<>", "").replace("<>", ""); 
-//		}else if(config.startsWith("<")){ 
-//			compare = SQL.COMPARE_TYPE_LITTLE; 
-//			config = config.replace("<", ""); 
-//		}else if(config.startsWith("[")){ 
-//			compare = SQL.COMPARE_TYPE_IN; 
-//			config = config.replace("[", ""); 
-//			config = config.replace("]", ""); 
-//			fetchValueType = FETCH_REQUEST_VALUE_TYPE_MULIT; 
-//		}else if(config.startsWith("%")){ 
-//			if(config.endsWith("%")){ 
-//				compare = SQL.COMPARE_TYPE_LIKE; 
-//			}else{ 
-//				compare = SQL.COMPARE_TYPE_LIKE_SUBFIX; 
-//			} 
-//			config = config.replace("%", ""); 
-//		}else if(config.endsWith("%")){ 
-//			compare = SQL.COMPARE_TYPE_LIKE_PREFIX; 
-//			config = config.replace("%", ""); 
-//		}else{ 
-//			compare = SQL.COMPARE_TYPE_EQUAL; 
-//		} 
-//		return config; 
-//	} 
-//	 
-//	/** 
-//	 * 解析预处理类.方法 
-//	 * V2.0只支持一层处理方法 
-//	 * @param config  config
-//	 */ 
-//	private String parseClassMethod1(String config){ 
-//		if(config.contains("(")){ 
-//			//有预处理方法 
-//			 
-//			//解析class.method 
-//			String classMethod = config.substring(0,config.indexOf("(")); 
-//			if(classMethod.contains(".")){ 
-//				//有特定类 
-//				className = classMethod.substring(0,classMethod.lastIndexOf(".")); 
-//				methodName = classMethod.substring(classMethod.lastIndexOf(".")+1,classMethod.length()); 
-//			}else{ 
-//				//默认类 
-//				methodName = classMethod; 
-//			} 
-//			config = config.substring(config.indexOf("(")+1,config.indexOf(")")); 
-//		} 
-//		return config; 
-//	} 
- 
-	/** 
-	 *  
+	 *  createAutoCondition
 	 * @param chain 容器 
 	 * @return return
 	 */ 
@@ -263,7 +141,7 @@ public class ConfigImpl implements Config{
 				condition = new AutoConditionChainImpl((ConfigChain)this).setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 				condition.setContainer(chain);
 			}else{
-				condition = new AutoConditionImpl(this).setJoin(parser.getJoin()); 
+				condition = new AutoConditionImpl(this).setOrCompare(getOrCompare()).setJoin(parser.getJoin()); 
 				condition.setContainer(chain);
 			} 
 		} 
@@ -339,4 +217,20 @@ public class ConfigImpl implements Config{
 	public boolean isValueEncrypt() { 
 		return parser.isValueEncrypt(); 
 	}
+	@Override
+	public COMPARE_TYPE getOrCompare() {
+		ParseResult or = parser.getOr();
+		if(null != or){
+			return or.getCompare();
+		}
+		return parser.getCompare();
+	}
+	@Override
+	public void setOrCompare(COMPARE_TYPE compare) {
+		ParseResult or = parser.getOr();
+		if(null != or){
+			or.setCompare(compare);
+		}
+	}
+	
 }

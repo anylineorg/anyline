@@ -95,6 +95,7 @@ public class ConfigParser {
 		ParseResult result = parseInit(config); 
 		result = parseCompare(result, isKey); 
 		result = parseClassMethod(result); 
+		result = parseOr(result); 
 		result = parseDef(result); 
 		result = parseEncrypt(result); 
 		return result; 
@@ -114,7 +115,16 @@ public class ConfigParser {
 		String key = config; 
 		if(key.contains(":")){ 
 			id = config.substring(0,config.indexOf(":")); 
-			key = config.substring(config.indexOf(":")+1,config.length()); 
+			if(key.contains("|")){
+				String[] tmp = key.split("\\|"); 
+				ParseResult or = new ParseResult(); 
+				or.setKey(tmp[1]);
+				or = parseEncrypt(or); 
+				result.setOr(or); 
+				key = config.substring(config.indexOf(":")+1,config.indexOf("|")); 
+			}else{
+				key = config.substring(config.indexOf(":")+1,config.length()); 
+			}
 		} 
 		if(id.startsWith("+")){ 
 			//必须参数 
@@ -224,7 +234,7 @@ public class ConfigParser {
 		result.setKey(config); 
 		return result;
 	}/** 
-	 * 解析加密方式 
+	 * 解析默认值 
 	 * @param result  result
 	 * @return return
 	 */ 
@@ -243,6 +253,17 @@ public class ConfigParser {
 				def = parseEncrypt(def); 
 				result.addDef(def); 
 			}
+		}
+		return result; 
+	}
+	private static ParseResult parseOr(ParseResult result){ 
+		String key = result.getKey(); 
+		if(key.indexOf("|") != -1){ 
+			String[] tmp = key.split("\\|"); 
+			ParseResult or = new ParseResult(); 
+			or.setKey(tmp[1]);
+			or = parseEncrypt(or); 
+			result.setOr(or); 
 		}
 		return result; 
 	}
@@ -289,6 +310,9 @@ public class ConfigParser {
 	} 
 	public static List<Object> getValues(Map<String,Object> values, ParseResult parser){ 
 		List<Object> list = new ArrayList<Object>(); 
+		if(null == parser){
+			return list;
+		}
 		try{ 
 			String key = parser.getKey(); 
 			//String def = parser.getDef(); 
