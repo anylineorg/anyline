@@ -2,6 +2,7 @@ package org.anyline.entity;
  
 import java.util.Hashtable; 
  
+
 import org.anyline.util.BasicConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
@@ -46,6 +47,7 @@ public class PageNaviConfig extends BasicConfig{
 	public String KEY_SHOW_JUMP			= "_anyline_navi_show_jump"		; //设置是否显示页数跳转key 
 	public String KEY_SHOW_VOL			= "_anyline_navi_show_vol"		; //设置是否显示每页条数设置key 
 	public String KEY_GUIDE				= "_anyline_navi_guide"			; //设置分页样式的key 
+	public String KEY_ID_FLAG 			= "_anyline_navi_conf_"			; //生成配置文件标识
 	 
 	 
 	public int CONFIG_PAGE_VAL_SET_SORT = 1;	//1:VAR_PAGE_VOL_NUMBERS 2:STYLE_PAGE_VOL  

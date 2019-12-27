@@ -42,7 +42,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
-import org.anyline.web.tag.Navi;
 import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -423,9 +422,9 @@ public class AbstractBasicController{
 			uri = request.getRequestURI(); 
 		} 
 		PageNavi navi = new PageNaviImpl(pageNo, pageVol, uri); 
-		String flag = (String)request.getAttribute(Navi.CONFIG_FLAG_KEY);
+		String flag = (String)request.getAttribute(config.KEY_ID_FLAG);
 		if(null == flag){
-			flag = request.getParameter(Navi.CONFIG_FLAG_KEY);
+			flag = request.getParameter(config.KEY_ID_FLAG);
 		}
 		if(null != flag){
 			flag = flag.replace("'", "").replace("\"", "");
@@ -708,7 +707,7 @@ public class AbstractBasicController{
 				type = 1;
 			}
 			navi.setType(type);
-			map.put("NAVI", BasicUtil.escape(navi.ajaxPage()));
+			map.put("NAVI", BasicUtil.escape(ajaxPage(navi)));
 			map.put("TOTAL_ROW", navi.getTotalRow()+"");
 			map.put("TOTAL_PAGE", navi.getTotalPage()+"");
 			map.put("CUR_PAGE", navi.getCurPage()+"");
@@ -718,6 +717,10 @@ public class AbstractBasicController{
 		}
 		map.put("EXT", ext);
 		return map;
+	}
+	private String ajaxPage(PageNavi navi){
+		String html = "";
+		return html;
 	}
 
 	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page){
