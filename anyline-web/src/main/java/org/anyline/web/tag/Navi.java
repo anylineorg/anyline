@@ -34,7 +34,6 @@ import org.slf4j.LoggerFactory;
  * 
  */ 
 public class Navi extends BodyTagSupport{
-	public static final String CONFIG_FLAG_KEY = "_anyline_navi_conf_"; 
 	private static final long serialVersionUID = 1L; 
 	private static final Logger log = LoggerFactory.getLogger(Navi.class);
 	private String url				;	//数据来源 
@@ -77,7 +76,7 @@ public class Navi extends BodyTagSupport{
 			if(null == flag){
 				flag = idx+"";
 			}
-			String confId = CONFIG_FLAG_KEY + flag;
+			String confId = config.KEY_ID_FLAG + flag;
 			builder.append("<div id='_navi_border_"+flag+"'>");
 			//放到form里 实现后退时值不被重置
 			builder.append("<form><input type='text' style='display:none;' id='_navi_cache_page_"+flag+"'><input type='text' style='display:none;' id='_navi_cache_vol_"+flag+"'></form>");
@@ -96,7 +95,7 @@ public class Navi extends BodyTagSupport{
 				
 			}
 			builder.append("var " + confId + " = {");
-			builder.append(CONFIG_FLAG_KEY).append(":'").append(flag).append("',");
+			builder.append(config.KEY_ID_FLAG).append(":'").append(flag).append("',");
 			if(BasicUtil.isNotEmpty(url)){
 				builder.append("url:'").append(url).append("',");
 			}
