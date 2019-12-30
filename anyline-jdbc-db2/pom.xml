@@ -19,12 +19,10 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc</artifactId>
-			<version>${anyline.jdbc.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ibm.db2</groupId>
 			<artifactId>jcc</artifactId>
-			<version>${db2-jdbc.version}</version>
 		</dependency>
 	</dependencies>
 </project>
