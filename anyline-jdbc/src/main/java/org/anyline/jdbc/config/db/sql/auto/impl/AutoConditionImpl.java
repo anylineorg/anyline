@@ -178,8 +178,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			text = this.text; 
 		}else{ 
 			String txt = "";
-
-			if(BasicUtil.isNotEmpty(true, values)){
+			if(BasicUtil.isNotEmpty(true, values) || isRequired()){
 				txt = getRunText(creater, values, compare);
 				if(BasicUtil.isNotEmpty(txt)){
 					text = txt;

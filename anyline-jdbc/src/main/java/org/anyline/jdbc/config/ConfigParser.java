@@ -364,6 +364,7 @@ public class ConfigParser {
 		List<ParseResult> defs = parser.getDefs(); 
 		if(null != defs){ 
 			for(ParseResult def:defs){ 
+				result = new ArrayList<Object>();
 				String key = def.getKey(); 
 				if(key.startsWith("{") && key.endsWith("}")){ 
 					// col:value 
@@ -394,7 +395,8 @@ public class ConfigParser {
 						result = getRuntimeValues(values, key,def.isKeyEncrypt(), def.isValueEncrypt()); 
 					} 
 				} 
-				if(!result.isEmpty()){ 
+				//if(!result.isEmpty()){ 
+				if(!BasicUtil.isEmpty(true, result)){ 
 					break; 
 				} 
 			} 

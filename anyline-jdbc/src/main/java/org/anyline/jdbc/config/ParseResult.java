@@ -109,6 +109,15 @@ public class ParseResult implements Serializable{
 		return id; 
 	} 
 	public void setId(String id) { 
+		if(null != id){
+			if(id.startsWith("++")){
+				setStrictRequired(true);
+			}
+			if(id.startsWith("+")){
+				setRequired(true);
+			}
+			id = id.replace("+", "");
+		}
 		this.id = id; 
 	} 
 	public String getJoin() { 
