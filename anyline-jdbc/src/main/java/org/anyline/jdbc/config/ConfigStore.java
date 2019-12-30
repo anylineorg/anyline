@@ -74,6 +74,7 @@ public interface ConfigStore {
 	public ConfigStore addCondition(String key, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue); 
+
 	/**
 	 * XML自定义SQL条件中指定变量赋值
 	 * @param key condition.id
@@ -82,8 +83,17 @@ public interface ConfigStore {
 	 * @return return
 	 */
 	public ConfigStore addCondition(String key, String var, Object value);
-	
 	public ConfigStore addCondition(Config config);
+	
+	public ConfigStore conditions(String key, Object value);
+	public ConfigStore condition(String key, Object value);
+	public ConfigStore condition(String key, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore condition(String key, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore condition(COMPARE_TYPE compare, String key, Object value);
+	public ConfigStore condition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue); 
+	public ConfigStore condition(String key, String var, Object value);
+	public ConfigStore condition(Config config);
+	
 
 	public ConfigStore and(String key, Object value);
 	public ConfigStore and(COMPARE_TYPE compare, String key, Object value);
