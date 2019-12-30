@@ -19,7 +19,6 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc</artifactId>
-			<version>${anyline.jdbc.version}</version>
 		</dependency>
 		
 		<!-- 
