@@ -18,7 +18,6 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-core</artifactId>
-			<version>${anyline.core.version}</version>
 		</dependency>
 		<dependency>
             <groupId>org.bytedeco</groupId>
