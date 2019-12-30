@@ -14,43 +14,4 @@
 	<packaging>pom</packaging>
 	<name>anyline-start</name>
 	<url>http://www.anyline.org</url>
-	
-	<!-- 
-		以下依赖根据实现情况修改 mvc,数据库,连接池jsp
-		实现项目一般依赖anyline-dependency并创建与anyline-dependency相同key的properties用来覆盖依赖版本号
-	 -->
-	<dependencies>
-		<!-- springmvc支持 -->
-		<dependency>
-			<groupId>org.anyline</groupId>
-			<artifactId>anyline-mvc</artifactId>
-		</dependency>
-		<!-- end springmvc -->
-		
-		<!-- 连接池 -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-			<version>${druid.version}</version>
-		</dependency>
-		<!-- end 连接池 -->
-		
-		<!-- mysql支持 -->
-		<dependency>
-			<groupId>org.anyline</groupId>
-			<artifactId>anyline-jdbc-mysql</artifactId>
-		</dependency>
-		<!-- end mysql -->
-		
-		<!-- jsp -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-		</dependency>
-		<!-- end jsp -->
-	</dependencies>
 </project>

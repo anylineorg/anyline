@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.anyline</groupId>
-		<artifactId>anyline-dependency</artifactId>
+		<artifactId>anyline-start-mvc-jsp</artifactId>
 		<version>8.3.7</version>
 	</parent>
 	<artifactId>anyline-start-mvc-jsp-mysql</artifactId>
@@ -15,37 +15,11 @@
 	<url>http://www.anyline.org</url>
 
 	<dependencies>
-		<!-- springmvc支持 -->
-		<dependency>
-			<groupId>org.anyline</groupId>
-			<artifactId>anyline-mvc</artifactId>
-		</dependency>
-		<!-- end springmvc -->
-		
-		<!-- jsp -->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jstl</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>taglibs</groupId>
-			<artifactId>standard</artifactId>
-		</dependency>
-		<!-- end jsp -->
-		
-		<!-- 连接池 -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-		</dependency>
-		<!-- end 连接池 -->
-		
 		<!-- mysql支持 -->
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc-mysql</artifactId>
 		</dependency>
 		<!-- end mysql -->
-		
 	</dependencies>
 </project>
