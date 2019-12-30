@@ -19,7 +19,6 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-mvc</artifactId>
-			<version>${anyline.version}</version>
 		</dependency>
 		<!-- end springmvc -->
 		
@@ -27,12 +26,10 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
-			<version>${javax.jstl.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>taglibs</groupId>
 			<artifactId>standard</artifactId>
-			<version>${taglibs.standard.version}</version>
 		</dependency>
 		<!-- end jsp -->
 		
@@ -40,7 +37,6 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>${druid.version}</version>
 		</dependency>
 		<!-- end 连接池 -->
 		
@@ -48,7 +44,6 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc-mysql</artifactId>
-			<version>${anyline.jdbc.mysql.version}</version>
 		</dependency>
 		<!-- end mysql -->
 		
