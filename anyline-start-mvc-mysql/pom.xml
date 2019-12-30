@@ -19,7 +19,6 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-mvc</artifactId>
-			<version>${anyline.version}</version>
 		</dependency>
 		<!-- end springmvc -->
 		
@@ -27,7 +26,6 @@
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>${druid.version}</version>
 		</dependency>
 		<!-- end 连接池 -->
 		
@@ -35,7 +33,6 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc-mysql</artifactId>
-			<version>${anyline.jdbc.mysql.version}</version>
 		</dependency>
 		<!-- end mysql -->
 	</dependencies>
