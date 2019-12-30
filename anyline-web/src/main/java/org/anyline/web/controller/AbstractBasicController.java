@@ -707,7 +707,7 @@ public class AbstractBasicController{
 				type = 1;
 			}
 			navi.setType(type);
-			map.put("NAVI", BasicUtil.escape(ajaxPage(navi)));
+			map.put("NAVI", BasicUtil.escape(navi.html("ajax")));
 			map.put("TOTAL_ROW", navi.getTotalRow()+"");
 			map.put("TOTAL_PAGE", navi.getTotalPage()+"");
 			map.put("CUR_PAGE", navi.getCurPage()+"");
@@ -717,10 +717,6 @@ public class AbstractBasicController{
 		}
 		map.put("EXT", ext);
 		return map;
-	}
-	private String ajaxPage(PageNavi navi){
-		String html = "";
-		return html;
 	}
 
 	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page){

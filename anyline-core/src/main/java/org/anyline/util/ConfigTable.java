@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Properties;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
@@ -55,13 +56,8 @@ public class ConfigTable {
 		debug();
 	}
 	protected ConfigTable(){}
-	public static void addConfig(String ... files){
-		if(null == files){
-			return;
-		}
-		for(String file:files){
-			loadConfig(new File(file));
-		}
+	public static void addConfig(String content){
+			loadConfig(content);
 	}
 	public static void addConfig(File ... files){
 		if(null == files){
@@ -185,6 +181,27 @@ public class ConfigTable {
 			}
 		} 
 	}
+	/**
+	 * 解析配置文件
+	 * @param content 文件内容
+	 */
+	protected static void parseConfig(String content){
+		try{
+			Document document = DocumentHelper.parseText(content);
+			Element root = document.getRootElement();
+			for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();){
+				Element propertyElement = itrProperty.next();
+				String key = propertyElement.attributeValue("key");
+				String value = propertyElement.getTextTrim();
+				configs.put(key.toUpperCase().trim(), value);
+				if(isDebug()){
+					log.info("[解析配置文件][{}={}]",key,value);
+				}
+			}
+		}catch(Exception e){
+			log.error("配置文件解析异常:"+e);
+		}
+	} 
 	protected static void loadConfig(File file){
 		try{
 			if(isDebug()){
