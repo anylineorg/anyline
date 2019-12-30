@@ -19,7 +19,6 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-core</artifactId>
-			<version>${anyline.core.version}</version>
 		</dependency>
 		<dependency>
 		    <groupId>com.alibaba</groupId>
