@@ -264,6 +264,47 @@ public class ConfigStoreImpl implements ConfigStore{
 		}
 		return this;
 	}
+	
+	@Override
+	public ConfigStore conditions(String key, Object value) {
+		return addConditions(key, value);
+	}
+
+	@Override
+	public ConfigStore condition(String key, Object value) {
+		return addCondition(key, value);
+	}
+
+	@Override
+	public ConfigStore condition(String key, String var, Object value, boolean overCondition, boolean overValue) {
+		return addCondition(key, var, value, overCondition, overValue);
+	}
+
+	@Override
+	public ConfigStore condition(String key, Object value, boolean overCondition, boolean overValue) {
+		return addCondition(key, value, overCondition, overValue);
+	}
+
+	@Override
+	public ConfigStore condition(COMPARE_TYPE compare, String key, Object value) {
+		return addCondition(compare, key, value);
+	}
+
+	@Override
+	public ConfigStore condition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue) {
+		return addCondition(compare, key, value, overCondition, overValue);
+	}
+
+	@Override
+	public ConfigStore condition(String key, String var, Object value) {
+		return addCondition(key, var, value);
+	}
+
+	@Override
+	public ConfigStore condition(Config config) {
+		return addCondition(config);
+	}
+
 	@Override
 	public ConfigStore ors(String key, Object value){
 		return ors(COMPARE_TYPE.EQUAL, key, value);
