@@ -93,13 +93,20 @@
 		<persistence.version>1.0.2</persistence.version>
 		<jpush.client.version>3.3.12</jpush.client.version>
 		<jpush.version>1.1.6</jpush.version>
+		<alibaba.nacos.version>1.1.4</alibaba.nacos.version>
 	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-core</artifactId>
 				<version>${anyline.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-ext</artifactId>
+				<version>${anyline.ext.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
@@ -220,6 +227,131 @@
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-weixin</artifactId>
 				<version>${anyline.weixin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-core</artifactId>
+				<version>${anyboot.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-alipay</artifactId>
+				<version>${anyboot.alipay.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-aliyun</artifactId>
+				<version>${anyboot.aliyun.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-amap</artifactId>
+				<version>${anyboot.amap.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-easemob</artifactId>
+				<version>${anyboot.easemob.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-jdbc</artifactId>
+				<version>${anyboot.jdbc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-jdbc-db2</artifactId>
+				<version>${anyboot.jdbc.db2.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-jdbc-hgdb</artifactId>
+				<version>${anyboot.jdbc.hgdb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-jdbc-mariadb</artifactId>
+				<version>${anyboot.jdbc.mariadb.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-jdbc-mysql</artifactId>
+				<version>${anyboot.jdbc.mysql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-jdbc-mssql</artifactId>
+				<version>${anyboot.jdbc.mssql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-jdbc-oracle</artifactId>
+				<version>${anyboot.jdbc.oracle.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-jdbc-postgresql</artifactId>
+				<version>${anyboot.jdbc.postgresql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-jpush</artifactId>
+				<version>${anyboot.jpush.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-mail</artifactId>
+				<version>${anyboot.mail.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-mvc</artifactId>
+				<version>${anyboot.mvc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-net</artifactId>
+				<version>${anyboot.net.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-poi</artifactId>
+				<version>${anyboot.poi.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-qq</artifactId>
+				<version>${anyboot.qq.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-redis</artifactId>
+				<version>${anyboot.redis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-struts</artifactId>
+				<version>${anyboot.struts.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-video</artifactId>
+				<version>${anyboot.video.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-web</artifactId>
+				<version>${anyboot.web.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-web-ext</artifactId>
+				<version>${anyboot.web.ext.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyboot-weixin</artifactId>
+				<version>${anyboot.weixin.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.ibm.db2</groupId>
