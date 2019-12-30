@@ -19,12 +19,10 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-web</artifactId>
-			<version>${anyline.web.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mariadb.jdbc</groupId>
 			<artifactId>mariadb-java-client</artifactId>
-			<version>${mariadb.version}</version>
 		</dependency>
 	</dependencies>
 </project>
