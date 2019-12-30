@@ -19,22 +19,18 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-web</artifactId>
-			<version>${anyline.web.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aliyun.oss</groupId>
 			<artifactId>aliyun-sdk-oss</artifactId>
-			<version>${aliyun.oss.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.aliyun</groupId>
 			<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
-			<version>${aliyun.sms.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jsp-api</artifactId>
-			<version>${javax.jsp.version}</version>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
