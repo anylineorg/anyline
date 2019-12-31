@@ -275,7 +275,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			return; 
 		} 
 		String txt = builder.toString(); 
-		boolean where = hasWhere(txt); 
+		boolean where = endwithWhere(txt); 
 		if(!where){ 
 			builder.append(" WHERE 1=1"); 
 		}
