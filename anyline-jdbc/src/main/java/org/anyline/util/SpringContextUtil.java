@@ -1,12 +1,13 @@
-package org.anyline.jdbc.util; 
+package org.anyline.util; 
  
  
-import java.util.Map; 
- 
-import org.springframework.beans.BeansException; 
-import org.springframework.context.ApplicationContext; 
-import org.springframework.context.ApplicationContextAware; 
-import org.springframework.stereotype.Component; 
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
  
 @Component 
 public class SpringContextUtil implements ApplicationContextAware { 
@@ -29,6 +30,15 @@ public class SpringContextUtil implements ApplicationContextAware {
     	return applicationContext.getBeansOfType(clazz); 
     }  
     public static <T> T getBean(Class<T> clazz) throws BeansException{ 
-    	return applicationContext.getBean(clazz); 
+    	Map<String,T> beans = getBeans(clazz);
+    	if(null != beans && !beans.isEmpty()){
+    		for(Entry<String,T> set:beans.entrySet()){
+    			T bean = set.getValue();
+    			if(null != bean){
+    				return bean;
+    			}
+    		}
+    	}
+    	return null;
     }  
 } 
