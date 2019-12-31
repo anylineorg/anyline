@@ -1,16 +1,17 @@
 package org.anyline.jdbc.util; 
  
-import java.sql.Connection; 
-import java.sql.SQLException; 
-import java.util.Map; 
-import java.util.concurrent.ConcurrentHashMap; 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import javax.sql.DataSource; 
+import javax.sql.DataSource;
 
 import org.anyline.jdbc.config.db.SQLCreater;
-import org.springframework.jdbc.core.JdbcTemplate; 
-import org.springframework.jdbc.datasource.DataSourceUtils; 
-import org.springframework.stereotype.Repository; 
+import org.anyline.util.SpringContextUtil;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.stereotype.Repository;
 @Repository 
 public class SQLCreaterUtil { 
  
@@ -53,7 +54,7 @@ public class SQLCreaterUtil {
 					for(SQLCreater item: creaters.values()){ 
 						if(type ==item.type()){ 
 							creater = item; 
-							creaters.put(type.getName(), creater); 
+							SQLCreaterUtil.creaters.put(type.getName(), creater); 
 							break; 
 						} 
 					} 
