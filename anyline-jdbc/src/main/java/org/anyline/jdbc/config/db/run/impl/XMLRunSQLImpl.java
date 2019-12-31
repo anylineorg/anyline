@@ -406,7 +406,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null == conditionChain || !conditionChain.isActive()){ 
 			return; 
 		} 
-		if(!hasWhere(builder.toString())){ 
+		if(!endwithWhere(builder.toString())){ 
 			builder.append(" WHERE 1=1"); 
 		} 
 		builder.append(conditionChain.getRunText(creater)); 
@@ -418,7 +418,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 //		} 
 	} 
 	private void appendStaticCondition(){ 
-		if(!hasWhere(builder.toString())){ 
+		if(!endwithWhere(builder.toString())){ 
 			builder.append(" WHERE 1=1"); 
 		} 
 		if(null != staticConditions){ 
