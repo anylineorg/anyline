@@ -18,7 +18,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>
-			<artifactId>anyline-web</artifactId>
+			<artifactId>anyline-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>mysql</groupId>
