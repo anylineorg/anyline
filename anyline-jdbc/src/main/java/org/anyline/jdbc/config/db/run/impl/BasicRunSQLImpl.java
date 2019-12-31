@@ -381,7 +381,40 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		variables.add(var); 
 		return this; 
 	} 
-	 
+	public static void main(String[] args) {
+		String txt = "SELECT * FROM A WHERE A =A AND A IN(SELECT * FROM ID WHERE A IN('1'))";
+		txt = "SELECT * FROM A where a = a UNION ALL SELECT * FROM B where (a = 1)";
+		txt = "SELECT * FROM A where a = a UNION ALL SELECT * FROM B where (a = 1)";
+//		txt = "SELECT *FROM (SELECT * FROM A where a = 1 UNION ALL SELECT * FROM B)";
+//		txt = "SELECT *FROM (SELECT * FROM A UNION ALL SELECT * FROM B) WHERE A = 1";
+//		txt = "SELECT *FROM (SELECT * FROM A WHER A =1 UNION ALL SELECT * FROM B WHERE A =1) WHERE A = 1 AND ID IN(SELECT * FROM B WHERE A=1)";
+		System.out.println(endwithWhere(txt));
+	}
+
+	protected static boolean endwithWhere(String txt){ 
+		boolean where = false;
+		txt = txt.toUpperCase(); 
+		int fr = txt.lastIndexOf("WHERE"); 
+		if(fr > 0){ 
+			txt = txt.substring(fr); 
+			try{ 
+				int bSize = 0;//左括号数据
+				if(txt.contains(")")){
+					bSize = RegularUtil.fetch(txt, "\\)").size();
+				} 
+				int eSize = 0;//右括号数量
+				if(txt.contains("(")){
+					eSize = RegularUtil.fetch(txt, "\\(").size();
+				} 
+				if(bSize == eSize){ 
+					where = true; 
+				} 
+			}catch(Exception e){ 
+				e.printStackTrace(); 
+			} 
+		} 
+		return where; 
+	}
 	protected boolean hasWhere(String txt){ 
 		boolean where = false;
 		txt = txt.toUpperCase(); 
