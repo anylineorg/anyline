@@ -727,16 +727,33 @@
 			</plugin>
 		</plugins>
 	</build>
-	<repositories>
+
+    
+    <repositories>
         <repository>
-            <id>anyline-repos</id>
-            <name>AnyLine Repository</name>
-            <url>http://maven.anyline.org/repository/maven-public</url>  
-            <releases>
-                <enabled>true</enabled>
-            </releases>
+            <id>aliyun</id>
+            <name>aliyun repository</name>
+            <url>http://maven.aliyun.com/nexus/content/groups/public</url>
+        </repository>
+        <repository>
+            <id>anyline</id>
+            <name>anyline repository</name>
+            <url>http://maven.anyline.org/repository/maven-public</url>
+        </repository>
+        <repository>
+            <id>spring-milestone</id>
+            <name>Spring Milestone</name>
+            <url>https://repo.spring.io/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-snapshot</id>
+            <name>Spring Snapshot</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </repository>
     </repositories>
