@@ -22,7 +22,6 @@ package org.anyline.jdbc.config.db.sql.auto.impl;
 import org.anyline.jdbc.config.db.sql.auto.TextSQL;
  
 public class TextSQLImpl extends AutoSQLImpl implements TextSQL{ 
-	private static final long serialVersionUID = 7586751724724062851L;
 	private String text; 
 	public TextSQLImpl(String text){ 
 		super(); 

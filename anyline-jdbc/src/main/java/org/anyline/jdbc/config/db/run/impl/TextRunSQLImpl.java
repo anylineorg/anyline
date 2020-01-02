@@ -347,6 +347,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 * @param obj  obj
 	 * @return return
 	 */ 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public TextRunSQLImpl addValues(Object obj){ 
 		if(null == obj){ 
 			return this; 

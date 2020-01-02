@@ -111,6 +111,7 @@ public class ConfigImpl implements Config{
 	public List<Object> getOrValues() { 
 		return orValues; 
 	} 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void addValue(Object value){
 		if(null == values){
 			values = new ArrayList<Object>();

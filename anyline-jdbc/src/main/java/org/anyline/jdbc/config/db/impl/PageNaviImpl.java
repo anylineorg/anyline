@@ -190,7 +190,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		this.displayPageLast = displayPageLast; 
 	} 
  
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings({ "unchecked", "rawtypes" }) 
 	public void addParam(String key, Object value){ 
 		if(null == key || null == value){ 
 			return; 
@@ -216,7 +216,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		} 
 		return result; 
 	} 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings({ "rawtypes" }) 
 	public Object getParam(String key){ 
 		Object result = null; 
 		if(null != params){ 
@@ -454,7 +454,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 		PageNaviConfig config = PageNaviConfig.getInstance(style); 
 		calculate(); 
 		StringBuilder navi = new StringBuilder(); 
-		StringBuilder layout = new StringBuilder(); 
+		//StringBuilder layout = new StringBuilder(); 
 		StringBuilder index = new StringBuilder(); 
 		StringBuilder stat = new StringBuilder(); 
 		StringBuilder vol = new StringBuilder(); 

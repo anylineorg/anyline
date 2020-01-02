@@ -28,6 +28,7 @@ import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.AnylineEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.run.RunSQL;
@@ -37,7 +38,6 @@ import org.anyline.jdbc.config.db.run.impl.XMLRunSQLImpl;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.TextSQL;
 import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
-import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLException;
 import org.anyline.jdbc.exception.SQLUpdateException;
@@ -124,6 +124,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		} 
 		return run; 
 	}
+	@SuppressWarnings("rawtypes")
 	private RunSQL createDeleteRunSQLFromTable(String table, String key, Object values){
 		if(null == table || null == key || null == values){
 			return null;
@@ -883,6 +884,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param columns  columns
 	 * @return return
 	 */ 
+	@SuppressWarnings("unused")
 	private List<String> confirmUpdateColumns(String dst, AnylineEntity entity, String ... propertys){ 
 		List<String> keys = null;/*确定需要更新的列*/ 
 		if(null == entity){ 
