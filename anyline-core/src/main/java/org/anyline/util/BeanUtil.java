@@ -25,7 +25,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,19 +41,19 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.anyline.entity.DataSet;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
-import org.apache.commons.beanutils.BeanUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
  
  
 public class BeanUtil { 
@@ -66,22 +65,20 @@ public class BeanUtil {
 		if(Modifier.isStatic(field.getModifiers())){ 
 			return false; 
 		} 
-		try{ 
-			if(field.isAccessible()){ 
-				//可访问属性 
-				field.set(obj, value); 
-				BeanUtils.setProperty(obj, field.getName(), value); 
-			}else{ 
-				//不可访问属性 
-				field.setAccessible(true); 
-				field.set(obj, value); 
-				BeanUtils.setProperty(obj, field.getName(), value); 
-				field.setAccessible(false); 
-			} 
-		}catch(Exception e){ 
-			e.printStackTrace(); 
-			return false; 
-		} 
+		try{
+			if(field.isAccessible()){
+				//可访问属性
+				field.set(obj, value);
+			}else{
+				//不可访问属性
+				field.setAccessible(true);
+				field.set(obj, value);
+				field.setAccessible(false);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
 		return true; 
 	} 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -168,11 +165,6 @@ public class BeanUtil {
 			} 
 		}catch(Exception e){ 
 			return null; 
-		} 
-		if(null == value){ 
-			try{ 
-				value = BeanUtils.getProperty(obj, field.getName()); 
-			}catch(Exception e){} 
 		} 
 		return value; 
 	} 
@@ -654,21 +646,21 @@ public class BeanUtil {
 	@SuppressWarnings("rawtypes")
 	public static <T> T json2oject(JSONObject json, Class<T> clazz){ 
 		T obj = null; 
-		try{ 
-			obj = (T)clazz.newInstance(); 
-			Iterator it = json.keys(); 
-			while (it.hasNext()) { 
-				String key = it.next().toString(); 
-				Object v = json.get(key); 
-				BeanUtil.setFieldValue(obj, key, v); 
-			} 
-		}catch(Exception e){ 
-			e.printStackTrace(); 
-		} 
+		try{
+			obj = (T)clazz.newInstance();
+			Iterator it = json.keySet().iterator();
+			while (it.hasNext()) {
+				String key = it.next().toString();
+				Object v = json.get(key);
+				BeanUtil.setFieldValue(obj, key, v);
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		return obj; 
 	} 
 	public static <T> T json2oject(String json, Class<T> clazz){ 
-		return json2oject(JSONObject.fromObject(json), clazz); 
+		return JSONObject.parseObject(json, clazz);
 	} 
 	@SuppressWarnings("rawtypes")
 	public static String map2xml(Map<String,?> map, boolean border, boolean order){ 
@@ -711,11 +703,7 @@ public class BeanUtil {
 		return map2xml(map, true, false); 
 	} 
 	public static String map2json(Map<String,?> map){ 
-		JsonConfig config = new JsonConfig(); 
-		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());   
-		config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor()); 
-		JSONObject json = JSONObject.fromObject(map, config); 
-		return json.toString(); 
+		return JSON.toJSONString(map, SerializerFeature.WriteDateUseDateFormat);
 	} 
 	public static Map<String,Object> xml2map(String xml){ 
 		Map<String,Object> map = new HashMap<String,Object>(); 
@@ -782,13 +770,8 @@ public class BeanUtil {
 		return map; 
 	} 
 	public static String object2json(Object obj){ 
-		JsonConfig config = new JsonConfig(); 
-		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());   
-		config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor()); 
-		JSONObject json = JSONObject.fromObject(obj,config); 
-		return json.toString(); 
+		return JSON.toJSONString(obj, SerializerFeature.WriteDateUseDateFormat);
 	} 
- 
 	/** 
 	 * 提取集合中每个条目的key属性的值 
 	 * @param list  list

@@ -1,22 +1,23 @@
 package org.anyline.easemob.util; 
  
-import java.util.HashMap; 
-import java.util.Hashtable; 
-import java.util.List; 
-import java.util.Map; 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
-import net.sf.json.JSONObject; 
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.net.HttpUtil;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.anyline.entity.DataRow; 
-import org.anyline.entity.DataSet; 
-import org.anyline.net.HttpUtil; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.BeanUtil; 
-import org.anyline.util.ConfigTable; 
-import org.apache.http.HttpEntity; 
-import org.apache.http.entity.StringEntity; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
  
 public class EasemobUtil { 
 	private static final Logger log = LoggerFactory.getLogger(EasemobUtil.class); 
@@ -669,11 +670,11 @@ public class EasemobUtil {
 		try { 
 			String url = baseUrl + "/token"; 
 			String txt = HttpUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText(); 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("access_token")){ 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("access_token")){ 
 				access_token = json.getString("access_token"); 
 			} 
-			if(json.has("expires_in")){ 
+			if(json.containsKey("expires_in")){ 
 				access_token_expires = System.currentTimeMillis()/1000 + json.getLong("expires_in"); 
 			} 
 		} catch (Exception e) { 

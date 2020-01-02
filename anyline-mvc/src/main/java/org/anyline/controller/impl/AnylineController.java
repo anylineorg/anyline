@@ -33,21 +33,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.DESUtil;
 import org.anyline.util.FileUtil;
-import org.anyline.util.JSONDateFormatProcessor;
 import org.anyline.web.controller.AbstractBasicController;
 import org.anyline.web.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +53,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
  
 public class AnylineController extends AbstractBasicController { 
  
@@ -340,10 +339,6 @@ public class AnylineController extends AbstractBasicController {
 			} 
 			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE); 
 		} 
-		// 转换成JSON格式 
-		JsonConfig config = new JsonConfig(); 
-		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());   
-		config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor()); 
  
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		String dataType = null; // 数据类型 
@@ -387,8 +382,7 @@ public class AnylineController extends AbstractBasicController {
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 			log.warn("[controller return][result:{}][message:{}]",result,message); 
 		} 
-		JSON json = JSONObject.fromObject(map,config); 
-		return json.toString(); 
+		return BeanUtil.map2json(map); 
 	} 
 	/** 
 	 *  

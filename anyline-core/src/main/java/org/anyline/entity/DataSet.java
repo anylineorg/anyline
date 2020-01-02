@@ -21,7 +21,6 @@ package org.anyline.entity;
  
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,21 +31,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DateUtil;
 import org.anyline.util.EscapeUtil;
-import org.anyline.util.JSONDateFormatProcessor;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
  
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
@@ -96,7 +94,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public static DataSet parseJson(String json){
 		if(null != json){
 			try{
-				return parseJson(JSONArray.fromObject(json));
+				return parseJson(JSONArray.parseArray(json));
 			}catch(Exception e){
 				
 			}
@@ -1208,19 +1206,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
     	map.put("rows", rows); 
     	map.put("success", result); 
     	map.put("navi", navi); 
-    	JSON json = JSONObject.fromObject(map); 
-		return json.toString(); 
+		return JSON.toJSONString(map, SerializerFeature.WriteDateUseDateFormat);
 	}
 	/**
 	 * rows 列表中的数据格式化成json格式   不同与toString
 	 * @return return
 	 */
 	public String toJson(){
-		JsonConfig config = new JsonConfig();  
-        config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
-        config.registerJsonValueProcessor(Timestamp.class, new JSONDateFormatProcessor());
-		JSONArray json = JSONArray.fromObject(rows, config);
-		return json.toString();
+		return JSON.toJSONString(rows, SerializerFeature.WriteDateUseDateFormat);
 	}
 	public String getJson(){
 		return toJSON();

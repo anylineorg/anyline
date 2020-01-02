@@ -20,7 +20,12 @@
 package org.anyline.jdbc.config.db.impl; 
  
  
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -56,7 +61,20 @@ public class SQLStoreImpl extends SQLStore{
 	} 
 	public static synchronized void loadSQL(){ 
 		sqlDir = ConfigTable.getString("SQL_STORE_DIR"); 
-		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),sqlDir),"xml"); 
+		if(null ==sqlDir){
+			return;
+		}
+		List<File> files = new ArrayList<File>();
+		if(sqlDir.contains("${classpath}")){
+			sqlDir = sqlDir.replace("${classpath}", ConfigTable.getClassPath());
+			files = FileUtil.getAllChildrenFile(new File(sqlDir),"xml");
+		}else if(sqlDir.startsWith("/WEB-INF")){
+			files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),sqlDir),"xml");
+		}else if(sqlDir.startsWith("/")){
+			files = FileUtil.getAllChildrenFile(new File(sqlDir),"xml");
+		}else {
+			files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),sqlDir),"xml");
+		}
 		for(File file:files){
 			if(ConfigTable.isSQLDebug()){
 				log.warn("[解析SQL] [FILE:{}]",file.getAbsolutePath());
@@ -65,7 +83,18 @@ public class SQLStoreImpl extends SQLStore{
 		}
 		lastLoadTime = System.currentTimeMillis(); 
 	} 
-	 
+
+	public static String getJarFile()throws IOException {
+		InputStream in=SQLStoreImpl.class.getResourceAsStream("/idcheck-file.properties");//读jar包根目录下的idcheck-file.properties文件
+		Reader f = new InputStreamReader(in);		
+		BufferedReader fb = new BufferedReader(f);
+		StringBuffer sb = new StringBuffer("");
+		String s = "";
+		while((s = fb.readLine()) != null) {
+			sb = sb.append(s);
+		}
+		return sb.toString();
+	}
  
 	/** 
 	 * 解析sql.xml文件 
