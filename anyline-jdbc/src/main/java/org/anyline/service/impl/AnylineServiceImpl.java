@@ -795,6 +795,7 @@ public class AnylineServiceImpl implements AnylineService {
 		} 
 		 
 	} 
+	@SuppressWarnings("rawtypes")
 	@Override 
 	public int save(String dest, Object data, boolean checkParimary, String... columns) { 
 		if (null == data) { 
@@ -968,6 +969,7 @@ public class AnylineServiceImpl implements AnylineService {
 		return execute(src, null, conditions); 
 	} 
  
+	@SuppressWarnings("rawtypes")
 	@Override 
 	public int delete(String dest, Object data) { 
 		if (null == data) { 

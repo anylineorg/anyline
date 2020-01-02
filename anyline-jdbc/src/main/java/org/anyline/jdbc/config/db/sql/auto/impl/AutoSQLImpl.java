@@ -34,7 +34,6 @@ import org.anyline.jdbc.config.db.sql.auto.AutoSQL;
 import org.anyline.util.BasicUtil;
  
 public class AutoSQLImpl extends BasicSQL implements AutoSQL{ 
-	private static final long serialVersionUID = 4804654368819564162L;
 	protected String schema; 
 	protected String table; 
 	protected List<String> columns;

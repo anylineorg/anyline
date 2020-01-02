@@ -8,14 +8,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.OrderStore;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.Config;
-import org.anyline.jdbc.config.ConfigChain;
-import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESKey;
@@ -308,6 +304,7 @@ public class ConfigParser {
 		} 
 		return null; 
 	} 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static List<Object> getValues(Map<String,Object> values, ParseResult parser){ 
 		List<Object> list = new ArrayList<Object>(); 
 		if(null == parser){
@@ -838,6 +835,7 @@ public class ConfigParser {
 	 *            //value是否加密 
 	 * @return return
 	 */ 
+	@SuppressWarnings("unchecked")
 	private static List<Object> getRuntimeValuesFormDecryptMap(Map<String,Object> values, String key, boolean valueEncrypt) { 
 		List<Object> result = new ArrayList<Object>(); 
 		if (values.get(IS_PARAMS_DECRYPT) == null) { 
@@ -865,6 +863,7 @@ public class ConfigParser {
 	 * @param param  param
 	 * @return return
 	 */ 
+	@SuppressWarnings("unused")
 	private static String getRuntimeValueFormDecryptMap(Map<String,Object> values, String key, boolean valueEncrypt) { 
 		String result = null; 
 		List<Object> list = getRuntimeValuesFormDecryptMap(values, key,valueEncrypt); 
@@ -882,6 +881,7 @@ public class ConfigParser {
 	 *  
 	 * @param values values
 	 */ 
+	@SuppressWarnings({ "rawtypes", "unused" })
 	private static void decryptParam(Map<String,Object> values) { 
 		Map<String, List<String>> fullMap = new HashMap<String, List<String>>(); 
 		Map<String, List<String>> partMap = new HashMap<String, List<String>>(); 
@@ -920,6 +920,7 @@ public class ConfigParser {
 	 *            value是否加密 
 	 * @return return
 	 */ 
+	@SuppressWarnings("rawtypes")
 	public static List<Object> getRuntimeValues(Map<String,Object> values, String key, boolean keyEncrypt, boolean valueEncrypt) { 
 		List<Object> result = new ArrayList<Object>(); 
 		if (null == values || null == key) { 

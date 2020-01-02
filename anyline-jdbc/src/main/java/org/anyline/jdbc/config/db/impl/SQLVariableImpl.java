@@ -104,7 +104,7 @@ public class SQLVariableImpl implements SQLVariable{
 	public void setValue(Object value) {
 		setValue(true, value);
 	}
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public void setValue(boolean chkNull, Object value) {
 		if(null == value && chkNull){
 			return;
