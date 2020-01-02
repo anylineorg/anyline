@@ -18,7 +18,7 @@
 package org.anyline.plugin.springmvc; 
  
 import java.util.Locale; 
- 
+
 import org.springframework.beans.BeanUtils; 
 import org.springframework.web.servlet.View; 
 import org.springframework.web.servlet.view.AbstractUrlBasedView; 
@@ -31,6 +31,7 @@ public class TemplateResourceViewResolver extends UrlBasedViewResolver {
 	private Boolean exposeContextBeansAsAttributes; 
 	private String[] exposedContextBeanNames; 
  
+	@SuppressWarnings("rawtypes")
 	public TemplateResourceViewResolver() { 
 		Class viewClass = requiredViewClass(); 
 		if (viewClass.equals(InternalResourceView.class)) 
@@ -39,6 +40,7 @@ public class TemplateResourceViewResolver extends UrlBasedViewResolver {
 		setViewClass(viewClass); 
 	} 
  
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	protected Class requiredViewClass() { 
 		return InternalResourceView.class; 
 	} 
@@ -51,7 +53,7 @@ public class TemplateResourceViewResolver extends UrlBasedViewResolver {
 		this.exposeContextBeansAsAttributes = Boolean.valueOf(exposeContextBeansAsAttributes); 
 	} 
  
-	public void setExposedContextBeanNames(String[] exposedContextBeanNames) { 
+	public void setExposedContextBeanNames(String ... exposedContextBeanNames) { 
 		this.exposedContextBeanNames = exposedContextBeanNames; 
 	} 
  
@@ -59,7 +61,6 @@ public class TemplateResourceViewResolver extends UrlBasedViewResolver {
 		AbstractUrlBasedView view = buildView(viewName); 
 		return ((View) getApplicationContext().getAutowireCapableBeanFactory().initializeBean(view, viewName)); 
 	} 
- 
 	protected AbstractUrlBasedView buildView(String viewName) throws Exception { 
 		TemplateView view = (TemplateView) BeanUtils.instantiateClass(getViewClass()); 
 		if (!viewName.contains(getPrefix())  
