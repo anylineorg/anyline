@@ -35,7 +35,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.util.DESUtil;
-import org.anyline.util.DESUtil;
 import org.anyline.web.controller.AbstractBasicController;
 import org.anyline.web.util.WebUtil;
 import org.apache.struts2.interceptor.ServletRequestAware;
@@ -46,7 +45,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
  
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware { 
-	protected static final Logger log = LoggerFactory.getLogger(AnylineAction.class); 
 	public static int RESULT_TYPE_DEFAULT = 0; 
 	public static int RESULT_TYPE_JSON = 1; 
 	 
