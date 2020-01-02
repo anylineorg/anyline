@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map; 
 import java.util.Properties; 
 import java.util.Vector; 
- 
+
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
 import org.anyline.util.DateUtil; 
@@ -17,7 +17,7 @@ import org.anyline.util.FileUtil;
 import org.apache.commons.lang.StringUtils; 
 import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory; 
- 
+
 import com.jcraft.jsch.Channel; 
 import com.jcraft.jsch.ChannelSftp; 
 import com.jcraft.jsch.ChannelSftp.LsEntry; 
@@ -279,7 +279,8 @@ public class SFTPUtil {
         }   
     }   
    
-    public List<String> files(String dir){ 
+    @SuppressWarnings("unchecked")
+	public List<String> files(String dir){ 
     	List<String> list = new ArrayList<String>(); 
     	try { 
 			Vector<LsEntry> files = client.ls(dir); 
