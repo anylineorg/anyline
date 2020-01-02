@@ -32,7 +32,6 @@ import org.anyline.util.regular.RegularUtil;
  
 public class DateUtil { 
 	private static int MaxDate;// 一月最大天数 
-	private static int MaxYear;// 一年最大天数 
  
 	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.S"; 
 	public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss"; 
