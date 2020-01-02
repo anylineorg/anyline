@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
  */ 
 public class WeixinCheck extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(WeixinCheck.class); 
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{

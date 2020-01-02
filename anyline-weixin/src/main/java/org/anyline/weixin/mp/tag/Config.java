@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
  */ 
 public class Config extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(Config.class); 
 	private boolean debug = false;
 	private String apis= "";
 	private String key = "";
