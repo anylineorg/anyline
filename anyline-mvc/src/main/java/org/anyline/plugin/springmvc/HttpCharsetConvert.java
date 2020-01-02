@@ -59,7 +59,8 @@ public class HttpCharsetConvert extends AbstractHttpMessageConverter<String> {
         return String.class.equals(clazz);   
     }   
    
-    @Override   
+    @SuppressWarnings("rawtypes")
+	@Override   
     protected String readInternal(Class clazz, HttpInputMessage inputMessage) throws IOException {   
         Charset charset = getContentTypeCharset(inputMessage.getHeaders().getContentType());   
         return FileCopyUtils.copyToString(new InputStreamReader(inputMessage.getBody(), charset));   
@@ -97,7 +98,8 @@ public class HttpCharsetConvert extends AbstractHttpMessageConverter<String> {
         return this.availableCharsets;   
     }   
    
-    private Charset getContentTypeCharset(MediaType contentType) {   
+    @SuppressWarnings("deprecation")
+	private Charset getContentTypeCharset(MediaType contentType) {   
         if (contentType != null && contentType.getCharSet() != null) {   
             return contentType.getCharSet();   
         }   

@@ -75,6 +75,7 @@ public class TemplateView extends JstlView {
 
 
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void render(Map model, HttpServletRequest request,
 			HttpServletResponse response) throws Exception {
 		

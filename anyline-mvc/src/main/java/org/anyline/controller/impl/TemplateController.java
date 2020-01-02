@@ -23,7 +23,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
-import org.anyline.util.DESUtil;
 import org.anyline.web.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
   
@@ -34,6 +33,7 @@ public class TemplateController extends AnylineController {
 	 * 根据dir构造文件目录(super.dir+this.dir)
 	 * @return return
 	 */
+	@SuppressWarnings("rawtypes")
 	protected String buildDir(){
 		String result = "";
 		try {
