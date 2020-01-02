@@ -39,6 +39,7 @@ public class Sum extends BaseBodyTag {
 	private String property; 
 	private String format;
  
+	@SuppressWarnings("rawtypes")
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
 		String html = ""; 

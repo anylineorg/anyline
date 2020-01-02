@@ -37,13 +37,13 @@ import org.slf4j.LoggerFactory;
  
 public class SelectText extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(SelectText.class); 
 	private String scope; 
 	private Object data; 
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD"); 
 	private String textKey = "NM"; 
  
-	 public int doEndTag() throws JspException { 
+	 @SuppressWarnings({ "rawtypes", "unchecked" })
+	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		String html = "";
 //		valueKey = DataRow.keyCase(valueKey);

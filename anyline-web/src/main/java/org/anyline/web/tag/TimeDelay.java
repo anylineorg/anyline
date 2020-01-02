@@ -37,7 +37,6 @@ import org.slf4j.LoggerFactory;
  */ 
 public class TimeDelay extends BaseBodyTag implements Cloneable{ 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(TimeDelay.class); 
 	private Object nvl = false;	//如果value为空("",null) 是否显示当时间,默认false 
  
 	public int doEndTag() throws JspException { 

@@ -512,6 +512,7 @@ public class AbstractBasicController{
 	 * @param keys  keys
 	 * @return return
 	 */ 
+	@SuppressWarnings("unused")
 	private PageNavi saveParamToNavi(HttpServletRequest request, boolean single, boolean keyEncrypt, boolean valueEncrypt, String... keys) { 
 		PageNavi navi = (PageNavi) request.getAttribute("navi"); 
 		if (null == navi) { 
