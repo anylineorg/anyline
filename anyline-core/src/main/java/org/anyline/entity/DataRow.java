@@ -106,6 +106,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @param keys 列名:obj属性名 "ID:memberId"
 	 * @return return
 	 */
+	@SuppressWarnings("rawtypes")
 	public static DataRow parse(Object obj, String ... keys){
 		Map<String,String> map = new HashMap<String,String>();
 		if(null != keys){
@@ -744,6 +745,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * 所有上级数据(递归) 
 	 * @return return
 	 */ 
+	@SuppressWarnings("unchecked")
 	public List<Object> getAllParent(){ 
 		if(null != get(ALL_PARENT)){ 
 			return (List<Object>)get(ALL_PARENT); 
