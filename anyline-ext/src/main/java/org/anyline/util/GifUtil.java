@@ -1,23 +1,23 @@
 package org.anyline.util; 
  
-import java.awt.image.BufferedImage; 
-import java.io.File; 
-import java.util.ArrayList; 
-import java.util.List; 
- 
-import javax.imageio.ImageIO; 
-import javax.imageio.spi.ImageReaderSpi; 
-import javax.imageio.spi.ImageWriterSpi; 
-import javax.imageio.stream.FileImageInputStream; 
-import javax.imageio.stream.FileImageOutputStream; 
- 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
- 
-import com.sun.imageio.plugins.gif.GIFImageReader; 
-import com.sun.imageio.plugins.gif.GIFImageReaderSpi; 
-import com.sun.imageio.plugins.gif.GIFImageWriter; 
-import com.sun.imageio.plugins.gif.GIFImageWriterSpi; 
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.imageio.spi.ImageReaderSpi;
+import javax.imageio.spi.ImageWriterSpi;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.FileImageOutputStream;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.sun.imageio.plugins.gif.GIFImageReader;
+import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
+import com.sun.imageio.plugins.gif.GIFImageWriter;
+import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
  
 public class GifUtil { 
 	private static Logger log = LoggerFactory.getLogger(GifUtil.class); 
@@ -36,7 +36,7 @@ public class GifUtil {
     			dir.mkdirs(); 
     		} 
     		in = new FileImageInputStream(file); 
-    		ImageReaderSpi readerSpi = new GIFImageReaderSpi(); 
+			ImageReaderSpi readerSpi = new GIFImageReaderSpi(); 
     		GIFImageReader gifReader = (GIFImageReader) readerSpi.createReaderInstance(); 
     		gifReader.setInput(in); 
     		int size = gifReader.getNumImages(true); 
