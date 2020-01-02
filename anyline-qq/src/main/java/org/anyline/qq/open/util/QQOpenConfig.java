@@ -1,15 +1,11 @@
 package org.anyline.qq.open.util; 
  
-import java.io.File; 
-import java.util.Hashtable; 
-import java.util.List; 
- 
-import org.anyline.qq.mp.util.QQMPConfig; 
-import org.anyline.qq.util.QQConfig; 
-import org.anyline.util.BasicConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.FileUtil; 
+import java.util.Hashtable;
+
+import org.anyline.qq.util.QQConfig;
+import org.anyline.util.BasicConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
  
  
 public class QQOpenConfig extends QQConfig{ 
