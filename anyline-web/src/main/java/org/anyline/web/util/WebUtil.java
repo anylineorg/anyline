@@ -183,6 +183,7 @@ public class WebUtil {
 	 *            //value是否加密 
 	 * @return return
 	 */ 
+	@SuppressWarnings("unchecked")
 	private static List<Object> getHttpRequestParamsFormDecryptMap(HttpServletRequest request, String key, boolean valueEncrypt) { 
 		List<Object> result = new ArrayList<Object>(); 
 		if (request.getAttribute(DESUtil.IS_PARAMS_DECRYPT) == null) { 
@@ -218,6 +219,7 @@ public class WebUtil {
 	 * @param param  param
 	 * @return return
 	 */ 
+	@SuppressWarnings("unused")
 	private static String getHttpRequestParamFormDecryptMap(HttpServletRequest request, String key, boolean valueEncrypt) { 
 		String result = null; 
 		List<Object> list = getHttpRequestParamsFormDecryptMap(request, key,valueEncrypt); 
@@ -599,6 +601,7 @@ public class WebUtil {
 	 * @param keys  keys
 	 * @return return
 	 */ 
+	@SuppressWarnings("unchecked")
 	private static Map<String, Object> encryptValue(Map<String, Object> map, boolean mix, String... keys) { 
 		if (null == map) { 
 			return map; 
@@ -637,6 +640,7 @@ public class WebUtil {
 	 * @param keys  keys
 	 * @return return
 	 */ 
+	@SuppressWarnings("unchecked")
 	private static Object encryptValue(Object obj, boolean mix, String... keys) { 
 		if (null == obj) { 
 			return obj; 
@@ -680,6 +684,7 @@ public class WebUtil {
 	 * @param keys  keys
 	 * @return return
 	 */ 
+	@SuppressWarnings("unchecked")
 	private static Collection<Object> encryptValue(Collection<Object> list, boolean mix, String... keys) { 
 		if (null == list) { 
 			return list; 

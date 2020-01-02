@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 public class Ellipsis extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
 	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() "; 
-	private static final Logger log = LoggerFactory.getLogger(Ellipsis.class); 
 	private int length;					//结果长度 
 	private String replace = "...";		//替换字符
 	private boolean toggle = false; 

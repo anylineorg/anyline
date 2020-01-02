@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  */ 
 public class PageContext extends BaseBodyTag implements Cloneable{ 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(PageContext.class); 
  
 	private String key; 
 	 

@@ -54,7 +54,8 @@ public class I18N extends BaseBodyTag{
 		checkLang(); 
         return EVAL_BODY_BUFFERED; 
     } 
-	 public int doEndTag() throws JspException { 
+	 @SuppressWarnings({ "rawtypes", "unchecked" })
+	public int doEndTag() throws JspException { 
 		 String html = ""; 
 		 if(BasicUtil.isNotEmpty(data)){
 			 if(data instanceof String){

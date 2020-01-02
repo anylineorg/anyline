@@ -32,7 +32,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
-import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 public class BaseBodyTag extends BodyTagSupport implements Cloneable{ 
@@ -243,6 +242,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return super.clone(); 
 	} 
  
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void addParam(String key, Object value) { 
 //		if(null == value || "".equals(value.toString().trim())){ 
 //			return ; 

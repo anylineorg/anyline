@@ -19,21 +19,19 @@
  
 package org.anyline.web.tag; 
  
-import java.util.Collection; 
- 
-import javax.servlet.http.HttpServletRequest; 
-import javax.servlet.jsp.JspException; 
-import javax.servlet.jsp.tagext.Tag; 
- 
-import org.anyline.entity.DataSet; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.BeanUtil; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import java.util.Collection;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
+
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
 public class Set extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(Set.class); 
 	private String scope; 
 	private Object data; 
 	private String selector; 
@@ -42,6 +40,7 @@ public class Set extends BaseBodyTag {
 	private int begin = -1; 
 	private int end = -1; 
 	private int qty = -1; 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
 		try { 

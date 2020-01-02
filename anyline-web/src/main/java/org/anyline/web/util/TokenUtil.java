@@ -111,6 +111,7 @@ public class TokenUtil {
 	 * @param request  request
 	 * @return return
 	 */ 
+	@SuppressWarnings("rawtypes")
 	public static boolean checkRequired(HttpServletRequest request){ 
 		boolean result = false; 
 		String tokenUri = createTokenKey(request.getRequestURI()); 
@@ -137,6 +138,7 @@ public class TokenUtil {
 	 * @param request  request
 	 * @param tokenKey  tokenKey
 	 */ 
+	@SuppressWarnings("unchecked")
 	public static void setTokenRequiredRefer(HttpServletRequest request, String tokenKey){ 
 		//添加到servlet防止页面伪造 
 		Set<String> requiredTokenReferList = (Set<String>)request.getSession().getServletContext().getAttribute(Constant.SERVLET_ATTR_REQUIRED_TOKEN_REFER); 
@@ -145,6 +147,7 @@ public class TokenUtil {
 		} 
 		requiredTokenReferList.add(tokenKey); 
 	} 
+	@SuppressWarnings("unchecked")
 	public static void setTokenRequiredUri(HttpServletRequest request, String tokenKey){ 
 		//添加到servlet防止页面伪造 
 		Set<String> requiredTokenReferList = (Set<String>)request.getSession().getServletContext().getAttribute(Constant.SERVLET_ATTR_REQUIRED_TOKEN_URI); 

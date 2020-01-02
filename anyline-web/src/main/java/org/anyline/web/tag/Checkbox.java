@@ -48,7 +48,6 @@ import org.slf4j.LoggerFactory;
  */ 
 public class Checkbox extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(Checkbox.class); 
 	private String scope; 
 	private Object data; 
 	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID"); 
@@ -65,6 +64,7 @@ public class Checkbox extends BaseBodyTag {
 	private String labelClazz = "al-chk-item-label";
 	private String label = "";//label标签体，如果未定义label则生成默认label标签体{textKey}
  
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
 		StringBuilder html = new StringBuilder();
@@ -251,6 +251,7 @@ public class Checkbox extends BaseBodyTag {
 		}
 		return false;
 	}
+	@SuppressWarnings("rawtypes")
 	private boolean checked(Object chks, Object value){
 		if(null != chks){
 			if(chks instanceof Collection){

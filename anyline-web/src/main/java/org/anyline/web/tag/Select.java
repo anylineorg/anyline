@@ -23,11 +23,11 @@ import java.util.Collection;
 import java.util.HashMap; 
 import java.util.List; 
 import java.util.Map; 
- 
+
 import javax.servlet.http.HttpServletRequest; 
 import javax.servlet.jsp.JspException; 
 import javax.servlet.jsp.JspWriter; 
- 
+
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.BeanUtil; 
 import org.anyline.util.ConfigTable; 
@@ -51,6 +51,7 @@ public class Select extends BaseBodyTag {
 		this.head = head; 
 	} 
  
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
 //		valueKey = DataRow.keyCase(valueKey); 
