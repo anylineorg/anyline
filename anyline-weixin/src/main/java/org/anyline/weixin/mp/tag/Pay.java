@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
  */ 
 public class Pay extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(Pay.class); 
 	private boolean debug = false;
 	private String prepay= "";
 	private String success = null;
