@@ -24,7 +24,6 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -105,6 +104,7 @@ public class FileUtil {
 	 * @param dst  dst
 	 * @return return
 	 */ 
+	@SuppressWarnings("rawtypes")
 	public static int getPathType(Class dst){ 
 		int type = -1; 
 		try{ 

@@ -32,7 +32,6 @@ import org.anyline.util.regular.RegularUtil;
  
 public class DateUtil { 
 	private static int MaxDate;// 一月最大天数 
-	private static int MaxYear;// 一年最大天数 
  
 	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.S"; 
 	public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss"; 
@@ -46,8 +45,7 @@ public class DateUtil {
 	public static final int DATE_PART_SECOND = Calendar.SECOND; 
 	public static final int DATE_PART_MILLISECOND = Calendar.MILLISECOND; 
  
-	private static Calendar calendar = Calendar.getInstance( 
-			TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINESE); 
+	private static Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINESE); 
 	public void setTimeZone(TimeZone zone, Locale local){ 
 		calendar = Calendar.getInstance(zone, local); 
 	} 

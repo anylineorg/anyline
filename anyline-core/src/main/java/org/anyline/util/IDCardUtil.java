@@ -150,7 +150,7 @@ public class IDCardUtil {
 	 * @param idcard  idcard
 	 * @return return
 	 */ 
-	private static boolean validate15(String idcard) { 
+	public static boolean validate15(String idcard) { 
 		// 非15位为假 
 		if (idcard.length() != 15) { 
 			return false; 

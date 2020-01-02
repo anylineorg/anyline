@@ -17,9 +17,6 @@
  */
 package org.anyline.util; 
  
-import java.sql.Timestamp;
-import java.util.Date;
-
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonValueProcessor;
  

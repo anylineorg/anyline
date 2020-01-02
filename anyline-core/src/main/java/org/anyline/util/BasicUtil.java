@@ -24,18 +24,13 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import net.sf.json.JSONObject;
 
@@ -50,6 +45,7 @@ public class BasicUtil {
 	 *            是否递归查检集合对象 
 	 * @return return
 	 */ 
+	@SuppressWarnings("rawtypes")
 	public static boolean isEmpty(boolean recursion, Object obj) { 
 		if (null == obj) { 
 			return true; 
@@ -719,6 +715,7 @@ public class BasicUtil {
 	 * 获取本机IP 
 	 * @return return
 	 */ 
+	@SuppressWarnings("rawtypes")
 	public static List<InetAddress> getLocalIps(){ 
 		List<InetAddress> ips = new ArrayList<InetAddress>(); 
 		try{ 
@@ -854,6 +851,7 @@ public class BasicUtil {
 	   }
 	   return result.toString();
    }
+   @SuppressWarnings("rawtypes")
    public static boolean isWrapClass(Object obj) { 
 	    try { 
 	    	return ((Class) obj.getClass().getField("TYPE").get(null)).isPrimitive();
