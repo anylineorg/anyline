@@ -122,6 +122,7 @@ public class TemplateController extends AnylineController {
 		return success(content);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private String parseTemplate(HttpServletRequest request, HttpServletResponse response, String path){
 		String result = "";
 		 //构造填充数据的Map 
