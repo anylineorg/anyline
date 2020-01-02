@@ -1094,7 +1094,9 @@ public class BeanUtil {
 				String[] kv = item.split(":"); 
 				if(kv.length ==2){ 
 					map.put(kv[0], kv[1]); 
-				} 
+				}else{
+					map.put(item.replace(":", ""), null);
+				}
 			} 
 		} 
 		return map; 
