@@ -39,12 +39,12 @@ import java.util.Map;
 import java.util.Set; 
 import java.util.SortedMap; 
 import java.util.TreeMap; 
- 
+
 import javax.net.ssl.SSLContext; 
 import javax.net.ssl.SSLException; 
 import javax.net.ssl.SSLSession; 
 import javax.net.ssl.SSLSocket; 
- 
+
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
 import org.anyline.util.FileUtil; 
@@ -314,7 +314,6 @@ public class HttpUtil {
 	} 
  
 	public static HttpResult get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) { 
-		long fr = System.currentTimeMillis(); 
 		if(null == client){ 
 			if(url.contains("https://")){ 
 				client = defaultSSLClient(); 
@@ -976,6 +975,7 @@ public class HttpUtil {
 		return url; 
 	} 
  
+	@SuppressWarnings("rawtypes")
 	public static List<NameValuePair> packNameValuePair(Map<String,Object> params){ 
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>(); 
 		if (null != params) { 

@@ -10,7 +10,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory; 
 import java.util.concurrent.ThreadPoolExecutor; 
 import java.util.concurrent.TimeUnit; 
- 
+
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
 import org.anyline.util.DateUtil; 
@@ -125,6 +125,7 @@ public class Downloader {
 //		} 
 //		 
 //	}; 
+	@SuppressWarnings("unused")
 	private void log(){ 
 		if(getTaskSize()<=1 || !ConfigTable.isDebug()){ 
 			return; 

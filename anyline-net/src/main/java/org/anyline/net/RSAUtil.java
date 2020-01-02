@@ -21,9 +21,9 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec; 
 import java.util.HashMap; 
 import java.util.Map; 
- 
+
 import javax.crypto.Cipher; 
- 
+
 import org.anyline.util.Base64Util; 
 import org.apache.commons.codec.binary.Base64; 
 import org.apache.commons.io.IOUtils; 
@@ -165,6 +165,7 @@ public class RSAUtil {
 		} 
 	} 
  
+	@SuppressWarnings("deprecation")
 	private static byte[] rsaSplitCodec(Cipher cipher, int opmode, byte[] datas, int keySize) { 
 		int maxBlock = 0; 
 		if (opmode == Cipher.DECRYPT_MODE) { 
