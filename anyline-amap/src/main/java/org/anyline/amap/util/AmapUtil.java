@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.MapLocation;
@@ -16,11 +14,15 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.impl.PageNaviImpl;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.MD5Util;
 import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 /** 
  * 高德云图 
  * @author zh 
@@ -96,16 +98,16 @@ public class AmapUtil {
 		if(BasicUtil.isNotEmpty(address)){ 
 			data.put("_address", address); 
 		} 
-		params.put("data", JSONObject.fromObject(data).toString()); 
+		params.put("data", BeanUtil.map2json(data)); 
 		String sign = sign(params); 
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		String id = null; 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("status")){ 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("status")){ 
 				String status = json.getString("status"); 
-				if("1".equals(status) && json.has("_id")){ 
+				if("1".equals(status) && json.containsKey("_id")){ 
 					id = json.getString("_id"); 
 					log.warn("[添加标注完成][id:{}][name:{}]",id,name); 
 				}else{ 
@@ -193,12 +195,12 @@ public class AmapUtil {
 			log.warn("[删除标注][param:{}]",HttpUtil.param(params)); 
 		} 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("status")){ 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("status")){ 
 				String status = json.getString("status"); 
 				if("1".equals(status)){ 
-					cnt = json.getInt("success"); 
-					log.warn("[删除标注完成][success:{}][fail:{}]", cnt,json.getInt("fail")); 
+					cnt = json.getIntValue("success"); 
+					log.warn("[删除标注完成][success:{}][fail:{}]", cnt,json.getIntValue("fail")); 
 				}else{ 
 					log.warn("[删除标注失败][info:{}]",json.getString("info")); 
 				} 
@@ -245,15 +247,15 @@ public class AmapUtil {
 		if(BasicUtil.isNotEmpty(address)){ 
 			data.put("_address", address); 
 		} 
-		params.put("data", JSONObject.fromObject(data).toString()); 
+		params.put("data", BeanUtil.map2json(data)); 
 		params.put("sig", sign(params)); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 			log.warn("[更新标注][param:{}]",HttpUtil.param(params)); 
 		} 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("status")){ 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("status")){ 
 				String status = json.getString("status"); 
 				if("1".equals(status)){ 
 					cnt = 1; 
@@ -305,8 +307,8 @@ public class AmapUtil {
 		String sign = sign(params); 
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
-		JSONObject json = JSONObject.fromObject(txt); 
-		if(json.has("tableid")){ 
+		JSONObject json = JSON.parseObject(txt); 
+		if(json.containsKey("tableid")){ 
 			tableId = json.getString("tableid"); 
 			log.warn("[创建地图完成][tableid:{}]",tableId); 
 		}else{ 
@@ -349,11 +351,11 @@ public class AmapUtil {
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("count")){ 
-				navi.setTotalRow(json.getInt("count")); 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("count")){ 
+				navi.setTotalRow(json.getIntValue("count")); 
 			} 
-			if(json.has("datas")){ 
+			if(json.containsKey("datas")){ 
 				set = DataSet.parseJson(json.getJSONArray("datas")); 
 			}else{ 
 				set = new DataSet(); 
@@ -427,11 +429,11 @@ public class AmapUtil {
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("count")){ 
-				navi.setTotalRow(json.getInt("count")); 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("count")){ 
+				navi.setTotalRow(json.getIntValue("count")); 
 			} 
-			if(json.has("datas")){ 
+			if(json.containsKey("datas")){ 
 				set = DataSet.parseJson(json.getJSONArray("datas")); 
 			}else{ 
 				log.warn("[周边搜索失败][info:{}]",json.getString("info")); 
@@ -514,11 +516,11 @@ public class AmapUtil {
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("count")){ 
-				navi.setTotalRow(json.getInt("count")); 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("count")){ 
+				navi.setTotalRow(json.getIntValue("count")); 
 			} 
-			if(json.has("datas")){ 
+			if(json.containsKey("datas")){ 
 				set = DataSet.parseJson(json.getJSONArray("datas")); 
 				if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 					log.warn("[条件搜索][结果数量:{}]",set.size());	 
@@ -556,8 +558,8 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("datas")){ 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("datas")){ 
 				DataSet set = DataSet.parseJson(json.getJSONArray("datas")); 
 				if(set.size() > 0){ 
 					row = set.getRow(0); 
@@ -594,8 +596,8 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("datas")){ 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("datas")){ 
 				set = DataSet.parseJson(json.getJSONArray("datas")); 
 			}else{ 
 				set = new DataSet(); 
@@ -633,8 +635,8 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("datas")){ 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("datas")){ 
 				set = DataSet.parseJson(json.getJSONArray("datas")); 
 			}else{ 
 				set = new DataSet(); 
@@ -673,8 +675,8 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("datas")){ 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("datas")){ 
 				set = DataSet.parseJson(json.getJSONArray("datas")); 
 			}else{ 
 				set = new DataSet(); 
@@ -711,8 +713,8 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
-			if(json.has("datas")){ 
+			JSONObject json = JSON.parseObject(txt); 
+			if(json.containsKey("datas")){ 
 				set = DataSet.parseJson(json.getJSONArray("datas")); 
 			}else{ 
 				set = new DataSet(); 
@@ -779,9 +781,9 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
+			JSONObject json = JSON.parseObject(txt); 
 			DataSet set = null; 
-			if(json.has("geocodes")){ 
+			if(json.containsKey("geocodes")){ 
 				set = DataSet.parseJson(json.getJSONArray("geocodes")); 
 				if(set.size()>0){ 
 					DataRow row = set.getRow(0); 
@@ -836,7 +838,7 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSONObject.fromObject(txt); 
+			JSONObject json = JSON.parseObject(txt); 
 			row = DataRow.parseJson(json); 
 			DataRow route = row.getRow("route"); 
 			if(null != route){ 

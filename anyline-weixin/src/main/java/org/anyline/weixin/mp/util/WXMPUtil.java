@@ -1,44 +1,45 @@
 package org.anyline.weixin.mp.util; 
  
-import java.io.File; 
-import java.net.URLEncoder; 
-import java.util.HashMap; 
-import java.util.Hashtable; 
-import java.util.Map; 
- 
-import net.sf.json.JSONObject; 
- 
-import org.anyline.entity.DataRow; 
-import org.anyline.entity.DataSet; 
-import org.anyline.net.HttpUtil; 
-import org.anyline.net.RSAUtil; 
-import org.anyline.net.SimpleHttpUtil; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.BeanUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.SHA1Util; 
-import org.anyline.weixin.entity.TemplateMessage; 
-import org.anyline.weixin.entity.TemplateMessageResult; 
-import org.anyline.weixin.mp.entity.WXMPGroupRedpack; 
-import org.anyline.weixin.mp.entity.WXMPGroupRedpackResult; 
-import org.anyline.weixin.mp.entity.WXMPPayRefund; 
-import org.anyline.weixin.mp.entity.WXMPPayRefundResult; 
-import org.anyline.weixin.mp.entity.WXMPPrePayOrder; 
-import org.anyline.weixin.mp.entity.WXMPPrePayResult; 
-import org.anyline.weixin.mp.entity.WXMPRedpack; 
-import org.anyline.weixin.mp.entity.WXMPRedpackResult; 
-import org.anyline.weixin.mp.entity.WXMPTransfer; 
-import org.anyline.weixin.mp.entity.WXMPTransferBank; 
-import org.anyline.weixin.mp.entity.WXMPTransferBankResult; 
-import org.anyline.weixin.mp.entity.WXMPTransferResult; 
-import org.anyline.weixin.util.WXConfig; 
-import org.anyline.weixin.util.WXConfig.SNSAPI_SCOPE; 
-import org.anyline.weixin.util.WXUtil; 
-import org.apache.http.HttpEntity; 
-import org.apache.http.entity.StringEntity; 
-import org.apache.http.impl.client.CloseableHttpClient; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import java.io.File;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.net.HttpUtil;
+import org.anyline.net.RSAUtil;
+import org.anyline.net.SimpleHttpUtil;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.SHA1Util;
+import org.anyline.weixin.entity.TemplateMessage;
+import org.anyline.weixin.entity.TemplateMessageResult;
+import org.anyline.weixin.mp.entity.WXMPGroupRedpack;
+import org.anyline.weixin.mp.entity.WXMPGroupRedpackResult;
+import org.anyline.weixin.mp.entity.WXMPPayRefund;
+import org.anyline.weixin.mp.entity.WXMPPayRefundResult;
+import org.anyline.weixin.mp.entity.WXMPPrePayOrder;
+import org.anyline.weixin.mp.entity.WXMPPrePayResult;
+import org.anyline.weixin.mp.entity.WXMPRedpack;
+import org.anyline.weixin.mp.entity.WXMPRedpackResult;
+import org.anyline.weixin.mp.entity.WXMPTransfer;
+import org.anyline.weixin.mp.entity.WXMPTransferBank;
+import org.anyline.weixin.mp.entity.WXMPTransferBankResult;
+import org.anyline.weixin.mp.entity.WXMPTransferResult;
+import org.anyline.weixin.util.WXConfig;
+import org.anyline.weixin.util.WXConfig.SNSAPI_SCOPE;
+import org.anyline.weixin.util.WXUtil;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
  
 public class WXMPUtil extends WXUtil{ 
 	private static final Logger log = LoggerFactory.getLogger(WXMPUtil.class); 
@@ -469,12 +470,12 @@ public class WXMPUtil extends WXUtil{
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 			log.warn("[CREATE NEW ACCESS TOKEN][result:{}]",text); 
 		} 
-		JSONObject json = JSONObject.fromObject(text); 
+		JSONObject json = JSON.parseObject(text); 
 		row = new DataRow(); 
-		if(json.has("access_token")){ 
+		if(json.containsKey("access_token")){ 
 			row.put("APP_ID", appid); 
 			row.put("ACCESS_TOKEN", json.getString("access_token")); 
-			row.setExpires(json.getInt("expires_in")*800); 
+			row.setExpires(json.getIntValue("expires_in")*800); 
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:{}]",row.getString("ACCESS_TOKEN")); 
 			} 
@@ -513,10 +514,10 @@ public class WXMPUtil extends WXUtil{
 		String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+accessToken+"&type=jsapi"; 
 		String text = HttpUtil.get(url,"UTF-8").getText(); 
 		log.warn("[CREATE NEW JSAPI TICKET][txt:{}]",text); 
-		JSONObject json = JSONObject.fromObject(text); 
-		if(json.has("ticket")){ 
+		JSONObject json = JSON.parseObject(text); 
+		if(json.containsKey("ticket")){ 
 			row.put("TICKET", json.getString("ticket")); 
-			row.setExpires(json.getInt("expires_in")*1000); 
+			row.setExpires(json.getIntValue("expires_in")*1000); 
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[CREATE NEW JSAPI TICKET][TICKET:{}]",row.get("TICKET")); 
 			} 

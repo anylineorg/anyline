@@ -27,19 +27,16 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.JSONDateFormatProcessor;
-import org.anyline.util.JSONStringFormatProcessor;
+import org.anyline.util.BeanUtil;
 import org.apache.struts2.dispatcher.StrutsResultSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.opensymphony.xwork2.ActionInvocation;
  
 public class JSONResult extends StrutsResultSupport { 
@@ -105,12 +102,7 @@ public class JSONResult extends StrutsResultSupport {
         	map.put("request_time", request.getParameter("_anyline_request_time"));
         	map.put("response_time_fr", request.getAttribute("_anyline_response_time_fr"));
         	map.put("response_time_to", System.currentTimeMillis());
-        	JsonConfig config = new JsonConfig();
-    		config.registerJsonValueProcessor(Date.class, new JSONDateFormatProcessor());
-    		config.registerJsonValueProcessor(java.sql.Timestamp.class, new JSONDateFormatProcessor());
-    		config.registerJsonValueProcessor(Object.class, new JSONStringFormatProcessor()); 
-        	JSON json = JSONObject.fromObject(map, config);  
-    		String str = json.toString(); 
+    		String str = BeanUtil.map2json(map);
         	writer.print(str); 
         }catch(Exception e){
         	e.printStackTrace(); 

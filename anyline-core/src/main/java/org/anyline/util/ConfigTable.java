@@ -88,6 +88,9 @@ public class ConfigTable {
 		String result = webRoot + File.separator + "WEB-INF" + File.separator + "classes" + File.separator;
 		return result;
 	}
+	public static String getClassPath(){
+		return classpath;
+	}
 	public static void init(){
 		init("anyline");
 	}
@@ -102,6 +105,8 @@ public class ConfigTable {
 		try{ 
 			//path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 			path = ConfigTable.class.getResource("/").getPath();
+			System.out.println("ConfigTable.class.getResourceAsStream============="+ConfigTable.class.getResourceAsStream("/"));
+			System.out.println("ConfigTable.class.getResource============="+path);
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		} 
