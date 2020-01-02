@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Hashtable; 
 import java.util.List; 
 import java.util.Map; 
- 
+
 import org.anyline.util.BasicUtil; 
- 
+
 import cn.jiguang.common.ClientConfig; 
 import cn.jpush.api.JPushClient; 
 import cn.jpush.api.push.PushResult; 
@@ -187,7 +187,8 @@ public class JPushUtil {
 		} 
 		return result; 
 	} 
-	private PushPayload buildPushObjec_Tag(String type, String title, String msg, Map<String, String> extras,String[] tags) { 
+	@SuppressWarnings({ "unused", "static-access" })
+	private PushPayload buildPushObjectByTag(String type, String title, String msg, Map<String, String> extras,String[] tags) { 
 		if(null == extras){ 
 			extras = new HashMap<String,String>(); 
 		} 
@@ -206,6 +207,7 @@ public class JPushUtil {
 								.build(); 
 	} 
  
+	@SuppressWarnings("static-access")
 	private PushPayload buildPushObject_Alias(String type, String title, String msg, Map<String, String> extras,String[] alias) { 
 		if(null == extras){ 
 			extras = new HashMap<String,String>(); 
@@ -243,6 +245,7 @@ public class JPushUtil {
 								.setNotification(Notification.android(msg, title, extras)) 
 								.build(); 
 	} 
+	@SuppressWarnings("unused")
 	private PushPayload buildPushObject_Alias_Android(String type, String title, String msg, Map<String, String> extras,String[] alias) { 
 		if(null == extras){ 
 			extras = new HashMap<String,String>(); 
@@ -261,6 +264,7 @@ public class JPushUtil {
 								.setNotification(Notification.android(msg, title, extras)) 
 								.build(); 
 	} 
+	@SuppressWarnings("unused")
 	private PushPayload buildPushObjec_Tag_IOS(String type, String title,Map<String, String> extras,String[] tags) { 
 		if(null == extras){ 
 			extras = new HashMap<String,String>(); 
@@ -279,6 +283,7 @@ public class JPushUtil {
 								.setNotification(Notification.ios(title, extras)) 
 								.build(); 
 	} 
+	@SuppressWarnings("unused")
 	private PushPayload buildPushObject_Alias_IOS(String type, String title,Map<String, String> extras,String[] alias) { 
 		if(null == extras){ 
 			extras = new HashMap<String,String>(); 
