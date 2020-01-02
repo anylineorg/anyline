@@ -1,11 +1,10 @@
 package org.anyline.alipay.util; 
  
-import java.util.Hashtable; 
- 
-import org.anyline.entity.PageNaviConfig; 
-import org.anyline.util.BasicConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
+import java.util.Hashtable;
+
+import org.anyline.util.BasicConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
  
  
 public class AlipayConfig extends BasicConfig{ 
