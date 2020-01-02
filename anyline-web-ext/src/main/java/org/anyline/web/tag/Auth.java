@@ -52,7 +52,6 @@ public class Auth extends BaseBodyTag {
 	private String id;
 	private String params;
 	 
-	private static final Logger log = LoggerFactory.getLogger(Auth.class); 
 	public int doEndTag() { 
 		JspWriter writer = null;
 		boolean result = true; 
