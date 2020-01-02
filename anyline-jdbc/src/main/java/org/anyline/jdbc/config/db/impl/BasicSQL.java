@@ -36,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
 public abstract class BasicSQL implements SQL{ 
-	private static final long serialVersionUID = 4425561226335747225L;
 
 	protected static final Logger log = LoggerFactory.getLogger(BasicSQL.class); 
 	protected ConditionChain chain;			//查询条件 
@@ -122,7 +121,7 @@ public abstract class BasicSQL implements SQL{
 	 * @param runValue  runValue
 	 * @return return
 	 */ 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings({ "unchecked", "rawtypes" }) 
 	protected SQL addRunValue(Object runValue){ 
 		if(null == runValues){ 
 			runValues = new Vector<Object>(); 

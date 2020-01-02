@@ -19,13 +19,12 @@
 
 package org.anyline.jdbc.config.db.impl; 
  
-import java.util.ArrayList; 
-import java.util.Collection; 
-import java.util.List; 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
-import org.anyline.util.BasicUtil;
  
 /** 
  * 自动生成的参数 
@@ -33,7 +32,6 @@ import org.anyline.util.BasicUtil;
  * 
  */ 
 public abstract class BasicConditionChain extends BasicCondition implements ConditionChain{ 
-	private static final long serialVersionUID = 8226224203628527018L;
 	protected List<Condition> conditions = new ArrayList<Condition>(); 
 	protected int joinSize; 
 	 

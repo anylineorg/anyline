@@ -21,7 +21,6 @@ package org.anyline.jdbc.config.db.impl;
  
 import org.anyline.jdbc.config.db.Order;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.util.BasicUtil; 
  
 public class OrderImpl implements Order{ 
 	private static final long serialVersionUID = -765229283714551699L;

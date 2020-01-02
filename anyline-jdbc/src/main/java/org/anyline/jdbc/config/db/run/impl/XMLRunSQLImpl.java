@@ -353,6 +353,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	/** 
 	 * 检测test表达式 
 	 */ 
+	@SuppressWarnings("rawtypes")
 	private void checkTest(){ 
 		if(null != conditionChain){ 
 			for(Condition con:conditionChain.getConditions()){ 
@@ -597,6 +598,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 * @param obj  obj
 	 * @return return
 	 */ 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public RunSQL addValues(Object obj){ 
 		if(null == obj){ 
 			return this; 

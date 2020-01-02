@@ -199,13 +199,14 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		return text; 
 	} 
 
-	public String getRunText(SQLCreater creater, Object vvv, COMPARE_TYPE compare){ 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public String getRunText(SQLCreater creater, Object val, COMPARE_TYPE compare){ 
 		String disKeyFr = creater.getDisKeyFr(); 
 		String disKeyTo = creater.getDisKeyTo(); 
 		String text = ""; 
 			text = disKeyFr + column.replace(".", disKeyTo+"."+disKeyFr) + disKeyTo; 
 			if(compare == SQL.COMPARE_TYPE.EQUAL){ 
-				Object v = getValue(vvv);
+				Object v = getValue(val);
 				if(null == v || "NULL".equals(v.toString())){ 
 					text += " IS NULL"; 
 					if("NULL".equals(getValue())){
@@ -237,8 +238,8 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 					text += " NOT";
 				}
 				text += " IN ("; 
-				if(vvv instanceof Collection){ 
-					Collection<Object> coll = (Collection)vvv; 
+				if(val instanceof Collection){ 
+					Collection<Object> coll = (Collection)val; 
 					int size = coll.size(); 
 					for(int i=0; i<size; i++){ 
 						text += "?"; 
@@ -260,9 +261,9 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			text += ""; 
 			//runtime value
 			if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN || compare == SQL.COMPARE_TYPE.BETWEEN){ 
-				runValues.addAll(getValues(vvv)); 
+				runValues.addAll(getValues(val)); 
 			}else{ 
-				Object value = getValue(vvv); 
+				Object value = getValue(val); 
 				if((null == value || "NULL".equals(value)) && compare == SQL.COMPARE_TYPE.EQUAL){ 
 				}else{ 
 					runValues.add(value); 
@@ -271,7 +272,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		return text; 
 	} 
 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings({ "rawtypes" }) 
 	public Object getValue(Object src){ 
 		Object value = null; 
 		if(null != src){
@@ -285,7 +286,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		}
 		return value; 
 	} 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings({ "unchecked", "rawtypes" }) 
 	public List<Object> getValues(Object src){ 
 		List<Object> values = new ArrayList<Object>(); 
 		if(null != src){
