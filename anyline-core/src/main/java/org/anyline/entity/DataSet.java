@@ -1512,7 +1512,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		for(DataRow row : rows){
 			String[] params = packParam(row, reverseKey(keys));
 			DataRow result = items.getRow(params);
-			row.copy(result, result.keys());
+			if(null != result){
+				row.copy(result, result.keys());
+			}
 		}
 		return this;
 	}
