@@ -34,11 +34,11 @@ import org.slf4j.LoggerFactory;
  
 public class Contains extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(Contains.class); 
 	private Object data;		
 	private String key;
 	private String scope;
 	private Object elseValue;
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		String html = "";

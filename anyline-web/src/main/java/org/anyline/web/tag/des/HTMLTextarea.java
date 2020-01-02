@@ -23,7 +23,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DESUtil;
 import org.anyline.web.tag.ComponentTag;
-import org.anyline.web.util.WebUtil;
 /** 
  * 加密textarea 
  * @author zh 

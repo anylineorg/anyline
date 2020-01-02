@@ -38,7 +38,6 @@ import org.slf4j.LoggerFactory;
  */ 
 public class Param extends BaseBodyTag implements Cloneable{ 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(Param.class);
 	private String property; //如果设置的property则调用父标签的setProperty(value)方法 
 	private String key; //未设置property的前提下 如果指定了key则添加到父标签的paramMap中 未指定则添加到父标签的paramList中 
 	 

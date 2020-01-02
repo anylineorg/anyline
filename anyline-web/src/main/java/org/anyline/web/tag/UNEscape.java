@@ -29,7 +29,6 @@ import org.slf4j.LoggerFactory;
  
 public class UNEscape extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(UNEscape.class); 
  
 	public int doEndTag() { 
 		String src = BasicUtil.nvl(value,body,"").toString().trim(); 

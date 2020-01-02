@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
  */ 
 public class Navi extends BodyTagSupport{
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(Navi.class);
 	private String url				;	//数据来源 
 	private String param			;	//参数收集函数
 	private String container		;	//返回内容显示容器

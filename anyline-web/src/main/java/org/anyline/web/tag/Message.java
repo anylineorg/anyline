@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
  
 public class Message extends BodyTagSupport{ 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(Message.class); 
 	private String scope; 
 	private String key; 
 	private boolean clean = true;		//显示后清除 

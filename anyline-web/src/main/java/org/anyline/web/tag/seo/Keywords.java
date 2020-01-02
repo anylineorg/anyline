@@ -43,7 +43,6 @@ import org.slf4j.LoggerFactory;
  */ 
 public class Keywords extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1L; 
-	private static final Logger log = LoggerFactory.getLogger(Keywords.class); 
 	//<seo:keyword key="java" count="3"/> 
 	//<al:param key ="" count="3"/> 
  
