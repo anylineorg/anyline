@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Hashtable; 
 import java.util.List; 
 import java.util.Map; 
- 
+
 import org.anyline.net.HttpUtil; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
@@ -17,7 +17,7 @@ import org.anyline.util.DateUtil;
 import org.anyline.util.FileUtil; 
 import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory; 
- 
+
 import com.aliyun.oss.OSSClient; 
 import com.aliyun.oss.common.utils.BinaryUtil; 
 import com.aliyun.oss.model.GetObjectRequest; 
@@ -48,6 +48,7 @@ public class OSSUtil {
 	public void setClient(OSSClient client) { 
 		this.client = client; 
 	} 
+	@SuppressWarnings("deprecation")
 	public static OSSUtil getInstance(String key) { 
 		if (BasicUtil.isEmpty(key)) { 
 			key = "default"; 
