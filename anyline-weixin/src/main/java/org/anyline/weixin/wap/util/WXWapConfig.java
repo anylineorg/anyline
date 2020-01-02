@@ -1,17 +1,13 @@
 package org.anyline.weixin.wap.util; 
  
-import java.io.File; 
-import java.util.Hashtable; 
-import java.util.List; 
- 
-import org.anyline.entity.DataRow; 
-import org.anyline.entity.DataSet; 
-import org.anyline.util.BasicConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.FileUtil; 
-import org.anyline.weixin.open.util.WXOpenConfig; 
-import org.anyline.weixin.util.WXConfig; 
+import java.util.Hashtable;
+
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.util.BasicConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.weixin.util.WXConfig;
  
  
 public class WXWapConfig extends WXConfig{ 
