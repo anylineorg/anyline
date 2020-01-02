@@ -1673,6 +1673,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return rows.add((DataRow) e); 
 	} 
  
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public boolean addAll(Collection c) { 
 		return rows.addAll(c); 
 	} 
@@ -1709,6 +1710,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return rows.toArray(); 
 	} 
  
+	@SuppressWarnings("unchecked")
 	public Object[] toArray(Object[] a) { 
 		return rows.toArray(a); 
 	} 

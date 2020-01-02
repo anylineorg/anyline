@@ -19,44 +19,42 @@
  
 package org.anyline.util; 
  
-import java.io.File; 
-import java.lang.annotation.Annotation; 
-import java.lang.reflect.Field; 
-import java.lang.reflect.Method; 
-import java.lang.reflect.Modifier; 
-import java.math.BigDecimal; 
-import java.sql.Timestamp; 
-import java.util.ArrayList; 
-import java.util.Arrays; 
-import java.util.Collection; 
-import java.util.Date; 
-import java.util.HashMap; 
-import java.util.Iterator; 
-import java.util.List; 
-import java.util.Map; 
-import java.util.Set; 
-import java.util.SortedMap; 
-import java.util.TreeMap; 
-import java.util.stream.Collectors; 
-import java.util.stream.IntStream; 
- 
-import javax.persistence.Column; 
-import javax.persistence.Id; 
-import javax.persistence.Table; 
- 
-import net.sf.json.JSONObject; 
-import net.sf.json.JsonConfig; 
- 
-import org.anyline.entity.DataSet; 
-import org.anyline.util.regular.Regular; 
-import org.anyline.util.regular.RegularUtil; 
-import org.apache.commons.beanutils.BeanUtils; 
-import org.dom4j.Document; 
-import org.dom4j.DocumentException; 
-import org.dom4j.DocumentHelper; 
-import org.dom4j.Element; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import java.io.File;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+
+import org.anyline.entity.DataSet;
+import org.anyline.util.regular.Regular;
+import org.anyline.util.regular.RegularUtil;
+import org.apache.commons.beanutils.BeanUtils;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
  
 public class BeanUtil { 
@@ -86,6 +84,7 @@ public class BeanUtil {
 		} 
 		return true; 
 	} 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion){ 
 		if(null == obj || null == field){ 
 			return false; 
@@ -177,6 +176,7 @@ public class BeanUtil {
 		} 
 		return value; 
 	} 
+	@SuppressWarnings("rawtypes")
 	public static Object getFieldValue(Object obj, String field, boolean recursion){ 
 		if(null == obj){ 
 			return null; 
@@ -196,6 +196,7 @@ public class BeanUtil {
 	public static Object getFieldValue(Object obj, String field){ 
 		return getFieldValue(obj, field, false); 
 	} 
+	@SuppressWarnings("rawtypes")
 	public static List<String> getMapKeys(Map map){ 
 		List<String> list = new ArrayList<String>(); 
 		for(Object key:map.keySet()){ 
@@ -260,7 +261,7 @@ public class BeanUtil {
 	 * @param property  property
 	 * @return return
 	 */ 
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings({ "unchecked", "rawtypes" }) 
 	public static Object getAnnotationValue(Field field, Class clazz, String property){ 
 		try{ 
 			Annotation annotation = field.getAnnotation(clazz); 
@@ -284,6 +285,7 @@ public class BeanUtil {
 	 * @param column  column
 	 * @return return
 	 */ 
+	@SuppressWarnings("rawtypes")
 	public static Object getValueByColumn(Object obj, String column){ 
 		/*读取类属性*/ 
 		if(null == obj || null == column){ 
@@ -349,6 +351,7 @@ public class BeanUtil {
 	 * @param annotation  annotation
 	 * @return return
 	 */ 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static List<Field> searchFieldsByAnnotation(Class clazz, Class annotation){ 
 		List<Field> list = new ArrayList<Field>(); 
 		try{ 
@@ -390,6 +393,7 @@ public class BeanUtil {
 	 * @param keys keys
 	 * @return return
 	 */ 
+	@SuppressWarnings("unchecked")
 	public static Map<String,Object> toMap(Object obj, String ... keys){ 
 		if(null == obj){ 
 			return null; 
@@ -453,6 +457,7 @@ public class BeanUtil {
 			removeProperty(objs, key); 
 		} 
 	} 
+	@SuppressWarnings("rawtypes")
 	public static void removeProperty(Object obj, String key){ 
 		if(null == obj || null == key){ 
 			return; 
@@ -480,6 +485,7 @@ public class BeanUtil {
 		} 
 		return list; 
 	} 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static Object fetch(Object obj, String ... keys){ 
 		if(null == obj){ 
 			return null; 
@@ -582,6 +588,7 @@ public class BeanUtil {
 	 * @return return
 	 */ 
 	 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static List<Class> getClasses(String pack, Class ... bases){ 
 		List<Class> list = new ArrayList<Class>(); 
 		File dir = new File(BeanUtil.class.getResource("/").getFile(),pack.replace(".", File.separator)); 
@@ -623,6 +630,7 @@ public class BeanUtil {
 		} 
 		return list; 
 	} 
+	@SuppressWarnings("rawtypes")
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion){ 
 		T obj = null; 
 		try { 
@@ -643,6 +651,7 @@ public class BeanUtil {
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz){ 
 		return map2object(map, clazz, false); 
 	} 
+	@SuppressWarnings("rawtypes")
 	public static <T> T json2oject(JSONObject json, Class<T> clazz){ 
 		T obj = null; 
 		try{ 
@@ -661,6 +670,7 @@ public class BeanUtil {
 	public static <T> T json2oject(String json, Class<T> clazz){ 
 		return json2oject(JSONObject.fromObject(json), clazz); 
 	} 
+	@SuppressWarnings("rawtypes")
 	public static String map2xml(Map<String,?> map, boolean border, boolean order){ 
 		StringBuffer builder = new StringBuffer(); 
 		if(border){ 
@@ -1045,6 +1055,7 @@ public class BeanUtil {
 		return join(list,","); 
 	} 
 	 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object toUpperCaseKey(Object obj, String ... keys){ 
 		if(null == obj){ 
 			return null; 
@@ -1059,6 +1070,7 @@ public class BeanUtil {
 		} 
 		return obj; 
 	} 
+	@SuppressWarnings("rawtypes")
 	public static Collection toUpperCaseKey(Collection con, String ... keys){ 
 		if(null == con){ 
 			return con; 
@@ -1142,6 +1154,7 @@ public class BeanUtil {
 	 * @param rest  rest
 	 * @return return
 	 */ 
+	@SuppressWarnings("unchecked")
 	public static <T> T[] union(T[] first, T[]... rest) { 
 		int len = first.length; 
 		for (T[] array : rest) { 

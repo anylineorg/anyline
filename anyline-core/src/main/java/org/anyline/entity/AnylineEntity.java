@@ -39,6 +39,7 @@ public abstract class AnylineEntity extends DataRow implements Serializable{
 	 * 			是否检查可更新 
 	 * @return return
 	 */ 
+	@SuppressWarnings("rawtypes")
 	public List<String> getColumns(boolean checkInsert, boolean checkUpdate){ 
 		List<String> columns = new ArrayList<String>(); 
 		/*读取类属性*/ 
