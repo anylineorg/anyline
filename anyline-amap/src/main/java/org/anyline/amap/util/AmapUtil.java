@@ -820,6 +820,7 @@ public class AmapUtil {
 	 *							  2，不考虑路况，仅走距离最短的路线，但是可能存在穿越小路/小区的情况 			   
 	 * @return return
 	 */ 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DataRow directionDrive(String origin, String destination, String points, int strategy){ 
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/direction/driving"; 
