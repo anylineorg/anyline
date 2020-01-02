@@ -58,14 +58,8 @@ public class DESUtil {
 			try{ 
 				instance = new DESUtil();
 				instances.put(DEFAULT_SECRET_KEY, instance); 
-			}catch(NoSuchPaddingException e){ 
-				 
-			}catch(NoSuchAlgorithmException e){ 
-				 
-			}catch(InvalidKeyException e){ 
-				 
 			}catch(Exception e){ 
-				 
+				 log.warn("[des insance][result:fail][msg:{}]",e.getMessage());
 			} 
 		} 
 		return instance; 
@@ -213,6 +207,7 @@ public class DESUtil {
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static void encrypt(Object obj, String ... keys) throws BadPaddingException, IllegalBlockSizeException{ 
 		if(null == keys || null == obj){ 
 			return; 
