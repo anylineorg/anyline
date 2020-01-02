@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Hashtable; 
 import java.util.List; 
 import java.util.Map; 
- 
+
 import net.sf.json.JSONObject; 
- 
+
 import org.anyline.entity.DataRow; 
 import org.anyline.entity.DataSet; 
 import org.anyline.net.HttpUtil; 
@@ -619,6 +619,7 @@ public class EasemobUtil {
 	 * @param txt  txt
 	 * @return return
 	 */ 
+	@SuppressWarnings("unchecked")
 	private static DataRow parseUser(String txt){ 
 		DataRow user = null; 
 		DataRow row = DataRow.parseJson(txt); 
