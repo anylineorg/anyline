@@ -44,6 +44,7 @@
 		<anyline.amap.version>${anyline.version}</anyline.amap.version>
 		<anyline.alipay.version>${anyline.version}</anyline.alipay.version>
 		<anyline.aliyun.version>${anyline.version}</anyline.aliyun.version>
+		<anyline.video.version>${anyline.version}</anyline.video.version>
 		<anyline.easemob.version>${anyline.version}</anyline.easemob.version>
 		<anyline.jpush.version>${anyline.version}</anyline.jpush.version>
 		<anyline.mail.version>${anyline.version}</anyline.mail.version>
@@ -58,11 +59,11 @@
 		<anyline.jdbc.oracle.version>${anyline.version}</anyline.jdbc.oracle.version>
 		<anyline.jdbc.postgresql.version>${anyline.version}</anyline.jdbc.postgresql.version>
 		<anyline.jdbc.hgdb.version>${anyline.version}</anyline.jdbc.hgdb.version>
+		
 		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
 		<mysql.version>5.1.24</mysql.version>
 		<db2-jdbc.version>11.5.0.0</db2-jdbc.version>
-		<ojdbc.version>19.3.0.0</ojdbc.version>
-		<!-- oracle -->
+		<ojdbc.version>19.3.0.0</ojdbc.version><!-- oracle -->
 		<postgresql.version>42.2.8</postgresql.version>
 		<hgdb.version>4.0-jdbc42</hgdb.version>
 		<mariadb.version>2.4.4</mariadb.version>

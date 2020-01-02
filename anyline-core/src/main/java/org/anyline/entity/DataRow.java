@@ -28,10 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONNull;
-import net.sf.json.JSONObject;
-
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -43,6 +39,9 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
  
 public class DataRow extends HashMap<String, Object> implements Serializable{ 
 	private static final long serialVersionUID = -2098827041540802313L;
@@ -142,15 +141,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return row;
 	}
-	/**
+	/*
 	 * 解析json结构字符
-	 * @param json json
-	 * @return return
+	 * @param json
+	 * @return
 	 */
 	public static DataRow parseJson(String json){
 		if(null != json){
 			try{
-				return parseJson(JSONObject.fromObject(json));
+				return parseJson(JSONObject.parseObject(json));
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -167,7 +166,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null == json){
 			return row;
 		}
-		Iterator<?>  itr = json.keys();
+		Iterator<?>  itr = json.keySet().iterator();
 		while(itr.hasNext()){
 			String key = itr.next().toString();
 			Object val = json.get(key);
@@ -176,9 +175,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 					row.put(key, parseJson((JSONObject)val));
 				}else if(val instanceof JSONArray){
 					row.put(key, parseJson((JSONArray)val));
-				}else if(val instanceof JSONNull){
+				}/*else if(val instanceof JSONNull){
 					row.put(key, null);
-				}else if(val instanceof String){
+				}*/else if(val instanceof String){
 					if("null".equalsIgnoreCase((String)val)){
 						row.put(key, null);
 					}else{

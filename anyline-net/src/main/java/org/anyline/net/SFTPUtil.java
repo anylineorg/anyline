@@ -1,31 +1,30 @@
 package org.anyline.net; 
  
  
-import java.io.File; 
-import java.io.FileOutputStream; 
-import java.util.ArrayList; 
-import java.util.HashMap; 
-import java.util.List; 
-import java.util.Map; 
-import java.util.Properties; 
-import java.util.Vector; 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Vector;
 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.DateUtil; 
-import org.anyline.util.FileUtil; 
-import org.apache.commons.lang.StringUtils; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
+import org.anyline.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.jcraft.jsch.Channel; 
-import com.jcraft.jsch.ChannelSftp; 
-import com.jcraft.jsch.ChannelSftp.LsEntry; 
-import com.jcraft.jsch.JSch; 
-import com.jcraft.jsch.Session; 
-import com.jcraft.jsch.SftpATTRS; 
-import com.jcraft.jsch.SftpException; 
-import com.jcraft.jsch.SftpProgressMonitor; 
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelSftp;
+import com.jcraft.jsch.ChannelSftp.LsEntry;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+import com.jcraft.jsch.SftpATTRS;
+import com.jcraft.jsch.SftpException;
+import com.jcraft.jsch.SftpProgressMonitor;
  
 public class SFTPUtil { 
 	private final Logger log = LoggerFactory.getLogger(SFTPUtil.class); 
@@ -231,8 +230,9 @@ public class SFTPUtil {
      * @throws SftpException 异常  
      */   
     public boolean mkdir(String dir) throws SftpException {   
-        if (StringUtils.isBlank(dir))   
+        if (BasicUtil.isEmpty(dir)){
             return false;   
+        }
         String md = dir.replaceAll("\\\\", "/");   
         if (md.indexOf("/") != 0 || md.length() == 1)   
             return false;   

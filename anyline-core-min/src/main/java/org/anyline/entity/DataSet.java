@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
@@ -1187,14 +1188,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
     	map.put("message", message);
     	map.put("rows", rows);
     	map.put("success", result);
-		return JSON.toJSONString(map);
+		return JSON.toJSONString(map, SerializerFeature.WriteDateUseDateFormat);
 	}
 	/*
 	 * rows 列表中的数据格式化成json格式   不同与toString
 	 * @return
 	 */
 	public String toJson(){
-		return JSON.toJSONString(rows);
+		return JSON.toJSONString(rows, SerializerFeature.WriteDateUseDateFormat);
 	}
 	public String getJson(){
 		return toJSON();

@@ -32,9 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import net.sf.json.JSONObject;
-
 import org.anyline.util.regular.RegularUtil;
+
+import com.alibaba.fastjson.JSONObject;
  
 public class BasicUtil { 
 	/** 
@@ -867,7 +867,7 @@ public class BasicUtil {
 		   return true;
 	   }
 	   try{
-		   JSONObject.fromObject(json.toString());
+		   JSONObject.parse(json.toString());
 	   }catch(Exception e){
 		   return false;
 	   }
