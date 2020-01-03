@@ -40,8 +40,7 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
  
 public class DataRow extends HashMap<String, Object> implements Serializable{ 
 	private static final long serialVersionUID = -2098827041540802313L;
@@ -118,8 +117,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		DataRow row = new DataRow();
 		if(null != obj){
-			if(obj instanceof JSONObject){
-				row = parseJson((JSONObject)obj);
+			if(obj instanceof JsonNode){
+				row = parseJson((JsonNode)obj);
 			}else if(obj instanceof DataRow){
 				row = (DataRow)obj;
 			}else if(obj instanceof Map){
@@ -149,46 +148,95 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public static DataRow parseJson(String json){
 		if(null != json){
 			try{
-				return parseJson(JSONObject.parseObject(json));
+				return parseJson(BeanUtil.JSON_MAPPER.readTree(json));
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 		return null;
 	}
+
+//	/**
+//	 * 解析JSONObject
+//	 * @param json json
+//	 * @return return
+//	 */
+//	public static DataRow parseJson(JSONObject json){
+//		DataRow row = new DataRow();
+//		if(null == json){
+//			return row;
+//		}
+//		Iterator<?>  itr = json.keySet().iterator();
+//		while(itr.hasNext()){
+//			String key = itr.next().toString();
+//			Object val = json.get(key);
+//			if(null != val){
+//				if(val instanceof JSONObject){
+//					row.put(key, parseJson((JSONObject)val));
+//				}else if(val instanceof JSONArray){
+//					row.put(key, parseJson((JSONArray)val));
+//				}/*else if(val instanceof JSONNull){
+//					row.put(key, null);
+//				}*/else if(val instanceof String){
+//					if("null".equalsIgnoreCase((String)val)){
+//						row.put(key, null);
+//					}else{
+//						row.put(key, val);
+//					}
+//				}else{
+//					row.put(key, val);
+//				}
+//			}
+//		}
+//		return row;
+//	}
 	/**
 	 * 解析JSONObject
 	 * @param json json
 	 * @return return
 	 */
-	public static DataRow parseJson(JSONObject json){
-		DataRow row = new DataRow();
+	public static DataRow parseJson(JsonNode json){
+		return (DataRow)parse(json);
+	}
+	private static Object parse(JsonNode json){
 		if(null == json){
-			return row;
+			return null;
 		}
-		Iterator<?>  itr = json.keySet().iterator();
-		while(itr.hasNext()){
-			String key = itr.next().toString();
-			Object val = json.get(key);
-			if(null != val){
-				if(val instanceof JSONObject){
-					row.put(key, parseJson((JSONObject)val));
-				}else if(val instanceof JSONArray){
-					row.put(key, parseJson((JSONArray)val));
-				}/*else if(val instanceof JSONNull){
-					row.put(key, null);
-				}*/else if(val instanceof String){
-					if("null".equalsIgnoreCase((String)val)){
-						row.put(key, null);
-					}else{
-						row.put(key, val);
+		if(json.isValueNode()){
+			return BeanUtil.value(json);
+		}
+		if(json.isObject()){
+			DataRow row = new DataRow();
+			Iterator<Entry<String, JsonNode>> fields = json.fields();
+			while(fields.hasNext()){
+				Entry<String, JsonNode> field = fields.next();
+				JsonNode value = field.getValue();
+				String key = field.getKey();
+				if(null != value){
+					if(value.isValueNode()){
+						row.put(key, BeanUtil.value(value));
+					}else if(value.isArray()){
+						row.put(key, parse(value));
+					}else if(value.isObject()){
+						row.put(key, parseJson(value));
 					}
 				}else{
-					row.put(key, val);
+					row.put(key, null);
 				}
+				
 			}
+			return row;
+		}else if(json.isArray()){
+			List<Object> list = new ArrayList<Object>();
+			Iterator<JsonNode>  items = json.iterator();
+			while(items.hasNext()){
+				JsonNode item = items.next();
+				list.add(parse(item));
+			}
+			return list;
 		}
-		return row;
+		
+		return null;
 	}
 	/**
 	 * 解析JSON集合
@@ -199,24 +247,23 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @param array array
 	 * @return return
 	 */
-	public static List<Object> parseJson(JSONArray array){
-		List<Object> list = new ArrayList<Object>();
-		int size = array.size();
-		for(int i=0; i<size; i++){
-			Object val = array.get(i);
-			if(null != val){
-				if(val instanceof JSONObject){
-					list.add(parseJson((JSONObject)val));
-				}else if(val instanceof JSONArray){
-					list.add(parseJson((JSONArray)val));
-				}else{
-					list.add(val);
-				}
-			}
-		}
-		return list;
-	}
-
+//	public static List<Object> parseJson(JSONArray array){
+//		List<Object> list = new ArrayList<Object>();
+//		int size = array.size();
+//		for(int i=0; i<size; i++){
+//			Object val = array.get(i);
+//			if(null != val){
+//				if(val instanceof JSONObject){
+//					list.add(parseJson((JSONObject)val));
+//				}else if(val instanceof JSONArray){
+//					list.add(parseJson((JSONArray)val));
+//				}else{
+//					list.add(val);
+//				}
+//			}
+//		}
+//		return list;
+//	}
 
 	/**
 	 * 解析xml结构字符
@@ -286,28 +333,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			row.attr(attr.getName(), attr.getValue());
 		}
 		return row;
-	}
-	/**
-	 * 解析JSON集合
-	 * @param array array
-	 * @return return
-	 */
-	public static List<Object> parseXml(JSONArray array){
-		List<Object> list = new ArrayList<Object>();
-		int size = array.size();
-		for(int i=0; i<size; i++){
-			Object val = array.get(i);
-			if(null != val){
-				if(val instanceof JSONObject){
-					list.add(parseJson((JSONObject)val));
-				}else if(val instanceof JSONArray){
-					list.add(parseJson((JSONArray)val));
-				}else{
-					list.add(val);
-				}
-			}
-		}
-		return list;
 	}
 	/**
 	 * 创建时间

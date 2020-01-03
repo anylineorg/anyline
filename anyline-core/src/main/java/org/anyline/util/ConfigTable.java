@@ -105,8 +105,9 @@ public class ConfigTable {
 		try{ 
 			//path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 			path = ConfigTable.class.getResource("/").getPath();
-			System.out.println("ConfigTable.class.getResourceAsStream============="+ConfigTable.class.getResourceAsStream("/"));
-			System.out.println("ConfigTable.class.getResource============="+path);
+			System.out.println("getResource(/)="+ConfigTable.class.getResource("/").getPath()); //class path 目录
+			System.out.println("getResource('')="+ConfigTable.class.getResource("").getPath()); //当前类所在目录  如果是在jar内 (8.3.7.jar!/org/anyline/util/)
+			System.out.println("getProtectionDomain().getCodeSource()="+ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());//jar文件甩在目录
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		} 

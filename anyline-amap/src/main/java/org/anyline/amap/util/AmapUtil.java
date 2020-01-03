@@ -20,9 +20,6 @@ import org.anyline.util.MD5Util;
 import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 /** 
  * 高德云图 
  * @author zh 
@@ -104,14 +101,14 @@ public class AmapUtil {
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		String id = null; 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
-			if(json.containsKey("status")){ 
-				String status = json.getString("status"); 
-				if("1".equals(status) && json.containsKey("_id")){ 
-					id = json.getString("_id"); 
+			DataRow row = DataRow.parseJson(txt);
+			if(row.containsKey("status")){ 
+				String status = row.getString("status"); 
+				if("1".equals(status) && row.containsKey("_id")){ 
+					id = row.getString("_id"); 
 					log.warn("[添加标注完成][id:{}][name:{}]",id,name); 
 				}else{ 
-					log.warn("[添加标注失败][name:{}][info:{}]", name,json.getString("info")); 
+					log.warn("[添加标注失败][name:{}][info:{}]", name, row.getString("info")); 
 					log.warn("[param:{}]",HttpUtil.param(params)); 
 				} 
 			} 
@@ -195,12 +192,12 @@ public class AmapUtil {
 			log.warn("[删除标注][param:{}]",HttpUtil.param(params)); 
 		} 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("status")){ 
 				String status = json.getString("status"); 
 				if("1".equals(status)){ 
-					cnt = json.getIntValue("success"); 
-					log.warn("[删除标注完成][success:{}][fail:{}]", cnt,json.getIntValue("fail")); 
+					cnt = json.getInt("success"); 
+					log.warn("[删除标注完成][success:{}][fail:{}]", cnt,json.getInt("fail")); 
 				}else{ 
 					log.warn("[删除标注失败][info:{}]",json.getString("info")); 
 				} 
@@ -254,7 +251,7 @@ public class AmapUtil {
 			log.warn("[更新标注][param:{}]",HttpUtil.param(params)); 
 		} 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("status")){ 
 				String status = json.getString("status"); 
 				if("1".equals(status)){ 
@@ -307,7 +304,7 @@ public class AmapUtil {
 		String sign = sign(params); 
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
-		JSONObject json = JSON.parseObject(txt); 
+		DataRow json = DataRow.parseJson(txt); 
 		if(json.containsKey("tableid")){ 
 			tableId = json.getString("tableid"); 
 			log.warn("[创建地图完成][tableid:{}]",tableId); 
@@ -351,12 +348,12 @@ public class AmapUtil {
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("count")){ 
-				navi.setTotalRow(json.getIntValue("count")); 
+				navi.setTotalRow(json.getInt("count")); 
 			} 
 			if(json.containsKey("datas")){ 
-				set = DataSet.parseJson(json.getJSONArray("datas")); 
+				set = json.getSet("datas"); 
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[本地搜索失败][info:{}]",json.getString("info")); 
@@ -429,12 +426,12 @@ public class AmapUtil {
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("count")){ 
-				navi.setTotalRow(json.getIntValue("count")); 
+				navi.setTotalRow(json.getInt("count")); 
 			} 
 			if(json.containsKey("datas")){ 
-				set = DataSet.parseJson(json.getJSONArray("datas")); 
+				set = json.getSet("datas"); 
 			}else{ 
 				log.warn("[周边搜索失败][info:{}]",json.getString("info")); 
 				log.warn("[周边搜索失败][params:{}]",HttpUtil.param(params)); 
@@ -516,12 +513,12 @@ public class AmapUtil {
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("count")){ 
-				navi.setTotalRow(json.getIntValue("count")); 
+				navi.setTotalRow(json.getInt("count")); 
 			} 
 			if(json.containsKey("datas")){ 
-				set = DataSet.parseJson(json.getJSONArray("datas")); 
+				set = json.getSet("datas"); 
 				if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 					log.warn("[条件搜索][结果数量:{}]",set.size());	 
 				} 
@@ -558,9 +555,9 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("datas")){ 
-				DataSet set = DataSet.parseJson(json.getJSONArray("datas")); 
+				DataSet set = json.getSet("datas"); 
 				if(set.size() > 0){ 
 					row = set.getRow(0); 
 				} 
@@ -596,9 +593,9 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("datas")){ 
-				set = DataSet.parseJson(json.getJSONArray("datas")); 
+				set = json.getSet("datas"); 
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[数据分布检索失败][info:{}]",json.getString("info")); 
@@ -635,9 +632,9 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("datas")){ 
-				set = DataSet.parseJson(json.getJSONArray("datas")); 
+				set = json.getSet("datas"); 
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[数据分布检索失败][info:{}]",json.getString("info")); 
@@ -675,9 +672,9 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("datas")){ 
-				set = DataSet.parseJson(json.getJSONArray("datas")); 
+				set = json.getSet("datas"); 
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[数据分布检索失败][info:{}]",json.getString("info")); 
@@ -713,9 +710,9 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			if(json.containsKey("datas")){ 
-				set = DataSet.parseJson(json.getJSONArray("datas")); 
+				set = json.getSet("datas"); 
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[附近检索失败][info:}{}]",json.getString("info")); 
@@ -781,10 +778,10 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
+			DataRow json = DataRow.parseJson(txt); 
 			DataSet set = null; 
 			if(json.containsKey("geocodes")){ 
-				set = DataSet.parseJson(json.getJSONArray("geocodes")); 
+				set = json.getSet("geocodes"); 
 				if(set.size()>0){ 
 					DataRow row = set.getRow(0); 
 					location = new MapLocation(row.getString("LOCATION")); 
@@ -838,8 +835,7 @@ public class AmapUtil {
 		params.put("sig", sign); 
 		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
 		try{ 
-			JSONObject json = JSON.parseObject(txt); 
-			row = DataRow.parseJson(json); 
+			row = DataRow.parseJson(txt); 
 			DataRow route = row.getRow("route"); 
 			if(null != route){ 
 				List paths = route.getList("PATHS"); 

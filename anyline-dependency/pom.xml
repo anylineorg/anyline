@@ -95,6 +95,7 @@
 		<jpush.client.version>3.3.12</jpush.client.version>
 		<jpush.version>1.1.6</jpush.version>
 		<alibaba.nacos.version>1.1.4</alibaba.nacos.version>
+		<jackson.version>2.9.8</jackson.version>
 	</properties>
 
 	<dependencyManagement>
@@ -406,6 +407,26 @@
 				<artifactId>json-lib</artifactId>
 				<version>${json.version}</version>
 				<classifier>jdk15</classifier>
+			</dependency>
+			<dependency>
+			    <groupId>com.fasterxml.jackson.core</groupId>
+			    <artifactId>jackson-core</artifactId>
+			    <version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+			    <version>${jackson.version}</version>
+            </dependency>
+			<dependency>
+			    <groupId>com.fasterxml.jackson.core</groupId>
+			    <artifactId>jackson-core</artifactId>
+			    <version>${jackson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.dom4j</groupId>

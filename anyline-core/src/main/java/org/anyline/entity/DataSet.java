@@ -41,10 +41,7 @@ import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.databind.JsonNode;
  
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
@@ -94,24 +91,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public static DataSet parseJson(String json){
 		if(null != json){
 			try{
-				return parseJson(JSONArray.parseArray(json));
+				return parseJson(BeanUtil.JSON_MAPPER.readTree(json));
 			}catch(Exception e){
 				
 			}
 		}
 		return null;
 	}
-	public static DataSet parseJson(JSONArray json){
+	public static DataSet parseJson(JsonNode json){
 		DataSet set = new DataSet();
 		if(null != json){
-			int size = json.size();
-			for(int i=0; i<size; i++){
-				Object val = json.get(i);
-				if(null != val){
-					if(val instanceof JSONObject){
-						DataRow row = DataRow.parseJson((JSONObject) val);
-						set.add(row);
-					}
+			if(json.isArray()){
+				Iterator<JsonNode>  items = json.iterator();
+				while(items.hasNext()){
+					JsonNode item = items.next();
+					set.add(DataRow.parseJson(item));
 				}
 			}
 		}
@@ -1206,14 +1200,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
     	map.put("rows", rows); 
     	map.put("success", result); 
     	map.put("navi", navi); 
-		return JSON.toJSONString(map, SerializerFeature.WriteDateUseDateFormat);
+		return BeanUtil.map2json(map);
 	}
 	/**
 	 * rows 列表中的数据格式化成json格式   不同与toString
 	 * @return return
 	 */
 	public String toJson(){
-		return JSON.toJSONString(rows, SerializerFeature.WriteDateUseDateFormat);
+		return BeanUtil.object2json(this);
 	}
 	public String getJson(){
 		return toJSON();

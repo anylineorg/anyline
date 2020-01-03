@@ -20,6 +20,7 @@
 package org.anyline.util; 
  
 import java.io.File;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -41,6 +42,7 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -51,12 +53,13 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.serializer.SerializerFeature;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
  
  
 public class BeanUtil { 
+	public static ObjectMapper JSON_MAPPER = new ObjectMapper();
 	private static final Logger log = LoggerFactory.getLogger(BeanUtil.class); 
 	public static boolean setFieldValue(Object obj, Field field, Object value){ 
 		if(null == obj || null == field){ 
@@ -643,24 +646,13 @@ public class BeanUtil {
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz){ 
 		return map2object(map, clazz, false); 
 	} 
-	@SuppressWarnings("rawtypes")
-	public static <T> T json2oject(JSONObject json, Class<T> clazz){ 
-		T obj = null; 
-		try{
-			obj = (T)clazz.newInstance();
-			Iterator it = json.keySet().iterator();
-			while (it.hasNext()) {
-				String key = it.next().toString();
-				Object v = json.get(key);
-				BeanUtil.setFieldValue(obj, key, v);
-			}
-		}catch(Exception e){
+	public static <T> T json2oject(String json, Class<T> clazz){ 
+		try {
+			return  JSON_MAPPER.readValue(json, clazz);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return obj; 
-	} 
-	public static <T> T json2oject(String json, Class<T> clazz){ 
-		return JSONObject.parseObject(json, clazz);
+		return null;
 	} 
 	@SuppressWarnings("rawtypes")
 	public static String map2xml(Map<String,?> map, boolean border, boolean order){ 
@@ -703,7 +695,7 @@ public class BeanUtil {
 		return map2xml(map, true, false); 
 	} 
 	public static String map2json(Map<String,?> map){ 
-		return JSON.toJSONString(map, SerializerFeature.WriteDateUseDateFormat);
+		return object2json(map);
 	} 
 	public static Map<String,Object> xml2map(String xml){ 
 		Map<String,Object> map = new HashMap<String,Object>(); 
@@ -770,8 +762,14 @@ public class BeanUtil {
 		return map; 
 	} 
 	public static String object2json(Object obj){ 
-		return JSON.toJSONString(obj, SerializerFeature.WriteDateUseDateFormat);
+		try {
+			return JSON_MAPPER.writeValueAsString(obj);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return null;
 	} 
+
 	/** 
 	 * 提取集合中每个条目的key属性的值 
 	 * @param list  list
@@ -1548,4 +1546,53 @@ public class BeanUtil {
 		result[1] = key2; 
 		return result; 
 	} 
+   public static boolean isJson(Object json){
+	   if(null == json){
+		   return false;
+	   }
+	   try{
+		   JSON_MAPPER.readTree(json.toString());
+	   }catch(Exception e){
+		   return false;
+	   }
+	   return true;
+   }
+
+	public static Object value(JsonNode json){
+		if(null == json){
+			return null;
+		}else{
+			if(json.isNull()){
+				return null;
+			}else if(json.isInt()){
+				return json.asInt();
+			}else if(json.isBoolean()){
+				return json.asBoolean();
+			}else if(json.isDouble()){
+				return json.asDouble();
+			}else if(json.isLong()){
+				return json.asLong();
+			}else{
+				return json.asText();
+			}
+		}
+	}
+		 public static void main(String[] args) throws IOException {
+			   Map<String,Object> map = new HashMap<String,Object>();
+			   map.put("name", 1L);
+			   List<Object> list = new ArrayList<Object>();
+			   DataRow u1 = new DataRow();
+			   u1.put("name", "li");
+			   
+			   list.add(u1);
+			   map.put("list", list);
+			   String str =  BeanUtil.JSON_MAPPER.writeValueAsString(map);
+			   JsonNode node = BeanUtil.JSON_MAPPER.readTree(str);
+			   DataRow row = DataRow.parseJson(str);
+			   Iterator<JsonNode> it = node.iterator();
+			   System.out.println(row.toJson());
+			   System.out.println(node.get("name").isValueNode());
+			   System.out.println(node.isValueNode());
+			   System.out.println(node.isArray());
+		   }
 } 
