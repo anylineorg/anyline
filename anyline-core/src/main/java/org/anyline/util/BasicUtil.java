@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +35,21 @@ import java.util.Random;
 
 import org.anyline.util.regular.RegularUtil;
 
-import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
  
 public class BasicUtil { 
+
+	public static void main(String[] args) {
+		try {
+			Map<String,String> map = new HashMap<String,String>();
+			map.put("a", "a");
+            String string = new ObjectMapper().writeValueAsString(map);
+            System.out.println(string);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+	}
 	/** 
 	 * 是否为空或""或"null"(大写字母"NULL"不算空) 集合对象检查是否为空或集合中是否有对象 
 	 *  
@@ -858,20 +871,6 @@ public class BasicUtil {
 	    } catch (Exception e) { 
 	        return false; 
 	    } 
-   }
-   public static boolean isJson(Object json){
-	   if(null == json){
-		   return false;
-	   }
-	   if(json instanceof JSONObject){
-		   return true;
-	   }
-	   try{
-		   JSONObject.parse(json.toString());
-	   }catch(Exception e){
-		   return false;
-	   }
-	   return true;
    }
    public static String omit(String src, int left, int right){
 	   return omit(src, left, right, "*");

@@ -350,7 +350,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			String key = keys.get(i);
 			Object value = row.get(key);
 			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo());
-			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BasicUtil.isJson(value)){
+			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 				String str = value.toString();
 				value = str.substring(1, str.length()-1);
 				param.append(value);
@@ -430,7 +430,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					sql.append("null");
 				}else if(value instanceof String){
 					String str = value.toString();
-					if(str.startsWith("{") && str.endsWith("}") && !BasicUtil.isJson(value)){
+					if(str.startsWith("{") && str.endsWith("}") && !BeanUtil.isJson(value)){
 						str = str.substring(1, str.length()-1);
 					}else{
 						str = "'" + str.replace("'", "''") + "'";
@@ -587,7 +587,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
 				Object value = row.get(key);
-				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BasicUtil.isJson(value)){
+				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(1, str.length()-1);
 					sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
