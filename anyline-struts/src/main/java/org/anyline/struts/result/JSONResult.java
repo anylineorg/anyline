@@ -20,7 +20,6 @@
 package org.anyline.struts.result; 
  
 import java.io.PrintWriter;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,8 +34,6 @@ import org.apache.struts2.dispatcher.StrutsResultSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.opensymphony.xwork2.ActionInvocation;
  
 public class JSONResult extends StrutsResultSupport { 

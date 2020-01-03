@@ -37,9 +37,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
  
 public class WXMPUtil extends WXUtil{ 
 	private static final Logger log = LoggerFactory.getLogger(WXMPUtil.class); 
@@ -470,12 +467,12 @@ public class WXMPUtil extends WXUtil{
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 			log.warn("[CREATE NEW ACCESS TOKEN][result:{}]",text); 
 		} 
-		JSONObject json = JSON.parseObject(text); 
+		DataRow json = DataRow.parseJson(text); 
 		row = new DataRow(); 
 		if(json.containsKey("access_token")){ 
 			row.put("APP_ID", appid); 
 			row.put("ACCESS_TOKEN", json.getString("access_token")); 
-			row.setExpires(json.getIntValue("expires_in")*800); 
+			row.setExpires(json.getInt("expires_in")*800); 
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:{}]",row.getString("ACCESS_TOKEN")); 
 			} 
@@ -514,10 +511,10 @@ public class WXMPUtil extends WXUtil{
 		String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+accessToken+"&type=jsapi"; 
 		String text = HttpUtil.get(url,"UTF-8").getText(); 
 		log.warn("[CREATE NEW JSAPI TICKET][txt:{}]",text); 
-		JSONObject json = JSON.parseObject(text); 
+		DataRow json = DataRow.parseJson(text); 
 		if(json.containsKey("ticket")){ 
 			row.put("TICKET", json.getString("ticket")); 
-			row.setExpires(json.getIntValue("expires_in")*1000); 
+			row.setExpires(json.getInt("expires_in")*1000); 
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[CREATE NEW JSAPI TICKET][TICKET:{}]",row.get("TICKET")); 
 			} 

@@ -15,9 +15,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
  
 public class EasemobUtil { 
 	private static final Logger log = LoggerFactory.getLogger(EasemobUtil.class); 
@@ -669,13 +666,13 @@ public class EasemobUtil {
 		map.put("client_secret", config.CLIENT_SECRET); 
 		try { 
 			String url = baseUrl + "/token"; 
-			String txt = HttpUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText(); 
-			JSONObject json = JSON.parseObject(txt); 
-			if(json.containsKey("access_token")){ 
-				access_token = json.getString("access_token"); 
+			String txt = HttpUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(map), "UTF-8")).getText();
+			DataRow row = DataRow.parseJson(txt);
+			if(row.containsKey("access_token")){ 
+				access_token = row.getString("access_token"); 
 			} 
-			if(json.containsKey("expires_in")){ 
-				access_token_expires = System.currentTimeMillis()/1000 + json.getLong("expires_in"); 
+			if(row.containsKey("expires_in")){ 
+				access_token_expires = System.currentTimeMillis()/1000 + row.getLong("expires_in"); 
 			} 
 		} catch (Exception e) { 
 			e.printStackTrace(); 
