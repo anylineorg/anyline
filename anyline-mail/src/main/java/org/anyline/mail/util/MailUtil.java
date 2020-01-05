@@ -1,17 +1,19 @@
 package org.anyline.mail.util; 
  
-import java.util.Hashtable; 
-import java.util.Properties; 
- 
-import javax.mail.Message; 
-import javax.mail.Session; 
-import javax.mail.Transport; 
-import javax.mail.internet.InternetAddress; 
-import javax.mail.internet.MimeMessage; 
- 
-import org.anyline.util.BasicUtil; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import java.lang.reflect.Method;
+import java.util.Hashtable;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
 public class MailUtil { 
 	private static final Logger log = LoggerFactory.getLogger(MailUtil.class); 
@@ -26,7 +28,7 @@ public class MailUtil {
 	public static MailUtil getInstance() { 
 		return getInstance("default"); 
 	} 
- 
+
 	public static MailUtil getInstance(String key) { 
 		if (BasicUtil.isEmpty(key)) { 
 			key = "default"; 
