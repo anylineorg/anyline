@@ -29,7 +29,7 @@
 10|++CODE:cd|CODE = ? 或 整个SQL不执行|如果http中没有cd或cd值为空,整个SQL不执行，如果是查询SQL，则返回长度为0的集合
 
 
-以上格式仅提供给condition(String)函数用来指定从http/rpc中取值的方式，其他形式(如直接提供值，而不是从http/rpc中取值)参考AnylineService或AnylineDao  
+详细参考:[http://doc.anyline.org/s?id=1059](http://doc.anyline.org/s?id=1059)
 
  **- 常规数据库操作** 
 
