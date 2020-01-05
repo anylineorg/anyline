@@ -18,7 +18,7 @@ public class WXOpenConfig extends WXConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
  
 	public static WXOpenConfig getInstance(){ 
@@ -31,7 +31,7 @@ public class WXOpenConfig extends WXConfig{
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WXOpenConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		return (WXOpenConfig)instances.get(key); 
 	} 
@@ -49,8 +49,8 @@ public class WXOpenConfig extends WXConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, WXOpenConfig.class, "anyline-weixin-open.xml",compatibles); 
+	private synchronized static void load() { 
+		load(instances, WXOpenConfig.class, "anyline-weixin-open.xml",compatibles); 
 		WXOpenConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

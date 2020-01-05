@@ -30,22 +30,22 @@ public class AlipayConfig extends AnylineConfig{
 		} 
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - AlipayConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		 
 		return (AlipayConfig)instances.get(key); 
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
 	/** 
 	 * 加载配置文件 
 	 * 首先加载anyline-config.xml 
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, AlipayConfig.class, "anyline-alipay.xml"); 
+	private synchronized static void load() { 
+		load(instances, AlipayConfig.class, "anyline-alipay.xml"); 
 		AlipayConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	public String getString(String key){ 

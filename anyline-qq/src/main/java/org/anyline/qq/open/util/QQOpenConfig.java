@@ -32,7 +32,7 @@ public class QQOpenConfig extends QQConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
  
 	public static QQOpenConfig getInstance(){ 
@@ -45,15 +45,15 @@ public class QQOpenConfig extends QQConfig{
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQOpenConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		return (QQOpenConfig)instances.get(key); 
 	} 
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, QQOpenConfig.class, "anyline-qq-open.xml"); 
+	private synchronized static void load() { 
+		load(instances, QQOpenConfig.class, "anyline-qq-open.xml"); 
 		QQOpenConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

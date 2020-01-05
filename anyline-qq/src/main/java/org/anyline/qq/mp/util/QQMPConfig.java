@@ -21,7 +21,7 @@ public class QQMPConfig extends AnylineConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
  
 	public static QQMPConfig getInstance(){ 
@@ -34,7 +34,7 @@ public class QQMPConfig extends AnylineConfig{
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQMPConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		return (QQMPConfig)instances.get(key); 
 	} 
@@ -43,8 +43,8 @@ public class QQMPConfig extends AnylineConfig{
 	 * 首先加载anyline-config.xml 
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, QQMPConfig.class, "anyline-qq-mp.xml"); 
+	private synchronized static void load() { 
+		load(instances, QQMPConfig.class, "anyline-qq-mp.xml"); 
 		QQMPConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

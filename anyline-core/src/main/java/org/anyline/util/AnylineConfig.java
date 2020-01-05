@@ -1,33 +1,42 @@
 package org.anyline.util; 
  
-import java.io.File; 
-import java.lang.reflect.Field; 
-import java.lang.reflect.Modifier; 
-import java.lang.reflect.Type; 
-import java.util.HashMap; 
-import java.util.Hashtable; 
-import java.util.Iterator; 
-import java.util.List; 
-import java.util.Map; 
- 
-import org.anyline.entity.DataRow; 
-import org.anyline.entity.DataSet; 
-import org.dom4j.Document; 
-import org.dom4j.Element; 
-import org.dom4j.io.SAXReader; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
 public abstract class AnylineConfig { 
 	protected static long lastLoadTime 	= 0;	//最后一次加载时间 
 	protected static final Logger log = LoggerFactory.getLogger(AnylineConfig.class); 
 	protected Map<String, String> kvs = new HashMap<String, String>(); 
-	 
+	protected static String[] compatibles = {};
 	protected void afterParse(String key, String value){ 
 		 
 	} 
-	 
-	protected synchronized static void loadConfig(Hashtable<String,AnylineConfig> instances, Class<? extends AnylineConfig> clazz, String fileName, String ... compatibles) { 
+	public static void parse(String content){
+	}
+	/**
+	 * 加载配置文件
+	 * @param instances 配置实例
+	 * @param clazz 子类
+	 * @param fileName 文件名
+	 * @param compatibles 兼容配置
+	 */
+	protected synchronized static void load(Hashtable<String,AnylineConfig> instances, Class<? extends AnylineConfig> clazz, String fileName, String ... compatibles) { 
 		try { 
 			File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes"); 
 			if(null != dir &&  !dir.exists()){ 
@@ -37,7 +46,7 @@ public abstract class AnylineConfig {
 			int configSize = 0; 
 			for(File file:files){ 
 				if(fileName.equals(file.getName())){ 
-					parseFile(clazz, file, instances,compatibles); 
+					parse(clazz, file, instances,compatibles); 
 					configSize ++; 
 				} 
 			} 
@@ -49,6 +58,7 @@ public abstract class AnylineConfig {
 			log.error("[解析配置文件][file:{}][配置文件解析异常:{}]",fileName,e); 
 		} 
 	} 
+	
 	@SuppressWarnings("unchecked") 
 	public static <T extends AnylineConfig> T parse(Class<? extends AnylineConfig> T, String key, DataRow row, Hashtable<String, AnylineConfig> instances, String... compatibles) { 
 		T config = null; 
@@ -111,15 +121,8 @@ public abstract class AnylineConfig {
 		} 
 		return instances; 
 	} 
-	//兼容上一版本 最后一版key:倒数第二版key:倒数第三版key 
-	protected static Hashtable<String, AnylineConfig> parseFile(Class<?> T, File file, Hashtable<String, AnylineConfig> instances, String... compatibles) { 
-		if (null == file || !file.exists()) { 
-			log.warn("[解析配置文件][文件不存在][file:{}]",file); 
-			return instances; 
-		} 
-		SAXReader reader = new SAXReader(); 
+	private static Hashtable<String, AnylineConfig> parse(Class<?> T, Document document, Hashtable<String, AnylineConfig> instances, String... compatibles) {
 		try { 
-			Document document = reader.read(file); 
 			Element root = document.getRootElement(); 
 			for (Iterator<Element> itrConfig = root.elementIterator("config"); itrConfig.hasNext();) { 
 				Element configElement = itrConfig.next(); 
@@ -138,7 +141,7 @@ public abstract class AnylineConfig {
 					Element element = elements.next(); 
 					String key = element.attributeValue("key"); 
 					String value = element.getTextTrim(); 
-					log.info("[解析配置文件][file:{}][key:{}][{}={}]",file, configKey, key,value); 
+					log.info("[解析配置文件][key:{}][{}={}]", configKey, key,value); 
 					kvs.put(key, value); 
 					config.setValue(key, value); 
 				} 
@@ -169,7 +172,31 @@ public abstract class AnylineConfig {
 			} 
 		} catch (Exception e) { 
 			e.printStackTrace(); 
+		}
+		return instances; 
+	}
+	protected static Hashtable<String, AnylineConfig> parse(Class<?> T, String content, Hashtable<String, AnylineConfig> instances, String... compatibles) {
+		try { 
+			Document document = DocumentHelper.parseText(content); 
+			instances = parse(T, document, instances, compatibles);
+		} catch (Exception e) { 
+			e.printStackTrace(); 
 		} 
+		return instances; 
+	}
+	//兼容上一版本 最后一版key:倒数第二版key:倒数第三版key 
+	protected static Hashtable<String, AnylineConfig> parse(Class<?> T, File file, Hashtable<String, AnylineConfig> instances, String... compatibles) { 
+		if (null == file || !file.exists()) { 
+			log.warn("[解析配置文件][文件不存在][file:{}]",file); 
+			return instances; 
+		} 
+		SAXReader reader = new SAXReader(); 
+		try { 
+			Document document = reader.read(file); 
+			instances = parse(T, document, instances, compatibles);
+		} catch (Exception e) { 
+			e.printStackTrace(); 
+		}
 		return instances; 
 	} 
  

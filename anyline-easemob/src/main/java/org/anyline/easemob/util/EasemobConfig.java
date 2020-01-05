@@ -21,7 +21,7 @@ public class EasemobConfig extends AnylineConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
 	public static EasemobConfig getInstance(){ 
 		return getInstance("default"); 
@@ -33,15 +33,15 @@ public class EasemobConfig extends AnylineConfig{
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - EasemobConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		return (EasemobConfig)instances.get(key); 
 	} 
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, EasemobConfig.class, "anyline-easemob.xml"); 
+	private synchronized static void load() { 
+		load(instances, EasemobConfig.class, "anyline-easemob.xml"); 
 		EasemobConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	 

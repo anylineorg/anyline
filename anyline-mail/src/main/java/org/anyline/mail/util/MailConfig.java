@@ -23,9 +23,13 @@ public class MailConfig extends AnylineConfig{
 		init(); 
 		debug(); 
 	} 
+	
+	public static void parse(String content){
+		parse(MailConfig.class, content, instances ,compatibles); 
+	}
 	public static void init() { 
-		//加载配置文件 
-		loadConfig(); 
+		//加载默认配置文件 
+		load(); 
 	} 
 	public static void setConfigDir(File dir){ 
 		configDir = dir; 
@@ -40,15 +44,15 @@ public class MailConfig extends AnylineConfig{
 		} 
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - MailConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		return (MailConfig)instances.get(key); 
 	} 
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, MailConfig.class, "anyline-mail.xml"); 
+	private synchronized static void load() { 
+		load(instances, MailConfig.class, "anyline-mail.xml"); 
 		MailConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 
