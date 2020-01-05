@@ -19,7 +19,10 @@
 
 package org.anyline.util; 
  
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Hashtable;
@@ -51,6 +54,7 @@ public class ConfigTable {
 	protected static boolean isLoading = false;
 	public static boolean  IS_UPPER_KEY = true;
 	public static boolean  IS_LOWER_KEY = false;
+	
 	static{
 		init();
 		debug();
@@ -94,6 +98,14 @@ public class ConfigTable {
 	public static void init(){
 		init("anyline");
 	}
+	public static String getPackageType(){
+		String type = "war";
+		String classpath = ConfigTable.class.getResource("/").getPath();
+		if(classpath.contains(".jar!")){
+			type = "jar";
+		}
+		return type;
+	}
 	public static void init(String flag) {
 		if(isLoading){
 			return;
@@ -103,11 +115,7 @@ public class ConfigTable {
 		isLoading = true;
 		String path =  ""; 
 		try{ 
-			//path = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
 			path = ConfigTable.class.getResource("/").getPath();
-			System.out.println("getResource(/)="+ConfigTable.class.getResource("/").getPath()); //class path 目录
-			System.out.println("getResource('')="+ConfigTable.class.getResource("").getPath()); //当前类所在目录  如果是在jar内 (8.3.7.jar!/org/anyline/util/)
-			System.out.println("getProtectionDomain().getCodeSource()="+ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath());//jar文件甩在目录
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		} 
@@ -116,11 +124,15 @@ public class ConfigTable {
 		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){ 
 			path = path.substring(1); 
 		}
+		path = path.replace("file:/", "");//jar项目
 
 		if(null == root && null != path){
 			root = path;
 			if(path.indexOf("bin") > 0){
 				root = path.substring(0,path.indexOf("bin")-1);	
+			}
+			if(path.indexOf("target") > 0){
+				root = path.substring(0,path.indexOf("target")-1);	
 			}
 		}
 		if(null == webRoot && null != path){
