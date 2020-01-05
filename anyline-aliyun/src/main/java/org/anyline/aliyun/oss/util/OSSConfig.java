@@ -3,12 +3,12 @@ package org.anyline.aliyun.oss.util;
 import java.io.File; 
 import java.util.Hashtable; 
  
-import org.anyline.util.BasicConfig; 
+import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
  
-public class OSSConfig extends BasicConfig{ 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+public class OSSConfig extends AnylineConfig{ 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	private static File configDir; 
 	public String ACCESS_ID		= ""; 
 	public String ACCESS_SECRET = ""; 

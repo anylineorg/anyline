@@ -4,14 +4,14 @@ import java.io.File;
 import java.util.Hashtable; 
 import java.util.List; 
  
-import org.anyline.util.BasicConfig; 
+import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
 import org.anyline.util.FileUtil; 
  
  
-public class RedisConfig extends BasicConfig{ 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+public class RedisConfig extends AnylineConfig{ 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	public String HOST = ""; 
 	public String CLIENT_ID =""; 
 	public String CLIENT_SECRET =""; 

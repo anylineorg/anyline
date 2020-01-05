@@ -3,13 +3,13 @@ package org.anyline.qq.open.util;
 import java.util.Hashtable;
 
 import org.anyline.qq.util.QQConfig;
-import org.anyline.util.BasicConfig;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
  
  
 public class QQOpenConfig extends QQConfig{ 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	/** 
 	 * 服务号相关信息 
 	 */ 

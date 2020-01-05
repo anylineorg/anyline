@@ -18,16 +18,16 @@ import org.dom4j.io.SAXReader;
 import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory; 
  
-public abstract class BasicConfig { 
+public abstract class AnylineConfig { 
 	protected static long lastLoadTime 	= 0;	//最后一次加载时间 
-	protected static final Logger log = LoggerFactory.getLogger(BasicConfig.class); 
+	protected static final Logger log = LoggerFactory.getLogger(AnylineConfig.class); 
 	protected Map<String, String> kvs = new HashMap<String, String>(); 
 	 
 	protected void afterParse(String key, String value){ 
 		 
 	} 
 	 
-	protected synchronized static void loadConfig(Hashtable<String,BasicConfig> instances, Class<? extends BasicConfig> clazz, String fileName, String ... compatibles) { 
+	protected synchronized static void loadConfig(Hashtable<String,AnylineConfig> instances, Class<? extends AnylineConfig> clazz, String fileName, String ... compatibles) { 
 		try { 
 			File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes"); 
 			if(null != dir &&  !dir.exists()){ 
@@ -50,7 +50,7 @@ public abstract class BasicConfig {
 		} 
 	} 
 	@SuppressWarnings("unchecked") 
-	public static <T extends BasicConfig> T parse(Class<? extends BasicConfig> T, String key, DataRow row, Hashtable<String, BasicConfig> instances, String... compatibles) { 
+	public static <T extends AnylineConfig> T parse(Class<? extends AnylineConfig> T, String key, DataRow row, Hashtable<String, AnylineConfig> instances, String... compatibles) { 
 		T config = null; 
 		try { 
 			config = (T) T.newInstance(); 
@@ -104,7 +104,7 @@ public abstract class BasicConfig {
 		} 
 		return config; 
 	} 
-	public static Hashtable<String, BasicConfig> parse(Class<? extends BasicConfig> T, String column, DataSet set, Hashtable<String, BasicConfig> instances, String... compatibles) { 
+	public static Hashtable<String, AnylineConfig> parse(Class<? extends AnylineConfig> T, String column, DataSet set, Hashtable<String, AnylineConfig> instances, String... compatibles) { 
 		for (DataRow row : set) { 
 			String key = row.getString(column); 
 			parse(T, key, row, instances, compatibles); 
@@ -112,7 +112,7 @@ public abstract class BasicConfig {
 		return instances; 
 	} 
 	//兼容上一版本 最后一版key:倒数第二版key:倒数第三版key 
-	protected static Hashtable<String, BasicConfig> parseFile(Class<?> T, File file, Hashtable<String, BasicConfig> instances, String... compatibles) { 
+	protected static Hashtable<String, AnylineConfig> parseFile(Class<?> T, File file, Hashtable<String, AnylineConfig> instances, String... compatibles) { 
 		if (null == file || !file.exists()) { 
 			log.warn("[解析配置文件][文件不存在][file:{}]",file); 
 			return instances; 
@@ -128,9 +128,9 @@ public abstract class BasicConfig {
 					configKey = "default"; 
 				} 
  
-				BasicConfig config = instances.get(configKey); 
+				AnylineConfig config = instances.get(configKey); 
 				if(null == config){ 
-					config = (BasicConfig) T.newInstance(); 
+					config = (AnylineConfig) T.newInstance(); 
 				} 
 				Map<String, String> kvs = new HashMap<String, String>(); 
 				Iterator<Element> elements = configElement.elementIterator("property"); 
