@@ -23,7 +23,6 @@ public class MailConfig extends AnylineConfig{
 		init(); 
 		debug(); 
 	} 
-	
 	public static void parse(String content){
 		parse(MailConfig.class, content, instances ,compatibles); 
 	}
