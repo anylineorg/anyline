@@ -3,7 +3,8 @@ package org.anyline.redis.util;
 import java.io.File; 
 import java.util.Hashtable; 
 import java.util.List; 
- 
+
+
 import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
@@ -22,6 +23,16 @@ public class RedisConfig extends AnylineConfig{
 		init(); 
 		debug(); 
 	} 
+	/**
+	 * 解析配置文件内容
+	 * @param content 配置文件内容
+	 */
+	public static void parse(String content){
+		parse(RedisConfig.class, content, instances ,compatibles); 
+	}
+	/**
+	 * 初始化默认配置文件
+	 */
 	public static void init() { 
 		//加载配置文件 
 		loadConfig(); 
