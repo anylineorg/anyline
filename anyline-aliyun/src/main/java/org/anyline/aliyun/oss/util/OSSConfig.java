@@ -1,11 +1,11 @@
 package org.anyline.aliyun.oss.util; 
  
-import java.io.File; 
-import java.util.Hashtable; 
- 
-import org.anyline.util.AnylineConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
+import java.io.File;
+import java.util.Hashtable;
+
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
  
 public class OSSConfig extends AnylineConfig{ 
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
@@ -21,6 +21,16 @@ public class OSSConfig extends AnylineConfig{
 		init(); 
 		debug(); 
 	} 
+	/**
+	 * 解析配置文件内容
+	 * @param content 配置文件内容
+	 */
+	public static void parse(String content){
+		parse(OSSConfig.class, content, instances ,compatibles); 
+	}
+	/**
+	 * 初始化默认配置文件
+	 */
 	public static void init() { 
 		//加载配置文件 
 		load(); 

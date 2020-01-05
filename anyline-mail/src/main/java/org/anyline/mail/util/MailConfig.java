@@ -23,9 +23,16 @@ public class MailConfig extends AnylineConfig{
 		init(); 
 		debug(); 
 	} 
+	/**
+	 * 解析配置文件内容
+	 * @param content 配置文件内容
+	 */
 	public static void parse(String content){
 		parse(MailConfig.class, content, instances ,compatibles); 
 	}
+	/**
+	 * 初始化默认配置文件
+	 */
 	public static void init() { 
 		//加载默认配置文件 
 		load(); 
