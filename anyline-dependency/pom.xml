@@ -95,7 +95,7 @@
 		<jpush.client.version>3.3.12</jpush.client.version>
 		<jpush.version>1.1.6</jpush.version>
 		<alibaba.nacos.version>1.1.4</alibaba.nacos.version>
-		<jackson.version>2.9.8</jackson.version>
+		<jackson.version>2.10.1</jackson.version>
 	</properties>
 
 	<dependencyManagement>
