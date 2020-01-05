@@ -23,7 +23,7 @@ public class OSSConfig extends AnylineConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
 	public static void setConfigDir(File dir){ 
 		configDir = dir; 
@@ -39,7 +39,7 @@ public class OSSConfig extends AnylineConfig{
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - OSSConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		return (OSSConfig)instances.get(key); 
 	} 
@@ -48,8 +48,8 @@ public class OSSConfig extends AnylineConfig{
 	 * 首先加载anyline-config.xml 
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, OSSConfig.class, "anyline-aliyun-oss.xml"); 
+	private synchronized static void load() { 
+		load(instances, OSSConfig.class, "anyline-aliyun-oss.xml"); 
 		OSSConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

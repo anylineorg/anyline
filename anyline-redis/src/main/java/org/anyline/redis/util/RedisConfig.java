@@ -45,7 +45,7 @@ public class RedisConfig extends AnylineConfig{
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml"); 
 			for(File file:files){ 
 				if("anyline-Redis.xml".equals(file.getName())){ 
-					parseFile(RedisConfig.class, file, instances); 
+					parse(RedisConfig.class, file, instances); 
 				} 
 			} 
 			 
