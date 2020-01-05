@@ -96,7 +96,7 @@ public class PageNaviConfig extends AnylineConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
 	public static PageNaviConfig getInstance(){ 
 		return getInstance("default"); 
@@ -108,7 +108,7 @@ public class PageNaviConfig extends AnylineConfig{
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - PageNaviConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		 
 		return (PageNaviConfig)instances.get(key); 
@@ -127,8 +127,8 @@ public class PageNaviConfig extends AnylineConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, PageNaviConfig.class, "anyline-navi.xml", compatibles); 
+	private synchronized static void load() { 
+		load(instances, PageNaviConfig.class, "anyline-navi.xml", compatibles); 
 		PageNaviConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
  

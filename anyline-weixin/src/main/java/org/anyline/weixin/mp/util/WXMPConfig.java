@@ -19,7 +19,7 @@ public class WXMPConfig extends WXConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
 	public static WXMPConfig getInstance(){ 
 		return getInstance("default"); 
@@ -31,7 +31,7 @@ public class WXMPConfig extends WXConfig{
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WXMPConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		return (WXMPConfig)instances.get(key); 
 	} 
@@ -54,8 +54,8 @@ public class WXMPConfig extends WXConfig{
 	 * 首先加载anyline-config.xml 
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, WXMPConfig.class, "anyline-weixin-mp.xml",compatibles); 
+	private synchronized static void load() { 
+		load(instances, WXMPConfig.class, "anyline-weixin-mp.xml",compatibles); 
 		WXMPConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

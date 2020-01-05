@@ -21,7 +21,7 @@ public class SMSConfig extends AnylineConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
  
 	public static SMSConfig getInstance(){ 
@@ -36,8 +36,8 @@ public class SMSConfig extends AnylineConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, SMSConfig.class, "anyline-aliyun-sms.xml"); 
+	private synchronized static void load() { 
+		load(instances, SMSConfig.class, "anyline-aliyun-sms.xml"); 
 	} 
 	private static void debug(){ 
 	} 

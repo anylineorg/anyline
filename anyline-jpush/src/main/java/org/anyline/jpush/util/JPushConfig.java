@@ -17,7 +17,7 @@ public class JPushConfig extends AnylineConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
  
 	public static JPushConfig getInstance(){ 
@@ -30,15 +30,15 @@ public class JPushConfig extends AnylineConfig{
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - JPushConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		return (JPushConfig)instances.get(key); 
 	} 
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, JPushConfig.class, "anyline-jpush.xml"); 
+	private synchronized static void load() { 
+		load(instances, JPushConfig.class, "anyline-jpush.xml"); 
 		JPushConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

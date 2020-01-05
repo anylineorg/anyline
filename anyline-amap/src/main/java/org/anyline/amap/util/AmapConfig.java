@@ -20,7 +20,7 @@ public class AmapConfig extends AnylineConfig{
 	} 
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load(); 
 	} 
 	public static void setConfigDir(File dir){ 
 		configDir = dir; 
@@ -36,15 +36,15 @@ public class AmapConfig extends AnylineConfig{
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - AmapConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
 			//重新加载 
-			loadConfig(); 
+			load(); 
 		} 
 		return (AmapConfig)instances.get(key); 
 	} 
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void loadConfig() { 
-		loadConfig(instances, AmapConfig.class, "anyline-amap.xml"); 
+	private synchronized static void load() { 
+		load(instances, AmapConfig.class, "anyline-amap.xml"); 
 		AmapConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 
