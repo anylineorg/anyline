@@ -3,6 +3,8 @@ package org.anyline.entity;
 import java.util.Hashtable; 
  
 
+
+
 import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
@@ -94,6 +96,16 @@ public class PageNaviConfig extends AnylineConfig{
 		init(); 
 		debug(); 
 	} 
+	/**
+	 * 解析配置文件内容
+	 * @param content 配置文件内容
+	 */
+	public static void parse(String content){
+		parse(PageNaviConfig.class, content, instances ,compatibles); 
+	}
+	/**
+	 * 初始化默认配置文件
+	 */
 	public static void init() { 
 		//加载配置文件 
 		load(); 
