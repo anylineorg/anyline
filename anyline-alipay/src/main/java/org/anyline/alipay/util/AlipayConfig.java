@@ -2,13 +2,13 @@ package org.anyline.alipay.util;
  
 import java.util.Hashtable;
 
-import org.anyline.util.BasicConfig;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
  
  
-public class AlipayConfig extends BasicConfig{ 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+public class AlipayConfig extends AnylineConfig{ 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	public String APP_PRIVATE_KEY = ""; 
 	public String ALIPAY_PUBLIC_KEY = ""; 
 	public String APP_ID = ""; 

@@ -3,11 +3,11 @@ package org.anyline.entity;
 import java.util.Hashtable; 
  
 
-import org.anyline.util.BasicConfig; 
+import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
  
-public class PageNaviConfig extends BasicConfig{ 
+public class PageNaviConfig extends AnylineConfig{ 
  
 	 
 	public String STYLE_FILE_PATH 				= ""					; //样式文件路径 
@@ -66,7 +66,7 @@ public class PageNaviConfig extends BasicConfig{
 	public String EVENT_AFTER				= ""; 
 	public String EVENT_REFRESH				= ""; 
  
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
  
 	//兼容上一版本  
 	//最后一版key:倒数第二版key:倒数第三版key 
@@ -117,7 +117,7 @@ public class PageNaviConfig extends BasicConfig{
 	public static PageNaviConfig parse(String key, DataRow row){ 
 		return parse(PageNaviConfig.class, key, row, instances,compatibles); 
 	} 
-	public static Hashtable<String,BasicConfig> parse(String column, DataSet set){ 
+	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){ 
 		for(DataRow row:set){ 
 			String key = row.getString(column); 
 			parse(key, row); 
