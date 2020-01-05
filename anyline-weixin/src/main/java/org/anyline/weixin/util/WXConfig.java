@@ -1,8 +1,8 @@
 package org.anyline.weixin.util; 
  
-import org.anyline.util.BasicConfig; 
+import org.anyline.util.AnylineConfig; 
  
-public class WXConfig extends BasicConfig{ 
+public class WXConfig extends AnylineConfig{ 
 	//支付方式 
 	public static enum TRADE_TYPE{ 
 		JSAPI			{public String getCode(){return "JSAPI";} 		public String getName(){return "公从号";}}, 

@@ -4,14 +4,14 @@ import java.util.Hashtable;
  
 import org.anyline.entity.DataRow; 
 import org.anyline.entity.DataSet; 
-import org.anyline.util.BasicConfig; 
+import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
 import org.anyline.weixin.util.WXConfig; 
  
  
 public class WXMPConfig extends WXConfig{ 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	 
 	static{ 
 		init(); 
@@ -42,7 +42,7 @@ public class WXMPConfig extends WXConfig{
 	public static WXMPConfig parse(String key, DataRow row){ 
 		return parse(WXMPConfig.class, key, row, instances,compatibles); 
 	} 
-	public static Hashtable<String,BasicConfig> parse(String column, DataSet set){ 
+	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){ 
 		for(DataRow row:set){ 
 			String key = row.getString(column); 
 			parse(key, row); 

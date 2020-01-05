@@ -3,12 +3,12 @@ package org.anyline.amap.util;
 import java.io.File; 
 import java.util.Hashtable; 
  
-import org.anyline.util.BasicConfig; 
+import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
  
-public class AmapConfig extends BasicConfig{ 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+public class AmapConfig extends AnylineConfig{ 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	public static String KEY= ""; 
 	public static String PRIVATE_KEY = ""; 
 	public static String TABLE_ID = ""; 

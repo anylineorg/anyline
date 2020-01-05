@@ -2,11 +2,11 @@ package org.anyline.aliyun.sms.util;
  
 import java.util.Hashtable; 
  
-import org.anyline.util.BasicConfig; 
+import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
  
-public class SMSConfig extends BasicConfig{ 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+public class SMSConfig extends AnylineConfig{ 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	//服务器配置 
 	public String ACCESS_KEY= ""; 
 	public String ACCESS_SECRET = ""; 

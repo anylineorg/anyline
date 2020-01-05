@@ -2,13 +2,13 @@ package org.anyline.easemob.util;
  
 import java.util.Hashtable; 
  
-import org.anyline.util.BasicConfig; 
+import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
  
  
-public class EasemobConfig extends BasicConfig{ 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+public class EasemobConfig extends AnylineConfig{ 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	public String HOST = ""; 
 	public String CLIENT_ID =""; 
 	public String CLIENT_SECRET =""; 

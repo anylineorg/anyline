@@ -3,13 +3,13 @@ package org.anyline.mail.util;
 import java.io.File; 
 import java.util.Hashtable; 
  
-import org.anyline.util.BasicConfig; 
+import org.anyline.util.AnylineConfig; 
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
  
-public class MailConfig extends BasicConfig{ 
+public class MailConfig extends AnylineConfig{ 
 	 
-	private static Hashtable<String,BasicConfig> instances = new Hashtable<String,BasicConfig>(); 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	private static File configDir; 
 	public String ACCOUNT; 
 	public String PASSWORD; 
