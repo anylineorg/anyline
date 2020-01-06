@@ -1,0 +1,47 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.anyline</groupId>
+	<artifactId>anyline</artifactId>
+	<version>8.3.7</version>
+	<packaging>pom</packaging>
+	<name>anyline</name>
+	<url>http://www.anyline.org</url>
+    <modules>
+		<module>anyline-alipay</module>
+		<module>anyline-aliyun</module>
+		<module>anyline-amap</module>
+		<module>anyline-core</module>
+		<module>anyline-core-min</module>
+		<module>anyline-dependency</module>
+		<module>anyline-easemob</module>
+		<module>anyline-ext</module>
+		<module>anyline-jdbc</module>
+		<module>anyline-jdbc-db2</module>
+		<module>anyline-jdbc-hgdb</module>
+		<module>anyline-jdbc-mariadb</module>
+		<module>anyline-jdbc-mssql</module>
+		<module>anyline-jdbc-mysql</module>
+		<module>anyline-jdbc-oracle</module>
+		<module>anyline-jdbc-postgresql</module>
+		<module>anyline-jpush</module>
+		<module>anyline-mail</module>
+		<module>anyline-mvc</module>
+		<module>anyline-nacos</module>
+		<module>anyline-nc</module>
+		<module>anyline-net</module>
+		<module>anyline-poi</module>
+		<module>anyline-qq</module>
+		<module>anyline-redis</module>
+		<module>anyline-start</module>
+		<module>anyline-start-mvc</module>
+		<module>anyline-start-mvc-jsp</module>
+		<module>anyline-start-mvc-jsp-mysql</module>
+		<module>anyline-start-mvc-mysql</module>
+		<module>anyline-struts</module>
+		<module>anyline-video</module>
+		<module>anyline-web</module>
+		<module>anyline-web-ext</module>
+		<module>anyline-weixin</module>
+    </modules>
+</project>
