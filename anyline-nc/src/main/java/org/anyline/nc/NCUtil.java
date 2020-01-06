@@ -117,7 +117,8 @@ public class NCUtil {
 	} 
 	/** 
 	 * 查询变量值 
-	 * @param origin 起点 
+	 * @param var 变量
+	 * @param origin 起点
 	 * @param shape 长度 
 	 * @return return
 	 */ 

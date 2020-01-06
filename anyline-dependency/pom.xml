@@ -5,7 +5,7 @@
 	<artifactId>anyline-dependency</artifactId>
 	<version>8.3.7</version>
 	<packaging>pom</packaging>
-	<name>AnyLine</name>
+	<name>anyLine dependency</name>
 	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
 	<url>http://www.anyline.org</url>
 	<licenses>
