@@ -10,10 +10,10 @@
 		<version>8.3.7</version>
 	</parent>
 
-	<artifactId>anyline-mail</artifactId>
+	<artifactId>anyline-nacos</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-mail</name>
-	<url>http://www.anyline.org/mail</url>
+	<name>anyline-nacos</name>
+	<url>http://www.anyline.org/nacos</url>
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>
