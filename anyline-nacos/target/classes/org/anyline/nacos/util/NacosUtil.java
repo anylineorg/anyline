@@ -7,43 +7,21 @@ import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-@Component
 public class NacosUtil {
 	private static Logger log = LoggerFactory.getLogger(NacosUtil.class);
 	private NacosConfig config = null;
 
 	private static Hashtable<String, NacosUtil> instances = new Hashtable<String, NacosUtil>();
-	
-	static{
-		NacosUtil util = NacosUtil.getInstance();
-		if(util.config.AUTO_SCAN){
-			List<Class<?>> classList = ClassUtil.list("org.anyline", true, AnylineConfig.class);
-			for(Class<?> clazz:classList){
-				@SuppressWarnings("unchecked")
-				Class<AnylineConfig> c = (Class<AnylineConfig>)clazz;
-				String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
-				try {
-					util.config(null, configName, c);
-				} catch (NacosException e) {
-					log.warn("[nacos config][result:false][config:{}]", configName);
-				}
-			}
-		}
-	}
-public static void main(String[] args) {
-}
+
+
 	public static NacosUtil getInstance(){
 		return getInstance("default");
 	}
@@ -60,27 +38,25 @@ public static void main(String[] args) {
 		}
 		return util;
 	}
-	public String config(String group, String data, final Class<? extends AnylineConfig> T) throws NacosException{
-		if(BasicUtil.isEmpty(group)){
-			group = config.GROUP;
-		}
-		log.warn("[nacos config][group:{}][data:{}][class:{}]", group, data, T.getName());
-		final String gp = group;
-		final String dt = data;
-		Listener listener = new Listener() {
+	public boolean config(String group, String data, final Class<? extends AnylineConfig> T) throws NacosException{
+		boolean result = false;
+		Properties properties = new Properties();
+		properties.put(PropertyKeyConst.SERVER_ADDR, config.ADDRESS+":"+config.PORT);
+		ConfigService configService = NacosFactory.createConfigService(properties);
+		String content = configService.getConfig(data, group, config.TIMEOUT);
+		parse(T, content);
+		configService.addListener(data, group, new Listener() {
 			@Override
 			public void receiveConfigInfo(String content) {
-				log.warn("[nacos reload config][group:{}][data:{}][class:{}]", gp, dt, T.getName());
 				parse(T, content);
 			}
 			@Override
 			public Executor getExecutor() {
 				return null;
 			}
-		};
-		String config = config(group,data,listener);
-		parse(T, config);
-		return config;
+		});
+		result = true;
+		return result;
 	}
 
 	/**
@@ -92,10 +68,6 @@ public static void main(String[] args) {
 	 * @throws NacosException NacosException
 	 */
 	public String config(String group, String data, Listener listener) throws NacosException{
-		if(BasicUtil.isEmpty(group)){
-			group = config.GROUP;
-		}
-		log.warn("[nacos config][group:{}][data:{}][listener:{}]", group, data, listener);
 		Properties properties = new Properties();
 		properties.put(PropertyKeyConst.SERVER_ADDR, config.ADDRESS+":"+config.PORT);
 		ConfigService configService = NacosFactory.createConfigService(properties);
@@ -104,15 +76,6 @@ public static void main(String[] args) {
 			configService.addListener(data, group, listener);
 		}
 		return content;
-	}
-	public String config(String data){
-		try{
-			Listener listener = null;
-			return config(null, data, listener);
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		return null;
 	}
 	public String config(String group, String data){
 		try{

@@ -12,8 +12,6 @@ public class NacosConfig extends AnylineConfig{
 	public String ADDRESS;
 	public int PORT = 8848;
 	public int TIMEOUT = 5000;
-	public String GROUP = "DEFAULT_GROUP";
-	public boolean AUTO_SCAN = true;
 	static{
 		init(); 
 		debug(); 
