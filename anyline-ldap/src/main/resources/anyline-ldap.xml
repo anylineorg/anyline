@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="ADDRESS"></property>
+		<property key="DOMAIN">ladp.anyline.org</property>
+		<property key="PORT">389</property>
+		<!--验证的类型 none,simple,strong-->
+		<property key="SECURITY_AUTHENTICATION">simple</property>
+	</config>
+</configs>
