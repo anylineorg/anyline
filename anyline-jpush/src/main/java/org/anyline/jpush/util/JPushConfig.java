@@ -1,13 +1,13 @@
 package org.anyline.jpush.util; 
  
-import java.util.Hashtable; 
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
-
-import org.anyline.util.AnylineConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
+import java.util.Hashtable;
  
-public class JPushConfig extends AnylineConfig{ 
+public class JPushConfig extends AnylineConfig{
+	public static String CONFIG_NAME = "anyline-jpush.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	public String APP_KEY =""; 
 	public String MASTER_SECRET =""; 
@@ -49,7 +49,7 @@ public class JPushConfig extends AnylineConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, JPushConfig.class, "anyline-jpush.xml"); 
+		load(instances, JPushConfig.class, CONFIG_NAME);
 		JPushConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

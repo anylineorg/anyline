@@ -1,17 +1,13 @@
 package org.anyline.redis.util; 
  
-import java.io.File; 
-import java.util.Hashtable; 
-import java.util.List; 
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
 
-
-import org.anyline.util.AnylineConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.FileUtil; 
+import java.util.Hashtable;
  
  
-public class RedisConfig extends AnylineConfig{ 
+public class RedisConfig extends AnylineConfig{
+	public static String CONFIG_NAME = "anyline-redis.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	public String HOST = ""; 
 	public String CLIENT_ID =""; 
@@ -35,7 +31,7 @@ public class RedisConfig extends AnylineConfig{
 	 */
 	public static void init() { 
 		//加载配置文件 
-		loadConfig(); 
+		load();
 	} 
 	public static RedisConfig getInstance(){ 
 		return getInstance("default"); 
@@ -49,20 +45,9 @@ public class RedisConfig extends AnylineConfig{
 	/** 
 	 * 加载配置文件 
 	 */ 
-	private synchronized static void loadConfig() { 
-		try { 
- 
-			File dir = new File(ConfigTable.getWebRoot() , "WEB-INF/classes"); 
-			List<File> files = FileUtil.getAllChildrenFile(dir, "xml"); 
-			for(File file:files){ 
-				if("anyline-Redis.xml".equals(file.getName())){ 
-					parse(RedisConfig.class, file, instances); 
-				} 
-			} 
-			 
-		} catch (Exception e) { 
-			log.error("[配置文件解析异常][msg:{}]",e); 
-		} 
+	private synchronized static void load() {
+		load(instances, RedisConfig.class, CONFIG_NAME);
+		RedisConfig.lastLoadTime = System.currentTimeMillis();
 	} 
 	 
 	private static void debug(){} 

@@ -1,11 +1,11 @@
 package org.anyline.aliyun.oss.util; 
  
-import java.io.File;
-import java.util.Hashtable;
-
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+
+import java.io.File;
+import java.util.Hashtable;
  
 public class OSSConfig extends AnylineConfig{ 
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
@@ -15,7 +15,8 @@ public class OSSConfig extends AnylineConfig{
 	public String ENDPOINT		= ""; 
 	public String BUCKET		= ""; 
 	public String DIR			= ""; 
-	public int EXPIRE_SECOND 	= 3600; 
+	public int EXPIRE_SECOND 	= 3600;
+	public static String CONFIG_NAME = "anyline-aliyun-oss.xml";
 	 
 	static{ 
 		init(); 
@@ -59,7 +60,7 @@ public class OSSConfig extends AnylineConfig{
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, OSSConfig.class, "anyline-aliyun-oss.xml"); 
+		load(instances, OSSConfig.class, CONFIG_NAME);
 		OSSConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

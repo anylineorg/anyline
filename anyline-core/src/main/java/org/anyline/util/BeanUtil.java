@@ -19,29 +19,9 @@
  
 package org.anyline.util; 
  
-import java.io.File;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.regular.Regular;
@@ -53,9 +33,17 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import java.io.File;
+import java.io.IOException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.util.*;
  
  
 public class BeanUtil { 
@@ -180,6 +168,9 @@ public class BeanUtil {
 		if(obj instanceof Map){ 
 			Map map = (Map)obj; 
 			value = map.get(field); 
+		}else if(obj instanceof Class){
+			Field f = getField((Class)obj, field, recursion); 
+			value = getFieldValue(obj, f); 
 		}else{ 
 			Field f = getField(obj.getClass(), field, recursion); 
 			value = getFieldValue(obj, f); 

@@ -1,14 +1,14 @@
 package org.anyline.qq.mp.util; 
  
-import java.util.Hashtable; 
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
-
-import org.anyline.util.AnylineConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
+import java.util.Hashtable;
  
  
-public class QQMPConfig extends AnylineConfig{ 
+public class QQMPConfig extends AnylineConfig{
+	public static String CONFIG_NAME = "anyline-qq-mp.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	/** 
 	 * 服务号相关信息 
@@ -55,7 +55,7 @@ public class QQMPConfig extends AnylineConfig{
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, QQMPConfig.class, "anyline-qq-mp.xml"); 
+		load(instances, QQMPConfig.class, CONFIG_NAME);
 		QQMPConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

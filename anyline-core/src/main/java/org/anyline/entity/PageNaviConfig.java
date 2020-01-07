@@ -1,16 +1,14 @@
 package org.anyline.entity; 
  
-import java.util.Hashtable; 
- 
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
-
-
-import org.anyline.util.AnylineConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
+import java.util.Hashtable;
  
-public class PageNaviConfig extends AnylineConfig{ 
- 
+public class PageNaviConfig extends AnylineConfig{
+
+	public static String CONFIG_NAME = "anyline-navi.xml";
 	 
 	public String STYLE_FILE_PATH 				= ""					; //样式文件路径 
 	public String SCRIPT_FILE_PATH 				= ""					; //脚本文件路径 
@@ -140,7 +138,7 @@ public class PageNaviConfig extends AnylineConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, PageNaviConfig.class, "anyline-navi.xml", compatibles); 
+		load(instances, PageNaviConfig.class, CONFIG_NAME, compatibles);
 		PageNaviConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
  
