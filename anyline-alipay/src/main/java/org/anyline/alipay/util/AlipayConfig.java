@@ -1,10 +1,10 @@
 package org.anyline.alipay.util; 
  
-import java.util.Hashtable;
-
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+
+import java.util.Hashtable;
  
  
 public class AlipayConfig extends AnylineConfig{ 
@@ -16,7 +16,8 @@ public class AlipayConfig extends AnylineConfig{
 	public String ENCODE = "utf-8"; 
 	public String SIGN_TYPE = "RSA"; 
 	public String RETURN_URL= ""; 
-	public String NOTIFY_URL= ""; 
+	public String NOTIFY_URL= "";
+	public static String CONFIG_NAME = "anyline-alipay.xml";
 	static{ 
 		init(); 
 		debug(); 
@@ -55,7 +56,7 @@ public class AlipayConfig extends AnylineConfig{
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, AlipayConfig.class, "anyline-alipay.xml"); 
+		load(instances, AlipayConfig.class, CONFIG_NAME);
 		AlipayConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	public String getString(String key){ 

@@ -1,14 +1,15 @@
 package org.anyline.qq.open.util; 
  
-import java.util.Hashtable;
-
 import org.anyline.qq.util.QQConfig;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+
+import java.util.Hashtable;
  
  
-public class QQOpenConfig extends QQConfig{ 
+public class QQOpenConfig extends QQConfig{
+	public static String CONFIG_NAME = "anyline-qq-open.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	/** 
 	 * 服务号相关信息 
@@ -53,7 +54,7 @@ public class QQOpenConfig extends QQConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, QQOpenConfig.class, "anyline-qq-open.xml"); 
+		load(instances, QQOpenConfig.class, CONFIG_NAME);
 		QQOpenConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

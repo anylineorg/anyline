@@ -1,19 +1,19 @@
 package org.anyline.amap.util; 
  
-import java.io.File; 
-import java.util.Hashtable; 
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
-
-import org.anyline.util.AnylineConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
+import java.io.File;
+import java.util.Hashtable;
  
 public class AmapConfig extends AnylineConfig{ 
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	public static String KEY= ""; 
 	public static String PRIVATE_KEY = ""; 
 	public static String TABLE_ID = ""; 
-	private static File configDir; 
+	private static File configDir;
+	public static String CONFIG_NAME = "anyline-amap.xml";
 	 
 	static{ 
 		init(); 
@@ -55,7 +55,7 @@ public class AmapConfig extends AnylineConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, AmapConfig.class, "anyline-amap.xml"); 
+		load(instances, AmapConfig.class, CONFIG_NAME);
 		AmapConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

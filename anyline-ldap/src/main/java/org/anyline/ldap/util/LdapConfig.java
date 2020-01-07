@@ -7,6 +7,7 @@ import org.anyline.util.ConfigTable;
 import java.util.Hashtable;
 
 public class LdapConfig extends AnylineConfig{
+	public static String CONFIG_NAME = "anyline-ldap.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public String KEY = "default";
 	public String ADDRESS;
@@ -55,7 +56,7 @@ public class LdapConfig extends AnylineConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, LdapConfig.class, "anyline-ldap.xml");
+		load(instances, LdapConfig.class, CONFIG_NAME);
 		LdapConfig.lastLoadTime = System.currentTimeMillis();
 	} 
 	private static void debug(){ 

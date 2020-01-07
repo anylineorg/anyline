@@ -1,14 +1,15 @@
 package org.anyline.mail.util; 
  
-import java.io.File; 
-import java.util.Hashtable; 
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+
+import java.io.File;
+import java.util.Hashtable;
  
-import org.anyline.util.AnylineConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
- 
-public class MailConfig extends AnylineConfig{ 
-	 
+public class MailConfig extends AnylineConfig{
+
+	public static String CONFIG_NAME = "anyline-mail.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	private static File configDir; 
 	public String ACCOUNT; 
@@ -58,7 +59,7 @@ public class MailConfig extends AnylineConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, MailConfig.class, "anyline-mail.xml"); 
+		load(instances, MailConfig.class, CONFIG_NAME);
 		MailConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 

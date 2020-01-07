@@ -1,14 +1,14 @@
 package org.anyline.easemob.util; 
  
-import java.util.Hashtable; 
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 
-
-import org.anyline.util.AnylineConfig; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
+import java.util.Hashtable;
  
  
-public class EasemobConfig extends AnylineConfig{ 
+public class EasemobConfig extends AnylineConfig{
+	public static String CONFIG_NAME = "anyline-easemob.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	public String HOST = ""; 
 	public String CLIENT_ID =""; 
@@ -52,7 +52,7 @@ public class EasemobConfig extends AnylineConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, EasemobConfig.class, "anyline-easemob.xml"); 
+		load(instances, EasemobConfig.class, CONFIG_NAME);
 		EasemobConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	 

@@ -1,10 +1,9 @@
 package org.anyline.aliyun.sms.util; 
  
-import java.util.Hashtable; 
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
 
-
-import org.anyline.util.AnylineConfig; 
-import org.anyline.util.BasicUtil; 
+import java.util.Hashtable;
  
 public class SMSConfig extends AnylineConfig{ 
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
@@ -15,7 +14,8 @@ public class SMSConfig extends AnylineConfig{
 	//客户端配置 
 	public String SMS_SERVER = ""; 
 	public String CLIENT_APP= ""; 
-	public String CLIENT_SECRET= ""; 
+	public String CLIENT_SECRET= "";
+	public static String CONFIG_NAME = "anyline-aliyun-sms.xml";
 	static{ 
 		init(); 
 		debug(); 
@@ -48,7 +48,7 @@ public class SMSConfig extends AnylineConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, SMSConfig.class, "anyline-aliyun-sms.xml"); 
+		load(instances, SMSConfig.class, CONFIG_NAME);
 	} 
 	private static void debug(){ 
 	} 

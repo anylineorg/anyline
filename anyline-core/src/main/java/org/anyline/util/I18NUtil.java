@@ -19,18 +19,18 @@
 
 package org.anyline.util; 
  
-import java.io.File;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
  
 public class I18NUtil {
 	static final Logger log = LoggerFactory.getLogger(I18NUtil.class); 
@@ -40,8 +40,12 @@ public class I18NUtil {
 	static{ 
 		init(); 
 	} 
-	private static void init(){ 
-		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),ConfigTable.get("I18N_MESSAGE_DIR")), "xml"); 
+	private static void init(){
+		String dir = ConfigTable.get("I18N_MESSAGE_DIR");
+		if(null == dir){
+			return;
+		}
+		List<File> files = FileUtil.getAllChildrenFile(new File(ConfigTable.getWebRoot(),dir), "xml");
 		messages = new Hashtable<String,Map<String,String>>(); 
 		SAXReader reader = new SAXReader(); 
 		for(File file:files){ 
