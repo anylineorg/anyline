@@ -11,6 +11,7 @@ public class NacosConfig extends AnylineConfig{
 	public String KEY = "default";
 	public String ADDRESS;
 	public int PORT = 8848;
+	public int TIMEOUT = 5000;
 	static{
 		init(); 
 		debug(); 
