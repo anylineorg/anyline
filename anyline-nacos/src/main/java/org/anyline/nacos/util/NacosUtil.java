@@ -97,6 +97,7 @@ public static void main(String[] args) {
 		}
 		log.warn("[nacos config][group:{}][data:{}][listener:{}]", group, data, listener);
 		Properties properties = new Properties();
+		properties.put(PropertyKeyConst.NAMESPACE, config.NAMESAPCE);
 		properties.put(PropertyKeyConst.SERVER_ADDR, config.ADDRESS+":"+config.PORT);
 		ConfigService configService = NacosFactory.createConfigService(properties);
 		String content = configService.getConfig(data, group, config.TIMEOUT);
