@@ -62,7 +62,9 @@
 		<module>anyline-web</module>
 		<module>anyline-web-ext</module>
 		<module>anyline-weixin</module>
-    </modules>
+		<module>anyline-rocketmq</module>
+		<module>anyline-ldap</module>
+	</modules>
 	<profiles>
 		<profile>
 			<id>central</id>
