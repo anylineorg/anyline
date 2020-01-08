@@ -51,10 +51,13 @@
 		<anyline.qq.version>${anyline.version}</anyline.qq.version>
 		<anyline.redis.version>${anyline.version}</anyline.redis.version>
 		<anyline.weixin.version>${anyline.version}</anyline.weixin.version>
+		<anyline.poi.version>${anyline.version}</anyline.poi.version>
+		<anyline.nacos.version>${anyline.version}</anyline.nacos.version>
 		<!-- jdbc -->
 		<anyline.jdbc.version>${anyline.version}</anyline.jdbc.version>
 		<anyline.jdbc.mssql.version>${anyline.version}</anyline.jdbc.mssql.version>
 		<anyline.jdbc.mysql.version>${anyline.version}</anyline.jdbc.mysql.version>
+		<anyline.jdbc.mariadb.version>${anyline.version}</anyline.jdbc.mariadb.version>
 		<anyline.jdbc.db2.version>${anyline.version}</anyline.jdbc.db2.version>
 		<anyline.jdbc.oracle.version>${anyline.version}</anyline.jdbc.oracle.version>
 		<anyline.jdbc.postgresql.version>${anyline.version}</anyline.jdbc.postgresql.version>
