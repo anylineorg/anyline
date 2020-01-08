@@ -8,6 +8,7 @@
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-start-mvc-jsp</artifactId>
 		<version>8.3.7</version>
+		<relativePath>../anyline-start-mvc-jsp</relativePath>
 	</parent>
 	<artifactId>anyline-start-mvc-jsp-mysql</artifactId>
 	<packaging>pom</packaging>

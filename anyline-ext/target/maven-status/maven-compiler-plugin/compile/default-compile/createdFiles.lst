@@ -1,0 +1,5 @@
+org\anyline\util\LZWEncoder.class
+org\anyline\util\GifUtil.class
+org\anyline\util\NeuQuant.class
+org\anyline\util\WatermarkUtil.class
+org\anyline\util\AnimatedGifEncoder.class

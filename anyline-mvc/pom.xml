@@ -9,6 +9,7 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
 		<version>8.3.7</version>
+		<relativePath>../anyline-dependency</relativePath>
 	</parent>
 	
 	<artifactId>anyline-mvc</artifactId>

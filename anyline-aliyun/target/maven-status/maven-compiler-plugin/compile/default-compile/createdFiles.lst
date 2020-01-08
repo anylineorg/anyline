@@ -1,0 +1,7 @@
+org\anyline\aliyun\oss\util\OSSUtil.class
+org\anyline\aliyun\oss\tag\OSSConfig.class
+org\anyline\aliyun\sms\util\SMSUtil.class
+org\anyline\aliyun\sms\util\SMSClient.class
+org\anyline\aliyun\sms\util\SMSConfig.class
+org\anyline\aliyun\sms\util\SMSResult.class
+org\anyline\aliyun\oss\util\OSSConfig.class
