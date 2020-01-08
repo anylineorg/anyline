@@ -3,9 +3,10 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>anyline</artifactId>
         <groupId>org.anyline</groupId>
+        <artifactId>anyline-dependency</artifactId>
         <version>8.3.7</version>
+        <relativePath>../anyline-dependency</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 

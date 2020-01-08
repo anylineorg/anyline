@@ -27,15 +27,18 @@
 		<url>https://github.com/anylineorg/anyline</url>
 	</scm>
     <modules>
+		<module>anyline-dependency</module>
+		<module>anyline-core</module>
+		<module>anyline-net</module>
+		<module>anyline-jdbc</module>
+		<module>anyline-web</module>
+		<module>anyline-mvc</module>
 		<module>anyline-alipay</module>
 		<module>anyline-aliyun</module>
 		<module>anyline-amap</module>
-		<module>anyline-core</module>
 		<module>anyline-core-min</module>
-		<module>anyline-dependency</module>
 		<module>anyline-easemob</module>
 		<module>anyline-ext</module>
-		<module>anyline-jdbc</module>
 		<module>anyline-jdbc-db2</module>
 		<module>anyline-jdbc-hgdb</module>
 		<module>anyline-jdbc-mariadb</module>
@@ -45,10 +48,8 @@
 		<module>anyline-jdbc-postgresql</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
-		<module>anyline-mvc</module>
 		<module>anyline-nacos</module>
 		<module>anyline-nc</module>
-		<module>anyline-net</module>
 		<module>anyline-poi</module>
 		<module>anyline-qq</module>
 		<module>anyline-redis</module>
@@ -59,11 +60,10 @@
 		<module>anyline-start-mvc-mysql</module>
 		<module>anyline-struts</module>
 		<module>anyline-video</module>
-		<module>anyline-web</module>
-		<module>anyline-web-ext</module>
 		<module>anyline-weixin</module>
 		<module>anyline-rocketmq</module>
 		<module>anyline-ldap</module>
+		<module>anyline-web-ext</module>
 	</modules>
 	<profiles>
 		<profile>

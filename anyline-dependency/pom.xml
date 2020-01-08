@@ -5,7 +5,7 @@
 	<artifactId>anyline-dependency</artifactId>
 	<version>8.3.7</version>
 	<packaging>pom</packaging>
-	<name>anyLine dependency</name>
+	<name>anyline dependency</name>
 	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
 	<url>http://www.anyline.org</url>
 	<licenses>
@@ -16,7 +16,7 @@
 	</licenses>
 	<developers>
 		<developer>
-			<name>AnyLine</name>
+			<name>anyline</name>
 			<email>service@anyline.org</email>
 			<organization>org.anyline</organization>
 			<organizationUrl>http://www.anyline.org</organizationUrl>
@@ -32,7 +32,7 @@
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<anyline.version>${project.version}</anyline.version>
-		
+
 		<anyline.core.version>${anyline.version}</anyline.core.version>
 		<anyline.net.version>${anyline.version}</anyline.net.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
@@ -62,7 +62,7 @@
 		<anyline.jdbc.oracle.version>${anyline.version}</anyline.jdbc.oracle.version>
 		<anyline.jdbc.postgresql.version>${anyline.version}</anyline.jdbc.postgresql.version>
 		<anyline.jdbc.hgdb.version>${anyline.version}</anyline.jdbc.hgdb.version>
-		
+
 		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
 		<mysql.version>5.1.24</mysql.version>
 		<db2-jdbc.version>11.5.0.0</db2-jdbc.version>
@@ -238,7 +238,7 @@
 				<artifactId>anyline-nc</artifactId>
 				<version>${anyline.nc.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
@@ -253,13 +253,13 @@
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-context</artifactId>
 				<version>${spring.version}</version>
-			</dependency>  
+			</dependency>
 			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-webmvc</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>com.ibm.db2</groupId>
 				<artifactId>jcc</artifactId>
@@ -284,7 +284,7 @@
 				<groupId>mysql</groupId>
 				<artifactId>mysql-connector-java</artifactId>
 				<version>${mysql.version}</version>
-			</dependency> 
+			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
@@ -358,7 +358,7 @@
 				<groupId>org.apache.struts</groupId>
 				<artifactId>struts2-convention-plugin</artifactId>
 				<version>${apache.struts.version}</version>
-			</dependency>   
+			</dependency>
 			<dependency>
 				<groupId>com.aliyun.oss</groupId>
 				<artifactId>aliyun-sdk-oss</artifactId>
@@ -369,7 +369,7 @@
 				<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
 				<version>${aliyun.sms.version}</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>net.sf.ehcache</groupId>
 				<artifactId>ehcache</artifactId>
@@ -395,13 +395,13 @@
 				<artifactId>logback-core</artifactId>
 				<version>${logback.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
 				<version>${logback.version}</version>
 			</dependency>
-	
+
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-access</artifactId>
@@ -428,11 +428,6 @@
                 <artifactId>jackson-databind</artifactId>
 			    <version>${jackson.version}</version>
             </dependency>
-			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
-			    <artifactId>jackson-core</artifactId>
-			    <version>${jackson.version}</version>
-			</dependency>
 			<dependency>
 				<groupId>org.dom4j</groupId>
 				<artifactId>dom4j</artifactId>
