@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<configs>
-	<config key="default">
-		<property key="ADDRESS">127.0.0.1</property>
-		<property key="PORT">8848</property>
-	</config>
-</configs>
