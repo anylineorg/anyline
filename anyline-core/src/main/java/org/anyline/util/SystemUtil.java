@@ -1,11 +1,10 @@
 package org.anyline.util; 
  
-import java.io.File; 
-import java.lang.management.ManagementFactory; 
+import com.sun.management.OperatingSystemMXBean;
+import org.anyline.entity.DataRow;
 
-import org.anyline.entity.DataRow; 
-
-import com.sun.management.OperatingSystemMXBean; 
+import java.io.File;
+import java.lang.management.ManagementFactory;
  
 public class SystemUtil { 
 	private DataRow info = null; 
@@ -109,18 +108,7 @@ public class SystemUtil {
 		return info.getInt("vmMax"); 
 	} 
 	 
-	public static void main(String[] args) { 
-		while(true){ 
-		 info(); 
-		 try { 
-			Thread.sleep(2000); 
-		} catch (Exception e) { 
-			// TODO Auto-generated catch block 
-			e.printStackTrace(); 
-		} 
-		} 
-	} 
-	public static void info(){ 
+	public static void info(){
  
 		// 虚拟机级内存情况查询 
 		long vmFree = 0; 
