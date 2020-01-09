@@ -16,20 +16,16 @@
  *           
  */ 
  
-package org.anyline.util; 
- 
-import java.text.ParseException; 
-import java.text.SimpleDateFormat; 
-import java.util.ArrayList; 
-import java.util.Calendar; 
-import java.util.Date; 
-import java.util.List; 
-import java.util.Locale; 
-import java.util.TimeZone; 
- 
-import org.anyline.util.regular.Regular; 
-import org.anyline.util.regular.RegularUtil; 
- 
+package org.anyline.util;
+
+import org.anyline.util.regular.Regular;
+import org.anyline.util.regular.RegularUtil;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+
 public class DateUtil { 
 	private static int MaxDate;// 一月最大天数 
  
@@ -43,19 +39,48 @@ public class DateUtil {
 	public static final int DATE_PART_HOUR = Calendar.HOUR; 
 	public static final int DATE_PART_MINUTE = Calendar.MINUTE; 
 	public static final int DATE_PART_SECOND = Calendar.SECOND; 
-	public static final int DATE_PART_MILLISECOND = Calendar.MILLISECOND; 
- 
-	private static Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Shanghai"), Locale.CHINESE); 
-	public void setTimeZone(TimeZone zone, Locale local){ 
-		calendar = Calendar.getInstance(zone, local); 
-	} 
-	public static boolean between(Date cur, Date fr, Date to) { 
-		if (cur.getTime() >= fr.getTime() && cur.getTime() <= to.getTime()) { 
-			return true; 
-		} 
-		return false; 
-	} 
- 
+	public static final int DATE_PART_MILLISECOND = Calendar.MILLISECOND;
+
+
+	private static final Object calendarLock = new Object();
+	private static Map<String, ThreadLocal<Calendar>> calendars = new HashMap<String, ThreadLocal<Calendar>>();
+	private static Calendar getCalendar(TimeZone zone, Locale local) {
+		if(null == zone){
+			zone = TimeZone.getTimeZone("Asia/Shanghai");
+		}
+		if(null == local){
+			local = Locale.CHINESE;
+		}
+		final TimeZone _zone = zone;
+		final Locale _local = local;
+		String key = zone.getDisplayName() + local.getDisplayName();
+		ThreadLocal<Calendar> instance = calendars.get(key);
+		if (instance == null) {
+			synchronized (calendarLock) {
+				instance = calendars.get(key);
+				if (instance == null) {
+					instance = new ThreadLocal<Calendar>() {
+						@Override
+						protected Calendar initialValue() {
+							return Calendar.getInstance(_zone,_local);
+						}
+					};
+					calendars.put(key, instance);
+				}
+			}
+		}
+		return instance.get();
+	}
+	private static Calendar getCalendar() {
+		return getCalendar(null,null);
+	}
+	public static boolean between(Date cur, Date fr, Date to) {
+		if (cur.getTime() >= fr.getTime() && cur.getTime() <= to.getTime()) {
+			return true;
+		}
+		return false;
+	}
+
 	/** 
 	 * cur是否在fr和to之内 
 	 *  
@@ -144,8 +169,8 @@ public class DateUtil {
 		if (null == date || null == format) 
 			return ""; 
 		return new java.text.SimpleDateFormat(format, locale).format(date); 
-	} 
- 
+	}
+
 	public static String format(Locale locale, Long date, String format) { 
 		if (null == date || null == format) 
 			return ""; 
@@ -221,7 +246,7 @@ public class DateUtil {
 	} 
  
 	public static int convertMinute() { 
-		String hm = format("hh:mm"); 
+		String hm = format("HH:mm");
 		return convertMinute(hm); 
 	} 
  
@@ -250,7 +275,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static String getWeek(Date date) { 
+	public static String getWeek(Date date) {
+		Calendar calendar = getCalendar();
 		// 再转换为时间 
 		calendar.setTime(date); 
 		// int hour=c.get(Calendar.DAY_OF_WEEK); 
@@ -266,7 +292,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getFirstDayOfWeek(Date date) { 
+	public static Date getFirstDayOfWeek(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.set(Calendar.DAY_OF_WEEK, 1);// 设为当前周的第一天 
 		return calendar.getTime(); 
@@ -285,7 +312,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getFirstDayOfNextWeek(Date date) { 
+	public static Date getFirstDayOfNextWeek(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.WEEK_OF_YEAR, 1);// 减一个周 
 		calendar.set(Calendar.DAY_OF_WEEK, 1);// 把日期设置为当周第一天 
@@ -306,7 +334,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getFirstDayOfPreviousWeek(Date date) { 
+	public static Date getFirstDayOfPreviousWeek(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.WEEK_OF_YEAR, -1);// 减一个周 
 		calendar.set(Calendar.DAY_OF_WEEK, 1);// 设为当前周第一天 
@@ -326,7 +355,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getLastDayOfWeek(Date date) { 
+	public static Date getLastDayOfWeek(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.set(Calendar.DAY_OF_WEEK, 7); 
 		return calendar.getTime(); 
@@ -345,7 +375,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getLastDayOfNextWeek(Date date) { 
+	public static Date getLastDayOfNextWeek(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.WEEK_OF_YEAR, 1);// 减一个周 
 		calendar.set(Calendar.DAY_OF_WEEK, 7); 
@@ -366,7 +397,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getLastDayOfPreviousWeek(Date date) { 
+	public static Date getLastDayOfPreviousWeek(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.WEEK_OF_YEAR, -1);// 减一个周 
 		calendar.set(Calendar.DAY_OF_WEEK, 7); 
@@ -386,7 +418,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getFirstDayOfMonth(Date date) { 
+	public static Date getFirstDayOfMonth(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.set(Calendar.DAY_OF_MONTH, 1);// 设为当前月的1号 
 		return calendar.getTime(); 
@@ -405,7 +438,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getFirstDayOfNextMonth(Date date) { 
+	public static Date getFirstDayOfNextMonth(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.MONTH, 1);// 减一个月 
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天 
@@ -425,7 +459,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getFirstDayOfPreviousMonth(Date date) { 
+	public static Date getFirstDayOfPreviousMonth(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.set(Calendar.DATE, 1);// 设为当前月的1号 
 		calendar.add(Calendar.MONTH, -1);// 减一个月，变为下月的1号 
@@ -468,7 +503,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getLastDayOfPreviousMonth(Date date) { 
+	public static Date getLastDayOfPreviousMonth(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.MONTH, -1);// 减一个月 
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天 
@@ -489,7 +525,8 @@ public class DateUtil {
 	 * @param date  date
 	 * @return return
 	 */ 
-	public static Date getLastDayOfNextMonth(Date date) { 
+	public static Date getLastDayOfNextMonth(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.MONTH, 1);// 加一个月 
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天 
@@ -506,7 +543,8 @@ public class DateUtil {
 	} 
  
 	// 获得本周星期日的日期 
-	public static Date getCurrentWeekday(Date date) { 
+	public static Date getCurrentWeekday(Date date) {
+		Calendar calendar = getCalendar();
 		int mondayPlus = getMondayPlus(date); 
 		calendar.setTime(date); 
 		calendar.add(Calendar.DATE, mondayPlus + 6); 
@@ -522,7 +560,8 @@ public class DateUtil {
 	} 
  
 	// 获得当前日期与本周日相差的天数 
-	public static int getMondayPlus(Date date) { 
+	public static int getMondayPlus(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		// 获得今天是一周的第几天，星期日是第一天，星期二是第二天...... 
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 因为按中国礼拜一作为第一天所以这里减1 
@@ -538,7 +577,8 @@ public class DateUtil {
 	} 
  
 	// 获得本周一的日期 
-	public static Date getMondayOFWeek(Date date) { 
+	public static Date getMondayOFWeek(Date date) {
+		Calendar calendar = getCalendar();
 		int mondayPlus = getMondayPlus(date); 
 		calendar.setTime(date); 
 		calendar.add(Calendar.DATE, mondayPlus); 
@@ -550,11 +590,12 @@ public class DateUtil {
 	} 
  
 	public static Date getMondayOFWeek() { 
-		return getMondayOFWeek(new Date(0)); 
+		return getMondayOFWeek(new Date());
 	} 
  
 	// 获得下周星期一的日期 
-	public static Date getNextMonday(Date date) { 
+	public static Date getNextMonday(Date date) {
+		Calendar calendar = getCalendar();
 		int mondayPlus = getMondayPlus(date); 
 		calendar.setTime(date); 
 		calendar.add(Calendar.DATE, mondayPlus + 7); 
@@ -570,7 +611,8 @@ public class DateUtil {
 	} 
  
 	// 获得下周星期日的日期 
-	public static Date getNextSunday(Date date) { 
+	public static Date getNextSunday(Date date) {
+		Calendar calendar = getCalendar();
 		int mondayPlus = getMondayPlus(date); 
 		calendar.setTime(date); 
 		calendar.add(Calendar.DATE, mondayPlus + 7 + 6); 
@@ -586,7 +628,8 @@ public class DateUtil {
 	} 
  
 	// 当前日期与本周日相差几天 
-	public static int getMonthPlus(Date date) { 
+	public static int getMonthPlus(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		int monthOfNumber = calendar.get(Calendar.DAY_OF_MONTH); 
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天 
@@ -600,7 +643,8 @@ public class DateUtil {
 	} 
  
 	// 获得明年最后一天的日期 
-	public static Date getNextYearEnd(Date date) { 
+	public static Date getNextYearEnd(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.YEAR, 1);// 加一个年 
 		calendar.set(Calendar.DAY_OF_YEAR, 1); 
@@ -617,7 +661,8 @@ public class DateUtil {
 	} 
  
 	// 获得明年第一天的日期 
-	public static Date getNextYearFirst(Date date) { 
+	public static Date getNextYearFirst(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.YEAR, 1);// 加一个年 
 		calendar.set(Calendar.DAY_OF_YEAR, 1); 
@@ -637,7 +682,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static int countDaysOfYear(Date date) { 
+	public static int countDaysOfYear(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.set(Calendar.DAY_OF_YEAR, 1);// 把日期设为当年第一天 
 		calendar.roll(Calendar.DAY_OF_YEAR, -1);// 把日期回滚一天。 
@@ -657,7 +703,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static int countDaysOfMonth(Date date) { 
+	public static int countDaysOfMonth(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.set(Calendar.DAY_OF_MONTH, 1); // 把时间调整为当月的第一天； 
 		calendar.add(Calendar.MONTH,1); // 月份调至下个月； 
@@ -673,7 +720,8 @@ public class DateUtil {
 		return countDaysOfMonth(new Date()); 
 	} 
 	 
-	private static int getYearPlus(Date date) { 
+	private static int getYearPlus(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		int yearOfNumber = calendar.get(Calendar.DAY_OF_YEAR);// 获得当天是一年中的第几天 
 		calendar.set(Calendar.DAY_OF_YEAR, 1);// 把日期设为当年第一天 
@@ -687,7 +735,8 @@ public class DateUtil {
 	} 
  
 	// 获得本年第一天的日期 
-	public static Date getFirstDayOfYear(Date date) { 
+	public static Date getFirstDayOfYear(Date date) {
+		Calendar calendar = getCalendar();
 		int yearPlus = getYearPlus(date); 
 		calendar.setTime(date); 
 		calendar.add(Calendar.DATE, yearPlus); 
@@ -878,7 +927,8 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addDay(int value) { 
+	public static Date addDay(int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(new Date()); 
 		calendar.add(Calendar.DAY_OF_YEAR, value); 
 		return calendar.getTime(); 
@@ -891,12 +941,14 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addDay(Date date, int value) { 
+	public static Date addDay(Date date, int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.DAY_OF_YEAR, value); 
 		return calendar.getTime(); 
 	} 
-	public static String addDay(String date, int value) { 
+	public static String addDay(String date, int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(parse(date)); 
 		calendar.add(Calendar.DAY_OF_YEAR, value); 
 		return DateUtil.format(calendar.getTime(),"yyyy-MM-dd"); 
@@ -908,7 +960,8 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addMonth(int value) { 
+	public static Date addMonth(int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(new Date()); 
 		calendar.add(Calendar.MONTH, value); 
 		return calendar.getTime(); 
@@ -921,7 +974,8 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addMonth(Date date, int value) { 
+	public static Date addMonth(Date date, int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.MONTH, value); 
 		return calendar.getTime(); 
@@ -936,7 +990,8 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addYear(int value) { 
+	public static Date addYear(int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(new Date()); 
 		calendar.add(Calendar.YEAR, value); 
 		return calendar.getTime(); 
@@ -968,7 +1023,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static int getDayOfWeek(Date date) { 
+	public static int getDayOfWeek(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.DAY_OF_WEEK) - 1; 
 	} 
@@ -1034,7 +1090,8 @@ public class DateUtil {
 		return list; 
 	} 
  
-	public static List<Date> getDaysOfWeek(int year, int week){ 
+	public static List<Date> getDaysOfWeek(int year, int week){
+		Calendar calendar = getCalendar();
 		List<Date> list = new ArrayList<Date>(); 
 		calendar.setTime(new Date()); 
 		calendar.set(Calendar.YEAR, year); 
@@ -1120,7 +1177,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static int getWeekOfYear(Date date) { 
+	public static int getWeekOfYear(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.WEEK_OF_YEAR); 
 	} 
@@ -1136,7 +1194,8 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addYear(Date date, int value) { 
+	public static Date addYear(Date date, int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.YEAR, value); 
 		return calendar.getTime(); 
@@ -1151,7 +1210,8 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addHour(int value) { 
+	public static Date addHour(int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(new Date()); 
 		calendar.add(Calendar.HOUR_OF_DAY, value); 
 		return calendar.getTime(); 
@@ -1164,7 +1224,8 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addHour(Date date, int value) { 
+	public static Date addHour(Date date, int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.HOUR_OF_DAY, value); 
 		return calendar.getTime(); 
@@ -1179,7 +1240,8 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addMinute(int value) { 
+	public static Date addMinute(int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(new Date()); 
 		calendar.add(Calendar.MINUTE, value); 
 		return calendar.getTime(); 
@@ -1192,7 +1254,8 @@ public class DateUtil {
 	 * @param value  value
 	 * @return return
 	 */ 
-	public static Date addMinute(Date date, int value) { 
+	public static Date addMinute(Date date, int value) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		calendar.add(Calendar.MINUTE, value); 
 		return calendar.getTime(); 
@@ -1206,7 +1269,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static int year(Date date) { 
+	public static int year(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.YEAR); 
 	} 
@@ -1220,7 +1284,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static int month(Date date) { 
+	public static int month(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.MONTH); 
 	} 
@@ -1258,7 +1323,8 @@ public class DateUtil {
 	public static int dayOfMonth() { 
 		return getDayOfMonth(); 
 	} 
-	public static int getDayOfMonth(Date date){ 
+	public static int getDayOfMonth(Date date){
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.DAY_OF_MONTH); 
 	} 
@@ -1292,7 +1358,8 @@ public class DateUtil {
 		return getDayOfYear(); 
 	} 
  
-	public static int getDayOfYear(Date date) { 
+	public static int getDayOfYear(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.DAY_OF_YEAR); 
 	} 
@@ -1311,7 +1378,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static int hour(Date date) { 
+	public static int hour(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.HOUR); 
 	} 
@@ -1325,7 +1393,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static int minute(Date date) { 
+	public static int minute(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.MINUTE); 
 	} 
@@ -1339,7 +1408,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static int second(Date date) { 
+	public static int second(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.SECOND); 
 	} 
@@ -1374,7 +1444,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static boolean isAm(Date date) { 
+	public static boolean isAm(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.AM_PM) == 0; 
 	} 
@@ -1388,7 +1459,8 @@ public class DateUtil {
 	 * @param date date
 	 * @return return
 	 */ 
-	public static boolean isPm(Date date) { 
+	public static boolean isPm(Date date) {
+		Calendar calendar = getCalendar();
 		calendar.setTime(date); 
 		return calendar.get(Calendar.AM_PM) == 1; 
 	} 
