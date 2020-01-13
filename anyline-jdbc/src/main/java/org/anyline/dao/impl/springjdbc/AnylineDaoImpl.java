@@ -35,7 +35,7 @@ import org.anyline.dao.impl.BatchInsertStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.cache.PageLazyStore;
+import org.anyline.cache.PageLazyStore;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;

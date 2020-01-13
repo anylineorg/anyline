@@ -19,16 +19,12 @@
 
 package org.anyline.jdbc.config; 
  
+import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.db.*;
+import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+
 import java.util.List;
 import java.util.Map;
-
-import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.Group;
-import org.anyline.jdbc.config.db.GroupStore;
-import org.anyline.jdbc.config.db.Order;
-import org.anyline.jdbc.config.db.OrderStore;
-import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
  
  
 /** 
@@ -37,9 +33,7 @@ import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
  * 
  */ 
 public interface ConfigStore { 
-	 
-	 
-	/** 
+	/**
 	 * 解析查询配置参数 
 	 * @param config "COMPANY_CD:company","NM:nmEn% | NM:nmCn%","STATUS_VALUE:[status]" 
 	 * @return return
