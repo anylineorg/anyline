@@ -19,21 +19,15 @@
 
 package org.anyline.util; 
  
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Properties;
-
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.*;
  
  
 public class ConfigTable { 
@@ -107,7 +101,6 @@ public class ConfigTable {
 		if(isLoading){
 			return;
 		}
-		//中断递归
 		lastLoadTime = System.currentTimeMillis();
 		isLoading = true;
 		String path =  ""; 
@@ -216,7 +209,24 @@ public class ConfigTable {
 		}catch(Exception e){
 			log.error("配置文件解析异常:"+e);
 		}
-	} 
+	}
+	public static void parse(String xml){
+		try {
+			Document document = DocumentHelper.parseText(xml);
+			Element root = document.getRootElement();
+			for (Iterator<Element> itrProperty = root.elementIterator("property"); itrProperty.hasNext(); ) {
+				Element propertyElement = itrProperty.next();
+				String key = propertyElement.attributeValue("key");
+				String value = propertyElement.getTextTrim();
+				configs.put(key.toUpperCase().trim(), value);
+				if (isDebug()) {
+					log.info("[解析配置文件][{}={}]", key, value);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 	protected static void loadConfig(File file){
 		try{
 			if(isDebug()){
@@ -232,18 +242,8 @@ public class ConfigTable {
 					loadConfig(f);
 				}
 			}
-			SAXReader reader = new SAXReader();
-			Document document = reader.read(file);
-			Element root = document.getRootElement();
-			for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();){
-				Element propertyElement = itrProperty.next();
-				String key = propertyElement.attributeValue("key");
-				String value = propertyElement.getTextTrim();
-				configs.put(key.toUpperCase().trim(), value);
-				if(isDebug()){
-					log.info("[解析配置文件][{}={}]",key,value);
-				}
-			}
+			parse(FileUtil.read(file).toString());
+
 		}catch(Exception e){
 			log.error("配置文件解析异常:"+e);
 		}

@@ -17,11 +17,12 @@
  */ 
  
  
-package org.anyline.util; 
- 
+package org.anyline.util;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.regular.Regular;
@@ -43,12 +44,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
  
  
 public class BeanUtil { 
 	public static ObjectMapper JSON_MAPPER = new ObjectMapper();
-	private static final Logger log = LoggerFactory.getLogger(BeanUtil.class); 
+
+	private static final Logger log = LoggerFactory.getLogger(BeanUtil.class);
+	static{
+		JSON_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		JSON_MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+	}
 	public static boolean setFieldValue(Object obj, Field field, Object value){ 
 		if(null == obj || null == field){ 
 			return false; 
