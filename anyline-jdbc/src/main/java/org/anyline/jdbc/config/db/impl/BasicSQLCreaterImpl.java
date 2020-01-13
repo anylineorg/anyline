@@ -20,10 +20,6 @@
 package org.anyline.jdbc.config.db.impl;
 
  
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.AnylineEntity;
 import org.anyline.entity.DataRow;
@@ -48,11 +44,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 
 /**
  * SQL生成 子类主要实现与分页相关的SQL 以及disKey
- * @author  zh
- * @since   1.0
  */
 
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
@@ -711,7 +709,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	/** 
 	 * 确认需要插入的列 
 	 * @param entity  entity
-	 * @param columns  columns
+	 * @param propertys  propertys
 	 * @return return
 	 */ 
 	private List<String> confirmInsertColumns(String dst, AnylineEntity entity, String ... propertys){ 
@@ -832,7 +830,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			} 
 		} 
 		if(each){ 
-			keys = row.getUpdateColumns();
+			keys = row.keys();
 			for(String k:mastKeys){
 				if(!keys.contains(k)){
 					keys.add(k);
@@ -880,8 +878,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	} 
 	/** 
 	 * 确认需要更新的列 
+	 * @param dst  dst
 	 * @param entity  entity
-	 * @param columns  columns
+	 * @param propertys  propertys
 	 * @return return
 	 */ 
 	@SuppressWarnings("unused")

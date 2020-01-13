@@ -19,13 +19,13 @@
 
 package org.anyline.service; 
  
-import java.util.Collection;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
+
+import java.util.Collection;
  
 public interface AnylineService{ 
 	/**
@@ -65,19 +65,7 @@ public interface AnylineService{
 	public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions);
 	public DataSet caches(String cache, String src, String ... conditions);
 	public DataSet caches(String cache, String src, int fr, int to, String ... conditions);
-	/**
-	 * 只用一级缓存 忽略二级缓存
-	 * @param cache cache
-	 * @param src src
-	 * @param configs configs
-	 * @param conditions conditions
-	 * @return return
-	 */
-	public DataSet cacheL1(String cache, String src, ConfigStore configs, String ... conditions);
-	public DataSet cacheL1(String cache, String src, String ... conditions);
-	public DataSet cacheL1(String cache, String src, int fr, int to, String ... conditions);
 
-	 
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
 	public DataRow next(DataRow row, SQL.ORDER_TYPE order, String ... conditions);
