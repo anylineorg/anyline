@@ -949,9 +949,36 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		Object value = get(key);
 		return Double.parseDouble(value.toString());
 	}
+
+	public double getDouble(String key, double def){
+		try {
+			return getDouble(key);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
 	public long getLong(String key) throws Exception{
 		Object value = get(key);
 		return Long.parseLong(value.toString());
+	}
+	public long getLong(String key, long def){
+		try {
+			return getLong(key);
+		}catch (Exception e){
+			return def;
+		}
+	}
+	public float getFloat(String key) throws Exception{
+		Object value = get(key);
+		return Float.parseFloat(value.toString());
+	}
+	public float getFloat(String key, float def){
+		try {
+			return getFloat(key);
+		}catch (Exception e){
+			return def;
+		}
 	}
 	public boolean getBoolean(String key, boolean def){
 		return BasicUtil.parseBoolean(getString(key), def);
