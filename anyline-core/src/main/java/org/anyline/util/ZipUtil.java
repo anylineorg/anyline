@@ -345,8 +345,13 @@ public class ZipUtil {
 	 */ 
 	public static String getEntryComment(ZipEntry entry) { 
 		String result = ""; 
-		try { 
-			result = new String(entry.getComment().getBytes("GB2312"), "8859_1"); 
+		try {
+
+            result = entry.getComment();
+            if(null != result) {
+                result = new String(result.getBytes("GB2312"), "8859_1");
+            }
+
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		} 
