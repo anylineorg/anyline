@@ -1477,4 +1477,31 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+	/**
+	 * 替换所有NULL值
+	 * @param key key
+	 * @param value value
+	 * @return return
+	 */
+	public DataRow replaceNull(String key, String value){
+		List<String> keys = keys();
+		if(null == get(key)){
+			put(key,value);
+		}
+		return this;
+	}
+
+	/**
+	 * 替换所有空值
+	 * @param key key
+	 * @param value value
+	 * @return return
+	 */
+	public DataRow replaceEmpty(String key, String value){
+		List<String> keys = keys();
+		if(isEmpty(key)){
+			put(key,value);
+		}
+		return this;
+	}
 } 
