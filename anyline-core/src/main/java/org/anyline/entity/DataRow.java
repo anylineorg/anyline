@@ -937,7 +937,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}else{
 			return Integer.parseInt(val.toString());
 		}
-	} 
+	}
+	public int getInt(String key, int def){
+		try{
+			return getInt(key);
+		}catch(Exception e){
+			return def;
+		}
+	}
 	public double getDouble(String key) throws Exception{
 		Object value = get(key);
 		return Double.parseDouble(value.toString());
