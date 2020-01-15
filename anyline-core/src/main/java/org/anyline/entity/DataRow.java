@@ -16,23 +16,8 @@
  *          
  */
 package org.anyline.entity; 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
-import org.anyline.util.NumberUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.anyline.util.*;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -40,7 +25,11 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.math.BigDecimal;
+import java.util.*;
  
 public class DataRow extends HashMap<String, Object> implements Serializable{ 
 	private static final long serialVersionUID = -2098827041540802313L;
@@ -125,7 +114,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				Map mp = (Map)obj;
 				List<String> ks = BeanUtil.getMapKeys(mp);
 				for(String k:ks){
-					row.put(k, mp.get(k));
+					Object value = mp.get(k);
+					if(null != value && value instanceof Map){
+						value = parse(value);
+					}
+					row.put(k, value);
 				}
 			}else{
 				List<String> fields = BeanUtil.getFieldsName(obj.getClass());
