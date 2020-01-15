@@ -19,24 +19,15 @@
 
 package org.anyline.util; 
  
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.anyline.util.regular.RegularUtil;
+
 import java.math.BigDecimal;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
-import org.anyline.util.regular.RegularUtil;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.*;
  
 public class BasicUtil { 
 
@@ -380,30 +371,27 @@ public class BasicUtil {
 	 * @return return
 	 */ 
 	public static Boolean parseBoolean(Object obj, Boolean def) {
-		boolean result = def; 
-		if (isEmpty(obj)) 
-			return result; 
 		try { 
-			if ("1".equals(obj.toString()) 
-					|| "true".equalsIgnoreCase(obj.toString()) 
-					|| "on".equalsIgnoreCase(obj.toString()) 
-					|| "t".equalsIgnoreCase(obj.toString())) { 
-				result = true; 
-			} else if ("0".equals(obj.toString())
-					|| "false".equalsIgnoreCase(obj.toString())
-					|| "off".equalsIgnoreCase(obj.toString()) 
-					|| "f".equalsIgnoreCase(obj.toString())) { 
-				result = false; 
-			} else { 
-				result = Boolean.parseBoolean(obj.toString()); 
-			} 
-		} catch (Exception e) { 
-		} 
-		return result; 
+			return parseBoolean(obj);
+		} catch (Exception e) {
+			return def;
+		}
 	} 
  
-	public static boolean parseBoolean(Object obj) { 
-		return parseBoolean(obj, false); 
+	public static boolean parseBoolean(Object obj) throws Exception{
+		if ("1".equals(obj.toString())
+				|| "true".equalsIgnoreCase(obj.toString())
+				|| "on".equalsIgnoreCase(obj.toString())
+				|| "t".equalsIgnoreCase(obj.toString())) {
+			return true;
+		} else if ("0".equals(obj.toString())
+				|| "false".equalsIgnoreCase(obj.toString())
+				|| "off".equalsIgnoreCase(obj.toString())
+				|| "f".equalsIgnoreCase(obj.toString())) {
+			return  false;
+		} else {
+			return Boolean.parseBoolean(obj.toString());
+		}
 	} 
  
 	/** 

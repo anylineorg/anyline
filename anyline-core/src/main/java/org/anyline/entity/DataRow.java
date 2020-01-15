@@ -149,40 +149,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return null;
 	}
 
-//	/**
-//	 * 解析JSONObject
-//	 * @param json json
-//	 * @return return
-//	 */
-//	public static DataRow parseJson(JSONObject json){
-//		DataRow row = new DataRow();
-//		if(null == json){
-//			return row;
-//		}
-//		Iterator<?>  itr = json.keySet().iterator();
-//		while(itr.hasNext()){
-//			String key = itr.next().toString();
-//			Object val = json.get(key);
-//			if(null != val){
-//				if(val instanceof JSONObject){
-//					row.put(key, parseJson((JSONObject)val));
-//				}else if(val instanceof JSONArray){
-//					row.put(key, parseJson((JSONArray)val));
-//				}/*else if(val instanceof JSONNull){
-//					row.put(key, null);
-//				}*/else if(val instanceof String){
-//					if("null".equalsIgnoreCase((String)val)){
-//						row.put(key, null);
-//					}else{
-//						row.put(key, val);
-//					}
-//				}else{
-//					row.put(key, val);
-//				}
-//			}
-//		}
-//		return row;
-//	}
 	/**
 	 * 解析JSONObject
 	 * @param json json
@@ -231,32 +197,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		
 		return null;
 	}
-	/**
-	 * 解析JSON集合
-	 * 集合中条目不一定是key-value形式的json对象,有可能只是简单的String
-	 * 所以不能解析DataRow,所以条目不能放入DataSet中
-	 * {keys:[1,2,3]}
-	 * {user:[{code:1},[code:2]]}
-	 * @param array array
-	 * @return return
-	 */
-//	public static List<Object> parseJson(JSONArray array){
-//		List<Object> list = new ArrayList<Object>();
-//		int size = array.size();
-//		for(int i=0; i<size; i++){
-//			Object val = array.get(i);
-//			if(null != val){
-//				if(val instanceof JSONObject){
-//					list.add(parseJson((JSONObject)val));
-//				}else if(val instanceof JSONArray){
-//					list.add(parseJson((JSONArray)val));
-//				}else{
-//					list.add(val);
-//				}
-//			}
-//		}
-//		return list;
-//	}
 
 	/**
 	 * 解析xml结构字符
@@ -985,47 +925,32 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @param key key
 	 * @return return
 	 */ 
-	public int getInt(String key){ 
-		int result = 0; 
-		try{
-			Object val = get(key);
-			if(null != val){
-				if(val instanceof Boolean && (Boolean)val){
-					result = 1;
-				}else{ 
-					result = (int)getDouble(key);
-				}
-			} 
-		}catch(Exception e){ 
-			result = 0; 
-		} 
-		return result; 
-	} 
-	public double getDouble(String key){ 
-		double result = 0; 
-		Object value = get(key); 
-		try{ 
-			result = Double.parseDouble(value.toString()); 
-		}catch(Exception e){ 
-			result = 0; 
-		} 
-		return result; 
-	}
-	public long getLong(String key){
-		long result = 0;
-		try{
-			Object value = get(key);
-			result = Long.parseLong(value.toString());
-		}catch(Exception e){
-			result = 0;
+	public int getInt(String key) throws Exception{
+		Object val = get(key);
+		if(val instanceof Boolean){
+			boolean bol = (Boolean)val;
+			if(bol){
+				return 1;
+			}else{
+				return 0;
+			}
+		}else{
+			return Integer.parseInt(val.toString());
 		}
-		return result;
+	} 
+	public double getDouble(String key) throws Exception{
+		Object value = get(key);
+		return Double.parseDouble(value.toString());
+	}
+	public long getLong(String key) throws Exception{
+		Object value = get(key);
+		return Long.parseLong(value.toString());
 	}
 	public boolean getBoolean(String key, boolean def){
 		return BasicUtil.parseBoolean(getString(key), def);
 	}
-	public boolean getBoolean(String key){
-		return BasicUtil.parseBoolean(getString(key), false);
+	public boolean getBoolean(String key) throws Exception{
+		return BasicUtil.parseBoolean(getString(key));
 	}
 	public BigDecimal getDecimal(String key){
 		BigDecimal result = null;
@@ -1069,7 +994,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return DateUtil.parse(date);
 	}
 
-	public Date getDate(String key){
+	public Date getDate(String key) {
 		String date = getString(key);
 		if(null == date){
 			return null;
