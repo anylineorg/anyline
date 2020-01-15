@@ -2001,6 +2001,31 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return this;
 	}
+
+    /**
+     * 替换所有NULL值
+     * @param value value
+     * @return return
+     */
+    public DataSet replaceNull(String key, String value){
+        for(DataRow row:rows){
+            row.replaceNull(key, value);
+        }
+        return this;
+    }
+
+    /**
+     * 替换所有空值
+     * @param key key
+     * @param value value
+     * @return return
+     */
+    public DataSet replaceEmpty(String key, String value){
+        for(DataRow row:rows){
+            row.replaceEmpty(key, value);
+        }
+        return this;
+    }
 	/* ************************* 类sql操作 ************************************** */
 	public DataRow random(){
 		DataRow row = null;
