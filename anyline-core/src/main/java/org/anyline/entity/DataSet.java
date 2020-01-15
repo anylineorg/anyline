@@ -19,29 +19,16 @@
 
 package org.anyline.entity; 
  
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
-import org.anyline.util.EscapeUtil;
+import com.fasterxml.jackson.databind.JsonNode;
+import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.*;
  
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
@@ -1033,7 +1020,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return result;
 		
 	}
-	public List<Integer> getInts(String key){
+	public List<Integer> getInts(String key) throws Exception{
 		List<Integer> result = new ArrayList<Integer>();
 		for(DataRow row:rows){
 			result.add(row.getInt(key));
@@ -1153,7 +1140,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param key  key
 	 * @return return
 	 */ 
-	public int getInt(int index, String key) { 
+	public int getInt(int index, String key) throws Exception{
 		int result = 0; 
 		DataRow row = getRow(index); 
 		if (null != row) 
@@ -1161,7 +1148,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return result; 
 	} 
  
-	public int getInt(String key) { 
+	public int getInt(String key) throws Exception {
 		return getInt(0, key); 
 	} 
  
@@ -1171,16 +1158,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
-	 */ 
-	public double getDouble(int index, String key) { 
-		double result = 0; 
-		DataRow row = getRow(index); 
-		if (null != row) 
-			result = row.getDouble(key); 
-		return result; 
-	} 
- 
-	public double getDouble(String key) { 
+	 */
+    public double getDouble(int index, String key) throws Exception{
+        double result = 0;
+        DataRow row = getRow(index);
+        if (null != row)
+            result = row.getDouble(key);
+        return result;
+    }
+
+    public double getDouble(String key) throws Exception {
 		return getDouble(0, key); 
 	} 
 	/**
