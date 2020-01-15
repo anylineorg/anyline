@@ -18,14 +18,10 @@
  
 package org.anyline.util; 
  
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,9 +31,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
  
 /** 
  * Java utils 实现的Zip工具 不支持RAR格式 
@@ -320,9 +313,11 @@ public class ZipUtil {
 	 * @return 压缩文件内文件名称 
 	 */ 
 	public static ArrayList<String> getEntriesNames(File zip) { 
-		ArrayList<String> entryNames = new ArrayList<String>(); 
-		try { 
-			Enumeration<?> entries = getEntriesEnumeration(zip); 
+		ArrayList<String> entryNames = new ArrayList<String>();
+		ZipFile zipFile = null;
+		try {
+			zipFile = new ZipFile(zip);
+			Enumeration<?> entries = zipFile.entries();
 			while (entries.hasMoreElements()) { 
 				ZipEntry entry = ((ZipEntry) entries.nextElement()); 
 				entryNames.add(new String(getEntryName(entry) 
@@ -330,33 +325,18 @@ public class ZipUtil {
 			} 
 		} catch (Exception e) { 
 			e.printStackTrace(); 
-		} 
+		} finally {
+			if(null != zipFile) {
+				try {
+					zipFile.close();
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		}
 		return entryNames; 
 	} 
- 
-	/** 
-	 * 获得压缩文件内压缩文件对象以取得其属性 
-	 *  
-	 * @param zip  压缩文件 
-	 * @return 返回一个压缩文件列表 
-	 */ 
-	public static Enumeration<?> getEntriesEnumeration(File zip) { 
-		ZipFile zf = null; 
-		try { 
-			zf = new ZipFile(zip); 
-		} catch (Exception e) { 
-			e.printStackTrace(); 
-		} finally { 
-			try { 
-				zf.close(); 
-			} catch (IOException e) { 
-				e.printStackTrace(); 
-			} 
-		} 
-		return zf.entries(); 
- 
-	} 
- 
+
 	/** 
 	 * 取得压缩文件对象的注释 
 	 *  
@@ -381,8 +361,11 @@ public class ZipUtil {
 	 */ 
 	public static String getEntryName(ZipEntry entry) { 
 		String result = ""; 
-		try { 
-			result = new String(entry.getName().getBytes("GB2312"), "8859_1"); 
+		try {
+			result = entry.getName();
+			if(null != result) {
+				result = new String(result.getBytes("GB2312"), "8859_1");
+			}
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		} 
