@@ -160,7 +160,6 @@ public class ConfigTable {
 			//classpath根目录
 			File dir = new File(classpath);
 			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-
 			for(File f:files){
 				String name = f.getName();
 				if((flag+"-config.xml").equals(name)){
@@ -188,27 +187,6 @@ public class ConfigTable {
 				IS_UPPER_KEY = false;
 			}
 		} 
-	}
-	/**
-	 * 解析配置文件
-	 * @param content 文件内容
-	 */
-	protected static void parseConfig(String content){
-		try{
-			Document document = DocumentHelper.parseText(content);
-			Element root = document.getRootElement();
-			for(Iterator<Element> itrProperty=root.elementIterator("property"); itrProperty.hasNext();){
-				Element propertyElement = itrProperty.next();
-				String key = propertyElement.attributeValue("key");
-				String value = propertyElement.getTextTrim();
-				configs.put(key.toUpperCase().trim(), value);
-				if(isDebug()){
-					log.info("[解析配置文件][{}={}]",key,value);
-				}
-			}
-		}catch(Exception e){
-			log.error("配置文件解析异常:"+e);
-		}
 	}
 	public static void parse(String xml){
 		try {
