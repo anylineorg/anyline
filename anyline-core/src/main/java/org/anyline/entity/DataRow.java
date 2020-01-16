@@ -1507,7 +1507,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return return
 	 */
 	public DataRow replaceNull(String key, String value){
-		List<String> keys = keys();
 		if(null == get(key)){
 			put(key,value);
 		}
@@ -1521,10 +1520,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return return
 	 */
 	public DataRow replaceEmpty(String key, String value){
-		List<String> keys = keys();
 		if(isEmpty(key)){
 			put(key,value);
 		}
 		return this;
 	}
+
 } 
