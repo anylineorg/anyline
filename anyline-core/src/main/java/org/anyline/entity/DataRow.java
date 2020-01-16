@@ -1048,18 +1048,33 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public String getJson(){
 		return BeanUtil.map2json(this);
 	}
-	public DataRow clearEmpty(){
-		List<String> keys = keys();
-		for(String key:keys){
-			if(this.isEmpty(key)){
-				this.remove(key);
+	public DataRow removeEmpty(String ... keys){
+		if(null != keys && keys.length>0){
+			for(String key:keys){
+				if(this.isEmpty(key)){
+					this.remove(key);
+				}
+			}
+		}else {
+			List<String> cols = keys();
+			for (String key : cols){
+				if (this.isEmpty(key)) {
+					this.remove(key);
+				}
 			}
 		}
 		return this;
 	}
-	public DataRow clearNull(){
-		List<String> keys = keys();
-		for(String key:keys){
+	public DataRow removeNull(String ... keys){
+		if(null != keys && keys.length>0){
+			for(String key:keys){
+				if(null == this.get(key)){
+					this.remove(key);
+				}
+			}
+		}
+		List<String> cols = keys();
+		for(String key:cols){
 			if(null == this.get(key)){
 				this.remove(key);
 			}
@@ -1070,11 +1085,19 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * null值替换成""
 	 * @return return
 	 */
-	public DataRow nvl(){
-		List<String> keys = keys();
-		for(String key:keys){
-			if(null == get(key)){
-				put(key,"");
+	public DataRow nvl(String ... keys){
+		if(null != keys && keys.length>0){
+			for(String key:keys){
+				if(null == get(key)){
+					put(key,"");
+				}
+			}
+		}else{
+			List<String> cols = keys();
+			for(String key:cols){
+				if(null == get(key)){
+					put(key,"");
+				}
 			}
 		}
 		return this;

@@ -1600,9 +1600,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * 清除空列
 	 * @return return
 	 */
-	public DataSet clearEmpty(){
+	public DataSet removeEmpty(String ... keys){
 		for(DataRow row:rows){
-			row.clearEmpty();
+			row.removeEmpty(keys);
 		}
 		return this;
 	}
@@ -1965,9 +1965,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return this;
 	}
-	public DataSet clearNull(){
+	public DataSet removeNull(String ... keys){
 		for(DataRow row:rows){
-			row.clearNull();
+			row.removeNull(keys);
 		}
 		return this;
 	}
