@@ -986,27 +986,22 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public boolean getBoolean(String key) throws Exception{
 		return BasicUtil.parseBoolean(getString(key));
 	}
-	public BigDecimal getDecimal(String key){
-		BigDecimal result = null;
-		try{
-			String str = getString(key);
-			if(BasicUtil.isNotEmpty(str)){
-				result = new BigDecimal(str);
-			}
-		}catch(Exception e){
-			result = null;
-		}
-		return result;
+	public BigDecimal getDecimal(String key) throws Exception{
+		return new BigDecimal(getString(key));
 	}
 	public BigDecimal getDecimal(String key, double def){
 		return getDecimal(key, new BigDecimal(def));
 	}
 	public BigDecimal getDecimal(String key, BigDecimal def){
-		BigDecimal result = getDecimal(key);
-		if(null == result){
-			result = def;
+		try{
+			BigDecimal result = getDecimal(key);
+			if(null == result){
+				return def;
+			}
+			return result;
+		}catch(Exception e){
+			return def;
 		}
-		return result;
 	}
 	public Date getDate(String key, Date def){
 		Object date = get(key);
@@ -1024,16 +1019,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 	}
 	public Date getDate(String key, String def){
-		String date = getStringNvl(key, def);
-		return DateUtil.parse(date);
+		try{
+			return getDate(key);
+		}catch(Exception e){
+			return DateUtil.parse(def);
+		}
 	}
 
-	public Date getDate(String key) {
-		String date = getString(key);
-		if(null == date){
-			return null;
-		}
-		return DateUtil.parse(date);
+	public Date getDate(String key) throws Exception{
+		return DateUtil.parse(getString(key));
 	} 
 	/** 
 	 * 转换成json格式 
