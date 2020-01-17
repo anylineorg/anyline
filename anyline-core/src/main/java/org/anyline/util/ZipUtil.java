@@ -221,8 +221,11 @@ public class ZipUtil {
 			e.printStackTrace(); 
 			return false; 
 		} 
-	} 
- 
+	}
+
+	public static void main(String[] args) {
+		System.out.println("1234".substring(2));
+	}
 	/** 
 	 * 解压缩一个文件 
 	 *  

@@ -20,17 +20,17 @@
 package org.anyline.web.tag; 
  
  
+import org.anyline.util.BasicUtil;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.BasicUtil;
  
  
 public class If extends BaseBodyTag implements Cloneable{ 
 	private static final long serialVersionUID = 1L; 
 	 
 	private boolean test; 
-	private boolean skip = false;//如果test=false时是否跳过body体(不再执行boyd中的子标签)
+	private boolean skip = false;//如果test=false时是否跳过body体(不再执行boyd中的子标签) skip=false时即使test=false标签体也会执行
 	private Object elseValue; 
 
 	public int doStartTag(){

@@ -874,7 +874,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>format</name>			
+			<name>format</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>nvl</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>

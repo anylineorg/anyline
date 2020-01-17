@@ -18,19 +18,14 @@
  
 package org.anyline.web.tag; 
  
-import java.util.ArrayList; 
-import java.util.Collection; 
-import java.util.HashMap; 
-import java.util.List; 
-import java.util.Map; 
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 
-import javax.servlet.http.HttpServletRequest; 
-import javax.servlet.jsp.JspException; 
-import javax.servlet.jsp.JspWriter; 
-
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.BeanUtil; 
-import org.anyline.util.ConfigTable; 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import java.util.*;
  
 public class Select extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
@@ -121,8 +116,8 @@ public class Select extends BaseBodyTag {
 						if (null != val && null != this.value && val.equals(value.toString())) { 
 							html += " selected=\"selected\""; 
 						} 
-						html += crateExtraData(item); 
-						html += ">" + text + "</option>"; 
+						html += crateExtraData(item);
+						html += ">" + text + "</option>";
 					} 
 				} 
 				html += "</select>"; 
