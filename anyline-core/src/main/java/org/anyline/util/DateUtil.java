@@ -74,6 +74,14 @@ public class DateUtil {
 	private static Calendar getCalendar() {
 		return getCalendar(null,null);
 	}
+
+	/**
+	 * cur是否在fr与to之间(包含fr,to)
+	 * @param cur 时间
+	 * @param fr 开始时间
+	 * @param to 结束时间
+	 * @return boolean
+	 */
 	public static boolean between(Date cur, Date fr, Date to) {
 		if (cur.getTime() >= fr.getTime() && cur.getTime() <= to.getTime()) {
 			return true;
@@ -82,12 +90,11 @@ public class DateUtil {
 	}
 
 	/**
-	 * cur是否在fr和to之内
-	 *
-	 * @param cur  cur
-	 * @param fr  fr
-	 * @param to  to
-	 * @return return
+	 * cur是否在fr与to之间(包含fr,to)
+	 * @param cur 时间
+	 * @param fr 开始时间
+	 * @param to 结束时间
+	 * @return boolean
 	 */
 	public static boolean between(String cur, String fr, String to) {
 		return between(parse(cur), parse(fr), parse(to));
@@ -95,10 +102,10 @@ public class DateUtil {
 
 	/**
 	 * 时间差
-	 * @param part  part
-	 * @param fr  fr
-	 * @param to  to
-	 * @return return
+	 * @param part  参考Calendar
+	 * @param fr  开始时间
+	 * @param to  结束时间
+	 * @return long
 	 */
 	public static long diff(int part, Date fr, Date to) {
 		long result = 0;
@@ -158,10 +165,11 @@ public class DateUtil {
 
 	/**
 	 * 格式化日期
-	 * @param locale locale
-	 * @param date  date
-	 * @param format  format
-	 * @return return
+	 * @param locale 地区/语言,格式化月份，星期几时根据地区语言,
+	 *               如MMMMM(zh:一月,en:January)MMMM(zh:一月,en:Jan) EEE(zh:星期五,en:Fri) EEEE(en:Friday)
+	 * @param date  日期
+	 * @param format  格式
+	 * @return String
 	 */
 	public static String format(Locale locale, Date date, String format) {
 		if (null == date || null == format)
@@ -228,8 +236,8 @@ public class DateUtil {
 
 	/**
 	 * 时间转换成分钟
-	 * @param hm  hm
-	 * @return return
+	 * @param hm  时间(10:10=610)
+	 * @return int
 	 */
 	public static int convertMinute(String hm) {
 		int minute = -1;
@@ -250,8 +258,8 @@ public class DateUtil {
 
 	/**
 	 * 分钟转换成时间
-	 * @param minute  minute
-	 * @return return
+	 * @param minute  分钟(610=10:10)
+	 * @return String
 	 */
 	public static String convertMinute(int minute) {
 		String time = "";
@@ -269,7 +277,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 根据一个日期，返回是星期几的字符串
+	 * 星期几
 	 * @param date  date
 	 * @return return
 	 */

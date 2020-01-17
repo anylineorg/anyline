@@ -23,7 +23,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
- 
+import java.nio.charset.StandardCharsets;
+
 public class SimpleHttpUtil { 
 	public static String post(String url, String param) { 
 		return request(url, "POST", param); 
@@ -47,15 +48,16 @@ public class SimpleHttpUtil {
             conn.setRequestProperty("content-type", "application/x-www-form-urlencoded"); 
 			if (null != param) { 
 				OutputStream os = conn.getOutputStream(); 
-				os.write(param.getBytes("UTF-8")); 
+				os.write(param.getBytes(StandardCharsets.UTF_8));
+
 				os.close(); 
 			} 
 			// 从输入流读取返回内容 
 			is = conn.getInputStream(); 
-			isr = new InputStreamReader(is, "UTF-8"); 
+			isr = new InputStreamReader(is, StandardCharsets.UTF_8);
 			br = new BufferedReader(isr); 
 			String str = null; 
-			StringBuffer buffer = new StringBuffer(); 
+			StringBuilder buffer = new StringBuilder();
 			while ((str = br.readLine()) != null) { 
 				buffer.append(str); 
 			} 
@@ -64,12 +66,12 @@ public class SimpleHttpUtil {
 			e.printStackTrace(); 
 		} finally { 
 			try { 
-				// 释放资源 
-				br.close(); 
-				isr.close(); 
-				is.close(); 
-				is = null; 
-				conn.disconnect(); 
+				// 释放资源
+				if(null != br) br.close();
+				if(null != isr) isr.close();
+				if(null != is) is.close();
+				if(null != conn) conn.disconnect();
+				is = null;
 			} catch (Exception e) { 
 				e.printStackTrace(); 
 			} 

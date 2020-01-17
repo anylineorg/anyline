@@ -21,10 +21,10 @@
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-net</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>cn.jpush.api</groupId>
-			<artifactId>jiguang-common</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>cn.jpush.api</groupId>-->
+<!--			<artifactId>jiguang-common</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>cn.jpush.api</groupId>
 			<artifactId>jpush-client</artifactId>

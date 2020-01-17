@@ -250,7 +250,6 @@ public class AnylineServiceImpl implements AnylineService {
         key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
         SQL sql = createSQL(src);
         if(null != cacheProvider) {
-            //一级缓存数据
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
                 Object cacheValue = cacheElement.getValue();
@@ -504,7 +503,7 @@ public class AnylineServiceImpl implements AnylineService {
     }
     public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions){
         //是否启动缓存
-        if(!ConfigTable.getBoolean("IS_USE_CACHE") || null == cache){
+        if(null == cache){
             return query(src, configs, conditions);
         }
         PageNaviImpl navi = new PageNaviImpl();

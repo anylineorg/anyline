@@ -5,10 +5,7 @@ import com.alibaba.nacos.api.PropertyKeyConst;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
-import org.anyline.util.AnylineConfig;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ClassUtil;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -29,7 +26,7 @@ public class NacosUtil {
 	static{
 		NacosUtil util = NacosUtil.getInstance();
 		if(util.config.AUTO_SCAN){
-			List<Class<?>> classList = ClassUtil.list("org.anyline", true, AnylineConfig.class);
+			List<Class<?>> classList = ClassUtil.list("org.anyline", true, AnylineConfig.class, ConfigTable.class);
 			for(Class<?> clazz:classList){
 				@SuppressWarnings("unchecked")
 				Class<AnylineConfig> c = (Class<AnylineConfig>)clazz;

@@ -8,7 +8,6 @@
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
 		<version>8.3.7</version>
-		<relativePath>../anyline-dependency</relativePath>
 	</parent>
 	
 	<artifactId>anyline-net</artifactId>
@@ -27,16 +26,12 @@
 		</dependency>
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpmime</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>commons-httpclient</groupId>
-			<artifactId>commons-httpclient</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>commons-httpclient</groupId>-->
+<!--			<artifactId>commons-httpclient</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>

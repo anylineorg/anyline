@@ -19,17 +19,16 @@
 
 package org.anyline.web.tag; 
  
-import java.math.BigDecimal;
-import java.util.Collection;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.NumberUtil;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import java.math.BigDecimal;
+import java.util.Collection;
  
 public class Sum extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
@@ -38,6 +37,7 @@ public class Sum extends BaseBodyTag {
 	private String selector; 
 	private String property; 
 	private String format;
+	private String nvl;
  
 	@SuppressWarnings("rawtypes")
 	public int doEndTag() throws JspException { 
@@ -63,7 +63,7 @@ public class Sum extends BaseBodyTag {
 				}
 				Collection items = (Collection) data;
 				if(BasicUtil.isNotEmpty(selector) && data instanceof DataSet){
-					data = BeanUtil.select(items,selector.split(","));
+					items = BeanUtil.select(items,selector.split(","));
 				}
 				BigDecimal result = new BigDecimal(0); 
 				if (null != items){ 
@@ -87,7 +87,10 @@ public class Sum extends BaseBodyTag {
 						html = result.toString();
 					}
 				} 
-			} 
+			}
+			if(BasicUtil.isEmpty(html) && BasicUtil.isNotEmpty(nvl)){
+				html = nvl;
+			}
 			JspWriter out = pageContext.getOut(); 
 			out.print(html); 
 		} catch (Exception e) {
@@ -126,6 +129,7 @@ public class Sum extends BaseBodyTag {
 		super.release(); 
 		scope = null; 
 		data = null;
+		nvl = null;
 		property = null;
 		selector = null; 
 		format = null;
