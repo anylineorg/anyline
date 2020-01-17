@@ -117,7 +117,7 @@
 	<tag>
 		<name>text</name>
 		<tagclass>org.anyline.web.tag.Text</tagclass>
-		<bodycontent>empty</bodycontent>
+		<bodycontent>JSP</bodycontent>
 		<attribute>
 			<name>data</name>
 			<required>false</required>
@@ -682,6 +682,7 @@
 	<tag>
 		<name>date</name>
 		<tagclass>org.anyline.web.tag.DateFormat</tagclass>
+		<bodycontent>JSP</bodycontent>
 		<info>日期格式化 nvl:如果value为空("",null) 是否显示当前时间</info>
 		<attribute>
 			<name>value</name>

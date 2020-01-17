@@ -20,15 +20,14 @@
 package org.anyline.web.tag; 
  
  
-import java.util.List;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import java.util.List;
  
  
 public class Text extends BaseBodyTag{ 
@@ -66,8 +65,10 @@ public class Text extends BaseBodyTag{
 				if(index > -1 && index<list.size()){
 					result = BeanUtil.getValueByColumn(list.get(index), property);
 				}
-			}else{
+			}else if(BasicUtil.isWrapClass(data)){
 				result = BeanUtil.getValueByColumn(data,property);
+			}else{
+				result = data;
 			}
 			if(null == result){
 				result = body;
