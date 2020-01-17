@@ -1,11 +1,5 @@
 package org.anyline.weixin.mp.util; 
  
-import java.io.File;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.net.HttpUtil;
@@ -17,18 +11,7 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.SHA1Util;
 import org.anyline.weixin.entity.TemplateMessage;
 import org.anyline.weixin.entity.TemplateMessageResult;
-import org.anyline.weixin.mp.entity.WXMPGroupRedpack;
-import org.anyline.weixin.mp.entity.WXMPGroupRedpackResult;
-import org.anyline.weixin.mp.entity.WXMPPayRefund;
-import org.anyline.weixin.mp.entity.WXMPPayRefundResult;
-import org.anyline.weixin.mp.entity.WXMPPrePayOrder;
-import org.anyline.weixin.mp.entity.WXMPPrePayResult;
-import org.anyline.weixin.mp.entity.WXMPRedpack;
-import org.anyline.weixin.mp.entity.WXMPRedpackResult;
-import org.anyline.weixin.mp.entity.WXMPTransfer;
-import org.anyline.weixin.mp.entity.WXMPTransferBank;
-import org.anyline.weixin.mp.entity.WXMPTransferBankResult;
-import org.anyline.weixin.mp.entity.WXMPTransferResult;
+import org.anyline.weixin.mp.entity.*;
 import org.anyline.weixin.util.WXConfig;
 import org.anyline.weixin.util.WXConfig.SNSAPI_SCOPE;
 import org.anyline.weixin.util.WXUtil;
@@ -37,6 +20,12 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
  
 public class WXMPUtil extends WXUtil{ 
 	private static final Logger log = LoggerFactory.getLogger(WXMPUtil.class); 
@@ -472,7 +461,7 @@ public class WXMPUtil extends WXUtil{
 		if(json.containsKey("access_token")){ 
 			row.put("APP_ID", appid); 
 			row.put("ACCESS_TOKEN", json.getString("access_token")); 
-			row.setExpires(json.getInt("expires_in")*800); 
+			row.setExpires(json.getInt("expires_in", 0)*800);
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:{}]",row.getString("ACCESS_TOKEN")); 
 			} 
@@ -514,7 +503,7 @@ public class WXMPUtil extends WXUtil{
 		DataRow json = DataRow.parseJson(text); 
 		if(json.containsKey("ticket")){ 
 			row.put("TICKET", json.getString("ticket")); 
-			row.setExpires(json.getInt("expires_in")*1000); 
+			row.setExpires(json.getInt("expires_in", 0)*1000);
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[CREATE NEW JSAPI TICKET][TICKET:{}]",row.get("TICKET")); 
 			} 
@@ -597,7 +586,7 @@ public class WXMPUtil extends WXUtil{
 		if(null == info){ 
 			return false; 
 		} 
-		if(info.getInt("subscribe") ==1){ 
+		if(info.getInt("subscribe", 0) ==1){
 			return true; 
 		} 
 		return false; 

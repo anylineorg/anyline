@@ -232,7 +232,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	protected int getTotal(String sql, List<Object> values) { 
 		int total = 0; 
 		DataSet set = select(sql,values); 
-		total = set.getInt("CNT"); 
+		total = set.getInt(0,"CNT",0);
 		return total; 
 	} 
 	/** 
