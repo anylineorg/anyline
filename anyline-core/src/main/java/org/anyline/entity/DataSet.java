@@ -618,7 +618,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			begin = 0;
 		}
 		for (int i = begin; i < size && i<=end; i++) {
-			tmpValue = getString(i, key);
+			tmpValue = getString(i, key,"");
 			if ((null == value && null == tmpValue)
 					|| (null != value && value.equals(tmpValue))) {
 				set.add(getRow(i));
@@ -647,9 +647,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			begin = 0;
 		} 
 		for (int i = begin; i < size && i <=end; i++) {
-			BigDecimal tmp = getDecimal(i, key);
+			BigDecimal tmp = getDecimal(i, key, 0);
 			if(null != tmp){
-				result = result.add(getDecimal(i, key));
+				result = result.add(getDecimal(i, key, 0));
 			} 
 		} 
 		return result; 
@@ -715,7 +715,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			size = top; 
 		} 
 		for (int i = 0; i < size; i++) {
-			BigDecimal tmp = getDecimal(i, key);
+			BigDecimal tmp = getDecimal(i, key, 0);
 			if(null != tmp && (null == result || tmp.compareTo(result) > 0)){
 				result = tmp;
 			} 
@@ -770,7 +770,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			size = top;
 		}
 		for (int i = 0; i < size; i++) {
-			BigDecimal tmp = getDecimal(i, key);
+			BigDecimal tmp = getDecimal(i, key, 0);
 			if(null != tmp && (null == result || tmp.compareTo(result) < 0)){
 				result = tmp;
 			}
@@ -862,7 +862,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		} 
 		int count = 0; 
 		for (int i = 0; i < size; i++) {
-			BigDecimal tmp = getDecimal(i, key);
+			BigDecimal tmp = getDecimal(i, key, 0);
 			if(null != tmp){ 
 				result = result.add(tmp);
 			} 
@@ -944,7 +944,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public List<String> fetchDistinctValue(String key) { 
 		List<String> result = new ArrayList<String>(); 
 		for (int i = 0; i < size(); i++) { 
-			String value = getString(i, key); 
+			String value = getString(i, key,"");
 			if (result.contains(value)) { 
 				continue; 
 			} 
@@ -993,13 +993,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
-	 */ 
-	public String getString(int index, String key) { 
-		String result = null; 
-		DataRow row = getRow(index); 
-		if (null != row) 
-			result = row.getString(key); 
-		return result; 
+	 */
+	public String getString(int index, String key) throws Exception{
+		return getRow(index).getString(key);
+	}
+	public String getString(int index, String key, String def){
+		try{
+			return getString(index, key);
+		}catch(Exception e){
+			return def;
+		}
+	}
+	public String getString(String key) throws Exception{
+		return getString(0, key);
+	}
+	public String getString(String key, String def){
+		return getString(0, key, def);
 	}
 	public Object get(int index, String key){
 		DataRow row = getRow(index);
@@ -1008,10 +1017,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return null;
 	} 
- 
-	public String getString(String key) { 
-		return getString(0, key); 
-	}
+
 	public List<String> getStrings(String key){
 		List<String> result = new ArrayList<String>();
 		for(DataRow row:rows){
@@ -1071,22 +1077,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return result;
 	}
-	public BigDecimal getDecimal(int idx, String key){
-		BigDecimal result = null;
-		DataRow row = getRow(idx);
-		if (null != row)
-			result = row.getDecimal(key);
-		return result;
+	public BigDecimal getDecimal(int idx, String key) throws Exception{
+		return getRow(idx).getDecimal(key);
 	}
 	public BigDecimal getDecimal(int idx, String key, double def){
 		return getDecimal(idx, key, new BigDecimal(def));
 	}
 	public BigDecimal getDecimal(int idx, String key, BigDecimal def){
-		BigDecimal result =getDecimal(idx, key);
-		if(null ==result){
-			result = def;
+		try{
+			BigDecimal val= getDecimal(idx, key);
+			if(null == val){
+				return def;
+			}
+			return val;
+		}catch(Exception e){
+			return def;
 		}
-		return result;
 	} 
  
 	/** 
@@ -1095,13 +1101,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
-	 */ 
-	public String getHtmlString(int index, String key) { 
-		String result = getString(index, key); 
-		return result; 
-	} 
+	 */
+	public String getHtmlString(int index, String key) throws Exception{
+		return getString(index, key);
+	}
+	public String getHtmlString(int index, String key, String def){
+		return getString(index, key, def);
+	}
+
  
-	public String getHtmlString(String key) { 
+	public String getHtmlString(String key) throws Exception{
 		return getHtmlString(0, key); 
 	}
  
@@ -1112,24 +1121,35 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
-	 */ 
-	public String getEscapeString(int index, String key) { 
-		String result = getString(index, key); 
-		result = EscapeUtil.escape(result).toString(); 
-		return result; 
-	} 
+	 */
+	public String getEscapeString(int index, String key) throws Exception{
+		return  EscapeUtil.escape(getString(index, key)).toString();
+	}
+	public String getEscapeString(int index, String key, String def){
+		try{
+			return getEscapeString(index, key);
+		}catch(Exception e){
+			return  EscapeUtil.escape(def).toString();
+		}
+	}
+
+	public String getDoubleEscapeString(int index, String key) throws Exception{
+		return EscapeUtil.doubleEscape(getString(index, key));
+	}
+	public String getDoubleEscapeString(int index, String key, String def) {
+		try{
+			return getDoubleEscapeString(index, key);
+		}catch(Exception e){
+			return EscapeUtil.doubleEscape(def);
+		}
+
+	}
  
-	public String getDoubleEscapeString(int index, String key) { 
-		String result = getString(index, key); 
-		result = EscapeUtil.doubleEscape(result); 
-		return result; 
-	} 
- 
-	public String getEscapeString(String key) { 
+	public String getEscapeString(String key) throws Exception {
 		return getEscapeString(0, key); 
 	} 
  
-	public String getDoubleEscapeString(String key) { 
+	public String getDoubleEscapeString(String key) throws Exception {
 		return getDoubleEscapeString(0, key); 
 	} 
  
@@ -1139,19 +1159,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
-	 */ 
+	 */
 	public int getInt(int index, String key) throws Exception{
-		int result = 0; 
-		DataRow row = getRow(index); 
-		if (null != row) 
-			result = row.getInt(key); 
-		return result; 
-	} 
- 
+		return getRow(index).getInt(key);
+	}
+	public int getInt(int index, String key, int def){
+		try{
+			return getInt(index, key);
+		}catch(Exception e){
+			return def;
+		}
+	}
+
 	public int getInt(String key) throws Exception {
-		return getInt(0, key); 
-	} 
- 
+		return getInt(0, key);
+	}
+	public int getInt(String key, int def){
+		return getInt(0, key, def);
+	}
+
 	/** 
 	 * double 
 	 *  
@@ -1160,16 +1186,23 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @return return
 	 */
     public double getDouble(int index, String key) throws Exception{
-        double result = 0;
-        DataRow row = getRow(index);
-        if (null != row)
-            result = row.getDouble(key);
-        return result;
+        return getRow(index).getDouble(key);
     }
 
-    public double getDouble(String key) throws Exception {
-		return getDouble(0, key); 
-	} 
+	public double getDouble(int index, String key, double def){
+		try{
+			return getDouble(index, key);
+		}catch(Exception e){
+			return def;
+		}
+	}
+
+	public double getDouble(String key) throws Exception {
+		return getDouble(0, key);
+	}
+	public double getDouble(String key, double def) {
+		return getDouble(0, key, def);
+	}
 	/**
 	 * rows 列表中的数据格式化成json格式   不同与toJSON
 	 *  map.put("type", "list");

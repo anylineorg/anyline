@@ -65,7 +65,7 @@ public class Text extends BaseBodyTag{
 				if(index > -1 && index<list.size()){
 					result = BeanUtil.getValueByColumn(list.get(index), property);
 				}
-			}else if(BasicUtil.isWrapClass(data)){
+			}else if(null != property){
 				result = BeanUtil.getValueByColumn(data,property);
 			}else{
 				result = data;
