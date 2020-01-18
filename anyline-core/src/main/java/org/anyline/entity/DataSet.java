@@ -2555,7 +2555,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					if(null == row.get(key)){
 						continue;
 					}
-					if(row.getDecimal(key).compareTo(number) < 0){
+					if(row.getDecimal(key,0).compareTo(number) < 0){
 						set.add(row);
 					}
 				}
@@ -2597,7 +2597,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					if(null == row.get(key)){
 						continue;
 					}
-					if(row.getDecimal(key).compareTo(number) <= 0){
+					if(row.getDecimal(key,0).compareTo(number) <= 0){
 						set.add(row);
 					}
 				}
@@ -2639,7 +2639,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					if(null == row.get(key)){
 						continue;
 					}
-					if(row.getDecimal(key).compareTo(number) > 0){
+					if(row.getDecimal(key,0).compareTo(number) > 0){
 						set.add(row);
 					}
 				}
@@ -2681,7 +2681,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					if(null == row.get(key)){
 						continue;
 					}
-					if(row.getDecimal(key).compareTo(number) >= 0){
+					if(row.getDecimal(key,0).compareTo(number) >= 0){
 						set.add(row);
 					}
 				}
