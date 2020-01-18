@@ -1520,4 +1520,4 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 
-} 
+}

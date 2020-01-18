@@ -23,7 +23,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -38,7 +37,6 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.File;
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -1575,22 +1573,22 @@ public class BeanUtil {
 			}
 		}
 	}
-		 public static void main(String[] args) throws IOException {
-			   Map<String,Object> map = new HashMap<String,Object>();
-			   map.put("name", 1L);
-			   List<Object> list = new ArrayList<Object>();
-			   DataRow u1 = new DataRow();
-			   u1.put("name", "li");
-			   
-			   list.add(u1);
-			   map.put("list", list);
-			   String str =  BeanUtil.JSON_MAPPER.writeValueAsString(map);
-			   JsonNode node = BeanUtil.JSON_MAPPER.readTree(str);
-			   DataRow row = DataRow.parseJson(str);
-			   Iterator<JsonNode> it = node.iterator();
-			   System.out.println(row.toJson());
-			   System.out.println(node.get("name").isValueNode());
-			   System.out.println(node.isValueNode());
-			   System.out.println(node.isArray());
-		   }
+
+	public static String value(Map<String, ?> map, String keys) {
+		String result = null;
+		String[] _keys = keys.split("\\.");
+		for (String key : _keys) {
+			Object o = map.get(key);
+			if (BasicUtil.isNotEmpty(o) ) {
+				if(o instanceof Map){
+					map = (Map<String, ?>) o;
+				}else{
+					result = o.toString();
+				}
+			} else {
+				continue;
+			}
+		}
+		return result;
+	}
 } 
