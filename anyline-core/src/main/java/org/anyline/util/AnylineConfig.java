@@ -1,15 +1,5 @@
 package org.anyline.util; 
  
-import java.io.File;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.dom4j.Document;
@@ -18,6 +8,13 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.*;
  
 public abstract class AnylineConfig { 
 	protected static long lastLoadTime 	= 0;	//最后一次加载时间 
@@ -38,22 +35,29 @@ public abstract class AnylineConfig {
 	 */
 	protected synchronized static void load(Hashtable<String,AnylineConfig> instances, Class<? extends AnylineConfig> clazz, String fileName, String ... compatibles) { 
 		try { 
-			File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes"); 
-			if(null != dir &&  !dir.exists()){ 
-				dir = new File(ConfigTable.getWebRoot()); 
-			} 
-			List<File> files = FileUtil.getAllChildrenFile(dir, "xml"); 
-			int configSize = 0; 
-			for(File file:files){ 
-				if(fileName.equals(file.getName())){ 
-					parse(clazz, file, instances,compatibles); 
-					configSize ++; 
+
+			if("jar".equals(ConfigTable.getPackageType())){
+				log.warn("[加载配置文件][type:jar][file:{}]",fileName);
+				InputStream in = ConfigTable.class.getClassLoader().getResourceAsStream("/"+fileName);
+				String txt = FileUtil.read(in, "UTF-8").toString();
+				parse(txt);
+			}else{
+				File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes"); 
+				if(null != dir &&  !dir.exists()){ 
+					dir = new File(ConfigTable.getWebRoot()); 
 				} 
-			} 
-			if(configSize ==0){ 
-				log.warn("[解析配置文件][未加载配置文件:{}][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/{}]",fileName,fileName); 
-			} 
-			 
+				List<File> files = FileUtil.getAllChildrenFile(dir, "xml"); 
+				int configSize = 0; 
+				for(File file:files){ 
+					if(fileName.equals(file.getName())){ 
+						parse(clazz, file, instances,compatibles); 
+						configSize ++; 
+					} 
+				} 
+				if(configSize ==0){ 
+					log.warn("[解析配置文件][未加载配置文件:{}][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/{}]",fileName,fileName); 
+				} 
+			}
 		} catch (Exception e) { 
 			log.error("[解析配置文件][file:{}][配置文件解析异常:{}]",fileName,e); 
 		} 
@@ -186,6 +190,7 @@ public abstract class AnylineConfig {
 	}
 	//兼容上一版本 最后一版key:倒数第二版key:倒数第三版key 
 	protected static Hashtable<String, AnylineConfig> parse(Class<?> T, File file, Hashtable<String, AnylineConfig> instances, String... compatibles) { 
+		log.warn("[解析配置文件][file:{}]",file); 
 		if (null == file || !file.exists()) { 
 			log.warn("[解析配置文件][文件不存在][file:{}]",file); 
 			return instances; 

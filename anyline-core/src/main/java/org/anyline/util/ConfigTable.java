@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
  
@@ -130,6 +131,15 @@ public class ConfigTable {
 			if(path.indexOf("WEB-INF") > 0){
 				webRoot = path.substring(0,path.indexOf("WEB-INF")-1);	
 			}
+			if(path.indexOf("!/BOOT-INF") > 0){
+				webRoot = path.substring(0,path.indexOf("!/BOOT-INF"));
+			}
+			if(path.indexOf("bin") > 0){
+				webRoot = path.substring(0,path.indexOf("bin")-1);	
+			}
+			if(path.indexOf("target") > 0){
+				webRoot = path.substring(0,path.indexOf("target")-1);	
+			}
 		}
 		if(path.contains("classes")){
 			classpath = path;
@@ -139,7 +149,8 @@ public class ConfigTable {
 			}else{
 				classpath = root + File.separator + "bin" + File.separator + "classes" + File.separator;
 			}
-		} 
+		}
+
 		//加载配置文件 
 		loadConfig(flag); 
 	} 
@@ -157,22 +168,31 @@ public class ConfigTable {
 			if(null != root){ 
 				configs.put("HOME_DIR", root);
 			}
-			//classpath根目录
-			File dir = new File(classpath);
-			List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-			for(File f:files){
-				String name = f.getName();
-				if((flag+"-config.xml").equals(name)){
-					loadConfig(f);
+			
+			if("jar".equals(getPackageType())){
+				log.warn("[加载配置文件][type:jar][file:{}]",flag+"-config.xml");
+				InputStream in = ConfigTable.class.getClassLoader().getResourceAsStream("/"+flag+"-config.xml");
+				String txt = FileUtil.read(in, "UTF-8").toString();
+				parse(txt);
+			}else{
+				//classpath根目录
+				File dir = new File(classpath);
+				log.warn("[加载配置文件][type:war][dir:{}]",classpath);
+				List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
+				for(File f:files){
+					String name = f.getName();
+					if((flag+"-config.xml").equals(name)){
+						loadConfig(f);
+					}
 				}
-			}
 
-			for(File f:files){
-				String name = f.getName();
-				if(name.startsWith(flag+"-config") && !(flag+"-config.xml").equals(name)){
-					loadConfig(f);
-				}
-			} 
+				for(File f:files){
+					String name = f.getName();
+					if(name.startsWith(flag+"-config") && !(flag+"-config.xml").equals(name)){
+						loadConfig(f);
+					}
+				} 
+			}
 		} catch (Exception e) {
 			log.error("配置文件解析异常:"+e);
 			e.printStackTrace(); 
