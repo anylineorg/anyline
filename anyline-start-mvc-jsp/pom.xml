@@ -27,4 +27,22 @@
 		</dependency>
 		<!-- end jsp -->
 	</dependencies>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<webResources>
+						<resource>
+							<directory>src/main/webapp/WEB-INF</directory>
+							<filtering>true</filtering>
+							<targetPath>WEB-INF</targetPath>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
