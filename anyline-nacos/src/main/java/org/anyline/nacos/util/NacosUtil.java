@@ -39,8 +39,7 @@ public class NacosUtil {
 			}
 		}
 	}
-public static void main(String[] args) {
-}
+
 	public static NacosUtil getInstance(){
 		return getInstance("default");
 	}

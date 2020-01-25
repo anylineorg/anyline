@@ -31,16 +31,6 @@ import java.util.*;
  
 public class BasicUtil { 
 
-	public static void main(String[] args) {
-		try {
-			Map<String,String> map = new HashMap<String,String>();
-			map.put("a", "a");
-            String string = new ObjectMapper().writeValueAsString(map);
-            System.out.println(string);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-	}
 	/** 
 	 * 是否为空或""或"null"(大写字母"NULL"不算空) 集合对象检查是否为空或集合中是否有对象 
 	 *  
