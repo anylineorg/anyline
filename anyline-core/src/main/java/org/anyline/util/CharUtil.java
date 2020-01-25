@@ -185,4 +185,15 @@ public class CharUtil {
 		} 
 		return buffer.toString(); 
 	}
+
+	/**
+	 * 首字母大写
+	 * @param src src
+	 * @return String
+	 */
+	public static String toUpperCaseHeader(String src){
+		char[] cs=src.toCharArray();
+		cs[0]-=32;
+		return String.valueOf(cs);
+	}
 }
