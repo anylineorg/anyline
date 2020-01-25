@@ -177,8 +177,7 @@ public class JPushUtil {
 			PushResult pr = client.sendPush(pl); 
 			result = pr.isResultOK(); 
 ////			 
-//			System.out.println(extras); 
-//			pl = buildPushObjec_Tag_IOS(type, title, extras, tags); 
+//			pl = buildPushObjec_Tag_IOS(type, title, extras, tags);
 //			pr = client.sendPush(pl); 
 //			result = pr.isResultOK() && result; 
 		} catch (Exception e) { 

@@ -307,8 +307,7 @@ public class Downloader {
 		long length = 0; 
 		for(DownloadTask task:tasks.values()){ 
 			length += task.getLength(); 
-			//System.out.println(task.getLengthFormat()); 
-		} 
+		}
 		return length; 
 	} 
 	public String getSumLengthFormat(){ 
