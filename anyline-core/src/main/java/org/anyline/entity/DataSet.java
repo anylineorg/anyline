@@ -1016,7 +1016,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return row.get(key);
 		}
 		return null;
-	} 
+	}
+
+	public List<Object> gets(String key){
+		List<Object> list = new ArrayList<Object>();
+		for(DataRow row:rows){
+			list.add(row.getString(key));
+		}
+		return list;
+	}
 
 	public List<String> getStrings(String key){
 		List<String> result = new ArrayList<String>();
