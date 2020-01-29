@@ -552,32 +552,39 @@ public class BasicUtil {
 	 * @param src  src
 	 * @return return
 	 */ 
-	public static List<List<String>> mergeDescartes(List<List<String>> src) { 
-		List<List<String>> result = new ArrayList<List<String>>(); 
-		List<String> st = src.get(0); 
-		for (String t : st) { 
-			List<String> tmp = new ArrayList<String>(); 
+	public static List<List<?>> descartes(List<List<?>> src) {
+		List<List<?>> result = new ArrayList<List<?>>();
+		List<?> st = src.get(0);
+		for (Object t : st) {
+			List<Object> tmp = new ArrayList<Object>();
 			tmp.add(t); 
 			result.add(tmp); 
 		} 
-		List<List<String>> store = new ArrayList<List<String>>(); 
+		List<List<?>> store = new ArrayList<List<?>>();
 		for (int i = 1; i < src.size(); i++) { 
-			List<String> r2 = src.get(i); 
+			List<?> r2 = src.get(i);
 			for (int j = 0; j < result.size(); j++) { 
-				List<String> rns = result.get(j); 
+				List<?> rns = result.get(j);
 				for (int k = 0; k < r2.size(); k++) { 
-					List<String> mid = new ArrayList<String>(); 
+					List<Object> mid = new ArrayList<Object>();
 					mid.addAll(rns); 
 					mid.add(r2.get(k)); 
 					store.add(mid); 
 				} 
 			} 
-			result = new ArrayList<List<String>>(); 
+			result = new ArrayList<List<?>>();
 			result.addAll(store); 
-			store = new ArrayList<List<String>>(); 
+			store = new ArrayList<List<?>>();
 		} 
 		return result; 
-	} 
+	}
+	public static List<List<?>> descartes(List<?> ... src) {
+		List<List<?>> pack = new ArrayList<List<?>>();
+		for(List<?> item:src){
+			pack.add(item);
+		}
+		return descartes(pack);
+	}
 
 	public static List<String> split(String str, String separator){
 		List<String> list = new ArrayList<String>();
