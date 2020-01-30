@@ -402,6 +402,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return to;
 	}
+
 	/**
 	 * 筛选符合条件的集合
 	 * @param params key1,value1,key2:value2,key3,value3
@@ -568,6 +569,30 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet getRows(String... params) {
 		return getRows(0, params);
 	}
+	public DataSet getRows(DataSet set, String key){
+		String kvs[] = new String[set.size()];
+		int i=0;
+		for(DataRow row:set){
+			String value = row.getString(key);
+			if(BasicUtil.isNotEmpty(value)) {
+				kvs[i++] = key + ":" + value;
+			}
+		}
+		return getRows(kvs);
+	}
+	public DataSet getRows(DataRow row, String ... keys){
+		List<String> list =new ArrayList<String>();
+		int i=0;
+		for(String key:keys){
+			String value = row.getString(key);
+			if(BasicUtil.isNotEmpty(value)) {
+				list.add(key + ":" + value);
+			}
+		}
+		String[] kvs = BeanUtil.list2array(list);
+		return getRows(kvs);
+	}
+
 	/**
 	 * 数字格式化
 	 * @param format format
@@ -993,6 +1018,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
+	 * @throws Exception
 	 */
 	public String getString(int index, String key) throws Exception{
 		return getRow(index).getString(key);
@@ -1109,6 +1135,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
+	 * @throws Exception
 	 */
 	public String getHtmlString(int index, String key) throws Exception{
 		return getString(index, key);
@@ -1167,6 +1194,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
+	 * @throws Exception
 	 */
 	public int getInt(int index, String key) throws Exception{
 		return getRow(index).getInt(key);
@@ -1186,12 +1214,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return getInt(0, key, def);
 	}
 
-	/** 
-	 * double 
-	 *  
+	/**
+	 * double
 	 * @param index  index
 	 * @param key  key
 	 * @return return
+	 * @throws Exception
 	 */
     public double getDouble(int index, String key) throws Exception{
         return getRow(index).getDouble(key);

@@ -38,6 +38,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -1071,7 +1072,22 @@ public class BeanUtil {
 			} 
 		} 
 		return map; 
-	} 
+	}
+	public static <T> T[] list2array(List<T> list){
+		T[] result = (T[]) Array.newInstance(list.get(0).getClass(), list.size());
+		int index = 0;
+		for(T item:list){
+			result[index++] = item;
+		}
+		return result;
+	}
+	public static <T> List<T> arrayList(T[] array){
+		List<T> list = new ArrayList<T>();
+		for(T item:array){
+			list.add(item);
+		}
+		return list;
+	}
 	/** 
 	 * String 转map 
 	 * @param str name:zhang,age:20 
