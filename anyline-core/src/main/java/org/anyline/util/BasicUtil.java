@@ -544,46 +544,42 @@ public class BasicUtil {
 			keys.add(it.next().toString()); 
 		} 
 		return keys; 
-	} 
- 
+	}
+
 	/** 
 	 * 合成笛卡尔组合 
 	 *  
-	 * @param src  src
+	 * @param lists  lists
 	 * @return return
 	 */ 
-	public static List<List<?>> descartes(List<List<?>> src) {
-		List<List<?>> result = new ArrayList<List<?>>();
-		List<?> st = src.get(0);
-		for (Object t : st) {
-			List<Object> tmp = new ArrayList<Object>();
+	public static <T> List<List<T>> descartes(List<List<T>> lists) {
+		List<List<T>> result = new ArrayList<List<T>>();
+		if(null == lists || lists.size()==0){
+			return result;
+		}
+		List<T> st = lists.get(0);
+		for (T t : st) {
+			List<T> tmp = new ArrayList<T>();
 			tmp.add(t); 
 			result.add(tmp); 
 		} 
-		List<List<?>> store = new ArrayList<List<?>>();
-		for (int i = 1; i < src.size(); i++) { 
-			List<?> r2 = src.get(i);
+		List<List<T>> store = new ArrayList<List<T>>();
+		for (int i = 1; i < lists.size(); i++) {
+			List<T> r2 = lists.get(i);
 			for (int j = 0; j < result.size(); j++) { 
-				List<?> rns = result.get(j);
+				List<T> rns = result.get(j);
 				for (int k = 0; k < r2.size(); k++) { 
-					List<Object> mid = new ArrayList<Object>();
+					List<T> mid = new ArrayList<T>();
 					mid.addAll(rns); 
 					mid.add(r2.get(k)); 
 					store.add(mid); 
 				} 
 			} 
-			result = new ArrayList<List<?>>();
+			result = new ArrayList<List<T>>();
 			result.addAll(store); 
-			store = new ArrayList<List<?>>();
+			store = new ArrayList<List<T>>();
 		} 
 		return result; 
-	}
-	public static List<List<?>> descartes(List<?> ... src) {
-		List<List<?>> pack = new ArrayList<List<?>>();
-		for(List<?> item:src){
-			pack.add(item);
-		}
-		return descartes(pack);
 	}
 
 	public static List<String> split(String str, String separator){
