@@ -285,16 +285,16 @@ public class BasicUtil {
 		}
 		return RegularUtil.isDateTime(obj.toString());
 	}
-	public static int parseInt(Object value, int def) { 
-		if (null == value) { 
-			return def; 
-		} 
-		try { 
-			return (int) Double.parseDouble(value.toString()); 
-		} catch (Exception e) { 
-			return def; 
-		} 
-	} 
+	public static int parseInt(Object value, int def) {
+		if (null == value) {
+			return def;
+		}
+		try {
+			return (int) Double.parseDouble(value.toString());
+		} catch (Exception e) {
+			return def;
+		}
+	}
  
 	public static Integer parseInteger(Object value, Integer def) { 
 		if (null == value) { 
