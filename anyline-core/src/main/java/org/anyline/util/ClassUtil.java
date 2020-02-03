@@ -27,7 +27,30 @@ import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile; 
  
-public class ClassUtil { 
+public class ClassUtil {
+
+	/**
+	 * 是否是基础类型(不包含String类型)
+	 * @param obj obj
+	 * @return boolean
+	 */
+	@SuppressWarnings("rawtypes")
+	public static boolean isPrimitiveClass(Object obj) {
+		try {
+			Class clazz = obj.getClass();
+			if(clazz.isPrimitive() || ((Class<?>)clazz.getField("TYPE").get(null)).isPrimitive()){
+				return true;
+			}else{
+				return false;
+			}
+		} catch (Exception e) {
+			//e.printStackTrace();
+			return false;
+		}
+	}
+	public static boolean isWrapClass(Object obj){
+		return !isPrimitiveClass(obj);
+	}
 	public static List<Class<?>> list(String packageName, boolean recursion, Class<?> ... bases){
 		List<Class<?>> list = new ArrayList<Class<?>>();
 		try {

@@ -847,7 +847,7 @@ public class BeanUtil {
 				}else{ 
 					return false; 
 				} 
-			}else if(!BasicUtil.isWrapClass(obj1)){ 
+			}else if(!ClassUtil.isPrimitiveClass(obj1)){
 				if(null == obj2){ 
 					return false; 
 				}else{ 
