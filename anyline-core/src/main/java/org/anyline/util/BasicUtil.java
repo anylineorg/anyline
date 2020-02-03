@@ -845,14 +845,7 @@ public class BasicUtil {
 	   }
 	   return result.toString();
    }
-   @SuppressWarnings("rawtypes")
-   public static boolean isWrapClass(Object obj) { 
-	    try { 
-	    	return ((Class) obj.getClass().getField("TYPE").get(null)).isPrimitive();
-	    } catch (Exception e) { 
-	        return false; 
-	    } 
-   }
+
    public static String omit(String src, int left, int right){
 	   return omit(src, left, right, "*");
    }

@@ -223,12 +223,18 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
-			<name>key</name>
+			<name>property</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
 			<name>else</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>skip</name>
+			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
