@@ -70,9 +70,9 @@ public class If extends BaseBodyTag implements Cloneable{
 	 
 	public void setTest(boolean test) { 
 		this.test = test; 
-	} 
-	public void setElse(Object elseValue) { 
-		this.elseValue = elseValue; 
+	}
+	public void setElse(Object elseValue) {
+		this.elseValue = elseValue;
 	}
 	public boolean getTest(){
 		return test;

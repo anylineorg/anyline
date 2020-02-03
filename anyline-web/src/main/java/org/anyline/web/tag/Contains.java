@@ -108,8 +108,6 @@ public class Contains extends BaseBodyTag {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-		}finally{
-			release();
 		}
 		if(skip && !contains){
 			return SKIP_BODY;
@@ -131,6 +129,8 @@ public class Contains extends BaseBodyTag {
 			out.print(html);
 		}catch(Exception e){
 
+		}finally{
+			release();
 		}
         return EVAL_PAGE;    
 	}
