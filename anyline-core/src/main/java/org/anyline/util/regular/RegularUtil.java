@@ -258,10 +258,10 @@ public class RegularUtil {
 	}
 
 	/**
-	 * 获取所有 包含attribute属性 的标签与标签体
+	 * 获取所有 包含attribute属性 的标签与标签体,不支持相同标签嵌套
 	 * [
-	 * 	[整个标签含标签体,tag],
-	 * 	[整个标签含标签体,tag]
+	 * 	[整个标签含标签体,开始标签，结束标签，标签体，标签名称],
+	 * 	[整个标签含标签体,开始标签，结束标签，标签体，标签名称]
 	 * ]
 	 * @param src src
 	 * @param attribute attribute
@@ -274,18 +274,53 @@ public class RegularUtil {
 				+ "|(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?(>|(/>)))";			//单标签
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
 		List<List<String>> list = regular.fetchs(src, reg);
+		int idx = 0;
 		for(List<String> tmp:list){
 			List<String> item = new ArrayList<String>();
-			item.add(tmp.get(0));
-			item.add(tmp.get(4));
+			String start = tmp.get(0);
+			String all = null;
+			String body = null;
+			String end = null;
+			String name = tmp.get(4);
+			idx = src.indexOf(start, idx);
+			if(!start.endsWith("/>")){
+				end = "</" + name + ">";
+				int fr = idx+start.length();
+				int to = src.indexOf(end,idx+start.length());
+				if(to > fr) {
+					body = src.substring(fr, to);
+					if(body.contains(end)){
+						body = null;
+					}
+				}
+				if(null == body){
+					end = null;
+					all = start;
+				}else{
+					all = start + body + end;
+				}
+			}else{
+				all = start;
+			}
+			item.add(all);
+			item.add(start);
+			item.add(end);
+			item.add(body);
+			item.add(name);
 			result.add(item);
 		}
 		return result;
 	}
+
 	/**
-	 * 获取所有 包含attribute属性=value值  的标签与标签体
+	 * 获取所有 包含attribute属性包含value值  的标签与标签体
 	 * 单标签只匹配有/&gt;结尾的情况，避免与双标签的开始标签混淆
-	 * 如class="a"
+	 * 如class="a" : attribute=class value=a
+	 * style="width:100px;" :attribute=style value=width
+	 * [
+	 * 	[整个标签含标签体,开始标签，结束标签，标签体，标签名称],
+	 * 	[整个标签含标签体,开始标签，结束标签，标签体，标签名称]
+	 * ]
 	 * @param src src
 	 * @param attribute attribute
 	 * @param value value
@@ -297,10 +332,19 @@ public class RegularUtil {
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
 		String reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";	//双标签
 		List<List<String>> list = regular.fetchs(src, reg);
+		int idx = 0;
 		for(List<String> tmp:list){
 			List<String> item = new ArrayList<String>();
-			item.add(tmp.get(0));
-			item.add(tmp.get(1));
+			String all = tmp.get(0);
+			String name = tmp.get(1);
+			String start = all.substring(0,all.indexOf(">")+1);
+			String end = "</" + name + ">";
+			String body = cut(all, start,end);
+			item.add(all);
+			item.add(start);
+			item.add(end);
+			item.add(body);
+			item.add(name);
 			result.add(item);
 		}
 
@@ -309,11 +353,15 @@ public class RegularUtil {
 		for(List<String> tmp:list){
 			List<String> item = new ArrayList<String>();
 			item.add(tmp.get(0));
+			item.add(tmp.get(0));
+			item.add(null);
+			item.add(null);
 			item.add(tmp.get(1));
 			result.add(item);
 		}
 		return result;
 	}
+
 
 	/** 
 	 * 删除 tags之外的标签"&lt;b&gt;"与"&lt;/b&gt;"只写一次 "b"
