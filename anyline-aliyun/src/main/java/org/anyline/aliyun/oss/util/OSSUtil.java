@@ -37,7 +37,10 @@ public class OSSUtil {
 	 
 	public OSSConfig getConfig(){ 
 		return config; 
-	} 
+	}
+	public void setConfig(OSSConfig config){
+		this.config = config;
+	}
 	public static OSSUtil getInstance() { 
 		return getInstance("default"); 
 	} 
