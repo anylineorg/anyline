@@ -14,8 +14,9 @@ import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.ConfigTable; 
 import org.anyline.util.DateUtil; 
-import org.anyline.util.FileUtil; 
-import org.slf4j.Logger; 
+import org.anyline.util.FileUtil;
+import org.anyline.web.config.http.Config;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory; 
 
 import com.aliyun.oss.OSSClient; 
@@ -32,15 +33,18 @@ public class OSSUtil {
 	private static final Logger log = LoggerFactory.getLogger(OSSUtil.class); 
 	private OSSClient client = null; 
 	private OSSConfig config = null; 
-	private static Hashtable<String, OSSUtil> instances = new Hashtable<String, OSSUtil>(); 
-	 
-	 
-	public OSSConfig getConfig(){ 
-		return config; 
-	}
-	public void setConfig(OSSConfig config){
-		this.config = config;
-	}
+	private static Hashtable<String, OSSUtil> instances = new Hashtable<String, OSSUtil>();
+    public OSSUtil(){}
+	public OSSUtil(String endpoint, String bucket, String account, String password){
+        OSSConfig config = new OSSConfig();
+        config.ENDPOINT = endpoint;
+        config.ACCESS_ID = account;
+        config.ACCESS_SECRET = password;
+        config.BUCKET = bucket;
+        this.config = config;
+        this.client = new OSSClient(config.ENDPOINT, config.ACCESS_ID, config.ACCESS_SECRET);
+    }
+
 	public static OSSUtil getInstance() { 
 		return getInstance("default"); 
 	} 
@@ -50,7 +54,13 @@ public class OSSUtil {
 	} 
 	public void setClient(OSSClient client) { 
 		this.client = client; 
-	} 
+	}
+    public OSSConfig getConfig(){
+        return config;
+    }
+    public void setConfig(OSSConfig config){
+        this.config = config;
+    }
 	@SuppressWarnings("deprecation")
 	public static OSSUtil getInstance(String key) { 
 		if (BasicUtil.isEmpty(key)) { 
