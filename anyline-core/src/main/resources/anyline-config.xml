@@ -69,5 +69,5 @@
 	
 	<!-- 是否启用(一级)缓存 -->
 	<property key="IS_USE_CACHE">true</property>
-	
+
 </properties>
