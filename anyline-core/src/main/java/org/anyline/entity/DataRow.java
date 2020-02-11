@@ -1520,4 +1520,25 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 
+	/**
+	 * 拼接value
+	 * @param keys keys
+	 * @return String
+	 */
+	public String join(String ... keys){
+		String result = "";
+		if(null != keys){
+			for(String key:keys){
+				String val = getString(key);
+				if(BasicUtil.isNotEmpty(val)){
+					if("".equals(result)){
+						result = val;
+					}else{
+						result += "," + val;
+					}
+				}
+			}
+		}
+		return result;
+	}
 }
