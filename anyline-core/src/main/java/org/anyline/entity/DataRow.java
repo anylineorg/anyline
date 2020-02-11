@@ -913,7 +913,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(key.contains("{") && key.contains("}")){
 			result = BeanUtil.parseFinalValue(this,key);
 		}else{ 
-			result = getStringNvl(key, defs);
+			result = getString(key);
+			if(BasicUtil.isEmpty(result)){
+				if(null == defs || defs.length == 0){
+					result = "";
+				}else{
+					result = BasicUtil.nvl(defs).toString();
+				}
+			}
 		} 
 		return result; 
 	}
