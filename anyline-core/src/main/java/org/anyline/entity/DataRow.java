@@ -905,7 +905,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		} 
 		return result; 
 	} 
-	public String getString(String key){ 
+	public String getString(String key, String ... defs){
 		String result = null;
 		if(null == key){
 			return result;
@@ -913,10 +913,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(key.contains("{") && key.contains("}")){
 			result = BeanUtil.parseFinalValue(this,key);
 		}else{ 
-			Object value = get(key);
-			if(null != value){
-				result = value.toString();
-			}
+			result = getStringNvl(key, defs);
 		} 
 		return result; 
 	}
