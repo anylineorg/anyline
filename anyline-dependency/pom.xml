@@ -79,7 +79,7 @@
 		<fastjson.version>1.2.62</fastjson.version>
 		<logback.version>1.2.3</logback.version>
 		<json.version>2.4</json.version>
-		<jackson.version>2.9.10.1</jackson.version>
+		<jackson.version>2.10.0</jackson.version>
 		<dom4j.version>2.1.1</dom4j.version>
 		<commons.net.version>3.6</commons.net.version>
 		<commons.io.version>2.6</commons.io.version>
