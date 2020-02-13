@@ -905,30 +905,29 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		} 
 		return result; 
 	} 
-	public String getString(String key, String ... defs){
+	public String getString(String key){
 		String result = null;
 		if(null == key){
 			return result;
 		}
 		if(key.contains("{") && key.contains("}")){
 			result = BeanUtil.parseFinalValue(this,key);
-		}else{ 
-			result = getString(key);
-			if(BasicUtil.isEmpty(result)){
-				if(null == defs || defs.length == 0){
-					result = "";
-				}else{
-					result = BasicUtil.nvl(defs).toString();
-				}
+		}else{
+			Object value = get(key);
+			if(null != value){
+				result = value.toString();
 			}
 		} 
 		return result; 
 	}
-	/**
+
+
+	 /**
 	 * boolean类型true 解析成 1
 	 * @param key key
-	 * @return return
-	 */ 
+	 * @return int
+	 * @throws Exception
+	 */
 	public int getInt(String key) throws Exception{
 		Object val = get(key);
 		if(val instanceof Boolean){
@@ -1081,6 +1080,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * null值替换成""
+	 * @param keys keys
 	 * @return return
 	 */
 	public DataRow nvl(String ... keys){

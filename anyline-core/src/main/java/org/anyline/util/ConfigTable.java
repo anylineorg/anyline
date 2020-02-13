@@ -131,6 +131,7 @@ public class ConfigTable {
 			if(path.indexOf("WEB-INF") > 0){
 				webRoot = path.substring(0,path.indexOf("WEB-INF")-1);	
 			}
+			/*
 			if(path.indexOf("!/BOOT-INF") > 0){
 				webRoot = path.substring(0,path.indexOf("!/BOOT-INF"));
 			}
@@ -139,7 +140,7 @@ public class ConfigTable {
 			}
 			if(path.indexOf("target") > 0){
 				webRoot = path.substring(0,path.indexOf("target")-1);	
-			}
+			}*/
 		}
 		if(path.contains("classes")){
 			classpath = path;

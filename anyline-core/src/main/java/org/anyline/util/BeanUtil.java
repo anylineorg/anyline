@@ -880,7 +880,7 @@ public class BeanUtil {
 	 * @return return
 	 */ 
  
-	public static String join(List<?> list, String key, String split) { 
+	public static String concat(List<?> list, String key, String split) {
 		StringBuilder builder = new StringBuilder(); 
 		if (null != list) { 
 			int size = list.size(); 
@@ -895,7 +895,7 @@ public class BeanUtil {
 		} 
 		return builder.toString(); 
 	} 
-	public static String join(List<?> list, String split) { 
+	public static String concat(List<?> list, String split) {
 		StringBuilder builder = new StringBuilder(); 
 		if (null != list) { 
 			int size = list.size(); 
@@ -908,14 +908,14 @@ public class BeanUtil {
 		} 
 		return builder.toString(); 
 	} 
-	public static String join(List<?> list) { 
-		return join(list,","); 
+	public static String concat(List<?> list) {
+		return concat(list,",");
 	} 
  
 	 
 	 
  
-	public static <T> String join(T[] list, String key, String split) { 
+	public static <T> String concat(T[] list, String key, String split) {
 		StringBuilder builder = new StringBuilder(); 
 		if (null != list) { 
 			int size = list.length; 
@@ -930,7 +930,7 @@ public class BeanUtil {
 		} 
 		return builder.toString(); 
 	} 
-	public static <T> String join(T[] list, String split) { 
+	public static <T> String concat(T[] list, String split) {
 		StringBuilder builder = new StringBuilder(); 
 		if (null != list) { 
 			int size = list.length; 
@@ -943,12 +943,12 @@ public class BeanUtil {
 		} 
 		return builder.toString(); 
 	} 
-	public static <T> String join(T[] list) { 
-		return join(list,","); 
+	public static <T> String concat(T[] list) {
+		return concat(list,",");
 	} 
  
  
-	public static String join(int[] list, String split) { 
+	public static String concat(int[] list, String split) {
 		StringBuilder builder = new StringBuilder(); 
 		if (null != list) { 
 			int size = list.length; 
@@ -961,11 +961,11 @@ public class BeanUtil {
 		} 
 		return builder.toString(); 
 	} 
-	public static String join(int[] list) { 
-		return join(list,","); 
+	public static String concat(int[] list) {
+		return concat(list,",");
 	} 
  
-	public static String join(long[] list, String split) { 
+	public static String concat(long[] list, String split) {
 		StringBuilder builder = new StringBuilder(); 
 		if (null != list) { 
 			int size = list.length; 
@@ -978,11 +978,11 @@ public class BeanUtil {
 		} 
 		return builder.toString(); 
 	} 
-	public static String join(long[] list) { 
-		return join(list,","); 
+	public static String concat(long[] list) {
+		return concat(list,",");
 	} 
  
-	public static String join(double[] list, String split) { 
+	public static String concat(double[] list, String split) {
 		StringBuilder builder = new StringBuilder(); 
 		if (null != list) { 
 			int size = list.length; 
@@ -995,11 +995,11 @@ public class BeanUtil {
 		} 
 		return builder.toString(); 
 	} 
-	public static String join(double[] list) { 
-		return join(list,","); 
+	public static String concat(double[] list) {
+		return concat(list,",");
 	} 
  
-	public static String join(float[] list, String split) { 
+	public static String concat(float[] list, String split) {
 		StringBuilder builder = new StringBuilder(); 
 		if (null != list) { 
 			int size = list.length; 
@@ -1012,11 +1012,11 @@ public class BeanUtil {
 		} 
 		return builder.toString(); 
 	} 
-	public static String join(float[] list) { 
-		return join(list,","); 
+	public static String concat(float[] list) {
+		return concat(list,",");
 	} 
  
-	public static String join(short[] list, String split) { 
+	public static String concat(short[] list, String split) {
 		StringBuilder builder = new StringBuilder(); 
 		if (null != list) { 
 			int size = list.length; 
@@ -1029,8 +1029,8 @@ public class BeanUtil {
 		} 
 		return builder.toString(); 
 	} 
-	public static String join(short[] list) { 
-		return join(list,","); 
+	public static String concat(short[] list) {
+		return concat(list,",");
 	} 
 	 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

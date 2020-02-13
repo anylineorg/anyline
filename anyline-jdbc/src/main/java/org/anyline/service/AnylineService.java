@@ -22,6 +22,7 @@ package org.anyline.service;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.ConfigStore;
+import org.anyline.jdbc.config.Table;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
 
@@ -54,6 +55,9 @@ public interface AnylineService{
 	public DataSet selects(String src, int fr, int to, String ... conditions);
 	public DataRow select(String src, ConfigStore configs, String ... conditions);
 	public DataRow select(String src, String ... conditions);
+
+
+
 	/**
 	 * 如果二级缓存开启 会从二级缓存中提取数据
 	 * @param cache	对应ehcache缓存配置文件 中的cache.name
@@ -65,6 +69,28 @@ public interface AnylineService{
 	public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions);
 	public DataSet caches(String cache, String src, String ... conditions);
 	public DataSet caches(String cache, String src, int fr, int to, String ... conditions);
+	public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions);
+	public DataRow cache(String cache, String src, String ... conditions);
+
+
+	/*多表查询，左右连接时使用*/
+	public DataSet querys(Table table, ConfigStore configs, String ... conditions);
+	public DataSet querys(Table table, String ... conditions);
+	public DataSet querys(Table table, int fr, int to, String ... conditions);
+	public DataRow query(Table table, ConfigStore configs, String ... conditions);
+	public DataRow query(Table table, String ... conditions);
+	public DataSet selects(Table table, ConfigStore configs, String ... conditions);
+	public DataSet selects(Table table, String ... conditions);
+	public DataSet selects(Table table, int fr, int to, String ... conditions);
+	public DataRow select(Table table, ConfigStore configs, String ... conditions);
+	public DataRow select(Table table, String ... conditions);
+	public DataSet caches(String cache, Table table, ConfigStore configs, String ... conditions);
+	public DataSet caches(String cache, Table table, String ... conditions);
+	public DataSet caches(String cache, Table table, int fr, int to, String ... conditions);
+	public DataRow cache(String cache, Table table, ConfigStore configs, String ... conditions);
+	public DataRow cache(String cache, Table table, String ... conditions);
+
+
 
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
 	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
@@ -78,9 +104,6 @@ public interface AnylineService{
 	public DataRow prev(DataRow row, ConfigStore configs, String ... conditions);
 	public DataRow prev(DataRow row, String ... conditions);
 
-	public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions);
-	public DataRow cache(String cache, String src, String ... conditions);
-	
 
 	/**
 	 * 删除缓存 参数保持与查询参数完全一致

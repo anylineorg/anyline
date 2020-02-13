@@ -1023,7 +1023,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 *  
 	 * @param index  index
 	 * @param key  key
-	 * @return return
+	 * @return String
 	 * @throws Exception
 	 */
 	public String getString(int index, String key) throws Exception{
@@ -1162,6 +1162,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
+	 * @throws Exception
 	 */
 	public String getEscapeString(int index, String key) throws Exception{
 		return  EscapeUtil.escape(getString(index, key)).toString();
@@ -1673,6 +1674,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	/**
 	 * 清除空列
+	 * @param keys keys
 	 * @return return
 	 */
 	public DataSet removeEmpty(String ... keys){
