@@ -28,6 +28,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
+import org.anyline.jdbc.config.Table;
 import org.anyline.jdbc.config.db.Order;
 import org.anyline.jdbc.config.db.OrderStore;
 import org.anyline.jdbc.config.db.Procedure;
@@ -95,109 +96,6 @@ public class AnylineServiceImpl implements AnylineService {
     public DataSet select(Procedure procedure) {
         return query(procedure);
     }
-    protected PageNavi setPageLazy(String src, ConfigStore configs, String ... conditions){
-        PageNavi navi =  null;
-        String lazyKey = null;
-        if(null != configs){
-            navi = configs.getPageNavi();
-            if(null != navi && navi.isLazy()){
-                lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
-                navi.setLazyKey(lazyKey);
-                int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
-                navi.setTotalRow(total);
-            }
-        }
-        return navi;
-    }
-    protected DataSet queryFromDao(String src, ConfigStore configs, String... conditions){
-        DataSet set = null;
-        if(ConfigTable.isSQLDebug()){
-            log.warn("[解析SQL][src:{}]", src);
-        }
-        //conditions = parseConditions(conditions);
-        try {
-            setPageLazy(src, configs, conditions);
-            SQL sql = createSQL(src);
-            set = dao.querys(sql, configs, conditions);
-            set.addQueryParam("query_src", src);
-        } catch (Exception e) {
-            set = new DataSet();
-            set.setException(e);
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
-                e.printStackTrace();
-            }
-            log.error("QUERY ERROR:"+e);
-        }
-        return set;
-    }
-    /**
-     * 解析SQL中指定的主键table(col1,col2)[pk1,pk2]
-     * @param src  src
-     * @param pks  pks
-     * @return return
-     */
-    protected String parsePrimaryKey(String src, List<String> pks){
-        if(src.endsWith(">")){
-            int fr = src.lastIndexOf("<");
-            int to = src.lastIndexOf(">");
-            if(fr != -1){
-                String pkstr = src.substring(fr+1,to);
-                src = src.substring(0, fr);
-                String[] tmps = pkstr.split(",");
-                for(String tmp:tmps){
-                    pks.add(tmp);
-                    if(ConfigTable.isSQLDebug()){
-                        log.warn("[解析SQL主键] [KEY:{}]",tmp);
-                    }
-                }
-            }
-        }
-        return src;
-    }
-    protected synchronized SQL createSQL(String src){
-        SQL sql = null;
-        src = src.trim();
-        List<String> pks = new ArrayList<String>();
-        //文本sql
-        if (src.startsWith("{") && src.endsWith("}")) {
-            if(ConfigTable.isSQLDebug()){
-                log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:{}]",src);
-            }
-            src = src.substring(1,src.length()-1);
-            src = DataSourceHolder.parseDataSource(src);//解析数据源
-            src = parsePrimaryKey(src, pks);//解析主键
-            sql = new TextSQLImpl(src);
-        } else {
-            src = DataSourceHolder.parseDataSource(src);//解析数据源
-            src = parsePrimaryKey(src, pks);//解析主键
-            if (src.toUpperCase().trim().startsWith("SELECT")
-                    || src.toUpperCase().trim().startsWith("DELETE")
-                    || src.toUpperCase().trim().startsWith("INSERT")
-                    || src.toUpperCase().trim().startsWith("UPDATE")) {
-                if(ConfigTable.isSQLDebug()){
-                    log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
-                }
-                sql = new TextSQLImpl(src);
-            }else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
-                /* XML定义 */
-                if(ConfigTable.isSQLDebug()){
-                    log.warn("[解析SQL类型] [类型:XML定义] [src:{}]", src);
-                }
-                sql = SQLStoreImpl.parseSQL(src);
-            } else {
-                /* 自动生成 */
-                if(ConfigTable.isSQLDebug()){
-                    log.warn("[解析SQL类型] [类型:auto] [src:{}]", src);
-                }
-                sql = new TableSQLImpl();
-                sql.setDataSource(src);
-            }
-        }
-        if(null != sql && pks.size()>0){
-            sql.setPrimaryKey(pks);
-        }
-        return sql;
-    }
     /**
      * 按条件查询
      * @param src 表｜视图｜函数｜自定义SQL
@@ -211,7 +109,6 @@ public class AnylineServiceImpl implements AnylineService {
         conditions = BasicUtil.compressionSpace(conditions);
         DataSet set = queryFromDao(src, configs, conditions);
         return set;
-
     }
 
     @Override
@@ -231,64 +128,7 @@ public class AnylineServiceImpl implements AnylineService {
         configs.setPageNavi(navi);
         return querys(src, configs, conditions);
     }
-
-    protected DataSet queryFromCache(String cache, String src, ConfigStore configs, String ... conditions){
-        if(ConfigTable.isDebug() && log.isWarnEnabled()){
-            log.warn("[cache from][cache:{}][src:{}]", cache, src);
-        }
-        DataSet set = null;
-        String key = "SET:";
-        if(cache.contains(">")){
-            String tmp[] = cache.split(">");
-            cache = tmp[0];
-        }
-        if(cache.contains(":")){
-            String ks[] = BeanUtil.parseKeyValue(cache);
-            cache = ks[0];
-            key += ks[1]+":";
-        }
-        key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
-        SQL sql = createSQL(src);
-        if(null != cacheProvider) {
-            CacheElement cacheElement = cacheProvider.get(cache, key);
-            if (null != cacheElement && null != cacheElement.getValue()) {
-                Object cacheValue = cacheElement.getValue();
-                if (cacheValue instanceof DataSet) {
-                    set = (DataSet) cacheValue;
-                    set.setIsFromCache(true);
-                } else {
-                    log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
-                }
-//        	//开启新线程提前更新缓存(90%时间)
-                long age = (System.currentTimeMillis() - cacheElement.getCreateTime()) / 1000;
-                final int _max = cacheElement.getExpires();
-                if (age > _max * 0.9) {
-                    if (ConfigTable.isDebug() && log.isWarnEnabled()) {
-                        log.warn("[缓存即将到期提前刷新][src:{}] [生存:{}/{}]", src, age, _max);
-                    }
-                    final String _key = key;
-                    final String _cache = cache;
-                    final SQL _sql = sql;
-                    final ConfigStore _configs = configs;
-                    final String[] _conditions = conditions;
-                    new Thread(new Runnable() {
-                        public void run() {
-                            CacheUtil.start(_key, _max / 10);
-                            DataSet newSet = dao.querys(_sql, _configs, _conditions);
-                            cacheProvider.put(_cache, _key, newSet);
-                            CacheUtil.stop(_key, _max / 10);
-                        }
-                    }).start();
-                }
-
-            } else {
-                setPageLazy(src, configs, conditions);
-                set = dao.querys(sql, configs, conditions);
-                cacheProvider.put(cache, key, set);
-            }
-        }
-        return set;
-    }
+    @Override
     public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions){
         DataSet set = null;
         src = BasicUtil.compressionSpace(src);
@@ -304,9 +144,11 @@ public class AnylineServiceImpl implements AnylineService {
         }
         return set;
     }
+    @Override
     public DataSet caches(String cache, String src, String ... conditions){
         return caches(cache, src, null, conditions);
     }
+    @Override
     public DataSet caches(String cache, String src, int fr, int to, String ... conditions){
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(fr);
@@ -340,6 +182,214 @@ public class AnylineServiceImpl implements AnylineService {
     @Override
     public DataRow query(String src, String... conditions) {
         return query(src, null, conditions);
+    }
+
+    @Override
+    public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions){
+        //是否启动缓存
+        if(null == cache){
+            return query(src, configs, conditions);
+        }
+        PageNaviImpl navi = new PageNaviImpl();
+        navi.setFirstRow(0);
+        navi.setLastRow(0);
+        navi.setCalType(1);
+        if (null == configs) {
+            configs = new ConfigStoreImpl();
+        }
+        configs.setPageNavi(navi);
+
+        DataRow row = null;
+        String key = "ROW:";
+
+        if(cache.contains(":")){
+            String ks[] = BeanUtil.parseKeyValue(cache);
+            cache = ks[0];
+            key += ks[1]+":";
+        }
+        key +=  CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
+        if(null != cacheProvider) {
+            CacheElement cacheElement = cacheProvider.get(cache, key);
+            if (null != cacheElement && null != cacheElement.getValue()) {
+                Object cacheValue = cacheElement.getValue();
+                if (cacheValue instanceof DataRow) {
+                    row = (DataRow) cacheValue;
+                    row.setIsFromCache(true);
+                    return row;
+                } else {
+                    log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
+                }
+            }
+        }
+        // 调用实际 的方法
+        row = query(src, configs, conditions);
+        if(null != row && null != cacheProvider){
+            cacheProvider.put(cache, key, row);
+        }
+        return row;
+    }
+    @Override
+    public DataRow cache(String cache, String src, String ... conditions){
+        return cache(cache, src, null, conditions);
+    }
+
+    /*多表查询，左右连接*/
+
+    @Override
+    public DataSet selects(Table table, ConfigStore configs, String... conditions) {
+        return querys(table, configs, conditions);
+    }
+    @Override
+    public DataSet selects(Table table, String... conditions) {
+        return querys(table, conditions);
+    }
+    @Override
+    public DataSet selects(Table table, int fr, int to, String... conditions) {
+        return querys(table, fr, to, conditions);
+    }
+    @Override
+    public DataRow select(Table table, ConfigStore configs, String... conditions) {
+        return query(table, configs, conditions);
+    }
+    @Override
+    public DataRow select(Table table, String... conditions) {
+        return query(table, conditions);
+    }
+
+    /**
+     * 按条件查询
+     * @param table 表｜视图｜函数｜自定义SQL
+     * @param configs http参数封装
+     * @param conditions 固定查询条件
+     * @return return
+     */
+    @Override
+    public DataSet querys(Table table, ConfigStore configs, String... conditions) {
+        conditions = BasicUtil.compressionSpace(conditions);
+        DataSet set = queryFromDao(table, configs, conditions);
+        return set;
+
+    }
+
+    @Override
+    public DataSet querys(Table table, String... conditions) {
+        return querys(table, null, conditions);
+    }
+
+
+    @Override
+    public DataSet querys(Table table, int fr, int to, String... conditions) {
+        PageNaviImpl navi = new PageNaviImpl();
+        navi.setFirstRow(fr);
+        navi.setLastRow(to);
+        navi.setCalType(1);
+        navi.setTotalRow(to-fr+1);
+        ConfigStore configs = new ConfigStoreImpl();
+        configs.setPageNavi(navi);
+        return querys(table, configs, conditions);
+    }
+    @Override
+    public DataSet caches(String cache, Table table, ConfigStore configs, String ... conditions){
+        DataSet set = null;
+        conditions = BasicUtil.compressionSpace(conditions);
+        if(null == cache){
+            set = querys(table, configs, conditions);
+        }else{
+            if(null != cacheProvider){
+               // set = queryFromCache(cache, table, configs, conditions);
+            }else{
+                set = querys(table, configs, conditions);
+            }
+        }
+        return set;
+    }
+    @Override
+    public DataSet caches(String cache, Table table, String ... conditions){
+        return caches(cache, table, null, conditions);
+    }
+    @Override
+    public DataSet caches(String cache, Table table, int fr, int to, String ... conditions){
+        PageNaviImpl navi = new PageNaviImpl();
+        navi.setFirstRow(fr);
+        navi.setLastRow(to);
+        navi.setCalType(1);
+        navi.setTotalRow(to-fr+1);
+        ConfigStore configs = new ConfigStoreImpl();
+        configs.setPageNavi(navi);
+        return caches(cache, table, configs, conditions);
+    }
+
+    @Override
+    public DataRow query(Table table, ConfigStore store, String... conditions) {
+        PageNaviImpl navi = new PageNaviImpl();
+        navi.setFirstRow(0);
+        navi.setLastRow(0);
+        navi.setCalType(1);
+        if (null == store) {
+            store = new ConfigStoreImpl();
+        }
+        store.setPageNavi(navi);
+        DataSet set = querys(table, store, conditions);
+        if (null != set && set.size() > 0) {
+            DataRow row = set.getRow(0);
+            return row;
+        }
+        return null;
+    }
+
+
+    @Override
+    public DataRow query(Table table, String... conditions) {
+        return query(table, null, conditions);
+    }
+
+    @Override
+    public DataRow cache(String cache, Table table, ConfigStore configs, String ... conditions){
+        //是否启动缓存
+        if(null == cache){
+            return query(table, configs, conditions);
+        }
+        PageNaviImpl navi = new PageNaviImpl();
+        navi.setFirstRow(0);
+        navi.setLastRow(0);
+        navi.setCalType(1);
+        if (null == configs) {
+            configs = new ConfigStoreImpl();
+        }
+        configs.setPageNavi(navi);
+
+        DataRow row = null;
+        String key = "ROW:";
+
+        if(cache.contains(":")){
+            String ks[] = BeanUtil.parseKeyValue(cache);
+            cache = ks[0];
+            key += ks[1]+":";
+        }
+        key +=  CacheUtil.createCacheElementKey(true, true, table.getName(), configs, conditions);
+        if(null != cacheProvider) {
+            CacheElement cacheElement = cacheProvider.get(cache, key);
+            if (null != cacheElement && null != cacheElement.getValue()) {
+                Object cacheValue = cacheElement.getValue();
+                if (cacheValue instanceof DataRow) {
+                    row = (DataRow) cacheValue;
+                    row.setIsFromCache(true);
+                    return row;
+                } else {
+                    log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
+                }
+            }
+        }
+        // 调用实际 的方法
+        row = query(table, configs, conditions);
+        if(null != row && null != cacheProvider){
+            cacheProvider.put(cache, key, row);
+        }
+        return row;
+    }
+    @Override
+    public DataRow cache(String cache, Table table, String ... conditions){
+        return cache(cache, table, null, conditions);
     }
 
     @Override
@@ -500,52 +550,6 @@ public class AnylineServiceImpl implements AnylineService {
     @Override
     public DataRow prev(DataRow row, ConfigStore configs, String... conditions) {
         return prev(row, null, null, configs, conditions);
-    }
-    public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions){
-        //是否启动缓存
-        if(null == cache){
-            return query(src, configs, conditions);
-        }
-        PageNaviImpl navi = new PageNaviImpl();
-        navi.setFirstRow(0);
-        navi.setLastRow(0);
-        navi.setCalType(1);
-        if (null == configs) {
-            configs = new ConfigStoreImpl();
-        }
-        configs.setPageNavi(navi);
-
-        DataRow row = null;
-        String key = "ROW:";
-
-        if(cache.contains(":")){
-            String ks[] = BeanUtil.parseKeyValue(cache);
-            cache = ks[0];
-            key += ks[1]+":";
-        }
-        key +=  CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
-        if(null != cacheProvider) {
-            CacheElement cacheElement = cacheProvider.get(cache, key);
-            if (null != cacheElement && null != cacheElement.getValue()) {
-                Object cacheValue = cacheElement.getValue();
-                if (cacheValue instanceof DataRow) {
-                    row = (DataRow) cacheValue;
-                    row.setIsFromCache(true);
-                    return row;
-                } else {
-                    log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
-                }
-            }
-        }
-        // 调用实际 的方法
-        row = query(src, configs, conditions);
-        if(null != row && null != cacheProvider){
-            cacheProvider.put(cache, key, row);
-        }
-        return row;
-    }
-    public DataRow cache(String cache, String src, String ... conditions){
-        return cache(cache, src, null, conditions);
     }
 
 
@@ -953,4 +957,192 @@ public class AnylineServiceImpl implements AnylineService {
         return dao.delete(table, key, values);
     }
 
+    protected PageNavi setPageLazy(String src, ConfigStore configs, String ... conditions){
+        PageNavi navi =  null;
+        String lazyKey = null;
+        if(null != configs){
+            navi = configs.getPageNavi();
+            if(null != navi && navi.isLazy()){
+                lazyKey = CacheUtil.createCacheElementKey(false, false, src, configs, conditions);
+                navi.setLazyKey(lazyKey);
+                int total = PageLazyStore.getTotal(lazyKey, navi.getLazyPeriod());
+                navi.setTotalRow(total);
+            }
+        }
+        return navi;
+    }
+    protected DataSet queryFromDao(Table table, ConfigStore configs, String... conditions){
+        DataSet set = null;
+        if(ConfigTable.isSQLDebug()){
+            log.warn("[解析SQL][src:{}]", table.getName());
+        }
+        //conditions = parseConditions(conditions);
+        try {
+            setPageLazy(table.getName(), configs, conditions);
+            SQL sql = createSQL(table);
+            set = dao.querys(sql, configs, conditions);
+            set.addQueryParam("query_src", table.getName());
+        } catch (Exception e) {
+            set = new DataSet();
+            set.setException(e);
+            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+                e.printStackTrace();
+            }
+            log.error("QUERY ERROR:"+e);
+        }
+        return set;
+    }
+    protected DataSet queryFromDao(String src, ConfigStore configs, String... conditions){
+        DataSet set = null;
+        if(ConfigTable.isSQLDebug()){
+            log.warn("[解析SQL][src:{}]", src);
+        }
+        //conditions = parseConditions(conditions);
+        try {
+            setPageLazy(src, configs, conditions);
+            SQL sql = createSQL(src);
+            set = dao.querys(sql, configs, conditions);
+            set.addQueryParam("query_src", src);
+        } catch (Exception e) {
+            set = new DataSet();
+            set.setException(e);
+            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+                e.printStackTrace();
+            }
+            log.error("QUERY ERROR:"+e);
+        }
+        return set;
+    }
+    /**
+     * 解析SQL中指定的主键table(col1,col2)[pk1,pk2]
+     * @param src  src
+     * @param pks  pks
+     * @return return
+     */
+    protected String parsePrimaryKey(String src, List<String> pks){
+        if(src.endsWith(">")){
+            int fr = src.lastIndexOf("<");
+            int to = src.lastIndexOf(">");
+            if(fr != -1){
+                String pkstr = src.substring(fr+1,to);
+                src = src.substring(0, fr);
+                String[] tmps = pkstr.split(",");
+                for(String tmp:tmps){
+                    pks.add(tmp);
+                    if(ConfigTable.isSQLDebug()){
+                        log.warn("[解析SQL主键] [KEY:{}]",tmp);
+                    }
+                }
+            }
+        }
+        return src;
+    }
+
+    protected synchronized SQL createSQL(Table table){
+        SQL sql = null;
+        List<String> pks = new ArrayList<String>();
+
+        return sql;
+    }
+    protected synchronized SQL createSQL(String src){
+        SQL sql = null;
+        src = src.trim();
+        List<String> pks = new ArrayList<String>();
+        //文本sql
+        if (src.startsWith("{") && src.endsWith("}")) {
+            if(ConfigTable.isSQLDebug()){
+                log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:{}]",src);
+            }
+            src = src.substring(1,src.length()-1);
+            src = DataSourceHolder.parseDataSource(src);//解析数据源
+            src = parsePrimaryKey(src, pks);//解析主键
+            sql = new TextSQLImpl(src);
+        } else {
+            src = DataSourceHolder.parseDataSource(src);//解析数据源
+            src = parsePrimaryKey(src, pks);//解析主键
+            if (src.toUpperCase().trim().startsWith("SELECT")
+                    || src.toUpperCase().trim().startsWith("DELETE")
+                    || src.toUpperCase().trim().startsWith("INSERT")
+                    || src.toUpperCase().trim().startsWith("UPDATE")) {
+                if(ConfigTable.isSQLDebug()){
+                    log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
+                }
+                sql = new TextSQLImpl(src);
+            }else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
+                /* XML定义 */
+                if(ConfigTable.isSQLDebug()){
+                    log.warn("[解析SQL类型] [类型:XML定义] [src:{}]", src);
+                }
+                sql = SQLStoreImpl.parseSQL(src);
+            } else {
+                /* 自动生成 */
+                if(ConfigTable.isSQLDebug()){
+                    log.warn("[解析SQL类型] [类型:auto] [src:{}]", src);
+                }
+                sql = new TableSQLImpl();
+                sql.setDataSource(src);
+            }
+        }
+        if(null != sql && pks.size()>0){
+            sql.setPrimaryKey(pks);
+        }
+        return sql;
+    }
+    protected DataSet queryFromCache(String cache, String src, ConfigStore configs, String ... conditions){
+        if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            log.warn("[cache from][cache:{}][src:{}]", cache, src);
+        }
+        DataSet set = null;
+        String key = "SET:";
+        if(cache.contains(">")){
+            String tmp[] = cache.split(">");
+            cache = tmp[0];
+        }
+        if(cache.contains(":")){
+            String ks[] = BeanUtil.parseKeyValue(cache);
+            cache = ks[0];
+            key += ks[1]+":";
+        }
+        key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
+        SQL sql = createSQL(src);
+        if(null != cacheProvider) {
+            CacheElement cacheElement = cacheProvider.get(cache, key);
+            if (null != cacheElement && null != cacheElement.getValue()) {
+                Object cacheValue = cacheElement.getValue();
+                if (cacheValue instanceof DataSet) {
+                    set = (DataSet) cacheValue;
+                    set.setIsFromCache(true);
+                } else {
+                    log.error("[缓存设置错误,检查配置文件是否有重复cache.name 或Java代码调用中cache.name混淆][channel:{}]", cache);
+                }
+//        	//开启新线程提前更新缓存(90%时间)
+                long age = (System.currentTimeMillis() - cacheElement.getCreateTime()) / 1000;
+                final int _max = cacheElement.getExpires();
+                if (age > _max * 0.9) {
+                    if (ConfigTable.isDebug() && log.isWarnEnabled()) {
+                        log.warn("[缓存即将到期提前刷新][src:{}] [生存:{}/{}]", src, age, _max);
+                    }
+                    final String _key = key;
+                    final String _cache = cache;
+                    final SQL _sql = sql;
+                    final ConfigStore _configs = configs;
+                    final String[] _conditions = conditions;
+                    new Thread(new Runnable() {
+                        public void run() {
+                            CacheUtil.start(_key, _max / 10);
+                            DataSet newSet = dao.querys(_sql, _configs, _conditions);
+                            cacheProvider.put(_cache, _key, newSet);
+                            CacheUtil.stop(_key, _max / 10);
+                        }
+                    }).start();
+                }
+
+            } else {
+                setPageLazy(src, configs, conditions);
+                set = dao.querys(sql, configs, conditions);
+                cacheProvider.put(cache, key, set);
+            }
+        }
+        return set;
+    }
 }

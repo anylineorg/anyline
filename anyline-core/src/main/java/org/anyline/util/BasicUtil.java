@@ -550,8 +550,9 @@ public class BasicUtil {
 	 * 合成笛卡尔组合 
 	 *  
 	 * @param lists  lists
+	 * @param <T> t
 	 * @return return
-	 */ 
+	 */
 	public static <T> List<List<T>> descartes(List<List<T>> lists) {
 		List<List<T>> result = new ArrayList<List<T>>();
 		if(null == lists || lists.size()==0){
