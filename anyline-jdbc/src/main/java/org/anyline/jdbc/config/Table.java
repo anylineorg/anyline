@@ -7,6 +7,7 @@ public class Table {
     private String datasoruce;
     private String schema;
     private String name;
+    private String alias;
     private List<String> columns = new ArrayList<String>();
     private TYPE type = TYPE.TABLE;
     private List<Join> joins = new ArrayList<Join>();//关联表
@@ -19,14 +20,21 @@ public class Table {
         public abstract String getCode();
     }
 
-    public static void main(String[] args) {
-        Table table = new Table("<ds>dbo.user(id,nm)","id,nm,ss");
-    }
     public Table(String name, String columns){
         this.name = name;
         parseName();
         parseColumn(columns);
     }
+
+    /**
+     * 解析name
+     * 支持的格式(以下按先后顺序即可)
+     * user
+     * user(id,nm)
+     * user as u
+     * user as u(id,nm)
+     * &lt;ds_hr&gt;user as u(id,nm)
+     */
     private void parseName(){
         if(null != name){
             if(name.startsWith("<")){
@@ -46,6 +54,18 @@ public class Table {
                         columns.add(col);
                     }
                 }
+            }
+            String tag = " as ";
+            String lower = name.toLowerCase();
+            int tagIdx = lower.indexOf(tag)+tag.length();
+            if(tagIdx > 0){
+                String alias = name.substring(tagIdx).trim();
+                name = name.substring(0,tagIdx).trim();
+            }
+            if(name.contains(" ")){
+                String[] tmps = name.split(" ");
+                name = tmps[0];
+                alias = tmps[1];
             }
         }
     }
@@ -118,5 +138,13 @@ public class Table {
 
     public void setJoins(List<Join> joins) {
         this.joins = joins;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }

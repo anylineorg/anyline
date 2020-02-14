@@ -368,7 +368,7 @@ public class BasicUtil {
 		}
 	} 
  
-	public static boolean parseBoolean(Object obj) throws Exception{
+	public static boolean parseBoolean(Object obj) throws RuntimeException{
 		if ("1".equals(obj.toString())
 				|| "true".equalsIgnoreCase(obj.toString())
 				|| "on".equalsIgnoreCase(obj.toString())
