@@ -11,6 +11,7 @@ public class Join {
     }
     private String schema;
     private String name;
+    private String alias;
     private TYPE type;
     private String condition;
 
@@ -28,10 +29,26 @@ public class Join {
 
     public void setName(String name) {
         this.name = name;
-        if(name != null && name.contains(".")){
-            String[] tmps = name.split(".");
-            this.schema = tmps[0];
-            this.name = tmps[1];
+    }
+    private void parseName(){
+        if(null != name){
+            if(null != name && name.contains(".")){
+                String[] tbs = name.split("\\.");
+                name = tbs[1];
+                schema = tbs[0];
+            }
+            String tag = " as ";
+            String lower = name.toLowerCase();
+            int tagIdx = lower.indexOf(tag)+tag.length();
+            if(tagIdx > 0){
+                String alias = name.substring(tagIdx).trim();
+                name = name.substring(0,tagIdx).trim();
+            }
+            if(name.contains(" ")){
+                String[] tmps = name.split(" ");
+                name = tmps[0];
+                alias = tmps[1];
+            }
         }
     }
 
