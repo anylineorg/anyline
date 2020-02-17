@@ -31,6 +31,7 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
+import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
@@ -44,21 +45,15 @@ public class Contains extends BaseBodyTag {
 
 
 	private boolean contains = false;
+
 	public int doStartTag(){
-		String valueProperty = property;
-		String dataProperty = property;
-		if(property != null && property.contains(":")){
-			String[] tmps = property.split(":");
-			dataProperty = tmps[0];
-			valueProperty = tmps[1];
-		}
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 		String html = "";
 		try{
 			if(null != data && null != value){
-				if(null != valueProperty && ClassUtil.isWrapClass(value) && !(value instanceof String)){
-					value = BeanUtil.getFieldValue(value, valueProperty);
-				}
+//				if(null != valueProperty && ClassUtil.isWrapClass(value) && !(value instanceof String)){
+//					value = BeanUtil.getFieldValue(value, valueProperty);
+//				}
 				if(data instanceof String){
 					if(data.toString().endsWith("}")){
 						data = data.toString().replace("{", "").replace("}", "");
@@ -83,27 +78,13 @@ public class Contains extends BaseBodyTag {
 				if(data instanceof Collection){
 					Collection cons = (Collection)data;
 					for(Object item:cons){
-						if(null == item){
-							continue;
-						}else if(item instanceof String || item instanceof Number || item instanceof Boolean || item instanceof Date) {
-							if(value.toString().equals(item.toString())){
-								contains = true;
-								break;
-							}
-						}else{
-							Object v = BeanUtil.getFieldValue(item, dataProperty)+"";
-							if(value.toString().equals(v)){
-								contains = true;
-								break;
-							}
+						if(BasicUtil.equals(item, value, property)){
+							contains = true;
+							break;
 						}
-
 					}
 				}else{
-					Object v = BeanUtil.getFieldValue(data, dataProperty);
-					if(value.equals(v)){
-						contains = true;
-					}
+					contains = BasicUtil.equals(data, value, property);
 				}
 			}
 		}catch(Exception e){
@@ -115,7 +96,6 @@ public class Contains extends BaseBodyTag {
 			return EVAL_BODY_BUFFERED;
 		}
 	}
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int doEndTag() throws JspException {
 		try{
