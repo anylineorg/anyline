@@ -926,9 +926,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * boolean类型true 解析成 1
 	 * @param key key
 	 * @return int
-	 * @throws Exception Exception
+	 * @throws RuntimeException RuntimeException
 	 */
-	public int getInt(String key) throws Exception{
+	public int getInt(String key) throws RuntimeException{
 		Object val = get(key);
 		if(val instanceof Boolean){
 			boolean bol = (Boolean)val;
@@ -941,6 +941,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return Integer.parseInt(val.toString());
 		}
 	}
+
 	public int getInt(String key, int def){
 		try{
 			return getInt(key);
@@ -948,7 +949,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return def;
 		}
 	}
-	public double getDouble(String key) throws Exception{
+	public double getDouble(String key) throws RuntimeException{
 		Object value = get(key);
 		return Double.parseDouble(value.toString());
 	}
@@ -961,7 +962,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 	}
 
-	public long getLong(String key) throws Exception{
+	public long getLong(String key) throws RuntimeException{
 		Object value = get(key);
 		return Long.parseLong(value.toString());
 	}
@@ -972,7 +973,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return def;
 		}
 	}
-	public float getFloat(String key) throws Exception{
+	public float getFloat(String key) throws RuntimeException{
 		Object value = get(key);
 		return Float.parseFloat(value.toString());
 	}
@@ -986,10 +987,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public boolean getBoolean(String key, boolean def){
 		return BasicUtil.parseBoolean(getString(key), def);
 	}
-	public boolean getBoolean(String key) throws Exception{
+	public boolean getBoolean(String key) throws RuntimeException{
 		return BasicUtil.parseBoolean(getString(key));
 	}
-	public BigDecimal getDecimal(String key) throws Exception{
+	public BigDecimal getDecimal(String key) throws RuntimeException{
 		return new BigDecimal(getString(key));
 	}
 	public BigDecimal getDecimal(String key, double def){
@@ -1029,7 +1030,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 	}
 
-	public Date getDate(String key) throws Exception{
+	public Date getDate(String key) throws RuntimeException{
 		return DateUtil.parse(getString(key));
 	} 
 	/** 
