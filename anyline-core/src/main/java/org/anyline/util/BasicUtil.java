@@ -873,7 +873,103 @@ public class BasicUtil {
 
    public static String unescape(String src) {  
        return CodeUtil.unescape(src);  
-   } 
+   }
 
 
+	/**
+	 * v1与v2是否相等
+	 * @param v1 v1
+	 * @param v2 v2
+	 * @param propertys1 属性列表1
+	 * @param propertys2 属性列表2
+	 * @return boolean
+	 */
+	public static boolean equals(Object v1, Object v2, List<String> propertys1, List<String> propertys2){
+		boolean result = false;
+		if(null == v1 && null == v2){
+			return true;
+		}else if(null == v1 || null == v2){
+			return false;
+		}
+		if(v1 instanceof String || v1 instanceof Number || v1 instanceof Boolean || v1 instanceof Date) {
+			//v1基础类型
+			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date){
+				//v2基础类型
+				result = v2.toString().equals(v1.toString());
+			}else{
+				//v2非基础类型
+				if(null != propertys2 && propertys2.size()>0){
+					v2 = BeanUtil.getFieldValue(v2, propertys2.get(0))+"";
+				}
+				result = v2.toString().equals(v1.toString());
+			}
+		}else{
+			//v1非基础类型
+			if(v2 instanceof String || v2 instanceof Number || v2 instanceof Boolean || v2 instanceof Date){
+				//v2基础类型
+				if(null != propertys1 && propertys1.size()>0){
+					v1 = BeanUtil.getFieldValue(v1, propertys1.get(0))+"";
+				}
+				result = v2.toString().equals(v1.toString());
+			}else{
+				//v2非基础类型
+				boolean eq = true;
+				int psize = 0;
+				if(null == propertys1 || null == propertys2){
+					eq = false;
+				}else{
+					//取长度较短的一个长度
+					psize = NumberUtil.min(propertys1.size(), propertys2.size());
+				}
+				if(psize > 0){
+					for(int i=0; i<psize; i++){
+						String p1 = propertys1.get(i);
+						String p2 = propertys2.get(i);
+						String vv1 = BeanUtil.getFieldValue(v1, p1)+"";
+						String vv2 = BeanUtil.getFieldValue(v2, p2)+"";
+						if(!vv1.equals(vv2)){
+							eq = false;
+							break;
+						}
+					}
+				}else{
+					//没有设置property
+					eq = v1.equals(v2);
+				}
+				if(eq){
+					result = true;
+				}
+			}
+		}
+		return result;
+	}
+	/**
+	 * v1与v2是否相等
+	 * @param v1 v1
+	 * @param v2 v2
+	 * @param propertys 属性(ID:CD,NM:NAME)(ID,NM)
+	 * @return boolean
+	 */
+	public static boolean equals(Object v1, Object v2, String propertys){
+		boolean result = false;
+		List<String> propertys1 = new ArrayList<String>();
+		List<String> propertys2 = new ArrayList<String>();
+		if(BasicUtil.isNotEmpty(propertys)){
+			String[] ps = propertys.split(",");
+			for(String p:ps){
+				if(BasicUtil.isNotEmpty(p)){
+					String p1 = p;
+					String p2 = p;
+					if(p.contains(":")){
+						String[] tmps = p.split(":");
+						p1 = tmps[0];
+						p2 = tmps[1];
+					}
+					propertys1.add(p1);
+					propertys2.add(p2);
+				}
+			}
+		}
+		return equals(v1, v2, propertys1, propertys2);
+	}
 }
