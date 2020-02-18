@@ -52,7 +52,7 @@ public class Text extends BaseBodyTag{
 				DataSet set = (DataSet)data;
 				if(index > -1 && index<set.size()){
 					DataRow row = set.getRow(index);
-					result = row.get(property);
+					result = row.getString(property);
 				}else if(BasicUtil.isNotEmpty(selector)){
 					DataRow row = set.getRow(selector.split(","));
 					if(null != row){
