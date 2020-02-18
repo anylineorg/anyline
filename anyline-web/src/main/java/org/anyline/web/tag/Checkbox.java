@@ -123,7 +123,7 @@ public class Checkbox extends BaseBodyTag {
 						List list = new ArrayList(); 
 						for (String item : items) { 
 							list.add(item); 
-						} 
+						}
 						this.value = list; 
 					}else if(this.value instanceof Collection){ 
 						List list = new ArrayList(); 
