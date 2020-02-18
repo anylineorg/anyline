@@ -1314,6 +1314,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+
 	/**
 	 * 复制String类型数据
 	 * @param data data
