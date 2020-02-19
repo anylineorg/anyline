@@ -353,7 +353,8 @@ public class ConfigTable {
 				String fileName = file.getName();
 				if(fileName.endsWith("jar") && fileName.contains("-")){
 					//anyline-core-8.3.7-SNAPSHOT.jar
-					version = fileName.replace("anyline-core-","").replace(".jar","");
+					version = fileName.replace("anyline-","").replace(".jar","");
+					version = version.substring(version.indexOf("-")+1);
 				}
 				time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(new Date(file.lastModified()));
 			}catch(Exception e){
