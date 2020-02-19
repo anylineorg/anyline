@@ -767,10 +767,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return get(key) != null;
 	}
 	public boolean hasKey(String key){
-		return keys().contains(key);
+		return keys().contains(key(key));
 	}
 	public boolean containsKey(String key){
-		return keys().contains(key);
+		return keys().contains(key(key));
 	} 
 	public List<String> keys(){ 
 		List<String> keys = new ArrayList<String>(); 

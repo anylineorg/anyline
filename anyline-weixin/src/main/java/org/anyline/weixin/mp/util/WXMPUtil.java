@@ -473,8 +473,25 @@ public class WXMPUtil extends WXUtil{
 		} 
 		accessTokens.addRow(row); 
 		return row; 
-	} 
-	 
+	}
+
+	public static void main(String[] args) {
+		String str="{\"access_token\":\"30_xGZDA-dSpV35pbx1DYBZug6qryDMt02Niw0Jo2XqvQPFgpVg_r1tLM9jbPRT3HjU0jJRG5B5YwKsJqp89L3hsXwt1GlYDv13wv8-KMpbNFZvNEgN0BPaBaeHMU0KHfFWCXQ2hzHW-2m1A_MZYUBcACAKGN\",\"expires_in\":7196}";
+		DataRow json = DataRow.parseJson(str);
+		DataRow row = new DataRow();
+		if(json.containsKey("access_token")){
+			row.put("ACCESS_TOKEN", json.getString("access_token"));
+			row.setExpires(json.getInt("expires_in", 0)*800);
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:{}]",row.getString("ACCESS_TOKEN"));
+			}
+		}else{
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
+				log.warn("[CREATE NEW ACCESS TOKEN][FAIL]");
+			}
+		}
+		System.out.println(row);
+	}
 	public String getJsapiTicket(){ 
 		String result = ""; 
 		DataRow row = jsapiTickets.getRow("APP_ID", config.APP_ID); 
