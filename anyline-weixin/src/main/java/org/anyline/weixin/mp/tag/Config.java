@@ -50,6 +50,14 @@ public class Config extends BaseBodyTag {
 			WXMPUtil util = WXMPUtil.getInstance(key);
 			if(null != util){
 				String url = "";
+				if("auto".equals(server)){
+					server = HttpUtil.parseHost(request.getHeader("Referer"));
+				}
+				if(null != server){
+					if(server.contains("127.0.0.1") || server.contains("localhost")){
+						server = null;
+					}
+				}
 				if(BasicUtil.isEmpty(server)){
 					server = util.getConfig().WEB_SERVER;
 				}
