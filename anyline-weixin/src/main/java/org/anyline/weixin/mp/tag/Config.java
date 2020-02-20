@@ -51,7 +51,7 @@ public class Config extends BaseBodyTag {
 			if(null != util){
 				String url = "";
 				if("auto".equals(server)){
-					server = HttpUtil.parseHost(request.getHeader("Referer"));
+					server = HttpUtil.parseHost(request.getServerName());
 				}
 				if(null != server){
 					if(server.contains("127.0.0.1") || server.contains("localhost")){
@@ -62,7 +62,7 @@ public class Config extends BaseBodyTag {
 					server = util.getConfig().WEB_SERVER;
 				}
 				if(BasicUtil.isEmpty(server)){
-					server = HttpUtil.parseHost(request.getHeader("Referer"));
+					server = HttpUtil.parseHost(request.getServerName());
 				}
 				url =  FileUtil.mergePath(server , BasicUtil.evl(request.getAttribute("javax.servlet.forward.request_uri"),"")+"");
 				String param = request.getQueryString();
@@ -133,5 +133,12 @@ public class Config extends BaseBodyTag {
 	public void setKey(String key) {
 		this.key = key;
 	}
-	 
+
+	public String getServer() {
+		return server;
+	}
+
+	public void setServer(String server) {
+		this.server = server;
+	}
 }
