@@ -818,7 +818,10 @@ public class HttpUtil {
 	 * @param url  url
 	 * @return return
 	 */ 
-	public static String parseHost(String url) { 
+	public static String parseHost(String url) {
+		if(null == url){
+			return null;
+		}
 		url = url.replaceAll("http://", ""); 
 		int idx = url.indexOf("/"); 
 		if (idx != -1) { 
