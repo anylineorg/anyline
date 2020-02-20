@@ -33,26 +33,42 @@ import org.anyline.web.util.WebUtil;
 public class CheckClient extends BaseBodyTag implements Cloneable{ 
 	private static final long serialVersionUID = 1L; 
 	private String type = "";
-	private Object elseValue; 
-	public int doEndTag() throws JspException { 
+	private Object elseValue;
+	private boolean skip = false;//如果test=false时是否跳过body体(不再执行boyd中的子标签) skip=false时即使test=false标签体也会执行
+	private boolean test = false;
+	private boolean truncate = false; //如果test=false;跳整个页面
+	public int doStartTag(){
+		type = (type+"").toLowerCase();
+		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+		String curType = WebUtil.clientType(request).toLowerCase();
+		if(type.contains(curType)){
+			test = true;
+		}
+		if(truncate && !test){
+			return SKIP_PAGE;
+		}
+		if(skip && !test){
+			return SKIP_BODY;
+		}else {
+			return EVAL_BODY_BUFFERED;
+		}
+	}
+	public int doEndTag() throws JspException {
 		try{
-			type = (type+"").toLowerCase();
-			HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-			String curType = WebUtil.clientType(request).toLowerCase();
-			if(type.contains(curType)){
-				JspWriter out = pageContext.getOut(); 
-				out.print(BasicUtil.nvl(value,body,"")); 
+			if(test){
+				JspWriter out = pageContext.getOut();
+				out.print(BasicUtil.nvl(value,body,""));
 			}else if(null != elseValue){
 				JspWriter out = pageContext.getOut();
 				out.print(elseValue);
-			} 
-		}catch(Exception e){ 
-			e.printStackTrace(); 
-		}finally{ 
-			release(); 
-		} 
-        return EVAL_PAGE;    
-	} 
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			release();
+		}
+		return EVAL_PAGE ;
+	}
  
  
 	@Override 
@@ -62,7 +78,9 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 		body = null; 
 		type = null;
 		value = null;
-		elseValue = null; 
+		elseValue = null;
+		skip = false;
+		truncate = false;
 	} 
 	 
 	 
@@ -84,5 +102,20 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 	public void setType(String type) {
 		this.type = type;
 	}
-	 
+
+	public boolean isSkip() {
+		return skip;
+	}
+
+	public void setSkip(boolean skip) {
+		this.skip = skip;
+	}
+
+	public boolean isTruncate() {
+		return truncate;
+	}
+
+	public void setTruncate(boolean truncate) {
+		this.truncate = truncate;
+	}
 }

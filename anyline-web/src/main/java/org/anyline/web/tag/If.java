@@ -31,14 +31,18 @@ public class If extends BaseBodyTag implements Cloneable{
 	 
 	private boolean test; 
 	private boolean skip = false;//如果test=false时是否跳过body体(不再执行boyd中的子标签) skip=false时即使test=false标签体也会执行
-	private Object elseValue; 
+	private Object elseValue;
+	private boolean truncate = false;
 
 	public int doStartTag(){
+		if(truncate && !test){
+			return SKIP_PAGE;
+		}
 		if(skip && !test){
-            return SKIP_BODY;
+			return SKIP_BODY;
 		}else {
-            return EVAL_BODY_BUFFERED;
-        }
+			return EVAL_BODY_BUFFERED;
+		}
 	} 
 	 public int doEndTag() throws JspException { 
 		try{
@@ -66,6 +70,7 @@ public class If extends BaseBodyTag implements Cloneable{
 		test = false; 
 		elseValue = null; 
 		skip = false;
+		truncate = false;
 	} 
 	 
 	public void setTest(boolean test) { 
@@ -87,5 +92,13 @@ public class If extends BaseBodyTag implements Cloneable{
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
 		return super.clone(); 
-	} 
+	}
+
+	public boolean isTruncate() {
+		return truncate;
+	}
+
+	public void setTruncate(boolean truncate) {
+		this.truncate = truncate;
+	}
 }
