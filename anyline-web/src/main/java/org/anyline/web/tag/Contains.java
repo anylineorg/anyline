@@ -42,6 +42,7 @@ public class Contains extends BaseBodyTag {
 	private String property;
 	private Object elseValue;
 	private boolean skip = false;
+	private boolean truncate = false;
 
 
 	private boolean contains = false;
@@ -90,6 +91,10 @@ public class Contains extends BaseBodyTag {
 		}catch(Exception e){
 			e.printStackTrace();
 		}
+
+		if(truncate && !contains){
+			return SKIP_PAGE;
+		}
 		if(skip && !contains){
 			return SKIP_BODY;
 		}else {
@@ -124,6 +129,7 @@ public class Contains extends BaseBodyTag {
 		this.property = null;
 		this.skip = false;
 		contains = false;
+		truncate = false;
 	}
 	public Object getData() {
 		return data;
@@ -164,5 +170,13 @@ public class Contains extends BaseBodyTag {
 
 	public void setProperty(String property) {
 		this.property = property;
+	}
+
+	public boolean isTruncate() {
+		return truncate;
+	}
+
+	public void setTruncate(boolean truncate) {
+		this.truncate = truncate;
 	}
 }
