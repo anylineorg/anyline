@@ -19,7 +19,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>
-			<artifactId>anyline-weixin</artifactId>
+			<artifactId>anyline-web</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-wechat</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.anyline</groupId>

@@ -502,7 +502,7 @@ public class WebUtil {
 	 * @param request request
 	 * @return return
 	 */
-	public static boolean isWeixin(HttpServletRequest request){
+	public static boolean isWechat(HttpServletRequest request){
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
 		if(userAgent.indexOf("micromessenger")>-1){
 		    return true;
@@ -581,8 +581,8 @@ public class WebUtil {
 		String type = "";
 		if(isApp(request)){
 			type = "app";
-		}else if(isWeixin(request)){
-			type = "weixin";
+		}else if(isWechat(request)){
+			type = "wechat";
 		}else if(isQQ(request)){
 			type = "qq";
 		}else if(isAlipay(request)){

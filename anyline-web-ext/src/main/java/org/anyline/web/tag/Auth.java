@@ -17,33 +17,29 @@
  */
 
 
-package org.anyline.web.tag; 
- 
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
+package org.anyline.web.tag;
 
-import javax.servlet.jsp.JspWriter;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.qq.util.QQConfig;
 import org.anyline.util.BasicUtil;
-import org.anyline.web.tag.BaseBodyTag;
-import org.anyline.weixin.mp.util.WXMPConfig;
-import org.anyline.weixin.mp.util.WXMPUtil;
-import org.anyline.weixin.util.WXConfig;
-import org.anyline.weixin.util.WXConfig.SNSAPI_SCOPE;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.anyline.util.CodeUtil;
+import org.anyline.wechat.mp.util.WechatMPConfig;
+import org.anyline.wechat.mp.util.WechatMPUtil;
+import org.anyline.wechat.util.WechatConfig;
 
-public class Auth extends BaseBodyTag { 
+import javax.servlet.jsp.JspWriter;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
+public class Auth extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
 	private String key = "default";
 	private String appid;
-	private String type;	//wx:微信 qq:QQ
+	private String type;	//wechat:微信 qq:QQ
 	private String redirect;
 	private String state;
 	private boolean encode;//是否将state编码后存储到servlet中
@@ -88,18 +84,18 @@ public class Auth extends BaseBodyTag {
 				
 			}
 			
-			if("wx".equalsIgnoreCase(type) || "weixin".equalsIgnoreCase(type)){
-				WXConfig wxconfig = WXMPConfig.getInstance(key);
-				if(null == wxconfig){
+			if("wx".equalsIgnoreCase(type) || "wechat".equalsIgnoreCase(type) || "weixin".equalsIgnoreCase(type)){
+				WechatConfig wechatConfig = WechatMPConfig.getInstance(key);
+				if(null == wechatConfig){
 					result = false;
 				}else{
-					SNSAPI_SCOPE apiScope = WXConfig.SNSAPI_SCOPE.BASE; 
-					if(WXConfig.SNSAPI_SCOPE.USERINFO.getCode().equals(scope) || "info".equals(scope)){
-						apiScope = WXConfig.SNSAPI_SCOPE.USERINFO;
+					WechatConfig.SNSAPI_SCOPE apiScope = WechatConfig.SNSAPI_SCOPE.BASE;
+					if(WechatConfig.SNSAPI_SCOPE.USERINFO.getCode().equals(scope) || "info".equals(scope)){
+						apiScope = WechatConfig.SNSAPI_SCOPE.USERINFO;
 					}
-					url = WXMPUtil.ceateAuthUrl(key, redirect, apiScope, state);
+					url = WechatMPUtil.ceateAuthUrl(key, redirect, apiScope, state);
 //					if(BasicUtil.isEmpty(appid)){
-//						appid = wxconfig.APP_ID;
+//						appid = WechatConfig.APP_ID;
 //					}
 //					Map<String,String> map = new HashMap<String,String>();
 //					if(null != params){
@@ -115,13 +111,13 @@ public class Auth extends BaseBodyTag {
 //						scope = "snsapi_base";
 //					}
 //					if(BasicUtil.isEmpty(redirect)){
-//						redirect = wxconfig.OAUTH_REDIRECT_URL;
+//						redirect = WechatConfig.OAUTH_REDIRECT_URL;
 //					}
 //					if(BasicUtil.isEmpty(redirect)){
-//						redirect = WXMPConfig.getInstance().OAUTH_REDIRECT_URL;
+//						redirect = WechatMPConfig.getInstance().OAUTH_REDIRECT_URL;
 //					}
 //					redirect = URLEncoder.encode(redirect, "UTF-8");
-//					url =  WXConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
+//					url =  WechatConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
 				}
 			}else if("qq".equalsIgnoreCase(type)){
 				QQMPConfig qqconfig = QQMPConfig.getInstance(key);
@@ -151,7 +147,7 @@ public class Auth extends BaseBodyTag {
 					if(BasicUtil.isEmpty(redirect)){
 						redirect = QQMPConfig.getInstance().OAUTH_REDIRECT_URL;
 					}
-					redirect = URLEncoder.encode(redirect, "UTF-8");
+					redirect = CodeUtil.urlEncode(redirect, "UTF-8");
 					url =  QQConfig.URL_OAUTH + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state+",app:"+key;
 				}
 			}
@@ -169,7 +165,7 @@ public class Auth extends BaseBodyTag {
 				html = "登录配置异常";
 			} 
 			writer.print(html); 
-		} catch (IOException e) { 
+		} catch (IOException e) {
 			e.printStackTrace(); 
 		}finally{ 
 			release(); 

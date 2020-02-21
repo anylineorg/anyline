@@ -60,7 +60,7 @@
 		<module>anyline-start-mvc-mysql</module>
 		<module>anyline-struts</module>
 		<module>anyline-video</module>
-		<module>anyline-weixin</module>
+		<module>anyline-wechat</module>
 		<module>anyline-rocketmq</module>
 		<module>anyline-ldap</module>
 		<module>anyline-web-ext</module>

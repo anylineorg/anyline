@@ -51,7 +51,7 @@
 		<anyline.mail.version>${anyline.version}</anyline.mail.version>
 		<anyline.qq.version>${anyline.version}</anyline.qq.version>
 		<anyline.redis.version>${anyline.version}</anyline.redis.version>
-		<anyline.weixin.version>${anyline.version}</anyline.weixin.version>
+		<anyline.wechat.version>${anyline.version}</anyline.wechat.version>
 		<anyline.poi.version>${anyline.version}</anyline.poi.version>
 		<anyline.nacos.version>${anyline.version}</anyline.nacos.version>
 		<!-- jdbc -->
@@ -237,8 +237,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-weixin</artifactId>
-				<version>${anyline.weixin.version}</version>
+				<artifactId>anyline-wechat</artifactId>
+				<version>${anyline.wechat.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>

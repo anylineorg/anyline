@@ -11,9 +11,9 @@
 		<relativePath>../anyline-dependency</relativePath>
 	</parent>
 	
-	<artifactId>anyline-weixin</artifactId>
+	<artifactId>anyline-wechat</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-weixin</name>
+	<name>anyline-wechat</name>
 	<url>http://www.anyline.org/weixin</url>
 	
 	<dependencies>
