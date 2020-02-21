@@ -14,7 +14,7 @@
 	<artifactId>anyline-wechat</artifactId>
 	<packaging>jar</packaging>
 	<name>anyline-wechat</name>
-	<url>http://www.anyline.org/weixin</url>
+	<url>http://www.anyline.org/wechat</url>
 	
 	<dependencies>
 		<dependency>

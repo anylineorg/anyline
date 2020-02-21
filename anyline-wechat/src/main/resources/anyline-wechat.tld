@@ -5,16 +5,16 @@
  <tlibversion>2.3</tlibversion>
  <jspversion>1.2</jspversion>
  <shortname>anyline</shortname>
- <uri>http://www.anyline.org/weixin</uri>
+ <uri>http://www.anyline.org/wechat</uri>
 	<info>anyline 微信标签</info>
 	<tag>
 		<name>check</name>
-		<tagclass>org.anyline.weixin.mp.tag.WeixinCheck</tagclass>
+		<tagclass>org.anyline.wechat.mp.tag.WechatCheck</tagclass>
 		<bodycontent>JSP</bodycontent>
 	</tag>
 	<tag>
 		<name>config</name>
-		<tagclass>org.anyline.weixin.mp.tag.Config</tagclass>
+		<tagclass>org.anyline.wechat.mp.tag.Config</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<attribute>
 			<name>debug</name>
@@ -34,7 +34,7 @@
 	</tag>
 	<tag>
 		<name>pay</name>
-		<tagclass>org.anyline.weixin.mp.tag.Pay</tagclass>
+		<tagclass>org.anyline.wechat.mp.tag.Pay</tagclass>
 		<bodycontent>JSP</bodycontent>
 		<info>H5调起支付</info>
 		<attribute>
