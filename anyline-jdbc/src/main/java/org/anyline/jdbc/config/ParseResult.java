@@ -7,7 +7,11 @@ import java.util.List;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
- 
+
+/**
+ * id.field:key
+ * field:key
+ */
 public class ParseResult implements Serializable{ 
 	private static final long serialVersionUID = 1L; 
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值 
