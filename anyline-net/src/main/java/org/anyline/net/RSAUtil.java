@@ -101,12 +101,12 @@ public class RSAUtil {
 	 * @param publicKey  publicKey
 	 * @return return
 	 */ 
-	public static String publicEncrypt(String data, RSAPublicKey publicKey) { 
+	public static String publicEncrypt(String data, RSAPublicKey publicKey) throws Exception{
 		try { 
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.ENCRYPT_MODE, publicKey); 
 			return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength())); 
-		} catch (Exception e) { 
+		} catch (Exception e) {
 			throw new Exception("[公钥加密异常][加密数据:" + data + "]", e);
 		} 
 	} 
@@ -119,7 +119,7 @@ public class RSAUtil {
 	 * @return return
 	 */ 
  
-	public static String privateDecrypt(String data, RSAPrivateKey privateKey) { 
+	public static String privateDecrypt(String data, RSAPrivateKey privateKey)  throws Exception{
 		try { 
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.DECRYPT_MODE, privateKey); 
@@ -137,7 +137,7 @@ public class RSAUtil {
 	 * @return return
 	 */ 
  
-	public static String privateEncrypt(String data, RSAPrivateKey privateKey) { 
+	public static String privateEncrypt(String data, RSAPrivateKey privateKey)  throws Exception{
 		try { 
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.ENCRYPT_MODE, privateKey); 
@@ -155,7 +155,7 @@ public class RSAUtil {
 	 * @return return
 	 */ 
  
-	public static String publicDecrypt(String data, RSAPublicKey publicKey) { 
+	public static String publicDecrypt(String data, RSAPublicKey publicKey) throws Exception{
 		try { 
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.DECRYPT_MODE, publicKey); 
@@ -166,7 +166,7 @@ public class RSAUtil {
 	} 
  
 	@SuppressWarnings("deprecation")
-	private static byte[] rsaSplitCodec(Cipher cipher, int opmode, byte[] datas, int keySize) { 
+	private static byte[] rsaSplitCodec(Cipher cipher, int opmode, byte[] datas, int keySize)  throws Exception{
 		int maxBlock = 0; 
 		if (opmode == Cipher.DECRYPT_MODE) { 
 			maxBlock = keySize / 8; 
