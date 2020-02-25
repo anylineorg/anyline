@@ -64,6 +64,7 @@ public class ConfigImpl implements Config{
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("join", this.getJoin());
 		map.put("id", this.getId());
+		map.put("field", this.getField());
 		map.put("key", this.getKey());
 		map.put("compare", this.getCompare().getCode());
 		map.put("values", values);

@@ -69,7 +69,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != configStore){ 
 			for(Config conf:configStore.getConfigChain().getConfigs()){ 
 				setConditionValue(conf.isRequire(),  
-						conf.isStrictRequired(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare()); 
+						conf.isStrictRequired(), conf.getField(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			} 
 			 
 			OrderStore orderStore = configStore.getOrders(); 

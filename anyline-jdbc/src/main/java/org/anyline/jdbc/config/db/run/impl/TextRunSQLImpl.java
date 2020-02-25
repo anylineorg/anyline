@@ -67,7 +67,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					} 
 					AutoCondition con = (AutoCondition)condition; 
 					setConditionValue(
-							con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare()); 
+							con.isRequired(), con.isStrictRequired(), con.getId(), null, con.getValues(), con.getCompare());
 					SQLVariable var = this.getVariable(con.getId());
 					if(null != var){
 						var.setValue(false, con.getValues());
@@ -77,12 +77,12 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		} 
 		if(null != configStore){ 
 			for(Config conf:configStore.getConfigChain().getConfigs()){ 
-				Condition con = getCondition(conf.getId());
-				SQLVariable var = this.getVariable(conf.getId());
+				Condition con = getCondition(conf.getField());
+				SQLVariable var = this.getVariable(conf.getField());
 				//sql体中有对应的变量
 				if(null != con){
 					setConditionValue( 
-						conf.isRequire(), conf.isStrictRequired(), conf.getId(), conf.getVariable(), conf.getValues(), conf.getCompare());
+						conf.isRequire(), conf.isStrictRequired(), conf.getField(), conf.getVariable(), conf.getValues(), conf.getCompare());
 				}
 				if(null != var){
 					var.setValue(false, conf.getValues());
@@ -262,9 +262,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		} 
 	}
 	/** 
-	 * 拼接查询条件 
-	 * @param builder  builder
-	 * @param sql  sql
+	 * 拼接查询条件
 	 */ 
 	private void appendCondition(){ 
 		if(null == conditionChain){ 
@@ -281,22 +279,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 		builder.append(conditionChain.getRunText(creater));
 		addValues(conditionChain.getRunValues());
-//		 
-//		int idx = 0; 
-//		for(Condition con:cons){ 
-//			SQLVariable var = getVariable(con.getId()); 
-//			if(null != var){ 
-//				//sql主体变量 
-//				continue; 
-//			} 
-//			if(idx > 0){ 
-//				builder.append(" AND "); 
-//			} 
-//			builder.append(con.getRunText(creater)); 
-//			addValues(con.getRunValues()); 
-//			idx ++; 
-//		} 
-	} 
+	}
 	 
 	public void setConfigs(ConfigStore configs) { 
 		this.configStore = configs; 

@@ -22,13 +22,12 @@
  */ 
 package org.anyline.jdbc.config.db.impl; 
  
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
- 
+import org.anyline.util.BeanUtil;
+
 public class SQLVariableImpl implements SQLVariable{ 
 	private static final long serialVersionUID = 6111859581787193807L;
 	public static final int VAR_TYPE_INDEX			= 0;		//根据下标区分 CD = ? 
@@ -38,18 +37,15 @@ public class SQLVariableImpl implements SQLVariable{
 	 
 	public String toString(){
 		String str = "";
-		str = "key:"+this.getKey() 
-				+ ", type:"+type 
-				+ ", sign type:"+signType
-				+ ", compare:"+compare.getCode()
-				+ ", required:"+required
-				+ ", strict required:"+strictRequired
-				+ ", values:";
-		if(null != values){
-			for(Object value:values){
-				str += " " + value;
-			}
-		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("key", this.getKey());
+		map.put("type", type);
+		map.put("sign type", signType);
+		map.put("compare", this.getCompare());
+		map.put("required", required);
+		map.put("strict required", strictRequired);
+		map.put("values", values);
+		str = BeanUtil.map2json(map);
 		return str;
 	} 
  
