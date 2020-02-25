@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,18 +41,24 @@ public interface Config {
 	 * @param chain 容器 
 	 * @return return
 	 */ 
-	public Condition createAutoCondition(ConditionChain chain); 
-	public String getId() ; 
+	public Condition createAutoCondition(ConditionChain chain);
+
+	public String getId() ; 	//XML condition.id 或表名/表别名
  
-	public void setId(String id) ; 
- 
-	public String getVariable() ; 
- 
+	public void setId(String id) ;
+
+
+	public String getField() ; //XML condition中的key 或名名
+
+
+	public String getKey() ;
+
+	public void setKey(String key) ;
+
+	public String getVariable() ;
+
 	public void setVariable(String variable) ; 
- 
-	public String getKey() ; 
- 
-	public void setKey(String key) ; 
+
 
 	public COMPARE_TYPE getCompare() ; 
 	public void setCompare(COMPARE_TYPE compare) ; 

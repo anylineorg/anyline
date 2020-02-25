@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,5 +20,5 @@
 package org.anyline.jdbc.config.db.sql.auto; 
  
  
-public interface TableSQL extends AutoSQL{ 
+public interface TableSQL extends AutoSQL{
 }

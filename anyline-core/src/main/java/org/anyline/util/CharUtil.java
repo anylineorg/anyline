@@ -114,7 +114,7 @@ public class CharUtil {
 		try { 
 			byte[] bytes = chs.getBytes("gb2312"); 
 			if (bytes == null || bytes.length > 2 || bytes.length <= 0) { 
-				throw new RuntimeException("illegal resource string"); 
+				throw new Exception("illegal resource string");
 			} 
 			if (bytes.length == 1) { 
 				asc = bytes[0]; 

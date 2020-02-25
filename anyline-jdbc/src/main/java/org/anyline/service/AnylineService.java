@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ package org.anyline.service;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.Table;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
 
@@ -74,21 +73,21 @@ public interface AnylineService{
 
 
 	/*多表查询，左右连接时使用*/
-	public DataSet querys(Table table, ConfigStore configs, String ... conditions);
-	public DataSet querys(Table table, String ... conditions);
-	public DataSet querys(Table table, int fr, int to, String ... conditions);
-	public DataRow query(Table table, ConfigStore configs, String ... conditions);
-	public DataRow query(Table table, String ... conditions);
-	public DataSet selects(Table table, ConfigStore configs, String ... conditions);
-	public DataSet selects(Table table, String ... conditions);
-	public DataSet selects(Table table, int fr, int to, String ... conditions);
-	public DataRow select(Table table, ConfigStore configs, String ... conditions);
-	public DataRow select(Table table, String ... conditions);
-	public DataSet caches(String cache, Table table, ConfigStore configs, String ... conditions);
-	public DataSet caches(String cache, Table table, String ... conditions);
-	public DataSet caches(String cache, Table table, int fr, int to, String ... conditions);
-	public DataRow cache(String cache, Table table, ConfigStore configs, String ... conditions);
-	public DataRow cache(String cache, Table table, String ... conditions);
+	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
+	public DataSet querys(SQL sql, String ... conditions);
+	public DataSet querys(SQL sql, int fr, int to, String ... conditions);
+	public DataRow query(SQL sql, ConfigStore configs, String ... conditions);
+	public DataRow query(SQL sql, String ... conditions);
+	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions);
+	public DataSet selects(SQL sql, String ... conditions);
+	public DataSet selects(SQL sql, int fr, int to, String ... conditions);
+	public DataRow select(SQL sql, ConfigStore configs, String ... conditions);
+	public DataRow select(SQL sql, String ... conditions);
+	public DataSet caches(String cache, SQL sql, ConfigStore configs, String ... conditions);
+	public DataSet caches(String cache, SQL sql, String ... conditions);
+	public DataSet caches(String cache, SQL sql, int fr, int to, String ... conditions);
+	public DataRow cache(String cache, SQL sql, ConfigStore configs, String ... conditions);
+	public DataRow cache(String cache, SQL sql, String ... conditions);
 
 
 

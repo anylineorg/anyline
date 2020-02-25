@@ -1,4 +1,4 @@
-package org.anyline.jdbc.config;
+package org.anyline.jdbc.config.db.sql.auto.impl;
 
 public class Join {
     public static enum TYPE{
@@ -12,7 +12,7 @@ public class Join {
     private String schema;
     private String name;
     private String alias;
-    private TYPE type;
+    private TYPE type = TYPE.INNER;
     private String condition;
 
     public String getSchema() {
@@ -29,6 +29,7 @@ public class Join {
 
     public void setName(String name) {
         this.name = name;
+        parseName();
     }
     private void parseName(){
         if(null != name){
@@ -39,9 +40,9 @@ public class Join {
             }
             String tag = " as ";
             String lower = name.toLowerCase();
-            int tagIdx = lower.indexOf(tag)+tag.length();
+            int tagIdx = lower.indexOf(tag);
             if(tagIdx > 0){
-                String alias = name.substring(tagIdx).trim();
+                alias = name.substring(tagIdx+tag.length()).trim();
                 name = name.substring(0,tagIdx).trim();
             }
             if(name.contains(" ")){
@@ -66,5 +67,13 @@ public class Join {
 
     public void setCondition(String condition) {
         this.condition = condition;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 }

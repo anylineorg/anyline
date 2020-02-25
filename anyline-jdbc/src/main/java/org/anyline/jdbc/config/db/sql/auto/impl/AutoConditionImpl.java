@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +41,8 @@ import org.anyline.util.BeanUtil;
  * @author zh 
  * 
  */ 
-public class AutoConditionImpl extends BasicCondition implements AutoCondition{ 
+public class AutoConditionImpl extends BasicCondition implements AutoCondition{
+	private String table;		//表或表别名
 	private String column;		//列 
 	private Object values;		//参数值 
 	private Object orValues;		//参数值 
@@ -51,7 +52,8 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
  
 	public AutoConditionImpl(Config config){
 		setJoin(config.getJoin());
-		setColumn(config.getId()); 
+		setTable(config.getId());   	//表名或表别名
+		setColumn(config.getField());   //列名
 		setValues(config.getValues()); 
 		setOrValues(config.getOrValues());
 		setCompare(config.getCompare());
@@ -173,7 +175,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	 */ 
 	public String getRunText(SQLCreater creater){ 
 		runValues = new ArrayList<Object>();
-		String text = ""; 
+		String text = "";
 		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
 			text = this.text; 
 		}else{ 
@@ -203,72 +205,76 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	public String getRunText(SQLCreater creater, Object val, COMPARE_TYPE compare){ 
 		String disKeyFr = creater.getDisKeyFr(); 
 		String disKeyTo = creater.getDisKeyTo(); 
-		String text = ""; 
-			text = disKeyFr + column.replace(".", disKeyTo+"."+disKeyFr) + disKeyTo; 
-			if(compare == SQL.COMPARE_TYPE.EQUAL){ 
-				Object v = getValue(val);
-				if(null == v || "NULL".equals(v.toString())){ 
-					text += " IS NULL"; 
-					if("NULL".equals(getValue())){
-						this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
-					}
-				}else{
-					text += compare.getSql(); 
-				} 
-			}else if(compare == SQL.COMPARE_TYPE.GREAT){ 
-				//text += "> ?";
-				text += compare.getSql(); 
-			}else if(compare == SQL.COMPARE_TYPE.GREAT_EQUAL){ 
-				//text += ">= ?";
-				text += compare.getSql(); 
-			}else if(compare == SQL.COMPARE_TYPE.LESS){ 
-				//text += "< ?";
-				text += compare.getSql(); 
-			}else if(compare == SQL.COMPARE_TYPE.NOT_EQUAL){ 
-				//text += "<> ?";
-				text += compare.getSql(); 
-			}else if(compare == SQL.COMPARE_TYPE.LESS_EQUAL){
-				//text += "<= ?";
-				text += compare.getSql();
-			}else if(compare == SQL.COMPARE_TYPE.BETWEEN){
-				//text += " BETWEEN ? AND ?";
-				text += compare.getSql();
-			}else if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN){
-				if(compare == SQL.COMPARE_TYPE.NOT_IN){
-					text += " NOT";
+		String text = "";
+		if(BasicUtil.isNotEmpty(table)){
+			text += disKeyFr + table + disKeyTo + ".";
+		}
+		text += disKeyFr + column + disKeyTo;
+
+		if(compare == SQL.COMPARE_TYPE.EQUAL){
+			Object v = getValue(val);
+			if(null == v || "NULL".equals(v.toString())){
+				text += " IS NULL";
+				if("NULL".equals(getValue())){
+					this.variableType = Condition.VARIABLE_FLAG_TYPE_NONE;
 				}
-				text += " IN ("; 
-				if(val instanceof Collection){ 
-					Collection<Object> coll = (Collection)val; 
-					int size = coll.size(); 
-					for(int i=0; i<size; i++){ 
-						text += "?"; 
-						if(i < size-1){ 
-							text += ","; 
-						} 
-					} 
-					text += ")"; 
-				}else{ 
-					text += "= ?"; 
-				} 
-			}else if(compare == SQL.COMPARE_TYPE.LIKE){
-				text += " LIKE "+ creater.concat("'%'", "?" , "'%'"); 
-			}else if(compare == SQL.COMPARE_TYPE.LIKE_PREFIX){ 
-				text += " LIKE "+ creater.concat("?" , "'%'"); 
-			}else if(compare == SQL.COMPARE_TYPE.LIKE_SUBFIX){ 
-				text += " LIKE "+ creater.concat("'%'", "?"); 
-			}  
-			text += ""; 
-			//runtime value
-			if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN || compare == SQL.COMPARE_TYPE.BETWEEN){ 
-				runValues.addAll(getValues(val)); 
-			}else{ 
-				Object value = getValue(val); 
-				if((null == value || "NULL".equals(value)) && compare == SQL.COMPARE_TYPE.EQUAL){ 
-				}else{ 
-					runValues.add(value); 
-				} 
-			} 
+			}else{
+				text += compare.getSql();
+			}
+		}else if(compare == SQL.COMPARE_TYPE.GREAT){
+			//text += "> ?";
+			text += compare.getSql();
+		}else if(compare == SQL.COMPARE_TYPE.GREAT_EQUAL){
+			//text += ">= ?";
+			text += compare.getSql();
+		}else if(compare == SQL.COMPARE_TYPE.LESS){
+			//text += "< ?";
+			text += compare.getSql();
+		}else if(compare == SQL.COMPARE_TYPE.NOT_EQUAL){
+			//text += "<> ?";
+			text += compare.getSql();
+		}else if(compare == SQL.COMPARE_TYPE.LESS_EQUAL){
+			//text += "<= ?";
+			text += compare.getSql();
+		}else if(compare == SQL.COMPARE_TYPE.BETWEEN){
+			//text += " BETWEEN ? AND ?";
+			text += compare.getSql();
+		}else if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN){
+			if(compare == SQL.COMPARE_TYPE.NOT_IN){
+				text += " NOT";
+			}
+			text += " IN (";
+			if(val instanceof Collection){
+				Collection<Object> coll = (Collection)val;
+				int size = coll.size();
+				for(int i=0; i<size; i++){
+					text += "?";
+					if(i < size-1){
+						text += ",";
+					}
+				}
+				text += ")";
+			}else{
+				text += "= ?";
+			}
+		}else if(compare == SQL.COMPARE_TYPE.LIKE){
+			text += " LIKE "+ creater.concat("'%'", "?" , "'%'");
+		}else if(compare == SQL.COMPARE_TYPE.LIKE_PREFIX){
+			text += " LIKE "+ creater.concat("?" , "'%'");
+		}else if(compare == SQL.COMPARE_TYPE.LIKE_SUBFIX){
+			text += " LIKE "+ creater.concat("'%'", "?");
+		}
+		text += "";
+		//runtime value
+		if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN || compare == SQL.COMPARE_TYPE.BETWEEN){
+			runValues.addAll(getValues(val));
+		}else{
+			Object value = getValue(val);
+			if((null == value || "NULL".equals(value)) && compare == SQL.COMPARE_TYPE.EQUAL){
+			}else{
+				runValues.add(value);
+			}
+		}
 		return text; 
 	} 
 
@@ -351,4 +357,13 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		map.put("values", values);
 		return BeanUtil.map2json(map);
 	}
-} 
+
+	public String getTable() {
+		return table;
+	}
+
+	public void setTable(String table) {
+		this.table = table;
+	}
+
+}

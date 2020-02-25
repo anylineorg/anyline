@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,12 +33,17 @@ import org.anyline.jdbc.config.db.impl.BasicSQL;
 import org.anyline.jdbc.config.db.sql.auto.AutoSQL;
 import org.anyline.util.BasicUtil;
  
-public class AutoSQLImpl extends BasicSQL implements AutoSQL{ 
+public class AutoSQLImpl extends BasicSQL implements AutoSQL{
+	protected String datasoruce;
 	protected String schema; 
-	protected String table; 
-	protected List<String> columns;
-	protected String distinct = ""; 
-	 
+	protected String table;
+	protected String distinct = "";
+	protected String alias;
+	protected List<String> columns = new ArrayList<String>();
+	protected List<Join> joins = new ArrayList<Join>();//关联表
+
+
+
 	public AutoSQLImpl(){ 
 		super(); 
 		chain = new AutoConditionChainImpl(); 
@@ -55,23 +60,9 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	public SQL setDataSource(String table){ 
 		if(null == table){ 
 			return this; 
-		} 
-		//table = table.toUpperCase(); 
-		if(table.contains("(")){ 
-			//指定列名 
-			setTable(table.substring(0,table.indexOf("("))); 
-			int colIdx0 = table.indexOf("("); 
-			int colIdx1 = table.lastIndexOf(")"); 
-			String columns = table.substring(colIdx0+1,colIdx1).trim(); 
-			if(columns.toUpperCase().contains("DISTINCT")){ 
-				//distinct 
-				columns = columns.substring(8).trim(); 
-				distinct = "DISTINCT"; 
-			} 
-			addColumn(columns); 
-		}else{ 
-			setTable(table); 
-		} 
+		}
+		this.table = table;
+		parseTable();
 		return this; 
 	}
 	/* ****************************************************************************************** 
@@ -153,7 +144,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	 * 解析多列 
 	 * @param src src
 	 */
-	private void parseMultColumns(String src){
+	protected void parseMultColumns(String src){
 		List<String> cols = new ArrayList<String>();
 		//拆分转义字段({}) CD, {ISNULL(NM,'') AS NM}, {CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE  
 		while(src.contains("{")){
@@ -184,6 +175,76 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 			}
 		}
 	}
+	/**
+	 * 解析name
+	 * 支持的格式(以下按先后顺序即可)
+	 * user
+	 * user(id,nm)
+	 * user as u
+	 * user as u(id,nm)
+	 * &lt;ds_hr&gt;user as u(id,nm)
+	 */
+	protected void parseTable(){
+		if(null != table){
+			if(table.startsWith("<")){
+				datasoruce = table.substring(1,table.indexOf(">"));
+				table = table.substring(table.indexOf(">")+1);
+			}
+
+			String tag = " as ";
+			String lower = table.toLowerCase();
+			int tagIdx = lower.lastIndexOf(tag);
+			if(tagIdx > 0){
+				if(table.substring(tagIdx+tag.length()).contains(")")){
+					//列别名中的as
+				}else{
+					alias = table.substring(tagIdx+tag.length()).trim();
+					table = table.substring(0,tagIdx).trim();
+				}
+			}
+			if(table.contains("(")){
+				String colStr = table.substring(table.indexOf("(")+1, table.indexOf(")")).trim();
+				if(colStr.toLowerCase().startsWith("distinct")){
+					distinct = "distinct";
+					colStr = colStr.substring(9).trim();
+				}
+				String[] cols = colStr.split(",");
+				table = table.substring(0,table.indexOf("("));
+				for(String col:cols){
+					col = col.trim();
+					if(!columns.contains(col)) {
+						columns.add(col);
+					}
+				}
+			}
+			if(null != table && table.contains(".")){
+				String[] tbs = table.split("\\.");
+				table = tbs[1];
+				schema = tbs[0];
+			}
+			if(table.contains(" ")){
+				String[] tmps = table.split(" ");
+				if(tmps[0].contains("(")){
+					//列中的空格
+				}else {
+					table = tmps[0];
+					alias = tmps[1];
+				}
+			}
+		}
+	}
+
+	private void parseColumn(String columns){
+		if(null != columns){
+			String[] cols = columns.split(",");
+			for(String col:cols){
+				col = col.trim();
+				if(!this.columns.contains(col)) {
+					this.columns.add(col);
+				}
+			}
+		}
+	}
 	public String getDataSource(){ 
 		return table; 
 	} 
@@ -193,10 +254,10 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	public void setSchema(String schema) { 
 		this.schema = schema; 
 	} 
-	@Override 
-	public String getTable() { 
-		return table; 
-	} 
+	@Override
+	public String getTable() {
+		return table;
+	}
 	@Override 
 	public void setTable(String table) { 
 		this.table = table; 
@@ -235,5 +296,18 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 		return false;
 	}
 	 
-	 
-} 
+	@Override
+	public List<Join> getJoins(){
+		return joins;
+	}
+
+	@Override
+	public String getAlias() {
+		return alias;
+	}
+
+	@Override
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
+}

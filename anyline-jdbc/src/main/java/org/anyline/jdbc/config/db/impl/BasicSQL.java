@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.db.sql.auto.impl.Join;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.GroupStore;
@@ -45,7 +46,8 @@ public abstract class BasicSQL implements SQL{
 	protected List<String> primaryKeys = new ArrayList<String>();		//主键
 	protected List<String> fetchKeys   = new ArrayList<String>();		//最终需要封装的列
 	protected boolean valid 		   = true;
-	 
+
+
 	//运行时参数值 
 	protected Vector<Object> runValues; 
 	public int getVersion(){ 
@@ -360,6 +362,7 @@ public abstract class BasicSQL implements SQL{
 		this.addFetchKey(fetchKeys);
 		return this;
 	}
+
 	public List<String> getFetchKeys(){
 		return fetchKeys;
 	}
@@ -368,5 +371,28 @@ public abstract class BasicSQL implements SQL{
 	}
 	public void setValid(boolean valid){
 		this.valid = valid;
-	} 
+	}
+
+	public SQL join(Join join){
+		return this;
+	}
+	public SQL join(Join.TYPE type, String table, String condition){
+		return this;
+	}
+	public SQL inner(String table, String condition){
+		return this;
+	}
+	public SQL left(String table, String condition){
+		return this;
+	}
+	public SQL right(String table, String condition){
+		return this;
+	}
+	public SQL full(String table, String condition){
+		return this;
+	}
+	public List<Join> getJoins(){
+		return null;
+	}
+
 } 

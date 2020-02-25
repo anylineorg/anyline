@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -368,7 +368,7 @@ public class BasicUtil {
 		}
 	} 
  
-	public static boolean parseBoolean(Object obj) throws RuntimeException{
+	public static boolean parseBoolean(Object obj) throws Exception{
 		if ("1".equals(obj.toString())
 				|| "true".equalsIgnoreCase(obj.toString())
 				|| "on".equalsIgnoreCase(obj.toString())

@@ -15,7 +15,7 @@ public class ParseResult implements Serializable{
 	 
 	private boolean required				; //是否必须(空值拼接IS NULL) 
 	private boolean strictRequired			; //是否严格必须(空值不查询) 
-	private String id						; //xml定义中的id 
+	private String id						; //xml定义中的id 或auto sql的表别名
 	private String field					; //实体属性或表列名 
 	private String clazz					; //取值后处理类 
 	private String method					; //处理方法 
@@ -105,7 +105,7 @@ public class ParseResult implements Serializable{
 	public void setSetEncrypt(boolean setEncrypt) { 
 		this.setEncrypt = setEncrypt; 
 	} 
-	public String getId() { 
+	public String getId() {
 		return id; 
 	} 
 	public void setId(String id) { 

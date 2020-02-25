@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -79,5 +79,7 @@ public interface AutoSQL extends SQL{
 	public String getDataSource(); 
 	public void setSchema(String schema) ; 
 	public void setTable(String table) ; 
-	public String getDistinct(); 
+	public String getDistinct();
+	public void setAlias(String alias);
+	public String getAlias();
 } 

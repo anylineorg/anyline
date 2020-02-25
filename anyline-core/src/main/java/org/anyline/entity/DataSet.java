@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1024,9 +1024,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return String
-	 * @throws RuntimeException RuntimeException
+	 * @throws Exception Exception
 	 */
-	public String getString(int index, String key) throws RuntimeException{
+	public String getString(int index, String key) throws Exception{
 		return getRow(index).getString(key);
 	}
 	public String getString(int index, String key, String def){
@@ -1036,7 +1036,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return def;
 		}
 	}
-	public String getString(String key) throws RuntimeException{
+	public String getString(String key) throws Exception{
 		return getString(0, key);
 	}
 	public String getString(String key, String def){
@@ -1066,7 +1066,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return result;
 		
 	}
-	public List<Integer> getInts(String key) throws RuntimeException{
+	public List<Integer> getInts(String key) throws Exception{
 		List<Integer> result = new ArrayList<Integer>();
 		for(DataRow row:rows){
 			result.add(row.getInt(key));
@@ -1117,7 +1117,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return result;
 	}
-	public BigDecimal getDecimal(int idx, String key) throws RuntimeException{
+	public BigDecimal getDecimal(int idx, String key) throws Exception{
 		return getRow(idx).getDecimal(key);
 	}
 	public BigDecimal getDecimal(int idx, String key, double def){
@@ -1141,9 +1141,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
-	 * @throws RuntimeException RuntimeException
+	 * @throws Exception Exception
 	 */
-	public String getHtmlString(int index, String key) throws RuntimeException{
+	public String getHtmlString(int index, String key) throws Exception{
 		return getString(index, key);
 	}
 	public String getHtmlString(int index, String key, String def){
@@ -1151,7 +1151,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 
  
-	public String getHtmlString(String key) throws RuntimeException{
+	public String getHtmlString(String key) throws Exception{
 		return getHtmlString(0, key); 
 	}
  
@@ -1162,9 +1162,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
-	 * @throws RuntimeException RuntimeException
+	 * @throws Exception Exception
 	 */
-	public String getEscapeString(int index, String key) throws RuntimeException{
+	public String getEscapeString(int index, String key) throws Exception{
 		return  EscapeUtil.escape(getString(index, key)).toString();
 	}
 	public String getEscapeString(int index, String key, String def){
@@ -1175,7 +1175,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 	}
 
-	public String getDoubleEscapeString(int index, String key) throws RuntimeException{
+	public String getDoubleEscapeString(int index, String key) throws Exception{
 		return EscapeUtil.doubleEscape(getString(index, key));
 	}
 	public String getDoubleEscapeString(int index, String key, String def) {
@@ -1187,11 +1187,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 	}
  
-	public String getEscapeString(String key) throws RuntimeException {
+	public String getEscapeString(String key) throws Exception {
 		return getEscapeString(0, key); 
 	} 
  
-	public String getDoubleEscapeString(String key) throws RuntimeException {
+	public String getDoubleEscapeString(String key) throws Exception {
 		return getDoubleEscapeString(0, key); 
 	} 
  
@@ -1201,9 +1201,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
-	 * @throws RuntimeException RuntimeException
+	 * @throws Exception Exception
 	 */
-	public int getInt(int index, String key) throws RuntimeException{
+	public int getInt(int index, String key) throws Exception{
 		return getRow(index).getInt(key);
 	}
 	public int getInt(int index, String key, int def){
@@ -1214,7 +1214,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 	}
 
-	public int getInt(String key) throws RuntimeException {
+	public int getInt(String key) throws Exception {
 		return getInt(0, key);
 	}
 	public int getInt(String key, int def){
@@ -1226,9 +1226,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param index  index
 	 * @param key  key
 	 * @return return
-	 * @throws RuntimeException RuntimeException
+	 * @throws Exception Exception
 	 */
-    public double getDouble(int index, String key) throws RuntimeException{
+    public double getDouble(int index, String key) throws Exception{
         return getRow(index).getDouble(key);
     }
 
@@ -1240,7 +1240,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 	}
 
-	public double getDouble(String key) throws RuntimeException {
+	public double getDouble(String key) throws Exception {
 		return getDouble(0, key);
 	}
 	public double getDouble(String key, double def) {

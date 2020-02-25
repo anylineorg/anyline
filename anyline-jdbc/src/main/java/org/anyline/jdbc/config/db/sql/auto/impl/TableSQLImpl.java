@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,9 @@
 
 package org.anyline.jdbc.config.db.sql.auto.impl; 
  
-import java.util.List; 
+import java.util.List;
 
+import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
  
 public class TableSQLImpl extends AutoSQLImpl implements TableSQL{ 
@@ -32,8 +33,9 @@ public class TableSQLImpl extends AutoSQLImpl implements TableSQL{
  
  
 	@Override 
-	public void setTable(String table) { 
-		this.table = table; 
+	public void setTable(String table) {
+		this.table = table;
+		parseTable();
 	} 
  
 	@Override 
@@ -44,5 +46,31 @@ public class TableSQLImpl extends AutoSQLImpl implements TableSQL{
 	@Override 
 	public List<String> getColumns() { 
 		return this.columns; 
-	} 
+	}
+
+
+
+	public SQL join(Join join){
+		joins.add(join);
+		return this;
+	}
+	public SQL join(Join.TYPE type, String table, String condition){
+		Join join = new Join();
+		join.setName(table);
+		join.setType(type);
+		join.setCondition(condition);
+		return join(join);
+	}
+	public SQL inner(String table, String condition){
+		return join(Join.TYPE.INNER, table, condition);
+	}
+	public SQL left(String table, String condition){
+		return join(Join.TYPE.LEFT, table, condition);
+	}
+	public SQL right(String table, String condition){
+		return join(Join.TYPE.RIGHT, table, condition);
+	}
+	public SQL full(String table, String condition){
+		return join(Join.TYPE.FULL, table, condition);
+	}
 } 

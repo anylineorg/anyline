@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -926,9 +926,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * boolean类型true 解析成 1
 	 * @param key key
 	 * @return int
-	 * @throws RuntimeException RuntimeException
+	 * @throws Exception Exception
 	 */
-	public int getInt(String key) throws RuntimeException{
+	public int getInt(String key) throws Exception{
 		Object val = get(key);
 		if(val instanceof Boolean){
 			boolean bol = (Boolean)val;
@@ -949,7 +949,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return def;
 		}
 	}
-	public double getDouble(String key) throws RuntimeException{
+	public double getDouble(String key) throws Exception{
 		Object value = get(key);
 		return Double.parseDouble(value.toString());
 	}
@@ -962,7 +962,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 	}
 
-	public long getLong(String key) throws RuntimeException{
+	public long getLong(String key) throws Exception{
 		Object value = get(key);
 		return Long.parseLong(value.toString());
 	}
@@ -973,7 +973,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return def;
 		}
 	}
-	public float getFloat(String key) throws RuntimeException{
+	public float getFloat(String key) throws Exception{
 		Object value = get(key);
 		return Float.parseFloat(value.toString());
 	}
@@ -987,10 +987,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public boolean getBoolean(String key, boolean def){
 		return BasicUtil.parseBoolean(getString(key), def);
 	}
-	public boolean getBoolean(String key) throws RuntimeException{
+	public boolean getBoolean(String key) throws Exception{
 		return BasicUtil.parseBoolean(getString(key));
 	}
-	public BigDecimal getDecimal(String key) throws RuntimeException{
+	public BigDecimal getDecimal(String key) throws Exception{
 		return new BigDecimal(getString(key));
 	}
 	public BigDecimal getDecimal(String key, double def){
@@ -1030,7 +1030,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 	}
 
-	public Date getDate(String key) throws RuntimeException{
+	public Date getDate(String key) throws Exception{
 		return DateUtil.parse(getString(key));
 	} 
 	/** 
@@ -1546,5 +1546,100 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * 在key列基础上 +value,如果原来没有key列则默认0并put
+	 * @param key key
+	 * @param value value
+	 * @return this
+	 */
+	public DataRow add(String key, int value){
+		put(key,getInt(key,0) + value);
+		return this;
+	}
+
+	public DataRow add(String key, double value){
+		put(key,getDouble(key,0) + value);
+		return this;
+	}
+	public DataRow add(String key, short value){
+		put(key, getInt(key,0) + value);
+		return this;
+	}
+	public DataRow add(String key, float value){
+		put(key,getFloat(key,0) + value);
+		return this;
+	}
+	public DataRow add(String key, BigDecimal value){
+		put(key,getDecimal(key,0).add(value));
+		return this;
+	}
+
+	public DataRow subtract(String key, int value){
+		put(key,getInt(key,0) - value);
+		return this;
+	}
+
+	public DataRow subtract(String key, double value){
+		put(key,getDouble(key,0) - value);
+		return this;
+	}
+	public DataRow subtract(String key, short value){
+		put(key, getInt(key,0) - value);
+		return this;
+	}
+	public DataRow subtract(String key, float value){
+		put(key,getFloat(key,0) - value);
+		return this;
+	}
+	public DataRow subtract(String key, BigDecimal value){
+		put(key,getDecimal(key,0).subtract(value));
+		return this;
+	}
+
+	public DataRow multiply(String key, int value){
+		put(key,getInt(key,0) * value);
+		return this;
+	}
+
+	public DataRow multiply(String key, double value){
+		put(key,getDouble(key,0) * value);
+		return this;
+	}
+	public DataRow multiply(String key, short value){
+		put(key, getInt(key,0) * value);
+		return this;
+	}
+	public DataRow multiply(String key, float value){
+		put(key,getFloat(key,0) * value);
+		return this;
+	}
+	public DataRow multiply(String key, BigDecimal value){
+		put(key,getDecimal(key,0).multiply(value));
+		return this;
+	}
+
+
+	public DataRow divide(String key, int value){
+		put(key,getInt(key,0) / value);
+		return this;
+	}
+
+	public DataRow divide(String key, double value){
+		put(key,getDouble(key,0) / value);
+		return this;
+	}
+	public DataRow divide(String key, short value){
+		put(key, getInt(key,0) / value);
+		return this;
+	}
+	public DataRow divide(String key, float value){
+		put(key,getFloat(key,0) / value);
+		return this;
+	}
+	public DataRow divide(String key, BigDecimal value){
+		put(key,getDecimal(key,0).divide(value));
+		return this;
 	}
 }

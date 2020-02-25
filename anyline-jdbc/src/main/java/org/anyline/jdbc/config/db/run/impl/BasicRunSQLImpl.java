@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -296,7 +296,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				//需要解析的SQL
 				ParseResult parser = ConfigParser.parse(condition,false);
 				Object value = ConfigParser.getValues(parser);
-				addCondition(parser.isRequired(), parser.isStrictRequired(), parser.getId(),value,parser.getCompare());
+				addCondition(parser.isRequired(), parser.isStrictRequired(), parser.getField(),value,parser.getCompare());
 				return this;
 			}
 		}

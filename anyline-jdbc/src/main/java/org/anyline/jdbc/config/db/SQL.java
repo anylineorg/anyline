@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.anyline.entity.PageNavi;
- 
+import org.anyline.jdbc.config.db.sql.auto.impl.Join;
+
 /** 
  * V3.0 
  */ 
@@ -102,14 +103,14 @@ public interface SQL extends Cloneable {
 	 * 	根据XML定义SQL : setDataSource("admin.power:S_POWER")<br> 
 	 *  admin.power : XML文件路径,文件目录以.分隔<br> 
 	 *  S_POWER : 自定义SQL的id 
-	 * </p> 
-	 * @param	ds  数据源 : 表|视图|自定义SQL.id 
+	 * </p>
+	 * @param	ds  数据源 : 表|视图|自定义SQL.id
 	 * @return return
-	 */ 
-	public SQL setDataSource(String ds); 
-	public String getDataSource(); 
-	public String getSchema(); 
-	public String getTable(); 
+	 */
+	public SQL setDataSource(String ds);
+	public String getDataSource();
+	public String getSchema();
+	public String getTable();
 	/** 
 	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖 
 	 * @param order  order
@@ -147,13 +148,13 @@ public interface SQL extends Cloneable {
 	 *  
 	 * 											XML定义SQL 
 	 *  
-	 * *******************************************************************************************************/ 
-	/** 
-	 * 设置SQL文本, 从XML中text标签中取出 
+	 * *******************************************************************************************************/
+	/**
+	 * 设置SQL文本, 从XML中text标签中取出
 	 * @param text  text
 	 * @return return
-	 */ 
-	public SQL setText(String text); 
+	 */
+	public SQL setText(String text);
 	 
 	/** 
 	 * 设置查询条件变量值 
@@ -191,5 +192,12 @@ public interface SQL extends Cloneable {
 	public void setStrict(boolean strict);
 	public boolean isStrict();
 	public boolean isValid();
+	public SQL join(Join join);
+	public SQL join(Join.TYPE type, String table, String condition);
+	public SQL inner(String table, String condition);
+	public SQL left(String table, String condition);
+	public SQL right(String table, String condition);
+	public SQL full(String table, String condition);
+	public List<Join> getJoins();
 	
 } 

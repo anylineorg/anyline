@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,10 +35,11 @@ import org.anyline.jdbc.config.db.impl.OrderStoreImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
+import org.anyline.jdbc.config.db.sql.auto.impl.Join;
 import org.anyline.util.BasicUtil;
  
 public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{ 
-	private String table; 
+	private String table;
 	private String author; 
 	public TableRunSQLImpl(){ 
 		this.conditionChain = new AutoConditionChainImpl(); 
@@ -121,13 +122,26 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			builder.append("*"); 
 			builder.append(SQLCreater.BR); 
 		} 
-		builder.append("FROM").append(SQLCreater.BR_TAB); 
+		builder.append("FROM").append(SQLCreater.BR_TAB);
 		if(null != author){ 
 			builder.append(disKeyFr).append(author).append(disKeyTo).append("."); 
-		} 
-		 
+		}
 		builder.append(disKeyFr).append(table).append(disKeyTo); 
-		builder.append(SQLCreater.BR); 
+		builder.append(SQLCreater.BR);
+		if(BasicUtil.isNotEmpty(sql.getAlias())){
+			builder.append(" AS ").append(sql.getAlias());
+		}
+		List<Join> joins = sql.getJoins();
+		if(null != joins) {
+			for (Join join:joins) {
+				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ").append(disKeyFr).append(join.getName()).append(disKeyTo);
+				if(BasicUtil.isNotEmpty(join.getAlias())){
+					builder.append(" AS ").append(join.getAlias());
+				}
+				builder.append(" ON ").append(join.getCondition());
+			}
+		}
+
 		builder.append("\nWHERE 1=1\n\t"); 
 		 
  
@@ -150,9 +164,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		} 
 	} 
 	/** 
-	 * 拼接查询条件 
-	 * @param builder  builder
-	 * @param sql  sql
+	 * 拼接查询条件
 	 */ 
 	private void appendCondition(){ 
 		if(null == conditionChain){ 
@@ -161,13 +173,11 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		builder.append(conditionChain.getRunText(creater)); 
 		addValues(conditionChain.getRunValues()); 
 	} 
-	 
- 
+
 	public void setConfigs(ConfigStore configs) { 
 		this.configStore = configs; 
 		if(null != configs){ 
-			this.pageNavi = configs.getPageNavi(); 
-			 
+			this.pageNavi = configs.getPageNavi();
 		} 
 	} 
  

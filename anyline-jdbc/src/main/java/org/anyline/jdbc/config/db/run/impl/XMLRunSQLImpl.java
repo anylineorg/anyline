@@ -1,5 +1,5 @@
 /*  
- * Copyright 2006-2015 www.anyline.org 
+ * Copyright 2006-2020 www.anyline.org
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -399,9 +399,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		} 
 	} 
 	/** 
-	 * 拼接查询条件 
-	 * @param builder  builder
-	 * @param sql  sql
+	 * 拼接查询条件
 	 */ 
 	private void appendCondition(){ 
 		if(null == conditionChain || !conditionChain.isActive()){ 
@@ -468,7 +466,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) { 
 		/*不指定变量名或condition = variable 时,根据condition为SQL主体变量赋值*/ 
 		if(null != variables &&  
-				(BasicUtil.isEmpty(variable) || condition.equals(variable)) 
+				(BasicUtil.isEmpty(condition) || condition.equals(variable))
 		){ 
 			List<SQLVariable> vars = getVariables(condition); 
 			for(SQLVariable var:vars){ 

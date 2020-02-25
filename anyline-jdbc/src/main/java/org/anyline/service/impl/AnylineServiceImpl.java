@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2015 www.anyline.org
+ * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.Table;
 import org.anyline.jdbc.config.db.Order;
 import org.anyline.jdbc.config.db.OrderStore;
 import org.anyline.jdbc.config.db.Procedure;
@@ -236,49 +235,49 @@ public class AnylineServiceImpl implements AnylineService {
     /*多表查询，左右连接*/
 
     @Override
-    public DataSet selects(Table table, ConfigStore configs, String... conditions) {
+    public DataSet selects(SQL table, ConfigStore configs, String... conditions) {
         return querys(table, configs, conditions);
     }
     @Override
-    public DataSet selects(Table table, String... conditions) {
+    public DataSet selects(SQL table, String... conditions) {
         return querys(table, conditions);
     }
     @Override
-    public DataSet selects(Table table, int fr, int to, String... conditions) {
+    public DataSet selects(SQL table, int fr, int to, String... conditions) {
         return querys(table, fr, to, conditions);
     }
     @Override
-    public DataRow select(Table table, ConfigStore configs, String... conditions) {
+    public DataRow select(SQL table, ConfigStore configs, String... conditions) {
         return query(table, configs, conditions);
     }
     @Override
-    public DataRow select(Table table, String... conditions) {
+    public DataRow select(SQL table, String... conditions) {
         return query(table, conditions);
     }
 
     /**
      * 按条件查询
-     * @param table 表｜视图｜函数｜自定义SQL
+     * @param sql 表｜视图｜函数｜自定义SQL |SQL
      * @param configs http参数封装
      * @param conditions 固定查询条件
      * @return return
      */
     @Override
-    public DataSet querys(Table table, ConfigStore configs, String... conditions) {
+    public DataSet querys(SQL sql, ConfigStore configs, String... conditions) {
         conditions = BasicUtil.compressionSpace(conditions);
-        DataSet set = queryFromDao(table, configs, conditions);
+        DataSet set = queryFromDao(sql, configs, conditions);
         return set;
 
     }
 
     @Override
-    public DataSet querys(Table table, String... conditions) {
-        return querys(table, null, conditions);
+    public DataSet querys(SQL sql, String... conditions) {
+        return querys(sql, null, conditions);
     }
 
 
     @Override
-    public DataSet querys(Table table, int fr, int to, String... conditions) {
+    public DataSet querys(SQL sql, int fr, int to, String... conditions) {
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(fr);
         navi.setLastRow(to);
@@ -286,10 +285,10 @@ public class AnylineServiceImpl implements AnylineService {
         navi.setTotalRow(to-fr+1);
         ConfigStore configs = new ConfigStoreImpl();
         configs.setPageNavi(navi);
-        return querys(table, configs, conditions);
+        return querys(sql, configs, conditions);
     }
     @Override
-    public DataSet caches(String cache, Table table, ConfigStore configs, String ... conditions){
+    public DataSet caches(String cache, SQL table, ConfigStore configs, String ... conditions){
         DataSet set = null;
         conditions = BasicUtil.compressionSpace(conditions);
         if(null == cache){
@@ -304,11 +303,11 @@ public class AnylineServiceImpl implements AnylineService {
         return set;
     }
     @Override
-    public DataSet caches(String cache, Table table, String ... conditions){
+    public DataSet caches(String cache, SQL table, String ... conditions){
         return caches(cache, table, null, conditions);
     }
     @Override
-    public DataSet caches(String cache, Table table, int fr, int to, String ... conditions){
+    public DataSet caches(String cache, SQL table, int fr, int to, String ... conditions){
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(fr);
         navi.setLastRow(to);
@@ -320,7 +319,7 @@ public class AnylineServiceImpl implements AnylineService {
     }
 
     @Override
-    public DataRow query(Table table, ConfigStore store, String... conditions) {
+    public DataRow query(SQL table, ConfigStore store, String... conditions) {
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(0);
         navi.setLastRow(0);
@@ -339,12 +338,12 @@ public class AnylineServiceImpl implements AnylineService {
 
 
     @Override
-    public DataRow query(Table table, String... conditions) {
+    public DataRow query(SQL table, String... conditions) {
         return query(table, null, conditions);
     }
 
     @Override
-    public DataRow cache(String cache, Table table, ConfigStore configs, String ... conditions){
+    public DataRow cache(String cache, SQL table, ConfigStore configs, String ... conditions){
         //是否启动缓存
         if(null == cache){
             return query(table, configs, conditions);
@@ -366,7 +365,7 @@ public class AnylineServiceImpl implements AnylineService {
             cache = ks[0];
             key += ks[1]+":";
         }
-        key +=  CacheUtil.createCacheElementKey(true, true, table.getName(), configs, conditions);
+        key +=  CacheUtil.createCacheElementKey(true, true, table.getTable(), configs, conditions);
         if(null != cacheProvider) {
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
@@ -388,7 +387,7 @@ public class AnylineServiceImpl implements AnylineService {
         return row;
     }
     @Override
-    public DataRow cache(String cache, Table table, String ... conditions){
+    public DataRow cache(String cache, SQL table, String ... conditions){
         return cache(cache, table, null, conditions);
     }
 
@@ -971,17 +970,16 @@ public class AnylineServiceImpl implements AnylineService {
         }
         return navi;
     }
-    protected DataSet queryFromDao(Table table, ConfigStore configs, String... conditions){
+    protected DataSet queryFromDao(SQL sql, ConfigStore configs, String... conditions){
         DataSet set = null;
         if(ConfigTable.isSQLDebug()){
-            log.warn("[解析SQL][src:{}]", table.getName());
+            log.warn("[解析SQL][src:{}]", sql.getText());
         }
         //conditions = parseConditions(conditions);
         try {
-            setPageLazy(table.getName(), configs, conditions);
-            SQL sql = createSQL(table);
+            setPageLazy(sql.getText(), configs, conditions);
             set = dao.querys(sql, configs, conditions);
-            set.addQueryParam("query_src", table.getName());
+            set.addQueryParam("query_src", sql.getText());
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
@@ -1038,12 +1036,6 @@ public class AnylineServiceImpl implements AnylineService {
         return src;
     }
 
-    protected synchronized SQL createSQL(Table table){
-        SQL sql = null;
-        List<String> pks = new ArrayList<String>();
-
-        return sql;
-    }
     protected synchronized SQL createSQL(String src){
         SQL sql = null;
         src = src.trim();
