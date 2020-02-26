@@ -99,5 +99,29 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
 		return super.clone(); 
-	} 
+	}
+
+	public Object getMin() {
+		return min;
+	}
+
+	public void setMin(Object min) {
+		this.min = min;
+	}
+
+	public Object getMax() {
+		return max;
+	}
+
+	public void setMax(Object max) {
+		this.max = max;
+	}
+
+	public String getDef() {
+		return def;
+	}
+
+	public void setDef(String def) {
+		this.def = def;
+	}
 }
