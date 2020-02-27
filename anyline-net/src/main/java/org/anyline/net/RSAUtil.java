@@ -100,6 +100,7 @@ public class RSAUtil {
 	 * @param data  data
 	 * @param publicKey  publicKey
 	 * @return return
+	 * @throws Exception Exception
 	 */ 
 	public static String publicEncrypt(String data, RSAPublicKey publicKey) throws Exception{
 		try { 
@@ -117,6 +118,7 @@ public class RSAUtil {
 	 * @param data  data
 	 * @param privateKey  privateKey
 	 * @return return
+	 * @throws Exception Exception
 	 */ 
  
 	public static String privateDecrypt(String data, RSAPrivateKey privateKey)  throws Exception{
@@ -135,6 +137,7 @@ public class RSAUtil {
 	 * @param data  data
 	 * @param privateKey  privateKey
 	 * @return return
+	 * @throws Exception Exception
 	 */ 
  
 	public static String privateEncrypt(String data, RSAPrivateKey privateKey)  throws Exception{
@@ -153,6 +156,7 @@ public class RSAUtil {
 	 * @param data  data
 	 * @param publicKey  publicKey
 	 * @return return
+	 * @throws Exception Exception
 	 */ 
  
 	public static String publicDecrypt(String data, RSAPublicKey publicKey) throws Exception{
