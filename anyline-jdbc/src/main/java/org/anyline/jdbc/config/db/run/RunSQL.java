@@ -40,8 +40,8 @@ public interface RunSQL {
 	 * 添加查询条件 
 	 * @param required 是否必须
 	 * @param strictRequired 是否严格验证必须
-	 * @param	condition  列名|查询条件ID 
-	 * @param	variable  变量key 
+	 * @param	condition  查询条件ID
+	 * @param	variable  列名|变量key
 	 * @param	value  值 
 	 * @param compare 比较方式
 	 * @return return
