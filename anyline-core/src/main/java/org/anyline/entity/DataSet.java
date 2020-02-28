@@ -104,6 +104,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return this;
 	}
+
+	/**
+	 * 移除每个条目中指定的key
+	 * @param keys keys
+	 * @return DataSet
+	 */
 	public DataSet remove(String ... keys){
 		for(DataRow row:rows){
 			for(String key:keys){
@@ -112,6 +118,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return this;
 	}
+
 	/** 
 	 * 添加主键 
 	 * @param applyItem 是否应用到集合中的DataRow 默认true 
