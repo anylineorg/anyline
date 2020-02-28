@@ -471,10 +471,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 * @param	variable  列名|变量key
 	 * @param	value  值
 	 * @param compare 比较方式
-	 * @return
+	 * @return RunSQL
 	 */
 	@Override
-
 	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) { 
 		/*不指定变量名或condition = variable 时,根据condition为SQL主体变量赋值*/ 
 		if(null != variables &&  
