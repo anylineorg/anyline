@@ -33,54 +33,8 @@ import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
  
 public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.config.http.ConfigChain{ 
-	private List<Config> configs = new ArrayList<Config>(); 
-	 
-	public ConfigChainImpl(){}
-	public String toString(){
-		String str = null;
-		if(null != configs){
-			for(Config conf:configs){
-				if(null == conf){
-					continue;
-				}
-				if(null == str){
-					str = conf.toString();
-				}else{
-					str += "," + conf.toString();
-				}
-			}
-		}
-		return "["+str+"]";
-	}
-	public String cacheKey(){
-		String str = null;
-		if(null != configs){
-			for(Config conf:configs){
-				if(null == conf){
-					continue;
-				}
-				if(null == str){
-					str = conf.cacheKey();
-				}else{
-					str += "," + conf.cacheKey();
-				}
-			}
-		}
-		return str;
-	} 
-	public ConfigChainImpl(String config){ 
-		if(null == config){ 
-			return; 
-		} 
-		String[] configs = config.split("\\|"); 
-		for(String item:configs){ 
-			ConfigImpl conf = new ConfigImpl(item); 
-			conf.setJoin(Condition.CONDITION_JOIN_TYPE_OR);
-			if(!conf.isEmpty()){ 
-				this.configs.add(conf);
-			} 
-		} 
-	}
+	private List<Config> configs = new ArrayList<Config>();
+
 	public Config getConfig(String key){
 		for(Config conf: configs){
 			String id = conf.getId();
@@ -99,7 +53,7 @@ public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.confi
 		}
 		return null;
 	}
-	
+
 
 	public ConfigChain removeConfig(String key){
 		Config config = getConfig(key);
@@ -115,11 +69,11 @@ public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.confi
 		}
 		return this;
 	}
-	
-	 
-	public void addConfig(Config config){ 
-		configs.add(config); 
-	} 
+
+
+	public void addConfig(Config config){
+		configs.add(config);
+	}
 
 	public List<Object> getValues() {
 		List<Object> values = new ArrayList<Object>();
@@ -127,7 +81,7 @@ public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.confi
 			values.addAll(config.getValues());
 		}
 		return values;
-	} 
+	}
 	/** 
 	 * 赋值 
 	 * @param request  request
@@ -139,24 +93,18 @@ public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.confi
 //		if(items.size()>0){ 
 //			setCompare(items.get(0).getCompareType()); 
 //		} 
-	} 
-	public List<Config> getConfigs(){ 
-		return configs; 
-	} 
-	public ConditionChain createAutoConditionChain(){ 
-		ConditionChain chain = new AutoConditionChainImpl(); 
-		for(Config config:configs){ 
-			Condition condition = config.createAutoCondition(chain); 
-			if(null != condition){ 
-				chain.addCondition(condition); 
-			} 
-		} 
-		return chain; 
 	}
-	@Override
-	public void setValue(Map<String, Object> values) {
-		for(Config config:configs){ 
-			config.setValue(values); 
-		} 
-	} 
+	public List<Config> getConfigs(){
+		return configs;
+	}
+	public ConditionChain createAutoConditionChain(){
+		ConditionChain chain = new AutoConditionChainImpl();
+		for(Config config:configs){
+			Condition condition = config.createAutoCondition(chain);
+			if(null != condition){
+				chain.addCondition(condition);
+			}
+		}
+		return chain;
+	}
 }

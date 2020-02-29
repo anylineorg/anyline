@@ -40,10 +40,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
 public class ConfigImpl implements Config{
-	protected static final Logger log = LoggerFactory.getLogger(ConfigImpl.class); 
-	private List<Object> values;	//VALUE 
-	private List<Object> orValues;
-	private boolean empty;			//是否值为空 
+	protected static final Logger log = LoggerFactory.getLogger(ConfigImpl.class);
+	protected List<Object> values;	//VALUE
+	protected List<Object> orValues;
+	protected boolean empty;			//是否值为空
 	protected ParseResult parser;
 	@Override
 	public Object clone(){

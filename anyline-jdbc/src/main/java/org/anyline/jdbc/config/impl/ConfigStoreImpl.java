@@ -49,10 +49,10 @@ import org.anyline.util.DESUtil;
  * 
  */ 
 public class ConfigStoreImpl implements ConfigStore{ 
-	private ConfigChain chain; 
-	private PageNavi navi; 
-	private OrderStore orders;		//排序依据 
-	private GroupStore groups; 
+	protected ConfigChain chain;
+	protected PageNavi navi;
+	protected OrderStore orders;		//排序依据
+	protected GroupStore groups;
 
 	@Override
 	public String toString(){
@@ -135,7 +135,7 @@ public class ConfigStoreImpl implements ConfigStore{
 			conf.setJoin(Condition.CONDITION_JOIN_TYPE_AND);
 			conf.setCompare(SQL.COMPARE_TYPE.IN);
 		}
-		conf.setId(key);
+		conf.setVariable(key);
 		if(null != values && !(values instanceof Collection)){
 			String s = values.toString();
 			if(s.startsWith("[") && s.endsWith("]")){
@@ -329,7 +329,7 @@ public class ConfigStoreImpl implements ConfigStore{
 	/** 
 	 * 把httpRequest中的参数存放到navi 
 	 */ 
-	private void setNaviParam(){ 
+	protected void setNaviParam(){
 		if(null == chain || null == navi){ 
 			return; 
 		} 
