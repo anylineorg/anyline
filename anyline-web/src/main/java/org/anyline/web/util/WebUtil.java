@@ -843,10 +843,29 @@ public class WebUtil {
 		}
 		return null;
 	}
+
+	/**
+	 * 设置cookie
+	 * @param response response
+	 * @param key key
+	 * @param value value
+	 * @param expire 过期时间(秒)
+	 */
 	public static void setCookie(HttpServletResponse response, String key, String value, int expire){
 		Cookie cookie = new Cookie(key, value);
 		cookie.setMaxAge(expire);
 		response.addCookie(cookie);
+	}
+
+	public static void deleteCookie(HttpServletRequest request, String key){
+		Cookie[] cks = request.getCookies();
+		if(null != cks){
+			for(Cookie ck:cks){
+				if(key.equals(ck.getName())){
+					ck.setMaxAge(0);
+				}
+			}
+		}
 	}
 	public static String readRequestContent(HttpServletRequest request){
     	StringBuilder sb = new StringBuilder();
