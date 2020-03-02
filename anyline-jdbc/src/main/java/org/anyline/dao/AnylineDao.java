@@ -98,6 +98,14 @@ public interface AnylineDao{
 	 */ 
 	public DataSet queryProcedure(Procedure procedure); 
 	public int delete(String dest, Object data, String ... columns);
-	public int delete(String table, String key, Collection<Object> values);
-	public int delete(String table, String key, String ... values);
+
+	/**
+	 * 删除多行
+	 * @param table 表
+	 * @param key 列
+	 * @param values 值集合
+	 * @return 影响行数
+	 */
+	public int deletes(String table, String key, Collection<Object> values);
+	public int deletes(String table, String key, String ... values);
 } 

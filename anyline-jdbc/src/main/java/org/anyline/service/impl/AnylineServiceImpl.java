@@ -946,12 +946,20 @@ public class AnylineServiceImpl implements AnylineService {
         return dao.delete(dest, row, columns);
     }
 
-    public int delete(String table, String key, Collection<Object> values){
+    @Override
+    public int delete(String table, String... kvs) {
         table = DataSourceHolder.parseDataSource(table);
-        return dao.delete(table, key, values);
+        DataRow row = DataRow.parseArray(kvs);
+        row.setPrimaryKey(row.keys());
+        return dao.delete(table, row);
     }
 
-    public int delete(String table, String key, String ... values){
+    public int deletes(String table, String key, Collection<Object> values){
+        table = DataSourceHolder.parseDataSource(table);
+        return dao.deletes(table, key, values);
+    }
+
+    public int deletes(String table, String key, String ... values){
         table = DataSourceHolder.parseDataSource(table);
         return dao.delete(table, key, values);
     }

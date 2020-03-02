@@ -230,14 +230,37 @@ public interface AnylineService{
 	public DataSet select(Procedure procedure); 
 	 
 	/**
-	 * 删除 根据主键删除
-	 * @param dest dest
-	 * @param data data
-	 * @return return
+	 * 删除 根据主键删除 可设置复合主键
+	 * @param dest 表
+	 * @param data 数据
+	 * @return 影响行数
 	 */ 
 	public int delete(String dest, Object data); 
 	public int delete(Object data);
-	
-	public int delete(String table, String key, Collection<Object> values);
-	public int delete(String table, String key, String ... values); 
+
+	/**
+	 * 根据多列条件删除
+	 * @param table 表
+	 * @param kvs key-value
+	 * @return 影响行数
+	 */
+	public int delete(String table, String ... kvs);
+
+	/**
+	 * 删除多行
+	 * @param table 表
+	 * @param key 名
+	 * @param values 值集合
+	 * @return 影响行数
+	 */
+	public int deletes(String table, String key, Collection<Object> values);
+
+	/**
+	 * 删除多行
+	 * @param table 表
+	 * @param key 名
+	 * @param values 值集合
+	 * @return 影响行数
+	 */
+	public int deletes(String table, String key, String ... values);
 }

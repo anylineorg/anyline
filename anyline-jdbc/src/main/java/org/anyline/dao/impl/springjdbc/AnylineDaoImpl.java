@@ -761,14 +761,15 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 		} 
 		return set; 
-	} 
+	}
 
-	public int delete(String table, String key, Collection<Object> values){
+
+	public int deletes(String table, String key, Collection<Object> values){
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(table, key, values);
 		int result = exeDelete(run);
 		return result;
 	}
-	public int delete(String table, String key, String ... values){
+	public int deletes(String table, String key, String ... values){
 		List<String> list = new ArrayList<String>();
 		if(null != values){
 			for(String value:values){
