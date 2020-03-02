@@ -569,6 +569,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow setPrimaryKey(String ... pks){
 		return setPrimaryKey(false, pks);
 	}
+
+    /**
+     * 设置主键
+     * @param applyContainer 是否应用到上级容器
+     * @param pks keys
+     * @return DataRow
+     */
 	public DataRow setPrimaryKey(boolean applyContainer, Collection<String> pks){
 		if(BasicUtil.isEmpty(pks)){
 			return this;

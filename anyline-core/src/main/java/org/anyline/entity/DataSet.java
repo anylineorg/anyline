@@ -1663,6 +1663,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return result;
 	}
+
+	/**
+	 * 颠倒kv-vk
+	 * @param keys kv
+	 * @return String[]
+	 */
 	private String[] reverseKey(String[] keys){
 		if(null == keys){
 			return new String[0];
