@@ -48,10 +48,10 @@ public interface Config {
 	public void setId(String id) ;
 
 
-	public String getField() ; //XML condition中的key 或名名
+	public String getField() ; //XML condition中的key 或列名
 
 
-	public String getKey() ;
+	public String getKey() ;//参数key
 
 	public void setKey(String key) ;
 

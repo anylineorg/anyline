@@ -102,7 +102,11 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 	public Config getConfig(String key, SQL.COMPARE_TYPE type){
 		for(Config conf: configs){
 			String id = conf.getId();
+			String var = conf.getVariable();
 			if(null != id && id.equalsIgnoreCase(key) && conf.getCompare() == type){
+				return conf;
+			}
+			if(null == id && null != var && var.equalsIgnoreCase(key) && conf.getCompare() == type){
 				return conf;
 			}
 		}

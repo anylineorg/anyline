@@ -155,8 +155,9 @@ public class ConfigStoreImpl implements ConfigStore{
 		return this;
 	}
 	@Override
-	public ConfigStore addCondition(String key, Object value, boolean overCondition, boolean overValue){
-		return addCondition(key, null, value, overCondition, overValue);
+	public ConfigStore addCondition(String var, Object value, boolean overCondition, boolean overValue){
+		String key = var;
+		return addCondition(key, var, value, overCondition, overValue);
 	}
 	@Override
 	public ConfigStore addCondition(String key, String var, Object value, boolean overCondition, boolean overValue){
