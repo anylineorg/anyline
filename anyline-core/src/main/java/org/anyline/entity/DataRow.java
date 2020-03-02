@@ -267,6 +267,46 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return row;
 	}
+
+	/**
+	 * 解析 key1,value1,key2,value2,key3:value3组合
+	 * @param kvs kvs
+	 * @return DataRow
+	 */
+	public static DataRow parseArray(String ... kvs){
+		DataRow result = new DataRow();
+		int len = kvs.length;
+		int i = 0;
+		while(i<len){
+			String p1 = kvs[i];
+			if(BasicUtil.isEmpty(p1)){
+				i++;
+				continue;
+			}else if(p1.contains(":")){
+				String ks[] = BeanUtil.parseKeyValue(p1);
+				result.put(ks[0], ks[1]);
+				i++;
+				continue;
+			}else{
+				if(i+1<len){
+					String p2 = kvs[i+1];
+					if(BasicUtil.isEmpty(p2) || !p2.contains(":")){
+						result.put(p1, p2);
+						i+=2;
+						continue;
+					}else{
+						String ks[] = BeanUtil.parseKeyValue(p2);
+						result.put(ks[0], ks[1]);
+						i+=2;
+						continue;
+					}
+				}
+
+			}
+			i++;
+		}
+		return result;
+	}
 	/**
 	 * 创建时间
 	 * @return return
