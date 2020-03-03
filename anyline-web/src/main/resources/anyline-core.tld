@@ -1187,6 +1187,23 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
+
+	<tag>
+		<name>client</name>
+		<tagclass>org.anyline.web.tag.Client</tagclass>
+		<bodycontent>empty</bodycontent>
+		<info>客户端类型web,wap,app,wechat</info>
+		<attribute>
+			<name>var</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>out</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
 	<tag>
 		<name>auth</name>
 		<tagclass>org.anyline.web.tag.Auth</tagclass>

@@ -34,7 +34,7 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String type = "";
 	private Object elseValue;
-	private boolean skip = true;//如果test=false时是否跳过body体(不再执行boyd中的子标签) skip=false时即使test=false标签体也会执行
+	private boolean skip = false;//如果test=false时是否跳过body体(不再执行boyd中的子标签) skip=false时即使test=false标签体也会执行
 	private boolean test = false;
 	private boolean truncate = false; //如果test=false;跳整个页面
 	public int doStartTag(){
@@ -79,7 +79,7 @@ public class CheckClient extends BaseBodyTag implements Cloneable{
 		type = null;
 		value = null;
 		elseValue = null;
-		skip = true;
+		skip = false;
 		truncate = false;
 		test = false;
 	} 
