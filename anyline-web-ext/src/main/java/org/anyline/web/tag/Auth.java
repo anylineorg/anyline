@@ -58,7 +58,7 @@ public class Auth extends BaseBodyTag {
 		}
 		 
 		try {
-			log.error("[第三方登录][type:{}]",type); 
+			log.warn("[第三方登录][type:{}]",type);
 			writer = pageContext.getOut();
 			if(encode){
 				String stateValue = state;
@@ -87,6 +87,7 @@ public class Auth extends BaseBodyTag {
 			if("wx".equalsIgnoreCase(type) || "wechat".equalsIgnoreCase(type) || "weixin".equalsIgnoreCase(type)){
 				WechatConfig wechatConfig = WechatMPConfig.getInstance(key);
 				if(null == wechatConfig){
+					log.warn("[第三方登录][微信配置文件不存在][key:{}]",key);
 					result = false;
 				}else{
 					WechatConfig.SNSAPI_SCOPE apiScope = WechatConfig.SNSAPI_SCOPE.BASE;
@@ -122,6 +123,7 @@ public class Auth extends BaseBodyTag {
 			}else if("qq".equalsIgnoreCase(type)){
 				QQMPConfig qqconfig = QQMPConfig.getInstance(key);
 				if(null == qqconfig){
+					log.warn("[第三方登录][QQ配置文件不存在][key:{}]",key);
 					result = false;
 				}else{
 					if(BasicUtil.isEmpty(appid)){
@@ -151,6 +153,7 @@ public class Auth extends BaseBodyTag {
 					url =  QQConfig.URL_OAUTH + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state+",app:"+key;
 				}
 			}
+			log.warn("[第三方登录][result:{}][url:{}]",result,url);
 			if(result){
 				html = "<a href=\""+url+"\" id=\""+id+"\">";
 				if(BasicUtil.isNotEmpty(body)){
@@ -163,7 +166,8 @@ public class Auth extends BaseBodyTag {
 			}else{
 				log.error("[第三方登录][登录配置异常]");
 				html = "登录配置异常";
-			} 
+			}
+			log.warn("[第三方登录][result:{}][url:{}][html:{}]",result,url,html);
 			writer.print(html); 
 		} catch (IOException e) {
 			e.printStackTrace(); 
