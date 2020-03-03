@@ -53,8 +53,8 @@ public class WechatWapUtil {
 	/** 
 	 * 统一下单 
 	 * @param order  order
-	 * @return return
-	 * @throws Exception
+	 * @return WechatPrePayResult
+	 * @throws Exception Exception
 	 */ 
 	public WechatPrePayResult unifiedorder(WechatPrePayOrder order) throws Exception{
 		return WechatUtil.unifiedorder(config,WechatConfig.TRADE_TYPE.MWEB,order);
@@ -65,7 +65,7 @@ public class WechatWapUtil {
 	/** 
 	 * H5调起支付所需参数
      * @param prepayid 预支付id(由统一下单接口返回)
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow pay(String prepayid){
 		Map<String,Object> params = new HashMap<String,Object>(); 
