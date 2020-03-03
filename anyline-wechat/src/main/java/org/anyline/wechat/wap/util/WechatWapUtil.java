@@ -54,6 +54,7 @@ public class WechatWapUtil {
 	 * 统一下单 
 	 * @param order  order
 	 * @return return
+	 * @throws Exception
 	 */ 
 	public WechatPrePayResult unifiedorder(WechatPrePayOrder order) throws Exception{
 		return WechatUtil.unifiedorder(config,WechatConfig.TRADE_TYPE.MWEB,order);
