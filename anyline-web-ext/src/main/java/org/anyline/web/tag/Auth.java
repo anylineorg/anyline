@@ -48,8 +48,7 @@ public class Auth extends BaseBodyTag {
 	private String id;
 	private String params;
 	 
-	public int doEndTag() { 
-		JspWriter writer = null;
+	public int doEndTag() {
 		boolean result = true; 
 		String html = "";
 		String url = "";
@@ -59,7 +58,6 @@ public class Auth extends BaseBodyTag {
 		 
 		try {
 			log.warn("[第三方登录][type:{}]",type);
-			writer = pageContext.getOut();
 			if(encode){
 				String stateValue = state;
 				state = BasicUtil.getRandomLowerString(20);
@@ -168,8 +166,9 @@ public class Auth extends BaseBodyTag {
 				html = "登录配置异常";
 			}
 			log.warn("[第三方登录][result:{}][url:{}][html:{}]",result,url,html);
-			writer.print(html); 
-		} catch (IOException e) {
+            JspWriter out = pageContext.getOut();
+            out.print(html);
+        } catch (Exception e) {
 			e.printStackTrace(); 
 		}finally{ 
 			release(); 
