@@ -80,7 +80,7 @@ public class WechatConfig extends AnylineConfig{
 	//发送模板消息 
 	public final static String API_URL_SEND_TEMPLATE_MESSAGE	= "https://api.weixin.qq.com/cgi-bin/message/template/send"; 
 	//oauth2.0授权 
-	public final static String API_URL_GET_AUTH_INFO		= "https://api.weixin.qq.com/sns/oauth2/access_token";
+	public final static String API_URL_GET_AUTH_INFO			= "https://api.weixin.qq.com/sns/oauth2/access_token";
 	//用户基本信息	 
 	public final static String API_URL_GET_USER_INFO			= "https://api.weixin.qq.com/cgi-bin/user/info";//?access_token=ACCESS_TOKEN&openid=OPENID&lang=zh_CN  
 	 

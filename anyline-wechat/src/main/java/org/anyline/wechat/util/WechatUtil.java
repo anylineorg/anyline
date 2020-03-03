@@ -485,12 +485,13 @@ public class WechatUtil {
 	 * @return AuthInfo
 	 */
 	public static WechatAuthInfo getAuthInfo(WechatConfig config, String code){
-		WechatAuthInfo result = new WechatAuthInfo();
+		WechatAuthInfo result = null;
 		String url = WechatConfig.API_URL_GET_AUTH_INFO + "?appid="+config.APP_ID+"&secret="+config.APP_SECRET+"&code="+code+"&grant_type=authorization_code";
 		String txt = HttpUtil.get(url).getText();
-		result = BeanUtil.xml2object(txt, WechatAuthInfo.class);
-		if(BasicUtil.isEmpty(result.getOpenid())){
-			result.setResult(false);
+		log.warn("[get auth info][txt:{}]",txt);
+		result = BeanUtil.json2oject(txt, WechatAuthInfo.class);
+		if(BasicUtil.isNotEmpty(result.getOpenid())){
+			result.setResult(true);
 		}
 		return result;
 	}
@@ -502,13 +503,15 @@ public class WechatUtil {
 	 * @return UserInfo
 	 */
 	public static WechatUserInfo getUserInfo(WechatConfig config, String openid){
-		WechatUserInfo result = new WechatUserInfo();
+		WechatUserInfo result = null;
 		String url = WechatConfig.API_URL_GET_USER_INFO + "?access_token="+getAccessToken(config)+"&openid="+openid+"&lang=zh_CN";
 		String txt = HttpUtil.get(url).getText();
-		result = BeanUtil.xml2object(txt, WechatUserInfo.class);
-		if(BasicUtil.isEmpty(result.getOpenid())){
-			result.setResult(false);
+		log.warn("[wechar get user info][result:{}]",txt);
+		result = BeanUtil.json2oject(txt, WechatUserInfo.class);
+		if(BasicUtil.isNotEmpty(result.getOpenid())){
+			result.setResult(true);
 		}
 		return result;
 	}
+
 } 
