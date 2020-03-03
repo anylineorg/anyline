@@ -844,7 +844,7 @@ public class ConfigParser {
 		} 
 		Map<String, List<String>> partMap = (Map<String, List<String>>) values.get(PARAMS_PART_DECRYPT_MAP); 
 		List<String> list = partMap.get(encryptHttpRequestParamKey(key)); 
-		if (null != values) { 
+		if (null != values && null != list) {
 			if (valueEncrypt) { 
 				for (String value : list) { 
 					value = decryptParamValue(value); 
