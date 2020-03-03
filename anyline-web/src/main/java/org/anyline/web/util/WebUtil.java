@@ -216,7 +216,8 @@ public class WebUtil {
 	 * 从解密后的参数MAP中取值 
 	 *  
 	 * @param request  request
-	 * @param param  param
+	 * @param key  key
+	 * @param valueEncrypt  valueEncrypt
 	 * @return return
 	 */ 
 	@SuppressWarnings("unused")
@@ -865,6 +866,7 @@ public class WebUtil {
 		if(null != cks){
 			for(Cookie ck:cks){
 				if(key.equals(ck.getName())){
+					ck.setValue(null);
 					ck.setMaxAge(0);
 					response.addCookie(ck);
 				}
