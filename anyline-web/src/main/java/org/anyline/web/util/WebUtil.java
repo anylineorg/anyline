@@ -857,12 +857,16 @@ public class WebUtil {
 		response.addCookie(cookie);
 	}
 
-	public static void deleteCookie(HttpServletRequest request, String key){
+	public static void deleteCookie(HttpServletRequest request, HttpServletResponse response, String key){
+		if(null == key){
+			return;
+		}
 		Cookie[] cks = request.getCookies();
 		if(null != cks){
 			for(Cookie ck:cks){
 				if(key.equals(ck.getName())){
 					ck.setMaxAge(0);
+					response.addCookie(ck);
 				}
 			}
 		}
