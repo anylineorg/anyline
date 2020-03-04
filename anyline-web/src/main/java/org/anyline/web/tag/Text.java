@@ -50,20 +50,31 @@ public class Text extends BaseBodyTag{
 			Object result = null; 
 			if(data instanceof DataSet){
 				DataSet set = (DataSet)data;
-				if(index > -1 && index<set.size()){
-					DataRow row = set.getRow(index);
-					result = row.getString(property);
-				}else if(BasicUtil.isNotEmpty(selector)){
-					DataRow row = set.getRow(selector.split(","));
-					if(null != row){
-						result = row.get(property);
-					}
+				DataRow row = null;
+				if(BasicUtil.isNotEmpty(selector)){
+					set = set.getRows(selector.split(","));
+				}
+				if(index == -1){
+					index = 0;
+				}
+				if(index<set.size()){
+					row = set.getRow(index);
+				}
+				if(null != row){
+					result = row.get(property);
 				}
 			}else if(data instanceof List){
 				@SuppressWarnings("rawtypes")
 				List list = (List)data;
-				if(index > -1 && index<list.size()){
-					result = BeanUtil.getValueByColumn(list.get(index), property);
+				Object item = null;
+				if(index == -1){
+					index = 0;
+				}
+				if(index<list.size()){
+					item = list.get(index);
+				}
+				if(null != item) {
+					result = BeanUtil.getValueByColumn(item, property);
 				}
 			}else if(null != property){
 				result = BeanUtil.getValueByColumn(data,property);
