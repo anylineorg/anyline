@@ -166,16 +166,9 @@ public class DESUtil {
 	 */ 
 	private byte[] decrypt(byte[] arrB) throws BadPaddingException, IllegalBlockSizeException{ 
 		return decryptCipher.doFinal(arrB); 
-	} 
-	 
-	 
-	public String decrypt(String str)throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{ 
-		String result = "";
-			result = new String(decrypt(hexStr2ByteArr(str)),ConfigTable.getString("DES_ENCODE","UTF-8"));
-			result = result.substring(salt.length());
-		return result; 
-	} 
-	 
+	}
+
+
 	 
 	/**
 	 * 
@@ -192,7 +185,23 @@ public class DESUtil {
 		Key key = new SecretKeySpec(arrB, "DES"); 
 		 
 		return key; 
-	}  
+	}
+
+	/**
+	 * 加密String
+	 * @param  str str
+	 * @return  String
+	 * @throws IllegalBlockSizeException IllegalBlockSizeException
+	 * @throws BadPaddingException BadPaddingException
+	 * @throws UnsupportedEncodingException UnsupportedEncodingException
+	 */
+	public String decrypt(String str)throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
+		String result = "";
+		result = new String(decrypt(hexStr2ByteArr(str)),ConfigTable.getString("DES_ENCODE","UTF-8"));
+		result = result.substring(salt.length());
+		return result;
+	}
+
 	/** 
 	 * 加密集合中的keys属性值 
 	 * @param list  list
