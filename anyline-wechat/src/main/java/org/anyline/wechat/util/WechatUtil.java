@@ -173,6 +173,9 @@ public class WechatUtil {
 			log.warn("[统一下单][return:{}]", rtn);
 		}
 		result = BeanUtil.xml2object(rtn, WechatPrePayResult.class);
+		if(BasicUtil.isNotEmpty(result.getPrepay_id())){
+			result.setResult(true);
+		}
 
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[统一下单][prepay id:{}]", result.getPrepay_id());

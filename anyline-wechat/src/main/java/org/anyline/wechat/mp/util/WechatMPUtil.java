@@ -116,7 +116,7 @@ public class WechatMPUtil extends WechatUtil {
 	 * @param prepayid 预支付id(由统一下单接口返回)
 	 * @return return
 	 */ 
-	public DataRow pay(String prepayid){
+	public DataRow callUpParam(String prepayid){
 		String timestamp = System.currentTimeMillis()/1000+""; 
 		String random = BasicUtil.getRandomLowerString(20); 
 		String pkg = "prepay_id="+prepayid; 
