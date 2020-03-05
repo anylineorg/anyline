@@ -27,8 +27,8 @@ import javax.servlet.jsp.JspWriter;
 public class SubString extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1554109844585627661L; 
 	 
-	private int begin = -1; 
-	private int end = -1; 
+	private int begin = 0;
+	private int end = 0; //负数表示取最后end个
 	 
 	public int doStartTag() throws JspException { 
         return EVAL_BODY_BUFFERED; 
@@ -37,13 +37,17 @@ public class SubString extends BaseBodyTag{
 		//输出 
 		JspWriter out = pageContext.getOut(); 
 		String text = body; 
-		if(null != text){ 
-			if(begin < 0){ 
-				begin = 0; 
-			} 
-			if(end > text.length() || end < 0){ 
-				end = text.length(); 
-			} 
+		if(null != text){
+			if(end < 0){
+				begin = text.length() + end;
+				end = text.length();
+			}
+			if(begin < 0){
+				begin = 0;
+			}
+			if(end > text.length() || end <= 0){
+				end = text.length();
+			}
 			text = text.substring(begin,end); 
 			try{ 
 				out.print(text); 
@@ -58,8 +62,8 @@ public class SubString extends BaseBodyTag{
 	@Override 
     public void release(){ 
 		super.release(); 
-    	begin = -1; 
-    	end = -1;
+    	begin = 0;
+    	end = 0;
     	value = null;
     	body = null;
     			 

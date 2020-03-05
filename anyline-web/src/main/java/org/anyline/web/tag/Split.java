@@ -31,7 +31,7 @@ public class Split extends BaseBodyTag{
 	private String regex; 
 	private String var;
 	private String scope = "page"; 
-	private String text = null; 
+	private String text = null;
 	 
 	public int doStartTag() throws JspException { 
         return EVAL_BODY_BUFFERED; 
