@@ -52,8 +52,8 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
  
 	public AutoConditionImpl(Config config){
 		setJoin(config.getJoin());
-		setTable(config.getId());   	//表名或表别名
-		setColumn(config.getField());   //列名
+		setTable(config.getPrefix());   	//表名或表别名
+		setColumn(config.getVariable());   //列名
 		setValues(config.getValues()); 
 		setOrValues(config.getOrValues());
 		setCompare(config.getCompare());

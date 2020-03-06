@@ -72,11 +72,24 @@ public class BasicUtil {
 			} 
 		} 
 		return true; 
-	} 
- 
-	public static boolean isEmpty(Object obj) { 
-		return isEmpty(false, obj); 
-	} 
+	}
+
+	/**
+	 * 是否全部为空
+	 * @param objs objs
+	 * @return boolean
+	 */
+	public static boolean isEmpty(Object ... objs) {
+		if(null == objs){
+			return true;
+		}
+		for(Object obj:objs){
+			if(!isEmpty(false, obj)){
+				return false;
+			}
+		}
+		return true;
+	}
 
 
 	public static boolean isNotEmpty(Object obj) {

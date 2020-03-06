@@ -69,7 +69,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != configStore){ 
 			for(Config conf:configStore.getConfigChain().getConfigs()){ 
 				setConditionValue(conf.isRequire(),  
-						conf.isStrictRequired(), conf.getField(), conf.getVariable(), conf.getValues(), conf.getCompare());
+						conf.isStrictRequired(), conf.getPrefix(), conf.getVariable(), conf.getValues(), conf.getCompare());
 			} 
 			 
 			OrderStore orderStore = configStore.getOrders(); 
@@ -102,7 +102,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					} 
 					 
 				} 
-				setConditionValue(parser.isRequired(), parser.isStrictRequired(), parser.getId(), parser.getField(), value, parser.getCompare()); 
+				setConditionValue(parser.isRequired(), parser.isStrictRequired(), parser.getPrefix(), parser.getVar(), value, parser.getCompare());
 			} 
 		} 
 		//检查必须条件required strictRequired 
@@ -475,7 +475,8 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 */
 	@Override
 	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) { 
-		/*不指定变量名或condition = variable 时,根据condition为SQL主体变量赋值*/ 
+		/*不指定condition.id或condition.id = variable 时,根据var为SQL主体变量赋值*/
+		//只提供var 不提供condition
 		if(null != variables &&  
 				(BasicUtil.isEmpty(condition) || condition.equals(variable))
 		){ 
@@ -485,11 +486,17 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			} 
 		} 
 		/*参数赋值*/ 
-		if(null == condition){ 
+		if(null == variable){
 			return this; 
-		} 
-		Condition con = getCondition(condition); 
-		SQLVariable var = getVariable(condition); 
+		}
+		Condition con = null;
+		if(null == condition){
+			con = getCondition(variable);
+		}else{
+			con = getCondition(condition);;
+		}
+
+		SQLVariable var = getVariable(variable);
 		if(null == con && null == var){//没有对应的condition也没有对应的text中的变量 
 			if(this.isStrict()){ 
 				return this; 
@@ -509,7 +516,6 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			return this; 
 		} 
 		if(null != con){ 
-			variable = BasicUtil.nvl(variable, condition).toString(); 
 			con.setValue(variable, value); 
 			if(con.isActive()){ 
 				this.conditionChain.setActive(true); 

@@ -45,52 +45,63 @@ public interface ConfigStore {
 	public ConfigStore setValue(Map<String,Object> values); 
 	public ConfigChain getConfigChain();
 	public Config getConfig(String key);
-	public ConfigStore removeConfig(String key);
+	public ConfigStore removeConfig(String var);
 	public ConfigStore removeConfig(Config config);
-	public List<Object> getConfigValues(String key);
-	public Object getConfigValue(String key);
+	public List<Object> getConfigValues(String var);
+	public Object getConfigValue(String var);
 	public Config getConfig(String key, SQL.COMPARE_TYPE compare);
-	public ConfigStore removeConfig(String key, SQL.COMPARE_TYPE compare);
-	public List<Object> getConfigValues(String key, SQL.COMPARE_TYPE compare);
-	public Object getConfigValue(String key, SQL.COMPARE_TYPE compare);
-	public ConfigStore addConditions(String key, Object value);
-	public ConfigStore addCondition(String key, Object value);
+	public ConfigStore removeConfig(String var, SQL.COMPARE_TYPE compare);
+	public List<Object> getConfigValues(String var, SQL.COMPARE_TYPE compare);
+	public Object getConfigValue(String var, SQL.COMPARE_TYPE compare);
+	public ConfigStore addConditions(String var, Object value);
+	public ConfigStore addCondition(String var, Object value);
 	/**
 	 * 
-	 * @param key key
-	 * @param var XML自定义SQL条件中指定变量赋值
+	 * @param id 表别名或XML中查询条件的ID
+	 * @param var XML自定义SQL条件中指定变量赋值或列名
 	 * @param value value
 	 * @param overCondition 覆盖相同key的条件
 	 * @param overValue		覆盖条件value overValue		覆盖条件value
 	 * @return return
 	 */
-	public ConfigStore addCondition(String key, String var, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore addCondition(String key, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value);
-	public ConfigStore addCondition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue); 
+	public ConfigStore addCondition(String id, String var, Object value, boolean overCondition, boolean overValue);
+
+	/**
+	 *
+	 * @param var XML自定义SQL条件中指定变量赋值或列名
+	 * @param value value
+	 * @param overCondition 覆盖相同key的条件
+	 * @param overValue		覆盖条件value overValue		覆盖条件value
+	 * @return return
+	 */
+	public ConfigStore addCondition(String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore addCondition(COMPARE_TYPE compare, String id, Object value);
+	public ConfigStore addCondition(COMPARE_TYPE compare, String id, String var, Object value);
+	public ConfigStore addCondition(COMPARE_TYPE compare, String id, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore addCondition(COMPARE_TYPE compare, String id, String var, Object value, boolean overCondition, boolean overValue);
 
 	/**
 	 * XML自定义SQL条件中指定变量赋值
-	 * @param key condition.id
+	 * @param id condition.id或表名
 	 * @param var condition.var
 	 * @param value value
 	 * @return return
 	 */
-	public ConfigStore addCondition(String key, String var, Object value);
+	public ConfigStore addCondition(String id, String var, Object value);
 	public ConfigStore addCondition(Config config);
 	
-	public ConfigStore conditions(String key, Object value);
-	public ConfigStore condition(String key, Object value);
-	public ConfigStore condition(String key, String var, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore condition(String key, Object value, boolean overCondition, boolean overValue);
-	public ConfigStore condition(COMPARE_TYPE compare, String key, Object value);
-	public ConfigStore condition(COMPARE_TYPE compare, String key, Object value, boolean overCondition, boolean overValue); 
-	public ConfigStore condition(String key, String var, Object value);
+	public ConfigStore conditions(String var, Object value);
+	public ConfigStore condition(String var, Object value);
+	public ConfigStore condition(String id, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore condition(String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore condition(COMPARE_TYPE compare, String var, Object value);
+	public ConfigStore condition(COMPARE_TYPE compare, String var, Object value, boolean overCondition, boolean overValue);
+	public ConfigStore condition(String id, String var, Object value);
 	public ConfigStore condition(Config config);
 	
 
-	public ConfigStore and(String key, Object value);
-	public ConfigStore and(COMPARE_TYPE compare, String key, Object value);
+	public ConfigStore and(String var, Object value);
+	public ConfigStore and(COMPARE_TYPE compare, String var, Object value);
 	/**
 	 * 与ConfigStore中前一个条件合成or
 	 * @param key key
@@ -98,15 +109,15 @@ public interface ConfigStore {
 	 * @return ConfigStore
 	 */
 	public ConfigStore or(String key, Object value);
-	public ConfigStore or(COMPARE_TYPE compare, String key, Object value);
+	public ConfigStore or(COMPARE_TYPE compare, String var, Object value);
 	/**
 	 * 与ConfigStore中当前所有的条件合成or
-	 * @param key key
+	 * @param var var
 	 * @param value value
 	 * @return ConfigStore
 	 */
-	public ConfigStore ors(String key, Object value);
-	public ConfigStore ors(COMPARE_TYPE compare, String key, Object value);
+	public ConfigStore ors(String var, Object value);
+	public ConfigStore ors(COMPARE_TYPE compare, String var, Object value);
 	/** 
 	 * 添加排序 
 	 * @param order  order

@@ -106,11 +106,11 @@ public class ConfigParser {
 		ParseResult result = new ParseResult(); 
 		boolean required = false; 
 		boolean strictRequired = false; 
-		String field = null; 
-		String id = config;
+		String prefix = null;
+		String var = config;
 		String key = config;
 		if(key.contains(":")){
-			id = config.substring(0,config.indexOf(":")); 
+			var = config.substring(0,config.indexOf(":"));
 			if(key.contains("|")){
 				String[] tmp = key.split("\\|");
 				ParseResult or = new ParseResult(); 
@@ -122,32 +122,29 @@ public class ConfigParser {
 				key = config.substring(config.indexOf(":")+1,config.length());
 			}
 		} 
-		if(id.startsWith("+")){ 
+		if(var.startsWith("+")){
 			//必须参数 
 			required = true; 
-			id = id.substring(1,id.length()); 
+			var = var.substring(1,var.length());
 			if(ConfigTable.getBoolean("CONDITION_VALUE_STRICT")){ 
 				strictRequired = true; 
 			} 
 		} 
-		if(id.startsWith("+")){ 
+		if(var.startsWith("+")){
 			//必须参数 
 			strictRequired = true; 
-			id = id.substring(1,id.length()); 
+			var = var.substring(1,var.length());
 		} 
-		if(id.contains(".")){ 
+		if(var.contains(".")){
 			//XML中自定义参数时,同时指定param.id及变量名condition_id.param_id
 			//Table中同时指定表名(表别名).列名 table.column
-			field = id.substring(id.indexOf(".")+1,id.length());
-			id = id.substring(0,id.indexOf("."));
-			result.setId(id);//其他不指定ID
-		}else{ 
-			//默认变量名 
-			field = id; 
+			prefix = var.substring(0,var.indexOf("."));
+			var = var.substring(var.indexOf(".")+1,var.length());
+			result.setPrefix(prefix);//其他不指定
 		}
 		result.setRequired(required); 
-		result.setStrictRequired(strictRequired); 
-		result.setField(field); 
+		result.setStrictRequired(strictRequired);
+		result.setVar(var);
 		result.setKey(key);
 		return result; 
 	} 

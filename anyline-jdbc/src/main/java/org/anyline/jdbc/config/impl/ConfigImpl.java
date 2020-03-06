@@ -63,8 +63,8 @@ public class ConfigImpl implements Config{
 	public String toString(){ 
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("join", this.getJoin());
-		map.put("id", this.getId());
-		map.put("field", this.getField());
+		map.put("prefix", this.getPrefix());
+		map.put("var", this.getVariable());
 		map.put("key", this.getKey());
 		map.put("compare", this.getCompare().getCode());
 		map.put("values", values);
@@ -72,7 +72,7 @@ public class ConfigImpl implements Config{
 	}
 	public String cacheKey(){
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("id", this.getId());
+		map.put("prefix", this.getPrefix());
 		map.put("compare", this.getCompare().getCode());
 		map.put("values", values);
 		return BeanUtil.map2json(map);
@@ -149,22 +149,20 @@ public class ConfigImpl implements Config{
 		} 
 		return condition; 
 	} 
-	public String getId() { 
-		return parser.getId(); 
+	public String getPrefix() {
+		return parser.getPrefix();
 	} 
- 	public String getField(){
-		return parser.getField();
-	}
-	public void setId(String id) { 
-		parser.setId(id); 
+
+	public void setPrefix(String prefix) {
+		parser.setPrefix(prefix);
 	} 
  
 	public String getVariable() { 
-		return parser.getField(); 
+		return parser.getVar();
 	} 
  
 	public void setVariable(String variable) { 
-		parser.setField(variable); 
+		parser.setVar(variable);
 	} 
  
  
@@ -240,6 +238,6 @@ public class ConfigImpl implements Config{
 
 	}
 	public String getTable(){
-		return parser.getField();
+		return parser.getPrefix();
 	}
 }

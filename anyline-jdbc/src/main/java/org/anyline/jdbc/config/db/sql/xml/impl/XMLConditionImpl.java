@@ -279,15 +279,15 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 		} 
 		return result; 
 	} 
-	public SQLVariable getVariable(String key) { 
-		if(null == variables || null == key){ 
+	public SQLVariable getVariable(String var) {
+		if(null == variables || null == var){
 			return null; 
 		} 
 		for(SQLVariable variable:variables){
 			if(null == variable){
 				continue;
 			} 
-			if(key.equalsIgnoreCase(variable.getKey())){ 
+			if(var.equalsIgnoreCase(variable.getKey())){
 				return variable; 
 			} 
 		} 

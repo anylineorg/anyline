@@ -77,12 +77,12 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		} 
 		if(null != configStore){ 
 			for(Config conf:configStore.getConfigChain().getConfigs()){ 
-				Condition con = getCondition(conf.getField());
-				SQLVariable var = this.getVariable(conf.getField());
+				Condition con = getCondition(conf.getVariable());
+				SQLVariable var = this.getVariable(conf.getVariable());
 				//sql体中有对应的变量
 				if(null != con){
 					setConditionValue( 
-						conf.isRequire(), conf.isStrictRequired(), conf.getField(), conf.getVariable(), conf.getValues(), conf.getCompare());
+						conf.isRequire(), conf.isStrictRequired(), conf.getVariable(), conf.getVariable(), conf.getValues(), conf.getCompare());
 				}
 				if(null != var){
 					var.setValue(false, conf.getValues());

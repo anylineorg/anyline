@@ -105,17 +105,17 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 		if(condition.contains(":")){
 			ParseResult parser = ConfigParser.parse(condition,false);
 			 
-			String id = parser.getId(); 
+			String prefix = parser.getPrefix();
 			String var = null; 
 			Object value = ConfigParser.getValues(parser);//parser.getKey(); 
-			if(id.contains(".")){ 
-				String[] keys = id.split("."); 
-				id = keys[0]; 
+			if(prefix.contains(".")){
+				String[] keys = prefix.split(".");
+				prefix = keys[0];
 				if(keys.length > 1){ 
 					var = keys[1]; 
 				} 
 			} 
-			setConditionValue(id,var,value); 
+			setConditionValue(prefix,var,value);
 		} 
 		return this; 
 	} 

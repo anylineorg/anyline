@@ -43,21 +43,17 @@ public interface Config {
 	 */ 
 	public Condition createAutoCondition(ConditionChain chain);
 
-	public String getId() ; 	//XML condition.id 或表名/表别名
+	public String getPrefix() ; 	//XML condition.id 或表名/表别名
  
-	public void setId(String id) ;
+	public void setPrefix(String prefix) ;
 
+	public String getVariable() ;//XML condition中的key 或列名
 
-	public String getField() ; //XML condition中的key 或列名
-
+	public void setVariable(String variable) ;
 
 	public String getKey() ;//参数key
 
 	public void setKey(String key) ;
-
-	public String getVariable() ;
-
-	public void setVariable(String variable) ; 
 
 
 	public COMPARE_TYPE getCompare() ; 

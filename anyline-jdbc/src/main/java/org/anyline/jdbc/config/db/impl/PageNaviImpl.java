@@ -47,8 +47,8 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	protected static final String TAB 					= "\t"; 
 	protected static final String BR_TAB 				= "\n\t"; 
 	 
-	protected int totalRow					= 0			; //记录总数 
-	protected int totalPage					= 0 		; //最大页数 
+	protected int totalRow					= 0			; //记录总数 (rows)
+	protected int totalPage					= 0 		; //最大页数 (pages)
 	protected int curPage					= 1 		; //当前页数 
 	 
 	protected int pageRange					= 10		; //显示多少个分页下标 
@@ -60,7 +60,7 @@ public class PageNaviImpl implements PageNavi, Serializable{
 	protected int calType 					= 0			; //分页计算方式(0-按页数 1-按开始结束数) 
 	protected int firstRow 					= 0			; //第一行 
 	protected int lastRow 					= -1		; //最后一行 
-	protected boolean lazy 					= false		; 
+	protected boolean lazy 					= false		; //是否懒加载
 	protected String flag  					= ""		; //一个jsp中有多个分页时用来区分 
 	protected long lazyPeriod 				= 0			; //总条数懒加载时间间隔(秒) 
 	protected String lazyKey 				= null		; //懒加载 

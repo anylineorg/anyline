@@ -29,7 +29,8 @@ import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
- 
+import org.anyline.util.BasicUtil;
+
 public class ConfigChainImpl extends ConfigImpl implements ConfigChain{ 
 	private List<Config> configs = new ArrayList<Config>(); 
 	 
@@ -90,36 +91,65 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 			}
 		} 
 	}
-	public Config getConfig(String key){
+	public Config getConfig(String id, String var){
+		if(BasicUtil.isEmpty(id, var)){
+			return null;
+		}
 		for(Config conf: configs){
-			String id = conf.getId();
-			if(null != id && id.equalsIgnoreCase(key)){
-				return conf;
+			String confId = conf.getPrefix();
+			String confVar = conf.getVariable();
+			if(BasicUtil.isEmpty(id)){
+				//只提供列名，不提供表名
+				if(var.equalsIgnoreCase(confVar)){
+					return conf;
+				}
+			}else if(BasicUtil.isEmpty(var)){
+				//只提供查询条件id不提供变量名
+				if(id.equalsIgnoreCase(confId)){
+					return conf;
+				}
+			}else{
+				if(id.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar)){
+					return conf;
+				}
 			}
 		}
 		return null;
 	}
-	public Config getConfig(String key, SQL.COMPARE_TYPE type){
+	public Config getConfig(String id, String var, SQL.COMPARE_TYPE type){
+		if(BasicUtil.isEmpty(id, var)){
+			return null;
+		}
 		for(Config conf: configs){
-			String id = conf.getId();
-			String var = conf.getVariable();
-			if(null != id && id.equalsIgnoreCase(key) && conf.getCompare() == type){
-				return conf;
-			}
-			if(null == id && null != var && var.equalsIgnoreCase(key) && conf.getCompare() == type){
-				return conf;
+			String confId = conf.getPrefix();
+			String confVar = conf.getVariable();
+			SQL.COMPARE_TYPE confType = conf.getCompare();
+			if(BasicUtil.isEmpty(id)){
+				//只提供列名，不提供表名
+				if(var.equalsIgnoreCase(confVar) && type == confType){
+					return conf;
+				}
+			}else if(BasicUtil.isEmpty(var)){
+				//只提供查询条件id不提供变量名
+				if(id.equalsIgnoreCase(confId) && type == confType){
+					return conf;
+				}
+			}else{
+				if(id.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar) && type == confType){
+					return conf;
+				}
 			}
 		}
 		return null;
 	}
 	
 
-	public ConfigChain removeConfig(String key){
-		Config config = getConfig(key);
+	public ConfigChain removeConfig(String key, String var){
+		Config config = getConfig(key, var);
 		return removeConfig(config);
 	}
-	public ConfigChain removeConfig(String key, SQL.COMPARE_TYPE type){
-		Config config = getConfig(key, type);
+	public ConfigChain removeConfig(String key, String var, SQL.COMPARE_TYPE type){
+		Config config = getConfig(key, var, type);
 		return removeConfig(config);
 	}
 	public ConfigChain removeConfig(Config config){

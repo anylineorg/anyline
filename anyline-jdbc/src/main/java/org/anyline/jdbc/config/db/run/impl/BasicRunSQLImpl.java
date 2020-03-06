@@ -296,7 +296,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				//需要解析的SQL
 				ParseResult parser = ConfigParser.parse(condition,false);
 				Object value = ConfigParser.getValues(parser);
-				addCondition(parser.isRequired(), parser.isStrictRequired(), parser.getField(),value,parser.getCompare());
+				addCondition(parser.isRequired(), parser.isStrictRequired(), parser.getVar(),value,parser.getCompare());
 				return this;
 			}
 		}

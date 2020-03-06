@@ -19,8 +19,8 @@ public class ParseResult implements Serializable{
 	 
 	private boolean required				; //是否必须(空值拼接IS NULL) 
 	private boolean strictRequired			; //是否严格必须(空值不查询) 
-	private String id						; //xml定义中的id 或auto sql的表别名
-	private String field					; //实体属性或表列名 
+	private String prefix						; //xml定义中的id 或auto sql的表别名
+	private String var						; //实体属性或表列名
 	private String clazz					; //取值后处理类 
 	private String method					; //处理方法 
 	 
@@ -67,11 +67,11 @@ public class ParseResult implements Serializable{
 	public void setKey(String key) { 
 		this.key = key; 
 	} 
-	public String getField() { 
-		return field; 
+	public String getVar() {
+		return var;
 	} 
-	public void setField(String field) { 
-		this.field = field; 
+	public void setVar(String var) {
+		this.var = var;
 	} 
 	public String getClazz() { 
 		return clazz; 
@@ -109,20 +109,20 @@ public class ParseResult implements Serializable{
 	public void setSetEncrypt(boolean setEncrypt) { 
 		this.setEncrypt = setEncrypt; 
 	} 
-	public String getId() {
-		return id; 
+	public String getPrefix() {
+		return prefix;
 	} 
-	public void setId(String id) { 
-		if(null != id){
-			if(id.startsWith("++")){
+	public void setPrefix(String prefix) {
+		if(null != prefix){
+			if(prefix.startsWith("++")){
 				setStrictRequired(true);
 			}
-			if(id.startsWith("+")){
+			if(prefix.startsWith("+")){
 				setRequired(true);
 			}
-			id = id.replace("+", "");
+			prefix = prefix.replace("+", "");
 		}
-		this.id = id; 
+		this.prefix = prefix;
 	} 
 	public String getJoin() { 
 		return join; 

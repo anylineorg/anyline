@@ -33,7 +33,7 @@ import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 public interface AutoCondition extends Condition{ 
 	public Object getValue(); 
 	public List<Object> getValues(); 
-	public String getId(); 
+	public String getId();
 	public String getColumn() ; 
 	public void setColumn(String column) ; 
 	public void setValues(Object values) ; 

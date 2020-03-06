@@ -88,7 +88,7 @@ public interface Condition extends Cloneable{
 	 * 													 XML定义 
 	 * 
 	 * ***********************************************************************************************************/ 
-	public String getId(); 
+	public String getId();
 	public Object clone()throws CloneNotSupportedException; 
 	public void setValue(String key, Object value);
 	public void setTest(String test);
