@@ -135,7 +135,8 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		checkTest(); 
 		parseText(); 
 		checkValid(); 
-	} 
+	}
+
 	private void checkValid(){ 
 		if(!valid){ 
 			return; 
@@ -276,9 +277,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					addValues(value); 
 				} 
 			} 
-		} 
-		 
-		builder.append(result); 
+		}
+
+		builder.append(result);
 		appendCondition(); 
 		appendStaticCondition(); 
 		appendGroup(); 
@@ -346,8 +347,8 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				 
 	} 
 	private void appendGroup(){ 
-		if(null != groupStore){ 
-			builder.append(groupStore.getRunText(disKeyFr+disKeyTo)); 
+		if(null != groupStore){
+			builder.append(groupStore.getRunText(disKeyFr+disKeyTo));
 		} 
 	} 
 	/** 
@@ -405,24 +406,24 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null == conditionChain || !conditionChain.isActive()){ 
 			return; 
 		} 
-		if(!endwithWhere(builder.toString())){ 
-			builder.append(" WHERE 1=1"); 
-		} 
-		builder.append(conditionChain.getRunText(creater)); 
+		if(!endwithWhere(builder.toString())){
+			builder.append(" WHERE 1=1");
+		}
+		builder.append(conditionChain.getRunText(creater));
 		addValues(conditionChain.getRunValues()); 
 //		if(null != staticConditions){ 
 //			for(String con:staticConditions){ 
-//				builder.append("\nAND ").append(con); 
+//				query.append("\nAND ").append(con); 
 //			} 
 //		} 
 	} 
 	private void appendStaticCondition(){ 
-		if(!endwithWhere(builder.toString())){ 
-			builder.append(" WHERE 1=1"); 
+		if(!endwithWhere(builder.toString())){
+			builder.append(" WHERE 1=1");
 		} 
 		if(null != staticConditions){ 
-			for(String con:staticConditions){ 
-				builder.append("\nAND ").append(con); 
+			for(String con:staticConditions){
+				builder.append("\nAND ").append(con);
 			} 
 		} 
 	} 

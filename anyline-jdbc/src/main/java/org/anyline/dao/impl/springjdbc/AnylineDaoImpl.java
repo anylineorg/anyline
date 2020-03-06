@@ -780,12 +780,28 @@ public class AnylineDaoImpl implements AnylineDao {
 		int result = exeDelete(run);
 		return result;
 	}
-	@Override 
-	public int delete(String dest, Object data, String... columns) { 
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(dest, data, columns);
-		int result = exeDelete(run); 
-		return result; 
+	@Override
+	public int delete(String dest, DataSet set, String... columns) {
+		int size = 0;
+		for(DataRow row:set){
+			size += delete(dest, row, columns);
+		}
+		return size;
 	}
+	@Override
+	public int delete(String dest, DataRow row, String... columns) {
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(dest, row, columns);
+		int result = exeDelete(run);
+		return result;
+	}
+
+	@Override
+	public int delete(String table, ConfigStore configs, String... conditions) {
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(table, configs, conditions);
+		int result = exeDelete(run);
+		return result;
+	}
+
 	protected int exeDelete(RunSQL run){
 		int result = 0;
 		final String sql = run.getDeleteTxt();

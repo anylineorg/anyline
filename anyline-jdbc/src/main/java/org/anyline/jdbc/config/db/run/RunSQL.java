@@ -35,6 +35,8 @@ import org.anyline.jdbc.config.ConfigStore;
 public interface RunSQL { 
 	public void setCreater(SQLCreater creater); 
 	public void init();
+	public void createRunDeleteTxt();
+	public void createRunQueryTxt();
 	 
 	/** 
 	 * 添加查询条件 
@@ -102,11 +104,11 @@ public interface RunSQL {
 	public String getExecuteTxt(); 
 	public List<Object> getValues() ; 
 	public PageNavi getPageNavi() ; 
-	public void setPageNavi(PageNavi pageNavi) ; 
-	public StringBuilder getBuilder() ; 
-	public void setBuilder(StringBuilder builder) ;
+	public void setPageNavi(PageNavi pageNavi) ;
 	public String getFetchColumns();
 	public void setStrict(boolean strict);
 	public boolean isStrict();
 	public boolean isValid();
+	public StringBuilder getBuilder();
+	public void setBuilder(StringBuilder builder);
 } 

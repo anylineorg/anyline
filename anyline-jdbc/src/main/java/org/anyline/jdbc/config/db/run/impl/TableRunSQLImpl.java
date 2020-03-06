@@ -77,8 +77,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			if(navi != null){ 
 				this.pageNavi = navi; 
 			} 
-		} 
-		createRunTxt(); 
+		}
 		checkValid(); 
 	}
 	private void checkValid(){
@@ -86,13 +85,13 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			this.valid = false;
 		}
 	} 
-	private void createRunTxt(){
-		TableSQL sql = (TableSQL)this.getSql(); 
-		builder.append("SELECT "); 
-		if(null != sql.getDistinct()){ 
-			builder.append(sql.getDistinct()); 
-		} 
-		builder.append(SQLCreater.BR_TAB); 
+	public void createRunQueryTxt(){
+		TableSQL sql = (TableSQL)this.getSql();
+		builder.append("SELECT ");
+		if(null != sql.getDistinct()){
+			builder.append(sql.getDistinct());
+		}
+		builder.append(SQLCreater.BR_TAB);
 		List<String> columns = sql.getColumns(); 
 		if(null != columns && columns.size()>0){ 
 			//指定查询列 
@@ -148,16 +147,50 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
  
 		/*添加查询条件*/ 
 		//appendConfigStore(); 
-		appendCondition(); 
-		appendGroup(); 
-		appendOrderStore(); 
-	} 
-	private void appendOrderStore(){ 
+		appendCondition();
+		appendGroup();
+		appendOrderStore();
+	}
+
+	public void createRunDeleteTxt(){
+		TableSQL sql = (TableSQL)this.getSql();
+		builder.append("DELETE FROM ");
+		if(null != author){
+			builder.append(disKeyFr).append(author).append(disKeyTo).append(".");
+		}
+		builder.append(disKeyFr).append(table).append(disKeyTo);
+		builder.append(SQLCreater.BR);
+		if(BasicUtil.isNotEmpty(sql.getAlias())){
+			builder.append(" AS ").append(sql.getAlias());
+		}
+		List<Join> joins = sql.getJoins();
+		if(null != joins) {
+			for (Join join:joins) {
+				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ").append(disKeyFr).append(join.getName()).append(disKeyTo);
+				if(BasicUtil.isNotEmpty(join.getAlias())){
+					builder.append(" AS ").append(join.getAlias());
+				}
+				builder.append(" ON ").append(join.getCondition());
+			}
+		}
+
+		builder.append("\nWHERE 1=1\n\t");
+
+
+
+		/*添加查询条件*/
+		//appendConfigStore();
+		appendCondition();
+		appendGroup();
+		appendOrderStore();
+	}
+
+	private void appendOrderStore(){
 		 
 	} 
-	private void appendGroup(){ 
-		if(null != groupStore){ 
-			builder.append(groupStore.getRunText(disKeyFr+disKeyTo)); 
+	private void appendGroup(){
+		if(null != groupStore){
+			builder.append(groupStore.getRunText(disKeyFr+disKeyTo));
 		}
 		if(BasicUtil.isNotEmpty(having)){
 			builder.append(" HAVING ").append(having);
@@ -166,11 +199,11 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	/** 
 	 * 拼接查询条件
 	 */ 
-	private void appendCondition(){ 
+	private void appendCondition(){
 		if(null == conditionChain){ 
 			return; 
-		} 
-		builder.append(conditionChain.getRunText(creater)); 
+		}
+		builder.append(conditionChain.getRunText(creater));
 		addValues(conditionChain.getRunValues()); 
 	} 
 

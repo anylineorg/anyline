@@ -21,6 +21,7 @@ package org.anyline.dao;
  
 import java.util.Collection;
 
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
@@ -96,8 +97,10 @@ public interface AnylineDao{
 	 * @param procedure  procedure
 	 * @return return
 	 */ 
-	public DataSet queryProcedure(Procedure procedure); 
-	public int delete(String dest, Object data, String ... columns);
+	public DataSet queryProcedure(Procedure procedure);
+	public int delete(String dest, DataSet set, String ... columns);
+	public int delete(String dest, DataRow row, String ... columns);
+	public int delete(String table, ConfigStore configs, String ... conditions);
 
 	/**
 	 * 删除多行

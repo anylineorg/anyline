@@ -24,7 +24,7 @@ import java.util.List;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.ConfigStore;
  
-public interface SQLCreater{ 
+public interface SQLCreater{
 	public static enum DB_TYPE{
 		MYSQL			{public String getName(){return "mysql";}},
 		MSSQL			{public String getName(){return "mssql";}},

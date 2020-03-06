@@ -227,16 +227,19 @@ public interface AnylineService{
 	public DataSet query(Procedure procedure); 
 	
 	public DataSet selectProcedure(String procedure, String ... inputs); 
-	public DataSet select(Procedure procedure); 
-	 
+	public DataSet select(Procedure procedure);
+
+	public int delete(String table, ConfigStore configs, String ... conditions);
 	/**
 	 * 删除 根据主键删除 可设置复合主键
 	 * @param dest 表
-	 * @param data 数据
+	 * @param set 数据
 	 * @return 影响行数
-	 */ 
-	public int delete(String dest, Object data); 
-	public int delete(Object data);
+	 */
+	public int delete(String dest, DataSet set, String ... columns);
+	public int delete(DataSet set, String ... columns);
+	public int delete(String dest, DataRow row, String ... columns);
+	public int delete(DataRow row, String ... columns);
 
 	/**
 	 * 根据多列条件删除

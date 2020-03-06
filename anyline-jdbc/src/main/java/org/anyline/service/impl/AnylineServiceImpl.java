@@ -903,47 +903,24 @@ public class AnylineServiceImpl implements AnylineService {
 
     @SuppressWarnings("rawtypes")
     @Override
-    public int delete(String dest, Object data) {
-        if (null == data) {
-            return 0;
-        }
-        if (data instanceof DataRow) {
-            return deleteRow(dest, (DataRow) data);
-        }
-        if (data instanceof DataSet) {
-            DataSet set = (DataSet) data;
+    public int delete(String dest, DataSet set, String ... columns) {
             int cnt = 0;
             int size = set.size();
             for (int i = 0; i < size; i++) {
-                cnt += deleteRow(dest, set.getRow(i));
+                cnt += delete(dest, set.getRow(i), columns);
             }
             return cnt;
-        }
-        if (data instanceof Collection) {
-            Collection datas = (Collection) data;
-            int cnt = 0;
-            for (Object obj : datas) {
-                cnt += delete(dest, obj);
-            }
-            return cnt;
-        }
-        return deleteObject(dest, data);
     }
 
-    @Override
-    public int delete(Object data) {
-        return delete(null, data);
+    public int delete(DataSet set, String ... columns) {
+        return delete(null, set, columns);
     }
-
-
-
-    protected int deleteObject(String dest, Object data, String... columns) {
-        return 0;
-    }
-
-    protected int deleteRow(String dest, DataRow row, String... columns) {
+    public int delete(String dest, DataRow row, String ... columns) {
         dest = DataSourceHolder.parseDataSource(dest);
         return dao.delete(dest, row, columns);
+    }
+    public int delete(DataRow row, String ... columns) {
+        return dao.delete(null, row, columns);
     }
 
     @Override
@@ -961,9 +938,13 @@ public class AnylineServiceImpl implements AnylineService {
 
     public int deletes(String table, String key, String ... values){
         table = DataSourceHolder.parseDataSource(table);
-        return dao.delete(table, key, values);
+        return dao.deletes(table, key, values);
     }
 
+    public int delete(String table, ConfigStore configs, String ... conditions){
+        table = DataSourceHolder.parseDataSource(table);
+        return dao.delete(table, configs, conditions);
+    }
     protected PageNavi setPageLazy(String src, ConfigStore configs, String ... conditions){
         PageNavi navi =  null;
         String lazyKey = null;

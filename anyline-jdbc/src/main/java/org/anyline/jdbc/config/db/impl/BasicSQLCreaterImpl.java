@@ -33,6 +33,7 @@ import org.anyline.jdbc.config.db.run.impl.TextRunSQLImpl;
 import org.anyline.jdbc.config.db.run.impl.XMLRunSQLImpl;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.TextSQL;
+import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLException;
@@ -81,7 +82,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			run.setSql(sql);
 			run.setConfigStore(configs); 
 			run.addConditions(conditions);
-			run.init(); 
+			run.init();
+			run.createRunQueryTxt();
 		} 
 		return run; 
 	}
@@ -114,12 +116,22 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		RunSQL run = null; 
 		if(null == dest){ 
 			dest = getDataSource(obj); 
-		} 
-		if(obj instanceof DataRow){ 
-			run = createDeleteRunSQLFromDataRow(dest, (DataRow)obj, columns); 
-		}else if(obj instanceof AnylineEntity){ 
-			run = createDeleteRunSQLFromEntity(dest, (AnylineEntity)obj, columns); 
-		} 
+		}
+		if(obj instanceof DataRow){
+			run = createDeleteRunSQLFromDataRow(dest, (DataRow)obj, columns);
+		}else if(obj instanceof ConfigStore){
+			run = new TableRunSQLImpl();
+			run.setCreater(this);
+			SQL sql = new TableSQLImpl();
+			sql.setDataSource(dest);
+			run.setSql(sql);
+			run.setConfigStore((ConfigStore)obj);
+			run.addConditions(columns);
+			run.init();
+			run.createRunDeleteTxt();
+		}else if(obj instanceof AnylineEntity){
+			run = createDeleteRunSQLFromEntity(dest, (AnylineEntity)obj, columns);
+		}
 		return run; 
 	}
 	@SuppressWarnings("rawtypes")
@@ -127,8 +139,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null == table || null == key || null == values){
 			return null;
 		}
+		StringBuilder builder = new StringBuilder();
 		TableRunSQLImpl run = new TableRunSQLImpl();
-		StringBuilder builder = run.getBuilder();
 		builder.append("DELETE FROM ").append(table).append(" WHERE ");
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
@@ -157,11 +169,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append("=?");
 			run.addValue(values);
 		}
+		run.setBuilder(builder);
 		return run;
 	}
 	private RunSQL createDeleteRunSQLFromDataRow(String dest, DataRow obj, String ... columns){ 
 		TableRunSQLImpl run = new TableRunSQLImpl();
-		StringBuilder builder = run.getBuilder(); 
+		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
 		List<String> keys = new ArrayList<String>();
 		if(null != columns && columns.length>0){
@@ -183,16 +196,19 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}else{
 			throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
-		} 
+		}
+		run.setBuilder(builder);
 		return run; 
 	} 
  
 	private RunSQL createDeleteRunSQLFromEntity(String dest, AnylineEntity obj, String ... columns){ 
-		TableRunSQLImpl run = new TableRunSQLImpl(); 
-		run.getBuilder().append("DELETE FROM ").append(parseTable(dest)) 
+		TableRunSQLImpl run = new TableRunSQLImpl();
+		StringBuilder builder = new StringBuilder();
+		builder.append("DELETE FROM ").append(parseTable(dest))
 		.append(" WHERE ").append(getDisKeyFr()).append(getPrimaryKey(obj)).append(getDisKeyTo()) 
 		.append("=?"); 
-		run.addValue(getPrimaryValue(obj)); 
+		run.addValue(getPrimaryValue(obj));
+		run.setBuilder(builder);
 		return run; 
 	} 
  
@@ -224,7 +240,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 */ 
 	@Override 
 	public String parseBaseQueryTxt(RunSQL run){ 
-		return run.getBuilder().toString(); 
+		return run.getBuilder().toString();
 	} 
 	/** 
 	 * 求总数SQL 
@@ -320,8 +336,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 	private RunSQL createInsertTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
-		StringBuilder sql = new StringBuilder();
 		List<Object> values = new ArrayList<Object>();
+		StringBuilder builder = new StringBuilder();
 		if(BasicUtil.isEmpty(dest)){
 			throw new SQLException("未指定表");
 		}
@@ -339,15 +355,15 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null == keys || keys.size() == 0){
 			throw new SQLException("未指定列");
 		}
-		sql.append("INSERT INTO ").append(parseTable(dest));
-		sql.append("(");
+		builder.append("INSERT INTO ").append(parseTable(dest));
+		builder.append("(");
 		param.append(") VALUES (");
 		
 		int size = keys.size();
 		for(int i=0; i<size; i++){
 			String key = keys.get(i);
 			Object value = row.get(key);
-			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
 			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 				String str = value.toString();
 				value = str.substring(1, str.length()-1);
@@ -361,20 +377,20 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}
 			}
 			if(i<size-1){
-				sql.append(",");
+				builder.append(",");
 				param.append(",");
 			}
 		}
 		param.append(")");
-		sql.append(param);
-		run.setBuilder(sql);
+		builder.append(param);
 		run.addValues(values);
+		run.setBuilder(builder);
 		return run;
 	}
 	private RunSQL createInsertTxtFromDataSet(String dest, DataSet set, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
-		StringBuilder sql = new StringBuilder();
 
+		StringBuilder builder = new StringBuilder();
 		if(null == set || set.size() ==0){
 			throw new SQLException("空数据");
 		}
@@ -394,18 +410,18 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null == keys || keys.size() == 0){
 			throw new SQLException("未指定列");
 		}
-		sql.append("INSERT INTO ").append(parseTable(dest));
-		sql.append("(");
+		builder.append("INSERT INTO ").append(parseTable(dest));
+		builder.append("(");
 		
 		int keySize = keys.size();
 		for(int i=0; i<keySize; i++){
 			String key = keys.get(i);
-			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
 			if(i<keySize-1){
-				sql.append(",");
+				builder.append(",");
 			}
 		}
-		sql.append(") VALUES ");
+		builder.append(") VALUES ");
 		int dataSize = set.size();
 		for(int i=0; i<dataSize; i++){
 			DataRow row = set.getRow(i);
@@ -419,13 +435,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}
 				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
 			}
-			
-			sql.append("(");
+
+			builder.append("(");
 			for(int j=0; j<keySize; j++){
 				Object value = row.get(keys.get(j));
 				
 				if(null == value || "NULL".equals(value)){
-					sql.append("null");
+					builder.append("null");
 				}else if(value instanceof String){
 					String str = value.toString();
 					if(str.startsWith("{") && str.endsWith("}") && !BeanUtil.isJson(value)){
@@ -433,31 +449,29 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					}else{
 						str = "'" + str.replace("'", "''") + "'";
 					}
-					sql.append(str);
+					builder.append(str);
 				}else if(value instanceof Number || value instanceof Boolean){
-					sql.append(value.toString());
+					builder.append(value.toString());
 				}else{
-					sql.append(value.toString());
+					builder.append(value.toString());
 				}
 				if(j<keySize-1){
-					sql.append(",");
+					builder.append(",");
 				}
 			}
-			sql.append(")");
+			builder.append(")");
 			if(i<dataSize-1){
-				sql.append(",");
+				builder.append(",");
 			}
 		}
-		run.setBuilder(sql);
+		run.setBuilder(builder);
 		return run;
 	}
 	 
 	private RunSQL createInsertTxtFromEntity(String dest, AnylineEntity entity, boolean checkParimary, String ... columns){ 
-		RunSQL run = new TableRunSQLImpl(); 
-		StringBuilder sql = new StringBuilder(); 
-		List<Object> values = new ArrayList<Object>(); 
-		 
- 
+		RunSQL run = new TableRunSQLImpl();
+		StringBuilder builder = new StringBuilder();
+		List<Object> values = new ArrayList<Object>();
 		if(null == dest){ 
 			dest = entity.getDataSource(); 
 		} 
@@ -470,27 +484,27 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		List<String> keys = confirmInsertColumns(dest, entity, columns); 
 		if(null == keys || keys.size() == 0){ 
 			throw new SQLException("未指定列"); 
-		} 
-		sql.append("INSERT INTO ").append(parseTable(dest)); 
-		sql.append("("); 
+		}
+		builder.append("INSERT INTO ").append(parseTable(dest));
+		builder.append("(");
 		int size = keys.size(); 
-		for(int i=0; i<size; i++){ 
-			sql.append(getDisKeyFr()).append(keys.get(i)).append(getDisKeyTo()); 
-			if(i<size-1){ 
-				sql.append(","); 
+		for(int i=0; i<size; i++){
+			builder.append(getDisKeyFr()).append(keys.get(i)).append(getDisKeyTo());
+			if(i<size-1){
+				builder.append(",");
 			} 
-		} 
-		sql.append(") VALUES ("); 
-		for(int i=0; i<size; i++){ 
-			sql.append("?"); 
-			if(i<size-1){ 
-				sql.append(","); 
+		}
+		builder.append(") VALUES (");
+		for(int i=0; i<size; i++){
+			builder.append("?");
+			if(i<size-1){
+				builder.append(",");
 			} 
 			values.add(entity.getValueByColumn(keys.get(i))); 
-		} 
-		sql.append(")"); 
-		run.setBuilder(sql); 
-		run.addValues(values); 
+		}
+		builder.append(")");
+		run.addValues(values);
+		run.setBuilder(builder);
 		return run; 
 	} 
  
@@ -564,8 +578,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return run; 
 	}
 	private RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){ 
-		RunSQL run = new TableRunSQLImpl(); 
-		StringBuilder sql = new StringBuilder(); 
+		RunSQL run = new TableRunSQLImpl();
+		StringBuilder builder = new StringBuilder();
 		List<Object> values = new ArrayList<Object>(); 
 		/*确定需要更新的列*/ 
 		List<String> keys = confirmUpdateColumns(dest, row, columns); 
@@ -579,36 +593,36 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		} 
 		/*构造SQL*/
 		int size = keys.size();
-		if(size > 0){ 
-			sql.append("UPDATE ").append(parseTable(dest)); 
-			sql.append(" SET").append(SQLCreater.BR_TAB); 
+		if(size > 0){
+			builder.append("UPDATE ").append(parseTable(dest));
+			builder.append(" SET").append(SQLCreater.BR_TAB);
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
 				Object value = row.get(key);
 				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(1, str.length()-1);
-					sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
-				}else{ 
-					sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					builder.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
+				}else{
+					builder.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
 					values.add(value);
 				} 
-				if(i<size-1){ 
-					sql.append(","); 
+				if(i<size-1){
+					builder.append(",");
 				} 
-			} 
-			sql.append(SQLCreater.BR); 
-			sql.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
+			}
+			builder.append(SQLCreater.BR);
+			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
 			for(String pk:primaryKeys){
-				sql.append(" AND ").append(getDisKeyFr()).append(pk).append(getDisKeyTo()).append(" = ?"); 
+				builder.append(" AND ").append(getDisKeyFr()).append(pk).append(getDisKeyTo()).append(" = ?");
 				values.add(row.get(pk)); 
-			} 
-			run.setBuilder(sql); 
+			}
 			run.addValues(values);
-		} 
+		}
+		run.setBuilder(builder);
 		return run; 
 	}
 	/** 

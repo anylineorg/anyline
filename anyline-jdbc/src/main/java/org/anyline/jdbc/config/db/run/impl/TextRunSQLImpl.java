@@ -106,8 +106,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			if(navi != null){ 
 				this.pageNavi = navi; 
 			} 
-		} 
-		createRunTxt();
+		}
 		checkValid(); 
 	} 
 	private void parseText(){ 
@@ -168,8 +167,8 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != conditionChain && !conditionChain.isValid()){
 			this.valid = false;
 		}
-	} 
-	private void createRunTxt(){ 
+	}
+	public void createRunQueryTxt(){
 		String result = sql.getText(); 
 		if(null != variables){ 
 			for(SQLVariable var:variables){
@@ -272,7 +271,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null == cons || cons.size()==0){ 
 			return; 
 		} 
-		String txt = builder.toString(); 
+		String txt = builder.toString();
 		boolean where = endwithWhere(txt); 
 		if(!where){ 
 			builder.append(" WHERE 1=1"); 

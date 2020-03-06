@@ -47,11 +47,11 @@ import org.slf4j.LoggerFactory;
  
  
 public abstract class BasicRunSQLImpl implements RunSQL { 
-	protected static final Logger log = LoggerFactory.getLogger(BasicRunSQLImpl.class); 
+	protected static final Logger log = LoggerFactory.getLogger(BasicRunSQLImpl.class);
+	protected StringBuilder builder = new StringBuilder();
 	protected SQL sql; 
 	protected List<Object> values; 
-	protected PageNavi pageNavi; 
-	protected StringBuilder builder = new StringBuilder(); 
+	protected PageNavi pageNavi;
 	protected ConditionChain conditionChain;			//查询条件 
 	protected ConfigStore configStore; 
 	protected OrderStore orderStore; 
@@ -140,13 +140,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	} 
 	public void setPageNavi(PageNavi pageNavi) { 
 		this.pageNavi = pageNavi; 
-	} 
-	public StringBuilder getBuilder() { 
-		return builder; 
-	} 
-	public void setBuilder(StringBuilder builder) { 
-		this.builder = builder; 
-	} 
+	}
 	public ConfigStore getConfigStore() { 
 		return configStore; 
 	} 
@@ -208,7 +202,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	}
 	@Override 
 	public String getBaseQueryTxt() { 
-		return builder.toString(); 
+		return builder.toString();
 	} 
 	public RunSQL addOrders(OrderStore orderStore){ 
 		if(null == orderStore){ 
@@ -365,13 +359,13 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	}
 	 
 	public String getDeleteTxt(){ 
-		return this.builder.toString(); 
+		return builder.toString();
 	} 
 	public String getInsertTxt(){ 
-		return this.builder.toString(); 
+		return builder.toString();
 	} 
 	public String getUpdateTxt(){ 
-		return this.builder.toString(); 
+		return builder.toString();
 	} 
 	 
 	public RunSQL addVariable(SQLVariable var){ 
@@ -412,7 +406,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	}
 	@Override
 	public String getExecuteTxt(){
-		return builder.toString();
+		return null;
 	}
 	//需要查询的列 
 	public String getFetchColumns(){
@@ -442,6 +436,19 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public boolean isValid(){
 		return this.valid;
 	}
-} 
+
+	public void createRunDeleteTxt(){
+
+	}
+	public void createRunQueryTxt(){
+
+	}
+	public void setBuilder(StringBuilder builder){
+		this.builder = builder;
+	}
+	public StringBuilder getBuilder(){
+		return this.builder;
+	}
+}
  
  
