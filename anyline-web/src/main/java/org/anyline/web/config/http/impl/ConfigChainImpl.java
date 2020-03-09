@@ -31,36 +31,48 @@ import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
- 
+import org.anyline.util.BasicUtil;
+
 public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.config.http.ConfigChain{ 
 	private List<Config> configs = new ArrayList<Config>();
 
-	public Config getConfig(String key){
-		for(Config conf: configs){
-			String id = conf.getId();
-			if(null != id && id.equalsIgnoreCase(key)){
-				return conf;
-			}
-		}
-		return null;
+	public Config getConfig(String prefix, String var){
+		return getConfig(prefix, var, SQL.COMPARE_TYPE.EQUAL);
 	}
-	public Config getConfig(String key, SQL.COMPARE_TYPE type){
+	public Config getConfig(String prefix, String var, SQL.COMPARE_TYPE type){
+		if(BasicUtil.isEmpty(prefix, var)){
+			return null;
+		}
 		for(Config conf: configs){
-			String id = conf.getId();
-			if(null != id && id.equalsIgnoreCase(key) && conf.getCompare() == type){
-				return conf;
+			String confId = conf.getPrefix();
+			String confVar = conf.getVariable();
+			SQL.COMPARE_TYPE confType = conf.getCompare();
+			if(BasicUtil.isEmpty(prefix)){
+				//只提供列名，不提供表名
+				if(var.equalsIgnoreCase(confVar) && type == confType){
+					return conf;
+				}
+			}else if(BasicUtil.isEmpty(var)){
+				//只提供查询条件id不提供变量名
+				if(prefix.equalsIgnoreCase(confId) && type == confType){
+					return conf;
+				}
+			}else{
+				if(prefix.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar) && type == confType){
+					return conf;
+				}
 			}
 		}
 		return null;
 	}
 
 
-	public ConfigChain removeConfig(String key){
-		Config config = getConfig(key);
+	public ConfigChain removeConfig(String prefix, String var){
+		Config config = getConfig(prefix, var);
 		return removeConfig(config);
 	}
-	public ConfigChain removeConfig(String key, SQL.COMPARE_TYPE type){
-		Config config = getConfig(key, type);
+	public ConfigChain removeConfig(String key, String var, SQL.COMPARE_TYPE type){
+		Config config = getConfig(key, var, type);
 		return removeConfig(config);
 	}
 	public ConfigChain removeConfig(Config config){

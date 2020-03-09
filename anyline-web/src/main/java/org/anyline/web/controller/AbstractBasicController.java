@@ -87,7 +87,7 @@ public class AbstractBasicController{
 					ParseResult parser = ConfigParser.parse(param,true);
 					
 					Object value = ConfigParser.getValues(WebUtil.values(request), parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt()); 
-					BeanUtil.setFieldValue(entity, parser.getField(), value);
+					BeanUtil.setFieldValue(entity, parser.getVar(), value);
 				}// end for 
 			} else {// end指定属性与request参数对应关系 
 				/* 未指定属性与request参数对应关系 */ 
@@ -139,9 +139,9 @@ public class AbstractBasicController{
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true); 
 				Object value = ConfigParser.getValue(WebUtil.values(request), parser);
-				row.put(parser.getField(), value);
+				row.put(parser.getVar(), value);
 				if(parser.isRequired()){
-					row.addUpdateColumns(parser.getField());
+					row.addUpdateColumns(parser.getVar());
 				} 
 			} 
 		}else{
@@ -220,7 +220,7 @@ public class AbstractBasicController{
 			for (String param : params) { 
 				ParseResult parser = ConfigParser.parse(param,true);
 				List<Object> values = ConfigParser.getValues(WebUtil.values(request), parser);
-				map.put(parser.getField(), values);
+				map.put(parser.getVar(), values);
 				if(size <= values.size()){
 					size = values.size();
 				} 
@@ -230,9 +230,9 @@ public class AbstractBasicController{
 				DataRow row = new DataRow(); 
 				for (String param : params) { 
 					ParseResult parser = ConfigParser.parse(param,true); 
-					List<Object> values = map.get(parser.getField());
+					List<Object> values = map.get(parser.getVar());
 					if(values.size() > i){ 
-						row.put(parser.getField(), values.get(i));
+						row.put(parser.getVar(), values.get(i));
 					}else{
 						List<ParseResult> defs = parser.getDefs();
 						if(null != defs && defs.size()>0){
@@ -242,7 +242,7 @@ public class AbstractBasicController{
 								// col:value
 								key = key.substring(1, key.length()-1);
 							}
-							row.put(parser.getField(), key);
+							row.put(parser.getVar(), key);
 						}
 					} 
 				} 
@@ -474,7 +474,7 @@ public class AbstractBasicController{
 
 			ParseResult parser = ConfigParser.parse(param, true);
 			if (BasicUtil.isEmpty(getParam(request, parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt()))) { 
-				setMessage(request,"请提供必须参数:" + parser.getField());
+				setMessage(request,"请提供必须参数:" + parser.getVar());
 				result = false; 
 			} 
 		} 
