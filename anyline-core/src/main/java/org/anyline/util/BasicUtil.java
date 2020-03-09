@@ -82,7 +82,7 @@ public class BasicUtil {
 	 * @param objs objs
 	 * @return boolean
 	 */
-	public static boolean isEmptys(Object ... objs) {
+	public static boolean isEmpty(Object ... objs) {
 		if(null == objs){
 			return true;
 		}
