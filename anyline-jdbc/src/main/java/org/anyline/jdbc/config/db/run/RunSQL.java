@@ -42,14 +42,14 @@ public interface RunSQL {
 	 * 添加查询条件 
 	 * @param required 是否必须
 	 * @param strictRequired 是否严格验证必须
-	 * @param	condition  查询条件ID
+	 * @param	prefix  查询条件ID或表名
 	 * @param	variable  列名|变量key
 	 * @param	value  值 
 	 * @param compare 比较方式
 	 * @return return
 	 */
-	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare);
-	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare); 
+	public RunSQL setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, SQL.COMPARE_TYPE compare);
+	public RunSQL setConditionValue(boolean required, String prefix, String variable, Object value, SQL.COMPARE_TYPE compare);
 	public void setGroupStore(GroupStore groups) ; 
 	public GroupStore getGroupStore() ; 
 	public RunSQL group(String group); 
@@ -67,13 +67,14 @@ public interface RunSQL {
 	 * 添加查询条件 
 	 * @param	required 是否必须 
 	 * @param strictRequired 是否严格验证必须
-	 * @param	column 列名 
+	 * @param	prefix 表名
+	 * @param	var 列名
 	 * @param	value 值 
 	 * @param	compare 比较方式 
 	 * @return return
 	 */
-	public RunSQL addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare);
-	public RunSQL addCondition(boolean required, String column, Object value, COMPARE_TYPE compare); 
+	public RunSQL addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, COMPARE_TYPE compare);
+	public RunSQL addCondition(boolean required,  String prefix, String var, Object value, COMPARE_TYPE compare);
 	public RunSQL setConditionChain(ConditionChain chain); 
 	public RunSQL addConditions(String[] conditions) ; 
 	public RunSQL addCondition(String condition); 

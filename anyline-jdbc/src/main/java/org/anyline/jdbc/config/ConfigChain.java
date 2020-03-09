@@ -27,12 +27,12 @@ import org.anyline.jdbc.config.db.SQL;
  
 public interface ConfigChain extends Config{
 	public void addConfig(Config config);
-	public Config getConfig(String id, String var);
-	public Config getConfig(String id, String var, SQL.COMPARE_TYPE type);
+	public Config getConfig(String prefix, String var);
+	public Config getConfig(String prefix, String var, SQL.COMPARE_TYPE type);
 	
 	public ConfigChain removeConfig(Config config);
-	public ConfigChain removeConfig(String id, String  var);
-	public ConfigChain removeConfig(String id, String var, SQL.COMPARE_TYPE type);
+	public ConfigChain removeConfig(String prefix, String  var);
+	public ConfigChain removeConfig(String prefix, String var, SQL.COMPARE_TYPE type);
 	public void setValue(Map<String,Object> values); 
 	public List<Config> getConfigs(); 
 	public ConditionChain createAutoConditionChain(); 

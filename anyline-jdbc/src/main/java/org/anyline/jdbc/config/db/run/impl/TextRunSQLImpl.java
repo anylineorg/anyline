@@ -107,7 +107,6 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				this.pageNavi = navi; 
 			} 
 		}
-		checkValid(); 
 	} 
 	private void parseText(){ 
 		String text = sql.getText(); 
@@ -253,7 +252,8 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		builder.append(result); 
 		appendCondition(); 
 		appendGroup(); 
-		//appendOrderStore(); 
+		//appendOrderStore();
+		checkValid();
 	} 
 	private void appendGroup(){ 
 		if(null != groupStore){ 
@@ -406,17 +406,15 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
  
 	/** 
 	 * 添加查询条件 
-	 * @param	required 
-	 * 			是否必须 
-	 * @param	column 
-	 * 			列名 
-	 * @param	value 
-	 * 			值 
-	 * @param	compare 
-	 * 			比较方式 
+	 * @param	required  是否必须
+	 * @param	strictRequired  是否必须
+	 * @param	prefix 表名
+	 * @param	var  列名
+	 * @param	value  值
+	 * @param	compare  比较方式
 	 */ 
-	public RunSQL addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare){ 
-		Condition condition = new AutoConditionImpl(required,strictRequired,column, value, compare); 
+	public RunSQL addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, COMPARE_TYPE compare){
+		Condition condition = new AutoConditionImpl(required,strictRequired,prefix, var, value, compare);
 		if(null == conditionChain){ 
 			conditionChain = new AutoConditionChainImpl(); 
 		} 

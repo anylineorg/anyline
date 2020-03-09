@@ -26,6 +26,7 @@ import org.anyline.jdbc.config.db.SQLStore;
 import org.anyline.jdbc.config.db.sql.xml.impl.XMLConditionImpl;
 import org.anyline.jdbc.config.db.sql.xml.impl.XMLSQLImpl;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 import org.dom4j.Document;
@@ -100,7 +101,7 @@ public class SQLStoreImpl extends SQLStore{
 		}else {
 			dirName = new File(ConfigTable.getWebRoot(), sqlDir).getPath() + FileUtil.getFileSeparator();
 		}
-		fileName = fileName.substring(fileName.indexOf("sql")+4, fileName.indexOf(".xml")).replace("/","").replace("\\",".").replace("..",".");
+		fileName = fileName.substring(fileName.indexOf("sql")+4, fileName.indexOf(".xml")).replace("/",".").replace("\\",".").replace("..",".");
 
 		Document document = createDocument(file);
 		if(null == document) {
@@ -200,6 +201,9 @@ public class SQLStoreImpl extends SQLStore{
 				log.warn("[提取SQL][id:{}]",id);
 			}
 			sql = sqls.get(id);
+			if(null == sql){
+				log.error("[SQL提取失败][id:{}][所有可用sql:{}]",id, BeanUtil.concat(BeanUtil.getMapKeys(sqls)));
+			}
 		}catch(Exception e){
 			log.error("[SQL提取失败][id:{}]",id);
 		}

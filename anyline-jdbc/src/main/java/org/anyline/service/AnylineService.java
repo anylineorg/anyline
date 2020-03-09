@@ -234,6 +234,7 @@ public interface AnylineService{
 	 * 删除 根据主键删除 可设置复合主键
 	 * @param dest 表
 	 * @param set 数据
+	 * @param columns columns
 	 * @return 影响行数
 	 */
 	public int delete(String dest, DataSet set, String ... columns);

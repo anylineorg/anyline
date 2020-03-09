@@ -67,15 +67,17 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	/** 
 	 * @param	required  是否必须 
 	 * @param strictRequired 是否严格验证 如果缺少严格验证的条件 整个SQL不执行
-	 * @param	column  列 
+	 * @param	prefix  表
+	 * @param	var  列
 	 * @param	values 值 
 	 * @param	compare  比较方式 
 	 */ 
-	public AutoConditionImpl(boolean required, boolean strictRequired, String column, Object values, COMPARE_TYPE compare){ 
+	public AutoConditionImpl(boolean required, boolean strictRequired, String prefix, String var, Object values, COMPARE_TYPE compare){
 		setRequired(required);
-		setStrictRequired(strictRequired); 
-		setColumn(column); 
-		setValues(values); 
+		setStrictRequired(strictRequired);
+		setTable(prefix);
+		setColumn(var);
+		setValues(values);
 		setCompare(compare); 
 		setVariableType(Condition.VARIABLE_FLAG_TYPE_INDEX); 
 		if(BasicUtil.isNotEmpty(true,values) || required){ 

@@ -116,26 +116,26 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 		}
 		return null;
 	}
-	public Config getConfig(String id, String var, SQL.COMPARE_TYPE type){
-		if(BasicUtil.isEmpty(id, var)){
+	public Config getConfig(String prefix, String var, SQL.COMPARE_TYPE type){
+		if(BasicUtil.isEmpty(prefix, var)){
 			return null;
 		}
 		for(Config conf: configs){
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
 			SQL.COMPARE_TYPE confType = conf.getCompare();
-			if(BasicUtil.isEmpty(id)){
+			if(BasicUtil.isEmpty(prefix)){
 				//只提供列名，不提供表名
 				if(var.equalsIgnoreCase(confVar) && type == confType){
 					return conf;
 				}
 			}else if(BasicUtil.isEmpty(var)){
 				//只提供查询条件id不提供变量名
-				if(id.equalsIgnoreCase(confId) && type == confType){
+				if(prefix.equalsIgnoreCase(confId) && type == confType){
 					return conf;
 				}
 			}else{
-				if(id.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar) && type == confType){
+				if(prefix.equalsIgnoreCase(confId) && var.equalsIgnoreCase(confVar) && type == confType){
 					return conf;
 				}
 			}

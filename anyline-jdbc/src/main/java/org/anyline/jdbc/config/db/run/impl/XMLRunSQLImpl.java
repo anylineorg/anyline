@@ -133,8 +133,8 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			} 
 		} 
 		checkTest(); 
-		parseText(); 
-		checkValid(); 
+		parseText();
+		checkValid();
 	}
 
 	private void checkValid(){ 
@@ -468,18 +468,18 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 *
 	 * @param required 是否必须
 	 * @param strictRequired 是否严格验证必须
-	 * @param	condition  查询条件ID
+	 * @param	prefix  查询条件ID
 	 * @param	variable  列名|变量key
 	 * @param	value  值
 	 * @param compare 比较方式
 	 * @return RunSQL
 	 */
 	@Override
-	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) { 
+	public RunSQL setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		/*不指定condition.id或condition.id = variable 时,根据var为SQL主体变量赋值*/
 		//只提供var 不提供condition
 		if(null != variables &&  
-				(BasicUtil.isEmpty(condition) || condition.equals(variable))
+				(BasicUtil.isEmpty(prefix) || prefix.equals(variable))
 		){ 
 			List<SQLVariable> vars = getVariables(variable);
 			for(SQLVariable var:vars){ 
@@ -491,10 +491,10 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			return this; 
 		}
 		Condition con = null;
-		if(null == condition){
+		if(null == prefix){
 			con = getCondition(variable);
 		}else{
-			con = getCondition(condition);;
+			con = getCondition(prefix);;
 		}
 
 		SQLVariable var = getVariable(variable);
@@ -503,12 +503,12 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				return this; 
 			}else{ 
 				//生成新条件 
-				String column = variable; 
-				//String condition, String variable 
-				if(BasicUtil.isNotEmpty(condition) && !condition.equals(variable)){ 
-					column = condition + "." + variable; 
-				} 
-				Condition newCon = new AutoConditionImpl(required, strictRequired, column, value, compare); 
+//				String column = variable;
+//				//String condition, String variable
+//				if(BasicUtil.isNotEmpty(prefix) && !prefix.equals(variable)){
+//					column = prefix + "." + variable;
+//				}
+				Condition newCon = new AutoConditionImpl(required, strictRequired,prefix, variable, value, compare);
 				conditionChain.addCondition(newCon); 
 				if(newCon.isActive()){ 
 					conditionChain.setActive(true); 
@@ -660,31 +660,31 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
  
 	/** 
 	 * 添加静态文本查询条件 
-	 * @param condition  condition
+	 * @param prefix  condition.id
 	 * @param variable variable
 	 * @param value value
 	 * @return return
 	 */
-	public RunSQL addCondition(String condition, String variable, Object value) { 
+	public RunSQL addCondition(String prefix, String variable, Object value) {
 		if(null != variables && BasicUtil.isEmpty(variable)){ 
 			for(SQLVariable v:variables){ 
 				if(null == v){ 
 					continue; 
 				} 
-				if(v.getKey().equalsIgnoreCase(condition)){ 
+				if(v.getKey().equalsIgnoreCase(prefix)){
 					v.setValue(value); 
 				} 
 			} 
 		} 
 		/*参数赋值*/ 
-		if(null == condition){ 
+		if(null == prefix){
 			return this; 
 		} 
-		Condition con = getCondition(condition); 
+		Condition con = getCondition(prefix);
 		if(null == con){ 
 			return this; 
 		} 
-		variable = BasicUtil.nvl(variable, condition).toString(); 
+		variable = BasicUtil.nvl(variable, prefix).toString();
 		con.setValue(variable, value); 
 		return this; 
 	} 

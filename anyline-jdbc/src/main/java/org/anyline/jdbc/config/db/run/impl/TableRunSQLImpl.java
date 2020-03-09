@@ -78,7 +78,6 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				this.pageNavi = navi; 
 			} 
 		}
-		checkValid(); 
 	}
 	private void checkValid(){
 		if(null != conditionChain && !conditionChain.isValid()){
@@ -150,6 +149,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		appendCondition();
 		appendGroup();
 		appendOrderStore();
+		checkValid();
 	}
 
 	public void createRunDeleteTxt(){
@@ -183,6 +183,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		appendCondition();
 		appendGroup();
 		appendOrderStore();
+		checkValid();
 	}
 
 	private void appendOrderStore(){

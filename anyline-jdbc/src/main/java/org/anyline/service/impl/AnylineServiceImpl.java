@@ -1055,6 +1055,9 @@ public class AnylineServiceImpl implements AnylineService {
                     log.warn("[解析SQL类型] [类型:XML定义] [src:{}]", src);
                 }
                 sql = SQLStoreImpl.parseSQL(src);
+                if(null == sql){
+                    log.error("[解析SQL类型][XML解析失败][src:{}]",src);
+                }
             } else {
                 /* 自动生成 */
                 if(ConfigTable.isSQLDebug()){

@@ -177,7 +177,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	} 
  
 	@Override 
-	public RunSQL setConditionValue(boolean required, boolean strictRequired,  String condition, String variable, Object value, SQL.COMPARE_TYPE compare) { 
+	public RunSQL setConditionValue(boolean required, boolean strictRequired,  String prefix, String variable, Object value, SQL.COMPARE_TYPE compare) {
 		return this; 
 	} 
 	@Override 
@@ -238,20 +238,18 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	 ********************************************************************************************/
 	/**
 	 * 添加查询条件
-	 * @param	required
-	 * 			是否必须
-	 * @param	column
-	 * 			列名
-	 * @param	value
-	 * 			值
-	 * @param	compare
-	 * 			比较方式
+	 * @param	required 是否必须
+	 * @param	strictRequired 是否必须
+	 * @param	prefix 表名
+	 * @param	var 列名
+	 * @param	value 值
+	 * @param	compare 比较方式
 	 */
-	public RunSQL addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare){
+	public RunSQL addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, COMPARE_TYPE compare){
 		if(this instanceof XMLRunSQLImpl){
-			((XMLRunSQLImpl)this).addCondition(column, column, value);
+			((XMLRunSQLImpl)this).addCondition(prefix, var, value);
 		}else{
-			Condition condition = new AutoConditionImpl(required,strictRequired,column, value, compare);
+			Condition condition = new AutoConditionImpl(required,strictRequired,prefix,var, value, compare);
 			if(null == conditionChain){
 				conditionChain = new AutoConditionChainImpl();
 			}
@@ -261,8 +259,8 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		}
 		return this;
 	}
-	public RunSQL addCondition(boolean required, String column, Object value, COMPARE_TYPE compare){
-		return addCondition(required, false, column, value, compare);
+	public RunSQL addCondition(boolean required, String prefix, String var, Object value, COMPARE_TYPE compare){
+		return addCondition(required, false, prefix, var, value, compare);
 	}
 	/**
 	 * 添加静态文本查询条件
@@ -290,7 +288,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				//需要解析的SQL
 				ParseResult parser = ConfigParser.parse(condition,false);
 				Object value = ConfigParser.getValues(parser);
-				addCondition(parser.isRequired(), parser.isStrictRequired(), parser.getVar(),value,parser.getCompare());
+				addCondition(parser.isRequired(), parser.isStrictRequired(), parser.getPrefix(),parser.getVar(),value,parser.getCompare());
 				return this;
 			}
 		}
@@ -406,7 +404,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	}
 	@Override
 	public String getExecuteTxt(){
-		return null;
+		return sql.getText();
 	}
 	//需要查询的列 
 	public String getFetchColumns(){

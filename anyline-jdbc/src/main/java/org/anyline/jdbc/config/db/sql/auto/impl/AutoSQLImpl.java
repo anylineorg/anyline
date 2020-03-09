@@ -83,7 +83,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 		if(null == chain){ 
 			chain = new AutoConditionChainImpl(); 
 		} 
-		Condition condition = new AutoConditionImpl(required, strictRequired, column, value, compare); 
+		Condition condition = new AutoConditionImpl(required, strictRequired, null, column, value, compare);
 		chain.addCondition(condition); 
 		return this; 
 	} 
