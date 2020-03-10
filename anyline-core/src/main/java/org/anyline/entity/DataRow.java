@@ -75,6 +75,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		createTime = System.currentTimeMillis();
 	}
+
+	public DataRow(KEY_CASE keyCase){
+		this();
+		this.keyCase = keyCase;
+	}
 	public DataRow(String table){
 		this();
 		this.setTable(table);
@@ -86,6 +91,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			Object value = map.get(key);
 			put(key(key), value);
 		}
+	}
+	public DataRow setKeyCase(KEY_CASE keyCase){
+		this.keyCase = keyCase;
+		return this;
 	}
 	/**
 	 * 解析实体类对象
