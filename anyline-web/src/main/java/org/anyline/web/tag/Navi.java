@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *          
+ *
  */
 
 
-package org.anyline.web.tag; 
+package org.anyline.web.tag;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -28,14 +28,14 @@ import org.anyline.util.BasicUtil;
 import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/** 
- * ajax形式分页 
- * @author zh 
- * 
- */ 
+/**
+ * ajax形式分页
+ * @author zh
+ *
+ */
 public class Navi extends BodyTagSupport{
-	private static final long serialVersionUID = 1L; 
-	private String url				;	//数据来源 
+	private static final long serialVersionUID = 1L;
+	private String url				;	//数据来源
 	private String param			;	//参数收集函数
 	private String container		;	//返回内容显示容器
 	private String body				;	//返回内容显示容器class或id(如果body与page分开)
@@ -50,23 +50,23 @@ public class Navi extends BodyTagSupport{
 	private String function			;	//指定function后,需主动调用function后加载数据,查询条件发生变化时可调用function
 	private String refresh			; 	//刷新当前页的函数
 	private String before			;	//渲染之前调用
-	private String after			;	//渲染之后调用	
+	private String after			;	//渲染之后调用
 	private Boolean intime = false	;	//实时执行
-	private Boolean auto = false	;	//是否加载下一页内容(swap加载更多typ=1时 划屏到底部自动加载)
-	private String callback			;	//回调函数	
+	private Boolean auto = null		;	//是否加载下一页内容(swap加载更多typ=1时 划屏到底部自动加载)
+	private String callback			;	//回调函数
 	private String guide			;   //加载更多文本提示
-	 
+
 	private String empty			;	//查询无数据显示内容
 	private String over				;	//最后一页提示
 	private String style = "default"; 	//样式标记对应anyline-navi.xml中的config.key
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
 	private Boolean vol = true		;   //是否显示每页多少条(配置文件开启的情况下有效)
-	
+
 	private int type = 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
 
-	
-	public int doStartTag() throws JspException { 
+
+	public int doStartTag() throws JspException {
 		try{
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
 			StringBuilder builder = new StringBuilder();
@@ -84,14 +84,14 @@ public class Navi extends BodyTagSupport{
 				builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
 			}
 			builder.append("<script>\n");
-			
+
 			if(type ==2){
 				if(WebUtil.isWap((HttpServletRequest)pageContext.getRequest())){
 					type = 1;
 				}else{
 					type = 0;
 				}
-				
+
 			}
 			builder.append("var " + confId + " = {");
 			builder.append(config.KEY_ID_FLAG).append(":'").append(flag).append("',");
@@ -138,6 +138,9 @@ public class Navi extends BodyTagSupport{
 				builder.append("guide:'" ).append(guide).append("',");
 			}
 			builder.append("vol:").append(vol).append(",");
+			if(null == auto){
+				auto = config.VAR_AUTO_LOAD;
+			}
 			builder.append("auto:").append(auto).append(",");
 			builder.append("type:").append(type).append(",");
 			builder.append("style:'").append(style).append("',");
@@ -198,19 +201,19 @@ public class Navi extends BodyTagSupport{
 			pageContext.getRequest().setAttribute("_anyline_navi_tag_idx", idx + "");
 			JspWriter out = pageContext.getOut();
 			out.print(builder.toString());
-		}catch(Exception e){ 
-			e.printStackTrace(); 
-		}finally{ 
-			release(); 
-		} 
-        return EVAL_BODY_INCLUDE; 
-    }    
-	public int doEndTag() throws JspException {    
-	        return EVAL_PAGE;    
-	} 
-	@Override 
-	public void release() { 
-		super.release(); 
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally{
+			release();
+		}
+		return EVAL_BODY_INCLUDE;
+	}
+	public int doEndTag() throws JspException {
+		return EVAL_PAGE;
+	}
+	@Override
+	public void release() {
+		super.release();
 		param 			= null	;	//参数收集函数
 		container 		= null	;	//返回内容容器
 		callback 		= null	;	//回调函数
@@ -231,13 +234,13 @@ public class Navi extends BodyTagSupport{
 		creater			= "ajax";
 		stat			= false	;
 		jump			= false	;
-		auto			= false	;
+		auto			= null	;
 		style			= "default"	;
 		scroll 			= null	;
 		cur 			= null	;
 		vol				= true	;
 	}
-	
+
 	public String getParam() {
 		return param;
 	}
@@ -250,14 +253,14 @@ public class Navi extends BodyTagSupport{
 	public void setContainer(String container) {
 		this.container = container;
 	}
-	
+
 	public String getCallback() {
 		return callback;
 	}
 	public void setCallback(String callback) {
 		this.callback = callback;
 	}
-	
+
 	public String getBodyContainer() {
 		return bodyContainer;
 	}
@@ -402,5 +405,5 @@ public class Navi extends BodyTagSupport{
 	public void setVol(Boolean vol) {
 		this.vol = vol;
 	}
- 
-} 
+
+}
