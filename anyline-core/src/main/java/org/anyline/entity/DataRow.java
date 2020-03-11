@@ -36,7 +36,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	protected static final Logger log = LoggerFactory.getLogger(DataRow.class); 
 
 	public static enum KEY_CASE{
-		DEFAULT				{public String getCode(){return "DEFAULT";} 	public String getName(){return "默认";}},
+		CONFIG				{public String getCode(){return "CONFIG";} 	public String getName(){return "按配置文件";}},
+		SRC					{public String getCode(){return "SRC";} 	public String getName(){return "不转换";}},
 		UPPER				{public String getCode(){return "UPPER";} 	public String getName(){return "强制大写";}},
 		LOWER				{public String getCode(){return "LOWER";} 	public String getName(){return "强制小写";}};
 		public abstract String getName();
@@ -66,7 +67,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private boolean updateNullColumn 		= ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
 	private boolean updateEmptyColumn 		= ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
 	
-	private KEY_CASE keyCase = KEY_CASE.DEFAULT;
+	private KEY_CASE keyCase = KEY_CASE.CONFIG;
 
 	public DataRow(){
 		String pk = key(PRIMARY_KEY);
@@ -873,19 +874,19 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 	public Object put(String key, Object value, boolean pk, boolean override){
-		return put(KEY_CASE.DEFAULT, key, value, pk, override);
+		return put(KEY_CASE.CONFIG, key, value, pk, override);
 	}
 	public Object put(KEY_CASE keyCase, String key, Object value, boolean pk){
 		this.put(keyCase, key, value, pk , true);
 		return this;
 	}
 	public Object put(String key, Object value, boolean pk){
-		this.put(KEY_CASE.DEFAULT, key, value, pk , true);
+		this.put(KEY_CASE.CONFIG, key, value, pk , true);
 		return this;
 	}
 	@Override
 	public Object put(String key, Object value){
-		this.put(KEY_CASE.DEFAULT, key, value, false , true);
+		this.put(KEY_CASE.CONFIG, key, value, false , true);
 		return this;
 	}
 	public Object attr(String key, Object value){
@@ -1438,7 +1439,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 */
 	private static String keyCase(KEY_CASE keyCase, String key){
 		if(null != key){
-			if(keyCase == KEY_CASE.DEFAULT){
+			if(keyCase == KEY_CASE.CONFIG){
 				if(ConfigTable.IS_UPPER_KEY){
 					key = key.toUpperCase();
 				}
@@ -1454,13 +1455,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return key;
 	}
 	public static String keyCase(String key){
-		return keyCase(KEY_CASE.DEFAULT, key);
+		return keyCase(KEY_CASE.CONFIG, key);
 	}
 	private String key(String key){
-		return key(KEY_CASE.DEFAULT, key);
+		return key(KEY_CASE.CONFIG, key);
 	}
 	private String key(KEY_CASE keyCase, String key){
-		if(keyCase == KEY_CASE.DEFAULT){
+		if(keyCase == KEY_CASE.CONFIG){
 			keyCase = this.keyCase;
 		}
 		return keyCase(keyCase, key);
