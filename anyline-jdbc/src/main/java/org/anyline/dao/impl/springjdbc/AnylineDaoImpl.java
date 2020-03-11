@@ -538,7 +538,6 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			e.printStackTrace();
 			if(showSQLWhenError){
 				log.error(random + "[异常][txt:\n{}\n]",sql);
 				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
