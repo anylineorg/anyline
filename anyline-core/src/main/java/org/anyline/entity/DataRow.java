@@ -17,6 +17,7 @@
  */
 package org.anyline.entity; 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.anyline.util.*;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -105,6 +106,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 */
 	@SuppressWarnings("rawtypes")
 	public static DataRow parse(Object obj, String ... keys){
+		return parse(KEY_CASE.CONFIG, obj, keys);
+	}
+	public static DataRow parse(KEY_CASE keyCase,Object obj, String ... keys){
 		Map<String,String> map = new HashMap<String,String>();
 		if(null != keys){
 			for(String key:keys){
@@ -114,10 +118,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				}
 			}
 		}
-		DataRow row = new DataRow();
+		DataRow row = new DataRow(keyCase);
 		if(null != obj){
 			if(obj instanceof JsonNode){
-				row = parseJson((JsonNode)obj);
+				row = parseJson(keyCase,(JsonNode)obj);
 			}else if(obj instanceof DataRow){
 				row = (DataRow)obj;
 			}else if(obj instanceof Map){
@@ -148,10 +152,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @param json
 	 * @return
 	 */
-	public static DataRow parseJson(String json){
+	public static DataRow parseJson(KEY_CASE keyCase,String json){
 		if(null != json){
 			try{
-				return parseJson(BeanUtil.JSON_MAPPER.readTree(json));
+				return parseJson(keyCase,BeanUtil.JSON_MAPPER.readTree(json));
 			}catch(Exception e){
 				e.printStackTrace();
 			}
@@ -159,15 +163,22 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return null;
 	}
 
+	public static DataRow parseJson(String json){
+		return parseJson(KEY_CASE.CONFIG, json);
+	}
 	/**
 	 * 解析JSONObject
 	 * @param json json
 	 * @return return
 	 */
-	public static DataRow parseJson(JsonNode json){
-		return (DataRow)parse(json);
+	public static DataRow parseJson(KEY_CASE keyCase, JsonNode json){
+		return (DataRow)parse(keyCase, json);
 	}
-	private static Object parse(JsonNode json){
+	public static DataRow parseJson(JsonNode json){
+		return parseJson(KEY_CASE.CONFIG,json);
+	}
+
+	private static Object parse(KEY_CASE keyCase, JsonNode json){
 		if(null == json){
 			return null;
 		}
@@ -175,7 +186,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return BeanUtil.value(json);
 		}
 		if(json.isObject()){
-			DataRow row = new DataRow();
+			DataRow row = new DataRow(keyCase);
 			Iterator<Entry<String, JsonNode>> fields = json.fields();
 			while(fields.hasNext()){
 				Entry<String, JsonNode> field = fields.next();
@@ -200,7 +211,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			Iterator<JsonNode>  items = json.iterator();
 			while(items.hasNext()){
 				JsonNode item = items.next();
-				list.add(parse(item));
+				list.add(parse(keyCase,item));
 			}
 			return list;
 		}

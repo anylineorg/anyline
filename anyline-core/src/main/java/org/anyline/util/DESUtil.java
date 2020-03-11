@@ -256,9 +256,6 @@ public class DESUtil {
 	 * HTTP_REQUEST_PARAM_KEY_DES_KEY = "@#$%#"; //参数名加密密钥 public static final
 	 * String HTTP_REQUEST_PARAM_VALUE_DES_KEY = "@#23$%097#"; //参数值加密密钥
 	 */
-	public static final String PARAMS_FULL_DECRYPT_MAP = "PARAMS_FULL_DECRYPT_MAP"; // request参数值解密后MAP(整体加密)
-	public static final String PARAMS_PART_DECRYPT_MAP = "PARAMS_PART_DECRYPT_MAP"; // request参数值解密后MAP(逐个加密)
-	public static final String IS_PARAMS_DECRYPT = "IS_PARAMS_DECRYPT"; // request参数值是否已解密
 	private static Map<String, DESKey> deskeys = null;
 	private static DESKey defaultDesKey = null;
 	private static final int MAX_DES_VERSION_INDEX = 12; // 密文中插入版本号最大位置
