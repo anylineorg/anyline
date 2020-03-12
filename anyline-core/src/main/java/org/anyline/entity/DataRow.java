@@ -149,8 +149,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/*
 	 * 解析json结构字符
-	 * @param json
-	 * @return
+	 * @param keyCase key大小写
+	 * @param json json
+	 * @return DataRow
 	 */
 	public static DataRow parseJson(KEY_CASE keyCase,String json){
 		if(null != json){

@@ -38,16 +38,16 @@ public class Join extends BaseBodyTag{
 	private Object data;
 	private String selector;
 	private String property;
-	private int index = -1;
-	private int begin = -1;
-	private int end = -1;
-	private int qty = -1;
+	private Integer index;
+	private Integer begin;
+	private Integer end;
+	private Integer qty;
 	private String split = ",";
 	 
 	public int doStartTag() throws JspException { 
         return EVAL_BODY_BUFFERED; 
-    } 
-	 public int doEndTag() throws JspException {
+    }
+	public int doEndTag() throws JspException {
 		 HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		 try {
 			 if (null != data) {
@@ -69,9 +69,9 @@ public class Join extends BaseBodyTag{
 				 if(data instanceof Collection){
 					 Collection items = (Collection) data;
 					 if(BasicUtil.isNotEmpty(selector)){
-						 data = BeanUtil.select(items,selector.split(","));
+						 items = BeanUtil.select(items,selector.split(","));
 					 }
-					 if(index !=-1){
+					 if(index != null){
 						 int i = 0;
 						 data = null;
 						 for(Object item:items){
@@ -82,12 +82,8 @@ public class Join extends BaseBodyTag{
 							 i ++;
 						 }
 					 }else{
-						 if(begin != -1){
-							 if(qty != -1){
-								 end = begin + qty;
-							 }
-							 data = BeanUtil.cuts((Collection)data, begin, end);
-						 }
+						 int[] range = BasicUtil.range(begin, end, qty, items.size());
+						 data = BeanUtil.cuts(items, range[0], range[1]);
 					 }
 				 }
 				 String html ="";
@@ -117,77 +113,48 @@ public class Join extends BaseBodyTag{
 		super.release();
 		data = null;
 		property = null;
-		index = -1;
-		begin = -1;
-		end = -1;
-		qty = -1;
+		index = null;
+		begin = null;
+		end = null;
+		qty = null;
 		selector = null;
 		property = null;
 		split = ",";
     }
-	public Object getData() {
-		return data;
-	}
-	public void setData(Object data) {
-		this.data = data;
-	}
-	public int getIndex() {
-		return index;
-	}
-	public void setIndex(int index) {
-		this.index = index;
-	}
-	public String getProperty() {
-		return property;
-	}
-	public void setProperty(String property) {
-		this.property = property;
-	}
-	public String getSelector() {
-		return selector;
-	}
-	public void setSelector(String selector) {
-		this.selector = selector;
-	}
 
 	public String getScope() {
 		return scope;
 	}
 
-	public void setScope(String scope) {
-		this.scope = scope;
+	public Object getData() {
+		return data;
 	}
 
-	public int getBegin() {
+	public String getSelector() {
+		return selector;
+	}
+
+	public String getProperty() {
+		return property;
+	}
+
+	public Integer getIndex() {
+		return index;
+	}
+
+	public Integer getBegin() {
 		return begin;
 	}
 
-	public void setBegin(int begin) {
-		this.begin = begin;
-	}
-
-	public int getEnd() {
+	public Integer getEnd() {
 		return end;
 	}
 
-	public void setEnd(int end) {
-		this.end = end;
-	}
-
-	public int getQty() {
+	public Integer getQty() {
 		return qty;
-	}
-
-	public void setQty(int qty) {
-		this.qty = qty;
 	}
 
 	public String getSplit() {
 		return split;
 	}
-
-	public void setSplit(String split) {
-		this.split = split;
-	}
- 
 }

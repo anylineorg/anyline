@@ -20,6 +20,8 @@
 package org.anyline.web.tag; 
  
  
+import org.anyline.util.BasicUtil;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
  
@@ -27,8 +29,9 @@ import javax.servlet.jsp.JspWriter;
 public class SubString extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1554109844585627661L; 
 	 
-	private int begin = 0;
-	private int end = 0; //负数表示取最后end个
+	private Integer begin = null;
+	private Integer qty = null;
+	private Integer end = null; //负数表示取最后end个
 	 
 	public int doStartTag() throws JspException { 
         return EVAL_BODY_BUFFERED; 
@@ -38,16 +41,7 @@ public class SubString extends BaseBodyTag{
 		JspWriter out = pageContext.getOut(); 
 		String text = body; 
 		if(null != text){
-			if(end < 0){
-				begin = text.length() + end;
-				end = text.length();
-			}
-			if(begin < 0){
-				begin = 0;
-			}
-			if(end > text.length() || end <= 0){
-				end = text.length();
-			}
+			int range[] = BasicUtil.range(begin, end, qty, text.length());
 			text = text.substring(begin,end); 
 			try{ 
 				out.print(text); 
@@ -62,24 +56,35 @@ public class SubString extends BaseBodyTag{
 	@Override 
     public void release(){ 
 		super.release(); 
-    	begin = 0;
-    	end = 0;
+    	begin = null;
+    	end = null;
+    	qty = null;
     	value = null;
     	body = null;
     			 
-    } 
-	public int getBegin() { 
-		return begin; 
-	} 
-	public void setBegin(int begin) { 
-		this.begin = begin; 
-	} 
-	public int getEnd() { 
-		return end; 
-	} 
-	public void setEnd(int end) { 
-		this.end = end; 
-	} 
-	 
- 
+    }
+
+	public Integer getBegin() {
+		return begin;
+	}
+
+	public void setBegin(Integer begin) {
+		this.begin = begin;
+	}
+
+	public Integer getQty() {
+		return qty;
+	}
+
+	public void setQty(Integer qty) {
+		this.qty = qty;
+	}
+
+	public Integer getEnd() {
+		return end;
+	}
+
+	public void setEnd(Integer end) {
+		this.end = end;
+	}
 }

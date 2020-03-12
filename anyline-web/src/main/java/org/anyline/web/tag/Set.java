@@ -36,10 +36,10 @@ public class Set extends BaseBodyTag {
 	private Object data; 
 	private String selector; 
 	private String var; 
-	private int index = -1; 
-	private int begin = -1; 
-	private int end = -1; 
-	private int qty = -1; 
+	private Integer index = null;
+	private Integer begin = null;
+	private Integer end = null;
+	private Integer qty = null;
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
@@ -62,10 +62,10 @@ public class Set extends BaseBodyTag {
 				} 
 				if(data instanceof Collection){ 
 					Collection items = (Collection) data; 
-					if(BasicUtil.isNotEmpty(selector)){ 
-						data = BeanUtil.select(items,selector.split(",")); 
+					if(BasicUtil.isNotEmpty(selector)){
+						items = BeanUtil.select(items,selector.split(","));
 					} 
-					if(index !=-1){ 
+					if(index != null){
 						int i = 0; 
 						data = null; 
 						for(Object item:items){ 
@@ -75,13 +75,9 @@ public class Set extends BaseBodyTag {
 							} 
 							i ++; 
 						} 
-					}else{ 
-						if(begin != -1){ 
-							if(qty != -1){ 
-								end = begin + qty; 
-							} 
-							data = BeanUtil.cuts((Collection)data, begin, end); 
-						} 
+					}else{
+						int[] range = BasicUtil.range(begin, end, qty, items.size());
+						data = BeanUtil.cuts(items, range[0], range[1]);
 					} 
 				} 
 				 
@@ -128,45 +124,65 @@ public class Set extends BaseBodyTag {
 		data = null; 
 		var = null; 
 		selector = null; 
-		index = -1; 
-	} 
- 
-	public String getScope() { 
-		return scope; 
-	} 
- 
-	public void setScope(String scope) { 
-		this.scope = scope; 
-	} 
- 
- 
-	public String getSelector() { 
-		return selector; 
-	} 
- 
- 
-	public void setSelector(String selector) { 
-		this.selector = selector; 
-	} 
- 
- 
-	public String getVar() { 
-		return var; 
-	} 
- 
- 
-	public void setVar(String var) { 
-		this.var = var; 
-	} 
- 
- 
-	public int getIndex() { 
-		return index; 
-	} 
- 
- 
-	public void setIndex(int index) { 
-		this.index = index; 
-	} 
-	 
+		index = null;
+		begin = null;
+		end = null;
+		qty = null;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
+	public String getSelector() {
+		return selector;
+	}
+
+	public void setSelector(String selector) {
+		this.selector = selector;
+	}
+
+	public String getVar() {
+		return var;
+	}
+
+	public void setVar(String var) {
+		this.var = var;
+	}
+
+	public Integer getIndex() {
+		return index;
+	}
+
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
+
+	public Integer getBegin() {
+		return begin;
+	}
+
+	public void setBegin(Integer begin) {
+		this.begin = begin;
+	}
+
+	public Integer getEnd() {
+		return end;
+	}
+
+	public void setEnd(Integer end) {
+		this.end = end;
+	}
+
+	public Integer getQty() {
+		return qty;
+	}
+
+	public void setQty(Integer qty) {
+		this.qty = qty;
+	}
 }

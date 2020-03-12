@@ -988,4 +988,44 @@ public class BasicUtil {
 		}
 		return equals(v1, v2, propertys1, propertys2);
 	}
+
+	/**
+	 * 确认边界
+	 * @param begin 开始
+	 * @param end 结束
+	 * @param qty 数量
+	 * @param total 总数
+	 * @return [开始，结束]
+	 */
+	public static int[] range(Integer begin, Integer end, Integer qty, Integer total){
+		int[] result = new int[2];
+		if(null != begin && begin < 0){
+			begin = 0;
+		}
+		if(null != end && end < 0){ //end<0，取最后-end个
+			begin = total + end;
+			end = total;
+		}
+		if(null != begin && null != qty){
+			end = begin + qty;
+		}
+		if(null != total){
+			if(end > total){
+				end = total;
+			}
+		}
+		if(null == begin){
+			begin = 0;
+		}
+		if(null == end){
+			end = total;
+		}
+		if(end < begin){
+			end = begin;
+		}
+
+		result[0] = begin;
+		result[1] = end;
+		return result;
+	}
 }
