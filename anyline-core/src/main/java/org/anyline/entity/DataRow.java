@@ -185,7 +185,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(json.isValueNode()){
 			return BeanUtil.value(json);
 		}
-		if(json.isObject()){
+		if(json.isArray()){
+			List<Object> list = new ArrayList<Object>();
+			Iterator<JsonNode>  items = json.iterator();
+			while(items.hasNext()){
+				JsonNode item = items.next();
+				list.add(parse(keyCase,item));
+			}
+			return list;
+		}else if(json.isObject()){
 			DataRow row = new DataRow(keyCase);
 			Iterator<Entry<String, JsonNode>> fields = json.fields();
 			while(fields.hasNext()){
@@ -196,7 +204,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 					if(value.isValueNode()){
 						row.put(key, BeanUtil.value(value));
 					}else if(value.isArray()){
-						row.put(key, parse(value));
+						row.put(key, parse(keyCase,value));
 					}else if(value.isObject()){
 						row.put(key, parseJson(value));
 					}
@@ -206,14 +214,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				
 			}
 			return row;
-		}else if(json.isArray()){
-			List<Object> list = new ArrayList<Object>();
-			Iterator<JsonNode>  items = json.iterator();
-			while(items.hasNext()){
-				JsonNode item = items.next();
-				list.add(parse(keyCase,item));
-			}
-			return list;
 		}
 		
 		return null;
