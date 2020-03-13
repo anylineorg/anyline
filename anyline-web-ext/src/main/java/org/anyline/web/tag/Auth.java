@@ -113,7 +113,7 @@ public class Auth extends BaseBodyTag {
 //						redirect = WechatConfig.OAUTH_REDIRECT_URL;
 //					}
 //					if(BasicUtil.isEmpty(redirect)){
-//						redirect = WechatMPConfig.getInstance().OAUTH_REDIRECT_URL;
+//						redirect = WechatProgrameConfig.getInstance().OAUTH_REDIRECT_URL;
 //					}
 //					redirect = URLEncoder.encode(redirect, "UTF-8");
 //					url =  WechatConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
