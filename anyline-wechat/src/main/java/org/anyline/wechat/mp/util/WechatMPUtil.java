@@ -3,18 +3,22 @@ package org.anyline.wechat.mp.util;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.net.HttpUtil;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.SHA1Util;
+import org.anyline.util.*;
 import org.anyline.wechat.entity.*;
 import org.anyline.wechat.util.WechatConfig;
 import org.anyline.wechat.util.WechatConfig.SNSAPI_SCOPE;
 import org.anyline.wechat.util.WechatUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
+import java.security.AlgorithmParameters;
+import java.security.Key;
+import java.security.Security;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -297,6 +301,7 @@ public class WechatMPUtil extends WechatUtil {
 	 */ 
 	public String getPublicKey() { 
 		return WechatUtil.getPublicKey(config);
-	} 
-	 
+	}
+
+
 } 

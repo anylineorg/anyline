@@ -150,7 +150,7 @@ public class WechatUtil {
 			order.setNotify_url(config.PAY_NOTIFY_URL);
 		}
 		if(BasicUtil.isEmpty(order.getNotify_url())){
-		//	order.setNotify_url(WechatMPConfig.getInstance().PAY_NOTIFY_URL);
+		//	order.setNotify_url(WechatProgrameConfig.getInstance().PAY_NOTIFY_URL);
 		}
 		if(BasicUtil.isEmpty(order.getOut_trade_no())){
 			throw new Exception("未设置交易单号");

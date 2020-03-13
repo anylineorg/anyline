@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="APP_ID">wxc403*******b5f06</property>
+		<property key="APP_SECRET">2ede1c*********c915f440745df8</property>
+		<!--其他参数与公众号类似-->
+	</config>
+</configs> 
