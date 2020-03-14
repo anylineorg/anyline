@@ -615,8 +615,12 @@ public class PageNaviImpl implements PageNavi, Serializable{
 //				builder.append(vol); 
 //			} 
 		}else if(type == 1){ 
-			//加载更多 
-			createPageTag(index, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey); 
+			//加载更多
+			if(curPage+1 <= totalPage){
+				createPageTag(index, "navi-more-button", loadMoreFormat, (int)NumberUtil.min(curPage+1, totalPage+1), configVarKey);
+			}else{
+				index.append(config.STYLE_PAGE_OVER);
+			}
 		} 
 		 
 		 
