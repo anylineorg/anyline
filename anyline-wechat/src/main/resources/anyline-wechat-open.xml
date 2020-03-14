@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--开放平台配置-->
 <configs>
 	<config key="default">
 		<property key="APP_ID">wx67***45f</property>

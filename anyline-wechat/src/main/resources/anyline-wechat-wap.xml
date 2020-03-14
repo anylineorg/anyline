@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--H5配置-->
 <configs>
 	<config key="default">
 		<property key="APP_ID">wx16***21a57</property>

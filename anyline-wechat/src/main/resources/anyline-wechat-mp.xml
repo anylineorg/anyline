@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--公众平台配置-->
 <configs>
 	<config key="default">
 		<property key="APP_ID">wxc403*******b5f06</property>
