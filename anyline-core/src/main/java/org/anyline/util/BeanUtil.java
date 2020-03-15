@@ -881,31 +881,33 @@ public class BeanUtil {
 	 */ 
  
 	public static String concat(List<?> list, String key, String split) {
-		StringBuilder builder = new StringBuilder(); 
-		if (null != list) { 
-			int size = list.size(); 
-			for (int i = 0; i < size; i++) { 
-				Object obj = list.get(i); 
-				Object val = getFieldValue(obj, key); 
-				builder.append(val); 
-				if (i < size - 1) { 
-					builder.append(split); 
-				} 
-			} 
-		} 
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
 		return builder.toString(); 
 	} 
 	public static String concat(List<?> list, String split) {
-		StringBuilder builder = new StringBuilder(); 
-		if (null != list) { 
-			int size = list.size(); 
-			for (int i = 0; i < size; i++) { 
-				builder.append(list.get(i)); 
-				if (i < size - 1) { 
-					builder.append(split); 
-				} 
-			} 
-		} 
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
 		return builder.toString(); 
 	} 
 	public static String concat(List<?> list) {
@@ -916,31 +918,33 @@ public class BeanUtil {
 	 
  
 	public static <T> String concat(T[] list, String key, String split) {
-		StringBuilder builder = new StringBuilder(); 
-		if (null != list) { 
-			int size = list.length; 
-			for (int i = 0; i < size; i++) { 
-				Object obj = list[i]; 
-				Object val = getFieldValue(obj, key); 
-				builder.append(val); 
-				if (i < size - 1) { 
-					builder.append(split); 
-				} 
-			} 
-		} 
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
 		return builder.toString(); 
 	} 
 	public static <T> String concat(T[] list, String split) {
-		StringBuilder builder = new StringBuilder(); 
-		if (null != list) { 
-			int size = list.length; 
-			for (int i = 0; i < size; i++) { 
-				builder.append(list[i]); 
-				if (i < size - 1) { 
-					builder.append(split); 
-				} 
-			} 
-		} 
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
 		return builder.toString(); 
 	} 
 	public static <T> String concat(T[] list) {
@@ -949,16 +953,18 @@ public class BeanUtil {
  
  
 	public static String concat(int[] list, String split) {
-		StringBuilder builder = new StringBuilder(); 
-		if (null != list) { 
-			int size = list.length; 
-			for (int i = 0; i < size; i++) { 
-				builder.append(list[i]); 
-				if (i < size - 1) { 
-					builder.append(split); 
-				} 
-			} 
-		} 
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
 		return builder.toString(); 
 	} 
 	public static String concat(int[] list) {
@@ -966,16 +972,18 @@ public class BeanUtil {
 	} 
  
 	public static String concat(long[] list, String split) {
-		StringBuilder builder = new StringBuilder(); 
-		if (null != list) { 
-			int size = list.length; 
-			for (int i = 0; i < size; i++) { 
-				builder.append(list[i]); 
-				if (i < size - 1) { 
-					builder.append(split); 
-				} 
-			} 
-		} 
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
 		return builder.toString(); 
 	} 
 	public static String concat(long[] list) {
@@ -983,16 +991,18 @@ public class BeanUtil {
 	} 
  
 	public static String concat(double[] list, String split) {
-		StringBuilder builder = new StringBuilder(); 
-		if (null != list) { 
-			int size = list.length; 
-			for (int i = 0; i < size; i++) { 
-				builder.append(list[i]); 
-				if (i < size - 1) { 
-					builder.append(split); 
-				} 
-			} 
-		} 
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
 		return builder.toString(); 
 	} 
 	public static String concat(double[] list) {
@@ -1000,16 +1010,18 @@ public class BeanUtil {
 	} 
  
 	public static String concat(float[] list, String split) {
-		StringBuilder builder = new StringBuilder(); 
-		if (null != list) { 
-			int size = list.length; 
-			for (int i = 0; i < size; i++) { 
-				builder.append(list[i]); 
-				if (i < size - 1) { 
-					builder.append(split); 
-				} 
-			} 
-		} 
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
 		return builder.toString(); 
 	} 
 	public static String concat(float[] list) {
@@ -1017,16 +1029,18 @@ public class BeanUtil {
 	} 
  
 	public static String concat(short[] list, String split) {
-		StringBuilder builder = new StringBuilder(); 
-		if (null != list) { 
-			int size = list.length; 
-			for (int i = 0; i < size; i++) { 
-				builder.append(list[i]); 
-				if (i < size - 1) { 
-					builder.append(split); 
-				} 
-			} 
-		} 
+		StringBuilder builder = new StringBuilder();
+		if (null != list) {
+			for(Object item:list){
+				if(BasicUtil.isEmpty(item)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(item);
+			}
+		}
 		return builder.toString(); 
 	} 
 	public static String concat(short[] list) {
@@ -1125,23 +1139,38 @@ public class BeanUtil {
 			} 
 		} 
 		return result; 
-	} 
-	/** 
+	}
+	/**
 	 * 删除空值  
 	 * @param map  map
-	 */ 
-	public static void clearEmpty(Map<String, Object> map){ 
-		if(null == map){ 
-			return; 
-		} 
-		List<String> keys = BasicUtil.getMapKeys(map); 
-		for(String key:keys){ 
-			Object value = map.get(key); 
-			if(BasicUtil.isEmpty(value)){ 
-				map.remove(key); 
-			} 
-		} 
-	} 
+	 */
+	public static void clearEmpty(Map<String, Object> map){
+		if(null == map){
+			return;
+		}
+		List<String> keys = BasicUtil.getMapKeys(map);
+		for(String key:keys){
+			Object value = map.get(key);
+			if(BasicUtil.isEmpty(value)){
+				map.remove(key);
+			}
+		}
+	}
+	/**
+	 * 删除空值
+	 * @param list  list
+	 */
+	public static void clearEmpty(List<Object> list){
+		if(null == list){
+			return;
+		}
+		int size = list.size();
+		for(int i=size-1;i>=0;i--){
+			if(BasicUtil.isEmpty(list.get(i))){
+				list.remove(i);
+			}
+		}
+	}
 	/** 
 	 * 多个数组合并成一个数组(二维数组合成一维数组) 
 	 * @param <T> T
