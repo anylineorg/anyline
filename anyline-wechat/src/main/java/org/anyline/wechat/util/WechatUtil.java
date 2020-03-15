@@ -465,7 +465,7 @@ public class WechatUtil {
 		}
 		DataRow json = DataRow.parseJson(text);
 		row = new DataRow();
-		if(json.containsKey("access_token")){
+		if(null != json && json.containsKey("access_token")){
 			row.put("APP_ID", appid);
 			row.put("ACCESS_TOKEN", json.getString("access_token"));
 			row.setExpires(json.getInt("expires_in", 0)*800);
