@@ -27,11 +27,11 @@ import org.anyline.util.BasicUtil;
  
 public class Omit extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
-	private int right;
-	private int left;
+	private Integer right;
+	private Integer left;
 	private String ellipsis = "*";
-	private int max;//最大长度(不小于 right+left+1)
-	private int min;//最小长度(不小于 right+left+1)
+	private Integer max;//最大长度(不小于 right+left+1)
+	private Integer min;//最小长度(不小于 right+left+1)
 	private String value;
 	 
 	public int doEndTag() { 
@@ -42,16 +42,28 @@ public class Omit extends BaseBodyTag {
  
 		JspWriter writer = null; 
 		String result = ""; 
-		try { 
+		try {
+
 			writer = pageContext.getOut();
-			if(max < 0 || max>src.length()){
-				max = src.length();
+			int len = src.length();
+			if(null == max || max < 0 || max>len){
+				max = len;
 			}
-			if(min < 0){
-				min = 0;
+
+			if(null == min || min < 0){
+				min = len;
 			}
-			if(min>src.length()){
-				min = src.length();
+			if(min>len){
+				min = len;
+			}
+			if(null == left || left<0){
+				left = 0;
+			}
+			if(left > len){
+				left = len;
+			}
+			if(null == left || left<0){
+				left = 0;
 			}
 			int fill = max - left - right;
 			if(fill < 0){
@@ -84,29 +96,28 @@ public class Omit extends BaseBodyTag {
 		super.release(); 
 		value = null;
 		body = null;
-		left = 0;
-		right = 0;
-		max = 0;
-		min = 0;
+		left = null;
+		right = null;
+		max = null;
+		min = null;
 		ellipsis = "*"; 
 	}
 
-	public int getRight() {
+	public Integer getRight() {
 		return right;
 	}
 
-	public void setRight(int right) {
+	public void setRight(Integer right) {
 		this.right = right;
 	}
 
-	public int getLeft() {
+	public Integer getLeft() {
 		return left;
 	}
 
-	public void setLeft(int left) {
+	public void setLeft(Integer left) {
 		this.left = left;
 	}
-
 
 	public String getEllipsis() {
 		return ellipsis;
@@ -116,6 +127,23 @@ public class Omit extends BaseBodyTag {
 		this.ellipsis = ellipsis;
 	}
 
+	public Integer getMax() {
+		return max;
+	}
+
+	public void setMax(Integer max) {
+		this.max = max;
+	}
+
+	public Integer getMin() {
+		return min;
+	}
+
+	public void setMin(Integer min) {
+		this.min = min;
+	}
+
+	@Override
 	public String getValue() {
 		return value;
 	}
@@ -123,23 +151,4 @@ public class Omit extends BaseBodyTag {
 	public void setValue(String value) {
 		this.value = value;
 	}
-
-	public int getMax() {
-		return max;
-	}
-
-	public void setMax(int max) {
-		this.max = max;
-	}
-
-	public int getMin() {
-		return min;
-	}
-
-	public void setMin(int min) {
-		this.min = min;
-	}
-
-
-	 
-} 
+}
