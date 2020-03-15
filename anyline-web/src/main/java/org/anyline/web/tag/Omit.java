@@ -53,9 +53,6 @@ public class Omit extends BaseBodyTag {
 			if(null == min || min < 0){
 				min = len;
 			}
-			if(min>len){
-				min = len;
-			}
 			if(null == left || left<0){
 				left = 0;
 			}
