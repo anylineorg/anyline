@@ -194,9 +194,16 @@ public class HttpUtil {
 		setHeader(method, headers); 
 		result = exe(client, method, encode); 
 		return result; 
-	} 
- 
- 
+	}
+
+
+	/**
+	 * post
+	 * @param url     url
+	 * @param encode endoce
+	 * @param entitys new StringEntity(BeanUtil.map2json(params), "UTF-8");
+	 * @return HttpResult
+	 */
 	public static HttpResult post(String url, String encode, HttpEntity... entitys) { 
 		return post(defaultClient(), url, encode, entitys); 
 	} 
@@ -443,10 +450,9 @@ public class HttpUtil {
  
 	public static HttpResult delete(Map<String, String> headers, String url, String encode, NameValuePair ... pairs) { 
 		return delete(defaultClient(), headers, url, encode, pairs); 
-	} 
- 
-	 
-	private static HttpResult exe(CloseableHttpClient client, HttpRequestBase method, String encode){ 
+	}
+
+	private static HttpResult exe(CloseableHttpClient client, HttpRequestBase method, String encode){
 		CloseableHttpResponse response = null; 
 		HttpResult result = null; 
 		try { 
@@ -463,18 +469,18 @@ public class HttpUtil {
 		} catch (Exception e) { 
 			result = new HttpResult(); 
 			e.printStackTrace(); 
-		} finally { 
-			try { 
-				if(null != response){ 
-					response.close(); 
-				} 
-				method.releaseConnection(); 
-				if(client == HttpUtil.client){ 
-					client.close(); 
-				} 
-			} catch (Exception e) { 
-				e.printStackTrace(); 
-			} 
+		} finally {
+			try {
+				if(null != response){
+					response.close();
+				}
+				method.releaseConnection();
+				if(client == HttpUtil.client){
+					client.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		} 
 		return result; 
 	} 
@@ -519,11 +525,11 @@ public class HttpUtil {
 		} 
 		return code; 
 	} 
-	private static HttpResult parseResult(HttpResult src, CloseableHttpResponse response, String encode) { 
-		if (null == src) { 
-			src = new HttpResult(); 
+	private static HttpResult parseResult(HttpResult result, CloseableHttpResponse response, String encode) {
+		if (null == result) {
+			result = new HttpResult();
 		} 
-		try { 
+		try {
 			if(null != response){ 
 				Map<String, String> headers = new HashMap<String, String>(); 
 				Header[] all = response.getAllHeaders(); 
@@ -532,25 +538,26 @@ public class HttpUtil {
 					String value = header.getValue(); 
 					headers.put(key, value); 
 					if ("Set-Cookie".equalsIgnoreCase(key)) { 
-						HttpCookie c = new HttpCookie(value); 
-						src.setCookie(c); 
+						HttpCookie c = new HttpCookie(value);
+						result.setCookie(c);
 					} 
 				} 
-				int code = response.getStatusLine().getStatusCode(); 
-				src.setHeaders(headers); 
-				src.setStatus(code); 
+				int code = response.getStatusLine().getStatusCode();
+				result.setHeaders(headers);
+				result.setStatus(code);
 				if(code ==200){ 
 					HttpEntity entity = response.getEntity(); 
-					if (null != entity) { 
-						String text = EntityUtils.toString(entity, encode); 
-						src.setText(text); 
+					if (null != entity) {
+						result.setInputStream(entity.getContent());
+						String text = EntityUtils.toString(entity, encode);
+						result.setText(text);
 					} 
 				} 
 			} 
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		} 
-		return src; 
+		return result;
 	} 
  
 	public static DownloadTask download(String url, String dst){ 
@@ -787,8 +794,99 @@ public class HttpUtil {
         post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  //表单形式。 
         HttpResult source = exe(client, post, encode); 
 		return source; 
-     } 
-	  
+     }
+
+
+	/*staic*/
+	public static HttpResult postStream(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) {
+		return postStream(client, null, url, encode, entitys);
+	}
+	public static HttpResult postStream(CloseableHttpClient client, Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		List<HttpEntity> list = new ArrayList<HttpEntity>();
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				list.add(entity);
+			}
+		}
+		return postStream(client, headers, url, encode, list);
+	}
+
+	public static HttpResult postStream(CloseableHttpClient client, String url, String encode, Map<String, Object> params) {
+		return postStream(client, null, url, encode, params);
+	}
+	public static HttpResult postStream(CloseableHttpClient client, Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		List<HttpEntity> entitys = new ArrayList<HttpEntity>();
+		if(null != params && !params.isEmpty()){
+			List<NameValuePair> pairs = packNameValuePair(params);
+			try {
+				HttpEntity entity = new UrlEncodedFormEntity(pairs, encode);
+				entitys.add(entity);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return postStream(client, headers, url, encode, entitys);
+	}
+
+
+	public static HttpResult postStream(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+		HttpResult result = new HttpResult();
+		InputStream is = null;
+		if(null == client){
+			if(url.contains("https://")){
+				client = defaultSSLClient();
+			}else{
+				client =  defaultClient();
+			}
+		}
+		if(url.startsWith("//")){
+			url = "http:" + url;
+		}
+		HttpPost method = new HttpPost(url);
+		if(null != entitys){
+			for(HttpEntity entity:entitys){
+				method.setEntity(entity);
+			}
+		}
+		setHeader(method, headers);
+		try {
+			CloseableHttpResponse response = client.execute(method);
+			is = response.getEntity().getContent();
+			result.setInputStream(is);
+		}catch(Exception e){
+
+		}
+		return result;
+	}
+
+
+	/**
+	 * postStream
+	 * @param url     url
+	 * @param encode endoce
+	 * @param entitys new StringEntity(BeanUtil.map2json(params), "UTF-8");
+	 * @return InputStream
+	 */
+	public static HttpResult postStream(String url, String encode, HttpEntity... entitys) {
+		return postStream(defaultClient(), url, encode, entitys);
+	}
+	public static HttpResult postStream(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
+		return postStream(defaultClient(),headers, url, encode, entitys);
+	}
+	public static HttpResult postStream(String url, String encode, Map<String, Object> params) {
+		return postStream(defaultClient(), url, encode, params);
+	}
+	public static HttpResult postStream(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+		return postStream(defaultClient(), headers, url, encode, params);
+	}
+	public static HttpResult postStream(String url,   Map<String, Object> params) {
+		return postStream(defaultClient(), null, url, "UTF-8", params);
+	}
+	public static HttpResult postStream(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+		return postStream(defaultClient(),headers, url, encode, entitys);
+	}
+
 	public static String read(InputStream is, String encode) { 
 		if (is == null) { 
 			return null; 

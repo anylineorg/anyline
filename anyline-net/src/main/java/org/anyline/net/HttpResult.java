@@ -19,6 +19,7 @@
 
 package org.anyline.net; 
  
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -41,7 +42,8 @@ public class HttpResult {
 	private String parser			; //解析器CD 
 	private String host				;
 	private Map<String,String> headers = new HashMap<String,String>();
-	private Map<String,HttpCookie> cookies = new HashMap<String,HttpCookie>(); 
+	private Map<String,HttpCookie> cookies = new HashMap<String,HttpCookie>();
+	private InputStream inputStream;
  
 	private Map<String,String> seed; 
 	 
@@ -177,5 +179,12 @@ public class HttpResult {
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	 
+
+	public InputStream getInputStream() {
+		return inputStream;
+	}
+
+	public void setInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
+	}
 }
