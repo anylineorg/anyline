@@ -75,6 +75,31 @@ public class WechatProgrameUtil extends WechatUtil {
 		}
 		return session;
 	}
+
+	/**
+	 * 生成二维码
+	 * @param path
+	 * @param width
+	 * @return
+	 */
+	public String createQRCode(String path, int width) throws Exception{
+		String result =  null;
+		String access_token = getAccessToken(config);
+		String url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token="+access_token+"&path="+path;
+		if(width >0){
+			url += "&width" + width;
+		}
+		DataRow json = DataRow.parseJson(HttpUtil.get(url).getText());
+		if("0".equals(json.getString("errcode"))){
+			result = json.getString("buffer");
+		}else{
+			throw new Exception(json.getString("errmsg"));
+		}
+		return result;
+	}
+	public String createQRCode(String path) throws Exception{
+		return createQRCode(path, 0);
+	}
 	/**
 	 * 解密数据
 	 * @param session 会话key
