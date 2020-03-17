@@ -887,29 +887,29 @@ public class HttpUtil {
 		return postStream(defaultClient(),headers, url, encode, entitys);
 	}
 
-	public static String read(InputStream is, String encode) { 
-		if (is == null) { 
-			return null; 
-		} 
-		ByteArrayBuffer bab = new ByteArrayBuffer(0); 
-		byte[] b = new byte[1024]; 
-		int len = 0; 
-		try { 
-			while ((len = is.read(b)) != -1) { 
-				bab.append(b, 0, len); 
-			} 
-			return new String(bab.toByteArray(), encode); 
-		} catch (IOException e) { 
-			e.printStackTrace(); 
-		} finally { 
-			try { 
-				is.close(); 
-			} catch (IOException e) { 
-				e.printStackTrace(); 
-			} 
-		} 
-		return null; 
-	} 
+	public static String read(InputStream is, String encode) {
+		if (is == null) {
+			return null;
+		}
+		ByteArrayBuffer bab = new ByteArrayBuffer(0);
+		byte[] b = new byte[1024];
+		int len = 0;
+		try {
+			while ((len = is.read(b)) != -1) {
+				bab.append(b, 0, len);
+			}
+			return new String(bab.toByteArray(), encode);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 	/** 
 	 * 提取url根目录 
 	 *  
