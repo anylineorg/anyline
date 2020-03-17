@@ -115,6 +115,17 @@ public class WechatProgrameUtil extends WechatUtil {
 			InputStream is = createQRCode(path, width);
 			FileUtil.write(is, file);
 		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	public boolean createQRCode(String path, int width, OutputStream os){
+		try {
+			InputStream is = createQRCode(path, width);
+			FileUtil.write(is, os);
+		}catch(Exception e){
+			e.printStackTrace();
 			return false;
 		}
 		return true;
@@ -122,8 +133,146 @@ public class WechatProgrameUtil extends WechatUtil {
 	public boolean createQRCode(String path, File file){
 		return createQRCode(path, 0, file);
 	}
+	public boolean createQRCode(String path, OutputStream os){
+		return createQRCode(path, 0, os);
+	}
 	public InputStream createQRCode(String path) throws Exception{
 		return createQRCode(path, 0);
+	}
+
+	/**
+	 * 创建二维码
+	 * @param path path
+	 * @param width 宽度自动写0
+	 * @param autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调，默认 false
+	 * @param color auto_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"} 十进制表示
+	 * @param hyaline 是否需要透明底色，为 true 时，生成透明底色的小程序
+	 * @return InputStream
+	 */
+	public InputStream createWXCode(String path, int width, boolean autoColor, String color, boolean hyaline){
+		String access_token = getAccessToken(config);
+		String url = "https://api.weixin.qq.com/wxa/getwxacode?access_token="+access_token;
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("path",path);
+		if(width>0){
+			params.put("width", width);
+		}
+		params.put("auto_color", autoColor);
+		if(BasicUtil.isNotEmpty(color)) {
+			params.put("line_color", color);
+		}
+		params.put("is_hyaline", hyaline);
+		String json = BeanUtil.map2json(params);
+		InputStream is = HttpUtil.postStream(url,"UTF-8", new StringEntity(json, "UTF-8")).getInputStream();
+		return is;
+	}
+
+	/**
+	 * 创建二维码
+	 * @param path path
+	 * @param width 宽度自动写0
+	 * @param autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调，默认 false
+	 * @param color auto_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"} 十进制表示
+	 * @param hyaline 是否需要透明底色，为 true 时，生成透明底色的小程序
+	 * @param file 写入文件
+	 * @return boolean
+	 */
+	public boolean createWXCode(String path, int width, boolean autoColor, String color, boolean hyaline, File file){
+		try{
+			InputStream is = createWXCode(path, width, autoColor, color, hyaline);
+			FileUtil.write(is, file);
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	public boolean createWXCode(String path, int width, boolean autoColor, String color, boolean hyaline, OutputStream os){
+		try{
+			InputStream is = createWXCode(path, width, autoColor, color, hyaline);
+			FileUtil.write(is, os);
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	public boolean createWXCode(String path, File file){
+		return createWXCode(path, 0, true, null, false, file);
+	}
+	public boolean createWXCode(String path, OutputStream os){
+		return createWXCode(path, 0, true, null, false, os);
+	}
+
+	/**
+	 * 创建二维码
+	 * @param path path
+	 * @param scene scene 最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）
+	 * @param width 宽度自动写0
+	 * @param autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调，默认 false
+	 * @param color auto_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"} 十进制表示
+	 * @param hyaline 是否需要透明底色，为 true 时，生成透明底色的小程序
+	 * @return InputStream
+	 */
+	public InputStream createWXCodeUnlimit(String path, String scene, int width, boolean autoColor, String color, boolean hyaline){
+		String access_token = getAccessToken(config);
+		String url = "https://api.weixin.qq.com/wxa/getwxacode?access_token="+access_token;
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("path",path);
+		if(width>0){
+			params.put("width", width);
+		}
+
+		params.put("auto_color", autoColor);
+		if(BasicUtil.isNotEmpty(scene)) {
+			params.put("scene", scene);
+		}
+		if(BasicUtil.isNotEmpty(color)) {
+			params.put("line_color", color);
+		}
+		params.put("is_hyaline", hyaline);
+		String json = BeanUtil.map2json(params);
+		InputStream is = HttpUtil.postStream(url,"UTF-8", new StringEntity(json, "UTF-8")).getInputStream();
+		return is;
+	}
+	/**
+	 * 创建二维码
+	 * @param path path
+	 * @param scene scene 最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）
+	 * @param width 宽度自动写0
+	 * @param autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调，默认 false
+	 * @param color auto_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"} 十进制表示
+	 * @param hyaline 是否需要透明底色，为 true 时，生成透明底色的小程序
+	 * @param file 写入文件
+	 * @return
+	 */
+	public boolean createWXCodeUnlimit(String path, String scene, int width, boolean autoColor, String color, boolean hyaline, File file){
+		try{
+			InputStream is = createWXCodeUnlimit(path, scene, width, autoColor, color, hyaline);
+			FileUtil.write(is, file);
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	public boolean createWXCodeUnlimit(String path, String scene, int width, boolean autoColor, String color, boolean hyaline, OutputStream os){
+		try{
+			InputStream is = createWXCodeUnlimit(path, scene, width, autoColor, color, hyaline);
+			FileUtil.write(is, os);
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
+	public boolean createWXCodeUnlimit(String path, String scene, File file){
+		return createWXCodeUnlimit(path, scene, 0, true, null, false, file);
+	}
+	public boolean createWXCodeUnlimit(String path, String scene, OutputStream os){
+		return createWXCodeUnlimit(path, scene, 0, true, null, false, os);
 	}
 
 	/**
