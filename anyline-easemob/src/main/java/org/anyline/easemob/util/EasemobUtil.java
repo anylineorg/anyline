@@ -54,7 +54,7 @@ public class EasemobUtil {
 	public EasemobConfig getConfig() { 
 		return config; 
 	} 
- 
+
  
 	/** 
 	 * 注册用户 

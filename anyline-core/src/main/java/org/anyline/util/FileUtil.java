@@ -249,7 +249,54 @@ public class FileUtil {
 	public static void write(String content, File file) {
 		write(content, file, "UTF-8", false);
 	}
-	 
+
+	public static boolean write(InputStream is, File file){
+		if(null == file || null == is){
+			return false;
+		}
+		try {
+			if(!file.exists()) {
+				if (!file.getParentFile().exists()) {
+					file.getParentFile().mkdirs();
+				}
+				file.createNewFile();
+			}
+			OutputStream os = new FileOutputStream(file);
+			return write(is, os, true);
+		}catch(Exception e){
+			return false;
+		}
+	}
+	public static boolean write(InputStream is, OutputStream os){
+		return write(is,os,true);
+	}
+	public static boolean write(InputStream is, OutputStream os, boolean close){
+		BufferedInputStream bis = new BufferedInputStream(is);
+		int len;
+		byte[] arr = new byte[1024];
+		try {
+			while ((len = bis.read(arr)) != -1) {
+				os.write(arr, 0, len);
+				os.flush();
+			}
+		}catch(Exception e){
+			return false;
+		}finally {
+			if(close){
+				try {
+					os.close();
+				}catch (Exception ex){
+
+				}
+				try {
+					is.close();
+				}catch (Exception ex){
+
+				}
+			}
+		}
+		return true;
+	}
 	/** 
 	 * 创建文件 
 	 * @param fileDir  fileDir
