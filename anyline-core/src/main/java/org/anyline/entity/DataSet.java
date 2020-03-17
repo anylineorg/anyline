@@ -2117,6 +2117,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
+    public DataSet replace(String key, String oldChar, String newChar){
+		if(null == key || null == oldChar || null == newChar){
+			return this;
+		}
+		for(DataRow row:rows){
+			row.replace(key, oldChar, newChar);
+		}
+    	return this;
+	}
 	/* ************************* 类sql操作 ************************************** */
 	public DataRow random(){
 		DataRow row = null;

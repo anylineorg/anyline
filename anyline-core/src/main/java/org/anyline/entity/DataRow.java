@@ -1008,7 +1008,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				return 0;
 			}
 		}else{
-			return Integer.parseInt(val.toString());
+			return (int)Double.parseDouble(val.toString());
 		}
 	}
 
@@ -1595,7 +1595,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
-
+	public DataRow replace(String key, String oldChar, String newChar){
+		if(null == key || null == oldChar || null == newChar){
+			return this;
+		}
+		put(key,getStringNvl(key).replace(oldChar, newChar));
+		return this;
+	}
 	/**
 	 * 拼接value
 	 * @param keys keys
