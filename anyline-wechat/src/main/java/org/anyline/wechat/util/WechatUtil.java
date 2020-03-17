@@ -517,4 +517,7 @@ public class WechatUtil {
 		return result;
 	}
 
+	public static void profit(){
+
+    }
 } 

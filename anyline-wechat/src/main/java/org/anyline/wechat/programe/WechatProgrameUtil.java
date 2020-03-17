@@ -5,12 +5,25 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.net.AESUtil;
 import org.anyline.net.HttpUtil;
-import org.anyline.util.BasicUtil;
+import org.anyline.util.*;
 import org.anyline.wechat.util.WechatUtil;
+import org.apache.http.HttpEntity;
+import org.apache.http.entity.StringEntity;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
 import java.security.Security;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
+
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintWriter;
 
 public class WechatProgrameUtil extends WechatUtil {
 	private static DataSet jsapiTickets = new DataSet();
@@ -75,31 +88,44 @@ public class WechatProgrameUtil extends WechatUtil {
 		}
 		return session;
 	}
-
+	public String getAccessToken(){
+		return getAccessToken(config);
+	}
 	/**
 	 * 生成二维码
-	 * @param path
-	 * @param width
-	 * @return
+	 * @param path path
+	 * @param width width
+	 * @return InputStream
+	 * @throws Exception
 	 */
-	public String createQRCode(String path, int width) throws Exception{
-		String result =  null;
+	public InputStream createQRCode(String path, int width) throws Exception{
 		String access_token = getAccessToken(config);
-		String url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token="+access_token+"&path="+path;
-		if(width >0){
-			url += "&width" + width;
+		String url = "https://api.weixin.qq.com/cgi-bin/wxaapp/createwxaqrcode?access_token="+access_token;
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("path",path);
+		if(width>0){
+			params.put("width", width);
 		}
-		DataRow json = DataRow.parseJson(HttpUtil.get(url).getText());
-		if("0".equals(json.getString("errcode"))){
-			result = json.getString("buffer");
-		}else{
-			throw new Exception(json.getString("errmsg"));
-		}
-		return result;
+		String json = BeanUtil.map2json(params);
+		InputStream is = HttpUtil.postStream(url,"UTF-8", new StringEntity(json, "UTF-8")).getInputStream();
+		return is;
 	}
-	public String createQRCode(String path) throws Exception{
+	public boolean createQRCode(String path, int width, File file){
+		try {
+			InputStream is = createQRCode(path, width);
+			FileUtil.write(is, file);
+		}catch(Exception e){
+			return false;
+		}
+		return true;
+	}
+	public boolean createQRCode(String path, File file){
+		return createQRCode(path, 0, file);
+	}
+	public InputStream createQRCode(String path) throws Exception{
 		return createQRCode(path, 0);
 	}
+
 	/**
 	 * 解密数据
 	 * @param session 会话key
