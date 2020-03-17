@@ -208,7 +208,7 @@ public class WechatProgrameUtil extends WechatUtil {
 	/**
 	 * 创建二维码
 	 * @param path path
-	 * @param scene scene 最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）
+	 * @param scene scene 最大32个可见字符，只支持数字，大小写英文以及部分特殊字符，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）
 	 * @param width 宽度自动写0
 	 * @param autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调，默认 false
 	 * @param color auto_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"} 十进制表示
@@ -239,13 +239,13 @@ public class WechatProgrameUtil extends WechatUtil {
 	/**
 	 * 创建二维码
 	 * @param path path
-	 * @param scene scene 最大32个可见字符，只支持数字，大小写英文以及部分特殊字符：!#$&'()*+,/:;=?@-._~，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）
+	 * @param scene scene 最大32个可见字符，只支持数字，大小写英文以及部分特殊字符，其它字符请自行编码为合法字符（因不支持%，中文无法使用 urlencode 处理，请使用其他编码方式）
 	 * @param width 宽度自动写0
 	 * @param autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调，默认 false
 	 * @param color auto_color 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"} 十进制表示
 	 * @param hyaline 是否需要透明底色，为 true 时，生成透明底色的小程序
 	 * @param file 写入文件
-	 * @return
+	 * @return  boolean
 	 */
 	public boolean createWXCodeUnlimit(String path, String scene, int width, boolean autoColor, String color, boolean hyaline, File file){
 		try{
