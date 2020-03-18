@@ -96,7 +96,7 @@ public class WechatProgrameUtil extends WechatUtil {
 	 * @param path path
 	 * @param width width
 	 * @return InputStream
-	 * @throws Exception
+	 * @throws Exception Exception
 	 */
 	public InputStream createQRCode(String path, int width) throws Exception{
 		String access_token = getAccessToken(config);
