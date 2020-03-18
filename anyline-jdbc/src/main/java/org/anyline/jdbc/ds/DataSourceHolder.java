@@ -19,15 +19,16 @@
  
 package org.anyline.jdbc.ds; 
  
-import java.util.ArrayList; 
-import java.util.List; 
- 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import javax.sql.DataSource; 
  
 import org.anyline.util.ConfigTable; 
 import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
- 
+import org.slf4j.LoggerFactory;
+
 public class DataSourceHolder { 
 	public static Logger log = LoggerFactory.getLogger(DataSourceHolder.class); 
 	//切换前数据源 
@@ -107,8 +108,11 @@ public class DataSourceHolder {
 	} 
 	public static boolean contains(String ds){ 
 		return dataSources.contains(ds); 
-	} 
-	public static void addDataSource(String key, DataSource ds) throws Exception{ 
+	}
+	public static DataSource reg(String key, DataSource ds) throws Exception{
+		return addDataSource(key, ds);
+	}
+	public static DataSource addDataSource(String key, DataSource ds) throws Exception{
 		if(dataSources.contains(key)){ 
 			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]"); 
 		} 
@@ -116,6 +120,8 @@ public class DataSourceHolder {
 			log.warn("[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key); 
 		} 
 		DynamicDataSource.addDataSource(key, ds); 
-		dataSources.add(key); 
-	} 
+		dataSources.add(key);
+		return ds;
+	}
+
 }
