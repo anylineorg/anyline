@@ -34,8 +34,8 @@ public class ProcedureImpl  implements Procedure{
 	private static final long serialVersionUID = -1421673036222025241L;
 	private String name;
 	private List<ProcedureParam> inputs = new ArrayList<ProcedureParam>();
-	private List<ProcedureParam> outputs = new ArrayList<ProcedureParam>();
-	private List<Object> result;	//执行结果|输入参数
+	private List<ProcedureParam> outputs = new ArrayList<ProcedureParam>();//输出参数，输入输出参数
+	private List<Object> result;	//输出参数结果
 	
 	
 	public ProcedureImpl(String name){
