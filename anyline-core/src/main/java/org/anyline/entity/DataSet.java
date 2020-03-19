@@ -1649,7 +1649,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	/**
 	 * 差集
-	 * 从当前集合中删除set中存在的row
+	 * 从当前集合中删除set中存在的row,生成新的DataSet并不修改当前对象
 	 * @param set set
 	 * @param keys CD,"CD:WORK_CD"
 	 * @return return

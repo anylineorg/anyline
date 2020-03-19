@@ -23,6 +23,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -94,7 +95,22 @@ public class BeanUtil {
 	} 
 	public static boolean setFieldValue(Object obj, String field, Object value){ 
 		return setFieldValue(obj, field, value, true); 
-	} 
+	}
+
+	public static void setFieldsValue(Object obj, DataRow values){
+		List<String> fields = BeanUtil.getFieldsName(obj.getClass());
+		List<String> keys = values.keys();
+		for(String key:keys){
+			values.put(key.replace("-",""), values.getString(key));
+		}
+		for(String filed:fields){
+			if(!values.containsKey(filed)){
+				continue;
+			}
+			Object value = values.get(filed);
+			BeanUtil.setFieldValue(obj, filed, value);
+		}
+	}
 	public static Method getMethod(Class<?> clazz, String name, boolean recursion, Class<?>... parameterTypes){ 
 		Method method = null; 
 		try{ 
