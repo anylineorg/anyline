@@ -11,6 +11,7 @@ import org.anyline.wechat.util.WechatConfig;
  
  
 public class WechatOpenConfig extends WechatConfig{
+	public static String CONFIG_NAME = "anyline-wechat-open.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	static{ 
 		init(); 
@@ -50,7 +51,7 @@ public class WechatOpenConfig extends WechatConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, WechatOpenConfig.class, "anyline-wechat-open.xml",compatibles);
+		load(instances, WechatOpenConfig.class, CONFIG_NAME,compatibles);
 		WechatOpenConfig.lastLoadTime = System.currentTimeMillis();
 	} 
 	private static void debug(){ 

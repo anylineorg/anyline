@@ -26,7 +26,6 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 public class WechatProgrameUtil extends WechatUtil {
-	private static DataSet jsapiTickets = new DataSet();
 
 	private WechatProgrameConfig config = null;
 

@@ -11,7 +11,8 @@ import java.util.Hashtable;
 
 
 public class WechatProgrameConfig extends WechatConfig{
-	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
+	public static String CONFIG_NAME = "anyline-wechat-programe.xml";
 	 
 	static{ 
 		init(); 
@@ -65,7 +66,7 @@ public class WechatProgrameConfig extends WechatConfig{
 	 * 然后加载anyline开头的xml文件并覆盖先加载的配置 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, WechatProgrameConfig.class, "anyline-wechat-programe.xml",compatibles);
+		load(instances, WechatProgrameConfig.class, CONFIG_NAME,compatibles);
 		WechatProgrameConfig.lastLoadTime = System.currentTimeMillis();
 	} 
 	private static void debug(){ 

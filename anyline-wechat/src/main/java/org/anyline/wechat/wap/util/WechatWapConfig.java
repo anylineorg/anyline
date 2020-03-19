@@ -11,7 +11,8 @@ import org.anyline.wechat.util.WechatConfig;
  
  
 public class WechatWapConfig extends WechatConfig{
-	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
+	public static String CONFIG_NAME = "anyline-wechat-wap.xml";
  
 	static{ 
 		init(); 
@@ -60,7 +61,7 @@ public class WechatWapConfig extends WechatConfig{
 	 * 加载配置文件 
 	 */ 
 	private synchronized static void load() { 
-		load(instances, WechatWapConfig.class, "anyline-wechat-wap.xml",compatibles);
+		load(instances, WechatWapConfig.class, CONFIG_NAME,compatibles);
 		WechatWapConfig.lastLoadTime = System.currentTimeMillis();
 	} 
 	private static void debug(){ 

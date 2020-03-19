@@ -1,7 +1,7 @@
 package org.anyline.wechat.util;
  
-import java.io.File; 
-import java.util.HashMap; 
+import java.io.File;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.anyline.entity.DataRow;
@@ -453,6 +453,13 @@ public class WechatUtil {
 		}
 		return result;
 	}
+
+	/**
+	 * 新建access_token
+	 * @param appid appid
+	 * @param secret secret
+	 * @return DataRow
+	 */
 	private static DataRow newAccessToken(String appid, String secret){
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[CREATE NEW ACCESS TOKEN][appid:{}][secret:{}]",appid, secret);

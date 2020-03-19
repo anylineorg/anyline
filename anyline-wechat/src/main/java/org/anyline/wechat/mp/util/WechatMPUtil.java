@@ -26,7 +26,7 @@ import java.util.Map;
 public class WechatMPUtil extends WechatUtil {
 	private static DataSet jsapiTickets = new DataSet();
 
-	private WechatMPConfig config = null; 
+	private WechatMPConfig config = null;
  
 	private static Hashtable<String,WechatMPUtil> instances = new Hashtable<String,WechatMPUtil>(); 
 	public static WechatMPUtil getInstance(){ 
@@ -60,7 +60,7 @@ public class WechatMPUtil extends WechatUtil {
 	} 
 	 
 	public WechatMPConfig getConfig() { 
-		return config; 
+		return config;
 	} 
  
 	/** 
@@ -249,52 +249,39 @@ public class WechatMPUtil extends WechatUtil {
 			return true; 
 		} 
 		return false; 
-	} 
-	/** 
-	 * 发送样模板消息 
-	 * @param msg  msg
-	 * @return return
-	 */ 
-	public WechatTemplateMessageResult sendTemplateMessage(WechatTemplateMessage msg){
-		WechatTemplateMessageResult result = null;
-		String token = getAccessToken(); 
-		String url = WechatConfig.API_URL_SEND_TEMPLATE_MESSAGE + "?access_token=" + token;
-		String json = BeanUtil.object2json(msg); 
-		log.warn("[send template message][data:{}]",json); 
-		HttpEntity entity = new StringEntity(json, "UTF-8"); 
-		String txt = HttpUtil.post(url, "UTF-8", entity).getText(); 
-		log.warn("[send template message][result:{}]",txt); 
-		result = BeanUtil.json2oject(txt, WechatTemplateMessageResult.class);
-		return result; 
-	} 
-	public WechatTemplateMessageResult sendTemplateMessage(String openId, WechatTemplateMessage msg){
-		msg.setUser(openId); 
-		return sendTemplateMessage(msg); 
-	} 
- 
-	public static String ceateAuthUrl(String key, String redirect, SNSAPI_SCOPE scope, String state){ 
-		String url = null; 
-		try{ 
+	}
+
+	/**
+	 * 创建登录连接
+	 * @param key 配置文件的key默认default
+	 * @param redirect redirect 登录成功后得定向地址
+	 * @param scope scope 获取信息范围
+	 * @param state state 原样返回
+	 * @return String
+	 */
+	public static String ceateAuthUrl(String key, String redirect, SNSAPI_SCOPE scope, String state){
+		String url = null;
+		try{
 			WechatConfig config = WechatMPConfig.getInstance(key);
-			String appid = config.APP_ID; 
-			if(BasicUtil.isEmpty(scope)){ 
-				scope = SNSAPI_SCOPE.BASE; 
-			} 
-			if(BasicUtil.isEmpty(redirect)){ 
-				redirect = config.OAUTH_REDIRECT_URL; 
-			} 
-			if(BasicUtil.isEmpty(redirect)){ 
-				redirect = WechatMPConfig.getInstance().OAUTH_REDIRECT_URL; 
-			} 
-			redirect = URLEncoder.encode(redirect, "UTF-8"); 
+			String appid = config.APP_ID;
+			if(BasicUtil.isEmpty(scope)){
+				scope = SNSAPI_SCOPE.BASE;
+			}
+			if(BasicUtil.isEmpty(redirect)){
+				redirect = config.OAUTH_REDIRECT_URL;
+			}
+			if(BasicUtil.isEmpty(redirect)){
+				redirect = WechatMPConfig.getInstance().OAUTH_REDIRECT_URL;
+			}
+			redirect = URLEncoder.encode(redirect, "UTF-8");
 			url =  WechatConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="
-					+scope.getCode()+"&state="+state+",app:"+key+"#wechat_redirect"; 
-		}catch(Exception e){ 
-			return null; 
-		} 
-		return url; 
-	} 
-	 
+					+scope.getCode()+"&state="+state+",app:"+key+"#wechat_redirect";
+		}catch(Exception e){
+			return null;
+		}
+		return url;
+	}
+
 	/** 
 	 * 获取RSA公钥 
 	 * @return return
@@ -304,4 +291,25 @@ public class WechatMPUtil extends WechatUtil {
 	}
 
 
+	/**
+	 * 发送样模板消息
+	 * @param msg  msg
+	 * @return return
+	 */
+	public WechatTemplateMessageResult sendTemplateMessage(WechatTemplateMessage msg){
+		WechatTemplateMessageResult result = null;
+		String token = getAccessToken();
+		String url = WechatConfig.API_URL_SEND_TEMPLATE_MESSAGE + "?access_token=" + token;
+		String json = BeanUtil.object2json(msg);
+		log.warn("[send template message][data:{}]",json);
+		HttpEntity entity = new StringEntity(json, "UTF-8");
+		String txt = HttpUtil.post(url, "UTF-8", entity).getText();
+		log.warn("[send template message][result:{}]",txt);
+		result = BeanUtil.json2oject(txt, WechatTemplateMessageResult.class);
+		return result;
+	}
+	public WechatTemplateMessageResult sendTemplateMessage(String openId, WechatTemplateMessage msg){
+		msg.setUser(openId);
+		return sendTemplateMessage(msg);
+	}
 } 
