@@ -23,10 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.List;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
@@ -40,146 +37,182 @@ import java.util.zip.ZipOutputStream;
 public class ZipUtil { 
 	static final Logger log = LoggerFactory.getLogger(ZipUtil.class); 
 	private static final int BUFF_SIZE = 1024 * 1024; // 1M Byte 
- 
-	/** 
-	 * 批量压缩文件或文件夹 
-	 * @param srcs  要压缩的文件或文件夹列表 
-	 * @param root  压缩后文件路径,解压到当前目录时,解压完成后的目录名 
-	 * @param zip  生成的压缩文件名 
-	 * @return return
-	 */ 
-	public static boolean zip(Collection<File> srcs, File zip, String root) { 
-		return zip(srcs, zip, root, null); 
-	} 
-	public static boolean append(Collection<File> srcs, File zip, String root) { 
-		return append(srcs, zip, root, null); 
-	} 
- 
-	public static boolean zip(File src, File zip, String root) { 
-		List<File> files = new ArrayList<File>(); 
-		files.add(src); 
-		return zip(files, zip, root); 
-	} 
-	public static boolean append(File src, File zip, String root) { 
-		List<File> files = new ArrayList<File>(); 
-		files.add(src); 
-		return append(files, zip, root); 
-	} 
- 
-	public static boolean zip(Collection<File> srcs, File zip) { 
-		return zip(srcs, zip, ""); 
-	} 
-	public static boolean append(Collection<File> srcs, File zip) { 
-		return append(srcs, zip, ""); 
-	} 
- 
-	public static boolean zip(File src, File zip) { 
-		List<File> files = new ArrayList<File>(); 
-		files.add(src); 
-		return zip(files, zip); 
-	} 
-	public static boolean append(File src, File zip) { 
-		List<File> files = new ArrayList<File>(); 
-		files.add(src); 
-		return append(files, zip); 
-	} 
- 
-	/** 
-	 * 批量压缩文件（夹） 如果zip已存在则会覆盖 
-	 *  
-	 * @param files   要压缩的文件（夹）列表 
-	 * @param zip  生成的压缩文件 
-	 * @param root 压缩后文件路径,解压到当前目录时,解压完成后的目录名 
-	 * @param comment   压缩文件的注释 
+
+
+	public static boolean zip(Map<String,File> files, File zip, String root, String comment, boolean append) {
+		boolean result = true;
+		long fr = System.currentTimeMillis();
+		if (ConfigTable.isDebug()) {
+			log.warn("[压缩文件][file:{}][size:{}]", zip.getAbsolutePath(), files.size());
+		}
+		try {
+
+			List<String> keys = BeanUtil.getMapKeys(files);
+			File dir = zip.getParentFile();
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+			ZipOutputStream zipout = null;
+			if (append && zip.exists()) {
+				//追加文件
+				File tempFile = File.createTempFile(zip.getName(), null);
+				tempFile.delete();
+				boolean renameOk = zip.renameTo(tempFile);
+				if (!renameOk) {
+					throw new Exception("重命名失败 "
+							+ zip.getAbsolutePath() + " > "
+							+ tempFile.getAbsolutePath());
+				}
+				byte[] buf = new byte[1024];
+				ZipInputStream zin = new ZipInputStream(new FileInputStream(tempFile));
+				zipout = new ZipOutputStream(new FileOutputStream(zip));
+				ZipEntry entry = zin.getNextEntry();
+				while (entry != null) {
+					String name = entry.getName();
+					boolean notInFiles = true;
+					for(String key:keys){
+						if (key.equals(name)) {
+							notInFiles = false;
+							break;
+						}
+					}
+//					for (File f : files) {
+//						if (f.getName().equals(name)) {
+//							notInFiles = false;
+//							break;
+//						}
+//					}
+					if (notInFiles) {
+						zipout.putNextEntry(new ZipEntry(name));
+						int len;
+						while ((len = zin.read(buf)) > 0) {
+							zipout.write(buf, 0, len);
+						}
+					}
+					entry = zin.getNextEntry();
+				}
+				zin.close();
+			}else{//end 追加
+				zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip),BUFF_SIZE));
+			}
+			for(String key:keys){
+				File file = files.get(key);
+				if (!zip(file, key, zipout, root)) {
+					result = false;
+				}
+			}
+
+			if(null !=comment){
+				zipout.setComment(comment);
+			}
+			zipout.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		if (ConfigTable.isDebug()) {
+			log.warn("[压缩完成][time:{}][size:{}]",(System.currentTimeMillis() - fr), files.size());
+		}
+		return result;
+	}
+
+	/**
+	 * 批量压缩文件（夹） 如果zip已存在则会覆盖
+	 *
+	 * @param files   要压缩的文件（夹）列表
+	 * @param zip  生成的压缩文件
+	 * @param root 压缩后文件路径,解压到当前目录时,解压完成后的目录名
+	 * @param comment   压缩文件的注释
 	 * @param append   是否追加
 	 * @return return
-	 */ 
-	public static boolean zip(Collection<File> files, File zip, String root, String comment, boolean append) { 
-		boolean result = true; 
-		long fr = System.currentTimeMillis(); 
-		if (ConfigTable.isDebug()) { 
-			log.warn("[压缩文件][file:{}][size:{}]", zip.getAbsolutePath(), files.size()); 
-		} 
-		try { 
-			File dir = zip.getParentFile(); 
-			if (!dir.exists()) { 
-				dir.mkdirs(); 
-			} 
-			ZipOutputStream zipout = null; 
-			if (append && zip.exists()) { 
-				//追加文件 
-				File tempFile = File.createTempFile(zip.getName(), null); 
-				tempFile.delete(); 
-				boolean renameOk = zip.renameTo(tempFile); 
-				if (!renameOk) { 
-					throw new Exception("重命名失败 "
-							+ zip.getAbsolutePath() + " > " 
-							+ tempFile.getAbsolutePath()); 
-				} 
-				byte[] buf = new byte[1024]; 
-				ZipInputStream zin = new ZipInputStream(new FileInputStream(tempFile)); 
-				zipout = new ZipOutputStream(new FileOutputStream(zip)); 
-				ZipEntry entry = zin.getNextEntry(); 
-				while (entry != null) { 
-					String name = entry.getName(); 
-					boolean notInFiles = true; 
-					for (File f : files) { 
-						if (f.getName().equals(name)) { 
-							notInFiles = false; 
-							break; 
-						} 
-					} 
-					if (notInFiles) { 
-						zipout.putNextEntry(new ZipEntry(name)); 
-						int len; 
-						while ((len = zin.read(buf)) > 0) { 
-							zipout.write(buf, 0, len); 
-						} 
-					} 
-					entry = zin.getNextEntry(); 
-				} 
-				zin.close(); 
-			}else{ 
-				zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip),BUFF_SIZE)); 
-			} 
-			for (File file : files) { 
-				if (!zip(file, zipout, root)) { 
-					result = false; 
-				} 
-			} 
-			if(null !=comment){ 
-				zipout.setComment(comment); 
-			} 
-			zipout.close(); 
-		} catch (Exception e) { 
-			e.printStackTrace(); 
-		} 
-		if (ConfigTable.isDebug()) { 
-			log.warn("[压缩完成][time:{}][size:{}]",(System.currentTimeMillis() - fr), files.size()); 
-		} 
-		return result; 
-	} 
- 
-	public static boolean zip(Collection<File> files, File zip, String root, String comment) { 
-		return zip(files, zip, root, comment, false); 
-	} 
- 
-	public static boolean append(Collection<File> files, File zip, String root, String comment){ 
-		return zip(files, zip, root, comment, true); 
-	} 
-	 
-	public static boolean zip(File src, File zip, String root, String comment) { 
-		List<File> files = new ArrayList<File>(); 
-		files.add(src); 
-		return zip(files, zip, root, comment); 
-	} 
-	public static boolean append(File src, File zip, String root, String comment) { 
-		List<File> files = new ArrayList<File>(); 
-		files.add(src); 
-		return append(files, zip, root, comment); 
-	} 
- 
- 
+	 */
+	public static boolean zip(Collection<File> files, File zip, String root, String comment, boolean append) {
+		Map<String,File> map = new HashMap<String,File>();
+		for(File file:files){
+			map.put(file.getName(), file);
+		}
+		return zip(map,zip,root,comment,append);
+	}
+	public static boolean zip(Collection<File> files, File zip, String root, String comment) {
+		return zip(files, zip, root, comment, false);
+	}
+	public static boolean zip(Map<String,File> files, File zip, String root, String comment) {
+		return zip(files, zip, root, comment, false);
+	}
+
+	public static boolean append(Collection<File> files, File zip, String root, String comment){
+		return zip(files, zip, root, comment, true);
+	}
+	public static boolean append(Map<String,File> files, File zip, String root, String comment){
+		return zip(files, zip, root, comment, true);
+	}
+
+	public static boolean zip(File src, File zip, String root, String comment) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return zip(files, zip, root, comment);
+	}
+	public static boolean append(File src, File zip, String root, String comment) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return append(files, zip, root, comment);
+	}
+
+	/**
+	 * 批量压缩文件或文件夹
+	 * @param srcs  要压缩的文件或文件夹列表
+	 * @param root  压缩后文件路径,解压到当前目录时,解压完成后的目录名
+	 * @param zip  生成的压缩文件名
+	 * @return return
+	 */
+	public static boolean zip(Collection<File> srcs, File zip, String root) {
+		return zip(srcs, zip, root, null);
+	}
+	public static boolean zip(Map<String,File> srcs, File zip, String root) {
+		return zip(srcs, zip, root, null);
+	}
+	public static boolean append(Collection<File> srcs, File zip, String root) {
+		return append(srcs, zip, root, null);
+	}
+	public static boolean append(Map<String,File> srcs, File zip, String root) {
+		return append(srcs, zip, root, null);
+	}
+
+	public static boolean zip(File src, File zip, String root) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return zip(files, zip, root);
+	}
+	public static boolean append(File src, File zip, String root) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return append(files, zip, root);
+	}
+
+	public static boolean zip(Collection<File> srcs, File zip) {
+		return zip(srcs, zip, "");
+	}
+	public static boolean zip(Map<String,File> srcs, File zip) {
+		return zip(srcs, zip, "");
+	}
+	public static boolean append(Collection<File> srcs, File zip) {
+		return append(srcs, zip, "");
+	}
+
+	public static boolean append(Map<String,File> srcs, File zip) {
+		return append(srcs, zip, "");
+	}
+
+	public static boolean zip(File src, File zip) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return zip(files, zip);
+	}
+	public static boolean append(File src, File zip) {
+		List<File> files = new ArrayList<File>();
+		files.add(src);
+		return append(files, zip);
+	}
+
 	/** 
 	 * 压缩文件 
 	 *  
@@ -187,9 +220,12 @@ public class ZipUtil {
 	 * @param zipout 压缩的目的文件 
 	 * @param dir   压缩后文件路径,解压到当前目录时,解压完成后的目录名 
 	 */ 
-	private static boolean zip(File src, ZipOutputStream zipout, String dir) { 
+	private static boolean zip(File src, String rename, ZipOutputStream zipout, String dir) {
 		try { 
-			String path = src.getName(); 
+			String path = src.getName();
+			if(BasicUtil.isNotEmpty(rename)){
+				path = rename;
+			}
 			if (BasicUtil.isNotEmpty(dir)) { 
 				path = dir + File.separator + src.getName(); 
 			} 
@@ -197,7 +233,7 @@ public class ZipUtil {
 			if (src.isDirectory()) { 
 				File[] fileList = src.listFiles(); 
 				for (File file : fileList) { 
-					zip(file, zipout, path); 
+					zip(file, file.getName(),zipout, path);
 				} 
 			} else { 
 				long fr = System.currentTimeMillis(); 
