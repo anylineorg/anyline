@@ -25,8 +25,8 @@ import java.util.Map;
 
 import javax.sql.DataSource; 
  
-import org.anyline.util.ConfigTable; 
-import org.slf4j.Logger; 
+import org.anyline.util.ConfigTable;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class DataSourceHolder { 
