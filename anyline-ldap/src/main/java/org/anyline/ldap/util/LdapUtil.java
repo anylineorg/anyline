@@ -34,6 +34,13 @@ public class LdapUtil {
 		} 
 		return util; 
 	}
+
+	/**
+	 * 登录
+	 * @param account 帐号
+	 * @param password 密码
+	 * @return 是否登录成功
+	 */
 	public boolean login(String account, String password) {
 		try{
 			connect(account, password).close();
