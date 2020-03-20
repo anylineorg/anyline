@@ -391,4 +391,11 @@ public class ConfigTable {
 			e.printStackTrace();
 		}
 	}
+
+	public static void setUpperKey(boolean bol){
+		IS_UPPER_KEY = bol;
+	}
+	public static void setLowerKey(boolean bol){
+		IS_LOWER_KEY = bol;
+	}
 } 
