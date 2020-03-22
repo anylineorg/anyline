@@ -13,8 +13,11 @@
 		<property key="PAY_MCH_ID">143*****402</property>
 		<property key="PAY_NOTIFY_URL">http://****/js/hm/pay/ntf/wx_mp</property>
 		<property key="PAY_CALLBACK_URL"></property>
+		<!--涉及资金回滚的接口会使用到API证书，包括退款、撤销接口。
+		下载API证书:微信商户平台(pay.weixin.qq.com) 账户中心/账户设置/API安全 。-->
 		<property key="PAY_KEY_STORE_FILE">D:\\apiclient_cert.p12</property>
-		<property key="PAY_KEY_STORE_PASSWORD">111111</property>
+		<!--PAY_KEY_STORE_FILE 证书密码 默认是PAY_MCH_ID-->
+		<property key="PAY_KEY_STORE_PASSWORD">143*****402</property>
 		<!-- 支付到银行卡公钥文件 -->
 		<property key="PAY_BANK_RSA_PUBLIC_KEY_FILE"></property>
 	</config>
