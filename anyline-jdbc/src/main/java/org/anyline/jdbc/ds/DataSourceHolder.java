@@ -20,11 +20,13 @@
 package org.anyline.jdbc.ds; 
  
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.sql.DataSource; 
- 
+import javax.sql.DataSource;
+
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -124,4 +126,11 @@ public class DataSourceHolder {
 		return ds;
 	}
 
+	public static DataSource addDataSource(String key, String type, String url, String user, String password) throws Exception{
+		DataSource ds = null;
+		Class<? extends DataSource> dataSourceType = (Class<? extends DataSource>) Class.forName((String) type);
+		ds = dataSourceType.newInstance();
+		addDataSource(key,ds);
+		return ds;
+	}
 }
