@@ -1635,6 +1635,12 @@ public class BeanUtil {
 		}
 	}
 
+	/**
+	 * map中提取map中的key
+	 * @param map
+	 * @param keys
+	 * @return
+	 */
 	public static String value(Map<String, ?> map, String keys) {
 		String result = null;
 		String[] _keys = keys.split("\\.");
@@ -1652,4 +1658,5 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
 } 
