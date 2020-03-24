@@ -56,12 +56,10 @@ import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ParseResult;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DESUtil;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.env.Environment;
 
 public class WebUtil {
 
@@ -183,7 +181,6 @@ public class WebUtil {
 				request.setAttribute(PACK_REQUEST_PARAM, map);
 			}
 		}
-
 		return map;
 	}
 	/**
@@ -935,4 +932,109 @@ public class WebUtil {
 			}
 		}
 	}
+
+	/**
+	 * 根据配置文件设置对象属性值
+	 * @param obj 对象
+	 * @param prefix 前缀
+	 * @param env 配置文件环境
+	 */
+	public static void setFieldsValue(Object obj, String prefix, Environment env ){
+		List<String> fields = BeanUtil.getFieldsName(obj.getClass());
+		for(String field:fields){
+			String value = getProperty(prefix, env, field);
+			if(BasicUtil.isNotEmpty(value)) {
+				BeanUtil.setFieldValue(obj, field, value);
+			}
+		}
+	}
+
+	/**
+	 * 根据配置文件提取指定key的值
+	 * @param prefix 前缀
+	 * @param env 配置文件环境
+	 * @param keys key列表 第一个有值的key生效
+	 * @return String
+	 */
+	public static String getProperty(String prefix, Environment env, String ... keys){
+		String value = null;
+		if(null == env || null == keys){
+			return value;
+		}
+		if(null == prefix){
+			prefix = "";
+		}
+		for(String key:keys){
+			key = prefix + key;
+			value = env.getProperty(key);
+			if(null != value){
+				return value;
+			}
+			//以中划线分隔的配置文件
+			String[] ks = key.split("-");
+			String sKey = null;
+			for(String k:ks){
+				if(null == sKey){
+					sKey = k;
+				}else{
+					sKey = sKey + CharUtil.toUpperCaseHeader(k);
+				}
+			}
+			value = env.getProperty(sKey);
+			if(null != value){
+				return value;
+			}
+
+			//以下划线分隔的配置文件
+			ks = key.split("_");
+			sKey = null;
+			for(String k:ks){
+				if(null == sKey){
+					sKey = k;
+				}else{
+					sKey = sKey + CharUtil.toUpperCaseHeader(k);
+				}
+			}
+			value = env.getProperty(sKey);
+			if(null != value){
+				return value;
+			}
+		}
+		return value;
+	}
+
+
+
+
+//    //默认数据源
+//    private DataSource defaultDataSource;
+	//用户自定义数据源
+	//private static Map<String, DataSource> springDataSources = new HashMap<>();
+//    public static DataSource reg(String code, Map<String, String> map) throws Exception{
+//        DataSource ds = null;
+//        if(DataSourceHolder.contains(code)) {
+//            throw new Exception("重复注册");
+//        }else{
+//            ds = buildDataSource(map);
+//            DataSourceHolder.reg(code, ds);
+//        }
+//        return ds;
+//    }
+
+//    public static DataSource reg(String code, String driver, String url, String user, String password) throws Exception{
+//        DataSource ds = null;
+//        if(DataSourceHolder.contains(code)) {
+//            throw new Exception("重复注册");
+//        }else{
+//            Map<String,String> map = new HashMap<String,String>();
+//            map.put("driver", driver);
+//            map.put("url", url);
+//            map.put("user", user);
+//            map.put("password", password);
+//            ds = buildDataSource(map);
+//            DataSourceHolder.reg(code, ds);
+//        }
+//        DataSourceHolder.reg(code,ds);
+//        return ds;
+//    }
 }
