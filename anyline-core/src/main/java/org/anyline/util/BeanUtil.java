@@ -97,20 +97,6 @@ public class BeanUtil {
 		return setFieldValue(obj, field, value, true); 
 	}
 
-	public static void setFieldsValue(Object obj, DataRow values){
-		List<String> fields = BeanUtil.getFieldsName(obj.getClass());
-		List<String> keys = values.keys();
-		for(String key:keys){
-			values.put(key.replace("-",""), values.getString(key));
-		}
-		for(String filed:fields){
-			if(!values.containsKey(filed)){
-				continue;
-			}
-			Object value = values.get(filed);
-			BeanUtil.setFieldValue(obj, filed, value);
-		}
-	}
 	public static Method getMethod(Class<?> clazz, String name, boolean recursion, Class<?>... parameterTypes){ 
 		Method method = null; 
 		try{ 
@@ -199,8 +185,8 @@ public class BeanUtil {
 		} 
 		return value; 
 		 
-	} 
- 
+	}
+
 	public static Object getFieldValue(Object obj, String field){ 
 		return getFieldValue(obj, field, false); 
 	} 
@@ -1636,13 +1622,13 @@ public class BeanUtil {
 	}
 
 	/**
-	 * map中提取map中的key
-	 * @param map
-	 * @param keys
+	 * 深层提取map中的value
+	 * @param map map
+	 * @param keys keys 一级key.二级key.三级key
 	 * @return
 	 */
-	public static String value(Map<String, ?> map, String keys) {
-		String result = null;
+	public static Object value(Map<String, ?> map, String keys) {
+		Object result  = null;
 		String[] _keys = keys.split("\\.");
 		for (String key : _keys) {
 			Object o = map.get(key);
@@ -1650,7 +1636,7 @@ public class BeanUtil {
 				if(o instanceof Map){
 					map = (Map<String, ?>) o;
 				}else{
-					result = o.toString();
+					result = o;
 				}
 			} else {
 				continue;
@@ -1659,4 +1645,87 @@ public class BeanUtil {
 		return result;
 	}
 
+	/**
+	 * 取第一个不为空的值
+	 * @param map map
+	 * @param keys keys
+	 * @return Object
+	 */
+	public static Object value(Map<String,?> map, String ... keys){
+		Object value = null;
+		if(null == map || null == keys){
+			return value;
+		}
+		for(String key:keys){
+			value = map.get(key);
+			if(null != value){
+				return value;
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * 提取第一个不为空的value
+	 * @param map map
+	 * @param keys keys
+	 * @return String
+	 */
+	public static Object propertyValue(Map<String,?> map, String ... keys){
+		Object value = null;
+		if(null == map || null == keys){
+			return value;
+		}
+		for(String key:keys){
+			value = map.get(key);
+			if(null != value){
+				return value;
+			}
+			//以下划线分隔的key
+			String[] ks = key.split("_");
+			String sKey = null;
+			for(String k:ks){
+				if(null == sKey){
+					sKey = k;
+				}else{
+					sKey = sKey + CharUtil.toUpperCaseHeader(k);
+				}
+			}
+			value = map.get(sKey);
+			if(null != value){
+				return value;
+			}
+			//以中划线分隔的key
+			ks = key.split("-");
+			sKey = null;
+			for(String k:ks){
+				if(null == sKey){
+					sKey = k;
+				}else{
+					sKey = sKey + CharUtil.toUpperCaseHeader(k);
+				}
+			}
+			value = map.get(sKey);
+			if(null != value){
+				return value;
+			}
+		}
+		return value;
+	}
+	/**
+	 * 设置所有属性值
+	 * @param obj obj
+	 * @param map map
+	 */
+    public static void setFieldsValue(Object obj, Map<String,?> map ){
+    	if(null != map && null != obj) {
+			List<String> fields = BeanUtil.getFieldsName(obj.getClass());
+			for (String field : fields) {
+				Object value = propertyValue(map, field);
+				if (BasicUtil.isNotEmpty(value)) {
+					BeanUtil.setFieldValue(obj, field, value);
+				}
+			}
+		}
+    }
 } 
