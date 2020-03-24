@@ -19,13 +19,7 @@
 
 package org.anyline.util; 
  
-import java.awt.AlphaComposite;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.Transparency;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -205,6 +199,14 @@ public class WatermarkUtil {
             String format = "jpg";
             if(target.getName().toLowerCase().endsWith("png")){
             	format = "png";
+            }
+            if ("jpg".equals(format)) { //重画一下，要么会变色
+                BufferedImage tag;
+                tag = new BufferedImage(buffImg.getWidth(), buffImg.getHeight(), BufferedImage.TYPE_INT_BGR);
+                Graphics gg = tag.getGraphics();
+                gg.drawImage(buffImg, 0, 0, null); // 绘制缩小后的图
+                gg.dispose();
+                buffImg = tag;
             }
             ImageIO.write(buffImg, format, os);
         } catch (Exception e) { 
