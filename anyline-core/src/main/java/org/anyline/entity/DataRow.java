@@ -208,7 +208,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 					}else if(value.isArray()){
 						row.put(key, parse(keyCase,value));
 					}else if(value.isObject()){
-						row.put(key, parseJson(value));
+						row.put(key, parseJson(keyCase, value));
 					}
 				}else{
 					row.put(key, null);
