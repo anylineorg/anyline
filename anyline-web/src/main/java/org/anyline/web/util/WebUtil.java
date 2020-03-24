@@ -1002,39 +1002,4 @@ public class WebUtil {
 		}
 		return value;
 	}
-
-
-
-
-//    //默认数据源
-//    private DataSource defaultDataSource;
-	//用户自定义数据源
-	//private static Map<String, DataSource> springDataSources = new HashMap<>();
-//    public static DataSource reg(String code, Map<String, String> map) throws Exception{
-//        DataSource ds = null;
-//        if(DataSourceHolder.contains(code)) {
-//            throw new Exception("重复注册");
-//        }else{
-//            ds = buildDataSource(map);
-//            DataSourceHolder.reg(code, ds);
-//        }
-//        return ds;
-//    }
-
-//    public static DataSource reg(String code, String driver, String url, String user, String password) throws Exception{
-//        DataSource ds = null;
-//        if(DataSourceHolder.contains(code)) {
-//            throw new Exception("重复注册");
-//        }else{
-//            Map<String,String> map = new HashMap<String,String>();
-//            map.put("driver", driver);
-//            map.put("url", url);
-//            map.put("user", user);
-//            map.put("password", password);
-//            ds = buildDataSource(map);
-//            DataSourceHolder.reg(code, ds);
-//        }
-//        DataSourceHolder.reg(code,ds);
-//        return ds;
-//    }
 }
