@@ -130,7 +130,7 @@ public class CharUtil {
 	} 
  
 	/** 
-	 * 单字解析 
+	 * 单字解析 汉字转拼音
 	 *  
 	 * @param str  str
 	 * @return return
