@@ -45,17 +45,26 @@ public class DataSourceHolder {
     } 
     public static String getDataSource() { 
         return THREAD_CUR_SOURCE.get(); 
-    } 
- 
-    public static void setDataSource(String dataSource) { 
+    }
+
+	/**
+	 * 设置当前数据源名称
+	 * @param dataSource 数据源在spring context中注册的名称
+	 */
+	public static void setDataSource(String dataSource) {
     	if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
     		log.warn("[切换数据源][thread:{}][数据源:{}]",Thread.currentThread().getId(),dataSource); 
     	} 
     	THREAD_RECALL_SOURCE.set(THREAD_CUR_SOURCE.get());//记录切换前数据源 
     	THREAD_CUR_SOURCE.set(dataSource); 
     	THREAD_AUTO_DEFAULT.set(false); 
-    } 
- 
+    }
+
+	/**
+	 * 设置当前数据源名称
+	 * @param dataSource 数据源在spring context中注册的名称
+	 * @param auto 扫行完后切换回原来的数据库
+	 */
     public static void setDataSource(String dataSource, boolean auto) { 
     	if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
     		log.warn("[切换数据源][thread:{}][数据源:{}][auto default:{}]",Thread.currentThread().getId(),dataSource,auto); 
@@ -102,18 +111,34 @@ public class DataSourceHolder {
 			} 
 		} 
 		return src; 
-	} 
+	}
+
+	/**
+	 * 注册新的数据源，只是把spring context中现有的数据源名称添加到数据源名称列表
+	 * @param ds 数据源名称
+	 */
 	public static void reg(String ds){ 
 		if(!dataSources.contains(ds)){ 
 			dataSources.add(ds); 
 		} 
-	} 
+	}
+
+	/**
+	 * 数据源列表中是否已包含指定数据源
+	 * @param ds 数据源名称
+	 * @return boolean
+	 */
 	public static boolean contains(String ds){ 
 		return dataSources.contains(ds); 
 	}
-	public static DataSource reg(String key, DataSource ds) throws Exception{
-		return addDataSource(key, ds);
-	}
+
+	/**
+	 * 注册数据源
+	 * @param key 数据源名称
+	 * @param ds 数据源
+	 * @return DataSource
+	 * @throws Exception Exception
+	 */
 	public static DataSource addDataSource(String key, DataSource ds) throws Exception{
 		if(dataSources.contains(key)){ 
 			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]"); 
@@ -126,11 +151,56 @@ public class DataSourceHolder {
 		return ds;
 	}
 
-	public static DataSource addDataSource(String key, String type, String url, String user, String password) throws Exception{
-		DataSource ds = null;
-		Class<? extends DataSource> dataSourceType = (Class<? extends DataSource>) Class.forName((String) type);
-		ds = dataSourceType.newInstance();
-		addDataSource(key,ds);
-		return ds;
+	public static DataSource reg(String key, String type, String driver, String url, String user, String password) throws Exception{
+		Map<String,String> param = new HashMap<String,String>();
+		param.put("type", type);
+		param.put("driver", driver);
+		param.put("url", url);
+		param.put("user", user);
+		param.put("password", password);
+		DataSource ds = buildDataSource(param);
+		return reg(key,ds);
 	}
+	public static DataSource reg(String key, DataSource ds) throws Exception{
+		return addDataSource(key, ds);
+	}
+
+	public static DataSource reg(String key, Map<String,?> param) throws Exception{
+		return addDataSource(key, buildDataSource(param));
+	}
+
+	/**
+	 * 创建数据源
+	 * @param params
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static DataSource buildDataSource(Map<String, ?> params) throws Exception{
+        try {
+            String type = (String)params.get("type");
+            if (type == null) {
+                throw new Exception("未设置数据源类型(如:type=com.zaxxer.hikari.HikariDataSource)");
+            }
+            Class<? extends DataSource> dataSourceType = (Class<? extends DataSource>) Class.forName((String) type);
+            Object driver =  BeanUtil.propertyValue(params,"driver","driver-class","driver-class-name");
+			Object url =  BeanUtil.propertyValue(params,"url","jdbc-url");
+			Object user =  BeanUtil.propertyValue(params,"user","username");
+            DataSource ds =  dataSourceType.newInstance();
+            Map<String,Object> map = new HashMap<String,Object>();
+            map.putAll(params);
+            map.put("url", url);
+            map.put("jdbcUrl", url);
+			map.put("driver",driver);
+			map.put("driverClass",driver);
+			map.put("driverClassName",driver);
+			map.put("user",user);
+			map.put("username",user);
+            BeanUtil.setFieldsValue(ds, map);
+            return ds;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
