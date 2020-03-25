@@ -79,7 +79,7 @@ public class Set extends BaseBodyTag {
 					}else{
 						int[] range = BasicUtil.range(begin, end, qty, items.size());
 						if(items instanceof DataSet){
-							data = ((DataSet) items).cut(range[0], range[1]);
+							data = ((DataSet) items).cuts(range[0], range[1]);
 						}else {
 							data = BeanUtil.cuts(items, range[0], range[1]);
 						}
