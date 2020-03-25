@@ -1008,7 +1008,7 @@ public class BasicUtil {
 			end = begin + qty;
 		}
 		if(null != total){
-			if(end > total){
+			if(null == end || end > total){
 				end = total;
 			}
 		}
@@ -1021,7 +1021,12 @@ public class BasicUtil {
 		if(end < begin){
 			end = begin;
 		}
-
+		if(begin <0){
+			begin = 0;
+		}
+		if(end <0){
+			end = 0;
+		}
 		result[0] = begin;
 		result[1] = end;
 		return result;
