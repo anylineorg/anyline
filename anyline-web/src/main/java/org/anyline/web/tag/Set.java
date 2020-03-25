@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
 
+import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
@@ -77,7 +78,11 @@ public class Set extends BaseBodyTag {
 						} 
 					}else{
 						int[] range = BasicUtil.range(begin, end, qty, items.size());
-						data = BeanUtil.cuts(items, range[0], range[1]);
+						if(items instanceof DataSet){
+							data = ((DataSet) items).cut(range[0], range[1]);
+						}else {
+							data = BeanUtil.cuts(items, range[0], range[1]);
+						}
 					} 
 				} 
 				 
