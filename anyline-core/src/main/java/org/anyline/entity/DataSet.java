@@ -1789,7 +1789,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	/**
 	 * 清除空列
 	 * @param keys keys
-	 * @return return
+	 * @return DataSet
 	 */
 	public DataSet removeEmpty(String ... keys){
 		for(DataRow row:rows){
@@ -1798,9 +1798,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return this;
 	}
 	/**
-	 * 清除指定列全为空的行,如果不指定则清除所有列为空的行
+	 * 清除指定列全为空的行,如果不指定keys,则清除所有列都为空的行
 	 * @param keys keys
-	 * @return return
+	 * @return DataSet
 	 */
 	public DataSet clearEmptyRow(String ... keys){
 		int size = this.size();
@@ -1827,7 +1827,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	/**
 	 * NULL &gt; ""
-	 * @return return
+	 * @return DataSet
 	 */
 	public DataSet nvl(){
 		for(DataRow row:rows){
@@ -1910,7 +1910,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * 根据当前时间与创建时间对比
 	 * 过期返回 true
 	 * @param millisecond	过期时间(毫秒) millisecond	过期时间(毫秒)
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean isExpire(int millisecond){
 		if(System.currentTimeMillis() - createTime > millisecond){
@@ -1945,7 +1945,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 	/**
 	 * 过期时间(毫秒)
-	 * @return return
+	 * @return long
 	 */
 	public long getExpires() {
 		return expires;
@@ -2060,7 +2060,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	/**
 	 * 排序
 	 * @param keys keys
-	 * @return return
+	 * @return DataSet
 	 */
 	public DataSet asc(final String ... keys){
 		Collections.sort(rows, new Comparator<DataRow>() {  
