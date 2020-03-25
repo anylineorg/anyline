@@ -1625,7 +1625,7 @@ public class BeanUtil {
 	 * 深层提取map中的value
 	 * @param map map
 	 * @param keys keys 一级key.二级key.三级key
-	 * @return
+	 * @return Object
 	 */
 	public static Object value(Map<String, ?> map, String keys) {
 		Object result  = null;
