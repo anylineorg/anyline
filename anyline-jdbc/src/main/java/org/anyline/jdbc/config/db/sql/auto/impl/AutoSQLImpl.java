@@ -203,7 +203,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 				}
 			}
 			if(table.contains("(")){
-				String colStr = table.substring(table.indexOf("(")+1, table.indexOf(")")).trim();
+				String colStr = table.substring(table.indexOf("(")+1, table.lastIndexOf(")")).trim();
 				if(colStr.toLowerCase().startsWith("distinct")){
 					distinct = "distinct";
 					colStr = colStr.substring(9).trim();
