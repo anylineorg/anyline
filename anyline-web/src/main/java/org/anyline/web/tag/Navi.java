@@ -170,17 +170,18 @@ public class Navi extends BodyTagSupport{
 			if(BasicUtil.isNotEmpty(function)){
 				//clear:清空上一页内容  hold:保持当前页
 				builder.append("function ").append(function).append("(clear,hold){\n");
-				builder.append("\tif(clear){\n\t").append(confId).append("['clear'] = 1;\n\t").append(confId).append("['flush'] = true;\n}\n");
+				builder.append("\tif(clear){\n\t").append(confId).append("['clear'] = 1;\n\t").append(confId).append("['flush'] = true;\n\t}\n");
 				builder.append("\tvar _cur_page = ").append(curPage).append(";\n");
 				builder.append("\tif(hold){\n\t\t_cur_page = $('#_navi_cache_page_").append(flag).append("').val() || $('#hid_cur_page_").append(flag).append("').val() || _cur_page;\n\t\t_navi_go(_cur_page,"+confId+");\n\t}else{\n");
 				builder.append("\t\t_navi_init(").append(confId).append(");\n\t}\n");
 				builder.append("\tif(clear){").append(confId).append("['clear'] = 0;}\n");
 				builder.append("}\n");
 				if(intime){
-					builder.append("setTimeout(").append(function).append("(true,true),").append(delay).append(");\n");
+				    //延时执行，先读取当前第几页，每页多少条
+					builder.append("setTimeout(function(){").append(function).append("(true,true)},").append(delay).append(");\n");
 				}
 			}else{
-				builder.append("setTimeout(_navi_init(").append(confId).append("),").append(delay).append(");\n");
+				builder.append("setTimeout(function(){_navi_init(").append(confId).append(")},").append(delay).append(");\n");
 			}
 			//刷新当前页函数
 			refresh = BasicUtil.nvl(refresh, config.EVENT_REFRESH,"").toString();
