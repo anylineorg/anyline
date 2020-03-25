@@ -257,12 +257,81 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public int indexOf(Object obj){
 		return rows.indexOf(obj);
 	}
-	public DataSet cut(int begin){
-		return cut(begin, rows.size()-1);
-	} 
-	public DataSet cut(int begin, int end){
-		if(rows.isEmpty()){
+
+	/**
+	 * 从begin开始截断到end,方法执行将改变现在DataSet长度
+	 * @param begin 开始位置
+	 * @param end 结束位置
+	 * @return DataSet
+	 */
+	public DataSet truncates(int begin, int end){
+		if(!rows.isEmpty()) {
+			if (begin < 0) {
+				begin = 0;
+			}
+			if (end >= rows.size()) {
+				end = rows.size() - 1;
+			}
+			if(begin>=rows.size()){
+				begin = rows.size()-1;
+			}
+			if (end <= 0) {
+				end = 0;
+			}
+			rows = rows.subList(begin, end);
+		}
+		return this;
+	}
+
+	/**
+	 * 从begin开始截断到最后一个
+	 * @param begin 开始位置
+	 * @return DataSet
+	 */
+	public DataSet truncates(int begin){
+		return truncates(begin, rows.size()-1);
+	}
+	/**
+	 * 从begin开始截断到最后一个并返回其中一个DataRow
+	 * @param begin 开始位置
+	 * @return DataRow
+	 */
+	public DataRow truncate(int begin){
+		return truncate(begin, rows.size()-1);
+	}
+	/**
+	 * 从begin开始截断到end位置并返回其中一个DataRow
+	 * @param begin 开始位置
+	 * @param end 结束位置
+	 * @return DataRow
+	 */
+	public DataRow truncate(int begin, int end){
+		truncates(begin, end);
+		if(rows.size()>0){
+			return rows.get(0);
+		}else{
 			return null;
+		}
+	}
+
+	/**
+	 * 从begin开始截取到最后一个
+	 * @param begin 开始位置
+	 * @return DataSet
+	 */
+	public DataSet cuts(int begin){
+		return cuts(begin, rows.size()-1);
+	}
+	/**
+	 * 从begin开始截取到end位置，方法执行时会创建新的DataSet并不改变原有set长度
+	 * @param begin 开始位置
+	 * @param end 结束位置
+	 * @return DataSet
+	 */
+	public DataSet cuts(int begin, int end){
+		DataSet result = new DataSet();
+		if(rows.isEmpty()){
+			return result;
 		}
 		if(begin < 0){
 			begin = 0;
@@ -270,13 +339,39 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		if(end >= rows.size()){
 			end = rows.size() - 1;
 		}
+		if(begin >= rows.size()){
+			begin = rows.size() - 1;
+		}
 		if(end <= 0){
 			end = 0;
 		}
-		rows = rows.subList(begin, end);
-		return this;
-	} 
- 
+		for(int i=begin; i<=end; i++){
+			result.add(rows.get(i));
+		}
+		return result;
+	}
+
+	/**
+	 * 从begin开始截取到最后一个,并返回其中第一个DataRow
+	 * @param begin 开始位置
+	 * @return DataSet
+	 */
+	public DataRow cut(int begin){
+		return cut(begin, rows.size()-1);
+	}
+	/**
+	 * 从begin开始截取到end位置，并返回其中第一个DataRow,方法执行时会创建新的DataSet并不改变原有set长度
+	 * @param begin 开始位置
+	 * @param end 结束位置
+	 * @return DataSet
+	 */
+	public DataRow cut(int begin, int end){
+		DataSet result = cuts(begin,end);
+		if(result.size()>0){
+			return result.getRow(0);
+		}
+		return null;
+	}
 	public DataSet(List<Map<String, Object>> list) { 
 		rows = new ArrayList<DataRow>(); 
 		if (null == list) 
