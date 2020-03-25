@@ -78,7 +78,7 @@ public class Navi extends BodyTagSupport{
 			String confId = config.KEY_ID_FLAG + flag;
 			builder.append("<div id='_navi_border_"+flag+"'>");
 			//放到form里 实现后退时值不被重置
-			builder.append("<form><input type='text' style='display:none;' id='_navi_cache_page_"+flag+"'><input type='text' style='display:none;' id='_navi_cache_vol_"+flag+"'></form>");
+			builder.append("<form><input type='text' style='display:none;'/><input type='text' style='display:none;' id='_navi_cache_page_"+flag+"'><input type='text' style='display:none;' id='_navi_cache_vol_"+flag+"'></form>");
 			if(idx == 0){
 				builder.append("<link rel=\"stylesheet\" href=\"" + config.STYLE_FILE_PATH + "\" type=\"text/css\"/>\n");
 				builder.append("<script type=\"text/javascript\" src=\"" + config.SCRIPT_FILE_PATH + "\"></script>\n");
