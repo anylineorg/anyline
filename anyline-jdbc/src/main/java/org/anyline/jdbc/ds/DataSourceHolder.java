@@ -171,8 +171,9 @@ public class DataSourceHolder {
 
 	/**
 	 * 创建数据源
-	 * @param params
-	 * @return
+	 * @param params params
+	 * @return DataSource
+	 * @throws Exception Exception
 	 */
 	@SuppressWarnings("unchecked")
 	public static DataSource buildDataSource(Map<String, ?> params) throws Exception{
