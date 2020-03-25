@@ -62,6 +62,7 @@ public class Navi extends BodyTagSupport{
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
 	private Boolean vol = true		;   //是否显示每页多少条(配置文件开启的情况下有效)
+    private int delay = 0           ;   //延迟执行时间
 
 	private int type = 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
 
@@ -176,10 +177,10 @@ public class Navi extends BodyTagSupport{
 				builder.append("\tif(clear){").append(confId).append("['clear'] = 0;}\n");
 				builder.append("}\n");
 				if(intime){
-					builder.append(function).append("(true,true);\n");
+					builder.append("setTimeout(").append(function).append("(true,true),").append(delay).append(");\n");
 				}
 			}else{
-				builder.append("_navi_init(").append(confId).append(");\n");
+				builder.append("setTimeout(_navi_init(").append(confId).append("),").append(delay).append(");\n");
 			}
 			//刷新当前页函数
 			refresh = BasicUtil.nvl(refresh, config.EVENT_REFRESH,"").toString();
@@ -239,6 +240,7 @@ public class Navi extends BodyTagSupport{
 		scroll 			= null	;
 		cur 			= null	;
 		vol				= true	;
+		delay           = 0     ;
 	}
 
 	public String getParam() {
@@ -406,4 +408,11 @@ public class Navi extends BodyTagSupport{
 		this.vol = vol;
 	}
 
+    public int getDelay() {
+        return delay;
+    }
+
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
 }
