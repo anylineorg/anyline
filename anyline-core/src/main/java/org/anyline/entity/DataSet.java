@@ -261,11 +261,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return cut(begin, rows.size()-1);
 	} 
 	public DataSet cut(int begin, int end){
+		if(rows.isEmpty()){
+			return null;
+		}
 		if(begin < 0){
 			begin = 0;
 		}
 		if(end >= rows.size()){
 			end = rows.size() - 1;
+		}
+		if(end <= 0){
+			end = 0;
 		}
 		rows = rows.subList(begin, end);
 		return this;
