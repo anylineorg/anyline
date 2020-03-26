@@ -216,25 +216,25 @@ public interface AnylineService{
 	 * @return return
 	 */ 
 	public boolean executeProcedure(String procedure, String... inputs); 
-	public boolean executeProcedure(Procedure procedure); 
+	public boolean execute(Procedure procedure, String... inputs);
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
 	 * @param inputs  inputs
 	 * @return return
 	 */ 
-	public DataSet queryProcedure(String procedure, String ... inputs); 
-	public DataSet query(Procedure procedure); 
-	
-	public DataSet selectProcedure(String procedure, String ... inputs); 
-	public DataSet select(Procedure procedure);
+	public DataSet queryProcedure(String procedure, String ... inputs);
+	public DataSet query(Procedure procedure, String ... inputs);
+
+	public DataSet selectProcedure(String procedure, String ... inputs);
+	public DataSet select(Procedure procedure, String ... inputs);
 
 	public int delete(String table, ConfigStore configs, String ... conditions);
 	/**
 	 * 删除 根据主键删除 可设置复合主键
 	 * @param dest 表
 	 * @param set 数据
-	 * @param columns columns
+	 * @param columns 主键
 	 * @return 影响行数
 	 */
 	public int delete(String dest, DataSet set, String ... columns);
@@ -243,7 +243,7 @@ public interface AnylineService{
 	public int delete(DataRow row, String ... columns);
 
 	/**
-	 * 根据多列条件删除
+	 * 根据多列条件删除 delete("user","type","1", "age:20");
 	 * @param table 表
 	 * @param kvs key-value
 	 * @return 影响行数
@@ -251,7 +251,7 @@ public interface AnylineService{
 	public int delete(String table, String ... kvs);
 
 	/**
-	 * 删除多行
+	 * 根据一列的多个值删除多行
 	 * @param table 表
 	 * @param key 名
 	 * @param values 值集合
@@ -260,7 +260,7 @@ public interface AnylineService{
 	public int deletes(String table, String key, Collection<Object> values);
 
 	/**
-	 * 删除多行
+	 * 根据一列的多个值删除多行
 	 * @param table 表
 	 * @param key 名
 	 * @param values 值集合

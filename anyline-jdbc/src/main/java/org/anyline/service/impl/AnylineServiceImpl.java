@@ -92,8 +92,8 @@ public class AnylineServiceImpl implements AnylineService {
         return queryProcedure(procedure, inputs);
     }
     @Override
-    public DataSet select(Procedure procedure) {
-        return query(procedure);
+    public DataSet select(Procedure procedure, String ... inputs) {
+        return query(procedure, inputs);
     }
     /**
      * 按条件查询
@@ -560,6 +560,7 @@ public class AnylineServiceImpl implements AnylineService {
      * @param conditions  conditions
      * @return return
      */
+    @Override
     public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions){
         if(null != cacheProvider) {
             src = BasicUtil.compressionSpace(src);
@@ -570,9 +571,11 @@ public class AnylineServiceImpl implements AnylineService {
         }
         return true;
     }
+    @Override
     public boolean removeCache(String channel, String src, String ... conditions){
         return removeCache(channel, src, null, conditions);
     }
+    @Override
     public boolean removeCache(String channel, String src, int fr, int to, String ... conditions){
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(fr);
@@ -588,6 +591,7 @@ public class AnylineServiceImpl implements AnylineService {
      * @param channel  channel
      * @return return
      */
+    @Override
     public boolean clearCache(String channel){
         if(null != cacheProvider) {
             return cacheProvider.clear(channel);
@@ -605,6 +609,7 @@ public class AnylineServiceImpl implements AnylineService {
      * @return return
      */
 
+    @Override
     public boolean exists(String src, ConfigStore configs, String ... conditions){
         boolean result = false;
         src = BasicUtil.compressionSpace(src);
@@ -613,12 +618,14 @@ public class AnylineServiceImpl implements AnylineService {
         result = dao.exists(sql, configs, conditions);
         return result;
     }
+    @Override
     public boolean exists(String src, String ... conditions){
         return exists(src, null, conditions);
     }
     /**
      * 只根据主键判断
      */
+    @Override
     public boolean exists(String src, DataRow row){
         if(null != row){
             List<String> keys = row.getPrimaryKeys();
@@ -635,10 +642,12 @@ public class AnylineServiceImpl implements AnylineService {
             return false;
         }
     }
+    @Override
     public boolean exists(DataRow row){
         return exists(null, row);
     }
 
+    @Override
     public int count(String src, ConfigStore configs, String ... conditions){
         int count = -1;
         try {
@@ -655,6 +664,7 @@ public class AnylineServiceImpl implements AnylineService {
         }
         return count;
     }
+    @Override
     public int count(String src, String ... conditions){
         return count(src, null, conditions);
     }
@@ -836,12 +846,17 @@ public class AnylineServiceImpl implements AnylineService {
         for (String input : inputs) {
             proc.addInput(input);
         }
-        return executeProcedure(proc);
+        return execute(proc);
     }
 
     @Override
-    public boolean executeProcedure(Procedure procedure) {
+    public boolean execute(Procedure procedure, String ... inputs) {
         procedure.setName(DataSourceHolder.parseDataSource(procedure.getName()));
+        if(null != inputs){
+            for(String input:inputs){
+                procedure.addInput(input);
+            }
+        }
         return dao.executeProcedure(procedure);
     }
 
@@ -853,10 +868,15 @@ public class AnylineServiceImpl implements AnylineService {
      * @return return
      */
     @Override
-    public DataSet query(Procedure procedure) {
+    public DataSet query(Procedure procedure, String ... inputs) {
         DataSet set = null;
         try {
             procedure.setName(DataSourceHolder.parseDataSource(procedure.getName()));
+            if(null != inputs){
+                for(String input:inputs){
+                    procedure.addInput(input);
+                }
+            }
             set = dao.queryProcedure(procedure);
         } catch (Exception e) {
             set = new DataSet();
@@ -874,8 +894,10 @@ public class AnylineServiceImpl implements AnylineService {
     public DataSet queryProcedure(String procedure, String... inputs) {
         Procedure proc = new ProcedureImpl();
         proc.setName(procedure);
-        for (String input : inputs) {
-            proc.addInput(input);
+        if(null != inputs) {
+            for (String input : inputs) {
+                proc.addInput(input);
+            }
         }
         return query(proc);
     }
@@ -912,13 +934,16 @@ public class AnylineServiceImpl implements AnylineService {
             return cnt;
     }
 
+    @Override
     public int delete(DataSet set, String ... columns) {
         return delete(null, set, columns);
     }
+    @Override
     public int delete(String dest, DataRow row, String ... columns) {
         dest = DataSourceHolder.parseDataSource(dest);
         return dao.delete(dest, row, columns);
     }
+    @Override
     public int delete(DataRow row, String ... columns) {
         return dao.delete(null, row, columns);
     }
@@ -931,16 +956,19 @@ public class AnylineServiceImpl implements AnylineService {
         return dao.delete(table, row);
     }
 
+    @Override
     public int deletes(String table, String key, Collection<Object> values){
         table = DataSourceHolder.parseDataSource(table);
         return dao.deletes(table, key, values);
     }
 
+    @Override
     public int deletes(String table, String key, String ... values){
         table = DataSourceHolder.parseDataSource(table);
         return dao.deletes(table, key, values);
     }
 
+    @Override
     public int delete(String table, ConfigStore configs, String ... conditions){
         table = DataSourceHolder.parseDataSource(table);
         return dao.delete(table, configs, conditions);
