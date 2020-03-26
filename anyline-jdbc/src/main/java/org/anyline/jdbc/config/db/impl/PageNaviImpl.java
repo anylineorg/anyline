@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
  
-public class PageNaviImpl implements PageNavi, Serializable{ 
+public class PageNaviImpl implements PageNavi{
 	protected static final long serialVersionUID = 3593100423479113410L; 
 	protected static final Logger log = LoggerFactory.getLogger(PageNaviImpl.class); 
  

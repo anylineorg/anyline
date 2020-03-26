@@ -11,12 +11,13 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.*;
  
-public abstract class AnylineConfig { 
+public abstract class AnylineConfig implements Serializable {
 	protected static long lastLoadTime 	= 0;	//最后一次加载时间 
 	protected static final Logger log = LoggerFactory.getLogger(AnylineConfig.class); 
 	protected Map<String, String> kvs = new HashMap<String, String>(); 

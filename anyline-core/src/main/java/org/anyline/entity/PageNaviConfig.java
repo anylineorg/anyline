@@ -4,9 +4,10 @@ import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 
+import java.io.Serializable;
 import java.util.Hashtable;
  
-public class PageNaviConfig extends AnylineConfig{
+public class PageNaviConfig extends AnylineConfig  {
 
 	public static String CONFIG_NAME = "anyline-navi.xml";
 	 
@@ -17,13 +18,13 @@ public class PageNaviConfig extends AnylineConfig{
 	public String STYLE_BUTTON_PREV				= "上一页"				; //上一页 
 	public String STYLE_BUTTON_NEXT				= "下一页"				; //下一页 
 	public String STYLE_BUTTON_LAST				= "最后页"				; //最后页 
-	public String STYLE_BUTTON_JUMP				= "确定"					; //跳转到 
+	public String STYLE_BUTTON_JUMP				= "确定"				; //跳转到
 	public String STYLE_LABEL_JUMP				= "转到第"				; //跳转到 
 	public String STYLE_LABEL_JUMP_PAGE			= "页"					; //跳转到 
-	public String STYLE_LOAD_MORE_FORMAT		= "加载更多"				; //加载更多 
+	public String STYLE_LOAD_MORE_FORMAT		= "加载更多"			; //加载更多
 	public String STYLE_INDEX_ELLIPSIS			= "..."					; //下标省略符 
-	public String STYLE_DATA_EMPTY				= "没有更多内容了"			; //查询无数据 
-	public String STYLE_PAGE_OVER				= "最后一页了"				; //最后一页 
+	public String STYLE_DATA_EMPTY				= "没有更多内容了"		; //查询无数据
+	public String STYLE_PAGE_OVER				= "最后一页了"			; //最后一页
 	 
 	//变量 
 	public int VAR_PAGE_RANGE					= 5						; //下标数量 
