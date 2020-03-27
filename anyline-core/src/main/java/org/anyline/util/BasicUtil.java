@@ -756,91 +756,96 @@ public class BasicUtil {
 			ips.add(ip.getHostAddress()); 
 		} 
 		return ips; 
-	} 
+	}
+
+	public static <T> List<T> array2list(T[] objs){
+		List<T> list = new ArrayList<T>();
+		for(T o : objs){
+			list.add(o);
+		}
+		return list;
+	}
 	/** 
 	 * 数组是否包含 
 	 * @param objs  objs
 	 * @param obj  obj
+	 * @param ignoreCase  ignoreCase
+	 * @param ignoreNull  ignoreNull
 	 * @return return
 	 */
-	public static boolean containsString(Object[] objs, Object obj){
-		if(null == objs && null == obj){
-			return true;
-		}
-		if(null == objs || null == obj){
+	public static boolean containsString(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj){
+		if(null == objs){
 			return false;
 		}
-		for(Object o : objs){
-			if(obj.toString().equals(o.toString())){
-				return true;
-			}
-		}
-		return false;
+		return containsString(ignoreNull, ignoreCase, array2list(objs), obj);
+	}
+	public static boolean containsString(Object[] objs, String obj){
+		return containsString(false,false,objs, obj);
 	}
 	public static boolean contains(Object[] objs, Object obj){
-		if(null == objs && null == obj){
-			return true;
+		if(null == objs){
+			return false;
 		}
-		if(null == objs || null == obj){
+		return contains(false,array2list(objs), obj);
+	}
+	public static boolean contains(boolean ignoreNull, Collection<Object> objs, Object obj){
+		if(null == objs){
 			return false;
 		}
 		for(Object o : objs){
+			if(ignoreNull){
+				if(null == obj || null == o){
+					continue;
+				}
+			}else{
+				if(null == obj && null == o){
+					return true;
+				}
+			}
+			if(null == o){
+				continue;
+			}
 			if(obj.equals(o)){
 				return true;
 			}
 		}
 		return false;
 	}
-	public static boolean contains(Collection<Object> objs, Object obj){
-		if(null == objs && null == obj){
-			return true;
-		}
-		if(null == objs || null == obj){
+	public static <T> boolean containsString(boolean ignoreNull, boolean ignoreCase, Collection<T> objs, String obj){
+		if(null == objs){
 			return false;
 		}
-		for(Object o : objs){
-			if(obj.equals(o)){
-				return true;
+		for(T o : objs){
+			if(ignoreNull){
+				if(null == obj || null == o){
+					continue;
+				}
+			}else{
+				if(null == obj && null == o){
+					return true;
+				}
+			}
+			if (null != obj) {
+				if(null == o){
+					continue;
+				}
+				String val = o.toString();
+				if(ignoreCase){
+					obj = obj.toLowerCase();
+					val = val.toLowerCase();
+				}
+				if(obj.equals(val)){
+					return true;
+				}
 			}
 		}
 		return false;
 	}
-	public static boolean containsString(Collection<Object> objs, Object obj){
-		if(null == objs && null == obj){
-			return true;
-		}
-		if(null == objs || null == obj){
-			return false;
-		}
-		for(Object o : objs){
-			if(obj.toString().equals(o.toString())){
-				return true;
-			}
-		}
-		return false;
+
+	public static boolean containsString(Collection<Object> objs, String obj){
+		return containsString(false,false,objs,obj);
 	}
-	public static boolean containsIgnoreCase(Object[] objs, Object obj){
-		if(null == objs || null == obj){
-			return false;
-		}
-		for(Object o : objs){
-			if(obj.toString().equalsIgnoreCase(o.toString())){
-				return true;
-			}
-		}
-		return false;
-	}
-	public static boolean containsIgnoreCase(Collection<Object> objs, Object obj){
-		if(null == objs || null == obj){
-			return false;
-		}
-		for(Object o : objs){
-			if(obj.toString().equalsIgnoreCase(o.toString())){
-				return true;
-			}
-		}
-		return false;
-	}
+
 	/**
 	 * 拼接字符
 	 * @param list list
