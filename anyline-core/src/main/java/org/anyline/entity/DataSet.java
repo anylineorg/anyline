@@ -2311,6 +2311,23 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public class Select implements Serializable{
 		private static final long serialVersionUID = 1L;
+		private boolean ignoreCase = true;	//是否忽略大小写
+		/**
+		 * 是否忽略NULL 如果设置成true 在执行equal notEqual like contains进 null与null比较返回false
+		 * 左右出现NULL时直接返回false
+		 * true会导致一行数据 equal notEqual都筛选不到
+		 */
+		private boolean ignoreNull = true;
+		public DataSet setIgnoreCase(boolean bol){
+			this.ignoreCase = bol;
+			return DataSet.this;
+		}
+		/**
+		 * 筛选key=value的子集
+		 * @param key key
+		 * @param value value
+		 * @return DataSet
+		 */
 		public DataSet equals(String key, String value){
 			return equals(DataSet.this, key, value);
 		}
@@ -2319,29 +2336,39 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			String tmpValue;
 			for(DataRow row:src){
 				tmpValue = row.getString(key);
-				if (null != tmpValue &&  tmpValue.equals(value)) {
-					set.add(row);
+				if(ignoreNull){
+					if(null == tmpValue || null == value){
+						continue;
+					}
+				}else{
+					if(null == tmpValue && null == value){
+						set.add(row);
+						continue;
+					}
 				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-		public DataSet equalsIgnoreCase(String key, String value){
-			return equalsIgnoreCase(DataSet.this, key, value);
-		}
-		private DataSet equalsIgnoreCase(DataSet src, String key, String value){
-			DataSet set = new DataSet();
-			String tmpValue;
-			for(DataRow row:src){
-				tmpValue = row.getString(key);
-				if (null != tmpValue &&  tmpValue.equalsIgnoreCase(value)) {
-					set.add(row);
+
+				if (null != tmpValue) {
+					boolean chk = false;
+					if(ignoreCase){
+						chk = tmpValue.equalsIgnoreCase(value);
+					}else{
+						chk = tmpValue.equals(value);
+					}
+					if(chk) {
+						set.add(row);
+					}
 				}
 			}
 			set.cloneProperty(src);
 			return set;
 		}
 
+		/**
+		 * 筛选key ！= value的子集
+		 * @param key key
+		 * @param value value
+		 * @return DataSet
+		 */
 		public DataSet notEquals(String key, String value){
 			return notEquals(DataSet.this, key, value);
 		}
@@ -2350,33 +2377,37 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			String tmpValue;
 			for(DataRow row:src){
 				tmpValue = row.getString(key);
-				if (null != tmpValue &&  !tmpValue.equals(value)) {
-					set.add(row);
+				if(ignoreNull){
+					if(null == tmpValue || null == value){
+						continue;
+					}
+				}else{
+					if(null == tmpValue && null == value){
+						set.add(row);
+						continue;
+					}
 				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-		public DataSet notEqualsIgnoreCase(String key, String value){
-			return notEqualsIgnoreCase(DataSet.this, key, value);
-		}
-		private DataSet notEqualsIgnoreCase(DataSet src, String key, String value){
-			DataSet set = new DataSet();
-			String tmpValue;
-			for(DataRow row:src){
-				tmpValue = row.getString(key);
-				if (null != tmpValue &&  !tmpValue.equalsIgnoreCase(value)) {
-					set.add(row);
+
+				if (null != tmpValue) {
+					boolean chk = false;
+					if(ignoreCase){
+						chk = !tmpValue.equalsIgnoreCase(value);
+					}else{
+						chk = !tmpValue.equals(value);
+					}
+					if(chk) {
+						set.add(row);
+					}
 				}
 			}
 			set.cloneProperty(src);
 			return set;
 		}
 		/**
-		 * key列的值是否包含value
+		 * 筛选key列的值是否包含value的子集
 		 * @param key key
 		 * @param value value
-		 * @return return
+		 * @return DataSet
 		 */
 		public DataSet contains(String key, String value){
 			return contains(DataSet.this, key, value);
@@ -2386,8 +2417,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			String tmpValue;
 			for(DataRow row:src){
 				tmpValue = row.getString(key);
-				if (null != tmpValue && tmpValue.contains(value)) {
-					set.add(row);
+				if(ignoreNull){
+					if(null == tmpValue || null == value){
+						continue;
+					}
+				}else{
+					if(null == tmpValue && null == value){
+						set.add(row);
+						continue;
+					}
+				}
+
+				if (null != tmpValue) {
+					if(null == value){
+						continue;
+					}
+					if(ignoreCase){
+						tmpValue = tmpValue.toLowerCase();
+						value = value.toLowerCase();
+					}
+					if(tmpValue.contains(value)) {
+						set.add(row);
+					}
 				}
 			}
 			set.cloneProperty(src);
@@ -2399,15 +2450,33 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		private DataSet like(DataSet src, String key, String pattern){
 			DataSet set = new DataSet();
-			if(null == pattern){
-				return set;
+			if(null != pattern) {
+				pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
 			}
-			pattern = pattern.replace("!", "^").replace("_", "\\s|\\S").replace("%", "(\\s|\\S)*");
 			String tmpValue;
 			for(DataRow row:src){
 				tmpValue = row.getString(key);
-				if (null != tmpValue && RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
-					set.add(row);
+				if(ignoreNull){
+					if(null == tmpValue || null == pattern){
+						continue;
+					}
+				}else{
+					if(null == tmpValue && null == pattern){
+						set.add(row);
+						continue;
+					}
+				}
+				if (null != tmpValue) {
+					if(null == pattern){
+						continue;
+					}
+					if(ignoreCase){
+						tmpValue = tmpValue.toLowerCase();
+						pattern = pattern.toLowerCase();
+					}
+					if(RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
+						set.add(row);
+					}
 				}
 			}
 			set.cloneProperty(src);
@@ -2426,8 +2495,27 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			String tmpValue;
 			for(DataRow row:src){
 				tmpValue = row.getString(key);
-				if (null == tmpValue || !RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
-					set.add(row);
+				if(ignoreNull){
+					if(null == tmpValue || null == pattern){
+						continue;
+					}
+				}else{
+					if(null == tmpValue && null == pattern){
+						set.add(row);
+						continue;
+					}
+				}
+				if (null != tmpValue) {
+					if(null == pattern){
+						continue;
+					}
+					if(ignoreCase){
+						tmpValue = tmpValue.toLowerCase();
+						pattern = pattern.toLowerCase();
+					}
+					if(!RegularUtil.match(tmpValue, pattern, Regular.MATCH_MODE.MATCH)) {
+						set.add(row);
+					}
 				}
 			}
 			set.cloneProperty(src);
@@ -2441,8 +2529,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			String tmpValue;
 			for(DataRow row:src){
 				tmpValue = row.getString(key);
-				if (null != tmpValue && tmpValue.startsWith(prefix)) {
-					set.add(row);
+				if(ignoreNull){
+					if(null == tmpValue || null == prefix){
+						continue;
+					}
+				}else{
+					if(null == tmpValue && null == prefix){
+						set.add(row);
+						continue;
+					}
+				}
+
+				if (null != tmpValue) {
+					if(null == prefix){
+						continue;
+					}
+					if(ignoreCase){
+						tmpValue = tmpValue.toLowerCase();
+						prefix = prefix.toLowerCase();
+					}
+					if(tmpValue.startsWith(prefix)) {
+						set.add(row);
+					}
 				}
 			}
 			set.cloneProperty(src);
@@ -2457,144 +2565,68 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			String tmpValue;
 			for(DataRow row:src){
 				tmpValue = row.getString(key);
-				if (null != tmpValue && tmpValue.endsWith(suffix)) {
-					set.add(row);
+				if(ignoreNull){
+					if(null == tmpValue || null == suffix){
+						continue;
+					}
+				}else{
+					if(null == tmpValue && null == suffix){
+						set.add(row);
+						continue;
+					}
+				}
+
+				if (null != tmpValue) {
+					if(null == suffix){
+						continue;
+					}
+					if(ignoreCase){
+						tmpValue = tmpValue.toLowerCase();
+						suffix = suffix.toLowerCase();
+					}
+					if(tmpValue.endsWith(suffix)) {
+						set.add(row);
+					}
 				}
 			}
 			set.cloneProperty(src);
 			return set;
 		}
-		public DataSet in(String key, String ... values){
-			return in(DataSet.this, key, values);
-		}
-		private DataSet in(DataSet src, String key, String ... values){
-			DataSet set = new DataSet();
-			Object tmpValue;
-			for(DataRow row:src){
-				tmpValue = row.get(key);
-				if (null != tmpValue && BasicUtil.containsString(values, tmpValue)) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
+		public <T> DataSet in(String key, T ... values){
+			return in(DataSet.this, key, BasicUtil.array2list(values));
 		}
 
 		public DataSet in(String key, Collection<Object> values){
 			return in(DataSet.this, key, values);
 		}
-		private DataSet in(DataSet src, String key, Collection<Object> values){
+		private <T> DataSet in(DataSet src, String key, Collection<T> values){
 			DataSet set = new DataSet();
-			Object tmpValue;
 			for(DataRow row:src){
-				tmpValue = row.get(key);
-				if (null != tmpValue && BasicUtil.containsString(values, tmpValue)) {
+				if (BasicUtil.containsString(ignoreNull,ignoreCase,values, row.getString(key))) {
 					set.add(row);
 				}
 			}
 			set.cloneProperty(src);
 			return set;
 		}
-		
-		public DataSet inIgnoreCase(String key, String ... values){
-			return inIgnoreCase(DataSet.this, key, values);
-		}
-		private DataSet inIgnoreCase(DataSet src, String key, String ... values){
-			DataSet set = new DataSet();
-			Object tmpValue;
-			for(DataRow row:src){
-				tmpValue = row.get(key);
-				if (null != tmpValue && BasicUtil.containsIgnoreCase(values, tmpValue)) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-		public DataSet inIgnoreCase(String key, Collection<Object> values){
-			return inIgnoreCase(DataSet.this, key, values);
-		}
-		private DataSet inIgnoreCase(DataSet src, String key, Collection<Object> values){
-			DataSet set = new DataSet();
-			Object tmpValue;
-			for(DataRow row:src){
-				tmpValue = row.get(key);
-				if (null != tmpValue && BasicUtil.containsIgnoreCase(values, tmpValue)) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-
-		public DataSet notIn(String key, String ... values){
-			return notIn(DataSet.this, key, values);
-		}
-		public DataSet notIn(DataSet src, String key, String ... values){
-			DataSet set = new DataSet();
-			Object tmpValue;
-			for(DataRow row:src){
-				tmpValue = row.get(key);
-				if (null != tmpValue && !BasicUtil.containsString(values, tmpValue)) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
+		public <T> DataSet notIn(String key, T ... values){
+			return notIn(DataSet.this, key, BasicUtil.array2list(values));
 		}
 		public DataSet notIn(String key, Collection<Object> values){
 			return notIn(DataSet.this, key, values);
 		}
-		private DataSet notIn(DataSet src, String key, Collection<Object> values){
+		private <T> DataSet notIn(DataSet src, String key, Collection<T> values){
 			DataSet set = new DataSet();
-			Object tmpValue;
-			for(DataRow row:src){
-				tmpValue = row.get(key);
-				if (null != tmpValue && !BasicUtil.containsString(values, tmpValue)) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-		public DataSet notInIgnoreCase(String key, String ... values){
-			return notInIgnoreCase(DataSet.this, key, values);
-		}
-		private DataSet notInIgnoreCase(DataSet src, String key, String ... values){
-			DataSet set = new DataSet();
-			Object tmpValue;
-			for(DataRow row:src){
-				tmpValue = row.get(key);
-				if (null != tmpValue && !BasicUtil.containsIgnoreCase(values, tmpValue)) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-		public DataSet notInIgnoreCase(String key, Collection<Object> values){
-			return notInIgnoreCase(DataSet.this, key, values);
-		}
-		public DataSet notInIgnoreCase(DataSet src, String key, Collection<Object> values){
-			DataSet set = new DataSet();
-			Object tmpValue;
-			for(DataRow row:src){
-				tmpValue = row.get(key);
-				if (null != tmpValue && !BasicUtil.containsIgnoreCase(values, tmpValue)) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-		public DataSet isNull(String key){
-			return isNull(DataSet.this, key);
-		}
-		private DataSet isNull(DataSet src, String key){
-			DataSet set = new DataSet();
-			for(DataRow row:src){
-				if (null == row.get(key)) {
-					set.add(row);
+			if(null != values) {
+				String tmpValue = null;
+				for (DataRow row : src) {
+					tmpValue = row.getString(key);
+					if (ignoreNull && null == tmpValue) {
+						continue;
+					}
+					if (!BasicUtil.containsString(ignoreNull, ignoreCase, values, tmpValue)) {
+						set.add(row);
+					}
 				}
 			}
 			set.cloneProperty(src);
@@ -2612,23 +2644,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			}
 			return set;
 		}
-		public DataSet isNotNull(String key){
-			return isNotNull(DataSet.this, key);
-		}
-		private DataSet isNotNull(DataSet src, String key){
-			DataSet set = new DataSet();
-			for(DataRow row:src){
-				if (null != row.get(key)) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-		
-		public DataSet notNull(String key){
-			return isNotNull(key);
-		}
 
 		public DataSet isNotNull(String ... keys){
 			return isNotNull(DataSet.this, keys);
@@ -2644,22 +2659,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		public DataSet notNull(String ... keys){
 			return isNotNull(keys);
-		}
-		public DataSet isEmpty(String key){
-			return isEmpty(DataSet.this, key);
-		}
-		private DataSet isEmpty(DataSet src, String key){
-			DataSet set = new DataSet();
-			for(DataRow row:src){
-				if (BasicUtil.isEmpty(row.get(key))) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-		public DataSet empty(String key){
-			return isEmpty(key);
 		}
 		public DataSet isEmpty(String ... keys){
 			return isEmpty(DataSet.this, keys);
@@ -2677,23 +2676,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		public DataSet empty(String ... keys){
 			return isEmpty(keys);
 		}
-		public DataSet isNotEmpty(String key){
-			return isNotEmpty(DataSet.this, key);
-		}
-		private DataSet isNotEmpty(DataSet src, String key){
-			DataSet set = new DataSet();
-			for(DataRow row:src){
-				if (BasicUtil.isNotEmpty(row.get(key))) {
-					set.add(row);
-				}
-			}
-			set.cloneProperty(src);
-			return set;
-		}
-		public DataSet notEmpty(String key){
-			return isNotEmpty(key);
-		}
-
 		public DataSet isNotEmpty(String ... keys){
 			return isNotEmpty(DataSet.this, keys);
 		}
@@ -2709,10 +2691,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		public DataSet notEmpty(String ... keys){
 			return isNotEmpty(keys);
 		}
-		public DataSet less(String key, Object value){
+		public <T> DataSet less(String key, T value){
 			return less(DataSet.this, key, value);
 		}
-		private DataSet less(DataSet src, String key, Object value){
+		private <T> DataSet less(DataSet src, String key, T value){
 			DataSet set = new DataSet();
 			if(null == value){
 				return set;
@@ -2751,10 +2733,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			set.cloneProperty(src);
 			return set;
 		}
-		public DataSet lessEqual(String key, Object value){
+		public <T> DataSet lessEqual(String key, T value){
 			return lessEqual(DataSet.this, key, value); 
 		}
-		private DataSet lessEqual(DataSet src, String key, Object value){
+		private <T> DataSet lessEqual(DataSet src, String key, T value){
 			DataSet set = new DataSet();
 			if(null == value){
 				return set;
@@ -2793,10 +2775,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			set.cloneProperty(src);
 			return set;
 		}
-		public DataSet greater(String key, Object value){
+		public <T> DataSet greater(String key, T value){
 			return greater(DataSet.this, key, value);
 		}
-		private DataSet greater(DataSet src, String key, Object value){
+		private <T> DataSet greater(DataSet src, String key, T value){
 			DataSet set = new DataSet();
 			if(null == value){
 				return set;
@@ -2835,10 +2817,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			set.cloneProperty(src);
 			return set;
 		}
-		public DataSet greaterEqual(String key, Object value){
+		public <T> DataSet greaterEqual(String key, T value){
 			return greaterEqual(DataSet.this, key, value);
 		}
-		private DataSet greaterEqual(DataSet src, String key, Object value){
+		private <T> DataSet greaterEqual(DataSet src, String key, T value){
 			DataSet set = new DataSet();
 			if(null == value){
 				return set;
@@ -2877,10 +2859,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			set.cloneProperty(src);
 			return set;
 		}
-		public DataSet between(String key, Object min, Object max){
+		public <T> DataSet between(String key, Object min, T max){
 			return between(DataSet.this, key, min, max);
 		}
-		private DataSet between(DataSet src, String key, Object min, Object max){
+		private <T> DataSet between(DataSet src, String key, T min, T max){
 			DataSet set = greaterEqual(src,key, min);
 			set = lessEqual(set,key, max);
 			return set;
