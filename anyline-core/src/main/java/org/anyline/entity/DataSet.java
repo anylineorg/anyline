@@ -2318,10 +2318,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		 * true会导致一行数据 equal notEqual都筛选不到
 		 */
 		private boolean ignoreNull = true;
-		public DataSet setIgnoreCase(boolean bol){
-			this.ignoreCase = bol;
-			return DataSet.this;
-		}
+        public DataSet setIgnoreCase(boolean bol){
+            this.ignoreCase = bol;
+            return DataSet.this;
+        }
+        public DataSet setIgnoreNull(boolean bol){
+            this.ignoreNull = bol;
+            return DataSet.this;
+        }
 		/**
 		 * 筛选key=value的子集
 		 * @param key key
@@ -2445,9 +2449,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return set;
 		}
 
+        /**
+         * 筛选key列的值like pattern的子集,pattern遵循sql通配符的规则,%表示任意个字符,_表示一个字符
+         * @param key 列
+         * @param pattern 表达式
+         * @return DataSet
+         */
 		public DataSet like(String key, String pattern){
 			return like(DataSet.this, key, pattern);
 		}
+
 		private DataSet like(DataSet src, String key, String pattern){
 			DataSet set = new DataSet();
 			if(null != pattern) {
@@ -2596,7 +2607,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return in(DataSet.this, key, BasicUtil.array2list(values));
 		}
 
-		public DataSet in(String key, Collection<Object> values){
+		public<T> DataSet in(String key, Collection<T> values){
 			return in(DataSet.this, key, values);
 		}
 		private <T> DataSet in(DataSet src, String key, Collection<T> values){
@@ -2612,7 +2623,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		public <T> DataSet notIn(String key, T ... values){
 			return notIn(DataSet.this, key, BasicUtil.array2list(values));
 		}
-		public DataSet notIn(String key, Collection<Object> values){
+		public<T> DataSet notIn(String key, Collection<T> values){
 			return notIn(DataSet.this, key, values);
 		}
 		private <T> DataSet notIn(DataSet src, String key, Collection<T> values){
