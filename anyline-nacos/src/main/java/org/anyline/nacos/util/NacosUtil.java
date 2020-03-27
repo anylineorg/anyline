@@ -26,8 +26,8 @@ public class NacosUtil {
 	static{
 		NacosUtil util = NacosUtil.getInstance();
 		if(util.config.AUTO_SCAN){
-			List<Class<?>> classList = ClassUtil.list("org.anyline", true, AnylineConfig.class, ConfigTable.class);
-			for(Class<?> clazz:classList){
+			List<Class<?>> list = ClassUtil.list("org.anyline", true, AnylineConfig.class, ConfigTable.class);
+			for(Class<?> clazz:list){
 				@SuppressWarnings("unchecked")
 				Class<AnylineConfig> c = (Class<AnylineConfig>)clazz;
 				String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
