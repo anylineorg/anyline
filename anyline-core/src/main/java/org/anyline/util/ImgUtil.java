@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.InputStream; 
 import java.io.OutputStream; 
 import java.net.HttpURLConnection; 
-import java.net.URL; 
-import java.util.Iterator; 
+import java.net.URL;
+import java.util.Iterator;
  
 import javax.imageio.ImageIO; 
 import javax.imageio.ImageReadParam; 
@@ -32,15 +32,16 @@ import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream; 
  
 import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
- 
-import sun.misc.BASE64Decoder; 
-import sun.misc.BASE64Encoder; 
- 
+import org.slf4j.LoggerFactory;
+
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 /** 
  * 图片处理工具类：<br> 
  * 功能：缩放图像、切割图像、图像类型转换、彩色转黑白、文字水印、图片水印等 
- */ 
+ */
+@Deprecated
 public class ImgUtil { 
 	private static final Logger log = LoggerFactory.getLogger(ImgUtil.class); 
  
@@ -384,11 +385,11 @@ public class ImgUtil {
         		e.printStackTrace(); 
         	} 
         } 
-        BASE64Encoder encoder = new BASE64Encoder(); 
-        return encoder.encode(data); 
+        BASE64Encoder encoder = new BASE64Encoder();
+        return encoder.encode(data);
     } 
     public static String base64(File img) { 
-    	return base64Img(img); 
+    	return base64Img(img);
     } 
     public static String base64Img(URL url) { 
     	byte[] data = null; 
@@ -427,7 +428,7 @@ public class ImgUtil {
     			e.printStackTrace(); 
     		} 
     	} 
-        BASE64Encoder encoder = new BASE64Encoder(); 
+        BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode(data); 
     } 
     public static String base64(URL url) { 
@@ -448,7 +449,7 @@ public class ImgUtil {
     	str = str.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", ""); 
     	OutputStream  out = null; 
     	try { 
-    		BASE64Decoder decoder = new BASE64Decoder(); 
+    		BASE64Decoder decoder = new BASE64Decoder();
     		// 解密 
     		byte[] b = decoder.decodeBuffer(str); 
     		// 处理数据 
