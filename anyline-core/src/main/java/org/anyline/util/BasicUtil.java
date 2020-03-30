@@ -309,17 +309,7 @@ public class BasicUtil {
 			return def;
 		}
 	}
- 
-	public static Integer parseInteger(Object value, Integer def) { 
-		if (null == value) { 
-			return def; 
-		} 
-		try { 
-			return (int) Double.parseDouble(value.toString()); 
-		} catch (Exception e) { 
-			return def; 
-		} 
-	} 
+
 
 	public static Float parseFloat(Object value, Float def) {
 		if (null == value) {
@@ -385,13 +375,11 @@ public class BasicUtil {
 	public static boolean parseBoolean(Object obj) throws Exception{
 		if ("1".equals(obj.toString())
 				|| "true".equalsIgnoreCase(obj.toString())
-				|| "on".equalsIgnoreCase(obj.toString())
-				|| "t".equalsIgnoreCase(obj.toString())) {
+				|| "on".equalsIgnoreCase(obj.toString())) {
 			return true;
 		} else if ("0".equals(obj.toString())
 				|| "false".equalsIgnoreCase(obj.toString())
-				|| "off".equalsIgnoreCase(obj.toString())
-				|| "f".equalsIgnoreCase(obj.toString())) {
+				|| "off".equalsIgnoreCase(obj.toString())) {
 			return  false;
 		} else {
 			return Boolean.parseBoolean(obj.toString());
