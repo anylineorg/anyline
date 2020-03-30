@@ -61,7 +61,7 @@ public class Text extends BaseBodyTag{
 					row = set.getRow(index);
 				}
 				if(null != row){
-					result = row.get(property);
+					result = row.getString(property);
 				}
 			}else if(data instanceof List){
 				@SuppressWarnings("rawtypes")
