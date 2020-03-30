@@ -112,48 +112,153 @@ public class AnylineController extends AbstractBasicController {
  
 	public <T> T entity(Class<T> clazz, String... params) { 
 		return entity(getRequest(), clazz, false, false, params); 
+	}
+
+	@Deprecated
+	public DataRow entityRow(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(getRequest(), keyCase, row, keyEncrypt, valueEncrypt, params);
+	}
+
+	@Deprecated
+	public DataRow entityRow(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, params);
+	}
+	@Deprecated
+	public DataRow entityRow(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, String... params) {
+		return entity(getRequest(),keyCase, row, keyEncrypt, false, params);
+	}
+
+	@Deprecated
+	public DataRow entityRow(DataRow row, boolean keyEncrypt, String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, params);
+	}
+	@Deprecated
+	public DataRow entityRow(DataRow.KEY_CASE keyCase, DataRow row, String... params) {
+		return entity(getRequest(),keyCase, row, false, false, params);
+	}
+
+	@Deprecated
+	public DataRow entityRow(DataRow row, String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, false, false, params);
+	}
+	@Deprecated
+	public DataRow entityRow(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, params);
+	}
+	@Deprecated
+	public DataRow entityRow(boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
+	}
+
+	@Deprecated
+	public DataRow entityRow(DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+		return entity(getRequest(),keyCase, null, keyEncrypt, false, params);
+	}
+
+	@Deprecated
+	public DataRow entityRow(boolean keyEncrypt, String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, params);
+	}
+
+	@Deprecated
+	public DataRow entityRow(DataRow.KEY_CASE keyCase, String... params) {
+		return entity(getRequest(),keyCase, null, false, false, params);
+	}
+	@Deprecated
+	public DataRow entityRow(String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, false, false, params);
+	}
+
+	@Deprecated
+	public DataSet entitySet(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, params);
+	}
+
+	@Deprecated
+	public DataSet entitySet(boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
+	}
+	@Deprecated
+	public DataSet entitySet(DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+		return entitys(getRequest(),keyCase, keyEncrypt, false, params);
+	}
+	@Deprecated
+	public DataSet entitySet(boolean keyEncrypt, String... params) {
+		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, false, params);
+	}
+
+	@Deprecated
+	public DataSet entitySet(DataRow.KEY_CASE keyCase, String... params) {
+		return entitys(getRequest(),keyCase, false, false, params);
+	}
+	@Deprecated
+	public DataSet entitySet(String... params) {
+		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, false, false, params);
+	}
+
+	protected ConfigStore parseConfig(boolean navi, String... configs) {
+		return parseConfig(getRequest(), navi, configs);
 	} 
- 
-	public DataRow entityRow(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) { 
-		return entityRow(getRequest(), row, keyEncrypt, valueEncrypt, params); 
-	} 
- 
-	public DataRow entityRow(DataRow row, boolean keyEncrypt, String... params) { 
-		return entityRow(getRequest(), row, keyEncrypt, false, params); 
-	} 
- 
-	public DataRow entityRow(DataRow row, String... params) { 
-		return entityRow(getRequest(), row, false, false, params); 
-	} 
- 
-	public DataRow entityRow(boolean keyEncrypt, boolean valueEncrypt, String... params) { 
-		return entityRow(getRequest(), null, keyEncrypt, valueEncrypt, params); 
-	} 
- 
-	public DataRow entityRow(boolean keyEncrypt, String... params) { 
-		return entityRow(getRequest(), null, keyEncrypt, false, params); 
-	} 
- 
-	public DataRow entityRow(String... params) { 
-		return entityRow(getRequest(), null, false, false, params); 
-	} 
- 
-	public DataSet entitySet(boolean keyEncrypt, boolean valueEncrypt, String... params) { 
-		return entitySet(getRequest(), keyEncrypt, valueEncrypt, params); 
-	} 
- 
-	public DataSet entitySet(boolean keyEncrypt, String... params) { 
-		return entitySet(getRequest(), keyEncrypt, false, params); 
-	} 
- 
-	public DataSet entitySet(String... params) { 
-		return entitySet(getRequest(), false, false, params); 
-	} 
- 
-	protected ConfigStore parseConfig(boolean navi, String... configs) { 
-		return parseConfig(getRequest(), navi, configs); 
-	} 
- 
+
+
+	public DataRow entity(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(getRequest(), keyCase, row, keyEncrypt, valueEncrypt, params);
+	}
+
+	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, params);
+	}
+	public DataRow entity(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, String... params) {
+		return entity(getRequest(),keyCase, row, keyEncrypt, false, params);
+	}
+
+	public DataRow entity(DataRow row, boolean keyEncrypt, String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, params);
+	}
+	public DataRow entity(DataRow.KEY_CASE keyCase, DataRow row, String... params) {
+		return entity(getRequest(),keyCase, row, false, false, params);
+	}
+
+	public DataRow entity(DataRow row, String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, false, false, params);
+	}
+	public DataRow entity(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, params);
+	}
+
+
+	public DataRow entity(boolean keyEncrypt, String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, params);
+	}
+
+	public DataRow entity(DataRow.KEY_CASE keyCase, String... params) {
+		return entity(getRequest(),keyCase, null, false, false, params);
+	}
+	public DataRow entity(String... params) {
+		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, false, false, params);
+	}
+
+	public DataSet entitys(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, params);
+	}
+
+	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
+	}
+	public DataSet entitys(DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+		return entitys(getRequest(),keyCase, keyEncrypt, false, params);
+	}
+	public DataSet entitys(boolean keyEncrypt, String... params) {
+		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, false, params);
+	}
+
+	public DataSet entitys(DataRow.KEY_CASE keyCase, String... params) {
+		return entitys(getRequest(),keyCase, false, false, params);
+	}
+	public DataSet entitys(String... params) {
+		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, false, false, params);
+	}
+
 	protected ConfigStore parseConfig(int vol, String... configs) { 
 		return parseConfig(getRequest(), vol, configs); 
 	} 

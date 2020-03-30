@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -120,118 +121,87 @@ public class AbstractBasicController{
 		return entity(request, clazz, false, false, params);
 	} 
 
-	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entityRow(request, row, keyEncrypt, valueEncrypt, params);
-	} 
-	public DataRow entityRow(HttpServletRequest request, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-
-		/**
-		 * 
-			1 数据库查询          clear  X
-			2 entityRow  X      X
-			3 new        X      X
-			4 null       X      X
-		 */
-		if (null == row) { 
-			row = new DataRow();
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		if (null == row) {
+			row = new DataRow(keyCase);
 		}
-		if (null != params && params.length > 0) { 
+		if (null != params && params.length > 0) {
 			for (String param : params) {
-				ParseResult parser = ConfigParser.parse(param,true); 
+				ParseResult parser = ConfigParser.parse(param,true);
 				Object value = ConfigParser.getValue(WebUtil.values(request), parser);
 				row.put(parser.getVar(), value);
 				if(parser.isRequired()){
 					row.addUpdateColumns(parser.getVar());
-				} 
-			} 
+				}
+			}
 		}else{
 			Enumeration<String> names = request.getParameterNames();
 			while(names.hasMoreElements()){
 				String name = names.nextElement();
 				String value = request.getParameter(name);
 				row.put(name, value);
-		    }
-		} 
-		return row; 
-	} 
+			}
+		}
+		return row;
+	}
+
+
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String... params) {
+		return entity(request, keyCase, row, keyEncrypt,  params);
+	}
 
 	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
-		return entityRow(request, row, keyEncrypt,  params);
+		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt,  params);
 	}
-	public DataRow entityRow(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
-		return entityRow(request, row, keyEncrypt, false, params);
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, String... params) {
+		return entity(request,keyCase, row, params);
 	}
 	public DataRow entity(HttpServletRequest request, DataRow row, String... params) {
-		return entityRow(request, row, params);
+		return entity(request, DataRow.KEY_CASE.CONFIG, row, params);
 	}
-	public DataRow entityRow(HttpServletRequest request, DataRow row, String... params) {
-		return entityRow(request, row, false, false, params);
-	} 
-
-	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entityRow(request, keyEncrypt, valueEncrypt, params);
-	} 
-	public DataRow entityRow(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entityRow(request,null, keyEncrypt, valueEncrypt, params);
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(request, keyCase, keyEncrypt, valueEncrypt, params);
+	}
+	public DataRow entity(HttpServletRequest request,boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
+	}
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+		return entity(request,keyCase, keyEncrypt, params);
 	}
 	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, String... params) {
-		return entityRow(request, keyEncrypt, params);
+		return entity(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, params);
 	}
-	public DataRow entityRow(HttpServletRequest request, boolean keyEncrypt, String... params) {
-		return entityRow(request,null, keyEncrypt, false, params);
-	} 
 
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, String... params) {
+		return entity(request,keyCase,params);
+	}
 	public DataRow entity(HttpServletRequest request, String... params) {
-		return entityRow(request,params);
-	}
-	public DataRow entityRow(HttpServletRequest request, String... params) {
-		return entityRow(request, null, false, false, params);
+		return entity(request, DataRow.KEY_CASE.CONFIG,params);
 	}
 
 
-	public DataRow row(HttpServletRequest request, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entityRow(request, row, keyEncrypt, valueEncrypt, params);
-	}
-	
-	public DataRow row(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
-		return entityRow(request, row, keyEncrypt, params);
-	}
-	public DataRow row(HttpServletRequest request, DataRow row, String... params) {
-		return entityRow(request, row, params);
-	}
+	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		DataSet set = new DataSet();
 
-	public DataRow row(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entityRow(request, keyEncrypt, valueEncrypt, params);
-	}
-	public DataRow row(HttpServletRequest request, boolean keyEncrypt, String... params) {
-		return entityRow(request, keyEncrypt, params);
-	}
+		if (null != params && params.length > 0) {
 
-	public DataRow row(HttpServletRequest request, String... params) {
-		return entityRow(request, params);
-	} 
-	public DataSet entitySet(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) { 
-		DataSet set = new DataSet(); 
-		 
-		if (null != params && params.length > 0) { 
- 
 			Map<String,List<Object>> map = new HashMap<String,List<Object>>();
-			int size = 0; 
-			for (String param : params) { 
+			int size = 0;
+			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
 				List<Object> values = ConfigParser.getValues(WebUtil.values(request), parser);
 				map.put(parser.getVar(), values);
 				if(size <= values.size()){
 					size = values.size();
-				} 
-			} 
-			 
-			for(int i=0; i<size; i++){ 
-				DataRow row = new DataRow(); 
-				for (String param : params) { 
-					ParseResult parser = ConfigParser.parse(param,true); 
+				}
+			}
+
+			for(int i=0; i<size; i++){
+				DataRow row = new DataRow(keyCase);
+				for (String param : params) {
+					ParseResult parser = ConfigParser.parse(param,true);
 					List<Object> values = map.get(parser.getVar());
-					if(values.size() > i){ 
+					if(values.size() > i){
 						row.put(parser.getVar(), values.get(i));
 					}else{
 						List<ParseResult> defs = parser.getDefs();
@@ -244,42 +214,41 @@ public class AbstractBasicController{
 							}
 							row.put(parser.getVar(), key);
 						}
-					} 
-				} 
- 
-//				Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT); 
-//				if (null == client) { 
-//					client = new ClientTrace(request); 
+					}
+				}
+
+//				Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
+//				if (null == client) {
+//					client = new ClientTrace(request);
 //				}
 
-				//row.clearUpdateColumns(); 
-//				row.setClientTrace(client); 
-				set.addRow(row); 
-			} 
+				//row.clearUpdateColumns();
+//				row.setClientTrace(client);
+				set.addRow(row);
+			}
 		}
-		return set; 
-	} 
-	 
-
-	public DataSet entitySet(HttpServletRequest request, boolean keyEncrypt, String... params) {
-		return entitySet(request,keyEncrypt, false, params);
-	} 
-
-	public DataSet entitySet(HttpServletRequest request, String... params) {
-		return entitySet(request, false, false, params);
-	} 
-	public DataSet set(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entitySet(request, keyEncrypt, valueEncrypt, params);
+		return set;
 	}
-	
-
-	public DataSet set(HttpServletRequest request, boolean keyEncrypt, String... params) {
-		return entitySet(request, keyEncrypt, params);
+	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
 	}
 
-	public DataSet set(HttpServletRequest request, String... params) {
-		return entitySet(request, params);
-	} 
+	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+		return entitys(request,keyCase,keyEncrypt, false, params);
+	}
+
+	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG,keyEncrypt, false, params);
+	}
+	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, String... params) {
+		return entitys(request, keyCase, false, false, params);
+	}
+	public DataSet entitys(HttpServletRequest request,String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, params);
+	}
+
+
+
 	/** 
 	 * 解析参数 
 	 *  
