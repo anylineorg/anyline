@@ -382,6 +382,9 @@ public class AbstractBasicController{
 		if(config.VAR_CLIENT_SET_VOL_ENABLE){
 			int httpVol = BasicUtil.parseInt(request.getParameter(config.KEY_PAGE_ROWS),0);
 			if(httpVol > 0){
+				if(httpVol > config.VAR_PAGE_MAX_VOL){
+					log.warn("[每页条数超出限制][参考anyline-navi.xml:VAR_PAGE_MAX_VOL]");
+				}
 				pageVol = NumberUtil.min(config.VAR_PAGE_MAX_VOL, httpVol);
 			}
 		} 
