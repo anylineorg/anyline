@@ -29,7 +29,7 @@ public class PageNaviConfig extends AnylineConfig  {
 	//变量 
 	public int VAR_PAGE_RANGE					= 5						; //下标数量 
 	public int VAR_PAGE_DEFAULT_VOL				= 10					; //每页多少条 
-	public int VAR_PAGE_MAX_VOL					= 100					; //每页最多多少条 
+	public int VAR_PAGE_MAX_VOL					= 100					; //每页最多多少条(只针对从http传过来的vol,后台设置的不影响)
 	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= false					; //前端是否可设置每页多少条 
 	public boolean VAR_SHOW_STAT				= false					; //是否显示分布统计 
 	public boolean VAR_SHOW_JUMP				= false					; //是否显示跳转 

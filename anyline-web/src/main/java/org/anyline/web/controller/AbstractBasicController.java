@@ -39,10 +39,7 @@ import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.db.impl.PageNaviImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.Constant;
+import org.anyline.util.*;
 import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -383,7 +380,10 @@ public class AbstractBasicController{
 		pageVol = BasicUtil.parseInt(request.getAttribute(config.KEY_PAGE_ROWS),pageVol);
 		//是否启用前端设置显示行数
 		if(config.VAR_CLIENT_SET_VOL_ENABLE){
-			pageVol = BasicUtil.parseInt(request.getParameter(config.KEY_PAGE_ROWS),pageVol); 
+			int httpVol = BasicUtil.parseInt(request.getParameter(config.KEY_PAGE_ROWS),0);
+			if(httpVol > 0){
+				pageVol = NumberUtil.min(config.VAR_PAGE_MAX_VOL, httpVol);
+			}
 		} 
 		pageNo = BasicUtil.parseInt(request.getParameter(config.KEY_PAGE_NO),pageNo); 
 		String uri = null; 
