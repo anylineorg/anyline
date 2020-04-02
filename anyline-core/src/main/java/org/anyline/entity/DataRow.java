@@ -922,13 +922,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public Object getAttribute(String key){
 		return attributes.get(key);
 	}
-	public Object get(String key){ 
-		Object result = null; 
-		if(null != key){ 
-			result = super.get(key(key)); 
-		} 
-		return result; 
-	}
+
 	public DataRow getRow(String key){
 		if(null == key){
 			return null;
@@ -1607,12 +1601,37 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return result;
 	}
-
-	public Object value(boolean voluntary, String ... keys) {
-		return BeanUtil.value(this, voluntary, keys);
+//    public Object get(String key){
+//        Object result = null;
+//        if(null != key){
+//            result = super.get(key(key));
+//        }
+//        return result;
+//    }
+	public Object get(boolean voluntary, String ... keys) {
+        if(null == keys || keys.length ==0){
+            return null;
+        }
+        Object result  = this;
+        for (String key : keys) {
+            if(null != result) {
+                if(result instanceof DataRow){
+                    result = ((DataRow)result).get(voluntary, key);
+                }else if (ClassUtil.isWrapClass(result) && !(result instanceof String)) {
+                    result = BeanUtil.getFieldValue(result, key);
+                }else{
+                    if(voluntary){
+                        return result;
+                    }else {
+                        result = null;
+                    }
+                }
+            }
+        }
+        return result;
 	}
-	public Object value(String ... keys) {
-		return value( false, keys);
+	public Object get(String ... keys) {
+		return get(false, keys);
 	}
 	public Object nvl(String ... keys){
 		return BeanUtil.nvl(this,keys);
