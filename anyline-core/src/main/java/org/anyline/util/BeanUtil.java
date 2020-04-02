@@ -1669,17 +1669,17 @@ public class BeanUtil {
 	}
 	/**
 	 * 取第一个不为空的值
-	 * @param map map
+	 * @param src 数据源
 	 * @param keys keys
 	 * @return Object
 	 */
-	public static Object nvl(Map<String,?> map, String ... keys){
+	public static Object nvl(Object src, String ... keys){
 		Object value = null;
-		if(null == map || null == keys){
+		if(null == src || null == keys){
 			return value;
 		}
 		for(String key:keys){
-			value = map.get(key);
+			value = getFieldValue(src, key);
 			if(null != value){
 				return value;
 			}
@@ -1687,6 +1687,19 @@ public class BeanUtil {
 		return value;
 	}
 
+	public static Object evl(Object src, String ... keys){
+		Object value = null;
+		if(null == src || null == keys){
+			return value;
+		}
+		for(String key:keys){
+			value = getFieldValue(src, key);
+			if(BasicUtil.isNotEmpty(value)){
+				return value;
+			}
+		}
+		return value;
+	}
 	/**
 	 * 提取第一个不为空的value
 	 * @param map map
