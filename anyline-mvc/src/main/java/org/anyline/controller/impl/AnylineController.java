@@ -146,12 +146,12 @@ public class AnylineController extends AbstractBasicController {
 		return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, params);
 	}
 	@Deprecated
-	public DataRow entityRow(boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
 	}
 
 	@Deprecated
-	public DataRow entityRow(DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+	public DataRow entity(DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entity(getRequest(),keyCase, null, keyEncrypt, false, params);
 	}
 

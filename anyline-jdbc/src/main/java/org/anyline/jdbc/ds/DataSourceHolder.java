@@ -183,9 +183,9 @@ public class DataSourceHolder {
                 throw new Exception("未设置数据源类型(如:type=com.zaxxer.hikari.HikariDataSource)");
             }
             Class<? extends DataSource> dataSourceType = (Class<? extends DataSource>) Class.forName((String) type);
-            Object driver =  BeanUtil.propertyValue(params,"driver","driver-class","driver-class-name");
-			Object url =  BeanUtil.propertyValue(params,"url","jdbc-url");
-			Object user =  BeanUtil.propertyValue(params,"user","username");
+            Object driver =  BeanUtil.propertyNvl(params,"driver","driver-class","driver-class-name");
+			Object url =  BeanUtil.propertyNvl(params,"url","jdbc-url");
+			Object user =  BeanUtil.propertyNvl(params,"user","username");
             DataSource ds =  dataSourceType.newInstance();
             Map<String,Object> map = new HashMap<String,Object>();
             map.putAll(params);

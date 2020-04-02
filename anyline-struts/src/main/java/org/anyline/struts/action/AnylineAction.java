@@ -76,40 +76,40 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		return entity(request, clazz, false, false, params); 
 	} 
  
-	public DataRow entityRow(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) { 
-		return entityRow(request, row, keyEncrypt, valueEncrypt, params); 
+	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG,  row, keyEncrypt, valueEncrypt, params);
 	} 
  
-	public DataRow entityRow(DataRow row, boolean keyEncrypt, String... params) { 
-		return entityRow(request, row, keyEncrypt, false, params); 
+	public DataRow entity(DataRow row, boolean keyEncrypt, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, params);
 	} 
  
-	public DataRow entityRow(DataRow row, String... params) { 
-		return entityRow(request, row, false, false, params); 
+	public DataRow entity(DataRow row, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, row, false, false, params);
 	} 
  
-	public DataRow entityRow(boolean keyEncrypt, boolean valueEncrypt, String... params) { 
-		return entityRow(request, null, keyEncrypt, valueEncrypt, params); 
+	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
 	} 
  
-	public DataRow entityRow(boolean keyEncrypt, String... params) { 
-		return entityRow(request, null, keyEncrypt, false, params); 
+	public DataRow entity(boolean keyEncrypt, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, params);
 	} 
  
-	public DataRow entityRow(String... params) { 
-		return entityRow(request, null, false, false, params); 
+	public DataRow entity(String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, null, false, false, params);
 	} 
  
-	public DataSet entitySet(boolean keyEncrypt, boolean valueEncrypt, String... params) { 
-		return entitySet(request, keyEncrypt, valueEncrypt, params); 
+	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
 	} 
  
-	public DataSet entitySet(boolean keyEncrypt, String... params) { 
-		return entitySet(request, keyEncrypt, false, params); 
+	public DataSet entitys(boolean keyEncrypt, String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, false, params);
 	} 
  
-	public DataSet entitySet(String... params) { 
-		return entitySet(request, false, false, params); 
+	public DataSet entitys(String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, params);
 	} 
  
 	protected ConfigStore parseConfig(boolean navi, String... configs) { 
