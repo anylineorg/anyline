@@ -20,6 +20,7 @@
 package org.anyline.entity; 
  
 import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -32,71 +33,84 @@ import java.util.*;
  
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
-	protected static final Logger log = LoggerFactory.getLogger(DataSet.class); 
-	private boolean result 			= true		; // 执行结果 
-	private Exception exception		= null		; // 异常 
-	private String message			= null		; // 提示信息 
-	private PageNavi navi			= null		; // 分页 
-	private List<String> head		= null		; // 表头 
-	private List<DataRow> rows		= null		; // 数据 
-	private List<String> primaryKeys= null		; // 主键
-	private String datalink			= null		; // 数据连接
-	private String dataSource		= null		; // 数据源(表|视图|XML定义SQL) 
-	private String schema			= null		; 
-	private String table			= null		;
-	private long createTime 		= 0			; //创建时间
-	private long expires 			= -1		; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期 
-	private boolean isFromCache		= false		; //是否来自缓存
-	private boolean isAsc			= false		;
-	private boolean isDesc			= false		;
-	private Map<String, Object> queryParams 	= new HashMap<String,Object>()	;//查询条件
-	
+	protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
+	private boolean result = true; // 执行结果
+	private Exception exception = null; // 异常
+	private String message = null; // 提示信息
+	private PageNavi navi = null; // 分页
+	private List<String> head = null; // 表头
+	private List<DataRow> rows = null; // 数据
+	private List<String> primaryKeys = null; // 主键
+	private String datalink = null; // 数据连接
+	private String dataSource = null; // 数据源(表|视图|XML定义SQL)
+	private String schema = null;
+	private String table = null;
+	private long createTime = 0; //创建时间
+	private long expires = -1; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+	private boolean isFromCache = false; //是否来自缓存
+	private boolean isAsc = false;
+	private boolean isDesc = false;
+	private Map<String, Object> queryParams = new HashMap<String, Object>();//查询条件
+
 	/**
 	 * 创建索引
+	 *
 	 * @param key key
 	 * @return return
 	 * crateIndex("ID");
 	 * crateIndex("ID:ASC");
 	 */
-	public DataSet creatIndex(String key){
+	public DataSet creatIndex(String key) {
 		return this;
 	}
+
 	public DataSet() {
 		rows = new ArrayList<DataRow>();
 		createTime = System.currentTimeMillis();
 	}
-	public static DataSet parse(Collection<Object> list){
+
+	public static DataSet parse(Collection<Object> list) {
 		DataSet set = new DataSet();
-		if(null != list){
-			for(Object obj:list){
+		if (null != list) {
+			for (Object obj : list) {
 				DataRow row = DataRow.parse(obj);
 				set.add(row);
 			}
 		}
 		return set;
 	}
-	public static DataSet parseJson(String json){
-		if(null != json){
-			try{
-				return parseJson(BeanUtil.JSON_MAPPER.readTree(json));
-			}catch(Exception e){
-				
+
+	public static DataSet parseJson(DataRow.KEY_CASE keyCase, String json) {
+		if (null != json) {
+			try {
+				return parseJson(keyCase, BeanUtil.JSON_MAPPER.readTree(json));
+			} catch (Exception e) {
+
 			}
 		}
 		return null;
 	}
-	public static DataSet parseJson(JsonNode json){
+
+	public static DataSet parseJson(String json) {
+		return parseJson(DataRow.KEY_CASE.CONFIG, json);
+	}
+
+	public static DataSet parseJson(DataRow.KEY_CASE keyCase, JsonNode json) {
 		DataSet set = new DataSet();
-		if(null != json){
-			if(json.isArray()){
-				Iterator<JsonNode>  items = json.iterator();
-				while(items.hasNext()){
+		if (null != json) {
+			if (json.isArray()) {
+				Iterator<JsonNode> items = json.iterator();
+				while (items.hasNext()) {
 					JsonNode item = items.next();
-					set.add(DataRow.parseJson(item));
+					set.add(DataRow.parseJson(keyCase, item));
 				}
 			}
 		}
 		return set;
+	}
+
+	public static DataSet parseJson(JsonNode json){
+		return parseJson(DataRow.KEY_CASE.CONFIG, json);
 	}
 	public DataSet setIsNew(boolean bol){
 		for(DataRow row:rows){
