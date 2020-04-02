@@ -222,27 +222,32 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 
 	/**
 	 * 解析xml结构字符
+	 * @param keyCase KEY_CASE
 	 * @param xml xml
 	 * @return return
 	 */
-	public static DataRow parseXml(String xml){
+	public static DataRow parseXml(KEY_CASE keyCase, String xml){
 		if(null != xml){
 			try{
 				Document doc=DocumentHelper.parseText(xml);
-				return parseXml(doc.getRootElement());
+				return parseXml(keyCase, doc.getRootElement());
 			}catch(Exception e){
 				e.printStackTrace();
 			}
 		}
 		return null;
 	}
+
+	public static DataRow parseXml(String xml){
+		return parseXml(KEY_CASE.CONFIG, xml);
+	}
 	/**
 	 * 解析xml
 	 * @param element element
 	 * @return return
 	 */
-	public static DataRow parseXml(Element element){
-		DataRow row = new DataRow();
+	public static DataRow parseXml(KEY_CASE keyCase, Element element){
+		DataRow row = new DataRow(keyCase);
 		if(null == element){
 			return row;
 		}
@@ -266,7 +271,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 					row.put(childKey, child.getTextTrim());
 					continue;
 				}
-				DataRow childRow = parseXml(child);
+				DataRow childRow = parseXml(keyCase,child);
 				Object childStore = row.get(childKey);
 				if(null == childStore){
 					row.put(childKey, childRow);
@@ -1623,6 +1628,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return result;
 	}
 
+	public Object value(boolean voluntary, String ... keys) {
+		return BeanUtil.value(this, voluntary, keys);
+	}
+	public Object value(String ... keys) {
+		return value( false, keys);
+	}
 	/**
 	 * 在key列基础上 +value,如果原来没有key列则默认0并put
 	 * @param key key
