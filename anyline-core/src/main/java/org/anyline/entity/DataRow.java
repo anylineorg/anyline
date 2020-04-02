@@ -1153,28 +1153,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
-	/**
-	 * null值替换成""
-	 * @param keys keys
-	 * @return return
-	 */
-	public DataRow nvl(String ... keys){
-		if(null != keys && keys.length>0){
-			for(String key:keys){
-				if(null == get(key)){
-					put(key,"");
-				}
-			}
-		}else{
-			List<String> cols = keys();
-			for(String key:cols){
-				if(null == get(key)){
-					put(key,"");
-				}
-			}
-		}
-		return this;
-	}
+
 	/** 
 	 * 轮换成xml格式 
 	 * @return return
@@ -1545,20 +1524,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		this.updateEmptyColumn = updateEmptyColumn;
 		return this;
 	}
-	/**
-	 * 替换所有NULL值
-	 * @param value value
-	 * @return return
-	 */
-	public DataRow replaceNull(String value){
-		List<String> keys = keys();
-		for(String key:keys){
-			if(null == get(key)){
-				put(key,value);
-			}
-		}
-		return this;
-	}
 
 	/**
 	 * 替换所有空值
@@ -1575,6 +1540,19 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 	/**
+	 * 替换所有空值
+	 * @param key key
+	 * @param value value
+	 * @return return
+	 */
+	public DataRow replaceEmpty(String key, String value){
+		if(isEmpty(key)){
+			put(key,value);
+		}
+		return this;
+	}
+
+	/**
 	 * 替换所有NULL值
 	 * @param key key
 	 * @param value value
@@ -1588,14 +1566,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 
 	/**
-	 * 替换所有空值
-	 * @param key key
+	 * 替换所有NULL值
 	 * @param value value
 	 * @return return
 	 */
-	public DataRow replaceEmpty(String key, String value){
-		if(isEmpty(key)){
-			put(key,value);
+	public DataRow replaceNull(String value){
+		List<String> keys = keys();
+		for(String key:keys){
+			if(null == get(key)){
+				put(key,value);
+			}
 		}
 		return this;
 	}
@@ -1633,6 +1613,12 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public Object value(String ... keys) {
 		return value( false, keys);
+	}
+	public Object nvl(String ... keys){
+		return BeanUtil.nvl(this,keys);
+	}
+	public Object evl(String ... keys){
+		return BeanUtil.evl(this,keys);
 	}
 	/**
 	 * 在key列基础上 +value,如果原来没有key列则默认0并put
