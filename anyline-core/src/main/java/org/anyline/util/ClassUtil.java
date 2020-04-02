@@ -37,7 +37,12 @@ public class ClassUtil {
 	@SuppressWarnings("rawtypes")
 	public static boolean isPrimitiveClass(Object obj) {
 		try {
-			Class clazz = obj.getClass();
+			Class clazz = null;
+			if(obj instanceof Class){
+				clazz = (Class) obj;
+			}else{
+				clazz = obj.getClass();
+			}
 			if(clazz.isPrimitive() || ((Class<?>)clazz.getField("TYPE").get(null)).isPrimitive()){
 				return true;
 			}else{
@@ -48,6 +53,12 @@ public class ClassUtil {
 			return false;
 		}
 	}
+
+	/**
+	 * 是否是封装类(基础类型之外的类) String类返回true
+	 * @param obj
+	 * @return boolean
+	 */
 	public static boolean isWrapClass(Object obj){
 		return !isPrimitiveClass(obj);
 	}
