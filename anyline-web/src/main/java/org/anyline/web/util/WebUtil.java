@@ -308,6 +308,27 @@ public class WebUtil {
 		return result;
 	}
 
+	/**
+	 * 解密value
+	 * @param value value
+	 * @return String
+	 */
+	public String decrypt(String value){
+		return ConfigParser.decryptParamValue(value);
+	}
+	public String decryptValue(String value){
+		return ConfigParser.decryptParamValue(value);
+	}
+	public String decryptKey(String value){
+		return ConfigParser.decryptParamKey(value);
+	}
+
+	public String decrypt(String value, String def){
+		if(BasicUtil.isEmpty(value)){
+			return value;
+		}
+		return value;
+	}
 	//	/**
 //	 * http request参数
 //	 *
