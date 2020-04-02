@@ -243,7 +243,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 解析xml
-	 * @param element element
+     * @param keyCase KEY_CASE
+     * @param element element
 	 * @return return
 	 */
 	public static DataRow parseXml(KEY_CASE keyCase, Element element){
@@ -1601,13 +1602,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return result;
 	}
-//    public Object get(String key){
-//        Object result = null;
-//        if(null != key){
-//            result = super.get(key(key));
-//        }
-//        return result;
-//    }
+    public Object get(String key){
+        Object result = null;
+        if(null != key){
+            result = super.get(key(key));
+        }
+        return result;
+    }
 	public Object get(boolean voluntary, String ... keys) {
         if(null == keys || keys.length ==0){
             return null;

@@ -56,7 +56,7 @@ public class ClassUtil {
 
 	/**
 	 * 是否是封装类(基础类型之外的类) String类返回true
-	 * @param obj
+	 * @param obj obj
 	 * @return boolean
 	 */
 	public static boolean isWrapClass(Object obj){
