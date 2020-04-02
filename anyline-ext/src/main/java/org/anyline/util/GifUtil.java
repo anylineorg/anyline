@@ -25,7 +25,7 @@ public class GifUtil {
      * 拆分gif 
      * @param file  gif文件
      * @param dir 解压目录 
-     * @return List<File>
+     * @return List
      */ 
     public static List<File> split(File file, File dir){
     	List<File> files = new ArrayList<File>(); 
