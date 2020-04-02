@@ -1644,7 +1644,7 @@ public class BeanUtil {
 	 * @param keys keys 一级key.二级key.三级key
 	 * @return Object
 	 */
-	public static Object value(Object src, boolean voluntary, String ... keys) {
+	public static Object extract(Object src, boolean voluntary, String ... keys) {
 		if(null == keys || keys.length ==0){
 			return null;
 		}
@@ -1664,8 +1664,8 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static Object value(Object src, String ... keys) {
-		return value(src, false, keys);
+	public static Object extract(Object src, String ... keys) {
+		return extract(src, false, keys);
 	}
 	/**
 	 * 取第一个不为空的值
