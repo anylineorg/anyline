@@ -1622,36 +1622,58 @@ public class BeanUtil {
 	}
 
 	/**
-	 * 深层提取map中的value
-	 * @param map map
+	 * 递归提取src中的value
+	 * 如
+	 * {
+	 *     key1:{
+	 *         key11:{
+	 *             key111:111   //提取111 recursion(map,key1,key11,key111)
+	 *         },
+	 *         key12:{
+	 *             key121:{
+	 *                 key1211:1211,
+	 *                 key1212:1212 //提取1212 recursion(map,key1, key12, key121, key1212)
+	 *             }
+	 *         }
+	 *     }
+	 * }
+	 * @param src 数据源
+	 * @param voluntary 遇到基础类型是否停止(不取下一级)
+	 *                  voluntary=false时遇到提取基础类型属性值时返回null
+	 *                  voluntary=true时遇到提取基础类型属性值时返回当前value并return value
 	 * @param keys keys 一级key.二级key.三级key
 	 * @return Object
 	 */
-	public static Object value(Map<String, ?> map, String keys) {
-		Object result  = null;
-		String[] _keys = keys.split("\\.");
-		for (String key : _keys) {
-			Object o = map.get(key);
-			if (BasicUtil.isNotEmpty(o) ) {
-				if(o instanceof Map){
-					map = (Map<String, ?>) o;
+	public static Object value(Object src, boolean voluntary, String ... keys) {
+		if(null == keys || keys.length ==0){
+			return null;
+		}
+		Object result  = src;
+		for (String key : keys) {
+			if(null != result) {
+				if (ClassUtil.isWrapClass(result) && !(result instanceof String)) {
+					result = getFieldValue(result, key);
 				}else{
-					result = o;
+					if(voluntary){
+						return result;
+					}else {
+						result = null;
+					}
 				}
-			} else {
-				continue;
 			}
 		}
 		return result;
 	}
-
+	public static Object value(Object src, String ... keys) {
+		return value(src, false, keys);
+	}
 	/**
 	 * 取第一个不为空的值
 	 * @param map map
 	 * @param keys keys
 	 * @return Object
 	 */
-	public static Object value(Map<String,?> map, String ... keys){
+	public static Object nvl(Map<String,?> map, String ... keys){
 		Object value = null;
 		if(null == map || null == keys){
 			return value;
@@ -1671,7 +1693,7 @@ public class BeanUtil {
 	 * @param keys keys
 	 * @return String
 	 */
-	public static Object propertyValue(Map<String,?> map, String ... keys){
+	public static Object propertyNvl(Map<String,?> map, String ... keys){
 		Object value = null;
 		if(null == map || null == keys){
 			return value;
@@ -1721,7 +1743,7 @@ public class BeanUtil {
     	if(null != map && null != obj) {
 			List<String> fields = BeanUtil.getFieldsName(obj.getClass());
 			for (String field : fields) {
-				Object value = propertyValue(map, field);
+				Object value = propertyNvl(map, field);
 				if (BasicUtil.isNotEmpty(value)) {
 					BeanUtil.setFieldValue(obj, field, value);
 				}
