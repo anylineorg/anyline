@@ -712,7 +712,70 @@ public class BeanUtil {
 			e.printStackTrace(); 
 		} 
 		return map; 
-	} 
+	}
+
+	/**
+	 * 按key升序拼接
+	 * @param params  params
+	 * @param ignoreEmpty 忽略空值
+	 * @param sort 排序
+	 * @return return
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static String map2string(Map<String,?> params, boolean ignoreEmpty, boolean sort){
+		String result = "";
+		Set es = null;
+		if(sort){
+			SortedMap<String, Object> wrap = new TreeMap<String, Object>(params);
+			es = wrap.entrySet();
+		}else{
+			es = params.entrySet();
+		}
+		Iterator it = es.iterator();
+		while (it.hasNext()) {
+			Map.Entry entry = (Map.Entry) it.next();
+			String k = (String) entry.getKey();
+			Object v = entry.getValue();
+			if(ignoreEmpty && BasicUtil.isEmpty(v)) {
+				continue;
+			}
+			if(v instanceof Collection){
+				List list = new ArrayList();
+				list.addAll((Collection)v);
+				Collections.sort(list);
+				for(Object item: list){
+					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
+						continue;
+					}
+					if (!"".equals(result)) {
+						result += "&";
+					}
+					result += k + "=" + item;
+				}
+			}else if(v instanceof String[]){
+				String vals[] = (String[])v;
+				Arrays.sort(vals);
+				for(String item:vals){
+					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
+						continue;
+					}
+					if (!"".equals(result)) {
+						result += "&";
+					}
+					result += k + "=" + item;
+				}
+			}else{
+				if (!"".equals(result)) {
+					result += "&";
+				}
+				result += k + "=" + v;
+			}
+		}
+		return result;
+	}
+	public static String map2string(Map<String,?> params){
+		return map2string(params, true, true);
+	}
 	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion){ 
 		T obj = null; 
 		try { 

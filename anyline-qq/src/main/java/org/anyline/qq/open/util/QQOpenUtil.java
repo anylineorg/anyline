@@ -1,7 +1,7 @@
 package org.anyline.qq.open.util; 
- 
-import java.util.Base64; 
-import java.util.Hashtable; 
+
+import java.util.Base64;
+import java.util.Hashtable;
 import java.util.Map; 
  
 import javax.crypto.Mac; 
@@ -12,12 +12,9 @@ import org.anyline.entity.DataRow;
 import org.anyline.net.HttpUtil; 
 import org.anyline.net.SimpleHttpUtil; 
 import org.anyline.qq.open.entity.QQPayTradeOrder; 
-import org.anyline.qq.open.entity.QQPayTradeResult; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.BeanUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.MD5Util; 
-import org.anyline.util.regular.RegularUtil; 
+import org.anyline.qq.open.entity.QQPayTradeResult;
+import org.anyline.util.*;
+import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory; 
  
@@ -89,7 +86,7 @@ public class QQOpenUtil{
 	 */ 
 	public String sign(Map<String, Object> params) { 
 		String sign = ""; 
-		sign = HttpUtil.param(params); 
+		sign = BeanUtil.map2string(params);
 		sign += "&key=" + config.PAY_API_SECRET; 
 		sign = MD5Util.crypto(sign).toUpperCase(); 
 		return sign; 
@@ -121,7 +118,8 @@ public class QQOpenUtil{
         // 完成 Mac 操作 
         byte[] dst = mac.doFinal(byteSrc); 
         // Base64 
-        result = Base64.getEncoder().encodeToString(dst); 
+        //result = Base64.getEncoder().encode2String(dst);
+		result = Base64Util.encode(dst);
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		} 

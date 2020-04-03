@@ -109,7 +109,7 @@ public class AmapUtil {
 					log.warn("[添加标注完成][id:{}][name:{}]",id,name); 
 				}else{ 
 					log.warn("[添加标注失败][name:{}][info:{}]", name, row.getString("info")); 
-					log.warn("[param:{}]",HttpUtil.param(params)); 
+					log.warn("[param:{}]",BeanUtil.map2string(params)); 
 				} 
 			} 
 		}catch(Exception e){ 
@@ -189,7 +189,7 @@ public class AmapUtil {
 		String url = "http://yuntuapi.amap.com/datamanage/data/delete"; 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
-			log.warn("[删除标注][param:{}]",HttpUtil.param(params)); 
+			log.warn("[删除标注][param:{}]",BeanUtil.map2string(params)); 
 		} 
 		try{ 
 			DataRow json = DataRow.parseJson(txt); 
@@ -248,7 +248,7 @@ public class AmapUtil {
 		params.put("sig", sign(params)); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
-			log.warn("[更新标注][param:{}]",HttpUtil.param(params)); 
+			log.warn("[更新标注][param:{}]",BeanUtil.map2string(params)); 
 		} 
 		try{ 
 			DataRow json = DataRow.parseJson(txt); 
@@ -309,7 +309,7 @@ public class AmapUtil {
 			tableId = json.getString("tableid"); 
 			log.warn("[创建地图完成][tableid:{}]",tableId); 
 		}else{ 
-			log.warn("[创建地图失败][info:{}][param:{}]",txt,HttpUtil.param(params)); 
+			log.warn("[创建地图失败][info:{}][param:{}]",txt,BeanUtil.map2string(params)); 
 		} 
 		return tableId; 
 	} 
@@ -357,7 +357,7 @@ public class AmapUtil {
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[本地搜索失败][info:{}]",json.getString("info")); 
-				log.warn("[本地搜索失败][params:{}]",HttpUtil.param(params)); 
+				log.warn("[本地搜索失败][params:{}]",BeanUtil.map2string(params)); 
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
@@ -434,7 +434,7 @@ public class AmapUtil {
 				set = json.getSet("datas"); 
 			}else{ 
 				log.warn("[周边搜索失败][info:{}]",json.getString("info")); 
-				log.warn("[周边搜索失败][params:{}]",HttpUtil.param(params)); 
+				log.warn("[周边搜索失败][params:{}]",BeanUtil.map2string(params)); 
 				set = new DataSet(); 
 				set.setException(new Exception(json.getString("info"))); 
 			} 
@@ -525,7 +525,7 @@ public class AmapUtil {
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[条件搜索失败][info:{}]",json.getString("info")); 
-				log.warn("[条件搜索失败][params:{}]",HttpUtil.param(params)); 
+				log.warn("[条件搜索失败][params:{}]",BeanUtil.map2string(params)); 
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
@@ -563,7 +563,7 @@ public class AmapUtil {
 				} 
 			}else{ 
 				log.warn("[周边搜索失败][info:{}]",json.getString("info")); 
-				log.warn("[周边搜索失败][params:{}]",HttpUtil.param(params)); 
+				log.warn("[周边搜索失败][params:{}]",BeanUtil.map2string(params)); 
 			} 
 		}catch(Exception e){ 
 			log.warn("[周边搜索失败][error:{}]",e.getMessage()); 
@@ -599,7 +599,7 @@ public class AmapUtil {
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[数据分布检索失败][info:{}]",json.getString("info")); 
-				log.warn("[数据分布检索失败][params:{}]",HttpUtil.param(params)); 
+				log.warn("[数据分布检索失败][params:{}]",BeanUtil.map2string(params)); 
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
@@ -638,7 +638,7 @@ public class AmapUtil {
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[数据分布检索失败][info:{}]",json.getString("info")); 
-				log.warn("[数据分布检索失败][params:{}]",HttpUtil.param(params)); 
+				log.warn("[数据分布检索失败][params:{}]",BeanUtil.map2string(params)); 
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
@@ -678,7 +678,7 @@ public class AmapUtil {
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[数据分布检索失败][info:{}]",json.getString("info")); 
-				log.warn("[数据分布检索失败][params:{}]",HttpUtil.param(params)); 
+				log.warn("[数据分布检索失败][params:{}]",BeanUtil.map2string(params)); 
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
@@ -716,7 +716,7 @@ public class AmapUtil {
 			}else{ 
 				set = new DataSet(); 
 				log.warn("[附近检索失败][info:}{}]",json.getString("info")); 
-				log.warn("[附近检索失败][params:{}]",HttpUtil.param(params)); 
+				log.warn("[附近检索失败][params:{}]",BeanUtil.map2string(params)); 
 				set.setException(new Exception(json.getString("info"))); 
 			} 
 		}catch(Exception e){ 
@@ -797,7 +797,7 @@ public class AmapUtil {
 					location.setLevel(row.getString("LEVEL")); 
 				} 
 			}else{ 
-				log.warn("[坐标查询失败][info:{}][params:{}]",json.getString("info"),HttpUtil.param(params)); 
+				log.warn("[坐标查询失败][info:{}][params:{}]",json.getString("info"),BeanUtil.map2string(params)); 
 			} 
 		}catch(Exception e){ 
 			log.warn("[坐标查询失败][error:{}]",e.getMessage()); 
@@ -872,7 +872,7 @@ public class AmapUtil {
 	 */ 
 	public String sign(Map<String,Object> params){ 
 		String sign = ""; 
-		sign = HttpUtil.param(params) + this.privateKey; 
+		sign = BeanUtil.map2string(params) + this.privateKey; 
 		sign = MD5Util.sign(sign,"UTF-8"); 
 		return sign; 
 	} 

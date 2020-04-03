@@ -45,8 +45,9 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession; 
 import javax.net.ssl.SSLSocket; 
 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil; 
 import org.apache.http.Header; 
 import org.apache.http.HttpEntity; 
@@ -1017,7 +1018,7 @@ public class HttpUtil {
 			url = ""; 
 		} 
 		url = url.trim(); 
-		String kv = HttpUtil.param(params); 
+		String kv = BeanUtil.map2string(params);
 		if(BasicUtil.isNotEmpty(kv)){ 
 			if (url.indexOf("?") > -1) { 
 				if (url.indexOf("?") < url.length() - 1 && url.indexOf("&") < url.length() - 1) { 
@@ -1032,7 +1033,7 @@ public class HttpUtil {
 	} 
 	public static MultipartEntityBuilder mergeParam(MultipartEntityBuilder builder, Map<String,Object> params, ContentType contetType){ 
 		if(null != params){ 
-			String txt = HttpUtil.param(params); 
+			String txt = BeanUtil.map2string(params);
 			String[] kvs = txt.split("&"); 
 			for(String kv:kvs){ 
 				String[] tmps = kv.split("="); 
@@ -1260,67 +1261,5 @@ public class HttpUtil {
 	public static void setUserAgent(String agent){ 
 		HttpUtil.userAgent = agent; 
 	} 
- 
-	/** 
-	 * 按key升序拼接 
-	 * @param params  params
-	 * @param ignoreEmpty 忽略空值 
-	 * @param sort 排序 
-	 * @return return
-	 */ 
-	@SuppressWarnings({ "rawtypes", "unchecked" }) 
-	public static String param(Map<String,?> params, boolean ignoreEmpty, boolean sort){ 
-		String result = ""; 
-		Set es = null; 
-		if(sort){ 
-			SortedMap<String, Object> wrap = new TreeMap<String, Object>(params); 
-			es = wrap.entrySet(); 
-		}else{ 
-			es = params.entrySet(); 
-		} 
-		Iterator it = es.iterator(); 
-		while (it.hasNext()) { 
-			Map.Entry entry = (Map.Entry) it.next(); 
-			String k = (String) entry.getKey(); 
-			Object v = entry.getValue(); 
-			if(ignoreEmpty && BasicUtil.isEmpty(v)) { 
-				continue; 
-			} 
-			if(v instanceof Collection){ 
-				List list = new ArrayList(); 
-				list.addAll((Collection)v); 
-				Collections.sort(list); 
-				for(Object item: list){ 
-					if(ignoreEmpty && BasicUtil.isEmpty(item)) { 
-						continue; 
-					} 
-					if (!"".equals(result)) { 
-						result += "&"; 
-					} 
-					result += k + "=" + item; 
-				} 
-			}else if(v instanceof String[]){ 
-				String vals[] = (String[])v; 
-				Arrays.sort(vals); 
-				for(String item:vals){ 
-					if(ignoreEmpty && BasicUtil.isEmpty(item)) { 
-						continue; 
-					} 
-					if (!"".equals(result)) { 
-						result += "&"; 
-					} 
-					result += k + "=" + item; 
-				} 
-			}else{ 
-				if (!"".equals(result)) { 
-					result += "&"; 
-				} 
-				result += k + "=" + v; 
-			} 
-		} 
-		return result; 
-	} 
-	public static String param(Map<String,?> params){ 
-		return param(params, true, true); 
-	} 
+
 }

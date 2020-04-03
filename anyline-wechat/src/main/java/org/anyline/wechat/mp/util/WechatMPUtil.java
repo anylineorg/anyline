@@ -197,7 +197,7 @@ public class WechatMPUtil extends WechatUtil {
 	 */ 
 	public String jsapiSign(Map<String,Object> params){ 
 		String sign = ""; 
-		sign = HttpUtil.param(params); 
+		sign = BeanUtil.map2string(params);
 		sign = SHA1Util.sign(sign); 
 		return sign; 
 	} 
