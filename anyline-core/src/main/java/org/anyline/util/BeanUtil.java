@@ -718,7 +718,7 @@ public class BeanUtil {
 	 * 按key升序拼接
 	 * @param map  数据源
 	 * @param join key,value之间的拼接符(默认=)
-	 * @param separator  separator 多个kv的分隔符(默认&)
+	 * @param separator  separator 多个kv的分隔符(默认&amp;)
 	 * @param ignoreEmpty 是否忽略空值
 	 * @param sort 是否排序
 	 * @return return
