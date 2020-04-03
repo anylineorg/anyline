@@ -721,7 +721,7 @@ public class BeanUtil {
 	 * @param separator  separator 多个kv的分隔符(默认&amp;)
 	 * @param ignoreEmpty 是否忽略空值
 	 * @param sort 是否排序
-	 * @return return
+	 * @return String(a=1&amp;b=2&amp;b=3)
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static String map2string(Map<String,?> map, String join, String separator, boolean ignoreEmpty, boolean sort){
