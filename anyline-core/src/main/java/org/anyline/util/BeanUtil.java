@@ -716,20 +716,22 @@ public class BeanUtil {
 
 	/**
 	 * 按key升序拼接
-	 * @param params  params
-	 * @param ignoreEmpty 忽略空值
-	 * @param sort 排序
+	 * @param map  数据源
+	 * @param join key,value之间的拼接符(默认=)
+	 * @param separator  separator 多个kv的分隔符(默认&)
+	 * @param ignoreEmpty 是否忽略空值
+	 * @param sort 是否排序
 	 * @return return
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static String map2string(Map<String,?> params, boolean ignoreEmpty, boolean sort){
-		String result = "";
+	public static String map2string(Map<String,?> map, String join, String separator, boolean ignoreEmpty, boolean sort){
+		StringBuilder result = new StringBuilder();
 		Set es = null;
 		if(sort){
-			SortedMap<String, Object> wrap = new TreeMap<String, Object>(params);
+			SortedMap<String, Object> wrap = new TreeMap<String, Object>(map);
 			es = wrap.entrySet();
 		}else{
-			es = params.entrySet();
+			es = map.entrySet();
 		}
 		Iterator it = es.iterator();
 		while (it.hasNext()) {
@@ -747,10 +749,10 @@ public class BeanUtil {
 					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
 						continue;
 					}
-					if (!"".equals(result)) {
-						result += "&";
+					if (result.length() > 0) {
+						result.append(separator);
 					}
-					result += k + "=" + item;
+					result.append(k).append(join).append(item);
 				}
 			}else if(v instanceof String[]){
 				String vals[] = (String[])v;
@@ -759,22 +761,22 @@ public class BeanUtil {
 					if(ignoreEmpty && BasicUtil.isEmpty(item)) {
 						continue;
 					}
-					if (!"".equals(result)) {
-						result += "&";
+					if (result.length() > 0) {
+						result.append(separator);
 					}
-					result += k + "=" + item;
+					result.append(k).append(join).append(item);
 				}
 			}else{
-				if (!"".equals(result)) {
-					result += "&";
+				if (result.length() > 0) {
+					result.append(separator);
 				}
-				result += k + "=" + v;
+				result.append(k).append(join).append(v);
 			}
 		}
-		return result;
+		return result.toString();
 	}
-	public static String map2string(Map<String,?> params){
-		return map2string(params, true, true);
+	public static String map2string(Map<String,?> map){
+		return map2string(map, "=","&",true, true);
 	}
 	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion){ 
 		T obj = null; 
