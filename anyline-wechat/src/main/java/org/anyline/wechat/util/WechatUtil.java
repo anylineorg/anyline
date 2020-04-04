@@ -1,6 +1,7 @@
 package org.anyline.wechat.util;
  
 import java.io.File;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -437,14 +438,23 @@ public class WechatUtil {
 	}
 
 	public static String getAccessToken(WechatConfig config){
+		if(BasicUtil.isNotEmpty(config.SERVER_WHITELIST)){
+			try{
+				String ip = InetAddress.getLocalHost().getHostAddress();
+				if(!config.SERVER_WHITELIST.contains(ip)){
+					log.warn("[白名单验证失败][白名单:{}][本机IP:{}]", config.SERVER_WHITELIST, ip);
+					return null;
+				}
+			}catch (Exception e){
+				log.warn("[白名单验证异常]");
+			}
+		}
 		return getAccessToken(config.APP_ID, config.APP_SECRET);
 	}
 	public static String getAccessToken(String appid, String secret){
 		String result = "";
 		DataRow row = accessTokens.getRow("APP_ID", appid);
-		if(null == row){
-			row = newAccessToken(appid, secret);
-		}else if(row.isExpire()){
+		if(null == row || row.isExpire()){
 			accessTokens.remove(row);
 			row = newAccessToken(appid, secret);
 		}

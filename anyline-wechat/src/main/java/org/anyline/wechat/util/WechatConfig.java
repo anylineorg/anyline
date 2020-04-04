@@ -100,7 +100,7 @@ public class WechatConfig extends AnylineConfig{
 	public String PAY_NOTIFY_URL				= "" ; //微信支付统一接口的回调action
 	public String PAY_CALLBACK 					= "" ; //微信支付成功支付后跳转的地址
 	public String PAY_BANK_RSA_PUBLIC_KEY_FILE 	= "" ;
-
+	public String SERVER_WHITELIST			    = null; //白名单IP(如果设置了并且当前服务器不在白名单内，则跳过需要白名单才能调用的接口)
 
 	
 } 

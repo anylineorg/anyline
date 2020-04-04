@@ -161,27 +161,29 @@ public class WechatMPUtil extends WechatUtil {
 		} 
 		return result; 
 	} 
-	public DataRow newJsapiTicket(String accessToken){ 
+	public DataRow newJsapiTicket(String accessToken){
+		DataRow row = new DataRow();
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 			log.warn("[CREATE NEW JSAPI TICKET][token:{}]",accessToken); 
-		} 
-		DataRow row = new DataRow(); 
-		row.put("APP_ID", config.APP_ID); 
-		String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+accessToken+"&type=jsapi"; 
-		String text = HttpUtil.get(url,"UTF-8").getText(); 
-		log.warn("[CREATE NEW JSAPI TICKET][txt:{}]",text); 
-		DataRow json = DataRow.parseJson(text); 
-		if(json.containsKey("ticket")){ 
-			row.put("TICKET", json.getString("ticket")); 
-			row.setExpires(json.getInt("expires_in", 0)*1000);
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
-				log.warn("[CREATE NEW JSAPI TICKET][TICKET:{}]",row.get("TICKET")); 
-			} 
-		}else{ 
-			log.warn("[CREATE NEW JSAPI TICKET][FAIL]"); 
-			return null; 
-		} 
-		jsapiTickets.addRow(row); 
+		}
+		if(BasicUtil.isNotEmpty(accessToken)){
+			row.put("APP_ID", config.APP_ID);
+			String url = "https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token="+accessToken+"&type=jsapi";
+			String text = HttpUtil.get(url,"UTF-8").getText();
+			log.warn("[CREATE NEW JSAPI TICKET][txt:{}]",text);
+			DataRow json = DataRow.parseJson(text);
+			if(json.containsKey("ticket")){
+				row.put("TICKET", json.getString("ticket"));
+				row.setExpires(json.getInt("expires_in", 0)*1000);
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
+					log.warn("[CREATE NEW JSAPI TICKET][TICKET:{}]",row.get("TICKET"));
+				}
+			}else{
+				log.warn("[CREATE NEW JSAPI TICKET][FAIL]");
+				return null;
+			}
+			jsapiTickets.addRow(row);
+		}
 		return row; 
 	} 
 	/** 
