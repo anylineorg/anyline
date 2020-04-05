@@ -313,17 +313,17 @@ public class WebUtil {
 	 * @param value value
 	 * @return String
 	 */
-	public String decrypt(String value){
+	public static String decrypt(String value){
 		return ConfigParser.decryptParamValue(value);
 	}
-	public String decryptValue(String value){
+	public static String decryptValue(String value){
 		return ConfigParser.decryptParamValue(value);
 	}
-	public String decryptKey(String value){
+	public static String decryptKey(String value){
 		return ConfigParser.decryptParamKey(value);
 	}
 
-	public String decrypt(String value, String def){
+	public static String decrypt(String value, String def){
 		if(BasicUtil.isEmpty(value)){
 			return value;
 		}
