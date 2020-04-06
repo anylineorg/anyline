@@ -45,7 +45,8 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	protected String id; 
 	protected String name; 
 	protected Object value;
-	protected boolean evl; 
+	protected Object evl;
+	protected Object nvl;
 	protected String clazz; 
 	protected String style; 
 	protected String onclick; 
@@ -222,7 +223,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		id = null;
 		name = null;
 		value = null;
-		evl = false;
+		//evl = false;
+		evl = null;
+		nvl = null;
 		clazz = null;
 		style = null;
 		onclick = null;
@@ -274,13 +277,13 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return body; 
 	} 
 	public void setBody(String body) {
-		if(evl && BasicUtil.isNotEmpty(body)){
-			 String str = body.toString();
-			 if(str.contains(",")){
-				 String[] strs = str.split(",");
-				 body = (String)BasicUtil.nvl(strs);
-			 }
-		} 
+//		if(evl && BasicUtil.isNotEmpty(body)){
+//			 String str = body.toString();
+//			 if(str.contains(",")){
+//				 String[] strs = str.split(",");
+//				 body = (String)BasicUtil.nvl(strs);
+//			 }
+//		}
 		this.body = body; 
 	} 
 	public String getId() { 
@@ -300,13 +303,13 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		return value; 
 	} 
 	public void setValue(Object value) {
-		if(evl && BasicUtil.isNotEmpty(value)){
-			 String str = value.toString();
-			 if(str.contains(",")){
-				 String[] strs = str.split(",");
-				 value = BasicUtil.nvl(strs);
-			 }
-		} 
+//		if(evl && BasicUtil.isNotEmpty(value)){
+//			 String str = value.toString();
+//			 if(str.contains(",")){
+//				 String[] strs = str.split(",");
+//				 value = BasicUtil.nvl(strs);
+//			 }
+//		}
 		this.value = value;
 	}
 	public String getClazz() { 
@@ -357,12 +360,29 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	public void setReadonly(String readonly) {
 		this.readonly = readonly;
 	}
-	public boolean isEvl() {
+//	public boolean isEvl() {
+//		return evl;
+//	}
+//	public void setEvl(boolean evl) {
+//		this.evl = evl;
+//	}
+
+	public Object getEvl() {
 		return evl;
 	}
-	public void setEvl(boolean evl) {
+
+	public void setEvl(Object evl) {
 		this.evl = evl;
 	}
+
+	public Object getNvl() {
+		return nvl;
+	}
+
+	public void setNvl(Object nvl) {
+		this.nvl = nvl;
+	}
+
 	public String getExtraPrefix() {
 		return extraPrefix;
 	}
