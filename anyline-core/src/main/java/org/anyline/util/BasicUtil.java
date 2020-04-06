@@ -309,6 +309,9 @@ public class BasicUtil {
 			return def;
 		}
 	}
+	public static int parseInt(Object value) throws Exception{
+		return (int) Double.parseDouble(value.toString());
+	}
 
 
 	public static Float parseFloat(Object value, Float def) {
