@@ -85,17 +85,7 @@ public class TimeDelay extends BaseBodyTag implements Cloneable{
 		super.release();
 		this.value = null;
 		this.body = null;
-		this.nvl = true; 
-	} 
-	public Object getNvl() {
-		return nvl;
 	}
-
-
-	public void setNvl(Object nvl) {
-		this.nvl = nvl;
-	}
-
 
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
