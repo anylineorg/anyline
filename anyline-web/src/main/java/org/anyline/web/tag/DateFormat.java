@@ -28,6 +28,7 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
+import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
  
@@ -36,6 +37,11 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
 	private String format;
 	private String lang;
+	private int add;	//在原来基础上增加add单位
+	private String part = "d"; // y M d h m s
+	private String function; //对应DateUtil函数
+	private Object def;		//默认值 value,body,nvl都未指定时取def
+
 	private Object nvl = false;	//如果value为空("",null) 是否显示当前时间,默认false 
  
 	public String getFormat() { 
@@ -50,6 +56,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
  
 	public int doEndTag() throws JspException { 
 		try{
+			Date date = null;
 			String result = ""; 
 			if(null == format){ 
 				format = "yyyy-MM-dd"; 
@@ -60,24 +67,45 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 			Locale local = Locale.CHINA;
 			if(BasicUtil.isNotEmpty(lang)){
 				local = new Locale(lang);
-			} 
-			if(BasicUtil.isEmpty(value) && BasicUtil.parseBoolean(nvl)){ 
-				value = new Date(); 
-				result = DateUtil.format(local,new Date(), format); 
-			}else if(value instanceof String){
-				if(((String) value).contains(",")){
-					value = value.toString().replace(",", "");
-					result = DateUtil.format(local,BasicUtil.parseLong(value, 0L),format);
-				}else{ 
-					result = DateUtil.format(local,(String)value,format);
-				} 
-			}else if(value instanceof Date){
-				result = DateUtil.format(local,(Date)value,format);
-			}else if(value instanceof Long){
-				result = DateUtil.format(local,(Long)value,format);
-			} 
-			JspWriter out = pageContext.getOut(); 
-			out.print(result); 
+			}
+			date = parse(value);
+			if(null == date){
+				if(null != nvl) {
+					if (nvl instanceof Boolean) {
+						if((Boolean)nvl){
+							date = new Date();
+						}
+					}
+				}
+			}
+			if(null == date){
+				date = parse(def);
+			}
+			if(null != date) {
+				if (add != 0) {
+					if("y".equals(part)){
+						date = DateUtil.addYear(date,add);
+					}else if("d".equals(part)){
+						date = DateUtil.addDay(date, add);
+					}else if("M".equals(part)){
+						date = DateUtil.addMonth(date,add);
+					}else if("h".equalsIgnoreCase(part) || "hh".equals(part)){
+						date = DateUtil.addHour(date,add);
+					}
+				}
+			}
+			if(null != date){
+				result = DateUtil.format(local,date,format);
+			}
+			if(BasicUtil.isEmpty(result)){
+				if(null !=nvl && !(nvl instanceof Boolean)){
+					result = nvl.toString();
+				}
+			}
+			if(null != result) {
+				JspWriter out = pageContext.getOut();
+				out.print(result);
+			}
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		}finally{ 
@@ -85,26 +113,35 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 		} 
         return EVAL_PAGE;    
 	} 
- 
- 
+
 	@Override 
 	public void release() { 
 		super.release();
 		this.value = null;
 		this.body = null;
 		this.format = null;
+		this.lang = null;
 		this.nvl = false;
-		this.lang = null; 
-	} 
-	public Object getNvl() {
-		return nvl;
 	}
-
-
-	public void setNvl(Object nvl) {
-		this.nvl = nvl;
+	private Date parse(Object value){
+		Date date = null;
+		if(BasicUtil.isEmpty(value)){
+			return null;
+		}
+		if(value instanceof String){
+			if(((String) value).contains(",") || BasicUtil.isNumber(value)){
+				value = value.toString().replace(",", "");
+				date = new Date(BasicUtil.parseLong(value, 0L));
+			}else{
+				date = DateUtil.parse((String)value);
+			}
+		}else if(value instanceof Date){
+			date = (Date)value;
+		}else if(value instanceof Long){
+			date = new Date((Long)value);
+		}
+		return date;
 	}
-
 
 	public String getLang() {
 		return lang;
@@ -115,8 +152,31 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 		this.lang = lang;
 	}
 
+	public Integer getAdd() {
+		return add;
+	}
 
-	@Override 
+	public void setAdd(Integer add) {
+		this.add = add;
+	}
+
+	public String getPart() {
+		return part;
+	}
+
+	public void setPart(String part) {
+		this.part = part;
+	}
+
+	public String getFunction() {
+		return function;
+	}
+
+	public void setFunction(String function) {
+		this.function = function;
+	}
+
+	@Override
 	protected Object clone() throws CloneNotSupportedException { 
 		return super.clone(); 
 	} 
