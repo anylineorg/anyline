@@ -310,8 +310,8 @@ public class ConfigTable {
 	
 	
 	
-	protected static void line(String src, String chr, boolean center){
-		int len = 80;
+	protected static void line(String src, String chr, int append, boolean center){
+		int len = 80 + append;
 		int fill = 0 ;
 		String line = "";
 		if(center){
@@ -362,30 +362,30 @@ public class ConfigTable {
 			}
 
 			System.out.println();
-			line("","*", true);
-			line("Anyline Core " + version, " ", true);
-			line("anyline.org ", " ", true);
-			line(""," ", true);
+			line("","*", 0,true);
+			line("Anyline Core [" + version + "]", " ",1, true);
+			line("anyline.org ", " ", 0, true);
+			line(""," ", 0, true);
 			if(null != time && time.startsWith("2")){
-				line("Last Modified " + "[" + time +"] ", " ", true);
+				line("Last Modified " + "[" + time +"] ", " ", 0, true);
 			}else{
-				line("MinVersion " +  "[" + minVersion + "]", " ", true);
+				line("MinVersion " +  "[" + minVersion + "]", " ", 0, true);
 			}
-			line(""," ", true);
-			line("","*", true);
+			line(""," ", 0, true);
+			line("","*", 0, true);
 //			line(" github.con  git地址：https://github.com/anylineorg/anyline.git", "", false);
 //			//line(" github.com  git帐号：public@anyline.org(anyline111111)", "", false);
 //			line(" ", " ", false);
 //			line(" oschina.net git地址：https://git.oschina.net/anyline/anyline.git", "", false);
 //			line(" oschina.net svn地址：svn://git.oschina.net/anyline/anyline", "", false);
 			//line(" oschina.net 帐号密码：public@anyline.org(111111)", "", false);
-			line("","*", true);
+			line("","*", 0, true);
 			if(null != project){
-				line(" project root > " + project, "", false);
+				line(" project root > " + project, "", 0, false);
 			}
-			line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", false);
-			line(" =================== 生产环境请务必修改密钥文件key.xml ========================", "", false);
-			line("","*", true);
+			line(" debug status > anyline-config.xml:<property key=\"DEBUG\">boolean</property>", "", 0, false);
+			line(" =================== 生产环境请务必修改密钥文件key.xml ========================", "", 0, false);
+			line("","*", 0, true);
 			System.out.println();
 		}catch(Exception e){
 			e.printStackTrace();
