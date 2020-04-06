@@ -27,8 +27,6 @@ import javax.servlet.jsp.JspWriter;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.NumberUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
  
  
 public class NumberFormat extends BaseBodyTag implements Cloneable{ 
@@ -36,21 +34,13 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private String format;
 	private Object min;
 	private Object max; 
-	private String def; 
- 
-	public String getFormat() { 
-		return format; 
-	} 
- 
- 
-	public void setFormat(String format) { 
-		this.format = format; 
-	} 
+	private String def; //默认值
+
  
  
 	public int doEndTag() throws JspException { 
 		try{ 
-			String result = ""; 
+			String result = null;
 			if(null == value){ 
 				value = body;
 			}
@@ -73,10 +63,19 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 						log.warn("[number format][超过最大值:{}]", max);
 					}
 				} 
-				result = NumberUtil.format(num,format); 
-				JspWriter out = pageContext.getOut(); 
+				result = NumberUtil.format(num,format);
+			}else{
+				if(null == result && null != nvl){
+					result = nvl.toString();
+				}
+				if(BasicUtil.isEmpty(result) && null != evl){
+					result = evl.toString();
+				}
+			}
+			if(null != result) {
+				JspWriter out = pageContext.getOut();
 				out.print(result);
-			} 
+			}
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		}finally{ 
@@ -94,7 +93,8 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 		body = null;
 		def = null;
 		min = null;
-		max = null; 
+		max = null;
+		evl = null;
 	} 
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
@@ -119,6 +119,15 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 
 	public String getDef() {
 		return def;
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	public void setDef(String def) {
