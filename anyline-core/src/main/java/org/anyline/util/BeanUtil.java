@@ -46,8 +46,10 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
- 
- 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+
 public class BeanUtil { 
 	public static ObjectMapper JSON_MAPPER = new ObjectMapper();
 
@@ -323,7 +325,7 @@ public class BeanUtil {
 	public static List<String> getFieldsName(Class<?> clazz){ 
 		List<Field> fields = getFields(clazz); 
 		List<String> keys = new ArrayList<String>(); 
-		for(Field field:fields){ 
+		for(Field field:fields){
 			keys.add(field.getName()); 
 		} 
 		return keys; 
@@ -1616,31 +1618,69 @@ public class BeanUtil {
 		} 
 		return result; 
 	}
-	public static String camel(String key){
+
+	/**
+	 * 驼峰转下划线
+	 * userName : user_name
+	 * @param str src
+	 * @return String
+	 */
+	public static String camel_(String str){
+		Matcher matcher = Pattern.compile("[A-Z]").matcher(str);
+		StringBuffer sb = new StringBuffer();
+		while (matcher.find()) {
+			String g = matcher.group();
+			matcher.appendReplacement(sb, "_" + g);
+		}
+		matcher.appendTail(sb);
+		if (sb.charAt(0) == '_') {
+			sb.delete(0, 1);
+		}
+		return sb.toString();
+	}
+
+	/**
+	 * 转驼峰
+	 * @param key src
+	 * @param hold 是否保留分隔符
+	 * @return String
+	 */
+	public static String camel(String key, boolean hold){
 		String[] ks = key.split("_|-");
 		String sKey = null;
 		for(String k:ks){
 			if(null == sKey){
 				sKey = k;
 			}else{
-				sKey = sKey + CharUtil.toUpperCaseHeader(k);
+				if(hold){
+					sKey += "_";
+				}
+				sKey += CharUtil.toUpperCaseHeader(k);
 			}
 		}
 		return sKey;
 	}
-	public static String Camel(String key){
+	public static String camel(String key){
+		return camel(key, false);
+	}
+	public static String Camel(String key, boolean hold){
 		String[] ks = key.split("_|-");
 		String sKey = null;
 		for(String k:ks){
 			if(null == sKey){
 				sKey = CharUtil.toUpperCaseHeader(k);
 			}else{
-				sKey = sKey + CharUtil.toUpperCaseHeader(k);
+				if(hold){
+					sKey += "_";
+				}
+				sKey +=  CharUtil.toUpperCaseHeader(k);
 			}
 		}
 		return sKey;
 	}
-
+	public static String Camel(String key){
+		return Camel(key, false);
+	}
 	/** 
 	 * 解析 key:vlue形式参数age:20 
 	 * 返回数组["age","20"] 

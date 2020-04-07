@@ -30,18 +30,27 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.*;
- 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class DataRow extends HashMap<String, Object> implements Serializable{ 
 	private static final long serialVersionUID = -2098827041540802313L;
 	protected static final Logger log = LoggerFactory.getLogger(DataRow.class); 
 
 	public static enum KEY_CASE{
-		CONFIG				{public String getCode(){return "CONFIG";} 	public String getName(){return "按配置文件";}},
-		SRC					{public String getCode(){return "SRC";} 	public String getName(){return "不转换";}},
-		UPPER				{public String getCode(){return "UPPER";} 	public String getName(){return "强制大写";}},
-		LOWER				{public String getCode(){return "LOWER";} 	public String getName(){return "强制小写";}},
-		Camel 				{public String getCode(){return "Camel ";} 	public String getName(){return "大驼峰";}},
-		camel 				{public String getCode(){return "camel ";} 	public String getName(){return "小驼峰";}};
+		CONFIG				{public String getCode(){return "CONFIG";} 			public String getName(){return "按配置文件";}},
+		SRC					{public String getCode(){return "SRC";} 			public String getName(){return "不转换";}},
+		UPPER				{public String getCode(){return "UPPER";} 			public String getName(){return "强制大写";}},
+		LOWER				{public String getCode(){return "LOWER";} 			public String getName(){return "强制小写";}},
+		//下/中划线转成驼峰
+		Camel 				{public String getCode(){return "Camel ";} 			public String getName(){return "大驼峰";}},
+		camel 				{public String getCode(){return "camel ";} 			public String getName(){return "小驼峰";}},
+		//bean驼峰属性转下划线
+		CAMEL_CONFIG		{public String getCode(){return "CAMEL_CONFIG";} 	public String getName(){return "转下划线后按配置文件转换大小写";}},
+		CAMEL_SRC			{public String getCode(){return "CAMEL_SRC";} 		public String getName(){return "转下划线后不转换大小写";}},
+		CAMEL_UPPER			{public String getCode(){return "CAMEL_UPPER";} 	public String getName(){return "转下划线后强制大写";}},
+		CAMEL_LOWER			{public String getCode(){return "CAMEL_LOWER";} 	public String getName(){return "转下划线后强制小写";}};
+
 		public abstract String getName();
 		public abstract String getCode();
 	} 
@@ -145,9 +154,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 					String fieldName = field.getName();
 					String col = map.get(fieldName);
 					if(null == col){
-						col = keyCase(keyCase,fieldName);
+						col = fieldName;
 					}
-					row.put(col, BeanUtil.getFieldValue(obj, field));
+					row.put(keyCase, col, BeanUtil.getFieldValue(obj, field));
 				}
 			}
 		}
@@ -439,7 +448,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		Object items = get(ITEMS); 
 		if(items instanceof DataSet){ 
 			return (DataSet)items; 
-		} 
+		}
 		return null; 
 	} 
 	public DataRow putItems(Object obj){ 
@@ -1453,11 +1462,25 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				key = BeanUtil.Camel(key);
 			}else if(keyCase == KEY_CASE.camel){
 				key = BeanUtil.camel(key);
+			}else if(keyCase.getCode().contains("_")){
+				//驼峰转下划线
+				key = BeanUtil.camel_(key);
+				if(keyCase == KEY_CASE.CAMEL_CONFIG){
+						if(ConfigTable.IS_UPPER_KEY){
+							key = key.toUpperCase();
+						}
+						if(ConfigTable.IS_LOWER_KEY){
+							key = key.toLowerCase();
+						}
+				}else if(keyCase == KEY_CASE.CAMEL_LOWER){
+					key = key.toLowerCase();
+				}else if(keyCase == KEY_CASE.CAMEL_UPPER){
+					key = key.toUpperCase();
+				}
 			}
 		}
 		return key;
 	}
-
 	public static String keyCase(String key){
 		return keyCase(KEY_CASE.CONFIG, key);
 	}
