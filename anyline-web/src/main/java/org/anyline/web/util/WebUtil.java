@@ -324,8 +324,9 @@ public class WebUtil {
 	}
 
 	public static String decrypt(String value, String def){
+		value = decrypt(value);
 		if(BasicUtil.isEmpty(value)){
-			return value;
+			return def;
 		}
 		return value;
 	}
