@@ -136,11 +136,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 					row.put(k, value);
 				}
 			}else{
-				List<String> fields = BeanUtil.getFieldsName(obj.getClass());
-				for(String field : fields){
-					String col = map.get(field);
+
+				List<Field> fields = BeanUtil.getFields(obj.getClass());
+				for(Field field:fields) {
+					if (Modifier.isStatic(field.getModifiers())) {
+						continue;
+					}
+					String fieldName = field.getName();
+					String col = map.get(fieldName);
 					if(null == col){
-						col = keyCase(keyCase,field);
+						col = keyCase(keyCase,fieldName);
 					}
 					row.put(col, BeanUtil.getFieldValue(obj, field));
 				}
@@ -148,6 +153,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return row;
 	}
+
 	/*
 	 * 解析json结构字符
 	 * @param keyCase key大小写
