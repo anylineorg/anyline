@@ -1615,9 +1615,32 @@ public class BeanUtil {
 			idx ++; 
 		} 
 		return result; 
-	} 
- 
-	 
+	}
+	public static String camel(String key){
+		String[] ks = key.split("_|-");
+		String sKey = null;
+		for(String k:ks){
+			if(null == sKey){
+				sKey = k;
+			}else{
+				sKey = sKey + CharUtil.toUpperCaseHeader(k);
+			}
+		}
+		return sKey;
+	}
+	public static String Camel(String key){
+		String[] ks = key.split("_|-");
+		String sKey = null;
+		for(String k:ks){
+			if(null == sKey){
+				sKey = CharUtil.toUpperCaseHeader(k);
+			}else{
+				sKey = sKey + CharUtil.toUpperCaseHeader(k);
+			}
+		}
+		return sKey;
+	}
+
 	/** 
 	 * 解析 key:vlue形式参数age:20 
 	 * 返回数组["age","20"] 

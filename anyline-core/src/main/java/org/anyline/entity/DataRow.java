@@ -39,7 +39,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		CONFIG				{public String getCode(){return "CONFIG";} 	public String getName(){return "按配置文件";}},
 		SRC					{public String getCode(){return "SRC";} 	public String getName(){return "不转换";}},
 		UPPER				{public String getCode(){return "UPPER";} 	public String getName(){return "强制大写";}},
-		LOWER				{public String getCode(){return "LOWER";} 	public String getName(){return "强制小写";}};
+		LOWER				{public String getCode(){return "LOWER";} 	public String getName(){return "强制小写";}},
+		Camel 				{public String getCode(){return "Camel ";} 	public String getName(){return "大驼峰";}},
+		camel 				{public String getCode(){return "camel ";} 	public String getName(){return "小驼峰";}};
 		public abstract String getName();
 		public abstract String getCode();
 	} 
@@ -136,9 +138,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			}else{
 				List<String> fields = BeanUtil.getFieldsName(obj.getClass());
 				for(String field : fields){
-					String col = map.get(keyCase(field));
+					String col = map.get(field);
 					if(null == col){
-						col = field;
+						col = keyCase(keyCase,field);
 					}
 					row.put(col, BeanUtil.getFieldValue(obj, field));
 				}
@@ -1441,10 +1443,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				key = key.toLowerCase();
 			}else if(keyCase == KEY_CASE.UPPER){
 				key = key.toUpperCase();
+			}else if(keyCase == KEY_CASE.Camel){
+				key = BeanUtil.Camel(key);
+			}else if(keyCase == KEY_CASE.camel){
+				key = BeanUtil.camel(key);
 			}
 		}
 		return key;
 	}
+
 	public static String keyCase(String key){
 		return keyCase(KEY_CASE.CONFIG, key);
 	}
