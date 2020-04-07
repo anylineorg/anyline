@@ -15,19 +15,39 @@
 而在整个项目中这些过程又是大量重复或类似的。这不但影响开发速度与代码质量，更影响心情。  
 所以AnyLine提供了一个统一约定格式来实现这些繁琐的操作,格式大致如下 
 
-序号|约定格式|最终SQL(实际SQL根据数据库类型略有不同)|备注
-| --- | --- | --- | --- |
-1|CODE:cd|CODE = ?(cd没有值，则不生成)|如果http中有cd或cd值为空，则生成以上SQL,否则不生成SQL,其他格式同样适用(+开头除外)
-2|CODE:%id|CODE LIKE '%?'|
-3|CODE:%id%|CODE LIKE '%?%'|
-4|CODE:[id]|CODE IN(?,?,?,?,?,?,?,?)|占位符数量根据http参数数量生成
-5|CODE: cd: code|CODE = ?|如果http参数中有cd或cd值不为空,则根据cd取值，否则根据code取值,如果都没有值,则不生成SQL
-6|CODE: cd: id: code:{1}|CODE = ?|依次根据cd,id,code从http中取值，如果都没有值，则取默认值1，{}表示其中是value，而不是key
-7|CODE:cd\|CODE:code|(CODE = ? OR CODE = ?)|如果cd,code都有值则生成OR条件，如果仅一个有值则只生成CODE=?，如果都没有值则不生成SQL
-8|CODE:cd+|CODE = ?|cd+后加号表示http中cd值已加密，在生成SQL时需要先解密
-9|+CODE:cd|CODE = ? 或 CODE IS NULL|如果http中没有cd或cd值为空,则生成CODE IS NULL
-10|++CODE:cd|CODE = ? 或 整个SQL不执行|如果http中没有cd或cd值为空,整个SQL不执行，如果是查询SQL，则返回长度为0的集合
-
+|     |参数>|code=0|code=|<font size=7 >code=0&amp;code=1<br/>&amp;cd=2&amp;user=5</font>|cd=2&amp;cd=3|code=0(密)|cd=2(密)<br/>&amp;cd=3(密)|
+| --- | --- | ---  | --- | ---                                 | ---         | ---       | ---                   | 
+1|CODE:code|CODE = 0|忽略|CODE = 0|忽略|忽略|忽略|
+2|CODE:%code%|CODE LIKE '%0%'|忽略|CODE LIKE '%0%'|忽略|忽略|忽略|
+3|CODE:%code|CODE LIKE '%0'|忽略|CODE LIKE '%0'|忽略|忽略|忽略|
+4|CODE:code%|CODE LIKE '0%'|忽略|CODE LIKE '0%'|忽略|忽略|忽略|
+5|CODE:%code: cd% |CODE LIKE '%0%'|忽略|CODE LIKE '%0%'|CODE LIKE '%2%'|忽略|忽略|
+6|CODE:%code: cd:{9}% |CODE LIKE '%0%'|CODE LIKE '%9%'|CODE LIKE '%0%'|CODE LIKE '%2%'|忽略|忽略|
+7|CODE:%code: cd|CODE LIKE '%0'|忽略|CODE LIKE '%0'|CODE LIKE '%2'|忽略|忽略|
+8|CODE:%code: cd:{9}|CODE LIKE '%0'|CODE LIKE '%9'|CODE LIKE '%0'|CODE LIKE '%2'|忽略|忽略|
+9|CODE:[code]  |CODE = 0|忽略|CODE IN(0,1)|忽略|忽略|忽略|
+10|CODE:[code: cd]|CODE = 0|忽略|CODE IN(0,1)|CODE IN(2,3)|忽略|忽略|
+11|CODE:[cd+]|忽略|忽略|CODE = 2|CODE IN(2,3)|忽略|CODE IN(2,3)|
+12|CODE:[code: cd:{[6,7,8]}]  |CODE = 0|CODE IN(6,7,8)|CODE IN(0,1)|CODE IN(2,3)|忽略|忽略|
+13|CODE:[code: cd:{6,7,8}]|CODE = 0|CODE IN(6,7,8)|CODE IN(0,1)|CODE IN(2,3)|忽略|忽略|
+14|+CODE:code  |CODE = 0|CODE IS NULL|CODE = 0|CODE IS NULL|忽略|忽略|
+15|++CODE:code  |CODE = 0|不执行|CODE = 0|不执行|忽略|忽略|
+16|CODE:&gt;code|CODE &gt; 0|忽略|CODE &gt; 0|忽略|忽略|忽略|
+17|CODE:&gt;code: cd|CODE &gt; 0|忽略|CODE &gt; 0|CODE &gt; 2|忽略|忽略|
+18|CODE:&gt;code:{9}|CODE &gt; 0|CODE &gt; 9|CODE &gt;0|CODE &gt; 9|CODE &gt; 9|CODE &gt; 9|
+19|CODE:code: cd|CODE = 0|忽略|CODE = 2|CODE = 2|忽略|忽略|
+20|CODE:code: cd:{9}|CODE = 0|CODE = 9|CODE = 0|CODE = 2|忽略|忽略|
+21|CODE:code\|cd |CODE = 0|忽略|CODE =0 OR CODE = 2|忽略 |忽略|忽略|
+22|CODE:code\|{NULL}|CODE = 0 OR CODE IS NULL|忽略|CODE = 0 OR CODE IS NULL|忽略|忽略|忽略|
+23|CODE:code\|CODE: cd  |CODE = 0|忽略|CODE = 0 OR CODE = 1|CODE = 2 |忽略|忽略|
+24|CODE:code\|CD: cd  |CODE = 0|忽略|CODE = 0 OR CD = 2|CD = 2|忽略|忽略|
+25|CODE:code: cd\|user|CODE = 0|忽略|CODE = 0 OR CODE = 5|CODE = 2|忽略|忽略|
+26|CODE:code: cd\|{9}|CODE = 0|忽略|CODE = 0 OR CODE = 9|CODE = 2 OR CODE = 9|CODE = 9|CODE = 9|
+27|CODE:code+:{9} |CODE = 9|CODE = 9|CODE = 9|CODE = 9|CODE = 0|CODE = 9|
+28|CODE:code+: cd:{9}|CODE = 9|CODE = 9|CODE = 2|CODE = 2|CODE = 0|CODE = 9|
+29|CODE:code+: cd+|忽略|忽略|忽略|忽略|CODE = 0|CODE = 2|
+30|CODE:code\|CODE: cd\|CD: cd\|CD:code|CODE = 0 OR CD = 0|忽略|CODE =0 OR CODE = 2 OR ID =0 OR ID = 2|CODE =2 OR CD =2|忽略|忽略|
+31|CODE:code:{9}\|CD: cd:{9}|CODE = 0 OR CD = 9|CODE = 9 OR CD = 9|CODE = 0 OR CD = 2|CODE = 9 OR CD = 2|CODE = 9 OR CD = 9|CODE = 9 OR CD = 9| 
 
 详细参考:[http://doc.anyline.org/s?id=1059](http://doc.anyline.org/s?id=1059)
 
