@@ -681,7 +681,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					continue; 
 				} 
 				 
-				Object value = row.get(key); 
+				Object value = row.get(DataRow.KEY_CASE.SRC, key);
 				if(null == value){ 
 					if(factKeys.contains(key)){ 
 						keys.remove(key); 

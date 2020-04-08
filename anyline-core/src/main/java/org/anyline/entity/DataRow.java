@@ -1636,13 +1636,20 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return result;
 	}
-    public Object get(String key){
-        Object result = null;
-        if(null != key){
-            result = super.get(key(key));
-        }
-        return result;
-    }
+	public Object get(String key){
+		Object result = null;
+		if(null != key){
+			result = super.get(key(key));
+		}
+		return result;
+	}
+	public Object get(KEY_CASE keyCase,String key){
+		Object result = null;
+		if(null != key){
+			result = super.get(key(keyCase,key));
+		}
+		return result;
+	}
 	public Object get(boolean voluntary, String ... keys) {
         if(null == keys || keys.length ==0){
             return null;
