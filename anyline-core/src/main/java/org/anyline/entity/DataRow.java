@@ -118,7 +118,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public static DataRow parse(Object obj, String ... keys){
 		return parse(KEY_CASE.CONFIG, obj, keys);
 	}
-	public static DataRow parse(KEY_CASE keyCase,Object obj, String ... keys){
+	public static DataRow parse(KEY_CASE keyCase, Object obj, String ... keys){
 		Map<String,String> map = new HashMap<String,String>();
 		if(null != keys){
 			for(String key:keys){
@@ -461,6 +461,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return return
 	 */
 	public DataRow toLowerKey(String ... keys){
+		this.keyCase = KEY_CASE.LOWER;
 		if(null != keys && keys.length>0){
 			for(String key:keys){
 				Object value = get(key);
@@ -474,7 +475,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				put(KEY_CASE.LOWER, key, value);
 			}
 		}
-		this.keyCase = KEY_CASE.LOWER;
 		return this;
 	}
 	/**
@@ -483,6 +483,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return return
 	 */
 	public DataRow toUpperKey(String ... keys){
+		this.keyCase = KEY_CASE.UPPER;
 		if(null != keys && keys.length>0){
 			for(String key:keys){
 				Object value = get(key);
@@ -496,9 +497,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				put(KEY_CASE.UPPER,key, value);
 			}
 		}
-		this.keyCase = KEY_CASE.UPPER;
 		return this;
 	}
+
 	/**
 	 * 数字格式化
 	 * @param format format
@@ -1485,12 +1486,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return keyCase(KEY_CASE.CONFIG, key);
 	}
 	private String key(String key){
-		return key(KEY_CASE.CONFIG, key);
+		return keyCase(this.keyCase, key);
 	}
 	private String key(KEY_CASE keyCase, String key){
-		if(keyCase == KEY_CASE.CONFIG){
-			keyCase = this.keyCase;
-		}
 		return keyCase(keyCase, key);
 	}
 	/**

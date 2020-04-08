@@ -1626,6 +1626,9 @@ public class BeanUtil {
 	 * @return String
 	 */
 	public static String camel_(String str){
+		if(null == str || str.contains("_")){
+			return str;
+		}
 		Matcher matcher = Pattern.compile("[A-Z]").matcher(str);
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {
