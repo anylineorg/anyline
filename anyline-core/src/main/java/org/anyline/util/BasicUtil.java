@@ -21,6 +21,7 @@ package org.anyline.util;
 
 import org.anyline.util.regular.RegularUtil;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -480,8 +481,7 @@ public class BasicUtil {
 	} 
  
 	/** 
-	 * 压缩空白 将多个空白压缩成一个空格 
-	 *  
+	 * 压缩空白 将多个空白压缩成一个空格
 	 * @param str  str
 	 * @return return
 	 */ 
@@ -500,8 +500,15 @@ public class BasicUtil {
 			} 
 		} 
 		return strs; 
-	} 
- 
+	}
+
+	public static String compressionXml(String xml) {
+		xml = compressionSpace(xml);
+		xml = xml.replaceAll("<\\!--[\\s\\S]*-->","");
+		xml = xml.replaceAll("\\s{1,}<","<");
+		return xml;
+	}
+
 	/** 
 	 * 填充字符(从左侧填充) 
 	 *  
