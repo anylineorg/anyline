@@ -598,7 +598,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append(" SET").append(SQLCreater.BR_TAB);
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
-				Object value = row.get(key);
+				Object value = row.get(DataRow.KEY_CASE.SRC, key);
 				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(1, str.length()-1);
