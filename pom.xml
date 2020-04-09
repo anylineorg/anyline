@@ -52,7 +52,6 @@
 		<module>anyline-nc</module>
 		<module>anyline-poi</module>
 		<module>anyline-qq</module>
-		<module>anyline-redis</module>
 		<module>anyline-start</module>
 		<module>anyline-start-mvc</module>
 		<module>anyline-start-mvc-jsp</module>
@@ -65,6 +64,7 @@
 		<module>anyline-ldap</module>
 		<module>anyline-web-ext</module>
         <module>anyline-cache-ecache</module>
+		<module>anyline-cache-redis</module>
     </modules>
 	<profiles>
 		<profile>

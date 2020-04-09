@@ -49,7 +49,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		CAMEL_CONFIG		{public String getCode(){return "CAMEL_CONFIG";} 	public String getName(){return "转下划线后按配置文件转换大小写";}},
 		CAMEL_SRC			{public String getCode(){return "CAMEL_SRC";} 		public String getName(){return "转下划线后不转换大小写";}},
 		CAMEL_UPPER			{public String getCode(){return "CAMEL_UPPER";} 	public String getName(){return "转下划线后强制大写";}},
-		CAMEL_LOWER			{public String getCode(){return "CAMEL_LOWER";} 	public String getName(){return "转下划线后强制小写";}};
+		CAMEL_LOWER			{public String getCode(){return "CAMEL_LOWER";} 	public String getName(){return "转下划线后强制小写";}},
+
+		AUTO				{public String getCode(){return "AUTO";} 			public String getName(){return "自动识别";}};
 
 		public abstract String getName();
 		public abstract String getCode();
@@ -74,14 +76,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期 
 	protected Boolean isNew 				= false							; //强制新建(适应hibernate主键策略) 
 	protected boolean isFromCache 			= false							; //是否来自缓存
-
 	private boolean updateNullColumn 		= ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
 	private boolean updateEmptyColumn 		= ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
 	
-	private KEY_CASE keyCase = KEY_CASE.CONFIG;
+	private KEY_CASE keyCase 				= KEY_CASE.CONFIG;
+	private boolean isUpperKey				= false							; //是否已执行大写key转换(影响到驼峰执行)
 
 	public DataRow(){
-		String pk = key(PRIMARY_KEY);
+		String pk = putKey(PRIMARY_KEY);
 		if(null != pk){
 			primaryKeys.add(PRIMARY_KEY);
 		}
@@ -101,7 +103,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
 			String key = itr.next();
 			Object value = map.get(key);
-			put(key(key), value);
+			put(putKey(key), value);
 		}
 	}
 	public DataRow setKeyCase(KEY_CASE keyCase){
@@ -124,7 +126,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			for(String key:keys){
 				String tmp[] = key.split(":");
 				if(null != tmp && tmp.length>1){
-					map.put(keyCase(tmp[1].trim()), keyCase(tmp[0].trim()));
+					map.put(putKeyCase(tmp[1].trim()), putKeyCase(tmp[0].trim()));
 				}
 			}
 		}
@@ -389,7 +391,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		List<String> keys = row.keys();
 		for(String key : keys){
 			if(over || null != this.get(key)){
-				this.put(key, row.get(key));
+				this.put(key, row.get(KEY_CASE.SRC,key));
 			}
 		}
 		return this;
@@ -465,13 +467,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != keys && keys.length>0){
 			for(String key:keys){
 				Object value = get(key);
-				remove(key(key));
+				remove(putKey(key));
 				put(KEY_CASE.LOWER, key, value);
 			}
 		}else{
 			for(String key:keys()){
-				Object value = get(key(key));
-				remove(key(key));
+				Object value = get(key);
+				remove(putKey(key));
 				put(KEY_CASE.LOWER, key, value);
 			}
 		}
@@ -487,13 +489,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != keys && keys.length>0){
 			for(String key:keys){
 				Object value = get(key);
-				remove(key(key));
+				remove(putKey(key));
 				put(KEY_CASE.UPPER, key, value);
 			}
 		}else{
 			for(String key:keys()){
 				Object value = get(key);
-				remove(key(key));
+				remove(putKey(key));
 				put(KEY_CASE.UPPER,key, value);
 			}
 		}
@@ -590,7 +592,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			if(BasicUtil.isEmpty(item)){
 				continue;
 			}
-			item = key(item);
+			item = putKey(item);
 			if(!this.primaryKeys.contains(item)){
 				this.primaryKeys.add(item);
 			}
@@ -860,10 +862,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return get(key) != null;
 	}
 	public boolean hasKey(String key){
-		return keys().contains(key(key));
+		return keys().contains(putKey(key));
 	}
 	public boolean containsKey(String key){
-		return keys().contains(key(key));
+		return keys().contains(putKey(key));
 	} 
 	public List<String> keys(){ 
 		List<String> keys = new ArrayList<String>(); 
@@ -874,7 +876,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	public DataRow put(KEY_CASE keyCase, String key, Object value){
 		if(null != key){
-			key = key(keyCase,key);
+			key = putKey(keyCase,key);
 			if(key.startsWith("+")){
 				key = key.substring(1);
 				addUpdateColumns(key);
@@ -1311,9 +1313,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null != keys){
 			for(String key:keys){
 				if(null != key){
-					super.remove(key(key));
+					super.remove(putKey(key));
 				}
-				updateColumns.remove(key(key));
+				updateColumns.remove(putKey(key));
 			}
 		}
 		return this;
@@ -1329,7 +1331,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow removeUpdateColumns(String ... cols){
 		if(null != cols){
 			for(String col:cols){
-				updateColumns.remove(key(col));
+				updateColumns.remove(putKey(col));
 			}
 		}
 		return this;
@@ -1342,8 +1344,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow addUpdateColumns(String ... cols){
 		if(null != cols){
 			for(String col:cols){
-				if(!updateColumns.contains(key(col))){
-					updateColumns.add(key(col));
+				if(!updateColumns.contains(putKey(col))){
+					updateColumns.add(putKey(col));
 				}
 			}
 		}
@@ -1446,50 +1448,106 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @param key key
 	 * @return return
 	 */
-	private static String keyCase(KEY_CASE keyCase, String key){
-		if(null != key){
-			if(keyCase == KEY_CASE.CONFIG){
+	private static String getKeyCase(KEY_CASE keyCase, String key){
+		if(null == key || keyCase == KEY_CASE.SRC){
+			return key;
+		}
+		if(keyCase == KEY_CASE.CONFIG){
+			if(ConfigTable.IS_UPPER_KEY){
+				key = key.toUpperCase();
+			}
+			if(ConfigTable.IS_LOWER_KEY){
+				key = key.toLowerCase();
+			}
+		}else if(keyCase == KEY_CASE.LOWER){
+			key = key.toLowerCase();
+		}else if(keyCase == KEY_CASE.UPPER){
+			key = key.toUpperCase();
+		}
+//		else if(keyCase == KEY_CASE.Camel){
+//			key = BeanUtil.Camel(key);
+//		}else if(keyCase == KEY_CASE.camel){
+//			key = BeanUtil.camel(key);
+//		}else if(keyCase.getCode().contains("_")){
+//			//驼峰转下划线
+//			key = BeanUtil.camel_(key);
+//			if(keyCase == KEY_CASE.CAMEL_CONFIG){
+//					if(ConfigTable.IS_UPPER_KEY){
+//						key = key.toUpperCase();
+//					}
+//					if(ConfigTable.IS_LOWER_KEY){
+//						key = key.toLowerCase();
+//					}
+//			}else if(keyCase == KEY_CASE.CAMEL_LOWER){
+//				key = key.toLowerCase();
+//			}else if(keyCase == KEY_CASE.CAMEL_UPPER){
+//				key = key.toUpperCase();
+//			}
+//		}
+		return key;
+	}
+	public static String getKeyCase(String key){
+		return getKeyCase(KEY_CASE.CONFIG, key);
+	}
+	private String getKey(String key){
+		return getKeyCase(this.keyCase, key);
+	}
+	private String getKey(KEY_CASE keyCase, String key){
+		return getKeyCase(keyCase, key);
+	}
+	///////
+
+	/**
+	 * key大小写转换
+	 * @param keyCase keyCase
+	 * @param key key
+	 * @return return
+	 */
+	private static String putKeyCase(KEY_CASE keyCase, String key){
+		if(null == key || keyCase == KEY_CASE.SRC){
+			return key;
+		}
+		if(keyCase == KEY_CASE.CONFIG){
+			if(ConfigTable.IS_UPPER_KEY){
+				key = key.toUpperCase();
+			}
+			if(ConfigTable.IS_LOWER_KEY){
+				key = key.toLowerCase();
+			}
+		}else if(keyCase == KEY_CASE.LOWER){
+			key = key.toLowerCase();
+		}else if(keyCase == KEY_CASE.UPPER){
+			key = key.toUpperCase();
+		}else if(keyCase == KEY_CASE.Camel){
+			key = BeanUtil.Camel(key);
+		}else if(keyCase == KEY_CASE.camel){
+			key = BeanUtil.camel(key);
+		}else if(keyCase.getCode().contains("_")){
+			//驼峰转下划线
+			key = BeanUtil.camel_(key);
+			if(keyCase == KEY_CASE.CAMEL_CONFIG){
 				if(ConfigTable.IS_UPPER_KEY){
 					key = key.toUpperCase();
 				}
 				if(ConfigTable.IS_LOWER_KEY){
 					key = key.toLowerCase();
 				}
-			}else if(keyCase == KEY_CASE.LOWER){
+			}else if(keyCase == KEY_CASE.CAMEL_LOWER){
 				key = key.toLowerCase();
-			}else if(keyCase == KEY_CASE.UPPER){
+			}else if(keyCase == KEY_CASE.CAMEL_UPPER){
 				key = key.toUpperCase();
-			}else if(keyCase == KEY_CASE.Camel){
-				key = BeanUtil.Camel(key);
-			}else if(keyCase == KEY_CASE.camel){
-				key = BeanUtil.camel(key);
-			}else if(keyCase.getCode().contains("_")){
-				//驼峰转下划线
-				key = BeanUtil.camel_(key);
-				if(keyCase == KEY_CASE.CAMEL_CONFIG){
-						if(ConfigTable.IS_UPPER_KEY){
-							key = key.toUpperCase();
-						}
-						if(ConfigTable.IS_LOWER_KEY){
-							key = key.toLowerCase();
-						}
-				}else if(keyCase == KEY_CASE.CAMEL_LOWER){
-					key = key.toLowerCase();
-				}else if(keyCase == KEY_CASE.CAMEL_UPPER){
-					key = key.toUpperCase();
-				}
 			}
 		}
 		return key;
 	}
-	public static String keyCase(String key){
-		return keyCase(KEY_CASE.CONFIG, key);
+	public static String putKeyCase(String key){
+		return putKeyCase(KEY_CASE.CONFIG, key);
 	}
-	private String key(String key){
-		return keyCase(this.keyCase, key);
+	private String putKey(String key){
+		return putKeyCase(this.keyCase, key);
 	}
-	private String key(KEY_CASE keyCase, String key){
-		return keyCase(keyCase, key);
+	private String putKey(KEY_CASE keyCase, String key){
+		return putKeyCase(keyCase, key);
 	}
 	/**
 	 * 查询条件
@@ -1563,7 +1621,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		List<String> keys = keys();
 		for(String key:keys){
 			if(isEmpty(key)){
-				put(key,value);
+				put(KEY_CASE.SRC,key,value);
 			}
 		}
 		return this;
@@ -1639,14 +1697,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public Object get(String key){
 		Object result = null;
 		if(null != key){
-			result = super.get(key(key));
+			result = super.get(getKey(key));
 		}
 		return result;
 	}
 	public Object get(KEY_CASE keyCase,String key){
 		Object result = null;
 		if(null != key){
-			result = super.get(key(keyCase,key));
+			result = super.get(getKey(keyCase,key));
 		}
 		return result;
 	}

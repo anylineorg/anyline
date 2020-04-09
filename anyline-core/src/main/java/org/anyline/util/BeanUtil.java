@@ -1633,7 +1633,7 @@ public class BeanUtil {
 		StringBuffer sb = new StringBuffer();
 		while (matcher.find()) {
 			String g = matcher.group();
-			matcher.appendReplacement(sb, "_" + g);
+			matcher.appendReplacement(sb, "_" + g.toLowerCase());
 		}
 		matcher.appendTail(sb);
 		if (sb.charAt(0) == '_') {

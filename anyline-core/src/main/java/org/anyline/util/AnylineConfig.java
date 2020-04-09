@@ -43,7 +43,8 @@ public abstract class AnylineConfig implements Serializable {
 				String txt = FileUtil.read(in, "UTF-8").toString();
 				parse(txt);
 			}else{
-				File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes"); 
+				//File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
+				File dir = new File(ConfigTable.getClassPath());
 				if(null != dir &&  !dir.exists()){ 
 					dir = new File(ConfigTable.getWebRoot()); 
 				} 
@@ -222,8 +223,7 @@ public abstract class AnylineConfig implements Serializable {
 	} 
  
 	private void setValue(Field field, String value) { 
-		if (null != field) { 
- 
+		if (null != field) {
 			try { 
 				Object val = value; 
 				Type type = field.getGenericType(); 
