@@ -912,19 +912,19 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 	public Object put(String key, Object value, boolean pk, boolean override){
-		return put(KEY_CASE.CONFIG, key, value, pk, override);
+		return put(this.keyCase, key, value, pk, override);
 	}
 	public Object put(KEY_CASE keyCase, String key, Object value, boolean pk){
 		this.put(keyCase, key, value, pk , true);
 		return this;
 	}
 	public Object put(String key, Object value, boolean pk){
-		this.put(KEY_CASE.CONFIG, key, value, pk , true);
+		this.put(this.keyCase, key, value, pk , true);
 		return this;
 	}
 	@Override
 	public Object put(String key, Object value){
-		this.put(KEY_CASE.CONFIG, key, value, false , true);
+		this.put(this.keyCase, key, value, false , true);
 		return this;
 	}
 	public Object attr(String key, Object value){
