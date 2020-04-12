@@ -42,7 +42,6 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 	private String function; //对应DateUtil函数
 	private Object def;		//默认值 value,body,nvl都未指定时取def
 
-	private Object nvl = false;	//如果value为空("",null) 是否显示当前时间,默认false 
  
 	public String getFormat() { 
 		return format; 
@@ -70,11 +69,9 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 			}
 			date = parse(value);
 			if(null == date){
-				if(null != nvl) {
-					if (nvl instanceof Boolean) {
-						if((Boolean)nvl){
-							date = new Date();
-						}
+				if(BasicUtil.isNotEmpty(nvl)) {
+					if ("true".equalsIgnoreCase(nvl.toString()) || (nvl instanceof Boolean && (Boolean)nvl)){
+						date = new Date();
 					}
 				}
 			}
@@ -98,7 +95,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 				result = DateUtil.format(local,date,format);
 			}
 			if(BasicUtil.isEmpty(result)){
-				if(null !=nvl && !(nvl instanceof Boolean)){
+				if(null !=nvl && "false".equalsIgnoreCase(nvl.toString()) && !(nvl instanceof Boolean)){
 					result = nvl.toString();
 				}
 			}
@@ -121,7 +118,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 		this.body = null;
 		this.format = null;
 		this.lang = null;
-		this.nvl = false;
+		this.nvl = false; //如果value为空("",null) 是否显示当前时间,默认false
 	}
 	private Date parse(Object value){
 		Date date = null;
@@ -174,6 +171,18 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 
 	public void setFunction(String function) {
 		this.function = function;
+	}
+
+	public void setAdd(int add) {
+		this.add = add;
+	}
+
+	public Object getDef() {
+		return def;
+	}
+
+	public void setDef(Object def) {
+		this.def = def;
 	}
 
 	@Override
