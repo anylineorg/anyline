@@ -40,8 +40,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
 	} 
- 
- 
+
 	public String concat(String ... args){ 
 		String result = ""; 
 		if(null != args && args.length > 0){ 
