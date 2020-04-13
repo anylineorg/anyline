@@ -95,7 +95,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 				result = DateUtil.format(local,date,format);
 			}
 			if(BasicUtil.isEmpty(result)){
-				if(null !=nvl && "false".equalsIgnoreCase(nvl.toString()) && !(nvl instanceof Boolean)){
+				if(null !=nvl && !"false".equalsIgnoreCase(nvl.toString()) && !(nvl instanceof Boolean)){
 					result = nvl.toString();
 				}
 			}
