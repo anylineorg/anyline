@@ -73,6 +73,39 @@ public class NumberUtil {
 
 	/**
 	 * 选取最大数
+	 *
+	 * @param nums nums
+	 * @return return
+	 */
+	public static BigDecimal max(BigDecimal... nums) {
+		BigDecimal max = nums[0];
+		int size = nums.length;
+		for (int i = 0; i < size; i++) {
+			if (max.compareTo(nums[i]) < 0) {
+				max = nums[i];
+			}
+		}
+		return max;
+	}
+	/**
+	 * 选取最小数
+	 *
+	 * @param nums nums
+	 * @return return
+	 */
+	public static BigDecimal min(BigDecimal... nums) {
+		BigDecimal min = nums[0];
+		int size = nums.length;
+		for (int i = 0; i < size; i++) {
+			if (min.compareTo(nums[i]) >0) {
+				min = nums[i];
+			}
+		}
+		return min;
+	}
+
+	/**
+	 * 选取最大数
 	 * 
 	 * @param nums nums
 	 * @return return
