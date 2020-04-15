@@ -28,17 +28,12 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStore; 
 import java.security.cert.CertificateException; 
 import java.security.cert.X509Certificate; 
-import java.util.ArrayList; 
-import java.util.Arrays; 
-import java.util.Collection; 
-import java.util.Collections; 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap; 
 import java.util.Iterator; 
 import java.util.List; 
-import java.util.Map; 
-import java.util.Set; 
-import java.util.SortedMap; 
-import java.util.TreeMap; 
+import java.util.Map;
 
 import javax.net.ssl.SSLContext; 
 import javax.net.ssl.SSLException; 
@@ -406,7 +401,7 @@ public class HttpUtil {
 		if(null == client){ 
 			if(url.contains("https://")){ 
 				client = defaultSSLClient(); 
-			}else{ 
+			}else{
 				client =  defaultClient(); 
 			} 
 		} 

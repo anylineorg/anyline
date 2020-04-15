@@ -191,7 +191,7 @@ public class DownloadTask {
 	public void error(int code, String message){ 
 		try{ 
 			status = -1; 
-			log.error("[文件下载][下载异常]][url:{}][code:{}][message:{}]",url,code,message); 
+			log.error("[文件下载][下载异常][url:{}][code:{}][message:{}]",url,code,message);
 			this.errorCode = code; 
 			this.errorMsg = message; 
 			if(null != listener){ 
