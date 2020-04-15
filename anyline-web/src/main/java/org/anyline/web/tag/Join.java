@@ -122,6 +122,42 @@ public class Join extends BaseBodyTag{
 		split = ",";
     }
 
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	public void setSelector(String selector) {
+		this.selector = selector;
+	}
+
+	public void setProperty(String property) {
+		this.property = property;
+	}
+
+	public void setIndex(Integer index) {
+		this.index = index;
+	}
+
+	public void setBegin(Integer begin) {
+		this.begin = begin;
+	}
+
+	public void setEnd(Integer end) {
+		this.end = end;
+	}
+
+	public void setQty(Integer qty) {
+		this.qty = qty;
+	}
+
+	public void setSplit(String split) {
+		this.split = split;
+	}
+
 	public String getScope() {
 		return scope;
 	}
