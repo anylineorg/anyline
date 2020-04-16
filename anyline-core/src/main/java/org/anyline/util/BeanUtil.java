@@ -834,10 +834,61 @@ public class BeanUtil {
 			e.printStackTrace();
 		}
 		return null;
-	} 
+	}
 
+	/**
+	 * 参数转map
+	 * 参数格式a=1&amp;b=2&amp;b=3
+	 * 如果是多个值，以String的List形式保存
+	 * 如果是url将根据问号分割
+	 * @param url 参数或url
+	 * @param empty 结果中是否包含空值,所有空值以""形式保存
+	 * @return Map
+	 */
+	public static Map<String,Object> param2map(String url, boolean empty){
+		Map<String,Object> params = new HashMap<String,Object>();
+		if(null != url){
+			int index = url.indexOf("?");
+			if(index != -1) {
+				url = url.substring(index);
+				String[] kvs = url.split("&");
+				for(String kv:kvs){
+					String k = null;
+					String v = null;
+					String[] tmps = kv.split("=");
+					k = tmps[0];
+					if(tmps.length>1){
+						v = tmps[1];
+					}
+					if("null".equals(v)){
+						v = "";
+					}else if("NULL".equals(v)){
+						v = null;
+					}
+					if(BasicUtil.isEmpty(v) && !empty){
+						continue;
+					}
+					if(params.containsKey(k)){
+						Object olds = params.get(k);
+						List<String> vals = new ArrayList<String>();
+						if(null == olds){
+							vals.add(null);
+						}else if(olds instanceof String){
+							vals.add(olds.toString());
+						}else if(olds instanceof ArrayList){
+							vals = (ArrayList)olds;
+						}
+						vals.add(v);
+					}
+
+				}
+			}
+		}
+		return params;
+	}
 	/** 
-	 * 提取集合中每个条目的key属性的值 
+	 * 提取集合中每个条目的key属性的值
+	 * 如提取用户列表中的所有用户ID
 	 * @param list  list
 	 * @param key  key
 	 * @return return
@@ -851,7 +902,14 @@ public class BeanUtil {
 			} 
 		} 
 		return values; 
-	} 
+	}
+	/**
+	 * 提取集合中每个条目的多个key属性的值
+	 * 如提取用户列表中的所有用户ID,CODE
+	 * @param list  list
+	 * @param keys  keys
+	 * @return return
+	 */
 	public static List<Map<String,Object>> extracts(Collection<?> list, String ... keys){ 
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>(); 
 		if(null != list){ 
@@ -1212,33 +1270,41 @@ public class BeanUtil {
 	/**
 	 * 删除空值  
 	 * @param map  map
+	 * @param recursion  是否递归检测集合map类型值的长度
 	 */
-	public static void clearEmpty(Map<String, Object> map){
+	public static void clearEmpty(Map<String, Object> map, boolean recursion ){
 		if(null == map){
 			return;
 		}
 		List<String> keys = BasicUtil.getMapKeys(map);
 		for(String key:keys){
 			Object value = map.get(key);
-			if(BasicUtil.isEmpty(value)){
+			if(BasicUtil.isEmpty(recursion,value)){
 				map.remove(key);
 			}
 		}
 	}
+	public static void clearEmpty(Map<String, Object> map){
+		clearEmpty(map,true);
+	}
 	/**
 	 * 删除空值
 	 * @param list  list
+	 * @param recursion  是否递归检测集合map类型值的长度
 	 */
-	public static void clearEmpty(List<Object> list){
+	public static void clearEmpty(List<Object> list, boolean recursion){
 		if(null == list){
 			return;
 		}
 		int size = list.size();
 		for(int i=size-1;i>=0;i--){
-			if(BasicUtil.isEmpty(list.get(i))){
+			if(BasicUtil.isEmpty(recursion,list.get(i))){
 				list.remove(i);
 			}
 		}
+	}
+	public static void clearEmpty(List<Object> list){
+		clearEmpty(list, true);
 	}
 	/** 
 	 * 多个数组合并成一个数组(二维数组合成一维数组) 
