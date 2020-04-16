@@ -463,20 +463,20 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return return
 	 */
 	public DataRow toLowerKey(String ... keys){
-		this.keyCase = KEY_CASE.LOWER;
 		if(null != keys && keys.length>0){
 			for(String key:keys){
 				Object value = get(key);
-				remove(putKey(key));
+				remove(getKey(key));
 				put(KEY_CASE.LOWER, key, value);
 			}
 		}else{
 			for(String key:keys()){
 				Object value = get(key);
-				remove(putKey(key));
+				remove(getKey(key));
 				put(KEY_CASE.LOWER, key, value);
 			}
 		}
+		this.keyCase = KEY_CASE.LOWER;
 		return this;
 	}
 	/**
@@ -485,20 +485,20 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return return
 	 */
 	public DataRow toUpperKey(String ... keys){
-		this.keyCase = KEY_CASE.UPPER;
 		if(null != keys && keys.length>0){
 			for(String key:keys){
 				Object value = get(key);
-				remove(putKey(key));
+				remove(getKey(key));
 				put(KEY_CASE.UPPER, key, value);
 			}
 		}else{
 			for(String key:keys()){
 				Object value = get(key);
-				remove(putKey(key));
+				remove(getKey(key));
 				put(KEY_CASE.UPPER,key, value);
 			}
 		}
+		this.keyCase = KEY_CASE.UPPER;
 		return this;
 	}
 
