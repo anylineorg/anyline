@@ -81,7 +81,9 @@ public class NumberUtil {
 		BigDecimal max = nums[0];
 		int size = nums.length;
 		for (int i = 0; i < size; i++) {
-			if (max.compareTo(nums[i]) < 0) {
+			if(null == max){
+				max = nums[i];
+			}else if (null != nums[i] && max.compareTo(nums[i]) <0) {
 				max = nums[i];
 			}
 		}
@@ -97,7 +99,9 @@ public class NumberUtil {
 		BigDecimal min = nums[0];
 		int size = nums.length;
 		for (int i = 0; i < size; i++) {
-			if (min.compareTo(nums[i]) >0) {
+			if(null == min){
+				min = nums[i];
+			}else if (null != nums[i] && min.compareTo(nums[i]) >0) {
 				min = nums[i];
 			}
 		}
