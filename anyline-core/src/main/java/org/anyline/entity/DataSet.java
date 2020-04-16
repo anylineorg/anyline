@@ -1724,6 +1724,27 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet or(DataSet set, String ... keys){
 		return this.union(set, keys);
 	}
+
+	/**
+	 * 多个集合的交集
+	 * @param sets 集合
+	 * @param keys 判断依据
+	 * @return DataSet
+	 */
+	public static DataSet intersection(List<DataSet> sets, String ... keys){
+		DataSet result = null;
+		if(null != sets && sets.size()>0){
+			for(DataSet set:sets){
+				if(null == result){
+					result = set;
+				}else{
+					result = result.intersection(set, keys);
+				}
+			}
+		}
+		return result;
+	}
+
 	/**
 	 * 交集
 	 * @param set set
@@ -1736,8 +1757,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return result;
 		}
 		for(DataRow row:rows){
-			if(set.contains(row, reverseKey(keys))){
-				result.add((DataRow)row.clone());
+			String[] kv = reverseKey(keys);
+			if(set.contains(row, kv)){
+				if(!result.contains(row, kv)){
+					result.add((DataRow)row.clone());
+				}
 			}
 		}
 		return result;
