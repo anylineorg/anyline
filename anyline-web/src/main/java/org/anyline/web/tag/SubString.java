@@ -42,7 +42,7 @@ public class SubString extends BaseBodyTag{
 		String text = body; 
 		if(null != text){
 			int range[] = BasicUtil.range(begin, end, qty, text.length());
-			text = text.substring(begin,end); 
+			text = text.substring(range[0],range[1]);
 			try{ 
 				out.print(text); 
 			}catch(Exception e){ 
