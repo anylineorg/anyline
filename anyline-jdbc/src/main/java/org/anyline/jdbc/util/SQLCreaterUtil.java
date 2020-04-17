@@ -30,7 +30,8 @@ public class SQLCreaterUtil {
 			if(null != jdbc){ 
 				DataSource ds = jdbc.getDataSource(); 
 				Connection con = DataSourceUtils.getConnection(ds); 
-				String name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", ""); 
+				String name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", "");
+				name = con.getMetaData().getURL().toLowerCase();
 				if(!DataSourceUtils.isConnectionTransactional(con, ds)){ 
 					DataSourceUtils.releaseConnection(con, ds); 
 				} 

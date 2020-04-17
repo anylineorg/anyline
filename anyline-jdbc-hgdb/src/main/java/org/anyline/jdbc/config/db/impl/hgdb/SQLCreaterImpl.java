@@ -16,7 +16,16 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	public SQLCreaterImpl(){ 
 		disKeyFr = "\""; 
 		disKeyTo = "\""; 
-	} 
+	}
+
+	@Override
+	public String getDisKeyFr(){
+		return disKeyFr;
+	}
+	@Override
+	public String getDisKeyTo(){
+		return disKeyTo;
+	}
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		String sql = run.getBaseQueryTxt(); 

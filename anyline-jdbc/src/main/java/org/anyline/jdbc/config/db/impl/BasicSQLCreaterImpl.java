@@ -264,15 +264,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 
 	 
  
- 
-	@Override 
-	public String getDisKeyFr(){ 
-		return disKeyFr; 
-	} 
-	@Override 
-	public String getDisKeyTo(){ 
-		return disKeyTo; 
-	} 
+
  
 	@Override 
 	public RunSQL createInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){ 

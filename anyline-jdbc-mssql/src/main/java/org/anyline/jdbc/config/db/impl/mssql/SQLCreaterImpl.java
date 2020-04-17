@@ -30,7 +30,16 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	public SQLCreaterImpl(){ 
 		disKeyFr = "["; 
 		disKeyTo = "]"; 
-	} 
+	}
+
+	@Override
+	public String getDisKeyFr(){
+		return disKeyFr;
+	}
+	@Override
+	public String getDisKeyTo(){
+		return disKeyTo;
+	}
 	private String getDbVersion(){ 
 		if(null == dbVersion){ 
 			DataSet set = dao.querys(new TextSQLImpl("SELECT @@VERSION AS VS")); 
