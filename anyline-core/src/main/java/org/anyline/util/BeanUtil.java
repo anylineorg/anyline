@@ -1960,4 +1960,5 @@ public class BeanUtil {
 			}
 		}
     }
+
 } 
