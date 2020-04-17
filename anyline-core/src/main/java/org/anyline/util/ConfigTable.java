@@ -323,7 +323,7 @@ public class ConfigTable {
 		}
 		System.out.println(line);
 	}
-	
+
 	protected static void debug(){
 		if(!isDebug()){
 			return;
@@ -363,7 +363,7 @@ public class ConfigTable {
 
 			System.out.println();
 			line("","*", 0,true);
-			line("Anyline Core [" + version + "]", " ",0, true);
+			line("Anyline Core [" + version + "]", " ",1, true);
 			line("anyline.org ", " ", 0, true);
 			line(""," ", 0, true);
 			if(null != time && time.startsWith("2")){
