@@ -1737,31 +1737,36 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
 	/**
 	 * 多个集合的交集
+	 * @param distinct 是否根据keys抽取不重复的集合
 	 * @param sets 集合
 	 * @param keys 判断依据
 	 * @return DataSet
 	 */
-	public static DataSet intersection(List<DataSet> sets, String ... keys){
+	public static DataSet intersection(boolean distinct, List<DataSet> sets, String ... keys){
 		DataSet result = null;
 		if(null != sets && sets.size()>0){
 			for(DataSet set:sets){
 				if(null == result){
 					result = set;
 				}else{
-					result = result.intersection(set, keys);
+					result = result.intersection(distinct, set, keys);
 				}
 			}
 		}
 		return result;
 	}
 
+	public static DataSet intersection(List<DataSet> sets, String ... keys){
+		return intersection(false, sets, keys);
+	}
 	/**
 	 * 交集
+	 * @param distinct 是否根据keys抽取不重复的集合
 	 * @param set set
 	 * @param keys keys
 	 * @return return
 	 */
-	public DataSet intersection(DataSet set, String ... keys){
+	public DataSet intersection(boolean distinct, DataSet set, String ... keys){
 		DataSet result = new DataSet();
 		if(null == set){
 			return result;
@@ -1769,51 +1774,71 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		for(DataRow row:rows){
 			String[] kv = reverseKey(keys);
 			if(set.contains(row, kv)){
-				if(!result.contains(row, kv)){
+				if(!distinct && !result.contains(row, kv)){
 					result.add((DataRow)row.clone());
 				}
 			}
 		}
 		return result;
 	}
+	public DataSet intersection(DataSet set, String ... keys){
+		return intersection(false, set, keys);
+	}
+	public DataSet and(boolean distinct, DataSet set, String ... keys){
+		return intersection(distinct, set, keys);
+	}
 	public DataSet and(DataSet set, String ... keys){
-		return intersection(set, keys);
+		return intersection(false, set, keys);
 	}
 	/**
 	 * 补集
 	 * 在this中，但不在set中
 	 * this作为超集 set作为子集
+	 * @param distinct 是否根据keys抽取不重复的集合
 	 * @param set set
 	 * @param keys keys
 	 * @return return 
 	 */
-	public DataSet complement(DataSet set, String ... keys){
+	public DataSet complement(boolean distinct, DataSet set, String ... keys){
 		DataSet result = new DataSet();
 		for(DataRow row:rows){
-			if(null == set || !set.contains(row, reverseKey(keys))){
-				result.add((DataRow)row.clone());
-			}
-		}
-		return result;
-	}
-	/**
-	 * 差集
-	 * 从当前集合中删除set中存在的row,生成新的DataSet并不修改当前对象
-	 * this中有 set中没有的
-	 * @param set set
-	 * @param keys CD,"CD:WORK_CD"
-	 * @return return
-	 */
-	public DataSet difference(DataSet set, String ... keys){
-		DataSet result = new DataSet();
-		for(DataRow row:rows){
-			if(null == set || !set.contains(row, reverseKey(keys))){
-				result.add((DataRow)row.clone());
+			String[] kv = reverseKey(keys);
+			if(null == set || !set.contains(row, kv)){
+				if(!distinct || !result.contains(row, kv)) {
+					result.add((DataRow) row.clone());
+				}
 			}
 		}
 		return result;
 	}
 
+	public DataSet complement(DataSet set, String ... keys){
+		return complement(false, set, keys);
+	}
+	/**
+	 * 差集
+	 * 从当前集合中删除set中存在的row,生成新的DataSet并不修改当前对象
+	 * this中有 set中没有的
+	 * @param distinct 是否根据keys抽取不重复的集合
+	 * @param set set
+	 * @param keys CD,"CD:WORK_CD"
+	 * @return return
+	 */
+	public DataSet difference(boolean distinct, DataSet set, String ... keys){
+		DataSet result = new DataSet();
+		for(DataRow row:rows){
+			String[] kv = reverseKey(keys);
+			if(null == set || !set.contains(row, kv)){
+				if(!distinct || !result.contains(row, kv)) {
+					result.add((DataRow) row.clone());
+				}
+			}
+		}
+		return result;
+	}
+	public DataSet difference(DataSet set, String ... keys){
+		return difference(false, set, keys);
+	}
 	/**
 	 * 颠倒kv-vk
 	 * @param keys kv
