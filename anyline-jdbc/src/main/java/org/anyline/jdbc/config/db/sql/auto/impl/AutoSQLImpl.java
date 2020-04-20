@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *          
+ *
  */
 
 
-package org.anyline.jdbc.config.db.sql.auto.impl; 
- 
+package org.anyline.jdbc.config.db.sql.auto.impl;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,10 +32,10 @@ import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.jdbc.config.db.impl.BasicSQL;
 import org.anyline.jdbc.config.db.sql.auto.AutoSQL;
 import org.anyline.util.BasicUtil;
- 
+
 public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	protected String datasoruce;
-	protected String schema; 
+	protected String schema;
 	protected String table;
 	protected String distinct = "";
 	protected String alias;
@@ -44,109 +44,109 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 
 
 
-	public AutoSQLImpl(){ 
-		super(); 
-		chain = new AutoConditionChainImpl(); 
-	} 
-	public SQL init(){ 
-		return this; 
-	} 
-	/** 
+	public AutoSQLImpl(){
+		super();
+		chain = new AutoConditionChainImpl();
+	}
+	public SQL init(){
+		return this;
+	}
+	/**
 	 * 设置数据源
 	 * table(c1,c2)[pk1,pk2]
-	 * @param table table 
+	 * @param table table
 	 * @return return
-	 */ 
-	public SQL setDataSource(String table){ 
-		if(null == table){ 
-			return this; 
+	 */
+	public SQL setDataSource(String table){
+		if(null == table){
+			return this;
 		}
 		this.table = table;
 		parseTable();
-		return this; 
+		return this;
 	}
-	/* ****************************************************************************************** 
-	 *  
-	 * 										添加条件 
-	 *  
-	 * *******************************************************************************************/ 
-	/** 
-	 * 添加查询条件 
-	 * @param	required 是否必须 
+	/* ******************************************************************************************
+	 *
+	 * 										添加条件
+	 *
+	 * *******************************************************************************************/
+	/**
+	 * 添加查询条件
+	 * @param	required 是否必须
 	 * @param strictRequired 是否严格验证 如果缺少严格验证的条件 整个SQL不执行
-	 * @param	column  列名 
-	 * @param	value 值 
-	 * @param	compare  比较方式 
+	 * @param	column  列名
+	 * @param	value 值
+	 * @param	compare  比较方式
 	 * @return return
-	 */ 
-	public SQL addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare){ 
-		if(null == chain){ 
-			chain = new AutoConditionChainImpl(); 
-		} 
+	 */
+	public SQL addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare){
+		if(null == chain){
+			chain = new AutoConditionChainImpl();
+		}
 		Condition condition = new AutoConditionImpl(required, strictRequired, null, column, value, compare);
-		chain.addCondition(condition); 
-		return this; 
-	} 
+		chain.addCondition(condition);
+		return this;
+	}
 	public SQL addCondition(boolean required, String column, Object value, COMPARE_TYPE compare){
 		return addCondition(required, false, column, value, compare);
-	} 
-	/** 
-	 * 添加静态文本查询条件 
-	 */ 
-	public SQL addCondition(String condition) { 
-		if(BasicUtil.isEmpty(condition)){ 
-			return this; 
-		} 
+	}
+	/**
+	 * 添加静态文本查询条件
+	 */
+	public SQL addCondition(String condition) {
+		if(BasicUtil.isEmpty(condition)){
+			return this;
+		}
 		if(condition.contains(":")){
 			ParseResult parser = ConfigParser.parse(condition, false);
 			Object value = ConfigParser.getValues(parser);
 			addCondition(parser.isRequired(),parser.isStrictRequired(),parser.getVar(),value,parser.getCompare());
-		}else{ 
-			Condition con = new AutoConditionImpl(condition); 
-			chain.addCondition(con); 
-		} 
-		return this; 
-	} 
-	 /******************************************************************************************* 
-	 *  
-	 * 										赋值 
-	 *  
-	 ********************************************************************************************/ 
-	 
-	 
-	/******************************************************************************************** 
-	 *  
-	 * 										生成 SQL 
-	 *  
-	 ********************************************************************************************/ 
-	/** 
-	 * 添加列  
-	 * CD 
-	 * CD,NM 
+		}else{
+			Condition con = new AutoConditionImpl(condition);
+			chain.addCondition(con);
+		}
+		return this;
+	}
+	/*******************************************************************************************
+	 *
+	 * 										赋值
+	 *
+	 ********************************************************************************************/
+
+
+	/********************************************************************************************
+	 *
+	 * 										生成 SQL
+	 *
+	 ********************************************************************************************/
+	/**
+	 * 添加列
+	 * CD
+	 * CD,NM
 	 * @param columns  columns
-	 */ 
-	public void addColumn(String columns){ 
-		if(BasicUtil.isEmpty(columns)){ 
-			return; 
-		} 
-		if(null == this.columns){ 
-			this.columns = new ArrayList<String>(); 
-		} 
-		if(columns.contains(",")){ 
-			//多列 
-			parseMultColumns(columns); 
-		}else{ 
-			//单列 
-			this.columns.add(columns); 
-		} 
+	 */
+	public void addColumn(String columns){
+		if(BasicUtil.isEmpty(columns)){
+			return;
+		}
+		if(null == this.columns){
+			this.columns = new ArrayList<String>();
+		}
+		if(columns.contains(",")){
+			//多列
+			parseMultColumns(columns);
+		}else{
+			//单列
+			this.columns.add(columns);
+		}
 	}
 	/**
-	 * 解析多列 
+	 * 解析多列
 	 * @param src src
 	 */
 	protected void parseMultColumns(String src){
 		List<String> cols = new ArrayList<String>();
-		//拆分转义字段({}) CD, {ISNULL(NM,'') AS NM}, {CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE  
+		//拆分转义字段({}) CD, {ISNULL(NM,'') AS NM}, {CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
 		while(src.contains("{")){
 			src = src.trim();
 			int fr = src.indexOf("{");
@@ -208,14 +208,8 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 					distinct = "distinct";
 					colStr = colStr.substring(9).trim();
 				}
-				String[] cols = colStr.split(",");
+				parseColumn(colStr);
 				table = table.substring(0,table.indexOf("("));
-				for(String col:cols){
-					col = col.trim();
-					if(!columns.contains(col)) {
-						columns.add(col);
-					}
-				}
 			}
 			if(null != table && table.contains(".")){
 				String[] tbs = table.split("\\.");
@@ -233,61 +227,70 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 			}
 		}
 	}
-
-	private void parseColumn(String columns){
-		if(null != columns){
-			String[] cols = columns.split(",");
-			for(String col:cols){
-				col = col.trim();
-				if(!this.columns.contains(col)) {
-					this.columns.add(col);
+	private void parseColumn(String sql){
+		while(sql.contains("{")){
+			String pre = sql.substring(0,sql.indexOf("{"));
+			if(BasicUtil.isNotEmpty(pre)){
+				String[] pres = pre.split(",");
+				for(String item:pres){
+					item = item.trim();
+					if(BasicUtil.isNotEmpty(item) && !columns.contains(item)){
+						columns.add(item);
+					}
 				}
 			}
+			int fr = sql.indexOf("{");
+			int to = sql.indexOf("}");
+			String col = sql.substring(fr+1, to).trim();
+			if(!columns.contains(col)) {
+				columns.add(col);
+			}
+			sql = sql.substring(sql.indexOf("}")+1).trim();
 		}
 	}
-	public String getDataSource(){ 
-		return table; 
-	} 
-	public String getSchema() { 
-		return schema; 
-	} 
-	public void setSchema(String schema) { 
-		this.schema = schema; 
-	} 
+	public String getDataSource(){
+		return table;
+	}
+	public String getSchema() {
+		return schema;
+	}
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
 	@Override
 	public String getTable() {
 		return table;
 	}
-	@Override 
-	public void setTable(String table) { 
-		this.table = table; 
-	} 
-	@Override 
-	public SQL order(Order order) { 
-		return this; 
-	} 
-	@Override 
-	public ConditionChain getConditionChain() { 
-		return this.chain; 
-	} 
-	@Override 
-	public void createRunText(StringBuilder builder) { 
-	} 
-	@Override 
-	public String getDistinct() { 
-		return this.distinct; 
-	} 
-	@Override 
-	public List<String> getColumns() { 
-		return this.columns; 
-	} 
-	@Override 
-	public String getText() { 
-		return null; 
-	} 
-	@Override 
-	public List<SQLVariable> getSQLVariables() { 
-		return null; 
+	@Override
+	public void setTable(String table) {
+		this.table = table;
+	}
+	@Override
+	public SQL order(Order order) {
+		return this;
+	}
+	@Override
+	public ConditionChain getConditionChain() {
+		return this.chain;
+	}
+	@Override
+	public void createRunText(StringBuilder builder) {
+	}
+	@Override
+	public String getDistinct() {
+		return this.distinct;
+	}
+	@Override
+	public List<String> getColumns() {
+		return this.columns;
+	}
+	@Override
+	public String getText() {
+		return null;
+	}
+	@Override
+	public List<SQLVariable> getSQLVariables() {
+		return null;
 	}
 	@Override
 	public void setStrict(boolean strict) {}
@@ -295,7 +298,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	public boolean isStrict() {
 		return false;
 	}
-	 
+
 	@Override
 	public List<Join> getJoins(){
 		return joins;
