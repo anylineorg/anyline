@@ -1753,6 +1753,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				}
 			}
 		}
+		if(null == result){
+			result = new DataSet();
+		}
 		return result;
 	}
 
