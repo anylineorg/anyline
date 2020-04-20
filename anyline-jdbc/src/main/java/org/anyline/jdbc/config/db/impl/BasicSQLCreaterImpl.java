@@ -115,7 +115,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		} 
 		RunSQL run = null; 
 		if(null == dest){ 
-			dest = getDataSource(obj); 
+			dest = DataSourceHolder.parseDataSource(dest,obj);
 		}
 		if(obj instanceof DataRow){
 			run = createDeleteRunSQLFromDataRow(dest, (DataRow)obj, columns);
@@ -272,8 +272,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return null; 
 		} 
 		if(null == dest){ 
-			dest = getDataSource(obj); 
-		} 
+			dest = DataSourceHolder.parseDataSource(dest,obj);
+		}
+
 		if(obj instanceof DataRow){
 			DataRow row = (DataRow)obj;
 			row.setDataSource(dest); 
@@ -290,41 +291,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		} 
 		return null; 
-	} 
-	@Override 
-	public String getDataSource(Object obj){ 
-		if(null == obj){ 
-			return null; 
-		} 
-		String result = ""; 
-		if(obj instanceof DataRow){ 
-			DataRow row = (DataRow)obj;
-			String link = row.getDataLink();
-			if(BasicUtil.isNotEmpty(link)){
-				DataSourceHolder.setDataSource(link, true);
-			}
-			result = row.getDataSource(); 
-		}else if(obj instanceof DataSet){
-			DataSet set = (DataSet)obj;
-			if(set.size()>0){
-				result = getDataSource(set.getRow(0));
-			}
-		}
-//		else{ 
-//			try{ 
-//				Annotation annotation = obj.getClass().getAnnotation(Table.class);			//提取Table注解 
-//				Method method = annotation.annotationType().getMethod("name");				//引用name方法 
-//				result = (String)method.invoke(annotation);									//执行name方法返回结果 
-//				result = result.replace(getDisKeyFr(), "").replace(getDisKeyTo(),""); 
-//			}catch(NoClassDefFoundError e){ 
-//				e.printStackTrace(); 
-//			}catch(Exception e){
-//				e.printStackTrace();
-//				e.printStackTrace(); 
-//			} 
-//		}
-		result = DataSourceHolder.parseDataSource(result); 
-		return result; 
 	}
 	private RunSQL createInsertTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
@@ -387,10 +353,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			throw new SQLException("空数据");
 		}
 		if(BasicUtil.isEmpty(dest)){
-			dest = getDataSource(set);
+			dest = DataSourceHolder.parseDataSource(dest,set);
 		}
 		if(BasicUtil.isEmpty(dest)){
-			dest = getDataSource(set.getRow(0));
+			dest = DataSourceHolder.parseDataSource(dest,set.getRow(0));
 		}
 		if(BasicUtil.isEmpty(dest)){
 			throw new SQLException("未指定表");
@@ -504,10 +470,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns){ 
 		if(null == obj){ 
 			return null; 
-		} 
-		if(null == dest){ 
-			dest = getDataSource(obj); 
-		} 
+		}
+		if(null == dest){
+			dest = DataSourceHolder.parseDataSource(null,obj);
+		}
 		if(obj instanceof DataRow){ 
 			return createUpdateTxtFromDataRow(dest,(DataRow)obj,checkParimary, columns); 
 		} 
@@ -574,7 +540,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		StringBuilder builder = new StringBuilder();
 		List<Object> values = new ArrayList<Object>(); 
 		/*确定需要更新的列*/ 
-		List<String> keys = confirmUpdateColumns(dest, row, columns); 
+		List<String> keys = confirmUpdateColumns(row, columns);
 		List<String> primaryKeys = row.getPrimaryKeys();
 		if(primaryKeys.size() == 0){
 			throw new SQLUpdateException("[更新更新异常][更新条件为空,upate方法不支持更新整表操作]");
@@ -802,7 +768,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param columns  columns
 	 * @return return
 	 */ 
-	private List<String> confirmUpdateColumns(String dst, DataRow row, String ... columns){ 
+	private List<String> confirmUpdateColumns(DataRow row, String ... columns){
 		List<String> keys = null;/*确定需要更新的列*/ 
 		if(null == row){ 
 			return new ArrayList<String>(); 
@@ -973,7 +939,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return table;
 		}
 		table = table.replace(getDisKeyFr(), "").replace(getDisKeyTo(), "");
-		table = DataSourceHolder.parseDataSource(table);
+		table = DataSourceHolder.parseDataSource(table, null);
 		if(table.contains(".")){
 			String tmps[] = table.split("\\.");
 			table = getDisKeyFr() + tmps[0] + getDisKeyTo() + "." + getDisKeyFr() + tmps[1] + getDisKeyTo();

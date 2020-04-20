@@ -441,7 +441,8 @@ public class AnylineDaoImpl implements AnylineDao {
 				batchInsert(dest, set.getRow(i), checkParimary, columns);
 			}
 		}
-		String table = SQLCreaterUtil.getCreater(getJdbc()).getDataSource(data);
+
+		String table = DataSourceHolder.parseDataSource(dest,data);//SQLCreaterUtil.getCreater(getJdbc()).getDataSource(data);
 		List<String> cols = SQLCreaterUtil.getCreater(getJdbc()).confirmInsertColumns(dest, data, columns);
 		String strCols = "";
 		int size = cols.size();

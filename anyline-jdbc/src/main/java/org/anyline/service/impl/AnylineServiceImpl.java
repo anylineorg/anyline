@@ -681,7 +681,7 @@ public class AnylineServiceImpl implements AnylineService {
      */
     @Override
     public int update(boolean sync, String dest, Object data, String... columns) {
-        dest = DataSourceHolder.parseDataSource(dest);
+        dest = DataSourceHolder.parseDataSource(dest,dest);
         final String cols[] = BasicUtil.compressionSpace(columns);
         final String _dest = BasicUtil.compressionSpace(dest);
         final Object _data = data;
@@ -705,7 +705,7 @@ public class AnylineServiceImpl implements AnylineService {
     @Override
     public int update(String dest, Object data, String... columns) {
         dest = BasicUtil.compressionSpace(dest);
-        dest = DataSourceHolder.parseDataSource(dest);
+        dest = DataSourceHolder.parseDataSource(dest,data);
         columns = BasicUtil.compressionSpace(columns);
         return dao.update(dest, data, columns);
     }
@@ -788,13 +788,13 @@ public class AnylineServiceImpl implements AnylineService {
     }
 
     protected int saveObject(String dest, Object data, boolean checkParimary, String... columns) {
-        dest = DataSourceHolder.parseDataSource(dest);
+        dest = DataSourceHolder.parseDataSource(dest,data);
         return dao.save(dest, data, checkParimary, columns);
     }
 
     @Override
     public int insert(String dest, Object data, boolean checkParimary, String... columns) {
-        dest = DataSourceHolder.parseDataSource(dest);
+        dest = DataSourceHolder.parseDataSource(dest,data);
         return dao.insert(dest, data, checkParimary, columns);
     }
 
@@ -819,7 +819,7 @@ public class AnylineServiceImpl implements AnylineService {
 
     @Override
     public int batchInsert(String dest, Object data, boolean checkParimary, String... columns) {
-        dest = DataSourceHolder.parseDataSource(dest);
+        dest = DataSourceHolder.parseDataSource(dest,data);
         return dao.batchInsert(dest, data, checkParimary, columns);
     }
 
@@ -851,7 +851,7 @@ public class AnylineServiceImpl implements AnylineService {
 
     @Override
     public boolean execute(Procedure procedure, String ... inputs) {
-        procedure.setName(DataSourceHolder.parseDataSource(procedure.getName()));
+        procedure.setName(DataSourceHolder.parseDataSource(procedure.getName(),null));
         if(null != inputs){
             for(String input:inputs){
                 procedure.addInput(input);
@@ -877,6 +877,7 @@ public class AnylineServiceImpl implements AnylineService {
                     procedure.addInput(input);
                 }
             }
+
             set = dao.queryProcedure(procedure);
         } catch (Exception e) {
             set = new DataSet();
@@ -936,16 +937,18 @@ public class AnylineServiceImpl implements AnylineService {
 
     @Override
     public int delete(DataSet set, String ... columns) {
-        return delete(null, set, columns);
+        String dest = DataSourceHolder.parseDataSource(null,set);
+        return delete(dest, set, columns);
     }
     @Override
     public int delete(String dest, DataRow row, String ... columns) {
-        dest = DataSourceHolder.parseDataSource(dest);
+        dest = DataSourceHolder.parseDataSource(dest, row);
         return dao.delete(dest, row, columns);
     }
     @Override
     public int delete(DataRow row, String ... columns) {
-        return dao.delete(null, row, columns);
+        String dest = DataSourceHolder.parseDataSource(null,row);
+        return dao.delete(dest, row, columns);
     }
 
     @Override

@@ -26,6 +26,9 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
@@ -100,7 +103,7 @@ public class DataSourceHolder {
 	 * @param src  src
 	 * @return return
 	 */ 
-	public static String parseDataSource(String src){ 
+	public static String parseDataSource(String src){
 		if(null != src && src.startsWith("<")){ 
 			int fr = src.indexOf("<"); 
 			int to = src.indexOf(">"); 
@@ -110,9 +113,42 @@ public class DataSourceHolder {
 				setDataSource(ds, true); 
 			} 
 		} 
-		return src; 
+		return src;
 	}
-
+	public static String parseDataSource(String dest, Object obj){
+		if(BasicUtil.isNotEmpty(dest) || null == obj){
+			return dest;
+		}
+		String result = "";
+		if(obj instanceof DataRow){
+			DataRow row = (DataRow)obj;
+			String link = row.getDataLink();
+			if(BasicUtil.isNotEmpty(link)){
+				DataSourceHolder.setDataSource(link, true);
+			}
+			result = row.getDataSource();
+		}else if(obj instanceof DataSet){
+			DataSet set = (DataSet)obj;
+			if(set.size()>0){
+				result = parseDataSource(dest, set.getRow(0));
+			}
+		}
+//		else{
+//			try{
+//				Annotation annotation = obj.getClass().getAnnotation(Table.class);			//提取Table注解
+//				Method method = annotation.annotationType().getMethod("name");				//引用name方法
+//				result = (String)method.invoke(annotation);									//执行name方法返回结果
+//				result = result.replace(getDisKeyFr(), "").replace(getDisKeyTo(),"");
+//			}catch(NoClassDefFoundError e){
+//				e.printStackTrace();
+//			}catch(Exception e){
+//				e.printStackTrace();
+//				e.printStackTrace();
+//			}
+//		}
+		result = parseDataSource(result);
+		return result;
+	}
 	/**
 	 * 注册新的数据源，只是把spring context中现有的数据源名称添加到数据源名称列表
 	 * @param ds 数据源名称
