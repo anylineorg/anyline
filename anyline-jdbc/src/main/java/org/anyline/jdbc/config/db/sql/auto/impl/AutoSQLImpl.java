@@ -228,24 +228,37 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 		}
 	}
 	private void parseColumn(String sql){
-		while(sql.contains("{")){
-			String pre = sql.substring(0,sql.indexOf("{"));
-			if(BasicUtil.isNotEmpty(pre)){
-				String[] pres = pre.split(",");
-				for(String item:pres){
-					item = item.trim();
-					if(BasicUtil.isNotEmpty(item) && !columns.contains(item)){
-						columns.add(item);
+		if(BasicUtil.isEmpty(sql)){
+			return;
+		}
+		if(sql.contains("{")) {
+			while (sql.contains("{")) {
+				String pre = sql.substring(0, sql.indexOf("{"));
+				if (BasicUtil.isNotEmpty(pre)) {
+					String[] pres = pre.split(",");
+					for (String item : pres) {
+						item = item.trim();
+						if (BasicUtil.isNotEmpty(item) && !columns.contains(item)) {
+							columns.add(item);
+						}
 					}
 				}
+				int fr = sql.indexOf("{");
+				int to = sql.indexOf("}");
+				String col = sql.substring(fr + 1, to).trim();
+				if (!columns.contains(col)) {
+					columns.add(col);
+				}
+				sql = sql.substring(sql.indexOf("}") + 1).trim();
 			}
-			int fr = sql.indexOf("{");
-			int to = sql.indexOf("}");
-			String col = sql.substring(fr+1, to).trim();
-			if(!columns.contains(col)) {
-				columns.add(col);
+		}else{
+			String[] cols = sql.split(",");
+			for (String item : cols) {
+				item = item.trim();
+				if (BasicUtil.isNotEmpty(item) && !columns.contains(item)) {
+					columns.add(item);
+				}
 			}
-			sql = sql.substring(sql.indexOf("}")+1).trim();
 		}
 	}
 	public String getDataSource(){
