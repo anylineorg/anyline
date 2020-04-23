@@ -106,7 +106,9 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				}else{
 					if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
 						builder.append(column);
-					}else{ 
+					}else if("*".equals(column)){
+						builder.append("*");
+					}else{
 						builder.append(disKeyFr).append(column.replace(".", disKeyTo+"."+disKeyFr)).append(disKeyTo);
 					} 
 				} 
