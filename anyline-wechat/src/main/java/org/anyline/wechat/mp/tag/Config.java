@@ -64,7 +64,7 @@ public class Config extends BaseBodyTag {
 				if(BasicUtil.isEmpty(server)){
 					server = HttpUtil.parseHost(request.getServerName());
 				}
-				url =  FileUtil.mergePath(server , BasicUtil.evl(request.getAttribute("javax.servlet.forward.request_uri"),"")+"");
+				url =  HttpUtil.mergePath(server , BasicUtil.evl(request.getAttribute("javax.servlet.forward.request_uri"),"")+"");
 				if(null != util.getConfig().WEB_SERVER && util.getConfig().WEB_SERVER.startsWith("https")){
 					url = url.replace("http:","https:");
 				}
