@@ -881,7 +881,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 				key = key.substring(1);
 				addUpdateColumns(key);
 			}
-			Object oldValue = get(key);
+			Object oldValue = get(keyCase,key);
 			if(null == oldValue || !oldValue.equals(value)){
 				super.put(key, value);
 				if(BasicUtil.isNotEmpty(value)){
