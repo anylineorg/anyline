@@ -884,10 +884,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			Object oldValue = get(keyCase,key);
 			if(null == oldValue || !oldValue.equals(value)){
 				super.put(key, value);
-				if(BasicUtil.isNotEmpty(value)){
-					addUpdateColumns(key);
-				}
-			} 
+			}
+			if(!BasicUtil.equal(oldValue, value)){
+				addUpdateColumns(key);
+			}
 		}
 		return this; 
 	}
