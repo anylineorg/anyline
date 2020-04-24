@@ -776,8 +776,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		boolean each = true;//是否需要从row中查找列 
 		List<String> mastKeys = row.getUpdateColumns();		//必须更新列 
 		List<String> disKeys = new ArrayList<String>();			//必须不更新列 
-		List<String> factKeys = new ArrayList<String>();		//根据是否空值 
- 
+		List<String> factKeys = new ArrayList<String>();		//根据是否空值
 		if(null != columns && columns.length>0){ 
 			each = false; 
 			keys = new ArrayList<String>(); 
@@ -800,7 +799,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				} 
 				keys.add(column); 
 			} 
-		} 
+		}else if(null != mastKeys && mastKeys.size()>0){
+			each = false;
+			keys = mastKeys;
+		}
 		if(each){ 
 			keys = row.keys();
 			for(String k:mastKeys){
