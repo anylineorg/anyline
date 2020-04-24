@@ -857,7 +857,7 @@ public class AnylineServiceImpl implements AnylineService {
                 procedure.addInput(input);
             }
         }
-        return dao.executeProcedure(procedure);
+        return dao.execute(procedure);
     }
 
 
@@ -878,7 +878,7 @@ public class AnylineServiceImpl implements AnylineService {
                 }
             }
 
-            set = dao.queryProcedure(procedure);
+            set = dao.query(procedure);
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);

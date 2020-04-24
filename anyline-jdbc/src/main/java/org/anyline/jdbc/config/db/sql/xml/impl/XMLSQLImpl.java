@@ -210,7 +210,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 			return null; 
 		} 
 		for(Condition con:chain.getConditions()){ 
-			if(BasicUtil.isEqual(id, con.getId())){ 
+			if(BasicUtil.equal(id, con.getId())){
 				return (XMLConditionImpl)con; 
 			} 
 		} 

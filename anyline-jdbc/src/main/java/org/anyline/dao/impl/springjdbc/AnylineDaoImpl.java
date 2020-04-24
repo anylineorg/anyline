@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2006-2020 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,36 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *          
+ *
  */
 
 
-package org.anyline.dao.impl.springjdbc; 
- 
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+package org.anyline.dao.impl.springjdbc;
 
+import org.anyline.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.impl.BatchInsertStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
-import org.anyline.cache.PageLazyStore;
 import org.anyline.jdbc.config.ConfigParser;
+import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.impl.ProcedureParam;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
-import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLQueryException;
 import org.anyline.jdbc.exception.SQLUpdateException;
@@ -60,39 +49,45 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-  
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 @Repository("anyline.dao")
 public class AnylineDaoImpl implements AnylineDao {
 	protected static final Logger log = LoggerFactory.getLogger(AnylineDaoImpl.class);
-	
+
 	@Autowired(required=false)
 	protected JdbcTemplate jdbc;
-	
+
 	public JdbcTemplate getJdbc(){
 		return jdbc;
 	}
-	
+
 	protected BatchInsertStore batchInsertStore = new BatchInsertStore();
-	 
-	protected static boolean showSQL = false; 
-	protected static boolean showSQLParam = false; 
-	protected static boolean showSQLWhenError = true; 
+
+	protected static boolean showSQL = false;
+	protected static boolean showSQLParam = false;
+	protected static boolean showSQLWhenError = true;
 	protected static boolean showSQLParamWhenError = true;
-	
-	protected static boolean isBatchInsertRun = false; 
-	 
+
+	protected static boolean isBatchInsertRun = false;
+
 	public AnylineDaoImpl(){
-		showSQL = ConfigTable.getBoolean("SHOW_SQL",showSQL); 
-		showSQLParam = ConfigTable.getBoolean("SHOW_SQL_PARAM",showSQLParam); 
-		showSQLWhenError = ConfigTable.getBoolean("SHOW_SQL_WHEN_ERROR",showSQLWhenError); 
+		showSQL = ConfigTable.getBoolean("SHOW_SQL",showSQL);
+		showSQLParam = ConfigTable.getBoolean("SHOW_SQL_PARAM",showSQLParam);
+		showSQLWhenError = ConfigTable.getBoolean("SHOW_SQL_WHEN_ERROR",showSQLWhenError);
 		showSQLParamWhenError = ConfigTable.getBoolean("SHOW_SQL_PARAM_WHEN_ERROR",showSQLParamWhenError);
-	} 
-	/** 
-	 * 查询 
-	 */ 
-	@Override 
-	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions) { 
-		DataSet set = null; 
+	}
+	/**
+	 * 查询
+	 */
+	@Override
+	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions) {
+		DataSet set = null;
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
 		if(showSQL && !run.isValid()){
 			String tmp = "[valid:false]";
@@ -102,12 +97,12 @@ public class AnylineDaoImpl implements AnylineDao {
 			}else{
 				src = sql.getText();
 			}
-			tmp+="[SQL:"+ConfigParser.createSQLSign(false, false, src, configs, conditions)+"][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
+			tmp+="[SQL:"+ ConfigParser.createSQLSign(false, false, src, configs, conditions)+"][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn(tmp);
 		}
 		PageNavi navi = run.getPageNavi();
 		int total = 0;
-		if(run.isValid()){ 
+		if(run.isValid()){
 			if(null != navi){
 				if(navi.getLastRow() == 0){
 					//第一条
@@ -120,24 +115,24 @@ public class AnylineDaoImpl implements AnylineDao {
 					}else{
 						total = navi.getTotalRow();
 					}
-				} 
+				}
 			}
 			if(showSQL){
 				log.warn("[查询记录总数][行数:{}]",total);
 			}
-		} 
-		if(run.isValid() &&(null == navi || total > 0)){ 
-			set = select(run.getFinalQueryTxt(), run.getValues()); 
-		}else{ 
-			set = new DataSet(); 
-		} 
+		}
+		if(run.isValid() &&(null == navi || total > 0)){
+			set = select(run.getFinalQueryTxt(), run.getValues());
+		}else{
+			set = new DataSet();
+		}
 		set.setDataSource(sql.getDataSource());
 		set.addQueryParam("query_config", configs)
-		.addQueryParam("query_condition", conditions)
-		.addQueryParam("query_order", run.getOrderStore())
-		.addQueryParam("query_column", sql.getColumns());
-//		set.setSchema(sql.getSchema()); 
-//		set.setTable(sql.getTable()); 
+				.addQueryParam("query_condition", conditions)
+				.addQueryParam("query_order", run.getOrderStore())
+				.addQueryParam("query_column", sql.getColumns());
+//		set.setSchema(sql.getSchema());
+//		set.setTable(sql.getTable());
 		set.setNavi(navi);
 		if(null != navi && navi.isLazy()){
 			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
@@ -145,20 +140,20 @@ public class AnylineDaoImpl implements AnylineDao {
 		//自动切换回默认数据源
 		if(DataSourceHolder.isAutoDefault()){
 			DataSourceHolder.recoverDataSource();
-		} 
-		return set; 
-	} 
+		}
+		return set;
+	}
 	public DataSet querys(SQL sql, String ... conditions){
 		return querys(sql, null, conditions);
 	}
 
-	/** 
-	 * 查询 
-	 */ 
-	@Override 
-	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions) { 
+	/**
+	 * 查询
+	 */
+	@Override
+	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions) {
 		return querys(sql, configs, conditions);
-	} 
+	}
 	public DataSet selects(SQL sql, String ... conditions){
 		return querys(sql, null, conditions);
 	}
@@ -183,11 +178,11 @@ public class AnylineDaoImpl implements AnylineDao {
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
 		String txt = run.getExistsTxt();
 		List<Object> values = run.getValues();
-		
+
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn("{}[txt:\n{}\n]",random,txt);
 			log.warn("{}[参数:{}]",random,paramLogFormat(values));
 		}
@@ -224,29 +219,29 @@ public class AnylineDaoImpl implements AnylineDao {
 	public boolean exists(SQL sql, String ... conditions){
 		return exists(sql, null, conditions);
 	}
-	/** 
-	 * 总记录数 
+	/**
+	 * 总记录数
 	 * @param sql sql
 	 * @param values values
 	 * @return return
-	 */ 
-	protected int getTotal(String sql, List<Object> values) { 
-		int total = 0; 
-		DataSet set = select(sql,values); 
+	 */
+	protected int getTotal(String sql, List<Object> values) {
+		int total = 0;
+		DataSet set = select(sql,values);
 		total = set.getInt(0,"CNT",0);
-		return total; 
-	} 
-	/** 
-	 * 更新记录 
+		return total;
+	}
+	/**
+	 * 更新记录
 	 * @param obj		需要更新的数据  row		需要更新的数据
 	 * @param dest	dest
 	 * @param columns	需要更新的列  columns	需要更新的列
 	 * @return return
 	 */
-	@Override 
-	public int update(String dest, Object obj, String ... columns ){ 
-		if(null == obj){ 
-			throw new SQLUpdateException("更新空数据"); 
+	@Override
+	public int update(String dest, Object obj, String ... columns ){
+		if(null == obj){
+			throw new SQLUpdateException("更新空数据");
 		}
 		int result = 0;
 		if(obj instanceof DataSet){
@@ -256,7 +251,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			return result;
 		}
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createUpdateTxt(dest, obj, false, columns); 
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createUpdateTxt(dest, obj, false, columns);
 		String sql = run.getUpdateTxt();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:{}]",dest);
@@ -266,16 +261,16 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
 		}
-		/*执行SQL*/ 
+		/*执行SQL*/
 		try{
 			result = getJdbc().update(sql, values.toArray());
 			if(showSQL){
 				log.warn(random + "[执行耗时:{}ms][影响行数:{}]",System.currentTimeMillis() - fr,result);
-			} 
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 			if(showSQLWhenError){
@@ -288,32 +283,32 @@ public class AnylineDaoImpl implements AnylineDao {
 			if(DataSourceHolder.isAutoDefault()){
 				DataSourceHolder.recoverDataSource();
 			}
-		} 
-		return result; 
+		}
+		return result;
 	}
 	@Override
 	public int update(Object data, String ... columns){
 		return update(null, data, columns);
 	}
-	/** 
-	 * 保存(insert|upate) 
-	 */ 
-	@Override 
-	public int save(String dest, Object data, boolean checkParimary, String ... columns){ 
-		if(null == data){ 
-			throw new SQLUpdateException("保存空数据"); 
-		} 
-		if(data instanceof Collection){ 
-			Collection<?> items = (Collection<?>)data; 
-			int cnt = 0; 
-			for(Object item:items){ 
-				cnt += save(dest, item, checkParimary, columns); 
-			} 
-			return cnt; 
-		} 
-		return saveObject(dest, data, checkParimary, columns); 
-		 
-	} 
+	/**
+	 * 保存(insert|upate)
+	 */
+	@Override
+	public int save(String dest, Object data, boolean checkParimary, String ... columns){
+		if(null == data){
+			throw new SQLUpdateException("保存空数据");
+		}
+		if(data instanceof Collection){
+			Collection<?> items = (Collection<?>)data;
+			int cnt = 0;
+			for(Object item:items){
+				cnt += save(dest, item, checkParimary, columns);
+			}
+			return cnt;
+		}
+		return saveObject(dest, data, checkParimary, columns);
+
+	}
 
 	@Override
 	public int save(Object data, boolean checkParimary, String ... columns){
@@ -327,38 +322,38 @@ public class AnylineDaoImpl implements AnylineDao {
 	public int save(Object data, String ... columns){
 		return save(null, data, false, columns);
 	}
-	 
- 
-	protected int saveObject(String dest, Object data, boolean checkParimary, String ... columns){ 
-		if(null == data){ 
-			return 0; 
-		} 
-		if(checkIsNew(data)){ 
-			return insert(dest, data, checkParimary, columns); 
-		}else{ 
-			return update(dest, data, columns); 
-		} 
-	} 
-	protected boolean checkIsNew(Object obj){ 
-		if(null == obj){ 
-			return false; 
-		} 
-		if(obj instanceof DataRow){ 
-			DataRow row = (DataRow)obj; 
-			return row.isNew(); 
-		} 
-		return false; 
-	} 
- 
-	/** 
-	 * 添加 
-	 * @param checkParimary   是否需要检查重复主键,默认不检查 
-	 * @param columns  需要插入的列 
+
+
+	protected int saveObject(String dest, Object data, boolean checkParimary, String ... columns){
+		if(null == data){
+			return 0;
+		}
+		if(checkIsNew(data)){
+			return insert(dest, data, checkParimary, columns);
+		}else{
+			return update(dest, data, columns);
+		}
+	}
+	protected boolean checkIsNew(Object obj){
+		if(null == obj){
+			return false;
+		}
+		if(obj instanceof DataRow){
+			DataRow row = (DataRow)obj;
+			return row.isNew();
+		}
+		return false;
+	}
+
+	/**
+	 * 添加
+	 * @param checkParimary   是否需要检查重复主键,默认不检查
+	 * @param columns  需要插入的列
 	 * @param dest  dest
 	 * @param data  data
 	 * @return return
 	 */
-	@Override 
+	@Override
 	public int insert(String dest, Object data, boolean checkParimary, String ... columns){
 		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createInsertTxt(dest, data, checkParimary, columns);
 		if(null == run){
@@ -371,7 +366,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
 		}
@@ -380,13 +375,13 @@ public class AnylineDaoImpl implements AnylineDao {
 				@Override
 				public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 					PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-					 int idx = 0;
-					 if(null != values){
-	                    for(Object obj:values){
-	                    	ps.setObject(++idx, obj);
-	                    }
-					 }
-	                return ps;
+					int idx = 0;
+					if(null != values){
+						for(Object obj:values){
+							ps.setObject(++idx, obj);
+						}
+					}
+					return ps;
 				}
 			}, keyholder);
 			if (cnt == 1) {
@@ -413,7 +408,7 @@ public class AnylineDaoImpl implements AnylineDao {
 				DataSourceHolder.recoverDataSource();
 			}
 		}
-		return cnt; 
+		return cnt;
 	}
 
 	@Override
@@ -468,7 +463,7 @@ public class AnylineDaoImpl implements AnylineDao {
 						}catch(Exception e){
 							e.printStackTrace();
 						}
-						
+
 					}
 				}).start();
 			}
@@ -488,53 +483,53 @@ public class AnylineDaoImpl implements AnylineDao {
 	public int batchInsert(Object data, String ... columns){
 		return batchInsert(null, data, false, columns);
 	}
-	protected void setPrimaryValue(Object obj, int value){ 
-		if(null == obj){ 
-			return; 
-		} 
-		if(obj instanceof DataRow){ 
-			DataRow row = (DataRow)obj; 
-			row.put(row.getPrimaryKey(), value); 
-		}else{ 
-//			String key = BeanUtil.getPrimaryKey(obj.getClass()); 
-//			BeanUtil.setFieldValue(obj, key, value); 
-		} 
-	} 
-	/** 
-	 * 查询 
+	protected void setPrimaryValue(Object obj, int value){
+		if(null == obj){
+			return;
+		}
+		if(obj instanceof DataRow){
+			DataRow row = (DataRow)obj;
+			row.put(row.getPrimaryKey(), value);
+		}else{
+//			String key = BeanUtil.getPrimaryKey(obj.getClass());
+//			BeanUtil.setFieldValue(obj, key, value);
+		}
+	}
+	/**
+	 * 查询
 	 * @param sql  sql
 	 * @param values  values
 	 * @return return
-	 */ 
-	protected DataSet select(String sql, List<Object> values){ 
-		if(BasicUtil.isEmpty(sql)){ 
-			throw new SQLQueryException("未指定SQL"); 
+	 */
+	protected DataSet select(String sql, List<Object> values){
+		if(BasicUtil.isEmpty(sql)){
+			throw new SQLQueryException("未指定SQL");
 		}
 		long fr = System.currentTimeMillis();
-		String random = ""; 
+		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
-		} 
-		DataSet set = new DataSet(); 
+		}
+		DataSet set = new DataSet();
 		try{
-			List<Map<String,Object>> list = null; 
-			if(null != values && values.size()>0){ 
-				list = getJdbc().queryForList(sql, values.toArray()); 
-			}else{ 
-				list = getJdbc().queryForList(sql); 
+			List<Map<String,Object>> list = null;
+			if(null != values && values.size()>0){
+				list = getJdbc().queryForList(sql, values.toArray());
+			}else{
+				list = getJdbc().queryForList(sql);
 			}
 			long mid = System.currentTimeMillis();
 			if(showSQL){
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
-			} 
-	        for(Map<String,Object> map:list){ 
-	        	DataRow row = new DataRow(map);
-	        	row.clearUpdateColumns(); 
-	        	set.add(row); 
-	        }
-            set.setDatalink(DataSourceHolder.getDataSource());
+			}
+			for(Map<String,Object> map:list){
+				DataRow row = new DataRow(map);
+				row.clearUpdateColumns();
+				set.add(row);
+			}
+			set.setDatalink(DataSourceHolder.getDataSource());
 			if(showSQL){
 				log.warn(random + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,list.size() );
 			}
@@ -545,8 +540,8 @@ public class AnylineDaoImpl implements AnylineDao {
 				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
 			}
 			throw new SQLQueryException("查询异常:" + e + "\ntxt:" + sql + "\nparam:" + values);
-		} 
-		return set; 
+		}
+		return set;
 	}
 	@Override
 	public int execute(SQL sql, ConfigStore configs, String ... conditions){
@@ -563,7 +558,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[txt:\n{}\n]", txt);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
 		}
@@ -590,13 +585,13 @@ public class AnylineDaoImpl implements AnylineDao {
 				DataSourceHolder.recoverDataSource();
 			}
 		}
-		return result; 
+		return result;
 	}
 	@Override
 	public int execute(SQL sql, String ... conditions){
 		return execute(sql, null, conditions);
 	}
-//	@SuppressWarnings("unchecked")
+	//	@SuppressWarnings("unchecked")
 //	@Override
 //	public boolean executeProcedure(Procedure procedure){
 //		boolean result = false;
@@ -673,193 +668,105 @@ public class AnylineDaoImpl implements AnylineDao {
 //		}
 //		return result;
 //	}
-public boolean executeProcedure(Procedure procedure){
-	boolean result = false;
-	List<Object> list = new ArrayList<Object>();
-	final List<ProcedureParam> inputs = procedure.getInputs();
-	final List<ProcedureParam> outputs = procedure.getOutputs();
-	long fr = System.currentTimeMillis();
-	String random = "";
-	if(showSQL){
-		random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
-		log.warn(random + "[txt:\n{}\n]",procedure.getName() );
-		log.warn(random + "[输入参数:{}]",paramLogFormat(inputs));
-		log.warn(random + "[输出参数:{}]",paramLogFormat(inputs));
-	}
-	String sql = "{call " +procedure.getName()+"(";
-	final int sizeIn = inputs.size();
-	final int sizeOut = outputs.size();
-	final int size = sizeIn + sizeOut;
-	for(int i=0; i<size; i++){
-		sql += "?";
-		if(i < size-1){
-			sql += ",";
-		}
-	}
-	sql += ")}";
-	try{
-		list = (List<Object>)getJdbc().execute(sql,new CallableStatementCallback<Object>(){
-			public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
-				final List<Object> result = new ArrayList<Object>();
-				for(int i=1; i<=sizeIn; i++){
-					ProcedureParam param = inputs.get(i-1);
-					Object value = param.getValue();
-					if(null == value || "NULL".equalsIgnoreCase(value.toString())){
-						value = null;
-					}
-					cs.setObject(i, value, param.getType());
-				}
-				for(int i=1; i<=sizeOut; i++){
-					ProcedureParam param = outputs.get(i-1);
-					if(null == param.getValue()){
-						cs.registerOutParameter(i+sizeIn, param.getType());
-					}else{
-						cs.setObject(i+sizeIn, param.getValue(), param.getType());
-					}
-				}
-				if(sizeOut > 0){
-					//注册输出参数
-					cs.execute();
-					for(int i=1; i<=sizeOut; i++){
-						final Object output = cs.getObject(sizeIn+i);
-						result.add(output);
-					}
-				}else{
-					cs.execute();
-				}
-				return result;
-			}
-		});
-
+	@Override
+	public boolean execute(Procedure procedure){
+		boolean result = false;
+		List<Object> list = new ArrayList<Object>();
+		final List<ProcedureParam> inputs = procedure.getInputs();
+		final List<ProcedureParam> outputs = procedure.getOutputs();
+		long fr = System.currentTimeMillis();
+		String random = "";
 		if(showSQL){
-			log.warn(random + "[执行耗时:{}ms]",System.currentTimeMillis()-fr);
-			log.warn(random + "[输出参数:{}]",list);
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn("{}[txt:\n{}\n]",random,procedure.getName() );
+			log.warn("{}[输入参数:{}]",random,paramLogFormat(inputs));
+			log.warn("{}[输出参数:{}]",random,paramLogFormat(inputs));
 		}
-		procedure.setResult(list);
-		result = true;
-	}catch(Exception e){
-		result = false;
-		log.error(random+":" +e);
-		if(showSQLWhenError){
-			log.error(random + "[异常][txt:\n{}\n]",sql);
-			log.error(random + "[异常][输入参数:{}]",paramLogFormat(inputs));
-			log.error(random + "[异常][输出参数:{}]",paramLogFormat(outputs));
+		String sql = "{call " +procedure.getName()+"(";
+		final int sizeIn = inputs.size();
+		final int sizeOut = outputs.size();
+		final int size = sizeIn + sizeOut;
+		for(int i=0; i<size; i++){
+			sql += "?";
+			if(i < size-1){
+				sql += ",";
+			}
 		}
-		e.printStackTrace();
-		throw new SQLUpdateException("procedure执行异常:" + e + "\nprocedure:" + procedure.getName() + "\ninputs:" + paramLogFormat(inputs)+"\noutputs:"+paramLogFormat(outputs));
-	}finally{
-		//自动切换回默认数据源
-		if(DataSourceHolder.isAutoDefault()){
-			DataSourceHolder.recoverDataSource();
+		sql += ")}";
+		try{
+			list = (List<Object>)getJdbc().execute(sql,new CallableStatementCallback<Object>(){
+				public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
+					final List<Object> result = new ArrayList<Object>();
+					for(int i=1; i<=sizeIn; i++){
+						ProcedureParam param = inputs.get(i-1);
+						Object value = param.getValue();
+						if(null == value || "NULL".equalsIgnoreCase(value.toString())){
+							value = null;
+						}
+						cs.setObject(i, value, param.getType());
+					}
+					for(int i=1; i<=sizeOut; i++){
+						ProcedureParam param = outputs.get(i-1);
+						if(null == param.getValue()){
+							cs.registerOutParameter(i+sizeIn, param.getType());
+						}else{
+							cs.setObject(i+sizeIn, param.getValue(), param.getType());
+						}
+					}
+					if(sizeOut > 0){
+						//注册输出参数
+						cs.execute();
+						for(int i=1; i<=sizeOut; i++){
+							final Object output = cs.getObject(sizeIn+i);
+							result.add(output);
+						}
+					}else{
+						cs.execute();
+					}
+					return result;
+				}
+			});
+
+			if(showSQL){
+				log.warn("{}[执行耗时:{}ms]",random,System.currentTimeMillis()-fr);
+				log.warn("{}[输出参数:{}]",random,list);
+			}
+			procedure.setResult(list);
+			result = true;
+		}catch(Exception e){
+			result = false;
+			log.error(random+":" +e);
+			if(showSQLWhenError){
+				log.error("{}[异常][txt:\n{}\n]",random,sql);
+				log.error("{}[异常][输入参数:{}]",random,paramLogFormat(inputs));
+				log.error("{}[异常][输出参数:{}]",random,paramLogFormat(outputs));
+			}
+			e.printStackTrace();
+			throw new SQLUpdateException("procedure执行异常:" + e + "\nprocedure:" + procedure.getName() + "\ninputs:" + paramLogFormat(inputs)+"\noutputs:"+paramLogFormat(outputs));
+		}finally{
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.recoverDataSource();
+			}
 		}
+		return result;
 	}
-	return result;
-}
-//	/**
-//	 * 根据存储过程查询(MSSQL AS 后必须加 SET NOCOUNT ON)
-//	 * @param procedure  procedure
-//	 * @return return
-//	 */
-//	@Override
-//	public DataSet queryProcedure(final Procedure procedure){
-//		final List<String> inputValues = procedure.getInputValues();
-//		final List<Integer> inputTypes = procedure.getInputTypes();
-//		final List<Integer> outputTypes = procedure.getOutputTypes();\
-//		long fr = System.currentTimeMillis();
-//		String random = "";
-//		if(showSQL){
-//			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
-//			log.warn(random + "[txt:\n{}\n]",procedure.getName());
-//			log.warn(random + "[参数:{}]",paramLogFormat(inputValues));
-//		}
-//		final String rdm = random;
-//		DataSet set = null;
-//		try{
-//			set = (DataSet)getJdbc().execute(new CallableStatementCreator(){
-//	            public CallableStatement createCallableStatement(Connection conn) throws SQLException {
-//	            	String sql = "{call " +procedure.getName()+"(";
-//	        		final int sizeIn = null == inputTypes? 0 : inputTypes.size();
-//	        		final int sizeOut = null == outputTypes? 0 : outputTypes.size();
-//	        		final int size = sizeIn + sizeOut;
-//	        		for(int i=0; i<size; i++){
-//	        			sql += "?";
-//	        			if(i < size-1){
-//	        				sql += ",";
-//	        			}
-//	        		}
-//	        		sql += ")}";
-//
-//	                CallableStatement cs = conn.prepareCall(sql);
-//	                for(int i=1; i<=sizeIn; i++){
-//						Object value = inputValues.get(i-1);
-//						if(null == value || "NULL".equalsIgnoreCase(value.toString())){
-//							value = null;
-//						}
-//						cs.setObject(i, value, inputTypes.get(i-1));
-//					}
-//					for(int i=1; i<=sizeOut; i++){
-//						cs.registerOutParameter(i+sizeIn, outputTypes.get(i-1));
-//					}
-//	                return cs;
-//	            }
-//	        },new CallableStatementCallback<Object>(){
-//	            public Object doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {
-//	                ResultSet rs = cs.executeQuery();
-//	                DataSet set = new DataSet();
-//	        		ResultSetMetaData rsmd = rs.getMetaData();
-//	        		int cols = rsmd.getColumnCount();
-//	        		for(int i=1; i<=cols; i++){
-//	        			set.addHead(rsmd.getColumnName(i));
-//	        		}
-//	        		long mid = System.currentTimeMillis();
-//	                while(rs.next()){
-//	    				DataRow row = new DataRow();
-//	    				for(int i=1; i<=cols; i++){
-//	    					row.put(rsmd.getColumnName(i), rs.getObject(i));
-//	    				}
-//	    				set.addRow(row);
-//	    			}
-//	                set.setDatalink(DataSourceHolder.getDataSource());
-//	                if(showSQL){
-//	    				log.warn(rdm + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,set.size());
-//	    			}
-//	                return set;
-//	            }
-//	        });
-//			if(showSQL){
-//				log.warn(random + "[执行耗时:{}ms]",System.currentTimeMillis() - fr);
-//			}
-//		}catch(Exception e){
-//			e.printStackTrace();
-//			if(showSQLWhenError){
-//				log.error(random + "[异常][txt:\n{}\n]",procedure.getName());
-//				log.error(random + "[异常参数:{}]",paramLogFormat(inputValues));
-//			}
-//			throw new SQLQueryException("查询异常:" + e + "\nPROCEDURE:" + procedure.getName());
-//		}finally{
-//			//自动切换回默认数据源
-//			if(DataSourceHolder.isAutoDefault()){
-//				DataSourceHolder.recoverDataSource();
-//			}
-//		}
-//		return set;
-//	}
 	/**
 	 * 根据存储过程查询(MSSQL AS 后必须加 SET NOCOUNT ON)
 	 * @param procedure  procedure
 	 * @return return
 	 */
 	@Override
-	public DataSet queryProcedure(final Procedure procedure){
+	public DataSet query(final Procedure procedure){
 		final List<ProcedureParam> inputs = procedure.getInputs();
 		final List<ProcedureParam> outputs = procedure.getOutputs();
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
-			log.warn(random + "[txt:\n{}\n]",procedure.getName());
-			log.warn(random + "[输入参数:{}]",paramLogFormat(inputs));
-			log.warn(random + "[输出参数:{}]",paramLogFormat(inputs));
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn("{}[txt:\n{}\n]", random, procedure.getName());
+			log.warn("{}[输入参数:{}]", random, paramLogFormat(inputs));
+			log.warn("{}[输出参数:{}]", random, paramLogFormat(inputs));
 		}
 		final String rdm = random;
 		DataSet set = null;
@@ -898,7 +805,7 @@ public boolean executeProcedure(Procedure procedure){
 					}
 					return cs;
 				}
-			},new CallableStatementCallback<Object>(){
+			}, new CallableStatementCallback<Object>(){
 				public Object doInCallableStatement(CallableStatement cs) throws SQLException, DataAccessException {
 					ResultSet rs = cs.executeQuery();
 					DataSet set = new DataSet();
@@ -917,20 +824,20 @@ public boolean executeProcedure(Procedure procedure){
 					}
 					set.setDatalink(DataSourceHolder.getDataSource());
 					if(showSQL){
-						log.warn(rdm + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,set.size());
+						log.warn("{}[封装耗时:{}ms][封装行数:{}]", rdm, System.currentTimeMillis() - mid,set.size());
 					}
 					return set;
 				}
 			});
 			if(showSQL){
-				log.warn(random + "[执行耗时:{}ms]",System.currentTimeMillis() - fr);
+				log.warn("{}[执行耗时:{}ms]", random,System.currentTimeMillis() - fr);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 			if(showSQLWhenError){
-				log.error(random + "[异常][txt:\n{}\n]",procedure.getName());
-				log.error(random + "[输入参数:{}]",paramLogFormat(inputs));
-				log.error(random + "[输出参数:{}]",paramLogFormat(inputs));
+				log.error("{}[异常][txt:\n{}\n]",random,procedure.getName());
+				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
+				log.error("{}[输出参数:{}]",random,paramLogFormat(inputs));
 			}
 			throw new SQLQueryException("查询异常:" + e + "\nPROCEDURE:" + procedure.getName());
 		}finally{
@@ -987,34 +894,37 @@ public boolean executeProcedure(Procedure procedure){
 		long fr = System.currentTimeMillis();
 		String random = "";
 		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
-			log.warn(random + "[txt:\n{}\n]",sql);
-			log.warn(random + "[参数:{}]",paramLogFormat(values));
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn("{}[txt:\n{}\n]",random,sql);
+			log.warn("{}[参数:{}]",random,paramLogFormat(values));
 		}
 		try{
-			result = getJdbc().update(
-	            new PreparedStatementCreator() {
-	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
-	                {
-	                    PreparedStatement ps = getJdbc().getDataSource().getConnection().prepareStatement(sql);
-	                    int idx = 0;
-	                    if(null != values){
-		                    for(Object obj:values){
-		                    	ps.setObject(++idx, obj);
-		                    }
-	                    }
-	                    return ps;
-	                }
-	            });
+			result = getJdbc().update(sql,values);
+//			result = getJdbc().update(
+//	            new PreparedStatementCreator() {
+//	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
+//	                {
+//	                    PreparedStatement ps = getJdbc().getDataSource().getConnection().prepareStatement(sql);
+//	                    int idx = 0;
+//	                    if(null != values){
+//		                    for(Object obj:values){
+//		                    	ps.setObject(++idx, obj);
+//		                    }
+//	                    }
+//	                    return ps;
+//	                }
+//	            });
 			if(showSQL){
-				log.warn(random + "[执行耗时:{}ms][影响行数:{}]",System.currentTimeMillis()-fr,result);
+				log.warn("{}[执行耗时:{}ms][影响行数:{}]",random,System.currentTimeMillis()-fr,result);
 			}
+			result = 1;
 		}catch(Exception e){
 			log.error("删除异常:" +e);
 			if(showSQLWhenError){
-				log.error(random + "[异常][txt:\n{}\n]",sql);
-				log.error(random + "[异常][参数:{}]", paramLogFormat(values));
+				log.error("{}[异常][txt:\n{}\n]",random,sql);
+				log.error("{}[异常][参数:{}]",random, paramLogFormat(values));
 			}
+			result = 0;
 			throw new SQLUpdateException("删除异常:" + e);
 		}finally{
 			//自动切换回默认数据源
@@ -1043,5 +953,4 @@ public boolean executeProcedure(Procedure procedure){
 		}
 		return result;
 	}
-	
 }

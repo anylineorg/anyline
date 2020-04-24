@@ -91,13 +91,13 @@ public interface AnylineDao{
 	 * @param procedure  procedure
 	 * @return return
 	 */ 
-	public boolean executeProcedure(Procedure procedure); 
+	public boolean execute(Procedure procedure);
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
 	 * @return return
 	 */ 
-	public DataSet queryProcedure(Procedure procedure);
+	public DataSet query(Procedure procedure);
 	public int delete(String dest, DataSet set, String ... columns);
 	public int delete(String dest, DataRow row, String ... columns);
 	public int delete(String table, ConfigStore configs, String ... conditions);

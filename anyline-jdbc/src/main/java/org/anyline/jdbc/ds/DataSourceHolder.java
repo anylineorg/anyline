@@ -117,7 +117,7 @@ public class DataSourceHolder {
 	}
 	public static String parseDataSource(String dest, Object obj){
 		if(BasicUtil.isNotEmpty(dest) || null == obj){
-			return dest;
+			return parseDataSource(dest);
 		}
 		String result = "";
 		if(obj instanceof DataRow){
