@@ -101,15 +101,19 @@ public class BasicUtil {
 		return !isEmpty(recursion, obj);
 	} 
  
-	public static boolean isEqual(Object obj1, Object obj2) { 
+	public static boolean equal(Object obj1, Object obj2) {
 		if (null == obj1) { 
 			if (null == obj2) { 
 				return true; 
 			} else { 
-				return obj2.equals(obj1); 
+				return false;
 			} 
-		} else { 
-			return obj1.equals(obj2); 
+		} else {
+			if(null == obj2){
+				return false;
+			}else {
+				return obj1.toString().equals(obj2.toString());
+			}
 		} 
 	} 
  
