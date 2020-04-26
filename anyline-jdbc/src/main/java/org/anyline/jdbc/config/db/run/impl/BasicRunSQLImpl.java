@@ -349,7 +349,10 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 					String haveStr = condition.substring(up.indexOf("HAVING") + "HAVING".length()).trim();
 					this.having = haveStr;
 					continue;
-				} 
+				}
+//				if(up.contains(" OR ") && !(condition.startsWith("(") && condition.endsWith(")"))){
+//					condition = "(" + condition + ")";
+//				}
 				this.addCondition(condition); 
 			} 
 		} 

@@ -899,7 +899,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			log.warn("{}[参数:{}]",random,paramLogFormat(values));
 		}
 		try{
-			result = getJdbc().update(sql,values);
+			result = getJdbc().update(sql,values.toArray());
 //			result = getJdbc().update(
 //	            new PreparedStatementCreator() {
 //	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException

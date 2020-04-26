@@ -1685,7 +1685,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet dispatchItem(String field, boolean recursion, String ... keys){
 		return dispatchItem(field, recursion, this, keys);
 	}
-	
+	public DataSet removeColumn(String ... columns){
+		if(null != columns){
+			for(String column:columns){
+				for(DataRow row:rows){
+					row.remove(column);
+				}
+			}
+		}
+		return this;
+	}
 	
 	
 	/**
