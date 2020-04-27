@@ -1685,16 +1685,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet dispatchItem(String field, boolean recursion, String ... keys){
 		return dispatchItem(field, recursion, this, keys);
 	}
-	public DataSet removeColumn(String ... columns){
-		if(null != columns){
-			for(String column:columns){
-				for(DataRow row:rows){
-					row.remove(column);
-				}
-			}
-		}
-		return this;
-	}
 	
 	
 	/**
@@ -1873,22 +1863,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return result;
 	}
 	/**
-	 * 清除空列
-	 * @param keys keys
-	 * @return DataSet
-	 */
-	public DataSet removeEmpty(String ... keys){
-		for(DataRow row:rows){
-			row.removeEmpty(keys);
-		}
-		return this;
-	}
-	/**
 	 * 清除指定列全为空的行,如果不指定keys,则清除所有列都为空的行
 	 * @param keys keys
 	 * @return DataSet
 	 */
-	public DataSet clearEmptyRow(String ... keys){
+	public DataSet removeEmptyRow(String ... keys){
 		int size = this.size();
 		for(int i=size-1; i>=0; i--){
 			DataRow row = getRow(i);
@@ -1908,6 +1887,34 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					this.remove(row);
 				}
 			}
+		}
+		return this;
+	}
+
+	/**
+	 * 删除rows中的columns列
+	 * @param columns 检测的列，如果不输入则检测所有列
+	 * @return
+	 */
+	public DataSet removeColumn(String ... columns){
+		if(null != columns){
+			for(String column:columns){
+				for(DataRow row:rows){
+					row.remove(column);
+				}
+			}
+		}
+		return this;
+	}
+
+	/**
+	 * 删除rows中值为空(null|'')的列
+	 * @param columns 检测的列，如果不输入则检测所有列
+	 * @return DataSet
+	 */
+	public DataSet removeEmptyColumn(String ... columns){
+		for(DataRow row:rows){
+			row.removeEmpty(columns);
 		}
 		return this;
 	}
