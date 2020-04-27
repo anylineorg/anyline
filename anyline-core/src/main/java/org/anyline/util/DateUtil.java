@@ -1478,8 +1478,8 @@ public class DateUtil {
 		return conversion((long)src);
 	}
 	/**
-	 *
-	 * @param src  src
+	 *  毫秒转换成*天*时*分*秒*毫秒
+	 * @param src 毫秒
 	 * @return return
 	 */
 	public static String conversion(long src){
