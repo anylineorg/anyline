@@ -325,7 +325,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 				String str = value.toString();
 				value = str.substring(1, str.length()-1);
-				param.append(value);
+				if(value.toString().startsWith("{") && value.toString().endsWith("}")){
+					//保存json时可以{json格式}最终会有两层:{{a:1}}
+					param.append("?");
+					values.add(value);
+				}else {
+					param.append(value);
+				}
 			}else{
 				param.append("?");
 				if("NULL".equals(value)){
