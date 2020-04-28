@@ -48,7 +48,8 @@ import org.anyline.util.DESUtil;
  * @author zh 
  * 
  */ 
-public class ConfigStoreImpl implements ConfigStore{ 
+public class ConfigStoreImpl implements ConfigStore{
+	private static final long serialVersionUID = -2098827041540802313L;
 	protected ConfigChain chain;
 	protected PageNavi navi;
 	protected OrderStore orders;		//排序依据

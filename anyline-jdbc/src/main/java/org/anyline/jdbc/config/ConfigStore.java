@@ -23,6 +23,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.*;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
  
@@ -32,7 +33,7 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public interface ConfigStore { 
+public interface ConfigStore extends Serializable {
 	/**
 	 * 解析查询配置参数 
 	 * @param config "COMPANY_CD:company","NM:nmEn% | NM:nmCn%","STATUS_VALUE:[status]" 
