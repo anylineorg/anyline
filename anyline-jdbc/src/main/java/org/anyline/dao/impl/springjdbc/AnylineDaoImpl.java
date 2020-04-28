@@ -88,58 +88,61 @@ public class AnylineDaoImpl implements AnylineDao {
 	@Override
 	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
-		if(showSQL && !run.isValid()){
-			String tmp = "[valid:false]";
-			String src = "";
-			if(sql instanceof TableSQL){
-				src = sql.getTable();
-			}else{
-				src = sql.getText();
+		try {
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			if (showSQL && !run.isValid()) {
+				String tmp = "[valid:false]";
+				String src = "";
+				if (sql instanceof TableSQL) {
+					src = sql.getTable();
+				} else {
+					src = sql.getText();
+				}
+				tmp += "[SQL:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				log.warn(tmp);
 			}
-			tmp+="[SQL:"+ ConfigParser.createSQLSign(false, false, src, configs, conditions)+"][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
-			log.warn(tmp);
-		}
-		PageNavi navi = run.getPageNavi();
-		int total = 0;
-		if(run.isValid()){
-			if(null != navi){
-				if(navi.getLastRow() == 0){
-					//第一条
-					total = 1;
-				}else{
-					//未计数(总数 )
-					if(navi.getTotalRow() ==0){
-						total = getTotal(run.getTotalQueryTxt(), run.getValues());
-						navi.setTotalRow(total);
-					}else{
-						total = navi.getTotalRow();
+			PageNavi navi = run.getPageNavi();
+			int total = 0;
+			if (run.isValid()) {
+				if (null != navi) {
+					if (navi.getLastRow() == 0) {
+						//第一条
+						total = 1;
+					} else {
+						//未计数(总数 )
+						if (navi.getTotalRow() == 0) {
+							total = getTotal(run.getTotalQueryTxt(), run.getValues());
+							navi.setTotalRow(total);
+						} else {
+							total = navi.getTotalRow();
+						}
 					}
 				}
+				if (showSQL) {
+					log.warn("[查询记录总数][行数:{}]", total);
+				}
 			}
-			if(showSQL){
-				log.warn("[查询记录总数][行数:{}]",total);
+			if (run.isValid() && (null == navi || total > 0)) {
+				set = select(run.getFinalQueryTxt(), run.getValues());
+			} else {
+				set = new DataSet();
 			}
-		}
-		if(run.isValid() &&(null == navi || total > 0)){
-			set = select(run.getFinalQueryTxt(), run.getValues());
-		}else{
-			set = new DataSet();
-		}
-		set.setDataSource(sql.getDataSource());
-		set.addQueryParam("query_config", configs)
-				.addQueryParam("query_condition", conditions)
-				.addQueryParam("query_order", run.getOrderStore())
-				.addQueryParam("query_column", sql.getColumns());
+			set.setDataSource(sql.getDataSource());
+			set.addQueryParam("query_config", configs)
+					.addQueryParam("query_condition", conditions)
+					.addQueryParam("query_order", run.getOrderStore())
+					.addQueryParam("query_column", sql.getColumns());
 //		set.setSchema(sql.getSchema());
 //		set.setTable(sql.getTable());
-		set.setNavi(navi);
-		if(null != navi && navi.isLazy()){
-			PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
-		}
-		//自动切换回默认数据源
-		if(DataSourceHolder.isAutoDefault()){
-			DataSourceHolder.recoverDataSource();
+			set.setNavi(navi);
+			if (null != navi && navi.isLazy()) {
+				PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
+			}
+		}finally {
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.recoverDataSource();
+			}
 		}
 		return set;
 	}
@@ -175,44 +178,47 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 	public boolean exists(SQL sql, ConfigStore configs, String ... conditions){
 		boolean result = false;
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
-		String txt = run.getExistsTxt();
-		List<Object> values = run.getValues();
+		try {
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			String txt = run.getExistsTxt();
+			List<Object> values = run.getValues();
 
-		long fr = System.currentTimeMillis();
-		String random = "";
-		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
-			log.warn("{}[txt:\n{}\n]",random,txt);
-			log.warn("{}[参数:{}]",random,paramLogFormat(values));
-		}
-		/*执行SQL*/
-		try{
-			Map<String,Object> map = null;
-			if(null != values && values.size()>0){
-				map = getJdbc().queryForMap(txt, values.toArray());
-			}else{
-				map = getJdbc().queryForMap(txt);
+			long fr = System.currentTimeMillis();
+			String random = "";
+			if (showSQL) {
+				random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				log.warn("{}[txt:\n{}\n]", random, txt);
+				log.warn("{}[参数:{}]", random, paramLogFormat(values));
 			}
-			if(null == map){
-				result = false;
-			}else{
-				result =  BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
+			/*执行SQL*/
+			try {
+				Map<String, Object> map = null;
+				if (null != values && values.size() > 0) {
+					map = getJdbc().queryForMap(txt, values.toArray());
+				} else {
+					map = getJdbc().queryForMap(txt);
+				}
+				if (null == map) {
+					result = false;
+				} else {
+					result = BasicUtil.parseBoolean(map.get("IS_EXISTS"), false);
+				}
+				if (showSQL) {
+					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, result);
+				}
+			} catch (Exception e) {
+				log.error(random + "异常:" + e);
+				if (showSQLWhenError) {
+					log.error(random + "[异常TXT:\n{}\n]", sql);
+					log.error(random + "[异常参数:{}]", paramLogFormat(values));
+				}
+				throw new SQLQueryException("查询异常:" + e);
 			}
-			if(showSQL){
-				log.warn("{}[执行耗时:{}ms][影响行数:{}]",random,System.currentTimeMillis() - fr,result);
+		}finally {
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.recoverDataSource();
 			}
-		}catch(Exception e){
-			log.error(random + "异常:" + e);
-			if(showSQLWhenError){
-				log.error(random + "[异常TXT:\n{}\n]",sql);
-				log.error(random + "[异常参数:{}]",paramLogFormat(values));
-			}
-			throw new SQLQueryException("查询异常:" + e);
-		}
-		//自动切换回默认数据源
-		if(DataSourceHolder.isAutoDefault()){
-			DataSourceHolder.recoverDataSource();
 		}
 		return result;
 	}
