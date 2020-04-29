@@ -33,7 +33,7 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public interface ConfigStore extends Serializable {
+public interface ConfigStore {
 	/**
 	 * 解析查询配置参数 
 	 * @param config "COMPANY_CD:company","NM:nmEn% | NM:nmCn%","STATUS_VALUE:[status]" 

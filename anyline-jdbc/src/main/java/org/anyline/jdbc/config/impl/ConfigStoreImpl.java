@@ -19,6 +19,7 @@
 
 package org.anyline.jdbc.config.impl; 
  
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +49,7 @@ import org.anyline.util.DESUtil;
  * @author zh 
  * 
  */ 
-public class ConfigStoreImpl implements ConfigStore{
+public class ConfigStoreImpl implements ConfigStore, Serializable {
 	private static final long serialVersionUID = -2098827041540802313L;
 	protected ConfigChain chain;
 	protected PageNavi navi;
