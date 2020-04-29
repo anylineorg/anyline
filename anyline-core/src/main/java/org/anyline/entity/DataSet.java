@@ -1894,7 +1894,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	/**
 	 * 删除rows中的columns列
 	 * @param columns 检测的列，如果不输入则检测所有列
-	 * @return
+	 * @return DataSet
 	 */
 	public DataSet removeColumn(String ... columns){
 		if(null != columns){
