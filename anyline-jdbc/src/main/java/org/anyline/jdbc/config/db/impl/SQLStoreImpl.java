@@ -62,37 +62,42 @@ public class SQLStoreImpl extends SQLStore {
 		if (null == sqlDir) {
 			return;
 		}
-		List<File> files = new ArrayList<File>();
-		if (FileUtil.getPathType(SQLStoreImpl.class) == 0) {
+		List<File> files;
+		if (FileUtil.getPathType(ConfigTable.getClassPath()) == 0) {
 			if (sqlDir.contains("${classpath}")) {
 				sqlDir = sqlDir.replace("${classpath}", ConfigTable.getClassPath());
 			} else if (sqlDir.startsWith("/WEB-INF")) {
-				sqlDir = ConfigTable.getWebRoot() + sqlDir;
+				sqlDir = ConfigTable.getWebRoot() + "/" + sqlDir;
 			} else if (sqlDir.startsWith("/")) {
 			} else {
-				sqlDir = ConfigTable.getWebRoot() + sqlDir;
+				sqlDir = ConfigTable.getWebRoot() + "/" + sqlDir;
 			}
-			sqlDir = sqlDir.substring(sqlDir.indexOf("!/"), sqlDir.lastIndexOf("!/")).replaceAll("!/", "/");
-			log.info("sqlDir:" + sqlDir);
+			sqlDir = sqlDir.substring(sqlDir.indexOf("!/")).replaceAll("!/", "") + "/";
 			//遍历jar
 			List<JarEntry> list = new ArrayList<JarEntry>();
+			JarFile jFile = null;
 			try {
-				JarFile jar = new JarFile(System.getProperty(String.valueOf(SQLStoreImpl.class)));
-				Enumeration<JarEntry> jarEntrys = jar.entries();
-				while (jarEntrys.hasMoreElements()) {
-					JarEntry entry = jarEntrys.nextElement();
-					String name = entry.getName();
-					if (name.indexOf(sqlDir) != -1 && name.endsWith(".xml")) {
-						list.add(entry);
-					}
-				}
-			}catch(Exception e){
+				jFile = new JarFile(System.getProperty("java.class.path"));
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
+
+			if (jFile == null) {
+				return;
+			}
+			Enumeration<JarEntry> jarEntrys = jFile.entries();
+			while (jarEntrys.hasMoreElements()) {
+				JarEntry entry = jarEntrys.nextElement();
+				String name = entry.getName();
+				if (name.indexOf(sqlDir) != -1 && name.endsWith(".xml")) {
+					list.add(entry);
+				}
+			}
+
 			for (JarEntry jarEntry : list) {
 				String fileName = jarEntry.getName();
 				InputStream is = SQLStoreImpl.class.getClassLoader().getResourceAsStream(fileName);
-				sqls.putAll(parseSQLFile(fileName.substring(fileName.lastIndexOf("/")), is));
+				sqls.putAll(parseSQLFile(fileName.substring(fileName.lastIndexOf("/") + 1, fileName.lastIndexOf(".xml")), is));
 			}
 		} else {
 			File scanDir = null;
@@ -117,6 +122,17 @@ public class SQLStoreImpl extends SQLStore {
 		lastLoadTime = System.currentTimeMillis();
 	}
 
+	public static String getJarFile() throws IOException {
+		InputStream in = SQLStoreImpl.class.getResourceAsStream("/idcheck-file.properties");//读jar包根目录下的idcheck-file.properties文件
+		Reader f = new InputStreamReader(in);
+		BufferedReader fb = new BufferedReader(f);
+		StringBuffer sb = new StringBuffer("");
+		String s = "";
+		while ((s = fb.readLine()) != null) {
+			sb = sb.append(s);
+		}
+		return sb.toString();
+	}
 
 	/**
 	 * 解析sql.xml文件
@@ -175,13 +191,6 @@ public class SQLStoreImpl extends SQLStore {
 		return result;
 	}
 
-	/**
-	 * 解析sql.xml文件
-	 *
-	 * @param fileName 文件名
-	 * @param is 文件流
-	 * @return Hash
-	 */
 	private static Hashtable<String, SQL> parseSQLFile(String fileName, InputStream is) {
 		Hashtable<String, SQL> result = new Hashtable<String, SQL>();
 
@@ -296,6 +305,8 @@ public class SQLStoreImpl extends SQLStore {
 			if (ConfigTable.isSQLDebug()) {
 				log.warn("[提取SQL][id:{}]", id);
 			}
+			log.info("sqls:{}", BeanUtil.object2json(sqls));
+			log.info("sqlId:{}", id);
 			sql = sqls.get(id);
 			if (null == sql) {
 				log.error("[SQL提取失败][id:{}][所有可用sql:{}]", id, BeanUtil.concat(BeanUtil.getMapKeys(sqls)));
