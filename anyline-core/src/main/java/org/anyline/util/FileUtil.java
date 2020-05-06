@@ -20,25 +20,13 @@
 package org.anyline.util; 
  
  
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.LineNumberReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -120,7 +108,18 @@ public class FileUtil {
 			type = -1; 
 		} 
 		return type; 
-	} 
+	}
+	public static int getPathType(String path){
+		int type = -1;
+		if(path.indexOf(".jar!") != -1){
+			//jar 目录
+			type = 0;
+		}else{
+			//其他目录
+			type = 1;
+		}
+		return type;
+	}
 	/** 
 	 * 读取输入流 
 	 * @param input  input
@@ -171,24 +170,50 @@ public class FileUtil {
  
 		return buffer; 
 	}
-	 
+
+	public static void main(String[] args) throws Exception{
+		File jar = new File("D:\\a.jar");
+		java.util.jar.JarFile file = new JarFile(jar);
+		Enumeration<JarEntry> entrys = file.entries();
+		while(entrys.hasMoreElements()){
+			JarEntry item = entrys.nextElement();
+			System.out.println(item.getName());
+		}
+		file.close();
+	}
 	/** 
 	 * 读取文件 
 	 * @param file  file
 	 * @param encode  encode
 	 * @return return
 	 */ 
-	public static StringBuffer read(File file,String encode){ 
+	public static StringBuffer read(File file,String encode){
 		StringBuffer buffer = new StringBuffer();
-		if(null != file && file.exists()){ 
-			try{ 
-				buffer = read(new FileInputStream(file),encode); 
+		if(null != file && file.exists()){
+			try{
+				if(file.getAbsolutePath().contains(".jar!")){
+					buffer = readJar(file.getAbsolutePath());
+				}else {
+					buffer = read(new FileInputStream(file), encode);
+				}
 			}catch(Exception e){ 
 				e.printStackTrace(); 
 			}
 		} 
 		return buffer; 
-	} 
+	}
+
+	public static StringBuffer readJar(String path )throws IOException {
+		InputStream in=FileUtil.class.getResourceAsStream(path);
+		Reader f = new InputStreamReader(in);
+		BufferedReader fb = new BufferedReader(f);
+		StringBuffer builder = new StringBuffer();
+		String s = "";
+		while((s = fb.readLine()) != null) {
+			builder.append(s);
+		}
+		return builder;
+	}
 	public static StringBuffer read(File file){ 
 		StringBuffer buffer = new StringBuffer();
 		if(null != file && file.exists()){ 
