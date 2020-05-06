@@ -54,6 +54,7 @@
 		<anyline.wechat.version>${anyline.version}</anyline.wechat.version>
 		<anyline.poi.version>${anyline.version}</anyline.poi.version>
 		<anyline.nacos.version>${anyline.version}</anyline.nacos.version>
+		<anyline.ldap.version>${anyline.version}</anyline.ldap.version>
 		<!-- jdbc -->
 		<anyline.jdbc.version>${anyline.version}</anyline.jdbc.version>
 		<anyline.jdbc.mssql.version>${anyline.version}</anyline.jdbc.mssql.version>
@@ -244,6 +245,11 @@
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-nc</artifactId>
 				<version>${anyline.nc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-ldap</artifactId>
+				<version>${anyline.ldap.version}</version>
 			</dependency>
 
 			<dependency>
