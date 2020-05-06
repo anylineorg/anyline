@@ -122,17 +122,6 @@ public class SQLStoreImpl extends SQLStore {
 		lastLoadTime = System.currentTimeMillis();
 	}
 
-	public static String getJarFile() throws IOException {
-		InputStream in = SQLStoreImpl.class.getResourceAsStream("/idcheck-file.properties");//读jar包根目录下的idcheck-file.properties文件
-		Reader f = new InputStreamReader(in);
-		BufferedReader fb = new BufferedReader(f);
-		StringBuffer sb = new StringBuffer("");
-		String s = "";
-		while ((s = fb.readLine()) != null) {
-			sb = sb.append(s);
-		}
-		return sb.toString();
-	}
 
 	/**
 	 * 解析sql.xml文件
