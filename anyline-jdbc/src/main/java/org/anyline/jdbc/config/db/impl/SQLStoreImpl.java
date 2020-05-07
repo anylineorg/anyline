@@ -85,6 +85,7 @@ public class SQLStoreImpl extends SQLStore {
 			if (jFile == null) {
 				return;
 			}
+			log.warn("[解析SQL][scan dir:{}]",sqlDir);
 			Enumeration<JarEntry> jarEntrys = jFile.entries();
 			while (jarEntrys.hasMoreElements()) {
 				JarEntry entry = jarEntrys.nextElement();
@@ -111,6 +112,7 @@ public class SQLStoreImpl extends SQLStore {
 			} else {
 				scanDir = new File(ConfigTable.getWebRoot(), sqlDir);
 			}
+			log.warn("[解析SQL][scan dir:{}]",scanDir.getAbsolutePath());
 			files = FileUtil.getAllChildrenFile(scanDir, "xml");
 			for (File file : files) {
 				if (ConfigTable.isSQLDebug()) {
