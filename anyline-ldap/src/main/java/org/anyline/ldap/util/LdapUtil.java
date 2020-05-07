@@ -58,7 +58,7 @@ public class LdapUtil {
 	 * @throws NamingException 如果抛出异常表示登录失败
 	 */
 	public LdapContext connect(String account, String password) throws NamingException {
-		if(null != account && account.endsWith(config.DOMAIN)){
+		if(null != account && !account.endsWith(config.DOMAIN)){
 			account = account + "@" + config.DOMAIN;
 		}
 		Hashtable<String, Object> env = new Hashtable<String, Object>();
