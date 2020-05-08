@@ -568,6 +568,17 @@ public class AnylineServiceImpl implements AnylineService {
             String key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
             cacheProvider.remove(channel, "SET:" + key);
             cacheProvider.remove(channel, "ROW:" + key);
+
+            PageNaviImpl navi = new PageNaviImpl();
+            navi.setFirstRow(0);
+            navi.setLastRow(0);
+            navi.setCalType(1);
+            if (null == configs) {
+                configs = new ConfigStoreImpl();
+            }
+            configs.setPageNavi(navi);
+            key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
+            cacheProvider.remove(channel, "ROW:" + key);
         }
         return true;
     }
