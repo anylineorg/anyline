@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
-	<version>8.3.7</version>
+	<version>8.3.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline dependency</name>
 	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
@@ -31,7 +31,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<anyline.version>8.3.7</anyline.version>
+		<anyline.version>8.3.7-SNAPSHOT</anyline.version>
 
 		<anyline.core.version>${anyline.version}</anyline.core.version>
 		<anyline.net.version>${anyline.version}</anyline.net.version>

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-start</artifactId>
-		<version>8.3.7</version>
+		<version>8.3.7-SNAPSHOT</version>
 		<relativePath>../anyline-start</relativePath>
 	</parent>
 	<artifactId>anyline-start-mvc</artifactId>

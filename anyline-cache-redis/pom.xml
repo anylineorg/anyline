@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
-        <version>8.3.7</version>
+        <version>8.3.7-SNAPSHOT</version>
         <relativePath>../anyline-dependency</relativePath>
     </parent>
 
