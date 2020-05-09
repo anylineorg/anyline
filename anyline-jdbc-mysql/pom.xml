@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.3.7-SNAPSHOT</version>
+		<version>8.3.7</version>
 		<relativePath>../anyline-dependency</relativePath>
 	</parent>
 
@@ -20,6 +20,10 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 	</dependencies>
 </project>
