@@ -68,8 +68,17 @@ public class Split extends BaseBodyTag{
     	value = null;
     	body = null;
     	scope = "page";
-    			 
+    	text = null;
     }
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	public String getRegex() {
 		return regex;
 	}
