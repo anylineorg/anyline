@@ -75,7 +75,7 @@ public class MD5Util {
 		return sign(src, encode); 
     }  
 	public static String crypto2(String str){ 
-		return crypto(crypto(str,"UTF-8"), "UTF-8"); 
+		return crypto2(str,"UTF-8");
 	} 
 	public static String crypto2(String str, String encode){ 
 		return crypto(crypto(str, encode), encode); 
