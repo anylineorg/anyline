@@ -66,8 +66,8 @@
 		<anyline.jdbc.hgdb.version>${anyline.version}</anyline.jdbc.hgdb.version>
 
 		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
-<!--		<mysql.version>5.1.24</mysql.version>-->
-		<mysql.version>8.0.16</mysql.version>
+		<mysql.version>5.1.24</mysql.version>
+<!--		<mysql.version>8.0.16</mysql.version>-->
 		<db2-jdbc.version>11.5.0.0</db2-jdbc.version>
 		<ojdbc.version>19.3.0.0</ojdbc.version><!-- oracle -->
 		<postgresql.version>42.2.8</postgresql.version>
