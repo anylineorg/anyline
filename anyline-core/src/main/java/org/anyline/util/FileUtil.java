@@ -171,16 +171,6 @@ public class FileUtil {
 		return buffer; 
 	}
 
-	public static void main(String[] args) throws Exception{
-		File jar = new File("D:\\a.jar");
-		java.util.jar.JarFile file = new JarFile(jar);
-		Enumeration<JarEntry> entrys = file.entries();
-		while(entrys.hasMoreElements()){
-			JarEntry item = entrys.nextElement();
-			System.out.println(item.getName());
-		}
-		file.close();
-	}
 	/** 
 	 * 读取文件 
 	 * @param file  file
