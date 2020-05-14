@@ -1320,6 +1320,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+	@Override
+	public Object remove(Object key) {
+		if(null == key){
+			return null;
+		}
+		updateColumns.remove(putKey(key.toString()));
+		return super.remove(putKey(key.toString()));
+	}
 	/**
 	 * 清空需要更新的列
 	 * @return return
