@@ -1763,9 +1763,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	/**
 	 * 交集
-	 * @param distinct 是否根据keys抽取不重复的集合
+	 * @param distinct 是否根据keys抽取不重复的集合(根据keys去重)
 	 * @param set set
-	 * @param keys keys
+	 * @param keys 根据keys列比较是否相等，如果列名不一致"ID:USER_ID",ID表示当前DataSet的列,USER_ID表示参数中DataSet的列
 	 * @return return
 	 */
 	public DataSet intersection(boolean distinct, DataSet set, String ... keys){
