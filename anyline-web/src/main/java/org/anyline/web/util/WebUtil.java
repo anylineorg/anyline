@@ -1024,4 +1024,32 @@ public class WebUtil {
 		}
 		return value;
 	}
+	public static String read(HttpServletRequest request, String encode){
+		try {
+			return new String(read(request), encode);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static byte[] read(HttpServletRequest request) {
+		int len = request.getContentLength();
+		byte[] buffer = new byte[len];
+		ServletInputStream in = null;
+		try {
+			in = request.getInputStream();
+			in.read(buffer, 0, len);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (null != in) {
+				try {
+					in.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return buffer;
+	}
 }
