@@ -82,6 +82,42 @@ public class AnylineDaoImpl implements AnylineDao {
 		showSQLWhenError = ConfigTable.getBoolean("SHOW_SQL_WHEN_ERROR",showSQLWhenError);
 		showSQLParamWhenError = ConfigTable.getBoolean("SHOW_SQL_PARAM_WHEN_ERROR",showSQLParamWhenError);
 	}
+
+	/**
+	 * 查询
+	 */
+	@Override
+	public List<Map<String,Object>> maps(SQL sql, ConfigStore configs, String ... conditions) {
+		List<Map<String,Object>> maps = null;
+		try {
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			if (showSQL && !run.isValid()) {
+				String tmp = "[valid:false]";
+				String src = "";
+				if (sql instanceof TableSQL) {
+					src = sql.getTable();
+				} else {
+					src = sql.getText();
+				}
+				tmp += "[SQL:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				log.warn(tmp);
+			}
+			if (run.isValid()) {
+				maps = maps(run.getFinalQueryTxt(), run.getValues());
+			} else {
+				maps = new ArrayList<Map<String,Object>>();
+			}
+		}finally {
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.recoverDataSource();
+			}
+		}
+		return maps;
+	}
+	public List<Map<String,Object>> maps(SQL sql, String ... conditions){
+		return maps(sql, null, conditions);
+	}
 	/**
 	 * 查询
 	 */
@@ -500,6 +536,48 @@ public class AnylineDaoImpl implements AnylineDao {
 //			String key = BeanUtil.getPrimaryKey(obj.getClass());
 //			BeanUtil.setFieldValue(obj, key, value);
 		}
+	}
+
+	/**
+	 * 查询
+	 * @param sql  sql
+	 * @param values  values
+	 * @return return
+	 */
+	protected List<Map<String,Object>> maps(String sql, List<Object> values){
+		List<Map<String,Object>> maps = null;
+		if(BasicUtil.isEmpty(sql)){
+			throw new SQLQueryException("未指定SQL");
+		}
+		long fr = System.currentTimeMillis();
+		String random = "";
+		if(showSQL){
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn(random + "[txt:\n{}\n]",sql);
+			log.warn(random + "[参数:{}]",paramLogFormat(values));
+		}
+		try{
+			if(null != values && values.size()>0){
+				maps = getJdbc().queryForList(sql, values.toArray());
+			}else{
+				maps = getJdbc().queryForList(sql);
+			}
+			long mid = System.currentTimeMillis();
+			if(showSQL){
+				log.warn(random + "[执行耗时:{}ms]",mid - fr);
+			}
+			if(showSQL){
+				log.warn(random + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,maps.size() );
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			if(showSQLWhenError){
+				log.error(random + "[异常][txt:\n{}\n]",sql);
+				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
+			}
+			throw new SQLQueryException("查询异常:" + e + "\ntxt:" + sql + "\nparam:" + values);
+		}
+		return maps;
 	}
 	/**
 	 * 查询

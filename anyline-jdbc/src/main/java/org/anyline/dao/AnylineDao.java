@@ -20,6 +20,8 @@
 package org.anyline.dao; 
  
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -32,6 +34,10 @@ public interface AnylineDao{
 	public DataSet querys(SQL sql, String ... conditions);
 	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions);
 	public DataSet selects(SQL sql, String ... conditions);
+
+
+	public List<Map<String,Object>> maps(SQL sql, ConfigStore configs, String ... conditions);
+	public List<Map<String,Object>> maps(SQL sql, String ... conditions);
 
 	public int count(SQL sql, ConfigStore configs, String ... conditions);
 	public int count(SQL sql, String ... conditions);
