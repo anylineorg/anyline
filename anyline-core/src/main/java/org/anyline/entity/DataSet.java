@@ -2970,7 +2970,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			set.cloneProperty(src);
 			return set;
 		}
-		public <T> DataSet between(String key, Object min, T max){
+		public <T> DataSet between(String key, T min, T max){
 			return between(DataSet.this, key, min, max);
 		}
 		private <T> DataSet between(DataSet src, String key, T min, T max){
