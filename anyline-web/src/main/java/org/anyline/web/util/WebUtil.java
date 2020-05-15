@@ -1034,6 +1034,9 @@ public class WebUtil {
 	}
 	public static byte[] read(HttpServletRequest request) {
 		int len = request.getContentLength();
+		if(len <=0){
+			return new byte[0];
+		}
 		byte[] buffer = new byte[len];
 		ServletInputStream in = null;
 		try {
