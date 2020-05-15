@@ -331,10 +331,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	/**
 	 * 从begin开始截取到最后一个
 	 * @param begin 开始位置
+	 *              如果输入负数则取后n个,如果造成数量不足，则取全部
 	 * @return DataSet
 	 */
 	public DataSet cuts(int begin){
-		return cuts(begin, rows.size()-1);
+		if(begin < 0){
+			begin = rows.size() + begin;
+			int end = rows.size()-1;
+			return cuts(begin, end);
+		}else {
+			return cuts(begin, rows.size() - 1);
+		}
 	}
 	/**
 	 * 从begin开始截取到end位置，方法执行时会创建新的DataSet并不改变原有set长度
