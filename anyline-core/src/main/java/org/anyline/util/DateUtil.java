@@ -880,7 +880,9 @@ public class DateUtil {
 		if (!str.contains("-") && !str.contains("/")) {
 			format = format.replace("-", "").replace("/", "");
 		}
-
+		if(str.contains("T") && str.contains("+")){
+			format = "yyyy-MM-dd'T'HH:mm:ssXXX";
+		}
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		try {
 			date = sdf.parse(str);
