@@ -550,6 +550,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			if(BasicUtil.isEmpty(p1)){
 				i++;
 				continue;
+			}else if(p1.startsWith("{") && p1.endsWith("}")){
+				p1 = p1.substring(1,p1.length()-1);
 			}else if(p1.contains(":")){
 				String ks[] = BeanUtil.parseKeyValue(p1);
 				kvs.put(ks[0], ks[1]);
@@ -558,7 +560,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			}else{
 				if(i+1<len){
 					String p2 = params[i+1];
-					if(BasicUtil.isEmpty(p2) || !p2.contains(":")){
+					if(p2.startsWith("{") && p2.endsWith("}")){
+						p2 = p2.substring(1,p2.length()-1);
+					}else if(BasicUtil.isEmpty(p2) || !p2.contains(":")){
 						kvs.put(p1, p2); 
 						i+=2;
 						continue;

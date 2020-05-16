@@ -1747,6 +1747,7 @@ public class BeanUtil {
 		}
 		return sKey;
 	}
+
 	public static String Camel(String key){
 		return Camel(key, false);
 	}
@@ -1765,8 +1766,8 @@ public class BeanUtil {
 		int len = 2; 
 		String[] result = null; 
 		String key1 = src; 
-		String key2 = src; 
-		if(src.contains(":")){ 
+		String key2 = src;
+		if(src.contains(":")){
 			String tmp[] = src.split(":"); 
 			len = NumberUtil.max(len, tmp.length); 
 			result = new String[len]; 
