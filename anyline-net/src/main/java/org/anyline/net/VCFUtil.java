@@ -38,7 +38,11 @@ public class VCFUtil {
        for(String mobile:mobiles){
             if(mobile.contains(",")){
                 String[] items = mobile.split(",");
-                builder.append(format(items[0], items[1]));
+                if(items.length==1){
+                    builder.append(format(items[0], items[1]));
+                }else if(items.length>1){
+                    builder.append(format(items[0]));
+                }
             }else{
                 builder.append(format(mobile,mobile));
             }
