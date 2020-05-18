@@ -11,10 +11,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 
-/**
- * @author sainentl
- * @create 2020-05-18 9:04
- */
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
 	protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
