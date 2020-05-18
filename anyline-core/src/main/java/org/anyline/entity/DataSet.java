@@ -1,26 +1,6 @@
-/* 
- * Copyright 2006-2020 www.anyline.org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- *          
- */
+package org.anyline.entity;
 
-
-package org.anyline.entity; 
- 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -30,10 +10,14 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
- 
+
+/**
+ * @author sainentl
+ * @create 2020-05-18 9:04
+ */
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
-	protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
+	protected static final Logger log = LoggerFactory.getLogger(DataSet.class);q
 	private boolean result = true; // 执行结果
 	private Exception exception = null; // 异常
 	private String message = null; // 提示信息
@@ -133,9 +117,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return this;
 	}
 
-	/** 
-	 * 添加主键 
-	 * @param applyItem 是否应用到集合中的DataRow 默认true 
+	/**
+	 * 添加主键
+	 * @param applyItem 是否应用到集合中的DataRow 默认true
 	 * @param pks  pks
 	 * @return return
 	 */
@@ -151,36 +135,36 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public DataSet addPrimaryKey(String ... pks){
 		return addPrimaryKey(true, pks);
-	} 
-	public DataSet addPrimaryKey(boolean applyItem, Collection<String> pks) { 
-		if (null == primaryKeys) { 
-			primaryKeys = new ArrayList<String>(); 
-		} 
+	}
+	public DataSet addPrimaryKey(boolean applyItem, Collection<String> pks) {
+		if (null == primaryKeys) {
+			primaryKeys = new ArrayList<String>();
+		}
 		if (null == pks) {
-			return this; 
-		} 
-		for (String pk : pks) { 
-			if (BasicUtil.isEmpty(pk)) { 
-				continue; 
-			} 
-			pk = key(pk); 
-			if (!primaryKeys.contains(pk)) { 
-				primaryKeys.add(pk); 
-			} 
+			return this;
+		}
+		for (String pk : pks) {
+			if (BasicUtil.isEmpty(pk)) {
+				continue;
+			}
+			pk = key(pk);
+			if (!primaryKeys.contains(pk)) {
+				primaryKeys.add(pk);
+			}
 		}
 		if(applyItem){
 			for(DataRow row : rows){
 				row.setPrimaryKey(false, primaryKeys);
 			}
 		}
-		return this; 
+		return this;
 	}
 	public DataSet addPrimaryKey(Collection<String> pks) {
 		return addPrimaryKey(true, pks);
-	} 
-	/** 
-	 * 设置主键 
-	 *  
+	}
+	/**
+	 * 设置主键
+	 *
 	 * @param applyItem  applyItem
 	 * @param pks  pks
 	 * @return return
@@ -197,15 +181,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public DataSet setPrimaryKey(String ... pks){
 		return setPrimaryKey(true, pks);
-	} 
-	public DataSet setPrimaryKey(boolean applyItem, Collection<String> pks) { 
+	}
+	public DataSet setPrimaryKey(boolean applyItem, Collection<String> pks) {
 		if (null == pks) {
-			return this; 
-		} 
-		this.primaryKeys = new ArrayList<String>(); 
+			return this;
+		}
+		this.primaryKeys = new ArrayList<String>();
 		addPrimaryKey(applyItem, pks);
-		return this; 
-	} 
+		return this;
+	}
 	public DataSet setPrimaryKey(Collection<String> pks) {
 		return setPrimaryKey(true, pks);
 	}
@@ -213,61 +197,61 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet set(int index, DataRow item){
 		rows.set(index, item);
 		return this;
-	} 
- 
-	/** 
-	 * 是否有主键 
-	 *  
+	}
+
+	/**
+	 * 是否有主键
+	 *
 	 * @return return
-	 */ 
-	public boolean hasPrimaryKeys() { 
-		if (null != primaryKeys && primaryKeys.size() > 0) { 
-			return true; 
-		} else { 
-			return false; 
-		} 
-	} 
- 
-	/** 
-	 * 提取主键 
-	 *  
+	 */
+	public boolean hasPrimaryKeys() {
+		if (null != primaryKeys && primaryKeys.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * 提取主键
+	 *
 	 * @return return
-	 */ 
-	public List<String> getPrimaryKeys() { 
-		if (null == primaryKeys) { 
-			primaryKeys = new ArrayList<String>(); 
-		} 
-		return primaryKeys; 
-	} 
- 
-	/** 
-	 * 添加表头 
-	 *  
+	 */
+	public List<String> getPrimaryKeys() {
+		if (null == primaryKeys) {
+			primaryKeys = new ArrayList<String>();
+		}
+		return primaryKeys;
+	}
+
+	/**
+	 * 添加表头
+	 *
 	 * @param col  col
 	 * @return return
-	 */ 
-	public DataSet addHead(String col) { 
-		if (null == head) { 
-			head = new ArrayList<String>(); 
-		} 
+	 */
+	public DataSet addHead(String col) {
+		if (null == head) {
+			head = new ArrayList<String>();
+		}
 		if ("ROW_NUMBER".equals(col)) {
-			return this; 
-		} 
+			return this;
+		}
 		if (head.contains(col)) {
-			return this; 
-		} 
+			return this;
+		}
 		head.add(col);
-		return this; 
-	} 
- 
-	/** 
-	 * 表头 
-	 *  
+		return this;
+	}
+
+	/**
+	 * 表头
+	 *
 	 * @return return
-	 */ 
-	public List<String> getHead() { 
-		return head; 
-	} 
+	 */
+	public List<String> getHead() {
+		return head;
+	}
 	public int indexOf(Object obj){
 		return rows.indexOf(obj);
 	}
@@ -393,39 +377,39 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return null;
 	}
-	public DataSet(List<Map<String, Object>> list) { 
-		rows = new ArrayList<DataRow>(); 
-		if (null == list) 
-			return; 
-		for (Map<String, Object> map : list) { 
-			DataRow row = new DataRow(map); 
-			rows.add(row); 
-		} 
-	} 
- 
-	/** 
-	 * 记录数量 
-	 *  
+	public DataSet(List<Map<String, Object>> list) {
+		rows = new ArrayList<DataRow>();
+		if (null == list)
+			return;
+		for (Map<String, Object> map : list) {
+			DataRow row = new DataRow(map);
+			rows.add(row);
+		}
+	}
+
+	/**
+	 * 记录数量
+	 *
 	 * @return return
-	 */ 
-	public int size() { 
-		int result = 0; 
-		if (null != rows) 
-			result = rows.size(); 
-		return result; 
-	} 
- 
-	public int getSize() { 
-		return size(); 
-	} 
- 
-	/** 
-	 * 是否出现异常 
-	 *  
+	 */
+	public int size() {
+		int result = 0;
+		if (null != rows)
+			result = rows.size();
+		return result;
+	}
+
+	public int getSize() {
+		return size();
+	}
+
+	/**
+	 * 是否出现异常
+	 *
 	 * @return return
-	 */ 
-	public boolean isException() { 
-		return null != exception; 
+	 */
+	public boolean isException() {
+		return null != exception;
 	}
 
 	public boolean isFromCache(){
@@ -434,41 +418,41 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet setIsFromCache(boolean bol){
 		this.isFromCache = bol;
 		return this;
-	} 
- 
-	/** 
-	 * 返回数据是否为空 
-	 *  
+	}
+
+	/**
+	 * 返回数据是否为空
+	 *
 	 * @return return
-	 */ 
-	public boolean isEmpty() { 
-		boolean result = true; 
-		if (null == rows) { 
-			result = true; 
-		} else if (rows instanceof Collection) { 
-			result = ((Collection<?>) rows).isEmpty(); 
-		} 
-		return result; 
-	} 
- 
-	 
-	/** 
-	 * 读取一行数据 
-	 *  
+	 */
+	public boolean isEmpty() {
+		boolean result = true;
+		if (null == rows) {
+			result = true;
+		} else if (rows instanceof Collection) {
+			result = ((Collection<?>) rows).isEmpty();
+		}
+		return result;
+	}
+
+
+	/**
+	 * 读取一行数据
+	 *
 	 * @param index  index
 	 * @return return
-	 */ 
-	public DataRow getRow(int index) { 
-		DataRow row = null; 
-		if (null != rows && index < rows.size()) { 
-			row = rows.get(index); 
-		} 
-		if (null != row) { 
-			row.setContainer(this); 
-		} 
-		return row; 
-	} 
- 
+	 */
+	public DataRow getRow(int index) {
+		DataRow row = null;
+		if (null != rows && index < rows.size()) {
+			row = rows.get(index);
+		}
+		if (null != row) {
+			row.setContainer(this);
+		}
+		return row;
+	}
+
 	public DataRow getRow(String... params) {
 		return getRow(0, params);
 	}
@@ -478,17 +462,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return set.getRow(0);
 		}
 		return null;
-	} 
+	}
 	/**
 	 * distinct
 	 * @param keys keys
 	 * @return DataSet
-	 */ 
-	public DataSet distinct(String... keys) { 
+	 */
+	public DataSet distinct(String... keys) {
 		DataSet result = new DataSet();
-		if (null != rows) { 
-			int size = rows.size(); 
-			for (int i = 0; i < size; i++) { 
+		if (null != rows) {
+			int size = rows.size();
+			for (int i = 0; i < size; i++) {
 				DataRow row = rows.get(i);
 				//查看result中是否已存在
 				String[] params = packParam(row, keys);
@@ -498,11 +482,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 						tmp.put(key, row.get(key));
 					}
 					result.addRow(tmp);
-				} 
-			} 
+				}
+			}
 		}
-		result.cloneProperty(this); 
-		return result; 
+		result.cloneProperty(this);
+		return result;
 	}
 	public Object clone(){
 		DataSet set = new DataSet();
@@ -550,8 +534,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			if(BasicUtil.isEmpty(p1)){
 				i++;
 				continue;
-			}else if(p1.startsWith("{") && p1.endsWith("}")){
-				p1 = p1.substring(1,p1.length()-1);
 			}else if(p1.contains(":")){
 				String ks[] = BeanUtil.parseKeyValue(p1);
 				kvs.put(ks[0], ks[1]);
@@ -562,8 +544,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					String p2 = params[i+1];
 					if(p2.startsWith("{") && p2.endsWith("}")){
 						p2 = p2.substring(1,p2.length()-1);
+						kvs.put(p1, p2);
+						i+=2;
+						continue;
 					}else if(BasicUtil.isEmpty(p2) || !p2.contains(":")){
-						kvs.put(p1, p2); 
+						kvs.put(p1, p2);
 						i+=2;
 						continue;
 					}else{
@@ -591,7 +576,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 //					chk = false;
 //					break;
 //				}
-				
+
 				if(null == v){
 					if(null != value){
 						chk = false;
@@ -625,11 +610,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 						compare = 52;
 						v = v.substring(1);
 					}
-					
+
 					if(BasicUtil.isNumber(value)){
 						//数字类型
 						if(BasicUtil.isNumber(v)){
-							double d1 = BasicUtil.parseDouble(value, 0d); 
+							double d1 = BasicUtil.parseDouble(value, 0d);
 							double d2 =BasicUtil.parseDouble(v, 0d);
 							if(compare == 10){
 								if(d1 != d2){
@@ -692,8 +677,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				}
 			}
 		}//end for rows
-		set.cloneProperty(this); 
-		return set; 
+		set.cloneProperty(this);
+		return set;
 	}
 
 	public DataSet getRows(int begin, String... params) {
@@ -786,36 +771,36 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return set;
 	}
 
-	public DataSet getRows(int fr, int to) { 
+	public DataSet getRows(int fr, int to) {
 		DataSet set = new DataSet();
 		int size = this.size();
 		if(fr < 0){
 			fr = 0;
-		} 
+		}
 		for (int i = fr; i < size && i <= to; i++) {
-			set.addRow(getRow(i)); 
-		} 
-		return set; 
-	} 
-	 
-	public BigDecimal sum(int begin, int end, String key){ 
-		BigDecimal result = BigDecimal.ZERO; 
+			set.addRow(getRow(i));
+		}
+		return set;
+	}
+
+	public BigDecimal sum(int begin, int end, String key){
+		BigDecimal result = BigDecimal.ZERO;
 		int size = rows.size();
 		if(begin <=0){
 			begin = 0;
-		} 
+		}
 		for (int i = begin; i < size && i <=end; i++) {
 			BigDecimal tmp = getDecimal(i, key, 0);
 			if(null != tmp){
 				result = result.add(getDecimal(i, key, 0));
-			} 
-		} 
-		return result; 
-	} 
-	public BigDecimal sum(String key) { 
-		BigDecimal result = BigDecimal.ZERO; 
-		result = sum(0,size()-1, key); 
-		return result; 
+			}
+		}
+		return result;
+	}
+	public BigDecimal sum(String key) {
+		BigDecimal result = BigDecimal.ZERO;
+		result = sum(0,size()-1, key);
+		return result;
 	}
 	/**
 	 * sum
@@ -859,28 +844,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return row;
 	}
-	
-	/** 
-	 * 最大值 
-	 * @param top 多少行 
+
+	/**
+	 * 最大值
+	 * @param top 多少行
 	 * @param key  key
 	 * @return return
-	 */ 
-	public BigDecimal maxDecimal(int top, String key){ 
-		BigDecimal result = null; 
-		int size = rows.size(); 
-		if(size>top){ 
-			size = top; 
-		} 
+	 */
+	public BigDecimal maxDecimal(int top, String key){
+		BigDecimal result = null;
+		int size = rows.size();
+		if(size>top){
+			size = top;
+		}
 		for (int i = 0; i < size; i++) {
 			BigDecimal tmp = getDecimal(i, key, 0);
 			if(null != tmp && (null == result || tmp.compareTo(result) > 0)){
 				result = tmp;
-			} 
-		} 
-		return result; 
-	} 
-	public BigDecimal maxDecimal(String key){ 
+			}
+		}
+		return result;
+	}
+	public BigDecimal maxDecimal(String key){
 		return maxDecimal(size(),key);
 	}
 	public int maxInt(int top, String key){
@@ -912,16 +897,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
 //	public BigDecimal max(String key){
 //		return maxDecimal(size(), key);
 //	}
-	
-	
-	
-	/** 
-	 * 最小值 
-	 * @param top 多少行 
+
+
+
+	/**
+	 * 最小值
+	 * @param top 多少行
 	 * @param key  key
 	 * @return return
-	 */ 
-	public BigDecimal minDecimal(int top, String key){ 
+	 */
+	public BigDecimal minDecimal(int top, String key){
 		BigDecimal result = null;
 		int size = rows.size();
 		if(size>top){
@@ -933,11 +918,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 				result = tmp;
 			}
 		}
-		return result; 
-	} 
-	public BigDecimal minDecimal(String key){ 
-		return minDecimal(size(),key); 
-	} 
+		return result;
+	}
+	public BigDecimal minDecimal(String key){
+		return minDecimal(size(),key);
+	}
 
 	public int minInt(int top, String key){
 		BigDecimal result = minDecimal(top, key);
@@ -968,7 +953,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 //	public BigDecimal min(String key){
 //		return minDecimal(size(), key);
 //	}
-	
+
 	/**
 	 * key对应的value最大的一行
 	 * @param key key
@@ -1005,51 +990,51 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			row = getRow(0);
 		}
 		return row;
-	} 
-	/** 
-	 * 平均值 空数据不参与加法但参与除法 
-	 * @param top 多少行 
+	}
+	/**
+	 * 平均值 空数据不参与加法但参与除法
+	 * @param top 多少行
 	 * @param key key
 	 * @return return
-	 */ 
-	public BigDecimal avg(int top, String key){ 
-		BigDecimal result = BigDecimal.ZERO; 
-		int size = rows.size(); 
-		if(size>top){ 
-			size = top; 
-		} 
-		int count = 0; 
+	 */
+	public BigDecimal avg(int top, String key){
+		BigDecimal result = BigDecimal.ZERO;
+		int size = rows.size();
+		if(size>top){
+			size = top;
+		}
+		int count = 0;
 		for (int i = 0; i < size; i++) {
 			BigDecimal tmp = getDecimal(i, key, 0);
-			if(null != tmp){ 
+			if(null != tmp){
 				result = result.add(tmp);
-			} 
-			count ++; 
-		} 
-		if(count >0){ 
-			result = result.divide(new BigDecimal(count)); 
-		} 
-		return result; 
-	} 
-	public BigDecimal avg(String key){ 
-		BigDecimal result = avg(size(),key); 
-		return result; 
-	} 
-	 
-	public DataSet addRow(DataRow row) { 
-		if (null != row) { 
-			rows.add(row); 
+			}
+			count ++;
 		}
-		return this; 
-	} 
- 
-	public DataSet addRow(int idx, DataRow row) { 
-		if (null != row) { 
-			rows.add(idx, row); 
+		if(count >0){
+			result = result.divide(new BigDecimal(count));
 		}
-		return this; 
+		return result;
 	}
-	
+	public BigDecimal avg(String key){
+		BigDecimal result = avg(size(),key);
+		return result;
+	}
+
+	public DataSet addRow(DataRow row) {
+		if (null != row) {
+			rows.add(row);
+		}
+		return this;
+	}
+
+	public DataSet addRow(int idx, DataRow row) {
+		if (null != row) {
+			rows.add(idx, row);
+		}
+		return this;
+	}
+
 	/**
 	 * 合并key值 以connector连接
 	 * @param key key
@@ -1079,65 +1064,65 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	}
 	public String concat(String key){
 		return BasicUtil.concat(getStrings(key), ",");
-	} 
-	/** 
-	 * 提取单列值 
-	 *  
+	}
+	/**
+	 * 提取单列值
+	 *
 	 * @param key  key
 	 * @return return
-	 */ 
-	public List<Object> fetchValues(String key) { 
-		List<Object> result = new ArrayList<Object>(); 
-		for (int i = 0; i < size(); i++) { 
-			result.add(get(i, key)); 
-		} 
-		return result; 
+	 */
+	public List<Object> fetchValues(String key) {
+		List<Object> result = new ArrayList<Object>();
+		for (int i = 0; i < size(); i++) {
+			result.add(get(i, key));
+		}
+		return result;
 	}
-	 
+
 	/**
 	 * 取单列不重复的值
 	 * @param key key
 	 * @return return
-	 */ 
-	public List<String> fetchDistinctValue(String key) { 
-		List<String> result = new ArrayList<String>(); 
-		for (int i = 0; i < size(); i++) { 
+	 */
+	public List<String> fetchDistinctValue(String key) {
+		List<String> result = new ArrayList<String>();
+		for (int i = 0; i < size(); i++) {
 			String value = getString(i, key,"");
-			if (result.contains(value)) { 
-				continue; 
-			} 
-			result.add(value); 
-		} 
-		return result; 
+			if (result.contains(value)) {
+				continue;
+			}
+			result.add(value);
+		}
+		return result;
 	}
 	public List<String> fetchDistinctValues(String key) {
 		return fetchDistinctValue(key);
-	} 
- 
-	/** 
-	 * 分页 
+	}
+
+	/**
+	 * 分页
 	 * @param link link
 	 * @return return
-	 */ 
-	public String displayNavi(String link) { 
-		String result = ""; 
-		if (null != navi) { 
-			result = navi.toString(); 
-		} 
-		return result; 
-	} 
- 
-	public String navi(String link) { 
-		return displayNavi(link); 
-	} 
- 
-	public String displayNavi() { 
-		return displayNavi(null); 
-	} 
- 
-	public String navi() { 
-		return displayNavi(null); 
-	} 
+	 */
+	public String displayNavi(String link) {
+		String result = "";
+		if (null != navi) {
+			result = navi.toString();
+		}
+		return result;
+	}
+
+	public String navi(String link) {
+		return displayNavi(link);
+	}
+
+	public String displayNavi() {
+		return displayNavi(null);
+	}
+
+	public String navi() {
+		return displayNavi(null);
+	}
 	public DataSet put(int idx, String key, Object value){
 		DataRow row = getRow(idx);
 		if(null != row){
@@ -1151,9 +1136,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return this;
 	}
-	/** 
-	 * String 
-	 *  
+	/**
+	 * String
+	 *
 	 * @param index  index
 	 * @param key  key
 	 * @return String
@@ -1207,7 +1192,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			result.add(row.getString(key));
 		}
 		return result;
-		
+
 	}
 	public List<Integer> getInts(String key) throws Exception{
 		List<Integer> result = new ArrayList<Integer>();
@@ -1215,7 +1200,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			result.add(row.getInt(key));
 		}
 		return result;
-		
+
 	}
 	public List<Object> getObjects(String key){
 		List<Object> result = new ArrayList<Object>();
@@ -1223,7 +1208,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			result.add(row.get(key));
 		}
 		return result;
-		
+
 	}
 	public List<String> getDistinctStrings(String key){
 		return fetchDistinctValue(key);
@@ -1276,11 +1261,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}catch(Exception e){
 			return def;
 		}
-	} 
- 
-	/** 
-	 * html格式(未实现) 
-	 *  
+	}
+
+	/**
+	 * html格式(未实现)
+	 *
 	 * @param index  index
 	 * @param key  key
 	 * @return return
@@ -1293,15 +1278,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return getString(index, key, def);
 	}
 
- 
+
 	public String getHtmlString(String key) throws Exception{
-		return getHtmlString(0, key); 
+		return getHtmlString(0, key);
 	}
- 
- 
-	/** 
-	 * escape String 
-	 *  
+
+
+	/**
+	 * escape String
+	 *
 	 * @param index  index
 	 * @param key  key
 	 * @return return
@@ -1329,18 +1314,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 
 	}
- 
+
 	public String getEscapeString(String key) throws Exception {
-		return getEscapeString(0, key); 
-	} 
- 
+		return getEscapeString(0, key);
+	}
+
 	public String getDoubleEscapeString(String key) throws Exception {
-		return getDoubleEscapeString(0, key); 
-	} 
- 
-	/** 
-	 * int 
-	 *  
+		return getDoubleEscapeString(0, key);
+	}
+
+	/**
+	 * int
+	 *
 	 * @param index  index
 	 * @param key  key
 	 * @return return
@@ -1371,9 +1356,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @return return
 	 * @throws Exception Exception
 	 */
-    public double getDouble(int index, String key) throws Exception{
-        return getRow(index).getDouble(key);
-    }
+	public double getDouble(int index, String key) throws Exception{
+		return getRow(index).getDouble(key);
+	}
 
 	public double getDouble(int index, String key, double def){
 		try{
@@ -1392,20 +1377,20 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	/**
 	 * rows 列表中的数据格式化成json格式   不同与toJSON
 	 *  map.put("type", "list");
-    	map.put("result", result);
-    	map.put("message", message);
-    	map.put("rows", rows);
-    	map.put("success", result);
-    	map.put("navi", navi);
-	 */ 
-	public String toString() { 
-		Map<String,Object> map = new HashMap<String,Object>(); 
-    	map.put("type", "list"); 
-    	map.put("result", result); 
-    	map.put("message", message); 
-    	map.put("rows", rows); 
-    	map.put("success", result); 
-    	map.put("navi", navi); 
+	 map.put("result", result);
+	 map.put("message", message);
+	 map.put("rows", rows);
+	 map.put("success", result);
+	 map.put("navi", navi);
+	 */
+	public String toString() {
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("type", "list");
+		map.put("result", result);
+		map.put("message", message);
+		map.put("rows", rows);
+		map.put("success", result);
+		map.put("navi", navi);
 		return BeanUtil.map2json(map);
 	}
 	/**
@@ -1433,177 +1418,177 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			maps.put(row.getString(key), row);
 		}
 		return maps;
-	} 
-	/** 
-	 * 子类 
+	}
+	/**
+	 * 子类
 	 * @param idx idx
 	 * @return return
-	 */ 
-	public Object getChildren(int idx) { 
-		DataRow row = getRow(idx); 
-		if (null != row) { 
-			return row.getChildren(); 
-		} 
-		return null; 
-	} 
- 
-	public Object getChildren() { 
-		return getChildren(0); 
-	} 
- 
-	public DataSet setChildren(int idx, Object children) { 
-		DataRow row = getRow(idx); 
-		if (null != row) { 
-			row.setChildren(children); 
+	 */
+	public Object getChildren(int idx) {
+		DataRow row = getRow(idx);
+		if (null != row) {
+			return row.getChildren();
 		}
-		return this; 
-	} 
- 
-	public DataSet setChildren(Object children) { 
+		return null;
+	}
+
+	public Object getChildren() {
+		return getChildren(0);
+	}
+
+	public DataSet setChildren(int idx, Object children) {
+		DataRow row = getRow(idx);
+		if (null != row) {
+			row.setChildren(children);
+		}
+		return this;
+	}
+
+	public DataSet setChildren(Object children) {
 		setChildren(0, children);
-		return this; 
-	} 
- 
-	/** 
-	 * 父类 
+		return this;
+	}
+
+	/**
+	 * 父类
 	 * @param idx idx
 	 * @return return
-	 */ 
-	public Object getParent(int idx) { 
-		DataRow row = getRow(idx); 
-		if (null != row) { 
-			return row.getParent(); 
-		} 
-		return null; 
-	} 
- 
-	public Object getParent() { 
-		return getParent(0); 
-	} 
- 
-	public DataSet setParent(int idx, Object parent) { 
-		DataRow row = getRow(idx); 
-		if (null != row) { 
-			row.setParent(parent); 
+	 */
+	public Object getParent(int idx) {
+		DataRow row = getRow(idx);
+		if (null != row) {
+			return row.getParent();
 		}
-		return this; 
-	} 
- 
-	public DataSet setParent(Object parent) { 
+		return null;
+	}
+
+	public Object getParent() {
+		return getParent(0);
+	}
+
+	public DataSet setParent(int idx, Object parent) {
+		DataRow row = getRow(idx);
+		if (null != row) {
+			row.setParent(parent);
+		}
+		return this;
+	}
+
+	public DataSet setParent(Object parent) {
 		setParent(0, parent);
-		return this; 
-	} 
- 
-	/** 
-	 * 转换成对象 
+		return this;
+	}
+
+	/**
+	 * 转换成对象
 	 * @param <T> T
 	 * @param index index
 	 * @param clazz  clazz
 	 * @return return
-	 */ 
-	public <T> T entity(int index, Class<T> clazz) { 
-		DataRow row = getRow(index); 
-		if (null != row) { 
-			return row.entity(clazz); 
-		} 
-		return null; 
-	} 
- 
-	/** 
-	 * 转换成对象集合 
+	 */
+	public <T> T entity(int index, Class<T> clazz) {
+		DataRow row = getRow(index);
+		if (null != row) {
+			return row.entity(clazz);
+		}
+		return null;
+	}
+
+	/**
+	 * 转换成对象集合
 	 * @param <T> T
 	 * @param clazz  clazz
 	 * @return return
-	 */ 
-	public <T> List<T> entity(Class<T> clazz) { 
-		List<T> list = new ArrayList<T>(); 
-		if (null != rows) { 
-			for (DataRow row : rows) { 
-				list.add(row.entity(clazz)); 
-			} 
-		} 
-		return list; 
-	} 
- 
-	public <T> T entity(Class<T> clazz, int idx) { 
-		DataRow row = getRow(idx); 
-		if (null != row) { 
-			return row.entity(clazz); 
-		} 
-		return null; 
-	} 
- 
-	public DataSet setDataSource(String dataSource) { 
-		if (null == dataSource) {
-			return this; 
+	 */
+	public <T> List<T> entity(Class<T> clazz) {
+		List<T> list = new ArrayList<T>();
+		if (null != rows) {
+			for (DataRow row : rows) {
+				list.add(row.entity(clazz));
+			}
 		}
-		this.dataSource = dataSource; 
-		if (dataSource.contains(".") && !dataSource.contains(":")) { 
-			schema = dataSource.substring(0, dataSource.indexOf(".")); 
-			table = dataSource.substring(dataSource.indexOf(".") + 1); 
+		return list;
+	}
+
+	public <T> T entity(Class<T> clazz, int idx) {
+		DataRow row = getRow(idx);
+		if (null != row) {
+			return row.entity(clazz);
+		}
+		return null;
+	}
+
+	public DataSet setDataSource(String dataSource) {
+		if (null == dataSource) {
+			return this;
+		}
+		this.dataSource = dataSource;
+		if (dataSource.contains(".") && !dataSource.contains(":")) {
+			schema = dataSource.substring(0, dataSource.indexOf("."));
+			table = dataSource.substring(dataSource.indexOf(".") + 1);
 		}
 		for(DataRow row:rows){
 			if(BasicUtil.isEmpty(row.getDataSource())){
 				row.setDataSource(dataSource);
 			}
 		}
-		return this; 
-	} 
- 
-	public DataSet union(DataSet set, String ... keys) { 
-		DataSet result = new DataSet(); 
-		if (null != rows) { 
-			int size = rows.size(); 
-			for (int i = 0; i < size; i++) { 
-				result.add(rows.get(i)); 
-			} 
-		} 
+		return this;
+	}
+
+	public DataSet union(DataSet set, String ... keys) {
+		DataSet result = new DataSet();
+		if (null != rows) {
+			int size = rows.size();
+			for (int i = 0; i < size; i++) {
+				result.add(rows.get(i));
+			}
+		}
 		if (null == keys || keys.length==0) {
-			keys = new String[1]; 
-			keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY"); 
-		} 
-		int size = set.size(); 
-		for (int i = 0; i < size; i++) { 
-			DataRow item = set.getRow(i); 
-			if (!result.contains(item, keys)) { 
-				result.add(item); 
-			} 
-		} 
-		return result; 
-	} 
+			keys = new String[1];
+			keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+		}
+		int size = set.size();
+		for (int i = 0; i < size; i++) {
+			DataRow item = set.getRow(i);
+			if (!result.contains(item, keys)) {
+				result.add(item);
+			}
+		}
+		return result;
+	}
 	/**
 	 * 合并
 	 * @param set set
 	 * @return return
-	 */ 
-	public DataSet unionAll(DataSet set) { 
-		DataSet result = new DataSet(); 
-		if (null != rows) { 
-			int size = rows.size(); 
-			for (int i = 0; i < size; i++) { 
-				result.add(rows.get(i)); 
-			} 
-		} 
-		int size = set.size(); 
-		for (int i = 0; i < size; i++) { 
-			DataRow item = set.getRow(i); 
-			result.add(item); 
-		} 
-		return result; 
-	} 
+	 */
+	public DataSet unionAll(DataSet set) {
+		DataSet result = new DataSet();
+		if (null != rows) {
+			int size = rows.size();
+			for (int i = 0; i < size; i++) {
+				result.add(rows.get(i));
+			}
+		}
+		int size = set.size();
+		for (int i = 0; i < size; i++) {
+			DataRow item = set.getRow(i);
+			result.add(item);
+		}
+		return result;
+	}
 	/**
 	 * 是否包含这一行
 	 * @param row row
 	 * @param keys keys
 	 * @return return
-	 */ 
-	public boolean contains(DataRow row, String ... keys) { 
-		if (null == rows || rows.size() == 0 || null == row) { 
-			return false; 
+	 */
+	public boolean contains(DataRow row, String ... keys) {
+		if (null == rows || rows.size() == 0 || null == row) {
+			return false;
 		}
 		if (null == keys || keys.length==0) {
 			keys = new String[1];
-			keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID"); 
+			keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 		}
 		String params[] = packParam(row, keys);
 		return getRows(params).size() > 0;
@@ -1625,7 +1610,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		}
 		return params;
 	}
-	
+
 	/**
 	 * 从items中按相应的key提取数据 存入
 	 * dispatchItem("children",items, "DEPAT_CD")
@@ -1635,25 +1620,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param items items
 	 * @param keys keys
 	 * @return return
-	 */ 
-	public DataSet dispatchItems(String field, boolean recursion, DataSet items, String ... keys){ 
-		if(null == items || null == keys || keys.length == 0){ 
-			return this; 
+	 */
+	public DataSet dispatchItems(String field, boolean recursion, DataSet items, String ... keys){
+		if(null == items || null == keys || keys.length == 0){
+			return this;
 		}
 		if(BasicUtil.isEmpty(field)){
 			field = "ITEMS";
-		} 
+		}
 		for(DataRow row : rows){
-			if(null == row.get(field)){ 
+			if(null == row.get(field)){
 				String[] params = packParam(row, reverseKey(keys));
 				DataSet set = items.getRows(params);
 				if(recursion){
 					set.dispatchItems(field, recursion, items, keys);
-				} 
+				}
 				row.put(field, set);
-			} 
-		} 
-		return this; 
+			}
+		}
+		return this;
 	}
 	public DataSet dispatchItems(String field,DataSet items, String ... keys){
 		return dispatchItems(field, false, items, keys);
@@ -1696,8 +1681,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	public DataSet dispatchItem(String field, boolean recursion, String ... keys){
 		return dispatchItem(field, recursion, this, keys);
 	}
-	
-	
+
+
 	/**
 	 * 根据keys列建立关联，并将关联出来的结果拼接到集合的条目上，如果有重复则覆盖条目
 	 * @param items 被查询的集合
@@ -1810,7 +1795,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @param distinct 是否根据keys抽取不重复的集合
 	 * @param set set
 	 * @param keys keys
-	 * @return return 
+	 * @return return
 	 */
 	public DataSet complement(boolean distinct, DataSet set, String ... keys){
 		DataSet result = new DataSet();
@@ -1938,76 +1923,76 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			row.nvl();
 		}
 		return this;
-	} 
-	/* ********************************************** 实现接口 *********************************************************** */ 
+	}
+	/* ********************************************** 实现接口 *********************************************************** */
 	public boolean add(DataRow e) {
-		return rows.add((DataRow) e); 
-	} 
- 
+		return rows.add((DataRow) e);
+	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public boolean addAll(Collection c) { 
-		return rows.addAll(c); 
-	} 
- 
-	public void clear() { 
-		rows.clear(); 
-	} 
- 
-	public boolean contains(Object o) { 
-		return rows.contains(o); 
-	} 
- 
-	public boolean containsAll(Collection<?> c) { 
-		return rows.containsAll(c); 
-	} 
- 
-	public Iterator<DataRow> iterator() { 
-		return rows.iterator(); 
-	} 
- 
-	public boolean remove(Object o) { 
-		return rows.remove(o); 
-	} 
- 
-	public boolean removeAll(Collection<?> c) { 
-		return rows.removeAll(c); 
-	} 
- 
-	public boolean retainAll(Collection<?> c) { 
-		return rows.retainAll(c); 
-	} 
- 
-	public Object[] toArray() { 
-		return rows.toArray(); 
-	} 
- 
+	public boolean addAll(Collection c) {
+		return rows.addAll(c);
+	}
+
+	public void clear() {
+		rows.clear();
+	}
+
+	public boolean contains(Object o) {
+		return rows.contains(o);
+	}
+
+	public boolean containsAll(Collection<?> c) {
+		return rows.containsAll(c);
+	}
+
+	public Iterator<DataRow> iterator() {
+		return rows.iterator();
+	}
+
+	public boolean remove(Object o) {
+		return rows.remove(o);
+	}
+
+	public boolean removeAll(Collection<?> c) {
+		return rows.removeAll(c);
+	}
+
+	public boolean retainAll(Collection<?> c) {
+		return rows.retainAll(c);
+	}
+
+	public Object[] toArray() {
+		return rows.toArray();
+	}
+
 	@SuppressWarnings("unchecked")
-	public Object[] toArray(Object[] a) { 
-		return rows.toArray(a); 
-	} 
- 
-	public String getSchema() { 
-		return schema; 
-	} 
- 
-	public DataSet setSchema(String schema) { 
+	public Object[] toArray(Object[] a) {
+		return rows.toArray(a);
+	}
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public DataSet setSchema(String schema) {
 		this.schema = schema;
-		return this; 
-	} 
- 
-	public String getTable() { 
-		return table; 
-	} 
- 
+		return this;
+	}
+
+	public String getTable() {
+		return table;
+	}
+
 	public DataSet setTable(String table) {
 		if(null != table && table.contains(".")){
 			String[] tbs = table.split("\\.");
 			this.table = tbs[1];
 			this.schema = tbs[0];
-		}else{ 
+		}else{
 			this.table = table;
 		}
-		return this; 
+		return this;
 	}
 	/**
 	 * 验证是否过期
@@ -2037,7 +2022,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return true;
 		}
 		return false;
-	} 
+	}
 	public long getCreateTime() {
 		return createTime;
 	}
@@ -2167,83 +2152,83 @@ public class DataSet implements Collection<DataRow>, Serializable {
 	 * @return DataSet
 	 */
 	public DataSet asc(final String ... keys){
-		Collections.sort(rows, new Comparator<DataRow>() {  
-            public int compare(DataRow r1, DataRow r2) {
-            	int result = 0;
-            	for(String key:keys){
-            		Object v1 = r1.get(key);
-            		Object v2 = r2.get(key);
-            		if(null == v1){
-            			if(null == v2){
-            				continue;
-            			}
-            			return -1;
-            		}else{
-            			if(null == v2){
-            				return 1;
-            			}
-            		}
-            		if(BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)){
-            			BigDecimal val1 = new BigDecimal(v1.toString());
-            			BigDecimal val2 = new BigDecimal(v2.toString());
-            			result = val1.compareTo(val2);
-            		}else if((BasicUtil.isDate(v1) && BasicUtil.isDate(v2))
-            				||(BasicUtil.isDateTime(v1) && BasicUtil.isDateTime(v2))
-            				){
-            			Date date1 = DateUtil.parse(v1.toString());
-            			Date date2 = DateUtil.parse(v2.toString());
-            			result = date1.compareTo(date2);
-            		}else{
-            			result = v1.toString().compareTo(v2.toString());
-            		}
-            		if(result != 0){
-            			return result;
-            		}
-            	}
-            	return 0;
-            }  
-        }); 
+		Collections.sort(rows, new Comparator<DataRow>() {
+			public int compare(DataRow r1, DataRow r2) {
+				int result = 0;
+				for(String key:keys){
+					Object v1 = r1.get(key);
+					Object v2 = r2.get(key);
+					if(null == v1){
+						if(null == v2){
+							continue;
+						}
+						return -1;
+					}else{
+						if(null == v2){
+							return 1;
+						}
+					}
+					if(BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)){
+						BigDecimal val1 = new BigDecimal(v1.toString());
+						BigDecimal val2 = new BigDecimal(v2.toString());
+						result = val1.compareTo(val2);
+					}else if((BasicUtil.isDate(v1) && BasicUtil.isDate(v2))
+							||(BasicUtil.isDateTime(v1) && BasicUtil.isDateTime(v2))
+					){
+						Date date1 = DateUtil.parse(v1.toString());
+						Date date2 = DateUtil.parse(v2.toString());
+						result = date1.compareTo(date2);
+					}else{
+						result = v1.toString().compareTo(v2.toString());
+					}
+					if(result != 0){
+						return result;
+					}
+				}
+				return 0;
+			}
+		});
 		isAsc = true;
 		isDesc = false;
 		return this;
 	}
 	public DataSet desc(final String ... keys){
-		Collections.sort(rows, new Comparator<DataRow>() {  
+		Collections.sort(rows, new Comparator<DataRow>() {
 			public int compare(DataRow r1, DataRow r2) {
-            	int result = 0;
-            	for(String key:keys){
-            		Object v1 = r1.get(key);
-            		Object v2 = r2.get(key);
-            		if(null == v1){
-            			if(null == v2){
-            				continue;
-            			}
-            			return 1;
-            		}else{
-            			if(null == v2){
-            				return -1;
-            			}
-            		}
-            		if(BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)){
-            			BigDecimal val1 = new BigDecimal(v1.toString());
-            			BigDecimal val2 = new BigDecimal(v2.toString());
-            			result = val2.compareTo(val1);
-            		}else if((BasicUtil.isDate(v1) && BasicUtil.isDate(v2))
-            				||(BasicUtil.isDateTime(v1) && BasicUtil.isDateTime(v2))
-            				){
-            			Date date1 = DateUtil.parse(v1.toString());
-            			Date date2 = DateUtil.parse(v2.toString());
-            			result = date2.compareTo(date1);
-            		}else{
-            			result = v2.toString().compareTo(v1.toString());
-            		}
-            		if(result != 0){
-            			return result;
-            		}
-            	}
-            	return 0;
-            } 
-        }); 
+				int result = 0;
+				for(String key:keys){
+					Object v1 = r1.get(key);
+					Object v2 = r2.get(key);
+					if(null == v1){
+						if(null == v2){
+							continue;
+						}
+						return 1;
+					}else{
+						if(null == v2){
+							return -1;
+						}
+					}
+					if(BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)){
+						BigDecimal val1 = new BigDecimal(v1.toString());
+						BigDecimal val2 = new BigDecimal(v2.toString());
+						result = val2.compareTo(val1);
+					}else if((BasicUtil.isDate(v1) && BasicUtil.isDate(v2))
+							||(BasicUtil.isDateTime(v1) && BasicUtil.isDateTime(v2))
+					){
+						Date date1 = DateUtil.parse(v1.toString());
+						Date date2 = DateUtil.parse(v2.toString());
+						result = date2.compareTo(date1);
+					}else{
+						result = v2.toString().compareTo(v1.toString());
+					}
+					if(result != 0){
+						return result;
+					}
+				}
+				return 0;
+			}
+		});
 		isAsc = false;
 		isDesc = true;
 		return this;
@@ -2297,39 +2282,39 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		return this;
 	}
 
-    /**
-     * 替换所有NULL值
+	/**
+	 * 替换所有NULL值
 	 * @param key key
 	 * @param value value
-     * @return return
-     */
-    public DataSet replaceNull(String key, String value){
-        for(DataRow row:rows){
-            row.replaceNull(key, value);
-        }
-        return this;
-    }
+	 * @return return
+	 */
+	public DataSet replaceNull(String key, String value){
+		for(DataRow row:rows){
+			row.replaceNull(key, value);
+		}
+		return this;
+	}
 
-    /**
-     * 替换所有空值
-     * @param key key
-     * @param value value
-     * @return return
-     */
-    public DataSet replaceEmpty(String key, String value){
-        for(DataRow row:rows){
-            row.replaceEmpty(key, value);
-        }
-        return this;
-    }
-    public DataSet replace(String key, String oldChar, String newChar){
+	/**
+	 * 替换所有空值
+	 * @param key key
+	 * @param value value
+	 * @return return
+	 */
+	public DataSet replaceEmpty(String key, String value){
+		for(DataRow row:rows){
+			row.replaceEmpty(key, value);
+		}
+		return this;
+	}
+	public DataSet replace(String key, String oldChar, String newChar){
 		if(null == key || null == oldChar || null == newChar){
 			return this;
 		}
 		for(DataRow row:rows){
 			row.replace(key, oldChar, newChar);
 		}
-    	return this;
+		return this;
 	}
 	/* ************************* 类sql操作 ************************************** */
 	public DataRow random(){
@@ -2422,14 +2407,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
 		 * true会导致一行数据 equal notEqual都筛选不到
 		 */
 		private boolean ignoreNull = true;
-        public DataSet setIgnoreCase(boolean bol){
-            this.ignoreCase = bol;
-            return DataSet.this;
-        }
-        public DataSet setIgnoreNull(boolean bol){
-            this.ignoreNull = bol;
-            return DataSet.this;
-        }
+		public DataSet setIgnoreCase(boolean bol){
+			this.ignoreCase = bol;
+			return DataSet.this;
+		}
+		public DataSet setIgnoreNull(boolean bol){
+			this.ignoreNull = bol;
+			return DataSet.this;
+		}
 		/**
 		 * 筛选key=value的子集
 		 * @param key key
@@ -2553,12 +2538,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return set;
 		}
 
-        /**
-         * 筛选key列的值like pattern的子集,pattern遵循sql通配符的规则,%表示任意个字符,_表示一个字符
-         * @param key 列
-         * @param pattern 表达式
-         * @return DataSet
-         */
+		/**
+		 * 筛选key列的值like pattern的子集,pattern遵循sql通配符的规则,%表示任意个字符,_表示一个字符
+		 * @param key 列
+		 * @param pattern 表达式
+		 * @return DataSet
+		 */
 		public DataSet like(String key, String pattern){
 			return like(DataSet.this, key, pattern);
 		}
@@ -2637,7 +2622,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return set;
 		}
 		public DataSet startWith(String key, String prefix){
-			return startWith(DataSet.this, key, prefix); 
+			return startWith(DataSet.this, key, prefix);
 		}
 		private DataSet startWith(DataSet src, String key, String prefix){
 			DataSet set = new DataSet();
@@ -2787,7 +2772,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			}
 			return set;
 		}
-		
+
 		public DataSet empty(String ... keys){
 			return isEmpty(keys);
 		}
@@ -2830,7 +2815,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					if(null == row.get(key)){
 						continue;
 					}
-					if(row.isNotEmpty(key) && 
+					if(row.isNotEmpty(key) &&
 							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) < 0){
 						set.add(row);
 					}
@@ -2849,7 +2834,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			return set;
 		}
 		public <T> DataSet lessEqual(String key, T value){
-			return lessEqual(DataSet.this, key, value); 
+			return lessEqual(DataSet.this, key, value);
 		}
 		private <T> DataSet lessEqual(DataSet src, String key, T value){
 			DataSet set = new DataSet();
@@ -2872,7 +2857,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					if(null == row.get(key)){
 						continue;
 					}
-					if(row.isNotEmpty(key) && 
+					if(row.isNotEmpty(key) &&
 							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) <= 0){
 						set.add(row);
 					}
@@ -2914,7 +2899,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					if(null == row.get(key)){
 						continue;
 					}
-					if(row.isNotEmpty(key) && 
+					if(row.isNotEmpty(key) &&
 							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) > 0){
 						set.add(row);
 					}
@@ -2956,7 +2941,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 					if(null == row.get(key)){
 						continue;
 					}
-					if(row.isNotEmpty(key) && 
+					if(row.isNotEmpty(key) &&
 							DateUtil.diff(DateUtil.DATE_PART_MILLISECOND, date, row.getDate(key,new Date())) >= 0){
 						set.add(row);
 					}
@@ -2982,8 +2967,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 			set = lessEqual(set,key, max);
 			return set;
 		}
-		
+
 	};
 	public Select select = new Select();
 }
- 

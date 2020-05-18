@@ -39,12 +39,12 @@ public class VCFUtil {
             if(mobile.contains(",")){
                 String[] items = mobile.split(",");
                 if(items.length==1){
-                    builder.append(format(items[0], items[1]));
+                    builder.append(format(items[0])).append("\n");
                 }else if(items.length>1){
-                    builder.append(format(items[0]));
+                    builder.append(format(items[0], items[1])).append("\n");
                 }
             }else{
-                builder.append(format(mobile,mobile));
+                builder.append(format(mobile,mobile)).append("\n");
             }
        }
        return builder.toString();
