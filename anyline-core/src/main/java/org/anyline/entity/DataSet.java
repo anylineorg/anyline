@@ -17,7 +17,7 @@ import java.util.*;
  */
 public class DataSet implements Collection<DataRow>, Serializable {
 	private static final long serialVersionUID = 6443551515441660101L;
-	protected static final Logger log = LoggerFactory.getLogger(DataSet.class);q
+	protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
 	private boolean result = true; // 执行结果
 	private Exception exception = null; // 异常
 	private String message = null; // 提示信息
