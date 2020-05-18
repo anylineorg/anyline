@@ -679,4 +679,17 @@
             <url>http://maven.anyline.org/repository/maven-public</url>
         </repository>
     </repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>anyline-releases</id>
+			<name>releases</name>
+			<url>http://maven.anyline.org/repository/maven-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>anyline-snapshots</id>
+			<name>snapshots</name>
+			<url>http://maven.anyline.org/repository/maven-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
