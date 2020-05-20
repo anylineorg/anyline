@@ -19,47 +19,25 @@
 
 package org.anyline.web.util;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.net.InetAddress;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
-
+import org.anyline.entity.DataRow;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+
+import javax.servlet.*;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
+import java.io.*;
+import java.net.InetAddress;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WebUtil {
 
@@ -162,24 +140,32 @@ public class WebUtil {
 		Map<String,Object> map = (Map<String,Object>)request.getAttribute(PACK_REQUEST_PARAM);
 		if(null == map){
 			map = new HashMap<String,Object>();
-			Enumeration<String> keys = request.getParameterNames();
-			while(keys.hasMoreElements()){
-				String key = keys.nextElement()+"";
-				String[] values = request.getParameterValues(key);
-				if(null != values){
-					if(values.length == 1){
-						map.put(key, values[0]);
-					}else if(values.length > 1){
-						List<Object> list = new ArrayList<Object>();
-						for(String value:values){
-							list.add(value);
+			//body体json格式(ajax以raw提交)
+			String body = WebUtil.read(request,"UTF-8");
+			if(BasicUtil.isNotEmpty(body) && body.startsWith("{") && body.endsWith("}")){
+				map = DataRow.parseJson(DataRow.KEY_CASE.SRC,body);
+			}else {
+				//utl与form表单格式
+				Enumeration<String> keys = request.getParameterNames();
+				while (keys.hasMoreElements()) {
+					String key = keys.nextElement() + "";
+					String[] values = request.getParameterValues(key);
+					if (null != values) {
+						if (values.length == 1) {
+							map.put(key, values[0]);
+						} else if (values.length > 1) {
+							List<Object> list = new ArrayList<Object>();
+							for (String value : values) {
+								list.add(value);
+							}
+							map.put(key, list);
 						}
-						map.put(key, list);
 					}
+					map.put(DECRYPT_PARAM_MAP, decryptParam(request));
 				}
-				map.put(DECRYPT_PARAM_MAP, decryptParam(request));
-				request.setAttribute(PACK_REQUEST_PARAM, map);
 			}
+
+			request.setAttribute(PACK_REQUEST_PARAM, map);
 		}
 		return map;
 	}
@@ -341,7 +327,7 @@ public class WebUtil {
 //	 *            value是否加密
 //	 * @return return
 //	 */
-	public static List<Object> getHttpRequestParams(HttpServletRequest request,String key, boolean keyEncrypt, boolean valueEncrypt) {
+	public static List<Object> getHttpRequestParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		List<Object> result = new ArrayList<Object>();
 		if (null == request || null == key) {
 			return null;
@@ -384,7 +370,7 @@ public class WebUtil {
 		return result;
 	}
 
-	public static List<Object> getHttpRequestParams(HttpServletRequest request,  String param, boolean keyEncrypt) {
+	public static List<Object> getHttpRequestParams(HttpServletRequest request, String param, boolean keyEncrypt) {
 		return getHttpRequestParams(request, param, keyEncrypt, false);
 	}
 
@@ -404,7 +390,7 @@ public class WebUtil {
 //	 *            参数值是否加密过,是则解密
 //	 * @return return
 //	 */
-	public static Object getHttpRequestParam(HttpServletRequest request,String key, boolean keyEncrypt, boolean valueEncrypt) {
+	public static Object getHttpRequestParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		String result = "";
 		List<Object> list = getHttpRequestParams(request, key, keyEncrypt, valueEncrypt);
 		if(null != list && list.size()>0){
@@ -1045,13 +1031,13 @@ public class WebUtil {
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			if (null != in) {
-				try {
-					in.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
+//			if (null != in) {
+//				try {
+//					in.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+//			}
 		}
 		return buffer;
 	}
