@@ -72,7 +72,22 @@ public abstract class AnylineConfig implements Serializable {
 					String txt = FileUtil.read(in, "UTF-8").toString();
 					parse(txt);
 				}
-
+				//加载同目录下config目录
+				File dir = new File(FileUtil.mergePath(ConfigTable.getRoot(),"config"));
+				if (null != dir && !dir.exists()) {
+					dir = new File(ConfigTable.getWebRoot());
+				}
+				List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
+				int configSize = 0;
+				for (File file : files) {
+					if (fileName.equals(file.getName())) {
+						parse(clazz, file, instances, compatibles);
+						configSize++;
+					}
+				}
+				if (configSize == 0) {
+					log.warn("[解析配置文件][未加载配置文件:{}][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/{}]", fileName, fileName);
+				}
 			} else {
 				//File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
 				File dir = new File(ConfigTable.getClassPath());

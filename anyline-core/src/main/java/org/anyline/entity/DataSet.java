@@ -572,14 +572,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
             } else {
                 if (i + 1 < len) {
                     String p2 = params[i + 1];
-                    if (p2.startsWith("{") && p2.endsWith("}")) {
+                    if (BasicUtil.isEmpty(p2) || !p2.contains(":")) {
+                        kvs.put(p1, p2);
+                        i += 2;
+                        continue;
+                    } else if (p2.startsWith("{") && p2.endsWith("}")) {
                         p2 = p2.substring(1, p2.length() - 1);
                         kvs.put(p1, p2);
                         kvs.put(p1 + srcFlagTag, "true");
-                        i += 2;
-                        continue;
-                    } else if (BasicUtil.isEmpty(p2) || !p2.contains(":")) {
-                        kvs.put(p1, p2);
                         i += 2;
                         continue;
                     } else {

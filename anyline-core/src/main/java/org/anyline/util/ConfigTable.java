@@ -36,7 +36,7 @@ import java.util.jar.JarFile;
 
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
-	protected static String root;
+	protected static String root;		//项目根目录 如果是jar文件运行表示jar文件所在目录
 	protected static String webRoot;
 	protected static String classpath;
 	protected static Hashtable<String,String> configs;
@@ -95,8 +95,8 @@ public class ConfigTable {
 	}
 	public static String getPackageType(){
 		String type = "war";
-		String classpath = ConfigTable.class.getResource("/").getPath();
-		if(classpath.contains(".jar!")){
+		String path = ConfigTable.class.getResource("/").getPath();
+		if(path.contains(".jar!")){
 			type = "jar";
 		}
 		return type;
@@ -109,19 +109,32 @@ public class ConfigTable {
 		isLoading = true;
 		String path =  "";
 		try{
+			//  path=file:/D:/develop/web/sso-0.0.2-SNAPSHOT.jar!/BOOT-INF/classes!/		(windows jar)
+			//  path=/D:/develop/web/sso/WEB-INF/classes/ 									(windows tomcat)
+			//  path=/D:/develop/git/sso/target/classes/									(windows IDE)
+			//  path=/D:/develop/git/sso/bin/classes/										(windows IDE)
+			//  path=file:/usr/local/web/sso/sso-0.0.2-SNAPSHOT.jar!/BOOT-INF/classes!/		(linux jar)
+			//  path=/usr/local/web/sso/WEB-INF/classes/									(linux tomcat)
 			path = ConfigTable.class.getResource("/").getPath();
 		}catch(Exception e){
 			e.printStackTrace();
 		}
-		Properties props=System.getProperties(); //获得系统属性集
-		String osName = props.getProperty("os.name"); //操作系统名称
+		log.warn("path={}",path);
+		Properties props=System.getProperties();
+		String osName = props.getProperty("os.name");
 		if(null != osName && osName.toUpperCase().contains("WINDOWS") && path.startsWith("/")){
 			path = path.substring(1);
+			path =path.replace("file:/", "");
 		}
-		path = path.replace("file:/", "");//jar项目
-
+		path = path.replace("file:", "");//jar项目
+		//file:/cse/java/cse-sso/qnlm-sso-0.0.2-SNAPSHOT.jar!/BOOT-INF/classes!/
+		//log.warn("root={}",root);
 		if(null == root && null != path){
 			root = path;
+			if(root.contains(".jar")){
+				root = root.substring(0, root.indexOf(".jar"));
+				root = root.substring(0,root.lastIndexOf("/"));
+			}
 			if(path.indexOf("bin") > 0){
 				root = path.substring(0,path.indexOf("bin")-1);
 			}
@@ -129,6 +142,7 @@ public class ConfigTable {
 				root = path.substring(0,path.indexOf("target")-1);
 			}
 		}
+		//log.warn("root={}",root);
 		if(null == webRoot && null != path){
 			webRoot = path;
 			if(path.indexOf("WEB-INF") > 0){
@@ -204,25 +218,13 @@ public class ConfigTable {
 					String txt = FileUtil.read(in, "UTF-8").toString();
 					parse(txt);
 				}
-
+				//加载jar文件同目录的config
+				File dir = new File(FileUtil.mergePath(root,"config"));
+				loadConfigDir(dir,flag);
 			}else{
 				//classpath根目录
 				File dir = new File(classpath);
-				log.warn("[加载配置文件][type:war][dir:{}]",classpath);
-				List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-				for(File f:files){
-					String name = f.getName();
-					if((flag+"-config.xml").equals(name)){
-						loadConfig(f);
-					}
-				}
-
-				for(File f:files){
-					String name = f.getName();
-					if(name.startsWith(flag+"-config") && !(flag+"-config.xml").equals(name)){
-						loadConfig(f);
-					}
-				}
+				loadConfigDir(dir,flag);
 			}
 		} catch (Exception e) {
 			log.error("配置文件解析异常:"+e);
@@ -236,6 +238,22 @@ public class ConfigTable {
 		if(null != isUpper){
 			if("false".equals(isUpper.toLowerCase()) || "0".equals(isUpper)){
 				IS_UPPER_KEY = false;
+			}
+		}
+	}
+	protected synchronized static void loadConfigDir(File dir, String flag) {
+		log.warn("[加载配置文件][dir:{}]",dir.getAbsolutePath());
+		List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
+		for(File f:files){
+			String name = f.getName();
+			if((flag+"-config.xml").equals(name)){
+				loadConfig(f);
+			}
+		}
+		for(File f:files){
+			String name = f.getName();
+			if(name.startsWith(flag+"-config") && !(flag+"-config.xml").equals(name)){
+				loadConfig(f);
 			}
 		}
 	}
@@ -360,13 +378,17 @@ public class ConfigTable {
 
 	protected static void line(String src, String chr, int append, boolean center){
 		int len = 80 + append;
-		int fill = 0 ;
 		String line = "";
 		if(center){
-			fill = (len - src.length() -2)/2;
-			line = "*"+BasicUtil.fillChar("", chr, fill) + src +BasicUtil.fillChar("", chr, fill) +"*";
+			int fillLeft = (len - src.length() -2)/2;
+			int fillRight = (len - src.length() -2)/2;
+			if((len - src.length())%2!=0){
+				fillRight ++;
+
+			}
+			line = "*"+BasicUtil.fillChar("", chr, fillLeft) + src +BasicUtil.fillChar("", chr, fillRight) +"*";
 		}else{
-			fill = len - src.length() - 2;
+			int fill = len - src.length() - 2;
 			line = "*" + src + BasicUtil.fillChar("", chr, fill)+"";
 		}
 		System.out.println(line);
@@ -397,13 +419,20 @@ public class ConfigTable {
 				if(path.contains("/WEB-INF")){
 					project = path.substring(0, path.indexOf("/WEB-INF"));
 				}
+
 				File file = new File(path);
-				String fileName = file.getName();
-				if(fileName.endsWith("jar") && fileName.contains("-")){
-					//anyline-core-8.3.7-SNAPSHOT.jar
-					version = fileName.replace("anyline-","").replace(".jar","");
-					version = version.substring(version.indexOf("-")+1);
-				}
+				try {
+					//file:/usr/local/java/sso/sso-0.0.2-SNAPSHOT.jar!/BOOT-INF/lib/anyline-core-8.3.7-SNAPSHOT.jar!/
+					String anylineJarPath = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+					String anylineJarName = new File(anylineJarPath).getName();
+					if(anylineJarName.endsWith("jar") || anylineJarName.endsWith("jar!")){
+						if(anylineJarName.contains("-")){
+							version = anylineJarName.replace("anyline-","").replace(".jar","").replace("!","");
+							version = version.substring(version.indexOf("-")+1);
+						}
+					}
+					file = new File(anylineJarPath);
+				}catch (Exception e){}
 				time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE).format(new Date(file.lastModified()));
 			}catch(Exception e){
 
@@ -411,7 +440,7 @@ public class ConfigTable {
 
 			System.out.println();
 			line("","*", 0,true);
-			line("Anyline Core [" + version + "]", " ",1, true);
+			line("Anyline Core [" + version + "]", " ",0, true);
 			line("anyline.org ", " ", 0, true);
 			line(""," ", 0, true);
 			if(null != time && time.startsWith("2")){
@@ -446,4 +475,5 @@ public class ConfigTable {
 	public static void setLowerKey(boolean bol){
 		IS_LOWER_KEY = bol;
 	}
+
 }
