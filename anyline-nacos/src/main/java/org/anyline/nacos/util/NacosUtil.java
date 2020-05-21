@@ -26,15 +26,39 @@ public class NacosUtil {
 	static{
 		NacosUtil util = NacosUtil.getInstance();
 		if(util.config.AUTO_SCAN){
-			List<Class<?>> list = ClassUtil.list("org.anyline", true, AnylineConfig.class, ConfigTable.class);
-			for(Class<?> clazz:list){
-				@SuppressWarnings("unchecked")
-				Class<AnylineConfig> c = (Class<AnylineConfig>)clazz;
-				String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
-				try {
-					util.config(null, configName, c);
-				} catch (NacosException e) {
-					log.warn("[nacos config][result:false][config:{}]", configName);
+			String packages = util.config.SCAN_PACKAGE;
+			if(BasicUtil.isNotEmpty(packages)){
+				String[] pks = packages.split(",");
+				if(null != pks) {
+					for (String pk:pks) {
+						List<Class<?>> list = ClassUtil.list(pk, true, AnylineConfig.class, ConfigTable.class);
+						for(Class<?> clazz:list){
+							@SuppressWarnings("unchecked")
+							Class<AnylineConfig> configClass = (Class<AnylineConfig>)clazz;
+							String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
+							try {
+								util.config(null, configName, configClass);
+							} catch (NacosException e) {
+								log.warn("[nacos config][result:false][config:{}]", configName);
+							}
+						}
+					}
+				}
+			}
+			String cls = util.config.SCAN_CLASS;
+			if(BasicUtil.isNotEmpty(cls)){
+				String[] clas  = cls.split(",");
+				for(String c:clas){
+					try {
+						Class clazz = Class.forName(c);
+						@SuppressWarnings("unchecked")
+						Class<AnylineConfig> configClass = (Class<AnylineConfig>)clazz;
+						String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
+						util.config(null, configName, configClass);
+					}catch (Exception e){
+						e.printStackTrace();
+					}
+
 				}
 			}
 		}
@@ -122,6 +146,10 @@ public class NacosUtil {
 	}
 
 	public static void parse(Class<? extends AnylineConfig> T, String content) {
+		if(BasicUtil.isNotEmpty(content)){
+			log.warn("[nacos config][pull fail][config class:{}]",T.getName());
+			return;
+		}
 		try{
 		    Class<?> clazz = Class.forName(T.getName());
 		    Method method = clazz.getMethod("parse", String.class);
