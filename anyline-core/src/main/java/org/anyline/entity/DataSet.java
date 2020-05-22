@@ -1362,6 +1362,20 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
+     * 抽取指定列生成新的DataSet 新的DataSet只包括指定列的值与分页信息，不包含其他附加信息(如来源表)
+     * @param keys keys
+     * @return DataSet
+     */
+    public DataSet extract(String ... keys){
+        DataSet result = new DataSet();
+        for(DataRow row:rows){
+            DataRow item = row.extract(keys);
+            result.add(item);
+        }
+        result.navi = this.navi;
+        return result;
+    }
+    /**
      * html格式(未实现)
      *
      * @param index index
