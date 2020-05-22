@@ -1392,6 +1392,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 
 	/**
+	 * 抽取指定列,生成新的DataRow,新的DataRow只包括指定列的值，不包含其他附加信息(如来源表)
+	 * @param keys keys
+	 * @return DataRow
+	 */
+	public DataRow extract(String ... keys){
+		DataRow result = new DataRow();
+		result.copy(this, keys);
+		return result;
+	}
+	/**
 	 * 复制String类型数据
 	 * @param data data
 	 * @param keys keys
