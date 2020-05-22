@@ -175,10 +175,7 @@ public class BeanUtil {
 			return null; 
 		} 
 		Object value = null;
-		if(obj instanceof DataRow){
-			DataRow row = (DataRow)obj;
-			value = row.get(field);
-		}else if(obj instanceof Map){
+		if(obj instanceof Map){
 			Map map = (Map)obj; 
 			value = map.get(field); 
 		}else if(obj instanceof Class){
