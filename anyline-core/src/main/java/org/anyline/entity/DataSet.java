@@ -2975,6 +2975,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
             return set;
         }
 
+        private DataSet isNull(DataSet src, String  key) {
+            DataSet set = new DataSet();
+            for(DataRow row:src){
+                if(null == row.get(key)){
+                    set.add(row);
+                }
+            }
+            return set;
+        }
         public DataSet isNotNull(String... keys) {
             return isNotNull(DataSet.this, keys);
         }
@@ -2989,6 +2998,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
             return set;
         }
 
+        private DataSet isNotNull(DataSet src, String  key) {
+            DataSet set = new DataSet();
+            for(DataRow row:src){
+                if(null != row.get(key)){
+                    set.add(row);
+                }
+            }
+            return set;
+        }
         public DataSet notNull(String... keys) {
             return isNotNull(keys);
         }
@@ -3007,6 +3025,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
             return set;
         }
 
+        private DataSet isEmpty(DataSet src, String  key) {
+            DataSet set = new DataSet();
+            for(DataRow row:src){
+                if(row.isEmpty(key)){
+                    set.add(row);
+                }
+            }
+            return set;
+        }
         public DataSet empty(String... keys) {
             return isEmpty(keys);
         }
@@ -3025,6 +3052,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
             return set;
         }
 
+        private DataSet isNotEmpty(DataSet src, String  key) {
+            DataSet set = new DataSet();
+            for(DataRow row:src){
+                if(row.isNotEmpty(key)){
+                    set.add(row);
+                }
+            }
+            return set;
+        }
         public DataSet notEmpty(String... keys) {
             return isNotEmpty(keys);
         }
@@ -3219,4 +3255,5 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     ;
     public Select select = new Select();
+
 }
