@@ -20,6 +20,7 @@
 package org.anyline.web.util;
 
 import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.util.*;
@@ -132,8 +133,22 @@ public class WebUtil {
 		return (request.getHeader("Referer") != null);
 	}
 
-
-	public static Map<String,Object> values(HttpServletRequest request){
+	public static DataSet values(HttpServletRequest request){
+		DataSet set = new DataSet();
+		if(null == request){
+			return set;
+		}
+		String body = WebUtil.read(request,"UTF-8");
+		if(BasicUtil.isNotEmpty(body) && body.startsWith("[") && body.endsWith("]")){
+			try {
+				set = DataSet.parseJson(DataRow.KEY_CASE.SRC, body);
+			}catch(Exception e){
+				log.error("[json parse error][{}]", e.getMessage());
+			}
+		}
+		return set;
+	}
+	public static Map<String,Object> value(HttpServletRequest request){
 		if(null == request){
 			return new HashMap<String,Object>();
 		}
@@ -332,7 +347,7 @@ public class WebUtil {
 		if (null == request || null == key) {
 			return null;
 		}
-		Map<String,Object> values = values(request);
+		Map<String,Object> values = value(request);
 
 		ParseResult parser = new ParseResult();
 		parser.setKey(key);

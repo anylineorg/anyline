@@ -84,7 +84,7 @@ public class AbstractBasicController{
 
 					ParseResult parser = ConfigParser.parse(param,true);
 					
-					Object value = ConfigParser.getValues(WebUtil.values(request), parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt()); 
+					Object value = ConfigParser.getValues(WebUtil.value(request), parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
 					BeanUtil.setFieldValue(entity, parser.getVar(), value);
 				}// end for 
 			} else {// end指定属性与request参数对应关系 
@@ -125,7 +125,7 @@ public class AbstractBasicController{
 		if (null != params && params.length > 0) {
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				Object value = ConfigParser.getValue(WebUtil.values(request), parser);
+				Object value = ConfigParser.getValue(WebUtil.value(request), parser);
 				row.put(parser.getVar(), value);
 				if(parser.isRequired()){
 					row.addUpdateColumns(parser.getVar());
@@ -179,14 +179,26 @@ public class AbstractBasicController{
 
 	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		DataSet set = new DataSet();
-
 		if (null != params && params.length > 0) {
-
+			//raw [json]格式
+			DataSet list = WebUtil.values(request);
+			if(list.size()>0){
+				for(DataRow item:list) {
+					DataRow row = new DataRow();
+					for (String param : params) {
+						Object value = item.get(param);
+						row.put(keyCase, param, value);
+					}
+					set.add(row);
+				}
+				return set;
+			}
+			//k=v格式
 			Map<String,List<Object>> map = new HashMap<String,List<Object>>();
 			int size = 0;
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				List<Object> values = ConfigParser.getValues(WebUtil.values(request), parser);
+				List<Object> values = ConfigParser.getValues(WebUtil.value(request), parser);
 				map.put(parser.getVar(), values);
 				if(size <= values.size()){
 					size = values.size();
@@ -260,7 +272,7 @@ public class AbstractBasicController{
 			PageNavi pageNavi = parsePageNavi(request); 
 			store.setPageNavi(pageNavi); 
 		} 
-		store.setValue(WebUtil.values(request)); 
+		store.setValue(WebUtil.value(request));
 		return store; 
 	} 
 	/** 
@@ -278,7 +290,7 @@ public class AbstractBasicController{
 			pageNavi.setPageRows(vol);
 			store.setPageNavi(pageNavi);
 		} 
-		store.setValue(WebUtil.values(request)); 
+		store.setValue(WebUtil.value(request));
 		return store; 
 	} 
  
@@ -298,7 +310,7 @@ public class AbstractBasicController{
 		navi.setFirstRow(fr); 
 		navi.setLastRow(to); 
 		store.setPageNavi(navi); 
-		store.setValue(WebUtil.values(request)); 
+		store.setValue(WebUtil.value(request));
 		return store; 
 	}
 	protected ConfigStore parseConfig(HttpServletRequest request, String... conditions) {

@@ -3252,8 +3252,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
 
     }
-
-    ;
     public Select select = new Select();
 
 }
