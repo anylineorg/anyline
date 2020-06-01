@@ -39,25 +39,26 @@ public class Split extends BaseBodyTag{
 	 public int doEndTag() throws JspException {
 		if(BasicUtil.isEmpty(text)){ 
 			text = body;
-		} 
-		if(null != text && null != var){ 
-			try{ 
-				String[] result = text.split(regex);
-				if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) {
-					pageContext.getServletContext().setAttribute(var, result);
-				} else if ("session".equals(scope)) {
-					pageContext.getSession().setAttribute(var, result);
-				}  else if ("request".equals(scope)) {
-					pageContext.getRequest().setAttribute(var, result);
-				}else if ("page".equals(scope)){
-					pageContext.setAttribute(var, result);
-				}
-			}catch(Exception e){ 
-	 
-			}finally{ 
-				release(); 
-			} 
-		} 
+		}
+		 String[] result = null;
+		 if(null != text && null != var) {
+			 result = text.split(regex);
+		 }
+		try{
+			if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) {
+				pageContext.getServletContext().setAttribute(var, result);
+			} else if ("session".equals(scope)) {
+				pageContext.getSession().setAttribute(var, result);
+			}  else if ("request".equals(scope)) {
+				pageContext.getRequest().setAttribute(var, result);
+			}else if ("page".equals(scope)){
+				pageContext.setAttribute(var, result);
+			}
+		}catch(Exception e){
+
+		}finally{
+			release();
+		}
         return EVAL_PAGE;    
 	} 
 	@Override 
