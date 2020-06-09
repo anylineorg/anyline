@@ -764,7 +764,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn("{}[txt:\n{}\n]",random,procedure.getName() );
 			log.warn("{}[输入参数:{}]",random,paramLogFormat(inputs));
-			log.warn("{}[输出参数:{}]",random,paramLogFormat(inputs));
+			log.warn("{}[输出参数:{}]",random,paramLogFormat(outputs));
 		}
 		String sql = "{call " +procedure.getName()+"(";
 		final int sizeIn = inputs.size();
