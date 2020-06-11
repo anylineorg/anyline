@@ -1042,6 +1042,9 @@ public class WebUtil {
 		}
 		return null;
 	}
+	public static String read(HttpServletRequest request, String encode){
+		return read(request, encode, true);
+	}
 	public static byte[] read(HttpServletRequest request, boolean cache) {
 		byte[] buffer = (byte[])request.getAttribute("_anyline_request_read_cache_byte");
 		if(null != buffer){
@@ -1071,5 +1074,9 @@ public class WebUtil {
 //			}
 		}
 		return buffer;
+	}
+
+	public static byte[] read(HttpServletRequest request) {
+		return read(request, true);
 	}
 }
