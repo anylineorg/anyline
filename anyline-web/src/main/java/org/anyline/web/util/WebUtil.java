@@ -138,7 +138,7 @@ public class WebUtil {
 		if(null == request){
 			return set;
 		}
-		String body = WebUtil.read(request,"UTF-8");
+		String body = WebUtil.read(request,"UTF-8", true);
 		if(BasicUtil.isNotEmpty(body) && body.startsWith("[") && body.endsWith("]")){
 			try {
 				set = DataSet.parseJson(DataRow.KEY_CASE.SRC, body);
@@ -156,7 +156,7 @@ public class WebUtil {
 		if(null == map){
 			map = new HashMap<String,Object>();
 			//body体json格式(ajax以raw提交)
-			String body = WebUtil.read(request,"UTF-8");
+			String body = WebUtil.read(request,"UTF-8",true);
 			if(BasicUtil.isNotEmpty(body) && body.startsWith("{") && body.endsWith("}")){
 				map = DataRow.parseJson(DataRow.KEY_CASE.SRC,body);
 			}else {
@@ -1025,24 +1025,40 @@ public class WebUtil {
 		}
 		return value;
 	}
-	public static String read(HttpServletRequest request, String encode){
+
+	/**
+	 * 读取request body
+	 * @param request request
+	 * @param encode 编码
+	 * @param cache 是否缓存(第二次reqad是否有效)
+	 * @return
+	 */
+	public static String read(HttpServletRequest request, String encode, boolean cache){
 		try {
-			return new String(read(request), encode);
+			String str = new String(read(request,cache), encode);
+			return str;
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return null;
 	}
-	public static byte[] read(HttpServletRequest request) {
+	public static byte[] read(HttpServletRequest request, boolean cache) {
+		byte[] buffer = (byte[])request.getAttribute("_anyline_request_read_cache_byte");
+		if(null != buffer){
+			return buffer;
+		}
 		int len = request.getContentLength();
 		if(len <=0){
 			return new byte[0];
 		}
-		byte[] buffer = new byte[len];
+		buffer = new byte[len];
 		ServletInputStream in = null;
 		try {
 			in = request.getInputStream();
 			in.read(buffer, 0, len);
+			if(cache){
+				request.setAttribute("_anyline_request_read_cache_byte", buffer);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
