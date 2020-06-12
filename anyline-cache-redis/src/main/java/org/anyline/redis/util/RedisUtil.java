@@ -41,7 +41,7 @@ public class RedisUtil {
         return cluster.get(key(key));
     }
     public boolean exists(String key){
-        return cluster.exists(key);
+        return cluster.exists(key(key));
     }
     public void object(String key, Object value){
         key = key(key);
