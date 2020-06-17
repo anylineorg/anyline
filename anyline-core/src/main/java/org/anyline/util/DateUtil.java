@@ -1433,13 +1433,15 @@ public class DateUtil {
 	 * @return return
 	 */
 	public static int compare(Date fr, Date to) {
-		int result = 0;
-		if (fr.getTime() > to.getTime()) {
-			result = 1;
-		} else {
-			result = -1;
+		long _fr = fr.getTime();
+		long _to = to.getTime();
+		if (_fr > _to) {
+			return 1;
+		} else if(_fr == _to){
+			return 0;
+		}else {
+			return -1;
 		}
-		return result;
 	}
 
 	public static int compare(String fr, String to) {

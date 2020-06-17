@@ -37,6 +37,7 @@
 		<anyline.net.version>${anyline.version}</anyline.net.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
 		<anyline.cache.ecache.version>${anyline.version}</anyline.cache.ecache.version>
+		<anyline.cache.redis.version>${anyline.version}</anyline.cache.redis.version>
 		<anyline.nc.version>${anyline.version}</anyline.nc.version>
 		<anyline.web.version>${anyline.version}</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
@@ -103,6 +104,7 @@
 		<jpush.version>1.1.6</jpush.version>
 		<alibaba.nacos.version>1.1.4</alibaba.nacos.version>
 		<rocketmq.version>4.6.0</rocketmq.version>
+		<redis.version>3.3.0</redis.version>
 		<spring.redis.version>2.3.0.RELEASE</spring.redis.version>
 	</properties>
 
@@ -215,8 +217,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-redis</artifactId>
-				<version>${anyline.redis.version}</version>
+				<artifactId>anyline-cache-redis</artifactId>
+				<version>${anyline.cache.redis.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>

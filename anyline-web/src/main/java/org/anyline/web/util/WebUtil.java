@@ -1031,7 +1031,7 @@ public class WebUtil {
 	 * @param request request
 	 * @param encode 编码
 	 * @param cache 是否缓存(第二次reqad是否有效)
-	 * @return
+	 * @return String
 	 */
 	public static String read(HttpServletRequest request, String encode, boolean cache){
 		try {

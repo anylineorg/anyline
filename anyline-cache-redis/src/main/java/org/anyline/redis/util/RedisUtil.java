@@ -29,10 +29,16 @@ public class RedisUtil {
         return prefix + key;
     }
     public void set(String key, String value){
-        cluster.set(key(key),(String)value);
+        cluster.set(key(key),value);
+    }
+    public void setex(String key, int seconds, String value){
+        cluster.setex(key(key), seconds, value);
     }
     public String get(String key){
         return cluster.get(key(key));
+    }
+    public void delete(String key){
+        cluster.del(key(key));
     }
     public void string(String key, String value){
         cluster.set(key(key),(String)value);
