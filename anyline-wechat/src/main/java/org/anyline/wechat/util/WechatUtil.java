@@ -486,6 +486,7 @@ public class WechatUtil {
 			row.put("APP_ID", appid);
 			row.put("ACCESS_TOKEN", json.getString("access_token"));
 			row.setExpires(json.getInt("expires_in", 0)*800);
+			row.setExpires(1000*60*5); //5分钟内有效
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[CREATE NEW ACCESS TOKEN][ACCESS_TOKEN:{}]",row.getString("ACCESS_TOKEN"));
 			}

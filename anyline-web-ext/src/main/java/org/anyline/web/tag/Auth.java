@@ -30,6 +30,7 @@ import org.anyline.wechat.mp.util.WechatMPConfig;
 import org.anyline.wechat.mp.util.WechatMPUtil;
 import org.anyline.wechat.util.WechatConfig;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -159,7 +160,9 @@ public class Auth extends BaseBodyTag {
 				}
 				html += "</a>";
 				if(auto){
-					html += "<script>location.href = \""+url+"\";</script>";
+					((HttpServletResponse)pageContext.getResponse()).sendRedirect(url);
+					return EVAL_PAGE;
+					//html += "<script>location.href = \""+url+"\";</script>";
 				}
 			}else{
 				log.error("[第三方登录][登录配置异常]");
