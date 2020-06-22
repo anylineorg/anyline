@@ -283,7 +283,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		appendCondition(); 
 		appendStaticCondition(); 
 		appendGroup(); 
-		//appendOrderStore(); 
+		//appendOrderStore();
 	} 
  
 	private void copyParam(){ 
