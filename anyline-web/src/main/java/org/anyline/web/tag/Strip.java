@@ -53,6 +53,9 @@ public class Strip extends BaseBodyTag implements Cloneable{
 			if(sign && null != result){
 				result = result.replaceAll("&\\w{2,8};","");
 			}
+			if(null != result){
+				result = result.replace("\r","").replace("\n","");
+			}
 			if(length != -1){ 
 				int size = length * 2; 
 				String chrs[] = result.split(""); 
