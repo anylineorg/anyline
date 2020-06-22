@@ -160,9 +160,10 @@ public class Auth extends BaseBodyTag {
 				}
 				html += "</a>";
 				if(auto){
-					((HttpServletResponse)pageContext.getResponse()).sendRedirect(url);
-					return EVAL_PAGE;
-					//html += "<script>location.href = \""+url+"\";</script>";
+					//((HttpServletResponse)pageContext.getResponse()).sendRedirect(url);
+					html += "<script>location.href = \""+url+"\";</script>";
+					//return EVAL_PAGE;
+
 				}
 			}else{
 				log.error("[第三方登录][登录配置异常]");
