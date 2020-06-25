@@ -1922,9 +1922,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         for (DataRow row : rows) {
             String[] kv = reverseKey(keys);
-            if (set.contains(row, kv)) {
-                if (!distinct && !result.contains(row, kv)) {
+            if (set.contains(row, kv)) { //符合交集
+                if(!result.contains(row, kv)){//result中没有
                     result.add((DataRow) row.clone());
+                }else {
+                    if(!distinct){//result中有但不要求distinct
+                        result.add((DataRow) row.clone());
+                    }
                 }
             }
         }
