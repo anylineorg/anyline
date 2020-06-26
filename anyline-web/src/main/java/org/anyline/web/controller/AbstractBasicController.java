@@ -351,19 +351,23 @@ public class AbstractBasicController{
 	 * @param valueEncrypt  valueEncrypt
 	 * @return return
 	 */ 
-	protected String getParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) { 
-		return (String) WebUtil.getHttpRequestParam(request, key,keyEncrypt, valueEncrypt); 
+	protected String getParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, String ... defs) {
+		String result =  (String) WebUtil.getHttpRequestParam(request, key,keyEncrypt, valueEncrypt);
+		if(BasicUtil.isEmpty(result) && null != defs && defs.length>0){
+			return (String)BasicUtil.nvl(defs);
+		}
+		return result;
 	} 
  
-	protected String getParam(HttpServletRequest request, String key, boolean valueEncrypt) {
+	protected String getParam(HttpServletRequest request, String key, boolean valueEncrypt, String ... defs) {
 		return getParam(request,key, false,valueEncrypt);
 	}
 
-	protected String getParam(HttpServletRequest request, String key) {
-		return getParam(request, key, false, false);
+	protected String getParam(HttpServletRequest request, String key, String ... defs) {
+		return getParam(request, key, false, false, defs);
 	} 
-	protected List<Object> getParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) { 
-		return WebUtil.getHttpRequestParams(request, key, keyEncrypt, valueEncrypt); 
+	protected List<Object> getParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
+		return WebUtil.getHttpRequestParams(request, key, keyEncrypt, valueEncrypt);
 	} 
 	 
 	protected List<Object> getParams(HttpServletRequest request, String key, boolean valueEncrypt) {
@@ -371,8 +375,50 @@ public class AbstractBasicController{
 	} 
 	protected List<Object> getParams(HttpServletRequest request, String key) {
 		return getParams(request,key, false, false);
-	} 
- 
+	}
+
+
+	protected int getInt(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
+		String val = getParam(request,key, keyEncrypt, valueEncrypt);
+		return BasicUtil.parseInt(val);
+	}
+
+	protected int getInt(HttpServletRequest request, String key, boolean valueEncrypt) throws Exception{
+		String val = getParam(request,key, valueEncrypt);
+		return BasicUtil.parseInt(val);
+	}
+
+	protected int getInt(HttpServletRequest request, String key) throws Exception{
+		String val = getParam(request,key);
+		return BasicUtil.parseInt(val);
+	}
+
+	protected int getInt(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, int def){
+		String val = getParam(request,key, keyEncrypt, valueEncrypt);
+		try {
+			return BasicUtil.parseInt(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
+	protected int getInt(HttpServletRequest request, String key, boolean valueEncrypt, int def) {
+		String val = getParam(request,key, valueEncrypt);
+		try {
+			return BasicUtil.parseInt(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
+	protected int getInt(HttpServletRequest request, String key, int def) {
+		String val = getParam(request,key);
+		try {
+			return BasicUtil.parseInt(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
 	/** 
 	 * 按PageNavi预订格式<br> 
 	 * 从HttpServletRequest中提取分布数据 

@@ -307,41 +307,41 @@ public class AnylineController extends AbstractBasicController {
 	} 
 	 
 	 
-	protected String getParam(String key, boolean keyEncrypt, boolean valueEncrypt) { 
-		return getParam(getRequest(), key, keyEncrypt, valueEncrypt); 
+	protected String getParam(String key, boolean keyEncrypt, boolean valueEncrypt, String ... defs) {
+		return getParam(getRequest(), key, keyEncrypt, valueEncrypt, defs);
 	} 
  
-	protected String getParam(String key, boolean valueEncrypt) { 
-		return getParam(getRequest(), key, false, valueEncrypt); 
+	protected String getParam(String key, boolean valueEncrypt, String ... defs) {
+		return getParam(getRequest(), key, false, valueEncrypt, defs);
 	} 
  
-	protected String getParam(String key) { 
-		return getParam(getRequest(), key, false, false); 
+	protected String getParam(String key, String ... defs) {
+		return getParam(getRequest(), key, false, false, defs);
 	} 
  
-	protected List<Object> getParams(String key, boolean keyEncrypt, boolean valueEncrypt) { 
-		return getParams(getRequest(), key, keyEncrypt, valueEncrypt); 
+	protected List<Object> getParams(String key, boolean keyEncrypt, boolean valueEncrypt) {
+		return getParams(getRequest(), key, keyEncrypt, valueEncrypt);
 	} 
-	protected List<Object> getParams(String key, boolean valueEncrypt) { 
-		return getParams(getRequest(), key, false, valueEncrypt); 
+	protected List<Object> getParams(String key, boolean valueEncrypt) {
+		return getParams(getRequest(), key, false, valueEncrypt);
 	} 
  
-	protected List<Object> getParams(String key) { 
-		return getParams(getRequest(), key, false, false); 
+	protected List<Object> getParams(String key) {
+		return getParams(getRequest(), key, false, false);
 	} 
  
  
 	 
-	protected String param(String key, boolean keyEncrypt, boolean valueEncrypt) { 
-		return getParam(getRequest(), key, keyEncrypt, valueEncrypt); 
+	protected String param(String key, boolean keyEncrypt, boolean valueEncrypt, String ... defs) {
+		return getParam(getRequest(), key, keyEncrypt, valueEncrypt, defs);
 	} 
  
-	protected String param(String key, boolean valueEncrypt) { 
-		return getParam(getRequest(), key, false, valueEncrypt); 
+	protected String param(String key, boolean valueEncrypt, String ... defs) {
+		return getParam(getRequest(), key, false, valueEncrypt, defs);
 	} 
  
-	protected String param(String key) { 
-		return getParam(getRequest(), key, false, false); 
+	protected String param(String key, String ... defs) {
+		return getParam(getRequest(), key, false, false, defs);
 	} 
  
 	protected List<Object> params(String key, boolean keyEncrypt, boolean valueEncrypt) { 
@@ -353,8 +353,36 @@ public class AnylineController extends AbstractBasicController {
  
 	protected List<Object> params(String key) { 
 		return getParams(getRequest(), key, false, false); 
-	} 
- 
+	}
+
+
+
+
+
+	protected int getInt(String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
+		return getInt(getRequest(), key, keyEncrypt, valueEncrypt);
+	}
+
+	protected int getInt(String key, boolean valueEncrypt) throws Exception{
+		return getInt(getRequest(), key, valueEncrypt);
+	}
+
+	protected int getInt(String key) throws Exception{
+		return getInt(getRequest(), key);
+	}
+
+	protected int getInt(String key, boolean keyEncrypt, boolean valueEncrypt, int def){
+		return getInt(getRequest(), key, keyEncrypt, valueEncrypt, def);
+	}
+
+	protected int getInt(String key, boolean valueEncrypt, int def) {
+		return getInt(getRequest(), key, valueEncrypt, def);
+	}
+
+	protected int getInt(String key, int def) {
+		return getInt(getRequest(), key, def);
+	}
+
 	 
 	protected boolean checkRequired(boolean keyEncrypt, boolean valueEncrypt, String... params) { 
 		return checkRequired(getRequest(), keyEncrypt, valueEncrypt, params); 
