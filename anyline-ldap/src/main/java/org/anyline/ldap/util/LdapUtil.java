@@ -34,7 +34,6 @@ public class LdapUtil {
 		} 
 		return util; 
 	}
-
 	/**
 	 * 登录
 	 * @param account 帐号
