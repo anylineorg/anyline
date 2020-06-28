@@ -35,22 +35,25 @@ public class Replace extends BaseBodyTag implements Cloneable{
 	private String to;
 	 public int doEndTag() throws JspException {
 		 String src = BasicUtil.nvl(value,body,"").toString().trim();
-			if(BasicUtil.isEmpty(src) || BasicUtil.isEmpty(from)){
-				return EVAL_BODY_INCLUDE;
-			}
-			if(BasicUtil.isEmpty(to)){
-				to = "";
-			}
-			JspWriter writer = null;
-			try {
-				writer = pageContext.getOut();
-				writer.print(src.replace(from, to));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}finally{
-				release();
-			}
-			return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容
+		 if(BasicUtil.isEmpty(src)){
+			 return EVAL_BODY_INCLUDE;
+		 }
+		 if(null == from || from.length()==0){
+			 return EVAL_BODY_INCLUDE;
+		 }
+		if(BasicUtil.isEmpty(to)){
+			to = "";
+		}
+		JspWriter writer = null;
+		try {
+			writer = pageContext.getOut();
+			writer.print(src.replace(from, to));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}finally{
+			release();
+		}
+		return EVAL_PAGE;// 标签执行完毕之后继续执行下面的内容
 	} 
  
  
