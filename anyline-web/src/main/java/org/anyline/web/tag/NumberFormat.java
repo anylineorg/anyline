@@ -53,14 +53,14 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 					BigDecimal minNum = new BigDecimal(min.toString());
 					if(minNum.compareTo(num) > 0){
 						num = minNum;
-						log.warn("[number format][超过最小值:{}]", min);
+						log.warn("[number format][value:{}][小于最小值:{}]", num,min);
 					}
 				}
 				if(BasicUtil.isNotEmpty(max)){
 					BigDecimal maxNum = new BigDecimal(max.toString());
 					if(maxNum.compareTo(num) < 0){
 						num = maxNum;
-						log.warn("[number format][超过最大值:{}]", max);
+						log.warn("[number format][value:{}][超过最大值:{}]",num, max);
 					}
 				} 
 				result = NumberUtil.format(num,format);
