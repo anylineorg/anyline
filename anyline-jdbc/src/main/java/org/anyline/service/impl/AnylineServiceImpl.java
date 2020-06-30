@@ -160,7 +160,7 @@ public class AnylineServiceImpl implements AnylineService {
         DataSet set = null;
         src = BasicUtil.compressionSpace(src);
         conditions = BasicUtil.compressionSpace(conditions);
-        if(null == cache){
+        if(null == cache || "true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
             set = querys(src, configs, conditions);
         }else{
             if(null != cacheProvider){
