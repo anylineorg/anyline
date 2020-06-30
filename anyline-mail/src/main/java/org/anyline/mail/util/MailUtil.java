@@ -16,9 +16,9 @@ public class MailUtil {
 	private static final Logger log = LoggerFactory.getLogger(MailUtil.class); 
 	private MailConfig config = null; 
 	private Properties props = new Properties(); 
-	private static Hashtable<String, MailUtil> instances = new Hashtable<String, MailUtil>(); 
-	 
-	 
+	private static Hashtable<String, MailUtil> instances = new Hashtable<String, MailUtil>();
+
+
 	public MailConfig getConfig(){ 
 		return config; 
 	} 
@@ -65,9 +65,9 @@ public class MailUtil {
 			msg.setContent(content + "", "text/html;charset=UTF-8"); 
 			msg.saveChanges(); 
 			Transport transport = mailSession.getTransport("smtp"); 
-			transport.connect(config.HOST, 
+			transport.connect(config.HOST,
 					config.ACCOUNT, 
-					config.PASSWORD); 
+					config.PASSWORD);
 			transport.sendMessage(msg, msg.getAllRecipients()); 
 			transport.close(); 
 		} catch (Exception e) { 
@@ -78,6 +78,6 @@ public class MailUtil {
 		return true; 
 	} 
 	public boolean send(String to, String title, String content) { 
-		return send(config.USERNAME, to, title, content); 
+		return send(config.USERNAME, to, title, content);
 	} 
 }
