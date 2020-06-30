@@ -1330,7 +1330,7 @@ public class BeanUtil {
  
  
 	/** 
-	 * 差值最小的成员下标 
+	 * 集合中与value差值最小的成员的下标
 	 * @param array  array
 	 * @param value  value
 	 * @return return
@@ -1634,7 +1634,7 @@ public class BeanUtil {
  
 	public static String parseFinalValue(Object obj, String key){ 
 		if(null == obj){ 
-			return key; 
+			return key;
 		} 
 		String value = key; 
 		if(BasicUtil.isNotEmpty(key)){ 
