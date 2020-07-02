@@ -420,6 +420,51 @@ public class AbstractBasicController{
 			return def;
 		}
 	}
+
+
+
+
+	protected double getDouble(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
+		String val = getParam(request,key, keyEncrypt, valueEncrypt);
+		return Double.parseDouble(val);
+	}
+
+	protected double getDouble(HttpServletRequest request, String key, boolean valueEncrypt) throws Exception{
+		String val = getParam(request,key, valueEncrypt);
+		return Double.parseDouble(val);
+	}
+
+	protected double getDouble(HttpServletRequest request, String key) throws Exception{
+		String val = getParam(request,key);
+		return Double.parseDouble(val);
+	}
+
+	protected double getDouble(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, double def){
+		String val = getParam(request,key, keyEncrypt, valueEncrypt);
+		try {
+			return Double.parseDouble(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
+	protected double getDouble(HttpServletRequest request, String key, boolean valueEncrypt, double def) {
+		String val = getParam(request,key, valueEncrypt);
+		try {
+			return Double.parseDouble(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
+	protected double getDouble(HttpServletRequest request, String key, double def) {
+		String val = getParam(request,key);
+		try {
+			return Double.parseDouble(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
 	/** 
 	 * 按PageNavi预订格式<br> 
 	 * 从HttpServletRequest中提取分布数据 
