@@ -383,7 +383,33 @@ public class AnylineController extends AbstractBasicController {
 		return getInt(getRequest(), key, def);
 	}
 
-	 
+
+
+	protected double getDouble(String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
+		return getDouble(getRequest(), key, keyEncrypt, valueEncrypt);
+	}
+
+	protected double getDouble(String key, boolean valueEncrypt) throws Exception{
+		return getDouble(getRequest(), key, valueEncrypt);
+	}
+
+	protected double getDouble(String key) throws Exception{
+		return getDouble(getRequest(), key);
+	}
+
+	protected double getDouble(String key, boolean keyEncrypt, boolean valueEncrypt, double def){
+		return getDouble(getRequest(), key, keyEncrypt, valueEncrypt, def);
+	}
+
+	protected double getDouble(String key, boolean valueEncrypt, double def) {
+		return getDouble(getRequest(), key, valueEncrypt, def);
+	}
+
+	protected double getDouble(String key, double def) {
+		return getDouble(getRequest(), key, def);
+	}
+
+
 	protected boolean checkRequired(boolean keyEncrypt, boolean valueEncrypt, String... params) { 
 		return checkRequired(getRequest(), keyEncrypt, valueEncrypt, params); 
 	} 
