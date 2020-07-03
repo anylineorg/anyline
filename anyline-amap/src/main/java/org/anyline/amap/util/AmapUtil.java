@@ -728,7 +728,7 @@ public class AmapUtil {
 	} 
 	/** 
 	 * 按坐标查地址 
-	 * @param location  location
+	 * @param location  经度在前，纬度在后，经纬度间以“,”分割
 	 * @return return
 	 */ 
 	public DataRow regeo(String location){ 
@@ -758,7 +758,10 @@ public class AmapUtil {
 			e.printStackTrace(); 
 		} 
 		return row; 
-	} 
+	}
+	public DataRow regeo(String lon, String lat){
+		return regeo(lon+","+lat);
+	}
 	/** 
 	 * 根据地址查坐标 
 	 * @param address  address
