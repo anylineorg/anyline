@@ -28,20 +28,20 @@ public class RedisUtil {
     public String key(String key){
         return prefix + key;
     }
-    public void set(String key, String value){
-        cluster.set(key(key),value);
+    public String set(String key, String value){
+       return cluster.set(key(key),value);
     }
-    public void setex(String key, int seconds, String value){
-        cluster.setex(key(key), seconds, value);
+    public String setex(String key, int seconds, String value){
+        return cluster.setex(key(key), seconds, value);
     }
     public String get(String key){
         return cluster.get(key(key));
     }
-    public void delete(String key){
-        cluster.del(key(key));
+    public Long delete(String key){
+        return cluster.del(key(key));
     }
-    public void string(String key, String value){
-        cluster.set(key(key),(String)value);
+    public String string(String key, String value){
+        return cluster.set(key(key),(String)value);
     }
     public String string(String key){
         return cluster.get(key(key));
@@ -49,15 +49,16 @@ public class RedisUtil {
     public boolean exists(String key){
         return cluster.exists(key(key));
     }
-    public void object(String key, Object value){
+    public String object(String key, Object value){
         key = key(key);
         if(null != value){
             if(value instanceof String){
-                cluster.set(key,(String)value);
+               return cluster.set(key,(String)value);
             }else{
-                cluster.set(key.getBytes(), BeanUtil.serialize(value));
+               return cluster.set(key.getBytes(), BeanUtil.serialize(value));
             }
         }
+        return null;
     }
     public Object object(String key){
         Object result = null;
