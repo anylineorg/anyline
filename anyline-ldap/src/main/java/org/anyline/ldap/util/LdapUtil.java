@@ -86,9 +86,11 @@ public class LdapUtil {
 	/**
 	 * 注册用户
 	 * @param name 用户名
+	 * @param password 密码
+	 * @param attributes 其他属性
 	 * @return boolean
 	 */
-	public boolean addUser(String name) {
+	public boolean addUser(String name, String password, Map<String,String> attributes) {
 		try {
 			BasicAttributes attrs = new BasicAttributes();
 			BasicAttribute objclassSet = new BasicAttribute("objectClass");
@@ -96,6 +98,17 @@ public class LdapUtil {
 			objclassSet.add("employeeID");
 			attrs.put(objclassSet);
 			attrs.put("ou", name);
+			List<String> keys = BeanUtil.getMapKeys(attributes);
+			for(String key:keys){
+				attrs.put(key, attributes.get(key));
+			}
+			byte[] unicodePassword = null;
+			try {
+				unicodePassword = password.getBytes("UTF-16LE");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			attrs.put("unicodePwd", unicodePassword);
 			dc.createSubcontext("ou=" + name + "," + config.ROOT, attrs);
 			return true;
 		} catch (Exception e) {
@@ -104,6 +117,22 @@ public class LdapUtil {
 		}
 	}
 
+	/**
+	 * 移动到新ou
+	 * @param dn dn
+	 * @param ou ou
+	 * @return boolean
+	 */
+	public boolean changeOU(String dn, String ou) {
+		String newDN = dn.split(",")[0] + "," + ou;
+		try {
+			dc.rename(dn, newDN);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	/**
 	 * 添加部门
 	 * @param name 名称
