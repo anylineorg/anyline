@@ -13,12 +13,13 @@ public class LdapConfig extends AnylineConfig{
 	public String ADDRESS;
 	public int PORT = 389;
 	public String DOMAIN;
+	public String ROOT;
 	public String SECURITY_AUTHENTICATION;
-	public String URL; // ldap:{ADDRESS}:PORT
+	public String URL; // ldap:{ADDRESS}:{PORT}
 	static{ 
 		init(); 
-		debug(); 
-	} 
+		debug();
+}
 	/**
 	 * 解析配置文件内容
 	 * @param content 配置文件内容
