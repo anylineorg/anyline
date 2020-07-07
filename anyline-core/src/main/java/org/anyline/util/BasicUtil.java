@@ -545,8 +545,27 @@ public class BasicUtil {
  
 	public static String fillChar(String src, int len) { 
 		return fillChar(src, "0", len); 
-	} 
- 
+	}
+
+
+
+	public static String fillLChar(int src, String chr, int len) {
+		return fillLChar(src+"", chr, len);
+	}
+
+	public static String fillRChar(int src, String chr, int len) {
+		 return fillRChar(src+"", chr, len);
+	}
+
+	public static String fillChar(int src, String chr, int len) {
+		return fillChar(src+"", chr, len);
+	}
+
+	public static String fillChar(int src, int len) {
+		return fillChar(src+"", len);
+	}
+
+
 	/** 
 	 * 提取HashMap的key 
 	 *  
