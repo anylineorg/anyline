@@ -916,13 +916,18 @@ public class HttpUtil {
 		if(null == url){
 			return null;
 		}
-		url = url.replaceAll("http://", ""); 
-		int idx = url.indexOf("/"); 
-		if (idx != -1) { 
-			url = url.substring(0, idx); 
-		} 
-		url = "http://" + url; 
-		return url; 
+		String str = url.replaceAll("http://", "").replaceAll("https://", "").replaceAll("//", "");
+		int idx = str.indexOf("/");
+		if (idx != -1) {
+			str = str.substring(0, idx);
+		}
+		if(url.startsWith("https")){
+			return "https://" + str;
+		}else if(url.startsWith("//")){
+			return "//" + str;
+		}else {
+			return "http://" + str;
+		}
 	} 
 	/** 
 	 * 从URL中提取文件目录(删除查询参数) 
