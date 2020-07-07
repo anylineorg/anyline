@@ -1306,16 +1306,17 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 删除指定的key
+	 * 不和remove命名 避免调用remoate("ID","CODE")时与HashMap.remove(Object key, Object value) 冲突
 	 * @param keys keys
 	 * @return return
 	 */
-	public DataRow remove(String ... keys){
+	public DataRow removes(String ... keys){
 		if(null != keys){
 			for(String key:keys){
 				if(null != key){
 					super.remove(putKey(key));
+					updateColumns.remove(putKey(key));
 				}
-				updateColumns.remove(putKey(key));
 			}
 		}
 		return this;
