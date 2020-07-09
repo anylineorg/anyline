@@ -1215,7 +1215,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public DataSet removes(String... keys) {
         for (DataRow row : rows) {
-            row.remove(keys);
+            row.removes(keys);
         }
         return this;
     }
