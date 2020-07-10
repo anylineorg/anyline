@@ -1,8 +1,10 @@
 package org.anyline.alipay.util; 
  
-import java.util.Hashtable; 
- 
-import org.anyline.alipay.entity.AlipayTradeOrder; 
+import java.util.Hashtable;
+
+import com.sun.deploy.net.HttpUtils;
+import com.sun.deploy.net.URLEncoder;
+import org.anyline.alipay.entity.AlipayTradeOrder;
 import org.anyline.alipay.entity.AlipayTradeQuery; 
 import org.anyline.alipay.entity.AlipayTradeQueryResult; 
 import org.anyline.alipay.entity.AlipayTransfer; 
@@ -188,5 +190,16 @@ public class AlipayUtil {
 			log.warn("[单笔转账到支付宝账户查询][data:{}][result:{}]", json,BeanUtil.object2json(result)); 
 		} 
 		return result; 
-	} 
+	}
+
+	public static String ceateAuthUrl(String key, String redirect, String state){
+		try {
+			redirect = URLEncoder.encode(redirect, "UTF-8");
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		AlipayConfig config = AlipayConfig.getInstance(key);
+		String url = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+config.APP_ID+"&scope=auth_user&redirect_uri="+redirect+"&state="+state;
+		return url;
+	}
 } 
