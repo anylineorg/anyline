@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--公众平台配置-->
 <configs>
+	<!-- V2版本 -->
 	<config key="default">
 		<!-- 在商户平台的产品中心/开发配置/商户信息/商户号
 		公众号网页中调起支付的URL也需要在这个页面的支付配置中设置
@@ -18,5 +19,14 @@
 		<property key="KEY_STORE_PASSWORD">143*****402</property>
 		<!-- 支付到银行卡公钥文件 -->
 		<property key="BANK_RSA_PUBLIC_KEY_FILE"></property>
+	</config>
+
+
+
+	<!-- V3版本 -->
+	<config key="default">
+		<!--V2基础上MCH_ID换成以下两个参数-->
+		<property key="SP_MCHID">143*****402</property>
+		<property key="SUB_MCHID">143*****402</property>
 	</config>
 </configs> 
