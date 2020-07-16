@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 public class Replace extends BaseBodyTag implements Cloneable{ 
 	private static final long serialVersionUID = 1L; 
 	private String from;
+	private String separate;
 	private String to;
 	 public int doEndTag() throws JspException {
 		 String src = BasicUtil.nvl(value,body,"").toString().trim();
@@ -47,7 +48,17 @@ public class Replace extends BaseBodyTag implements Cloneable{
 		JspWriter writer = null;
 		try {
 			writer = pageContext.getOut();
-			writer.print(src.replace(from, to));
+			String result = "";
+			if(null!= separate){
+				String froms[] = from.split(separate);
+				result = src;
+				for(String item:froms){
+					result = result.replace(item, to);
+				}
+			}else {
+				result = src.replace(from, to);
+			}
+			writer.print(result);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally{
@@ -62,13 +73,21 @@ public class Replace extends BaseBodyTag implements Cloneable{
 		super.release();
 		value = null;
 		from = null;
-		to = null; 
+		to = null;
+		separate = null;
 	} 
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
 		return super.clone(); 
 	}
 
+	public String getSeparate() {
+		return separate;
+	}
+
+	public void setSeparate(String separate) {
+		this.separate = separate;
+	}
 
 	public String getFrom() {
 		return from;

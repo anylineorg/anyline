@@ -171,6 +171,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>separate</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>evl</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

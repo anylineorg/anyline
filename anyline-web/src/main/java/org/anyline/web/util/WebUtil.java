@@ -1050,28 +1050,30 @@ public class WebUtil {
 		if(null != buffer){
 			return buffer;
 		}
-		int len = request.getContentLength();
-		if(len <=0){
-			return new byte[0];
-		}
-		buffer = new byte[len];
+		buffer = new byte[1024];
 		ServletInputStream in = null;
+		ByteArrayOutputStream out = null;
 		try {
 			in = request.getInputStream();
-			in.read(buffer, 0, len);
+			out = new ByteArrayOutputStream();
+			int len;
+			while ((len = in.read(buffer)) != -1) {
+				out.write(buffer, 0, len);
+			}
+			buffer = out.toByteArray();
 			if(cache){
 				request.setAttribute("_anyline_request_read_cache_byte", buffer);
 			}
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-//			if (null != in) {
-//				try {
-//					in.close();
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//			}
+			if (null != out) {
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return buffer;
 	}
