@@ -50,41 +50,9 @@ public class WechatWapUtil {
 	public WechatWapConfig getConfig(){
 		return config; 
 	} 
-	/** 
-	 * 统一下单 
-	 * @param order  order
-	 * @return WechatPrePayResult
-	 * @throws Exception Exception
-	 */ 
-	public WechatPrePayResult unifiedorder(WechatPrePayOrder order) throws Exception{
-		return WechatUtil.unifiedorder(config,WechatConfig.TRADE_TYPE.MWEB,order);
-	} 
+
  
- 
- 
-	/** 
-	 * H5调起支付所需参数
-     * @param prepayid 预支付id(由统一下单接口返回)
-	 * @return DataRow
-	 */ 
-	public DataRow pay(String prepayid){
-		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("appid", config.APP_ID); 
-		params.put("partnerid", config.PAY_MCH_ID); 
-		params.put("prepayid", prepayid); 
-		params.put("package", "Sign=WXPay"); 
-		params.put("noncestr", BasicUtil.getRandomUpperString(32)); 
-		params.put("timestamp", System.currentTimeMillis()/1000+""); 
-		String sign = WechatUtil.sign(config.PAY_API_SECRET,params);
-		params.put("sign", sign); 
-		DataRow row = new DataRow(params); 
-		row.put("packagevalue", row.get("package")); 
-		row.remove("package"); 
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
-			log.warn("[WAP调起微信支付][参数:{}]", row.toJSON());
-		} 
-		return row; 
-	}
+
 
 	public WechatAuthInfo getAuthInfo(String code){
 		return WechatUtil.getAuthInfo(config, code);

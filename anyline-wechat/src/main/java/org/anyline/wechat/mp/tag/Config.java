@@ -28,11 +28,9 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.FileUtil;
 import org.anyline.web.tag.BaseBodyTag;
 import org.anyline.wechat.mp.util.WechatMPUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 /**
  * 
  * 微信 wx.config

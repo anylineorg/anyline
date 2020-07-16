@@ -48,6 +48,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>appid</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>fail</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>

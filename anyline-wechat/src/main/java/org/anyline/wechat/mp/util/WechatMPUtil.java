@@ -62,84 +62,7 @@ public class WechatMPUtil extends WechatUtil {
 	public WechatMPConfig getConfig() { 
 		return config;
 	} 
- 
-	/** 
-	 * 统一下单 
-	 * @param order  order
-	 * @return return
-	 * @throws Exception Exception
-	 */ 
-	public WechatPrePayResult unifiedorder(WechatPrePayOrder order) throws Exception{
-		return WechatUtil.unifiedorder(config,WechatConfig.TRADE_TYPE.JSAPI, order);
-	}
 
-	/**
-	 * 退款申请
-	 * @param refund  refund
-	 * @return return
-	 */
-	public WechatRefundResult refund(WechatRefund refund){
-		return WechatUtil.refund(config, refund);
-	}
-
-	/** 
-	 * 发送红包 
-	 * @param pack  pack
-	 * @return return
-	 */ 
-	public WechatRedpackResult sendRedpack(WechatRedpack pack){
-		return WechatUtil.sendRedpack(config, pack);
-	} 
- 
-	/** 
-	 * 发送裂变红包 
-	 * @param pack  pack
-	 * @return return
-	 */ 
-	public WechatFissionRedpackResult sendRedpack(WechatFissionRedpack pack){
-		return WechatUtil.sendRedpack(config,pack);
-	} 
-	/** 
-	 * 企业付款 
-	 * @param transfer  transfer
-	 * @return return
-	 */ 
-	public WechatEnterpriseTransferResult transfer(WechatEnterpriseTransfer transfer){
-		return WechatUtil.transfer(config, transfer);
-	} 
-	/** 
-	 * 企业付款到银行卡 
-	 * @param transfer  transfer
-	 * @return return
-	 */ 
-	public WechatEnterpriseTransferBankResult transfer(WechatEnterpriseTransferBank transfer){
-		return WechatUtil.transfer(config, transfer);
-	} 
-	/** 
-	 * JSAPI调起支付所需参数
-	 * @param prepayid 预支付id(由统一下单接口返回)
-	 * @return return
-	 */ 
-	public DataRow callUpParam(String prepayid){
-		String timestamp = System.currentTimeMillis()/1000+""; 
-		String random = BasicUtil.getRandomLowerString(20); 
-		String pkg = "prepay_id="+prepayid; 
-		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("package", pkg); 
-		params.put("timeStamp", timestamp); 
-		params.put("appId", config.APP_ID);
-		params.put("nonceStr", random); 
-		params.put("signType", "MD5"); 
-		String sign = WechatUtil.sign(config.PAY_API_SECRET, params);
-		params.put("paySign", sign); 
-		 
-		DataRow row = new DataRow(params); 
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
-			log.warn("[jsapi调起微信支付][参数:{}]", row.toJSON());
-		} 
-		return row; 
-	} 
- 
 	 
 	public String getAccessToken(){ 
 		return WechatUtil.getAccessToken(config);
@@ -283,14 +206,6 @@ public class WechatMPUtil extends WechatUtil {
 			return null;
 		}
 		return url;
-	}
-
-	/** 
-	 * 获取RSA公钥 
-	 * @return return
-	 */ 
-	public String getPublicKey() { 
-		return WechatUtil.getPublicKey(config);
 	}
 
 

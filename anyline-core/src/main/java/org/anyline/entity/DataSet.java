@@ -264,7 +264,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * 从begin开始截断到end,方法执行将改变现在DataSet长度
+     * 从begin开始截断到end,方法执行将改变原DataSet长度
      *
      * @param begin 开始位置
      * @param end   结束位置
@@ -296,11 +296,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return DataSet
      */
     public DataSet truncates(int begin) {
-        return truncates(begin, rows.size() - 1);
+        if (begin < 0) {
+            begin = rows.size() + begin;
+            int end = rows.size() - 1;
+            return truncates(begin, end);
+        } else {
+            return truncates(begin, rows.size() - 1);
+        }
     }
 
     /**
-     * 从begin开始截断到最后一个并返回其中一个DataRow
+     * 从begin开始截断到最后一个并返回其中第一个DataRow
      *
      * @param begin 开始位置
      * @return DataRow
@@ -310,7 +316,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * 从begin开始截断到end位置并返回其中一个DataRow
+     * 从begin开始截断到end位置并返回其中第一个DataRow
      *
      * @param begin 开始位置
      * @param end   结束位置
@@ -1105,7 +1111,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * 合并key值 以connector连接
+     * 合并key例的值 以connector连接
      *
      * @param key       key
      * @param connector connector

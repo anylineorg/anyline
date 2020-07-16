@@ -28,7 +28,7 @@ import javax.servlet.jsp.JspWriter;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.web.tag.BaseBodyTag;
-import org.anyline.wechat.mp.util.WechatMPUtil;
+import org.anyline.wechat.pay.util.WechatPayUtil;
 import org.anyline.wechat.util.WechatUtil;
 
 /**
@@ -42,26 +42,27 @@ public class Pay extends BaseBodyTag {
 	private String prepay= "";
 	private String success = null;
 	private String fail = null;
-	private String key; 
-	public int doEndTag() throws JspException { 
+	private String appid = null;
+	private String key;
+	public int doEndTag() throws JspException {
 		try{
-			WechatMPUtil util = WechatMPUtil.getInstance(key);
+			WechatPayUtil util = WechatPayUtil.getInstance(key);
 			String timestamp = System.currentTimeMillis()/1000+"";
 			String random = BasicUtil.getRandomLowerString(20);
 			String pkg = "prepay_id="+prepay;
 			Map<String,Object> params = new HashMap<String,Object>();
 			params.put("package", pkg);
 			params.put("timeStamp", timestamp);
-			params.put("appId", util.getConfig().APP_ID);
+			params.put("appId", appid);
 			params.put("nonceStr", random);
 			params.put("signType", "MD5");
-			String sign = WechatUtil.sign(util.getConfig().PAY_API_SECRET, params);
+			String sign = WechatUtil.sign(util.getConfig().API_SECRET, params);
 			StringBuilder builder = new StringBuilder();
 			
 			builder.append("<script language=\"javascript\">\n");
 			builder.append("	function onBridgeReady() {\n");
 			builder.append("		WeixinJSBridge.invoke('getBrandWCPayRequest', {\n");
-			builder.append("			'appId':'").append(util.getConfig().APP_ID).append("',\n");
+			builder.append("			'appId':'").append(appid).append("',\n");
 			builder.append("			'timeStamp':'").append(timestamp).append("',\n");
 			builder.append("			'nonceStr':'").append(random).append("',\n");
 			builder.append("			'package':'").append(pkg).append("',\n");
@@ -102,6 +103,15 @@ public class Pay extends BaseBodyTag {
 		} 
 		return EVAL_PAGE; 
 	}
+
+	public String getAppid() {
+		return appid;
+	}
+
+	public void setAppid(String appid) {
+		this.appid = appid;
+	}
+
 	public boolean isDebug() {
 		return debug;
 	}
