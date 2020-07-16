@@ -131,7 +131,10 @@ public class Auth extends BaseBodyTag {
 					url =  QQConfig.URL_OAUTH + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state+",app:"+key;
 				}
 			} else if("alipay".equalsIgnoreCase(type)) {
-				url = AlipayUtil.ceateAuthUrl(key,redirect,state);
+				if(BasicUtil.isEmpty(scope)){
+					scope = "auth_base";
+				}
+				url = AlipayUtil.getInstance(key).ceateAuthUrl(redirect,scope,state);
 			}
 			log.warn("[第三方登录][result:{}][url:{}]",result,url);
 			if(result){
