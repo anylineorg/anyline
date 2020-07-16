@@ -13,7 +13,8 @@ public class WechatPayConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-wechat-pay.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public String API_SECRET 				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
-	public String MCH_ID 					= "" ; //商家号
+	public String SP_MCHID 					= "" ; //服务商商户号
+	public String SUB_MCHID 				= "" ; //子商户商户号
 	public String KEY_STORE_FILE 			= "" ; //证书文件
 	public String KEY_STORE_PASSWORD 		= "" ; //证书密码
 	public String NOTIFY_URL				= "" ; //微信支付统一接口的回调action
