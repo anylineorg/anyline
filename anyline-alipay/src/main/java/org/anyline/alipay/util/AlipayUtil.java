@@ -1,17 +1,19 @@
 package org.anyline.alipay.util; 
  
+import java.net.URLEncoder;
 import java.util.Hashtable;
 
-import com.sun.deploy.net.HttpUtils;
-import com.sun.deploy.net.URLEncoder;
+import com.alipay.api.request.*;
+import com.alipay.api.response.*;
 import org.anyline.alipay.entity.AlipayTradeOrder;
 import org.anyline.alipay.entity.AlipayTradeQuery; 
 import org.anyline.alipay.entity.AlipayTradeQueryResult; 
 import org.anyline.alipay.entity.AlipayTransfer; 
 import org.anyline.alipay.entity.AlipayTransferQuery; 
 import org.anyline.alipay.entity.AlipayTransferQueryResult; 
-import org.anyline.alipay.entity.AlipayTransferResult; 
-import org.anyline.util.BasicUtil; 
+import org.anyline.alipay.entity.AlipayTransferResult;
+import org.anyline.entity.DataRow;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil; 
 import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory; 
@@ -19,24 +21,29 @@ import org.slf4j.LoggerFactory;
 import com.alipay.api.AlipayApiException; 
 import com.alipay.api.AlipayClient; 
 import com.alipay.api.DefaultAlipayClient; 
-import com.alipay.api.domain.AlipayTradeAppPayModel; 
-import com.alipay.api.request.AlipayFundTransOrderQueryRequest; 
-import com.alipay.api.request.AlipayFundTransToaccountTransferRequest; 
-import com.alipay.api.request.AlipayTradeAppPayRequest; 
-import com.alipay.api.request.AlipayTradeQueryRequest; 
-import com.alipay.api.request.AlipayTradeWapPayRequest; 
-import com.alipay.api.response.AlipayFundTransOrderQueryResponse; 
-import com.alipay.api.response.AlipayFundTransToaccountTransferResponse; 
-import com.alipay.api.response.AlipayTradeAppPayResponse; 
-import com.alipay.api.response.AlipayTradeQueryResponse; 
- 
+import com.alipay.api.domain.AlipayTradeAppPayModel;
+
 public class AlipayUtil { 
 	private static final Logger log = LoggerFactory.getLogger(AlipayUtil.class); 
  
 	private AlipayClient client = null; 
-	private AlipayConfig config = null; 
+	private AlipayConfig config = null;
+	public AlipayUtil(){
+	}
+	public AlipayUtil(AlipayConfig config){
+		this.config = config;
+		client = new DefaultAlipayClient(
+				"https://openapi.alipay.com/gateway.do",
+				config.getString("APP_ID"),
+				config.getString("APP_PRIVATE_KEY"),
+				config.getString("DATA_FORMAT"),
+				config.getString("ENCODE"),
+				config.getString("ALIPAY_PUBLIC_KEY"),
+				config.getString("SIGN_TYPE"));
+	}
 	private static Hashtable<String, AlipayUtil> instances = new Hashtable<String, AlipayUtil>(); 
- 
+
+
 	public static AlipayUtil getInstance() { 
 		return getInstance("default"); 
 	} 
@@ -46,24 +53,23 @@ public class AlipayUtil {
 			key = "default"; 
 		} 
 		AlipayUtil util = instances.get(key); 
-		if (null == util) { 
-			util = new AlipayUtil(); 
-			AlipayConfig config = AlipayConfig.getInstance(key); 
-			util.config = config; 
-			util.client = new DefaultAlipayClient( 
-					"https://openapi.alipay.com/gateway.do", 
-					config.getString("APP_ID"), 
-					config.getString("APP_PRIVATE_KEY"), 
-					config.getString("DATA_FORMAT"), 
-					config.getString("ENCODE"), 
-					config.getString("ALIPAY_PUBLIC_KEY"), 
-					config.getString("SIGN_TYPE")); 
+		if (null == util) {
+			AlipayConfig config = AlipayConfig.getInstance(key);
+
+			util = new AlipayUtil(config);
+
 			instances.put(key, util); 
 		} 
  
 		return util; 
-	} 
- 
+	}
+
+	public static AlipayUtil reg(String key, DataRow config){
+		AlipayConfig conf = AlipayConfig.reg(key, config);
+		AlipayUtil util = new AlipayUtil(conf);
+		instances.put(key, util);
+		return util;
+	}
 	/** 
 	 * app支付 
 	 *  
@@ -107,10 +113,13 @@ public class AlipayUtil {
 		String result = ""; 
 		return result; 
 	} 
-	public String createWapOrder(AlipayTradeOrder order){ 
+	public String createWapOrder(AlipayTradeOrder order, String callback){
 		String result = ""; 
-		AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();//创建API对应的request 
-	    alipayRequest.setReturnUrl(config.RETURN_URL); 
+		AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();//创建API对应的request
+		if(BasicUtil.isEmpty(callback)){
+			callback = config.RETURN_URL;
+		}
+	    alipayRequest.setReturnUrl(callback);
 	    alipayRequest.setNotifyUrl(config.NOTIFY_URL); 
 	    alipayRequest.setBizContent(BeanUtil.object2json(order));//填充业务参数 
 	    try { 
@@ -120,13 +129,13 @@ public class AlipayUtil {
 	    } 
 		return result; 
 	} 
-	public String createWapOrder(String subject, String body, String price, String order){ 
+	public String createWapOrder(String subject, String body, String price, String order, String callback){
 		AlipayTradeOrder tradeOrder = new AlipayTradeOrder(); 
 		tradeOrder.setSubject(subject); 
 		tradeOrder.setBody(body); 
 		tradeOrder.setTotal_amount(price); 
 		tradeOrder.setOut_trade_no(order); 
-		return createWapOrder(tradeOrder); 
+		return createWapOrder(tradeOrder, callback);
 	} 
 	/** 
 	 * 交易状态查询 
@@ -192,14 +201,52 @@ public class AlipayUtil {
 		return result; 
 	}
 
-	public static String ceateAuthUrl(String key, String redirect, String state){
+	/**
+	 * 创建登录连接
+	 * @param redirect 回调地址
+	 * @param state 状态保持
+	 * @param scope 获取信息范围
+	 * @return String
+	 */
+	public String ceateAuthUrl(String redirect, String scope, String state){
 		try {
 			redirect = URLEncoder.encode(redirect, "UTF-8");
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		AlipayConfig config = AlipayConfig.getInstance(key);
-		String url = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+config.APP_ID+"&scope=auth_user&redirect_uri="+redirect+"&state="+state;
+		String url = "https://openauth.alipay.com/oauth2/publicAppAuthorize.htm?app_id="+config.APP_ID+"&scope="+scope+"&redirect_uri="+redirect+"&state="+state;
 		return url;
 	}
+
+	/**
+	 * 用户信息
+	 * @param code 回调参数auth_code
+	 * @return
+	 */
+	public DataRow getUserInfo(String code){
+		DataRow user = null;
+		AlipaySystemOauthTokenRequest req = new AlipaySystemOauthTokenRequest();
+		req.setCode(code);
+		req.setGrantType("authorization_code");
+		try {
+			AlipaySystemOauthTokenResponse oauthTokenResponse = client.execute(req);
+			String token = oauthTokenResponse.getAccessToken();
+			String userId = oauthTokenResponse.getAlipayUserId();
+			user = new DataRow();
+			user.put("USER_ID", userId);
+			//详细信息
+			AlipayUserInfoShareRequest infoReq = new AlipayUserInfoShareRequest();
+			AlipayUserInfoShareResponse infoRes = client.execute(infoReq, token);
+			if (infoRes.isSuccess()) {
+				user = DataRow.parseJson(infoRes.getBody()).getRow("alipay_user_info_share_response");
+			} else {
+				log.warn("[获取详细调用失败][code:{}][msg:{}]",infoRes.getSubCode(),infoRes.getSubMsg());
+			}
+		} catch (AlipayApiException e) {
+			//处理异常
+			e.printStackTrace();
+		}
+		return user;
+	}
+
 } 
