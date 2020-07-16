@@ -1,6 +1,5 @@
 package org.anyline.wechat.entity.v3;
- 
-import org.anyline.wechat.util.WechatConfig.TRADE_TYPE;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;

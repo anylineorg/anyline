@@ -62,12 +62,11 @@ public class WechatPayUtil {
 
     /**
      * 统一下单
-     * @param type  type
      * @param order  order
      * @return return
      * @throws Exception Exception
      */
-    public WechatPrePayResult unifiedorder(WechatConfig.TRADE_TYPE type, WechatPrePayOrder order) throws Exception{
+    public WechatPrePayResult unifiedorder(WechatPrePayOrder order) throws Exception{
         WechatPrePayResult result = null;
         order.setNonce_str(BasicUtil.getRandomLowerString(20));
         if(null == order.getAppid()){
@@ -88,7 +87,6 @@ public class WechatPayUtil {
         if(BasicUtil.isEmpty(order.getOut_trade_no())){
             throw new Exception("未设置交易单号");
         }
-        order.setTrade_type(type);
         Map<String, Object> map = BeanUtil.toMap(order);
         String sign = WechatUtil.sign(config.API_SECRET,map);
         map.put("sign", sign);
@@ -100,7 +98,7 @@ public class WechatPayUtil {
         if(ConfigTable.isDebug() && log.isWarnEnabled()){
             log.warn("[统一下单][xml:{}]", xml);
         }
-        String rtn = SimpleHttpUtil.post(WechatConfig.API_URL_UNIFIED_ORDER, xml);
+        String rtn = SimpleHttpUtil.post(WechatPayConfig.API_URL_UNIFIED_ORDER, xml);
 
         if(ConfigTable.isDebug() && log.isWarnEnabled()){
             log.warn("[统一下单][return:{}]", rtn);
@@ -186,7 +184,7 @@ public class WechatPayUtil {
             CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity reqEntity  = new StringEntity(xml);
             reqEntity.setContentType("application/x-www-form-urlencoded");
-            String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_REFUND, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[退款申请调用][result:{}", txt);
             }
@@ -246,7 +244,7 @@ public class WechatPayUtil {
             CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded");
-            String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_REDPACK, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[发送红包调用][result:{}]", txt);
             }
@@ -305,7 +303,7 @@ public class WechatPayUtil {
             CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded");
-            String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_SEND_GROUP_REDPACK, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[发送裂变红包调用][result:{}]", txt);
             }
@@ -359,7 +357,7 @@ public class WechatPayUtil {
             CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded");
-            String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[付款调用][result:{}]", txt);
             }
@@ -427,7 +425,7 @@ public class WechatPayUtil {
             CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded");
-            String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
+            String txt = HttpUtil.post(httpclient, WechatPayConfig.API_URL_COMPANY_TRANSFER_BANK, "UTF-8", reqEntity).getText();
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 log.warn("[付款调用][result:{}]", txt);
             }

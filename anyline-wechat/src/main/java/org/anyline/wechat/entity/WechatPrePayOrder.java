@@ -1,7 +1,8 @@
 package org.anyline.wechat.entity;
- 
-import org.anyline.wechat.util.WechatConfig.TRADE_TYPE;
- 
+
+
+import org.anyline.wechat.pay.util.WechatPayConfig;
+
 public class WechatPrePayOrder {
 	protected String appid				; //公众号ID(conf)	是	String(32)	wxd678efh567hg6787	微信支付分配的公众账号ID（企业号corpid即为此appId） 
 	protected String mch_id				; //商户号(conf)	是	String(32)	1230000109	微信支付分配的商户号
@@ -84,7 +85,7 @@ public class WechatPrePayOrder {
 	public String getTrade_type() { 
 		return trade_type; 
 	} 
-	public void setTrade_type(TRADE_TYPE trade_type) { 
+	public void setTrade_type(WechatPayConfig.TRADE_TYPE trade_type) {
 		this.trade_type = trade_type.getCode(); 
 	} 
 	public String getDevice_info() { 

@@ -10,6 +10,7 @@ import java.util.Hashtable;
 
 
 public class WechatPayConfig extends AnylineConfig{
+
 	public static String CONFIG_NAME = "anyline-wechat-pay.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public String API_SECRET 				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
