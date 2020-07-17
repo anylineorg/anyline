@@ -221,7 +221,7 @@ public class AlipayUtil {
 	/**
 	 * 用户信息
 	 * @param code 回调参数auth_code
-	 * @return
+	 * @return DataRow
 	 */
 	public DataRow getUserInfo(String code){
 		DataRow user = null;
