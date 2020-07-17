@@ -536,7 +536,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			for(String condition:conditions){ 
 				if(null == condition){ 
 					continue; 
-				} 
+				}
 				condition = condition.trim(); 
 				String up = condition.toUpperCase().replaceAll("\\s+", " ").trim(); 
 				if(up.startsWith("ORDER BY")){ 
