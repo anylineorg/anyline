@@ -143,11 +143,10 @@ public class WechatPayUtil {
 
     /**
      * 退款申请
-     * @param appid  appid
      * @param refund  refund
      * @return return
      */
-    public WechatRefundResult refund(String appid, WechatRefund refund) throws Exception{
+    public WechatRefundResult refund(WechatRefund refund) throws Exception{
         WechatRefundResult result = null;
         if(null == refund.getAppid()){
             throw new Exception("未设置appid");
