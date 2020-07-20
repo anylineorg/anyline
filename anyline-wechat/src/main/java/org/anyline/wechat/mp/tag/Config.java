@@ -25,10 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
+import org.anyline.entity.DataRow;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.web.tag.BaseBodyTag;
+import org.anyline.wechat.mp.util.WechatMPConfig;
 import org.anyline.wechat.mp.util.WechatMPUtil;
 
 /**
@@ -41,11 +43,15 @@ public class Config extends BaseBodyTag {
 	private boolean debug = false;
 	private String apis= "";
 	private String key = "";
+	private DataRow config = null;
 	private String server = ""; 
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		try{
 			WechatMPUtil util = WechatMPUtil.getInstance(key);
+			if(null == util && null != config){
+				util = WechatMPUtil.reg(key, config);
+			}
 			if(null != util){
 				String url = "";
 				if("auto".equals(server)){
@@ -116,6 +122,15 @@ public class Config extends BaseBodyTag {
 		} 
 		return EVAL_PAGE; 
 	}
+
+	public DataRow getConfig() {
+		return config;
+	}
+
+	public void setConfig(DataRow config) {
+		this.config = config;
+	}
+
 	public boolean isDebug() {
 		return debug;
 	}
