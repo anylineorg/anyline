@@ -1,4 +1,4 @@
-package org.anyline.wechat.entity.v3;
+package org.anyline.wechat.entity.v3.service;
 
 
 import java.util.ArrayList;
@@ -7,18 +7,53 @@ import java.util.List;
 import java.util.Map;
 
 public class WechatPrePayOrder {
-	private String appid						;//服务商公众号ID		string（32）	是	 服务商申请的公众号或移动应用appid。示例值：wx8888888888888888
-	private String mchid						;//服务商户号			string（32）	是	 服务商户号，由微信支付生成并下发示例值：1230000109
+	private String sp_appid						;//服务商公众号ID		string（32）	是	 服务商申请的公众号或移动应用appid。示例值：wx8888888888888888
+	private String sp_mchid						;//服务商户号			string（32）	是	 服务商户号，由微信支付生成并下发示例值：1230000109
+	private String sub_appid					;//子商户公众号ID		string（32）	否	 子商户申请的公众号或移动应用appid。示例值：wxd678efh567hg6999
+	private String sub_mchid					;//子商户号				string（32）	是	 子商户的商户号，有微信支付生成并下发。示例值：1900000109
 	private String description					;//商品描述				string（127）	是	 商品描述示例值：Image形象店-深圳腾大-QQ公仔
 	private String out_trade_no					;//商户订单号			string（32）	是	 商户系统内部订单号，只能是数字、大小写字母_-*且在同一个商户号下唯一，详见【商户订单号】。特殊规则：最小字符长度为6示例值：1217752501201407033233368018
 	private String time_expire					;//交易结束时间			string（64）	否	 订单失效时间，遵循rfc3339标准格式，格式为YYYY-MM-DDTHH:mm:ss+TIMEZONE，YYYY-MM-DD表示年月日，T出现在字符串中，表示time元素的开头，HH:mm:ss表示时分秒，TIMEZONE表示时区（+08:00表示东八区时间，领先UTC 8小时，即北京时间）。例如：2015-05-20T13:29:35+08:00表示，北京时间2015年5月20日 13点29分35秒。示例值：2018-06-08T10:34:56+08:00
 	private String attach						;//附加数据				string（128）	否	 附加数据，在查询API和支付通知中原样返回，可作为自定义参数使用示例值：自定义数据
 	private String notify_url					;//通知地址				string（256）	是	 通知URL必须为直接可访问的URL，不允许携带查询串。格式：URL示例值：https://www.weixin.qq.com/wxpay/pay.php
 	private String goods_tag					;//订单优惠标记			string（32）	否	 订单优惠标记示例值：WXG
+	private Map<String,Object> settle_info		;//结算信息profit_sharing,subsidy_amount
 	private Map<String,Object> amount			;//订单金额 total currency
 	private Map<String,Object> payer			;//支付者 sp_openid sub_openid
 	private Map<String,Object> detail			;
 	private Map<String,Object> scene_info		;//支付场景
+
+	public String getSp_appid() {
+		return sp_appid;
+	}
+
+	public void setSp_appid(String sp_appid) {
+		this.sp_appid = sp_appid;
+	}
+
+	public String getSp_mchid() {
+		return sp_mchid;
+	}
+
+	public void setSp_mchid(String sp_mchid) {
+		this.sp_mchid = sp_mchid;
+	}
+
+	public String getSub_appid() {
+		return sub_appid;
+	}
+
+	public void setSub_appid(String sub_appid) {
+		this.sub_appid = sub_appid;
+	}
+
+	public String getSub_mchid() {
+		return sub_mchid;
+	}
+
+	public void setSub_mchid(String sub_mchid) {
+		this.sub_mchid = sub_mchid;
+	}
 
 	public String getDescription() {
 		return description;
@@ -68,24 +103,21 @@ public class WechatPrePayOrder {
 		this.goods_tag = goods_tag;
 	}
 
+	public Map<String, Object> getSettle_info() {
+		return settle_info;
+	}
+
+	public void setSettle_info(Map<String, Object> settle_info) {
+		this.settle_info = settle_info;
+	}
+	public void setSettle_info(boolean profit_sharing, int subsidy_amount) {
+		this.settle_info = new HashMap<String,Object>();
+		settle_info.put("profit_sharing", profit_sharing);
+		settle_info.put("subsidy_amount", subsidy_amount);
+	}
+
 	public Map<String, Object> getAmount() {
 		return amount;
-	}
-
-	public String getAppid() {
-		return appid;
-	}
-
-	public void setAppid(String appid) {
-		this.appid = appid;
-	}
-
-	public String getMchid() {
-		return mchid;
-	}
-
-	public void setMchid(String mchid) {
-		this.mchid = mchid;
 	}
 
 	public void setAmount(Map<String, Object> amount) {
@@ -107,9 +139,10 @@ public class WechatPrePayOrder {
 	public void setPayer(Map<String, Object> payer) {
 		this.payer = payer;
 	}
-	public void setPayer(String openid) {
+	public void setPayer(String sp_openid, String sub_openid) {
 		this.payer = new HashMap<String,Object>();
-		payer.put("openid",openid);
+		payer.put("sp_openid",sp_openid);
+		payer.put("sub_openid",sub_openid);
 	}
 
 	public Map<String, Object> getDetail() {
