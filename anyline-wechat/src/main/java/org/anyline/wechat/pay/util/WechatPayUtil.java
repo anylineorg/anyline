@@ -50,8 +50,10 @@ public class WechatPayUtil {
         WechatPayUtil util = instances.get(key);
         if(null == util){
             WechatPayConfig config = WechatPayConfig.getInstance(key);
-            util = new WechatPayUtil(config);
-            instances.put(key, util);
+            if(null != config) {
+                util = new WechatPayUtil(config);
+                instances.put(key, util);
+            }
         }
         return util;
     }

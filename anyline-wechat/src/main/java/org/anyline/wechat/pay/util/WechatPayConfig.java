@@ -14,7 +14,10 @@ public class WechatPayConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-wechat-pay.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public String API_SECRET 				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
-	public String MCH_ID 					= "" ; //商家号
+	public String MCH_ID 					= "" ; //商户号
+	public String MCH_PRIVATE_SECRET		= "" ; //商户API私钥(保存在apiclient_key.pem也可以通过p12导出)
+	public String SP_MCHID 					= "" ; //服务商商户号(服务商模式)
+	public String SUB_MCHID 				= "" ; //子商户商户号(服务商模式)
 	public String KEY_STORE_FILE 			= "" ; //证书文件
 	public String KEY_STORE_PASSWORD 		= "" ; //证书密码
 	public String NOTIFY_URL				= "" ; //微信支付统一接口的回调action
@@ -51,13 +54,14 @@ public class WechatPayConfig extends AnylineConfig{
 
 	//支付方式
 	public static enum TRADE_TYPE{
-		JSAPI			{public String getCode(){return "JSAPI";} 		public String getName(){return "公从号";}},
-		APP				{public String getCode(){return "APP";} 		public String getName(){return "APP";}},
-		NATIVE			{public String getCode(){return "NATIVE";} 		public String getName(){return "原生扫码";}},
-		MICROPAY		{public String getCode(){return "MICROPAY";} 	public String getName(){return "刷卡";}},
-		MWEB			{public String getCode(){return "MWEB";} 		public String getName(){return "WAP";}};
+		JSAPI			{public String getCode(){return "JSAPI";} 		public String getApi(){return "jsapi";} 	public String getName(){return "公从号";}},
+		APP				{public String getCode(){return "APP";}  		public String getApi(){return "app";}		public String getName(){return "APP";}},
+		NATIVE			{public String getCode(){return "NATIVE";} 		public String getApi(){return "native";} 	public String getName(){return "原生扫码";}},
+		MICROPAY		{public String getCode(){return "MICROPAY";}  	public String getApi(){return "";}			public String getName(){return "刷卡";}},
+		MWEB			{public String getCode(){return "MWEB";}  		public String getApi(){return "h5";}		public String getName(){return "WAP";}};
 		public abstract String getName();
 		public abstract String getCode();
+		public abstract String getApi();
 	};
 	static{
 		init();

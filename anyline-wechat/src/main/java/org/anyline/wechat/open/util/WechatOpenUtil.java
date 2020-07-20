@@ -51,8 +51,10 @@ public class WechatOpenUtil {
 		WechatOpenUtil util = instances.get(key);
 		if(null == util){ 
 			WechatOpenConfig config = WechatOpenConfig.getInstance(key);
-			util = new WechatOpenUtil(config);
-			instances.put(key, util); 
+			if(null != config) {
+				util = new WechatOpenUtil(config);
+				instances.put(key, util);
+			}
 		} 
 		return util; 
 	} 

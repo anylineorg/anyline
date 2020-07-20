@@ -1,4 +1,4 @@
-package org.anyline.wechat.pay.util.v3;
+package org.anyline.wechat.pay.util.v3.service;
 
 import org.anyline.entity.DataRow;
 import org.anyline.net.HttpResult;
@@ -56,12 +56,10 @@ public class WechatPayUtil {
     public WechatPayConfig getConfig() {
         return config;
     }
-    public String unifiedorder(WechatPayConfig.TRADE_TYPE type, WechatPrePayOrder order){
-        return transactions(type,order);
-    }
-    public String transactions(WechatPayConfig.TRADE_TYPE type, WechatPrePayOrder order){
+
+    public String transactions(WechatPrePayOrder order){
         String prepay_id = null;
-        String url = "https://api.mch.weixin.qq.com/v3/pay/transactions/"+type.getApi();
+        String url = "https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi";
         api(url,BeanUtil.object2json(order));
         return prepay_id;
     }
@@ -74,7 +72,7 @@ public class WechatPayUtil {
         HttpResult result = HttpUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(params), "UTF-8"));
         headers = result.getHeaders();
         String requestId = headers.get("Request-ID");
-        System.out.print("pay result txt:"+result.getText());
+        System.out.print("txt:"+result.getText());
         return new String[]{result.getStatus()+"",requestId};
     }
 }

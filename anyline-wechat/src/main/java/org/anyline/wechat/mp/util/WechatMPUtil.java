@@ -52,9 +52,11 @@ public class WechatMPUtil extends WechatUtil {
 		} 
 		WechatMPUtil util = instances.get(key); 
 		if(null == util){ 
-			WechatMPConfig config = WechatMPConfig.getInstance(key); 
-			util = new WechatMPUtil(config); 
-			instances.put(key, util); 
+			WechatMPConfig config = WechatMPConfig.getInstance(key);
+			if(null != config) {
+				util = new WechatMPUtil(config);
+				instances.put(key, util);
+			}
 		} 
 		return util; 
 	} 
