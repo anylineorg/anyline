@@ -55,10 +55,10 @@ public class AlipayUtil {
 		AlipayUtil util = instances.get(key); 
 		if (null == util) {
 			AlipayConfig config = AlipayConfig.getInstance(key);
-
-			util = new AlipayUtil(config);
-
-			instances.put(key, util); 
+			if(null != config){
+				util = new AlipayUtil(config);
+				instances.put(key, util);
+			}
 		} 
  
 		return util; 
