@@ -896,6 +896,7 @@ public class WebUtil {
 	public static void setCookie(HttpServletResponse response, String key, String value, int expire){
 		Cookie cookie = new Cookie(key, value);
 		cookie.setMaxAge(expire);
+		cookie.setPath("/");
 		response.addCookie(cookie);
 	}
 
