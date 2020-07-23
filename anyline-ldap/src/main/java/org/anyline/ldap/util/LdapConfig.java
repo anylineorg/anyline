@@ -19,7 +19,7 @@ public class LdapConfig extends AnylineConfig{
 	static{ 
 		init(); 
 		debug();
-}
+	}
 	/**
 	 * 解析配置文件内容
 	 * @param content 配置文件内容
