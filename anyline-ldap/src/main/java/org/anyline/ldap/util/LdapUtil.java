@@ -46,12 +46,12 @@ public class LdapUtil {
 	 * @param password 密码
 	 * @return 是否登录成功
 	 */
-	public boolean login(String account, String password) {
+	public boolean login(String account, String password) throws Exception{
 		try{
 			connect(account, password).close();
 		}catch(Exception e){
 			log.warn("[ldap login][result:false][msg:{}]", e.getMessage());
-			return false;
+			throw e;
 		}
 		return true;
 	}
@@ -76,7 +76,6 @@ public class LdapUtil {
 			dc = new InitialLdapContext(env, null);//连接
 		}catch(NamingException e){
 			log.warn("[ldap connect][result:false][msg:{}]", e.getMessage());
-			e.printStackTrace();
 			throw e;
 		}
 		return dc;
