@@ -91,8 +91,9 @@ public class Text extends BaseBodyTag{
 			if(null != evl){
 				result = BasicUtil.evl(result,evl); 
 			}
-			
-			out.print(result);
+			if(BasicUtil.isNotEmpty(result)) {
+				out.print(result);
+			}
 		}catch(Exception e){ 
 		 
 		}finally{ 
