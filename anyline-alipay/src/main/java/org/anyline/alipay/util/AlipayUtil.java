@@ -224,6 +224,7 @@ public class AlipayUtil {
 	 * @return DataRow
 	 */
 	public DataRow getUserInfo(String code){
+		log.warn("[get user info][code:{}]",code);
 		DataRow user = null;
 		AlipaySystemOauthTokenRequest req = new AlipaySystemOauthTokenRequest();
 		req.setCode(code);
@@ -232,15 +233,22 @@ public class AlipayUtil {
 			AlipaySystemOauthTokenResponse oauthTokenResponse = client.execute(req);
 			String token = oauthTokenResponse.getAccessToken();
 			String userId = oauthTokenResponse.getAlipayUserId();
+			log.warn("[get user info][token:{}][user id:{}]",token,userId);
 			user = new DataRow();
 			user.put("USER_ID", userId);
 			//详细信息
-			AlipayUserInfoShareRequest infoReq = new AlipayUserInfoShareRequest();
-			AlipayUserInfoShareResponse infoRes = client.execute(infoReq, token);
-			if (infoRes.isSuccess()) {
-				user = DataRow.parseJson(infoRes.getBody()).getRow("alipay_user_info_share_response");
-			} else {
-				log.warn("[获取详细调用失败][code:{}][msg:{}]",infoRes.getSubCode(),infoRes.getSubMsg());
+			try {
+				AlipayUserInfoShareRequest infoReq = new AlipayUserInfoShareRequest();
+				AlipayUserInfoShareResponse infoRes = client.execute(infoReq, token);
+				if (infoRes.isSuccess()) {
+					user = DataRow.parseJson(infoRes.getBody()).getRow("alipay_user_info_share_response");
+				} else {
+					user = new DataRow();
+					user.put("USER_ID", userId);
+					log.warn("[获取详细调用失败][code:{}][msg:{}]", infoRes.getSubCode(), infoRes.getSubMsg());
+				}
+			}catch (Exception e){
+				e.printStackTrace();
 			}
 		} catch (AlipayApiException e) {
 			//处理异常
