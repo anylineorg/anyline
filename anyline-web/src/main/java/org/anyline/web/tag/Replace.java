@@ -29,12 +29,7 @@ import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * 以separate分隔from，每个条目换成to,如果to中也有separate并且条目长度与from一致则按顺序替换
- * value = "ABC123"  from = "ABC" to="a" result = "a123"
- * value = "ABC123" from = "A,B,C"  separate="," to = "a" result = "aaa123"
- * value = "ABC123" from = "A,B,C"  separate="," to = "a,b,c" result = "abc123"
- */
+
 public class Replace extends BaseBodyTag implements Cloneable{ 
 	private static final long serialVersionUID = 1L; 
 	private String from;
@@ -57,6 +52,12 @@ public class Replace extends BaseBodyTag implements Cloneable{
 			writer = pageContext.getOut();
 			String result = "";
 			if(null!= separate){
+				/**
+				 * 以separate分隔from，每个条目换成to,如果to中也有separate并且条目长度与from一致则按顺序替换
+				 * value = "ABC123"  from = "ABC" to="a" result = "a123"
+				 * value = "ABC123" from = "A,B,C"  separate="," to = "a" result = "aaa123"
+				 * value = "ABC123" from = "A,B,C"  separate="," to = "a,b,c" result = "abc123"
+				 */
 				String froms[] = from.split(separate,-1);
 				String tos[] = to.split(separate,-1);
 

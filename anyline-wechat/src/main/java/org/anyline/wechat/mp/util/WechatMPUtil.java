@@ -205,6 +205,7 @@ public class WechatMPUtil extends WechatUtil {
 			url =  WechatConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="
 					+scope.getCode()+"&state="+state+",app:"+key+"#wechat_redirect";
 		}catch(Exception e){
+			e.printStackTrace();
 			return null;
 		}
 		return url;
