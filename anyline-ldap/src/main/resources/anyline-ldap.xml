@@ -11,5 +11,9 @@
 		<property key="ROOT"></property>
 		<!--验证的类型 none,simple,strong-->
 		<property key="SECURITY_AUTHENTICATION">simple</property>
+		<!--连接超时(毫秒)-->
+		<property key="CONNECT_TIMEOUT">5000</property>
+		<!--读取超时(毫秒)-->
+		<property key="READ_TIMEOUT">5000</property>
 	</config>
 </configs>

@@ -16,6 +16,8 @@ public class LdapConfig extends AnylineConfig{
 	public String ROOT;
 	public String SECURITY_AUTHENTICATION;
 	public String URL; // ldap:{ADDRESS}:{PORT}
+	public int CONNECT_TIMEOUT = 0;
+	public int READ_TIMEOUT = 0;
 	static{ 
 		init(); 
 		debug();
