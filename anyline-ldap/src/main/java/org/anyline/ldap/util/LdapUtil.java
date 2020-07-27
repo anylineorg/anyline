@@ -45,6 +45,7 @@ public class LdapUtil {
 	 * @param account 帐号
 	 * @param password 密码
 	 * @return 是否登录成功
+	 * @throws Exception 如果抛出异常表示登录失败
 	 */
 	public boolean login(String account, String password) throws Exception{
 		try{
@@ -60,9 +61,9 @@ public class LdapUtil {
 	 * @param account 登录帐号 如 admin@anyline.org
 	 * @param password 登录密码
 	 * @return LdapContext
-	 * @throws NamingException 如果抛出异常表示登录失败
+	 * @throws Exception 如果抛出异常表示登录失败
 	 */
-	public DirContext connect(String account, String password) throws NamingException {
+	public DirContext connect(String account, String password) throws Exception {
 		if(null != account && !account.endsWith(config.DOMAIN)){
 			account = account + "@" + config.DOMAIN;
 		}
@@ -80,7 +81,7 @@ public class LdapUtil {
 		}
 		try{
 			dc = new InitialLdapContext(env, null);//连接
-		}catch(NamingException e){
+		}catch(Exception e){
 			log.warn("[ldap connect][result:false][msg:{}]", e.getMessage());
 			throw e;
 		}
