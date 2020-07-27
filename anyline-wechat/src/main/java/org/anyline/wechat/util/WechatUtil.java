@@ -92,14 +92,11 @@ public class WechatUtil {
 				log.warn("[白名单验证异常]");
 			}
 		}
-		return getAccessToken(config.APP_ID, config.APP_SECRET);
-	}
-	public static String getAccessToken(String appid, String secret){
 		String result = "";
-		DataRow row = accessTokens.getRow("APP_ID", appid);
+		DataRow row = accessTokens.getRow("APP_ID", config.APP_ID);
 		if(null == row || row.isExpire()){
 			accessTokens.remove(row);
-			row = newAccessToken(appid, secret);
+			row = newAccessToken(config);
 		}
 		if(null != row){
 			result = row.getString("ACCESS_TOKEN");
@@ -108,17 +105,25 @@ public class WechatUtil {
 	}
 
 	/**
-	 * 新建access_token
-	 * @param appid appid
-	 * @param secret secret
+	 * 新建access_token,
+	 * 经常有多个应用使用同一个公众号，多个应用应该通过一个中心服务器创建access token
+	 * 不应该每个应用单独创建access token
+	 * @param config config
 	 * @return DataRow
 	 */
-	private static DataRow newAccessToken(String appid, String secret){
+	private static DataRow newAccessToken(WechatConfig config){
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
-			log.warn("[CREATE NEW ACCESS TOKEN][appid:{}][secret:{}]",appid, secret);
+			log.warn("[CREATE NEW ACCESS TOKEN][appid:{}][secret:{}]",config.APP_ID, config.APP_SECRET);
 		}
+		String appid = config.APP_ID;
+		String secret = config.APP_SECRET;
 		DataRow row = new DataRow();
-		String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+secret;
+		String url = null;
+		if(BasicUtil.isEmpty(config.ACCESS_TOKEN_SERVER)){
+			url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid="+appid+"&secret="+secret;
+		}else{
+			url = config.ACCESS_TOKEN_SERVER+ "?grant_type=client_credential&appid="+appid+"&secret="+secret;
+		}
 		String text = HttpUtil.post(url,"UTF-8").getText();
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[CREATE NEW ACCESS TOKEN][result:{}]",text);

@@ -55,7 +55,7 @@ public class WechatConfig extends AnylineConfig{
 	public String SERVER_TOKEN 					= "" ; //服务号的配置token
 	public String OAUTH_REDIRECT_URL 			= "" ; //oauth2授权时回调action
 	public String WEB_SERVER 					= "" ;
-
+	public String ACCESS_TOKEN_SERVER			= "" ;
 
 	public String SERVER_WHITELIST			    = null; //白名单IP(如果设置了并且当前服务器不在白名单内，则跳过需要白名单才能调用的接口)
 

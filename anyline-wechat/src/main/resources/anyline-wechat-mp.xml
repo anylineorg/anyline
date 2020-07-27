@@ -10,6 +10,6 @@
 		<property key="SERVER_TOKEN">anyline</property>
 		<property key="WEB_SERVER">http://******</property>
 		<property key="OAUTH_REDIRECT_URL">http://*******/wap/hm/lg/cb_wx_mp</property>
-
+		<property key="ACCESS_TOKEN_SERVER"></property>
 	</config>
 </configs> 
