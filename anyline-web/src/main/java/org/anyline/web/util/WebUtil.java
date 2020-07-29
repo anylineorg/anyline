@@ -1056,14 +1056,16 @@ public class WebUtil {
 		ByteArrayOutputStream out = null;
 		try {
 			in = request.getInputStream();
-			out = new ByteArrayOutputStream();
-			int len;
-			while ((len = in.read(buffer)) != -1) {
-				out.write(buffer, 0, len);
-			}
-			buffer = out.toByteArray();
-			if(cache){
-				request.setAttribute("_anyline_request_read_cache_byte", buffer);
+			if(null != in) {
+				out = new ByteArrayOutputStream();
+				int len;
+				while ((len = in.read(buffer)) != -1) {
+					out.write(buffer, 0, len);
+				}
+				buffer = out.toByteArray();
+				if (cache) {
+					request.setAttribute("_anyline_request_read_cache_byte", buffer);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
