@@ -939,7 +939,9 @@ public class ConfigParser {
 							}else{
 								if (valueEncrypt) {
 									value = decryptParamValue(value.toString());
-									value = filterIllegalChar(value.toString());
+									if(null != value) {
+										value = filterIllegalChar(value.toString());
+									}
 								}
 								if (null != value) {
 									//这里有可能是个Map
