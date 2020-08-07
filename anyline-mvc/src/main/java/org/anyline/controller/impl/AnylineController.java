@@ -570,11 +570,14 @@ public class AnylineController extends AbstractBasicController {
 			return result(true,DESUtil.encryptParamValue(data.toString()),null); 
 		} 
 		return result(true, data, null); 
-	} 
- 
+	}
+
 	protected String success(Object ... data) {
-		return result(true, data, null); 
-	} 
+		return result(true, data, null);
+	}
+	protected String success(Object data) {
+		return result(true, data, null);
+	}
 	/** 
 	 * AJAX分页时调用  
 	 * 分数数据在服务器生成 
