@@ -572,10 +572,10 @@ public class AnylineController extends AbstractBasicController {
 		return result(true, data, null); 
 	}
 
-	protected String success(Object ... data) {
+	protected String success(Object data) {
 		return result(true, data, null);
 	}
-	protected String success(Object data) {
+	protected String success(Object ... data) {
 		return result(true, data, null);
 	}
 	/** 
