@@ -64,7 +64,8 @@ public class AnylineController extends AbstractBasicController {
 	 *  
 	 * @return return
 	 */ 
-	protected HttpServletRequest getRequest() { 
+	protected HttpServletRequest getRequest() {
+
 		if(null == request){ 
 			request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest(); 
 		} 
@@ -571,10 +572,7 @@ public class AnylineController extends AbstractBasicController {
 		return result(true, data, null); 
 	} 
  
-	protected String success(Object ... data) { 
-		if(null != data && data.length ==1){ 
-			return result(true, data[0], null); 
-		} 
+	protected String success(Object ... data) {
 		return result(true, data, null); 
 	} 
 	/** 
