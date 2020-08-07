@@ -25,7 +25,7 @@ public abstract class AnylineConfig implements Serializable {
 	protected Map<String, String> kvs = new HashMap<String, String>();
 	protected static String[] compatibles = {};
 
-	public String KEY							= "";
+	public String INSTANCE_KEY							= "";
 	protected void afterParse(String key, String value) {
 
 	}
@@ -161,7 +161,7 @@ public abstract class AnylineConfig implements Serializable {
 					}
 				}
 			}
-			config.KEY = key;
+			config.INSTANCE_KEY = key;
 			instances.put(key, config);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -224,7 +224,7 @@ public abstract class AnylineConfig implements Serializable {
 				}
 				//加载时间
 				config.kvs = kvs;
-				config.KEY = configKey;
+				config.INSTANCE_KEY = configKey;
 				instances.put(configKey, config);
 			}
 		} catch (Exception e) {
