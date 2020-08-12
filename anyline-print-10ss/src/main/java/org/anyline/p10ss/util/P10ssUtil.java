@@ -165,7 +165,7 @@ public class P10ssUtil {
      * 获取用户授权码
      * @param redirect 回调地址
      * @param state 状态保持
-     * @return url code=12e9647656a443338ec8f3aed33cabe7&state=1&response_type=code
+     * @return url url
      */
     public String createAuthorizeCodeUrl(String redirect, String state){
         try {
@@ -180,6 +180,8 @@ public class P10ssUtil {
      * 自用模式 添加打印机
      * @param code 打印机编号
      * @param secret 打印机密钥
+     * @param phone phone
+     * @param name name
      * @throws Exception 添加失败时异常
      */
     public void addPrinter(String code, String secret, String phone, String name) throws Exception{
@@ -205,10 +207,11 @@ public class P10ssUtil {
 
     /**
      * 文本打印
-     * @param machine
-     * @param order
-     * @param text
-     * @throws Exception
+     * @param machine machine
+     * @param order order
+     * @param text text
+     * @throws Exception Exception
+     * @return DataRow
      */
     public DataRow print(String machine, String order, String text) throws Exception{
         DataRow token = getAccessToken();
