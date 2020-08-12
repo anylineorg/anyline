@@ -56,6 +56,7 @@
 		<anyline.poi.version>${anyline.version}</anyline.poi.version>
 		<anyline.nacos.version>${anyline.version}</anyline.nacos.version>
 		<anyline.ldap.version>${anyline.version}</anyline.ldap.version>
+		<anyline.print.10ss.version>${anyline.version}</anyline.print.10ss.version>
 		<!-- jdbc -->
 		<anyline.jdbc.version>${anyline.version}</anyline.jdbc.version>
 		<anyline.jdbc.mssql.version>${anyline.version}</anyline.jdbc.mssql.version>
@@ -263,6 +264,11 @@
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-nacos</artifactId>
 				<version>${anyline.nacos.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-print-10ss</artifactId>
+				<version>${anyline.print.10ss.version}</version>
 			</dependency>
 
 			<dependency>
