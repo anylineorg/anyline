@@ -1373,7 +1373,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 */
 	public DataRow copy(DataRow data, String ... keys){
 		if(null == data || null == keys){
-			return this;
+			return  copy(data, keys());
 		}
 		for(String key:keys){
 			String ks[] = BeanUtil.parseKeyValue(key);
@@ -1381,6 +1381,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+
 	public DataRow copy(DataRow data, List<String> keys){
 		if(null == data || null == keys){
 			return this;
