@@ -74,10 +74,10 @@ public class LdapUtil {
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");//LDAP工厂类
 		env.put(Context.SECURITY_AUTHENTICATION, config.SECURITY_AUTHENTICATION);//认证类型
 		if(config.CONNECT_TIMEOUT > 0){
-			env.put("com.sun.jndi.ldap.connect.timeout",config.CONNECT_TIMEOUT);
+			env.put("com.sun.jndi.ldap.connect.timeout",config.CONNECT_TIMEOUT+"");
 		}
 		if(config.READ_TIMEOUT > 0){
-			env.put("com.sun.jndi.ldap.read.timeout",config.READ_TIMEOUT);
+			env.put("com.sun.jndi.ldap.read.timeout",config.READ_TIMEOUT+"");
 		}
 		try{
 			dc = new InitialLdapContext(env, null);//连接
