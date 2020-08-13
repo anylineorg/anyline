@@ -221,16 +221,20 @@ public class WechatMPUtil extends WechatUtil {
 		WechatTemplateMessageResult result = null;
 		String token = getAccessToken();
 		String url = WechatConfig.API_URL_SEND_TEMPLATE_MESSAGE + "?access_token=" + token;
-		String json = BeanUtil.object2json(msg);
-		log.warn("[send template message][data:{}]",json);
-		HttpEntity entity = new StringEntity(json, "UTF-8");
-		String txt = HttpUtil.post(url, "UTF-8", entity).getText();
-		log.warn("[send template message][result:{}]",txt);
-		result = BeanUtil.json2oject(txt, WechatTemplateMessageResult.class);
+		if(null != msg) {
+			String json = BeanUtil.object2json(msg);
+			log.warn("[send template message][data:{}]", json);
+			HttpEntity entity = new StringEntity(json, "UTF-8");
+			String txt = HttpUtil.post(url, "UTF-8", entity).getText();
+			log.warn("[send template message][result:{}]", txt);
+			result = BeanUtil.json2oject(txt, WechatTemplateMessageResult.class);
+		}
 		return result;
 	}
 	public WechatTemplateMessageResult sendTemplateMessage(String openId, WechatTemplateMessage msg){
-		msg.setUser(openId);
+		if(null != msg) {
+			msg.setUser(openId);
+		}
 		return sendTemplateMessage(msg);
 	}
 } 
