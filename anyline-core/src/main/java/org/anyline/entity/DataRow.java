@@ -1372,8 +1372,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return return
 	 */
 	public DataRow copy(DataRow data, String ... keys){
-		if(null == data || null == keys){
-			return  copy(data, keys());
+		if(null == data ){
+			return  this;
+		}
+		if(null == keys || keys.length ==0){
+			return copy(data, data.keys());
 		}
 		for(String key:keys){
 			String ks[] = BeanUtil.parseKeyValue(key);
