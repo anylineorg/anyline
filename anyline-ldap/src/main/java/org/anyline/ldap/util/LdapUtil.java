@@ -91,19 +91,20 @@ public class LdapUtil {
 
 	/**
 	 * 注册用户
-	 * @param name 用户名
+	 * @param uid 用户id(可以是登录帐号)
+	 * @param ou 组织
 	 * @param password 密码
 	 * @param attributes 其他属性
 	 * @return boolean
 	 */
-	public boolean addUser(String name, String password, Map<String,String> attributes) {
+	public boolean addUser(String uid, String ou, String password, Map<String,String> attributes) {
 		try {
 			BasicAttributes attrs = new BasicAttributes();
 			BasicAttribute objclassSet = new BasicAttribute("objectClass");
 			objclassSet.add("UserPrincipalName");
 			objclassSet.add("employeeID");
 			attrs.put(objclassSet);
-			attrs.put("ou", name);
+			attrs.put("ou", ou);
 			List<String> keys = BeanUtil.getMapKeys(attributes);
 			for(String key:keys){
 				attrs.put(key, attributes.get(key));
@@ -115,7 +116,7 @@ public class LdapUtil {
 				e.printStackTrace();
 			}
 			attrs.put("unicodePwd", unicodePassword);
-			dc.createSubcontext("ou=" + name + "," + config.ROOT, attrs);
+			dc.createSubcontext("uid="+uid+",ou=" + ou + "," + config.ROOT, attrs);
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
