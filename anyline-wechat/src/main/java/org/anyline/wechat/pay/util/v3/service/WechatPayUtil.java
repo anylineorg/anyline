@@ -1,19 +1,13 @@
 package org.anyline.wechat.pay.util.v3.service;
 
+
 import org.anyline.entity.DataRow;
-import org.anyline.net.HttpResult;
-import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.wechat.entity.v3.WechatPrePayOrder;
 import org.anyline.wechat.pay.util.WechatPayConfig;
-import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Hashtable;
-import java.util.Map;
 
 public class WechatPayUtil {
     protected static final Logger log = LoggerFactory.getLogger(WechatPayUtil.class);
