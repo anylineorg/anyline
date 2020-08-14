@@ -19,6 +19,7 @@
  
 package org.anyline.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -57,6 +58,11 @@ public class BeanUtil {
 	static{
 		JSON_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		JSON_MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		JSON_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		//Include.Include.ALWAYS 默认
+		//Include.NON_DEFAULT 属性为默认值不序列化
+		//Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化
+		//Include.NON_NULL 属性为NULL 不序列化
 	}
 	public static boolean setFieldValue(Object obj, Field field, Object value){ 
 		if(null == obj || null == field){ 
