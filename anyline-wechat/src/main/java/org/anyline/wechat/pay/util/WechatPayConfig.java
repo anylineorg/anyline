@@ -5,7 +5,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.wechat.util.WechatConfig;
 
 import java.util.Hashtable;
 
@@ -13,11 +12,13 @@ import java.util.Hashtable;
 public class WechatPayConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-wechat-pay.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
-	public String API_SECRET 				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
 	public String MCH_ID 					= "" ; //商户号
-	public String MCH_PRIVATE_SECRET		= "" ; //商户API私钥(保存在apiclient_key.pem也可以通过p12导出)
 	public String SP_MCHID 					= "" ; //服务商商户号(服务商模式)
 	public String SUB_MCHID 				= "" ; //子商户商户号(服务商模式)
+	public String API_SECRET 				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API密钥设置
+	public String API_SECRET_V3				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->APIv3密钥设置
+	public String MCH_PRIVATE_SECRET_FILE	= "" ; //商户API私钥(保存在apiclient_key.pem也可以通过p12导出)
+	public String CERTIFICATE_SERIAL        = "" ; //证书序号 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API证书-->查看证书
 	public String KEY_STORE_FILE 			= "" ; //证书文件
 	public String KEY_STORE_PASSWORD 		= "" ; //证书密码
 	public String NOTIFY_URL				= "" ; //微信支付统一接口的回调action
@@ -62,6 +63,18 @@ public class WechatPayConfig extends AnylineConfig{
 		public abstract String getName();
 		public abstract String getCode();
 		public abstract String getApi();
+	};
+
+	//支付方式
+	public static enum URL3{
+		UNIFIED_ORDER_JSPAI	        {public String getCode(){return "https://api.mch.weixin.qq.com/v3/pay/transactions/jsapi";} public String getName(){return "直连模式JSAPI下单";}},
+		UNIFIED_ORDER_PARTNER_JSPAI	{public String getCode(){return "https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi";} public String getName(){return "服务商模式JSAPI下单";}},
+		APP				{public String getCode(){return "APP";}  		public String getApi(){return "app";}		public String getName(){return "APP";}},
+		NATIVE			{public String getCode(){return "NATIVE";} 		public String getApi(){return "native";} 	public String getName(){return "原生扫码";}},
+		MICROPAY		{public String getCode(){return "MICROPAY";}  	public String getApi(){return "";}			public String getName(){return "刷卡";}},
+		MWEB			{public String getCode(){return "MWEB";}  		public String getApi(){return "h5";}		public String getName(){return "WAP";}};
+		public abstract String getName();
+		public abstract String getCode();
 	};
 	static{
 		init();
@@ -120,4 +133,4 @@ public class WechatPayConfig extends AnylineConfig{
 	}
 	private static void debug(){
 	}
-} 
+}
