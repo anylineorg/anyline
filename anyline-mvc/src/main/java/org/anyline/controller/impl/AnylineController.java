@@ -57,8 +57,8 @@ public class AnylineController extends AbstractBasicController {
 	@Autowired(required = false) 
 	@Qualifier("anyline.service") 
 	protected AnylineService service; 
-	protected HttpServletRequest request; 
-	protected HttpServletResponse response; 
+	protected HttpServletRequest _request;
+	protected HttpServletResponse _response;
 	/** 
 	 * 当前线程下的request 
 	 *  
@@ -66,31 +66,31 @@ public class AnylineController extends AbstractBasicController {
 	 */ 
 	protected HttpServletRequest getRequest() {
 
-		if(null == request){ 
-			request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest(); 
+		if(null == _request){
+			_request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		} 
-		return request; 
+		return _request;
 	} 
 	@Autowired 
 	protected void setRequest(HttpServletRequest request){ 
-		this.request = request; 
+		this._request = request;
 		try{ 
-			this.request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8")); 
+			this._request.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){ 
 			 
 		} 
 	} 
 	protected HttpServletResponse getResponse() { 
-		if(null == response){ 
-			response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse(); 
+		if(null == _response){
+			_response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
 		} 
-		return response; 
+		return _response;
 	} 
 	@Autowired 
 	public void setResponse(HttpServletResponse response){ 
-		this.response = response; 
+		this._response = response;
 		try{ 
-			this.response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8")); 
+			this._response.setCharacterEncoding(ConfigTable.getString("HTTP_ENCODEING","UTF-8"));
 		}catch(Exception e){ 
 			 
 		} 
