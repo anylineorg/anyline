@@ -13,6 +13,8 @@ public class WechatPrePayResult {
 	protected String err_code_des; 
 	protected String trade_type; 
 	protected String prepay_id;
+	protected String request_id;
+	protected String request_status;
 	private String code_url = null;//trade_type为NATIVE时有返回，用于生成二维码，展示给用户进行扫码支付
 	private String mweb_url = null;	//mweb_url为拉起微信支付收银台的中间页面，可通过访问该url来拉起微信客户端，完成支付,mweb_url的有效期为5分钟。
 	private boolean result;
@@ -124,6 +126,21 @@ public class WechatPrePayResult {
 	} 
 	public void setPrepay_id(String prepay_id) { 
 		this.prepay_id = prepay_id; 
-	} 
-	 
-} 
+	}
+
+	public String getRequest_status() {
+		return request_status;
+	}
+
+	public void setRequest_status(String request_status) {
+		this.request_status = request_status;
+	}
+
+	public String getRequest_id() {
+		return request_id;
+	}
+
+	public void setRequest_id(String request_id) {
+		this.request_id = request_id;
+	}
+}

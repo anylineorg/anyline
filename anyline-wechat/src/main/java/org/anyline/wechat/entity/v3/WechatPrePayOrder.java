@@ -15,10 +15,10 @@ public class WechatPrePayOrder {
 	private String attach						;//附加数据				string（128）	否	 附加数据，在查询API和支付通知中原样返回，可作为自定义参数使用示例值：自定义数据
 	private String notify_url					;//通知地址				string（256）	是	 通知URL必须为直接可访问的URL，不允许携带查询串。格式：URL示例值：https://www.weixin.qq.com/wxpay/pay.php
 	private String goods_tag					;//订单优惠标记			string（32）	否	 订单优惠标记示例值：WXG
-	private Map<String,Object> amount			;//订单金额 total currency
-	private Map<String,Object> payer			;//支付者 sp_openid sub_openid
-	private Map<String,Object> detail			;
-	private Map<String,Object> scene_info		;//支付场景
+	private Map<String,Object> amount			;//订单金额 total(分) currency(CNY)		是
+	private Map<String,Object> payer			;//支付者 sp_openid sub_openid			是
+	private Map<String,Object> detail			;//优惠功能								否
+	private Map<String,Object> scene_info		;//支付场景								否
 
 	public String getDescription() {
 		return description;

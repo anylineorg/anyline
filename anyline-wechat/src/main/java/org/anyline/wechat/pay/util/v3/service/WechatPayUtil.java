@@ -57,22 +57,4 @@ public class WechatPayUtil {
         return config;
     }
 
-    public String transactions(WechatPrePayOrder order){
-        String prepay_id = null;
-        String url = "https://api.mch.weixin.qq.com/v3/pay/partner/transactions/jsapi";
-        api(url,BeanUtil.object2json(order));
-        return prepay_id;
-    }
-    private String[] api(String url, String json){
-        DataRow row = new DataRow();
-        Map<String,String> headers = new HashMap<String,String>();
-        headers.put("Content-Type", "application/json");
-        headers.put("Accept", "application/json");
-        Map<String,Object> params = new HashMap<String,Object>();
-        HttpResult result = HttpUtil.post(headers, url, "UTF-8", new StringEntity(BeanUtil.map2json(params), "UTF-8"));
-        headers = result.getHeaders();
-        String requestId = headers.get("Request-ID");
-        System.out.print("txt:"+result.getText());
-        return new String[]{result.getStatus()+"",requestId};
-    }
 }

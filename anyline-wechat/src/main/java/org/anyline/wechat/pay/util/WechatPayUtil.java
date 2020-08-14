@@ -8,7 +8,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.wechat.entity.*;
-import org.anyline.wechat.util.WechatConfig;
 import org.anyline.wechat.util.WechatUtil;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
