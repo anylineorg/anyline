@@ -50,9 +50,6 @@ public class Omit extends BaseBodyTag {
 				max = len;
 			}
 
-			if(null == min || min < 0){
-				min = len;
-			}
 			if(null == left || left<0){
 				left = 0;
 			}
@@ -62,6 +59,17 @@ public class Omit extends BaseBodyTag {
 			if(null == left || left<0){
 				left = 0;
 			}
+			if(null == right || right<0){
+				right = 0;
+			}
+
+			if(null == min ){
+				min = 0;
+			}
+			if(min < left+right){
+				min = left+right+1;
+			}
+
 			int fill = max - left - right;
 			if(fill < 0){
 				fill = 0;
