@@ -65,6 +65,7 @@ public class Navi extends BodyTagSupport{
     private int delay = 0           ;   //延迟执行时间
 
 	private int type = 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
+	private Integer max = null		;   //最大显示到第几页(下标从1开始)
 
 
 	public int doStartTag() throws JspException {
@@ -137,6 +138,9 @@ public class Navi extends BodyTagSupport{
 			}
 			if(null != guide){
 				builder.append("guide:'" ).append(guide).append("',");
+			}
+			if(BasicUtil.isNotEmpty(max)){
+				builder.append("max:" ).append(max).append(",");
 			}
 			builder.append("vol:").append(vol).append(",");
 			if(null == auto){
@@ -242,6 +246,7 @@ public class Navi extends BodyTagSupport{
 		cur 			= null	;
 		vol				= true	;
 		delay           = 0     ;
+		max				= null  ;
 	}
 
 	public String getParam() {
@@ -413,7 +418,15 @@ public class Navi extends BodyTagSupport{
         return delay;
     }
 
-    public void setDelay(int delay) {
+	public Integer getMax() {
+		return max;
+	}
+
+	public void setMax(Integer max) {
+		this.max = max;
+	}
+
+	public void setDelay(int delay) {
         this.delay = delay;
     }
 }
