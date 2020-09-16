@@ -58,11 +58,18 @@ public class BeanUtil {
 	static{
 		JSON_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		JSON_MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-		JSON_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+		JSON_MAPPER.setSerializationInclusion(JsonInclude.Include.ALWAYS);
 		//Include.Include.ALWAYS 默认
 		//Include.NON_DEFAULT 属性为默认值不序列化
 		//Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化
 		//Include.NON_NULL 属性为NULL 不序列化
+	}
+	private static ObjectMapper newObjectMapper(JsonInclude.Include include){
+		ObjectMapper result = new ObjectMapper();
+		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		result.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		result.setSerializationInclusion(include);
+		return result;
 	}
 	public static boolean setFieldValue(Object obj, Field field, Object value){ 
 		if(null == obj || null == field){ 
@@ -652,15 +659,21 @@ public class BeanUtil {
 	} 
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz){ 
 		return map2object(map, clazz, false); 
-	} 
-	public static <T> T json2oject(String json, Class<T> clazz){ 
+	}
+	public static <T> T json2oject(String json, Class<T> clazz, JsonInclude.Include include){
 		try {
+			if(null != include){
+				return newObjectMapper(include).readValue(json, clazz);
+			}
 			return  JSON_MAPPER.readValue(json, clazz);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
-	} 
+	}
+	public static <T> T json2oject(String json, Class<T> clazz){
+		return json2oject(json,clazz);
+	}
 	@SuppressWarnings("rawtypes")
 	public static String map2xml(Map<String,?> map, boolean border, boolean order){ 
 		StringBuffer builder = new StringBuffer(); 
@@ -832,14 +845,20 @@ public class BeanUtil {
 			map.put(field.getName(), value); 
 		} 
 		return map; 
-	} 
-	public static String object2json(Object obj){ 
+	}
+	public static String object2json(Object obj, JsonInclude.Include include){
 		try {
+			if(null != include){
+				return newObjectMapper(include).writeValueAsString(obj);
+			}
 			return JSON_MAPPER.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	public static String object2json(Object obj){
+		return object2json(obj,null);
 	}
 
 	/**
