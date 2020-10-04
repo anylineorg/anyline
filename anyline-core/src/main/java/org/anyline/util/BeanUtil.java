@@ -672,7 +672,7 @@ public class BeanUtil {
 		return null;
 	}
 	public static <T> T json2oject(String json, Class<T> clazz){
-		return json2oject(json,clazz);
+		return json2oject(json,clazz, null);
 	}
 	@SuppressWarnings("rawtypes")
 	public static String map2xml(Map<String,?> map, boolean border, boolean order){ 
