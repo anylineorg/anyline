@@ -390,12 +390,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
 		for(String key : keys){
-			if(over || null != this.get(key)){
+			if(over || null == this.get(key)){
 				this.put(key, row.get(KEY_CASE.SRC,key));
 			}
 		}
 		return this;
 	}
+
 	public DataRow merge(DataRow row){
 		return merge(row, false);
 	}
