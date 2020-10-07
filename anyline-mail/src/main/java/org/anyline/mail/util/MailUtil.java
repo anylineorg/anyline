@@ -39,9 +39,17 @@ public class MailUtil {
 			util.props.put("password", config.PASSWORD); 
 			util.props.put("mail.transport.protocol", config.PROTOCOL); 
 			util.props.put("mail.smtp.host", config.HOST); 
-			util.props.put("mail.smtp.port", config.PORT); 
- 
-			instances.put(key, util); 
+			util.props.put("mail.smtp.port", config.PORT);
+
+			if(config.SSL_FLAG){
+				//端口465时需要ssl验证 解决部分服务器不开放25端口问题
+				util.props.setProperty("mail.smtp.auth", "true");
+				util.props.setProperty("mail.smtp.ssl.enable", "true");
+				util.props.setProperty("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+				util.props.setProperty("mail.smtp.socketFactory.fallback", "false");
+				util.props.setProperty("mail.smtp.socketFactory.port", config.PORT);
+			}
+			instances.put(key, util);
 		} 
 		return util; 
 	} 
