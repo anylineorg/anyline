@@ -37,6 +37,7 @@
 		<anyline.net.version>${anyline.version}</anyline.net.version>
 		<anyline.ext.version>${anyline.version}</anyline.ext.version>
 		<anyline.cache.ecache.version>${anyline.version}</anyline.cache.ecache.version>
+		<anyline.cache.redis.version>${anyline.version}</anyline.cache.redis.version>
 		<anyline.nc.version>${anyline.version}</anyline.nc.version>
 		<anyline.web.version>${anyline.version}</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
@@ -54,6 +55,8 @@
 		<anyline.wechat.version>${anyline.version}</anyline.wechat.version>
 		<anyline.poi.version>${anyline.version}</anyline.poi.version>
 		<anyline.nacos.version>${anyline.version}</anyline.nacos.version>
+		<anyline.ldap.version>${anyline.version}</anyline.ldap.version>
+		<anyline.print.10ss.version>${anyline.version}</anyline.print.10ss.version>
 		<!-- jdbc -->
 		<anyline.jdbc.version>${anyline.version}</anyline.jdbc.version>
 		<anyline.jdbc.mssql.version>${anyline.version}</anyline.jdbc.mssql.version>
@@ -66,6 +69,7 @@
 
 		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
 		<mysql.version>5.1.24</mysql.version>
+<!--		<mysql.version>8.0.16</mysql.version>-->
 		<db2-jdbc.version>11.5.0.0</db2-jdbc.version>
 		<ojdbc.version>19.3.0.0</ojdbc.version><!-- oracle -->
 		<postgresql.version>42.2.8</postgresql.version>
@@ -93,7 +97,11 @@
 		<spring.version>4.3.23.RELEASE</spring.version>
 		<aliyun.oss.version>3.8.0</aliyun.oss.version>
 		<aliyun.sms.version>2.1.0</aliyun.sms.version>
+
 		<alipay.version>3.7.26.ALL</alipay.version>
+		<!--
+		<alipay.version>4.10.58.ALL</alipay.version>
+-->
 		<druid.version>1.1.6</druid.version>
 		<jsch.version>0.1.55</jsch.version>
 		<persistence.version>1.0.2</persistence.version>
@@ -101,6 +109,8 @@
 		<jpush.version>1.1.6</jpush.version>
 		<alibaba.nacos.version>1.1.4</alibaba.nacos.version>
 		<rocketmq.version>4.6.0</rocketmq.version>
+		<redis.version>3.3.0</redis.version>
+		<spring.redis.version>2.3.0.RELEASE</spring.redis.version>
 	</properties>
 
 	<dependencyManagement>
@@ -212,8 +222,8 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-redis</artifactId>
-				<version>${anyline.redis.version}</version>
+				<artifactId>anyline-cache-redis</artifactId>
+				<version>${anyline.cache.redis.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
@@ -244,6 +254,21 @@
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-nc</artifactId>
 				<version>${anyline.nc.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-ldap</artifactId>
+				<version>${anyline.ldap.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-nacos</artifactId>
+				<version>${anyline.nacos.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-print-10ss</artifactId>
+				<version>${anyline.print.10ss.version}</version>
 			</dependency>
 
 			<dependency>
@@ -672,4 +697,17 @@
             <url>http://maven.anyline.org/repository/maven-public</url>
         </repository>
     </repositories>
+
+	<distributionManagement>
+		<repository>
+			<id>anyline-releases</id>
+			<name>releases</name>
+			<url>http://maven.anyline.org/repository/maven-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>anyline-snapshots</id>
+			<name>snapshots</name>
+			<url>http://maven.anyline.org/repository/maven-snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configs>
 	<config key="default">
-		<!-- 服务器地址 -->
+		<!-- 服务器地址或域名-->
 		<property key="ADDRESS">127.0.0.1</property>
 		<!-- 端口 默认8848 -->
 		<property key="PORT">8848</property>
@@ -11,5 +11,8 @@
 		<property key="GROUP">DEFAULT_GROUP</property>
 		<!-- 是否自动扫描配置类 默认true -->
 		<property key="AUTO_SCAN">true</property>
+		<!--自动扫描的包名,多个包名以逗号分隔-->
+		<property key="SCAN_PACKAGE">org.anyline,org.anyboot</property>
+		<property key="SCAN_CLASS">org.anyline.entity.PageNaviConfig,org.anyline.mail.util.MailConfig</property>
 	</config>
 </configs>

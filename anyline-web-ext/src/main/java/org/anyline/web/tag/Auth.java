@@ -20,6 +20,9 @@
 package org.anyline.web.tag;
 
 
+import com.alipay.api.domain.AlipayAccount;
+import org.anyline.alipay.util.AlipayConfig;
+import org.anyline.alipay.util.AlipayUtil;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.qq.mp.util.QQMPConfig;
@@ -30,6 +33,7 @@ import org.anyline.wechat.mp.util.WechatMPConfig;
 import org.anyline.wechat.mp.util.WechatMPUtil;
 import org.anyline.wechat.util.WechatConfig;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.util.HashMap;
@@ -93,30 +97,6 @@ public class Auth extends BaseBodyTag {
 						apiScope = WechatConfig.SNSAPI_SCOPE.USERINFO;
 					}
 					url = WechatMPUtil.ceateAuthUrl(key, redirect, apiScope, state);
-//					if(BasicUtil.isEmpty(appid)){
-//						appid = WechatConfig.APP_ID;
-//					}
-//					Map<String,String> map = new HashMap<String,String>();
-//					if(null != params){
-//						String[] items = params.split(",");
-//						for(String item:items){
-//							String[] kv = item.split(":");
-//							if(kv.length ==2){
-//								map.put(kv[0], kv[1]);
-//							}
-//						}
-//					}
-//					if(BasicUtil.isEmpty(scope)){
-//						scope = "snsapi_base";
-//					}
-//					if(BasicUtil.isEmpty(redirect)){
-//						redirect = WechatConfig.OAUTH_REDIRECT_URL;
-//					}
-//					if(BasicUtil.isEmpty(redirect)){
-//						redirect = WechatProgrameConfig.getInstance().OAUTH_REDIRECT_URL;
-//					}
-//					redirect = URLEncoder.encode(redirect, "UTF-8");
-//					url =  WechatConfig.URL_OAUTH + "?appid="+appid+"&redirect_uri="+redirect+"&response_type=code&scope="+scope+"&state="+state+",app:"+key+"#wechat_redirect";
 				}
 			}else if("qq".equalsIgnoreCase(type)){
 				QQMPConfig qqconfig = QQMPConfig.getInstance(key);
@@ -150,6 +130,11 @@ public class Auth extends BaseBodyTag {
 					redirect = CodeUtil.urlEncode(redirect, "UTF-8");
 					url =  QQConfig.URL_OAUTH + "?client_id="+appid+"&response_type="+response_type+"&redirect_uri="+redirect+"&scope="+scope+"&state="+state+",app:"+key;
 				}
+			} else if("alipay".equalsIgnoreCase(type)) {
+				if(BasicUtil.isEmpty(scope)){
+					scope = "auth_base";
+				}
+				url = AlipayUtil.getInstance(key).ceateAuthUrl(redirect,scope,state);
 			}
 			log.warn("[第三方登录][result:{}][url:{}]",result,url);
 			if(result){
@@ -159,7 +144,10 @@ public class Auth extends BaseBodyTag {
 				}
 				html += "</a>";
 				if(auto){
+					//((HttpServletResponse)pageContext.getResponse()).sendRedirect(url);
 					html += "<script>location.href = \""+url+"\";</script>";
+					//return EVAL_PAGE;
+
 				}
 			}else{
 				log.error("[第三方登录][登录配置异常]");

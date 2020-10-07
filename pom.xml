@@ -65,6 +65,7 @@
 		<module>anyline-web-ext</module>
         <module>anyline-cache-ecache</module>
 		<module>anyline-cache-redis</module>
+        <module>anyline-print-10ss</module>
     </modules>
 	<profiles>
 		<profile>

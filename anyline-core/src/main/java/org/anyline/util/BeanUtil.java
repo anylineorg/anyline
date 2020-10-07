@@ -19,6 +19,7 @@
  
 package org.anyline.util;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.File;
+import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -57,6 +58,18 @@ public class BeanUtil {
 	static{
 		JSON_MAPPER.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		JSON_MAPPER.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		JSON_MAPPER.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+		//Include.Include.ALWAYS 默认
+		//Include.NON_DEFAULT 属性为默认值不序列化
+		//Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化
+		//Include.NON_NULL 属性为NULL 不序列化
+	}
+	private static ObjectMapper newObjectMapper(JsonInclude.Include include){
+		ObjectMapper result = new ObjectMapper();
+		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		result.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		result.setSerializationInclusion(include);
+		return result;
 	}
 	public static boolean setFieldValue(Object obj, Field field, Object value){ 
 		if(null == obj || null == field){ 
@@ -174,8 +187,8 @@ public class BeanUtil {
 		if(null == obj){ 
 			return null; 
 		} 
-		Object value = null; 
-		if(obj instanceof Map){ 
+		Object value = null;
+		if(obj instanceof Map){
 			Map map = (Map)obj; 
 			value = map.get(field); 
 		}else if(obj instanceof Class){
@@ -646,15 +659,21 @@ public class BeanUtil {
 	} 
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz){ 
 		return map2object(map, clazz, false); 
-	} 
-	public static <T> T json2oject(String json, Class<T> clazz){ 
+	}
+	public static <T> T json2oject(String json, Class<T> clazz, JsonInclude.Include include){
 		try {
+			if(null != include){
+				return newObjectMapper(include).readValue(json, clazz);
+			}
 			return  JSON_MAPPER.readValue(json, clazz);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
-	} 
+	}
+	public static <T> T json2oject(String json, Class<T> clazz){
+		return json2oject(json,clazz, null);
+	}
 	@SuppressWarnings("rawtypes")
 	public static String map2xml(Map<String,?> map, boolean border, boolean order){ 
 		StringBuffer builder = new StringBuffer(); 
@@ -826,14 +845,20 @@ public class BeanUtil {
 			map.put(field.getName(), value); 
 		} 
 		return map; 
-	} 
-	public static String object2json(Object obj){ 
+	}
+	public static String object2json(Object obj, JsonInclude.Include include){
 		try {
+			if(null != include){
+				return newObjectMapper(include).writeValueAsString(obj);
+			}
 			return JSON_MAPPER.writeValueAsString(obj);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	public static String object2json(Object obj){
+		return object2json(obj,null);
 	}
 
 	/**
@@ -1330,7 +1355,7 @@ public class BeanUtil {
  
  
 	/** 
-	 * 差值最小的成员下标 
+	 * 集合中与value差值最小的成员的下标
 	 * @param array  array
 	 * @param value  value
 	 * @return return
@@ -1634,7 +1659,7 @@ public class BeanUtil {
  
 	public static String parseFinalValue(Object obj, String key){ 
 		if(null == obj){ 
-			return key; 
+			return key;
 		} 
 		String value = key; 
 		if(BasicUtil.isNotEmpty(key)){ 
@@ -1747,6 +1772,7 @@ public class BeanUtil {
 		}
 		return sKey;
 	}
+
 	public static String Camel(String key){
 		return Camel(key, false);
 	}
@@ -1765,8 +1791,8 @@ public class BeanUtil {
 		int len = 2; 
 		String[] result = null; 
 		String key1 = src; 
-		String key2 = src; 
-		if(src.contains(":")){ 
+		String key2 = src;
+		if(src.contains(":")){
 			String tmp[] = src.split(":"); 
 			len = NumberUtil.max(len, tmp.length); 
 			result = new String[len]; 
@@ -1961,4 +1987,55 @@ public class BeanUtil {
 		}
     }
 
+	public static byte[] serialize(Object value) {
+		byte[] rv=new byte[0];
+		if (value == null) {
+			return rv;
+		}
+		ByteArrayOutputStream bos = null;
+		ObjectOutputStream os = null;
+		try {
+			bos = new ByteArrayOutputStream();
+			os = new ObjectOutputStream(bos);
+			os.writeObject(value);
+			os.close();
+			bos.close();
+			rv = bos.toByteArray();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(os!=null)os.close();
+				if(bos!=null)bos.close();
+			}catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return rv;
+	}
+
+	public static Object deserialize(byte[] in) {
+		Object rv=null;
+		ByteArrayInputStream bis = null;
+		ObjectInputStream is = null;
+		try {
+			if(in != null) {
+				bis=new ByteArrayInputStream(in);
+				is=new ObjectInputStream(bis);
+				rv=is.readObject();
+				is.close();
+				bis.close();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(is!=null)is.close();
+				if(bis!=null)bis.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+		return rv;
+	}
 } 

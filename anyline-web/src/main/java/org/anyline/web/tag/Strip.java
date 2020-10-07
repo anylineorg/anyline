@@ -36,9 +36,11 @@ public class Strip extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L; 
  
 	private int length = -1; 
-	private String ellipsis="..."; 
-	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() "; 
- 
+	private String ellipsis="...";
+	private boolean sign = false;//是否删除html符号
+	private static final String SINGLE_CHAR = "abcdefghijklmnopqrstuvwxyz0123456789,.?'_-=+!@#$%^&*() ";
+
+
 	public int doEndTag() throws JspException { 
 		try{ 
 			String result = ""; 
@@ -47,7 +49,13 @@ public class Strip extends BaseBodyTag implements Cloneable{
 			}else if(null != body){ 
 				result = body; 
 			} 
-			result = RegularUtil.removeAllHtmlTag(result); 
+			result = RegularUtil.removeAllHtmlTag(result);
+			if(sign && null != result){
+				result = result.replaceAll("&\\w{2,8};","");
+			}
+			if(null != result){
+				result = result.replace("\r","").replace("\n","");
+			}
 			if(length != -1){ 
 				int size = length * 2; 
 				String chrs[] = result.split(""); 
@@ -111,6 +119,13 @@ public class Strip extends BaseBodyTag implements Cloneable{
  
 	public void setEllipsis(String ellipsis) { 
 		this.ellipsis = ellipsis; 
-	} 
- 
+	}
+
+	public boolean isSign() {
+		return sign;
+	}
+
+	public void setSign(boolean sign) {
+		this.sign = sign;
+	}
 }

@@ -22,11 +22,16 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
+import org.anyline.jdbc.config.Config;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.FileUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -36,17 +41,64 @@ public class ECacheProvider implements CacheProvider {
 	private static final Logger log = LoggerFactory.getLogger(ECacheProvider.class);
 	private CacheManager manager = null;
 	private Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
-	
+
+	public static InputStream getConfigFile() throws Exception{
+		File file = null;
+		String path = ConfigTable.getString("EHCACHE_CONFIG_PATH");
+		log.warn("[检测ehcache配置文件][path={}]", path);
+		if(null != path) {
+			file = new File(path);
+			if (file.exists()) {
+				log.warn("[加载ehcache配置文件][path={}]", path);
+				return new FileInputStream(file);
+			}
+		}
+		if("jar".equals(ConfigTable.getPackageType())){
+			path = FileUtil.mergePath(ConfigTable.getRoot(),"config","ehcache.xml");
+			log.warn("[检测ehcache配置文件][path={}]", path);
+			file = new File(path);
+			if(file.exists()){
+				log.warn("[加载ehcache配置文件][path={}]", path);
+				return new FileInputStream(file);
+			}
+			path = FileUtil.mergePath(ConfigTable.getRoot(),"ehcache.xml");
+			log.warn("[检测ehcache配置文件][path={}]", path);
+			file = new File(path);
+			if(file.exists()){
+				log.warn("[加载ehcache配置文件][path={}]", path);
+				return new FileInputStream(file);
+			}
+			path = FileUtil.mergePath(ConfigTable.getClassPath(),"ehcache.xml");
+			log.warn("[检测ehcache配置文件][path={}]", path);
+			file = new File(path);
+			if(file.exists()){
+				log.warn("[加载ehcache配置文件][path={}]", path);
+				return new FileInputStream(file);
+			}
+			InputStream in = ConfigTable.class.getClassLoader().getResourceAsStream("/ehcache.xml");
+			return in;
+		}
+		return null;
+	}
 	public CacheManager createManager(){
 		long fr = System.currentTimeMillis();
 		if(null == manager){
-			manager = CacheManager.create();
-	    	if(ConfigTable.isDebug() && log.isWarnEnabled()){
-	    		log.warn("[加载ehcache配置文件][耗时:{}",System.currentTimeMillis() - fr);
-	    		for(String name:manager.getCacheNames()){
-	    			log.warn("[解析ehcache配置文件] [name:{}]",name);
-	    		}
-	    	}
+			try {
+				InputStream in = getConfigFile();
+				if(null != in) {
+					manager = CacheManager.create(in);
+				}else{
+					manager = CacheManager.create();
+				}
+				if (ConfigTable.isDebug() && log.isWarnEnabled()) {
+					log.warn("[加载ehcache配置文件][耗时:{}", System.currentTimeMillis() - fr);
+					for (String name : manager.getCacheNames()) {
+						log.warn("[解析ehcache配置文件] [name:{}]", name);
+					}
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
 		}
 		return manager;
 	}

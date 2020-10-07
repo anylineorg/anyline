@@ -390,12 +390,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
 		for(String key : keys){
-			if(over || null != this.get(key)){
+			if(over || null == this.get(key)){
 				this.put(key, row.get(KEY_CASE.SRC,key));
 			}
 		}
 		return this;
 	}
+
 	public DataRow merge(DataRow row){
 		return merge(row, false);
 	}
@@ -1306,19 +1307,28 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 	/**
 	 * 删除指定的key
+	 * 不和remove命名 避免调用remoate("ID","CODE")时与HashMap.remove(Object key, Object value) 冲突
 	 * @param keys keys
 	 * @return return
 	 */
-	public DataRow remove(String ... keys){
+	public DataRow removes(String ... keys){
 		if(null != keys){
 			for(String key:keys){
 				if(null != key){
 					super.remove(putKey(key));
+					updateColumns.remove(putKey(key));
 				}
-				updateColumns.remove(putKey(key));
 			}
 		}
 		return this;
+	}
+	@Override
+	public Object remove(Object key) {
+		if(null == key){
+			return null;
+		}
+		updateColumns.remove(putKey(key.toString()));
+		return super.remove(putKey(key.toString()));
 	}
 	/**
 	 * 清空需要更新的列
@@ -1363,8 +1373,11 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	 * @return return
 	 */
 	public DataRow copy(DataRow data, String ... keys){
-		if(null == data || null == keys){
-			return this;
+		if(null == data ){
+			return  this;
+		}
+		if(null == keys || keys.length ==0){
+			return copy(data, data.keys());
 		}
 		for(String key:keys){
 			String ks[] = BeanUtil.parseKeyValue(key);
@@ -1372,6 +1385,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+
 	public DataRow copy(DataRow data, List<String> keys){
 		if(null == data || null == keys){
 			return this;
@@ -1383,6 +1397,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return this;
 	}
 
+	/**
+	 * 抽取指定列,生成新的DataRow,新的DataRow只包括指定列的值，不包含其他附加信息(如来源表)
+	 * @param keys keys
+	 * @return DataRow
+	 */
+	public DataRow extract(String ... keys){
+		DataRow result = new DataRow();
+		result.copy(this, keys);
+		return result;
+	}
 	/**
 	 * 复制String类型数据
 	 * @param data data

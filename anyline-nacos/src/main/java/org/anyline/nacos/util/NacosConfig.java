@@ -15,6 +15,8 @@ public class NacosConfig extends AnylineConfig{
 	public String NAMESPACE = "public";
 	public String GROUP = "DEFAULT_GROUP";
 	public boolean AUTO_SCAN = true;
+	public String SCAN_PACKAGE="org.anyline,org.anyboot";
+	public String SCAN_CLASS="";
 	static{
 		init(); 
 		debug(); 

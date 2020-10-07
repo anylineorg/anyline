@@ -98,16 +98,16 @@ public class Select extends BaseBodyTag {
 				if(BasicUtil.isNotEmpty(multiple)){ 
 					html += " multiple=\"multiple\""; 
 				} 
-				html +=  ">"; 
-				if (null != body) { 
-					html += body; 
-				} 
+				html +=  ">";
 				if (null == headValue) { 
 					headValue = ""; 
 				} 
 				if (null != head) { 
 					html += "<option value=\"" + headValue + "\">" + head + "</option>"; 
-				} 
+				}
+				if (null != body) {
+					html += body;
+				}
 				if (null != items) { 
 					for (Object item : items) { 
 						String val = parseRuntimeValue(item, valueKey, encrypt); 

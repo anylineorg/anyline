@@ -83,7 +83,7 @@ public class VerifyCodeUtil {
 		String verifyCode = getRandomCode(verifySize); 
 		outputImage(w, h, outputFile, verifyCode); 
 		return verifyCode; 
-	} 
+	}
 	/**
 	 * 输出随机验证码图片流,并返回验证码值 
 	 * 

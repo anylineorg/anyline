@@ -12,13 +12,7 @@ import java.util.Map;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.OrderStore;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DESKey;
-import org.anyline.util.DESUtil;
-import org.anyline.util.DateUtil;
-import org.anyline.util.MD5Util;
-import org.anyline.util.XssUtil;
+import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.dom4j.Document;
@@ -945,11 +939,14 @@ public class ConfigParser {
 							}else{
 								if (valueEncrypt) {
 									value = decryptParamValue(value.toString());
-									value = filterIllegalChar(value.toString());
+									if(null != value) {
+										value = filterIllegalChar(value.toString());
+									}
 								}
 								if (null != value) {
-									value = value.toString().trim();
-									value = filterIllegalChar(value.toString());
+									//这里有可能是个Map
+									//value = value.toString().trim();
+									value = filterIllegalChar(value);
 								}
 							}
 							result.add(value);
@@ -1012,11 +1009,31 @@ public class ConfigParser {
 	 * @param src  src
 	 * @return return
 	 */
-	public static String filterIllegalChar(String src) {
+	public static Object filterIllegalChar(Object src) {
 		if (null == src) {
 			return src;
 		}
-		src = XssUtil.strip(src);
+		if(src instanceof String){
+			src = XssUtil.strip(src.toString());
+		}else if(src instanceof Map){
+			Map map = (Map)src;
+			List<String> keys = BeanUtil.getMapKeys(map);
+			for(String key:keys){
+				map.put(key,filterIllegalChar(map.get(key)));
+			}
+		}else if(src instanceof Collection){
+			Collection cols = (Collection)src;
+			for (Object value : cols) {
+				value = filterIllegalChar(value);
+			}
+		}else if(ClassUtil.isWrapClass(src.getClass())){
+			List<String> keys = BeanUtil.getFieldsName(src.getClass());
+			for(String key:keys){
+				Object value = BeanUtil.getFieldValue(src, key);
+				BeanUtil.setFieldValue(src, key, filterIllegalChar(value));
+			}
+		}
+
 		return src;
 	}
 	/**

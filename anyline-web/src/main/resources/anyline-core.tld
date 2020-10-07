@@ -171,6 +171,11 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>separate</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>evl</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -916,6 +921,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>sign</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>evl</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
@@ -1131,6 +1140,11 @@
 		</attribute>
 		<attribute>
 			<name>delay</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>max</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>

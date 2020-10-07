@@ -275,10 +275,14 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 			return JSON; 
 		} 
 		return super.SUCCESS; 
-	} 
-	protected String success(Object ... data) { 
-		return success(request, data); 
-	} 
+	}
+	protected String success(Object data) {
+		return success(request, data);
+	}
+	protected String success(Object ... data) {
+		return success(request, data);
+	}
+
 	protected String json(HttpServletRequest request, boolean result, Object ... data) { 
 		this.result = result; 
 		if(result){ 

@@ -21,7 +21,8 @@ package org.anyline.jdbc.config.db.impl;
  
 import org.anyline.jdbc.config.db.Order;
 import org.anyline.jdbc.config.db.SQL;
- 
+import org.anyline.util.BasicUtil;
+
 public class OrderImpl implements Order{ 
 	private static final long serialVersionUID = -765229283714551699L;
 	private String column;									//排序列 
@@ -29,22 +30,25 @@ public class OrderImpl implements Order{
 	 
 	public OrderImpl(){} 
 	public OrderImpl(String str){ 
-		if(null == str){ 
+		if(BasicUtil.isEmpty(str)){
 			return; 
 		} 
-		str = str.trim(); 
-		String col = null; 
-		String typ = "ASC"; 
-		if (str.contains(" ")) { // 指明正序或倒序 
-			String[] keys = str.split("\\s+"); 
-			col = keys[0]; 
-			if (keys.length > 1) { 
-				typ = keys[1]; 
-			} 
-		} else { 
-			col = str; 
-		} 
-		this.column = col;
+		str = str.trim();
+		String typ = "ASC";
+		String up = str.toUpperCase();
+		//ID
+		//ID ASC
+		//ORDER BY CONVERT(id USING gbk) COLLATE gbk_chinese_ci DESC
+		if(up.endsWith(" ASC")){
+			this.column = str.substring(0,str.length()-4);
+			typ = "ASC";
+		}else if(up.endsWith(" DESC")){
+			this.column = str.substring(0,str.length()-5);
+			typ = "DESC";
+		} else {
+			this.column  = str;
+			typ = "ASC";
+		}
 		if(typ.equalsIgnoreCase("ASC")){
 			this.type = SQL.ORDER_TYPE.ASC;
 		}else{

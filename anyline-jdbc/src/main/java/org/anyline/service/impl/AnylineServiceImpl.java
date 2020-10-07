@@ -54,6 +54,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Service("anyline.service")
 public class AnylineServiceImpl implements AnylineService {
@@ -127,12 +128,39 @@ public class AnylineServiceImpl implements AnylineService {
         configs.setPageNavi(navi);
         return querys(src, configs, conditions);
     }
+
+    @Override
+    public List<Map<String,Object>> maps(String src, String... conditions) {
+        return maps(src, null, conditions);
+    }
+
+    @Override
+    public List<Map<String,Object>> maps(String src, ConfigStore configs, String... conditions) {
+        List<Map<String,Object>> maps = null;
+        src = BasicUtil.compressionSpace(src);
+        conditions = BasicUtil.compressionSpace(conditions);
+        if(ConfigTable.isSQLDebug()){
+            log.warn("[解析SQL][src:{}]", src);
+        }
+        try {
+            SQL sql = createSQL(src);
+            maps = dao.maps(sql, configs, conditions);
+        } catch (Exception e) {
+            maps = new ArrayList<Map<String,Object>>();
+            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+                e.printStackTrace();
+            }
+            log.error("QUERY ERROR:"+e);
+        }
+        return maps;
+    }
+
     @Override
     public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions){
         DataSet set = null;
         src = BasicUtil.compressionSpace(src);
         conditions = BasicUtil.compressionSpace(conditions);
-        if(null == cache){
+        if(null == cache || "true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
             set = querys(src, configs, conditions);
         }else{
             if(null != cacheProvider){
@@ -567,6 +595,17 @@ public class AnylineServiceImpl implements AnylineService {
             conditions = BasicUtil.compressionSpace(conditions);
             String key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
             cacheProvider.remove(channel, "SET:" + key);
+            cacheProvider.remove(channel, "ROW:" + key);
+
+            PageNaviImpl navi = new PageNaviImpl();
+            navi.setFirstRow(0);
+            navi.setLastRow(0);
+            navi.setCalType(1);
+            if (null == configs) {
+                configs = new ConfigStoreImpl();
+            }
+            configs.setPageNavi(navi);
+            key = CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
             cacheProvider.remove(channel, "ROW:" + key);
         }
         return true;

@@ -51,91 +51,18 @@ public class WechatOpenUtil {
 		WechatOpenUtil util = instances.get(key);
 		if(null == util){ 
 			WechatOpenConfig config = WechatOpenConfig.getInstance(key);
-			util = new WechatOpenUtil(config);
-			instances.put(key, util); 
+			if(null != config) {
+				util = new WechatOpenUtil(config);
+				instances.put(key, util);
+			}
 		} 
 		return util; 
 	} 
 	public WechatOpenConfig getConfig(){
 		return config; 
 	} 
-	/** 
-	 * 统一下单
-	 * @param order order
-	 * @return WechatPrePayResult
-	 * @throws Exception Exception
-	 */
-	public WechatPrePayResult unifiedorder(WechatPrePayOrder order) throws Exception{
-		return WechatUtil.unifiedorder(config,WechatConfig.TRADE_TYPE.APP,order);
-	} 
- 
- 
-	/** 
-	 * 退款申请 
-	 * @param refund  refund
-	 * @return return
-	 */ 
-	public WechatRefundResult refund(WechatRefund refund){
-		return WechatUtil.refund(config, refund);
-	}
 
-	/**
-	 * 发送红包
-	 * @param pack  pack
-	 * @return return
-	 */
-	public WechatRedpackResult sendRedpack(WechatRedpack pack){
-		return WechatUtil.sendRedpack(config, pack);
-	}
 
-	/**
-	 * 发送裂变红包
-	 * @param pack  pack
-	 * @return return
-	 */
-	public WechatFissionRedpackResult sendRedpack(WechatFissionRedpack pack){
-		return WechatUtil.sendRedpack(config,pack);
-	}
-	/**
-	 * 企业付款
-	 * @param transfer  transfer
-	 * @return return
-	 */
-	public WechatEnterpriseTransferResult transfer(WechatEnterpriseTransfer transfer){
-		return WechatUtil.transfer(config, transfer);
-	}
-	/**
-	 * 企业付款到银行卡
-	 * @param transfer  transfer
-	 * @return return
-	 */
-	public WechatEnterpriseTransferBankResult transfer(WechatEnterpriseTransferBank transfer){
-		return WechatUtil.transfer(config, transfer);
-	}
-
-	/** 
-	 * APP调起支付所需参数 
-	 * @param prepayid 预支付id(由统一下单接口返回)
-	 * @return return
-	 */ 
-	public DataRow pay(String prepayid){
-		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("appid", config.APP_ID); 
-		params.put("partnerid", config.PAY_MCH_ID); 
-		params.put("prepayid", prepayid); 
-		params.put("package", "Sign=WXPay"); 
-		params.put("noncestr", BasicUtil.getRandomUpperString(32)); 
-		params.put("timestamp", System.currentTimeMillis()/1000+""); 
-		String sign = WechatUtil.sign(config.PAY_API_SECRET,params);
-		params.put("sign", sign); 
-		DataRow row = new DataRow(params); 
-		row.put("packagevalue", row.get("package")); 
-		row.remove("package"); 
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
-			log.warn("[APP调起微信支付][参数:{}]", row.toJSON()); 
-		} 
-		return row; 
-	}
 	public WechatAuthInfo getAuthInfo(String code){
 		return WechatUtil.getAuthInfo(config, code);
 	}

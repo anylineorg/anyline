@@ -1,5 +1,7 @@
 package org.anyline.alipay.util; 
  
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -18,6 +20,7 @@ public class AlipayConfig extends AnylineConfig{
 	public String RETURN_URL= ""; 
 	public String NOTIFY_URL= "";
 	public static String CONFIG_NAME = "anyline-alipay.xml";
+
 	static{ 
 		init(); 
 		debug(); 
@@ -28,6 +31,21 @@ public class AlipayConfig extends AnylineConfig{
 	 */
 	public static void parse(String content){
 		parse(AlipayConfig.class, content, instances ,compatibles); 
+	}
+
+
+	public static AlipayConfig reg(String key, DataRow row){
+		return parse(AlipayConfig.class, key, row, instances,compatibles);
+	}
+	public static AlipayConfig parse(String key, DataRow row){
+		return parse(AlipayConfig.class, key, row, instances,compatibles);
+	}
+	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){
+		for(DataRow row:set){
+			String key = row.getString(column);
+			parse(key, row);
+		}
+		return instances;
 	}
 	/**
 	 * 初始化默认配置文件

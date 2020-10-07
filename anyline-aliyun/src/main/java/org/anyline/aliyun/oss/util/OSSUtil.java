@@ -359,8 +359,13 @@ public class OSSUtil {
 	public Map<String,String> signature(String dir, int second) { 
 		if(second == 0){ 
 			second = config.EXPIRE_SECOND; 
-		} 
-		String host = "http://" + config.BUCKET + "." + config.ENDPOINT; 
+		}
+		String host = "";
+		if(config.BUCKET.startsWith("http")){
+			host = config.BUCKET + "." + config.ENDPOINT;
+		}else{
+			host = "https://" + config.BUCKET + "." + config.ENDPOINT;
+		}
 		Map<String,String> result = new HashMap<String,String>(); 
 		try { 
 	        String postPolicy = policy(dir,second); 

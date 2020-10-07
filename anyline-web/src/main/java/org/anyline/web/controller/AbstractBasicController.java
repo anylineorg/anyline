@@ -84,7 +84,7 @@ public class AbstractBasicController{
 
 					ParseResult parser = ConfigParser.parse(param,true);
 					
-					Object value = ConfigParser.getValues(WebUtil.values(request), parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt()); 
+					Object value = ConfigParser.getValues(WebUtil.value(request), parser);//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
 					BeanUtil.setFieldValue(entity, parser.getVar(), value);
 				}// end for 
 			} else {// end指定属性与request参数对应关系 
@@ -125,7 +125,7 @@ public class AbstractBasicController{
 		if (null != params && params.length > 0) {
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				Object value = ConfigParser.getValue(WebUtil.values(request), parser);
+				Object value = ConfigParser.getValue(WebUtil.value(request), parser);
 				row.put(parser.getVar(), value);
 				if(parser.isRequired()){
 					row.addUpdateColumns(parser.getVar());
@@ -179,14 +179,26 @@ public class AbstractBasicController{
 
 	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		DataSet set = new DataSet();
-
 		if (null != params && params.length > 0) {
-
+			//raw [json]格式
+			DataSet list = WebUtil.values(request);
+			if(list.size()>0){
+				for(DataRow item:list) {
+					DataRow row = new DataRow();
+					for (String param : params) {
+						Object value = item.get(param);
+						row.put(keyCase, param, value);
+					}
+					set.add(row);
+				}
+				return set;
+			}
+			//k=v格式
 			Map<String,List<Object>> map = new HashMap<String,List<Object>>();
 			int size = 0;
 			for (String param : params) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				List<Object> values = ConfigParser.getValues(WebUtil.values(request), parser);
+				List<Object> values = ConfigParser.getValues(WebUtil.value(request), parser);
 				map.put(parser.getVar(), values);
 				if(size <= values.size()){
 					size = values.size();
@@ -260,7 +272,7 @@ public class AbstractBasicController{
 			PageNavi pageNavi = parsePageNavi(request); 
 			store.setPageNavi(pageNavi); 
 		} 
-		store.setValue(WebUtil.values(request)); 
+		store.setValue(WebUtil.value(request));
 		return store; 
 	} 
 	/** 
@@ -278,7 +290,7 @@ public class AbstractBasicController{
 			pageNavi.setPageRows(vol);
 			store.setPageNavi(pageNavi);
 		} 
-		store.setValue(WebUtil.values(request)); 
+		store.setValue(WebUtil.value(request));
 		return store; 
 	} 
  
@@ -298,7 +310,7 @@ public class AbstractBasicController{
 		navi.setFirstRow(fr); 
 		navi.setLastRow(to); 
 		store.setPageNavi(navi); 
-		store.setValue(WebUtil.values(request)); 
+		store.setValue(WebUtil.value(request));
 		return store; 
 	}
 	protected ConfigStore parseConfig(HttpServletRequest request, String... conditions) {
@@ -337,21 +349,26 @@ public class AbstractBasicController{
 	 * @param key  key
 	 * @param keyEncrypt  keyEncrypt
 	 * @param valueEncrypt  valueEncrypt
+	 * @param defs  defs
 	 * @return return
 	 */ 
-	protected String getParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) { 
-		return (String) WebUtil.getHttpRequestParam(request, key,keyEncrypt, valueEncrypt); 
+	protected String getParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, String ... defs) {
+		String result =  (String) WebUtil.getHttpRequestParam(request, key,keyEncrypt, valueEncrypt);
+		if(BasicUtil.isEmpty(result) && null != defs && defs.length>0){
+			return (String)BasicUtil.nvl(defs);
+		}
+		return result;
 	} 
  
-	protected String getParam(HttpServletRequest request, String key, boolean valueEncrypt) {
+	protected String getParam(HttpServletRequest request, String key, boolean valueEncrypt, String ... defs) {
 		return getParam(request,key, false,valueEncrypt);
 	}
 
-	protected String getParam(HttpServletRequest request, String key) {
-		return getParam(request, key, false, false);
+	protected String getParam(HttpServletRequest request, String key, String ... defs) {
+		return getParam(request, key, false, false, defs);
 	} 
-	protected List<Object> getParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) { 
-		return WebUtil.getHttpRequestParams(request, key, keyEncrypt, valueEncrypt); 
+	protected List<Object> getParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
+		return WebUtil.getHttpRequestParams(request, key, keyEncrypt, valueEncrypt);
 	} 
 	 
 	protected List<Object> getParams(HttpServletRequest request, String key, boolean valueEncrypt) {
@@ -359,8 +376,95 @@ public class AbstractBasicController{
 	} 
 	protected List<Object> getParams(HttpServletRequest request, String key) {
 		return getParams(request,key, false, false);
-	} 
- 
+	}
+
+
+	protected int getInt(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
+		String val = getParam(request,key, keyEncrypt, valueEncrypt);
+		return BasicUtil.parseInt(val);
+	}
+
+	protected int getInt(HttpServletRequest request, String key, boolean valueEncrypt) throws Exception{
+		String val = getParam(request,key, valueEncrypt);
+		return BasicUtil.parseInt(val);
+	}
+
+	protected int getInt(HttpServletRequest request, String key) throws Exception{
+		String val = getParam(request,key);
+		return BasicUtil.parseInt(val);
+	}
+
+	protected int getInt(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, int def){
+		String val = getParam(request,key, keyEncrypt, valueEncrypt);
+		try {
+			return BasicUtil.parseInt(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
+	protected int getInt(HttpServletRequest request, String key, boolean valueEncrypt, int def) {
+		String val = getParam(request,key, valueEncrypt);
+		try {
+			return BasicUtil.parseInt(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
+	protected int getInt(HttpServletRequest request, String key, int def) {
+		String val = getParam(request,key);
+		try {
+			return BasicUtil.parseInt(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
+
+
+
+	protected double getDouble(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
+		String val = getParam(request,key, keyEncrypt, valueEncrypt);
+		return Double.parseDouble(val);
+	}
+
+	protected double getDouble(HttpServletRequest request, String key, boolean valueEncrypt) throws Exception{
+		String val = getParam(request,key, valueEncrypt);
+		return Double.parseDouble(val);
+	}
+
+	protected double getDouble(HttpServletRequest request, String key) throws Exception{
+		String val = getParam(request,key);
+		return Double.parseDouble(val);
+	}
+
+	protected double getDouble(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, double def){
+		String val = getParam(request,key, keyEncrypt, valueEncrypt);
+		try {
+			return Double.parseDouble(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
+	protected double getDouble(HttpServletRequest request, String key, boolean valueEncrypt, double def) {
+		String val = getParam(request,key, valueEncrypt);
+		try {
+			return Double.parseDouble(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
+
+	protected double getDouble(HttpServletRequest request, String key, double def) {
+		String val = getParam(request,key);
+		try {
+			return Double.parseDouble(val);
+		}catch (Exception e){
+			return def;
+		}
+	}
 	/** 
 	 * 按PageNavi预订格式<br> 
 	 * 从HttpServletRequest中提取分布数据 
@@ -372,7 +476,7 @@ public class AbstractBasicController{
 		if (null == request){ 
 			return null;
 		}
-		String style = request.getParameter("style");
+		String style = getParam(request,"style");
 		PageNaviConfig config = PageNaviConfig.getInstance(style); 
 		int pageNo = 1; // 当前页数 默认1
 		int pageVol = config.VAR_PAGE_DEFAULT_VOL; // 每页多少条 默认10 
@@ -380,15 +484,16 @@ public class AbstractBasicController{
 		pageVol = BasicUtil.parseInt(request.getAttribute(config.KEY_PAGE_ROWS),pageVol);
 		//是否启用前端设置显示行数
 		if(config.VAR_CLIENT_SET_VOL_ENABLE){
-			int httpVol = BasicUtil.parseInt(request.getParameter(config.KEY_PAGE_ROWS),0);
+			int httpVol = BasicUtil.parseInt(getParam(request,config.KEY_PAGE_ROWS),0);
 			if(httpVol > 0){
 				if(httpVol > config.VAR_PAGE_MAX_VOL){
 					log.warn("[每页条数超出限制][参考anyline-navi.xml:VAR_PAGE_MAX_VOL]");
 				}
 				pageVol = NumberUtil.min(config.VAR_PAGE_MAX_VOL, httpVol);
 			}
-		} 
-		pageNo = BasicUtil.parseInt(request.getParameter(config.KEY_PAGE_NO),pageNo); 
+		}
+
+		pageNo = BasicUtil.parseInt(getParam(request,config.KEY_PAGE_NO),pageNo);
 		String uri = null; 
 		if (null == uri) { 
 			uri = request.getRequestURI(); 
@@ -396,25 +501,25 @@ public class AbstractBasicController{
 		PageNavi navi = new PageNaviImpl(pageNo, pageVol, uri); 
 		String flag = (String)request.getAttribute(config.KEY_ID_FLAG);
 		if(null == flag){
-			flag = request.getParameter(config.KEY_ID_FLAG);
+			flag = getParam(request,config.KEY_ID_FLAG);
 		}
 		if(null != flag){
 			flag = flag.replace("'", "").replace("\"", "");
 		}
 		navi.setFlag(flag);
 		boolean showStat = config.VAR_SHOW_STAT;
-		showStat = BasicUtil.parseBoolean(request.getParameter(config.KEY_SHOW_STAT), showStat);
+		showStat = BasicUtil.parseBoolean(getParam(request,config.KEY_SHOW_STAT), showStat);
 		navi.setShowStat(showStat);
 		boolean showJump = config.VAR_SHOW_JUMP;
-		showJump = BasicUtil.parseBoolean(request.getParameter(config.KEY_SHOW_JUMP), showJump);
+		showJump = BasicUtil.parseBoolean(getParam(request,config.KEY_SHOW_JUMP), showJump);
 		navi.setShowJump(showJump);
 
 		boolean showVol = config.VAR_SHOW_VOL;
-		showJump = BasicUtil.parseBoolean(request.getParameter(config.KEY_SHOW_VOL), showVol);
+		showJump = BasicUtil.parseBoolean(getParam(request,config.KEY_SHOW_VOL), showVol);
 		navi.setShowVol(showVol);
 		
 		navi.setStyle(style);
-		String guide = BasicUtil.nvl(request.getParameter(config.KEY_GUIDE), config.STYLE_LOAD_MORE_FORMAT,"").toString();
+		String guide = BasicUtil.nvl(getParam(request,config.KEY_GUIDE), config.STYLE_LOAD_MORE_FORMAT,"").toString();
 		navi.setGuide(guide);
 		request.setAttribute("navi", navi);
 		 
@@ -675,7 +780,7 @@ public class AbstractBasicController{
 				log.warn("[load jsp navi][rows:{}][page:{}]",navi.getTotalRow(),navi.getTotalPage());
 			}
 			int type = 0;
-			String _type = request.getParameter("_anyline_navi_type");
+			String _type = getParam(request,"_anyline_navi_type");
 			if("1".equals(_type)){
 				type = 1;
 			}

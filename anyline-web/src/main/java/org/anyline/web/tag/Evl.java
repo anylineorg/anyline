@@ -42,6 +42,7 @@ public class Evl extends BaseBodyTag implements Cloneable{
 	 
 	 public int doEndTag() throws JspException {
 		 if(null == paramList || paramList.size()==0){
+		 	value = BasicUtil.evl(value,body);
 			 if(BasicUtil.isNotEmpty(value)){
 				 String str = value.toString();
 				 if(str.contains(",")){

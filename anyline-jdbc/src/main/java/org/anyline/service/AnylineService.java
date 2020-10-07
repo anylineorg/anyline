@@ -26,7 +26,9 @@ import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
 
 import java.util.Collection;
- 
+import java.util.List;
+import java.util.Map;
+
 public interface AnylineService{ 
 	/**
 	 * 按条件查询
@@ -40,13 +42,23 @@ public interface AnylineService{
 	 * 			[+]CD:null
 	 * 			[+]CD:NULL
 	 * 			
-	 * @return return
+	 * @return DataSet
 	 */
 	public DataSet querys(String src, ConfigStore configs, String ... conditions);
 	public DataSet querys(String src, String ... conditions);
 	public DataSet querys(String src, int fr, int to, String ... conditions);
 	public DataRow query(String src, ConfigStore configs, String ... conditions);
 	public DataRow query(String src, String ... conditions);
+
+	/**
+	 * 直接返回Map集合不封装，不分页
+	 * @param src			数据源(表或自定义SQL或SELECT语句) src			数据源(表或自定义SQL或SELECT语句)
+	 * @param configs		封装来自于http的查询条件 configs		封装来自于http的查询条件
+	 * @param conditions	固定查询条件   conditions	固定查询条件
+	 * @return List
+	 */
+	public List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions);
+	public List<Map<String,Object>> maps(String src, String ... conditions);
 
 	//实现与query相同的功能
 	public DataSet selects(String src, ConfigStore configs, String ... conditions);

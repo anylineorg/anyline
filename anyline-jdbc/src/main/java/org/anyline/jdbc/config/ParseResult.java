@@ -64,13 +64,19 @@ public class ParseResult implements Serializable{
 	public String getKey() { 
 		return key; 
 	} 
-	public void setKey(String key) { 
+	public void setKey(String key) {
+		if(null != key){
+			key = key.trim();
+		}
 		this.key = key; 
 	} 
 	public String getVar() {
 		return var;
 	} 
 	public void setVar(String var) {
+		if(null != var){
+			var = var.trim();
+		}
 		this.var = var;
 	} 
 	public String getClazz() { 

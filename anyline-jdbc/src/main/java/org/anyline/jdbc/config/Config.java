@@ -19,6 +19,7 @@
 
 package org.anyline.jdbc.config; 
  
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
  
-public interface Config { 
+public interface Config extends Serializable {
 	//从request 取值方式 
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值 
 	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组 
