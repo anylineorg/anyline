@@ -55,8 +55,10 @@ public class WechatProgrameUtil extends WechatUtil {
 		WechatProgrameUtil util = instances.get(key);
 		if(null == util){
 			WechatProgrameConfig config = WechatProgrameConfig.getInstance(key);
-			util = new WechatProgrameUtil(config);
-			instances.put(key, util);
+			if(null != config) {
+				util = new WechatProgrameUtil(config);
+				instances.put(key, util);
+			}
 		}
 		return util;
 	}
