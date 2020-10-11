@@ -847,13 +847,15 @@ public class BeanUtil {
 		return map; 
 	}
 	public static String object2json(Object obj, JsonInclude.Include include){
-		try {
-			if(null != include){
-				return newObjectMapper(include).writeValueAsString(obj);
+		if(null != obj) {
+			try {
+				if (null != include) {
+					return newObjectMapper(include).writeValueAsString(obj);
+				}
+				return JSON_MAPPER.writeValueAsString(obj);
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
 			}
-			return JSON_MAPPER.writeValueAsString(obj);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
 		}
 		return null;
 	}
