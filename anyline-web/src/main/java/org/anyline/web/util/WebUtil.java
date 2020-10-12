@@ -552,6 +552,14 @@ public class WebUtil {
 			return false;
 		}
 	}
+	public static boolean isWechatApp(HttpServletRequest request){
+		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
+		if(userAgent.indexOf("micromessenger")>-1 && userAgent.indexOf("miniprogram")>-1){
+			return true;
+		}else{
+			return false;
+		}
+	}
 	public static boolean isApp(HttpServletRequest request){
 		if(null == request){
 			return false;
