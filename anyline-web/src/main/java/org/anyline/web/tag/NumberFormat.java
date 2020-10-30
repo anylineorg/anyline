@@ -35,6 +35,8 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private Object min;
 	private Object max; 
 	private String def; //默认值
+	private Integer scale;//小数位
+	private Integer round; // 参考BigDecimal.ROUND_UP;
 
  
  
@@ -62,8 +64,19 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 						num = maxNum;
 						log.warn("[number format][value:{}][超过最大值:{}]",num, max);
 					}
-				} 
-				result = NumberUtil.format(num,format);
+				}
+				if(null != scale){
+					if(null != round){
+						num = num.setScale(scale, round);
+					}else {
+						num = num.setScale(scale);
+					}
+				}
+				if(BasicUtil.isNotEmpty(format)) {
+					result = NumberUtil.format(num, format);
+				}else{
+					result = num.toString();
+				}
 			}else{
 				if(null == result && null != nvl){
 					result = nvl.toString();
@@ -95,6 +108,8 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 		min = null;
 		max = null;
 		evl = null;
+		scale = null;
+		round = null;
 	} 
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
@@ -132,5 +147,21 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 
 	public void setDef(String def) {
 		this.def = def;
+	}
+
+	public Integer getScale() {
+		return scale;
+	}
+
+	public void setScale(Integer scale) {
+		this.scale = scale;
+	}
+
+	public Integer getRound() {
+		return round;
+	}
+
+	public void setRound(Integer round) {
+		this.round = round;
 	}
 }

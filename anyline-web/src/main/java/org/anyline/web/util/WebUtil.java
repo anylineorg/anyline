@@ -553,6 +553,10 @@ public class WebUtil {
 		}
 	}
 	public static boolean isWechatApp(HttpServletRequest request){
+		String referer = request.getHeader("referer");
+		if(null != referer && referer.startsWith("https://servicewechat.com")){
+			return true;
+		}
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
 		if(userAgent.indexOf("micromessenger")>-1 && userAgent.indexOf("miniprogram")>-1){
 			return true;
