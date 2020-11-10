@@ -79,7 +79,7 @@ public abstract class BasicConditionChain extends BasicCondition implements Cond
 
 	public boolean isValid(){
 		for(Condition con:conditions){
-			if(!con.isValid()){
+			if(null != con && !con.isValid()){
 				return false;
 			}
 		}

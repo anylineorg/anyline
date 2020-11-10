@@ -59,6 +59,9 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 //			}else{
 //				txt = condition.getRunText(creater);
 //			}
+			if(null == condition){
+				continue;
+			}
 			txt = condition.getRunText(creater);
 			if(BasicUtil.isEmpty(txt)){
 				continue;
