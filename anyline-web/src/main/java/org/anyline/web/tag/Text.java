@@ -25,6 +25,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.util.List;
@@ -38,7 +39,8 @@ public class Text extends BaseBodyTag{
 	private String property;
 	private String selector;
 	private String nvl = null;
-	private String evl = null; 
+	private String evl = null;
+	private String var = null;
 	 
 	public int doStartTag() throws JspException { 
         return EVAL_BODY_BUFFERED; 
@@ -92,7 +94,11 @@ public class Text extends BaseBodyTag{
 				result = BasicUtil.evl(result,evl); 
 			}
 			if(BasicUtil.isNotEmpty(result)) {
-				out.print(result);
+				if(null != var){
+					pageContext.setAttribute(var, result);
+				}else {
+					out.print(result);
+				}
 			}
 		}catch(Exception e){ 
 		 
@@ -110,7 +116,17 @@ public class Text extends BaseBodyTag{
 		selector = null;
 		nvl = null;
 		evl = null;
+		var = null;
     }
+
+	public String getVar() {
+		return var;
+	}
+
+	public void setVar(String var) {
+		this.var = var;
+	}
+
 	public Object getData() {
 		return data;
 	}

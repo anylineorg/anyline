@@ -66,6 +66,7 @@ public class Navi extends BodyTagSupport{
 
 	private int type = 0			;	//分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1)
 	private Integer max = null		;   //最大显示到第几页(下标从1开始)
+	private Integer cache = null	;	//缓存夜间条件时间(秒)
 
 
 	public int doStartTag() throws JspException {
@@ -143,9 +144,14 @@ public class Navi extends BodyTagSupport{
 				builder.append("max:" ).append(max).append(",");
 			}
 			builder.append("vol:").append(vol).append(",");
+			if(null == cache){
+				cache = config.VAR_CACHE_CONDITION_SECOND;
+			}
+			builder.append("cache:").append(cache).append(",");
 			if(null == auto){
 				auto = config.VAR_AUTO_LOAD;
 			}
+
 			builder.append("auto:").append(auto).append(",");
 			builder.append("type:").append(type).append(",");
 			builder.append("style:'").append(style).append("',");
@@ -170,6 +176,12 @@ public class Navi extends BodyTagSupport{
 				cur = pageContext.getRequest().getParameter(config.KEY_PAGE_NO);
 			}
 			int curPage = BasicUtil.parseInt(cur, 1);
+			//加载缓存
+			if(null != cache){
+				builder.append("if(typeof _navi_load_cache === \"function\") {\n");
+				builder.append("\t_navi_load_cache('").append(flag).append("',").append(confId).append(");\n");
+				builder.append("}\n");
+			}
 			//加载数据函数
 			if(BasicUtil.isNotEmpty(function)){
 				//clear:清空上一页内容  hold:保持当前页
@@ -247,6 +259,7 @@ public class Navi extends BodyTagSupport{
 		vol				= true	;
 		delay           = 0     ;
 		max				= null  ;
+		cache			= null	;
 	}
 
 	public String getParam() {

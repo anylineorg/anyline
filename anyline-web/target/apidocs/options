@@ -1,0 +1,24 @@
+-classpath
+'D:/jar/maven/org/springframework/spring-beans/4.3.23.RELEASE/spring-beans-4.3.23.RELEASE.jar;D:/jar/maven/org/dom4j/dom4j/2.1.1/dom4j-2.1.1.jar;D:/jar/maven/org/springframework/spring-web/4.3.23.RELEASE/spring-web-4.3.23.RELEASE.jar;D:/jar/maven/commons-io/commons-io/2.6/commons-io-2.6.jar;D:/jar/maven/ognl/ognl/3.2.10/ognl-3.2.10.jar;D:/jar/maven/javax/servlet/servlet-api/2.4/servlet-api-2.4.jar;D:/jar/maven/org/apache/httpcomponents/httpmime/4.5/httpmime-4.5.jar;D:/jar/maven/org/anyline/anyline-jdbc/8.3.7-SNAPSHOT/anyline-jdbc-8.3.7-SNAPSHOT.jar;D:/jar/maven/ch/qos/logback/logback-access/1.2.3/logback-access-1.2.3.jar;D:/jar/maven/org/springframework/spring-tx/4.3.23.RELEASE/spring-tx-4.3.23.RELEASE.jar;D:/jar/maven/com/fasterxml/jackson/core/jackson-annotations/2.10.0/jackson-annotations-2.10.0.jar;D:/jar/maven/org/javassist/javassist/3.24.1-GA/javassist-3.24.1-GA.jar;D:/jar/maven/org/apache/httpcomponents/httpcore/4.4.1/httpcore-4.4.1.jar;D:/jar/maven/org/apache/httpcomponents/httpclient/4.5/httpclient-4.5.jar;D:/jar/maven/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar;D:/jar/maven/com/fasterxml/jackson/core/jackson-core/2.10.0/jackson-core-2.10.0.jar;D:/jar/maven/commons-logging/commons-logging/1.2/commons-logging-1.2.jar;D:/jar/maven/org/springframework/spring-expression/4.3.23.RELEASE/spring-expression-4.3.23.RELEASE.jar;D:/jar/maven/org/springframework/spring-jdbc/4.3.23.RELEASE/spring-jdbc-4.3.23.RELEASE.jar;D:/jar/maven/commons-codec/commons-codec/1.9/commons-codec-1.9.jar;D:/jar/maven/ch/qos/logback/logback-core/1.2.3/logback-core-1.2.3.jar;D:/jar/maven/javax/servlet/jsp-api/2.0/jsp-api-2.0.jar;D:/jar/maven/com/fasterxml/jackson/core/jackson-databind/2.10.0/jackson-databind-2.10.0.jar;D:/jar/maven/commons-net/commons-net/3.6/commons-net-3.6.jar;D:/jar/maven/com/jcraft/jsch/0.1.55/jsch-0.1.55.jar;D:/jar/maven/org/springframework/spring-aop/4.3.23.RELEASE/spring-aop-4.3.23.RELEASE.jar;D:/jar/maven/org/springframework/spring-context/4.3.23.RELEASE/spring-context-4.3.23.RELEASE.jar;D:/jar/maven/org/anyline/anyline-net/8.3.7-SNAPSHOT/anyline-net-8.3.7-SNAPSHOT.jar;D:/jar/maven/org/anyline/anyline-core/8.3.7-SNAPSHOT/anyline-core-8.3.7-SNAPSHOT.jar;D:/jar/maven/org/apache/oro/com.springsource.org.apache.oro/2.0.8/com.springsource.org.apache.oro-2.0.8.jar;D:/jar/maven/ch/qos/logback/logback-classic/1.2.3/logback-classic-1.2.3.jar;D:/jar/maven/org/springframework/spring-core/4.3.23.RELEASE/spring-core-4.3.23.RELEASE.jar;D:/jar/maven/javax/persistence/persistence-api/1.0.2/persistence-api-1.0.2.jar;D:/jar/maven/javax/servlet/javax.servlet-api/4.0.0/javax.servlet-api-4.0.0.jar'
+-encoding
+'UTF-8'
+-protected
+-sourcepath
+'D:/develop/git/anyline/anyline-web/src/main/java;D:/develop/git/anyline/anyline-web/target/generated-sources/annotations'
+-author
+-bottom
+'Copyright &#169; 2020. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'D:/develop/git/anyline/anyline-web/target/apidocs'
+-docencoding
+'UTF-8'
+-doctitle
+'anyline-web 8.3.7-SNAPSHOT API'
+-linkoffline
+'http://docs.oracle.com/javase/8/docs/api' 'D:/develop/git/anyline/anyline-web/target/javadoc-bundle-options'
+-use
+-version
+-windowtitle
+'anyline-web 8.3.7-SNAPSHOT API'

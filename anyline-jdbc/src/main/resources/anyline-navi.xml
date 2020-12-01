@@ -39,6 +39,10 @@
 		<property key="VAR_PAGE_MAX_VOL">100</property>
 		<!-- 是否允许前端设置每页多少条 -->
 		<property key="VAR_CLIENT_SET_VOL_ENABLE">true</property>
+		<!-- 缓存查询条件时间(秒) -->
+		<property key="VAR_CACHE_CONDITION_SECOND">0</property>
+		<!--cookie,localstorage(local),sessionStorage(session)-->
+		<property key="VAR_CACHE_CONDITION_TYPE">cookie</property>
 		
 		<!-- 用户选择每页多少条 -->
 		<!-- STYLE_PAGE_VOL与STYLE_PAGE_VOL_NUMBERS 会相互覆盖 (以配置文件后设置的为准) -->
@@ -55,7 +59,7 @@
 		<property key="EVENT_BEFORE"></property>
 		<property key="EVENT_AFTER"></property>
 		<property key="EVENT_REFRESH"></property>
-		
-		
+
+
 	</config>
 </configs>

@@ -38,6 +38,7 @@ public class Sum extends BaseBodyTag {
 	private String property; 
 	private String format;
 	private String nvl;
+	private String var;
  
 	@SuppressWarnings("rawtypes")
 	public int doEndTag() throws JspException { 
@@ -91,8 +92,12 @@ public class Sum extends BaseBodyTag {
 			if(BasicUtil.isEmpty(html) && BasicUtil.isNotEmpty(nvl)){
 				html = nvl;
 			}
-			JspWriter out = pageContext.getOut(); 
-			out.print(html); 
+			if(null == var) {
+				JspWriter out = pageContext.getOut();
+				out.print(html);
+			}else{
+				pageContext.setAttribute(var, html);
+			}
 		} catch (Exception e) {
 			e.printStackTrace(); 
 		} finally { 
@@ -123,8 +128,24 @@ public class Sum extends BaseBodyTag {
 		this.property = property;
 	}
 
+	@Override
+	public String getNvl() {
+		return nvl;
+	}
 
-	@Override 
+	public void setNvl(String nvl) {
+		this.nvl = nvl;
+	}
+
+	public String getVar() {
+		return var;
+	}
+
+	public void setVar(String var) {
+		this.var = var;
+	}
+
+	@Override
 	public void release() {
 		super.release(); 
 		scope = null; 
@@ -133,6 +154,7 @@ public class Sum extends BaseBodyTag {
 		property = null;
 		selector = null; 
 		format = null;
+		var = null;
 	} 
  
 	public String getScope() { 

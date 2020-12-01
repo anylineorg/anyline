@@ -67,8 +67,7 @@ public class PageNaviImpl implements PageNavi{
 	protected int type 						= 0			; //分页方式(0:下标 1:流式 2:根据浏览器状态 web:0,wap:1) 
 	protected Map<String,List<Object>> params= null		; //查询参数 
 	protected String method					= "post"	; 
-	protected String style					= ""		; //样式标记对应anyline-navi.xml中的config.key 
-	 
+	protected String style					= ""		; //样式标记对应anyline-navi.xml中的config.key
  
 	protected boolean showStat = false; 
 	protected boolean showJump = false; 
