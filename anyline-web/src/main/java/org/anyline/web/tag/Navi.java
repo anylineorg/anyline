@@ -176,16 +176,17 @@ public class Navi extends BodyTagSupport{
 				cur = pageContext.getRequest().getParameter(config.KEY_PAGE_NO);
 			}
 			int curPage = BasicUtil.parseInt(cur, 1);
-			//加载缓存
-			if(null != cache){
-				builder.append("if(typeof _navi_load_cache === \"function\") {\n");
-				builder.append("\t_navi_load_cache('").append(flag).append("',").append(confId).append(");\n");
-				builder.append("}\n");
-			}
 			//加载数据函数
 			if(BasicUtil.isNotEmpty(function)){
 				//clear:清空上一页内容  hold:保持当前页
 				builder.append("function ").append(function).append("(clear,hold){\n");
+
+				//加载缓存
+				if(null != cache){
+					builder.append("\tif(typeof _navi_load_cache === \"function\") {\n");
+					builder.append("\t\t_navi_load_cache('").append(flag).append("',").append(confId).append(");\n");
+					builder.append("\t}\n");
+				}
 				builder.append("\tif(clear){\n\t\t").append(confId).append("['clear'] = 1;\n\t\t").append(confId).append("['flush'] = true;\n\t}\n");
 				builder.append("\tvar _cur_page = ").append(curPage).append(";\n");
 				builder.append("\tif(hold){\n\t\t_cur_page = $('#_navi_cache_page_").append(flag).append("').val() || $('#hid_cur_page_").append(flag).append("').val() || _cur_page;\n\t\t_navi_go(_cur_page,"+confId+");\n\t}else{\n");

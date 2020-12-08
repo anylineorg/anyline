@@ -34,11 +34,9 @@ import java.util.HashMap;
 import java.util.Iterator; 
 import java.util.List; 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.SSLContext; 
-import javax.net.ssl.SSLException; 
-import javax.net.ssl.SSLSession; 
-import javax.net.ssl.SSLSocket; 
+import javax.net.ssl.*;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -56,8 +54,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost; 
 import org.apache.http.client.methods.HttpPut; 
 import org.apache.http.client.methods.HttpRequestBase; 
-import org.apache.http.client.utils.URLEncodedUtils; 
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory; 
+import org.apache.http.client.utils.URLEncodedUtils;
+import org.apache.http.config.SocketConfig;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLContextBuilder; 
 import org.apache.http.conn.ssl.SSLContexts; 
 import org.apache.http.conn.ssl.TrustStrategy; 
@@ -98,7 +97,8 @@ public class HttpUtil {
     private static String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36"; 
     private static int MAX_TIMEOUT = 72000; //毫秒 
      
-    private static CloseableHttpClient client; 
+    private static CloseableHttpClient client;
+	private static CloseableHttpClient sslClient;
     private Map<String,HttpUtil> instances = new HashMap<String,HttpUtil>();  
      
     static {   
@@ -1140,7 +1140,7 @@ public class HttpUtil {
 		builder.setUserAgent(userAgent); 
 		client = builder.build(); 
 		return client; 
-	} 
+	}
 	public static CloseableHttpClient ceateSSLClient(File keyFile, String protocol, String password){ 
 		CloseableHttpClient httpclient = null; 
 		try{ 
@@ -1166,43 +1166,7 @@ public class HttpUtil {
 	} 
 	public static CloseableHttpClient ceateSSLClient(File keyFile, String password){ 
 		return ceateSSLClient(keyFile, HttpUtil.PROTOCOL_TLSV1, password); 
-	} 
-	public static CloseableHttpClient defaultSSLClient(){ 
-		if(null == client){ 
-			HttpClientBuilder builder = HttpClients.custom().setSSLSocketFactory(createSSLConnSocketFactory()).setConnectionManager(connManager).setDefaultRequestConfig(requestConfig); 
-			builder.setUserAgent(userAgent);    
-			client = builder.build(); 
-		} 
-		return client; 
-	} 
-	private static SSLConnectionSocketFactory createSSLConnSocketFactory() {   
-        SSLConnectionSocketFactory sslsf = null;   
-        try {   
-            SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {   
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {   
-                    return true;   
-                }   
-            }).build();   
-            sslsf = new SSLConnectionSocketFactory(sslContext, new X509HostnameVerifier() {   
-   
-                public boolean verify(String host, SSLSession sslSession) {   
-                    return true;   
-                }   
-   
-                public void verify(String host, SSLSocket ssl) throws IOException {   
-                }   
-   
-                public void verify(String host, X509Certificate cert) throws SSLException {   
-                }   
-   
-                public void verify(String host, String[] cns, String[] subjectAlts) throws SSLException {   
-                }   
-            });   
-        } catch (GeneralSecurityException e) {   
-            e.printStackTrace();   
-        }   
-        return sslsf;   
-    }   
+	}
     public static String mergePath(String ... paths){ 
 		String result = null; 
 		String separator = "/"; 
@@ -1264,6 +1228,36 @@ public class HttpUtil {
 	} 
 	public static void setUserAgent(String agent){ 
 		HttpUtil.userAgent = agent; 
-	} 
+	}
 
+	public static CloseableHttpClient defaultSSLClient(){
+		try {
+			if (sslClient!=null){
+				return sslClient;
+			}
+
+			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+			httpClientBuilder.setMaxConnTotal(10000);
+			httpClientBuilder.setMaxConnPerRoute(1000);
+
+			httpClientBuilder.evictIdleConnections((long) 15, TimeUnit.SECONDS);
+			SocketConfig.Builder socketConfigBuilder = SocketConfig.custom();
+			socketConfigBuilder.setTcpNoDelay(true);
+			httpClientBuilder.setDefaultSocketConfig(socketConfigBuilder.build());
+			RequestConfig.Builder requestConfigBuilder = RequestConfig.custom();
+			requestConfigBuilder.setConnectTimeout(30000);
+			requestConfigBuilder.setSocketTimeout(30000);
+			httpClientBuilder.setDefaultRequestConfig(requestConfigBuilder.build());
+			SSLContext ctx = SSLContext.getInstance("TLS");
+			X509TrustManager tm = new SimpleX509TrustManager(null);
+			ctx.init(null, new TrustManager[]{tm}, null);
+			httpClientBuilder.setSslcontext(ctx);
+			httpClientBuilder.setConnectionManagerShared(true);
+			sslClient = httpClientBuilder.build();
+
+		} catch (Exception e) {
+
+		}
+		return sslClient;
+	}
 }
