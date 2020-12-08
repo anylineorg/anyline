@@ -171,11 +171,7 @@ public class HttpUtil {
  
 	public static HttpResult post(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) { 
 		if(null == client){ 
-			if(url.contains("https://")){ 
-				client = defaultSSLClient(); 
-			}else{ 
-				client =  defaultClient(); 
-			} 
+			client(url);
 		} 
 		if(url.startsWith("//")){ 
 			url = "http:" + url; 
@@ -201,22 +197,22 @@ public class HttpUtil {
 	 * @return HttpResult
 	 */
 	public static HttpResult post(String url, String encode, HttpEntity... entitys) { 
-		return post(defaultClient(), url, encode, entitys); 
+		return post(client(url), url, encode, entitys);
 	} 
 	public static HttpResult post(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) { 
-		return post(defaultClient(),headers, url, encode, entitys); 
+		return post(client(url),headers, url, encode, entitys);
 	} 
 	public static HttpResult post(String url, String encode, Map<String, Object> params) { 
-		return post(defaultClient(), url, encode, params); 
+		return post(client(url), url, encode, params);
 	} 
 	public static HttpResult post(Map<String, String> headers, String url, String encode, Map<String, Object> params) { 
-		return post(defaultClient(), headers, url, encode, params); 
+		return post(client(url), headers, url, encode, params);
 	} 
 	public static HttpResult post(String url,   Map<String, Object> params) { 
-		return post(defaultClient(), null, url, "UTF-8", params); 
+		return post(client(url), null, url, "UTF-8", params);
 	} 
 	public static HttpResult post(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) { 
-		return post(defaultClient(),headers, url, encode, entitys); 
+		return post(client(url),headers, url, encode, entitys);
 	} 
  
 	public static HttpResult put(CloseableHttpClient client, String url, String encode, HttpEntity... entitys) { 
@@ -254,11 +250,7 @@ public class HttpUtil {
  
 	public static HttpResult put(CloseableHttpClient client, Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) { 
 		if(null == client){ 
-			if(url.contains("https://")){ 
-				client = defaultSSLClient(); 
-			}else{ 
-				client =  defaultClient(); 
-			} 
+			client = client(url);
 		} 
 		if(url.startsWith("//")){ 
 			url = "http:" + url; 
@@ -277,23 +269,23 @@ public class HttpUtil {
 	 
  
 	public static HttpResult put(String url, String encode, HttpEntity... entitys) { 
-		return put(defaultClient(), url, encode, entitys); 
+		return put(client(url), url, encode, entitys);
 	} 
 	public static HttpResult put(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) { 
-		return put(defaultClient(), headers, url, encode, entitys); 
+		return put(client(url), headers, url, encode, entitys);
 	} 
  
 	public static HttpResult put(String url, String encode, Map<String, Object> params) { 
-		return put(defaultClient(), url, encode, params); 
+		return put(client(url), url, encode, params);
 	} 
 	public static HttpResult put(String url, Map<String, Object> params) { 
-		return put(defaultClient(), url, "UTF-8", params); 
+		return put(client(url), url, "UTF-8", params);
 	} 
 	public static HttpResult put(Map<String, String> headers, String url, String encode, Map<String, Object> params) { 
-		return put(defaultClient(), headers, url, encode, params); 
+		return put(client(url), headers, url, encode, params);
 	} 
 	public static HttpResult put(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) { 
-		return put(defaultClient(), headers, url, encode, entitys); 
+		return put(client(url), headers, url, encode, entitys);
 	} 
 	 
  
@@ -318,11 +310,7 @@ public class HttpUtil {
  
 	public static HttpResult get(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) { 
 		if(null == client){ 
-			if(url.contains("https://")){ 
-				client = defaultSSLClient(); 
-			}else{ 
-				client =  defaultClient(); 
-			} 
+			client = client(url);
 		} 
 		if(url.startsWith("//")){ 
 			url = "http:" + url; 
@@ -350,27 +338,27 @@ public class HttpUtil {
 		return get(url, encode, new HashMap<String,Object>()); 
 	} 
 	public static HttpResult get(String url, String encode, Map<String, Object> params) { 
-		return get(defaultClient(), url, encode, params); 
+		return get(client(url), url, encode, params);
 	} 
  
 	public static HttpResult get(String url,  Map<String, Object> params) { 
-		return get(defaultClient(), url, "UTF-8", params); 
+		return get(client(url), url, "UTF-8", params);
 	} 
  
 	public static HttpResult get(Map<String, String> headers, String url, String encode, Map<String, Object> params) { 
-		return get(defaultClient(), headers, url, encode, params); 
+		return get(client(url), headers, url, encode, params);
 	} 
  
 	public static HttpResult get(Map<String, String> headers, String url, String encode) { 
-		return get(defaultClient(), headers, url, encode, new HashMap<String,Object>()); 
+		return get(client(url), headers, url, encode, new HashMap<String,Object>());
 	} 
  
 	public static HttpResult get(String url, String encode, List<NameValuePair> pairs) { 
-		return get(defaultClient(), url, encode, pairs); 
+		return get(client(url), url, encode, pairs);
 	} 
  
 	public static HttpResult get(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) { 
-		return get(defaultClient(), headers, url, encode, pairs); 
+		return get(client(url), headers, url, encode, pairs);
 	} 
 	 
  
@@ -399,11 +387,7 @@ public class HttpUtil {
  
 	public static HttpResult delete(CloseableHttpClient client, Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) { 
 		if(null == client){ 
-			if(url.contains("https://")){ 
-				client = defaultSSLClient(); 
-			}else{
-				client =  defaultClient(); 
-			} 
+			client = client(url);
 		} 
 		if(url.startsWith("//")){ 
 			url = "http:" + url; 
@@ -427,25 +411,25 @@ public class HttpUtil {
  
  
 	public static HttpResult delete(String url, String encode, Map<String, Object> params) { 
-		return delete(defaultClient(), url, encode, params); 
+		return delete(client(url), url, encode, params);
 	} 
  
 	public static HttpResult delete(Map<String, String> headers, String url, String encode, Map<String, Object> params) { 
-		return delete(defaultClient(), headers, url, encode, params); 
+		return delete(client(url), headers, url, encode, params);
 	} 
  
 	public static HttpResult delete(String url, String encode, List<NameValuePair> pairs) { 
-		return delete(defaultClient(), url, encode, pairs); 
+		return delete(client(url), url, encode, pairs);
 	} 
  
 	public static HttpResult delete(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) { 
-		return delete(defaultClient(), headers, url, encode, pairs); 
+		return delete(client(url), headers, url, encode, pairs);
 	} 
  
  
  
 	public static HttpResult delete(Map<String, String> headers, String url, String encode, NameValuePair ... pairs) { 
-		return delete(defaultClient(), headers, url, encode, pairs); 
+		return delete(client(url), headers, url, encode, pairs);
 	}
 
 	private static HttpResult exe(CloseableHttpClient client, HttpRequestBase method, String encode){
@@ -558,36 +542,36 @@ public class HttpUtil {
  
 	public static DownloadTask download(String url, String dst){ 
 		File file = new File(dst); 
-		return download(defaultClient(), new DefaultProgress(url, file), url, file, null, null, false); 
+		return download(client(url), new DefaultProgress(url, file), url, file, null, null, false);
 	} 
 	public static DownloadTask download(String url, File dst){ 
-		return download(defaultClient(), new DefaultProgress(url, dst), url, dst, null, null, false); 
+		return download(client(url), new DefaultProgress(url, dst), url, dst, null, null, false);
 	} 
 	public static DownloadTask download(String url, String dst, Map<String,String> headers,Map<String,Object> params){ 
 		File file = new File(dst); 
-		return download(defaultClient(), new DefaultProgress(url, file), url, file, headers, params, false); 
+		return download(client(url), new DefaultProgress(url, file), url, file, headers, params, false);
 	} 
 	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params){ 
-		return download(defaultClient(), new DefaultProgress(url, dst), url, dst, headers, params, false); 
+		return download(client(url), new DefaultProgress(url, dst), url, dst, headers, params, false);
 	} 
 	public static DownloadTask download(String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){ 
 		File file = new File(dst); 
-		return download(defaultClient(), new DefaultProgress(url, file), url, file, headers, params, override); 
+		return download(client(url), new DefaultProgress(url, file), url, file, headers, params, override);
 	} 
 	public static DownloadTask download(String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){ 
-		return download(defaultClient(), new DefaultProgress(url, dst), url, dst, headers, params, override); 
+		return download(client(url), new DefaultProgress(url, dst), url, dst, headers, params, override);
 	} 
 	public static DownloadTask download(DownloadProgress progress, String url, String dst, boolean override){ 
-		return download(defaultClient(), progress, url, new File(dst), null, null, override); 
+		return download(client(url), progress, url, new File(dst), null, null, override);
 	} 
 	public static DownloadTask download(DownloadProgress progress, String url, File dst, boolean override){ 
-		return download(defaultClient(), progress, url, dst, null, null, override); 
+		return download(client(url), progress, url, dst, null, null, override);
 	} 
 	public static DownloadTask download(DownloadProgress progress, String url, String dst, Map<String,String> headers,Map<String,Object> params, boolean override){ 
-		return download(defaultClient(), progress, url, new File(dst), headers, params, override); 
+		return download(client(url), progress, url, new File(dst), headers, params, override);
 	} 
 	public static DownloadTask download(DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){ 
-		return download(defaultClient(), progress, url, dst, headers, params, override); 
+		return download(client(url), progress, url, dst, headers, params, override);
 	} 
 	public static DownloadTask download(CloseableHttpClient client, DownloadProgress progress, String url, File dst, Map<String,String> headers,Map<String,Object> params, boolean override){ 
 		DownloadTask task = new DownloadTask(); 
@@ -602,7 +586,7 @@ public class HttpUtil {
 	} 
  
 	public static boolean download(DownloadTask task){ 
-		return download(defaultClient(), task); 
+		return download(client(task.getUrl()), task);
 	} 
 	public static boolean download(CloseableHttpClient client, DownloadTask task){ 
 		boolean result = false; 
@@ -742,7 +726,7 @@ public class HttpUtil {
 		return result; 
 	} 
 	public static HttpResult upload(String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params){ 
-		return upload(defaultClient(), url, files, encode, headers, params); 
+		return upload(client(url), url, files, encode, headers, params);
 	} 
 	public static HttpResult upload(String url, Map<String,File> files, Map<String,String> headers, Map<String,Object> params){ 
 		return upload(url, files, "UTF-8", headers, params); 
@@ -830,11 +814,7 @@ public class HttpUtil {
 		HttpResult result = new HttpResult();
 		InputStream is = null;
 		if(null == client){
-			if(url.contains("https://")){
-				client = defaultSSLClient();
-			}else{
-				client =  defaultClient();
-			}
+			client = client(url);
 		}
 		if(url.startsWith("//")){
 			url = "http:" + url;
@@ -865,22 +845,22 @@ public class HttpUtil {
 	 * @return InputStream
 	 */
 	public static HttpResult postStream(String url, String encode, HttpEntity... entitys) {
-		return postStream(defaultClient(), url, encode, entitys);
+		return postStream(client(url), url, encode, entitys);
 	}
 	public static HttpResult postStream(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
-		return postStream(defaultClient(),headers, url, encode, entitys);
+		return postStream(client(url),headers, url, encode, entitys);
 	}
 	public static HttpResult postStream(String url, String encode, Map<String, Object> params) {
-		return postStream(defaultClient(), url, encode, params);
+		return postStream(client(url), url, encode, params);
 	}
 	public static HttpResult postStream(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
-		return postStream(defaultClient(), headers, url, encode, params);
+		return postStream(client(url), headers, url, encode, params);
 	}
 	public static HttpResult postStream(String url,   Map<String, Object> params) {
-		return postStream(defaultClient(), null, url, "UTF-8", params);
+		return postStream(client(url), null, url, "UTF-8", params);
 	}
 	public static HttpResult postStream(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
-		return postStream(defaultClient(),headers, url, encode, entitys);
+		return postStream(client(url),headers, url, encode, entitys);
 	}
 
 	public static String read(InputStream is, String encode) {
@@ -1120,8 +1100,14 @@ public class HttpUtil {
 		} 
 		return pairs; 
 	} 
- 
-	private static CloseableHttpClient defaultClient(){ 
+ 	private static CloseableHttpClient client(String url){
+		if(url.contains("https://")){
+			return defaultSSLClient();
+		}else{
+			return defaultClient();
+		}
+	}
+	private static CloseableHttpClient defaultClient(){
 		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(requestConfig); 
 		builder.setUserAgent(userAgent); 
 		client = builder.build(); 
