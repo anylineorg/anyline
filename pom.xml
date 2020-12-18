@@ -142,7 +142,6 @@
 				</plugins>
 			</build>
 		</profile>
-
 		<profile>
 			<id>anyline</id>
 			<distributionManagement>
