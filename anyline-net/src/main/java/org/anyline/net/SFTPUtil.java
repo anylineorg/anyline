@@ -204,7 +204,7 @@ public class SFTPUtil {
         } 
     }   
     public void uploadFile(File localFile, String remoteDir, String remoteFile) throws SftpException { 
-    	uploadFile(localFile.getAbsoluteFile(), remoteDir, remoteFile); 
+    	uploadFile(localFile.getAbsolutePath(), remoteDir, remoteFile);
     }   
    
     /**  
