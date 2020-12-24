@@ -40,17 +40,37 @@ import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.db.impl.PageNaviImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.util.*;
+import org.anyline.web.util.EntityListener;
 import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
- 
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.context.support.WebApplicationContextUtils;
+
 public class AbstractBasicController{ 
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
 	protected final String FAIL = "fail";
 	protected final String JSON = "json";
 	protected final String SUCCESS = "success";
-	 
+
+	@Autowired(required = false)
+	@Qualifier("anyline.entity.listener")
+	protected static EntityListener listener;
+	protected static boolean is_listener_load = false;
+	private EntityListener getListener(HttpServletRequest request){
+		if(null != listener){
+			return listener;
+		}
+		if(!is_listener_load) {
+			BeanFactory beanFactory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
+			listener = (EntityListener) beanFactory.getBean("anyline.entity.listener");
+			is_listener_load = true;
+		}
+		return listener;
+	}
 	/****************************************************************************************************************** 
 	 *  
 	 * 封装参数 
@@ -98,12 +118,11 @@ public class AbstractBasicController{
 					/* 属性赋值 */ 
 					BeanUtil.setFieldValue(entity, field, value); 
 				} 
-			}// end 未指定属性与request参数对应关系 
-				// 其他初始化工作("regCd","regTime","uptTime","uptCd","isActive") 
-//			Object client = request 
-//					.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT); 
-			// BeanUtil.setValue(entity, "clientTrace", client); 
-			//BeanUtil.setFieldValue(entity, "clientTrace", client); 
+			}// end 未指定属性与request参数对应关系
+			listener = getListener(request);
+			if(null != listener){
+				listener.init(request, entity);
+			}
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		} 
@@ -138,6 +157,10 @@ public class AbstractBasicController{
 				String value = request.getParameter(name);
 				row.put(name, value);
 			}
+		}
+		listener = getListener(request);
+		if(null != listener){
+			listener.init(request, row);
 		}
 		return row;
 	}
@@ -226,15 +249,12 @@ public class AbstractBasicController{
 					}
 				}
 
-//				Object client = request.getAttribute(Constant.REQUEST_ATTR_HTTP_CLIENT);
-//				if (null == client) {
-//					client = new ClientTrace(request);
-//				}
-
-				//row.clearUpdateColumns();
-//				row.setClientTrace(client);
 				set.addRow(row);
 			}
+		}
+		listener = getListener(request);
+		if(null != listener){
+			listener.init(request, set);
 		}
 		return set;
 	}
