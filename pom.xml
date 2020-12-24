@@ -49,7 +49,9 @@
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
+		<!--
 		<module>anyline-nc</module>
+		-->
 		<module>anyline-poi</module>
 		<module>anyline-qq</module>
 		<module>anyline-start</module>
