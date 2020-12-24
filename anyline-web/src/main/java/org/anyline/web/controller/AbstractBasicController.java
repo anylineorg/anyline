@@ -56,8 +56,6 @@ public class AbstractBasicController{
 	protected final String JSON = "json";
 	protected final String SUCCESS = "success";
 
-	@Autowired(required = false)
-	@Qualifier("anyline.entity.listener")
 	protected static EntityListener listener;
 	protected static boolean is_listener_load = false;
 	private EntityListener getListener(HttpServletRequest request){
@@ -70,6 +68,11 @@ public class AbstractBasicController{
 			is_listener_load = true;
 		}
 		return listener;
+	}
+	@Autowired(required = false)
+	@Qualifier("anyline.entity.listener")
+	public void setListener(EntityListener listener){
+		AbstractBasicController.listener = listener;
 	}
 	/****************************************************************************************************************** 
 	 *  
