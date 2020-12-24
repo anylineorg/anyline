@@ -154,12 +154,12 @@ public class AbstractBasicController{
 				}
 			}
 		}else{
-			Enumeration<String> names = request.getParameterNames();
+			/*Enumeration<String> names = request.getParameterNames();
 			while(names.hasMoreElements()){
 				String name = names.nextElement();
 				String value = request.getParameter(name);
 				row.put(name, value);
-			}
+			}*/
 		}
 		listener = getListener(request);
 		if(null != listener){
