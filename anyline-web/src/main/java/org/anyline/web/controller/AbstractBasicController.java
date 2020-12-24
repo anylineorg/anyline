@@ -64,7 +64,9 @@ public class AbstractBasicController{
 		}
 		if(!is_listener_load) {
 			BeanFactory beanFactory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
-			listener = (EntityListener) beanFactory.getBean("anyline.entity.listener");
+			try {
+				listener = (EntityListener) beanFactory.getBean("anyline.entity.listener");
+			}catch (Exception e){}
 			is_listener_load = true;
 		}
 		return listener;
