@@ -27,6 +27,7 @@
 	<property key="DEFAULT_PRIMARY_KEY">ID</property>
 	<!-- 自动添加主键 -->
 	<property key="AUTO_CREATE_PRIMARY_KEY">true</property>
+
 	<!-- 是否显示执行的SQL -->
 	<property key="SHOW_SQL">true</property>
 	<property key="SHOW_SQL_PARAM">true</property>
