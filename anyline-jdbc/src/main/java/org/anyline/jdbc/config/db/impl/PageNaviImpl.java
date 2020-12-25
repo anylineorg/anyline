@@ -114,11 +114,12 @@ public class PageNaviImpl implements PageNavi{
 	public void calculate() { 
 		int totalPage = (totalRow - 1) / pageRows + 1; 
 		//当前页是否超出总页数 
-		if(curPage > totalPage){ 
-			curPage = totalPage; 
-		} 
+		//if(curPage > totalPage){
+			//curPage = totalPage; 超出范围 不要查最后一页，交给调用方决定
+		//}
+
 		setTotalPage(totalPage);					//总页数 
-		setDisplayPageFirst(curPage - pageRange/2);				//显示的第一页 
+		setDisplayPageFirst(NumberUtil.min(curPage,totalPage) - pageRange/2);				//显示的第一页
 		if(displayPageFirst > totalPage - pageRange){ 
 			setDisplayPageFirst(totalPage - pageRange + 1); 
 		} 
