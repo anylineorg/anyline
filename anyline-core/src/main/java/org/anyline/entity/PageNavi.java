@@ -186,4 +186,5 @@ public interface PageNavi extends Serializable{
 	public String getGuide();
 	public PageNavi setMethod(String method);
 	public String getMethod();
+	public String getHtml();
 }

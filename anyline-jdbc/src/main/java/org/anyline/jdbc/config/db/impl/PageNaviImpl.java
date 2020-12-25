@@ -712,8 +712,7 @@ public class PageNaviImpl implements PageNavi{
 		} 
 		return html; 
 	} 
-	 
-	public String toString(){ 
-		return html("html"); 
-	} 
+	public String getHtml(){
+		return html("html");
+	}
 }

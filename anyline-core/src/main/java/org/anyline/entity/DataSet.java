@@ -1194,7 +1194,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public String displayNavi(String link) {
         String result = "";
         if (null != navi) {
-            result = navi.toString();
+            result = navi.getHtml();
         }
         return result;
     }
