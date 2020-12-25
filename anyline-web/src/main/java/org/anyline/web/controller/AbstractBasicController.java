@@ -777,7 +777,8 @@ public class AbstractBasicController{
 		return dir; 
 	}
 	/**
-	 * 
+	 *
+	 * @param adapt adapt
 	 * @param request request
 	 * @param response response
 	 * @param data data
@@ -786,7 +787,7 @@ public class AbstractBasicController{
 	 * @param ext	扩展数据 ext	扩展数据
 	 * @return return
 	 */
-	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext){
+	public Map<String,Object> navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext){
 		if(null == data){
 			data = (DataSet)request.getAttribute("_anyline_navi_data");
 		}else{
@@ -794,6 +795,21 @@ public class AbstractBasicController{
 		}
 		String html = "";
 		try{
+
+			String clientType = "web";
+			if (WebUtil.isWap(request)) {
+				clientType = "wap";
+			}
+
+			if (null != page) {
+				if (adapt) {
+					page = page.replace("/web/", "/" + clientType + "/");
+					page = page.replace("/wap/", "/" + clientType + "/");
+				}
+
+				page = page.replace("${client_type}", clientType);
+			}
+
 			html = WebUtil.parseJsp(request, response, page);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -820,6 +836,9 @@ public class AbstractBasicController{
 		}
 		map.put("EXT", ext);
 		return map;
+	}
+	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext){
+		return navi(false, request, response, data, navi, page, ext);
 	}
 
 	public Map<String,Object> navi(HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page){
