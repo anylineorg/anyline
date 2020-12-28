@@ -581,6 +581,7 @@ public class AnylineController extends AbstractBasicController {
 	/** 
 	 * AJAX分页时调用  
 	 * 分数数据在服务器生成 
+	 * @param adapt adapt
 	 * @param request request
 	 * @param response response
 	 * @param data	数据 request.setAttribute("_anyline_navi_data", data); 
@@ -588,7 +589,7 @@ public class AnylineController extends AbstractBasicController {
 	 * @param ext	扩展数据	  ext	扩展数据
 	 * @return return
 	 */ 
-	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext){ 
+	public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext){
 		 
 		if(null == request){ 
 			request = getRequest(); 
@@ -607,13 +608,34 @@ public class AnylineController extends AbstractBasicController {
 		} 
 		if(page != null && !page.startsWith("/")){ 
 			page = "/WEB-INF/"+page; 
-		} 
+		}
+
+		String clientType = "web";
+		if (WebUtil.isWap(request)) {
+			clientType = "wap";
+		}
+
+		if (null != page) {
+			if (adapt) {
+				page = page.replace("/web/", "/" + clientType + "/");
+				page = page.replace("/wap/", "/" + clientType + "/");
+			}
+
+			page = page.replace("${client_type}", clientType);
+		}
+
 		Map<String,Object> map = super.navi(request, response, data, navi, page, ext); 
 		return success(map); 
-	} 
-	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page){ 
-		return navi(request, response, data, page ,null); 
-	} 
+	}
+	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext){
+		return navi(false,request, response, data, page, ext);
+	}
+	public String navi(HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
+		return navi(request, response, data, page ,null);
+	}
+	public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page){
+		return navi(adapt,request, response, data, page ,null);
+	}
 	public String navi(HttpServletResponse response, String page){ 
 		return navi(null, response, null, page, null); 
 	} 

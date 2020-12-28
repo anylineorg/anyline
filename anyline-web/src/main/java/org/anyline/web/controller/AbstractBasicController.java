@@ -796,19 +796,6 @@ public class AbstractBasicController{
 		String html = "";
 		try{
 
-			String clientType = "web";
-			if (WebUtil.isWap(request)) {
-				clientType = "wap";
-			}
-
-			if (null != page) {
-				if (adapt) {
-					page = page.replace("/web/", "/" + clientType + "/");
-					page = page.replace("/wap/", "/" + clientType + "/");
-				}
-
-				page = page.replace("${client_type}", clientType);
-			}
 
 			html = WebUtil.parseJsp(request, response, page);
 		}catch(Exception e){
