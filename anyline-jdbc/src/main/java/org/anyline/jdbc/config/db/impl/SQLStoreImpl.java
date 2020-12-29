@@ -296,7 +296,7 @@ public class SQLStoreImpl extends SQLStore {
 			if (ConfigTable.isSQLDebug()) {
 				log.warn("[提取SQL][id:{}]", id);
 			}
-			log.info("sqls:{}", BeanUtil.object2json(sqls));
+			//log.info("sqls:{}", BeanUtil.object2json(sqls));
 			log.info("sqlId:{}", id);
 			sql = sqls.get(id);
 			if (null == sql) {
