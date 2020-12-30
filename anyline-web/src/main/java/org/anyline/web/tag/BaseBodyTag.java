@@ -109,10 +109,10 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		if(null != onfocus){
 			html += " onfocus=\"" + onfocus + "\"";
 		}
-		if(null != disabled){
+		if(BasicUtil.isNotEmpty(disabled) && !"false".equalsIgnoreCase(disabled)){
 			html += " disabled=\"" + disabled + "\"";
 		}
-		if(null != readonly){
+		if(BasicUtil.isNotEmpty(readonly) && !"false".equalsIgnoreCase(readonly)){
 			html += " readonly=\"" + readonly + "\"";
 		}
 		html += crateExtraData();
