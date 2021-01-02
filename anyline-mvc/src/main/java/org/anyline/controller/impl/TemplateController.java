@@ -99,6 +99,7 @@ public class TemplateController extends AnylineController {
 				name = name.replace("/wap/", "/"+clientType+"/");
 			}
 			name = name.replace("${client_type}", clientType);
+			name = name.replace("${client}", clientType);
 		}
 		if(null != content_template){
 			if(adapt){
@@ -106,6 +107,7 @@ public class TemplateController extends AnylineController {
 				content_template = content_template.replace("/wap/", "/"+clientType+"/");
 			}
 			content_template = content_template.replace("${client_type}", clientType);
+			content_template = content_template.replace("${client}", clientType);
 		}
 		if(ConfigTable.isDebug() && adapt){
 			log.warn("[create view template][content path:" + content_template + "][template path:" + name + "]");

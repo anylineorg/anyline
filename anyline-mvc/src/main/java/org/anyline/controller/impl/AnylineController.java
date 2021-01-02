@@ -622,6 +622,7 @@ public class AnylineController extends AbstractBasicController {
 			}
 
 			page = page.replace("${client_type}", clientType);
+			page = page.replace("${client}", clientType);
 		}
 
 		Map<String,Object> map = super.navi(request, response, data, navi, page, ext); 
