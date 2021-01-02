@@ -625,6 +625,24 @@ public class AnylineController extends AbstractBasicController {
 			page = page.replace("${client}", clientType);
 		}
 
+		if (null != request) {
+			Map<String, Object> map = (Map)request.getAttribute("anyline_template_variable");
+			if (null == map) {
+				map = (Map)request.getSession().getAttribute("anyline_template_variable");
+			}
+
+			if (null != map) {
+				Iterator var4 = map.keySet().iterator();
+
+				while(var4.hasNext()) {
+					String key = (String)var4.next();
+					Object value = map.get(key);
+					if (null != value) {
+						page = page.replace("${" + key + "}", value.toString());
+					}
+				}
+			}
+		}
 		Map<String,Object> map = super.navi(request, response, data, navi, page, ext); 
 		return success(map); 
 	}
