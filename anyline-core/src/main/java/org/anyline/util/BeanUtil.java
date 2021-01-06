@@ -1256,6 +1256,7 @@ public class BeanUtil {
 		}
 		return list;
 	}
+
 	/** 
 	 * String 转map 
 	 * @param str name:zhang,age:20 
@@ -1266,12 +1267,20 @@ public class BeanUtil {
 		if(BasicUtil.isNotEmpty(str)){ 
 			if(str.startsWith("{") && str.endsWith("}")){ 
 				str = str.substring(1, str.length()-1); 
-			} 
+			}
 			String[] list = str.split(","); 
 			for(String item:list){ 
 				String[] kv = item.split(":"); 
-				if(kv.length ==2){ 
-					map.put(kv[0], kv[1]); 
+				if(kv.length ==2){
+					String k = kv[0];
+					if(k.startsWith("\"") && k.endsWith("\"")){
+						k = k.substring(1,k.length()-1);
+					}
+					String v = kv[1];
+					if(v.startsWith("\"") && v.endsWith("\"")){
+						v = v.substring(1,v.length()-1);
+					}
+					map.put(k,v);
 				}else{
 					map.put(item.replace(":", ""), null);
 				}
