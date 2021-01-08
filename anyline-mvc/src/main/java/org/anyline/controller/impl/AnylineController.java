@@ -549,7 +549,7 @@ public class AnylineController extends AbstractBasicController {
 		if(encrypt){ 
 			msg = DESUtil.encryptParamValue(msg); 
 		} 
-		return result("200",false, null, msg);
+		return result("-1",false, null, msg);
 	}
 	protected String fail(String code, String msg, boolean encrypt) {
 		if(encrypt){
@@ -559,7 +559,7 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 	protected String fail(String msg) {
-		return result("200",false, null, msg);
+		return result("-1",false, null, msg);
 	}
 	protected String fail(String code, String msg) {
 		return result(code,false, null, msg);
