@@ -485,7 +485,7 @@ public class AnylineController extends AbstractBasicController {
 	 * @param message  message
 	 * @return return
 	 */ 
-	public String result(boolean result, Object data, String message) { 
+	public String result(String code, boolean result, Object data, String message) {
 		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE); 
 		if (null != messages) { 
 			for (int i = 0; i < messages.size(); i++) { 
@@ -530,7 +530,7 @@ public class AnylineController extends AbstractBasicController {
 		map.put("message", message); 
 		map.put("data", data); 
 		map.put("success", result); 
-		map.put("code", "200"); 
+		map.put("code", code);
     	map.put("request_time", getRequest().getParameter("_anyline_request_time")); 
     	map.put("response_time_fr", getRequest().getAttribute("_anyline_response_time_fr")); 
     	map.put("response_time_to", System.currentTimeMillis()); 
@@ -549,14 +549,24 @@ public class AnylineController extends AbstractBasicController {
 		if(encrypt){ 
 			msg = DESUtil.encryptParamValue(msg); 
 		} 
-		return result(false, null, msg); 
-	} 
- 
-	protected String fail(String msg) { 
-		return result(false, null, msg); 
-	} 
-	protected String fail() { 
-		return fail(null); 
+		return result("200",false, null, msg);
+	}
+	protected String fail(String code, String msg, boolean encrypt) {
+		if(encrypt){
+			msg = DESUtil.encryptParamValue(msg);
+		}
+		return result(code,false, null, msg);
+	}
+
+	protected String fail(String msg) {
+		return result("200",false, null, msg);
+	}
+	protected String fail(String code, String msg) {
+		return result(code,false, null, msg);
+	}
+	protected String fail() {
+		String msg = null;
+		return fail(msg);
 	} 
  
 	/** 
@@ -567,16 +577,16 @@ public class AnylineController extends AbstractBasicController {
 	 */ 
 	protected String success(Object data, boolean encrypt) { 
 		if(encrypt && null != data){ 
-			return result(true,DESUtil.encryptParamValue(data.toString()),null); 
+			return result("200",true,DESUtil.encryptParamValue(data.toString()),null);
 		} 
-		return result(true, data, null); 
+		return result("200",true, data, null);
 	}
 
 	protected String success(Object data) {
-		return result(true, data, null);
+		return result("200",true, data, null);
 	}
 	protected String success(Object ... data) {
-		return result(true, data, null);
+		return result("200",true, data, null);
 	}
 	/** 
 	 * AJAX分页时调用  
