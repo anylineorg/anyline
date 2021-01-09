@@ -65,6 +65,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
  
 	private List<String> primaryKeys 		= new ArrayList<String>()		; //主键
 	private List<String> updateColumns 		= new ArrayList<String>()		;
+	private List<String> ignoreUpdateColumns= new ArrayList<>()			;
 	private String datalink					= null							; 
 	private String dataSource				= null 							; //数据源(表|视图|XML定义SQL) 
 	private String schema					= null							; 
@@ -1305,6 +1306,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public List<String> getUpdateColumns() {
 		return updateColumns;
 	}
+	public List<String> getIgnoreUpdateColumns(){
+		return ignoreUpdateColumns;
+	}
 	/**
 	 * 删除指定的key
 	 * 不和remove命名 避免调用remoate("ID","CODE")时与HashMap.remove(Object key, Object value) 冲突
@@ -1338,10 +1342,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		updateColumns.clear();
 		return this;
 	}
+	public DataRow clearIgnoreUpdateColumns(){
+		ignoreUpdateColumns.clear();
+		return this;
+	}
 	public DataRow removeUpdateColumns(String ... cols){
 		if(null != cols){
 			for(String col:cols){
-				updateColumns.remove(putKey(col));
+				String key = putKey(col);
+				updateColumns.remove(key);
+				ignoreUpdateColumns.add(key);
 			}
 		}
 		return this;
@@ -1354,8 +1364,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow addUpdateColumns(String ... cols){
 		if(null != cols){
 			for(String col:cols){
-				if(!updateColumns.contains(putKey(col))){
-					updateColumns.add(putKey(col));
+				String key = putKey(col);
+				if(!updateColumns.contains(key)){
+					updateColumns.add(key);
+					ignoreUpdateColumns.remove(key);
 				}
 			}
 		}
@@ -1364,6 +1376,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public DataRow addAllUpdateColumns(){
 		updateColumns.clear();
 		updateColumns.addAll(keys());
+		ignoreUpdateColumns.clear();
 		return this;
 	}
 	/**

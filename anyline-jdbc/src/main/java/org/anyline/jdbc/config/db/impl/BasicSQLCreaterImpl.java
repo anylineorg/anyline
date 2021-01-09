@@ -853,7 +853,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				} 
 				 
 			} 
-		} 
+		}
+		List<String> ignores = row.getIgnoreUpdateColumns();
+		for(String key:ignores){
+			keys.remove(key);
+		}
 		return keys; 
 	} 
 	/** 
