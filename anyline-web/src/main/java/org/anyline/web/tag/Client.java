@@ -30,7 +30,6 @@ import javax.servlet.jsp.JspWriter;
 
 public class Client extends BaseBodyTag implements Cloneable{
 	private static final long serialVersionUID = 1L;
-	private String var = null;
 	private boolean out = true;
 	public int doStartTag(){
 			return EVAL_BODY_BUFFERED;

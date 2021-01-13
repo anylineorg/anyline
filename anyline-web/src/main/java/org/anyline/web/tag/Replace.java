@@ -47,9 +47,7 @@ public class Replace extends BaseBodyTag implements Cloneable{
 		if(BasicUtil.isEmpty(to)){
 			to = "";
 		}
-		JspWriter writer = null;
 		try {
-			writer = pageContext.getOut();
 			String result = "";
 			if(null!= separate){
 				/**
@@ -75,7 +73,14 @@ public class Replace extends BaseBodyTag implements Cloneable{
 			}else {
 				result = src.replace(from, to);
 			}
-			writer.print(result);
+			if(null != result) {
+				if(BasicUtil.isNotEmpty(var)){
+					pageContext.getRequest().setAttribute(var, result);
+				}else {
+					JspWriter out = pageContext.getOut();
+					out.print(result);
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}finally{

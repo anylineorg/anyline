@@ -28,8 +28,7 @@ import org.anyline.util.BasicUtil;
 public class Split extends BaseBodyTag{ 
 	private static final long serialVersionUID = 1554109844585627661L; 
 	 
-	private String regex; 
-	private String var;
+	private String regex;
 	private String scope = "page"; 
 	private String text = null;
 	 

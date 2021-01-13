@@ -33,6 +33,10 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>var</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>set</name>
@@ -125,6 +129,10 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>var</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>config</name>
@@ -177,6 +185,10 @@
 		</attribute>
 		<attribute>
 			<name>evl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -375,6 +387,10 @@
 		</attribute>
 		<attribute>
 			<name>evl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -814,6 +830,10 @@
 			<name>function</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>var</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>delay</name>
@@ -831,6 +851,10 @@
 			<name>evl</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
+		<attribute>
+			<name>var</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
 	</tag>
 	<tag>
 		<name>minute</name>
@@ -842,6 +866,10 @@
 		</attribute>
 		<attribute>
 			<name>evl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -878,6 +906,10 @@
 		</attribute>
 		<attribute>
 			<name>evl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -942,6 +974,10 @@
 		</attribute>
 		<attribute>
 			<name>evl</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>
@@ -1031,6 +1067,10 @@
 		<attribute>
 			<name>type</name>
 			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 	</tag>

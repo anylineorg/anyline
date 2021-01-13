@@ -35,8 +35,7 @@ public class Set extends BaseBodyTag {
 	private static final long serialVersionUID = 1L; 
 	private String scope; 
 	private Object data; 
-	private String selector; 
-	private String var; 
+	private String selector;
 	private Integer index = null;
 	private Integer begin = null;
 	private Integer end = null;

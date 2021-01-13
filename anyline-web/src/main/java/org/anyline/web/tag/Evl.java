@@ -73,8 +73,14 @@ public class Evl extends BaseBodyTag implements Cloneable{
 						method.invoke(parent, result);
 					}
 				}else{
-					JspWriter out = pageContext.getOut();
-					out.print(result);
+					if(null != result) {
+						if(BasicUtil.isNotEmpty(var)){
+							pageContext.getRequest().setAttribute(var, result);
+						}else {
+							JspWriter out = pageContext.getOut();
+							out.print(result);
+						}
+					}
 				}
 				 
 			}catch(Exception e){ 

@@ -38,7 +38,6 @@ public class Sum extends BaseBodyTag {
 	private String property; 
 	private String format;
 	private String nvl;
-	private String var;
  
 	@SuppressWarnings("rawtypes")
 	public int doEndTag() throws JspException { 

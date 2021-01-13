@@ -100,8 +100,12 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 				}
 			}
 			if(null != result) {
-				JspWriter out = pageContext.getOut();
-				out.print(result);
+				if(BasicUtil.isNotEmpty(var)){
+					pageContext.getRequest().setAttribute(var, result);
+				}else {
+					JspWriter out = pageContext.getOut();
+					out.print(result);
+				}
 			}
 		}catch(Exception e){ 
 			e.printStackTrace(); 

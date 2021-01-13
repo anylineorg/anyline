@@ -40,7 +40,6 @@ public class Text extends BaseBodyTag{
 	private String selector;
 	private String nvl = null;
 	private String evl = null;
-	private String var = null;
 	 
 	public int doStartTag() throws JspException { 
         return EVAL_BODY_BUFFERED; 

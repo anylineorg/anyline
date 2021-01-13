@@ -34,8 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  */ 
 public class MinuteFormat extends BaseBodyTag implements Cloneable{ 
-	private static final long serialVersionUID = 1L; 
- 
+	private static final long serialVersionUID = 1L;
 	public int doEndTag() throws JspException { 
 		try{ 
 			String result = ""; 

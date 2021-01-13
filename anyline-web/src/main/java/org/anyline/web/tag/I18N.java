@@ -45,7 +45,7 @@ public class I18N extends BaseBodyTag{
 	private Object data; 
 	private String lang;			//语言 
 	private String key;
-	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","CD");
+	private String valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 	private String textKey = "NM"; 
 	private HttpServletRequest request;  
 	 

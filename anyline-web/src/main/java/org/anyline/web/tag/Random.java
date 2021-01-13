@@ -33,8 +33,7 @@ public class Random extends BaseBodyTag {
 	private String type;
 	 
 	public int doEndTag() { 
- 
-		JspWriter writer = null; 
+
 		String result = ""; 
 		try {
 			int _begin = BasicUtil.parseInt(begin, 0);
@@ -51,8 +50,14 @@ public class Random extends BaseBodyTag {
 					}
 				}
 			}
-			writer = pageContext.getOut();
-			writer.print(result); 
+			if(null != result) {
+				if(BasicUtil.isNotEmpty(var)){
+					pageContext.getRequest().setAttribute(var, result);
+				}else {
+					JspWriter out = pageContext.getOut();
+					out.print(result);
+				}
+			}
 		} catch (IOException e) { 
 			e.printStackTrace(); 
 		}finally{ 
