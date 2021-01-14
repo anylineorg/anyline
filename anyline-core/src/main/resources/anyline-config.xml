@@ -70,5 +70,6 @@
 	
 	<!-- 是否启用(一级)缓存 -->
 	<property key="IS_USE_CACHE">true</property>
+	<property key="HTTP_FAIL_CODE">200</property>
 
 </properties>
