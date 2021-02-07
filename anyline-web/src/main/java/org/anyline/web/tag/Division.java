@@ -38,15 +38,28 @@ public class Division extends BodyTagSupport{
 	private String divisor;		//除数 
 	private String dividend;	//被除数 
 	private String format; 
-	private String defaultValue = ""; 
- 
+	private String defaultValue = "";
+	private Integer scale = 10;
+	private int round = 0;
+
 	 public int doStartTag() throws JspException { 
 		try{ 
 			JspWriter out = pageContext.getOut(); 
 			BigDecimal _divisor = BasicUtil.parseDecimal(divisor, 0); 
 			BigDecimal _dividend = BasicUtil.parseDecimal(dividend, 0);
+			if(null == scale) {
+				if (null != format) {
+					if(format.indexOf(".") >=0){
+						scale = format.length() - format.indexOf(".")-1;
+					}else{
+						scale = 1;
+					}
+				}else{
+					scale = 10;
+				}
+			}
 			if(_dividend.compareTo(new BigDecimal(0)) != 0){
-				BigDecimal result = _dividend.divide(_divisor);
+				BigDecimal result = _dividend.divide(_divisor,scale, round);
 				if(null != format){ 
 					defaultValue = NumberUtil.format(result, format); 
 				}else{ 
@@ -62,7 +75,7 @@ public class Division extends BodyTagSupport{
         return EVAL_BODY_INCLUDE; 
     }    
 	public int doEndTag() throws JspException {    
-	        return EVAL_PAGE;    
+	 	return EVAL_PAGE;
 	} 
 	@Override 
 	public void release() { 
@@ -70,10 +83,28 @@ public class Division extends BodyTagSupport{
 		defaultValue = ""; 
 		divisor = null; 
 		dividend = null; 
-		format = null; 
-	} 
- 
-	public String getDivisor() { 
+		format = null;
+		scale = null;
+		round = 0;
+	}
+
+	public Integer getScale() {
+		return scale;
+	}
+
+	public void setScale(Integer scale) {
+		this.scale = scale;
+	}
+
+	public int getRound() {
+		return round;
+	}
+
+	public void setRound(int round) {
+		this.round = round;
+	}
+
+	public String getDivisor() {
 		return divisor; 
 	} 
  

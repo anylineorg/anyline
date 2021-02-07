@@ -344,7 +344,7 @@
 		<name>division</name>
 		<tagclass>org.anyline.web.tag.Division</tagclass>
 		<bodycontent>empty</bodycontent>
-		<info>除法</info>
+		<info>除法dividend/divisor</info>
 		<attribute>
 			<name>divisor</name>
 			<required>true</required>
@@ -353,6 +353,14 @@
 		<attribute>
 			<name>dividend</name>
 			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>scale</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>round</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
