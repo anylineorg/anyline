@@ -49,6 +49,7 @@ public class ConfigTable {
 	protected static boolean isLoading = false;
 	public static boolean  IS_UPPER_KEY = true;
 	public static boolean  IS_LOWER_KEY = false;
+	public static boolean IS_THROW_SQL_EXCEPTION = false;
 	public static String CONFIG_NAME = "anyline-config.xml";
 
 	static{

@@ -151,6 +151,9 @@ public class AnylineServiceImpl implements AnylineService {
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
+            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+                throw e;
+            }
         }
         return maps;
     }
@@ -700,6 +703,9 @@ public class AnylineServiceImpl implements AnylineService {
                 e.printStackTrace();
             }
             log.error("COUNT ERROR:"+e);
+            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+                throw e;
+            }
         }
         return count;
     }
@@ -925,6 +931,9 @@ public class AnylineServiceImpl implements AnylineService {
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 e.printStackTrace();
             }
+            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+                throw e;
+            }
         }
         return set;
     }
@@ -1046,6 +1055,9 @@ public class AnylineServiceImpl implements AnylineService {
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
+            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+                throw e;
+            }
         }
         return set;
     }
@@ -1067,6 +1079,9 @@ public class AnylineServiceImpl implements AnylineService {
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
+            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+                throw e;
+            }
         }
         return set;
     }
