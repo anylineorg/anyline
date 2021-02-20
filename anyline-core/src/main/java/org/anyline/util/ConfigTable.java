@@ -242,6 +242,7 @@ public class ConfigTable {
 				IS_UPPER_KEY = false;
 			}
 		}
+		IS_THROW_SQL_EXCEPTION = getBoolean("IS_THROW_SQL_EXCEPTION");
 	}
 	protected synchronized static void loadConfigDir(File dir, String flag) {
 		log.warn("[加载配置文件][dir:{}]",dir.getAbsolutePath());
