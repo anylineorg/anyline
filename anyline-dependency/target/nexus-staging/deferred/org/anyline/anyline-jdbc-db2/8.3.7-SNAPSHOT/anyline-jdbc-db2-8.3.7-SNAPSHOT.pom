@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.anyline</groupId>
+		<artifactId>anyline-dependency</artifactId>
+		<version>8.3.7-SNAPSHOT</version>
+		<relativePath>../anyline-dependency</relativePath>
+	</parent>
+
+	<artifactId>anyline-jdbc-db2</artifactId>
+	<packaging>jar</packaging>
+	<name>anyline-jdbc-db2</name>
+	<url>http://www.anyline.org/db2</url>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.ibm.db2</groupId>
+			<artifactId>jcc</artifactId>
+		</dependency>
+	</dependencies>
+</project>

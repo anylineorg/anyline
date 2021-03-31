@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.mariadb.jdbc:mariadb-java-client:2.4.4">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/mariadb/jdbc/mariadb-java-client/2.4.4/mariadb-java-client-2.4.4.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/mariadb/jdbc/mariadb-java-client/2.4.4/mariadb-java-client-2.4.4-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/mariadb/jdbc/mariadb-java-client/2.4.4/mariadb-java-client-2.4.4-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

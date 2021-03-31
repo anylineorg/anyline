@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="receive">
+		<property key="ACCOUNT">**@163.com</property>
+		<property key="PASSWORD">***</property>
+		<property key="PROTOCOL">pop3</property>
+		<property key="HOST">pop3.163.com</property>
+		<property key="PORT">110</property>
+		<!-- receive时是否自动下载附件 -->
+		<property key="AUTO_DOWNLOAD_ATTACHMENT">true</property>
+		<!-- 附件下载地址 支持变量
+		{send_date}:发送日期yyyyMMdd
+		{send_time}:发送时间yyyyMMddhhmmss
+		{file}:文件名,如果出现此变量，当前属性生成文件名，不再拼接附件名称,否则当前属性作为目录名称
+		-->
+		<property key="ATTACHMENT_DIR">d:\\sbd\\{send_date}\\{send_time}_{file}</property>
+	</config>
+</configs>

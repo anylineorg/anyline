@@ -1,0 +1,4 @@
+org\anyline\mail\util\Pop3Util.class
+org\anyline\mail\entity\Mail.class
+org\anyline\mail\util\MailUtil.class
+org\anyline\mail\util\MailConfig.class

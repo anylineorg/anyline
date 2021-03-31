@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<!--服务器配置-->
+		<property key="ACCESS_KEY"></property><!-- 申请地址:https://ak-console.aliyun.com -->
+		<property key="ACCESS_SECRET"></property>
+		<property key="SMS_SIGN"></property>
+
+		<!--客户端配置-->
+		<property key="SMS_SERVER"></property>
+		<property key="CLIENT_APP"></property>
+		<property key="CLIENT_SECRET"></property>
+	</config>
+</configs>

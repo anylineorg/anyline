@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<!-- 用来生成连接地址ldap:{ADDRESS}:{PORT} -->
+		<property key="ADDRESS"></property>
+		<!-- 用来生成完整用户名 admin@{DOMAIN} 如:ldap.anyline.org -->
+		<property key="DOMAIN"></property>
+		<!-- 端口号 -->
+		<property key="PORT">389</property>
+		<!-- 根目录  如:dc=anyline,dc=org(级别越高越靠后与域名顺序类似) -->
+		<property key="ROOT"></property>
+		<!--验证的类型 none,simple,strong-->
+		<property key="SECURITY_AUTHENTICATION">simple</property>
+		<!--连接超时(毫秒)-->
+		<property key="CONNECT_TIMEOUT">5000</property>
+		<!--读取超时(毫秒)-->
+		<property key="READ_TIMEOUT">5000</property>
+	</config>
+</configs>

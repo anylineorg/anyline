@@ -522,12 +522,10 @@ public class AbstractBasicController{
 		String uri = null; 
 		if (null == uri) { 
 			uri = request.getRequestURI(); 
-		} 
-		PageNavi navi = new PageNaviImpl(pageNo, pageVol, uri); 
-		String flag = (String)request.getAttribute(config.KEY_ID_FLAG);
-		if(null == flag){
-			flag = getParam(request,config.KEY_ID_FLAG);
 		}
+		PageNavi navi = new PageNaviImpl(pageNo, pageVol, uri); 
+		String flag = getParam(request,config.KEY_ID_FLAG);
+
 		if(null != flag){
 			flag = flag.replace("'", "").replace("\"", "");
 		}

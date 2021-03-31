@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/anyline.iml" filepath="$PROJECT_DIR$/anyline.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-alipay/anyline-alipay.iml" filepath="$PROJECT_DIR$/anyline-alipay/anyline-alipay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-aliyun/anyline-aliyun.iml" filepath="$PROJECT_DIR$/anyline-aliyun/anyline-aliyun.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-amap/anyline-amap.iml" filepath="$PROJECT_DIR$/anyline-amap/anyline-amap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-cache-ecache/anyline-cache-ecache.iml" filepath="$PROJECT_DIR$/anyline-cache-ecache/anyline-cache-ecache.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-cache-redis/anyline-cache-redis.iml" filepath="$PROJECT_DIR$/anyline-cache-redis/anyline-cache-redis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-core/anyline-core.iml" filepath="$PROJECT_DIR$/anyline-core/anyline-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-dependency/anyline-dependency.iml" filepath="$PROJECT_DIR$/anyline-dependency/anyline-dependency.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-easemob/anyline-easemob.iml" filepath="$PROJECT_DIR$/anyline-easemob/anyline-easemob.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-ext/anyline-ext.iml" filepath="$PROJECT_DIR$/anyline-ext/anyline-ext.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-jdbc/anyline-jdbc.iml" filepath="$PROJECT_DIR$/anyline-jdbc/anyline-jdbc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-jdbc-db2/anyline-jdbc-db2.iml" filepath="$PROJECT_DIR$/anyline-jdbc-db2/anyline-jdbc-db2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-jdbc-hgdb/anyline-jdbc-hgdb.iml" filepath="$PROJECT_DIR$/anyline-jdbc-hgdb/anyline-jdbc-hgdb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-jdbc-mariadb/anyline-jdbc-mariadb.iml" filepath="$PROJECT_DIR$/anyline-jdbc-mariadb/anyline-jdbc-mariadb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-jdbc-mssql/anyline-jdbc-mssql.iml" filepath="$PROJECT_DIR$/anyline-jdbc-mssql/anyline-jdbc-mssql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-jdbc-mysql/anyline-jdbc-mysql.iml" filepath="$PROJECT_DIR$/anyline-jdbc-mysql/anyline-jdbc-mysql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-jdbc-oracle/anyline-jdbc-oracle.iml" filepath="$PROJECT_DIR$/anyline-jdbc-oracle/anyline-jdbc-oracle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-jdbc-postgresql/anyline-jdbc-postgresql.iml" filepath="$PROJECT_DIR$/anyline-jdbc-postgresql/anyline-jdbc-postgresql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-jpush/anyline-jpush.iml" filepath="$PROJECT_DIR$/anyline-jpush/anyline-jpush.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-ldap/anyline-ldap.iml" filepath="$PROJECT_DIR$/anyline-ldap/anyline-ldap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-mail/anyline-mail.iml" filepath="$PROJECT_DIR$/anyline-mail/anyline-mail.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-mvc/anyline-mvc.iml" filepath="$PROJECT_DIR$/anyline-mvc/anyline-mvc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-nacos/anyline-nacos.iml" filepath="$PROJECT_DIR$/anyline-nacos/anyline-nacos.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-net/anyline-net.iml" filepath="$PROJECT_DIR$/anyline-net/anyline-net.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-poi/anyline-poi.iml" filepath="$PROJECT_DIR$/anyline-poi/anyline-poi.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-print-10ss/anyline-print-10ss.iml" filepath="$PROJECT_DIR$/anyline-print-10ss/anyline-print-10ss.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-qq/anyline-qq.iml" filepath="$PROJECT_DIR$/anyline-qq/anyline-qq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-rocketmq/anyline-rocketmq.iml" filepath="$PROJECT_DIR$/anyline-rocketmq/anyline-rocketmq.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-start/anyline-start.iml" filepath="$PROJECT_DIR$/anyline-start/anyline-start.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-start-mvc/anyline-start-mvc.iml" filepath="$PROJECT_DIR$/anyline-start-mvc/anyline-start-mvc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-start-mvc-jsp/anyline-start-mvc-jsp.iml" filepath="$PROJECT_DIR$/anyline-start-mvc-jsp/anyline-start-mvc-jsp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-start-mvc-jsp-mysql/anyline-start-mvc-jsp-mysql.iml" filepath="$PROJECT_DIR$/anyline-start-mvc-jsp-mysql/anyline-start-mvc-jsp-mysql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-start-mvc-mysql/anyline-start-mvc-mysql.iml" filepath="$PROJECT_DIR$/anyline-start-mvc-mysql/anyline-start-mvc-mysql.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-struts/anyline-struts.iml" filepath="$PROJECT_DIR$/anyline-struts/anyline-struts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-tencent/anyline-tencent.iml" filepath="$PROJECT_DIR$/anyline-tencent/anyline-tencent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-video/anyline-video.iml" filepath="$PROJECT_DIR$/anyline-video/anyline-video.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-web/anyline-web.iml" filepath="$PROJECT_DIR$/anyline-web/anyline-web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-web-ext/anyline-web-ext.iml" filepath="$PROJECT_DIR$/anyline-web-ext/anyline-web-ext.iml" />
+      <module fileurl="file://$PROJECT_DIR$/anyline-wechat/anyline-wechat.iml" filepath="$PROJECT_DIR$/anyline-wechat/anyline-wechat.iml" />
+    </modules>
+  </component>
+</project>
