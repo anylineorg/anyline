@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="APP_ID">20880216***</property>
+		<property key="SELLER_ID">***@163.com</property>
+		<property key="KEY">********yb040wthne9qzwvm</property>
+		<property key="NOTIFY_URL"></property>
+		<property key="CALLBACK_URL"></property>
+		<property key="SIGN_TYPE">MD5</property>
+		<property key="LOG_PATH">D:/log</property>
+		<property key="INPUT_CHARSET">UTF-8</property>
+		<property key="APP_PRIVATE_SECRET">*********/5wOEbwUPsov80xY7rqfWcbTpJ***Ph1</property>
+		<property key="APP_PUBLIC_SECRET">***********/fEsraprwCtzvzQETrNRwVxLO5jVmRGiIDAQAB</property>
+		<property key="API_PUBLIC_SECRET"></property>
+		<property key="ANTI_PHISHING_KEY"></property>
+		<property key="EXTER_INVOKE_IP"></property>
+	</config>
+</configs> 

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!-- DTD for properties --> 
+<!DOCTYPE properties [
+    <!ELEMENT properties ( comment?, property* ) >
+    <!ATTLIST properties version CDATA #FIXED "1.0">
+    <!ELEMENT comment (#PCDATA) >
+    <!ELEMENT property (#PCDATA) >
+    <!ATTLIST property key CDATA #REQUIRED>
+]>
+<properties>
+	<!-- 多长时间加载一次配置文件 (秒)-->
+	<property key="RELOAD">120</property>
+	<!-- 存放在servlet context中的key(配置文件热重载时不覆盖当前key)(如el表达式中引用${al.RELOAD})-->
+	<property key="SERVLET_ATTRIBUTE_KEY">al</property>
+	<property key="DEBUG">true</property>
+	<!-- sql 存放根目录 -->
+	<property key="SQL_STORE_DIR">/WEB-INF/classes/sql</property>
+	<!-- 密钥 文件路径 -->
+	<property key="DES_KEY_FILE">/WEB-INF/classes/key.xml</property>
+	<!-- 国际化文本存放目录 -->
+	<property key="I18N_MESSAGE_DIR">/WEB-INF/classes/message</property>
+	<!-- 国际化消息SESSION存放KEY -->
+	<property key="I18N_MESSAGE_SESSION_KEY">I18N_MESSAGE_SESSION_KEY</property>
+	<!-- 国际化消息默认语言 -->
+	<property key="I18N_MESSAGE_DEFAULT_LANG">cn</property>
+	<!-- 默认主键 -->
+	<property key="DEFAULT_PRIMARY_KEY">ID</property>
+	<!-- 抛出SQL异常 -->
+	<property key="IS_THROW_SQL_EXCEPTION">true</property>
+
+	<!-- 是否显示执行的SQL -->
+	<property key="SHOW_SQL">true</property>
+	<property key="SHOW_SQL_PARAM">true</property>
+	<property key="SHOW_SQL_WHEN_ERROR">false</property>
+	<property key="SHOW_SQL_PARAM_WHEN_ERROR">false</property>
+	<!-- 强制返回值以大写存储 -->
+	<property key="IS_UPPER_KEY">true</property>
+	<!-- 强制返回值以大写存储 -->
+	<!-- 
+	<property key="IS_LOWER_KEY">true</property>
+	 -->
+
+	<!-- 登录验证码图片宽度 -->
+	<property key="VALIDATE_CODE_IMG_WIDTH">60</property>
+	<!-- 登录验证码图片宽度 -->
+	<property key="VALIDATE_CODE_IMG_HEIGHT">20</property>
+	<!-- 登录验证码图片 字符个数 -->
+	<property key="VALIDATE_CODE_IMG_CHAR_SIZE">4</property>
+	<!-- 登录验证码图片 复杂度 -->
+	<property key="VALIDATE_CODE_IMG_COMPLEXITY">10</property>
+	
+	<!-- 是否更新NULL列 -->
+	<property key="IS_UPDATE_NULL_COLUMN">false</property>
+	<!-- 是否更新空列 -->
+	<property key="IS_UPDATE_EMPTY_COLUMN">false</property>
+	<!-- true:参数值为空时不执行SQL false:参数为空时拼接IS NULL-->
+	<property key="CONDITION_VALUE_STRICT">true</property>
+
+	<!-- 模板文件目录 -->
+	<property key="TEMPLET_FILE_PATH_WEB">/WEB-INF/web/home/template/default.jsp</property>
+	<property key="TEMPLET_FILE_PATH_WAP">/WEB-INF/def/wap/common/templet.jsp</property>
+	<!-- fail文件路径 -->
+	<property key="FAIL_FILE_PATH">/WEB-INF/def/web/common/error/fail.jsp</property>
+	<!-- error文件路径 -->
+	<property key="ERROR_FILE_PATH">/WEB-INF/def/web/common/error/error.jsp</property>
+	
+	<!-- 是否启用(一级)缓存 -->
+	<property key="IS_USE_CACHE">true</property>
+	<property key="HTTP_FAIL_CODE">200</property>
+
+</properties>

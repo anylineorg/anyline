@@ -237,4 +237,8 @@ public class WechatMPUtil extends WechatUtil {
 		}
 		return sendTemplateMessage(msg);
 	}
+	//生成场景二维码
+	public void createQrCode(){
+
+	}
 } 
