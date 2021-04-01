@@ -1,28 +1,28 @@
 package org.anyline.wechat.mp.util;
- 
+
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.net.HttpUtil;
-import org.anyline.util.*;
-import org.anyline.wechat.entity.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.SHA1Util;
+import org.anyline.wechat.entity.WechatAuthInfo;
+import org.anyline.wechat.entity.WechatTemplateMessage;
+import org.anyline.wechat.entity.WechatTemplateMessageResult;
+import org.anyline.wechat.entity.WechatUserInfo;
 import org.anyline.wechat.util.WechatConfig;
 import org.anyline.wechat.util.WechatConfig.SNSAPI_SCOPE;
 import org.anyline.wechat.util.WechatUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.net.URLEncoder;
-import java.security.AlgorithmParameters;
-import java.security.Key;
-import java.security.Security;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
- 
+
 public class WechatMPUtil extends WechatUtil {
 	private static DataSet jsapiTickets = new DataSet();
 
@@ -238,7 +238,43 @@ public class WechatMPUtil extends WechatUtil {
 		return sendTemplateMessage(msg);
 	}
 	//生成场景二维码
-	public void createQrCode(){
-
+	public DataRow createQrCode(String code){
+		String token = getAccessToken();
+		String url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+token;
+		Map<String,String> params = new HashMap<String,String>();
+		String param = "{\"action_name\": \"QR_LIMIT_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \""+code+"\"}}}";
+		String result = HttpUtil.post(url,"UTF-8", new StringEntity(param,"UTF-8")).getText();
+		return DataRow.parseJson(result);
 	}
-} 
+
+    /**
+     * 生成临时二维码
+	 * @param code 场景值
+	 * @param sec 有效时间(秒)
+	 * @return DataRow
+	 */
+	public DataRow createQrCode(String code, int sec){
+		String token = getAccessToken();
+		String url = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token="+token;
+		Map<String,String> params = new HashMap<String,String>();
+		String param = "{\"expire_seconds\":"+sec+", \"action_name\": \"QR_STR_SCENE\", \"action_info\": {\"scene\": {\"scene_str\": \""+code+"\"}}}";
+		String result = HttpUtil.post(url,"UTF-8", new StringEntity(param,"UTF-8")).getText();
+		return DataRow.parseJson(result);
+	}
+
+    /**
+     * 为用户添加标签
+	 * @param users 用户openid列表
+	 * @param tag 标签id
+	 * @return DataRow
+	 */
+	public DataRow addUserTag(List<String> users, int tag){
+		String token = getAccessToken();
+		String url = "https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token="+token;
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("openid_list", users);
+		params.put("tagid", tag);
+		String result = HttpUtil.post(url,"UTF-8", new StringEntity(BeanUtil.map2json(params),"UTF-8")).getText();
+		return DataRow.parseJson(result);
+	}
+}
