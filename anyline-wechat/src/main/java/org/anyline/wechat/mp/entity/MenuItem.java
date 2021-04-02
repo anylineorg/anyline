@@ -9,6 +9,7 @@ public class MenuItem {
     private String key;
     private String url;
     private String appid;
+    private String media_id;
     private String pagepath;
     private List<MenuItem> sub_button = new ArrayList<MenuItem>();
 
@@ -73,6 +74,14 @@ public class MenuItem {
 
     public List<MenuItem> getSub_button() {
         return sub_button;
+    }
+
+    public String getMedia_id() {
+        return media_id;
+    }
+
+    public void setMedia_id(String media_id) {
+        this.media_id = media_id;
     }
 
     public void setSub_button(List<MenuItem> sub_button) {
