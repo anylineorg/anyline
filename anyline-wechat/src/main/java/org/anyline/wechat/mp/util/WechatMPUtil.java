@@ -11,6 +11,7 @@ import org.anyline.wechat.entity.WechatAuthInfo;
 import org.anyline.wechat.entity.WechatTemplateMessage;
 import org.anyline.wechat.entity.WechatTemplateMessageResult;
 import org.anyline.wechat.entity.WechatUserInfo;
+import org.anyline.wechat.mp.entity.Menu;
 import org.anyline.wechat.util.WechatConfig;
 import org.anyline.wechat.util.WechatConfig.SNSAPI_SCOPE;
 import org.anyline.wechat.util.WechatUtil;
@@ -276,5 +277,53 @@ public class WechatMPUtil extends WechatUtil {
 		params.put("tagid", tag);
 		String result = HttpUtil.post(url,"UTF-8", new StringEntity(BeanUtil.map2json(params),"UTF-8")).getText();
 		return DataRow.parseJson(result);
+	}
+
+	/**
+	 * 创建菜单
+	 * @param menu 菜单内容
+	 * @return 菜单id
+	 */
+	public String createMenu(Menu menu){
+		String url = "https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token="+getAccessToken();
+		if(null == menu.getMatchrule()){
+			url = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token="+getAccessToken();
+		}
+		String result = HttpUtil.post(url, "UTF-8", new StringEntity(menu.toJson(),"UTF-8")).getText();
+		DataRow row = DataRow.parse(result);
+		String id = row.getString("menuid");
+		menu.setMenuid(id);
+		return id;
+	}
+
+	/**
+	 * 删除所以菜单
+	 * @return DataRow
+	 */
+	public DataRow deleteMenu(){
+		String url = "https://api.weixin.qq.com/cgi-bin/menu/delete?access_token="+getAccessToken();
+		String result = HttpUtil.get(url).getText();
+		DataRow row = DataRow.parse(result);
+		return row;
+	}
+
+	/**
+	 * 删除指定菜单
+	 * @param menu 菜单id
+	 * @return DataRow
+	 */
+	public DataRow deleteMenu(String menu){
+		String param = "{\"menuid\":\""+menu+"\"}";
+		String url = "https://api.weixin.qq.com/cgi-bin/menu/delconditional?access_token="+getAccessToken();
+		String result = HttpUtil.post(url, "UTF-8", new StringEntity(param,"UTF-8")).getText();
+		DataRow row = DataRow.parse(result);
+		return row;
+	}
+
+	public DataRow getMenu(){
+		String url = "https://api.weixin.qq.com/cgi-bin/menu/get?access_token="+getAccessToken();
+		String result = HttpUtil.get(url).getText();
+		DataRow row = DataRow.parseJson(result);
+		return row;
 	}
 }
