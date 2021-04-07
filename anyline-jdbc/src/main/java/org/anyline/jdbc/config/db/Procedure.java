@@ -61,5 +61,8 @@ public interface Procedure extends Serializable{
 	public void setName(String name) ;
 	public void setResult(List<Object> result);
 	public List<Object> getResult();
+	public void regReturn();
+	public boolean hasReturn();
+
 
 } 
