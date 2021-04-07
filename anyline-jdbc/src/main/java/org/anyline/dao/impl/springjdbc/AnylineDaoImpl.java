@@ -760,13 +760,15 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<ProcedureParam> outputs = procedure.getOutputs();
 		long fr = System.currentTimeMillis();
 		String random = "";
-		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
-			log.warn("{}[txt:\n{}\n]",random,procedure.getName() );
-			log.warn("{}[输入参数:{}]",random,paramLogFormat(inputs));
-			log.warn("{}[输出参数:{}]",random,paramLogFormat(outputs));
+		String sql = "{";
+
+		//带有返回值
+		int returnIndex = 0;
+		if(procedure.hasReturn()){
+			sql += "? = ";
+			returnIndex = 1;
 		}
-		String sql = "{call " +procedure.getName()+"(";
+		sql += "call " +procedure.getName()+"(";
 		final int sizeIn = inputs.size();
 		final int sizeOut = outputs.size();
 		final int size = sizeIn + sizeOut;
@@ -777,35 +779,50 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 		}
 		sql += ")}";
+
+		if(showSQL){
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn("{}[txt:\n{}\n]",random, sql );
+			log.warn("{}[输入参数:{}]",random,paramLogFormat(inputs));
+			log.warn("{}[输出参数:{}]",random,paramLogFormat(outputs));
+		}
 		try{
 			list = (List<Object>)getJdbc().execute(sql,new CallableStatementCallback<Object>(){
 				public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
 					final List<Object> result = new ArrayList<Object>();
+
+					//带有返回参数
+					int returnIndex = 0;
+					if(procedure.hasReturn()){
+						returnIndex = 1;
+						cs.registerOutParameter(1, Types.VARCHAR);
+					}
 					for(int i=1; i<=sizeIn; i++){
 						ProcedureParam param = inputs.get(i-1);
 						Object value = param.getValue();
 						if(null == value || "NULL".equalsIgnoreCase(value.toString())){
 							value = null;
 						}
-						cs.setObject(i, value, param.getType());
+						cs.setObject(i+returnIndex, value, param.getType());
 					}
 					for(int i=1; i<=sizeOut; i++){
 						ProcedureParam param = outputs.get(i-1);
 						if(null == param.getValue()){
-							cs.registerOutParameter(i+sizeIn, param.getType());
+							cs.registerOutParameter(i+sizeIn+returnIndex, param.getType());
 						}else{
-							cs.setObject(i+sizeIn, param.getValue(), param.getType());
+							cs.setObject(i+sizeIn+returnIndex, param.getValue(), param.getType());
 						}
+					}
+					cs.execute();
+					if(procedure.hasReturn()){
+						result.add(cs.getObject(1));
 					}
 					if(sizeOut > 0){
 						//注册输出参数
-						cs.execute();
 						for(int i=1; i<=sizeOut; i++){
-							final Object output = cs.getObject(sizeIn+i);
+							final Object output = cs.getObject(sizeIn+returnIndex+i);
 							result.add(output);
 						}
-					}else{
-						cs.execute();
 					}
 					return result;
 				}

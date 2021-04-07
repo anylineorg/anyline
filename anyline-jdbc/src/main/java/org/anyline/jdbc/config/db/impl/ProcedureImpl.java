@@ -36,6 +36,7 @@ public class ProcedureImpl  implements Procedure{
 	private List<ProcedureParam> inputs = new ArrayList<ProcedureParam>();
 	private List<ProcedureParam> outputs = new ArrayList<ProcedureParam>();//输出参数，输入输出参数
 	private List<Object> result;	//输出参数结果
+	private boolean hasReturn = false;
 	
 	
 	public ProcedureImpl(String name){
@@ -114,4 +115,10 @@ public class ProcedureImpl  implements Procedure{
 		return outputs;
 	}
 
+	public void regReturn(){
+		hasReturn = true;
+	}
+	public boolean hasReturn(){
+		return hasReturn;
+	}
 }
