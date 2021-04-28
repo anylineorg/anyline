@@ -289,7 +289,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(set.size() >0){
 				return createInsertTxtFromDataSet(dest,set,checkParimary, columns);
 			}
-		} 
+		}
+		if(obj instanceof Collection){
+			DataSet set = DataSet.parse((Collection)obj);
+			set.setDataSource(dest);
+			if(set.size() >0){
+				return createInsertTxtFromDataSet(dest,set,checkParimary, columns);
+			}
+		}
 		return null; 
 	}
 	private RunSQL createInsertTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
