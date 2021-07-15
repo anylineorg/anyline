@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.springframework:spring-web:4.3.23.RELEASE">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../jar/maven/org/springframework/spring-web/4.3.23.RELEASE/spring-web-4.3.23.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../jar/maven/org/springframework/spring-web/4.3.23.RELEASE/spring-web-4.3.23.RELEASE-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../jar/maven/org/springframework/spring-web/4.3.23.RELEASE/spring-web-4.3.23.RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

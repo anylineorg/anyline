@@ -1,8 +1,0 @@
-org\anyline\plugin\springmvc\TemplateResourceViewResolver.class
-org\anyline\plugin\springmvc\HttpCharsetConvert.class
-org\anyline\plugin\springmvc\TemplateView.class
-org\anyline\plugin\springmvc\TemplateModelAndView.class
-org\anyline\controller\impl\AnylineController.class
-org\anyline\controller\impl\TemplateController.class
-org\anyline\interceptor\DataSourceInterceptor.class
-org\anyline\controller\impl\ext\TemplateController.class

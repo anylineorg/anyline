@@ -80,7 +80,9 @@ public class SMSUtil {
 		    request.setTemplateParam(BeanUtil.map2json(params)); 
  
 		    //hint 此处可能会抛出异常，注意catch 
-	        SendSmsResponse response = client.getAcsResponse(request); 
+	        SendSmsResponse response = client.getAcsResponse(request);
+	        result.setCode(response.getCode());
+	        result.setMsg(response.getMessage());
 	        result.setResult(true); 
 		} catch (ClientException e) { 
 			e.printStackTrace(); 

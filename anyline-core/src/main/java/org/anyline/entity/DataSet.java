@@ -114,7 +114,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
-
+    public DataSet trim(){
+        for(DataRow row:rows){
+            row.trim();
+        }
+        return this;
+    }
     /**
      * 添加主键
      *

@@ -1492,8 +1492,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(keyCase == KEY_CASE.CONFIG){
 			if(ConfigTable.IS_UPPER_KEY){
 				key = key.toUpperCase();
-			}
-			if(ConfigTable.IS_LOWER_KEY){
+			}else if(ConfigTable.IS_LOWER_KEY){
 				key = key.toLowerCase();
 			}
 		}else if(keyCase == KEY_CASE.LOWER){
@@ -1659,6 +1658,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		for(String key:keys){
 			if(isEmpty(key)){
 				put(KEY_CASE.SRC,key,value);
+			}
+		}
+		return this;
+	}
+	public DataRow trim(){
+		List<String> keys = keys();
+		for(String key:keys){
+			Object value = get(key);
+			if(null != value && value instanceof String) {
+				put(KEY_CASE.SRC, key, value.toString().trim());
 			}
 		}
 		return this;

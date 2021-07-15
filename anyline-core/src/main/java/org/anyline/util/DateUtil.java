@@ -1053,7 +1053,7 @@ public class DateUtil {
 		list.add(fr);
 		while(true){
 			fr = DateUtil.addDay(fr, 1);
-			if(DateUtil.diff(DATE_PART_DATE, fr, to) >0){
+			if(DateUtil.diff(DATE_PART_DATE, fr, to) < 0){
 				break;
 			}
 			list.add(fr);
@@ -1123,12 +1123,12 @@ public class DateUtil {
 		return list;
 	}
 
-	public List<String> getDays(String fr, String to){
+	public static List<String> getDays(String fr, String to){
 		List<String> list = new ArrayList<String>();
 		list.add(fr);
 		while(true){
 			fr = DateUtil.addDay(fr, 1);
-			if(DateUtil.diff(DATE_PART_DATE, fr, to) >0){
+			if(DateUtil.diff(DATE_PART_DATE, fr, to) < 0){
 				break;
 			}
 			list.add(fr);

@@ -37,6 +37,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private String def; //默认值
 	private Integer scale;//小数位
 	private Integer round; // 参考BigDecimal.ROUND_UP;
+	private String hide; //隐藏span.class
 
  
  
@@ -49,8 +50,9 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 			if(BasicUtil.isEmpty(value)){
 				value = def;
 			}
+			BigDecimal num = null;
 			if(BasicUtil.isNotEmpty(value)){
-				BigDecimal num = new BigDecimal(value.toString());
+				num = new BigDecimal(value.toString());
 				if(BasicUtil.isNotEmpty(min)){
 					BigDecimal minNum = new BigDecimal(min.toString());
 					if(minNum.compareTo(num) > 0){
@@ -91,6 +93,9 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 				}else {
 					JspWriter out = pageContext.getOut();
 					out.print(result);
+					if(BasicUtil.isNotEmpty(hide) && null != num){
+						out.print("<span class='"+hide+"' style='display:none;'>"+num+"</span>");
+					}
 				}
 			}
 		}catch(Exception e){ 
@@ -114,6 +119,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 		evl = null;
 		scale = null;
 		round = null;
+		hide = null;
 	} 
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
@@ -167,5 +173,13 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 
 	public void setRound(Integer round) {
 		this.round = round;
+	}
+
+	public String getHide() {
+		return hide;
+	}
+
+	public void setHide(String hide) {
+		this.hide = hide;
 	}
 }

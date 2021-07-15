@@ -536,7 +536,11 @@ public class AnylineController extends AbstractBasicController {
     	map.put("response_time_to", System.currentTimeMillis()); 
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 			log.warn("[controller return][result:{}][message:{}]",result,message); 
-		} 
+		}
+
+		getResponse().setContentType("application/json;charset=utf-8");
+		getResponse().setHeader("Content-type", "application/json;charset=utf-8");
+		getResponse().setCharacterEncoding("UTF-8");
 		return BeanUtil.map2json(map); 
 	} 
 	/** 

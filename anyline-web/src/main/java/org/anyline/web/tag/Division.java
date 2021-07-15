@@ -58,7 +58,7 @@ public class Division extends BodyTagSupport{
 					scale = 10;
 				}
 			}
-			if(_dividend.compareTo(new BigDecimal(0)) != 0){
+			if(_divisor.compareTo(BigDecimal.ZERO) != 0){
 				BigDecimal result = _dividend.divide(_divisor,scale, round);
 				if(null != format){ 
 					defaultValue = NumberUtil.format(result, format); 

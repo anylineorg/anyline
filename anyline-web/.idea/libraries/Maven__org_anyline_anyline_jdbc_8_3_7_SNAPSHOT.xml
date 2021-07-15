@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.anyline:anyline-jdbc:8.3.7-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../jar/maven/org/anyline/anyline-jdbc/8.3.7-SNAPSHOT/anyline-jdbc-8.3.7-20210428.101924-332.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../jar/maven/org/anyline/anyline-jdbc/8.3.7-SNAPSHOT/anyline-jdbc-8.3.7-20210428.101924-332-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../jar/maven/org/anyline/anyline-jdbc/8.3.7-SNAPSHOT/anyline-jdbc-8.3.7-20210428.101924-332-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.anyline:anyline-core:8.3.7-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../jar/maven/org/anyline/anyline-core/8.3.7-SNAPSHOT/anyline-core-8.3.7-20210613.103044-349.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../../jar/maven/org/anyline/anyline-core/8.3.7-SNAPSHOT/anyline-core-8.3.7-20210613.103044-349-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../../jar/maven/org/anyline/anyline-core/8.3.7-SNAPSHOT/anyline-core-8.3.7-20210613.103044-349-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
