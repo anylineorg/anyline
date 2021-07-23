@@ -59,7 +59,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	protected String having;
 	protected List<SQLVariable> variables;
 	protected boolean strict = false;
-	protected boolean valid = true; 
+	protected boolean valid = true;
+	protected List<String> insertColumns;
+	protected List<String> updateColumns;
 	 
 	 
 	protected SQLCreater creater; 
@@ -449,6 +451,28 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	}
 	public StringBuilder getBuilder(){
 		return this.builder;
+	}
+
+	@Override
+	public List<String> getInsertColumns() {
+		return insertColumns;
+	}
+
+	@Override
+	public RunSQL setInsertColumns(List<String> insertColumns) {
+		this.insertColumns = insertColumns;
+		return this;
+	}
+
+	@Override
+	public List<String> getUpdateColumns() {
+		return updateColumns;
+	}
+
+	@Override
+	public RunSQL setUpdateColumns(List<String> updateColumns) {
+		this.updateColumns = updateColumns;
+		return this;
 	}
 }
  

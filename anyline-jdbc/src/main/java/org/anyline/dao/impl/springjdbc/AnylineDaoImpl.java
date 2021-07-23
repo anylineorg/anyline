@@ -305,7 +305,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[txt:\n{}\n]",sql);
-			log.warn(random + "[参数:{}]",paramLogFormat(values));
+			log.warn(random + "[参数:{}]",paramLogFormat(run.getUpdateColumns(),values));
 		}
 		/*执行SQL*/
 		try{
@@ -317,7 +317,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			e.printStackTrace();
 			if(showSQLWhenError){
 				log.error(random + "[异常][txt:\n{}\n]",sql);
-				log.error(random + "[异常参数][param:{}]",paramLogFormat(values));
+				log.error(random + "[异常参数][param:{}]",paramLogFormat(run.getUpdateColumns(),values));
 			}
 			throw new SQLUpdateException("更新异常:" + e);
 		}finally{
@@ -410,7 +410,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn(random + "[txt:\n{}\n]",sql);
-			log.warn(random + "[参数:{}]",paramLogFormat(values));
+			log.warn(random + "[参数:{}]",paramLogFormat(run.getInsertColumns(),values));
 		}
 		try{
 			cnt= getJdbc().update(new PreparedStatementCreator() {
@@ -441,7 +441,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			e.printStackTrace();
 			if(showSQLWhenError){
 				log.error(random + "[异常][txt:\n{}\n]",sql);
-				log.error(random + "[异常参数][param:{}]",paramLogFormat(values));
+				log.error(random + "[异常参数][param:{}]",paramLogFormat(run.getInsertColumns(),values));
 			}
 			throw new SQLUpdateException("插入异常:" + e);
 		}finally{
@@ -1041,17 +1041,40 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * @return return
 	 */
 	protected String paramLogFormat(List<?> params){
-		String result = "";
+		String result = "\n";
 		if(null != params){
 			int idx = 0;
 			for(Object param:params){
-				result += " param" + idx++ + "=";
+				result += "param" + idx++ + "=";
 				result += param;
 				if(null != param){
 					result += "(" + param.getClass().getSimpleName() + ")";
 				}
+				result += "\n";
 			}
 		}
 		return result;
+	}
+	protected String paramLogFormat(List<?> keys, List<?> values) {
+		String result = "\n";
+		if (null != keys && null != values) {
+			if(keys.size() == values.size()) {
+				int size = keys.size();
+				for (int i = 0; i < size; i++) {
+					Object key = keys.get(i);
+					Object value = values.get(i);
+					result += keys.get(i) + "=";
+					result += value;
+					if (null != value) {
+						result += "(" + value.getClass().getSimpleName() + ")";
+					}
+					result += "\n";
+				}
+			}else{
+				result = paramLogFormat(values);
+			}
+		}
+		return result;
+
 	}
 }

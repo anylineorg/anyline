@@ -90,16 +90,21 @@ public interface RunSQL {
 	 * @param obj  obj
 	 * @return return
 	 */ 
-	public RunSQL addValues(Object obj); 
+	public RunSQL addValues(Object obj);
+
 	public RunSQL addOrders(OrderStore orderStore); 
 	public RunSQL addOrder(Order order); 
 	public SQL getSql() ; 
-	public RunSQL setSql(SQL sql) ; 
+	public RunSQL setSql(SQL sql) ;
+	public RunSQL setInsertColumns(List<String> keys);
+	public List<String> getInsertColumns();
+	public RunSQL setUpdateColumns(List<String> keys);
+	public List<String> getUpdateColumns();
 	public String getBaseQueryTxt() ; 
 	public String getFinalQueryTxt() ; 
 	public String getTotalQueryTxt() ;
 	public String getExistsTxt(); 
-	public String getInsertTxt(); 
+	public String getInsertTxt();
 	public String getDeleteTxt(); 
 	public String getUpdateTxt();
 	public String getExecuteTxt(); 

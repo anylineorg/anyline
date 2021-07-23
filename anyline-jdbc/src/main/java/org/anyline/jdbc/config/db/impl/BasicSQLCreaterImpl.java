@@ -323,7 +323,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		builder.append("INSERT INTO ").append(parseTable(dest));
 		builder.append("(");
 		param.append(") VALUES (");
-		
+		List<String> insertColumns = new ArrayList<String>();
 		int size = keys.size();
 		for(int i=0; i<size; i++){
 			String key = keys.get(i);
@@ -335,12 +335,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(value.toString().startsWith("{") && value.toString().endsWith("}")){
 					//保存json时可以{json格式}最终会有两层:{{a:1}}
 					param.append("?");
+					insertColumns.add(key);
 					values.add(value);
 				}else {
 					param.append(value);
 				}
 			}else{
 				param.append("?");
+				insertColumns.add(key);
 				if("NULL".equals(value)){
 					values.add(null);
 				}else{
@@ -356,6 +358,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		builder.append(param);
 		run.addValues(values);
 		run.setBuilder(builder);
+		run.setInsertColumns(insertColumns);
 		return run;
 	}
 	private RunSQL createInsertTxtFromDataSet(String dest, DataSet set, boolean checkParimary, String ... columns){
@@ -448,17 +451,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		} 
 		if(BasicUtil.isEmpty(dest)){ 
 			throw new SQLException("未指定表"); 
-		} 
-		 
-		 
+		}
 		/*确定需要更新的列*/ 
-		List<String> keys = confirmInsertColumns(dest, entity, columns); 
+		List<String> keys = confirmInsertColumns(dest, entity, columns);
 		if(null == keys || keys.size() == 0){ 
 			throw new SQLException("未指定列"); 
 		}
 		builder.append("INSERT INTO ").append(parseTable(dest));
 		builder.append("(");
-		int size = keys.size(); 
+		int size = keys.size();
+		List<String> insertColumns = new ArrayList<String>();
 		for(int i=0; i<size; i++){
 			builder.append(getDisKeyFr()).append(keys.get(i)).append(getDisKeyTo());
 			if(i<size-1){
@@ -470,12 +472,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append("?");
 			if(i<size-1){
 				builder.append(",");
-			} 
-			values.add(entity.getValueByColumn(keys.get(i))); 
+			}
+			values.add(entity.getValueByColumn(keys.get(i)));
+			insertColumns.add(keys.get(i));
 		}
 		builder.append(")");
 		run.addValues(values);
 		run.setBuilder(builder);
+		run.setInsertColumns(insertColumns);
 		return run; 
 	} 
  
@@ -554,6 +558,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		List<Object> values = new ArrayList<Object>(); 
 		/*确定需要更新的列*/ 
 		List<String> keys = confirmUpdateColumns(row, columns);
+
 		List<String> primaryKeys = row.getPrimaryKeys();
 		if(primaryKeys.size() == 0){
 			throw new SQLUpdateException("[更新更新异常][更新条件为空,upate方法不支持更新整表操作]");
@@ -561,7 +566,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		/*不更新主键*/
 		for(String pk:primaryKeys){
 			keys.remove(pk); 
-		} 
+		}
+		List<String> updateColumns = new ArrayList<String>();
 		/*构造SQL*/
 		int size = keys.size();
 		if(size > 0){
@@ -579,6 +585,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					if("NULL".equals(value)){
 						value = null;
 					}
+					updateColumns.add(key);
 					values.add(value);
 				} 
 				if(i<size-1){
@@ -589,10 +596,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
 			for(String pk:primaryKeys){
 				builder.append(" AND ").append(getDisKeyFr()).append(pk).append(getDisKeyTo()).append(" = ?");
+				updateColumns.add(pk);
 				values.add(row.get(pk)); 
 			}
 			run.addValues(values);
 		}
+		run.setUpdateColumns(updateColumns);
 		run.setBuilder(builder);
 		return run; 
 	}
