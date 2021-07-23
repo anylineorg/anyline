@@ -21,6 +21,7 @@ package org.anyline.util;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -289,6 +290,9 @@ public class DateUtil {
 		// hour中存的就是星期几了，其范围 1~7
 		// 1=星期日 7=星期六，其他类推
 		return new SimpleDateFormat("EEEE").format(calendar.getTime());
+	}
+	public static String getWeek(String date) {
+		return getWeek(parse(date));
 	}
 
 
@@ -1139,8 +1143,12 @@ public class DateUtil {
 		String result = null;
 		if(null != dates){
 			for(String date:dates){
-				if(null == result || diff(DATE_PART_SECOND, result, date) >0){
+				if(BasicUtil.isEmpty(result)){
 					result = date;
+				}else {
+					if (BasicUtil.isNotEmpty(date) && diff(DATE_PART_SECOND, result, date) > 0) {
+						result = date;
+					}
 				}
 			}
 		}
@@ -1150,8 +1158,12 @@ public class DateUtil {
 		String result = null;
 		if(null != dates){
 			for(String date:dates){
-				if(null == result || diff(DATE_PART_SECOND, result, date) <0){
+				if(BasicUtil.isEmpty(result)){
 					result = date;
+				}else {
+					if (BasicUtil.isNotEmpty(date) && diff(DATE_PART_SECOND, result, date) < 0) {
+						result = date;
+					}
 				}
 			}
 		}
@@ -1161,8 +1173,12 @@ public class DateUtil {
 		Date result = null;
 		if(null != dates){
 			for(Date date:dates){
-				if(null == result || diff(DATE_PART_SECOND, result, date) >0){
+				if(null == result){
 					result = date;
+				}else{
+					if(null != date && diff(DATE_PART_SECOND, result, date) > 0){
+						result = date;
+					}
 				}
 			}
 		}
@@ -1172,8 +1188,12 @@ public class DateUtil {
 		Date result = null;
 		if(null != dates){
 			for(Date date:dates){
-				if(null == result || diff(DATE_PART_SECOND, result, date) <0){
+				if(null == result){
 					result = date;
+				}else{
+					if(null != date && diff(DATE_PART_SECOND, result, date) < 0){
+						result = date;
+					}
 				}
 			}
 		}
@@ -1426,18 +1446,18 @@ public class DateUtil {
 	}
 
 	/**
-	 * fr 大于  to返回 1
+	 * date1 大于  date2返回 1
 	 *
-	 * @param fr  fr
-	 * @param to  to
+	 * @param date1  date2
+	 * @param date2  date2
 	 * @return return
 	 */
-	public static int compare(Date fr, Date to) {
-		long _fr = fr.getTime();
-		long _to = to.getTime();
-		if (_fr > _to) {
+	public static int compare(Date date1, Date date2) {
+		long _date1 = date1.getTime();
+		long _date2 = date2.getTime();
+		if (_date1 > _date2) {
 			return 1;
-		} else if(_fr == _to){
+		} else if(_date1 == _date2){
 			return 0;
 		}else {
 			return -1;
