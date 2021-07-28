@@ -55,12 +55,13 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			builder.append(sql).append("\n").append(order); 
 		}else{ 
 			//分页 
-				builder.append("SELECT "+cols+" FROM( \n"); 
-				builder.append("SELECT _TAB_I.* ,ROWNUM AS ROW_NUMBER \n"); 
+				builder.append("SELECT "+cols+" FROM( \n");
+				builder.append("SELECT TAB_I.* ,ROWNUM AS ROW_NUMBER \n"); 
 				builder.append("FROM( \n"); 
 				builder.append(sql); 
-				builder.append(") AS _TAB_I \n"); 
-				builder.append(") AS _TAB_O WHERE ROW_NUMBER >= "+(first+1)+" AND ROW_NUMBER <= "+(last+1)); 
+				builder.append(")  TAB_I \n");
+				builder.append(")  TAB_O WHERE ROW_NUMBER >= "+(first+1)+" AND ROW_NUMBER <= "+(last+1));
+
 			 
 		} 
 		 
