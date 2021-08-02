@@ -17,7 +17,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	@Autowired(required = false) 
 	@Qualifier("anyline.dao") 
 	protected AnylineDao dao; 
-	 
+
 	public DB_TYPE type(){ 
 		return DB_TYPE.ORACLE; 
 	} 
@@ -62,7 +62,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 				builder.append(")  TAB_I \n");
 				builder.append(")  TAB_O WHERE ROW_NUMBER >= "+(first+1)+" AND ROW_NUMBER <= "+(last+1));
 
-			 
 		} 
 		 
 		return builder.toString(); 
