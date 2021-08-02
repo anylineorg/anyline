@@ -42,6 +42,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		SRC					{public String getCode(){return "SRC";} 			public String getName(){return "不转换";}},
 		UPPER				{public String getCode(){return "UPPER";} 			public String getName(){return "强制大写";}},
 		LOWER				{public String getCode(){return "LOWER";} 			public String getName(){return "强制小写";}},
+		//以下规则取消
 		//下/中划线转成驼峰
 		Camel 				{public String getCode(){return "Camel ";} 			public String getName(){return "大驼峰";}},
 		camel 				{public String getCode(){return "camel ";} 			public String getName(){return "小驼峰";}},
@@ -1550,10 +1551,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			if(ConfigTable.IS_LOWER_KEY){
 				key = key.toLowerCase();
 			}
-		}else if(keyCase == KEY_CASE.LOWER){
-			key = key.toLowerCase();
 		}else if(keyCase == KEY_CASE.UPPER){
 			key = key.toUpperCase();
+		}else if(keyCase == KEY_CASE.LOWER){
+			key = key.toLowerCase();
 		}else if(keyCase == KEY_CASE.Camel){
 			key = BeanUtil.Camel(key);
 		}else if(keyCase == KEY_CASE.camel){
@@ -1576,6 +1577,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return key;
 	}
+
 	public static String putKeyCase(String key){
 		return putKeyCase(KEY_CASE.CONFIG, key);
 	}
