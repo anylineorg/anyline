@@ -23,8 +23,8 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	} 
  
 	public SQLCreaterImpl(){ 
-		disKeyFr = "\""; 
-		disKeyTo = "\""; 
+		disKeyFr = "";
+		disKeyTo = "";
 	}
 	@Override
 	public String getDisKeyFr(){

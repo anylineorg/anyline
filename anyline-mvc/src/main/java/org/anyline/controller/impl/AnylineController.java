@@ -504,8 +504,21 @@ public class AnylineController extends AbstractBasicController {
 			DataSet set = (DataSet) data; 
 			message += (String) BasicUtil.nvl(message, set.getMessage()); 
 			dataType = "list"; 
-			data = set.getRows(); 
-			map.put("navi", set.getNavi()); 
+			data = set.getRows();
+			PageNavi navi = set.getNavi();
+			if(null != navi){
+				Map<String,Object> navi_ = new HashMap<String,Object>();
+				navi_.put("page", navi.getCurPage());
+				navi_.put("pages", navi.getTotalPage());
+				navi_.put("rows", navi.getTotalRow());
+				navi_.put("vol", navi.getPageRows());
+				navi_.put("curPage", navi.getCurPage());
+				navi_.put("totalPage", navi.getTotalPage());
+				navi_.put("totalRow", navi.getTotalRow());
+				navi_.put("pageRows", navi.getPageRows());
+				map.put("navi", navi_);
+			}
+
 		} else if (data instanceof Iterable) { 
 			dataType = "list"; 
 		} else if (data instanceof DataRow) { 

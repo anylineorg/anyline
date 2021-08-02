@@ -250,14 +250,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 */
 	@Override
 	public String parseTotalQueryTxt(RunSQL run){
-		String sql = "SELECT COUNT(0) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) AS F";
+		String sql = "SELECT COUNT(0) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
 		return sql;
 	}
 
 	@Override
 	public String parseExistsTxt(RunSQL run){
-		String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n) AS IS_EXISTS";
+		String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
 		return sql;
 	}

@@ -129,14 +129,16 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		builder.append(disKeyFr).append(table).append(disKeyTo); 
 		builder.append(SQLCreater.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
-			builder.append(" AS ").append(sql.getAlias());
+			//builder.append(" AS ").append(sql.getAlias());
+			builder.append("  ").append(sql.getAlias());
 		}
 		List<Join> joins = sql.getJoins();
 		if(null != joins) {
 			for (Join join:joins) {
 				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ").append(disKeyFr).append(join.getName()).append(disKeyTo);
 				if(BasicUtil.isNotEmpty(join.getAlias())){
-					builder.append(" AS ").append(join.getAlias());
+					//builder.append(" AS ").append(join.getAlias());
+					builder.append("  ").append(join.getAlias());
 				}
 				builder.append(" ON ").append(join.getCondition());
 			}
@@ -163,14 +165,15 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		builder.append(disKeyFr).append(table).append(disKeyTo);
 		builder.append(SQLCreater.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
-			builder.append(" AS ").append(sql.getAlias());
+			//builder.append(" AS ").append(sql.getAlias());
+			builder.append("  ").append(sql.getAlias());
 		}
 		List<Join> joins = sql.getJoins();
 		if(null != joins) {
 			for (Join join:joins) {
 				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ").append(disKeyFr).append(join.getName()).append(disKeyTo);
 				if(BasicUtil.isNotEmpty(join.getAlias())){
-					builder.append(" AS ").append(join.getAlias());
+					builder.append("  ").append(join.getAlias());
 				}
 				builder.append(" ON ").append(join.getCondition());
 			}

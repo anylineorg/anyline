@@ -1521,7 +1521,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
         map.put("message", message);
         map.put("rows", rows);
         map.put("success", result);
-        map.put("navi", navi);
+        if(null != navi){
+            Map<String,Object> navi_ = new HashMap<String,Object>();
+            navi_.put("page", navi.getCurPage());
+            navi_.put("pages", navi.getTotalPage());
+            navi_.put("rows", navi.getTotalRow());
+            navi_.put("vol", navi.getPageRows());
+            map.put("navi", navi_);
+        }
         return BeanUtil.map2json(map);
     }
 
