@@ -10,7 +10,20 @@ import java.util.Hashtable;
 public class PageNaviConfig extends AnylineConfig  {
 
 	public static String CONFIG_NAME = "anyline-navi.xml";
-	 
+	public static String DEFAULT_KEY_PAGE_ROWS			= "_anyline_page_rows"			; //设置每页显示多少条的key
+	public static String DEFAULT_KEY_PAGE_NO			= "_anyline_page"				; //设置当前第几页的key
+	public static String DEFAULT_KEY_TOTAL_PAGE			= "_anyline_total_page"			; //显示一共多少页的key
+	public static String DEFAULT_KEY_TOTAL_ROW			= "_anyline_total_row"			; //显示一共多少条的key
+	public static String DEFAULT_KEY_SHOW_STAT			= "_anyline_navi_show_stat"		; //设置是否显示统计数据的key
+	public static String DEFAULT_KEY_SHOW_JUMP			= "_anyline_navi_show_jump"		; //设置是否显示页数跳转key
+	public static String DEFAULT_KEY_SHOW_VOL			= "_anyline_navi_show_vol"		; //设置是否显示每页条数设置key
+	public static String DEFAULT_KEY_GUIDE				= "_anyline_navi_guide"			; //设置分页样式的key
+	public static String DEFAULT_KEY_ID_FLAG 			= "_anyline_navi_conf_"			; //生成配置文件标识
+	public static int DEFAULT_VAR_PAGE_DEFAULT_VOL				= 10					; //每页多少条
+	public static int DEFAULT_VAR_PAGE_MAX_VOL					= 100					; //每页最多多少条(只针对从http传过来的vol,后台设置的不影响)
+	public static boolean DEFAULT_VAR_CLIENT_SET_VOL_ENABLE		= false					; //前端是否可设置每页多少条
+
+
 	public String STYLE_FILE_PATH 				= ""					; //样式文件路径 
 	public String SCRIPT_FILE_PATH 				= ""					; //脚本文件路径 
 	 
@@ -25,12 +38,13 @@ public class PageNaviConfig extends AnylineConfig  {
 	public String STYLE_INDEX_ELLIPSIS			= "..."					; //下标省略符 
 	public String STYLE_DATA_EMPTY				= "没有更多内容了"		; //查询无数据
 	public String STYLE_PAGE_OVER				= "最后一页了"			; //最后一页
-	 
+
+
 	//变量 
-	public int VAR_PAGE_RANGE					= 5						; //下标数量 
-	public int VAR_PAGE_DEFAULT_VOL				= 10					; //每页多少条 
-	public int VAR_PAGE_MAX_VOL					= 100					; //每页最多多少条(只针对从http传过来的vol,后台设置的不影响)
-	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= false					; //前端是否可设置每页多少条 
+	public int VAR_PAGE_RANGE					= 5								; //下标数量
+	public int VAR_PAGE_DEFAULT_VOL				= DEFAULT_VAR_PAGE_DEFAULT_VOL	; //每页多少条
+	public int VAR_PAGE_MAX_VOL					= DEFAULT_VAR_PAGE_MAX_VOL		; //每页最多多少条(只针对从http传过来的vol,后台设置的不影响)
+	public boolean VAR_CLIENT_SET_VOL_ENABLE 	= DEFAULT_VAR_CLIENT_SET_VOL_ENABLE					; //前端是否可设置每页多少条
 	public boolean VAR_SHOW_STAT				= false					; //是否显示分布统计 
 	public boolean VAR_SHOW_JUMP				= false					; //是否显示跳转 
 	public boolean VAR_SHOW_VOL					= true					; //是否显示每页条数设置 
@@ -43,15 +57,15 @@ public class PageNaviConfig extends AnylineConfig  {
 	public String  VAR_FORM_METHOD				= "post"				; 
 	 
 	//key 
-	public String KEY_PAGE_ROWS			= "_anyline_page_rows"			; //设置每页显示多少条的key			 
-	public String KEY_PAGE_NO			= "_anyline_page"				; //设置当前第几页的key 
-	public String KEY_TOTAL_PAGE		= "_anyline_total_page"			; //显示一共多少页的key 
-	public String KEY_TOTAL_ROW			= "_anyline_total_row"			; //显示一共多少条的key 
-	public String KEY_SHOW_STAT			= "_anyline_navi_show_stat"		; //设置是否显示统计数据的key 
-	public String KEY_SHOW_JUMP			= "_anyline_navi_show_jump"		; //设置是否显示页数跳转key 
-	public String KEY_SHOW_VOL			= "_anyline_navi_show_vol"		; //设置是否显示每页条数设置key 
-	public String KEY_GUIDE				= "_anyline_navi_guide"			; //设置分页样式的key 
-	public String KEY_ID_FLAG 			= "_anyline_navi_conf_"			; //生成配置文件标识
+	public String KEY_PAGE_ROWS			= DEFAULT_KEY_PAGE_ROWS			; //设置每页显示多少条的key
+	public String KEY_PAGE_NO			= DEFAULT_KEY_PAGE_NO			; //设置当前第几页的key
+	public String KEY_TOTAL_PAGE		= DEFAULT_KEY_TOTAL_PAGE		; //显示一共多少页的key
+	public String KEY_TOTAL_ROW			= DEFAULT_KEY_TOTAL_ROW			; //显示一共多少条的key
+	public String KEY_SHOW_STAT			= DEFAULT_KEY_SHOW_STAT			; //设置是否显示统计数据的key
+	public String KEY_SHOW_JUMP			= DEFAULT_KEY_SHOW_JUMP			; //设置是否显示页数跳转key
+	public String KEY_SHOW_VOL			= DEFAULT_KEY_SHOW_VOL			; //设置是否显示每页条数设置key
+	public String KEY_GUIDE				= DEFAULT_KEY_GUIDE				; //设置分页样式的key
+	public String KEY_ID_FLAG 			= DEFAULT_KEY_ID_FLAG			; //生成配置文件标识
 	 
 	 
 	public int CONFIG_PAGE_VAL_SET_SORT = 1;	//1:VAR_PAGE_VOL_NUMBERS 2:STYLE_PAGE_VOL  
