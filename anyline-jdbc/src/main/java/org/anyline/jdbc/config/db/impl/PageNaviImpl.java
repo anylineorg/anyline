@@ -454,7 +454,10 @@ public class PageNaviImpl implements PageNavi{
 	 * @return return
 	 */ 
 	public String html(String creater){ 
-		PageNaviConfig config = PageNaviConfig.getInstance(style); 
+		PageNaviConfig config = PageNaviConfig.getInstance(style);
+		if(null == config){
+			config = new PageNaviConfig();
+		}
 		calculate(); 
 		StringBuilder navi = new StringBuilder(); 
 		//StringBuilder layout = new StringBuilder(); 

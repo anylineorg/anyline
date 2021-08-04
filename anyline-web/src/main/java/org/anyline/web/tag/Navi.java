@@ -72,6 +72,9 @@ public class Navi extends BodyTagSupport{
 	public int doStartTag() throws JspException {
 		try{
 			PageNaviConfig config = PageNaviConfig.getInstance(style);
+			if(null == config){
+				config = new PageNaviConfig();
+			}
 			StringBuilder builder = new StringBuilder();
 			int idx = BasicUtil.parseInt((String)pageContext.getRequest().getAttribute("_anyline_navi_tag_idx"), 0);
 			String flag = id;

@@ -502,7 +502,10 @@ public class AbstractBasicController{
 			return null;
 		}
 		String style = getParam(request,"style");
-		PageNaviConfig config = PageNaviConfig.getInstance(style); 
+		PageNaviConfig config = PageNaviConfig.getInstance(style);
+		if(null == config){
+			config = new PageNaviConfig();
+		}
 		int pageNo = 1; // 当前页数 默认1
 		int pageVol = config.VAR_PAGE_DEFAULT_VOL; // 每页多少条 默认10 
 		// 提取request中请求参数 
