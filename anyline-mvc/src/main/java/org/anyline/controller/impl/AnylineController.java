@@ -489,8 +489,11 @@ public class AnylineController extends AbstractBasicController {
 		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE); 
 		if (null != messages) { 
 			for (int i = 0; i < messages.size(); i++) { 
-				DataRow msg = messages.getRow(i); 
-				message = BasicUtil.nvl(message,"") + "\n" + msg.getString(Constant.MESSAGE_VALUE); 
+				DataRow msg = messages.getRow(i);
+				String tmp = msg.getStringNvl(Constant.MESSAGE_VALUE,"");
+				if(BasicUtil.isNotEmpty(tmp)) {
+					message = BasicUtil.nvl(message, "") + "\n" + tmp;
+				}
 			} 
 			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE); 
 		} 
