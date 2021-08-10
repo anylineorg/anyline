@@ -425,7 +425,6 @@ public class ConfigTable {
 
 				File file = new File(path);
 				try {
-					//file:/usr/local/java/sso/sso-0.0.2-SNAPSHOT.jar!/BOOT-INF/lib/anyline-core-8.3.7-SNAPSHOT.jar!/
 					String anylineJarPath = ConfigTable.class.getProtectionDomain().getCodeSource().getLocation().getFile();
 					String anylineJarName = new File(anylineJarPath).getName();
 					if(anylineJarName.endsWith("jar") || anylineJarName.endsWith("jar!")){
