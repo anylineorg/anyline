@@ -547,9 +547,6 @@
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<version>2.10.3</version>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
@@ -691,6 +688,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	<!--
     <repositories>
         <repository>
             <id>aliyun</id>
@@ -716,4 +714,5 @@
 			<url>http://maven.anyline.org/repository/maven-snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	-->
 </project>
