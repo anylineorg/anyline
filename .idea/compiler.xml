@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="anyline-struts" />
+        <module name="anyline-aliyun" />
+        <module name="anyline-poi" />
+        <module name="anyline-ldap" />
+        <module name="anyline-print-10ss" />
+        <module name="anyline-cache-ecache" />
+        <module name="anyline-jdbc-db2" />
+        <module name="anyline-jdbc-mssql" />
+        <module name="anyline-cache-redis" />
+        <module name="anyline-core" />
+        <module name="anyline-qq" />
+        <module name="anyline-amap" />
+        <module name="anyline-jpush" />
+        <module name="anyline-wechat" />
+        <module name="anyline-alipay" />
+        <module name="anyline-web-ext" />
+        <module name="anyline-ext" />
+        <module name="anyline-rocketmq" />
+        <module name="anyline-jdbc-postgresql" />
+        <module name="anyline-jdbc-mysql" />
+        <module name="anyline-net" />
+        <module name="anyline-jdbc-oracle" />
+        <module name="anyline-jdbc-hgdb" />
+        <module name="anyline-tencent" />
+        <module name="anyline-web" />
+        <module name="anyline-jdbc-mariadb" />
+        <module name="anyline-easemob" />
+        <module name="anyline-nacos" />
+        <module name="anyline-mvc" />
+        <module name="anyline-mail" />
+        <module name="anyline-video" />
+        <module name="anyline-jdbc" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="anyline" target="1.8" />
+      <module name="anyline-alipay" target="1.8" />
+      <module name="anyline-aliyun" target="1.8" />
+      <module name="anyline-amap" target="1.8" />
+      <module name="anyline-cache-ecache" target="1.8" />
+      <module name="anyline-cache-redis" target="1.8" />
+      <module name="anyline-core" target="1.8" />
+      <module name="anyline-dependency" target="1.8" />
+      <module name="anyline-easemob" target="1.8" />
+      <module name="anyline-ext" target="1.8" />
+      <module name="anyline-jdbc" target="1.8" />
+      <module name="anyline-jdbc-db2" target="1.8" />
+      <module name="anyline-jdbc-hgdb" target="1.8" />
+      <module name="anyline-jdbc-mariadb" target="1.8" />
+      <module name="anyline-jdbc-mssql" target="1.8" />
+      <module name="anyline-jdbc-mysql" target="1.8" />
+      <module name="anyline-jdbc-oracle" target="1.8" />
+      <module name="anyline-jdbc-postgresql" target="1.8" />
+      <module name="anyline-jpush" target="1.8" />
+      <module name="anyline-ldap" target="1.8" />
+      <module name="anyline-mail" target="1.8" />
+      <module name="anyline-mvc" target="1.8" />
+      <module name="anyline-nacos" target="1.8" />
+      <module name="anyline-net" target="1.8" />
+      <module name="anyline-poi" target="1.8" />
+      <module name="anyline-print-10ss" target="1.8" />
+      <module name="anyline-qq" target="1.8" />
+      <module name="anyline-rocketmq" target="1.8" />
+      <module name="anyline-start" target="1.8" />
+      <module name="anyline-start-mvc" target="1.8" />
+      <module name="anyline-start-mvc-jsp" target="1.8" />
+      <module name="anyline-start-mvc-jsp-mysql" target="1.8" />
+      <module name="anyline-start-mvc-mysql" target="1.8" />
+      <module name="anyline-struts" target="1.8" />
+      <module name="anyline-tencent" target="1.8" />
+      <module name="anyline-video" target="1.8" />
+      <module name="anyline-web" target="1.8" />
+      <module name="anyline-web-ext" target="1.8" />
+      <module name="anyline-wechat" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

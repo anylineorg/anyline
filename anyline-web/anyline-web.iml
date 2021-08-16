@@ -15,8 +15,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Maven: org.anyline:anyline-jdbc:8.3.7-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: org.anyline:anyline-core:8.3.7-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="anyline-jdbc" />
+    <orderEntry type="module" module-name="anyline-core" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.2.3" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
@@ -32,7 +32,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-tx:4.3.23.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: ognl:ognl:3.2.10" level="project" />
     <orderEntry type="library" name="Maven: org.javassist:javassist:3.24.1-GA" level="project" />
-    <orderEntry type="library" name="Maven: org.anyline:anyline-net:8.3.7-SNAPSHOT" level="project" />
+    <orderEntry type="module" module-name="anyline-net" />
     <orderEntry type="library" name="Maven: commons-net:commons-net:3.6" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpmime:4.5" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5" level="project" />

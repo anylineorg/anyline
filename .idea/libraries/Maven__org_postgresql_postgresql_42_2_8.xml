@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.postgresql:postgresql:42.2.8">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/postgresql/postgresql/42.2.8/postgresql-42.2.8.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/postgresql/postgresql/42.2.8/postgresql-42.2.8-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/postgresql/postgresql/42.2.8/postgresql-42.2.8-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

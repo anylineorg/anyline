@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/anyline-alipay/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-alipay/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-aliyun/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-aliyun/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-amap/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-amap/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-cache-ecache/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-cache-ecache/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-cache-redis/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-core/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-core/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-easemob/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-easemob/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-ext/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jdbc-db2/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jdbc-hgdb/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jdbc-mariadb/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jdbc-mssql/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jdbc-mysql/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jdbc-oracle/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jdbc-postgresql/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jdbc/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jdbc/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jpush/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-jpush/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-ldap/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-ldap/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-mail/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-mail/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-mvc/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-nacos/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-nacos/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-net/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-poi/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-print-10ss/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-qq/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-qq/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-struts/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-tencent/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-tencent/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-video/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-web-ext/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-web/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-web/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-wechat/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/anyline-wechat/src/main/resources" charset="UTF-8" />
+  </component>
+</project>

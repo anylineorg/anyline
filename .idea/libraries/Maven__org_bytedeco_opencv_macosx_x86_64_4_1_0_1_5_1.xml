@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.bytedeco:opencv:macosx-x86_64:4.1.0-1.5.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/opencv/4.1.0-1.5.1/opencv-4.1.0-1.5.1-macosx-x86_64.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/opencv/4.1.0-1.5.1/opencv-4.1.0-1.5.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/opencv/4.1.0-1.5.1/opencv-4.1.0-1.5.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

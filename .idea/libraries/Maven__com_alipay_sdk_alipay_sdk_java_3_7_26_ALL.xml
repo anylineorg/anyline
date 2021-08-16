@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: com.alipay.sdk:alipay-sdk-java:3.7.26.ALL">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/com/alipay/sdk/alipay-sdk-java/3.7.26.ALL/alipay-sdk-java-3.7.26.ALL.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/com/alipay/sdk/alipay-sdk-java/3.7.26.ALL/alipay-sdk-java-3.7.26.ALL-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/com/alipay/sdk/alipay-sdk-java/3.7.26.ALL/alipay-sdk-java-3.7.26.ALL-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

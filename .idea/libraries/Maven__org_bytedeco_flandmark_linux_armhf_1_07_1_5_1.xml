@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.bytedeco:flandmark:linux-armhf:1.07-1.5.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/flandmark/1.07-1.5.1/flandmark-1.07-1.5.1-linux-armhf.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/flandmark/1.07-1.5.1/flandmark-1.07-1.5.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/flandmark/1.07-1.5.1/flandmark-1.07-1.5.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

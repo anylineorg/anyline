@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.bytedeco:artoolkitplus:linux-x86_64:2.3.1-1.5.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/artoolkitplus/2.3.1-1.5.1/artoolkitplus-2.3.1-1.5.1-linux-x86_64.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/artoolkitplus/2.3.1-1.5.1/artoolkitplus-2.3.1-1.5.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/artoolkitplus/2.3.1-1.5.1/artoolkitplus-2.3.1-1.5.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

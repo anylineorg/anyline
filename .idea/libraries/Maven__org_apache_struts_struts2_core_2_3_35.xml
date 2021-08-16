@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.apache.struts:struts2-core:2.3.35">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/apache/struts/struts2-core/2.3.35/struts2-core-2.3.35.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/apache/struts/struts2-core/2.3.35/struts2-core-2.3.35-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/apache/struts/struts2-core/2.3.35/struts2-core-2.3.35-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

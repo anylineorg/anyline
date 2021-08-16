@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.bytedeco:libdc1394:windows-x86_64:2.2.6-1.5.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/libdc1394/2.2.6-1.5.1/libdc1394-2.2.6-1.5.1-windows-x86_64.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/libdc1394/2.2.6-1.5.1/libdc1394-2.2.6-1.5.1-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../../jar/maven/org/bytedeco/libdc1394/2.2.6-1.5.1/libdc1394-2.2.6-1.5.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
