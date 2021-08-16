@@ -1,5 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="2862cf18-04fb-4897-b08b-49fa04778b68" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/anyline-alipay/anyline-alipay.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-aliyun/anyline-aliyun.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-amap/anyline-amap.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-cache-ecache/anyline-cache-ecache.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-cache-redis/anyline-cache-redis.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-core/anyline-core.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-dependency/anyline-dependency.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-easemob/anyline-easemob.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-ext/anyline-ext.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-jdbc-db2/anyline-jdbc-db2.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-jdbc-hgdb/anyline-jdbc-hgdb.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-jdbc-mariadb/anyline-jdbc-mariadb.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-jdbc-mssql/anyline-jdbc-mssql.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-jdbc-mysql/anyline-jdbc-mysql.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-jdbc-oracle/anyline-jdbc-oracle.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-jdbc-postgresql/anyline-jdbc-postgresql.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-jdbc/anyline-jdbc.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-jpush/anyline-jpush.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-ldap/anyline-ldap.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-mail/anyline-mail.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-mvc/anyline-mvc.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-nacos/anyline-nacos.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-net/anyline-net.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-poi/anyline-poi.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-print-10ss/anyline-print-10ss.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-qq/anyline-qq.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-rocketmq/anyline-rocketmq.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-start-mvc-jsp-mysql/anyline-start-mvc-jsp-mysql.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-start-mvc-jsp/anyline-start-mvc-jsp.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-start-mvc-mysql/anyline-start-mvc-mysql.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-start-mvc/anyline-start-mvc.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-start/anyline-start.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-struts/anyline-struts.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-tencent/anyline-tencent.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-video/anyline-video.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-web-ext/anyline-web-ext.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-web/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-web/anyline-web.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline-wechat/anyline-wechat.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/anyline.iml" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -9,7 +63,60 @@
       </MavenGeneralSettings>
     </option>
   </component>
+  <component name="ProjectId" id="1wmyJ2x8hwguCWRQ5AAjlTrRp7x" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
+  </component>
+  <component name="RebelAgentSelection">
+    <selection>jr</selection>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="ArquillianJUnit" factoryName="" nameIsGenerated="true">
+      <option name="arquillianRunConfiguration">
+        <value>
+          <option name="containerStateName" value="" />
+        </value>
+      </option>
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="2862cf18-04fb-4897-b08b-49fa04778b68" name="Default Changelist" comment="" />
+      <created>1629077988601</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1629077988601</updated>
+      <workItem from="1629077991871" duration="658000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
