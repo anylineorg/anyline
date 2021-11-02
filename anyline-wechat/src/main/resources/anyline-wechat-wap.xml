@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--H5配置-->
+<configs>
+	<config key="default">
+		<property key="APP_ID">wx16***21a57</property>
+		<property key="SIGN_TYPE">RSA</property>
+		<property key="SERVER_TOKEN">***</property>
+		<!-- 暂时与公众号回调一致 -->
+		<property key="WEB_SERVER">http://***</property>
+		<property key="OAUTH_REDIRECT_URL">http://***</property>
+		
+		<property key="PAY_API_SECRET">oaonhd**********ohvottvq</property>
+		<property key="PAY_MCH_ID">143*****402</property>
+		<property key="PAY_NOTIFY_URL">http://****/js/hm/pay/ntf/wx_mp</property>
+		<property key="PAY_CALLBACK_URL"></property>
+		<property key="PAY_KEY_STORE_FILE">D:\\apiclient_cert.p12</property>
+		<property key="PAY_KEY_STORE_PASSWORD">111111</property>
+	</config>
+</configs> 

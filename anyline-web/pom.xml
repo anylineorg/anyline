@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+		<groupId>org.anyline</groupId>
+		<artifactId>anyline-dependency</artifactId>
+		<version>8.3.9-SNAPSHOT</version>
+		<relativePath>../anyline-dependency</relativePath>
+	</parent>
+	
+	<artifactId>anyline-web</artifactId>
+	<packaging>jar</packaging>
+	<name>anyline-web</name>
+	<url>http://www.anyline.org/web</url>
+
+	<dependencies>
+<!--		<dependency>-->
+<!--			<groupId>org.anyline</groupId>-->
+<!--			<artifactId>anyline-core</artifactId>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-jdbc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.anyline</groupId>
+			<artifactId>anyline-net</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>org.springframework</groupId>-->
+<!--			<artifactId>spring-context</artifactId>-->
+<!--		</dependency>-->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<scope>provided</scope>
+			<optional>true</optional>
+		</dependency>
+	</dependencies>
+</project>
