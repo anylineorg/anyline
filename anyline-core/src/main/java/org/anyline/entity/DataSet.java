@@ -2437,14 +2437,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         }
                     }
                     if (BasicUtil.isNumber(v1) && BasicUtil.isNumber(v2)) {
-                        BigDecimal val1 = new BigDecimal(v1.toString());
-                        BigDecimal val2 = new BigDecimal(v2.toString());
-                        result = val1.compareTo(val2);
-                    } else if ((BasicUtil.isDate(v1) && BasicUtil.isDate(v2))
-                            || (BasicUtil.isDateTime(v1) && BasicUtil.isDateTime(v2))
-                    ) {
-                        Date date1 = DateUtil.parse(v1.toString());
-                        Date date2 = DateUtil.parse(v2.toString());
+                        BigDecimal num1 = new BigDecimal(v1.toString());
+                        BigDecimal num2 = new BigDecimal(v2.toString());
+                        result = num1.compareTo(num2);
+                    } else if (v1 instanceof Date && v2 instanceof Date) {
+                        Date date1 = (Date)v1;
+                        Date date2 = (Date)v2;
                         result = date1.compareTo(date2);
                     } else {
                         result = v1.toString().compareTo(v2.toString());
@@ -2482,11 +2480,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         BigDecimal val1 = new BigDecimal(v1.toString());
                         BigDecimal val2 = new BigDecimal(v2.toString());
                         result = val2.compareTo(val1);
-                    } else if ((BasicUtil.isDate(v1) && BasicUtil.isDate(v2))
-                            || (BasicUtil.isDateTime(v1) && BasicUtil.isDateTime(v2))
-                    ) {
-                        Date date1 = DateUtil.parse(v1.toString());
-                        Date date2 = DateUtil.parse(v2.toString());
+                    } else if (v1 instanceof Date && v2 instanceof Date) {
+                        Date date1 = (Date)v1;
+                        Date date2 = (Date)v2;
                         result = date2.compareTo(date1);
                     } else {
                         result = v2.toString().compareTo(v1.toString());
