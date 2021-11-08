@@ -29,6 +29,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -72,7 +73,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	private String schema					= null							; 
 	private String table					= null							;
 	private Map<String, Object> queryParams	= new HashMap<String,Object>()	; //查询条件
-	private Map<String, Object> attributes 	= new HashMap<String,Object>()	; //属性 
+	private Map<String, Object> attributes 	= new HashMap<String,Object>()	; //属性
 	private Object clientTrace				= null							; //客户端数据
 	private long createTime 				= 0								; //创建时间
 	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期 
@@ -80,7 +81,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	protected boolean isFromCache 			= false							; //是否来自缓存
 	private boolean updateNullColumn 		= ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
 	private boolean updateEmptyColumn 		= ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
-	
+	private Map<String,String> keymap		= new HashMap<String,String>();
 	private KEY_CASE keyCase 				= KEY_CASE.CONFIG;
 	private boolean isUpperKey				= false							; //是否已执行大写key转换(影响到驼峰执行)
 
@@ -524,6 +525,14 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
+
+	public DataRow numberFormat(String target, String key, String format){
+		if(null == target || null == key || isEmpty(key) || null == format){
+			return this;
+		}
+		put(target, NumberUtil.format(getString(key), format));
+		return this;
+	}
 	/**
 	 * 日期格式化
 	 * @param format format
@@ -542,6 +551,16 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			}
 		}
 		return this;
+	}
+	public DataRow dateFormat(String target, String key, String format){
+		if(null == target || null == key || isEmpty(key) || null == format){
+			return this;
+		}
+		put(target, DateUtil.format(getString(key), format));
+		return this;
+	}
+	public DataRow dateFormat(String key, String format){
+		return  dateFormat(key, key, format);
 	}
 	/**
 	 * 指定列是否为空
@@ -891,6 +910,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			if(!BasicUtil.equal(oldValue, value)){
 				addUpdateColumns(key);
 			}
+
+			keymap.put(key, key.toUpperCase());
 		}
 		return this; 
 	}
@@ -1098,6 +1119,27 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}catch(Exception e){
 			return def;
 		}
+	}
+
+	public String getDecimal(String key, String format) throws Exception{
+		BigDecimal result = getDecimal(key);
+		return NumberUtil.format(result, format);
+	}
+
+	public String getDecimal(String key, double def, String format){
+		return getDecimal(key, new BigDecimal(def), format);
+	}
+	public String getDecimal(String key, BigDecimal def, String format){
+		BigDecimal result = null;
+		try{
+			result = getDecimal(key);
+			if(null == result){
+				result = def;
+			}
+		}catch(Exception e){
+			result = def;
+		}
+		return NumberUtil.format(result, format);
 	}
 	public Date getDate(String key, Date def){
 		Object date = get(key);
@@ -1656,6 +1698,23 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	}
 
 	/**
+	 * 替换key
+	 * @param key key
+	 * @param target target
+	 * @param remove 是否删除原来的key
+	 * @return
+	 */
+	public DataRow changeKey(String key, String target, boolean remove) {
+		put(target, get(key));
+		if(remove){
+			remove(key);
+		}
+		return this;
+	}
+	public DataRow changeKey(String key, String target) {
+		return changeKey(key, target, true);
+	}
+	/**
 	 * 替换所有空值
 	 * @param value value
 	 * @return return
@@ -1793,97 +1852,184 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		return BeanUtil.evl(this,keys);
 	}
 	/**
-	 * 在key列基础上 +value,如果原来没有key列则默认0并put
+	 * 在key列基础上 +value,如果原来没有key列则默认0并put到target
+	 * @param target 计算结果key
 	 * @param key key
 	 * @param value value
 	 * @return this
 	 */
-	public DataRow add(String key, int value){
-		put(key,getInt(key,0) + value);
+	public DataRow add(String target, String key, int value){
+		put(target,getInt(key,0) + value);
 		return this;
+	}
+
+	public DataRow add(String target, String key, double value){
+		put(target,getDouble(key,0) + value);
+		return this;
+	}
+	public DataRow add(String target, String key, short value){
+		put(target, getInt(key,0) + value);
+		return this;
+	}
+	public DataRow add(String target, String key, float value){
+		put(target,getFloat(key,0) + value);
+		return this;
+	}
+	public DataRow add(String target, String key, BigDecimal value){
+		put(target,getDecimal(key,0).add(value));
+		return this;
+	}
+
+	public DataRow add(String key, int value){
+		return  add(key, key, value);
 	}
 
 	public DataRow add(String key, double value){
-		put(key,getDouble(key,0) + value);
-		return this;
+		return  add(key, key, value);
 	}
 	public DataRow add(String key, short value){
-		put(key, getInt(key,0) + value);
-		return this;
+		return  add(key, key, value);
 	}
 	public DataRow add(String key, float value){
-		put(key,getFloat(key,0) + value);
-		return this;
+		return  add(key, key, value);
 	}
 	public DataRow add(String key, BigDecimal value){
-		put(key,getDecimal(key,0).add(value));
+		return  add(key, key, value);
+	}
+
+
+	public DataRow subtract(String target, String key, int value){
+		put(target,getInt(key,0) - value);
 		return this;
 	}
 
-	public DataRow subtract(String key, int value){
-		put(key,getInt(key,0) - value);
+	public DataRow subtract(String target, String key, double value){
+		put(target,getDouble(key,0) - value);
 		return this;
+	}
+	public DataRow subtract(String target, String key, short value){
+		put(target, getInt(key,0) - value);
+		return this;
+	}
+	public DataRow subtract(String target, String key, float value){
+		put(target,getFloat(key,0) - value);
+		return this;
+	}
+	public DataRow subtract(String target, String key, BigDecimal value){
+		put(target,getDecimal(key,0).subtract(value));
+		return this;
+	}
+
+
+	public DataRow subtract(String key, int value){
+		return  subtract(key, key, value);
 	}
 
 	public DataRow subtract(String key, double value){
-		put(key,getDouble(key,0) - value);
-		return this;
+		return  subtract(key, key, value);
 	}
 	public DataRow subtract(String key, short value){
-		put(key, getInt(key,0) - value);
-		return this;
+		return  subtract(key, key, value);
 	}
 	public DataRow subtract(String key, float value){
-		put(key,getFloat(key,0) - value);
-		return this;
+		return  subtract(key, key, value);
 	}
 	public DataRow subtract(String key, BigDecimal value){
-		put(key,getDecimal(key,0).subtract(value));
+		return  subtract(key, key, value);
+	}
+
+
+
+	public DataRow multiply(String target, String key, int value){
+		put(target,getInt(key,0) * value);
 		return this;
 	}
 
-	public DataRow multiply(String key, int value){
-		put(key,getInt(key,0) * value);
+	public DataRow multiply(String target, String key, double value){
+		put(target,getDouble(key,0) * value);
 		return this;
+	}
+	public DataRow multiply(String target, String key, short value){
+		put(target, getInt(key,0) * value);
+		return this;
+	}
+	public DataRow multiply(String target, String key, float value){
+		put(target,getFloat(key,0) * value);
+		return this;
+	}
+	public DataRow multiply(String target, String key, BigDecimal value){
+		put(target,getDecimal(key,0).multiply(value));
+		return this;
+	}
+
+
+	public DataRow multiply(String key, int value){
+		return multiply(key,key,value);
 	}
 
 	public DataRow multiply(String key, double value){
-		put(key,getDouble(key,0) * value);
-		return this;
+		return multiply(key,key,value);
 	}
 	public DataRow multiply(String key, short value){
-		put(key, getInt(key,0) * value);
-		return this;
+		return multiply(key,key,value);
 	}
 	public DataRow multiply(String key, float value){
-		put(key,getFloat(key,0) * value);
-		return this;
+		return multiply(key,key,value);
 	}
 	public DataRow multiply(String key, BigDecimal value){
-		put(key,getDecimal(key,0).multiply(value));
+		return multiply(key,key,value);
+	}
+
+
+	public DataRow divide(String target, String key, int value){
+		put(target,getInt(key,0) / value);
+		return this;
+	}
+
+	public DataRow divide(String target, String key, double value){
+		put(target,getDouble(key,0) / value);
+		return this;
+	}
+	public DataRow divide(String target, String key, short value){
+		put(target, getInt(key,0) / value);
+		return this;
+	}
+	public DataRow divide(String target, String key, float value){
+		put(target,getFloat(key,0) / value);
+		return this;
+	}
+	public DataRow divide(String target, String key, BigDecimal value, int mode){
+		put(target,getDecimal(key,0).divide(value, mode));
 		return this;
 	}
 
 
 	public DataRow divide(String key, int value){
-		put(key,getInt(key,0) / value);
-		return this;
+		return divide(key,key, value);
 	}
 
 	public DataRow divide(String key, double value){
-		put(key,getDouble(key,0) / value);
-		return this;
+		return divide(key,key, value);
 	}
 	public DataRow divide(String key, short value){
-		put(key, getInt(key,0) / value);
-		return this;
+		return divide(key,key, value);
 	}
 	public DataRow divide(String key, float value){
-		put(key,getFloat(key,0) / value);
+		return divide(key,key, value);
+	}
+	public DataRow divide(String key, BigDecimal value, int mode){
+		return divide(key,key, value, mode);
+	}
+
+	public DataRow round(String target, String key, int scale, int mode){
+		BigDecimal value = getDecimal(key,0);
+		value.setScale(scale,mode);
+		put(target, value);
 		return this;
 	}
-	public DataRow divide(String key, BigDecimal value){
-		put(key,getDecimal(key,0).divide(value));
-		return this;
+	public DataRow round(String key, int scale, int mode){
+		return round(key, key, scale, mode);
 	}
+
+
 }

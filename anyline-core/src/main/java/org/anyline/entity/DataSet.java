@@ -786,6 +786,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
+    public DataSet numberFormat(String target, String key, String format){
+        for(DataRow row: rows){
+            numberFormat(target, key, format);
+        }
+        return this;
+    }
+    public DataSet numberFormat(String key, String format){
+       return numberFormat(key, key, format);
+    }
 
     /**
      * 日期格式化
@@ -806,6 +815,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+    public DataSet dateFormat(String target, String key, String format){
+        for(DataRow row: rows){
+            dateFormat(target, key, format);
+        }
+        return this;
+    }
+    public DataSet dateFormat(String key, String format){
+        return dateFormat(key, key, format);
+    }
     /**
      * 提取符合指定属性值的集合
      *
@@ -1559,6 +1577,226 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return getDouble(0, key, def);
     }
 
+
+    /**
+     * 在key列基础上 +value,如果原来没有key列则默认0并put到target
+     * @param target 计算结果key
+     * @param key key
+     * @param value value
+     * @return this
+     */
+    public DataSet add(String target, String key, int value){
+        for(DataRow row:rows){
+            row.add(target, key, value);
+        }
+        return this;
+    }
+
+    public DataSet add(String target, String key, double value){
+        for(DataRow row:rows){
+            row.add(target, key, value);
+        }
+        return this;
+    }
+    public DataSet add(String target, String key, short value){
+        for(DataRow row:rows){
+            row.add(target, key, value);
+        }
+        return this;
+    }
+    public DataSet add(String target, String key, float value){
+        for(DataRow row:rows){
+            row.add(target, key, value);
+        }
+        return this;
+    }
+    public DataSet add(String target, String key, BigDecimal value){
+        for(DataRow row:rows){
+            row.add(target, key, value);
+        }
+        return this;
+    }
+
+    public DataSet add(String key, int value){
+        return  add(key, key, value);
+    }
+
+    public DataSet add(String key, double value){
+        return  add(key, key, value);
+    }
+    public DataSet add(String key, short value){
+        return  add(key, key, value);
+    }
+    public DataSet add(String key, float value){
+        return  add(key, key, value);
+    }
+    public DataSet add(String key, BigDecimal value){
+        return  add(key, key, value);
+    }
+
+
+    public DataSet subtract(String target, String key, int value){
+        for(DataRow row:rows){
+            row.subtract(target, key, value);
+        }
+        return this;
+    }
+
+    public DataSet subtract(String target, String key, double value){
+        for(DataRow row:rows){
+            row.subtract(target, key, value);
+        }
+        return this;
+    }
+    public DataSet subtract(String target, String key, short value){
+        for(DataRow row:rows){
+            row.subtract(target, key, value);
+        }
+        return this;
+    }
+    public DataSet subtract(String target, String key, float value){
+        for(DataRow row:rows){
+            row.subtract(target, key, value);
+        }
+        return this;
+    }
+    public DataSet subtract(String target, String key, BigDecimal value){
+        for(DataRow row:rows){
+            row.subtract(target, key, value);
+        }
+        return this;
+    }
+
+
+    public DataSet subtract(String key, int value){
+        return  subtract(key, key, value);
+    }
+
+    public DataSet subtract(String key, double value){
+        return  subtract(key, key, value);
+    }
+    public DataSet subtract(String key, short value){
+        return  subtract(key, key, value);
+    }
+    public DataSet subtract(String key, float value){
+        return  subtract(key, key, value);
+    }
+    public DataSet subtract(String key, BigDecimal value){
+        return  subtract(key, key, value);
+    }
+
+
+
+    public DataSet multiply(String target, String key, int value){
+        for(DataRow row:rows){
+            row.multiply(target, key, value);
+        }
+        return this;
+    }
+
+    public DataSet multiply(String target, String key, double value){
+        for(DataRow row:rows){
+            row.multiply(target, key, value);
+        }
+        return this;
+    }
+    public DataSet multiply(String target, String key, short value){
+        for(DataRow row:rows){
+            row.multiply(target, key, value);
+        }
+        return this;
+    }
+    public DataSet multiply(String target, String key, float value){
+        for(DataRow row:rows){
+            row.multiply(target, key, value);
+        }
+        return this;
+    }
+    public DataSet multiply(String target, String key, BigDecimal value){
+        for(DataRow row:rows){
+            row.multiply(target, key, value);
+        }
+        return this;
+    }
+
+
+    public DataSet multiply(String key, int value){
+        return multiply(key,key,value);
+    }
+
+    public DataSet multiply(String key, double value){
+        return multiply(key,key,value);
+    }
+    public DataSet multiply(String key, short value){
+        return multiply(key,key,value);
+    }
+    public DataSet multiply(String key, float value){
+        return multiply(key,key,value);
+    }
+    public DataSet multiply(String key, BigDecimal value){
+        return multiply(key,key,value);
+    }
+
+
+    public DataSet divide(String target, String key, int value){
+        for(DataRow row:rows){
+            row.divide(target, key, value);
+        }
+        return this;
+    }
+
+    public DataSet divide(String target, String key, double value){
+        for(DataRow row:rows){
+            row.divide(target, key, value);
+        }
+        return this;
+    }
+    public DataSet divide(String target, String key, short value){
+        for(DataRow row:rows){
+            row.divide(target, key, value);
+        }
+        return this;
+    }
+    public DataSet divide(String target, String key, float value){
+        for(DataRow row:rows){
+            row.divide(target, key, value);
+        }
+        return this;
+    }
+    public DataSet divide(String target, String key, BigDecimal value, int mode){
+        for(DataRow row:rows){
+            row.divide(target, key, value, mode);
+        }
+        return this;
+    }
+
+
+    public DataSet divide(String key, int value){
+        return divide(key,key, value);
+    }
+
+    public DataSet divide(String key, double value){
+        return divide(key,key, value);
+    }
+    public DataSet divide(String key, short value){
+        return divide(key,key, value);
+    }
+    public DataSet divide(String key, float value){
+        return divide(key,key, value);
+    }
+    public DataSet divide(String key, BigDecimal value, int mode){
+        return divide(key,key, value, mode);
+    }
+
+    public DataSet round(String target, String key, int scale, int mode){
+        for (DataRow row:rows){
+            row.round(target, key, scale, mode);
+        }
+        return this;
+    }
+    public DataSet round(String key, int scale, int mode){
+        return round(key, key, scale, mode);
+    }
     /**
      * rows 列表中的数据格式化成json格式   不同与toJSON
      * map.put("type", "list");
@@ -2132,6 +2370,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+    public DataSet changeKey(String key, String target, boolean remove) {
+        for(DataRow row:rows){
+            row.changeKey(key, target, remove);
+        }
+        return this;
+    }
+    public DataSet changeKey(String key, String target) {
+        return changeKey(key, target, true);
+    }
     /**
      * 删除rows中的columns列
      *

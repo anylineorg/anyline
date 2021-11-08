@@ -36,6 +36,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.TableBuilder;
+import org.anyline.jdbc.config.db.SQL;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -216,6 +217,12 @@ public class AnylineController extends AbstractBasicController {
 
 	public DataSet entitys(TableBuilder table){
 		List<String> metadatas = service.metadata(table.getTable());
+		List<String> params = params(metadatas);
+		return entitys(getRequest(), null, false, false, params);
+	}
+
+	public DataSet entitys(SQL sql){
+		List<String> metadatas = service.metadata(sql.getTable());
 		List<String> params = params(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}
