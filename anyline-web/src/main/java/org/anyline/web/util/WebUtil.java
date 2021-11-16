@@ -773,18 +773,45 @@ public class WebUtil {
 	 * 解析jsp成html 只能解析当前应用下的jsp文件
 	 * @param request request
 	 * @param response response
-	 * @param file "/WEB-INF/page/index.jsp"
+	 * @param jsp "/WEB-INF/page/index.jsp"
 	 * @return return
 	 * @throws ServletException ServletException
 	 * @throws IOException IOException
 	 */
-	public static String parseJsp(HttpServletRequest request, HttpServletResponse response, String file) throws ServletException, IOException {
+	public static String parseJsp(HttpServletRequest request, HttpServletResponse response, String jsp) throws ServletException, IOException {
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		render(request, response, jsp, os, false);
+		String result = os.toString();
+		if(ConfigTable.isDebug() && ConfigTable.getBoolean("PARSE_JSP_LOG")){
+			log.warn("[LOAD JSP TEMPLATE][FILE:{}][HTML:{}]", jsp, result);
+		}
+		return result;
+	}
+
+	public static void render(HttpServletRequest request, HttpServletResponse response, String jsp, File target) throws ServletException, IOException {
+		render(request, response, jsp, new FileOutputStream(target), true);
+	}
+
+	/**
+	 * JSP解析
+	 * @param request request
+	 * @param response response
+	 * @param jsp jsp文件path以根据目录/开始
+	 * @param os 输出到os
+	 * @param close 关闭输出流
+	 * @throws ServletException ServletException
+	 * @throws IOException IOException
+	 */
+	public static void render(HttpServletRequest request, HttpServletResponse response, String jsp, final  OutputStream os, boolean close) throws ServletException, IOException {
 		ServletContext servlet = request.getServletContext();
-		RequestDispatcher dispatcher = servlet.getRequestDispatcher(file);
-		final ByteArrayOutputStream os = new ByteArrayOutputStream();
+		RequestDispatcher dispatcher = servlet.getRequestDispatcher(jsp);
 		final ServletOutputStream stream = new ServletOutputStream() {
 			public void write(byte[] data, int offset, int length) {
-				os.write(data, offset, length);
+				try {
+					os.write(data, offset, length);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
 			}
 			public void write(int b) throws IOException {
 				os.write(b);
@@ -797,6 +824,7 @@ public class WebUtil {
 			@Override
 			public void setWriteListener(WriteListener arg0) {}
 		};
+
 		final PrintWriter writer = new PrintWriter(new OutputStreamWriter(os));
 		HttpServletResponse resp = new HttpServletResponseWrapper(response) {
 			public ServletOutputStream getOutputStream() {
@@ -808,11 +836,13 @@ public class WebUtil {
 		};
 		dispatcher.include(request, resp);
 		writer.flush();
-		String result = os.toString();
-		if(ConfigTable.isDebug() && ConfigTable.getBoolean("PARSE_JSP_LOG")){
-			log.warn("[LOAD JSP TEMPLATE][FILE:{}][HTML:{}]", file, result);
+		if(close){
+			try{
+				os.close();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 		}
-		return result;
 	}
 	/**
 	 * 下载文件
