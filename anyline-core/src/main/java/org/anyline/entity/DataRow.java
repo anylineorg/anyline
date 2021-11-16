@@ -29,14 +29,10 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-public class DataRow extends HashMap<String, Object> implements Serializable{ 
+public class DataRow extends LinkedHashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
-	protected static final Logger log = LoggerFactory.getLogger(DataRow.class); 
+	protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
 
 	public static enum KEY_CASE{
 		CONFIG				{public String getCode(){return "CONFIG";} 			public String getName(){return "按配置文件";}},
@@ -45,8 +41,8 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		LOWER				{public String getCode(){return "LOWER";} 			public String getName(){return "强制小写";}},
 		//以下规则取消
 		//下/中划线转成驼峰
-		Camel 				{public String getCode(){return "Camel ";} 			public String getName(){return "大驼峰";}},
-		camel 				{public String getCode(){return "camel ";} 			public String getName(){return "小驼峰";}},
+		Camel 				{public String getCode(){return "Camel";} 			public String getName(){return "大驼峰";}},
+		camel 				{public String getCode(){return "camel";} 			public String getName(){return "小驼峰";}},
 		//bean驼峰属性转下划线
 		CAMEL_CONFIG		{public String getCode(){return "CAMEL_CONFIG";} 	public String getName(){return "转下划线后按配置文件转换大小写";}},
 		CAMEL_SRC			{public String getCode(){return "CAMEL_SRC";} 		public String getName(){return "转下划线后不转换大小写";}},
@@ -89,6 +85,15 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		String pk = putKey(PRIMARY_KEY);
 		if(null != pk){
 			primaryKeys.add(PRIMARY_KEY);
+		}
+		if(keyCase == KEY_CASE.CONFIG){
+			if(ConfigTable.IS_UPPER_KEY){
+				keyCase = KEY_CASE.UPPER;
+			}else if(ConfigTable.IS_LOWER_KEY){
+				keyCase = KEY_CASE.LOWER;
+			}else{
+				keyCase = KEY_CASE.SRC;
+			}
 		}
 		createTime = System.currentTimeMillis();
 	}
@@ -218,9 +223,9 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			return list;
 		}else if(json.isObject()){
 			DataRow row = new DataRow(keyCase);
-			Iterator<Entry<String, JsonNode>> fields = json.fields();
+			Iterator<Map.Entry<String, JsonNode>> fields = json.fields();
 			while(fields.hasNext()){
-				Entry<String, JsonNode> field = fields.next();
+				Map.Entry<String, JsonNode> field = fields.next();
 				JsonNode value = field.getValue();
 				String key = field.getKey();
 				if(null != value){
@@ -910,8 +915,10 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 			if(!BasicUtil.equal(oldValue, value)){
 				addUpdateColumns(key);
 			}
-
-			keymap.put(key, key.toUpperCase());
+			if(ConfigTable.IS_KEY_IGNORE_CASE && this.keyCase == KEY_CASE.SRC) {
+				String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
+				keymap.put(ignoreKey, key);
+			}
 		}
 		return this; 
 	}
@@ -1369,7 +1376,6 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return this;
 	}
-	@Override
 	public Object remove(Object key) {
 		if(null == key){
 			return null;
@@ -1527,6 +1533,30 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		}
 		return true;
 	}
+	public DataRow camel(){
+		List<String> keys = keys();
+		this.setKeyCase(KEY_CASE.camel);
+		for(String key:keys){
+			String camel = BeanUtil.camel(key);
+			put(KEY_CASE.camel,camel,get(key));
+
+			updateColumns.remove(key);
+			super.remove(key);
+		}
+		return this;
+	}
+	public DataRow Camel(){
+		List<String> keys = keys();
+		this.setKeyCase(KEY_CASE.Camel);
+		for(String key:keys){
+			String Camel = BeanUtil.Camel(key);
+			put(key,get(key));
+
+			updateColumns.remove(key);
+			super.remove(key);
+		}
+		return this;
+	}
 	/**
 	 * key大小写转换
 	 * @param keyCase keyCase
@@ -1537,13 +1567,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null == key || keyCase == KEY_CASE.SRC){
 			return key;
 		}
-		if(keyCase == KEY_CASE.CONFIG){
-			if(ConfigTable.IS_UPPER_KEY){
-				key = key.toUpperCase();
-			}else if(ConfigTable.IS_LOWER_KEY){
-				key = key.toLowerCase();
-			}
-		}else if(keyCase == KEY_CASE.LOWER){
+		if(keyCase == KEY_CASE.LOWER){
 			key = key.toLowerCase();
 		}else if(keyCase == KEY_CASE.UPPER){
 			key = key.toUpperCase();
@@ -1591,14 +1615,7 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 		if(null == key || keyCase == KEY_CASE.SRC){
 			return key;
 		}
-		if(keyCase == KEY_CASE.CONFIG){
-			if(ConfigTable.IS_UPPER_KEY){
-				key = key.toUpperCase();
-			}
-			if(ConfigTable.IS_LOWER_KEY){
-				key = key.toLowerCase();
-			}
-		}else if(keyCase == KEY_CASE.UPPER){
+		if(keyCase == KEY_CASE.UPPER){
 			key = key.toUpperCase();
 		}else if(keyCase == KEY_CASE.LOWER){
 			key = key.toLowerCase();
@@ -1809,7 +1826,13 @@ public class DataRow extends HashMap<String, Object> implements Serializable{
 	public Object get(String key){
 		Object result = null;
 		if(null != key){
-			result = super.get(getKey(key));
+			if(ConfigTable.IS_KEY_IGNORE_CASE && this.keyCase == KEY_CASE.SRC) {
+				String ignoreKey = key.replace("_", "").replace("-", "").toUpperCase();
+				key = keymap.get(ignoreKey);
+				result = super.get(key);
+			}else {
+				result = super.get(getKey(key));
+			}
 		}
 		return result;
 	}
