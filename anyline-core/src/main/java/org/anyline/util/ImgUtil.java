@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream; 
 import java.net.HttpURLConnection; 
 import java.net.URL;
+import java.util.Base64;
 import java.util.Iterator;
  
 import javax.imageio.ImageIO; 
@@ -33,9 +34,6 @@ import javax.imageio.stream.ImageInputStream;
  
 import org.slf4j.Logger; 
 import org.slf4j.LoggerFactory;
-
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 /** 
  * 图片处理工具类：<br> 
@@ -383,9 +381,9 @@ public class ImgUtil {
         	}catch(Exception e){ 
         		e.printStackTrace(); 
         	} 
-        } 
-        BASE64Encoder encoder = new BASE64Encoder();
-        return encoder.encode(data);
+        }
+
+        return new String(Base64.getEncoder().encode(data));
     } 
     public static String base64(File img) { 
     	return base64Img(img);
@@ -426,9 +424,9 @@ public class ImgUtil {
     		}catch(Exception e){ 
     			e.printStackTrace(); 
     		} 
-    	} 
-        BASE64Encoder encoder = new BASE64Encoder();
-        return encoder.encode(data); 
+    	}
+
+        return Base64.getEncoder().encodeToString(data);
     } 
     public static String base64(URL url) { 
     	return base64Img(url); 
@@ -447,10 +445,10 @@ public class ImgUtil {
     	} 
     	str = str.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", ""); 
     	OutputStream  out = null; 
-    	try { 
-    		BASE64Decoder decoder = new BASE64Decoder();
+    	try {
+            Base64.Decoder decoder = Base64.getDecoder();
     		// 解密 
-    		byte[] b = decoder.decodeBuffer(str); 
+    		byte[] b = decoder.decode(str);
     		// 处理数据 
     		for (int i = 0; i < b.length; ++i) { 
     			if (b[i] < 0) { 
