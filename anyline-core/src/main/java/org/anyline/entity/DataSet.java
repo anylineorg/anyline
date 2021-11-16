@@ -93,6 +93,18 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return parseJson(DataRow.KEY_CASE.CONFIG, json);
     }
 
+    public DataSet Camel(){
+        for(DataRow row:rows){
+            row.Camel();
+        }
+        return this;
+    }
+    public DataSet camel(){
+        for(DataRow row:rows){
+            row.camel();
+        }
+        return this;
+    }
     public DataSet setIsNew(boolean bol) {
         for (DataRow row : rows) {
             row.setIsNew(bol);
