@@ -1,7 +1,13 @@
 package org.anyline.util;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -131,5 +137,31 @@ public class Dom4jUtil {
             list.addAll(items);
         }
         return list;
+    }
+
+    public static String format(String xml){
+        String result = null;
+        XMLWriter writer = null;
+        try {
+            Document document = DocumentHelper.parseText(xml);
+            if (document != null) {
+                StringWriter stringWriter = new StringWriter();
+                OutputFormat format = new OutputFormat("\t", true);
+                writer = new XMLWriter(stringWriter, format);
+                writer.write(document);
+                writer.flush();
+                result = stringWriter.getBuffer().toString();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            if (writer != null) {
+                try {
+                    writer.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+        return result;
     }
 }
