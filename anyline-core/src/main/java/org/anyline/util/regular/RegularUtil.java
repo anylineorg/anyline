@@ -613,13 +613,17 @@ public class RegularUtil {
 			return null;
 		}
 	}
+	public static String cut(String text, String ... tags){
+		return cut(text, false, tags);
+	}
 	/**
 	 * 取tags[i-2]与tags[i-1]之间的文本
 	 * @param text text
 	 * @param tags tags
+	 * @param contains 是否包含开始结束标签
 	 * @return return
 	 */ 
-	public static String cut(String text,String ... tags){ 
+	public static String cut(String text, boolean contains, String ... tags){
 		if(null == text || null == tags || tags.length < 2){ 
 			/*没有开始结束标志*/ 
 			return null; 
@@ -628,7 +632,8 @@ public class RegularUtil {
 		int _to = -1;	//结束下标 
 		String frTag = ""; 
 		String toTag = tags[tags.length-1];
-		int frLength = 0; 
+		int frLength = 0;
+		int toLength = 0;
 		for(int i=0; i<tags.length-1; i++){ 
 			frTag = tags[i];
 			if(frTag.equalsIgnoreCase(TAG_BEGIN)){
@@ -648,22 +653,36 @@ public class RegularUtil {
 		}
 		if(frTag.equalsIgnoreCase(TAG_END)){
 			_to = text.length();
+
 		}else{
 			if(toTag.equalsIgnoreCase(TAG_END)){
 				_to = text.length();
+				toLength = 0;
 			}else{ 
 				_to = text.indexOf(toTag,_fr+frLength);
+				toLength = toTag.length();
 			}
 		} 
 		if(_to <= _fr) {
 			return null;
-		} 
-		return text.substring(_fr+frLength,_to); 
-	} 
-	public static List<String> cuts(String text, String ... tags){ 
+		}
+		String result = null;
+		if(contains){
+			_fr = text.indexOf(tags[0]);
+			result = text.substring(_fr,_to+toLength);
+		}else{
+			result = text.substring(_fr+frLength,_to);
+		}
+		return result;
+	}
+
+	public static List<String> cuts(String text, String ... tags){
+		return cuts(text, false, tags);
+	}
+	public static List<String> cuts(String text, boolean contains, String ... tags){
 		List<String> list = new ArrayList<String>(); 
 		while(true){ 
-			String item = cut(text, tags);
+			String item = cut(text,contains, tags);
 			if(null == item){ 
 				break; 
 			}else{ 
