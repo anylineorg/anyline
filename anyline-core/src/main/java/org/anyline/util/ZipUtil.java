@@ -63,31 +63,22 @@ public class ZipUtil {
 		return true;
 	}
 
-	/**
-	 * 读取压缩文件条目
-	 * @param zip 压缩文件
-	 * @param item 条目
-	 * @return InputStream
-	 * @throws Exception Exception
-	 */
-	public static InputStream read(File zip, String item) throws Exception{
-		ZipFile _zip = new ZipFile(zip);
-		ZipEntry _item = _zip.getEntry(item);
-		return _zip.getInputStream(_item);
-	}
 	public static String read(File zip, String item, String encode){
 		InputStream in = null;
+		ZipFile _zip = null;
 		try {
-			in = read(zip, item);
+			_zip = new ZipFile(zip);
+			ZipEntry _item = _zip.getEntry(item);
+			in = _zip.getInputStream(_item);
 			String str = FileUtil.read(in, "UTF-8").toString();
 			return str;
 		}catch (Exception e){
 			return null;
 		}finally {
-			try{
-				in.close();
+			try {
+				_zip.close();
 			}catch (Exception e){
-
+				e.printStackTrace();
 			}
 		}
 	}
@@ -98,15 +89,15 @@ public class ZipUtil {
 	 * @param item 被替换条目(含目录)
 	 * @throws Exception Exception
 	 */
-	public static void replace(File zip, File content, String item) throws Exception {
-		replace(zip, new FileInputStream(content), item);
+	public static void replace(File zip, String item, File content) throws Exception {
+		replace(zip, item, new FileInputStream(content));
 	}
 
-	public static void replace(File zip, String content, String item) throws Exception {
-		replace(zip, new ByteArrayInputStream(content.getBytes()), item);
+	public static void replace(File zip, String item, String content) throws Exception {
+		replace(zip, item, new ByteArrayInputStream(content.getBytes()));
 	}
 
-	public static void replace(File src, InputStream in, String item) throws Exception {
+	public static void replace(File src, String item, InputStream in) throws Exception {
 
 		File tempFile = File.createTempFile(src.getName(), null);
 		tempFile.delete();
