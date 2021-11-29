@@ -442,8 +442,8 @@ public class ZipUtil {
 	 * @param zip 压缩文件 
 	 * @return 压缩文件内文件名称 
 	 */ 
-	public static ArrayList<String> getEntriesNames(File zip) { 
-		ArrayList<String> entryNames = new ArrayList<String>();
+	public static List<String> getEntriesNames(File zip) {
+		List<String> entryNames = new ArrayList<>();
 		ZipFile zipFile = null;
 		try {
 			zipFile = new ZipFile(zip);
