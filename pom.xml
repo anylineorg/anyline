@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline</artifactId>
-	<version>8.3.9-SNAPSHOT</version>
+	<version>8.5.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline</name>
 	
@@ -41,11 +41,13 @@
 		<module>anyline-ext</module>
 		<module>anyline-jdbc-db2</module>
 		<module>anyline-jdbc-hgdb</module>
-		<module>anyline-jdbc-mariadb</module>
 		<module>anyline-jdbc-mssql</module>
 		<module>anyline-jdbc-mysql</module>
 		<module>anyline-jdbc-oracle</module>
 		<module>anyline-jdbc-postgresql</module>
+		<module>anyline-jdbc-dm</module>
+		<module>anyline-jdbc-mariadb</module>
+		<module>anyline-jdbc-mongodb</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
@@ -59,7 +61,6 @@
 		<module>anyline-start-mvc-jsp</module>
 		<module>anyline-start-mvc-jsp-mysql</module>
 		<module>anyline-start-mvc-mysql</module>
-		<module>anyline-struts</module>
 		<module>anyline-video</module>
 		<module>anyline-wechat</module>
 		<module>anyline-rocketmq</module>
@@ -69,6 +70,6 @@
 		<module>anyline-cache-redis</module>
         <module>anyline-print-10ss</module>
         <module>anyline-tencent</module>
-        <module>anyline-jdbc-dm</module>
-    </modules>
+		<module>anyline-office</module>
+	</modules>
 </project>

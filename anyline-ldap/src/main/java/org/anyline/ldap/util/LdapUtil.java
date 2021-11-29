@@ -247,7 +247,7 @@ public class LdapUtil {
 					Attribute attr = (Attribute) attrs.next();
 					String attrId = attr.getID();
 					NamingEnumeration values = attr.getAll();
-					List<String> vals = new ArrayList<String>();
+					List<String> vals = new ArrayList<>();
 					while (values.hasMore()) {
 						Object oneVal = values.nextElement();
 						if (oneVal instanceof String) {

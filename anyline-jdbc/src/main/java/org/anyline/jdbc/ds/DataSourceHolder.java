@@ -42,7 +42,7 @@ public class DataSourceHolder {
     private static final ThreadLocal<String> THREAD_CUR_SOURCE = new ThreadLocal<String>(); 
     //是否还原默认数据源,执行一次操作后还原回默认数据源 
     private static final ThreadLocal<Boolean> THREAD_AUTO_DEFAULT = new ThreadLocal<Boolean>(); 
-    private static List<String> dataSources = new ArrayList<String>(); 
+    private static List<String> dataSources = new ArrayList<>();
     static{ 
     	THREAD_AUTO_DEFAULT.set(false); 
     } 

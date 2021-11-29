@@ -176,7 +176,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		TableRunSQLImpl run = new TableRunSQLImpl();
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
-		List<String> keys = new ArrayList<String>();
+		List<String> keys = new ArrayList<>();
 		if(null != columns && columns.length>0){
 			for(String col:columns){
 				keys.add(col);
@@ -323,7 +323,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		builder.append("INSERT INTO ").append(parseTable(dest));
 		builder.append("(");
 		param.append(") VALUES (");
-		List<String> insertColumns = new ArrayList<String>();
+		List<String> insertColumns = new ArrayList<>();
 		int size = keys.size();
 		for(int i=0; i<size; i++){
 			String key = keys.get(i);
@@ -460,7 +460,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		builder.append("INSERT INTO ").append(parseTable(dest));
 		builder.append("(");
 		int size = keys.size();
-		List<String> insertColumns = new ArrayList<String>();
+		List<String> insertColumns = new ArrayList<>();
 		for(int i=0; i<size; i++){
 			builder.append(getDisKeyFr()).append(keys.get(i)).append(getDisKeyTo());
 			if(i<size-1){
@@ -567,7 +567,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		for(String pk:primaryKeys){
 			keys.remove(pk); 
 		}
-		List<String> updateColumns = new ArrayList<String>();
+		List<String> updateColumns = new ArrayList<>();
 		/*构造SQL*/
 		int size = keys.size();
 		if(size > 0){
@@ -614,16 +614,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private List<String> confirmInsertColumns(String dst, DataRow row, String ... columns){ 
 		List<String> keys = null;/*确定需要插入的列*/ 
 		if(null == row){ 
-			return new ArrayList<String>(); 
+			return new ArrayList<>();
 		} 
 		boolean each = true;//是否需要从row中查找列 
-		List<String> mastKeys = new ArrayList<String>();		//必须插入列 
-		List<String> disKeys = new ArrayList<String>();			//必须不插入列 
-		List<String> factKeys = new ArrayList<String>();		//根据是否空值 
+		List<String> mastKeys = new ArrayList<>();		//必须插入列
+		List<String> disKeys = new ArrayList<>();			//必须不插入列
+		List<String> factKeys = new ArrayList<>();		//根据是否空值
  
 		if(null != columns && columns.length>0){ 
 			each = false; 
-			keys = new ArrayList<String>(); 
+			keys = new ArrayList<>();
 			for(String column:columns){ 
 				if(BasicUtil.isEmpty(column)){ 
 					continue; 
@@ -709,16 +709,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private List<String> confirmInsertColumns(String dst, AnylineEntity entity, String ... propertys){ 
 		List<String> keys = null;/*确定需要插入的列*/ 
 		if(null == entity){ 
-			return new ArrayList<String>(); 
+			return new ArrayList<>();
 		} 
 		boolean each = true;//是否需要从row中查找列 
-		List<String> mastKeys = new ArrayList<String>();		//必须插入列 
-		List<String> disKeys = new ArrayList<String>();			//必须不插入列 
-		List<String> factKeys = new ArrayList<String>();		//根据是否空值 
+		List<String> mastKeys = new ArrayList<>();		//必须插入列
+		List<String> disKeys = new ArrayList<>();			//必须不插入列
+		List<String> factKeys = new ArrayList<>();		//根据是否空值
  
 		if(null != propertys && propertys.length>0){ 
 			each = false; 
-			keys = new ArrayList<String>(); 
+			keys = new ArrayList<>();
 			for(String property:propertys){ 
 				if(BasicUtil.isEmpty(property)){ 
 					continue; 
@@ -793,15 +793,15 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private List<String> confirmUpdateColumns(DataRow row, String ... columns){
 		List<String> keys = null;/*确定需要更新的列*/ 
 		if(null == row){ 
-			return new ArrayList<String>(); 
+			return new ArrayList<>();
 		} 
 		boolean each = true;//是否需要从row中查找列 
 		List<String> mastKeys = row.getUpdateColumns();		//必须更新列 
-		List<String> disKeys = new ArrayList<String>();			//必须不更新列 
-		List<String> factKeys = new ArrayList<String>();		//根据是否空值
+		List<String> disKeys = new ArrayList<>();			//必须不更新列
+		List<String> factKeys = new ArrayList<>();		//根据是否空值
 		if(null != columns && columns.length>0){ 
 			each = false; 
-			keys = new ArrayList<String>(); 
+			keys = new ArrayList<>();
 			for(String column:columns){ 
 				if(BasicUtil.isEmpty(column)){ 
 					continue; 
@@ -887,16 +887,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	private List<String> confirmUpdateColumns(String dst, AnylineEntity entity, String ... propertys){ 
 		List<String> keys = null;/*确定需要更新的列*/ 
 		if(null == entity){ 
-			return new ArrayList<String>(); 
+			return new ArrayList<>();
 		} 
 		boolean each = true;//是否需要从row中查找列 
-		List<String> mastKeys = new ArrayList<String>();		//必须更新列 
-		List<String> disKeys = new ArrayList<String>();			//必须不更新列 
-		List<String> factKeys = new ArrayList<String>();		//根据是否空值 
+		List<String> mastKeys = new ArrayList<>();		//必须更新列
+		List<String> disKeys = new ArrayList<>();			//必须不更新列
+		List<String> factKeys = new ArrayList<>();		//根据是否空值
  
 		if(null != propertys && propertys.length>0){ 
 			each = false; 
-			keys = new ArrayList<String>(); 
+			keys = new ArrayList<>();
 			for(String property:propertys){ 
 				if(BasicUtil.isEmpty(property)){ 
 					continue; 

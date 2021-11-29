@@ -61,8 +61,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	public static String ITEMS				= "ITEMS"						; 
 	private DataSet container				= null							; //包含当前对象的容器 
  
-	private List<String> primaryKeys 		= new ArrayList<String>()		; //主键
-	private List<String> updateColumns 		= new ArrayList<String>()		;
+	private List<String> primaryKeys 		= new ArrayList<>()		; //主键
+	private List<String> updateColumns 		= new ArrayList<>()		;
 	private List<String> ignoreUpdateColumns= new ArrayList<>()			;
 	private String datalink					= null							; 
 	private String dataSource				= null 							; //数据源(表|视图|XML定义SQL) 
@@ -595,7 +595,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 */
 	public DataRow addPrimaryKey(boolean applyContainer, String ... pks){
 		if(null != pks){
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			for(String pk:pks){
 				list.add(pk);
 			}
@@ -613,7 +613,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		
 		/*没有处于容器中时,设置自身主键*/
 		if(null == this.primaryKeys){
-			this.primaryKeys = new ArrayList<String>();
+			this.primaryKeys = new ArrayList<>();
 		}
 		for(String item:pks){
 			if(BasicUtil.isEmpty(item)){
@@ -633,7 +633,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	
 	public DataRow setPrimaryKey(boolean applyContainer, String ... pks){
 		if(null != pks){
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			for(String pk:pks){
 				list.add(pk);
 			}
@@ -661,7 +661,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		}
 		
 		if(null == this.primaryKeys){
-			this.primaryKeys = new ArrayList<String>();
+			this.primaryKeys = new ArrayList<>();
 		}else{
 			this.primaryKeys.clear();
 		}
@@ -687,7 +687,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		} 
 		 
 		/*本身与容器都没有主键 返回默认主键*/ 
-		List<String> defaultPrimary = new ArrayList<String>(); 
+		List<String> defaultPrimary = new ArrayList<>();
 		String configKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY"); 
 		if(null != configKey && !configKey.trim().equals("")){ 
 			defaultPrimary.add(configKey);	 
@@ -895,7 +895,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		return keys().contains(putKey(key));
 	} 
 	public List<String> keys(){ 
-		List<String> keys = new ArrayList<String>(); 
+		List<String> keys = new ArrayList<>();
 		for(Iterator<String> itr=this.keySet().iterator(); itr.hasNext();){ 
 			keys.add(itr.next()); 
 		} 
@@ -1500,7 +1500,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * @return return
 	 */
 	public List<String> numberKeys(){
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<String> keys = keys();
 		for(String key:keys){
 			if(get(key) instanceof Number){
@@ -1515,7 +1515,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * @return return
 	 */
 	public boolean checkRequired(String ... keys){
-		List<String> ks = new ArrayList<String>();
+		List<String> ks = new ArrayList<>();
 		if(null != keys && keys.length >0){
 			for(String key:keys){
 				ks.add(key);

@@ -83,7 +83,7 @@ public class ClassUtil {
 	}
 
 	public static List<String> nameList(String packageName, boolean recursion, Class<?> ... bases){
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		try {
 			List<String> names = getClassNameList(packageName, recursion);
 			for (String name : names) {
@@ -205,7 +205,7 @@ public class ClassUtil {
 	 * @throws UnsupportedEncodingException UnsupportedEncodingException
 	 */
 	private static List<String> getClassNameListFromJar(String jarPath, boolean childPackage) throws UnsupportedEncodingException {
-		List<String> names = new ArrayList<String>();
+		List<String> names = new ArrayList<>();
 		String[] jarInfo = jarPath.split("!");
 		String jarFilePath = jarInfo[0].substring(jarInfo[0].indexOf("/"));
 		String packagePath = jarInfo[1].substring(1);
@@ -251,7 +251,7 @@ public class ClassUtil {
 	 * @throws UnsupportedEncodingException
 	 */
 	private static List<String> getClassNameListFromJar(URL[] urls, String packagePath, boolean childPackage) throws UnsupportedEncodingException {
-		List<String> names = new ArrayList<String>();
+		List<String> names = new ArrayList<>();
 		if (urls != null) {
 			for (int i = 0; i < urls.length; i++) {
 				URL url = urls[i];

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
-	<version>8.3.9-SNAPSHOT</version>
+	<version>8.5.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline dependency</name>
 	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
@@ -31,7 +31,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<anyline.version>8.3.9-SNAPSHOT</anyline.version>
+		<anyline.version>8.5.1-SNAPSHOT</anyline.version>
 
 		<anyline.core.version>${anyline.version}</anyline.core.version>
 		<anyline.net.version>${anyline.version}</anyline.net.version>
@@ -42,7 +42,6 @@
 		<anyline.web.version>${anyline.version}</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
 		<anyline.mvc.version>${anyline.version}</anyline.mvc.version>
-		<anyline.struts.version>${anyline.version}</anyline.struts.version>
 		<anyline.amap.version>${anyline.version}</anyline.amap.version>
 		<anyline.alipay.version>${anyline.version}</anyline.alipay.version>
 		<anyline.aliyun.version>${anyline.version}</anyline.aliyun.version>
@@ -68,8 +67,7 @@
 		<anyline.jdbc.hgdb.version>${anyline.version}</anyline.jdbc.hgdb.version>
 
 		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
-		<mysql.version>5.1.24</mysql.version>
-<!--		<mysql.version>8.0.16</mysql.version>-->
+		<mysql.version>8.0.16</mysql.version>
 		<db2-jdbc.version>11.5.0.0</db2-jdbc.version>
 		<ojdbc.version>19.3.0.0</ojdbc.version><!-- oracle -->
 		<postgresql.version>42.2.8</postgresql.version>
@@ -88,20 +86,15 @@
 		<commons.net.version>3.6</commons.net.version>
 		<commons.io.version>2.6</commons.io.version>
 		<commons.httpclient.version>3.1</commons.httpclient.version>
-		<apache.httpcomponents.version>4.5</apache.httpcomponents.version>
-		<apache.struts.version>2.3.35</apache.struts.version>
+		<apache.httpcomponents.version>4.5.12</apache.httpcomponents.version>
 		<oro.version>2.0.8</oro.version>
 		<ecache.version>2.10.6</ecache.version>
 		<ognl.version>3.2.10</ognl.version>
 		<slf4j.version>1.7.25</slf4j.version>
-		<spring.version>4.3.23.RELEASE</spring.version>
+		<spring.version>5.1.7.RELEASE</spring.version>
 		<aliyun.oss.version>3.8.0</aliyun.oss.version>
 		<aliyun.sms.version>2.1.0</aliyun.sms.version>
-
-		<alipay.version>3.7.26.ALL</alipay.version>
-		<!--
-		<alipay.version>4.10.58.ALL</alipay.version>
--->
+		<alipay.version>4.16.57.ALL</alipay.version>
 		<druid.version>1.1.6</druid.version>
 		<jsch.version>0.1.55</jsch.version>
 		<persistence.version>1.0.2</persistence.version>
@@ -110,7 +103,7 @@
 		<alibaba.nacos.version>1.1.4</alibaba.nacos.version>
 		<rocketmq.version>4.6.0</rocketmq.version>
 		<redis.version>3.3.0</redis.version>
-		<spring.redis.version>2.3.0.RELEASE</spring.redis.version>
+		<spring.redis.version>2.5.6</spring.redis.version>
 	</properties>
 
 	<dependencyManagement>
@@ -224,11 +217,6 @@
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-cache-redis</artifactId>
 				<version>${anyline.cache.redis.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.anyline</groupId>
-				<artifactId>anyline-struts</artifactId>
-				<version>${anyline.struts.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
@@ -375,21 +363,6 @@
 				<groupId>com.jcraft</groupId>
 				<artifactId>jsch</artifactId>
 				<version>${jsch.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-core</artifactId>
-				<version>${apache.struts.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-spring-plugin</artifactId>
-				<version>${apache.struts.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.struts</groupId>
-				<artifactId>struts2-convention-plugin</artifactId>
-				<version>${apache.struts.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.aliyun.oss</groupId>

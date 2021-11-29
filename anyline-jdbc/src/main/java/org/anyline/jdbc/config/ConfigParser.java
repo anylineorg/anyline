@@ -887,7 +887,7 @@ public class ConfigParser {
 //			Object obj = entry.getValue();
 //			List<String> list = partMap.get(k);
 //			if (null == list) {
-//				list = new ArrayList<String>();
+//				list = new ArrayList<>();
 //				partMap.put(k, list);
 //			}
 //			if (null != obj) {

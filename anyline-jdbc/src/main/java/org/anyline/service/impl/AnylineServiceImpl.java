@@ -1152,7 +1152,7 @@ public class AnylineServiceImpl implements AnylineService {
     protected synchronized SQL createSQL(String src){
         SQL sql = null;
         src = src.trim();
-        List<String> pks = new ArrayList<String>();
+        List<String> pks = new ArrayList<>();
         //文本sql
         if (src.startsWith("{") && src.endsWith("}")) {
             if(ConfigTable.isSQLDebug()){

@@ -1128,7 +1128,7 @@ public class DateUtil {
 	}
 
 	public static List<String> getDays(String fr, String to){
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		list.add(fr);
 		while(true){
 			fr = DateUtil.addDay(fr, 1);

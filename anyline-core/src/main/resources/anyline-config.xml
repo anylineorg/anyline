@@ -39,7 +39,8 @@
 	<!-- 
 	<property key="IS_LOWER_KEY">true</property>
 	 -->
-
+	<!--DataRow取值时 KEY 不区分大小写-->
+	<property key="IS_KEY_IGNORE_CASE">true</property>
 	<!-- 登录验证码图片宽度 -->
 	<property key="VALIDATE_CODE_IMG_WIDTH">60</property>
 	<!-- 登录验证码图片宽度 -->

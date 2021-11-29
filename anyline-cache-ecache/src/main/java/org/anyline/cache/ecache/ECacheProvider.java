@@ -113,7 +113,7 @@ public class ECacheProvider implements CacheProvider {
 		return cache;
 	}
 	public List<String> getCacheNames(){
-		List<String> names = new ArrayList<String>();
+		List<String> names = new ArrayList<>();
 		CacheManager manager = createManager();
 		for(String name:manager.getCacheNames()){
 			names.add(name);

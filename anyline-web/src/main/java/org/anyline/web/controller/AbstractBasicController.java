@@ -140,7 +140,7 @@ public class AbstractBasicController{
 	}
 
 	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		if(null != params){
 			for(String param:params){
 				list.add(param);
@@ -211,7 +211,7 @@ public class AbstractBasicController{
 		return entity(request, DataRow.KEY_CASE.CONFIG,params);
 	}
 	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		if (null != params) {
 			for (String param : params) {
 				list.add(param);

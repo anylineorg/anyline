@@ -208,7 +208,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 
 	public List<String> metadata(String table){
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		String sql = "select * from " + table + " WHERE 1=0";
 		SqlRowSet row = getJdbc().queryForRowSet(sql);
 		SqlRowSetMetaData rsm = row.getMetaData();
@@ -1083,7 +1083,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		return result;
 	}
 	public int deletes(String table, String key, String ... values){
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		if(null != values){
 			for(String value:values){
 				list.add(value);

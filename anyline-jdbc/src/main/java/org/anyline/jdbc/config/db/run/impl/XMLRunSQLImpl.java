@@ -94,7 +94,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT){ 
 					String[] tmp = value.toString().split(","); 
 					if(null != tmp){ 
-						List<String> list = new ArrayList<String>(); 
+						List<String> list = new ArrayList<>();
 						for(String item:tmp){ 
 							list.add(item); 
 						} 
@@ -571,7 +571,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
  
 	public void addSatticCondition(String condition){ 
 		if(null == staticConditions){ 
-			staticConditions = new ArrayList<String>(); 
+			staticConditions = new ArrayList<>();
 		} 
 		if(!isStrict()){ 
 			staticConditions.add(condition); 
@@ -598,7 +598,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			if(!isTime){			 
 				//需要解析的SQL 
 				if(null == conditions){ 
-					conditions = new ArrayList<String>(); 
+					conditions = new ArrayList<>();
 				} 
 				conditions.add(condition); 
 				return this; 

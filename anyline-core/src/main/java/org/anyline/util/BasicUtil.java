@@ -401,7 +401,7 @@ public class BasicUtil {
 	 * @return return
 	 */ 
 	public static List<String> parseLimit(int num) { 
-		List<String> list = new ArrayList<String>(); 
+		List<String> list = new ArrayList<>();
 		int count = 0; 
 		while (num >= 1) { 
 			int temp = num % 2; 
@@ -573,7 +573,7 @@ public class BasicUtil {
 	 * @return return
 	 */ 
 	public static List<String> getMapKeys(Map<?, ?> map) { 
-		List<String> keys = new ArrayList<String>(); 
+		List<String> keys = new ArrayList<>();
 		Iterator<?> it = map.keySet().iterator(); 
 		while (it.hasNext()) { 
 			keys.add(it.next().toString()); 
@@ -619,7 +619,7 @@ public class BasicUtil {
 	}
 
 	public static List<String> split(String str, String separator){
-		List<String> list = new ArrayList<String>();
+		List<String> list = new ArrayList<>();
 		if(null !=str && null != separator){
 			String tmps[] = str.split(separator);
 			for(String tmp : tmps){
@@ -771,7 +771,7 @@ public class BasicUtil {
 	 * @return return
 	 */ 
 	public static List<String> getLocalIpsAddress(){ 
-		List<String> ips = new ArrayList<String>(); 
+		List<String> ips = new ArrayList<>();
 		List<InetAddress> list = getLocalIps(); 
 		for(InetAddress ip:list){ 
 			ips.add(ip.getHostAddress()); 
@@ -992,8 +992,8 @@ public class BasicUtil {
 	 */
 	public static boolean equals(Object v1, Object v2, String propertys){
 		boolean result = false;
-		List<String> propertys1 = new ArrayList<String>();
-		List<String> propertys2 = new ArrayList<String>();
+		List<String> propertys1 = new ArrayList<>();
+		List<String> propertys2 = new ArrayList<>();
 		if(BasicUtil.isNotEmpty(propertys)){
 			String[] ps = propertys.split(",");
 			for(String p:ps){

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.3.9-SNAPSHOT</version>
+		<version>8.5.1-SNAPSHOT</version>
 		<relativePath>../anyline-dependency</relativePath>
 	</parent>
 
@@ -16,15 +16,6 @@
 	<name>anyline-core</name>
 	<url>http://www.anyline.org/core</url>
 	<dependencies>
-<!--		<dependency>-->
-<!--			<groupId>org.slf4j</groupId>-->
-<!--			<artifactId>slf4j-api</artifactId>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>ch.qos.logback</groupId>-->
-<!--			<artifactId>logback-core</artifactId>-->
-<!--		</dependency>-->
-
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -34,19 +25,7 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-access</artifactId>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>net.sf.json-lib</groupId>
-			<artifactId>json-lib</artifactId>
-			<classifier>jdk15</classifier>
-		</dependency> -->
-<!-- 		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-		</dependency> -->
-<!--		<dependency>-->
-<!--		    <groupId>com.fasterxml.jackson.core</groupId>-->
-<!--		    <artifactId>jackson-core</artifactId>-->
-<!--		</dependency>-->
+
 		<dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -66,6 +45,11 @@
 		<dependency>
 			<groupId>javax.persistence</groupId>
 			<artifactId>persistence-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+			<version>3.2.2</version>
 		</dependency>
 	</dependencies>
 </project>

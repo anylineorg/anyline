@@ -41,7 +41,7 @@ public abstract class AnylineEntity extends DataRow implements Serializable{
 	 */ 
 	@SuppressWarnings("rawtypes")
 	public List<String> getColumns(boolean checkInsert, boolean checkUpdate){ 
-		List<String> columns = new ArrayList<String>(); 
+		List<String> columns = new ArrayList<>();
 		/*读取类属性*/ 
 		Class clazz = this.getClass(); 
 		while(null != clazz){ 

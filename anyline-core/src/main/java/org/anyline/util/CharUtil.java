@@ -193,7 +193,7 @@ public class CharUtil {
 	 */
 	public static String toUpperCaseHeader(String src){
 		char[] cs=src.toCharArray();
-		cs[0]-=32;
+		cs[0] = Character.toUpperCase(cs[0]);
 		return String.valueOf(cs);
 	}
 }
