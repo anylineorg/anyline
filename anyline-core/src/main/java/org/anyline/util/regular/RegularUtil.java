@@ -116,7 +116,7 @@ public class RegularUtil {
 		}else if(Regular.FILTER_TYPE.WIPE == type){ 
 			return wipe(src,regx,mode); 
 		}else{ 
-			return new ArrayList<String>(); 
+			return new ArrayList<>();
 		} 
 	} 
 	/** 
@@ -181,7 +181,7 @@ public class RegularUtil {
 	 * @return return
 	 */ 
 	public static List<String> regexpValue(String src, String regex, Regular.MATCH_MODE mode){ 
-		List<String> result = new ArrayList<String>(); 
+		List<String> result = new ArrayList<>();
 		try{ 
 			List<List<String>> rs = fetchs(src, regex, mode); 
 			for(List<String> row:rs){ 
@@ -268,14 +268,14 @@ public class RegularUtil {
 	 * @throws Exception Exception
 	 */
 	public static List<List<String>> getAllTagAndBodyWithAttribute(String src, String attribute) throws Exception{
-		List<List<String>> result = new ArrayList<List<String>>();
+		List<List<String>> result = new ArrayList<>();
 		String reg =  "(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?>[^>]*?</\\1>)"	//双标签
 				+ "|(<([\\w-]+)[^>]*?\\s"+attribute+"\\b[^>]*?(>|(/>)))";			//单标签
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
 		List<List<String>> list = regular.fetchs(src, reg);
 		int idx = 0;
 		for(List<String> tmp:list){
-			List<String> item = new ArrayList<String>();
+			List<String> item = new ArrayList<>();
 			String start = tmp.get(0);
 			String all = null;
 			String body = null;
@@ -327,13 +327,13 @@ public class RegularUtil {
 	 * @throws Exception Exception
 	 */
 	public static List<List<String>> getAllTagAndBodyWithAttributeValue(String src, String attribute, String value) throws Exception{
-		List<List<String>> result = new ArrayList<List<String>>();
+		List<List<String>> result = new ArrayList<>();
 		Regular regular = regularList.get(Regular.MATCH_MODE.CONTAIN);
 		String reg =  "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?>[^>]*?</\\1>";	//双标签
 		List<List<String>> list = regular.fetchs(src, reg);
 		int idx = 0;
 		for(List<String> tmp:list){
-			List<String> item = new ArrayList<String>();
+			List<String> item = new ArrayList<>();
 			String all = tmp.get(0);
 			String name = tmp.get(1);
 			String start = all.substring(0,all.indexOf(">")+1);
@@ -350,7 +350,7 @@ public class RegularUtil {
 		reg = "<([\\w-]+)[^>]*?\\s"+attribute+"\\b[\\s]*=[\\s]*(['\"])[^>]*?\\b"+value+"\\b[^>]*?\\2[^>]*?/>";	//单标签
 		list = regular.fetchs(src, reg);
 		for(List<String> tmp:list){
-			List<String> item = new ArrayList<String>();
+			List<String> item = new ArrayList<>();
 			item.add(tmp.get(0));
 			item.add(tmp.get(0));
 			item.add(null);
@@ -540,7 +540,7 @@ public class RegularUtil {
 			String regx = "(?i)((<(" + tagNames + ")[^<]*?>)([\\s\\S]*?)(</\\3>))|(<(" +tagNames+")[\\s\\S]*?>)";
 			items = fetchs(txt, regx);
 			for(List<String> item:items){
-				List<String> rtn = new ArrayList<String>();
+				List<String> rtn = new ArrayList<>();
 				if(null == item.get(7)){
 					//双标签 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 (单标签时null)
 					rtn.add(item.get(0));
@@ -588,7 +588,7 @@ public class RegularUtil {
 	 * @return return 
 	 */
 	public static List<String> fetchAttribute(String txt, String tag){
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<List<String>> list = fetchAttributeList(txt, tag);
 		if(list.size() >0){
 			result = list.get(0);
@@ -596,7 +596,7 @@ public class RegularUtil {
 		return result;
 	}
 	public static List<String> fetchAttributeValues(String txt, String tag){
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		List<List<String>> list = fetchAttributeList(txt, tag);
 		for(List<String> attr: list){
 			if(attr.size() > 3 ){
@@ -680,7 +680,7 @@ public class RegularUtil {
 		return cuts(text, false, tags);
 	}
 	public static List<String> cuts(String text, boolean contains, String ... tags){
-		List<String> list = new ArrayList<String>(); 
+		List<String> list = new ArrayList<>();
 		while(true){ 
 			String item = cut(text,contains, tags);
 			if(null == item){ 
