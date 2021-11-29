@@ -39,7 +39,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	protected String table;
 	protected String distinct = "";
 	protected String alias;
-	protected List<String> columns = new ArrayList<String>();
+	protected List<String> columns = new ArrayList<>();
 	protected List<Join> joins = new ArrayList<Join>();//关联表
 
 
@@ -130,7 +130,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 			return;
 		}
 		if(null == this.columns){
-			this.columns = new ArrayList<String>();
+			this.columns = new ArrayList<>();
 		}
 		if(columns.contains(",")){
 			//多列
@@ -145,7 +145,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	 * @param src src
 	 */
 	protected void parseMultColumns(String src){
-		List<String> cols = new ArrayList<String>();
+		List<String> cols = new ArrayList<>();
 		//拆分转义字段({}) CD, {ISNULL(NM,'') AS NM}, {CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
 		while(src.contains("{")){
 			src = src.trim();
