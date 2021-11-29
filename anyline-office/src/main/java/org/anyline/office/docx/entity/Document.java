@@ -30,7 +30,7 @@ public class Document {
     }
 
     private void load(){
-        xml = ZipUtil.read(file,"word/document.xml","UTF-8");
+        xml = ZipUtil.read(file,"word/document.xml");
     }
     public void reload(){
         load();
@@ -100,41 +100,41 @@ public class Document {
         String name = element.getName();
         String prName = name+"Pr";
         Element pr = DocxUtil.element(element, prName);
-        if("p".equals(name)){
+        if("p".equalsIgnoreCase(name)){
             for(String sk: styles.keySet()){
                 String sv = styles.get(sk);
                 if(sk.equalsIgnoreCase("list-style-type")){
                     DocxUtil.element(pr, "pStyle", "val",sv);
-                }else if(sk.equals("list-lvl")){
+                }else if(sk.equalsIgnoreCase("list-lvl")){
                     Element numPr = DocxUtil.element(pr,"numPr");
                     DocxUtil.element(numPr, "ilvl", "val",sv+"");
                 }else if(sk.equalsIgnoreCase("numFmt")){
                     Element numPr = DocxUtil.element(pr,"numPr");
                     DocxUtil.element(numPr, "numFmt", "val",sv+"");
-                }else if ("text-align".equals(sk)) {
+                }else if ("text-align".equalsIgnoreCase(sk)) {
                     DocxUtil.element(pr, "jc","val", sv);
-                }else if(sk.equals("background-color")){
+                }else if(sk.equalsIgnoreCase("background-color")){
                     //<w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
                     DocxUtil.element(pr, "shd", "fill",sv.replace("#",""));
-                }else if(sk.equals("margin-left")){
+                }else if(sk.equalsIgnoreCase("margin-left")){
                     DocxUtil.element(pr, "ind", "left",DocxUtil.width(sv)+"");
-                }else if(sk.equals("margin-right")){
+                }else if(sk.equalsIgnoreCase("margin-right")){
                     DocxUtil.element(pr, "ind", "right",DocxUtil.width(sv)+"");
-                }else if(sk.equals("margin-top")){
+                }else if(sk.equalsIgnoreCase("margin-top")){
                     DocxUtil.element(pr, "spacing", "before",DocxUtil.width(sv)+"");
-                }else if(sk.equals("margin-bottom")){
+                }else if(sk.equalsIgnoreCase("margin-bottom")){
                     DocxUtil.element(pr, "spacing", "after",DocxUtil.width(sv)+"");
-                }else if(sk.equals("padding-left")){
+                }else if(sk.equalsIgnoreCase("padding-left")){
                     DocxUtil.element(pr, "ind", "left",DocxUtil.width(sv)+"");
-                }else if(sk.equals("padding-right")){
+                }else if(sk.equalsIgnoreCase("padding-right")){
                     DocxUtil.element(pr, "ind", "right",DocxUtil.width(sv)+"");
-                }else if(sk.equals("padding-top")){
+                }else if(sk.equalsIgnoreCase("padding-top")){
                     DocxUtil.element(pr, "spacing", "before",DocxUtil.width(sv)+"");
-                }else if(sk.equals("padding-bottom")){
+                }else if(sk.equalsIgnoreCase("padding-bottom")){
                     DocxUtil.element(pr, "spacing", "after",DocxUtil.width(sv)+"");
                 }else if(sk.equalsIgnoreCase("text-indent")){
                     DocxUtil.element(pr, "ind", "firstLine",DocxUtil.width(sv)+"");
-                }else if(sk.equals("line-height")){
+                }else if(sk.equalsIgnoreCase("line-height")){
                     DocxUtil.element(pr, "spacing", "line",DocxUtil.width(sv)+"");
                 }
             }
@@ -149,13 +149,13 @@ public class Document {
             }
             Element border = DocxUtil.element(pr, "bdr");
             DocxUtil.border(border, styles);
-        }else if("r".equals(name)){
+        }else if("r".equalsIgnoreCase(name)){
             for (String sk : styles.keySet()) {
                 String sv = styles.get(sk);
-                if(sk.equals("color")){
+                if(sk.equalsIgnoreCase("color")){
                     Element color = pr.addElement("w:color");
                     color.addAttribute("w:val", sv.replace("#",""));
-                }else if(sk.equals("background-color")){
+                }else if(sk.equalsIgnoreCase("background-color")){
                     //<w:highlight w:val="yellow"/>
                     DocxUtil.element(pr, "highlight", "val",sv.replace("#",""));
                 }
@@ -163,13 +163,13 @@ public class Document {
             Element border = DocxUtil.element(pr, "bdr");
             DocxUtil.border(border, styles);
             DocxUtil.font(pr, styles);
-        }else if("tbl".equals(name)){
+        }else if("tbl".equalsIgnoreCase(name)){
             for (String sk : styles.keySet()) {
                 String sv = styles.get(sk);
-                if(sk.equals("width")){
+                if(sk.equalsIgnoreCase("width")){
                     DocxUtil.element(pr,"tblW","w", DocxUtil.width(sv)+"");
                     DocxUtil.element(pr,"tblW","type", DocxUtil.widthType(sv));
-                }else if(sk.equals("color")){
+                }else if(sk.equalsIgnoreCase("color")){
 
                 }else if(sk.equalsIgnoreCase("margin-left")){
                     DocxUtil.element(pr,"tblInd","w",DocxUtil.width(sv)+"");
@@ -181,20 +181,25 @@ public class Document {
             }
             Element border = DocxUtil.element(pr,"tblBorders");
             DocxUtil.border(border, styles);
-        }else if("tr".equals(name)){
+        }else if("tr".equalsIgnoreCase(name)){
             for(String sk:styles.keySet()){
                 String sv = styles.get(sk);
+                if("repeat-header".equalsIgnoreCase(sk)){
+                    DocxUtil.element(pr,"tblHeader","val","true");
+                }
             }
-        }else if("tc".equals(name)){
+        }else if("tc".equalsIgnoreCase(name)){
             for(String sk:styles.keySet()){
                 String sv = styles.get(sk);
-                if("vertical-align".equals(sk)){
+                if("vertical-align".equalsIgnoreCase(sk)){
                     DocxUtil.element(pr,"vAlign", "val", sv );
-                }else if("text-align".equals(sk)){
+                }else if("text-align".equalsIgnoreCase(sk)){
                     DocxUtil.element(pr, "jc","val", sv);
-                }else if(sk.equals("background-color")){
+                }else if(sk.equalsIgnoreCase("background-color")){
                     //<w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
                     DocxUtil.element(pr, "shd", "fill",sv.replace("#",""));
+                }else if(sk.equalsIgnoreCase("white-space")){
+                    DocxUtil.element(pr,"noWrap");
                 }
             }
             //
@@ -310,16 +315,20 @@ public class Document {
 
 
 
-    public Element table(Element box, Element after, Element table){
+    public Element table(Element box, Element after, Element src){
 
         Element tbl = body.addElement("w:tbl");
         Element tblPr = tbl.addElement("w:tblPr");
-        Element tblStyle = tblPr.addElement("w:tblStyle");
-        tblStyle.addAttribute("w:val","a5");
 
-        Map<String,String> styles = style(null, table);
+        Table table = new Table();
+        Map<String,String> styles = style(null, src);
         pr(tbl, styles);
-        List<Element> html_rows = table.elements("tr");
+        List<Element> html_rows = src.elements("tr");
+        for(Element row:html_rows){
+            Tr tr = new Tr();
+            tr.setStyles(style(styles, row));
+            table.addTr(tr);
+        }
         int rows_size = html_rows.size();
         int cols_size = 0;
         if(rows_size>0){
@@ -330,13 +339,16 @@ public class Document {
                 cols_size += colspan;
             }
         }
-        DataRow[][] cells = new DataRow[rows_size][cols_size];
+        Td[][] cells = new Td[rows_size][cols_size];
         for(int r=0; r<rows_size; r++) {
+            Tr tr = table.getTr(r);
             for (int c = 0; c < cols_size; c++) {
-                DataRow tc = new DataRow();
-                cells[r][c] = tc;
+                Td td = new Td();
+                cells[r][c] = td;
+                tr.addTd(td);
             }
         }
+
         for(int r=0; r<rows_size; r++) {
             Element html_row = html_rows.get(r);
             String row_style = html_row.attributeValue("style");
@@ -344,7 +356,7 @@ public class Document {
             for(int c = 0; c<cols.size(); c++){
                 Element html_col = cols.get(c);
                 String value = html_col.getTextTrim();
-                DataRow tc = cells[r][c];
+                Td tc = cells[r][c];
                 int merge_qty = 0;
                 while(tc.size() > 0){
                     merge_qty ++;
@@ -358,14 +370,14 @@ public class Document {
                 int colspan = BasicUtil.parseInt(html_col.attributeValue("colspan"),1);
 
                 if(rowspan > 1){
-                    tc.put("merge",1);
+                    tc.put("merge","1");
                     for(int i=r+1; i<=r+rowspan-1; i++){
                         for(int j=c+1; j<c+colspan; j++){
                             DataRow merge = cells[i][j];
-                            merge.put("remove",1);//被上一列合燕
+                            merge.put("remove",1);//被上一列合并
                         }
-                        DataRow merge = cells[i][c];
-                        merge.put("merge",2);//被上一行合并
+                        DataRow merge = cells[i][c+merge_qty];
+                        merge.put("merge","2");//被上一行合并
                     }
                 }
                 if(colspan > 1){
@@ -378,7 +390,13 @@ public class Document {
             }
         }
         for(int r=0; r<rows_size; r++) {
-            Element tr = tr(tbl, cells[r], styles);
+            for (int c = 0; c < cols_size; c++) {
+                DataRow tc =  cells[r][c] ;
+            }
+        }
+        for(int r=0; r<rows_size; r++) {
+            Tr tr = table.getTr(r);
+            tr(tbl, cells[r], tr.getStyles());
         }
         DocxUtil.after(tbl, after);
 
@@ -387,6 +405,7 @@ public class Document {
 
     public Element tr(Element parent, DataRow[] tds, Map<String, String> styles){
         Element tr = parent.addElement("w:tr");
+        pr(tr, styles);
         for (DataRow td:tds) {
             Element tc = tc(tr, td, styles);
         }
@@ -394,7 +413,7 @@ public class Document {
     }
     public Element tc(Element parent, DataRow td, Map<String, String> styles){
         Element tc = null;
-        int merge = td.getInt("merge",0); //0:不合并 1:向下合并 2:被合并
+        int merge = td.getInt("merge",0); //0:不合并 1:向下合并(restart) 2:被合并(continue)
         int colspan = td.getInt("colspan",1); //向右合并
         int remove = td.getInt("remove",0); //被左侧合并
         if(remove == 0){
@@ -411,16 +430,15 @@ public class Document {
                 span.addAttribute("w:val", colspan+"");
             }
             if(tcPr.elements().size()==0){
-                tc.remove(tcPr);
+                //tc.remove(tcPr);
             }
+
+            Element src = (Element)td.get("src");
+            pr(tc, style(styles, src));
             if(merge !=2){
-                styles = StyleParser.parse(styles,td.getString("style"));
-                pr(tc, styles);
-                Element src = (Element)td.get("src");
                 if(null != src) {
-                    //Element p = tc.addElement("w:p");
-                    //pr(p, styles);
-                    parseHtml(tc, null, src, StyleParser.parse(styles,""));
+                    Element p = tc.addElement("w:p");
+                    parseHtml(p, null, src, style(styles,null));
                 }
             }else{
                 p(tc,"",null);
@@ -431,18 +449,20 @@ public class Document {
     private Element inline(Element parent, Element next, String text, Map<String, String> styles){
         String pname = parent.getName();
         Element r;
-        if(pname.equals("r")){
+        if(pname.equalsIgnoreCase("r")){
             r = parent;
+            pr(parent, styles);
             DocxUtil.after(r, next);
-        }else if(pname.equals("tc")){
+        }else if(pname.equalsIgnoreCase("tc")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
             r = p.addElement("w:r");
             DocxUtil.after(r, next);
-        }else if(pname.equals("p")){
+        }else if(pname.equalsIgnoreCase("p")){
+            pr(parent, styles);
             r = parent.addElement("w:r");
             //DocxUtil.after(r, next);
-        }else if(pname.equals("body")){
+        }else if(pname.equalsIgnoreCase("body")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
             r = p.addElement("w:r");
@@ -459,21 +479,22 @@ public class Document {
         Element box = null;
         String pname = parent.getName();
         Element newNext = null;
-        if(pname.equals("p")){
+        pr(parent, styles);
+        if(pname.equalsIgnoreCase("p")){
             box = parent.addElement("w:r");
             next = box.addElement("w:br");
             DocxUtil.after(box, next);
             newNext = parent;
-        }else if(pname.equals("r")){
+        }else if(pname.equalsIgnoreCase("r")){
             box = parent.getParent().addElement("w:r");
             next = box.addElement("w:br");
             DocxUtil.after(box, next);
             newNext = parent.getParent();
-        }else if(pname.equals("tc")){
+        }else if(pname.equalsIgnoreCase("tc")){
             box = parent.addElement("w:p");
             DocxUtil.after(box, next);
             newNext = box;
-        }else if(pname.equals("body")){
+        }else if(pname.equalsIgnoreCase("body")){
             box = parent.addElement("w:p");
             newNext = box;
             DocxUtil.after(box, next);
@@ -548,12 +569,15 @@ public class Document {
     }
     public Element parseHtml(Element parent, Element next, Element html, Map<String,String> styles){
         String pname = parent.getName();
-
-        styles = style(styles, html);
+/*
+        if(!html.getName().equalsIgnoreCase("td")) {
+            styles = style(styles, html);
+        }*/
 
         String txt = html.getTextTrim().replace("&nbsp;"," ");
         if(html.elements().size()==0){
-            txt = txt.replaceAll("\\s","");
+            //txt = txt.replaceAll("\\s","");
+            txt = txt.trim();
             html.setText(txt);
         }
         Iterator<Node> nodes = html.nodeIterator();
@@ -577,10 +601,10 @@ public class Document {
                 }
                 if("table".equalsIgnoreCase(tag)){
                     Element box = null;
-                    if(pname.equals("tc")){
+                    if(pname.equalsIgnoreCase("tc")){
                         box = parent;
                         pr(box, styles);
-                    }else if(pname.equals("p")){
+                    }else if(pname.equalsIgnoreCase("p")){
                         box = parent.addElement("w:r");
                     }else{
                         box = doc.getRootElement().element("body");
@@ -626,7 +650,7 @@ public class Document {
         return next;
     }
     public Element p(Element parent, String text, Map<String,String> styles){
-        while(parent.getName().equals("p")){
+        while(parent.getName().equalsIgnoreCase("p")){
             parent = parent.getParent();
         }
         Element p = parent.addElement("w:p");
@@ -656,6 +680,9 @@ public class Document {
                     result.put(k, src.get(k));
                 }
             }
+        }
+        if(null == element){
+            return result;
         }
         result = StyleParser.parse(result, element.attributeValue("style"));
 
@@ -693,7 +720,9 @@ public class Document {
             for(Element t:ts){
                 String txt = t.getTextTrim();
                 List<String> flags = DocxUtil.splitKey(txt);
-
+                if(flags.size() == 0){
+                    continue;
+                }
                 Collections.reverse(flags);
                 Element r = t.getParent();
                 List<Element> elements = r.elements();
@@ -710,15 +739,16 @@ public class Document {
                         key = flag.substring(2, flag.length() - 1);
                         content = replaces.get(key);
                     }
-                    boolean isblock = DocxUtil.isBlock(content);
-                    Element p = t.getParent().getParent();
-                    if(null != key && DocxUtil.isEmpty(p, t) && !DocxUtil.hasParent(t,"tc")){
+                    //boolean isblock = DocxUtil.isBlock(content);
+                    //Element p = t.getParent();
+                    /*if(null != key && DocxUtil.isEmpty(p, t) && !DocxUtil.hasParent(t,"tc")){
                         next = DocxUtil.prev(body, p);
                         body.remove(p);
                         List<Element> list = parseHtml(body, next ,content);
                     }else{
                         List<Element> list = parseHtml(r, next ,content);
-                    }
+                    }*/
+                    List<Element> list = parseHtml(r, next ,content);
                 }
                 elements.remove(t);
             }
