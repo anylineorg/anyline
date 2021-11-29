@@ -29,7 +29,7 @@ public class DocxUtil {
      */
     public static String listStyle(File docx, String key){
         try {
-            String num_xml = ZipUtil.read(docx, "word/document.xml", "UTF-8");
+            String num_xml = ZipUtil.read(docx, "word/document.xml");
             Document document = DocumentHelper.parseText(num_xml);
             List<Element> ts = DomUtil.elements(document.getRootElement(),"t");
             for(Element t:ts){
@@ -66,7 +66,7 @@ public class DocxUtil {
     public static List<String> listStyles(File docx){
         List<String> list = new ArrayList<>();
         try {
-            String num_xml = ZipUtil.read(docx, "word/numbering.xml", "UTF-8");
+            String num_xml = ZipUtil.read(docx, "word/numbering.xml");
             Document document = DocumentHelper.parseText(num_xml);
             List<Element> nums = document.getRootElement().elements("num");
             for(Element num:nums){
@@ -86,7 +86,7 @@ public class DocxUtil {
         if(null != files && files.length>1){
             List<String> docs = new ArrayList<>();
             for(File file:files){
-                docs.add(ZipUtil.read(file,"word/document.xml","UTF-8"));
+                docs.add(ZipUtil.read(file,"word/document.xml"));
             }
             String result = merge(docs);
             try {
@@ -293,8 +293,6 @@ public class DocxUtil {
                     list.addAll(splitKey(t1));
                 }
                 txt = txt.substring(0, txt.length() - key.length());
-            }else{
-                list.add(txt);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -339,15 +337,39 @@ public class DocxUtil {
             item.addAttribute("w:type",  "dxa");
         }
     }
+    private static Map<String, Integer>fontSizes = new HashMap<String, Integer>() {
+        {
+            put("初号", 84);
+            put("小初", 72);
+            put("一号", 52);
+            put("小一", 48);
+            put("二号", 44);
+            put("小二", 36);
+            put("三号", 33);
+            put("小三", 30);
+            put("四号", 28);
+            put("小四", 24);
+            put("五号", 21);
+            put("小五", 18);
+            put("六号", 15);
+            put("小六", 13);
+            put("七号", 11);
+            put("八号", 10);
+        }
+    };
     public static void font(Element pr, Map<String,String> styles){
         String fontSize = styles.get("font-size");
         if(null != fontSize){
             int pt = 0;
-            if(fontSize.endsWith("px")){
-                int px = BasicUtil.parseInt(fontSize.replace("px",""),0);
-                pt = (int)DocxUtil.px2pt(px);
-            }else if(fontSize.endsWith("pt")){
-                pt = BasicUtil.parseInt(fontSize.replace("pt",""),0);
+            if(fontSizes.containsKey(fontSize)){
+                pt = fontSizes.get(fontSize);
+            }else{
+                if(fontSize.endsWith("px")){
+                    int px = BasicUtil.parseInt(fontSize.replace("px",""),0);
+                    pt = (int)DocxUtil.px2pt(px);
+                }else if(fontSize.endsWith("pt")){
+                    pt = BasicUtil.parseInt(fontSize.replace("pt",""),0);
+                }
             }
             if(pt>0){
                 // <w:sz w:val="28"/>
