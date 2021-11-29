@@ -63,14 +63,14 @@ public class ZipUtil {
 		return true;
 	}
 
-	public static String read(File zip, String item, String encode){
+	public static String read(File zip, String item){
 		InputStream in = null;
 		ZipFile _zip = null;
 		try {
 			_zip = new ZipFile(zip);
 			ZipEntry _item = _zip.getEntry(item);
 			in = _zip.getInputStream(_item);
-			String str = FileUtil.read(in, "UTF-8").toString();
+			String str = FileUtil.read(in).toString();
 			return str;
 		}catch (Exception e){
 			return null;
