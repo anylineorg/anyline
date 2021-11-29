@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class Dom4jUtil {
+public class DomUtil {
     /**
      * 根据标签name搜索element
      * @param root 根节点
@@ -57,7 +57,7 @@ public class Dom4jUtil {
      * 根据标签name以及属性值搜索element
      * @param root 根节点
      * @param tag 标签名(不含namespace)
-     * @param attribute 属性名
+     * @param attribute 属性名(不含namespace)
      * @param value 属性值
      * @return Element
      */
@@ -79,7 +79,7 @@ public class Dom4jUtil {
      * 根据标签name以及属性值搜索element
      * @param root 根节点
      * @param tag 标签名(不含namespace)
-     * @param attribute 属性名
+     * @param attribute 属性名(不含namespace)
      * @param value 属性值
      * @return List
      */
@@ -100,7 +100,7 @@ public class Dom4jUtil {
     /**
      * 根据属性值搜索element
      * @param root 根节点
-     * @param attribute 属性名
+     * @param attribute 属性名(不含namespace)
      * @param value 属性值
      * @return Element
      */
@@ -121,7 +121,7 @@ public class Dom4jUtil {
     /**
      * 根据属性值搜索element
      * @param root 根节点
-     * @param attribute 属性名
+     * @param attribute 属性名(不含namespace)
      * @param value 属性值
      * @return List
      */
@@ -144,14 +144,22 @@ public class Dom4jUtil {
         XMLWriter writer = null;
         try {
             Document document = DocumentHelper.parseText(xml);
-            if (document != null) {
-                StringWriter stringWriter = new StringWriter();
-                OutputFormat format = new OutputFormat("\t", true);
-                writer = new XMLWriter(stringWriter, format);
-                writer.write(document);
-                writer.flush();
-                result = stringWriter.getBuffer().toString();
-            }
+            result = format(document);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
+    public static String format(Document document){
+        String result = null;
+        XMLWriter writer = null;
+        try {
+            StringWriter stringWriter = new StringWriter();
+            OutputFormat format = new OutputFormat("\t", true);
+            writer = new XMLWriter(stringWriter, format);
+            writer.write(document);
+            writer.flush();
+            result = stringWriter.getBuffer().toString();
         }catch (Exception e){
             e.printStackTrace();
         }finally {
