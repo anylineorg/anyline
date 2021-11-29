@@ -149,7 +149,7 @@ public class OSSUtil {
 	 * @return return
 	 */ 
 	public List<String> list(String prefix){ 
-		List<String> list = new ArrayList<String>(); 
+		List<String> list = new ArrayList<>();
 		if(null == prefix){ 
 			prefix = ""; 
 		} 
