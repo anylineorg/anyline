@@ -276,7 +276,7 @@ public class WebUtil {
 					if (!"".equals(k) && !"".equals(v)) {
 						List<String> list = result.get(k);
 						if (null == list) {
-							list = new ArrayList<String>();
+							list = new ArrayList<>();
 							result.put(k, list);
 						}
 						list.add(v);
@@ -292,7 +292,7 @@ public class WebUtil {
 
 			List<String> list = result.get(k);
 			if (null == list) {
-				list = new ArrayList<String>();
+				list = new ArrayList<>();
 				result.put(k, list);
 			}
 			vs = request.getParameterValues(k);
