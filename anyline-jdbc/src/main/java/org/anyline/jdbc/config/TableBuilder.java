@@ -13,7 +13,7 @@ public class TableBuilder {
     private String table;
     private String datasource;
     private String alias;
-    private List<String> columns = new ArrayList<String>();
+    private List<String> columns = new ArrayList<>();
     private List<Join> joins = new ArrayList<Join>();//关联表
 
     public static TableBuilder init(){
