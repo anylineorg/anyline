@@ -43,8 +43,8 @@ public abstract class BasicSQL implements SQL{
 	protected OrderStore orders;			//排序 
 	protected GroupStore groups;			//分组条件 
 	protected PageNavi navi;				//分页
-	protected List<String> primaryKeys = new ArrayList<String>();		//主键
-	protected List<String> fetchKeys   = new ArrayList<String>();		//最终需要封装的列
+	protected List<String> primaryKeys = new ArrayList<>();		//主键
+	protected List<String> fetchKeys   = new ArrayList<>();		//最终需要封装的列
 	protected boolean valid 		   = true;
 
 
@@ -223,7 +223,7 @@ public abstract class BasicSQL implements SQL{
 	
 	public SQL addPrimaryKey(String ... primaryKeys){
 		if(null != primaryKeys){
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			for(String pk:primaryKeys){
 				list.add(pk);
 			}
@@ -238,7 +238,7 @@ public abstract class BasicSQL implements SQL{
 		
 		/*没有处于容器中时,设置自身主键*/
 		if(null == this.primaryKeys){
-			this.primaryKeys = new ArrayList<String>();
+			this.primaryKeys = new ArrayList<>();
 		}
 		for(String item:primaryKeys){
 			if(BasicUtil.isEmpty(item)){
@@ -259,7 +259,7 @@ public abstract class BasicSQL implements SQL{
 	 */
 	public SQL setPrimaryKey(String ... primaryKeys){
 		if(null != primaryKeys){
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			for(String pk:primaryKeys){
 				list.add(pk);
 			}
@@ -274,7 +274,7 @@ public abstract class BasicSQL implements SQL{
 		
 		/*没有处于容器中时,设置自身主键*/
 		if(null == this.primaryKeys){
-			this.primaryKeys = new ArrayList<String>();
+			this.primaryKeys = new ArrayList<>();
 		}else{
 			this.primaryKeys.clear();
 		}
@@ -312,7 +312,7 @@ public abstract class BasicSQL implements SQL{
 
 	public SQL addFetchKey(String ... fetchKeys){
 		if(null != fetchKeys){
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			for(String pk:fetchKeys){
 				list.add(pk);
 			}
@@ -326,7 +326,7 @@ public abstract class BasicSQL implements SQL{
 		}
 		
 		if(null == this.fetchKeys){
-			this.fetchKeys = new ArrayList<String>();
+			this.fetchKeys = new ArrayList<>();
 		}
 		for(String item:fetchKeys){
 			if(BasicUtil.isEmpty(item)){
@@ -341,7 +341,7 @@ public abstract class BasicSQL implements SQL{
 	}
 	public SQL setFetchKey(String ... fetchKeys){
 		if(null != fetchKeys){
-			List<String> list = new ArrayList<String>();
+			List<String> list = new ArrayList<>();
 			for(String pk:fetchKeys){
 				list.add(pk);
 			}
@@ -355,7 +355,7 @@ public abstract class BasicSQL implements SQL{
 		}
 		
 		if(null == this.fetchKeys){
-			this.fetchKeys = new ArrayList<String>();
+			this.fetchKeys = new ArrayList<>();
 		}else{
 			this.fetchKeys.clear();
 		}

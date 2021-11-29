@@ -141,7 +141,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public DataSet addPrimaryKey(boolean applyItem, String... pks) {
         if (null != pks) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             for (String pk : pks) {
                 list.add(pk);
             }
@@ -156,7 +156,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public DataSet addPrimaryKey(boolean applyItem, Collection<String> pks) {
         if (null == primaryKeys) {
-            primaryKeys = new ArrayList<String>();
+            primaryKeys = new ArrayList<>();
         }
         if (null == pks) {
             return this;
@@ -191,7 +191,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public DataSet setPrimaryKey(boolean applyItem, String... pks) {
         if (null != pks) {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             for (String pk : pks) {
                 list.add(pk);
             }
@@ -208,7 +208,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (null == pks) {
             return this;
         }
-        this.primaryKeys = new ArrayList<String>();
+        this.primaryKeys = new ArrayList<>();
         addPrimaryKey(applyItem, pks);
         return this;
     }
@@ -242,7 +242,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public List<String> getPrimaryKeys() {
         if (null == primaryKeys) {
-            primaryKeys = new ArrayList<String>();
+            primaryKeys = new ArrayList<>();
         }
         return primaryKeys;
     }
@@ -255,7 +255,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public DataSet addHead(String col) {
         if (null == head) {
-            head = new ArrayList<String>();
+            head = new ArrayList<>();
         }
         if ("ROW_NUMBER".equals(col)) {
             return this;
@@ -768,7 +768,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet getRows(DataRow row, String... keys) {
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         int i = 0;
         for (String key : keys) {
             String value = row.getString(key);
@@ -1250,7 +1250,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return return
      */
     public List<String> fetchDistinctValue(String key) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (int i = 0; i < size(); i++) {
             String value = getString(i, key, "");
             if (result.contains(value)) {
@@ -1362,7 +1362,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public List<String> getStrings(String key) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (DataRow row : rows) {
             result.add(row.getString(key));
         }
@@ -1393,7 +1393,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public List<String> getNvlStrings(String key) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         List<Object> list = fetchValues(key);
         for (Object val : list) {
             if (null != val) {
@@ -1406,7 +1406,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public List<String> getStringsWithoutEmpty(String key) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         List<Object> list = fetchValues(key);
         for (Object val : list) {
             if (BasicUtil.isNotEmpty(val)) {
@@ -1417,7 +1417,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public List<String> getStringsWithoutNull(String key) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         List<Object> list = fetchValues(key);
         for (Object val : list) {
             if (null != val) {

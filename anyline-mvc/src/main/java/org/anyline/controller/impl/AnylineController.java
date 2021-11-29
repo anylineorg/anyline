@@ -227,7 +227,7 @@ public class AnylineController extends AbstractBasicController {
 		return entitys(getRequest(), null, false, false, params);
 	}
 	private List<String> params(List<String> metadatas){
-		List<String> params = new ArrayList<String>();
+		List<String> params = new ArrayList<>();
 		String keyCase = ConfigTable.getString("HTTP_PARAM_KEYS_CASE");
 		if("camel".equals(keyCase)){
 			if(null != metadatas){

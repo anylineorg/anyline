@@ -130,7 +130,7 @@ public class FileUtil {
 		StringBuffer buffer = new StringBuffer(); 
 		int BUFFER_SIZE = 1024 * 8; 
 		 
-		BufferedInputStream in = null ; 
+		BufferedInputStream in = null ;
          
          try  { 
         	 if(input.available() <=0){ 
@@ -139,9 +139,9 @@ public class FileUtil {
         	 if(BUFFER_SIZE>input.available()){ 
         		 BUFFER_SIZE = input.available(); 
         	 } 
-             in = new BufferedInputStream(input, BUFFER_SIZE); 
+             in = new BufferedInputStream(input, BUFFER_SIZE);
              input.available(); 
-             byte [] by = new byte [BUFFER_SIZE]; 
+             byte [] by = new byte [BUFFER_SIZE];
              int size = 0; 
              while ((size=in.read(by)) != -1 ){ 
             	if(null == encode){ 
@@ -150,7 +150,7 @@ public class FileUtil {
             	else{ 
             		buffer.append(new String(by,0,size,encode)); 
             	} 
-            } 
+            }
          }catch(Exception ex){ 
         	log.error(ex.getMessage());
         	ex.printStackTrace(); 
@@ -158,17 +158,43 @@ public class FileUtil {
                 try{ 
                 	if(null != in) {
                 		in.close();
-                	} 
+                	}
                 	if(null != input){
                 		input.close();
                 	} 
                 }catch(Exception e){ 
                 	e.printStackTrace();
-                	e.printStackTrace(); 
                 } 
         }   
  
 		return buffer; 
+	}
+
+	public static StringBuffer read(InputStream input){
+		StringBuffer buffer = new StringBuffer();
+		try  {
+			if(input.available() <=0){
+				return buffer;
+			}
+			input.available();
+			BufferedReader br=new BufferedReader(new InputStreamReader(input));
+			String line=null;
+			while((line=br.readLine())!=null){
+				buffer.append(line);
+			}
+		}catch(Exception ex){
+			ex.printStackTrace();
+		} finally  {
+			try{
+				if(null != input){
+					input.close();
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
+		return buffer;
 	}
 	public static byte[] file2byte(File file){
 		byte[] buffer = null;
@@ -1137,8 +1163,8 @@ public class FileUtil {
 		}
 	}
 	//HTTP 文件类型
-		public final static List<String> httpFileExtend = new ArrayList<String>();
-		public final static List<String> httpFileType = new ArrayList<String>();
+		public final static List<String> httpFileExtend = new ArrayList<>();
+		public final static List<String> httpFileType = new ArrayList<>();
 		public final static Map<String, String> FILE_TYPE_MAP = new HashMap<String, String>();   
 		static{
 			FILE_TYPE_MAP.put("jpg", "FFD8FF"); 	//JPEG (jpg)     

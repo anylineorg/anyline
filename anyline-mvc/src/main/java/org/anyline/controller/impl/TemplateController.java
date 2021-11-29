@@ -25,10 +25,12 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
 import org.anyline.web.util.WebUtil;
 import org.springframework.web.servlet.ModelAndView;
-  
-  
 
-public class TemplateController extends AnylineController { 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
+
+public class TemplateController extends AnylineController {
 	/**
 	 * 根据dir构造文件目录(super.dir+this.dir)
 	 * @return return
@@ -53,7 +55,26 @@ public class TemplateController extends AnylineController {
 		if(!result.endsWith("/")){
 			result = result + "/";
 		}
+		result = parseVariable(result);
 		return result;
+	}
+	private String parseVariable(String src){
+		HttpServletRequest request = getRequest();
+		if(null != request){
+			Map<String,Object> map = (Map<String,Object>)request.getAttribute("anyline_template_variable");
+			if(null == map){
+				map = (Map<String,Object>)request.getSession().getAttribute("anyline_template_variable");
+			}
+			if(null != map){
+				for(String key:map.keySet()){
+					Object value = map.get(key);
+					if(null != value) {
+						src = src.replace("${" + key + "}", value.toString());
+					}
+				}
+			}
+		}
+		return src;
 	}
 
 	/**
@@ -62,14 +83,15 @@ public class TemplateController extends AnylineController {
 	 * @param name name
 	 * @param template template
 	 * template(page,template) 与createView(page,template); 相同
-		需要注意的是
-		page有两种格式相对与绝对
-		相对目录时,方法内部会将文件名与目录名拼接
-		拼接时,先拼当前类的dir 再拼父类中的dir
-		另外:template不指定时template(page)默认为default.jsp
-		内容文件与模板文件 目录结构应该保持一致
+	需要注意的是
+	page有两种格式相对与绝对
+	相对目录时,方法内部会将文件名与目录名拼接
+	拼接时,先拼当前类的dir 再拼父类中的dir
+	另外:template不指定时template(page)默认为default.jsp
+	内容文件与模板文件 目录结构应该保持一致
 	 * @return return
 	 */
+
 	protected TemplateModelAndView template(boolean adapt, String name, String template){
 		TemplateModelAndView tv = new TemplateModelAndView();
 		if(null != name && !name.startsWith("/")){
@@ -89,6 +111,7 @@ public class TemplateController extends AnylineController {
 				}
 			}
 		}
+		content_template = parseVariable(content_template);
 		String clientType = "web";
 		if(WebUtil.isWap(getRequest())){
 			clientType = "wap";
@@ -109,69 +132,50 @@ public class TemplateController extends AnylineController {
 			content_template = content_template.replace("${client_type}", clientType);
 			content_template = content_template.replace("${client}", clientType);
 		}
-		if(ConfigTable.isDebug() && adapt){
-			log.warn("[create view template][content path:" + content_template + "][template path:" + name + "]");
-		}
-		
-		tv.setViewName(name);
-		tv.addObject(TemplateView.ANYLINE_TEMPLATE_NAME, content_template);
-		tv.addObject(TemplateModelAndView.CONTENT_URL,getRequest().getRequestURI());
-		String style_template = name.substring(0,name.lastIndexOf("/")+1).replace("/page/", "/template/style/");
-		try{
-			tv.addObject(TemplateView.ANYLINE_STYLE_TEMPLATE_DES, DESUtil.getInstance().encrypt(style_template));
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		
-		String clazz = this.getClass().getName();
-		tv.setFromClass(clazz);
+		tv.setViewName(content_template);
+		tv.addObject(TemplateView.ANYLINE_TEMPLATE_CONTENT_PATH, name);
 		return tv;
 	}
 
+
 	protected TemplateModelAndView template(boolean adapt, String name){
-		return template(adapt, name, TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT);
+		String template = ConfigTable.getString("DEFAULT_TEMPLATE");
+		if(BasicUtil.isEmpty(template)){
+			template = TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT;
+		}
+		return template(adapt, name, template);
 	}
 
+
 	protected TemplateModelAndView template(String name){
-		return template(false, name, TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT);
+		String template = ConfigTable.getString("DEFAULT_TEMPLATE");
+		if(BasicUtil.isEmpty(template)){
+			template = TemplateView.ANYLINE_TEMPLATE_NAME_DEFAULT;
+		}
+		return template(false, name, template);
 	}
+
 
 	protected TemplateModelAndView template(String name, String template){
 		return template(false, name, template);
 	}
-	
-	 
-	/** 
-	 * 加载数据 数据模板中的数据 
-	 * @param keys  keys
-	 * @param obj  obj
-	 * @return return
-	 */ 
-	protected String createTemplateData(Object obj, String ... keys){ 
-		BeanUtil.toUpperCaseKey(obj, keys); 
-		DESUtil.encryptKey(obj, keys); 
-		return success(obj); 
-	} 
-	protected String loadData(Object obj, String ...keys){ 
-		return createTemplateData(obj, keys); 
-	} 
-	 
-	protected ModelAndView error(String ... msgs ){ 
-		return errorView(msgs); 
-	} 
-	protected ModelAndView errorView(String ... msgs){ 
-		String message =""; 
-		String bak_url = getRequest().getHeader("Referer"); 
-		if(null != msgs){ 
-			for(String msg:msgs){ 
-				message += "<br/>"+ msg; 
-			} 
-		} 
-		 
-		ModelAndView view = new ModelAndView(ConfigTable.getString("ERROR_PAGE_PATH")); 
-		view.addObject("msg", message); 
-		view.addObject("bak_url",bak_url); 
-		return view; 
+
+	protected ModelAndView error(String ... msgs ){
+		return errorView(msgs);
+	}
+	protected ModelAndView errorView(String ... msgs){
+		String message ="";
+		String bak_url = getRequest().getHeader("Referer");
+		if(null != msgs){
+			for(String msg:msgs){
+				message += "<br/>"+ msg;
+			}
+		}
+
+		ModelAndView view = new ModelAndView(ConfigTable.getString("ERROR_PAGE_PATH"));
+		view.addObject("msg", message);
+		view.addObject("bak_url",bak_url);
+		return view;
 	}
 	protected ModelAndView emptyView(String ... msgs){
 		String message ="";
@@ -181,15 +185,15 @@ public class TemplateController extends AnylineController {
 				message += "<br/>"+ msg;
 			}
 		}
-		
+
 		ModelAndView view = new ModelAndView(ConfigTable.getString("EMPTY_PAGE_PATH"));
 		view.addObject("msg", message);
 		view.addObject("bak_url",bak_url);
 		return view;
-	} 
-	protected ModelAndView emptyView(){ 
-		ModelAndView view = new ModelAndView(ConfigTable.getString("EMPTY_PAGE_PATH")); 
-		return view; 
 	}
- 
+	protected ModelAndView emptyView(){
+		ModelAndView view = new ModelAndView(ConfigTable.getString("EMPTY_PAGE_PATH"));
+		return view;
+	}
+
 }

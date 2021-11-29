@@ -365,7 +365,7 @@ public class FTPUtil {
     	} 
 	} 
     public List<String> files(String dir) throws IOException {   
-        List<String> fileList = new ArrayList<String>();   
+        List<String> fileList = new ArrayList<>();
    
         FTPFile[] ftpFiles = client.listFiles(dir);   
         for (int i = 0; ftpFiles!=null && i<ftpFiles.length; i++) {   
@@ -448,7 +448,7 @@ public class FTPUtil {
      * @return list, 第一个是路径（/xxx/xxx/）,第二个是文件名（xxx.yy）  
      */   
     public static List<String> formatPath(String srcPath) {   
-        List<String> list = new ArrayList<String>(2);   
+        List<String> list = new ArrayList<>(2);
         String repSrc = srcPath.replaceAll("\\\\", "/");   
         int firstP = repSrc.indexOf("/");   
         int lastP = repSrc.lastIndexOf("/");   

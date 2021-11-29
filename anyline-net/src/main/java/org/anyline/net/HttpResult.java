@@ -140,7 +140,7 @@ public class HttpResult {
 		return headers.get(key);
 	}
 
-	public static List<String> encodeList = new ArrayList<String>(); 
+	public static List<String> encodeList = new ArrayList<>();
 	 
 	public long getLastModified() { 
 		return lastModified; 

@@ -207,7 +207,7 @@ public class BeanUtil {
 	} 
 	@SuppressWarnings("rawtypes")
 	public static List<String> getMapKeys(Map map){ 
-		List<String> list = new ArrayList<String>(); 
+		List<String> list = new ArrayList<>();
 		for(Object key:map.keySet()){ 
 			list.add(key.toString()); 
 		} 
@@ -337,7 +337,7 @@ public class BeanUtil {
 	} 
 	public static List<String> getFieldsName(Class<?> clazz){ 
 		List<Field> fields = getFields(clazz); 
-		List<String> keys = new ArrayList<String>(); 
+		List<String> keys = new ArrayList<>();
 		for(Field field:fields){
 			keys.add(field.getName()); 
 		} 
@@ -897,7 +897,7 @@ public class BeanUtil {
 					}
 					if(params.containsKey(k)){
 						Object olds = params.get(k);
-						List<String> vals = new ArrayList<String>();
+						List<String> vals = new ArrayList<>();
 						if(null == olds){
 							vals.add(null);
 						}else if(olds instanceof String){
@@ -984,15 +984,15 @@ public class BeanUtil {
 	 * @param obj  obj
 	 * @param keys 只比较keys列,基础类型不需要指定列 
 	 * @return return
-	 */ 
-	public static <T> boolean contain(Collection<T> list, T obj, String ... keys){ 
-		for(T item:list){ 
-			if(equals(item, obj)){ 
-				return true; 
-			} 
-		} 
-		return false; 
-	} 
+	 */
+	public static <T> boolean contain(Collection<T> list, T obj, String ... keys){
+		for(T item:list){
+			if(equals(item, obj)){
+				return true;
+			}
+		}
+		return false;
+	}
 	public static <T> boolean equals(T obj1, T obj2, String ... keys){ 
 		if(null == keys || keys.length == 0){ 
 			if(null == obj1){ 
@@ -1752,15 +1752,18 @@ public class BeanUtil {
 	 */
 	public static String camel(String key, boolean hold){
 		String[] ks = key.split("_|-");
+		if(ks.length <=1){
+			return key;
+		}
 		String sKey = null;
 		for(String k:ks){
 			if(null == sKey){
-				sKey = k;
+				sKey = k.toLowerCase();
 			}else{
 				if(hold){
 					sKey += "_";
 				}
-				sKey += CharUtil.toUpperCaseHeader(k);
+				sKey += CharUtil.toUpperCaseHeader(k.toLowerCase());
 			}
 		}
 		return sKey;
@@ -1771,15 +1774,18 @@ public class BeanUtil {
 	}
 	public static String Camel(String key, boolean hold){
 		String[] ks = key.split("_|-");
+		if(ks.length <= 1){
+			return key;
+		}
 		String sKey = null;
 		for(String k:ks){
 			if(null == sKey){
-				sKey = CharUtil.toUpperCaseHeader(k);
+				sKey = CharUtil.toUpperCaseHeader(k.toLowerCase());
 			}else{
 				if(hold){
 					sKey += "_";
 				}
-				sKey +=  CharUtil.toUpperCaseHeader(k);
+				sKey +=  CharUtil.toUpperCaseHeader(k.toLowerCase());
 			}
 		}
 		return sKey;
@@ -2049,5 +2055,19 @@ public class BeanUtil {
 			}
 		}
 		return rv;
+	}
+
+	public static void merge(Map src, Map copy){
+    	merge(src, copy, false);
+	}
+	public static void merge(Map src, Map copy, boolean over){
+    	if(null != src && null != copy){
+    		for(Object key:copy.keySet()){
+    			if(!over && src.containsKey(key)){
+    				continue;
+				}
+    			src.put(key, copy.get(key));
+			}
+		}
 	}
 } 

@@ -62,7 +62,7 @@ public class Keywords extends BaseBodyTag{
 			insert = ConfigTable.getBoolean("SEO_INSERT_KEYWORDS_"+request.getServerName(),insert); 
 			 
 			if(insert && WebUtil.isSpider(request)){ 
-				List<String> keys = new ArrayList<String>(); 
+				List<String> keys = new ArrayList<>();
 				if(null != paramList){ 
 					for(Object item:paramList){ 
 						if(null != item){ 

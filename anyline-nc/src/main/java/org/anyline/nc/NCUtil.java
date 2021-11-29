@@ -76,7 +76,7 @@ public class NCUtil {
 	 * @return return
 	 */ 
 	public List<String> getVariableNames(){ 
-		List<String> list = new ArrayList<String>(); 
+		List<String> list = new ArrayList<>();
 		List<Variable> variables = getVariables(); 
 		for(Variable var:variables){ 
 			list.add(var.getFullName()); 
