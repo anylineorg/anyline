@@ -121,4 +121,12 @@ public class StyleParser {
         }
         return styles;
     }
+
+    public static Map<String,String> parse(Map<String,String> src, String txt){
+        if(null == src){
+            src = new HashMap<String,String>();
+        }
+        BeanUtil.merge(src,StyleParser.parse(txt));
+        return src;
+    }
 }

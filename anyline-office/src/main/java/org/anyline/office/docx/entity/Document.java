@@ -1,6 +1,7 @@
 package org.anyline.office.docx.entity;
 
 import org.anyline.entity.DataRow;
+import org.anyline.office.docx.util.DocxUtil;
 import org.anyline.office.docx.util.StyleParser;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
@@ -19,6 +20,8 @@ public class Document {
     private Map<String, Map<String,String>> styles = new HashMap<String, Map<String,String>>();
     private Map<String,String> replaces = new HashMap<String,String>();
     private int listNum = 0;
+
+
     public Document(File file){
         this.file = file;
     }
@@ -53,109 +56,6 @@ public class Document {
         replaces.put(key, content);
     }
 
-    /**
-     * 当前节点下的文本
-     * @param element element
-     * @return String
-     */
-    public String text(Element element){
-        String text = "";
-        Iterator<Node> nodes = element.nodeIterator();
-        while (nodes.hasNext()) {
-            Node node = nodes.next();
-            int type = node.getNodeType();
-            if(type == 3){
-                text += node.getText().trim();
-            }else{
-                text += text((Element)node);
-            }
-        }
-        return text.trim();
-    }
-    private boolean isBlock(String text){
-        if(null != text){
-            List<String> styles = RegularUtil.cuts(text,true,"<style",">","</style>");
-            for(String style:styles){
-                text = text.replace(style,"");
-            }
-            text = text.trim();
-            if(text.startsWith("<div") || text.startsWith("<ul") || text.startsWith("<ol") || text.startsWith("<table")){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 当前节点后的所有节点
-     * @param element element
-     * @param tag 过滤标签
-     * @return List
-     */
-    private List<Element> afters(Element element, String tag){
-        List<Element> list = new ArrayList<>();
-        List<Element> elements = element.getParent().elements();
-        int index = elements.indexOf(element);
-        for(int i=index+1; i<elements.size(); i++){
-            Element item = elements.get(i);
-            if(item.getName().equalsIgnoreCase(tag)) {
-                list.add(item);
-            }
-        }
-        return list;
-    }
-    /**
-     * 当前节点前的所有节点
-     * @param element element
-     * @param tag 过滤标签
-     * @return List
-     */
-    private List<Element> befores(Element element, String tag){
-        List<Element> list = new ArrayList<>();
-        List<Element> elements = element.getParent().elements();
-        int index = elements.indexOf(element);
-        for(int i=elements.size()-1; i>index; i--){
-            Element item = elements.get(i);
-            if(item.getName().equalsIgnoreCase(tag)) {
-                list.add(item);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * start与end之间的所有节点
-     * @param start 开始
-     * @param end 结束
-     * @param tag 过滤
-     * @return List
-     */
-    private List<Element> betweens(Element start,Element end, String tag){
-        List<Element> list = new ArrayList<>();
-        List<Element> elements = start.getParent().elements();
-        int fr = elements.indexOf(start);
-        int to = elements.indexOf(end);
-        int index = elements.indexOf(start);
-        for(int i=fr+1; i>to; i++){
-            Element item = elements.get(i);
-            if(item.getName().equalsIgnoreCase(tag)) {
-                list.add(item);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * 删除parent下的removes节点
-     * @param parent parent
-     * @param removes removes
-     */
-    private void remove(Element parent, List<Element> removes){
-        List<Element> elements = parent.elements();
-        for(Element remove:removes){
-            elements.remove(remove);
-        }
-    }
 
     /**
      * 替换书签
@@ -166,7 +66,7 @@ public class Document {
         Element end =  DomUtil.element(body, "bookmarkEnd","id",id);
         String name = start.attributeValue("name");
         String content = replaces.get(name);
-        boolean isblock = isBlock(content);
+        boolean isblock = DocxUtil.isBlock(content);
         Element startP = start.getParent();
         Element endP = end.getParent();
         if(isblock){
@@ -176,261 +76,79 @@ public class Document {
                 Element nEndP = startP.getParent().addElement("w:p");
                 endP.elements().remove(end);
                 nEndP.elements().add(end);
-                after(nEndP, startP);
+                DocxUtil.after(nEndP, startP);
             }
-            remove(startP, afters(start,"r"));
-            remove(endP, befores(end,"r"));
+            DocxUtil.remove(startP, DocxUtil.afters(start,"r"));
+            DocxUtil.remove(endP, DocxUtil.befores(end,"r"));
             parseHtml(startP.getParent(),startP,content);
         }else{
             if(startP == endP){
-                remove(startP,betweens(start, end,"r"));
+                DocxUtil.remove(startP,DocxUtil.betweens(start, end,"r"));
                 parseHtml(startP,startP,content);
             }else{
-                remove(startP, afters(start,"r"));
-                remove(endP, befores(end,"r"));
+                DocxUtil.remove(startP, DocxUtil.afters(start,"r"));
+                DocxUtil.remove(endP, DocxUtil.befores(end,"r"));
                 parseHtml(startP,startP,content);
             }
         }
     }
 
-    /**
-     * 拆分关键字
-     * 拆分123${key}abc成多个w:t
-     * @param txt txt
-     * @return List
-     */
-    private List<String> splitKey(String txt){
-        List<String> list = new ArrayList<>();
-        try {
-            List<String> keys = RegularUtil.fetch(txt, "\\$\\{.*?\\}");
-            int size = keys.size();
-            if(size>0){
-                String key = keys.get(keys.size()-1);
-                int index = txt.lastIndexOf(key);
-                String t1 = txt.substring(0, index);
-                String t2 = txt.substring(index + key.length());
-                if (t2.length() > 0) {
-                    list.addAll(splitKey(t2));
-                }
-                list.add(key);
-                if (t1.length() > 0) {
-                    list.addAll(splitKey(t1));
-                }
-                txt = txt.substring(0, txt.length() - key.length());
-            }else{
-                list.add(txt);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    /**
-     * 宽度计算
-     * @param src width
-     * @return dxa
-     */
-    public int width(String src){
-        int width = 0;
-        if(null != src){
-            src = src.trim().toLowerCase();
-            if(src.endsWith("px")){
-                src = src.replace("px","");
-                width = px2dxa(BasicUtil.parseInt(src,0));
-            }else if(src.endsWith("pt")){
-                src = src.replace("pt","");
-                width = pt2dxa(BasicUtil.parseInt(src,0));
-            }else if(src.endsWith("%")){
-                width = (int)(BasicUtil.parseDouble(src.replace("%",""),0d)/100*5000);
-
-            }else if(src.endsWith("dxa")){
-                width = BasicUtil.parseInt(src.replace("dxa",""),0);
-            }else{
-                width = px2dxa(BasicUtil.parseInt(src,0));
-            }
-        }
-        return width;
-    }
-    public String widthType(String width){
-        if(null != width && width.trim().endsWith("%")){
-            return "pct";
-        }
-        if(null != width && width.trim().endsWith("dxa")){
-            return "dxa";
-        }
-        return "dxa";
-    }
-    public void border(Element border, Map<String,String> styles){
-        border(border,"top", styles);
-        border(border,"right", styles);
-        border(border,"bottom", styles);
-        border(border,"left", styles);
-
-    }
-    public void border(Element border, String side, Map<String,String> styles){
-        Element item = null;
-        String width = styles.get("border-"+side+"-width");
-        String style = styles.get("border-"+side+"-style");
-        String color = styles.get("border-"+side+"-color");
-        int dxa = width(width);
-        int line = (int)(dxa2pt(dxa)*8);
-        if(BasicUtil.isNotEmpty(width)){
-            item = element(border, side);
-            item.addAttribute("w:sz", line+"");
-            item.addAttribute("w:val", style);
-            item.addAttribute("w:color", color);
-        }
-    }
-    public void padding(Element margin, Map<String,String> styles){
-        padding(margin,"top", styles);
-        padding(margin,"start", styles);
-        padding(margin,"bottom", styles);
-        padding(margin,"end", styles);
-
-    }
-    public void padding(Element margin, String side, Map<String,String> styles){
-        String width = styles.get("padding-"+side);
-        int dxa = width(width);
-        if(BasicUtil.isNotEmpty(width)){
-            Element item = element(margin, side);
-            item.addAttribute("w:w", dxa+"");
-            item.addAttribute("w:type",  "dxa");
-        }
-    }
-    public void font(Element pr, Map<String,String> styles){
-        String fontSize = styles.get("font-size");
-        if(null != fontSize){
-            int pt = 0;
-            if(fontSize.endsWith("px")){
-                int px = BasicUtil.parseInt(fontSize.replace("px",""),0);
-                pt = (int)px2pt(px);
-            }else if(fontSize.endsWith("pt")){
-                pt = BasicUtil.parseInt(fontSize.replace("pt",""),0);
-            }
-            if(pt>0){
-                // <w:sz w:val="28"/>
-                element(pr, "sz","val", pt+"");
-            }
-        }
-        //加粗
-        String fontWeight = styles.get("font-weight");
-        if(null != fontWeight && fontWeight.length()>0){
-            int weight = BasicUtil.parseInt(fontWeight,0);
-            if(weight >=700){
-                //<w:b w:val="true"/>
-                element(pr, "b","val","true");
-            }
-        }
-        //下划线
-        String underline = styles.get("underline");
-        if(null != underline){
-            if(underline.equalsIgnoreCase("true") || underline.equalsIgnoreCase("single")){
-                //<w:u w:val="single"/>
-                element(pr, "u","val","single");
-            }else{
-                element(pr, "u","val",underline);
-                /*dash - a dashed line
-                dashDotDotHeavy - a series of thick dash, dot, dot characters
-                dashDotHeavy - a series of thick dash, dot characters
-                dashedHeavy - a series of thick dashes
-                dashLong - a series of long dashed characters
-                dashLongHeavy - a series of thick, long, dashed characters
-                dotDash - a series of dash, dot characters
-                dotDotDash - a series of dash, dot, dot characters
-                dotted - a series of dot characters
-                dottedHeavy - a series of thick dot characters
-                double - two lines
-                none - no underline
-                single - a single line
-                thick - a single think line
-                wave - a single wavy line
-                wavyDouble - a pair of wavy lines
-                wavyHeavy - a single thick wavy line
-                words - a single line beneath all non-space characters
-                */
-            }
-        }
-        //删除线
-        String dstrike = styles.get("dstrike");
-        if(null != dstrike){
-            if(dstrike.equalsIgnoreCase("true")){
-                //<w:dstrike w:val="true"/>
-                element(pr, "dstrike","val","true");
-            }
-        }
-        //斜体
-        String italics = styles.get("italic");
-        if(null != italics){
-            if(italics.equalsIgnoreCase("true")){
-                //<w:dstrike w:val="true"/>
-                element(pr, "i","val","true");
-            }
-        }
-    }
-    public Element element(Element parent, String tag){
-        Element element = parent.element(tag);
-        if(null == element){
-            element = parent.addElement("w:"+tag);
-        }
-        return element;
-    }
     public Element pr(Element element, Map<String,String> styles){
         if(null == styles){
             styles = new HashMap<String,String>();
         }
         String name = element.getName();
         String prName = name+"Pr";
-        Element pr = element(element, prName);
+        Element pr = DocxUtil.element(element, prName);
         if("p".equals(name)){
             for(String sk: styles.keySet()){
                 String sv = styles.get(sk);
                 if(sk.equalsIgnoreCase("list-style-type")){
-                    element(pr, "pStyle", "val",sv);
+                    DocxUtil.element(pr, "pStyle", "val",sv);
                 }else if(sk.equals("list-lvl")){
-                    Element numPr = element(pr,"numPr");
-                    element(numPr, "ilvl", "val",sv+"");
+                    Element numPr = DocxUtil.element(pr,"numPr");
+                    DocxUtil.element(numPr, "ilvl", "val",sv+"");
                 }else if(sk.equalsIgnoreCase("numFmt")){
-                    Element numPr = element(pr,"numPr");
-                    element(numPr, "numFmt", "val",sv+"");
+                    Element numPr = DocxUtil.element(pr,"numPr");
+                    DocxUtil.element(numPr, "numFmt", "val",sv+"");
                 }else if ("text-align".equals(sk)) {
-                    element(pr, "jc","val", sv);
+                    DocxUtil.element(pr, "jc","val", sv);
                 }else if(sk.equals("background-color")){
                     //<w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
-                    element(pr, "shd", "fill",sv.replace("#",""));
+                    DocxUtil.element(pr, "shd", "fill",sv.replace("#",""));
                 }else if(sk.equals("margin-left")){
-                    element(pr, "ind", "left",width(sv)+"");
+                    DocxUtil.element(pr, "ind", "left",DocxUtil.width(sv)+"");
                 }else if(sk.equals("margin-right")){
-                    element(pr, "ind", "right",width(sv)+"");
+                    DocxUtil.element(pr, "ind", "right",DocxUtil.width(sv)+"");
                 }else if(sk.equals("margin-top")){
-                    element(pr, "spacing", "before",width(sv)+"");
+                    DocxUtil.element(pr, "spacing", "before",DocxUtil.width(sv)+"");
                 }else if(sk.equals("margin-bottom")){
-                    element(pr, "spacing", "after",width(sv)+"");
+                    DocxUtil.element(pr, "spacing", "after",DocxUtil.width(sv)+"");
                 }else if(sk.equals("padding-left")){
-                    element(pr, "ind", "left",width(sv)+"");
+                    DocxUtil.element(pr, "ind", "left",DocxUtil.width(sv)+"");
                 }else if(sk.equals("padding-right")){
-                    element(pr, "ind", "right",width(sv)+"");
+                    DocxUtil.element(pr, "ind", "right",DocxUtil.width(sv)+"");
                 }else if(sk.equals("padding-top")){
-                    element(pr, "spacing", "before",width(sv)+"");
+                    DocxUtil.element(pr, "spacing", "before",DocxUtil.width(sv)+"");
                 }else if(sk.equals("padding-bottom")){
-                    element(pr, "spacing", "after",width(sv)+"");
+                    DocxUtil.element(pr, "spacing", "after",DocxUtil.width(sv)+"");
                 }else if(sk.equalsIgnoreCase("text-indent")){
-                    element(pr, "ind", "firstLine",width(sv)+"");
+                    DocxUtil.element(pr, "ind", "firstLine",DocxUtil.width(sv)+"");
                 }else if(sk.equals("line-height")){
-                    element(pr, "spacing", "line",width(sv)+"");
+                    DocxUtil.element(pr, "spacing", "line",DocxUtil.width(sv)+"");
                 }
             }
             if(styles.containsKey("list-style-num")){
                 //如果在样式里指定了样式
-                Element numPr = element(pr,"numPr");
-                element(numPr, "numId", "val",styles.get("list-style-num"));
+                Element numPr = DocxUtil.element(pr,"numPr");
+                DocxUtil.element(numPr, "numId", "val",styles.get("list-style-num"));
             }else if(styles.containsKey("list-num")){
                 //运行时自动生成
-                Element numPr = element(pr,"numPr");
-                element(numPr, "numId", "val",styles.get("list-num"));
+                Element numPr = DocxUtil.element(pr,"numPr");
+                DocxUtil.element(numPr, "numId", "val",styles.get("list-num"));
             }
-            Element border = element(pr, "bdr");
-            border(border, styles);
+            Element border = DocxUtil.element(pr, "bdr");
+            DocxUtil.border(border, styles);
         }else if("r".equals(name)){
             for (String sk : styles.keySet()) {
                 String sv = styles.get(sk);
@@ -439,30 +157,30 @@ public class Document {
                     color.addAttribute("w:val", sv.replace("#",""));
                 }else if(sk.equals("background-color")){
                     //<w:highlight w:val="yellow"/>
-                    element(pr, "highlight", "val",sv.replace("#",""));
+                    DocxUtil.element(pr, "highlight", "val",sv.replace("#",""));
                 }
             }
-            Element border = element(pr, "bdr");
-            border(border, styles);
-            font(pr, styles);
+            Element border = DocxUtil.element(pr, "bdr");
+            DocxUtil.border(border, styles);
+            DocxUtil.font(pr, styles);
         }else if("tbl".equals(name)){
             for (String sk : styles.keySet()) {
                 String sv = styles.get(sk);
                 if(sk.equals("width")){
-                    element(pr,"tblW","w", width(sv)+"");
-                    element(pr,"tblW","type", widthType(sv));
+                    DocxUtil.element(pr,"tblW","w", DocxUtil.width(sv)+"");
+                    DocxUtil.element(pr,"tblW","type", DocxUtil.widthType(sv));
                 }else if(sk.equals("color")){
 
                 }else if(sk.equalsIgnoreCase("margin-left")){
-                    element(pr,"tblInd","w",width(sv)+"");
-                    element(pr,"tblInd","type","dxa");
+                    DocxUtil.element(pr,"tblInd","w",DocxUtil.width(sv)+"");
+                    DocxUtil.element(pr,"tblInd","type","dxa");
                 }else if(sk.equalsIgnoreCase("padding-left")){
-                    element(pr,"tblInd","w",width(sv)+"");
-                    element(pr,"tblInd","type","dxa");
+                    DocxUtil.element(pr,"tblInd","w",DocxUtil.width(sv)+"");
+                    DocxUtil.element(pr,"tblInd","type","dxa");
                 }
             }
-            Element border = element(pr,"tblBorders");
-            border(border, styles);
+            Element border = DocxUtil.element(pr,"tblBorders");
+            DocxUtil.border(border, styles);
         }else if("tr".equals(name)){
             for(String sk:styles.keySet()){
                 String sv = styles.get(sk);
@@ -471,19 +189,19 @@ public class Document {
             for(String sk:styles.keySet()){
                 String sv = styles.get(sk);
                 if("vertical-align".equals(sk)){
-                    element(pr,"vAlign", "val", sv );
+                    DocxUtil.element(pr,"vAlign", "val", sv );
                 }else if("text-align".equals(sk)){
-                    element(pr, "jc","val", sv);
+                    DocxUtil.element(pr, "jc","val", sv);
                 }else if(sk.equals("background-color")){
                     //<w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
-                    element(pr, "shd", "fill",sv.replace("#",""));
+                    DocxUtil.element(pr, "shd", "fill",sv.replace("#",""));
                 }
             }
             //
-            Element padding = element(pr,"tcMar");
-            padding(padding, styles);
-            Element border = element(pr,"tcBorders");
-            border(border, styles);
+            Element padding = DocxUtil.element(pr,"tcMar");
+            DocxUtil.padding(padding, styles);
+            Element border = DocxUtil.element(pr,"tcBorders");
+            DocxUtil.border(border, styles);
         }
         if(pr.elements().size()==0){
             element.remove(pr);
@@ -515,65 +233,6 @@ public class Document {
         return list;
     }
 
-    /**
-     * src插入到ref之后
-     * @param src src
-     * @param ref ref
-     */
-    private void after(Element src, Element ref){
-        if(null == ref || null == src){
-            return;
-        }
-        //同级
-        if(ref.getParent() == src.getParent()){
-            List<Element> elements = ref.getParent().elements();
-            int index = elements.indexOf(ref)+1;
-            elements.remove(src);
-            if(index > elements.size()-1){
-                index = elements.size()-1;
-            }
-            elements.add(index, src);
-        }else{
-            //ref更下级
-            after(src, ref.getParent());
-        }
-
-    }
-    private void after(List<Element> srcs, Element ref){
-        if(null == ref || null == srcs){
-            return;
-        }
-        int size = srcs.size();
-        for(int i=size-1; i>=0; i--){
-            Element src = srcs.get(i);
-           // after(src, ref);
-        }
-        for(Element src:srcs){
-            after(src, ref);
-        }
-
-    }
-    /**
-     * src插入到ref之前
-     * @param src src
-     * @param ref ref
-     */
-    private void before1(Element src, Element ref){
-        if(null == ref || null == src){
-            return;
-        }
-        List<Element> elements = ref.getParent().elements();
-        int index = elements.indexOf(ref);
-        while (!elements.contains(src)){
-            src = src.getParent();
-            if(null == src){
-                return;
-            }
-        }
-        elements.remove(src);
-        elements.add(index, src);
-
-    }
     public Element parent(Element element, String ... tags){
         Element parent = null;
         if(contains(tags, element.getName())){
@@ -591,20 +250,13 @@ public class Document {
         }
         return parent;
     }
-    private boolean contains(String[] list, String item){
-        for(String i:list){
-            if(i.equalsIgnoreCase(item)){
-                return true;
-            }
-        }
-        return false;
-    }
+
     /**
      * 找到到当前p的上一级(用来创建与当前所在p平级的新p,遇到tc停止)
      * @param element 当前节点
      * @return Element
      */
-    public Element pp1(Element element){
+    public Element pp(Element element){
         String tag = "p";
         Element parent = null;
         if(element.getName().equalsIgnoreCase(tag)){
@@ -627,109 +279,22 @@ public class Document {
         }
         return parent;
     }
-    //找到当前节点所在的p
     public Element p(Element element){
         return parent(element, "p");
 
     }
-    public Element prev(Element element){
-        Element prev = null;
-        List<Element> elements = element.getParent().elements();
-        int index = elements.indexOf(element);
-        if(index>0){
-            prev = elements.get(index-1);
-        }
-        return prev;
-    }
-    public String prevName(Element element){
-        Element prev = prev(element);
-        if(null != prev){
-            return prev.getName();
-        }else{
-            return "";
-        }
-    }
-    public Element last(Element element){
-        Element last = null;
-        List<Element> elements = element.getParent().elements();
-        if(elements.size()>0){
-            last = elements.get(elements.size()-1);
-        }
-        return last;
-    }
-    public String lastName(Element element){
-        Element last = last(element);
-        if(null != last){
-            return last.getName();
-        }else{
-            return "";
-        }
-    }
-
-    private boolean isEmpty(Element element){
-        List<Element> elements = element.elements();
-        for(Element item:elements){
-            String name = item.getName();
-            if(name.equalsIgnoreCase("t") || name.equalsIgnoreCase("tbl")){
-                return false;
-            }
-        }
-        String txt = element.getTextTrim();
-        if(txt.length() > 0){
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * exclude 是否是element中唯一内容
-     * @param element
-     * @param exclude
-     * @return
-     */
-    private boolean isEmpty(Element element, Element exclude){
-        List<Element> elements = element.elements();
-        for(Element item:elements){
-            String name = item.getName();
-            if(name.equalsIgnoreCase("t") || name.equalsIgnoreCase("tbl")){
-                if(item != exclude) {
-                    return false;
-                }
-            }
-        }
-        String txt = element.getTextTrim();
-        if(txt.length() > 0){
-            return false;
-        }
-        return true;
-    }
-    private boolean isEmpty(List<Element> elements){
-        for(Element item:elements){
-            String name = item.getName();
-            if(name.equalsIgnoreCase("r") || name.equalsIgnoreCase("t") || name.equalsIgnoreCase("tbl")){
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private boolean hasParent(Element element, String parent){
-        Element p = element.getParent();
-        while(true){
-            if(null == p){
-                break;
-            }
-            if(p.getName().equalsIgnoreCase(parent)) {
+    private boolean contains(String[] list, String item){
+        for(String i:list){
+            if(i.equalsIgnoreCase(item)){
                 return true;
             }
-            p = p.getParent();
         }
         return false;
     }
     //当element位置开始把parent拆分(element不一定是parent直接子级)
     private void split(Element element){
         Element parent = parent(element,"p");
-        int pindex = index(parent);
+        int pindex = DocxUtil.index(parent);
         split(parent.getParent(), parent, element, pindex);
     }
     private Element split(Element box, Element parent, Element stop, int index){
@@ -743,17 +308,6 @@ public class Document {
         return element;
     }
 
-    /**
-     * 当前节点在上级节点的下标
-     * @param element element
-     * @return index
-     */
-    private int index(Element element){
-        int index = -1;
-        List<Element> elements = element.getParent().elements();
-        index = elements.indexOf(element);
-        return index;
-    }
 
 
     public Element table(Element box, Element after, Element table){
@@ -826,7 +380,7 @@ public class Document {
         for(int r=0; r<rows_size; r++) {
             Element tr = tr(tbl, cells[r], styles);
         }
-        after(tbl, after);
+        DocxUtil.after(tbl, after);
 
         return tbl;
     }
@@ -845,7 +399,7 @@ public class Document {
         int remove = td.getInt("remove",0); //被左侧合并
         if(remove == 0){
             tc = parent.addElement("w:tc");
-            Element tcPr = element(tc, "tcPr");
+            Element tcPr = DocxUtil.element(tc, "tcPr");
             if(merge > 0){
                 Element vMerge = tcPr.addElement("w:vMerge");
                 if(merge == 1) {
@@ -860,13 +414,13 @@ public class Document {
                 tc.remove(tcPr);
             }
             if(merge !=2){
-                styles = style(styles,td.getString("style"));
+                styles = StyleParser.parse(styles,td.getString("style"));
                 pr(tc, styles);
                 Element src = (Element)td.get("src");
                 if(null != src) {
                     //Element p = tc.addElement("w:p");
                     //pr(p, styles);
-                    parseHtml(tc, null, src, style(styles,""));
+                    parseHtml(tc, null, src, StyleParser.parse(styles,""));
                 }
             }else{
                 p(tc,"",null);
@@ -879,20 +433,20 @@ public class Document {
         Element r;
         if(pname.equals("r")){
             r = parent;
-            after(r, next);
+            DocxUtil.after(r, next);
         }else if(pname.equals("tc")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
             r = p.addElement("w:r");
-            after(r, next);
+            DocxUtil.after(r, next);
         }else if(pname.equals("p")){
             r = parent.addElement("w:r");
-            //after(r, next);
+            //DocxUtil.after(r, next);
         }else if(pname.equals("body")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
             r = p.addElement("w:r");
-            after(p, next);
+            DocxUtil.after(p, next);
         }else{
             throw new RuntimeException("text.parent异常:"+parent.getName());
         }
@@ -908,21 +462,21 @@ public class Document {
         if(pname.equals("p")){
             box = parent.addElement("w:r");
             next = box.addElement("w:br");
-            after(box, next);
+            DocxUtil.after(box, next);
             newNext = parent;
         }else if(pname.equals("r")){
             box = parent.getParent().addElement("w:r");
             next = box.addElement("w:br");
-            after(box, next);
+            DocxUtil.after(box, next);
             newNext = parent.getParent();
         }else if(pname.equals("tc")){
             box = parent.addElement("w:p");
-            after(box, next);
+            DocxUtil.after(box, next);
             newNext = box;
         }else if(pname.equals("body")){
             box = parent.addElement("w:p");
             newNext = box;
-            after(box, next);
+            DocxUtil.after(box, next);
 
         }else{
             throw new RuntimeException("div.parent 异常:"+pname+":"+element.getName()+":"+element.getTextTrim());
@@ -934,8 +488,8 @@ public class Document {
     }
 
     private Element ol(Element parent, Element next, Element element, Map<String,String> styles){
-        styles = style(styles, element.attributeValue("style"));
-        if(!hasParent(element, "ol")){
+        styles = StyleParser.parse(styles, element.attributeValue("style"));
+        if(!DocxUtil.hasParent(element, "ol")){
             listNum ++;//新一组编号
         }
         List<Element> lis = element.elements();
@@ -975,7 +529,7 @@ public class Document {
         styles.put("list-lvl",lvl+"");
         styles.put("list-num", listNum+"");
         pr(box, styles);
-        after(box, next);
+        DocxUtil.after(box, next);
         next = parseHtml(box, next, element, styles);
         return next;
     }
@@ -1093,17 +647,6 @@ public class Document {
         }
         return r;
     }
-    /**
-     * 添加element及属性
-     * @param parent parent
-     * @param tag element tag
-     * @param key attribute key
-     * @param value attribute value
-     */
-    public void element(Element parent, String tag, String key, String value){
-        Element element = element(parent,tag);
-        element.addAttribute("w:"+key, value);
-    }
     public Map<String,String> style(Map<String,String> src, Element element){
         Map<String,String> result = new HashMap<String,String>();
 
@@ -1114,7 +657,7 @@ public class Document {
                 }
             }
         }
-        result = style(result, element.attributeValue("style"));
+        result = StyleParser.parse(result, element.attributeValue("style"));
 
         String name = element.getName();
         BeanUtil.merge(result, this.styles.get(name));
@@ -1132,14 +675,14 @@ public class Document {
 
         return result;
     }
-    public Map<String,String> style(Map<String,String> src, String txt){
-        if(null == src){
-            src = new HashMap<String,String>();
-        }
-        BeanUtil.merge(src,StyleParser.parse(txt));
-        return src;
+    public String listStyle(String key){
+        return DocxUtil.listStyle(file, key);
     }
 
+
+    public List<String> listStyles(){
+        return DocxUtil.listStyles(file);
+    }
     public void save(){
         try {
             load();
@@ -1149,7 +692,7 @@ public class Document {
             List<Element> ts = DomUtil.elements(body, "t");
             for(Element t:ts){
                 String txt = t.getTextTrim();
-                List<String> flags = splitKey(txt);
+                List<String> flags = DocxUtil.splitKey(txt);
 
                 Collections.reverse(flags);
                 Element r = t.getParent();
@@ -1167,10 +710,10 @@ public class Document {
                         key = flag.substring(2, flag.length() - 1);
                         content = replaces.get(key);
                     }
-                    boolean isblock = isBlock(content);
+                    boolean isblock = DocxUtil.isBlock(content);
                     Element p = t.getParent().getParent();
-                    if(null != key && isEmpty(p, t) && !hasParent(t,"tc")){
-                        next = prev(body, p);
+                    if(null != key && DocxUtil.isEmpty(p, t) && !DocxUtil.hasParent(t,"tc")){
+                        next = DocxUtil.prev(body, p);
                         body.remove(p);
                         List<Element> list = parseHtml(body, next ,content);
                     }else{
@@ -1189,125 +732,5 @@ public class Document {
             e.printStackTrace();
         }
     }
-    private Element next(Element parent, Element child){
-        Element next = null;
-        while(child.getParent() != parent){
-            child = child.getParent();
-            if(null == child){
-                break;
-            }
-        }
-        if(null != child){
-            List<Element> elements = parent.elements();
-            int index = elements.indexOf(child);
-            if(index != -1){
-                index ++;
-                if(index >0 && index <elements.size()-1){
-                    next = elements.get(index);
-                }
-            }
-        }
-        return next;
-    }
-    private Element prev(Element parent, Element child){
-        Element next = null;
-        while(child.getParent() != parent){
-            child = child.getParent();
-            if(null == child){
-                break;
-            }
-        }
-        if(null != child){
-            List<Element> elements = parent.elements();
-            int index = elements.indexOf(child);
-            if(index != -1){
-                index --;
-                if(index >0 && index <elements.size()-1){
-                    next = elements.get(index);
-                }
-            }
-        }
-        return next;
-    }
 
-    public final double PT_PER_PX = 0.75;
-    public final int IN_PER_PT = 72;
-    public final double CM_PER_PT = 28.3;
-    public final double MM_PER_PT = 2.83;
-    public final int EMU_PER_PX = 9525;
-    public final int px2dxa(int px){
-        return pt2dxa(px2pt(px));
-    }
-    public final int pt2dxa(double pt){
-        return (int)(pt*20);
-    }
-    public final double dxa2pt(double dxa){
-        return  dxa/20;
-    }
-    public final double dxa2px(double dxa){
-        return  pt2px(dxa2pt(dxa));
-    }
-    public final double px2emu(double px) {
-        return  (px* EMU_PER_PX);
-    }
-
-    public final double emu2px(double emu) {
-        return (emu*EMU_PER_PX);
-    }
-
-    public final double pt2px(double pt) {
-        return (pt/PT_PER_PX);
-    }
-
-    public final double in2px(double in) {
-        return (in2pt(in)*PT_PER_PX);
-    }
-
-    public final double px2in(double px) {
-        return pt2in(px2pt(px));
-    }
-
-    public final double cm2px(double cm) {
-        return (cm2pt(cm)*PT_PER_PX);
-    }
-
-    public final double px2cm(double px) {
-        return pt2cm(px2pt(px));
-    }
-
-    public final double mm2px(double mm) {
-        return (mm2pt(mm)*PT_PER_PX);
-    }
-
-    public final double px2mm(double px) {
-        return pt2mm(px2pt(px));
-    }
-
-    public final double pt2in(double pt) {
-        return (pt/IN_PER_PT);
-    }
-
-    public final double pt2mm(double mm) {
-        return (mm/MM_PER_PT);
-    }
-
-    public final double pt2cm(double in) {
-        return (in/CM_PER_PT);
-    }
-
-    public final double px2pt(double px) {
-        return (px*PT_PER_PX);
-    }
-
-    public final double in2pt(double in) {
-        return (in*IN_PER_PT);
-    }
-
-    public final double mm2pt(double mm) {
-        return (mm*MM_PER_PT);
-    }
-
-    public final double cm2pt(double cm) {
-        return (cm*CM_PER_PT);
-    }
 }
