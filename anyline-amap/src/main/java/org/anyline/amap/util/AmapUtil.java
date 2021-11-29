@@ -146,7 +146,7 @@ public class AmapUtil {
 		if(null == ids){ 
 			return 0; 
 		} 
-		List<String> list = new ArrayList<String>(); 
+		List<String> list = new ArrayList<>();
 		for(String id:ids){ 
 			list.add(id); 
 		} 
@@ -846,7 +846,7 @@ public class AmapUtil {
 					DataRow path = (DataRow)paths.get(0); 
 					row = path; 
 					List<DataRow> steps = (List<DataRow>)path.getList("steps"); 
-					List<String> polylines = new ArrayList<String>(); 
+					List<String> polylines = new ArrayList<>();
 					for(DataRow step:steps){ 
 						String polyline = step.getString("polyline"); 
 						String[] tmps = polyline.split(";"); 
