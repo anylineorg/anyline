@@ -281,7 +281,7 @@ public class SFTPUtil {
    
     @SuppressWarnings("unchecked")
 	public List<String> files(String dir){ 
-    	List<String> list = new ArrayList<String>(); 
+    	List<String> list = new ArrayList<>();
     	try { 
 			Vector<LsEntry> files = client.ls(dir); 
 			for(LsEntry file:files){ 
