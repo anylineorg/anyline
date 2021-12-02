@@ -120,29 +120,6 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		 
 		return html; 
 	}
-	protected String parseRuntimeValue(Object obj, String key){
-		return parseRuntimeValue(obj, key, false);
-	}
-	protected String parseRuntimeValue(Object obj, String key, boolean encrypt){
-		if(null == obj){
-			return key;
-		}
-		String value = key;
-		if(BasicUtil.isNotEmpty(key)){
-			if(key.contains("{")){
-				value = BeanUtil.parseFinalValue(obj, key);
-			} else {
-				value = BeanUtil.getFieldValue(obj, key) + "";
-				if (encrypt) {
-					value = DESUtil.encryptValue(value + "");
-				}
-			}
-		}
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){
-			//log.warn("[parse run time value][key:"+key+"][value:"+value+"]");
-		}
-		return value;
-	}
 	/**
 	 * 条目data-*
 	 * itemExtra = "ID:1"
@@ -160,7 +137,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 				if(tmps.length>=2){
 					String id = tmps[0];
 					String key = tmps[1];
-					String value = parseRuntimeValue(obj,key);
+					String value = BeanUtil.parseRuntimeValue(obj,key);
 					if(null == value){
 						value = "";
 					}
@@ -189,7 +166,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 				for(String item:list){
 					String[] tmps = item.split(":");
 					if(tmps.length>=2){
-						String value = parseRuntimeValue(extraData, tmps[1]);
+						String value = BeanUtil.parseRuntimeValue(extraData, tmps[1]);
 						html += extraPrefix + tmps[0] + "=\"" + value + "\"";
 					}
 				}
