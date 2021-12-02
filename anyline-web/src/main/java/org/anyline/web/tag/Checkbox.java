@@ -210,7 +210,7 @@ public class Checkbox extends BaseBodyTag {
 							String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">"; 
 							String labelBody = ""; 
 							if (textKey.contains("{")) { 
-								labelBody = parseRuntimeValue(item,textKey); 
+								labelBody = BeanUtil.parseRuntimeValue(item,textKey);
 							} else { 
 								Object v = item.get(textKey); 
 								if (null != v) { 
@@ -222,7 +222,7 @@ public class Checkbox extends BaseBodyTag {
 						}else{//指定label文本
 							String labelHtml = label;
 							if(labelHtml.contains("{") && labelHtml.contains("}")){
-								labelHtml = parseRuntimeValue(item,labelHtml);
+								labelHtml = BeanUtil.parseRuntimeValue(item,labelHtml);
 							}
 							html.append(labelHtml);
 						}
