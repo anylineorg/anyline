@@ -86,8 +86,8 @@ public class Select extends BaseBodyTag {
 			if ("text".equals(type)) { 
 				if (null != items) { 
 					for (Object item : items) { 
-						String val = parseRuntimeValue(item, valueKey, encrypt); 
-						String text = parseRuntimeValue(item, textKey); 
+						String val = BeanUtil.parseRuntimeValue(item, valueKey, encrypt);
+						String text = BeanUtil.parseRuntimeValue(item, textKey);
 						if (null != val && null != this.value && val.equals(value.toString())) { 
 							html = text; 
 						} 
@@ -110,8 +110,8 @@ public class Select extends BaseBodyTag {
 				}
 				if (null != items) { 
 					for (Object item : items) { 
-						String val = parseRuntimeValue(item, valueKey, encrypt); 
-						String text = parseRuntimeValue(item, textKey); 
+						String val = BeanUtil.parseRuntimeValue(item, valueKey, encrypt);
+						String text = BeanUtil.parseRuntimeValue(item, textKey);
 						html += "<option value=\"" + val + "\""; 
 						if (null != val && null != this.value && val.equals(value.toString())) { 
 							html += " selected=\"selected\""; 

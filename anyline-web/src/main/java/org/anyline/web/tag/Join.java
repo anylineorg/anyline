@@ -89,7 +89,7 @@ public class Join extends BaseBodyTag{
 				 String html ="";
 				 Collection list = (Collection)data;
 				 for(Object item:list){
-					 String val = parseRuntimeValue(item, property, encrypt);
+					 String val = BeanUtil.parseRuntimeValue(item, property, encrypt);
 					 if(BasicUtil.isNotEmpty(val)){
 					 	if("".equals(html)){
 					 		html = val;
