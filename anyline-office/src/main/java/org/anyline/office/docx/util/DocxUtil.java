@@ -1,13 +1,7 @@
 package org.anyline.office.docx.util;
 
-import org.anyline.entity.DataRow;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
-import org.apache.poi.util.Units;
-import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -20,7 +14,6 @@ import java.util.*;
 
 public class DocxUtil {
     private static Logger log = LoggerFactory.getLogger(DocxUtil.class);
-
     /**
      * 根据关键字查找样式列表ID
      * @param docx docx文件
@@ -305,6 +298,8 @@ public class DocxUtil {
         border(border,"right", styles);
         border(border,"bottom", styles);
         border(border,"left", styles);
+        border(border,"insideH", styles);
+        border(border,"insideV", styles);
 
     }
     public static void border(Element border, String side, Map<String,String> styles){
@@ -315,7 +310,7 @@ public class DocxUtil {
         int dxa = DocxUtil.width(width);
         int line = (int)(DocxUtil.dxa2pt(dxa)*8);
         if(BasicUtil.isNotEmpty(width)){
-            item = element(border, side);
+            item = addElement(border, side);
             item.addAttribute("w:sz", line+"");
             item.addAttribute("w:val", style);
             item.addAttribute("w:color", color);
@@ -332,7 +327,7 @@ public class DocxUtil {
         String width = styles.get("padding-"+side);
         int dxa = DocxUtil.width(width);
         if(BasicUtil.isNotEmpty(width)){
-            Element item = element(margin, side);
+            Element item = addElement(margin, side);
             item.addAttribute("w:w", dxa+"");
             item.addAttribute("w:type",  "dxa");
         }
@@ -373,7 +368,7 @@ public class DocxUtil {
             }
             if(pt>0){
                 // <w:sz w:val="28"/>
-                element(pr, "sz","val", pt+"");
+                addElement(pr, "sz","val", pt+"");
             }
         }
         //加粗
@@ -382,7 +377,7 @@ public class DocxUtil {
             int weight = BasicUtil.parseInt(fontWeight,0);
             if(weight >=700){
                 //<w:b w:val="true"/>
-                element(pr, "b","val","true");
+                addElement(pr, "b","val","true");
             }
         }
         //下划线
@@ -390,9 +385,9 @@ public class DocxUtil {
         if(null != underline){
             if(underline.equalsIgnoreCase("true") || underline.equalsIgnoreCase("single")){
                 //<w:u w:val="single"/>
-                element(pr, "u","val","single");
+                addElement(pr, "u","val","single");
             }else{
-                element(pr, "u","val",underline);
+                addElement(pr, "u","val",underline);
                 /*dash - a dashed line
                 dashDotDotHeavy - a series of thick dash, dot, dot characters
                 dashDotHeavy - a series of thick dash, dot characters
@@ -419,7 +414,7 @@ public class DocxUtil {
         if(null != dstrike){
             if(dstrike.equalsIgnoreCase("true")){
                 //<w:dstrike w:val="true"/>
-                element(pr, "dstrike","val","true");
+                addElement(pr, "dstrike","val","true");
             }
         }
         //斜体
@@ -427,9 +422,47 @@ public class DocxUtil {
         if(null != italics){
             if(italics.equalsIgnoreCase("true")){
                 //<w:dstrike w:val="true"/>
-                element(pr, "i","val","true");
+                addElement(pr, "i","val","true");
             }
         }
+        String fontFamily = styles.get("font-family");
+        if(null != fontFamily){
+            addElement(pr, "rFonts","eastAsia",fontFamily);
+        }
+        String fontFamilyAscii = styles.get("font-family-ascii");
+        if(null != fontFamilyAscii){
+            addElement(pr, "rFonts","ascii",fontFamilyAscii);
+        }
+        String fontFamilyEast = styles.get("font-family-east");
+        if(null != fontFamilyEast){
+            addElement(pr, "rFonts","eastAsia",fontFamilyEast);
+        }
+        fontFamilyEast = styles.get("font-family-eastAsia");
+        if(null != fontFamilyEast){
+            addElement(pr, "rFonts","eastAsia",fontFamilyEast);
+        }
+        String fontFamilyhAnsi = styles.get("font-family-height");
+        if(null != fontFamilyhAnsi){
+            addElement(pr, "rFonts","hAnsi",fontFamilyhAnsi);
+        }
+        fontFamilyhAnsi = styles.get("font-family-hAnsi");
+        if(null != fontFamilyhAnsi){
+            addElement(pr, "rFonts","hAnsi",fontFamilyhAnsi);
+        }
+        String fontFamilyComplex = styles.get("font-family-complex");
+        if(null != fontFamilyComplex){
+            addElement(pr, "rFonts","cs",fontFamilyComplex);
+        }
+        fontFamilyComplex = styles.get("font-family-cs");
+        if(null != fontFamilyComplex){
+            addElement(pr, "rFonts","cs",fontFamilyComplex);
+        }
+
+        String fontFamilyHint = styles.get("font-family-hint");
+        if(null != fontFamilyHint){
+            addElement(pr, "rFonts","hint",fontFamilyHint);
+        }
+        //<w:rFonts w:ascii="Adobe Gothic Std B" w:eastAsia="宋体" w:hAnsi="宋体" w:cs="宋体" w:hint="eastAsia"/>
     }
 
     /**
@@ -439,11 +472,11 @@ public class DocxUtil {
      * @param key attribute key
      * @param value attribute value
      */
-    public static void element(Element parent, String tag, String key, String value){
-        Element element = DocxUtil.element(parent,tag);
+    public static void addElement(Element parent, String tag, String key, String value){
+        Element element = DocxUtil.addElement(parent,tag);
         element.addAttribute("w:"+key, value);
     }
-    public static Element element(Element parent, String tag){
+    public static Element addElement(Element parent, String tag){
         Element element = parent.element(tag);
         if(null == element){
             element = parent.addElement("w:"+tag);
@@ -524,77 +557,22 @@ public class DocxUtil {
         return false;
     }
 
-    /**
-     * 当前节点后的所有节点
-     * @param element element
-     * @param tag 过滤标签
-     * @return List
-     */
-    public static List<Element> afters(Element element, String tag){
-        List<Element> list = new ArrayList<>();
-        List<Element> elements = element.getParent().elements();
-        int index = elements.indexOf(element);
-        for(int i=index+1; i<elements.size(); i++){
-            Element item = elements.get(i);
-            if(item.getName().equalsIgnoreCase(tag)) {
-                list.add(item);
+    public static List<Element> betweens(Element bookmark, String ... tags){
+        String id = bookmark.attributeValue("id");
+        Element end = null;
+        List<Element> ends = bookmark.getParent().elements("bookmarkEnd");
+        for(Element item:ends){
+            if(id.equals(item.attributeValue("id"))){
+                end = item;
+                break;
             }
         }
-        return list;
+        return DomUtil.betweens(bookmark, end, tags);
     }
-    /**
-     * 当前节点前的所有节点
-     * @param element element
-     * @param tag 过滤标签
-     * @return List
-     */
-    public static List<Element> befores(Element element, String tag){
-        List<Element> list = new ArrayList<>();
-        List<Element> elements = element.getParent().elements();
-        int index = elements.indexOf(element);
-        for(int i=elements.size()-1; i>index; i--){
-            Element item = elements.get(i);
-            if(item.getName().equalsIgnoreCase(tag)) {
-                list.add(item);
-            }
-        }
-        return list;
+    public static Element bookmark(Element parent, String name){
+        Element start = DomUtil.element(parent, "bookmarkStart", "name", name);
+        return start;
     }
-
-    /**
-     * start与end之间的所有节点
-     * @param start 开始
-     * @param end 结束
-     * @param tag 过滤
-     * @return List
-     */
-    public static List<Element> betweens(Element start,Element end, String tag){
-        List<Element> list = new ArrayList<>();
-        List<Element> elements = start.getParent().elements();
-        int fr = elements.indexOf(start);
-        int to = elements.indexOf(end);
-        int index = elements.indexOf(start);
-        for(int i=fr+1; i>to; i++){
-            Element item = elements.get(i);
-            if(item.getName().equalsIgnoreCase(tag)) {
-                list.add(item);
-            }
-        }
-        return list;
-    }
-
-    /**
-     * 删除parent下的removes节点
-     * @param parent parent
-     * @param removes removes
-     */
-    public static void remove(Element parent, List<Element> removes){
-        List<Element> elements = parent.elements();
-        for(Element remove:removes){
-            elements.remove(remove);
-        }
-    }
-
     /**
      * 宽度计算
      * @param src width
@@ -647,8 +625,8 @@ public class DocxUtil {
     public static final double dxa2px(double dxa){
         return  pt2px(dxa2pt(dxa));
     }
-    public static final double px2emu(double px) {
-        return  (px* EMU_PER_PX);
+    public static final int px2emu(int px) {
+        return px* EMU_PER_PX;
     }
 
     public static final double emu2px(double emu) {
