@@ -47,6 +47,7 @@ public class Table {
     }
     public Table addTr(Tr tr){
         trs.add(tr);
+        tr.setTable(this);
         return this;
     }
 }

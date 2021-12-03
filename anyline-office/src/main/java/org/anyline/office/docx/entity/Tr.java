@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Tr {
+    private Table table;
     private List<Td> tds = new ArrayList<>();
     private Map<String,String> styles = new HashMap();
     private Element src;
@@ -45,6 +46,15 @@ public class Tr {
     }
     public Tr addTd(Td td){
         tds.add(td);
+        td.setTr(this);
         return this;
+    }
+
+    public Table getTable() {
+        return table;
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
     }
 }

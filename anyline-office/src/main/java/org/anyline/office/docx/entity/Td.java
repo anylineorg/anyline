@@ -16,6 +16,7 @@ public class Td {
     private String clazz = null;
     private int merge = -1;
     private boolean remove = false;
+    private Tr tr;
     public Map<String, String> getStyles() {
         return styles;
     }
@@ -23,6 +24,7 @@ public class Td {
     public void setStyles(Map<String, String> styles) {
         this.styles = styles;
     }
+
 
     public Element getSrc() {
         return src;
@@ -75,6 +77,13 @@ public class Td {
         return clazz;
     }
 
+    public Tr getTr() {
+        return tr;
+    }
+
+    public void setTr(Tr tr) {
+        this.tr = tr;
+    }
 
     public String getText() {
         return text;
