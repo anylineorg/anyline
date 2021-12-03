@@ -500,6 +500,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataRow getRow(String... params) {
         return getRow(0, params);
     }
+    public DataRow getRow(List<String> params) {
+        String[] kvs = BeanUtil.list2array(params);
+        return getRow(0, kvs);
+    }
 
     public DataRow getRow(int begin, String... params) {
         DataSet set = getRows(begin, 1, params);
@@ -516,6 +520,26 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return DataSet
      */
     public DataSet distinct(String... keys) {
+        DataSet result = new DataSet();
+        if (null != rows) {
+            int size = rows.size();
+            for (int i = 0; i < size; i++) {
+                DataRow row = rows.get(i);
+                //查看result中是否已存在
+                String[] params = packParam(row, keys);
+                if (result.getRows(params).size() == 0) {
+                    DataRow tmp = new DataRow();
+                    for (String key : keys) {
+                        tmp.put(key, row.get(key));
+                    }
+                    result.addRow(tmp);
+                }
+            }
+        }
+        result.cloneProperty(this);
+        return result;
+    }
+    public DataSet distinct(List<String> keys) {
         DataSet result = new DataSet();
         if (null != rows) {
             int size = rows.size();
@@ -2072,6 +2096,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return params;
     }
+    public String[] packParam(DataRow row, List<String>  keys) {
+        if (null == keys || null == row) {
+            return null;
+        }
+        String params[] = new String[keys.size() * 2];
+        int idx = 0;
+        for (String key : keys) {
+            if (null == key) {
+                continue;
+            }
+            String ks[] = BeanUtil.parseKeyValue(key);
+            params[idx++] = ks[0];
+            params[idx++] = row.getString(ks[1]);
+        }
+        return params;
+    }
 
     /**
      * 从items中按相应的key提取数据 存入
@@ -2649,10 +2689,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     /**
      * 行转列
-     *
-     * @param pk       唯一标识key(如姓名) pk		唯一标识key(如姓名)
+     * 表结构(姓名,科目,分数)
+     * 返回结构 张三,数学,物理,英语
+     * @param pk       唯一标识key(如姓名) pk
      * @param classKey 分类key(如科目)
-     * @param valueKey 取值key(如分数) valueKey	取值key(如分数)
+     * @param valueKey 取值key(如分数)
      * @return return
      */
     public DataSet pivot(String pk, String classKey, String valueKey) {
@@ -2672,6 +2713,60 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
+    /**
+     * 行转列
+     * 表结构(姓名,年度,科目,分数,等级)
+     * 返回结构 张三,2010-数学-分数,2010-数学-等级,2010-物理-分数,2010-物理-等级
+     * @param pk       唯一标识key(如姓名)
+     * @param classKeys 分类key(如年度,科目)
+     * @param valueKeys 取值key(如分数,等级)
+     * @return return
+     */
+    public DataSet pivot(String pk, List<String> classKeys, String ... valueKeys) {
+        DataSet result = distinct(pk);
+        for (DataRow row : result) {
+            DataSet classValues = distinct(classKeys);  //01年,数学;01年,物理;02年数学
+            row.put("KEYS", classValues);
+            for (DataRow classValue : classValues) {
+                classValue.put(pk, row.getString("pk"));
+                String[] kvs = kvs(classValue);
+                DataRow valueRow = getRow(kvs);
+                classValue.remove(pk);
+                String finalKey = concatValue(classValue,"-");
+                if (null != valueRow) {
+                    for(String valueKey:valueKeys){
+                        //2010-数学-分数:100;2010-数学-等级:A
+                        row.put(finalKey+"-"+valueKey, valueRow.getString(valueKey));
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private String concatValue(DataRow row, String split){
+        StringBuilder builder = new StringBuilder();
+        List<String> keys = row.keys();
+        for(String key:keys){
+            if(builder.length() > 0){
+                builder.append(split);
+            }
+            builder.append(row.getString(key));
+        }
+        return builder.toString();
+    }
+    private String[] kvs(DataRow row){
+        List<String> keys = row.keys();
+        int size = keys.size();
+        String[] kvs = new String[size*2];
+        for(int i=0; i<size; i++){
+            String k = keys.get(i);
+            String v = row.getStringNvl(k);
+            kvs[i*2] = k;
+            kvs[i*2+1] = v;
+        }
+        return kvs;
+    }
     /**
      * 排序
      *
