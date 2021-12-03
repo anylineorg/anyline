@@ -37,9 +37,10 @@ public class DomUtil {
      * 根据标签name搜索element
      * @param root 根节点
      * @param tag 标签名(不含namespace)
+     * @param recursion 递归查询子类
      * @return List
      */
-    public static List<Element> elements(Element root, String tag){
+    public static List<Element> elements(Element root, String tag, boolean recursion){
         List<Element> list = new ArrayList<Element>();
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext()){
@@ -47,12 +48,17 @@ public class DomUtil {
             if (e.getName().equals(tag)){
                 list.add(e);
             }
-            List<Element> items = elements(e, tag);
-            list.addAll(items);
+            if(recursion) {
+                List<Element> items = elements(e, tag);
+                list.addAll(items);
+            }
         }
         return list;
     }
 
+    public static List<Element> elements(Element root, String tag){
+        return elements(root, tag,true);
+    }
     /**
      * 根据标签name以及属性值搜索element
      * @param root 根节点
@@ -172,4 +178,77 @@ public class DomUtil {
         }
         return result;
     }
+
+    /**
+     * 当前节点后的所有节点
+     * @param element element
+     * @param tag 过滤标签
+     * @return List
+     */
+    public static List<Element> afters(Element element, String tag){
+        List<Element> list = new ArrayList<>();
+        List<Element> elements = element.getParent().elements();
+        int index = elements.indexOf(element);
+        for(int i=index+1; i<elements.size(); i++){
+            Element item = elements.get(i);
+            if(item.getName().equalsIgnoreCase(tag)) {
+                list.add(item);
+            }
+        }
+        return list;
+    }
+    /**
+     * 当前节点前的所有节点
+     * @param element element
+     * @param tag 过滤标签
+     * @return List
+     */
+    public static List<Element> befores(Element element, String tag){
+        List<Element> list = new ArrayList<>();
+        List<Element> elements = element.getParent().elements();
+        int index = elements.indexOf(element);
+        for(int i=elements.size()-1; i>index; i--){
+            Element item = elements.get(i);
+            if(item.getName().equalsIgnoreCase(tag)) {
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * start与end之间的所有节点
+     * @param start 开始
+     * @param end 结束
+     * @param tags 过滤
+     * @return List
+     */
+    public static List<Element> betweens(Element start,Element end, String ... tags){
+        List<Element> list = new ArrayList<>();
+        List<Element> elements = start.getParent().elements();
+        int fr = elements.indexOf(start);
+        int to = elements.indexOf(end);
+        int index = elements.indexOf(start);
+        for(int i=fr+1; i<to; i++){
+            Element item = elements.get(i);
+            if(null == tags || tags.length ==0 || BasicUtil.contains(tags, item.getName())) {
+                list.add(item);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 删除parent下的removes节点
+     * @param parent parent
+     * @param removes removes
+     */
+    public static void remove(Element parent, List<Element> removes){
+        List<Element> elements = parent.elements();
+        for(Element remove:removes){
+            elements.remove(remove);
+        }
+    }
+
+
 }
