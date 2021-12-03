@@ -63,7 +63,27 @@ public class StyleParser {
                             v = v.replace("solid","single");
                             String[] vs = v.split(" ");
                             //border:5px solid red;
-                            if(vs.length ==3){
+                            if("none".equalsIgnoreCase(v)){
+                                styles.remove("border-top-width");
+                                styles.remove("border-top-style");
+                                styles.remove("border-top-color");
+                                styles.remove("border-right-width");
+                                styles.remove("border-right-style");
+                                styles.remove("border-right-color");
+                                styles.remove("border-bottom-width");
+                                styles.remove("border-bottom-style");
+                                styles.remove("border-bottom-color");
+                                styles.remove("border-left-width");
+                                styles.remove("border-left-style");
+                                styles.remove("border-left-color");
+                                styles.remove("border-insideV-width");
+                                styles.remove("border-insideV-style");
+                                styles.remove("border-insideV-color");
+                                styles.remove("border-insideH-width");
+                                styles.remove("border-insideH-style");
+                                styles.remove("border-insideH-color");
+                            }
+                            else if(vs.length ==3){
                                 styles.put("border-top-width", vs[0]);
                                 styles.put("border-top-style", vs[1]);
                                 styles.put("border-top-color", vs[2]);
@@ -76,14 +96,22 @@ public class StyleParser {
                                 styles.put("border-left-width", vs[0]);
                                 styles.put("border-left-style", vs[1]);
                                 styles.put("border-left-color", vs[2]);
+                                styles.put("border-insideV-width", vs[0]);
+                                styles.put("border-insideV-style", vs[1]);
+                                styles.put("border-insideV-color", vs[2]);
+                                styles.put("border-insideH-width", vs[0]);
+                                styles.put("border-insideH-style", vs[1]);
+                                styles.put("border-insideH-color", vs[2]);
                             }
                         }else if("border-width".equalsIgnoreCase(k)){
                             String[] vs = v.split(" ");
                             if(vs.length ==2){
                                 styles.put("border-top-width", vs[0]);
                                 styles.put("border-bottom-width", vs[0]);
+                                styles.put("border-insideH-width", vs[0]);
                                 styles.put("border-left-width", vs[1]);
                                 styles.put("border-right-width", vs[1]);
+                                styles.put("border-insideV-width", vs[1]);
                             }
                         }else if("border-style".equalsIgnoreCase(k)){
                             v = v.replace("solid","single");
@@ -91,16 +119,24 @@ public class StyleParser {
                             if(vs.length ==2){
                                 styles.put("border-top-style", vs[0]);
                                 styles.put("border-bottom-style", vs[0]);
+                                styles.put("border-insideH-style", vs[0]);
                                 styles.put("border-left-style", vs[1]);
                                 styles.put("border-right-style", vs[1]);
+                                styles.put("border-insideV-style", vs[1]);
                             }
                         }else if("border-color".equalsIgnoreCase(k)){
                             String[] vs = v.split(" ");
                             if(vs.length ==2){
                                 styles.put("border-top-color", vs[0]);
                                 styles.put("border-bottom-color", vs[0]);
+                                styles.put("border-insideH-color", vs[0]);
                                 styles.put("border-left-color", vs[1]);
                                 styles.put("border-right-color", vs[1]);
+                                styles.put("border-insideV-color", vs[0]);
+                            }
+                        }else if("font".equalsIgnoreCase(k)){
+                            if("bold".equalsIgnoreCase(v)){
+                                styles.put("font-weight","700");
                             }
                         }else if("font-weight".equalsIgnoreCase(k)){
                             if("bold".equalsIgnoreCase(v)){
