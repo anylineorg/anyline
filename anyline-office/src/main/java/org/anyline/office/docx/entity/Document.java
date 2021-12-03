@@ -666,7 +666,7 @@ public class Document {
                     if (!"sectPr".equalsIgnoreCase(name)) {
                         element.getParent().remove(element);
                         if(parent.getName().equalsIgnoreCase(element.getName())){
-                            parent.elements().addAll(element.elements());
+                            addElements(parent, element.elements(), true);
                         }else {
                             parent.elements().add(element);
                         }
@@ -679,6 +679,22 @@ public class Document {
         }
         return newNext;
     }
+    private void addElements(Element parent, List<Element> elements, boolean over){
+        for(Element element:elements){
+            String name = element.getName();
+            element.getParent().remove(element);
+            List<Element> exists = DomUtil.elements(parent, name, false);
+            if(null != exists && exists.size()>0){
+                if(over){
+                    DomUtil.remove(parent, exists);
+                    parent.elements().add(element);
+                }
+            }else{
+                parent.elements().add(element);
+            }
+        }
+    }
+
     private Element img(Element parent, Element next, Element element, Map<String, String> styles){
         String pname = parent.getName();
         Element r;
