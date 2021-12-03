@@ -105,7 +105,6 @@ public class Document {
             }
         }
     }
-
     public Element pr(Element element, Map<String,String> styles){
         if(null == styles){
             styles = new HashMap<String,String>();
@@ -116,6 +115,9 @@ public class Document {
         if("p".equalsIgnoreCase(name)){
             for(String sk: styles.keySet()){
                 String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
                 if(sk.equalsIgnoreCase("list-style-type")){
                     DocxUtil.addElement(pr, "pStyle", "val",sv);
                 }else if(sk.equalsIgnoreCase("list-lvl")){
@@ -126,9 +128,6 @@ public class Document {
                     DocxUtil.addElement(numPr, "numFmt", "val",sv+"");
                 }else if ("text-align".equalsIgnoreCase(sk)) {
                     DocxUtil.addElement(pr, "jc","val", sv);
-                }else if(sk.equalsIgnoreCase("background-color")){
-                    //<w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
-                    DocxUtil.addElement(pr, "shd", "fill",sv.replace("#",""));
                 }else if(sk.equalsIgnoreCase("margin-left")){
                     DocxUtil.addElement(pr, "ind", "left",DocxUtil.width(sv)+"");
                 }else if(sk.equalsIgnoreCase("margin-right")){
@@ -212,10 +211,14 @@ public class Document {
 
             Element border = DocxUtil.addElement(pr, "bdr");
             DocxUtil.border(border, styles);
+            //DocxUtil.background(pr, styles);
 
         }else if("r".equalsIgnoreCase(name)){
             for (String sk : styles.keySet()) {
                 String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
                 if(sk.equalsIgnoreCase("color")){
                     Element color = pr.addElement("w:color");
                     color.addAttribute("w:val", sv.replace("#",""));
@@ -230,6 +233,9 @@ public class Document {
         }else if("tbl".equalsIgnoreCase(name)){
             for (String sk : styles.keySet()) {
                 String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
                 if(sk.equalsIgnoreCase("width")){
                     DocxUtil.addElement(pr,"tblW","w", DocxUtil.width(sv)+"");
                     DocxUtil.addElement(pr,"tblW","type", DocxUtil.widthType(sv));
@@ -245,27 +251,39 @@ public class Document {
             }
             Element border = DocxUtil.addElement(pr,"tblBorders");
             DocxUtil.border(border, styles);
+            DocxUtil.background(pr, styles);
         }else if("tr".equalsIgnoreCase(name)){
             for(String sk:styles.keySet()){
                 String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
                 if("repeat-header".equalsIgnoreCase(sk)){
                     DocxUtil.addElement(pr,"tblHeader","val","true");
+                }else if("min-height".equalsIgnoreCase(sk)){
+                    DocxUtil.addElement(pr,"trHeight","hRule","atLeast");
+                    DocxUtil.addElement(pr,"trHeight","val",(int)DocxUtil.dxa2pt(DocxUtil.width(sv))*20+"");
+                }else if("height".equalsIgnoreCase(sk)){
+                    DocxUtil.addElement(pr,"trHeight","hRule","exact");
+                    DocxUtil.addElement(pr,"trHeight","val",(int)DocxUtil.dxa2pt(DocxUtil.width(sv))*20+"");
                 }
             }
+            DocxUtil.background(pr, styles);
         }else if("tc".equalsIgnoreCase(name)){
             for(String sk:styles.keySet()){
                 String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
                 if("vertical-align".equalsIgnoreCase(sk)){
                     DocxUtil.addElement(pr,"vAlign", "val", sv );
                 }else if("text-align".equalsIgnoreCase(sk)){
                     DocxUtil.addElement(pr, "jc","val", sv);
-                }else if(sk.equalsIgnoreCase("background-color")){
-                    //<w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
-                    DocxUtil.addElement(pr, "shd", "fill",sv.replace("#",""));
                 }else if(sk.equalsIgnoreCase("white-space")){
                     DocxUtil.addElement(pr,"noWrap");
                 }else if(sk.equalsIgnoreCase("width")){
                     DocxUtil.addElement(pr,"tcW","w",DocxUtil.width(sv)+"");
+                    DocxUtil.addElement(pr,"tcW","type",DocxUtil.widthType(sv));
                 }
             }
             //
@@ -273,6 +291,7 @@ public class Document {
             DocxUtil.padding(padding, styles);
             Element border = DocxUtil.addElement(pr,"tcBorders");
             DocxUtil.border(border, styles);
+            DocxUtil.background(pr, styles);
         }
         if(pr.elements().size()==0){
             element.remove(pr);
@@ -388,12 +407,13 @@ public class Document {
         Element tblPr = tbl.addElement("w:tblPr");
 
         Table table = new Table();
-        Map<String,String> styles = style(null, src);
+        Map<String,String> styles = style(src);
         pr(tbl, styles);
+        table.setStyles(styles);
         List<Element> html_rows = src.elements("tr");
         for(Element row:html_rows){
             Tr tr = new Tr();
-            tr.setStyles(style(styles, row));
+            tr.setStyles(style(row));
             table.addTr(tr);
         }
         int rows_size = html_rows.size();
@@ -412,7 +432,6 @@ public class Document {
             for (int c = 0; c < cols_size; c++) {
                 Td td = new Td();
                 cells[r][c] = td;
-                td.setStyles(this.styles.get("td"));
                 tr.addTd(td);
             }
         }
@@ -433,7 +452,8 @@ public class Document {
                 }
                 tc.setSrc(html_col);
                 tc.setText(text);
-                Map<String,String> tdStyles = style(tc.getStyles(), html_col);
+                Map<String,String> tdStyles = style(html_col);
+                tdStyles = StyleParser.parse(tdStyles, html_col.attributeValue("style"));
                 tc.setStyles(tdStyles);
                 tc.setClazz(html_col.attributeValue("class"));
                 int rowspan = BasicUtil.parseInt(html_col.attributeValue("rowspan"), 1);
@@ -483,13 +503,15 @@ public class Document {
 
     public Element tr(Element parent, Tr tr){
         Element etr = parent.addElement("w:tr");
+        Map<String,String> styles = StyleParser.inherit(tr.getStyles(), tr.getTable().getStyles());
+        tr.setStyles(styles);
         pr(etr, tr.getStyles());
         for (Td td:tr.getTds()) {
-            Element tc = tc(etr, td, td.getStyles());
+            Element tc = tc(etr, td);
         }
         return etr;
     }
-    public Element tc(Element parent, Td td, Map<String, String> styles){
+    public Element tc(Element parent, Td td){
         Element tc = null;
         int merge = td.getMerge(); //0:不合并 1:向下合并(restart) 2:被合并(continue)
         int colspan = td.getColspan(); //向右合并
@@ -511,11 +533,12 @@ public class Document {
                 //tc.remove(tcPr);
             }
 
-            pr(tc, td.getStyles());
+            Map<String, String> styles = StyleParser.inherit(td.getStyles(), td.getTr().getStyles());
+            pr(tc, styles);
             if(merge !=2){
                 if(null != td.getSrc()) {
                     Element p = tc.addElement("w:p");
-                    parseHtml(p, null, td.getSrc(), style(styles,null));
+                    parseHtml(p, null, td.getSrc(), StyleParser.inherit(null, styles));
                 }
             }else{
                 p(tc,"",null);
@@ -720,7 +743,7 @@ public class Document {
             throw new RuntimeException("text.parent异常:"+parent.getName());
         }
 
-        styles = style(styles, element);
+        styles = StyleParser.inherit(style(element), styles);
         pr(r, styles);
         String widthType = DocxUtil.widthType(styles.get("width"));
         int width = 0;
@@ -847,7 +870,7 @@ public class Document {
                 }
             }else if(type == 1 ) {//element
                 Element element = (Element) node;
-                Map<String,String> itemStyles = style(styles, element);
+                Map<String,String> itemStyles = StyleParser.inherit(style(element),styles);
                 String display = itemStyles.get("display");
                 if("none".equalsIgnoreCase(display)){
                     continue;
@@ -929,16 +952,8 @@ public class Document {
         }
         return r;
     }
-    public Map<String,String> style(Map<String,String> src, Element element){
+    public Map<String,String> style(Element element){
         Map<String,String> result = new HashMap<String,String>();
-
-        if(null != src){
-            for(String k: src.keySet()){
-                if(!k.contains("border") && !k.contains("margin") && !k.contains("padding") && !k.contains("width") && !k.contains("height")) {
-                    result.put(k, src.get(k));
-                }
-            }
-        }
         if(null == element){
             return result;
         }
@@ -950,16 +965,16 @@ public class Document {
         }
         result = StyleParser.parse(result, element.attributeValue("style"));
         String name = element.getName();
-        BeanUtil.merge(result, this.styles.get(name));
+        StyleParser.merge(result, this.styles.get(name));
         String id = element.attributeValue("id");
         if(null != id){
-            BeanUtil.merge(result, this.styles.get("#"+id));
+            StyleParser.merge(result, this.styles.get("#"+id));
         }
         String clazz = element.attributeValue("class");
         if(null != clazz){
             String[] cs = clazz.split(" ");
             for(String c:cs){
-                BeanUtil.merge(result, this.styles.get("."+c));
+                StyleParser.merge(result, this.styles.get("."+c));
             }
         }
 
