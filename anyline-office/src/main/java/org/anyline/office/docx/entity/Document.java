@@ -957,6 +957,22 @@ public class Document {
         if(null == element){
             return result;
         }
+        String parentName = null;
+        List<String> parentClassList = null;
+        Element parent = element.getParent();
+        if(null != parent){
+            parentName = parent.getName();
+            String parentClass = parent.attributeValue("class");
+            if(null != parentClass){
+                String[] tmps = parentClass.trim().split(" ");
+                for(String tmp:tmps){
+                    tmp = tmp.trim();
+                    if(tmp.length()>0){
+                        parentClassList.add(tmp);
+                    }
+                }
+            }
+        }
         String tag = element.getName();
         if(tag.equalsIgnoreCase("table")){
             result = StyleParser.parse(result, "border:1px solid auto;");
@@ -966,6 +982,15 @@ public class Document {
         result = StyleParser.parse(result, element.attributeValue("style"));
         String name = element.getName();
         StyleParser.merge(result, this.styles.get(name));
+
+        if(null != parentName){
+            StyleParser.merge(result, this.styles.get(parentName + " "+name));
+        }
+        if(null != parentClassList){
+            for(String pc:parentClassList){
+                StyleParser.merge(result, this.styles.get("."+pc + " "+name));
+            }
+        }
         String id = element.attributeValue("id");
         if(null != id){
             StyleParser.merge(result, this.styles.get("#"+id));
@@ -974,6 +999,14 @@ public class Document {
         if(null != clazz){
             String[] cs = clazz.split(" ");
             for(String c:cs){
+                if(null != parentName){
+                    StyleParser.merge(result, this.styles.get(parentName + " ."+c));
+                }
+                if(null != parentClassList){
+                    for(String pc:parentClassList){
+                        StyleParser.merge(result, this.styles.get("."+pc + " ."+c));
+                    }
+                }
                 StyleParser.merge(result, this.styles.get("."+c));
             }
         }

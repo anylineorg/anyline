@@ -144,7 +144,35 @@ public class StyleParser {
 
         if(null != parent){
             for(String k: parent.keySet()){
-                if(k.contains("font") || k.contains("align")) {
+                if(k.contains("font") || k.contains("align") || k.contains("list-style") || k.contains("speak")
+                        || k.equalsIgnoreCase("line-height")
+                        || k.equalsIgnoreCase("word-spacing")
+                        || k.equalsIgnoreCase("border-collapse")
+                        || k.equalsIgnoreCase("border-spacing")
+                        || k.equalsIgnoreCase("azimuth")
+                        || k.equalsIgnoreCase("color")
+                        || k.equalsIgnoreCase("caption-side")
+                        || k.equalsIgnoreCase("cursor")
+                        || k.equalsIgnoreCase("direction")
+                        || k.equalsIgnoreCase("elevation")
+                        || k.equalsIgnoreCase("empty-cells")
+                        || k.equalsIgnoreCase("letter-spacing")
+                        || k.equalsIgnoreCase("orphans")
+                        || k.equalsIgnoreCase("pitch-range")
+                        || k.equalsIgnoreCase("pitch")
+                        || k.equalsIgnoreCase("quotes")
+                        || k.equalsIgnoreCase("richness")
+                        || k.equalsIgnoreCase("speaknumeral")
+                        || k.equalsIgnoreCase("speechrate")
+                        || k.equalsIgnoreCase("stress")
+                        || k.equalsIgnoreCase("texttransform")
+                        || k.equalsIgnoreCase("text-indent")
+                        || k.equalsIgnoreCase("visibility")
+                        || k.equalsIgnoreCase("voice-family")
+                        || k.equalsIgnoreCase("volume")
+                        || k.equalsIgnoreCase("word-spacing")
+                        || k.equalsIgnoreCase("whitespace")
+                ) {
                     src.put(k, parent.get(k));
                 }
             }
