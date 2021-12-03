@@ -21,51 +21,9 @@
             <groupId>org.anyline</groupId>
             <artifactId>anyline-core</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml -->
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>5.0.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-excelant -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-excelant</artifactId>
-            <version>5.0.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.poi/poi-examples -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-examples</artifactId>
-            <version>5.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.docx4j</groupId>
-            <artifactId>docx4j</artifactId>
-            <version>6.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.docx4j</groupId>
-            <artifactId>xhtmlrenderer</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>xmlgraphics-commons</artifactId>
-            <version>2.6</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.docx4j</groupId>
-            <artifactId>docx4j-ImportXHTML</artifactId>
-            <version>8.2.1</version>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.14.3</version>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-net</artifactId>
         </dependency>
     </dependencies>
 </project>
