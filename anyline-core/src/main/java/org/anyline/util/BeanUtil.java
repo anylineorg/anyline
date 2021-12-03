@@ -188,7 +188,10 @@ public class BeanUtil {
 			return null; 
 		} 
 		Object value = null;
-		if(obj instanceof Map){
+		if(obj instanceof DataRow){
+			DataRow row = (DataRow)obj;
+			value = row.get(field);
+		}else if(obj instanceof Map){
 			Map map = (Map)obj; 
 			value = map.get(field); 
 		}else if(obj instanceof Class){
@@ -2069,5 +2072,29 @@ public class BeanUtil {
     			src.put(key, copy.get(key));
 			}
 		}
+	}
+
+	public static String parseRuntimeValue(Object obj, String key){
+		return BeanUtil.parseRuntimeValue(obj, key, false);
+	}
+	public static String parseRuntimeValue(Object obj, String key, boolean encrypt){
+		if(null == obj){
+			return key;
+		}
+		String value = key;
+		if(BasicUtil.isNotEmpty(key)){
+			if(key.contains("{")){
+				value = BeanUtil.parseFinalValue(obj, key);
+			} else {
+				value = BeanUtil.getFieldValue(obj, key) + "";
+				if (encrypt) {
+					value = DESUtil.encryptValue(value + "");
+				}
+			}
+		}
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			//log.warn("[parse run time value][key:"+key+"][value:"+value+"]");
+		}
+		return value;
 	}
 } 
