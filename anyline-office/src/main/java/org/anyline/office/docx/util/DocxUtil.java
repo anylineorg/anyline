@@ -14,6 +14,7 @@ import java.util.*;
 
 public class DocxUtil {
     private static Logger log = LoggerFactory.getLogger(DocxUtil.class);
+
     /**
      * 根据关键字查找样式列表ID
      * @param docx docx文件
@@ -300,7 +301,6 @@ public class DocxUtil {
         border(border,"left", styles);
         border(border,"insideH", styles);
         border(border,"insideV", styles);
-
     }
     public static void border(Element border, String side, Map<String,String> styles){
         Element item = null;
@@ -463,6 +463,16 @@ public class DocxUtil {
             addElement(pr, "rFonts","hint",fontFamilyHint);
         }
         //<w:rFonts w:ascii="Adobe Gothic Std B" w:eastAsia="宋体" w:hAnsi="宋体" w:cs="宋体" w:hint="eastAsia"/>
+    }
+
+    public static void background(Element pr,Map<String,String> styles){
+        String color = styles.get("background-color");
+        if(null != color){
+            //<w:shd w:val="clear" w:color="auto" w:fill="FFFF00"/>
+            DocxUtil.addElement(pr, "shd", "color","auto");
+            DocxUtil.addElement(pr, "shd", "val","clear");
+            DocxUtil.addElement(pr, "shd", "fill",color.replace("#",""));
+        }
     }
 
     /**
