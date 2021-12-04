@@ -37,6 +37,7 @@ public class StyleParser {
                 value = value.trim();
                 String[] keys = key.split(",");
                 for (String k : keys) {
+                    k = k.trim();
                     Map<String, String> tmps = parse(value);
                     BeanUtil.merge(tmps, styles.get(k));
                     styles.put(k, tmps);

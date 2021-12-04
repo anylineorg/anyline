@@ -7,6 +7,7 @@ import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.dom4j.ElementPath;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -231,6 +232,21 @@ public class Document {
             DocxUtil.border(border, styles);
             DocxUtil.font(pr, styles);
         }else if("tbl".equalsIgnoreCase(name)){
+
+            DocxUtil.addElement(pr,"tblCellSpacing","w","0");
+            DocxUtil.addElement(pr,"tblCellSpacing","type","nil");
+
+            Element mar = DocxUtil.addElement(pr,"tblCellMar");
+            DocxUtil.addElement(mar,"top","w","0");
+            DocxUtil.addElement(mar,"top","type","dxa");
+            DocxUtil.addElement(mar,"bottom","w","0");
+            DocxUtil.addElement(mar,"bottom","type","dxa");
+            DocxUtil.addElement(mar,"right","w","0"); //新版本end
+            DocxUtil.addElement(mar,"right","type","dxa");
+            DocxUtil.addElement(mar,"end","w","0");
+            DocxUtil.addElement(mar,"end","type","dxa");
+            DocxUtil.addElement(mar,"left","w","0");//新版本用start,但07版本用start会报错
+            DocxUtil.addElement(mar,"left","type","dxa");
             for (String sk : styles.keySet()) {
                 String sv = styles.get(sk);
                 if(BasicUtil.isEmpty(sv)){
@@ -245,10 +261,23 @@ public class Document {
                     DocxUtil.addElement(pr,"tblInd","w",DocxUtil.width(sv)+"");
                     DocxUtil.addElement(pr,"tblInd","type","dxa");
                 }else if(sk.equalsIgnoreCase("padding-left")){
-                    DocxUtil.addElement(pr,"tblInd","w",DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(pr,"tblInd","type","dxa");
+                    DocxUtil.addElement(mar,"left","w",DocxUtil.width(sv)+""); //新版本用start,但07版本用start会报错
+                    DocxUtil.addElement(mar,"left","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-right")){
+                    DocxUtil.addElement(mar,"right","w",DocxUtil.width(sv)+""); //新版本用end
+                    DocxUtil.addElement(mar,"right","type","dxa");
+                    DocxUtil.addElement(mar,"end","w",DocxUtil.width(sv)+"");
+                    DocxUtil.addElement(mar,"end","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-top")){
+                    DocxUtil.addElement(mar,"top","w",DocxUtil.width(sv)+"");
+                    DocxUtil.addElement(mar,"top","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-bottom")){
+                    DocxUtil.addElement(mar,"bottom","w",DocxUtil.width(sv)+"");
+                    DocxUtil.addElement(mar,"bottom","type","dxa");
                 }
             }
+
+
             Element border = DocxUtil.addElement(pr,"tblBorders");
             DocxUtil.border(border, styles);
             DocxUtil.background(pr, styles);
@@ -275,6 +304,18 @@ public class Document {
                 if(BasicUtil.isEmpty(sv)){
                     continue;
                 }
+
+                Element mar = DocxUtil.addElement(pr,"tcMar");
+                DocxUtil.addElement(mar,"top","w","0");
+                DocxUtil.addElement(mar,"top","type","dxa");
+                DocxUtil.addElement(mar,"bottom","w","0");
+                DocxUtil.addElement(mar,"bottom","type","dxa");
+                DocxUtil.addElement(mar,"right","w","0"); //新版本end
+                DocxUtil.addElement(mar,"right","type","dxa");
+                DocxUtil.addElement(mar,"end","w","0");
+                DocxUtil.addElement(mar,"end","type","dxa");
+                DocxUtil.addElement(mar,"left","w","0");//新版本用start,但07版本用start会报错
+                DocxUtil.addElement(mar,"left","type","dxa");
                 if("vertical-align".equalsIgnoreCase(sk)){
                     DocxUtil.addElement(pr,"vAlign", "val", sv );
                 }else if("text-align".equalsIgnoreCase(sk)){
@@ -284,6 +325,20 @@ public class Document {
                 }else if(sk.equalsIgnoreCase("width")){
                     DocxUtil.addElement(pr,"tcW","w",DocxUtil.width(sv)+"");
                     DocxUtil.addElement(pr,"tcW","type",DocxUtil.widthType(sv));
+                }else if(sk.equalsIgnoreCase("padding-left")){
+                    DocxUtil.addElement(mar,"left","w",DocxUtil.width(sv)+""); //新版本用start,但07版本用start会报错
+                    DocxUtil.addElement(mar,"left","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-right")){
+                    DocxUtil.addElement(mar,"right","w",DocxUtil.width(sv)+""); //新版本用end
+                    DocxUtil.addElement(mar,"right","type","dxa");
+                    DocxUtil.addElement(mar,"end","w",DocxUtil.width(sv)+"");
+                    DocxUtil.addElement(mar,"end","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-top")){
+                    DocxUtil.addElement(mar,"top","w",DocxUtil.width(sv)+"");
+                    DocxUtil.addElement(mar,"top","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-bottom")){
+                    DocxUtil.addElement(mar,"bottom","w",DocxUtil.width(sv)+"");
+                    DocxUtil.addElement(mar,"bottom","type","dxa");
                 }
             }
             //
@@ -958,7 +1013,7 @@ public class Document {
             return result;
         }
         String parentName = null;
-        List<String> parentClassList = null;
+        List<String> parentClassList = new ArrayList<>();
         Element parent = element.getParent();
         if(null != parent){
             parentName = parent.getName();
@@ -983,18 +1038,11 @@ public class Document {
         String name = element.getName();
         StyleParser.merge(result, this.styles.get(name));
 
-        if(null != parentName){
-            StyleParser.merge(result, this.styles.get(parentName + " "+name));
-        }
-        if(null != parentClassList){
-            for(String pc:parentClassList){
-                StyleParser.merge(result, this.styles.get("."+pc + " "+name));
-            }
-        }
         String id = element.attributeValue("id");
         if(null != id){
             StyleParser.merge(result, this.styles.get("#"+id));
         }
+
         String clazz = element.attributeValue("class");
         if(null != clazz){
             String[] cs = clazz.split(" ");
@@ -1002,13 +1050,19 @@ public class Document {
                 if(null != parentName){
                     StyleParser.merge(result, this.styles.get(parentName + " ."+c));
                 }
-                if(null != parentClassList){
-                    for(String pc:parentClassList){
-                        StyleParser.merge(result, this.styles.get("."+pc + " ."+c));
-                    }
+                for(String pc:parentClassList){
+                    StyleParser.merge(result, this.styles.get("."+pc + " ."+c));
                 }
                 StyleParser.merge(result, this.styles.get("."+c));
             }
+        }
+
+        for(String pc:parentClassList){
+            StyleParser.merge(result, this.styles.get("."+pc + " "+name));
+        }
+
+        if(null != parentName){
+            StyleParser.merge(result, this.styles.get(parentName + " "+name));
         }
 
         return result;
