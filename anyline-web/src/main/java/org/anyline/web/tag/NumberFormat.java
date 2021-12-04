@@ -38,6 +38,7 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	private Integer scale;//小数位
 	private Integer round; // 参考BigDecimal.ROUND_UP;
 	private String hide; //隐藏span.class
+	private String echo; //显示位置 span.class
 
  
  
@@ -92,7 +93,11 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 					pageContext.getRequest().setAttribute(var, result);
 				}else {
 					JspWriter out = pageContext.getOut();
-					out.print(result);
+					if(BasicUtil.isNotEmpty(echo) && null != num){
+						out.print("<span class='"+echo+"'>"+result+"</span>");
+					}else {
+						out.print(result);
+					}
 					if(BasicUtil.isNotEmpty(hide) && null != num){
 						out.print("<span class='"+hide+"' style='display:none;'>"+num+"</span>");
 					}
@@ -124,6 +129,14 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
 		return super.clone(); 
+	}
+
+	public String getEcho() {
+		return echo;
+	}
+
+	public void setEcho(String echo) {
+		this.echo = echo;
 	}
 
 	public Object getMin() {
