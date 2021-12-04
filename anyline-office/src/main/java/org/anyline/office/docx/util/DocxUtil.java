@@ -308,7 +308,7 @@ public class DocxUtil {
         String style = styles.get("border-"+side+"-style");
         String color = styles.get("border-"+side+"-color");
         int dxa = DocxUtil.width(width);
-        int line = (int)(DocxUtil.dxa2pt(dxa)*8);
+        int line = ((int)(DocxUtil.dxa2pt(dxa)*8)/4*4);
         if(BasicUtil.isNotEmpty(width)){
             item = addElement(border, side);
             item.addAttribute("w:sz", line+"");
