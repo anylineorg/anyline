@@ -86,6 +86,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		if(null != pk){
 			primaryKeys.add(PRIMARY_KEY);
 		}
+		parseKeycase();
+		createTime = System.currentTimeMillis();
+	}
+	private void parseKeycase(){
 		if(keyCase == KEY_CASE.CONFIG){
 			if(ConfigTable.IS_UPPER_KEY){
 				keyCase = KEY_CASE.UPPER;
@@ -95,12 +99,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 				keyCase = KEY_CASE.SRC;
 			}
 		}
-		createTime = System.currentTimeMillis();
 	}
 
 	public DataRow(KEY_CASE keyCase){
 		this();
 		this.keyCase = keyCase;
+		parseKeycase();
 	}
 	public DataRow(String table){
 		this();
@@ -116,6 +120,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	public DataRow setKeyCase(KEY_CASE keyCase){
 		this.keyCase = keyCase;
+		parseKeycase();
 		return this;
 	}
 	/**
