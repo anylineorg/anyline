@@ -237,7 +237,7 @@ public class Document {
             DocxUtil.addElement(pr,"tblCellSpacing","type","nil");
 
             Element mar = DocxUtil.addElement(pr,"tblCellMar");
-            DocxUtil.addElement(mar,"top","w","0");
+            /*DocxUtil.addElement(mar,"top","w","0");
             DocxUtil.addElement(mar,"top","type","dxa");
             DocxUtil.addElement(mar,"bottom","w","0");
             DocxUtil.addElement(mar,"bottom","type","dxa");
@@ -246,7 +246,7 @@ public class Document {
             DocxUtil.addElement(mar,"end","w","0");
             DocxUtil.addElement(mar,"end","type","dxa");
             DocxUtil.addElement(mar,"left","w","0");//新版本用start,但07版本用start会报错
-            DocxUtil.addElement(mar,"left","type","dxa");
+            DocxUtil.addElement(mar,"left","type","dxa");*/
             for (String sk : styles.keySet()) {
                 String sv = styles.get(sk);
                 if(BasicUtil.isEmpty(sv)){
@@ -256,7 +256,6 @@ public class Document {
                     DocxUtil.addElement(pr,"tblW","w", DocxUtil.width(sv)+"");
                     DocxUtil.addElement(pr,"tblW","type", DocxUtil.widthType(sv));
                 }else if(sk.equalsIgnoreCase("color")){
-
                 }else if(sk.equalsIgnoreCase("margin-left")){
                     DocxUtil.addElement(pr,"tblInd","w",DocxUtil.width(sv)+"");
                     DocxUtil.addElement(pr,"tblInd","type","dxa");
@@ -277,7 +276,6 @@ public class Document {
                 }
             }
 
-
             Element border = DocxUtil.addElement(pr,"tblBorders");
             DocxUtil.border(border, styles);
             DocxUtil.background(pr, styles);
@@ -297,7 +295,6 @@ public class Document {
                     DocxUtil.addElement(pr,"trHeight","val",(int)DocxUtil.dxa2pt(DocxUtil.width(sv))*20+"");
                 }
             }
-            DocxUtil.background(pr, styles);
         }else if("tc".equalsIgnoreCase(name)){
             for(String sk:styles.keySet()){
                 String sv = styles.get(sk);
@@ -306,7 +303,7 @@ public class Document {
                 }
 
                 Element mar = DocxUtil.addElement(pr,"tcMar");
-                DocxUtil.addElement(mar,"top","w","0");
+                /*DocxUtil.addElement(mar,"top","w","0");
                 DocxUtil.addElement(mar,"top","type","dxa");
                 DocxUtil.addElement(mar,"bottom","w","0");
                 DocxUtil.addElement(mar,"bottom","type","dxa");
@@ -315,7 +312,7 @@ public class Document {
                 DocxUtil.addElement(mar,"end","w","0");
                 DocxUtil.addElement(mar,"end","type","dxa");
                 DocxUtil.addElement(mar,"left","w","0");//新版本用start,但07版本用start会报错
-                DocxUtil.addElement(mar,"left","type","dxa");
+                DocxUtil.addElement(mar,"left","type","dxa");*/
                 if("vertical-align".equalsIgnoreCase(sk)){
                     DocxUtil.addElement(pr,"vAlign", "val", sv );
                 }else if("text-align".equalsIgnoreCase(sk)){
@@ -507,8 +504,8 @@ public class Document {
                 }
                 tc.setSrc(html_col);
                 tc.setText(text);
-                Map<String,String> tdStyles = style(html_col);
-                tdStyles = StyleParser.parse(tdStyles, html_col.attributeValue("style"));
+                Map<String,String> tdStyles = StyleParser.merge(tc.getStyles(),style(html_col));
+                tdStyles = StyleParser.parse(tdStyles, html_col.attributeValue("style"), true);
                 tc.setStyles(tdStyles);
                 tc.setClazz(html_col.attributeValue("class"));
                 int rowspan = BasicUtil.parseInt(html_col.attributeValue("rowspan"), 1);
@@ -663,7 +660,7 @@ public class Document {
         return newNext;
     }
     private Element ol(Element parent, Element next, Element element, Map<String,String> styles){
-        styles = StyleParser.parse(styles, element.attributeValue("style"));
+        styles = StyleParser.parse(styles, element.attributeValue("style"), true);
         if(!DocxUtil.hasParent(element, "ol")){
             listNum ++;//新一组编号
         }
@@ -1008,6 +1005,11 @@ public class Document {
         return r;
     }
     public Map<String,String> style(Element element){
+        int index = element.getParent().elements(element.getName()).indexOf(element);
+        String nth = ":nth-child(even)";
+        if((index+1)%2 ==0){
+            nth = ":nth-child(odd)";
+        }
         Map<String,String> result = new HashMap<String,String>();
         if(null == element){
             return result;
@@ -1034,37 +1036,48 @@ public class Document {
         }else if(tag.equalsIgnoreCase("td")){
             result = StyleParser.parse(result, "vertical-align:center;");
         }
-        result = StyleParser.parse(result, element.attributeValue("style"));
-        String name = element.getName();
-        StyleParser.merge(result, this.styles.get(name));
 
-        String id = element.attributeValue("id");
-        if(null != id){
-            StyleParser.merge(result, this.styles.get("#"+id));
+        String name = element.getName();
+
+
+
+        for(String pc:parentClassList){
+            StyleParser.merge(result, this.styles.get("."+pc + " "+name), true);
+            StyleParser.merge(result, this.styles.get("."+pc + " "+name+nth), true);
         }
+
+        if(null != parentName){
+            StyleParser.merge(result, this.styles.get(parentName + " "+name), true);
+            StyleParser.merge(result, this.styles.get(parentName + " "+name+nth), true);
+        }
+
+        StyleParser.merge(result, this.styles.get(name), true);
+        StyleParser.merge(result, this.styles.get(name+nth), true);
 
         String clazz = element.attributeValue("class");
         if(null != clazz){
             String[] cs = clazz.split(" ");
             for(String c:cs){
                 if(null != parentName){
-                    StyleParser.merge(result, this.styles.get(parentName + " ."+c));
+                    StyleParser.merge(result, this.styles.get(parentName + " ."+c), true);
+                    StyleParser.merge(result, this.styles.get(parentName + " ."+c+nth), true);
                 }
                 for(String pc:parentClassList){
-                    StyleParser.merge(result, this.styles.get("."+pc + " ."+c));
+                    StyleParser.merge(result, this.styles.get("."+pc + " ."+c), true);
+                    StyleParser.merge(result, this.styles.get("."+pc + " ."+nth), true);
                 }
-                StyleParser.merge(result, this.styles.get("."+c));
+                StyleParser.merge(result, this.styles.get("."+c), true);
+                StyleParser.merge(result, this.styles.get("."+c+nth), true);
             }
         }
 
-        for(String pc:parentClassList){
-            StyleParser.merge(result, this.styles.get("."+pc + " "+name));
+
+        String id = element.attributeValue("id");
+        if(null != id){
+            StyleParser.merge(result, this.styles.get("#"+id),true);
         }
 
-        if(null != parentName){
-            StyleParser.merge(result, this.styles.get(parentName + " "+name));
-        }
-
+        result = StyleParser.parse(result, element.attributeValue("style"),true);
         return result;
     }
     public String listStyle(String key){

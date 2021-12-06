@@ -41,11 +41,20 @@ public class Tr {
     }
 
     public Tr setTd(int index, Td td){
+        String bg = styles.get("background-color");
+        if(null != bg){
+            td.getStyles().put("background-color", bg);
+        }
         tds.add(index, td);
         return this;
     }
     public Tr addTd(Td td){
         tds.add(td);
+
+        String bg = styles.get("background-color");
+        if(null != bg){
+            td.getStyles().put("background-color", bg);
+        }
         td.setTr(this);
         return this;
     }

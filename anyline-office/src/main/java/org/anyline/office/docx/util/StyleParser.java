@@ -145,6 +145,9 @@ public class StyleParser {
 
         if(null != parent){
             for(String k: parent.keySet()){
+                if(src.containsKey(k)){
+                   continue;
+                }
                 if(k.contains("font") || k.contains("align") || k.contains("list-style") || k.contains("speak")
                         || k.equalsIgnoreCase("line-height")
                         || k.equalsIgnoreCase("word-spacing")
@@ -182,6 +185,9 @@ public class StyleParser {
         return src;
     }
     public static Map<String, String> merge(Map<String, String> src, Map<String, String> copy) {
+        return merge(src, copy, false);
+    }
+    public static Map<String, String> merge(Map<String, String> src, Map<String, String> copy, boolean over) {
         if(null == src){
             src = new HashMap<>();
         }
@@ -230,12 +236,15 @@ public class StyleParser {
             src.remove("border-bottom-style");
             src.remove("border-bottom-color");
         }
-        BeanUtil.merge(src, copy);
+        BeanUtil.merge(src, copy, over);
         return src;
     }
 
-    public static Map<String,String> parse(Map<String,String> src, String txt){
+    public static Map<String,String> parse(Map<String,String> src, String txt, boolean over){
         Map<String,String> copy = StyleParser.parse(txt);
-        return merge(src, copy);
+        return merge(src, copy, over);
+    }
+    public static Map<String,String> parse(Map<String,String> src, String txt){
+        return parse(src, txt, false);
     }
 }
