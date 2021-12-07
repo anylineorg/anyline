@@ -600,12 +600,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return return
      */
     public DataSet getRows(int begin, int qty, String... params) {
+        long start = System.currentTimeMillis();
         DataSet set = new DataSet();
         Map<String, String> kvs = new HashMap<String, String>();
         int len = params.length;
         int i = 0;
         String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
-
         while (i < len) {
             String p1 = params[i];
             if (BasicUtil.isEmpty(p1)) {
@@ -644,6 +644,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         for (i = 0; i < size; i++) {
             DataRow row = getRow(i);
             boolean chk = true;//对比结果
+            long fr = System.currentTimeMillis();
             for (String k : kvs.keySet()) {
                 boolean srcFlag = false;
                 if (k.endsWith(srcFlagTag)) {
@@ -655,6 +656,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     }
                 }
                 String v = kvs.get(k);
+
                 Object value = row.get(k);// DataSet item value
 //				if(null == v && null == value){
 //					continue;
@@ -668,8 +670,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     if (null != value) {
                         chk = false;
                         break;
+                    }else{
+                        chk = true;
+                        break;
                     }
                 } else {
+                    if (null == value) {
+                        chk = false;
+                        break;
+                    }
                     //与SQL.COMPARE_TYPE保持一致
                     int compare = 10;
                     if (v.startsWith("=")) {
@@ -697,12 +706,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         compare = 52;
                         v = v.substring(1);
                     }
-
-                    if (BasicUtil.isNumber(value)) {
-                        //数字类型
-                        if (BasicUtil.isNumber(v)) {
-                            double d1 = BasicUtil.parseDouble(value, 0d);
-                            double d2 = BasicUtil.parseDouble(v, 0d);
+                    if(compare <= 31 && value instanceof Number) {
+                        try {
+                            double d1 = Double.parseDouble(value.toString());
+                            double d2 = Double.parseDouble(v);
                             if (compare == 10) {
                                 if (d1 != d2) {
                                     chk = false;
@@ -729,8 +736,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
                                     break;
                                 }
                             }
+                        }catch (NumberFormatException e){
+                            chk = false;
+                            break;
                         }
                     }
+                    //System.out.println("check number:"+value+":"+(System.currentTimeMillis()-fr));
                     String str = value + "";
                     str = str.toLowerCase();
                     v = v.toLowerCase();
@@ -759,6 +770,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         }
                     }
                 }
+                //System.out.println("check number2:"+(System.currentTimeMillis()-fr));
             }//end for kvs
             if (chk) {
                 set.add(row);
@@ -768,6 +780,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             }
         }//end for rows
         set.cloneProperty(this);
+        System.out.println("total:"+":"+(System.currentTimeMillis()-start));
         return set;
     }
 
@@ -829,7 +842,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
     public DataSet numberFormat(String key, String format){
-       return numberFormat(key, key, format);
+        return numberFormat(key, key, format);
     }
 
     /**
