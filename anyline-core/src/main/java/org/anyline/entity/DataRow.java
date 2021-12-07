@@ -1724,7 +1724,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * @param key key
 	 * @param target target
 	 * @param remove 是否删除原来的key
-	 * @return
+	 * @return DataRow
 	 */
 	public DataRow changeKey(String key, String target, boolean remove) {
 		put(target, get(key));
