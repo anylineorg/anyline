@@ -656,15 +656,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     }
                 }
                 String v = kvs.get(k);
-
-                Object value = row.get(k);// DataSet item value
-//				if(null == v && null == value){
-//					continue;
-//				}
-//				if(!v.equals(value)){
-//					chk = false;
-//					break;
-//				}
+                Object value = row.get(k);
 
                 if (null == v) {
                     if (null != value) {
@@ -741,7 +733,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
                             break;
                         }
                     }
-                    //System.out.println("check number:"+value+":"+(System.currentTimeMillis()-fr));
                     String str = value + "";
                     str = str.toLowerCase();
                     v = v.toLowerCase();
@@ -770,7 +761,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         }
                     }
                 }
-                //System.out.println("check number2:"+(System.currentTimeMillis()-fr));
             }//end for kvs
             if (chk) {
                 set.add(row);
@@ -780,7 +770,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
             }
         }//end for rows
         set.cloneProperty(this);
-        System.out.println("total:"+":"+(System.currentTimeMillis()-start));
         return set;
     }
 
