@@ -22,6 +22,7 @@ package org.anyline.web.tag;
  
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
@@ -49,11 +50,7 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 				 if(BasicUtil.isNotEmpty(value)){
 					 String str = value.toString();
 					 if(str.contains(",")){
-						 String[] strs = str.split(",");
-						 paramList = new ArrayList<Object>(); 
-						 for(String item:strs){
-							 paramList.add(item);
-						 }
+						 paramList = new ArrayList<>(Arrays.asList(str.split(",")));
 					 }
 				 }
 			 }
