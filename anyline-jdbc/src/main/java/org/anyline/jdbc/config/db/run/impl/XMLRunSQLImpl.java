@@ -19,11 +19,7 @@
  
 package org.anyline.jdbc.config.db.run.impl; 
  
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import ognl.Ognl;
 import ognl.OgnlContext;
@@ -92,15 +88,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				ParseResult parser = ConfigParser.parse(condition,false); 
 				Object value = ConfigParser.getValues(parser);// parser.getKey(); 
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT){ 
-					String[] tmp = value.toString().split(","); 
-					if(null != tmp){ 
-						List<String> list = new ArrayList<>();
-						for(String item:tmp){ 
-							list.add(item); 
-						} 
-						value = list; 
-					} 
-					 
+					 value = new ArrayList<>(Arrays.asList(value.toString().split(",")));
 				} 
 				setConditionValue(parser.isRequired(), parser.isStrictRequired(), parser.getPrefix(), parser.getVar(), value, parser.getCompare());
 			} 
