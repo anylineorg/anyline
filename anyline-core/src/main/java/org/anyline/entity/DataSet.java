@@ -2783,10 +2783,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
         List<String> valueKeys = new ArrayList<>(Arrays.asList(valueKey.trim().split(",")));
         return pivot(pks, classKeys, valueKeys);
     }
-
-    public DataSet pivot(String pk, List<String> classKeys, String ... valueKeys) {
-        List<String> pks = new ArrayList<>();
-        pks.add(pk);
+    public DataSet pivot(String pk, String classKey) {
+        List<String> pks = new ArrayList<>(Arrays.asList(pk.trim().split(",")));
+        List<String> classKeys = new ArrayList<>(Arrays.asList(classKey.trim().split(",")));
+        List<String> valueKeys = new ArrayList<>();
         return pivot(pks, classKeys, valueKeys);
     }
 
