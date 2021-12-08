@@ -19,11 +19,7 @@
 
 package org.anyline.web.tag; 
  
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -118,13 +114,8 @@ public class Checkbox extends BaseBodyTag {
 							this.value = this.value.toString().replace("{", "").replace("}", ""); 
 						} 
 					}
-					if (this.value instanceof String) { 
-						String items[] = this.value.toString().split(","); 
-						List list = new ArrayList(); 
-						for (String item : items) { 
-							list.add(item); 
-						}
-						this.value = list; 
+					if (this.value instanceof String) {
+						this.value = new ArrayList(Arrays.asList(this.value.toString().split(",")));
 					}else if(this.value instanceof Collection){ 
 						List list = new ArrayList(); 
 						Collection cols = (Collection)this.value; 
