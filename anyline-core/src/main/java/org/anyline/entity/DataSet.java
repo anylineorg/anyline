@@ -503,12 +503,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataRow getRow(String... params) {
         return getRow(0, params);
     }
+    public DataRow getRow(DataRow params) {
+        return getRow(0, params);
+    }
     public DataRow getRow(List<String> params) {
         String[] kvs = BeanUtil.list2array(params);
         return getRow(0, kvs);
     }
 
     public DataRow getRow(int begin, String... params) {
+        DataSet set = getRows(begin, 1, params);
+        if (set.size() > 0) {
+            return set.getRow(0);
+        }
+        return null;
+    }
+    public DataRow getRow(int begin, DataRow params) {
         DataSet set = getRows(begin, 1, params);
         if (set.size() > 0) {
             return set.getRow(0);
@@ -659,6 +669,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
             }
             i++;
         }
+        return getRows(begin, qty, kvs);
+    }
+
+    public DataSet getRows(int begin, int qty, DataRow kvs) {
+        Map<String,String> map = new HashMap<String,String>();
+        for(String k:kvs.keySet()){
+            map.put(k, kvs.getString(k));
+        }
+        return getRows(begin, qty, map);
+    }
+    public DataSet getRows(int begin, int qty, Map<String, String> kvs) {
+        DataSet set = new DataSet();
+        String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
         BigDecimal d1;
         BigDecimal d2;
         for (DataRow row:rows) {
@@ -794,7 +817,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         set.cloneProperty(this);
         return set;
     }
-
     public DataSet getRows(int begin, String... params) {
         return getRows(begin, 0, params);
     }
@@ -2743,8 +2765,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             for (DataRow classValue : classValues) {
                 DataRow params = new DataRow();
                 params.copy(row, pks).copy(classValue);
-                String[] kvs = kvs(params);
-                DataRow valueRow = getRow(kvs);
+                DataRow valueRow = getRow(params);
                 if(null != valueRow){
                     valueRow.skip = true;
                 }
