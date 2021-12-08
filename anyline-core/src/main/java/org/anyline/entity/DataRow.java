@@ -1381,6 +1381,17 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		}
 		return this;
 	}
+	public DataRow removes(List<String> keys){
+		if(null != keys){
+			for(String key:keys){
+				if(null != key){
+					super.remove(putKey(key));
+					updateColumns.remove(putKey(key));
+				}
+			}
+		}
+		return this;
+	}
 	public Object remove(Object key) {
 		if(null == key){
 			return null;
