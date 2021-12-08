@@ -591,8 +591,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
+     * 指定key转换成number
+     * @param keys keys
+     * @return DataRow
+     */
+    public DataSet convertNumber(String ... keys){
+        if(null != keys) {
+            for(DataRow row:rows){
+                row.convertNumber(keys);
+            }
+        }
+        return this;
+    }
+    /**
      * 筛选符合条件的集合
-     *
+     * 注意如果String类型 1与1.0比较不相等, 可以先调用convertNumber转换一下数据类型
      * @param params key1,value1,key2:value2,key3,value3
      *               "NM:zh%","AGE:&gt;20","NM","%zh%"
      * @param begin  begin
@@ -600,7 +613,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return return
      */
     public DataSet getRows(int begin, int qty, String... params) {
-        long start = System.currentTimeMillis();
         DataSet set = new DataSet();
         Map<String, String> kvs = new HashMap<String, String>();
         int len = params.length;
@@ -641,10 +653,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
             i++;
         }
         int size = size();
+        BigDecimal d1;
+        BigDecimal d2;
         for (i = 0; i < size; i++) {
             DataRow row = getRow(i);
             boolean chk = true;//对比结果
-            long fr = System.currentTimeMillis();
             for (String k : kvs.keySet()) {
                 boolean srcFlag = false;
                 if (k.endsWith(srcFlagTag)) {
@@ -700,30 +713,31 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     }
                     if(compare <= 31 && value instanceof Number) {
                         try {
-                            double d1 = Double.parseDouble(value.toString());
-                            double d2 = Double.parseDouble(v);
+                            d1 = new BigDecimal(value.toString());
+                            d2 = new BigDecimal(v);
+                            int cr = d1.compareTo(d2);
                             if (compare == 10) {
-                                if (d1 != d2) {
+                                if (cr != 0) {
                                     chk = false;
                                     break;
                                 }
                             } else if (compare == 20) {
-                                if (!(d1 > d2)) {
+                                if (cr <= 0) {
                                     chk = false;
                                     break;
                                 }
                             } else if (compare == 21) {
-                                if (!(d1 >= d2)) {
+                                if (cr < 0) {
                                     chk = false;
                                     break;
                                 }
                             } else if (compare == 30) {
-                                if (!(d1 < d2)) {
+                                if (cr >= 0) {
                                     chk = false;
                                     break;
                                 }
                             } else if (compare == 31) {
-                                if (!(d1 <= d2)) {
+                                if (cr > 0) {
                                     chk = false;
                                     break;
                                 }

@@ -1729,7 +1729,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	public DataRow changeKey(String key, String target, boolean remove) {
 		put(target, get(key));
 		if(remove){
-			remove(key);
+			remove(putKey(key));
 		}
 		return this;
 	}
@@ -1827,6 +1827,24 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * 指定key转换成number
+	 * @param keys keys
+	 * @return DataRow
+	 */
+	public DataRow convertNumber(String ... keys){
+		if(null != keys) {
+			for (String key:keys) {
+				String v = getString(key);
+				if(null != v){
+					put(key, new BigDecimal(v));
+					remove(putKey(key));
+				}
+			}
+		}
+		return this;
 	}
 	public Object get(String key){
 		Object result = null;
