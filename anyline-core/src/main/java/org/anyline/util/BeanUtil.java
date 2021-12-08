@@ -527,7 +527,7 @@ public class BeanUtil {
 	 * @param params  params
 	 * @return return
 	 */ 
-	public static Collection<?> select(Collection<?> list, String ... params){ 
+	public static Collection<?> select(Collection<?> list, String ... params){
 		if(null == list || null == params || params.length==0){ 
 			return list; 
 		} 
@@ -833,21 +833,63 @@ public class BeanUtil {
 		} 
 		builder.append("</xml>"); 
 		return builder.toString(); 
-	} 
-	public static Map<String,Object> object2map(Object obj){ 
-		if(null == obj){ 
-			return null; 
-		} 
-		Map<String,Object> map = new HashMap<String,Object>(); 
-		List<Field> fields = BeanUtil.getFields(obj.getClass()); 
-		for(Field field:fields){ 
-			Object value = BeanUtil.getFieldValue(obj, field); 
-			if(null == value){ 
-				value = ""; 
-			} 
-			map.put(field.getName(), value); 
-		} 
-		return map; 
+	}
+	public static Map<String,Object> object2map(Object obj){
+		if(null == obj){
+			return null;
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		List<Field> fields = BeanUtil.getFields(obj.getClass());
+		for(Field field:fields){
+			Object value = BeanUtil.getFieldValue(obj, field);
+			if(null == value){
+				value = "";
+			}
+			map.put(field.getName(), value);
+		}
+		return map;
+	}
+	public static Map<String,Object> object2map(Object obj, List<String> keys){
+		if(null == obj){
+			return null;
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		for(String key:keys){
+			Object value = BeanUtil.getFieldValue(obj, key);
+			if(null == value){
+				value = "";
+			}
+			map.put(key, value);
+		}
+		return map;
+	}
+	public static <T> List<Map<String,Object>> objects2maps(Collection<T> objs, List<String> keys){
+		List<Map<String,Object>> maps = new ArrayList<>();
+		if(null != objs)
+			for(T obj:objs){
+				if(obj instanceof Map){
+					Map<String,Object> item = new HashMap<>();
+					for(String key:keys){
+						item.put(key, ((Map)obj).get(key));
+					}
+					maps.add(item);
+				}else {
+					maps.add(object2map(obj, keys));
+				}
+			}
+		return maps;
+	}
+	public static <T> List<Map<String,Object>> objects2maps(Collection<T> objs){
+		List<Map<String,Object>> maps = new ArrayList<>();
+		if(null != objs)
+			for(T obj:objs){
+				if(obj instanceof Map){
+					maps.add((Map)obj);
+				}else {
+					maps.add(object2map(obj));
+				}
+			}
+		return maps;
 	}
 	public static String object2json(Object obj, JsonInclude.Include include){
 		if(null != obj) {
@@ -962,24 +1004,41 @@ public class BeanUtil {
 	 * @param list   list
 	 * @param keys 根据keys列或属性值比较 
 	 * @return   return
-	 */ 
-	public static <T> Collection<T> distinct(Collection<T> list, String ... keys){ 
-		List<T> result = new ArrayList<T>(); 
-		if(null != list){ 
-			for(T obj:list){ 
-				if(null == keys || keys.length==0){ 
-					if(!result.contains(obj)){ 
-						result.add(obj); 
-					} 
-				}else{ 
-					if(contain(result, obj, keys)){ 
-						result.add(obj); 
-					} 
-				} 
-			} 
-		} 
-		return result; 
-	} 
+	 */
+	public static <T> Collection<T> distinct(Collection<T> list, String ... keys){
+		List<T> result = new ArrayList<T>();
+		if(null != list){
+			for(T obj:list){
+				if(null == keys || keys.length==0){
+					if(!result.contains(obj)){
+						result.add(obj);
+					}
+				}else{
+					if(contain(result, obj, keys)){
+						result.add(obj);
+					}
+				}
+			}
+		}
+		return result;
+	}
+	public static <T> Collection<T> distinct(Collection<T> list, List<String> keys){
+		List<T> result = new ArrayList<T>();
+		if(null != list){
+			for(T obj:list){
+				if(null == keys || keys.size()==0){
+					if(!result.contains(obj)){
+						result.add(obj);
+					}
+				}else{
+					if(!contain(result, obj, keys)){
+						result.add(obj);
+					}
+				}
+			}
+		}
+		return result;
+	}
 	/** 
 	 * 是否包含  
 	 * @param <T> T
@@ -996,35 +1055,48 @@ public class BeanUtil {
 		}
 		return false;
 	}
-	public static <T> boolean equals(T obj1, T obj2, String ... keys){ 
-		if(null == keys || keys.length == 0){ 
-			if(null == obj1){ 
-				if(null == obj2){ 
-					return true; 
-				}else{ 
-					return false; 
-				} 
+	public static <T> boolean contain(Collection<T> list, T obj, List<String> keys){
+		for(T item:list){
+			if(equals(item, obj, keys)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public static <T> boolean equals(T obj1, T obj2, List<String> keys){
+		if(null == keys || keys.size() == 0){
+			if(null == obj1){
+				if(null == obj2){
+					return true;
+				}else{
+					return false;
+				}
 			}else if(!ClassUtil.isPrimitiveClass(obj1)){
-				if(null == obj2){ 
-					return false; 
-				}else{ 
-					if(obj1.toString().equals(obj2.toString())){ 
-						return true; 
-					} 
-				} 
-			} 
-			return false; 
-		} 
- 
-		for(String key:keys){ 
-			Object v1 = BeanUtil.getFieldValue(obj1, key); 
-			Object v2 = BeanUtil.getFieldValue(obj2, key); 
-			if(!equals(v1,v2)){ 
-				return false; 
-			} 
-			 
-		} 
-		return true; 
+				if(null == obj2){
+					return false;
+				}else{
+					if(obj1.toString().equals(obj2.toString())){
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		for(String key:keys){
+			Object v1 = BeanUtil.getFieldValue(obj1, key);
+			Object v2 = BeanUtil.getFieldValue(obj2, key);
+			if(!equals(v1,v2)){
+				return false;
+			}
+
+		}
+		return true;
+	}
+
+	public static <T> boolean equals(T obj1, T obj2, String ... keys){ 
+		return equals(obj1, obj2, Arrays.asList(keys));
 	} 
  
  
@@ -2096,5 +2168,281 @@ public class BeanUtil {
 			//log.warn("[parse run time value][key:"+key+"][value:"+value+"]");
 		}
 		return value;
+	}
+
+	public static Map<String,Object> copy(Map<String,Object> src, Map<String,Object> copy, List<String> keys){
+		if(null == copy ){
+			return  src;
+		}
+		if(null != keys) {
+			for (String key : keys) {
+				String ks[] = BeanUtil.parseKeyValue(key);
+				src.put(ks[0], copy.get(ks[1]));
+			}
+		}
+		return src;
+	}
+	public static Map<String,Object> copy(Map<String,Object> src, Map<String,Object> copy, String ... keys){
+		if(null == copy ){
+			return  src;
+		}
+		if(null != keys) {
+			for (String key : keys) {
+				String ks[] = BeanUtil.parseKeyValue(key);
+				src.put(ks[0], copy.get(ks[1]));
+			}
+		}
+		return src;
+	}
+	public static Map<String,Object> copy(Map<String,Object> src, Map<String,Object> copy){
+		return copy(src, copy, getMapKeys(copy));
+	}
+	public static <T> T query(Collection<T> datas, Map<String,Object> kvs){
+		List<T> list = querys(datas,0,1, kvs);
+		if(list.size()>0){
+			return list.get(0);
+		}
+		return null;
+	}
+
+	public static <T> List<T> querys(Collection<T> datas, int begin, String... params) {
+		return querys(datas,begin, 0, params);
+	}
+
+	public static <T> List<T> querys(Collection<T> datas, String... params) {
+		return querys(datas,0, params);
+	}
+
+	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, String... params) {
+		Map<String, Object> kvs = new HashMap<>();
+		int len = params.length;
+		int i = 0;
+		String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
+		while (i < len) {
+			String p1 = params[i];
+			if (BasicUtil.isEmpty(p1)) {
+				i++;
+				continue;
+			} else if (p1.contains(":")) {
+				String ks[] = BeanUtil.parseKeyValue(p1);
+				kvs.put(ks[0], ks[1]);
+				i++;
+				continue;
+			} else {
+				if (i + 1 < len) {
+					String p2 = params[i + 1];
+					if (BasicUtil.isEmpty(p2) || !p2.contains(":")) {
+						kvs.put(p1, p2);
+						i += 2;
+						continue;
+					} else if (p2.startsWith("{") && p2.endsWith("}")) {
+						p2 = p2.substring(1, p2.length() - 1);
+						kvs.put(p1, p2);
+						kvs.put(p1 + srcFlagTag, "true");
+						i += 2;
+						continue;
+					} else {
+						String ks[] = BeanUtil.parseKeyValue(p2);
+						kvs.put(ks[0], ks[1]);
+						i += 2;
+						continue;
+					}
+				}
+
+			}
+			i++;
+		}
+		return querys(datas, begin, qty, kvs);
+	}
+
+
+	public static <T> List<T> querys(Collection<T> datas, int begin, int qty, Map<String, Object> kvs) {
+		List<T> set = new ArrayList<>();
+		String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
+		BigDecimal d1;
+		BigDecimal d2;
+		for (T row:datas) {
+			boolean chk = true;//对比结果
+			for (String k : kvs.keySet()) {
+				boolean srcFlag = false;
+				if (k.endsWith(srcFlagTag)) {
+					continue;
+				} else {
+					String srcFlagValue = kvs.get(k + srcFlagTag)+"";
+					if (BasicUtil.isNotEmpty(srcFlagValue)) {
+						srcFlag = true;
+					}
+				}
+				String v = kvs.get(k)+"";
+				Object value = getFieldValue(row,k);
+
+				if (null == v) {
+					if (null != value) {
+						chk = false;
+						break;
+					}else{
+						chk = true;
+						break;
+					}
+				} else {
+					if (null == value) {
+						chk = false;
+						break;
+					}
+					String str = value + "";
+					str = str.toLowerCase();
+					v = v.toLowerCase();
+					if (srcFlag) {
+						v = "{" + v + "}";
+					}
+					if (!v.equals(str)) {
+						chk = false;
+						break;
+					}
+
+				}
+			}//end for kvs
+			if (chk) {
+				set.add(row);
+				if (qty > 0 && set.size() >= qty) {
+					break;
+				}
+			}
+		}//end for rows
+		return set;
+	}
+	private static String concatValue(Map<String,Object> row, String split){
+		StringBuilder builder = new StringBuilder();
+		List<String> keys = getMapKeys(row);
+		for(String key:keys){
+			if(builder.length() > 0){
+				builder.append(split);
+			}
+			builder.append(row.get(key));
+		}
+		return builder.toString();
+	}
+	/**
+	 * 行转列
+	 * 表结构(编号, 姓名, 年度, 科目, 分数, 等级)
+	 * @param datas      数据集
+	 * @param pks       唯一标识key(如编号,姓名)
+	 * @param classKeys 分类key(如年度,科目)
+	 * @param valueKeys 取值key(如分数,等级),如果不指定key则将整行作为value
+	 * @return
+	 * 如果指定key
+	 * 返回结构 [
+	 *      {编号:01,姓名:张三,2010-数学-分数:100},
+	 *      {编号:01,姓名:张三,2010-数学-等级:A},
+	 *      {编号:01,姓名:张三,2010-物理-分数:100}
+	 *  ]
+	 *  如果只有一个valueKey则返回[
+	 *      {编号:01,姓名:张三,2010-数学:100},
+	 *      {编号:01,姓名:张三,2010-物理:90}
+	 *  ]
+	 * 不指定valuekey则返回 [
+	 *      {编号:01,姓名:张三,2010-数学:{分数:100,等级:A}},
+	 *      {编号:01,姓名:张三,2010-物理:{分数:100,等级:A}}
+	 *  ]
+	 */
+	public static <T> List<Map<String,Object>> pivot(Collection<T> datas, List<String> pks, List<String> classKeys, List<String> valueKeys) {
+		List<Map<String,Object>> result = objects2maps(distinct(datas,pks),pks);
+		List<Map<String,Object>> classValues = objects2maps(distinct(datas,classKeys),classKeys);  //[{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
+		for (Map<String,Object> row : result) {
+			for (Map<String,Object> classValue : classValues) {
+				Map<String,Object> params = new HashMap<>();
+				copy(params, row, pks);
+				copy(params, classValue);
+				T valueRow = query(datas,params);
+				String finalKey = concatValue(classValue,"-");//2010-数学
+				if(null != valueKeys && valueKeys.size() > 0){
+					if(valueKeys.size() == 1){
+						if (null != valueRow) {
+							row.put(finalKey, getFieldValue(valueRow, valueKeys.get(0)));
+						} else {
+							row.put(finalKey, null);
+						}
+					}else {
+						for (String valueKey : valueKeys) {
+							//{2010-数学-分数:100;2010-数学-等级:A}
+							if (null != valueRow) {
+								row.put(finalKey + "-" + valueKey, getFieldValue(valueRow, valueKey));
+							} else {
+								row.put(finalKey + "-" + valueKey, null);
+							}
+						}
+					}
+				}else{
+					if (null != valueRow){
+						row.put(finalKey, valueRow);
+					}else{
+						row.put(finalKey, null);
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	public static <T> List<Map<String,Object>> pivot(Collection<T> datas, String[] pks, String[] classKeys, String[] valueKeys) {
+		return pivot(datas, Arrays.asList(pks),Arrays.asList(classKeys),Arrays.asList(valueKeys));
+	}
+	/**
+	 * 行转列
+	 * @param pk       唯一标识key(如姓名)多个key以,分隔如(编号,姓名)
+	 * @param classKey 分类key(如科目)多个key以,分隔如(科目,年度)
+	 * @param valueKey 取值key(如分数)多个key以,分隔如(分数,等级)
+	 * @return
+	 *  表结构(姓名,科目,分数)
+	 *  返回结构 [{姓名:张三,数学:100,物理:90,英语:80},{姓名:李四,数学:100,物理:90,英语:80}]
+	 */
+	public static <T> List<Map<String,Object>> pivot(Collection<T> datas, String pk, String classKey, String valueKey) {
+		List<String> pks = new ArrayList<>(Arrays.asList(pk.trim().split(",")));
+		List<String> classKeys = new ArrayList<>(Arrays.asList(classKey.trim().split(",")));
+		List<String> valueKeys = new ArrayList<>(Arrays.asList(valueKey.trim().split(",")));
+		return pivot(datas, pks, classKeys, valueKeys);
+	}
+	public static <T> List<Map<String,Object>> pivot(Collection<T> datas, String pk, String classKey) {
+		List<String> pks = new ArrayList<>(Arrays.asList(pk.trim().split(",")));
+		List<String> classKeys = new ArrayList<>(Arrays.asList(classKey.trim().split(",")));
+		List<String> valueKeys = new ArrayList<>();
+		return pivot(datas, pks, classKeys, valueKeys);
+	}
+
+	public static <T> List<Map<String,Object>> pivot(Collection<T> datas, List<String> pks, List<String> classKeys, String ... valueKeys) {
+		List<String> list = new ArrayList<>();
+		if(null != valueKeys){
+			for(String item:valueKeys){
+				list.add(item);
+			}
+		}
+		return pivot(datas, pks, classKeys, valueKeys);
+	}
+	private String concatValue(DataRow row, String split){
+		StringBuilder builder = new StringBuilder();
+		List<String> keys = row.keys();
+		for(String key:keys){
+			if(builder.length() > 0){
+				builder.append(split);
+			}
+			builder.append(row.getString(key));
+		}
+		return builder.toString();
+	}
+	private static String[] kvs(Map<String,Object> row){
+		List<String> keys = getMapKeys(row);
+		int size = keys.size();
+		String[] kvs = new String[size*2];
+		for(int i=0; i<size; i++){
+			String k = keys.get(i);
+			String value = null;
+			Object v = row.get(k);
+			if(null != v){
+				value = v.toString();
+			}
+			kvs[i*2] = k;
+			kvs[i*2+1] = value;
+		}
+		return kvs;
 	}
 } 
