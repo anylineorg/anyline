@@ -2705,54 +2705,59 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     /**
      * 行转列
-     * 表结构(姓名,科目,分数)
-     * 返回结构 张三,数学,物理,英语
-     * @param pk       唯一标识key(如姓名) pk
-     * @param classKey 分类key(如科目)
-     * @param valueKey 取值key(如分数)
-     * @return return
-     */
-    public DataSet pivot(String pk, String classKey, String valueKey) {
-        DataSet result = distinct(pk);
-        for (DataRow row : result) {
-            List<String> classValues = getDistinctStrings(classKey);
-            row.put("KEYS", classValues);
-            for (String classValue : classValues) {
-                DataRow valueRow = getRow(pk, row.getString(pk), classKey, classValue);
-                if (null != valueRow) {
-                    row.put(classValue, valueRow.get(valueKey));
-                } else {
-                    row.put(classValue, null);
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
-     * 行转列
-     * 表结构(姓名,年度,科目,分数,等级)
-     * 返回结构 张三,2010-数学-分数,2010-数学-等级,2010-物理-分数,2010-物理-等级
-     * @param pk       唯一标识key(如姓名)
+     * 表结构(编号, 姓名, 年度, 科目, 分数, 等级)
+     * @param pks       唯一标识key(如编号,姓名)
      * @param classKeys 分类key(如年度,科目)
-     * @param valueKeys 取值key(如分数,等级)
-     * @return return
+     * @param valueKeys 取值key(如分数,等级),如果不指定key则将整行作为value
+     * @return
+     * 如果指定key
+     * 返回结构 [
+     *      {编号:01,姓名:张三,2010-数学-分数:100},
+     *      {编号:01,姓名:张三,2010-数学-等级:A},
+     *      {编号:01,姓名:张三,2010-物理-分数:100}
+     *  ]
+     *  如果只有一个valueKey则返回[
+     *      {编号:01,姓名:张三,2010-数学:100},
+     *      {编号:01,姓名:张三,2010-物理:90}
+     *  ]
+     * 不指定valuekey则返回 [
+     *      {编号:01,姓名:张三,2010-数学:{分数:100,等级:A}},
+     *      {编号:01,姓名:张三,2010-物理:{分数:100,等级:A}}
+     *  ]
      */
-    public DataSet pivot(String pk, List<String> classKeys, String ... valueKeys) {
-        DataSet result = distinct(pk);
+
+    public DataSet pivot(List<String> pks, List<String> classKeys, List<String> valueKeys) {
+        DataSet result = distinct(pks);
+        DataSet classValues = distinct(classKeys);  //[{年度:2010,科目:数学},{年度:2010,科目:物理},{年度:2011,科目:数学}]
         for (DataRow row : result) {
-            DataSet classValues = distinct(classKeys);  //01年,数学;01年,物理;02年数学
-            row.put("KEYS", classValues);
             for (DataRow classValue : classValues) {
-                classValue.put(pk, row.getString("pk"));
-                String[] kvs = kvs(classValue);
+                DataRow params = new DataRow();
+                params.copy(row).copy(classValue);
+                String[] kvs = kvs(params);
                 DataRow valueRow = getRow(kvs);
-                classValue.remove(pk);
-                String finalKey = concatValue(classValue,"-");
-                if (null != valueRow) {
-                    for(String valueKey:valueKeys){
-                        //2010-数学-分数:100;2010-数学-等级:A
-                        row.put(finalKey+"-"+valueKey, valueRow.getString(valueKey));
+                String finalKey = concatValue(classValue,"-");//2010-数学
+                if(null != valueKeys && valueKeys.size() > 0){
+                    if(valueKeys.size() == 1){
+                        if (null != valueRow) {
+                            row.put(finalKey, valueRow.get(valueKeys.get(0)));
+                        } else {
+                            row.put(finalKey, null);
+                        }
+                    }else {
+                        for (String valueKey : valueKeys) {
+                            //{2010-数学-分数:100;2010-数学-等级:A}
+                            if (null != valueRow) {
+                                row.put(finalKey + "-" + valueKey, valueRow.get(valueKey));
+                            } else {
+                                row.put(finalKey + "-" + valueKey, null);
+                            }
+                        }
+                    }
+                }else{
+                    if (null != valueRow){
+                        row.put(finalKey, valueRow);
+                    }else{
+                        row.put(finalKey, null);
                     }
                 }
             }
@@ -2760,6 +2765,40 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
+    public DataSet pivot(String[] pks, String[] classKeys, String[] valueKeys) {
+        return pivot(Arrays.asList(pks),Arrays.asList(classKeys),Arrays.asList(valueKeys));
+    }
+    /**
+     * 行转列
+     * @param pk       唯一标识key(如姓名)多个key以,分隔如(编号,姓名)
+     * @param classKey 分类key(如科目)多个key以,分隔如(科目,年度)
+     * @param valueKey 取值key(如分数)多个key以,分隔如(分数,等级)
+     * @return
+     *  表结构(姓名,科目,分数)
+     *  返回结构 [{姓名:张三,数学:100,物理:90,英语:80},{姓名:李四,数学:100,物理:90,英语:80}]
+     */
+    public DataSet pivot(String pk, String classKey, String valueKey) {
+        List<String> pks = new ArrayList<>(Arrays.asList(pk.trim().split(",")));
+        List<String> classKeys = new ArrayList<>(Arrays.asList(classKey.trim().split(",")));
+        List<String> valueKeys = new ArrayList<>(Arrays.asList(valueKey.trim().split(",")));
+        return pivot(pks, classKeys, valueKeys);
+    }
+
+    public DataSet pivot(String pk, List<String> classKeys, String ... valueKeys) {
+        List<String> pks = new ArrayList<>();
+        pks.add(pk);
+        return pivot(pks, classKeys, valueKeys);
+    }
+
+    public DataSet pivot(List<String> pks, List<String> classKeys, String ... valueKeys) {
+        List<String> list = new ArrayList<>();
+        if(null != valueKeys){
+            for(String item:valueKeys){
+                list.add(item);
+            }
+        }
+        return pivot(pks, classKeys, valueKeys);
+    }
     private String concatValue(DataRow row, String split){
         StringBuilder builder = new StringBuilder();
         List<String> keys = row.keys();
