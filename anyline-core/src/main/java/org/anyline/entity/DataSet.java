@@ -496,7 +496,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return row;
     }
-
+    public boolean exists(String ... params){
+        DataRow row = getRow(0, params);
+        return row != null;
+    }
     public DataRow getRow(String... params) {
         return getRow(0, params);
     }
@@ -527,7 +530,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 DataRow row = rows.get(i);
                 //查看result中是否已存在
                 String[] params = packParam(row, keys);
-                if (result.getRows(params).size() == 0) {
+                if (result.getRow(params) == null) {
                     DataRow tmp = new DataRow();
                     for (String key : keys) {
                         tmp.put(key, row.get(key));
@@ -542,12 +545,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet distinct(List<String> keys) {
         DataSet result = new DataSet();
         if (null != rows) {
-            int size = rows.size();
-            for (int i = 0; i < size; i++) {
-                DataRow row = rows.get(i);
+            for (DataRow row:rows) {
                 //查看result中是否已存在
                 String[] params = packParam(row, keys);
-                if (result.getRows(params).size() == 0) {
+                if (result.getRow(params) == null) {
                     DataRow tmp = new DataRow();
                     for (String key : keys) {
                         tmp.put(key, row.get(key));
@@ -603,6 +604,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
+    public DataSet skip(boolean skip){
+        for(DataRow row:rows){
+            row.skip = skip;
+        }
+        return this;
+    }
     /**
      * 筛选符合条件的集合
      * 注意如果String类型 1与1.0比较不相等, 可以先调用convertNumber转换一下数据类型
@@ -652,11 +659,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
             }
             i++;
         }
-        int size = size();
         BigDecimal d1;
         BigDecimal d2;
-        for (i = 0; i < size; i++) {
-            DataRow row = getRow(i);
+        for (DataRow row:rows) {
+            if(row.skip){
+                continue;
+            }
             boolean chk = true;//对比结果
             for (String k : kvs.keySet()) {
                 boolean srcFlag = false;
@@ -2093,7 +2101,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
         }
         String params[] = packParam(row, keys);
-        return getRows(params).size() > 0;
+        return exists(params);
     }
 
     public String[] packParam(DataRow row, String... keys) {
@@ -2154,9 +2162,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 if (recursion) {
                     set.dispatchItems(field, recursion, items, keys);
                 }
+                set.skip(true);
                 row.put(field, set);
             }
         }
+        items.skip(false);
         return this;
     }
 
@@ -2732,9 +2742,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         for (DataRow row : result) {
             for (DataRow classValue : classValues) {
                 DataRow params = new DataRow();
-                params.copy(row).copy(classValue);
+                params.copy(row, pks).copy(classValue);
                 String[] kvs = kvs(params);
                 DataRow valueRow = getRow(kvs);
+                if(null != valueRow){
+                    valueRow.skip = true;
+                }
                 String finalKey = concatValue(classValue,"-");//2010-数学
                 if(null != valueKeys && valueKeys.size() > 0){
                     if(valueKeys.size() == 1){
@@ -2762,6 +2775,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 }
             }
         }
+        skip(false);
         return result;
     }
 
