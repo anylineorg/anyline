@@ -15,7 +15,7 @@
  *
  *          
  */
-package org.anyline.entity; 
+package org.anyline.entity;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.util.*;
 import org.dom4j.Attribute;
@@ -30,6 +30,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.*;
+
 public class DataRow extends LinkedHashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
 	protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
@@ -59,7 +60,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	public static String CHILDREN 			= "CHILDREN"					; //子数据 
 	public static String PRIMARY_KEY		= ConfigTable.getString("DEFAULT_PRIMARY_KEY","id"); 
 	public static String ITEMS				= "ITEMS"						; 
-	private DataSet container				= null							; //包含当前对象的容器 
+	private DataSet container				= null							; //包含当前对象的容器
  
 	private List<String> primaryKeys 		= new ArrayList<>()		; //主键
 	private List<String> updateColumns 		= new ArrayList<>()		;
@@ -80,6 +81,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	private Map<String,String> keymap		= new HashMap<String,String>();
 	private KEY_CASE keyCase 				= KEY_CASE.CONFIG;
 	private boolean isUpperKey				= false							; //是否已执行大写key转换(影响到驼峰执行)
+	public boolean skip					= false							; //遍历计算时标记
 
 	public DataRow(){
 		String pk = putKey(PRIMARY_KEY);
@@ -112,10 +114,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	public DataRow(Map<String,Object> map){
 		this();
-		for(Iterator<String> itr=map.keySet().iterator(); itr.hasNext();){
-			String key = itr.next();
-			Object value = map.get(key);
-			put(putKey(key), value);
+		Set<Map.Entry<String,Object>> set = map.entrySet();
+		for(Map.Entry<String,Object> entity:set){
+			put(putKey(entity.getKey()), entity.getValue());
 		}
 	}
 	public DataRow setKeyCase(KEY_CASE keyCase){
