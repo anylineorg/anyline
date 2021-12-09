@@ -707,8 +707,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         chk = false;
                         break;
                     }else{
-                        chk = true;
-                        break;
+                        continue;
                     }
                 } else {
                     if (null == value) {
@@ -818,7 +817,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return set;
     }
     public DataSet getRows(int begin, String... params) {
-        return getRows(begin, 0, params);
+        return getRows(begin, -1, params);
     }
 
     public DataSet getRows(String... params) {
