@@ -39,8 +39,8 @@ public class StyleParser {
                 for (String k : keys) {
                     k = k.trim();
                     Map<String, String> tmps = parse(value);
-                    BeanUtil.merge(tmps, styles.get(k));
-                    styles.put(k, tmps);
+                    tmps = merge(styles.get(k),tmps, true);
+                    styles.put(k,tmps);
                 }
             }
         }
@@ -88,15 +88,22 @@ public class StyleParser {
                                 || "border-bottom".equalsIgnoreCase(k)
                                 || "border-left".equalsIgnoreCase(k)
                                 || "border-right".equalsIgnoreCase(k)
+                                || "border-insideV".equalsIgnoreCase(k)
+                                || "border-insideH".equalsIgnoreCase(k)
                                 || "border-tl2br".equalsIgnoreCase(k)
                                 || "border-tr2bl".equalsIgnoreCase(k)
                         ){
                             v = v.replace("solid", "single");
-                            String[] vs = v.split(" ");
-                            if (vs.length == 3) {
-                                styles.put(k+"-width", vs[0]);
-                                styles.put(k+"-style", vs[1]);
-                                styles.put(k+"-color", vs[2]);
+                            if("none".equalsIgnoreCase(v)){
+                                styles.put(k,v);
+                                removeBorder(k, styles);
+                            }else {
+                                String[] vs = v.split(" ");
+                                if (vs.length == 3) {
+                                    styles.put(k + "-width", vs[0]);
+                                    styles.put(k + "-style", vs[1]);
+                                    styles.put(k + "-color", vs[2]);
+                                }
                             }
                         }else if ("border-width".equalsIgnoreCase(k)) {
                             String[] vs = v.split(" ");
@@ -198,6 +205,23 @@ public class StyleParser {
 
         return src;
     }
+    public static Map<String, String> removeBorder(String side, Map<String, String> styles){
+        side = side.replace("border-","");
+        styles.remove("border-"+side+"-width");
+        styles.remove("border-"+side+"-style");
+        styles.remove("border-"+side+"-color");
+        styles.put("border-"+side,"none");
+        return styles;
+    }
+    public static Map<String, String> removeBorder(Map<String, String> styles){
+        removeBorder("top", styles);
+        removeBorder("right", styles);
+        removeBorder("bottom", styles);
+        removeBorder("left", styles);
+        removeBorder("insideV", styles);
+        removeBorder("insideH", styles);
+        return styles;
+    }
     public static Map<String, String> merge(Map<String, String> src, Map<String, String> copy) {
         return merge(src, copy, false);
     }
@@ -211,44 +235,25 @@ public class StyleParser {
         }
 
         if ("none".equalsIgnoreCase(copy.get("border"))) {
-            src.remove("border-top-width");
-            src.remove("border-top-style");
-            src.remove("border-top-color");
-            src.remove("border-right-width");
-            src.remove("border-right-style");
-            src.remove("border-right-color");
-            src.remove("border-bottom-width");
-            src.remove("border-bottom-style");
-            src.remove("border-bottom-color");
-            src.remove("border-left-width");
-            src.remove("border-left-style");
-            src.remove("border-left-color");
-            src.remove("border-insideV-width");
-            src.remove("border-insideV-style");
-            src.remove("border-insideV-color");
-            src.remove("border-insideH-width");
-            src.remove("border-insideH-style");
-            src.remove("border-insideH-color");
+            removeBorder(src);
         }
         if ("none".equalsIgnoreCase(copy.get("border-left"))) {
-            src.remove("border-left-width");
-            src.remove("border-left-style");
-            src.remove("border-left-color");
+            removeBorder("left", src);
         }
         if ("none".equalsIgnoreCase(copy.get("border-right"))) {
-            src.remove("border-right-width");
-            src.remove("border-right-style");
-            src.remove("border-right-color");
+            removeBorder("right", src);
         }
         if ("none".equalsIgnoreCase(copy.get("border-top"))) {
-            src.remove("border-top-width");
-            src.remove("border-top-style");
-            src.remove("border-top-color");
+            removeBorder("top", src);
         }
         if ("none".equalsIgnoreCase(copy.get("border-bottom"))) {
-            src.remove("border-bottom-width");
-            src.remove("border-bottom-style");
-            src.remove("border-bottom-color");
+            removeBorder("bottom", src);
+        }
+        if ("none".equalsIgnoreCase(copy.get("border-insideV"))) {
+            removeBorder("insideV", src);
+        }
+        if ("none".equalsIgnoreCase(copy.get("border-insideH"))) {
+            removeBorder("insideH", src);
         }
         BeanUtil.merge(src, copy, over);
         return src;
