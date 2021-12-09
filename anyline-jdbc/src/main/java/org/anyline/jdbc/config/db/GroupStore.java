@@ -34,6 +34,6 @@ public interface GroupStore extends Serializable{
 	public void group(String str) ; 
  
 	public Group getGroup(String group); 
-	public String getRunText(String disKey); 
+	public String getRunText(String delimiter);
 	public void clear(); 
 } 

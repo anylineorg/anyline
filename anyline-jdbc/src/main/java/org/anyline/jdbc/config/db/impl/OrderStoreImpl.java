@@ -82,7 +82,7 @@ public class OrderStoreImpl implements OrderStore{
 		} 
 		return null; 
 	} 
-	public String getRunText(String disKey){ 
+	public String getRunText(String delimiter){
 		StringBuilder builder = new StringBuilder(); 
 		if(null != orders && orders.size() > 0){ 
 			builder.append(" ORDER BY "); 

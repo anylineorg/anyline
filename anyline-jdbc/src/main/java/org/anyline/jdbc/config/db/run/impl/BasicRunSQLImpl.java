@@ -65,15 +65,15 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	 
 	 
 	protected SQLCreater creater; 
-	protected String disKeyFr; 
-	protected String disKeyTo; 
+	protected String delimiterFr;
+	protected String delimiterTo;
 	 
 	public void setCreater(SQLCreater creater){ 
 		this.creater = creater; 
 	} 
 	public void init(){ 
-		this.disKeyFr = creater.getDisKeyFr(); 
-		this.disKeyTo = creater.getDisKeyTo(); 
+		this.delimiterFr = creater.getDelimiterFr();
+		this.delimiterTo = creater.getDelimiterTo();
 		 
  
 		if(null != configStore){ 
@@ -162,17 +162,17 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public void setGroupStore(GroupStore groupStore) { 
 		this.groupStore = groupStore; 
 	} 
-	public String getDisKeyFr() { 
-		return disKeyFr; 
+	public String getDelimiterFr() {
+		return delimiterFr;
 	} 
-	public void setDisKeyFr(String disKeyFr) { 
-		this.disKeyFr = disKeyFr; 
+	public void setdelimiterFr(String delimiterFr) {
+		this.delimiterFr = delimiterFr;
 	} 
-	public String getDisKeyTo() { 
-		return disKeyTo; 
+	public String getDelimiterTo() {
+		return delimiterTo;
 	} 
-	public void setDisKeyTo(String disKeyTo) { 
-		this.disKeyTo = disKeyTo; 
+	public void setdelimiterTo(String delimiterTo) {
+		this.delimiterTo = delimiterTo;
 	} 
 	public SQLCreater getCreater() { 
 		return creater; 
@@ -420,9 +420,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				result = null;
 				for(String col:cols){
 					if(null == result){
-						result = creater.getDisKeyFr() + col + creater.getDisKeyTo();
+						result = creater.getDelimiterFr() + col + creater.getDelimiterTo();
 					}else{
-						result += "," + creater.getDisKeyFr() + col + creater.getDisKeyTo();
+						result += "," + creater.getDelimiterFr() + col + creater.getDelimiterTo();
 					}
 				}
 			}

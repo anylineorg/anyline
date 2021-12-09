@@ -51,15 +51,15 @@ import java.util.List;
 
 
 /**
- * SQL生成 子类主要实现与分页相关的SQL 以及disKey
+ * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
  */
 
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	protected static final Logger log = LoggerFactory.getLogger(BasicSQLCreaterImpl.class);
 	@Autowired(required=false)
 	protected PrimaryCreater primaryCreater; 
-	public String disKeyFr = ""; 
-	public String disKeyTo = "";
+	public String delimiterFr = "";
+	public String delimiterTo = "";
 	public DB_TYPE type(){
 		return null;
 	}
@@ -144,7 +144,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		builder.append("DELETE FROM ").append(table).append(" WHERE ");
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
-			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			builder.append(getDelimiterFr()).append(key).append(getDelimiterTo());
 			if(cons.size() > 1){
 				builder.append(" IN(");
 				int idx = 0;
@@ -165,7 +165,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
 			}
 		}else{
-			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			builder.append(getDelimiterFr()).append(key).append(getDelimiterTo());
 			builder.append("=?");
 			run.addValue(values);
 		}
@@ -191,7 +191,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					builder.append("\nAND ");
 				}
 				String key = keys.get(i);
-				builder.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ? ");
+				builder.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ? ");
 				run.addValue(obj.get(key)); 
 			}
 		}else{
@@ -205,7 +205,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		TableRunSQLImpl run = new TableRunSQLImpl();
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest))
-		.append(" WHERE ").append(getDisKeyFr()).append(getPrimaryKey(obj)).append(getDisKeyTo()) 
+		.append(" WHERE ").append(getDelimiterFr()).append(getPrimaryKey(obj)).append(getDelimiterTo())
 		.append("=?"); 
 		run.addValue(getPrimaryValue(obj));
 		run.setBuilder(builder);
@@ -312,7 +312,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(null == pk){
 				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 			}
-			row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
+			row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 		}
 		/*确定需要插入的列*/
 		
@@ -328,7 +328,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		for(int i=0; i<size; i++){
 			String key = keys.get(i);
 			Object value = row.get(key);
-			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			builder.append(getDelimiterFr()).append(key).append(getDelimiterTo());
 			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 				String str = value.toString();
 				value = str.substring(1, str.length()-1);
@@ -390,7 +390,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int keySize = keys.size();
 		for(int i=0; i<keySize; i++){
 			String key = keys.get(i);
-			builder.append(getDisKeyFr()).append(key).append(getDisKeyTo());
+			builder.append(getDelimiterFr()).append(key).append(getDelimiterTo());
 			if(i<keySize-1){
 				builder.append(",");
 			}
@@ -407,7 +407,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(null == pk){
 					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
 				}
-				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDisKeyFr(), "").replace(getDisKeyTo(), ""), pk, null));
+				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 			}
 
 			builder.append("(");
@@ -462,7 +462,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int size = keys.size();
 		List<String> insertColumns = new ArrayList<>();
 		for(int i=0; i<size; i++){
-			builder.append(getDisKeyFr()).append(keys.get(i)).append(getDisKeyTo());
+			builder.append(getDelimiterFr()).append(keys.get(i)).append(getDelimiterTo());
 			if(i<size-1){
 				builder.append(",");
 			} 
@@ -537,7 +537,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 //		int size = keys.size(); 
 //		for(int i=0; i<size; i++){ 
 //			String key = keys.get(i); 
-//			sql.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB); 
+//			sql.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
 //			values.add(entity.getValueByColumn(key)); 
 //			if(i<size-1){ 
 //				sql.append(","); 
@@ -546,7 +546,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 //		//sql.append(SQL.BR); 
 //		sql.append("\nWHERE 1=1").append(SQLCreater.BR_TAB); 
 //		for(String primary:primaryKeys){ 
-//			sql.append(" AND ").append(getDisKeyFr()).append(primary).append(getDisKeyTo()).append(" = ?"); 
+//			sql.append(" AND ").append(getDelimiterFr()).append(primary).append(getDelimiterTo()).append(" = ?");
 //			values.add(entity.getValueByColumn(primary)); 
 //		} 
 //		entity.processBeforeDisplay();	//显示之前预处理 
@@ -579,9 +579,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(1, str.length()-1);
-					builder.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
+					builder.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 				}else{
-					builder.append(getDisKeyFr()).append(key).append(getDisKeyTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					builder.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
@@ -595,7 +595,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append(SQLCreater.BR);
 			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
 			for(String pk:primaryKeys){
-				builder.append(" AND ").append(getDisKeyFr()).append(pk).append(getDisKeyTo()).append(" = ?");
+				builder.append(" AND ").append(getDelimiterFr()).append(pk).append(getDelimiterTo()).append(" = ?");
 				updateColumns.add(pk);
 				values.add(row.get(pk)); 
 			}
@@ -618,7 +618,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		} 
 		boolean each = true;//是否需要从row中查找列 
 		List<String> mastKeys = new ArrayList<>();		//必须插入列
-		List<String> disKeys = new ArrayList<>();			//必须不插入列
+		List<String> delimiters = new ArrayList<>();			//必须不插入列
 		List<String> factKeys = new ArrayList<>();		//根据是否空值
  
 		if(null != columns && columns.length>0){ 
@@ -634,7 +634,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					each = true; 
 				}else if(column.startsWith("-")){
 					column = column.substring(1, column.length()); 
-					disKeys.add(column); 
+					delimiters.add(column);
 					each = true; 
 				}else if(column.startsWith("?")){
 					column = column.substring(1, column.length()); 
@@ -656,7 +656,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					//必须插入 
 					continue; 
 				} 
-				if(disKeys.contains(key)){ 
+				if(delimiters.contains(key)){
 					keys.remove(key); 
 					continue; 
 				} 
@@ -713,7 +713,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		} 
 		boolean each = true;//是否需要从row中查找列 
 		List<String> mastKeys = new ArrayList<>();		//必须插入列
-		List<String> disKeys = new ArrayList<>();			//必须不插入列
+		List<String> delimiters = new ArrayList<>();			//必须不插入列
 		List<String> factKeys = new ArrayList<>();		//根据是否空值
  
 		if(null != propertys && propertys.length>0){ 
@@ -731,7 +731,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}else if(property.startsWith("-")){
 					property = property.substring(1, property.length()); 
 					String column = entity.getColumnByProperty(property); 
-					disKeys.add(column); 
+					delimiters.add(column);
 					each = true; 
 				}else if(property.startsWith("?")){
 					property = property.substring(1, property.length()); 
@@ -754,7 +754,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					//必须插入 
 					continue; 
 				} 
-				if(disKeys.contains(key)){ 
+				if(delimiters.contains(key)){
 					keys.remove(key); 
 					continue; 
 				} 
@@ -797,7 +797,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		} 
 		boolean each = true;//是否需要从row中查找列 
 		List<String> mastKeys = row.getUpdateColumns();		//必须更新列 
-		List<String> disKeys = new ArrayList<>();			//必须不更新列
+		List<String> delimiters = new ArrayList<>();			//必须不更新列
 		List<String> factKeys = new ArrayList<>();		//根据是否空值
 		if(null != columns && columns.length>0){ 
 			each = false; 
@@ -812,7 +812,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					each = true; 
 				}else if(column.startsWith("-")){
 					column = column.substring(1, column.length()); 
-					disKeys.add(column); 
+					delimiters.add(column);
 					each = true; 
 				}else if(column.startsWith("?")){
 					column = column.substring(1, column.length()); 
@@ -842,7 +842,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					//必须更新 
 					continue; 
 				} 
-				if(disKeys.contains(key)){ 
+				if(delimiters.contains(key)){
 					keys.remove(key); 
 					continue; 
 				} 
@@ -891,7 +891,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		} 
 		boolean each = true;//是否需要从row中查找列 
 		List<String> mastKeys = new ArrayList<>();		//必须更新列
-		List<String> disKeys = new ArrayList<>();			//必须不更新列
+		List<String> delimiters = new ArrayList<>();			//必须不更新列
 		List<String> factKeys = new ArrayList<>();		//根据是否空值
  
 		if(null != propertys && propertys.length>0){ 
@@ -909,7 +909,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}else if(property.startsWith("-")){
 					property = property.substring(1, property.length()); 
 					String column = entity.getColumnByProperty(property); 
-					disKeys.add(column); 
+					delimiters.add(column);
 					each = true; 
 				}else if(property.startsWith("?")){
 					property = property.substring(1, property.length()); 
@@ -932,7 +932,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					//必须更新 
 					continue; 
 				} 
-				if(disKeys.contains(key)){ 
+				if(delimiters.contains(key)){
 					keys.remove(key); 
 					continue; 
 				} 
@@ -966,13 +966,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null == table){
 			return table;
 		}
-		table = table.replace(getDisKeyFr(), "").replace(getDisKeyTo(), "");
+		table = table.replace(getDelimiterFr(), "").replace(getDelimiterTo(), "");
 		table = DataSourceHolder.parseDataSource(table, null);
 		if(table.contains(".")){
 			String tmps[] = table.split("\\.");
-			table = getDisKeyFr() + tmps[0] + getDisKeyTo() + "." + getDisKeyFr() + tmps[1] + getDisKeyTo();
+			table = getDelimiterFr() + tmps[0] + getDelimiterTo() + "." + getDelimiterFr() + tmps[1] + getDelimiterTo();
 		}else{
-			table = getDisKeyFr() + table + getDisKeyTo();
+			table = getDelimiterFr() + table + getDelimiterTo();
 		}
 		return table;
 	}

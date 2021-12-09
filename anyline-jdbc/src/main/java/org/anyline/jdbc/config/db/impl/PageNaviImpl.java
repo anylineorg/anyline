@@ -236,7 +236,7 @@ public class PageNaviImpl implements PageNavi{
 		//return getOrderText(require, null); 
 		return null; 
 	} 
-	public String getOrderText(boolean require, OrderStore store, String disKey){ 
+	public String getOrderText(boolean require, OrderStore store, String delimiter){
 		String result = ""; 
 		if(null == orders){ 
 			orders = store; 
@@ -248,7 +248,7 @@ public class PageNaviImpl implements PageNavi{
 			} 
 		} 
 		if(null != orders){ 
-			result = orders.getRunText(disKey); 
+			result = orders.getRunText(delimiter);
 		} 
 		if(require && result.length() == 0){ 
 			result = "ORDER BY " + ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID"); 
