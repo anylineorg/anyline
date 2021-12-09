@@ -207,9 +207,10 @@ public class DocxUtil {
             int index = elements.indexOf(ref)+1;
             elements.remove(src);
             if(index > elements.size()-1){
-                index = elements.size()-1;
+                elements.add(src);
+            }else {
+                elements.add(index, src);
             }
-            elements.add(index, src);
         }else{
             //ref更下级
             after(src, ref.getParent());
@@ -301,6 +302,8 @@ public class DocxUtil {
         border(border,"left", styles);
         border(border,"insideH", styles);
         border(border,"insideV", styles);
+        border(border,"tl2br", styles);
+        border(border,"tr2bl", styles);
     }
     public static void border(Element border, String side, Map<String,String> styles){
         Element item = null;
@@ -566,6 +569,7 @@ public class DocxUtil {
         }
         return false;
     }
+
 
     public static List<Element> betweens(Element bookmark, String ... tags){
         String id = bookmark.attributeValue("id");
