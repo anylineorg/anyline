@@ -870,7 +870,7 @@ public class AmapUtil {
 	}
 	public DataSet poi(String city, String keywords){
 		DataSet set = new DataSet();
-		String url = "http://restapi.amap.com/v3/direction/driving";
+		String url = "https://restapi.amap.com/v5/place/text";
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("city", city);
 		params.put("keywords", keywords);
@@ -878,16 +878,15 @@ public class AmapUtil {
 		params.put("offset","20");
 		DataRow row = api(url,params);
 		if(row.getInt("status",0)==1){
+			List<DataRow> items = (List<DataRow>)row.get("POIS");
+			for(DataRow item:items){
+				set.add(item);
+			}
 
 		}
-		System.out.println(row);
 		return set;
 	}
 
-	public static void main(String[] args) {
-		AmapUtil util = AmapUtil.getInstance("3b9371b4837346d44b98cfc219522fdc","72c5c3a17d8d5f0f6174e79264144682","5937e0932376c11dab517b6a");
-		util.poi("青岛","动漫产业园");
-	}
 	public DataRow api(String url, Map<String,Object> params){
 		params.put("key", this.key);
 		String sign = sign(params);
