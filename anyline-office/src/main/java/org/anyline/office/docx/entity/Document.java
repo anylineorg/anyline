@@ -589,8 +589,7 @@ public class Document {
             pr(tc, styles);
             if(merge !=2){
                 if(null != td.getSrc()) {
-                    Element p = tc.addElement("w:p");
-                    parseHtml(p, null, td.getSrc(), StyleParser.inherit(null, styles));
+                    parseHtml(tc, null, td.getSrc(), StyleParser.inherit(null, styles));
                 }
             }else{
                 p(tc,"",null);
@@ -631,32 +630,44 @@ public class Document {
         Element box = null;
         String pname = parent.getName();
         Element newNext = null;
+        Element wp = null;
         pr(parent, styles);
         if(pname.equalsIgnoreCase("p")){
             box = parent.addElement("w:r");
             next = box.addElement("w:br");
             DocxUtil.after(box, next);
             newNext = parent;
+            wp = parent;
         }else if(pname.equalsIgnoreCase("r")){
             box = parent.getParent().addElement("w:r");
             next = box.addElement("w:br");
             DocxUtil.after(box, next);
             newNext = parent.getParent();
+            wp = newNext;
         }else if(pname.equalsIgnoreCase("tc")){
             box = parent.addElement("w:p");
             DocxUtil.after(box, next);
             newNext = box;
+            wp = box;
         }else if(pname.equalsIgnoreCase("body")){
             box = parent.addElement("w:p");
             newNext = box;
             DocxUtil.after(box, next);
-
+            wp = box;
         }else{
             throw new RuntimeException("div.parent 异常:"+pname+":"+element.getName()+":"+element.getTextTrim());
             //新建一个段落
         }
+
         pr(box, styles);
         parseHtml(box, next, element, styles);
+
+        if(null != styles.get("page-break-after")){
+            //分页
+            Element wr = wp.addElement("w:r");
+            wr.addElement("w:br").addAttribute("w:type","page");
+            wr.addElement("w:r").addElement("w:lastRenderedPageBreak");
+        }
         return newNext;
     }
     private Element ol(Element parent, Element next, Element element, Map<String,String> styles){
