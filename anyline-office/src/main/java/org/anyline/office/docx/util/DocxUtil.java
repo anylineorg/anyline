@@ -15,6 +15,7 @@ import java.util.*;
 public class DocxUtil {
     private static Logger log = LoggerFactory.getLogger(DocxUtil.class);
 
+
     /**
      * 根据关键字查找样式列表ID
      * @param docx docx文件
@@ -335,26 +336,6 @@ public class DocxUtil {
             item.addAttribute("w:type",  "dxa");
         }
     }
-    private static Map<String, Integer>fontSizes = new HashMap<String, Integer>() {
-        {
-            put("初号", 84);
-            put("小初", 72);
-            put("一号", 52);
-            put("小一", 48);
-            put("二号", 44);
-            put("小二", 36);
-            put("三号", 33);
-            put("小三", 30);
-            put("四号", 28);
-            put("小四", 24);
-            put("五号", 21);
-            put("小五", 18);
-            put("六号", 15);
-            put("小六", 13);
-            put("七号", 11);
-            put("八号", 10);
-        }
-    };
     public static void font(Element pr, Map<String,String> styles){
         String fontSize = styles.get("font-size");
         if(null != fontSize){
@@ -702,4 +683,25 @@ public class DocxUtil {
     public static final double cm2pt(double cm) {
         return (cm*CM_PER_PT);
     }
+
+    private static Map<String, Integer>fontSizes = new HashMap<String, Integer>() {
+        {
+            put("初号", 84);
+            put("小初", 72);
+            put("一号", 52);
+            put("小一", 48);
+            put("二号", 44);
+            put("小二", 36);
+            put("三号", 33);
+            put("小三", 30);
+            put("四号", 28);
+            put("小四", 24);
+            put("五号", 21);
+            put("小五", 18);
+            put("六号", 15);
+            put("小六", 13);
+            put("七号", 11);
+            put("八号", 10);
+        }
+    };
 }
