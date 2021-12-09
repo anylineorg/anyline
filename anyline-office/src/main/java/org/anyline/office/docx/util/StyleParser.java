@@ -84,7 +84,21 @@ public class StyleParser {
                                 styles.put("border-insideH-style", vs[1]);
                                 styles.put("border-insideH-color", vs[2]);
                             }
-                        } else if ("border-width".equalsIgnoreCase(k)) {
+                        } else if("border-top".equalsIgnoreCase(k)
+                                || "border-bottom".equalsIgnoreCase(k)
+                                || "border-left".equalsIgnoreCase(k)
+                                || "border-right".equalsIgnoreCase(k)
+                                || "border-tl2br".equalsIgnoreCase(k)
+                                || "border-tr2bl".equalsIgnoreCase(k)
+                        ){
+                            v = v.replace("solid", "single");
+                            String[] vs = v.split(" ");
+                            if (vs.length == 3) {
+                                styles.put(k+"-width", vs[0]);
+                                styles.put(k+"-style", vs[1]);
+                                styles.put(k+"-color", vs[2]);
+                            }
+                        }else if ("border-width".equalsIgnoreCase(k)) {
                             String[] vs = v.split(" ");
                             if (vs.length == 2) {
                                 styles.put("border-top-width", vs[0]);
