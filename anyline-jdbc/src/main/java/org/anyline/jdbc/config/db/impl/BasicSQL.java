@@ -93,9 +93,9 @@ public abstract class BasicSQL implements SQL{
 		return this;
 	}
  
-	protected String getOrderText(String disKey){ 
+	protected String getOrderText(String delimiter){
 		if(null != orders){ 
-			return orders.getRunText(disKey); 
+			return orders.getRunText(delimiter);
 		} 
 		return ""; 
 	} 

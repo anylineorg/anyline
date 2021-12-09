@@ -70,8 +70,8 @@ public interface SQLCreater{
 	public String parseFinalQueryTxt(RunSQL run); 
 	public RunSQL createInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns); 
 	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns); 
-	public String getDisKeyFr(); 
-	public String getDisKeyTo();
+	public String getDelimiterFr();
+	public String getDelimiterTo();
 	public String getPrimaryKey(Object obj); 
 	public Object getPrimaryValue(Object obj);
 	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);

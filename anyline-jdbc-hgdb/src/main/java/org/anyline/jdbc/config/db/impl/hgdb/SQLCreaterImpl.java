@@ -15,17 +15,17 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater {
 		return DB_TYPE.HighGo;
 	}
 	public SQLCreaterImpl(){
-		disKeyFr = "";
-		disKeyTo = "";
+		delimiterFr = "";
+		delimiterTo = "";
 	}
 
 	@Override
-	public String getDisKeyFr(){
-		return disKeyFr;
+	public String getDelimiterFr(){
+		return delimiterFr;
 	}
 	@Override
-	public String getDisKeyTo(){
-		return disKeyTo;
+	public String getDelimiterTo(){
+		return delimiterTo;
 	}
 	@Override
 	public String parseFinalQueryTxt(RunSQL run){
@@ -37,7 +37,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater {
 		}
 		OrderStore orders = run.getOrderStore();
 		if(null != orders){
-			sql += orders.getRunText(getDisKeyFr()+getDisKeyTo());
+			sql += orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		}
 		PageNavi navi = run.getPageNavi();
 		if(null != navi){

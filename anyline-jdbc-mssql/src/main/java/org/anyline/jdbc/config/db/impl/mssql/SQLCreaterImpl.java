@@ -28,17 +28,17 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	 
 	private static String dbVersion = ConfigTable.getString("DATABASE_VERSION"); 
 	public SQLCreaterImpl(){ 
-		disKeyFr = "["; 
-		disKeyTo = "]"; 
+		delimiterFr = "[";
+		delimiterTo = "]";
 	}
 
 	@Override
-	public String getDisKeyFr(){
-		return disKeyFr;
+	public String getDelimiterFr(){
+		return delimiterFr;
 	}
 	@Override
-	public String getDisKeyTo(){
-		return disKeyTo;
+	public String getDelimiterTo(){
+		return delimiterTo;
 	}
 	private String getDbVersion(){ 
 		if(null == dbVersion){ 
@@ -75,7 +75,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 		int last = 0; 
 		String order = ""; 
 		if(null != orders){ 
-			order = orders.getRunText(getDisKeyFr()+getDisKeyTo()); 
+			order = orders.getRunText(getDelimiterFr()+getDelimiterTo());
 		} 
 		if(null != navi){ 
 			first = navi.getFirstRow(); 

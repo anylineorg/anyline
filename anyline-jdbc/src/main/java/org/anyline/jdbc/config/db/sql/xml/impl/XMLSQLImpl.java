@@ -221,20 +221,20 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 	 * 														生成SQL 
 	 *  
 	 * ***********************************************************************************************************************************/ 
-//	public void appendCondition(StringBuilder builder, String disKey){ 
+//	public void appendCondition(StringBuilder builder, String delimiter){
 //		if(null == chain){ 
 //			return; 
 //		} 
-//		builder.append(chain.getRunText(disKey)); 
+//		builder.append(chain.getRunText(delimiter));
 //		addRunValue(chain.getRunValues()); 
 //	} 
 //	/** 
 //	 * 生成运行时SQL 
 //	 */ 
-//	public String getRunText(String diskey){ 
+//	public String getRunText(String delimiter){
 //		StringBuilder builder = new StringBuilder(); 
 //		builder.append(createRunText()); 
-//		appendCondition(builder, diskey); 
+//		appendCondition(builder, delimiter);
 //		return builder.toString(); 
 //	} 
  

@@ -83,7 +83,7 @@ public class GroupStoreImpl implements GroupStore{
 		groups.clear(); 
 	} 
 	@Override 
-	public String getRunText(String disKey) { 
+	public String getRunText(String delimiter) {
 		StringBuilder builder = new StringBuilder(); 
 		if(null != groups && groups.size() > 0){ 
 			builder.append(" GROUP BY "); 

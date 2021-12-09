@@ -92,15 +92,15 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 
 //	@SuppressWarnings("unchecked") 
 //	public String getRunText(SQLCreater creater){ 
-//		String disKeyFr = creater.getDisKeyFr(); 
-//		String disKeyTo = creater.getDisKeyTo(); 
+//		String delimiterFr = creater.getDelimiterFr();
+//		String delimiterTo = creater.getDelimiterTo();
 //		runValues = new ArrayList<Object>(); /////////////////////////////////////////////////////////////////////////////
 //		String text = ""; 
 //		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){  /////////////////////////////////////////////////////////////////////////////
 //			//static txt
 //			text = this.text; 
 //		}else{ 
-//			text = disKeyFr + column.replace(".", disKeyTo+"."+disKeyFr) + disKeyTo; 
+//			text = delimiterFr + column.replace(".", delimiterTo+"."+delimiterFr) + delimiterTo;
 //			
 //			if(compare == SQL.COMPARE_TYPE.EQUAL){ 
 //				if(null == getValue() || "NULL".equals(getValue())){ 
@@ -205,13 +205,13 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public String getRunText(SQLCreater creater, Object val, COMPARE_TYPE compare){ 
-		String disKeyFr = creater.getDisKeyFr(); 
-		String disKeyTo = creater.getDisKeyTo(); 
+		String delimiterFr = creater.getDelimiterFr();
+		String delimiterTo = creater.getDelimiterTo();
 		String text = "";
 		if(BasicUtil.isNotEmpty(table)){
-			text += disKeyFr + table + disKeyTo + ".";
+			text += delimiterFr + table + delimiterTo + ".";
 		}
-		text += disKeyFr + column + disKeyTo;
+		text += delimiterFr + column + delimiterTo;
 
 		if(compare == SQL.COMPARE_TYPE.EQUAL){
 			Object v = getValue(val);
