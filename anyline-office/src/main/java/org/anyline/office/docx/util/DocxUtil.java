@@ -29,9 +29,7 @@ public class DocxUtil {
             List<Element> ts = DomUtil.elements(document.getRootElement(),"t");
             for(Element t:ts){
                 if(t.getTextTrim().contains(key)){
-                    Element r = t.getParent();
-                    Element p = r.getParent();
-                    Element pr = p.element("pPr");
+                    Element pr = t.getParent().getParent().element("pPr");
                     if(null != pr) {
                         Element numPr = pr.element("numPr");
                         if(null != numPr){
@@ -45,7 +43,6 @@ public class DocxUtil {
                         }
                     }
                 }
-
             }
         }catch (Exception e){
             e.printStackTrace();
