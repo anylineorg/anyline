@@ -664,9 +664,8 @@ public class Document {
 
         if(null != styles.get("page-break-after")){
             //分页
-            Element wr = wp.addElement("w:r");
-            wr.addElement("w:br").addAttribute("w:type","page");
-            wr.addElement("w:r").addElement("w:lastRenderedPageBreak");
+            wp.addElement("w:r").addElement("w:br").addAttribute("w:type","page");
+            wp.addElement("w:r").addElement("w:lastRenderedPageBreak");
         }
         return newNext;
     }
@@ -920,6 +919,7 @@ public class Document {
             html.setText(txt);
         }
         Iterator<Node> nodes = html.nodeIterator();
+        boolean empty = true;
         while (nodes.hasNext()){
             Node node = nodes.next();
             String tag = node.getName();
@@ -928,10 +928,12 @@ public class Document {
             if(type == 3){//text
                 String text = node.getText().trim();
                 if(text.length()>0) {
+                    empty = false;
                    Element r = inline(parent, next, text, styles);
                    next = r;
                 }
             }else if(type == 1 ) {//element
+                empty = false;
                 Element element = (Element) node;
                 Map<String,String> itemStyles = StyleParser.inherit(style(element),styles);
                 String display = itemStyles.get("display");
@@ -991,6 +993,9 @@ public class Document {
                     next = parseHtml(parent, next, element, itemStyles);
                 }
             }
+        }
+        if(empty && "tc".equalsIgnoreCase(pname)){
+            parent.addElement("w:p");
         }
         return next;
     }
