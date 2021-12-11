@@ -55,7 +55,7 @@ public class Config extends BaseBodyTag {
 			if(null != util){
 				String url = "";
 				if("auto".equals(server)){
-					server = HttpUtil.parseHost(request.getServerName());
+					server = HttpUtil.host(request.getServerName());
 					log.warn("[wechat config][auto confirm server][server:{}]",server);
 				}
 				if(null != server){
@@ -68,7 +68,7 @@ public class Config extends BaseBodyTag {
 					log.warn("[wechat config][config server][server:{}]",server);
 				}
 				if(BasicUtil.isEmpty(server)){
-					server = HttpUtil.parseHost(request.getServerName());
+					server = HttpUtil.host(request.getServerName());
 					log.warn("[wechat config][server host][server:{}]",server);
 				}
 				url =  HttpUtil.mergePath(server , BasicUtil.evl(request.getAttribute("javax.servlet.forward.request_uri"),"")+"");
