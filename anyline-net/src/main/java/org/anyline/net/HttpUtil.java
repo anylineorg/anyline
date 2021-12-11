@@ -891,8 +891,8 @@ public class HttpUtil {
 	 *  
 	 * @param url  url
 	 * @return return
-	 */ 
-	public static String parseHost(String url) {
+	 */
+	public static String host(String url) {
 		if(null == url){
 			return null;
 		}
@@ -908,7 +908,17 @@ public class HttpUtil {
 		}else {
 			return "http://" + str;
 		}
-	} 
+	}
+	public static String domain(String url) {
+		if(null == url){
+			return null;
+		}
+		url = url.replace("http://","").replace("https://","");
+		if (url.contains(":")){
+			url = url.substring(0, url.indexOf(":"));
+		}
+		return url;
+	}
 	/** 
 	 * 从URL中提取文件目录(删除查询参数) 
 	 *  
@@ -1199,7 +1209,7 @@ public class HttpUtil {
 		} 
 		String fullPath = null; 
 		if (url.startsWith("/")) {// 当前站点的绝对路径 
-			fullPath = parseHost(host) + url; 
+			fullPath = host(host) + url;
 		} else if (url.startsWith("?")) {// 查询参数 
 			fullPath = parsePath(host) + url; 
 		} else {// 当前站点的相对路径 
