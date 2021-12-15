@@ -1,4 +1,4 @@
-package org.anyline.office.docx.entity;
+package org.anyline.office.docx.entity.html;
 
 import org.dom4j.Element;
 
@@ -9,6 +9,7 @@ import java.util.Map;
 
 public class Tr {
     private Table table;
+    private String clazz;
     private List<Td> tds = new ArrayList<>();
     private Map<String,String> styles = new HashMap();
     private Element src;
@@ -58,6 +59,17 @@ public class Tr {
         td.setTr(this);
         return this;
     }
+    public int index(){
+        List<Tr> trs = table.getTrs();
+        return trs.indexOf(this);
+    }
+    public String getClazz() {
+        return clazz;
+    }
+
+    public void setClazz(String clazz) {
+        this.clazz = clazz;
+    }
 
     public Table getTable() {
         return table;
@@ -65,5 +77,31 @@ public class Tr {
 
     public void setTable(Table table) {
         this.table = table;
+    }
+    public void build(StringBuilder builder){
+        if(null == builder) {
+            builder = new StringBuilder();
+        }
+        builder.append("<tr");
+        if(null != clazz){
+            builder.append(" class='").append(clazz).append("'");
+        }
+        if (null != styles && !styles.isEmpty()) {
+            builder.append(" style='");
+            for(String key:styles.keySet()){
+                builder.append(key).append(":").append(styles.get(key)).append(";");
+            }
+            builder.append("'");
+        }
+        builder.append(">");
+        for(Td td:tds){
+            td.build(builder);
+        }
+        builder.append("</tr>");
+    }
+    public String build(){
+        StringBuilder builder = new StringBuilder();
+        build(builder);
+        return builder.toString();
     }
 }
