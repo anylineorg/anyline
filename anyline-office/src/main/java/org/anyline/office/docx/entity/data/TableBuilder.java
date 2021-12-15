@@ -30,16 +30,21 @@ public class TableBuilder {
     }
 
     public String build(){
+        return build(true);
+    }
+    public String build(boolean box){
         StringBuilder build = new StringBuilder();
         parseUnion();
+        if(box){
         build.append("<table");
-        if(null != clazz){
-            build.append(" class='").append(clazz).append("'");
+            if(null != clazz){
+                build.append(" class='").append(clazz).append("'");
+            }
+            build.append(TAG_CLOSE).append(BR);
         }
-        build.append(TAG_CLOSE).append(BR);
         if(null != header){
             build.append(header);
-        }else if(null != headers){
+        }else if(null != headers && headers.size() >0){
             build.append(TAG_TR_BEGIN).append(TAG_CLOSE).append(BR);
             int size = headers.size();
             for(int i=0; i<size; i++){
@@ -161,7 +166,9 @@ public class TableBuilder {
         if(null != footer){
             build.append(footer);
         }
-        build.append("</table>");
+        if(box) {
+            build.append("</table>");
+        }
 
         return build.toString();
     }
@@ -205,6 +212,10 @@ public class TableBuilder {
 
     public TableBuilder setFields(List<String> fields) {
         this.fields = fields;
+        return this;
+    }
+    public TableBuilder setFields(String ... fields) {
+        this.fields = Arrays.asList(fields);
         return this;
     }
 
