@@ -35,9 +35,6 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.io.*;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
@@ -224,7 +221,7 @@ public class BeanUtil {
 	 * @return return
 	 */
 	public static String getColumn(Field field, boolean checkInsert, boolean checkUpdate){ 
- 
+ /*
 		try{ 
 			Annotation annotation = field.getAnnotation(Column.class); 
 			if(null == annotation){ 
@@ -247,13 +244,11 @@ public class BeanUtil {
 				} 
 			} 
 			return column; 
-		}catch(NoClassDefFoundError e){ 
+		}catch(Exception e){
 			e.printStackTrace(); 
 			return null; 
-		}catch(Exception e){ 
-			e.printStackTrace(); 
-			return null; 
-		} 
+		} */
+		return null;
 	} 
 	public static String getColumn(Class<?> clazz,String field, boolean checkInsert, boolean checkUpdate){ 
 		try { 
@@ -348,13 +343,13 @@ public class BeanUtil {
 	} 
 	public static String checkTable(Class<?> clazz){ 
 		String result = null; 
-		try{ 
+/*		try{
 			Annotation annotation = clazz.getAnnotation(Table.class);					//提取Table注解 
 			Method method = annotation.annotationType().getMethod("name");				//引用name方法 
 			result = (String)method.invoke(annotation);									//执行name方法返回结果 
 		}catch(Exception e){ 
 			e.printStackTrace(); 
-		} 
+		} */
 		return result; 
 	} 
 	/** 
@@ -385,11 +380,11 @@ public class BeanUtil {
 	 * @return return
 	 */ 
 	public static String getPrimaryKey(Class<?> clazz){ 
-		List<Field> fields = searchFieldsByAnnotation(clazz, Id.class); 
+		/*List<Field> fields = searchFieldsByAnnotation(clazz, Id.class);
 		if(fields.size()>0){ 
 			Field field = fields.get(0); 
 			return getColumn(field, false, false); 
-		} 
+		} */
 		return null; 
 	} 
 	public static Object getPrimaryValue(Object obj){ 
