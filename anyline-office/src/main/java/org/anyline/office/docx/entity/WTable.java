@@ -184,7 +184,11 @@ public class WTable {
             List<Element> tcs = tr.elements();
             if(tcs.size()>0){
                 Element tc = tcs.get(tcs.size()-1);
-                trs.add(tc.createCopy());
+                for (int i = 0; i < qty; i++) {
+                    Element newTc = tc.createCopy();
+                    DocxUtil.cleanText(newTc);
+                    tr.add(newTc);
+                }
             }else {
                 for (int i = 0; i < qty; i++) {
                     tr.addElement("w:tc").addElement("w:p");
