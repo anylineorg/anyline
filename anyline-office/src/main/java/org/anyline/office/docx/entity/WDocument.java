@@ -1,13 +1,15 @@
 package org.anyline.office.docx.entity;
 
 import org.anyline.net.HttpUtil;
+import org.anyline.office.docx.entity.html.Table;
+import org.anyline.office.docx.entity.html.Td;
+import org.anyline.office.docx.entity.html.Tr;
 import org.anyline.office.docx.util.DocxUtil;
 import org.anyline.office.docx.util.StyleParser;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
-import org.dom4j.ElementPath;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +19,8 @@ import java.io.File;
 import java.security.AccessController;
 import java.util.*;
 
-public class Document {
-    private static Logger log = LoggerFactory.getLogger(Document.class);
+public class WDocument {
+    private static Logger log = LoggerFactory.getLogger(WDocument.class);
     private File file;
     private String xml = null;      //document.xml文本
     //word/document.xml
@@ -35,19 +37,36 @@ public class Document {
 
 
 
-    public Document(File file){
+    public WDocument(File file){
         this.file = file;
     }
-    public Document(String file){
+    public WDocument(String file){
         this.file = new File(file);
     }
 
     private void load(){
-        xml = ZipUtil.read(file,"word/document.xml");
-        relsXml = ZipUtil.read(file,"word/_rels/document.xml.rels");
+        if(null == xml){
+            try {
+                xml = ZipUtil.read(file, "word/document.xml");
+                relsXml = ZipUtil.read(file, "word/_rels/document.xml.rels");
+                doc = DocumentHelper.parseText(xml);
+                relsDoc = DocumentHelper.parseText(relsXml);
+                body = doc.getRootElement().element("body");
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
     }
     public void reload(){
-        load();
+        try {
+            xml = ZipUtil.read(file, "word/document.xml");
+            relsXml = ZipUtil.read(file, "word/_rels/document.xml.rels");
+            doc = DocumentHelper.parseText(xml);
+            relsDoc = DocumentHelper.parseText(relsXml);
+            body = doc.getRootElement().element("body");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     public void flush(){
         try {
@@ -61,13 +80,40 @@ public class Document {
         for(String key:map.keySet()){
             this.styles.put(key, map.get(key));
         }
-
     }
     public void replace(String key, String content){
         if(null == key && key.trim().length()==0){
             return;
         }
         replaces.put(key, content);
+    }
+    public void insert(Element parent, String html){
+        parseHtml(parent, null, html);
+    }
+    public void insert(int index, Element parent, String html){
+        List<Element> elements = parent.elements();
+        if(index <=1 ){
+            index = 1;
+        }else if(index >= elements.size()){
+            index = elements.size()-1;
+        }
+        Element prev = elements.get(index-1);
+        parseHtml(parent, null, html);
+    }
+    public Element getParent(String bookmark, String tag){
+        load();
+        Element bk = DocxUtil.bookmark(doc.getRootElement(), bookmark);
+        return DocxUtil.getParent(bk, tag);
+    }
+    public WTable getTable(String bookmark){
+        Element src = getParent(bookmark, "tbl");
+        WTable table = new WTable(this, src);
+        return table;
+    }
+    public WTr getTr(String bookmark){
+        Element src = getParent(bookmark, "tr");
+        WTr tr = new WTr(this, src);
+        return tr;
     }
 
 
@@ -80,6 +126,9 @@ public class Document {
         Element end =  DomUtil.element(body, "bookmarkEnd","id",id);
         String name = start.attributeValue("name");
         String content = replaces.get(name);
+        if(null == content){
+            return;
+        }
         boolean isblock = DocxUtil.isBlock(content);
         Element startP = start.getParent();
         Element endP = end.getParent();
@@ -106,249 +155,8 @@ public class Document {
             }
         }
     }
-    public Element pr(Element element, Map<String,String> styles){
-        if(null == styles){
-            styles = new HashMap<String,String>();
-        }
-        String name = element.getName();
-        String prName = name+"Pr";
-        Element pr = DocxUtil.addElement(element, prName);
-        if("p".equalsIgnoreCase(name)){
-            for(String sk: styles.keySet()){
-                String sv = styles.get(sk);
-                if(BasicUtil.isEmpty(sv)){
-                    continue;
-                }
-                if(sk.equalsIgnoreCase("list-style-type")){
-                    DocxUtil.addElement(pr, "pStyle", "val",sv);
-                }else if(sk.equalsIgnoreCase("list-lvl")){
-                    Element numPr = DocxUtil.addElement(pr,"numPr");
-                    DocxUtil.addElement(numPr, "ilvl", "val",sv+"");
-                }else if(sk.equalsIgnoreCase("numFmt")){
-                    Element numPr = DocxUtil.addElement(pr,"numPr");
-                    DocxUtil.addElement(numPr, "numFmt", "val",sv+"");
-                }else if ("text-align".equalsIgnoreCase(sk)) {
-                    DocxUtil.addElement(pr, "jc","val", sv);
-                }else if(sk.equalsIgnoreCase("margin-left")){
-                    DocxUtil.addElement(pr, "ind", "left",DocxUtil.width(sv)+"");
-                }else if(sk.equalsIgnoreCase("margin-right")){
-                    DocxUtil.addElement(pr, "ind", "right",DocxUtil.width(sv)+"");
-                }else if(sk.equalsIgnoreCase("margin-top")){
-                    DocxUtil.addElement(pr, "spacing", "before",DocxUtil.width(sv)+"");
-                }else if(sk.equalsIgnoreCase("margin-bottom")){
-                    DocxUtil.addElement(pr, "spacing", "after",DocxUtil.width(sv)+"");
-                }else if(sk.equalsIgnoreCase("padding-left")){
-                    DocxUtil.addElement(pr, "ind", "left",DocxUtil.width(sv)+"");
-                }else if(sk.equalsIgnoreCase("padding-right")){
-                    DocxUtil.addElement(pr, "ind", "right",DocxUtil.width(sv)+"");
-                }else if(sk.equalsIgnoreCase("padding-top")){
-                    DocxUtil.addElement(pr, "spacing", "before",DocxUtil.width(sv)+"");
-                }else if(sk.equalsIgnoreCase("padding-bottom")){
-                    DocxUtil.addElement(pr, "spacing", "after",DocxUtil.width(sv)+"");
-                }else if(sk.equalsIgnoreCase("text-indent")){
-                    DocxUtil.addElement(pr, "ind", "firstLine",DocxUtil.width(sv)+"");
-                }else if(sk.equalsIgnoreCase("line-height")){
-                    DocxUtil.addElement(pr, "spacing", "line",DocxUtil.width(sv)+"");
-                }
-            }
-            if(styles.containsKey("list-style-num")){
-                //如果在样式里指定了样式
-                Element numPr = DocxUtil.addElement(pr,"numPr");
-                DocxUtil.addElement(numPr, "numId", "val",styles.get("list-style-num"));
-            }else if(styles.containsKey("list-num")){
-                //运行时自动生成
-                Element numPr = DocxUtil.addElement(pr,"numPr");
-                DocxUtil.addElement(numPr, "numId", "val",styles.get("list-num"));
-            }
-
-            //<div style="page-size-orient:landscape"/>
-            if(styles.containsKey("page-size-orient")){
-                String orient = styles.get("page-size-orient");
-                if(!"landscape".equalsIgnoreCase(orient)){
-                    orient = "portrait";
-                }
-                String w = styles.get("page-size-w");
-                String h = styles.get("page-size-h");
-                String top = styles.get("page-margin-top");
-                String right = styles.get("page-margin-right");
-                String bottom = styles.get("page-margin-bottom");
-                String left = styles.get("page-margin-left");
-                String header = styles.get("page-margin-left");
-                String footer = styles.get("page-margin-left");
-
-                header = BasicUtil.evl(header, "851").toString();
-                footer = BasicUtil.evl(footer, "992").toString();
-                if("portrait".equalsIgnoreCase(orient)){
-                    //竖板<w:pgMar w:top="1440" w:right="1134" w:bottom="1440" w:left="1531" w:header="851" w:footer="992" w:gutter="0"/>
-                    w = BasicUtil.evl(w, "11906").toString();
-                    h = BasicUtil.evl(h, "16838").toString();
-                    top = BasicUtil.evl(top, "1440").toString();
-                    right = BasicUtil.evl(right, "1134").toString();
-                    bottom = BasicUtil.evl(bottom, "1440").toString();
-                    left = BasicUtil.evl(left, "1531").toString();
-                }else {
-                    //横板
-                    // <w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>
-                    // <w:pgMar w:top="1531" w:right="1440" w:bottom="1134" w:left="1440" w:header="851" w:footer="992" w:gutter="0"/>
-                    w = BasicUtil.evl(w, "16838").toString();
-                    h = BasicUtil.evl(h, "11906").toString();
-                    top = BasicUtil.evl(top, "1531").toString();
-                    right = BasicUtil.evl(right, "1134").toString();
-                    bottom = BasicUtil.evl(bottom, "1440").toString();
-                    left = BasicUtil.evl(left, "1531").toString();
-                }
-                Element sectPr = DocxUtil.addElement(pr,"sectPr");
-                DocxUtil.addElement(sectPr,"pgSz","w", w);
-                DocxUtil.addElement(sectPr,"pgSz","h", h);
-                DocxUtil.addElement(sectPr,"pgSz","orient", orient);
-
-                DocxUtil.addElement(sectPr,"pgMar","top", top);
-                DocxUtil.addElement(sectPr,"pgMar","right", right);
-                DocxUtil.addElement(sectPr,"pgMar","bottom", bottom);
-                DocxUtil.addElement(sectPr,"pgMar","left", left);
-                DocxUtil.addElement(sectPr,"pgMar","header", header);
-                DocxUtil.addElement(sectPr,"pgMar","footer", footer);
-            }
-
-            Element border = DocxUtil.addElement(pr, "bdr");
-            DocxUtil.border(border, styles);
-            //DocxUtil.background(pr, styles);
-
-        }else if("r".equalsIgnoreCase(name)){
-            for (String sk : styles.keySet()) {
-                String sv = styles.get(sk);
-                if(BasicUtil.isEmpty(sv)){
-                    continue;
-                }
-                if(sk.equalsIgnoreCase("color")){
-                    Element color = pr.addElement("w:color");
-                    color.addAttribute("w:val", sv.replace("#",""));
-                }else if(sk.equalsIgnoreCase("background-color")){
-                    //<w:highlight w:val="yellow"/>
-                    DocxUtil.addElement(pr, "highlight", "val",sv.replace("#",""));
-                }
-            }
-            Element border = DocxUtil.addElement(pr, "bdr");
-            DocxUtil.border(border, styles);
-            DocxUtil.font(pr, styles);
-        }else if("tbl".equalsIgnoreCase(name)){
-
-            DocxUtil.addElement(pr,"tblCellSpacing","w","0");
-            DocxUtil.addElement(pr,"tblCellSpacing","type","nil");
-
-            Element mar = DocxUtil.addElement(pr,"tblCellMar");
-            /*DocxUtil.addElement(mar,"top","w","0");
-            DocxUtil.addElement(mar,"top","type","dxa");
-            DocxUtil.addElement(mar,"bottom","w","0");
-            DocxUtil.addElement(mar,"bottom","type","dxa");
-            DocxUtil.addElement(mar,"right","w","0"); //新版本end
-            DocxUtil.addElement(mar,"right","type","dxa");
-            DocxUtil.addElement(mar,"end","w","0");
-            DocxUtil.addElement(mar,"end","type","dxa");
-            DocxUtil.addElement(mar,"left","w","0");//新版本用start,但07版本用start会报错
-            DocxUtil.addElement(mar,"left","type","dxa");*/
-            for (String sk : styles.keySet()) {
-                String sv = styles.get(sk);
-                if(BasicUtil.isEmpty(sv)){
-                    continue;
-                }
-                if(sk.equalsIgnoreCase("width")){
-                    DocxUtil.addElement(pr,"tblW","w", DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(pr,"tblW","type", DocxUtil.widthType(sv));
-                }else if(sk.equalsIgnoreCase("color")){
-                }else if(sk.equalsIgnoreCase("margin-left")){
-                    DocxUtil.addElement(pr,"tblInd","w",DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(pr,"tblInd","type","dxa");
-                }else if(sk.equalsIgnoreCase("padding-left")){
-                    DocxUtil.addElement(mar,"left","w",DocxUtil.width(sv)+""); //新版本用start,但07版本用start会报错
-                    DocxUtil.addElement(mar,"left","type","dxa");
-                }else if(sk.equalsIgnoreCase("padding-right")){
-                    DocxUtil.addElement(mar,"right","w",DocxUtil.width(sv)+""); //新版本用end
-                    DocxUtil.addElement(mar,"right","type","dxa");
-                    DocxUtil.addElement(mar,"end","w",DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(mar,"end","type","dxa");
-                }else if(sk.equalsIgnoreCase("padding-top")){
-                    DocxUtil.addElement(mar,"top","w",DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(mar,"top","type","dxa");
-                }else if(sk.equalsIgnoreCase("padding-bottom")){
-                    DocxUtil.addElement(mar,"bottom","w",DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(mar,"bottom","type","dxa");
-                }
-            }
-
-            Element border = DocxUtil.addElement(pr,"tblBorders");
-            DocxUtil.border(border, styles);
-            DocxUtil.background(pr, styles);
-        }else if("tr".equalsIgnoreCase(name)){
-            for(String sk:styles.keySet()){
-                String sv = styles.get(sk);
-                if(BasicUtil.isEmpty(sv)){
-                    continue;
-                }
-                if("repeat-header".equalsIgnoreCase(sk)){
-                    DocxUtil.addElement(pr,"tblHeader","val","true");
-                }else if("min-height".equalsIgnoreCase(sk)){
-                    DocxUtil.addElement(pr,"trHeight","hRule","atLeast");
-                    DocxUtil.addElement(pr,"trHeight","val",(int)DocxUtil.dxa2pt(DocxUtil.width(sv))*20+"");
-                }else if("height".equalsIgnoreCase(sk)){
-                    DocxUtil.addElement(pr,"trHeight","hRule","exact");
-                    DocxUtil.addElement(pr,"trHeight","val",(int)DocxUtil.dxa2pt(DocxUtil.width(sv))*20+"");
-                }
-            }
-        }else if("tc".equalsIgnoreCase(name)){
-            for(String sk:styles.keySet()){
-                String sv = styles.get(sk);
-                if(BasicUtil.isEmpty(sv)){
-                    continue;
-                }
-
-                Element mar = DocxUtil.addElement(pr,"tcMar");
-                /*DocxUtil.addElement(mar,"top","w","0");
-                DocxUtil.addElement(mar,"top","type","dxa");
-                DocxUtil.addElement(mar,"bottom","w","0");
-                DocxUtil.addElement(mar,"bottom","type","dxa");
-                DocxUtil.addElement(mar,"right","w","0"); //新版本end
-                DocxUtil.addElement(mar,"right","type","dxa");
-                DocxUtil.addElement(mar,"end","w","0");
-                DocxUtil.addElement(mar,"end","type","dxa");
-                DocxUtil.addElement(mar,"left","w","0");//新版本用start,但07版本用start会报错
-                DocxUtil.addElement(mar,"left","type","dxa");*/
-                if("vertical-align".equalsIgnoreCase(sk)){
-                    DocxUtil.addElement(pr,"vAlign", "val", sv );
-                }else if("text-align".equalsIgnoreCase(sk)){
-                    DocxUtil.addElement(pr, "jc","val", sv);
-                }else if(sk.equalsIgnoreCase("white-space")){
-                    DocxUtil.addElement(pr,"noWrap");
-                }else if(sk.equalsIgnoreCase("width")){
-                    DocxUtil.addElement(pr,"tcW","w",DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(pr,"tcW","type",DocxUtil.widthType(sv));
-                }else if(sk.equalsIgnoreCase("padding-left")){
-                    DocxUtil.addElement(mar,"left","w",DocxUtil.width(sv)+""); //新版本用start,但07版本用start会报错
-                    DocxUtil.addElement(mar,"left","type","dxa");
-                }else if(sk.equalsIgnoreCase("padding-right")){
-                    DocxUtil.addElement(mar,"right","w",DocxUtil.width(sv)+""); //新版本用end
-                    DocxUtil.addElement(mar,"right","type","dxa");
-                    DocxUtil.addElement(mar,"end","w",DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(mar,"end","type","dxa");
-                }else if(sk.equalsIgnoreCase("padding-top")){
-                    DocxUtil.addElement(mar,"top","w",DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(mar,"top","type","dxa");
-                }else if(sk.equalsIgnoreCase("padding-bottom")){
-                    DocxUtil.addElement(mar,"bottom","w",DocxUtil.width(sv)+"");
-                    DocxUtil.addElement(mar,"bottom","type","dxa");
-                }
-            }
-            //
-            Element padding = DocxUtil.addElement(pr,"tcMar");
-            DocxUtil.padding(padding, styles);
-            Element border = DocxUtil.addElement(pr,"tcBorders");
-            DocxUtil.border(border, styles);
-            DocxUtil.background(pr, styles);
-        }
-        if(pr.elements().size()==0){
-            element.remove(pr);
-        }
-        return pr;
+    public  Element pr(Element element, Map<String,String> styles){
+        return DocxUtil.pr(element, styles);
     }
 
     private List<Element> parseHtml(Element box, Element next, String html){
@@ -530,7 +338,7 @@ public class Document {
                             merge.setMerge(2);//被上一行合并
                             merge.setColspan(colspan);
                         }
-                        for(int i=tcIndex+1; i<tcIndex+colspan; i++){
+                        for(int i=tcIndex+merge_qty+1; i<tcIndex+merge_qty+colspan; i++){
                             Td cur = cells[j][i];
                             cur.setRemove(true);//被上一列合并
                         }
@@ -626,7 +434,7 @@ public class Document {
         t.setText(text.trim());
         return r;
     }
-    private Element block(Element parent, Element next, Element element, Map<String,String> styles){
+    public Element block(Element parent, Element next, Element element, Map<String,String> styles){
         Element box = null;
         String pname = parent.getName();
         Element newNext = null;
@@ -645,7 +453,7 @@ public class Document {
             newNext = parent.getParent();
             wp = newNext;
         }else if(pname.equalsIgnoreCase("tc")){
-            box = parent.addElement("w:p");
+            box = DocxUtil.addElement(parent,"p");
             DocxUtil.after(box, next);
             newNext = box;
             wp = box;
@@ -662,7 +470,7 @@ public class Document {
         pr(box, styles);
         parseHtml(box, next, element, styles);
 
-        if(null != styles.get("page-break-after")){
+        if(null != styles && null != styles.get("page-break-after")){
             //分页
             wp.addElement("w:r").addElement("w:br").addAttribute("w:type","page");
             wp.addElement("w:r").addElement("w:lastRenderedPageBreak");
@@ -912,7 +720,7 @@ public class Document {
     }
     public Element parseHtml(Element parent, Element next, Element html, Map<String,String> styles){
         String pname = parent.getName();
-        String txt = html.getTextTrim().replace("&nbsp;"," ");
+        String txt = html.getTextTrim();
         if(html.elements().size()==0){
             //txt = txt.replaceAll("\\s","");
             txt = txt.trim();
@@ -1107,9 +915,6 @@ public class Document {
     public void save(){
         try {
             load();
-            doc = DocumentHelper.parseText(xml);
-            relsDoc = DocumentHelper.parseText(relsXml);
-            body = doc.getRootElement().element("body");
 
             List<Element> ts = DomUtil.elements(body, "t");
             for(Element t:ts){
@@ -1133,6 +938,17 @@ public class Document {
                     if(flag.startsWith("${") && flag.endsWith("}")) {
                         key = flag.substring(2, flag.length() - 1);
                         content = replaces.get(key);
+                        if(null == content){
+                            content = replaces.get(flag);
+                        }
+                    }else if(flag.startsWith("{") && flag.endsWith("}")){
+                        key = flag.substring(2, flag.length() - 1);
+                        content = replaces.get(key);
+                        if(null == content){
+                            content = replaces.get(flag);
+                        }
+                    }else{
+                        content = replaces.get(flag);
                     }
                     //boolean isblock = DocxUtil.isBlock(content);
                     //Element p = t.getParent();
@@ -1143,7 +959,9 @@ public class Document {
                     }else{
                         List<Element> list = parseHtml(r, next ,content);
                     }*/
-                    List<Element> list = parseHtml(r, next ,content);
+                    if(null != content) {
+                        List<Element> list = parseHtml(r, next, content);
+                    }
                 }
                 elements.remove(t);
             }
@@ -1152,6 +970,7 @@ public class Document {
                 replaceBookmark(bookmark);
             }
             checkContentTypes();
+            ZipUtil.replace(file,"word/document.xml", DomUtil.format(doc));
             ZipUtil.replace(file,"word/document.xml", DomUtil.format(doc));
             ZipUtil.replace(file,"word/_rels/document.xml.rels", DomUtil.format(relsDoc));
 
