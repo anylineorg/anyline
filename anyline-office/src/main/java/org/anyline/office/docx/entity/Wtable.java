@@ -45,9 +45,7 @@ public class Wtable {
 
 
     public Element getParent(String bookmark, String tag){
-        doc.reload();
-        Element bk = doc.getParent(bookmark, tag);
-        return DocxUtil.getParent(bk, tag);
+        return doc.getParent(bookmark, tag);
     }
 
 
@@ -239,16 +237,30 @@ public class Wtable {
         reload();
         return this;
     }
-    public Wtable addRows(int qty){
+    public Wtable addRows(int index, int qty){
         List<Element> trs = src.elements("tr");
         if(trs.size()>0){
-            Element tr = trs.get(trs.size()-1);
+            Element tr = null;
+            if(index == -1) {
+                tr = trs.get(trs.size() - 1);
+            }else{
+                tr = trs.get(index-1);
+            }
             for(int i=0; i<qty; i++) {
-                trs.add(tr.createCopy());
+                Element newTr = tr.createCopy();
+                DocxUtil.removeContent(newTr);
+                if(index != -1){
+                    trs.add(index++, newTr);
+                }else {
+                    trs.add(newTr);
+                }
             }
         }
         reload();
         return this;
+    }
+    public Wtable addRows(int qty){
+        return addRows(-1, qty);
     }
     public int getTrSize(){
         return src.elements("tr").size();
@@ -260,6 +272,31 @@ public class Wtable {
         return this;
     }
 
+    public Wtable merge(int rows, int cols, int rowspan, int colspan){
+        reload();
+        for(int r=rows; r<rows+rowspan; r++){
+            for(int c=cols; c<cols+colspan; c++){
+                Wtc tc = getTc(r, c);
+                Element pr = DocxUtil.addElement(tc.getSrc(), "tcPr");
+                if(rowspan > 1){
+                    if(r==rows){
+                        DocxUtil.addElement(pr, "vMerge", "val",   "restart");
+                    }else{
+                        DocxUtil.addElement(pr, "vMerge");
+                    }
+                }
+                if(colspan>1){
+                    if(c==cols){
+                        DocxUtil.addElement(pr, "gridSpan", "val",   colspan+"");
+                    }else{
+                        tc.remove();
+                    }
+                }
+            }
+        }
+        reload();
+        return this;
+    }
     public List<Wtr> getTrs(){
         return trs;
     }
