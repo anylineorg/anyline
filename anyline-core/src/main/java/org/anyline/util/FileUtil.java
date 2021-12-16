@@ -43,7 +43,7 @@ public class FileUtil {
 	/**
 	 * 合成path
 	 * @param paths paths
-	 * @return return
+	 * @return String
 	 */
 	public static String mergePath(String ... paths){
 		String result = null;
@@ -81,7 +81,7 @@ public class FileUtil {
  
 	/** 
 	 * 目录分隔符 
-	 * @return return
+	 * @return String
 	 */ 
 	public static String getFileSeparator(){ 
 		return System.getProperty("file.separator"); 
@@ -90,7 +90,7 @@ public class FileUtil {
 	/** 
 	 * 判断当前应用程序的目录类别 0-jar包形式 
 	 * @param dst  dst
-	 * @return return
+	 * @return int
 	 */ 
 	@SuppressWarnings("rawtypes")
 	public static int getPathType(Class dst){ 
@@ -124,7 +124,7 @@ public class FileUtil {
 	 * 读取输入流 
 	 * @param input  input
 	 * @param encode  encode
-	 * @return return
+	 * @return StringBuffer
 	 */ 
 	public static StringBuffer read(InputStream input, String encode){ 
 		StringBuffer buffer = new StringBuffer(); 
@@ -219,7 +219,7 @@ public class FileUtil {
 	 * 读取文件 
 	 * @param file  file
 	 * @param encode  encode
-	 * @return return
+	 * @return StringBuffer
 	 */ 
 	public static StringBuffer read(File file,String encode){
 		StringBuffer buffer = new StringBuffer();
@@ -363,7 +363,7 @@ public class FileUtil {
 	 * @param fileDir  fileDir
 	 * @param fileName  fileName
 	 * @param over 是否清空已存在的同名文件 
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean create(String fileDir, String fileName, boolean over){ 
 		String filePath = mergePath(fileDir, fileName); 
@@ -397,7 +397,7 @@ public class FileUtil {
 	/** 
 	 * 从URL中提取文件目录(删除查询参数) 
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */ 
 	public static String fetchPathByUrl(String url){ 
 		int to = url.indexOf("?"); 
@@ -408,7 +408,7 @@ public class FileUtil {
 	/** 
 	 * 提取一个URL所在的目录 
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */ 
 	public static String fetchDirByUrl(String url){ 
 		String dir = null; 
@@ -425,7 +425,7 @@ public class FileUtil {
 	/** 
 	 * path是否包含文件名 
 	 * @param path  path
-	 * @return return
+	 * @return boolean
 	 */ 
 	private static boolean isHttpFile(String path){ 
  
@@ -447,7 +447,7 @@ public class FileUtil {
 	/** 
 	 * 提取url根目录 
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */ 
 	public static String getHostUrl(String url){ 
 		url = url.replaceAll("http://",""); 
@@ -458,34 +458,11 @@ public class FileUtil {
 		url = "http://"+url; 
 		return url; 
 	} 
-	 
-//	/** 
-//	 * 获取文件编码格式 
-//	 * 需要包antlr.jar cpdetector.jar chardet.jar 
-//	 * @param file  file
-//	 * @return return
-//	 */ 
-//	public static String getFileEncode(File file){ 
-//		String encode = "UTF-8"; 
-// 
-//		Charset charset = null; 
-//		try { 
-//			CodepageDetectorProxy detector = CodepageDetectorProxy.getInstance(); 
-//		//	detector.add(JChardetFacade.getInstance()); 
-//			charset = detector.detectCodepage(file.toURI().toURL()); 
-//		} catch (Exception e) { 
-//			e.printStackTrace(); 
-//		} 
-//		if (charset != null) { 
-//			encode = charset.name(); 
-//		} 
-// 
-//		return encode; 
-//	}
+
 	/**
 	 * 不含后缀的文件名
 	 * @param file file
-	 * @return return
+	 * @return String
 	 */ 
 	public static String getSimpleFileName(File file){ 
 		String name = null; 
@@ -526,7 +503,7 @@ public class FileUtil {
 	 * 复制文件  源文件  目标文件 
 	 * @param src  src
 	 * @param dst  dst
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean copy(File src, File dst){ 
 		boolean result = true; 
@@ -593,7 +570,7 @@ public class FileUtil {
 	 * 读取当前目录及子目录下所有文件 
 	 * @param dir  dir
 	 * @param subbfixs  subbfixs
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<File> getAllChildrenFile(File dir, String ...subbfixs){ 
 		List<File> list = new ArrayList<File>(); 
@@ -626,7 +603,7 @@ public class FileUtil {
 	/** 
 	 * 读取当前目录及子目录下所有子目录 
 	 * @param dir  dir
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<File> getAllChildrenDirectory(File dir){ 
 		List<File> list = new ArrayList<File>(); 
@@ -656,7 +633,7 @@ public class FileUtil {
 	 *  
 	 * @param dir  dir
 	 * @param types  types
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<File> getChildrenFile(File dir, String ...types){ 
 		List<File> list = new ArrayList<File>(); 
@@ -673,7 +650,7 @@ public class FileUtil {
 	 * ZIP文件中的所有子文件 
 	 * @param zip  zip
 	 * @param types  types
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<File> getZipAllChildrenFile(File zip, String ...types){ 
 		List<File> list = new ArrayList<File>(); 
@@ -703,7 +680,7 @@ public class FileUtil {
 	 * 按类型(后缀)过滤文件 
 	 * @param file  file
 	 * @param types  types
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean filterByType(File file, String ... types){ 
 		if(null == file){ 
@@ -730,7 +707,7 @@ public class FileUtil {
 	/** 
 	 * 后缀名 
 	 * @param fileName  fileName
-	 * @return return
+	 * @return String
 	 */ 
 	public static String parseSubName(String fileName){ 
 		String result = null; 
@@ -811,7 +788,7 @@ public class FileUtil {
 	 /** 
 	  * 删除目录 
 	  * @param file  file
-	  * @return return
+	  * @return boolean
 	  */ 
 	public static boolean delete(File file) {
 		if(null == file){
@@ -839,7 +816,7 @@ public class FileUtil {
 	 * @param subbfixs 如果file是目录, 只统计其中subbfixs结尾的文件 
 	 * @return return
 	 */ 
-	public static int calculateLine(File file, String ... subbfixs){ 
+	public static int lines(File file, String ... subbfixs){
 		int size = 0; 
 		if(null == file || !file.exists()){ 
 			return size; 
@@ -847,7 +824,7 @@ public class FileUtil {
 		if(file.isDirectory()){
 			List<File> files = FileUtil.getAllChildrenFile(file, subbfixs);
 			for(File item:files){
-				size += calculateLine(item);
+				size += lines(item);
 			}
 		}
 		try{ 
