@@ -426,6 +426,10 @@ public class Wtc {
         }
         return this;
     }
+    public void remove(){
+        src.getParent().remove(src);
+        parent.getTcs().remove(this);
+    }
     public Wtc setText(String text){
         setText(text, null);
         return this;
