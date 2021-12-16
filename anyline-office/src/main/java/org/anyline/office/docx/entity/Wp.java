@@ -62,7 +62,7 @@ public class Wp {
         for(Wr wr:wrs){
             wr.setFontFamily(font);
         }
-        Element pr = DocxUtil.addElement(src, "rPr");
+        Element pr = DocxUtil.addElement(src, "pPr");
         DocxUtil.addElement(pr, "rFonts","eastAsia", font);
         DocxUtil.addElement(pr, "rFonts","ascii", font);
         DocxUtil.addElement(pr, "rFonts","hAnsi", font);
