@@ -105,15 +105,10 @@ public class WDocument {
         Element bk = DocxUtil.bookmark(doc.getRootElement(), bookmark);
         return DocxUtil.getParent(bk, tag);
     }
-    public WTable getTable(String bookmark){
+    public Wtable getTable(String bookmark){
         Element src = getParent(bookmark, "tbl");
-        WTable table = new WTable(this, src);
+        Wtable table = new Wtable(this, src);
         return table;
-    }
-    public WTr getTr(String bookmark){
-        Element src = getParent(bookmark, "tr");
-        WTr tr = new WTr(this, src);
-        return tr;
     }
 
 
@@ -159,7 +154,7 @@ public class WDocument {
         return DocxUtil.pr(element, styles);
     }
 
-    private List<Element> parseHtml(Element box, Element next, String html){
+    private List<Element> parseHtml(Element box, Element prev, String html){
         List<Element> list = new ArrayList<Element>();
         if(null == html || html.trim().length()==0){
             return list;
@@ -172,11 +167,10 @@ public class WDocument {
             html = html.replace(style,"");
         }
         try {
-            html = html.replace("&","&amp;");
             html = "<body>" + html + "</body>";
             org.dom4j.Document doc = DocumentHelper.parseText(html);
             Element root = doc.getRootElement();
-            parseHtml(box, next, root, null);
+            parseHtml(box, prev, root, null);
         }catch (Exception e){
             e.printStackTrace();
             //log.error(html);
@@ -342,7 +336,6 @@ public class WDocument {
                             Td cur = cells[j][i];
                             cur.setRemove(true);//被上一列合并
                         }
-
                     }
                 }
                 tcIndex += colspan-1;
@@ -405,27 +398,27 @@ public class WDocument {
         }
         return  tc;
     }
-    private Element inline(Element parent, Element next, String text, Map<String, String> styles){
+    private Element inline(Element parent, Element prev, String text, Map<String, String> styles){
         String pname = parent.getName();
         Element r;
         if(pname.equalsIgnoreCase("r")){
             r = parent;
             pr(parent, styles);
-            DocxUtil.after(r, next);
+            DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("tc")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
             r = p.addElement("w:r");
-            DocxUtil.after(r, next);
+            DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("p")){
             pr(parent, styles);
             r = parent.addElement("w:r");
-            //DocxUtil.after(r, next);
+            //DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("body")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
             r = p.addElement("w:r");
-            DocxUtil.after(p, next);
+            DocxUtil.after(p, prev);
         }else{
             throw new RuntimeException("text.parent异常:"+parent.getName());
         }
@@ -434,33 +427,33 @@ public class WDocument {
         t.setText(text.trim());
         return r;
     }
-    public Element block(Element parent, Element next, Element element, Map<String,String> styles){
+    public Element block(Element parent, Element prev, Element element, Map<String,String> styles){
         Element box = null;
         String pname = parent.getName();
-        Element newNext = null;
+        Element newPrev = null;
         Element wp = null;
         pr(parent, styles);
         if(pname.equalsIgnoreCase("p")){
             box = parent.addElement("w:r");
-            next = box.addElement("w:br");
-            DocxUtil.after(box, next);
-            newNext = parent;
+            prev = box.addElement("w:br");
+            DocxUtil.after(box, prev);
+            newPrev = parent;
             wp = parent;
         }else if(pname.equalsIgnoreCase("r")){
             box = parent.getParent().addElement("w:r");
-            next = box.addElement("w:br");
-            DocxUtil.after(box, next);
-            newNext = parent.getParent();
-            wp = newNext;
+            prev = box.addElement("w:br");
+            DocxUtil.after(box, prev);
+            newPrev = parent.getParent();
+            wp = newPrev;
         }else if(pname.equalsIgnoreCase("tc")){
             box = DocxUtil.addElement(parent,"p");
-            DocxUtil.after(box, next);
-            newNext = box;
+            DocxUtil.after(box, prev);
+            newPrev = box;
             wp = box;
         }else if(pname.equalsIgnoreCase("body")){
             box = parent.addElement("w:p");
-            newNext = box;
-            DocxUtil.after(box, next);
+            newPrev = box;
+            DocxUtil.after(box, prev);
             wp = box;
         }else{
             throw new RuntimeException("div.parent 异常:"+pname+":"+element.getName()+":"+element.getTextTrim());
@@ -468,16 +461,16 @@ public class WDocument {
         }
 
         pr(box, styles);
-        parseHtml(box, next, element, styles);
+        parseHtml(box, prev, element, styles);
 
         if(null != styles && null != styles.get("page-break-after")){
             //分页
             wp.addElement("w:r").addElement("w:br").addAttribute("w:type","page");
             wp.addElement("w:r").addElement("w:lastRenderedPageBreak");
         }
-        return newNext;
+        return newPrev;
     }
-    private Element ol(Element parent, Element next, Element element, Map<String,String> styles){
+    private Element ol(Element parent, Element prev, Element element, Map<String,String> styles){
         styles = StyleParser.parse(styles, element.attributeValue("style"), true);
         if(!DocxUtil.hasParent(element, "ol")){
             listNum ++;//新一组编号
@@ -486,12 +479,12 @@ public class WDocument {
         for(Element li:lis){
             String liName = li.getName();
             if(liName.equalsIgnoreCase("ol")) {
-                next = ol(body, next, li, styles);
+                prev = ol(body, prev, li, styles);
             }else{
-                next = li(body, next, li, styles);
+                prev = li(body, prev, li, styles);
             }
         }
-        return next;
+        return prev;
     }
     private List<Map<String,String>> lis(Element parent){
         List<Map<String,String>> lis = new ArrayList<Map<String,String>>();
@@ -513,15 +506,15 @@ public class WDocument {
         }
         return lis;
     }
-    private Element li(Element parent, Element next, Element element, Map<String,String> styles){
+    private Element li(Element parent, Element prev, Element element, Map<String,String> styles){
         Element box = parent.addElement("w:p");
         int lvl = lvl(element);
         styles.put("list-lvl",lvl+"");
         styles.put("list-num", listNum+"");
         pr(box, styles);
-        DocxUtil.after(box, next);
-        next = parseHtml(box, next, element, styles);
-        return next;
+        DocxUtil.after(box, prev);
+        prev = parseHtml(box, prev, element, styles);
+        return prev;
     }
     private int lvl(Element li){
         int lvl = -1;
@@ -536,13 +529,13 @@ public class WDocument {
         }
         return lvl;
     }
-    private Element word(Element parent, Element next, Element element, Map<String, String> styles){
+    private Element word(Element parent, Element prev, Element element, Map<String, String> styles){
         String path = element.getTextTrim();
         String bookmark = element.attributeValue("bookmark");
-        return word(parent, next, new File(path), bookmark, styles);
+        return word(parent, prev, new File(path), bookmark, styles);
     }
-    private Element word(Element parent, Element next, File word, String bookmark, Map<String, String> styles){
-        Element newNext = null;
+    private Element word(Element parent, Element prev, File word, String bookmark, Map<String, String> styles){
+        Element newPrev = null;
         String wxml = ZipUtil.read(word,"word/document.xml");
         try {
             Element wbody =  DocumentHelper.parseText(wxml).getRootElement().element("body");
@@ -563,14 +556,14 @@ public class WDocument {
                         }else {
                             parent.elements().add(element);
                         }
-                        newNext = element;
+                        newPrev = element;
                     }
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return newNext;
+        return newPrev;
     }
     private void addElements(Element parent, List<Element> elements, boolean over){
         for(Element element:elements){
@@ -588,27 +581,27 @@ public class WDocument {
         }
     }
 
-    private Element img(Element parent, Element next, Element element, Map<String, String> styles){
+    private Element img(Element parent, Element prev, Element element, Map<String, String> styles){
         String pname = parent.getName();
         Element r;
         if(pname.equalsIgnoreCase("r")){
             r = parent;
             pr(parent, styles);
-            DocxUtil.after(r, next);
+            DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("tc")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
             r = p.addElement("w:r");
-            DocxUtil.after(r, next);
+            DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("p")){
             pr(parent, styles);
             r = parent.addElement("w:r");
-            //DocxUtil.after(r, next);
+            //DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("body")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
             r = p.addElement("w:r");
-            DocxUtil.after(p, next);
+            DocxUtil.after(p, prev);
         }else{
             throw new RuntimeException("text.parent异常:"+parent.getName());
         }
@@ -619,13 +612,13 @@ public class WDocument {
         int width = 0;
         if("pct".equalsIgnoreCase(widthType)) {
         }else{
-            width = DocxUtil.px2emu((int)DocxUtil.dxa2px(DocxUtil.width(styles.get("width"))));
+            width = DocxUtil.px2emu((int)DocxUtil.dxa2px(DocxUtil.dxa(styles.get("width"))));
         }
         String heightType = DocxUtil.widthType(styles.get("height"));
         int height = 0;
         if("pct".equalsIgnoreCase(heightType)) {
         }else{
-            height = DocxUtil.px2emu((int)DocxUtil.dxa2px(DocxUtil.width(styles.get("height"))));
+            height = DocxUtil.px2emu((int)DocxUtil.dxa2px(DocxUtil.dxa(styles.get("height"))));
         }
 
         String rdm = System.currentTimeMillis()+"";
@@ -718,7 +711,16 @@ public class WDocument {
         return r;
 
     }
-    public Element parseHtml(Element parent, Element next, Element html, Map<String,String> styles){
+
+    /**
+     * 解析html
+     * @param parent 上一级
+     * @param prev 放在prev之后
+     * @param html html
+     * @param styles 样式
+     * @return prev
+     */
+    public Element parseHtml(Element parent, Element prev, Element html, Map<String,String> styles){
         String pname = parent.getName();
         String txt = html.getTextTrim();
         if(html.elements().size()==0){
@@ -737,8 +739,8 @@ public class WDocument {
                 String text = node.getText().trim();
                 if(text.length()>0) {
                     empty = false;
-                   Element r = inline(parent, next, text, styles);
-                   next = r;
+                   Element r = inline(parent, prev, text, styles);
+                    prev = r;
                 }
             }else if(type == 1 ) {//element
                 empty = false;
@@ -759,53 +761,59 @@ public class WDocument {
                         box = doc.getRootElement().element("body");
                         //新建一个段落
                     }
-                    Element tbl = table(box, next, element);
-                    next = tbl;
+                    Element tbl = table(box, prev, element);
+                    prev = tbl;
                 }else if("div".equalsIgnoreCase(tag)){
                     if("inline".equalsIgnoreCase(display) || "inline-block".equalsIgnoreCase(display)){
-                        next = parseHtml(parent, next, element, itemStyles);
+                        prev = parseHtml(parent, prev, element, itemStyles);
                     }else {
-                        next = block(parent, next, element, itemStyles);
+                        prev = block(parent, prev, element, itemStyles);
                     }
                 }else if("span".equalsIgnoreCase(tag)){
                     if("block".equalsIgnoreCase(display)){
-                        next = block(parent, next, element, itemStyles);
+                        prev = block(parent, prev, element, itemStyles);
                     }else {
-                        next =  parseHtml(parent, next, element, itemStyles);
+                        prev =  parseHtml(parent, prev, element, itemStyles);
                     }
                 }else if("img".equalsIgnoreCase(tag)){
-                    Element img = img(parent, next, element, styles);
-                    next = img;
+                    Element img = img(parent, prev, element, styles);
+                    prev = img;
                 }else if("word".equalsIgnoreCase(tag)){
-                    Element word = word(parent, next, element, styles);
-                    next = word;
+                    Element word = word(parent, prev, element, styles);
+                    prev = word;
                 }else if("ol".equalsIgnoreCase(tag)){
-                    next = ol(body, next, element, itemStyles);
+                    prev = ol(body, prev, element, itemStyles);
                 }else if("li".equalsIgnoreCase(tag)){
-                    next = li(body, next, element, itemStyles);
+                    prev = li(body, prev, element, itemStyles);
                 }else if("br".equalsIgnoreCase(tag)){
                     parent.addElement("w:br");
                 }else if("u".equalsIgnoreCase(tag)){
                     itemStyles.put("underline","true");
-                    next = parseHtml(parent, next, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles);
                 }else if("b".equalsIgnoreCase(tag)){
                     itemStyles.put("font-weight","700");
-                    next = parseHtml(parent, next, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles);
                 }else if("i".equalsIgnoreCase(tag)){
                     itemStyles.put("italics","true");
-                    next = parseHtml(parent, next, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles);
                 }else if("del".equalsIgnoreCase(tag)){
                     itemStyles.put("dstrike","true");
-                    next = parseHtml(parent, next, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles);
+                }else if("sup".equalsIgnoreCase(tag)){
+                    itemStyles.put("vertical-align","superscript");
+                    prev = parseHtml(parent, prev, element, itemStyles);
+                }else if("sub".equalsIgnoreCase(tag)){
+                    itemStyles.put("vertical-align","subscript");
+                    prev = parseHtml(parent, prev, element, itemStyles);
                 }else{
-                    next = parseHtml(parent, next, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles);
                 }
             }
         }
         if(empty && "tc".equalsIgnoreCase(pname)){
             parent.addElement("w:p");
         }
-        return next;
+        return prev;
     }
     public Element p(Element parent, String text, Map<String,String> styles){
         while(parent.getName().equalsIgnoreCase("p")){
@@ -927,9 +935,9 @@ public class WDocument {
                 Element r = t.getParent();
                 List<Element> elements = r.elements();
                 int index = elements.indexOf(t);
-                Element next = null;
+                Element prev = null;
                 if(index < elements.size()-1){
-                    next = elements.get(index+1);
+                    prev = elements.get(index+1);
                 }
                 for(int i=0; i<flags.size(); i++){
                     String flag = flags.get(i);
@@ -953,14 +961,14 @@ public class WDocument {
                     //boolean isblock = DocxUtil.isBlock(content);
                     //Element p = t.getParent();
                     /*if(null != key && DocxUtil.isEmpty(p, t) && !DocxUtil.hasParent(t,"tc")){
-                        next = DocxUtil.prev(body, p);
+                        prev = DocxUtil.prev(body, p);
                         body.remove(p);
-                        List<Element> list = parseHtml(body, next ,content);
+                        List<Element> list = parseHtml(body, prev ,content);
                     }else{
-                        List<Element> list = parseHtml(r, next ,content);
+                        List<Element> list = parseHtml(r, prev ,content);
                     }*/
                     if(null != content) {
-                        List<Element> list = parseHtml(r, next, content);
+                        List<Element> list = parseHtml(r, prev, content);
                     }
                 }
                 elements.remove(t);
