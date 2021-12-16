@@ -199,7 +199,7 @@ public class Table {
      * @param cols 依据列1,2,3(1,2) 第1,2,3列值相同时合并行,第3列合并的前提是第1,2列已合并
      * @return Table
      */
-    public Table mergeRow(String ... cols){
+    public Table setMergeRow(String ... cols){
         for(String col:cols){
             List<Integer> refs = new ArrayList<>();
             int c = -1;
@@ -221,7 +221,7 @@ public class Table {
         mergeRows = Arrays.asList(cols);
         return this;
     }
-    public Table mergeCol(int start, int qty){
+    public Table setMergeCol(int start, int qty){
         Integer[] merge = new Integer[2];
         merge[0] = start;
         merge[1] = qty;
