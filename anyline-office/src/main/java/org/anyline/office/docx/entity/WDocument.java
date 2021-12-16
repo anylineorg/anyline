@@ -110,8 +110,49 @@ public class WDocument {
         Wtable table = new Wtable(this, src);
         return table;
     }
+    //插入排版方向
+    public void setOrient(Element prev, String orient, Map<String,String> styles){
+        int index = index(body, prev);
+        Element p = body.addElement("w:p");
+        Element pr = p.addElement("pPr");
 
+        DocxUtil.setOrient(pr, orient, styles);
 
+        List<Element> elements = body.elements();
+        if(index > -1 && index <elements.size()-1){
+            elements.remove(p);
+            elements.add(index+1, p);
+        }
+    }
+    public void setOrient(Element prev, String orient){
+        setOrient(prev, orient, null);
+    }
+    //插入换页
+    public void insertPageBreak(Element prev){
+        int index = index(body, prev);
+        Element p = body.addElement("w:p");
+
+        p.addElement("w:r").addElement("w:br").addAttribute("w:type","page");
+        p.addElement("w:r").addElement("w:lastRenderedPageBreak");
+
+        List<Element> elements = body.elements();
+        if(index > -1 && index <elements.size()-1){
+            elements.remove(p);
+            elements.add(index+1, p);
+        }
+
+    }
+    public static int index(Element parent, Element element){
+        int index = parent.indexOf(element);
+        while(element.getParent() != parent){
+            element = element.getParent();
+            if(element.getParent() == parent) {
+                index = parent.indexOf(element);
+                break;
+            }
+        }
+        return index;
+    }
     /**
      * 替换书签
      * @param start 开始书签
