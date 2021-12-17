@@ -17,6 +17,7 @@ public class Td {
     private String clazz = null;
     private int merge = -1; // -1 不合并 1:合并 2:被合并
     private boolean remove = false;
+    private String width;
     private Tr tr;
     public Map<String, String> getStyles() {
         return styles;
@@ -72,7 +73,6 @@ public class Td {
 
     public void setRowspan(int rowspan) {
         this.rowspan = rowspan;
-
     }
     //根据 rowspan colspan合并
     public void merge(){
@@ -108,6 +108,14 @@ public class Td {
     public int getRowIndex(){
         Tr tr = getTr();
         return tr.index();
+    }
+
+    public String getWidth() {
+        return width;
+    }
+
+    public void setWidth(String width) {
+        this.width = width;
     }
 
     public String getClazz() {
