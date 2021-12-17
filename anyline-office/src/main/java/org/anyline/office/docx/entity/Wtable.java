@@ -118,7 +118,7 @@ public class Wtable {
             datas.add(data);
         }
         TableBuilder builder = TableBuilder.init().setFields(cols).setDatas(datas);
-        String html = builder.build(false);
+        String html = builder.build().build(false);
         insert(index, template, html);
     }
     public void insert(int index, String html){
