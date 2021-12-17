@@ -1,5 +1,9 @@
 package org.anyline.office.docx.entity.data;
  
+import org.anyline.office.docx.entity.html.Table;
+import org.anyline.office.docx.entity.html.Td;
+import org.anyline.office.docx.entity.html.Tr;
+import org.anyline.office.docx.util.StyleParser;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
@@ -29,10 +33,7 @@ public class TableBuilder {
         return builder;
     }
 
-    public String build(){
-        return build(true);
-    }
-    public String build(boolean box){
+    public String buildHtml(boolean box){
         StringBuilder build = new StringBuilder();
         parseUnion();
         if(box){
@@ -173,6 +174,130 @@ public class TableBuilder {
         return build.toString();
     }
 
+    public Table build(){
+        parseUnion();
+        Table table = new Table();
+        table.setClazz(clazz);
+        table.setHeader(header);
+        table.setFooter(footer);
+
+         if(null != headers && headers.size() >0){
+             Tr tr = new Tr();
+            int size = headers.size();
+            for(int i=0; i<size; i++){
+                String header = headers.get(i);
+                Td td = new Td();
+                td.setText(header);
+                if(null != widths && i<widths.size()){
+                    td.setWidth(widths.get(i));
+                }
+                tr.addTd(td);
+            }
+            table.addTr(tr);
+        }
+        if(null != datas && null != fields){
+            int dsize = datas.size();
+            int ksize = fields.size();
+            Object[] objs = datas.toArray();
+            Map<String,String>[][] cells = new HashMap[dsize][ksize];
+            for(int i=0; i<dsize; i++){
+                Object data = objs[i];
+                for(int j=0; j<ksize; j++){
+                    String field = fields.get(j);
+                    String value = null;
+                    if(field.equals("{num}")){
+                        value = (i+1)+"";
+                    }else{
+                        value = BeanUtil.parseRuntimeValue(data, field);
+                    }
+                    Map<String,String> map = new HashMap<>();
+                    map.put("value", value);
+                    cells[i][j] = map;
+                    if(null != unions && unions.contains(field)) {
+                        //向上查看相同值
+                        int ii = 1;
+                        while (true) {
+                            if (i - ii < 0) {
+                                break;
+                            }
+                            Map<String, String> prev = cells[i - ii][j];
+                            Object prevRow = objs[i-ii];
+                            String pvalue = prev.get("value");
+                            if (null != pvalue && pvalue.equals(value)) {
+                                boolean leftMerge = true;
+                                String[] refs = unionRefs.get(field);
+                                if(null != refs){
+                                    for (String ref:refs) {
+                                        int refIndex = fields.indexOf(ref);
+                                        Map<String, String> left = cells[i][refIndex];
+                                        String curRefValue = BeanUtil.parseRuntimeValue(data, ref);
+                                        String prevRefValue = BeanUtil.parseRuntimeValue(prevRow, ref);
+                                        if(null ==curRefValue  || !curRefValue.equals(prevRefValue)){
+                                            //当前行左侧值  与上一行左侧值比较
+                                            leftMerge = false;
+                                            break;
+                                        }
+
+                                        if (!"1".equals(left.get("remove"))) {
+                                            //依赖列未合并
+                                            leftMerge = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (leftMerge) {//左列是否已合并
+                                    map.put("remove", "1");
+                                    map.put("merge", "1");
+                                    prev.put("merge", "1");
+                                    prev.put("rowspan", BasicUtil.parseInt(prev.get("rowspan"), 1) + 1 + "");
+                                } else {
+                                    break;
+                                }
+                            } else {
+                                break;
+                            }
+                            ii++;
+                        }
+                    }
+                }
+            }
+
+            for(int i=0; i<dsize; i++){
+                Object data = objs[i];
+                Tr tr = new Tr();
+                for(int j=0; j<ksize; j++){
+                    Map<String,String> map = cells[i][j];
+                    String value = map.get("value");
+                    String remove = map.get("remove");
+                    String rowspan = map.get("rowspan");
+                    String width = "";
+                    String style = "";
+                    if(j<widths.size()){
+                        width = widths.get(j);
+                    }
+                    if(j<styles.size()){
+                        style = styles.get(j);
+                    }
+                    if(!"1".equals(remove)){
+                        Td td = new Td();
+                        if (null != rowspan) {
+                            td.setRowspan(BasicUtil.parseInt(rowspan,1));
+                        }
+                        if(BasicUtil.isNotEmpty(width)){
+                            td.setWidth(width);
+                        }
+                        if(BasicUtil.isNotEmpty(style)){
+                            td.setStyles(StyleParser.parse(style));
+                        }
+                        td.setText(value);
+                        tr.addTd(td);
+                    }
+                }
+                table.addTr(tr);
+            }
+        }
+        return table;
+    }
     private void parseUnion(){
         List<String> list = new ArrayList<>();
         for(String union:unions){
