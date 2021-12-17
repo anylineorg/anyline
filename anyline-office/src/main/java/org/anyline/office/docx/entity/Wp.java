@@ -200,4 +200,8 @@ public class Wp {
         }
         return null;
     }
+    public Wp addWr(Wr wr){
+        wrs.add(wr);
+        return this;
+    }
 }
