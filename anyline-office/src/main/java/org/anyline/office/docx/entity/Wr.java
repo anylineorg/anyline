@@ -13,6 +13,23 @@ public class Wr {
         this.doc = doc;
         this.src = src;
     }
+
+    public WDocument getDoc() {
+        return doc;
+    }
+
+    public void setDoc(WDocument doc) {
+        this.doc = doc;
+    }
+
+    public Element getSrc() {
+        return src;
+    }
+
+    public void setSrc(Element src) {
+        this.src = src;
+    }
+
     public List<Wt> getWts(){
         List<Wt> wts = new ArrayList<>();
         List<Element> ts = src.elements("t");
