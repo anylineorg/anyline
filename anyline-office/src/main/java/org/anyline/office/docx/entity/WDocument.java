@@ -35,7 +35,13 @@ public class WDocument {
     private Map<String,String> replaces = new HashMap<String,String>();
     private int listNum = 0;
 
+    public Element getBody() {
+        return body;
+    }
 
+    public void setBody(Element body) {
+        this.body = body;
+    }
 
     public WDocument(File file){
         this.file = file;
@@ -956,7 +962,12 @@ public class WDocument {
     public String listStyle(String key){
         return DocxUtil.listStyle(file, key);
     }
-
+    public void insert(Element prev, File file){
+        WDocument idoc = new WDocument(file);
+        idoc.load();
+        Element body = idoc.getBody();
+        List<Element> elements = DomUtil.elements(body, "p","tbl");
+    }
 
     public List<String> listStyles(){
         return DocxUtil.listStyles(file);
