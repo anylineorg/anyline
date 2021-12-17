@@ -9,6 +9,7 @@ import org.dom4j.io.XMLWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -17,93 +18,109 @@ public class DomUtil {
     /**
      * 根据标签name搜索element
      * @param root 根节点
-     * @param tag 标签名(不含namespace)
+     * @param tags 标签名(不含namespace)
      * @return Element
      */
-    public static Element element(Element root,String tag){
+    public static Element element(Element root,List<String> tags){
         Element result = null;
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext() && null == result){
             Element e= it.next();
-            if (e.getName().equals(tag)){
+            if (tags.contains(e.getName())){
                 result = e;
                 break;
             }else{
-                result = element(e, tag);
+                result = element(e, tags);
             }
         }
         return result;
     }
+    public static Element element(Element root, String tags){
+        return element(root, Arrays.asList(tags.split(",")));
+    }
     /**
      * 根据标签name搜索element
      * @param root 根节点
-     * @param tag 标签名(不含namespace)
+     * @param tags 标签名(不含namespace)
      * @param recursion 递归查询子类
      * @return List
      */
-    public static List<Element> elements(Element root, String tag, boolean recursion){
+    public static List<Element> elements(Element root, List<String> tags, boolean recursion){
         List<Element> list = new ArrayList<Element>();
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext()){
             Element e= it.next();
-            if (e.getName().equals(tag)){
+            if (tags.contains(e.getName())){
                 list.add(e);
             }
             if(recursion) {
-                List<Element> items = elements(e, tag);
+                List<Element> items = elements(e, tags, recursion);
                 list.addAll(items);
             }
         }
         return list;
     }
 
-    public static List<Element> elements(Element root, String tag){
-        return elements(root, tag,true);
+    public static List<Element> elements(Element root, String tags, boolean recursion){
+        return elements(root, Arrays.asList(tags.split(",")), recursion);
+    }
+    public static List<Element> elements(Element root, List<String> tags){
+        return elements(root, tags,true);
+    }
+    public static List<Element> elements(Element root, String tags){
+        return elements(root, tags,true);
     }
     /**
      * 根据标签name以及属性值搜索element
      * @param root 根节点
-     * @param tag 标签名(不含namespace)
+     * @param tags 标签名(不含namespace)
      * @param attribute 属性名(不含namespace)
      * @param value 属性值
      * @return Element
      */
-    public static Element element(Element root,String tag, String attribute, String value){
+    public static Element element(Element root,List<String> tags, String attribute, String value){
         Element result = null;
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext() && null == result){
             Element e= it.next();
-            if (e.getName().equals(tag) && value.equals(e.attributeValue(attribute))){
+            if (tags.contains(e.getName()) && value.equals(e.attributeValue(attribute))){
                 result = e;
                 break;
             }else{
-                result = element(e, tag, attribute, value);
+                result = element(e, tags, attribute, value);
             }
         }
         return result;
     }
+
+    public static Element element(Element root, String tags, String attribute, String value){
+        return element(root, Arrays.asList(tags.split(",")), attribute, value);
+    }
     /**
      * 根据标签name以及属性值搜索element
      * @param root 根节点
-     * @param tag 标签名(不含namespace)
+     * @param tags 标签名(不含namespace)
      * @param attribute 属性名(不含namespace)
      * @param value 属性值
      * @return List
      */
-    public static List<Element> elements(Element root, String tag, String attribute, String value){
+    public static List<Element> elements(Element root, List<String> tags, String attribute, String value){
         List<Element> list = new ArrayList<Element>();
         Iterator<Element> it = root.elementIterator();
         while(it.hasNext()){
             Element e= it.next();
-            if (e.getName().equals(tag) && value.equals(e.attributeValue(attribute))){
+            if (tags.contains(e.getName()) && value.equals(e.attributeValue(attribute))){
                 list.add(e);
             }
-            List<Element> items = elements(e, tag, attribute, value);
+            List<Element> items = elements(e, tags, attribute, value);
             list.addAll(items);
         }
         return list;
     }
 
+    public static List<Element> elements(Element root, String tags, String attribute, String value){
+        return elements(root, Arrays.asList(tags.split(",")), attribute, value);
+    }
     /**
      * 根据属性值搜索element
      * @param root 根节点
