@@ -269,6 +269,7 @@ public class Wtc {
         }
         return this;
     }
+
     public Wtc setWidth(String width){
         Element pr = DocxUtil.addElement(src, "tcPr");
         DocxUtil.addElement(pr, "tcW","w", DocxUtil.dxa(width)+"");
@@ -451,11 +452,21 @@ public class Wtc {
         t.setText(text);
         return this;
     }
-    public List<String> getTexts(){
+    public List<String> getTextList(){
         List<String> texts = new ArrayList<>();
         List<Element> ts = DomUtil.elements(src, "t");
         for(Element t:ts){
             texts.add(t.getTextTrim());
+        }
+        return texts;
+    }
+    public String getTexts(){
+        List<String> list = getTextList();
+        String texts = "";
+        for(String item:list){
+            if(null != item){
+                texts += item;
+            }
         }
         return texts;
     }
