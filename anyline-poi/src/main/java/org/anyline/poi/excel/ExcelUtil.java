@@ -203,6 +203,12 @@ public class ExcelUtil {
 					BeanUtil.parseFinalValue(item,key);
 				}
 			}
+			if(!file.getParentFile().exists()){
+				file.getParentFile().mkdirs();
+			}
+			if(!file.exists()){
+				file.createNewFile();
+			}
 			out=new FileOutputStream(file);
 			workbook.write(out);
 		}catch(Exception e){
