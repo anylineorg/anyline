@@ -15,7 +15,7 @@ import java.util.Map;
 public class Wtable {
     private WDocument doc;
     private Element src;
-    private List<Wtr> trs = new ArrayList<>();
+    private List<Wtr> wtrs = new ArrayList<>();
     public Wtable(WDocument doc){
         this.doc = doc;
         load();
@@ -29,11 +29,11 @@ public class Wtable {
         load();
     }
     private void load(){
-        trs.clear();
+        wtrs.clear();
         List<Element> elements = src.elements("tr");
         for(Element element:elements){
             Wtr tr = new Wtr(doc, this, element);
-            trs.add(tr);
+            wtrs.add(tr);
         }
     }
 
@@ -153,7 +153,7 @@ public class Wtable {
             index = trs.indexOf(template.getSrc());
         }
         try {
-            org.dom4j.Document doc = DocumentHelper.parseText("<body>"+html+"</body>");
+            org.dom4j.Document doc = DocumentHelper.parseText("<root>"+html+"</root>");
             Element root = doc.getRootElement();
             List<Element> rows = root.elements("tr");
             for(Element row:rows){
@@ -298,10 +298,10 @@ public class Wtable {
         return this;
     }
     public List<Wtr> getTrs(){
-        return trs;
+        return wtrs;
     }
     public Wtr getTr(int index){
-        return trs.get(index);
+        return wtrs.get(index);
     }
     public Wtc getTc(int rows, int cols){
         Wtr wtr = getTr(rows);
@@ -318,6 +318,8 @@ public class Wtable {
         removeRightBorder();
         removeInsideHBorder();
         removeInsideVBorder();
+        removeTl2brBorder();
+        removeTr2blBorder();
         return this;
     }
 
@@ -362,6 +364,14 @@ public class Wtable {
         removeBorder(src, "insideV");
         return this;
     }
+    public Wtable removeTl2brBorder(){
+        removeBorder(src, "tl2br");
+        return this;
+    }
+    public Wtable removeTr2blBorder(){
+        removeBorder(src, "tr2bl");
+        return this;
+    }
 
     /**
      * 清除表格水平边框
@@ -376,7 +386,7 @@ public class Wtable {
      * @return wtable
      */
     public Wtable removeTcBorder(){
-        for(Wtr tr:trs){
+        for(Wtr tr:wtrs){
             List<Wtc> tcs = tr.getTcs();
             for(Wtc tc:tcs){
                 tc.removeBorder();
@@ -390,7 +400,7 @@ public class Wtable {
      * @return wtable
      */
     public Wtable removeTcColor(){
-        for(Wtr tr:trs){
+        for(Wtr tr:wtrs){
             List<Wtc> tcs = tr.getTcs();
             for(Wtc tc:tcs){
                 tc.removeColor();
@@ -404,7 +414,7 @@ public class Wtable {
      * @return wtable
      */
     public Wtable removeTcBackgroundColor(){
-        for(Wtr tr:trs){
+        for(Wtr tr:wtrs){
             List<Wtc> tcs = tr.getTcs();
             for(Wtc tc:tcs){
                 tc.removeBackgroundColor();
@@ -418,11 +428,70 @@ public class Wtable {
         Element tcPr = DocxUtil.addElement(tbl, "tblPr");
         Element borders = DocxUtil.addElement(tcPr, "tblBorders");
         Element border = DocxUtil.addElement(borders, side);
-        border.addAttribute("val","nil");
+        border.addAttribute("w:val","nil");
         DocxUtil.removeAttribute(border, "sz");
         DocxUtil.removeAttribute(border, "space");
         DocxUtil.removeAttribute(border, "color");
     }
+
+    /**
+     * 删除整行的上边框
+     * @param rows rows
+     * @return wtable
+     */
+    public Wtable removeTopBorder(int rows){
+        Wtr tr = getTr(rows);
+        List<Wtc> tcs = tr.getTcs();
+        for(Wtc tc:tcs){
+            tc.removeTopBorder();
+        }
+        return this;
+    }
+
+    /**
+     * 删除整行的下边框
+     * @param rows rows
+     * @return wtable
+     */
+    public Wtable removeBottomBorder(int rows){
+        Wtr tr = getTr(rows);
+        List<Wtc> tcs = tr.getTcs();
+        for(Wtc tc:tcs){
+            tc.removeBottomBorder();
+        }
+        return this;
+    }
+
+    /**
+     * 删除整列的左边框
+     * @param cols cols
+     * @return wtable
+     */
+    public Wtable removeLeftBorder(int cols){
+        for(Wtr tr: wtrs){
+            Wtc tc = tr.getTcWithColspan(cols, true);
+            if(null != tc){
+                tc.removeLeftBorder();
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 删除整列的右边框
+     * @param cols cols
+     * @return wtable
+     */
+    public Wtable removeRightBorder(int cols){
+        for(Wtr tr: wtrs){
+            Wtc tc = tr.getTcWithColspan(cols, false);
+            if(null != tc){
+                tc.removeRightBorder();
+            }
+        }
+        return this;
+    }
+
 
     /**
      * 清除单元格左边框
@@ -540,8 +609,17 @@ public class Wtable {
         getTc(rows, cols).setTl2brBorder();
         return this;
     }
+    public Wtable setTl2brBorder(int rows, int cols, String top, String bottom){
+        getTc(rows, cols).setTl2brBorder(top, bottom);
+        return this;
+    }
     public Wtable setTr2blBorder(int rows, int cols){
         getTc(rows, cols).setTr2blBorder();
+        return this;
+    }
+
+    public Wtable setTr2blBorder(int rows, int cols, String top, String bottom){
+        getTc(rows, cols).setTr2blBorder(top, bottom);
         return this;
     }
 
@@ -587,6 +665,18 @@ public class Wtable {
     }
     public Wtable setWidth(int rows, int cols, String width){
         getTc(rows, cols).setWidth(width);
+        return this;
+    }
+
+    public Wtable setWidth(int cols, String width){
+        for(Wtr tr:wtrs){
+            tr.getTc(cols).setWidth(width);
+        }
+        return this;
+    }
+    public Wtable setHeight(int rows, String height){
+        Wtr tr = getTr(rows);
+        tr.setHeight(height);
         return this;
     }
 
@@ -690,4 +780,8 @@ public class Wtable {
         return setItalic(rows, cols,true);
     }
 
+    public Wtable replace(int rows, int cols, String src, String tar){
+        getTc(rows, cols).replace(src, tar);
+        return this;
+    }
 }
