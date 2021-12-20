@@ -127,6 +127,9 @@ public class Table {
         }
         return builder.toString();
     }
+    public String build(){
+        return build(true);
+    }
     /**
      * 根据内容是否相同，在右侧qty范围内检测需要合并的列数量
      * @param td 单元格
