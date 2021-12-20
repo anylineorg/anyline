@@ -917,6 +917,9 @@ public class HttpUtil {
 		if (url.contains(":")){
 			url = url.substring(0, url.indexOf(":"));
 		}
+		if(url.contains("/")){
+			url = url.substring(0, url.indexOf("/"));
+		}
 		return url;
 	}
 	/** 
