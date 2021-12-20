@@ -172,28 +172,28 @@ public class WDocument {
             return;
         }
         boolean isblock = DocxUtil.isBlock(content);
-        Element startP = start.getParent();
-        Element endP = end.getParent();
+        Element startParent = start.getParent();
+        Element endParent = end.getParent();
         if(isblock){
-            if(startP == endP){
+            if(startParent == endParent){
                 //结束标签拆分到下一段落
                 //<start.p><content.p><end.p>
-                Element nEndP = startP.getParent().addElement("w:p");
-                endP.elements().remove(end);
+                Element nEndP = startParent.getParent().addElement("w:p");
+                endParent.elements().remove(end);
                 nEndP.elements().add(end);
-                DocxUtil.after(nEndP, startP);
+                DocxUtil.after(nEndP, startParent);
             }
-            DomUtil.remove(startP, DomUtil.afters(start,"r"));
-            DomUtil.remove(endP, DomUtil.befores(end,"r"));
-            parseHtml(startP.getParent(),startP,content);
+            DomUtil.remove(startParent, DomUtil.afters(start,"t"));
+            DomUtil.remove(endParent, DomUtil.befores(end,"t"));
+            parseHtml(startParent.getParent(),startParent,content);
         }else{
-            if(startP == endP){
-                DomUtil.remove(startP,DomUtil.betweens(start, end,"r"));
-                parseHtml(startP,startP,content);
+            if(startParent == endParent){
+                DomUtil.remove(startParent,DomUtil.betweens(start, end,"t"));
+                parseHtml(startParent,startParent,content);
             }else{
-                DomUtil.remove(startP, DomUtil.afters(start,"r"));
-                DomUtil.remove(endP, DomUtil.befores(end,"r"));
-                parseHtml(startP,startP,content);
+                DomUtil.remove(startParent, DomUtil.afters(start,"t"));
+                DomUtil.remove(endParent, DomUtil.befores(end,"t"));
+                parseHtml(startParent,startParent,content);
             }
         }
     }
@@ -214,7 +214,7 @@ public class WDocument {
             html = html.replace(style,"");
         }
         try {
-            html = "<body>" + html + "</body>";
+            html = "<root>" + html + "</root>";
             org.dom4j.Document doc = DocumentHelper.parseText(html);
             Element root = doc.getRootElement();
             parseHtml(box, prev, root, null);
@@ -493,7 +493,13 @@ public class WDocument {
             newPrev = parent.getParent();
             wp = newPrev;
         }else if(pname.equalsIgnoreCase("tc")){
-            box = DocxUtil.addElement(parent,"p");
+            //box = DocxUtil.addElement(parent,"p");
+            Element p = parent.element("p");
+            if(null != p && DocxUtil.isEmpty(p)){
+                box = p;
+            }else{
+                box = parent.addElement("w:p");
+            }
             DocxUtil.after(box, prev);
             newPrev = box;
             wp = box;
@@ -636,7 +642,10 @@ public class WDocument {
             pr(parent, styles);
             DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("tc")){
-            Element p = parent.addElement("w:p");
+            Element p = parent.element("p");
+            if(null == p || !DocxUtil.isEmpty(p)){
+                p = parent.addElement("w:p");
+            }
             pr(p, styles);
             r = p.addElement("w:r");
             DocxUtil.after(r, prev);
@@ -771,7 +780,6 @@ public class WDocument {
         String pname = parent.getName();
         String txt = html.getTextTrim();
         if(html.elements().size()==0){
-            //txt = txt.replaceAll("\\s","");
             txt = txt.trim();
             html.setText(txt);
         }
@@ -966,7 +974,13 @@ public class WDocument {
         WDocument idoc = new WDocument(file);
         idoc.load();
         Element body = idoc.getBody();
-        List<Element> elements = DomUtil.elements(body, "p","tbl");
+        List<Element> inserts = DomUtil.elements(body, "p,tbl");
+        int index = index(body, prev);
+        List<Element> elements = body.elements();
+        for(Element insert:inserts){
+            insert.getParent().remove(insert);
+            elements.add(index++, insert);
+        }
     }
 
     public List<String> listStyles(){
