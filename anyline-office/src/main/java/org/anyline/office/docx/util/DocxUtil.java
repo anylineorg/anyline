@@ -1,11 +1,15 @@
 package org.anyline.office.docx.util;
 
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.office.docx.entity.Wtable;
+import org.anyline.office.docx.entity.Wtc;
+import org.anyline.office.docx.entity.Wtr;
+import org.anyline.office.docx.entity.WDocument;
+import org.anyline.office.docx.entity.html.Table;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
-import org.dom4j.Node;
+import org.dom4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +18,6 @@ import java.util.*;
 
 public class DocxUtil {
     private static Logger log = LoggerFactory.getLogger(DocxUtil.class);
-
 
     /**
      * 根据关键字查找样式列表ID
@@ -94,7 +97,78 @@ public class DocxUtil {
         return result;
     }
 
+    /**
+     * copy的样式复制给src
+     * @param src src
+     * @param copy 被复制
+     */
+    public static void copyStyle(Element src, Element copy){
+        String name = src.getName();
+        String prName = name+"Pr";
+        Element srcPr = src.element(prName);
+        if(null != srcPr){
+            src.remove(srcPr);
+        }
+        Element pr = DomUtil.element(copy, prName);
+        if(null != pr){
+            Element newPr = pr.createCopy();
+            src.elements().add(0,newPr);
+        }
+    }
 
+    /**
+     * 前一个节点
+     * @param  element element
+     * @return element
+     */
+    public static Element prevByName(Element element){
+        Element prev = null;
+        List<Element> elements = DomUtil.elements(top(element), element.getName());
+        int index = elements.indexOf(element);
+        if(index > 0){
+            prev = elements.get(index -1);
+        }
+        return prev;
+    }
+    public static Element prevByName(Element parent, Element element){
+        Element prev = null;
+        List<Element> elements = DomUtil.elements(parent, element.getName());
+        int index = elements.indexOf(element);
+        if(index > 0){
+            prev = elements.get(index -1);
+        }
+        return prev;
+    }
+    public static Element nextByName(Element element){
+        Element prev = null;
+        List<Element> elements = DomUtil.elements(top(element), element.getName());
+        int index = elements.indexOf(element);
+        if(index < elements.size()-1 && index > 0){
+            prev = elements.get(index + 1);
+        }
+        return prev;
+    }
+    public static Element nextByName(Element parent, Element element){
+        Element prev = null;
+        List<Element> elements = DomUtil.elements(parent, element.getName());
+        int index = elements.indexOf(element);
+        if(index < elements.size()-1 && index > 0){
+            prev = elements.get(index + 1);
+        }
+        return prev;
+    }
+    public static Element top(Element element){
+        Element top = element.getParent();
+        while (null != top.getParent()){
+            top = top.getParent();
+        }
+        return top;
+    }
+    /**
+     * 前一个节点
+     * @param  element element
+     * @return element
+     */
     public static Element prev(Element element){
         Element prev = null;
         List<Element> elements = element.getParent().elements();
@@ -129,39 +203,24 @@ public class DocxUtil {
         }
     }
 
-    private static boolean isEmpty(Element element){
-        List<Element> elements = element.elements();
+    public static boolean isEmpty(Element element){
+        List<Element> elements = DomUtil.elements(element, "drawing,tbl,t");
         for(Element item:elements){
             String name = item.getName();
-            if(name.equalsIgnoreCase("t") || name.equalsIgnoreCase("tbl")){
+            if(name.equalsIgnoreCase("drawing")){
                 return false;
             }
-        }
-        String txt = element.getTextTrim();
-        if(txt.length() > 0){
-            return false;
-        }
-        return true;
-    }
 
-    /**
-     * exclude 是否是element中唯一内容
-     * @param element element
-     * @param exclude 不包含
-     * @return boolean
-     */
-    public static boolean isEmpty(Element element, Element exclude){
-        List<Element> elements = element.elements();
-        for(Element item:elements){
-            String name = item.getName();
-            if(name.equalsIgnoreCase("t") || name.equalsIgnoreCase("tbl")){
-                if(item != exclude) {
+            if(name.equalsIgnoreCase("tbl")){
+                return false;
+            }
+            if(name.equalsIgnoreCase("t")){
+                if(item.getTextTrim().length() > 0){
                     return false;
                 }
             }
         }
-        String txt = element.getTextTrim();
-        if(txt.length() > 0){
+        if(element.getTextTrim().length() > 0){
             return false;
         }
         return true;
@@ -188,6 +247,20 @@ public class DocxUtil {
             p = p.getParent();
         }
         return false;
+    }
+
+    public static Element getParent(Element element, String parent){
+        Element p = element.getParent();
+        while(true){
+            if(null == p){
+                break;
+            }
+            if(p.getName().equalsIgnoreCase(parent)) {
+                return p;
+            }
+            p = p.getParent();
+        }
+        return null;
     }
 
     /**
@@ -308,7 +381,7 @@ public class DocxUtil {
         String width = styles.get("border-"+side+"-width");
         String style = styles.get("border-"+side+"-style");
         String color = styles.get("border-"+side+"-color");
-        int dxa = DocxUtil.width(width);
+        int dxa = DocxUtil.dxa(width);
         int line = ((int)(DocxUtil.dxa2pt(dxa)*8)/4*4);
         if(BasicUtil.isNotEmpty(width)){
             item = addElement(border, side);
@@ -326,12 +399,26 @@ public class DocxUtil {
     }
     public static void padding(Element margin, String side, Map<String,String> styles){
         String width = styles.get("padding-"+side);
-        int dxa = DocxUtil.width(width);
+        int dxa = DocxUtil.dxa(width);
         if(BasicUtil.isNotEmpty(width)){
             Element item = addElement(margin, side);
             item.addAttribute("w:w", dxa+"");
             item.addAttribute("w:type",  "dxa");
         }
+    }
+    public static int fontSize(String size){
+        int pt = 0;
+        if(fontSizes.containsKey(size)){
+            pt = fontSizes.get(size);
+        }else{
+            if(size.endsWith("px")){
+                int px = BasicUtil.parseInt(size.replace("px",""),0);
+                pt = (int)DocxUtil.px2pt(px);
+            }else if(size.endsWith("pt")){
+                pt = BasicUtil.parseInt(size.replace("pt",""),0);
+            }
+        }
+        return pt;
     }
     public static void font(Element pr, Map<String,String> styles){
         String fontSize = styles.get("font-size");
@@ -465,6 +552,10 @@ public class DocxUtil {
      */
     public static void addElement(Element parent, String tag, String key, String value){
         Element element = DocxUtil.addElement(parent,tag);
+        Attribute attribute = element.attribute(key);
+        if(null != attribute){
+            element.remove(attribute);
+        }
         element.addAttribute("w:"+key, value);
     }
     public static Element addElement(Element parent, String tag){
@@ -565,31 +656,315 @@ public class DocxUtil {
         Element start = DomUtil.element(parent, "bookmarkStart", "name", name);
         return start;
     }
+
+
+    public static Element pr(Element element, String styles){
+        return pr(element, StyleParser.parse(styles));
+    }
+    public static Element pr(Element element, Map<String,String> styles){
+        if(null == styles){
+            styles = new HashMap<String,String>();
+        }
+        String name = element.getName();
+        String prName = name+"Pr";
+        Element pr = DocxUtil.addElement(element, prName);
+        if("p".equalsIgnoreCase(name)){
+            for(String sk: styles.keySet()){
+                String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
+                if(sk.equalsIgnoreCase("list-style-type")){
+                    DocxUtil.addElement(pr, "pStyle", "val",sv);
+                }else if(sk.equalsIgnoreCase("list-lvl")){
+                    Element numPr = DocxUtil.addElement(pr,"numPr");
+                    DocxUtil.addElement(numPr, "ilvl", "val",sv+"");
+                }else if(sk.equalsIgnoreCase("numFmt")){
+                    Element numPr = DocxUtil.addElement(pr,"numPr");
+                    DocxUtil.addElement(numPr, "numFmt", "val",sv+"");
+                }else if ("text-align".equalsIgnoreCase(sk)) {
+                    DocxUtil.addElement(pr, "jc","val", sv);
+                }else if(sk.equalsIgnoreCase("margin-left")){
+                    DocxUtil.addElement(pr, "ind", "left",DocxUtil.dxa(sv)+"");
+                }else if(sk.equalsIgnoreCase("margin-right")){
+                    DocxUtil.addElement(pr, "ind", "right",DocxUtil.dxa(sv)+"");
+                }else if(sk.equalsIgnoreCase("margin-top")){
+                    DocxUtil.addElement(pr, "spacing", "before",DocxUtil.dxa(sv)+"");
+                }else if(sk.equalsIgnoreCase("margin-bottom")){
+                    DocxUtil.addElement(pr, "spacing", "after",DocxUtil.dxa(sv)+"");
+                }else if(sk.equalsIgnoreCase("padding-left")){
+                    DocxUtil.addElement(pr, "ind", "left",DocxUtil.dxa(sv)+"");
+                }else if(sk.equalsIgnoreCase("padding-right")){
+                    DocxUtil.addElement(pr, "ind", "right",DocxUtil.dxa(sv)+"");
+                }else if(sk.equalsIgnoreCase("padding-top")){
+                    DocxUtil.addElement(pr, "spacing", "before",DocxUtil.dxa(sv)+"");
+                }else if(sk.equalsIgnoreCase("padding-bottom")){
+                    DocxUtil.addElement(pr, "spacing", "after",DocxUtil.dxa(sv)+"");
+                }else if(sk.equalsIgnoreCase("text-indent")){
+                    DocxUtil.addElement(pr, "ind", "firstLine",DocxUtil.dxa(sv)+"");
+                }else if(sk.equalsIgnoreCase("line-height")){
+                    DocxUtil.addElement(pr, "spacing", "line",DocxUtil.dxa(sv)+"");
+                }
+            }
+            if(styles.containsKey("list-style-num")){
+                //如果在样式里指定了样式
+                Element numPr = DocxUtil.addElement(pr,"numPr");
+                DocxUtil.addElement(numPr, "numId", "val",styles.get("list-style-num"));
+            }else if(styles.containsKey("list-num")){
+                //运行时自动生成
+                Element numPr = DocxUtil.addElement(pr,"numPr");
+                DocxUtil.addElement(numPr, "numId", "val",styles.get("list-num"));
+            }
+
+            //<div style="page-size-orient:landscape"/>
+            if(styles.containsKey("page-size-orient")){
+                String orient = styles.get("page-size-orient");
+                if(!"landscape".equalsIgnoreCase(orient)){
+                    orient = "portrait";
+                }
+                setOrient(pr, orient, styles);
+            }
+
+            Element border = DocxUtil.addElement(pr, "bdr");
+            DocxUtil.border(border, styles);
+            //DocxUtil.background(pr, styles);
+
+        }else if("r".equalsIgnoreCase(name)){
+            for (String sk : styles.keySet()) {
+                String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
+                if(sk.equalsIgnoreCase("color")){
+                    Element color = pr.addElement("w:color");
+                    color.addAttribute("w:val", sv.replace("#",""));
+                }else if(sk.equalsIgnoreCase("background-color")){
+                    //<w:highlight w:val="yellow"/>
+                    DocxUtil.addElement(pr, "highlight", "val",sv.replace("#",""));
+                }else if(sk.equalsIgnoreCase("vertical-align")){
+                    DocxUtil.addElement(pr,"vertAlign", "val", sv );
+                }
+            }
+            Element border = DocxUtil.addElement(pr, "bdr");
+            DocxUtil.border(border, styles);
+            DocxUtil.font(pr, styles);
+        }else if("tbl".equalsIgnoreCase(name)){
+
+            //DocxUtil.addElement(pr,"tblCellSpacing","w","0");
+            //DocxUtil.addElement(pr,"tblCellSpacing","type","nil");
+
+            Element mar = DocxUtil.addElement(pr,"tblCellMar");
+            /*DocxUtil.addElement(mar,"top","w","0");
+            DocxUtil.addElement(mar,"top","type","dxa");
+            DocxUtil.addElement(mar,"bottom","w","0");
+            DocxUtil.addElement(mar,"bottom","type","dxa");
+            DocxUtil.addElement(mar,"right","w","0"); //新版本end
+            DocxUtil.addElement(mar,"right","type","dxa");
+            DocxUtil.addElement(mar,"end","w","0");
+            DocxUtil.addElement(mar,"end","type","dxa");
+            DocxUtil.addElement(mar,"left","w","0");//新版本用start,但07版本用start会报错
+            DocxUtil.addElement(mar,"left","type","dxa");*/
+            for (String sk : styles.keySet()) {
+                String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
+                if(sk.equalsIgnoreCase("width")){
+                    DocxUtil.addElement(pr,"tblW","w", DocxUtil.dxa(sv)+"");
+                    DocxUtil.addElement(pr,"tblW","type", DocxUtil.widthType(sv));
+                }else if(sk.equalsIgnoreCase("color")){
+                }else if(sk.equalsIgnoreCase("margin-left")){
+                    DocxUtil.addElement(pr,"tblInd","w",DocxUtil.dxa(sv)+"");
+                    DocxUtil.addElement(pr,"tblInd","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-left")){
+                    DocxUtil.addElement(mar,"left","w",DocxUtil.dxa(sv)+""); //新版本用start,但07版本用start会报错
+                    DocxUtil.addElement(mar,"left","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-right")){
+                    DocxUtil.addElement(mar,"right","w",DocxUtil.dxa(sv)+""); //新版本用end
+                    DocxUtil.addElement(mar,"right","type","dxa");
+                    DocxUtil.addElement(mar,"end","w",DocxUtil.dxa(sv)+"");
+                    DocxUtil.addElement(mar,"end","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-top")){
+                    DocxUtil.addElement(mar,"top","w",DocxUtil.dxa(sv)+"");
+                    DocxUtil.addElement(mar,"top","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-bottom")){
+                    DocxUtil.addElement(mar,"bottom","w",DocxUtil.dxa(sv)+"");
+                    DocxUtil.addElement(mar,"bottom","type","dxa");
+                }
+            }
+
+            Element border = DocxUtil.addElement(pr,"tblBorders");
+            DocxUtil.border(border, styles);
+            DocxUtil.background(pr, styles);
+        }else if("tr".equalsIgnoreCase(name)){
+            for(String sk:styles.keySet()){
+                String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
+                if("repeat-header".equalsIgnoreCase(sk)){
+                    DocxUtil.addElement(pr,"tblHeader","val","true");
+                }else if("min-height".equalsIgnoreCase(sk)){
+                    DocxUtil.addElement(pr,"trHeight","hRule","atLeast");
+                    DocxUtil.addElement(pr,"trHeight","val",(int)DocxUtil.dxa2pt(DocxUtil.dxa(sv))*20+"");
+                }else if("height".equalsIgnoreCase(sk)){
+                    DocxUtil.addElement(pr,"trHeight","hRule","exact");
+                    DocxUtil.addElement(pr,"trHeight","val",(int)DocxUtil.dxa2pt(DocxUtil.dxa(sv))*20+"");
+                }
+            }
+        }else if("tc".equalsIgnoreCase(name)){
+            for(String sk:styles.keySet()){
+                String sv = styles.get(sk);
+                if(BasicUtil.isEmpty(sv)){
+                    continue;
+                }
+
+                Element mar = DocxUtil.addElement(pr,"tcMar");
+                /*DocxUtil.addElement(mar,"top","w","0");
+                DocxUtil.addElement(mar,"top","type","dxa");
+                DocxUtil.addElement(mar,"bottom","w","0");
+                DocxUtil.addElement(mar,"bottom","type","dxa");
+                DocxUtil.addElement(mar,"right","w","0"); //新版本end
+                DocxUtil.addElement(mar,"right","type","dxa");
+                DocxUtil.addElement(mar,"end","w","0");
+                DocxUtil.addElement(mar,"end","type","dxa");
+                DocxUtil.addElement(mar,"left","w","0");//新版本用start,但07版本用start会报错
+                DocxUtil.addElement(mar,"left","type","dxa");*/
+                if("vertical-align".equalsIgnoreCase(sk)){
+                    DocxUtil.addElement(pr,"vAlign", "val", sv );
+                }else if("text-align".equalsIgnoreCase(sk)){
+                    DocxUtil.addElement(pr, "jc","val", sv);
+                }else if(sk.equalsIgnoreCase("white-space")){
+                    DocxUtil.addElement(pr,"noWrap");
+                }else if(sk.equalsIgnoreCase("width")){
+                    DocxUtil.addElement(pr,"tcW","w",DocxUtil.dxa(sv)+"");
+                    DocxUtil.addElement(pr,"tcW","type",DocxUtil.widthType(sv));
+                }else if(sk.equalsIgnoreCase("padding-left")){
+                    DocxUtil.addElement(mar,"left","w",DocxUtil.dxa(sv)+""); //新版本用start,但07版本用start会报错
+                    DocxUtil.addElement(mar,"left","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-right")){
+                    DocxUtil.addElement(mar,"right","w",DocxUtil.dxa(sv)+""); //新版本用end
+                    DocxUtil.addElement(mar,"right","type","dxa");
+                    DocxUtil.addElement(mar,"end","w",DocxUtil.dxa(sv)+"");
+                    DocxUtil.addElement(mar,"end","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-top")){
+                    DocxUtil.addElement(mar,"top","w",DocxUtil.dxa(sv)+"");
+                    DocxUtil.addElement(mar,"top","type","dxa");
+                }else if(sk.equalsIgnoreCase("padding-bottom")){
+                    DocxUtil.addElement(mar,"bottom","w",DocxUtil.dxa(sv)+"");
+                    DocxUtil.addElement(mar,"bottom","type","dxa");
+                }
+            }
+            //
+            Element padding = DocxUtil.addElement(pr,"tcMar");
+            DocxUtil.padding(padding, styles);
+            Element border = DocxUtil.addElement(pr,"tcBorders");
+            DocxUtil.border(border, styles);
+            DocxUtil.background(pr, styles);
+        }
+        if(pr.elements().size()==0){
+            element.remove(pr);
+        }
+        return pr;
+    }
+
+    //插入排版方向
+    public static void setOrient(Element pr, String orient, Map<String,String> styles){
+        String w = styles.get("page-size-w");
+        String h = styles.get("page-size-h");
+        String top = styles.get("page-margin-top");
+        String right = styles.get("page-margin-right");
+        String bottom = styles.get("page-margin-bottom");
+        String left = styles.get("page-margin-left");
+        String header = styles.get("page-margin-left");
+        String footer = styles.get("page-margin-left");
+
+        header = BasicUtil.evl(header, "851").toString();
+        footer = BasicUtil.evl(footer, "992").toString();
+        if("portrait".equalsIgnoreCase(orient)){
+            //竖板<w:pgMar w:top="1440" w:right="1134" w:bottom="1440" w:left="1531" w:header="851" w:footer="992" w:gutter="0"/>
+            w = BasicUtil.evl(w, "11906").toString();
+            h = BasicUtil.evl(h, "16838").toString();
+            top = BasicUtil.evl(top, "1440").toString();
+            right = BasicUtil.evl(right, "1134").toString();
+            bottom = BasicUtil.evl(bottom, "1440").toString();
+            left = BasicUtil.evl(left, "1531").toString();
+        }else {
+            //横板
+            // <w:pgSz w:w="16838" w:h="11906" w:orient="landscape"/>
+            // <w:pgMar w:top="1531" w:right="1440" w:bottom="1134" w:left="1440" w:header="851" w:footer="992" w:gutter="0"/>
+            w = BasicUtil.evl(w, "16838").toString();
+            h = BasicUtil.evl(h, "11906").toString();
+            top = BasicUtil.evl(top, "1531").toString();
+            right = BasicUtil.evl(right, "1134").toString();
+            bottom = BasicUtil.evl(bottom, "1440").toString();
+            left = BasicUtil.evl(left, "1531").toString();
+        }
+        Element sectPr = DocxUtil.addElement(pr,"sectPr");
+        DocxUtil.addElement(sectPr,"pgSz","w", w);
+        DocxUtil.addElement(sectPr,"pgSz","h", h);
+        DocxUtil.addElement(sectPr,"pgSz","orient", orient);
+
+        DocxUtil.addElement(sectPr,"pgMar","top", top);
+        DocxUtil.addElement(sectPr,"pgMar","right", right);
+        DocxUtil.addElement(sectPr,"pgMar","bottom", bottom);
+        DocxUtil.addElement(sectPr,"pgMar","left", left);
+        DocxUtil.addElement(sectPr,"pgMar","header", header);
+        DocxUtil.addElement(sectPr,"pgMar","footer", footer);
+
+    }
+    public static void removeAttribute(Element element, String attribute){
+        Attribute att = element.attribute("w:"+attribute);
+        if(null != att){
+            element.remove(att);
+        }
+    }
+
+    public static void removeContent(Element parent){
+        List<Element> ts = DomUtil.elements(parent,"t");
+        for(Element t:ts){
+            t.getParent().remove(t);
+        }
+        List<Element> imgs = DomUtil.elements(parent,"drawing");
+        for(Element img:imgs){
+            img.getParent().remove(img);
+        }
+        List<Element> brs = DomUtil.elements(parent,"br");
+        for(Element br:brs){
+            br.getParent().remove(br);
+        }
+    }
+    public static void removeElement(Element parent, String element){
+        List<Element> elements = DomUtil.elements(parent, element);
+        for(Element item:elements){
+            item.getParent().remove(item);
+        }
+    }
     /**
      * 宽度计算
      * @param src width
      * @return dxa
      */
-    public static int width(String src){
-        int width = 0;
+    public static int dxa(String src){
+        int dxa = 0;
         if(null != src){
             src = src.trim().toLowerCase();
             if(src.endsWith("px")){
                 src = src.replace("px","");
-                width = px2dxa(BasicUtil.parseInt(src,0));
+                dxa = px2dxa(BasicUtil.parseInt(src,0));
             }else if(src.endsWith("pt")){
                 src = src.replace("pt","");
-                width = pt2dxa(BasicUtil.parseInt(src,0));
+                dxa = pt2dxa(BasicUtil.parseInt(src,0));
             }else if(src.endsWith("%")){
-                width = (int)(BasicUtil.parseDouble(src.replace("%",""),0d)/100*5000);
+                dxa = (int)(BasicUtil.parseDouble(src.replace("%",""),0d)/100*5000);
 
             }else if(src.endsWith("dxa")){
-                width = BasicUtil.parseInt(src.replace("dxa",""),0);
+                dxa = BasicUtil.parseInt(src.replace("dxa",""),0);
             }else{
-                width = px2dxa(BasicUtil.parseInt(src,0));
+                dxa = px2dxa(BasicUtil.parseInt(src,0));
             }
         }
-        return width;
+        return dxa;
     }
     public static String widthType(String width){
         if(null != width && width.trim().endsWith("%")){
