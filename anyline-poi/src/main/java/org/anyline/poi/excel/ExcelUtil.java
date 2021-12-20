@@ -8,6 +8,7 @@ import java.util.*;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.FileUtil;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.*;
@@ -199,6 +200,7 @@ public class ExcelUtil {
 					Cell cell=row.createCell(c++);
 					cell.setCellType(CellType.STRING);
 					cell.setCellValue(item.getStringNvl(key,""));
+					BeanUtil.parseFinalValue(item,key);
 				}
 			}
 			out=new FileOutputStream(file);
@@ -224,5 +226,34 @@ public class ExcelUtil {
 	}
 	public static boolean export(File file, int rows, List<String> keys, DataSet set){
 		return export(file,rows, null, keys, set);
+	}
+
+	/**
+	 * 导出excel
+	 * @param file 文件
+	 * @param rows 行数
+	 * @param set 数据
+	 * @param configs 姓名:NAME
+	 * @return boolean
+	 */
+	public static boolean export(File file, int rows, DataSet set, String ... configs){
+		List<String> headers = new ArrayList<>();
+		List<String> keys = new ArrayList<>();
+		if(null != configs){
+			for(String config:configs){
+				String tmps[] = config.split(":");
+				if(tmps.length == 2){
+					headers.add(tmps[0]);
+					keys.add(tmps[1]);
+				}
+			}
+			if(headers.size() != keys.size()){
+				headers = new ArrayList<>();
+			}
+		}
+		return export(file, rows, headers, keys, set);
+	}
+	public static boolean export(File file,  DataSet set, String ... configs){
+		return export(file, 0, set, configs);
 	}
 } 
