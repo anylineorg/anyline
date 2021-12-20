@@ -1408,7 +1408,7 @@ public class DateUtil {
 	public static int hour(Date date) {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
-		return calendar.get(Calendar.HOUR);
+		return calendar.get(Calendar.HOUR_OF_DAY);
 	}
 
 	public static int hour() {
