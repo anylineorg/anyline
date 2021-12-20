@@ -2,6 +2,7 @@ package org.anyline.office.docx.entity;
 
 import org.anyline.office.docx.util.DocxUtil;
 import org.anyline.office.docx.util.StyleParser;
+import org.anyline.util.BasicUtil;
 import org.anyline.util.DomUtil;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -68,6 +69,39 @@ public class Wtc {
     public Wtc setBorder(String side, String style){
         return this;
     }
+
+    /**
+     * 当前单元格合并列数量
+     * @return colspan
+     */
+    public int getColspan(){
+        Element tcPr = src.element("tcPr");
+        if(null != tcPr){
+            Element gridSpan = tcPr.element("gridSpan");
+            if(null != gridSpan){
+                return BasicUtil.parseInt(gridSpan.attributeValue("val"), 1);
+            }
+        }
+        return 1;
+    }
+
+    /**
+     * 当前单元格合并行数量，被合并返回-1
+     * @return rowspan
+     */
+    public int getRowspan(){
+        Element tcPr = src.element("tcPr");
+        if(null != tcPr){
+            Element vMerge = tcPr.element("vMerge");
+            if(null != vMerge){
+                String val = vMerge.attributeValue("val");
+                if(!"restart".equalsIgnoreCase(val)){
+                    return -1;
+                }
+            }
+        }
+        return 1;
+    }
     public Wtc left(){
         Wtc left = null;
         List<Wtc> tcs = parent.getTcs();
@@ -103,7 +137,7 @@ public class Wtc {
         Wtable table = parent.getParent();
         List<Wtr> trs = table.getTrs();
         int y = trs.indexOf(parent);
-        if(y < trs.size()-1){
+        if(y < trs.size()-1 && y>0){
             Wtr tr = trs.get(y-1);
             int x = parent.getTcs().indexOf(this);
             top = tr.getTc(x);
@@ -154,7 +188,7 @@ public class Wtc {
         Element tcPr = DocxUtil.addElement(tc, "tcPr");
         Element borders = DocxUtil.addElement(tcPr, "tcBorders");
         Element border = DocxUtil.addElement(borders, side);
-        border.addAttribute("val","nil");
+        border.addAttribute("w:val","nil");
         DocxUtil.removeAttribute(border, "sz");
         DocxUtil.removeAttribute(border, "space");
         DocxUtil.removeAttribute(border, "color");
@@ -207,7 +241,15 @@ public class Wtc {
         setBorder(src, "tl2br", 4, "auto", "single");
         return this;
     }
+    public Wtc setTl2brBorder(String top, String bottom){
+        setBorder(src, "tl2br", 4, "auto", "single");
+        return this;
+    }
     public Wtc setTr2blBorder(){
+        setBorder(src, "tr2bl", 4, "auto", "single");
+        return this;
+    }
+    public Wtc setTr2blBorder(String top, String bottom){
         setBorder(src, "tr2bl", 4, "auto", "single");
         return this;
     }
@@ -240,10 +282,10 @@ public class Wtc {
         Element tcPr = DocxUtil.addElement(tc, "tcPr");
         Element borders = DocxUtil.addElement(tcPr, "tcBorders");
         Element border = DocxUtil.addElement(borders, side);
-        border.addAttribute("val",style);
-        border.addAttribute("sz",size+"");
-        border.addAttribute("color",color.replace("#",""));
-        border.addAttribute("space","0");
+        border.addAttribute("w:val",style);
+        border.addAttribute("w:sz",size+"");
+        border.addAttribute("w:color",color.replace("#",""));
+        border.addAttribute("w:space","0");
     }
     public Wtc setColor(String color){
         for(Wp wp:wps){
@@ -408,9 +450,9 @@ public class Wtc {
 
         DocxUtil.removeContent(src);
         try {
-            Document doc = DocumentHelper.parseText("<body>"+html+"</body>");
+            Document doc = DocumentHelper.parseText("<root>"+html+"</root>");
             Element root = doc.getRootElement();
-            this.doc.block(src, null, root, null);
+            this.doc.parseHtml(src, null, root, null);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -476,6 +518,12 @@ public class Wtc {
             return t.getText();
         }
         return null;
+    }
+    public Wtc replace(String src, String tar){
+        for(Wp wp:wps){
+            wp.replace(src, tar);
+        }
+        return this;
     }
 
 }
