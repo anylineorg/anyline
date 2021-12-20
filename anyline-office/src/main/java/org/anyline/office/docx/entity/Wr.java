@@ -234,4 +234,13 @@ public class Wr {
         DocxUtil.removeElement(src,"color");
         return this;
     }
+    public Wr replace(String src, String tar){
+        List<Wt> wts = getWts();
+        for(Wt wt:wts){
+            String text = wt.getText();
+            text = text.replace(src, tar);
+            wt.setText(text);
+        }
+        return this;
+    }
 }
