@@ -204,4 +204,10 @@ public class Wp {
         wrs.add(wr);
         return this;
     }
+    public Wp replace(String src, String tar){
+        for(Wr wr:wrs){
+            wr.replace(src, tar);
+        }
+        return this;
+    }
 }
