@@ -852,7 +852,7 @@ public class WDocument {
                     itemStyles.put("italics","true");
                     prev = parseHtml(parent, prev, element, itemStyles);
                 }else if("del".equalsIgnoreCase(tag)){
-                    itemStyles.put("dstrike","true");
+                    itemStyles.put("strike","true");
                     prev = parseHtml(parent, prev, element, itemStyles);
                 }else if("sup".equalsIgnoreCase(tag)){
                     itemStyles.put("vertical-align","superscript");
