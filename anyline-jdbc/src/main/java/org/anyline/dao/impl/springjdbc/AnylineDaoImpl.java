@@ -209,7 +209,7 @@ public class AnylineDaoImpl implements AnylineDao {
 
 	public List<String> metadata(String table){
 		List<String> list = new ArrayList<>();
-		String sql = "select * from " + table + " WHERE 1=0";
+		String sql = "SELECT * FROM " + table + " WHERE 1=0";
 		SqlRowSet row = getJdbc().queryForRowSet(sql);
 		SqlRowSetMetaData rsm = row.getMetaData();
 		for (int i = 1; i < rsm.getColumnCount(); i++) {
@@ -219,7 +219,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	}
 	public List<MetaData> metadatas(String table){
 		List<MetaData> list = new ArrayList<MetaData>();
-		String sql = "select * from " + table + " WHERE 1=0";
+		String sql = "SELECT * FROM " + table + " WHERE 1=0";
 		SqlRowSet row = getJdbc().queryForRowSet(sql);
 		SqlRowSetMetaData rsm = row.getMetaData();
 
@@ -577,7 +577,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			strCols +=  "," +col;
 		}
 		synchronized (batchInsertStore) {
-			batchInsertStore.addData(table, strCols,(DataRow)data);
+			batchInsertStore.addData(table, strCols, (DataRow)data);
 			if(!isBatchInsertRun){
 				isBatchInsertRun = true;
 				new Thread(new Runnable(){
