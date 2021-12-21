@@ -17,6 +17,7 @@ public class Wtc {
     private Element src;
     private Wtr parent;
     private List<Wp> wps = new ArrayList<>();
+    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
     public Wtc(WDocument doc, Wtr parent, Element src){
         this.doc = doc;
         this.src = src;
@@ -68,6 +69,14 @@ public class Wtc {
     }
     public Wtc setBorder(String side, String style){
         return this;
+    }
+
+    public String getWidthUnit() {
+        return widthUnit;
+    }
+
+    public void setWidthUnit(String widthUnit) {
+        this.widthUnit = widthUnit;
     }
 
     /**
@@ -287,6 +296,71 @@ public class Wtc {
         border.addAttribute("w:color",color.replace("#",""));
         border.addAttribute("w:space","0");
     }
+
+    public Wtc setBottomPadding(String padding){
+        return setPadding(src, "bottom", padding);
+    }
+    public Wtc setBottomPadding(int padding){
+        return setPadding(src, "bottom", padding);
+    }
+    public Wtc setBottomPadding(double padding){
+        return setPadding(src, "bottom", padding);
+    }
+
+    public Wtc setTopPadding(String padding){
+        return setPadding(src, "top", padding);
+    }
+    public Wtc setTopPadding(int padding){
+        return setPadding(src, "top", padding);
+    }
+    public Wtc setTopPadding(double padding){
+        return setPadding(src, "top", padding);
+    }
+
+    public Wtc setRightPadding(String padding){
+        return setPadding(src, "right", padding);
+    }
+    public Wtc setRightPadding(int padding){
+        return setPadding(src, "right", padding);
+    }
+    public Wtc setRightPadding(double padding){
+        return setPadding(src, "right", padding);
+    }
+
+    public Wtc setLeftPadding(String padding){
+        return setPadding(src, "left", padding);
+    }
+    public Wtc setLeftPadding(int padding){
+        return setPadding(src, "left", padding);
+    }
+    public Wtc setLeftPadding(double padding){
+        return setPadding(src, "left", padding);
+    }
+
+
+    public Wtc setPadding(String side, String padding){
+        return setPadding(src, side, padding);
+    }
+    public Wtc setPadding(String side, int padding){
+        return setPadding(src, side, padding);
+    }
+    public Wtc setPadding(String side, double padding){
+        return setPadding(src, side, padding);
+    }
+
+    private Wtc setPadding(Element tc, String side, int padding){
+        return setPadding(tc, side, padding+widthUnit);
+    }
+    private Wtc setPadding(Element tc, String side, double padding){
+        return setPadding(tc, side, padding+widthUnit);
+    }
+    private Wtc setPadding(Element tc, String side, String padding){
+        Element pr = DocxUtil.addElement(tc, "tcPr");
+        Element mar = DocxUtil.addElement(pr,"tcMar");
+        DocxUtil.addElement(mar,side,"w",DocxUtil.dxa(padding)+"");
+        DocxUtil.addElement(mar,side,"type","dxa");
+        return this;
+    }
     public Wtc setColor(String color){
         for(Wp wp:wps){
             wp.setColor(color);
@@ -317,6 +391,12 @@ public class Wtc {
         DocxUtil.addElement(pr, "tcW","w", DocxUtil.dxa(width)+"");
         DocxUtil.addElement(pr, "tcW","type", DocxUtil.widthType(width));
         return this;
+    }
+    public Wtc setWidth(int width){
+        return setWidth(widthUnit+widthUnit);
+    }
+    public Wtc setWidth(double width){
+        return setWidth(widthUnit+widthUnit);
     }
 
     public Wtc setAlign(String align){
