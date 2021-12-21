@@ -11,6 +11,7 @@ public class Wtr {
     private Element src;
     private Wtable parent;
     private List<Wtc> wtcs = new ArrayList<>();
+    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
     public Wtr(WDocument doc, Wtable parent, Element src){
         this.doc = doc;
         this.src = src;
@@ -56,6 +57,12 @@ public class Wtr {
         DocxUtil.addElement(pr,"trHeight", "val", dxa+"" );
         return this;
     }
+    public Wtr setHeight(int height){
+        return setHeight(height+widthUnit);
+    }
+    public Wtr setHeight(double height){
+        return setHeight(height+widthUnit);
+    }
     public List<Wtc> getWtcs(){
         if(wtcs.size() ==0){
             List<Element> elements = src.elements("tc");
@@ -68,6 +75,17 @@ public class Wtr {
     }
     public Wtc getTc(int index){
         return wtcs.get(index);
+    }
+
+    public String getWidthUnit() {
+        return widthUnit;
+    }
+
+    public void setWidthUnit(String widthUnit) {
+        this.widthUnit = widthUnit;
+        for(Wtc tc:wtcs){
+            tc.setWidthUnit(widthUnit);
+        }
     }
 
     /**
