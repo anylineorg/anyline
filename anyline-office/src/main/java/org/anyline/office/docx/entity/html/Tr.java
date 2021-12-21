@@ -13,6 +13,7 @@ public class Tr {
     private List<Td> tds = new ArrayList<>();
     private Map<String,String> styles = new HashMap();
     private Element src;
+    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
 
     public Element getSrc() {
         return src;
@@ -49,6 +50,18 @@ public class Tr {
         tds.add(index, td);
         return this;
     }
+    public Tr setHeight(int index, String height){
+        styles.put("height", height);
+        return this;
+    }
+    public Tr setHeight(int index, int height){
+        styles.put("height", height+widthUnit);
+        return this;
+    }
+    public Tr setHeight(int index, double height){
+        styles.put("height", height+widthUnit);
+        return this;
+    }
     public Tr addTd(Td td){
         tds.add(td);
 
@@ -73,6 +86,17 @@ public class Tr {
 
     public Table getTable() {
         return table;
+    }
+
+    public String getWidthUnit() {
+        return widthUnit;
+    }
+
+    public void setWidthUnit(String widthUnit) {
+        this.widthUnit = widthUnit;
+        for(Td td:tds){
+            td.setWidthUnit(widthUnit);
+        }
     }
 
     public void setTable(Table table) {
