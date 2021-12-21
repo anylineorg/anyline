@@ -92,7 +92,7 @@ public class UrlUtil {
 	/** 
 	 * Utf8URL解码 
 	 *  
-	 * @param text  text
+	 * @param url  text
 	 * @return return
 	 */ 
 	private static String UTF8Decode(String url) { 
