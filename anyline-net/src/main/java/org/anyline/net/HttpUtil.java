@@ -1155,7 +1155,7 @@ public class HttpUtil {
 			//ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证，允许和所有的host建立SSL通信                  
 			//BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略，即通配符能够匹配所有子域名
 			//STRICT_HOSTNAME_VERIFIER  严格匹配模式，hostname必须匹配第一个CN或者任何一个subject-alts
-	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols,null,
+	        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols, null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 	        httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build(); 
 		}catch(Exception e){ 
