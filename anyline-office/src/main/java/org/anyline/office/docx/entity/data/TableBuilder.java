@@ -20,6 +20,7 @@ public class TableBuilder {
     private List<String> widths = new ArrayList<>();
     private List<String> styles = new ArrayList<>();
     private Map<String,String[]> unionRefs = new HashMap<>();
+    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
 
     private static String TAG_TR_BEGIN = "\t<tr";
     private static String TAG_TR_END = "\t</tr>\n";
@@ -172,6 +173,14 @@ public class TableBuilder {
         }
 
         return build.toString();
+    }
+
+    public String getWidthUnit() {
+        return widthUnit;
+    }
+
+    public void setWidthUnit(String widthUnit) {
+        this.widthUnit = widthUnit;
     }
 
     public Table build(){
@@ -413,6 +422,9 @@ public class TableBuilder {
         widths.add(width);
         styles.add(style);
         return this;
+    }
+    public TableBuilder addConfig(String header, String field, int width, String style){
+        return addConfig(header, field, width+widthUnit, style);
     }
     public TableBuilder addConfig(String header, String field){
         headers.add(header);
