@@ -15,6 +15,7 @@ import java.util.Map;
 public class Wtable {
     private WDocument doc;
     private Element src;
+    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
     private List<Wtr> wtrs = new ArrayList<>();
     public Wtable(WDocument doc){
         this.doc = doc;
@@ -272,6 +273,13 @@ public class Wtable {
         return this;
     }
 
+    public Wtable setWidth(int width){
+        return setWidth(width+widthUnit);
+    }
+    public Wtable setWidth(double width){
+        return setWidth(width+widthUnit);
+    }
+
     public Wtable merge(int rows, int cols, int rowspan, int colspan){
         reload();
         for(int r=rows; r<rows+rowspan; r++){
@@ -437,35 +445,35 @@ public class Wtable {
     /**
      * 删除整行的上边框
      * @param rows rows
-     * @return wtable
+     * @return Wtr
      */
-    public Wtable removeTopBorder(int rows){
+    public Wtr removeTopBorder(int rows){
         Wtr tr = getTr(rows);
         List<Wtc> tcs = tr.getTcs();
         for(Wtc tc:tcs){
             tc.removeTopBorder();
         }
-        return this;
+        return tr;
     }
 
     /**
      * 删除整行的下边框
      * @param rows rows
-     * @return wtable
+     * @return wtr
      */
-    public Wtable removeBottomBorder(int rows){
+    public Wtr removeBottomBorder(int rows){
         Wtr tr = getTr(rows);
         List<Wtc> tcs = tr.getTcs();
         for(Wtc tc:tcs){
             tc.removeBottomBorder();
         }
-        return this;
+        return tr;
     }
 
     /**
      * 删除整列的左边框
      * @param cols cols
-     * @return wtable
+     * @return Wtable
      */
     public Wtable removeLeftBorder(int cols){
         for(Wtr tr: wtrs){
@@ -480,7 +488,7 @@ public class Wtable {
     /**
      * 删除整列的右边框
      * @param cols cols
-     * @return wtable
+     * @return Wtable
      */
     public Wtable removeRightBorder(int cols){
         for(Wtr tr: wtrs){
@@ -497,41 +505,37 @@ public class Wtable {
      * 清除单元格左边框
      * @param rows rows
      * @param cols cols
-     * @return wtable
+     * @return Wtc
      */
-    public Wtable removeLeftBorder(int rows, int cols){
-        getTc(rows, cols).removeLeftBorder();
-        return this;
+    public Wtc removeLeftBorder(int rows, int cols){
+        return getTc(rows, cols).removeLeftBorder();
     }
     /**
      * 清除单元格右边框
      * @param rows rows
      * @param cols cols
-     * @return wtable
+     * @return Wtc
      */
-    public Wtable removeRightBorder(int rows, int cols){
-        getTc(rows, cols).removeRightBorder();
-        return this;
+    public Wtc removeRightBorder(int rows, int cols){
+        return getTc(rows, cols).removeRightBorder();
     }
     /**
      * 清除单元格上边框
      * @param rows rows
      * @param cols cols
-     * @return wtable
+     * @return Wtc
      */
-    public Wtable removeTopBorder(int rows, int cols){
-        getTc(rows, cols).removeTopBorder();
-        return this;
+    public Wtc removeTopBorder(int rows, int cols){
+        return getTc(rows, cols).removeTopBorder();
     }
     /**
      * 清除单元格下边框
      * @param rows rows
      * @param cols cols
-     * @return wtable
+     * @return Wtc
      */
-    public Wtable removeBottomBorder(int rows, int cols){
-        getTc(rows, cols).removeBottomBorder();
-        return this;
+    public Wtc removeBottomBorder(int rows, int cols){
+        return getTc(rows, cols).removeBottomBorder();
     }
     /**
      * 清除单元格左上到右下边框
@@ -539,9 +543,8 @@ public class Wtable {
      * @param cols cols
      * @return wtable
      */
-    public Wtable removeTl2brBorder(int rows, int cols){
-        getTc(rows, cols).removeTl2brBorder();
-        return this;
+    public Wtc removeTl2brBorder(int rows, int cols){
+        return getTc(rows, cols).removeTl2brBorder();
     }
     /**
      * 清除单元格右上到左下边框
@@ -549,9 +552,8 @@ public class Wtable {
      * @param cols cols
      * @return wtable
      */
-    public Wtable removeTr2blBorder(int rows, int cols){
-        getTc(rows, cols).removeBorder();
-        return this;
+    public Wtc removeTr2blBorder(int rows, int cols){
+        return getTc(rows, cols).removeBorder();
     }
 
     /**
@@ -560,112 +562,99 @@ public class Wtable {
      * @param cols cols
      * @return wtable
      */
-    public Wtable removeBorder(int rows, int cols){
-        removeLeftBorder(rows, cols);
-        removeRightBorder(rows, cols);
-        removeTopBorder(rows, cols);
-        removeBottomBorder(rows, cols);
-        removeTl2brBorder(rows, cols);
-        removeTr2blBorder(rows, cols);
-        return this;
+    public Wtc removeBorder(int rows, int cols){
+        return getTc(rows, cols)
+                .removeLeftBorder()
+                .removeRightBorder()
+                .removeTopBorder()
+                .removeBottomBorder()
+                .removeTl2brBorder()
+                .removeTr2blBorder();
     }
 
     /**
      * 设置单元格默认边框
      * @param rows rows
      * @param cols cols
-     * @return  Wtable
+     * @return  Wtc
      */
-    public Wtable setBorder(int rows, int cols){
-        setLeftBorder(rows, cols);
-        setRightBorder(rows, cols);
-        setTopBorder(rows, cols);
-        setBottomBorder(rows, cols);
-        setTl2brBorder(rows, cols);
-        setTr2blBorder(rows, cols);
-        return this;
+    public Wtc setBorder(int rows, int cols){
+        return getTc(rows, cols)
+        .setLeftBorder()
+        .setRightBorder()
+        .setTopBorder()
+        .setBottomBorder()
+        .setTl2brBorder()
+        .setTr2blBorder();
     }
-    public Wtable setBorder(int rows, int cols, int size, String color, String style){
-        getTc(rows, cols).setBorder(size, color, style);
-        return this;
+    public Wtc setBorder(int rows, int cols, int size, String color, String style){
+        return getTc(rows, cols).setBorder(size, color, style);
     }
-    public Wtable setLeftBorder(int rows, int cols){
-        getTc(rows, cols).setLeftBorder();
-        return this;
+    public Wtc setLeftBorder(int rows, int cols){
+        return getTc(rows, cols).setLeftBorder();
     }
-    public Wtable setRightBorder(int rows, int cols){
-        getTc(rows, cols).setRightBorder();
-        return this;
+    public Wtc setRightBorder(int rows, int cols){
+        return getTc(rows, cols).setRightBorder();
     }
-    public Wtable setTopBorder(int rows, int cols){
-        getTc(rows, cols).setTopBorder();
-        return this;
+    public Wtc setTopBorder(int rows, int cols){
+        return getTc(rows, cols).setTopBorder();
     }
-    public Wtable setBottomBorder(int rows, int cols){
-        getTc(rows, cols).setBottomBorder();
-        return this;
+    public Wtc setBottomBorder(int rows, int cols){
+        return getTc(rows, cols).setBottomBorder();
     }
-    public Wtable setTl2brBorder(int rows, int cols){
-        getTc(rows, cols).setTl2brBorder();
-        return this;
+    public Wtc setTl2brBorder(int rows, int cols){
+        return getTc(rows, cols).setTl2brBorder();
     }
-    public Wtable setTl2brBorder(int rows, int cols, String top, String bottom){
-        getTc(rows, cols).setTl2brBorder(top, bottom);
-        return this;
+    public Wtc setTl2brBorder(int rows, int cols, String top, String bottom){
+        return getTc(rows, cols).setTl2brBorder(top, bottom);
     }
-    public Wtable setTr2blBorder(int rows, int cols){
-        getTc(rows, cols).setTr2blBorder();
-        return this;
+    public Wtc setTr2blBorder(int rows, int cols){
+        return getTc(rows, cols).setTr2blBorder();
     }
 
-    public Wtable setTr2blBorder(int rows, int cols, String top, String bottom){
-        getTc(rows, cols).setTr2blBorder(top, bottom);
-        return this;
+    public Wtc setTr2blBorder(int rows, int cols, String top, String bottom){
+        return getTc(rows, cols).setTr2blBorder(top, bottom);
     }
 
-    public Wtable setLeftBorder(int rows, int cols, int size, String color, String style){
-        getTc(rows, cols).setLeftBorder(size, color, style);
-        return this;
+    public Wtc setLeftBorder(int rows, int cols, int size, String color, String style){
+        return getTc(rows, cols).setLeftBorder(size, color, style);
     }
-    public Wtable setRightBorder(int rows, int cols, int size, String color, String style){
-        getTc(rows, cols).setRightBorder(size, color, style);
-        return this;
+    public Wtc setRightBorder(int rows, int cols, int size, String color, String style){
+        return getTc(rows, cols).setRightBorder(size, color, style);
     }
-    public Wtable setTopBorder(int rows, int cols, int size, String color, String style){
-        getTc(rows, cols).setTopBorder(size, color, style);
-        return this;
+    public Wtc setTopBorder(int rows, int cols, int size, String color, String style){
+        return getTc(rows, cols).setTopBorder(size, color, style);
     }
-    public Wtable setBottomBorder(int rows, int cols, int size, String color, String style){
-        getTc(rows, cols).setBottomBorder(size, color, style);
-        return this;
+    public Wtc setBottomBorder(int rows, int cols, int size, String color, String style){
+        return getTc(rows, cols).setBottomBorder(size, color, style);
     }
-    public Wtable setTl2brBorder(int rows, int cols, int size, String color, String style){
-        getTc(rows, cols).setTl2brBorder(size, color, style);
-        return this;
+    public Wtc setTl2brBorder(int rows, int cols, int size, String color, String style){
+        return getTc(rows, cols).setTl2brBorder(size, color, style);
     }
-    public Wtable setTr2blBorder(int rows, int cols, int size, String color, String style){
-        getTc(rows, cols).setTr2blBorder(size, color, style);
-        return this;
+    public Wtc setTr2blBorder(int rows, int cols, int size, String color, String style){
+        return getTc(rows, cols).setTr2blBorder(size, color, style);
     }
-    public Wtable setColor(int rows, int cols, String color){
-        getTc(rows, cols).setColor(color);
-        return this;
+    public Wtc setColor(int rows, int cols, String color){
+        return getTc(rows, cols).setColor(color);
     }
-    public Wtable setFont(int rows, int cols, String size, String eastAsia, String ascii, String hint){
-        getTc(rows, cols).setFont(size, eastAsia, ascii, hint);
-        return this;
+    public Wtc setFont(int rows, int cols, String size, String eastAsia, String ascii, String hint){
+        return getTc(rows, cols).setFont(size, eastAsia, ascii, hint);
     }
-    public Wtable setFontSize(int rows, int cols, String size){
-        getTc(rows, cols).setFontSize(size);
-        return this;
+    public Wtc setFontSize(int rows, int cols, String size){
+        return getTc(rows, cols).setFontSize(size);
     }
-    public Wtable setFontFamily(int rows, int cols, String font){
-        getTc(rows, cols).setFontFamily(font);
-        return this;
+    public Wtc setFontFamily(int rows, int cols, String font){
+        return getTc(rows, cols).setFontFamily(font);
     }
-    public Wtable setWidth(int rows, int cols, String width){
-        getTc(rows, cols).setWidth(width);
-        return this;
+    public Wtc setWidth(int rows, int cols, String width){
+        return getTc(rows, cols).setWidth(width);
+    }
+    public Wtc setWidth(int rows, int cols, int width){
+        return getTc(rows, cols).setWidth(width);
+    }
+
+    public Wtc setWidth(int rows, int cols, double width){
+        return getTc(rows, cols).setWidth(width);
     }
 
     public Wtable setWidth(int cols, String width){
@@ -674,114 +663,198 @@ public class Wtable {
         }
         return this;
     }
-    public Wtable setHeight(int rows, String height){
+    public Wtable setWidth(int cols, int width){
+        for(Wtr tr:wtrs){
+            tr.getTc(cols).setWidth(width);
+        }
+        return this;
+    }
+    public Wtable setWidth(int cols, double width){
+        for(Wtr tr:wtrs){
+            tr.getTc(cols).setWidth(width);
+        }
+        return this;
+    }
+    public Wtr setHeight(int rows, String height){
         Wtr tr = getTr(rows);
         tr.setHeight(height);
-        return this;
+        return tr;
     }
 
-    public Wtable setAlign(int rows, int cols, String align){
-        getTc(rows, cols).setAlign(align);
-        return this;
+    public Wtr setHeight(int rows, int height){
+        return setHeight(rows, height+widthUnit);
     }
-    public Wtable setVerticalAlign(int rows, int cols, String align){
-        getTc(rows, cols).setVerticalAlign(align);
-        return this;
+    public Wtr setHeight(int rows, double height){
+        return setHeight(rows, height+widthUnit);
     }
+
+    public Wtc setAlign(int rows, int cols, String align){
+        return getTc(rows, cols).setAlign(align);
+    }
+    public Wtc setVerticalAlign(int rows, int cols, String align){
+        return getTc(rows, cols).setVerticalAlign(align);
+    }
+
+    public Wtc setBottomPadding(int rows, int cols, String padding){
+        return getTc(rows, cols).setBottomPadding(padding);
+    }
+    public Wtc setBottomPadding(int rows, int cols, int padding){
+        return getTc(rows, cols).setBottomPadding(padding);
+    }
+    public Wtc setBottomPadding(int rows, int cols, double padding){
+        return getTc(rows, cols).setBottomPadding(padding);
+    }
+
+    public Wtc setTopPadding(int rows, int cols, String padding){
+        return getTc(rows, cols).setTopPadding(padding);
+    }
+    public Wtc setTopPadding(int rows, int cols, int padding){
+        return getTc(rows, cols).setTopPadding(padding);
+    }
+    public Wtc setTopPadding(int rows, int cols, double padding){
+        return getTc(rows, cols).setTopPadding(padding);
+    }
+
+    public Wtc setRightPadding(int rows, int cols, String padding){
+        return getTc(rows, cols).setRightPadding(padding);
+    }
+    public Wtc setRightPadding(int rows, int cols, int padding){
+        return getTc(rows, cols).setRightPadding(padding);
+    }
+    public Wtc setRightPadding(int rows, int cols, double padding){
+        return getTc(rows, cols).setRightPadding(padding);
+    }
+
+    public Wtc setLeftPadding(int rows, int cols, String padding){
+        return getTc(rows, cols).setLeftPadding(padding);
+    }
+    public Wtc setLeftPadding(int rows, int cols, int padding){
+        return getTc(rows, cols).setLeftPadding(padding);
+    }
+    public Wtc setLeftPadding(int rows, int cols, double padding){
+        return getTc(rows, cols).setLeftPadding(padding);
+    }
+
+
+    public Wtc setPadding(int rows, int cols, String side, String padding){
+        return getTc(rows, cols).setPadding(side, padding);
+    }
+    public Wtc setPadding(int rows, int cols, String side, int padding){
+        return getTc(rows, cols).setPadding(side, padding);
+    }
+    public Wtc setPadding(int rows, int cols, String side, double padding){
+        return getTc(rows, cols).setPadding(side, padding);
+    }
+
 
     /**
      * 背景色
+     * @param rows rows
+     * @param cols cols
      * @param color 颜色
-     * @return Wtable
+     * @return Wtc
      */
-    public Wtable setBackgroundColor(int rows, int cols,String color){
-        getTc(rows, cols).setBackgroundColor(color);
-        return this;
+    public Wtc setBackgroundColor(int rows, int cols, String color){
+        return getTc(rows, cols).setBackgroundColor(color);
     }
 
     /**
      * 清除样式
-     * @return Wtable
+     * @param rows rows
+     * @param cols cols
+     * @return Wtc
      */
-    public Wtable removeStyle(int rows, int cols){
-        getTc(rows, cols).removeStyle();
-        return this;
+    public Wtc removeStyle(int rows, int cols){
+        return getTc(rows, cols).removeStyle();
     }
     /**
      * 清除背景色
-     * @return Wtable
+     * @param rows rows
+     * @param cols cols
+     * @return Wtc
      */
-    public Wtable removeBackgroundColor(int rows, int cols){
-        getTc(rows, cols).removeBackgroundColor();
-        return this;
+    public Wtc removeBackgroundColor(int rows, int cols){
+        return getTc(rows, cols).removeBackgroundColor();
     }
 
     /**
      * 清除颜色
-     * @return Wtable
+     * @param rows rows
+     * @param cols cols
+     * @return Wtc
      */
-    public Wtable removeColor(int rows, int cols){
-        getTc(rows, cols).removeColor();
-        return this;
+    public Wtc removeColor(int rows, int cols){
+        return getTc(rows, cols).removeColor();
     }
     /**
      * 粗体
+     * @param rows rows
+     * @param cols cols
      * @param bold 是否
-     * @return Wtable
+     * @return Wtc
      */
-    public Wtable setBold(int rows, int cols, boolean bold){
-        getTc(rows, cols).setBold(bold);
-        return this;
+    public Wtc setBold(int rows, int cols, boolean bold){
+        return getTc(rows, cols).setBold(bold);
     }
-    public Wtable setBold(int rows, int cols){
-        setBold(rows, cols, true);
-        return this;
+    public Wtc setBold(int rows, int cols){
+        return setBold(rows, cols, true);
     }
 
     /**
      * 下划线
+     * @param rows rows
+     * @param cols cols
      * @param underline 是否
-     * @return Wtable
+     * @return Wtc
      */
-    public Wtable setUnderline(int rows, int cols, boolean underline){
-        getTc(rows, cols).setUnderline(underline);
-        return this;
+    public Wtc setUnderline(int rows, int cols, boolean underline){
+        return getTc(rows, cols).setUnderline(underline);
     }
-    public Wtable setUnderline(int rows, int cols){
-        setUnderline(rows, cols, true);
-        return this;
+    public Wtc setUnderline(int rows, int cols){
+        return setUnderline(rows, cols, true);
     }
 
     /**
      * 删除线
+     * @param rows rows
+     * @param cols cols
      * @param strike 是否
-     * @return Wtable
+     * @return Wtc
      */
-    public Wtable setStrike(int rows, int cols, boolean strike){
-        getTc(rows, cols).setStrike(strike);
-        return this;
+    public Wtc setStrike(int rows, int cols, boolean strike){
+        return getTc(rows, cols).setStrike(strike);
     }
-    public Wtable setStrike(int rows, int cols){
-        setStrike(rows, cols, true);
-        return this;
+    public Wtc setStrike(int rows, int cols){
+        return setStrike(rows, cols, true);
     }
 
     /**
      * 斜体
+     * @param rows rows
+     * @param cols cols
      * @param italic 是否
-     * @return Wtable
+     * @return Wtc
      */
-    public Wtable setItalic(int rows, int cols, boolean italic){
-        getTc(rows, cols).setItalic(italic);
-        return this;
+    public Wtc setItalic(int rows, int cols, boolean italic){
+        return getTc(rows, cols).setItalic(italic);
     }
 
-    public Wtable setItalic(int rows, int cols){
-        return setItalic(rows, cols,true);
+    public Wtc setItalic(int rows, int cols){
+        return setItalic(rows, cols, true);
     }
 
-    public Wtable replace(int rows, int cols, String src, String tar){
-        getTc(rows, cols).replace(src, tar);
-        return this;
+    public Wtc replace(int rows, int cols, String src, String tar){
+        return getTc(rows, cols).replace(src, tar);
+    }
+
+    public String getWidthUnit() {
+        return widthUnit;
+    }
+
+    public void setWidthUnit(String widthUnit) {
+        this.widthUnit = widthUnit;
+        for(Wtr tr:wtrs){
+            tr.setWidthUnit(widthUnit);
+        }
     }
 }
