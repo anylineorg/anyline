@@ -478,9 +478,9 @@ public class DocxUtil {
             }
         }
         //删除线
-        String dstrike = styles.get("dstrike");
-        if(null != dstrike){
-            if(dstrike.equalsIgnoreCase("true")){
+        String strike = styles.get("strike");
+        if(null != strike){
+            if(strike.equalsIgnoreCase("true")){
                 //<w:dstrike w:val="true"/>
                 addElement(pr, "dstrike","val","true");
             }
@@ -952,12 +952,17 @@ public class DocxUtil {
             if(src.endsWith("px")){
                 src = src.replace("px","");
                 dxa = px2dxa(BasicUtil.parseInt(src,0));
+            }else if(src.endsWith("cm")){
+                src = src.replace("cm","");
+                dxa = cm2dxa(BasicUtil.parseDouble(src,0d));
+            }else if(src.endsWith("厘米")){
+                src = src.replace("厘米","");
+                dxa = cm2dxa(BasicUtil.parseDouble(src,0d));
             }else if(src.endsWith("pt")){
                 src = src.replace("pt","");
                 dxa = pt2dxa(BasicUtil.parseInt(src,0));
             }else if(src.endsWith("%")){
                 dxa = (int)(BasicUtil.parseDouble(src.replace("%",""),0d)/100*5000);
-
             }else if(src.endsWith("dxa")){
                 dxa = BasicUtil.parseInt(src.replace("dxa",""),0);
             }else{
@@ -981,6 +986,9 @@ public class DocxUtil {
     public static final double MM_PER_PT = 2.83;
     public static final int EMU_PER_PX = 9525;
     public static final int px2dxa(int px){
+        return pt2dxa(px2pt(px));
+    }
+    public static final int px2dxa(double px){
         return pt2dxa(px2pt(px));
     }
     public static final int pt2dxa(double pt){
@@ -1054,6 +1062,10 @@ public class DocxUtil {
 
     public static final double cm2pt(double cm) {
         return (cm*CM_PER_PT);
+    }
+
+    public static final int cm2dxa(double cm) {
+        return px2dxa(cm2px(cm));
     }
 
     private static Map<String, Integer>fontSizes = new HashMap<String, Integer>() {
