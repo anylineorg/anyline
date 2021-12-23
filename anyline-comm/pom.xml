@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.anyline</groupId>
+        <artifactId>anyline-dependency</artifactId>
+        <version>8.5.1-SNAPSHOT</version>
+        <relativePath>../anyline-dependency</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>anyline-comm</artifactId>
+    <description>串、并口通信</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bidib.jbidib.org.qbang.rxtx</groupId>
+            <artifactId>rxtxcomm</artifactId>
+            <version>2.2</version>
+        </dependency>
+    </dependencies>
+</project>
