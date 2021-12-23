@@ -137,8 +137,8 @@ public class WechatPayUtil {
     /**
      * 退款申请
      * @param refund  refund
-     * @return return
-     * @throws Exception
+     * @return WechatRefundResult
+     * @throws Exception  Exception
      */
     public WechatRefundResult refund(WechatRefund refund) throws Exception{
         return null;
