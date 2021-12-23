@@ -28,11 +28,16 @@ public class ExcelUtil {
 	 * @param file file 文件
 	 * @param sheet sheet序号,从0开始,如果读取全文sheetNo设置null
 	 * @param rows 从第几行开始读取
+	 * @return List
+	 * @throws EncryptedDocumentException EncryptedDocumentException
+	 * @throws InvalidFormatException InvalidFormatException
+	 * @throws IOException IOException
 	 */
 	public static List<List<String>> read(File file, int sheet, int rows) throws EncryptedDocumentException, InvalidFormatException, IOException {
 		Workbook workbook = getWorkbook(file);
 		return read(workbook.getSheetAt(sheet), rows);
 	}
+
 	public static List<List<String>> read(File file, int sheet) throws EncryptedDocumentException, InvalidFormatException, IOException {
 		return read(file, sheet, 0);
 	}
@@ -46,11 +51,6 @@ public class ExcelUtil {
 	public static List<List<String>> read(File file, String sheet) throws EncryptedDocumentException, InvalidFormatException, IOException {
 		return read(file, sheet, 0);
 	}
-
-	/**
-	 * 根据文件路径获取Workbook对象
-	 * @param file 文件全路径
-	 */
 	public static Workbook getWorkbook(File file) throws EncryptedDocumentException, InvalidFormatException, IOException {
 		InputStream is = null;
 		Workbook wb = null;
