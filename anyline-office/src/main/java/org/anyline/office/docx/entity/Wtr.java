@@ -131,6 +131,14 @@ public class Wtr {
         }
         return this;
     }
+
+    /**
+     * 设置边框
+     * @param size 宽度根据width unit单位
+     * @param color 颜色
+     * @param style 样式
+     * @return tr
+     */
     public Wtr setBorder(int size, String color, String style){
         List<Wtc> tcs = getWtcs();
         for(Wtc tc:tcs){
@@ -139,6 +147,11 @@ public class Wtr {
         return this;
     }
 
+    /**
+     * 设置颜色
+     * @param color color
+     * @return tr
+     */
     public Wtr setColor(String color){
         List<Wtc> tcs = getWtcs();
         for(Wtc tc:tcs){
@@ -146,6 +159,15 @@ public class Wtr {
         }
         return this;
     }
+
+    /**
+     * 设置字体
+     * @param size 字号
+     * @param eastAsia 中文字体
+     * @param ascii 英文字体
+     * @param hint 默认字体
+     * @return tr
+     */
     public Wtr setFont(String size, String eastAsia, String ascii, String hint){
         List<Wtc> tcs = getWtcs();
         for(Wtc tc:tcs){
@@ -153,6 +175,12 @@ public class Wtr {
         }
         return this;
     }
+
+    /**
+     * 设置字号
+     * @param size px|pt|cm
+     * @return tr
+     */
     public Wtr setFontSize(String size){
         List<Wtc> tcs = getWtcs();
         for(Wtc tc:tcs){
@@ -160,6 +188,12 @@ public class Wtr {
         }
         return this;
     }
+
+    /**
+     * 设置字体
+     * @param font 字体
+     * @return tr
+     */
     public Wtr setFontFamily(String font){
         List<Wtc> tcs = getWtcs();
         for(Wtc tc:tcs){
@@ -168,6 +202,11 @@ public class Wtr {
         return this;
     }
 
+    /**
+     * 设置水平对齐方式
+     * @param align start/left center end/right
+     * @return tr
+     */
     public Wtr setAlign(String align){
         List<Wtc> tcs = getWtcs();
         for(Wtc tc:tcs){
@@ -175,6 +214,12 @@ public class Wtr {
         }
         return this;
     }
+
+    /**
+     * 设置垂直对齐方式
+     * @param align top/center/bottom
+     * @return
+     */
     public Wtr setVerticalAlign(String align){
         List<Wtc> tcs = getWtcs();
         for(Wtc tc:tcs){
@@ -182,6 +227,12 @@ public class Wtr {
         }
         return this;
     }
+
+    /**
+     * 设置整行背景色
+     * @param color color
+     * @return tr
+     */
     public Wtr setBackgroundColor(String color){
         List<Wtc> tcs = getWtcs();
         for(Wtc tc:tcs){
@@ -189,6 +240,11 @@ public class Wtr {
         }
         return this;
     }
+
+    /**
+     * 删除整行背景色
+     * @return tr
+     */
     public Wtr removeContent(){
         DocxUtil.removeContent(src);
         return this;
