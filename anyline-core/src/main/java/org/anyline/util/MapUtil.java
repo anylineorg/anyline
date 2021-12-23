@@ -274,7 +274,7 @@ public class MapUtil {
 			}
 			boolean chk = true;//对比结果
 			for (String k : kvs.keySet()) {
-				String v = kvs.get(k)+"";
+				Object v = kvs.get(k);
 				Object value = row.get(k);
 				if (null == v) {
 					if (null != value) {
@@ -291,7 +291,7 @@ public class MapUtil {
 					}
 					String str = value + "";
 					str = str.toLowerCase();
-					v = v.toLowerCase();
+					v = v.toString().toLowerCase();
 					if (!v.equals(str)) {
 						chk = false;
 						break;
@@ -391,6 +391,7 @@ public class MapUtil {
 	}
 	/**
 	 * 行转列
+	 * @param datas    数据
 	 * @param pk       唯一标识key(如姓名)多个key以,分隔如(编号,姓名)
 	 * @param classKey 分类key(如科目)多个key以,分隔如(科目,年度)
 	 * @param valueKey 取值key(如分数)多个key以,分隔如(分数,等级)
