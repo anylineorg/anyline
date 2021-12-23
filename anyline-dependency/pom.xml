@@ -42,6 +42,7 @@
 		<anyline.web.version>${anyline.version}</anyline.web.version>
 		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
 		<anyline.mvc.version>${anyline.version}</anyline.mvc.version>
+		<anyline.struts.version>${anyline.version}</anyline.struts.version>
 		<anyline.amap.version>${anyline.version}</anyline.amap.version>
 		<anyline.alipay.version>${anyline.version}</anyline.alipay.version>
 		<anyline.aliyun.version>${anyline.version}</anyline.aliyun.version>
@@ -97,6 +98,7 @@
 		<alipay.version>4.16.57.ALL</alipay.version>
 		<druid.version>1.1.6</druid.version>
 		<jsch.version>0.1.55</jsch.version>
+		<apache.struts.version>2.3.35</apache.struts.version>
 		<persistence.version>1.0.2</persistence.version>
 		<jpush.client.version>3.3.12</jpush.client.version>
 		<jpush.version>1.1.6</jpush.version>
@@ -104,6 +106,7 @@
 		<rocketmq.version>4.6.0</rocketmq.version>
 		<redis.version>3.3.0</redis.version>
 		<spring.redis.version>2.5.6</spring.redis.version>
+		<rxtx.version>2.2</rxtx.version>
 	</properties>
 
 	<dependencyManagement>
@@ -187,6 +190,11 @@
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jpush</artifactId>
 				<version>${anyline.jpush.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-struts</artifactId>
+				<version>${anyline.struts.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
@@ -279,7 +287,11 @@
 				<artifactId>spring-webmvc</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.bidib.jbidib.org.qbang.rxtx</groupId>
+				<artifactId>rxtxcomm</artifactId>
+				<version>${rxtx.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>com.ibm.db2</groupId>
 				<artifactId>jcc</artifactId>
@@ -363,6 +375,21 @@
 				<groupId>com.jcraft</groupId>
 				<artifactId>jsch</artifactId>
 				<version>${jsch.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.struts</groupId>
+				<artifactId>struts2-core</artifactId>
+				<version>${apache.struts.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.struts</groupId>
+				<artifactId>struts2-spring-plugin</artifactId>
+				<version>${apache.struts.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.struts</groupId>
+				<artifactId>struts2-convention-plugin</artifactId>
+				<version>${apache.struts.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.aliyun.oss</groupId>
