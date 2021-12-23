@@ -51,6 +51,8 @@
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
+		<module>anyline-struts</module>
+		<module>anyline-comm</module>
 		<!--
 		<module>anyline-nc</module>
 		-->
