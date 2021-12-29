@@ -152,13 +152,19 @@ public class WebUtil {
 		if(null == request){
 			return new HashMap<String,Object>();
 		}
+		//System.out.println(request.getParameterNames().hasMoreElements());
+		//String page = request.getParameter("_anyline_page");
 		Map<String,Object> map = (Map<String,Object>)request.getAttribute(PACK_REQUEST_PARAM);
 		if(null == map){
 			map = new HashMap<String,Object>();
 			//body体json格式(ajax以raw提交)
 			String body = WebUtil.read(request,"UTF-8",true);
-			if(BasicUtil.isNotEmpty(body) && body.startsWith("{") && body.endsWith("}")){
-				map = DataRow.parseJson(DataRow.KEY_CASE.SRC,body);
+			if(BasicUtil.isNotEmpty(body)){
+				if(body.startsWith("{") && body.endsWith("}")) {
+					map = DataRow.parseJson(DataRow.KEY_CASE.SRC, body);
+				}else{
+					map = BeanUtil.param2map(body,true);
+				}
 			}else {
 				//utl与form表单格式
 				Enumeration<String> keys = request.getParameterNames();
