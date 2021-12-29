@@ -92,7 +92,7 @@
 		<oro.version>2.0.8</oro.version>
 		<ecache.version>2.10.6</ecache.version>
 		<ognl.version>3.2.10</ognl.version>
-		<spring.version>5.1.7.RELEASE</spring.version>
+		<spring.version>5.1.14.RELEASE</spring.version>
 		<aliyun.oss.version>3.8.0</aliyun.oss.version>
 		<aliyun.sms.version>2.1.0</aliyun.sms.version>
 		<alipay.version>4.16.57.ALL</alipay.version>
