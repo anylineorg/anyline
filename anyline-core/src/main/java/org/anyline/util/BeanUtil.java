@@ -918,37 +918,39 @@ public class BeanUtil {
 			int index = url.indexOf("?");
 			if(index != -1) {
 				url = url.substring(index);
-				String[] kvs = url.split("&");
-				for(String kv:kvs){
-					String k = null;
-					String v = null;
-					String[] tmps = kv.split("=");
-					k = tmps[0];
-					if(tmps.length>1){
-						v = tmps[1];
-					}
-					if("null".equals(v)){
-						v = "";
-					}else if("NULL".equals(v)){
-						v = null;
-					}
-					if(BasicUtil.isEmpty(v) && !empty){
-						continue;
-					}
-					if(params.containsKey(k)){
-						Object olds = params.get(k);
-						List<String> vals = new ArrayList<>();
-						if(null == olds){
-							vals.add(null);
-						}else if(olds instanceof String){
-							vals.add(olds.toString());
-						}else if(olds instanceof ArrayList){
-							vals = (ArrayList)olds;
-						}
-						vals.add(v);
-					}
-
+			}
+			String[] kvs = url.split("&");
+			for(String kv:kvs){
+				String k = null;
+				String v = null;
+				String[] tmps = kv.split("=");
+				k = tmps[0];
+				if(tmps.length>1){
+					v = tmps[1];
 				}
+				if("null".equals(v)){
+					v = "";
+				}else if("NULL".equals(v)){
+					v = null;
+				}
+				if(BasicUtil.isEmpty(v) && !empty){
+					continue;
+				}
+				if(params.containsKey(k)){
+					Object olds = params.get(k);
+					List<String> vals = new ArrayList<>();
+					if(null == olds){
+						vals.add(null);
+					}else if(olds instanceof String){
+						vals.add(olds.toString());
+					}else if(olds instanceof ArrayList){
+						vals = (ArrayList)olds;
+					}
+					vals.add(v);
+				}else{
+					params.put(k,v);
+				}
+
 			}
 		}
 		return params;
