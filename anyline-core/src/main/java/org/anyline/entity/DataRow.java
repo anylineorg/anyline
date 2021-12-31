@@ -105,7 +105,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
 	public DataRow(KEY_CASE keyCase){
 		this();
-		this.keyCase = keyCase;
+		if(null != keyCase) {
+			this.keyCase = keyCase;
+		}
 		parseKeycase();
 	}
 	public DataRow(String table){
@@ -1851,9 +1853,24 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			for (String key:keys) {
 				String v = getString(key);
 				if(null != v){
-					put(key, new BigDecimal(v));
 					remove(putKey(key));
+					put(key, new BigDecimal(v));
 				}
+			}
+		}
+		return this;
+	}
+	public DataRow convertString(String ... keys){
+		List<String> list = null;
+		if(null == keys || keys.length ==0){
+			list = keys();
+		}else{
+			list = Arrays.asList(keys);
+		}
+		for (String key:list) {
+			String v = getString(key);
+			if(null != v){
+				put(key, v.toString());
 			}
 		}
 		return this;
