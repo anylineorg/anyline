@@ -614,6 +614,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
+    public DataSet convertString(String ... keys){
+        if(null != keys) {
+            for(DataRow row:rows){
+                row.convertString(keys);
+            }
+        }
+        return this;
+    }
     public DataSet skip(boolean skip){
         for(DataRow row:rows){
             row.skip = skip;
