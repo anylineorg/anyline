@@ -189,14 +189,15 @@ public class WDocument {
         }else{
             if(startParent == endParent){
                 DomUtil.remove(startParent,DomUtil.betweens(start, end,"t"));
-                parseHtml(startParent,startParent,content);
+                parseHtml(startParent,start,content);
             }else{
                 DomUtil.remove(startParent, DomUtil.afters(start,"t"));
                 DomUtil.remove(endParent, DomUtil.befores(end,"t"));
-                parseHtml(startParent,startParent,content);
+                parseHtml(startParent,start,content);
             }
         }
     }
+
     public  Element pr(Element element, Map<String,String> styles){
         return DocxUtil.pr(element, styles);
     }
@@ -460,7 +461,25 @@ public class WDocument {
         }else if(pname.equalsIgnoreCase("p")){
             pr(parent, styles);
             r = parent.addElement("w:r");
-            //DocxUtil.after(r, prev);
+            //复制前一个w 的样式
+            if(null == styles || styles.isEmpty()){
+                if(null != prev){
+                    Element prevR = null;
+                    if(prev.getName().equals("r")){
+                        prevR = prev;
+                    }else{
+                        Element tmp = DocxUtil.prev(prev);
+                        if(tmp.getName().equals("r")){
+                            prevR = tmp;
+                        }
+                    }
+                    if(null != prevR){
+                        DocxUtil.copyStyle(r, prevR);
+                    }
+                }
+            }
+
+            DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("body")){
             Element p = parent.addElement("w:p");
             pr(p, styles);
