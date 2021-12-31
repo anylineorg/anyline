@@ -122,6 +122,28 @@ public class Wtable {
         String html = builder.build().build(false);
         insert(index, template, html);
     }
+
+    public Wtable insert(int index, Wtr template, int qty){
+        List<Element> trs = src.elements("tr");
+        for(int i=0; i<qty; i++) {
+            Element newTr = template.getSrc().createCopy();
+            DocxUtil.removeContent(newTr);
+            if(index != -1){
+                trs.add(index++, newTr);
+            }else {
+                trs.add(newTr);
+            }
+        }
+        reload();
+        return this;
+    }
+    public Wtable insert(int index, int qty){
+        if(index < wtrs.size()-1){
+            Wtr template = wtrs.get(index-1);
+            return insert(index, template, qty);
+        }
+        return this;
+    }
     public void insert(int index, String html){
         List<Element> trs = src.elements("tr");
         Wtr template = null;//以最后一行作模板
