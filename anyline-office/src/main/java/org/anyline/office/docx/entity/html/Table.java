@@ -95,12 +95,6 @@ public class Table {
         return this;
     }
 
-    public static void main(String[] args) {
-        Table table = new Table(10,10);
-        table.setColspan(0,0,3);
-        table.setRowspan(3,3, 2);
-        System.out.println(table.build());
-    }
 
     /**
      * 创建html
