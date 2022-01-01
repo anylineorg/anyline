@@ -102,6 +102,11 @@ public class ZipUtil {
 		File tempFile = File.createTempFile(src.getName(), null);
 		tempFile.delete();
 		boolean renameOk = src.renameTo(tempFile);
+		if(!renameOk){
+			tempFile = new File(src.getParent(), "tmp_"+System.currentTimeMillis()+src.getName());
+			tempFile.delete();
+			renameOk = src.renameTo(tempFile);
+		}
 		if (!renameOk) {
 			throw new Exception("重命名失败 "
 					+ src.getAbsolutePath() + " > "
@@ -129,6 +134,7 @@ public class ZipUtil {
 			}
 		}
 		out.close();
+		tempFile.delete();
 	}
 	public static boolean zip(Map<String,File> files, File zip, String dir, String comment, boolean append) {
 		boolean result = true;
