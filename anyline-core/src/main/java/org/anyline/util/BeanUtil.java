@@ -1738,13 +1738,16 @@ public class BeanUtil {
 			} 
 		} 
 		return index; 
-	} 
- 
-	public static String parseFinalValue(Object obj, String key){ 
+	}
+
+	public static String parseFinalValue(Object obj, String key){
+		return parseFinalValue(obj, key, key);
+	}
+	public static String parseFinalValue(Object obj, String key, String def){
 		if(null == obj){ 
 			return key;
 		} 
-		String value = key; 
+		String value = def;
 		if(BasicUtil.isNotEmpty(key)){ 
 			if(key.contains("{")){ 
 				try{ 
@@ -1760,9 +1763,15 @@ public class BeanUtil {
 					e.printStackTrace(); 
 				} 
 			} else { 
-				value = BeanUtil.getFieldValue(obj, key) + ""; 
+				Object val = BeanUtil.getFieldValue(obj, key);
+				if(null != val){
+					value = val.toString();
+				}
 			} 
-		} 
+		}
+		if(BasicUtil.isEmpty(value)){
+			value = def;
+		}
 		return value; 
 	} 
 	/** 
