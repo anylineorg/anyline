@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import com.sun.glass.ui.Size;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
@@ -26,31 +27,70 @@ public class ExcelUtil {
 	/**
 	 * 读取指定Sheet也的内容
 	 * @param file file 文件
-	 * @param sheet sheet序号,从0开始,如果读取全文sheetNo设置null
+	 * @param sheet sheet序号,从0开始
 	 * @param rows 从第几行开始读取
 	 * @return List
-	 * @throws EncryptedDocumentException EncryptedDocumentException
-	 * @throws InvalidFormatException InvalidFormatException
-	 * @throws IOException IOException
+	 *
 	 */
-	public static List<List<String>> read(File file, int sheet, int rows) throws EncryptedDocumentException, InvalidFormatException, IOException {
-		Workbook workbook = getWorkbook(file);
-		return read(workbook.getSheetAt(sheet), rows);
+	public static List<List<String>> read(File file, int sheet, int rows) {
+		List<List<String>> list = null;
+		try {
+			Workbook workbook = getWorkbook(file);
+			list = read(workbook.getSheetAt(sheet), rows);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return list;
 	}
 
-	public static List<List<String>> read(File file, int sheet) throws EncryptedDocumentException, InvalidFormatException, IOException {
+	/**
+	 * 读取指定Sheet也的内容
+	 * @param file file 文件
+	 * @param sheet sheet序号,从0开始
+	 * @return List
+	 *
+	 */
+	public static List<List<String>> read(File file, int sheet) {
 		return read(file, sheet, 0);
 	}
-	public static List<List<String>> read(File file) throws EncryptedDocumentException, InvalidFormatException, IOException {
+
+	/**
+	 * 读取excel
+	 * @param file 文件 第0个sheet第0行开始读取
+	 * @return list
+	 */
+	public static List<List<String>> read(File file){
 		return read(file, 0, 0);
 	}
-	public static List<List<String>> read(File file, String sheet, int rows) throws EncryptedDocumentException, InvalidFormatException, IOException {
-		Workbook workbook = getWorkbook(file);
-		return read(workbook.getSheet(sheet), rows);
+
+	/**
+	 * 读取excel
+	 * @param file 文件
+	 * @param sheet sheet
+	 * @param rows 从rows行开始读取
+	 * @return list
+	 */
+	public static List<List<String>> read(File file, String sheet, int rows) {
+		List<List<String>> list = null;
+		try {
+			Workbook workbook = getWorkbook(file);
+			list = read(workbook.getSheet(sheet), rows);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return list;
 	}
-	public static List<List<String>> read(File file, String sheet) throws EncryptedDocumentException, InvalidFormatException, IOException {
+
+	/**
+	 * 读取excel
+	 * @param file 文件
+	 * @param sheet sheet
+	 * @return list
+	 */
+	public static List<List<String>> read(File file, String sheet) {
 		return read(file, sheet, 0);
 	}
+
 	public static Workbook getWorkbook(File file) throws EncryptedDocumentException, InvalidFormatException, IOException {
 		InputStream is = null;
 		Workbook wb = null;
@@ -84,8 +124,8 @@ public class ExcelUtil {
 				List<String> list = new ArrayList<>();
 				Row row = sheet.getRow(i);
 				if(row != null){
-					int columNos = row.getLastCellNum();// 表头总共的列数
-					for (int j = 0; j < columNos; j++) {
+					int last = row.getLastCellNum();// 表头总共的列数
+					for (int j = 0; j < last; j++) {
 						Cell cell = row.getCell(j);
 						if(cell != null){
 							list.add(value(cell));
@@ -174,25 +214,23 @@ public class ExcelUtil {
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
 	 * @param headers	表头  headers	表头
 	 * @param sheet 	sheet
-	 * @param rows		导出的开始位置
+	 * @param insert		导出的开始位置
 	 * @param keys		对应列名属性名  keys		对应列名属性名
 	 * @param set		数据源  set		数据源
 	 * @return return
 	 */ 
-	public static boolean export(File file, String sheet, int rows, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(File file, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
 		FileOutputStream out = null;
 		try{
-
-			SXSSFWorkbook  workbook = null;
+			XSSFWorkbook  workbook = null;
 			Sheet sht = null;
+			int move = set.size();
+			int last = 0;
 			if(file.exists()){
-
 				File tempFile = File.createTempFile(file.getName(), null);
-				tempFile.delete();
 				boolean renameOk = file.renameTo(tempFile);
 				if(!renameOk){
 					tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
-					tempFile.delete();
 					renameOk = file.renameTo(tempFile);
 				}
 				if (!renameOk) {
@@ -200,40 +238,50 @@ public class ExcelUtil {
 							+ file.getAbsolutePath() + " > "
 							+ tempFile.getAbsolutePath());
 				}
-
-				XSSFWorkbook wb = new XSSFWorkbook(tempFile);
-				workbook = new SXSSFWorkbook(wb);
+				FileInputStream is = new FileInputStream(tempFile);
+				workbook = new XSSFWorkbook(is);
 				if(BasicUtil.isEmpty(sheet)){
 					sht = workbook.getSheetAt(0);
 				}else {
 					sht = workbook.getSheet(sheet);
 				}
+				last = sht.getLastRowNum();
+				is.close();
+				tempFile.delete();
 			}else {
-				workbook = new SXSSFWorkbook();
+				workbook = new XSSFWorkbook();
 				if(BasicUtil.isEmpty(sheet)){
 					sheet = "sheet1";
 				}
 				sht = workbook.createSheet(sheet);
 			}
+			int footFr = insert;
+			int footTo = last;
+			insert = last+1;
 			//表头
-			if(null != headers) {
-				Row row =sht.createRow(rows++);
+			if(null != headers && headers.size()>0) {
+				Row row =sht.createRow(insert++);
 				int c= 0 ;
 				for (String header : headers) {
 					Cell cell = row.createCell(c++);
 					cell.setCellType(CellType.STRING);
 					cell.setCellValue(header);
 				}
+				move ++;
 			}
 			for(DataRow item:set){
-				Row row = sht.createRow(rows++);
+				Row row = sht.createRow(insert++);
 				int c = 0;
 				for(String key:keys){
 					Cell cell=row.createCell(c++);
 					cell.setCellType(CellType.STRING);
-					cell.setCellValue(item.getStringNvl(key,""));
-					BeanUtil.parseFinalValue(item,key);
+					cell.setCellValue(BeanUtil.parseFinalValue(item,key,""));
 				}
+			}
+			int footSize = footTo - footFr +1; //foot行数
+			if(move>0 && footTo >= footFr) {
+				sht.shiftRows(footFr, footTo, move+footSize);
+				sht.shiftRows(footTo+1, footTo+1+ move, -footSize);
 			}
 			if(!file.getParentFile().exists()){
 				file.getParentFile().mkdirs();
@@ -259,7 +307,6 @@ public class ExcelUtil {
 	}
 
 	/**
-	 *
 	 * 导出EXCEL
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
 	 * @param rows 开始写入的行数
@@ -271,6 +318,13 @@ public class ExcelUtil {
 	public static boolean export(File file, int rows, List<String>headers, List<String> keys, DataSet set){
 		return export(file, "sheet1", rows, headers, keys, set);
 	}
+	/**
+	 * 导出EXCEL
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param keys 读取集合条目的属性
+	 * @param set 数据集合
+	 * @return boolean
+	 */
 	public static boolean export(File file, List<String> keys, DataSet set){
 		return export(file,0, null, keys, set);
 	}
@@ -305,7 +359,7 @@ public class ExcelUtil {
 	 * @param sheet sheet 如果文件存在 并且为空时 则取第0个sheet
 	 * @param rows 行数
 	 * @param set 数据
-	 * @param configs 姓名:NAME
+	 * @param configs 姓名:NAME或NAME
 	 * @return boolean
 	 */
 	public static boolean export(File file, String sheet, int rows, DataSet set, String ... configs){
@@ -317,6 +371,8 @@ public class ExcelUtil {
 				if(tmps.length == 2){
 					headers.add(tmps[0]);
 					keys.add(tmps[1]);
+				}else{
+					keys.add(config);
 				}
 			}
 			if(headers.size() != keys.size()){
@@ -326,10 +382,216 @@ public class ExcelUtil {
 		return export(file, sheet, rows, headers, keys, set);
 	}
 
+
+	/**
+	 * 导出excel
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param rows 行数
+	 * @param set 数据
+	 * @param configs 姓名:NAME或NAME
+	 * @return boolean
+	 */
 	public static boolean export(File file, int rows, DataSet set, String ... configs){
-		return export(file, null, rows, set, configs);
+		return export(file, "", rows, set, configs);
 	}
+
+
+	/**
+	 * 导出excel
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param set 数据
+	 * @param configs 姓名:NAME或NAME
+	 * @return boolean
+	 */
 	public static boolean export(File file,  DataSet set, String ... configs){
 		return export(file, 0, set, configs);
 	}
+
+
+	/**
+	 * 导出EXCEL
+	 * @param template 模板
+	 * @param file 导致文件位置
+	 * @param headers	表头  headers	表头
+	 * @param sheet 	sheet
+	 * @param insert		导出的开始位置
+	 * @param keys		对应列名属性名  keys		对应列名属性名
+	 * @param set		数据源  set		数据源
+	 * @return return
+	 */
+	public static boolean export(File template, File file, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+		FileOutputStream out = null;
+		try{
+			XSSFWorkbook  workbook = null;
+			Sheet sht = null;
+
+			int move = set.size();
+			int last = 0;
+			if(null != template && template.exists()){
+				FileInputStream is = new FileInputStream(template);
+				workbook = new XSSFWorkbook(is);
+				if(BasicUtil.isNotEmpty(sheet)){
+					workbook.setSheetName(0, sheet);
+				}
+				sht = workbook.getSheetAt(0);
+				last = sht.getLastRowNum();
+				is.close();
+			}else {
+				workbook = new XSSFWorkbook();
+				if(BasicUtil.isEmpty(sheet)){
+					sheet = "sheet1";
+				}
+				sht = workbook.createSheet(sheet);
+			}
+			int footFr = insert;
+			int footTo = last;
+			insert = last+1;
+			//表头
+			if(null != headers && headers.size()>0) {
+				Row row =sht.createRow(insert++);
+				int c= 0 ;
+				for (String header : headers) {
+					Cell cell = row.createCell(c++);
+					cell.setCellType(CellType.STRING);
+					cell.setCellValue(header);
+				}
+				move ++;
+			}
+			for(DataRow item:set){
+				Row row = sht.createRow(insert++);
+				int c = 0;
+				for(String key:keys){
+					Cell cell=row.createCell(c++);
+					cell.setCellType(CellType.STRING);
+					cell.setCellValue(BeanUtil.parseFinalValue(item,key,""));
+				}
+			}
+			int footSize = footTo - footFr +1; //foot行数
+			if(move>0 && footTo >= footFr) {
+				sht.shiftRows(footFr, footTo, move+footSize);
+				sht.shiftRows(footTo+1, footTo+1+ move, -footSize);
+			}
+			if(!file.getParentFile().exists()){
+				file.getParentFile().mkdirs();
+			}
+			if(!file.exists()){
+				file.createNewFile();
+			}
+			out = new FileOutputStream(file);
+			workbook.write(out);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}finally {
+			try{
+				out.flush();
+				out.close();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 导出EXCEL
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param rows 开始写入的行数
+	 * @param headers 表头
+	 * @param keys 读取集合条目的属性
+	 * @param set 数据集合
+	 * @return boolean
+	 */
+	public static boolean export(File template, File file, int rows, List<String>headers, List<String> keys, DataSet set){
+		return export(template, file, "sheet1", rows, headers, keys, set);
+	}
+	/**
+	 * 导出EXCEL
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param keys 读取集合条目的属性
+	 * @param set 数据集合
+	 * @return boolean
+	 */
+	public static boolean export(File template, File file, List<String> keys, DataSet set){
+		return export(template, file,0, null, keys, set);
+	}
+
+	/**
+	 * 导出EXCEL
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param headers 表头
+	 * @param keys 读取集合条目的属性
+	 * @param set 数据集合
+	 * @return boolean
+	 */
+	public static boolean export(File template, File file, List<String> headers,List<String> keys, DataSet set){
+		return export(template, file,0, headers, keys, set);
+	}
+
+	/**
+	 * 导出EXCEL
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param rows 从第几行开始写入
+	 * @param keys 读取集合条目的属性
+	 * @param set 数据集合
+	 * @return boolean
+	 */
+	public static boolean export(File template, File file, int rows, List<String> keys, DataSet set){
+		return export(template, file,rows, null, keys, set);
+	}
+
+	/**
+	 * 导出excel
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param sheet sheet 如果文件存在 并且为空时 则取第0个sheet
+	 * @param rows 行数
+	 * @param set 数据
+	 * @param configs 姓名:NAME或NAME
+	 * @return boolean
+	 */
+	public static boolean export(File template, File file, String sheet, int rows, DataSet set, String ... configs){
+		List<String> headers = new ArrayList<>();
+		List<String> keys = new ArrayList<>();
+		if(null != configs){
+			for(String config:configs){
+				String tmps[] = config.split(":");
+				if(tmps.length == 2){
+					headers.add(tmps[0]);
+					keys.add(tmps[1]);
+				}else{
+					keys.add(config);
+				}
+			}
+			if(headers.size() != keys.size()){
+				headers = new ArrayList<>();
+			}
+		}
+		return export(template, file, sheet, rows, headers, keys, set);
+	}
+
+
+	/**
+	 * 导出excel
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param rows 行数
+	 * @param set 数据
+	 * @param configs 姓名:NAME或NAME
+	 * @return boolean
+	 */
+	public static boolean export(File template, File file, int rows, DataSet set, String ... configs){
+		return export(template, file, null, rows, set, configs);
+	}
+
+
+	/**
+	 * 导出excel
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param set 数据
+	 * @param configs 姓名:NAME或NAME
+	 * @return boolean
+	 */
+	public static boolean export(File template, File file,  DataSet set, String ... configs){
+		return export(template, file, 0, set, configs);
+	}
+
 } 
