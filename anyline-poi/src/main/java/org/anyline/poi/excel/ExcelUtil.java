@@ -168,24 +168,56 @@ public class ExcelUtil {
 			}
 		return value;
 	}
+
 	/** 
-	 *  
-	 * @param file		文件  file		文件
+	 * 导出EXCEL
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
 	 * @param headers	表头  headers	表头
+	 * @param sheet 	sheet
 	 * @param rows		导出的开始位置
 	 * @param keys		对应列名属性名  keys		对应列名属性名
 	 * @param set		数据源  set		数据源
 	 * @return return
 	 */ 
-	public static boolean export(File file, int rows, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(File file, String sheet, int rows, List<String>headers, List<String> keys, DataSet set){
 		FileOutputStream out = null;
 		try{
-			SXSSFWorkbook  workbook=new SXSSFWorkbook();
-			Sheet sheet=workbook.createSheet("sheet1");
-			//表头
 
+			SXSSFWorkbook  workbook = null;
+			Sheet sht = null;
+			if(file.exists()){
+
+				File tempFile = File.createTempFile(file.getName(), null);
+				tempFile.delete();
+				boolean renameOk = file.renameTo(tempFile);
+				if(!renameOk){
+					tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
+					tempFile.delete();
+					renameOk = file.renameTo(tempFile);
+				}
+				if (!renameOk) {
+					throw new Exception("重命名失败 "
+							+ file.getAbsolutePath() + " > "
+							+ tempFile.getAbsolutePath());
+				}
+
+				XSSFWorkbook wb = new XSSFWorkbook(tempFile);
+				workbook = new SXSSFWorkbook(wb);
+				if(BasicUtil.isEmpty(sheet)){
+					sht = workbook.getSheetAt(0);
+				}else {
+					sht = workbook.getSheet(sheet);
+				}
+			}else {
+				workbook = new SXSSFWorkbook();
+				if(BasicUtil.isEmpty(sheet)){
+					sheet = "sheet1";
+				}
+				sht = workbook.createSheet(sheet);
+			}
+			//表头
 			if(null != headers) {
-				Row row =sheet.createRow(rows++);
+				Row row =sht.createRow(rows++);
 				int c= 0 ;
 				for (String header : headers) {
 					Cell cell = row.createCell(c++);
@@ -194,7 +226,7 @@ public class ExcelUtil {
 				}
 			}
 			for(DataRow item:set){
-				Row row = sheet.createRow(rows++);
+				Row row = sht.createRow(rows++);
 				int c = 0;
 				for(String key:keys){
 					Cell cell=row.createCell(c++);
@@ -209,10 +241,11 @@ public class ExcelUtil {
 			if(!file.exists()){
 				file.createNewFile();
 			}
-			out=new FileOutputStream(file);
+			out = new FileOutputStream(file);
 			workbook.write(out);
 		}catch(Exception e){
 			e.printStackTrace();
+			return false;
 		}finally {
 			try{
 				out.flush();
@@ -222,27 +255,60 @@ public class ExcelUtil {
 			}
 		}
 
-		return false; 
+		return true;
+	}
+
+	/**
+	 *
+	 * 导出EXCEL
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param rows 开始写入的行数
+	 * @param headers 表头
+	 * @param keys 读取集合条目的属性
+	 * @param set 数据集合
+	 * @return boolean
+	 */
+	public static boolean export(File file, int rows, List<String>headers, List<String> keys, DataSet set){
+		return export(file, "sheet1", rows, headers, keys, set);
 	}
 	public static boolean export(File file, List<String> keys, DataSet set){
 		return export(file,0, null, keys, set);
 	}
+
+	/**
+	 * 导出EXCEL
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param headers 表头
+	 * @param keys 读取集合条目的属性
+	 * @param set 数据集合
+	 * @return boolean
+	 */
 	public static boolean export(File file, List<String> headers,List<String> keys, DataSet set){
 		return export(file,0, headers, keys, set);
 	}
+
+	/**
+	 * 导出EXCEL
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param rows 从第几行开始写入
+	 * @param keys 读取集合条目的属性
+	 * @param set 数据集合
+	 * @return boolean
+	 */
 	public static boolean export(File file, int rows, List<String> keys, DataSet set){
 		return export(file,rows, null, keys, set);
 	}
 
 	/**
 	 * 导出excel
-	 * @param file 文件
+	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param sheet sheet 如果文件存在 并且为空时 则取第0个sheet
 	 * @param rows 行数
 	 * @param set 数据
 	 * @param configs 姓名:NAME
 	 * @return boolean
 	 */
-	public static boolean export(File file, int rows, DataSet set, String ... configs){
+	public static boolean export(File file, String sheet, int rows, DataSet set, String ... configs){
 		List<String> headers = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
 		if(null != configs){
@@ -257,7 +323,11 @@ public class ExcelUtil {
 				headers = new ArrayList<>();
 			}
 		}
-		return export(file, rows, headers, keys, set);
+		return export(file, sheet, rows, headers, keys, set);
+	}
+
+	public static boolean export(File file, int rows, DataSet set, String ... configs){
+		return export(file, null, rows, set, configs);
 	}
 	public static boolean export(File file,  DataSet set, String ... configs){
 		return export(file, 0, set, configs);
