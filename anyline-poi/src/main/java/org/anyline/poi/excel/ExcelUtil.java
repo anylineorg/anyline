@@ -116,7 +116,7 @@ public class ExcelUtil {
 	}
 
 
-	private static List<List<String>> read(Sheet sheet, int rows) {
+	public static List<List<String>> read(Sheet sheet, int rows) {
 		List<List<String>> lists = new ArrayList<List<String>>();
 		if(sheet != null){
 			int rowNos = sheet.getLastRowNum();// 得到excel的总记录条数
@@ -169,14 +169,12 @@ public class ExcelUtil {
 		return value;
 	}
 
-	private static String value(Cell cell) {
+	public static String value(Cell cell) {
 		//判断是否为null或空串
 		if (cell == null || cell.toString().trim().equals("")) {
 			return "";
 		}
 		String value = "";
-
-
 			switch (cell.getCellTypeEnum()) {
 				case NUMERIC: // 数字
 					if (HSSFDateUtil.isCellDateFormatted(cell)) {
