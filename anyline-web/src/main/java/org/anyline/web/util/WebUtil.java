@@ -27,6 +27,7 @@ import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
+import sun.misc.BASE64Encoder;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
@@ -850,35 +851,47 @@ public class WebUtil {
 			}
 		}
 	}
+
 	/**
 	 * 下载文件
+	 * @param request request
 	 * @param response response
 	 * @param file file
 	 * @param title title
 	 * @return return
 	 */
-	public static boolean download(HttpServletResponse response, File file, String title){
+	public static boolean download(HttpServletRequest request, HttpServletResponse response, File file, String title){
 		try{
 			if (null != file && file.exists()) {
 				if(BasicUtil.isEmpty(title)){
 					title = file.getName();
 				}
-				return download(response, new FileInputStream(file), title);
+				return download(request, response, new FileInputStream(file), title);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return false;
 	}
-	public static boolean download(HttpServletResponse response, String txt, String title){
+
+	public static boolean download(HttpServletResponse response, File file, String title){
+		return download(null, response, file, title);
+	}
+	public static boolean download(HttpServletRequest request, HttpServletResponse response, String txt, String title){
 		try{
-			return download(response, new ByteArrayInputStream(txt.getBytes()), title);
+			return download(request, response, new ByteArrayInputStream(txt.getBytes()), title);
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return false;
 	}
 
+	public static boolean download(HttpServletResponse response, String txt, String title){
+		return download(null, response, txt, title);
+	}
+	public static boolean download(HttpServletResponse response, InputStream in, String title){
+		return download(null, response, in, title);
+	}
 	/**
 	 * 下载文件
 	 * @param response response
@@ -886,12 +899,17 @@ public class WebUtil {
 	 * @param title title
 	 * @return return
 	 */
-	public static boolean download(HttpServletResponse response, InputStream in, String title){
+	public static boolean download(HttpServletRequest request, HttpServletResponse response, InputStream in, String title){
 		OutputStream out = null;
 		try {
 			response.setCharacterEncoding("UTF-8");
-			response.setHeader("Location", title);
-			response.setHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(title,"UTF-8"));
+			response.setHeader("Location",   title );
+			if(null != request){
+				title = encode(request, title);
+			}else {
+				title = URLEncoder.encode(title, "utf-8");
+			}
+			response.setHeader("Content-Disposition", "attachment; filename=" + title);
 			out = response.getOutputStream();
 			byte[] buf = new byte[1024];
 			int count = 0;
@@ -918,6 +936,22 @@ public class WebUtil {
 			}
 		}
 		return true;
+	}
+	public static String encode(HttpServletRequest request, String value) throws IOException {
+		String agent = request.getHeader("User-Agent"); //获取浏览器
+		if (agent.contains("Firefox")) {
+			BASE64Encoder base64Encoder = new BASE64Encoder();
+			value = "=?utf-8?B?"
+					+ base64Encoder.encode(value.getBytes("utf-8"))
+					+ "?=";
+		} else if(agent.contains("MSIE")) {
+			value = URLEncoder.encode(value, "utf-8");
+		} else if(agent.contains ("Safari")) {
+			value = new String (value.getBytes ("utf-8"),"ISO8859-1");
+		} else {
+			value = URLEncoder.encode(value, "utf-8");
+		}
+		return value;
 	}
 	public static String getCookie(HttpServletRequest request, String key){
 		if(null == key){
