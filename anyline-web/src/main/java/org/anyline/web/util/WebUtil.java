@@ -27,7 +27,6 @@ import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.env.Environment;
-import sun.misc.BASE64Encoder;
 
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
@@ -874,6 +873,19 @@ public class WebUtil {
 		return false;
 	}
 
+	public static boolean download(HttpServletRequest request, HttpServletResponse response, File file){
+		try{
+			if (null != file && file.exists()) {
+				return download(request, response, new FileInputStream(file), file.getName());
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	public static boolean download(HttpServletResponse response, File file){
+		return download(null, response, file, file.getName());
+	}
 	public static boolean download(HttpServletResponse response, File file, String title){
 		return download(null, response, file, title);
 	}
@@ -909,7 +921,8 @@ public class WebUtil {
 			}else {
 				title = URLEncoder.encode(title, "utf-8");
 			}
-			response.setHeader("Content-Disposition", "attachment; filename=" + title);
+			String content = "attachment; filename*=utf-8'zh_cn'" + title;
+			response.setHeader("Content-Disposition", content);
 			out = response.getOutputStream();
 			byte[] buf = new byte[1024];
 			int count = 0;
@@ -938,16 +951,16 @@ public class WebUtil {
 		return true;
 	}
 	public static String encode(HttpServletRequest request, String value) throws IOException {
-		String agent = request.getHeader("User-Agent"); //获取浏览器
-		if (agent.contains("Firefox")) {
-			BASE64Encoder base64Encoder = new BASE64Encoder();
-			value = "=?utf-8?B?"
-					+ base64Encoder.encode(value.getBytes("utf-8"))
-					+ "?=";
-		} else if(agent.contains("MSIE")) {
+		String agent = request.getHeader("User-Agent").toLowerCase(); //获取浏览器
+		if (agent.contains("firefox")) {
 			value = URLEncoder.encode(value, "utf-8");
-		} else if(agent.contains ("Safari")) {
-			value = new String (value.getBytes ("utf-8"),"ISO8859-1");
+		} else if(agent.contains("msie")) {
+			value = URLEncoder.encode(value, "utf-8");
+		} else if(agent.contains ("chrome")) {
+			value = URLEncoder.encode(value, "utf-8");
+		} else if(agent.contains ("safari")) {
+			//value = new String (value.getBytes ("utf-8"),"ISO8859-1");
+			value = URLEncoder.encode(value, "utf-8");
 		} else {
 			value = URLEncoder.encode(value, "utf-8");
 		}
