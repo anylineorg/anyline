@@ -7,7 +7,7 @@ import org.anyline.jdbc.config.db.run.RunSQL;
 import java.util.List;
 import java.util.Map;
 
-public interface AnylineDaoListener {
+public interface JDBCListener {
 
     public void beforeQuery(AnylineDao dao, RunSQL run);
     public void afterQuery(AnylineDao dao, RunSQL run, List<Map<String,Object>>  maps);
