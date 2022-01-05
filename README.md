@@ -97,30 +97,38 @@ AnyLine支持但不推荐实体Bean的形式
 
 
 ```
-anyline-core           : 基础包
-anyline-web            : javaEE基础
-anyline-net            : 多任务下载，下载进度，断点续传，网速计算，耗时预算，下载回调	
-anyline-struts         : strtus2支持
-anyline-springmvc      : springmvc支持
-anyline-jdbc		: jdbc基础
-anyline-jdbc-mysql     : mysql支持
-anyline-jdbc-mssql     : sql server支持
-anyline-jdbc-db2       : db2支持
-anyline-jdbc-oracle    : oracle支持
-anyline-jdbc-postgresql: PostgreSQL支持
-anyline-jdbc-hgdb      :瀚高数据库支持
-anyline-alipay         : 支付宝支付集成工具
-anyline-aliyun         : 阿里云平台相关工具
-anyline-weixin         : 微信支付,微信开放平台，公众平台集成工具
-anyline-qq             : QQ支付，QQ开放平台，公众平台集成工具
-anyline-jpush          : 极光推送集成工具
-anyline-easemob        : 环信集成工具
-anyline-amap           : 高德云图集成工具
-anyline-sms            : 基于阿里云的短信发送工具
-anyline-mail           : 邮件接收发送
-anyline-video          : 视频处理
-anyline-ext            : 水印,动画等扩展功能
-anyline-redis          : redis
-anyline-nc	       : netcdf解析
-anyline-poi	       : 基于poi的msoffice文件操作
+anyline-core                : 基础包
+anyline-web                 : javaEE基础
+anyline-net                 : 多任务下载，下载进度，断点续传，网速计算，耗时预算，下载回调	
+anyline-struts              : strtus2支持
+anyline-mvc                 : springmvc支持
+anyline-jdbc		        : jdbc基础
+anyline-jdbc-mysql          : mysql支持
+anyline-jdbc-mssql          : sql server支持
+anyline-jdbc-db2            : db2支持
+anyline-jdbc-dm             : 达梦支持
+anyline-jdbc-oracle         : oracle支持
+anyline-jdbc-postgresql     : PostgreSQL支持
+anyline-jdbc-hgdb           : 瀚高数据库支持
+anyline-ldap                : ldap
+anyline-nacos               : nacos
+anyline-alipay              : 支付宝支付集成工具
+anyline-aliyun              : 阿里云平台相关工具
+anyline-wechat              : 微信支付,微信开放平台，公众平台集成工具
+anyline-tencent             : 腾讯云
+anyline-qq                  : QQ支付，QQ开放平台，公众平台集成工具
+anyline-jpush               : 极光推送集成工具
+anyline-easemob             : 环信集成工具
+anyline-amap                : 高德云图集成工具
+anyline-sms                 : 基于阿里云的短信发送工具
+anyline-mail                : 邮件接收发送
+anyline-comm                : 串、并口通信
+anyline-video               : 视频处理
+anyline-ext                 : 水印,动画等扩展功能
+anyline-cache-ecache        : ecache
+anyline-cache-redis         : redis
+anyline-print               : 小票打印机
+anyline-nc	                : netcdf解析
+anyline-office              : open office
+anyline-poi	                : 基于poi的msoffice文件操作
 ```
