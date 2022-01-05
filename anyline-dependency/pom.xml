@@ -33,40 +33,6 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<anyline.version>8.5.1-SNAPSHOT</anyline.version>
 
-		<anyline.core.version>${anyline.version}</anyline.core.version>
-		<anyline.net.version>${anyline.version}</anyline.net.version>
-		<anyline.ext.version>${anyline.version}</anyline.ext.version>
-		<anyline.cache.ecache.version>${anyline.version}</anyline.cache.ecache.version>
-		<anyline.cache.redis.version>${anyline.version}</anyline.cache.redis.version>
-		<anyline.nc.version>${anyline.version}</anyline.nc.version>
-		<anyline.web.version>${anyline.version}</anyline.web.version>
-		<anyline.web.ext.version>${anyline.version}</anyline.web.ext.version>
-		<anyline.mvc.version>${anyline.version}</anyline.mvc.version>
-		<anyline.struts.version>${anyline.version}</anyline.struts.version>
-		<anyline.amap.version>${anyline.version}</anyline.amap.version>
-		<anyline.alipay.version>${anyline.version}</anyline.alipay.version>
-		<anyline.aliyun.version>${anyline.version}</anyline.aliyun.version>
-		<anyline.video.version>${anyline.version}</anyline.video.version>
-		<anyline.easemob.version>${anyline.version}</anyline.easemob.version>
-		<anyline.jpush.version>${anyline.version}</anyline.jpush.version>
-		<anyline.mail.version>${anyline.version}</anyline.mail.version>
-		<anyline.qq.version>${anyline.version}</anyline.qq.version>
-		<anyline.redis.version>${anyline.version}</anyline.redis.version>
-		<anyline.wechat.version>${anyline.version}</anyline.wechat.version>
-		<anyline.poi.version>${anyline.version}</anyline.poi.version>
-		<anyline.nacos.version>${anyline.version}</anyline.nacos.version>
-		<anyline.ldap.version>${anyline.version}</anyline.ldap.version>
-		<anyline.print.10ss.version>${anyline.version}</anyline.print.10ss.version>
-		<!-- jdbc -->
-		<anyline.jdbc.version>${anyline.version}</anyline.jdbc.version>
-		<anyline.jdbc.mssql.version>${anyline.version}</anyline.jdbc.mssql.version>
-		<anyline.jdbc.mysql.version>${anyline.version}</anyline.jdbc.mysql.version>
-		<anyline.jdbc.mariadb.version>${anyline.version}</anyline.jdbc.mariadb.version>
-		<anyline.jdbc.db2.version>${anyline.version}</anyline.jdbc.db2.version>
-		<anyline.jdbc.oracle.version>${anyline.version}</anyline.jdbc.oracle.version>
-		<anyline.jdbc.postgresql.version>${anyline.version}</anyline.jdbc.postgresql.version>
-		<anyline.jdbc.hgdb.version>${anyline.version}</anyline.jdbc.hgdb.version>
-
 		<mssql-jdbc.version>7.2.2.jre8</mssql-jdbc.version>
 		<mysql.version>8.0.16</mysql.version>
 		<db2-jdbc.version>11.5.0.0</db2-jdbc.version>
@@ -92,7 +58,7 @@
 		<oro.version>2.0.8</oro.version>
 		<ecache.version>2.10.6</ecache.version>
 		<ognl.version>3.2.10</ognl.version>
-		<spring.version>5.1.7.RELEASE</spring.version>
+		<spring.version>5.1.18.RELEASE</spring.version>
 		<aliyun.oss.version>3.8.0</aliyun.oss.version>
 		<aliyun.sms.version>2.1.0</aliyun.sms.version>
 		<alipay.version>4.16.57.ALL</alipay.version>
@@ -114,157 +80,162 @@
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-core</artifactId>
-				<version>${anyline.core.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-ext</artifactId>
-				<version>${anyline.ext.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-alipay</artifactId>
-				<version>${anyline.alipay.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-aliyun</artifactId>
-				<version>${anyline.aliyun.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-amap</artifactId>
-				<version>${anyline.amap.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-easemob</artifactId>
-				<version>${anyline.easemob.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-cache-ecache</artifactId>
-				<version>${anyline.cache.ecache.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jdbc</artifactId>
-				<version>${anyline.jdbc.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jdbc-db2</artifactId>
-				<version>${anyline.jdbc.db2.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jdbc-hgdb</artifactId>
-				<version>${anyline.jdbc.hgdb.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jdbc-mariadb</artifactId>
-				<version>${anyline.jdbc.mariadb.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jdbc-mysql</artifactId>
-				<version>${anyline.jdbc.mysql.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jdbc-mssql</artifactId>
-				<version>${anyline.jdbc.mssql.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jdbc-oracle</artifactId>
-				<version>${anyline.jdbc.oracle.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jdbc-postgresql</artifactId>
-				<version>${anyline.jdbc.postgresql.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jpush</artifactId>
-				<version>${anyline.jpush.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-struts</artifactId>
-				<version>${anyline.struts.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-mail</artifactId>
-				<version>${anyline.mail.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-mvc</artifactId>
-				<version>${anyline.mvc.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-net</artifactId>
-				<version>${anyline.net.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-poi</artifactId>
-				<version>${anyline.poi.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-qq</artifactId>
-				<version>${anyline.qq.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-cache-redis</artifactId>
-				<version>${anyline.cache.redis.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-video</artifactId>
-				<version>${anyline.video.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-web</artifactId>
-				<version>${anyline.web.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-web-ext</artifactId>
-				<version>${anyline.web.ext.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-wechat</artifactId>
-				<version>${anyline.wechat.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-nc</artifactId>
-				<version>${anyline.nc.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-ldap</artifactId>
-				<version>${anyline.ldap.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-nacos</artifactId>
-				<version>${anyline.nacos.version}</version>
+				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-print-10ss</artifactId>
-				<version>${anyline.print.10ss.version}</version>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-office</artifactId>
+				<version>${anyline.version}</version>
 			</dependency>
 
 			<dependency>
@@ -475,11 +446,6 @@
 				<artifactId>commons-io</artifactId>
 				<version>${commons.io.version}</version>
 			</dependency>
-<!--			<dependency>
-				<groupId>javax.persistence</groupId>
-				<artifactId>persistence-api</artifactId>
-				<version>${persistence.version}</version>
-			</dependency>-->
 			<dependency>
 				<groupId>javax.servlet</groupId>
 				<artifactId>jstl</artifactId>
@@ -633,7 +599,6 @@
 				</plugins>
 			</build>
 		</profile>
-
 
 	</profiles>
 	<build>
