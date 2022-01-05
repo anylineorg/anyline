@@ -21,7 +21,7 @@ package org.anyline.dao.impl.springjdbc;
 
 import org.anyline.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
-import org.anyline.dao.AnylineDaoListener;
+import org.anyline.dao.JDBCListener;
 import org.anyline.dao.impl.BatchInsertStore;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -68,11 +68,12 @@ public class AnylineDaoImpl implements AnylineDao {
 	protected JdbcTemplate jdbc;
 
 	@Autowired(required=false)
-	protected AnylineDaoListener listener;
+	protected JDBCListener listener;
 
 	public JdbcTemplate getJdbc(){
 		return jdbc;
 	}
+
 
 	protected BatchInsertStore batchInsertStore = new BatchInsertStore();
 
