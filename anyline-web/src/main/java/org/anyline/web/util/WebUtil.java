@@ -152,8 +152,6 @@ public class WebUtil {
 		if(null == request){
 			return new HashMap<String,Object>();
 		}
-		//System.out.println(request.getParameterNames().hasMoreElements());
-		//String page = request.getParameter("_anyline_page");
 		Map<String,Object> map = (Map<String,Object>)request.getAttribute(PACK_REQUEST_PARAM);
 		if(null == map){
 			map = new HashMap<String,Object>();
