@@ -155,6 +155,9 @@ public class AnylineDaoImpl implements AnylineDao {
 			int total = 0;
 			if (run.isValid()) {
 				if (null != navi) {
+					if(null != listener){
+						listener.beforeTotal(this,run);
+					}
 					if (navi.getLastRow() == 0) {
 						//第一条
 						total = 1;
@@ -167,6 +170,9 @@ public class AnylineDaoImpl implements AnylineDao {
 							total = navi.getTotalRow();
 						}
 					}
+					if(null != listener){
+						listener.afterTotal(this, run, total);
+					}
 				}
 				if (showSQL) {
 					log.warn("[查询记录总数][行数:{}]", total);
@@ -174,7 +180,6 @@ public class AnylineDaoImpl implements AnylineDao {
 			}
 			if (run.isValid() && (null == navi || total > 0)) {
 				if(null != listener){
-
 					listener.beforeQuery(this,run);
 				}
 				set = select(run.getFinalQueryTxt(), run.getValues());

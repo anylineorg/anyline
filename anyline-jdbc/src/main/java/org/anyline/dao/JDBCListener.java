@@ -9,6 +9,8 @@ import java.util.Map;
 
 public interface JDBCListener {
 
+    public void beforeTotal(AnylineDao dao, RunSQL run);
+    public void afterTotal(AnylineDao dao, RunSQL run, int total);
     public void beforeQuery(AnylineDao dao, RunSQL run);
     public void afterQuery(AnylineDao dao, RunSQL run, List<Map<String,Object>>  maps);
     public void afterQuery(AnylineDao dao, RunSQL run, DataSet set );
