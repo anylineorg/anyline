@@ -118,12 +118,9 @@ public class Td {
         for(int c=cols+1; c<cols+colspan; c++){
             tr.getTd(c).setRemove(true);
         }
-        System.out.println("merge rowspan("+this.getRowIndex()+","+this.getColIndex()+")");
         for(int r=rows+1; r<rows+rowspan; r++){
             tr = trs.get(r);
-            System.out.println("merge rowspan:"+r);
             for(int c=cols; c<cols+colspan; c++){
-                System.out.println("merge rowspan:"+r+":"+c);
                 tr.getTd(c).setRemove(true);
             }
         }

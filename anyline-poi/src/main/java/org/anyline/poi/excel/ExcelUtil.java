@@ -14,7 +14,6 @@ import org.anyline.util.FileUtil;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -425,35 +424,12 @@ public class ExcelUtil {
 		try{
 			XSSFWorkbook  workbook = null;
 			Sheet sht = null;
-			int move = set.size();
-			int last = 0;
 			workbook = new XSSFWorkbook();
 			if(BasicUtil.isEmpty(sheet)){
 				sheet = "sheet1";
 			}
 			sht = workbook.createSheet(sheet);
-
-			insert = last+1;
-			//表头
-			if(null != headers && headers.size()>0) {
-				Row row =sht.createRow(insert++);
-				int c= 0 ;
-				for (String header : headers) {
-					Cell cell = row.createCell(c++);
-					cell.setCellType(CellType.STRING);
-					cell.setCellValue(header);
-				}
-				move ++;
-			}
-			for(DataRow item:set){
-				Row row = sht.createRow(insert++);
-				int c = 0;
-				for(String key:keys){
-					Cell cell=row.createCell(c++);
-					cell.setCellType(CellType.STRING);
-					cell.setCellValue(BeanUtil.parseFinalValue(item,key,""));
-				}
-			}
+			write(sht, insert, headers, keys, set);
 			workbook.write(os);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -469,13 +445,33 @@ public class ExcelUtil {
 
 		return true;
 	}
-	public static boolean export(File file, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
-		FileOutputStream out = null;
+
+	private static void write(Sheet sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+		//表头
+		if(null != headers && headers.size()>0) {
+			Row row =sheet.createRow(insert++);
+			int c= 0 ;
+			for (String header : headers) {
+				Cell cell = row.createCell(c++);
+				cell.setCellType(CellType.STRING);
+				cell.setCellValue(header);
+			}
+		}
+		for(DataRow item:set){
+			Row row = sheet.createRow(insert++);
+			int c = 0;
+			for(String key:keys){
+				Cell cell=row.createCell(c++);
+				cell.setCellType(CellType.STRING);
+				cell.setCellValue(BeanUtil.parseFinalValue(item,key,""));
+			}
+		}
+	}
+	public static boolean export(File file, String sheet, int insert, Table table){
+		FileOutputStream os = null;
 		try{
 			XSSFWorkbook  workbook = null;
 			Sheet sht = null;
-			int move = set.size();
-			int last = 0;
 			if(file.exists()){
 				File tempFile = File.createTempFile(file.getName(), null);
 				boolean renameOk = file.renameTo(tempFile);
@@ -495,7 +491,6 @@ public class ExcelUtil {
 				}else {
 					sht = workbook.getSheet(sheet);
 				}
-				last = sht.getLastRowNum();
 				is.close();
 				tempFile.delete();
 			}else {
@@ -505,104 +500,87 @@ public class ExcelUtil {
 				}
 				sht = workbook.createSheet(sheet);
 			}
-			int footFr = insert;
-			int footTo = last;
-			if(last >= insert) {
-				insert = last + 1;
-			}
-			//表头
-			if(null != headers && headers.size()>0) {
-				Row row =sht.createRow(insert++);
-				int c= 0 ;
-				for (String header : headers) {
-					Cell cell = row.createCell(c++);
-					cell.setCellType(CellType.STRING);
-					cell.setCellValue(header);
-				}
-				move ++;
-			}
-			for(DataRow item:set){
-				Row row = sht.createRow(insert++);
-				int c = 0;
-				for(String key:keys){
-					Cell cell=row.createCell(c++);
-					cell.setCellType(CellType.STRING);
-					cell.setCellValue(BeanUtil.parseFinalValue(item,key,""));
-				}
-			}
-			int footSize = footTo - footFr +1; //foot行数
-			if(move>0 && footTo >= footFr) {
-				sht.shiftRows(footFr, footTo, move+footSize);
-				sht.shiftRows(footTo+1, footTo+footSize+ move, -footSize);//数据上移
-			}
+
 			if(!file.getParentFile().exists()){
 				file.getParentFile().mkdirs();
 			}
 			if(!file.exists()){
 				file.createNewFile();
 			}
-			out = new FileOutputStream(file);
-			workbook.write(out);
+			os = new FileOutputStream(file);
+			write(workbook, os, sht, insert, table);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
-		}finally {
-			try{
-				out.flush();
-				out.close();
-			}catch (Exception e){
-				e.printStackTrace();
-			}
 		}
 		return true;
 	}
 
-	public static boolean export(File file, String sheet, int insert, Table table){
-		FileOutputStream out = null;
+	public static boolean export(File template, OutputStream os, String sheet, int insert, Table table){
 		try{
-			XSSFWorkbook  workbook = null;
 			Sheet sht = null;
-			int move = table.getTrs().size();
-			int last = 0;
-			if(file.exists()){
-				File tempFile = File.createTempFile(file.getName(), null);
-				boolean renameOk = file.renameTo(tempFile);
-				if(!renameOk){
-					tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
-					renameOk = file.renameTo(tempFile);
-				}
-				if (!renameOk) {
-					throw new Exception("重命名失败 "
-							+ file.getAbsolutePath() + " > "
-							+ tempFile.getAbsolutePath());
-				}
-				FileInputStream is = new FileInputStream(tempFile);
-				workbook = new XSSFWorkbook(is);
-				if(BasicUtil.isEmpty(sheet)){
-					sht = workbook.getSheetAt(0);
-				}else {
-					sht = workbook.getSheet(sheet);
-				}
-				last = sht.getLastRowNum();
-				is.close();
-				tempFile.delete();
+			FileInputStream is = new FileInputStream(template);
+			XSSFWorkbook workbook = new XSSFWorkbook(is);
+			if(BasicUtil.isEmpty(sheet)){
+				sht = workbook.getSheetAt(0);
 			}else {
-				workbook = new XSSFWorkbook();
-				if(BasicUtil.isEmpty(sheet)){
-					sheet = "sheet1";
-				}
-				sht = workbook.createSheet(sheet);
+				sht = workbook.getSheet(sheet);
 			}
+			is.close();
+
+			write(workbook, os, sht, insert, table);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	public static boolean export(File template, File file, String sheet, int insert, Table table){
+		try{
+			Sheet sht = null;
+			FileInputStream is = new FileInputStream(template);
+			XSSFWorkbook workbook = new XSSFWorkbook(is);
+			if(BasicUtil.isEmpty(sheet)){
+				sht = workbook.getSheetAt(0);
+			}else {
+				sht = workbook.getSheet(sheet);
+			}
+			is.close();
+			write(workbook, new FileOutputStream(file), sht, insert, table);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	public static boolean export(OutputStream os, String sheet, int insert, Table table){
+		try{
+			XSSFWorkbook workbook = new XSSFWorkbook();
+			if(BasicUtil.isEmpty(sheet)){
+				sheet = "sheet1";
+			}
+			Sheet sht = workbook.createSheet(sheet);
+			write(workbook, os, sht, insert, table);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, Table table){
+		try {
+			int move = table.getTrs().size();
+			int last = sheet.getLastRowNum();
 			int footFr = insert;
 			int footTo = last;
-			if(last >= insert) {
+			if (last >= insert) {
 				insert = last + 1;
 			}
 			List<Tr> trs = table.getTrs();
-			for(Tr tr:trs){
-				Row row = sht.createRow(insert);
+			for (Tr tr : trs) {
+				Row row = sheet.createRow(insert);
 				List<Td> tds = tr.getTds();
-				for(Td td:tds){
+				for (Td td : tds) {
 					int rowspan = td.getRowspan();
 					int colspan = td.getColspan();
 
@@ -610,46 +588,37 @@ public class ExcelUtil {
 					int x = td.getColIndex();
 					int y = td.getRowIndex();
 					int offset = td.getOffset();
-					Cell cell=row.createCell(colIndex + offset);
+					Cell cell = row.createCell(colIndex + offset);
 
 					cell.setCellType(CellType.STRING);
 					cell.setCellValue(td.getTextTrim());
-					if(rowspan > 1 || colspan > 1){
+					if (rowspan > 1 || colspan > 1) {
 						int firstRow = insert + y;
 						int lastRow = firstRow + rowspan - 1;
 						int firstCol = x + offset;
 						int lastCol = firstCol + colspan - 1;
 						CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
-						sht.addMergedRegion(region);
+						sheet.addMergedRegion(region);
 					}
 				}
-				insert ++;
+				insert++;
 			}
-			int footSize = footTo - footFr +1; //foot行数
-			if(move>0 && footTo >= footFr) {
-				sht.shiftRows(footFr, footTo, move+footSize);//表头下移
-				sht.shiftRows(footTo+1, footTo+footSize+ move, -footSize);//数据上移
+			int footSize = footTo - footFr + 1; //foot行数
+			if (move > 0 && footTo >= footFr) {
+				sheet.shiftRows(footFr, footTo, move + footSize);//表头下移
+				sheet.shiftRows(footTo + 1, footTo + footSize + move, -footSize);//数据上移
 			}
-			if(!file.getParentFile().exists()){
-				file.getParentFile().mkdirs();
-			}
-			if(!file.exists()){
-				file.createNewFile();
-			}
-			out = new FileOutputStream(file);
-			workbook.write(out);
-		}catch(Exception e){
+			workbook.write(os);
+		}catch (Exception e){
 			e.printStackTrace();
-			return false;
 		}finally {
 			try{
-				out.flush();
-				out.close();
+				os.flush();
+				os.close();
 			}catch (Exception e){
 				e.printStackTrace();
 			}
 		}
-		return true;
 	}
 	/**
 	 * 导出EXCEL
@@ -758,7 +727,6 @@ public class ExcelUtil {
 		return export(os, sheet, rows, headers, keys, set);
 	}
 
-
 	/**
 	 * 导出excel
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
@@ -773,7 +741,6 @@ public class ExcelUtil {
 	public static boolean export(OutputStream os, int rows, DataSet set, String ... configs){
 		return export(os, "", rows, set, configs);
 	}
-
 
 	/**
 	 * 导出excel
@@ -818,14 +785,83 @@ public class ExcelUtil {
 		}
 	}
 
-	public static boolean export(File template, OutputStream os, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
 
+	public static boolean export(File file, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+		FileOutputStream os = null;
 		try{
 			XSSFWorkbook  workbook = null;
 			Sheet sht = null;
+			if(file.exists()){
+				File tempFile = File.createTempFile(file.getName(), null);
+				boolean renameOk = file.renameTo(tempFile);
+				if(!renameOk){
+					tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
+					renameOk = file.renameTo(tempFile);
+				}
+				if (!renameOk) {
+					throw new Exception("重命名失败 "
+							+ file.getAbsolutePath() + " > "
+							+ tempFile.getAbsolutePath());
+				}
+				FileInputStream is = new FileInputStream(tempFile);
+				workbook = new XSSFWorkbook(is);
+				if(BasicUtil.isEmpty(sheet)){
+					sht = workbook.getSheetAt(0);
+				}else {
+					sht = workbook.getSheet(sheet);
+				}
+				is.close();
+				tempFile.delete();
+			}else {
+				workbook = new XSSFWorkbook();
+				if(BasicUtil.isEmpty(sheet)){
+					sheet = "sheet1";
+				}
+				sht = workbook.createSheet(sheet);
+			}
 
+			write(workbook, os, sht, insert, headers, keys, set);
+
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+		try {
 			int move = set.size();
-			int last = 0;
+			int footFr = insert;
+			int last = sheet.getLastRowNum();
+			int footTo = last;
+			if (last >= insert) {
+				insert = last + 1;
+			}
+			if (null != headers && headers.size() > 0) {
+				move++;
+			}
+			write(sheet, insert, headers, keys, set);
+			int footSize = footTo - footFr + 1; //foot行数
+			if (move > 0 && footTo >= footFr) {
+				sheet.shiftRows(footFr, footTo, move + footSize);
+				sheet.shiftRows(footTo + 1, footTo + footSize + move, -footSize);//数据上移
+			}
+			workbook.write(os);
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			try{
+				os.flush();
+				os.close();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
+	public static boolean export(File template, OutputStream os, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+		try{
+			XSSFWorkbook  workbook = null;
+			Sheet sht = null;
 			if(null != template && template.exists()){
 				FileInputStream is = new FileInputStream(template);
 				workbook = new XSSFWorkbook(is);
@@ -833,7 +869,7 @@ public class ExcelUtil {
 					workbook.setSheetName(0, sheet);
 				}
 				sht = workbook.getSheetAt(0);
-				last = sht.getLastRowNum();
+
 				is.close();
 			}else {
 				workbook = new XSSFWorkbook();
@@ -842,47 +878,10 @@ public class ExcelUtil {
 				}
 				sht = workbook.createSheet(sheet);
 			}
-			int footFr = insert;
-			int footTo = last;
-			if(last >= insert) {
-				insert = last + 1;
-			}
-			//表头
-			if(null != headers && headers.size()>0) {
-				Row row =sht.createRow(insert++);
-				int c= 0 ;
-				for (String header : headers) {
-					Cell cell = row.createCell(c++);
-					cell.setCellType(CellType.STRING);
-					cell.setCellValue(header);
-				}
-				move ++;
-			}
-			for(DataRow item:set){
-				Row row = sht.createRow(insert++);
-				int c = 0;
-				for(String key:keys){
-					Cell cell=row.createCell(c++);
-					cell.setCellType(CellType.STRING);
-					cell.setCellValue(BeanUtil.parseFinalValue(item,key,""));
-				}
-			}
-			int footSize = footTo - footFr +1; //foot行数
-			if(move>0 && footTo >= footFr) {
-				sht.shiftRows(footFr, footTo, move+footSize);
-				sht.shiftRows(footTo+1, footTo+footSize+ move, -footSize);//数据上移
-			}
-			workbook.write(os);
+			write(workbook, os, sht, insert, headers, keys, set);
 		}catch(Exception e){
 			e.printStackTrace();
 			return false;
-		}finally {
-			try{
-				os.flush();
-				os.close();
-			}catch (Exception e){
-				e.printStackTrace();
-			}
 		}
 		return true;
 	}
@@ -933,17 +932,18 @@ public class ExcelUtil {
 	/**
 	 * 导出EXCEL
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
-	 * @param rows 从第几行开始写入
+	 * @param insert 从第几行开始写入
 	 * @param keys 读取集合条目的属性
 	 * @param set 数据集合
 	 * @return boolean
 	 */
-	public static boolean export(File template, File file, int rows, List<String> keys, DataSet set){
-		return export(template, file,rows, null, keys, set);
+	public static boolean export(File template, File file, int insert, List<String> keys, DataSet set){
+		return export(template, file,insert, null, keys, set);
 	}
-	public static boolean export(File template, OutputStream os, int rows, List<String> keys, DataSet set){
-		return export(template, os, rows, null, keys, set);
+	public static boolean export(File template, OutputStream os, int insert, List<String> keys, DataSet set){
+		return export(template, os, insert, null, keys, set);
 	}
+
 
 	/**
 	 * 导出excel
@@ -962,7 +962,7 @@ public class ExcelUtil {
 			return false;
 		}
 	}
-	public static boolean export(File template, OutputStream os, String sheet, int rows, DataSet set, String ... configs){
+	public static boolean export(File template, OutputStream os, String sheet, int insert, DataSet set, String ... configs){
 		List<String> headers = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
 		if(null != configs){
@@ -979,22 +979,29 @@ public class ExcelUtil {
 				headers = new ArrayList<>();
 			}
 		}
-		return export(template, os, sheet, rows, headers, keys, set);
+		return export(template, os, sheet, insert, headers, keys, set);
 	}
 
 	/**
 	 * 导出excel
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
-	 * @param rows 行数
+	 * @param insert 开始插入的位置
 	 * @param set 数据
 	 * @param configs 姓名:NAME或NAME
 	 * @return boolean
 	 */
-	public static boolean export(File template, File file, int rows, DataSet set, String ... configs){
-		return export(template, file, null, rows, set, configs);
+	public static boolean export(File template, File file, int insert, DataSet set, String ... configs){
+		return export(template, file, null, insert, set, configs);
 	}
-	public static boolean export(File template, OutputStream os, int rows, DataSet set, String ... configs){
-		return export(template, os, null, rows, set, configs);
+	public static boolean export(File template, File file, int insert, Table table){
+		return export(template, file, null, insert, table);
+	}
+	public static boolean export(File template, OutputStream os, int insert, DataSet set, String ... configs){
+		return export(template, os, null, insert, set, configs);
+	}
+
+	public static boolean export(File template, OutputStream os, int insert, Table table){
+		return export(template, os, null, insert, table);
 	}
 
 	/**
@@ -1007,8 +1014,14 @@ public class ExcelUtil {
 	public static boolean export(File template, File file,  DataSet set, String ... configs){
 		return export(template, file, 0, set, configs);
 	}
+	public static boolean export(File template, File file,  Table table){
+		return export(template, file,"", 0, table);
+	}
 	public static boolean export(File template, OutputStream os,  DataSet set, String ... configs){
 		return export(template, os, 0, set, configs);
+	}
+	public static boolean export(File template, OutputStream os,  Table table){
+		return export(template, os, "", 0, table);
 	}
 
 } 
