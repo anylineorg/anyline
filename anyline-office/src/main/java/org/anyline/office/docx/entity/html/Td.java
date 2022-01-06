@@ -16,6 +16,7 @@ public class Td {
     private int rowspan = 1;
     private String clazz = null;
     private int merge = -1; // -1 不合并 1:合并 2:被合并
+    private int offset = 0; //向右偏移(前一列被上一行合并后，当前td偏移 +1, 前一列被更前一列合并时当前td偏移+1)
     private boolean remove = false;
     private String width;
     private boolean isMerge = false;
@@ -38,6 +39,9 @@ public class Td {
         this.src = src;
     }
 
+    public int getOffset(){
+        return offset;
+    }
     public int getColspan() {
         return colspan;
     }
@@ -65,8 +69,26 @@ public class Td {
         }
         return true;
     }
+    public Td setOffset(int offset){
+        this.offset = offset;
+        return this;
+    }
+    public Td addOffset(int offset){
+        this.offset += offset;
+        return this;
+    }
     public Td setColspan(int colspan) {
         this.colspan = colspan;
+        if(colspan > 1) {
+            isMerge = true;
+            //后面的所有列偏移+(colspan-1)
+           /* Tr tr = this.getTr();
+            int max = tr.getTds().size();
+            for(int i=this.getColIndex()+1; i<max; i++){
+                Td td = tr.getTd(i);
+                td.addOffset(colspan-1);
+            }*/
+        }
         return this;
     }
 
@@ -77,6 +99,9 @@ public class Td {
 
     public Td setRowspan(int rowspan) {
         this.rowspan = rowspan;
+        if(rowspan > 1) {
+            isMerge = true;
+        }
         return this;
     }
     //根据 rowspan colspan合并
@@ -93,9 +118,12 @@ public class Td {
         for(int c=cols+1; c<cols+colspan; c++){
             tr.getTd(c).setRemove(true);
         }
+        System.out.println("merge rowspan("+this.getRowIndex()+","+this.getColIndex()+")");
         for(int r=rows+1; r<rows+rowspan; r++){
             tr = trs.get(r);
+            System.out.println("merge rowspan:"+r);
             for(int c=cols; c<cols+colspan; c++){
+                System.out.println("merge rowspan:"+r+":"+c);
                 tr.getTd(c).setRemove(true);
             }
         }
@@ -152,6 +180,19 @@ public class Td {
         return text;
     }
 
+    public String getTextNvl() {
+        if(null == text){
+            return "";
+        }
+        return text;
+    }
+    public String getTextTrim() {
+        if(null == text){
+            return "";
+        }
+        return text.trim();
+    }
+
     public Td setText(String text) {
         this.text = text;
         return this;
@@ -199,6 +240,10 @@ public class Td {
             if (rowspan > 1) {
                 builder.append(" rowspan='").append(rowspan).append("'");
             }
+
+            builder.append(" data-row-index='").append(getRowIndex()).append("'");
+            builder.append(" data-col-index='").append(getColIndex()).append("'");
+            builder.append(" data-offset='").append(offset).append("'");
             builder.append(">");
             if(null != text) {
                 builder.append(text);

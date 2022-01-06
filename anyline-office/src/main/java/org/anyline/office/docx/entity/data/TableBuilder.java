@@ -209,36 +209,37 @@ public class TableBuilder {
             int ksize = fields.size();
             Object[] objs = datas.toArray();
             Map<String,String>[][] cells = new HashMap[dsize][ksize];
-            for(int i=0; i<dsize; i++){
-                Object data = objs[i];
-                for(int j=0; j<ksize; j++){
-                    String field = fields.get(j);
+            for(int r=0; r<dsize; r++){
+                Object data = objs[r];
+                for(int c=0; c<ksize; c++){
+                    String field = fields.get(c);
                     String value = null;
                     if(field.equals("{num}")){
-                        value = (i+1)+"";
+                        value = (r+1)+"";
                     }else{
                         value = BeanUtil.parseRuntimeValue(data, field);
                     }
                     Map<String,String> map = new HashMap<>();
                     map.put("value", value);
-                    cells[i][j] = map;
+                    cells[r][c] = map;
                     if(null != unions && unions.contains(field)) {
                         //向上查看相同值
-                        int ii = 1;
+                        int rr = 1;
                         while (true) {
-                            if (i - ii < 0) {
+                            if (r - rr < 0) {
                                 break;
                             }
-                            Map<String, String> prev = cells[i - ii][j];
-                            Object prevRow = objs[i-ii];
+                            //上一行
+                            Map<String, String> prev = cells[r - rr][c];
+                            Object prevRow = objs[r-rr];
                             String pvalue = prev.get("value");
                             if (null != pvalue && pvalue.equals(value)) {
-                                boolean leftMerge = true;
+                                boolean leftMerge = true;   //左侧是否已被合并
                                 String[] refs = unionRefs.get(field);
                                 if(null != refs){
                                     for (String ref:refs) {
                                         int refIndex = fields.indexOf(ref);
-                                        Map<String, String> left = cells[i][refIndex];
+                                        Map<String, String> left = cells[r][refIndex];
                                         String curRefValue = BeanUtil.parseRuntimeValue(data, ref);
                                         String prevRefValue = BeanUtil.parseRuntimeValue(prevRow, ref);
                                         if(null ==curRefValue  || !curRefValue.equals(prevRefValue)){
@@ -258,34 +259,35 @@ public class TableBuilder {
                                     map.put("remove", "1");
                                     map.put("merge", "1");
                                     prev.put("merge", "1");
-                                    prev.put("rowspan", BasicUtil.parseInt(prev.get("rowspan"), 1) + 1 + "");
+                                    int rowspan = BasicUtil.parseInt(prev.get("rowspan"), 1) + 1;
+                                    prev.put("rowspan",  rowspan+ "");
                                 } else {
                                     break;
                                 }
                             } else {
                                 break;
                             }
-                            ii++;
+                            rr++;
                         }
                     }
                 }
             }
 
-            for(int i=0; i<dsize; i++){
-                Object data = objs[i];
+            for(int r=0; r<dsize; r++){
+                Object data = objs[r];
                 Tr tr = new Tr();
-                for(int j=0; j<ksize; j++){
-                    Map<String,String> map = cells[i][j];
+                for(int c=0; c<ksize; c++){
+                    Map<String,String> map = cells[r][c];
                     String value = map.get("value");
                     String remove = map.get("remove");
                     String rowspan = map.get("rowspan");
                     String width = "";
                     String style = "";
-                    if(j<widths.size()){
-                        width = widths.get(j);
+                    if(c<widths.size()){
+                        width = widths.get(c);
                     }
-                    if(j<styles.size()){
-                        style = styles.get(j);
+                    if(c<styles.size()){
+                        style = styles.get(c);
                     }
                     if(!"1".equals(remove)){
                         Td td = new Td();
@@ -305,6 +307,7 @@ public class TableBuilder {
                 table.addTr(tr);
             }
         }
+        table.offset();
         return table;
     }
     private void parseUnion(){
@@ -364,11 +367,13 @@ public class TableBuilder {
     }
 
 
-    public TableBuilder addUnion(String union) {
+    public TableBuilder addUnion(String ... fields) {
         if(null == unions){
             unions = new ArrayList<>();
         }
-        unions.add(union);
+        for(String field:fields) {
+            unions.add(field);
+        }
         return this;
     }
 
