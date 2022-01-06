@@ -42,6 +42,20 @@ public class Tr {
         return tds.get(index);
     }
 
+    /**
+     * 根据偏移量 查询右侧tds
+     * @param begin index+offset
+     * @return List
+     */
+    public List<Td> getTdsByOffset(int begin){
+        List<Td> list = new ArrayList<>();
+        for(Td td:tds){
+            if(td.getOffset()+td.getColIndex() >= begin){
+                list.add(td);
+            }
+        }
+        return list;
+    }
     public Tr setTd(int index, Td td){
         String bg = styles.get("background-color");
         if(null != bg){

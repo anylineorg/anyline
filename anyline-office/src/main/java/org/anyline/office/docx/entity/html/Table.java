@@ -13,6 +13,7 @@ public class Table {
     private List<Tr> trs = new ArrayList<>();
     private String header = null; //复杂的头表直接设置html
     private String footer = null;
+    private boolean isOffset = false;//是否计算过偏移量(多次执行build, merge ,offset等只计算一次,)
     private Map<String,String> styles = new HashMap();
     private List<Integer> mergeRows = new ArrayList<>(); //根据内容合并行依据
     private Map<Integer, List<Integer>> refs = new HashMap<>(); //
@@ -254,6 +255,46 @@ public class Table {
     private void merge(){
         exeMergeRow();
         exeMergeCol();
+        offset();
+    }
+    //根据 colspan rowspan 计算偏移量
+    public Table offset(){
+        if(isOffset){
+            return this;
+        }
+        isOffset = true;
+        int rows = trs.size();
+        for(int r=0; r<rows; r++){
+            Tr tr = trs.get(r);
+            List<Td> tds = tr.getTds();
+            int cols = tds.size();
+            for(int c=0; c<cols; c++){
+                Td td = tds.get(c);
+                int colspan = td.getColspan();
+                int rowspan = td.getRowspan();
+                int offset = colspan -1;
+                if( offset > 0){
+                    //当前行 往后所有列 偏移增加colspan-1
+                    for(int cc=c+1; r<cols; cc++){
+                        Td after = tds.get(cc);
+                        after.addOffset(offset);
+                    }
+                }
+                if(rowspan > 1){
+                    offset ++;
+                    //下rowspan-1行
+                    for(int rr=r+1; rr<r+rowspan; rr++){
+                        Tr afterTr = trs.get(rr);
+                        int begin = td.getColIndex()+td.getOffset();
+                        List<Td> afterTds = afterTr.getTdsByOffset(begin);
+                        for(Td afterTd:afterTds){
+                            afterTd.addOffset(offset);
+                        }
+                    }
+                }
+            }
+        }
+        return this;
     }
     /**
      * 设置需要合并行的列下标
