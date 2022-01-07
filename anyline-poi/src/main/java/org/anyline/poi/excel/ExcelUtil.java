@@ -1023,5 +1023,13 @@ public class ExcelUtil {
 	public static boolean export(File template, OutputStream os,  Table table){
 		return export(template, os, "", 0, table);
 	}
-
+	public static boolean merge(Sheet sheet, int firstRow, int lastRow, int firstCol, int lastCol) {
+		try {
+			sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
+			return true;
+		}catch (Exception e){
+			e.printStackTrace();
+			return false;
+		}
+	}
 } 
