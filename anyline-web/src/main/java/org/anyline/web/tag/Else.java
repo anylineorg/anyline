@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,11 @@
 package org.anyline.web.tag; 
  
  
-import java.lang.reflect.Method;
+import org.anyline.util.BasicUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.Tag;
-
-import org.anyline.util.BasicUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.reflect.Method;
  
  
 public class Else extends BaseBodyTag implements Cloneable{ 

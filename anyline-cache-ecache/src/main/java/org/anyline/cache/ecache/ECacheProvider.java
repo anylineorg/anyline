@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
-import org.anyline.jdbc.config.Config;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 import org.slf4j.Logger;

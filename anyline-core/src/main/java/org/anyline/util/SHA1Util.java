@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,11 @@
  */
 package org.anyline.util; 
  
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
  
 public class SHA1Util { 
 	private static final Logger log = LoggerFactory.getLogger(SHA1Util.class); 

@@ -1,12 +1,5 @@
 package org.anyline.office.docx.util;
 
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.office.docx.entity.Wtable;
-import org.anyline.office.docx.entity.Wtc;
-import org.anyline.office.docx.entity.Wtr;
-import org.anyline.office.docx.entity.WDocument;
-import org.anyline.office.docx.entity.html.Table;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.dom4j.*;

@@ -431,7 +431,7 @@ public class Wtc {
 
     /**
      * 清除样式
-     * @return
+     * @return Wtc
      */
     public Wtc removeStyle(){
         Element pr = src.element("tcPr");
@@ -445,7 +445,7 @@ public class Wtc {
     }
     /**
      * 清除背景色
-     * @return
+     * @return Wtc
      */
     public Wtc removeBackgroundColor(){
         DocxUtil.removeElement(src,"shd");

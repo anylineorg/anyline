@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			}
 		}
 	}
-
 	public DataRow(KEY_CASE keyCase){
 		this();
 		if(null != keyCase) {
@@ -121,11 +120,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			put(putKey(entity.getKey()), entity.getValue());
 		}
 	}
+	public static DataRow parseList(Collection<Object> list){
+		DataRow row = new DataRow();
+		if(null != list) {
+			int i = 0;
+			for(Object obj:list){
+				row.put("" +i++,obj);
+			}
+		}
+		return row;
+	}
 	public DataRow setKeyCase(KEY_CASE keyCase){
 		this.keyCase = keyCase;
 		parseKeycase();
 		return this;
 	}
+
 	/**
 	 * 解析实体类对象
 	 * @param obj obj
@@ -180,7 +190,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		}
 		return row;
 	}
-
 	/*
 	 * 解析json结构字符
 	 * @param keyCase key大小写

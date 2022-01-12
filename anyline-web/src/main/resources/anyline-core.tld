@@ -453,6 +453,10 @@
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
 		<attribute>
+			<name>size</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
 			<name>style</name>
 			<rtexprvalue>true</rtexprvalue>
 		</attribute>
