@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,23 +18,16 @@
 
 
 package org.anyline.web.tag; 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DESUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-public class BaseBodyTag extends BodyTagSupport implements Cloneable{ 
+import java.util.*;
+public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	private static final long serialVersionUID = 1L;
 
 	protected final Logger log = LoggerFactory.getLogger(this.getClass()); 
@@ -81,44 +74,41 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	public void setDisabled(String disabled) {
 		this.disabled = disabled;
 	}
-	protected String attribute(){ 
-		String html = ""; 
-		if(null != id){ 
-			html += " id=\"" + id + "\""; 
+	protected void attribute(StringBuffer builder){
+		if(null != id){
+			builder.append(" id=\"").append(id).append("\"");
 		} 
-		if(null != name){ 
-			html += " name=\"" + name + "\""; 
+		if(null != name){
+			builder.append(" name=\"").append(name).append("\"");
 		} 
 //		if(null != value){ 
 //			html += " value=\"" + value + "\""; 
 //		} 
-		if(null != clazz){ 
-			html += " class=\"" + clazz + "\""; 
+		if(null != clazz){
+			builder.append(" class=\"").append(clazz).append("\"");
 		} 
-		if(null != style){ 
-			html += " style=\"" + style + "\""; 
+		if(null != style){
+			builder.append(" style=\"").append(style).append("\"");
 		} 
-		if(null != onclick){ 
-			html += " onclick=\"" + onclick + "\""; 
+		if(null != onclick){
+			builder.append(" onclick=\"").append(onclick).append("\"");
 		} 
-		if(null != onchange){ 
-			html += " onchange=\"" + onchange + "\""; 
+		if(null != onchange){
+			builder.append(" onchange=\"").append(onchange).append("\"");
 		} 
-		if(null != onblur){ 
-			html += " onblur=\"" + onblur + "\""; 
+		if(null != onblur){
+			builder.append(" onblur=\"").append(onblur).append("\"");
 		}
 		if(null != onfocus){
-			html += " onfocus=\"" + onfocus + "\"";
+			builder.append(" onfocus=\"").append(onfocus).append("\"");
 		}
 		if(BasicUtil.isNotEmpty(disabled) && !"false".equalsIgnoreCase(disabled)){
-			html += " disabled=\"" + disabled + "\"";
+			builder.append(" disabled=\"").append(disabled).append("\"");
 		}
 		if(BasicUtil.isNotEmpty(readonly) && !"false".equalsIgnoreCase(readonly)){
-			html += " readonly=\"" + readonly + "\"";
+			builder.append(" readonly=\"").append(readonly).append("\"");
 		}
-		html += crateExtraData();
-		 
-		return html; 
+		crateExtraData(builder);
 	}
 	/**
 	 * 条目data-*
@@ -128,8 +118,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	 * @param obj obj
 	 * @return return
 	 */
-	protected String crateExtraData(Object obj){
-		String html = "";
+	protected void crateExtraData(StringBuffer builder, Object obj){
 		if(BasicUtil.isNotEmpty(itemExtra)){
 			String[] list = itemExtra.split(",");
 			for(String item:list){
@@ -141,14 +130,12 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 					if(null == value){
 						value = "";
 					}
-					html += extraPrefix + id + "=\"" + value + "\"";
+					builder.append(extraPrefix).append(id).append("=\"").append(value).append("\"");
 				}
 			}
 		}
-		return html;
 	}
-	protected String crateExtraData(){
-		String html = "";
+	protected void crateExtraData(StringBuffer builder){
 		if(BasicUtil.isNotEmpty(extra)){
 			if(extra.startsWith("{") && extra.endsWith("}")){
 				//{id:1,nm:2} > data-id=1,data-nm=2 
@@ -157,7 +144,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 				for(String item:list){
 					String[] tmps = item.split(":");
 					if(tmps.length>=2){
-						html += extraPrefix + tmps[0] + "=\"" + tmps[1] + "\"";
+						builder.append(extraPrefix).append(tmps[0]).append("=\"").append(tmps[1]).append("\"");
 					}
 				}
 			}else{
@@ -167,12 +154,11 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 					String[] tmps = item.split(":");
 					if(tmps.length>=2){
 						String value = BeanUtil.parseRuntimeValue(extraData, tmps[1]);
-						html += extraPrefix + tmps[0] + "=\"" + value + "\"";
+						builder.append(extraPrefix).append(tmps[0]).append("=\"").append(value).append("\"");
 					}
 				}
 			}
 		}
-		return html;
 	} 
 	public int doStartTag() throws JspException { 
         return EVAL_BODY_BUFFERED; 

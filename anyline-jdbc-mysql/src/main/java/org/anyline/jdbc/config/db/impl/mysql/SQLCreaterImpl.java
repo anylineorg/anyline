@@ -1,5 +1,4 @@
- 
-package org.anyline.jdbc.config.db.impl.mysql; 
+package org.anyline.jdbc.config.db.impl.mysql;
  
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.OrderStore;

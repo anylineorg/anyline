@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,18 +19,15 @@
 
 package org.anyline.web.tag; 
  
-import java.util.*;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.DESUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import java.util.*;
 /**
  * 
  * 是否选中 一类的单个复选
@@ -63,7 +60,7 @@ public class Checkbox extends BaseBodyTag {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
-		StringBuilder html = new StringBuilder();
+		StringBuffer html = new StringBuffer();
 //		valueKey = DataRow.keyCase(valueKey);
 //		textKey = DataRow.keyCase(textKey);
 		try {
@@ -166,7 +163,9 @@ public class Checkbox extends BaseBodyTag {
 					
 					Map<String,String> map = new HashMap<String,String>();
 					map.put(valueKey, headValue);
-					html.append(attribute() + crateExtraData(map) + "/>");
+					attribute(html);
+					crateExtraData(html,map);
+					html.append("/>");
 					html.append("<label for=\"").append(id).append("\" class=\""+labelClazz+"\">").append(head).append("</label>\n");
 
 					html.append(itemBorderEndTag);
@@ -195,8 +194,9 @@ public class Checkbox extends BaseBodyTag {
 						if(checkedValue.equals(chk) || "true".equalsIgnoreCase(chk+"") || "checked".equalsIgnoreCase(chk+"") || checked(chks,item.get(valueKey)) ) { 
 							html.append(" checked=\"checked\""); 
 						}
-						 
-						html.append(attribute()).append(crateExtraData(item)).append("/>");
+						attribute(html);
+						crateExtraData(html,item);
+						html.append("/>");
 						if(BasicUtil.isEmpty(label)){ 
 							String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">"; 
 							String labelBody = ""; 

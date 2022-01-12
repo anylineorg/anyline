@@ -1,20 +1,31 @@
+/*
+ * Copyright 2015-2022 www.anyline.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *
+ */
 package org.anyline.wechat.wap.util;
- 
-import java.util.HashMap; 
-import java.util.Hashtable; 
-import java.util.Map; 
  
 import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
 import org.anyline.wechat.entity.WechatAuthInfo;
 import org.anyline.wechat.entity.WechatUserInfo;
-import org.anyline.wechat.entity.WechatPrePayOrder;
-import org.anyline.wechat.entity.WechatPrePayResult;
-import org.anyline.wechat.util.WechatConfig;
 import org.anyline.wechat.util.WechatUtil;
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Hashtable;
  
 public class WechatWapUtil {
 	private static final Logger log = LoggerFactory.getLogger(WechatWapUtil.class);

@@ -1,6 +1,10 @@
 package org.anyline.comm.serial.util;
 
 
+import gnu.io.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -8,17 +12,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.TooManyListenersException;
-
-import gnu.io.CommPort;
-import gnu.io.CommPortIdentifier;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
-import gnu.io.SerialPort;
-import gnu.io.SerialPortEvent;
-import gnu.io.SerialPortEventListener;
-import gnu.io.UnsupportedCommOperationException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class SerialUtil {
     private static Logger log = LoggerFactory.getLogger(SerialUtil.class);
@@ -43,6 +36,7 @@ public final class SerialUtil {
      * 开启串口
      * @param name 串口名称
      * @param rate 波特率
+     * @param timeout 超时时间
      * @return 串口对象
      */
     public static SerialPort open(String name,int rate, int timeout) {

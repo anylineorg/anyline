@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,16 @@
 
 package org.anyline.dao; 
  
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.MetaData;
+import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.ConfigStore;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
  
 public interface AnylineDao{ 
 	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);

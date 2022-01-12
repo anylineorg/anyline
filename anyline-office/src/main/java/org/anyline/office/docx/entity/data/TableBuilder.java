@@ -1,3 +1,20 @@
+/*
+ * Copyright 2006-2022 www.anyline.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *
+ */
 package org.anyline.office.docx.entity.data;
  
 import org.anyline.office.docx.entity.html.Table;
@@ -22,163 +39,20 @@ public class TableBuilder {
     private Map<String,String[]> unionRefs = new HashMap<>();
     private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
 
-    private static String TAG_TR_BEGIN = "\t<tr";
-    private static String TAG_TR_END = "\t</tr>\n";
-    private static String TAG_TD_BEGIN = "\t\t<td";
-    private static String TAG_TD_END = "</td>\n";
-    private static String TAG_CLOSE = ">";
-    private static String TAB = "\t";
-    private static String BR = "\n";
     public static TableBuilder init(){
         TableBuilder builder = new TableBuilder();
         return builder;
     }
 
-    public String buildHtml(boolean box){
-        StringBuilder build = new StringBuilder();
-        parseUnion();
-        if(box){
-        build.append("<table");
-            if(null != clazz){
-                build.append(" class='").append(clazz).append("'");
-            }
-            build.append(TAG_CLOSE).append(BR);
-        }
-        if(null != header){
-            build.append(header);
-        }else if(null != headers && headers.size() >0){
-            build.append(TAG_TR_BEGIN).append(TAG_CLOSE).append(BR);
-            int size = headers.size();
-            for(int i=0; i<size; i++){
-                String header = headers.get(i);
-                build.append(TAG_TD_BEGIN);
-                if(null != widths && i<widths.size()){
-                    build.append(" style='width:").append(widths.get(i)).append("'");
-                }
-                build.append(TAG_CLOSE).append(header).append(TAG_TD_END);
-            }
-            build.append(TAG_TR_END);
-        }
-        if(null != datas && null != fields){
-            int dsize = datas.size();
-            int ksize = fields.size();
-            Object[] objs = datas.toArray();
-            Map<String,String>[][] cells = new HashMap[dsize][ksize];
-            for(int i=0; i<dsize; i++){
-                Object data = objs[i];
-                for(int j=0; j<ksize; j++){
-                    String field = fields.get(j);
-                    String value = null;
-                    if(field.equals("{num}")){
-                        value = (i+1)+"";
-                    }else{
-                        value = BeanUtil.parseRuntimeValue(data, field);
-                    }
-                    Map<String,String> map = new HashMap<>();
-                    map.put("value", value);
-                    cells[i][j] = map;
-                    if(null != unions && unions.contains(field)) {
-                        //向上查看相同值
-                        int ii = 1;
-                        while (true) {
-                            if (i - ii < 0) {
-                                break;
-                            }
-                            Map<String, String> prev = cells[i - ii][j];
-                            Object prevRow = objs[i-ii];
-                            String pvalue = prev.get("value");
-                            if (null != pvalue && pvalue.equals(value)) {
-                                boolean leftMerge = true;
-                                String[] refs = unionRefs.get(field);
-                                if(null != refs){
-                                    for (String ref:refs) {
-                                        int refIndex = fields.indexOf(ref);
-                                        Map<String, String> left = cells[i][refIndex];
-                                        String curRefValue = BeanUtil.parseRuntimeValue(data, ref);
-                                        String prevRefValue = BeanUtil.parseRuntimeValue(prevRow, ref);
-                                        if(null ==curRefValue  || !curRefValue.equals(prevRefValue)){
-                                            //当前行左侧值  与上一行左侧值比较
-                                            leftMerge = false;
-                                            break;
-                                        }
-
-                                        if (!"1".equals(left.get("remove"))) {
-                                            //依赖列未合并
-                                            leftMerge = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (leftMerge) {//左列是否已合并
-                                    map.put("remove", "1");
-                                    map.put("merge", "1");
-                                    prev.put("merge", "1");
-                                    prev.put("rowspan", BasicUtil.parseInt(prev.get("rowspan"), 1) + 1 + "");
-                                } else {
-                                    break;
-                                }
-                            } else {
-                                break;
-                            }
-                            ii++;
-                        }
-                    }
-                }
-            }
-
-            for(int i=0; i<dsize; i++){
-                Object data = objs[i];
-                build.append(TAG_TR_BEGIN).append(TAG_CLOSE).append(BR);
-                for(int j=0; j<ksize; j++){
-                    Map<String,String> map = cells[i][j];
-                    String value = map.get("value");
-                    String remove = map.get("remove");
-                    String rowspan = map.get("rowspan");
-                    String width = "";
-                    String style = "";
-                    if(j<widths.size()){
-                        width = widths.get(j);
-                    }
-                    if(j<styles.size()){
-                        style = styles.get(j);
-                    }
-                    if(!"1".equals(remove)){
-                        build.append(TAG_TD_BEGIN);
-                        if (null != rowspan) {
-                            build.append(" rowspan='").append(rowspan).append("'");
-                        }
-                        build.append(" style='");
-                        if(null != width){
-                            build.append("width:").append(width).append(";");
-                        }
-                        if(null != style){
-                            build.append(style);
-                        }
-                        build.append("'");
-                        build.append(TAG_CLOSE);
-                        if(null != value){
-                            build.append(value.trim());
-                        }
-                        build.append(TAG_TD_END);
-                    }
-                }
-                build.append(TAG_TR_END);
-            }
-        }
-        if(null != footer){
-            build.append(footer);
-        }
-        if(box) {
-            build.append("</table>");
-        }
-
-        return build.toString();
-    }
 
     public String getWidthUnit() {
         return widthUnit;
     }
 
+    /**
+     * 设置宽度 单位
+     * @param widthUnit px pt cm/厘米
+     */
     public void setWidthUnit(String widthUnit) {
         this.widthUnit = widthUnit;
     }

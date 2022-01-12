@@ -1,9 +1,5 @@
 package org.anyline.office.docx.entity.html;
 
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.apache.commons.collections.map.AbstractMapDecorator;
-import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import java.util.*;
@@ -471,7 +467,7 @@ public class Table {
      * @param cols cols
      * @param top 右上文本
      * @param bottom 左下文本
-     * @return
+     * @return td
      */
     public Td setTl2brBorder(int rows, int cols, String top, String bottom){
         Td td = getTd(rows, cols);
@@ -489,7 +485,7 @@ public class Table {
      * @param cols cols
      * @param top 左上文本
      * @param bottom 右下文本
-     * @return
+     * @return td
      */
     public Td setTr2blBorder(int rows, int cols, String top, String bottom){
         Td td = getTd(rows, cols);
@@ -592,7 +588,7 @@ public class Table {
      * @param rows rows
      * @param cols cols
      * @param align top middle|center bottom
-     * @return
+     * @return td
      */
     public Td setVerticalAlign(int rows, int cols, String align){
         return getTd(rows, cols).setVerticalAlign(align);

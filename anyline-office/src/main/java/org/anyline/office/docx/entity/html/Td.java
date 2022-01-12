@@ -2,7 +2,6 @@ package org.anyline.office.docx.entity.html;
 
 import org.dom4j.Element;
 
-import java.security.CodeSigner;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -401,7 +400,7 @@ public class Td {
      * 设置左上至右下边框
      * @param top 右上文本
      * @param bottom 左下文本
-     * @return
+     * @return td
      */
     public Td setTl2brBorder(String top, String bottom){
         String text = "<div style='text-align:right'>" + top + "</div><div style='text-align:left'>"+bottom+"</div>";
@@ -417,7 +416,7 @@ public class Td {
      * 设置左上至右下边框
      * @param top 左上文本
      * @param bottom 右下文本
-     * @return
+     * @return td
      */
     public Td setTr2blBorder(String top, String bottom){
         String text = "<div style='text-align:left'>" + top + "</div><div style='text-align:right'>"+bottom+"</div>";
@@ -557,7 +556,7 @@ public class Td {
 
     /**
      * 清除样式
-     * @return
+     * @return td
      */
     public Td removeStyle(){
         styles.clear();
@@ -565,7 +564,7 @@ public class Td {
     }
     /**
      * 清除背景色
-     * @return
+     * @return td
      */
     public Td removeBackgroundColor(){
         styles.remove("background-color");

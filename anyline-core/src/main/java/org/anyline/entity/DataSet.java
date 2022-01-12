@@ -53,7 +53,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         DataSet set = new DataSet();
         if (null != list) {
             for (Object obj : list) {
-                DataRow row = DataRow.parse(obj);
+                DataRow row = null;
+                if(obj instanceof Collection){
+                    row = DataRow.parseList((Collection)obj);
+                }else {
+                    row = DataRow.parse(obj);
+                }
                 set.add(row);
             }
         }
@@ -2186,7 +2191,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         for (DataRow row : rows) {
             if (null == row.get(field)) {
-                String[] params = packParam(row, reverseKey(keys));
+                Map<String,String> params = new HashMap<>();
+                for(String key:keys){
+                    params.put(key, row.getStringNvl(key));
+                }
                 DataSet set = items.getRows(params);
                 if (recursion) {
                     set.dispatchItems(field, recursion, items, keys);
@@ -2301,6 +2309,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this.union(set, keys);
     }
 
+    public DataSet getRows(Map<String, String> kvs) {
+        return getRows(0, -1, kvs);
+    }
     /**
      * 多个集合的交集
      *

@@ -1,5 +1,5 @@
 /* 
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@
 package org.anyline.web.tag;
 
 
-import com.alipay.api.domain.AlipayAccount;
-import org.anyline.alipay.util.AlipayConfig;
 import org.anyline.alipay.util.AlipayUtil;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -33,9 +31,7 @@ import org.anyline.wechat.mp.util.WechatMPConfig;
 import org.anyline.wechat.mp.util.WechatMPUtil;
 import org.anyline.wechat.util.WechatConfig;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 

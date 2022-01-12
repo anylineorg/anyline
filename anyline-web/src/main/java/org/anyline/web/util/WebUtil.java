@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -904,10 +904,11 @@ public class WebUtil {
 	}
 	/**
 	 * 下载文件
+	 * @param request request
 	 * @param response response
 	 * @param in in
 	 * @param title title
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean download(HttpServletRequest request, HttpServletResponse response, InputStream in, String title){
 		OutputStream out = null;

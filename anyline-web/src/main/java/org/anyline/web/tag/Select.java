@@ -1,5 +1,5 @@
 /*  
- * Copyright 2006-2020 www.anyline.org
+ * Copyright 2006-2022 www.anyline.org
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -36,7 +36,8 @@ public class Select extends BaseBodyTag {
 	private String head; 
 	private String headValue; 
 	private String type = "select"; // 如果type=text则只显示选中项的text而不生成<select> 
-	private String multiple = null; 
+	private String multiple = null;
+	private int size = 1;
  
 	public String getHead() { 
 		return head; 
@@ -93,34 +94,40 @@ public class Select extends BaseBodyTag {
 						} 
 					} 
 				} 
-			} else { 
-				html = "<select " + attribute(); 
-				if(BasicUtil.isNotEmpty(multiple)){ 
-					html += " multiple=\"multiple\""; 
-				} 
-				html +=  ">";
+			} else {
+				StringBuffer builder = new StringBuffer();
+				builder.append("<select ");
+				attribute(builder);
+				if(BasicUtil.isNotEmpty(multiple)){
+					builder.append(" multiple=\"multiple\"");
+				}
+				if(size>1){
+					builder.append(" size=\""+size+"\"");
+				}
+				builder.append(">");
 				if (null == headValue) { 
 					headValue = ""; 
 				} 
-				if (null != head) { 
-					html += "<option value=\"" + headValue + "\">" + head + "</option>"; 
+				if (null != head) {
+					builder.append("<option value=\"" + headValue + "\">" + head + "</option>");
 				}
 				if (null != body) {
-					html += body;
+					builder.append(body);
 				}
 				if (null != items) { 
 					for (Object item : items) { 
 						String val = BeanUtil.parseRuntimeValue(item, valueKey, encrypt);
 						String text = BeanUtil.parseRuntimeValue(item, textKey);
-						html += "<option value=\"" + val + "\""; 
-						if (null != val && null != this.value && val.equals(value.toString())) { 
-							html += " selected=\"selected\""; 
-						} 
-						html += crateExtraData(item);
-						html += ">" + text + "</option>";
+						builder.append("<option value=\"").append(val).append("\"");
+						if (null != val && null != this.value && val.equals(value.toString())) {
+							builder.append(" selected=\"selected\"");
+						}
+						crateExtraData(builder, item);
+						builder.append(">").append(text).append("</option>");
 					} 
-				} 
-				html += "</select>"; 
+				}
+				builder.append("</select>");
+				html = builder.toString();
 			} 
 			JspWriter out = pageContext.getOut(); 
 			out.print(html); 
@@ -162,16 +169,25 @@ public class Select extends BaseBodyTag {
 		scope = null; 
 		data = null; 
 		scope = null; 
-		head = null; 
+		head = null;
+		size = 1;
 		headValue = null; 
 		type = "select"; 
 		valueKey = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID"); 
 		textKey = "NM"; 
 		multiple = null; 
  
-	} 
- 
-	public String getType() { 
+	}
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	public String getType() {
 		return type; 
 	} 
  

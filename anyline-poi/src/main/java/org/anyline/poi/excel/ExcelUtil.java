@@ -1,25 +1,43 @@
-package org.anyline.poi.excel; 
+/*
+ * Copyright 2006-2022 www.anyline.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *
+ */
+package org.anyline.poi.excel;
  
-import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.office.docx.entity.data.TableBuilder;
+import org.anyline.office.docx.entity.html.Table;
+import org.anyline.office.docx.entity.html.Td;
+import org.anyline.office.docx.entity.html.Tr;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.FileUtil;
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.anyline.office.docx.entity.html.Table;
-import org.anyline.office.docx.entity.html.Tr;
-import org.anyline.office.docx.entity.html.Td;
+
+import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class ExcelUtil {
 
@@ -199,7 +217,7 @@ public class ExcelUtil {
 	}
 	/**
 	 * 判断指定的单元格是否是合并单元格
-	 * @param sheet
+	 * @param sheet sheet
 	 * @param row 行下标
 	 * @param col 列下标
 	 * @return boolean
@@ -791,6 +809,9 @@ public class ExcelUtil {
 		try{
 			XSSFWorkbook  workbook = null;
 			Sheet sht = null;
+			if(file.length() == 0){
+				file.delete();
+			}
 			if(file.exists()){
 				File tempFile = File.createTempFile(file.getName(), null);
 				boolean renameOk = file.renameTo(tempFile);
@@ -813,11 +834,17 @@ public class ExcelUtil {
 				is.close();
 				tempFile.delete();
 			}else {
+				File dir = file.getParentFile();
+				if(!dir.exists()){
+					dir.mkdirs();
+				}
+				file.createNewFile();
 				workbook = new XSSFWorkbook();
 				if(BasicUtil.isEmpty(sheet)){
 					sheet = "sheet1";
 				}
 				sht = workbook.createSheet(sheet);
+				os = new FileOutputStream(file);
 			}
 
 			write(workbook, os, sht, insert, headers, keys, set);
@@ -842,7 +869,7 @@ public class ExcelUtil {
 			}
 			write(sheet, insert, headers, keys, set);
 			int footSize = footTo - footFr + 1; //foot行数
-			if (move > 0 && footTo >= footFr) {
+			if (move > 0 && footTo >= footFr && footFr >= insert) {
 				sheet.shiftRows(footFr, footTo, move + footSize);
 				sheet.shiftRows(footTo + 1, footTo + footSize + move, -footSize);//数据上移
 			}
@@ -888,6 +915,7 @@ public class ExcelUtil {
 	/**
 	 * 导出EXCEL
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param template template
 	 * @param rows 开始写入的行数
 	 * @param headers 表头
 	 * @param keys 读取集合条目的属性
@@ -903,6 +931,7 @@ public class ExcelUtil {
 	/**
 	 * 导出EXCEL
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param template template
 	 * @param keys 读取集合条目的属性
 	 * @param set 数据集合
 	 * @return boolean
@@ -917,6 +946,7 @@ public class ExcelUtil {
 	/**
 	 * 导出EXCEL
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param template template
 	 * @param headers 表头
 	 * @param keys 读取集合条目的属性
 	 * @param set 数据集合
@@ -931,6 +961,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出EXCEL
+	 * @param template template
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
 	 * @param insert 从第几行开始写入
 	 * @param keys 读取集合条目的属性
@@ -948,6 +979,7 @@ public class ExcelUtil {
 	/**
 	 * 导出excel
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param template template
 	 * @param sheet sheet 如果文件存在 并且为空时 则取第0个sheet
 	 * @param rows 行数
 	 * @param set 数据
@@ -985,6 +1017,7 @@ public class ExcelUtil {
 	/**
 	 * 导出excel
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param template template
 	 * @param insert 开始插入的位置
 	 * @param set 数据
 	 * @param configs 姓名:NAME或NAME
@@ -1007,6 +1040,7 @@ public class ExcelUtil {
 	/**
 	 * 导出excel
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param template template
 	 * @param set 数据
 	 * @param configs 姓名:NAME或NAME
 	 * @return boolean

@@ -218,7 +218,7 @@ public class Wtr {
     /**
      * 设置垂直对齐方式
      * @param align top/center/bottom
-     * @return
+     * @return Wtr
      */
     public Wtr setVerticalAlign(String align){
         List<Wtc> tcs = getWtcs();
@@ -231,7 +231,7 @@ public class Wtr {
     /**
      * 设置整行背景色
      * @param color color
-     * @return tr
+     * @return  Wtr
      */
     public Wtr setBackgroundColor(String color){
         List<Wtc> tcs = getWtcs();
