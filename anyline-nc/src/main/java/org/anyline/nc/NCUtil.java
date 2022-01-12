@@ -17,19 +17,18 @@
  */
 package org.anyline.nc;
  
-import java.util.ArrayList; 
-import java.util.Hashtable; 
-import java.util.List; 
- 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.DateUtil; 
-import org.anyline.util.MD5Util; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
- 
-import ucar.ma2.Array; 
-import ucar.nc2.NetcdfFile; 
-import ucar.nc2.Variable; 
+import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
+import org.anyline.util.MD5Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ucar.ma2.Array;
+import ucar.nc2.NetcdfFile;
+import ucar.nc2.Variable;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
  
 public class NCUtil { 
 	private static Logger log = LoggerFactory.getLogger(NCUtil.class); 
