@@ -48,16 +48,32 @@ public class DataSet implements Collection<DataRow>, Serializable {
         rows = new ArrayList<DataRow>();
         createTime = System.currentTimeMillis();
     }
+    public static DataSet build(Collection<?> list, String ... fields) {
+        return parse(list, fields);
+    }
 
-    public static DataSet parse(Collection<Object> list) {
+    /**
+     * list解析成DataSet
+     * @param list list
+     * @param fields 如果list是二维数据
+     *               fields 下标对应的属性(字段/key)名称 如"ID","CODE","NAME"
+     *               如果不输入则以下标作为DataRow的key 如row.put("0","100").put("1","A01").put("2","张三");
+     *               如果属性数量超出list长度，取null值存入DataRow
+     *
+     *               如果list是一组数组
+     *               fileds对应条目的属性值 如果不输入 则以条目的属性作DataRow的key 如"USER_ID:id","USER_NM:name"
+     *
+     * @return
+     */
+    public static DataSet parse(Collection<?> list, String ... fields) {
         DataSet set = new DataSet();
         if (null != list) {
             for (Object obj : list) {
                 DataRow row = null;
                 if(obj instanceof Collection){
-                    row = DataRow.parseList((Collection)obj);
+                    row = DataRow.parseList((Collection)obj, fields);
                 }else {
-                    row = DataRow.parse(obj);
+                    row = DataRow.parse(obj, fields);
                 }
                 set.add(row);
             }
@@ -2732,21 +2748,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return asc(keys);
     }
 
-    public Object put(String key, Object value, boolean pk, boolean override) {
+    public DataSet put(String key, Object value, boolean pk, boolean override) {
         for (DataRow row : rows) {
             row.put(key, value, pk, override);
         }
         return this;
     }
 
-    public Object put(String key, Object value, boolean pk) {
+    public DataSet put(String key, Object value, boolean pk) {
         for (DataRow row : rows) {
             row.put(key, value, pk);
         }
         return this;
     }
 
-    public Object put(String key, Object value) {
+    public DataSet put(String key, Object value) {
         for (DataRow row : rows) {
             row.put(key, value);
         }
@@ -3053,6 +3069,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+    public DataSet replace(String oldChar, String newChar) {
+        for (DataRow row : rows) {
+            row.replace(oldChar, newChar);
+        }
+        return this;
+    }
     /* ************************* 类sql操作 ************************************** */
 
     /**
