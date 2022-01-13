@@ -1851,6 +1851,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		}
 		return this;
 	}
+
 	public DataRow replace(String key, String oldChar, String newChar){
 		if(null == key || null == oldChar || null == newChar){
 			return this;
