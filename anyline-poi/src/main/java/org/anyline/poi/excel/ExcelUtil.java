@@ -16,12 +16,10 @@
  *
  */
 package org.anyline.poi.excel;
- 
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.office.docx.entity.html.Table;
-import org.anyline.office.docx.entity.html.Td;
-import org.anyline.office.docx.entity.html.Tr;
+
+import org.anyline.entity.html.Table;
+import org.anyline.entity.html.Td;
+import org.anyline.entity.html.Tr;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.FileUtil;
@@ -36,6 +34,7 @@ import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -330,11 +329,14 @@ public class ExcelUtil {
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally {
-			try{
-				out.flush();
-				out.close();
-			}catch (Exception e){
-				e.printStackTrace();
+			if(null != out) {
+				try {
+					out.flush();
+					out.close();
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -438,7 +440,7 @@ public class ExcelUtil {
 	 * @param set		数据源  set		数据源
 	 * @return return
 	 */
-	public static boolean export(OutputStream os, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(OutputStream os, String sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
 		try{
 			XSSFWorkbook  workbook = null;
 			Sheet sht = null;
@@ -464,7 +466,7 @@ public class ExcelUtil {
 		return true;
 	}
 
-	private static void write(Sheet sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+	private static void write(Sheet sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
 		//表头
 		if(null != headers && headers.size()>0) {
 			Row row =sheet.createRow(insert++);
@@ -475,7 +477,7 @@ public class ExcelUtil {
 				cell.setCellValue(header);
 			}
 		}
-		for(DataRow item:set){
+		for(Object item:set){
 			Row row = sheet.createRow(insert++);
 			int c = 0;
 			for(String key:keys){
@@ -485,6 +487,7 @@ public class ExcelUtil {
 			}
 		}
 	}
+
 	public static boolean export(File file, String sheet, int insert, Table table){
 		FileOutputStream os = null;
 		try{
@@ -508,6 +511,9 @@ public class ExcelUtil {
 					sht = workbook.getSheetAt(0);
 				}else {
 					sht = workbook.getSheet(sheet);
+					if(null == sht){
+						sht = workbook.createSheet(sheet);
+					}
 				}
 				is.close();
 				tempFile.delete();
@@ -543,6 +549,9 @@ public class ExcelUtil {
 				sht = workbook.getSheetAt(0);
 			}else {
 				sht = workbook.getSheet(sheet);
+				if(null == sht){
+					sht = workbook.createSheet(sheet);
+				}
 			}
 			is.close();
 
@@ -562,8 +571,12 @@ public class ExcelUtil {
 				sht = workbook.getSheetAt(0);
 			}else {
 				sht = workbook.getSheet(sheet);
+				if(null == sht){
+					sht = workbook.createSheet(sheet);
+				}
 			}
 			is.close();
+			FileUtil.create(file, false);
 			write(workbook, new FileOutputStream(file), sht, insert, table);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -647,12 +660,13 @@ public class ExcelUtil {
 	 * @param set 数据集合
 	 * @return boolean
 	 */
-	public static boolean export(File file, int rows, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(File file, int rows, List<String>headers, List<String> keys, Collection<?> set){
 		return export(file, "sheet1", rows, headers, keys, set);
 	}
-	public static boolean export(OutputStream os, int rows, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(OutputStream os, int rows, List<String>headers, List<String> keys, Collection<?> set){
 		return export(os, "sheet1", rows, headers, keys, set);
 	}
+
 	/**
 	 * 导出EXCEL
 	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
@@ -660,10 +674,10 @@ public class ExcelUtil {
 	 * @param set 数据集合
 	 * @return boolean
 	 */
-	public static boolean export(File file, List<String> keys, DataSet set){
+	public static boolean export(File file, List<String> keys, Collection<?> set){
 		return export(file,0, null, keys, set);
 	}
-	public static boolean export(OutputStream os, List<String> keys, DataSet set){
+	public static boolean export(OutputStream os, List<String> keys, Collection<?> set){
 		return export(os,0, null, keys, set);
 	}
 
@@ -675,10 +689,10 @@ public class ExcelUtil {
 	 * @param set 数据集合
 	 * @return boolean
 	 */
-	public static boolean export(File file, List<String> headers,List<String> keys, DataSet set){
+	public static boolean export(File file, List<String> headers,List<String> keys, Collection<?> set){
 		return export(file,0, headers, keys, set);
 	}
-	public static boolean export(OutputStream os, List<String> headers,List<String> keys, DataSet set){
+	public static boolean export(OutputStream os, List<String> headers,List<String> keys, Collection<?> set){
 		return export(os,0, headers, keys, set);
 	}
 
@@ -690,10 +704,10 @@ public class ExcelUtil {
 	 * @param set 数据集合
 	 * @return boolean
 	 */
-	public static boolean export(File file, int rows, List<String> keys, DataSet set){
+	public static boolean export(File file, int rows, List<String> keys, Collection<?> set){
 		return export(file, rows, null, keys, set);
 	}
-	public static boolean export(OutputStream os, int rows, List<String> keys, DataSet set){
+	public static boolean export(OutputStream os, int rows, List<String> keys, Collection<?> set){
 		return export(os, rows, null, keys, set);
 	}
 
@@ -706,7 +720,7 @@ public class ExcelUtil {
 	 * @param configs 姓名:NAME或NAME
 	 * @return boolean
 	 */
-	public static boolean export(File file, String sheet, int rows, DataSet set, String ... configs){
+	public static boolean export(File file, String sheet, int rows, Collection<?> set, String ... configs){
 		List<String> headers = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
 		if(null != configs){
@@ -725,7 +739,8 @@ public class ExcelUtil {
 		}
 		return export(file, sheet, rows, headers, keys, set);
 	}
-	public static boolean export(OutputStream os, String sheet, int rows, DataSet set, String ... configs){
+
+	public static boolean export(OutputStream os, String sheet, int rows, Collection<?> set, String ... configs){
 		List<String> headers = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
 		if(null != configs){
@@ -753,10 +768,10 @@ public class ExcelUtil {
 	 * @param configs 姓名:NAME或NAME
 	 * @return boolean
 	 */
-	public static boolean export(File file, int rows, DataSet set, String ... configs){
+	public static boolean export(File file, int rows, Collection<?> set, String ... configs){
 		return export(file, "", rows, set, configs);
 	}
-	public static boolean export(OutputStream os, int rows, DataSet set, String ... configs){
+	public static boolean export(OutputStream os, int rows, Collection<?> set, String ... configs){
 		return export(os, "", rows, set, configs);
 	}
 
@@ -767,11 +782,11 @@ public class ExcelUtil {
 	 * @param configs 姓名:NAME或NAME
 	 * @return boolean
 	 */
-	public static boolean export(File file,  DataSet set, String ... configs){
+	public static boolean export(File file,  Collection<?> set, String ... configs){
 		return export(file, 0, set, configs);
 	}
 
-	public static boolean export(OutputStream os,  DataSet set, String ... configs){
+	public static boolean export(OutputStream os,  Collection<?> set, String ... configs){
 		return export(os, 0, set, configs);
 	}
 
@@ -787,15 +802,10 @@ public class ExcelUtil {
 	 * @param set		数据源  set		数据源
 	 * @return return
 	 */
-	public static boolean export(File template, File file, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(File template, File file, String sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
 
 		try{
-			if(!file.getParentFile().exists()){
-				file.getParentFile().mkdirs();
-			}
-			if(!file.exists()){
-				file.createNewFile();
-			}
+			FileUtil.create(file, false);
 			return export(template, new FileOutputStream(file), sheet, insert, headers, keys, set);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -804,7 +814,7 @@ public class ExcelUtil {
 	}
 
 
-	public static boolean export(File file, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(File file, String sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
 		FileOutputStream os = null;
 		try{
 			XSSFWorkbook  workbook = null;
@@ -830,23 +840,22 @@ public class ExcelUtil {
 					sht = workbook.getSheetAt(0);
 				}else {
 					sht = workbook.getSheet(sheet);
+					if(null == sht){
+						sht = workbook.createSheet(sheet);
+					}
 				}
 				is.close();
 				tempFile.delete();
 			}else {
-				File dir = file.getParentFile();
-				if(!dir.exists()){
-					dir.mkdirs();
-				}
-				file.createNewFile();
+
+				FileUtil.create(file, false);
 				workbook = new XSSFWorkbook();
 				if(BasicUtil.isEmpty(sheet)){
 					sheet = "sheet1";
 				}
 				sht = workbook.createSheet(sheet);
-				os = new FileOutputStream(file);
 			}
-
+			os = new FileOutputStream(file);
 			write(workbook, os, sht, insert, headers, keys, set);
 
 		}catch(Exception e){
@@ -855,7 +864,7 @@ public class ExcelUtil {
 		}
 		return true;
 	}
-	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
 		try {
 			int move = set.size();
 			int footFr = insert;
@@ -885,7 +894,7 @@ public class ExcelUtil {
 			}
 		}
 	}
-	public static boolean export(File template, OutputStream os, String sheet, int insert, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(File template, OutputStream os, String sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
 		try{
 			XSSFWorkbook  workbook = null;
 			Sheet sht = null;
@@ -922,10 +931,10 @@ public class ExcelUtil {
 	 * @param set 数据集合
 	 * @return boolean
 	 */
-	public static boolean export(File template, File file, int rows, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(File template, File file, int rows, List<String>headers, List<String> keys, Collection<?> set){
 		return export(template, file, "sheet1", rows, headers, keys, set);
 	}
-	public static boolean export(File template, OutputStream os, int rows, List<String>headers, List<String> keys, DataSet set){
+	public static boolean export(File template, OutputStream os, int rows, List<String>headers, List<String> keys, Collection<?> set){
 		return export(template, os, "sheet1", rows, headers, keys, set);
 	}
 	/**
@@ -936,10 +945,10 @@ public class ExcelUtil {
 	 * @param set 数据集合
 	 * @return boolean
 	 */
-	public static boolean export(File template, File file, List<String> keys, DataSet set){
+	public static boolean export(File template, File file, List<String> keys, Collection<?> set){
 		return export(template, file,0, null, keys, set);
 	}
-	public static boolean export(File template, OutputStream os, List<String> keys, DataSet set){
+	public static boolean export(File template, OutputStream os, List<String> keys, Collection<?> set){
 		return export(template, os,0, null, keys, set);
 	}
 
@@ -952,10 +961,10 @@ public class ExcelUtil {
 	 * @param set 数据集合
 	 * @return boolean
 	 */
-	public static boolean export(File template, File file, List<String> headers,List<String> keys, DataSet set){
+	public static boolean export(File template, File file, List<String> headers,List<String> keys, Collection<?> set){
 		return export(template, file,0, headers, keys, set);
 	}
-	public static boolean export(File template, OutputStream os, List<String> headers,List<String> keys, DataSet set){
+	public static boolean export(File template, OutputStream os, List<String> headers,List<String> keys, Collection<?> set){
 		return export(template, os,0, headers, keys, set);
 	}
 
@@ -968,10 +977,10 @@ public class ExcelUtil {
 	 * @param set 数据集合
 	 * @return boolean
 	 */
-	public static boolean export(File template, File file, int insert, List<String> keys, DataSet set){
+	public static boolean export(File template, File file, int insert, List<String> keys, Collection<?> set){
 		return export(template, file,insert, null, keys, set);
 	}
-	public static boolean export(File template, OutputStream os, int insert, List<String> keys, DataSet set){
+	public static boolean export(File template, OutputStream os, int insert, List<String> keys, Collection<?> set){
 		return export(template, os, insert, null, keys, set);
 	}
 
@@ -986,15 +995,16 @@ public class ExcelUtil {
 	 * @param configs 姓名:NAME或NAME
 	 * @return boolean
 	 */
-	public static boolean export(File template, File file, String sheet, int rows, DataSet set, String ... configs){
+	public static boolean export(File template, File file, String sheet, int rows, Collection<?> set, String ... configs){
 		try {
+			FileUtil.create(file, false);
 			return export(template, new FileOutputStream(file), sheet, rows, set, configs);
 		}catch (Exception e){
 			e.printStackTrace();
 			return false;
 		}
 	}
-	public static boolean export(File template, OutputStream os, String sheet, int insert, DataSet set, String ... configs){
+	public static boolean export(File template, OutputStream os, String sheet, int insert, Collection<?> set, String ... configs){
 		List<String> headers = new ArrayList<>();
 		List<String> keys = new ArrayList<>();
 		if(null != configs){
@@ -1023,13 +1033,13 @@ public class ExcelUtil {
 	 * @param configs 姓名:NAME或NAME
 	 * @return boolean
 	 */
-	public static boolean export(File template, File file, int insert, DataSet set, String ... configs){
+	public static boolean export(File template, File file, int insert, Collection<?> set, String ... configs){
 		return export(template, file, null, insert, set, configs);
 	}
 	public static boolean export(File template, File file, int insert, Table table){
 		return export(template, file, null, insert, table);
 	}
-	public static boolean export(File template, OutputStream os, int insert, DataSet set, String ... configs){
+	public static boolean export(File template, OutputStream os, int insert, Collection<?> set, String ... configs){
 		return export(template, os, null, insert, set, configs);
 	}
 
@@ -1045,13 +1055,13 @@ public class ExcelUtil {
 	 * @param configs 姓名:NAME或NAME
 	 * @return boolean
 	 */
-	public static boolean export(File template, File file,  DataSet set, String ... configs){
+	public static boolean export(File template, File file,  Collection<?> set, String ... configs){
 		return export(template, file, 0, set, configs);
 	}
 	public static boolean export(File template, File file,  Table table){
 		return export(template, file,"", 0, table);
 	}
-	public static boolean export(File template, OutputStream os,  DataSet set, String ... configs){
+	public static boolean export(File template, OutputStream os,  Collection<?> set, String ... configs){
 		return export(template, os, 0, set, configs);
 	}
 	public static boolean export(File template, OutputStream os,  Table table){
