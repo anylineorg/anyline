@@ -120,12 +120,33 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			put(putKey(entity.getKey()), entity.getValue());
 		}
 	}
-	public static DataRow parseList(Collection<Object> list){
+
+	/**
+	 * 数组解析成DataSet
+	 * @param list 数组
+	 * @param fields 下标对应的属性(字段/key)名称，如果不输入则以下标作为DataRow的key,如果属性数量超出list长度，取null值存入DataRow
+	 * @return
+	 */
+	public static DataRow parseList(Collection<?> list, String ... fields){
 		DataRow row = new DataRow();
 		if(null != list) {
-			int i = 0;
-			for(Object obj:list){
-				row.put("" +i++,obj);
+
+			if(null == fields || fields.length ==0){
+				int i = 0;
+				for(Object obj:list){
+					row.put("" +i++,obj);
+				}
+			}else{
+				Object[] items = list.toArray();
+				int len = fields.length;
+				for(int i=0; i<len; i++){
+					String field = fields[i];
+					Object value = null;
+					if(i<items.length-1){
+						value = items[i];
+					}
+					row.put(field, value);
+				}
 			}
 		}
 		return row;
@@ -145,6 +166,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	@SuppressWarnings("rawtypes")
 	public static DataRow parse(Object obj, String ... keys){
 		return parse(KEY_CASE.CONFIG, obj, keys);
+	}
+	public static DataRow build(Object obj, String ... keys){
+		return parse(obj, keys);
 	}
 	public static DataRow parse(KEY_CASE keyCase, Object obj, String ... keys){
 		Map<String,String> map = new HashMap<String,String>();
@@ -189,6 +213,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			}
 		}
 		return row;
+	}
+
+	public static DataRow build(KEY_CASE keyCase, Object obj, String ... keys){
+		return parse(keyCase, obj, keys);
 	}
 	/*
 	 * 解析json结构字符
@@ -949,7 +977,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * @param override	是否覆盖之前的主键(追加到primaryKeys) 默认覆盖(单一主键)
 	 * @return return
 	 */
-	public Object put(KEY_CASE keyCase, String key, Object value, boolean pk, boolean override){
+	public DataRow put(KEY_CASE keyCase, String key, Object value, boolean pk, boolean override){
 		if(pk){
 			if(override){
 				primaryKeys.clear();
@@ -959,27 +987,27 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		this.put(keyCase, key, value);
 		return this;
 	}
-	public Object put(String key, Object value, boolean pk, boolean override){
+	public DataRow put(String key, Object value, boolean pk, boolean override){
 		return put(this.keyCase, key, value, pk, override);
 	}
-	public Object put(KEY_CASE keyCase, String key, Object value, boolean pk){
+	public DataRow put(KEY_CASE keyCase, String key, Object value, boolean pk){
 		this.put(keyCase, key, value, pk , true);
 		return this;
 	}
-	public Object put(String key, Object value, boolean pk){
+	public DataRow put(String key, Object value, boolean pk){
 		this.put(this.keyCase, key, value, pk , true);
 		return this;
 	}
 	@Override
-	public Object put(String key, Object value){
+	public DataRow put(String key, Object value){
 		this.put(this.keyCase, key, value, false , true);
 		return this;
 	}
-	public Object attr(String key, Object value){
+	public DataRow attr(String key, Object value){
 		attributes.put(key, value);
 		return this;
 	}
-	public Object setAttribute(String key, Object value){
+	public DataRow setAttribute(String key, Object value){
 		attributes.put(key, value);
 		return this;
 	}
@@ -1828,6 +1856,16 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			return this;
 		}
 		put(key,getStringNvl(key).replace(oldChar, newChar));
+		return this;
+	}
+	public DataRow replace(String oldChar, String newChar){
+		List<String> keys = keys();
+		if(null == newChar){
+			newChar = "";
+		}
+		for(String key:keys){
+			put(key,getStringNvl(key).replace(oldChar, newChar));
+		}
 		return this;
 	}
 	/**
