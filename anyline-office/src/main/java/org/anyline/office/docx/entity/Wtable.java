@@ -1,9 +1,8 @@
 package org.anyline.office.docx.entity;
 
-import org.anyline.office.docx.entity.data.TableBuilder;
+import org.anyline.entity.html.TableBuilder;
 import org.anyline.office.docx.util.DocxUtil;
-import org.anyline.office.docx.util.StyleParser;
-import org.anyline.util.DomUtil;
+import org.anyline.util.StyleParser;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 

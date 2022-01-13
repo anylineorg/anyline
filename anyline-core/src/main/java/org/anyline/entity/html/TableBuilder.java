@@ -34,8 +34,8 @@ public class TableBuilder {
     private List<String> widths = new ArrayList<>();
     private List<String> styles = new ArrayList<>();
     private Map<String,String[]> unionRefs = new HashMap<>();
+    private List<String> ignoreUnionValues = new ArrayList<>();  //不参与合并的值
     private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
-    private String replaceEmpty = ""     ;//null替换成
 
     public static TableBuilder init(){
         TableBuilder builder = new TableBuilder();
@@ -62,7 +62,6 @@ public class TableBuilder {
         table.setHeader(header);
         table.setFooter(footer);
 
-        //生成表头
          if(null != headers && headers.size() >0){
              Tr tr = new Tr();
             int size = headers.size();
@@ -77,10 +76,9 @@ public class TableBuilder {
             }
             table.addTr(tr);
         }
-         //计算单元格属性及值
         if(null != datas && null != fields){
-            int dsize = datas.size();   //数据集合长度
-            int ksize = fields.size();  //属性长度
+            int dsize = datas.size();
+            int ksize = fields.size();
             Object[] objs = datas.toArray();
             Map<String,String>[][] cells = new HashMap[dsize][ksize];
             for(int r=0; r<dsize; r++){
@@ -92,9 +90,6 @@ public class TableBuilder {
                         value = (r+1)+"";
                     }else{
                         value = BeanUtil.parseRuntimeValue(data, field);
-                        if(BasicUtil.isEmpty(value) && null != replaceEmpty){
-                            value = replaceEmpty;
-                        }
                     }
                     Map<String,String> map = new HashMap<>();
                     map.put("value", value);
@@ -118,6 +113,10 @@ public class TableBuilder {
                                         int refIndex = fields.indexOf(ref);
                                         Map<String, String> left = cells[r][refIndex];
                                         String curRefValue = BeanUtil.parseRuntimeValue(data, ref);
+                                        if(ignoreUnionValues.indexOf(curRefValue) != -1){
+                                            leftMerge = false;
+                                            break;
+                                        }
                                         String prevRefValue = BeanUtil.parseRuntimeValue(prevRow, ref);
                                         if(null ==curRefValue  || !curRefValue.equals(prevRefValue)){
                                             //当前行左侧值  与上一行左侧值比较
@@ -150,7 +149,6 @@ public class TableBuilder {
                 }
             }
 
-            //生成tr
             for(int r=0; r<dsize; r++){
                 Object data = objs[r];
                 Tr tr = new Tr();
@@ -317,11 +315,20 @@ public class TableBuilder {
         return this;
     }
 
-    public Map<String, String[]> getUnionRefs() {
-        return unionRefs;
+    public List<String> getIgnoreUnionValues() {
+        return ignoreUnionValues;
     }
 
-    public void setUnionRefs(Map<String, String[]> unionRefs) {
-        this.unionRefs = unionRefs;
+    public TableBuilder setIgnoreUnionValues(List<String> ignoreUnionValue) {
+        this.ignoreUnionValues = ignoreUnionValue;
+        return this;
+    }
+    public TableBuilder addIgnoreUnionValue(String ... vals){
+        if(null != vals){
+            for(String val:vals){
+                ignoreUnionValues.add(val);
+            }
+        }
+        return this;
     }
 }

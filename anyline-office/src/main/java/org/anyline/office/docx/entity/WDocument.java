@@ -1,11 +1,10 @@
 package org.anyline.office.docx.entity;
 
+import org.anyline.entity.html.Table;
+import org.anyline.entity.html.Td;
+import org.anyline.entity.html.Tr;
 import org.anyline.net.HttpUtil;
-import org.anyline.office.docx.entity.html.Table;
-import org.anyline.office.docx.entity.html.Td;
-import org.anyline.office.docx.entity.html.Tr;
 import org.anyline.office.docx.util.DocxUtil;
-import org.anyline.office.docx.util.StyleParser;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.dom4j.DocumentHelper;
