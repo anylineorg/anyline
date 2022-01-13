@@ -1907,6 +1907,39 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet round(String key, int scale, int mode){
         return round(key, key, scale, mode);
     }
+
+    /**
+     * DataSet拆分成size部分
+     * @param page 拆成多少部分
+     * @return list
+     */
+    public List<DataSet> split(int page){
+        List<DataSet> list = new ArrayList<>();
+        int size = this.size();
+        int vol = size / page;//每页多少行
+        for(int i=0; i<page; i++){
+            int fr = i*vol;
+            int to = (i+1)*vol-1;
+            if(i == page-1){
+                to = size-1;
+            }
+            DataSet set = this.cuts(fr, to);
+            list.add(set);
+        }
+        return list;
+    }
+
+    public static void main(String[] args) {
+        DataSet set = new DataSet();
+        for(int i=0;i<10; i++){
+            DataRow row = new DataRow();
+            set.add(row);
+        }
+        List<DataSet> list = set.split(3);
+        for(DataSet item:list){
+            System.out.println(item.size());
+        }
+    }
     /**
      * rows 列表中的数据格式化成json格式   不同与toJSON
      * map.put("type", "list");
@@ -3031,6 +3064,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+
     /**
      * 替换所有NULL值
      *
@@ -3838,6 +3872,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
 
     }
+    
     public Select select = new Select();
 
 }
