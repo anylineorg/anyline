@@ -998,8 +998,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		this.put(this.keyCase, key, value, pk , true);
 		return this;
 	}
+
+	/**
+	 * 这是重写的父类put不要改返回值类型
+	 * @param key key
+	 * @param value value
+	 * @return Object
+	 */
 	@Override
-	public DataRow put(String key, Object value){
+	public Object put(String key, Object value){
+		this.put(this.keyCase, key, value, false , true);
+		return this;
+	}
+	public DataRow set(String key, Object value){
 		this.put(this.keyCase, key, value, false , true);
 		return this;
 	}
