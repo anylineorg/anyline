@@ -99,19 +99,7 @@ public class ZipUtil {
 
 	public static void replace(File src, String item, InputStream in) throws Exception {
 
-		File tempFile = File.createTempFile(src.getName(), null);
-		tempFile.delete();
-		boolean renameOk = src.renameTo(tempFile);
-		if(!renameOk){
-			tempFile = new File(src.getParent(), "tmp_"+System.currentTimeMillis()+src.getName());
-			tempFile.delete();
-			renameOk = src.renameTo(tempFile);
-		}
-		if (!renameOk) {
-			throw new Exception("重命名失败 "
-					+ src.getAbsolutePath() + " > "
-					+ tempFile.getAbsolutePath());
-		}
+		File tempFile = FileUtil.createTempFile(src);
 		ZipFile zip = new ZipFile(tempFile);
 		Enumeration<? extends ZipEntry> entrys = zip.entries();
 		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(src));
@@ -152,14 +140,7 @@ public class ZipUtil {
 			ZipOutputStream zipout = null;
 			if (append && zip.exists()) {
 				//追加文件
-				File tempFile = File.createTempFile(zip.getName(), null);
-				tempFile.delete();
-				boolean renameOk = zip.renameTo(tempFile);
-				if (!renameOk) {
-					throw new Exception("重命名失败 "
-							+ zip.getAbsolutePath() + " > "
-							+ tempFile.getAbsolutePath());
-				}
+				File tempFile = FileUtil.createTempFile(zip);
 				byte[] buf = new byte[1024];
 				ZipInputStream zin = new ZipInputStream(new FileInputStream(tempFile));
 				zipout = new ZipOutputStream(new FileOutputStream(zip));
@@ -183,6 +164,7 @@ public class ZipUtil {
 					entry = zin.getNextEntry();
 				}
 				zin.close();
+				tempFile.delete();
 			}else{//end 追加
 				zipout = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(zip),BUFF_SIZE));
 			}

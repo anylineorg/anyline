@@ -308,17 +308,7 @@ public class ExcelUtil {
 	public static void value(File file, int sheet, int row, int col, String value) {
 		OutputStream out = null;
 		try {
-			File tempFile = File.createTempFile(file.getName(), null);
-			boolean renameOk = file.renameTo(tempFile);
-			if(!renameOk){
-				tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
-				renameOk = file.renameTo(tempFile);
-			}
-			if (!renameOk) {
-				throw new Exception("重命名失败 "
-						+ file.getAbsolutePath() + " > "
-						+ tempFile.getAbsolutePath());
-			}
+			File tempFile = FileUtil.createTempFile(file);
 			FileInputStream is = new FileInputStream(tempFile);
 
 			Workbook workbook = new XSSFWorkbook(is);
@@ -489,24 +479,13 @@ public class ExcelUtil {
 			}
 		}
 	}
-
 	public static boolean export(File file, String sheet, int insert, Table table){
 		FileOutputStream os = null;
 		try{
 			XSSFWorkbook  workbook = null;
 			Sheet sht = null;
 			if(file.exists()){
-				File tempFile = File.createTempFile(file.getName(), null);
-				boolean renameOk = file.renameTo(tempFile);
-				if(!renameOk){
-					tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
-					renameOk = file.renameTo(tempFile);
-				}
-				if (!renameOk) {
-					throw new Exception("重命名失败 "
-							+ file.getAbsolutePath() + " > "
-							+ tempFile.getAbsolutePath());
-				}
+				File tempFile = FileUtil.createTempFile(file);
 				FileInputStream is = new FileInputStream(tempFile);
 				workbook = new XSSFWorkbook(is);
 				if(BasicUtil.isEmpty(sheet)){
@@ -525,52 +504,6 @@ public class ExcelUtil {
 					sheet = "sheet1";
 				}
 				sht = workbook.createSheet(sheet);
-			}
-
-			if(!file.getParentFile().exists()){
-				file.getParentFile().mkdirs();
-			}
-			if(!file.exists()){
-				file.createNewFile();
-			}
-			os = new FileOutputStream(file);
-			write(workbook, os, sht, insert, table);
-		}catch(Exception e){
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
-
-	public static boolean export(File file, int sheet, int insert, Table table){
-		FileOutputStream os = null;
-		try{
-			XSSFWorkbook  workbook = null;
-			Sheet sht = null;
-			if(file.exists()){
-				File tempFile = File.createTempFile(file.getName(), null);
-				boolean renameOk = file.renameTo(tempFile);
-				if(!renameOk){
-					tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
-					renameOk = file.renameTo(tempFile);
-				}
-				if (!renameOk) {
-					throw new Exception("重命名失败 "
-							+ file.getAbsolutePath() + " > "
-							+ tempFile.getAbsolutePath());
-				}
-				FileInputStream is = new FileInputStream(tempFile);
-				workbook = new XSSFWorkbook(is);
-				if(BasicUtil.isEmpty(sheet)){
-					sht = workbook.getSheetAt(0);
-				}else {
-					sht = workbook.getSheetAt(sheet);
-				}
-				is.close();
-				tempFile.delete();
-			}else {
-				workbook = new XSSFWorkbook();
-				sht = workbook.createSheet("sheet1");
 			}
 
 			if(!file.getParentFile().exists()){
@@ -617,12 +550,6 @@ public class ExcelUtil {
 		}
 		return true;
 	}
-	public static boolean export(File template, File file, Table table) {
-		return export(template, file, 0, 0, table);
-	}
-	public static boolean export(File template, OutputStream os,  Table table){
-		return export(template, os, "", 0, table);
-	}
 	public static boolean export(File template, File file, String sheet, int insert, Table table){
 		try{
 			Sheet sht = null;
@@ -660,6 +587,9 @@ public class ExcelUtil {
 		}
 		return true;
 	}
+	public static boolean export(File template, OutputStream os,  Table table){
+		return export(template, os, "", 0, table);
+	}
 	public static boolean export(OutputStream os, String sheet, int insert, Table table){
 		try{
 			XSSFWorkbook workbook = new XSSFWorkbook();
@@ -674,8 +604,6 @@ public class ExcelUtil {
 		}
 		return true;
 	}
-
-
 	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, Table table){
 		try {
 			int size = table.getTrs().size();
@@ -895,17 +823,7 @@ public class ExcelUtil {
 				file.delete();
 			}
 			if(file.exists()){
-				File tempFile = File.createTempFile(file.getName(), null);
-				boolean renameOk = file.renameTo(tempFile);
-				if(!renameOk){
-					tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
-					renameOk = file.renameTo(tempFile);
-				}
-				if (!renameOk) {
-					throw new Exception("重命名失败 "
-							+ file.getAbsolutePath() + " > "
-							+ tempFile.getAbsolutePath());
-				}
+				File tempFile = FileUtil.createTempFile(file);
 				FileInputStream is = new FileInputStream(tempFile);
 				workbook = new XSSFWorkbook(is);
 				if(BasicUtil.isEmpty(sheet)){
@@ -1120,6 +1038,9 @@ public class ExcelUtil {
 	 */
 	public static boolean export(File template, File file,  Collection<?> set, String ... configs){
 		return export(template, file, 0, set, configs);
+	}
+	public static boolean export(File template, File file,  Table table){
+		return export(template, file,"", 0, table);
 	}
 	public static boolean export(File template, OutputStream os,  Collection<?> set, String ... configs){
 		return export(template, os, 0, set, configs);
