@@ -260,37 +260,51 @@ public class Table {
         }
         isOffset = true;
         int rows = trs.size();
-        for(int r=0; r<rows; r++){
-            Tr tr = trs.get(r);
-            List<Td> tds = tr.getTds();
-            int cols = tds.size();
-            for(int c=0; c<cols; c++){
-                Td td = tds.get(c);
-                int colspan = td.getColspan();
-                int rowspan = td.getRowspan();
-                int offset = colspan -1;
-                if( offset > 0){
-                    //当前行 往后所有列 偏移增加colspan-1
-                    for(int cc=c+1; r<cols; cc++){
-                        Td after = tds.get(cc);
-                        after.addOffset(offset);
+        int maxCols = getMaxColSize();
+        for(int c=0; c<maxCols; c++){
+            for(int r=0; r<rows; r++){
+                Tr tr = trs.get(r);
+                List<Td> tds = tr.getTds();
+                int cols = tds.size();
+                if(c<cols) {
+                    Td td = tds.get(c);
+                    int colspan = td.getColspan();
+                    int rowspan = td.getRowspan();
+                    int offset = colspan - 1;
+                    if (offset > 0) {
+                        //当前行 往后所有列 偏移增加colspan-1
+                        for (int cc = c + 1; r < cols; cc++) {
+                            Td after = tds.get(cc);
+                            after.addOffset(offset);
+                        }
                     }
-                }
-                if(rowspan > 1){
-                    offset ++;
-                    //下rowspan-1行
-                    for(int rr=r+1; rr<r+rowspan; rr++){
-                        Tr afterTr = trs.get(rr);
-                        int begin = td.getColIndex()+td.getOffset();
-                        List<Td> afterTds = afterTr.getTdsByOffset(begin);
-                        for(Td afterTd:afterTds){
-                            afterTd.addOffset(offset);
+                    if (rowspan > 1) {
+                        offset++;
+                        //下rowspan-1行
+                        for (int rr = r + 1; rr < r + rowspan; rr++) {
+                            Tr afterTr = trs.get(rr);
+                            int begin = td.getColIndex() + td.getOffset();
+                            List<Td> afterTds = afterTr.getTdsByOffset(begin);
+                            for (Td afterTd : afterTds) {
+                                afterTd.addOffset(offset);
+                            }
                         }
                     }
                 }
             }
         }
+
         return this;
+    }
+    public int getMaxColSize(){
+        int max = 0;
+        for(Tr tr:trs){
+            int size = tr.getTds().size();
+            if(size > max){
+                max = size;
+            }
+        }
+        return max;
     }
     /**
      * 设置需要合并行的列下标

@@ -36,6 +36,7 @@ public class TableBuilder {
     private Map<String,String[]> unionRefs = new HashMap<>();
     private List<String> ignoreUnionValues = new ArrayList<>();  //不参与合并的值
     private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
+    private String replaceEmpty = "";    //遇到空值替换成
 
     public static TableBuilder init(){
         TableBuilder builder = new TableBuilder();
@@ -55,15 +56,101 @@ public class TableBuilder {
         this.widthUnit = widthUnit;
     }
 
+    /**
+     * 检测参考列是否合并
+     * @param field 当前列
+     * @param r 当前行
+     * @param prevRow 上一行数据
+     * @return boolean
+     */
+    private boolean checkRefMerge(String field, int r, Object prevRow ){
+        boolean merge = true;
+        String[] refs = unionRefs.get(field);
+        Object data = list[r];
+        if(null != refs){
+            for (String ref:refs) {
+                int refIndex = fields.indexOf(ref);
+                Map<String, String> refCell = cells[r][refIndex];
+                if(null == refCell.get("checked")){
+                    checkMerge(r, refIndex, ref);
+                }
+                String curRefValue = BeanUtil.parseRuntimeValue(data, ref);//当前行 参与列的值
+                if(null == curRefValue){
+                    curRefValue =replaceEmpty;
+                }
+                if(ignoreUnionValues.indexOf(curRefValue) != -1){
+                    merge = false;
+                    break;
+                }
+                String prevRefValue = BeanUtil.parseRuntimeValue(prevRow, ref);
+                if(null == prevRefValue){
+                    prevRefValue = replaceEmpty;
+                }
+                if(!curRefValue.equals(prevRefValue)){
+                    //当前行参考列值  与上一行参考列值比较
+                    merge = false;
+                    break;
+                }
+
+                if (null != refCell &&  !"1".equals(refCell.get("merge")) &&  !"1".equals(refCell.get("merged"))) {
+                    //依赖列未合并
+                    merge = false;
+                    break;
+                }
+            }
+        }
+        return merge;
+    }
+    private void checkMerge(int r, int c, String field){
+
+        Map<String,String> map = cells[r][c];
+        String value = map.get("value");
+        map.put("checked","1");
+        int rowspan = 1;
+        if(null != unions && unions.contains(field)) {
+            //向上查看相同值
+            int rr = r+1;
+            Object data = list[r];
+            int rsize = list.length;
+            while (true) {
+                if (rr >= rsize) {
+                    break;
+                }
+                //下一行
+                Map<String, String> next = cells[rr][c];
+                Object prevRow = list[rr];
+                String pvalue = next.get("value");
+                if (pvalue.equals(value) && ignoreUnionValues.indexOf(value) == -1) {
+                    boolean refMerge = checkRefMerge(field, r, prevRow);   //参考列是否已被合并
+                    if (refMerge) {//参考列已合并 或没有参考列
+                        map.put("merge", "1");  //合并
+                        next.put("merged", "1"); //被合并
+                        rowspan ++;
+                    } else {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+                rr++;
+            }
+        }
+
+        map.put("rowspan",  rowspan+ "");
+    }
+    //向下求相同值
+    Map<String,String>[][] cells = null;
+    Object[] list = null;
     public Table build(){
+        Table table = null;
+        table = new Table();
         parseUnion();
-        Table table = new Table();
         table.setClazz(clazz);
         table.setHeader(header);
         table.setFooter(footer);
 
-         if(null != headers && headers.size() >0){
-             Tr tr = new Tr();
+        if(null != headers && headers.size() >0){
+            Tr tr = new Tr();
             int size = headers.size();
             for(int i=0; i<size; i++){
                 String header = headers.get(i);
@@ -77,85 +164,44 @@ public class TableBuilder {
             table.addTr(tr);
         }
         if(null != datas && null != fields){
-            int dsize = datas.size();
-            int ksize = fields.size();
-            Object[] objs = datas.toArray();
-            Map<String,String>[][] cells = new HashMap[dsize][ksize];
-            for(int r=0; r<dsize; r++){
-                Object data = objs[r];
-                for(int c=0; c<ksize; c++){
+            list = datas.toArray();
+            int rsize = list.length;    //行数
+            int csize = fields.size();  //列数
+            cells = new HashMap[rsize][csize];
+            for(int r=0; r<rsize; r++){
+                Object data = list[r];
+                for(int c=0; c<csize; c++){
+                    Map<String,String> map = new HashMap<>();
                     String field = fields.get(c);
                     String value = null;
                     if(field.equals("{num}")){
                         value = (r+1)+"";
                     }else{
                         value = BeanUtil.parseRuntimeValue(data, field);
-                    }
-                    Map<String,String> map = new HashMap<>();
-                    map.put("value", value);
-                    cells[r][c] = map;
-                    if(null != unions && unions.contains(field)) {
-                        //向上查看相同值
-                        int rr = 1;
-                        while (true) {
-                            if (r - rr < 0) {
-                                break;
-                            }
-                            //上一行
-                            Map<String, String> prev = cells[r - rr][c];
-                            Object prevRow = objs[r-rr];
-                            String pvalue = prev.get("value");
-                            if (null != pvalue && pvalue.equals(value)) {
-                                boolean leftMerge = true;   //左侧是否已被合并
-                                String[] refs = unionRefs.get(field);
-                                if(null != refs){
-                                    for (String ref:refs) {
-                                        int refIndex = fields.indexOf(ref);
-                                        Map<String, String> left = cells[r][refIndex];
-                                        String curRefValue = BeanUtil.parseRuntimeValue(data, ref);
-                                        if(ignoreUnionValues.indexOf(curRefValue) != -1){
-                                            leftMerge = false;
-                                            break;
-                                        }
-                                        String prevRefValue = BeanUtil.parseRuntimeValue(prevRow, ref);
-                                        if(null ==curRefValue  || !curRefValue.equals(prevRefValue)){
-                                            //当前行左侧值  与上一行左侧值比较
-                                            leftMerge = false;
-                                            break;
-                                        }
-
-                                        if (!"1".equals(left.get("remove"))) {
-                                            //依赖列未合并
-                                            leftMerge = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                                if (leftMerge) {//左列是否已合并
-                                    map.put("remove", "1");
-                                    map.put("merge", "1");
-                                    prev.put("merge", "1");
-                                    int rowspan = BasicUtil.parseInt(prev.get("rowspan"), 1) + 1;
-                                    prev.put("rowspan",  rowspan+ "");
-                                } else {
-                                    break;
-                                }
-                            } else {
-                                break;
-                            }
-                            rr++;
+                        if(null == value){
+                            value = replaceEmpty;
                         }
                     }
+                    map.put("value", value);
+                    cells[r][c] = map;
+                }
+
+            }
+            for(int r=0; r<rsize; r++){
+                for(int c=0; c<csize; c++){
+                    String field = fields.get(c);
+                    checkMerge(r, c, field);
                 }
             }
 
-            for(int r=0; r<dsize; r++){
-                Object data = objs[r];
+            for(int r=0; r<rsize; r++){
+                Object data = list[r];
                 Tr tr = new Tr();
-                for(int c=0; c<ksize; c++){
+                for(int c=0; c<csize; c++){
                     Map<String,String> map = cells[r][c];
                     String value = map.get("value");
-                    String remove = map.get("remove");
+                    String merge = map.get("merge");    //合并其他行
+                    String merged = map.get("merged");  //被其他行合并
                     String rowspan = map.get("rowspan");
                     String width = "";
                     String style = "";
@@ -165,7 +211,7 @@ public class TableBuilder {
                     if(c<styles.size()){
                         style = styles.get(c);
                     }
-                    if(!"1".equals(remove)){
+                    if(!"1".equals(merged)){
                         Td td = new Td();
                         if (null != rowspan) {
                             td.setRowspan(BasicUtil.parseInt(rowspan,1));
@@ -248,7 +294,9 @@ public class TableBuilder {
             unions = new ArrayList<>();
         }
         for(String field:fields) {
-            unions.add(field);
+            if(!unions.contains(field)) {
+                unions.add(field);
+            }
         }
         return this;
     }

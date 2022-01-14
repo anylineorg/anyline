@@ -134,6 +134,7 @@ public class Tr {
         builder.append(">");
         for(Td td:tds){
             td.build(builder);
+            builder.append("\n");
         }
         builder.append("</tr>");
     }

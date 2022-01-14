@@ -240,6 +240,7 @@ public class Td {
             builder.append(" data-row-index='").append(getRowIndex()).append("'");
             builder.append(" data-col-index='").append(getColIndex()).append("'");
             builder.append(" data-offset='").append(offset).append("'");
+            builder.append(" data-cell-col='").append(offset+getColIndex()).append("'");
             builder.append(">");
             if(null != text) {
                 builder.append(text);
