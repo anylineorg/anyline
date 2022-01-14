@@ -1929,17 +1929,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return list;
     }
 
-    public static void main(String[] args) {
-        DataSet set = new DataSet();
-        for(int i=0;i<10; i++){
-            DataRow row = new DataRow();
-            set.add(row);
-        }
-        List<DataSet> list = set.split(3);
-        for(DataSet item:list){
-            System.out.println(item.size());
-        }
-    }
     /**
      * rows 列表中的数据格式化成json格式   不同与toJSON
      * map.put("type", "list");
@@ -2242,7 +2231,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if (null == row.get(field)) {
                 Map<String,String> params = new HashMap<>();
                 for(String key:keys){
-                    params.put(key, row.getStringNvl(key));
+                    params.put(key, row.getString(key)); //这里如果是null的话保留null
                 }
                 DataSet set = items.getRows(params);
                 if (recursion) {
