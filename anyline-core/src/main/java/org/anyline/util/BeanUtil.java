@@ -1747,7 +1747,7 @@ public class BeanUtil {
 		if(null == obj){ 
 			return key;
 		} 
-		String value = def;
+		String value = key;
 		if(BasicUtil.isNotEmpty(key)){ 
 			if(key.contains("{")){ 
 				try{ 
