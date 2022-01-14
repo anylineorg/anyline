@@ -542,8 +542,57 @@ public class ExcelUtil {
 		return true;
 	}
 
+	public static boolean export(File file, int sheet, int insert, Table table){
+		FileOutputStream os = null;
+		try{
+			XSSFWorkbook  workbook = null;
+			Sheet sht = null;
+			if(file.exists()){
+				File tempFile = File.createTempFile(file.getName(), null);
+				boolean renameOk = file.renameTo(tempFile);
+				if(!renameOk){
+					tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
+					renameOk = file.renameTo(tempFile);
+				}
+				if (!renameOk) {
+					throw new Exception("重命名失败 "
+							+ file.getAbsolutePath() + " > "
+							+ tempFile.getAbsolutePath());
+				}
+				FileInputStream is = new FileInputStream(tempFile);
+				workbook = new XSSFWorkbook(is);
+				if(BasicUtil.isEmpty(sheet)){
+					sht = workbook.getSheetAt(0);
+				}else {
+					sht = workbook.getSheetAt(sheet);
+				}
+				is.close();
+				tempFile.delete();
+			}else {
+				workbook = new XSSFWorkbook();
+				sht = workbook.createSheet("sheet1");
+			}
+
+			if(!file.getParentFile().exists()){
+				file.getParentFile().mkdirs();
+			}
+			if(!file.exists()){
+				file.createNewFile();
+			}
+			os = new FileOutputStream(file);
+			write(workbook, os, sht, insert, table);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+
 	public static boolean export(File file, Table table){
 		String sheet = "sheet1";
+		return export(file, sheet,0, table);
+	}
+	public static boolean export(File file, String sheet, Table table){
 		return export(file, sheet,0, table);
 	}
 	public static boolean export(File template, OutputStream os, String sheet, int insert, Table table){
@@ -568,6 +617,12 @@ public class ExcelUtil {
 		}
 		return true;
 	}
+	public static boolean export(File template, File file, Table table) {
+		return export(template, file, 0, 0, table);
+	}
+	public static boolean export(File template, OutputStream os,  Table table){
+		return export(template, os, "", 0, table);
+	}
 	public static boolean export(File template, File file, String sheet, int insert, Table table){
 		try{
 			Sheet sht = null;
@@ -581,6 +636,21 @@ public class ExcelUtil {
 					sht = workbook.createSheet(sheet);
 				}
 			}
+			is.close();
+			FileUtil.create(file, false);
+			write(workbook, new FileOutputStream(file), sht, insert, table);
+		}catch(Exception e){
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	public static boolean export(File template, File file, int sheet, int insert, Table table){
+		try{
+			Sheet sht = null;
+			FileInputStream is = new FileInputStream(template);
+			XSSFWorkbook workbook = new XSSFWorkbook(is);
+			sht = workbook.getSheetAt(sheet);
 			is.close();
 			FileUtil.create(file, false);
 			write(workbook, new FileOutputStream(file), sht, insert, table);
@@ -605,52 +675,7 @@ public class ExcelUtil {
 		return true;
 	}
 
-	private static void write1(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, Table table){
-		try {
-			int size = table.getTrs().size();
-			int last = sheet.getLastRowNum();
-			if(last > 0 && last>=insert) {
-				sheet.shiftRows(insert, last, size);//表尾下移
-			}
-			List<Tr> trs = table.getTrs();
-			for (Tr tr : trs) {
-				Row row = sheet.createRow(insert);
-				List<Td> tds = tr.getTds();
-				for (Td td : tds) {
-					int rowspan = td.getRowspan();
-					int colspan = td.getColspan();
 
-					int colIndex = td.getColIndex();
-					int x = td.getColIndex();
-					int y = td.getRowIndex();
-					int offset = td.getOffset();
-					Cell cell = row.createCell(colIndex + offset);
-
-					cell.setCellType(CellType.STRING);
-					cell.setCellValue(td.getTextTrim());
-					if (rowspan > 1 || colspan > 1) {
-						int firstRow = insert + y;
-						int lastRow = firstRow + rowspan - 1;
-						int firstCol = x + offset;
-						int lastCol = firstCol + colspan - 1;
-						CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
-						sheet.addMergedRegion(region);
-					}
-				}
-				insert++;
-			}
-			workbook.write(os);
-		}catch (Exception e){
-			e.printStackTrace();
-		}finally {
-			try{
-				os.flush();
-				os.close();
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-		}
-	}
 	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, Table table){
 		try {
 			int size = table.getTrs().size();
@@ -676,7 +701,7 @@ public class ExcelUtil {
 					cell.setCellType(CellType.STRING);
 					cell.setCellValue(td.getTextTrim());
 					if (rowspan > 1 || colspan > 1) {
-						int firstRow = insert + y;
+						int firstRow = insert;
 						int lastRow = firstRow + rowspan - 1;
 						int firstCol = x + offset;
 						int lastCol = firstCol + colspan - 1;
@@ -1096,14 +1121,8 @@ public class ExcelUtil {
 	public static boolean export(File template, File file,  Collection<?> set, String ... configs){
 		return export(template, file, 0, set, configs);
 	}
-	public static boolean export(File template, File file,  Table table){
-		return export(template, file,"", 0, table);
-	}
 	public static boolean export(File template, OutputStream os,  Collection<?> set, String ... configs){
 		return export(template, os, 0, set, configs);
-	}
-	public static boolean export(File template, OutputStream os,  Table table){
-		return export(template, os, "", 0, table);
 	}
 	public static boolean merge(Sheet sheet, int firstRow, int lastRow, int firstCol, int lastCol) {
 		try {
@@ -1114,4 +1133,5 @@ public class ExcelUtil {
 			return false;
 		}
 	}
+
 } 
