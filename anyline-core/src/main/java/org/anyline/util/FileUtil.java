@@ -408,7 +408,22 @@ public class FileUtil {
 			e.printStackTrace(); 
 		} 
 		return true; 
-	} 
+	}
+
+	public static File createTempFile(File file) throws Exception{
+		File tempFile = File.createTempFile(file.getName(), null);
+		boolean renameOk = file.renameTo(tempFile);
+		if(!renameOk){
+			tempFile = new File(file.getParent(), "tmp_"+System.currentTimeMillis()+file.getName());
+			renameOk = file.renameTo(tempFile);
+		}
+		if (!renameOk) {
+			throw new Exception("重命名失败 "
+					+ file.getAbsolutePath() + " > "
+					+ tempFile.getAbsolutePath());
+		}
+		return tempFile;
+	}
 	/** 
 	 * 从URL中提取文件目录(删除查询参数) 
 	 * @param url  url
