@@ -198,15 +198,17 @@ public class ExcelUtil {
 					int last = row.getLastCellNum();// 表头总共的列数
 					for (int j = 0; j < last; j++) {
 						Cell cell = row.getCell(j);
+						String value = null;
 						if(cell != null){
-							String value = null;
 							if(isMerged(sheet, i, j)){
 								value = getMergedRegionValue(sheet, i, j);
 							}else {
 								value = value(cell);
 							}
-							list.add(value);
+						}else{
+							value = getMergedRegionValue(sheet, i, j);
 						}
+						list.add(value);
 					}
 					lists.add(list);
 				}
@@ -540,6 +542,10 @@ public class ExcelUtil {
 		return true;
 	}
 
+	public static boolean export(File file, Table table){
+		String sheet = "sheet1";
+		return export(file, sheet,0, table);
+	}
 	public static boolean export(File template, OutputStream os, String sheet, int insert, Table table){
 		try{
 			Sheet sht = null;
@@ -598,14 +604,13 @@ public class ExcelUtil {
 		}
 		return true;
 	}
-	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, Table table){
+
+	private static void write1(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, Table table){
 		try {
-			int move = table.getTrs().size();
+			int size = table.getTrs().size();
 			int last = sheet.getLastRowNum();
-			int footFr = insert;
-			int footTo = last;
-			if (last >= insert) {
-				insert = last + 1;
+			if(last > 0 && last>=insert) {
+				sheet.shiftRows(insert, last, size);//表尾下移
 			}
 			List<Tr> trs = table.getTrs();
 			for (Tr tr : trs) {
@@ -634,10 +639,52 @@ public class ExcelUtil {
 				}
 				insert++;
 			}
-			int footSize = footTo - footFr + 1; //foot行数
-			if (move > 0 && footTo >= footFr) {
-				sheet.shiftRows(footFr, footTo, move + footSize);//表头下移
-				sheet.shiftRows(footTo + 1, footTo + footSize + move, -footSize);//数据上移
+			workbook.write(os);
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			try{
+				os.flush();
+				os.close();
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+	}
+	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, Table table){
+		try {
+			int size = table.getTrs().size();
+			int last = sheet.getLastRowNum();
+			if(last > 0 && last>=insert) {
+				sheet.shiftRows(insert, last, size);//表尾下移
+			}
+
+			List<Tr> trs = table.getTrs();
+			for (Tr tr : trs) {
+				Row row = sheet.createRow(insert);
+				List<Td> tds = tr.getTds();
+				for (Td td : tds) {
+					int rowspan = td.getRowspan();
+					int colspan = td.getColspan();
+
+					int colIndex = td.getColIndex();
+					int x = td.getColIndex();
+					int y = td.getRowIndex();
+					int offset = td.getOffset();
+					Cell cell = row.createCell(colIndex + offset);
+
+					cell.setCellType(CellType.STRING);
+					cell.setCellValue(td.getTextTrim());
+					if (rowspan > 1 || colspan > 1) {
+						int firstRow = insert + y;
+						int lastRow = firstRow + rowspan - 1;
+						int firstCol = x + offset;
+						int lastCol = firstCol + colspan - 1;
+						CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
+						sheet.addMergedRegion(region);
+					}
+				}
+				insert++;
 			}
 			workbook.write(os);
 		}catch (Exception e){
@@ -866,22 +913,13 @@ public class ExcelUtil {
 	}
 	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
 		try {
-			int move = set.size();
-			int footFr = insert;
+
+			int size = set.size();
 			int last = sheet.getLastRowNum();
-			int footTo = last;
-			if (last >= insert) {
-				insert = last + 1;
-			}
-			if (null != headers && headers.size() > 0) {
-				move++;
+			if(last > 0 && last>=insert) {
+				sheet.shiftRows(insert, last, size);//表尾下移
 			}
 			write(sheet, insert, headers, keys, set);
-			int footSize = footTo - footFr + 1; //foot行数
-			if (move > 0 && footTo >= footFr && footFr >= insert) {
-				sheet.shiftRows(footFr, footTo, move + footSize);
-				sheet.shiftRows(footTo + 1, footTo + footSize + move, -footSize);//数据上移
-			}
 			workbook.write(os);
 		}catch (Exception e){
 			e.printStackTrace();
