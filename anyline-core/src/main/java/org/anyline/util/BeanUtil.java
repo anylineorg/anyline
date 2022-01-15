@@ -1741,7 +1741,7 @@ public class BeanUtil {
 	}
 
 	public static String parseFinalValue(Object obj, String key){
-		return parseFinalValue(obj, key, key);
+		return parseFinalValue(obj, key, "");
 	}
 	public static String parseFinalValue(Object obj, String key, String def){
 		if(null == obj){ 
