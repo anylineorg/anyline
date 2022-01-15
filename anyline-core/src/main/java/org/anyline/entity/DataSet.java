@@ -63,7 +63,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *               如果list是一组数组
      *               fileds对应条目的属性值 如果不输入 则以条目的属性作DataRow的key 如"USER_ID:id","USER_NM:name"
      *
-     * @return
+     * @return DataSet
      */
     public static DataSet parse(Collection<?> list, String ... fields) {
         DataSet set = new DataSet();
@@ -730,6 +730,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 }
                 String v = kvs.get(k);
                 Object value = row.get(k);
+                if(!row.containsKey(k) && null == value){
+                    //注意这里有可能是个复合key
+                    chk = false;
+                    break;
+                }
 
                 if (null == v) {
                     if (null != value) {
@@ -2192,6 +2197,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return params;
     }
+
+    /**
+     * 根据数据与属性列表 封装kvs
+     *  ["ID","1","CODE","A01"]
+     * @param row 数据 DataRow
+     * @param keys 属性 ID,CODE
+     * @return kvs
+     */
     public String[] packParam(DataRow row, List<String>  keys) {
         if (null == keys || null == row) {
             return null;
@@ -2215,9 +2228,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * dispatchItems("children",items, "CD:BASE_CD")
      *
      * @param field     默认"ITEMS" field:默认"ITEMS"
-     * @param recursion recursion
+     * @param recursion recursion 是否递归
      * @param items     items
-     * @param keys      keys
+     * @param keys      keys    ID:DEPT_ID或ID
      * @return return
      */
     public DataSet dispatchItems(String field, boolean recursion, DataSet items, String... keys) {
@@ -2229,11 +2242,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         for (DataRow row : rows) {
             if (null == row.get(field)) {
-                Map<String,String> params = new HashMap<>();
-                for(String key:keys){
-                    params.put(key, row.getString(key)); //这里如果是null的话保留null
-                }
-                DataSet set = items.getRows(params);
+                String[] kvs = packParam(row, reverseKey(keys));
+                DataSet set = items.getRows(kvs);
                 if (recursion) {
                     set.dispatchItems(field, recursion, items, keys);
                 }
@@ -2244,6 +2254,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
         items.skip(false);
         return this;
     }
+
+
 
     public DataSet dispatchItems(String field, DataSet items, String... keys) {
         return dispatchItems(field, false, items, keys);
