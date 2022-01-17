@@ -33,10 +33,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class ExcelUtil {
 
@@ -604,6 +601,19 @@ public class ExcelUtil {
 		}
 		return true;
 	}
+	private static Row row(Sheet sheet, int r){
+		Row row = null;
+		int last = sheet.getLastRowNum();
+		if(r<=last){
+			row = sheet.getRow(r);
+			if(null == row){
+				row = sheet.createRow(r);
+			}
+		}else{
+			row = sheet.createRow(r);
+		}
+		return row;
+	}
 	private static void write(XSSFWorkbook workbook, OutputStream os, Sheet sheet, int insert, Table table){
 		try {
 			int size = table.getTrs().size();
@@ -614,7 +624,7 @@ public class ExcelUtil {
 
 			List<Tr> trs = table.getTrs();
 			for (Tr tr : trs) {
-				Row row = sheet.createRow(insert);
+				Row row = row(sheet,insert);
 				List<Td> tds = tr.getTds();
 				for (Td td : tds) {
 					int rowspan = td.getRowspan();
@@ -624,8 +634,25 @@ public class ExcelUtil {
 					int x = td.getColIndex();
 					int y = td.getRowIndex();
 					int offset = td.getOffset();
-					Cell cell = row.createCell(colIndex + offset);
 
+					CellStyle style = null;
+					if (insert - 1 > 0) {
+						Row prevRow = sheet.getRow(insert - 1);
+						int lastCellIndex = prevRow.getLastCellNum();
+						if (colIndex + offset >= lastCellIndex) {
+							Cell prevCell = prevRow.getCell(colIndex + offset);
+							if (null != prevCell) {
+								style = prevCell.getCellStyle();
+							}
+						}
+					}
+					Map<String,String> styles = td.getStyles();
+					if(null == style){
+						style = sheet.getWorkbook().createCellStyle();
+					}
+					parseStyle(style, styles);
+					Cell cell = row.createCell(colIndex + offset);
+					cell.setCellStyle(style);
 					cell.setCellType(CellType.STRING);
 					cell.setCellValue(td.getTextTrim());
 					if (rowspan > 1 || colspan > 1) {
@@ -635,6 +662,14 @@ public class ExcelUtil {
 						int lastCol = firstCol + colspan - 1;
 						CellRangeAddress region = new CellRangeAddress(firstRow, lastRow, firstCol, lastCol);
 						sheet.addMergedRegion(region);
+						//补齐其他单元格(否则边框设置不上)
+						for(int rr=1; rr<rowspan; rr++){
+							Row mergeRow = row(sheet, insert+rr);
+							for(int cc=0; cc<colspan; cc++){
+								Cell mergeCell = mergeRow.createCell(colIndex + offset + cc);
+								mergeCell.setCellStyle(style);
+							}
+						}
 					}
 				}
 				insert++;
@@ -650,6 +685,43 @@ public class ExcelUtil {
 				e.printStackTrace();
 			}
 		}
+	}
+	private static CellStyle parseStyle(CellStyle style, Map<String,String> styles){
+		if(null != styles) {
+			if(BasicUtil.isNotEmpty(styles.get("border-top-width"))){
+				style.setBorderTop(BorderStyle.THIN);
+			}
+			if(BasicUtil.isNotEmpty(styles.get("border-bottom-width"))){
+				style.setBorderBottom(BorderStyle.THIN);
+			}
+			if(BasicUtil.isNotEmpty(styles.get("border-left-width"))){
+				style.setBorderLeft(BorderStyle.THIN);
+			}
+			if(BasicUtil.isNotEmpty(styles.get("border-right-width"))){
+				style.setBorderRight(BorderStyle.THIN);
+			}
+			String textAlign = styles.get("text-align");
+			if(BasicUtil.isNotEmpty(textAlign)){
+				if("center".equals(textAlign)){
+					style.setAlignment(HorizontalAlignment.CENTER);
+				}else if("left".equals(textAlign)){
+					style.setAlignment(HorizontalAlignment.LEFT);
+				}else if("right".equals(textAlign)){
+					style.setAlignment(HorizontalAlignment.RIGHT);
+				}
+			}
+			String verticalAlign = styles.get("vertical-align");
+			if(BasicUtil.isNotEmpty(verticalAlign)){
+				if("center".equals(verticalAlign) || "middle".equals(verticalAlign)){
+					style.setVerticalAlignment(VerticalAlignment.CENTER);
+				}else if("top".equals(verticalAlign)){
+					style.setVerticalAlignment(VerticalAlignment.TOP);
+				}else if("bottom".equals(verticalAlign)){
+					style.setVerticalAlignment(VerticalAlignment.BOTTOM);
+				}
+			}
+		}
+		return style;
 	}
 	/**
 	 * 导出EXCEL
