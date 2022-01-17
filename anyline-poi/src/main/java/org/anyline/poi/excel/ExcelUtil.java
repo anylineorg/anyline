@@ -608,7 +608,7 @@ public class ExcelUtil {
 		try {
 			int size = table.getTrs().size();
 			int last = sheet.getLastRowNum();
-			if(last > 0 && last>=insert) {
+			if(last > 0 && last>=insert && size>0) {
 				sheet.shiftRows(insert, last, size);//表尾下移
 			}
 
@@ -859,7 +859,7 @@ public class ExcelUtil {
 
 			int size = set.size();
 			int last = sheet.getLastRowNum();
-			if(last > 0 && last>=insert) {
+			if(last > 0 && last>=insert && size>0) {
 				sheet.shiftRows(insert, last, size);//表尾下移
 			}
 			write(sheet, insert, headers, keys, set);
