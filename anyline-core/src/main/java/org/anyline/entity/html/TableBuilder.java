@@ -138,6 +138,35 @@ public class TableBuilder {
 
         map.put("rowspan",  rowspan+ "");
     }
+    private void checkNum(int c, String field){
+        int rows = cells.length;
+        int num = 1;
+        for(int r=0; r<rows; r++){
+            Map<String, String> cell = cells[r][c];
+            cell.put("value", num+"");
+            String ref = field.substring(field.indexOf("(")+1, field.length()-1);
+            int refCol = fields.indexOf(ref);
+            if(refCol != -1) {
+                Map<String, String> refCell = cells[r][refCol];
+                if(null != refCell){
+                    int rowspan = BasicUtil.parseInt(refCell.get("rowspan"),1);
+                    if(rowspan > 1) {
+                        cell.put("merge", "1");  //合并
+                        cell.put("rowspan", rowspan+"");
+                        //当前行以下rowspan-1行全部被合并
+                        for(int rr=r+1; rr<r+rowspan&&rr<rows; rr++){
+                            Map<String, String> mergedCell = cells[rr][c];
+                            mergedCell.put("merged", "1"); //被合并
+                        }
+                        r += rowspan-1;
+                    }
+                    //num -= rowspan;
+                }
+            }
+            num ++;
+        }
+
+    }
     //向下求相同值
     Map<String,String>[][] cells = null;
     Object[] list = null;
@@ -176,6 +205,8 @@ public class TableBuilder {
                     String value = null;
                     if(field.equals("{num}")){
                         value = (r+1)+"";
+                    }else if(field.contains("{num}")){
+                        value = field;
                     }else{
                         value = BeanUtil.parseRuntimeValue(data, field);
                         if(null == value){
@@ -187,10 +218,18 @@ public class TableBuilder {
                 }
 
             }
+            //检测合并单元格
             for(int r=0; r<rsize; r++){
                 for(int c=0; c<csize; c++){
                     String field = fields.get(c);
                     checkMerge(r, c, field);
+                }
+            }
+            //检测序号 {num}(DEPT_CODE)
+            for(int c=0; c<fields.size(); c++){
+                String field = fields.get(c);
+                if(field.contains("{num}")){
+                    checkNum(c, field);
                 }
             }
 
