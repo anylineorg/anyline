@@ -112,11 +112,11 @@ public class ConfigTable {
 		isLoading = true;
 		String path =  "";
 		try{
-			//  path=file:/D:/develop/web/sso-0.0.2-SNAPSHOT.jar!/BOOT-INF/classes!/		(windows jar)
+			//  path=file:/D:/develop/web/sso-0.0.2.jar!/BOOT-INF/classes!/		(windows jar)
 			//  path=/D:/develop/web/sso/WEB-INF/classes/ 									(windows tomcat)
 			//  path=/D:/develop/git/sso/target/classes/									(windows IDE)
 			//  path=/D:/develop/git/sso/bin/classes/										(windows IDE)
-			//  path=file:/usr/local/web/sso/sso-0.0.2-SNAPSHOT.jar!/BOOT-INF/classes!/		(linux jar)
+			//  path=file:/usr/local/web/sso/sso-0.0.2.jar!/BOOT-INF/classes!/		(linux jar)
 			//  path=/usr/local/web/sso/WEB-INF/classes/									(linux tomcat)
 			path = ConfigTable.class.getResource("/").getPath();
 		}catch(Exception e){
@@ -130,7 +130,7 @@ public class ConfigTable {
 			path =path.replace("file:/", "");
 		}
 		path = path.replace("file:", "");//jar项目
-		//file:/cse/java/cse-sso/qnlm-sso-0.0.2-SNAPSHOT.jar!/BOOT-INF/classes!/
+		//file:/cse/java/cse-sso/qnlm-sso-0.0.2.jar!/BOOT-INF/classes!/
 		//log.warn("root={}",root);
 		if(null == root && null != path){
 			root = path;
