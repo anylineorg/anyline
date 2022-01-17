@@ -19,7 +19,6 @@ package org.anyline.entity.html;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.StyleParser;
 
 import java.util.*;
 
@@ -31,12 +30,17 @@ public class TableBuilder {
     private String clazz = null;
     private List<String> fields = new ArrayList<>();
     private List<String> unions = new ArrayList<>();//需要合并字段，值相同的几行合并(如里相关列合并的情况下才会合并,如前一列学校合并时，后一列班级才有可能合并，班级列名(学校列名,其他列名))
-    private List<String> widths = new ArrayList<>();
-    private List<String> styles = new ArrayList<>();
+    private Map<String,Map<String,String>> styles = new HashMap<>();
     private Map<String,String[]> unionRefs = new HashMap<>();
     private List<String> ignoreUnionValues = new ArrayList<>();  //不参与合并的值
-    private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
-    private String replaceEmpty = "";    //遇到空值替换成
+    private String widthUnit = "px";                //默认长度单位 px pt cm/厘米
+    private String replaceEmpty = "";               //遇到空值替换成
+    private String cellBorder = "";                 //单元格边框
+    private String lineHeight = "";                 //行高
+    private String mergeCellVerticalAlign = "";     //合并单元格垂直对齐方式
+    private String mergeCellHorizontalAlign = "";   //合并单元格水平对齐方式
+    private String emptyCellVerticalAlign = "";     //空单元格垂直对齐方式
+    private String emptyCellHorizontalAlign = "";   //空单元格水平对齐方式
 
     public static TableBuilder init(){
         TableBuilder builder = new TableBuilder();
@@ -69,6 +73,9 @@ public class TableBuilder {
         Object data = list[r];
         if(null != refs){
             for (String ref:refs) {
+                if(field.equals(ref)){ //如果误加了 参考自己 忽略
+                    continue;
+                }
                 int refIndex = fields.indexOf(ref);
                 Map<String, String> refCell = cells[r][refIndex];
                 if(null == refCell.get("checked")){
@@ -185,9 +192,6 @@ public class TableBuilder {
                 String header = headers.get(i);
                 Td td = new Td();
                 td.setText(header);
-                if(null != widths && i<widths.size()){
-                    td.setWidth(widths.get(i));
-                }
                 tr.addTd(td);
             }
             table.addTr(tr);
@@ -226,7 +230,7 @@ public class TableBuilder {
                 }
             }
             //检测序号 {num}(DEPT_CODE)
-            for(int c=0; c<fields.size(); c++){
+            for(int c=0; c<csize; c++){
                 String field = fields.get(c);
                 if(field.contains("{num}")){
                     checkNum(c, field);
@@ -241,28 +245,35 @@ public class TableBuilder {
                     String value = map.get("value");
                     String merge = map.get("merge");    //合并其他行
                     String merged = map.get("merged");  //被其他行合并
-                    String rowspan = map.get("rowspan");
-                    String width = "";
-                    String style = "";
-                    if(c<widths.size()){
-                        width = widths.get(c);
-                    }
-                    if(c<styles.size()){
-                        style = styles.get(c);
-                    }
+                    int rowspan = BasicUtil.parseInt(map.get("rowspan"),1);
                     if(!"1".equals(merged)){
                         Td td = new Td();
-                        if (null != rowspan) {
-                            td.setRowspan(BasicUtil.parseInt(rowspan,1));
-                        }
-                        if(BasicUtil.isNotEmpty(width)){
-                            td.setWidth(width);
-                        }
-                        if(BasicUtil.isNotEmpty(style)){
-                            td.setStyles(StyleParser.parse(style));
-                        }
                         td.setText(value);
                         tr.addTd(td);
+                        Map<String,String> tdStyle = styles.get(fields.get(c));
+                        if(null != tdStyle) {
+                            td.setStyles(tdStyle);
+                        }
+                        if (rowspan > 1) {
+                            td.setRowspan(rowspan);
+                            if(BasicUtil.isNotEmpty(mergeCellHorizontalAlign)){
+                                td.setAlign(mergeCellHorizontalAlign);
+                            }
+                            if(BasicUtil.isNotEmpty(mergeCellVerticalAlign)){
+                                td.setVerticalAlign(mergeCellVerticalAlign);
+                            }
+                        }
+                        if(BasicUtil.isEmpty(value) || replaceEmpty.equals(value)){
+                            if(BasicUtil.isNotEmpty(emptyCellHorizontalAlign)){
+                                td.setAlign(emptyCellHorizontalAlign);
+                            }
+                            if(BasicUtil.isNotEmpty(emptyCellVerticalAlign)){
+                                td.setVerticalAlign(emptyCellVerticalAlign);
+                            }
+                        }
+                        if(BasicUtil.isNotEmpty(cellBorder)) {
+                            td.setBorder();
+                        }
                     }
                 }
                 table.addTr(tr);
@@ -340,15 +351,6 @@ public class TableBuilder {
         return this;
     }
 
-    public List<String> getWidths() {
-        return widths;
-    }
-
-    public TableBuilder setWidths(List<String> widths) {
-        this.widths = widths;
-        return this;
-    }
-
     public String getClazz() {
         return clazz;
     }
@@ -376,29 +378,70 @@ public class TableBuilder {
         return this;
     }
 
-    public List<String> getStyles() {
+    public Map<String,Map<String, String>> getStyles() {
         return styles;
     }
 
-    public TableBuilder setStyles(List<String> styles) {
-        this.styles = styles;
+    public Map<String, String> getStyle(String field) {
+        return styles.get(field);
+    }
+
+    public TableBuilder setStyle(String field, Map<String, String> style) {
+        styles.put(field, style);
         return this;
     }
-    public TableBuilder addConfig(String header, String field, String width, String style){
+    /**
+     * 设置水平对齐方式
+     * @param field field
+     * @param align left center right
+     * @return TableBuilder
+     */
+    public TableBuilder setHorizontalAlign(String field, String align) {
+        Map<String,String> style = styles.get(field);
+        if(null == style){
+            style = new HashMap<>();
+        }
+        style.put("text-align", align);
+        return this;
+    }
+    public TableBuilder setTextAlign(String field, String align) {
+        return setHorizontalAlign(field, align);
+    }
+
+    /**
+     * 设置垂直对齐方式
+     * @param field field
+     * @param align top middle/center bottom
+     * @return TableBuilder
+     */
+    public TableBuilder setVerticalAlign(String field, String align) {
+        Map<String,String> style = styles.get(field);
+        if(null == style){
+            style = new HashMap<>();
+        }
+        style.put("vertical-align", align);
+        return this;
+    }
+    public TableBuilder addConfig(String header, String field, String width){
         headers.add(header);
         fields.add(field);
-        widths.add(width);
-        styles.add(style);
+        Map<String,String> style = styles.get(field);
+        if(null == style){
+            style = new HashMap<>();
+        }
+        style.put("width", width);
         return this;
     }
-    public TableBuilder addConfig(String header, String field, int width, String style){
-        return addConfig(header, field, width+widthUnit, style);
+    public TableBuilder addConfig(String header, String field, int width){
+        return addConfig(header, field, width+widthUnit);
     }
     public TableBuilder addConfig(String header, String field){
         headers.add(header);
         fields.add(field);
-        widths.add(null);
-        styles.add(null);
+        return this;
+    }
+    public TableBuilder setWidth(String field, String width){
+
         return this;
     }
 
@@ -416,6 +459,57 @@ public class TableBuilder {
                 ignoreUnionValues.add(val);
             }
         }
+        return this;
+    }
+
+    public String getCellBorder() {
+        return cellBorder;
+    }
+
+    public TableBuilder setCellBorder(String cellBorder) {
+        this.cellBorder = cellBorder;
+        return this;
+    }
+    public TableBuilder setCellBorder(boolean border) {
+        if(border){
+            cellBorder = "1px solid auto";
+        }else{
+            cellBorder = "";
+        }
+        return this;
+    }
+
+    public String getLineHeight() {
+        return lineHeight;
+    }
+
+    public TableBuilder setLineHeight(String lineHeight) {
+        this.lineHeight = lineHeight;
+        return this;
+    }
+
+    public TableBuilder setReplaceEmpty(String replaceEmpty) {
+        this.replaceEmpty = replaceEmpty;
+        return this;
+    }
+
+    public TableBuilder setMergeCellVerticalAlign(String mergeCellVerticalAlign) {
+        this.mergeCellVerticalAlign = mergeCellVerticalAlign;
+        return this;
+    }
+
+    public TableBuilder setMergeCellHorizontalAlign(String mergeCellHorizontalAlign) {
+        this.mergeCellHorizontalAlign = mergeCellHorizontalAlign;
+        return this;
+    }
+
+    public TableBuilder setEmptyCellVerticalAlign(String emptyCellVerticalAlign) {
+        this.emptyCellVerticalAlign = emptyCellVerticalAlign;
+        return this;
+    }
+
+    public TableBuilder setEmptyCellHorizontalAlign(String emptyCellHorizontalAlign) {
+        this.emptyCellHorizontalAlign = emptyCellHorizontalAlign;
         return this;
     }
 }
