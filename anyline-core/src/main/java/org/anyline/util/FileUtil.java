@@ -1189,12 +1189,16 @@ public class FileUtil {
 	        FILE_TYPE_MAP.put("eml", "44656C69766572792D646174653A");  //Email [thorough only] (eml)     
 	        FILE_TYPE_MAP.put("dbx", "CFAD12FEC5FD746F");  //Outlook Express (dbx)     
 	        FILE_TYPE_MAP.put("pst", "2142444E");  //Outlook (pst)     
-	        FILE_TYPE_MAP.put("xls", "D0CF11E0");  //MS Word     
-	        FILE_TYPE_MAP.put("doc", "D0CF11E0");  //MS Excel 注意：word 和 excel的文件头一样     
+	        FILE_TYPE_MAP.put("xls", "D0CF11E0");  //MS Word
+			FILE_TYPE_MAP.put("xlsx","504B0304");
+			FILE_TYPE_MAP.put("doc", "D0CF11E0");  //MS Excel 注意：word 和 excel的文件头一样
+			FILE_TYPE_MAP.put("docx","504B0304");
+			FILE_TYPE_MAP.put("ppt", "D0CF11E0");
+			FILE_TYPE_MAP.put("pptx","504B0304");
 	        FILE_TYPE_MAP.put("mdb", "5374616E64617264204A");  //MS Access (mdb)     
 	        FILE_TYPE_MAP.put("wpd", "FF575043"); //WordPerfect (wpd)      
 	        FILE_TYPE_MAP.put("eps", "252150532D41646F6265");     
-	        FILE_TYPE_MAP.put("ps", "252150532D41646F6265");     
+	        FILE_TYPE_MAP.put("ps",  "252150532D41646F6265");
 	        FILE_TYPE_MAP.put("pdf", "255044462D312E");  //Adobe Acrobat (pdf)     
 	        FILE_TYPE_MAP.put("qdf", "AC9EBD8F");  //Quicken (qdf)     
 	        FILE_TYPE_MAP.put("pwl", "E3828596");  //Windows Password (pwl)     
@@ -1252,9 +1256,11 @@ public class FileUtil {
 			httpFileExtend.add("dll");
 			httpFileType.add("application/octet-stream");                                                           
 			httpFileExtend.add("dms");
-			httpFileType.add("application/octet-stream");                                                           
+			httpFileType.add("application/octet-stream");
 			httpFileExtend.add("doc");
-			httpFileType.add("application/msword");                                                                 
+			httpFileType.add("application/msword");
+			httpFileExtend.add("docx");
+			httpFileType.add("aapplication/vnd.openxmlformats-officedocument.wordprocessingml.document");
 			httpFileExtend.add("dvi");
 			httpFileType.add("application/x-dvi");                                                                  
 			httpFileExtend.add("dxr");
@@ -1358,9 +1364,11 @@ public class FileUtil {
 			httpFileExtend.add("pnm");
 			httpFileType.add("image/x-portable-anymap");                                                            
 			httpFileExtend.add("ppm");
-			httpFileType.add("image/x-portable-pixmap");                                                            
+			httpFileType.add("image/x-portable-pixmap");
 			httpFileExtend.add("ppt");
-			httpFileType.add("application/vnd.ms-powerpoint");                                                      
+			httpFileType.add("application/vnd.ms-powerpoint");
+			httpFileExtend.add("pptx");
+			httpFileType.add("application/vnd.openxmlformats-officedocument.presentationml.presentation");
 			httpFileExtend.add("ps");
 			httpFileType.add("application/postscript");                                                             
 			httpFileExtend.add("qt");
@@ -1470,9 +1478,11 @@ public class FileUtil {
 			httpFileExtend.add("xht");
 			httpFileType.add("application/xhtml+xml");                                                              
 			httpFileExtend.add("xhtml");
-			httpFileType.add("application/xhtml+xml");                                                              
+			httpFileType.add("application/xhtml+xml");
 			httpFileExtend.add("xls");
-			httpFileType.add("application/vnd.ms-excel");                                                           
+			httpFileType.add("application/vnd.ms-excel");
+			httpFileExtend.add("xlsx");
+			httpFileType.add("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\n");
 			httpFileExtend.add("xml");
 			httpFileType.add("text/xml");                                                                           
 			httpFileExtend.add("xpm");

@@ -902,6 +902,7 @@ public class WebUtil {
 	public static boolean download(HttpServletResponse response, InputStream in, String title){
 		return download(null, response, in, title);
 	}
+
 	/**
 	 * 下载文件
 	 * @param request request
@@ -922,6 +923,17 @@ public class WebUtil {
 			}
 			String content = "attachment; filename*=utf-8'zh_cn'" + title;
 			response.setHeader("Content-Disposition", content);
+			String contentType = "application/x-download";
+			if(BasicUtil.isNotEmpty(title)){
+				String subName = FileUtil.parseSubName(title);
+				if(null != subName){
+					int idx = FileUtil.httpFileExtend.indexOf(subName);
+					if(idx != -1) {
+						contentType = FileUtil.httpFileType.get(idx);
+					}
+				}
+			}
+			response.setContentType(contentType);
 			out = response.getOutputStream();
 			byte[] buf = new byte[1024];
 			int count = 0;
