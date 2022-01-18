@@ -129,6 +129,6 @@ anyline-cache-ecache        : ecache
 anyline-cache-redis         : redis
 anyline-print               : 小票打印机
 anyline-nc	                : netcdf解析
-anyline-office              : open office
+anyline-office              : open xml
 anyline-poi	                : 基于poi的msoffice文件操作
 ```
