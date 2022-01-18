@@ -48,6 +48,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
         rows = new ArrayList<DataRow>();
         createTime = System.currentTimeMillis();
     }
+
+    public DataSet(List<Map<String, Object>> list) {
+        rows = new ArrayList<DataRow>();
+        if (null == list)
+            return;
+        for (Map<String, Object> map : list) {
+            DataRow row = new DataRow(map);
+            rows.add(row);
+        }
+    }
+
     public static DataSet build(Collection<?> list, String ... fields) {
         return parse(list, fields);
     }
@@ -440,17 +451,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return null;
     }
-
-    public DataSet(List<Map<String, Object>> list) {
-        rows = new ArrayList<DataRow>();
-        if (null == list)
-            return;
-        for (Map<String, Object> map : list) {
-            DataRow row = new DataRow(map);
-            rows.add(row);
-        }
-    }
-
     /**
      * 记录数量
      *
