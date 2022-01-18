@@ -20,6 +20,7 @@ package org.anyline.poi.excel;
 import org.anyline.entity.html.Table;
 import org.anyline.entity.html.Td;
 import org.anyline.entity.html.Tr;
+import org.anyline.office.docx.util.DocxUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.FileUtil;
@@ -651,6 +652,11 @@ public class ExcelUtil {
 						style = sheet.getWorkbook().createCellStyle();
 					}
 					parseStyle(style, styles);
+					Font font = sheet.getWorkbook().createFont();
+					font = parseFont(font, styles);
+					if(null != font){
+						style.setFont(font);
+					}
 					Cell cell = row.createCell(colIndex + offset);
 					cell.setCellStyle(style);
 					cell.setCellType(CellType.STRING);
@@ -686,20 +692,46 @@ public class ExcelUtil {
 			}
 		}
 	}
+
+	private static BorderStyle parseBorderStyle(Map<String,String> styles, String side){
+		BorderStyle result = BorderStyle.NONE;
+		String style = styles.get("border-"+side+"-style");
+		if(BasicUtil.isEmpty(style)){
+			style = styles.get("border-style");
+		}
+		if(BasicUtil.isNotEmpty(style)){
+			if("solid".equalsIgnoreCase(style)){
+				result = BorderStyle.THIN;
+			}else if("double".equalsIgnoreCase(style)){
+				result = BorderStyle.DOUBLE;
+			}else if("dashed".equalsIgnoreCase(style)){
+				result = BorderStyle.DASHED;
+			}else if("dotted".equalsIgnoreCase(style)){
+				result = BorderStyle.DOTTED;
+			}else if("thick".equalsIgnoreCase(style)){
+				result = BorderStyle.THICK;
+			}else{
+				result = BorderStyle.THIN;
+			}
+		}
+		return result;
+	}
+	/**
+	 * 根据css样式解析excel样式
+	 * @param style excel样式
+	 * @param styles css样式
+	 * @return CellStyle
+	 */
 	private static CellStyle parseStyle(CellStyle style, Map<String,String> styles){
 		if(null != styles) {
-			if(BasicUtil.isNotEmpty(styles.get("border-top-width"))){
-				style.setBorderTop(BorderStyle.THIN);
-			}
-			if(BasicUtil.isNotEmpty(styles.get("border-bottom-width"))){
-				style.setBorderBottom(BorderStyle.THIN);
-			}
-			if(BasicUtil.isNotEmpty(styles.get("border-left-width"))){
-				style.setBorderLeft(BorderStyle.THIN);
-			}
-			if(BasicUtil.isNotEmpty(styles.get("border-right-width"))){
-				style.setBorderRight(BorderStyle.THIN);
-			}
+			//边框
+			style.setBorderTop(parseBorderStyle(styles, "top"));
+			style.setBorderTop(parseBorderStyle(styles, "bottom"));
+			style.setBorderTop(parseBorderStyle(styles, "right"));
+			style.setBorderTop(parseBorderStyle(styles, "left"));
+			style.setBottomBorderColor(IndexedColors.GOLD.index);
+
+			//水平对齐
 			String textAlign = styles.get("text-align");
 			if(BasicUtil.isNotEmpty(textAlign)){
 				if("center".equals(textAlign)){
@@ -710,6 +742,7 @@ public class ExcelUtil {
 					style.setAlignment(HorizontalAlignment.RIGHT);
 				}
 			}
+			//垂直对齐
 			String verticalAlign = styles.get("vertical-align");
 			if(BasicUtil.isNotEmpty(verticalAlign)){
 				if("center".equals(verticalAlign) || "middle".equals(verticalAlign)){
@@ -720,8 +753,62 @@ public class ExcelUtil {
 					style.setVerticalAlignment(VerticalAlignment.BOTTOM);
 				}
 			}
+
 		}
 		return style;
+	}
+	private static Font parseFont(Font font, Map<String,String> styles){
+		if(null != styles) {
+			String fontSize = styles.get("font-size");
+			if(null != fontSize){
+				short pt = 0;
+				if(fontSize.endsWith("px")){
+					int px = BasicUtil.parseInt(fontSize.replace("px",""),0);
+					pt = (short) DocxUtil.px2pt(px);
+				}else if(fontSize.endsWith("pt")){
+					pt = (short)BasicUtil.parseInt(fontSize.replace("pt",""),0);
+				}
+				if(pt>0){
+					font.setFontHeightInPoints(pt);
+				}
+			}
+
+			String fontFamily = styles.get("font-family");
+			if(BasicUtil.isNotEmpty(fontFamily)) {
+				font.setFontName(fontFamily);
+			}
+
+			//删除线
+			String strike = styles.get("strike");
+			if(null != strike){
+				if(strike.equalsIgnoreCase("true")){
+					font.setStrikeout(true);
+				}
+			}
+			//斜体
+			String italics = styles.get("italic");
+			if(null != italics){
+				if(italics.equalsIgnoreCase("true")){
+					font.setItalic(true);
+				}
+			}
+			//加粗
+			String fontWeight = styles.get("font-weight");
+			if(null != fontWeight && fontWeight.length()>0){
+				int weight = BasicUtil.parseInt(fontWeight,0);
+				if(weight >=700){
+					font.setBold(true);
+				}
+			}
+
+			//下划线
+			String underline = styles.get("underline");
+			if(null != underline){
+				font.setUnderline((byte) 1);
+			}
+			return font;
+		}
+		return null;
 	}
 	/**
 	 * 导出EXCEL
