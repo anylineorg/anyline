@@ -16,6 +16,7 @@ public class Wtable {
     private Element src;
     private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
     private List<Wtr> wtrs = new ArrayList<>();
+    private boolean isAutoLoad = true;
     public Wtable(WDocument doc){
         this.doc = doc;
         load();
@@ -195,7 +196,9 @@ public class Wtable {
             if(null != template){
                 //trs.remove(template.getSrc());
             }
-            reload();
+            if(isAutoLoad) {
+                reload();
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -206,12 +209,16 @@ public class Wtable {
         if(index < trs.size() && index >=0){
             trs.remove(index);
         }
-        reload();
+        if(isAutoLoad) {
+            reload();
+        }
     }
     public void remove(Wtr tr){
         List<Element> trs = src.elements("tr");
         trs.remove(tr.getSrc());
-        reload();
+        if(isAutoLoad) {
+            reload();
+        }
     }
     public String getText(int rows, int cols){
         String text = null;
@@ -256,7 +263,9 @@ public class Wtable {
                 }
             }
         }
-        reload();
+        if(isAutoLoad) {
+            reload();
+        }
         return this;
     }
     public Wtable addRows(int index, int qty){
@@ -278,7 +287,9 @@ public class Wtable {
                 }
             }
         }
-        reload();
+        if(isAutoLoad) {
+            reload();
+        }
         return this;
     }
     public Wtable addRows(int qty){
@@ -877,5 +888,13 @@ public class Wtable {
         for(Wtr tr:wtrs){
             tr.setWidthUnit(widthUnit);
         }
+    }
+
+    public boolean isAutoLoad() {
+        return isAutoLoad;
+    }
+
+    public void setAutoLoad(boolean autoLoad) {
+        isAutoLoad = autoLoad;
     }
 }
