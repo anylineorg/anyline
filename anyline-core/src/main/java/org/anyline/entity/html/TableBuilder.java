@@ -404,8 +404,25 @@ public class TableBuilder {
         style.put("text-align", align);
         return this;
     }
+
+    /**
+     * 设置所有列的水平对齐方式
+     * @param align  left center right
+     * @return TableBuilder
+     */
+    public TableBuilder setHorizontalAlign(String align) {
+        if(null != fields) {
+            for (String field : fields) {
+                setHorizontalAlign(field, align);
+            }
+        }
+        return this;
+    }
     public TableBuilder setTextAlign(String field, String align) {
         return setHorizontalAlign(field, align);
+    }
+    public TableBuilder setTextAlign(String align) {
+        return setHorizontalAlign(align);
     }
 
     /**
@@ -420,6 +437,20 @@ public class TableBuilder {
             style = new HashMap<>();
         }
         style.put("vertical-align", align);
+        return this;
+    }
+
+    /**
+     * 设置所有列垂直对齐方式
+     * @param align top middle/center bottom
+     * @return TableBuilder
+     */
+    public TableBuilder setVerticalAlign(String align) {
+        if(null != fields) {
+            for (String field : fields) {
+                setVerticalAlign(field, align);
+            }
+        }
         return this;
     }
     public TableBuilder addConfig(String header, String field, String width){
