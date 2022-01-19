@@ -52,6 +52,11 @@ public class Wtc {
     public void setSrc(Element src) {
         this.src = src;
     }
+
+    /**
+     * 当前单元格内所有书签名称
+     * @return list
+     */
     public List<String> getBookmarks(){
         List<String> list = new ArrayList<>();
         List<Element> marks = DomUtil.elements(src, "bookmarkStart");
@@ -60,6 +65,11 @@ public class Wtc {
         }
         return list;
     }
+
+    /**
+     * 当前单元格内第一个书签名称
+     * @return String
+     */
     public String getBookmark(){
         Element mark = DomUtil.element(src, "bookmarkStart");
         if(null != mark){
@@ -71,6 +81,10 @@ public class Wtc {
         return this;
     }
 
+    /**
+     * 宽度尺寸单位
+     * @return String
+     */
     public String getWidthUnit() {
         return widthUnit;
     }
@@ -111,6 +125,11 @@ public class Wtc {
         }
         return 1;
     }
+
+    /**
+     * 当前单元格 左侧单元格
+     * @return wtc
+     */
     public Wtc left(){
         Wtc left = null;
         List<Wtc> tcs = parent.getTcs();
@@ -120,6 +139,10 @@ public class Wtc {
         }
         return left;
     }
+    /**
+     * 当前单元格 右侧单元格
+     * @return wtc
+     */
     public Wtc right(){
         Wtc right = null;
         List<Wtc> tcs = parent.getTcs();
@@ -129,6 +152,11 @@ public class Wtc {
         }
         return right;
     }
+
+    /**
+     * 当前单元格 下方单元格
+     * @return wtc
+     */
     public Wtc bottom(){
         Wtc bottom = null;
         Wtable table = parent.getParent();
@@ -141,6 +169,10 @@ public class Wtc {
         }
         return bottom;
     }
+    /**
+     * 当前单元格 上方单元格
+     * @return wtc
+     */
     public Wtc top(){
         Wtc top = null;
         Wtable table = parent.getParent();
@@ -153,6 +185,10 @@ public class Wtc {
         }
         return top;
     }
+    /**
+     * 删除左边框
+     * @return wtc
+     */
     public Wtc removeLeftBorder(){
         removeBorder(src, "left");
         Wtc left = left();
@@ -161,6 +197,10 @@ public class Wtc {
         }
         return this;
     }
+    /**
+     * 删除右边框
+     * @return wtc
+     */
     public Wtc removeRightBorder(){
         removeBorder(src, "right");
         Wtc right = right();
@@ -169,6 +209,10 @@ public class Wtc {
         }
         return this;
     }
+    /**
+     * 删除上边框
+     * @return wtc
+     */
     public Wtc removeTopBorder(){
         removeBorder(src, "top");
         Wtc top = top();
@@ -177,6 +221,10 @@ public class Wtc {
         }
         return this;
     }
+    /**
+     * 删除下边框
+     * @return wtc
+     */
     public Wtc removeBottomBorder(){
         removeBorder(src, "bottom");
         Wtc bottom = bottom();
@@ -185,14 +233,27 @@ public class Wtc {
         }
         return this;
     }
+
+    /**
+     * 删除左上至右下分隔线
+     * @return wtc
+     */
     public Wtc removeTl2brBorder(){
         removeBorder(src, "tl2br");
         return this;
     }
+    /**
+     * 删除右上至左下分隔线
+     * @return wtc
+     */
     public Wtc removeTr2blBorder(){
         removeBorder(src, "tr2bl");
         return this;
     }
+    /**
+     * 删除边框
+     * @return wtc
+     */
     private void removeBorder(Element tc, String side){
         Element tcPr = DocxUtil.addElement(tc, "tcPr");
         Element borders = DocxUtil.addElement(tcPr, "tcBorders");
@@ -203,6 +264,11 @@ public class Wtc {
         DocxUtil.removeAttribute(border, "color");
     }
 
+
+    /**
+     * 删除所有
+     * @return wtc
+     */
     public Wtc removeBorder(){
         removeLeftBorder();
         removeRightBorder();
@@ -212,15 +278,25 @@ public class Wtc {
         removeTr2blBorder();
         return this;
     }
+    /**
+     * 设置上下左右默认边框
+     * @return wtc
+     */
     public Wtc setBorder(){
         setLeftBorder();
         setRightBorder();
         setTopBorder();
         setBottomBorder();
-        setTl2brBorder();
-        setTr2blBorder();
         return this;
     }
+
+    /**
+     * 设置上下左右边框
+     * @param size 边框宽度(1px)
+     * @param color 颜色
+     * @param style 样式(single)
+     * @return wtc
+     */
     public Wtc setBorder(int size, String color, String style){
         setLeftBorder(size, color, style);
         setRightBorder(size, color, style);
@@ -230,59 +306,142 @@ public class Wtc {
         setTr2blBorder(size, color, style);
         return this;
     }
+    /**
+     * 设置左默认边框
+     * @return wtc
+     */
     public Wtc setLeftBorder(){
         setBorder(src, "left", 4, "auto", "single");
         return this;
     }
+    /**
+     * 设置右默认边框
+     * @return wtc
+     */
     public Wtc setRightBorder(){
         setBorder(src, "right", 4, "auto", "single");
         return this;
     }
+    /**
+     * 设置上默认边框
+     * @return wtc
+     */
     public Wtc setTopBorder(){
         setBorder(src, "top", 4, "auto", "single");
         return this;
     }
+    /**
+     * 设置下默认边框
+     * @return wtc
+     */
     public Wtc setBottomBorder(){
         setBorder(src, "bottom", 4, "auto", "single");
         return this;
     }
+    /**
+     * 设置左上至右下默认边框
+     * @return wtc
+     */
     public Wtc setTl2brBorder(){
         setBorder(src, "tl2br", 4, "auto", "single");
         return this;
     }
+
+    /**
+     * 设置 左上 至 右下分隔线
+     * @param top 右上内容
+     * @param bottom 左下内容
+     * @return wtc
+     */
     public Wtc setTl2brBorder(String top, String bottom){
         setBorder(src, "tl2br", 4, "auto", "single");
+        String html = "<div style='text-align:right;'>"+top+"</div><div style='text-align:left;'>"+bottom+"</div>";
+        setHtml(html);
         return this;
     }
+    /**
+     * 设置 左上 至 右下默认样式分隔线
+     * @return wtc
+     */
     public Wtc setTr2blBorder(){
         setBorder(src, "tr2bl", 4, "auto", "single");
         return this;
     }
+    /**
+     * 设置 右上 至 左下分隔线
+     * @param top 左上内容
+     * @param bottom 右下内容
+     * @return wtc
+     */
     public Wtc setTr2blBorder(String top, String bottom){
         setBorder(src, "tr2bl", 4, "auto", "single");
+        String html = "<div style='text-align:left;'>"+top+"</div><div style='text-align:right;'>"+bottom+"</div>";
+        setHtml(html);
         return this;
     }
 
+    /**
+     * 设置左边框
+     * @param size 边框宽度(1px)
+     * @param color 颜色
+     * @param style 样式(single)
+     * @return wtc
+     */
     public Wtc setLeftBorder(int size, String color, String style){
         setBorder(src, "left", size, color, style);
         return this;
     }
+    /**
+     * 设置右边框
+     * @param size 边框宽度(1px)
+     * @param color 颜色
+     * @param style 样式(single)
+     * @return wtc
+     */
     public Wtc setRightBorder(int size, String color, String style){
         setBorder(src, "right", size, color, style);
         return this;
     }
+    /**
+     * 设置上边框
+     * @param size 边框宽度(1px)
+     * @param color 颜色
+     * @param style 样式(single)
+     * @return wtc
+     */
     public Wtc setTopBorder(int size, String color, String style){
         setBorder(src, "top", size, color, style);
         return this;
     }
+    /**
+     * 设置下边框
+     * @param size 边框宽度(1px)
+     * @param color 颜色
+     * @param style 样式(single)
+     * @return wtc
+     */
     public Wtc setBottomBorder(int size, String color, String style){
         setBorder(src, "bottom", size, color, style);
         return this;
     }
+    /**
+     * 设置左上至右下边框
+     * @param size 边框宽度(1px)
+     * @param color 颜色
+     * @param style 样式(single)
+     * @return wtc
+     */
     public Wtc setTl2brBorder(int size, String color, String style){
         setBorder(src, "tl2br", size, color, style);
         return this;
     }
+    /**
+     * 设置右上至左下边框
+     * @param size 边框宽度(1px)
+     * @param color 颜色
+     * @param style 样式(single)
+     * @return wtc
+     */
     public Wtc setTr2blBorder(int size, String color, String style){
         setBorder(src, "tr2bl", size, color, style);
         return this;
@@ -297,42 +456,103 @@ public class Wtc {
         border.addAttribute("w:space","0");
     }
 
+    /**
+     * 设置下边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setBottomPadding(String padding){
         return setPadding(src, "bottom", padding);
     }
+    /**
+     * 设置下边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setBottomPadding(int padding){
         return setPadding(src, "bottom", padding);
     }
+
+    /**
+     * 设置下边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setBottomPadding(double padding){
         return setPadding(src, "bottom", padding);
     }
 
+    /**
+     * 设置上边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setTopPadding(String padding){
         return setPadding(src, "top", padding);
     }
+    /**
+     * 设置上边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setTopPadding(int padding){
         return setPadding(src, "top", padding);
     }
+    /**
+     * 设置上边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setTopPadding(double padding){
         return setPadding(src, "top", padding);
     }
 
+    /**
+     * 设置右边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setRightPadding(String padding){
         return setPadding(src, "right", padding);
     }
+    /**
+     * 设置右边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setRightPadding(int padding){
         return setPadding(src, "right", padding);
     }
+    /**
+     * 设置右边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setRightPadding(double padding){
         return setPadding(src, "right", padding);
     }
 
+    /**
+     * 设置左边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setLeftPadding(String padding){
         return setPadding(src, "left", padding);
     }
+    /**
+     * 设置左边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setLeftPadding(int padding){
         return setPadding(src, "left", padding);
     }
+    /**
+     * 设置左边距
+     * @param padding 边距
+     * @return wtc
+     */
     public Wtc setLeftPadding(double padding){
         return setPadding(src, "left", padding);
     }
