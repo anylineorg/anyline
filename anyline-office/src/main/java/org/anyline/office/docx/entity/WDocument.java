@@ -1063,7 +1063,6 @@ public class WDocument {
             }
             checkContentTypes();
             ZipUtil.replace(file,"word/document.xml", DomUtil.format(doc));
-            ZipUtil.replace(file,"word/document.xml", DomUtil.format(doc));
             ZipUtil.replace(file,"word/_rels/document.xml.rels", DomUtil.format(relsDoc));
 
         }catch (Exception e){

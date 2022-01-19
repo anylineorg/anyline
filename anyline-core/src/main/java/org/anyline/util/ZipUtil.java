@@ -33,7 +33,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
- 
+
 /** 
  * Java utils 实现的Zip工具 不支持RAR格式
  */ 
@@ -122,6 +122,7 @@ public class ZipUtil {
 			}
 		}
 		out.close();
+		zip.close();
 		tempFile.delete();
 	}
 	public static boolean zip(Map<String,File> files, File zip, String dir, String comment, boolean append) {
