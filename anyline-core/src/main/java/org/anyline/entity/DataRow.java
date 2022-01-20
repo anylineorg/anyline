@@ -58,19 +58,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	public static String PARENT 			= "PARENT"						; //上级数据 
 	public static String ALL_PARENT 		= "ALL_PARENT"					; //所有上级数据 
 	public static String CHILDREN 			= "CHILDREN"					; //子数据 
-	public static String PRIMARY_KEY		= ConfigTable.getString("DEFAULT_PRIMARY_KEY","id"); 
+	public static String PRIMARY_KEY		= ConfigTable.getString("DEFAULT_PRIMARY_KEY","ID");
 	public static String ITEMS				= "ITEMS"						; 
 	private DataSet container				= null							; //包含当前对象的容器
  
-	private List<String> primaryKeys 		= new ArrayList<>()		; //主键
-	private List<String> updateColumns 		= new ArrayList<>()		;
-	private List<String> ignoreUpdateColumns= new ArrayList<>()			;
+	private List<String> primaryKeys 		= new ArrayList<>()				; //主键
+	private List<String> updateColumns 		= new ArrayList<>()				;
+	private List<String> ignoreUpdateColumns= new ArrayList<>()				;
 	private String datalink					= null							; 
 	private String dataSource				= null 							; //数据源(表|视图|XML定义SQL) 
 	private String schema					= null							; 
 	private String table					= null							;
-	private Map<String, Object> queryParams	= new HashMap<String,Object>()	; //查询条件
-	private Map<String, Object> attributes 	= new HashMap<String,Object>()	; //属性
+	private Map<String, Object> queryParams	= new HashMap<String,Object>()				; //查询条件
+	private Map<String, Object> attributes 	= new HashMap<String,Object>()				; //属性
 	private Object clientTrace				= null							; //客户端数据
 	private long createTime 				= 0								; //创建时间
 	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期 
@@ -78,10 +78,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	protected boolean isFromCache 			= false							; //是否来自缓存
 	private boolean updateNullColumn 		= ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
 	private boolean updateEmptyColumn 		= ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
-	private Map<String,String> keymap		= new HashMap<String,String>();
-	private KEY_CASE keyCase 				= KEY_CASE.CONFIG;
+	private Map<String,String> keymap		= new HashMap<String,String>()				; //keymap
+	private KEY_CASE keyCase 				= KEY_CASE.CONFIG				; //列名格式
 	private boolean isUpperKey				= false							; //是否已执行大写key转换(影响到驼峰执行)
-	public boolean skip					= false							; //遍历计算时标记
+	public boolean skip						= false							; //遍历计算时标记
 
 	public DataRow(){
 		String pk = putKey(PRIMARY_KEY);
