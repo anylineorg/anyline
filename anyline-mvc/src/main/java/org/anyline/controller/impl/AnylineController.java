@@ -18,19 +18,6 @@
  
 package org.anyline.controller.impl; 
  
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -38,22 +25,24 @@ import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.TableBuilder;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.service.AnylineService;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.Constant;
-import org.anyline.util.DESUtil;
-import org.anyline.util.FileUtil;
+import org.anyline.util.*;
 import org.anyline.web.controller.AbstractBasicController;
 import org.anyline.web.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
  
 public class AnylineController extends AbstractBasicController { 
  
@@ -497,14 +486,10 @@ public class AnylineController extends AbstractBasicController {
 			PageNavi navi = set.getNavi();
 			if(null != navi){
 				Map<String,Object> navi_ = new HashMap<String,Object>();
-				navi_.put("page", navi.getCurPage());
-				navi_.put("pages", navi.getTotalPage());
-				navi_.put("rows", navi.getTotalRow());
-				navi_.put("vol", navi.getPageRows());
-				navi_.put("curPage", navi.getCurPage());
-				navi_.put("totalPage", navi.getTotalPage());
-				navi_.put("totalRow", navi.getTotalRow());
-				navi_.put("pageRows", navi.getPageRows());
+				navi_.put("page", navi.getCurPage());		//当前页
+				navi_.put("pages", navi.getTotalPage());	//总页数
+				navi_.put("rows", navi.getTotalRow());		//总行数
+				navi_.put("vol", navi.getPageRows());		//第页行籹
 				map.put("navi", navi_);
 			}
 
