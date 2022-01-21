@@ -1062,11 +1062,64 @@ public class WDocument {
                 replaceBookmark(bookmark);
             }
             checkContentTypes();
+            checkMergeCol();
             ZipUtil.replace(file,"word/document.xml", DomUtil.format(doc));
             ZipUtil.replace(file,"word/_rels/document.xml.rels", DomUtil.format(relsDoc));
 
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+    /**
+     * 合并列的表格，如果没有设置宽度，在wps中只占一列,需要在表格中根据总列数添加
+     * w:tblGrid
+     *      w:gridCol w:w="1000"
+     */
+    private void checkMergeCol(){
+        List<Element> tables = DomUtil.elements(doc.getRootElement(), "tbl");
+        for(Element table:tables){
+            int max = 0;
+            boolean isMerge = false;
+            List<Element> trs = DomUtil.elements(table, "tr");
+            for(Element tr:trs){
+                int size = 0;
+                List<Element> tcs = DomUtil.elements(tr,"tc");
+                for(Element tc:tcs){
+                    int colspan = 1;
+                    Element pr = DomUtil.element(tc,"tcPr");
+                    if(null != pr){
+                        Element grid = DomUtil.element(pr,"gridSpan");
+                        if(null != grid){
+                            colspan = BasicUtil.parseInt(grid.attributeValue("w:val"),1);
+                        }
+                    }
+                    if(colspan > 1){
+                        isMerge = true;
+                    }
+                    size += colspan;
+                }
+                if(size > max){
+                    max = size;
+                }
+            }
+            if(isMerge){
+
+                int tableWidth = 5000;
+                Element  tblW = DomUtil.element(table, "tblW");
+                if(null != tblW){
+                    tableWidth = BasicUtil.parseInt(tblW.attributeValue("w:w"),5000);
+                }
+                Element tblGrid = DomUtil.element(table,"tblGrid");
+                if(null == tblGrid){
+                    tblGrid = DocxUtil.addElement(table, "tblGrid");
+                }
+                List<Element> gridCols = DomUtil.elements(tblGrid, "gridCol");
+                int width = tableWidth / max;
+                for(int i=gridCols.size(); i<max; i++){
+                    Element gridCol = tblGrid.addElement("w:gridCol");
+                    gridCol.addAttribute("w:w", width+"");
+                }
+            }
         }
     }
     private void checkContentTypes(){
