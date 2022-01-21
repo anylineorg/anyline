@@ -12,10 +12,8 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.security.action.GetPropertyAction;
 
 import java.io.File;
-import java.security.AccessController;
 import java.util.*;
 
 public class WDocument {
@@ -468,7 +466,12 @@ public class WDocument {
                         prevR = prev;
                     }else{
                         Element tmp = DocxUtil.prev(prev);
-                        if(tmp.getName().equals("r")){
+                        String tmpName = tmp.getName();
+                        if(tmpName.equals("r")){
+                            prevR = tmp;
+                        }else if(tmpName.equals("pPr")){
+                            prevR = tmp;
+                        }else if(tmpName.equals("p")){
                             prevR = tmp;
                         }
                     }
@@ -711,7 +714,7 @@ public class WDocument {
                 subfix = "jpeg";
             }
         }
-        File tmpdir = new File(AccessController.doPrivileged(new GetPropertyAction("java.io.tmpdir")));
+        File tmpdir = new File(System.getProperty("java.io.tmpdir"));
         File img = new File(tmpdir,"image" + rdm + "." + subfix);
         try {
             //下载文件

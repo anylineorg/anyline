@@ -93,7 +93,7 @@ public class DocxUtil {
     /**
      * copy的样式复制给src
      * @param src src
-     * @param copy 被复制
+     * @param copy 被复制p/w或pPr/wPr
      */
     public static void copyStyle(Element src, Element copy){
         String name = src.getName();
@@ -102,7 +102,14 @@ public class DocxUtil {
         if(null != srcPr){
             src.remove(srcPr);
         }
-        Element pr = DomUtil.element(copy, prName);
+
+        Element pr = null;
+        String copyName = copy.getName();
+        if(copyName.equals(prName)){
+            pr = copy;
+        }else {
+            pr = DomUtil.element(copy, prName);;
+        }
         if(null != pr){
             Element newPr = pr.createCopy();
             src.elements().add(0,newPr);
