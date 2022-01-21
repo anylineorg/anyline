@@ -1600,15 +1600,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		}
 		return true;
 	}
+
 	public DataRow camel(){
 		List<String> keys = keys();
 		this.setKeyCase(KEY_CASE.camel);
 		for(String key:keys){
 			String camel = BeanUtil.camel(key);
-			put(KEY_CASE.camel,camel,get(key));
-
 			updateColumns.remove(key);
 			super.remove(key);
+			put(KEY_CASE.SRC,camel,get(key));
 		}
 		return this;
 	}
@@ -1617,10 +1617,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		this.setKeyCase(KEY_CASE.Camel);
 		for(String key:keys){
 			String Camel = BeanUtil.Camel(key);
-			put(key,get(key));
-
 			updateColumns.remove(key);
 			super.remove(key);
+			put(KEY_CASE.SRC,Camel,get(key));
 		}
 		return this;
 	}
