@@ -1601,26 +1601,29 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		return true;
 	}
 
+
 	public DataRow camel(){
 		List<String> keys = keys();
-		this.setKeyCase(KEY_CASE.camel);
 		for(String key:keys){
+			Object value = get(key);
 			String camel = BeanUtil.camel(key);
 			updateColumns.remove(key);
 			super.remove(key);
-			put(KEY_CASE.SRC,camel,get(key));
+			put(KEY_CASE.SRC,camel,value);
 		}
+		this.setKeyCase(KEY_CASE.camel);
 		return this;
 	}
 	public DataRow Camel(){
 		List<String> keys = keys();
-		this.setKeyCase(KEY_CASE.Camel);
 		for(String key:keys){
+			Object value = get(key);
 			String Camel = BeanUtil.Camel(key);
 			updateColumns.remove(key);
 			super.remove(key);
-			put(KEY_CASE.SRC,Camel,get(key));
+			put(KEY_CASE.SRC,Camel,value);
 		}
+		this.setKeyCase(KEY_CASE.Camel);
 		return this;
 	}
 	/**
@@ -1638,11 +1641,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		}else if(keyCase == KEY_CASE.UPPER){
 			key = key.toUpperCase();
 		}
-//		else if(keyCase == KEY_CASE.Camel){
-//			key = BeanUtil.Camel(key);
-//		}else if(keyCase == KEY_CASE.camel){
-//			key = BeanUtil.camel(key);
-//		}else if(keyCase.getCode().contains("_")){
+		else if(keyCase == KEY_CASE.Camel){
+			key = BeanUtil.Camel(key);
+		}else if(keyCase == KEY_CASE.camel){
+			key = BeanUtil.camel(key);
+		}
+		//else if(keyCase.getCode().contains("_")){
 //			//驼峰转下划线
 //			key = BeanUtil.camel_(key);
 //			if(keyCase == KEY_CASE.CAMEL_CONFIG){
