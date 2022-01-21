@@ -1832,6 +1832,9 @@ public class BeanUtil {
 	 * @return String
 	 */
 	public static String camel(String key, boolean hold){
+		if(!key.contains("-") && !key.contains("_")){
+			return key;
+		}
 		String[] ks = key.split("_|-");
 		String sKey = null;
 		for(String k:ks){
@@ -1852,6 +1855,9 @@ public class BeanUtil {
 		return camel(key, false);
 	}
 	public static String Camel(String key, boolean hold){
+		if(!key.contains("-") && !key.contains("_")){
+			return key;
+		}
 		String[] ks = key.split("_|-");
 		String sKey = null;
 		for(String k:ks){
