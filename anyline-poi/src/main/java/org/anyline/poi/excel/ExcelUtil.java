@@ -467,14 +467,20 @@ public class ExcelUtil {
 				cell.setCellValue(header);
 			}
 		}
+		int num = 1;
 		for(Object item:set){
 			Row row = sheet.createRow(insert++);
 			int c = 0;
 			for(String key:keys){
 				Cell cell=row.createCell(c++);
 				cell.setCellType(CellType.STRING);
-				cell.setCellValue(BeanUtil.parseFinalValue(item,key,""));
+				if(key.equals("{num}")){
+					cell.setCellValue(num);
+				}else {
+					cell.setCellValue(BeanUtil.parseFinalValue(item, key, ""));
+				}
 			}
+			num ++;
 		}
 	}
 	public static boolean export(File file, String sheet, int insert, Table table){
@@ -726,10 +732,9 @@ public class ExcelUtil {
 		if(null != styles) {
 			//边框
 			style.setBorderTop(parseBorderStyle(styles, "top"));
-			style.setBorderTop(parseBorderStyle(styles, "bottom"));
-			style.setBorderTop(parseBorderStyle(styles, "right"));
-			style.setBorderTop(parseBorderStyle(styles, "left"));
-			style.setBottomBorderColor(IndexedColors.GOLD.index);
+			style.setBorderBottom(parseBorderStyle(styles, "bottom"));
+			style.setBorderRight(parseBorderStyle(styles, "right"));
+			style.setBorderLeft(parseBorderStyle(styles, "left"));
 
 			//水平对齐
 			String textAlign = styles.get("text-align");
