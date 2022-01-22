@@ -215,7 +215,7 @@ public class WDocument {
             html = "<root>" + html + "</root>";
             org.dom4j.Document doc = DocumentHelper.parseText(html);
             Element root = doc.getRootElement();
-            parseHtml(box, prev, root, null);
+            parseHtml(box, prev, root, null, true);
         }catch (Exception e){
             e.printStackTrace();
             //log.error(html);
@@ -435,7 +435,7 @@ public class WDocument {
             pr(tc, styles);
             if(merge !=2){
                 if(null != td.getSrc()) {
-                    parseHtml(tc, null, td.getSrc(), StyleParser.inherit(null, styles));
+                    parseHtml(tc, null, td.getSrc(), StyleParser.inherit(null, styles), false);
                 }
             }else{
                 p(tc,"",null);
@@ -443,7 +443,7 @@ public class WDocument {
         }
         return  tc;
     }
-    private Element inline(Element parent, Element prev, String text, Map<String, String> styles){
+    private Element inline(Element parent, Element prev, String text, Map<String, String> styles, boolean copyPrevStyle){
         String pname = parent.getName();
         Element r;
         if(pname.equalsIgnoreCase("r")){
@@ -459,7 +459,7 @@ public class WDocument {
             pr(parent, styles);
             r = parent.addElement("w:r");
             //复制前一个w 的样式
-            if(null != prev){
+            if(copyPrevStyle && null != prev){
                 Element prevR = prevStyle(prev);
                 DocxUtil.copyStyle(r, prevR, true);
             }
@@ -537,7 +537,7 @@ public class WDocument {
         }
 
         pr(box, styles);
-        parseHtml(box, prev, element, styles);
+        parseHtml(box, prev, element, styles, false);
 
         if(null != styles && null != styles.get("page-break-after")){
             //分页
@@ -589,7 +589,7 @@ public class WDocument {
         styles.put("list-num", listNum+"");
         pr(box, styles);
         DocxUtil.after(box, prev);
-        prev = parseHtml(box, prev, element, styles);
+        prev = parseHtml(box, prev, element, styles, false);
         return prev;
     }
     private int lvl(Element li){
@@ -797,9 +797,10 @@ public class WDocument {
      * @param prev 放在prev之后
      * @param html html
      * @param styles 样式
+     * @param copyPrevStyle 是否复制前一个标签的样式，在替换书签时需要用到,但在div中嵌套的span需要避免复制闰一个标签的样式
      * @return prev
      */
-    public Element parseHtml(Element parent, Element prev, Element html, Map<String,String> styles){
+    public Element parseHtml(Element parent, Element prev, Element html, Map<String,String> styles, boolean copyPrevStyle){
         String pname = parent.getName();
         String txt = html.getTextTrim();
         if(html.elements().size()==0){
@@ -817,7 +818,7 @@ public class WDocument {
                 String text = node.getText().trim();
                 if(text.length()>0) {
                     empty = false;
-                   Element r = inline(parent, prev, text, styles);
+                   Element r = inline(parent, prev, text, styles, copyPrevStyle);
                     prev = r;
                 }
             }else if(type == 1 ) {//element
@@ -843,7 +844,7 @@ public class WDocument {
                     prev = tbl;
                 }else if("div".equalsIgnoreCase(tag)){
                     if("inline".equalsIgnoreCase(display) || "inline-block".equalsIgnoreCase(display)){
-                        prev = parseHtml(parent, prev, element, itemStyles);
+                        prev = parseHtml(parent, prev, element, itemStyles, false);
                     }else {
                         prev = block(parent, prev, element, itemStyles);
                     }
@@ -851,7 +852,7 @@ public class WDocument {
                     if("block".equalsIgnoreCase(display)){
                         prev = block(parent, prev, element, itemStyles);
                     }else {
-                        prev =  parseHtml(parent, prev, element, itemStyles);
+                        prev =  parseHtml(parent, prev, element, itemStyles, false);
                     }
                 }else if("img".equalsIgnoreCase(tag)){
                     Element img = img(parent, prev, element, styles);
@@ -867,24 +868,24 @@ public class WDocument {
                     parent.addElement("w:br");
                 }else if("u".equalsIgnoreCase(tag)){
                     itemStyles.put("underline","true");
-                    prev = parseHtml(parent, prev, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles, false);
                 }else if("b".equalsIgnoreCase(tag)){
                     itemStyles.put("font-weight","700");
-                    prev = parseHtml(parent, prev, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles, false);
                 }else if("i".equalsIgnoreCase(tag)){
                     itemStyles.put("italics","true");
-                    prev = parseHtml(parent, prev, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles, false);
                 }else if("del".equalsIgnoreCase(tag)){
                     itemStyles.put("strike","true");
-                    prev = parseHtml(parent, prev, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles, false);
                 }else if("sup".equalsIgnoreCase(tag)){
                     itemStyles.put("vertical-align","superscript");
-                    prev = parseHtml(parent, prev, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles, false);
                 }else if("sub".equalsIgnoreCase(tag)){
                     itemStyles.put("vertical-align","subscript");
-                    prev = parseHtml(parent, prev, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles, false);
                 }else{
-                    prev = parseHtml(parent, prev, element, itemStyles);
+                    prev = parseHtml(parent, prev, element, itemStyles, false);
                 }
             }
         }
@@ -892,6 +893,10 @@ public class WDocument {
             parent.addElement("w:p");
         }
         return prev;
+    }
+
+    public Element parseHtml(Element parent, Element prev, Element html, Map<String,String> styles){
+        return parseHtml(parent, prev, html, styles, false);
     }
     public Element p(Element parent, String text, Map<String,String> styles){
         while(parent.getName().equalsIgnoreCase("p")){
