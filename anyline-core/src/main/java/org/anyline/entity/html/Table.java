@@ -61,6 +61,13 @@ public class Table {
         trs.get(rows).setTd(cols, td);
         return this;
     }
+    public Table setWidth(String width){
+        if(null == styles){
+            styles = new HashMap<>();
+        }
+        styles.put("width", width);
+        return this;
+    }
 
     public String getWidthUnit() {
         return widthUnit;
