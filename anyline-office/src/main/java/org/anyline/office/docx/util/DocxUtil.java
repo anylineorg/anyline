@@ -1,12 +1,15 @@
 package org.anyline.office.docx.util;
 
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.DomUtil;
+import org.anyline.util.StyleParser;
+import org.anyline.util.ZipUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.dom4j.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
 import java.util.*;
 
 public class DocxUtil {
@@ -94,15 +97,19 @@ public class DocxUtil {
      * copy的样式复制给src
      * @param src src
      * @param copy 被复制p/w或pPr/wPr
+     * @param override 如果样式重复，是否覆盖原来的样式
      */
-    public static void copyStyle(Element src, Element copy){
+    public static void copyStyle(Element src, Element copy, boolean override){
+        if(null == src || null == copy){
+            return;
+        }
         String name = src.getName();
         String prName = name+"Pr";
         Element srcPr = src.element(prName);
-        if(null != srcPr){
+        if(override){
             src.remove(srcPr);
+            srcPr = null;
         }
-
         Element pr = null;
         String copyName = copy.getName();
         if(copyName.equals(prName)){
@@ -111,11 +118,57 @@ public class DocxUtil {
             pr = DomUtil.element(copy, prName);;
         }
         if(null != pr){
-            Element newPr = pr.createCopy();
-            src.elements().add(0,newPr);
+            if(null == srcPr) {
+                //如果原来没有pr新创建一个
+                Element newPr = pr.createCopy();
+                src.elements().add(0, newPr);
+            }else{
+                List<Element> items = pr.elements();
+                List<Element> newItems = new ArrayList<>();
+                for(Element item:items){
+                    String itemName = item.getName();
+                    Element srcItem = srcPr.element(itemName);
+                    if(override){
+                        srcPr.remove(srcItem);
+                        srcItem = null;
+                    }
+                    if(null == srcItem){
+                        //如果原来没有这个样式条目直接复制一个
+                        Element newItem = item.createCopy();
+                        newItems.add(newItem);
+                    }else{
+                        //如果原来有这个样式条目,在原来基础上复制属性
+                        List<Attribute> attributes = item.attributes();
+                        for(Attribute attribute:attributes){
+                            String attributeName = attribute.getName();
+                            String attributeFullName = attributeName;
+                            String attributeNamespace = attribute.getNamespacePrefix();
+                            if(BasicUtil.isNotEmpty(attributeNamespace)){
+                                attributeFullName = attributeNamespace+":"+attributeName;
+                            }
+                            Attribute srcAttribute = srcItem.attribute(attributeName);
+                            if(null == srcAttribute){
+                                srcAttribute = srcItem.attribute(attributeFullName);
+                            }
+                            if(override){
+                                if(null != srcAttribute){
+                                    srcItem.remove(srcAttribute);
+                                    srcAttribute = null;
+                                }
+                            }
+                            if(null == srcAttribute) {
+                                srcItem.attributeValue(attributeFullName, attribute.getStringValue());
+                            }
+                        }
+                    }
+                }
+                srcPr.elements().addAll(newItems);
+            }
         }
     }
-
+    public static void copyStyle(Element src, Element copy){
+        copyStyle(src, copy, false);
+    }
     /**
      * 前一个节点
      * @param  element element
@@ -553,6 +606,9 @@ public class DocxUtil {
     public static void addElement(Element parent, String tag, String key, String value){
         Element element = DocxUtil.addElement(parent,tag);
         Attribute attribute = element.attribute(key);
+        if(null == attribute){
+            attribute = element.attribute("w:"+key);
+        }
         if(null != attribute){
             element.remove(attribute);
         }
