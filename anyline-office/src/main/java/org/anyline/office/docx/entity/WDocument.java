@@ -459,26 +459,9 @@ public class WDocument {
             pr(parent, styles);
             r = parent.addElement("w:r");
             //复制前一个w 的样式
-            if(null == styles || styles.isEmpty()){
-                if(null != prev){
-                    Element prevR = null;
-                    if(prev.getName().equals("r")){
-                        prevR = prev;
-                    }else{
-                        Element tmp = DocxUtil.prev(prev);
-                        String tmpName = tmp.getName();
-                        if(tmpName.equals("r")){
-                            prevR = tmp;
-                        }else if(tmpName.equals("pPr")){
-                            prevR = tmp;
-                        }else if(tmpName.equals("p")){
-                            prevR = tmp;
-                        }
-                    }
-                    if(null != prevR){
-                        DocxUtil.copyStyle(r, prevR);
-                    }
-                }
+            if(null != prev){
+                Element prevR = prevStyle(prev);
+                DocxUtil.copyStyle(r, prevR, true);
             }
 
             DocxUtil.after(r, prev);
@@ -490,10 +473,29 @@ public class WDocument {
         }else{
             throw new RuntimeException("text.parent异常:"+parent.getName());
         }
+
         pr(r, styles);
         Element t = r.addElement("w:t");
         t.setText(text.trim());
         return r;
+    }
+    //前一个样式
+    public Element prevStyle(Element prev){
+        Element prevStyle = null;
+        if(prev.getName().equals("r")){
+            prevStyle = prev;
+        }else{
+            Element tmp = DocxUtil.prev(prev);
+            String tmpName = tmp.getName();
+            if(tmpName.equals("r")){
+                prevStyle = tmp;
+            }else if(tmpName.equals("pPr")){
+                prevStyle = tmp;
+            }else if(tmpName.equals("p")){
+                prevStyle = tmp;
+            }
+        }
+        return prevStyle;
     }
     public Element block(Element parent, Element prev, Element element, Map<String,String> styles){
         Element box = null;
