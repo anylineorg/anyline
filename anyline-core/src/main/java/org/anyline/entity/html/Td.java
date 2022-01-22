@@ -363,8 +363,8 @@ public class Td {
         setRightBorder();
         setTopBorder();
         setBottomBorder();
-        setTl2brBorder();
-        setTr2blBorder();
+        //setTl2brBorder();
+        //setTr2blBorder();
         return this;
     }
     public Td setBorder(String weight, String color, String style){
@@ -372,8 +372,8 @@ public class Td {
         setRightBorder(weight, color, style);
         setTopBorder(weight, color, style);
         setBottomBorder(weight, color, style);
-        setTl2brBorder(weight, color, style);
-        setTr2blBorder(weight, color, style);
+        //setTl2brBorder(weight, color, style);
+        //setTr2blBorder(weight, color, style);
         return this;
     }
     public Td setLeftBorder(){

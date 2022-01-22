@@ -33,6 +33,7 @@ public class TableBuilder {
     private Map<String,Map<String,String>> styles = new HashMap<>();
     private Map<String,String[]> unionRefs = new HashMap<>();
     private List<String> ignoreUnionValues = new ArrayList<>();  //不参与合并的值
+    private String width = "100%";                  //整个表格宽度
     private String widthUnit = "px";                //默认长度单位 px pt cm/厘米
     private String replaceEmpty = "";               //遇到空值替换成
     private String cellBorder = "";                 //单元格边框
@@ -180,6 +181,9 @@ public class TableBuilder {
     public Table build(){
         Table table = null;
         table = new Table();
+        if(BasicUtil.isNotEmpty(width)){
+            table.setWidthUnit(width);
+        }
         parseUnion();
         table.setClazz(clazz);
         table.setHeader(header);
@@ -475,6 +479,12 @@ public class TableBuilder {
 
         return this;
     }
+
+    public TableBuilder setWidth(String width){
+        this.width = width;
+        return this;
+    }
+
 
     public List<String> getIgnoreUnionValues() {
         return ignoreUnionValues;
