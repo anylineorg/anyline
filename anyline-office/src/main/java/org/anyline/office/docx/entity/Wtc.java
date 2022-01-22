@@ -752,7 +752,7 @@ public class Wtc {
         try {
             Document doc = DocumentHelper.parseText("<root>"+html+"</root>");
             Element root = doc.getRootElement();
-            this.doc.parseHtml(src, null, root, null);
+            this.doc.parseHtml(src, null, root, null, false);
         }catch (Exception e){
             e.printStackTrace();
         }
