@@ -218,7 +218,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		String sql = "SELECT * FROM " + table + " WHERE 1=0";
 		SqlRowSet row = getJdbc().queryForRowSet(sql);
 		SqlRowSetMetaData rsm = row.getMetaData();
-		for (int i = 1; i < rsm.getColumnCount(); i++) {
+		for (int i = 1; i <= rsm.getColumnCount(); i++) {
 			list.add(rsm.getColumnName(i));
 		}
 		return list;
@@ -229,7 +229,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		SqlRowSet row = getJdbc().queryForRowSet(sql);
 		SqlRowSetMetaData rsm = row.getMetaData();
 
-		for (int i = 1; i < rsm.getColumnCount(); i++) {
+		for (int i = 1; i <= rsm.getColumnCount(); i++) {
 			MetaData item = new MetaData();
 			item.setCatalogName(rsm.getCatalogName(i));
 			item.setClassName(rsm.getColumnClassName(i));
