@@ -163,10 +163,13 @@ public class CodeUtil {
 	 * @param encode  encode
 	 * @return return
 	 */ 
-	public static String urlEncode(String url, String encode) { 
+	public static String urlEncode(String url, String encode, int len) {
 		if (BasicUtil.isEmpty(url)) { 
 			return ""; 
-		} 
+		}
+		if(len >= 0 && len<url.length()){
+			url = url.substring(0, len);
+		}
 		String result = ""; 
 		try { 
 			result = java.net.URLEncoder.encode(url, encode); 
@@ -174,12 +177,18 @@ public class CodeUtil {
 			e.printStackTrace(); 
 		} 
 		return result; 
-	} 
-	 
-	public static String urlEncode(String url) { 
-		return urlEncode(url, "utf-8"); 
-	} 
- 
+	}
+
+	public static String urlEncode(String url, String encode) {
+		return urlEncode(url, encode, -1);
+	}
+	public static String urlEncode(String url) {
+		return urlEncode(url, "utf-8", -1);
+	}
+	public static String urlEncode(String url, int len) {
+		return urlEncode(url, "utf-8", len);
+	}
+
 	/** 
 	 * url参数部分编码 
 	 * @param url  url
