@@ -568,6 +568,22 @@ public class Wtc {
         return setPadding(src, side, padding);
     }
 
+
+    public Wtc setPadding(String padding){
+        setPadding(src, "top", padding);
+        setPadding(src, "bottom", padding);
+        setPadding(src, "right", padding);
+        setPadding(src, "left", padding);
+        return this;
+    }
+    public Wtc setPadding(int padding){
+        return setPadding(padding+widthUnit);
+    }
+    public Wtc setPadding(double padding){
+        return setPadding(padding+widthUnit);
+    }
+
+
     private Wtc setPadding(Element tc, String side, int padding){
         return setPadding(tc, side, padding+widthUnit);
     }
@@ -629,6 +645,9 @@ public class Wtc {
     }
     public Wtc setVerticalAlign(String align){
         Element pr = DocxUtil.addElement(src, "tcPr");
+        if(align.equals("middle")){
+            align = "center";
+        }
         DocxUtil.addElement(pr,"vAlign", "val", align );
         return this;
     }
@@ -644,7 +663,7 @@ public class Wtc {
         DocxUtil.addElement(pr, "shd", "val","clear");
         DocxUtil.addElement(pr, "shd", "fill",color.replace("#",""));
         for(Wp wp:wps){
-            wp.setBackgroundColor(color);
+            //wp.setBackgroundColor(color);
         }
         return this;
     }
@@ -787,7 +806,6 @@ public class Wtc {
         return this;
     }
     public Wtc addText(String text){
-        DocxUtil.removeContent(src);
         Element p = DocxUtil.addElement(src, "p");
         Element r = DocxUtil.addElement(p, "r");
         Element t = r.addElement("w:t");
