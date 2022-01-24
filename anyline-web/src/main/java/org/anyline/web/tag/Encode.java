@@ -26,7 +26,8 @@ import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
 public class Encode extends BaseBodyTag {
-	private static final long serialVersionUID = 1L; 
+	private static final long serialVersionUID = 1L;
+	private int len = 0;
  
 	public int doEndTag() { 
 		String src = BasicUtil.nvl(value,body,"").toString().trim(); 
@@ -35,7 +36,7 @@ public class Encode extends BaseBodyTag {
 		} 
  
 		JspWriter writer = null; 
-		String result = CodeUtil.urlEncode(src);
+		String result = CodeUtil.urlEncode(src, len);
 		try { 
 			writer = pageContext.getOut(); 
 			writer.print(result); 
@@ -51,7 +52,15 @@ public class Encode extends BaseBodyTag {
 	public void release() { 
 		super.release(); 
 		value = null;
-		body = null; 
-	} 
-	 
-} 
+		body = null;
+		len = 0;
+	}
+
+	public int getLen() {
+		return len;
+	}
+
+	public void setLen(int len) {
+		this.len = len;
+	}
+}
