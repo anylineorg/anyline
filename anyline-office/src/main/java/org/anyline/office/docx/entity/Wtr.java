@@ -146,7 +146,34 @@ public class Wtr {
         }
         return this;
     }
-
+    public Wtr setTopBorder(int size, String color, String style){
+        List<Wtc> tcs = getWtcs();
+        for(Wtc tc:tcs){
+            tc.setTopBorder(size, color, style);
+        }
+        return this;
+    }
+    public Wtr removeTopBorder(){
+        List<Wtc> tcs = getWtcs();
+        for(Wtc tc:tcs){
+            tc.removeTopBorder();
+        }
+        return this;
+    }
+    public Wtr setBottomBorder(int size, String color, String style){
+        List<Wtc> tcs = getWtcs();
+        for(Wtc tc:tcs){
+            tc.setBottomBorder(size, color, style);
+        }
+        return this;
+    }
+    public Wtr removeBottomBorder(){
+        List<Wtc> tcs = getWtcs();
+        for(Wtc tc:tcs){
+            tc.removeBottomBorder();
+        }
+        return this;
+    }
     /**
      * 设置颜色
      * @param color color
@@ -424,6 +451,26 @@ public class Wtr {
     public Wtr setBottomPadding(int padding){
         for(Wtc tc:wtcs){
             tc.setBottomPadding(padding);
+        }
+        return this;
+    }
+
+
+    public Wtr setPadding(double padding){
+        for(Wtc tc:wtcs){
+            tc.setPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setPadding(String padding){
+        for(Wtc tc:wtcs){
+            tc.setPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setPadding(int padding){
+        for(Wtc tc:wtcs){
+            tc.setPadding(padding);
         }
         return this;
     }
