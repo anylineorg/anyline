@@ -451,9 +451,9 @@ public class WDocument {
             pr(parent, styles);
             DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("tc")){
-            Element p = parent.addElement("w:p");
-            pr(p, styles);
-            r = p.addElement("w:r");
+            Element p = DocxUtil.addElement(parent, "p");
+            r = DocxUtil.addElement(p, "r");
+            pr(r, styles);
             DocxUtil.after(r, prev);
         }else if(pname.equalsIgnoreCase("p")){
             pr(parent, styles);

@@ -193,9 +193,6 @@ public class Wtable {
                     trs.add(newTr);
                 }
             }
-            if(null != template){
-                //trs.remove(template.getSrc());
-            }
             if(isAutoLoad) {
                 reload();
             }
@@ -669,14 +666,90 @@ public class Wtable {
     public Wtc setColor(int rows, int cols, String color){
         return getTc(rows, cols).setColor(color);
     }
+
+    /**
+     * 设置整行颜色
+     * @param rows 行
+     * @param color 颜色
+     * @return wtr
+     */
+    public Wtr setColor(int rows, String color){
+        Wtr tr = getTr(rows);
+        tr.setColor(color);
+        return tr;
+    }
+    /**
+     * 设置单元格 字体
+     * @param rows 行
+     * @param cols 列
+     * @param size 字号
+     * @param eastAsia 中文字体
+     * @param ascii 西文字体
+     * @param hint 默认字体
+     * @return wtc
+     */
     public Wtc setFont(int rows, int cols, String size, String eastAsia, String ascii, String hint){
         return getTc(rows, cols).setFont(size, eastAsia, ascii, hint);
     }
+
+    /**
+     * 设置整行 字体
+     * @param rows 行
+     * @param size 字号
+     * @param eastAsia 中文字体
+     * @param ascii 西文字体
+     * @param hint 默认字体
+     * @return wtr
+     */
+    public Wtr setFont(int rows, String size, String eastAsia, String ascii, String hint){
+        Wtr tr = getTr(rows);
+        tr.setFont(size, eastAsia, ascii, hint);
+        return tr;
+    }
+
+    /**
+     * 设置单元格字号
+     * @param rows 行
+     * @param cols 列
+     * @param size 字号
+     * @return wtc
+     */
     public Wtc setFontSize(int rows, int cols, String size){
         return getTc(rows, cols).setFontSize(size);
     }
+    /**
+     * 设置整行字号
+     * @param rows 行
+     * @param size 字号
+     * @return wtr
+     */
+    public Wtr setFontSize(int rows, String size){
+        Wtr tr = getTr(rows);
+        tr.setFontSize(size);
+        return tr;
+    }
+
+    /**
+     * 设置单元格字体
+     * @param rows 行
+     * @param cols 列
+     * @param font 字体
+     * @return wtc
+     */
     public Wtc setFontFamily(int rows, int cols, String font){
         return getTc(rows, cols).setFontFamily(font);
+    }
+
+    /**
+     * 设置整行字体
+     * @param rows 行
+     * @param font 字体
+     * @return wtr
+     */
+    public Wtr setFontFamily(int rows, String font){
+        Wtr tr = getTr(rows);
+        tr.setFontFamily(font);
+        return tr;
     }
     public Wtc setWidth(int rows, int cols, String width){
         return getTc(rows, cols).setWidth(width);
@@ -720,21 +793,141 @@ public class Wtable {
         return setHeight(rows, height+widthUnit);
     }
 
+    /**
+     * 设置单元格内容水平对齐方式
+     * @param rows 行
+     * @param cols 列
+     * @param align 对齐方式
+     * @return wtc
+     */
     public Wtc setAlign(int rows, int cols, String align){
         return getTc(rows, cols).setAlign(align);
     }
+    /**
+     * 设置整行单元格内容水平对齐方式
+     * @param rows 行
+     * @param align 对齐方式
+     * @return wtcr
+     */
+    public Wtr setAlign(int rows, String align){
+        Wtr tr = getTr(rows);
+        tr.setAlign(align);
+        return tr;
+    }
+
+    /**
+     * 设置整个表格单元格内容水平对齐方式
+     * @param align 对齐方式
+     * @return wtable
+     */
+    public Wtable setAlign(String align){
+        for(Wtr tr:wtrs) {
+            tr.setAlign(align);
+        }
+        return this;
+    }
+    /**
+     * 设置单元格内容垂直对齐方式
+     * @param rows 行
+     * @param cols 列
+     * @param align 对齐方式
+     * @return wtc
+     */
     public Wtc setVerticalAlign(int rows, int cols, String align){
         return getTc(rows, cols).setVerticalAlign(align);
     }
 
+    /**
+     * 设置整行单元格内容垂直对齐方式
+     * @param rows 行
+     * @param align 对齐方式
+     * @return wtr
+     */
+    public Wtr setVerticalAlign(int rows, String align){
+        Wtr tr = getTr(rows);
+        tr.setVerticalAlign(align);
+        return tr;
+    }
+
+    /**
+     * 设置整个表格单元格内容垂直对齐方式
+     * @param align 对齐方式
+     * @return wtable
+     */
+    public Wtable setVerticalAlign(String align){
+        for(Wtr tr:wtrs) {
+            tr.setVerticalAlign(align);
+        }
+        return this;
+    }
+    /**
+     * 设置单元格下边距
+     * @param rows 行
+     * @param cols 列
+     * @param padding 边距 可以指定单位,如:10px
+     * @return wtc
+     */
     public Wtc setBottomPadding(int rows, int cols, String padding){
         return getTc(rows, cols).setBottomPadding(padding);
     }
+    /**
+     * 设置单元格下边距
+     * @param rows 行
+     * @param cols 列
+     * @param padding 边距 默认单位dxa
+     * @return wtc
+     */
     public Wtc setBottomPadding(int rows, int cols, int padding){
         return getTc(rows, cols).setBottomPadding(padding);
     }
     public Wtc setBottomPadding(int rows, int cols, double padding){
         return getTc(rows, cols).setBottomPadding(padding);
+    }
+
+
+    /**
+     * 设置整行单元格下边距
+     * @param rows 行
+     * @param padding 边距 可以指定单位,如:10px
+     * @return wtr
+     */
+    public Wtr setBottomPadding(int rows, String padding){
+        Wtr tr = getTr(rows);
+        tr.setBottomPadding(padding);
+        return tr;
+    }
+    public Wtr setBottomPadding(int rows, int padding){
+        Wtr tr = getTr(rows);
+        tr.setBottomPadding(padding);
+        return tr;
+    }
+    public Wtr setBottomPadding(int rows, double padding){
+        Wtr tr = getTr(rows);
+        tr.setBottomPadding(padding);
+        return tr;
+    }
+    /**
+     * 设置整个表格中所有单元格下边距
+     * @param padding 边距 可以指定单位,如:10px
+     * @return wtable
+     */
+    public Wtable setBottomPadding(String padding){
+        for(Wtr tr:wtrs){
+            tr.setBottomPadding(padding);
+        }
+        return this;
+    }
+    public Wtable setBottomPadding(int padding){
+        for(Wtr tr:wtrs){
+            tr.setBottomPadding(padding);
+        }
+        return this;
+    }
+    public Wtable setBottomPadding(double padding){
+        for(Wtr tr:wtrs){
+            tr.setBottomPadding(padding);
+        }
+        return this;
     }
 
     public Wtc setTopPadding(int rows, int cols, String padding){
@@ -747,6 +940,39 @@ public class Wtable {
         return getTc(rows, cols).setTopPadding(padding);
     }
 
+    public Wtr setTopPadding(int rows, String padding){
+        Wtr tr = getTr(rows);
+        tr.setTopPadding(padding);
+        return tr;
+    }
+    public Wtr setTopPadding(int rows, int padding){
+        Wtr tr = getTr(rows);
+        tr.setTopPadding(padding);
+        return tr;
+    }
+    public Wtr setTopPadding(int rows, double padding){
+        Wtr tr = getTr(rows);
+        tr.setTopPadding(padding);
+        return tr;
+    }
+    public Wtable setTopPadding(String padding){
+        for(Wtr tr:wtrs){
+            tr.setTopPadding(padding);
+        }
+        return this;
+    }
+    public Wtable setTopPadding(int padding){
+        for(Wtr tr:wtrs){
+            tr.setTopPadding(padding);
+        }
+        return this;
+    }
+    public Wtable setTopPadding(double padding){
+        for(Wtr tr:wtrs){
+            tr.setTopPadding(padding);
+        }
+        return this;
+    }
     public Wtc setRightPadding(int rows, int cols, String padding){
         return getTc(rows, cols).setRightPadding(padding);
     }
@@ -756,6 +982,41 @@ public class Wtable {
     public Wtc setRightPadding(int rows, int cols, double padding){
         return getTc(rows, cols).setRightPadding(padding);
     }
+
+    public Wtr setRightPadding(int rows, String padding){
+        Wtr tr = getTr(rows);
+        tr.setRightPadding(padding);
+        return tr;
+    }
+    public Wtr setRightPadding(int rows, int padding){
+        Wtr tr = getTr(rows);
+        tr.setRightPadding(padding);
+        return tr;
+    }
+    public Wtr setRightPadding(int rows, double padding){
+        Wtr tr = getTr(rows);
+        tr.setRightPadding(padding);
+        return tr;
+    }
+    public Wtable setRightPadding(String padding){
+        for(Wtr tr:wtrs){
+            tr.setRightPadding(padding);
+        }
+        return this;
+    }
+    public Wtable setRightPadding(int padding){
+        for(Wtr tr:wtrs){
+            tr.setRightPadding(padding);
+        }
+        return this;
+    }
+    public Wtable setRightPadding(double padding){
+        for(Wtr tr:wtrs){
+            tr.setRightPadding(padding);
+        }
+        return this;
+    }
+
 
     public Wtc setLeftPadding(int rows, int cols, String padding){
         return getTc(rows, cols).setLeftPadding(padding);
@@ -767,6 +1028,42 @@ public class Wtable {
         return getTc(rows, cols).setLeftPadding(padding);
     }
 
+    public Wtr setLeftPadding(int rows, String padding){
+        Wtr tr = getTr(rows);
+        tr.setLeftPadding(padding);
+        return tr;
+    }
+    public Wtr setLeftPadding(int rows, int padding){
+        Wtr tr = getTr(rows);
+        tr.setLeftPadding(padding);
+        return tr;
+    }
+    public Wtr setLeftPadding(int rows, double padding){
+        Wtr tr = getTr(rows);
+        tr.setLeftPadding(padding);
+        return tr;
+    }
+
+    public Wtable setLeftPadding(String padding){
+        for(Wtr tr:wtrs){
+            tr.setLeftPadding(padding);
+        }
+        return this;
+    }
+    public Wtable setLeftPadding(int padding){
+        for(Wtr tr:wtrs){
+            tr.setLeftPadding(padding);
+        }
+        return this;
+    }
+    public Wtable setLeftPadding(double padding){
+        for(Wtr tr:wtrs){
+            tr.setLeftPadding(padding);
+        }
+        return this;
+    }
+
+
 
     public Wtc setPadding(int rows, int cols, String side, String padding){
         return getTc(rows, cols).setPadding(side, padding);
@@ -777,10 +1074,45 @@ public class Wtable {
     public Wtc setPadding(int rows, int cols, String side, double padding){
         return getTc(rows, cols).setPadding(side, padding);
     }
+    public Wtr setPadding(int rows, String side, String padding){
+        Wtr tr = getTr(rows);
+        tr.setPadding(side, padding);
+        return tr;
+    }
+    public Wtr setPadding(int rows, String side, int padding){
+        Wtr tr = getTr(rows);
+        tr.setPadding(side, padding);
+        return tr;
+    }
+    public Wtr setPadding(int rows, String side, double padding){
+        Wtr tr = getTr(rows);
+        tr.setPadding(side, padding);
+        return tr;
+    }
+    public Wtable setPadding(String side, String padding){
+        for(Wtr tr:wtrs){
+            tr.setPadding(side, padding);
+        }
+        return this;
+    }
+
+    public Wtable setPadding(String side, int padding){
+        for(Wtr tr:wtrs){
+            tr.setPadding(side, padding);
+        }
+        return this;
+    }
+
+    public Wtable setPadding(String side, double padding){
+        for(Wtr tr:wtrs){
+            tr.setPadding(side, padding);
+        }
+        return this;
+    }
 
 
     /**
-     * 背景色
+     * 设置单元格背景色
      * @param rows rows
      * @param cols cols
      * @param color 颜色
@@ -791,7 +1123,26 @@ public class Wtable {
     }
 
     /**
-     * 清除样式
+     * 设置整行单元格背景色
+     * @param rows rows
+     * @param color 颜色
+     * @return Wtr
+     */
+    public Wtr setBackgroundColor(int rows, String color){
+        Wtr tr = getTr(rows);
+        tr.setBackgroundColor(color);
+        return tr;
+    }
+
+    public Wtable setBackgroundColor(String color){
+        for(Wtr tr:wtrs){
+            tr.setBackgroundColor(color);
+        }
+        return this;
+    }
+
+    /**
+     * 清除单元格样式
      * @param rows rows
      * @param cols cols
      * @return Wtc
@@ -800,7 +1151,23 @@ public class Wtable {
         return getTc(rows, cols).removeStyle();
     }
     /**
-     * 清除背景色
+     * 清除整行单元格样式
+     * @param rows rows
+     * @return Wtr
+     */
+    public Wtr removeStyle(int rows){
+        Wtr tr = getTr(rows);
+        tr.removeContent();
+        return tr;
+    }
+    public Wtable removeStyle(){
+        for(Wtr tr:wtrs){
+            tr.removeStyle();
+        }
+        return this;
+    }
+    /**
+     * 清除单元格背景色
      * @param rows rows
      * @param cols cols
      * @return Wtc
@@ -810,13 +1177,46 @@ public class Wtable {
     }
 
     /**
-     * 清除颜色
+     * 清除整行单元格背景色
+     * @param rows rows
+     * @return Wtr
+     */
+    public Wtr removeBackgroundColor(int rows){
+        Wtr tr = getTr(rows);
+        tr.removeBackgroundColor();
+        return tr;
+    }
+    public Wtable removeBackgroundColor(){
+        for(Wtr tr:wtrs){
+            tr.removeBackgroundColor();
+        }
+        return this;
+    }
+
+    /**
+     * 清除单元格颜色
      * @param rows rows
      * @param cols cols
      * @return Wtc
      */
     public Wtc removeColor(int rows, int cols){
         return getTc(rows, cols).removeColor();
+    }
+    /**
+     * 清除整行单元格颜色
+     * @param rows rows
+     * @return Wtr
+     */
+    public Wtr removeColor(int rows){
+        Wtr tr = getTr(rows);
+        tr.removeColor();
+        return tr;
+    }
+    public Wtable removeColor(){
+        for(Wtr tr:wtrs){
+            tr.removeColor();
+        }
+        return this;
     }
     /**
      * 粗体
@@ -830,6 +1230,23 @@ public class Wtable {
     }
     public Wtc setBold(int rows, int cols){
         return setBold(rows, cols, true);
+    }
+    public Wtr setBold(int rows){
+        return setBold(rows, true);
+    }
+    public Wtr setBold(int rows, boolean bold){
+        Wtr tr = getTr(rows);
+        tr.setBold(bold);
+        return tr;
+    }
+    public Wtable setBold(boolean bold){
+        for(Wtr tr:wtrs){
+            tr.setBold(bold);
+        }
+        return this;
+    }
+    public Wtable setBold(){
+        return setBold(true);
     }
 
     /**
@@ -859,6 +1276,20 @@ public class Wtable {
     public Wtc setStrike(int rows, int cols){
         return setStrike(rows, cols, true);
     }
+    public Wtr setStrike(int rows, boolean strike){
+        Wtr tr = getTr(rows);
+        tr.setStrike(strike);
+        return tr;
+    }
+    public Wtable setStrike(boolean strike){
+        for(Wtr tr:wtrs){
+            tr.setStrike(strike);
+        }
+        return this;
+    }
+    public Wtable setStrike(){
+        return setStrike(true);
+    }
 
     /**
      * 斜体
@@ -875,8 +1306,56 @@ public class Wtable {
         return setItalic(rows, cols, true);
     }
 
+    /**
+     * 设置整行斜体
+     * @param rows 行
+     * @param italic 是否斜体
+     * @return wtr
+     */
+    public Wtr setItalic(int rows,  boolean italic){
+        Wtr tr = getTr(rows);
+        tr.setItalic(italic);
+        return tr;
+    }
+    public Wtable setItalic(boolean italic){
+        for(Wtr tr:wtrs){
+            tr.setItalic(italic);
+        }
+        return this;
+    }
+    public Wtable setItalic(){
+        return setItalic(true);
+    }
+
+    /**
+     * 替换单元格内容
+     * @param rows 行
+     * @param cols 行
+     * @param src src
+     * @param tar tar
+     * @return wtc
+     */
     public Wtc replace(int rows, int cols, String src, String tar){
         return getTc(rows, cols).replace(src, tar);
+    }
+
+    /**
+     * 替换整行单元格内容
+     * @param rows 行
+     * @param src src
+     * @param tar tar
+     * @return wtr
+     */
+    public Wtr replace(int rows, String src, String tar){
+        Wtr tr = getTr(rows);
+        tr.replace(src, tar);
+        return tr;
+    }
+    public Wtable replace(String src, String tar){
+        for(Wtr tr:wtrs){
+            tr.replace(src, tar);
+        }
+        return this;
     }
 
     public String getWidthUnit() {

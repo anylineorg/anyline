@@ -249,4 +249,182 @@ public class Wtr {
         DocxUtil.removeContent(src);
         return this;
     }
+    public Wtr removeStyle(){
+        for(Wtc tc:wtcs){
+            tc.removeStyle();
+        }
+        return this;
+    }
+    public Wtr removeBackgroundColor(){
+        for(Wtc tc:wtcs){
+            tc.removeBackgroundColor();
+        }
+        return this;
+    }
+    public Wtr removeColor(){
+        for(Wtc tc:wtcs){
+            tc.removeColor();
+        }
+        return this;
+    }
+    public Wtr replace(String src, String tar){
+        for(Wtc tc:wtcs){
+            tc.replace(src, tar);
+        }
+        return this;
+    }
+    public Wtr setBold(){
+        for(Wtc tc:wtcs){
+            tc.setBold();
+        }
+        return this;
+    }
+    public Wtr setBold(boolean bold){
+        for(Wtc tc:wtcs){
+            tc.setBold(bold);
+        }
+        return this;
+    }
+    /**
+     * 下划线
+     * @param underline 是否
+     * @return Wtc
+     */
+    public Wtr setUnderline(boolean underline){
+        for(Wtc tc:wtcs){
+            tc.setUnderline(underline);
+        }
+        return this;
+    }
+    public Wtr setUnderline(){
+        setUnderline(true);
+        return this;
+    }
+
+    /**
+     * 删除线
+     * @param strike 是否
+     * @return Wtc
+     */
+    public Wtr setStrike(boolean strike){
+        for(Wtc tc:wtcs){
+            tc.setStrike(strike);
+        }
+        return this;
+    }
+    public Wtr setStrike(){
+        setStrike(true);
+        return this;
+    }
+
+    /**
+     * 斜体
+     * @param italic 是否
+     * @return Wtc
+     */
+    public Wtr setItalic(boolean italic){
+        for(Wtc tc:wtcs){
+            tc.setItalic(italic);
+        }
+        return this;
+    }
+
+    public Wtr setItalic(){
+        return setItalic(true);
+    }
+    public Wtr setPadding(String side, double padding){
+        for(Wtc tc:wtcs){
+            tc.setPadding(side, padding);
+        }
+        return this;
+    }
+    public Wtr setPadding(String side, String padding){
+        for(Wtc tc:wtcs){
+            tc.setPadding(side, padding);
+        }
+        return this;
+    }
+    public Wtr setPadding(String side, int padding){
+        for(Wtc tc:wtcs){
+            tc.setPadding(side, padding);
+        }
+        return this;
+    }
+
+    public Wtr setLeftPadding(double padding){
+        for(Wtc tc:wtcs){
+            tc.setLeftPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setLeftPadding(String padding){
+        for(Wtc tc:wtcs){
+            tc.setLeftPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setLeftPadding(int padding){
+        for(Wtc tc:wtcs){
+            tc.setLeftPadding(padding);
+        }
+        return this;
+    }
+
+    public Wtr setRightPadding(double padding){
+        for(Wtc tc:wtcs){
+            tc.setRightPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setRightPadding(String padding){
+        for(Wtc tc:wtcs){
+            tc.setRightPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setRightPadding(int padding){
+        for(Wtc tc:wtcs){
+            tc.setRightPadding(padding);
+        }
+        return this;
+    }
+
+    public Wtr setTopPadding(double padding){
+        for(Wtc tc:wtcs){
+            tc.setTopPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setTopPadding(String padding){
+        for(Wtc tc:wtcs){
+            tc.setTopPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setTopPadding(int padding){
+        for(Wtc tc:wtcs){
+            tc.setTopPadding(padding);
+        }
+        return this;
+    }
+
+
+    public Wtr setBottomPadding(double padding){
+        for(Wtc tc:wtcs){
+            tc.setBottomPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setBottomPadding(String padding){
+        for(Wtc tc:wtcs){
+            tc.setBottomPadding(padding);
+        }
+        return this;
+    }
+    public Wtr setBottomPadding(int padding){
+        for(Wtc tc:wtcs){
+            tc.setBottomPadding(padding);
+        }
+        return this;
+    }
 }
