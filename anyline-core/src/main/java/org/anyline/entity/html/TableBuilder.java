@@ -182,7 +182,7 @@ public class TableBuilder {
         Table table = null;
         table = new Table();
         if(BasicUtil.isNotEmpty(width)){
-            table.setWidthUnit(width);
+            table.setWidth(width);
         }
         parseUnion();
         table.setClazz(clazz);

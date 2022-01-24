@@ -536,6 +536,8 @@ public class DocxUtil {
             if(strike.equalsIgnoreCase("true")){
                 //<w:dstrike w:val="true"/>
                 addElement(pr, "dstrike","val","true");
+            }else if("none".equalsIgnoreCase(strike) || "false".equalsIgnoreCase(strike)){
+                addElement(pr, "dstrike","val","false");
             }
         }
         //斜体
@@ -544,6 +546,8 @@ public class DocxUtil {
             if(italics.equalsIgnoreCase("true")){
                 //<w:dstrike w:val="true"/>
                 addElement(pr, "i","val","true");
+            }else if("none".equalsIgnoreCase(italics) || "false".equalsIgnoreCase(italics)){
+                addElement(pr, "i","val","false");
             }
         }
         String fontFamily = styles.get("font-family");
@@ -603,8 +607,12 @@ public class DocxUtil {
      * @param key attribute key
      * @param value attribute value
      */
-    public static void addElement(Element parent, String tag, String key, String value){
+    public static Element addElement(Element parent, String tag, String key, String value){
         Element element = DocxUtil.addElement(parent,tag);
+        addAttribute(element, key, value);
+        return element;
+    }
+    public static void addAttribute(Element element, String key, String value){
         Attribute attribute = element.attribute(key);
         if(null == attribute){
             attribute = element.attribute("w:"+key);
@@ -792,8 +800,7 @@ public class DocxUtil {
                     continue;
                 }
                 if(sk.equalsIgnoreCase("color")){
-                    Element color = pr.addElement("w:color");
-                    color.addAttribute("w:val", sv.replace("#",""));
+                    addElement(pr, "color", "val", sv.replace("#",""));
                 }else if(sk.equalsIgnoreCase("background-color")){
                     //<w:highlight w:val="yellow"/>
                     DocxUtil.addElement(pr, "highlight", "val",sv.replace("#",""));

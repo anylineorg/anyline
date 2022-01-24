@@ -139,16 +139,7 @@ public class Wp {
     }
     public Wp setItalic(boolean italic){
         Element pr = DocxUtil.addElement(src, "pPr");
-        Element i = pr.element("i");
-        if(italic){
-            if(null == i){
-                pr.addElement("w:i");
-            }
-        }else{
-            if(null != i){
-                pr.remove(i);
-            }
-        }
+        DocxUtil.addElement(pr, "i","val",italic+"");
         for(Wr wr:wrs){
             wr.setItalic(italic);
         }
