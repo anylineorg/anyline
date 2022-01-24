@@ -388,7 +388,7 @@ public class ExcelUtil {
 			return "";
 		}
 		String value = "";
-		switch (cell.getCellTypeEnum()) {
+		switch (cell.getCellType()) {
 			case NUMERIC: // 数字
 				if (HSSFDateUtil.isCellDateFormatted(cell)) {
 					Date date = cell.getDateCellValue();
