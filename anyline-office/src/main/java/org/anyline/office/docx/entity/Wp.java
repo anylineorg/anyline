@@ -79,7 +79,8 @@ public class Wp {
 
     public Wp setBackgroundColor(String color){
         Element pr = DocxUtil.addElement(src, "pPr");
-        DocxUtil.addElement(pr, "highlight", "val", color.replace("#",""));
+        color = color.replace("#","");
+        DocxUtil.addElement(pr, "highlight", "val", color);
         for(Wr wr:wrs){
             wr.setBackgroundColor(color);
         }
