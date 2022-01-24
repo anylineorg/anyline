@@ -2,10 +2,10 @@ package org.anyline.jdbc.config.db.sql.auto.impl;
 
 public class Join {
     public static enum TYPE{
-        INNER               {public String getCode(){return "INNER";} 	public String getName(){return "内连接";}},
+        INNER               {public String getCode(){return "INNER JOIN";} 	public String getName(){return "内连接";}},
         LEFT				{public String getCode(){return "LEFT JOIN";} 	public String getName(){return "左连接";}},
-        RIGHT			    {public String getCode(){return "RIGHT OJIN";} 	public String getName(){return "右连接";}},
-        FULL				{public String getCode(){return "FULL";} 	public String getName(){return "全连接";}};
+        RIGHT			    {public String getCode(){return "RIGHT JOIN";} 	public String getName(){return "右连接";}},
+        FULL				{public String getCode(){return "FULL JOIN";} 	public String getName(){return "全连接";}};
         public abstract String getName();
         public abstract String getCode();
     }
