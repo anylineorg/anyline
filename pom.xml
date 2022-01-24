@@ -73,7 +73,8 @@
 		<module>anyline-cache-redis</module>
         <module>anyline-print-10ss</module>
         <module>anyline-tencent</module>
-	</modules>
+        <module>anyline-pdf</module>
+    </modules>
 	<build>
 		<plugins>
 			<plugin>
