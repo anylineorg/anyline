@@ -795,6 +795,7 @@ public class WDocument {
         prstGeom.addAttribute("prst","rect");
         prstGeom.addElement("a:avLst");
 
+        DocxUtil.after(r, prev);
         return r;
 
     }
