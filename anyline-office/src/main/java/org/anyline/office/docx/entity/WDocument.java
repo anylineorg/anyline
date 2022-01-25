@@ -717,14 +717,22 @@ public class WDocument {
             }
         }
         File tmpdir = new File(System.getProperty("java.io.tmpdir"));
-        File img = new File(tmpdir,"image" + rdm + "." + subfix);
+        File img = null;
         try {
             //下载文件
-            HttpUtil.download(src, img);
+            if(src.startsWith("http") || src.startsWith("//")) {
+                img = new File(tmpdir,"image" + rdm + "." + subfix);
+                HttpUtil.download(src, img);
+            }else{
+                //本地图片
+                img = new File(src);
+            }
             Map<String,File> map = new HashMap<>();
             map.put("word/media/"+img.getName(),img);
             ZipUtil.append( map,file);
-            img.delete();
+            if(src.startsWith("http") || src.startsWith("//")) {
+                img.delete();
+            }
             //创建文件资源引用
             Element relRoot = relsDoc.getRootElement();
             Element imgRel = relRoot.addElement("Relationship");
