@@ -25,7 +25,6 @@ import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.FileUtil;
 import org.apache.poi.EncryptedDocumentException;
-import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -390,7 +389,7 @@ public class ExcelUtil {
 		String value = "";
 		switch (cell.getCellType()) {
 			case NUMERIC: // 数字
-				if (HSSFDateUtil.isCellDateFormatted(cell)) {
+				if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
 					Date date = cell.getDateCellValue();
 					DateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					value = formater.format(date);
