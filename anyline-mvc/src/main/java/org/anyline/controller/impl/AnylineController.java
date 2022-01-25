@@ -229,6 +229,7 @@ public class AnylineController extends AbstractBasicController {
 		}else if("Camel".equals(keyCase)){
 			if(null != metadatas){
 				for(String key:metadatas){
+					key = CharUtil.toUpperCaseHeader(key.toLowerCase());
 					params.add(key+":"+BeanUtil.Camel(key));
 				}
 			}
