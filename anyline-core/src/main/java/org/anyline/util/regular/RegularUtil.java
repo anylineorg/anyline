@@ -17,25 +17,19 @@
  */
 
 
-package org.anyline.util.regular; 
- 
+package org.anyline.util.regular;
+
+import org.anyline.util.ConfigTable;
+import org.apache.oro.text.regex.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.anyline.util.ConfigTable;
-import org.apache.oro.text.regex.MatchResult;
-import org.apache.oro.text.regex.Pattern;
-import org.apache.oro.text.regex.PatternCompiler;
-import org.apache.oro.text.regex.PatternMatcher;
-import org.apache.oro.text.regex.PatternMatcherInput;
-import org.apache.oro.text.regex.Perl5Compiler;
-import org.apache.oro.text.regex.Perl5Matcher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
- 
- 
+
 public class RegularUtil {
 	private static Regular regular; 
 	public static Regular regularMatch 		= new RegularMatch();			//完全匹配模式 
@@ -528,16 +522,16 @@ public class RegularUtil {
 		List<List<String>> result = new ArrayList<List<String>>();
 		List<List<String>> items = new ArrayList<List<String>>();
 		if(null != tags && tags.length>0){
-			String tagNames = "";
+			String names = "";
 			int size = tags.length;
 			for(int i=0; i<size; i++){
 				if(i==0){
-					tagNames += tags[i];
+					names += tags[i];
 				}else{
-					tagNames += "|"+tags[i];
+					names += "|"+tags[i];
 				}
 			}
-			String regx = "(?i)((<(" + tagNames + ")[^<]*?>)([\\s\\S]*?)(</\\3>))|(<(" +tagNames+")[\\s\\S]*?>)";
+			String regx = "(?i)((<(" + names + ")\\s[^<]*?>)([\\s\\S]*?)(</\\3>))|(<(" +names+")\\s[\\s\\S]*?>)";
 			items = fetchs(txt, regx);
 			for(List<String> item:items){
 				List<String> rtn = new ArrayList<>();
