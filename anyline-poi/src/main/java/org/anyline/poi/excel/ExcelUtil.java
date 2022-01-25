@@ -387,7 +387,8 @@ public class ExcelUtil {
 			return "";
 		}
 		String value = "";
-		switch (cell.getCellType()) {
+		//5.0.0 getCellType()
+		switch (cell.getCellTypeEnum()) {
 			case NUMERIC: // 数字
 				if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
 					Date date = cell.getDateCellValue();
