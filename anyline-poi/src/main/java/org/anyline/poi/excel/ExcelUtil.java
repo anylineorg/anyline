@@ -410,10 +410,10 @@ public class ExcelUtil {
 				value = "";
 				break;
 			case ERROR: // 故障
-				value = "非法字符";
+				value = "";
 				break;
 			default:
-				value = "未知类型";
+				value = "";
 				break;
 		}
 		return value;
