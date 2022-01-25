@@ -81,7 +81,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	private Map<String,String> keymap		= new HashMap<String,String>()				; //keymap
 	private KEY_CASE keyCase 				= KEY_CASE.CONFIG				; //列名格式
 	private boolean isUpperKey				= false							; //是否已执行大写key转换(影响到驼峰执行)
+	private Map<String,String> converts 	= new HashMap<>()				; //key是否已转换<key,src><当前key,原key>
 	public boolean skip						= false							; //遍历计算时标记
+
 
 	public DataRow(){
 		String pk = putKey(PRIMARY_KEY);
@@ -197,7 +199,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 					row.put(k, value);
 				}
 			}else{
-
 				List<Field> fields = BeanUtil.getFields(obj.getClass());
 				for(Field field:fields) {
 					if (Modifier.isStatic(field.getModifiers())) {
@@ -521,13 +522,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			for(String key:keys){
 				Object value = get(key);
 				remove(getKey(key));
-				put(KEY_CASE.LOWER, key, value);
+				key = key.toLowerCase();
+				put(KEY_CASE.SRC, key, value);
 			}
 		}else{
 			for(String key:keys()){
 				Object value = get(key);
 				remove(getKey(key));
-				put(KEY_CASE.LOWER, key, value);
+				key = key.toLowerCase();
+				put(KEY_CASE.SRC, key, value);
 			}
 		}
 		this.keyCase = KEY_CASE.LOWER;
@@ -543,13 +546,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			for(String key:keys){
 				Object value = get(key);
 				remove(getKey(key));
-				put(KEY_CASE.UPPER, key, value);
+				key = key.toUpperCase();
+				put(KEY_CASE.SRC, key, value);
 			}
 		}else{
 			for(String key:keys()){
 				Object value = get(key);
 				remove(getKey(key));
-				put(KEY_CASE.UPPER,key, value);
+				key = key.toUpperCase();
+				put(KEY_CASE.SRC,key, value);
 			}
 		}
 		this.keyCase = KEY_CASE.UPPER;

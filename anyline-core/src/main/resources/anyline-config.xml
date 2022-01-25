@@ -73,7 +73,13 @@
 
 	<!--获取表结构的缓存KEY-->
 	<property key="TABLE_METADATA_CACHE_KEY">static_1800</property>
-	<!--http参数格式camel:小驼峰 Camel:大驼峰 在entity()中会用到如果数据库列表中有下划线会按以下格式转换-->
+	<!--
+		http参数格式camel:小驼峰 Camel:大驼峰
+		在entity()中会用到如果数据库列表中有下划线会按以下格式转换
+
+		注意这里只支持下划线转驼峰
+		如果数据库中已经是驼峰，不要配置这个参数
+	-->
 	<property key="HTTP_PARAM_KEYS_CASE">camel</property>
 
 </properties>

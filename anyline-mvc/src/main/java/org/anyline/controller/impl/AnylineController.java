@@ -217,11 +217,13 @@ public class AnylineController extends AbstractBasicController {
 	}
 	private List<String> params(List<String> metadatas){
 		List<String> params = new ArrayList<>();
+		//注意这里只支持下划线转驼峰
+		//如果数据库中已经是驼峰，不要配置这个参数
 		String keyCase = ConfigTable.getString("HTTP_PARAM_KEYS_CASE");
 		if("camel".equals(keyCase)){
 			if(null != metadatas){
 				for(String key:metadatas){
-					params.add(key+":"+BeanUtil.camel(key));
+					params.add(key+":"+BeanUtil.camel(key.toLowerCase()));
 				}
 			}
 		}else if("Camel".equals(keyCase)){
@@ -233,6 +235,7 @@ public class AnylineController extends AbstractBasicController {
 		}
 		return params;
 	}
+
 
 	protected ConfigStore parseConfig(int vol, String... configs) { 
 		return parseConfig(getRequest(), vol, configs); 
