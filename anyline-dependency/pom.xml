@@ -74,7 +74,7 @@
 		<spring.redis.version>2.5.6</spring.redis.version>
 		<rxtx.version>2.2</rxtx.version>
 		<pdfbox.version>2.0.25</pdfbox.version>
-		<poi.version>5.0.0</poi.version>
+		<poi.version>3.17</poi.version>
 	</properties>
 
 	<dependencyManagement>
