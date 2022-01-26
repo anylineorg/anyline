@@ -744,29 +744,113 @@ public class WDocument {
         }
 
         Element draw = r.addElement("w:drawing");
-        Element inline = draw.addElement("wp:inline");
-        inline.addAttribute("distT","0");
-        inline.addAttribute("distB","0");
-        inline.addAttribute("distL","0");
-        inline.addAttribute("distR","0");
-        Element extent = inline.addElement("wp:extent");
+        Element box = null;
+        String positionType = styles.get("position");
+        /*
+            fixed            相对于页面的左上角定位对象
+            relative         相对其他元素定位
+        */
+        boolean isFloat = "relative".equalsIgnoreCase(positionType) || "fixed".equalsIgnoreCase(positionType);
+        if(isFloat){
+            //浮动
+            box = draw.addElement("wp:anchor");
+            box.addAttribute("distT","0");
+            box.addAttribute("distB","0");
+            box.addAttribute("distL","114300");
+            box.addAttribute("distR","114300");
+
+            int zIndex = BasicUtil.parseInt(styles.get("z-index"),100);
+            box.addAttribute("relativeHeight",zIndex+"");
+            box.addAttribute("behindDoc","0");
+            box.addAttribute("locked","0");
+            box.addAttribute("layoutInCell","0");
+            box.addAttribute("allowOverlap","1");
+
+
+            //水平偏移
+            int offsetX = (int)DocxUtil.dxa2emu(DocxUtil.dxa(styles.get("offset-x")));
+            //垂直偏移
+            int offsetY = (int)DocxUtil.dxa2emu(DocxUtil.dxa(styles.get("offset-y")));
+
+            Element simplePos= box.addElement("wp:simplePos");
+            if("fixed".equals(positionType)){
+                //如果使用simplePos定位 这里设置成1
+                //相对于页面的左上角定位对象
+                box.addAttribute("simplePos","1");
+                simplePos.addAttribute("x",offsetX+"");
+                simplePos.addAttribute("y",offsetY+"");
+            }else{
+                //relative相对位
+                box.addAttribute("simplePos","0");
+                simplePos.addAttribute("x","0");
+                simplePos.addAttribute("y","0");
+                /*对于水平定位:
+                character - 相对于锚点在运行内容中的位置
+                column  - 相对于包含锚的列的范围
+                insideMargin  - 相对于奇数页的左边距，偶数页的右边距
+                leftMargin  - 相对于左边距
+                margin  - 相对于页边距
+                outsideMargin  - 相对于奇数页的右边距，偶数页的左边距
+                page - 相对于页面边缘
+                rightMargin - 相对于右边距
+                */
+
+                //水平参照
+                String relativeX = styles.get("relative-x");
+
+                Element positionH = box.addElement("wp:positionH");
+                positionH.addAttribute("relativeFrom",relativeX);
+                Element posOffsetH = positionH.addElement("wp:posOffset");
+                posOffsetH.setText(offsetX+"");
+                /*对于垂直定位：
+                bottomMargin - 相对于底部边距
+                insideMargin - 相对于当前页面的内边距
+                line - 相对于包含锚字符的行
+                margin - 相对于页边距
+                outsideMargin - 相对于当前页面的外边距
+                page - 相对于页面边缘
+                paragraph - 相对于包含锚的段落
+                topMargin - 相对于上边距
+                */
+                //垂直参照
+                String relativeY = styles.get("relative-y");
+
+                Element positionV = box.addElement("wp:positionV");
+                positionV.addAttribute("relativeFrom",relativeY);
+                Element posOffsetV = positionV.addElement("wp:posOffset");
+                posOffsetV.setText(offsetY+"");
+
+            }
+        }else{
+            box = draw.addElement("wp:inline");
+            box.addAttribute("distT","0");
+            box.addAttribute("distB","0");
+            box.addAttribute("distL","0");
+            box.addAttribute("distR","0");
+        }
+        Element extent = box.addElement("wp:extent");
         extent.addAttribute("cx", width+"");
         extent.addAttribute("cy", height+"");
-        Element effectExtent = inline.addElement("wp:effectExtent"); //边距
+        Element effectExtent = box.addElement("wp:effectExtent"); //边距
+
         effectExtent.addAttribute("l","0");
-        effectExtent.addAttribute("t","0");
         effectExtent.addAttribute("r","0");
+        effectExtent.addAttribute("t","0");
         effectExtent.addAttribute("b","0");
-        Element docPr = inline.addElement("wp:docPr");
+        if(isFloat){
+            //浮动
+            box.addElement("wp:wrapNone");
+        }
+        Element docPr = box.addElement("wp:docPr");
         int docPrId = NumberUtil.random(0,100);
         docPr.addAttribute("id", docPrId+"");
         docPr.addAttribute("name", "图片"+rdm);
         docPr.addAttribute("descr", img.getName());
-        Element cNvGraphicFramePr = inline.addElement("wp:cNvGraphicFramePr");
+        Element cNvGraphicFramePr = box.addElement("wp:cNvGraphicFramePr");
         Element graphicFrameLocks = cNvGraphicFramePr.addElement("a:graphicFrameLocks","http://schemas.openxmlformats.org/drawingml/2006/main");
         graphicFrameLocks.addAttribute("xmlns:a","http://schemas.openxmlformats.org/drawingml/2006/main");
         graphicFrameLocks.addAttribute("noChangeAspect","1");
-        Element graphic = inline.addElement("a:graphic","http://schemas.openxmlformats.org/drawingml/2006/main");
+        Element graphic = box.addElement("a:graphic","http://schemas.openxmlformats.org/drawingml/2006/main");
         graphic.addAttribute("xmlns:a","http://schemas.openxmlformats.org/drawingml/2006/main");
         Element graphicData = graphic.addElement("a:graphicData");
         graphicData.addAttribute("uri","http://schemas.openxmlformats.org/drawingml/2006/picture");
