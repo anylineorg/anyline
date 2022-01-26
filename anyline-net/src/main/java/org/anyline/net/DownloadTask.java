@@ -1,18 +1,18 @@
 package org.anyline.net; 
  
-import java.io.File; 
-import java.math.BigDecimal; 
-import java.util.HashMap; 
-import java.util.Iterator; 
-import java.util.LinkedHashMap; 
-import java.util.Map; 
-import java.util.Map.Entry; 
- 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.DateUtil; 
-import org.anyline.util.FileUtil; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
+import org.anyline.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
  
 public class DownloadTask { 
 	private Logger log = LoggerFactory.getLogger(DownloadTask.class); 
@@ -119,7 +119,7 @@ public class DownloadTask {
 	} 
 	/** 
 	 * 平均下载速度/s 
-	 * @return return
+	 * @return String
 	 */ 
 	public String getAvgSpeedFormat(){ 
 		long speed = getSpeed(); 
@@ -127,7 +127,7 @@ public class DownloadTask {
 	} 
 	/** 
 	 * 瞬时下载速度/s 
-	 * @return return
+	 * @return String
 	 */ 
 	public String getSpeedFormat(){ 
 		long speed = getSpeed(); 
@@ -371,7 +371,12 @@ public class DownloadTask {
 			expend = end - start; 
 		} 
 		return expend; 
-	} 
+	}
+
+	/**
+	 * 耗时
+	 * @return String
+	 */
 	public String getExpendFormat(){ 
 		return DateUtil.conversion(getExpend()); 
 	} 
@@ -394,7 +399,11 @@ public class DownloadTask {
 			expect = (long)(length*1.0 / speed - expend);	//剩余时间=预计总耗时-已耗时 
 		} 
 		return expect; 
-	} 
+	}
+	/**
+	 * 预计剩余时间
+	 * @return return
+	 */
 	public long getExpect() { 
 		return expect; 
 	} 
