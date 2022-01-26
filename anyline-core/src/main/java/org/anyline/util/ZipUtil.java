@@ -66,6 +66,10 @@ public class ZipUtil {
 	public static String read(File zip, String item){
 		InputStream in = null;
 		ZipFile _zip = null;
+		if(!zip.exists()){
+			log.error("[文件不存在][path:{}]", zip.getAbsolutePath());
+			return null;
+		}
 		try {
 			_zip = new ZipFile(zip);
 			ZipEntry _item = _zip.getEntry(item);
@@ -98,7 +102,10 @@ public class ZipUtil {
 	}
 
 	public static void replace(File src, String item, InputStream in) throws Exception {
-
+		if(!src.exists()){
+			log.error("[文件不存在][path:{}]", src.getAbsolutePath());
+			return;
+		}
 		File tempFile = FileUtil.createTempFile(src);
 		ZipFile zip = new ZipFile(tempFile);
 		Enumeration<? extends ZipEntry> entrys = zip.entries();
