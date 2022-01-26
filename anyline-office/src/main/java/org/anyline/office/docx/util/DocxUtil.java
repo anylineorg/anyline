@@ -1048,6 +1048,7 @@ public class DocxUtil {
     public static final double CM_PER_PT = 28.3;
     public static final double MM_PER_PT = 2.83;
     public static final int EMU_PER_PX = 9525;
+    public static final int EMU_PER_DXA = 635;
     public static final int px2dxa(int px){
         return pt2dxa(px2pt(px));
     }
@@ -1066,7 +1067,9 @@ public class DocxUtil {
     public static final int px2emu(int px) {
         return px* EMU_PER_PX;
     }
-
+    public static final double dxa2emu(double dxa){
+        return dxa * EMU_PER_DXA;
+    }
     public static final double emu2px(double emu) {
         return (emu*EMU_PER_PX);
     }
