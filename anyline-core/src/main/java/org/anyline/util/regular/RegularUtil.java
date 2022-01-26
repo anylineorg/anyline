@@ -560,13 +560,13 @@ public class RegularUtil {
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
 	 * fetchAttributeValues(txt,"id");
 	 * @param txt txt
-	 * @param tag tag
+	 * @param attribute attribute
 	 * @return return
 	 */
-	public static List<List<String>> fetchAttributeList(String txt, String tag){
+	public static List<List<String>> fetchAttributeList(String txt, String attribute){
 		List<List<String>> result = new ArrayList<List<String>>();
 		try{
-			String regx = "(?i)(" + tag + ")\\s*=\\s*(['\"])([\\s\\S]*?)\\2";
+			String regx = "(?i)(" + attribute + ")\\s*=\\s*(['\"])([\\s\\S]*?)\\2";
 			result = fetchs(txt, regx);
 		}catch(Exception e){
 			e.printStackTrace();
@@ -578,20 +578,20 @@ public class RegularUtil {
 	 * 0全文  1:属性name 2:引号('|") 3:属性值
 	 * fetchAttributeValues(txt,"id","name");
 	 * @param txt txt
-	 * @param tag tag
+	 * @param attribute attribute
 	 * @return return 
 	 */
-	public static List<String> fetchAttribute(String txt, String tag){
+	public static List<String> fetchAttribute(String txt, String attribute){
 		List<String> result = new ArrayList<>();
-		List<List<String>> list = fetchAttributeList(txt, tag);
+		List<List<String>> list = fetchAttributeList(txt, attribute);
 		if(list.size() >0){
 			result = list.get(0);
 		}
 		return result;
 	}
-	public static List<String> fetchAttributeValues(String txt, String tag){
+	public static List<String> fetchAttributeValues(String txt, String attribute){
 		List<String> result = new ArrayList<>();
-		List<List<String>> list = fetchAttributeList(txt, tag);
+		List<List<String>> list = fetchAttributeList(txt, attribute);
 		for(List<String> attr: list){
 			if(attr.size() > 3 ){
 				result.add(attr.get(3));
@@ -599,8 +599,9 @@ public class RegularUtil {
 		}
 		return result;
 	}
-	public static String fetchAttributeValue(String txt, String tag){
-		List<String> values = fetchAttributeValues(txt, tag);
+
+	public static String fetchAttributeValue(String txt, String attribute){
+		List<String> values = fetchAttributeValues(txt, attribute);
 		if(values.size()>0){
 			return values.get(0);
 		}else{
