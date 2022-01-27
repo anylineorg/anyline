@@ -17,63 +17,43 @@
  */ 
 package org.anyline.net; 
  
-import java.io.File; 
-import java.io.FileInputStream; 
-import java.io.IOException; 
-import java.io.InputStream; 
-import java.io.RandomAccessFile; 
-import java.io.UnsupportedEncodingException; 
-import java.nio.charset.Charset; 
-import java.security.GeneralSecurityException; 
-import java.security.KeyStore; 
-import java.security.cert.CertificateException; 
-import java.security.cert.X509Certificate; 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap; 
-import java.util.Iterator; 
-import java.util.List; 
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.*;
-
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.FileUtil; 
-import org.apache.http.Header; 
-import org.apache.http.HttpEntity; 
-import org.apache.http.HttpResponse; 
-import org.apache.http.NameValuePair; 
-import org.apache.http.client.config.RequestConfig; 
-import org.apache.http.client.entity.UrlEncodedFormEntity; 
-import org.apache.http.client.methods.CloseableHttpResponse; 
-import org.apache.http.client.methods.HttpDelete; 
-import org.apache.http.client.methods.HttpGet; 
-import org.apache.http.client.methods.HttpPost; 
-import org.apache.http.client.methods.HttpPut; 
-import org.apache.http.client.methods.HttpRequestBase; 
+import org.anyline.util.FileUtil;
+import org.apache.http.Header;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.*;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-import org.apache.http.conn.ssl.SSLContextBuilder; 
-import org.apache.http.conn.ssl.SSLContexts; 
-import org.apache.http.conn.ssl.TrustStrategy; 
-import org.apache.http.conn.ssl.X509HostnameVerifier; 
+import org.apache.http.conn.ssl.SSLContexts;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntityBuilder; 
-import org.apache.http.impl.client.CloseableHttpClient; 
-import org.apache.http.impl.client.HttpClientBuilder; 
-import org.apache.http.impl.client.HttpClients; 
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager; 
-import org.apache.http.message.BasicNameValuePair; 
-import org.apache.http.util.ByteArrayBuffer; 
-import org.apache.http.util.EntityUtils; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
-/** 
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.ByteArrayBuffer;
+import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.security.KeyStore;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+/**
  * 基于hpptclient4.x 
  * 第一个参数用来保持session连接  
  * null或default:整个应用使用同一个session  
@@ -1259,4 +1239,28 @@ public class HttpUtil {
 		}
 		return sslClient;
 	}
+	public static boolean isUrl(String src){
+		if(null == src){
+			return false;
+		}
+		if(src.startsWith("http://") || src.startsWith("https://")){
+			return true;
+		}
+		if(src.startsWith("//")){
+			src = src.substring(2);
+			int index1 = src.indexOf("."); 	// 域名中的.
+			if(index1 == -1){
+				return false;
+			}
+			int index2 = src.indexOf("/");	// url中的path分隔
+			if(index1 < index2){			// 没有在/之前出现的 有可能是文件名中的.
+				return true;
+			}
+			if(index2 == -1){				//没有域名
+				return true;
+			}
+		}
+		return false;
+	}
+
 }

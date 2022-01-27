@@ -720,17 +720,20 @@ public class WDocument {
         File img = null;
         try {
             //下载文件
-            if(src.startsWith("http") || src.startsWith("//")) {
+            if(HttpUtil.isUrl(src)) {
                 img = new File(tmpdir,"image" + rdm + "." + subfix);
                 HttpUtil.download(src, img);
             }else{
                 //本地图片
+                if(src.startsWith("file:")){
+                    src = src.substring("file:".length());
+                }
                 img = new File(src);
             }
             Map<String,File> map = new HashMap<>();
             map.put("word/media/"+img.getName(),img);
             ZipUtil.append( map,file);
-            if(src.startsWith("http") || src.startsWith("//")) {
+            if(HttpUtil.isUrl(src)) {
                 img.delete();
             }
             //创建文件资源引用
