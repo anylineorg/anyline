@@ -161,6 +161,7 @@ public class CodeUtil {
 	 * 整个url编码 
 	 * @param url  url
 	 * @param encode  encode
+	 * @param len  保留长度
 	 * @return return
 	 */ 
 	public static String urlEncode(String url, String encode, int len) {
