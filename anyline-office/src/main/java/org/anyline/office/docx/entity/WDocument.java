@@ -734,6 +734,7 @@ public class WDocument {
             map.put("word/media/"+img.getName(),img);
             ZipUtil.append( map,file);
             if(HttpUtil.isUrl(src)) {
+                //删除临时文件
                 img.delete();
             }
             //创建文件资源引用
@@ -825,23 +826,26 @@ public class WDocument {
 
             }
         }else{
+            //不浮动
             box = draw.addElement("wp:inline");
             box.addAttribute("distT","0");
             box.addAttribute("distB","0");
             box.addAttribute("distL","0");
             box.addAttribute("distR","0");
         }
+
         Element extent = box.addElement("wp:extent");
         extent.addAttribute("cx", width+"");
         extent.addAttribute("cy", height+"");
-        Element effectExtent = box.addElement("wp:effectExtent"); //边距
 
+        Element effectExtent = box.addElement("wp:effectExtent"); //边距
         effectExtent.addAttribute("l","0");
         effectExtent.addAttribute("r","0");
         effectExtent.addAttribute("t","0");
         effectExtent.addAttribute("b","0");
         if(isFloat){
-            //浮动
+            //浮动时才需要
+            //这个wrapNone位置不能变
             box.addElement("wp:wrapNone");
         }
         Element docPr = box.addElement("wp:docPr");
