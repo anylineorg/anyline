@@ -823,7 +823,6 @@ public class WDocument {
                 positionV.addAttribute("relativeFrom",relativeY);
                 Element posOffsetV = positionV.addElement("wp:posOffset");
                 posOffsetV.setText(offsetY+"");
-
             }
         }else{
             //不浮动
