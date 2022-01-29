@@ -236,7 +236,7 @@ public class ExcelUtil {
 			int last = max;
 			if(foot < 0){
 				last = max + foot;
-			}else{
+			}else if(foot > 0){
 				last = foot;
 			}
 			for (int r = rows; r <= last; r++) {// 遍历行
