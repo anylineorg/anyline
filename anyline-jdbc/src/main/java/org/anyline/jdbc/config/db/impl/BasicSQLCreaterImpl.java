@@ -41,12 +41,15 @@ import org.anyline.jdbc.exception.SQLUpdateException;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 
@@ -424,6 +427,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 						str = "'" + str.replace("'", "''") + "'";
 					}
 					builder.append(str);
+				}else if(value instanceof Timestamp){
+					builder.append("'").append(value.toString()).append("'");
+				}else if(value instanceof java.sql.Date){
+					builder.append("'").append(value.toString()).append("'");
+				}else if(value instanceof Date){
+					builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");
 				}else if(value instanceof Number || value instanceof Boolean){
 					builder.append(value.toString());
 				}else{
