@@ -44,6 +44,26 @@ public class ExcelUtil {
 	 * @param file file 文件
 	 * @param sheet sheet序号,从0开始
 	 * @param rows 从第几行开始读取
+	 * @param foot 到第几行结束(如果负数表示 表尾有多少行不需要读取)
+	 * @return List
+	 *
+	 */
+	public static List<List<String>> read(File file, int sheet, int rows, int foot) {
+		List<List<String>> list = null;
+		try {
+			Workbook workbook = getWorkbook(file);
+			list = read(workbook.getSheetAt(sheet), rows, foot);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	/**
+	 * 读取指定Sheet也的内容
+	 * @param file file 文件
+	 * @param sheet sheet序号,从0开始
+	 * @param rows 从第几行开始读取
 	 * @return List
 	 *
 	 */
@@ -51,7 +71,7 @@ public class ExcelUtil {
 		List<List<String>> list = null;
 		try {
 			Workbook workbook = getWorkbook(file);
-			list = read(workbook.getSheetAt(sheet), rows);
+			list = read(workbook.getSheetAt(sheet), rows, 0);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -70,7 +90,7 @@ public class ExcelUtil {
 		List<List<String>> list = null;
 		try {
 			Workbook workbook = getWorkbook(is);
-			list = read(workbook.getSheetAt(sheet), rows);
+			list = read(workbook.getSheetAt(sheet), rows, 0);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -113,7 +133,25 @@ public class ExcelUtil {
 		List<List<String>> list = null;
 		try {
 			Workbook workbook = getWorkbook(file);
-			list = read(workbook.getSheet(sheet), rows);
+			list = read(workbook.getSheet(sheet), rows, 0);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return list;
+	}
+	/**
+	 * 读取excel
+	 * @param file 文件
+	 * @param sheet sheet
+	 * @param rows 从rows行开始读取
+	 * @param foot 到第几行结束(如果负数表示 表尾有多少行不需要读取)
+	 * @return list
+	 */
+	public static List<List<String>> read(File file, String sheet, int rows, int foot) {
+		List<List<String>> list = null;
+		try {
+			Workbook workbook = getWorkbook(file);
+			list = read(workbook.getSheet(sheet), rows, foot);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -124,7 +162,7 @@ public class ExcelUtil {
 		List<List<String>> list = null;
 		try {
 			Workbook workbook = getWorkbook(is);
-			list = read(workbook.getSheet(sheet), rows);
+			list = read(workbook.getSheet(sheet), rows, 0);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -184,26 +222,39 @@ public class ExcelUtil {
 		return wb;
 	}
 
-	public static List<List<String>> read(Sheet sheet, int rows) {
+	/**
+	 * 读取sheet
+	 * @param sheet sheet
+	 * @param rows 从第rows行开始
+	 * @param foot 到第几行结束(如果负数表示 表尾有多少行不需要读取)
+	 * @return List
+	 */
+	public static List<List<String>> read(Sheet sheet, int rows, int foot) {
 		List<List<String>> lists = new ArrayList<List<String>>();
 		if(sheet != null){
-			int rowNos = sheet.getLastRowNum();// 得到excel的总记录条数
-			for (int i = rows; i <= rowNos; i++) {// 遍历行
+			int max = sheet.getLastRowNum();// 得到excel的总记录条数
+			int last = max;
+			if(foot < 0){
+				last = max + foot;
+			}else{
+				last = foot;
+			}
+			for (int r = rows; r <= last; r++) {// 遍历行
 				List<String> list = new ArrayList<>();
-				Row row = sheet.getRow(i);
+				Row row = sheet.getRow(r);
 				if(row != null){
-					int last = row.getLastCellNum();// 表头总共的列数
-					for (int j = 0; j < last; j++) {
-						Cell cell = row.getCell(j);
+					int cells = row.getLastCellNum();// 表头总共的列数
+					for (int c = 0; c < cells; c++) {
+						Cell cell = row.getCell(c);
 						String value = null;
 						if(cell != null){
-							if(isMerged(sheet, i, j)){
-								value = getMergedRegionValue(sheet, i, j);
+							if(isMerged(sheet, r, c)){
+								value = getMergedRegionValue(sheet, r, c);
 							}else {
 								value = value(cell);
 							}
 						}else{
-							value = getMergedRegionValue(sheet, i, j);
+							value = getMergedRegionValue(sheet, r, c);
 						}
 						list.add(value);
 					}
@@ -395,7 +446,10 @@ public class ExcelUtil {
 					DateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					value = formater.format(date);
 				}else{
-					value = cell.getNumericCellValue() + "";
+					//如果查数字，修改成String
+					cell.setCellType(CellType.STRING);
+					value = cell.getStringCellValue();
+					//value = cell.getNumericCellValue() + "";
 				}
 				break;
 			case STRING: // 字符串
@@ -425,7 +479,7 @@ public class ExcelUtil {
 	 * @param os 输出流
 	 * @param headers	表头  headers	表头
 	 * @param sheet 	sheet
-	 * @param insert		导出的开始位置
+	 * @param insert	导出的开始位置
 	 * @param keys		对应列名属性名  keys		对应列名属性名
 	 * @param set		数据源  set		数据源
 	 * @return return

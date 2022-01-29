@@ -38,20 +38,24 @@ public class ExcelReader {
 
 		List<List<String>> list = null;
 		if(sheet != -1) {
-			list = ExcelUtil.read(file, sheet, fr);
+			list = ExcelUtil.read(file, sheet, fr, foot);
 		}else{
 			if(null != sheetName){
-				list = ExcelUtil.read(file, sheetName, fr);
+				list = ExcelUtil.read(file, sheetName, fr, foot);
 			}else{
-				list = ExcelUtil.read(file, 0, fr);
+				list = ExcelUtil.read(file, 0, fr, foot);
 			}
 		}
 		if(list.size()>0) {
 			if (head != -1) {
 				//取第一行作为表头
-				List<String> headers = list.get(0);
+				List<String> headers = list.get(head);
 				int size = headers.size();
+				int rows = 0;
 				for(List<String> item:list){
+					if(rows ++ <= head){
+						continue;
+					}
 					DataRow row = new DataRow();
 					for(int i=0; i<size; i++){
 						String key = headers.get(i);
