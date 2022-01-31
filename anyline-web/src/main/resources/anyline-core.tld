@@ -991,6 +991,23 @@
 		</attribute>
 	</tag>
 	<tag>
+		<name>clear</name>
+		<tagclass>org.anyline.web.tag.Clear</tagclass>
+		<attribute>
+			<name>value</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>var</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+		<attribute>
+			<name>len</name>
+			<rtexprvalue>true</rtexprvalue>
+		</attribute>
+	</tag>
+	<tag>
 		<name>decode</name>
 		<tagclass>org.anyline.web.tag.Decode</tagclass>
 		<attribute>
