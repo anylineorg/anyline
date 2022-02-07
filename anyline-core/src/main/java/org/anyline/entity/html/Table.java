@@ -280,7 +280,7 @@ public class Table {
                     int offset = colspan - 1;
                     if (offset > 0) {
                         //当前行 往后所有列 偏移增加colspan-1
-                        for (int cc = c + 1; r < cols; cc++) {
+                        for (int cc = c + 1; cc < cols; cc++) {
                             Td after = tds.get(cc);
                             after.addOffset(offset);
                         }
@@ -297,6 +297,7 @@ public class Table {
                             }
                         }
                     }
+
                 }
             }
         }
