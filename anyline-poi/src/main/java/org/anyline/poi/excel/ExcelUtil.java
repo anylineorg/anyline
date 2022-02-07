@@ -441,7 +441,7 @@ public class ExcelUtil {
 		//5.0.0 getCellType()
 		switch (cell.getCellTypeEnum()) {
 			case NUMERIC: // 数字
-				if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
+				if (DateUtil.isCellDateFormatted(cell)) {
 					Date date = cell.getDateCellValue();
 					DateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					value = formater.format(date);
@@ -682,7 +682,6 @@ public class ExcelUtil {
 			if(last > 0 && last>=insert && size>0) {
 				sheet.shiftRows(insert, last, size);//表尾下移
 			}
-
 			List<Tr> trs = table.getTrs();
 			for (Tr tr : trs) {
 				Row row = row(sheet,insert);
@@ -717,10 +716,6 @@ public class ExcelUtil {
 					if(null != font){
 						style.setFont(font);
 					}
-					Cell cell = row.createCell(colIndex + offset);
-					cell.setCellStyle(style);
-					cell.setCellType(CellType.STRING);
-					cell.setCellValue(td.getTextTrim());
 					if (rowspan > 1 || colspan > 1) {
 						int firstRow = insert;
 						int lastRow = firstRow + rowspan - 1;
@@ -736,7 +731,18 @@ public class ExcelUtil {
 								mergeCell.setCellStyle(style);
 							}
 						}
+						if(colspan>1){
+							for(int cc=1; cc<colspan; cc++){
+								Cell mergeCell = row.createCell(colIndex + offset + cc);
+								mergeCell.setCellStyle(style);
+							}
+						}
 					}
+
+					Cell cell = row.createCell(colIndex + offset);
+					cell.setCellStyle(style);
+					cell.setCellType(CellType.STRING);
+					cell.setCellValue(td.getTextTrim());
 				}
 				insert++;
 			}
