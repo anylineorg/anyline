@@ -19,6 +19,8 @@ package org.anyline.entity.html;
 
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.StyleParser;
+import org.anyline.util.regular.RegularUtil;
 
 import java.util.*;
 
@@ -188,9 +190,25 @@ public class TableBuilder {
         parseUnion();
         table.setClazz(clazz);
         table.setHeader(header);
-        //需要检测变量如合计
-        table.setFooter(footer);
-
+        if(null != header){
+            List<String> strs = RegularUtil.cuts(header,"<tr",">","</tr>");
+            for(String str:strs){
+                List<String> stds = RegularUtil.cuts(str,"<td","</td>");
+                Tr tr = new Tr();
+                for(String std:stds){
+                    Td td = new Td();
+                    String text = RegularUtil.cut(std,">",RegularUtil.TAG_END);
+                    String style = RegularUtil.fetchAttributeValue(std,"style");
+                    int colspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std,"colspan"),1);
+                    int rowspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std,"rowspan"),1);
+                    td.setColspan(colspan);
+                    td.setRowspan(rowspan);
+                    td.setText(text);
+                    tr.addTd(td);
+                }
+                table.addTr(tr);
+            }
+        }
         if(null != headers && headers.size() >0){
             Tr tr = new Tr();
             int size = headers.size();
@@ -198,6 +216,9 @@ public class TableBuilder {
                 String header = headers.get(i);
                 Td td = new Td();
                 td.setText(header);
+                if(BasicUtil.isNotEmpty(cellBorder)) {
+                    td.setBorder();
+                }
                 tr.addTd(td);
             }
             table.addTr(tr);
@@ -286,6 +307,31 @@ public class TableBuilder {
                             td.setBorder();
                         }
                     }
+                }
+                table.addTr(tr);
+            }
+        }
+        //需要检测变量如合计
+        table.setFooter(footer);
+        if(null != footer){
+            List<String> strs = RegularUtil.cuts(footer,"<tr",">","</tr>");
+            for(String str:strs){
+                List<String> stds = RegularUtil.cuts(str,"<td","</td>");
+                Tr tr = new Tr();
+                for(String std:stds){
+                    Td td = new Td();
+                    String text = RegularUtil.cut(std,">",RegularUtil.TAG_END);
+                    String style = RegularUtil.fetchAttributeValue(std,"style");
+                    td.setStyles(StyleParser.parse(style));
+                    int colspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std,"colspan"),1);
+                    int rowspan = BasicUtil.parseInt(RegularUtil.fetchAttributeValue(std,"rowspan"),1);
+                    td.setColspan(colspan);
+                    td.setRowspan(rowspan);
+                    td.setText(text);
+                    if(BasicUtil.isNotEmpty(cellBorder)) {
+                        td.setBorder();
+                    }
+                    tr.addTd(td);
                 }
                 table.addTr(tr);
             }
