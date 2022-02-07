@@ -32,16 +32,17 @@ public class TableBuilder {
     private List<String> unions = new ArrayList<>();//需要合并字段，值相同的几行合并(如里相关列合并的情况下才会合并,如前一列学校合并时，后一列班级才有可能合并，班级列名(学校列名,其他列名))
     private Map<String,Map<String,String>> styles = new HashMap<>();
     private Map<String,String[]> unionRefs = new HashMap<>();
-    private List<String> ignoreUnionValues = new ArrayList<>();  //不参与合并的值
-    private String width = "100%";                  //整个表格宽度
-    private String widthUnit = "px";                //默认长度单位 px pt cm/厘米
-    private String replaceEmpty = "";               //遇到空值替换成
-    private String cellBorder = "";                 //单元格边框
-    private String lineHeight = "";                 //行高
-    private String mergeCellVerticalAlign = "";     //合并单元格垂直对齐方式
-    private String mergeCellHorizontalAlign = "";   //合并单元格水平对齐方式
-    private String emptyCellVerticalAlign = "";     //空单元格垂直对齐方式
-    private String emptyCellHorizontalAlign = "";   //空单元格水平对齐方式
+    private Map<String,Map<String,String>> options = new HashMap<>();   //外键对应关系
+    private List<String> ignoreUnionValues = new ArrayList<>();         //不参与合并的值
+    private String width = "100%";                                      //整个表格宽度
+    private String widthUnit = "px";                                    //默认长度单位 px pt cm/厘米
+    private String replaceEmpty = "";                                   //遇到空值替换成
+    private String cellBorder = "";                                     //单元格边框
+    private String lineHeight = "";                                     //行高
+    private String mergeCellVerticalAlign = "";                         //合并单元格垂直对齐方式
+    private String mergeCellHorizontalAlign = "";                       //合并单元格水平对齐方式
+    private String emptyCellVerticalAlign = "";                         //空单元格垂直对齐方式
+    private String emptyCellHorizontalAlign = "";                       //空单元格水平对齐方式
 
     public static TableBuilder init(){
         TableBuilder builder = new TableBuilder();
@@ -187,6 +188,7 @@ public class TableBuilder {
         parseUnion();
         table.setClazz(clazz);
         table.setHeader(header);
+        //需要检测变量如合计
         table.setFooter(footer);
 
         if(null != headers && headers.size() >0){
@@ -217,9 +219,14 @@ public class TableBuilder {
                         value = field;
                     }else{
                         value = BeanUtil.parseRuntimeValue(data, field);
-                        if(null == value){
-                            value = replaceEmpty;
-                        }
+                    }
+                    //外键对应关系
+                    Map<String,String> option = options.get(field);
+                    if(null != option && null != value){
+                        value = option.get(value);
+                    }
+                    if(null == value){
+                        value = replaceEmpty;
                     }
                     map.put("value", value);
                     cells[r][c] = map;
@@ -551,6 +558,37 @@ public class TableBuilder {
 
     public TableBuilder setEmptyCellHorizontalAlign(String emptyCellHorizontalAlign) {
         this.emptyCellHorizontalAlign = emptyCellHorizontalAlign;
+        return this;
+    }
+    public TableBuilder setOptions(String field,Map<String,String> option){
+        options.put(field, option);
+        return this;
+    }
+    public TableBuilder addOption(String field, String value, String text){
+        Map<String,String> map = options.get(field);
+        if(null == map){
+            map = new HashMap<>();
+        }
+        map.put(value, text);
+        options.put(field, map);
+        return this;
+    }
+    public TableBuilder setOptions(String field, Collection datas, String value, String text){
+        Map<String,String> map = new HashMap<>();
+        for(Object obj:datas){
+            String v = null;
+            String t = null;
+            Object ov = BeanUtil.getFieldValue(obj, value);
+            Object ot = BeanUtil.getFieldValue(obj, text);
+            if(null != ov){
+                v = ov.toString();
+            }
+            if(null != ot){
+                t = ot.toString();
+            }
+            map.put(v, t);
+        }
+        options.put(field, map);
         return this;
     }
 }
