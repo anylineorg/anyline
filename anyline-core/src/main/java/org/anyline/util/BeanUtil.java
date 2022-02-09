@@ -1163,21 +1163,6 @@ public class BeanUtil {
 	public static String concat(List<?> list) {
 		return concat(list,",");
 	}
-	public static String concat(String split, String ... values) {
-		StringBuilder builder = new StringBuilder();
-		if(null != values){
-			for(String value:values){
-				if(BasicUtil.isEmpty(value)){
-					continue;
-				}
-				if (builder.length() > 0) {
-					builder.append(split);
-				}
-				builder.append(value);
-			}
-		}
-		return builder.toString();
-	}
 
 
 	public static <T> String concat(T[] list, String key, String split) {
