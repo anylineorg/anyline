@@ -61,6 +61,8 @@ public class BeanUtil {
 		//Include.NON_EMPTY 属性为 空（“”） 或者为 NULL 都不序列化
 		//Include.NON_NULL 属性为NULL 不序列化
 	}
+
+
 	private static ObjectMapper newObjectMapper(JsonInclude.Include include){
 		ObjectMapper result = new ObjectMapper();
 		result.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
@@ -74,15 +76,37 @@ public class BeanUtil {
 		} 
 		if(Modifier.isStatic(field.getModifiers())){ 
 			return false; 
-		} 
+		}
 		try{
+			Object v = value;
+			if(null != v){
+				String type = field.getType().getSimpleName().toLowerCase();
+				if(type.equals("int") || type.equals("integer")){
+					v = Integer.parseInt(value.toString());
+				}else if(type.equals("double")){
+					v = Double.parseDouble(value.toString());
+				}else if(type.equals("long")){
+					v = Long.parseLong(value.toString());
+				}else if(type.equals("float")){
+					v = Float.parseFloat(value.toString());
+				}else if(type.equals("boolean")){
+					v = Boolean.parseBoolean(value.toString());
+				}else if(type.equals("short")){
+					v = Short.parseShort(value.toString());
+				}else if(type.equals("bigdecimal")){
+					v = new BigDecimal(value.toString());
+				}else if(type.equals("byte")){
+					v = Byte.parseByte(value.toString());
+				}
+			}
+
 			if(field.isAccessible()){
 				//可访问属性
-				field.set(obj, value);
+				field.set(obj, v);
 			}else{
 				//不可访问属性
 				field.setAccessible(true);
-				field.set(obj, value);
+				field.set(obj, v);
 				field.setAccessible(false);
 			}
 		}catch(Exception e){
