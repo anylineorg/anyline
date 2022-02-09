@@ -2227,8 +2227,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * dispatchItem("children",items, "DEPAT_CD")
      * dispatchItems("children",items, "CD:BASE_CD")
      *
-     * @param field     默认"ITEMS" field:默认"ITEMS"
-     * @param recursion recursion 是否递归
+     * @param field     默认"ITEMS"
+     * @param recursion 是否递归
      * @param items     items
      * @param keys      keys    ID:DEPT_ID或ID
      * @return return
@@ -2255,6 +2255,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+    public DataSet dispatchItems(boolean recursion, DataSet items, String... keys) {
+        return dispatchItems("ITEMS", recursion, items, keys);
+    }
 
 
     public DataSet dispatchItems(String field, DataSet items, String... keys) {
