@@ -21,7 +21,6 @@ package org.anyline.util;
 
 import org.anyline.util.regular.RegularUtil;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -870,23 +869,41 @@ public class BasicUtil {
 	/**
 	 * 拼接字符
 	 * @param list list
-	 * @param connector connector
+	 * @param split split
 	 * @return return
 	 */
-   public static String concat(List<String> list, String connector){
+   public static String concat(List<String> list, String split){
 	   if(null == list){
 		   return "";
 	   }
 	   StringBuffer result = new StringBuffer();
 	   for(String val:list){
+		   if(BasicUtil.isEmpty(val)){
+			   continue;
+		   }
 		   if(result.length() > 0){
-			   result.append(connector);
+			   result.append(split);
 		   }
 		   result.append(val);
 	   }
 	   return result.toString();
    }
 
+	public static String concat(String split, String ... values) {
+		StringBuilder builder = new StringBuilder();
+		if(null != values){
+			for(String value:values){
+				if(BasicUtil.isEmpty(value)){
+					continue;
+				}
+				if (builder.length() > 0) {
+					builder.append(split);
+				}
+				builder.append(value);
+			}
+		}
+		return builder.toString();
+	}
    public static String omit(String src, int left, int right){
 	   return omit(src, left, right, "*");
    }
