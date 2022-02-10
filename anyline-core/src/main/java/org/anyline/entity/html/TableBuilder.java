@@ -610,15 +610,21 @@ public class TableBuilder {
         options.put(field, option);
         return this;
     }
-    public TableBuilder addOption(String field, String value, String text){
+
+    public TableBuilder addOption(String field, String ... kvs){
         Map<String,String> map = options.get(field);
-        if(null == map){
-            map = new HashMap<>();
+        if(null != kvs){
+            Map<String,String> tmps = BeanUtil.array2map(kvs);
+            if(map == null){
+                map = tmps;
+            }else{
+                map.putAll(tmps);
+            }
         }
-        map.put(value, text);
         options.put(field, map);
         return this;
     }
+
     public TableBuilder setOptions(String field, Collection datas, String value, String text){
         Map<String,String> map = new HashMap<>();
         for(Object obj:datas){
