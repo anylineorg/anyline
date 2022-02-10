@@ -37,7 +37,7 @@
 		<mysql.version>8.0.16</mysql.version>
 		<db2-jdbc.version>11.5.0.0</db2-jdbc.version>
 		<ojdbc.version>19.3.0.0</ojdbc.version><!-- oracle -->
-		<postgresql.version>42.2.8</postgresql.version>
+		<postgresql.version>42.2.25</postgresql.version>
 		<hgdb.version>4.0-jdbc42</hgdb.version>
 		<mariadb.version>2.4.4</mariadb.version>
 		<javax.servlet.version>4.0.0</javax.servlet.version>
