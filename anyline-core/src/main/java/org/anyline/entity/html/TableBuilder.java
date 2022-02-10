@@ -610,8 +610,18 @@ public class TableBuilder {
         options.put(field, option);
         return this;
     }
+    public TableBuilder addOptions(String field,Map<String,String> option){
+        Map<String,String> map = options.get(field);
+        if(null == map){
+            map = option;
+        }else {
+            map.putAll(option);
+        }
+        options.put(field, map);
+        return this;
+    }
 
-    public TableBuilder addOption(String field, String ... kvs){
+    public TableBuilder addOptions(String field, String ... kvs){
         Map<String,String> map = options.get(field);
         if(null != kvs){
             Map<String,String> tmps = BeanUtil.array2map(kvs);
@@ -625,8 +635,37 @@ public class TableBuilder {
         return this;
     }
 
+    public TableBuilder setOptions(String field, String ... kvs){
+        if(null != kvs){
+            Map<String,String> map = BeanUtil.array2map(kvs);
+            options.put(field, map);
+        }
+        return this;
+    }
+
     public TableBuilder setOptions(String field, Collection datas, String value, String text){
         Map<String,String> map = new HashMap<>();
+        for(Object obj:datas){
+            String v = null;
+            String t = null;
+            Object ov = BeanUtil.getFieldValue(obj, value);
+            Object ot = BeanUtil.getFieldValue(obj, text);
+            if(null != ov){
+                v = ov.toString();
+            }
+            if(null != ot){
+                t = ot.toString();
+            }
+            map.put(v, t);
+        }
+        options.put(field, map);
+        return this;
+    }
+    public TableBuilder addOptions(String field, Collection datas, String value, String text){
+        Map<String,String> map = options.get(field);
+        if(null == map){
+            map = new HashMap<>();
+        }
         for(Object obj:datas){
             String v = null;
             String t = null;
