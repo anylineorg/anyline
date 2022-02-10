@@ -239,6 +239,16 @@
 				<artifactId>anyline-office</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-poi</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-pdf</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.springframework</groupId>
