@@ -663,7 +663,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         Map<String, String> kvs = new HashMap<String, String>();
         int len = params.length;
         int i = 0;
-        String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
+        String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对,如时间格式TIME:{10:10}
         while (i < len) {
             String p1 = params[i];
             if (BasicUtil.isEmpty(p1)) {
@@ -700,7 +700,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return getRows(begin, qty, kvs);
     }
-
     public DataSet getRows(int begin, int qty, DataRow kvs) {
         Map<String,String> map = new HashMap<String,String>();
         for(String k:kvs.keySet()){
