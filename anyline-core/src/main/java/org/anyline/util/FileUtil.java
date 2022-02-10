@@ -185,24 +185,44 @@ public class FileUtil {
 		return buffer; 
 	}
 
+	/**
+	 * 读取输入流
+	 * @param input  input
+	 * @return StringBuffer
+	 */
 	public static StringBuffer read(InputStream input){
 		StringBuffer buffer = new StringBuffer();
+		int BUFFER_SIZE = 1024 * 8;
+
+		BufferedInputStream in = null ;
+		InputStreamReader reader = null;
 		try  {
 			if(input.available() <=0){
 				return buffer;
 			}
+			if(BUFFER_SIZE>input.available()){
+				BUFFER_SIZE = input.available();
+			}
+			in = new BufferedInputStream(input, BUFFER_SIZE);
+			reader = new InputStreamReader(in);
 			input.available();
-			BufferedReader br=new BufferedReader(new InputStreamReader(input));
-			String line=null;
-			while((line=br.readLine())!=null){
-				buffer.append(line);
+			char [] by = new char [BUFFER_SIZE];
+			int size = 0;
+			while ((size=reader.read(by)) != -1 ){
+				buffer.append(new String(by,0,size));
 			}
 		}catch(Exception ex){
 			ex.printStackTrace();
 		} finally  {
 			try{
+				if(null != in) {
+					in.close();
+				}
 				if(null != input){
 					input.close();
+				}
+				if(null != reader){
+					reader.close();
 				}
 			}catch(Exception e){
 				e.printStackTrace();
@@ -263,17 +283,16 @@ public class FileUtil {
 		}
 		return builder;
 	}
-	public static StringBuffer read(File file){ 
+	public static StringBuffer read(File file){
 		StringBuffer buffer = new StringBuffer();
-		if(null != file && file.exists()){ 
-			try{ 
-				//String encode = getFileEncode(file); 
-				buffer = read(new FileInputStream(file),"UTF-8"); 
-			}catch(Exception e){ 
-				e.printStackTrace(); 
+		if(null != file && file.exists()){
+			try{
+				buffer = read(new FileInputStream(file));
+			}catch(Exception e){
+				e.printStackTrace();
 			}
-		} 
-		return buffer; 
+		}
+		return buffer;
 	}
 	/**
 	 * 
