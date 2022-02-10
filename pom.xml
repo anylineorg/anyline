@@ -58,6 +58,7 @@
 		-->
 		<module>anyline-office</module>
 		<module>anyline-poi</module>
+		<module>anyline-pdf</module>
 		<module>anyline-qq</module>
 		<module>anyline-start</module>
 		<module>anyline-start-mvc</module>
@@ -73,7 +74,6 @@
 		<module>anyline-cache-redis</module>
         <module>anyline-print-10ss</module>
         <module>anyline-tencent</module>
-        <module>anyline-pdf</module>
     </modules>
 	<build>
 		<plugins>
