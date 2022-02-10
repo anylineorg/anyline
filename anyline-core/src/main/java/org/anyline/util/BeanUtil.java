@@ -660,7 +660,46 @@ public class BeanUtil {
 			} 
 		} 
 		return list; 
-	} 
+	}
+	/**
+	 * @param params key1,value1,key2:value2,key3,value3
+	 *               "NM:zh%","AGE:&gt;20","NM","%zh%"
+	 * @return Map
+	 */
+	public static Map<String,String> array2map(String ... params){
+		Map<String, String> map = new HashMap<String, String>();
+		int len = params.length;
+		int i = 0;
+		while (i < len) {
+			String p1 = params[i];
+			if (BasicUtil.isEmpty(p1)) {
+				i++;
+				continue;
+			} else if (p1.contains(":")) {
+				String ks[] = BeanUtil.parseKeyValue(p1);
+				map.put(ks[0], ks[1]);
+				i++;
+				continue;
+			} else {
+				if (i + 1 < len) {
+					String p2 = params[i + 1];
+					if (BasicUtil.isEmpty(p2) || !p2.contains(":")) {
+						map.put(p1, p2);
+						i += 2;
+						continue;
+					} else {
+						String ks[] = BeanUtil.parseKeyValue(p2);
+						map.put(ks[0], ks[1]);
+						i += 2;
+						continue;
+					}
+				}
+
+			}
+			i++;
+		}
+		return  map;
+	}
 	@SuppressWarnings("rawtypes")
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion){ 
 		T obj = null; 
