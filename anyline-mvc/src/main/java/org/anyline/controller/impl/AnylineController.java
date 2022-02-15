@@ -465,13 +465,14 @@ public class AnylineController extends AbstractBasicController {
 	 * @return String
 	 */ 
 	public String result(String code, boolean result, Object data, String message) {
-		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE); 
+		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE);
+		message = BasicUtil.nvl(message, "").toString();
 		if (null != messages) { 
 			for (int i = 0; i < messages.size(); i++) { 
 				DataRow msg = messages.getRow(i);
 				String tmp = msg.getStringNvl(Constant.MESSAGE_VALUE,"");
 				if(BasicUtil.isNotEmpty(tmp)) {
-					message = BasicUtil.nvl(message, "") + "\n" + tmp;
+					message += "\n" + tmp;
 				}
 			} 
 			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE); 
@@ -480,11 +481,11 @@ public class AnylineController extends AbstractBasicController {
 		Map<String, Object> map = new HashMap<String, Object>(); 
 		String dataType = null; // 数据类型 
 		if (null == data) { 
-			message = (String) BasicUtil.nvl(message, "没有返回数据"); 
+			message = BasicUtil.nvl(message, "没有返回数据").toString();
 			data = ""; 
 		} else if (data instanceof DataSet) { 
 			DataSet set = (DataSet) data; 
-			message += (String) BasicUtil.nvl(message, set.getMessage()); 
+			message = BasicUtil.nvl(message, set.getMessage(),"").toString();
 			dataType = "list"; 
 			data = set.getRows();
 			PageNavi navi = set.getNavi();
@@ -515,7 +516,8 @@ public class AnylineController extends AbstractBasicController {
 		} 
 		if (!result && null != data) { 
 			message += data.toString(); 
-		} 
+		}
+
 		map.put("type", dataType); 
 		map.put("result", result); 
 		map.put("message", message); 
