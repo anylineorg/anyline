@@ -1,14 +1,5 @@
 package org.anyline.jdbc.config;
 
-import java.io.File;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.OrderStore;
 import org.anyline.jdbc.config.db.SQL;
@@ -20,6 +11,10 @@ import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class ConfigParser {
 	static final Logger log = LoggerFactory.getLogger(ConfigParser.class);
@@ -822,22 +817,23 @@ public class ConfigParser {
 	 *
 	 * @param values values
 	 * @param key  key
-	 *            //key
-	 * @param valueEncrypt  valueEncrypt
-	 *            //value是否加密
+	 * @param valueEncrypt value是否加密
 	 * @return return
 	 */
 	@SuppressWarnings("unchecked")
-	private static List<Object> getRuntimeValuesFormDecryptMap(Map<String,Object> values, String key, boolean valueEncrypt) {
+	private static List<Object> getRuntimeValuesFromDecryptMap(Map<String,Object> values, String key, boolean valueEncrypt) {
 		List<Object> result = new ArrayList<Object>();
 //		if (values.get(IS_PARAMS_DECRYPT) == null) {
 //			decryptParam(values);
 //		}
 		valueEncrypt = false;//整体加密参数，分解时已value已解密，这里不需要再解一次了
 		Map<String, List<String>> partMap = (Map<String, List<String>>) values.get("DECRYPT_PARAM_MAP");
-		List<String> list = partMap.get(encryptHttpRequestParamKey(key));
-		if(null == list || list.size()==0){
-			list = partMap.get(key);
+		List<String> list = null;
+		if(null != key && null != partMap) {
+			list = partMap.get(encryptHttpRequestParamKey(key));
+			if (null == list || list.size() == 0) {
+				list = partMap.get(key);
+			}
 		}
 		if (null != values && null != list) {
 			if (valueEncrypt) {
@@ -863,7 +859,7 @@ public class ConfigParser {
 	@SuppressWarnings("unused")
 	private static String getRuntimeValueFormDecryptMap(Map<String,Object> values, String key, boolean valueEncrypt) {
 		String result = null;
-		List<Object> list = getRuntimeValuesFormDecryptMap(values, key,valueEncrypt);
+		List<Object> list = getRuntimeValuesFromDecryptMap(values, key,valueEncrypt);
 		if (null != list && list.size() > 0) {
 			Object tmp = list.get(0);
 			if (null != tmp) {
@@ -926,7 +922,7 @@ public class ConfigParser {
 		}else{
 			if (keyEncrypt) {
 				// key已加密
-				result = getRuntimeValuesFormDecryptMap(values, key, valueEncrypt);
+				result = getRuntimeValuesFromDecryptMap(values, key, valueEncrypt);
 			} else {
 				// key未加密
 				Object obj = values.get(key);
