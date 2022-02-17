@@ -14,7 +14,7 @@ public class LogUtil {
      * @param type    样式代号：0无；1加粗；3斜体；4下划线
      * @param content 日志内容
      */
-    private static String format(String content, int color, int type) {
+    public static String format(String content, int color, int type) {
         boolean hasType = type != 1 && type != 3 && type != 4;
         if (hasType) {
             return String.format("\033[%dm%s\033[0m", color, content);
@@ -22,7 +22,7 @@ public class LogUtil {
             return String.format("\033[%d;%dm%s\033[0m", color, type, content);
         }
     }
-    private static String format(String content, int color) {
+    public static String format(String content, int color) {
         return format(content, color, 0);
     }
 }
