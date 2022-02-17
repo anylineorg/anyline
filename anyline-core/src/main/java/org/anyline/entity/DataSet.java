@@ -2227,12 +2227,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * dispatchItems("children",items, "CD:BASE_CD")
      *
      * @param field     默认"ITEMS"
+     * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
      * @param recursion 是否递归
      * @param items     items
      * @param keys      keys    ID:DEPT_ID或ID
      * @return return
      */
-    public DataSet dispatchItems(String field, boolean recursion, DataSet items, String... keys) {
+    public DataSet dispatchItems(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
         if (null == items || null == keys || keys.length == 0) {
             return this;
         }
@@ -2244,9 +2245,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 String[] kvs = packParam(row, reverseKey(keys));
                 DataSet set = items.getRows(kvs);
                 if (recursion) {
-                    set.dispatchItems(field, recursion, items, keys);
+                    set.dispatchItems(field, unique, recursion, items, keys);
                 }
-                set.skip(true);
+                if(unique) {
+                    set.skip(true);
+                }
                 row.put(field, set);
             }
         }
@@ -2254,28 +2257,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public DataSet dispatchItems(boolean recursion, DataSet items, String... keys) {
-        return dispatchItems("ITEMS", recursion, items, keys);
+    public DataSet dispatchItems(boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchItems("ITEMS", unique, recursion, items, keys);
     }
 
 
     public DataSet dispatchItems(String field, DataSet items, String... keys) {
-        return dispatchItems(field, false, items, keys);
+        return dispatchItems(field,false, false, items, keys);
     }
 
     public DataSet dispatchItems(DataSet items, String... keys) {
         return dispatchItems("ITEMS", items, keys);
     }
 
-    public DataSet dispatchItems(boolean recursion, String... keys) {
-        return dispatchItems("ITEMS", recursion, this, keys);
+    public DataSet dispatchItems(boolean unique, boolean recursion, String... keys) {
+        return dispatchItems("ITEMS", unique, recursion, this, keys);
     }
 
-    public DataSet dispatchItems(String field, boolean recursion, String... keys) {
-        return dispatchItems(field, recursion, this, keys);
+    public DataSet dispatchItems(String field, boolean unique, boolean recursion, String... keys) {
+        return dispatchItems(field, unique, recursion, this, keys);
     }
 
-    public DataSet dispatchItem(String field, boolean recursion, DataSet items, String... keys) {
+    public DataSet dispatchItem(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
         if (null == items || null == keys || keys.length == 0) {
             return this;
         }
@@ -2286,26 +2289,30 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if (null == row.get(field)) {
                 String[] params = packParam(row, reverseKey(keys));
                 DataRow result = items.getRow(params);
+                if(unique){
+                    result.skip = true;
+                }
                 row.put(field, result);
             }
         }
+        items.skip(false);
         return this;
     }
 
     public DataSet dispatchItem(String field, DataSet items, String... keys) {
-        return dispatchItem(field, false, items, keys);
+        return dispatchItem(field, false, false, items, keys);
     }
 
     public DataSet dispatchItem(DataSet items, String... keys) {
         return dispatchItem("ITEM", items, keys);
     }
 
-    public DataSet dispatchItem(boolean recursion, String... keys) {
-        return dispatchItem("ITEM", recursion, this, keys);
+    public DataSet dispatchItem(boolean unique, boolean recursion, String... keys) {
+        return dispatchItem("ITEM", unique, recursion, this, keys);
     }
 
-    public DataSet dispatchItem(String field, boolean recursion, String... keys) {
-        return dispatchItem(field, recursion, this, keys);
+    public DataSet dispatchItem(String field, boolean unique, boolean recursion, String... keys) {
+        return dispatchItem(field, unique, recursion, this, keys);
     }
 
 
@@ -2353,7 +2360,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public DataSet group(String... keys) {
         DataSet result = distinct(keys);
-        result.dispatchItems(this, keys);
+        result.dispatchItems(true,false, this, keys);
         return result;
     }
 
