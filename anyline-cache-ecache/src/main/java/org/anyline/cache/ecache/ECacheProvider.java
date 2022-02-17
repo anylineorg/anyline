@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import java.util.List;
 public class ECacheProvider implements CacheProvider {
 	private static final Logger log = LoggerFactory.getLogger(ECacheProvider.class);
 	private CacheManager manager = null;
+	private HashSet<String> channels = new HashSet<>();
 	private Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
 
 	public static InputStream getConfigFile() throws Exception{
@@ -205,5 +207,14 @@ public class ECacheProvider implements CacheProvider {
 			result = false;
 		}
 		return result;
-	} 
+	}
+	public boolean clears(){
+		for(String channel:channels){
+			clear(channel);
+		}
+		return true;
+	}
+	public HashSet<String> channels(){
+		return channels;
+	}
 }

@@ -17,9 +17,13 @@
  */
 package org.anyline.cache;
 
+import java.util.HashSet;
+
 public interface CacheProvider {
 	public CacheElement get(String channel, String key);
 	public void put(String channel, String key, Object value);
 	public boolean remove(String channel, String key);
 	public boolean clear(String channel);
+	public boolean clears();
+	public HashSet<String> channels();
 }
