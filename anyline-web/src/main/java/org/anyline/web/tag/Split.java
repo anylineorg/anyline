@@ -20,9 +20,9 @@
 package org.anyline.web.tag; 
  
  
-import javax.servlet.jsp.JspException;
-
 import org.anyline.util.BasicUtil;
+
+import javax.servlet.jsp.JspException;
  
  
 public class Split extends BaseBodyTag{ 
@@ -36,6 +36,9 @@ public class Split extends BaseBodyTag{
         return EVAL_BODY_BUFFERED; 
     } 
 	 public int doEndTag() throws JspException {
+		 if(null != var){
+			 pageContext.removeAttribute(var);
+		 }
 		if(BasicUtil.isEmpty(text)){ 
 			text = body;
 		}

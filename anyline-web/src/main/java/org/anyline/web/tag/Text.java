@@ -25,7 +25,6 @@ import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import java.util.List;
@@ -45,6 +44,9 @@ public class Text extends BaseBodyTag{
         return EVAL_BODY_BUFFERED; 
     } 
 	 public int doEndTag() throws JspException {
+		 if(null != var){
+			 pageContext.removeAttribute(var);
+		 }
 		//输出 
 		JspWriter out = pageContext.getOut();
 		try{

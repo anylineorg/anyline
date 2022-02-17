@@ -20,17 +20,13 @@
 package org.anyline.web.tag; 
  
  
-import java.util.Date;
-import java.util.Locale;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.DateUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.DateUtil;
-import org.anyline.util.NumberUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.Date;
+import java.util.Locale;
  
  
 public class DateFormat extends BaseBodyTag implements Cloneable{ 
@@ -55,6 +51,9 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
  
 	public int doEndTag() throws JspException { 
 		try{
+			if(BasicUtil.isNotEmpty(var)){
+				pageContext.getRequest().removeAttribute(var);
+			}
 			Date date = null;
 			String result = ""; 
 			if(null == format){ 

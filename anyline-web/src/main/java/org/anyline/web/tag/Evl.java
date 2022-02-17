@@ -20,18 +20,15 @@
 package org.anyline.web.tag; 
  
  
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
  
 
 /**
@@ -42,6 +39,9 @@ public class Evl extends BaseBodyTag implements Cloneable{
 	private String target = null; 
 	 
 	 public int doEndTag() throws JspException {
+	 	if(BasicUtil.isNotEmpty(var)){
+			 pageContext.getRequest().removeAttribute(var);
+		 }
 		 if(null == paramList || paramList.size()==0){
 		 	value = BasicUtil.evl(value,body);
 			 if(BasicUtil.isNotEmpty(value)){

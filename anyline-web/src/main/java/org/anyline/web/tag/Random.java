@@ -19,11 +19,10 @@
 
 package org.anyline.web.tag; 
  
-import java.io.IOException;
+import org.anyline.util.BasicUtil;
 
 import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.BasicUtil;
+import java.io.IOException;
  
 public class Random extends BaseBodyTag { 
 	private static final long serialVersionUID = 1L; 
@@ -36,6 +35,9 @@ public class Random extends BaseBodyTag {
 
 		String result = ""; 
 		try {
+			if(BasicUtil.isNotEmpty(var)){
+				pageContext.getRequest().removeAttribute(var);
+			}
 			int _begin = BasicUtil.parseInt(begin, 0);
 			int _end = BasicUtil.parseInt(end, 0);
 			if(_begin != _end){
