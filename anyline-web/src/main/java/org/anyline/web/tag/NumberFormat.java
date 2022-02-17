@@ -20,13 +20,12 @@
 package org.anyline.web.tag; 
  
  
-import java.math.BigDecimal;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.NumberUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.NumberUtil;
+import java.math.BigDecimal;
  
  
 public class NumberFormat extends BaseBodyTag implements Cloneable{ 
@@ -43,7 +42,10 @@ public class NumberFormat extends BaseBodyTag implements Cloneable{
  
  
 	public int doEndTag() throws JspException { 
-		try{ 
+		try{
+			if(BasicUtil.isNotEmpty(var)){
+				pageContext.getRequest().removeAttribute(var);
+			}
 			String result = null;
 			if(null == value){ 
 				value = body;

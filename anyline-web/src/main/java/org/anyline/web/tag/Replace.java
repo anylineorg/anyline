@@ -20,14 +20,11 @@
 package org.anyline.web.tag; 
  
  
-import java.io.IOException;
+import org.anyline.util.BasicUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-
-import org.anyline.util.BasicUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.IOException;
 
 
 public class Replace extends BaseBodyTag implements Cloneable{ 
@@ -37,6 +34,9 @@ public class Replace extends BaseBodyTag implements Cloneable{
 	private String to;
 
 	 public int doEndTag() throws JspException {
+		 if(BasicUtil.isNotEmpty(var)){
+			 pageContext.getRequest().removeAttribute(var);
+		 }
 		 String src = BasicUtil.nvl(value,body,"").toString().trim();
 		 if(BasicUtil.isEmpty(src)){
 			 return EVAL_BODY_INCLUDE;

@@ -20,18 +20,15 @@
 package org.anyline.web.tag; 
  
  
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
  
 /**
  * 第一个 != null 的值
@@ -46,6 +43,9 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 	 
 	 public int doEndTag() throws JspException { 
 		try{
+			if(BasicUtil.isNotEmpty(var)){
+				pageContext.getRequest().removeAttribute(var);
+			}
 			 if(null == paramList || paramList.size()==0){
 				 if(BasicUtil.isNotEmpty(value)){
 					 String str = value.toString();

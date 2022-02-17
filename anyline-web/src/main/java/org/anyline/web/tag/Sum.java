@@ -42,7 +42,10 @@ public class Sum extends BaseBodyTag {
 	@SuppressWarnings("rawtypes")
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
-		String html = ""; 
+		String html = "";
+		if(null != var){
+			pageContext.removeAttribute(var);
+		}
 		try { 
 			if (null != data) { 
 				if (data instanceof String) { 
