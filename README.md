@@ -1,6 +1,9 @@
  8.3.8之后代码已迁至[https://github.com/anylineorg/anyline](http://https://github.com/anylineorg/anyline)  
  8.3.8之前提交历史记录查看[https://github.com/anylineorg/anyline-history.git](https://github.com/anylineorg/anyline-history.git)  
- demo:[https://gitee.com/anyline/anyline-simple.git](https://gitee.com/anyline/anyline-simple.git),[https://github.com/anylineorg/anyline-simple.git](https://github.com/anylineorg/anyline-simple.git)  
+
+***快速开始请参考示例代码:***  
+ [https://gitee.com/anyline/anyline-simple.git](https://gitee.com/anyline/anyline-simple.git)  
+[https://github.com/anylineorg/anyline-simple.git](https://github.com/anylineorg/anyline-simple.git)  
  
 
 AnyLine的核心是一个基于spring-jdbc的,脱离了各种O的ORM,用来简化数据库以及针对结果集的操作。  
