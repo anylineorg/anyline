@@ -1007,64 +1007,88 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     /**
      * 多列合计
-     *
+     * @param result 保存合计结果
      * @param keys keys
-     * @return return
+     * @return DataRow
      */
-    public DataRow sums(String... keys) {
-        DataRow row = new DataRow();
+    public DataRow sums(DataRow result, String... keys) {
+        if(null == result){
+            result = new DataRow();
+        }
         if (size() > 0) {
             if (null != keys) {
                 for (String key : keys) {
-                    row.put(key, sum(key));
+                    result.put(key, sum(key));
                 }
             } else {
                 List<String> numberKeys = getRow(0).numberKeys();
                 for (String key : numberKeys) {
-                    row.put(key, sum(key));
+                    result.put(key, sum(key));
                 }
             }
         }
-        return row;
+        return result;
+    }
+    public DataRow sums(String... keys) {
+        return sums(new DataRow(), keys);
     }
 
     /**
      * 多列平均值
      *
+     * @param result 保存合计结果
      * @param keys keys
-     * @return return
+     * @return DataRow
      */
-    public DataRow avgs(String... keys) {
-        DataRow row = new DataRow();
+    public DataRow avgs(DataRow result, String... keys) {
+        if(null == result){
+            result = new DataRow();
+        }
         if (size() > 0) {
             if (null != keys) {
                 for (String key : keys) {
-                    row.put(key, avg(key));
+                    result.put(key, avg(key));
                 }
             } else {
                 List<String> numberKeys = getRow(0).numberKeys();
                 for (String key : numberKeys) {
-                    row.put(key, avg(key));
+                    result.put(key, avg(key));
                 }
             }
         }
-        return row;
+        return result;
+    }
+    public DataRow avgs(String... keys) {
+        return avgs(new DataRow(), keys);
+    }
+
+    /**
+     * 多列平均值
+     * @param scale scale
+     * @param round round
+     * @param keys keys
+     * @return DataRow
+     */
+    public DataRow avgs(DataRow result, int scale, int round, String... keys) {
+        if(null == result){
+            result = new DataRow();
+        }
+        if (size() > 0) {
+            if (null != keys) {
+                for (String key : keys) {
+                    result.put(key, avg(key, scale, round));
+                }
+            } else {
+                List<String> numberKeys = getRow(0).numberKeys();
+                for (String key : numberKeys) {
+                    result.put(key, avg(key, scale, round));
+                }
+            }
+        }
+        return result;
     }
     public DataRow avgs(int scale, int round, String... keys) {
-        DataRow row = new DataRow();
-        if (size() > 0) {
-            if (null != keys) {
-                for (String key : keys) {
-                    row.put(key, avg(key, scale, round));
-                }
-            } else {
-                List<String> numberKeys = getRow(0).numberKeys();
-                for (String key : numberKeys) {
-                    row.put(key, avg(key, scale, round));
-                }
-            }
-        }
-        return row;
+        return avgs(new DataRow(), scale, round, keys);
     }
 
     /**
