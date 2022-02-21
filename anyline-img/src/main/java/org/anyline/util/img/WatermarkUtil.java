@@ -17,8 +17,16 @@
  */
 
 
-package org.anyline.util; 
- 
+package org.anyline.util.img;
+
+import org.anyline.util.DateUtil;
+import org.anyline.util.ImgUtil;
+import org.anyline.util.NumberUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -26,12 +34,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
- 
 public class WatermarkUtil {
 	protected static final Logger log = LoggerFactory.getLogger(WatermarkUtil.class); 
 	private int degree = 0;								//旋转角度 
@@ -129,7 +131,7 @@ public class WatermarkUtil {
                 e.printStackTrace(); 
             } 
         }
-        log.warn("[添加水印][耗时:{}][text:{}][src:{}][target:{}]",DateUtil.conversion(System.currentTimeMillis()-fr),text, src.getAbsoluteFile(), target.getAbsoluteFile());
+        log.warn("[添加水印][耗时:{}][text:{}][src:{}][target:{}]", DateUtil.conversion(System.currentTimeMillis()-fr),text, src.getAbsoluteFile(), target.getAbsoluteFile());
         return true; 
     } 
     public void markText(String text, String src, String target){ 

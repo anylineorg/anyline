@@ -1,15 +1,14 @@
-package org.anyline.util; 
- 
-import java.awt.Color; 
-import java.awt.Graphics2D; 
-import java.awt.image.BufferedImage; 
-import java.awt.image.DataBufferByte; 
-import java.io.BufferedOutputStream; 
-import java.io.FileOutputStream; 
-import java.io.IOException; 
-import java.io.OutputStream; 
- 
- 
+package org.anyline.util.img;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+
 public class AnimatedGifEncoder { 
  
   protected int width; // image size 
@@ -479,7 +478,7 @@ public class AnimatedGifEncoder {
 //  
 // Adapted from Jef Poskanzer's Java port by way of J. M. G. Elliott. 
 // K Weiner 12/00 
- 
+
 class LZWEncoder { 
  
   private static final int EOF = -1; 
@@ -787,8 +786,8 @@ class LZWEncoder {
  * sublicense, and/or sell copies of the Software, and to permit persons who 
  * receive copies from any such party to do so, with the only requirement being 
  * that this copyright notice remain intact. 
- */ 
- 
+ */
+
 // Ported to Java 12/00 K Weiner 
 class NeuQuant { 
  

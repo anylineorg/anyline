@@ -1,24 +1,24 @@
-package org.anyline.util; 
- 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+package org.anyline.util.img;
+
+import com.sun.imageio.plugins.gif.GIFImageReader;
+import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
+import com.sun.imageio.plugins.gif.GIFImageWriter;
+import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.NumberUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.FileImageOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.sun.imageio.plugins.gif.GIFImageReader;
-import com.sun.imageio.plugins.gif.GIFImageReaderSpi;
-import com.sun.imageio.plugins.gif.GIFImageWriter;
-import com.sun.imageio.plugins.gif.GIFImageWriterSpi;
- 
 public class GifUtil { 
 	private static Logger log = LoggerFactory.getLogger(GifUtil.class); 
     /** 
@@ -92,7 +92,7 @@ public class GifUtil {
         	if(!dir.exists()){ 
         		dir.mkdirs(); 
         	} 
-            AnimatedGifEncoder e = new AnimatedGifEncoder();  
+            AnimatedGifEncoder e = new AnimatedGifEncoder();
             e.setRepeat(0);   
             e.start(tar.getAbsolutePath()); 
             int size = srcs.size(); 
@@ -103,7 +103,7 @@ public class GifUtil {
                 e.setDelay(delay); //设置播放的延迟时间   
                 src[i] = ImageIO.read(item); // 读入需要播放的jpg文件   
                 e.addFrame(src[i]);  //添加到帧中   
-                if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+                if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 	log.warn("[合成 gif][第{}/{}帧][gif:{}][源文件:{}][耗时:{}]",i+1,size,tar.getAbsolutePath(), item.getAbsoluteFile(),System.currentTimeMillis()-fr); 
                 } 
             }   
