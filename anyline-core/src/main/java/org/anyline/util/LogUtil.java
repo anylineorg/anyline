@@ -13,6 +13,7 @@ public class LogUtil {
      * 37  灰色
      * @param type    样式代号：0无；1加粗；3斜体；4下划线
      * @param content 日志内容
+     * @return String
      */
     public static String format(String content, int color, int type) {
         boolean hasType = type != 1 && type != 3 && type != 4;
