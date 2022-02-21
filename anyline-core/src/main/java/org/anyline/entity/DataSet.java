@@ -1064,6 +1064,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     /**
      * 多列平均值
+     * @param result 保存合计结果
      * @param scale scale
      * @param round round
      * @param keys keys
@@ -2247,8 +2248,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     /**
      * 从items中按相应的key提取数据 存入
-     * dispatchItem("children",items, "DEPAT_CD")
-     * dispatchItems("children",items, "CD:BASE_CD")
+     * dispatch("children",items, "DEPAT_CD")
+     * dispatchs("children",items, "CD:BASE_CD")
      *
      * @param field     默认"ITEMS"
      * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
@@ -2257,7 +2258,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys      keys    ID:DEPT_ID或ID
      * @return return
      */
-    public DataSet dispatchItems(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
         if (null == items || null == keys || keys.length == 0) {
             return this;
         }
@@ -2269,7 +2270,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 String[] kvs = packParam(row, reverseKey(keys));
                 DataSet set = items.getRows(kvs);
                 if (recursion) {
-                    set.dispatchItems(field, unique, recursion, items, keys);
+                    set.dispatchs(field, unique, recursion, items, keys);
                 }
                 if(unique) {
                     set.skip(true);
@@ -2281,28 +2282,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public DataSet dispatchItems(boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchItems("ITEMS", unique, recursion, items, keys);
+    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs("ITEMS", unique, recursion, items, keys);
     }
 
 
-    public DataSet dispatchItems(String field, DataSet items, String... keys) {
-        return dispatchItems(field,false, false, items, keys);
+    public DataSet dispatchs(String field, DataSet items, String... keys) {
+        return dispatchs(field,false, false, items, keys);
     }
 
-    public DataSet dispatchItems(DataSet items, String... keys) {
-        return dispatchItems("ITEMS", items, keys);
+    public DataSet dispatchs(DataSet items, String... keys) {
+        return dispatchs("ITEMS", items, keys);
     }
 
-    public DataSet dispatchItems(boolean unique, boolean recursion, String... keys) {
-        return dispatchItems("ITEMS", unique, recursion, this, keys);
+    public DataSet dispatchs(boolean unique, boolean recursion, String... keys) {
+        return dispatchs("ITEMS", unique, recursion, this, keys);
     }
 
-    public DataSet dispatchItems(String field, boolean unique, boolean recursion, String... keys) {
-        return dispatchItems(field, unique, recursion, this, keys);
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, String... keys) {
+        return dispatchs(field, unique, recursion, this, keys);
     }
 
-    public DataSet dispatchItem(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
+    public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
         if (null == items || null == keys || keys.length == 0) {
             return this;
         }
@@ -2323,22 +2324,87 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public DataSet dispatchItem(String field, DataSet items, String... keys) {
-        return dispatchItem(field, false, false, items, keys);
+    public DataSet dispatch(String field, DataSet items, String... keys) {
+        return dispatch(field, false, false, items, keys);
     }
 
-    public DataSet dispatchItem(DataSet items, String... keys) {
-        return dispatchItem("ITEM", items, keys);
+    public DataSet dispatch(DataSet items, String... keys) {
+        return dispatch("ITEM", items, keys);
     }
 
-    public DataSet dispatchItem(boolean unique, boolean recursion, String... keys) {
+    public DataSet dispatch(boolean unique, boolean recursion, String... keys) {
         return dispatchItem("ITEM", unique, recursion, this, keys);
     }
 
-    public DataSet dispatchItem(String field, boolean unique, boolean recursion, String... keys) {
+    public DataSet dispatch(String field, boolean unique, boolean recursion, String... keys) {
         return dispatchItem(field, unique, recursion, this, keys);
     }
 
+
+    /**
+     * 直接调用dispatchs
+     * @param field     默认"ITEMS"
+     * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
+     * @param recursion 是否递归
+     * @param items     items
+     * @param keys      keys    ID:DEPT_ID或ID
+     * @return return
+     */
+    @Deprecated
+    public DataSet dispatchItems(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs(field, unique, recursion, items, keys);
+    }
+
+    @Deprecated
+    public DataSet dispatchItems(boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs( unique, recursion, items, keys);
+    }
+
+
+    @Deprecated
+    public DataSet dispatchItems(String field, DataSet items, String... keys) {
+        return dispatchs(field, items, keys);
+    }
+
+    @Deprecated
+    public DataSet dispatchItems(DataSet items, String... keys) {
+        return dispatchs(items, keys);
+    }
+
+    @Deprecated
+    public DataSet dispatchItems(boolean unique, boolean recursion, String... keys) {
+        return dispatchs( unique, recursion,  keys);
+    }
+
+    @Deprecated
+    public DataSet dispatchItems(String field, boolean unique, boolean recursion, String... keys) {
+        return dispatchs(field, unique, recursion,  keys);
+    }
+
+    @Deprecated
+    public DataSet dispatchItem(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatch(field, unique, recursion, items, keys);
+    }
+
+    @Deprecated
+    public DataSet dispatchItem(String field, DataSet items, String... keys) {
+        return dispatch(field,  items, keys);
+    }
+
+    @Deprecated
+    public DataSet dispatchItem(DataSet items, String... keys) {
+        return dispatch(items, keys);
+    }
+
+    @Deprecated
+    public DataSet dispatchItem(boolean unique, boolean recursion, String... keys) {
+        return dispatch(unique, recursion,  keys);
+    }
+
+    @Deprecated
+    public DataSet dispatchItem(String field, boolean unique, boolean recursion, String... keys) {
+        return dispatch(field, unique, recursion,  keys);
+    }
 
     /**
      * 根据keys列建立关联，并将关联出来的结果拼接到集合的条目上，如果有重复则覆盖条目
