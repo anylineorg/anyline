@@ -105,7 +105,6 @@ public interface JDBCListener {
      * @param dest 需要更新的表
      * @param obj 更新内容
      * @param columns 需要更新的列
-     * @return 是否执行  如果返回false 将不执行更新
      */
     public void afterUpdate(AnylineDao dao, RunSQL run,int count, String dest, Object obj, String ... columns);
 
