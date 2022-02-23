@@ -2259,7 +2259,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return return
      */
     public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        if (null == items || null == keys || keys.length == 0) {
+        if(null == keys || keys.length == 0){
+            throw new RuntimeException("未指定对应关系");
+        }
+        if (null == items) {
             return this;
         }
         if (BasicUtil.isEmpty(field)) {
@@ -2304,7 +2307,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        if (null == items || null == keys || keys.length == 0) {
+        if(null == keys || keys.length == 0){
+            throw new RuntimeException("未指定对应关系");
+        }
+        if (null == items) {
             return this;
         }
         if (BasicUtil.isEmpty(field)) {
@@ -2333,11 +2339,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet dispatch(boolean unique, boolean recursion, String... keys) {
-        return dispatchItem("ITEM", unique, recursion, this, keys);
+        return dispatch("ITEM", unique, recursion, this, keys);
     }
 
     public DataSet dispatch(String field, boolean unique, boolean recursion, String... keys) {
-        return dispatchItem(field, unique, recursion, this, keys);
+        return dispatch(field, unique, recursion, this, keys);
     }
 
 
