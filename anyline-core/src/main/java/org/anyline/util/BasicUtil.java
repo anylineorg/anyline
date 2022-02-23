@@ -493,16 +493,25 @@ public class BasicUtil {
 			str = str.replaceAll("\\s{2,}", " ").trim(); 
 		} 
 		return str; 
-	} 
- 
-	public static String[] compressionSpace(String[] strs) { 
-		if (null != strs) { 
-			int size = strs.length; 
-			for (int i = 0; i < size; i++) { 
-				strs[i] = compressionSpace(strs[i]); 
-			} 
-		} 
-		return strs; 
+	}
+
+	public static String[] compressionSpace(String[] strs) {
+		if (null != strs) {
+			int size = strs.length;
+			for (int i = 0; i < size; i++) {
+				strs[i] = compressionSpace(strs[i]);
+			}
+		}
+		return strs;
+	}
+	public static List<String> compressionSpace(List<String> strs) {
+		List<String> result = new ArrayList<>();
+		if (null != strs) {
+			for(String str:strs){
+				result.add(compressionSpace(str));
+			}
+		}
+		return strs;
 	}
 
 	public static String compressionXml(String xml) {
@@ -580,43 +589,6 @@ public class BasicUtil {
 		return keys; 
 	}
 
-	/** 
-	 * 合成笛卡尔组合 
-	 *  
-	 * @param lists  lists
-	 * @param <T> t
-	 * @return return
-	 */
-	public static <T> List<List<T>> descartes(List<List<T>> lists) {
-		List<List<T>> result = new ArrayList<List<T>>();
-		if(null == lists || lists.size()==0){
-			return result;
-		}
-		List<T> st = lists.get(0);
-		for (T t : st) {
-			List<T> tmp = new ArrayList<T>();
-			tmp.add(t); 
-			result.add(tmp); 
-		} 
-		List<List<T>> store = new ArrayList<List<T>>();
-		for (int i = 1; i < lists.size(); i++) {
-			List<T> r2 = lists.get(i);
-			for (int j = 0; j < result.size(); j++) { 
-				List<T> rns = result.get(j);
-				for (int k = 0; k < r2.size(); k++) { 
-					List<T> mid = new ArrayList<T>();
-					mid.addAll(rns); 
-					mid.add(r2.get(k)); 
-					store.add(mid); 
-				} 
-			} 
-			result = new ArrayList<List<T>>();
-			result.addAll(store); 
-			store = new ArrayList<List<T>>();
-		} 
-		return result; 
-	}
-
 	public static List<String> split(String str, String separator){
 		List<String> list = new ArrayList<>();
 		if(null !=str && null != separator){
@@ -629,37 +601,7 @@ public class BasicUtil {
 			}
 		}
 		return list;
-	} 
-	/** 
-	 * 合并数组 
-	 *  
-	 * @param obj0  obj0
-	 * @param obj1  obj1
-	 * @return return
-	 */ 
-	public static Object[] merge(Object[] obj0, Object[] obj1) { 
-		if (null == obj0) { 
-			if (null == obj1) { 
-				return null; 
-			} else { 
-				return obj1; 
-			} 
-		} else { 
-			if (null == obj1) { 
-				return obj0; 
-			} else { 
-				Object[] obj = new Object[obj0.length + obj1.length]; 
-				int idx = 0; 
-				for (int i = 0; i < obj0.length; i++) { 
-					obj[idx++] = obj0[i]; 
-				} 
-				for (int i = 0; i < obj1.length; i++) { 
-					obj[idx++] = obj1[i]; 
-				} 
-				return obj; 
-			} 
-		} 
-	} 
+	}
  
  
 	/** 
@@ -725,36 +667,6 @@ public class BasicUtil {
 		return src.substring(max-len, max);
 	}
 
-	/**
-	 * 数组合并
-	 * @param array 第一个数组
-	 * @param items 其他数组
-	 * @param <T> 数据类型
-	 * @return 合并后数组
-	 */
-	public static <T> T[] join(T[] array, T[]... items) {
-		if(null == array){
-			return (T[]) new Object[0];
-		}
-		int len = array.length;
-		if(null == items){
-			return array;
-		}
-		for (T[] item : items) {
-			if(null != item) {
-				len += array.length;
-			}
-		}
-		T[] result = Arrays.copyOf(array, len);
-		int offset = array.length;
-		for (T[] item : items) {
-			if(null != item) {
-				System.arraycopy(item, 0, result, offset, item.length);
-				offset += item.length;
-			}
-		}
-		return result;
-	}
 		/**
          * 获取本机IP
          * @return return
@@ -793,13 +705,6 @@ public class BasicUtil {
 		return ips; 
 	}
 
-	public static <T> List<T> array2list(T[] objs){
-		List<T> list = new ArrayList<T>();
-		for(T o : objs){
-			list.add(o);
-		}
-		return list;
-	}
 	/** 
 	 * 数组是否包含 
 	 * @param objs  objs
@@ -812,7 +717,7 @@ public class BasicUtil {
 		if(null == objs){
 			return false;
 		}
-		return containsString(ignoreNull, ignoreCase, array2list(objs), obj);
+		return containsString(ignoreNull, ignoreCase, BeanUtil.array2list(objs), obj);
 	}
 	public static boolean containsString(Object[] objs, String obj){
 		return containsString(false,false,objs, obj);
@@ -821,7 +726,7 @@ public class BasicUtil {
 		if(null == objs){
 			return false;
 		}
-		return contains(false,array2list(objs), obj);
+		return contains(false,BeanUtil.array2list(objs), obj);
 	}
 	public static boolean contains(boolean ignoreNull, Collection<Object> objs, Object obj){
 		if(null == objs){

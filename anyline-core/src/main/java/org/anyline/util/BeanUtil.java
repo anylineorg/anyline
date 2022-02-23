@@ -1382,13 +1382,6 @@ public class BeanUtil {
 		}
 		return result;
 	}
-	public static <T> List<T> arrayList(T[] array){
-		List<T> list = new ArrayList<T>();
-		for(T item:array){
-			list.add(item);
-		}
-		return list;
-	}
 
 	/** 
 	 * String 转map 
@@ -2200,10 +2193,10 @@ public class BeanUtil {
 		return rv;
 	}
 
-	public static void merge(Map src, Map copy){
-    	merge(src, copy, false);
+	public static void join(Map src, Map copy){
+		join(src, copy, false);
 	}
-	public static void merge(Map src, Map copy, boolean over){
+	public static void join(Map src, Map copy, boolean over){
     	if(null != src && null != copy){
     		for(Object key:copy.keySet()){
     			if(!over && src.containsKey(key)){
@@ -2213,6 +2206,109 @@ public class BeanUtil {
 			}
 		}
 	}
+
+	public static <T> List<T> array2list(T[] ... arrays){
+		List<T> list = new ArrayList<T>();
+		if(null != arrays) {
+			for (T[] array : arrays) {
+				for(T item:array) {
+					list.add(item);
+				}
+			}
+		}
+		return list;
+	}
+	/**
+	 * 合成笛卡尔组合
+	 *
+	 * @param lists  lists
+	 * @param <T> t
+	 * @return return
+	 */
+	public static <T> List<List<T>> descartes(List<List<T>> lists) {
+		List<List<T>> result = new ArrayList<List<T>>();
+		if(null == lists || lists.size()==0){
+			return result;
+		}
+		List<T> st = lists.get(0);
+		for (T t : st) {
+			List<T> tmp = new ArrayList<T>();
+			tmp.add(t);
+			result.add(tmp);
+		}
+		List<List<T>> store = new ArrayList<List<T>>();
+		for (int i = 1; i < lists.size(); i++) {
+			List<T> r2 = lists.get(i);
+			for (int j = 0; j < result.size(); j++) {
+				List<T> rns = result.get(j);
+				for (int k = 0; k < r2.size(); k++) {
+					List<T> mid = new ArrayList<T>();
+					mid.addAll(rns);
+					mid.add(r2.get(k));
+					store.add(mid);
+				}
+			}
+			result = new ArrayList<List<T>>();
+			result.addAll(store);
+			store = new ArrayList<List<T>>();
+		}
+		return result;
+	}
+
+	/**
+	 * 数组合并
+	 * @param array 第一个数组
+	 * @param items 其他数组
+	 * @param <T> 数据类型
+	 * @return 合并后数组
+	 */
+	public static <T> T[] merge(T[] array, T[]... items) {
+		T[] result = null;
+		int len = array.length;
+		for (T[] item : items) {
+			if(null != item) {
+				len += array.length;
+			}
+		}
+		if(null != array) {
+			result = Arrays.copyOf(array, len);
+		}else{
+			result = (T[]) new Object[len];
+		}
+		int offset = array.length;
+		for (T[] item : items) {
+			if(null != item) {
+				System.arraycopy(item, 0, result, offset, item.length);
+				offset += item.length;
+			}
+		}
+		return result;
+	}
+
+	public static <T> List<T> merge(List<T> list, T... items) {
+		List<T> result = new ArrayList<>();
+		if(null != list){
+			result.addAll(list);
+		}
+		if(null != items){
+			for(T item:items){
+				result.add(item);
+			}
+		}
+		return result;
+	}
+	public static <T> List<T> join(List<T> list, T... items) {
+		if(null == list){
+			list = new ArrayList<>();
+		}
+		if(null != items){
+			for(T item:items){
+				list.add(item);
+			}
+		}
+		return list;
+	}
+
 
 	public static String parseRuntimeValue(Object obj, String key){
 		return BeanUtil.parseRuntimeValue(obj, key, false);
