@@ -132,12 +132,22 @@ public class AbstractBasicController {
 		return entity;
 	}
 
+	public <T> T entity(HttpServletRequest request, Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+		return entity(request, clazz, keyEncrypt, valueEncrypt, BasicUtil.join(fixs, params));
+	}
 	public <T> T entity(HttpServletRequest request, Class<T> clazz, boolean keyEncrypt, String... params) {
 		return entity(request,clazz, keyEncrypt, false, params);
+	}
+	public <T> T entity(HttpServletRequest request, Class<T> clazz, boolean keyEncrypt, String[] fixs, String... params) {
+		return entity(request,clazz, keyEncrypt, false, BasicUtil.join(fixs, params));
 	}
 
 	public <T> T entity(HttpServletRequest request, Class<T> clazz, String... params) {
 		return entity(request, clazz, false, false, params);
+	}
+
+	public <T> T entity(HttpServletRequest request, Class<T> clazz, String[] fixs, String... params) {
+		return entity(request, clazz, false, false, BasicUtil.join(fixs, params));
 	}
 
 	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
@@ -150,6 +160,9 @@ public class AbstractBasicController {
 		return entity(request, keyCase, row, keyEncrypt, valueEncrypt, list);
 	}
 
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+		return entity(request, keyCase, row, keyEncrypt, valueEncrypt, BasicUtil.join(fixs, params));
+	}
 	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, List<String> params) {
 		if (null == row) {
 			row = new DataRow(keyCase);
@@ -182,34 +195,65 @@ public class AbstractBasicController {
 	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, false, params);
 	}
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
+		return entity(request, keyCase, row, keyEncrypt, false, BasicUtil.join(fixs, params));
+	}
 
 	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt,  params);
 	}
+	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt,  BasicUtil.join(fixs, params));
+	}
 	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, String... params) {
 		return entity(request,keyCase, row, params);
+	}
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, String[] fixs, String... params) {
+		return entity(request,keyCase, row, BasicUtil.join(fixs, params));
 	}
 	public DataRow entity(HttpServletRequest request, DataRow row, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG, row, params);
 	}
+	public DataRow entity(HttpServletRequest request, DataRow row, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, row, BasicUtil.join(fixs, params));
+	}
 	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, keyCase, null, keyEncrypt, valueEncrypt, params);
+	}
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+		return entity(request, keyCase, null, keyEncrypt, valueEncrypt, BasicUtil.join(fixs, params));
 	}
 	public DataRow entity(HttpServletRequest request,boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
 	}
+	public DataRow entity(HttpServletRequest request,boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, BasicUtil.join(fixs, params));
+	}
 	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entity(request,keyCase, keyEncrypt, false, params);
+	}
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
+		return entity(request,keyCase, keyEncrypt, false, BasicUtil.join(fixs, params));
 	}
 	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, false, params);
 	}
 
+	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, false, BasicUtil.join(fixs, params));
+	}
+
 	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, String... params) {
 		return entity(request,keyCase,false, params);
 	}
+	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, String[] fixs, String... params) {
+		return entity(request,keyCase,false, BasicUtil.join(fixs, params));
+	}
 	public DataRow entity(HttpServletRequest request, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG,params);
+	}
+	public DataRow entity(HttpServletRequest request, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, BasicUtil.join(fixs, params));
 	}
 	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		List<String> list = new ArrayList<>();
@@ -219,6 +263,9 @@ public class AbstractBasicController {
 			}
 		}
 		return entitys(request, keyCase, keyEncrypt, valueEncrypt,list);
+	}
+	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+		return entitys(request, keyCase, keyEncrypt, valueEncrypt, BasicUtil.join(fixs, params));
 	}
 
 	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> params) {
@@ -286,15 +333,27 @@ public class AbstractBasicController {
 	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entitys(request,keyCase,keyEncrypt, false, params);
 	}
+	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
+		return entitys(request,keyCase,keyEncrypt, false, BasicUtil.join(fixs, params));
+	}
 
 	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, String... params) {
 		return entitys(request, DataRow.KEY_CASE.CONFIG,keyEncrypt, false, params);
 	}
+	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, String[] fixs, String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG,keyEncrypt, false, BasicUtil.join(fixs, params));
+	}
 	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, String... params) {
 		return entitys(request, keyCase, false, false, params);
 	}
-	public DataSet entitys(HttpServletRequest request,String... params) {
+	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, String[] fixs, String... params) {
+		return entitys(request, keyCase, false, false, BasicUtil.join(fixs, params));
+	}
+	public DataSet entitys(HttpServletRequest request, String... params) {
 		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, params);
+	}
+	public DataSet entitys(HttpServletRequest request, String[] fixs, String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, BasicUtil.join(fixs, params));
 	}
 
 
@@ -316,6 +375,9 @@ public class AbstractBasicController {
 		store.setValue(WebUtil.value(request));
 		return store;
 	}
+	protected ConfigStore parseConfig(HttpServletRequest request, boolean navi, String[] fixs, String... configs) {
+		return parseConfig(request, navi, BasicUtil.join(fixs, configs));
+	}
 	/**
 	 * 解析参数
 	 *
@@ -333,6 +395,9 @@ public class AbstractBasicController {
 		}
 		store.setValue(WebUtil.value(request));
 		return store;
+	}
+	protected ConfigStore parseConfig(HttpServletRequest request, int vol, String[] fixs,  String... configs) {
+		return parseConfig(request, vol, BasicUtil.join(fixs, configs));
 	}
 
 	/**
@@ -354,34 +419,66 @@ public class AbstractBasicController {
 		store.setValue(WebUtil.value(request));
 		return store;
 	}
-	protected ConfigStore parseConfig(HttpServletRequest request, String... conditions) {
-		return parseConfig(request, false, conditions);
+
+	protected ConfigStore parseConfig(HttpServletRequest request, int fr, int to, String[] fixs, String... configs) {
+		return  parseConfig(request, fr, to, BasicUtil.join(fixs, configs));
+	}
+	protected ConfigStore parseConfig(HttpServletRequest request, String... configs) {
+		return parseConfig(request, false, configs);
+	}
+	protected ConfigStore parseConfig(HttpServletRequest request, String[] fixs, String... configs) {
+		return parseConfig(request, false, BasicUtil.join(fixs, configs));
 	}
 
 	protected ConfigStore config(HttpServletRequest request, boolean navi, String... configs) {
 		return parseConfig(request, navi, configs);
 	}
+	protected ConfigStore config(HttpServletRequest request, boolean navi, String[] fixs, String... configs) {
+		return parseConfig(request, navi, BasicUtil.join(fixs, configs));
+	}
+
 	protected ConfigStore config(HttpServletRequest request, int vol, String... configs) {
 		return parseConfig(request, vol, configs);
+	}
+	protected ConfigStore config(HttpServletRequest request, int vol, String[] fixs, String... configs) {
+		return parseConfig(request, vol, BasicUtil.join(fixs, configs));
 	}
 	protected ConfigStore config(HttpServletRequest request, int fr, int to, String... configs) {
 		return parseConfig(request, fr, to, configs);
 	}
-	protected ConfigStore config(HttpServletRequest request, String... conditions) {
-		return parseConfig(request, conditions);
+	protected ConfigStore config(HttpServletRequest request, int fr, int to, String[] fixs, String... configs) {
+		return parseConfig(request, fr, to, BasicUtil.join(fixs, configs));
+	}
+	protected ConfigStore config(HttpServletRequest request, String... configs) {
+		return parseConfig(request, configs);
+	}
+	protected ConfigStore config(HttpServletRequest request, String[] fixs, String... configs) {
+		return parseConfig(request, BasicUtil.join(fixs, configs));
 	}
 
 	protected ConfigStore condition(HttpServletRequest request, boolean navi, String... configs) {
 		return parseConfig(request, navi, configs);
 	}
+	protected ConfigStore condition(HttpServletRequest request, boolean navi, String[] fixs, String... configs) {
+		return parseConfig(request, navi, BasicUtil.join(fixs, configs));
+	}
 	protected ConfigStore condition(HttpServletRequest request, int vol, String... configs) {
 		return parseConfig(request, vol, configs);
+	}
+	protected ConfigStore condition(HttpServletRequest request, int vol, String[] fixs, String... configs) {
+		return parseConfig(request, vol, BasicUtil.join(fixs, configs));
 	}
 	protected ConfigStore condition(HttpServletRequest request, int fr, int to, String... configs) {
 		return parseConfig(request, fr, to, configs);
 	}
-	protected ConfigStore condition(HttpServletRequest request, String... conditions) {
-		return parseConfig(request, conditions);
+	protected ConfigStore condition(HttpServletRequest request, int fr, int to, String[] fixs, String... configs) {
+		return parseConfig(request, fr, to, BasicUtil.join(fixs, configs));
+	}
+	protected ConfigStore condition(HttpServletRequest request, String... configs) {
+		return parseConfig(request, configs);
+	}
+	protected ConfigStore condition(HttpServletRequest request, String[] fixs, String... configs) {
+		return parseConfig(request, BasicUtil.join(fixs, configs));
 	}
 	/**
 	 * rquest.getParameter
