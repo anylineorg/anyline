@@ -724,26 +724,41 @@ public class BasicUtil {
 		}
 		return src.substring(max-len, max);
 	}
-//	/**
-//	 * 拼接集合
-//	 * @param objs objs
-//	 * @return return
-//	 */
-//	public static String join(Collection<?> objs){
-//		if(null == objs){
-//			return "";
-//		}
-//		String result = "";
-//		int idx = 0;
-//		for(Object obj:objs){
-//			result += "[" + idx++ +"]" + obj;
-//		}
-//		return result;
-//	}
-	/** 
-	 * 获取本机IP 
-	 * @return return
-	 */ 
+
+	/**
+	 * 数组合并
+	 * @param array 第一个数组
+	 * @param items 其他数组
+	 * @param <T> 数据类型
+	 * @return 合并后数组
+	 */
+	public static <T> T[] join(T[] array, T[]... items) {
+		if(null == array){
+			return (T[]) new Object[0];
+		}
+		int len = array.length;
+		if(null == items){
+			return array;
+		}
+		for (T[] item : items) {
+			if(null != item) {
+				len += array.length;
+			}
+		}
+		T[] result = Arrays.copyOf(array, len);
+		int offset = array.length;
+		for (T[] item : items) {
+			if(null != item) {
+				System.arraycopy(item, 0, result, offset, item.length);
+				offset += item.length;
+			}
+		}
+		return result;
+	}
+		/**
+         * 获取本机IP
+         * @return return
+         */
 	@SuppressWarnings("rawtypes")
 	public static List<InetAddress> getLocalIps(){ 
 		List<InetAddress> ips = new ArrayList<InetAddress>(); 
