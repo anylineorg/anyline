@@ -351,7 +351,7 @@ public class WDocument {
                 }
                 tc.setSrc(html_col);
                 tc.setText(text);
-                Map<String,String> tdStyles = StyleParser.merge(tc.getStyles(),style(html_col));
+                Map<String,String> tdStyles = StyleParser.join(tc.getStyles(),style(html_col));
                 tdStyles = StyleParser.parse(tdStyles, html_col.attributeValue("style"), true);
                 tc.setStyles(tdStyles);
                 tc.setClazz(html_col.attributeValue("class"));
@@ -1056,39 +1056,39 @@ public class WDocument {
 
 
         for(String pc:parentClassList){
-            StyleParser.merge(result, this.styles.get("."+pc + " "+name), true);
-            StyleParser.merge(result, this.styles.get("."+pc + " "+name+nth), true);
+            StyleParser.join(result, this.styles.get("."+pc + " "+name), true);
+            StyleParser.join(result, this.styles.get("."+pc + " "+name+nth), true);
         }
 
         if(null != parentName){
-            StyleParser.merge(result, this.styles.get(parentName + " "+name), true);
-            StyleParser.merge(result, this.styles.get(parentName + " "+name+nth), true);
+            StyleParser.join(result, this.styles.get(parentName + " "+name), true);
+            StyleParser.join(result, this.styles.get(parentName + " "+name+nth), true);
         }
 
-        StyleParser.merge(result, this.styles.get(name), true);
-        StyleParser.merge(result, this.styles.get(name+nth), true);
+        StyleParser.join(result, this.styles.get(name), true);
+        StyleParser.join(result, this.styles.get(name+nth), true);
 
         String clazz = element.attributeValue("class");
         if(null != clazz){
             String[] cs = clazz.split(" ");
             for(String c:cs){
                 if(null != parentName){
-                    StyleParser.merge(result, this.styles.get(parentName + " ."+c), true);
-                    StyleParser.merge(result, this.styles.get(parentName + " ."+c+nth), true);
+                    StyleParser.join(result, this.styles.get(parentName + " ."+c), true);
+                    StyleParser.join(result, this.styles.get(parentName + " ."+c+nth), true);
                 }
                 for(String pc:parentClassList){
-                    StyleParser.merge(result, this.styles.get("."+pc + " ."+c), true);
-                    StyleParser.merge(result, this.styles.get("."+pc + " ."+nth), true);
+                    StyleParser.join(result, this.styles.get("."+pc + " ."+c), true);
+                    StyleParser.join(result, this.styles.get("."+pc + " ."+nth), true);
                 }
-                StyleParser.merge(result, this.styles.get("."+c), true);
-                StyleParser.merge(result, this.styles.get("."+c+nth), true);
+                StyleParser.join(result, this.styles.get("."+c), true);
+                StyleParser.join(result, this.styles.get("."+c+nth), true);
             }
         }
 
 
         String id = element.attributeValue("id");
         if(null != id){
-            StyleParser.merge(result, this.styles.get("#"+id),true);
+            StyleParser.join(result, this.styles.get("#"+id),true);
         }
 
         result = StyleParser.parse(result, element.attributeValue("style"),true);
