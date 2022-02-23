@@ -3643,7 +3643,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
 
         public <T> DataSet in(String key, T... values) {
-            return in(DataSet.this, key, BasicUtil.array2list(values));
+            return in(DataSet.this, key, BeanUtil.array2list(values));
         }
 
         public <T> DataSet in(String key, Collection<T> values) {
@@ -3662,7 +3662,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
 
         public <T> DataSet notIn(String key, T... values) {
-            return notIn(DataSet.this, key, BasicUtil.array2list(values));
+            return notIn(DataSet.this, key, BeanUtil.array2list(values));
         }
 
         public <T> DataSet notIn(String key, Collection<T> values) {
