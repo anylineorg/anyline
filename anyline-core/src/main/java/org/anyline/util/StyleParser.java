@@ -31,7 +31,7 @@ public class StyleParser {
                 for (String k : keys) {
                     k = k.trim();
                     Map<String, String> tmps = parse(value);
-                    tmps = merge(styles.get(k),tmps, true);
+                    tmps = join(styles.get(k),tmps, true);
                     styles.put(k,tmps);
                 }
             }
@@ -214,10 +214,10 @@ public class StyleParser {
         removeBorder("insideH", styles);
         return styles;
     }
-    public static Map<String, String> merge(Map<String, String> src, Map<String, String> copy) {
-        return merge(src, copy, false);
+    public static Map<String, String> join(Map<String, String> src, Map<String, String> copy) {
+        return join(src, copy, false);
     }
-    public static Map<String, String> merge(Map<String, String> src, Map<String, String> copy, boolean over) {
+    public static Map<String, String> join(Map<String, String> src, Map<String, String> copy, boolean over) {
         if(null == src){
             src = new HashMap<>();
         }
@@ -247,13 +247,13 @@ public class StyleParser {
         if ("none".equalsIgnoreCase(copy.get("border-insideH"))) {
             removeBorder("insideH", src);
         }
-        BeanUtil.merge(src, copy, over);
+        BeanUtil.join(src, copy, over);
         return src;
     }
 
     public static Map<String,String> parse(Map<String,String> src, String txt, boolean over){
         Map<String,String> copy = StyleParser.parse(txt);
-        return merge(src, copy, over);
+        return join(src, copy, over);
     }
     public static Map<String,String> parse(Map<String,String> src, String txt){
         return parse(src, txt, false);
