@@ -2456,7 +2456,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public DataSet group(String... keys) {
         DataSet result = distinct(keys);
-        result.dispatchItems(true,false, this, keys);
+        result.dispatchs(true,false, this, keys);
         return result;
     }
 
