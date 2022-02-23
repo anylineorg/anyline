@@ -18,14 +18,6 @@
  
 package org.anyline.struts.action; 
  
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -39,10 +31,15 @@ import org.anyline.web.controller.AbstractBasicController;
 import org.anyline.web.util.WebUtil;
 import org.apache.struts2.interceptor.ServletRequestAware;
 import org.apache.struts2.interceptor.ServletResponseAware;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.util.List;
+import java.util.Map;
  
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware { 
 	public static int RESULT_TYPE_DEFAULT = 0; 
@@ -61,85 +58,134 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected String msg; // 返回信息 
 	protected String url; // 动态跳转 
 	protected int result_type = RESULT_TYPE_DEFAULT; 
-	protected String code = "200"; 
-	 
- 
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params) { 
-		return entity(request, clazz, keyEncrypt, valueEncrypt, params); 
-	} 
- 
-	public <T> T entity(Class<T> clazz, boolean keyEncrypt, String... params) { 
-		return entity(request, clazz, keyEncrypt, false, params); 
-	} 
- 
-	public <T> T entity(Class<T> clazz, String... params) { 
-		return entity(request, clazz, false, false, params); 
-	} 
- 
+	protected String code = "200";
+
+
+	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+		return entity(request, clazz, keyEncrypt, valueEncrypt, params);
+	}
+	public <T> T entity(Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+		return entity(request, clazz, keyEncrypt, valueEncrypt, BasicUtil.join(fixs, params));
+	}
+
+	public <T> T entity(Class<T> clazz, boolean keyEncrypt, String... params) {
+		return entity(request, clazz, keyEncrypt, false, params);
+	}
+	public <T> T entity(Class<T> clazz, boolean keyEncrypt, String[] fixs, String... params) {
+		return entity(request, clazz, keyEncrypt, false, BasicUtil.join(fixs, params));
+	}
+
+	public <T> T entity(Class<T> clazz, String... params) {
+		return entity(request, clazz, false, false, params);
+	}
+	public <T> T entity(Class<T> clazz, String[] fixs, String... params) {
+		return entity(request, clazz, false, false, BasicUtil.join(fixs, params));
+	}
+
 	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG,  row, keyEncrypt, valueEncrypt, params);
-	} 
- 
+	}
+	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG,  row, keyEncrypt, valueEncrypt, BasicUtil.join(fixs, params));
+	}
+
 	public DataRow entity(DataRow row, boolean keyEncrypt, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, params);
-	} 
- 
+	}
+	public DataRow entity(DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, BasicUtil.join(fixs, params));
+	}
+
 	public DataRow entity(DataRow row, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG, row, false, false, params);
-	} 
- 
+	}
+	public DataRow entity(DataRow row, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, row, false, false, BasicUtil.join(fixs, params));
+	}
+
 	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
-	} 
- 
+	}
+
+	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BasicUtil.join(fixs, params));
+	}
+
 	public DataRow entity(boolean keyEncrypt, String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, params);
-	} 
- 
+	}
+	public DataRow entity(boolean keyEncrypt, String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, BasicUtil.join(fixs, params));
+	}
+
 	public DataRow entity(String... params) {
 		return entity(request, DataRow.KEY_CASE.CONFIG, null, false, false, params);
-	} 
- 
+	}
+	public DataRow entity(String[] fixs, String... params) {
+		return entity(request, DataRow.KEY_CASE.CONFIG, null, false, false, BasicUtil.join(fixs, params));
+	}
+
 	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
-	} 
- 
+	}
+	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, BasicUtil.join(fixs, params));
+	}
+
 	public DataSet entitys(boolean keyEncrypt, String... params) {
 		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, false, params);
-	} 
- 
+	}
+
+	public DataSet entitys(boolean keyEncrypt, String[] fixs, String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, false, BasicUtil.join(fixs, params));
+	}
+
 	public DataSet entitys(String... params) {
 		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, params);
-	} 
- 
-	protected ConfigStore parseConfig(boolean navi, String... configs) { 
-		return parseConfig(request, navi, configs); 
-	} 
- 
-	protected ConfigStore parseConfig(int vol, String... configs) { 
-		return parseConfig(request, vol, configs); 
-	} 
- 
-	protected ConfigStore parseConfig(int fr, int to, String... configs) { 
-		return parseConfig(request, fr, to, configs); 
-	} 
- 
-	protected ConfigStore parseConfig(String... conditions) { 
-		return parseConfig(request, false, conditions); 
-	} 
- 
-	protected String getParam(String key, boolean keyEncrypt, boolean valueEncrypt) { 
-		return getParam(request, key, keyEncrypt, valueEncrypt); 
-	} 
- 
-	protected String getParam(String key, boolean keyEncrypt) { 
-		return getParam(request, key, keyEncrypt, false); 
-	} 
- 
-	protected String getParam(String key) { 
-		return getParam(request, key, false, false); 
-	} 
- 
+	}
+
+	public DataSet entitys(String[] fixs, String... params) {
+		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, BasicUtil.join(fixs, params));
+	}
+
+	protected ConfigStore parseConfig(boolean navi, String... configs) {
+		return parseConfig(request, navi, configs);
+	}
+	protected ConfigStore parseConfig(boolean navi, String[] fixs, String... configs) {
+		return parseConfig(request, navi, BasicUtil.join(fixs, configs));
+	}
+
+	protected ConfigStore parseConfig(int vol, String[] fixs, String... configs) {
+		return parseConfig(request, vol, BasicUtil.join(fixs, configs));
+	}
+
+	protected ConfigStore parseConfig(int fr, int to, String... configs) {
+		return parseConfig(request, fr, to, configs);
+	}
+	protected ConfigStore parseConfig(int fr, int to, String[] fixs, String... configs) {
+		return parseConfig(request, fr, to, BasicUtil.join(fixs, configs));
+	}
+
+	protected ConfigStore parseConfig(String... configs) {
+		return parseConfig(request, false, configs);
+	}
+
+	protected ConfigStore parseConfig(String[] fixs, String... configs) {
+		return parseConfig(request, false, BasicUtil.join(fixs, configs));
+	}
+
+	protected String getParam(String key, boolean keyEncrypt, boolean valueEncrypt) {
+		return getParam(request, key, keyEncrypt, valueEncrypt);
+	}
+
+	protected String getParam(String key, boolean keyEncrypt) {
+		return getParam(request, key, keyEncrypt, false);
+	}
+
+	protected String getParam(String key) {
+		return getParam(request, key, false, false);
+	}
+
 	protected List<Object> getParams(String key,  boolean keyEncrypt, boolean valueEncrypt) { 
 		return getParams(request, key, keyEncrypt, valueEncrypt); 
 	} 
