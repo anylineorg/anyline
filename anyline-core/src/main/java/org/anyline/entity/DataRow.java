@@ -1527,7 +1527,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			return this;
 		}
 		List<String> list = BeanUtil.merge(fixs, keys);
-		for(String key:keys){
+		for(String key:list){
 			String ks[] = BeanUtil.parseKeyValue(key);
 			this.put(ks[0], data.get(ks[1]));
 		}
