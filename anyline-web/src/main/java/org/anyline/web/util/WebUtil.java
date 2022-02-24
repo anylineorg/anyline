@@ -699,17 +699,18 @@ public class WebUtil {
 	 * @return return
 	 */
 	@SuppressWarnings("unchecked")
-	private static Object encryptValue(Object obj, boolean mix, String... keys) {
+	private static Object encryptValue(Object obj, boolean mix, List<String> fixs, String... keys) {
 		if (null == obj) {
 			return obj;
 		}
+		List<String> list = BeanUtil.merge(fixs, keys);
 		if (obj instanceof String || obj instanceof Number || obj instanceof Boolean || obj instanceof Date) {
 			return DESUtil.encryptValue(obj.toString(),mix);
 		}
 		if (obj instanceof Map) {
-			obj = encryptValue((Map<String, Object>) obj, mix, keys);
+			obj = encryptValue((Map<String, Object>) obj, mix, fixs, keys);
 		} else if (obj instanceof Collection) {
-			obj = encryptValue((Collection<Object>) obj, mix, keys);
+			obj = encryptValue((Collection<Object>) obj, mix, fixs, keys);
 		} else {
 			//Object无法加密
 			List<String> ks = BeanUtil.getFieldsName(obj.getClass());
@@ -719,8 +720,8 @@ public class WebUtil {
 					continue;
 				}
 				if(v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
-					if(null == keys || keys.length == 0 || BasicUtil.contains(keys, k)){
-						v = encryptValue(v.toString(), mix);
+					if(null == list || list.size() == 0 || list.contains(k)){
+						v = encryptValue(v.toString(), mix, list);
 					}
 				} else {
 					if (v instanceof Map) {
@@ -734,6 +735,12 @@ public class WebUtil {
 		}
 		return obj;
 	}
+	private static Object encryptValue(Object obj, boolean mix, String[] fixs, String... keys) {
+		return encryptValue(obj, mix, BeanUtil.array2list(fixs, keys));
+	}
+	private static Object encryptValue(Object obj, boolean mix, String... keys) {
+		return encryptValue(obj, mix, BeanUtil.array2list(keys));
+	}
 
 	/**
 	 * 加密集合
@@ -743,20 +750,23 @@ public class WebUtil {
 	 * @return return
 	 */
 	@SuppressWarnings("unchecked")
-	private static Collection<Object> encryptValue(Collection<Object> list, boolean mix, String... keys) {
+	private static Collection<Object> encryptValue(Collection<Object> list, boolean mix, List<String> fixs, String... keys) {
 		if (null == list) {
 			return list;
 		}
 		for (Object obj : list) {
 			if (obj instanceof Map) {
-				obj = encryptValue((Map<String, Object>) obj, mix, keys);
+				obj = encryptValue((Map<String, Object>) obj, mix, fixs, keys);
 			} else if (obj instanceof Collection) {
-				obj = encryptValue((Collection<Object>) obj, mix, keys);
+				obj = encryptValue((Collection<Object>) obj, mix, fixs, keys);
 			} else {
-				obj = encryptValue(obj, mix, keys);
+				obj = encryptValue(obj, mix, fixs, keys);
 			}
 		}
 		return list;
+	}
+	private static Collection<Object> encryptValue(Collection<Object> list, boolean mix, String[] fixs, String... keys) {
+		return encryptValue(list, mix, BeanUtil.array2list(fixs, keys));
 	}
 
 	/**
@@ -769,8 +779,20 @@ public class WebUtil {
 	public static Object encrypt(Object obj, boolean mix, String... keys) {
 		return encryptValue(obj, mix, keys);
 	}
+	public static Object encrypt(Object obj, boolean mix, List<String> fixs, String... keys) {
+		return encryptValue(obj, mix, BeanUtil.merge(fixs, keys));
+	}
+	public static Object encrypt(Object obj, boolean mix, String[] fixs, String... keys) {
+		return encryptValue(obj, mix, BeanUtil.array2list(fixs, keys));
+	}
 	public static Object encrypt(Object obj, String... keys) {
 		return encrypt(obj,false,keys);
+	}
+	public static Object encrypt(Object obj, List<String> fixs, String... keys) {
+		return encrypt(obj,false,BeanUtil.merge(fixs, keys));
+	}
+	public static Object encrypt(Object obj, String[] fixs, String... keys) {
+		return encrypt(obj,false, BeanUtil.array2list(fixs, keys));
 	}
 
 	/**
