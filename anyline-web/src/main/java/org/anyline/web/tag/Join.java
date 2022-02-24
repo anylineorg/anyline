@@ -19,17 +19,14 @@
 
 package org.anyline.web.tag; 
  
- 
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
+
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.Tag;
-import java.util.*;
+import java.util.Collection;
 
 
 public class Join extends BaseBodyTag{
