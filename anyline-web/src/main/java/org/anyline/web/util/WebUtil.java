@@ -657,13 +657,15 @@ public class WebUtil {
 	 * @param map  map
 	 * @param mix  mix
 	 * @param keys  keys
+	 * @param fixs  fixs
 	 * @return return
 	 */
 	@SuppressWarnings("unchecked")
-	private static Map<String, Object> encryptValue(Map<String, Object> map, boolean mix, String... keys) {
+	private static Map<String, Object> encryptValue(Map<String, Object> map, boolean mix, List<String> fixs, String... keys) {
 		if (null == map) {
 			return map;
 		}
+		fixs = BeanUtil.merge(fixs, keys);
 		List<String> ks = BeanUtil.getMapKeys(map);
 		for(String k:ks){
 			Object v = map.get(k);
@@ -672,22 +674,30 @@ public class WebUtil {
 			}
 
 			if(v instanceof String || v instanceof Number || v instanceof Boolean || v instanceof Date) {
-				if(null == keys || keys.length == 0 || BasicUtil.contains(keys, k)){
+				if(null == fixs || fixs.size() == 0 || fixs.contains(k)){
 					v = encryptValue(v.toString(), mix);
 				}
 			}else{
 				if (v instanceof Map) {
-					v = encryptValue((Map<String, Object>) v, mix, keys);
+					v = encryptValue((Map<String, Object>) v, mix, fixs, keys);
 				} else if (v instanceof Collection) {
-					v = encryptValue((Collection<Object>) v, mix, keys);
+					v = encryptValue((Collection<Object>) v, mix, fixs, keys);
 				} else {
-					v = encryptValue(v, mix, keys);
+					v = encryptValue(v, mix, fixs, keys);
 				}
 			}
 			map.put(k, v);
 		}
 
 		return map;
+	}
+
+	private static Map<String, Object> encryptValue(Map<String, Object> map, boolean mix, String[] fixs, String... keys) {
+		return encryptValue(map, mix, BeanUtil.array2list(fixs, keys));
+	}
+
+	private static Map<String, Object> encryptValue(Map<String, Object> map, boolean mix, String... keys) {
+		return encryptValue(map, mix, BeanUtil.array2list(keys));
 	}
 
 	/**
