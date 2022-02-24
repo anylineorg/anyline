@@ -1506,24 +1506,27 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * @param keys this与data中的key不同时 "this.key:data.key"(CD:ORDER_CD)
 	 * @return return
 	 */
+	public DataRow copy(DataRow data, String[] fixs, String ... keys){
+		return copy(data, BeanUtil.array2list(fixs, keys));
+	}
 	public DataRow copy(DataRow data, String ... keys){
 		if(null == data ){
 			return  this;
 		}
 		if(null == keys || keys.length ==0){
 			return copy(data, data.keys());
+		}else{
+			return copy(data, BeanUtil.array2list(keys));
 		}
-		for(String key:keys){
-			String ks[] = BeanUtil.parseKeyValue(key);
-			this.put(ks[0], data.get(ks[1]));
-		}
-		return this;
+
 	}
 
-	public DataRow copy(DataRow data, List<String> keys){
-		if(null == data || null == keys){
+
+	public DataRow copy(DataRow data, List<String> fixs, String ... keys){
+		if(null == data || data.isEmpty()){
 			return this;
 		}
+		List<String> list = BeanUtil.merge(fixs, keys);
 		for(String key:keys){
 			String ks[] = BeanUtil.parseKeyValue(key);
 			this.put(ks[0], data.get(ks[1]));
