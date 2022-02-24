@@ -87,6 +87,7 @@ public class AbstractBasicController {
 	 * @param clazz  clazz
 	 * @param keyEncrypt  keyEncrypt
 	 * @param valueEncrypt  valueEncrypt
+	 * @param fixs  fixs
 	 * @param params  params
 	 * @return return
 	 */
