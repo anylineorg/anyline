@@ -2211,8 +2211,10 @@ public class BeanUtil {
 		List<T> list = new ArrayList<T>();
 		if(null != arrays) {
 			for (T[] array : arrays) {
-				for(T item:array) {
-					list.add(item);
+				if(null != array) {
+					for (T item : array) {
+						list.add(item);
+					}
 				}
 			}
 		}
