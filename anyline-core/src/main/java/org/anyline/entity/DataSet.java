@@ -1008,89 +1008,99 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 多列合计
      * @param result 保存合计结果
+     * @param fixs fixs
      * @param keys keys
      * @return DataRow
      */
-    public DataRow sums(DataRow result, String... keys) {
+    public DataRow sums(DataRow result, List<String> fixs, String... keys) {
         if(null == result){
             result = new DataRow();
         }
         if (size() > 0) {
-            if (null != keys) {
-                for (String key : keys) {
-                    result.put(key, sum(key));
-                }
-            } else {
-                List<String> numberKeys = getRow(0).numberKeys();
-                for (String key : numberKeys) {
-                    result.put(key, sum(key));
-                }
+            List<String> list = BeanUtil.merge(fixs, keys);
+            for (String key : list) {
+                result.put(key, sum(key));
             }
         }
         return result;
     }
-    public DataRow sums(String... keys) {
-        return sums(new DataRow(), keys);
+    public DataRow sums(DataRow result, String[] fixs, String... keys) {
+        return sums(result, BeanUtil.array2list(fixs, keys));
+    }
+    public DataRow sums(String ... keys) {
+        List<String> list = BeanUtil.array2list(keys);
+        if(list.size() ==0 && size() >0){
+            list = getRow(0).numberKeys();
+        }
+        return sums(new DataRow(), list);
     }
 
     /**
      * 多列平均值
      *
      * @param result 保存合计结果
+     * @param fixs fixs
      * @param keys keys
      * @return DataRow
      */
-    public DataRow avgs(DataRow result, String... keys) {
+    public DataRow avgs(DataRow result, List<String> fixs, String... keys) {
         if(null == result){
             result = new DataRow();
         }
         if (size() > 0) {
-            if (null != keys) {
-                for (String key : keys) {
-                    result.put(key, avg(key));
-                }
-            } else {
-                List<String> numberKeys = getRow(0).numberKeys();
-                for (String key : numberKeys) {
-                    result.put(key, avg(key));
-                }
+            List<String> list = BeanUtil.merge(fixs, keys);
+            for (String key : list) {
+                result.put(key, avg(key));
             }
         }
         return result;
     }
-    public DataRow avgs(String... keys) {
-        return avgs(new DataRow(), keys);
+
+    public DataRow avgs(DataRow result, String[] fixs, String... keys) {
+        return avgs(result, BeanUtil.array2list(fixs, keys));
     }
+    public DataRow avgs(String ... keys) {
+        List<String> list = BeanUtil.array2list(keys);
+        if(list.size() ==0 && size() >0){
+            list = getRow(0).numberKeys();
+        }
+        return avgs(new DataRow(), list);
+    }
+
 
     /**
      * 多列平均值
      * @param result 保存合计结果
      * @param scale scale
      * @param round round
+     * @param fixs fixs
      * @param keys keys
      * @return DataRow
      */
-    public DataRow avgs(DataRow result, int scale, int round, String... keys) {
+    public DataRow avgs(DataRow result, int scale, int round, List<String> fixs, String... keys) {
         if(null == result){
             result = new DataRow();
         }
         if (size() > 0) {
-            if (null != keys) {
-                for (String key : keys) {
-                    result.put(key, avg(key, scale, round));
-                }
-            } else {
-                List<String> numberKeys = getRow(0).numberKeys();
-                for (String key : numberKeys) {
-                    result.put(key, avg(key, scale, round));
-                }
+            List<String> list = BeanUtil.merge(fixs, keys);
+            for (String key : keys) {
+                result.put(key, avg(key, scale, round));
             }
         }
         return result;
     }
-    public DataRow avgs(int scale, int round, String... keys) {
-        return avgs(new DataRow(), scale, round, keys);
+
+    public DataRow avgs(DataRow result, int scale, int round, String[] fixs, String... keys) {
+        return avgs(result, scale, round, BeanUtil.array2list(fixs, keys));
     }
+    public DataRow avgs(int scale, int round, String ... keys) {
+        List<String> list = BeanUtil.array2list(keys);
+        if(list.size() ==0 && size() >0){
+            list = getRow(0).numberKeys();
+        }
+        return avgs(new DataRow(), scale, round,  list);
+    }
+
 
     /**
      * 最大值
@@ -1580,18 +1590,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return DataSet
      */
     public DataSet extract(String ... keys){
-        DataSet result = new DataSet();
-        for(DataRow row:rows){
-            DataRow item = row.extract(keys);
-            result.add(item);
-        }
-        result.navi = this.navi;
-        return result;
+        return extract(BeanUtil.array2list(keys));
     }
-    public DataSet extract(List<String> keys){
+    public DataSet extract(String[] fixs, String ... keys){
+        return extract(BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet extract(List<String> fixs, String ... keys){
         DataSet result = new DataSet();
+        List<String> list = BeanUtil.merge(fixs, keys);
         for(DataRow row:rows){
-            DataRow item = row.extract(keys);
+            DataRow item = row.extract(list);
             result.add(item);
         }
         result.navi = this.navi;
@@ -2139,10 +2147,11 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 合并
      * @param set DataSet
+     * @param fixs fixs
      * @param keys 根据keys去重
      * @return DataSet
      */
-    public DataSet union(DataSet set, String... keys) {
+    public DataSet union(DataSet set, List<String> fixs, String... keys) {
         DataSet result = new DataSet();
         if (null != rows) {
             int size = rows.size();
@@ -2150,20 +2159,26 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 result.add(rows.get(i));
             }
         }
-        if (null == keys || keys.length == 0) {
-            keys = new String[1];
-            keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+        List<String> list = BeanUtil.merge(fixs, keys);
+        if (list.size() == 0) {
+            list.add(ConfigTable.getString("DEFAULT_PRIMARY_KEY"));
         }
         int size = set.size();
         for (int i = 0; i < size; i++) {
             DataRow item = set.getRow(i);
-            if (!result.contains(item, keys)) {
+            if (!list.contains(item)) {
                 result.add(item);
             }
         }
         return result;
     }
 
+    public DataSet union(DataSet set, String[] fixs, String... keys) {
+        return union(set, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet union(DataSet set, String... keys) {
+        return union(set, BeanUtil.array2list(keys));
+    }
     /**
      * 合并合并不去重
      *
@@ -2190,28 +2205,42 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 是否包含这一行
      *
      * @param row  row
+     * @param fixs fixs
      * @param keys keys
      * @return return
      */
-    public boolean contains(DataRow row, String... keys) {
+    public boolean contains(DataRow row, List<String> fixs, String... keys) {
         if (null == rows || rows.size() == 0 || null == row) {
             return false;
         }
-        if (null == keys || keys.length == 0) {
-            keys = new String[1];
-            keys[0] = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+        List<String> list = BeanUtil.merge(fixs, keys);
+        if (list.size() == 0) {
+            list.add(ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID"));
         }
-        String params[] = packParam(row, keys);
+        String params[] = packParam(row, list);
         return exists(params);
     }
 
-    public String[] packParam(DataRow row, String... keys) {
-        if (null == keys || null == row) {
+    public boolean contains(DataRow row, String[] fixs, String... keys) {
+        return contains(row, BeanUtil.array2list(fixs, keys));
+    }
+
+    public boolean contains(DataRow row, String... keys) {
+        return contains(row, BeanUtil.array2list(keys));
+    }
+
+
+    public String[] packParam(DataRow row, List<String> fixs, String... keys) {
+        if (null == row) {
             return null;
         }
-        String params[] = new String[keys.length * 2];
+        List<String> list = BeanUtil.merge(fixs, keys);
+        if(list.size()==0){
+            return null;
+        }
+        String params[] = new String[list.size() * 2];
         int idx = 0;
-        for (String key : keys) {
+        for (String key : list) {
             if (null == key) {
                 continue;
             }
@@ -2220,6 +2249,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
             params[idx++] = row.getString(ks[1]);
         }
         return params;
+    }
+    public String[] packParam(DataRow row, String[] fixs, String... keys) {
+        return packParam(row, BeanUtil.array2list(fixs, keys));
+    }
+
+    public String[] packParam(DataRow row, String... keys) {
+        return packParam(row, BeanUtil.array2list(keys));
     }
 
     /**
@@ -2255,25 +2291,27 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
      * @param recursion 是否递归
      * @param items     items
+     * @param fixs     fixs
      * @param keys      keys    ID:DEPT_ID或ID
      * @return return
      */
-    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        if(null == keys || keys.length == 0){
-            throw new RuntimeException("未指定对应关系");
-        }
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         if (null == items) {
             return this;
+        }
+        List<String> list = BeanUtil.merge(fixs, keys);
+        if(list.size() == 0){
+            throw new RuntimeException("未指定对应关系");
         }
         if (BasicUtil.isEmpty(field)) {
             field = "ITEMS";
         }
         for (DataRow row : rows) {
             if (null == row.get(field)) {
-                String[] kvs = packParam(row, reverseKey(keys));
+                String[] kvs = packParam(row, reverseKey(list));
                 DataSet set = items.getRows(kvs);
                 if (recursion) {
-                    set.dispatchs(field, unique, recursion, items, keys);
+                    set.dispatchs(field, unique, recursion, items, list);
                 }
                 if(unique) {
                     set.skip(true);
@@ -2285,40 +2323,79 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs(field, unique, recursion, items, BeanUtil.array2list(keys));
+    }
+
     public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String... keys) {
         return dispatchs("ITEMS", unique, recursion, items, keys);
+    }
+    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
+        return dispatchs("ITEMS", unique, recursion, items, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
+        return dispatchs("ITEMS", unique, recursion, items, BeanUtil.array2list(fixs, keys));
     }
 
 
     public DataSet dispatchs(String field, DataSet items, String... keys) {
         return dispatchs(field,false, false, items, keys);
     }
+    public DataSet dispatchs(String field, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(field,false, false, items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatchs(String field, DataSet items, List<String> fixs, String... keys) {
+        return dispatchs(field,false, false, items, BeanUtil.merge(fixs, keys));
+    }
 
     public DataSet dispatchs(DataSet items, String... keys) {
         return dispatchs("ITEMS", items, keys);
+    }
+    public DataSet dispatchs(DataSet items, List<String> fixs, String... keys) {
+        return dispatchs("ITEMS", items, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(DataSet items, String[] fixs, String... keys) {
+        return dispatchs("ITEMS", items, BeanUtil.array2list(fixs, keys));
     }
 
     public DataSet dispatchs(boolean unique, boolean recursion, String... keys) {
         return dispatchs("ITEMS", unique, recursion, this, keys);
     }
 
+    public DataSet dispatchs(boolean unique, boolean recursion, List<String> fixs,  String... keys) {
+        return dispatchs("ITEMS", unique, recursion, this, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(boolean unique, boolean recursion, String[] fixs,  String... keys) {
+        return dispatchs("ITEMS", unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
+
     public DataSet dispatchs(String field, boolean unique, boolean recursion, String... keys) {
         return dispatchs(field, unique, recursion, this, keys);
     }
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
+        return dispatchs(field, unique, recursion, this, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
+        return dispatchs(field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
 
-    public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        if(null == keys || keys.length == 0){
-            throw new RuntimeException("未指定对应关系");
-        }
+    public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         if (null == items) {
             return this;
         }
+        List<String> list = BeanUtil.merge(fixs, keys);
+        if(list.size() == 0){
+            throw new RuntimeException("未指定对应关系");
+        }
         if (BasicUtil.isEmpty(field)) {
-            field = "ITEM";
+            field = "ITEMS";
         }
         for (DataRow row : rows) {
             if (null == row.get(field)) {
-                String[] params = packParam(row, reverseKey(keys));
+                String[] params = packParam(row, reverseKey(list));
                 DataRow result = items.getRow(params);
                 if(unique){
                     result.skip = true;
@@ -2330,20 +2407,50 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+    public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs(field, unique, recursion, items, BeanUtil.array2list(keys));
+    }
     public DataSet dispatch(String field, DataSet items, String... keys) {
         return dispatch(field, false, false, items, keys);
     }
+    public DataSet dispatch(String field, DataSet items, String[] fixs, String... keys) {
+        return dispatch(field, false, false, items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(String field, DataSet items, List<String> fixs, String... keys) {
+        return dispatch(field, false, false, items, BeanUtil.merge(fixs, keys));
+    }
 
     public DataSet dispatch(DataSet items, String... keys) {
-        return dispatch("ITEM", items, keys);
+        return dispatch("ITEM", items, BeanUtil.array2list(keys));
+    }
+    public DataSet dispatch(DataSet items, String[] fixs, String... keys) {
+        return dispatch("ITEM", items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(DataSet items, List<String> fixs, String... keys) {
+        return dispatch("ITEM", items, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatch(boolean unique, boolean recursion, String... keys) {
         return dispatch("ITEM", unique, recursion, this, keys);
     }
+    public DataSet dispatch(boolean unique, boolean recursion, String[] fixs, String... keys) {
+        return dispatch("ITEM", unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(boolean unique, boolean recursion, List<String> fixs, String... keys) {
+        return dispatch("ITEM", unique, recursion, this, BeanUtil.merge(fixs, keys));
+    }
 
     public DataSet dispatch(String field, boolean unique, boolean recursion, String... keys) {
         return dispatch(field, unique, recursion, this, keys);
+    }
+    public DataSet dispatch(String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
+        return dispatch(field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
+        return dispatch(field, unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
 
 
@@ -2416,21 +2523,29 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 根据keys列建立关联，并将关联出来的结果拼接到集合的条目上，如果有重复则覆盖条目
      *
      * @param items 被查询的集合
+     * @param fixs  关联条件列
      * @param keys  关联条件列
      * @return return
      */
-    public DataSet join(DataSet items, String... keys) {
-        if (null == items || null == keys || keys.length == 0) {
+    public DataSet join(DataSet items, List<String> fixs,  String... keys) {
+        List<String> list = BeanUtil.merge(fixs, keys);
+        if (null == items || list.size() == 0) {
             return this;
         }
         for (DataRow row : rows) {
-            String[] params = packParam(row, reverseKey(keys));
+            String[] params = packParam(row, reverseKey(list));
             DataRow result = items.getRow(params);
             if (null != result) {
                 row.copy(result, result.keys());
             }
         }
         return this;
+    }
+    public DataSet join(DataSet items, String[] fixs,  String... keys) {
+        return join(items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet join(DataSet items, String... keys) {
+        return join(items, BeanUtil.array2list(keys));
     }
 
 
@@ -2451,9 +2566,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 按keys分组
      *
+     * @param fixs keys
      * @param keys keys
      * @return return
      */
+    public DataSet group(String[] fixs, String... keys) {
+        DataSet result = distinct(BeanUtil.merge(fixs, keys));
+        result.dispatchs(true,false, this, keys);
+        return result;
+    }
+    public DataSet group(List<String> fixs, String... keys) {
+        DataSet result = distinct(BeanUtil.merge(fixs, keys));
+        result.dispatchs(true,false, this, keys);
+        return result;
+    }
+
     public DataSet group(String... keys) {
         DataSet result = distinct(keys);
         result.dispatchs(true,false, this, keys);
@@ -2597,13 +2724,16 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return String[]
      */
     private String[] reverseKey(String[] keys) {
+        return reverseKey(BeanUtil.array2list(keys));
+    }
+    private String[] reverseKey(List<String> keys) {
         if (null == keys) {
             return new String[0];
         }
-        int size = keys.length;
+        int size = keys.size();
         String result[] = new String[size];
         for (int i = 0; i < size; i++) {
-            String key = keys[i];
+            String key = keys.get(i);
             if (BasicUtil.isNotEmpty(key) && key.contains(":")) {
                 String ks[] = BeanUtil.parseKeyValue(key);
                 key = ks[1] + ":" + ks[0];
@@ -3737,21 +3867,26 @@ public class DataSet implements Collection<DataRow>, Serializable {
             return isNotNull(keys);
         }
 
-        public DataSet isEmpty(String... keys) {
-            return isEmpty(DataSet.this, keys);
+        /**
+         * 提取指定列都为空的集合
+         * @param keys keys
+         * @return DataSet
+         */
+        public DataSet empty(String... keys) {
+            return empty(DataSet.this, keys);
         }
 
-        private DataSet isEmpty(DataSet src, String... keys) {
+        private DataSet empty(DataSet src, String... keys) {
             DataSet set = src;
             if (null != keys) {
                 for (String key : keys) {
-                    set = isEmpty(set, key);
+                    set = empty(set, key);
                 }
             }
             return set;
         }
 
-        private DataSet isEmpty(DataSet src, String  key) {
+        private DataSet empty(DataSet src, String  key) {
             DataSet set = new DataSet();
             for(DataRow row:src){
                 if(row.isEmpty(key)){
@@ -3760,25 +3895,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
             }
             return set;
         }
-        public DataSet empty(String... keys) {
-            return isEmpty(keys);
+
+        public DataSet notEmpty(String... keys) {
+            return notEmpty(DataSet.this, keys);
         }
 
-        public DataSet isNotEmpty(String... keys) {
-            return isNotEmpty(DataSet.this, keys);
-        }
-
-        private DataSet isNotEmpty(DataSet src, String... keys) {
+        private DataSet notEmpty(DataSet src, String... keys) {
             DataSet set = src;
             if (null != keys) {
                 for (String key : keys) {
-                    set = isNotEmpty(set, key);
+                    set = notEmpty(set, key);
                 }
             }
             return set;
         }
 
-        private DataSet isNotEmpty(DataSet src, String  key) {
+        private DataSet notEmpty(DataSet src, String  key) {
             DataSet set = new DataSet();
             for(DataRow row:src){
                 if(row.isNotEmpty(key)){
@@ -3786,9 +3918,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 }
             }
             return set;
-        }
-        public DataSet notEmpty(String... keys) {
-            return isNotEmpty(keys);
         }
 
         public <T> DataSet less(String key, T value) {
