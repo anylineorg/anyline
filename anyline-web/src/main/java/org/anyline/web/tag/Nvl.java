@@ -17,16 +17,16 @@
  */
 
 
-package org.anyline.web.tag; 
- 
- 
+package org.anyline.web.tag;
+
+
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
  
@@ -38,65 +38,79 @@ import java.util.Arrays;
  * &lt;/al:nvl&gt;
  */ 
 public class Nvl extends BaseBodyTag implements Cloneable{ 
-	private static final long serialVersionUID = 1L; 
-	private String target = null; 
-	 
-	 public int doEndTag() throws JspException { 
-		try{
-			if(BasicUtil.isNotEmpty(var)){
-				pageContext.getRequest().removeAttribute(var);
-			}
-			 if(null == paramList || paramList.size()==0){
-				 if(BasicUtil.isNotEmpty(value)){
-					 String str = value.toString();
-					 if(str.contains(",")){
-						 paramList = new ArrayList<>(Arrays.asList(str.split(",")));
-					 }
-				 }
-			 }
-			String result = "";
-			for(Object param:paramList){ 
-				if(null != param && !param.toString().equals("null")){
-					result = param.toString(); 
-					break; 
-				} 
-			}
-			result = BasicUtil.nvl(result,body,"").toString();
-			Tag parent = this.getParent();
-			if("parent".equals(target) && null != parent){
-				Method method = BeanUtil.getMethod(parent.getClass(), "setNvl", String.class);
-				if(null != method){
-					method.invoke(parent, result);
-				}
-			}else{
+	private static final long serialVersionUID = 1L;
 
-				if(null != result) {
-					if(BasicUtil.isNotEmpty(var)){
-						pageContext.getRequest().setAttribute(var, result);
-					}else {
-						JspWriter out = pageContext.getOut();
-						out.print(result);
+	private String scope;
+
+	public int doEndTag() throws JspException {
+		if(BasicUtil.isNotEmpty(var)){
+			pageContext.getRequest().removeAttribute(var);
+		}
+		if(null == paramList || paramList.size()==0){
+			value = BasicUtil.nvl(value,body);
+			if(null == value){
+				String str = value.toString();
+				if(str.contains(",")){
+					paramList = new ArrayList<>(Arrays.asList(str.split(",")));
+				}
+			}
+		}
+		if(null != paramList && paramList.size()>0){
+			try{
+				String result = "";
+				for(Object param:paramList){
+					if(null != param && !param.toString().equals("null")){
+						result = param.toString();
+						break;
 					}
 				}
-			} 
-		}catch(Exception e){ 
-			e.printStackTrace(); 
-		}finally{ 
-			release(); 
-		} 
-        return EVAL_PAGE;    
-	} 
- 
- 
-	@Override 
-	public void release() { 
+
+				result = BasicUtil.nvl(result,body,"").toString();
+				if(BasicUtil.isEmpty(var)){
+					JspWriter out = pageContext.getOut();
+					out.print(result);
+				}else{
+					if(null == scope){
+						pageContext.getRequest().setAttribute(var, result);
+					}else if("parent".equalsIgnoreCase(scope)){
+						Tag parent = this.getParent();
+						BeanUtil.setFieldValue(parent, var, result);
+					}else if("page".equalsIgnoreCase(scope)){
+						pageContext.setAttribute(var, result);
+					}else if("request".equalsIgnoreCase(scope)){
+						pageContext.getRequest().setAttribute(var, result);
+					}else if("session".equalsIgnoreCase(scope)){
+						((HttpServletRequest)pageContext.getRequest()).getSession().setAttribute(var, result);
+					}else if("servlet".equalsIgnoreCase(scope) || "application".equalsIgnoreCase(scope)){
+						pageContext.getRequest().getServletContext().setAttribute(var, result);
+					}
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}finally{
+				release();
+			}
+		}
+		return EVAL_PAGE;
+	}
+
+
+	@Override
+	public void release() {
 		super.release();
 		paramList = null;
 		value = null;
-		target = null; 
-	} 
-	@Override 
-	protected Object clone() throws CloneNotSupportedException { 
-		return super.clone(); 
-	} 
+		scope = null;
+	}
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
+	}
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
 }
