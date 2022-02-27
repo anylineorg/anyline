@@ -23,10 +23,10 @@ package org.anyline.web.tag;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.Tag;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
  
@@ -35,8 +35,8 @@ import java.util.Arrays;
  * 第一个 !=null 并 != "" 的值
  */ 
 public class Evl extends BaseBodyTag implements Cloneable{ 
-	private static final long serialVersionUID = 1L; 
-	private String target = null; 
+	private static final long serialVersionUID = 1L;
+	private String scope;
 	 
 	 public int doEndTag() throws JspException {
 	 	if(BasicUtil.isNotEmpty(var)){
@@ -63,23 +63,25 @@ public class Evl extends BaseBodyTag implements Cloneable{
 				}
 
 				result = BasicUtil.evl(result,body,"").toString();
-				Tag parent = this.getParent();
-				if("".equals(target) && null != parent){
-					Method method = BeanUtil.getMethod(parent.getClass(), "setEvl", String.class);
-					if(null != method){
-						method.invoke(parent, result);
-					}
+				if(BasicUtil.isEmpty(var)){
+					JspWriter out = pageContext.getOut();
+					out.print(result);
 				}else{
-					if(null != result) {
-						if(BasicUtil.isNotEmpty(var)){
-							pageContext.getRequest().setAttribute(var, result);
-						}else {
-							JspWriter out = pageContext.getOut();
-							out.print(result);
-						}
+					if(null == scope){
+						pageContext.getRequest().setAttribute(var, result);
+					}else if("parent".equalsIgnoreCase(scope)){
+						Tag parent = this.getParent();
+						BeanUtil.setFieldValue(parent, var, result);
+					}else if("page".equalsIgnoreCase(scope)){
+						pageContext.setAttribute(var, result);
+					}else if("request".equalsIgnoreCase(scope)){
+						pageContext.getRequest().setAttribute(var, result);
+					}else if("session".equalsIgnoreCase(scope)){
+						((HttpServletRequest)pageContext.getRequest()).getSession().setAttribute(var, result);
+					}else if("servlet".equalsIgnoreCase(scope) || "application".equalsIgnoreCase(scope)){
+						pageContext.getRequest().getServletContext().setAttribute(var, result);
 					}
 				}
-				 
 			}catch(Exception e){ 
 				e.printStackTrace(); 
 			}finally{ 
@@ -95,10 +97,17 @@ public class Evl extends BaseBodyTag implements Cloneable{
 		super.release();
 		paramList = null;
 		value = null;
-		target = null; 
+		scope = null;
 	} 
 	@Override 
 	protected Object clone() throws CloneNotSupportedException { 
 		return super.clone(); 
-	} 
+	}
+ 	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
+	}
 }
