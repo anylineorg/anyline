@@ -17,9 +17,9 @@
  */
 
 
-package org.anyline.util; 
- 
-public class DESKey { 
+package org.anyline.util;
+
+public class DESKey {
 	private String version; 
 	private String key; 
 	private String keyParam; 
@@ -29,7 +29,8 @@ public class DESKey {
 	private String prefix; 
 	private String prefixParam; 
 	private String prefixParamName; 
-	private String prefixParamValue; 
+	private String prefixParamValue;
+
 	 
 	public String getKey(String type){ 
 		String result = key; 
@@ -106,5 +107,6 @@ public class DESKey {
 	} 
 	public void setPrefixParamValue(String prefixParamValue) { 
 		this.prefixParamValue = prefixParamValue; 
-	} 
-} 
+	}
+
+}

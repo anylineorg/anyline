@@ -47,7 +47,7 @@ public class DESUtil {
 	public static final String DEFAULT_SALT = "!@)A(#$N%^&Y*(";	//盐值 
 	private Cipher encryptCipher = null;					//加密 
 	private Cipher decryptCipher = null;					//解密
-	private String salt = DEFAULT_SALT; 
+	private String salt = DEFAULT_SALT;
 	 
 	private static Map<String,DESUtil> instances = new Hashtable<String,DESUtil>(); 
 	/** 
@@ -144,7 +144,10 @@ public class DESUtil {
 	private byte[] encrypt(byte[] arrB) throws BadPaddingException,IllegalBlockSizeException{ 
 		return encryptCipher.doFinal(arrB); 
 	} 
-	public String encrypt(String str) throws BadPaddingException,IllegalBlockSizeException{ 
+	public String encrypt(String str) throws BadPaddingException,IllegalBlockSizeException{
+		if(null == str || ignores.contains(str)){
+			return str;
+		}
 		str = salt + str; 
 		return byteArr2HexStr(encrypt(str.getBytes())); 
 	} 
@@ -255,9 +258,17 @@ public class DESUtil {
 	private static final String ENCRYPT_TYPE_PARAM = "param";
 	private static final String ENCRYPT_TYPE_KEY = "name";
 	private static final String ENCRYPT_TYPE_VALUE = "value";
+	private static List<String> ignores = new ArrayList<>();
 	static {
 		deskeys = new HashMap<String, DESKey>();
 		try {
+			String ignoreList = ConfigTable.getString("DES_IGNORE");
+			if(null != ignoreList){
+				String[] tmps = ignoreList.split(",");
+				for(String tmp:tmps){
+					ignores.add(tmp);
+				}
+			}
 			String keyPath = ConfigTable.get("DES_KEY_FILE");
 			if (BasicUtil.isNotEmpty(keyPath)) {
 				File keyFile = new File(ConfigTable.getWebRoot(), keyPath);
@@ -265,26 +276,19 @@ public class DESUtil {
 					SAXReader reader = new SAXReader();
 					Document document = reader.read(keyFile);
 					Element root = document.getRootElement();
-					for (Iterator<Element> itrKey = root.elementIterator(); itrKey
-							.hasNext();) {
+					for (Iterator<Element> itrKey = root.elementIterator(); itrKey.hasNext();) {
 						Element element = itrKey.next();
 						DESKey key = new DESKey();
 						String version = element.attributeValue("version");
 						key.setVersion(version);
 						key.setKey(element.elementTextTrim("des-key"));
-						key.setKeyParam(element
-								.elementTextTrim("des-key-param"));
-						key.setKeyParamName(element
-								.elementTextTrim("des-key-param-name"));
-						key.setKeyParamValue(element
-								.elementTextTrim("des-key-param-value"));
+						key.setKeyParam(element.elementTextTrim("des-key-param"));
+						key.setKeyParamName(element.elementTextTrim("des-key-param-name"));
+						key.setKeyParamValue(element.elementTextTrim("des-key-param-value"));
 						key.setPrefix(element.elementTextTrim("des-prefix"));
-						key.setPrefixParam(element
-								.elementTextTrim("des-prefix-param"));
-						key.setPrefixParamName(element
-								.elementTextTrim("des-prefix-param-name"));
-						key.setPrefixParamValue(element
-								.elementTextTrim("des-prefix-param-value"));
+						key.setPrefixParam(element.elementTextTrim("des-prefix-param"));
+						key.setPrefixParamName(element.elementTextTrim("des-prefix-param-name"));
+						key.setPrefixParamValue(element.elementTextTrim("des-prefix-param-value"));
 						if (null == defaultDesKey) {
 							defaultDesKey = key;
 						} else {
@@ -421,8 +425,8 @@ public class DESUtil {
 	 */
 	private static String encryptByType(String src, String type, boolean mix) {
 		String result = null;
-		if (null == src) {
-			return null;
+		if(null == src || ignores.contains(src)){
+			return src;
 		}
 		if (isEncrypt(src, type)) {
 			return src;

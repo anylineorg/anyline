@@ -715,6 +715,7 @@ public class WebUtil {
 		}
 		List<String> list = BeanUtil.merge(fixs, keys);
 		if (obj instanceof String || obj instanceof Number || obj instanceof Boolean || obj instanceof Date) {
+			//
 			return DESUtil.encryptValue(obj.toString(),mix);
 		}
 		if (obj instanceof Map) {
