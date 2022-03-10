@@ -191,6 +191,9 @@ public class DESUtil {
 	 * @throws UnsupportedEncodingException UnsupportedEncodingException
 	 */
 	public String decrypt(String str)throws IllegalBlockSizeException, BadPaddingException, UnsupportedEncodingException{
+		if(null == str || ignores.contains(str)){
+			return str;
+		}
 		String result = "";
 		result = new String(decrypt(hexStr2ByteArr(str)),ConfigTable.getString("DES_ENCODE","UTF-8"));
 		result = result.substring(salt.length());
@@ -504,7 +507,7 @@ public class DESUtil {
 	 * @return 删除前缀 > 解析版本号 > 解密
 	 */
 	private static String decrypt(String src, String type) {
-		if (null == src || null == type) {
+		if (null == src || null == type || ignores.contains(src)) {
 			return null;
 		}
 		String result = null;
@@ -540,7 +543,7 @@ public class DESUtil {
 			log.warn("[decrypt][start][src:{}][type:{}]", src, type);
 		}
 		String result = src;
-		if (null == src) {
+		if (null == src || ignores.contains(src)) {
 			return null;
 		}
 		// 删除随机URL混淆码
