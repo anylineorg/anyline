@@ -1503,6 +1503,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 将数据从data中复制到this
 	 * @param data data
+	 * @param fixs fixs
+	 * @param data data
 	 * @param keys this与data中的key不同时 "this.key:data.key"(CD:ORDER_CD)
 	 * @return return
 	 */
