@@ -63,7 +63,7 @@ public class Text extends BaseBodyTag{
 				if(index<set.size()){
 					row = set.getRow(index);
 				}
-				if(null != row){
+				if(null != row && null != property){
 					result = row.getString(property);
 				}
 			}else if(data instanceof List){
@@ -76,8 +76,16 @@ public class Text extends BaseBodyTag{
 				if(index<list.size()){
 					item = list.get(index);
 				}
-				if(null != item) {
+				if(null != item && null != property) {
 					result = BeanUtil.getValueByColumn(item, property);
+				}
+			}else if(data instanceof String[]){
+				String[] list = (String[])data;
+				if(index == -1){
+					index = 0;
+				}
+				if(index < list.length){
+					result = list[index];
 				}
 			}else if(null != property){
 				result = BeanUtil.getValueByColumn(data,property);
