@@ -66,11 +66,9 @@ public class SQLStoreImpl extends SQLStore {
 		if (FileUtil.getPathType(ConfigTable.getClassPath()) == 0) {
 			if (sqlDir.contains("${classpath}")) {
 				sqlDir = sqlDir.replace("${classpath}", ConfigTable.getClassPath());
-			} else if (sqlDir.startsWith("/WEB-INF")) {
-				sqlDir = ConfigTable.getWebRoot() + "/" + sqlDir;
 			} else if (sqlDir.startsWith("/")) {
+				sqlDir = ConfigTable.getWebRoot() + sqlDir;
 			} else {
-				sqlDir = ConfigTable.getWebRoot() + "/" + sqlDir;
 			}
 			sqlDir = sqlDir.substring(sqlDir.indexOf("!/")).replaceAll("!/", "") + "/";
 			//遍历jar
