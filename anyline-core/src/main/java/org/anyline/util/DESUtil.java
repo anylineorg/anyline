@@ -261,7 +261,7 @@ public class DESUtil {
 	private static final String ENCRYPT_TYPE_PARAM = "param";
 	private static final String ENCRYPT_TYPE_KEY = "name";
 	private static final String ENCRYPT_TYPE_VALUE = "value";
-	private static List<String> ignores = new ArrayList<>();
+	public static List<String> ignores = new ArrayList<>();
 	static {
 		deskeys = new HashMap<String, DESKey>();
 		try {

@@ -685,6 +685,9 @@ public class ConfigParser {
 		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
 			log.warn("[decrypt][start][src:{}][type:{}]", src, type);
 		}
+		if(null != src && DESUtil.ignores.contains(src)){
+			return src;
+		}
 		String result = src;
 		if (null == src) {
 			return null;
