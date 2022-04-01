@@ -16,9 +16,10 @@
  *
  */
 package org.anyline.wechat.util;
- 
+
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.net.HttpBuilder;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -80,11 +81,18 @@ public class WechatUtil {
 		parameters.put("sign_type", "MD5"); 
 		String sign = WechatUtil.sign(apiSecret, parameters);
 		parameters.put("sign", sign); 
-		String xml = BeanUtil.map2xml(parameters); 
-		CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword); 
+		String xml = BeanUtil.map2xml(parameters);
+		CloseableHttpClient httpclient = HttpBuilder.ceateSSLClient(keyStoreFile, HttpBuilder.PROTOCOL_TLSV1, keyStorePassword);
 		StringEntity reqEntity = new StringEntity(xml, "UTF-8"); 
-		reqEntity.setContentType("application/x-www-form-urlencoded"); 
-		String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
+		reqEntity.setContentType("application/x-www-form-urlencoded");
+
+		String txt = HttpBuilder.init()
+				.setClient(httpclient)
+				.setUrl(WechatConfig.API_URL_GET_PUBLIC_SECRET)
+				.setEncode("UTF-8")
+				.addEntity(reqEntity)
+				.build().get().getText();
+		//String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[获取RSA公钥][\n{}\n]",txt);
 		}
