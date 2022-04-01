@@ -82,7 +82,7 @@ public class WechatUtil {
 		String sign = WechatUtil.sign(apiSecret, parameters);
 		parameters.put("sign", sign); 
 		String xml = BeanUtil.map2xml(parameters);
-		CloseableHttpClient httpclient = HttpBuilder.ceateSSLClient(keyStoreFile, HttpBuilder.PROTOCOL_TLSV1, keyStorePassword);
+		CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
 		StringEntity reqEntity = new StringEntity(xml, "UTF-8"); 
 		reqEntity.setContentType("application/x-www-form-urlencoded");
 
