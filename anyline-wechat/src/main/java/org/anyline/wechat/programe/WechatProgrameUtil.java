@@ -19,28 +19,22 @@ package org.anyline.wechat.programe;
 
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
 import org.anyline.net.AESUtil;
 import org.anyline.net.HttpUtil;
-import org.anyline.util.*;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.FileUtil;
 import org.anyline.wechat.util.WechatUtil;
-import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.security.Security;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 
 public class WechatProgrameUtil extends WechatUtil {
 
@@ -125,7 +119,7 @@ public class WechatProgrameUtil extends WechatUtil {
 			params.put("width", width);
 		}
 		String json = BeanUtil.map2json(params);
-		InputStream is = HttpUtil.postStream(url,"UTF-8", new StringEntity(json, "UTF-8")).getInputStream();
+		InputStream is = HttpUtil.stream(url,"UTF-8", new StringEntity(json, "UTF-8")).getInputStream();
 		return is;
 	}
 	public boolean createQRCode(String path, int width, File file){
@@ -181,7 +175,7 @@ public class WechatProgrameUtil extends WechatUtil {
 		}
 		params.put("is_hyaline", hyaline);
 		String json = BeanUtil.map2json(params);
-		InputStream is = HttpUtil.postStream(url,"UTF-8", new StringEntity(json, "UTF-8")).getInputStream();
+		InputStream is = HttpUtil.stream(url,"UTF-8", new StringEntity(json, "UTF-8")).getInputStream();
 		return is;
 	}
 
@@ -251,7 +245,7 @@ public class WechatProgrameUtil extends WechatUtil {
 		}
 		params.put("is_hyaline", hyaline);
 		String json = BeanUtil.map2json(params);
-		InputStream is = HttpUtil.postStream(url,"UTF-8", new StringEntity(json, "UTF-8")).getInputStream();
+		InputStream is = HttpUtil.stream(url,"UTF-8", new StringEntity(json, "UTF-8")).getInputStream();
 		return is;
 	}
 	/**
