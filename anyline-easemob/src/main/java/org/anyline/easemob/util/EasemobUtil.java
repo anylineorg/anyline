@@ -1,12 +1,8 @@
 package org.anyline.easemob.util; 
  
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.net.HttpBuilder;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -15,6 +11,11 @@ import org.apache.http.HttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
  
 public class EasemobUtil { 
 	private static final Logger log = LoggerFactory.getLogger(EasemobUtil.class); 
@@ -212,8 +213,11 @@ public class EasemobUtil {
 	public DataRow getUser(String user){ 
 		DataRow result = new DataRow(); 
 		String url = baseUrl +  "/users/" + user; 
-		try{ 
-			String txt = HttpUtil.get(defaultHeader(),url, "UTF-8").getText(); 
+		try{
+			String txt = HttpBuilder.init()
+					.setHeaders(defaultHeader())
+					.setUrl(url)
+					.build().get().getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[get user][result:{}]",txt); 
 			} 
@@ -243,8 +247,11 @@ public class EasemobUtil {
 		if(BasicUtil.isNotEmpty(cursor)){ 
 			params.put("cursor", cursor); 
 		} 
-		try{ 
-			String txt = HttpUtil.get(defaultHeader(),url, "UTF-8").getText(); 
+		try{
+			String txt = HttpBuilder.init()
+					.setHeaders(defaultHeader())
+					.setUrl(url)
+					.build().get().getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[get user list][result:{}]",txt); 
 			} 
@@ -288,8 +295,11 @@ public class EasemobUtil {
 	public DataSet getFriends(String user){ 
 		DataSet result = new DataSet(); 
 		String url = baseUrl + "/users/" + user + "/contacts/users"; 
-		try { 
-			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText(); 
+		try {
+			String txt = HttpBuilder.init()
+					.setHeaders(defaultHeader())
+					.setUrl(url)
+					.build().get().getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[get friend list][result:{}]",txt); 
 			} 
@@ -362,8 +372,11 @@ public class EasemobUtil {
 	public DataSet getBlocks(String block){ 
 		DataSet result = new DataSet(); 
 		String url = baseUrl + "/users/" + block + "/blocks/users"; 
-		try { 
-			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText(); 
+		try {
+			String txt = HttpBuilder.init()
+					.setHeaders(defaultHeader())
+					.setUrl(url)
+					.build().get().getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[get block list][result:{}]",txt); 
 			} 
@@ -413,8 +426,11 @@ public class EasemobUtil {
 	public String status(String user){ 
 		String result = "0"; 
 		String url = baseUrl + "/users/" + user + "/status"; 
-		try { 
-			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText(); 
+		try {
+			String txt = HttpBuilder.init()
+					.setHeaders(defaultHeader())
+					.setUrl(url)
+					.build().get().getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[get user status][result:{}]",txt); 
 			} 
@@ -440,8 +456,11 @@ public class EasemobUtil {
 	public int offlineMsgCount(String user){ 
 		int result = 0; 
 		String url = baseUrl + "/users/" + user + "/offline_msg_count"; 
-		try { 
-			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText(); 
+		try {
+			String txt = HttpBuilder.init()
+					.setHeaders(defaultHeader())
+					.setUrl(url)
+					.build().get().getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[get user status][result:{}]",txt); 
 			} 
@@ -466,8 +485,11 @@ public class EasemobUtil {
 	public String offlineMsgStatus(String user, String msg){ 
 		String result = ""; 
 		String url = baseUrl + "/users/" + user + "/offline_msg_status/" + msg; 
-		try { 
-			String txt = HttpUtil.get(defaultHeader(), url,"UTF-8").getText(); 
+		try {
+			String txt = HttpBuilder.init()
+					.setHeaders(defaultHeader())
+					.setUrl(url)
+					.build().get().getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[get user status][result:{}]",txt); 
 			} 
