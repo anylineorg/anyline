@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import javax.swing.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.KeyStore;
