@@ -606,6 +606,7 @@ public class DocxUtil {
      * @param tag element tag
      * @param key attribute key
      * @param value attribute value
+     * @return Element
      */
     public static Element addElement(Element parent, String tag, String key, String value){
         Element element = DocxUtil.addElement(parent,tag);
