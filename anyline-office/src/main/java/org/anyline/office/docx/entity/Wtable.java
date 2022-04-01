@@ -320,6 +320,7 @@ public class Wtable {
     }
     /**
      * 追加行，追加的行将复制上一行的样式(背景色、字体等)
+     * @param index 位置
      * @param qty 追加数量
      * @return table
      */
