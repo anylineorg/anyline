@@ -241,8 +241,8 @@ public class DownloadTask {
 			status = 1; 
 			if(start ==0){ 
 				start = System.currentTimeMillis(); 
-			} 
-			HttpUtil.download(this); 
+			}
+			HttpBuilder.init().addDownloadTask(this).build().download();
 		}else{ 
 			action = 1; 
 			status = 1; 
