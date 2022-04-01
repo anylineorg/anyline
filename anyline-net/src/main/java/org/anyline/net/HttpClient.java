@@ -52,7 +52,7 @@ public class HttpClient {
 
 	private String protocol = "TLSv1";
 	private RequestConfig requestConfig;
-	private String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36";
+	private String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";
 	private PoolingHttpClientConnectionManager connManager;
     private int connectTimeout = 72000; //毫秒
 	private int socketTimeout = 72000;
@@ -87,7 +87,7 @@ public class HttpClient {
 
 	public HttpResult post() {
 		if(null != params && !params.isEmpty()){
-			List<NameValuePair> pairs = HttpBuilder.packNameValuePair(params);
+			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
 				HttpEntity entity = new UrlEncodedFormEntity(pairs, encode);
 				entitys.add(entity);
@@ -110,7 +110,7 @@ public class HttpClient {
 
 	public HttpResult put() {
 		if(null != params && !params.isEmpty()){
-			List<NameValuePair> pairs = HttpBuilder.packNameValuePair(params);
+			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
 				HttpEntity entity = new UrlEncodedFormEntity(pairs, encode);
 				entitys.add(entity);
@@ -160,7 +160,7 @@ public class HttpClient {
 		HttpResult result = new HttpResult();
 		InputStream is = null;
 		if(null == client){
-			client = HttpBuilder.client(url);
+			client = HttpUtil.client(url);
 		}
 		if(url.startsWith("//")){
 			url = "http:" + url;
@@ -186,7 +186,7 @@ public class HttpClient {
 	private HttpResult exe(HttpRequestBase method){
 		setHeader(method, headers);
 		if(null == client){
-			client = HttpBuilder.client(url);
+			client = HttpUtil.client(url);
 		}
 		if(url.startsWith("//")){
 			url = "http:" + url;
@@ -233,7 +233,7 @@ public class HttpClient {
 		boolean result = false;
 		String url = task.getUrl();
 		if(null == client){
-			client = HttpBuilder.client(url);
+			client = HttpUtil.client(url);
 		}
 		if(url.startsWith("//")){
 			url = "http:" + url;
@@ -243,7 +243,7 @@ public class HttpClient {
 			finalUrl = "http:"+url;
 		}
 
-		finalUrl = HttpBuilder.mergeParam(finalUrl, task.getParams());
+		finalUrl = HttpUtil.mergeParam(finalUrl, task.getParams());
 		//DownloadProgress progress = task.getProgress();
 		File dst = task.getLocal();
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(dst)){
@@ -389,7 +389,7 @@ public class HttpClient {
 		builder.setCharset(Charset.forName(encode));  //设置字符编码集
 		ContentType contentType = ContentType.create("text/plain",Charset.forName(encode));
 
-		HttpBuilder.mergeParam(builder, params, contentType);
+		HttpUtil.mergeParam(builder, params, contentType);
 		if(null != headers){
 			for(String key:headers.keySet()){
 				post.setHeader(key, headers.get(key));
@@ -413,7 +413,7 @@ public class HttpClient {
 	}
 	public int status(){
 		int code = -1;
-		CloseableHttpClient client = HttpBuilder.defaultSSLClient();
+		CloseableHttpClient client = HttpUtil.defaultSSLClient();
 		CloseableHttpResponse response = null;
 		if(url.startsWith("//")){
 			url = "http:" + url;
