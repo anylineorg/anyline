@@ -19,6 +19,7 @@ package org.anyline.wechat.pay.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.net.HttpBuilder;
+import org.anyline.net.HttpUtil;
 import org.anyline.net.RSAUtil;
 import org.anyline.net.SimpleHttpUtil;
 import org.anyline.util.BasicUtil;
@@ -199,7 +200,7 @@ public class WechatPayUtil {
             return new WechatRefundResult(false,"未设置密钥文件密码");
         }
         try{
-            CloseableHttpClient httpclient = HttpBuilder.ceateSSLClient(keyStoreFile, HttpBuilder.PROTOCOL_TLSV1, keyStorePassword);
+            CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity reqEntity  = new StringEntity(xml);
             reqEntity.setContentType("application/x-www-form-urlencoded");
             String txt = HttpBuilder.init()
@@ -266,7 +267,7 @@ public class WechatPayUtil {
             return new WechatRedpackResult(false,"未设置密钥文件密码");
         }
         try{
-            CloseableHttpClient httpclient = HttpBuilder.ceateSSLClient(keyStoreFile, HttpBuilder.PROTOCOL_TLSV1, keyStorePassword);
+            CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded");
             String txt = HttpBuilder.init()
@@ -332,7 +333,7 @@ public class WechatPayUtil {
             return new WechatFissionRedpackResult(false,"未设置密钥文件密码");
         }
         try{
-            CloseableHttpClient httpclient = HttpBuilder.ceateSSLClient(keyStoreFile, HttpBuilder.PROTOCOL_TLSV1, keyStorePassword);
+            CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded");
             String txt = HttpBuilder.init()
@@ -392,7 +393,7 @@ public class WechatPayUtil {
             return new WechatEnterpriseTransferResult(false,"未设置密钥文件密码");
         }
         try{
-            CloseableHttpClient httpclient = HttpBuilder.ceateSSLClient(keyStoreFile, HttpBuilder.PROTOCOL_TLSV1, keyStorePassword);
+            CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded");
             String txt = HttpBuilder.init()
@@ -466,7 +467,7 @@ public class WechatPayUtil {
             return new WechatEnterpriseTransferBankResult(false,"未设置密钥文件密码");
         }
         try{
-            CloseableHttpClient httpclient = HttpBuilder.ceateSSLClient(keyStoreFile, HttpBuilder.PROTOCOL_TLSV1, keyStorePassword);
+            CloseableHttpClient httpclient = HttpUtil.ceateSSLClient(keyStoreFile, HttpUtil.PROTOCOL_TLSV1, keyStorePassword);
             StringEntity  reqEntity  = new StringEntity(xml,"UTF-8");
             reqEntity.setContentType("application/x-www-form-urlencoded");
             String txt = HttpBuilder.init()
