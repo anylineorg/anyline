@@ -573,9 +573,11 @@ public class DESUtil {
 			if (sub > result.length() || sub == -1) {
 				return null;
 			}
-			result = result.substring(sub);
-			if (ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
-				log.warn("[decrypt][删除前缀][result:{}]", result);
+			if(result.startsWith(prefix)) {
+				result = result.substring(sub);
+				if (ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
+					log.warn("[decrypt][删除前缀][result:{}]", result);
+				}
 			}
 			// 解析版本
 			String tmp[] = parseDESVersion(result);
