@@ -74,7 +74,8 @@
         <module>anyline-print-10ss</module>
         <module>anyline-tencent</module>
 		<module>anyline-img</module>
-	</modules>
+        <module>anyline-jdbc-clickhouse</module>
+    </modules>
 	<build>
 		<plugins>
 			<plugin>
