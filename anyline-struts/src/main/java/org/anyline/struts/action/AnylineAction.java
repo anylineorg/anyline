@@ -40,8 +40,11 @@ import java.util.Map;
  
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware { 
 	public static int RESULT_TYPE_DEFAULT = 0; 
-	public static int RESULT_TYPE_JSON = 1; 
-	 
+	public static int RESULT_TYPE_JSON = 1;
+
+	protected final String RESULT_FAIL = "fail";
+	protected final String RESULT_JSON = "json";
+	protected final String RESULT_SUCCESS = "success";
 	protected HttpServletRequest request; 
 	protected HttpServletResponse response; 
 	protected HttpSession session; 
@@ -315,9 +318,9 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		} 
 		if (isAjaxRequest(request) || resultType == RESULT_TYPE_JSON) { 
 			result = true; 
-			return JSON; 
+			return RESULT_JSON;
 		} 
-		return super.SUCCESS; 
+		return RESULT_SUCCESS;
 	}
 	protected String success(Object data) {
 		return success(request, data);
@@ -408,9 +411,9 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 		} 
 		request.getSession().setAttribute(Constant.SESSION_ATTR_ERROR_MESSAGE, msg); 
 		if (isAjaxRequest(request) || RESULT_TYPE_JSON == resultType) { 
-			return JSON; 
+			return RESULT_JSON;
 		} else { 
-			return FAIL; 
+			return RESULT_FAIL;
 		} 
 	} 
 	 

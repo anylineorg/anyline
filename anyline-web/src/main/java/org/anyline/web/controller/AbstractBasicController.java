@@ -49,9 +49,6 @@ import java.util.Map;
 public class AbstractBasicController {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
-	protected final String FAIL = "fail";
-	protected final String JSON = "json";
-	protected final String SUCCESS = "success";
 
 	protected static EntityListener listener;
 	protected static boolean is_listener_load = false;
