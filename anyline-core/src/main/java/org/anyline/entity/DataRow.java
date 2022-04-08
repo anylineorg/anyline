@@ -24,7 +24,11 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
+import javax.annotation.Resource;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -54,7 +58,29 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
 		public abstract String getName();
 		public abstract String getCode();
-	} 
+	}
+
+	private static EntityAdapter adapter;
+	private static boolean is_adapter_load = false;
+
+	@Autowired(required = false)
+	@Qualifier("anyline.entity.adapter")
+	public void setAdapter(EntityAdapter adapter){
+		DataRow.adapter = adapter;
+	}
+	private static EntityAdapter getAdapter(){
+		if(null != adapter){
+			return adapter;
+		}
+		if(!is_adapter_load) {
+			try {
+				adapter = (EntityAdapter)SpringContextUtil.getBean("anyline.entity.adapter");
+			}catch (Exception e){}
+			is_adapter_load = true;
+		}
+		return adapter;
+	}
+
 	public static String PARENT 			= "PARENT"						; //上级数据 
 	public static String ALL_PARENT 		= "ALL_PARENT"					; //所有上级数据 
 	public static String CHILDREN 			= "CHILDREN"					; //子数据 
@@ -167,6 +193,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 */
 	@SuppressWarnings("rawtypes")
 	public static DataRow parse(Object obj, String ... keys){
+		if(null != getAdapter()){
+			return adapter.parse(obj, keys);
+		}
 		return parse(KEY_CASE.CONFIG, obj, keys);
 	}
 	public static DataRow build(Object obj, String ... keys){
@@ -900,7 +929,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		T entity = null; 
 		if(null == clazz){ 
 			return entity; 
-		} 
+		}
+		if(null != getAdapter()){
+			return adapter.entity(clazz, this);
+		}
 		try { 
 			entity = (T)clazz.newInstance(); 
 			/*读取类属性*/ 

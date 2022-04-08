@@ -524,6 +524,8 @@ public class AnylineController extends AbstractBasicController {
 
 
 
+
+
 	protected double getDouble(String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
 		return getDouble(getRequest(), key, keyEncrypt, valueEncrypt);
 	}
