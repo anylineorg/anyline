@@ -79,8 +79,9 @@ public class BeanUtil {
 		}
 		try{
 			Object v = value;
+			boolean compatible = true;//是否兼容 int long等不能设置null值
+			String type = field.getType().getSimpleName().toLowerCase();
 			if(null != v){
-				String type = field.getType().getSimpleName().toLowerCase();
 				if(type.equals("int") || type.equals("integer")){
 					v = Integer.parseInt(value.toString());
 				}else if(type.equals("double")){
@@ -98,16 +99,28 @@ public class BeanUtil {
 				}else if(type.equals("byte")){
 					v = Byte.parseByte(value.toString());
 				}
-			}
-
-			if(field.isAccessible()){
-				//可访问属性
-				field.set(obj, v);
 			}else{
-				//不可访问属性
-				field.setAccessible(true);
-				field.set(obj, v);
-				field.setAccessible(false);
+				if(type.equals("int")
+						|| type.equals("double")
+						|| type.equals("long")
+						|| type.equals("float")
+						|| type.equals("boolean")
+						|| type.equals("short")
+						|| type.equals("byte")
+				){
+					compatible = false;
+				}
+			}
+			if(compatible) {
+				if (field.isAccessible()) {
+					//可访问属性
+					field.set(obj, v);
+				} else {
+					//不可访问属性
+					field.setAccessible(true);
+					field.set(obj, v);
+					field.setAccessible(false);
+				}
 			}
 		}catch(Exception e){
 			e.printStackTrace();
