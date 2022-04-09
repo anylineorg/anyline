@@ -193,8 +193,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 */
 	@SuppressWarnings("rawtypes")
 	public static DataRow parse(Object obj, String ... keys){
+		DataRow result = null;
 		if(null != getAdapter()){
-			return adapter.parse(obj, keys);
+			result = adapter.parse(obj, keys);
+			if(null != result){
+				return result;
+			}
 		}
 		return parse(KEY_CASE.CONFIG, obj, keys);
 	}
@@ -931,7 +935,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			return entity; 
 		}
 		if(null != getAdapter()){
-			return adapter.entity(clazz, this);
+			entity = adapter.entity(clazz, this);
+			if(null != entity){
+				return entity;
+			}
 		}
 		try { 
 			entity = (T)clazz.newInstance(); 

@@ -20,6 +20,7 @@ package org.anyline.controller.impl;
  
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.EntityAdapter;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.TableBuilder;
@@ -339,7 +340,14 @@ public class AnylineController extends AbstractBasicController {
 		return entitys(getRequest(), null, false, false, params);
 	}
 	private List<String> params(List<String> metadatas){
-		List<String> params = new ArrayList<>();
+		List<String> params = null;
+		adapter = getAdapter();
+		if(null != adapter){
+			params = adapter.metadata2param(metadatas);
+			if(null != params){
+				return params;
+			}
+		}
 		//注意这里只支持下划线转驼峰
 		//如果数据库中已经是驼峰，不要配置这个参数
 		String keyCase = ConfigTable.getString("HTTP_PARAM_KEYS_CASE");

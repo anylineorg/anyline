@@ -19,24 +19,18 @@
 
 package org.anyline.web.controller;
 
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.PageNaviConfig;
+import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.db.impl.PageNaviImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.util.*;
-import org.anyline.web.util.EntityListener;
 import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,25 +44,26 @@ public class AbstractBasicController {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 	protected String dir;				// <result>文件默认目录
 
-	protected static EntityListener listener;
-	protected static boolean is_listener_load = false;
-	private EntityListener getListener(HttpServletRequest request){
-		if(null != listener){
-			return listener;
-		}
-		if(!is_listener_load) {
-			try {
-				BeanFactory beanFactory = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
-				listener = (EntityListener) beanFactory.getBean("anyline.entity.listener");
-			}catch (Exception e){}
-			is_listener_load = true;
-		}
-		return listener;
-	}
+
+	protected static EntityAdapter adapter;
+	private static boolean is_adapter_load = false;
+
 	@Autowired(required = false)
-	@Qualifier("anyline.entity.listener")
-	public void setListener(EntityListener listener){
-		AbstractBasicController.listener = listener;
+	@Qualifier("anyline.entity.adapter")
+	public void setAdapter(EntityAdapter adapter){
+		AbstractBasicController.adapter = adapter;
+	}
+	protected static EntityAdapter getAdapter(){
+		if(null != adapter){
+			return adapter;
+		}
+		if(!is_adapter_load) {
+			try {
+				adapter = (EntityAdapter)SpringContextUtil.getBean("anyline.entity.adapter");
+			}catch (Exception e){}
+			is_adapter_load = true;
+		}
+		return adapter;
 	}
 	/******************************************************************************************************************
 	 *
@@ -121,9 +116,9 @@ public class AbstractBasicController {
 					BeanUtil.setFieldValue(entity, field, value);
 				}
 			}// end 未指定属性与request参数对应关系
-			listener = getListener(request);
-			if(null != listener){
-				listener.init(request, entity);
+			adapter = getAdapter();
+			if(null != adapter){
+				adapter.after(request, entity);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -171,9 +166,10 @@ public class AbstractBasicController {
 				row.put(name, value);
 			}*/
 		}
-		listener = getListener(request);
-		if(null != listener){
-			listener.init(request, row);
+
+		adapter = getAdapter();
+		if(null != adapter){
+			adapter.after(request, row);
 		}
 		return row;
 	}
@@ -305,12 +301,12 @@ public class AbstractBasicController {
 					}
 				}
 
+				adapter = getAdapter();
+				if(null != adapter){
+					adapter.after(request, row);
+				}
 				set.addRow(row);
 			}
-		}
-		listener = getListener(request);
-		if(null != listener){
-			listener.init(request, set);
 		}
 		return set;
 	}
