@@ -36,6 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -458,6 +459,7 @@ public class AbstractBasicController {
 	protected String getParam(HttpServletRequest request, String key, String ... defs) {
 		return getParam(request, key, false, false, defs);
 	}
+
 	protected List<Object> getParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		return WebUtil.getHttpRequestParams(request, key, keyEncrypt, valueEncrypt);
 	}
@@ -468,6 +470,47 @@ public class AbstractBasicController {
 	protected List<Object> getParams(HttpServletRequest request, String key) {
 		return getParams(request,key, false, false);
 	}
+
+	protected String getString(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, String ... defs) {
+		return getParam(request, key, keyEncrypt, valueEncrypt, defs);
+	}
+
+	protected String getString(HttpServletRequest request, String key, boolean valueEncrypt, String ... defs) {
+		return getParam(request,key, false,valueEncrypt);
+	}
+
+	protected String getString(HttpServletRequest request, String key, String ... defs) {
+		return getParam(request, key, false, false, defs);
+	}
+
+	protected List<String> getStrings(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
+		List<String> result = new ArrayList<>();
+		List<Object> params = getParams(request, key, keyEncrypt, valueEncrypt);
+		for(Object param:params){
+			if(null != param){
+				if(param instanceof List){
+					List list = (List)param;
+					if(list.size()>0){
+						param = list.get(0);
+						if(null != param){
+							result.add(param.toString());
+						}
+					}
+				}else{
+					result.add(param.toString());
+				}
+			}
+		}
+		return result;
+	}
+
+	protected List<String> getStrings(HttpServletRequest request, String key, boolean valueEncrypt) {
+		return getStrings(request, key, false, valueEncrypt);
+	}
+	protected List<String> getStrings(HttpServletRequest request, String key) {
+		return getStrings(request,key, false, false);
+	}
+
 
 
 	protected int getInt(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) throws Exception{
