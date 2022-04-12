@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
  
 	public DB_TYPE type(){ 
-		return DB_TYPE.MYSQL; 
+		return DB_TYPE.ClickHouse;
 	} 
 	public SQLCreaterImpl(){ 
 		delimiterFr = "";

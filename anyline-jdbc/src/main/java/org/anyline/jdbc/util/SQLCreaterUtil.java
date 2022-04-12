@@ -48,8 +48,10 @@ public class SQLCreaterUtil {
 					type = SQLCreater.DB_TYPE.HighGo;
 				}else if(name.contains("postgresql")){
 					type = SQLCreater.DB_TYPE.PostgreSQL;
+				}else if(name.contains("clickhouse")){
+					type = SQLCreater.DB_TYPE.ClickHouse;
 				}
-				creater = creaters.get(name);
+				creater = creaters.get(type.getName());
 				if(null == creater){
 					Map<String, SQLCreater> creaters = SpringContextUtil.getBeans(SQLCreater.class);
 					for(SQLCreater item: creaters.values()){

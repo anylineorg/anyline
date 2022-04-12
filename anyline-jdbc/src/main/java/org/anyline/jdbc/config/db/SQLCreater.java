@@ -32,7 +32,8 @@ public interface SQLCreater{
 		DB2				{public String getName(){return "db2";}},
 		PostgreSQL 		{public String getName(){return "PostgreSQL";}},
 		DM		 		{public String getName(){return "DM";}},
-		HighGo			{public String getName(){return "HighGo";}};
+		HighGo			{public String getName(){return "HighGo";}},
+		ClickHouse			{public String getName(){return "ClickHouse";}};
 		public abstract String getName();
 	} 
 	public static final String TAB = "\t"; 
