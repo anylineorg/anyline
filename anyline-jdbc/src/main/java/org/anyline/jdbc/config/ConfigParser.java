@@ -31,6 +31,16 @@ public class ConfigParser {
 		deskeys = new HashMap<String, DESKey>();
 		try {
 			String keyPath = ConfigTable.get("DES_KEY_FILE");
+			if (BasicUtil.isNotEmpty(keyPath)) {
+				if (keyPath.contains("${classpath}")) {
+					keyPath = keyPath.replace("${classpath}", ConfigTable.getClassPath());
+				} else if (keyPath.startsWith("/")) {
+					keyPath = ConfigTable.getWebRoot() + keyPath;
+				} else {
+
+				}
+			}
+
 			if(BasicUtil.isNotEmpty(keyPath)){
 				File keyFile = new File(ConfigTable.getWebRoot(), keyPath);
 				if (keyFile.exists()) {

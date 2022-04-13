@@ -73,22 +73,16 @@ public class DESUtil {
 			try{ 
 				instance = new DESUtil(key);
 				instances.put(key, instance); 
-			}catch(NoSuchPaddingException e){ 
-				e.printStackTrace(); 
-			}catch(NoSuchAlgorithmException e){
-				e.printStackTrace(); 
-			}catch(InvalidKeyException e){
-				e.printStackTrace(); 
 			}catch(Exception e){
 				e.printStackTrace(); 
 			} 
 		} 
 		return instance; 
 	} 
-	protected DESUtil() throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{ 
+	protected DESUtil() throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{
 		this(DEFAULT_SECRET_KEY); 
 	} 
-	protected DESUtil(String key) throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{ 
+	protected DESUtil(String key) throws NoSuchPaddingException,NoSuchAlgorithmException,InvalidKeyException{
  
 		Security.addProvider(new SunJCE()); 
 		Key _key = getKey(key.getBytes()); 
