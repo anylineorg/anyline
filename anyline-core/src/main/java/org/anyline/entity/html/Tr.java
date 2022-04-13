@@ -76,6 +76,14 @@ public class Tr {
         styles.put("height", height+widthUnit);
         return this;
     }
+    public Tr addTd(String ... tds){
+        if(null != tds){
+            for(String td:tds){
+                this.addTd(new Td(td));
+            }
+        }
+        return this;
+    }
     public Tr addTd(Td td){
         tds.add(td);
 
