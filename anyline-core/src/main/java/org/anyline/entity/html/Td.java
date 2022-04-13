@@ -19,12 +19,19 @@ public class Td {
     private boolean remove = false;
     private String width;
     private boolean isMerge = false;
-    private Tr tr;
+    private org.anyline.entity.html.Tr tr;
     public Map<String, String> getStyles() {
         return styles;
     }
     private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
 
+
+    public Td(){
+
+    }
+    public Td(String text){
+        setText(text);
+    }
     public void setStyles(Map<String, String> styles) {
         this.styles = styles;
     }
@@ -108,9 +115,9 @@ public class Td {
         if(isMerge){
             return;
         }
-        Tr tr = getTr();
+        org.anyline.entity.html.Tr tr = getTr();
         List<Td> tds = tr.getTds();
-        List<Tr> trs = tr.getTable().getTrs();
+        List<org.anyline.entity.html.Tr> trs = tr.getTable().getTrs();
         int cols = tds.indexOf(this);
         int rows = trs.indexOf(tr);
 
@@ -127,19 +134,19 @@ public class Td {
     }
     public int[] index(){
         int result[] = new int[2];
-        Tr tr = getTr();
+        org.anyline.entity.html.Tr tr = getTr();
         List<Td> tds = tr.getTds();
         result[0] = tr.index();
         result[1] = tds.indexOf(this);
         return result;
     }
     public int getColIndex(){
-        Tr tr = getTr();
+        org.anyline.entity.html.Tr tr = getTr();
         List<Td> tds = tr.getTds();
         return tds.indexOf(this);
     }
     public int getRowIndex(){
-        Tr tr = getTr();
+        org.anyline.entity.html.Tr tr = getTr();
         return tr.index();
     }
 
@@ -164,11 +171,11 @@ public class Td {
         return clazz;
     }
 
-    public Tr getTr() {
+    public org.anyline.entity.html.Tr getTr() {
         return tr;
     }
 
-    public void setTr(Tr tr) {
+    public void setTr(org.anyline.entity.html.Tr tr) {
         this.tr = tr;
     }
 
@@ -278,11 +285,11 @@ public class Td {
     }
     public Td bottom(){
         Td bottom = null;
-        Table table = tr.getTable();
-        List<Tr> trs = table.getTrs();
+        org.anyline.entity.html.Table table = tr.getTable();
+        List<org.anyline.entity.html.Tr> trs = table.getTrs();
         int y = trs.indexOf(tr);
         if(y < trs.size()-1){
-            Tr tr = trs.get(y+1);
+            org.anyline.entity.html.Tr tr = trs.get(y+1);
             int x = tr.getTds().indexOf(this);
             bottom = tr.getTd(x);
         }
@@ -290,11 +297,11 @@ public class Td {
     }
     public Td top(){
         Td top = null;
-        Table table = tr.getTable();
-        List<Tr> trs = table.getTrs();
+        org.anyline.entity.html.Table table = tr.getTable();
+        List<org.anyline.entity.html.Tr> trs = table.getTrs();
         int y = trs.indexOf(tr);
         if(y < trs.size()-1 && y>0){
-            Tr tr = trs.get(y-1);
+            org.anyline.entity.html.Tr tr = trs.get(y-1);
             int x = tr.getTds().indexOf(this);
             top = tr.getTd(x);
         }
