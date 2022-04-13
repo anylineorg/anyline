@@ -129,25 +129,17 @@ public class HttpClient {
 	}
 
 	public HttpResult get() {
+		url = HttpUtil.mergeParam(url, params);
 		if (null != pairs && !pairs.isEmpty()) {
-			String params = URLEncodedUtils.format(pairs,encode);
-			if (url.contains("?")) {
-				url += "&" + params;
-			} else {
-				url += "?" + params;
-			}
+			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs,encode));
 		}
 		HttpGet method = new HttpGet(url);
 		return exe(method);
 	}
 	public HttpResult delete() {
+		url = HttpUtil.mergeParam(url, params);
 		if (null != pairs && !pairs.isEmpty()) {
-			String params = URLEncodedUtils.format(pairs,encode);
-			if (url.contains("?")) {
-				url += "&" + params;
-			} else {
-				url += "?" + params;
-			}
+			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs,encode));
 		}
 		HttpDelete method = new HttpDelete(url);
 		return exe(method);
