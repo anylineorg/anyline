@@ -31,7 +31,8 @@ public class ConfigParser {
 		deskeys = new HashMap<String, DESKey>();
 		try {
 			String keyPath = ConfigTable.get("DES_KEY_FILE");
-			if (BasicUtil.isNotEmpty(keyPath)) {
+
+			if(BasicUtil.isNotEmpty(keyPath)){
 				if (keyPath.contains("${classpath}")) {
 					keyPath = keyPath.replace("${classpath}", ConfigTable.getClassPath());
 				} else if (keyPath.startsWith("/")) {
@@ -39,10 +40,7 @@ public class ConfigParser {
 				} else {
 
 				}
-			}
-
-			if(BasicUtil.isNotEmpty(keyPath)){
-				File keyFile = new File(ConfigTable.getWebRoot(), keyPath);
+				File keyFile = new File(keyPath);
 				if (keyFile.exists()) {
 					SAXReader reader = new SAXReader();
 					Document document = reader.read(keyFile);
