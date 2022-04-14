@@ -1,5 +1,6 @@
 package org.anyline.pdf.util;
 
+import org.anyline.entity.DataSet;
 import org.apache.pdfbox.io.RandomAccessFile;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -8,6 +9,8 @@ import org.apache.pdfbox.text.PDFTextStripper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PDFUtil {
 
@@ -33,5 +36,31 @@ public class PDFUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * 按页读取文本
+     * @return List
+     */
+    public static List<String> pages(){
+        List<String> list = new ArrayList<>();
+        return list;
+    }
+    /**
+     * 读取表格
+     * @return DataSet
+     */
+    public static DataSet table(){
+        DataSet set = new DataSet();
+        return set;
+    }
+
+    /**
+     * 读取所有表格
+     * @return List
+     */
+    public static List<DataSet> tables(){
+        List<DataSet> list = new ArrayList<>();
+        return list;
     }
 }
