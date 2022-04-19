@@ -118,40 +118,33 @@ public class BasicUtil {
  
 	/** 
 	 * nvl 取第一个不为null的值,没有符合条件的 则返回null 
-	 *  
-	 * @param recursion  对于集合变量,是否递归 
+	 *
 	 * @param values  values
 	 * @return return
 	 */
-	public static Object nvl(boolean recursion, Object... values) {
+	public static Object nvl(Object... values) {
 		if (null == values) {
 			return null;
 		}
 		for (Object item : values) {
-			if ("".equals(item) || isNotEmpty(recursion, item)) {
+			if (null != item) {
 				return item;
 			}
 		}
 		return null;
 	}
-	public static Object nvl(boolean recursion, String... values) {
+	public static Object nvl(String... values) {
 		if (null == values) {
 			return null;
 		}
 		for (Object item : values) {
-			if ("".equals(item) || isNotEmpty(recursion, item)) {
+			if (null != item) {
 				return item;
 			}
 		}
 		return null;
 	} 
 
-	public static Object nvl(Object... values) {
-		return nvl(false, values);
-	}
-	public static Object nvl(String... values) {
-		return nvl(false, values);
-	} 
  
 	/** 
 	 * 反回第一个不为空(""|null|empty)的值 没有符合条件的 则返回NULL 
