@@ -45,7 +45,8 @@ import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.ognl.DefaultMemberAccess;
 import org.anyline.util.BasicUtil;
- 
+import org.anyline.util.BeanUtil;
+
 public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{ 
 	private List<String> conditions; 
 	private List<String> staticConditions; 
@@ -88,7 +89,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				ParseResult parser = ConfigParser.parse(condition,false); 
 				Object value = ConfigParser.getValues(parser);// parser.getKey(); 
 				if(parser.getParamFetchType() == ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT){ 
-					 value = new ArrayList<>(Arrays.asList(value.toString().split(",")));
+					 value = BeanUtil.array2list(value.toString().split(","));
 				} 
 				setConditionValue(parser.isRequired(), parser.isStrictRequired(), parser.getPrefix(), parser.getVar(), value, parser.getCompare());
 			} 
