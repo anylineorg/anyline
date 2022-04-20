@@ -47,7 +47,7 @@ public class Evl extends BaseBodyTag implements Cloneable{
 			 if(BasicUtil.isNotEmpty(value)){
 				 String str = value.toString();
 				 if(str.contains(",")){
-					 paramList = new ArrayList<>(Arrays.asList(str.split(",")));
+					 paramList = BeanUtil.array2list(str.split(","));
 				 }
 			 }
 		 }
