@@ -139,7 +139,7 @@ public class Tr {
             }
             builder.append("'");
         }
-        builder.append(">");
+        builder.append(">\n");
         for(Td td:tds){
             td.build(builder);
             builder.append("\n");

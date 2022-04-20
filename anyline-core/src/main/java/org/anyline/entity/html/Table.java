@@ -126,7 +126,7 @@ public class Table {
                 }
                 builder.append("'");
             }
-            builder.append(">");
+            builder.append(">\n");
         }
         if(null != header){
             builder.append(header);
