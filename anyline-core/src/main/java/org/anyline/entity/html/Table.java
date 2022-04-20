@@ -1,5 +1,6 @@
 package org.anyline.entity.html;
 
+import org.anyline.util.BeanUtil;
 import org.dom4j.Element;
 
 import java.util.*;
@@ -344,7 +345,7 @@ public class Table {
      * @return Table
      */
     public Table setMergeRow(Integer ... cols){
-        mergeRows = Arrays.asList(cols);
+        mergeRows = BeanUtil.array2list(cols);
         return this;
     }
 
