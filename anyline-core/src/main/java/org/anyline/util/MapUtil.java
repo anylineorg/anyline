@@ -150,7 +150,7 @@ public class MapUtil {
 	}
 
 	public static boolean equals(Map<String,Object> obj1, Map<String,Object> obj2, String ... keys){
-		return equals(obj1, obj2, Arrays.asList(keys));
+		return equals(obj1, obj2, BeanUtil.array2list(keys));
 	}
 
 
@@ -387,7 +387,7 @@ public class MapUtil {
 	}
 
 	public static Collection<Map<String,Object>> pivot(Collection<Map<String,Object>> datas, String[] pks, String[] classKeys, String[] valueKeys) {
-		return pivot(datas, Arrays.asList(pks),Arrays.asList(classKeys),Arrays.asList(valueKeys));
+		return pivot(datas, BeanUtil.array2list(pks),BeanUtil.array2list(classKeys),BeanUtil.array2list(valueKeys));
 	}
 	/**
 	 * 行转列
@@ -400,14 +400,14 @@ public class MapUtil {
 	 *  返回结构 [{姓名:张三,数学:100,物理:90,英语:80},{姓名:李四,数学:100,物理:90,英语:80}]
 	 */
 	public static  Collection<Map<String,Object>> pivot(Collection<Map<String,Object>> datas, String pk, String classKey, String valueKey) {
-		List<String> pks = new ArrayList<>(Arrays.asList(pk.trim().split(",")));
-		List<String> classKeys = new ArrayList<>(Arrays.asList(classKey.trim().split(",")));
-		List<String> valueKeys = new ArrayList<>(Arrays.asList(valueKey.trim().split(",")));
+		List<String> pks = BeanUtil.array2list(pk.trim().split(","));
+		List<String> classKeys = BeanUtil.array2list(classKey.trim().split(","));
+		List<String> valueKeys = BeanUtil.array2list(valueKey.trim().split(","));
 		return pivot(datas, pks, classKeys, valueKeys);
 	}
 	public static Collection<Map<String,Object>> pivot(Collection<Map<String,Object>> datas, String pk, String classKey) {
-		List<String> pks = new ArrayList<>(Arrays.asList(pk.trim().split(",")));
-		List<String> classKeys = new ArrayList<>(Arrays.asList(classKey.trim().split(",")));
+		List<String> pks = BeanUtil.array2list(pk.trim().split(","));
+		List<String> classKeys = BeanUtil.array2list(classKey.trim().split(","));
 		List<String> valueKeys = new ArrayList<>();
 		return pivot(datas, pks, classKeys, valueKeys);
 	}
