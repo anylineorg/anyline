@@ -89,6 +89,7 @@ public class AbstractBasicController {
 		if (null == clazz) {
 			return entity;
 		}
+		Map<String,Object> requestValues = WebUtil.value(request);
 		try {
 			entity = (T) clazz.newInstance();
 			/* 属性赋值 */
@@ -102,8 +103,10 @@ public class AbstractBasicController {
 					ParseResult parser = ConfigParser.parse(param,true);
 
 					//getParam(request,parser.getKey(), parser.isKeyEncrypt(), parser.isValueEncrypt());
-					Object value = ConfigParser.getValues(WebUtil.value(request), parser);
-					BeanUtil.setFieldValue(entity, parser.getVar(), value);
+					if(requestValues.containsKey(parser.getVar()) || requestValues.containsKey(parser.getKey())) {
+						Object value = ConfigParser.getValues(requestValues, parser);
+						BeanUtil.setFieldValue(entity, parser.getVar(), value);
+					}
 				}// end for
 			} else {// end指定属性与request参数对应关系
 				/* 未指定属性与request参数对应关系 */
@@ -151,10 +154,13 @@ public class AbstractBasicController {
 		}
 		List<String> arrays = BeanUtil.merge(fixs, params);
 		if (arrays.size() > 0) {
+			Map<String,Object> requestValues = WebUtil.value(request);
 			for (String param : arrays) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				Object value = ConfigParser.getValue(WebUtil.value(request), parser);
-				row.put(parser.getVar(), value);
+				if(requestValues.containsKey(parser.getVar()) || requestValues.containsKey(parser.getKey())) {
+					Object value = ConfigParser.getValue(requestValues, parser);
+					row.put(parser.getVar(), value);
+				}
 				if(parser.isRequired()){
 					row.addUpdateColumns(parser.getVar());
 				}
@@ -272,12 +278,16 @@ public class AbstractBasicController {
 			//k=v格式
 			Map<String,List<Object>> map = new HashMap<String,List<Object>>();
 			int size = 0;
+
+			Map<String,Object> requestValues = WebUtil.value(request);
 			for (String param : arrays) {
 				ParseResult parser = ConfigParser.parse(param,true);
-				List<Object> values = ConfigParser.getValues(WebUtil.value(request), parser);
-				map.put(parser.getVar(), values);
-				if(size <= values.size()){
-					size = values.size();
+				if(requestValues.containsKey(parser.getVar())||requestValues.containsKey(parser.getKey())) {
+					List<Object> values = ConfigParser.getValues(requestValues, parser);
+					map.put(parser.getVar(), values);
+					if (size <= values.size()) {
+						size = values.size();
+					}
 				}
 			}
 
