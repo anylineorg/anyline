@@ -3104,7 +3104,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet pivot(String[] pks, String[] classKeys, String[] valueKeys) {
-        return pivot(Arrays.asList(pks),Arrays.asList(classKeys),Arrays.asList(valueKeys));
+        return pivot(BeanUtil.array2list(pks),BeanUtil.array2list(classKeys),BeanUtil.array2list(valueKeys));
     }
     /**
      * 行转列
@@ -3116,14 +3116,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *  返回结构 [{姓名:张三,数学:100,物理:90,英语:80},{姓名:李四,数学:100,物理:90,英语:80}]
      */
     public DataSet pivot(String pk, String classKey, String valueKey) {
-        List<String> pks = new ArrayList<>(Arrays.asList(pk.trim().split(",")));
-        List<String> classKeys = new ArrayList<>(Arrays.asList(classKey.trim().split(",")));
-        List<String> valueKeys = new ArrayList<>(Arrays.asList(valueKey.trim().split(",")));
+        List<String> pks = BeanUtil.array2list(pk.trim().split(","));
+        List<String> classKeys = BeanUtil.array2list(classKey.trim().split(","));
+        List<String> valueKeys = BeanUtil.array2list(valueKey.trim().split(","));
         return pivot(pks, classKeys, valueKeys);
     }
     public DataSet pivot(String pk, String classKey) {
-        List<String> pks = new ArrayList<>(Arrays.asList(pk.trim().split(",")));
-        List<String> classKeys = new ArrayList<>(Arrays.asList(classKey.trim().split(",")));
+        List<String> pks = BeanUtil.array2list(pk.trim().split(","));
+        List<String> classKeys = BeanUtil.array2list(classKey.trim().split(","));
         List<String> valueKeys = new ArrayList<>();
         return pivot(pks, classKeys, valueKeys);
     }
