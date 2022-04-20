@@ -76,6 +76,7 @@ anyline-jdbc-dm             : 达梦支持
 anyline-jdbc-oracle         : oracle支持
 anyline-jdbc-postgresql     : PostgreSQL支持
 anyline-jdbc-hgdb           : 瀚高数据库支持
+anyline-jdbc-clickhouse     : clickhouse
 anyline-ldap                : ldap
 anyline-nacos               : nacos
 anyline-alipay              : 支付宝支付集成工具
@@ -94,7 +95,7 @@ anyline-ext                 : 水印,动画等扩展功能
 anyline-cache-ecache        : ecache
 anyline-cache-redis         : redis
 anyline-print               : 小票打印机
-anyline-nc	                : netcdf解析
+anyline-nc                  : netcdf解析
 anyline-office              : 基于open xml的word/excel操作
-anyline-poi	                : 基于poi的msoffice文件操作
+anyline-poi                 : 基于poi的msoffice文件操作
 ```
