@@ -1980,7 +1980,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		if(null == keys || keys.length ==0){
 			list = keys();
 		}else{
-			list = Arrays.asList(keys);
+			list = BeanUtil.array2list(keys);
 		}
 		for (String key:list) {
 			String v = getString(key);
