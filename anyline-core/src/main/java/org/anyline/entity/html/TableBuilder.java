@@ -371,6 +371,22 @@ public class TableBuilder {
         this.headers = headers;
         return this;
     }
+    public TableBuilder setHeaders(String ... headers) {
+        this.headers = BeanUtil.array2list(headers);
+        return this;
+    }
+    public TableBuilder addHeaders(String ... headers) {
+        for(String header:headers){
+            this.headers.add(header);
+        }
+        return this;
+    }
+    public TableBuilder addHeaders(List<String> headers) {
+        for(String header:headers){
+            this.headers.add(header);
+        }
+        return this;
+    }
 
     public List<String> getFields() {
         return fields;
@@ -381,7 +397,19 @@ public class TableBuilder {
         return this;
     }
     public TableBuilder setFields(String ... fields) {
-        this.fields = Arrays.asList(fields);
+        this.fields = BeanUtil.array2list(fields);
+        return this;
+    }
+    public TableBuilder addFields(String ... fields) {
+        for(String field:fields){
+            this.fields.add(field);
+        }
+        return this;
+    }
+    public TableBuilder addFields(List<String> fields) {
+        for(String field:fields){
+            this.fields.add(field);
+        }
         return this;
     }
 
