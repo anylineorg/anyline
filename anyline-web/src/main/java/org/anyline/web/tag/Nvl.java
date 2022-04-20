@@ -51,7 +51,7 @@ public class Nvl extends BaseBodyTag implements Cloneable{
 			if(null == value){
 				String str = value.toString();
 				if(str.contains(",")){
-					paramList = new ArrayList<>(Arrays.asList(str.split(",")));
+					paramList = BeanUtil.array2list(str.split(","));
 				}
 			}
 		}
