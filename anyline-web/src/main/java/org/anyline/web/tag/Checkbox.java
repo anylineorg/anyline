@@ -112,7 +112,7 @@ public class Checkbox extends BaseBodyTag {
 						} 
 					}
 					if (this.value instanceof String) {
-						this.value = new ArrayList(Arrays.asList(this.value.toString().split(",")));
+						this.value = BeanUtil.array2list(this.value.toString().split(","));
 					}else if(this.value instanceof Collection){ 
 						List list = new ArrayList(); 
 						Collection cols = (Collection)this.value; 
