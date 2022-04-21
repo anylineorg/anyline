@@ -45,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.zip.ZipEntry;
@@ -141,7 +142,7 @@ public class FileUtil {
 	 * @param encode  encode
 	 * @return StringBuffer
 	 */ 
-	public static StringBuffer read(InputStream input, String encode){ 
+	public static StringBuffer read(InputStream input, Charset encode){
 		StringBuffer buffer = new StringBuffer(); 
 		int BUFFER_SIZE = 1024 * 8; 
 		 
@@ -163,7 +164,7 @@ public class FileUtil {
             		buffer.append(new String(by,0,size)); 
             	} 
             	else{ 
-            		buffer.append(new String(by,0,size,encode)); 
+            		buffer.append(new String(by,0,size,encode));
             	} 
             }
          }catch(Exception ex){ 
@@ -256,7 +257,7 @@ public class FileUtil {
 	 * @param encode  encode
 	 * @return StringBuffer
 	 */ 
-	public static StringBuffer read(File file,String encode){
+	public static StringBuffer read(File file,Charset encode){
 		StringBuffer buffer = new StringBuffer();
 		if(null != file && file.exists()){
 			try{
@@ -270,6 +271,9 @@ public class FileUtil {
 			}
 		} 
 		return buffer; 
+	}
+	public static StringBuffer read(File file, String encode){
+		return read(file, Charset.forName(encode));
 	}
 
 	public static StringBuffer readJar(String path )throws IOException {
@@ -301,7 +305,7 @@ public class FileUtil {
 	 * @param encode 编码
 	 * @param append 是否追加
 	 */
-	public static void write(String content, File file, String encode, boolean append) {
+	public static void write(String content, File file, Charset encode, boolean append) {
 		if(null == file){
 			return;
 		}
@@ -332,8 +336,14 @@ public class FileUtil {
 		} 
 	}
 
-	public static void write(String content, File file, String encode) {
+	public static void write(String content, File file, String encode, boolean append) {
+		write(content, file, Charset.forName(encode), append);
+	}
+	public static void write(String content, File file, Charset encode) {
 		write(content, file, encode, false);
+	}
+	public static void write(String content, File file, String encode) {
+		write(content, file, Charset.forName(encode), false);
 	}
 
 	public static void write(String content, File file, boolean append) {
