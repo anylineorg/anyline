@@ -2236,9 +2236,23 @@ public class BeanUtil {
 	/**
 	 * 合成笛卡尔组合
 	 *
-	 * @param lists  lists
+	 * @param lists  二维数组
 	 * @param <T> t
 	 * @return return
+	 * 输入:
+	 * [[A,B,C],[1,2,3]]
+	 * 输出:
+	 *  [[A, 1], [A, 2], [A, 3]
+	 * , [B, 1], [B, 2], [B, 3]
+	 * , [C, 1], [C, 2], [C, 3]]
+	 *
+	 * 输入:
+	 * [[A,B,C],[1,2,3],[一,二,三]]
+	 * 输出:
+	 *  [[A, 1, 一], [A, 1, 二], [A, 1, 三], [A, 2, 一], [A, 2, 二], [A, 2, 三], [A, 3, 一], [A, 3, 二], [A, 3, 三]
+	 * , [B, 1, 一], [B, 1, 二], [B, 1, 三], [B, 2, 一], [B, 2, 二], [B, 2, 三], [B, 3, 一], [B, 3, 二], [B, 3, 三]
+	 * , [C, 1, 一], [C, 1, 二], [C, 1, 三], [C, 2, 一], [C, 2, 二], [C, 2, 三], [C, 3, 一], [C, 3, 二], [C, 3, 三]
+	 * ]
 	 */
 	public static <T> List<List<T>> descartes(List<List<T>> lists) {
 		List<List<T>> result = new ArrayList<List<T>>();
@@ -2268,6 +2282,10 @@ public class BeanUtil {
 			store = new ArrayList<List<T>>();
 		}
 		return result;
+	}
+
+	public static <T> List<List<T>> descartes(List<T> ... lists) {
+		return descartes(array2list(lists));
 	}
 
 	/**
