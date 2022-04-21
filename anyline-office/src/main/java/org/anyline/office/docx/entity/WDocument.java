@@ -486,13 +486,15 @@ public class WDocument {
             prevStyle = prev;
         }else{
             Element tmp = DocxUtil.prev(prev);
-            String tmpName = tmp.getName();
-            if(tmpName.equals("r")){
-                prevStyle = tmp;
-            }else if(tmpName.equals("pPr")){
-                prevStyle = tmp;
-            }else if(tmpName.equals("p")){
-                prevStyle = tmp;
+            if(null != tmp) {
+                String tmpName = tmp.getName();
+                if (tmpName.equals("r")) {
+                    prevStyle = tmp;
+                } else if (tmpName.equals("pPr")) {
+                    prevStyle = tmp;
+                } else if (tmpName.equals("p")) {
+                    prevStyle = tmp;
+                }
             }
         }
         return prevStyle;
