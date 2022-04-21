@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.nio.charset.Charset;
 import java.util.*;
 
 public class WDocument {
@@ -1115,7 +1116,11 @@ public class WDocument {
     public List<String> listStyles(){
         return DocxUtil.listStyles(file);
     }
+
     public void save(){
+        save(Charset.forName("UTF-8"));
+    }
+    public void save(Charset charset){
         try {
             load();
 
@@ -1174,8 +1179,8 @@ public class WDocument {
             }
             checkContentTypes();
             checkMergeCol();
-            ZipUtil.replace(file,"word/document.xml", DomUtil.format(doc));
-            ZipUtil.replace(file,"word/_rels/document.xml.rels", DomUtil.format(relsDoc));
+            ZipUtil.replace(file,"word/document.xml", DomUtil.format(doc), charset);
+            ZipUtil.replace(file,"word/_rels/document.xml.rels", DomUtil.format(relsDoc), charset);
 
         }catch (Exception e){
             e.printStackTrace();
