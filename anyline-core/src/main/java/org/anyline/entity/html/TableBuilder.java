@@ -35,7 +35,7 @@ public class TableBuilder {
     private Map<String,Map<String,String>> styles = new HashMap<>();
     private Map<String,String[]> unionRefs = new HashMap<>();
     private Map<String,Map<String,String>> options = new HashMap<>();   //外键对应关系
-    private List<String> ignoreUnionValues = new ArrayList<>();         //不参与合并的值
+    private List<String> ignoreUnionValues = new ArrayList<>();         //不参与合并的值(如一些空值)
     private String width = "100%";                                      //整个表格宽度
     private String widthUnit = "px";                                    //默认长度单位 px pt cm/厘米
     private String replaceEmpty = "";                                   //遇到空值替换成
@@ -424,7 +424,7 @@ public class TableBuilder {
     }
 
 
-    public TableBuilder addUnion(String ... fields) {
+    public TableBuilder addUnions(String ... fields) {
         if(null == unions){
             unions = new ArrayList<>();
         }
@@ -538,29 +538,68 @@ public class TableBuilder {
         }
         return this;
     }
+
+    /**
+     *
+     * @param header 表头名称
+     * @param field 属性
+     * @param width 宽度
+     * @return TableBuilder
+     */
     public TableBuilder addConfig(String header, String field, String width){
         headers.add(header);
         fields.add(field);
         Map<String,String> style = styles.get(field);
         if(null == style){
             style = new HashMap<>();
+            styles.put(field, style);
         }
         style.put("width", width);
         return this;
     }
+    /**
+     *
+     * @param header 表头名称
+     * @param field 属性
+     * @param width 宽度
+     * @return TableBuilder
+     */
     public TableBuilder addConfig(String header, String field, int width){
         return addConfig(header, field, width+widthUnit);
     }
+    /**
+     *
+     * @param header 表头名称
+     * @param field 属性
+     * @return TableBuilder
+     */
     public TableBuilder addConfig(String header, String field){
         headers.add(header);
         fields.add(field);
         return this;
     }
+    /**
+     * 根据属性设置列宽度
+     * @param field 属性(定位列)
+     * @param width 宽度
+     * @return TableBuilder
+     */
     public TableBuilder setWidth(String field, String width){
 
+        Map<String,String> style = styles.get(field);
+        if(null == style){
+            style = new HashMap<>();
+            styles.put(field, style);
+        }
+        style.put("width", width);
         return this;
     }
 
+    /**
+     * 设置 表格宽度
+     * @param width 宽度
+     * @return TableBuilder
+     */
     public TableBuilder setWidth(String width){
         this.width = width;
         return this;
@@ -571,14 +610,25 @@ public class TableBuilder {
         return ignoreUnionValues;
     }
 
-    public TableBuilder setIgnoreUnionValues(List<String> ignoreUnionValue) {
-        this.ignoreUnionValues = ignoreUnionValue;
+    /**
+     * 设置 不参与合并的值
+     * @param values 不参合合并的值，如空值
+     * @return TableBuilder
+     */
+    public TableBuilder setIgnoreUnionValues(List<String> values) {
+        this.ignoreUnionValues = values;
         return this;
     }
-    public TableBuilder addIgnoreUnionValue(String ... vals){
-        if(null != vals){
-            for(String val:vals){
-                ignoreUnionValues.add(val);
+
+    /**
+     * 追加 不参与合并的值
+     * @param values 不参合合并的值，如空值
+     * @return TableBuilder
+     */
+    public TableBuilder addIgnoreUnionValue(String ... values){
+        if(null != values){
+            for(String value:values){
+                ignoreUnionValues.add(value);
             }
         }
         return this;
@@ -588,10 +638,20 @@ public class TableBuilder {
         return cellBorder;
     }
 
-    public TableBuilder setCellBorder(String cellBorder) {
-        this.cellBorder = cellBorder;
+    /**
+     * 设置所有单元格边框
+     * @param border 边框
+     * @return TableBuilder
+     */
+    public TableBuilder setCellBorder(String border) {
+        this.cellBorder = border;
         return this;
     }
+    /**
+     * 设置所有单元格默认边框
+     * @param border 是否需要边框
+     * @return TableBuilder
+     */
     public TableBuilder setCellBorder(boolean border) {
         if(border){
             cellBorder = "1px solid auto";
@@ -605,40 +665,82 @@ public class TableBuilder {
         return lineHeight;
     }
 
-    public TableBuilder setLineHeight(String lineHeight) {
-        this.lineHeight = lineHeight;
+    /**
+     * 设置行高
+     * @param height 行高
+     * @return TableBuilder
+     */
+    public TableBuilder setLineHeight(String height) {
+        this.lineHeight = height;
         return this;
     }
 
-    public TableBuilder setReplaceEmpty(String replaceEmpty) {
-        this.replaceEmpty = replaceEmpty;
+    /**
+     * 设置空值替换内容
+     * @param value 空值替换成value
+     * @return TableBuilder
+     */
+    public TableBuilder setReplaceEmpty(String value) {
+        this.replaceEmpty = value;
         return this;
     }
 
-    public TableBuilder setMergeCellVerticalAlign(String mergeCellVerticalAlign) {
-        this.mergeCellVerticalAlign = mergeCellVerticalAlign;
+    /**
+     * 设置合并后单元格垂直对齐方式
+     * @param align  对齐方式
+     * @return TableBuilder
+     */
+    public TableBuilder setMergeCellVerticalAlign(String align) {
+        this.mergeCellVerticalAlign = align;
         return this;
     }
 
-    public TableBuilder setMergeCellHorizontalAlign(String mergeCellHorizontalAlign) {
-        this.mergeCellHorizontalAlign = mergeCellHorizontalAlign;
+    /**
+     * 设置合并后单元格水平对齐方式
+     * @param align  对齐方式
+     * @return TableBuilder
+     */
+    public TableBuilder setMergeCellHorizontalAlign(String align) {
+        this.mergeCellHorizontalAlign = align;
         return this;
     }
 
-    public TableBuilder setEmptyCellVerticalAlign(String emptyCellVerticalAlign) {
-        this.emptyCellVerticalAlign = emptyCellVerticalAlign;
+    /**
+     * 设置空单元格垂直对齐方式
+     * @param align  对齐方式
+     * @return TableBuilder
+     */
+    public TableBuilder setEmptyCellVerticalAlign(String align) {
+        this.emptyCellVerticalAlign = align;
         return this;
     }
 
-    public TableBuilder setEmptyCellHorizontalAlign(String emptyCellHorizontalAlign) {
-        this.emptyCellHorizontalAlign = emptyCellHorizontalAlign;
+    /**
+     * 设置空单元格水平对齐方式
+     * @param align  对齐方式
+     * @return TableBuilder
+     */
+    public TableBuilder setEmptyCellHorizontalAlign(String align) {
+        this.emptyCellHorizontalAlign = align;
         return this;
     }
-    public TableBuilder setOptions(String field,Map<String,String> option){
+    /**
+     * 设置下拉列表数据源
+     * @param field 属性(定位列)
+     * @param option 数据源
+     * @return TableBuilder
+     */
+    public TableBuilder setOptions(String field, Map<String,String> option){
         options.put(field, option);
         return this;
     }
-    public TableBuilder addOptions(String field,Map<String,String> option){
+    /**
+     * 追加下拉列表数据源
+     * @param field 属性(定位列)
+     * @param option 数据源
+     * @return TableBuilder
+     */
+    public TableBuilder addOptions(String field, Map<String,String> option){
         Map<String,String> map = options.get(field);
         if(null == map){
             map = option;
@@ -649,6 +751,12 @@ public class TableBuilder {
         return this;
     }
 
+    /**
+     * 追加下拉列表数据源
+     * @param field 属性(定位列)
+     * @param kvs 数据源 k1,v1,k2,v2
+     * @return TableBuilder
+     */
     public TableBuilder addOptions(String field, String ... kvs){
         Map<String,String> map = options.get(field);
         if(null != kvs){
@@ -663,6 +771,12 @@ public class TableBuilder {
         return this;
     }
 
+    /**
+     * 设置下拉列表数据源
+     * @param field 属性(定位列)
+     * @param kvs 数据源 k1,v1,k2,v2
+     * @return TableBuilder
+     */
     public TableBuilder setOptions(String field, String ... kvs){
         if(null != kvs){
             Map<String,String> map = BeanUtil.array2map(kvs);
@@ -671,24 +785,28 @@ public class TableBuilder {
         return this;
     }
 
+    /**
+     * 设置下拉列表数据源
+     * @param field 属性(定位列)
+     * @param datas 数据源
+     * @param value value属性
+     * @param text text属性
+     * @return TableBuilder
+     */
     public TableBuilder setOptions(String field, Collection datas, String value, String text){
-        Map<String,String> map = new HashMap<>();
-        for(Object obj:datas){
-            String v = null;
-            String t = null;
-            Object ov = BeanUtil.getFieldValue(obj, value);
-            Object ot = BeanUtil.getFieldValue(obj, text);
-            if(null != ov){
-                v = ov.toString();
-            }
-            if(null != ot){
-                t = ot.toString();
-            }
-            map.put(v, t);
-        }
-        options.put(field, map);
+        options.remove(field);
+        addOptions(field, datas, value, text);
         return this;
     }
+
+    /**
+     * 追加下拉列表数据源
+     * @param field 属性(定位列)
+     * @param datas 数据源
+     * @param value value属性
+     * @param text text属性
+     * @return TableBuilder
+     */
     public TableBuilder addOptions(String field, Collection datas, String value, String text){
         Map<String,String> map = options.get(field);
         if(null == map){
