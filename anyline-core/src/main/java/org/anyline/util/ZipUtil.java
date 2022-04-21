@@ -63,7 +63,7 @@ public class ZipUtil {
 		return true;
 	}
 
-	public static String read(File zip, String item){
+	public static String read(File zip, String item, Charset charset){
 		InputStream in = null;
 		ZipFile _zip = null;
 		if(!zip.exists()){
@@ -74,7 +74,7 @@ public class ZipUtil {
 			_zip = new ZipFile(zip);
 			ZipEntry _item = _zip.getEntry(item);
 			in = _zip.getInputStream(_item);
-			String str = FileUtil.read(in).toString();
+			String str = FileUtil.read(in,charset).toString();
 			return str;
 		}catch (Exception e){
 			return null;
@@ -85,6 +85,12 @@ public class ZipUtil {
 				e.printStackTrace();
 			}
 		}
+	}
+	public static String read(File zip, String item, String charset){
+		return read(zip, item, Charset.forName(charset));
+	}
+	public static String read(File zip, String item){
+		return read(zip, item, Charset.forName("UTF-8"));
 	}
 	/**
 	 * 替换内容
@@ -98,20 +104,23 @@ public class ZipUtil {
 	}
 
 	public static void replace(File zip, String item, String content) throws Exception {
-		replace(zip, item, new ByteArrayInputStream(content.getBytes()));
+		replace(zip, item, content, Charset.forName("UTF-8"));
+	}
+	public static void replace(File zip, String item, String content, Charset charset) throws Exception {
+		replace(zip, item, new ByteArrayInputStream(content.getBytes(charset)), charset);
 	}
 
-	public static void replace(File src, String item, InputStream in) throws Exception {
+	public static void replace(File src, String item, InputStream in, Charset charset) throws Exception {
 		if(!src.exists()){
 			log.error("[文件不存在][path:{}]", src.getAbsolutePath());
 			return;
 		}
 		File tempFile = FileUtil.createTempFile(src);
-		ZipFile zip = new ZipFile(tempFile);
+		ZipFile zip = new ZipFile(tempFile, charset);
 		Enumeration<? extends ZipEntry> entrys = zip.entries();
-		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(src));
+		ZipOutputStream out = new ZipOutputStream(new FileOutputStream(src), charset);
 		int len = -1;
-		byte[] buffer = new byte[1024];
+		byte[] buffer = new byte[1024*8];
 		while (entrys.hasMoreElements()) {
 			ZipEntry entity = entrys.nextElement();
 			InputStream is = zip.getInputStream(entity);
@@ -131,6 +140,9 @@ public class ZipUtil {
 		out.close();
 		zip.close();
 		tempFile.delete();
+	}
+	public static void replace(File src, String item, InputStream in) throws Exception {
+		replace(src, item, in, Charset.forName("UTF-8"));
 	}
 	public static boolean zip(Map<String,File> files, File zip, String dir, String comment, boolean append) {
 		boolean result = true;
