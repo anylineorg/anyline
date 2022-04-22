@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.jar.JarEntry;
@@ -218,7 +219,7 @@ public class ConfigTable {
 					}
 				}else{
 					in = ConfigTable.class.getClassLoader().getResourceAsStream("/"+flag+"-config.xml");
-					String txt = FileUtil.read(in, "UTF-8").toString();
+					String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
 					parse(txt);
 				}
 				//加载jar文件同目录的config

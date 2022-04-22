@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -87,7 +88,7 @@ public abstract class AnylineConfig implements Serializable {
 					}
 				} else {
 					in = ConfigTable.class.getClassLoader().getResourceAsStream("/" + fileName);
-					String txt = FileUtil.read(in, "UTF-8").toString();
+					String txt = FileUtil.read(in, Charset.forName("UTF-8")).toString();
 					parse(txt);
 				}
 				//加载同目录下config目录
