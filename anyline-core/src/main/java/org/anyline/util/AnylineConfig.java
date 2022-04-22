@@ -92,7 +92,7 @@ public abstract class AnylineConfig implements Serializable {
 					parse(txt);
 				}
 				//加载同目录下config目录
-				File dir = new File(FileUtil.mergePath(ConfigTable.getRoot(),"config"));
+				File dir = new File(FileUtil.merge(ConfigTable.getRoot(),"config"));
 				if (null != dir && !dir.exists()) {
 					dir = new File(ConfigTable.getWebRoot());
 				}

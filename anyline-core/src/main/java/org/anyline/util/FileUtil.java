@@ -61,7 +61,7 @@ public class FileUtil {
 	 * @param paths paths
 	 * @return String
 	 */
-	public static String mergePath(String ... paths){
+	public static String merge(String ... paths){
 		String result = null;
 		String separator = getFileSeparator();
 		if(null != paths){
@@ -404,13 +404,13 @@ public class FileUtil {
 	}
 	/** 
 	 * 创建文件 
-	 * @param fileDir  fileDir
-	 * @param fileName  fileName
+	 * @param dir  dir
+	 * @param name  name
 	 * @param over 是否清空已存在的同名文件 
 	 * @return boolean
 	 */ 
-	public static boolean create(String fileDir, String fileName, boolean over){ 
-		String filePath = mergePath(fileDir, fileName); 
+	public static boolean create(String dir, String name, boolean over){
+		String filePath = merge(dir, name);
 		return create(filePath,over); 
 	} 
 	public static boolean create(String file, boolean over){ 

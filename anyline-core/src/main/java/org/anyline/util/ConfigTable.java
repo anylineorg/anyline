@@ -223,7 +223,7 @@ public class ConfigTable {
 					parse(txt);
 				}
 				//加载jar文件同目录的config
-				File dir = new File(FileUtil.mergePath(root,"config"));
+				File dir = new File(FileUtil.merge(root,"config"));
 				loadConfigDir(dir,flag);
 			}else{
 				//classpath根目录
