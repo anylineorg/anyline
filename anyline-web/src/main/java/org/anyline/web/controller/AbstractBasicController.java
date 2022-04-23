@@ -296,18 +296,20 @@ public class AbstractBasicController {
 				for (String param : arrays) {
 					ParseResult parser = ConfigParser.parse(param,true);
 					List<Object> values = map.get(parser.getVar());
-					if(values.size() > i){
-						row.put(parser.getVar(), values.get(i));
-					}else{
-						List<ParseResult> defs = parser.getDefs();
-						if(null != defs && defs.size()>0){
-							ParseResult def = defs.get(0);
-							String key = def.getKey();
-							if(null != key && key.startsWith("{") && key.endsWith("}")){
-								// col:value
-								key = key.substring(1, key.length()-1);
+					if(null != values) {
+						if (values.size() > i) {
+							row.put(parser.getVar(), values.get(i));
+						} else {
+							List<ParseResult> defs = parser.getDefs();
+							if (null != defs && defs.size() > 0) {
+								ParseResult def = defs.get(0);
+								String key = def.getKey();
+								if (null != key && key.startsWith("{") && key.endsWith("}")) {
+									// col:value
+									key = key.substring(1, key.length() - 1);
+								}
+								row.put(parser.getVar(), key);
 							}
-							row.put(parser.getVar(), key);
 						}
 					}
 				}
