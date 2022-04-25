@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *          
+ *
  */
 /*
  * Copyright 2006-2022 www.anyline.org
@@ -34,9 +34,9 @@
  */
 
 
-package org.anyline.util; 
- 
- 
+package org.anyline.util;
+
+
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
@@ -52,9 +52,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 
-public class FileUtil { 
-	private static final Logger log = LoggerFactory.getLogger(FileUtil.class); 
-	public final static int PATH_TYPE_JAR = 0; 
+public class FileUtil {
+	private static final Logger log = LoggerFactory.getLogger(FileUtil.class);
+	public final static int PATH_TYPE_JAR = 0;
 
 	/**
 	 * 合成path
@@ -74,7 +74,7 @@ public class FileUtil {
 				}else{
 					if(result.endsWith("/") || result.endsWith("\\")){
 						if(path.startsWith("/") || path.startsWith("\\")){
-							// "root/" + "/sub" 
+							// "root/" + "/sub"
 							result += path.substring(1);
 						}else{
 							// "root/" + "sub"
@@ -82,7 +82,7 @@ public class FileUtil {
 						}
 					}else{
 						if(path.startsWith("/") || path.startsWith("\\")){
-							// "root" + "/sub" 
+							// "root" + "/sub"
 							result += path;
 						}else{
 							// "root" + "sub"
@@ -94,36 +94,36 @@ public class FileUtil {
 		}
 		return result;
 	}
- 
-	/** 
-	 * 目录分隔符 
+
+	/**
+	 * 目录分隔符
 	 * @return String
-	 */ 
-	public static String getFileSeparator(){ 
-		return System.getProperty("file.separator"); 
-	} 
-	 
-	/** 
-	 * 判断当前应用程序的目录类别 0-jar包形式 
+	 */
+	public static String getFileSeparator(){
+		return System.getProperty("file.separator");
+	}
+
+	/**
+	 * 判断当前应用程序的目录类别 0-jar包形式
 	 * @param dst  dst
 	 * @return int
-	 */ 
+	 */
 	@SuppressWarnings("rawtypes")
-	public static int getPathType(Class dst){ 
-		int type = -1; 
-		try{ 
-			String path = dst.getResource("").getPath(); 
-			if(path.indexOf(".jar!") != -1){ 
-				//jar 目录 
-				type = 0; 
-			}else{ 
-				//其他目录 
-				type = 1; 
-			} 
-		}catch(Exception e){ 
-			type = -1; 
-		} 
-		return type; 
+	public static int getPathType(Class dst){
+		int type = -1;
+		try{
+			String path = dst.getResource("").getPath();
+			if(path.indexOf(".jar!") != -1){
+				//jar 目录
+				type = 0;
+			}else{
+				//其他目录
+				type = 1;
+			}
+		}catch(Exception e){
+			type = -1;
+		}
+		return type;
 	}
 	public static int getPathType(String path){
 		int type = -1;
@@ -136,54 +136,54 @@ public class FileUtil {
 		}
 		return type;
 	}
-	/** 
-	 * 读取输入流 
+	/**
+	 * 读取输入流
 	 * @param input  input
 	 * @param encode  encode
 	 * @return StringBuffer
-	 */ 
+	 */
 	public static StringBuffer read(InputStream input, Charset encode){
-		StringBuffer buffer = new StringBuffer(); 
-		int BUFFER_SIZE = 1024 * 8; 
-		 
+		StringBuffer buffer = new StringBuffer();
+		int BUFFER_SIZE = 1024 * 8;
+
 		BufferedInputStream in = null ;
-         
-         try  { 
-        	 if(input.available() <=0){ 
-        		 return buffer; 
-        	 } 
-        	 if(BUFFER_SIZE>input.available()){ 
-        		 BUFFER_SIZE = input.available(); 
-        	 } 
+
+         try  {
+        	 if(input.available() <=0){
+        		 return buffer;
+        	 }
+        	 if(BUFFER_SIZE>input.available()){
+        		 BUFFER_SIZE = input.available();
+        	 }
              in = new BufferedInputStream(input, BUFFER_SIZE);
-             input.available(); 
+             input.available();
              byte [] by = new byte [BUFFER_SIZE];
-             int size = 0; 
-             while ((size=in.read(by)) != -1 ){ 
-            	if(null == encode){ 
-            		buffer.append(new String(by,0,size)); 
-            	} 
-            	else{ 
+             int size = 0;
+             while ((size=in.read(by)) != -1 ){
+            	if(null == encode){
+            		buffer.append(new String(by,0,size));
+            	}
+            	else{
             		buffer.append(new String(by,0,size,encode));
-            	} 
+            	}
             }
-         }catch(Exception ex){ 
+         }catch(Exception ex){
         	log.error(ex.getMessage());
-        	ex.printStackTrace(); 
-         } finally  { 
-                try{ 
+        	ex.printStackTrace();
+         } finally  {
+                try{
                 	if(null != in) {
                 		in.close();
                 	}
                 	if(null != input){
                 		input.close();
-                	} 
-                }catch(Exception e){ 
+                	}
+                }catch(Exception e){
                 	e.printStackTrace();
-                } 
-        }   
- 
-		return buffer; 
+                }
+        }
+
+		return buffer;
 	}
 
 	/**
@@ -251,12 +251,12 @@ public class FileUtil {
 		}
 		return buffer;
 	}
-	/** 
-	 * 读取文件 
+	/**
+	 * 读取文件
 	 * @param file  file
 	 * @param encode  encode
 	 * @return StringBuffer
-	 */ 
+	 */
 	public static StringBuffer read(File file,Charset encode){
 		StringBuffer buffer = new StringBuffer();
 		if(null != file && file.exists()){
@@ -266,11 +266,11 @@ public class FileUtil {
 				}else {
 					buffer = read(new FileInputStream(file), encode);
 				}
-			}catch(Exception e){ 
-				e.printStackTrace(); 
+			}catch(Exception e){
+				e.printStackTrace();
 			}
-		} 
-		return buffer; 
+		}
+		return buffer;
 	}
 	public static StringBuffer read(File file, String encode){
 		return read(file, Charset.forName(encode));
@@ -299,7 +299,7 @@ public class FileUtil {
 		return buffer;
 	}
 	/**
-	 * 
+	 *
 	 * @param content 写入内容
 	 * @param file 文件
 	 * @param encode 编码
@@ -313,27 +313,27 @@ public class FileUtil {
 		if(!dir.exists()){
 			dir.mkdirs();
 		}
-		FileOutputStream fos = null;  
-		OutputStreamWriter osw = null; 
-		try {  
-			fos = new FileOutputStream(file, append);	 
-			osw = new OutputStreamWriter(fos, encode); 
+		FileOutputStream fos = null;
+		OutputStreamWriter osw = null;
+		try {
+			fos = new FileOutputStream(file, append);
+			osw = new OutputStreamWriter(fos, encode);
 			if(append){
 				osw.append(content);
-			}else{ 
+			}else{
 				osw.write(content);
-			} 
-			osw.flush();  
-		} catch (Exception e) {  
-			e.printStackTrace();  
-		}finally{ 
-			try{ 
-				osw.close(); 
-				fos.close(); 
-			}catch(Exception e){ 
-				e.printStackTrace(); 
-			} 
-		} 
+			}
+			osw.flush();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}finally{
+			try{
+				osw.close();
+				fos.close();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void write(String content, File file, String encode, boolean append) {
@@ -402,41 +402,41 @@ public class FileUtil {
 		}
 		return true;
 	}
-	/** 
-	 * 创建文件 
+	/**
+	 * 创建文件
 	 * @param dir  dir
 	 * @param name  name
-	 * @param over 是否清空已存在的同名文件 
+	 * @param over 是否清空已存在的同名文件
 	 * @return boolean
-	 */ 
+	 */
 	public static boolean create(String dir, String name, boolean over){
 		String filePath = merge(dir, name);
-		return create(filePath,over); 
-	} 
-	public static boolean create(String file, boolean over){ 
-		return create(new File(file), over); 
-	} 
-	public static boolean create(File file, boolean over){ 
-		if(null == file){ 
-			return false; 
-		} 
-		try{ 
-			File dir = file.getParentFile(); 
-			if(!dir.exists()){ 
-				dir.mkdirs(); 
-			} 
-			if(file.exists()){ 
-				if(over){ 
-					file.delete(); 
-				}else{ 
-					return true; 
-				} 
-			} 
-			file.createNewFile(); 
-		}catch(Exception e){ 
-			e.printStackTrace(); 
-		} 
-		return true; 
+		return create(filePath,over);
+	}
+	public static boolean create(String file, boolean over){
+		return create(new File(file), over);
+	}
+	public static boolean create(File file, boolean over){
+		if(null == file){
+			return false;
+		}
+		try{
+			File dir = file.getParentFile();
+			if(!dir.exists()){
+				dir.mkdirs();
+			}
+			if(file.exists()){
+				if(over){
+					file.delete();
+				}else{
+					return true;
+				}
+			}
+			file.createNewFile();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return true;
 	}
 
 	public static File createTempFile(File file) throws Exception{
@@ -453,97 +453,97 @@ public class FileUtil {
 		}
 		return tempFile;
 	}
-	/** 
-	 * 从URL中提取文件目录(删除查询参数) 
+	/**
+	 * 从URL中提取文件目录(删除查询参数)
 	 * @param url  url
 	 * @return String
-	 */ 
-	public static String fetchPathByUrl(String url){ 
-		int to = url.indexOf("?"); 
-		if(to != -1) 
-			url = url.substring(0,to); 
-		return url; 
-	} 
-	/** 
-	 * 提取一个URL所在的目录 
+	 */
+	public static String fetchPathByUrl(String url){
+		int to = url.indexOf("?");
+		if(to != -1)
+			url = url.substring(0,to);
+		return url;
+	}
+	/**
+	 * 提取一个URL所在的目录
 	 * @param url  url
 	 * @return String
-	 */ 
-	public static String fetchDirByUrl(String url){ 
-		String dir = null; 
-		if(url.endsWith("/")){ 
-			dir = url; 
-		}else if(isHttpFile(url)){ 
-			int to = url.lastIndexOf("/"); 
-			dir = url.substring(0,to); 
-		}else{ 
-			dir = url; 
-		} 
-		return dir; 
-	} 
-	/** 
-	 * path是否包含文件名 
+	 */
+	public static String fetchDirByUrl(String url){
+		String dir = null;
+		if(url.endsWith("/")){
+			dir = url;
+		}else if(isHttpFile(url)){
+			int to = url.lastIndexOf("/");
+			dir = url.substring(0,to);
+		}else{
+			dir = url;
+		}
+		return dir;
+	}
+	/**
+	 * path是否包含文件名
 	 * @param path  path
 	 * @return boolean
-	 */ 
-	private static boolean isHttpFile(String path){ 
- 
-		if(path.endsWith("/")){ 
-			return false; 
-		} 
-		String head = "http://"; 
-		int fr = head.length(); 
-		int l1 = path.lastIndexOf("/"); 
-		int l2 = path.lastIndexOf("."); 
-		//int l3 = path.length(); 
-		if(l1 == -1){ 
-			return false; 
-		}else if(l2>l1 && l2>fr){ 
-			return true; 
-		} 
-		return false; 
-	} 
-	/** 
-	 * 提取url根目录 
+	 */
+	private static boolean isHttpFile(String path){
+
+		if(path.endsWith("/")){
+			return false;
+		}
+		String head = "http://";
+		int fr = head.length();
+		int l1 = path.lastIndexOf("/");
+		int l2 = path.lastIndexOf(".");
+		//int l3 = path.length();
+		if(l1 == -1){
+			return false;
+		}else if(l2>l1 && l2>fr){
+			return true;
+		}
+		return false;
+	}
+	/**
+	 * 提取url根目录
 	 * @param url  url
 	 * @return String
-	 */ 
-	public static String getHostUrl(String url){ 
-		url = url.replaceAll("http://",""); 
-		int idx = url.indexOf("/"); 
-		if(idx != -1){ 
-			url = url.substring(0,idx); 
-		} 
-		url = "http://"+url; 
-		return url; 
-	} 
+	 */
+	public static String getHostUrl(String url){
+		url = url.replaceAll("http://","");
+		int idx = url.indexOf("/");
+		if(idx != -1){
+			url = url.substring(0,idx);
+		}
+		url = "http://"+url;
+		return url;
+	}
 
 	/**
 	 * 不含后缀的文件名
 	 * @param file file
 	 * @return String
-	 */ 
-	public static String getSimpleFileName(File file){ 
-		String name = null; 
-		if(null == file) return null; 
-		name = file.getName(); 
+	 */
+	public static String getSimpleFileName(File file){
+		String name = null;
+		if(null == file) return null;
+		name = file.getName();
 		int idx = name.lastIndexOf(".");
-		if(idx != -1){ 
+		if(idx != -1){
 			name = name.substring(0,idx);
-		} 
-		return name; 
+		}
+		return name;
 	}
-	 
-	public static String getSimpleFileName(String file){ 
-		return getSimpleFileName(new File(file)); 
-	} 
-	public static String getFileName(String file){ 
-		return getFileName(new File(file)); 
-	} 
-	public static String getFileName(File file){ 
-		if(null != file) 
-			return file.getName(); 
-		return null; 
+
+	public static String getSimpleFileName(String file){
+		return getSimpleFileName(new File(file));
+	}
+	public static String getFileName(String file){
+		return getFileName(new File(file));
+	}
+	public static String getFileName(File file){
+		if(null != file)
+			return file.getName();
+		return null;
 	}
 	public static String getSuffixFileName(File file){
 		String name = null;
@@ -558,327 +558,327 @@ public class FileUtil {
 	public static String getSuffixFileName(String file){
 		return getSuffixFileName(new File(file));
 	}
-	/** 
-	 * 复制文件  源文件  目标文件 
+	/**
+	 * 复制文件  源文件  目标文件
 	 * @param src  src
 	 * @param dst  dst
 	 * @return boolean
-	 */ 
-	public static boolean copy(File src, File dst){ 
-		boolean result = true; 
-		if (src.isDirectory()){ 
-			if (!dst.exists()){ 
-				result = dst.mkdirs(); 
-			} 
-			String[] files = src.list(); 
-			for(int i = 0; i < files.length; i++){ 
-				copy(new File(src, files[i]), new File(dst, files[i])); 
-			} 
-		} else{ 
-			if(!src.exists()){ 
-				result = false; 
+	 */
+	public static boolean copy(File src, File dst){
+		boolean result = true;
+		if (src.isDirectory()){
+			if (!dst.exists()){
+				result = dst.mkdirs();
+			}
+			String[] files = src.list();
+			for(int i = 0; i < files.length; i++){
+				copy(new File(src, files[i]), new File(dst, files[i]));
+			}
+		} else{
+			if(!src.exists()){
+				result = false;
 			}else{
 				File dir = dst.getParentFile();
 				if(!dir.exists()){
 					dir.mkdirs();
-				} 
-				InputStream in = null; 
-				OutputStream out = null; 
-				try{ 
-					if(!dst.isDirectory()){ 
-						File dirs = dst.getParentFile(); 
-						if(!dirs.exists()){ 
-							dirs.mkdirs(); 
-						} 
+				}
+				InputStream in = null;
+				OutputStream out = null;
+				try{
+					if(!dst.isDirectory()){
+						File dirs = dst.getParentFile();
+						if(!dirs.exists()){
+							dirs.mkdirs();
+						}
 					}else{
 						dst = new File(dst, src.getName());
-					} 
-					dst.createNewFile(); 
-					in = new FileInputStream(src); 
-					out = new FileOutputStream(dst); 
-					byte[] buf = new byte[1024]; 
-					int len; 
-					while ((len = in.read(buf)) > 0) { 
-						out.write(buf, 0, len); 
-					} 
-				}catch(Exception e){ 
+					}
+					dst.createNewFile();
+					in = new FileInputStream(src);
+					out = new FileOutputStream(dst);
+					byte[] buf = new byte[1024];
+					int len;
+					while ((len = in.read(buf)) > 0) {
+						out.write(buf, 0, len);
+					}
+				}catch(Exception e){
 					e.printStackTrace();
-					result = false; 
-				}finally{ 
-					if(null != in){ 
-						try{ 
-							in.close(); 
-						}catch(Exception ex){ 
-							log.error(ex.getMessage()); 
-						} 
-					} 
-					if(null != out){ 
-						try{ 
-							out.close(); 
-						}catch(Exception ex){ 
-							log.error(ex.getMessage()); 
-						} 
-					} 
-				} 
-			} 
-		} 
-		return result; 
-	} 
-     
-	/** 
-	 * 读取当前目录及子目录下所有文件 
+					result = false;
+				}finally{
+					if(null != in){
+						try{
+							in.close();
+						}catch(Exception ex){
+							log.error(ex.getMessage());
+						}
+					}
+					if(null != out){
+						try{
+							out.close();
+						}catch(Exception ex){
+							log.error(ex.getMessage());
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 读取当前目录及子目录下所有文件
 	 * @param dir  dir
 	 * @param subbfixs  subbfixs
 	 * @return List
-	 */ 
-	public static List<File> getAllChildrenFile(File dir, String ...subbfixs){ 
-		List<File> list = new ArrayList<File>(); 
-		if(dir.isFile()){ 
-			if(filterByType(dir, subbfixs)){ 
-				list.add(dir); 
-			} 
-			return list; 
-		} 
-		File[] children = dir.listFiles();
-		if(null != children){ 
-			int size = children.length; 
-			for(int i=0; i<size; i++){ 
-				File child = children[i]; 
-				if(child.isHidden()){ 
-					continue; 
-				} 
-				if(child.isFile()){ 
-					if(filterByType(child,subbfixs)){ 
-						list.add(child); 
-					} 
-				}else{ 
-					List<File> tmpList = getAllChildrenFile(child,subbfixs); 
-					list.addAll(tmpList); 
-				} 
+	 */
+	public static List<File> getAllChildrenFile(File dir, String ...subbfixs){
+		List<File> list = new ArrayList<File>();
+		if(dir.isFile()){
+			if(filterByType(dir, subbfixs)){
+				list.add(dir);
 			}
-		} 
-		return list; 
-	} 
-	/** 
-	 * 读取当前目录及子目录下所有子目录 
+			return list;
+		}
+		File[] children = dir.listFiles();
+		if(null != children){
+			int size = children.length;
+			for(int i=0; i<size; i++){
+				File child = children[i];
+				if(child.isHidden()){
+					continue;
+				}
+				if(child.isFile()){
+					if(filterByType(child,subbfixs)){
+						list.add(child);
+					}
+				}else{
+					List<File> tmpList = getAllChildrenFile(child,subbfixs);
+					list.addAll(tmpList);
+				}
+			}
+		}
+		return list;
+	}
+	/**
+	 * 读取当前目录及子目录下所有子目录
 	 * @param dir  dir
 	 * @return List
-	 */ 
-	public static List<File> getAllChildrenDirectory(File dir){ 
-		List<File> list = new ArrayList<File>(); 
-		if(dir.isFile()){ 
-			return list; 
-		} 
+	 */
+	public static List<File> getAllChildrenDirectory(File dir){
+		List<File> list = new ArrayList<File>();
+		if(dir.isFile()){
+			return list;
+		}
 		File[] children = dir.listFiles();
-		if(null != children){ 
-			int size = children.length; 
-			for(int i=0; i<size; i++){ 
-				File child = children[i]; 
-				if(child.isHidden()){ 
-					continue; 
-				} 
-				if(child.isDirectory()){ 
-					if(null == child.listFiles() || child.listFiles().length == 0){ 
-						list.add(child); 
-					}else{ 
-						list.addAll(getAllChildrenDirectory(child)); 
-					} 
-				} 
+		if(null != children){
+			int size = children.length;
+			for(int i=0; i<size; i++){
+				File child = children[i];
+				if(child.isHidden()){
+					continue;
+				}
+				if(child.isDirectory()){
+					if(null == child.listFiles() || child.listFiles().length == 0){
+						list.add(child);
+					}else{
+						list.addAll(getAllChildrenDirectory(child));
+					}
+				}
 			}
-		} 
-		return list; 
-	} 
-	/** 
-	 *  
+		}
+		return list;
+	}
+	/**
+	 *
 	 * @param dir  dir
 	 * @param types  types
 	 * @return List
-	 */ 
-	public static List<File> getChildrenFile(File dir, String ...types){ 
-		List<File> list = new ArrayList<File>(); 
+	 */
+	public static List<File> getChildrenFile(File dir, String ...types){
+		List<File> list = new ArrayList<File>();
 		File files[] = dir.listFiles();
-		if(null != files){ 
-			for(File file:files){ 
-				if(file.isFile() && filterByType(file,types)) 
-					list.add(file); 
+		if(null != files){
+			for(File file:files){
+				if(file.isFile() && filterByType(file,types))
+					list.add(file);
 			}
-		} 
-		return list; 
-	} 
-	/** 
-	 * ZIP文件中的所有子文件 
+		}
+		return list;
+	}
+	/**
+	 * ZIP文件中的所有子文件
 	 * @param zip  zip
 	 * @param types  types
 	 * @return List
-	 */ 
-	public static List<File> getZipAllChildrenFile(File zip, String ...types){ 
-		List<File> list = new ArrayList<File>(); 
-		ZipInputStream in = null; 
-		try{ 
-			in = new ZipInputStream(new FileInputStream(zip)); 
-			ZipEntry entry = null; 
-			while((entry=in.getNextEntry()) != null){ 
-				String path = zip.getAbsolutePath() + "!/" + entry.getName(); 
-				File file = new File(path); 
-				if(filterByType(file, types)){ 
-					list.add(file); 
-				} 
-			} 
-		}catch(Exception e){ 
-			e.printStackTrace(); 
+	 */
+	public static List<File> getZipAllChildrenFile(File zip, String ...types){
+		List<File> list = new ArrayList<File>();
+		ZipInputStream in = null;
+		try{
+			in = new ZipInputStream(new FileInputStream(zip));
+			ZipEntry entry = null;
+			while((entry=in.getNextEntry()) != null){
+				String path = zip.getAbsolutePath() + "!/" + entry.getName();
+				File file = new File(path);
+				if(filterByType(file, types)){
+					list.add(file);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
 		}finally{
 			try {
 				in.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		} 
-		return list; 
-	} 
-	/** 
-	 * 按类型(后缀)过滤文件 
+		}
+		return list;
+	}
+	/**
+	 * 按类型(后缀)过滤文件
 	 * @param file  file
 	 * @param types  types
 	 * @return boolean
-	 */ 
-	public static boolean filterByType(File file, String ... types){ 
-		if(null == file){ 
-			return false; 
-		} 
-		if(null == types || types.length == 0){ 
-			return true; 
-		} 
+	 */
+	public static boolean filterByType(File file, String ... types){
+		if(null == file){
+			return false;
+		}
+		if(null == types || types.length == 0){
+			return true;
+		}
 		for(String type:types){
-			String fileName = file.getAbsolutePath().toUpperCase(); 
-			type = type.toUpperCase(); 
-			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)){ 
-				return true; 
-			} 
-			if(!type.startsWith(".")){ 
-				type = "." + type; 
-			} 
-			if(fileName.endsWith(type)){ 
-				return true; 
+			String fileName = file.getAbsolutePath().toUpperCase();
+			type = type.toUpperCase();
+			if(RegularUtil.match(fileName, type, Regular.MATCH_MODE.MATCH)){
+				return true;
 			}
-		} 
-		return false; 
+			if(!type.startsWith(".")){
+				type = "." + type;
+			}
+			if(fileName.endsWith(type)){
+				return true;
+			}
+		}
+		return false;
 	}
-	/** 
-	 * 后缀名 
+	/**
+	 * 后缀名
 	 * @param fileName  fileName
 	 * @return String
-	 */ 
-	public static String parseSubName(String fileName){ 
-		String result = null; 
-		if(null == fileName) return null; 
-		int idx = fileName.lastIndexOf("."); 
-		if(idx >0){ 
-			result = fileName.substring(idx+1); 
-		} 
-		return result; 
-	} 
-	public static boolean exists(File file){ 
-		if(null == file){ 
-			return false; 
-		} 
-		return file.exists(); 
-	} 
-	public static boolean exists(String file){ 
-		return exists(new File(file)); 
-	}  
-	public static boolean isFile(File file){ 
-		if(null == file){ 
-			return false; 
-		} 
-		return file.isFile(); 
-	} 
-	public static boolean isFile(String file){ 
-		return isFile(new File(file)); 
-	} 
-	/** 
-	 * 识别文件类型(文件格式) 
+	 */
+	public static String parseSubName(String fileName){
+		String result = null;
+		if(null == fileName) return null;
+		int idx = fileName.lastIndexOf(".");
+		if(idx >0){
+			result = fileName.substring(idx+1);
+		}
+		return result;
+	}
+	public static boolean exists(File file){
+		if(null == file){
+			return false;
+		}
+		return file.exists();
+	}
+	public static boolean exists(String file){
+		return exists(new File(file));
+	}
+	public static boolean isFile(File file){
+		if(null == file){
+			return false;
+		}
+		return file.isFile();
+	}
+	public static boolean isFile(String file){
+		return isFile(new File(file));
+	}
+	/**
+	 * 识别文件类型(文件格式)
 	 * @param file  file
 	 * @return return
-	 */ 
-	public static String parseSubName(File file) {     
-        String filetype = null;      
-        byte[] b = new byte[50];      
-        try {      
-            InputStream is = new FileInputStream(file);      
-            is.read(b);      
-            filetype = getFileTypeByStream(b);      
-            is.close();    
-        } catch (Exception e) {      
-            e.printStackTrace();      
-        }      
-        return filetype;      
-    }  
-	public final static String getFileTypeByStream(byte[] b){      
-        String filetypeHex = String.valueOf(getFileHexString(b));      
-        Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();      
-        while (entryiterator.hasNext()) {      
-            Entry<String,String> entry =  entryiterator.next();      
-            String fileTypeHexValue = entry.getValue();      
-            if (filetypeHex.toUpperCase().startsWith(fileTypeHexValue)) {      
-                return entry.getKey();      
-            }      
-        }      
-        return null;      
-    }      
-	 public final static String getFileHexString(byte[] b)      
-	    {      
-	        StringBuilder stringBuilder = new StringBuilder();      
-	        if (b == null || b.length <= 0)      
-	        {      
-	            return null;      
-	        }      
-	        for (int i = 0; i < b.length; i++)      
-	        {      
-	            int v = b[i] & 0xFF;      
-	            String hv = Integer.toHexString(v);      
-	            if (hv.length() < 2)      
-	            {      
-	                stringBuilder.append(0);      
-	            }      
-	            stringBuilder.append(hv);      
-	        }      
-	        return stringBuilder.toString();      
-	    }    
-	 /** 
-	  * 删除目录 
+	 */
+	public static String parseSubName(File file) {
+        String filetype = null;
+        byte[] b = new byte[50];
+        try {
+            InputStream is = new FileInputStream(file);
+            is.read(b);
+            filetype = getFileTypeByStream(b);
+            is.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return filetype;
+    }
+	public final static String getFileTypeByStream(byte[] b){
+        String filetypeHex = String.valueOf(getFileHexString(b));
+        Iterator<Entry<String, String>> entryiterator = FILE_TYPE_MAP.entrySet().iterator();
+        while (entryiterator.hasNext()) {
+            Entry<String,String> entry =  entryiterator.next();
+            String fileTypeHexValue = entry.getValue();
+            if (filetypeHex.toUpperCase().startsWith(fileTypeHexValue)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+	 public final static String getFileHexString(byte[] b)
+	    {
+	        StringBuilder stringBuilder = new StringBuilder();
+	        if (b == null || b.length <= 0)
+	        {
+	            return null;
+	        }
+	        for (int i = 0; i < b.length; i++)
+	        {
+	            int v = b[i] & 0xFF;
+	            String hv = Integer.toHexString(v);
+	            if (hv.length() < 2)
+	            {
+	                stringBuilder.append(0);
+	            }
+	            stringBuilder.append(hv);
+	        }
+	        return stringBuilder.toString();
+	    }
+	 /**
+	  * 删除目录
 	  * @param file  file
 	  * @return boolean
-	  */ 
+	  */
 	public static boolean delete(File file) {
 		if(null == file){
 			return false;
 		}
-		boolean result = true; 
-		if (file.isDirectory()) { 
+		boolean result = true;
+		if (file.isDirectory()) {
 			File[] children = file.listFiles();
-			if(null != children){ 
+			if(null != children){
 				for (File child:children) {
-						delete(child); 
+						delete(child);
 				}
 			}
 			result = file.delete();
-			log.warn("[目录删除][result:"+result+"][file:"+file.getAbsolutePath()+"]"); 
+			log.warn("[目录删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
 		}else{
 			result = file.delete();
 			log.warn("[文件删除][result:"+result+"][file:"+file.getAbsolutePath()+"]");
 		}
 		return result;
-	} 
-	/** 
-	 * 计算文件行数 
+	}
+	/**
+	 * 计算文件行数
 	 * @param file file
-	 * @param subbfixs 如果file是目录, 只统计其中subbfixs结尾的文件 
+	 * @param subbfixs 如果file是目录, 只统计其中subbfixs结尾的文件
 	 * @return return
-	 */ 
+	 */
 	public static int lines(File file, String ... subbfixs){
-		int size = 0; 
-		if(null == file || !file.exists()){ 
-			return size; 
+		int size = 0;
+		if(null == file || !file.exists()){
+			return size;
 		}
 		if(file.isDirectory()){
 			List<File> files = FileUtil.getAllChildrenFile(file, subbfixs);
@@ -886,31 +886,31 @@ public class FileUtil {
 				size += lines(item);
 			}
 		}
-		try{ 
+		try{
 			LineNumberReader lineNumberReader = new LineNumberReader(new FileReader(file));
 			lineNumberReader.skip(file.length());
             size += lineNumberReader.getLineNumber();
             lineNumberReader.close();
-        }catch(Exception e){ 
-        	 
-        } 
-        return size; 
+        }catch(Exception e){
+
+        }
+        return size;
 	}
-	/** 
-	 * 压缩文件 
+	/**
+	 * 压缩文件
 	 * @param zip  zip
 	 * @param srcs  srcs
 	 * @return return
-	 */ 
-	public static boolean zip(File zip, File... srcs) { 
-		List<File> files = new ArrayList<File>(); 
-		for (File src:srcs) { 
-			files.add(src); 
-		} 
-		return zip(zip,files); 
-	} 
-	public static boolean zip(File zip, List<File> srcs) { 
-		return ZipUtil.zip(srcs, zip); 
+	 */
+	public static boolean zip(File zip, File... srcs) {
+		List<File> files = new ArrayList<File>();
+		for (File src:srcs) {
+			files.add(src);
+		}
+		return zip(zip,files);
+	}
+	public static boolean zip(File zip, List<File> srcs) {
+		return ZipUtil.zip(srcs, zip);
 	}
     /**
     * 获取单个文件的MD5值！
@@ -930,12 +930,12 @@ public class FileUtil {
     	return MD5Util.getDirMD5(file, recursion);
     }
 
-    /**  
-     * 读取输入流中的数据保存至指定目录  
-     * @param is 输入流  
-     * @param file 文件名  
+    /**
+     * 读取输入流中的数据保存至指定目录
+     * @param is 输入流
+     * @param file 文件名
 	 * @return return
-     */  
+     */
     public static boolean save(InputStream is, File file) {
     	if (BasicUtil.isEmpty(file)) {
 			return false;
@@ -948,24 +948,24 @@ public class FileUtil {
         BufferedInputStream bis = null;
         BufferedOutputStream bos =null;
 		try {
-			bis = new BufferedInputStream(is);  
+			bis = new BufferedInputStream(is);
 			bos = new BufferedOutputStream(new FileOutputStream(file));
-	        int len = -1;  
-	        while ((len = bis.read()) != -1) {  
-	            bos.write(len);  
-	            bos.flush();  
-	        }  
+	        int len = -1;
+	        while ((len = bis.read()) != -1) {
+	            bos.write(len);
+	            bos.flush();
+	        }
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally{
 			try{
 				if(null != bos) {
-					bos.close();  
+					bos.close();
 				}
 			}catch(Exception e){}
 			try{
 				if(null != bis) {
-					bis.close();  
+					bis.close();
 				}
 			}catch(Exception e){}
 		}
@@ -973,14 +973,14 @@ public class FileUtil {
 			log.warn("[save file][file:"+file.getAbsolutePath()+"][耗时:"+(System.currentTimeMillis()-fr)+"]");
 		}
         return true;
-    }  
+    }
 
-    /**  
-     * 读取输入流中的数据保存至指定目录  
-     * @param is 输入流  
-     * @param path 文件存储目录  
+    /**
+     * 读取输入流中的数据保存至指定目录
+     * @param is 输入流
+     * @param path 文件存储目录
 	 * @return return
-     */  
+     */
     public static boolean save(InputStream is, String path) {
     	return save(is, new File(path));
     }
@@ -1055,13 +1055,13 @@ public class FileUtil {
         	try{
         		os.close();
         	}catch(Exception e){
-        		
+
         	}
         }
     	try{
     		is.close();
     	}catch(Exception e){
-    		
+
     	}
     }
 	/**
@@ -1099,21 +1099,32 @@ public class FileUtil {
         		os.flush();
         		os.close();
         	}catch(Exception e){
-        		
+
         	}
         	try{
         		is.close();
         	}catch(Exception e){
-        		
+
         	}
         }
     	try{
     		is.close();
     	}catch(Exception e){
-    		
+
     	}
     }
-
+	public static void replace(File file,  Charset encode, String fr, String to){
+		if(file.exists() && BasicUtil.isNotEmpty(fr) && null != to) {
+			String content = read(file, encode).toString().replace(fr,to);
+			write(content, file, encode);
+		}
+	}
+	public static void replace(File file, String fr, String to){
+		if(file.exists() && BasicUtil.isNotEmpty(fr) && null != to) {
+			String content = read(file).toString().replace(fr,to);
+			write(content, file);
+		}
+	}
 	/**
 	 * 文件拆分
 	 * @param file file
@@ -1201,89 +1212,89 @@ public class FileUtil {
 	//HTTP 文件类型
 		public final static List<String> httpFileExtend = new ArrayList<>();
 		public final static List<String> httpFileType = new ArrayList<>();
-		public final static Map<String, String> FILE_TYPE_MAP = new HashMap<String, String>();   
+		public final static Map<String, String> FILE_TYPE_MAP = new HashMap<String, String>();
 		static{
-			FILE_TYPE_MAP.put("jpg", "FFD8FF"); 	//JPEG (jpg)     
-	        FILE_TYPE_MAP.put("png", "89504E47");   //PNG (png)     
-	        FILE_TYPE_MAP.put("gif", "47494638");   //GIF (gif)     
-	        FILE_TYPE_MAP.put("tif", "49492A00");   //TIFF (tif)     
-	        FILE_TYPE_MAP.put("bmp", "424D"); 		//Windows Bitmap (bmp)     
-	        FILE_TYPE_MAP.put("dwg", "41433130");   //CAD (dwg)     
-	        FILE_TYPE_MAP.put("html", "68746D6C3E");//HTML (html)     
-	        FILE_TYPE_MAP.put("rtf", "7B5C727466"); //Rich Text Format (rtf)     
-	        FILE_TYPE_MAP.put("xml", "3C3F786D6C");     
-	        FILE_TYPE_MAP.put("zip", "504B0304");     
-	        FILE_TYPE_MAP.put("rar", "52617221");     
-	        FILE_TYPE_MAP.put("psd", "38425053");   //Photoshop (psd)     
-	        FILE_TYPE_MAP.put("eml", "44656C69766572792D646174653A");  //Email [thorough only] (eml)     
-	        FILE_TYPE_MAP.put("dbx", "CFAD12FEC5FD746F");  //Outlook Express (dbx)     
-	        FILE_TYPE_MAP.put("pst", "2142444E");  //Outlook (pst)     
+			FILE_TYPE_MAP.put("jpg", "FFD8FF"); 	//JPEG (jpg)
+	        FILE_TYPE_MAP.put("png", "89504E47");   //PNG (png)
+	        FILE_TYPE_MAP.put("gif", "47494638");   //GIF (gif)
+	        FILE_TYPE_MAP.put("tif", "49492A00");   //TIFF (tif)
+	        FILE_TYPE_MAP.put("bmp", "424D"); 		//Windows Bitmap (bmp)
+	        FILE_TYPE_MAP.put("dwg", "41433130");   //CAD (dwg)
+	        FILE_TYPE_MAP.put("html", "68746D6C3E");//HTML (html)
+	        FILE_TYPE_MAP.put("rtf", "7B5C727466"); //Rich Text Format (rtf)
+	        FILE_TYPE_MAP.put("xml", "3C3F786D6C");
+	        FILE_TYPE_MAP.put("zip", "504B0304");
+	        FILE_TYPE_MAP.put("rar", "52617221");
+	        FILE_TYPE_MAP.put("psd", "38425053");   //Photoshop (psd)
+	        FILE_TYPE_MAP.put("eml", "44656C69766572792D646174653A");  //Email [thorough only] (eml)
+	        FILE_TYPE_MAP.put("dbx", "CFAD12FEC5FD746F");  //Outlook Express (dbx)
+	        FILE_TYPE_MAP.put("pst", "2142444E");  //Outlook (pst)
 	        FILE_TYPE_MAP.put("xls", "D0CF11E0");  //MS Word
 			FILE_TYPE_MAP.put("xlsx","504B0304");
 			FILE_TYPE_MAP.put("doc", "D0CF11E0");  //MS Excel 注意：word 和 excel的文件头一样
 			FILE_TYPE_MAP.put("docx","504B0304");
 			FILE_TYPE_MAP.put("ppt", "D0CF11E0");
 			FILE_TYPE_MAP.put("pptx","504B0304");
-	        FILE_TYPE_MAP.put("mdb", "5374616E64617264204A");  //MS Access (mdb)     
-	        FILE_TYPE_MAP.put("wpd", "FF575043"); //WordPerfect (wpd)      
-	        FILE_TYPE_MAP.put("eps", "252150532D41646F6265");     
+	        FILE_TYPE_MAP.put("mdb", "5374616E64617264204A");  //MS Access (mdb)
+	        FILE_TYPE_MAP.put("wpd", "FF575043"); //WordPerfect (wpd)
+	        FILE_TYPE_MAP.put("eps", "252150532D41646F6265");
 	        FILE_TYPE_MAP.put("ps",  "252150532D41646F6265");
-	        FILE_TYPE_MAP.put("pdf", "255044462D312E");  //Adobe Acrobat (pdf)     
-	        FILE_TYPE_MAP.put("qdf", "AC9EBD8F");  //Quicken (qdf)     
-	        FILE_TYPE_MAP.put("pwl", "E3828596");  //Windows Password (pwl)     
-	        FILE_TYPE_MAP.put("wav", "57415645");  //Wave (wav)     
-	        FILE_TYPE_MAP.put("avi", "41564920");     
-	        FILE_TYPE_MAP.put("ram", "2E7261FD");  //Real Audio (ram)     
-	        FILE_TYPE_MAP.put("rm", "2E524D46");  //Real Media (rm)     
-	        FILE_TYPE_MAP.put("mpg", "000001BA");  //     
-	        FILE_TYPE_MAP.put("mov", "6D6F6F76");  //Quicktime (mov)     
-	        FILE_TYPE_MAP.put("asf", "3026B2758E66CF11"); //Windows Media (asf)     
-	        FILE_TYPE_MAP.put("mid", "4D546864");  //MIDI (mid)     
-	        
+	        FILE_TYPE_MAP.put("pdf", "255044462D312E");  //Adobe Acrobat (pdf)
+	        FILE_TYPE_MAP.put("qdf", "AC9EBD8F");  //Quicken (qdf)
+	        FILE_TYPE_MAP.put("pwl", "E3828596");  //Windows Password (pwl)
+	        FILE_TYPE_MAP.put("wav", "57415645");  //Wave (wav)
+	        FILE_TYPE_MAP.put("avi", "41564920");
+	        FILE_TYPE_MAP.put("ram", "2E7261FD");  //Real Audio (ram)
+	        FILE_TYPE_MAP.put("rm", "2E524D46");  //Real Media (rm)
+	        FILE_TYPE_MAP.put("mpg", "000001BA");  //
+	        FILE_TYPE_MAP.put("mov", "6D6F6F76");  //Quicktime (mov)
+	        FILE_TYPE_MAP.put("asf", "3026B2758E66CF11"); //Windows Media (asf)
+	        FILE_TYPE_MAP.put("mid", "4D546864");  //MIDI (mid)
+
 			//文件编码
 			//文件类型
 			httpFileExtend.add("ai");
 			httpFileType.add("application/postscript");
 			httpFileExtend.add("aif");
-			httpFileType.add("audio/x-aiff");                                                                       
+			httpFileType.add("audio/x-aiff");
 			httpFileExtend.add("aifc");
-			httpFileType.add("audio/x-aiff");                                                                       
+			httpFileType.add("audio/x-aiff");
 			httpFileExtend.add("aiff");
-			httpFileType.add("audio/x-aiff");                                                                       
+			httpFileType.add("audio/x-aiff");
 			httpFileExtend.add("asc");
-			httpFileType.add("text/plain");                                                                         
+			httpFileType.add("text/plain");
 			httpFileExtend.add("au");
-			httpFileType.add("audio/basic");                                                                        
+			httpFileType.add("audio/basic");
 			httpFileExtend.add("avi");
-			httpFileType.add("video/x-msvideo");                                                                    
+			httpFileType.add("video/x-msvideo");
 			httpFileExtend.add("bcpio");
-			httpFileType.add("application/x-bcpio");                                                                
+			httpFileType.add("application/x-bcpio");
 			httpFileExtend.add("bin");
-			httpFileType.add("application/octet-stream");                                                           
+			httpFileType.add("application/octet-stream");
 			httpFileExtend.add("bmp");
-			httpFileType.add("image/bmp");                                                                          
+			httpFileType.add("image/bmp");
 			httpFileExtend.add("cdf");
-			httpFileType.add("application/x-netcdf");                                                               
+			httpFileType.add("application/x-netcdf");
 			httpFileExtend.add("class");
-			httpFileType.add("application/octet-stream");                                                           
+			httpFileType.add("application/octet-stream");
 			httpFileExtend.add("cpio");
-			httpFileType.add("application/x-cpio");                                                                 
+			httpFileType.add("application/x-cpio");
 			httpFileExtend.add("cpt");
-			httpFileType.add("application/mac-compactpro");                                                         
+			httpFileType.add("application/mac-compactpro");
 			httpFileExtend.add("csh");
-			httpFileType.add("application/x-csh");                                                                  
+			httpFileType.add("application/x-csh");
 			httpFileExtend.add("css");
-			httpFileType.add("text/css");                                                                           
+			httpFileType.add("text/css");
 			httpFileExtend.add("dcr");
-			httpFileType.add("application/x-director");                                                             
+			httpFileType.add("application/x-director");
 			httpFileExtend.add("dir");
-			httpFileType.add("application/x-director");                                                             
+			httpFileType.add("application/x-director");
 			httpFileExtend.add("djv");
-			httpFileType.add("image/vnd.djvu");                                                                     
+			httpFileType.add("image/vnd.djvu");
 			httpFileExtend.add("djvu");
-			httpFileType.add("image/vnd.djvu");                                                                     
+			httpFileType.add("image/vnd.djvu");
 			httpFileExtend.add("dll");
-			httpFileType.add("application/octet-stream");                                                           
+			httpFileType.add("application/octet-stream");
 			httpFileExtend.add("dms");
 			httpFileType.add("application/octet-stream");
 			httpFileExtend.add("doc");
@@ -1291,107 +1302,107 @@ public class FileUtil {
 			httpFileExtend.add("docx");
 			httpFileType.add("aapplication/vnd.openxmlformats-officedocument.wordprocessingml.document");
 			httpFileExtend.add("dvi");
-			httpFileType.add("application/x-dvi");                                                                  
+			httpFileType.add("application/x-dvi");
 			httpFileExtend.add("dxr");
-			httpFileType.add("application/x-director");                                                             
+			httpFileType.add("application/x-director");
 			httpFileExtend.add("eps");
-			httpFileType.add("application/postscript");                                                             
+			httpFileType.add("application/postscript");
 			httpFileExtend.add("etx");
-			httpFileType.add("text/x-setext");                                                                      
+			httpFileType.add("text/x-setext");
 			httpFileExtend.add("exe");
-			httpFileType.add("application/octet-stream");                                                           
+			httpFileType.add("application/octet-stream");
 			httpFileExtend.add("ez");
-			httpFileType.add("application/andrew-inset");                                                           
+			httpFileType.add("application/andrew-inset");
 			httpFileExtend.add("gif");
-			httpFileType.add("image/gif");                                                                          
+			httpFileType.add("image/gif");
 			httpFileExtend.add("gtar");
-			httpFileType.add("application/x-gtar");                                                                 
+			httpFileType.add("application/x-gtar");
 			httpFileExtend.add("hdf");
-			httpFileType.add("application/x-hdf");                                                                  
+			httpFileType.add("application/x-hdf");
 			httpFileExtend.add("hqx");
-			httpFileType.add("application/mac-binhex40");                                                           
+			httpFileType.add("application/mac-binhex40");
 			httpFileExtend.add("htm");
-			httpFileType.add("text/html");                                                                          
+			httpFileType.add("text/html");
 			httpFileExtend.add("html");
-			httpFileType.add("text/html");                                                                          
+			httpFileType.add("text/html");
 			httpFileExtend.add("ice");
-			httpFileType.add("x-conference/x-cooltalk");                                                            
+			httpFileType.add("x-conference/x-cooltalk");
 			httpFileExtend.add("ief");
-			httpFileType.add("image/ief");                                                                          
+			httpFileType.add("image/ief");
 			httpFileExtend.add("iges");
-			httpFileType.add("model/iges");                                                                         
+			httpFileType.add("model/iges");
 			httpFileExtend.add("igs");
-			httpFileType.add("model/iges");                                                                         
+			httpFileType.add("model/iges");
 			httpFileExtend.add("jpe");
-			httpFileType.add("image/jpeg");                                                                         
+			httpFileType.add("image/jpeg");
 			httpFileExtend.add("jpeg");
-			httpFileType.add("image/jpeg");                                                                         
+			httpFileType.add("image/jpeg");
 			httpFileExtend.add("jpg");
-			httpFileType.add("image/jpeg");                                                                         
+			httpFileType.add("image/jpeg");
 			httpFileExtend.add("js");
-			httpFileType.add("application/x-javascript");                                                           
+			httpFileType.add("application/x-javascript");
 			httpFileExtend.add("kar");
-			httpFileType.add("audio/midi");                                                                         
+			httpFileType.add("audio/midi");
 			httpFileExtend.add("latex");
-			httpFileType.add("application/x-latex");                                                                
+			httpFileType.add("application/x-latex");
 			httpFileExtend.add("lha");
-			httpFileType.add("application/octet-stream");                                                           
+			httpFileType.add("application/octet-stream");
 			httpFileExtend.add("lzh");
-			httpFileType.add("application/octet-stream");                                                           
+			httpFileType.add("application/octet-stream");
 			httpFileExtend.add("m3u");
-			httpFileType.add("audio/x-mpegurl");                                                                    
+			httpFileType.add("audio/x-mpegurl");
 			httpFileExtend.add("man");
-			httpFileType.add("application/x-troff-man");                                                            
+			httpFileType.add("application/x-troff-man");
 			httpFileExtend.add("me");
-			httpFileType.add("application/x-troff-me");                                                             
+			httpFileType.add("application/x-troff-me");
 			httpFileExtend.add("mesh");
-			httpFileType.add("model/mesh");                                                                         
+			httpFileType.add("model/mesh");
 			httpFileExtend.add("mid");
-			httpFileType.add("audio/midi");                                                                         
+			httpFileType.add("audio/midi");
 			httpFileExtend.add("midi");
-			httpFileType.add("audio/midi");                                                                         
+			httpFileType.add("audio/midi");
 			httpFileExtend.add("mif");
-			httpFileType.add("application/vnd.mif");                                                                
+			httpFileType.add("application/vnd.mif");
 			httpFileExtend.add("mov");
-			httpFileType.add("video/quicktime");                                                                    
+			httpFileType.add("video/quicktime");
 			httpFileExtend.add("movie");
-			httpFileType.add("video/x-sgi-movie");                                                                  
+			httpFileType.add("video/x-sgi-movie");
 			httpFileExtend.add("mp2");
-			httpFileType.add("audio/mpeg");                                                                         
+			httpFileType.add("audio/mpeg");
 			httpFileExtend.add("mp3");
-			httpFileType.add("audio/mpeg");                                                                         
+			httpFileType.add("audio/mpeg");
 			httpFileExtend.add("mpe");
-			httpFileType.add("video/mpeg");                                                                         
+			httpFileType.add("video/mpeg");
 			httpFileExtend.add("mpeg");
-			httpFileType.add("video/mpeg");                                                                         
+			httpFileType.add("video/mpeg");
 			httpFileExtend.add("mpg");
-			httpFileType.add("video/mpeg");                                                                         
+			httpFileType.add("video/mpeg");
 			httpFileExtend.add("mpga");
-			httpFileType.add("audio/mpeg");                                                                         
+			httpFileType.add("audio/mpeg");
 			httpFileExtend.add("ms");
-			httpFileType.add("application/x-troff-ms");                                                             
+			httpFileType.add("application/x-troff-ms");
 			httpFileExtend.add("msh");
-			httpFileType.add("model/mesh");                                                                         
+			httpFileType.add("model/mesh");
 			httpFileExtend.add("mxu");
-			httpFileType.add("video/vnd.mpegurl");                                                                  
+			httpFileType.add("video/vnd.mpegurl");
 			httpFileExtend.add("nc");
-			httpFileType.add("application/x-netcdf");                                                               
+			httpFileType.add("application/x-netcdf");
 			httpFileExtend.add("oda");
-			httpFileType.add("application/oda");                                                                    
+			httpFileType.add("application/oda");
 			httpFileExtend.add("pbm");
-			httpFileType.add("image/x-portable-bitmap");                                                            
+			httpFileType.add("image/x-portable-bitmap");
 			httpFileExtend.add("pdb");
-			httpFileType.add("chemical/x-pdb");                                                                     
+			httpFileType.add("chemical/x-pdb");
 			httpFileExtend.add("pdf");
-			httpFileType.add("application/pdf");                                                                    
+			httpFileType.add("application/pdf");
 			httpFileExtend.add("pgm");
-			httpFileType.add("image/x-portable-graymap");                                                           
+			httpFileType.add("image/x-portable-graymap");
 			httpFileExtend.add("pgn");
-			httpFileType.add("application/x-chess-pgn");                                                            
+			httpFileType.add("application/x-chess-pgn");
 			httpFileExtend.add("png");
-			httpFileType.add("image/png");                                                                          
+			httpFileType.add("image/png");
 			httpFileExtend.add("pnm");
-			httpFileType.add("image/x-portable-anymap");                                                            
+			httpFileType.add("image/x-portable-anymap");
 			httpFileExtend.add("ppm");
 			httpFileType.add("image/x-portable-pixmap");
 			httpFileExtend.add("ppt");
@@ -1399,113 +1410,113 @@ public class FileUtil {
 			httpFileExtend.add("pptx");
 			httpFileType.add("application/vnd.openxmlformats-officedocument.presentationml.presentation");
 			httpFileExtend.add("ps");
-			httpFileType.add("application/postscript");                                                             
+			httpFileType.add("application/postscript");
 			httpFileExtend.add("qt");
-			httpFileType.add("video/quicktime");                                                                    
+			httpFileType.add("video/quicktime");
 			httpFileExtend.add("ra");
-			httpFileType.add("audio/x-realaudio");                                                                  
+			httpFileType.add("audio/x-realaudio");
 			httpFileExtend.add("ram");
-			httpFileType.add("audio/x-pn-realaudio");                                                               
+			httpFileType.add("audio/x-pn-realaudio");
 			httpFileExtend.add("ras");
-			httpFileType.add("image/x-cmu-raster");                                                                 
+			httpFileType.add("image/x-cmu-raster");
 			httpFileExtend.add("rgb");
-			httpFileType.add("image/x-rgb");                                                                        
+			httpFileType.add("image/x-rgb");
 			httpFileExtend.add("rm");
-			httpFileType.add("audio/x-pn-realaudio");                                                               
+			httpFileType.add("audio/x-pn-realaudio");
 			httpFileExtend.add("roff");
-			httpFileType.add("application/x-troff");                                                                
+			httpFileType.add("application/x-troff");
 			httpFileExtend.add("rpm");
-			httpFileType.add("audio/x-pn-realaudio-plugin");                                                        
+			httpFileType.add("audio/x-pn-realaudio-plugin");
 			httpFileExtend.add("rtf");
-			httpFileType.add("text/rtf");                                                                           
+			httpFileType.add("text/rtf");
 			httpFileExtend.add("rtx");
-			httpFileType.add("text/richtext");                                                                      
+			httpFileType.add("text/richtext");
 			httpFileExtend.add("sgm");
-			httpFileType.add("text/sgml");                                                                          
+			httpFileType.add("text/sgml");
 			httpFileExtend.add("sgml");
-			httpFileType.add("text/sgml");                                                                          
+			httpFileType.add("text/sgml");
 			httpFileExtend.add("sh");
-			httpFileType.add("application/x-sh");                                                                   
+			httpFileType.add("application/x-sh");
 			httpFileExtend.add("shar");
-			httpFileType.add("application/x-shar");                                                                 
+			httpFileType.add("application/x-shar");
 			httpFileExtend.add("silo");
-			httpFileType.add("model/mesh");                                                                         
+			httpFileType.add("model/mesh");
 			httpFileExtend.add("sit");
-			httpFileType.add("application/x-stuffit");                                                              
+			httpFileType.add("application/x-stuffit");
 			httpFileExtend.add("skd");
-			httpFileType.add("application/x-koan");                                                                 
+			httpFileType.add("application/x-koan");
 			httpFileExtend.add("skm");
-			httpFileType.add("application/x-koan");                                                                 
+			httpFileType.add("application/x-koan");
 			httpFileExtend.add("skp");
-			httpFileType.add("application/x-koan");                                                                 
+			httpFileType.add("application/x-koan");
 			httpFileExtend.add("skt");
-			httpFileType.add("application/x-koan");                                                                 
+			httpFileType.add("application/x-koan");
 			httpFileExtend.add("smi");
-			httpFileType.add("application/smil");                                                                   
+			httpFileType.add("application/smil");
 			httpFileExtend.add("smil");
-			httpFileType.add("application/smil");                                                                   
+			httpFileType.add("application/smil");
 			httpFileExtend.add("snd");
-			httpFileType.add("audio/basic");                                                                        
+			httpFileType.add("audio/basic");
 			httpFileExtend.add("so");
-			httpFileType.add("application/octet-stream");                                                           
+			httpFileType.add("application/octet-stream");
 			httpFileExtend.add("spl");
-			httpFileType.add("application/x-futuresplash");                                                         
+			httpFileType.add("application/x-futuresplash");
 			httpFileExtend.add("src");
-			httpFileType.add("application/x-wais-source");                                                          
+			httpFileType.add("application/x-wais-source");
 			httpFileExtend.add("sv4cpio");
-			httpFileType.add("application/x-sv4cpio");                                                              
+			httpFileType.add("application/x-sv4cpio");
 			httpFileExtend.add("sv4crc");
-			httpFileType.add("application/x-sv4crc");                                                               
+			httpFileType.add("application/x-sv4crc");
 			httpFileExtend.add("swf");
-			httpFileType.add("application/x-shockwave-flash");                                                      
+			httpFileType.add("application/x-shockwave-flash");
 			httpFileExtend.add("t");
-			httpFileType.add("application/x-troff");                                                                
+			httpFileType.add("application/x-troff");
 			httpFileExtend.add("tar");
-			httpFileType.add("application/x-tar");                                                                  
+			httpFileType.add("application/x-tar");
 			httpFileExtend.add("tcl");
-			httpFileType.add("application/x-tcl");                                                                  
+			httpFileType.add("application/x-tcl");
 			httpFileExtend.add("tex");
-			httpFileType.add("application/x-tex");                                                                  
+			httpFileType.add("application/x-tex");
 			httpFileExtend.add("texi");
-			httpFileType.add("application/x-texinfo");                                                              
+			httpFileType.add("application/x-texinfo");
 			httpFileExtend.add("texinfo");
-			httpFileType.add("application/x-texinfo");                                                              
+			httpFileType.add("application/x-texinfo");
 			httpFileExtend.add("tif");
-			httpFileType.add("image/tiff");                                                                         
+			httpFileType.add("image/tiff");
 			httpFileExtend.add("tiff");
-			httpFileType.add("image/tiff");                                                                         
+			httpFileType.add("image/tiff");
 			httpFileExtend.add("tr");
-			httpFileType.add("application/x-troff");                                                                
+			httpFileType.add("application/x-troff");
 			httpFileExtend.add("tsv");
-			httpFileType.add("text/tab-separated-values");                                                          
+			httpFileType.add("text/tab-separated-values");
 			httpFileExtend.add("txt");
-			httpFileType.add("text/plain");                                                                         
+			httpFileType.add("text/plain");
 			httpFileExtend.add("ustar");
-			httpFileType.add("application/x-ustar");                                                                
+			httpFileType.add("application/x-ustar");
 			httpFileExtend.add("vcd");
-			httpFileType.add("application/x-cdlink");                                                               
+			httpFileType.add("application/x-cdlink");
 			httpFileExtend.add("vrml");
-			httpFileType.add("model/vrml");                                                                         
+			httpFileType.add("model/vrml");
 			httpFileExtend.add("wav");
-			httpFileType.add("audio/x-wav");                                                                        
+			httpFileType.add("audio/x-wav");
 			httpFileExtend.add("wbmp");
-			httpFileType.add("image/vnd.wap.wbmp");                                                                 
+			httpFileType.add("image/vnd.wap.wbmp");
 			httpFileExtend.add("wbxml");
-			httpFileType.add("application/vnd.wap.wbxml");                                                          
+			httpFileType.add("application/vnd.wap.wbxml");
 			httpFileExtend.add("wml");
-			httpFileType.add("text/vnd.wap.wml");                                                                   
+			httpFileType.add("text/vnd.wap.wml");
 			httpFileExtend.add("wmlc");
-			httpFileType.add("application/vnd.wap.wmlc");                                                           
+			httpFileType.add("application/vnd.wap.wmlc");
 			httpFileExtend.add("wmls");
-			httpFileType.add("text/vnd.wap.wmlscript");                                                             
+			httpFileType.add("text/vnd.wap.wmlscript");
 			httpFileExtend.add("wmlsc");
-			httpFileType.add("application/vnd.wap.wmlscriptc");                                                     
+			httpFileType.add("application/vnd.wap.wmlscriptc");
 			httpFileExtend.add("wrl");
-			httpFileType.add("model/vrml");                                                                         
+			httpFileType.add("model/vrml");
 			httpFileExtend.add("xbm");
-			httpFileType.add("image/x-xbitmap");                                                                    
+			httpFileType.add("image/x-xbitmap");
 			httpFileExtend.add("xht");
-			httpFileType.add("application/xhtml+xml");                                                              
+			httpFileType.add("application/xhtml+xml");
 			httpFileExtend.add("xhtml");
 			httpFileType.add("application/xhtml+xml");
 			httpFileExtend.add("xls");
@@ -1513,16 +1524,16 @@ public class FileUtil {
 			httpFileExtend.add("xlsx");
 			httpFileType.add("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet\n");
 			httpFileExtend.add("xml");
-			httpFileType.add("text/xml");                                                                           
+			httpFileType.add("text/xml");
 			httpFileExtend.add("xpm");
-			httpFileType.add("image/x-xpixmap");                                                                    
+			httpFileType.add("image/x-xpixmap");
 			httpFileExtend.add("xsl");
-			httpFileType.add("text/xml");                                                                           
+			httpFileType.add("text/xml");
 			httpFileExtend.add("xwd");
-			httpFileType.add("image/x-xwindowdump");                                                                
+			httpFileType.add("image/x-xwindowdump");
 			httpFileExtend.add("xyz");
-			httpFileType.add("chemical/x-xyz");                                                                     
-			httpFileExtend.add("zip");                           
+			httpFileType.add("chemical/x-xyz");
+			httpFileExtend.add("zip");
 			httpFileType.add("application/zip");
 		}
 }
