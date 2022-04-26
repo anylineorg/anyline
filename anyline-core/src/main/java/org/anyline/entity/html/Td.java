@@ -1,5 +1,6 @@
 package org.anyline.entity.html;
 
+import org.anyline.util.BeanUtil;
 import org.dom4j.Element;
 
 import java.util.HashMap;
@@ -752,4 +753,30 @@ public class Td {
         this.widthUnit = widthUnit;
     }
 
+    public void addStyle(String key, String value){
+        styles.put(key, value);
+    }
+    public Td createCopy(boolean style, boolean content){
+        Td copy = new Td();
+
+        copy.setWidthUnit(widthUnit);
+        if(content) {
+            copy.setText(text);
+        }
+        copy.setColspan(colspan);
+        copy.setRowspan(rowspan);
+        copy.setWidth(width);
+        if(style) {
+            copy.setClazz(this.clazz);
+            List<String> keys = BeanUtil.getMapKeys(styles);
+            for (String key : keys) {
+                copy.addStyle(key, styles.get(key));
+            }
+        }
+        return copy;
+    }
+
+    public Td createCopy(){
+        return createCopy(true, false);
+    }
 }
