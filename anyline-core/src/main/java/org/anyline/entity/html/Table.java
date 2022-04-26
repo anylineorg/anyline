@@ -101,6 +101,105 @@ public class Table {
     }
 
 
+
+
+    /**
+     * 追加列, 每一行追加，追加的列将复制前一列的样式(背景色、字体等)
+     * @param qty 追加数量
+     * @return table
+     */
+    public Table addColumns(int qty){
+        insertColumns(-1, qty);
+        return this;
+    }
+
+    /**
+     * 插入列
+     * 追加的列将复制前一列的样式(背景色、字体等)
+     * 如果col=0则将制后一列的样式(背景色、字体等)
+     * @param col 插入位置 -1:表示追加以最后一行
+     * @param qty 数量
+     * @return table
+     */
+    public Table insertColumns(int col, int qty){
+        for(Tr tr:trs){
+            List<Td> tds = tr.getTds();
+            int cols = tds.size();
+            if(cols > 0 && col < cols){
+                Td template = null;
+                if(col == 0){
+                    template = tds.get(0);
+                }else if(col == -1){
+                    template = tds.get(cols-1);
+                }else{
+                    template = tds.get(col-1);
+                }
+                int index = col;
+                for (int i = 0; i < qty; i++) {
+                    Td newTc = template.createCopy();
+                    newTc.setTr(tr);
+                    if(col == -1){//追加到最后
+                        tds.add(newTc);
+                    }else {
+                        tds.add(index++, newTc);
+                    }
+                }
+            }else {
+                for (int i = 0; i < qty; i++) {
+                    tr.addTd(new Td());
+                }
+            }
+        }
+        return this;
+    }
+    /**
+     * 追加行，追加的行将复制上一行的样式(背景色、字体等)
+     * @param index 位置
+     * @param qty 追加数量
+     * @return table
+     */
+    public Table insertRows(int index, int qty){
+        if(trs.size()>0){
+            Tr template = null;
+            if(index >0 && index< trs.size()-1){
+                template = getTr(index-1);
+            }else if(index == -1){
+                template = getTr(trs.size()-1);
+            }
+            insertRows(template, index, qty);
+        }
+        return this;
+    }
+    public Table insertRows(Tr template, int index, int qty){
+        if(trs.size()>0){
+            if(null == template){
+                template = trs.get(trs.size()-1);
+            }
+            for(int i=0; i<qty; i++) {
+                Tr newTr = template.createCopy();
+                newTr.setTable(this);
+                if(index != -1){
+                    trs.add(index++, newTr);
+                }else {
+                    trs.add(newTr);
+                }
+            }
+        }
+        return this;
+    }
+    public Table addRows(int qty){
+        return insertRows(-1, qty);
+    }
+    public Table addRows(int index, int qty){
+        return insertRows(index, qty);
+    }
+
+
+
+
+
+
+
     /**
      * 创建html
      * @param box 是否需要table标签
