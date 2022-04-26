@@ -1,6 +1,8 @@
 package org.anyline.entity.html;
 
+import org.anyline.util.BeanUtil;
 import org.dom4j.Element;
+import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,6 +39,9 @@ public class Tr {
 
     public void setStyles(Map<String, String> styles) {
         this.styles = styles;
+    }
+    public void addStyle(String key, String value){
+        styles.put(key, value);
     }
     public Td getTd(int index){
         return tds.get(index);
@@ -150,5 +155,30 @@ public class Tr {
         StringBuilder builder = new StringBuilder();
         build(builder);
         return builder.toString();
+    }
+    public Tr createCopy(boolean style, boolean content){
+        Tr copy = new Tr();
+        copy.setWidthUnit(widthUnit);
+        int offset = 0; //已追加的偏移
+        for(Td td:tds){
+            for(int i= offset; i<td.getOffset(); i++){
+                copy.addTd(new Td());
+                offset++;
+            }
+            copy.addTd(td.createCopy(style, content));
+        }
+        if(style) {
+            copy.setClazz(this.clazz);
+            List<String> keys = BeanUtil.getMapKeys(styles);
+            for (String key : keys) {
+                copy.addStyle(key, styles.get(key));
+            }
+        }
+
+        return copy;
+    }
+
+    public Tr createCopy(){
+        return createCopy(true, false);
     }
 }
