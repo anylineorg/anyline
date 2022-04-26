@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright 2006-2022 www.anyline.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- *          
+ *
  */
 package org.anyline.cache.ecache;
 
@@ -55,21 +55,21 @@ public class ECacheProvider implements CacheProvider {
 			}
 		}
 		if("jar".equals(ConfigTable.getPackageType())){
-			path = FileUtil.mergePath(ConfigTable.getRoot(),"config","ehcache.xml");
+			path = FileUtil.merge(ConfigTable.getRoot(),"config","ehcache.xml");
 			log.warn("[检测ehcache配置文件][path={}]", path);
 			file = new File(path);
 			if(file.exists()){
 				log.warn("[加载ehcache配置文件][path={}]", path);
 				return new FileInputStream(file);
 			}
-			path = FileUtil.mergePath(ConfigTable.getRoot(),"ehcache.xml");
+			path = FileUtil.merge(ConfigTable.getRoot(),"ehcache.xml");
 			log.warn("[检测ehcache配置文件][path={}]", path);
 			file = new File(path);
 			if(file.exists()){
 				log.warn("[加载ehcache配置文件][path={}]", path);
 				return new FileInputStream(file);
 			}
-			path = FileUtil.mergePath(ConfigTable.getClassPath(),"ehcache.xml");
+			path = FileUtil.merge(ConfigTable.getClassPath(),"ehcache.xml");
 			log.warn("[检测ehcache配置文件][path={}]", path);
 			file = new File(path);
 			if(file.exists()){
@@ -164,8 +164,8 @@ public class ECacheProvider implements CacheProvider {
 		}
 		return result;
 	}
-	
-	
+
+
 	public void put(String channel, String key, Object value){
 		Element element = new Element(key, value);
 		put(channel, element);
@@ -179,7 +179,7 @@ public class ECacheProvider implements CacheProvider {
 	    	}
 		}
 	}
-	
+
 	public boolean remove(String channel, String key){
 		boolean result = true;
 		try{
