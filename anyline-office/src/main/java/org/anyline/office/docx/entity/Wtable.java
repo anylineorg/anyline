@@ -827,15 +827,15 @@ public class Wtable {
 
     /**
      * 设置整行 字体
-     * @param rows 行
+     * @param row 行
      * @param size 字号
      * @param eastAsia 中文字体
      * @param ascii 西文字体
      * @param hint 默认字体
      * @return wtr
      */
-    public Wtr setFont(int rows, String size, String eastAsia, String ascii, String hint){
-        Wtr tr = getTr(rows);
+    public Wtr setFont(int row, String size, String eastAsia, String ascii, String hint){
+        Wtr tr = getTr(row);
         tr.setFont(size, eastAsia, ascii, hint);
         return tr;
     }
