@@ -417,7 +417,7 @@ public class ImgUtil {
 	        is = conn.getInputStream(); 
 	        bis = new BufferedInputStream(is); 
 	        baos = new ByteArrayOutputStream(); 
-	        final int BUFFER_SIZE = 2*1024; 
+	        final int BUFFER_SIZE = 1024 * 80;
 	        final int EOF = -1; 
 	        int c; 
 	        byte[] buf = new byte[BUFFER_SIZE]; 

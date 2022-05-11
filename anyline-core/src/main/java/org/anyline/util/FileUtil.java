@@ -144,7 +144,7 @@ public class FileUtil {
 	 */
 	public static StringBuffer read(InputStream input, Charset encode){
 		StringBuffer buffer = new StringBuffer();
-		int BUFFER_SIZE = 1024 * 8;
+		int BUFFER_SIZE = 1024 * 80;
 
 		BufferedInputStream in = null ;
 
