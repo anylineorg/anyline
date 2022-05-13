@@ -171,10 +171,17 @@ public class WebUtil {
 					String[] values = request.getParameterValues(key);
 					if (null != values) {
 						if (values.length == 1) {
-							map.put(key, values[0]);
+							if(null != values[0]){
+								map.put(key, values[0].trim());
+							}else{
+								map.put(key, null);
+							}
 						} else if (values.length > 1) {
 							List<Object> list = new ArrayList<Object>();
 							for (String value : values) {
+								if(null != value){
+									value = value.trim();
+								}
 								list.add(value);
 							}
 							map.put(key, list);
@@ -276,6 +283,9 @@ public class WebUtil {
 					if (kv.length > 1) {
 						v = kv[1].trim();
 						//v = DESUtil.filterIllegalChar(v);
+					}
+					if(null != v){
+						v = v.trim();
 					}
 					if (!"".equals(k) && !"".equals(v)) {
 						List<String> list = result.get(k);
