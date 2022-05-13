@@ -83,5 +83,7 @@
 	<property key="HTTP_PARAM_KEYS_CASE">camel</property>
 	<!--忽略加密的值-->
 	<property key="DES_IGNORE">0,-1</property>
+	<!--http参数是否trim-->
+	<property key="HTTP_PARAM_TRIM">true</property>
 
 </properties>
