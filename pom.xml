@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline</artifactId>
-	<version>8.5.2-SNAPSHOT</version>
+	<version>8.5.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline</name>
 
@@ -47,6 +47,7 @@
 		<module>anyline-jdbc-dm</module>
 		<module>anyline-jdbc-mariadb</module>
 		<module>anyline-jdbc-mongodb</module>
+		<module>anyline-jdbc-clickhouse</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
@@ -73,7 +74,6 @@
         <module>anyline-print-10ss</module>
         <module>anyline-tencent</module>
 		<module>anyline-img</module>
-        <module>anyline-jdbc-clickhouse</module>
     </modules>
 	<build>
 		<plugins>

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.5.2-SNAPSHOT</version>
+		<version>8.5.3-SNAPSHOT</version>
 		<relativePath>../anyline-dependency</relativePath>
 	</parent>
 
@@ -15,7 +15,7 @@
 	<packaging>jar</packaging>
 	<name>anyline-aliyun</name>
 	<url>http://www.anyline.org/aliyun</url>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>

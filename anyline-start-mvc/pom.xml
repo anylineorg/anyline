@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-start</artifactId>
-		<version>8.5.2-SNAPSHOT</version>
+		<version>8.5.3-SNAPSHOT</version>
 		<relativePath>../anyline-start</relativePath>
 	</parent>
 	<artifactId>anyline-start-mvc</artifactId>
@@ -22,13 +22,13 @@
 			<artifactId>anyline-mvc</artifactId>
 		</dependency>
 		<!-- end springmvc -->
-		
+
 		<!-- 连接池 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
 		</dependency>
 		<!-- end 连接池 -->
-		
+
 	</dependencies>
 </project>

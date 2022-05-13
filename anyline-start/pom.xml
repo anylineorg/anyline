@@ -7,10 +7,10 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.5.2-SNAPSHOT</version>
+		<version>8.5.3-SNAPSHOT</version>
 		<relativePath>../anyline-dependency</relativePath>
 	</parent>
-	
+
 	<artifactId>anyline-start</artifactId>
 	<packaging>pom</packaging>
 	<name>anyline-start</name>
