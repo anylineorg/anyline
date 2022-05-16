@@ -15,8 +15,8 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 		return DB_TYPE.DM;
 	} 
 	public SQLCreaterImpl(){ 
-		delimiterFr = "";
-		delimiterTo = "";
+		delimiterFr = "\"";
+		delimiterTo = "\"";
 	}
 
 	@Override
