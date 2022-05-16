@@ -46,6 +46,8 @@ public class SQLCreaterUtil {
 					type = SQLCreater.DB_TYPE.DB2;
 				}else if(name.contains("hgdb") || name.contains("highgo")){
 					type = SQLCreater.DB_TYPE.HighGo;
+				}else if(name.contains("dmdbms")){
+					type = SQLCreater.DB_TYPE.DM;
 				}else if(name.contains("postgresql")){
 					type = SQLCreater.DB_TYPE.PostgreSQL;
 				}else if(name.contains("clickhouse")){
