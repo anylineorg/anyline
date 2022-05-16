@@ -52,7 +52,11 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(table.contains(".")){ 
 			this.author = table.substring(0,table.indexOf(".")); 
 			this.table = table.substring(table.indexOf(".") + 1); 
-		} 
+		} else{
+			if(BasicUtil.isNotEmpty(sql.getSchema())){
+				author = sql.getSchema();
+			}
+		}
 	} 
 	public void init(){
 		super.init(); 
@@ -123,7 +127,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			builder.append(SQLCreater.BR); 
 		} 
 		builder.append("FROM").append(SQLCreater.BR_TAB);
-		if(null != author){ 
+		if(null != author){
 			builder.append(delimiterFr).append(author).append(delimiterTo).append(".");
 		}
 		builder.append(delimiterFr).append(table).append(delimiterTo);
