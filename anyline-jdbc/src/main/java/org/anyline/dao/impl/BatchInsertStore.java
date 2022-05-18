@@ -53,9 +53,10 @@ public class BatchInsertStore {
 						while(cnt < max && !rows.isEmpty()){ 
 							DataRow row = rows.poll(); 
 							if(null != row){ 
-								list.add(row); 
-							} 
-						} 
+								list.add(row);
+								cnt ++;
+							}
+						}
 						return list; 
 					} 
 				} 
