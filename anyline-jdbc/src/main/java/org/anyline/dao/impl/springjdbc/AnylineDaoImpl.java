@@ -582,6 +582,7 @@ public class AnylineDaoImpl implements AnylineDao {
 			String col = cols.get(i);
 			strCols +=  "," +col;
 		}
+		int sleep = ConfigTable.getInt("BATCH_INSERT_SLEEP_MILLIS",1000);
 		synchronized (batchInsertStore) {
 			batchInsertStore.addData(table, strCols, (DataRow)data);
 			if(!isBatchInsertRun){
@@ -605,7 +606,7 @@ public class AnylineDaoImpl implements AnylineDao {
 
 									}
 								}else{
-									Thread.sleep(1000*10);
+									Thread.sleep(sleep);
 								}
 							}
 						}catch(Exception e){

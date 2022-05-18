@@ -57,6 +57,11 @@
 	<!-- true:参数值为空时不执行SQL false:参数为空时拼接IS NULL-->
 	<property key="CONDITION_VALUE_STRICT">true</property>
 
+	<!--批量插入一次最多行数-->
+	<property key="BATCH_INSERT_MAX_SIZE">500</property>
+	<!--批量插入执行间隔-->
+	<property key="BATCH_INSERT_SLEEP_MILLIS">1000</property>
+
 	<!-- 模板文件目录 -->
 	<property key="TEMPLET_FILE_PATH_WEB">/WEB-INF/web/home/template/default.jsp</property>
 	<property key="TEMPLET_FILE_PATH_WAP">/WEB-INF/def/wap/common/templet.jsp</property>
