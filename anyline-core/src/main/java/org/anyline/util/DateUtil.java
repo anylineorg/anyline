@@ -24,6 +24,7 @@ import org.anyline.util.regular.RegularUtil;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.OffsetDateTime;
 import java.util.*;
 
 
@@ -884,9 +885,20 @@ public class DateUtil {
 		if (!str.contains("-") && !str.contains("/")) {
 			format = format.replace("-", "").replace("/", "");
 		}
-		if(str.contains("T") && str.contains("+")){
-			format = "yyyy-MM-dd'T'HH:mm:ssXXX";
+		if(str.contains("T")){
+			/**
+			 * ISO8601
+			 * "2020-12-19T16:22:50.000Z"
+			 * "2020-12-19T16:22:50.000+08:00"
+			 * "2020-12-19T16:22:50Z"
+			 * "2020-12-19T16:22:50+08:00"
+			 * "2017-03-31T10:38:14.4723017Z"
+			 * "2021-09-08T09:20:14.245292+08:00"
+			 */
+			OffsetDateTime offsetDateTime = OffsetDateTime.parse(str);
+			return Date.from(offsetDateTime.toInstant());
 		}
+
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
 		try {
 			date = sdf.parse(str);
