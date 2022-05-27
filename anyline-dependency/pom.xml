@@ -653,14 +653,6 @@
 	</profiles>
 	<build>
 		<resources>
-			<!--
-			<resource>
-				<directory>src/main/java</directory>
-			</resource>
-			-->
-			<resource>
-				<directory>src/main/resources</directory>
-			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
@@ -695,9 +687,7 @@
 				<configuration>
 					<excludes>
 						<excludes>*.xml</excludes>
-						<excludes>*.tld</excludes>
 						<excludes>*.xsd</excludes>
-						<excludes>*.properties</excludes>
 					</excludes>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
