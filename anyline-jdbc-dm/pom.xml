@@ -22,11 +22,8 @@
             <artifactId>anyline-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>dm.jdbc</groupId>
-            <artifactId>dmjdbc</artifactId>
-            <version>18</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/lib/DmJdbcDriver18.jar</systemPath>
+            <groupId>com.dameng</groupId>
+            <artifactId>Dm8JdbcDriver18</artifactId>
         </dependency>
     </dependencies>
 </project>
