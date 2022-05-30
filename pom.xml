@@ -74,6 +74,7 @@
         <module>anyline-print-10ss</module>
         <module>anyline-tencent</module>
 		<module>anyline-img</module>
+        <module>anyline-minio</module>
     </modules>
 	<build>
 		<plugins>
