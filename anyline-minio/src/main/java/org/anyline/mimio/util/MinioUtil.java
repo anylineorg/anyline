@@ -1,12 +1,10 @@
 package org.anyline.mimio.util;
 
 import io.minio.*;
-import io.minio.errors.MinioException;
 import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
 import org.anyline.util.BasicUtil;
-import org.apache.commons.compress.compressors.FileNameUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Decoder;
@@ -133,6 +131,10 @@ public class MinioUtil {
         return objectWriteResponse.object();
     }
 
+    public String putObject(String obj, InputStream stream, Long size) throws Exception{
+        return putObject(config.BUCKET, obj, stream, size);
+    }
+
     /**
      * 根据文件前置查询文件
      *
@@ -158,6 +160,9 @@ public class MinioUtil {
         return objectList;
     }
 
+    public List<Item> getAllObjectsByPrefix(String prefix, boolean recursive) throws Exception {
+        return getAllObjectsByPrefix(config.BUCKET, prefix, recursive);
+    }
     /**
      * 获取文件外链
      * 这里的 method 方法决定最后链接是什么请求获得
@@ -177,6 +182,9 @@ public class MinioUtil {
         return client.getPresignedObjectUrl(args);
     }
 
+    public String getObjectURL(String obj) throws Exception {
+        return getObjectURL(config.BUCKET, obj);
+    }
     /**
      * 获取文件
      *
@@ -190,6 +198,10 @@ public class MinioUtil {
                 .object(obj)
                 .build();
         return client.getObject(getObjectArgs);
+    }
+
+    public InputStream getObject(String obj) throws Exception {
+        return getObject(config.BUCKET, obj);
     }
 
 
@@ -214,6 +226,9 @@ public class MinioUtil {
         return obj;
     }
 
+    public String putObject(String obj, String base64) throws Exception{
+        return putObject(config.BUCKET, obj, base64);
+    }
     /**
      * 上传文件
      * @param bucket bucket名称
@@ -221,9 +236,13 @@ public class MinioUtil {
      * @param file 文件
      * @throws Exception Exception
      */
-    public String putObject( String bucket,String obj, File file) throws Exception{
+    public String putObject(String bucket,String obj, File file) throws Exception{
         this.putObject(bucket, obj, new FileInputStream(file), file.length());
         return obj;
+    }
+
+    public String putObject(String obj, File file) throws Exception{
+        return putObject(config.BUCKET, obj, file);
     }
 
     /**
@@ -241,6 +260,10 @@ public class MinioUtil {
         return client.statObject(statObjectArgs);
     }
 
+    public StatObjectResponse getObjectInfo(String obj) throws Exception {
+        return getObjectInfo(config.BUCKET, obj);
+    }
+
     /**
      * 删除文件
      *
@@ -255,6 +278,9 @@ public class MinioUtil {
                 .build());
     }
 
+    public void removeObject(String obj) throws Exception {
+        removeObject(config.BUCKET, obj);
+    }
 
     /**
      * 获取直传链接
@@ -262,7 +288,7 @@ public class MinioUtil {
      * @param obj 文件名称
      * @throws Exception Exception
      */
-    public String presignedUrl( String bucket,String obj) throws Exception{
+    public String presignedUrl(String bucket,String obj) throws Exception{
         GetPresignedObjectUrlArgs getPresignedObjectUrlArgs = GetPresignedObjectUrlArgs.builder()
                 .method(Method.PUT)
                 .bucket(bucket)
@@ -270,6 +296,10 @@ public class MinioUtil {
                 .expiry(7, TimeUnit.DAYS)
                 .build();
         return client.getPresignedObjectUrl(getPresignedObjectUrlArgs);
+    }
+
+    public String presignedUrl(String obj) throws Exception{
+        return presignedUrl(config.BUCKET, obj);
     }
 
     /**
@@ -298,6 +328,10 @@ public class MinioUtil {
                 .build();
         ObjectWriteResponse objectWriteResponse = client.composeObject(composeObjectArgs);
         return objectWriteResponse.object();
+    }
+
+    public String composeObject(List<String> chunks, String target) throws Exception{
+        return composeObject(config.BUCKET, chunks, target);
     }
 
 }
