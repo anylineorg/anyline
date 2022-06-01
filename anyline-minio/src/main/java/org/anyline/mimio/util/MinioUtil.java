@@ -165,8 +165,8 @@ public class MinioUtil {
     }
     /**
      * 获取文件外链
-     * 这里的 method 方法决定最后链接是什么请求获得
-     *  expiry 决定这个链接多久失效
+     * getObjectURL("alcdn","a/b.txt")
+     * http://192.168.220.101:9000/alcdn/a/b.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=aHENiF4aebppM3Yo%2F20220601%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220601T034532Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=9eb063a1cd0c77168420d7b64733434f83c3af9b21283bf79dd6621b2ad36d47
      * @param bucket bucket名称
      * @param obj 文件名称
      * @return url
@@ -231,6 +231,7 @@ public class MinioUtil {
     }
     /**
      * 上传文件
+     * utObject("alcdn","a/b.txt",new File("D:\\a.txt"));
      * @param bucket bucket名称
      * @param obj 文件名称
      * @param file 文件
