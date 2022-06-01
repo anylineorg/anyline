@@ -82,6 +82,7 @@ public class MinioUtil {
      * 创建bucket
      *
      * @param bucket bucket名称
+     * @throws Exception Exception
      */
     public void createBucket(String bucket) throws Exception {
         if (!client.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())) {
@@ -91,8 +92,9 @@ public class MinioUtil {
 
     /**
      * 获取全部bucket
-     *
+     * @return List
      * https://docs.minio.io/cn/java-client-api-reference.html#listBuckets
+     * @throws Exception Exception
      */
     public List<Bucket> getAllBuckets() throws Exception {
         return client.listBuckets();
@@ -101,6 +103,8 @@ public class MinioUtil {
     /**
      * 根据bucket获取信息
      * @param bucket bucket名称
+     * @return Optional
+     * @throws Exception Exception
      */
     public Optional<Bucket> getBucket(String bucket) throws Exception {
         return client.listBuckets().stream().filter(b -> b.name().equals(bucket)).findFirst();
@@ -109,6 +113,7 @@ public class MinioUtil {
     /**
      * 根据bucket删除信息
      * @param bucket bucket名称
+     * @throws Exception Exception
      */
     public void removeBucket(String bucket) throws Exception {
         client.removeBucket(RemoveBucketArgs.builder().bucket(bucket).build());
@@ -120,6 +125,8 @@ public class MinioUtil {
      * @param obj 文件名称
      * @param stream 文件流
      * @param size 文件大小
+     * @return String
+     * @throws Exception Exception
      */
     public String putObject(String bucket, String obj, InputStream stream, Long size) throws Exception{
         PutObjectArgs putObjectArgs = PutObjectArgs.builder()
@@ -142,6 +149,7 @@ public class MinioUtil {
      * @param prefix     前缀
      * @param recursive  是否递归查询
      * @return MinioItem 列表
+     * @throws Exception Exception
      */
     public List<Item> getAllObjectsByPrefix(String bucket, String prefix, boolean recursive) throws Exception {
         List<Item> objectList = new ArrayList<>();
@@ -166,10 +174,11 @@ public class MinioUtil {
     /**
      * 获取文件外链
      * getObjectURL("alcdn","a/b.txt")
-     * http://192.168.220.101:9000/alcdn/a/b.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=aHENiF4aebppM3Yo%2F20220601%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220601T034532Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=9eb063a1cd0c77168420d7b64733434f83c3af9b21283bf79dd6621b2ad36d47
+     * 返回一个url
      * @param bucket bucket名称
      * @param obj 文件名称
      * @return url
+     * @throws Exception Exception
      */
     public String getObjectURL(String bucket, String obj) throws Exception {
         GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
@@ -190,7 +199,8 @@ public class MinioUtil {
      *
      * @param bucket bucket名称
      * @param obj 文件名称
-     * @return 二进制流
+     * @return InputStream
+     * @throws Exception Exception
      */
     public InputStream getObject(String bucket, String obj) throws Exception {
         GetObjectArgs getObjectArgs = GetObjectArgs.builder()
@@ -210,6 +220,8 @@ public class MinioUtil {
      * @param bucket bucket名称
      * @param obj 文件名称
      * @param base64 文件base64
+     * @return String
+     * @throws Exception Exception
      */
     public String putObject(String bucket, String obj, String base64) throws Exception{
         InputStream inputStream = new ByteArrayInputStream(base64.getBytes());
@@ -235,6 +247,7 @@ public class MinioUtil {
      * @param bucket bucket名称
      * @param obj 文件名称
      * @param file 文件
+     * @return String
      * @throws Exception Exception
      */
     public String putObject(String bucket,String obj, File file) throws Exception{
@@ -251,6 +264,7 @@ public class MinioUtil {
      *
      * @param bucket bucket名称
      * @param obj 文件名称
+     * @return StatObjectResponse
      * @throws Exception https://docs.minio.io/cn/java-client-api-reference.html#statObject
      */
     public StatObjectResponse getObjectInfo(String bucket, String obj) throws Exception {
@@ -287,6 +301,8 @@ public class MinioUtil {
      * 获取直传链接
      * @param bucket bucket名称
      * @param obj 文件名称
+     * @throws Exception Exception
+     * @return String
      * @throws Exception Exception
      */
     public String presignedUrl(String bucket,String obj) throws Exception{
