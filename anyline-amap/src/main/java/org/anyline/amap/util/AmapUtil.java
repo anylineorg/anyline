@@ -577,7 +577,7 @@ public class AmapUtil {
 	 * @param keywords 关键字 必须 
 	 * @param country ""或null时 默认:中国 
 	 * @param filter 条件 
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet statByProvince(String keywords, String country, String filter){ 
 		DataSet set = null; 
@@ -616,7 +616,7 @@ public class AmapUtil {
 	 * @param keywords 关键字 必须 
 	 * @param province ""或null时 默认:全国 
 	 * @param filter 条件 
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet statByCity(String keywords, String province, String filter){ 
 		DataSet set = null; 
@@ -820,7 +820,7 @@ public class AmapUtil {
 	 * @param strategy		选路策略  0，不考虑当时路况，返回耗时最短的路线，但是此路线不一定距离最短 
 	 *							  1，不走收费路段，且耗时最少的路线 
 	 *							  2，不考虑路况，仅走距离最短的路线，但是可能存在穿越小路/小区的情况 			   
-	 * @return return
+	 * @return DataRow
 	 */ 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public DataRow directionDrive(String origin, String destination, String points, int strategy){ 
@@ -906,7 +906,7 @@ public class AmapUtil {
 	/** 
 	 * 签名 
 	 * @param params  params
-	 * @return return
+	 * @return String
 	 */ 
 	public String sign(Map<String,Object> params){ 
 		String sign = ""; 
