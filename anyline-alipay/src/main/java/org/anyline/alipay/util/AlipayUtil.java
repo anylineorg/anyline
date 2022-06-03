@@ -161,7 +161,7 @@ public class AlipayUtil {
 	/** 
 	 * 单笔转账到支付宝账户 
 	 * @param transfer  转帐参数
-	 * @return return
+	 * @return AlipayTransferResult
 	 */ 
 	public AlipayTransferResult transfer(AlipayTransfer transfer) { 
 		AlipayTransferResult result = null;  
@@ -182,7 +182,7 @@ public class AlipayUtil {
 	/** 
 	 * 单笔转账到支付宝账户  结果查询 
 	 * @param query  查询参数
-	 * @return return
+	 * @return AlipayTransferQueryResult
 	 */ 
 	public AlipayTransferQueryResult transferQuery(AlipayTransferQuery query) { 
 		AlipayTransferQueryResult result = null; 
