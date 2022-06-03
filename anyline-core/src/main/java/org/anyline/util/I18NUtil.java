@@ -78,7 +78,7 @@ public class I18NUtil {
 	 *  
 	 * @param lang 语言 
 	 * @param key   key
-	 * @return return
+	 * @return String
 	 */ 
 	public static String get(String lang, String key){ 
 		Map<String,String> map = messages.get(lang); 
