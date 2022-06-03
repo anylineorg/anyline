@@ -72,7 +72,7 @@ public class Pop3Util {
 	 * @param to 收件人地址
 	 * @param title 邮件主题
 	 * @param content  邮件内容
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean send(String fr, String to, String title, String content) {
 		log.warn("[send email][fr:{}][to:{}][title:{}][centent:{}]", fr, to, title, content);
@@ -142,7 +142,7 @@ public class Pop3Util {
 	 * @param delete 是否删除
 	 * @param fr 下标从1开始
 	 * @param to -1:全部
-	 * @return return
+	 * @return List
 	 */
 	public List<Mail> receive(boolean read, boolean delete, int fr, int to){
 		List<Mail> mails = new ArrayList<Mail>();
@@ -192,7 +192,7 @@ public class Pop3Util {
 	 * @param setRead setRead
 	 * @param delete delete
 	 * @param messages   要解析的邮件列表
-	 * @return return
+	 * @return List
 	 */
 	public List<Mail> parse( boolean setRead, boolean delete, Message... messages){
 		List<Mail> mails = new ArrayList<Mail>();
