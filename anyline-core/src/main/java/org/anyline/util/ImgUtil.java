@@ -381,7 +381,7 @@ public class ImgUtil {
     /** 
      * 根据图片转换为base64编码字符串 
      * @param img  img
-     * @return return
+     * @return String
      */ 
     public static String base64Img(File img) { 
     	InputStream in = null; 
@@ -452,7 +452,7 @@ public class ImgUtil {
      * base64 图片转文件 
      * @param file  file
      * @param str  str
-     * @return return
+     * @return boolean
      */ 
     public static boolean base64Img(File file, String str) { 
     	if (null == str || null == file) return false; 
@@ -496,7 +496,7 @@ public class ImgUtil {
     /** 
      * 获取文件宽高 
      * @param img  img
-     * @return return
+     * @return int
      */ 
 	public static int[] size(File img){ 
     	int width = -1; 
