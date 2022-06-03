@@ -85,7 +85,7 @@ public interface AnylineService{
 	 * @param src src
 	 * @param configs configs
 	 * @param conditions conditions
-	 * @return return
+	 * @return DataSet
 	 */
 	public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions);
 	public DataSet caches(String cache, String src, String ... conditions);
@@ -132,7 +132,7 @@ public interface AnylineService{
 	 * @param src src
 	 * @param configs configs
 	 * @param conditions conditions
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
 	public boolean removeCache(String channel, String src, String ... conditions);
@@ -140,7 +140,7 @@ public interface AnylineService{
 	/**
 	 * 清空缓存
 	 * @param channel channel
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean clearCache(String channel);
 	 
@@ -149,7 +149,7 @@ public interface AnylineService{
 	 * @param src  src
 	 * @param configs  configs
 	 * @param conditions  conditions
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean exists(String src, ConfigStore configs, String ... conditions); 
 	public boolean exists(String src, String ... conditions); 
@@ -166,7 +166,7 @@ public interface AnylineService{
 	 * @param columns	  需要更新的列 
 	 * @param dest	   表 
 	 * @param data data
-	 * @return return
+	 * @return int
 	 */
 	public int update(String dest, Object data, String ... columns);
 	public int update(Object data, String ... columns);
@@ -180,7 +180,7 @@ public interface AnylineService{
 	 * @param checkPriamry  checkPriamry
 	 * @param columns  columns
 	 * @param dest 表 
-	 * @return return
+	 * @return int
 	 */ 
 	public int save(String dest, Object data, boolean checkPriamry, String ... columns); 
 	public int save(Object data, boolean checkPriamry, String ... columns); 
@@ -205,7 +205,7 @@ public interface AnylineService{
 	 * @param data data
 	 * @param checkPriamry checkPriamry
 	 * @param columns columns
-	 * @return return
+	 * @return int
 	 */
 	public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
 	public int batchInsert(Object data, boolean checkPriamry, String ... columns);
@@ -227,7 +227,7 @@ public interface AnylineService{
 	 * @param src  src
 	 * @param configs  configs
 	 * @param conditions  conditions
-	 * @return return
+	 * @return int
 	 */ 
 	public int execute(String src, ConfigStore configs, String ... conditions); 
 	public int execute(String src, String ... conditions); 
@@ -235,7 +235,7 @@ public interface AnylineService{
 	 * 执行存储过程 
 	 * @param procedure  procedure
 	 * @param inputs  inputs
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean executeProcedure(String procedure, String... inputs); 
 	public boolean execute(Procedure procedure, String... inputs);
@@ -243,7 +243,7 @@ public interface AnylineService{
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
 	 * @param inputs  inputs
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet queryProcedure(String procedure, String ... inputs);
 	public DataSet query(Procedure procedure, String ... inputs);
