@@ -102,7 +102,7 @@ public class IDCardUtil {
 	 * </p> 
 	 *  
 	 * @param idcard  idcard
-	 * @return return
+	 * @return boolean
 	 */ 
 	private static boolean isValidate18Idcard(String idcard) { 
 		// 非18位为假 
