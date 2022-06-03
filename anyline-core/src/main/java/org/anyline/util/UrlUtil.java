@@ -36,7 +36,7 @@ public class UrlUtil {
 	 * 是否是UTF-8格式 
 	 *  
 	 * @param url  url
-	 * @return return
+	 * @return boolean
 	 */ 
 	private static boolean isUTF8(String url) { 
 		url = url.toLowerCase(); 
