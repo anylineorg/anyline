@@ -82,7 +82,7 @@ public class TemplateController extends AnylineController {
 	 * 并有可能调用controller方法为模板准备数据(参考parseTemplate)
 	 * @param request request
 	 * @param response response
-	 * @return return
+	 * @return String
 	 */
 	@RequestMapping("load_style")
 	@ResponseBody
