@@ -685,7 +685,7 @@ public class AbstractBasicController {
 	 * @param keyEncrypt keyEncrypt
 	 * @param valueEncrypt valueEncrypt
 	 * @param params params
-	 * @return return
+	 * @return boolean
 	 */
 	protected boolean checkRequired(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		params = BasicUtil.compressionSpace(params);
@@ -718,7 +718,7 @@ public class AbstractBasicController {
 	 * 是否是ajax请求
 	 *
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	protected boolean isAjaxRequest(HttpServletRequest request) {
 		String header = request.getHeader("x-requested-with");
@@ -734,7 +734,7 @@ public class AbstractBasicController {
 	 *            是否取单个值(否则取数组)
 	 * @param request  request
 	 * @param keys  keys
-	 * @return return
+	 * @return PageNavi
 	 */
 	@SuppressWarnings("unused")
 	private PageNavi saveParamToNavi(HttpServletRequest request, boolean single, boolean keyEncrypt, boolean valueEncrypt, String... keys) {
@@ -757,7 +757,7 @@ public class AbstractBasicController {
 //	/**
 //	 * 当前操作客户端
 //	 *
-//	 * @return return
+//	 * @return ClientTrace
 //	 */
 //	protected ClientTrace currentClient(HttpServletRequest request) {
 //		ClientTrace client = null;
@@ -849,7 +849,7 @@ public class AbstractBasicController {
 	/**
 	 * reffer
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	protected boolean hasReffer(HttpServletRequest request) {
 		String reffer = request.getHeader("Referer");
@@ -862,7 +862,7 @@ public class AbstractBasicController {
 	/**
 	 * 是否是蜘蛛
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	protected boolean isSpider(HttpServletRequest request) {
 		return !hasReffer(request);
@@ -872,7 +872,7 @@ public class AbstractBasicController {
 	/**
 	 * 是否是移动端
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	protected boolean isWap(HttpServletRequest request) {
 		return WebUtil.isWap(request);
@@ -907,7 +907,7 @@ public class AbstractBasicController {
 	 * @param navi	分页 navi	分页
 	 * @param page	数据模板以WEB-INF为相对目录根目录 page	数据模板以WEB-INF为相对目录根目录
 	 * @param ext	扩展数据 ext	扩展数据
-	 * @return return
+	 * @return Map
 	 */
 	public Map<String,Object> navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, Object data, PageNavi navi, String page, Object ext){
 		if(null == data){
