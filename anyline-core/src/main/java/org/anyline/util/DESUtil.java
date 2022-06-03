@@ -131,7 +131,7 @@ public class DESUtil {
 	/** 
 	 * 加密 
 	 * @param arrB  arrB
-	 * @return return
+	 * @return byte
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  BadPaddingException
 	 */ 
@@ -149,7 +149,7 @@ public class DESUtil {
 	/** 
 	 * 解密 
 	 * @param arrB  arrB
-	 * @return return
+	 * @return byte
 	 * @throws BadPaddingException  BadPaddingException
 	 * @throws IllegalBlockSizeException  IllegalBlockSizeException
 	 */ 
