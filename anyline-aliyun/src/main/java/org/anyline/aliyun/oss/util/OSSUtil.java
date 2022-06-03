@@ -321,7 +321,7 @@ public class OSSUtil {
 	 * 是否过期
 	 * @param path  path
 	 * @param millisecond  millisecond
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean isExpire(String path, long millisecond){
 		if(null == path){
@@ -339,7 +339,7 @@ public class OSSUtil {
 	/**
 	 * 创建完整url
 	 * @param path  path
-	 * @return return
+	 * @return String
 	 */
 	private String createUrl(String path){
 		if(null == path){
