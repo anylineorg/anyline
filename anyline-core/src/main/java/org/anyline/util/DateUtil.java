@@ -1066,7 +1066,7 @@ public class DateUtil {
 	/**
 	 * 星期几(礼拜几)
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int getDayOfWeek(Date date) {
 		Calendar calendar = getCalendar();
