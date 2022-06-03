@@ -2043,6 +2043,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 在key列基础上 +value,如果原来没有key列则默认0并put到target
+	 * 如果target与key一致则覆盖原值
 	 * @param target 计算结果key
 	 * @param key key
 	 * @param value value
