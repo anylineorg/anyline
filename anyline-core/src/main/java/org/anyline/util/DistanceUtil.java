@@ -79,9 +79,9 @@ public class DistanceUtil {
         double distance = -1;
         try{
             distance = distance(
-                    BasicUtil.parseDouble(loc1.getLon(), -1.0),
+                    BasicUtil.parseDouble(loc1.getLng(), -1.0),
                     BasicUtil.parseDouble(loc1.getLat(), -1.0),
-                    BasicUtil.parseDouble(loc2.getLon(), -1.0),
+                    BasicUtil.parseDouble(loc2.getLng(), -1.0),
                     BasicUtil.parseDouble(loc2.getLat(), -1.0)
             );
         }catch(Exception e){
@@ -90,11 +90,11 @@ public class DistanceUtil {
         return distance;
     }
     public static String distanceFormat(MapLocation loc1, MapLocation loc2) {
-        double distance = distance(loc1.getLon(), loc1.getLat(), loc2.getLon(), loc2.getLat());
+        double distance = distance(loc1.getLng(), loc1.getLat(), loc2.getLng(), loc2.getLat());
         return distanceFormat(distance);
     }
     public static String distanceFormatCn(MapLocation loc1, MapLocation loc2) {
-        double distance = distance(loc1.getLon(), loc1.getLat(), loc2.getLon(), loc2.getLat());
+        double distance = distance(loc1.getLng(), loc1.getLat(), loc2.getLng(), loc2.getLat());
         return distanceFormatCn(distance);
     }
 
