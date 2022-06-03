@@ -122,7 +122,7 @@ public class ClassUtil {
 	 * 是否是bases子类或实现了basees接口(满足全部)
 	 * @param c  c
 	 * @param bases  bases
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isAllSub(Class<?> c, Class<?> ... bases){
 		if(null == bases || bases.length == 0){
