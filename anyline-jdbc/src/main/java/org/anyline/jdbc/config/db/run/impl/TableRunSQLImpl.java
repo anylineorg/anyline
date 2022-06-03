@@ -227,7 +227,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	/** 
 	 * 添加参数值 
 	 * @param obj  obj
-	 * @return return
+	 * @return RunSQL
 	 */ 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public RunSQL addValues(Object obj){ 
