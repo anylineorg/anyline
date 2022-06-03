@@ -122,7 +122,7 @@ public class WechatMPUtil extends WechatUtil {
 	 * 对所有待签名参数按照字段名的ASCII 码从小到大排序（字典序）后， 
 	 * 使用URL键值对的格式（即key1=value1&amp;key2=value2…）拼接成字符串string1。 
 	 * @param params  params
-	 * @return return
+	 * @return String
 	 */ 
 	public String jsapiSign(Map<String,Object> params){ 
 		String sign = ""; 
@@ -167,7 +167,7 @@ public class WechatMPUtil extends WechatUtil {
 	/** 
 	 * 是否已关注 
 	 * @param openid  openid
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean isSubscribe(String openid){
 		WechatUserInfo info = getUserInfo(openid);
@@ -216,7 +216,7 @@ public class WechatMPUtil extends WechatUtil {
 	/**
 	 * 发送样模板消息
 	 * @param msg  msg
-	 * @return return
+	 * @return WechatTemplateMessageResult
 	 */
 	public WechatTemplateMessageResult sendTemplateMessage(WechatTemplateMessage msg){
 		WechatTemplateMessageResult result = null;
