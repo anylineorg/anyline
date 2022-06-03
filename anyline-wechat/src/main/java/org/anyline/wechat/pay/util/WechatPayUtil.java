@@ -82,7 +82,7 @@ public class WechatPayUtil {
     /**
      * 统一下单
      * @param order  order
-     * @return return
+     * @return WechatPrePayResult
      * @throws Exception Exception
      */
     public WechatPrePayResult unifiedorder(WechatPrePayOrder order) throws Exception{
@@ -138,7 +138,7 @@ public class WechatPayUtil {
      * JSAPI调起支付所需参数
      * @param appid appid
      * @param prepayid 预支付id(由统一下单接口返回)
-     * @return return
+     * @return DataRow
      */
     public DataRow callUpParam(String appid, String prepayid){
         String timestamp = System.currentTimeMillis()/1000+"";
@@ -357,7 +357,7 @@ public class WechatPayUtil {
     /**
      * 企业付款
      * @param transfer  transfer
-     * @return return
+     * @return WechatEnterpriseTransferResult
      */
     public WechatEnterpriseTransferResult transfer(WechatEnterpriseTransfer transfer){
         WechatEnterpriseTransferResult result = new WechatEnterpriseTransferResult();
@@ -416,7 +416,7 @@ public class WechatPayUtil {
     /**
      * 企业付款到银行卡
      * @param transfer  transfer
-     * @return return
+     * @return WechatEnterpriseTransferBankResult
      */
     public WechatEnterpriseTransferBankResult transfer(WechatEnterpriseTransferBank transfer){
         WechatEnterpriseTransferBankResult result = new WechatEnterpriseTransferBankResult();
@@ -490,7 +490,7 @@ public class WechatPayUtil {
 
     /**
      * 获取RSA公钥
-     * @return return
+     * @return String
      */
     public String getPublicKey() {
         String txt = WechatUtil.getPublicKey(config.MCH_ID, config.API_SECRET, new File(config.KEY_STORE_FILE), config.KEY_STORE_PASSWORD);
