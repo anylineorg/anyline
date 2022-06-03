@@ -19,7 +19,7 @@ public class VideoUtil {
 	 * @param in 视频流(执行结束后将关闭input)
 	 * @param out 输出流(一般提供一个文件流)
 	 * @param index 截取第几帧 如果index小于等0 取中间一帧
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean frame(InputStream in, OutputStream out, int index) {
 
@@ -87,7 +87,7 @@ public class VideoUtil {
 	 * 截取视频中间帧图片并写入输出流
 	 * @param video  视频
 	 * @param out  输出流(一般提供一个文件流)
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean frame(File video, OutputStream out) {
 		return frame(video, out, -1);
@@ -96,7 +96,7 @@ public class VideoUtil {
 	 * 截取视频中间帧图片并写入输出文件
 	 * @param video  视频
 	 * @param img  输出文件
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean frame(File video, File img) {
 		boolean result = false;
