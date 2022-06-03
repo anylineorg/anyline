@@ -52,7 +52,7 @@ public class DESUtil {
 	private static Map<String,DESUtil> instances = new Hashtable<String,DESUtil>(); 
 	/** 
 	 * 频繁加密解密时,使用单例模式,减少new耗时 
-	 * @return return
+	 * @return DESUtil
 	 */ 
 	public static DESUtil getInstance(){ 
 		DESUtil instance = instances.get(DEFAULT_SECRET_KEY); 
@@ -162,7 +162,7 @@ public class DESUtil {
 	/**
 	 * 
 	 * @param arrBTmp arrBTmp
-	 * @return return
+	 * @return Key
 	 */
 	private Key getKey(byte[] arrBTmp) { 
 		byte[] arrB = new byte[8];	// 创建一个空的8位字节数组（默认值为0） 
