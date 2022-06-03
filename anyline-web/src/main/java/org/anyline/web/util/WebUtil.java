@@ -52,7 +52,7 @@ public class WebUtil {
 	 * 提取clicent真实ip
 	 *
 	 * @param request  request
-	 * @return return
+	 * @return String
 	 */
 
 	public static String getRemoteIp(HttpServletRequest request) {
@@ -97,7 +97,7 @@ public class WebUtil {
 	 * 判断是否是ajax请求
 	 *
 	 * @param request  request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isAjaxRequest(HttpServletRequest request) {
 		String header = request.getHeader("x-requested-with");
@@ -111,7 +111,7 @@ public class WebUtil {
 	 * 是否是蜘蛛
 	 *
 	 * @param request  request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isSpider(HttpServletRequest request) {
 		if (!hasReffer(request)) {
@@ -124,7 +124,7 @@ public class WebUtil {
 	 * 是否有入口页
 	 *
 	 * @param request  request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean hasReffer(HttpServletRequest request) {
 		if (null == request) {
@@ -201,7 +201,7 @@ public class WebUtil {
 	 * @param request  request
 	 * @param key  key key
 	 * @param valueEncrypt  valueEncrypt value是否加密
-	 * @return return
+	 * @return List
 	 */
 //	@SuppressWarnings("unchecked")
 //	private static List<Object> getHttpRequestParamsFormDecryptMap(HttpServletRequest request, String key, boolean valueEncrypt) {
@@ -354,7 +354,7 @@ public class WebUtil {
 //	 *            key是否加密
 //	 * @param valueEncrypt  valueEncrypt
 //	 *            value是否加密
-//	 * @return return
+//	 * @return List
 //	 */
 	public static List<Object> getHttpRequestParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		List<Object> result = new ArrayList<Object>();
@@ -417,7 +417,7 @@ public class WebUtil {
 //	 *            参数名是否加密过
 //	 * @param valueEncrypt  valueEncrypt
 //	 *            参数值是否加密过,是则解密
-//	 * @return return
+//	 * @return Object
 //	 */
 	public static Object getHttpRequestParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
 		String result = "";
@@ -440,7 +440,7 @@ public class WebUtil {
 	 * 解析IP
 	 *
 	 * @param ip  ip
-	 * @return return
+	 * @return long
 	 */
 	public static long parseIp(String ip) {
 		long ipNum = 0;
@@ -467,7 +467,7 @@ public class WebUtil {
 	 * 还原格式化IP
 	 *
 	 * @param ipNum  ipNum
-	 * @return return
+	 * @return String
 	 */
 	public static String formatIp(long ipNum) {
 		String ip = "";
@@ -484,7 +484,7 @@ public class WebUtil {
 	 * 提取refer的uri
 	 *
 	 * @param request  request
-	 * @return return
+	 * @return String
 	 */
 	public static String fetchReferUri(HttpServletRequest request) {
 		if (null == request) {
@@ -505,7 +505,7 @@ public class WebUtil {
 	/**
 	 * 是否是移动终端
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isWap(HttpServletRequest request) {
 		boolean result = false;
@@ -547,7 +547,7 @@ public class WebUtil {
 	/**
 	 * 是否本地访问
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isLocal(HttpServletRequest request){
 		String ip = getRemoteIp(request);
@@ -556,7 +556,7 @@ public class WebUtil {
 	/**
 	 * 是否微信调用
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isWechat(HttpServletRequest request){
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
@@ -595,7 +595,7 @@ public class WebUtil {
 	/**
 	 * 是否支付宝调用
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isAlipay(HttpServletRequest request){
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
@@ -608,7 +608,7 @@ public class WebUtil {
 	/**
 	 * 是否QQ调用
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isQQ(HttpServletRequest request){
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
@@ -622,7 +622,7 @@ public class WebUtil {
 	/**
 	 * 是否android调用
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isAndroid(HttpServletRequest request){
 		String userAgent = request.getHeader("user-agent").toLowerCase();
@@ -635,7 +635,7 @@ public class WebUtil {
 	/**
 	 * 是否android调用
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isIphone(HttpServletRequest request){
 		String userAgent = request.getHeader("user-agent").toLowerCase();
@@ -668,7 +668,7 @@ public class WebUtil {
 	 * @param mix  mix
 	 * @param keys  keys
 	 * @param fixs  fixs
-	 * @return return
+	 * @return Map
 	 */
 	@SuppressWarnings("unchecked")
 	private static Map<String, Object> encryptValue(Map<String, Object> map, boolean mix, List<String> fixs, String... keys) {
@@ -716,7 +716,7 @@ public class WebUtil {
 	 * @param obj  obj
 	 * @param mix  mix
 	 * @param keys  keys
-	 * @return return
+	 * @return Object
 	 */
 	@SuppressWarnings("unchecked")
 	private static Object encryptValue(Object obj, boolean mix, List<String> fixs, String... keys) {
@@ -768,7 +768,7 @@ public class WebUtil {
 	 * @param list  list
 	 * @param mix  mix
 	 * @param keys  keys
-	 * @return return
+	 * @return Collection
 	 */
 	@SuppressWarnings("unchecked")
 	private static Collection<Object> encryptValue(Collection<Object> list, boolean mix, List<String> fixs, String... keys) {
@@ -795,7 +795,7 @@ public class WebUtil {
 	 * @param mix 是否混淆url 生成随机URL用来防止QQ等工具报警,扰乱爬虫
 	 * @param obj  obj
 	 * @param keys  keys
-	 * @return return
+	 * @return Object
 	 */
 	public static Object encrypt(Object obj, boolean mix, String... keys) {
 		return encryptValue(obj, mix, keys);
@@ -821,7 +821,7 @@ public class WebUtil {
 	 * @param request request
 	 * @param response response
 	 * @param jsp "/WEB-INF/page/index.jsp"
-	 * @return return
+	 * @return String
 	 * @throws ServletException ServletException
 	 * @throws IOException IOException
 	 */
@@ -898,7 +898,7 @@ public class WebUtil {
 	 * @param response response
 	 * @param file file
 	 * @param title title
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean download(HttpServletRequest request, HttpServletResponse response, File file, String title){
 		try{
