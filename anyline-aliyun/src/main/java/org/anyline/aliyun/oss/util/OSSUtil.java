@@ -80,7 +80,7 @@ public class OSSUtil {
 	 * 上传文件或目录
 	 * @param file  file
 	 * @param path  path
-	 * @return return
+	 * @return String
 	 */
 	public String upload(File file, String path){
 		if(null == path){
@@ -145,8 +145,8 @@ public class OSSUtil {
 	}
 	/**
 	 * 文件列表
-	 * @param prefix  prefix
-	 * @return return
+	 * @param prefix  前缀
+	 * @return List
 	 */
 	public List<String> list(String prefix){
 		List<String> list = new ArrayList<>();
@@ -179,9 +179,9 @@ public class OSSUtil {
 	}
 	/**
 	 * 下载prefix目录下的所有文件到本地dir目录
-	 * @param dir  dir
-	 * @param prefix  prefix
-	 * @return return
+	 * @param dir  目录
+	 * @param prefix  前缀
+	 * @return boolean
 	 */
 	public boolean download(File dir, String prefix){
 		if(null == prefix){
@@ -224,8 +224,8 @@ public class OSSUtil {
 	}
 	/**
 	 * 文件是否存在
-	 * @param path  path
-	 * @return return
+	 * @param path  文件路径
+	 * @return boolean
 	 */
 	public boolean exists(String path){
 		boolean result = false;
@@ -276,8 +276,8 @@ public class OSSUtil {
 	}
 	/**
 	 * 最后修改时间
-	 * @param path  path
-	 * @return return
+	 * @param path  文件路径
+	 * @return Date
 	 */
 	public Date getLastModified(String path){
 		if(null == path){
@@ -302,7 +302,7 @@ public class OSSUtil {
 	 * 最后修改时间
 	 * @param path  path
 	 * @param format 日期格式
-	 * @return return
+	 * @return String
 	 */
 	public String getLastModified(String path, String format){
 		if(null == path){
