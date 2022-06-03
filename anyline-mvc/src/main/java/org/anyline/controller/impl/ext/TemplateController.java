@@ -55,7 +55,7 @@ public class TemplateController extends AnylineController {
 	 * 对于复杂模板(如解析前需要查询数据)需要自行实现解析方法js中 通过{parser:'/al/tmp/load1.do'}形式指定
 	 * @param request request
 	 * @param response response
-	 * @return return
+	 * @return String
 	 */
 	@RequestMapping("load")
 	@ResponseBody
