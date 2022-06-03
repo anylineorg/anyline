@@ -69,7 +69,7 @@ public class AmapUtil {
 	 * @param lat  lat
 	 * @param address  address
 	 * @param extras  extras
-	 * @return return
+	 * @return String
 	 */ 
 	public String create(String name, int loctype, String lon, String lat, String address, Map<String, Object> extras){ 
 		String url = "http://yuntuapi.amap.com/datamanage/data/create"; 
@@ -140,7 +140,7 @@ public class AmapUtil {
 	/** 
 	 * 删除标注 
 	 * @param ids  ids
-	 * @return return
+	 * @return int
 	 */ 
 	public int delete(String ... ids){ 
 		if(null == ids){ 
@@ -217,7 +217,7 @@ public class AmapUtil {
 	 * @param lat  lat
 	 * @param address  address
 	 * @param extras  extras
-	 * @return return 0:更新失败,没有对应的id  1:更新完成  -1:异常 
+	 * @return int 0:更新失败,没有对应的id  1:更新完成  -1:异常
 	 */ 
 	public int update(String id, String name, int loctype, String lon, String lat, String address, Map<String,Object> extras){ 
 		int cnt = 0; 
@@ -293,7 +293,7 @@ public class AmapUtil {
 	/** 
 	 * 创建新地图 
 	 * @param name  name
-	 * @return return
+	 * @return String
 	 */ 
 	public String createTable(String name){ 
 		String tableId = null; 
@@ -322,7 +322,7 @@ public class AmapUtil {
 	 * @param sortrule  sortrule
 	 * @param limit  limit
 	 * @param page  page
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet local(String keywords, String city, String filter, String sortrule, int limit, int page){ 
 		DataSet set = null; 
@@ -379,7 +379,7 @@ public class AmapUtil {
 	 * @param sortrule 排序 
 	 * @param limit 每页多少条 
 	 * @param page 第几页 
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet around(String center, int radius, String keywords, Map<String,String> filters, String sortrule, int limit, int page){ 
 		DataSet set = null; 
@@ -490,7 +490,7 @@ public class AmapUtil {
 	 * 若不填升降序，默认按升序排列。 示例：按年龄age字段升序排序 sortrule = age:1 
 	 * @param limit 每页最大记录数为100 
 	 * @param page 当前页数 &gt;=1 
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet list(String filter, String sortrule, int limit, int page){ 
 		DataSet set = null; 
@@ -542,7 +542,7 @@ public class AmapUtil {
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t4 
 	 * API:在指定tableid的数据表内，查询对应数据id的数据详情 
 	 * @param id  id
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow info(String id){ 
 		DataRow row = null; 
@@ -656,7 +656,7 @@ public class AmapUtil {
 	 * @param province   province
 	 * @param city   city
 	 * @param filter 条件 
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet statByDistrict(String keywords, String province, String city, String filter){ 
 		DataSet set = null; 
@@ -694,7 +694,7 @@ public class AmapUtil {
 	 * @param radius  radius
 	 * @param limit  limit
 	 * @param timerange  timerange
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet nearby(String center, String radius, int limit, int timerange ){ 
 		DataSet set = null; 
@@ -729,7 +729,7 @@ public class AmapUtil {
 	/** 
 	 * 按坐标查地址 
 	 * @param location  经度在前，纬度在后，经纬度间以“,”分割
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow regeo(String location){ 
 		DataRow row = null; 
@@ -766,7 +766,7 @@ public class AmapUtil {
 	 * 根据地址查坐标 
 	 * @param address  address
 	 * @param city  city
-	 * @return return
+	 * @return MapLocation
 	 */ 
 	public MapLocation geo(String address, String city){ 
 		MapLocation location = null; 
