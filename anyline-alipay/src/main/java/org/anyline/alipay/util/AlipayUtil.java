@@ -140,7 +140,7 @@ public class AlipayUtil {
 	/** 
 	 * 交易状态查询 
 	 * @param query 查询参数
-	 * @return return
+	 * @return AlipayTradeQueryResult
 	 */ 
 	public AlipayTradeQueryResult tradeQuery(AlipayTradeQuery query){ 
 		AlipayTradeQueryResult result = null;  
