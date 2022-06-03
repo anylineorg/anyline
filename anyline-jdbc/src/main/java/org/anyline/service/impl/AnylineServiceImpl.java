@@ -102,7 +102,7 @@ public class AnylineServiceImpl implements AnylineService {
      * @param src 表｜视图｜函数｜自定义SQL
      * @param configs http参数封装
      * @param conditions 固定查询条件
-     * @return return
+     * @return DataSet
      */
     @Override
     public DataSet querys(String src, ConfigStore configs, String... conditions) {
@@ -330,7 +330,7 @@ public class AnylineServiceImpl implements AnylineService {
      * @param sql 表｜视图｜函数｜自定义SQL |SQL
      * @param configs http参数封装
      * @param conditions 固定查询条件
-     * @return return
+     * @return DataSet
      */
     @Override
     public DataSet querys(SQL sql, ConfigStore configs, String... conditions) {
@@ -628,7 +628,7 @@ public class AnylineServiceImpl implements AnylineService {
      * @param src  src
      * @param configs  configs
      * @param conditions  conditions
-     * @return return
+     * @return boolean
      */
     @Override
     public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions){
@@ -670,7 +670,7 @@ public class AnylineServiceImpl implements AnylineService {
     /**
      * 清空缓存
      * @param channel  channel
-     * @return return
+     * @return boolean
      */
     @Override
     public boolean clearCache(String channel){
@@ -687,7 +687,7 @@ public class AnylineServiceImpl implements AnylineService {
      * @param src  src
      * @param configs  configs
      * @param conditions  conditions
-     * @return return
+     * @return boolean
      */
 
     @Override
@@ -761,7 +761,7 @@ public class AnylineServiceImpl implements AnylineService {
      * @param dest  dest
      * @param data  需要更新的数据
      * @param columns 需要更新的列
-     * @return return
+     * @return int
      */
     @Override
     public int update(boolean sync, String dest, Object data, String... columns) {
@@ -949,7 +949,7 @@ public class AnylineServiceImpl implements AnylineService {
      * 根据存储过程查询
      *
      * @param procedure  procedure
-     * @return return
+     * @return DataSet
      */
     @Override
     public DataSet query(Procedure procedure, String ... inputs) {
@@ -1128,7 +1128,7 @@ public class AnylineServiceImpl implements AnylineService {
      * 解析SQL中指定的主键table(col1,col2)[pk1,pk2]
      * @param src  src
      * @param pks  pks
-     * @return return
+     * @return String
      */
     protected String parsePrimaryKey(String src, List<String> pks){
         if(src.endsWith(">")){
