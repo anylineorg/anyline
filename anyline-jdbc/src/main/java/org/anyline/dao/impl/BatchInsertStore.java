@@ -40,7 +40,7 @@ public class BatchInsertStore {
 	} 
 	/** 
 	 * 需要保存的数据列表 
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public synchronized DataSet getDatas(){ 
 		int max = ConfigTable.getInt("BATCH_INSERT_MAX_SIZE",100);//一次最多插入 
