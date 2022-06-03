@@ -46,7 +46,7 @@ public interface RunSQL {
 	 * @param	variable  列名|变量key
 	 * @param	value  值 
 	 * @param compare 比较方式
-	 * @return return
+	 * @return RunSQL
 	 */
 	public RunSQL setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, SQL.COMPARE_TYPE compare);
 	public RunSQL setConditionValue(boolean required, String prefix, String variable, Object value, SQL.COMPARE_TYPE compare);
@@ -71,7 +71,7 @@ public interface RunSQL {
 	 * @param	var 列名
 	 * @param	value 值 
 	 * @param	compare 比较方式 
-	 * @return return
+	 * @return RunSQL
 	 */
 	public RunSQL addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, COMPARE_TYPE compare);
 	public RunSQL addCondition(boolean required,  String prefix, String var, Object value, COMPARE_TYPE compare);
@@ -88,7 +88,7 @@ public interface RunSQL {
 	/** 
 	 * 添加参数值 
 	 * @param obj  obj
-	 * @return return
+	 * @return RunSQL
 	 */ 
 	public RunSQL addValues(Object obj);
 
