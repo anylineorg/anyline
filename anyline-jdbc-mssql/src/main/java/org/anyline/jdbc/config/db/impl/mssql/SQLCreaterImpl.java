@@ -62,7 +62,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	 * 查询SQL 
 	 * RunSQL 反转调用 
 	 * @param run  run
-	 * @return return
+	 * @return String
 	 */ 
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
