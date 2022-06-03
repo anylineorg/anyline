@@ -4,7 +4,7 @@ import org.anyline.util.BasicUtil;
  
 public class MapLocation { 
 	 
-	private String lon; 
+	private String lng;
 	private String lat; 
 	private String provinceCode; 
 	private String provinceNm; 
@@ -15,22 +15,27 @@ public class MapLocation {
 	private String street; 
 	private String code; 
 	private String level; 
-	private String address; 
+	private String address;
+
+	/**
+	 *
+	 * @param location 位置  lng,lat
+	 */
 	public MapLocation(String location){ 
 		if(BasicUtil.isNotEmpty(location)){ 
 			String[] tmps = location.split(","); 
 			if(tmps.length > 1){ 
-				lon = tmps[0]; 
+				lng = tmps[0];
 				lat = tmps[1]; 
 			} 
 		} 
 	} 
-	public MapLocation(String lon, String lat){ 
-		this.lon = lon; 
+	public MapLocation(String lng, String lat){
+		this.lng = lng;
 		this.lat = lat; 
 	} 
 	public boolean isEmpty(){ 
-		if(BasicUtil.isEmpty(lon) || BasicUtil.isEmpty(lat) || "-1".equals(lon) || "-1".equals(lat)){ 
+		if(BasicUtil.isEmpty(lng) || BasicUtil.isEmpty(lat) || "-1".equals(lng) || "-1".equals(lat)){
 			return true; 
 		} 
 		return false; 
@@ -38,11 +43,11 @@ public class MapLocation {
 	public boolean isNotEmpty(){ 
 		return !isEmpty(); 
 	} 
-	public String getLon() { 
-		return lon; 
+	public String getLng() {
+		return lng;
 	} 
-	public void setLon(String lon) { 
-		this.lon = lon; 
+	public void setLng(String lng) {
+		this.lng = lng;
 	} 
 	public String getLat() { 
 		return lat; 
@@ -51,7 +56,7 @@ public class MapLocation {
 		this.lat = lat; 
 	} 
 	public String getLocation(){ 
-		return lon + "," + lat; 
+		return lng + "," + lat;
 	} 
 	public String getCenter(){ 
 		return getLocation(); 
