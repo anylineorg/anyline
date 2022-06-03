@@ -280,8 +280,8 @@ public class DateUtil {
 
 	/**
 	 * 星期几
-	 * @param date  date
-	 * @return return
+	 * @param date 日期
+	 * @return String
 	 */
 	public static String getWeek(Date date) {
 		Calendar calendar = getCalendar();
@@ -300,8 +300,8 @@ public class DateUtil {
 	/**
 	 * 当周第一天
 	 * 周日作为一周的第一天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getFirstDayOfWeek(Date date) {
 		Calendar calendar = getCalendar();
@@ -320,7 +320,7 @@ public class DateUtil {
 
 	/**
 	 * 下周第一天
-	 * @param date  date
+	 * @param date  日期
 	 * @return return
 	 */
 	public static Date getFirstDayOfNextWeek(Date date) {
@@ -342,8 +342,8 @@ public class DateUtil {
 
 	/**
 	 * 上个周第一天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getFirstDayOfPreviousWeek(Date date) {
 		Calendar calendar = getCalendar();
@@ -363,8 +363,8 @@ public class DateUtil {
 
 	/**
 	 * 当周最后天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getLastDayOfWeek(Date date) {
 		Calendar calendar = getCalendar();
@@ -383,8 +383,8 @@ public class DateUtil {
 
 	/**
 	 * 下周最后天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getLastDayOfNextWeek(Date date) {
 		Calendar calendar = getCalendar();
@@ -405,8 +405,8 @@ public class DateUtil {
 
 	/**
 	 * 上个周最后天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getLastDayOfPreviousWeek(Date date) {
 		Calendar calendar = getCalendar();
@@ -426,8 +426,8 @@ public class DateUtil {
 
 	/**
 	 * 当月第一天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getFirstDayOfMonth(Date date) {
 		Calendar calendar = getCalendar();
@@ -446,8 +446,8 @@ public class DateUtil {
 
 	/**
 	 * 下个月第一天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getFirstDayOfNextMonth(Date date) {
 		Calendar calendar = getCalendar();
@@ -467,8 +467,8 @@ public class DateUtil {
 
 	/**
 	 * 上个月第一天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getFirstDayOfPreviousMonth(Date date) {
 		Calendar calendar = getCalendar();
@@ -488,8 +488,8 @@ public class DateUtil {
 
 	/**
 	 * 当月最后一天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getLastDayOfMonth(Date date) {
 		Calendar calendar = getCalendar();
@@ -510,8 +510,8 @@ public class DateUtil {
 
 	/**
 	 * 上月最后一天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getLastDayOfPreviousMonth(Date date) {
 		Calendar calendar = getCalendar();
@@ -532,8 +532,8 @@ public class DateUtil {
 
 	/**
 	 * 下月最后一天
-	 * @param date  date
-	 * @return return
+	 * @param date  日期
+	 * @return Date
 	 */
 	public static Date getLastDayOfNextMonth(Date date) {
 		Calendar calendar = getCalendar();
@@ -652,7 +652,11 @@ public class DateUtil {
 		}
 	}
 
-	// 获得明年最后一天的日期
+	/**
+	 * 获得明年最后一天的日期
+	 * @param date 日期
+	 * @return Date
+	 */
 	public static Date getNextYearEnd(Date date) {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
@@ -670,7 +674,11 @@ public class DateUtil {
 		return getNextYearEnd(new Date());
 	}
 
-	// 获得明年第一天的日期
+	/**
+	 * 获得明年第一天的日期
+	 * @param date 日期
+	 * @return Date
+	 */
 	public static Date getNextYearFirst(Date date) {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
@@ -744,7 +752,12 @@ public class DateUtil {
 		}
 	}
 
-	// 获得本年第一天的日期
+
+	/**
+	 * 获得本年第一天的日期
+	 * @param date 日期
+	 * @return Date
+	 */
 	public static Date getFirstDayOfYear(Date date) {
 		Calendar calendar = getCalendar();
 		int yearPlus = getYearPlus(date);
@@ -761,7 +774,11 @@ public class DateUtil {
 		return getFirstDayOfYear(new Date());
 	}
 
-	// 获得本年最后一天的日期 *
+	/**
+	 * 获得本年最后一天的日期
+	 * @param date 日期
+	 * @return String
+	 */
 	public static String getCurrentYearEnd(Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");// 可以方便地修改日期格式
 		String years = dateFormat.format(date);
@@ -776,7 +793,12 @@ public class DateUtil {
 		return getCurrentYearEnd(new Date());
 	}
 
-	// 获得上年第一天的日期 *
+
+	/**
+	 * 获得上年第一天的日期
+	 * @param date 日期
+	 * @return String
+	 */
 	public static String getPreviousYearFirst(Date date) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");// 可以方便地修改日期格式
 		String years = dateFormat.format(date);
@@ -822,7 +844,7 @@ public class DateUtil {
 	 * 是否闰年
 	 *
 	 * @param year 年
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isLeapYear(int year) {
 		return (year % 4 == 0 && year % 100 != 0) || (year % 400 == 0);
@@ -831,9 +853,9 @@ public class DateUtil {
 	/**
 	 * 转换成日期
 	 *
-	 * @param date  date
+	 * @param date  日期
 	 * @param format  format
-	 * @return return
+	 * @return Date
 	 */
 	public static Date parse(String date, String format) {
 		SimpleDateFormat df = new SimpleDateFormat(format);
@@ -847,8 +869,8 @@ public class DateUtil {
 	/**
 	 * 转换成日期(使用默认格式)
 	 *
-	 * @param str  str
-	 * @return return
+	 * @param str 日期
+	 * @return Date
 	 */
 	public static Date parse(String str) {
 		if (BasicUtil.isEmpty(str)) {
@@ -920,7 +942,7 @@ public class DateUtil {
 	/**
 	 * 昨天
 	 *
-	 * @return return
+	 * @return Date
 	 */
 	public static Date yesterday() {
 		return addDay(-1);
@@ -929,7 +951,7 @@ public class DateUtil {
 	/**
 	 * 明天
 	 *
-	 * @return return
+	 * @return Date
 	 */
 	public static Date tomorrow() {
 		return addDay(1);
@@ -938,7 +960,7 @@ public class DateUtil {
 	/**
 	 * 现在
 	 *
-	 * @return return
+	 * @return Date
 	 */
 	public static Date now() {
 		return new Date(System.currentTimeMillis());
@@ -947,8 +969,8 @@ public class DateUtil {
 	/**
 	 * 按日加
 	 *
-	 * @param value  value
-	 * @return return
+	 * @param value 天数
+	 * @return Date
 	 */
 	public static Date addDay(int value) {
 		Calendar calendar = getCalendar();
@@ -960,9 +982,9 @@ public class DateUtil {
 	/**
 	 * 按日加,指定日期
 	 *
-	 * @param date  date
-	 * @param value  value
-	 * @return return
+	 * @param date  日期
+	 * @param value  天数
+	 * @return Date
 	 */
 	public static Date addDay(Date date, int value) {
 		Calendar calendar = getCalendar();
@@ -980,7 +1002,7 @@ public class DateUtil {
 	/**
 	 * 按月加
 	 *
-	 * @param value  value
+	 * @param value  月数
 	 * @return return
 	 */
 	public static Date addMonth(int value) {
@@ -993,9 +1015,9 @@ public class DateUtil {
 	/**
 	 * 按月加,指定日期
 	 *
-	 * @param date  date
-	 * @param value  value
-	 * @return return
+	 * @param date  日期
+	 * @param value  月数
+	 * @return Date
 	 */
 	public static Date addMonth(Date date, int value) {
 		Calendar calendar = getCalendar();
@@ -1010,8 +1032,8 @@ public class DateUtil {
 	/**
 	 * 按年加
 	 *
-	 * @param value  value
-	 * @return return
+	 * @param value 年数
+	 * @return Date
 	 */
 	public static Date addYear(int value) {
 		Calendar calendar = getCalendar();
@@ -1024,7 +1046,7 @@ public class DateUtil {
 	 * 当前日期所在周的第idx天 第1天：星期日 第7天：星期六
 	 *
 	 * @param idx  idx
-	 * @param date  date
+	 * @param date  日期
 	 * @return return
 	 */
 	public static Date getDateOfWeek(int idx, Date date) {
@@ -1229,7 +1251,7 @@ public class DateUtil {
 	/**
 	 * 按年加,指定日期
 	 *
-	 * @param date  date
+	 * @param date  日期
 	 * @param value  value
 	 * @return return
 	 */
@@ -1259,7 +1281,7 @@ public class DateUtil {
 	/**
 	 * 按小时加,指定日期
 	 *
-	 * @param date  date
+	 * @param date  日期
 	 * @param value  value
 	 * @return return
 	 */
@@ -1289,7 +1311,7 @@ public class DateUtil {
 	/**
 	 * 按分钟加,指定日期
 	 *
-	 * @param date  date
+	 * @param date  日期
 	 * @param value  value
 	 * @return return
 	 */
