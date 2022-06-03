@@ -35,7 +35,7 @@ public class BasicUtil {
 	 * @param obj  obj
 	 * @param recursion  recursion
 	 *            是否递归查检集合对象 
-	 * @return return
+	 * @return boolean
 	 */ 
 	@SuppressWarnings("rawtypes")
 	public static boolean isEmpty(boolean recursion, Object obj) { 
@@ -120,7 +120,7 @@ public class BasicUtil {
 	 * nvl 取第一个不为null的值,没有符合条件的 则返回null 
 	 *
 	 * @param values  values
-	 * @return return
+	 * @return Object
 	 */
 	public static Object nvl(Object... values) {
 		if (null == values) {
@@ -151,7 +151,7 @@ public class BasicUtil {
 	 * 与nvl区别 : ""不符合evl条件 但符合nvl条件  
 	 * @param recursion  recursion
 	 * @param values  values
-	 * @return return
+	 * @return Object
 	 */ 
 	public static Object evl(boolean recursion, Object... values) { 
 		if (null == values) { 
@@ -174,7 +174,7 @@ public class BasicUtil {
 	 *  
 	 * @param fr  fr
 	 * @param to  to
-	 * @return return
+	 * @return int
 	 */
 	public static int getRandomNumber(int fr, int to) {
 		return NumberUtil.random(fr, to);
@@ -188,7 +188,7 @@ public class BasicUtil {
 	 *  
 	 * @param length  length
 	 * @param buffer  buffer
-	 * @return return
+	 * @return String
 	 */ 
 	public static String getRandomString(int length, StringBuffer buffer) { 
 		StringBuffer sb = new StringBuffer(); 
@@ -218,7 +218,7 @@ public class BasicUtil {
 	/**
 	 * 随机中文字符(GBK)
 	 * @param length length
-	 * @return return
+	 * @return String
 	 */
 	public static String getRandomCnString(int length){
 		String result = "";
