@@ -82,7 +82,7 @@ public class AbstractBasicController {
 	 * @param valueEncrypt  valueEncrypt
 	 * @param fixs  fixs
 	 * @param params  params
-	 * @return return
+	 * @return T
 	 */
 	public <T> T entity(HttpServletRequest request, Class<T> clazz, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
 		T entity = null;
@@ -366,7 +366,7 @@ public class AbstractBasicController {
 	 * @param navi  是否分页
 	 * @param fixs   参数
 	 * @param configs   参数
-	 * @return return
+	 * @return ConfigStore
 	 */
 	protected ConfigStore condition(HttpServletRequest request, boolean navi, List<String> fixs, String... configs) {
 		ConfigStore store = new ConfigStoreImpl(BeanUtil.merge(fixs, configs));
@@ -391,7 +391,7 @@ public class AbstractBasicController {
 	 * @param vol   每页多少条记录 vol不大于0时不分页
 	 * @param fixs    参数
 	 * @param configs    参数
-	 * @return return
+	 * @return ConfigStore
 	 */
 	protected ConfigStore condition(HttpServletRequest request, int vol, List<String> fixs, String... configs) {
 		ConfigStore store = new ConfigStoreImpl(BeanUtil.merge(fixs, configs));
@@ -417,7 +417,7 @@ public class AbstractBasicController {
 	 * @param to   结束行
 	 * @param fixs     fixs
 	 * @param configs     参数
-	 * @return return
+	 * @return ConfigStore
 	 */
 	protected ConfigStore condition(HttpServletRequest request, int fr, int to, List<String> fixs, String... configs) {
 		ConfigStore store = new ConfigStoreImpl(BeanUtil.merge(fixs, configs));
@@ -454,7 +454,7 @@ public class AbstractBasicController {
 	 * @param keyEncrypt  keyEncrypt
 	 * @param valueEncrypt  valueEncrypt
 	 * @param defs  defs
-	 * @return return
+	 * @return String
 	 */
 	protected String getParam(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt, String ... defs) {
 		String result =  (String) WebUtil.getHttpRequestParam(request, key,keyEncrypt, valueEncrypt);
@@ -616,7 +616,7 @@ public class AbstractBasicController {
 	 * 从HttpServletRequest中提取分布数据
 	 *
 	 * @param request  request
-	 * @return return
+	 * @return PageNavi
 	 */
 	protected  PageNavi parsePageNavi(HttpServletRequest request) {
 		if (null == request){
