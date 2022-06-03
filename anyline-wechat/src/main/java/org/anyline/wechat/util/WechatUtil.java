@@ -45,7 +45,7 @@ public class WechatUtil {
 	 *  
 	 * @param secret  secret
 	 * @param params  params
-	 * @return return
+	 * @return String
 	 */ 
 	public static String sign(String secret, Map<String, Object> params) { 
 		String sign = ""; 
@@ -72,7 +72,7 @@ public class WechatUtil {
 	 * @param apiSecret  apiSecret
 	 * @param keyStoreFile  keyStoreFile
 	 * @param keyStorePassword  keyStorePassword
-	 * @return return
+	 * @return String
 	 */ 
 	public static String getPublicKey(String mch, String apiSecret, File keyStoreFile, String keyStorePassword) { 
 		Map<String, Object> parameters = new HashMap<String, Object>(); 
