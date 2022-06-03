@@ -65,7 +65,7 @@ public class COSUtil {
 	 * 上传文件或目录
 	 * @param file  file
 	 * @param path  path
-	 * @return return
+	 * @return String
 	 *//*
 
 	public String upload(File file, String path){
@@ -133,7 +133,7 @@ public class COSUtil {
 /**
 	 * 文件列表
 	 * @param prefix  prefix
-	 * @return return
+	 * @return List
 	 *//*
 
 	public List<String> list(String prefix){
