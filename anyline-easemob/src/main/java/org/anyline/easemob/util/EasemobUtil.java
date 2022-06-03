@@ -62,7 +62,7 @@ public class EasemobUtil {
 	 * @param user  user
 	 * @param password  password
 	 * @param nickname 昵称 
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow reg(String user, String password, String nickname){ 
 		DataRow result = null; 
@@ -97,7 +97,7 @@ public class EasemobUtil {
 	/** 
 	 * 批量注册 
 	 * @param list  list
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet regs(List<Map<String,String>> list){ 
 		DataSet result = new DataSet(); 
@@ -141,7 +141,7 @@ public class EasemobUtil {
 	 * 修改密码 
 	 * @param user  user
 	 * @param password  password
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean resetPassword(String user, String password){ 
 		boolean result = false; 
@@ -167,7 +167,7 @@ public class EasemobUtil {
 	 * 修改昵称 
 	 * @param user  user
 	 * @param nickname  nickname
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow resetNickname(String user, String nickname){ 
 		DataRow result = null; 
@@ -189,7 +189,7 @@ public class EasemobUtil {
 	/** 
 	 * 删除用户 
 	 * @param user  user
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean delete(String user){ 
 		boolean result = false; 
@@ -208,7 +208,7 @@ public class EasemobUtil {
 	/** 
 	 * 用户信息 
 	 * @param user  user
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow getUser(String user){ 
 		DataRow result = new DataRow(); 
@@ -237,7 +237,7 @@ public class EasemobUtil {
 	 * 批量用户信息 
 	 * @param limit  limit
 	 * @param cursor 分页游标 
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet getUsers(int limit, String cursor){ 
 		DataSet set = new DataSet(); 
@@ -271,7 +271,7 @@ public class EasemobUtil {
 	 * 添加好友 
 	 * @param user  user
 	 * @param friend  friend
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow addFriend(String user, String friend){ 
 		DataRow result = null; 
@@ -290,7 +290,7 @@ public class EasemobUtil {
 	/** 
 	 * 好友列表(只查username) 
 	 * @param user  user
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet getFriends(String user){ 
 		DataSet result = new DataSet(); 
@@ -346,7 +346,7 @@ public class EasemobUtil {
 	 * 添加黑名单 
 	 * @param user  user
 	 * @param block  block
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow addBlock(String user, String block){ 
 		DataRow result = null; 
@@ -364,12 +364,12 @@ public class EasemobUtil {
 			e.printStackTrace(); 
 		} 
 		return result; 
-	} 
-	/** 
+	}
+	/**
 	 * @param block  block
-	 * @return return
-	 */ 
-	public DataSet getBlocks(String block){ 
+	 * @return DataSet
+	 */
+	public DataSet getBlocks(String block){
 		DataSet result = new DataSet(); 
 		String url = baseUrl + "/users/" + block + "/blocks/users"; 
 		try {
@@ -421,7 +421,7 @@ public class EasemobUtil {
 	/** 
 	 * 在线状态  1:在线 0:离线 
 	 * @param user  user
-	 * @return return
+	 * @return String
 	 */ 
 	public String status(String user){ 
 		String result = "0"; 
@@ -451,7 +451,7 @@ public class EasemobUtil {
 	/** 
 	 * 离线消息数量 
 	 * @param user  user
-	 * @return return
+	 * @return int
 	 */ 
 	public int offlineMsgCount(String user){ 
 		int result = 0; 
@@ -480,7 +480,7 @@ public class EasemobUtil {
 	 * deliverd:表示此用户的该条离线消息已经收到过了 undelivered:表示此用户的该条离线消息还未收到 
 	 * @param user  user 
 	 * @param msg msg
-	 * @return return
+	 * @return String
 	 */ 
 	public String offlineMsgStatus(String user, String msg){ 
 		String result = ""; 
@@ -506,7 +506,7 @@ public class EasemobUtil {
 	/** 
 	 * 禁用帐号 
 	 * @param user  user
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow deactivate(String user){ 
 		DataRow result = null; 
@@ -543,7 +543,7 @@ public class EasemobUtil {
 	/** 
 	 * 强制用户下线  
 	 * @param user  user
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean disconnect(String user){ 
 		boolean result = false; 
@@ -570,7 +570,7 @@ public class EasemobUtil {
 	 * @param from  from
 	 * @param msg  msg
 	 * @param to  to
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean send(String from, String msg, String to){ 
 		boolean result = false; 
@@ -605,7 +605,7 @@ public class EasemobUtil {
 	 * @param max 最大人数 
 	 * @param approve 是否需要审核 
 	 * @param owner 群主 
-	 * @return return
+	 * @return String
 	 */ 
 	public String createGroup(String name, String des, boolean pub, int max, boolean approve, String owner){ 
 		String result = ""; 
@@ -637,7 +637,7 @@ public class EasemobUtil {
 	/** 
 	 * 根据返回值解析用户数据  
 	 * @param txt  txt
-	 * @return return
+	 * @return DataRow
 	 */ 
 	@SuppressWarnings("unchecked")
 	private static DataRow parseUser(String txt){ 
@@ -677,7 +677,7 @@ public class EasemobUtil {
 	 
 	/** 
 	 * 创建新token  
-	 * @return return
+	 * @return String
 	 */ 
 	private String createNewAccessToken(){ 
 		Map<String,String> headers = new HashMap<String,String>(); 
