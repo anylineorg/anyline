@@ -281,7 +281,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 * @param result 执行结果 
 	 * @param success   执行成功时返回数据 
 	 * @param fail   执行失败时返回数据 
-	 * @return return
+	 * @return String
 	 */ 
 	protected String result(HttpServletRequest request, boolean result, Object success, Object fail) { 
 		if (result) { 
@@ -300,7 +300,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 *  
 	 * @param request  request
 	 * @param data  data
-	 * @return return
+	 * @return String
 	 */ 
 	protected String success(HttpServletRequest request, Object ... data) { 
 		return success(RESULT_TYPE_DEFAULT,request, data); 
@@ -346,7 +346,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 * 加密仅支持String类型 不支持对象加密  
 	 * @param data  data
 	 * @param encrypt  encrypt
-	 * @return return
+	 * @return String
 	 */ 
 	protected String success(Object data, boolean encrypt) { 
 		if(encrypt && null != data){ 
@@ -387,7 +387,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	 * 执行失败 
 	 * @param resultType resultType
 	 * @param msgs msgs
-	 * @return return
+	 * @return String
 	 */ 
 	protected String fail(int resultType, Object... msgs) { 
 		result = false; 
