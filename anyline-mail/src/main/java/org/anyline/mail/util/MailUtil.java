@@ -60,7 +60,7 @@ public class MailUtil {
 	 * @param to		收件人地址  to		收件人地址
 	 * @param title		邮件主题  title		邮件主题
 	 * @param content	邮件内容  content	邮件内容
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean send(String fr, String to, String title, String content) { 
 		log.warn("[send email][fr:{}][to:{}][title:{}][content:{}]", fr,to,title,content);
