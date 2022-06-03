@@ -114,7 +114,7 @@ public class WechatPayUtil {
      * JSAPI调起支付所需参数
      * @param appid appid
      * @param prepayid 预支付id(由统一下单接口返回)
-     * @return return
+     * @return DataRow
      */
     public DataRow callUpParam(String appid, String prepayid){
         String timestamp = System.currentTimeMillis()/1000+"";
@@ -159,7 +159,7 @@ public class WechatPayUtil {
     /**
      * 企业付款
      * @param transfer  transfer
-     * @return return
+     * @return WechatEnterpriseTransferResult
      */
     public WechatEnterpriseTransferResult transfer(WechatEnterpriseTransfer transfer){
         return null;
