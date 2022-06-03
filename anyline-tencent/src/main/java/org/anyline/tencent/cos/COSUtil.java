@@ -170,7 +170,7 @@ public class COSUtil {
 	 * 下载prefix目录下的所有文件到本地dir目录
 	 * @param dir  dir
 	 * @param prefix  prefix
-	 * @return return
+	 * @return boolean
 	 *//*
 
 	public boolean download(File dir, String prefix){
@@ -216,7 +216,7 @@ public class COSUtil {
 /**
 	 * 文件是否存在
 	 * @param path  path
-	 * @return return
+	 * @return boolean
 	 *//*
 
 	public boolean exists(String path){
@@ -270,7 +270,7 @@ public class COSUtil {
 /**
 	 * 最后修改时间
 	 * @param path  path
-	 * @return return
+	 * @return Date
 	 *//*
 
 	public Date getLastModified(String path){
@@ -297,7 +297,7 @@ public class COSUtil {
 	 * 最后修改时间
 	 * @param path  path
 	 * @param format 日期格式
-	 * @return return
+	 * @return String
 	 *//*
 
 	public String getLastModified(String path, String format){
@@ -318,7 +318,7 @@ public class COSUtil {
 	 * 是否过期
 	 * @param path  path
 	 * @param millisecond  millisecond
-	 * @return return
+	 * @return boolean
 	 *//*
 
 	public boolean isExpire(String path, long millisecond){
@@ -338,7 +338,7 @@ public class COSUtil {
 /**
 	 * 创建完整url
 	 * @param path  path
-	 * @return return
+	 * @return String
 	 *//*
 
 	private String createUrl(String path){
