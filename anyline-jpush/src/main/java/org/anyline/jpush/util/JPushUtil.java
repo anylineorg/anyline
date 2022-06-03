@@ -58,7 +58,7 @@ public class JPushUtil {
 	 * @param msg 详细信息 
 	 * @param extras 参数 
 	 * @param tags 接收人 
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean pushByTag(String type, String title, String msg, Map<String,String> extras, String ... tags){ 
 		if(null == extras){ 
@@ -110,7 +110,7 @@ public class JPushUtil {
 	 * @param msg 详细信息 
 	 * @param extras 参数 
 	 * @param alias 接收人 
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean pushByAlias(String type, String title, String msg, Map<String,String> extras, String ... alias){ 
 		boolean result = true; 
