@@ -44,9 +44,9 @@ public interface SQLCreater{
 	/** 
 	 * 创建查询SQL 
 	 * @param sql  sql
-	 * @param configs  configs
-	 * @param conditions  conditions
-	 * @return return
+	 * @param configs 查询条件配置
+	 * @param conditions 查询条件
+	 * @return RunSQL
 	 */ 
 	public RunSQL createQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions); 
 	 
@@ -57,8 +57,8 @@ public interface SQLCreater{
 	public String parseBaseQueryTxt(RunSQL run); 
 	/** 
 	 * 求总数SQL 
-	 * @param run  run
-	 * @return return
+	 * @param run  RunSQL
+	 * @return String
 	 */ 
 	public String parseTotalQueryTxt(RunSQL run); 
 	 
@@ -66,7 +66,7 @@ public interface SQLCreater{
 	/** 
 	 * 查询SQL 
 	 * @param run  run
-	 * @return return
+	 * @return String
 	 */ 
 	public String parseFinalQueryTxt(RunSQL run); 
 	public RunSQL createInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns); 
@@ -79,7 +79,7 @@ public interface SQLCreater{
 	/**
 	 * 拼接字符串
 	 * @param args args
-	 * @return return
+	 * @return String
 	 */
 	public String concat(String ... args);
 
