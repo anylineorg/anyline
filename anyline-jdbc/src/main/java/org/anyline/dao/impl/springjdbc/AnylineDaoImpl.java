@@ -340,7 +340,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * 总记录数
 	 * @param sql sql
 	 * @param values values
-	 * @return return
+	 * @return int
 	 */
 	protected int getTotal(String sql, List<Object> values) {
 		int total = 0;
@@ -353,7 +353,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * @param obj		需要更新的数据  row		需要更新的数据
 	 * @param dest	dest
 	 * @param columns	需要更新的列  columns	需要更新的列
-	 * @return return
+	 * @return int
 	 */
 	@Override
 	public int update(String dest, Object obj, String ... columns ){
@@ -479,7 +479,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * @param columns  需要插入的列
 	 * @param dest  dest
 	 * @param data  data
-	 * @return return
+	 * @return int
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkParimary, String ... columns){
@@ -649,7 +649,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * 查询
 	 * @param sql  sql
 	 * @param values  values
-	 * @return return
+	 * @return List
 	 */
 	protected List<Map<String,Object>> maps(String sql, List<Object> values){
 		List<Map<String,Object>> maps = null;
@@ -690,7 +690,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	 * 查询
 	 * @param sql  sql
 	 * @param values  values
-	 * @return return
+	 * @return DataSet
 	 */
 	protected DataSet select(String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
@@ -983,7 +983,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	/**
 	 * 根据存储过程查询(MSSQL AS 后必须加 SET NOCOUNT ON)
 	 * @param procedure  procedure
-	 * @return return
+	 * @return DataSet
 	 */
 	@Override
 	public DataSet query(final Procedure procedure){
@@ -1181,7 +1181,7 @@ public class AnylineDaoImpl implements AnylineDao {
 	/**
 	 * 参数日志格式化
 	 * @param params params
-	 * @return return
+	 * @return String
 	 */
 	protected String paramLogFormat(List<?> params){
 		String result = "\n";
