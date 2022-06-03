@@ -123,7 +123,7 @@ public class CharUtil {
 	 *  
 	 * @param chs  chs
 	 *            汉字字符串 
-	 * @return return
+	 * @return int
 	 */ 
 	private static int getChsAscii(String chs) { 
  
@@ -150,7 +150,7 @@ public class CharUtil {
 	 * 单字解析 汉字转拼音
 	 *  
 	 * @param str  str
-	 * @return return
+	 * @return String
 	 */ 
 	public static  String convert(String str) { 
  
@@ -173,7 +173,7 @@ public class CharUtil {
 	 * 获取汉字字符串的拼音 
 	 *  
 	 * @param chs  chs
-	 * @return return
+	 * @return String
 	 */ 
 	public static String pinyin(String chs) { 
 		return pinyin(chs, false); 
@@ -185,7 +185,7 @@ public class CharUtil {
 	 *  
 	 * @param chs  chs
 	 * @param first 是否只取首字母 
-	 * @return return
+	 * @return String
 	 */ 
 	public static  String pinyin(String chs, boolean first) { 
 		chs = chs.toLowerCase(Locale.getDefault()); 
