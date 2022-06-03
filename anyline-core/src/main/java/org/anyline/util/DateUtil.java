@@ -321,7 +321,7 @@ public class DateUtil {
 	/**
 	 * 下周第一天
 	 * @param date  日期
-	 * @return return
+	 * @return Date
 	 */
 	public static Date getFirstDayOfNextWeek(Date date) {
 		Calendar calendar = getCalendar();
@@ -698,7 +698,7 @@ public class DateUtil {
 	/**
 	 * 一年多少天
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int countDaysOfYear(Date date) {
 		Calendar calendar = getCalendar();
@@ -719,7 +719,7 @@ public class DateUtil {
 	/**
 	 * 一年多少天
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int countDaysOfMonth(Date date) {
 		Calendar calendar = getCalendar();
@@ -1003,7 +1003,7 @@ public class DateUtil {
 	 * 按月加
 	 *
 	 * @param value  月数
-	 * @return return
+	 * @return Date
 	 */
 	public static Date addMonth(int value) {
 		Calendar calendar = getCalendar();
@@ -1047,7 +1047,7 @@ public class DateUtil {
 	 *
 	 * @param idx  idx
 	 * @param date  日期
-	 * @return return
+	 * @return Date
 	 */
 	public static Date getDateOfWeek(int idx, Date date) {
 		Date result = null;
@@ -1357,7 +1357,7 @@ public class DateUtil {
 	/**
 	 * 星期几(礼拜几)
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int dayOfWeek(Date date) {
 		return getDayOfWeek(date);
@@ -1372,7 +1372,7 @@ public class DateUtil {
 	/**
 	 * 日(号)
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int dayOfMonth(Date date) {
 		return getDayOfMonth(date);
@@ -1437,7 +1437,7 @@ public class DateUtil {
 	/**
 	 * 小时(点)
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int hour(Date date) {
 		Calendar calendar = getCalendar();
