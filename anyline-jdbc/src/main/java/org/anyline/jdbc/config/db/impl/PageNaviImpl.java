@@ -138,7 +138,7 @@ public class PageNaviImpl implements PageNavi{
 	 
 	/** 
 	 * 第一行 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getFirstRow(){ 
 		if(calType == 0){ 
@@ -152,7 +152,7 @@ public class PageNaviImpl implements PageNavi{
 	} 
 	/** 
 	 * 最后一行 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getLastRow(){ 
 		if(calType == 0){ 
@@ -166,7 +166,7 @@ public class PageNaviImpl implements PageNavi{
 	} 
 	/** 
 	 * 页面显示的第一页 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getDisplayPageFirst() { 
 		return displayPageFirst; 
@@ -180,7 +180,7 @@ public class PageNaviImpl implements PageNavi{
 	} 
 	/** 
 	 * 页面显示的最后一页 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getDisplayPageLast() { 
 		return displayPageLast; 
@@ -258,7 +258,7 @@ public class PageNaviImpl implements PageNavi{
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
-	 * @return return
+	 * @return PageNavi
 	 */ 
 	public PageNavi order(Order order){ 
 		if(null == orders){ 
@@ -271,7 +271,7 @@ public class PageNaviImpl implements PageNavi{
 	 * 设置排序方式 
 	 * @param order  order
 	 * @param type  type
-	 * @return return
+	 * @return PageNavi
 	 */ 
 	@Override 
 	public PageNavi order(String order, String type){ 
@@ -451,7 +451,7 @@ public class PageNaviImpl implements PageNavi{
  
 	/** 
 	 *  @param creater creater
-	 * @return return
+	 * @return String
 	 */ 
 	public String html(String creater){ 
 		PageNaviConfig config = PageNaviConfig.getInstance(style);
