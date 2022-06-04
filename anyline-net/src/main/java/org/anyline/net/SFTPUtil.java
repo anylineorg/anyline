@@ -117,7 +117,7 @@ public class SFTPUtil {
     }   
     /** 
      * 断开连接 
-     * @return return
+     * @return boolean
      */ 
 	public boolean disconnect(){ 
         if (session != null) {   
@@ -226,7 +226,7 @@ public class SFTPUtil {
     /**  
      * 根据路径创建文件夹.  
      * @param dir 路径 必须是 /xxx/xxx/ 不能就单独一个/  
-     * @return return
+     * @return boolean
      * @throws SftpException 异常  
      */   
     public boolean mkdir(String dir) throws SftpException {   
