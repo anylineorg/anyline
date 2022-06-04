@@ -41,7 +41,7 @@ public class RegularMatch implements Regular{
 	 * 匹配状态 
 	 * @param src  src
 	 * @param regx  regx
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean match(String src, String regx){ 
 		boolean result = false; 
@@ -61,7 +61,7 @@ public class RegularMatch implements Regular{
 	 * 提取子串 
 	 * @param src	输入字符串  src	输入字符串
 	 * @param regx	表达式  regx	表达式
-	 * @return return
+	 * @return List
 	 */ 
 	public List<List<String>> fetchs(String src, String regx){ 
 		List<List<String>> list = new ArrayList<List<String>>(); 
@@ -90,7 +90,7 @@ public class RegularMatch implements Regular{
 	 * @param src		输入字符串  src		输入字符串
 	 * @param regx		表达式  regx		表达式
 	 * @param idx		指定提取位置  idx		指定提取位置
-	 * @return return
+	 * @return List
 	 */ 
 	public List<String> fetch(String src, String regx, int idx){ 
 		List<String> list = new ArrayList<>();
@@ -117,7 +117,7 @@ public class RegularMatch implements Regular{
 	 * 过滤 保留匹配项 
 	 * @param src  src
 	 * @param regx  regx
-	 * @return return
+	 * @return List
 	 */ 
 	public List<String> pick(List<String> src, String regx){ 
 		List<String> list = new ArrayList<>();
@@ -132,7 +132,7 @@ public class RegularMatch implements Regular{
 	 * 过滤 删除匹配项 
 	 * @param src  src
 	 * @param regx  regx
-	 * @return return
+	 * @return List
 	 */ 
 	public List<String> wipe(List<String> src, String regx){ 
 		List<String> list = new ArrayList<>();
