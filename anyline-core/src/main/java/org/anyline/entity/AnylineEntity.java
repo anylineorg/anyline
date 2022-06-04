@@ -37,7 +37,7 @@ public abstract class AnylineEntity extends DataRow implements Serializable{
 	 * 			是否检查可插入 
 	 * @param checkUpdate  checkUpdate
 	 * 			是否检查可更新 
-	 * @return return
+	 * @return List
 	 */ 
 	@SuppressWarnings("rawtypes")
 	public List<String> getColumns(boolean checkInsert, boolean checkUpdate){ 
@@ -59,7 +59,7 @@ public abstract class AnylineEntity extends DataRow implements Serializable{
 	/** 
 	 * 根据属性读取对应的列名 
 	 * @param property  property
-	 * @return return
+	 * @return String
 	 */ 
 	public String getColumnByProperty(String property){ 
 		String column = null; 
@@ -80,7 +80,7 @@ public abstract class AnylineEntity extends DataRow implements Serializable{
 	/** 
 	 * 根据列名读取属性值 
 	 * @param column  column
-	 * @return return
+	 * @return Object
 	 */ 
 	public Object getValueByColumn(String column){ 
 		return BeanUtil.getValueByColumn(this, column); 
