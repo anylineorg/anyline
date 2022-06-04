@@ -66,7 +66,7 @@ public class MD5Util {
 	/** 
 	 * 字符MD5加密 
 	 * @param src  src
-	 * @return return
+	 * @return String
 	 */ 
 	public static String crypto(String src){ 
 		return sign(src, "UTF-8"); 
@@ -84,7 +84,7 @@ public class MD5Util {
     /** 
     * 获取单个文件的MD5值！ 
     * @param file  file
-    * @return return
+    * @return String
     */ 
     public static String getFileMD5(File file) { 
 	    if (null == file || !file.isFile() || !file.exists()){ 
@@ -113,7 +113,7 @@ public class MD5Util {
     * 获取文件夹中文件的MD5值 
     * @param file  file
     * @param recursion ;true递归子目录中的文件 
-    * @return return
+    * @return Map
     */ 
     public static Map<String, String> getDirMD5(File file,boolean recursion) { 
 	    if(null == file || !file.isDirectory() || !file.exists()){ 
@@ -147,7 +147,7 @@ public class MD5Util {
     /** 
      * 将一个字节转化成十六进制形式的字符串 
      * @param b  b
-     * @return return
+     * @return String
      */ 
     private static String byteToHexString(byte b) { 
         int n = b; 
