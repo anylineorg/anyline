@@ -40,7 +40,7 @@ public interface Config extends Serializable {
 	/** 
 	 *  
 	 * @param chain 容器 
-	 * @return return
+	 * @return Condition
 	 */ 
 	public Condition createAutoCondition(ConditionChain chain);
 
