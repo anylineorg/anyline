@@ -227,7 +227,7 @@ public interface Regular {
 	* 匹配状态 
 	* @param src  src
 	* @param regx  regx
-	* @return return
+	* @return boolean
 	*/ 
 	public boolean match(String src, String regx); 
  
@@ -235,7 +235,7 @@ public interface Regular {
 	* 提取子串 
 	* @param src	输入字符串  src	输入字符串
 	* @param regx	表达式  regx	表达式
-	* @return return
+	* @return List
 	 * @throws Exception Exception
 	*/ 
 	public List<List<String>> fetchs(String src, String regx) throws Exception; 
@@ -244,7 +244,7 @@ public interface Regular {
 	* @param src		输入字符串  src		输入字符串
 	* @param regx		表达式  regx		表达式
 	* @param idx		指定提取位置  idx		指定提取位置
-	* @return return
+	* @return List
 	 * @throws Exception Exception
 	*/ 
 	public List<String> fetch(String src, String regx, int idx) throws Exception;
@@ -260,14 +260,14 @@ public interface Regular {
 	* 过滤  仅保留匹配项 
 	* @param src  src
 	* @param regx  regx
-	* @return return
+	* @return List
 	*/
 	public List<String> pick(List<String> src, String regx);
 	/** 
 	* 过滤 删除匹配项 
 	* @param src  src
 	* @param regx  regx
-	* @return return
+	* @return List
 	*/
 	public List<String> wipe(List<String> src, String regx);
  
