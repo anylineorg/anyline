@@ -47,7 +47,7 @@ public class DownloadTask {
 	 
 	/** 
 	 * 是否覆盖已存在文件 
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean isOverride() { 
 		return override; 
@@ -62,7 +62,7 @@ public class DownloadTask {
  
 	/** 
 	 * 平均每秒下载byte 
-	 * @return return
+	 * @return long
 	 */ 
 	public long getAvgSpeed(){ 
 		Long sum = 0L; 
@@ -90,7 +90,7 @@ public class DownloadTask {
 	} 
 	/** 
 	 * 瞬时每秒下载byte(只计算最后一次) 
-	 * @return return
+	 * @return long
 	 */ 
 	public long getSpeed(){ 
 		if(!this.isRunning()){ 
@@ -362,7 +362,7 @@ public class DownloadTask {
 	} 
 	/** 
 	 * 耗时 
-	 * @return return
+	 * @return long
 	 */ 
 	public long getExpend() { 
 		if(end ==0){ 
@@ -387,7 +387,7 @@ public class DownloadTask {
 	 * 预计剩余时间 
 	 * 没有实际速度时，使用预计速度 
 	 * @param speed speed
-	 * @return return
+	 * @return long
 	 */ 
 	public long getExpect(long speed) { 
 		if(expend>0){ 
@@ -402,7 +402,7 @@ public class DownloadTask {
 	}
 	/**
 	 * 预计剩余时间
-	 * @return return
+	 * @return long
 	 */
 	public long getExpect() { 
 		return expect; 
