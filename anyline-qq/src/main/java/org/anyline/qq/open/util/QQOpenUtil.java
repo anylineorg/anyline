@@ -40,7 +40,7 @@ public class QQOpenUtil{
 	/** 
 	 * 统一下单 
 	 * @param order  order
-	 * @return return
+	 * @return QQPayTradeResult
 	 */ 
 	public QQPayTradeResult unifiedorder(QQPayTradeOrder order) { 
 		QQPayTradeResult result = null; 
@@ -82,7 +82,7 @@ public class QQOpenUtil{
 	 * 签名 
 	 * 统一下单签名 
 	 * @param params  params
-	 * @return return
+	 * @return String
 	 */ 
 	public String sign(Map<String, Object> params) { 
 		String sign = ""; 
@@ -96,7 +96,7 @@ public class QQOpenUtil{
 	 * APP 调用起支付签名 
 	 * @param nonce	随机串  nonce	随机串
 	 * @param prepayid 预支付ID 
-	 * @return return
+	 * @return String
 	 */ 
 	public String appSign(String prepayid, String nonce){ 
 		String result = ""; 
@@ -133,7 +133,7 @@ public class QQOpenUtil{
 	 * APP调起支付所需参数 
 	 * @param hint	关注手Q公众帐号提示语  hint	关注手Q公众帐号提示语
 	 * @param prepayid 预支付ID 
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow appParam(String prepayid, String hint){ 
 		DataRow row = new DataRow(); 
