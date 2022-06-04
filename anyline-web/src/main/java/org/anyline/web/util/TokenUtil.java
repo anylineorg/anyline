@@ -32,7 +32,7 @@ public class TokenUtil {
 	/** 
 	 * 创建token并放入session 
 	 * @param request  request
-	 * @return return
+	 * @return String
 	 */ 
 	public static String createToken(HttpServletRequest request){ 
 		String token = null; 
@@ -59,7 +59,7 @@ public class TokenUtil {
 	/** 
 	 * 验证token 
 	 * @param request request
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean checkToken(HttpServletRequest request){ 
 		boolean result = false; 
@@ -109,7 +109,7 @@ public class TokenUtil {
 	/** 
 	 * token是否必须 
 	 * @param request  request
-	 * @return return
+	 * @return boolean
 	 */ 
 	@SuppressWarnings("rawtypes")
 	public static boolean checkRequired(HttpServletRequest request){ 
