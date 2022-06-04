@@ -27,7 +27,7 @@ public interface AutoSQL extends SQL{
 	/** 
 	 * 设置数据源 
 	 * @param table table
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL setDataSource(String table); 
 	 
@@ -43,7 +43,7 @@ public interface AutoSQL extends SQL{
 	 * @param	column  列名 
 	 * @param	value  值 
 	 * @param	compare  比较方式 
-	 * @return return
+	 * @return SQL
 	 */
 	public SQL addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare);
 	public SQL addCondition(boolean required, String column, Object value, COMPARE_TYPE compare); 
@@ -51,7 +51,7 @@ public interface AutoSQL extends SQL{
 	/** 
 	 * 添加静态文本查询条件 
 	 * @param condition codition
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL addCondition(String condition) ; 
 	 /* ****************************************************************************************** 
