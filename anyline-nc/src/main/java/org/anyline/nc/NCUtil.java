@@ -52,7 +52,7 @@ public class NCUtil {
 	} 
 	/** 
 	 * 打开源文件 
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean open(){ 
 		try{ 
@@ -69,7 +69,7 @@ public class NCUtil {
 	} 
 	/** 
 	 * 释放源文件 
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean close(){ 
 		try{ 
@@ -82,14 +82,14 @@ public class NCUtil {
 	} 
 	/** 
 	 * 变量列表 
-	 * @return return
+	 * @return List
 	 */ 
 	public List<Variable> getVariables(){ 
 		return nc.getVariables(); 
 	} 
 	/** 
 	 * 变量名称列表 
-	 * @return return
+	 * @return List
 	 */ 
 	public List<String> getVariableNames(){ 
 		List<String> list = new ArrayList<>();
@@ -101,7 +101,7 @@ public class NCUtil {
 	} 
 	/** 
 	 * 内容概要 
-	 * @return return
+	 * @return String
 	 */ 
 	public String info(){ 
 		return nc.getDetailInfo(); 
@@ -109,7 +109,7 @@ public class NCUtil {
 	/** 
 	 * 查询变量 
 	 * @param var  var
-	 * @return return
+	 * @return Variable
 	 */ 
 	public Variable findVariable(String var){ 
 		return nc.findVariable(var); 
@@ -117,7 +117,7 @@ public class NCUtil {
 	/** 
 	 * 查询变量值 
 	 * @param var  var
-	 * @return return
+	 * @return Array
 	 */ 
 	public Array getVariableValues(String var){ 
 		Array array = null; 
@@ -136,7 +136,7 @@ public class NCUtil {
 	 * @param var 变量
 	 * @param origin 起点
 	 * @param shape 长度 
-	 * @return return
+	 * @return Array
 	 */ 
 	public Array getVariableValues(String var, int[] origin, int[] shape){ 
 		Array array = null; 
