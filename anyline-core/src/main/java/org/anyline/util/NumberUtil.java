@@ -32,7 +32,7 @@ public class NumberUtil {
 	 * 
 	 * @param src src
 	 * @param pattern pattern
-	 * @return return
+	 * @return String
 	 */
 	public static String format(String src, String pattern) {
 		if (BasicUtil.isEmpty(src) || BasicUtil.isEmpty(src.trim())) {
@@ -53,7 +53,7 @@ public class NumberUtil {
 	 * 
 	 * @param src src
 	 * @param pattern pattern
-	 * @return return
+	 * @return String
 	 */
 	public static String format(Number src, String pattern) {
 		if (null == src) {
@@ -65,7 +65,7 @@ public class NumberUtil {
 	/**
 	 * 中文大写(简体)
 	 * @param num num
-	 * @return return
+	 * @return String
 	 */ 
 	public static String upper(long num){
 		return NumberTextUtil.getInstance(NumberTextUtil.Lang.ChineseSimplified).getText(num);
@@ -75,7 +75,7 @@ public class NumberUtil {
 	 * 选取最大数
 	 *
 	 * @param nums nums
-	 * @return return
+	 * @return BigDecimal
 	 */
 	public static BigDecimal max(BigDecimal... nums) {
 		BigDecimal max = nums[0];
@@ -93,7 +93,7 @@ public class NumberUtil {
 	 * 选取最小数
 	 *
 	 * @param nums nums
-	 * @return return
+	 * @return BigDecimal
 	 */
 	public static BigDecimal min(BigDecimal... nums) {
 		BigDecimal min = nums[0];
@@ -112,7 +112,7 @@ public class NumberUtil {
 	 * 选取最大数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return double
 	 */
 	public static double max(double... nums) {
 		double max = nums[0];
@@ -128,7 +128,7 @@ public class NumberUtil {
 	 * 选取最小数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return double
 	 */
 	public static double min(double... nums) {
 		double min = nums[0];
@@ -145,7 +145,7 @@ public class NumberUtil {
 	 * 选取最大数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return int
 	 */
 	public static int max(int... nums) {
 		int max = nums[0];
@@ -162,7 +162,7 @@ public class NumberUtil {
 	 * 选取最小数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return int
 	 */
 	public static int min(int... nums) {
 		int min = nums[0];
@@ -179,7 +179,7 @@ public class NumberUtil {
 	 * 选取最大数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return long
 	 */
 	public static long max(long... nums) {
 		long max = nums[0];
@@ -196,7 +196,7 @@ public class NumberUtil {
 	 * 选取最小数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return long
 	 */
 	public static long min(long... nums) {
 		long min = nums[0];
@@ -213,7 +213,7 @@ public class NumberUtil {
 	 * 选取最大数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return float
 	 */
 	public static float max(float... nums) {
 		float max = nums[0];
@@ -230,7 +230,7 @@ public class NumberUtil {
 	 * 选取最小数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return float
 	 */
 	public static float min(float... nums) {
 		float min = nums[0];
@@ -247,7 +247,7 @@ public class NumberUtil {
 	 * 选取最大数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return short
 	 */
 	public static short max(short... nums) {
 		short max = nums[0];
@@ -264,7 +264,7 @@ public class NumberUtil {
 	 * 选取最小数
 	 * 
 	 * @param nums nums
-	 * @return return
+	 * @return short
 	 */
 	public static short min(short... nums) {
 		short min = nums[0];
