@@ -97,7 +97,7 @@ public class ConfigParser {
 	 *
 	 * @param config +id.field:key | key
 	 * 	             +date.dateFr:dateFr | date
-	 * @return return
+	 * @return ParseResult
 	 */
 	private static ParseResult parseInit(String config){
 		ParseResult result = new ParseResult();
@@ -149,7 +149,7 @@ public class ConfigParser {
 	/**
 	 * 解析处理方法
 	 * @param result  result
-	 * @return return
+	 * @return ParseResult
 	 */
 	private static ParseResult parseClassMethod(ParseResult result){
 		String config = result.getKey();
@@ -180,7 +180,7 @@ public class ConfigParser {
 	 * 解析 比较方式
 	 * @param result  result
 	 * @param isKey true:parseConfig参数 false:query参数
-	 * @return return
+	 * @return ParseResult
 	 */
 	private static ParseResult parseCompare(ParseResult result, boolean isKey){
 		String config = result.getKey();
@@ -227,7 +227,7 @@ public class ConfigParser {
 	}/**
 	 * 解析默认值
 	 * @param result  result
-	 * @return return
+	 * @return ParseResult
 	 */
 	private static ParseResult parseDef(ParseResult result){
 		String key = result.getKey();
@@ -261,7 +261,7 @@ public class ConfigParser {
 	/**
 	 * 解析加密方式
 	 * @param result  result
-	 * @return return
+	 * @return ParseResult
 	 */
 	private static ParseResult parseEncrypt(ParseResult result){
 		Map<String,Object> map = parseEncrypt(result.getKey());
@@ -349,7 +349,7 @@ public class ConfigParser {
 	 * 默认值
 	 * @param values values
 	 * @param parser  parser
-	 * @return return
+	 * @return List
 	 */
 	private static List<Object> getDefValues(Map<String,Object> values, ParseResult parser){
 		List<Object> result = new ArrayList<Object>();
@@ -421,7 +421,7 @@ public class ConfigParser {
 	/**
 	 * 默认值
 	 * @param parser  parser
-	 * @return return
+	 * @return List
 	 */
 	private static List<Object> getDefValues(ParseResult parser){
 		List<Object> result = new ArrayList<Object>();
@@ -458,7 +458,7 @@ public class ConfigParser {
 	 * @param src  src
 	 * @param store  store
 	 * @param conditions  conditions
-	 * @return return
+	 * @return String
 	 */
 	public static String createSQLSign(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
 		conditions = BasicUtil.compressionSpace(conditions);
@@ -507,7 +507,7 @@ public class ConfigParser {
 	 * 整体加密http 参数(cd=1&amp;nm=2)
 	 *
 	 * @param param  param
-	 * @return return
+	 * @return String
 	 */
 	public static String encryptRequestParam(String param) {
 		if (null == param || "".equals(param.trim())) {
@@ -520,7 +520,7 @@ public class ConfigParser {
 	 * 整体解密http 参数(cd=1&amp;nm=2)
 	 *
 	 * @param param  param
-	 * @return return
+	 * @return String
 	 */
 	public static String decryptRequestParam(String param) {
 		if (null == param) {
@@ -533,7 +533,7 @@ public class ConfigParser {
 	 * 加密http请求参数名
 	 *
 	 * @param key key
-	 * @return return
+	 * @return String
 	 */
 	public static String encryptHttpRequestParamKey(String key) {
 		if (null == key || "".equals(key.trim())) {
@@ -546,7 +546,7 @@ public class ConfigParser {
 	 * 解密http请求参数名
 	 *
 	 * @param key key
-	 * @return return
+	 * @return String
 	 */
 	public static String decryptParamKey(String key) {
 		if (null == key) {
@@ -558,7 +558,7 @@ public class ConfigParser {
 	/**
 	 * 加密http请求参数值
 	 * @param value value
-	 * @return return
+	 * @return String
 	 */
 	public static String encryptHttpRequestParamValue(String value) {
 		if (null == value || "".equals(value.trim())) {
@@ -570,7 +570,7 @@ public class ConfigParser {
 	/**
 	 * 解密http请求参数值
 	 * @param value value
-	 * @return return
+	 * @return String
 	 */
 	public static String decryptParamValue(String value) {
 		if (null == value) {
@@ -636,7 +636,7 @@ public class ConfigParser {
 	 * 是否已加密 (应该根据规则判断,而不是解一次密)
 	 * @param src src
 	 * @param type type
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isEncrypt(String src, String type){
 		if(null == src){
@@ -687,7 +687,7 @@ public class ConfigParser {
 	 * @param src  src
 	 * @param key  key
 	 * @param type  type
-	 * @return return
+	 * @return String
 	 */
 	private static String decrypt(String src, DESKey key, String type) {
 		if(ConfigTable.getBoolean("IS_DECRYPT_LOG")){
@@ -754,7 +754,7 @@ public class ConfigParser {
 	 * 加密url参数部分
 	 *
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */
 	public static String encryptUrl(String url) {
 		if (null == url || !url.contains("?")) {
@@ -810,7 +810,7 @@ public class ConfigParser {
 	 * 加密htmla标签中的url
 	 *
 	 * @param tag  tag
-	 * @return return
+	 * @return String
 	 */
 	public static String encryptHtmlTagA(String tag) {
 		try {
@@ -829,7 +829,7 @@ public class ConfigParser {
 	 * @param values values
 	 * @param key  key
 	 * @param valueEncrypt value是否加密
-	 * @return return
+	 * @return List
 	 */
 	@SuppressWarnings("unchecked")
 	private static List<Object> getRuntimeValuesFromDecryptMap(Map<String,Object> values, String key, boolean valueEncrypt) {
@@ -865,7 +865,7 @@ public class ConfigParser {
 	 * @param values values
 	 * @param key  key
 	 * @param valueEncrypt  valueEncrypt
-	 * @return return
+	 * @return String
 	 */
 	@SuppressWarnings("unused")
 	private static String getRuntimeValueFormDecryptMap(Map<String,Object> values, String key, boolean valueEncrypt) {
@@ -920,7 +920,7 @@ public class ConfigParser {
 	 * @param key  key
 	 * @param keyEncrypt  keyEncrypt key是否加密
 	 * @param valueEncrypt  valueEncrypt value是否加密
-	 * @return return
+	 * @return List
 	 */
 	@SuppressWarnings("rawtypes")
 	public static List<Object> getRuntimeValues(Map<String,Object> values, String key, boolean keyEncrypt, boolean valueEncrypt) {
@@ -991,7 +991,7 @@ public class ConfigParser {
 	 *            参数名是否加密过
 	 * @param valueEncrypt  valueEncrypt
 	 *            参数值是否加密过,是则解密
-	 * @return return
+	 * @return Object
 	 */
 	public static Object getRuntimeValue(Map<String,Object> values,String key, boolean keyEncrypt, boolean valueEncrypt) {
 		String result = "";
@@ -1014,7 +1014,7 @@ public class ConfigParser {
 	 * 检查非法字符
 	 *
 	 * @param src  src
-	 * @return return
+	 * @return Object
 	 */
 	public static Object filterIllegalChar(Object src) {
 		if (null == src) {
@@ -1048,7 +1048,7 @@ public class ConfigParser {
 	 *
 	 * @param src  src
 	 *            未插入版本号的密文
-	 * @return return
+	 * @return int
 	 */
 	private static int getDESVersionIndex(String src) {
 		int idx = -1;
@@ -1065,9 +1065,8 @@ public class ConfigParser {
 	/**
 	 * 密文中插入版本号
 	 *
-	 * @param src  src
-	 *            未插入版本号的密文
-	 * @return return
+	 * @param src  未插入版本号的密文
+	 * @return String
 	 */
 	private static String insertDESVersion(String src, String version) {
 		int idx = getDESVersionIndex(src);
@@ -1085,7 +1084,7 @@ public class ConfigParser {
 	 * 解析加密版本号
 	 *
 	 * @param src  src
-	 * @return return
+	 * @return String
 	 */
 	private static String[] parseDESVersion(String src) {
 		String result[] = null;
