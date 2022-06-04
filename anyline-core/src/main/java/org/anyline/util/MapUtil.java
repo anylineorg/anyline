@@ -36,7 +36,7 @@ public class MapUtil {
 	 * 如提取用户列表中的所有用户ID,CODE
 	 * @param list  list
 	 * @param keys  keys
-	 * @return return
+	 * @return List
 	 */
 	public static List<Map<String,Object>> extracts(Collection<Map<String,Object>> list, String ... keys){
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>();
