@@ -63,7 +63,7 @@ public abstract class BasicSQL implements SQL{
 	/** 
 	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖 
 	 * @param order  order
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL order(Order order){ 
 		if(null == orders){ 
@@ -97,7 +97,7 @@ public abstract class BasicSQL implements SQL{
 	/** 
 	 * 添加分组条件,在之前的基础上添加新分组条件,有重复条件则覆盖 
 	 * @param group  group
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL group(String group){ 
 		/*避免添加空条件*/ 
@@ -116,7 +116,7 @@ public abstract class BasicSQL implements SQL{
 	/** 
 	 * 添加运行时参数值 
 	 * @param runValue  runValue
-	 * @return return
+	 * @return SQL
 	 */ 
 	@SuppressWarnings({ "unchecked", "rawtypes" }) 
 	protected SQL addRunValue(Object runValue){ 
@@ -133,7 +133,7 @@ public abstract class BasicSQL implements SQL{
 	} 
 	/** 
 	 * 运行时参数值 
-	 * @return return
+	 * @return List
 	 */ 
 	public List<Object> getRunValues() { 
 		return runValues; 
@@ -144,7 +144,8 @@ public abstract class BasicSQL implements SQL{
 		return this; 
 	} 
 	/** 
-	 * 添加标准查询条件 
+	 * 添加标准查询条件
+	 * @return SQL
 	 */ 
 	public SQL addCondition(Condition condition) { 
 		chain.addCondition(condition); 
@@ -157,19 +158,17 @@ public abstract class BasicSQL implements SQL{
 	 * @param	condition	 条件ID 
 	 * @param	variable 变量key 
 	 * @param	value  值 
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL setConditionValue(String condition, String variable, Object value) { 
 		return this; 
 	} 
 	/** 
 	 * 添加查询条件(自动生成) 
-	 * @param	column 
-	 * 			列名 
-	 * @param	value 
-	 * 			值 
-	 * @param	compare 
-	 * 			比较方式 
+	 * @param	column  列名
+	 * @param	value  值
+	 * @param	compare  比较方式
+	 * @return SQL
 	 */ 
 	public SQL addCondition(String column, Object value, int compare) { 
 		return this; 
@@ -250,7 +249,7 @@ public abstract class BasicSQL implements SQL{
 	 * 设置主键 先清空之前设置过和主键
 	 * 当前对象处于容器中时,设置容器主键,否则设置自身主键
 	 * @param primaryKeys primaryKeys
-	 * @return return
+	 * @return SQL
 	 */
 	public SQL setPrimaryKey(String ... primaryKeys){
 		if(null != primaryKeys){
@@ -279,7 +278,7 @@ public abstract class BasicSQL implements SQL{
 	/**
 	 * 读取主键
 	 * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键
-	 * @return return
+	 * @return List
 	 */
 	public List<String> getPrimaryKeys(){
 		return primaryKeys;
@@ -293,7 +292,7 @@ public abstract class BasicSQL implements SQL{
 	}
 	/**
 	 * 自身是否有主键
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean hasPrimaryKeys(){
 		if(null != primaryKeys && primaryKeys.size()>0){
