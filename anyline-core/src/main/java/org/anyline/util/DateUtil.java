@@ -1084,7 +1084,7 @@ public class DateUtil {
 	 * 区间日期
 	 * @param fr  fr
 	 * @param to  to
-	 * @return return
+	 * @return List
 	 */
 	public static List<Date> getDays(Date fr, Date to){
 		List<Date> list = new ArrayList<Date>();
@@ -1236,7 +1236,7 @@ public class DateUtil {
 	/**
 	 * 一年中的第几个星期
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int getWeekOfYear(Date date) {
 		Calendar calendar = getCalendar();
@@ -1253,7 +1253,7 @@ public class DateUtil {
 	 *
 	 * @param date  日期
 	 * @param value  value
-	 * @return return
+	 * @return Date
 	 */
 	public static Date addYear(Date date, int value) {
 		Calendar calendar = getCalendar();
@@ -1269,7 +1269,7 @@ public class DateUtil {
 	 * 按小时加
 	 *
 	 * @param value  value
-	 * @return return
+	 * @return Date
 	 */
 	public static Date addHour(int value) {
 		Calendar calendar = getCalendar();
@@ -1283,7 +1283,7 @@ public class DateUtil {
 	 *
 	 * @param date  日期
 	 * @param value  value
-	 * @return return
+	 * @return Date
 	 */
 	public static Date addHour(Date date, int value) {
 		Calendar calendar = getCalendar();
@@ -1299,7 +1299,7 @@ public class DateUtil {
 	 * 按分钟加
 	 *
 	 * @param value  value
-	 * @return return
+	 * @return Date
 	 */
 	public static Date addMinute(int value) {
 		Calendar calendar = getCalendar();
@@ -1313,7 +1313,7 @@ public class DateUtil {
 	 *
 	 * @param date  日期
 	 * @param value  value
-	 * @return return
+	 * @return Date
 	 */
 	public static Date addMinute(Date date, int value) {
 		Calendar calendar = getCalendar();
@@ -1328,7 +1328,7 @@ public class DateUtil {
 	/**
 	 * 年份
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int year(Date date) {
 		Calendar calendar = getCalendar();
@@ -1343,7 +1343,7 @@ public class DateUtil {
 	/**
 	 * 月份
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int month(Date date) {
 		Calendar calendar = getCalendar();
@@ -1452,7 +1452,7 @@ public class DateUtil {
 	/**
 	 * 分钟
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int minute(Date date) {
 		Calendar calendar = getCalendar();
@@ -1467,7 +1467,7 @@ public class DateUtil {
 	/**
 	 * 秒
 	 * @param date date
-	 * @return return
+	 * @return int
 	 */
 	public static int second(Date date) {
 		Calendar calendar = getCalendar();
@@ -1484,7 +1484,7 @@ public class DateUtil {
 	 *
 	 * @param date1  date2
 	 * @param date2  date2
-	 * @return return
+	 * @return int
 	 */
 	public static int compare(Date date1, Date date2) {
 		long _date1 = date1.getTime();
@@ -1505,7 +1505,7 @@ public class DateUtil {
 	/**
 	 * 是上午吗?
 	 * @param date date
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isAm(Date date) {
 		Calendar calendar = getCalendar();
@@ -1520,7 +1520,7 @@ public class DateUtil {
 	/**
 	 * 是下午吗?
 	 * @param date date
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean isPm(Date date) {
 		Calendar calendar = getCalendar();
@@ -1538,7 +1538,7 @@ public class DateUtil {
 	/**
 	 *  毫秒转换成*天*时*分*秒*毫秒
 	 * @param src 毫秒
-	 * @return return
+	 * @return String
 	 */
 	public static String conversion(long src){
 		String result = "";
