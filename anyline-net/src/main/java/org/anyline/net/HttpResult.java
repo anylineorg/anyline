@@ -71,7 +71,7 @@ public class HttpResult {
 	/** 
 	 * 根据http文件头信息 解析文件类型 
 	 * @param contentType  contentType
-	 * @return return
+	 * @return String
 	 */ 
 	public static String parseHttpFileExtend(String contentType){ 
 		String fileType = null; 
