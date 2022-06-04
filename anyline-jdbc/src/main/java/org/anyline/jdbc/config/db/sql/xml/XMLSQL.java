@@ -34,6 +34,7 @@ public interface XMLSQL extends SQL{
 	/** 
 	 * 设置SQL 主体文本 
 	 * @param text  text
+	 * @return SQL
 	 */ 
 	public SQL setText(String text) ; 
 	public String getText(); 
@@ -41,7 +42,7 @@ public interface XMLSQL extends SQL{
 	/** 
 	 * 添加静态文本查询条件 
 	 * @param condition condition
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL addCondition(String condition) ; 
  
@@ -52,13 +53,10 @@ public interface XMLSQL extends SQL{
 	 * ***********************************************************************************************************************************/ 
 	/** 
 	 * 添加查询条件 
-	 * @param	condition 
-	 * 			列名|查询条件ID 
-	 * @param	variable 
-	 * 			变量key 
-	 * @param	value 
-	 * 			值 
-	 * @return return
+	 * @param	condition  列名|查询条件ID
+	 * @param	variable  变量key
+	 * @param	value  值
+	 * @return SQL
 	 */ 
 	public SQL setConditionValue(String condition, String variable, Object value); 
 	/* *********************************************************************************************************************************** 
