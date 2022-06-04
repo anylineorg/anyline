@@ -64,7 +64,7 @@ public class WatermarkUtil {
      * @param text  text
      * @param src  src
      * @param target  target
-     * @return return
+     * @return boolean
      */ 
     public boolean markText(String text, File src, File target) {
     	if(null == text || null == src || null == target || !src.exists()){
