@@ -48,7 +48,7 @@ public class CacheUtil {
      * 如果不符合刷新条件返回false
      * @param key key
      * @param sec sec
-     * @return return
+     * @return boolean
      */
     public static boolean start(String key, int sec){
     	boolean result = false;
@@ -113,7 +113,7 @@ public class CacheUtil {
     /**
      * 已执行时间
      * @param key key
-     * @return return
+     * @return long
      */
     public static long getRunTime(String key){
     	long result = -1;
@@ -127,7 +127,7 @@ public class CacheUtil {
      * 创建集中缓存的key
      * @param table table
      * @param row row
-     * @return return
+     * @return String
      */
     public static String crateCachePrimaryKey(String table, DataRow row){
     	String key = table;
@@ -147,7 +147,7 @@ public class CacheUtil {
 	 * @param src src
 	 * @param store store
 	 * @param conditions conditions
-	 * @return return
+	 * @return String
 	 */
 	public static String createCacheElementKey(boolean page, boolean order, String src, ConfigStore store, String ... conditions){
 		conditions = BasicUtil.compressionSpace(conditions);
