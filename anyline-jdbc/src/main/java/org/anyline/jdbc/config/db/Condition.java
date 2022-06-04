@@ -35,23 +35,23 @@ public interface Condition extends Cloneable{
 	/** 
 	 * 运行时文本 
 	 * @param creater creater
-	 * @return return
+	 * @return String
 	 */ 
 	public String getRunText(SQLCreater creater); 
 	/** 
 	 * 运行时参数值 
-	 * @return return
+	 * @return List
 	 */ 
 	public List<Object> getRunValues(); 
 	/** 
 	 * 拼接方式 
-	 * @return return
+	 * @return String
 	 */ 
 	public String getJoin(); 
 	public Condition setJoin(String join); 
 	/** 
 	 * 当前条件所处容器 
-	 * @return return
+	 * @return ConditionChain
 	 */ 
 	public ConditionChain getContainer(); 
 	public boolean hasContainer(); 
@@ -59,7 +59,7 @@ public interface Condition extends Cloneable{
 	/** 
 	 * 设置当前条件所处容器 
 	 * @param chain  chain
-	 * @return return
+	 * @return Condition
 	 */ 
 	public Condition setContainer(ConditionChain chain); 
 	 
