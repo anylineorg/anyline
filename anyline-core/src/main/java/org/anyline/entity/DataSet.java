@@ -36,7 +36,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 创建索引
      *
      * @param key key
-     * @return return
+     * @return DataSet
      * crateIndex("ID");
      * crateIndex("ID:ASC");
      */
@@ -169,7 +169,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param applyItem 是否应用到集合中的DataRow 默认true
      * @param pks       pks
-     * @return return
+     * @return DataSet
      */
     public DataSet addPrimaryKey(boolean applyItem, String... pks) {
         if (null != pks) {
@@ -219,7 +219,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param applyItem applyItem
      * @param pks       pks
-     * @return return
+     * @return DataSet
      */
     public DataSet setPrimaryKey(boolean applyItem, String... pks) {
         if (null != pks) {
@@ -257,7 +257,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 是否有主键
      *
-     * @return return
+     * @return boolean
      */
     public boolean hasPrimaryKeys() {
         if (null != primaryKeys && primaryKeys.size() > 0) {
@@ -270,7 +270,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 提取主键
      *
-     * @return return
+     * @return List
      */
     public List<String> getPrimaryKeys() {
         if (null == primaryKeys) {
@@ -283,7 +283,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 添加表头
      *
      * @param col col
-     * @return return
+     * @return DataSet
      */
     public DataSet addHead(String col) {
         if (null == head) {
@@ -302,7 +302,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 表头
      *
-     * @return return
+     * @return List
      */
     public List<String> getHead() {
         return head;
@@ -454,7 +454,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 记录数量
      *
-     * @return return
+     * @return int
      */
     public int size() {
         int result = 0;
@@ -470,7 +470,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 是否出现异常
      *
-     * @return return
+     * @return boolean
      */
     public boolean isException() {
         return null != exception;
@@ -488,7 +488,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 返回数据是否为空
      *
-     * @return return
+     * @return boolean
      */
     public boolean isEmpty() {
         boolean result = true;
@@ -505,7 +505,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 读取一行数据
      *
      * @param index index
-     * @return return
+     * @return DataRow
      */
     public DataRow getRow(int index) {
         DataRow row = null;
@@ -656,7 +656,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *               "NM:zh%","AGE:&gt;20","NM","%zh%"
      * @param begin  begin
      * @param qty    最多筛选多少个 0表示不限制
-     * @return return
+     * @return DataSet
      */
     public DataSet getRows(int begin, int qty, String... params) {
         DataSet set = new DataSet();
@@ -887,7 +887,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param format format
      * @param cols   cols
-     * @return return
+     * @return DataSet
      */
     public DataSet formatNumber(String format, String... cols) {
         if (null == cols || BasicUtil.isEmpty(format)) {
@@ -915,7 +915,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param format format
      * @param cols   cols
-     * @return return
+     * @return DataSet
      */
     public DataSet formatDate(String format, String... cols) {
         if (null == cols || BasicUtil.isEmpty(format)) {
@@ -945,7 +945,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param end   end
      * @param key   key
      * @param value value
-     * @return return
+     * @return DataSet
      */
     public DataSet filter(int begin, int end, String key, String value) {
         DataSet set = new DataSet();
@@ -1107,7 +1107,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param top 多少行
      * @param key key
-     * @return return
+     * @return BigDecimal
      */
     public BigDecimal maxDecimal(int top, String key) {
         BigDecimal result = null;
@@ -1166,7 +1166,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param top 多少行
      * @param key key
-     * @return return
+     * @return BigDecimal
      */
     public BigDecimal minDecimal(int top, String key) {
         BigDecimal result = null;
@@ -1223,7 +1223,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * key对应的value最大的一行
      *
      * @param key key
-     * @return return
+     * @return DataRow
      */
     public DataRow max(String key) {
         int size = size();
@@ -1266,7 +1266,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param key key
      * @param scale scale
      * @param round round
-     * @return return
+     * @return BigDecimal
      */
     public BigDecimal avg(int top, String key, int scale, int round) {
         BigDecimal result = BigDecimal.ZERO;
@@ -1317,7 +1317,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param key       key
      * @param connector connector
-     * @return return v1,v2,v3
+     * @return String v1,v2,v3
      */
     public String concat(String key, String connector) {
         return BasicUtil.concat(getStrings(key), connector);
@@ -1333,7 +1333,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param key       key
      * @param connector connector
-     * @return return v1,v2,v3
+     * @return String v1,v2,v3
      */
     public String concatWithoutNull(String key, String connector) {
         return BasicUtil.concat(getStringsWithoutNull(key), connector);
@@ -1344,7 +1344,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param key       key
      * @param connector connector
-     * @return return v1,v2,v3
+     * @return String v1,v2,v3
      */
     public String concatWithoutEmpty(String key, String connector) {
         return BasicUtil.concat(getStringsWithoutEmpty(key), connector);
@@ -1370,7 +1370,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 提取单列值
      *
      * @param key key
-     * @return return
+     * @return List
      */
     public List<Object> fetchValues(String key) {
         List<Object> result = new ArrayList<Object>();
@@ -1384,7 +1384,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 取单列不重复的值
      *
      * @param key key
-     * @return return
+     * @return List
      */
     public List<String> fetchDistinctValue(String key) {
         List<String> result = new ArrayList<>();
@@ -1406,7 +1406,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 分页
      *
      * @param link link
-     * @return return
+     * @return String
      */
     public String displayNavi(String link) {
         String result = "";
@@ -1610,7 +1610,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param index index
      * @param key   key
-     * @return return
+     * @return String
      * @throws Exception Exception
      */
     public String getHtmlString(int index, String key) throws Exception {
@@ -1632,7 +1632,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param index index
      * @param key   key
-     * @return return
+     * @return String
      * @throws Exception Exception
      */
     public String getEscapeString(int index, String key) throws Exception {
@@ -1673,7 +1673,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param index index
      * @param key   key
-     * @return return
+     * @return int
      * @throws Exception Exception
      */
     public int getInt(int index, String key) throws Exception {
@@ -1701,7 +1701,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param index index
      * @param key   key
-     * @return return
+     * @return double
      * @throws Exception Exception
      */
     public double getDouble(int index, String key) throws Exception {
@@ -2013,7 +2013,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * rows 列表中的数据格式化成json格式   不同与toString
      *
-     * @return return
+     * @return String
      */
     public String toJson() {
         return BeanUtil.object2json(this);
@@ -2031,7 +2031,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 根据指定列生成map
      *
      * @param key ID,{ID}_{NM}
-     * @return return
+     * @return Map
      */
     public Map<String, DataRow> toMap(String key) {
         Map<String, DataRow> maps = new HashMap<String, DataRow>();
@@ -2045,7 +2045,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 子类
      *
      * @param idx idx
-     * @return return
+     * @return Object
      */
     public Object getChildren(int idx) {
         DataRow row = getRow(idx);
@@ -2076,7 +2076,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 父类
      *
      * @param idx idx
-     * @return return
+     * @return Object
      */
     public Object getParent(int idx) {
         DataRow row = getRow(idx);
@@ -2109,7 +2109,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param <T>   T
      * @param index index
      * @param clazz clazz
-     * @return return
+     * @return T
      */
     public <T> T entity(int index, Class<T> clazz) {
         DataRow row = getRow(index);
@@ -2124,7 +2124,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param <T>   T
      * @param clazz clazz
-     * @return return
+     * @return List
      */
     public <T> List<T> entity(Class<T> clazz) {
         List<T> list = new ArrayList<T>();
@@ -2200,7 +2200,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 合并合并不去重
      *
      * @param set set
-     * @return return
+     * @return DataSet
      */
     public DataSet unionAll(DataSet set) {
         DataSet result = new DataSet();
@@ -2224,7 +2224,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param row  row
      * @param fixs fixs
      * @param keys keys
-     * @return return
+     * @return boolean
      */
     public boolean contains(DataRow row, List<String> fixs, String... keys) {
         if (null == rows || rows.size() == 0 || null == row) {
@@ -2309,8 +2309,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param recursion 是否递归
      * @param items     items
      * @param fixs     fixs
-     * @param keys      keys    ID:DEPT_ID或ID
-     * @return return
+     * @param keys     ID:DEPT_ID或ID
+     * @return DataSet
      */
     public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         if (null == items) {
@@ -2477,8 +2477,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
      * @param recursion 是否递归
      * @param items     items
-     * @param keys      keys    ID:DEPT_ID或ID
-     * @return return
+     * @param keys       ID:DEPT_ID或ID
+     * @return DataSet
      */
     @Deprecated
     public DataSet dispatchItems(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
@@ -2542,7 +2542,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param items 被查询的集合
      * @param fixs  关联条件列
      * @param keys  关联条件列
-     * @return return
+     * @return DataSet
      */
     public DataSet join(DataSet items, List<String> fixs,  String... keys) {
         List<String> list = BeanUtil.merge(fixs, keys);
@@ -2585,7 +2585,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param fixs keys
      * @param keys keys
-     * @return return
+     * @return DataSet
      */
     public DataSet group(String[] fixs, String... keys) {
         DataSet result = distinct(BeanUtil.merge(fixs, keys));
@@ -2646,7 +2646,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param distinct 是否根据keys抽取不重复的集合(根据keys去重)
      * @param set      set
      * @param keys     根据keys列比较是否相等，如果列名不一致"ID:USER_ID",ID表示当前DataSet的列,USER_ID表示参数中DataSet的列
-     * @return return
+     * @return DataSet
      */
     public DataSet intersection(boolean distinct, DataSet set, String... keys) {
         DataSet result = new DataSet();
@@ -2688,7 +2688,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param distinct 是否根据keys抽取不重复的集合
      * @param set      set
      * @param keys     keys
-     * @return return
+     * @return DataSet
      */
     public DataSet complement(boolean distinct, DataSet set, String... keys) {
         DataSet result = new DataSet();
@@ -2715,7 +2715,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param distinct 是否根据keys抽取不重复的集合
      * @param set      set
      * @param keys     CD,"CD:WORK_CD"
-     * @return return
+     * @return DataSet
      */
     public DataSet difference(boolean distinct, DataSet set, String... keys) {
         DataSet result = new DataSet();
@@ -3295,7 +3295,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 替换所有NULL值
      *
      * @param value value
-     * @return return
+     * @return DataSet
      */
     public DataSet replaceNull(String value) {
         for (DataRow row : rows) {
@@ -3308,7 +3308,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 替换所有空值
      *
      * @param value value
-     * @return return
+     * @return DataSet
      */
     public DataSet replaceEmpty(String value) {
         for (DataRow row : rows) {
@@ -3323,7 +3323,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param key   key
      * @param value value
-     * @return return
+     * @return DataSet
      */
     public DataSet replaceNull(String key, String value) {
         for (DataRow row : rows) {
@@ -3337,7 +3337,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param key   key
      * @param value value
-     * @return return
+     * @return DataSet
      */
     public DataSet replaceEmpty(String key, String value) {
         for (DataRow row : rows) {
