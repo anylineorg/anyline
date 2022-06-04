@@ -127,7 +127,7 @@ public class SQLStoreImpl extends SQLStore {
 	 * 解析sql.xml文件
 	 *
 	 * @param file file
-	 * @return return
+	 * @return Hashtable
 	 */
 	private static Hashtable<String, SQL> parseSQLFile(File file) {
 		Hashtable<String, SQL> result = new Hashtable<String, SQL>();
