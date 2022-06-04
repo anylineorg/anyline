@@ -101,7 +101,7 @@ public class DataSourceHolder {
 	 * 解析数据源,并返回修改后的SQL 
 	 * &lt;mysql_ds&gt;crm_user 
 	 * @param src  src
-	 * @return return
+	 * @return String
 	 */ 
 	public static String parseDataSource(String src){
 		if(null != src && src.startsWith("<")){ 
