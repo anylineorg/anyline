@@ -601,7 +601,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	/** 
 	 * 添加参数值 
 	 * @param obj  obj
-	 * @return return
+	 * @return RunSQL
 	 */ 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public RunSQL addValues(Object obj){ 
@@ -652,7 +652,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 * @param prefix  condition.id
 	 * @param variable variable
 	 * @param value value
-	 * @return return
+	 * @return RunSQL
 	 */
 	public RunSQL addCondition(String prefix, String variable, Object value) {
 		if(null != variables && BasicUtil.isEmpty(variable)){ 
