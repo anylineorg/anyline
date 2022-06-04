@@ -327,7 +327,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	/** 
 	 * 添加参数值 
 	 * @param obj  obj
-	 * @return return
+	 * @return TextRunSQLImpl
 	 */ 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public TextRunSQLImpl addValues(Object obj){ 
@@ -378,7 +378,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 * @param condition condition
 	 * @param variable variable
 	 * @param value value
-	 * @return return
+	 * @return RunSQL
 	 */
 	public RunSQL addCondition(String condition, String variable, Object value) { 
 		if(null != variables && BasicUtil.isEmpty(variable)){ 
@@ -412,6 +412,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	 * @param	var  列名
 	 * @param	value  值
 	 * @param	compare  比较方式
+	 * @return RunSQL
 	 */ 
 	public RunSQL addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, COMPARE_TYPE compare){
 		Condition condition = new AutoConditionImpl(required,strictRequired,prefix, var, value, compare);
