@@ -14,7 +14,7 @@ public class PageLazyStore {
 	 * 缓存中的总条数 
 	 * @param key		  key
 	 * @param period	过期时间(秒)  period	过期时间(秒)
-	 * @return return
+	 * @return int
 	 */ 
 	public static int getTotal(String key, long period) { 
 		Long fr = lazyTime.get(key);		//创建时间 
