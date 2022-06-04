@@ -53,7 +53,7 @@ public class TemplateModelAndView extends ModelAndView{
 	 * 文件名:方法名(String)
 	 * 或文件名:类名.方法名(String)
 	 * @param template template
-	 * @return return
+	 * @return TemplateModelAndView
 	 */
 	public TemplateModelAndView setStyle(String template){
 		
@@ -68,7 +68,7 @@ public class TemplateModelAndView extends ModelAndView{
 	/**
 	 * 构造完整path
 	 * @param path path
-	 * @return return
+	 * @return String
 	 */
 	public String createFullTemplatePath(String path){
 		String viewName = this.getViewName();
