@@ -61,7 +61,7 @@ public class IDCardUtil {
 	 * 验证所有的身份证的合法性 
 	 *  
 	 * @param idcard  idcard
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean validate(String idcard) { 
 		if (idcard.length() == 15) { 
@@ -148,7 +148,7 @@ public class IDCardUtil {
 	 * 验证15位身份证的合法性,该方法验证不准确，最好是将15转为18位后再判断，该类中已提供。 
 	 *  
 	 * @param idcard  idcard
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean validate15(String idcard) { 
 		// 非15位为假 
@@ -242,7 +242,7 @@ public class IDCardUtil {
 	 * 将15位的身份证转成18位身份证 
 	 *  
 	 * @param idcard  idcard
-	 * @return return
+	 * @return String
 	 */ 
 	public static String convertIdcarBy15bit(String idcard) { 
 		String idcard17 = null; 
@@ -297,7 +297,7 @@ public class IDCardUtil {
 	 * 15位和18位身份证号码的基本数字和位数验校 
 	 *  
 	 * @param idcard  idcard
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean isIdcard(String idcard) { 
 		return idcard == null || "".equals(idcard) ? false : Pattern.matches( 
@@ -308,7 +308,7 @@ public class IDCardUtil {
 	 * 15位身份证号码的基本数字和位数验校 
 	 *  
 	 * @param idcard  idcard
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean is15Idcard(String idcard) { 
 		return idcard == null || "".equals(idcard) ? false : Pattern.matches( 
@@ -320,7 +320,7 @@ public class IDCardUtil {
 	 * 18位身份证号码的基本数字和位数验校 
 	 *  
 	 * @param idcard  idcard
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean is18Idcard(String idcard) { 
 		return Pattern 
@@ -333,7 +333,7 @@ public class IDCardUtil {
 	 * 数字验证 
 	 *  
 	 * @param str  str
-	 * @return return
+	 * @return boolean
 	 */ 
 	private static boolean isDigital(String str) { 
 		return str == null || "".equals(str) ? false : str.matches("^[0-9]*$"); 
@@ -343,7 +343,7 @@ public class IDCardUtil {
 	 * 将身份证的每位和对应位的加权因子相乘之后，再得到和值 
 	 *  
 	 * @param bit  bit
-	 * @return return
+	 * @return int
 	 */ 
 	private static int getPowerSum(int[] bit) { 
  
@@ -413,7 +413,7 @@ public class IDCardUtil {
 	 * 将字符数组转为整型数组 
 	 *  
 	 * @param c  c
-	 * @return return
+	 * @return int
 	 * @throws NumberFormatException 
 	 */ 
 	private static int[] converCharToInt(char[] c) throws NumberFormatException { 
