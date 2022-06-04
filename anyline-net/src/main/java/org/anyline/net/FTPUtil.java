@@ -96,7 +96,7 @@ public class FTPUtil {
 	 * 下载单个文件 
 	 * @param remote  remote
 	 * @param local  local
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean downloadFile(String remote, File local) {   
 	    boolean success = false; 
@@ -233,7 +233,7 @@ public class FTPUtil {
      * 修改名称  
      * @param from   from
      * @param to   to
-     * @return return
+     * @return boolean
      * @throws IOException IOException  
      */   
     public boolean rename(String from, String to) throws IOException {   
@@ -321,7 +321,7 @@ public class FTPUtil {
 	 * 下载整个目录 
 	 * @param remoteDir  remoteDir
 	 * @param localDir  localDir
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean downloadDir(String remoteDir, File localDir) { 
 	    boolean success = false;   
@@ -434,7 +434,7 @@ public class FTPUtil {
     /**  
      * 创建目录  
      * @param path   path
-     * @return return
+     * @return boolean
      * @throws IOException   IOException
      */   
     public boolean makeDir(String path) throws IOException {   
