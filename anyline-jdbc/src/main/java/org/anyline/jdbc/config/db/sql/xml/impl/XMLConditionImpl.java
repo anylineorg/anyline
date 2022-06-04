@@ -107,8 +107,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 	} 
  
 	/** 
-	 * 解析变量 
-	 * @return return
+	 * 解析变量
 	 */ 
 	private void parseText(){ 
 		try{
