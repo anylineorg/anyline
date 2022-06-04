@@ -216,7 +216,7 @@ public class ZipUtil {
 	 * @param dir 压缩后文件路径,解压到当前目录时,解压完成后的目录名
 	 * @param comment   压缩文件的注释
 	 * @param append   是否追加
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean zip(Collection<File> files, File zip, String dir, String comment, boolean append) {
 		Map<String,File> map = new HashMap<String,File>();
@@ -255,7 +255,7 @@ public class ZipUtil {
 	 * @param items  要压缩的文件或文件夹列表
 	 * @param dir  压缩后文件路径,解压到当前目录时,解压完成后的目录名
 	 * @param zip  生成的压缩文件名
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean zip(Collection<File> items, File zip, String dir) {
 		return zip(items, zip, dir, null);
@@ -367,7 +367,7 @@ public class ZipUtil {
 	 *  
 	 * @param zip 压缩文件 
 	 * @param dir 解压缩的目标目录 
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<File> unZip(File zip, String dir) { 
 		return unZip(zip, new File(dir)); 
@@ -378,7 +378,7 @@ public class ZipUtil {
 	 *  
 	 * @param zip 压缩文件 
 	 * @param dir 解压缩的目标目录 
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<File> unZip(File zip, File dir) { 
 		List<File> files = new ArrayList<File>(); 
@@ -435,7 +435,7 @@ public class ZipUtil {
 	 * 解压文件 
 	 *  
 	 * @param zip  zip
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<File> unZip(File zip) { 
 		if (null == zip) { 
