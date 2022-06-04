@@ -245,7 +245,7 @@ public class BasicUtil {
 	 * @param src src
 	 * @param idx idx
 	 * @param key key
-	 * @return return
+	 * @return String
 	 */ 
 	public static String insert(String src, int idx, String key) { 
 		if (null == src || null == key) { 
@@ -260,7 +260,7 @@ public class BasicUtil {
 	 * 判断数字 
 	 *  
 	 * @param obj  obj
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean isNumber(Object obj) { 
 		boolean result = false; 
@@ -362,7 +362,7 @@ public class BasicUtil {
 	 *  
 	 * @param obj  obj
 	 * @param def  def
-	 * @return return
+	 * @return Boolean
 	 */ 
 	public static Boolean parseBoolean(Object obj, Boolean def) {
 		try { 
@@ -390,7 +390,7 @@ public class BasicUtil {
 	 * 拆分权限数 ： 将任意一个数拆分成多个（2的n次方）的和 
 	 *  
 	 * @param num  num
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<String> parseLimit(int num) { 
 		List<String> list = new ArrayList<>();
@@ -416,7 +416,7 @@ public class BasicUtil {
 	 * @param src  src
 	 * @param pattern  pattern
 	 * @param replace  replace
-	 * @return return
+	 * @return String
 	 */ 
 	public static String replace(String src, String pattern, String replace) { 
 		if (src == null) 
@@ -438,7 +438,7 @@ public class BasicUtil {
 	 * 删除空格 
 	 *  
 	 * @param str  str
-	 * @return return
+	 * @return String
 	 */ 
 	public static String trim(Object str) { 
 		String result = ""; 
@@ -459,7 +459,7 @@ public class BasicUtil {
 	 * 删除空格 
 	 *  
 	 * @param str  str
-	 * @return return
+	 * @return String
 	 */ 
 	public static String trim(String str) { 
 		String result = ""; 
@@ -479,7 +479,7 @@ public class BasicUtil {
 	/** 
 	 * 压缩空白 将多个空白压缩成一个空格
 	 * @param str  str
-	 * @return return
+	 * @return String
 	 */ 
 	public static String compressionSpace(String str) { 
 		if (null != str) { 
@@ -520,7 +520,7 @@ public class BasicUtil {
 	 * @param src   原文 
 	 * @param chr  填充字符 
 	 * @param len  需要达到的长度 
-	 * @return return
+	 * @return String
 	 */ 
 	public static String fillLChar(String src, String chr, int len) { 
 		if (null != src && null != chr && chr.length() > 0) { 
@@ -571,7 +571,7 @@ public class BasicUtil {
 	 * 提取HashMap的key 
 	 *  
 	 * @param map  map
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<String> getMapKeys(Map<?, ?> map) { 
 		List<String> keys = new ArrayList<>();
@@ -602,7 +602,7 @@ public class BasicUtil {
 	 *  
 	 * @param src  src
 	 * @param chr  chr
-	 * @return return
+	 * @return int
 	 */ 
 	public static int catSubCharCount(String src, String chr) { 
 		int count = 0; 
@@ -662,7 +662,7 @@ public class BasicUtil {
 
 		/**
          * 获取本机IP
-         * @return return
+         * @return List
          */
 	@SuppressWarnings("rawtypes")
 	public static List<InetAddress> getLocalIps(){ 
@@ -687,7 +687,7 @@ public class BasicUtil {
 	} 
 	/** 
 	 * 获取本机IP地址 
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<String> getLocalIpsAddress(){ 
 		List<String> ips = new ArrayList<>();
@@ -704,7 +704,7 @@ public class BasicUtil {
 	 * @param obj  obj
 	 * @param ignoreCase  ignoreCase
 	 * @param ignoreNull  ignoreNull
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean containsString(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj){
 		if(null == objs){
@@ -783,7 +783,7 @@ public class BasicUtil {
 	 * 拼接字符
 	 * @param list list
 	 * @param split split
-	 * @return return
+	 * @return String
 	 */
    public static String concat(List<String> list, String split){
 	   if(null == list){
