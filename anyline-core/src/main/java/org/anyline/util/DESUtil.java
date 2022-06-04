@@ -322,9 +322,8 @@ public class DESUtil {
 	/**
 	 * 检查非法字符
 	 * 
-	 * @param src
-	 *            src
-	 * @return return
+	 * @param src src
+	 * @return String
 	 */
 	public static String filterIllegalChar(String src) {
 		if (null == src) {
@@ -337,9 +336,8 @@ public class DESUtil {
 	/**
 	 * 整体加密http 参数(cd=1&amp;nm=2)
 	 * 
-	 * @param param
-	 *            param
-	 * @return return
+	 * @param param param
+	 * @return String
 	 */
 	public static String encryptParam(String param) {
 		if (null == param || "".equals(param.trim())) {
@@ -351,9 +349,8 @@ public class DESUtil {
 	/**
 	 * 整体解密http 参数(cd=1&amp;nm=2)
 	 * 
-	 * @param param
-	 *            param
-	 * @return return
+	 * @param param  param
+	 * @return String
 	 */
 	public static String decryptParam(String param) {
 		if (null == param) {
@@ -365,9 +362,8 @@ public class DESUtil {
 	/**
 	 * 加密http请求参数名
 	 * 
-	 * @param key
-	 *            key
-	 * @return return
+	 * @param key key
+	 * @return String
 	 */
 	public static String encryptParamKey(String key) {
 		if (null == key || "".equals(key.trim())) {
@@ -379,9 +375,8 @@ public class DESUtil {
 	/**
 	 * 解密http请求参数名
 	 * 
-	 * @param key
-	 *            key
-	 * @return return
+	 * @param key  key
+	 * @return String
 	 */
 	public static String decryptParamKey(String key) {
 		if (null == key) {
@@ -393,9 +388,8 @@ public class DESUtil {
 	/**
 	 * 加密http请求参数值
 	 * 
-	 * @param value
-	 *            value
-	 * @return return
+	 * @param value value
+	 * @return String
 	 */
 	public static String encryptParamValue(String value) {
 		if (null == value || "".equals(value.trim())) {
@@ -407,9 +401,8 @@ public class DESUtil {
 	/**
 	 * 解密http请求参数值
 	 * 
-	 * @param value
-	 *            value
-	 * @return return
+	 * @param value  value
+	 * @return String
 	 */
 	public static String decryptParamValue(String value) {
 		if (null == value) {
@@ -477,11 +470,9 @@ public class DESUtil {
 	/**
 	 * 是否已加密 (应该根据规则判断,而不是解一次密)
 	 * 
-	 * @param src
-	 *            src
-	 * @param type
-	 *            type
-	 * @return return
+	 * @param src src
+	 * @param type type
+	 * @return boolean
 	 */
 	public static boolean isEncrypt(String src, String type) {
 		if (null == src) {
@@ -531,13 +522,10 @@ public class DESUtil {
 	/**
 	 * 解密
 	 * 
-	 * @param src
-	 *            src
-	 * @param key
-	 *            key
-	 * @param type
-	 *            type
-	 * @return return
+	 * @param src  src
+	 * @param key key
+	 * @param type type
+	 * @return String
 	 */
 	private static String decrypt(String src, DESKey key, String type) {
 		if (ConfigTable.getBoolean("IS_DECRYPT_LOG")) {
@@ -603,9 +591,8 @@ public class DESUtil {
 	/**
 	 * 加密url参数部分
 	 * 
-	 * @param url
-	 *            url
-	 * @return return
+	 * @param url url
+	 * @return String
 	 */
 	public static String encryptUrl(String url) {
 		if (null == url || !url.contains("?")) {
@@ -662,9 +649,8 @@ public class DESUtil {
 	/**
 	 * 加密htmla标签中的url
 	 * 
-	 * @param tag
-	 *            tag
-	 * @return return
+	 * @param tag tag
+	 * @return String
 	 */
 	public static String encryptHtmlTagA(String tag) {
 		try {
@@ -680,9 +666,8 @@ public class DESUtil {
 	/**
 	 * 解析加密版本号
 	 * 
-	 * @param src
-	 *            src
-	 * @return return
+	 * @param src src
+	 * @return String
 	 */
 	private static String[] parseDESVersion(String src) {
 		String result[] = null;
@@ -706,9 +691,8 @@ public class DESUtil {
 	/**
 	 * 密文中插入版本号位置
 	 * 
-	 * @param src
-	 *            src 未插入版本号的密文
-	 * @return return
+	 * @param src 未插入版本号的密文
+	 * @return int
 	 */
 	private static int getDESVersionIndex(String src) {
 		int idx = -1;
@@ -725,9 +709,8 @@ public class DESUtil {
 	/**
 	 * 密文中插入版本号
 	 * 
-	 * @param src
-	 *            src 未插入版本号的密文
-	 * @return return
+	 * @param src 未插入版本号的密文
+	 * @return String
 	 */
 	private static String insertDESVersion(String src, String version) {
 		int idx = getDESVersionIndex(src);
@@ -747,7 +730,7 @@ public class DESUtil {
 	 * @param map  map
 	 * @param mix  mix
 	 * @param keys  keys
-	 * @return return
+	 * @return Map
 	 */ 
 	private static Map<String, Object> encryptKey(Map<String, Object> map, boolean mix, String... keys) { 
 		if (null == map) { 
@@ -776,7 +759,7 @@ public class DESUtil {
 	 * @param list  list
 	 * @param mix  mix
 	 * @param keys  keys
-	 * @return return
+	 * @return Collection
 	 */ 
 	private static Collection<Object> encryptKey(Collection<Object> list, boolean mix, String... keys) { 
 		if (null == list) { 
@@ -796,7 +779,7 @@ public class DESUtil {
 	 * @param mix 是否混淆url 生成随机URL用来防止QQ等工具报警 
 	 * @param obj  obj
 	 * @param keys  keys
-	 * @return return
+	 * @return Object
 	 */ 
 	@SuppressWarnings("unchecked")
 	public static Object encryptKey(Object obj, boolean mix, String... keys) { 
