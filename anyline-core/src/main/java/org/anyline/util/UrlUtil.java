@@ -51,7 +51,7 @@ public class UrlUtil {
 	 * UTF-8编码是否有效 
 	 *  
 	 * @param text  text
-	 * @return return
+	 * @return boolean
 	 */ 
 	private static boolean checkUTF8(String text) { 
 		String sign = ""; 
@@ -69,7 +69,7 @@ public class UrlUtil {
 	 * utf8URL编码转字符 
 	 *  
 	 * @param text  text
-	 * @return return
+	 * @return String
 	 */ 
 	private static String UTF82Word(String text) { 
 		String result; 
@@ -92,8 +92,8 @@ public class UrlUtil {
 	/** 
 	 * Utf8URL解码 
 	 *  
-	 * @param url  text
-	 * @return return
+	 * @param url  url
+	 * @return String
 	 */ 
 	private static String UTF8Decode(String url) { 
 		String result = ""; 
@@ -119,7 +119,7 @@ public class UrlUtil {
 //	 * Utf8URL编码 
 //	 *  
 //	 * @param text  text
-//	 * @return return
+//	 * @return String
 //	 */ 
 //	private static String UTF8Encode(String text) { 
 //		StringBuffer result = new StringBuffer(); 
