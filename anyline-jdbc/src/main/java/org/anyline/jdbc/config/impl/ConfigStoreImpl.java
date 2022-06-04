@@ -76,7 +76,7 @@ public class ConfigStoreImpl implements ConfigStore, Serializable {
 	 * "NM:nmEn|nmCn" 生成 NM={nmEn} OR NM = {nmCn} nmEn为空时当前条件不生效
 	 * "NM:nmEn|{1}" 
 	 * "NM:nmEn:nmCn" 根据参数值生成NM = {nmEn}或生成 NM={nmCn}   
-	 * @return return
+	 * @return Config
 	 */
 	@Override 
 	public Config parseConfig(String config){ 
@@ -403,7 +403,7 @@ public class ConfigStoreImpl implements ConfigStore, Serializable {
 	/** 
 	 * 添加排序 
 	 * @param order  order
-	 * @return return
+	 * @return ConfigStore
 	 */
 	@Override 
 	public ConfigStore order(Order order){ 
@@ -437,7 +437,7 @@ public class ConfigStoreImpl implements ConfigStore, Serializable {
 	/** 
 	 * 添加分组 
 	 * @param group  group
-	 * @return return
+	 * @return ConfigStore
 	 */
 	@Override 
 	public ConfigStore group(Group group){ 
@@ -546,7 +546,7 @@ public class ConfigStoreImpl implements ConfigStore, Serializable {
 	/**
 	 * 开启记录总数懒加载 
 	 * @param ms 缓存有效期(毫秒)
-	 * @return return
+	 * @return ConfigStore
 	 */
 	public ConfigStore setTotalLazy(long ms){
 		if(null != navi){
