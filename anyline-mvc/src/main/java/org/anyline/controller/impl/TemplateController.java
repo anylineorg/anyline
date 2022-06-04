@@ -49,7 +49,7 @@ import java.util.Map;
 public class TemplateController extends AnylineController {
 	/**
 	 * 根据dir构造文件目录(super.dir+this.dir)
-	 * @return return
+	 * @return String
 	 */
 	@SuppressWarnings("rawtypes")
 	protected String buildDir(){
@@ -105,7 +105,7 @@ public class TemplateController extends AnylineController {
 	拼接时,先拼当前类的dir 再拼父类中的dir
 	另外:template不指定时template(page)默认为default.jsp
 	内容文件与模板文件 目录结构应该保持一致
-	 * @return return
+	 * @return TemplateModelAndView
 	 */
 
 	protected TemplateModelAndView template(boolean adapt, String name, String template){
