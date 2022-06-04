@@ -36,7 +36,7 @@ public class RSAUtil {
 	/** 
 	 *  
 	 * @param keySize 密钥长度 
-	 * @return return
+	 * @return Map
 	 */ 
 	public static Map<String, String> createKeys(int keySize) { 
 		// 为RSA算法创建一个KeyPairGenerator对象 
@@ -67,7 +67,7 @@ public class RSAUtil {
 	 * 得到公钥 
 	 *  
 	 * @param publicKey   密钥字符串（经过base64编码） 
-	 * @return return
+	 * @return RSAPublicKey
 	 * @throws NoSuchAlgorithmException NoSuchAlgorithmException 
 	 * @throws InvalidKeySpecException InvalidKeySpecException 
 	 */ 
@@ -82,7 +82,7 @@ public class RSAUtil {
 	/** 
 	 * 得到私钥 
 	 * @param privateKey  密钥字符串（经过base64编码） 
-	 * @return return
+	 * @return RSAPrivateKey
 	 * @throws NoSuchAlgorithmException  NoSuchAlgorithmException
 	 * @throws InvalidKeySpecException  InvalidKeySpecException
 	 */ 
@@ -99,7 +99,7 @@ public class RSAUtil {
 	 *  
 	 * @param data  data
 	 * @param publicKey  publicKey
-	 * @return return
+	 * @return String
 	 * @throws Exception Exception
 	 */ 
 	public static String publicEncrypt(String data, RSAPublicKey publicKey) throws Exception{
@@ -117,7 +117,7 @@ public class RSAUtil {
 	 *  
 	 * @param data  data
 	 * @param privateKey  privateKey
-	 * @return return
+	 * @return String
 	 * @throws Exception Exception
 	 */ 
  
@@ -136,7 +136,7 @@ public class RSAUtil {
 	 *  
 	 * @param data  data
 	 * @param privateKey  privateKey
-	 * @return return
+	 * @return String
 	 * @throws Exception Exception
 	 */ 
  
@@ -155,7 +155,7 @@ public class RSAUtil {
 	 *  
 	 * @param data  data
 	 * @param publicKey  publicKey
-	 * @return return
+	 * @return String
 	 * @throws Exception Exception
 	 */ 
  
@@ -206,7 +206,7 @@ public class RSAUtil {
      * @param data 已加密数据 
      * @param privateKey 私钥(BASE64编码) 
      *  
-     * @return return
+     * @return String
      * @throws Exception Exception
      */ 
     public static String sign(byte[] data, String privateKey) throws Exception { 
@@ -230,7 +230,7 @@ public class RSAUtil {
      * @param data 已加密数据 
      * @param publicKey 公钥(BASE64编码) 
      * @param sign 数字签名 
-     * @return return
+     * @return boolean
      * @throws Exception  Exception
      *  
      */ 
@@ -249,7 +249,7 @@ public class RSAUtil {
      * 从文件中提取私钥 
      * @param file  file
      * @param keyAlgorithm  keyAlgorithm
-     * @return return
+     * @return RSAPrivateKey
      */ 
 	public static RSAPrivateKey getPrivateKey(File file, String keyAlgorithm) { 
 		RSAPrivateKey privateKey = null; 
