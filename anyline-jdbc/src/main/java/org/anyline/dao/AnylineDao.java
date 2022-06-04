@@ -52,7 +52,7 @@ public interface AnylineDao{
 	 * @param	columns  需要更新的列 
 	 * @param	dst  表 
 	 * @param	data data
-	 * @return return
+	 * @return int
 	 */ 
 	public int update(String dst, Object data, String ... columns); 
 	public int update(Object data, String ... columns); 
@@ -63,7 +63,7 @@ public interface AnylineDao{
 	 * @param checkParimary   是否需要检查重复主键,默认不检查 
 	 * @param columns  需要插入的列 
 	 * @param dst 表 
-	 * @return return
+	 * @return int
 	 */
 	public int insert(String dst, Object data, boolean checkParimary, String ... columns);
 	public int insert(Object data, boolean checkParimary, String ... columns); 
@@ -81,7 +81,7 @@ public interface AnylineDao{
 	 * @param data  data
 	 * @param checkParimary 是否检查主键 
 	 * @param columns  columns
-	 * @return return
+	 * @return int
 	 */ 
 	public int save(String dst, Object data, boolean checkParimary, String ... columns); 
 	public int save(Object data, boolean checkParimary, String ... columns); 
@@ -98,13 +98,13 @@ public interface AnylineDao{
 	/** 
 	 * 执行存储过程 
 	 * @param procedure  procedure
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean execute(Procedure procedure);
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet query(Procedure procedure);
 	public int delete(String dest, DataSet set, String ... columns);
