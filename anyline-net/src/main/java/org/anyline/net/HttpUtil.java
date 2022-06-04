@@ -327,7 +327,7 @@ public class HttpUtil {
 	 * 创建完整HTTP路径
 	 * @param host  host
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */
 	public static String createFullPath(String host, String url) {
 		if (url.startsWith("http") || url.startsWith("//") || BasicUtil.isEmpty(host)){
@@ -353,7 +353,7 @@ public class HttpUtil {
 	 * 提取url根目录
 	 *
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */
 	public static String host(String url) {
 		if(null == url){
@@ -389,7 +389,7 @@ public class HttpUtil {
 	 * 从URL中提取文件目录(删除查询参数)
 	 *
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */
 	public static String parsePath(String url) {
 		int to = url.indexOf("?");
@@ -402,7 +402,7 @@ public class HttpUtil {
 	 * 提取一个URL所在的目录
 	 *
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */
 	public static String parseDir(String url) {
 		String dir = null;
@@ -423,7 +423,7 @@ public class HttpUtil {
 	 * 提取一个URL指向的文件名
 	 *
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */
 	public static String parseFileName(String url) {
 		String name = null;
@@ -442,7 +442,7 @@ public class HttpUtil {
 	/**
 	 * path是否包含文件名
 	 * @param path  path
-	 * @return return
+	 * @return boolean
 	 */
 	private static boolean isHttpFile(String path) {
 
@@ -513,7 +513,7 @@ public class HttpUtil {
 	 * 合并参数
 	 * @param url  url
 	 * @param params  params
-	 * @return return
+	 * @return String
 	 */
 	public static String mergeParam(String url, Map<String,Object> params){
 		if(BasicUtil.isEmpty(params)){
@@ -553,7 +553,7 @@ public class HttpUtil {
 	 * 合并参数
 	 * @param url  url
 	 * @param params  params
-	 * @return return
+	 * @return String
 	 */
 	public static String mergeParam(String url, String ... params){
 		if(BasicUtil.isEmpty(url) || BasicUtil.isEmpty(params)){
