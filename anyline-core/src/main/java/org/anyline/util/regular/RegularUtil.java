@@ -77,7 +77,7 @@ public class RegularUtil {
 	 * @param src	输入字符串  src	输入字符串
 	 * @param regx	表达式  regx	表达式
 	 * @param mode	mode
-	 * @return return
+	 * @return List
 	 * @throws Exception Exception
 	 */ 
 	public static synchronized List<List<String>> fetchs(String src, String regx, Regular.MATCH_MODE mode) throws Exception{ 
@@ -118,7 +118,7 @@ public class RegularUtil {
 	 * @param src  src
 	 * @param regx  regx
 	 * @param mode  mode
-	 * @return return
+	 * @return List
 	 */ 
 	public static synchronized List<String> pick(List<String> src, String regx, Regular.MATCH_MODE mode){ 
 		regular = regularList.get(mode); 
@@ -129,7 +129,7 @@ public class RegularUtil {
 	 * @param src  src
 	 * @param regx  regx
 	 * @param mode  mode
-	 * @return return
+	 * @return List
 	 */ 
 	public static synchronized List<String> wipe(List<String> src, String regx, Regular.MATCH_MODE mode){ 
 		regular = regularList.get(mode); 
@@ -140,7 +140,7 @@ public class RegularUtil {
 	 * @param src     src
 	 * @param regx    regx
 	 * @param begin   有效开始位置 
-	 * @return return
+	 * @return int
 	 */ 
 	public static int indexOf(String src, String regx, int begin){ 
 		int idx = -1; 
@@ -172,7 +172,7 @@ public class RegularUtil {
 	 * @param src  src
 	 * @param regex  regex
 	 * @param mode  mode
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<String> regexpValue(String src, String regex, Regular.MATCH_MODE mode){ 
 		List<String> result = new ArrayList<>();
@@ -190,7 +190,7 @@ public class RegularUtil {
 	/**
 	 * 清除所有标签(只清除标签，不清除标签体)
 	 * @param src src
-	 * @return return
+	 * @return String
 	 */
 	public static String removeAllTag(String src){
 		if(null == src){
@@ -217,7 +217,7 @@ public class RegularUtil {
 	 * &lt;input type="text" a="class"&gt;&lt;/input&gt;(不匹配)
 	 * @param src src
 	 * @param attribute attribute
-	 * @return return
+	 * @return String
 	 */
 	public static String removeAllTagAndBodyWithAttribute(String src, String attribute){
 		String reg = "";
@@ -239,7 +239,7 @@ public class RegularUtil {
 	 * @param src src
 	 * @param attribute attribute
 	 * @param value value
-	 * @return return
+	 * @return String
 	 */
 	public static String removeAllTagAndBodyWithAttributeValue(String src, String attribute, String value){
 		String reg ="";
@@ -258,7 +258,7 @@ public class RegularUtil {
 	 * ]
 	 * @param src src
 	 * @param attribute attribute
-	 * @return return
+	 * @return List
 	 * @throws Exception Exception
 	 */
 	public static List<List<String>> getAllTagAndBodyWithAttribute(String src, String attribute) throws Exception{
@@ -317,7 +317,7 @@ public class RegularUtil {
 	 * @param src src
 	 * @param attribute attribute
 	 * @param value value
-	 * @return return
+	 * @return List
 	 * @throws Exception Exception
 	 */
 	public static List<List<String>> getAllTagAndBodyWithAttributeValue(String src, String attribute, String value) throws Exception{
@@ -361,7 +361,7 @@ public class RegularUtil {
 	 * 只删除标签不删除标签体 
 	 * @param src  src
 	 * @param tags  tags
-	 * @return return
+	 * @return String
 	 */ 
 	public static String removeTagExcept(String src, String ...tags){ 
 		if(null == src || null == tags || tags.length == 0){ 
@@ -386,7 +386,7 @@ public class RegularUtil {
 	 * 只删除标签,不删除标签体
 	 * @param src src
 	 * @param tags tags
-	 * @return return
+	 * @return String
 	 */
 	public static String removeTag(String src, String ...tags){
 		if(null == tags || tags.length==0){
@@ -406,7 +406,7 @@ public class RegularUtil {
 	 * 删除标签及标签体
 	 * @param src src
 	 * @param tags tags
-	 * @return return
+	 * @return String
 	 */
 	public static String removeTagWithBody(String src, String ...tags){
 		if(null == tags || tags.length==0){
@@ -434,7 +434,7 @@ public class RegularUtil {
 	/** 
 	 * 删除简单标签外的其他标签 
 	 * @param src  src
-	 * @return return
+	 * @return String
 	 */ 
 	public static String removeHtmlTagExceptSimple(String src){ 
 		return removeHtmlTagExcept(src,"br","b","strong","u","i","pre","ul","li","p"); 
@@ -460,7 +460,7 @@ public class RegularUtil {
 	 * 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 
 	 * @param txt text
 	 * @param tags 标签名,如div,span tags标签名,如div,span
-	 * @return return
+	 * @return List
 	 * @throws Exception Exception
 	 */
 	public static List<List<String>> fetchPairedTag(String txt,String ... tags) throws Exception{
@@ -489,7 +489,7 @@ public class RegularUtil {
 	 * 0:全文 1::标签name 
 	 * @param txt text
 	 * @param tags 标签名,如img br
-	 * @return return
+	 * @return List
 	 * @throws Exception Exception
 	 */
 	public static List<List<String>> fetchSingleTag(String txt,String ... tags) throws Exception{
@@ -515,7 +515,7 @@ public class RegularUtil {
 	 * 0:全文 1:开始标签 2:标签name 3:标签体 (单标签时null) 4:结束标签 (单标签时null)
 	 * @param txt txt
 	 * @param tags 标签名 tags标签名
-	 * @return return
+	 * @return List
 	 * @throws Exception Exception
 	 */
 	public static List<List<String>> fetchAllTag(String txt,String ... tags) throws Exception{
@@ -561,7 +561,7 @@ public class RegularUtil {
 	 * fetchAttributeValues(txt,"id");
 	 * @param txt txt
 	 * @param attribute attribute
-	 * @return return
+	 * @return List
 	 */
 	public static List<List<String>> fetchAttributeList(String txt, String attribute){
 		List<List<String>> result = new ArrayList<List<String>>();
@@ -579,7 +579,7 @@ public class RegularUtil {
 	 * fetchAttributeValues(txt,"id","name");
 	 * @param txt txt
 	 * @param attribute attribute
-	 * @return return 
+	 * @return List
 	 */
 	public static List<String> fetchAttribute(String txt, String attribute){
 		List<String> result = new ArrayList<>();
@@ -616,7 +616,7 @@ public class RegularUtil {
 	 * @param text text
 	 * @param tags tags
 	 * @param contains 是否包含开始结束标签
-	 * @return return
+	 * @return String
 	 */ 
 	public static String cut(String text, boolean contains, String ... tags){
 		if(null == text || null == tags || tags.length < 2){ 
