@@ -46,7 +46,7 @@ public abstract class BasicConditionChain extends BasicCondition implements Cond
 	/** 
 	 * 附加条件 
 	 * @param condition  condition
-	 * @return return
+	 * @return ConditionChain
 	 */ 
 	public ConditionChain addCondition(Condition condition){ 
 		conditions.add(condition); 
