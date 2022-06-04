@@ -33,7 +33,7 @@ public interface Procedure extends Serializable{
 	 * 添加输入参数 
 	 * @param value	值  value	值
 	 * @param type	类型  type	类型
-	 * @return return
+	 * @return Procedure
 	 */ 
 	public Procedure addInput(Object value, Integer type);
 	public Procedure addInput(String value);
@@ -44,7 +44,7 @@ public interface Procedure extends Serializable{
 	/**
 	 * 注册输出参数
 	 * @param type	类型  type	类型
-	 * @return return
+	 * @return Procedure
 	 */
 	public Procedure regOutput(Integer type);
 	public Procedure regOutput();
