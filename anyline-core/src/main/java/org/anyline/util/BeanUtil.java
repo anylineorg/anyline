@@ -255,7 +255,7 @@ public class BeanUtil {
 	 * @param field field
 	 * @param checkInsert checkInsert
 	 * @param checkUpdate checkUpdate
-	 * @return return
+	 * @return String
 	 */
 	public static String getColumn(Field field, boolean checkInsert, boolean checkUpdate){ 
  /*
@@ -303,7 +303,7 @@ public class BeanUtil {
 	 * @param field  field
 	 * @param clazz  clazz
 	 * @param property  property
-	 * @return return
+	 * @return Object
 	 */ 
 	@SuppressWarnings({ "unchecked", "rawtypes" }) 
 	public static Object getAnnotationValue(Field field, Class clazz, String property){ 
@@ -327,7 +327,7 @@ public class BeanUtil {
 	 * 根据列名读取属性值 
 	 * @param obj obj
 	 * @param column  column
-	 * @return return
+	 * @return Object
 	 */ 
 	@SuppressWarnings("rawtypes")
 	public static Object getValueByColumn(Object obj, String column){ 
@@ -357,7 +357,7 @@ public class BeanUtil {
 	/** 
 	 * 提取类及父类的所有属性 
 	 * @param clazz  clazz
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<Field> getFields(Class<?> clazz){ 
 		List<Field> fields = new ArrayList<Field>(); 
@@ -393,7 +393,7 @@ public class BeanUtil {
 	 * 查询指定类的有annotation注解的属性 
 	 * @param clazz  clazz
 	 * @param annotation  annotation
-	 * @return return
+	 * @return List
 	 */ 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static List<Field> searchFieldsByAnnotation(Class clazz, Class annotation){ 
@@ -414,7 +414,7 @@ public class BeanUtil {
 	/** 
 	 * 主键列名 
 	 * @param clazz  clazz
-	 * @return return
+	 * @return String
 	 */ 
 	public static String getPrimaryKey(Class<?> clazz){ 
 		/*List<Field> fields = searchFieldsByAnnotation(clazz, Id.class);
@@ -435,7 +435,7 @@ public class BeanUtil {
 	 * 对象转换成Map 
 	 * @param obj  obj
 	 * @param keys keys
-	 * @return return
+	 * @return Map
 	 */ 
 	@SuppressWarnings("unchecked")
 	public static Map<String,Object> toMap(Object obj, String ... keys){ 
@@ -517,7 +517,7 @@ public class BeanUtil {
 	 * 提取指定属性值 
 	 * @param objs  objs
 	 * @param keys  keys
-	 * @return return 
+	 * @return Collection
 	 */ 
 	public static Collection<Object> fetch(Collection<Object> objs, String ... keys){ 
 		if(null == objs){ 
@@ -557,7 +557,7 @@ public class BeanUtil {
 	 * 参考 DataSet.getRows
 	 * @param list  list
 	 * @param params  params
-	 * @return return
+	 * @return Collection
 	 */ 
 	public static Collection<?> select(Collection<?> list, String ... params){
 		if(null == list || null == params || params.length==0){ 
@@ -629,7 +629,7 @@ public class BeanUtil {
 	 * pack包下的所有类 不包括jar包中定义类 
 	 * @param pack  pack
 	 * @param bases bases
-	 * @return return
+	 * @return List
 	 */ 
 	 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -1036,7 +1036,7 @@ public class BeanUtil {
 	 * 如提取用户列表中的所有用户ID
 	 * @param list  list
 	 * @param key  key
-	 * @return return
+	 * @return List
 	 */ 
 	public static List<Object> extract(Collection<?> list, String key){ 
 		List<Object> values = new ArrayList<Object>(); 
@@ -1053,7 +1053,7 @@ public class BeanUtil {
 	 * 如提取用户列表中的所有用户ID,CODE
 	 * @param list  list
 	 * @param keys  keys
-	 * @return return
+	 * @return List
 	 */
 	public static List<Map<String,Object>> extracts(Collection<?> list, String ... keys){ 
 		List<Map<String,Object>> result = new ArrayList<Map<String,Object>>(); 
@@ -1118,7 +1118,7 @@ public class BeanUtil {
 	 * @param list  list
 	 * @param obj  obj
 	 * @param keys 只比较keys列,基础类型不需要指定列 
-	 * @return return
+	 * @return T
 	 */
 	public static <T> boolean contain(Collection<T> list, T obj, String ... keys){
 		for(T item:list){
@@ -1179,7 +1179,7 @@ public class BeanUtil {
 	 * @param list   数组 
 	 * @param split  分隔符 
 	 * @param key key
-	 * @return return
+	 * @return String
 	 */ 
  
 	public static String concat(List<?> list, String key, String split) {
@@ -1399,7 +1399,7 @@ public class BeanUtil {
 	/** 
 	 * String 转map 
 	 * @param str name:zhang,age:20 
-	 * @return return
+	 * @return Map
 	 */ 
 	public static Map<String,String> string2map(String str){ 
 		Map<String,String> map = new HashMap<String,String>(); 
@@ -1486,7 +1486,7 @@ public class BeanUtil {
 	 * @param <T> T
 	 * @param first  first
 	 * @param rest  rest
-	 * @return return
+	 * @return T
 	 */ 
 	@SuppressWarnings("unchecked")
 	public static <T> T[] union(T[] first, T[]... rest) { 
@@ -1508,7 +1508,7 @@ public class BeanUtil {
 	 * 集合中与value差值最小的成员的下标
 	 * @param array  array
 	 * @param value  value
-	 * @return return
+	 * @return int
 	 */ 
 	public static int closest(short[] array, short value){ 
 		int index = 0; 
@@ -1847,7 +1847,7 @@ public class BeanUtil {
 	 * @param list  list
 	 * @param begin  begin
 	 * @param end  end
-	 * @return return
+	 * @return List
 	 */ 
 	public static <T> List<T> cuts(Collection<T> list, int begin, int end){ 
 		List<T> result = new ArrayList<T>(); 
@@ -1949,7 +1949,7 @@ public class BeanUtil {
 	 * 如果值为空返回["age",""] 
 	 * 如果没有分隔符返回["age","age"] 
 	 * @param src  src
-	 * @return return
+	 * @return String
 	 */ 
 	public static String[] parseKeyValue(String src){ 
 		if(BasicUtil.isEmpty(src)){ 
@@ -2238,7 +2238,7 @@ public class BeanUtil {
 	 *
 	 * @param lists  二维数组
 	 * @param <T> t
-	 * @return return
+	 * @return List
 	 * 输入:
 	 * [[A,B,C],[1,2,3]]
 	 * 输出:
