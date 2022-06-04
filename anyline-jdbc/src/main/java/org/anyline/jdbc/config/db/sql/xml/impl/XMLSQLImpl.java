@@ -257,7 +257,7 @@ public class XMLSQLImpl extends BasicSQL implements XMLSQL{
 	/*  
 	 * 创建运行时主体SQL 
 	 * @param text  text
-	 * @return return
+	 * @return String
 	 */ 
 //	private String createRunText(){ 
 //		initRunValues(); 
