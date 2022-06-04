@@ -38,7 +38,7 @@ public class VerifyCodeUtil {
 	 * 使用系统默认字符源生成验证码 
 	 *  
 	 * @param len 验证码长度 
-	 * @return return
+	 * @return String
 	 */ 
 	public static String getRandomCode(int len) { 
 		return getRandomCode(len, VERIFY_CODES); 
@@ -49,7 +49,7 @@ public class VerifyCodeUtil {
 	 *  
 	 * @param verifySize  验证码长度 
 	 * @param sources  验证码字符源 
-	 * @return return
+	 * @return String
 	 */ 
 	public static String getRandomCode(int verifySize, String sources) { 
 		if (sources == null || sources.length() == 0) { 
@@ -71,7 +71,7 @@ public class VerifyCodeUtil {
 	 * @param h  h
 	 * @param outputFile  outputFile
 	 * @param verifySize  verifySize
-	 * @return return
+	 * @return String
 	 * @throws IOException IOException
 	 */ 
 	public static String outputVerifyImage(int w, int h, File outputFile, int verifySize) throws IOException { 
@@ -87,7 +87,7 @@ public class VerifyCodeUtil {
 	 * @param os os
 	 * @param verifySize verifySize
 	 * @param trouble trouble
-	 * @return return 
+	 * @return String
 	 * @throws IOException IOException
 	 */
 	public static String outputVerifyImage(int w, int h, OutputStream os, int verifySize, boolean trouble) throws IOException {
@@ -104,7 +104,7 @@ public class VerifyCodeUtil {
 	 * @param w w
 	 * @param h h
 	 * @param os os
-	 * @return return
+	 * @return String
 	 * @throws IOException IOException
 	 */
 	public static String outputVerifyImageFormula(int w, int h, OutputStream os) throws IOException {
