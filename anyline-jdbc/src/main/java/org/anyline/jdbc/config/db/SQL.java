@@ -105,7 +105,7 @@ public interface SQL extends Cloneable {
 	 *  S_POWER : 自定义SQL的id 
 	 * </p>
 	 * @param	ds  数据源 : 表|视图|自定义SQL.id
-	 * @return return
+	 * @return SQL
 	 */
 	public SQL setDataSource(String ds);
 	public String getDataSource();
@@ -114,7 +114,7 @@ public interface SQL extends Cloneable {
 	/** 
 	 * 添加排序条件,在之前的基础上添加新排序条件,有重复条件则覆盖 
 	 * @param order  order
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL order(String order); 
 	public SQL order(String col, SQL.ORDER_TYPE type); 
@@ -123,7 +123,7 @@ public interface SQL extends Cloneable {
 	/** 
 	 * 添加分组条件,在之前的基础上添加新分组条件,有重复条件则覆盖 
 	 * @param group  group
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL group(String group); 
  
@@ -139,7 +139,7 @@ public interface SQL extends Cloneable {
 	 * @param column  列名 
 	 * @param value   值 
 	 * @param compare 比较方式 
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL addCondition(String column, Object value, int compare); 
  
@@ -152,7 +152,7 @@ public interface SQL extends Cloneable {
 	/**
 	 * 设置SQL文本, 从XML中text标签中取出
 	 * @param text  text
-	 * @return return
+	 * @return SQL
 	 */
 	public SQL setText(String text);
 	 
@@ -161,7 +161,7 @@ public interface SQL extends Cloneable {
 	 * @param condition	 条件ID 
 	 * @param variable 变量 
 	 * @param value  值 
-	 * @return return
+	 * @return SQL
 	 */ 
 	public SQL setConditionValue(String condition, String variable, Object value); 
 	public OrderStore getOrders();
