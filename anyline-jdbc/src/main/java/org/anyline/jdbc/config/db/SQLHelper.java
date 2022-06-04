@@ -25,7 +25,7 @@ public class SQLHelper {
 	 * @param prefix  prefix
 	 * @param fullKey  fullKey
 	 * @param afterChar  afterChar
-	 * @return return
+	 * @return SQLVariable
 	 */ 
 	public static SQLVariable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar){ 
 		int varType = -1; 
