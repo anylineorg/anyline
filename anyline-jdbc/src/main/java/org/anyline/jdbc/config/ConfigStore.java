@@ -37,7 +37,7 @@ public interface ConfigStore {
 	/**
 	 * 解析查询配置参数 
 	 * @param config "COMPANY_CD:company","NM:nmEn% | NM:nmCn%","STATUS_VALUE:[status]" 
-	 * @return return
+	 * @return Config
 	 */ 
 	public Config parseConfig(String config); 
 	public ConfigStore setPageNavi(PageNavi navi);
@@ -63,7 +63,7 @@ public interface ConfigStore {
 	 * @param value value
 	 * @param overCondition 覆盖相同key的条件
 	 * @param overValue		覆盖条件value overValue		覆盖条件value
-	 * @return return
+	 * @return ConfigStore
 	 */
 	public ConfigStore addCondition(String id, String var, Object value, boolean overCondition, boolean overValue);
 
@@ -73,7 +73,7 @@ public interface ConfigStore {
 	 * @param value value
 	 * @param overCondition 覆盖相同key的条件
 	 * @param overValue		覆盖条件value overValue		覆盖条件value
-	 * @return return
+	 * @return ConfigStore
 	 */
 	public ConfigStore addCondition(String var, Object value, boolean overCondition, boolean overValue);
 	public ConfigStore addCondition(COMPARE_TYPE compare, String id, Object value);
@@ -86,7 +86,7 @@ public interface ConfigStore {
 	 * @param id condition.id或表名
 	 * @param var condition.var
 	 * @param value value
-	 * @return return
+	 * @return ConfigStore
 	 */
 	public ConfigStore addCondition(String id, String var, Object value);
 	public ConfigStore addCondition(Config config);
@@ -122,7 +122,7 @@ public interface ConfigStore {
 	/** 
 	 * 添加排序 
 	 * @param order  order
-	 * @return return
+	 * @return ConfigStore
 	 */ 
 	public ConfigStore order(Order order); 
  
@@ -133,7 +133,7 @@ public interface ConfigStore {
 	/** 
 	 * 添加分组 
 	 * @param group  group
-	 * @return return
+	 * @return ConfigStore
 	 */ 
 	public ConfigStore group(Group group); 
  
@@ -144,7 +144,7 @@ public interface ConfigStore {
 	/**
 	 * 提取部分查询条件
 	 * @param keys keys
-	 * @return return
+	 * @return ConfigStore
 	 */
 	public ConfigStore fetch(String ... keys);
 	
@@ -152,7 +152,7 @@ public interface ConfigStore {
 	/**
 	 * 开启记录总数懒加载 
 	 * @param ms 缓存有效期(毫秒)
-	 * @return return
+	 * @return ConfigStore
 	 */
 	public ConfigStore setTotalLazy(long ms); 
 } 
