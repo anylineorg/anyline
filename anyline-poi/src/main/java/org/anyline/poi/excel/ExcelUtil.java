@@ -482,7 +482,7 @@ public class ExcelUtil {
 	 * @param insert	导出的开始位置
 	 * @param keys		对应列名属性名  keys		对应列名属性名
 	 * @param set		数据源  set		数据源
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean export(OutputStream os, String sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
 		try{
@@ -1024,7 +1024,7 @@ public class ExcelUtil {
 	 * @param insert	导出的开始位置
 	 * @param keys		对应列名属性名  keys		对应列名属性名
 	 * @param set		数据源  set		数据源
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean export(File template, File file, String sheet, int insert, List<String>headers, List<String> keys, Collection<?> set){
 
