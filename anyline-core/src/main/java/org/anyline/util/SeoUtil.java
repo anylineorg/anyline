@@ -39,7 +39,7 @@ public class SeoUtil {
 	 * 插入关键词 
 	 * @param src				源文  src				源文
 	 * @param keys				关键词  keys				关键词
-	 * @return return
+	 * @return String
 	 * 优先靠近标点符号插入以避免破坏单词 
 	 * 避免破坏原html标签 
 	 * 按星期更新数据 
@@ -102,7 +102,7 @@ public class SeoUtil {
 	/** 
 	 * 返回指定位置附近标点位置,没有则返回原位置 
 	 * @param idx  idx
-	 * @return return
+	 * @return int
 	 */ 
 	private static int getNearSignIdx(List<Integer> idxs, int idx){ 
 		for(int item: idxs){ 
@@ -115,7 +115,7 @@ public class SeoUtil {
 	/** 
 	 * 搜索全部标点及>位置 
 	 * @param src  src
-	 * @return return
+	 * @return List
 	 */ 
 	private static List<Integer> getSingIdx(String src){ 
 		List<Integer> idxs = new ArrayList<Integer>(); 
@@ -133,7 +133,7 @@ public class SeoUtil {
 	 * @param src  src
 	 * @param idxList  idxList
 	 * @param idxKeyMap  idxKeyMap
-	 * @return return
+	 * @return String
 	 */ 
 	private static String insert(String src, List<Integer> idxList, Map<Integer, String> idxKeyMap){ 
 		List<Integer> signIdxList = getSingIdx(src);					//标点位置 
@@ -161,7 +161,7 @@ public class SeoUtil {
 	 * @param src  src
 	 * @param idx  idx
 	 * @param key  key
-	 * @return return
+	 * @return boolean
 	 */ 
 	private static boolean isBreakTag(String src, int idx, String key){ 
 		boolean isBreak = false; 
@@ -184,7 +184,7 @@ public class SeoUtil {
 	 * @param src  src
 	 * @param key  key
 	 * @param idx  idx
-	 * @return return
+	 * @return boolean
 	 */ 
 	private static boolean isNearExistKey(String src, String key, int idx){ 
 		boolean keyExist = false;	// 
