@@ -33,7 +33,7 @@ public class Base64Util {
      * 将字节数组编码为字符串 
      * 
      * @param data  data
-     * @return return
+     * @return String
      */ 
     public static String encode(byte[] data) { 
         StringBuffer sb = new StringBuffer(); 
