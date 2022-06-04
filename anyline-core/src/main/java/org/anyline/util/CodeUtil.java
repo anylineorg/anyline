@@ -139,7 +139,7 @@ public class CodeUtil {
 	 * 整个url解码 
 	 * @param url  url
 	 * @param encode  encode
-	 * @return return
+	 * @return String
 	 */ 
 	public static String urlDecode(String url, String encode) { 
 		if (BasicUtil.isEmpty(url)) { 
@@ -162,7 +162,7 @@ public class CodeUtil {
 	 * @param url  url
 	 * @param encode  encode
 	 * @param len  保留长度
-	 * @return return
+	 * @return String
 	 */ 
 	public static String urlEncode(String url, String encode, int len) {
 		if (BasicUtil.isEmpty(url)) { 
@@ -194,8 +194,8 @@ public class CodeUtil {
 	 * url参数部分编码 
 	 * @param url  url
 	 * @param encode  encode
-	 * @return return
-	 */ 
+	 * @return String
+	 */
 	public static String urlParamEncode(String url, String encode) { 
 		if (BasicUtil.isEmpty(url)) { 
 			return ""; 
@@ -221,7 +221,7 @@ public class CodeUtil {
 	/** 
 	 * url参数部分编码 
 	 * @param url  url
-	 * @return return
+	 * @return String
 	 */ 
 	public static String urlAsciiEncode(String url) { 
 		if (BasicUtil.isEmpty(url)) { 
@@ -255,7 +255,7 @@ public class CodeUtil {
 	 * 半角转全角 
 	 *  
 	 * @param input  input
-	 * @return return
+	 * @return String
 	 */ 
 	public static String half2full(String input) { 
 		if (BasicUtil.isEmpty(input)) { 
@@ -276,7 +276,7 @@ public class CodeUtil {
 	 * 全角转半角 
 	 *  
 	 * @param src  src
-	 * @return return
+	 * @return String
 	 */ 
 	public static final String full2Half(String src) { 
 		if (BasicUtil.isEmpty(src)) { 
