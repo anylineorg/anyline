@@ -798,7 +798,7 @@ public class FileUtil {
 	/**
 	 * 识别文件类型(文件格式)
 	 * @param file  file
-	 * @return return
+	 * @return String
 	 */
 	public static String parseSubName(File file) {
         String filetype = null;
@@ -873,7 +873,7 @@ public class FileUtil {
 	 * 计算文件行数
 	 * @param file file
 	 * @param subbfixs 如果file是目录, 只统计其中subbfixs结尾的文件
-	 * @return return
+	 * @return int
 	 */
 	public static int lines(File file, String ... subbfixs){
 		int size = 0;
@@ -900,7 +900,7 @@ public class FileUtil {
 	 * 压缩文件
 	 * @param zip  zip
 	 * @param srcs  srcs
-	 * @return return
+	 * @return boolean
 	 */
 	public static boolean zip(File zip, File... srcs) {
 		List<File> files = new ArrayList<File>();
@@ -915,7 +915,7 @@ public class FileUtil {
     /**
     * 获取单个文件的MD5值！
     * @param file file
-    * @return return
+    * @return String
     */
 	public static String md5(File file){
 		return MD5Util.getFileMD5(file);
@@ -924,7 +924,7 @@ public class FileUtil {
     * 获取文件夹中文件的MD5值
     * @param file file
     * @param recursion  true递归子目录中的文件
-    * @return return
+    * @return Map
     */
     public static Map<String, String> md5(File file, boolean recursion) {
     	return MD5Util.getDirMD5(file, recursion);
@@ -934,7 +934,7 @@ public class FileUtil {
      * 读取输入流中的数据保存至指定目录
      * @param is 输入流
      * @param file 文件名
-	 * @return return
+	 * @return boolean
      */
     public static boolean save(InputStream is, File file) {
     	if (BasicUtil.isEmpty(file)) {
@@ -979,7 +979,7 @@ public class FileUtil {
      * 读取输入流中的数据保存至指定目录
      * @param is 输入流
      * @param path 文件存储目录
-	 * @return return
+	 * @return boolean
      */
     public static boolean save(InputStream is, String path) {
     	return save(is, new File(path));
@@ -988,7 +988,7 @@ public class FileUtil {
 	/**
 	 * @param total 全部
 	 * @param finish 已完成
-	 * @return return
+	 * @return String
 	 */
 	public static String progress(long total, long finish){
 		String title = "";
@@ -1003,7 +1003,7 @@ public class FileUtil {
 	/**
 	 * 文件大小格式化
 	 * @param b b
-	 * @return return
+	 * @return String
 	 */
 	public static String length(long b){
 		String result = "";
