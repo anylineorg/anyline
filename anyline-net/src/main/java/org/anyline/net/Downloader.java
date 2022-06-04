@@ -209,7 +209,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 任务数量 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getTaskSize(){ 
 		return tasks.size(); 
@@ -219,7 +219,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 已完成任务数量 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getFinishTaskSize(){ 
 		int size = 0; 
@@ -257,7 +257,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 异常任务数量 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getErrorTaskSize(){ 
 		int size = 0; 
@@ -279,7 +279,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 运行中任务数量 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getRunningTaskSize(){ 
 		int size = 0; 
@@ -301,7 +301,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 本次共需下载长度 
-	 * @return return
+	 * @return long
 	 */ 
 	public long getSumLength(){ 
 		long length = 0; 
@@ -342,7 +342,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 合计已完成 
-	 * @return return
+	 * @return long
 	 */ 
 	public long getSumFinish(){ 
 		long length = 0; 
@@ -357,7 +357,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 完成比例 
-	 * @return return
+	 * @return double
 	 */ 
 	public double getFinishRate(){ 
 		long length = getSumLength()	; //本次需下载 
@@ -376,7 +376,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 平均每秒下载byte 
-	 * @return return
+	 * @return long
 	 */ 
 	public long getAvgSpeed(){ 
 		long finish = getSumFinish(); 
@@ -388,7 +388,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 平均下载速度byte/s 
-	 * @return return
+	 * @return String
 	 */ 
 	public String getSpeedFormat(){ 
 		long speed = getSpeed(); 
@@ -396,7 +396,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 平均每秒下载byte 
-	 * @return return
+	 * @return long
 	 */ 
 	public long getSpeed(){ 
 		long speed = 0L; 
@@ -407,7 +407,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 平均下载速度byte/s 
-	 * @return return
+	 * @return String
 	 */ 
 	public String getAvgSpeedFormat(){ 
 		long speed = getAvgSpeed(); 
@@ -415,7 +415,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 合计已耗时 
-	 * @return return
+	 * @return long
 	 */ 
  
 	public long getExpend() { 
@@ -433,7 +433,7 @@ public class Downloader {
 	} 
 	/** 
 	 * 预计剩余时间 
-	 * @return return
+	 * @return long
 	 */ 
 	public long getExpect(){ 
 		long expect = 0; 
@@ -460,7 +460,7 @@ public class Downloader {
 	 * @param headers headers
 	 * @param params params
 	 * @param extras extras
-	 * @return return
+	 * @return Downloader
 	 */
 	public Downloader add(String url, File local, Map<String,String> headers, Map<String, Object> params,Map<String, Object> extras){ 
 		DownloadTask task = getTask(url); 
