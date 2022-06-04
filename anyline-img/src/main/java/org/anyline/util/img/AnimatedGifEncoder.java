@@ -149,7 +149,7 @@ public class AnimatedGifEncoder {
   /** 
    * Flushes any pending data and closes output file. If writing to an 
    * OutputStream, the stream is not closed. 
-   * @return return
+   * @return boolean
    */ 
   public boolean finish() { 
     if (!started) 
@@ -300,7 +300,7 @@ public class AnimatedGifEncoder {
   /** 
    * Returns index of palette color closest to c 
    * @param c color
-   * @return return
+   * @return int
    */ 
   protected int findClosest(Color c) { 
     if (colorTab == null) 
