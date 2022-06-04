@@ -75,7 +75,7 @@ public class AESUtil {
 	 * @param cipher  cipher
 	 * @param content  content
 	 * @param password  password
-	 * @return return
+	 * @return String
 	 */ 
 	public static String decrypt(CIPHER cipher, String password, String vector, String content) {
 		try { 
@@ -112,7 +112,7 @@ public class AESUtil {
 	/** 
 	 * 生成加密秘钥 
 	 *  
-	 * @return return
+	 * @return SecretKeySpec
 	 */ 
 	private static SecretKeySpec getSecretKey(final String password) { 
 		// 返回生成指定算法密钥生成器的 KeyGenerator 对象 
