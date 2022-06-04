@@ -39,17 +39,17 @@ public interface PageNavi extends Serializable{
  
 	/** 
 	 * 第一行 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getFirstRow(); 
 	/** 
 	 * 最后一行 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getLastRow(); 
 	/** 
 	 * 页面显示的第一页 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getDisplayPageFirst() ; 
 	/** 
@@ -59,7 +59,7 @@ public interface PageNavi extends Serializable{
 	public void setDisplayPageFirst(int displayPageFirst); 
 	/** 
 	 * 页面显示的最后一页 
-	 * @return return
+	 * @return int
 	 */ 
 	public int getDisplayPageLast() ; 
 	/** 
@@ -76,14 +76,14 @@ public interface PageNavi extends Serializable{
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
-	 * @return return
+	 * @return PageNavi
 	 */ 
 	//public PageNavi order(Order order); 
 	/** 
 	 * 设置排序方式 
 	 * @param order  order
 	 * @param type  type
-	 * @return return
+	 * @return PageNavi
 	 */ 
 	public PageNavi order(String order, String type); 
 	public PageNavi order(String order); 
@@ -91,25 +91,25 @@ public interface PageNavi extends Serializable{
 	/** 
 	 * 设置总行数 
 	 * @param totalRow  totalRow
-	 * @return return
+	 * @return PageNavi
 	 */ 
 	public PageNavi setTotalRow(int totalRow) ; 
 	/** 
 	 * 设置最后一页 
 	 * @param totalPage  totalPage
-	 * @return return
+	 * @return PageNavi
 	 */ 
 	public PageNavi setTotalPage(int totalPage) ; 
 	/** 
 	 * 设置当前页 
 	 * @param curPage  curPage
-	 * @return return
+	 * @return PageNavi
 	 */ 
 	public PageNavi setCurPage(int curPage) ; 
 	/** 
 	 * 设置每页显示的行数 
 	 * @param pageRows  pageRows
-	 * @return return
+	 * @return PageNavi
 	 */ 
 	public PageNavi setPageRows(int pageRows) ; 
 	public int getTotalRow() ; 
@@ -126,18 +126,18 @@ public interface PageNavi extends Serializable{
 	public PageNavi setLastRow(int lastRow) ;
 	/**
 	 * 总条数懒加载时间间隔(秒)
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean isLazy();
 	/**
 	 * 总条数懒加载时间间隔(秒)
-	 * @return return
+	 * @return long
 	 */
 	public long getLazyPeriod();
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @param ms ms
-	 * @return return
+	 * @return PageNavi
 	 */
 	public PageNavi setLazyPeriod(long ms);
 	public PageNavi setLazyKey(String key);
@@ -145,7 +145,7 @@ public interface PageNavi extends Serializable{
 	/**
 	 * 总条数懒加载时间间隔(秒)
 	 * @param ms ms
-	 * @return return
+	 * @return PageNavi
 	 */
 	public PageNavi setLazy(long ms);
 	public String html(String creater);
@@ -173,14 +173,14 @@ public interface PageNavi extends Serializable{
 	/**
 	 * 样式分组
 	 * @param style style
-	 * @return return
+	 * @return PageNavi
 	 */
 	public PageNavi setStyle(String style);
 	public String getStyle();
 	/**
 	 * 加载更多样式
 	 * @param guide guide
-	 * @return return
+	 * @return PageNavi
 	 */
 	public PageNavi setGuide(String guide);
 	public String getGuide();
