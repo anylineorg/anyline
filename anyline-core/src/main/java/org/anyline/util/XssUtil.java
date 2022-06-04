@@ -51,7 +51,7 @@ public class XssUtil {
 	/** 
 	 * 过滤字符 
 	 * @param value  value
-	 * @return return
+	 * @return String
 	 */ 
 	public static String strip(String value) { 
 		if (BasicUtil.isNotEmpty(value)) { 
@@ -70,7 +70,7 @@ public class XssUtil {
 	/** 
 	 * 检测是否存在非法字符 通过(没有非法字条)返回true 
 	 * @param value  value
-	 * @return return
+	 * @return boolean
 	 */ 
 	public static boolean check(String value) { 
 		if (BasicUtil.isNotEmpty(value)) { 
