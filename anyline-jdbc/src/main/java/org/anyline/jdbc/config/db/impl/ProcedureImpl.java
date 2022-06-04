@@ -48,7 +48,7 @@ public class ProcedureImpl  implements Procedure{
 	 * 添加输入参数
 	 * @param value	值 value	值
 	 * @param type	类型 type	类型
-	 * @return return
+	 * @return Procedure
 	 */
 	public Procedure addInput(Object value, Integer type){
 		ProcedureParam param = new ProcedureParam();
@@ -64,7 +64,7 @@ public class ProcedureImpl  implements Procedure{
 	/**
 	 * 注册输出参数
 	 * @param type	类型 type	类型
-	 * @return return
+	 * @return Procedure
 	 */
 	public Procedure regOutput(Integer type){
 		return regOutput(null, type);
