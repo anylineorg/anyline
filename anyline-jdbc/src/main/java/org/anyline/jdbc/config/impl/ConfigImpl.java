@@ -134,7 +134,7 @@ public class ConfigImpl implements Config{
 	/** 
 	 *  createAutoCondition
 	 * @param chain 容器 
-	 * @return return
+	 * @return Condition
 	 */ 
 	public Condition createAutoCondition(ConditionChain chain){ 
 		Condition condition = null; 
