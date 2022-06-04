@@ -55,7 +55,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	 * 设置数据源
 	 * table(c1,c2)[pk1,pk2]
 	 * @param table table
-	 * @return return
+	 * @return SQL
 	 */
 	public SQL setDataSource(String table){
 		if(null == table){
@@ -77,7 +77,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	 * @param	column  列名
 	 * @param	value 值
 	 * @param	compare  比较方式
-	 * @return return
+	 * @return SQL
 	 */
 	public SQL addCondition(boolean required, boolean strictRequired, String column, Object value, COMPARE_TYPE compare){
 		if(null == chain){
