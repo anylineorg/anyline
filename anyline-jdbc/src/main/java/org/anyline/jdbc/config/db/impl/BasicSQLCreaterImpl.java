@@ -249,7 +249,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * 求总数SQL 
 	 * RunSQL 反转调用 
 	 * @param run  run
-	 * @return return
+	 * @return String
 	 */
 	@Override
 	public String parseTotalQueryTxt(RunSQL run){
@@ -618,7 +618,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * 确认需要插入的列 
 	 * @param row  row
 	 * @param columns  columns
-	 * @return return
+	 * @return List
 	 */ 
 	private List<String> confirmInsertColumns(String dst, DataRow row, String ... columns){ 
 		List<String> keys = null;/*确定需要插入的列*/ 
@@ -713,7 +713,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * 确认需要插入的列 
 	 * @param entity  entity
 	 * @param propertys  propertys
-	 * @return return
+	 * @return List
 	 */ 
 	private List<String> confirmInsertColumns(String dst, AnylineEntity entity, String ... propertys){ 
 		List<String> keys = null;/*确定需要插入的列*/ 
@@ -797,7 +797,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * 确认需要更新的列 
 	 * @param row  row
 	 * @param columns  columns
-	 * @return return
+	 * @return List
 	 */ 
 	private List<String> confirmUpdateColumns(DataRow row, String ... columns){
 		List<String> keys = null;/*确定需要更新的列*/ 
@@ -890,7 +890,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param dst  dst
 	 * @param entity  entity
 	 * @param propertys  propertys
-	 * @return return
+	 * @return List
 	 */ 
 	@SuppressWarnings("unused")
 	private List<String> confirmUpdateColumns(String dst, AnylineEntity entity, String ... propertys){ 
