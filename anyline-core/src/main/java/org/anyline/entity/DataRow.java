@@ -189,7 +189,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 解析实体类对象
 	 * @param obj obj
 	 * @param keys 列名:obj属性名 "ID:memberId"
-	 * @return return
+	 * @return DataRow
 	 */
 	@SuppressWarnings("rawtypes")
 	public static DataRow parse(Object obj, String ... keys){
@@ -276,7 +276,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 解析JSONObject
 	 * @param keyCase keyCase
 	 * @param json json
-	 * @return return
+	 * @return DataRow
 	 */
 	public static DataRow parseJson(KEY_CASE keyCase, JsonNode json){
 		return (DataRow)parse(keyCase, json);
@@ -330,7 +330,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 解析xml结构字符
 	 * @param keyCase KEY_CASE
 	 * @param xml xml
-	 * @return return
+	 * @return DataRow
 	 */
 	public static DataRow parseXml(KEY_CASE keyCase, String xml){
 		if(null != xml){
@@ -351,7 +351,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 解析xml
      * @param keyCase KEY_CASE
      * @param element element
-	 * @return return
+	 * @return DataRow
 	 */
 	public static DataRow parseXml(KEY_CASE keyCase, Element element){
 		DataRow row = new DataRow(keyCase);
@@ -443,14 +443,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 创建时间
-	 * @return return
+	 * @return long
 	 */ 
 	public long getCreateTime(){
 		return createTime;
 	}
 	/**
 	 * 过期时间
-	 * @return return
+	 * @return long
 	 */
 	public long getExpires() {
 		return expires;
@@ -458,7 +458,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 设置过期时间
 	 * @param millisecond millisecond
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow setExpires(long millisecond) {
 		this.expires = millisecond;
@@ -472,7 +472,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 合并数据
 	 * @param row  row
 	 * @param over key相同时是否覆盖原数据
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow merge(DataRow row, boolean over){
 		List<String> keys = row.keys();
@@ -489,7 +489,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 是否是新数据
-	 * @return return
+	 * @return Boolean
 	 */ 
 	public Boolean isNew() { 
 		String pk = getPrimaryKey(); 
@@ -498,7 +498,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 是否来自缓存
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean isFromCache(){
 		return isFromCache;
@@ -506,7 +506,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 设置是否来自缓存
 	 * @param bol bol
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow setIsFromCache(boolean bol){
 		this.isFromCache = bol;
@@ -532,7 +532,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 默认子集
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet getItems(){ 
 		Object items = get(ITEMS); 
@@ -548,7 +548,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * key转换成小写
 	 * @param keys keys
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow toLowerKey(String ... keys){
 		if(null != keys && keys.length>0){
@@ -572,7 +572,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * key转换成大写
 	 * @param keys keys
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow toUpperKey(String ... keys){
 		if(null != keys && keys.length>0){
@@ -598,7 +598,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 数字格式化
 	 * @param format format
 	 * @param cols cols
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow formatNumber(String format, String ... cols){
 		if(null == cols || BasicUtil.isEmpty(format)){
@@ -625,7 +625,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 日期格式化
 	 * @param format format
 	 * @param cols cols
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow formatDate(String format, String ... cols){
 		if(null == cols || BasicUtil.isEmpty(format)){
@@ -653,7 +653,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 指定列是否为空
 	 * @param key key
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean isNull(String key){
 		Object obj = get(key);
@@ -674,7 +674,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 添加主键
 	 * @param applyContainer 是否应用到上级容器 默认false
 	 * @param pks pks
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow addPrimaryKey(boolean applyContainer, String ... pks){
 		if(null != pks){
@@ -756,7 +756,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/** 
 	 * 读取主键 
 	 * 主键为空时且容器有主键时,读取容器主键,否则返回默认主键 
-	 * @return return
+	 * @return List
 	 */ 
 	public List<String> getPrimaryKeys(){ 
 		/*有主键直接返回*/ 
@@ -787,7 +787,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	} 
 	/** 
 	 * 主键值 
-	 * @return return
+	 * @return List
 	 */ 
 	public List<Object> getPrimaryValues(){ 
 		List<Object> values = new ArrayList<Object>(); 
@@ -808,7 +808,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	} 
 	/** 
 	 * 是否有主键 
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean hasPrimaryKeys(){ 
 		if(hasSelfPrimaryKeys()){ 
@@ -824,7 +824,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	} 
 	/** 
 	 * 自身是否有主键 
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean hasSelfPrimaryKeys(){ 
 		if(null != primaryKeys && primaryKeys.size()>0){ 
@@ -837,7 +837,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/** 
 	 * 读取数据源 
 	 * 数据源为空时,读取容器数据源 
-	 * @return return
+	 * @return String
 	 */
 	public String getDataSource() {
 		String ds = table;
@@ -864,7 +864,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 设置数据源 
 	 * 当前对象处于容器中时,设置容器数据源 
 	 * @param dataSource  dataSource
-	 * @return return
+	 * @return DataRow
 	 */ 
 	public DataRow setDataSource(String dataSource){ 
 		if(null == dataSource){ 
@@ -883,7 +883,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	} 
 	/** 
 	 * 子类 
-	 * @return return
+	 * @return Object
 	 */ 
 	public Object getChildren(){ 
 		return get(CHILDREN); 
@@ -894,7 +894,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	} 
 	/** 
 	 * 父类 
-	 * @return return
+	 * @return Object
 	 */ 
 	public Object getParent(){ 
 		return get(PARENT); 
@@ -905,7 +905,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	} 
 	/** 
 	 * 所有上级数据(递归) 
-	 * @return return
+	 * @return List
 	 */ 
 	@SuppressWarnings("unchecked")
 	public List<Object> getAllParent(){ 
@@ -927,7 +927,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 转换成对象 
 	 * @param <T>  T
 	 * @param clazz  clazz
-	 * @return return
+	 * @return T
 	 */ 
 	public <T> T entity(Class<T> clazz){ 
 		T entity = null; 
@@ -969,7 +969,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 是否有指定的key
 	 * @param key key
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean has(String key){
 		return get(key) != null;
@@ -1019,7 +1019,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * @param value value
 	 * @param pk		是否是主键 pk		是否是主键
 	 * @param override	是否覆盖之前的主键(追加到primaryKeys) 默认覆盖(单一主键)
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow put(KEY_CASE keyCase, String key, Object value, boolean pk, boolean override){
 		if(pk){
@@ -1276,7 +1276,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	} 
 	/** 
 	 * 转换成json格式 
-	 * @return return
+	 * @return String
 	 */
 	public String toJSON(){
 		return BeanUtil.map2json(this);
@@ -1323,7 +1323,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
 	/** 
 	 * 轮换成xml格式 
-	 * @return return
+	 * @return String
 	 */
 	public String toXML(){
 		return BeanUtil.map2xml(this);
@@ -1333,7 +1333,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	} 
 	/** 
 	 * 是否处于容器内 
-	 * @return return
+	 * @return boolean
 	 */ 
 	public boolean hasContainer(){ 
 		if(null != getContainer()){ 
@@ -1344,7 +1344,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	} 
 	/** 
 	 * 包含当前对象的容器 
-	 * @return return
+	 * @return DataSet
 	 */ 
 	public DataSet getContainer() { 
 		return container; 
@@ -1403,7 +1403,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 根据当前时间与创建时间对比
 	 * 过期返回 true
 	 * @param millisecond	过期时间(毫秒) millisecond 
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean isExpire(int millisecond){
 		if(System.currentTimeMillis() - createTime > millisecond){
@@ -1414,7 +1414,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 是否过期
 	 * @param millisecond millisecond
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean isExpire(long millisecond){
 		if(System.currentTimeMillis() - createTime > millisecond){
@@ -1433,6 +1433,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 复制数据
+	 * @return Object
 	 */
 	public Object clone(){
 		DataRow row = (DataRow)super.clone();
@@ -1463,7 +1464,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 删除指定的key
 	 * 不和remove命名 避免调用remoate("ID","CODE")时与HashMap.remove(Object key, Object value) 冲突
 	 * @param keys keys
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow removes(String ... keys){
 		if(null != keys){
@@ -1496,7 +1497,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 清空需要更新的列
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow clearUpdateColumns(){
 		updateColumns.clear();
@@ -1519,7 +1520,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 添加需要更新的列
 	 * @param cols cols
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow addUpdateColumns(String ... cols){
 		if(null != cols){
@@ -1545,7 +1546,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * @param fixs fixs
 	 * @param data data
 	 * @param keys this与data中的key不同时 "this.key:data.key"(CD:ORDER_CD)
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow copy(DataRow data, String[] fixs, String ... keys){
 		return copy(data, BeanUtil.array2list(fixs, keys));
@@ -1598,7 +1599,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 复制String类型数据
 	 * @param data data
 	 * @param keys keys
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow copyString(DataRow data, String ... keys){
 		if(null == data || null == keys){
@@ -1617,7 +1618,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 所有数字列
-	 * @return return
+	 * @return List
 	 */
 	public List<String> numberKeys(){
 		List<String> result = new ArrayList<>();
@@ -1632,7 +1633,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 检测必选项
 	 * @param keys keys
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean checkRequired(String ... keys){
 		List<String> ks = new ArrayList<>();
@@ -1683,7 +1684,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * key大小写转换
 	 * @param keyCase keyCase
 	 * @param key key
-	 * @return return
+	 * @return String
 	 */
 	private static String getKeyCase(KEY_CASE keyCase, String key){
 		if(null == key || keyCase == KEY_CASE.SRC){
@@ -1732,7 +1733,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * key大小写转换
 	 * @param keyCase keyCase
 	 * @param key key
-	 * @return return
+	 * @return String
 	 */
 	private static String putKeyCase(KEY_CASE keyCase, String key){
 		if(null == key || keyCase == KEY_CASE.SRC){
@@ -1776,7 +1777,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 查询条件
-	 * @return return
+	 * @return Map
 	 */
 	public Map<String, Object> getQueryParams() {
 		if(queryParams.isEmpty()){
@@ -1787,7 +1788,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 设置查询条件
 	 * @param queryParams queryParams
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow setQueryParams(Map<String, Object> queryParams) {
 		this.queryParams = queryParams;
@@ -1806,7 +1807,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 是否更新null列
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean isUpdateNullColumn() {
 		return updateNullColumn;
@@ -1814,7 +1815,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 设置是否更新null列
 	 * @param updateNullColumn updateNullColumn
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow setUpdateNullColumn(boolean updateNullColumn) {
 		this.updateNullColumn = updateNullColumn;
@@ -1822,7 +1823,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 	/**
 	 * 是否更新空列
-	 * @return return
+	 * @return boolean
 	 */
 	public boolean isUpdateEmptyColumn() {
 		return updateEmptyColumn;
@@ -1830,7 +1831,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 设置是否更新空列
 	 * @param updateEmptyColumn updateEmptyColumn
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow setUpdateEmptyColumn(boolean updateEmptyColumn) {
 		this.updateEmptyColumn = updateEmptyColumn;
@@ -1857,7 +1858,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 替换所有空值
 	 * @param value value
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow replaceEmpty(String value){
 		List<String> keys = keys();
@@ -1882,7 +1883,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 替换所有空值
 	 * @param key key
 	 * @param value value
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow replaceEmpty(String key, String value){
 		if(isEmpty(key)){
@@ -1895,7 +1896,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 替换所有NULL值
 	 * @param key key
 	 * @param value value
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow replaceNull(String key, String value){
 		if(null == get(key)){
@@ -1907,7 +1908,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	/**
 	 * 替换所有NULL值
 	 * @param value value
-	 * @return return
+	 * @return DataRow
 	 */
 	public DataRow replaceNull(String value){
 		List<String> keys = keys();
