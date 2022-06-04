@@ -55,7 +55,7 @@ public class AnylineController extends AbstractBasicController {
 	/** 
 	 * 当前线程下的request 
 	 *  
-	 * @return return
+	 * @return HttpServletRequest
 	 */ 
 	protected HttpServletRequest getRequest() {
 
@@ -734,7 +734,7 @@ public class AnylineController extends AbstractBasicController {
 	 *  
 	 * @param msg  msg
 	 * @param encrypt	是否加密  encrypt	是否加密
-	 * @return return
+	 * @return String
 	 */ 
 	protected String fail(String msg, boolean encrypt) { 
 		if(encrypt){ 
@@ -766,7 +766,7 @@ public class AnylineController extends AbstractBasicController {
 	 * 加密仅支持String类型 不支持对象加密 
 	 * @param data  data
 	 * @param encrypt  encrypt
-	 * @return return
+	 * @return String
 	 */ 
 	protected String success(Object data, boolean encrypt) {
 		String code = ConfigTable.getString("HTTP_SUCCESS_CODE", "200");
@@ -793,7 +793,7 @@ public class AnylineController extends AbstractBasicController {
 	 * @param data	数据 request.setAttribute("_anyline_navi_data", data); 
 	 * @param page	生成分页数据的模板(与JSP语法一致)  page	生成分页数据的模板(与JSP语法一致)
 	 * @param ext	扩展数据	  ext	扩展数据
-	 * @return return
+	 * @return String
 	 */ 
 	public String navi(boolean adapt, HttpServletRequest request, HttpServletResponse response, DataSet data, String page, Object ext){
 		 
@@ -870,7 +870,7 @@ public class AnylineController extends AbstractBasicController {
 	/** 
 	 * 上传文件 
 	 * @param dir  dir
-	 * @return return
+	 * @return List
 	 * @throws IllegalStateException IllegalStateException
 	 * @throws IOException  IOException
 	 */ 
