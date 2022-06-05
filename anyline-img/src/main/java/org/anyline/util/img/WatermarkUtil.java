@@ -61,9 +61,9 @@ public class WatermarkUtil {
 	 
 	 /** 
      * 给图片添加水印、可设置水印的旋转角度 
-     * @param text  text
-     * @param src  src
-     * @param target  target
+     * @param text  水印文本
+     * @param src  源文件
+     * @param target  添加水印后保存至
      * @return boolean
      */ 
     public boolean markText(String text, File src, File target) {
