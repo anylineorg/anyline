@@ -130,8 +130,8 @@ public interface AnylineService{
 	 * 删除缓存 参数保持与查询参数完全一致
 	 * @param channel channel
 	 * @param src src
-	 * @param configs configs
-	 * @param conditions conditions
+	 * @param configs  查询条件
+	 * @param conditions 查询条件
 	 * @return boolean
 	 */
 	public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
@@ -146,9 +146,9 @@ public interface AnylineService{
 	 
 	/** 
 	 * 是否存在 
-	 * @param src  src
-	 * @param configs  configs
-	 * @param conditions  conditions
+	 * @param src  表
+	 * @param configs  查询条件
+	 * @param conditions 查询条件
 	 * @return boolean
 	 */ 
 	public boolean exists(String src, ConfigStore configs, String ... conditions); 
@@ -175,12 +175,12 @@ public interface AnylineService{
 	public int update(boolean sync, String dest, Object data, String ... columns);
 	public int update(boolean sync, Object data, String ... columns);
 	/** 
-	 * 保存(insert|update) 
-	 * @param data  data
-	 * @param checkPriamry  checkPriamry
-	 * @param columns  columns
+	 * 保存(insert|update)根据是否有主键值确定insert或update
+	 * @param data  数据
+	 * @param checkPriamry 是否检测主键
+	 * @param columns 指定更新或保存的列
 	 * @param dest 表 
-	 * @return int
+	 * @return 影响行数
 	 */ 
 	public int save(String dest, Object data, boolean checkPriamry, String ... columns); 
 	public int save(Object data, boolean checkPriamry, String ... columns); 
