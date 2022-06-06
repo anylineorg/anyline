@@ -33,10 +33,8 @@ public abstract class AnylineEntity extends DataRow implements Serializable{
  
 	/** 
 	 * 实体类对应的列 
-	 * @param checkInsert  checkInsert
-	 * 			是否检查可插入 
-	 * @param checkUpdate  checkUpdate
-	 * 			是否检查可更新 
+	 * @param checkInsert   是否检查可插入
+	 * @param checkUpdate   是否检查可更新
 	 * @return List
 	 */ 
 	@SuppressWarnings("rawtypes")
@@ -58,7 +56,7 @@ public abstract class AnylineEntity extends DataRow implements Serializable{
 	} 
 	/** 
 	 * 根据属性读取对应的列名 
-	 * @param property  property
+	 * @param property  属性名
 	 * @return String
 	 */ 
 	public String getColumnByProperty(String property){ 
@@ -79,7 +77,7 @@ public abstract class AnylineEntity extends DataRow implements Serializable{
 	} 
 	/** 
 	 * 根据列名读取属性值 
-	 * @param column  column
+	 * @param column  列名
 	 * @return Object
 	 */ 
 	public Object getValueByColumn(String column){ 
