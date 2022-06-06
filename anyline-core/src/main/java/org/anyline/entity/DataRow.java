@@ -2048,7 +2048,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * @param target 计算结果key
 	 * @param key key
 	 * @param value value
-	 * @return this
+	 * @return DataRow
 	 */
 	public DataRow add(String target, String key, int value){
 		put(target,getInt(key,0) + value);
