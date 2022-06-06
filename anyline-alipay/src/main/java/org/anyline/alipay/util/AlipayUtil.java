@@ -251,7 +251,6 @@ public class AlipayUtil {
 				e.printStackTrace();
 			}
 		} catch (AlipayApiException e) {
-			//处理异常
 			e.printStackTrace();
 		}
 		return user;
