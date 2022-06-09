@@ -21,6 +21,8 @@ package org.anyline.web.tag;
  
 /**
  * 判断当前type是否包含在指定的type中
+ * 参考 Webutil.clientType
+ * app,wechat,qq,alipay,wap,web
  */ 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
