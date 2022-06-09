@@ -30,7 +30,7 @@ import java.util.Random;
  
 public class VerifyCodeUtil { 
  
-	// ，字体只显示大写，去掉了1,0,i,o,2,Z,L,C,G几个容易混淆的字符 
+	// ,字体只显示大写,去掉了1,0,i,o,2,Z,L,C,G几个容易混淆的字符 
 	public static final String VERIFY_CODES = "3456789ABDEFHJKMNPQRSTUVWXY"; 
 	private static Random random = new Random(); 
  
