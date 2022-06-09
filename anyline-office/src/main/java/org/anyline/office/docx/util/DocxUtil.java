@@ -97,7 +97,7 @@ public class DocxUtil {
      * copy的样式复制给src
      * @param src src
      * @param copy 被复制p/w或pPr/wPr
-     * @param override 如果样式重复，是否覆盖原来的样式
+     * @param override 如果样式重复,是否覆盖原来的样式
      */
     public static void copyStyle(Element src, Element copy, boolean override){
         if(null == src || null == copy){
