@@ -794,10 +794,10 @@ public class WDocument {
                 /*对于水平定位:
                 character - 相对于锚点在运行内容中的位置
                 column  - 相对于包含锚的列的范围
-                insideMargin  - 相对于奇数页的左边距，偶数页的右边距
+                insideMargin  - 相对于奇数页的左边距,偶数页的右边距
                 leftMargin  - 相对于左边距
                 margin  - 相对于页边距
-                outsideMargin  - 相对于奇数页的右边距，偶数页的左边距
+                outsideMargin  - 相对于奇数页的右边距,偶数页的左边距
                 page - 相对于页面边缘
                 rightMargin - 相对于右边距
                 */
@@ -809,7 +809,7 @@ public class WDocument {
                 positionH.addAttribute("relativeFrom",relativeX);
                 Element posOffsetH = positionH.addElement("wp:posOffset");
                 posOffsetH.setText(offsetX+"");
-                /*对于垂直定位：
+                /*对于垂直定位:
                 bottomMargin - 相对于底部边距
                 insideMargin - 相对于当前页面的内边距
                 line - 相对于包含锚字符的行
@@ -899,7 +899,7 @@ public class WDocument {
      * @param prev 放在prev之后
      * @param html html
      * @param styles 样式
-     * @param copyPrevStyle 是否复制前一个标签的样式，在替换书签时需要用到,但在div中嵌套的span需要避免复制闰一个标签的样式
+     * @param copyPrevStyle 是否复制前一个标签的样式,在替换书签时需要用到,但在div中嵌套的span需要避免复制闰一个标签的样式
      * @return prev
      */
     public Element parseHtml(Element parent, Element prev, Element html, Map<String,String> styles, boolean copyPrevStyle){
@@ -1187,7 +1187,7 @@ public class WDocument {
         }
     }
     /**
-     * 合并列的表格，如果没有设置宽度，在wps中只占一列,需要在表格中根据总列数添加
+     * 合并列的表格,如果没有设置宽度,在wps中只占一列,需要在表格中根据总列数添加
      * w:tblGrid
      *      w:gridCol w:w="1000"
      */
