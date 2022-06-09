@@ -1954,7 +1954,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * ROUND_FLOOR 接近负无穷大的舍入模式 如果 BigDecimal 为正，则舍入行为与 ROUND_DOWN 相同 如果为负，则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反
      * ROUND_HALF_UP 四舍五入
      * ROUND_HALF_DOWN 五舍六入
-     * ROUND_HALF_EVEN 四舍六入 五留双 如果舍弃部分左边的数字为奇数，则舍入行为与 ROUND_HALF_UP 相同（四舍五入） 如果为偶数，则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入） 如：1.15 转成 1.1，1.25 -> 1.2
+     * ROUND_HALF_EVEN 四舍六入 五留双 如果舍弃部分左边的数字为奇数，则舍入行为与 ROUND_HALF_UP 相同（四舍五入） 如果为偶数，则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入） 如：1.15 转成 1.1，1.25 转成 1.2
      * ROUND_UNNECESSARY 断言请求的操作具有精确的结果，因此不需要舍入 如果对获得精确结果的操作指定此舍入模式，则抛出 ArithmeticException
      * @return DataSet
      */
