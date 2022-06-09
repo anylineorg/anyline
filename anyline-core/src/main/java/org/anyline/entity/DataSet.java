@@ -69,7 +69,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param fields 如果list是二维数据
      *               fields 下标对应的属性(字段/key)名称 如"ID","CODE","NAME"
      *               如果不输入则以下标作为DataRow的key 如row.put("0","100").put("1","A01").put("2","张三");
-     *               如果属性数量超出list长度，取null值存入DataRow
+     *               如果属性数量超出list长度,取null值存入DataRow
      *
      *               如果list是一组数组
      *               fileds对应条目的属性值 如果不输入 则以条目的属性作DataRow的key 如"USER_ID:id","USER_NM:name"
@@ -384,7 +384,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 从begin开始截取到最后一个
      *
      * @param begin 开始位置
-     *              如果输入负数则取后n个,如果造成数量不足，则取全部
+     *              如果输入负数则取后n个,如果造成数量不足,则取全部
      * @return DataSet
      */
     public DataSet cuts(int begin) {
@@ -398,7 +398,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * 从begin开始截取到end位置，方法执行时会创建新的DataSet并不改变原有set长度
+     * 从begin开始截取到end位置,方法执行时会创建新的DataSet并不改变原有set长度
      *
      * @param begin 开始位置
      * @param end   结束位置
@@ -438,7 +438,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * 从begin开始截取到end位置，并返回其中第一个DataRow,方法执行时会创建新的DataSet并不改变原有set长度
+     * 从begin开始截取到end位置,并返回其中第一个DataRow,方法执行时会创建新的DataSet并不改变原有set长度
      *
      * @param begin 开始位置
      * @param end   结束位置
@@ -1585,7 +1585,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * 抽取指定列生成新的DataSet 新的DataSet只包括指定列的值与分页信息，不包含其他附加信息(如来源表)
+     * 抽取指定列生成新的DataSet 新的DataSet只包括指定列的值与分页信息,不包含其他附加信息(如来源表)
      * @param keys keys
      * @return DataSet
      */
@@ -1948,14 +1948,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param key 属性
      * @param scale 小数位
      * @param mode 舍入 参考BigDecimal
-     * ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如：2.36 转成 2.4
-     * ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1，即截短)。 如：2.36 转成 2.3
-     * ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正，则舍入行为与 ROUND_UP 相同 如果为负，则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集
-     * ROUND_FLOOR 接近负无穷大的舍入模式 如果 BigDecimal 为正，则舍入行为与 ROUND_DOWN 相同 如果为负，则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反
+     * ROUND_UP 舍入远离零的舍入模式 在丢弃非零部分之前始终增加数字（始终对非零舍弃部分前面的数字加 1） 如:2.36 转成 2.4
+     * ROUND_DOWN 接近零的舍入模式 在丢弃某部分之前始终不增加数字(从不对舍弃部分前面的数字加1,即截短). 如:2.36 转成 2.3
+     * ROUND_CEILING 接近正无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_UP 相同 如果为负,则舍入行为与 ROUND_DOWN 相同 相当于是 ROUND_UP 和 ROUND_DOWN 的合集
+     * ROUND_FLOOR 接近负无穷大的舍入模式 如果 BigDecimal 为正,则舍入行为与 ROUND_DOWN 相同 如果为负,则舍入行为与 ROUND_UP 相同 与ROUND_CEILING 正好相反
      * ROUND_HALF_UP 四舍五入
      * ROUND_HALF_DOWN 五舍六入
-     * ROUND_HALF_EVEN 四舍六入 五留双 如果舍弃部分左边的数字为奇数，则舍入行为与 ROUND_HALF_UP 相同（四舍五入） 如果为偶数，则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入） 如：1.15 转成 1.1，1.25 转成 1.2
-     * ROUND_UNNECESSARY 断言请求的操作具有精确的结果，因此不需要舍入 如果对获得精确结果的操作指定此舍入模式，则抛出 ArithmeticException
+     * ROUND_HALF_EVEN 四舍六入 五留双 如果舍弃部分左边的数字为奇数,则舍入行为与 ROUND_HALF_UP 相同（四舍五入） 如果为偶数,则舍入行为与 ROUND_HALF_DOWN 相同（五舍六入） 如:1.15 转成 1.1,1.25 转成 1.2
+     * ROUND_UNNECESSARY 断言请求的操作具有精确的结果,因此不需要舍入 如果对获得精确结果的操作指定此舍入模式,则抛出 ArithmeticException
      * @return DataSet
      */
     public DataSet round(String key, int scale, int mode){
@@ -2537,7 +2537,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
-     * 根据keys列建立关联，并将关联出来的结果拼接到集合的条目上，如果有重复则覆盖条目
+     * 根据keys列建立关联,并将关联出来的结果拼接到集合的条目上,如果有重复则覆盖条目
      *
      * @param items 被查询的集合
      * @param fixs  关联条件列
@@ -2645,7 +2645,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param distinct 是否根据keys抽取不重复的集合(根据keys去重)
      * @param set      set
-     * @param keys     根据keys列比较是否相等，如果列名不一致"ID:USER_ID",ID表示当前DataSet的列,USER_ID表示参数中DataSet的列
+     * @param keys     根据keys列比较是否相等,如果列名不一致"ID:USER_ID",ID表示当前DataSet的列,USER_ID表示参数中DataSet的列
      * @return DataSet
      */
     public DataSet intersection(boolean distinct, DataSet set, String... keys) {
@@ -2682,7 +2682,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     /**
      * 补集
-     * 在this中，但不在set中
+     * 在this中,但不在set中
      * this作为超集 set作为子集
      *
      * @param distinct 是否根据keys抽取不重复的集合
@@ -2802,7 +2802,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 删除rows中的columns列
      *
-     * @param columns 检测的列，如果不输入则检测所有列
+     * @param columns 检测的列,如果不输入则检测所有列
      * @return DataSet
      */
     public DataSet removeColumn(String... columns) {
@@ -2819,7 +2819,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 删除rows中值为空(null|'')的列
      *
-     * @param columns 检测的列，如果不输入则检测所有列
+     * @param columns 检测的列,如果不输入则检测所有列
      * @return DataSet
      */
     public DataSet removeEmptyColumn(String... columns) {
