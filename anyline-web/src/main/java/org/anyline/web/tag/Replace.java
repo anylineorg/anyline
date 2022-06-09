@@ -51,7 +51,7 @@ public class Replace extends BaseBodyTag implements Cloneable{
 			String result = "";
 			if(null!= separate){
 				/**
-				 * 以separate分隔from，每个条目换成to,如果to中也有separate并且条目长度与from一致则按顺序替换
+				 * 以separate分隔from,每个条目换成to,如果to中也有separate并且条目长度与from一致则按顺序替换
 				 * value = "ABC123"  from = "ABC" to="a" result = "a123"
 				 * value = "ABC123" from = "A,B,C"  separate="," to = "a" result = "aaa123"
 				 * value = "ABC123" from = "A,B,C"  separate="," to = "a,b,c" result = "abc123"
