@@ -303,7 +303,7 @@ public class FTPUtil {
 				} catch (IOException e) { 
 					e.printStackTrace(); 
 				}  
-                cd(remotePath); //切换成返回true，失败（不存在）返回false   
+                cd(remotePath); //切换成返回true,失败（不存在）返回false   
             }   
             File[] files = local.listFiles();   
             for (File f : files) {   
