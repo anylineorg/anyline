@@ -150,7 +150,7 @@ public class DataSourceHolder {
 		return result;
 	}
 	/**
-	 * 注册新的数据源，只是把spring context中现有的数据源名称添加到数据源名称列表
+	 * 注册新的数据源,只是把spring context中现有的数据源名称添加到数据源名称列表
 	 * @param ds 数据源名称
 	 */
 	public static void reg(String ds){ 
