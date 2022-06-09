@@ -16,7 +16,7 @@ public class Td {
     private int rowspan = 1;
     private String clazz = null;
     private int merge = -1; // -1 不合并 1:合并 2:被合并
-    private int offset = 0; //向右偏移(前一列被上一行合并后，当前td偏移 +1, 前一列被更前一列合并时当前td偏移+1)
+    private int offset = 0; //向右偏移(前一列被上一行合并后,当前td偏移 +1, 前一列被更前一列合并时当前td偏移+1)
     private boolean remove = false;
     private String width;
     private boolean isMerge = false;
