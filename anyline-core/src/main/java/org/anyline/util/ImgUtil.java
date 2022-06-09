@@ -53,8 +53,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** 
- * 图片处理工具类：<br> 
- * 功能：缩放图像、切割图像、图像类型转换、彩色转黑白、文字水印、图片水印等 
+ * 图片处理工具类:<br> 
+ * 功能:缩放图像、切割图像、图像类型转换、彩色转黑白、文字水印、图片水印等 
  */
 public class ImgUtil { 
 	private static final Logger log = LoggerFactory.getLogger(ImgUtil.class); 
@@ -125,7 +125,7 @@ public class ImgUtil {
      * @param format 格式
      * @param height 缩放后的高度 
      * @param width 缩放后的宽度 
-     * @param fill 比例不对时是否需要补白：true为补白; false为不补白; 
+     * @param fill 比例不对时是否需要补白:true为补白; false为不补白; 
      */ 
     public static void scale(File src, File tar, String format, int width, int height, boolean fill) { 
     	long fr = System.currentTimeMillis(); 
@@ -219,8 +219,8 @@ public class ImgUtil {
      * 图像切割（指定切片的行数和列数） 
      * @param src 源图像地址 
      * @param dir 切片目标文件夹 
-     * @param rows 目标切片行数。默认2，必须是范围 [1, 20] 之内 
-     * @param cols 目标切片列数。默认2，必须是范围 [1, 20] 之内 
+     * @param rows 目标切片行数.默认2,必须是范围 [1, 20] 之内 
+     * @param cols 目标切片列数.默认2,必须是范围 [1, 20] 之内 
      */ 
     public static void cut(File src, File dir, int rows, int cols) { 
         try { 
@@ -287,8 +287,8 @@ public class ImgUtil {
      * 图像切割（指定切片的宽度和高度） 
      * @param src 源图像地址 
      * @param dir 切片目标文件夹 
-     * @param width 目标切片宽度。默认200 
-     * @param height 目标切片高度。默认150 
+     * @param width 目标切片宽度.默认200 
+     * @param height 目标切片高度.默认150 
      */ 
     public final static void cut3(File src, File dir, int width, int height) { 
         try { 
@@ -346,9 +346,9 @@ public class ImgUtil {
     } 
  
     /** 
-     * 图像类型转换：GIF&gt;JPG、GIF&gt;PNG、PNG&gt;JPG、PNG&gt;GIF(X)、BMP&gt;PNG 
+     * 图像类型转换:GIF&gt;JPG、GIF&gt;PNG、PNG&gt;JPG、PNG&gt;GIF(X)、BMP&gt;PNG 
      * @param src 源图像地址 
-     * @param format 包含格式非正式名称的 String：如JPG、JPEG、GIF等 
+     * @param format 包含格式非正式名称的 String:如JPG、JPEG、GIF等 
      * @param dest 目标图像地址 
      */ 
     public final static void convert(File src, String format, String dest) { 
