@@ -320,7 +320,7 @@ public class Pop3Util {
 	 * 判断邮件中是否包含附件
 	 *
 	 * @param part part
-	 * @return 邮件中存在附件返回true，不存在返回false
+	 * @return 邮件中存在附件返回true,不存在返回false
 	 * @throws MessagingException MessagingException
 	 * @throws IOException IOException
 	 * @return boolean
