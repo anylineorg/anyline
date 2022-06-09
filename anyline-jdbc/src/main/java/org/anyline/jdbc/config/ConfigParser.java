@@ -452,7 +452,7 @@ public class ConfigParser {
 		return result;
 	}
 	/**
-	 * 生成SQL签名，用来唯一标签一条SQL
+	 * 生成SQL签名,用来唯一标签一条SQL
 	 * @param page  page
 	 * @param order  order
 	 * @param src  src
@@ -837,7 +837,7 @@ public class ConfigParser {
 //		if (values.get(IS_PARAMS_DECRYPT) == null) {
 //			decryptParam(values);
 //		}
-		valueEncrypt = false;//整体加密参数，分解时已value已解密，这里不需要再解一次了
+		valueEncrypt = false;//整体加密参数,分解时已value已解密,这里不需要再解一次了
 		Map<String, List<String>> partMap = (Map<String, List<String>>) values.get("DECRYPT_PARAM_MAP");
 		List<String> list = null;
 		if(null != key && null != partMap) {
