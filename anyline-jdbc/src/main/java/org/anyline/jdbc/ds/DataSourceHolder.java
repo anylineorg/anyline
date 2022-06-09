@@ -218,7 +218,12 @@ public class DataSourceHolder {
 
 	/**
 	 * 创建数据源
-	 * @param params params
+	 * @param params 数据源参数
+	 * 	  type 连接池类型 如 com.zaxxer.hikari.HikariDataSource
+	 * 	  driver 驱动类 如 com.mysql.cj.jdbc.Driver
+	 * 	  url url
+	 * 	  user 用户名
+	 * 	  password 密码
 	 * @return DataSource
 	 * @throws Exception Exception
 	 */
