@@ -9,14 +9,14 @@ public class AlipayTradeQueryResult extends BasicResult{
 	 
 	private String trade_no				; //	必填	64	支付宝交易号	2013112011001004330000121536 
 	private String out_trade_no			; //	必填	64	商家订单号	6823789339978248 
-	private String open_id				; //	选填	32	买家支付宝用户号，该字段将废弃，不要使用	2088102122524333 
+	private String open_id				; //	选填	32	买家支付宝用户号,该字段将废弃,不要使用	2088102122524333 
 	private String buyer_logon_id		; //	必填	100	买家支付宝账号	159****5620 
-	private String trade_status			; //	必填	32	交易状态：WAIT_BUYER_PAY（交易创建，等待买家付款）、TRADE_CLOSED（未付款交易超时关闭，或支付完成后全额退款）、TRADE_SUCCESS（交易支付成功）、TRADE_FINISHED（交易结束，不可退款）	TRADE_CLOSED 
-	private String total_amount			; //	必填	11	交易的订单金额，单位为元，两位小数。该参数的值为支付时传入的total_amount	88.88 
-	private String receipt_amount		; //	必填	11	实收金额，单位为元，两位小数。该金额为本笔交易，商户账户能够实际收到的金额	15.25 
-	private String buyer_pay_amount		; //	选填	11	买家实付金额，单位为元，两位小数。该金额代表该笔交易买家实际支付的金额，不包含商户折扣等金额	8.88 
-	private String point_amount			; //	选填	11	积分支付的金额，单位为元，两位小数。该金额代表该笔交易中用户使用积分支付的金额，比如集分宝或者支付宝实时优惠等	10 
-	private String invoice_amount		; //	选填	11	交易中用户支付的可开具发票的金额，单位为元，两位小数。该金额代表该笔交易中可以给用户开具发票的金额	12.11 
+	private String trade_status			; //	必填	32	交易状态:WAIT_BUYER_PAY（交易创建,等待买家付款）、TRADE_CLOSED（未付款交易超时关闭,或支付完成后全额退款）、TRADE_SUCCESS（交易支付成功）、TRADE_FINISHED（交易结束,不可退款）	TRADE_CLOSED 
+	private String total_amount			; //	必填	11	交易的订单金额,单位为元,两位小数.该参数的值为支付时传入的total_amount	88.88 
+	private String receipt_amount		; //	必填	11	实收金额,单位为元,两位小数.该金额为本笔交易,商户账户能够实际收到的金额	15.25 
+	private String buyer_pay_amount		; //	选填	11	买家实付金额,单位为元,两位小数.该金额代表该笔交易买家实际支付的金额,不包含商户折扣等金额	8.88 
+	private String point_amount			; //	选填	11	积分支付的金额,单位为元,两位小数.该金额代表该笔交易中用户使用积分支付的金额,比如集分宝或者支付宝实时优惠等	10 
+	private String invoice_amount		; //	选填	11	交易中用户支付的可开具发票的金额,单位为元,两位小数.该金额代表该笔交易中可以给用户开具发票的金额	12.11 
 	private String send_pay_date		; //	必填	32	本次交易打款给卖家的时间	2014-11-27 15:45:57 
 	private String alipay_store_id		; //	选填	64	支付宝店铺编号	2015040900077001000100001232 
 	private String store_id				; //	选填	32	商户门店编号	NJ_S_001 
@@ -24,7 +24,7 @@ public class AlipayTradeQueryResult extends BasicResult{
 	private String store_name			; //	选填	512	请求交易支付中的商户店铺的名称	证大五道口店 
 	private String buyer_user_id		; //	必填	16	买家在支付宝的用户id	2088101117955611 
 	private String discount_goods_detail; //	必填	-	本次交易支付所使用的单品券优惠的商品优惠信息	[{"goods_id":"STANDARD1026181538","goods_name":"雪碧","discount_amount":"100.00","voucher_id":"2015102600073002039000002D5O"}] 
-	private String industry_sepc_detail	; //	选填	4096	行业特殊信息（例如在医保卡支付业务中，向用户返回医疗信息）。	{"registration_order_pay":{"brlx":"1","cblx":"1"}} 
+	private String industry_sepc_detail	; //	选填	4096	行业特殊信息（例如在医保卡支付业务中,向用户返回医疗信息）.	{"registration_order_pay":{"brlx":"1","cblx":"1"}} 
  
  
 	public AlipayTradeQueryResult(){ 
