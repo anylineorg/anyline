@@ -118,9 +118,9 @@ public class WechatMPUtil extends WechatUtil {
 	 * noncestr（随机字符串）,  
 	 * jsapi_ticket 
 	 * timestamp（时间戳 
-	 * url（当前网页的URL，不包含#及其后面部分） 
-	 * 对所有待签名参数按照字段名的ASCII 码从小到大排序（字典序）后， 
-	 * 使用URL键值对的格式（即key1=value1&amp;key2=value2…）拼接成字符串string1。 
+	 * url（当前网页的URL,不包含#及其后面部分） 
+	 * 对所有待签名参数按照字段名的ASCII 码从小到大排序（字典序）后, 
+	 * 使用URL键值对的格式（即key1=value1&amp;key2=value2…）拼接成字符串string1. 
 	 * @param params  params
 	 * @return String
 	 */ 
