@@ -187,6 +187,17 @@ public class DataSourceHolder {
 		return ds;
 	}
 
+	/**
+	 *
+	 * @param key 切换数据源依据
+	 * @param type 连接池类型 如 com.zaxxer.hikari.HikariDataSource
+	 * @param driver 驱动类 如 com.mysql.cj.jdbc.Driver
+	 * @param url url
+	 * @param user 用户名
+	 * @param password 密码
+	 * @return DataSource
+	 * @throws Exception Exception
+	 */
 	public static DataSource reg(String key, String type, String driver, String url, String user, String password) throws Exception{
 		Map<String,String> param = new HashMap<String,String>();
 		param.put("type", type);
