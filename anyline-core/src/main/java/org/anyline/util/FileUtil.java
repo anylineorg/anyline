@@ -1231,7 +1231,7 @@ public class FileUtil {
 	        FILE_TYPE_MAP.put("pst", "2142444E");  //Outlook (pst)
 	        FILE_TYPE_MAP.put("xls", "D0CF11E0");  //MS Word
 			FILE_TYPE_MAP.put("xlsx","504B0304");
-			FILE_TYPE_MAP.put("doc", "D0CF11E0");  //MS Excel 注意：word 和 excel的文件头一样
+			FILE_TYPE_MAP.put("doc", "D0CF11E0");  //MS Excel 注意:word 和 excel的文件头一样
 			FILE_TYPE_MAP.put("docx","504B0304");
 			FILE_TYPE_MAP.put("ppt", "D0CF11E0");
 			FILE_TYPE_MAP.put("pptx","504B0304");
