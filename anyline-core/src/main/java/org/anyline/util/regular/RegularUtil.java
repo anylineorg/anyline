@@ -188,7 +188,7 @@ public class RegularUtil {
 		return result; 
 	}
 	/**
-	 * 清除所有标签(只清除标签，不清除标签体)
+	 * 清除所有标签(只清除标签,不清除标签体)
 	 * @param src src
 	 * @return String
 	 */
@@ -253,8 +253,8 @@ public class RegularUtil {
 	/**
 	 * 获取所有 包含attribute属性 的标签与标签体,不支持相同标签嵌套
 	 * [
-	 * 	[整个标签含标签体,开始标签，结束标签，标签体，标签名称],
-	 * 	[整个标签含标签体,开始标签，结束标签，标签体，标签名称]
+	 * 	[整个标签含标签体,开始标签,结束标签,标签体,标签名称],
+	 * 	[整个标签含标签体,开始标签,结束标签,标签体,标签名称]
 	 * ]
 	 * @param src src
 	 * @param attribute attribute
@@ -307,12 +307,12 @@ public class RegularUtil {
 
 	/**
 	 * 获取所有 包含attribute属性包含value值  的标签与标签体
-	 * 单标签只匹配有/&gt;结尾的情况，避免与双标签的开始标签混淆
+	 * 单标签只匹配有/&gt;结尾的情况,避免与双标签的开始标签混淆
 	 * 如class="a" : attribute=class value=a
 	 * style="width:100px;" :attribute=style value=width
 	 * [
-	 * 	[整个标签含标签体,开始标签，结束标签，标签体，标签名称],
-	 * 	[整个标签含标签体,开始标签，结束标签，标签体，标签名称]
+	 * 	[整个标签含标签体,开始标签,结束标签,标签体,标签名称],
+	 * 	[整个标签含标签体,开始标签,结束标签,标签体,标签名称]
 	 * ]
 	 * @param src src
 	 * @param attribute attribute
@@ -454,8 +454,8 @@ public class RegularUtil {
 	/**
 	 * 提取双标签&lt;div&gt;content&lt;div&gt;
 	 * 依次取出p,table,div中的内容 有嵌套时只取外层 
-	 * 只能提取同时有 开始结束标签的内容，不能提取单标签内容如&lt;img&gt; &lt;br/&gt;
-	 * 支持不同标签嵌套，但不支持相同标签嵌套
+	 * 只能提取同时有 开始结束标签的内容,不能提取单标签内容如&lt;img&gt; &lt;br/&gt;
+	 * 支持不同标签嵌套,但不支持相同标签嵌套
 	 * 不区分大小写
 	 * 0:全文 1:开始标签 2:标签name 3:标签体 4:结束标签 
 	 * @param txt text
