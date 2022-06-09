@@ -60,7 +60,7 @@ public class FileTypeUtil {
 		FILE_TYPE_MAP.put("dbx", "CFAD12FEC5FD746F"); // Outlook Express (dbx) 
 		FILE_TYPE_MAP.put("pst", "2142444E"); // Outlook (pst) 
 		FILE_TYPE_MAP.put("xls", "D0CF11E0"); // MS Word 
-		FILE_TYPE_MAP.put("doc", "D0CF11E0"); // MS Excel 注意：word 和 excel的文件头一样 
+		FILE_TYPE_MAP.put("doc", "D0CF11E0"); // MS Excel 注意:word 和 excel的文件头一样 
 		FILE_TYPE_MAP.put("mdb", "5374616E64617264204A"); // MS Access (mdb) 
 		FILE_TYPE_MAP.put("wpd", "FF575043"); // WordPerfect (wpd) 
 		FILE_TYPE_MAP.put("eps", "252150532D41646F6265"); 
