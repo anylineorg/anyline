@@ -91,7 +91,7 @@ public class Wtr {
     /**
      * 获取单元格,计算合并列
      * @param index index
-     * @param prev 如果index位置被合并了，是否返 当前合并组中的第一个单元格
+     * @param prev 如果index位置被合并了,是否返 当前合并组中的第一个单元格
      * @return tc
      */
     public Wtc getTcWithColspan(int index, boolean prev){
