@@ -349,7 +349,7 @@ public class AnylineController extends AbstractBasicController {
 			}
 		}
 		//注意这里只支持下划线转驼峰
-		//如果数据库中已经是驼峰，不要配置这个参数
+		//如果数据库中已经是驼峰,不要配置这个参数
 		String keyCase = ConfigTable.getString("HTTP_PARAM_KEYS_CASE");
 		if("camel".equals(keyCase)){
 			if(null != metadatas){
@@ -891,7 +891,7 @@ public class AnylineController extends AbstractBasicController {
 				if (file != null) { 
 					// 取得当前上传文件的文件名称 
 					String fileName = file.getOriginalFilename(); 
-					// 如果名称不为"",说明该文件存在，否则说明该文件不存在 
+					// 如果名称不为"",说明该文件存在,否则说明该文件不存在 
 					if (BasicUtil.isNotEmpty(fileName)) { 
 						// 重命名上传后的文件名 
 						String sufName = FileUtil.getSuffixFileName(fileName); 
