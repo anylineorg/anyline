@@ -1,7 +1,7 @@
 package org.anyline.wechat.entity;
  
 public class WechatFissionRedpack extends WechatRedpack {
-	protected String amt_type = "ALL_RAND"	;//红包金额设置方式	是	ALL_RAND	String(32)	红包金额设置方式 ALL_RAND—全部随机,商户指定总金额和红包发放总人数，由微信支付随机计算出各红包金额 
+	protected String amt_type = "ALL_RAND"	;//红包金额设置方式	是	ALL_RAND	String(32)	红包金额设置方式 ALL_RAND—全部随机,商户指定总金额和红包发放总人数,由微信支付随机计算出各红包金额 
  
 	public String getAmt_type() { 
 		return amt_type; 
