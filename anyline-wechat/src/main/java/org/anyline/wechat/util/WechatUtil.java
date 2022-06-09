@@ -129,7 +129,7 @@ public class WechatUtil {
 
 	/**
 	 * 新建access_token,
-	 * 经常有多个应用使用同一个公众号，多个应用应该通过一个中心服务器创建access token
+	 * 经常有多个应用使用同一个公众号,多个应用应该通过一个中心服务器创建access token
 	 * 不应该每个应用单独创建access token
 	 * @param config config
 	 * @return DataRow
