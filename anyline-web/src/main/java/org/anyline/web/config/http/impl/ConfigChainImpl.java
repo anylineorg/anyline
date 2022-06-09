@@ -48,7 +48,7 @@ public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.confi
 			String confVar = conf.getVariable();
 			SQL.COMPARE_TYPE confType = conf.getCompare();
 			if(BasicUtil.isEmpty(prefix)){
-				//只提供列名，不提供表名
+				//只提供列名,不提供表名
 				if(var.equalsIgnoreCase(confVar) && type == confType){
 					return conf;
 				}
