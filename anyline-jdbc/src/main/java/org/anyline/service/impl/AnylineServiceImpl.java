@@ -302,7 +302,7 @@ public class AnylineServiceImpl implements AnylineService {
         return cache(cache, src, null, conditions);
     }
 
-    /*多表查询，左右连接*/
+    /*多表查询,左右连接*/
 
     @Override
     public DataSet selects(SQL table, ConfigStore configs, String... conditions) {
