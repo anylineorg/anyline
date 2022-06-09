@@ -274,14 +274,14 @@ public class HttpClient {
 		}else{
 		}
 		/*
-		0,100,40  开始，结束，已完成
+		0,100,40  开始,结束,已完成
 		101,200
-		 表示头500个字节：bytes=0-499
-		表示第二个500字节：bytes=500-999
-		表示最后500个字节：bytes=-500
-		表示500字节以后的范围：bytes=500-
-		第一个和最后一个字节：bytes=0-0,-1
-		同时指定几个范围：bytes=500-600,601-999
+		 表示头500个字节:bytes=0-499
+		表示第二个500字节:bytes=500-999
+		表示最后500个字节:bytes=-500
+		表示500字节以后的范围:bytes=500-
+		第一个和最后一个字节:bytes=0-0,-1
+		同时指定几个范围:bytes=500-600,601-999
 		 */
 		long start=0;
 		if(tmpFile.exists()){//继上次进度下载
@@ -398,8 +398,8 @@ public class HttpClient {
 		}
 
 		HttpEntity entity = builder.build();// 生成 HTTP POST 实体
-		post.setEntity(entity);   //post 实体。
-		post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  //表单形式。
+		post.setEntity(entity);   //post 实体.
+		post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  //表单形式.
 		HttpResult source = post();
 		return source;
 	}
@@ -498,9 +498,9 @@ public class HttpClient {
 			}
 			SSLContext sslcontext = SSLContexts.custom().loadKeyMaterial(keyStore, password.toCharArray()).build();
 			String[] protocols = new String[] {protocol};
-			//ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证，允许和所有的host建立SSL通信                  
-			//BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略，即通配符能够匹配所有子域名
-			//STRICT_HOSTNAME_VERIFIER  严格匹配模式，hostname必须匹配第一个CN或者任何一个subject-alts
+			//ALLOW_ALL_HOSTNAME_VERIFIER  关闭host验证,允许和所有的host建立SSL通信                  
+			//BROWSER_COMPATIBLE_HOSTNAME_VERIFIER  和浏览器兼容的验证策略,即通配符能够匹配所有子域名
+			//STRICT_HOSTNAME_VERIFIER  严格匹配模式,hostname必须匹配第一个CN或者任何一个subject-alts
 			SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(sslcontext,protocols, null,
 					SSLConnectionSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 			httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
