@@ -30,7 +30,7 @@ public class TextUtil {
 
             Map<Integer, int[]> AlgorithmMap = new HashMap<Integer, int[]>();
 
-            //将两个字符串中的中文字符以及出现的总数封装到，AlgorithmMap中
+            //将两个字符串中的中文字符以及出现的总数封装到,AlgorithmMap中
             for (int i = 0; i < doc1.length(); i++) {
                 char d1 = doc1.charAt(i);
                 if(isHanZi(d1)){//标点和数字不处理
@@ -38,7 +38,7 @@ public class TextUtil {
                     if(charIndex != -1){
                         int[] fq = AlgorithmMap.get(charIndex);
                         if(fq != null && fq.length == 2){
-                            fq[0]++;//已有该字符，加1
+                            fq[0]++;//已有该字符,加1
                         }else {
                             fq = new int[2];
                             fq[0] = 1;
@@ -103,21 +103,21 @@ public class TextUtil {
     }
 
     /**
-     * 根据输入的Unicode字符，获取它的GB2312编码或者ascii编码，
+     * 根据输入的Unicode字符,获取它的GB2312编码或者ascii编码,
      * 
      * @param ch 输入的GB2312中文字符或者ASCII字符(128个)
-     * @return ch在GB2312中的位置，-1表示该字符不认识
+     * @return ch在GB2312中的位置,-1表示该字符不认识
      */
     public static short getGB2312Id(char ch) {
         try {
             byte[] buffer = Character.toString(ch).getBytes("GB2312");
             if (buffer.length != 2) {
-                // 正常情况下buffer应该是两个字节，否则说明ch不属于GB2312编码，故返回'?'，此时说明不认识该字符
+                // 正常情况下buffer应该是两个字节,否则说明ch不属于GB2312编码,故返回'?',此时说明不认识该字符
                 return -1;
             }
-            int b0 = (int) (buffer[0] & 0x0FF) - 161; // 编码从A1开始，因此减去0xA1=161
+            int b0 = (int) (buffer[0] & 0x0FF) - 161; // 编码从A1开始,因此减去0xA1=161
             int b1 = (int) (buffer[1] & 0x0FF) - 161; 
-            return (short) (b0 * 94 + b1);// 第一个字符和最后一个字符没有汉字，因此每个区只收16*6-2=94个汉字
+            return (short) (b0 * 94 + b1);// 第一个字符和最后一个字符没有汉字,因此每个区只收16*6-2=94个汉字
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
