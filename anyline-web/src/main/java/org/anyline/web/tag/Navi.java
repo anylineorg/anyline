@@ -197,7 +197,7 @@ public class Navi extends BodyTagSupport{
 				builder.append("\tif(clear){").append(confId).append("['clear'] = 0;}\n");
 				builder.append("}\n");
 				if(intime){
-				    //延时执行，先读取当前第几页，每页多少条
+				    //延时执行,先读取当前第几页,每页多少条
 					builder.append("setTimeout(function(){").append(function).append("(true,true)},").append(delay).append(");\n");
 				}
 			}else{
