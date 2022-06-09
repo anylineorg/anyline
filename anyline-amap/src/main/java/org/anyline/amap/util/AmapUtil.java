@@ -314,7 +314,7 @@ public class AmapUtil {
 		return tableId; 
 	} 
 	/** 
-	 * 本地检索 检索指定云图tableid里，对应城市（全国/省/市/区县）范围的POI信息 
+	 * 本地检索 检索指定云图tableid里,对应城市（全国/省/市/区县）范围的POI信息 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t1 
 	 * @param keywords  keywords
 	 * @param city  city
@@ -370,7 +370,7 @@ public class AmapUtil {
 		return set; 
 	} 
 	/** 
-	 * 周边搜索 在指定tableid的数据表内，搜索指定中心点和半径范围内，符合筛选条件的位置数据 
+	 * 周边搜索 在指定tableid的数据表内,搜索指定中心点和半径范围内,符合筛选条件的位置数据 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t2 
 	 * @param center  center
 	 * @param radius 查询半径 
@@ -484,10 +484,10 @@ public class AmapUtil {
 	 * AmapUtil.getInstance(TABLE_TENANT).list("tenant_id:1","shop_id:1", 10, 1);  
 	 * @param filter 查询条件 
 	 * filter=key1:value1+key2:[value2,value3]   
-	 * filter=type:酒店+star:[3,5]  等同于SQL语句的： WHERE type = "酒店" AND star BETWEEN 3 AND 5  
+	 * filter=type:酒店+star:[3,5]  等同于SQL语句的: WHERE type = "酒店" AND star BETWEEN 3 AND 5  
 	 * @param sortrule 排序条件  
-	 * 支持按用户自选的字段（仅支持数值类型字段）升降序排序。1：升序，0：降序  
-	 * 若不填升降序，默认按升序排列。 示例：按年龄age字段升序排序 sortrule = age:1 
+	 * 支持按用户自选的字段（仅支持数值类型字段）升降序排序.1:升序,0:降序  
+	 * 若不填升降序,默认按升序排列. 示例:按年龄age字段升序排序 sortrule = age:1 
 	 * @param limit 每页最大记录数为100 
 	 * @param page 当前页数 &gt;=1 
 	 * @return DataSet
@@ -538,9 +538,9 @@ public class AmapUtil {
 		return set; 
 	} 
 	/** 
-	 * ID检索 在指定tableid的数据表内，查询对应数据id的数据详情 
+	 * ID检索 在指定tableid的数据表内,查询对应数据id的数据详情 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t4 
-	 * API:在指定tableid的数据表内，查询对应数据id的数据详情 
+	 * API:在指定tableid的数据表内,查询对应数据id的数据详情 
 	 * @param id  id
 	 * @return DataRow
 	 */ 
@@ -572,7 +572,7 @@ public class AmapUtil {
 		return row; 
 	} 
 	/** 
-	 * 省数据分布检索 检索指定云图tableid里，全表数据或按照一定查询或筛选过滤而返回的数据中，含有数据的省名称（中文名称）和对应POI个数（count）的信息列表，按照count从高到低的排序展现 
+	 * 省数据分布检索 检索指定云图tableid里,全表数据或按照一定查询或筛选过滤而返回的数据中,含有数据的省名称（中文名称）和对应POI个数（count）的信息列表,按照count从高到低的排序展现 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t6 
 	 * @param keywords 关键字 必须 
 	 * @param country ""或null时 默认:中国 
@@ -611,7 +611,7 @@ public class AmapUtil {
 	} 
  
 	/** 
-	 * 市数据分布检索 检索指定云图tableid里，全表数据或按照一定查询或筛选过滤而返回的数据中，含有数据的市名称（中文名称）和对应POI个数（count）的信息列表，按照count从高到低的排序展现 
+	 * 市数据分布检索 检索指定云图tableid里,全表数据或按照一定查询或筛选过滤而返回的数据中,含有数据的市名称（中文名称）和对应POI个数（count）的信息列表,按照count从高到低的排序展现 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t6 
 	 * @param keywords 关键字 必须 
 	 * @param province ""或null时 默认:全国 
@@ -650,7 +650,7 @@ public class AmapUtil {
 	} 
  
 	/** 
-	 * 区数据分布检索 检索指定云图tableid里，在指定的省，市下面全表数据或按照一定查询或筛选过滤而返回的数据中，所有区县名称（中文名称）和对应POI个数（count）的信息列表，按照count从高到低的排序展现 
+	 * 区数据分布检索 检索指定云图tableid里,在指定的省,市下面全表数据或按照一定查询或筛选过滤而返回的数据中,所有区县名称（中文名称）和对应POI个数（count）的信息列表,按照count从高到低的排序展现 
 	 * API:http://lbs.amap.com/yuntu/reference/cloudsearch/#t6 
 	 * @param keywords 关键字 必须 
 	 * @param province   province
@@ -689,7 +689,7 @@ public class AmapUtil {
 		return set; 
 	} 
 	/** 
-	 * 检索1个中心点，周边一定公里范围内（直线距离或者导航距离最大10公里），一定时间范围内（最大24小时）上传过用户位置信息的用户，返回用户标识，经纬度，距离中心点距离。 
+	 * 检索1个中心点,周边一定公里范围内（直线距离或者导航距离最大10公里）,一定时间范围内（最大24小时）上传过用户位置信息的用户,返回用户标识,经纬度,距离中心点距离. 
 	 * @param center  center
 	 * @param radius  radius
 	 * @param limit  limit
@@ -728,7 +728,7 @@ public class AmapUtil {
 	} 
 	/** 
 	 * 按坐标查地址 
-	 * @param location  经度在前，纬度在后，经纬度间以“,”分割
+	 * @param location  经度在前,纬度在后,经纬度间以“,”分割
 	 * @return DataRow
 	 */ 
 	public DataRow regeo(String location){ 
@@ -817,9 +817,9 @@ public class AmapUtil {
 	 * @param origin		出发地  origin		出发地
 	 * @param destination	目的地  destination	目的地
 	 * @param points		途经地 最多支持16个 坐标点之间用";"分隔 
-	 * @param strategy		选路策略  0，不考虑当时路况，返回耗时最短的路线，但是此路线不一定距离最短 
-	 *							  1，不走收费路段，且耗时最少的路线 
-	 *							  2，不考虑路况，仅走距离最短的路线，但是可能存在穿越小路/小区的情况 			   
+	 * @param strategy		选路策略  0,不考虑当时路况,返回耗时最短的路线,但是此路线不一定距离最短 
+	 *							  1,不走收费路段,且耗时最少的路线 
+	 *							  2,不考虑路况,仅走距离最短的路线,但是可能存在穿越小路/小区的情况 			   
 	 * @return DataRow
 	 */ 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
