@@ -385,7 +385,7 @@ public class DownloadTask {
 	} 
 	/** 
 	 * 预计剩余时间 
-	 * 没有实际速度时，使用预计速度 
+	 * 没有实际速度时,使用预计速度 
 	 * @param speed speed
 	 * @return long
 	 */ 
