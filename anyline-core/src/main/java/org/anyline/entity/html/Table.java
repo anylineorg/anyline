@@ -14,7 +14,7 @@ public class Table {
     private Map<String,String> styles = new HashMap();
     private List<Integer> mergeRows = new ArrayList<>(); //根据内容合并行依据
     private Map<Integer, List<Integer>> refs = new HashMap<>(); //
-    private List<Integer[]> mergeCols = new ArrayList<>();//根据内容合并列，开始列,合并数量
+    private List<Integer[]> mergeCols = new ArrayList<>();//根据内容合并列,开始列,合并数量
     private Element src;
     private String widthUnit = "px";     //默认长度单位 px pt cm/厘米
     public Table(){}
@@ -104,7 +104,7 @@ public class Table {
 
 
     /**
-     * 追加列, 每一行追加，追加的列将复制前一列的样式(背景色、字体等)
+     * 追加列, 每一行追加,追加的列将复制前一列的样式(背景色、字体等)
      * @param qty 追加数量
      * @return table
      */
@@ -153,7 +153,7 @@ public class Table {
         return this;
     }
     /**
-     * 追加行，追加的行将复制上一行的样式(背景色、字体等)
+     * 追加行,追加的行将复制上一行的样式(背景色、字体等)
      * @param index 位置
      * @param qty 追加数量
      * @return table
@@ -246,7 +246,7 @@ public class Table {
         return build(true);
     }
     /**
-     * 根据内容是否相同，在右侧qty范围内检测需要合并的列数量
+     * 根据内容是否相同,在右侧qty范围内检测需要合并的列数量
      * @param td 单元格
      * @param qty 检测范围
      * @return colspan 需要合并列的数量
