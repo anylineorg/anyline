@@ -1847,7 +1847,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 */
 	public DataRow changeKey(String key, String target, boolean remove) {
 		put(target, get(key));
-		if(remove && !target.equals(key)){
+		if(remove && !target.equalsIgnoreCase(key)){
 			remove(putKey(key));
 		}
 		return this;
