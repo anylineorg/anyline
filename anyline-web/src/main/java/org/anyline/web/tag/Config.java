@@ -17,9 +17,12 @@
  */
 
 
-package org.anyline.web.tag; 
- 
- 
+package org.anyline.web.tag;
+
+/**
+ * 输出ConfigTable(anyline-config.xml)对应的值
+ */
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
