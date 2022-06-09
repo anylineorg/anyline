@@ -81,7 +81,7 @@ public class AESUtil {
 		try { 
 			// 实例化 
 			Cipher cipherInstance = Cipher.getInstance(cipher.getCode());
-			// 使用密钥初始化，设置为解密模式
+			// 使用密钥初始化,设置为解密模式
 			if(BasicUtil.isNotEmpty(vector)){
 				AlgorithmParameters algorithmParameters = AlgorithmParameters.getInstance(KEY);
 				algorithmParameters.init(new IvParameterSpec(Base64Util.decode(vector)));
