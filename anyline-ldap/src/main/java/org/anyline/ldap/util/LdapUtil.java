@@ -70,7 +70,7 @@ public class LdapUtil {
 		Hashtable<String, Object> env = new Hashtable<String, Object>();
 		env.put(Context.SECURITY_PRINCIPAL, account);		//用户名
 		env.put(Context.SECURITY_CREDENTIALS, password);	//密码
-		env.put(Context.PROVIDER_URL, config.URL);			//LDAP的地址：端口
+		env.put(Context.PROVIDER_URL, config.URL);			//LDAP的地址:端口
 		env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");//LDAP工厂类
 		env.put(Context.SECURITY_AUTHENTICATION, config.SECURITY_AUTHENTICATION);//认证类型
 		if(config.CONNECT_TIMEOUT > 0){
@@ -218,9 +218,9 @@ public class LdapUtil {
 	}
 
 	/**
-	 * @param base  ：根节点(在这里是"dc=example,dc=com")
-	 * @param scope ：搜索范围,本节点(SearchControls.OBJECT_SCOPE),单层(SearchControls.ONELEVEL_SCOPE),遍历(SearchControls.SUBTREE_SCOPE)
-	 * @param filter  ：指定子节点(格式为"(objectclass=*)",*是指全部，可以指定某一特定类型的树节点)
+	 * @param base  :根节点(在这里是"dc=example,dc=com")
+	 * @param scope :搜索范围,本节点(SearchControls.OBJECT_SCOPE),单层(SearchControls.ONELEVEL_SCOPE),遍历(SearchControls.SUBTREE_SCOPE)
+	 * @param filter  :指定子节点(格式为"(objectclass=*)",*是指全部,可以指定某一特定类型的树节点)
 	 * @return DataSet
 	 */
 	public DataSet search(String base, int scope, String filter) {
