@@ -167,7 +167,7 @@ public class DateUtil {
 
 	/**
 	 * 格式化日期
-	 * @param locale 地区/语言,格式化月份，星期几时根据地区语言,
+	 * @param locale 地区/语言,格式化月份,星期几时根据地区语言,
 	 *               如MMMMM(zh:一月,en:January)MMMM(zh:一月,en:Jan) EEE(zh:星期五,en:Fri) EEEE(en:Friday)
 	 * @param date  日期
 	 * @param format  格式
@@ -288,8 +288,8 @@ public class DateUtil {
 		// 再转换为时间
 		calendar.setTime(date);
 		// int hour=c.get(Calendar.DAY_OF_WEEK);
-		// hour中存的就是星期几了，其范围 1~7
-		// 1=星期日 7=星期六，其他类推
+		// hour中存的就是星期几了,其范围 1~7
+		// 1=星期日 7=星期六,其他类推
 		return new SimpleDateFormat("EEEE").format(calendar.getTime());
 	}
 	public static String getWeek(String date) {
@@ -474,7 +474,7 @@ public class DateUtil {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
 		calendar.set(Calendar.DATE, 1);// 设为当前月的1号
-		calendar.add(Calendar.MONTH, -1);// 减一个月，变为下月的1号
+		calendar.add(Calendar.MONTH, -1);// 减一个月,变为下月的1号
 		return calendar.getTime();
 	}
 
@@ -495,8 +495,8 @@ public class DateUtil {
 		Calendar calendar = getCalendar();
 		calendar.setTimeInMillis(date.getTime() + 100000);
 		calendar.set(Calendar.DAY_OF_MONTH, 1);// 设为当前月的1号
-		calendar.add(Calendar.MONTH, 1);// 加一个月，变为下月的1号
-		calendar.add(Calendar.DATE, -1);// 减去一天，变为当月最后一天
+		calendar.add(Calendar.MONTH, 1);// 加一个月,变为下月的1号
+		calendar.add(Calendar.DATE, -1);// 减去一天,变为当月最后一天
 		return calendar.getTime();
 	}
 
@@ -518,7 +518,7 @@ public class DateUtil {
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, -1);// 减一个月
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天
-		calendar.roll(Calendar.DATE, -1);// 日期回滚一天，也就是本月最后一天
+		calendar.roll(Calendar.DATE, -1);// 日期回滚一天,也就是本月最后一天
 		return calendar.getTime();
 	}
 
@@ -540,7 +540,7 @@ public class DateUtil {
 		calendar.setTime(date);
 		calendar.add(Calendar.MONTH, 1);// 加一个月
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天
-		calendar.roll(Calendar.DATE, -1);// 日期回滚一天，也就是本月最后一天
+		calendar.roll(Calendar.DATE, -1);// 日期回滚一天,也就是本月最后一天
 		return calendar.getTime();
 	}
 
@@ -573,7 +573,7 @@ public class DateUtil {
 	public static int getMondayPlus(Date date) {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
-		// 获得今天是一周的第几天，星期日是第一天，星期二是第二天......
+		// 获得今天是一周的第几天,星期日是第一天,星期二是第二天......
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 因为按中国礼拜一作为第一天所以这里减1
 		if (dayOfWeek == 1) {
 			return 0;
@@ -643,7 +643,7 @@ public class DateUtil {
 		calendar.setTime(date);
 		int monthOfNumber = calendar.get(Calendar.DAY_OF_MONTH);
 		calendar.set(Calendar.DATE, 1);// 把日期设置为当月第一天
-		calendar.roll(Calendar.DATE, -1);// 日期回滚一天，也就是最后一天
+		calendar.roll(Calendar.DATE, -1);// 日期回滚一天,也就是最后一天
 		MaxDate = calendar.get(Calendar.DATE);
 		if (monthOfNumber == 1) {
 			return -MaxDate;
@@ -704,7 +704,7 @@ public class DateUtil {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
 		calendar.set(Calendar.DAY_OF_YEAR, 1);// 把日期设为当年第一天
-		calendar.roll(Calendar.DAY_OF_YEAR, -1);// 把日期回滚一天。
+		calendar.roll(Calendar.DAY_OF_YEAR, -1);// 把日期回滚一天.
 		return calendar.get(Calendar.DAY_OF_YEAR);
 	}
 
@@ -724,8 +724,8 @@ public class DateUtil {
 	public static int countDaysOfMonth(Date date) {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
-		calendar.set(Calendar.DAY_OF_MONTH, 1); // 把时间调整为当月的第一天；
-		calendar.add(Calendar.MONTH,1); // 月份调至下个月；
+		calendar.set(Calendar.DAY_OF_MONTH, 1); // 把时间调整为当月的第一天;
+		calendar.add(Calendar.MONTH,1); // 月份调至下个月;
 		calendar.add(Calendar.DAY_OF_MONTH, -1); // 时间减去一天（就等于上个月的最后一天）
 		return calendar.get(Calendar.DAY_OF_MONTH);
 	}
@@ -743,7 +743,7 @@ public class DateUtil {
 		calendar.setTime(date);
 		int yearOfNumber = calendar.get(Calendar.DAY_OF_YEAR);// 获得当天是一年中的第几天
 		calendar.set(Calendar.DAY_OF_YEAR, 1);// 把日期设为当年第一天
-		calendar.roll(Calendar.DAY_OF_YEAR, -1);// 把日期回滚一天。
+		calendar.roll(Calendar.DAY_OF_YEAR, -1);// 把日期回滚一天.
 		int MaxYear = calendar.get(Calendar.DAY_OF_YEAR);
 		if (yearOfNumber == 1) {
 			return -MaxYear;
@@ -1055,7 +1055,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 当前日期所在周的第idx天 第1天：星期日 第7天：星期六
+	 * 当前日期所在周的第idx天 第1天:星期日 第7天:星期六
 	 *
 	 * @param idx  idx
 	 * @param date  日期
