@@ -14,7 +14,7 @@ public class DistanceUtil {
         return d * Math.PI / 180.0;
     }
     /**
-     * 通过经纬度获取距离(单位：米)
+     * 通过经纬度获取距离(单位:米)
      *
      * @param lat1  lat1
      * @param lon1  lon1
