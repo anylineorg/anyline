@@ -80,10 +80,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 		} 
 		if(null != name){
 			builder.append(" name=\"").append(name).append("\"");
-		} 
-//		if(null != value){ 
-//			html += " value=\"" + value + "\""; 
-//		} 
+		}
 		if(null != clazz){
 			builder.append(" class=\"").append(clazz).append("\"");
 		} 
