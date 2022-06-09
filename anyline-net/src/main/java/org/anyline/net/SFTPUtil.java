@@ -160,16 +160,16 @@ public class SFTPUtil {
     }   
    
     /**  
-     * 删除文件夹-sftp协议.如果文件夹有内容，则会抛出异常.  
+     * 删除文件夹-sftp协议.如果文件夹有内容,则会抛出异常.  
      * @param path 文件夹路径  
      * @throws SftpException   SftpException
      */   
     public void deleteDir(String path) throws SftpException {   
         @SuppressWarnings("unchecked")   
         Vector<LsEntry> vector = client.ls(path);   
-        if (vector.size() == 1) { // 文件，直接删除   
+        if (vector.size() == 1) { // 文件,直接删除   
             client.rm(path);   
-        } else if (vector.size() == 2) { // 空文件夹，直接删除   
+        } else if (vector.size() == 2) { // 空文件夹,直接删除   
             client.rmdir(path);   
         } else {   
             String fileName = "";   
@@ -209,7 +209,7 @@ public class SFTPUtil {
    
     /**  
      * 上传文件-sftp协议.  
-     * @param localFile 源文件路径，/xxx/xx.yy 或 x:/xxx/xxx.yy  
+     * @param localFile 源文件路径,/xxx/xx.yy 或 x:/xxx/xxx.yy  
      * @return 上传成功与否  
      * @throws SftpException 异常  
      */   
@@ -264,7 +264,7 @@ public class SFTPUtil {
    
     /**  
      * 判断文件夹是否存在.  
-     * @param dir 文件夹路径， /xxx/xxx/  
+     * @param dir 文件夹路径, /xxx/xxx/  
      * @return 是否存在  
      */   
     public boolean dirExist(String dir) {   
