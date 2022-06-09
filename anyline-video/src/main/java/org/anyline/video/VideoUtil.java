@@ -115,9 +115,21 @@ public class VideoUtil {
 			return false;
 		}
 	}
+	/***
+	 * 截取视频中间帧图片并写入输出文件
+	 * @param video  视频
+	 * @param img  输出文件
+	 * @return boolean
+	 */
 	public static boolean frame(String video, String img) {
 		return frame(new File(video), new File(img));
 	}
+	/***
+	 * 截取视频中间帧图片并写入输出文件
+	 * @param video  视频
+	 * @param out  输出流
+	 * @return boolean
+	 */
 	public static boolean frame(String video, OutputStream out) {
 		return frame(new File(video), out);
 	}
