@@ -982,7 +982,7 @@ public class BeanUtil {
 	/**
 	 * 参数转map
 	 * 参数格式a=1&amp;b=2&amp;b=3
-	 * 如果是多个值，以String的List形式保存
+	 * 如果是多个值,以String的List形式保存
 	 * 如果是url将根据问号分割
 	 * @param url 参数或url
 	 * @param empty 结果中是否包含空值,所有空值以""形式保存
