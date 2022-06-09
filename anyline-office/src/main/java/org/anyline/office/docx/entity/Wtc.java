@@ -109,7 +109,7 @@ public class Wtc {
     }
 
     /**
-     * 当前单元格合并行数量，被合并返回-1
+     * 当前单元格合并行数量,被合并返回-1
      * @return rowspan
      */
     public int getRowspan(){
