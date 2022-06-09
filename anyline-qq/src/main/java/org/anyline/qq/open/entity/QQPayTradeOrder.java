@@ -19,7 +19,7 @@ public class QQPayTradeOrder {
 	private String attach			; //附加数据 
 	private String time_start		; //订单生成时间yyyyMMddHHmmss 
 	private String time_expire		; //订单超时时间yyyyMMddHHmmss 
-	private String contract_code	; // 代扣签约序列号 商户侧记录的用户代扣协议序列号，支付中开通代扣必传 
+	private String contract_code	; // 代扣签约序列号 商户侧记录的用户代扣协议序列号,支付中开通代扣必传 
 	private String promotion_tag	; //QQ钱包活动标识 
 	public String getMch_id() { 
 		return mch_id; 
