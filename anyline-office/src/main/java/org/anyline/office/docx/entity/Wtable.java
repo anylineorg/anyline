@@ -266,7 +266,7 @@ public class Wtable {
     }
 
     /**
-     * 追加列, 每一行追加，追加的列将复制前一列的样式(背景色、字体等)
+     * 追加列, 每一行追加,追加的列将复制前一列的样式(背景色、字体等)
      * @param qty 追加数量
      * @return table
      */
@@ -319,7 +319,7 @@ public class Wtable {
         return this;
     }
     /**
-     * 追加行，追加的行将复制上一行的样式(背景色、字体等)
+     * 追加行,追加的行将复制上一行的样式(背景色、字体等)
      * @param index 位置
      * @param qty 追加数量
      * @return table
