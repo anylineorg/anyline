@@ -33,6 +33,9 @@ import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.*;
 
 public class DataRow extends LinkedHashMap<String, Object> implements Serializable{
@@ -1259,6 +1262,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			Date d = new Date();
 			d.setTime((Long)date);
 			return d;
+		}else if(date instanceof LocalDateTime){
+			ZoneId zoneId = ZoneId.systemDefault();
+			ZonedDateTime zdt = ((LocalDateTime)date).atZone(zoneId);
+			return Date.from(zdt.toInstant());
 		}else{
 			return DateUtil.parse(date.toString());
 		}
