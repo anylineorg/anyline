@@ -242,7 +242,7 @@ public class ClassUtil {
 	}
 
 	/**
-	 * 从所有jar中搜索该包，并获取该包下所有类
+	 * 从所有jar中搜索该包,并获取该包下所有类
 	 *
 	 * @param urls         URL集合
 	 * @param packagePath  包路径
