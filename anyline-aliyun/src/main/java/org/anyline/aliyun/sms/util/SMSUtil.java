@@ -79,7 +79,7 @@ public class SMSUtil {
 	        //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为 
 		    request.setTemplateParam(BeanUtil.map2json(params)); 
  
-		    //hint 此处可能会抛出异常，注意catch 
+		    //hint 此处可能会抛出异常,注意catch 
 	        SendSmsResponse response = client.getAcsResponse(request);
 	        result.setCode(response.getCode());
 	        result.setMsg(response.getMessage());
