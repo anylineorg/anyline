@@ -387,7 +387,7 @@ public class BasicUtil {
 	} 
  
 	/** 
-	 * 拆分权限数 ： 将任意一个数拆分成多个（2的n次方）的和 
+	 * 拆分权限数 : 将任意一个数拆分成多个（2的n次方）的和 
 	 *  
 	 * @param num  num
 	 * @return List
@@ -949,14 +949,14 @@ public class BasicUtil {
 	 * @param end 结束
 	 * @param qty 数量
 	 * @param total 总数
-	 * @return [开始，结束]
+	 * @return [开始,结束]
 	 */
 	public static int[] range(Integer begin, Integer end, Integer qty, Integer total){
 		int[] result = new int[2];
 		if(null != begin && begin < 0){
 			begin = 0;
 		}
-		if(null != end && end < 0){ //end<0，取最后-end个
+		if(null != end && end < 0){ //end<0,取最后-end个
 			begin = total + end;
 			end = total;
 		}
