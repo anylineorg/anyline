@@ -908,6 +908,7 @@ public class DateUtil {
 			format = format.replace("-", "").replace("/", "");
 		}
 		if(str.contains("T")){
+
 			/**
 			 * ISO8601
 			 * "2020-12-19T16:22:50.000Z"
@@ -917,8 +918,18 @@ public class DateUtil {
 			 * "2017-03-31T10:38:14.4723017Z"
 			 * "2021-09-08T09:20:14.245292+08:00"
 			 */
-			OffsetDateTime offsetDateTime = OffsetDateTime.parse(str);
-			return Date.from(offsetDateTime.toInstant());
+			try {
+				OffsetDateTime offsetDateTime = OffsetDateTime.parse(str);
+				return Date.from(offsetDateTime.toInstant());
+			}catch (Exception e){
+				str = str.replace("T", " ");
+				if(str.contains(".")) {
+					format = FORMAT_FULL;
+				}else{
+					format = FORMAT_DATE_TIME;
+				}
+			}
+
 		}
 
 		SimpleDateFormat sdf = new SimpleDateFormat(format);
@@ -934,6 +945,7 @@ public class DateUtil {
 		}
 		return date;
 	}
+
 
 	public static boolean isDate(String str) {
 		return parse(str) != null;
