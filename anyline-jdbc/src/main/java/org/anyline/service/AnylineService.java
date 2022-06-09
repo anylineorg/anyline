@@ -53,7 +53,7 @@ public interface AnylineService{
 	public DataRow query(String src, String ... conditions);
 
 	/**
-	 * 直接返回Map集合不封装，不分页
+	 * 直接返回Map集合不封装,不分页
 	 * @param src			数据源(表或自定义SQL或SELECT语句) src			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		封装来自于http的查询条件 configs		封装来自于http的查询条件
 	 * @param conditions	固定查询条件   conditions	固定查询条件
@@ -94,7 +94,7 @@ public interface AnylineService{
 	public DataRow cache(String cache, String src, String ... conditions);
 
 
-	/*多表查询，左右连接时使用*/
+	/*多表查询,左右连接时使用*/
 	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
 	public DataSet querys(SQL sql, String ... conditions);
 	public DataSet querys(SQL sql, int fr, int to, String ... conditions);
