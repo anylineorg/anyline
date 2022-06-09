@@ -1168,7 +1168,8 @@ public class AnylineServiceImpl implements AnylineService {
             if (src.toUpperCase().trim().startsWith("SELECT")
                     || src.toUpperCase().trim().startsWith("DELETE")
                     || src.toUpperCase().trim().startsWith("INSERT")
-                    || src.toUpperCase().trim().startsWith("UPDATE")) {
+                    || src.toUpperCase().trim().startsWith("UPDATE")
+                    || src.toUpperCase().trim().startsWith("TRUNCATE")) {
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
