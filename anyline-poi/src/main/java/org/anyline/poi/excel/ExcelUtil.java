@@ -446,7 +446,7 @@ public class ExcelUtil {
 					DateFormat formater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					value = formater.format(date);
 				}else{
-					//如果查数字，修改成String
+					//如果查数字,修改成String
 					cell.setCellType(CellType.STRING);
 					value = cell.getStringCellValue();
 					//value = cell.getNumericCellValue() + "";
@@ -877,7 +877,7 @@ public class ExcelUtil {
 	}
 	/**
 	 * 导出EXCEL
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param rows 开始写入的行数
 	 * @param headers 表头
 	 * @param keys 读取集合条目的属性
@@ -893,7 +893,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出EXCEL
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param keys 读取集合条目的属性
 	 * @param set 数据集合
 	 * @return boolean
@@ -907,7 +907,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出EXCEL
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param headers 表头
 	 * @param keys 读取集合条目的属性
 	 * @param set 数据集合
@@ -922,7 +922,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出EXCEL
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param rows 从第几行开始写入
 	 * @param keys 读取集合条目的属性
 	 * @param set 数据集合
@@ -937,7 +937,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出excel
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param sheet sheet 如果文件存在 并且为空时 则取第0个sheet
 	 * @param rows 行数
 	 * @param set 数据
@@ -986,7 +986,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出excel
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param rows 行数
 	 * @param set 数据
 	 * @param configs 姓名:NAME或NAME
@@ -1001,7 +1001,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出excel
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param set 数据
 	 * @param configs 姓名:NAME或NAME
 	 * @return boolean
@@ -1128,7 +1128,7 @@ public class ExcelUtil {
 	}
 	/**
 	 * 导出EXCEL
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param template template
 	 * @param rows 开始写入的行数
 	 * @param headers 表头
@@ -1144,7 +1144,7 @@ public class ExcelUtil {
 	}
 	/**
 	 * 导出EXCEL
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param template template
 	 * @param keys 读取集合条目的属性
 	 * @param set 数据集合
@@ -1159,7 +1159,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出EXCEL
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param template template
 	 * @param headers 表头
 	 * @param keys 读取集合条目的属性
@@ -1176,7 +1176,7 @@ public class ExcelUtil {
 	/**
 	 * 导出EXCEL
 	 * @param template template
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param insert 从第几行开始写入
 	 * @param keys 读取集合条目的属性
 	 * @param set 数据集合
@@ -1192,7 +1192,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出excel
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param template template
 	 * @param sheet sheet 如果文件存在 并且为空时 则取第0个sheet
 	 * @param rows 行数
@@ -1231,7 +1231,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出excel
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param template template
 	 * @param insert 开始插入的位置
 	 * @param set 数据
@@ -1254,7 +1254,7 @@ public class ExcelUtil {
 
 	/**
 	 * 导出excel
-	 * @param file 导致文件位置，如果文件已存存，则以当前文件作为模板
+	 * @param file 导致文件位置,如果文件已存存,则以当前文件作为模板
 	 * @param template template
 	 * @param set 数据
 	 * @param configs 姓名:NAME或NAME
