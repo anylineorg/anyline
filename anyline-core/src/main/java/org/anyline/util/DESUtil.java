@@ -95,7 +95,7 @@ public class DESUtil {
 	} 
 	private static String byteArr2HexStr(byte[] arrB){ 
 		int iLen = arrB.length; 
-		/* 每个byte用两个字符才能表示，所以字符串的长度是数组长度的两倍 */ 
+		/* 每个byte用两个字符才能表示,所以字符串的长度是数组长度的两倍 */ 
 		StringBuffer sb = new StringBuffer(iLen * 2); 
 		for (int i = 0; i < iLen; i++) { 
 			int intTmp = arrB[i]; 
@@ -117,7 +117,7 @@ public class DESUtil {
 		byte[] arrB = strIn.getBytes(); 
 		int iLen = arrB.length; 
 		 
-		/* 两个字符表示一个字节，所以字节数组长度是字符串长度除以2 */ 
+		/* 两个字符表示一个字节,所以字节数组长度是字符串长度除以2 */ 
 		byte[] arrOut = new byte[iLen / 2]; 
 		for (int i = 0; i < iLen; i = i + 2) { 
 			String strTmp = new String(arrB, i, 2); 
