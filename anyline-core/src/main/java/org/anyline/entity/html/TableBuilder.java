@@ -31,7 +31,7 @@ public class TableBuilder {
     private String footer = null;
     private String clazz = null;
     private List<String> fields = new ArrayList<>();
-    private List<String> unions = new ArrayList<>();//需要合并字段，值相同的几行合并(如里相关列合并的情况下才会合并,如前一列学校合并时，后一列班级才有可能合并，班级列名(学校列名,其他列名))
+    private List<String> unions = new ArrayList<>();//需要合并字段,值相同的几行合并(如里相关列合并的情况下才会合并,如前一列学校合并时,后一列班级才有可能合并,班级列名(学校列名,其他列名))
     private Map<String,Map<String,String>> styles = new HashMap<>();
     private Map<String,String[]> unionRefs = new HashMap<>();
     private Map<String,Map<String,String>> options = new HashMap<>();   //外键对应关系
@@ -612,7 +612,7 @@ public class TableBuilder {
 
     /**
      * 设置 不参与合并的值
-     * @param values 不参合合并的值，如空值
+     * @param values 不参合合并的值,如空值
      * @return TableBuilder
      */
     public TableBuilder setIgnoreUnionValues(List<String> values) {
@@ -622,7 +622,7 @@ public class TableBuilder {
 
     /**
      * 追加 不参与合并的值
-     * @param values 不参合合并的值，如空值
+     * @param values 不参合合并的值,如空值
      * @return TableBuilder
      */
     public TableBuilder addIgnoreUnionValue(String ... values){
