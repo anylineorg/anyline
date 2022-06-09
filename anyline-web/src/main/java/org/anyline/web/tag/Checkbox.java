@@ -55,7 +55,7 @@ public class Checkbox extends BaseBodyTag {
 	private String border = "true";//条目border(内部包含checkox,label) true, false, div, li, dd
 	private String borderClazz = "al-chk-item-border";//
 	private String labelClazz = "al-chk-item-label";
-	private String label = "";//label标签体，如果未定义label则生成默认label标签体{textKey}
+	private String label = "";//label标签体,如果未定义label则生成默认label标签体{textKey}
  
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public int doEndTag() throws JspException { 
