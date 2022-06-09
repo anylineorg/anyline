@@ -99,7 +99,7 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
 			if(BasicUtil.isEmpty(id)){
-				//只提供列名，不提供表名
+				//只提供列名,不提供表名
 				if(var.equalsIgnoreCase(confVar)){
 					return conf;
 				}
@@ -125,7 +125,7 @@ public class ConfigChainImpl extends ConfigImpl implements ConfigChain{
 			String confVar = conf.getVariable();
 			SQL.COMPARE_TYPE confType = conf.getCompare();
 			if(BasicUtil.isEmpty(prefix)){
-				//只提供列名，不提供表名
+				//只提供列名,不提供表名
 				if(var.equalsIgnoreCase(confVar) && type == confType){
 					return conf;
 				}
