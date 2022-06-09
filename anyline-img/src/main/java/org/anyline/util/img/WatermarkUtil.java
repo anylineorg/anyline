@@ -178,9 +178,9 @@ public class WatermarkUtil {
                 // 设置水印旋转 
                 g.rotate(Math.toRadians(degree),(double) width / 2, (double) height / 2); 
             } 
-            // 水印图象的路径 水印一般为gif或者png的，这样可设置透明度 
+            // 水印图象的路径 水印一般为gif或者png的,这样可设置透明度 
             ImageIcon imgIcon = new ImageIcon(icon.getAbsolutePath()); 
-            // 得到Image对象。 
+            // 得到Image对象. 
             Image img = imgIcon.getImage(); 
             float alpha = 0.5f; // 透明度 
             g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP,alpha)); 
@@ -202,7 +202,7 @@ public class WatermarkUtil {
             if(target.getName().toLowerCase().endsWith("png")){
             	format = "png";
             }
-            if ("jpg".equals(format)) { //重画一下，要么会变色
+            if ("jpg".equals(format)) { //重画一下,要么会变色
                 BufferedImage tag;
                 tag = new BufferedImage(buffImg.getWidth(), buffImg.getHeight(), BufferedImage.TYPE_INT_BGR);
                 Graphics gg = tag.getGraphics();
