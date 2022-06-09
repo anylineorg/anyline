@@ -43,12 +43,12 @@ public final class SerialUtil {
         try {
             //通过端口名称得到端口
             CommPortIdentifier identifier = CommPortIdentifier.getPortIdentifier(name);
-            //打开端口，（自定义名字，打开超时时间）
+            //打开端口,（自定义名字,打开超时时间）
             CommPort port = identifier.open(name, timeout);
             //判断是不是串口
             if (port instanceof SerialPort) {
                 SerialPort serialPort = (SerialPort) port;
-                //设置串口参数（波特率，数据位8，停止位1，校验位无）
+                //设置串口参数（波特率,数据位8,停止位1,校验位无）
                 serialPort.setSerialPortParams(rate, SerialPort.DATABITS_8, SerialPort.STOPBITS_1, SerialPort.PARITY_NONE);
                 log.warn("[开启串口][名称:{}][波特率:{}]", name, rate);
                 return serialPort;
