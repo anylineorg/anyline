@@ -261,6 +261,50 @@ public abstract class AnylineConfig implements Serializable {
 		return instances;
 	}
 
+	private static boolean listener_running = false;	//监听是否启动
+	private static Map<String,Map<String,Object>> listener_files = new Hashtable<>(); //监听文件更新<文件名,最后加载时间>
+
+	private synchronized static void listener(){
+		if(listener_running){
+			return;
+		}
+		listener_running = true;
+		log.warn("[启动监听]");
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				while (true) {
+					for (Map.Entry<String, Map<String,Object>> item : listener_files.entrySet()) {
+						File file = new File(item.getKey());
+						Map<String,Object> params = item.getValue();
+						Class<?> T = (Class<?>)params.get("CLAZZ");
+						Hashtable<String, AnylineConfig> instances = (Hashtable<String, AnylineConfig>)params.get("INSTANCES");
+						String[] compatibles = (String[])params.get("COMPATIBLES");
+						Long lastLoad = (Long)params.get("LAST_LOAD");
+
+						Long lastModify = file.lastModified();
+
+						if (lastLoad == 0 || lastModify > lastLoad) {
+							String txt = FileUtil.read(file).toString();
+							parse(T, txt, instances, compatibles);
+							params.put("LAST_LOAD", System.currentTimeMillis());
+							listener_files.put(file.getAbsolutePath(), params);
+						}
+					}
+
+					if(ConfigTable.getInt("RELOAD",0) != 0){
+						listener_running = false;
+						break;
+					}
+					try {
+						Thread.sleep(5000);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}).start();
+	}
 	//兼容上一版本 最后一版key:倒数第二版key:倒数第三版key
 	protected static Hashtable<String, AnylineConfig> parse(Class<?> T, File file, Hashtable<String, AnylineConfig> instances, String... compatibles) {
 		log.warn("[解析配置文件][file:{}]", file);
@@ -268,16 +312,19 @@ public abstract class AnylineConfig implements Serializable {
 			log.warn("[解析配置文件][文件不存在][file:{}]", file);
 			return instances;
 		}
-		SAXReader reader = new SAXReader();
-		try {
-			Document document = reader.read(file);
-			instances = parse(T, document, instances, compatibles);
-		} catch (Exception e) {
-			e.printStackTrace();
+		Map<String,Object> params = new HashMap<>();
+		params.put("CLAZZ", T);
+		params.put("INSTANCES", instances);
+		params.put("COMPATIBLES", compatibles);
+		params.put("LAST_LOAD",0l);
+		listener_files.put(file.getAbsolutePath(), params);
+		String txt = FileUtil.read(file).toString();
+		parse(T, txt, instances, compatibles);
+		if(ConfigTable.getInt("RELOAD",0) == 0){
+			listener();
 		}
 		return instances;
 	}
-
 	protected static Hashtable<String, AnylineConfig> parse(Class<?> T, InputStream is, Hashtable<String, AnylineConfig> instances, String... compatibles) {
 		SAXReader reader = new SAXReader();
 		try {
