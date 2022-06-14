@@ -49,6 +49,7 @@ public class ConfigTable {
 	protected static final String version = "8.5.3-SNAPSHOT";
 	protected static final String minVersion = "0007";
 	protected static boolean isLoading = false;
+	private static boolean listener_running = false;	//监听是否启动
 	public static boolean  IS_UPPER_KEY = true;
 	public static boolean  IS_LOWER_KEY = false;
 	public static boolean IS_KEY_IGNORE_CASE = true;
@@ -58,24 +59,35 @@ public class ConfigTable {
 	static{
 		init();
 		debug();
-		listener();
 	}
-	private static void listener(){
+	private synchronized static void listener(){
+		if(listener_running){
+			return;
+		}
+		listener_running = true;
+		log.warn("[启动监听]");
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				for(Map.Entry<String, Long> item: listener_files.entrySet()){
-					File file = new File(item.getKey());
-					Long lastLoad = item.getValue();
-					Long lastModify = file.lastModified();
-					if(lastLoad == 0 || lastModify > lastLoad){
-						parse(file);
+				while (true) {
+					for (Map.Entry<String, Long> item : listener_files.entrySet()) {
+						File file = new File(item.getKey());
+						Long lastLoad = item.getValue();
+						Long lastModify = file.lastModified();
+						if (lastLoad == 0 || lastModify > lastLoad) {
+							parse(file);
+						}
 					}
-				}
-				try {
-					Thread.sleep(1000);
-				}catch (Exception e){
-					e.printStackTrace();
+
+					if(getInt("RELOAD",0) != 0){
+						listener_running = false;
+						break;
+					}
+					try {
+						Thread.sleep(5000);
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}).start();
@@ -337,8 +349,13 @@ public class ConfigTable {
 				for(File f:files){
 					loadConfig(f);
 				}
+			}else {
+				parse(file);
+				//如果未设置重新加载时间,则实现监听文件更新
+				if(getInt("RELOAD",0) == 0){
+					listener();
+				}
 			}
-			parse(file);
 
 		}catch(Exception e){
 			log.error("配置文件解析异常:"+e);
