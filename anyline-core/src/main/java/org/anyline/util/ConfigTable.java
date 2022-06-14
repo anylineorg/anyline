@@ -37,6 +37,7 @@ import java.util.jar.JarFile;
 
 public class ConfigTable {
 	private static final Logger log = LoggerFactory.getLogger(ConfigTable.class);
+	private static Map<String,Long> listener_files = new Hashtable<>(); //监听文件更新<文件名,最后加载时间>
 	protected static String root;		//项目根目录 如果是jar文件运行表示jar文件所在目录
 	protected static String webRoot;
 	protected static String classpath;
@@ -45,7 +46,7 @@ public class ConfigTable {
 	protected static int reload = 0;			//重新加载间隔
 	protected static boolean debug = false;
 	protected static boolean sqlDebug = false;
-	protected static final String version = "8.3.9-SNAPSHOT";
+	protected static final String version = "8.5.3-SNAPSHOT";
 	protected static final String minVersion = "0007";
 	protected static boolean isLoading = false;
 	public static boolean  IS_UPPER_KEY = true;
@@ -57,6 +58,27 @@ public class ConfigTable {
 	static{
 		init();
 		debug();
+		listener();
+	}
+	private static void listener(){
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				for(Map.Entry<String, Long> item: listener_files.entrySet()){
+					File file = new File(item.getKey());
+					Long lastLoad = item.getValue();
+					Long lastModify = file.lastModified();
+					if(lastLoad == 0 || lastModify > lastLoad){
+						parse(file);
+					}
+				}
+				try {
+					Thread.sleep(1000);
+				}catch (Exception e){
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 	protected ConfigTable(){}
 	public static void addConfig(String content){
@@ -262,6 +284,10 @@ public class ConfigTable {
 			}
 		}
 	}
+	public static void parse(File file){
+		parse(FileUtil.read(file).toString());
+		listener_files.put(file.getAbsolutePath(), System.currentTimeMillis());
+	}
 	public static void parse(String xml){
 		try {
 			Document document = DocumentHelper.parseText(xml);
@@ -312,12 +338,13 @@ public class ConfigTable {
 					loadConfig(f);
 				}
 			}
-			parse(FileUtil.read(file).toString());
+			parse(file);
 
 		}catch(Exception e){
 			log.error("配置文件解析异常:"+e);
 		}
 	}
+
 	public static String get(String key){
 		if(null == key){
 			return null;
