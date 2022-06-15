@@ -47,6 +47,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -430,6 +433,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}else if(value instanceof Timestamp){
 					builder.append("'").append(value.toString()).append("'");
 				}else if(value instanceof java.sql.Date){
+					builder.append("'").append(value.toString()).append("'");
+				}else if(value instanceof LocalDate){
+					builder.append("'").append(value.toString()).append("'");
+				}else if(value instanceof LocalTime){
+					builder.append("'").append(value.toString()).append("'");
+				}else if(value instanceof LocalDateTime){
 					builder.append("'").append(value.toString()).append("'");
 				}else if(value instanceof Date){
 					builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");

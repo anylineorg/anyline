@@ -6,7 +6,7 @@
 	<version>8.5.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline dependency</name>
-	<description>一个针对web环境的，基于spring-jdbc的，快捷数据库操作工具</description>
+	<description>一个针对web环境的,基于spring-jdbc的,快捷数据库操作工具</description>
 	<url>http://www.anyline.org</url>
 	<licenses>
 		<license>
