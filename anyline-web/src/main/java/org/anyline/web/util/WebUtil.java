@@ -853,6 +853,8 @@ public class WebUtil {
 		ServletContext servlet = request.getServletContext();
 		RequestDispatcher dispatcher = servlet.getRequestDispatcher(jsp);
 		final ServletOutputStream stream = new ServletOutputStream() {
+
+			@Override
 			public void write(byte[] data, int offset, int length) {
 				try {
 					os.write(data, offset, length);
@@ -860,8 +862,9 @@ public class WebUtil {
 					e.printStackTrace();
 				}
 			}
+			@Override
 			public void write(int b) throws IOException {
-				os.write(b);
+				//os.write(b);
 			}
 			@Override
 			public boolean isReady() {
