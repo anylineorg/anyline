@@ -38,16 +38,21 @@
 		<module>anyline-aliyun</module>
 		<module>anyline-amap</module>
 		<module>anyline-easemob</module>
-		<module>anyline-jdbc-db2</module>
-		<module>anyline-jdbc-hgdb</module>
-		<module>anyline-jdbc-mssql</module>
-		<module>anyline-jdbc-mysql</module>
-		<module>anyline-jdbc-oracle</module>
-		<module>anyline-jdbc-postgresql</module>
-		<module>anyline-jdbc-dm</module>
-		<module>anyline-jdbc-mariadb</module>
-		<module>anyline-jdbc-mongodb</module>
-		<module>anyline-jdbc-clickhouse</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-db2</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-hgdb</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-mssql</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-mysql</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-oracle</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-postgresql</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-dm</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-mariadb</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-mongodb</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-clickhouse</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-tidb</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-oceanbase</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-polardb</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-neo4j</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-kingbase</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
@@ -75,7 +80,7 @@
         <module>anyline-tencent</module>
 		<module>anyline-img</module>
         <module>anyline-minio</module>
-    </modules>
+	</modules>
 	<build>
 		<plugins>
 			<plugin>

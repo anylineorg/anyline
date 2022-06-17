@@ -8,7 +8,7 @@
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
 		<version>8.5.3-SNAPSHOT</version>
-		<relativePath>../anyline-dependency</relativePath>
+		<relativePath>../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
 	<artifactId>anyline-jdbc-oracle</artifactId>

@@ -1,27 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
         <version>8.5.3-SNAPSHOT</version>
         <relativePath>../anyline-dependency/pom.xml</relativePath>
     </parent>
+    <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>anyline-jdbc-clickhouse</artifactId>
+    <artifactId>anyline-jdbc-polardb</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-jdbc-clickhouse</name>
-    <url>http://www.anyline.org/clickhouse</url>
+    <name>anyline jdbc PolarDB </name>
+    <url>http://www.anyline.org/polardb</url>
 
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
             <artifactId>anyline-jdbc</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.clickhouse</groupId>
-            <artifactId>clickhouse-jdbc</artifactId>
-        </dependency>
     </dependencies>
+
 </project>
