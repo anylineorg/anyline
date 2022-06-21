@@ -34,7 +34,7 @@
 		<anyline.version>8.5.3-SNAPSHOT</anyline.version>
 
 		<jdbc.mssql.version>7.2.2.jre8</jdbc.mssql.version>
-		<jdbc.mysql.version>8.0.16</jdbc.mysql.version>
+		<jdbc.mysql.version>8.0.28</jdbc.mysql.version>
 		<jdbc.db2.version>11.5.0.0</jdbc.db2.version>
 		<jdbc.ojdbc.version>19.3.0.0</jdbc.ojdbc.version><!-- oracle -->
 		<jdbc.postgresql.version>42.2.25</jdbc.postgresql.version>
