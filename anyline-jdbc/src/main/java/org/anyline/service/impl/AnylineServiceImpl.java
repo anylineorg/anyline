@@ -134,7 +134,7 @@ public class AnylineServiceImpl implements AnylineService {
         List<String> list = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
 
-        if(null != cacheProvider && BasicUtil.isNotEmpty(cache)){
+        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
             String key = "METADATA_" + table;
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if(null != cacheElement){
@@ -153,7 +153,7 @@ public class AnylineServiceImpl implements AnylineService {
         List<MetaData> list = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
 
-        if(null != cacheProvider && BasicUtil.isNotEmpty(cache)){
+        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
             String key = "METADATAS_" + table;
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if(null != cacheElement){

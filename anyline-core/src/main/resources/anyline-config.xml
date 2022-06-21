@@ -70,8 +70,8 @@
 	<!-- error文件路径 -->
 	<property key="ERROR_FILE_PATH">/WEB-INF/def/web/common/error/error.jsp</property>
 	
-	<!-- 是否启用(一级)缓存 -->
-	<property key="IS_USE_CACHE">true</property>
+	<!-- 是否禁用缓存 -->
+	<property key="CACHE_DISABLED">false</property>
 
 	<property key="HTTP_FAIL_CODE">-1</property>
 	<property key="HTTP_SUCCESS_CODE">200</property>
