@@ -672,64 +672,6 @@ public class AnylineController extends AbstractBasicController {
 			} 
 			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE); 
 		}
-
-		/*Map<String, Object> map = new HashMap<String, Object>();
-		String dataType = null; // 数据类型 
-		if (null == data) { 
-			message = BasicUtil.nvl(message, "没有返回数据").toString();
-			data = ""; 
-		} else if (data instanceof DataSet) { 
-			DataSet set = (DataSet) data; 
-			message = BasicUtil.nvl(message, set.getMessage(),"").toString();
-			dataType = "list"; 
-			data = set.getRows();
-			PageNavi navi = set.getNavi();
-			if(null != navi){
-				Map<String,Object> navi_ = new HashMap<String,Object>();
-				navi_.put("page", navi.getCurPage());		//当前页
-				navi_.put("pages", navi.getTotalPage());	//总页数
-				navi_.put("rows", navi.getTotalRow());		//总行数
-				navi_.put("vol", navi.getPageRows());		//第页行籹
-				map.put("navi", navi_);
-			}
-
-		} else if (data instanceof Iterable) { 
-			dataType = "list"; 
-		} else if (data instanceof DataRow) { 
-			dataType = "map"; 
-		} else if (data instanceof Map) { 
-			dataType = "map"; 
-		} else if (data instanceof String) { 
-			dataType = "string"; 
-			// data = BasicUtil.convertJSONChar(data.toString()); 
-			data = data.toString(); 
-		} else if (data instanceof Number) { 
-			dataType = "number"; 
-			data = data.toString(); 
-		} else { 
-			dataType = "map"; 
-		} 
-		if (!result && null != data) { 
-			message += data.toString(); 
-		}
-
-		map.put("type", dataType); 
-		map.put("result", result); 
-		map.put("message", message); 
-		map.put("data", data); 
-		map.put("success", result); 
-		map.put("code", code);
-    	map.put("request_time", getRequest().getParameter("_anyline_request_time")); 
-    	map.put("response_time", getRequest().getAttribute("_anyline_response_time"));
-    	map.put("finish_time", System.currentTimeMillis());
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
-			log.warn("[controller return][result:{}][message:{}]",result,message); 
-		}
-
-		getResponse().setContentType("application/json;charset=utf-8");
-		getResponse().setHeader("Content-type", "application/json;charset=utf-8");
-		getResponse().setCharacterEncoding("UTF-8");
-		return BeanUtil.map2json(map); */
 		Result rtn = Result.init(result, code,data,message);
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[controller return][result:{}][message:{}][request:{}][response:{}][finish:{}]"
