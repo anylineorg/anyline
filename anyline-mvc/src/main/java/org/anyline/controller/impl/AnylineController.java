@@ -719,8 +719,8 @@ public class AnylineController extends AbstractBasicController {
 		map.put("success", result); 
 		map.put("code", code);
     	map.put("request_time", getRequest().getParameter("_anyline_request_time")); 
-    	map.put("response_time_fr", getRequest().getAttribute("_anyline_response_time_fr")); 
-    	map.put("response_time_to", System.currentTimeMillis()); 
+    	map.put("response_time", getRequest().getAttribute("_anyline_response_time"));
+    	map.put("finish_time", System.currentTimeMillis());
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 			log.warn("[controller return][result:{}][message:{}]",result,message); 
 		}
