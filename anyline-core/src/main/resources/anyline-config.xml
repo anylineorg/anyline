@@ -90,5 +90,8 @@
 	<property key="DES_IGNORE">0,-1</property>
 	<!--http参数是否trim-->
 	<property key="HTTP_PARAM_TRIM">true</property>
-
+	<!---http 客户端请求时间KEY -->
+	<property key="HTTP_REQUEST_TIME_KET">_anyline_request_time</property>
+	<!---http 服务器端开始响应时间KEY-->
+	<property key="HTTP_RESPONSE_TIME_KEY">_anyline_response_time</property>
 </properties>
