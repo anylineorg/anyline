@@ -28,6 +28,7 @@ import org.anyline.jdbc.config.db.SQL;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.web.controller.AbstractBasicController;
+import org.anyline.web.util.Result;
 import org.anyline.web.util.WebUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -670,9 +671,9 @@ public class AnylineController extends AbstractBasicController {
 				}
 			} 
 			getRequest().removeAttribute(Constant.REQUEST_ATTR_MESSAGE); 
-		} 
- 
-		Map<String, Object> map = new HashMap<String, Object>(); 
+		}
+
+		/*Map<String, Object> map = new HashMap<String, Object>();
 		String dataType = null; // 数据类型 
 		if (null == data) { 
 			message = BasicUtil.nvl(message, "没有返回数据").toString();
@@ -728,7 +729,13 @@ public class AnylineController extends AbstractBasicController {
 		getResponse().setContentType("application/json;charset=utf-8");
 		getResponse().setHeader("Content-type", "application/json;charset=utf-8");
 		getResponse().setCharacterEncoding("UTF-8");
-		return BeanUtil.map2json(map); 
+		return BeanUtil.map2json(map); */
+		Result rtn = Result.init(result, code,data,message);
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			log.warn("[controller return][result:{}][message:{}][request:{}][response:{}][finish:{}]"
+					,result,message, rtn.getRequest_time(), rtn.getResponse_time(), rtn.getFinish_time());
+		}
+		return rtn.json();
 	} 
 	/** 
 	 *  
