@@ -8,13 +8,13 @@
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
 		<version>8.5.3-SNAPSHOT</version>
-		<relativePath>../anyline-dependency/pom.xml</relativePath>
+		<relativePath>../../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>anyline-jdbc-mariadb</artifactId>
+	<artifactId>anyline-jdbc-mssql</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-jdbc-mariadb</name>
-	<url>http://www.anyline.org/mariadb</url>
+	<name>anyline-jdbc-mssql</name>
+	<url>http://www.anyline.org/mssql</url>
 
 	<dependencies>
 		<dependency>
@@ -22,8 +22,8 @@
 			<artifactId>anyline-jdbc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.mariadb.jdbc</groupId>
-			<artifactId>mariadb-java-client</artifactId>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
 		</dependency>
 	</dependencies>
 </project>

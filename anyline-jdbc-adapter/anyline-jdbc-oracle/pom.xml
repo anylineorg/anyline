@@ -8,26 +8,18 @@
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
 		<version>8.5.3-SNAPSHOT</version>
-		<relativePath>../anyline-dependency/pom.xml</relativePath>
+		<relativePath>../../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>anyline-jdbc-hgdb</artifactId>
+	<artifactId>anyline-jdbc-oracle</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-jdbc-hgdb</name>
-	<url>http://www.anyline.org/hgdb</url>
+	<name>anyline-jdbc-oracle</name>
+	<url>http://www.anyline.org/oracle</url>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc</artifactId>
 		</dependency>
-
-		<!--
-		<dependency>
-			<groupId>com.hgdb</groupId>
-			<artifactId>hgdb</artifactId>
-			<version>${jdbc.hgdb.version}</version>
-		</dependency>
-		 -->
 	</dependencies>
 </project>

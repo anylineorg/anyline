@@ -8,13 +8,13 @@
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
 		<version>8.5.3-SNAPSHOT</version>
-		<relativePath>../anyline-dependency/pom.xml</relativePath>
+		<relativePath>../../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>anyline-jdbc-mssql</artifactId>
+	<artifactId>anyline-jdbc-postgresql</artifactId>
 	<packaging>jar</packaging>
-	<name>anyline-jdbc-mssql</name>
-	<url>http://www.anyline.org/mssql</url>
+	<name>anyline-jdbc-postgresql</name>
+	<url>http://www.anyline.org/postgresql</url>
 
 	<dependencies>
 		<dependency>
@@ -22,8 +22,8 @@
 			<artifactId>anyline-jdbc</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.microsoft.sqlserver</groupId>
-			<artifactId>mssql-jdbc</artifactId>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 		</dependency>
 	</dependencies>
 </project>

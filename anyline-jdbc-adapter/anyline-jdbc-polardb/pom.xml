@@ -7,14 +7,14 @@
         <groupId>org.anyline</groupId>
         <artifactId>anyline-dependency</artifactId>
         <version>8.5.3-SNAPSHOT</version>
-        <relativePath>../anyline-dependency/pom.xml</relativePath>
+        <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>anyline-jdbc-oceanbase</artifactId>
+    <artifactId>anyline-jdbc-polardb</artifactId>
     <packaging>jar</packaging>
-    <name>anyline jdbc OceanBase</name>
-    <url>http://www.anyline.org/oceanbase</url>
+    <name>anyline jdbc PolarDB </name>
+    <url>http://www.anyline.org/polardb</url>
 
     <dependencies>
         <dependency>
