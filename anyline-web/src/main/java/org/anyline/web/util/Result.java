@@ -23,6 +23,9 @@ public class Result {
     private int vol = -1;
     private int page = -1;
     private int pages = -1;
+    private Long request_time = null;
+    private Long response_time = null;
+    private Long finish_time = null;
 
     private PageNavi navi;
     private HttpServletRequest request;
@@ -32,6 +35,15 @@ public class Result {
         Result result = new Result();
         result.data = data;
         result.success = true;
+        result.init();
+        return result;
+    }
+    public static Result init(boolean success, String code, Object data, String message){
+        Result result = new Result();
+        result.success = success;
+        result.data = data;
+        result.code = code;
+        result.message = message;
         result.init();
         return result;
     }
@@ -65,6 +77,17 @@ public class Result {
     private void init(){
        request =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
        response =  ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getResponse();
+        if(null != request) {
+            Object request_time_ = request.getParameter(ConfigTable.getString("HTTP_REQUEST_TIME_KET","_anyline_request_time"));
+            if(null != request_time_){
+                request_time = (Long)request_time_;
+            }
+            Object response_time_ = request.getAttribute(ConfigTable.getString("HTTP_RESPONSE_TIME_KEY","_anyline_response_time"));
+            if(null != response_time_){
+                response_time = (Long)response_time_;
+            }
+        }
+        finish_time = System.currentTimeMillis();
     }
     public String json() {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -116,11 +139,9 @@ public class Result {
         map.put("data", data);
         map.put("success", success);
         map.put("code", code);
-        if(null != request) {
-            map.put("request_time", request.getParameter(ConfigTable.getString("HTTP_REQUEST_TIME_KET","_anyline_request_time")));
-            map.put("response_time", request.getAttribute(ConfigTable.getString("HTTP_RESPONSE_TIME_KEY","_anyline_response_time")));
-        }
-        map.put("finish_time", System.currentTimeMillis());
+        map.put("request_time", request_time);
+        map.put("response_time", response_time);
+        map.put("finish_time", finish_time);
         if (null != response){
             response.setContentType("application/json;charset=utf-8");
             response.setHeader("Content-type", "application/json;charset=utf-8");
@@ -218,5 +239,29 @@ public class Result {
 
     public void setResponse(HttpServletResponse response) {
         this.response = response;
+    }
+
+    public Long getRequest_time() {
+        return request_time;
+    }
+
+    public void setRequest_time(Long request_time) {
+        this.request_time = request_time;
+    }
+
+    public Long getResponse_time() {
+        return response_time;
+    }
+
+    public void setResponse_time(Long response_time) {
+        this.response_time = response_time;
+    }
+
+    public Long getFinish_time() {
+        return finish_time;
+    }
+
+    public void setFinish_time(Long finish_time) {
+        this.finish_time = finish_time;
     }
 }
