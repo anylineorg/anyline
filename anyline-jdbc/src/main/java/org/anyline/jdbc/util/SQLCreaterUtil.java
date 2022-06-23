@@ -54,6 +54,8 @@ public class SQLCreaterUtil {
 					type = SQLCreater.DB_TYPE.ClickHouse;
 				}else if(name.contains("kingbase")){
 					type = SQLCreater.DB_TYPE.KingBase;
+				}else if(name.contains("oceanbase")){
+					type = SQLCreater.DB_TYPE.OceanBase;
 				}
 				creater = creaters.get(type.getName());
 				if(null == creater){
