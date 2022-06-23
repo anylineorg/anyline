@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
  
 	public DB_TYPE type(){ 
-		return DB_TYPE.Kingbase;
+		return DB_TYPE.KingBase;
 	} 
 	public SQLCreaterImpl(){ 
 		delimiterFr = "\"";
