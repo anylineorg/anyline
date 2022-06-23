@@ -194,11 +194,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-tidb</artifactId>
-				<version>${anyline.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.anyline</groupId>
 				<artifactId>anyline-jpush</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>

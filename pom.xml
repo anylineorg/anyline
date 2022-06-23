@@ -48,7 +48,6 @@
 		<module>anyline-jdbc-adapter/anyline-jdbc-mariadb</module>
 		<module>anyline-jdbc-adapter/anyline-jdbc-mongodb</module>
 		<module>anyline-jdbc-adapter/anyline-jdbc-clickhouse</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-tidb</module>
 		<module>anyline-jdbc-adapter/anyline-jdbc-oceanbase</module>
 		<module>anyline-jdbc-adapter/anyline-jdbc-polardb</module>
 		<module>anyline-jdbc-adapter/anyline-jdbc-neo4j</module>
