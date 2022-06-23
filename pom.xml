@@ -80,7 +80,8 @@
         <module>anyline-tencent</module>
 		<module>anyline-img</module>
         <module>anyline-minio</module>
-	</modules>
+        <module>anyline-jdbc-adapter/anyline-jdbc-kingbase-prostgresql</module>
+    </modules>
 	<build>
 		<plugins>
 			<plugin>
