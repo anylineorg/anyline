@@ -13,7 +13,7 @@
 
     <artifactId>anyline-jdbc-kingbase-prostgresql</artifactId>
     <packaging>jar</packaging>
-    <name>anyline jdbc kingbase</name>
+    <name>anyline-jdbc-kingbase-prostgresql</name>
     <url>http://www.anyline.org/kingbase</url>
 
     <dependencies>

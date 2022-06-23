@@ -52,6 +52,8 @@ public class SQLCreaterUtil {
 					type = SQLCreater.DB_TYPE.PostgreSQL;
 				}else if(name.contains("clickhouse")){
 					type = SQLCreater.DB_TYPE.ClickHouse;
+				}else if(name.contains("kingbase")){
+					type = SQLCreater.DB_TYPE.KingBase;
 				}
 				creater = creaters.get(type.getName());
 				if(null == creater){

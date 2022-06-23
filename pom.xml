@@ -53,6 +53,7 @@
 		<module>anyline-jdbc-adapter/anyline-jdbc-polardb</module>
 		<module>anyline-jdbc-adapter/anyline-jdbc-neo4j</module>
 		<module>anyline-jdbc-adapter/anyline-jdbc-kingbase</module>
+		<module>anyline-jdbc-adapter/anyline-jdbc-kingbase-prostgresql</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
@@ -80,7 +81,6 @@
         <module>anyline-tencent</module>
 		<module>anyline-img</module>
         <module>anyline-minio</module>
-        <module>anyline-jdbc-adapter/anyline-jdbc-kingbase-prostgresql</module>
     </modules>
 	<build>
 		<plugins>

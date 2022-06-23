@@ -33,7 +33,7 @@ public interface SQLCreater{
 		PostgreSQL 		{public String getName(){return "PostgreSQL";}},
 		DM		 		{public String getName(){return "DM";}},
 		HighGo			{public String getName(){return "HighGo";}},
-		Kingbase			{public String getName(){return "Kingbase";}},
+		KingBase			{public String getName(){return "KingBase";}},
 		ClickHouse			{public String getName(){return "ClickHouse";}};
 		public abstract String getName();
 	} 

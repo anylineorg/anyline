@@ -19,7 +19,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	protected AnylineDao dao; 
 
 	public DB_TYPE type(){ 
-		return DB_TYPE.Kingbase;
+		return DB_TYPE.KingBase;
 	} 
  
 	public SQLCreaterImpl(){ 
