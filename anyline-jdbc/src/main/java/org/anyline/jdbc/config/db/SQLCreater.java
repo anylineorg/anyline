@@ -35,6 +35,7 @@ public interface SQLCreater{
 		HighGo			{public String getName(){return "HighGo";}},
 		KingBase		{public String getName(){return "KingBase";}},
 		OceanBase 		{public String getName(){return "OceanBase";}},
+		PolarDB  		{public String getName(){return "PolarDB";}},
 		ClickHouse		{public String getName(){return "ClickHouse";}};
 		public abstract String getName();
 	} 

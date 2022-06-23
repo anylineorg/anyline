@@ -56,6 +56,8 @@ public class SQLCreaterUtil {
 					type = SQLCreater.DB_TYPE.KingBase;
 				}else if(name.contains("oceanbase")){
 					type = SQLCreater.DB_TYPE.OceanBase;
+				}else if(name.contains("polardb")){
+					type = SQLCreater.DB_TYPE.PolarDB;
 				}
 				creater = creaters.get(type.getName());
 				if(null == creater){
