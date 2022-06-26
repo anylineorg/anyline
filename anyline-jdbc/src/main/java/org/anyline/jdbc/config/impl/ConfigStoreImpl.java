@@ -126,6 +126,7 @@ public class ConfigStoreImpl implements ConfigStore, Serializable {
 	 * @param to 止
 	 */
 	public ConfigStoreImpl(int fr, int to){
+		chain = new ConfigChainImpl();
 		PageNaviImpl navi = new PageNaviImpl();
 		navi.setFirstRow(fr);
 		navi.setLastRow(to);
