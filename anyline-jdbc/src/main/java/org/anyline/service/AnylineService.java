@@ -61,6 +61,7 @@ public interface AnylineService{
 	 */
 	public List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions);
 	public List<Map<String,Object>> maps(String src, String ... conditions);
+	public List<Map<String,Object>> maps(String src, int fr, int to, String ... conditions);
 
 	//实现与query相同的功能
 	public DataSet selects(String src, ConfigStore configs, String ... conditions);
