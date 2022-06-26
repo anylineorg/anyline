@@ -120,13 +120,7 @@ public class AnylineServiceImpl implements AnylineService {
 
     @Override
     public DataSet querys(String src, int fr, int to, String... conditions) {
-        PageNaviImpl navi = new PageNaviImpl();
-        navi.setFirstRow(fr);
-        navi.setLastRow(to);
-        navi.setCalType(1);
-        navi.setTotalRow(to-fr+1);
-        ConfigStore configs = new ConfigStoreImpl();
-        configs.setPageNavi(navi);
+        ConfigStore configs = new ConfigStoreImpl(fr, to);
         return querys(src, configs, conditions);
     }
 
@@ -171,6 +165,10 @@ public class AnylineServiceImpl implements AnylineService {
     @Override
     public List<Map<String,Object>> maps(String src, String... conditions) {
         return maps(src, null, conditions);
+    }
+    @Override
+    public List<Map<String,Object>> maps(String src, int fr, int to, String... conditions) {
+        return maps(src, new ConfigStoreImpl(fr, to), conditions);
     }
 
     @Override
@@ -219,13 +217,7 @@ public class AnylineServiceImpl implements AnylineService {
     }
     @Override
     public DataSet caches(String cache, String src, int fr, int to, String ... conditions){
-        PageNaviImpl navi = new PageNaviImpl();
-        navi.setFirstRow(fr);
-        navi.setLastRow(to);
-        navi.setCalType(1);
-        navi.setTotalRow(to-fr+1);
-        ConfigStore configs = new ConfigStoreImpl();
-        configs.setPageNavi(navi);
+        ConfigStore configs = new ConfigStoreImpl(fr, to);
         return caches(cache, src, configs, conditions);
     }
 
@@ -348,13 +340,7 @@ public class AnylineServiceImpl implements AnylineService {
 
     @Override
     public DataSet querys(SQL sql, int fr, int to, String... conditions) {
-        PageNaviImpl navi = new PageNaviImpl();
-        navi.setFirstRow(fr);
-        navi.setLastRow(to);
-        navi.setCalType(1);
-        navi.setTotalRow(to-fr+1);
-        ConfigStore configs = new ConfigStoreImpl();
-        configs.setPageNavi(navi);
+        ConfigStore configs = new ConfigStoreImpl(fr,to);
         return querys(sql, configs, conditions);
     }
     @Override
@@ -378,13 +364,7 @@ public class AnylineServiceImpl implements AnylineService {
     }
     @Override
     public DataSet caches(String cache, SQL table, int fr, int to, String ... conditions){
-        PageNaviImpl navi = new PageNaviImpl();
-        navi.setFirstRow(fr);
-        navi.setLastRow(to);
-        navi.setCalType(1);
-        navi.setTotalRow(to-fr+1);
-        ConfigStore configs = new ConfigStoreImpl();
-        configs.setPageNavi(navi);
+        ConfigStore configs = new ConfigStoreImpl(fr, to);
         return caches(cache, table, configs, conditions);
     }
 
@@ -658,13 +638,7 @@ public class AnylineServiceImpl implements AnylineService {
     }
     @Override
     public boolean removeCache(String channel, String src, int fr, int to, String ... conditions){
-        PageNaviImpl navi = new PageNaviImpl();
-        navi.setFirstRow(fr);
-        navi.setLastRow(to);
-        navi.setCalType(1);
-        navi.setTotalRow(to-fr+1);
-        ConfigStore configs = new ConfigStoreImpl();
-        configs.setPageNavi(navi);
+        ConfigStore configs = new ConfigStoreImpl(fr, to);
         return removeCache(channel, src, configs, conditions);
     }
     /**
