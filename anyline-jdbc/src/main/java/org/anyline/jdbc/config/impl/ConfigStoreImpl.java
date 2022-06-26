@@ -25,10 +25,7 @@ import org.anyline.jdbc.config.ConfigChain;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.*;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
-import org.anyline.jdbc.config.db.impl.GroupImpl;
-import org.anyline.jdbc.config.db.impl.GroupStoreImpl;
-import org.anyline.jdbc.config.db.impl.OrderImpl;
-import org.anyline.jdbc.config.db.impl.OrderStoreImpl;
+import org.anyline.jdbc.config.db.impl.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DESUtil;
 
@@ -121,6 +118,20 @@ public class ConfigStoreImpl implements ConfigStore, Serializable {
 		for(String config:configs){
 			chain.addConfig(parseConfig(config));
 		}
+	}
+
+	/**
+	 * 按起止行数查询
+	 * @param fr 起
+	 * @param to 止
+	 */
+	public ConfigStoreImpl(int fr, int to){
+		PageNaviImpl navi = new PageNaviImpl();
+		navi.setFirstRow(fr);
+		navi.setLastRow(to);
+		navi.setCalType(1);
+		navi.setTotalRow(to-fr+1);
+		this.setPageNavi(navi);
 	}
 	public ConfigStoreImpl(List<String> configs){
 		configs = BasicUtil.compressionSpace(configs);
