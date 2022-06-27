@@ -91,16 +91,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 		return result; 
 	}
 
-	/* INSERT ALL
-      INTO ORG_DS(ORG_NAME,ORG_CODE) VALUES ('A', 'A')
-      INTO ORG_DS(ORG_NAME,ORG_CODE) VALUES ('B', 'B')
-    SELECT 1 FROM DUAL;
-
-    INSERT ALL
-INTO ORG_DS(ORG_NAME,ORG_CODE)VALUES('A','A')
-SELECT 1 FROM DUAL;
-INTO ORG_DS(ORG_NAME,ORG_CODE)VALUES('B','B')SELECT 1 FROM DUAL;
-	*/
 	@Override
 	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys){
 		builder.append("INSERT ALL \n");
