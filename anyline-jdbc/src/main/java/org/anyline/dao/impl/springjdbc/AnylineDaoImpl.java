@@ -505,26 +505,31 @@ public class AnylineDaoImpl implements AnylineDao {
 				listenerResult = listener.beforeInsert(this,run, dest, data,checkParimary, columns);
 			}
 			if(listenerResult) {
-				cnt = getJdbc().update(new PreparedStatementCreator() {
-					@Override
-					public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-						PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-						int idx = 0;
-						if (null != values) {
-							for (Object obj : values) {
-								ps.setObject(++idx, obj);
+				Long id = null;
+				if(null != values && values.size()>0){
+					cnt = getJdbc().update(new PreparedStatementCreator() {
+						@Override
+						public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+							PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
+							int idx = 0;
+							if (null != values) {
+								for (Object obj : values) {
+									ps.setObject(++idx, obj);
+								}
 							}
+							return ps;
 						}
-						return ps;
+					}, keyholder);
+					if (cnt == 1) {
+						try {
+							id =  keyholder.getKey().longValue();
+							setPrimaryValue(data, id);
+						} catch (Exception e) {}
 					}
-				}, keyholder);
-				long id = 0;
-				if (cnt == 1) {
-					try {
-						id =  keyholder.getKey().longValue();
-						setPrimaryValue(data, id);
-					} catch (Exception e) {}
+				}else{
+					cnt = getJdbc().update(sql);
 				}
+
 				if (null != listener) {
 					listener.afterInsert(this, run, cnt, dest, data, checkParimary, columns);
 				}
