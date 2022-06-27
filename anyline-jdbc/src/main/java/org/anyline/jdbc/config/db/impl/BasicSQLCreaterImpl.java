@@ -440,40 +440,44 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int keySize = keys.size();
 		builder.append("(");
 		for(int j=0; j<keySize; j++){
-			Object value = row.get(keys.get(j));
-
-			if(null == value || "NULL".equals(value)){
-				builder.append("null");
-			}else if(value instanceof String){
-				String str = value.toString();
-				if(str.startsWith("{") && str.endsWith("}") && !BeanUtil.isJson(value)){
-					str = str.substring(1, str.length()-1);
-				}else{
-					str = "'" + str.replace("'", "''") + "'";
-				}
-				builder.append(str);
-			}else if(value instanceof Timestamp){
-				builder.append("'").append(value.toString()).append("'");
-			}else if(value instanceof java.sql.Date){
-				builder.append("'").append(value.toString()).append("'");
-			}else if(value instanceof LocalDate){
-				builder.append("'").append(value.toString()).append("'");
-			}else if(value instanceof LocalTime){
-				builder.append("'").append(value.toString()).append("'");
-			}else if(value instanceof LocalDateTime){
-				builder.append("'").append(value.toString()).append("'");
-			}else if(value instanceof Date){
-				builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");
-			}else if(value instanceof Number || value instanceof Boolean){
-				builder.append(value.toString());
-			}else{
-				builder.append(value.toString());
-			}
+			format(builder, row, keys.get(j));
 			if(j<keySize-1){
 				builder.append(",");
 			}
 		}
 		builder.append(")");
+	}
+	@Override
+	public void format(StringBuilder builder, DataRow row, String key){
+		Object value = row.get(key);
+
+		if(null == value || "NULL".equals(value)){
+			builder.append("null");
+		}else if(value instanceof String){
+			String str = value.toString();
+			if(str.startsWith("{") && str.endsWith("}") && !BeanUtil.isJson(value)){
+				str = str.substring(1, str.length()-1);
+			}else{
+				str = "'" + str.replace("'", "''") + "'";
+			}
+			builder.append(str);
+		}else if(value instanceof Timestamp){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof java.sql.Date){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof LocalDate){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof LocalTime){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof LocalDateTime){
+			builder.append("'").append(value.toString()).append("'");
+		}else if(value instanceof Date){
+			builder.append("'").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("'");
+		}else if(value instanceof Number || value instanceof Boolean){
+			builder.append(value.toString());
+		}else{
+			builder.append(value.toString());
+		}
 	}
 	 
 	private RunSQL createInsertTxtFromEntity(String dest, AnylineEntity entity, boolean checkParimary, String ... columns){ 

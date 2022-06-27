@@ -10,11 +10,18 @@ import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 
 @Repository("anyline.jdbc.creater.oracle") 
@@ -123,5 +130,37 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			builder.append(" \n");
 		}
 		builder.append("SELECT 1 FROM DUAL");
+	}
+
+	@Override
+	public void format(StringBuilder builder, DataRow row, String key){
+		Object value = row.get(key);
+
+		if(null == value || "NULL".equals(value)){
+			builder.append("null");
+		}else if(value instanceof String){
+			String str = value.toString();
+			if(str.startsWith("{") && str.endsWith("}") && !BeanUtil.isJson(value)){
+				str = str.substring(1, str.length()-1);
+			}else{
+				str = "'" + str.replace("'", "''") + "'";
+			}
+			builder.append(str);
+		}else if(value instanceof Timestamp
+				|| value instanceof java.util.Date
+				|| value instanceof java.sql.Date
+				|| value instanceof LocalDate
+				|| value instanceof LocalTime
+				|| value instanceof LocalDateTime
+		){
+			Date date = DateUtil.parse(value);
+			builder.append("TO_DATE('").append(DateUtil.format(date,DateUtil.FORMAT_DATE_TIME)).append("','yyyy-mm-dd hh24:mi:ss')");
+		}else if(value instanceof Date){
+			builder.append("TO_DATE('").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("','yyyy-mm-dd hh24:mi:ss')");
+		}else if(value instanceof Number || value instanceof Boolean){
+			builder.append(value.toString());
+		}else{
+			builder.append(value.toString());
+		}
 	}
 }
