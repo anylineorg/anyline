@@ -21,6 +21,7 @@ package org.anyline.jdbc.config.db;
  
 import java.util.List;
 
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.ConfigStore;
@@ -75,7 +76,7 @@ public interface SQLCreater{
 	public String parseFinalQueryTxt(RunSQL run);
 	public RunSQL createInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns);
 	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys);
-
+	public void format(StringBuilder builder, DataRow row, String key);
 	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns); 
 	public String getDelimiterFr();
 	public String getDelimiterTo();
