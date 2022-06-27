@@ -22,9 +22,10 @@ import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.OffsetDateTime;
+import java.time.*;
 import java.util.*;
 
 
@@ -864,6 +865,23 @@ public class DateUtil {
 		} catch (ParseException e) {
 			return null;
 		}
+	}
+	public static Date parse(Object value){
+		Date date = null;
+		if(null != value){
+			if(value instanceof Timestamp){
+				date = new Date(((Timestamp)value).getTime());
+			}else if(value instanceof Date){
+				date = (Date)value;
+			}else if(value instanceof java.sql.Date){
+				date = new Date(((java.sql.Date)value).getTime());
+			}else if(value instanceof LocalDate){
+				date = Date.from(((LocalDate)value).atStartOfDay(ZoneId.systemDefault()).toInstant());
+			}else if(value instanceof LocalDateTime){
+				date = Date.from(((LocalDateTime)value).atZone(ZoneId.systemDefault()).toInstant());
+			}
+		}
+		return date;
 	}
 
 	/**
