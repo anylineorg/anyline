@@ -2,15 +2,21 @@
 package org.anyline.jdbc.config.db.impl.oracle; 
  
 import org.anyline.dao.AnylineDao;
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.OrderStore;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
- 
+
+import java.util.List;
+
 @Repository("anyline.jdbc.creater.oracle") 
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
 	 
@@ -67,8 +73,9 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 		 
 		return builder.toString(); 
 		 
-	} 
- 
+	}
+
+	@Override
 	public String concat(String ... args){ 
 		String result = ""; 
 		if(null != args && args.length > 0){ 
@@ -82,5 +89,49 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			} 
 		} 
 		return result; 
-	} 
+	}
+
+	/* INSERT ALL
+      INTO ORG_DS(ORG_NAME,ORG_CODE) VALUES ('A', 'A')
+      INTO ORG_DS(ORG_NAME,ORG_CODE) VALUES ('B', 'B')
+    SELECT 1 FROM DUAL;
+
+    INSERT ALL
+INTO ORG_DS(ORG_NAME,ORG_CODE)VALUES('A','A')
+SELECT 1 FROM DUAL;
+INTO ORG_DS(ORG_NAME,ORG_CODE)VALUES('B','B')SELECT 1 FROM DUAL;
+	*/
+	@Override
+	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys){
+		builder.append("INSERT ALL \n");
+		String head = "INTO " + dest + " (";
+		int keySize = keys.size();
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			head += key;
+			if(i<keySize-1){
+				head += ", ";
+			}
+		}
+		head += ") ";
+
+		int dataSize = set.size();
+		for(int i=0; i<dataSize; i++){
+			DataRow row = set.getRow(i);
+			if(null == row){
+				continue;
+			}
+			if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
+				String pk = row.getPrimaryKey();
+				if(null == pk){
+					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+				}
+				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
+			}
+			builder.append(head).append("VALUES ");
+			insertValue(builder, row, keys);
+			builder.append(" \n");
+		}
+		builder.append("SELECT 1 FROM DUAL");
+	}
 }
