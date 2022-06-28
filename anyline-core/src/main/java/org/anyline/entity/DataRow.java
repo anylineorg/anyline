@@ -1954,7 +1954,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			newChar = "";
 		}
 		for(String key:keys){
-			put(key,getStringNvl(key).replace(oldChar, newChar));
+			Object value = get(key);
+			if(value != null && value instanceof String) {
+				put(key, ((String)value).replace(oldChar, newChar));
+			}
 		}
 		return this;
 	}
