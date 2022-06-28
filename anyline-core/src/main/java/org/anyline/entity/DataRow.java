@@ -650,6 +650,20 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		put(target, DateUtil.format(getString(key), format));
 		return this;
 	}
+	public DataRow dateParse(String target, String key, String format){
+		if(null == target || null == key || isEmpty(key) || null == format){
+			return this;
+		}
+		put(target, DateUtil.parse(getString(key), format));
+		return this;
+	}
+	public DataRow dateParse(String target, String key){
+		if(null == target || null == key || isEmpty(key)){
+			return this;
+		}
+		put(target, DateUtil.parse(getString(key)));
+		return this;
+	}
 	public DataRow dateFormat(String key, String format){
 		return  dateFormat(key, key, format);
 	}

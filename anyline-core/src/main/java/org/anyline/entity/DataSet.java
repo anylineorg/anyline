@@ -931,7 +931,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public DataSet dateFormat(String target, String key, String format){
         for(DataRow row: rows){
-            dateFormat(target, key, format);
+            row.dateFormat(target, key, format);
+        }
+        return this;
+    }
+    public DataSet dateParse(String target, String key, String format){
+        for(DataRow row: rows){
+            row.dateParse(target, key, format);
+        }
+        return this;
+    }
+    public DataSet dateParse(String target, String key){
+        for(DataRow row: rows){
+            row.dateParse(target, key);
+        }
+        return this;
+    }
+    public DataSet dateParse(String key){
+        for(DataRow row: rows){
+            row.dateParse(key, key);
         }
         return this;
     }
