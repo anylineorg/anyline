@@ -1,5 +1,6 @@
 package org.anyline.amap.util; 
  
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -59,5 +60,10 @@ public class AmapConfig extends AnylineConfig{
 		AmapConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 
-	} 
+	}
+
+	public static AmapConfig register(String key, DataRow row) {
+		AmapConfig config = parse(AmapConfig.class, key, row, instances, compatibles);
+		return config;
+	}
 } 
