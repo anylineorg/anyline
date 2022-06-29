@@ -235,6 +235,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-aliyun-sms</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-video</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
