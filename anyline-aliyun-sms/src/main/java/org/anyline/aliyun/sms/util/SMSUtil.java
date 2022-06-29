@@ -1,21 +1,16 @@
-package org.anyline.aliyun.sms.util; 
+package org.anyline.aliyun.sms.util;
+
+import com.aliyun.dysmsapi20170525.Client;
+import com.aliyun.dysmsapi20170525.models.*;
+import com.aliyun.teaopenapi.models.Config;
+import com.aliyun.teautil.models.RuntimeOptions;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+import org.anyline.util.DateUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
-
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
- 
-import com.aliyuncs.DefaultAcsClient; 
-import com.aliyuncs.IAcsClient; 
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest; 
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse; 
-import com.aliyuncs.exceptions.ClientException; 
-import com.aliyuncs.profile.DefaultProfile; 
-import com.aliyuncs.profile.IClientProfile;
-
-import javax.swing.*;
 
 /** 
  * 短信服务 
@@ -25,16 +20,15 @@ import javax.swing.*;
  */ 
 public class SMSUtil { 
 	private static final Logger log = LoggerFactory.getLogger(SMSUtil.class); 
-	private SMSConfig config = null; 
+	private SMSConfig config = null;
+	private Client client;
 	private static Hashtable<String,SMSUtil> instances = new Hashtable<String,SMSUtil>(); 
-	 
-	private IAcsClient client = null; 
-	private SendSmsRequest request = new SendSmsRequest(); 
+
  
     //产品名称:云通信短信API产品,开发者无需替换 
     static final String product = "Dysmsapi"; 
     //产品域名,开发者无需替换 
-    static final String domain = "dysmsapi.aliyuncs.com"; 
+    static final String endpoint = "dysmsapi.aliyuncs.com";
      
 	public static SMSUtil getInstance(){ 
 		return getInstance("default"); 
@@ -47,15 +41,14 @@ public class SMSUtil {
 		if(null == util){ 
 			util = new SMSUtil(); 
 			SMSConfig config = SMSConfig.getInstance(key);
-			util.config = config; 
-			try { 
-				System.setProperty("sun.net.client.defaultConnectTimeout", "10000"); 
-		        System.setProperty("sun.net.client.defaultReadTimeout", "10000"); 
- 
-		        //初始化acsClient,暂不支持region化 
-		        IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", config.ACCESS_KEY, config.ACCESS_SECRET); 
-		        DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", product, domain); 
-		        util.client = new DefaultAcsClient(profile); 
+			util.config = config;
+
+			try {
+				Config cfg = new Config();
+				cfg.setAccessKeyId(config.ACCESS_KEY);
+				cfg.setAccessKeySecret(config.ACCESS_SECRET);
+				cfg.endpoint = endpoint;
+		        util.client = new Client(cfg);
 			} 
 	        catch (Exception e) { 
 				e.printStackTrace();
@@ -78,26 +71,27 @@ public class SMSUtil {
 		try { 
 			if(BasicUtil.isEmpty(sign)){ 
 				sign = config.SMS_SIGN; 
-			} 
-		 	request.setPhoneNumbers(mobile); 
-	        //必填:短信签名-可在短信控制台中找到 
-	        request.setSignName(sign); 
-	        //必填:短信模板-可在短信控制台中找到 
-	        request.setTemplateCode(template); 
-	        //可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为 
-		    request.setTemplateParam(BeanUtil.map2json(params));
-
-		    //hint 此处可能会抛出异常,注意catch 
-	        SendSmsResponse response = client.getAcsResponse(request);
-	        result.setCode(response.getCode());
-	        result.setMsg(response.getMessage());
-			result.setBiz(response.getBizId());
+			}
+			SendSmsRequest request = new SendSmsRequest()
+					//必填:短信签名-可在短信控制台中找到
+					.setSignName(sign)
+					//必填:短信模板-可在短信控制台中找到
+					.setTemplateCode(template)
+					.setPhoneNumbers(mobile)
+					//可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
+					.setTemplateParam(BeanUtil.map2json(params));
+			RuntimeOptions runtime = new RuntimeOptions();
+			SendSmsResponse response = client.sendSmsWithOptions(request, runtime);
+	        result.setStatus(response.getStatusCode());
+			SendSmsResponseBody body = response.getBody();
+			result.setCode(body.getCode());
+	        result.setMsg(body.getMessage());
+			result.setBiz(body.getBizId());
 	        result.setResult(true);
-		} catch (ClientException e) { 
+		} catch (Exception e) {
 			e.printStackTrace();
 			result.setResult(false);
-			result.setCode(e.getErrCode()); 
-			result.setMsg(e.getErrMsg()); 
+			result.setMsg(e.getMessage());
 		} 
 		return result; 
 	}
@@ -176,6 +170,66 @@ public class SMSUtil {
 	public SMSResult send(String template, List<String> mobiles, Object entity, String ... keys) {
 		return send(config.SMS_SIGN, template, mobiles, object2map(entity, keys));
 	}
+
+	/**
+	 * 查询发送状态,有可能查出多个发送记录，按时间倒序
+	 * @param mobile 手机号
+	 * @param biz 回执号
+	 * @param date 发送日期
+	 * @param vol 每页多少条
+	 * @param page 当前第几页
+	 * @return List 根据 SMSMResult.status 1:等待回执 2:发送失败 3:发送成功。
+	 * @throws Exception Exception
+	 */
+	public List<SMSResult> status(String mobile, String biz, String date, int vol, int page) throws Exception{
+		List<SMSResult> results = new ArrayList<>();
+		QuerySendDetailsRequest queryReq = new QuerySendDetailsRequest()
+				.setPhoneNumber(mobile)
+				.setBizId(biz)
+				.setSendDate(date)
+				.setPageSize((long)vol)
+				.setCurrentPage((long)page)
+				;
+			QuerySendDetailsResponse queryResp = client.querySendDetails(queryReq);
+			List<QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO> list = queryResp.getBody().getSmsSendDetailDTOs().getSmsSendDetailDTO();
+			for (QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO item : list) {
+				SMSResult result = new SMSResult();
+				result.setStatus(item.getSendStatus().intValue());
+				result.setContent(item.getContent());
+				result.setCode(item.getErrCode());
+				result.setMobile(item.getPhoneNum());
+				result.setOut(item.getOutId());
+				result.setReceiveTime(item.getReceiveDate());
+				result.setSendTime(item.getSendDate());
+				result.setTemplate(item.getTemplateCode());
+			}
+
+		return results;
+	}
+
+	/**
+	 * 最后一次发送状态
+	 * @param mobile 手机号
+	 * @param biz 回执号
+	 * @param date 发送日期
+	 * @return SMSResult 根据 SMSMResult.status 1:等待回执 2:发送失败 3:发送成功。
+	 * @throws Exception Exception
+	 */
+	public SMSResult status(String mobile, String biz, String date) throws Exception{
+		List<SMSResult> results = status(mobile, biz, date, 1,1);
+		if(results.size()>0){
+			return results.get(0);
+		}
+		return null;
+	}
+
+	public SMSResult status(String mobile, String biz) throws Exception{
+		return status(mobile, biz, DateUtil.format("yyyyMMdd"));
+	}
+	public SMSResult status(String mobile) throws Exception{
+		return status(mobile, null, DateUtil.format("yyyyMMdd"));
+	}
+
 	public SMSConfig getConfig() { 
 		return config; 
 	}
