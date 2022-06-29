@@ -64,7 +64,16 @@ public class SMSUtil {
 			instances.put(key, util); 
 		} 
 		return util; 
-	} 
+	}
+
+	/**
+	 * 发送
+	 * @param sign 签名
+	 * @param template 模板编号
+	 * @param mobile 手机号，多个以逗号分隔
+	 * @param params 参数
+	 * @return SMSResult
+	 */
 	public SMSResult send(String sign, String template, String mobile, Map<String, String> params) { 
 		SMSResult result = new SMSResult(); 
 		try { 
