@@ -63,6 +63,7 @@
 		<spring.version>5.2.15.RELEASE</spring.version>
 		<aliyun.oss.version>3.8.0</aliyun.oss.version>
 		<aliyun.sms.version>2.1.0</aliyun.sms.version>
+		<aliyun.dysmsapi.version>2.0.10</aliyun.dysmsapi.version>
 		<alipay.version>4.16.57.ALL</alipay.version>
 		<druid.version>1.1.6</druid.version>
 		<jsch.version>0.1.55</jsch.version>
@@ -442,7 +443,11 @@
 				<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
 				<version>${aliyun.sms.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>com.aliyun</groupId>
+				<artifactId>dysmsapi20170525</artifactId>
+				<version>${aliyun.dysmsapi.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>net.sf.ehcache</groupId>
 				<artifactId>ehcache</artifactId>
