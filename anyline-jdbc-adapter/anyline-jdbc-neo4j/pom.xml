@@ -13,7 +13,7 @@
 
     <artifactId>anyline-jdbc-neo4j</artifactId>
     <packaging>jar</packaging>
-    <name>anyline jdbc Neo4j</name>
+    <name>anyline-jdbc-neo4j</name>
     <url>http://www.anyline.org/neo4j</url>
 
     <dependencies>

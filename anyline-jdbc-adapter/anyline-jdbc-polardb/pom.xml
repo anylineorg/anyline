@@ -13,7 +13,7 @@
 
     <artifactId>anyline-jdbc-polardb</artifactId>
     <packaging>jar</packaging>
-    <name>anyline jdbc PolarDB </name>
+    <name>anyline-jdbc-polardb</name>
     <url>http://www.anyline.org/polardb</url>
 
     <dependencies>
