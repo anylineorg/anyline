@@ -61,8 +61,15 @@ public class SMSConfig extends AnylineConfig {
 	private static void debug() {
 	}
 
-	public static SMSConfig register(String key, DataRow row) {
-		SMSConfig config = parse(SMSConfig.class, key, row, instances, compatibles);
+	public static SMSConfig register(String id, DataRow row) {
+		SMSConfig config = parse(SMSConfig.class, id, row, instances, compatibles);
+		return config;
+	}
+	public static SMSConfig register(String id, String key, String secret) {
+		DataRow row = new DataRow();
+		row.put("ACCESS_KEY", key);
+		row.put("ACCESS_SECRET", secret);
+		SMSConfig config = parse(SMSConfig.class, id, row, instances, compatibles);
 		return config;
 	}
 }
