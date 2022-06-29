@@ -943,6 +943,10 @@ public class DateUtil {
 				str = str.replace("T", " ");
 				if(str.contains(".")) {
 					format = FORMAT_FULL;
+				}else if(str.length() == 16){ //2020-06-30 12:00
+					format = "yyyy-MM-dd HH:mm";
+				}else if(str.length() == 13){ //2020-06-30 12
+					format = "yyyy-MM-dd HH";
 				}else{
 					format = FORMAT_DATE_TIME;
 				}
