@@ -2,11 +2,12 @@
 <configs>
 	<config key="default">
 		<!--服务器配置-->
-		<property key="ACCESS_KEY"></property><!-- 申请地址:https://ak-console.aliyun.com -->
+		<property key="ACCESS_KEY"></property><!-- 申请地址:https://ram.console.aliyun.com/manage/ak -->
 		<property key="ACCESS_SECRET"></property>
+		<!--默认签名,发送短信时如果不指定签名则使用这里的默认签名-->
 		<property key="SMS_SIGN"></property>
 
-		<!--客户端配置-->
+		<!--客户端配置(通过自建的短信中转发服统一发送的才需要配置)-->
 		<property key="SMS_SERVER"></property>
 		<property key="CLIENT_APP"></property>
 		<property key="CLIENT_SECRET"></property>

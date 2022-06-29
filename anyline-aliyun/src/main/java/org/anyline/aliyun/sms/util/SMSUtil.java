@@ -1,6 +1,8 @@
 package org.anyline.aliyun.sms.util; 
  
-import java.util.Hashtable; 
+import java.beans.beancontext.BeanContext;
+import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List; 
 import java.util.Map; 
  
@@ -46,7 +48,7 @@ public class SMSUtil {
 		SMSUtil util = instances.get(key); 
 		if(null == util){ 
 			util = new SMSUtil(); 
-			SMSConfig config = SMSConfig.getInstance(key); 
+			SMSConfig config = SMSConfig.getInstance(key);
 			util.config = config; 
 			try { 
 				System.setProperty("sun.net.client.defaultConnectTimeout", "10000"); 
@@ -67,9 +69,9 @@ public class SMSUtil {
 	}
 
 	/**
-	 * 发送
-	 * @param sign 签名
-	 * @param template 模板编号
+	 * 发送短信
+	 * @param sign 签名(如果不指定则使用配置文件中默认签名)
+	 * @param template 模板code(SMS_88550009,注意不要写成工单号)
 	 * @param mobile 手机号，多个以逗号分隔
 	 * @param params 参数
 	 * @return SMSResult
@@ -94,13 +96,39 @@ public class SMSUtil {
 	        result.setMsg(response.getMessage());
 	        result.setResult(true); 
 		} catch (ClientException e) { 
-			e.printStackTrace(); 
+			e.printStackTrace();
+			result.setResult(false);
 			result.setCode(e.getErrCode()); 
 			result.setMsg(e.getErrMsg()); 
 		} 
 		return result; 
-	} 
- 
+	}
+
+	/**
+	 * 发送短信
+	 * send("sign","SMS_000000","15800000000", new User()/new DataRow(), ["id","name:userNmae","age:userAge"])
+	 * @param sign 签名(如果不指定则使用配置文件中默认签名)
+	 * @param template 模板code(SMS_88550009,注意不要写成工单号)
+	 * @param mobile 手机号，多个以逗号分隔
+	 * @param entity 实体对象
+	 * @param keys 对象属性(根据keys从entity中取值生成短信参数),如果参数名与属性名不一致通过 短信参数名:属性名 转换
+	 * @return SMSResult
+	 */
+	public SMSResult send(String sign, String template, String mobile, Object entity, List<String> keys) {
+		return send(sign, template, mobile, object2map(entity, keys));
+	}
+
+	public SMSResult send(String sign, String template, String mobile, Object entity, String ... keys) {
+		return send(sign, template, mobile, object2map(entity, keys));
+	}
+		/**
+         * 发送短信
+         * @param sign 签名(如果不指定则使用配置文件中默认签名)
+         * @param template 模板code(SMS_88550009,注意不要写成工单号)
+         * @param mobiles 手机号
+         * @param params 参数
+         * @return SMSResult
+         */
 	public SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) { 
 		String mobile = ""; 
 		for(String item:mobiles){ 
@@ -111,15 +139,68 @@ public class SMSUtil {
 			} 
 		} 
 		return send(sign, template, mobile, params); 
-	} 
- 
-	public SMSResult send(String template, String mobile, Map<String, String> params) { 
-		return send(config.SMS_SIGN, template, mobile, params); 
-	} 
-	public SMSResult send(String template, List<String> mobile, Map<String, String> params) { 
-		return send(config.SMS_SIGN, template, mobile, params); 
-	} 
+	}
+	public SMSResult send(String sign, String template, List<String> mobiles, Object entity, List<String> keys) {
+		return send(sign, template, mobiles, object2map(entity, keys));
+	}
+	public SMSResult send(String sign, String template, List<String> mobiles, Object entity, String ... keys) {
+		return send(sign, template, mobiles, object2map(entity, keys));
+	}
+		/**
+         * 发送短信(使用配置文件中的默认签名)
+         * @param template 模板code(SMS_88550009,注意不要写成工单号)
+         * @param mobile 手机号
+         * @param params 参数
+         * @return SMSResult
+         */
+	public SMSResult send(String template, String mobile, Map<String, String> params) {
+		return send(config.SMS_SIGN, template, mobile, params);
+	}
+	public SMSResult send(String template, String mobile, Object entity, List<String> keys) {
+		return send(config.SMS_SIGN, template, mobile, object2map(entity, keys));
+	}
+	public SMSResult send(String template, String mobile, Object entity, String ... keys) {
+		return send(config.SMS_SIGN, template, mobile, object2map(entity, keys));
+	}
+	/**
+	 * 发送短信(使用配置文件中的默认签名)
+	 * @param template 模板code(SMS_88550009,注意不要写成工单号)
+	 * @param mobiles 手机号
+	 * @param params 参数
+	 * @return SMSResult
+	 */
+	public SMSResult send(String template, List<String> mobiles, Map<String, String> params) {
+		return send(config.SMS_SIGN, template, mobiles, params);
+	}
+	public SMSResult send(String template, List<String> mobiles, Object entity, List<String> keys) {
+		return send(config.SMS_SIGN, template, mobiles, object2map(entity, keys));
+	}
+	public SMSResult send(String template, List<String> mobiles, Object entity, String ... keys) {
+		return send(config.SMS_SIGN, template, mobiles, object2map(entity, keys));
+	}
 	public SMSConfig getConfig() { 
 		return config; 
-	} 
+	}
+
+	private Map<String,String> object2map(Object entity, List<String> keys){
+		Map<String,String> params = new HashMap<>();
+		if(null != keys){
+			for(String key:keys){
+				String field = key;
+				if(key.contains(":")){
+					String[] tmps = key.split(":");
+					key = tmps[0];
+					field = tmps[1];
+				}
+				Object value = BeanUtil.getFieldValue(entity, field);
+				if(null != value){
+					params.put(key, value.toString());
+				}
+			}
+		}
+		return params;
+	}
+	private Map<String,String> object2map(Object entity, String ... keys){
+		return object2map(entity, BeanUtil.array2list(keys));
+	}
 }
