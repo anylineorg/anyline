@@ -4,6 +4,7 @@ import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.*;
 import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.teautil.models.RuntimeOptions;
+import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DateUtil;
@@ -183,14 +184,16 @@ public class SMSUtil {
 	 */
 	public List<SMSResult> status(String mobile, String biz, String date, int vol, int page) throws Exception{
 		List<SMSResult> results = new ArrayList<>();
-		QuerySendDetailsRequest queryReq = new QuerySendDetailsRequest()
+		QuerySendDetailsRequest query = new QuerySendDetailsRequest()
 				.setPhoneNumber(mobile)
-				.setBizId(biz)
 				.setSendDate(date)
 				.setPageSize((long)vol)
-				.setCurrentPage((long)page)
-				;
-			QuerySendDetailsResponse queryResp = client.querySendDetails(queryReq);
+				.setCurrentPage((long)page);
+
+				if(BasicUtil.isNotEmpty(biz)){
+					query.setBizId(biz);
+				}
+			QuerySendDetailsResponse queryResp = client.querySendDetails(query);
 			List<QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO> list = queryResp.getBody().getSmsSendDetailDTOs().getSmsSendDetailDTO();
 			for (QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO item : list) {
 				SMSResult result = new SMSResult();
@@ -202,6 +205,7 @@ public class SMSUtil {
 				result.setReceiveTime(item.getReceiveDate());
 				result.setSendTime(item.getSendDate());
 				result.setTemplate(item.getTemplateCode());
+				results.add(result);
 			}
 
 		return results;
