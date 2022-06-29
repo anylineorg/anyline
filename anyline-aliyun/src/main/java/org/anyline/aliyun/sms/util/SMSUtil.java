@@ -1,11 +1,7 @@
 package org.anyline.aliyun.sms.util; 
- 
-import java.beans.beancontext.BeanContext;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List; 
-import java.util.Map; 
- 
+
+import java.util.*;
+
 import org.anyline.util.BasicUtil; 
 import org.anyline.util.BeanUtil; 
 import org.slf4j.Logger; 
