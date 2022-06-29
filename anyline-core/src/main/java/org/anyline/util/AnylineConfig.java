@@ -131,7 +131,7 @@ public abstract class AnylineConfig implements Serializable {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends AnylineConfig> T parse(Class<? extends AnylineConfig> T, String key, DataRow row, Hashtable<String, AnylineConfig> instances, String... compatibles) {
+	public static <T extends AnylineConfig> T parse(Class<? extends AnylineConfig> T, String id, DataRow row, Hashtable<String, AnylineConfig> instances, String... compatibles) {
 		T config = null;
 		try {
 			config = (T) T.newInstance();
@@ -179,8 +179,8 @@ public abstract class AnylineConfig implements Serializable {
 					}
 				}
 			}
-			config.INSTANCE_KEY = key;
-			instances.put(key, config);
+			config.INSTANCE_KEY = id;
+			instances.put(id, config);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
