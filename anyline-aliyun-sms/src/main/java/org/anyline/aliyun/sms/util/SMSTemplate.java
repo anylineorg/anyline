@@ -1,10 +1,15 @@
 package org.anyline.aliyun.sms.util;
 
 public class SMSTemplate {
-    //模板状态
-    // AUDIT_STATE_PASS:已审核通过
-    // AUDIT_SATE_CANCEL:撤销申请
-    // AUDIT_STATE_INIT:待审核
+
+    public static enum STATUS{
+        AUDIT_STATE_INIT			{public String getCode(){return "AUDIT_STATE_INIT";} public String getName(){return "待审核";}},
+        AUDIT_STATE_PASS			{public String getCode(){return "AUDIT_STATE_PASS";} public String getName(){return "已审核通过";}},
+        AUDIT_STATE_NOT_PASS		{public String getCode(){return "AUDIT_STATE_NOT_PASS";} public String getName(){return "审核未通过";}},
+        AUDIT_SATE_CANCEL		    {public String getCode(){return "AUDIT_SATE_CANCEL";} public String getName(){return "撤销申请";}};
+        public abstract String getCode();
+        public abstract String getName();
+    }
     private String status;
     private String code;
     private String name;
