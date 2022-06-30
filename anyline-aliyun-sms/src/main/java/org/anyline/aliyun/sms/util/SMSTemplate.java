@@ -10,7 +10,7 @@ public class SMSTemplate {
         public abstract String getCode();
         public abstract String getName();
     }
-    private String status;
+    private STATUS status;
     private String code;
     private String name;
     private int type;
@@ -20,12 +20,24 @@ public class SMSTemplate {
     private String rejectInfo;
     private String rejectSubInfo;
 
-    public String getStatus() {
+    public STATUS getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(STATUS status) {
         this.status = status;
+    }
+
+    public void setStatus(String status) {
+        if(STATUS.AUDIT_STATE_INIT.getCode().equals(status)){
+            this.status = STATUS.AUDIT_STATE_INIT;
+        }else if(STATUS.AUDIT_STATE_PASS.getCode().equals(status)){
+            this.status = STATUS.AUDIT_STATE_PASS;
+        }else if(STATUS.AUDIT_STATE_NOT_PASS.getCode().equals(status)){
+            this.status = STATUS.AUDIT_STATE_NOT_PASS;
+        }else if(STATUS.AUDIT_SATE_CANCEL.getCode().equals(status)){
+            this.status = STATUS.AUDIT_SATE_CANCEL;
+        }
     }
 
     public String getCode() {
