@@ -295,6 +295,29 @@ public class SMSUtil {
 			}
 			return code;
 		}
+
+		/**
+		 * 修改未审核通过的模板
+		 * @param code request()返回的编号
+		 * @param name 名称
+		 * @param type 0:验证码 1:通知短信 2:推广短信
+		 * @param content 内容,如果type=1内容中需要有变量,如:${code}
+		 * @param remark
+		 * @return boolean
+		 */
+		public boolean update(String code, String name, int type, String content, String remark) throws Exception {
+			ModifySmsTemplateRequest req = new ModifySmsTemplateRequest()
+					.setTemplateType(type)
+					.setTemplateName(name)
+					.setTemplateCode(code)
+					.setTemplateContent(content)
+					.setRemark(remark);
+			ModifySmsTemplateResponse resp = client.modifySmsTemplate(req);
+			if("OK".equalsIgnoreCase(resp.getBody().getCode())){
+				throw new Exception("修改失败:"+resp.getBody().getMessage());
+			}
+			return true;
+		}
 		/**
 		 * 查询全部模板列表
 		 * @return list
