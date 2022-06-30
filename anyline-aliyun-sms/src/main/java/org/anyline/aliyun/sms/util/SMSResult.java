@@ -2,6 +2,9 @@ package org.anyline.aliyun.sms.util;
  
 public class SMSResult { 
 	private boolean result;
+	//1 等待回执
+	//2 发送失败
+	//3 发送成功
 	private int status;
 	private String code;
 	private String msg;
