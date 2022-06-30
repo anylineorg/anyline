@@ -2,15 +2,20 @@ package org.anyline.aliyun.sms.util;
 
 import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.*;
+import com.aliyun.tea.TeaConverter;
+import com.aliyun.tea.TeaException;
+import com.aliyun.tea.TeaPair;
 import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.teautil.models.RuntimeOptions;
 import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Executable;
 import java.util.*;
 
 /** 
@@ -23,7 +28,9 @@ public class SMSUtil {
 	private static final Logger log = LoggerFactory.getLogger(SMSUtil.class); 
 	private SMSConfig config = null;
 	private Client client;
-	private static Hashtable<String,SMSUtil> instances = new Hashtable<String,SMSUtil>(); 
+	private static Hashtable<String,SMSUtil> instances = new Hashtable<String,SMSUtil>();
+
+	public Template template= new SMSUtil.Template();
 
  
     //产品名称:云通信短信API产品,开发者无需替换 
@@ -259,4 +266,159 @@ public class SMSUtil {
 	private Map<String,String> object2map(Object entity, String ... keys){
 		return object2map(entity, BeanUtil.array2list(keys));
 	}
+	public class Sign{
+		public void request(String name, int source, String remark, List<String> files){
+		}
+	}
+
+	public class Template{
+		/**
+		 * 申请短信模板
+		 * @param name 名称
+		 * @param type 0:验证码 1:通知短信 2:推广短信
+		 * @param content 内容,如果type=1内容中需要有变量,如:${code}
+		 * @param remark
+		 * @return 返回模板编号 SMS_000000
+		 */
+		public String request(String name, int type, String content, String remark) throws Exception {
+			AddSmsTemplateRequest req = new AddSmsTemplateRequest()
+					.setTemplateType(type)
+					.setTemplateName(name)
+					.setTemplateContent(content)
+					.setRemark(remark);
+			AddSmsTemplateResponse response = SMSUtil.this.client.addSmsTemplate(req);
+			String code = null;
+			if("OK".equalsIgnoreCase(response.getBody().getCode())){
+				code = response.getBody().getTemplateCode();
+			}else{
+				throw new Exception("模板申请失败:"+response.getBody().getCode());
+			}
+			return code;
+		}
+		/**
+		 * 查询全部模板列表
+		 * @return list
+		 * @throws Exception Exception
+		 */
+		public List<SMSTemplate> list() throws Exception{
+			List<SMSTemplate> templates = new ArrayList<>();
+			int page = 1;
+			while (true){
+				List<SMSTemplate> list = list(page, 10);
+				if(null == list || list.size() ==0){
+					break;
+				}
+				templates.addAll(list);
+				page ++;
+			}
+			return templates;
+		}
+
+		/**
+		 * 根据状态查询模板列表
+		 * @param status 状态
+		 * @return List
+		 * @throws Exception Exception
+		 */
+		public List<SMSTemplate> list(SMSTemplate.STATUS status) throws Exception{
+			List<SMSTemplate> all = list();
+			List<SMSTemplate> templates = new ArrayList<>();
+			for(SMSTemplate item:all){
+				if(status.getCode().equals(item.getStatus())){
+					templates.add(item);
+				}
+			}
+			return templates;
+		}
+
+		/**
+		 * 根据可用状态查询模板列表
+		 * @param enable 是否可用
+		 * @return List
+		 * @throws Exception Exception
+		 */
+		public List<SMSTemplate> list(boolean enable) throws Exception{
+			List<SMSTemplate> all = list();
+			List<SMSTemplate> templates = new ArrayList<>();
+			for(SMSTemplate item:all){
+				if(enable){
+					if(SMSTemplate.STATUS.AUDIT_STATE_PASS.getCode().equals(item.getStatus())) {
+						templates.add(item);
+					}
+				}else{
+					if(!SMSTemplate.STATUS.AUDIT_STATE_PASS.getCode().equals(item.getStatus())) {
+						templates.add(item);
+					}
+				}
+			}
+			return templates;
+		}
+
+		/**
+		 * 分页查询模板列表
+		 * @param page 当前第几页
+		 * @param vol 每页多少条
+		 * @return list
+		 * @throws Exception Exception
+		 */
+		public List<SMSTemplate> list(int page, int vol) throws Exception{
+			List<SMSTemplate> templates = new ArrayList<>();
+
+				QuerySmsTemplateListRequest req = new QuerySmsTemplateListRequest()
+						.setPageIndex(page)
+						.setPageSize(vol);
+				QuerySmsTemplateListResponse resp = SMSUtil.this.client.querySmsTemplateList(req);
+
+				if(null == resp || 200 != resp.getStatusCode()){
+					throw new Exception("查询失败:"+resp.getStatusCode());
+
+				}
+				QuerySmsTemplateListResponseBody body = resp.getBody();
+				if(null == body || !"OK".equalsIgnoreCase(body.getCode())){
+					throw new Exception("查询失败:"+body.getMessage());
+				}
+				List<QuerySmsTemplateListResponseBody.QuerySmsTemplateListResponseBodySmsTemplateList> list = body.getSmsTemplateList();
+				if(null == list){
+					return templates;
+				}
+				for(QuerySmsTemplateListResponseBody.QuerySmsTemplateListResponseBodySmsTemplateList item:list){
+					SMSTemplate template = new SMSTemplate();
+					template.setCode(item.getTemplateCode());
+					template.setContent(item.getTemplateContent());
+					template.setStatus(item.getAuditStatus());
+					template.setCreateTime(item.getCreateDate());
+					template.setName(item.getTemplateName());
+					template.setType(item.getTemplateType());
+					QuerySmsTemplateListResponseBody.QuerySmsTemplateListResponseBodySmsTemplateListReason reason = item.getReason();
+					if(null != reason){
+						template.setRejectInfo(reason.getRejectInfo());
+						template.setRejectTime(reason.getRejectDate());
+						template.setRejectSubInfo(reason.getRejectSubInfo());
+					}
+					templates.add(template);
+				}
+			return templates;
+		}
+
+		public List<SMSTemplate> list(int page) throws Exception{
+			return list(page, 10);
+		}
+
+		/**
+		 * 删除模板
+		 * @param code 模板编号
+		 * @return boolean
+		 * @throws Exception
+		 */
+		public boolean delete(String code) throws Exception{
+			DeleteSmsTemplateRequest req = new DeleteSmsTemplateRequest()
+					.setTemplateCode(code);
+			DeleteSmsTemplateResponse resp = client.deleteSmsTemplate(req);
+			if(!"OK".equalsIgnoreCase(resp.getBody().getCode())){
+				throw new Exception("删除失败:"+resp.getBody().getMessage());
+			}
+			return true;
+		}
+	}
+
 }
