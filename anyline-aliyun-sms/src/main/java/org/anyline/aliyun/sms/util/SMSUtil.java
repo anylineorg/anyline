@@ -14,6 +14,7 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 
 import java.lang.reflect.Executable;
 import java.util.*;
@@ -72,22 +73,27 @@ public class SMSUtil {
 	 * @param template 模板code(SMS_88550009,注意不要写成工单号)
 	 * @param mobile 手机号，多个以逗号分隔
 	 * @param params 参数
+	 * @param extend 上行短信扩展码。上行短信指发送给通信服务提供商的短信，用于定制某种服务、完成查询，或是办理某种业务等，需要收费，按运营商普通短信资费进行扣费。
+	 * @param out 外部流水扩展字段。
 	 * @return SMSResult
 	 */
-	public SMSResult send(String sign, String template, String mobile, Map<String, String> params) { 
+	public SMSResult send(String sign, String template, String extend, String out,  String mobile, Map<String, String> params) {
 		SMSResult result = new SMSResult(); 
 		try { 
 			if(BasicUtil.isEmpty(sign)){ 
 				sign = config.SMS_SIGN; 
 			}
 			SendSmsRequest request = new SendSmsRequest()
-					//必填:短信签名-可在短信控制台中找到
 					.setSignName(sign)
-					//必填:短信模板-可在短信控制台中找到
 					.setTemplateCode(template)
 					.setPhoneNumbers(mobile)
-					//可选:模板中的变量替换JSON串,如模板内容为"亲爱的${name},您的验证码为${code}"时,此处的值为
 					.setTemplateParam(BeanUtil.map2json(params));
+			if(BasicUtil.isNotEmpty(extend)){
+				request.setSmsUpExtendCode(extend);
+			}
+			if(BasicUtil.isNotEmpty(out)){
+				request.setOutId(out);
+			}
 			RuntimeOptions runtime = new RuntimeOptions();
 			SendSmsResponse response = client.sendSmsWithOptions(request, runtime);
 	        result.setStatus(response.getStatusCode());
@@ -102,6 +108,10 @@ public class SMSUtil {
 			result.setMsg(e.getMessage());
 		} 
 		return result; 
+	}
+
+	public SMSResult send(String sign, String template, String mobile, Map<String, String> params) {
+		return send(sign, template, null, null, mobile, params);
 	}
 
 	/**
@@ -129,7 +139,7 @@ public class SMSUtil {
          * @param params 参数
          * @return SMSResult
          */
-	public SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) { 
+	public SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) {
 		String mobile = ""; 
 		for(String item:mobiles){ 
 			if("".equals(mobile)){ 
@@ -187,9 +197,9 @@ public class SMSUtil {
 	 * @param vol 每页多少条
 	 * @param page 当前第几页
 	 * @return List 根据 SMSMResult.status 1:等待回执 2:发送失败 3:发送成功。
-	 * @throws Exception Exception
+	 * @throws RuntimeException RuntimeException
 	 */
-	public List<SMSResult> status(String mobile, String biz, String date, int vol, int page) throws Exception{
+	public List<SMSResult> status(String mobile, String biz, String date, int vol, int page) throws RuntimeException{
 		List<SMSResult> results = new ArrayList<>();
 		QuerySendDetailsRequest query = new QuerySendDetailsRequest()
 				.setPhoneNumber(mobile)
@@ -200,20 +210,24 @@ public class SMSUtil {
 				if(BasicUtil.isNotEmpty(biz)){
 					query.setBizId(biz);
 				}
-			QuerySendDetailsResponse queryResp = client.querySendDetails(query);
-			List<QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO> list = queryResp.getBody().getSmsSendDetailDTOs().getSmsSendDetailDTO();
-			for (QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO item : list) {
-				SMSResult result = new SMSResult();
-				result.setStatus(item.getSendStatus().intValue());
-				result.setContent(item.getContent());
-				result.setCode(item.getErrCode());
-				result.setMobile(item.getPhoneNum());
-				result.setOut(item.getOutId());
-				result.setReceiveTime(item.getReceiveDate());
-				result.setSendTime(item.getSendDate());
-				result.setTemplate(item.getTemplateCode());
-				results.add(result);
-			}
+				try {
+					QuerySendDetailsResponse queryResp = client.querySendDetails(query);
+					List<QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO> list = queryResp.getBody().getSmsSendDetailDTOs().getSmsSendDetailDTO();
+					for (QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO item : list) {
+						SMSResult result = new SMSResult();
+						result.setStatus(item.getSendStatus().intValue());
+						result.setContent(item.getContent());
+						result.setCode(item.getErrCode());
+						result.setMobile(item.getPhoneNum());
+						result.setOut(item.getOutId());
+						result.setReceiveTime(item.getReceiveDate());
+						result.setSendTime(item.getSendDate());
+						result.setTemplate(item.getTemplateCode());
+						results.add(result);
+					}
+				}catch (Exception e){
+					 throw new RuntimeException(e);
+				}
 
 		return results;
 	}
@@ -224,9 +238,8 @@ public class SMSUtil {
 	 * @param biz 回执号
 	 * @param date 发送日期
 	 * @return SMSResult 根据 SMSMResult.status 1:等待回执 2:发送失败 3:发送成功。
-	 * @throws Exception Exception
 	 */
-	public SMSResult status(String mobile, String biz, String date) throws Exception{
+	public SMSResult status(String mobile, String biz, String date){
 		List<SMSResult> results = status(mobile, biz, date, 1,1);
 		if(results.size()>0){
 			return results.get(0);
@@ -234,12 +247,13 @@ public class SMSUtil {
 		return null;
 	}
 
-	public SMSResult status(String mobile, String biz) throws Exception{
+	public SMSResult status(String mobile, String biz){
 		return status(mobile, biz, DateUtil.format("yyyyMMdd"));
 	}
-	public SMSResult status(String mobile) throws Exception{
+	public SMSResult status(String mobile){
 		return status(mobile, null, DateUtil.format("yyyyMMdd"));
 	}
+
 
 	public SMSConfig getConfig() { 
 		return config; 
@@ -279,51 +293,60 @@ public class SMSUtil {
 		 * @param content 内容,如果type=1内容中需要有变量,如:${code}
 		 * @param remark
 		 * @return 返回模板编号 SMS_000000
+		 * @throws RuntimeException RuntimeException
 		 */
-		public String request(String name, int type, String content, String remark) throws Exception {
+		public String request(String name, int type, String content, String remark) throws RuntimeException {
+			String code = null;
 			AddSmsTemplateRequest req = new AddSmsTemplateRequest()
 					.setTemplateType(type)
 					.setTemplateName(name)
 					.setTemplateContent(content)
 					.setRemark(remark);
-			AddSmsTemplateResponse response = SMSUtil.this.client.addSmsTemplate(req);
-			String code = null;
-			if("OK".equalsIgnoreCase(response.getBody().getCode())){
-				code = response.getBody().getTemplateCode();
-			}else{
-				throw new Exception("模板申请失败:"+response.getBody().getCode());
+			try {
+				AddSmsTemplateResponse response = SMSUtil.this.client.addSmsTemplate(req);
+				if("OK".equalsIgnoreCase(response.getBody().getCode())){
+					code = response.getBody().getTemplateCode();
+				}else{
+					throw new RuntimeException("模板申请失败:"+response.getBody().getCode());
+				}
+			}catch (Exception e){
+				throw new RuntimeException(e);
 			}
 			return code;
 		}
 
 		/**
-		 * 修改未审核通过的模板
+		 * 修改未审核通过的模板(只能侯审核失败的,不能侯未审核及撤销的)
 		 * @param code request()返回的编号
 		 * @param name 名称
 		 * @param type 0:验证码 1:通知短信 2:推广短信
 		 * @param content 内容,如果type=1内容中需要有变量,如:${code}
 		 * @param remark
 		 * @return boolean
+		 * @throws RuntimeException RuntimeException
 		 */
-		public boolean update(String code, String name, int type, String content, String remark) throws Exception {
+		public boolean update(String code, String name, int type, String content, String remark) throws RuntimeException {
 			ModifySmsTemplateRequest req = new ModifySmsTemplateRequest()
 					.setTemplateType(type)
 					.setTemplateName(name)
 					.setTemplateCode(code)
 					.setTemplateContent(content)
 					.setRemark(remark);
-			ModifySmsTemplateResponse resp = client.modifySmsTemplate(req);
-			if("OK".equalsIgnoreCase(resp.getBody().getCode())){
-				throw new Exception("修改失败:"+resp.getBody().getMessage());
+			try {
+				ModifySmsTemplateResponse resp = client.modifySmsTemplate(req);
+				if ("OK".equalsIgnoreCase(resp.getBody().getCode())) {
+					throw new Exception("修改失败:" + resp.getBody().getMessage());
+				}
+			}catch (Exception e){
+				throw new RuntimeException(e);
 			}
 			return true;
 		}
 		/**
 		 * 查询全部模板列表
 		 * @return list
-		 * @throws Exception Exception
 		 */
-		public List<SMSTemplate> list() throws Exception{
+		public List<SMSTemplate> list(){
 			List<SMSTemplate> templates = new ArrayList<>();
 			int page = 1;
 			while (true){
@@ -341,9 +364,8 @@ public class SMSUtil {
 		 * 根据状态查询模板列表
 		 * @param status 状态
 		 * @return List
-		 * @throws Exception Exception
 		 */
-		public List<SMSTemplate> list(SMSTemplate.STATUS status) throws Exception{
+		public List<SMSTemplate> list(SMSTemplate.STATUS status){
 			List<SMSTemplate> all = list();
 			List<SMSTemplate> templates = new ArrayList<>();
 			for(SMSTemplate item:all){
@@ -358,9 +380,8 @@ public class SMSUtil {
 		 * 根据可用状态查询模板列表
 		 * @param enable 是否可用
 		 * @return List
-		 * @throws Exception Exception
 		 */
-		public List<SMSTemplate> list(boolean enable) throws Exception{
+		public List<SMSTemplate> list(boolean enable){
 			List<SMSTemplate> all = list();
 			List<SMSTemplate> templates = new ArrayList<>();
 			for(SMSTemplate item:all){
@@ -382,66 +403,114 @@ public class SMSUtil {
 		 * @param page 当前第几页
 		 * @param vol 每页多少条
 		 * @return list
-		 * @throws Exception Exception
+		 * @throws RuntimeException RuntimeException
 		 */
-		public List<SMSTemplate> list(int page, int vol) throws Exception{
+		public List<SMSTemplate> list(int page, int vol) throws RuntimeException{
 			List<SMSTemplate> templates = new ArrayList<>();
 
 				QuerySmsTemplateListRequest req = new QuerySmsTemplateListRequest()
 						.setPageIndex(page)
 						.setPageSize(vol);
-				QuerySmsTemplateListResponse resp = SMSUtil.this.client.querySmsTemplateList(req);
+				try {
+					QuerySmsTemplateListResponse resp = SMSUtil.this.client.querySmsTemplateList(req);
 
-				if(null == resp || 200 != resp.getStatusCode()){
-					throw new Exception("查询失败:"+resp.getStatusCode());
+					if (null == resp || 200 != resp.getStatusCode()) {
+						throw new RuntimeException("查询失败:" + resp.getStatusCode());
 
-				}
-				QuerySmsTemplateListResponseBody body = resp.getBody();
-				if(null == body || !"OK".equalsIgnoreCase(body.getCode())){
-					throw new Exception("查询失败:"+body.getMessage());
-				}
-				List<QuerySmsTemplateListResponseBody.QuerySmsTemplateListResponseBodySmsTemplateList> list = body.getSmsTemplateList();
-				if(null == list){
-					return templates;
-				}
-				for(QuerySmsTemplateListResponseBody.QuerySmsTemplateListResponseBodySmsTemplateList item:list){
-					SMSTemplate template = new SMSTemplate();
-					template.setCode(item.getTemplateCode());
-					template.setContent(item.getTemplateContent());
-					template.setStatus(item.getAuditStatus());
-					template.setCreateTime(item.getCreateDate());
-					template.setName(item.getTemplateName());
-					template.setType(item.getTemplateType());
-					QuerySmsTemplateListResponseBody.QuerySmsTemplateListResponseBodySmsTemplateListReason reason = item.getReason();
-					if(null != reason){
-						template.setRejectInfo(reason.getRejectInfo());
-						template.setRejectTime(reason.getRejectDate());
-						template.setRejectSubInfo(reason.getRejectSubInfo());
 					}
-					templates.add(template);
+					QuerySmsTemplateListResponseBody body = resp.getBody();
+					if (null == body || !"OK".equalsIgnoreCase(body.getCode())) {
+						throw new RuntimeException("查询失败:" + body.getMessage());
+					}
+					List<QuerySmsTemplateListResponseBody.QuerySmsTemplateListResponseBodySmsTemplateList> list = body.getSmsTemplateList();
+					if (null == list) {
+						return templates;
+					}
+					for (QuerySmsTemplateListResponseBody.QuerySmsTemplateListResponseBodySmsTemplateList item : list) {
+						SMSTemplate template = new SMSTemplate();
+						template.setCode(item.getTemplateCode());
+						template.setContent(item.getTemplateContent());
+						template.setStatus(item.getAuditStatus());
+						template.setCreateTime(item.getCreateDate());
+						template.setName(item.getTemplateName());
+						template.setType(item.getTemplateType());
+						QuerySmsTemplateListResponseBody.QuerySmsTemplateListResponseBodySmsTemplateListReason reason = item.getReason();
+						if (null != reason) {
+							template.setRejectInfo(reason.getRejectInfo());
+							template.setRejectTime(reason.getRejectDate());
+							template.setRejectSubInfo(reason.getRejectSubInfo());
+						}
+						templates.add(template);
+					}
+				}catch (Exception e){
+					throw new RuntimeException(e);
 				}
 			return templates;
 		}
 
-		public List<SMSTemplate> list(int page) throws Exception{
+		public List<SMSTemplate> list(int page){
 			return list(page, 10);
 		}
 
 		/**
+		 * 根据编号查询模板信息(主要查询审核状态)
+		 * @param code code
+		 * @return SMSTemplate
+		 * @throws RuntimeException RuntimeException
+		 */
+		public SMSTemplate info(String code) throws RuntimeException{
+			SMSTemplate template = null;
+			QuerySmsTemplateRequest req = new QuerySmsTemplateRequest()
+					.setTemplateCode(code);
+			try {
+				QuerySmsTemplateResponse resp = client.querySmsTemplate(req);
+
+				if (null != resp && resp.getStatusCode() == 200) {
+					QuerySmsTemplateResponseBody body = resp.getBody();
+					if ("OK".equalsIgnoreCase(body.getCode())) {
+						template = new SMSTemplate();
+						template.setCode(code);
+						template.setType(body.getTemplateType());
+						template.setName(body.getTemplateName());
+						template.setContent(body.getTemplateContent());
+						template.setCreateTime(body.getCreateDate());
+						template.setRejectInfo(body.getReason());
+						int status = body.getTemplateStatus();
+						//0：审核中。
+						//1：审核通过。
+						//2：审核失败，请在返回参数Reason中查看审核失败原因。
+						if (status == 0) {
+							template.setStatus(SMSTemplate.STATUS.AUDIT_STATE_INIT);
+						} else if (status == 1) {
+							template.setStatus(SMSTemplate.STATUS.AUDIT_STATE_PASS);
+						} else if (status == 2) {
+							template.setStatus(SMSTemplate.STATUS.AUDIT_STATE_NOT_PASS);
+						}
+					}
+				}
+			}catch (Exception e){
+				throw new RuntimeException(e);
+			}
+			return template;
+		}
+		/**
 		 * 删除模板
 		 * @param code 模板编号
 		 * @return boolean
-		 * @throws Exception
+		 * @throws RuntimeException RuntimeException
 		 */
-		public boolean delete(String code) throws Exception{
+		public boolean delete(String code) throws RuntimeException{
 			DeleteSmsTemplateRequest req = new DeleteSmsTemplateRequest()
 					.setTemplateCode(code);
-			DeleteSmsTemplateResponse resp = client.deleteSmsTemplate(req);
-			if(!"OK".equalsIgnoreCase(resp.getBody().getCode())){
-				throw new Exception("删除失败:"+resp.getBody().getMessage());
+			try {
+				DeleteSmsTemplateResponse resp = client.deleteSmsTemplate(req);
+				if (!"OK".equalsIgnoreCase(resp.getBody().getCode())) {
+					throw new Exception("删除失败:" + resp.getBody().getMessage());
+				}
+			}catch (Exception e){
+				throw new RuntimeException(e);
 			}
 			return true;
 		}
 	}
-
 }
