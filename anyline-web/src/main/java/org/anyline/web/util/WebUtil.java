@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.*;
 import java.net.InetAddress;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -148,15 +149,24 @@ public class WebUtil {
 		}
 		return set;
 	}
+	private static String decode(String src, String encode){
+		try{
+			return URLDecoder.decode(src, encode);
+		}catch (Exception e){
+			return src;
+		}
+
+	}
 	public static Map<String,Object> value(HttpServletRequest request){
 		if(null == request){
 			return new HashMap<String,Object>();
 		}
+		String encode = "UTF-8";
 		Map<String,Object> map = (Map<String,Object>)request.getAttribute(PACK_REQUEST_PARAM);
 		if(null == map){
 			map = new HashMap<String,Object>();
 			//body体json格式(ajax以raw提交)
-			String body = WebUtil.read(request,"UTF-8",true);
+			String body = WebUtil.read(request,encode,true);
 			if(BasicUtil.isNotEmpty(body)){
 				if(body.startsWith("{") && body.endsWith("}")) {
 					map = DataRow.parseJson(DataRow.KEY_CASE.SRC, body);
@@ -172,7 +182,7 @@ public class WebUtil {
 					if (null != values) {
 						if (values.length == 1) {
 							if(null != values[0]){
-								map.put(key, values[0].trim());
+								map.put(key, decode(values[0].trim(),encode));
 							}else{
 								map.put(key, null);
 							}
@@ -180,7 +190,7 @@ public class WebUtil {
 							List<Object> list = new ArrayList<Object>();
 							for (String value : values) {
 								if(null != value){
-									value = value.trim();
+									value = decode(value.trim(),"UTF-8");
 								}
 								list.add(value);
 							}
@@ -314,7 +324,7 @@ public class WebUtil {
 				for (String v : vs) {
 					if (null != v && !"".equals(v)) {
 						//v = DESUtil.filterIllegalChar(v);
-						list.add(v.trim());
+						list.add(decode(v.trim(),"UTF-8"));
 					}
 				}
 			}
@@ -1101,6 +1111,10 @@ public class WebUtil {
 		if(null == values || values.length ==0){
 			return null;
 		}else{
+			int len = values.length;
+			for(int i=0; i<len; i++){
+				values[i] = decode(values[i],"UTF-8");
+			}
 			if(values.length ==1){
 				return values[0];
 			}else{
@@ -1189,6 +1203,7 @@ public class WebUtil {
 	public static String read(HttpServletRequest request, String encode, boolean cache){
 		try {
 			String str = new String(read(request,cache), encode);
+			str = decode(str,encode);
 			return str;
 		}catch (Exception e){
 			e.printStackTrace();
