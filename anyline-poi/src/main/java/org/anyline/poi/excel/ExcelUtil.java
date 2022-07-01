@@ -563,8 +563,8 @@ public class ExcelUtil {
 				}
 				sht = workbook.createSheet(sheet);
 			}
-
-			if(!file.getParentFile().exists()){
+			File dir = file.getParentFile();
+			if(null != dir && !dir.exists()){
 				file.getParentFile().mkdirs();
 			}
 			if(!file.exists()){
