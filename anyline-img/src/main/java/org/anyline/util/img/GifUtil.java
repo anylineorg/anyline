@@ -32,7 +32,7 @@ public class GifUtil {
     	FileImageInputStream in = null; 
     	FileImageOutputStream out = null; 
     	try { 
-    		if(!dir.exists()){ 
+    		if(null != dir && !dir.exists()){
     			dir.mkdirs(); 
     		} 
     		in = new FileImageInputStream(file); 
@@ -89,7 +89,7 @@ public class GifUtil {
         try { 
         	long fr = 0; 
         	File dir = tar.getParentFile(); 
-        	if(!dir.exists()){ 
+        	if(null != dir && !dir.exists()){
         		dir.mkdirs(); 
         	} 
             AnimatedGifEncoder e = new AnimatedGifEncoder();
@@ -124,7 +124,7 @@ public class GifUtil {
         try {
         	long fr = 0; 
         	File dir = tar.getParentFile(); 
-        	if(!dir.exists()){ 
+        	if(null != dir && !dir.exists()){
         		dir.mkdirs(); 
         	} 
             AnimatedGifEncoder e = new AnimatedGifEncoder();  
