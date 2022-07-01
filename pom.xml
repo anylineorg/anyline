@@ -36,25 +36,26 @@
 		<module>anyline-mvc</module>
 		<module>anyline-alipay</module>
 		<module>anyline-aliyun</module>
+		<module>anyline-aliyun-sms</module>
 		<module>anyline-amap</module>
 		<module>anyline-easemob</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-db2</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-hgdb</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-mssql</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-mysql</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-oracle</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-postgresql</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-dm</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-mariadb</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-mongodb</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-clickhouse</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-oceanbase</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-polardb</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-neo4j</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-kingbase</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-gbasedbt</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-oscar</module>
-		<module>anyline-jdbc-adapter/anyline-jdbc-kingbase-prostgresql</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-db2</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-hgdb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-mssql</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-mysql</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-oracle</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-postgresql</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-dm</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-mariadb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-mongodb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-clickhouse</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-oceanbase</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-polardb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-neo4j</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-gbasedbt</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-oscar</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase-prostgresql</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
@@ -83,7 +84,6 @@
 		<module>anyline-img</module>
         <module>anyline-minio</module>
         <module>anyline-oss</module>
-		<module>anyline-aliyun-sms</module>
 	</modules>
 	<build>
 		<plugins>
