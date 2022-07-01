@@ -72,7 +72,7 @@ public class WatermarkUtil {
     	}
     	long fr = System.currentTimeMillis();
     	File dir = target.getParentFile();
-    	if(!dir.exists()){
+    	if(null != dir && !dir.exists()){
     		dir.mkdirs();
     	}
         // 主图片的路径 
