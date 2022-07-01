@@ -48,14 +48,15 @@
 		<module>anyline-jdbc-dialect/anyline-jdbc-dm</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-mariadb</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-mongodb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-redis</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-clickhouse</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-oceanbase</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-polardb</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-neo4j</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase-prostgresql</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-gbasedbt</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-oscar</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase-prostgresql</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
