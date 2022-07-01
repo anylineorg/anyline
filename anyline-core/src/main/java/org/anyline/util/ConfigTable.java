@@ -46,7 +46,7 @@ public class ConfigTable {
 	protected static int reload = 0;			//重新加载间隔
 	protected static boolean debug = false;
 	protected static boolean sqlDebug = false;
-	protected static final String version = "8.5.3-SNAPSHOT";
+	protected static final String version = "8.5.5-SNAPSHOT";
 	protected static final String minVersion = "0007";
 	protected static boolean isLoading = false;
 	private static boolean listener_running = false;	//监听是否启动
