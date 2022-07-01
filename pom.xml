@@ -35,8 +35,8 @@
 		<module>anyline-web</module>
 		<module>anyline-mvc</module>
 		<module>anyline-alipay</module>
-		<module>anyline-aliyun</module>
-		<module>anyline-aliyun-sms</module>
+		<module>anyline-aliyun/anyline-aliyun-oss</module>
+		<module>anyline-aliyun/anyline-aliyun-sms</module>
 		<module>anyline-amap</module>
 		<module>anyline-easemob</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-db2</module>
@@ -78,14 +78,14 @@
 		<module>anyline-rocketmq</module>
 		<module>anyline-ldap</module>
 		<module>anyline-web-ext</module>
-        <module>anyline-cache-ecache</module>
-		<module>anyline-cache-redis</module>
-        <module>anyline-print-10ss</module>
+        <module>/anyline-cache/anyline-cache-ecache</module>
+		<module>/anyline-cache/anyline-cache-redis</module>
+        <module>/anyline-print/anyline-print-10ss</module>
         <module>anyline-tencent</module>
 		<module>anyline-img</module>
         <module>anyline-minio</module>
         <module>anyline-oss</module>
-	</modules>
+    </modules>
 	<build>
 		<plugins>
 			<plugin>
