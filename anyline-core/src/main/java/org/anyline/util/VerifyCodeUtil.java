@@ -148,7 +148,7 @@ public class VerifyCodeUtil {
 			return; 
 		} 
 		File dir = outputFile.getParentFile(); 
-		if (!dir.exists()) { 
+		if (null != dir && !dir.exists()) {
 			dir.mkdirs(); 
 		} 
 		try { 
