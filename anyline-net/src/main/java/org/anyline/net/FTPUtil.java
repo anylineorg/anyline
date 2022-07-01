@@ -104,7 +104,7 @@ public class FTPUtil {
 	    try { 
 	        client.setFileType(FTPClient.BINARY_FILE_TYPE); 
 	        File _localDir = local.getParentFile(); 
-        	if(!_localDir.exists()){ 
+        	if(null != _localDir && !_localDir.exists()){
         		_localDir.mkdirs(); 
         	} 
             OutputStream is = new FileOutputStream(local);    
