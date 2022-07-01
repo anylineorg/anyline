@@ -102,7 +102,7 @@ public class VideoUtil {
 		boolean result = false;
 		try {
 			File dir = img.getParentFile();
-			if(!dir.exists()){
+			if(null != dir && !dir.exists()){
 				dir.mkdirs();
 			}
 			result = frame(video, new FileOutputStream(img));
