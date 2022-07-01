@@ -110,7 +110,7 @@ public class ImgUtil {
             g.drawImage(image, 0, 0, null); // 绘制缩小后的图 
             g.dispose(); 
             File dir = tar.getParentFile(); 
-            if(!dir.exists()){ 
+            if(null != dir && !dir.exists()){
             	dir.mkdirs(); 
             } 
             ImageIO.write(tag, "JPEG", tar);// 输出到文件流 
@@ -155,7 +155,7 @@ public class ImgUtil {
                 itemp = image; 
             } 
             File dir = tar.getParentFile(); 
-            if(!dir.exists()){ 
+            if(null != dir && !dir.exists()){
             	dir.mkdirs(); 
             } 
            // ImageIO.write((BufferedImage) itemp, "JPEG", tar); 
@@ -260,7 +260,7 @@ public class ImgUtil {
                         g.dispose(); 
                         // 输出为文件 
  
-                        if(!dir.exists()){ 
+                        if(null != dir && !dir.exists()){
                         	dir.mkdirs(); 
                         } 
                         ImageIO.write(tag, "JPEG", new File(dir,  "_r" + i + "_c" + j + ".jpg")); 
@@ -332,7 +332,7 @@ public class ImgUtil {
                         g.drawImage(img, 0, 0, null); // 绘制缩小后的图 
                         g.dispose(); 
  
-                        if(!dir.exists()){ 
+                        if(null != dir && !dir.exists()){
                         	dir.mkdirs(); 
                         } 
                         // 输出为文件 
@@ -457,7 +457,7 @@ public class ImgUtil {
     public static boolean base64Img(File file, String str) { 
     	if (null == str || null == file) return false; 
     	File dir = file.getParentFile(); 
-    	if(!dir.exists()){ 
+    	if(null != dir && !dir.exists()){
     		dir.mkdirs(); 
     	} 
     	str = str.replace("data:image/jpeg;base64,", "").replace("data:image/png;base64,", ""); 
