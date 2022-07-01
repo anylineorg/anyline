@@ -90,7 +90,7 @@ public class SFTPUtil {
         try {   
             if (!localFile.exists()) {   
                 File parentFile = localFile.getParentFile();   
-                if (!parentFile.exists()) {   
+                if (null != parentFile && !parentFile.exists()) {
                     parentFile.mkdirs();   
                 }   
                 localFile.createNewFile();   
