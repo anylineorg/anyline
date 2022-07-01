@@ -1,15 +1,10 @@
 package org.anyline.redis.util;
 
-import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import redis.clients.jedis.JedisCluster;
 
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
 
 public class RedisProvider {
     private static Hashtable<String, RedisProvider> instances = new Hashtable();
