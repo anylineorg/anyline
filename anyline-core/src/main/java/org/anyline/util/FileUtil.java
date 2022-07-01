@@ -310,7 +310,7 @@ public class FileUtil {
 			return;
 		}
 		File dir = file.getParentFile();
-		if(!dir.exists()){
+		if(null != dir && !dir.exists()){
 			dir.mkdirs();
 		}
 		FileOutputStream fos = null;
@@ -359,8 +359,9 @@ public class FileUtil {
 		}
 		try {
 			if(!file.exists()) {
-				if (!file.getParentFile().exists()) {
-					file.getParentFile().mkdirs();
+				File dir = file.getParentFile();
+				if (null != dir && !dir.exists()) {
+					dir.mkdirs();
 				}
 				file.createNewFile();
 			}
@@ -422,7 +423,7 @@ public class FileUtil {
 		}
 		try{
 			File dir = file.getParentFile();
-			if(!dir.exists()){
+			if(null != dir && !dir.exists()){
 				dir.mkdirs();
 			}
 			if(file.exists()){
@@ -579,7 +580,7 @@ public class FileUtil {
 				result = false;
 			}else{
 				File dir = dst.getParentFile();
-				if(!dir.exists()){
+				if(null != dir && !dir.exists()){
 					dir.mkdirs();
 				}
 				InputStream in = null;
@@ -587,7 +588,7 @@ public class FileUtil {
 				try{
 					if(!dst.isDirectory()){
 						File dirs = dst.getParentFile();
-						if(!dirs.exists()){
+						if(null != dir &&!dirs.exists()){
 							dirs.mkdirs();
 						}
 					}else{
@@ -942,7 +943,7 @@ public class FileUtil {
 		}
     	long fr = System.currentTimeMillis();
     	File dir = file.getParentFile();
-    	if(!dir.exists()){
+    	if(null != dir && !dir.exists()){
     		dir.mkdirs();
     	}
         BufferedInputStream bis = null;
@@ -1032,7 +1033,7 @@ public class FileUtil {
 		FileInputStream is = null;
         try {
         	File dir = dst.getParentFile();
-        	if(!dir.exists()){
+        	if(null != dir && !dir.exists()){
         		dir.mkdirs();
         	}
             os = new FileOutputStream(dst);
@@ -1074,7 +1075,7 @@ public class FileUtil {
 		FileInputStream is = null;
         try {
         	File root = dst.getParentFile();
-        	if(!root.exists()){
+        	if(null != root && !root.exists()){
         		root.mkdirs();
         	}
             os = new FileOutputStream(dst);
