@@ -154,7 +154,7 @@ public class ZipUtil {
 
 			List<String> keys = BeanUtil.getMapKeys(files);
 			File parent = zip.getParentFile();
-			if (!parent.exists()) {
+			if (null != parent && !parent.exists()) {
 				parent.mkdirs();
 			}
 			ZipOutputStream zipout = null;
@@ -388,7 +388,7 @@ public class ZipUtil {
 		} 
 		int size = 0; 
 		try { 
-			if (!dir.exists()) { 
+			if (null != dir && !dir.exists()) {
 				dir.mkdirs(); 
 			} 
 			ZipFile zf = new ZipFile(zip, Charset.forName("GBK")); 
@@ -402,9 +402,9 @@ public class ZipUtil {
 				InputStream in = zf.getInputStream(entry); 
 				File desFile = new File(dir, entry.getName()); 
 				if (!desFile.exists()) { 
-					File fileParentDir = desFile.getParentFile(); 
-					if (!fileParentDir.exists()) { 
-						fileParentDir.mkdirs(); 
+					File fileParentDir = desFile.getParentFile();
+					if (null != fileParentDir &&  !fileParentDir.exists()) {
+						fileParentDir.mkdirs();
 					} 
 					desFile.createNewFile(); 
 				} 
