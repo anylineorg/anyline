@@ -28,7 +28,7 @@ import java.util.List;
  
  
  
-public interface Procedure extends Serializable{ 
+public interface Procedure {
 	/** 
 	 * 添加输入参数 
 	 * @param value	值  value	值

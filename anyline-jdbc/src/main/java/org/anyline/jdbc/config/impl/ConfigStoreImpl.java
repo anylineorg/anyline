@@ -40,7 +40,7 @@ import java.util.Map;
  * @author zh 
  * 
  */ 
-public class ConfigStoreImpl implements ConfigStore, Serializable {
+public class ConfigStoreImpl implements ConfigStore {
 	private static final long serialVersionUID = -2098827041540802313L;
 	protected ConfigChain chain;
 	protected PageNavi navi;

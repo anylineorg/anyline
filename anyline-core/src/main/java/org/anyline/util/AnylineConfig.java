@@ -37,7 +37,7 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public abstract class AnylineConfig implements Serializable {
+public abstract class AnylineConfig {
 	protected static long lastLoadTime = 0;    //最后一次加载时间
 	protected static final Logger log = LoggerFactory.getLogger(AnylineConfig.class);
 	protected Map<String, String> kvs = new HashMap<String, String>();

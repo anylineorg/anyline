@@ -12,7 +12,7 @@ import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
  * id.field:key
  * field:key
  */
-public class ParseResult implements Serializable{ 
+public class ParseResult{
 	private static final long serialVersionUID = 1L; 
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值 
 	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组 

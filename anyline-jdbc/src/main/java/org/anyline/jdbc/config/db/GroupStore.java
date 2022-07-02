@@ -22,7 +22,7 @@ package org.anyline.jdbc.config.db;
 import java.io.Serializable;
 import java.util.List;
  
-public interface GroupStore extends Serializable{ 
+public interface GroupStore{
 	public List<Group> getGroups(); 
 	public void group(Group group) ; 
 	/** 
