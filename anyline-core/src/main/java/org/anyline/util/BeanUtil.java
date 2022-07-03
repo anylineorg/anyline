@@ -129,7 +129,7 @@ public class BeanUtil {
 		return true; 
 	} 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion){ 
+	public static boolean setFieldValue(Object obj, String field, Object value, boolean recursion){
 		if(null == obj || null == field){ 
 			return false; 
 		} 
@@ -141,7 +141,7 @@ public class BeanUtil {
 			setFieldValue(obj, f, value); 
 		} 
 		return true; 
-	} 
+	}
 	public static boolean setFieldValue(Object obj, String field, Object value){ 
 		return setFieldValue(obj, field, value, true); 
 	}
@@ -191,8 +191,15 @@ public class BeanUtil {
 			} 
 		} 
 		return field; 
-	} 
- 
+	}
+
+	public static Field getField(Class<?> clazz, String name, boolean recursion, boolean ignoreCase, boolean ignoreSplit ){
+		if(null == name){
+			return null;
+		}
+		List<Field> list = getFields(clazz);
+		return getField(list, name, ignoreCase, ignoreSplit);
+	}
 	public static Field getField(Class<?> clazz, String name){ 
 		return getField(clazz, name, true); 
 	} 
@@ -713,26 +720,60 @@ public class BeanUtil {
 		}
 		return  map;
 	}
+
+	/**
+	 * map转实现
+	 * @param map map
+	 * @param clazz class
+	 * @param recursion 是否递归
+	 * @param ignoreCase 是否忽略大小写
+	 * @param ignoreSplit 是否忽略分隔符号
+	 * @return T
+	 * @param <T> T
+	 */
 	@SuppressWarnings("rawtypes")
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion){ 
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
 		T obj = null; 
 		try { 
 			obj = (T)clazz.newInstance(); 
 			Set es = map.entrySet(); 
-			Iterator it = es.iterator(); 
+			Iterator it = es.iterator();
+			List<Field> fields = BeanUtil.getFields(clazz);
 			while (it.hasNext()) { 
 				Map.Entry entry = (Map.Entry) it.next(); 
 				String k = (String) entry.getKey(); 
-				Object v = entry.getValue(); 
-				BeanUtil.setFieldValue(obj, k, v, recursion); 
+				Object v = entry.getValue();
+				Field field = getField(fields, k, ignoreCase, ignoreSplit);
+				BeanUtil.setFieldValue(obj, field, v);
 			} 
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		} 
 		return obj; 
-	} 
+	}
+	private static Field getField(List<Field> fields, String name, boolean ignoreCase, boolean ignoreSplit){
+		if(null == name){
+			return null;
+		}
+		Field field = null;
+		for(Field item:fields){
+			String itemName = item.getName();
+			if(ignoreCase){
+				itemName = itemName.toUpperCase();
+				name = name.toUpperCase();
+			}
+			if(ignoreSplit){
+				itemName = itemName.replace("-","").replace("_","");
+				name = name.replace("-","").replace("_","");
+			}
+			if(name.equals(itemName)){
+				field = item;
+			}
+		}
+		return field;
+	}
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz){ 
-		return map2object(map, clazz, false); 
+		return map2object(map, clazz, false, false, false);
 	}
 	public static <T> T json2oject(String json, Class<T> clazz, JsonInclude.Include include){
 		try {
@@ -873,16 +914,19 @@ public class BeanUtil {
 	public static String map2string(Map<String,?> map){
 		return map2string(map, "=","&",true, true);
 	}
-	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion){ 
+	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
 		T obj = null; 
 		try { 
 			Map<String,?> map = xml2map(xml); 
-			obj = map2object(map, clazz, recursion); 
+			obj = map2object(map, clazz, recursion, ignoreCase, ignoreSplit);
 		} catch (Exception e) { 
 			e.printStackTrace(); 
 		} 
 		return obj; 
-	} 
+	}
+	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion){
+		return xml2object(xml, clazz, recursion, false, false);
+	}
 	public static <T> T xml2object(String xml, Class<T> clazz){ 
 		return xml2object(xml,  clazz, true); 
 	} 
