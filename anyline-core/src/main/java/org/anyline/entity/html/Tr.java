@@ -2,7 +2,6 @@ package org.anyline.entity.html;
 
 import org.anyline.util.BeanUtil;
 import org.dom4j.Element;
-import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
 import java.util.HashMap;
