@@ -61,6 +61,6 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
 @Qualifier("anyline.service")
 protected AnylineService service;
 ```
-接下来service就可以完成大部分的数据库操作了。常用示例可以参考[示例代码](https://gitee.com/anyline/anyline-simple.git)
+接下来service就可以完成大部分的数据库操作了。常用示例可以参考[示例代码](https://gitee.com/anyline/anyline-simple)
 
 
