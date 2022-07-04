@@ -27,7 +27,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.FileUtil;
 import org.anyline.web.util.WebUtil;
-import org.apache.struts2.dispatcher.StrutsResultSupport;
+import org.apache.struts2.result.StrutsResultSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

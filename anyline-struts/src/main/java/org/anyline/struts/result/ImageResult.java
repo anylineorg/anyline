@@ -24,13 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.anyline.entity.DataRow;
 import org.anyline.web.util.WebUtil;
-import org.apache.struts2.dispatcher.StrutsResultSupport;
+import org.apache.struts2.result.StrutsResultSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionInvocation;
  
-public class ImageResult extends StrutsResultSupport { 
+public class ImageResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 1L; 
 	private static final Logger log = LoggerFactory.getLogger(ImageResult.class); 
 	private Object data = null; 

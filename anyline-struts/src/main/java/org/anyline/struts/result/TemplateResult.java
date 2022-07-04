@@ -27,11 +27,12 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.Constant;
 import org.anyline.web.util.WebUtil;
 import org.apache.struts2.ServletActionContext;
-import org.apache.struts2.dispatcher.StrutsResultSupport;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.Result;
-public class TemplateResult extends StrutsResultSupport { 
+import org.apache.struts2.result.StrutsResultSupport;
+
+public class TemplateResult extends StrutsResultSupport {
 	private static final long serialVersionUID = 0xe4a6cfd5319c8fc5L; 
 	private String contentPage = null; 
  
