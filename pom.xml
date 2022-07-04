@@ -85,6 +85,8 @@
 		<module>anyline-img</module>
         <module>anyline-minio</module>
         <module>anyline-oss</module>
+        <module>anyline-compatible</module>
+        <module>anyline-compatible-default</module>
     </modules>
 	<build>
 		<plugins>
