@@ -51,7 +51,7 @@ public interface JDBCListener {
      * @param run sql
      * @param maps 查询结果
      */
-    public void afterQuery(AnylineDao dao, RunSQL run, List<Map<String,Object>>  maps);
+    public void afterQuery(AnylineDao dao, RunSQL run, List<?>  maps);
     /**
      * 查询之后调用(调用service.query或service.querys)
      * @param dao dao
