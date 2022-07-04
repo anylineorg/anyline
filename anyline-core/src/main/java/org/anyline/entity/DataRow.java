@@ -24,11 +24,10 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import javax.annotation.Resource;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -41,27 +40,6 @@ import java.util.*;
 public class DataRow extends LinkedHashMap<String, Object> implements Serializable{
 	private static final long serialVersionUID = -2098827041540802313L;
 	protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
-
-	public static enum KEY_CASE{
-		CONFIG				{public String getCode(){return "CONFIG";} 			public String getName(){return "按配置文件";}},
-		SRC					{public String getCode(){return "SRC";} 			public String getName(){return "不转换";}},
-		UPPER				{public String getCode(){return "UPPER";} 			public String getName(){return "强制大写";}},
-		LOWER				{public String getCode(){return "LOWER";} 			public String getName(){return "强制小写";}},
-		//以下规则取消
-		//下/中划线转成驼峰
-		Camel 				{public String getCode(){return "Camel";} 			public String getName(){return "大驼峰";}},
-		camel 				{public String getCode(){return "camel";} 			public String getName(){return "小驼峰";}},
-		//bean驼峰属性转下划线
-		CAMEL_CONFIG		{public String getCode(){return "CAMEL_CONFIG";} 	public String getName(){return "转下划线后按配置文件转换大小写";}},
-		CAMEL_SRC			{public String getCode(){return "CAMEL_SRC";} 		public String getName(){return "转下划线后不转换大小写";}},
-		CAMEL_UPPER			{public String getCode(){return "CAMEL_UPPER";} 	public String getName(){return "转下划线后强制大写";}},
-		CAMEL_LOWER			{public String getCode(){return "CAMEL_LOWER";} 	public String getName(){return "转下划线后强制小写";}},
-
-		AUTO				{public String getCode(){return "AUTO";} 			public String getName(){return "自动识别";}};
-
-		public abstract String getName();
-		public abstract String getCode();
-	}
 
 	private static EntityAdapter adapter;
 	private static boolean is_adapter_load = false;
@@ -98,8 +76,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	private String dataSource				= null 							; //数据源(表|视图|XML定义SQL) 
 	private String schema					= null							; 
 	private String table					= null							;
-	private Map<String, Object> queryParams	= new HashMap<String,Object>()				; //查询条件
-	private Map<String, Object> attributes 	= new HashMap<String,Object>()				; //属性
+	private Map<String, Object> queryParams	= new HashMap<>()				; //查询条件
+	private Map<String, Object> attributes 	= new HashMap<>()				; //属性
 	private Object clientTrace				= null							; //客户端数据
 	private long createTime 				= 0								; //创建时间
 	private long expires 					= -1							; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期 
@@ -107,7 +85,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	protected boolean isFromCache 			= false							; //是否来自缓存
 	private boolean updateNullColumn 		= ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
 	private boolean updateEmptyColumn 		= ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
-	private Map<String,String> keymap		= new HashMap<String,String>()				; //keymap
+	private Map<String,String> keymap		= new HashMap<>()				; //keymap
 	private KEY_CASE keyCase 				= KEY_CASE.CONFIG				; //列名格式
 	private boolean isUpperKey				= false							; //是否已执行大写key转换(影响到驼峰执行)
 	private Map<String,String> converts 	= new HashMap<>()				; //key是否已转换<key,src><当前key,原key>
