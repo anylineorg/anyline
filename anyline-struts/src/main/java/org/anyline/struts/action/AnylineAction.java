@@ -37,6 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Map;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
  
 public class AnylineAction extends AbstractBasicController implements ServletRequestAware, ServletResponseAware { 
 	public static int RESULT_TYPE_DEFAULT = 0; 
@@ -83,69 +84,69 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	}
 
 	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG,  row, keyEncrypt, valueEncrypt, params);
+		return entity(request, KEY_CASE.CONFIG,  row, keyEncrypt, valueEncrypt, params);
 	}
 	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG,  row, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
+		return entity(request, KEY_CASE.CONFIG,  row, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
 	}
 
 	public DataRow entity(DataRow row, boolean keyEncrypt, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, params);
+		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, params);
 	}
 	public DataRow entity(DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.merge(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.merge(fixs, params));
 	}
 
 	public DataRow entity(DataRow row, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, row, false, false, params);
+		return entity(request, KEY_CASE.CONFIG, row, false, false, params);
 	}
 	public DataRow entity(DataRow row, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, row, false, false, BeanUtil.merge(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, row, false, false, BeanUtil.merge(fixs, params));
 	}
 
 	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
+		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
 	}
 
 	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
 	}
 
 	public DataRow entity(boolean keyEncrypt, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, params);
+		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, false, params);
 	}
 	public DataRow entity(boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, BeanUtil.merge(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, false, BeanUtil.merge(fixs, params));
 	}
 
 	public DataRow entity(String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, false, false, params);
+		return entity(request, KEY_CASE.CONFIG, null, false, false, params);
 	}
 	public DataRow entity(String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, false, false, BeanUtil.merge(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, null, false, false, BeanUtil.merge(fixs, params));
 	}
 
 	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
+		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
 	}
 	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
+		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, BeanUtil.merge(fixs, params));
 	}
 
 	public DataSet entitys(boolean keyEncrypt, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, false, params);
+		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, false, params);
 	}
 
 	public DataSet entitys(boolean keyEncrypt, String[] fixs, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, false, BeanUtil.merge(fixs, params));
+		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, false, BeanUtil.merge(fixs, params));
 	}
 
 	public DataSet entitys(String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, params);
+		return entitys(request, KEY_CASE.CONFIG, false, false, params);
 	}
 
 	public DataSet entitys(String[] fixs, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, BeanUtil.merge(fixs, params));
+		return entitys(request, KEY_CASE.CONFIG, false, false, BeanUtil.merge(fixs, params));
 	}
 
 	protected ConfigStore condition(boolean navi, String... configs) {

@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
 
 public class AbstractBasicController {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -148,7 +149,7 @@ public class AbstractBasicController {
 		return entity(request, clazz, false, false, BeanUtil.array2list(fixs, params));
 	}
 
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String ... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String ... params) {
 		if (null == row) {
 			row = new DataRow(keyCase);
 		}
@@ -181,84 +182,84 @@ public class AbstractBasicController {
 		return row;
 	}
 
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
 	//
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
 //
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, false, BeanUtil.array2list(params));
 	}
 	//
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(request, keyCase, row, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
 //
 	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.array2list(params));
+		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.array2list(params));
 	}
 	//
 	public DataRow entity(HttpServletRequest request, DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.array2list(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, row, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
 	//
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, String... params) {
 		return entity(request,keyCase, row, false, false, BeanUtil.array2list(params));
 	}
 	//
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, DataRow row, String[] fixs, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, DataRow row, String[] fixs, String... params) {
 		return entity(request, keyCase, row, false, false, BeanUtil.array2list(fixs, params));
 	}
 	//
 	public DataRow entity(HttpServletRequest request, DataRow row, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, row, false, false, BeanUtil.array2list(params));
+		return entity(request, KEY_CASE.CONFIG, row, false, false, BeanUtil.array2list(params));
 	}
 	//
 	public DataRow entity(HttpServletRequest request, DataRow row, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, row, false, false, BeanUtil.array2list(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, row, false, false, BeanUtil.array2list(fixs, params));
 	}
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, keyCase, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(request, keyCase, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
 	public DataRow entity(HttpServletRequest request,boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
+		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
 	public DataRow entity(HttpServletRequest request,boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entity(request,keyCase,null, keyEncrypt, false, BeanUtil.array2list(params));
 	}
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(request,keyCase, null, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
 	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, BeanUtil.array2list(params));
+		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, false, BeanUtil.array2list(params));
 	}
 
 	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, BeanUtil.array2list(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, String... params) {
 		return entity(request,keyCase,null, false, false, BeanUtil.array2list(params));
 	}
-	public DataRow entity(HttpServletRequest request, DataRow.KEY_CASE keyCase, String[] fixs, String... params) {
+	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, String[] fixs, String... params) {
 		return entity(request,keyCase,null, false, false, BeanUtil.array2list(fixs, params));
 	}
 	public DataRow entity(HttpServletRequest request, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, false, false, BeanUtil.array2list(params));
+		return entity(request, KEY_CASE.CONFIG, null, false, false, BeanUtil.array2list(params));
 	}
 	public DataRow entity(HttpServletRequest request, String[] fixs, String... params) {
-		return entity(request, DataRow.KEY_CASE.CONFIG, null, false, false, BeanUtil.array2list(fixs, params));
+		return entity(request, KEY_CASE.CONFIG, null, false, false, BeanUtil.array2list(fixs, params));
 	}
 
-	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String ... params) {
+	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String ... params) {
 		DataSet set = new DataSet();
 		List<String> arrays = BeanUtil.merge(fixs, params);
 		if (arrays.size() > 0) {
@@ -324,38 +325,38 @@ public class AbstractBasicController {
 		return set;
 	}
 
-	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(request, keyCase, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
-	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entitys(request, keyCase, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
 	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
+		return entitys(request, KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
-	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entitys(request,keyCase,keyEncrypt, false, BeanUtil.array2list(params));
 	}
-	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
+	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
 		return entitys(request,keyCase,keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
 	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG,keyEncrypt, false, BeanUtil.array2list(params));
+		return entitys(request, KEY_CASE.CONFIG,keyEncrypt, false, BeanUtil.array2list(params));
 	}
 	public DataSet entitys(HttpServletRequest request, boolean keyEncrypt, String[] fixs, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG,keyEncrypt, false, BeanUtil.array2list(fixs, params));
+		return entitys(request, KEY_CASE.CONFIG,keyEncrypt, false, BeanUtil.array2list(fixs, params));
 	}
-	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, String... params) {
+	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, String... params) {
 		return entitys(request, keyCase, false, false, BeanUtil.array2list(params));
 	}
-	public DataSet entitys(HttpServletRequest request, DataRow.KEY_CASE keyCase, String[] fixs, String... params) {
+	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, String[] fixs, String... params) {
 		return entitys(request, keyCase, false, false, BeanUtil.array2list(fixs, params));
 	}
 	public DataSet entitys(HttpServletRequest request, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, BeanUtil.array2list(params));
+		return entitys(request, KEY_CASE.CONFIG, false, false, BeanUtil.array2list(params));
 	}
 	public DataSet entitys(HttpServletRequest request, String[] fixs, String... params) {
-		return entitys(request, DataRow.KEY_CASE.CONFIG, false, false, BeanUtil.array2list(fixs, params));
+		return entitys(request, KEY_CASE.CONFIG, false, false, BeanUtil.array2list(fixs, params));
 	}
 
 

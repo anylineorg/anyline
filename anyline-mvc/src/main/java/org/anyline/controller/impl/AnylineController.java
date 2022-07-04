@@ -45,6 +45,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
  
 public class AnylineController extends AbstractBasicController { 
  
@@ -128,22 +129,22 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, params);
 	}
 	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, fixs, params);
 	}
 	public DataRow entity(boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, fixs, params);
 	}
 
-	public DataRow entity(DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entity(getRequest(),keyCase, null, keyEncrypt, false, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(getRequest(),keyCase, null, keyEncrypt, false, fixs, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase, boolean keyEncrypt, List<String> fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, List<String> fixs, String... params) {
 		return entity(getRequest(),keyCase, null, keyEncrypt, false, fixs, params);
 	}
 
@@ -157,51 +158,51 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 
-	public DataRow entity(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(getRequest(), keyCase, row, keyEncrypt, valueEncrypt, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(getRequest(), keyCase, row, keyEncrypt, valueEncrypt, fixs, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
 		return entity(getRequest(), keyCase, row, keyEncrypt, valueEncrypt, fixs, params);
 	}
 
 	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, params);
 	}
 	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, fixs, params);
 	}
 	public DataRow entity(DataRow row, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, valueEncrypt, fixs, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, String... params) {
+	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, String... params) {
 		return entity(getRequest(),keyCase, row, keyEncrypt, false, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
 		return entity(getRequest(),keyCase, row, keyEncrypt, false, fixs, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase,DataRow row, boolean keyEncrypt, List<String> fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase,DataRow row, boolean keyEncrypt, List<String> fixs, String... params) {
 		return entity(getRequest(),keyCase, row, keyEncrypt, false, fixs, params);
 	}
 
 	public DataRow entity(DataRow row, boolean keyEncrypt, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, false, params);
 	}
 	public DataRow entity(DataRow row, boolean keyEncrypt, String[] fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, false, fixs, params);
 	}
 	public DataRow entity(DataRow row, boolean keyEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, keyEncrypt, false, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, row, keyEncrypt, false, fixs, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase, DataRow row, String... params) {
+	public DataRow entity(KEY_CASE keyCase, DataRow row, String... params) {
 		return entity(getRequest(),keyCase, row, false, false, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase, DataRow row, String[] fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase, DataRow row, String[] fixs, String... params) {
 		return entity(getRequest(),keyCase, row, false, false, fixs, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase, DataRow row, List<String> fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase, DataRow row, List<String> fixs, String... params) {
 		return entity(getRequest(),keyCase, row, false, false, fixs, params);
 	}
 
@@ -213,46 +214,46 @@ public class AnylineController extends AbstractBasicController {
 				return entity(TableBuilder.init(table), row);
 			}
 		}
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, false, false, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, row, false, false, params);
 	}
 
 	public DataRow entity(DataRow row, String[] fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, false, false, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, row, false, false, fixs, params);
 	}
 	public DataRow entity(DataRow row, List<String> fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, row, false, false, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, row, false, false, fixs, params);
 	}
 
-	public DataRow entity(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, fixs, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
 		return entity(getRequest(),keyCase, null, keyEncrypt, valueEncrypt, params);
 	}
 
 
 	public DataRow entity(boolean keyEncrypt, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, false, params);
 	}
 
 	public DataRow entity(boolean keyEncrypt,String[] fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, false, fixs, params);
 	}
 
 	public DataRow entity(boolean keyEncrypt, List<String> fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, keyEncrypt, false, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, null, keyEncrypt, false, fixs, params);
 	}
 
-	public DataRow entity(DataRow.KEY_CASE keyCase, String... params) {
+	public DataRow entity(KEY_CASE keyCase, String... params) {
 		return entity(getRequest(),keyCase, null, false, false, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase, String[] fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase, String[] fixs, String... params) {
 		return entity(getRequest(),keyCase, null, false, false, fixs, params);
 	}
-	public DataRow entity(DataRow.KEY_CASE keyCase, List<String> fixs, String... params) {
+	public DataRow entity(KEY_CASE keyCase, List<String> fixs, String... params) {
 		return entity(getRequest(),keyCase, null, false, false, fixs, params);
 	}
 	public DataRow entity(String... params) {
@@ -263,70 +264,70 @@ public class AnylineController extends AbstractBasicController {
 				return entity(TableBuilder.init(table));
 			}
 		}
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, false, false, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, null, false, false, params);
 	}
 	public DataRow entity(String[] fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, false, false, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, null, false, false, fixs, params);
 	}
 	public DataRow entity(List<String> fixs, String... params) {
-		return entity(getRequest(), DataRow.KEY_CASE.CONFIG, null, false, false, fixs, params);
+		return entity(getRequest(), KEY_CASE.CONFIG, null, false, false, fixs, params);
 	}
 
-	public DataSet entitys(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, params);
 	}
-	public DataSet entitys(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, fixs, params);
 	}
-	public DataSet entitys(DataRow.KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
+	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
 		return entitys(getRequest(),keyCase, keyEncrypt, valueEncrypt, fixs, params);
 	}
 
 	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String... params) {
-		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
+		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, params);
 	}
 	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
-		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, fixs, params);
+		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, fixs, params);
 	}
 	public DataSet entitys(boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String... params) {
-		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, fixs, params);
+		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, valueEncrypt, fixs, params);
 	}
-	public DataSet entitys(DataRow.KEY_CASE keyCase, boolean keyEncrypt, String... params) {
+	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, String... params) {
 		return entitys(getRequest(),keyCase, keyEncrypt, false, params);
 	}
-	public DataSet entitys(DataRow.KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
+	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, String[] fixs, String... params) {
 		return entitys(getRequest(),keyCase, keyEncrypt, false, fixs, params);
 	}
-	public DataSet entitys(DataRow.KEY_CASE keyCase, boolean keyEncrypt, List<String> fixs, String... params) {
+	public DataSet entitys(KEY_CASE keyCase, boolean keyEncrypt, List<String> fixs, String... params) {
 		return entitys(getRequest(),keyCase, keyEncrypt, false, fixs, params);
 	}
 	public DataSet entitys(boolean keyEncrypt, String... params) {
-		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, false, params);
+		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, false, params);
 	}
 	public DataSet entitys(boolean keyEncrypt, String[] fixs, String... params) {
-		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, false, fixs, params);
+		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, false, fixs, params);
 	}
 	public DataSet entitys(boolean keyEncrypt, List<String> fixs, String... params) {
-		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, keyEncrypt, false, fixs, params);
+		return entitys(getRequest(), KEY_CASE.CONFIG, keyEncrypt, false, fixs, params);
 	}
 
-	public DataSet entitys(DataRow.KEY_CASE keyCase, String... params) {
+	public DataSet entitys(KEY_CASE keyCase, String... params) {
 		return entitys(getRequest(),keyCase, false, false, params);
 	}
-	public DataSet entitys(DataRow.KEY_CASE keyCase, String[] fixs, String... params) {
+	public DataSet entitys(KEY_CASE keyCase, String[] fixs, String... params) {
 		return entitys(getRequest(),keyCase, false, false, fixs, params);
 	}
-	public DataSet entitys(DataRow.KEY_CASE keyCase, List<String> fixs, String... params) {
+	public DataSet entitys(KEY_CASE keyCase, List<String> fixs, String... params) {
 		return entitys(getRequest(),keyCase, false, false, fixs, params);
 	}
 	public DataSet entitys(String... params) {
-		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, false, false, params);
+		return entitys(getRequest(), KEY_CASE.CONFIG, false, false, params);
 	}
 	public DataSet entitys(String[] fixs, String... params) {
-		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, false, false, fixs, params);
+		return entitys(getRequest(), KEY_CASE.CONFIG, false, false, fixs, params);
 	}
 	public DataSet entitys(List<String> fixs, String... params) {
-		return entitys(getRequest(), DataRow.KEY_CASE.CONFIG, false, false, fixs, params);
+		return entitys(getRequest(), KEY_CASE.CONFIG, false, false, fixs, params);
 	}
 
 	public DataSet entitys(TableBuilder table){

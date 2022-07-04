@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
 
 
 /**
@@ -613,7 +614,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append(" SET").append(SQLCreater.BR_TAB);
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
-				Object value = row.get(DataRow.KEY_CASE.SRC, key);
+				Object value = row.get(KEY_CASE.SRC, key);
 				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(1, str.length()-1);
@@ -699,7 +700,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					continue; 
 				} 
 				 
-				Object value = row.get(DataRow.KEY_CASE.SRC, key);
+				Object value = row.get(KEY_CASE.SRC, key);
 				if(null == value){ 
 					if(factKeys.contains(key)){ 
 						keys.remove(key); 

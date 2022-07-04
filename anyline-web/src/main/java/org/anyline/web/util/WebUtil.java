@@ -40,6 +40,7 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
 
 public class WebUtil {
 
@@ -142,7 +143,7 @@ public class WebUtil {
 		String body = WebUtil.read(request,"UTF-8", true);
 		if(BasicUtil.isNotEmpty(body) && body.startsWith("[") && body.endsWith("]")){
 			try {
-				set = DataSet.parseJson(DataRow.KEY_CASE.SRC, body);
+				set = DataSet.parseJson(KEY_CASE.SRC, body);
 			}catch(Exception e){
 				log.error("[json parse error][{}]", e.getMessage());
 			}
@@ -169,7 +170,7 @@ public class WebUtil {
 			String body = WebUtil.read(request,encode,true);
 			if(BasicUtil.isNotEmpty(body)){
 				if(body.startsWith("{") && body.endsWith("}")) {
-					map = DataRow.parseJson(DataRow.KEY_CASE.SRC, body);
+					map = DataRow.parseJson(KEY_CASE.SRC, body);
 				}else{
 					map = BeanUtil.param2map(body,true);
 				}

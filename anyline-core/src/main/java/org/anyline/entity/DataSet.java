@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
 
 public class DataSet implements Collection<DataRow>, Serializable {
     private static final long serialVersionUID = 6443551515441660101L;
@@ -92,7 +93,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return set;
     }
 
-    public static DataSet parseJson(DataRow.KEY_CASE keyCase, String json) {
+    public static DataSet parseJson(KEY_CASE keyCase, String json) {
         if (null != json) {
             try {
                 return parseJson(keyCase, BeanUtil.JSON_MAPPER.readTree(json));
@@ -104,10 +105,10 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public static DataSet parseJson(String json) {
-        return parseJson(DataRow.KEY_CASE.CONFIG, json);
+        return parseJson(KEY_CASE.CONFIG, json);
     }
 
-    public static DataSet parseJson(DataRow.KEY_CASE keyCase, JsonNode json) {
+    public static DataSet parseJson(KEY_CASE keyCase, JsonNode json) {
         DataSet set = new DataSet();
         if (null != json) {
             if (json.isArray()) {
@@ -122,7 +123,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public static DataSet parseJson(JsonNode json) {
-        return parseJson(DataRow.KEY_CASE.CONFIG, json);
+        return parseJson(KEY_CASE.CONFIG, json);
     }
 
     public DataSet Camel(){
