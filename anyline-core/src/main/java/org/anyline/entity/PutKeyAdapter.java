@@ -1,4 +1,4 @@
 package org.anyline.entity;
 
-public class PutKeyAdapter {
+public interface PutKeyAdapter extends KeyAdapter{
 }
