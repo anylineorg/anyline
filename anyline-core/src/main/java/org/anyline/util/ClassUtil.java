@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
@@ -270,18 +271,56 @@ public class ClassUtil {
 	}
 
 	/**
-	 * 反射注解的属性值 在不确定具体注解与属性的情况下使用
+	 * 反射类注解的属性值 在不确定具体注解与属性的情况下使用
 	 * 注解名与属性名不区分大小写
 	 * *表示任意字符
-	 * @param clazz 类
+	 * @param target 类
 	 * @param annotation 注解类名 如: *, Table*
 	 * @param field 属性名 如: *, value, name, *package*
 	 * @param qty 最多取几个值 -1:不限制
 	 * @return List
 	 */
-	public static List<Object> parseAnnotationFieldValues(Class clazz, String annotation, String field, int qty){
+	public static List<Object> parseAnnotationFieldValues(Class target, String annotation, String field, int qty){
+		Annotation[] annotations = target.getAnnotations();
+		return parseAnnotationFieldValues(annotations, annotation, field, qty);
+	}
+	public static List<Object> parseAnnotationFieldValues(Class target, String annotation, String field){
+		return parseAnnotationFieldValues(target, annotation, field, -1);
+	}
+	public static Object parseAnnotationFieldValue(Class target, String annotation, String field){
+		List<Object> values = parseAnnotationFieldValues(target, annotation, field, 1);
+		if(values.size() > 0){
+			return values.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * 反射属性target上的注解，获取注解上指定的属性值
+	 * 注解名与属性名不区分大小写
+	 * *表示任意字符
+	 * @param target 属性
+	 * @param annotation 注解类名 如: *, Table*
+	 * @param field 属性名 如: *, value, name, *package*
+	 * @param qty 最多取几个值 -1:不限制
+	 * @return List
+	 */
+	public static List<Object> parseAnnotationFieldValues(Field target, String annotation, String field, int qty){
+		Annotation[] annotations = target.getAnnotations();
+		return parseAnnotationFieldValues(annotations, annotation, field, qty);
+	}
+	public static List<Object> parseAnnotationFieldValues(Field target, String annotation, String field){
+		return parseAnnotationFieldValues(target, annotation, field, -1);
+	}
+	public static Object parseAnnotationFieldValue(Field target, String annotation, String field){
+		List<Object> values = parseAnnotationFieldValues(target, annotation, field, 1);
+		if(values.size() > 0){
+			return values.get(0);
+		}
+		return null;
+	}
+	private static List<Object> parseAnnotationFieldValues(Annotation[] annotations, String annotation, String field, int qty){
 		List<Object> list = new ArrayList<>();
-		Annotation[] annotations = clazz.getAnnotations();
 		for(Annotation an : annotations){
 			String name = an.annotationType().getSimpleName();
 			if(!match(name, annotation)){
@@ -313,16 +352,7 @@ public class ClassUtil {
 		}
 		return list;
 	}
-	public static List<Object> parseAnnotationFieldValues(Class clazz, String annotation, String field){
-		return parseAnnotationFieldValues(clazz, annotation, field, -1);
-	}
-	public static Object parseAnnotationFieldValue(Class clazz, String annotation, String field){
-		List<Object> values = parseAnnotationFieldValues(clazz, annotation, field, 1);
-		if(values.size() > 0){
-			return values.get(0);
-		}
-		return null;
-	}
+
 	private static boolean match(String value, String regex){
 		regex = regex.replace("*",".*").toUpperCase();
 		return value.toUpperCase().matches(regex);
