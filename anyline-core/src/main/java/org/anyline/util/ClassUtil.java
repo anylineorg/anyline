@@ -283,7 +283,7 @@ public class ClassUtil {
 		List<Object> list = new ArrayList<>();
 		Annotation[] annotations = clazz.getAnnotations();
 		for(Annotation an : annotations){
-			String name = an.annotationType().getName();
+			String name = an.annotationType().getSimpleName();
 			if(!match(name, annotation)){
 				continue;//注解名不匹配
 			}
