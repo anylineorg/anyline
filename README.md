@@ -34,7 +34,14 @@ List<User> = service.querys(User.class, condition(true,"anyline根据约定自�
 如果不是springboot项目一般是在配置文件中配置一个JdbcTemplate  
 如果你的项目中已经配置过数据源了，那以上就可以忽略了。  
 
-根据数据库类型添加依赖,如anyline-jdbc-mysql  
+根据数据库类型添加依赖,如
+```
+<dependency>
+<groupId>org.anyline</groupId>
+<artifactId>anyline-core</artifactId>
+<version>8.5.3-20220630</version>
+</dependency>
+```
 在需要操作数据库的地方注入AnylineService  
 ```
 @Qualifier("anyline.service")
