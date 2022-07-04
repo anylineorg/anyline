@@ -20,6 +20,8 @@ package org.anyline.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -170,7 +172,7 @@ public class ClassUtil {
 	 *                     类名集合
 	 * @param childPackage 是否遍历子包
 	 * @return 类的完整名称
-	 * @throws UnsupportedEncodingException UnsupportedEncodingException
+	 * @throws UnsupportedEncodingException  UnsupportedEncodingException
 	 */
 	private static List<String> getClassNameListFromFile(String filePath, boolean childPackage) throws UnsupportedEncodingException {
 		List<String> myClassName = new ArrayList<>();
@@ -266,4 +268,64 @@ public class ClassUtil {
 		}
 		return names;
 	}
+
+	/**
+	 * 反射注解的属性值 在不确定具体注解与属性的情况下使用
+	 * 注解名与属性名不区分大小写
+	 * *表示任意字符
+	 * @param clazz 类
+	 * @param annotation 注解类名 如: *, Table*
+	 * @param field 属性名 如: *, value, name, *package*
+	 * @param qty 最多取几个值 -1:不限制
+	 * @return List
+	 */
+	public static List<Object> parseAnnotationFieldValues(Class clazz, String annotation, String field, int qty){
+		List<Object> list = new ArrayList<>();
+		Annotation[] annotations = clazz.getAnnotations();
+		for(Annotation an : annotations){
+			String name = an.annotationType().getName();
+			if(!match(name, annotation)){
+				continue;//注解名不匹配
+			}
+			Method methods[] = an.annotationType().getMethods();
+			for(Method method:methods){
+				name = method.getName();
+				if(!match(name, field)){
+					continue;//属性名不匹配
+				}
+				try {
+					Object value = method.invoke(an);
+					if (value instanceof Object[]) {
+						Object values[] = (Object[]) value;
+						for (Object v : values) {
+							list.add(v);
+							if(qty >0 && list.size()>=qty){
+								return list;
+							}
+						}
+					} else {
+						list.add(value);
+					}
+				}catch (Exception e){
+				}
+			}
+
+		}
+		return list;
+	}
+	public static List<Object> parseAnnotationFieldValues(Class clazz, String annotation, String field){
+		return parseAnnotationFieldValues(clazz, annotation, field, -1);
+	}
+	public static Object parseAnnotationFieldValue(Class clazz, String annotation, String field){
+		List<Object> values = parseAnnotationFieldValues(clazz, annotation, field, 1);
+		if(values.size() > 0){
+			return values.get(0);
+		}
+		return null;
+	}
+	private static boolean match(String value, String regex){
+		regex = regex.replace("*",".*").toUpperCase();
+		return value.toUpperCase().matches(regex);
+	}
+
 } 
