@@ -30,8 +30,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
  
-public interface AnylineDao{ 
+public interface AnylineDao<E>{
 	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
+	public <T> List<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public DataSet querys(SQL sql, String ... conditions);
 	public List<String> metadata(String table);
 	public List<MetaData> metadatas(String table);
