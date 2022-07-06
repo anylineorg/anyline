@@ -104,8 +104,8 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				if(BasicUtil.isEmpty(column)){
 					continue;
 				} 
-				if(column.startsWith("{") && column.endsWith("}")){ 
-					column = column.substring(1, column.length()-1); 
+				if(column.startsWith("${") && column.endsWith("}")){
+					column = column.substring(2, column.length()-1);
 					builder.append(column); 
 				}else{
 					if(column.toUpperCase().contains(" AS ") || column.contains("(") || column.contains(",")){
