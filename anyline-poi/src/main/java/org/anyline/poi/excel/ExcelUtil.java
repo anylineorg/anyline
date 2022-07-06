@@ -528,7 +528,7 @@ public class ExcelUtil {
 			for(String key:keys){
 				Cell cell=row.createCell(c++);
 				cell.setCellType(CellType.STRING);
-				if(key.equals("{num}")){
+				if(key.equals("${num}")){
 					cell.setCellValue(num);
 				}else {
 					cell.setCellValue(BeanUtil.parseFinalValue(item, key, ""));

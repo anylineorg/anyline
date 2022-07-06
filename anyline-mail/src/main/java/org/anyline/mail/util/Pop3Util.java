@@ -211,7 +211,7 @@ public class Pop3Util {
 			mail.setReceiveTime(receiveTime);
 			if(config.AUTO_DOWNLOAD_ATTACHMENT){
 				if (isContainerAttachment) {
-					String dir = config.ATTACHMENT_DIR.replace("{ymd}", DateUtil.format(sendTime,"yyyyMMdd"));
+					String dir = config.ATTACHMENT_DIR.replace("${ymd}", DateUtil.format(sendTime,"yyyyMMdd"));
 					List<File> attachments = downloadAttachment(msg, dir , sendTime, null);
 					mail.setAttachments(attachments);
 				}
@@ -377,8 +377,8 @@ public class Pop3Util {
 		if (BasicUtil.isEmpty(files)) {
 			files = new ArrayList<File>();
 		}
-		dir = dir.replace("{send_date}", DateUtil.format(sendTime,"yyyyMMdd"));
-		dir = dir.replace("{send_time}", DateUtil.format(sendTime,"yyyyMMddhhmmss"));
+		dir = dir.replace("${send_date}", DateUtil.format(sendTime,"yyyyMMdd"));
+		dir = dir.replace("${send_time}", DateUtil.format(sendTime,"yyyyMMddhhmmss"));
 		if (part.isMimeType("multipart/*")) {
 			Multipart multipart = (Multipart) part.getContent(); // 复杂体邮件
 			int partCount = multipart.getCount();
@@ -388,8 +388,8 @@ public class Pop3Util {
 				String disp = bodyPart.getDisposition();
 				String name = decode(bodyPart.getFileName());
 				String path = null;
-				if(dir.contains("{file}")){
-					path = dir.replace("{file}", name);
+				if(dir.contains("${file}")){
+					path = dir.replace("${file}", name);
 				}else{
 					path = FileUtil.merge(dir, name);
 				}

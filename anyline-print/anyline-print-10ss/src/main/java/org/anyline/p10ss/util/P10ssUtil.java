@@ -113,7 +113,7 @@ public class P10ssUtil {
         }else{
             String url = config.ACCESS_TOKEN_SERVER+ "?appid="+config.APP_ID+"&secret="+config.APP_SECRET;
 
-            String text = HttpUtil.post(url,"UTF-8").getText();
+            String text = HttpUtil.post(url).getText();
             row = DataRow.parseJson(text);
             log.warn("[new access token][server:{}][token:{}]", config.ACCESS_TOKEN_SERVER, row);
         }
