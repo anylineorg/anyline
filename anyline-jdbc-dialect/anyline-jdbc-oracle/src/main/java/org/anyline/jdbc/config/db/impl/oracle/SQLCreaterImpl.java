@@ -140,8 +140,8 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			builder.append("null");
 		}else if(value instanceof String){
 			String str = value.toString();
-			if(str.startsWith("{") && str.endsWith("}") && !BeanUtil.isJson(value)){
-				str = str.substring(1, str.length()-1);
+			if(str.startsWith("${") && str.endsWith("}") && !BeanUtil.isJson(value)){
+				str = str.substring(2, str.length()-1);
 			}else{
 				str = "'" + str.replace("'", "''") + "'";
 			}
