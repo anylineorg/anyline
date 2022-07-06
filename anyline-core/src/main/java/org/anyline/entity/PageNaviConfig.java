@@ -78,7 +78,7 @@ public class PageNaviConfig extends AnylineConfig  {
 	public String VAR_PAGE_VOL_NUMBERS		= ""				; //用户选择每页多少条 10,20,30,40,50,100 如果设置了此属性将生成"<select class='navi-rows-set'><option value='10'>10 条/页</option>...</select> 
 		 
 	//位置分布 index:下标,stat:统计,jump:跳转到,vol:每页多少条 
-	public String VAR_COMPONENT_LAYOUT		= "{stat}{index}{vol}{jump}"; 
+	public String VAR_COMPONENT_LAYOUT		= "${stat}${index}${vol}${jump}";
 	 
 	public String EVENT_BEFORE				= ""; 
 	public String EVENT_AFTER				= ""; 
