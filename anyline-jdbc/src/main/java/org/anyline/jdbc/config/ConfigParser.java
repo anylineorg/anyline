@@ -358,9 +358,9 @@ public class ConfigParser {
 			for(ParseResult def:defs){
 				result = new ArrayList<Object>();
 				String key = def.getKey();
-				if(key.startsWith("{") && key.endsWith("}")){
+				if(key.startsWith("${") && key.endsWith("}")){
 					// col:value
-					key = key.substring(1, key.length()-1);
+					key = key.substring(2, key.length()-1);
 					if(ParseResult.FETCH_REQUEST_VALUE_TYPE_MULIT == parser.getParamFetchType()){
 						if(key.startsWith("[") && key.endsWith("]")){
 							key = key.substring(1, key.length()-1);
@@ -928,8 +928,8 @@ public class ConfigParser {
 		if (null == values || null == key) {
 			return null;
 		}
-		if(key.startsWith("{") && key.endsWith("}")){
-			result.add(key.substring(1, key.length()-1));
+		if(key.startsWith("${") && key.endsWith("}")){
+			result.add(key.substring(2, key.length()-1));
 		}else{
 			if (keyEncrypt) {
 				// key已加密
