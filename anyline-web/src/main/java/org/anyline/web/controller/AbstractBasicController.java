@@ -305,9 +305,9 @@ public class AbstractBasicController {
 							if (null != defs && defs.size() > 0) {
 								ParseResult def = defs.get(0);
 								String key = def.getKey();
-								if (null != key && key.startsWith("{") && key.endsWith("}")) {
+								if (null != key && key.startsWith("${") && key.endsWith("}")) {
 									// col:value
-									key = key.substring(1, key.length() - 1);
+									key = key.substring(2, key.length() - 1);
 								}
 								row.put(parser.getVar(), key);
 							}
