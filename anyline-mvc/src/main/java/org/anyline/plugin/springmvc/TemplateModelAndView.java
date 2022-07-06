@@ -83,7 +83,7 @@ public class TemplateModelAndView extends ModelAndView{
 		return data_template;
 	}
 	public TemplateModelAndView setDataParser(String ... parser){
-		String str = "{";
+		String str = "${";
 		int size = parser.length;
 		for(int i=0; i<size; i++){
 			String p =parser[i];
