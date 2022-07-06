@@ -88,13 +88,13 @@ public class Head extends BaseBodyTag implements Cloneable{
 				int len = vars.length; 
 				for(int i=0; i<len; i++){ 
 					if(null != _title && !_title.equals("")){ 
-						_title = _title.trim().replace("{"+i+"}", vars[i]);					 
+						_title = _title.trim().replace("${"+i+"}", vars[i]);
 					} 
 					if(null != _keywords && !_keywords.equals("")){ 
-						_keywords = _keywords.trim().replace("{"+i+"}", vars[i]);					 
+						_keywords = _keywords.trim().replace("${"+i+"}", vars[i]);
 					} 
 					if(null != _description && !_description.equals("")){ 
-						_description = _description.trim().replace("{"+i+"}", vars[i]);					 
+						_description = _description.trim().replace("${"+i+"}", vars[i]);
 					} 
 				} 
 			} 
