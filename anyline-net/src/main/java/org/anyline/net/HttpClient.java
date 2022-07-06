@@ -60,7 +60,7 @@ public class HttpClient {
 	private String url;
 	private String encode = "UTF-8";
 	private Map<String, Object> params = new HashMap<>();
-	private List<HttpEntity> entitys = new ArrayList<>();
+	private HttpEntity entity = null;
 	private List<NameValuePair> pairs = new ArrayList<>();
     private boolean autoClose = true;
     private DownloadTask task;
@@ -89,18 +89,15 @@ public class HttpClient {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
-				HttpEntity entity = new UrlEncodedFormEntity(pairs, encode);
-				entitys.add(entity);
+				entity = new UrlEncodedFormEntity(pairs, encode);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
 		}
 
 		HttpPost method = new HttpPost(url);
-		if(null != entitys && entitys.size()>0){
-			for(HttpEntity entity:entitys){
-				method.setEntity(entity);
-			}
+		if(null != entity){
+			method.setEntity(entity);
 		}
 		return exe(method);
 	}
@@ -112,18 +109,15 @@ public class HttpClient {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
-				HttpEntity entity = new UrlEncodedFormEntity(pairs, encode);
-				entitys.add(entity);
+				entity = new UrlEncodedFormEntity(pairs, encode);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			}
 		}
 
 		HttpPut method = new HttpPut(url);
-		if(null != entitys && entitys.size()>0){
-			for(HttpEntity entity:entitys){
-				method.setEntity(entity);
-			}
+		if(null != entity){
+			method.setEntity(entity);
 		}
 		return exe(method);
 	}
@@ -148,7 +142,7 @@ public class HttpClient {
 
 
 
-	public HttpResult postStream(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+	public HttpResult postStream(Map<String, String> headers, String url, String encode,  HttpEntity entity) {
 		HttpResult result = new HttpResult();
 		InputStream is = null;
 		if(null == client){
@@ -158,10 +152,8 @@ public class HttpClient {
 			url = "http:" + url;
 		}
 		HttpPost method = new HttpPost(url);
-		if(null != entitys){
-			for(HttpEntity entity:entitys){
-				method.setEntity(entity);
-			}
+		if(null != entity){
+			method.setEntity(entity);
 		}
 		setHeader(method, headers);
 		try {
@@ -593,14 +585,6 @@ public class HttpClient {
 		this.params = params;
 	}
 
-	public List<HttpEntity> getEntitys() {
-		return entitys;
-	}
-
-	public void setEntitys(List<HttpEntity> entitys) {
-		this.entitys = entitys;
-	}
-
 	public List<NameValuePair> getPairs() {
 		return pairs;
 	}
@@ -649,4 +633,11 @@ public class HttpClient {
 		this.client = client;
 	}
 
+	public HttpEntity getEntity() {
+		return entity;
+	}
+
+	public void setEntity(HttpEntity entity) {
+		this.entity = entity;
+	}
 }

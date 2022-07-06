@@ -59,16 +59,13 @@ public class HttpUtil {
 	private static String default_user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.74 Safari/537.36 Edg/99.0.1150.55";
 	public static String PROTOCOL_TLSV1 = "TLSv1";
 
-	public static HttpResult post(String url, String encode, HttpEntity... entitys) {
-		return post(null, url, encode, entitys);
-	} 
-	public static HttpResult post(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
-		return post(headers, url, encode, BeanUtil.array2list(entitys));
-	} 
- 
+
 	public static HttpResult post(String url, String encode, Map<String, Object> params) {
 		return post(null, url, encode, params);
-	} 
+	}
+	public static HttpResult post(Map<String, String> headers, String url) {
+		return post(headers, url, "UTF-8", (HttpEntity)null);
+	}
 	public static HttpResult post(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
@@ -79,24 +76,17 @@ public class HttpUtil {
 	} 
  
  
-	public static HttpResult post(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+	public static HttpResult post(Map<String, String> headers, String url, String encode, HttpEntity entity) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
 				.setEncode(encode)
-				.setEntitys(entitys)
+				.setEntity(entity)
 				.build().post();
 	}
 
 
 
-	public static HttpResult put(String url, String encode, HttpEntity... entitys) {
-		return put(null, url, encode, entitys);
-	}
-
-	public static HttpResult put( Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
-		return put(headers, url, encode, BeanUtil.array2list(entitys));
-	}
 
 	public static HttpResult put(String url, String encode, Map<String, Object> params) {
 		return put(null, url, encode, params);
@@ -111,23 +101,15 @@ public class HttpUtil {
 	}
 
 
-	public static HttpResult put(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+	public static HttpResult put(Map<String, String> headers, String url, String encode, HttpEntity entity) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
 				.setEncode(encode)
-				.setEntitys(entitys)
+				.setEntity(entity)
 				.build().put();
 	}
 
-
-
-	public static HttpResult stream(String url, String encode, HttpEntity... entitys) {
-		return stream(null, url, encode, entitys);
-	}
-	public static HttpResult stream(Map<String, String> headers, String url, String encode, HttpEntity ... entitys) {
-		return stream(headers, url, encode, BeanUtil.array2list(entitys));
-	}
 
 	public static HttpResult stream(String url, String encode, Map<String, Object> params) {
 		return stream(null, url, encode, params);
@@ -143,12 +125,12 @@ public class HttpUtil {
 	}
 
 
-	public static HttpResult stream(Map<String, String> headers, String url, String encode,  List<HttpEntity> entitys) {
+	public static HttpResult stream(Map<String, String> headers, String url, String encode,  HttpEntity entity) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
 				.setEncode(encode)
-				.setEntitys(entitys)
+				.setEntity(entity)
 				.setReturnType("stream")
 				.build().post();
 	}

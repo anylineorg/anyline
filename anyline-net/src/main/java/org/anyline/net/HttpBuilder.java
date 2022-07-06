@@ -19,7 +19,7 @@ public class HttpBuilder {
     private static final Logger log = LoggerFactory.getLogger(HttpBuilder.class);
     private CloseableHttpClient client;
     private Map<String, String> headers = new HashMap<>();
-    private List<HttpEntity> entitys = new ArrayList<>();
+    private HttpEntity entity;
     private Map<String, Object> params = new HashMap<>();
     private List<NameValuePair> pairs = new ArrayList<>();
     private String userAgent;
@@ -33,7 +33,7 @@ public class HttpBuilder {
         HttpClient client = new HttpClient();
         client.setClient(this.client);
         client.setHeaders(headers);
-        client.setEntitys(entitys);
+        client.setEntity(entity);
         client.setParams(params);
         client.setPairs(pairs);
         client.setUserAgent(userAgent);
@@ -68,33 +68,25 @@ public class HttpBuilder {
         this.encode = encode;
         return this;
     }
-    public HttpBuilder setEntitys(List<HttpEntity> entitys){
-        this.entitys = entitys;
-        return this;
-    }
-    public HttpBuilder addEntity(HttpEntity entity){
-        entitys.add(entity);
-        return this;
-    }
-    public HttpBuilder clearEntity(){
-        entitys.clear();
+    public HttpBuilder setEntity(HttpEntity entity){
+        this.entity = entity;
         return this;
     }
     public HttpBuilder clearHeader(){
         headers.clear();
         return this;
     }
-    public HttpBuilder addEntity(String entity){
+    public HttpBuilder setEntity(String entity){
         try {
-            entitys.add(new StringEntity(entity));
+            this.entity = new StringEntity(entity);
         }catch (Exception e){
             e.printStackTrace();
         }
         return this;
     }
-    public HttpBuilder addEntity(Map<String,?> map){
+    public HttpBuilder setEntity(Map<String,?> map){
         try {
-            entitys.add(new StringEntity(BeanUtil.map2json(map)));
+            entity = new StringEntity(BeanUtil.map2json(map));
         }catch (Exception e){
             e.printStackTrace();
         }

@@ -277,7 +277,7 @@ public class EasemobUtil {
 		DataRow result = null; 
 		String url = baseUrl + "/users/" + user + "/contacts/users/" + friend; 
 		try { 
-			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText(); 
+			String txt = HttpUtil.post(defaultHeader(), url).getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[add friend][result:{}]",txt); 
 			} 
@@ -512,7 +512,7 @@ public class EasemobUtil {
 		DataRow result = null; 
 		String url = baseUrl + "/users/" + user + "/deactivate"; 
 		try { 
-			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText(); 
+			String txt = HttpUtil.post(defaultHeader(), url).getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[deactivate user][result:{}]",txt); 
 			} 
@@ -532,7 +532,7 @@ public class EasemobUtil {
 	public void activate(String user){ 
 		String url = baseUrl + "/users/" + user + "/activate"; 
 		try { 
-			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText(); 
+			String txt = HttpUtil.post(defaultHeader(), url).getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[activate user][result:{}]",txt); 
 			} 
@@ -549,7 +549,7 @@ public class EasemobUtil {
 		boolean result = false; 
 		String url = baseUrl + "/users/" + user + "/disconnect"; 
 		try { 
-			String txt = HttpUtil.post(defaultHeader(), url,"UTF-8").getText(); 
+			String txt = HttpUtil.post(defaultHeader(), url).getText();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
 				log.warn("[disconnect user][result:{}]",txt); 
 			} 
@@ -659,7 +659,7 @@ public class EasemobUtil {
 	 
 	 
 	 
-	private  Map<String,String> defaultHeader(){ 
+	private  Map<String,String> defaultHeader(){
 		Map<String,String> headers = new HashMap<String,String>(); 
 		headers.put("Authorization", "Bearer " + getAccessToken()); 
 		headers.put("Content-Type", "application/json"); 
