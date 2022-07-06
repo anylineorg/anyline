@@ -60,7 +60,7 @@ public class I18N extends BaseBodyTag{
 		 if(BasicUtil.isNotEmpty(data)){
 			 if(data instanceof String){
 				if(data.toString().endsWith("}")){
-					String items[] = data.toString().replace("{", "").replace("}", "").toString().split(",");
+					String items[] = data.toString().replace("${", "").replace("}", "").toString().split(",");
 					List list = new ArrayList();
 					for(String item:items){
 						Map map = new HashMap();
@@ -78,12 +78,12 @@ public class I18N extends BaseBodyTag{
 					Object tmp = item.get(valueKey);
 					if(null != tmp && value.toString().equals(tmp.toString())){
 						String text = "";
-						if(textKey.contains("{")){
+						if(textKey.contains("${")){
 							text = textKey;
 							try {
-								List<String> keys = RegularUtil.fetch(textKey, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
+								List<String> keys = RegularUtil.fetch(textKey, "\\${\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
 								for(String key:keys){
-									Object v = BeanUtil.getFieldValue(item,key.replace("{", "").replace("}", ""));
+									Object v = BeanUtil.getFieldValue(item,key.replace("${", "").replace("}", ""));
 									if(null == v){
 										v = "";
 									}
