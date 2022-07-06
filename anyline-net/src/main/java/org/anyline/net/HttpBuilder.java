@@ -1,8 +1,10 @@
 package org.anyline.net;
 
+import org.anyline.util.BeanUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +74,30 @@ public class HttpBuilder {
     }
     public HttpBuilder addEntity(HttpEntity entity){
         entitys.add(entity);
+        return this;
+    }
+    public HttpBuilder clearEntity(){
+        entitys.clear();
+        return this;
+    }
+    public HttpBuilder clearHeader(){
+        headers.clear();
+        return this;
+    }
+    public HttpBuilder addEntity(String entity){
+        try {
+            entitys.add(new StringEntity(entity));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return this;
+    }
+    public HttpBuilder addEntity(Map<String,?> map){
+        try {
+            entitys.add(new StringEntity(BeanUtil.map2json(map)));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
         return this;
     }
     public HttpBuilder setPairs(List<NameValuePair> pairs){
