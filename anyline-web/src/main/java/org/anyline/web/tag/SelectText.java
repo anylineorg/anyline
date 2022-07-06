@@ -54,9 +54,9 @@ public class SelectText extends BaseBodyTag{
 			} 
 			if(data instanceof String){ 
 				if(data.toString().endsWith("}")){ 
-					data = data.toString().replace("${", "").replace("}", "");
+					data = data.toString().replace("{", "").replace("}", "");
 				}else{ 
-					if("servelt".equals(scope) || "application".equalsIgnoreCase(scope)){ 
+					if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){ 
 						data = request.getSession().getServletContext().getAttribute(data.toString()); 
 					}else if("session".equals(scope)){ 
 						data = request.getSession().getAttribute(data.toString()); 
@@ -83,7 +83,8 @@ public class SelectText extends BaseBodyTag{
 					Object tmp = item.get(valueKey); 
 					if(null != tmp && value.toString().equals(tmp.toString())){ 
 						String text = "";
-						if(textKey.contains("${")){
+						if(textKey.contains("{")){
+							textKey = textKey.replace("{","${");
 							text = BeanUtil.parseFinalValue(item, textKey);
 						}else{
 							Object v = BeanUtil.getFieldValue(item, textKey);

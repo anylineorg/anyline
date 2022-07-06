@@ -56,9 +56,9 @@ public class Radio extends BaseBodyTag{
 			if(null != data){ 
 				if(data instanceof String){ 
 					if(data.toString().endsWith("}")){ 
-						data = data.toString().replace("${", "").replace("}", "");
+						data = data.toString().replace("{", "").replace("}", "");
 					}else{ 
-						if("servelt".equals(scope) || "application".equalsIgnoreCase(scope)){ 
+						if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){ 
 							data = request.getSession().getServletContext().getAttribute(data.toString()); 
 						}else if("session".equals(scope)){ 
 							data = request.getSession().getAttribute(data.toString()); 
@@ -144,7 +144,8 @@ public class Radio extends BaseBodyTag{
 					if(BasicUtil.isEmpty(label)){
 						String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 						String labelBody = "";
-						if (textKey.contains("${")) {
+						if (textKey.contains("{")) {
+							textKey = textKey.replace("{","${");
 							labelBody = BeanUtil.parseRuntimeValue(item,textKey);
 						} else {
 							Object v = item.get(textKey);
@@ -156,7 +157,8 @@ public class Radio extends BaseBodyTag{
 						html.append(labelHtml);
 					}else{//指定label文本
 						String labelHtml = label;
-						if(labelHtml.contains("${") && labelHtml.contains("}")){
+						if(labelHtml.contains("{") && labelHtml.contains("}")){
+							labelHtml = labelHtml.replace("{","${");
 							labelHtml = BeanUtil.parseRuntimeValue(item,labelHtml);
 						}
 						html.append(labelHtml);

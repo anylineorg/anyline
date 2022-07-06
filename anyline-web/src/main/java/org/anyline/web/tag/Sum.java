@@ -50,9 +50,9 @@ public class Sum extends BaseBodyTag {
 			if (null != data) { 
 				if (data instanceof String) { 
 					if (data.toString().endsWith("}")) { 
-						data = data.toString().replace("${", "").replace("}", "");
+						data = data.toString().replace("{", "").replace("}", "");
 					} else { 
-						if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) { 
+						if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) { 
 							data = request.getSession().getServletContext().getAttribute(data.toString()); 
 						} else if ("session".equals(scope)) { 
 							data = request.getSession().getAttribute(data.toString()); 

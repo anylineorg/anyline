@@ -47,9 +47,9 @@ public class Set extends BaseBodyTag {
 			if (null != data) { 
 				if (data instanceof String) { 
 					if (data.toString().endsWith("}")) { 
-						data = data.toString().replace("${", "").replace("}", "");
+						data = data.toString().replace("{", "").replace("}", "");
 					} else { 
-						if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) { 
+						if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) { 
 							data = request.getSession().getServletContext().getAttribute(data.toString()); 
 						} else if ("session".equals(scope)) { 
 							data = request.getSession().getAttribute(data.toString()); 
@@ -85,7 +85,7 @@ public class Set extends BaseBodyTag {
 					} 
 				} 
 				 
-				if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) { 
+				if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) { 
 					request.getSession().getServletContext().setAttribute(var,data); 
 				} else if ("session".equals(scope)) { 
 					request.getSession().setAttribute(var,data); 

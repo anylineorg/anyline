@@ -42,7 +42,7 @@ public class Message extends BodyTagSupport{
 		DataSet messages = null; 
 		String message = ""; 
 		try{ 
-			if("servelt".equals(scope) || "application".equalsIgnoreCase(scope)){ 
+			if("servlet".equals(scope) || "application".equalsIgnoreCase(scope)){ 
 				messages = (DataSet)request.getSession().getServletContext().getAttribute(Constant.SERVLET_ATTR_MESSAGE); 
 			}else if("session".equals(scope)){ 
 				messages = (DataSet)request.getSession().getAttribute(Constant.SESSION_ATTR_MESSAGE); 

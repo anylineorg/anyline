@@ -47,7 +47,7 @@ public class Split extends BaseBodyTag{
 			 result = text.split(regex);
 		 }
 		try{
-			if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) {
+			if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {
 				pageContext.getServletContext().setAttribute(var, result);
 			} else if ("session".equals(scope)) {
 				pageContext.getSession().setAttribute(var, result);

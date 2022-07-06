@@ -134,9 +134,9 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	}
 	protected void crateExtraData(StringBuffer builder){
 		if(BasicUtil.isNotEmpty(extra)){
-			if(extra.startsWith("${") && extra.endsWith("}")){
-				//${id:1,nm:2} > data-id=1,data-nm=2
-				extra = extra.substring(2,extra.length()-1);
+			if(extra.startsWith("{") && extra.endsWith("}")){
+				//{id:1,nm:2} > data-id=1,data-nm=2
+				extra = extra.substring(1,extra.length()-1);
 				String[] list = extra.split(",");
 				for(String item:list){
 					String[] tmps = item.split(":");
