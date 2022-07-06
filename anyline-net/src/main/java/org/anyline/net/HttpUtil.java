@@ -63,8 +63,14 @@ public class HttpUtil {
 	public static HttpResult post(String url, String encode, Map<String, Object> params) {
 		return post(null, url, encode, params);
 	}
+	public static HttpResult post(String url) {
+		return post(null, url, "UTF-8", (HttpEntity)null);
+	}
 	public static HttpResult post(Map<String, String> headers, String url) {
 		return post(headers, url, "UTF-8", (HttpEntity)null);
+	}
+	public static HttpResult post(String url, String encode, HttpEntity entity) {
+		return post(null, url, encode, entity);
 	}
 	public static HttpResult post(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return HttpBuilder.init()
@@ -111,6 +117,12 @@ public class HttpUtil {
 	}
 
 
+	public static HttpResult stream(String url) {
+		return stream(null, url, "UTF-8", (HttpEntity)null);
+	}
+	public static HttpResult stream(String url, String encode, HttpEntity entity) {
+		return stream(null, url, encode, entity);
+	}
 	public static HttpResult stream(String url, String encode, Map<String, Object> params) {
 		return stream(null, url, encode, params);
 	}

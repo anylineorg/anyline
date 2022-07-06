@@ -3,7 +3,6 @@ package org.anyline.net;
 import org.anyline.util.BeanUtil;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.config.RequestConfig;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ public class HttpBuilder {
     private List<NameValuePair> pairs = new ArrayList<>();
     private String userAgent;
     private String url;
-    private String encode;
+    private String encode = "UTF-8";
     private DownloadTask task;
     private Map<String,File> uploads;
     private String returnType = "text";
@@ -78,7 +77,7 @@ public class HttpBuilder {
     }
     public HttpBuilder setEntity(String entity){
         try {
-            this.entity = new StringEntity(entity);
+            this.entity = new StringEntity(entity, encode);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -86,7 +85,7 @@ public class HttpBuilder {
     }
     public HttpBuilder setEntity(Map<String,?> map){
         try {
-            entity = new StringEntity(BeanUtil.map2json(map));
+            entity = new StringEntity(BeanUtil.map2json(map), encode);
         }catch (Exception e){
             e.printStackTrace();
         }
