@@ -209,8 +209,8 @@ public class AnylineController extends AbstractBasicController {
 	public DataRow entity(DataRow row, String... params) {
 		if(null != params && params.length==1){
 			String param = params[0];
-			if(param.startsWith("{") && param.endsWith("}")){
-				String table = param.substring(1, param.length()-1);
+			if(param.startsWith("${") && param.endsWith("}")){
+				String table = param.substring(2, param.length()-1);
 				return entity(TableBuilder.init(table), row);
 			}
 		}
@@ -259,8 +259,8 @@ public class AnylineController extends AbstractBasicController {
 	public DataRow entity(String... params) {
 		if(null != params && params.length==1){
 			String param = params[0];
-			if(param.startsWith("{") && param.endsWith("}")){
-				String table = param.substring(1, param.length()-1);
+			if(param.startsWith("${") && param.endsWith("}")){
+				String table = param.substring(2, param.length()-1);
 				return entity(TableBuilder.init(table));
 			}
 		}
