@@ -90,7 +90,7 @@ public class WechatUtil {
 				.setClient(httpclient)
 				.setUrl(WechatConfig.API_URL_GET_PUBLIC_SECRET)
 				.setEncode("UTF-8")
-				.addEntity(reqEntity)
+				.setEntity(reqEntity)
 				.build().get().getText();
 		//String txt = HttpUtil.post(httpclient, WechatConfig.API_URL_GET_PUBLIC_SECRET, "UTF-8", reqEntity).getText();
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
@@ -147,7 +147,7 @@ public class WechatUtil {
 		}else{
 			url = config.ACCESS_TOKEN_SERVER+ "?grant_type=client_credential&appid="+appid+"&secret="+secret;
 		}
-		String text = HttpUtil.post(url,"UTF-8").getText();
+		String text = HttpUtil.post(url).getText();
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[CREATE NEW ACCESS TOKEN][result:{}]",text);
 		}
