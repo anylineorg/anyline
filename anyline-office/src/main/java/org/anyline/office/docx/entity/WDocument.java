@@ -1150,7 +1150,7 @@ public class WDocument {
                             content = replaces.get(flag);
                         }
                     }else if(flag.startsWith("{") && flag.endsWith("}")){
-                        key = flag.substring(2, flag.length() - 1);
+                        key = flag.substring(1, flag.length() - 1);
                         content = replaces.get(key);
                         if(null == content){
                             content = replaces.get(flag);
