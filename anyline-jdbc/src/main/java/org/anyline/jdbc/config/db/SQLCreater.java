@@ -52,9 +52,9 @@ public interface SQLCreater{
 	 * @param configs 查询条件配置
 	 * @param conditions 查询条件
 	 * @return RunSQL
-	 */ 
-	public RunSQL createQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions); 
-	 
+	 */
+	public RunSQL createQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions);
+
 	public RunSQL createDeleteRunSQL(String dest, Object obj, String ... columns);
 	public RunSQL createDeleteRunSQL(String table, String key, Object values);
 	public RunSQL createExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions); 
