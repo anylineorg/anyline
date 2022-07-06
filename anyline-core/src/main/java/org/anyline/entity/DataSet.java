@@ -682,7 +682,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         kvs.put(p1, p2);
                         i += 2;
                         continue;
-                    } else if (p2.startsWith("{") && p2.endsWith("}")) {
+                    } else if (p2.startsWith("${") && p2.endsWith("}")) {
                         p2 = p2.substring(1, p2.length() - 1);
                         kvs.put(p1, p2);
                         kvs.put(p1 + srcFlagTag, "true");
@@ -815,7 +815,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     str = str.toLowerCase();
                     v = v.toLowerCase();
                     if (srcFlag) {
-                        v = "{" + v + "}";
+                        v = "${" + v + "}";
                     }
                     if (compare == 10) {
                         if (!v.equals(str)) {
