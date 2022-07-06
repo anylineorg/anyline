@@ -234,9 +234,9 @@ public class TableBuilder {
                     Map<String,String> map = new HashMap<>();
                     String field = fields.get(c);
                     String value = null;
-                    if(field.equals("{num}")){
+                    if(field.equals("${num}")){
                         value = (r+1)+"";
-                    }else if(field.contains("{num}")){
+                    }else if(field.contains("${num}")){
                         value = field;
                     }else{
                         value = BeanUtil.parseRuntimeValue(data, field);
@@ -264,7 +264,7 @@ public class TableBuilder {
             //检测序号 {num}(DEPT_CODE)
             for(int c=0; c<csize; c++){
                 String field = fields.get(c);
-                if(field.contains("{num}")){
+                if(field.contains("${num}")){
                     checkNum(c, field);
                 }
             }
