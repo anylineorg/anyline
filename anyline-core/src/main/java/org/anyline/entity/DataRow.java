@@ -24,10 +24,11 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.anyline.entity.KeyAdapter.KEY_CASE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import org.anyline.entity.KeyAdapter.KEY_CASE;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -1125,7 +1126,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 		if(null == key){
 			return result;
 		}
-		if(key.contains("{") && key.contains("}")){
+		if(key.contains("${") && key.contains("}")){
 			result = BeanUtil.parseFinalValue(this,key);
 		}else{
 			Object value = get(key);
