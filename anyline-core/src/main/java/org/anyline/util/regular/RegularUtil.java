@@ -37,10 +37,10 @@ public class RegularUtil {
 	public static Regular regularContain 		= new RegularContain();			//包含匹配模式 
 	 
 	private static final Map<Regular.MATCH_MODE,Regular> regularList = new HashMap<Regular.MATCH_MODE,Regular>(); 
-	public static final String REGEX_VARIABLE = "{(\\w+)}";		//变量{ID}
+	public static final String REGEX_VARIABLE = "${(\\w+)}";		//变量{ID}
 
-	public static final String TAG_BEGIN = "{begin}";
-	public static final String TAG_END = "{end}"; 
+	public static final String TAG_BEGIN = "${begin}";
+	public static final String TAG_END = "${end}"; 
 	 
 	private static final Logger log = LoggerFactory.getLogger(RegularUtil.class); 
 	static{ 
