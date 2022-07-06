@@ -14,14 +14,14 @@ public class StyleParser {
         Map<String, Map<String, String>> styles = new HashMap<>();
         if (null != style) {
             while (style.contains("}")) {
-                String item = RegularUtil.cut(style, "{begin}", "}");
+                String item = RegularUtil.cut(style, "${begin}", "}");
                 if (null == item) {
                     break;
                 }
                 style = style.substring(item.length() + 1);
                 item = item.trim();
-                String key = RegularUtil.cut(item, "{begin}", "{");
-                String value = RegularUtil.cut(item, "{", "{end}");
+                String key = RegularUtil.cut(item, "${begin}", "{");
+                String value = RegularUtil.cut(item, "{", "${end}");
                 if (null == key || null == value) {
                     continue;
                 }
