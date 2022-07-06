@@ -1447,9 +1447,11 @@ public class BeanUtil {
 	 */ 
 	public static Map<String,String> string2map(String str){ 
 		Map<String,String> map = new HashMap<String,String>(); 
-		if(BasicUtil.isNotEmpty(str)){ 
-			if(str.startsWith("{") && str.endsWith("}")){ 
-				str = str.substring(1, str.length()-1); 
+		if(BasicUtil.isNotEmpty(str)){
+			if(str.startsWith("${") && str.endsWith("}")){
+				str = str.substring(2, str.length()-1);
+			}else if(str.startsWith("{") && str.endsWith("}")){
+				str = str.substring(1, str.length()-1);
 			}
 			String[] list = str.split(","); 
 			for(String item:list){ 
@@ -1860,11 +1862,11 @@ public class BeanUtil {
 		} 
 		String value = key;
 		if(BasicUtil.isNotEmpty(key)){ 
-			if(key.contains("{")){ 
+			if(key.contains("${")){
 				try{ 
-					List<String> ks =RegularUtil.fetch(key, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0); 
+					List<String> ks =RegularUtil.fetch(key, "\\${\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
 					for(String k:ks){ 
-						Object v = BeanUtil.getFieldValue(obj,k.replace("{", "").replace("}", "")); 
+						Object v = BeanUtil.getFieldValue(obj,k.replace("${", "").replace("}", ""));
 						if(null == v){ 
 							v = ""; 
 						} 
@@ -2396,7 +2398,7 @@ public class BeanUtil {
 		}
 		String value = key;
 		if(BasicUtil.isNotEmpty(key)){
-			if(key.contains("{")){
+			if(key.contains("${")){
 				value = BeanUtil.parseFinalValue(obj, key);
 			} else {
 				Object val = BeanUtil.getFieldValue(obj, key);
@@ -2481,8 +2483,8 @@ public class BeanUtil {
 						kvs.put(p1, p2);
 						i += 2;
 						continue;
-					} else if (p2.startsWith("{") && p2.endsWith("}")) {
-						p2 = p2.substring(1, p2.length() - 1);
+					} else if (p2.startsWith("${") && p2.endsWith("}")) {
+						p2 = p2.substring(2, p2.length() - 1);
 						kvs.put(p1, p2);
 						kvs.put(p1 + srcFlagTag, "true");
 						i += 2;
@@ -2539,7 +2541,7 @@ public class BeanUtil {
 					str = str.toLowerCase();
 					v = v.toLowerCase();
 					if (srcFlag) {
-						v = "{" + v + "}";
+						v = "${" + v + "}";
 					}
 					if (!v.equals(str)) {
 						chk = false;
