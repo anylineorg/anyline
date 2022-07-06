@@ -56,7 +56,7 @@ public class Select extends BaseBodyTag {
  
 		if (data instanceof String) { 
 			if (data.toString().endsWith("}")) { 
-				data = data.toString().replace("{", "").replace("}", ""); 
+				data = data.toString().replace("${", "").replace("}", "");
 			} else { 
 				if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) { 
 					data = request.getSession().getServletContext().getAttribute(data.toString()); 
