@@ -85,7 +85,7 @@ public interface SQL extends Cloneable {
 	//NM = ${NM}
 	//NM LIKE '%{NM}%'    NM LIKE '%${NM}%'
 	//NM IN({NM})
-	public static final String SQL_PARAM_VAIRABLE_REGEX_EL = "([^\\s$]+)\\s*\\(?(\\s*\\$*{\\w+})(\\+|\\s|'|\\)|%)?";
+	public static final String SQL_PARAM_VAIRABLE_REGEX_EL = "([^\\s$]+)\\s*\\(?(\\s*\\$*${\\w+})(\\+|\\s|'|\\)|%)?";
 	
 	//自定义SQL.id格式 文件名:id
 	public static final String XML_SQL_ID_STYLE = "(\\.|\\S)*\\S+:\\S+"; 
