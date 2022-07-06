@@ -33,7 +33,7 @@ import java.util.*;
  * 是否选中 一类的单个复选
  * &lt;al:checkbox name="role${item.CODE }" value="1" data="" head="" headValue="${item.CODE }"&gt;&lt;/al:checkbox&gt;
  * value:选中值 
- * value="{1,2,3,4,5}"	 item.get(valueKey)是在1,3,4,5集合中时选中
+ * value="${1,2,3,4,5}"	 item.get(valueKey)是在1,3,4,5集合中时选中
  * value="${list}" property="ID"	item.get(valueKey)是在list.items.property 集合中时选中
  * rely="CHK" data.item.CHK  = true或1时选中 根据rely列的值 判断是否选中
  *
@@ -75,9 +75,9 @@ public class Checkbox extends BaseBodyTag {
 			if (null != data) { 
 				if (data instanceof String) { 
 					if (data.toString().endsWith("}")) { 
-						data = data.toString().replace("{", "").replace("}", ""); 
+						data = data.toString().replace("${", "").replace("}", "");
 					} else { 
-						if ("servelt".equals(scope) || "application".equalsIgnoreCase(scope)) { 
+						if ("servlet".equals(scope) || "application".equalsIgnoreCase(scope)) {
 							data = request.getSession().getServletContext().getAttribute(data.toString()); 
 						} else if ("session".equals(scope)) { 
 							data = request.getSession().getAttribute(data.toString()); 
@@ -108,7 +108,7 @@ public class Checkbox extends BaseBodyTag {
 					} 
 					if (this.value instanceof String) { 
 						if (this.value.toString().endsWith("}")) { 
-							this.value = this.value.toString().replace("{", "").replace("}", ""); 
+							this.value = this.value.toString().replace("${", "").replace("}", "");
 						} 
 					}
 					if (this.value instanceof String) {
@@ -200,7 +200,7 @@ public class Checkbox extends BaseBodyTag {
 						if(BasicUtil.isEmpty(label)){ 
 							String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">"; 
 							String labelBody = ""; 
-							if (textKey.contains("{")) { 
+							if (textKey.contains("${")) {
 								labelBody = BeanUtil.parseRuntimeValue(item,textKey);
 							} else { 
 								Object v = item.get(textKey); 
@@ -212,7 +212,7 @@ public class Checkbox extends BaseBodyTag {
 							html.append(labelHtml);
 						}else{//指定label文本
 							String labelHtml = label;
-							if(labelHtml.contains("{") && labelHtml.contains("}")){
+							if(labelHtml.contains("${") && labelHtml.contains("}")){
 								labelHtml = BeanUtil.parseRuntimeValue(item,labelHtml);
 							}
 							html.append(labelHtml);
