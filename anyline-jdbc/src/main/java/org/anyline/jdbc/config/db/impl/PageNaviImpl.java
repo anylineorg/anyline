@@ -500,8 +500,8 @@ public class PageNaviImpl implements PageNavi{
 		navi.append("<div class=\"anyline_navi\">\n"); 
 		//数据统计 
 		String statFormat = config.STYLE_STAT_FORMAT;  
-		statFormat = statFormat.replace("{totalRow}", totalRow+"").replace("{curPage}", curPage+"").replace("{totalPage}", totalPage+""); 
-		statFormat = statFormat.replace("{total-row}", totalRow+"").replace("{cur-page}", curPage+"").replace("{total-page}", totalPage+""); 
+		statFormat = statFormat.replace("${totalRow}", totalRow+"").replace("${curPage}", curPage+"").replace("${totalPage}", totalPage+"");
+		statFormat = statFormat.replace("${total-row}", totalRow+"").replace("${cur-page}", curPage+"").replace("${total-page}", totalPage+"");
 		if(showStat){ 
 			stat.append(statFormat).append("\n"); 
 		} 
