@@ -140,37 +140,38 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 			this.columns.add(columns);
 		}
 	}
+
 	/**
 	 * 解析多列
 	 * @param src src
 	 */
 	protected void parseMultColumns(String src){
 		List<String> cols = new ArrayList<>();
-		//拆分转义字段({}) CD, {ISNULL(NM,'') AS NM}, {CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
-		while(src.contains("{")){
+		//拆分转义字段(${}) CD, ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
+		while(src.contains("${")){
 			src = src.trim();
-			int fr = src.indexOf("{");
+			int fr = src.indexOf("${");
 			String tmp = "";
 			if(0 == fr){
 				tmp = src.substring(0, src.indexOf("}")+1);
 				src = src.substring(src.indexOf("}")+1);
 			}else{
-				tmp = src.substring(0, fr);
-				src = src.substring(fr);
+				tmp = src.substring(0, fr);  //先把 ${ 之前的部分拆出: CD,
+				src = src.substring(fr);     //剩余部分: ${ISNULL(NM,'') AS NM}, ${CASE WHEN AGE>0 THEN 0 AGE ELSE 0 END AS AGE}, TITLE
 			}
 			cols.add(tmp);
 		}
 		cols.add(src);
 		//二次拆分
 		for(String c:cols){
-			if(c.contains("{")){
-				this.columns.add(c);
+			if(c.contains("${")){
+				columns.add(c);
 			}else{
 				String[] cs = c.split(",");
 				for(String item:cs){
 					item = item.trim();
 					if(item.length()>0)
-						this.columns.add(item);
+						columns.add(item);
 				}
 			}
 		}
@@ -231,9 +232,10 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 		if(BasicUtil.isEmpty(sql)){
 			return;
 		}
-		if(sql.contains("{")) {
-			while (sql.contains("{")) {
-				String pre = sql.substring(0, sql.indexOf("{"));
+		if(sql.contains("${")) {
+			while (sql.contains("${")) {
+				sql = sql.trim();
+				String pre = sql.substring(0, sql.indexOf("${"));
 				if (BasicUtil.isNotEmpty(pre)) {
 					String[] pres = pre.split(",");
 					for (String item : pres) {
@@ -243,9 +245,9 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 						}
 					}
 				}
-				int fr = sql.indexOf("{");
+				int fr = sql.indexOf("${");
 				int to = sql.indexOf("}");
-				String col = sql.substring(fr + 1, to).trim();
+				String col = sql.substring(fr + 2, to).trim();
 				if (!columns.contains(col)) {
 					columns.add(col);
 				}
