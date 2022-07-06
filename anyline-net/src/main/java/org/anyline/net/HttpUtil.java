@@ -627,9 +627,19 @@ public class HttpUtil {
 			return defaultClient();
 		}
 	}
+	public static CloseableHttpClient client(String url, String userAgent){
+		if(url.contains("https://")){
+			return defaultSSLClient(userAgent);
+		}else{
+			return defaultClient(userAgent);
+		}
+	}
 	public static CloseableHttpClient defaultClient(){
+		return defaultClient(default_user_agent);
+	}
+	public static CloseableHttpClient defaultClient(String userAgent){
 		HttpClientBuilder builder = HttpClients.custom().setDefaultRequestConfig(default_request_config);
-		builder.setUserAgent(default_user_agent);
+		builder.setUserAgent(userAgent);
 		default_client = builder.build();
 		return default_client;
 	}
@@ -666,11 +676,15 @@ public class HttpUtil {
 		return httpclient;
 	}
 	public static CloseableHttpClient defaultSSLClient(){
+		return defaultSSLClient(default_user_agent);
+	}
+	public static CloseableHttpClient defaultSSLClient(String userAgent){
 		try {
 			if(null != default_ssl_client){
 				return default_ssl_client;
 			}
 			HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+			httpClientBuilder.setUserAgent(userAgent);
 			httpClientBuilder.setMaxConnTotal(10000);
 			httpClientBuilder.setMaxConnPerRoute(1000);
 

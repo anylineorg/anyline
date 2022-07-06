@@ -47,6 +47,10 @@ public class HttpBuilder {
     public static HttpBuilder init(){
         return new HttpBuilder();
     }
+    public HttpBuilder setContentType(String type){
+        headers.put("Content-Type", type);
+        return this;
+    }
     public HttpBuilder setClient(CloseableHttpClient client){
         this.client = client;
         return this;

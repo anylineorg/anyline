@@ -170,7 +170,7 @@ public class HttpClient {
 	private HttpResult exe(HttpRequestBase method){
 		setHeader(method, headers);
 		if(null == client){
-			client = HttpUtil.client(url);
+			client = HttpUtil.client(url, userAgent);
 		}
 		if(url.startsWith("//")){
 			url = "http:" + url;
