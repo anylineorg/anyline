@@ -38,7 +38,7 @@ public class SQLHelper {
 		if(signType ==1){ 
 			key = fullKey.replace(":", ""); 
 		}else if(signType ==2){ 
-			key = fullKey.replace("$", "").replace("{", "").replace("}", ""); 
+			key = fullKey.replace("${", "").replace("}", "");
 		} 
 		 
 		if(fullKey.startsWith("$") || fullKey.startsWith("::")){ 
