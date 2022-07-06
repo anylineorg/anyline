@@ -160,11 +160,11 @@ public class MapUtil {
 		}
 		String value = key;
 		if(BasicUtil.isNotEmpty(key)){
-			if(key.contains("{")){
+			if(key.contains("${")){
 				try{
-					List<String> ks =RegularUtil.fetch(key, "\\{\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
+					List<String> ks =RegularUtil.fetch(key, "\\${\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
 					for(String k:ks){
-						Object v =  obj.get(k.replace("{", "").replace("}", ""));
+						Object v =  obj.get(k.replace("${", "").replace("}", ""));
 						if(null == v){
 							v = "";
 						}
@@ -245,8 +245,8 @@ public class MapUtil {
 						kvs.put(p1, p2);
 						i += 2;
 						continue;
-					} else if (p2.startsWith("{") && p2.endsWith("}")) {
-						p2 = p2.substring(1, p2.length() - 1);
+					} else if (p2.startsWith("${") && p2.endsWith("}")) {
+						p2 = p2.substring(2, p2.length() - 1);
 						kvs.put(p1, p2);
 						kvs.put(p1 + srcFlagTag, "true");
 						i += 2;
