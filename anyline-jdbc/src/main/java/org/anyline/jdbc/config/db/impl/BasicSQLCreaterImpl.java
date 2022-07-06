@@ -337,10 +337,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			String key = keys.get(i);
 			Object value = row.get(key);
 			builder.append(getDelimiterFr()).append(key).append(getDelimiterTo());
-			if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
+			if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 				String str = value.toString();
 				value = str.substring(1, str.length()-1);
-				if(value.toString().startsWith("{") && value.toString().endsWith("}")){
+				if(value.toString().startsWith("${") && value.toString().endsWith("}")){
 					//保存json时可以{json格式}最终会有两层:{{a:1}}
 					param.append("?");
 					insertColumns.add(key);
@@ -456,8 +456,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append("null");
 		}else if(value instanceof String){
 			String str = value.toString();
-			if(str.startsWith("{") && str.endsWith("}") && !BeanUtil.isJson(value)){
-				str = str.substring(1, str.length()-1);
+			if(str.startsWith("${") && str.endsWith("}") && !BeanUtil.isJson(value)){
+				str = str.substring(2, str.length()-1);
 			}else{
 				str = "'" + str.replace("'", "''") + "'";
 			}
@@ -615,9 +615,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
 				Object value = row.get(KEY_CASE.SRC, key);
-				if(null != value && value.toString().startsWith("{") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
+				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
-					value = str.substring(1, str.length()-1);
+					value = str.substring(2, str.length()-1);
 					builder.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 				}else{
 					builder.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
