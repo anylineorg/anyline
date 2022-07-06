@@ -165,13 +165,13 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public String getDelimiterFr() {
 		return delimiterFr;
 	} 
-	public void setdelimiterFr(String delimiterFr) {
+	public void setDelimiterFr(String delimiterFr) {
 		this.delimiterFr = delimiterFr;
 	} 
 	public String getDelimiterTo() {
 		return delimiterTo;
 	} 
-	public void setdelimiterTo(String delimiterTo) {
+	public void setDelimiterTo(String delimiterTo) {
 		this.delimiterTo = delimiterTo;
 	} 
 	public SQLCreater getCreater() { 
@@ -272,9 +272,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 			return this;
 		}
 
-		if(condition.startsWith("{") && condition.endsWith("}")){
+		if(condition.startsWith("${") && condition.endsWith("}")){
 			//原生SQL  不处理
-			Condition con = new AutoConditionImpl(condition.substring(1, condition.length()-1));
+			Condition con = new AutoConditionImpl(condition.substring(2, condition.length()-1));
 			conditionChain.addCondition(con);
 			return this;
 		}
