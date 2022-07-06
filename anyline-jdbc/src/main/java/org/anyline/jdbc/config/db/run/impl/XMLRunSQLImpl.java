@@ -197,7 +197,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					if(var.getSignType() ==1){ 
 						replaceKey = ":" + var.getKey(); 
 					}else if(var.getSignType() ==2){ 
-						replaceKey = "{" + var.getKey() + "}"; 
+						replaceKey = "${" + var.getKey() + "}";
 					} 
 					if(null != value){ 
 						result = result.replace(replaceKey, value); 
@@ -214,7 +214,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					// CD = :CD 
 					// CD = {CD} 
 					// CD like '%:CD%' 
-					// CD like '%{CD}%' 
+					// CD like '%${CD}%'
 					List<Object> varValues = var.getValues(); 
 					if(BasicUtil.isNotEmpty(true, varValues)){ 
  
@@ -222,7 +222,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						if(var.getSignType() ==1){ 
 							replaceKey = ":" + var.getKey(); 
 						}else if(var.getSignType() ==2){ 
-							replaceKey = "{" + var.getKey() + "}"; 
+							replaceKey = "${" + var.getKey() + "}";
 						} 
 						if(var.getCompare() == SQL.COMPARE_TYPE.LIKE){ 
 							//CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%' 
@@ -571,9 +571,9 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			return this; 
 		} 
  
-		if(condition.startsWith("{") && condition.endsWith("}")){ 
+		if(condition.startsWith("${") && condition.endsWith("}")){
 			//原生SQL  不处理 
-			addSatticCondition(condition.substring(1, condition.length()-1)); 
+			addSatticCondition(condition.substring(2, condition.length()-1));
 			return this; 
 		} 
 		if(condition.contains(":")){ 
