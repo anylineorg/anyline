@@ -23,6 +23,7 @@ import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
 import org.anyline.cache.CacheUtil;
 import org.anyline.cache.PageLazyStore;
+import org.anyline.compatible.Compatible;
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -52,13 +53,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 @Service("anyline.service")
-public class AnylineServiceImpl implements AnylineService {
+public class AnylineServiceImpl<E> implements AnylineService<E> {
     protected final Logger log = LoggerFactory.getLogger(this.getClass());
     @Autowired(required = false)
     @Qualifier("anyline.dao")
@@ -68,35 +71,9 @@ public class AnylineServiceImpl implements AnylineService {
     @Qualifier("anyline.cache.provider")
     protected CacheProvider cacheProvider;
 
+    @Autowired(required = false)
+    protected Compatible compatible;
 
-    @Override
-    public DataSet selects(String src, ConfigStore configs, String... conditions) {
-        return querys(src, configs, conditions);
-    }
-    @Override
-    public DataSet selects(String src, String... conditions) {
-        return querys(src, conditions);
-    }
-    @Override
-    public DataSet selects(String src, int fr, int to, String... conditions) {
-        return querys(src, fr, to, conditions);
-    }
-    @Override
-    public DataRow select(String src, ConfigStore configs, String... conditions) {
-        return query(src, configs, conditions);
-    }
-    @Override
-    public DataRow select(String src, String... conditions) {
-        return query(src, conditions);
-    }
-    @Override
-    public DataSet selectProcedure(String procedure, String... inputs) {
-        return queryProcedure(procedure, inputs);
-    }
-    @Override
-    public DataSet select(Procedure procedure, String ... inputs) {
-        return query(procedure, inputs);
-    }
     /**
      * 按条件查询
      * @param src 表｜视图｜函数｜自定义SQL
@@ -111,12 +88,17 @@ public class AnylineServiceImpl implements AnylineService {
         DataSet set = queryFromDao(src, configs, conditions);
         return set;
     }
+    @Override
+    public DataSet querys(String src, PageNavi navi, String... conditions) {
+        ConfigStore configs = new ConfigStoreImpl();
+        configs.setPageNavi(navi);
+        return querys(src, configs, conditions);
+    }
 
     @Override
     public DataSet querys(String src, String... conditions) {
-        return querys(src, null, conditions);
+        return querys(src, (ConfigStore)null, conditions);
     }
-
 
     @Override
     public DataSet querys(String src, int fr, int to, String... conditions) {
@@ -184,7 +166,7 @@ public class AnylineServiceImpl implements AnylineService {
             maps = dao.maps(sql, configs, conditions);
         } catch (Exception e) {
             maps = new ArrayList<Map<String,Object>>();
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(log.isWarnEnabled()){
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
@@ -242,7 +224,7 @@ public class AnylineServiceImpl implements AnylineService {
 
     @Override
     public DataRow query(String src, String... conditions) {
-        return query(src, null, conditions);
+        return query(src, (ConfigStore)null, conditions);
     }
 
     @Override
@@ -294,6 +276,137 @@ public class AnylineServiceImpl implements AnylineService {
         return cache(cache, src, null, conditions);
     }
 
+    @Override
+    public <T> List<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
+        return queryFromDao(clazz, configs, conditions);
+    }
+
+    @Override
+    public <T> List<T> querys(Class<T> clazz, PageNavi navi, String... conditions) {
+        ConfigStore configs = new ConfigStoreImpl();
+        configs.setPageNavi(navi);
+        return querys(clazz, configs, conditions);
+    }
+
+    @Override
+    public <T> List<T> querys(Class<T> clazz, String... conditions) {
+        return querys(clazz, (ConfigStore)null, conditions);
+    }
+
+    @Override
+    public <T> List<T> querys(Class<T> clazz, int fr, int to, String... conditions) {
+        ConfigStore configs = new ConfigStoreImpl(fr, to);
+        return querys(clazz, configs, conditions);
+    }
+
+    @Override
+    public <T> T query(Class<T> clazz, ConfigStore configs, String... conditions) {
+        PageNaviImpl navi = new PageNaviImpl();
+        navi.setFirstRow(0);
+        navi.setLastRow(0);
+        navi.setCalType(1);
+        if (null == configs) {
+            configs = new ConfigStoreImpl();
+        }
+        configs.setPageNavi(navi);
+        List<T> list = querys(clazz, configs, conditions);
+        if (null != list && list.size() > 0) {
+            return list.get(0);
+        }
+        return null;
+    }
+
+    @Override
+    public <T> T query(Class<T> clazz, String... conditions) {
+        return query(clazz, (ConfigStore)null, conditions);
+    }
+
+
+    /**
+     * 解析泛型class
+     * @return class
+     */
+    protected Class<E> parseGenericClass(){
+        Type type = null;
+        Class<E> clazz = null;
+        Type superClass = getClass().getGenericSuperclass();
+        if(superClass instanceof ParameterizedType) {
+            type = ((ParameterizedType) superClass).getActualTypeArguments()[0];
+        }
+        if (type instanceof ParameterizedType) {
+            clazz = (Class<E>) ((ParameterizedType) type).getRawType();
+        } else {
+            clazz = (Class<E>) type;
+        }
+        return clazz;
+    }
+
+    @Override
+    public List<E> gets(ConfigStore configs, String... conditions) {
+        Class<E> clazz = parseGenericClass();
+        return querys(clazz, configs, conditions);
+    }
+    @Override
+    public List<E> gets(PageNavi navi, String... conditions) {
+        Class<E> clazz = parseGenericClass();
+        return querys(clazz, navi, conditions);
+    }
+
+    @Override
+    public List<E> gets(String... conditions) {
+        Class<E> clazz = parseGenericClass();
+        return querys(clazz, conditions);
+    }
+
+    @Override
+    public List<E> gets(int fr, int to, String... conditions) {
+        Class<E> clazz = parseGenericClass();
+        return querys(clazz, fr, to, conditions);
+    }
+
+    @Override
+    public E get(ConfigStore configs, String... conditions) {
+        Class<E> clazz = parseGenericClass();
+        return query(clazz, configs, conditions);
+    }
+
+    @Override
+    public E get(String... conditions) {
+        Class<E> clazz = parseGenericClass();
+        return query(clazz, conditions);
+    }
+    @Override
+    public DataSet selects(String src, ConfigStore configs, String... conditions) {
+        return querys(src, configs, conditions);
+    }
+    @Override
+    public DataSet selects(String src, PageNavi navi, String... conditions) {
+        return querys(src, navi, conditions);
+    }
+    @Override
+    public DataSet selects(String src, String... conditions) {
+        return querys(src, conditions);
+    }
+    @Override
+    public DataSet selects(String src, int fr, int to, String... conditions) {
+        return querys(src, fr, to, conditions);
+    }
+    @Override
+    public DataRow select(String src, ConfigStore configs, String... conditions) {
+        return query(src, configs, conditions);
+    }
+    @Override
+    public DataRow select(String src, String... conditions) {
+        return query(src, conditions);
+    }
+    @Override
+    public DataSet selectProcedure(String procedure, String... inputs) {
+        return queryProcedure(procedure, inputs);
+    }
+    @Override
+    public DataSet select(Procedure procedure, String ... inputs) {
+        return query(procedure, inputs);
+    }
     /*多表查询,左右连接*/
 
     @Override
@@ -731,19 +844,19 @@ public class AnylineServiceImpl implements AnylineService {
     /**
      * 更新记录
      *
-     * @param sync  是否异步
+     * @param async  是否异步
      * @param dest  dest
      * @param data  需要更新的数据
      * @param columns 需要更新的列
      * @return int
      */
     @Override
-    public int update(boolean sync, String dest, Object data, String... columns) {
+    public int update(boolean async, String dest, Object data, String... columns) {
         dest = DataSourceHolder.parseDataSource(dest,dest);
         final String cols[] = BasicUtil.compressionSpace(columns);
         final String _dest = BasicUtil.compressionSpace(dest);
         final Object _data = data;
-        if(sync){
+        if(async){
             new Thread(new Runnable(){
                 @Override
                 public void run() {
@@ -774,12 +887,12 @@ public class AnylineServiceImpl implements AnylineService {
         return update(null, data, columns);
     }
     @Override
-    public int update(boolean sync, Object data, String... columns) {
-        return update(sync, null, data, columns);
+    public int update(boolean async, Object data, String... columns) {
+        return update(async, null, data, columns);
     }
     @Override
-    public int save(boolean sync, String dest, Object data, boolean checkParimary, String... columns) {
-        if(sync){
+    public int save(boolean async, String dest, Object data, boolean checkParimary, String... columns) {
+        if(async){
             final String _dest = dest;
             final Object _data = data;
             final boolean _chk = checkParimary;
@@ -820,8 +933,8 @@ public class AnylineServiceImpl implements AnylineService {
         return save(null, data, checkParimary, columns);
     }
     @Override
-    public int save(boolean sync, Object data, boolean checkParimary, String... columns) {
-        return save(sync, null, data, checkParimary, columns);
+    public int save(boolean async, Object data, boolean checkParimary, String... columns) {
+        return save(async, null, data, checkParimary, columns);
     }
 
 
@@ -831,8 +944,8 @@ public class AnylineServiceImpl implements AnylineService {
     }
 
     @Override
-    public int save(boolean sync, Object data, String... columns) {
-        return save(sync, null, data, false, columns);
+    public int save(boolean async, Object data, String... columns) {
+        return save(async, null, data, false, columns);
     }
 
     @Override
@@ -841,8 +954,8 @@ public class AnylineServiceImpl implements AnylineService {
     }
 
     @Override
-    public int save(boolean sync, String dest, Object data, String... columns) {
-        return save(sync, dest, data, false, columns);
+    public int save(boolean async, String dest, Object data, String... columns) {
+        return save(async, dest, data, false, columns);
     }
 
     protected int saveObject(String dest, Object data, boolean checkParimary, String... columns) {
@@ -941,7 +1054,7 @@ public class AnylineServiceImpl implements AnylineService {
             set = new DataSet();
             set.setException(e);
             log.error("QUERY ERROR:"+e);
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(log.isWarnEnabled()){
                 e.printStackTrace();
             }
             if(ConfigTable.IS_THROW_SQL_EXCEPTION){
@@ -1007,9 +1120,17 @@ public class AnylineServiceImpl implements AnylineService {
         return dao.delete(dest, row, columns);
     }
     @Override
-    public int delete(DataRow row, String ... columns) {
-        String dest = DataSourceHolder.parseDataSource(null,row);
-        return dao.delete(dest, row, columns);
+    public int delete(Object obj, String ... columns) {
+        if(null == obj){
+            return 0;
+        }
+        if(obj instanceof DataRow) {
+            DataRow row = (DataRow)obj;
+            String dest = DataSourceHolder.parseDataSource(null, row);
+            return dao.delete(dest, row, columns);
+        }else{
+            return 0;
+        }
     }
 
     @Override
@@ -1056,7 +1177,6 @@ public class AnylineServiceImpl implements AnylineService {
         if(ConfigTable.isSQLDebug()){
             log.warn("[解析SQL][src:{}]", sql.getText());
         }
-        //conditions = parseConditions(conditions);
         try {
             setPageLazy(sql.getText(), configs, conditions);
             set = dao.querys(sql, configs, conditions);
@@ -1064,7 +1184,7 @@ public class AnylineServiceImpl implements AnylineService {
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(log.isWarnEnabled()){
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
@@ -1079,7 +1199,6 @@ public class AnylineServiceImpl implements AnylineService {
         if(ConfigTable.isSQLDebug()){
             log.warn("[解析SQL][src:{}]", src);
         }
-        //conditions = parseConditions(conditions);
         try {
             setPageLazy(src, configs, conditions);
             SQL sql = createSQL(src);
@@ -1088,7 +1207,7 @@ public class AnylineServiceImpl implements AnylineService {
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
-            if(ConfigTable.isDebug() && log.isWarnEnabled()){
+            if(log.isWarnEnabled()){
                 e.printStackTrace();
             }
             log.error("QUERY ERROR:"+e);
@@ -1097,6 +1216,27 @@ public class AnylineServiceImpl implements AnylineService {
             }
         }
         return set;
+    }
+
+    protected <T> List<T> queryFromDao(Class<T> clazz, ConfigStore configs, String... conditions){
+        List<T> list = null;
+        if(ConfigTable.isSQLDebug()){
+            log.warn("[解析SQL][src:{}]", clazz);
+        }
+        try {
+            setPageLazy(clazz.getName(), configs, conditions);
+            list = dao.querys(clazz, configs, conditions);
+        } catch (Exception e) {
+            list = new ArrayList<>();
+            if(log.isWarnEnabled()){
+                e.printStackTrace();
+            }
+            log.error("QUERY ERROR:"+e);
+            if(ConfigTable.IS_THROW_SQL_EXCEPTION){
+                throw e;
+            }
+        }
+        return list;
     }
     /**
      * 解析SQL中指定的主键table(col1,col2)[pk1,pk2]
@@ -1128,22 +1268,26 @@ public class AnylineServiceImpl implements AnylineService {
         src = src.trim();
         List<String> pks = new ArrayList<>();
         //文本sql
-        if (src.startsWith("{") && src.endsWith("}")) {
+        if (src.startsWith("${") && src.endsWith("}")) {
             if(ConfigTable.isSQLDebug()){
                 log.warn("[解析SQL类型] [类型:{JAVA定义}] [src:{}]",src);
             }
-            src = src.substring(1,src.length()-1);
+            src = src.substring(2,src.length()-1);
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
             sql = new TextSQLImpl(src);
         } else {
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
-            if (src.toUpperCase().trim().startsWith("SELECT")
-                    || src.toUpperCase().trim().startsWith("DELETE")
-                    || src.toUpperCase().trim().startsWith("INSERT")
-                    || src.toUpperCase().trim().startsWith("UPDATE")
-                    || src.toUpperCase().trim().startsWith("TRUNCATE")) {
+            String chk = src.toUpperCase().trim();
+            if (chk.startsWith("SELECT")
+                    || chk.startsWith("DELETE")
+                    || chk.startsWith("INSERT")
+                    || chk.startsWith("UPDATE")
+                    || chk.startsWith("TRUNCATE")
+                    || chk.startsWith("CREATE")
+                    || chk.startsWith("DROP")
+                    || chk.startsWith("CALL")) {
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
