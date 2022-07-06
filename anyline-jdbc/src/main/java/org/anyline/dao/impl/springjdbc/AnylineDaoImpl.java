@@ -20,6 +20,7 @@
 package org.anyline.dao.impl.springjdbc;
 
 import org.anyline.cache.PageLazyStore;
+import org.anyline.compatible.Compatible;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.JDBCListener;
 import org.anyline.dao.impl.BatchInsertStore;
@@ -34,15 +35,18 @@ import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.impl.ProcedureParam;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
+import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLQueryException;
 import org.anyline.jdbc.exception.SQLUpdateException;
 import org.anyline.jdbc.util.SQLCreaterUtil;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
@@ -61,7 +65,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository("anyline.dao")
-public class AnylineDaoImpl implements AnylineDao {
+public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	protected static final Logger log = LoggerFactory.getLogger(AnylineDaoImpl.class);
 
 	@Autowired(required=false)
@@ -69,6 +73,10 @@ public class AnylineDaoImpl implements AnylineDao {
 
 	@Autowired(required=false)
 	protected JDBCListener listener;
+
+
+	@Autowired(required=false)
+	protected Compatible compatible;
 
 	public JdbcTemplate getJdbc(){
 		return jdbc;
@@ -209,6 +217,72 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		return set;
 	}
+
+	@Override
+	public <T> List<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
+		List<T> list = null;
+		try {
+			SQL sql = new TableSQLImpl();
+			if(null != compatible){
+				sql.setDataSource(compatible.table(clazz));
+			}
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			if (showSQL && !run.isValid()) {
+				String tmp = "[valid:false]";
+				tmp += "[SQL:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				log.warn(tmp);
+			}
+			PageNavi navi = run.getPageNavi();
+			int total = 0;
+			if (run.isValid()) {
+				if (null != navi) {
+					if(null != listener){
+						listener.beforeTotal(this,run);
+					}
+					if (navi.getLastRow() == 0) {
+						//第一条
+						total = 1;
+					} else {
+						//未计数(总数 )
+						if (navi.getTotalRow() == 0) {
+							total = getTotal(run.getTotalQueryTxt(), run.getValues());
+							navi.setTotalRow(total);
+						} else {
+							total = navi.getTotalRow();
+						}
+					}
+					if(null != listener){
+						listener.afterTotal(this, run, total);
+					}
+				}
+				if (showSQL) {
+					log.warn("[查询记录总数][行数:{}]", total);
+				}
+			}
+			if (run.isValid() && (null == navi || total > 0)) {
+				if(null != listener){
+					listener.beforeQuery(this,run);
+				}
+				list = select(clazz, run.getFinalQueryTxt(), run.getValues());
+				if(null != listener){
+					listener.afterQuery(this, run, list);
+
+				}
+			} else {
+				list = new ArrayList<>();
+			}
+			if (null != navi && navi.isLazy()) {
+				PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
+			}
+		}finally {
+			//自动切换回默认数据源
+			if(DataSourceHolder.isAutoDefault()){
+				DataSourceHolder.recoverDataSource();
+			}
+		}
+		return list;
+	}
+
 	public DataSet querys(SQL sql, String ... conditions){
 		return querys(sql, null, conditions);
 	}
@@ -739,6 +813,52 @@ public class AnylineDaoImpl implements AnylineDao {
 		}
 		return set;
 	}
+
+	protected <T> List<T> select(Class<T> clazz, String sql, List<Object> values){
+		if(BasicUtil.isEmpty(sql)){
+			throw new SQLQueryException("未指定SQL");
+		}
+		long fr = System.currentTimeMillis();
+		String random = "";
+		if(showSQL){
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn(random + "[txt:\n{}\n]",sql);
+			log.warn(random + "[参数:{}]",paramLogFormat(values));
+		}
+		List<T> set = new ArrayList<>();
+		try{
+			List<Map<String,Object>> list = null;
+			if(null != values && values.size()>0){
+				list = getJdbc().queryForList(sql, values.toArray());
+			}else{
+				list = getJdbc().queryForList(sql);
+			}
+			long mid = System.currentTimeMillis();
+			if(showSQL){
+				log.warn(random + "[执行耗时:{}ms]",mid - fr);
+			}
+			for(Map<String,Object> map:list){
+				if(null != compatible){
+					T row = compatible.entity(clazz, map);
+					set.add(row);
+				}else{
+					T row = BeanUtil.map2object(map, clazz);
+					set.add(row);
+				}
+			}
+			if(showSQL){
+				log.warn(random + "[封装耗时:{}ms][封装行数:{}]",System.currentTimeMillis() - mid,list.size() );
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			if(showSQLWhenError){
+				log.error(random + "[异常][txt:\n{}\n]",sql);
+				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
+			}
+			throw new SQLQueryException("查询异常:" + e + "\ntxt:" + sql + "\nparam:" + values);
+		}
+		return set;
+	}
 	@Override
 	public int execute(SQL sql, ConfigStore configs, String ... conditions){
 		int result = -1;
@@ -883,7 +1003,7 @@ public class AnylineDaoImpl implements AnylineDao {
 		final List<ProcedureParam> outputs = procedure.getOutputs();
 		long fr = System.currentTimeMillis();
 		String random = "";
-		String sql = "{";
+		String sql = " {";
 
 		//带有返回值
 		int returnIndex = 0;
