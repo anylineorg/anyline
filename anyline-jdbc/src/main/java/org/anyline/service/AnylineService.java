@@ -22,21 +22,21 @@ package org.anyline.service;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.MetaData;
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
 
-import javax.print.attribute.standard.Media;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public interface AnylineService{ 
+public interface AnylineService<E>{
 	/**
 	 * 按条件查询
-	 * @param src			数据源(表或自定义SQL或SELECT语句) src			数据源(表或自定义SQL或SELECT语句)
-	 * @param configs		封装来自于http的查询条件 configs		封装来自于http的查询条件
-	 * @param conditions	固定查询条件   conditions	固定查询条件
+	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param configs		封装来自于http的查询条件 configs
+	 * @param conditions	固定查询条件
 	 * 			原生SQL(AND GROUP ORDER)
 	 * 			{原生}
 	 * 			[+]CD:1
@@ -48,15 +48,42 @@ public interface AnylineService{
 	 */
 	public DataSet querys(String src, ConfigStore configs, String ... conditions);
 	public DataSet querys(String src, String ... conditions);
+	public DataSet querys(String src, PageNavi navi, String ... conditions);
+
+	/**
+	 * 按条件查询
+	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param fr 起 下标从0开始
+	 * @param to 止
+	 * @param conditions	固定查询条件
+	 * @return DataSet
+	 */
 	public DataSet querys(String src, int fr, int to, String ... conditions);
 	public DataRow query(String src, ConfigStore configs, String ... conditions);
 	public DataRow query(String src, String ... conditions);
 
+	public <T> List<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
+	public <T> List<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
+	public <T> List<T> querys(Class<T> clazz, String ... conditions);
+	public <T> List<T> querys(Class<T> clazz, int fr, int to, String ... conditions);
+	public <T> T query(Class<T> clazz, ConfigStore configs, String ... conditions);
+	public <T> T query(Class<T> clazz, String ... conditions);
+
+
+	public List<E> gets(ConfigStore configs, String ... conditions);
+	public List<E> gets(PageNavi navi, String ... conditions);
+
+	//与public DataSet querys(String src, String ... conditions);  签名冲突
+	public List<E> gets(String ... conditions);
+	public List<E> gets(int fr, int to, String ... conditions);
+	public E get(ConfigStore configs, String ... conditions);
+	public E get(String ... conditions);
+
 	/**
 	 * 直接返回Map集合不封装,不分页
-	 * @param src			数据源(表或自定义SQL或SELECT语句) src			数据源(表或自定义SQL或SELECT语句)
-	 * @param configs		封装来自于http的查询条件 configs		封装来自于http的查询条件
-	 * @param conditions	固定查询条件   conditions	固定查询条件
+	 * @param src			数据源(表或自定义SQL或SELECT语句)
+	 * @param configs		封装来自于http的查询条件
+	 * @param conditions	固定查询条件
 	 * @return List
 	 */
 	public List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions);
@@ -65,17 +92,24 @@ public interface AnylineService{
 
 	//实现与query相同的功能
 	public DataSet selects(String src, ConfigStore configs, String ... conditions);
+	public DataSet selects(String src, PageNavi navi, String ... conditions);
 	public DataSet selects(String src, String ... conditions);
 	public DataSet selects(String src, int fr, int to, String ... conditions);
 	public DataRow select(String src, ConfigStore configs, String ... conditions);
 	public DataRow select(String src, String ... conditions);
 
 	/**
-	 * 获取表结构
+	 * 获取表结构(只返回列名)
 	 * @param table 表
 	 * @return List
 	 */
 	public List<String> metadata(String table);
+
+	/**
+	 * 获取表结构(返回列名,数据类型,长度等)
+	 * @param table 表
+	 * @return List
+	 */
 	public List<MetaData> metadatas(String table);
 
 
@@ -173,8 +207,8 @@ public interface AnylineService{
 	public int update(Object data, String ... columns);
 	public int update(String dest, ConfigStore configs, String ... conditions);
 	
-	public int update(boolean sync, String dest, Object data, String ... columns);
-	public int update(boolean sync, Object data, String ... columns);
+	public int update(boolean async, String dest, Object data, String ... columns);
+	public int update(boolean async, Object data, String ... columns);
 	/** 
 	 * 保存(insert|update)根据是否有主键值确定insert或update
 	 * @param data  数据
@@ -186,12 +220,21 @@ public interface AnylineService{
 	public int save(String dest, Object data, boolean checkPriamry, String ... columns); 
 	public int save(Object data, boolean checkPriamry, String ... columns); 
 	public int save(Object data, String ... columns); 
-	public int save(String dest, Object data, String ... columns); 
-//
-	public int save(boolean sync, String dest, Object data, boolean checkPriamry, String ... columns);
-	public int save(boolean sync, Object data, boolean checkPriamry, String ... columns);
-	public int save(boolean sync, Object data, String ... columns);
-	public int save(boolean sync, String dest, Object data, String ... columns); 
+	public int save(String dest, Object data, String ... columns);
+
+	/**
+	 * 保存(insert|update)根据是否有主键值确定insert或update
+	 * @param async 是否异步执行
+	 * @param data  数据
+	 * @param checkPriamry 是否检测主键
+	 * @param columns 指定更新或保存的列
+	 * @param dest 表
+	 * @return 影响行数
+	 */
+	public int save(boolean async, String dest, Object data, boolean checkPriamry, String ... columns);
+	public int save(boolean async, Object data, boolean checkPriamry, String ... columns);
+	public int save(boolean async, Object data, String ... columns);
+	public int save(boolean async, String dest, Object data, String ... columns); 
  
  
 	public int insert(String dest, Object data, boolean checkPriamry, String ... columns); 
@@ -254,16 +297,23 @@ public interface AnylineService{
 
 	public int delete(String table, ConfigStore configs, String ... conditions);
 	/**
-	 * 删除 根据主键删除 可设置复合主键
+	 * 删除 根据columns列删除 可设置复合主键
 	 * @param dest 表
 	 * @param set 数据
-	 * @param columns 主键
+	 * @param columns 生成删除条件的列，如果不设置则根据主键删除
 	 * @return 影响行数
 	 */
 	public int delete(String dest, DataSet set, String ... columns);
 	public int delete(DataSet set, String ... columns);
 	public int delete(String dest, DataRow row, String ... columns);
-	public int delete(DataRow row, String ... columns);
+
+	/**
+	 * 根据columns列删除
+	 * @param obj obj
+	 * @param columns 生成删除条件的列，如果不设置则根据主键删除
+	 * @return 影响行数
+	 */
+	public int delete(Object obj, String ... columns);
 
 	/**
 	 * 根据多列条件删除 delete("user","type","1", "age:20");
