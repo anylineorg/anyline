@@ -48,14 +48,14 @@ public class OSSConfig extends BaseBodyTag {
 				String yy = DateUtil.format("yy");
 				String mm = DateUtil.format("MM");
 				String dd = DateUtil.format("dd");
-				dir = dir.replace("${yyyy}", yyyy);
-				dir = dir.replace("${yy}", yy);
-				dir = dir.replace("${MM}", mm);
-				dir = dir.replace("${mm}", mm);
-				dir = dir.replace("${dd}", dd);
-				dir = dir.replace("${y}", yyyy);
-				dir = dir.replace("${m}", mm);
-				dir = dir.replace("${d}", dd);
+				dir = dir.replace("{yyyy}", yyyy);
+				dir = dir.replace("{yy}", yy);
+				dir = dir.replace("{MM}", mm);
+				dir = dir.replace("{mm}", mm);
+				dir = dir.replace("{dd}", dd);
+				dir = dir.replace("{y}", yyyy);
+				dir = dir.replace("{m}", mm);
+				dir = dir.replace("{d}", dd);
 			}
 			Map<String,String> map = util.signature(dir, expire);
 			if(BasicUtil.isEmpty(var)){
