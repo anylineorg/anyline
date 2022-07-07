@@ -48,7 +48,10 @@ public class Radio extends BaseBodyTag{
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		StringBuffer html = new StringBuffer();
 //		valueKey = DataRow.keyCase(valueKey);
-//		textKey = DataRow.keyCase(textKey); 
+//		textKey = DataRow.keyCase(textKey);
+
+		textKey = textKey.replace("{","${");
+		valueKey = valueKey.replace("{","${");
 		try{
 			if(BasicUtil.isEmpty(name)){
 				name = BasicUtil.getRandomLowerString(10);
@@ -144,8 +147,7 @@ public class Radio extends BaseBodyTag{
 					if(BasicUtil.isEmpty(label)){
 						String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">";
 						String labelBody = "";
-						if (textKey.contains("{")) {
-							textKey = textKey.replace("{","${");
+						if (textKey.contains("${")) {
 							labelBody = BeanUtil.parseRuntimeValue(item,textKey);
 						} else {
 							Object v = item.get(textKey);
