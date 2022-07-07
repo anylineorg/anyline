@@ -63,6 +63,8 @@ public class Checkbox extends BaseBodyTag {
 		StringBuffer html = new StringBuffer();
 //		valueKey = DataRow.keyCase(valueKey);
 //		textKey = DataRow.keyCase(textKey);
+		textKey = textKey.replace("{","${");
+		valueKey = valueKey.replace("{","${");
 		try {
 
 			if(null == rely){
@@ -201,7 +203,6 @@ public class Checkbox extends BaseBodyTag {
 							String labelHtml = "<label for=\""+id+ "\" class=\""+labelClazz+"\">"; 
 							String labelBody = ""; 
 							if (textKey.contains("{")) {
-								textKey = textKey.replace("{","$");
 								labelBody = BeanUtil.parseRuntimeValue(item,textKey);
 							} else { 
 								Object v = item.get(textKey); 
