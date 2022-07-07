@@ -56,7 +56,9 @@ public class I18N extends BaseBodyTag{
     } 
 	 @SuppressWarnings({ "rawtypes", "unchecked" })
 	public int doEndTag() throws JspException { 
-		 String html = ""; 
+		 String html = "";
+		 textKey = textKey.replace("{","${");
+		 valueKey = valueKey.replace("{","${");
 		 if(BasicUtil.isNotEmpty(data)){
 			 if(data instanceof String){
 				if(data.toString().endsWith("}")){
@@ -79,7 +81,6 @@ public class I18N extends BaseBodyTag{
 					if(null != tmp && value.toString().equals(tmp.toString())){
 						String text = "";
 						if(textKey.contains("{")){
-							text = textKey.replace("{","${");
 							try {
 								List<String> keys = RegularUtil.fetch(textKey, "\\${\\w+\\}",Regular.MATCH_MODE.CONTAIN,0);
 								for(String key:keys){
