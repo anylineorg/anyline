@@ -51,7 +51,9 @@ public class Select extends BaseBodyTag {
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest(); 
 //		valueKey = DataRow.keyCase(valueKey); 
-//		textKey = DataRow.keyCase(textKey); 
+//		textKey = DataRow.keyCase(textKey);
+		textKey = textKey.replace("{","${");
+		valueKey = valueKey.replace("{","${");
 		String html = ""; 
  
 		if (data instanceof String) { 
@@ -86,7 +88,7 @@ public class Select extends BaseBodyTag {
 		try { 
 			if ("text".equals(type)) { 
 				if (null != items) { 
-					for (Object item : items) { 
+					for (Object item : items) {
 						String val = BeanUtil.parseRuntimeValue(item, valueKey, encrypt);
 						String text = BeanUtil.parseRuntimeValue(item, textKey);
 						if (null != val && null != this.value && val.equals(value.toString())) { 
