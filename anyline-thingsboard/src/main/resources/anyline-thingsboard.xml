@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<property key="HOST">https://tb.anyline.org</property>
+		<property key="ACCOUNT">sysadmin@anyline.org</property>
+		<property key="PASSWORD">sysadmin</property>
+	</config>
+</configs>

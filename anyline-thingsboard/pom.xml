@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>org.anyline</groupId>
+        <artifactId>anyline-dependency</artifactId>
+        <version>8.5.5-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>anyline-thingsboard</artifactId>
+    <packaging>jar</packaging>
+    <description>thingsboard sdk</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.anyline</groupId>
+            <artifactId>anyline-web</artifactId>
+        </dependency>
+        <!--官方提供了私服地址
+        <repositories>
+            <repository>
+                <id>thingsboard</id>
+                <url>https://repo.thingsboard.io/artifactory/libs-release-public</url>
+            </repository>
+        </repositories>
+
+        <dependency>
+            <groupId>org.thingsboard</groupId>
+            <artifactId>rest-client</artifactId>
+            <version>3.1.1</version>
+        </dependency>
+        -->
+        <dependency>
+            <groupId>org.thingsboard</groupId>
+            <artifactId>rest-client</artifactId>
+            <version>3.1.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/lib/rest-client-3.1.1.jar</systemPath>
+            <!--在这里下载  https://repo.thingsboard.io/artifactory/libs-release-public/org/thingsboard/rest-client/-->
+        </dependency>
+        <dependency>
+            <groupId>org.thingsboard</groupId>
+            <artifactId>data</artifactId>
+            <version>3.1.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/lib/data-3.1.1.jar</systemPath>
+            <!--在这里下载  https://repo.thingsboard.io/artifactory/libs-release-public/org/thingsboard/common/data//-->
+        </dependency>
+    </dependencies>
+</project>
