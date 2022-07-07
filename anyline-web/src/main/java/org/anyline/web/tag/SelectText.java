@@ -46,6 +46,8 @@ public class SelectText extends BaseBodyTag{
 	public int doEndTag() throws JspException { 
 		HttpServletRequest request = (HttpServletRequest)pageContext.getRequest(); 
 		String html = "";
+		 textKey = textKey.replace("{","${");
+		 valueKey = valueKey.replace("{","${");
 //		valueKey = DataRow.keyCase(valueKey);
 //		textKey = DataRow.keyCase(textKey); 
 		try{ 
@@ -84,7 +86,6 @@ public class SelectText extends BaseBodyTag{
 					if(null != tmp && value.toString().equals(tmp.toString())){ 
 						String text = "";
 						if(textKey.contains("{")){
-							textKey = textKey.replace("{","${");
 							text = BeanUtil.parseFinalValue(item, textKey);
 						}else{
 							Object v = BeanUtil.getFieldValue(item, textKey);
