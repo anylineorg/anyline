@@ -59,6 +59,10 @@
 		<module>anyline-jdbc-dialect/anyline-jdbc-oscar</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-cassandra</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-timescaledb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-sqlite</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-h2</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-hsqldb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-derby</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
@@ -89,6 +93,7 @@
         <module>anyline-oss</module>
         <module>anyline-compatible</module>
         <module>anyline-compatible-default</module>
+        <module>anyline-thingsboard</module>
 	</modules>
 	<build>
 		<plugins>
