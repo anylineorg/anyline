@@ -339,9 +339,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append(getDelimiterFr()).append(key).append(getDelimiterTo());
 			if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 				String str = value.toString();
-				value = str.substring(1, str.length()-1);
+				value = str.substring(2, str.length()-1);
 				if(value.toString().startsWith("${") && value.toString().endsWith("}")){
-					//保存json时可以{json格式}最终会有两层:{{a:1}}
+					//保存json时可以{json格式}最终会有两层:{{a:1}}8.5之前
 					param.append("?");
 					insertColumns.add(key);
 					values.add(value);
