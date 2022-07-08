@@ -215,8 +215,7 @@ public class Checkbox extends BaseBodyTag {
 						}else{//指定label文本
 							String labelHtml = label;
 							if(labelHtml.contains("{") && labelHtml.contains("}")){
-								labelHtml = labelHtml.replace("{","${");
-								labelHtml = BeanUtil.parseRuntimeValue(item,labelHtml);
+								labelHtml = BeanUtil.parseRuntimeValue(item,labelHtml.replace("{","${"));
 							}
 							html.append(labelHtml);
 						}
