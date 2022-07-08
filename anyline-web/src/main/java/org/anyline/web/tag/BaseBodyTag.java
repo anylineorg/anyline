@@ -117,6 +117,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 	 */
 	protected void crateExtraData(StringBuffer builder, Object obj){
 		if(BasicUtil.isNotEmpty(itemExtra)){
+			itemExtra = itemExtra.replace("{","${");
 			String[] list = itemExtra.split(",");
 			for(String item:list){
 				String[] tmps = item.split(":");
@@ -146,6 +147,7 @@ public class BaseBodyTag extends BodyTagSupport implements Cloneable{
 				}
 			}else{
 				//id:ID,name:{NM}-{CODE} > data-id=extraData.get("ID"),data-NAME=extraData.get("NM")-extraData.get("CODE")
+				extra = extra.replace("{","$");
 				String[] list = extra.split(",");
 				for(String item:list){
 					String[] tmps = item.split(":");
