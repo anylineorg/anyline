@@ -63,6 +63,7 @@
 		<module>anyline-jdbc-dialect/anyline-jdbc-h2</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-hsqldb</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-derby</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-influxdb</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
@@ -94,7 +95,7 @@
         <module>anyline-compatible</module>
         <module>anyline-compatible-default</module>
         <module>anyline-thingsboard</module>
-	</modules>
+    </modules>
 	<build>
 		<plugins>
 			<plugin>
