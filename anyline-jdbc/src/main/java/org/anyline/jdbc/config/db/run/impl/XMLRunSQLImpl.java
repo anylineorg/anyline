@@ -43,9 +43,9 @@ import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.jdbc.config.db.sql.xml.impl.XMLConditionChainImpl;
 import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.ognl.DefaultMemberAccess;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.DefaultMemberAccess;
 
 public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{ 
 	private List<String> conditions; 
