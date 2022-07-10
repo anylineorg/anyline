@@ -17,6 +17,8 @@
  */
 package org.anyline.entity;
 import com.fasterxml.jackson.databind.JsonNode;
+import ognl.Ognl;
+import ognl.OgnlContext;
 import org.anyline.util.*;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -464,6 +466,27 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			}
 		}
 		return this;
+	}
+
+	public Object ognl(String formula, Object values) throws Exception{
+		if(null == values){
+			values = this;
+		}
+		formula = BeanUtil.parseRuntimeValue(values, formula);
+		OgnlContext context = new OgnlContext(null, null, new DefaultMemberAccess(true));
+		Object value = Ognl.getValue(formula, context, values);
+		return value;
+	}
+	public Object ognl(String formula) throws Exception{
+		return ognl(formula, this);
+	}
+
+	public DataRow ognl(String key, String formula, Object values) throws Exception{
+		put(key, ognl(key, formula, values));
+		return this;
+	}
+	public DataRow ognl(String key, String formula) throws Exception{
+		return ognl(key, formula, this);
 	}
 
 	public DataRow merge(DataRow row){
