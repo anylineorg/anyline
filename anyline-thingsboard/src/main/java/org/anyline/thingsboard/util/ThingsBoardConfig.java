@@ -65,10 +65,14 @@ public class ThingsBoardConfig extends AnylineConfig{
         return config;
     }
     public static ThingsBoardConfig register(String id, String host, String account, String password) {
+        return register(id, host, account, null);
+    }
+    public static ThingsBoardConfig register(String id, String host, String account, String password, String tenant) {
         DataRow row = new DataRow();
         row.put("HOST", host);
         row.put("ACCOUNT", account);
         row.put("PASSWORD", password);
+        row.put("TENANT", tenant);
         ThingsBoardConfig config = parse(ThingsBoardConfig.class, id, row, instances, compatibles);
         return config;
     }
