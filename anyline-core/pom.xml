@@ -40,6 +40,10 @@
 			<artifactId>com.springsource.org.apache.oro</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>ognl</groupId>
+			<artifactId>ognl</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
