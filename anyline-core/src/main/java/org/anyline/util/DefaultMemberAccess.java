@@ -1,10 +1,12 @@
-package org.anyline.jdbc.ognl;
+package org.anyline.util;
+
+import ognl.MemberAccess;
+
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 
-import ognl.MemberAccess;
 public class DefaultMemberAccess implements MemberAccess {
 	public boolean allowPrivateAccess = false;
 	public boolean allowProtectedAccess = false;
@@ -15,7 +17,7 @@ public class DefaultMemberAccess implements MemberAccess {
 	}
 
 	public DefaultMemberAccess(boolean allowPrivateAccess,
-			boolean allowProtectedAccess, boolean allowPackageProtectedAccess) {
+                               boolean allowProtectedAccess, boolean allowPackageProtectedAccess) {
 		super();
 		this.allowPrivateAccess = allowPrivateAccess;
 		this.allowProtectedAccess = allowProtectedAccess;
