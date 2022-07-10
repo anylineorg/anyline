@@ -1119,8 +1119,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return avgs(new DataRow(), scale, round,  list);
     }
-
-
     /**
      * 最大值
      *
@@ -1166,9 +1164,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return result.doubleValue();
     }
-
     public double maxDouble(String key) {
         return maxDouble(size(), key);
+    }
+    public double maxFloat(int top, String key) {
+        BigDecimal result = maxDecimal(top, key);
+        if (null == result) {
+            return 0;
+        }
+        return result.floatValue();
+    }
+
+    public double maxFloat(String key) {
+        return maxFloat(size(), key);
     }
 
 //	public BigDecimal max(int top, String key){
@@ -1228,6 +1236,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public double minDouble(String key) {
         return minDouble(size(), key);
+    }
+    public double minFloat(int top, String key) {
+        BigDecimal result = minDecimal(top, key);
+        if (null == result) {
+            return 0;
+        }
+        return result.floatValue();
+    }
+
+    public double minFloat(String key) {
+        return minFloat(size(), key);
     }
 
 //	public BigDecimal min(int top, String key){
@@ -2623,6 +2642,102 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
+
+    public Object agg(String type, String key){
+        Aggregation agg = Aggregation.valueOf(type);
+        Object result = null;
+        switch (agg){
+            case COUNT:
+                result = this.size();
+                break;
+            case SUM:
+                result = sum(key);
+                break;
+            case AVG:
+                result = avg(key);
+                break;
+            case MAX:
+                result = max(key);
+                break;
+            case MAX_DECIMAL:
+                result = maxDecimal(key);
+                break;
+            case MAX_DOUBLE:
+                result = maxDouble(key);
+                break;
+            case MAX_FLOAT:
+                result = maxFloat(key);
+                break;
+            case MAX_INT:
+                result = maxInt(key);
+                break;
+            case MIN:
+                result = min(key);
+                break;
+            case MIN_DECIMAL:
+                result = minDecimal(key);
+                break;
+            case MIN_DOUBLE:
+                result = minDouble(key);
+                break;
+            case MIN_FLOAT:
+                result = minFloat(key);
+                break;
+            case MIN_INT:
+                result = minInt(key);
+                break;
+            case STDEV:
+                result = stdev(key);
+                break;
+            case STDEVP:
+                result = stdevp(key);
+                break;
+            case STDEVA:
+                result = stdeva(key);
+                break;
+            case STDEVPA:
+                result = stdevpa(key);
+                break;
+            case VAR:
+                result = var(key);
+                break;
+            case VARA:
+                result = vara(key);
+                break;
+            case VARP:
+                result = varp(key);
+                break;
+            case VARPA:
+                result = varpa(key);
+                break;
+        }
+        return result;
+    }
+
+    public BigDecimal stdev(String key){
+        return null;
+    }
+    public BigDecimal stdeva(String key){
+        return null;
+    }
+    public BigDecimal stdevp(String key){
+        return null;
+    }
+    public BigDecimal stdevpa(String key){
+        return null;
+    }
+    public BigDecimal var(String key){
+        return null;
+    }
+    public BigDecimal vara(String key){
+        return null;
+    }
+    public BigDecimal varp(String key){
+        return null;
+    }
+    public BigDecimal varpa(String key){
+        return null;
+    }
     public DataSet or(DataSet set, String... keys) {
         return this.union(set, keys);
     }
@@ -3424,6 +3539,55 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return set;
     }
 
+    /**
+     * 根据ognl表达式 设置集合中每个DataRow.key的值
+     * @param key key
+     * @param formula ognl表达式
+     * @param values 运行时值
+     * @param strategy 发生异常时执行策略 0:忽略异常继续下一个 1:全部回滚
+     * @param exception 发生异常时是否抛出
+     * @return DataSet
+     */
+    public DataSet ognl(String key, String formula, Object values, int strategy, boolean exception) throws Exception{
+        if(strategy == 0){
+            for(DataRow row:rows){
+                try {
+                    row.ognl(key, formula, values);
+                }catch (Exception e){
+                    if(exception){
+                        throw e;
+                    }
+                }
+            }
+        }else{
+            List<Object> results = new ArrayList<>();
+            for(DataRow row:rows){
+                try {
+                    results.add(row.ognl(formula, values));
+                }catch (Exception e){
+                    results.add(null);
+                    if(exception){
+                        throw e;
+                    }
+                }
+            }
+            int size = results.size();
+            for(int i=0; i<size; i++){
+                Object result = results.get(i);
+                if(null != result){
+                    rows.get(i).put(key,result);
+                }
+            }
+        }
+        return this;
+    }
+
+    public DataSet ognl(String key, String formula,  int strategy, boolean exception) throws Exception{
+        return ognl(key, formula, null, strategy, exception);
+    }
+    public DataSet ognl(String key, String formula) throws Exception{
+        return ognl(key, formula, null, 0, false);
+    }
     /**
      * 随机取min到max行
      * @param min min
