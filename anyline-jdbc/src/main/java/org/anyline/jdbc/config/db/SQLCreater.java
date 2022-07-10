@@ -28,17 +28,28 @@ import org.anyline.jdbc.config.ConfigStore;
  
 public interface SQLCreater{
 	public static enum DB_TYPE{
-		MYSQL			{public String getName(){return "mysql";}},
-		MSSQL			{public String getName(){return "mssql";}},
-		ORACLE			{public String getName(){return "oracle";}},
-		DB2				{public String getName(){return "db2";}},
-		PostgreSQL 		{public String getName(){return "PostgreSQL";}},
-		DM		 		{public String getName(){return "DM";}},
-		HighGo			{public String getName(){return "HighGo";}},
-		KingBase		{public String getName(){return "KingBase";}},
-		OceanBase 		{public String getName(){return "OceanBase";}},
-		PolarDB  		{public String getName(){return "PolarDB";}},
-		ClickHouse		{public String getName(){return "ClickHouse";}};
+		MYSQL				{public String getName(){return "mysql";}},
+		MSSQL				{public String getName(){return "mssql";}},
+		ORACLE				{public String getName(){return "oracle";}},
+		DB2					{public String getName(){return "db2";}},
+		PostgreSQL 			{public String getName(){return "PostgreSQL";}},
+		DM		 			{public String getName(){return "达梦";}},
+		HighGo				{public String getName(){return "瀚高";}},
+		oscar				{public String getName(){return "神舟通用";}},
+		KingBase			{public String getName(){return "人大金仓 Oracle";}},
+		KingBase_PostgreSQL	{public String getName(){return "人大金仓 PostgreSQL";}},
+		GBase  				{public String getName(){return "南大通用";}},
+		OceanBase 			{public String getName(){return "OceanBase";}},
+		PolarDB  			{public String getName(){return "PolarDB";}},
+		SQLite  			{public String getName(){return "SQLite";}},
+		H2  				{public String getName(){return "H2";}},
+		Derby  				{public String getName(){return "Derby";}},
+		HSQLDB  			{public String getName(){return "HSQLDB";}},
+		Neo4j  				{public String getName(){return "Neo4j";}},
+		InfluxDB			{public String getName(){return "InfluxDB";}},
+		TimescaleDB			{public String getName(){return "TimescaleDB";}},
+		Cassandra			{public String getName(){return "Cassandra";}},
+		ClickHouse			{public String getName(){return "ClickHouse";}};
 		public abstract String getName();
 	} 
 	public static final String TAB = "\t"; 
