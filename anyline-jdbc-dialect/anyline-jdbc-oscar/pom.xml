@@ -14,7 +14,7 @@
     <artifactId>anyline-jdbc-oscar</artifactId>
     <name>anyline-jdbc-oscar</name>
     <url>http://www.anyline.org/oscar</url>
-    <description>南大通用</description>
+    <description>神通</description>
     <packaging>jar</packaging>
 
     <dependencies>
