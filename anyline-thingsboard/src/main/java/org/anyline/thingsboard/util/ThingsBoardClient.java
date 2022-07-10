@@ -58,7 +58,7 @@ public class ThingsBoardClient extends RestClient {
         return client;
     }
 
-    private ThingsBoardClient(String host) {
+    public ThingsBoardClient(String host) {
         super(new RestTemplate(), host);
     }
 
