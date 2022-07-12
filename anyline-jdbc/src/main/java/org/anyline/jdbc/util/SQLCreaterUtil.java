@@ -58,6 +58,14 @@ public class SQLCreaterUtil {
 					type = SQLCreater.DB_TYPE.OceanBase;
 				}else if(name.contains("polardb")){
 					type = SQLCreater.DB_TYPE.PolarDB;
+				}else if(name.contains("sqlite")){
+					type = SQLCreater.DB_TYPE.SQLite;
+				}else if(name.contains(":h2:")){
+					type = SQLCreater.DB_TYPE.H2;
+				}else if(name.contains("hsqldb")){
+					type = SQLCreater.DB_TYPE.HSQLDB;
+				}else if(name.contains("derby")){
+					type = SQLCreater.DB_TYPE.Derby;
 				}
 				creater = creaters.get(type.getName());
 				if(null == creater){
