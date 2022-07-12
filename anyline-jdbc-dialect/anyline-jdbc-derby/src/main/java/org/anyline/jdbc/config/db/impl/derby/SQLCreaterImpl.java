@@ -44,7 +44,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			if(limit < 0){ 
 				limit = 0; 
 			} 
-			sql += " OFFSET " + navi.getFirstRow() + " ROWS FETCH NEXT " + limit + " ROWS";
+			sql += " OFFSET " + navi.getFirstRow() + " ROWS FETCH NEXT " + limit + " ROWS ONLY ";
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
