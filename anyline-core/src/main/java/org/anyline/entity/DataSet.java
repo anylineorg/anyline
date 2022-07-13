@@ -2221,7 +2221,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         int size = set.size();
         for (int i = 0; i < size; i++) {
             DataRow item = set.getRow(i);
-            if (!list.contains(item)) {
+            if (! result.contains(item, list)) {
                 result.add(item);
             }
         }
