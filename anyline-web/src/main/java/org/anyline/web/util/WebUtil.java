@@ -745,7 +745,7 @@ public class WebUtil {
 			obj = encryptValue((Collection<Object>) obj, mix, fixs, keys);
 		} else {
 			//Object无法加密
-			List<String> ks = BeanUtil.getFieldsName(obj.getClass());
+			List<String> ks = ClassUtil.getFieldsName(obj.getClass());
 			for (String k : ks) {
 				Object v = BeanUtil.getFieldValue(obj, k);
 				if (null == v) {
@@ -1131,7 +1131,7 @@ public class WebUtil {
 	 * @param env 配置文件环境
 	 */
 	public static void setFieldsValue(Object obj, String prefix, Environment env ){
-		List<String> fields = BeanUtil.getFieldsName(obj.getClass());
+		List<String> fields = ClassUtil.getFieldsName(obj.getClass());
 		for(String field:fields){
 			String value = getProperty(prefix, env, field);
 			if(BasicUtil.isNotEmpty(value)) {
