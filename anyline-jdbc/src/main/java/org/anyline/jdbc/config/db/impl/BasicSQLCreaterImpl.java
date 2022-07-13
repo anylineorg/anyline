@@ -21,7 +21,6 @@ package org.anyline.jdbc.config.db.impl;
 
  
 import org.anyline.dao.PrimaryCreater;
-import org.anyline.entity.AnylineEntity;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.ConfigStore;
@@ -136,8 +135,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			run.addConditions(columns);
 			run.init();
 			run.createRunDeleteTxt();
-		}else if(obj instanceof AnylineEntity){
-			run = createDeleteRunSQLFromEntity(dest, (AnylineEntity)obj, columns);
 		}
 		return run; 
 	}
@@ -207,20 +204,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		run.setBuilder(builder);
 		return run; 
 	} 
- 
-	private RunSQL createDeleteRunSQLFromEntity(String dest, AnylineEntity obj, String ... columns){ 
-		TableRunSQLImpl run = new TableRunSQLImpl();
-		StringBuilder builder = new StringBuilder();
-		builder.append("DELETE FROM ").append(parseTable(dest))
-		.append(" WHERE ").append(getDelimiterFr()).append(getPrimaryKey(obj)).append(getDelimiterTo())
-		.append("=?"); 
-		run.addValue(getPrimaryValue(obj));
-		run.setBuilder(builder);
-		return run; 
-	} 
- 
+
 	@Override 
-	public String getPrimaryKey(Object obj){ 
+	public String getPrimaryKey(Object obj){
 		if(null == obj){ 
 			return null; 
 		} 
@@ -286,9 +272,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			DataRow row = (DataRow)obj;
 			row.setDataSource(dest); 
 			return createInsertTxtFromDataRow(dest,row,checkParimary, columns); 
-		} 
-		if(obj instanceof AnylineEntity){ 
-			return createInsertTxtFromEntity(dest,(AnylineEntity)obj,checkParimary, columns);	 
 		}
 		if(obj instanceof DataSet){
 			DataSet set = (DataSet)obj;
@@ -480,47 +463,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append(value.toString());
 		}
 	}
-	 
-	private RunSQL createInsertTxtFromEntity(String dest, AnylineEntity entity, boolean checkParimary, String ... columns){ 
-		RunSQL run = new TableRunSQLImpl();
-		StringBuilder builder = new StringBuilder();
-		List<Object> values = new ArrayList<Object>();
-		if(null == dest){ 
-			dest = entity.getDataSource(); 
-		} 
-		if(BasicUtil.isEmpty(dest)){ 
-			throw new SQLException("未指定表"); 
-		}
-		/*确定需要更新的列*/ 
-		List<String> keys = confirmInsertColumns(dest, entity, columns);
-		if(null == keys || keys.size() == 0){ 
-			throw new SQLException("未指定列"); 
-		}
-		builder.append("INSERT INTO ").append(parseTable(dest));
-		builder.append("(");
-		int size = keys.size();
-		List<String> insertColumns = new ArrayList<>();
-		for(int i=0; i<size; i++){
-			builder.append(getDelimiterFr()).append(keys.get(i)).append(getDelimiterTo());
-			if(i<size-1){
-				builder.append(",");
-			} 
-		}
-		builder.append(") VALUES (");
-		for(int i=0; i<size; i++){
-			builder.append("?");
-			if(i<size-1){
-				builder.append(",");
-			}
-			values.add(entity.getValueByColumn(keys.get(i)));
-			insertColumns.add(keys.get(i));
-		}
-		builder.append(")");
-		run.addValues(values);
-		run.setBuilder(builder);
-		run.setInsertColumns(insertColumns);
-		return run; 
-	} 
+
  
 	@Override 
 	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns){ 
@@ -532,65 +475,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		if(obj instanceof DataRow){ 
 			return createUpdateTxtFromDataRow(dest,(DataRow)obj,checkParimary, columns); 
-		} 
-		if(obj instanceof AnylineEntity){ 
-			return createUpdateTxtFromEntity(dest,(AnylineEntity)obj,checkParimary, columns); 
-		} 
+		}
 		return null; 
 	} 
- 
-	private RunSQL createUpdateTxtFromEntity(String dest, AnylineEntity entity, boolean checkParimary, String ... columns){ 
-		RunSQL run = new TableRunSQLImpl(); 
-//		if(null == entity){ 
-//			throw new SQLException("更新空数据"); 
-//		} 
-//		if(null == dest){ 
-//			dest = entity.getDataSource(); 
-//		} 
-//		if(BasicUtil.isEmpty(dest)){ 
-//			throw new SQLException("未指定表"); 
-//		} 
-//		List<String> primaryKeys = entity.getPrimaryKeys(); 
-//		if(BasicUtil.isEmpty(true,primaryKeys)){ 
-//			throw new SQLException("未指定主键"); 
-//		} 
-//		 
-//		entity.processBeforeSave();	//保存之前预处理 
-//		 
-//		StringBuilder sql = new StringBuilder(); 
-//		List<Object> values = new ArrayList<Object>(); 
-//		/*确定需要更新的列*/ 
-//		List<String> keys = confirmUpdateColumns(dest, entity, propertys); 
-//		/*不更新主键*/ 
-//		for(String key:primaryKeys){ 
-//			keys.remove(key); 
-//		} 
-//		 
-//		if(BasicUtil.isEmpty(true,keys)){ 
-//			throw new SQLException("未指定更新列"); 
-//		} 
-// 
-//		/*构造SQL*/ 
-//		sql.append("UPDATE ").append(dest); 
-//		sql.append(" SET").append(SQLCreater.BR_TAB); 
-//		int size = keys.size(); 
-//		for(int i=0; i<size; i++){ 
-//			String key = keys.get(i); 
-//			sql.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
-//			values.add(entity.getValueByColumn(key)); 
-//			if(i<size-1){ 
-//				sql.append(","); 
-//			} 
-//		} 
-//		//sql.append(SQL.BR); 
-//		sql.append("\nWHERE 1=1").append(SQLCreater.BR_TAB); 
-//		for(String primary:primaryKeys){ 
-//			sql.append(" AND ").append(getDelimiterFr()).append(primary).append(getDelimiterTo()).append(" = ?");
-//			values.add(entity.getValueByColumn(primary)); 
-//		} 
-//		entity.processBeforeDisplay();	//显示之前预处理 
-		return run; 
-	}
+
 	private RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){ 
 		RunSQL run = new TableRunSQLImpl();
 		StringBuilder builder = new StringBuilder();
@@ -734,95 +622,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		if(data instanceof DataRow){
 			return confirmInsertColumns(dst, (DataRow)data, columns);
-		}else if(data instanceof AnylineEntity){
-			return confirmInsertColumns(dst, (AnylineEntity)data, columns);
 		}
 		return null;
-	} 
-	/** 
-	 * 确认需要插入的列 
-	 * @param entity  entity
-	 * @param propertys  propertys
-	 * @return List
-	 */ 
-	private List<String> confirmInsertColumns(String dst, AnylineEntity entity, String ... propertys){ 
-		List<String> keys = null;/*确定需要插入的列*/ 
-		if(null == entity){ 
-			return new ArrayList<>();
-		} 
-		boolean each = true;//是否需要从row中查找列 
-		List<String> mastKeys = new ArrayList<>();		//必须插入列
-		List<String> delimiters = new ArrayList<>();			//必须不插入列
-		List<String> factKeys = new ArrayList<>();		//根据是否空值
- 
-		if(null != propertys && propertys.length>0){ 
-			each = false; 
-			keys = new ArrayList<>();
-			for(String property:propertys){ 
-				if(BasicUtil.isEmpty(property)){ 
-					continue; 
-				} 
-				if(property.startsWith("+")){ 
-					property = property.substring(1, property.length()); 
-					String column = entity.getColumnByProperty(property); 
-					mastKeys.add(column); 
-					each = true; 
-				}else if(property.startsWith("-")){
-					property = property.substring(1, property.length()); 
-					String column = entity.getColumnByProperty(property); 
-					delimiters.add(column);
-					each = true; 
-				}else if(property.startsWith("?")){
-					property = property.substring(1, property.length()); 
-					String column = entity.getColumnByProperty(property); 
-					factKeys.add(column); 
-					each = true; 
-				} 
-				keys.add(entity.getColumnByProperty(property)); 
-			} 
-		} 
-		if(each){ 
-			keys = entity.getColumns(true, false); 
-			//是否插入null及""列 
-			boolean isInsertNullColumn = ConfigTable.getBoolean("IS_INSERT_NULL_COLUMN",false); 
-			boolean isInsertEmptyColumn = ConfigTable.getBoolean("IS_INSERT_EMPTY_COLUMN",false); 
-			int size = keys.size(); 
-			for(int i=size-1;i>=0; i--){ 
-				String key = keys.get(i); 
-				if(mastKeys.contains(key)){ 
-					//必须插入 
-					continue; 
-				} 
-				if(delimiters.contains(key)){
-					keys.remove(key); 
-					continue; 
-				} 
-				 
-				Object value = BeanUtil.getValueByColumn(entity, key); 
-				if(null == value){ 
-					if(factKeys.contains(key)){ 
-						keys.remove(key); 
-						continue; 
-					}	 
-					if(!isInsertNullColumn){ 
-						keys.remove(i); 
-						continue; 
-					} 
-				}else if("".equals(value.toString().trim())){ 
-					if(factKeys.contains(key)){ 
-						keys.remove(key); 
-						continue; 
-					}	 
-					if(!isInsertEmptyColumn){ 
-						keys.remove(i); 
-						continue; 
-					} 
-				} 
-				 
-			} 
-		} 
-		return keys; 
-	} 
+	}
 	/** 
 	 * 确认需要更新的列 
 	 * @param row  row
@@ -914,93 +716,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			keys.remove(key);
 		}
 		return keys; 
-	} 
-	/** 
-	 * 确认需要更新的列 
-	 * @param dst  dst
-	 * @param entity  entity
-	 * @param propertys  propertys
-	 * @return List
-	 */ 
-	@SuppressWarnings("unused")
-	private List<String> confirmUpdateColumns(String dst, AnylineEntity entity, String ... propertys){ 
-		List<String> keys = null;/*确定需要更新的列*/ 
-		if(null == entity){ 
-			return new ArrayList<>();
-		} 
-		boolean each = true;//是否需要从row中查找列 
-		List<String> mastKeys = new ArrayList<>();		//必须更新列
-		List<String> delimiters = new ArrayList<>();			//必须不更新列
-		List<String> factKeys = new ArrayList<>();		//根据是否空值
- 
-		if(null != propertys && propertys.length>0){ 
-			each = false; 
-			keys = new ArrayList<>();
-			for(String property:propertys){ 
-				if(BasicUtil.isEmpty(property)){ 
-					continue; 
-				} 
-				if(property.startsWith("+")){ 
-					property = property.substring(1, property.length()); 
-					String column = entity.getColumnByProperty(property); 
-					mastKeys.add(column); 
-					each = true; 
-				}else if(property.startsWith("-")){
-					property = property.substring(1, property.length()); 
-					String column = entity.getColumnByProperty(property); 
-					delimiters.add(column);
-					each = true; 
-				}else if(property.startsWith("?")){
-					property = property.substring(1, property.length()); 
-					String column = entity.getColumnByProperty(property); 
-					factKeys.add(column); 
-					each = true; 
-				} 
-				keys.add(entity.getColumnByProperty(property)); 
-			} 
-		} 
-		if(each){ 
-			keys = entity.getColumns(false, true); 
-			//是否更新null及""列 
-			boolean isUpdateNullColumn = entity.isUpdateNullColumn();//ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN",false); 
-			boolean isUpdateEmptyColumn = entity.isUpdateEmptyColumn();//ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN",false); 
-			int size = keys.size(); 
-			for(int i=size-1;i>=0; i--){ 
-				String key = keys.get(i); 
-				if(mastKeys.contains(key)){ 
-					//必须更新 
-					continue; 
-				} 
-				if(delimiters.contains(key)){
-					keys.remove(key); 
-					continue; 
-				} 
-				 
-				Object value = BeanUtil.getValueByColumn(entity, key); 
-				if(null == value){ 
-					if(factKeys.contains(key)){ 
-						keys.remove(key); 
-						continue; 
-					}	 
-					if(!isUpdateNullColumn){ 
-						keys.remove(i); 
-						continue; 
-					} 
-				}else if("".equals(value.toString().trim())){ 
-					if(factKeys.contains(key)){ 
-						keys.remove(key); 
-						continue; 
-					}	 
-					if(!isUpdateEmptyColumn){ 
-						keys.remove(i); 
-						continue; 
-					} 
-				} 
-				 
-			} 
-		} 
-		return keys; 
-	} 
+	}
 	public String parseTable(String table){
 		if(null == table){
 			return table;
