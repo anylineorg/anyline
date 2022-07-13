@@ -77,7 +77,7 @@ public class Text extends BaseBodyTag{
 					item = list.get(index);
 				}
 				if(null != item && null != property) {
-					result = BeanUtil.getValueByColumn(item, property);
+					result = BeanUtil.getFieldValue(item, property);
 				}
 			}else if(data instanceof String[]){
 				String[] list = (String[])data;
@@ -88,7 +88,7 @@ public class Text extends BaseBodyTag{
 					result = list[index];
 				}
 			}else if(null != property){
-				result = BeanUtil.getValueByColumn(data,property);
+				result = BeanUtil.getFieldValue(data,property);
 			}else{
 				result = data;
 			}
