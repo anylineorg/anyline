@@ -1,16 +1,12 @@
 package org.anyline.thingsboard.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import ognl.Ognl;
-import ognl.OgnlContext;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-import org.anyline.util.DateUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -19,10 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.thingsboard.rest.client.RestClient;
 import org.thingsboard.rest.client.utils.RestJsonConverter;
-import org.thingsboard.server.common.data.Device;
-import org.thingsboard.server.common.data.DeviceInfo;
 import org.thingsboard.server.common.data.EntityType;
-import org.thingsboard.server.common.data.id.EntityId;
 import org.thingsboard.server.common.data.kv.Aggregation;
 import org.thingsboard.server.common.data.kv.TsKvEntry;
 import org.thingsboard.server.common.data.page.PageLink;
@@ -158,7 +151,7 @@ public class ThingsBoardClient extends RestClient {
                         new ParameterizedTypeReference<Map<String, List<JsonNode>>>() {
                         }, type.name(), id, keys, useStrictDataTypes )
                 .getBody();
-        return map2set(maps);
+        return pivot(maps);
     }
 
     public DataSet getLatestTimeseries(EntityType type, String id,  String  keys) {
@@ -176,6 +169,11 @@ public class ThingsBoardClient extends RestClient {
 
     /**
      * 时间段内遥测数据
+     * 把相同时间的所有属性合成一行
+     *[
+     * {"TS":1657707789001, "LNG":120.1, "LAT":36.1},
+     * {"TS":1657707759002, "LNG":120.2, "LAT":36.2}
+     *]
      * @param type 类型 如DEVIDE
      * @param entity id
      * @param keys 查询属性
@@ -186,7 +184,7 @@ public class ThingsBoardClient extends RestClient {
      * @param end 结束时间
      * @param limit 第页行数
      * @param strict string是否转换成原始格式
-     * @return
+     * @return DataSet
      */
 
     public DataSet getTimeseries(EntityType type, String entity, String keys, Long interval, Aggregation agg, SortOrder.Direction order, Long start, Long end, Integer limit, boolean strict) {
@@ -219,8 +217,7 @@ public class ThingsBoardClient extends RestClient {
                 new ParameterizedTypeReference<Map<String, List<JsonNode>>>() {
                 },
                 params).getBody();
-        System.out.println(BeanUtil.object2json(timeseries));
-        return map2set(timeseries);
+        return pivot(timeseries);
     }
 
     public DataSet getTimeseries(EntityType type, String entity, String keys,  SortOrder.Direction order, Long start, Long end, Integer limit, boolean strict) {
@@ -265,7 +262,43 @@ public class ThingsBoardClient extends RestClient {
         return getTimeseries(EntityType.DEVICE, id, keys, null, null, SortOrder.Direction.DESC ,start, end, limit , true);
     }
 
+    /**
+     * 设备属性列表
+     * @param id 设备ID
+     * @param scope CLIENT_SCOPE, SERVER_SCOPE, SHARED_SCOPE
+     * @return List
+     */
+    public List<String> getDeviceAttributeKeys(String id, String scope){
+        return getAttributeKeys(EntityType.DEVICE, id, scope);
+    }
 
+    public List<String> getDeviceAttributeKeys(String id){
+        return getAttributeKeys(EntityType.DEVICE, id, null);
+    }
+
+
+    public List<String> getAttributeKeys(EntityType type, String id){
+        return getAttributeKeys(type, id, null);
+    }
+
+    /**
+     * 属性列表
+     * @param type EntityType
+     * @param id ID
+     * @param scope CLIENT_SCOPE, SERVER_SCOPE, SHARED_SCOPE
+     * @return List
+     */
+    public List<String> getAttributeKeys(EntityType type, String id, String scope){
+        String url = baseURL + "/api/plugins/telemetry/{entityType}/{entityId}/keys/attributes";
+        if(BasicUtil.isNotEmpty(scope)){
+            url += "/{scope}";
+        }
+        return restTemplate.exchange(url,
+                        HttpMethod.GET, HttpEntity.EMPTY,
+                        new ParameterizedTypeReference<List<String>>() {}, type.name(), id, scope)
+                .getBody();
+
+    }
 
     private String getTimeUrlParams(TimePageLink pageLink) {
         return this.getUrlParams(pageLink);
@@ -331,31 +364,46 @@ public class ThingsBoardClient extends RestClient {
 
     }
 
-    private DataSet map2set(Map<String, List<JsonNode>> timeseries){
+    /**
+     * 根据ts分组,将其他属性合并到一行
+     * 把相同时间的所有属性合成一行
+     * {
+     *  lng=[{"ts":1655007789001,"value":120.1}, {"ts":1655007759002,"value":120.2}],
+     *  lat=[{"ts":1655007789001,"value":36.1}, {"ts":1655007759002,"value":36.2}]
+     * }
+     * 转找成
+     *[
+     * {"TS":1657707789001, "LNG":120.1, "LAT":36.1},
+     * {"TS":1657707759002, "LNG":120.2, "LAT":36.2}
+     * ]
+     * @param timeseries 按属性分组的遥测数据
+     * @return DataSet
+     */
+    private DataSet pivot(Map<String, List<JsonNode>> timeseries){
         DataSet set = new DataSet();
         try {
-
-        /*
-        [{"TS":1657325325061,"KEY":"lng","VALUE":"1120.373291"},{"TS":1657325325061,"KEY":"lat","VALUE":"136.089957"}]
-        没有数据时 异常
-        json:{"lng":[{"ts":1657216877526,"value":null}],"lat":[{"ts":1657216877527,"value":null}]}
-        Exception in thread "main" java.lang.RuntimeException: Can't parse value: null
-        */
-
             List<TsKvEntry> list = RestJsonConverter.toTimeseries(timeseries);
+            DataSet tmps = new DataSet();
             for (TsKvEntry entry : list) {
                 DataRow row = new DataRow();
                 row.put("ts", entry.getTs());
-                row.put("key", entry.getKey());
+                row.put("key",entry.getKey());
                 row.put("value", entry.getValue());
+                tmps.add(row);
+            }
+            DataSet groups = tmps.group("ts");
+            for(DataRow group:groups){
+                DataSet items = group.getItems();
+                DataRow row = new DataRow();
+                row.put("ts", group.get("ts"));
+                for(DataRow item:items){
+                    row.put(item.getString("key"), item.get("value"));
+                }
                 set.add(row);
             }
         }catch (Exception e){
-            System.out.println(BeanUtil.object2json(timeseries));
             e.printStackTrace();
         }
-
-
         return set;
     }
 
