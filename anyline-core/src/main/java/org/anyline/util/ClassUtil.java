@@ -17,6 +17,9 @@
  */
 package org.anyline.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -32,6 +35,7 @@ import java.util.jar.JarFile;
  
 public class ClassUtil {
 
+	private static final Logger log = LoggerFactory.getLogger(ClassUtil.class);
 	/**
 	 * 是否是基础类型(不包含String类型)
 	 * @param obj obj
@@ -358,4 +362,173 @@ public class ClassUtil {
 		return value.toUpperCase().matches(regex);
 	}
 
+	/**
+	 * 提取类及父类的所有属性
+	 * @param clazz  clazz
+	 * @return List
+	 */
+	public static List<Field> getFields(Class<?> clazz){
+		List<Field> fields = new ArrayList<Field>();
+		while(null != clazz){
+			Field[] tmp = clazz.getDeclaredFields();
+			for(Field field:tmp){
+				fields.add(field);
+			}
+			clazz = clazz.getSuperclass();
+		}
+		return fields;
+	}
+	public static List<String> getFieldsName(Class<?> clazz){
+		List<Field> fields = getFields(clazz);
+		List<String> keys = new ArrayList<>();
+		for(Field field:fields){
+			keys.add(field.getName());
+		}
+		return keys;
+	}
+
+	public static Method getMethod(Class<?> clazz, String name, boolean recursion, Class<?>... parameterTypes){
+		Method method = null;
+		try{
+			method = clazz.getMethod(name, parameterTypes);
+		}catch(Exception e){}
+		if(null == method){
+			try{
+				method = clazz.getDeclaredMethod(name, parameterTypes);
+			}catch(Exception e){
+
+			}
+		}
+		//递归父类
+		if(null == method && recursion){
+			clazz = clazz.getSuperclass();
+			if(null != clazz){
+				method = getMethod(clazz, name, recursion, parameterTypes);
+			}
+		}
+		return method;
+	}
+
+	public static Method getMethod(Class<?> clazz, String name, Class<?>... parameterTypes){
+		return getMethod(clazz, name, false, parameterTypes);
+	}
+	public static Field getField(Class<?> clazz, String name, boolean recursion){
+		Field field = null;
+		try{
+			field = clazz.getField(name);
+		}catch(Exception e){}
+		if(null == field){
+			try{
+				field = clazz.getDeclaredField(name);
+			}catch(Exception e){
+
+			}
+		}
+		//递归父类
+		if(null == field && recursion){
+			clazz = clazz.getSuperclass();
+			if(null != clazz){
+				field = getField(clazz, name);
+			}
+		}
+		return field;
+	}
+
+	public static Field getField(List<Field> fields, String name, boolean ignoreCase, boolean ignoreSplit){
+		if(null == name){
+			return null;
+		}
+		Field field = null;
+		for(Field item:fields){
+			String itemName = item.getName();
+			if(ignoreCase){
+				itemName = itemName.toUpperCase();
+				name = name.toUpperCase();
+			}
+			if(ignoreSplit){
+				itemName = itemName.replace("-","").replace("_","");
+				name = name.replace("-","").replace("_","");
+			}
+			if(name.equals(itemName)){
+				field = item;
+			}
+		}
+		return field;
+	}
+	public static Field getField(Class<?> clazz, String name){
+		return getField(clazz, name, true);
+	}
+
+	/**
+	 * 查询指定类的有annotation注解的属性
+	 * @param clazz  clazz
+	 * @param annotation  annotation
+	 * @return List
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List<Field> searchFieldsByAnnotation(Class clazz, Class annotation){
+		List<Field> list = new ArrayList<Field>();
+		try{
+			List<Field> fields = getFields(clazz);
+			for(Field field:fields){
+				Annotation at = field.getAnnotation(annotation);
+				if(null != at){
+					list.add(field);
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return list;
+	}
+
+	/**
+	 * pack包下的所有类 不包括jar包中定义类
+	 * @param pack  pack
+	 * @param bases bases
+	 * @return List
+	 */
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static List<Class> getClasses(String pack, Class ... bases){
+		List<Class> list = new ArrayList<Class>();
+		File dir = new File(ClassUtil.class.getResource("/").getFile(),pack.replace(".", File.separator));
+		List<File> files = FileUtil.getAllChildrenFile(dir,".class");
+		for(File file:files){
+			try{
+				String path = file.getAbsolutePath();
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
+					log.warn("[检索类][file:{}]",path);
+				}
+				if(path.contains(File.separator+"classes"+File.separator)){
+					path = path.substring(path.indexOf(File.separator+"classes"+File.separator));
+				}
+				path = path.replace(File.separator, ".");
+				path = path.replace(".classes.", "").replace(".class", "");
+				if(ConfigTable.isDebug() && log.isWarnEnabled()){
+					log.warn("[检索类][class:{}]",path);
+				}
+				Class clazz = Class.forName(path);
+				if(clazz.getName().contains("$")){
+					continue;
+				}
+				if(null != bases && bases.length>0){
+					for(Class base:bases){
+						if(clazz.equals(base)){
+							continue;
+						}
+						if(base.isAssignableFrom(clazz)){
+							list.add(clazz);
+							continue;
+						}
+					}
+				}else{
+					list.add(clazz);
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+		return list;
+	}
 } 
