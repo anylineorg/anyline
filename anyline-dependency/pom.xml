@@ -1,11 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline-dependency</artifactId>
 	<version>8.5.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<name>anyline dependency</name>
+	<name>anyline-dependency</name>
 	<description>一个针对web环境的,基于spring-jdbc的,快捷数据库操作工具</description>
 	<url>http://www.anyline.org</url>
 	<licenses>
@@ -533,19 +533,19 @@
 				<classifier>jdk15</classifier>
 			</dependency>
 			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
-			    <artifactId>jackson-core</artifactId>
-			    <version>${jackson.version}</version>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>com.fasterxml.jackson.core</groupId>
+				<groupId>com.fasterxml.jackson.core</groupId>
 				<artifactId>jackson-annotations</artifactId>
 				<version>${jackson.version}</version>
 			</dependency>
 			<dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-			    <version>${jackson.version}</version>
+				<version>${jackson.version}</version>
             </dependency>
 			<dependency>
 				<groupId>org.dom4j</groupId>
@@ -733,16 +733,16 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-						<include>*.tld</include>
-						<include>*.xsd</include>
+					<include>*.tld</include>
+					<include>*.xsd</include>
 				</includes>
 				<targetPath>META-INF</targetPath>
 			</resource>
 			<resource>
 				<directory>/src/main/webapp/WEB-INF</directory>
 				<includes>
-						<include>*.tld</include>
-						<include>*.xsd</include>
+					<include>*.tld</include>
+					<include>*.xsd</include>
 				</includes>
 				<targetPath>META-INF</targetPath>
 			</resource>
