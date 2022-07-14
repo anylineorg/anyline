@@ -731,5 +731,50 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		return table;
 	}
- 
+	/* ************** 拼接字符串 *************** */
+	protected String concatFun(String ... args){
+		String result = "";
+		if(null != args && args.length > 0){
+			result = "concat(";
+			int size = args.length;
+			for(int i=0; i<size; i++){
+				String arg = args[i];
+				if(i>0){
+					result += ",";
+				}
+				result += arg;
+			}
+			result += ")";
+		}
+		return result;
+	}
+
+	protected String concatOr(String ... args){
+		String result = "";
+		if(null != args && args.length > 0){
+			int size = args.length;
+			for(int i=0; i<size; i++){
+				String arg = args[i];
+				if(i>0){
+					result += " || ";
+				}
+				result += arg;
+			}
+		}
+		return result;
+	}
+	protected String concatAdd(String ... args){
+		String result = "";
+		if(null != args && args.length > 0){
+			int size = args.length;
+			for(int i=0; i<size; i++){
+				String arg = args[i];
+				if(i>0){
+					result += " + ";
+				}
+				result += arg;
+			}
+		}
+		return result;
+	}
 } 

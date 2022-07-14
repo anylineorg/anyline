@@ -50,18 +50,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	} 
  
  
-	public String concat(String ... args){ 
-		String result = ""; 
-		if(null != args && args.length > 0){ 
-			int size = args.length; 
-			for(int i=0; i<size; i++){ 
-				String arg = args[i]; 
-				if(i>0){ 
-					result += " || "; 
-				} 
-				result += arg; 
-			} 
-		} 
-		return result; 
+	public String concat(String ... args){
+		return concatOr(args);
 	} 
 } 
