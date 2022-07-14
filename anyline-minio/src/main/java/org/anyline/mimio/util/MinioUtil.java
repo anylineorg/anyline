@@ -7,13 +7,9 @@ import io.minio.messages.Item;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.BASE64Decoder;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MinioUtil {
@@ -226,11 +222,10 @@ public class MinioUtil {
     public String putObject(String bucket, String obj, String base64) throws Exception{
         InputStream inputStream = new ByteArrayInputStream(base64.getBytes());
         // 进行解码
-        BASE64Decoder base64Decoder = new BASE64Decoder();
         byte[] byt = new byte[0];
         try {
-            byt = base64Decoder.decodeBuffer(inputStream);
-        } catch (IOException e) {
+            byt = Base64.getDecoder().decode(base64);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         inputStream = new ByteArrayInputStream(byt);
