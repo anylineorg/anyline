@@ -28,28 +28,33 @@ import org.anyline.jdbc.config.ConfigStore;
  
 public interface SQLCreater{
 	public static enum DB_TYPE{
-		MYSQL				{public String getName(){return "mysql";}},
-		MSSQL				{public String getName(){return "mssql";}},
-		ORACLE				{public String getName(){return "oracle";}},
+		Cassandra			{public String getName(){return "Cassandra";}},
+		ClickHouse			{public String getName(){return "ClickHouse";}},
+		CockroachDB			{public String getName(){return "CockroachDB";}},
 		DB2					{public String getName(){return "db2";}},
-		PostgreSQL 			{public String getName(){return "PostgreSQL";}},
+		Derby  				{public String getName(){return "Derby";}},
 		DM		 			{public String getName(){return "达梦";}},
+		GBase  				{public String getName(){return "南大通用";}},
+		H2  				{public String getName(){return "H2";}},
 		HighGo				{public String getName(){return "瀚高";}},
-		oscar				{public String getName(){return "神舟通用";}},
+		HSQLDB  			{public String getName(){return "HSQLDB";}},
+		InfluxDB			{public String getName(){return "InfluxDB";}},
 		KingBase			{public String getName(){return "人大金仓 Oracle";}},
 		KingBase_PostgreSQL	{public String getName(){return "人大金仓 PostgreSQL";}},
-		GBase  				{public String getName(){return "南大通用";}},
-		OceanBase 			{public String getName(){return "OceanBase";}},
-		PolarDB  			{public String getName(){return "PolarDB";}},
-		SQLite  			{public String getName(){return "SQLite";}},
-		H2  				{public String getName(){return "H2";}},
-		Derby  				{public String getName(){return "Derby";}},
-		HSQLDB  			{public String getName(){return "HSQLDB";}},
+		MariaDB				{public String getName(){return "MariaDB";}},
+		MongoDB				{public String getName(){return "MongoDB";}},
+		MSSQL				{public String getName(){return "mssql";}},
+		MYSQL				{public String getName(){return "mysql";}},
 		Neo4j  				{public String getName(){return "Neo4j";}},
-		InfluxDB			{public String getName(){return "InfluxDB";}},
-		TimescaleDB			{public String getName(){return "TimescaleDB";}},
-		Cassandra			{public String getName(){return "Cassandra";}},
-		ClickHouse			{public String getName(){return "ClickHouse";}};
+		OceanBase 			{public String getName(){return "OceanBase";}},
+		ORACLE				{public String getName(){return "oracle";}},
+		oscar				{public String getName(){return "神舟通用";}},
+		PolarDB  			{public String getName(){return "PolarDB";}},
+		PostgreSQL 			{public String getName(){return "PostgreSQL";}},
+		RethinkDB  			{public String getName(){return "RethinkDB";}},
+		SQLite  			{public String getName(){return "SQLite";}},
+		TimescaleDB			{public String getName(){return "TimescaleDB";}};
+
 		public abstract String getName();
 	} 
 	public static final String TAB = "\t"; 
