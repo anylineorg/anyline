@@ -21,16 +21,11 @@
 		</dependency>
 		<!--
 		这个中央库有问题
-		可以从这里下载https://www.unidata.ucar.edu/downloads/netcdf-java/
+
+		可以从这里下载 https://www.unidata.ucar.edu/downloads/netcdf-java/
+		源码在这 https://github.com/Unidata/netcdf-java
 		netcdfAll-*.jar是我们需要的工具库,这个文件太大就不上传了,自己下载到本地,对应好path
 		toolsUI-*.jar 是桌面工具,可以在windows下打开 用来浏览*.nc数据库文件
-		-->
-		<!--
-		<dependency>
-			<groupId>edu.ucar</groupId>
-			<artifactId>netcdf</artifactId>
-			<version>4.3.22</version>
-		</dependency>
 		-->
 		<dependency>
 			<groupId>edu.ucar</groupId>
@@ -40,15 +35,4 @@
 			<systemPath>${project.basedir}/src/main/lib/netcdfAll-5.5.2.jar</systemPath>
 		</dependency>
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<includeSystemScope>true</includeSystemScope>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
