@@ -130,7 +130,12 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-cache-ecache</artifactId>
+				<artifactId>anyline-cache-ehcache</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-sms</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
