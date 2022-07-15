@@ -879,6 +879,8 @@ public class DateUtil {
 				date = Date.from(((LocalDate)value).atStartOfDay(ZoneId.systemDefault()).toInstant());
 			}else if(value instanceof LocalDateTime){
 				date = Date.from(((LocalDateTime)value).atZone(ZoneId.systemDefault()).toInstant());
+			}else if(value instanceof String){
+				date = parse((String)value);
 			}
 		}
 		return date;
