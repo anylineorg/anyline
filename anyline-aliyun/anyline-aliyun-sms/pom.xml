@@ -19,7 +19,7 @@
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>
-            <artifactId>anyline-net</artifactId>
+            <artifactId>anyline-sms</artifactId>
         </dependency>
         <dependency>
             <groupId>com.aliyun</groupId>
