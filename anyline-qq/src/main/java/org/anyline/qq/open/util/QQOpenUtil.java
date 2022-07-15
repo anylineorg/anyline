@@ -30,10 +30,13 @@ public class QQOpenUtil{
 			key = "default"; 
 		} 
 		QQOpenUtil util = instances.get(key); 
-		if(null == util){ 
-			util = new QQOpenUtil(); 
-			util.config = QQOpenConfig.getInstance(key); 
-			instances.put(key, util); 
+		if(null == util){
+			QQOpenConfig config = QQOpenConfig.getInstance(key);
+			if(null != config) {
+				util = new QQOpenUtil();
+				util.config = config;
+				instances.put(key, util);
+			}
 		} 
 		return util; 
 	} 
