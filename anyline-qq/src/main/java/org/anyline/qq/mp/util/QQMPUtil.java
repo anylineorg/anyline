@@ -24,9 +24,12 @@ public class QQMPUtil {
 		} 
 		QQMPUtil util = instances.get(key); 
 		if(null == util){ 
-			util = new QQMPUtil(); 
-			util.config = QQMPConfig.getInstance(key); 
-			instances.put(key, util); 
+			util = new QQMPUtil();
+			QQMPConfig config = QQMPConfig.getInstance(key);
+			if(null != config) {
+				util.config = config;
+				instances.put(key, util);
+			}
 		} 
 		return util; 
 	} 
