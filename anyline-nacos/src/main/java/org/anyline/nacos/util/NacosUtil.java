@@ -42,8 +42,14 @@ public class NacosUtil {
 	
 	static{
 		NacosUtil util = NacosUtil.getInstance();
-		if(util.config.AUTO_SCAN){
-			String packages = util.config.SCAN_PACKAGE;
+		if(null != util){
+			util.scan();
+		}
+	}
+
+	public void scan(){
+		if(config.AUTO_SCAN){
+			String packages = config.SCAN_PACKAGE;
 			if(BasicUtil.isNotEmpty(packages)){
 				String[] pks = packages.split(",");
 				if(null != pks) {
@@ -54,7 +60,7 @@ public class NacosUtil {
 							Class<AnylineConfig> configClass = (Class<AnylineConfig>)clazz;
 							String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
 							try {
-								util.config(null, configName, configClass);
+								config(null, configName, configClass);
 							} catch (NacosException e) {
 								log.warn("[nacos config][result:false][config:{}]", configName);
 							}
@@ -62,7 +68,7 @@ public class NacosUtil {
 					}
 				}
 			}
-			String cls = util.config.SCAN_CLASS;
+			String cls = config.SCAN_CLASS;
 			if(BasicUtil.isNotEmpty(cls)){
 				String[] clas  = cls.split(",");
 				for(String c:clas){
@@ -71,7 +77,7 @@ public class NacosUtil {
 						@SuppressWarnings("unchecked")
 						Class<AnylineConfig> configClass = (Class<AnylineConfig>)clazz;
 						String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
-						util.config(null, configName, configClass);
+						config(null, configName, configClass);
 					}catch (Exception e){
 						e.printStackTrace();
 					}
@@ -80,7 +86,6 @@ public class NacosUtil {
 			}
 		}
 	}
-
 	public static NacosUtil getInstance(){
 		return getInstance("default");
 	}
@@ -92,8 +97,10 @@ public class NacosUtil {
 		if(null == util){
 			util = new NacosUtil();
 			NacosConfig config = NacosConfig.getInstance(key);
-			util.config = config;
-			instances.put(key, util);
+			if(null != config) {
+				util.config = config;
+				instances.put(key, util);
+			}
 		}
 		return util;
 	}
