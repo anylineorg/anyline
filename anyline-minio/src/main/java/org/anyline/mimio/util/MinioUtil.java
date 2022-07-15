@@ -59,14 +59,16 @@ public class MinioUtil {
         }
         MinioUtil util = instances.get(key);
         if (null == util) {
-            util = new MinioUtil();
             MinioConfig config = MinioConfig.getInstance(key);
-            util.config = config;
-            util.client = MinioClient.builder()
-                    .endpoint(config.ENDPOINT)
-                    .credentials(config.ACCESS_KEY, config.ACCESS_SECRET)
-                    .build();
-            instances.put(key, util);
+            if(null != config) {
+                util = new MinioUtil();
+                util.config = config;
+                util.client = MinioClient.builder()
+                        .endpoint(config.ENDPOINT)
+                        .credentials(config.ACCESS_KEY, config.ACCESS_SECRET)
+                        .build();
+                instances.put(key, util);
+            }
         }
         return util;
     }
