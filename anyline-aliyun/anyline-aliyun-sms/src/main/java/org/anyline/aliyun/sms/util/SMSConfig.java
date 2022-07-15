@@ -12,10 +12,7 @@ public class SMSConfig extends AnylineConfig {
 	public String ACCESS_KEY = "";
 	public String ACCESS_SECRET = "";
 	public String SMS_SIGN = "";
-	//客户端配置 
-	public String SMS_SERVER = "";
-	public String CLIENT_APP = "";
-	public String CLIENT_SECRET = "";
+
 	public static String CONFIG_NAME = "anyline-aliyun-sms.xml";
 
 	static {
