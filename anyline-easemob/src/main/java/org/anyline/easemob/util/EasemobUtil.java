@@ -43,11 +43,13 @@ public class EasemobUtil {
 		} 
 		EasemobUtil util = instances.get(key); 
 		if(null == util){ 
-			util = new EasemobUtil(); 
-			EasemobConfig config = EasemobConfig.getInstance(key); 
-			util.config = config; 
-			util.baseUrl = config.HOST + "/" + config.ORG_NAME + "/" + config.APP_NAME; 
-			instances.put(key, util); 
+			EasemobConfig config = EasemobConfig.getInstance(key);
+			if(null != config) {
+				util = new EasemobUtil();
+				util.config = config;
+				util.baseUrl = config.HOST + "/" + config.ORG_NAME + "/" + config.APP_NAME;
+				instances.put(key, util);
+			}
 		} 
 		return util; 
 	} 
