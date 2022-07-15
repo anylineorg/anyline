@@ -87,7 +87,7 @@
 		<module>anyline-rocketmq</module>
 		<module>anyline-ldap</module>
 		<module>anyline-web-ext</module>
-        <module>/anyline-cache/anyline-cache-ecache</module>
+        <module>/anyline-cache/anyline-cache-ehcache</module>
 		<module>/anyline-cache/anyline-cache-redis</module>
         <module>/anyline-print/anyline-print-10ss</module>
         <module>anyline-tencent</module>
@@ -97,6 +97,7 @@
         <module>anyline-compatible</module>
         <module>anyline-compatible-default</module>
         <module>anyline-thingsboard</module>
+        <module>anyline-sms</module>
     </modules>
 	<build>
 		<plugins>
