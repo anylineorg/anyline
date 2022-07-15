@@ -68,11 +68,13 @@ public class OSSUtil {
 		}
 		OSSUtil util = instances.get(key);
 		if (null == util) {
-			util = new OSSUtil();
 			OSSConfig config = OSSConfig.getInstance(key);
-			util.config = config;
-			util.client = new OSSClient(config.ENDPOINT, config.ACCESS_ID, config.ACCESS_SECRET);
-			instances.put(key, util);//get_object_to_file
+			if(null != config) {
+				util = new OSSUtil();
+				util.config = config;
+				util.client = new OSSClient(config.ENDPOINT, config.ACCESS_ID, config.ACCESS_SECRET);
+				instances.put(key, util);
+			}
 		}
 		return util;
 	}
