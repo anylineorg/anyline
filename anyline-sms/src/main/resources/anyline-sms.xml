@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configs>
+	<config key="default">
+		<!--默认签名,发送短信时如果不指定签名则使用这里的默认签名-->
+		<property key="SIGN"></property>
+		<property key="SERVER_HOST"></property>
+		<property key="APP_KEY"></property>
+		<property key="APP_SECRET"></property>
+		<!--默认租户 如果只有一个租户的可以在这里默认，如果有多个租户的 需要在发送时设置-->
+		<property key="TENANT_CODE"></property>
+		<property key="PLATFORM_CODE"></property>
+	</config>
+</configs>
