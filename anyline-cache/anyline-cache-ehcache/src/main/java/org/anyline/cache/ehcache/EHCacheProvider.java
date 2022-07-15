@@ -15,7 +15,7 @@
  *
  *
  */
-package org.anyline.cache.ecache;
+package org.anyline.cache.ehcache;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -37,8 +37,8 @@ import java.util.Hashtable;
 import java.util.List;
 
 @Component("anyline.cache.provider")
-public class ECacheProvider implements CacheProvider {
-	private static final Logger log = LoggerFactory.getLogger(ECacheProvider.class);
+public class EHCacheProvider implements CacheProvider {
+	private static final Logger log = LoggerFactory.getLogger(EHCacheProvider.class);
 	private CacheManager manager = null;
 	private HashSet<String> channels = new HashSet<>();
 	private Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
