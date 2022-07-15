@@ -1,5 +1,6 @@
 package org.anyline.nacos.util;
 
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -57,7 +58,33 @@ public class NacosConfig extends AnylineConfig{
 	private synchronized static void load() { 
 		load(instances, NacosConfig.class, "anyline-nacos.xml");
 		NacosConfig.lastLoadTime = System.currentTimeMillis();
-	} 
+	}
+	public static NacosConfig register(String id, String address, int port, String group, String namespace, boolean auto, String pack, String clazz) {
+		DataRow row = new DataRow();
+		row.put("ADDRESS", address);
+		row.put("PORT", port);
+		row.put("GROUP", group);
+		row.put("NAMESPACE", namespace);
+		row.put("AUTO_SCAN", auto);
+		row.put("SCAN_PACKAGE", pack);
+		row.put("SCAN_CLASS", clazz);
+		NacosConfig config = parse(NacosConfig.class, id, row, instances, compatibles);
+		NacosUtil util = NacosUtil.getInstance(id);
+		if(null != util) {
+			util.scan();
+		}
+		return config;
+	}
+
+	public static NacosConfig register(String id, String address, int port, String group, String namespace) {
+		return register(id, address, port, group, namespace, true, null, null);
+	}
+	public static NacosConfig register(String id, String address, int port) {
+		return register(id, address, port, "DEAULT_GROUP", "public", true, null, null);
+	}
+	public static NacosConfig register(String address, int port) {
+		return register("default", address, port, "DEAULT_GROUP", "public", true, null, null);
+	}
 	private static void debug(){ 
 	} 
 }
