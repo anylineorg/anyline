@@ -55,13 +55,15 @@ public class Pop3Util {
 		if (null == util) {
 			util = new Pop3Util();
 			MailConfig config = MailConfig.getInstance(key);
-			util.config = config;
-			util.props.put("username", config.ACCOUNT);
-			util.props.put("password", config.PASSWORD);
-			util.props.put("mail.store.protocol", config.PROTOCOL);
-			util.props.put("mail.pop3.host", config.HOST);
-			util.props.put("mail.pop3.port", config.PORT);
-			instances.put(key, util);
+			if(null != config) {
+				util.config = config;
+				util.props.put("username", config.ACCOUNT);
+				util.props.put("password", config.PASSWORD);
+				util.props.put("mail.store.protocol", config.PROTOCOL);
+				util.props.put("mail.pop3.host", config.HOST);
+				util.props.put("mail.pop3.port", config.PORT);
+				instances.put(key, util);
+			}
 		}
 		return util;
 	}
