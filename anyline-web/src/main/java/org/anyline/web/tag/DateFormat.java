@@ -66,7 +66,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 			if(BasicUtil.isNotEmpty(lang)){
 				local = new Locale(lang);
 			}
-			date = parse(value);
+			date = DateUtil.parse(value);
 			if(null == date){
 				if(BasicUtil.isNotEmpty(nvl)) {
 					if ("true".equalsIgnoreCase(nvl.toString()) || (nvl instanceof Boolean && (Boolean)nvl)){
@@ -74,9 +74,7 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 					}
 				}
 			}
-			if(null == date){
-				date = parse(def);
-			}
+
 			if(null != date) {
 				if (add != 0) {
 					if("y".equals(part)){
@@ -122,25 +120,6 @@ public class DateFormat extends BaseBodyTag implements Cloneable{
 		this.format = null;
 		this.lang = null;
 		this.nvl = false; //如果value为空("",null) 是否显示当前时间,默认false
-	}
-	private Date parse(Object value){
-		Date date = null;
-		if(BasicUtil.isEmpty(value)){
-			return null;
-		}
-		if(value instanceof String){
-			if(((String) value).contains(",") || BasicUtil.isNumber(value)){
-				value = value.toString().replace(",", "");
-				date = new Date(BasicUtil.parseLong(value, 0L));
-			}else{
-				date = DateUtil.parse((String)value);
-			}
-		}else if(value instanceof Date){
-			date = (Date)value;
-		}else if(value instanceof Long){
-			date = new Date((Long)value);
-		}
-		return date;
 	}
 
 	public String getLang() {
