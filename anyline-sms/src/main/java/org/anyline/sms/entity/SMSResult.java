@@ -1,4 +1,4 @@
-package org.anyline.aliyun.sms.util; 
+package org.anyline.sms.entity;
  
 public class SMSResult { 
 	private boolean result;
