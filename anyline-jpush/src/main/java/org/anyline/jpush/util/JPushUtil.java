@@ -34,16 +34,17 @@ public class JPushUtil {
 		JPushUtil util = instances.get(key); 
 		if(null == util){ 
 			util = new JPushUtil(); 
-			JPushConfig config = JPushConfig.getInstance(key); 
-			util.config = config; 
- 
-			ClientConfig clientConfig; 
-			clientConfig = ClientConfig.getInstance(); 
-			clientConfig.setApnsProduction(false);  
-			clientConfig.setTimeToLive(60 * 60 * 24); 
-			util.client = new JPushClient(config.MASTER_SECRET, config.APP_KEY, null, clientConfig); 
-			 
-			instances.put(key, util); 
+			JPushConfig config = JPushConfig.getInstance(key);
+			if(null != config) {
+				util.config = config;
+				ClientConfig clientConfig;
+				clientConfig = ClientConfig.getInstance();
+				clientConfig.setApnsProduction(false);
+				clientConfig.setTimeToLive(60 * 60 * 24);
+				util.client = new JPushClient(config.MASTER_SECRET, config.APP_KEY, null, clientConfig);
+
+				instances.put(key, util);
+			}
 		} 
 		return util; 
 	} 
