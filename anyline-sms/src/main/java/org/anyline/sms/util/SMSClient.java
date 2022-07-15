@@ -1,6 +1,7 @@
-package org.anyline.aliyun.sms.util;
+package org.anyline.sms.util;
 
 import org.anyline.net.HttpUtil;
+import org.anyline.sms.entity.SMSResult;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -13,25 +14,22 @@ import java.util.List;
 import java.util.Map;
  
 /** 
- * 短信服务 
+ * 短信服务client
  *  
  * @author zh 
  *  
  */ 
 public class SMSClient { 
-	private static final Logger log = LoggerFactory.getLogger(SMSClient.class); 
+	private static final Logger log = LoggerFactory.getLogger(SMSClient.class);
     private SMSConfig config = null; 
 	private static Hashtable<String,SMSClient> instances = new Hashtable<String,SMSClient>(); 
-	 
-//	private static String sms_server = SMSConfig.SMS_SERVER; 
-//	private String app = SMSConfig.CLIENT_APP; 
-//	private String secret = SMSConfig.CLIENT_SECRET; 
+
  
 	public static SMSClient getInstance(){ 
 		return getInstance("default"); 
 	} 
 	public static SMSClient getInstance(String key){ 
-		if(BasicUtil.isEmpty(key)){ 
+		if(BasicUtil.isEmpty(key)){
 			key = "default"; 
 		} 
 		SMSClient client = instances.get(key); 
@@ -42,20 +40,34 @@ public class SMSClient {
 			instances.put(key, client); 
 		} 
 		return client; 
-	} 
-	public SMSResult send(String sign, String template, String mobile, Map<String, String> params) { 
+	}
+
+	/**
+	 * 发送短信
+	 * @param platform 短信平台
+	 * @param tenant 租户
+	 * @param sign 签名
+	 * @param template 模板
+	 * @param mobile 手机号
+	 * @param params 参数
+	 * @return SMSResult
+	 */
+	public SMSResult send(String platform, String tenant, String sign, String template, String mobile, Map<String, String> params) {
 		SMSResult result = null; 
 		try{ 
 			Map<String,Object> map = new HashMap<String,Object>(); 
-			map.put("_client_app", config.CLIENT_APP); 
-			map.put("_client_secret", config.CLIENT_SECRET); 
-			map.put("_sms_sign", sign); 
-			map.put("_sms_template", template); 
-			map.put("_sms_mobile", mobile); 
-			map.put("_sms_param", BeanUtil.map2json(params)); 
-			String txt = HttpUtil.get(config.SMS_SERVER, "UTF-8", map).getText(); 
+			map.put("a", config.APP_KEY);
+			map.put("k", config.APP_SECRET);
+			map.put("s", sign);
+			map.put("t", template);
+			map.put("tt", BasicUtil.nvl(tenant, config.TENANT_CODE));
+			map.put("pl", BasicUtil.nvl(platform, config.PLATFORM_CODE));
+			map.put("m", mobile);
+			map.put("p", BeanUtil.map2json(params));
+
+			String txt = HttpUtil.post(config.SERVER_HOST, "UTF-8", map).getText();
 			result = BeanUtil.json2oject(txt, SMSResult.class); 
-			if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+			if(ConfigTable.isDebug() && log.isWarnEnabled()){
 				log.warn("[SMS SEND][mobile:{}][result:{}]",mobile,txt); 
 			} 
 		}catch(Exception e){ 
@@ -64,7 +76,19 @@ public class SMSClient {
 			e.printStackTrace(); 
 		} 
 		return result; 
-	} 
+	}
+
+	public SMSResult send(String sign, String template, String mobile, Map<String, String> params) {
+		return send(null, null, sign, template, mobile, params);
+	}
+	/**
+	 * 发送短信
+	 * @param sign 签名
+	 * @param template 配置
+	 * @param mobiles 手机号
+	 * @param params 参数
+	 * @return SMSResult
+	 */
 	public SMSResult send(String sign, String template, List<String> mobiles, Map<String, String> params) { 
 		String mobile = ""; 
 		for(String item:mobiles){ 
@@ -78,10 +102,10 @@ public class SMSClient {
 	} 
  
 	public SMSResult send(String template, String mobile, Map<String, String> params) { 
-		return send(config.SMS_SIGN, template, mobile, params); 
+		return send(config.SIGN, template, mobile, params);
 	} 
 	public SMSResult send(String template, List<String> mobile, Map<String, String> params) { 
-		return send(config.SMS_SIGN, template, mobile, params); 
+		return send(config.SIGN, template, mobile, params);
 	} 
  
 }
