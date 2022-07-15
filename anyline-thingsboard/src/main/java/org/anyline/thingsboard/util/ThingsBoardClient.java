@@ -43,10 +43,12 @@ public class ThingsBoardClient extends RestClient {
         ThingsBoardClient client = instances.get(key);
         if(null == client){
             ThingsBoardConfig config = ThingsBoardConfig.getInstance(key);
-            client = new ThingsBoardClient(config.HOST);
-            client.config = config;
-            client.login(config.ACCOUNT, config.PASSWORD);
-            instances.put(key, client);
+            if(null != config) {
+                client = new ThingsBoardClient(config.HOST);
+                client.config = config;
+                client.login(config.ACCOUNT, config.PASSWORD);
+                instances.put(key, client);
+            }
         }
         return client;
     }
