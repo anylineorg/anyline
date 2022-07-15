@@ -4,6 +4,7 @@ import com.aliyun.dysmsapi20170525.Client;
 import com.aliyun.dysmsapi20170525.models.*;
 import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.teautil.models.RuntimeOptions;
+import org.anyline.sms.entity.SMSResult;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DateUtil;
@@ -40,22 +41,22 @@ public class SMSUtil {
 			key = "default"; 
 		} 
 		SMSUtil util = instances.get(key); 
-		if(null == util){ 
-			util = new SMSUtil(); 
+		if(null == util){
 			SMSConfig config = SMSConfig.getInstance(key);
-			util.config = config;
-
-			try {
-				Config cfg = new Config();
-				cfg.setAccessKeyId(config.ACCESS_KEY);
-				cfg.setAccessKeySecret(config.ACCESS_SECRET);
-				cfg.endpoint = endpoint;
-		        util.client = new Client(cfg);
-			} 
-	        catch (Exception e) { 
-				e.printStackTrace();
-	        } 
-			instances.put(key, util); 
+			if(null != config) {
+				util = new SMSUtil();
+				util.config = config;
+				try {
+					Config cfg = new Config();
+					cfg.setAccessKeyId(config.ACCESS_KEY);
+					cfg.setAccessKeySecret(config.ACCESS_SECRET);
+					cfg.endpoint = endpoint;
+					util.client = new Client(cfg);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				instances.put(key, util);
+			}
 		}
 		return util; 
 	}
@@ -70,7 +71,7 @@ public class SMSUtil {
 	 * @param out 外部流水扩展字段。
 	 * @return SMSResult
 	 */
-	public SMSResult send(String sign, String template, String extend, String out,  String mobile, Map<String, String> params) {
+	public SMSResult send(String sign, String template, String extend, String out, String mobile, Map<String, String> params) {
 		SMSResult result = new SMSResult(); 
 		try { 
 			if(BasicUtil.isEmpty(sign)){ 
@@ -186,42 +187,44 @@ public class SMSUtil {
 	 * 查询发送状态,有可能查出多个发送记录，按时间倒序
 	 * @param mobile 手机号
 	 * @param biz 回执号
-	 * @param date 发送日期
+	 * @param date 发送日期(yyyyMMdd) 不传默认当天
 	 * @param vol 每页多少条
 	 * @param page 当前第几页
 	 * @return List 根据 SMSMResult.status 1:等待回执 2:发送失败 3:发送成功。
 	 * @throws RuntimeException RuntimeException
 	 */
 	public List<SMSResult> status(String mobile, String biz, String date, int vol, int page) throws RuntimeException{
+		if(BasicUtil.isEmpty(date)){
+			date = DateUtil.format("yyyyMMdd");
+		}
 		List<SMSResult> results = new ArrayList<>();
 		QuerySendDetailsRequest query = new QuerySendDetailsRequest()
-				.setPhoneNumber(mobile)
-				.setSendDate(date)
-				.setPageSize((long)vol)
-				.setCurrentPage((long)page);
+			.setPhoneNumber(mobile)
+			.setSendDate(date)
+			.setPageSize((long)vol)
+			.setCurrentPage((long)page);
 
-				if(BasicUtil.isNotEmpty(biz)){
-					query.setBizId(biz);
-				}
-				try {
-					QuerySendDetailsResponse queryResp = client.querySendDetails(query);
-					List<QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO> list = queryResp.getBody().getSmsSendDetailDTOs().getSmsSendDetailDTO();
-					for (QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO item : list) {
-						SMSResult result = new SMSResult();
-						result.setStatus(item.getSendStatus().intValue());
-						result.setContent(item.getContent());
-						result.setCode(item.getErrCode());
-						result.setMobile(item.getPhoneNum());
-						result.setOut(item.getOutId());
-						result.setReceiveTime(item.getReceiveDate());
-						result.setSendTime(item.getSendDate());
-						result.setTemplate(item.getTemplateCode());
-						results.add(result);
-					}
-				}catch (Exception e){
-					 throw new RuntimeException(e);
-				}
-
+		if(BasicUtil.isNotEmpty(biz)){
+			query.setBizId(biz);
+		}
+		try {
+			QuerySendDetailsResponse queryResp = client.querySendDetails(query);
+			List<QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO> list = queryResp.getBody().getSmsSendDetailDTOs().getSmsSendDetailDTO();
+			for (QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO item : list) {
+				SMSResult result = new SMSResult();
+				result.setStatus(item.getSendStatus().intValue());
+				result.setContent(item.getContent());
+				result.setCode(item.getErrCode());
+				result.setMobile(item.getPhoneNum());
+				result.setOut(item.getOutId());
+				result.setReceiveTime(item.getReceiveDate());
+				result.setSendTime(item.getSendDate());
+				result.setTemplate(item.getTemplateCode());
+				results.add(result);
+			}
+		}catch (Exception e){
+			 throw new RuntimeException(e);
+		}
 		return results;
 	}
 
