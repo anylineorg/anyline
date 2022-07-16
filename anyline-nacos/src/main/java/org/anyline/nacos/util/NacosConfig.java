@@ -22,7 +22,7 @@ public class NacosConfig extends AnylineConfig{
 	public int TIMEOUT = 5000;
 	public String NAMESPACE = DEFAULT_NAMESPACE;   //注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
 	public String GROUP = DEFAULT_GROUP;
-	public boolean AUTO_SCAN = true;
+	public boolean AUTO_SCAN = false;
 	public String SCAN_PACKAGE="org.anyline,org.anyboot";
 	public String SCAN_CLASS="";
 
@@ -104,6 +104,19 @@ public class NacosConfig extends AnylineConfig{
 		load(instances, NacosConfig.class, "anyline-nacos.xml");
 		NacosConfig.lastLoadTime = System.currentTimeMillis();
 	}
+
+	/**
+	 * 注册nacos实例
+	 * @param id “default”
+	 * @param address nacos 地址
+	 * @param port 端口
+	 * @param group group
+	 * @param namespace namespace
+	 * @param auto 是否自动扫描项目下的类
+	 * @param pack 扫描的包名
+	 * @param clazz 扫描clazz的子类
+	 * @return NacosConfig
+	 */
 	public static NacosConfig register(String id, String address, int port, String group, String namespace, boolean auto, String pack, String clazz) {
 		DataRow row = new DataRow();
 		row.put("ADDRESS", address);
@@ -122,16 +135,16 @@ public class NacosConfig extends AnylineConfig{
 	}
 
 	public static NacosConfig register(String id, String address, int port, String group, String namespace) {
-		return register(id, address, port, group, namespace, true, null, null);
+		return register(id, address, port, group, namespace, false, null, null);
 	}
 	public static NacosConfig register(String id, String address, int port) {
-		return register(id, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, true, null, null);
+		return register(id, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, false, null, null);
 	}
 	public static NacosConfig register(String address, int port) {
-		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, true, null, null);
+		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, false, null, null);
 	}
 	public static NacosConfig register(String address, int port, String pack, String clazz) {
-		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, true, pack, clazz);
+		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, false, pack, clazz);
 	}
 	private static void debug(){ 
 	} 

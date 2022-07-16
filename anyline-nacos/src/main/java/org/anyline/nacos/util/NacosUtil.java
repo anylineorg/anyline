@@ -27,9 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
@@ -51,6 +53,40 @@ public class NacosUtil {
 		if(null == config){
 			return;
 		}
+
+		//ConfigTable
+		Listener listener = new Listener() {
+			@Override
+			public void receiveConfigInfo(String content) {
+				log.warn("[nacos reload config][group:{}][data:{}][class:{}]", config.GROUP,  ConfigTable.CONFIG_NAME, ConfigTable.class.getName());
+				ConfigTable.parse(content);
+			}
+			@Override
+			public Executor getExecutor() {
+				return null;
+			}
+		};
+		try {
+			config(null, ConfigTable.CONFIG_NAME, listener);
+		}catch (Exception e){
+			log.warn("[nacos config][result:false][config:{}][msg:{}]",ConfigTable.class.getName(),e.getMessage());
+		}
+
+		//AnylineConfig子类
+		Map<String, Map<String,Object>> listenerFiles = AnylineConfig.getListeners();
+		for (Map.Entry<String, Map<String,Object>> item : listenerFiles.entrySet()) {
+			File file = new File(item.getKey());
+			Map<String,Object> params = item.getValue();
+			Class<AnylineConfig> clazz = (Class<AnylineConfig>)params.get("CLAZZ");
+			Hashtable<String, AnylineConfig> instances = (Hashtable<String, AnylineConfig>)params.get("INSTANCES");
+			String[] compatibles = (String[])params.get("COMPATIBLES");
+			try {
+				config(null, file.getName(), clazz);
+			} catch (NacosException e) {
+				log.warn("[nacos config][result:false][config:{}][msg:{}]",clazz.getName(),e.getMessage());
+			}
+		}
+		//自动扫描
 		if(config.AUTO_SCAN){
 			String packages = config.SCAN_PACKAGE;
 			if(BasicUtil.isNotEmpty(packages)){
@@ -84,7 +120,6 @@ public class NacosUtil {
 					}catch (Exception e){
 						log.warn("[nacos config][result:false][config:{}][msg:{}]", c,e.getMessage());
 					}
-
 				}
 			}
 		}
