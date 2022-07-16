@@ -157,6 +157,7 @@ public class ClassUtil {
 	 */
 	private static List<String> getClassNameList(String packageName, boolean childPackage) throws IOException {
 		List<String> fileNames = new ArrayList<>();
+		log.warn("[正在加载本地类][package:{}]",packageName);
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		String packagePath = packageName.replace(".", "/");
 		Enumeration<URL> urls = loader.getResources(packagePath);
