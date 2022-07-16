@@ -10,11 +10,12 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.Hashtable;
 
-@Component
+@Component()
 public class NacosConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
 	public static final String DEFAULT_NAMESPACE = "";
+	public static boolean DEFAULT_AUTO_SCAN = true;
 	public String key = DEFAULT_KEY;
 
 	public String ADDRESS;
@@ -22,7 +23,7 @@ public class NacosConfig extends AnylineConfig{
 	public int TIMEOUT = 5000;
 	public String NAMESPACE = DEFAULT_NAMESPACE;   //注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
 	public String GROUP = DEFAULT_GROUP;
-	public boolean AUTO_SCAN = false;
+	public boolean AUTO_SCAN = DEFAULT_AUTO_SCAN;
 	public String SCAN_PACKAGE="org.anyline,org.anyboot";
 	public String SCAN_CLASS="";
 
@@ -135,16 +136,16 @@ public class NacosConfig extends AnylineConfig{
 	}
 
 	public static NacosConfig register(String id, String address, int port, String group, String namespace) {
-		return register(id, address, port, group, namespace, false, null, null);
+		return register(id, address, port, group, namespace, DEFAULT_AUTO_SCAN, null, null);
 	}
 	public static NacosConfig register(String id, String address, int port) {
-		return register(id, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, false, null, null);
+		return register(id, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, DEFAULT_AUTO_SCAN, null, null);
 	}
 	public static NacosConfig register(String address, int port) {
-		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, false, null, null);
+		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, DEFAULT_AUTO_SCAN, null, null);
 	}
 	public static NacosConfig register(String address, int port, String pack, String clazz) {
-		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, false, pack, clazz);
+		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, DEFAULT_AUTO_SCAN, pack, clazz);
 	}
 	private static void debug(){ 
 	} 

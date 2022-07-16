@@ -295,6 +295,7 @@ public class ConfigTable {
 				loadConfig(f);
 			}
 		}
+		log.warn("[加载配置文件完成]");
 	}
 	public static void parse(File file){
 		parse(FileUtil.read(file).toString());

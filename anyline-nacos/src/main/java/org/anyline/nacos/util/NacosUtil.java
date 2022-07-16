@@ -58,7 +58,7 @@ public class NacosUtil {
 		Listener listener = new Listener() {
 			@Override
 			public void receiveConfigInfo(String content) {
-				log.warn("[nacos reload config][group:{}][data:{}][class:{}]", config.GROUP,  ConfigTable.CONFIG_NAME, ConfigTable.class.getName());
+				log.warn("[nacos reload config][group:{}][namespace:{}][data:{}][class:{}]", config.GROUP, config.NAMESPACE, ConfigTable.CONFIG_NAME, ConfigTable.class.getName());
 				ConfigTable.parse(content);
 			}
 			@Override
@@ -69,7 +69,7 @@ public class NacosUtil {
 		try {
 			config(null, ConfigTable.CONFIG_NAME, listener);
 		}catch (Exception e){
-			log.warn("[nacos config][result:false][config:{}][msg:{}]",ConfigTable.class.getName(),e.getMessage());
+			log.warn("[nacos config][result:false][group:{}][namespace:{}][config:{}][msg:{}]", config.GROUP, config.NAMESPACE, ConfigTable.class.getName(),e.getMessage());
 		}
 
 		//AnylineConfig子类
@@ -177,7 +177,7 @@ public class NacosUtil {
 		if(BasicUtil.isEmpty(group)){
 			group = config.GROUP;
 		}
-		log.warn("[nacos config][group:{}][data:{}][listener:{}]", group, data, listener);
+		log.warn("[nacos config][group:{}][namespace:{}][data:{}][listener:{}]", group, config.NAMESPACE, data, listener);
 		Properties properties = new Properties();
 		properties.put(PropertyKeyConst.NAMESPACE, config.NAMESPACE);
 		String adr = config.ADDRESS;
