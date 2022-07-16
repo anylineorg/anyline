@@ -264,7 +264,7 @@ public abstract class AnylineConfig {
 	}
 
 	private static boolean listener_running = false;	//监听是否启动
-	private static Map<String,Map<String,Object>> listener_files = new Hashtable<>(); //监听文件更新<文件名,最后加载时间>
+	protected static Map<String,Map<String,Object>> listener_files = new Hashtable<>(); //监听文件更新<文件名,最后加载时间>
 
 	private synchronized static void listener(){
 		if(listener_running){
@@ -314,18 +314,25 @@ public abstract class AnylineConfig {
 			log.warn("[解析配置文件][文件不存在][file:{}]", file);
 			return instances;
 		}
-		Map<String,Object> params = new HashMap<>();
-		params.put("CLAZZ", T);
-		params.put("INSTANCES", instances);
-		params.put("COMPATIBLES", compatibles);
-		params.put("LAST_LOAD",0l);
-		listener_files.put(file.getAbsolutePath(), params);
+		addListener(file, T, instances, compatibles);
 		String txt = FileUtil.read(file).toString();
 		parse(T, txt, instances, compatibles);
 		if(ConfigTable.getInt("RELOAD",0) == 0){
 			listener();
 		}
 		return instances;
+	}
+	public static Map<String,Map<String,Object>> getListeners(){
+		return listener_files;
+	}
+	public static Map<String,Object> addListener(File file, Class clazz, Hashtable<String, AnylineConfig> instances, String[] compatibles){
+		Map<String,Object> params = new HashMap<>();
+		params.put("CLAZZ", clazz);
+		params.put("INSTANCES", instances);
+		params.put("COMPATIBLES", compatibles);
+		params.put("LAST_LOAD",System.currentTimeMillis());
+		listener_files.put(file.getAbsolutePath(), params);
+		return params;
 	}
 	protected static Hashtable<String, AnylineConfig> parse(Class<?> T, InputStream is, Hashtable<String, AnylineConfig> instances, String... compatibles) {
 		SAXReader reader = new SAXReader();
