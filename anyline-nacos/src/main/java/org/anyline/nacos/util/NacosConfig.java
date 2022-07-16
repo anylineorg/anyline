@@ -10,12 +10,12 @@ import java.util.Hashtable;
 public class NacosConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
-	public static final String DEFAULT_NAMESPACE = "public";
+	public static final String DEFAULT_NAMESPACE = "";
 	public String key = DEFAULT_KEY;
 	public String ADDRESS;
 	public int PORT = 8848;
 	public int TIMEOUT = 5000;
-	public String NAMESPACE = DEFAULT_NAMESPACE;
+	public String NAMESPACE = DEFAULT_NAMESPACE;   //注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
 	public String GROUP = DEFAULT_GROUP;
 	public boolean AUTO_SCAN = true;
 	public String SCAN_PACKAGE="org.anyline,org.anyboot";
@@ -71,10 +71,10 @@ public class NacosConfig extends AnylineConfig{
 		row.put("SCAN_PACKAGE", pack);
 		row.put("SCAN_CLASS", clazz);
 		NacosConfig config = parse(NacosConfig.class, id, row, instances, compatibles);
-		//NacosUtil util = NacosUtil.getInstance(id);
-		//if(null != util) {
-		//	util.scan();
-		//}
+		NacosUtil util = NacosUtil.getInstance(id);
+		if(null != util) {
+			util.scan();
+		}
 		return config;
 	}
 

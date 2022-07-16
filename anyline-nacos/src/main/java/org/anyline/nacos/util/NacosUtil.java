@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
-@Component
+
 public class NacosUtil {
 	private static Logger log = LoggerFactory.getLogger(NacosUtil.class);
 	private NacosConfig config = null;
@@ -48,6 +48,9 @@ public class NacosUtil {
 	}
 
 	public void scan(){
+		if(null == config){
+			return;
+		}
 		if(config.AUTO_SCAN){
 			String packages = config.SCAN_PACKAGE;
 			if(BasicUtil.isNotEmpty(packages)){

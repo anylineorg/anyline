@@ -5,8 +5,8 @@
 		<property key="ADDRESS">127.0.0.1</property>
 		<!-- 端口 默认8848 -->
 		<property key="PORT">8848</property>
-		<!-- namespace 默认public -->
-		<property key="NAMESPACE">public</property>
+		<!-- namespace 注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public-->
+		<property key="NAMESPACE"></property>
 		<!-- group 默认 DEFAULT_GROUP -->
 		<property key="GROUP">DEFAULT_GROUP</property>
 		<!-- 是否自动扫描配置类 默认true -->
