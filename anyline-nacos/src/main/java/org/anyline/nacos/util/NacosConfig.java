@@ -4,14 +4,19 @@ import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Hashtable;
 
+@Component
 public class NacosConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
 	public static final String DEFAULT_NAMESPACE = "";
 	public String key = DEFAULT_KEY;
+
 	public String ADDRESS;
 	public int PORT = 8848;
 	public int TIMEOUT = 5000;
@@ -20,10 +25,48 @@ public class NacosConfig extends AnylineConfig{
 	public boolean AUTO_SCAN = true;
 	public String SCAN_PACKAGE="org.anyline,org.anyboot";
 	public String SCAN_CLASS="";
+
+
+	@Value("${anyline.nacos.scan.packages:org.anyline,org.anyboot}")
+	public String scanPackpage;
+	@Value("${anyline.nacos.scan.types:}")
+	public String scanClass;
+
+	//boot
+	@Value("${nacos.config.server-addr:}")
+	public String bootAddress;
+
+	@Value("${nacos.config.namespace:}")
+	public String bootNamespace;
+
+	@Value("${nacos.config.group:DEFAULT_GROUP}")
+	public String bootGroup;
+
+	//cloud
+	@Value("${spring.cloud.nacos.config.server-addr:}")
+	public String cloudAddress;
+
+	@Value("${spring.cloud.nacos.config.namespace:}")
+	public String cloudNamespace;
+
+	@Value("${spring.cloud.nacos.config.group:DEFAULT_GROUP}")
+	public String cloudGroup;
+
+
 	static{
 		init(); 
 		debug(); 
-	} 
+	}
+	@PostConstruct
+	public void auto(){
+		if(BasicUtil.isNotEmpty(bootAddress)){
+			register("boot", bootAddress, 8848, bootGroup, bootNamespace, true, scanPackpage, scanClass);
+		}
+		if(BasicUtil.isNotEmpty(cloudAddress)){
+			register("cloud", cloudAddress, 8848, cloudGroup, cloudNamespace, true, scanPackpage, scanClass);
+		}
+	}
+	//	public static NacosConfig register(String id, String address, int port, String group, String namespace, boolean auto, String pack, String clazz) {
 	/**
 	 * 解析配置文件内容
 	 * @param content 配置文件内容

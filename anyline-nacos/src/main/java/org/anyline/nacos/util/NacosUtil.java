@@ -145,7 +145,11 @@ public class NacosUtil {
 		log.warn("[nacos config][group:{}][data:{}][listener:{}]", group, data, listener);
 		Properties properties = new Properties();
 		properties.put(PropertyKeyConst.NAMESPACE, config.NAMESPACE);
-		properties.put(PropertyKeyConst.SERVER_ADDR, config.ADDRESS+":"+config.PORT);
+		String adr = config.ADDRESS;
+		if(!adr.contains(":") && config.PORT > 0){
+			adr = adr + ":" + config.PORT;
+		}
+		properties.put(PropertyKeyConst.SERVER_ADDR, adr);
 		ConfigService configService = NacosFactory.createConfigService(properties);
 		String content = configService.getConfig(data, group, config.TIMEOUT);
 		if(null != listener) {
@@ -173,7 +177,7 @@ public class NacosUtil {
 	}
 
 	public static void parse(Class<? extends AnylineConfig> T, String content) {
-		if(BasicUtil.isNotEmpty(content)){
+		if(BasicUtil.isEmpty(content)){
 			log.warn("[nacos config][pull fail][config class:{}]",T.getName());
 			return;
 		}
