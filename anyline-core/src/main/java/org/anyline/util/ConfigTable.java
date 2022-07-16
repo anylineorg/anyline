@@ -501,12 +501,6 @@ public class ConfigTable {
 			}
 			line(""," ", 0, true);
 			line("","*", 0, true);
-//			line(" github.con  git地址:https://github.com/anylineorg/anyline.git", "", false);
-//			//line(" github.com  git帐号:public@anyline.org(anyline111111)", "", false);
-//			line(" ", " ", false);
-//			line(" oschina.net git地址:https://git.oschina.net/anyline/anyline.git", "", false);
-//			line(" oschina.net svn地址:svn://git.oschina.net/anyline/anyline", "", false);
-			//line(" oschina.net 帐号密码:public@anyline.org(111111)", "", false);
 			line("","*", 0, true);
 			if(null != project){
 				line(" project root > " + project, "", 0, false);
