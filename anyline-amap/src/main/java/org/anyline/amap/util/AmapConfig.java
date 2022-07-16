@@ -39,11 +39,11 @@ public class AmapConfig extends AnylineConfig{
 		init(); 
 	} 
 	public static AmapConfig getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(DEFAULT_KEY); 
 	} 
 	public static AmapConfig getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = DEFAULT_KEY; 
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - AmapConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 

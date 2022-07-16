@@ -75,19 +75,23 @@ public class ClassUtil {
 			List<String> names = getClassNameList(packageName, recursion);
 			for (String name : names) {
 				try {
+					if(name.startsWith("java")){
+						continue;
+					}
 					Class<?> c = Class.forName(name);
 					if (isInSub(c, bases)) {
 						list.add(c);
 					}
-				} catch (Exception e) {
-
+				}catch (NoClassDefFoundError e){
+				}catch (Exception e) {
 				}
 			}
+		}catch (NoClassDefFoundError e){
 		}catch(Exception e){
-			e.printStackTrace();
 		}
 		return list;
 	}
+
 
 	public static List<String> nameList(String packageName, boolean recursion, Class<?> ... bases){
 		List<String> list = new ArrayList<>();
@@ -119,11 +123,11 @@ public class ClassUtil {
 			return true;
 		}
 		for(Class<?> base : bases){
-			if(!base.isAssignableFrom(c)){
-				return false;
+			if(base.isAssignableFrom(c)){
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 	/**
 	 * 是否是bases子类或实现了basees接口(满足全部)
@@ -194,9 +198,12 @@ public class ClassUtil {
 			} else {
 				String childFilePath = childFile.getPath();
 				if (childFilePath.endsWith(".class") && !childFilePath.contains("$")) {
-					childFilePath = childFilePath.substring(childFilePath.indexOf("/classes/") + 9, childFilePath.lastIndexOf("."));
-					childFilePath = childFilePath.replace("/", ".");
-					myClassName.add(childFilePath);
+					String c = childFilePath.split("classes")[1].replace(".class","");
+					c = c.replace("\\",".").replace("//",".");
+					if(c.startsWith(".")){
+						c = c.substring(1);
+					}
+					myClassName.add(c);
 				}
 			}
 		}

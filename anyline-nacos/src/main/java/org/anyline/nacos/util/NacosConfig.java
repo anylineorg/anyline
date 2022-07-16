@@ -9,12 +9,14 @@ import java.util.Hashtable;
 
 public class NacosConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
-	public String KEY = "default";
+	public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
+	public static final String DEFAULT_NAMESPACE = "public";
+	public String key = DEFAULT_KEY;
 	public String ADDRESS;
 	public int PORT = 8848;
 	public int TIMEOUT = 5000;
-	public String NAMESPACE = "public";
-	public String GROUP = "DEFAULT_GROUP";
+	public String NAMESPACE = DEFAULT_NAMESPACE;
+	public String GROUP = DEFAULT_GROUP;
 	public boolean AUTO_SCAN = true;
 	public String SCAN_PACKAGE="org.anyline,org.anyboot";
 	public String SCAN_CLASS="";
@@ -38,11 +40,11 @@ public class NacosConfig extends AnylineConfig{
 	} 
  
 	public static NacosConfig getInstance(){
-		return getInstance("default"); 
+		return getInstance(DEFAULT_KEY); 
 	} 
 	public static NacosConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = DEFAULT_KEY; 
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - NacosConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
@@ -69,10 +71,10 @@ public class NacosConfig extends AnylineConfig{
 		row.put("SCAN_PACKAGE", pack);
 		row.put("SCAN_CLASS", clazz);
 		NacosConfig config = parse(NacosConfig.class, id, row, instances, compatibles);
-		NacosUtil util = NacosUtil.getInstance(id);
-		if(null != util) {
-			util.scan();
-		}
+		//NacosUtil util = NacosUtil.getInstance(id);
+		//if(null != util) {
+		//	util.scan();
+		//}
 		return config;
 	}
 
@@ -80,10 +82,13 @@ public class NacosConfig extends AnylineConfig{
 		return register(id, address, port, group, namespace, true, null, null);
 	}
 	public static NacosConfig register(String id, String address, int port) {
-		return register(id, address, port, "DEAULT_GROUP", "public", true, null, null);
+		return register(id, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, true, null, null);
 	}
 	public static NacosConfig register(String address, int port) {
-		return register("default", address, port, "DEAULT_GROUP", "public", true, null, null);
+		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, true, null, null);
+	}
+	public static NacosConfig register(String address, int port, String pack, String clazz) {
+		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, true, pack, clazz);
 	}
 	private static void debug(){ 
 	} 

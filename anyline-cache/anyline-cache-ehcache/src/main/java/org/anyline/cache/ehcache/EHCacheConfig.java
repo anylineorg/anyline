@@ -18,7 +18,7 @@ public class EHCacheConfig extends AnylineConfig {
 	public String SIGN = "";
 	public String PLATFORM_CODE = "";
 
-	public static String CONFIG_NAME = "anyline-sms.xml";
+	public static String CONFIG_NAME = "anyline-ehcache.xml";
 
 	static {
 		init();
@@ -44,12 +44,12 @@ public class EHCacheConfig extends AnylineConfig {
 	}
 
 	public static EHCacheConfig getInstance() {
-		return getInstance("default");
+		return getInstance(DEFAULT_KEY);
 	}
 
 	public static EHCacheConfig getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
-			key = "default";
+			key = DEFAULT_KEY;
 		}
 		return (EHCacheConfig) instances.get(key);
 	}

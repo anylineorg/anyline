@@ -35,11 +35,11 @@ public class EasemobConfig extends AnylineConfig{
 		load(); 
 	} 
 	public static EasemobConfig getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(DEFAULT_KEY); 
 	} 
 	public static EasemobConfig getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = DEFAULT_KEY; 
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - EasemobConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 

@@ -62,7 +62,7 @@ public class NacosUtil {
 							try {
 								config(null, configName, configClass);
 							} catch (NacosException e) {
-								log.warn("[nacos config][result:false][config:{}]", configName);
+								log.warn("[nacos config][result:false][config:{}][msg:{}]", pk, configName);
 							}
 						}
 					}
@@ -79,7 +79,7 @@ public class NacosUtil {
 						String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
 						config(null, configName, configClass);
 					}catch (Exception e){
-						e.printStackTrace();
+						log.warn("[nacos config][result:false][config:{}][msg:{}]", c,e.getMessage());
 					}
 
 				}

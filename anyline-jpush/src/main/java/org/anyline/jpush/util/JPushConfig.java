@@ -32,11 +32,11 @@ public class JPushConfig extends AnylineConfig{
 	} 
  
 	public static JPushConfig getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(DEFAULT_KEY); 
 	} 
 	public static JPushConfig getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = DEFAULT_KEY; 
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - JPushConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 

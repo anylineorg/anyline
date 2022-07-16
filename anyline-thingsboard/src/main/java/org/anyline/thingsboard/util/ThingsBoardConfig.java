@@ -40,12 +40,12 @@ public class ThingsBoardConfig extends AnylineConfig{
     }
 
     public static ThingsBoardConfig getInstance() {
-        return getInstance("default");
+        return getInstance(DEFAULT_KEY);
     }
 
     public static ThingsBoardConfig getInstance(String key) {
         if (BasicUtil.isEmpty(key)) {
-            key = "default";
+            key = DEFAULT_KEY;
         }
         return (ThingsBoardConfig) instances.get(key);
     }

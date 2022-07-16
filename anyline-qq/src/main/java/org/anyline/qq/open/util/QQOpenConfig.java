@@ -37,11 +37,11 @@ public class QQOpenConfig extends QQConfig{
 	} 
  
 	public static QQOpenConfig getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(DEFAULT_KEY); 
 	} 
 	public static QQOpenConfig getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = DEFAULT_KEY; 
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQOpenConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 

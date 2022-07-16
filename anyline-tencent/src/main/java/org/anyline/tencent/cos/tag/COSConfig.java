@@ -17,7 +17,7 @@ public class COSConfig extends BaseBodyTag {
     private boolean debug = false;
     private int expire = 0;
     private String dir = "";
-    private String key = "default";
+    private String key = DEFAULT_KEY;
     private String var = "al.config.oss.aliyun";
     private String allow = "*";
 

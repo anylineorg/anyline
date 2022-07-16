@@ -50,11 +50,11 @@ public class WechatMPConfig extends WechatConfig{
 		load();
 	}
 	public static WechatMPConfig getInstance(){
-		return getInstance("default");
+		return getInstance(DEFAULT_KEY);
 	}
 	public static WechatMPConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
-			key = "default";
+			key = DEFAULT_KEY;
 		}
 
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WechatMPConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){

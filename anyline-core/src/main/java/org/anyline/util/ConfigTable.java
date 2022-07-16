@@ -302,6 +302,9 @@ public class ConfigTable {
 	}
 	public static void parse(String xml){
 		try {
+			if(BasicUtil.isEmpty(xml)){
+				return;
+			}
 			Document document = DocumentHelper.parseText(xml);
 			Element root = document.getRootElement();
 			for (Iterator<Element> itrProperty = root.elementIterator("property"); itrProperty.hasNext(); ) {

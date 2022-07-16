@@ -42,7 +42,7 @@ public abstract class AnylineConfig {
 	protected static final Logger log = LoggerFactory.getLogger(AnylineConfig.class);
 	protected Map<String, String> kvs = new HashMap<String, String>();
 	protected static String[] compatibles = {};
-
+	protected static final String DEFAULT_KEY = "default";
 	public String INSTANCE_KEY							= "";
 	protected void afterParse(String key, String value) {
 
@@ -202,7 +202,7 @@ public abstract class AnylineConfig {
 				Element configElement = itrConfig.next();
 				String configKey = configElement.attributeValue("key");
 				if (BasicUtil.isEmpty(configKey)) {
-					configKey = "default";
+					configKey = DEFAULT_KEY;
 				}
 
 				AnylineConfig config = instances.get(configKey);
@@ -253,8 +253,10 @@ public abstract class AnylineConfig {
 
 	protected static Hashtable<String, AnylineConfig> parse(Class<?> T, String content, Hashtable<String, AnylineConfig> instances, String... compatibles) {
 		try {
-			Document document = DocumentHelper.parseText(content);
-			instances = parse(T, document, instances, compatibles);
+			if(BasicUtil.isNotEmpty(content)) {
+				Document document = DocumentHelper.parseText(content);
+				instances = parse(T, document, instances, compatibles);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -269,7 +271,7 @@ public abstract class AnylineConfig {
 			return;
 		}
 		listener_running = true;
-		log.warn("[启动监听]");
+		log.warn("[启动本地配置监听]");
 		new Thread(new Runnable() {
 			@Override
 			public void run() {

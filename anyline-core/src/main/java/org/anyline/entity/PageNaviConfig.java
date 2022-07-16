@@ -127,11 +127,11 @@ public class PageNaviConfig extends AnylineConfig  {
 		load(); 
 	} 
 	public static PageNaviConfig getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(DEFAULT_KEY);
 	} 
 	public static PageNaviConfig getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = DEFAULT_KEY;
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - PageNaviConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 

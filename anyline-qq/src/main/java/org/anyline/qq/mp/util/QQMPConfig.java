@@ -36,11 +36,11 @@ public class QQMPConfig extends AnylineConfig{
 	} 
  
 	public static QQMPConfig getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(DEFAULT_KEY); 
 	} 
 	public static QQMPConfig getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = DEFAULT_KEY; 
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - QQMPConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 

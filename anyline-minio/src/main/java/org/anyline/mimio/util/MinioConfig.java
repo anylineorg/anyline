@@ -52,11 +52,11 @@ public class MinioConfig extends AnylineConfig{
 		init(); 
 	} 
 	public static MinioConfig getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(DEFAULT_KEY); 
 	} 
 	public static MinioConfig getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = DEFAULT_KEY; 
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - MinioConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 

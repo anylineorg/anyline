@@ -38,12 +38,12 @@ public class SMSConfig extends AnylineConfig {
 	}
 
 	public static SMSConfig getInstance() {
-		return getInstance("default");
+		return getInstance(DEFAULT_KEY);
 	}
 
 	public static SMSConfig getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
-			key = "default";
+			key = DEFAULT_KEY;
 		}
 		return (SMSConfig) instances.get(key);
 	}
