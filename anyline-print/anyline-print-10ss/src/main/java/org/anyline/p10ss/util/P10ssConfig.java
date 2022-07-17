@@ -46,11 +46,11 @@ public class P10ssConfig  extends AnylineConfig {
         load();
     }
     public static P10ssConfig getInstance(){
-        return getInstance(DEFAULT_KEY);
+        return getInstance(DEFAULT_INSTANCE_KEY);
     }
     public static P10ssConfig getInstance(String key){
         if(BasicUtil.isEmpty(key)){
-            key = DEFAULT_KEY;
+            key = DEFAULT_INSTANCE_KEY;
         }
 
         if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - P10ssConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){

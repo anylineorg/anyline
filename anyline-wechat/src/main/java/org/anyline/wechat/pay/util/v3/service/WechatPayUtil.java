@@ -33,7 +33,7 @@ public class WechatPayUtil {
 
     private static Hashtable<String, WechatPayUtil> instances = new Hashtable<String, WechatPayUtil>();
     public static WechatPayUtil getInstance(){
-        return getInstance("default");
+        return getInstance(WechatPayConfig.DEFAULT_INSTANCE_KEY);
     }
     public WechatPayUtil(WechatPayConfig config){
         this.config = config;
@@ -51,7 +51,7 @@ public class WechatPayUtil {
     }
     public static WechatPayUtil getInstance(String key){
         if(BasicUtil.isEmpty(key)){
-            key = "default";
+            key = WechatPayConfig.DEFAULT_INSTANCE_KEY;
         }
         WechatPayUtil util = instances.get(key);
         if(null == util){

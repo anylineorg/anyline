@@ -23,12 +23,12 @@ public class MailUtil {
 		return config; 
 	} 
 	public static MailUtil getInstance() { 
-		return getInstance("default"); 
+		return getInstance(MailConfig.DEFAULT_INSTANCE_KEY);
 	} 
 
 	public static MailUtil getInstance(String key) { 
 		if (BasicUtil.isEmpty(key)) { 
-			key = "default"; 
+			key = MailConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		MailUtil util = instances.get(key); 
 		if (null == util) { 

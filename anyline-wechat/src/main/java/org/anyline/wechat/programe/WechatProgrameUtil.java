@@ -43,7 +43,7 @@ public class WechatProgrameUtil extends WechatUtil {
 
 	private static Hashtable<String, WechatProgrameUtil> instances = new Hashtable<String,WechatProgrameUtil>();
 	public static WechatProgrameUtil getInstance(){
-		return getInstance("default");
+		return getInstance(WechatProgrameConfig.DEFAULT_INSTANCE_KEY);
 	}
 	public WechatProgrameUtil(WechatProgrameConfig config){
 		this.config = config;
@@ -61,7 +61,7 @@ public class WechatProgrameUtil extends WechatUtil {
 	}
 	public static WechatProgrameUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
-			key = "default";
+			key = WechatProgrameConfig.DEFAULT_INSTANCE_KEY;
 		}
 		WechatProgrameUtil util = instances.get(key);
 		if(null == util){

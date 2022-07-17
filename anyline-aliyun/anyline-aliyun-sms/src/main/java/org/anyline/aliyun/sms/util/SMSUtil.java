@@ -34,11 +34,11 @@ public class SMSUtil {
     static final String endpoint = "dysmsapi.aliyuncs.com";
      
 	public static SMSUtil getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(SMSConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static SMSUtil getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = SMSConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		SMSUtil util = instances.get(key); 
 		if(null == util){
@@ -75,7 +75,7 @@ public class SMSUtil {
 		SMSResult result = new SMSResult(); 
 		try { 
 			if(BasicUtil.isEmpty(sign)){ 
-				sign = config.SMS_SIGN; 
+				sign = config.SIGN; 
 			}
 			SendSmsRequest request = new SendSmsRequest()
 					.setSignName(sign)
@@ -158,13 +158,13 @@ public class SMSUtil {
          * @return SMSResult
          */
 	public SMSResult send(String template, String mobile, Map<String, String> params) {
-		return send(config.SMS_SIGN, template, mobile, params);
+		return send(config.SIGN, template, mobile, params);
 	}
 	public SMSResult send(String template, String mobile, Object entity, List<String> keys) {
-		return send(config.SMS_SIGN, template, mobile, object2map(entity, keys));
+		return send(config.SIGN, template, mobile, object2map(entity, keys));
 	}
 	public SMSResult send(String template, String mobile, Object entity, String ... keys) {
-		return send(config.SMS_SIGN, template, mobile, object2map(entity, keys));
+		return send(config.SIGN, template, mobile, object2map(entity, keys));
 	}
 	/**
 	 * 发送短信(使用配置文件中的默认签名)
@@ -174,13 +174,13 @@ public class SMSUtil {
 	 * @return SMSResult
 	 */
 	public SMSResult send(String template, List<String> mobiles, Map<String, String> params) {
-		return send(config.SMS_SIGN, template, mobiles, params);
+		return send(config.SIGN, template, mobiles, params);
 	}
 	public SMSResult send(String template, List<String> mobiles, Object entity, List<String> keys) {
-		return send(config.SMS_SIGN, template, mobiles, object2map(entity, keys));
+		return send(config.SIGN, template, mobiles, object2map(entity, keys));
 	}
 	public SMSResult send(String template, List<String> mobiles, Object entity, String ... keys) {
-		return send(config.SMS_SIGN, template, mobiles, object2map(entity, keys));
+		return send(config.SIGN, template, mobiles, object2map(entity, keys));
 	}
 
 	/**

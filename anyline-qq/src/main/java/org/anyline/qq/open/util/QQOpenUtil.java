@@ -23,11 +23,11 @@ public class QQOpenUtil{
 	private static Hashtable<String,QQOpenUtil> instances = new Hashtable<String,QQOpenUtil>(); 
 	private QQOpenConfig config = null; 
 	public static QQOpenUtil getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(QQOpenConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static QQOpenUtil getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = QQOpenConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		QQOpenUtil util = instances.get(key); 
 		if(null == util){

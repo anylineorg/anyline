@@ -42,7 +42,8 @@ public abstract class AnylineConfig {
 	protected static final Logger log = LoggerFactory.getLogger(AnylineConfig.class);
 	protected Map<String, String> kvs = new HashMap<String, String>();
 	protected static String[] compatibles = {};
-	protected static final String DEFAULT_KEY = "default";
+
+	public static final String DEFAULT_INSTANCE_KEY = "default";
 	public String INSTANCE_KEY							= "";
 	protected void afterParse(String key, String value) {
 
@@ -131,7 +132,7 @@ public abstract class AnylineConfig {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends AnylineConfig> T parse(Class<? extends AnylineConfig> T, String id, DataRow row, Hashtable<String, AnylineConfig> instances, String... compatibles) {
+	public static <T extends AnylineConfig> T parse(Class<? extends AnylineConfig> T, String instance, DataRow row, Hashtable<String, AnylineConfig> instances, String... compatibles) {
 		T config = null;
 		try {
 			config = (T) T.newInstance();
@@ -179,8 +180,8 @@ public abstract class AnylineConfig {
 					}
 				}
 			}
-			config.INSTANCE_KEY = id;
-			instances.put(id, config);
+			config.INSTANCE_KEY = instance;
+			instances.put(instance, config);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -202,7 +203,7 @@ public abstract class AnylineConfig {
 				Element configElement = itrConfig.next();
 				String configKey = configElement.attributeValue("key");
 				if (BasicUtil.isEmpty(configKey)) {
-					configKey = DEFAULT_KEY;
+					configKey = DEFAULT_INSTANCE_KEY;
 				}
 
 				AnylineConfig config = instances.get(configKey);

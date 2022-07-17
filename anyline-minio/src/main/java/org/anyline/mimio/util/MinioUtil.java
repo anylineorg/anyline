@@ -37,7 +37,7 @@ public class MinioUtil {
     }
 
     public static MinioUtil getInstance() {
-        return getInstance("default");
+        return getInstance(MinioConfig.DEFAULT_INSTANCE_KEY);
     }
 
     public MinioClient getClient() {
@@ -55,7 +55,7 @@ public class MinioUtil {
     @SuppressWarnings("deprecation")
     public static MinioUtil getInstance(String key) {
         if (BasicUtil.isEmpty(key)) {
-            key = "default";
+            key = MinioConfig.DEFAULT_INSTANCE_KEY;
         }
         MinioUtil util = instances.get(key);
         if (null == util) {

@@ -44,11 +44,11 @@ public class WechatWapUtil {
 		instances.put(key, this); 
 	} 
 	public static WechatWapUtil getInstance(){
-		return getInstance("default"); 
+		return getInstance(WechatWapConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static WechatWapUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
-			key = "default"; 
+			key = WechatWapConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		WechatWapUtil util = instances.get(key);
 		if(null == util){ 

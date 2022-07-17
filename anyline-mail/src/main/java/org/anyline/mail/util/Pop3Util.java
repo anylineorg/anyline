@@ -44,12 +44,12 @@ public class Pop3Util {
 	}
 
 	public static Pop3Util getInstance() {
-		return getInstance("default");
+		return getInstance(MailConfig.DEFAULT_INSTANCE_KEY);
 	}
 
 	public static Pop3Util getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
-			key = "default";
+			key = MailConfig.DEFAULT_INSTANCE_KEY;
 		}
 		Pop3Util util = instances.get(key);
 		if (null == util) {

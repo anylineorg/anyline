@@ -45,12 +45,12 @@ public class AlipayUtil {
 
 
 	public static AlipayUtil getInstance() { 
-		return getInstance("default"); 
+		return getInstance(AlipayConfig.DEFAULT_INSTANCE_KEY);
 	} 
  
 	public static AlipayUtil getInstance(String key) { 
 		if (BasicUtil.isEmpty(key)) { 
-			key = "default"; 
+			key = AlipayConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		AlipayUtil util = instances.get(key); 
 		if (null == util) {

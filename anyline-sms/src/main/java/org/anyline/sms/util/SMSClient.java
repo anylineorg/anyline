@@ -26,11 +26,11 @@ public class SMSClient {
 
  
 	public static SMSClient getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(SMSConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static SMSClient getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){
-			key = "default"; 
+			key = SMSConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		SMSClient client = instances.get(key); 
 		if(null == client){ 

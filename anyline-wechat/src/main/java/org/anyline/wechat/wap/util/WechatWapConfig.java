@@ -51,11 +51,11 @@ public class WechatWapConfig extends WechatConfig{
 	} 
  
 	public static WechatWapConfig getInstance(){
-		return getInstance(DEFAULT_KEY);
+		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static WechatWapConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){ 
-			key = DEFAULT_KEY;
+			key = DEFAULT_INSTANCE_KEY;
 		} 
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WechatWapConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
 			//重新加载 

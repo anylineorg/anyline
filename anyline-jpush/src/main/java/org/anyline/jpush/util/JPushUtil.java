@@ -3,9 +3,10 @@ package org.anyline.jpush.util;
 import java.util.HashMap; 
 import java.util.Hashtable; 
 import java.util.List; 
-import java.util.Map; 
+import java.util.Map;
 
-import org.anyline.util.BasicUtil; 
+import org.anyline.util.AnylineConfig;
+import org.anyline.util.BasicUtil;
 
 import cn.jiguang.common.ClientConfig; 
 import cn.jpush.api.JPushClient; 
@@ -25,11 +26,11 @@ public class JPushUtil {
 	private JPushClient client; 
 	 
 	public static JPushUtil getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(AnylineConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static JPushUtil getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = JPushConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		JPushUtil util = instances.get(key); 
 		if(null == util){ 

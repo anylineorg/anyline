@@ -13,7 +13,6 @@ import java.util.Hashtable;
 @Component()
 public class NacosConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
-	public String key 								= DEFAULT_KEY		;
 
 	public static String DEFAULT_ADDRESS			= null						;
 	public static int DEFAULT_PORT 					= 8848						;
@@ -92,11 +91,11 @@ public class NacosConfig extends AnylineConfig{
 	} 
  
 	public static NacosConfig getInstance(){
-		return getInstance(DEFAULT_KEY); 
+		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static NacosConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){ 
-			key = DEFAULT_KEY; 
+			key = DEFAULT_INSTANCE_KEY;
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - NacosConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){

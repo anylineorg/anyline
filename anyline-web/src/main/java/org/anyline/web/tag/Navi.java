@@ -24,6 +24,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 import org.anyline.entity.PageNaviConfig;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
@@ -58,7 +59,7 @@ public class Navi extends BodyTagSupport{
 
 	private String empty			;	//查询无数据显示内容
 	private String over				;	//最后一页提示
-	private String style = "default"; 	//样式标记对应anyline-navi.xml中的config.key
+	private String style = AnylineConfig.DEFAULT_INSTANCE_KEY; 	//样式标记对应anyline-navi.xml中的config.key
 	private Boolean stat = false	;	//是否显示统计
 	private Boolean jump = false	;	//是否显示跳转
 	private Boolean vol = true		;   //是否显示每页多少条(配置文件开启的情况下有效)
@@ -257,7 +258,7 @@ public class Navi extends BodyTagSupport{
 		stat			= false	;
 		jump			= false	;
 		auto			= null	;
-		style			= "default"	;
+		style			=  AnylineConfig.DEFAULT_INSTANCE_KEY	;
 		scroll 			= null	;
 		cur 			= null	;
 		vol				= true	;

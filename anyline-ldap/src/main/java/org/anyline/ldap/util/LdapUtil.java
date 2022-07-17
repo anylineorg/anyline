@@ -25,11 +25,11 @@ public class LdapUtil {
 
 
 	public static LdapUtil getInstance(){
-		return getInstance("default"); 
+		return getInstance(LdapConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static LdapUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
-			key = "default";
+			key =LdapConfig.DEFAULT_INSTANCE_KEY;
 		}
 		LdapUtil util = instances.get(key);
 		if(null == util){ 

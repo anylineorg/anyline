@@ -35,11 +35,11 @@ public class EasemobUtil {
  
  
 	public static EasemobUtil getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(EasemobConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static EasemobUtil getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = EasemobConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		EasemobUtil util = instances.get(key); 
 		if(null == util){ 

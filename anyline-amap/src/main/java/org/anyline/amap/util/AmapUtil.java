@@ -27,10 +27,10 @@ import org.slf4j.LoggerFactory;
  */ 
 public class AmapUtil { 
 	private static final Logger log = LoggerFactory.getLogger(AmapUtil.class); 
- 
-	private String key = AmapConfig.KEY; 
-	private String privateKey = AmapConfig.PRIVATE_KEY; 
-	private String table = AmapConfig.TABLE_ID; 
+
+	private String key = AmapConfig.DEFAULT_KEY;
+	private String privateKey = AmapConfig.PRIVATE_KEY;
+	private String table = AmapConfig.TABLE_ID;
 	private static Map<String,AmapUtil> pool = new Hashtable<String,AmapUtil>(); 
  
 	static{ 

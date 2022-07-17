@@ -126,11 +126,11 @@ public class NacosUtil {
 		}
 	}
 	public static NacosUtil getInstance(){
-		return getInstance("default");
+		return getInstance(NacosConfig.DEFAULT_INSTANCE_KEY);
 	}
 	public static NacosUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
-			key = "default";
+			key = NacosConfig.DEFAULT_INSTANCE_KEY;
 		}
 		NacosUtil util = instances.get(key);
 		if(null == util){

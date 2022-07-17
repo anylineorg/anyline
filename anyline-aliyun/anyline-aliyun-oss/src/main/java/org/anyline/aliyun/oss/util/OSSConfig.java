@@ -1,5 +1,6 @@
 package org.anyline.aliyun.oss.util; 
  
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -14,21 +15,21 @@ public class OSSConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
 	private static File configDir;
 
-	public static String DEFAULT_ACCESS_ID		= "";
-	public static String DEFAULT_ACCESS_SECRET 	= "";
-	public static String DEFAULT_ENDPOINT		= "";
-	public static String DEFAULT_BUCKET			= "";
-	public static String DEFAULT_DIR			= "";
+	public static String DEFAULT_ACCESS_ID		= ""	;
+	public static String DEFAULT_ACCESS_SECRET 	= ""	;
+	public static String DEFAULT_ENDPOINT		= ""	;
+	public static String DEFAULT_BUCKET			= ""	;
+	public static String DEFAULT_DIR			= ""	;
+	public static int DEFAULT_EXPIRE_SECOND 	= 3600	;
 
 	public String ACCESS_ID		= DEFAULT_ACCESS_ID		;
 	public String ACCESS_SECRET = DEFAULT_ACCESS_SECRET	;
 	public String ENDPOINT		= DEFAULT_ENDPOINT		;
 	public String BUCKET		= DEFAULT_BUCKET		;
 	public String DIR			= DEFAULT_DIR			;
-	public int EXPIRE_SECOND 	= 3600;
+	public int EXPIRE_SECOND 	= DEFAULT_EXPIRE_SECOND	;
+
 	public static String CONFIG_NAME = "anyline-aliyun-oss.xml";
-
-
 
 
 	static{ 
@@ -56,11 +57,11 @@ public class OSSConfig extends AnylineConfig{
 		init(); 
 	} 
 	public static OSSConfig getInstance(){ 
-		return getInstance(DEFAULT_KEY); 
+		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static OSSConfig getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = DEFAULT_KEY; 
+			key = DEFAULT_INSTANCE_KEY;
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - OSSConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){ 
@@ -80,5 +81,23 @@ public class OSSConfig extends AnylineConfig{
 		OSSConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 
-	} 
+	}
+
+
+	public static OSSConfig register(String instance, String id, String secret, String endpoint, String bucket, String dir, int expire) {
+		DataRow row = new DataRow();
+		row.put("ACCESS_ID", id);
+		row.put("ACCESS_SECRET", secret);
+		row.put("ENDPOINT", endpoint);
+		row.put("BUCKET", bucket);
+		row.put("DIR", dir);
+		row.put("EXPIRE_SECOND", expire);
+		OSSConfig config = parse(OSSConfig.class, instance, row, instances, compatibles);
+		return config;
+	}
+
+	public static OSSConfig register(String id, String secret, String endpoint, String bucket, String dir, int expire) {
+		return register(DEFAULT_INSTANCE_KEY, id, secret, endpoint, bucket, dir, expire);
+	}
+
 } 

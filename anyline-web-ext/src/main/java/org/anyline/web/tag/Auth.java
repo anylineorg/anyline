@@ -25,6 +25,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.qq.mp.util.QQMPConfig;
 import org.anyline.qq.util.QQConfig;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.CodeUtil;
 import org.anyline.wechat.mp.util.WechatMPConfig;
@@ -37,7 +38,7 @@ import java.util.Map;
 
 public class Auth extends BaseBodyTag {
 	private static final long serialVersionUID = 1L;
-	private String key = "default";
+	private String key = AnylineConfig.DEFAULT_INSTANCE_KEY;
 	private String appid;
 	private String type;	//wechat:微信 qq:QQ
 	private String redirect;

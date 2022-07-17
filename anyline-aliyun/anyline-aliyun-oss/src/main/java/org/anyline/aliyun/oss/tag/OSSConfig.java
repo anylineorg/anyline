@@ -20,10 +20,7 @@
 package org.anyline.aliyun.oss.tag; 
  
 import org.anyline.aliyun.oss.util.OSSUtil;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
+import org.anyline.util.*;
 import org.anyline.web.tag.BaseBodyTag;
 
 import javax.servlet.jsp.JspException;
@@ -35,7 +32,7 @@ public class OSSConfig extends BaseBodyTag {
 	private int expire = 0; 
 	private String dir = "";
 
-	private String key = "default";
+	private String key = AnylineConfig.DEFAULT_INSTANCE_KEY;
 	private String var = "al.config.oss.aliyun";
 	 
 	public int doEndTag() throws JspException { 

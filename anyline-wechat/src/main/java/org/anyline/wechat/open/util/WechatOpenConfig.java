@@ -40,11 +40,11 @@ public class WechatOpenConfig extends WechatConfig{
 	} 
  
 	public static WechatOpenConfig getInstance(){
-		return getInstance(DEFAULT_KEY); 
+		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static WechatOpenConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){ 
-			key = DEFAULT_KEY; 
+			key = DEFAULT_INSTANCE_KEY;
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WechatOpenConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){

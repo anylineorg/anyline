@@ -9,13 +9,10 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue; 
 import java.util.concurrent.ThreadFactory; 
 import java.util.concurrent.ThreadPoolExecutor; 
-import java.util.concurrent.TimeUnit; 
+import java.util.concurrent.TimeUnit;
 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.DateUtil; 
-import org.anyline.util.FileUtil; 
-import org.slf4j.Logger; 
+import org.anyline.util.*;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory; 
  
 public class Downloader { 
@@ -33,12 +30,12 @@ public class Downloader {
  
 	private static Hashtable<String,Downloader> instances = new Hashtable<String,Downloader>(); 
 	public static Downloader getInstance() { 
-		return getInstance("default"); 
+		return getInstance(AnylineConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	 
 	public static Downloader getInstance(String key) { 
 		if (BasicUtil.isEmpty(key)) { 
-			key = "default"; 
+			key = AnylineConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		Downloader util = instances.get(key); 
 		if (null == util) { 

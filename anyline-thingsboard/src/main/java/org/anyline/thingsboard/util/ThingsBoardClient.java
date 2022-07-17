@@ -33,11 +33,11 @@ public class ThingsBoardClient extends RestClient {
 
 
     public static ThingsBoardClient getInstance(){
-        return getInstance("default");
+        return getInstance(ThingsBoardConfig.DEFAULT_INSTANCE_KEY);
     }
     public static ThingsBoardClient getInstance(String key){
         if(BasicUtil.isEmpty(key)){
-            key = "default";
+            key = ThingsBoardConfig.DEFAULT_INSTANCE_KEY;
         }
         ThingsBoardClient client = instances.get(key);
         if(null == client){

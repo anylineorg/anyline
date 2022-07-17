@@ -50,11 +50,11 @@ public class WechatOpenUtil {
 	} 
 	 
 	public static WechatOpenUtil getInstance(){
-		return getInstance("default"); 
+		return getInstance(WechatOpenConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static WechatOpenUtil getInstance(String key){
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = WechatOpenConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		WechatOpenUtil util = instances.get(key);
 		if(null == util){ 

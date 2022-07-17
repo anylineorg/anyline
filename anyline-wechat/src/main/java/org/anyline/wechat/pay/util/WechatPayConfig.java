@@ -127,11 +127,11 @@ public class WechatPayConfig extends AnylineConfig{
 		load();
 	}
 	public static WechatPayConfig getInstance(){
-		return getInstance(DEFAULT_KEY);
+		return getInstance(DEFAULT_INSTANCE_KEY);
 	}
 	public static WechatPayConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){
-			key = DEFAULT_KEY;
+			key = DEFAULT_INSTANCE_KEY;
 		}
 
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - WechatPayConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){

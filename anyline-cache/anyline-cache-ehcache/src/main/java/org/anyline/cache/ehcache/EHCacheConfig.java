@@ -44,12 +44,12 @@ public class EHCacheConfig extends AnylineConfig {
 	}
 
 	public static EHCacheConfig getInstance() {
-		return getInstance(DEFAULT_KEY);
+		return getInstance(DEFAULT_INSTANCE_KEY);
 	}
 
 	public static EHCacheConfig getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
-			key = DEFAULT_KEY;
+			key = DEFAULT_INSTANCE_KEY;
 		}
 		return (EHCacheConfig) instances.get(key);
 	}

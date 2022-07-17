@@ -3,7 +3,9 @@ package org.anyline.aliyun.sms.util;
 import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
+import org.springframework.beans.factory.annotation.Value;
 
+import javax.annotation.PostConstruct;
 import java.util.Hashtable;
  
 public class SMSConfig extends AnylineConfig {
@@ -11,13 +13,13 @@ public class SMSConfig extends AnylineConfig {
 
 	public static String DEFAULT_ACCESS_KEY 	= "";
 	public static String DEFAULT_ACCESS_SECRET  = "";
-	public static String DEFAULT_SMS_SIGN 		= "";
+	public static String DEFAULT_SIGN	 		= "";
 
 
 	//服务器配置 
 	public String ACCESS_KEY 	= DEFAULT_ACCESS_KEY		;
 	public String ACCESS_SECRET = DEFAULT_ACCESS_SECRET		;
-	public String SMS_SIGN 		= DEFAULT_SMS_SIGN			;
+	public String SIGN 			= DEFAULT_SIGN				;
 
 	public static String CONFIG_NAME = "anyline-aliyun-sms.xml";
 
@@ -25,6 +27,7 @@ public class SMSConfig extends AnylineConfig {
 		init();
 		debug();
 	}
+
 
 	/**
 	 * 解析配置文件内容
@@ -44,12 +47,12 @@ public class SMSConfig extends AnylineConfig {
 	}
 
 	public static SMSConfig getInstance() {
-		return getInstance(DEFAULT_KEY);
+		return getInstance(DEFAULT_INSTANCE_KEY);
 	}
 
 	public static SMSConfig getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
-			key = DEFAULT_KEY;
+			key = DEFAULT_INSTANCE_KEY;
 		}
 		return (SMSConfig) instances.get(key);
 	}
@@ -74,5 +77,8 @@ public class SMSConfig extends AnylineConfig {
 		row.put("ACCESS_SECRET", secret);
 		SMSConfig config = parse(SMSConfig.class, id, row, instances, compatibles);
 		return config;
+	}
+	public static SMSConfig register(String key, String secret) {
+		return register(DEFAULT_INSTANCE_KEY, key, secret);
 	}
 }

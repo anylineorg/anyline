@@ -30,7 +30,7 @@ public class COSUtil {
     }
 
 	public static COSUtil getInstance() {
-		return getInstance("default");
+		return getInstance(DEFAULT_INSTANCE_KEY);
 	}
 
 	public COSClient getClient() {

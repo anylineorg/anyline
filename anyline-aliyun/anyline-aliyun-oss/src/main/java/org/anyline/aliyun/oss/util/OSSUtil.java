@@ -46,7 +46,7 @@ public class OSSUtil {
     }
 
 	public static OSSUtil getInstance() {
-		return getInstance("default");
+		return getInstance(OSSConfig.DEFAULT_INSTANCE_KEY);
 	}
 
 	public OSSClient getClient() {
@@ -64,7 +64,7 @@ public class OSSUtil {
 	@SuppressWarnings("deprecation")
 	public static OSSUtil getInstance(String key) {
 		if (BasicUtil.isEmpty(key)) {
-			key = "default";
+			key = OSSConfig.DEFAULT_INSTANCE_KEY;
 		}
 		OSSUtil util = instances.get(key);
 		if (null == util) {

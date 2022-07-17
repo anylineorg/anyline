@@ -122,28 +122,17 @@ public class BasicUtil {
 	 * @param values  values
 	 * @return Object
 	 */
-	public static Object nvl(Object... values) {
+	public static <T> T nvl(T... values) {
 		if (null == values) {
 			return null;
 		}
-		for (Object item : values) {
+		for (T item : values) {
 			if (null != item) {
 				return item;
 			}
 		}
 		return null;
 	}
-	public static Object nvl(String... values) {
-		if (null == values) {
-			return null;
-		}
-		for (Object item : values) {
-			if (null != item) {
-				return item;
-			}
-		}
-		return null;
-	} 
 
  
 	/** 
@@ -153,11 +142,11 @@ public class BasicUtil {
 	 * @param values  values
 	 * @return Object
 	 */ 
-	public static Object evl(boolean recursion, Object... values) { 
+	public static <T> T evl(boolean recursion, T... values) {
 		if (null == values) { 
 			return null; 
 		} 
-		for (Object item : values) { 
+		for (T item : values) {
 			if (isNotEmpty(recursion, item)) { 
 				return item; 
 			} 
@@ -165,7 +154,7 @@ public class BasicUtil {
 		return null; 
 	} 
  
-	public static Object evl(Object... values) { 
+	public static <T> T evl(T... values) {
 		return evl(false, values); 
 	} 
  

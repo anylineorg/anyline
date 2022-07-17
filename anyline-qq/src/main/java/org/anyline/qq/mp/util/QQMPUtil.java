@@ -16,11 +16,11 @@ public class QQMPUtil {
 	private static Hashtable<String,QQMPUtil> instances = new Hashtable<String,QQMPUtil>(); 
 	private QQMPConfig config = null; 
 	public static QQMPUtil getInstance(){ 
-		return getInstance("default"); 
+		return getInstance(QQMPConfig.DEFAULT_INSTANCE_KEY);
 	} 
 	public static QQMPUtil getInstance(String key){ 
 		if(BasicUtil.isEmpty(key)){ 
-			key = "default"; 
+			key = QQMPConfig.DEFAULT_INSTANCE_KEY;
 		} 
 		QQMPUtil util = instances.get(key); 
 		if(null == util){ 

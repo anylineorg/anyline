@@ -23,7 +23,7 @@ public class P10ssUtil {
 
     private static Hashtable<String, P10ssUtil> instances = new Hashtable<String, P10ssUtil>();
     public static P10ssUtil getInstance(){
-        return getInstance("default");
+        return getInstance(P10ssConfig.DEFAULT_INSTANCE_KEY);
     }
     public P10ssUtil(P10ssConfig config){
         this.config = config;
@@ -41,7 +41,7 @@ public class P10ssUtil {
     }
     public static P10ssUtil getInstance(String key){
         if(BasicUtil.isEmpty(key)){
-            key = "default";
+            key = P10ssConfig.DEFAULT_INSTANCE_KEY;
         }
         P10ssUtil util = instances.get(key);
         if(null == util){

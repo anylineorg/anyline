@@ -9,7 +9,7 @@ import java.util.Hashtable;
 public class LdapConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-ldap.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
-	public String key = DEFAULT_KEY;
+
 
 	public static String DEFAULT_ADDRESS					;
 	public static int DEFAULT_PORT = 389					;
@@ -51,11 +51,11 @@ public class LdapConfig extends AnylineConfig{
 	} 
  
 	public static LdapConfig getInstance(){
-		return getInstance(DEFAULT_KEY); 
+		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
 	public static LdapConfig getInstance(String key){
 		if(BasicUtil.isEmpty(key)){ 
-			key = DEFAULT_KEY; 
+			key = DEFAULT_INSTANCE_KEY;
 		} 
  
 		if(ConfigTable.getReload() > 0 && (System.currentTimeMillis() - LdapConfig.lastLoadTime)/1000 > ConfigTable.getReload() ){
