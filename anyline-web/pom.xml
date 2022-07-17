@@ -6,9 +6,9 @@
 
 	<parent>
 		<groupId>org.anyline</groupId>
-		<artifactId>anyline-dependency</artifactId>
+		<artifactId>anyline-dependency-web</artifactId>
 		<version>8.5.5-SNAPSHOT</version>
-		<relativePath>../anyline-dependency</relativePath>
+		<relativePath>../anyline-dependency-web</relativePath>
 	</parent>
 
 	<artifactId>anyline-web</artifactId>
@@ -17,10 +17,6 @@
 	<url>http://www.anyline.org/web</url>
 
 	<dependencies>
-<!--		<dependency>-->
-<!--			<groupId>org.anyline</groupId>-->
-<!--			<artifactId>anyline-core</artifactId>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc</artifactId>
@@ -28,26 +24,6 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-net</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>org.springframework</groupId>-->
-<!--			<artifactId>spring-context</artifactId>-->
-<!--		</dependency>-->
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jsp-api</artifactId>
-			<scope>provided</scope>
-			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>

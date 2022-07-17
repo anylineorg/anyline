@@ -14,6 +14,7 @@
     <artifactId>anyline-jdbc-dm</artifactId>
     <packaging>jar</packaging>
     <name>anyline-jdbc-dm</name>
+    <description>达梦</description>
     <url>http://www.anyline.org/dm</url>
 
     <dependencies>

@@ -13,6 +13,9 @@
 
 
     <artifactId>anyline-jdbc-mongodb</artifactId>
+    <packaging>jar</packaging>
+    <name>anyline-jdbc-mongodb</name>
+    <url>http://www.anyline.org/mongodb</url>
     <dependencies>
         <dependency>
             <groupId>org.anyline</groupId>

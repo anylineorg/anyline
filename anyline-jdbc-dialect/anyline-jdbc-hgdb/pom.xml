@@ -21,13 +21,5 @@
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc</artifactId>
 		</dependency>
-
-		<!--
-		<dependency>
-			<groupId>com.hgdb</groupId>
-			<artifactId>hgdb</artifactId>
-			<version>${jdbc.hgdb.version}</version>
-		</dependency>
-		 -->
 	</dependencies>
 </project>

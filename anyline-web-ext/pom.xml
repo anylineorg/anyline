@@ -6,9 +6,9 @@
 
 	<parent>
 		<groupId>org.anyline</groupId>
-		<artifactId>anyline-dependency</artifactId>
+		<artifactId>anyline-dependency-web</artifactId>
 		<version>8.5.5-SNAPSHOT</version>
-		<relativePath>../anyline-dependency</relativePath>
+		<relativePath>../anyline-dependency-web</relativePath>
 	</parent>
 
 	<artifactId>anyline-web-ext</artifactId>

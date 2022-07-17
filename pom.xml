@@ -29,6 +29,7 @@
 	</scm>
     <modules>
 		<module>anyline-dependency</module>
+		<module>anyline-dependency-web</module>
 		<module>anyline-core</module>
 		<module>anyline-net</module>
 		<module>anyline-jdbc</module>

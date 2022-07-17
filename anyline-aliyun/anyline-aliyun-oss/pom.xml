@@ -6,9 +6,9 @@
 
 	<parent>
 		<groupId>org.anyline</groupId>
-		<artifactId>anyline-dependency</artifactId>
+		<artifactId>anyline-dependency-web</artifactId>
 		<version>8.5.5-SNAPSHOT</version>
-		<relativePath>../../anyline-dependency/pom.xml</relativePath>
+		<relativePath>../../anyline-dependency-web</relativePath>
 	</parent>
 
 	<artifactId>anyline-aliyun-oss</artifactId>
@@ -28,12 +28,6 @@
 		<dependency>
 			<groupId>com.aliyun</groupId>
 			<artifactId>aliyun-java-sdk-dysmsapi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>jsp-api</artifactId>
-			<scope>provided</scope>
-			<optional>true</optional>
 		</dependency>
 	</dependencies>
 </project>

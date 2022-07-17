@@ -58,7 +58,7 @@ public class NacosUtil {
 		Listener listener = new Listener() {
 			@Override
 			public void receiveConfigInfo(String content) {
-				log.warn("[nacos reload config][group:{}][namespace:{}][data:{}][class:{}]", config.GROUP, config.NAMESPACE, ConfigTable.CONFIG_NAME, ConfigTable.class.getName());
+				log.warn("[nacos reload config][group:{}][namespace:{}][data:{}][class:{}]", config.GROUP, config.NAMESPACE, ConfigTable.CONFIG_NAME, ConfigTable.class.getSimpleName());
 				ConfigTable.parse(content);
 			}
 			@Override
@@ -69,7 +69,7 @@ public class NacosUtil {
 		try {
 			config(null, ConfigTable.CONFIG_NAME, listener);
 		}catch (Exception e){
-			log.warn("[nacos config][result:false][group:{}][namespace:{}][config:{}][msg:{}]", config.GROUP, config.NAMESPACE, ConfigTable.class.getName(),e.getMessage());
+			log.warn("[nacos config][result:false][group:{}][namespace:{}][class:{}][msg:{}]", config.GROUP, config.NAMESPACE, ConfigTable.class.getSimpleName(),e.getMessage());
 		}
 
 		//AnylineConfig子类
@@ -83,7 +83,7 @@ public class NacosUtil {
 			try {
 				config(null, file.getName(), clazz);
 			} catch (NacosException e) {
-				log.warn("[nacos config][result:false][config:{}][msg:{}]",clazz.getName(),e.getMessage());
+				log.warn("[nacos config][result:false][class:{}][msg:{}]",clazz.getSimpleName(),e.getMessage());
 			}
 		}
 		//自动扫描
@@ -101,7 +101,7 @@ public class NacosUtil {
 							try {
 								config(null, configName, configClass);
 							} catch (NacosException e) {
-								log.warn("[nacos config][result:false][config:{}][msg:{}]", pk, configName);
+								log.warn("[nacos config][result:false][package:{}][msg:{}]", pk, configName);
 							}
 						}
 					}
@@ -111,14 +111,15 @@ public class NacosUtil {
 			if(BasicUtil.isNotEmpty(cls)){
 				String[] clas  = cls.split(",");
 				for(String c:clas){
+					Class clazz = null;
 					try {
-						Class clazz = Class.forName(c);
+						clazz = Class.forName(c);
 						@SuppressWarnings("unchecked")
 						Class<AnylineConfig> configClass = (Class<AnylineConfig>)clazz;
 						String configName = (String)BeanUtil.getFieldValue(clazz, "CONFIG_NAME");
 						config(null, configName, configClass);
 					}catch (Exception e){
-						log.warn("[nacos config][result:false][config:{}][msg:{}]", c,e.getMessage());
+						log.warn("[nacos config][result:false][class:{}][msg:{}]", c,e.getMessage());
 					}
 				}
 			}
@@ -213,7 +214,7 @@ public class NacosUtil {
 
 	public static void parse(Class<? extends AnylineConfig> T, String content) {
 		if(BasicUtil.isEmpty(content)){
-			log.warn("[nacos config][pull fail][config class:{}]",T.getName());
+			log.warn("[nacos config][pull fail][config class:{}]",T.getSimpleName());
 			return;
 		}
 		try{
