@@ -16,7 +16,6 @@
 	<url>http://www.anyline.org</url>
 
 	<dependencies>
-		<!-- jsp -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
@@ -25,7 +24,6 @@
 			<groupId>taglibs</groupId>
 			<artifactId>standard</artifactId>
 		</dependency>
-		<!-- end jsp -->
 	</dependencies>
 	<build>
 		<plugins>

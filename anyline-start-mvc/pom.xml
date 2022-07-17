@@ -16,19 +16,9 @@
 	<url>http://www.anyline.org</url>
 
 	<dependencies>
-		<!-- springmvc支持 -->
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-mvc</artifactId>
 		</dependency>
-		<!-- end springmvc -->
-
-		<!-- 连接池 -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>druid</artifactId>
-		</dependency>
-		<!-- end 连接池 -->
-
 	</dependencies>
 </project>

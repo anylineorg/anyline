@@ -16,7 +16,6 @@
 	<url>http://www.anyline.org</url>
 
 	<dependencies>
-		<!-- mysql支持 -->
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc-mysql</artifactId>
@@ -25,6 +24,5 @@
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
-		<!-- end mysql -->
 	</dependencies>
 </project>
