@@ -9,10 +9,17 @@ import java.io.File;
 import java.util.Hashtable;
  
 public class AmapConfig extends AnylineConfig{ 
-	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
-	public static String KEY= ""; 
-	public static String PRIVATE_KEY = ""; 
-	public static String TABLE_ID = ""; 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
+
+
+	public static String DEFAULT_KEY			= "";
+	public static String DEFAULT_PRIVATE_KEY 	= "";
+	public static String DEFAULT_TABLE_ID 		= "";
+
+	public static String KEY			= DEFAULT_KEY			;
+	public static String PRIVATE_KEY 	= DEFAULT_PRIVATE_KEY	;
+	public static String TABLE_ID 		= DEFAULT_TABLE_ID		;
+
 	private static File configDir;
 	public static String CONFIG_NAME = "anyline-amap.xml";
 	 

@@ -13,19 +13,27 @@ import java.util.Hashtable;
 @Component()
 public class NacosConfig extends AnylineConfig{
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
-	public static final String DEFAULT_GROUP = "DEFAULT_GROUP";
-	public static final String DEFAULT_NAMESPACE = "";
-	public static boolean DEFAULT_AUTO_SCAN = true;
-	public String key = DEFAULT_KEY;
+	public String key 								= DEFAULT_KEY		;
 
-	public String ADDRESS;
-	public int PORT = 8848;
-	public int TIMEOUT = 5000;
-	public String NAMESPACE = DEFAULT_NAMESPACE;   //注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
-	public String GROUP = DEFAULT_GROUP;
-	public boolean AUTO_SCAN = DEFAULT_AUTO_SCAN;
-	public String SCAN_PACKAGE="org.anyline,org.anyboot";
-	public String SCAN_CLASS="";
+	public static String DEFAULT_ADDRESS			= null						;
+	public static int DEFAULT_PORT 					= 8848						;
+	public static int DEFAULT_TIMEOUT 				= 3000						;
+	public static String DEFAULT_NAMESPACE 			= ""						;   //注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
+	public static String DEFAULT_GROUP 				= "DEFAULT_GROUP"			;
+	public static boolean DEFAULT_AUTO_SCAN 		= true						;
+	public static String DEFAULT_SCAN_PACKAGE		= "org.anyline,org.anyboot"	;
+	public static String DEFAULT_SCAN_CLASS			= ""						;
+
+
+
+	public String ADDRESS		= DEFAULT_ADDRESS 		;
+	public int PORT 			= DEFAULT_PORT			;
+	public int TIMEOUT 			= DEFAULT_TIMEOUT		;
+	public String NAMESPACE 	= DEFAULT_NAMESPACE		;   //注意这里的命名空间要写ID而不是NAME,如果用默认的public写成空白不要写public
+	public String GROUP 		= DEFAULT_GROUP			;
+	public boolean AUTO_SCAN 	= DEFAULT_AUTO_SCAN		;
+	public String SCAN_PACKAGE	= DEFAULT_SCAN_PACKAGE	;
+	public String SCAN_CLASS	= DEFAULT_SCAN_CLASS	;
 
 
 	@Value("${anyline.nacos.scan.packages:org.anyline,org.anyboot}")

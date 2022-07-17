@@ -9,12 +9,20 @@ import java.util.Hashtable;
  
 public class EasemobConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-easemob.xml";
-	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
-	public String HOST = ""; 
-	public String CLIENT_ID =""; 
-	public String CLIENT_SECRET =""; 
-	public String ORG_NAME =""; 
-	public String APP_NAME =""; 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
+
+	public static String DEFAULT_HOST 			= "";
+	public static String DEFAULT_CLIENT_ID 		= "";
+	public static String DEFAULT_CLIENT_SECRET 	= "";
+	public static String DEFAULT_ORG_NAME 		= "";
+	public static String DEFAULT_APP_NAME 		= "";
+
+
+	public String HOST 			= DEFAULT_HOST			;
+	public String CLIENT_ID 	= DEFAULT_CLIENT_ID		;
+	public String CLIENT_SECRET = DEFAULT_CLIENT_SECRET	;
+	public String ORG_NAME 		= DEFAULT_ORG_NAME		;
+	public String APP_NAME 		= DEFAULT_APP_NAME		;
 		 
 	static{ 
 		init(); 

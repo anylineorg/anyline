@@ -9,14 +9,23 @@ import java.util.Hashtable;
 
 public class COSConfig extends AnylineConfig{ 
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
-	private static File configDir; 
-	public String ACCESS_ID		= ""; 
-	public String ACCESS_SECRET = ""; 
-	public String ENDPOINT		= ""; 
-	public String BUCKET		= ""; 
-	public String DIR			= ""; 
-	public int EXPIRE_SECOND 	= 3600;
-	public static String CONFIG_NAME = "anyline-tencent-cos.xml";
+	private static File configDir;
+
+	public static String DEFAULT_ACCESS_ID		= ""	; //
+	public static String DEFAULT_ACCESS_SECRET 	= ""	; //
+	public static String DEFAULT_ENDPOINT		= ""	; //
+	public static String DEFAULT_BUCKET			= ""	; //
+	public static String DEFAULT_DIR			= ""	; //
+	public static int DEFAULT_EXPIRE_SECOND 	= 3600	; //
+
+
+	public String ACCESS_ID		= DEFAULT_ACCESS_ID				; //
+	public String ACCESS_SECRET = DEFAULT_ACCESS_SECRET			; //
+	public String ENDPOINT		= DEFAULT_ENDPOINT				; //
+	public String BUCKET		= DEFAULT_BUCKET				; //
+	public String DIR			= DEFAULT_DIR					; //
+	public int EXPIRE_SECOND 	= DEFAULT_EXPIRE_SECOND			; //
+	public static String CONFIG_NAME = "anyline-tencent-cos.xml"; //
 	 
 	static{ 
 		init(); 

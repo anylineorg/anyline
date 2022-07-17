@@ -1945,20 +1945,6 @@ public class BeanUtil {
 		return rv;
 	}
 
-	public static void join(Map src, Map copy){
-		join(src, copy, false);
-	}
-	public static void join(Map src, Map copy, boolean over){
-    	if(null != src && null != copy){
-    		for(Object key:copy.keySet()){
-    			if(!over && src.containsKey(key)){
-    				continue;
-				}
-    			src.put(key, copy.get(key));
-			}
-		}
-	}
-
 	public static <T> List<T> array2list(T[] ... arrays){
 		List<T> list = new ArrayList<T>();
 		if(null != arrays) {
@@ -2028,7 +2014,7 @@ public class BeanUtil {
 	}
 
 	/**
-	 * 数组合并
+	 * 合并成新数组
 	 * @param array 第一个数组
 	 * @param items 其他数组
 	 * @param <T> 数据类型
@@ -2057,6 +2043,56 @@ public class BeanUtil {
 		return result;
 	}
 
+
+	/**
+	 * maps合并成新map
+	 * @param maps map
+	 * @return map
+	 * @param <K> k
+	 * @param <V> v
+	 */
+	public static <K,V> Map<K,V> merge(Map<K,V> ... maps){
+		Map<K,V> result = new HashMap<>();
+		if(null != maps){
+			for(Map<K,V> map:maps){
+				join(result, map, true);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * copy合并成src中
+	 * @param src src
+	 * @param copy copy6
+	 * @param over key相同时是否覆盖
+	 * @return map
+	 * @param <K> k
+	 * @param <V> v
+	 */
+	public static <K,V> Map<K,V>  join(Map<K,V> src, Map<K,V> copy, boolean over){
+		if(null == src){
+			src = new HashMap<K,V>();
+		}
+		if(null != copy){
+			for(K key:copy.keySet()){
+				if(!over && src.containsKey(key)){
+					continue;
+				}
+				src.put(key, copy.get(key));
+			}
+		}
+		return src;
+	}
+
+
+	/**
+	 * list与items合并成新集合
+	 * @param list list
+	 * @param items items
+	 * @return list
+	 * @param <T> T
+	 */
 	public static <T> List<T> merge(List<T> list, T... items) {
 		List<T> result = new ArrayList<>();
 		if(null != list){
@@ -2069,6 +2105,14 @@ public class BeanUtil {
 		}
 		return result;
 	}
+
+	/**
+	 * items拼接到list中
+	 * @param list list
+	 * @param items items
+	 * @return list
+	 * @param <T> T
+	 */
 	public static <T> List<T> join(List<T> list, T... items) {
 		if(null == list){
 			list = new ArrayList<>();

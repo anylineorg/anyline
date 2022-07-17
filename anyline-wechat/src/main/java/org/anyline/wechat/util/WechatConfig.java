@@ -66,15 +66,23 @@ public class WechatConfig extends AnylineConfig{
 
 	public final static String URL_OAUTH						= "https://open.weixin.qq.com/connect/oauth2/authorize";
 
-	public String APP_ID 						= "" ; //AppID(应用ID)
-	public String APP_SECRET 					= "" ; //AppSecret(应用密钥)
-	public String SIGN_TYPE 					= "" ; //签名加密方式
-	public String SERVER_TOKEN 					= "" ; //服务号的配置token
-	public String OAUTH_REDIRECT_URL 			= "" ; //oauth2授权时回调action
-	public String WEB_SERVER 					= "" ;
-	public String ACCESS_TOKEN_SERVER			= "" ;
+	public static String DEFAULT_APP_ID 						= "" ; //AppID(应用ID)
+	public static String DEFAULT_APP_SECRET 					= "" ; //AppSecret(应用密钥)
+	public static String DEFAULT_SIGN_TYPE 						= "" ; //签名加密方式
+	public static String DEFAULT_SERVER_TOKEN 					= "" ; //服务号的配置token
+	public static String DEFAULT_OAUTH_REDIRECT_URL 			= "" ; //oauth2授权时回调action
+	public static String DEFAULT_WEB_SERVER 					= "" ;
+	public static String DEFAULT_ACCESS_TOKEN_SERVER			= "" ;
+	public static String DEFAULT_SERVER_WHITELIST			    = null; //白名单IP(如果设置了并且当前服务器不在白名单内,则跳过需要白名单才能调用的接口)
 
-	public String SERVER_WHITELIST			    = null; //白名单IP(如果设置了并且当前服务器不在白名单内,则跳过需要白名单才能调用的接口)
+	public String APP_ID 						= DEFAULT_APP_ID 				; //AppID(应用ID)
+	public String APP_SECRET 					= DEFAULT_APP_SECRET 			; //AppSecret(应用密钥)
+	public String SIGN_TYPE 					= DEFAULT_SIGN_TYPE 			; //签名加密方式
+	public String SERVER_TOKEN 					= DEFAULT_SERVER_TOKEN 			; //服务号的配置token
+	public String OAUTH_REDIRECT_URL 			= DEFAULT_OAUTH_REDIRECT_URL	; //oauth2授权时回调action
+	public String WEB_SERVER 					= DEFAULT_WEB_SERVER 			;
+	public String ACCESS_TOKEN_SERVER			= DEFAULT_ACCESS_TOKEN_SERVER 	;
+	public String SERVER_WHITELIST			    = DEFAULT_SERVER_WHITELIST		; //白名单IP(如果设置了并且当前服务器不在白名单内,则跳过需要白名单才能调用的接口)
 
-	
+
 } 

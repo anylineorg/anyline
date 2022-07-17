@@ -12,15 +12,29 @@ public class MailConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-mail.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	private static File configDir;
-	public String ACCOUNT;
-	public String PASSWORD;
-	public String USERNAME;
-	public String PROTOCOL = "smtp";
-	public String HOST;
-	public String PORT;
-	public String ATTACHMENT_DIR = "";	//附件下载地址
-	public boolean SSL_FLAG = false;  //是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
-	public boolean AUTO_DOWNLOAD_ATTACHMENT = true;
+
+
+
+	public static String DEFAULT_ACCOUNT					= null 	;
+	public static String DEFAULT_PASSWORD					= null 	;
+	public static String DEFAULT_USERNAME					= null	;
+	public static String DEFAULT_PROTOCOL 					= "smtp";
+	public static String DEFAULT_HOST						= null	;
+	public static String DEFAULT_PORT						= null 	;
+	public static String DEFAULT_ATTACHMENT_DIR 			= ""	;	//附件下载地址
+	public static boolean DEFAULT_SSL_FLAG 					= false	;  //是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
+	public static boolean DEFAULT_AUTO_DOWNLOAD_ATTACHMENT 	= true	;
+
+
+	public String ACCOUNT					= DEFAULT_ACCOUNT 					;
+	public String PASSWORD					= DEFAULT_PASSWORD					;
+	public String USERNAME					= DEFAULT_USERNAME					;
+	public String PROTOCOL 					= DEFAULT_PROTOCOL					;
+	public String HOST						= DEFAULT_HOST						;
+	public String PORT						= DEFAULT_PORT						;
+	public String ATTACHMENT_DIR 			= DEFAULT_ATTACHMENT_DIR			;	//附件下载地址
+	public boolean SSL_FLAG 				= DEFAULT_SSL_FLAG					;  //是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
+	public boolean AUTO_DOWNLOAD_ATTACHMENT = DEFAULT_AUTO_DOWNLOAD_ATTACHMENT	;
 	static{
 		init();
 		debug();

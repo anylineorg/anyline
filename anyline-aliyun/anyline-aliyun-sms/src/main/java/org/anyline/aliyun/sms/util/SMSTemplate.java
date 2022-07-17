@@ -13,7 +13,7 @@ public class SMSTemplate {
     private STATUS status;
     private String code;
     private String name;
-    private int type;
+    private int type; //0:验证码 1:通知短信 2:推广短信
     private String content;
     private String createTime;
     private String rejectTime;

@@ -29,18 +29,33 @@ import java.util.Hashtable;
 public class WechatPayConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-wechat-pay.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
-	public String MCH_ID 					= "" ; //商户号
-	public String SP_MCHID 					= "" ; //服务商商户号(服务商模式)
-	public String SUB_MCHID 				= "" ; //子商户商户号(服务商模式)
-	public String API_SECRET 				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API密钥设置
-	public String API_SECRET_V3				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->APIv3密钥设置
-	public String MCH_PRIVATE_SECRET_FILE	= "" ; //商户API私钥(保存在apiclient_key.pem也可以通过p12导出)
-	public String CERTIFICATE_SERIAL        = "" ; //证书序号 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API证书-->查看证书
-	public String KEY_STORE_FILE 			= "" ; //证书文件
-	public String KEY_STORE_PASSWORD 		= "" ; //证书密码
-	public String NOTIFY_URL				= "" ; //微信支付统一接口的回调action
-	public String CALLBACK_URL 				= "" ; //微信支付成功支付后跳转的地址
-	public String BANK_RSA_PUBLIC_KEY_FILE 	= "" ;
+
+	public static String DEFAULT_MCH_ID 					= "" ; //商户号
+	public static String DEFAULT_SP_MCHID 					= "" ; //服务商商户号(服务商模式)
+	public static String DEFAULT_SUB_MCHID 					= "" ; //子商户商户号(服务商模式)
+	public static String DEFAULT_API_SECRET 				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API密钥设置
+	public static String DEFAULT_API_SECRET_V3				= "" ; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->APIv3密钥设置
+	public static String DEFAULT_MCH_PRIVATE_SECRET_FILE	= "" ; //商户API私钥(保存在apiclient_key.pem也可以通过p12导出)
+	public static String DEFAULT_CERTIFICATE_SERIAL        	= "" ; //证书序号 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API证书-->查看证书
+	public static String DEFAULT_KEY_STORE_FILE 			= "" ; //证书文件
+	public static String DEFAULT_KEY_STORE_PASSWORD 		= "" ; //证书密码
+	public static String DEFAULT_NOTIFY_URL					= "" ; //微信支付统一接口的回调action
+	public static String DEFAULT_CALLBACK_URL 				= "" ; //微信支付成功支付后跳转的地址
+	public static String DEFAULT_BANK_RSA_PUBLIC_KEY_FILE 	= "" ;
+
+
+	public String MCH_ID 					= DEFAULT_MCH_ID 					; //商户号
+	public String SP_MCHID 					= DEFAULT_SP_MCHID 					; //服务商商户号(服务商模式)
+	public String SUB_MCHID 				= DEFAULT_SUB_MCHID 				; //子商户商户号(服务商模式)
+	public String API_SECRET 				= DEFAULT_API_SECRET 				; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API密钥设置
+	public String API_SECRET_V3				= DEFAULT_API_SECRET_V3 			; //微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->APIv3密钥设置
+	public String MCH_PRIVATE_SECRET_FILE	= DEFAULT_MCH_PRIVATE_SECRET_FILE 	; //商户API私钥(保存在apiclient_key.pem也可以通过p12导出)
+	public String CERTIFICATE_SERIAL        = DEFAULT_CERTIFICATE_SERIAL 		; //证书序号 微信商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->API证书-->查看证书
+	public String KEY_STORE_FILE 			= DEFAULT_KEY_STORE_FILE 			; //证书文件
+	public String KEY_STORE_PASSWORD 		= DEFAULT_KEY_STORE_PASSWORD 		; //证书密码
+	public String NOTIFY_URL				= DEFAULT_NOTIFY_URL 				; //微信支付统一接口的回调action
+	public String CALLBACK_URL 				= DEFAULT_CALLBACK_URL 				; //微信支付成功支付后跳转的地址
+	public String BANK_RSA_PUBLIC_KEY_FILE 	= DEFAULT_BANK_RSA_PUBLIC_KEY_FILE 	;
 
 	/**
 	 * 微信支付接口地址

@@ -10,14 +10,27 @@ public class LdapConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-ldap.xml";
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 	public String key = DEFAULT_KEY;
-	public String ADDRESS;
-	public int PORT = 389;
-	public String DOMAIN;
-	public String ROOT;
-	public String SECURITY_AUTHENTICATION;
-	public String URL; // ldap:{ADDRESS}:{PORT}
-	public int CONNECT_TIMEOUT = 0;
-	public int READ_TIMEOUT = 0;
+
+	public static String DEFAULT_ADDRESS					;
+	public static int DEFAULT_PORT = 389					;
+	public static String DEFAULT_DOMAIN						;
+	public static String DEFAULT_ROOT						;
+	public static String DEFAULT_SECURITY_AUTHENTICATION	;
+	public static String DEFAULT_URL						; // ldap:{ADDRESS}:{PORT}
+	public static int DEFAULT_CONNECT_TIMEOUT = 0			;
+	public static int DEFAULT_READ_TIMEOUT = 0				;
+
+
+
+	public String ADDRESS					= DEFAULT_ADDRESS 					;
+	public int PORT 						= DEFAULT_PORT						;
+	public String DOMAIN					= DEFAULT_DOMAIN					;
+	public String ROOT						= DEFAULT_ROOT						;
+	public String SECURITY_AUTHENTICATION	= DEFAULT_SECURITY_AUTHENTICATION	;
+	public String URL						= DEFAULT_URL						; // ldap:{ADDRESS}:{PORT}
+	public int CONNECT_TIMEOUT 				= DEFAULT_CONNECT_TIMEOUT			;
+	public int READ_TIMEOUT 				= DEFAULT_READ_TIMEOUT				;
+
 	static{ 
 		init(); 
 		debug();

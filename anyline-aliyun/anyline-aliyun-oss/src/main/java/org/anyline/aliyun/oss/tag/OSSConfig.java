@@ -34,6 +34,7 @@ public class OSSConfig extends BaseBodyTag {
 	private boolean debug = false;
 	private int expire = 0; 
 	private String dir = "";
+
 	private String key = "default";
 	private String var = "al.config.oss.aliyun";
 	 

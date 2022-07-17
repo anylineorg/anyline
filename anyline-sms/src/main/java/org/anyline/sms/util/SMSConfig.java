@@ -9,12 +9,20 @@ import java.util.Hashtable;
 public class SMSConfig extends AnylineConfig {
 	private static Hashtable<String, AnylineConfig> instances = new Hashtable<String, AnylineConfig>();
 
-	public String SERVER_HOST = "";
-	public String APP_KEY = "";
-	public String APP_SECRET = "";
-	public String TENANT_CODE = "";
-	public String SIGN = "";
-	public String PLATFORM_CODE = "";
+	public static String DEFAULT_SERVER_HOST 	= "";
+	public static String DEFAULT_APP_KEY 		= "";
+	public static String DEFAULT_APP_SECRET 	= "";
+	public static String DEFAULT_TENANT_CODE 	= "";
+	public static String DEFAULT_SIGN 			= "";
+	public static String DEFAULT_PLATFORM_CODE 	= "";
+
+
+	public String SERVER_HOST 	= DEFAULT_SERVER_HOST	;
+	public String APP_KEY 		= DEFAULT_APP_KEY		;
+	public String APP_SECRET 	= DEFAULT_APP_SECRET	;
+	public String TENANT_CODE 	= DEFAULT_TENANT_CODE	;
+	public String SIGN 			= DEFAULT_SIGN			;
+	public String PLATFORM_CODE = DEFAULT_PLATFORM_CODE	;
 
 	public static String CONFIG_NAME = "anyline-sms.xml";
 

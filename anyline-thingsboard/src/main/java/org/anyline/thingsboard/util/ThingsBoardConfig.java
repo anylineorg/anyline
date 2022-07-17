@@ -11,9 +11,15 @@ public class ThingsBoardConfig extends AnylineConfig{
 
     private static Hashtable<String, AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
     private static File configDir;
-    public String ACCOUNT		= "";
-    public String PASSWORD      = "";
-    public String HOST		    = "";
+
+    public static String DEFAULT_ACCOUNT		= "";
+    public static String DEFAULT_PASSWORD       = "";
+    public static String DEFAULT_HOST		    = "";
+
+
+    public String ACCOUNT		= DEFAULT_ACCOUNT   ;
+    public String PASSWORD      = DEFAULT_PASSWORD  ;
+    public String HOST		    = DEFAULT_HOST      ;
     
     public static String CONFIG_NAME = "anyline-thingsboard.xml";
 

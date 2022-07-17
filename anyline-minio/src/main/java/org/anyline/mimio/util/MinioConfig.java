@@ -9,18 +9,24 @@ import java.util.Hashtable;
 
 public class MinioConfig extends AnylineConfig{ 
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
-	private static File configDir; 
-	public String ACCESS_KEY	= "";
-	public String ACCESS_SECRET = ""; 
-	public String ENDPOINT		= ""; 
-	public String BUCKET		= "";
-	public int PART_SIZE		= 1;
-	public String DIR			= ""; 
-	public int EXPIRE_SECOND 	= 3600;
+	private static File configDir;
+
+	public static String DEFAULT_ACCESS_KEY		= ""	;
+	public static String DEFAULT_ACCESS_SECRET	= ""	;
+	public static String DEFAULT_ENDPOINT		= ""	;
+	public static String DEFAULT_BUCKET			= ""	;
+	public static int DEFAULT_PART_SIZE			= 1		;
+	public static String DEFAULT_DIR			= ""	;
+	public static int DEFAULT_EXPIRE_SECOND 	= 3600	;
 
 
-
-
+	public String ACCESS_KEY	= DEFAULT_ACCESS_KEY	;
+	public String ACCESS_SECRET = DEFAULT_ACCESS_SECRET	;
+	public String ENDPOINT		= DEFAULT_ENDPOINT		;
+	public String BUCKET		= DEFAULT_BUCKET		;
+	public int PART_SIZE		= DEFAULT_PART_SIZE		;
+	public String DIR			= DEFAULT_DIR			;
+	public int EXPIRE_SECOND 	= DEFAULT_EXPIRE_SECOND	;
 
 
 

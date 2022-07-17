@@ -8,10 +8,16 @@ import java.util.Hashtable;
  
 public class SMSConfig extends AnylineConfig {
 	private static Hashtable<String, AnylineConfig> instances = new Hashtable<String, AnylineConfig>();
+
+	public static String DEFAULT_ACCESS_KEY 	= "";
+	public static String DEFAULT_ACCESS_SECRET  = "";
+	public static String DEFAULT_SMS_SIGN 		= "";
+
+
 	//服务器配置 
-	public String ACCESS_KEY = "";
-	public String ACCESS_SECRET = "";
-	public String SMS_SIGN = "";
+	public String ACCESS_KEY 	= DEFAULT_ACCESS_KEY		;
+	public String ACCESS_SECRET = DEFAULT_ACCESS_SECRET		;
+	public String SMS_SIGN 		= DEFAULT_SMS_SIGN			;
 
 	public static String CONFIG_NAME = "anyline-aliyun-sms.xml";
 

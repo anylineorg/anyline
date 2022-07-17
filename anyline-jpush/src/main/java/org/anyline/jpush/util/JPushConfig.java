@@ -7,15 +7,21 @@ import org.anyline.util.ConfigTable;
 import java.util.Hashtable;
  
 public class JPushConfig extends AnylineConfig{
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
+
+	public static String DEFAULT_APP_KEY 		= "" ;
+	public static String DEFAULT_MASTER_SECRET 	= "" ;
+
+	public String APP_KEY 		= DEFAULT_APP_KEY		;
+	public String MASTER_SECRET = DEFAULT_MASTER_SECRET	;
+
+
 	public static String CONFIG_NAME = "anyline-jpush.xml";
-	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
-	public String APP_KEY =""; 
-	public String MASTER_SECRET =""; 
-		 
-	static{ 
-		init(); 
-		debug(); 
-	} 
+
+	static{
+		init();
+		debug();
+	}
 	/**
 	 * 解析配置文件内容
 	 * @param content 配置文件内容
