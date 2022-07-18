@@ -4,10 +4,6 @@ import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.util.Hashtable;
  

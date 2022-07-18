@@ -1,19 +1,13 @@
-package org.anyline.aliyun.oss.util; 
- 
-import org.anyline.util.AnylineConfig;
+package org.anyline.aliyun.oss.util;
+
 import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.io.File;
-import java.util.Hashtable;
-
-@Component
-public class OSSBean extends AnylineConfig{
-	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
+@Component("anyline.oss.load.bean")
+public class OSSBean implements InitializingBean {
 
 	@Value("${anyline.aliyun.oss.id:}")
 	public String ACCESS_ID		;
@@ -28,8 +22,12 @@ public class OSSBean extends AnylineConfig{
 	@Value("${anyline.aliyun.oss.expire:}")
 	public int EXPIRE_SECOND 	;
 
-	@PostConstruct
-	private void init(){
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		ACCESS_SECRET = BasicUtil.evl(ACCESS_SECRET, OSSConfig.DEFAULT_ACCESS_SECRET);
+ 		if(BasicUtil.isEmpty(ACCESS_SECRET)){
+			return;
+		}
 		OSSConfig.register(
 				BasicUtil.evl(ACCESS_ID, OSSConfig.DEFAULT_ACCESS_ID)
 				, BasicUtil.evl(ACCESS_SECRET, OSSConfig.DEFAULT_ACCESS_SECRET)
@@ -39,8 +37,10 @@ public class OSSBean extends AnylineConfig{
 				, BasicUtil.evl(EXPIRE_SECOND, OSSConfig.DEFAULT_EXPIRE_SECOND)
 		);
 	}
-	@Bean
+	@Bean("anyline.aliyun.oss.init.util")
 	public OSSUtil instance(){
 		return OSSUtil.getInstance();
 	}
-} 
+
+
+}

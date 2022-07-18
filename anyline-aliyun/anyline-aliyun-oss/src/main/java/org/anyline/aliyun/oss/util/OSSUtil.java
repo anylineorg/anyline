@@ -42,7 +42,7 @@ public class OSSUtil {
         config.ACCESS_SECRET = password;
         config.BUCKET = bucket;
         this.config = config;
-        this.client = new OSSClient(config.ENDPOINT, config.ACCESS_ID, config.ACCESS_SECRET);
+        client = new OSSClient(config.ENDPOINT, config.ACCESS_ID, config.ACCESS_SECRET);
     }
 
 	public static OSSUtil getInstance() {
