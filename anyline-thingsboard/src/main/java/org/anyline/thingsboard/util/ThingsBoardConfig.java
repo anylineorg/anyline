@@ -15,11 +15,13 @@ public class ThingsBoardConfig extends AnylineConfig{
     public static String DEFAULT_ACCOUNT		= "";
     public static String DEFAULT_PASSWORD       = "";
     public static String DEFAULT_HOST		    = "";
+    public static String DEFAULT_TENANT		    = "";
 
 
     public String ACCOUNT		= DEFAULT_ACCOUNT   ;
     public String PASSWORD      = DEFAULT_PASSWORD  ;
     public String HOST		    = DEFAULT_HOST      ;
+    public String TENANT	    = DEFAULT_TENANT    ;
     
     public static String CONFIG_NAME = "anyline-thingsboard.xml";
 
@@ -69,6 +71,10 @@ public class ThingsBoardConfig extends AnylineConfig{
     public static ThingsBoardConfig register(String id, DataRow row) {
         ThingsBoardConfig config = parse(ThingsBoardConfig.class, id, row, instances, compatibles);
         return config;
+    }
+
+    public static ThingsBoardConfig register(DataRow row) {
+        return register(DEFAULT_INSTANCE_KEY, row);
     }
     public static ThingsBoardConfig register(String id, String host, String account, String password) {
         return register(id, host, account, null);
