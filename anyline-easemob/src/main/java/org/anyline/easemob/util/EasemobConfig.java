@@ -1,5 +1,6 @@
-package org.anyline.easemob.util; 
- 
+package org.anyline.easemob.util;
+
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -65,5 +66,12 @@ public class EasemobConfig extends AnylineConfig{
 	} 
 	 
 	private static void debug(){ 
-	} 
+	}
+	public static EasemobConfig register(String instance, DataRow row){
+		EasemobConfig config = parse(EasemobConfig.class, instance, row, instances, compatibles);
+		return config;
+	}
+	public static EasemobConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
+	}
 } 
