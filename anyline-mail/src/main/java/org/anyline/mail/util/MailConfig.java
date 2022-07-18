@@ -1,5 +1,6 @@
 package org.anyline.mail.util;
 
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -79,6 +80,12 @@ public class MailConfig extends AnylineConfig{
 	}
 	private static void debug(){
 	}
-
+	public static MailConfig register(String instance, DataRow row){
+		MailConfig config = parse(MailConfig.class, instance, row, instances, compatibles);
+		return config;
+	}
+	public static MailConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
+	}
 } 
  
