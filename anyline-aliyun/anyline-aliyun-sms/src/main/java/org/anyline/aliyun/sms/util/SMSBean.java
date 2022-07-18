@@ -1,15 +1,13 @@
 package org.anyline.aliyun.sms.util;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-
-@Component("anyline.sms.bean")
-public class SMSBean {
+@Component("anyline.sms.load.bean")
+public class SMSBean implements InitializingBean {
 
     @Value("${anyline.aliyun.sms.key:}")
     private String ACCESS_KEY;
@@ -18,17 +16,22 @@ public class SMSBean {
     @Value("${anyline.aliyun.sms.sign:}")
     private String SIN;
 
-    @PostConstruct
-    private void init(){
+
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        ACCESS_KEY = BasicUtil.evl(ACCESS_KEY, SMSConfig.DEFAULT_ACCESS_KEY);
+        if(BasicUtil.isEmpty(ACCESS_KEY)) {
+            return;
+        }
         SMSConfig.register(
-                 BasicUtil.evl(ACCESS_KEY, SMSConfig.DEFAULT_ACCESS_KEY)
+                BasicUtil.evl(ACCESS_KEY, SMSConfig.DEFAULT_ACCESS_KEY)
                 , BasicUtil.evl(ACCESS_SECRET, SMSConfig.DEFAULT_ACCESS_SECRET)
         );
     }
-    @Bean
+    @Bean("anyline.aliyun.sms.init.util")
     public SMSUtil instance(){
         return SMSUtil.getInstance();
     }
-
 
 }
