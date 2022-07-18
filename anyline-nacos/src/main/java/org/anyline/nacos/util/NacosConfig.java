@@ -7,7 +7,6 @@ import org.anyline.util.ConfigTable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.Hashtable;
 
 @Component()
@@ -65,7 +64,9 @@ public class NacosConfig extends AnylineConfig{
 		init(); 
 		debug(); 
 	}
-	@PostConstruct
+	public NacosConfig(){
+		auto();
+	}
 	public void auto(){
 		if(BasicUtil.isNotEmpty(bootAddress)){
 			register("boot", bootAddress, 8848, bootGroup, bootNamespace, true, scanPackpage, scanClass);
