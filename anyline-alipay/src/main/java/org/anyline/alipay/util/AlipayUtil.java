@@ -1,27 +1,20 @@
-package org.anyline.alipay.util; 
- 
-import java.net.URLEncoder;
-import java.util.Hashtable;
+package org.anyline.alipay.util;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.domain.AlipayTradeAppPayModel;
 import com.alipay.api.request.*;
 import com.alipay.api.response.*;
-import org.anyline.alipay.entity.AlipayTradeOrder;
-import org.anyline.alipay.entity.AlipayTradeQuery; 
-import org.anyline.alipay.entity.AlipayTradeQueryResult; 
-import org.anyline.alipay.entity.AlipayTransfer; 
-import org.anyline.alipay.entity.AlipayTransferQuery; 
-import org.anyline.alipay.entity.AlipayTransferQueryResult; 
-import org.anyline.alipay.entity.AlipayTransferResult;
+import org.anyline.alipay.entity.*;
 import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
- 
-import com.alipay.api.AlipayApiException; 
-import com.alipay.api.AlipayClient; 
-import com.alipay.api.DefaultAlipayClient; 
-import com.alipay.api.domain.AlipayTradeAppPayModel;
+import org.anyline.util.BeanUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.URLEncoder;
+import java.util.Hashtable;
 
 public class AlipayUtil { 
 	private static final Logger log = LoggerFactory.getLogger(AlipayUtil.class); 
@@ -64,12 +57,7 @@ public class AlipayUtil {
 		return util; 
 	}
 
-	public static AlipayUtil reg(String key, DataRow config){
-		AlipayConfig conf = AlipayConfig.reg(key, config);
-		AlipayUtil util = new AlipayUtil(conf);
-		instances.put(key, util);
-		return util;
-	}
+
 	/** 
 	 * app支付 
 	 *  
