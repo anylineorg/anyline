@@ -1,5 +1,6 @@
-package org.anyline.mimio.util; 
- 
+package org.anyline.mimio.util;
+
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -81,5 +82,13 @@ public class MinioConfig extends AnylineConfig{
 		MinioConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 
-	} 
+	}
+
+	public static MinioConfig register(String instance, DataRow row){
+		MinioConfig config = parse(MinioConfig.class, instance, row, instances, compatibles);
+		return config;
+	}
+	public static MinioConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
+	}
 } 
