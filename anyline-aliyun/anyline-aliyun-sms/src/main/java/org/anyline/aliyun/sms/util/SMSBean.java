@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-@Component
+@Component("anyline.sms.bean")
 public class SMSBean {
 
     @Value("${anyline.aliyun.sms.key:}")
