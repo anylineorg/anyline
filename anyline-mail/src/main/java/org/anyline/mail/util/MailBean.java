@@ -44,8 +44,8 @@ public class MailBean implements InitializingBean {
         row.put("HOST",BasicUtil.evl(HOST,MailConfig.DEFAULT_HOST));
         row.put("PORT",BasicUtil.evl(PORT,MailConfig.DEFAULT_PORT));
         row.put("ATTACHMENT_DIR",BasicUtil.evl(ATTACHMENT_DIR,MailConfig.DEFAULT_ATTACHMENT_DIR));
-        row.put("SSL_FLAG",BasicUtil.evl(SSL_FLAG,MailConfig.DEFAULT_SSL_FLAG));
-        row.put("AUTO_DOWNLOAD_ATTACHMENT",BasicUtil.evl(AUTO_DOWNLOAD_ATTACHMENT,MailConfig.DEFAULT_AUTO_DOWNLOAD_ATTACHMENT));
+        row.put("SSL_FLAG",SSL_FLAG);
+        row.put("AUTO_DOWNLOAD_ATTACHMENT",AUTO_DOWNLOAD_ATTACHMENT);
         MailConfig.register(row);
     }
 
