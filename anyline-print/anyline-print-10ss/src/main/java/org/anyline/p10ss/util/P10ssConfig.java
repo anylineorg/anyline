@@ -11,10 +11,19 @@ import java.util.Hashtable;
 
 public class P10ssConfig  extends AnylineConfig {
     private static Hashtable<String, AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
-    public String APP_ID = "";
-    public String APP_SECRET = "";
-    public String TYPE ="0"; //0:自用 1:开放
-    public String ACCESS_TOKEN_SERVER = "";
+
+
+    public static String DEFAULT_APP_ID                = "" ;
+    public static String DEFAULT_APP_SECRET            = "" ;
+    public static String DEFAULT_TYPE                  = "0"; //0:自用 1:开放
+    public static String DEFAULT_ACCESS_TOKEN_SERVER   = "" ;
+
+
+
+    public String APP_ID                = DEFAULT_APP_ID                ;
+    public String APP_SECRET            = DEFAULT_APP_SECRET            ;
+    public String TYPE                  = DEFAULT_TYPE                  ; //0:自用 1:开放
+    public String ACCESS_TOKEN_SERVER   = DEFAULT_ACCESS_TOKEN_SERVER   ;
 
 
     private static File configDir;
@@ -83,5 +92,18 @@ public class P10ssConfig  extends AnylineConfig {
         P10ssConfig.lastLoadTime = System.currentTimeMillis();
     }
     private static void debug(){
+    }
+    public P10ssConfig register(String instance, DataRow row){
+        P10ssConfig config = parse(P10ssConfig.class, instance, row, instances, compatibles);
+        return config;
+    }
+    public P10ssConfig register(DataRow row){
+        return register(DEFAULT_INSTANCE_KEY, row);
+    }
+    public P10ssConfig register(String app, String secret){
+        DataRow row = new DataRow();
+        row.put("APP_ID", app);
+        row.put("APP_SECRET",secret);
+        return register(row);
     }
 }
