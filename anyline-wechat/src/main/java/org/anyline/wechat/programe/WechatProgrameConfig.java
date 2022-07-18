@@ -87,5 +87,12 @@ public class WechatProgrameConfig extends WechatConfig{
 		WechatProgrameConfig.lastLoadTime = System.currentTimeMillis();
 	} 
 	private static void debug(){ 
-	} 
+	}
+
+	public static WechatProgrameConfig register(String key, DataRow row){
+		return parse(WechatProgrameConfig.class, key, row, instances,compatibles);
+	}
+	public static WechatProgrameConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
+	}
 } 

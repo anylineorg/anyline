@@ -141,9 +141,6 @@ public class WechatPayConfig extends AnylineConfig{
 		return (WechatPayConfig)instances.get(key);
 	}
 
-	public static WechatPayConfig reg(String key, DataRow row){
-		return parse(WechatPayConfig.class, key, row, instances,compatibles);
-	}
 	public static WechatPayConfig parse(String key, DataRow row){
 		return parse(WechatPayConfig.class, key, row, instances,compatibles);
 	}
@@ -164,5 +161,11 @@ public class WechatPayConfig extends AnylineConfig{
 		WechatPayConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
+	}
+	public static WechatPayConfig register(String key, DataRow row){
+		return parse(WechatPayConfig.class, key, row, instances,compatibles);
+	}
+	public static WechatPayConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
 	}
 }

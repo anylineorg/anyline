@@ -64,9 +64,6 @@ public class WechatMPConfig extends WechatConfig{
 		return (WechatMPConfig)instances.get(key);
 	}
 
-	public static WechatMPConfig reg(String key, DataRow row){
-		return parse(WechatMPConfig.class, key, row, instances,compatibles);
-	}
 	public static WechatMPConfig parse(String key, DataRow row){
 		return parse(WechatMPConfig.class, key, row, instances,compatibles);
 	}
@@ -87,5 +84,12 @@ public class WechatMPConfig extends WechatConfig{
 		WechatMPConfig.lastLoadTime = System.currentTimeMillis();
 	}
 	private static void debug(){
+	}
+
+	public static WechatMPConfig register(String key, DataRow row){
+		return parse(WechatMPConfig.class, key, row, instances,compatibles);
+	}
+	public static WechatMPConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
 	}
 } 

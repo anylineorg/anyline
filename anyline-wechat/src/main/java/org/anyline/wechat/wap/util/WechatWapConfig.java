@@ -16,7 +16,7 @@
  *
  */
 package org.anyline.wechat.wap.util;
- 
+
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.AnylineConfig;
@@ -82,5 +82,11 @@ public class WechatWapConfig extends WechatConfig{
 		WechatWapConfig.lastLoadTime = System.currentTimeMillis();
 	} 
 	private static void debug(){ 
-	} 
+	}
+	public static WechatWapConfig register(String key, DataRow row){
+		return parse(WechatWapConfig.class, key, row, instances,compatibles);
+	}
+	public static WechatWapConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
+	}
 } 
