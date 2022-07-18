@@ -54,8 +54,8 @@ public class WechatPayUtil {
         this.config = conf;
         instances.put(key, this);
     }
-    public static WechatPayUtil reg(String key, DataRow config){
-        WechatPayConfig conf = WechatPayConfig.reg(key, config);
+    public static WechatPayUtil register(String key, DataRow config){
+        WechatPayConfig conf = WechatPayConfig.register(key, config);
         WechatPayUtil util = new WechatPayUtil(conf);
         instances.put(key, util);
         return util;

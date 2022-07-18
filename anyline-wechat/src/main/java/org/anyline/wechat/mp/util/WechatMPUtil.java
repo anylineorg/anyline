@@ -42,7 +42,7 @@ public class WechatMPUtil extends WechatUtil {
 		instances.put(key, this); 
 	} 
 	public static WechatMPUtil reg(String key, DataRow config){ 
-		WechatMPConfig conf = WechatMPConfig.reg(key, config); 
+		WechatMPConfig conf = WechatMPConfig.register(key, config);
 		WechatMPUtil util = new WechatMPUtil(conf); 
 		instances.put(key, util); 
 		return util; 
