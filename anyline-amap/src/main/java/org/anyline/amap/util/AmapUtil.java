@@ -1,11 +1,4 @@
-package org.anyline.amap.util; 
- 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+package org.anyline.amap.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -13,54 +6,45 @@ import org.anyline.entity.MapLocation;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.impl.PageNaviImpl;
 import org.anyline.net.HttpUtil;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.MD5Util;
-import org.anyline.util.NumberUtil;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-/** 
+
+import java.util.*;
+
+/**
  * 高德云图 
  * @author zh 
  * 
  */ 
-public class AmapUtil { 
-	private static final Logger log = LoggerFactory.getLogger(AmapUtil.class); 
+public class AmapUtil {
+	private static Logger log = LoggerFactory.getLogger(AmapUtil.class);
+	public AmapConfig config = null;
+	private static Hashtable<String, AmapUtil> instances = new Hashtable<>();
 
-	private String key = AmapConfig.DEFAULT_KEY;
-	private String privateKey = AmapConfig.PRIVATE_KEY;
-	private String table = AmapConfig.TABLE_ID;
-	private static Map<String,AmapUtil> pool = new Hashtable<String,AmapUtil>(); 
- 
-	static{ 
-		AmapUtil def = new AmapUtil(); 
-		pool.put(def.table, def); 
-	} 
-	public static AmapUtil getInstance(String key, String privateKey, String table){ 
-		AmapUtil util = new AmapUtil(); 
-		util.key =  key; 
-		util.privateKey = privateKey; 
-		util.table = table; 
-		return util; 
-	} 
-	public static AmapUtil getInstance(){ 
-		return getInstance(AmapConfig.TABLE_ID); 
-	} 
-	public static AmapUtil getInstance(String table){ 
-		AmapUtil util = pool.get(table); 
-		if(null ==util){ 
-			util = new AmapUtil(); 
-			util.table = table; 
-			pool.put(table, util); 
-		} 
-		return util; 
-	} 
-	public static AmapUtil defaultInstance(){ 
-		return pool.get(AmapConfig.TABLE_ID); 
-	} 
-	 
- 
+
+	public AmapConfig getConfig(){
+		return config;
+	}
+	public static AmapUtil getInstance() {
+		return getInstance("default");
+	}
+
+	public static AmapUtil getInstance(String key) {
+		if (BasicUtil.isEmpty(key)) {
+			key = "default";
+		}
+		AmapUtil util = instances.get(key);
+		if (null == util) {
+			util = new AmapUtil();
+			AmapConfig config = AmapConfig.getInstance(key);
+			util.config = config;
+			instances.put(key, util);
+		}
+		return util;
+	}
+
+
 	/** 
 	 * 添加记录 
 	 * @param name  name
@@ -73,17 +57,17 @@ public class AmapUtil {
 	 */ 
 	public String create(String name, int loctype, String lon, String lat, String address, Map<String, Object> extras){ 
 		String url = "http://yuntuapi.amap.com/datamanage/data/create"; 
-		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("key", config.KEY);
+		params.put("tableid", config.TABLE);
 		params.put("loctype", loctype+""); 
 		Map<String,Object> data = new HashMap<String, Object>(); 
 		if(null != extras){ 
-			Iterator<String> keys = extras.keySet().iterator(); 
+			Iterator<String> keys = extras.keySet().iterator();
 			while(keys.hasNext()){ 
 				String key = keys.next(); 
 				Object value = extras.get(key); 
-				if(BasicUtil.isNotEmpty(value)){ 
+				if(BasicUtil.isNotEmpty(value)){
 					data.put(key, value); 
 				} 
 			} 
@@ -95,10 +79,10 @@ public class AmapUtil {
 		if(BasicUtil.isNotEmpty(address)){ 
 			data.put("_address", address); 
 		} 
-		params.put("data", BeanUtil.map2json(data)); 
+		params.put("data", BeanUtil.map2json(data));
 		String sign = sign(params); 
 		params.put("sig", sign); 
-		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
+		String txt = HttpUtil.post(url, "UTF-8", params).getText();
 		String id = null; 
 		try{ 
 			DataRow row = DataRow.parseJson(txt);
@@ -182,13 +166,13 @@ public class AmapUtil {
 			} 
 		} 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		params.put("key", config.KEY); 
+		params.put("tableid", config.TABLE); 
 		params.put("ids", param); 
 		params.put("sig", sign(params)); 
 		String url = "http://yuntuapi.amap.com/datamanage/data/delete"; 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[删除标注][param:{}]",BeanUtil.map2string(params)); 
 		} 
 		try{ 
@@ -223,8 +207,8 @@ public class AmapUtil {
 		int cnt = 0; 
 		String url = "http://yuntuapi.amap.com/datamanage/data/update"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		params.put("key", config.KEY); 
+		params.put("tableid", config.TABLE); 
 		params.put("loctype", loctype+""); 
  
 		Map<String,Object> data = new HashMap<String, Object>(); 
@@ -299,7 +283,7 @@ public class AmapUtil {
 		String tableId = null; 
 		String url = "http://yuntuapi.amap.com/datamanage/table/create"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
+		params.put("key", config.KEY); 
 		params.put("name", name); 
 		String sign = sign(params); 
 		params.put("sig", sign); 
@@ -324,12 +308,12 @@ public class AmapUtil {
 	 * @param page  page
 	 * @return DataSet
 	 */ 
-	public DataSet local(String keywords, String city, String filter, String sortrule, int limit, int page){ 
+	public DataSet local(String keywords, String city, String filter, String sortrule, int limit, int page){
 		DataSet set = null; 
 		String url = "http://yuntuapi.amap.com/datasearch/local"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		params.put("key", config.KEY); 
+		params.put("tableid", config.TABLE); 
 		params.put("keywords", keywords); 
 		if(BasicUtil.isEmpty(city)){ 
 			city = "全国"; 
@@ -337,14 +321,14 @@ public class AmapUtil {
 		params.put("city", city); 
 		params.put("filter", filter); 
 		params.put("sortrule", sortrule); 
-		limit = NumberUtil.min(limit, 100); 
+		limit = NumberUtil.min(limit, 100);
 		params.put("limit", limit+""); 
 		page = NumberUtil.max(page, 1); 
 		params.put("page", page+""); 
 		String sign = sign(params); 
 		params.put("sig", sign); 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
-		PageNavi navi = new PageNaviImpl(); 
+		PageNavi navi = new PageNaviImpl();
 		navi.setCurPage(page); 
 		navi.setPageRows(limit); 
 		try{ 
@@ -385,8 +369,8 @@ public class AmapUtil {
 		DataSet set = null; 
 		String url = "http://yuntuapi.amap.com/datasearch/around"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		params.put("key", config.KEY); 
+		params.put("tableid", config.TABLE); 
 		params.put("center", center); 
 		params.put("radius", radius+""); 
 		if(BasicUtil.isNotEmpty(keywords)){ 
@@ -496,8 +480,8 @@ public class AmapUtil {
 		DataSet set = null; 
 		String url = "http://yuntuapi.amap.com/datamanage/data/list"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		params.put("key", config.KEY); 
+		params.put("tableid", config.TABLE); 
 		params.put("filter", filter); 
 		if(BasicUtil.isNotEmpty(sortrule)){ 
 			params.put("sortrule", sortrule); 
@@ -548,8 +532,8 @@ public class AmapUtil {
 		DataRow row = null; 
 		String url = "http://yuntuapi.amap.com/datasearch/id"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		params.put("key", config.KEY); 
+		params.put("tableid", config.TABLE); 
 		params.put("_id", id); 
 		String sign = sign(params); 
 		params.put("sig", sign); 
@@ -583,8 +567,8 @@ public class AmapUtil {
 		DataSet set = null; 
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		params.put("key", config.KEY); 
+		params.put("tableid", config.TABLE); 
 		params.put("filter", filter); 
 		params.put("keywords", keywords); 
 		country = BasicUtil.evl(country, "中国")+""; 
@@ -622,8 +606,8 @@ public class AmapUtil {
 		DataSet set = null; 
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/city"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		params.put("key", config.KEY); 
+		params.put("tableid", config.TABLE); 
 		params.put("filter", filter); 
 		params.put("keywords", keywords); 
 		province = BasicUtil.evl(province, "全国")+""; 
@@ -662,8 +646,8 @@ public class AmapUtil {
 		DataSet set = null; 
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
-		params.put("tableid", this.table); 
+		params.put("key", config.KEY); 
+		params.put("tableid", config.TABLE); 
 		params.put("filter", filter); 
 		params.put("keywords", keywords); 
 		params.put("province", province); 
@@ -700,7 +684,7 @@ public class AmapUtil {
 		DataSet set = null; 
 		String url = "http://yuntuapi.amap.com/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
+		params.put("key", config.KEY); 
 		params.put("center", center); 
 		params.put("radius", radius); 
 		params.put("searchtype", "0"); 
@@ -735,7 +719,7 @@ public class AmapUtil {
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/geocode/regeo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
+		params.put("key", config.KEY); 
 		params.put("location", location); 
 		String sign = sign(params); 
 		params.put("sig", sign); 
@@ -768,11 +752,11 @@ public class AmapUtil {
 	 * @param city  city
 	 * @return MapLocation
 	 */ 
-	public MapLocation geo(String address, String city){ 
+	public MapLocation geo(String address, String city){
 		MapLocation location = null; 
 		String url = "http://restapi.amap.com/v3/geocode/geo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
+		params.put("key", config.KEY); 
 		params.put("address", address); 
 		if(BasicUtil.isNotEmpty(city)){ 
 			params.put("city", city); 
@@ -827,7 +811,7 @@ public class AmapUtil {
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/direction/driving"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
-		params.put("key", this.key); 
+		params.put("key", config.KEY); 
 		params.put("origin", origin); 
 		params.put("destination", destination); 
 		params.put("strategy", strategy+""); 
@@ -888,7 +872,7 @@ public class AmapUtil {
 	}
 
 	public DataRow api(String url, Map<String,Object> params){
-		params.put("key", this.key);
+		params.put("key", config.KEY);
 		String sign = sign(params);
 		params.put("sig", sign);
 		String txt = HttpUtil.get(url, "UTF-8", params).getText();
@@ -910,8 +894,9 @@ public class AmapUtil {
 	 */ 
 	public String sign(Map<String,Object> params){ 
 		String sign = ""; 
-		sign = BeanUtil.map2string(params) + this.privateKey; 
-		sign = MD5Util.sign(sign,"UTF-8"); 
+		sign = BeanUtil.map2string(params) + config.SECRET;
+		sign = MD5Util.sign(sign,"UTF-8");
 		return sign; 
-	} 
+	}
+
 }

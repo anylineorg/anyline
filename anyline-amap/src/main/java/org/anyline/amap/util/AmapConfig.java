@@ -13,12 +13,12 @@ public class AmapConfig extends AnylineConfig{
 
 
 	public static String DEFAULT_KEY			= "";
-	public static String DEFAULT_PRIVATE_KEY 	= "";
-	public static String DEFAULT_TABLE_ID 		= "";
+	public static String DEFAULT_SECRET 		= "";
+	public static String DEFAULT_TABLE 			= "";
 
-	public static String KEY			= DEFAULT_KEY			;
-	public static String PRIVATE_KEY 	= DEFAULT_PRIVATE_KEY	;
-	public static String TABLE_ID 		= DEFAULT_TABLE_ID		;
+	public String KEY		= DEFAULT_KEY		;
+	public String SECRET 	= DEFAULT_SECRET	;
+	public String TABLE 	= DEFAULT_TABLE		;
 
 	private static File configDir;
 	public static String CONFIG_NAME = "anyline-amap.xml";
@@ -71,8 +71,21 @@ public class AmapConfig extends AnylineConfig{
 	private static void debug(){ 
 	}
 
-	public static AmapConfig register(String key, DataRow row) {
-		AmapConfig config = parse(AmapConfig.class, key, row, instances, compatibles);
+	public static AmapConfig register(String instance, DataRow row) {
+		AmapConfig config = parse(AmapConfig.class, instance, row, instances, compatibles);
 		return config;
+	}
+	public static AmapConfig register(String instance, String key, String secret, String table) {
+		DataRow row = new DataRow();
+		row.put("KEY", key);
+		row.put("SECRET",secret);
+		row.put("TABLE",table);
+		return register(instance, row);
+	}
+	public static AmapConfig register(String key, String secret, String table) {
+		return register(DEFAULT_INSTANCE_KEY, key, secret, table);
+	}
+	public static AmapConfig register(String key, String secret) {
+		return register(DEFAULT_INSTANCE_KEY, key, secret, null);
 	}
 } 
