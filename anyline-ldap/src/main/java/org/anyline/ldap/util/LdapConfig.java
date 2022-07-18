@@ -1,5 +1,6 @@
 package org.anyline.ldap.util;
 
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -76,5 +77,12 @@ public class LdapConfig extends AnylineConfig{
 		LdapConfig.lastLoadTime = System.currentTimeMillis();
 	} 
 	private static void debug(){ 
-	} 
+	}
+	public static LdapConfig register(String instance, DataRow row){
+		LdapConfig config = parse(LdapConfig.class, instance, row, instances, compatibles);
+		return config;
+	}
+	public static LdapConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
+	}
 }
