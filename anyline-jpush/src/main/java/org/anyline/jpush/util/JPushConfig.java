@@ -1,5 +1,6 @@
 package org.anyline.jpush.util; 
  
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -59,5 +60,15 @@ public class JPushConfig extends AnylineConfig{
 		JPushConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 
-	} 
+	}
+	public static JPushConfig register(String instance, String key, String secret){
+		DataRow row = new DataRow();
+		row.put("APP_KEY",key);
+		row.put("MASTER_SECRET",secret);
+		JPushConfig config = parse(JPushConfig.class, instance, row, instances, compatibles);
+		return config;
+	}
+	public static JPushConfig register(String key, String secret){
+		return register(DEFAULT_INSTANCE_KEY, key, secret);
+	}
 }
