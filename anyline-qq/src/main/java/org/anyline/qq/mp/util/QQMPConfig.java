@@ -1,5 +1,6 @@
-package org.anyline.qq.mp.util; 
- 
+package org.anyline.qq.mp.util;
+
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -9,13 +10,18 @@ import java.util.Hashtable;
  
 public class QQMPConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-qq-mp.xml";
-	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
+
+	public static String DEFAULT_APP_ID = ""				; //AppID(应用ID)
+	public static String DEFAULT_API_KEY = ""				; //APPKEY(应用密钥)
+	public static String DEFAULT_OAUTH_REDIRECT_URL		; //登录成功回调URL
+
 	/** 
 	 * 服务号相关信息 
 	 */ 
-	public String APP_ID = ""				; //AppID(应用ID) 
-	public String API_KEY = ""				; //APPKEY(应用密钥) 
-	public String OAUTH_REDIRECT_URL		; //登录成功回调URL 
+	public String APP_ID			 = DEFAULT_APP_ID				; //AppID(应用ID)
+	public String API_KEY 			 = DEFAULT_API_KEY				; //APPKEY(应用密钥)
+	public String OAUTH_REDIRECT_URL = DEFAULT_OAUTH_REDIRECT_URL	; //登录成功回调URL
 	static{ 
 		init(); 
 		debug(); 
@@ -59,5 +65,22 @@ public class QQMPConfig extends AnylineConfig{
 		QQMPConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 
-	} 
+	}
+	public static QQMPConfig register(String instance, DataRow row){
+		QQMPConfig config = parse(QQMPConfig.class, instance, row, instances, compatibles);
+		return config;
+	}
+	public static QQMPConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
+	}
+	public static QQMPConfig register(String instance,  String app, String key, String redirect){
+		DataRow row = new DataRow();
+		row.put("DEFAULT_APP_ID", app);
+		row.put("DEFAULT_API_KEY", key);
+		row.put("OAUTH_REDIRECT_URL", redirect);
+		return register(instance, row);
+	}
+	public static QQMPConfig register(String app, String key, String redirect){
+		return register(DEFAULT_INSTANCE_KEY, app, key, redirect);
+	}
 } 

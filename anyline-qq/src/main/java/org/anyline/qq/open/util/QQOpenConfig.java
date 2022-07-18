@@ -1,5 +1,6 @@
-package org.anyline.qq.open.util; 
- 
+package org.anyline.qq.open.util;
+
+import org.anyline.entity.DataRow;
 import org.anyline.qq.util.QQConfig;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
@@ -10,21 +11,35 @@ import java.util.Hashtable;
  
 public class QQOpenConfig extends QQConfig{
 	public static String CONFIG_NAME = "anyline-qq-open.xml";
-	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>(); 
+	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
+
+	public static String DEFAULT_APP_ID 				= ""	; //AppID(应用ID)
+	public static String DEFAULT_APP_KEY 				= ""	; //APPKEY(应用密钥)
+	public static String DEFAULT_APP_SECRET 			= ""	; //AppSecret(应用密钥)
+	public static String DEFAULT_SIGN_TYPE 				= ""	; //签名加密方式
+	public static String DEFAULT_SERVER_TOKEN 			= ""	; //服务号的配置token
+
+	public static String DEFAULT_PAY_API_SECRET 		= ""	; //商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+	public static String DEFAULT_PAY_MCH_ID 			= ""	; //商家号
+	public static String DEFAULT_PAY_NOTIFY_URL 		= ""	; //支付统一接口的回调action
+	public static String DEFAULT_PAY_CALLBACK_URL 		= ""	; //支付成功支付后跳转的地址
+	public static String DEFAULT_PAY_KEY_STORE_FILE		 = ""	; //支付证书存放路径地址
+
+
 	/** 
 	 * 服务号相关信息 
 	 */ 
-	public String APP_ID = ""				; //AppID(应用ID) 
-	public String APP_KEY = ""				; //APPKEY(应用密钥) 
-	public String APP_SECRET = ""			; //AppSecret(应用密钥) 
-	public String SIGN_TYPE = ""			; //签名加密方式 
-	public String SERVER_TOKEN = ""			; //服务号的配置token 
+	public String APP_ID 				= DEFAULT_APP_ID				; //AppID(应用ID)
+	public String APP_KEY 				= DEFAULT_APP_KEY				; //APPKEY(应用密钥)
+	public String APP_SECRET 			= DEFAULT_APP_SECRET			; //AppSecret(应用密钥)
+	public String SIGN_TYPE 			= DEFAULT_SIGN_TYPE				; //签名加密方式
+	public String SERVER_TOKEN 			= DEFAULT_SERVER_TOKEN			; //服务号的配置token
 	 
-	public String PAY_API_SECRET = ""		; //商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置 
-	public String PAY_MCH_ID = ""			; //商家号 
-	public String PAY_NOTIFY_URL = ""		; //支付统一接口的回调action 
-	public String PAY_CALLBACK_URL = ""		; //支付成功支付后跳转的地址 
-	public String PAY_KEY_STORE_FILE = ""	; //支付证书存放路径地址 
+	public String PAY_API_SECRET 		= DEFAULT_PAY_API_SECRET		; //商家平台(pay.weixin.qq.com)-->账户设置-->API安全-->密钥设置
+	public String PAY_MCH_ID 			= DEFAULT_PAY_MCH_ID			; //商家号
+	public String PAY_NOTIFY_URL 		= DEFAULT_PAY_NOTIFY_URL		; //支付统一接口的回调action
+	public String PAY_CALLBACK_URL 		= DEFAULT_PAY_CALLBACK_URL		; //支付成功支付后跳转的地址
+	public String PAY_KEY_STORE_FILE 	= DEFAULT_PAY_KEY_STORE_FILE	; //支付证书存放路径地址
  
 	 
 	static{ 
@@ -58,5 +73,12 @@ public class QQOpenConfig extends QQConfig{
 		QQOpenConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 
-	} 
+	}
+	public static QQOpenConfig register(String instance, DataRow row){
+		QQOpenConfig config = parse(QQOpenConfig.class, instance, row, instances, compatibles);
+		return config;
+	}
+	public static QQOpenConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
+	}
 } 
