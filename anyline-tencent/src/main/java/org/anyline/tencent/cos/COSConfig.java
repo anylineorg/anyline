@@ -1,5 +1,6 @@
 package org.anyline.tencent.cos; 
  
+import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -73,5 +74,12 @@ public class COSConfig extends AnylineConfig{
 		COSConfig.lastLoadTime = System.currentTimeMillis(); 
 	} 
 	private static void debug(){ 
-	} 
+	}
+	public static COSConfig register(String instance, DataRow row){
+		COSConfig config = parse(COSConfig.class, instance, row, instances, compatibles);
+		return config;
+	}
+	public static COSConfig register(DataRow row){
+		return register(DEFAULT_INSTANCE_KEY, row);
+	}
 } 
