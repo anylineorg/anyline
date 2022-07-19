@@ -92,6 +92,7 @@ public class SMSUtil {
 			SendSmsResponse response = client.sendSmsWithOptions(request, runtime);
 	        result.setStatus(response.getStatusCode());
 			SendSmsResponseBody body = response.getBody();
+			result.setRequestId(body.getRequestId());
 			result.setCode(body.getCode());
 	        result.setMsg(body.getMessage());
 			result.setBiz(body.getBizId());
@@ -217,6 +218,7 @@ public class SMSUtil {
 				result.setContent(item.getContent());
 				result.setCode(item.getErrCode());
 				result.setMobile(item.getPhoneNum());
+				result.setRequestId(queryResp.getBody().getRequestId());
 				result.setOut(item.getOutId());
 				result.setReceiveTime(item.getReceiveDate());
 				result.setSendTime(item.getSendDate());

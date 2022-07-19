@@ -9,7 +9,7 @@ public class SMSResult {
 	private String code;
 	private String msg;
 	private String biz;	//发送回执ID,即发送流水号,查询送达状态时用到
-
+	private String requestId;
 	//发送后查询状态
 	private String content;
 	private String out;
@@ -19,8 +19,15 @@ public class SMSResult {
 	private String template;
 
 
+	public String getRequestId() {
+		return this.requestId;
+	}
 
-	public boolean isResult() { 
+	public void setRequestId(final String requestId) {
+		this.requestId = requestId;
+	}
+
+	public boolean isResult() {
 		return result; 
 	} 
 	public void setResult(boolean result) { 
