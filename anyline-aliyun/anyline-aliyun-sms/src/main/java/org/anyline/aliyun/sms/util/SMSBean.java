@@ -14,7 +14,7 @@ public class SMSBean implements InitializingBean {
     @Value("${anyline.aliyun.sms.secret:}")
     private String ACCESS_SECRET;
     @Value("${anyline.aliyun.sms.sign:}")
-    private String SIN;
+    private String SIGN;
 
 
 

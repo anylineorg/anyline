@@ -187,7 +187,7 @@ public class SMSUtil {
 	 * 查询发送状态,有可能查出多个发送记录，按时间倒序
 	 * @param mobile 手机号
 	 * @param biz 回执号
-	 * @param date 发送日期(yyyyMMdd) 不传默认当天
+	 * @param date 发送日期(yyyyMMdd) 不传默认当天 支持查询最近30天的记录。
 	 * @param vol 每页多少条
 	 * @param page 当前第几页
 	 * @return List 根据 SMSMResult.status 1:等待回执 2:发送失败 3:发送成功。
@@ -208,6 +208,7 @@ public class SMSUtil {
 			query.setBizId(biz);
 		}
 		try {
+
 			QuerySendDetailsResponse queryResp = client.querySendDetails(query);
 			List<QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO> list = queryResp.getBody().getSmsSendDetailDTOs().getSmsSendDetailDTO();
 			for (QuerySendDetailsResponseBody.QuerySendDetailsResponseBodySmsSendDetailDTOsSmsSendDetailDTO item : list) {
@@ -455,16 +456,16 @@ public class SMSUtil {
 		 * @throws RuntimeException RuntimeException
 		 */
 		public SMSTemplate info(String code) throws RuntimeException{
-			SMSTemplate template = null;
-			QuerySmsTemplateRequest req = new QuerySmsTemplateRequest()
-					.setTemplateCode(code);
+			SMSTemplate template = new SMSTemplate();
+			template.setCode(code);
+			template.setStatus(SMSTemplate.STATUS.ERROR);
+			QuerySmsTemplateRequest req = new QuerySmsTemplateRequest().setTemplateCode(code);
 			try {
 				QuerySmsTemplateResponse resp = client.querySmsTemplate(req);
 
 				if (null != resp && resp.getStatusCode() == 200) {
 					QuerySmsTemplateResponseBody body = resp.getBody();
 					if ("OK".equalsIgnoreCase(body.getCode())) {
-						template = new SMSTemplate();
 						template.setCode(code);
 						template.setType(body.getTemplateType());
 						template.setName(body.getTemplateName());
