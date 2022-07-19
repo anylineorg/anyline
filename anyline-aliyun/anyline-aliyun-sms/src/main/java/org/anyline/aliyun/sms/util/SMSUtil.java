@@ -470,18 +470,24 @@ public class SMSUtil {
 						template.setName(body.getTemplateName());
 						template.setContent(body.getTemplateContent());
 						template.setCreateTime(body.getCreateDate());
-						template.setRejectInfo(body.getReason());
 						int status = body.getTemplateStatus();
 						//0：审核中。
 						//1：审核通过。
 						//2：审核失败，请在返回参数Reason中查看审核失败原因。
+						//10:取消审核。
 						if (status == 0) {
 							template.setStatus(SMSTemplate.STATUS.AUDIT_STATE_INIT);
 						} else if (status == 1) {
 							template.setStatus(SMSTemplate.STATUS.AUDIT_STATE_PASS);
 						} else if (status == 2) {
 							template.setStatus(SMSTemplate.STATUS.AUDIT_STATE_NOT_PASS);
+							template.setRejectInfo(body.getReason());
+						}else if(status == 10){
+							template.setStatus(SMSTemplate.STATUS.AUDIT_SATE_CANCEL);
+						}else{
+							template.setStatus(SMSTemplate.STATUS.ERROR);
 						}
+
 					}
 				}
 			}catch (Exception e){

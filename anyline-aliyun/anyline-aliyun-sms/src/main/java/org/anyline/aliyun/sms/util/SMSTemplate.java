@@ -3,6 +3,7 @@ package org.anyline.aliyun.sms.util;
 public class SMSTemplate {
 
     public static enum STATUS{
+        ERROR           			{public String getCode(){return "ERROR";} public String getName(){return "异常状态";}},
         AUDIT_STATE_INIT			{public String getCode(){return "AUDIT_STATE_INIT";} public String getName(){return "待审核";}},
         AUDIT_STATE_PASS			{public String getCode(){return "AUDIT_STATE_PASS";} public String getName(){return "已审核通过";}},
         AUDIT_STATE_NOT_PASS		{public String getCode(){return "AUDIT_STATE_NOT_PASS";} public String getName(){return "审核未通过";}},
@@ -10,10 +11,17 @@ public class SMSTemplate {
         public abstract String getCode();
         public abstract String getName();
     }
+    public static enum TYPE{
+        VERIFY_CODE     			{public int getCode(){return 0;} public String getName(){return "验证码";}},
+        NOTICE			            {public int getCode(){return 1;} public String getName(){return "通知短信";}},
+        POPULARIZE		            {public int getCode(){return 2;} public String getName(){return "推广短信";}};
+        public abstract int getCode();
+        public abstract String getName();
+    }
     private STATUS status;
     private String code;
     private String name;
-    private int type; //0:验证码 1:通知短信 2:推广短信
+    private TYPE type; //0:验证码 1:通知短信 2:推广短信
     private String content;
     private String createTime;
     private String rejectTime;
@@ -56,12 +64,27 @@ public class SMSTemplate {
         this.name = name;
     }
 
-    public int getType() {
+    public TYPE getType() {
         return type;
     }
 
     public void setType(int type) {
-        this.type = type;
+        this.type = type(type);
+    }
+    public static TYPE type(int type){
+        if(type == 0){
+            return TYPE.VERIFY_CODE;
+        }
+        if(type == 1){
+            return TYPE.NOTICE;
+        }
+        if(type == 2){
+            return TYPE.POPULARIZE;
+        }
+        return null;
+    }
+    public void setType(TYPE type) {
+       this.type = type;
     }
 
     public String getContent() {
