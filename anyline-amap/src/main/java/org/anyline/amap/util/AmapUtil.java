@@ -711,7 +711,16 @@ public class AmapUtil {
 		return set; 
 	} 
 	/** 
-	 * 按坐标查地址 
+	 * 按坐标查地址
+	 * "country" :"中国",
+	 * "province" :"山东省",
+	 * "city" :"青岛市",
+	 * "citycode" :"0532",
+	 * "district" :"市南区",
+	 * "adcode" :"370215",
+	 * "township" :"**街道",
+	 * "towncode" :"370215010000",
+	 *
 	 * @param location  经度在前,纬度在后,经纬度间以“,”分割
 	 * @return DataRow
 	 */ 
