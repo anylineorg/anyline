@@ -32,10 +32,12 @@ public class AmapUtil {
 		}
 		AmapUtil util = instances.get(key);
 		if (null == util) {
-			util = new AmapUtil();
 			AmapConfig config = AmapConfig.getInstance(key);
-			util.config = config;
-			instances.put(key, util);
+			if(null != config) {
+				util = new AmapUtil();
+				util.config = config;
+				instances.put(key, util);
+			}
 		}
 		return util;
 	}
