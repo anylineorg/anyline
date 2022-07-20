@@ -26,7 +26,7 @@ import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
-import org.anyline.jdbc.config.db.Order;
+import org.anyline.entity.Order;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.jdbc.config.db.impl.BasicSQL;
@@ -276,6 +276,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	public String getTable() {
 		return table;
 	}
+
 	@Override
 	public void setTable(String table) {
 		this.table = table;

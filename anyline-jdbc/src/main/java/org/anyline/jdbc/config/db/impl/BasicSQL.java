@@ -17,10 +17,16 @@
  */
 
 
-package org.anyline.jdbc.config.db.impl; 
- 
+package org.anyline.jdbc.config.db.impl;
+
+import org.anyline.entity.Order;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.*;
+import org.anyline.jdbc.config.db.Condition;
+import org.anyline.jdbc.config.db.ConditionChain;
+import org.anyline.jdbc.config.db.GroupStore;
+import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.Join;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
@@ -35,7 +41,7 @@ public abstract class BasicSQL implements SQL{
 
 	protected static final Logger log = LoggerFactory.getLogger(BasicSQL.class); 
 	protected ConditionChain chain;			//查询条件 
-	protected OrderStore orders;			//排序 
+	protected OrderStore orders;			//排序
 	protected GroupStore groups;			//分组条件 
 	protected PageNavi navi;				//分页
 	protected List<String> primaryKeys = new ArrayList<>();		//主键
@@ -67,7 +73,7 @@ public abstract class BasicSQL implements SQL{
 	 */ 
 	public SQL order(Order order){ 
 		if(null == orders){ 
-			orders = new OrderStoreImpl(); 
+			orders = new OrderStoreImpl();
 		} 
 		orders.order(order); 
 		return this; 
@@ -80,7 +86,7 @@ public abstract class BasicSQL implements SQL{
 		orders.order(order); 
 		return this; 
 	}
-	public SQL order(String col, SQL.ORDER_TYPE type){
+	public SQL order(String col, Order.TYPE type){
 		if(null == orders){
 			orders = new OrderStoreImpl();
 		}

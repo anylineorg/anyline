@@ -49,23 +49,18 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
 根据数据库类型添加依赖,如
 ```
 <dependency>
-<groupId>org.anyline</groupId>
-<artifactId>anyline-jdbc-mysql(oracle|clickhouse...)</artifactId>
-<version>8.5.3-20220630</version>
+    <groupId>org.anyline</groupId>
+    <artifactId>anyline-jdbc-mysql(oracle|clickhouse...)</artifactId>
+    <version>8.5.3-20220630</version>
 </dependency>
 ```
+
 在需要操作数据库的地方注入AnylineService
 ```
 @Qualifier("anyline.service")
 protected AnylineService service;
 ```
 接下来service就可以完成大部分的数据库操作了。常用示例可以参考[【示例代码】](https://gitee.com/anyline/anyline-simple)
-
-------------------
-需要为anyline提供一个org.springframework.jdbc.core.JdbcTemplate;  
-如果是springboot项目一般是在pom里添加一个spring-boot-starter-jdbc的依赖  
-如果不是springboot项目一般是在配置文件中配置一个JdbcTemplate  
-正常情况下项目中已经配置过数据源了,以上3行可以忽略。
 
 
 

@@ -1,10 +1,6 @@
 package org.anyline.amap.util;
 
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.MapLocation;
-import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.impl.PageNaviImpl;
+import org.anyline.entity.*;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.*;
 import org.slf4j.Logger;

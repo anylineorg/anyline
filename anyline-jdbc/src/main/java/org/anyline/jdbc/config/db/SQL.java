@@ -17,13 +17,15 @@
  */
 
 
-package org.anyline.jdbc.config.db; 
- 
-import java.util.Collection;
-import java.util.List;
+package org.anyline.jdbc.config.db;
 
+import org.anyline.entity.Order;
+import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.sql.auto.impl.Join;
+
+import java.util.Collection;
+import java.util.List;
 
 /** 
  * V3.0 
@@ -50,12 +52,7 @@ public interface SQL extends Cloneable {
 		public abstract String getSql();
 		public abstract int getCode();
 	}
-	public static enum ORDER_TYPE{
-		ASC				{public String getCode(){return "ASC";} 	public String getName(){return "正序";}},
-		DESC			{public String getCode(){return "DESC";} 	public String getName(){return "倒序";}};
-		public abstract String getName();
-		public abstract String getCode();
-	} 
+
 	//public static int COMPARE_TYPE_EQUAL 			= 10;	// == 
 //	public static int COMPARE_TYPE_GREAT 			= 20;	// > 
 //	public static int COMPARE_TYPE_GREAT_EQUAL		= 21;	// >= 
@@ -117,7 +114,7 @@ public interface SQL extends Cloneable {
 	 * @return SQL
 	 */ 
 	public SQL order(String order); 
-	public SQL order(String col, SQL.ORDER_TYPE type); 
+	public SQL order(String col, Order.TYPE type);
 	public SQL order(Order order); 
  
 	/** 

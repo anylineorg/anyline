@@ -17,30 +17,30 @@
  */
 
 
-package org.anyline.jdbc.config.db.run.impl; 
- 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+package org.anyline.jdbc.config.db.run.impl;
 
+import org.anyline.entity.Order;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.Config;
+import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Condition;
-import org.anyline.jdbc.config.db.Order;
-import org.anyline.jdbc.config.db.OrderStore;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
-import org.anyline.jdbc.config.db.impl.OrderStoreImpl;
+import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.jdbc.config.db.impl.SQLVariableImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionImpl;
-import org.anyline.jdbc.config.Config;
-import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
  
 public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{ 
 	public TextRunSQLImpl(){ 

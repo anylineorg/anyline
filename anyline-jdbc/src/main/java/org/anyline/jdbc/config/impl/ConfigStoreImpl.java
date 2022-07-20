@@ -17,19 +17,22 @@
  */
 
 
-package org.anyline.jdbc.config.impl; 
- 
-import org.anyline.entity.PageNavi;
+package org.anyline.jdbc.config.impl;
+
+import org.anyline.entity.*;
 import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.ConfigChain;
 import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.db.*;
+import org.anyline.jdbc.config.db.Condition;
+import org.anyline.jdbc.config.db.Group;
+import org.anyline.jdbc.config.db.GroupStore;
+import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
-import org.anyline.jdbc.config.db.impl.*;
+import org.anyline.jdbc.config.db.impl.GroupImpl;
+import org.anyline.jdbc.config.db.impl.GroupStoreImpl;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DESUtil;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -418,9 +421,9 @@ public class ConfigStoreImpl implements ConfigStore {
 	 * @return ConfigStore
 	 */
 	@Override 
-	public ConfigStore order(Order order){ 
+	public ConfigStore order(Order order){
 		if(null == orders){ 
-			orders = new OrderStoreImpl(); 
+			orders = new OrderStoreImpl();
 		} 
 		orders.order(order); 
 		if(null != navi){ 

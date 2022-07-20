@@ -1,7 +1,7 @@
 package org.anyline.jdbc.config;
 
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.OrderStore;
+import org.anyline.entity.OrderStore;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;

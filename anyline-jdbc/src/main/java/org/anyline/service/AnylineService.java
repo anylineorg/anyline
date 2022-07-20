@@ -19,10 +19,7 @@
 
 package org.anyline.service; 
  
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.MetaData;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
@@ -148,15 +145,15 @@ public interface AnylineService<E>{
 
 
 
-	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
-	public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
-	public DataRow next(DataRow row, SQL.ORDER_TYPE order, String ... conditions);
+	public DataRow next(DataRow row, String column, Order.TYPE order, ConfigStore configs, String ... conditions);
+	public DataRow next(DataRow row, String column, Order.TYPE order, String ... conditions);
+	public DataRow next(DataRow row, Order.TYPE order, String ... conditions);
 	public DataRow next(DataRow row, ConfigStore configs, String ... conditions);
 	public DataRow next(DataRow row, String ... conditions);
 	
-	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions);
-	public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, String ... conditions);
-	public DataRow prev(DataRow row, SQL.ORDER_TYPE order, String ... conditions);
+	public DataRow prev(DataRow row, String column, Order.TYPE order, ConfigStore configs, String ... conditions);
+	public DataRow prev(DataRow row, String column, Order.TYPE order, String ... conditions);
+	public DataRow prev(DataRow row, Order.TYPE order, String ... conditions);
 	public DataRow prev(DataRow row, ConfigStore configs, String ... conditions);
 	public DataRow prev(DataRow row, String ... conditions);
 

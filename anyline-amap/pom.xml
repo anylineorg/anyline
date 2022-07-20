@@ -19,7 +19,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.anyline</groupId>
-			<artifactId>anyline-web</artifactId>
+			<artifactId>anyline-net</artifactId>
 		</dependency>
 	</dependencies>
 </project>

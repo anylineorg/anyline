@@ -17,13 +17,16 @@
  */
 
 
-package org.anyline.jdbc.config; 
- 
+package org.anyline.jdbc.config;
+
+import org.anyline.entity.Order;
+import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.*;
+import org.anyline.jdbc.config.db.Group;
+import org.anyline.jdbc.config.db.GroupStore;
+import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
  
@@ -124,11 +127,11 @@ public interface ConfigStore {
 	 * @param order  order
 	 * @return ConfigStore
 	 */ 
-	public ConfigStore order(Order order); 
+	public ConfigStore order(Order order);
  
 	public ConfigStore order(String column, String type); 
 	public ConfigStore order(String order); 
-	public OrderStore getOrders() ; 
+	public OrderStore getOrders() ;
 	public ConfigStore setOrders(OrderStore orders) ; 
 	/** 
 	 * 添加分组 

@@ -17,16 +17,13 @@
  */
 
 
-package org.anyline.jdbc.config.db.impl; 
- 
-import java.util.ArrayList; 
-import java.util.List; 
+package org.anyline.entity;
 
-import org.anyline.jdbc.config.db.Order;
-import org.anyline.jdbc.config.db.OrderStore;
-import org.anyline.jdbc.config.db.SQL;
-import org.anyline.util.BasicUtil; 
- 
+import org.anyline.util.BasicUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class OrderStoreImpl implements OrderStore{ 
 	private static final long serialVersionUID = -2129393152486629564L;
 	private List<Order> orders = new ArrayList<Order>(); 
@@ -45,8 +42,8 @@ public class OrderStoreImpl implements OrderStore{
 		} 
 	} 
  
-	public void order(String col, SQL.ORDER_TYPE type) { 
-		order(new OrderImpl(col, type)); 
+	public void order(String col, Order.TYPE type) { 
+		order(new OrderImpl(col, type));
 	} 
 	/** 
 	 * 排序多列以,分隔 

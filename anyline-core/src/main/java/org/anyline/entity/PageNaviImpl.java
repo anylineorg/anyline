@@ -17,28 +17,17 @@
  */ 
  
  
-package org.anyline.jdbc.config.db.impl; 
- 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+package org.anyline.entity;
 
-import org.anyline.entity.DataRow;
-import org.anyline.entity.PageNavi;
-import org.anyline.entity.PageNaviConfig;
-import org.anyline.jdbc.config.db.Order;
-import org.anyline.jdbc.config.db.OrderStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.NumberUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
- 
- 
+
+import java.util.*;
+
+
 public class PageNaviImpl implements PageNavi{
 	protected static final long serialVersionUID = 3593100423479113410L; 
 	protected static final Logger log = LoggerFactory.getLogger(PageNaviImpl.class); 
@@ -80,7 +69,7 @@ public class PageNaviImpl implements PageNavi{
 		setPageRows(pageRows); 
 		this.baseLink = baseLink; 
 	} 
-	public PageNaviImpl(int curPage,int pageRows, String baseLink){ 
+	public PageNaviImpl(int curPage, int pageRows, String baseLink){
 		this.curPage = curPage; 
 		setPageRows(pageRows); 
 		this.baseLink = baseLink; 

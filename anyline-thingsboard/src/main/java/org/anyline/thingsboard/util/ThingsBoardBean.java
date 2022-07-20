@@ -16,7 +16,7 @@ public class ThingsBoardBean implements InitializingBean {
     public String PASSWORD        ;
     @Value("${anyline.thingsboard.host:}")
     public String HOST		      ;
-    @Value("${anyline.thingsboard.tenant:}")
+    @Value("${anyline.thingsboard.tenant.id:}")
     public String TENANT	      ;
 
     @Override

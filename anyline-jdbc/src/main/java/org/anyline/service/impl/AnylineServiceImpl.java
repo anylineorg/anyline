@@ -25,17 +25,10 @@ import org.anyline.cache.CacheUtil;
 import org.anyline.cache.PageLazyStore;
 import org.anyline.compatible.Compatible;
 import org.anyline.dao.AnylineDao;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.MetaData;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.db.Order;
-import org.anyline.jdbc.config.db.OrderStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.SQL.ORDER_TYPE;
-import org.anyline.jdbc.config.db.impl.PageNaviImpl;
 import org.anyline.jdbc.config.db.impl.ProcedureImpl;
 import org.anyline.jdbc.config.db.impl.SQLStoreImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
@@ -555,7 +548,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataRow next(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions) {
+    public DataRow next(DataRow row, String column, Order.TYPE order, ConfigStore configs, String ... conditions) {
         //查询条件
         if(null == configs){
             configs = (ConfigStore)row.getQueryParam("query_config");
@@ -584,31 +577,31 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             column = row.getPrimaryKey();
         }
         if(null == order){
-            order = SQL.ORDER_TYPE.DESC;
+            order = Order.TYPE.DESC;
         }
         String src = (String)row.getQueryParam("query_src");
 
-        SQL.ORDER_TYPE queryOrder = null;
+        Order.TYPE queryOrder = null;
         String pk = row.getPrimaryKey();
         Object pv = row.getPrimaryValue();
         SQL.COMPARE_TYPE compare = null;
         configs.removeConfig(pk);
         if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv) || column.equalsIgnoreCase(pk)){
-            if(order == SQL.ORDER_TYPE.DESC){
+            if(order == Order.TYPE.DESC){
                 compare = SQL.COMPARE_TYPE.LESS;
-                queryOrder = SQL.ORDER_TYPE.DESC;
+                queryOrder = Order.TYPE.DESC;
             }else{
                 compare = SQL.COMPARE_TYPE.GREAT;
-                queryOrder = SQL.ORDER_TYPE.ASC;
+                queryOrder = Order.TYPE.ASC;
             }
         }else{
             configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv, true, true);
-            if(order == SQL.ORDER_TYPE.DESC){
+            if(order == Order.TYPE.DESC){
                 compare = SQL.COMPARE_TYPE.LESS_EQUAL;
-                queryOrder = SQL.ORDER_TYPE.DESC;
+                queryOrder = Order.TYPE.DESC;
             }else{
                 compare = SQL.COMPARE_TYPE.GREAT_EQUAL;
-                queryOrder = SQL.ORDER_TYPE.ASC;
+                queryOrder = Order.TYPE.ASC;
             }
         }
         configs.order(column, queryOrder.getCode());
@@ -618,11 +611,11 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataRow next(DataRow row, String column, ORDER_TYPE order, String... conditions) {
+    public DataRow next(DataRow row, String column, Order.TYPE order, String... conditions) {
         return next(row, column, order, null, conditions);
     }
     @Override
-    public DataRow next(DataRow row, ORDER_TYPE order, String... conditions) {
+    public DataRow next(DataRow row, Order.TYPE order, String... conditions) {
         return next(row, null, order, null, conditions);
     }
     @Override
@@ -635,7 +628,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return next(row, null, null, configs, conditions);
     }
     @Override
-    public DataRow prev(DataRow row, String column, SQL.ORDER_TYPE order, ConfigStore configs, String ... conditions) {
+    public DataRow prev(DataRow row, String column, Order.TYPE order, ConfigStore configs, String ... conditions) {
         //查询条件
         if(null == configs){
             configs = (ConfigStore)row.getQueryParam("query_config");
@@ -664,31 +657,31 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             column = row.getPrimaryKey();
         }
         if(null == order){
-            order = SQL.ORDER_TYPE.DESC;
+            order = Order.TYPE.DESC;
         }
         String src = (String)row.getQueryParam("query_src");
 
-        SQL.ORDER_TYPE queryOrder = null;
+        Order.TYPE queryOrder = null;
         String pk = row.getPrimaryKey();
         Object pv = row.getPrimaryValue();
         SQL.COMPARE_TYPE compare = null;
         configs.removeConfig(pk);
         if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv) || column.equalsIgnoreCase(pk)){
-            if(order == SQL.ORDER_TYPE.ASC){
+            if(order == Order.TYPE.ASC){
                 compare = SQL.COMPARE_TYPE.LESS;
-                queryOrder = SQL.ORDER_TYPE.DESC;
+                queryOrder = Order.TYPE.DESC;
             }else{
                 compare = SQL.COMPARE_TYPE.GREAT;
-                queryOrder = SQL.ORDER_TYPE.ASC;
+                queryOrder = Order.TYPE.ASC;
             }
         }else{
             configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv, true, true);
-            if(order == SQL.ORDER_TYPE.ASC){
+            if(order == Order.TYPE.ASC){
                 compare = SQL.COMPARE_TYPE.LESS_EQUAL;
-                queryOrder = SQL.ORDER_TYPE.DESC;
+                queryOrder = Order.TYPE.DESC;
             }else{
                 compare = SQL.COMPARE_TYPE.GREAT_EQUAL;
-                queryOrder = SQL.ORDER_TYPE.ASC;
+                queryOrder = Order.TYPE.ASC;
             }
         }
         configs.order(column, queryOrder.getCode());
@@ -698,11 +691,11 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataRow prev(DataRow row, String column, ORDER_TYPE order, String... conditions) {
+    public DataRow prev(DataRow row, String column, Order.TYPE order, String... conditions) {
         return prev(row, column, order, null, conditions);
     }
     @Override
-    public DataRow prev(DataRow row, ORDER_TYPE order, String... conditions) {
+    public DataRow prev(DataRow row, Order.TYPE order, String... conditions) {
         return prev(row, null, order, null, conditions);
     }
     @Override

@@ -17,18 +17,23 @@
  */
 
 
-package org.anyline.jdbc.config.db; 
- 
+package org.anyline.entity;
+
 import java.io.Serializable;
-import java.util.List;
  
-public interface OrderStore extends Cloneable,Serializable{ 
  
-	public List<Order> getOrders(); 
-	public void order(Order order); 
-	public void order(String col, SQL.ORDER_TYPE type); 
-	public void order(String str) ; 
-	public Order getOrder(String order); 
-	public String getRunText(String delimiter);
-	public void clear(); 
+public interface Order extends Cloneable,Serializable{ 
+/*	public static final String ORDER_TYPE_ASC = "ASC";
+	public static final String ORDER_TYPE_DESC = "DESC";*/
+	public String getColumn() ; 
+	public void setColumn(String column) ; 
+	public TYPE getType() ;
+	public void setType(TYPE type) ;
+	public void setType(String type) ;
+	public static enum TYPE{
+		ASC				{public String getCode(){return "ASC";} 	public String getName(){return "正序";}},
+		DESC			{public String getCode(){return "DESC";} 	public String getName(){return "倒序";}};
+		public abstract String getName();
+		public abstract String getCode();
+	}
 } 
