@@ -20,10 +20,10 @@
 package org.anyline.web.controller;
 
 import org.anyline.entity.*;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;
-import org.anyline.jdbc.config.db.impl.PageNaviImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.util.*;
 import org.anyline.web.util.WebUtil;
@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.anyline.entity.KeyAdapter.KEY_CASE;
 
 public class AbstractBasicController {
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
