@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 @Component("anyline.thingsboard.load.bean")
 public class ThingsBoardBean implements InitializingBean {
 
-    @Value("${anyline.thingsborad.account:}")
+    @Value("${anyline.thingsboard.account:}")
     public String ACCOUNT		  ;
-    @Value("${anyline.thingsborad.password:}")
+    @Value("${anyline.thingsboard.password:}")
     public String PASSWORD        ;
-    @Value("${anyline.thingsborad.host:}")
+    @Value("${anyline.thingsboard.host:}")
     public String HOST		      ;
-    @Value("${anyline.thingsborad.tenant:}")
+    @Value("${anyline.thingsboard.tenant:}")
     public String TENANT	      ;
 
     @Override
