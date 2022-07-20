@@ -6,8 +6,9 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 
-public class DistanceUtil {
-    private static final Logger log = LoggerFactory.getLogger(DistanceUtil.class);
+public class GISUtil {
+
+    private static final Logger log = LoggerFactory.getLogger(GISUtil.class);
     private static double EARTH_RADIUS = 6378.137;
 
     private static double rad(double d) {
