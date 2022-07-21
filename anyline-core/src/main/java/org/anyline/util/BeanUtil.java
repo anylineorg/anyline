@@ -63,6 +63,7 @@ import java.util.regex.Pattern;
 public class BeanUtil {
 	public static ObjectMapper JSON_MAPPER = new ObjectMapper();
 
+
 	private static final Logger log = LoggerFactory.getLogger(BeanUtil.class);
 	static{
 		DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
