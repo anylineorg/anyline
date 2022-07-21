@@ -1598,6 +1598,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return result;
     }
+    public List<Integer[]> getIntArrays(Integer def, List<String> keys) {
+        List<Integer[]> result = new ArrayList<>();
+        for(DataRow row:rows){
+            int len = keys.size();
+            Integer[] item = new Integer[len];
+            for(int i=0; i<len; i++){
+                String key = keys.get(i);
+                item[i] = row.getInt(key, def);
+            }
+            result.add(item);
+        }
+        return result;
+    }
+    public List<Integer[]> getIntArrays(Integer def, String ... keys) {
+        return getIntArrays(def, BeanUtil.array2list(keys));
+    }
 
     public List<Long> getLongs(String key) throws Exception {
         List<Long> result = new ArrayList<>();
@@ -1628,6 +1644,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
             result.add(item);
         }
         return result;
+    }
+    public List<Long[]> getLongArrays(Long def, List<String> keys){
+        List<Long[]> result = new ArrayList<>();
+        for(DataRow row:rows){
+            int len = keys.size();
+            Long[] item = new Long[len];
+            for(int i=0; i<len; i++){
+                String key = keys.get(i);
+                item[i] = row.getLong(key, def);
+            }
+            result.add(item);
+        }
+        return result;
+    }
+    public List<Long[]> getLongArrays(Long def, String ... keys){
+        return getLongArrays(def, BeanUtil.array2list(keys));
     }
 
     public List<Double> getDoubles(String key) throws Exception {
@@ -1661,6 +1693,23 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
+    public List<Double[]> getDoubleArrays(Double def, List<String> keys){
+        List<Double[]> result = new ArrayList<>();
+        for(DataRow row:rows){
+            int len = keys.size();
+            Double[] item = new Double[len];
+            for(int i=0; i<len; i++){
+                String key = keys.get(i);
+                item[i] = row.getDouble(key, def);
+            }
+            result.add(item);
+        }
+        return result;
+    }
+
+    public List<Double[]> getDoubleArrays(Double def, String ... keys){
+        return getDoubleArrays(def, BeanUtil.array2list(keys));
+    }
 
     public List<Object> getObjects(String key) {
         List<Object> result = new ArrayList<Object>();
