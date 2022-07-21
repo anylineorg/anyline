@@ -185,6 +185,7 @@ public class HttpClient {
 			if("stream".equals(returnType)) {
 				response = client.execute(method);
 				InputStream is = response.getEntity().getContent();
+				result = new HttpResult();
 				result.setInputStream(is);
 			}else{
 				method.setHeader("Connection", "close");
@@ -198,16 +199,18 @@ public class HttpClient {
 			result = new HttpResult();
 			e.printStackTrace();
 		} finally {
-			try {
-				if(null != response){
-					response.close();
+			if(!"stream".equals(returnType)) {
+				try {
+					if (null != response) {
+						response.close();
+					}
+					method.releaseConnection();
+					if (autoClose) {
+						client.close();
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				method.releaseConnection();
-				if(autoClose){
-					client.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		}
 		return result;
