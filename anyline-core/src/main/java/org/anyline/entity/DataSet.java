@@ -1553,6 +1553,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
+    public List<String[]> getStringArrays(String ... keys){
+        List<String[]> result = new ArrayList<>();
+        for(DataRow row:rows){
+            int len = keys.length;
+            String[] item = new String[len];
+            for(int i=0; i<len; i++){
+                String key = keys[i];
+                item[i] = row.getString(key);
+            }
+            result.add(item);
+        }
+        return result;
+    }
+
+
     public List<Integer> getInts(String key) throws Exception {
         List<Integer> result = new ArrayList<Integer>();
         for (DataRow row : rows) {
@@ -1568,7 +1583,20 @@ public class DataSet implements Collection<DataRow>, Serializable {
             result.add(row.getInt(key, def));
         }
         return result;
+    }
 
+    public List<Integer[]> getIntArrays(String ... keys) throws Exception{
+        List<Integer[]> result = new ArrayList<>();
+        for(DataRow row:rows){
+            int len = keys.length;
+            Integer[] item = new Integer[len];
+            for(int i=0; i<len; i++){
+                String key = keys[i];
+                item[i] = row.getInt(key);
+            }
+            result.add(item);
+        }
+        return result;
     }
 
     public List<Long> getLongs(String key) throws Exception {
@@ -1586,7 +1614,20 @@ public class DataSet implements Collection<DataRow>, Serializable {
             result.add(row.getLong(key, def));
         }
         return result;
+    }
 
+    public List<Long[]> getLongArrays(String ... keys) throws Exception{
+        List<Long[]> result = new ArrayList<>();
+        for(DataRow row:rows){
+            int len = keys.length;
+            Long[] item = new Long[len];
+            for(int i=0; i<len; i++){
+                String key = keys[i];
+                item[i] = row.getLong(key);
+            }
+            result.add(item);
+        }
+        return result;
     }
 
     public List<Double> getDoubles(String key) throws Exception {
@@ -1605,6 +1646,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return result;
 
+    }
+    public List<Double[]> getDoubleArrays(String ... keys) throws Exception{
+        List<Double[]> result = new ArrayList<>();
+        for(DataRow row:rows){
+            int len = keys.length;
+            Double[] item = new Double[len];
+            for(int i=0; i<len; i++){
+                String key = keys[i];
+                item[i] = row.getDouble(key);
+            }
+            result.add(item);
+        }
+        return result;
     }
 
 
