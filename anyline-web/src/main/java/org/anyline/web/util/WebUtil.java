@@ -21,6 +21,7 @@ package org.anyline.web.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.util.*;
@@ -40,7 +41,6 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.anyline.entity.KeyAdapter.KEY_CASE;
 
 public class WebUtil {
 
@@ -961,16 +961,13 @@ public class WebUtil {
 	}
 
 	/**
-	 * 下载文件
+	 * 设置下载header
 	 * @param request request
 	 * @param response response
-	 * @param in in
 	 * @param title title
-	 * @return boolean
 	 */
-	public static boolean download(HttpServletRequest request, HttpServletResponse response, InputStream in, String title){
-		OutputStream out = null;
-		try {
+	public static void download(HttpServletRequest request, HttpServletResponse response, String title){
+		try{
 			response.setCharacterEncoding("UTF-8");
 			response.setHeader("Location",   title );
 			if(null != request){
@@ -991,6 +988,22 @@ public class WebUtil {
 				}
 			}
 			response.setContentType(contentType);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * 下载文件
+	 * @param request request
+	 * @param response response
+	 * @param in in
+	 * @param title title
+	 * @return boolean
+	 */
+	public static boolean download(HttpServletRequest request, HttpServletResponse response, InputStream in, String title){
+		OutputStream out = null;
+		try {
+			download(request, response, title);
 			out = response.getOutputStream();
 			byte[] buf = new byte[1024];
 			int count = 0;
