@@ -21,11 +21,13 @@ package org.anyline.util;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 
@@ -1126,14 +1128,42 @@ public class DateUtil {
 		List<Date> list = new ArrayList<Date>();
 		list.add(fr);
 		while(true){
-			fr = DateUtil.addDay(fr, 1);
-			if(DateUtil.diff(DATE_PART_DATE, fr, to) < 0){
+			fr = addDay(fr, 1);
+			if(diff(DATE_PART_DATE, fr, to) < 0){
 				break;
 			}
 			list.add(fr);
 		}
 		return list;
 	}
+
+	/**
+	 * 期间的月份
+	 * @param fr yyyy-MM 或 yyyy-MM-dd
+	 * @param to yyyy-MM 或 yyyy-MM-dd
+	 * @return
+	 */
+	public static List<String> getMonths(String fr, String to){
+		List<String> list = new ArrayList<>();
+		if(fr.length() < 10){
+			fr = fr + "-01";
+		}
+		if(to.length() < 10){
+			to = to + "-01";
+		}
+		Date ymd = parse(fr);
+		Date last = parse(to);
+		list.add(format(ymd,"yyyy-MM"));
+		while (true){
+			ymd = addMonth(ymd,1);
+			if(diff(DATE_PART_MONTH, ymd, last) < 0){
+				break;
+			}
+			list.add(format(ymd,"yyyy-MM"));
+		}
+		return list;
+	}
+
 	public static List<Date> getDaysOfYear(int year){
 		return getDaysOfYear(parse(year+"-01-01"));
 	}
