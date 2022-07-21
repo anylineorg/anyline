@@ -1542,7 +1542,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
             result.add(row.getString(key));
         }
         return result;
+    }
 
+
+    public List<String> getStrings(String key, String ... defs) {
+        List<String> result = new ArrayList<>();
+        for (DataRow row : rows) {
+            result.add(row.getStringNvl(key, defs));
+        }
+        return result;
     }
 
     public List<Integer> getInts(String key) throws Exception {
@@ -1553,6 +1561,52 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
 
     }
+
+    public List<Integer> getInts(String key, int def) {
+        List<Integer> result = new ArrayList<Integer>();
+        for (DataRow row : rows) {
+            result.add(row.getInt(key, def));
+        }
+        return result;
+
+    }
+
+    public List<Long> getLongs(String key) throws Exception {
+        List<Long> result = new ArrayList<>();
+        for (DataRow row : rows) {
+            result.add(row.getLong(key));
+        }
+        return result;
+
+    }
+
+    public List<Long> getLongs(String key, Long def) {
+        List<Long> result = new ArrayList<>();
+        for (DataRow row : rows) {
+            result.add(row.getLong(key, def));
+        }
+        return result;
+
+    }
+
+    public List<Double> getDoubles(String key) throws Exception {
+        List<Double> result = new ArrayList<>();
+        for (DataRow row : rows) {
+            result.add(row.getDouble(key));
+        }
+        return result;
+
+    }
+
+    public List<Double> getDoubles(String key, Double def) {
+        List<Double> result = new ArrayList<>();
+        for (DataRow row : rows) {
+            result.add(row.getDouble(key, def));
+        }
+        return result;
+
+    }
+
 
     public List<Object> getObjects(String key) {
         List<Object> result = new ArrayList<Object>();
