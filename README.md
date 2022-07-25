@@ -44,7 +44,13 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
 
 
 ## 如何集成
-直接看代码[【anyline-simple-hello】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-hello)以下可以略过  
+直接看代码[【anyline-simple-hello】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-hello)  
+生产环境可以参考这几个[pom](https://gitee.com/anyline/anyboot/tree/master)    
+[【anyboot-start】](https://gitee.com/anyline/anyboot/blob/master/anyboot-start/pom.xml) 没有web环境,如定时任务,爬虫等    
+[【anyboot-start-mvc】](https://gitee.com/anyline/anyboot/blob/master/anyboot-start-mv/pom.xml) 基于spring-mvc  
+[【anyboot-start-mvc-mysql】](https://gitee.com/anyline/anyboot/blob/master/anyboot-start-mvc-mysql/pom.xml) 基于spring-mvc MySQL数据库    
+[【anyboot-start-mvc-jsp-mysql】](https://gitee.com/anyline/anyboot/blob/master/anyboot-start-mvc-jsp-mysql/pom.xml) 基于spring-mvc MySQL数据库 支持JSP    
+以下可以略过  
 
 根据数据库类型添加依赖,如
 ```
