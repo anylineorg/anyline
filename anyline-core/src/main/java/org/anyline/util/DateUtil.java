@@ -907,23 +907,24 @@ public class DateUtil {
 		Date date = null;
 		String format = FORMAT_FULL;
 		if (!str.contains(".")) {
-			// 不带毫秒
+			// 不带毫秒 2020-01-01 HH:mm:ss
 			format = FORMAT_DATE_TIME;
 		}
 
 		if (!str.contains(":")) {
-			// 不带时间
+			// 不带时间 2020-01-01
 			format = FORMAT_DATE;
 		} else if (!str.contains(" ")) {
-			// 不带日期
+			// 不带日期 12:12:12 12:12:12.109
 			format = format.replace("yyyy-MM-dd ", "");
 		}
 		if (BasicUtil.catSubCharCount(str, ":") == 1) {
-			// 只有时分 没有秒
+			// 只有时分 没有秒 10:10
 			format = format.replace(":ss", "");
 		}
 
 		if (str.contains("/")) {
+			// 2020/01/01
 			format = format.replace("-", "/");
 		}
 		if (!str.contains("-") && !str.contains("/")) {
@@ -941,18 +942,33 @@ public class DateUtil {
 			 * "2021-09-08T09:20:14.245292+08:00"
 			 */
 			try {
-				OffsetDateTime offsetDateTime = OffsetDateTime.parse(str);
-				return Date.from(offsetDateTime.toInstant());
+
+				if (str.contains("Z")) {
+					//2020-12-19T16:22:50Z
+					format = "yyyy-MM-dd'T'HH:mm:ss Z";
+					if(str.contains(".")){
+						//2020-12-19T16:22:50.101Z
+						format = "yyyy-MM-dd'T'HH:mm:ss.SSS Z";
+					}
+					SimpleDateFormat sdf = new SimpleDateFormat(format);
+					String tempTime = str.replace("Z", " UTC");
+					return sdf.parse(tempTime);
+				}
 			}catch (Exception e){
-				str = str.replace("T", " ");
-				if(str.contains(".")) {
-					format = FORMAT_FULL;
-				}else if(str.length() == 16){ //2020-06-30 12:00
-					format = "yyyy-MM-dd HH:mm";
-				}else if(str.length() == 13){ //2020-06-30 12
-					format = "yyyy-MM-dd HH";
-				}else{
-					format = FORMAT_DATE_TIME;
+				try{
+					OffsetDateTime offsetDateTime = OffsetDateTime.parse(str);
+					return Date.from(offsetDateTime.toInstant());
+				}catch (Exception ex) {
+					str = str.replace("T", " ");
+					if (str.contains(".")) {
+						format = FORMAT_FULL;
+					} else if (str.length() == 16) { //2020-06-30 12:00
+						format = "yyyy-MM-dd HH:mm";
+					} else if (str.length() == 13) { //2020-06-30 12
+						format = "yyyy-MM-dd HH";
+					} else {
+						format = FORMAT_DATE_TIME;
+					}
 				}
 			}
 
