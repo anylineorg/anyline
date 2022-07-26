@@ -135,6 +135,11 @@ public class GISUtil {
         return result;
     }
 
+     /**
+     * WGS-84 GPS坐标（谷歌地图国外）
+     * GCJ-02 国测局坐标（谷歌地图国内，高德地图）
+     * BD-09 百度坐标（百度地图）
+      */
     /** 地球半径,单位米（北京54 长半轴） */
     private static final double RADIUS = 6378245;
 
