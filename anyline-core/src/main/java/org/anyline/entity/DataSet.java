@@ -1,6 +1,7 @@
 package org.anyline.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.anyline.entity.KeyAdapter.KEY_CASE;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -10,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
-import org.anyline.entity.KeyAdapter.KEY_CASE;
 
 public class DataSet implements Collection<DataRow>, Serializable {
     private static final long serialVersionUID = 6443551515441660101L;
@@ -1054,6 +1054,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return sums(new DataRow(), list);
     }
 
+
     /**
      * 多列平均值
      *
@@ -1334,6 +1335,185 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public BigDecimal avg(String key) {
         BigDecimal result = avg(size(), key, 2, BigDecimal.ROUND_HALF_UP);
         return result;
+    }
+
+    /**
+     * 求和
+     * [
+     *  {NM:部门1,USERS:[{LVL:1,SCORE:6},{LVL:1,SCORE:7},{LVL:2,SCORE:8}]}
+     * ,{NM:部门2,USERS:[{LVL:1,SCORE:60},{LVL:3,SCORE:70},{LVL:2,SCORE:80}]}
+     * ,{NM:部门3,USERS:[{LVL:1,SCORE:600},{LVL:5,SCORE:700},{LVL:2,SCORE:800}]}
+     * ]
+     * sum("TOTAL", "USERS", "SCORE", "LVL>1") 计算每个部门中 LVL>1部分的用户子集 的SCORE合计 计算结果存储在TOTAL属性中
+     * [
+     *  {NM:部门1,TOTAL:8,     USERS:[{LVL:1,SCORE:6},{LVL:1,SCORE:7},{LVL:2,SCORE:8}]}
+     * ,{NM:部门2,TOTAL:150,   USERS:[{LVL:1,SCORE:60},{LVL:3,SCORE:70},{LVL:2,SCORE:80}]}
+     * ,{NM:部门3,TOTAL:2100,  USERS:[{LVL:6,SCORE:600},{LVL:5,SCORE:700},{LVL:2,SCORE:800}]}
+     * ]
+     * @param result 合计结果存储
+     * @param items 计算条目中的 items 集合
+     * @param field 根据field列 求和
+     * @param conditions items子集过滤条件
+     * @return DataSet
+     */
+    public DataSet sum(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.sum(field));
+        }
+        return this;
+    }
+
+    public DataSet avg(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.avg(field));
+        }
+        return this;
+    }
+
+
+    public DataSet var(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.var(field));
+        }
+        return this;
+    }
+    public DataSet min(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.min(field));
+        }
+        return this;
+    }
+    public DataSet max(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.max(field));
+        }
+        return this;
+    }
+    public DataSet count(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.size());
+        }
+        return this;
+    }
+    public DataSet vara(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.vara(field));
+        }
+        return this;
+    }
+
+    public DataSet varp(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.varp(field));
+        }
+        return this;
+    }
+
+    public DataSet varpa(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.varpa(field));
+        }
+        return this;
+    }
+    public DataSet stdev(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.stdev(field));
+        }
+        return this;
+    }
+
+    public DataSet stdeva(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.stdeva(field));
+        }
+        return this;
+    }
+
+    public DataSet stdevp(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.stdevp(field));
+        }
+        return this;
+    }
+
+    public DataSet stdevpa(String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.stdevpa(field));
+        }
+        return this;
+    }
+
+    public DataSet agg(Aggregation agg, String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.agg(agg, field));
+        }
+        return this;
+    }
+    public DataSet agg(String agg, String result, String items, String field, String ... conditions){
+        for(DataRow row:rows){
+            DataSet set = row.getSet(items);
+            if(null != conditions && conditions.length>0){
+                set = set.getRows(conditions);
+            }
+            row.put(result, set.agg(agg, field));
+        }
+        return this;
     }
 
     public DataSet addRow(DataRow row) {
@@ -2799,9 +2979,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
-
     public Object agg(String type, String key){
         Aggregation agg = Aggregation.valueOf(type);
+        return agg(agg, key);
+    }
+
+    public Object agg(Aggregation agg, String key){
         Object result = null;
         switch (agg){
             case COUNT:
