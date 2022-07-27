@@ -177,6 +177,12 @@ public class GISUtil {
         double bd_lat = z * Math.sin(theta) + 0.006;
         return new double[]{bd_lng, bd_lat};
     }
+    public static double[] wgs2bd(double[] lngLat){
+        return wgs2bd(lngLat[0], lngLat[1]);
+    }
+    public static double[] wgs2bd(double lng, double lat){
+        return gcj2bd(wgs2gcj(lng, lat));
+    }
 
     public static double[] wgs2gcj(double[] lngLat) {
         return wgs2gcj(lngLat[0], lngLat[1]);
