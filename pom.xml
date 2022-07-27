@@ -75,6 +75,7 @@
 		<!--这个module需要本地库,没有本地库或不需要nc的 把这个module注释一下-->
 		<module>anyline-nc</module>
 		<module>anyline-office</module>
+		<module>anyline-oro</module>
 		<module>anyline-poi</module>
 		<module>anyline-pdf</module>
 		<module>anyline-qq</module>

@@ -312,6 +312,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-oro</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-print-10ss</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
@@ -560,6 +565,7 @@
 				<artifactId>dom4j</artifactId>
 				<version>${org.dom4j.version}</version>
 			</dependency>
+			<!-- 经常依赖失败 已复制源码到anyline-oro -->
 			<dependency>
 				<groupId>org.apache.oro</groupId>
 				<artifactId>com.springsource.org.apache.oro</artifactId>
