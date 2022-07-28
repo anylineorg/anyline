@@ -17,14 +17,10 @@
  */
 
 
-package org.anyline.jdbc.config.impl; 
- 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package org.anyline.jdbc.config.impl;
 
+import org.anyline.jdbc.config.Config;
+import org.anyline.jdbc.config.ConfigChain;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.db.Condition;
@@ -32,13 +28,13 @@ import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionImpl;
-import org.anyline.jdbc.config.Config;
-import org.anyline.jdbc.config.ConfigChain;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
- 
+
+import java.util.*;
+
 public class ConfigImpl implements Config{
 	protected static final Logger log = LoggerFactory.getLogger(ConfigImpl.class);
 	protected List<Object> values;	//VALUE
@@ -104,7 +100,7 @@ public class ConfigImpl implements Config{
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		} 
-	} 
+	}
 
 	public List<Object> getValues() { 
 		return values; 
@@ -117,8 +113,17 @@ public class ConfigImpl implements Config{
 		if(null == values){
 			values = new ArrayList<Object>();
 		}
-		if(null != value && value instanceof Collection){
-			values.addAll((Collection)value);
+		if(null != value){
+			if(value instanceof Collection) {
+				values.addAll((Collection) value);
+			}else if(value instanceof Object[]){
+				Object[] tmps = (Object[]) value;
+				for(Object tmp:tmps){
+					values.add(tmp);
+				}
+			}else{
+				values.add(value);
+			}
 		}else{
 			values.add(value);
 		}

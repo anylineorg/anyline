@@ -57,7 +57,7 @@ public interface ConfigStore {
 	public ConfigStore removeConfig(String var, SQL.COMPARE_TYPE compare);
 	public List<Object> getConfigValues(String var, SQL.COMPARE_TYPE compare);
 	public Object getConfigValue(String var, SQL.COMPARE_TYPE compare);
-	public ConfigStore addConditions(String var, Object value);
+	public ConfigStore addConditions(String var, Object ... values);
 	public ConfigStore addCondition(String var, Object value);
 	/**
 	 * 

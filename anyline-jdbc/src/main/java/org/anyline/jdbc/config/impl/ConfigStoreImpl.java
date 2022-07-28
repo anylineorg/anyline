@@ -146,7 +146,7 @@ public class ConfigStoreImpl implements ConfigStore {
 	}
 
 	@Override
-	public ConfigStore addConditions(String var, Object values){
+	public ConfigStore addConditions(String var, Object ... values){
 		return addCondition(COMPARE_TYPE.IN, var, values);
 //		Config conf = chain.getConfig(null,var,SQL.COMPARE_TYPE.IN);
 //		if(null == conf){
