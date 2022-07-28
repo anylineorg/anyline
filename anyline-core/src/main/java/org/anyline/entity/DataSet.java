@@ -3523,8 +3523,37 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet put(String key, Object value) {
-        for (DataRow row : rows) {
-            row.put(key, value);
+        int regex = 0;
+        if(null != value && value instanceof String){
+            String str = (String)value;
+            int idx = str.indexOf("${");
+            if(idx != -1) {
+                if(str.startsWith("$") && str.endsWith("}")){  //${ID}
+                    regex = 1; //一个表达式
+                    if (str.indexOf("${", idx + 2) > 0) {
+                        if(idx != -1){
+                            regex = 2; //多个表达式 ${CODE}-${NM}
+                        }
+                    }
+                }else{
+                    regex = 2;  //123${ID}ABC
+                }
+            }
+        }
+        if(regex ==0){
+            for(DataRow row:rows){
+                row.put(key,value);
+            }
+        }else if(regex ==1){
+            for(DataRow row:rows){
+                String k = (String)value;
+                k = k.substring(2, k.length()-1);
+                row.put(key,row.get(k));
+            }
+        }else if(regex ==2){
+            for(DataRow row:rows){
+                row.put(key, row.getString((String)value));
+            }
         }
         return this;
     }
