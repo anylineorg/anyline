@@ -1045,9 +1045,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 			if(override){
 				primaryKeys.clear();
 			}
-			this.addPrimaryKey(key);
+			addPrimaryKey(key);
 		}
-		this.put(keyCase, key, value);
+		put(keyCase, key, value);
 		return this;
 	}
 	public DataRow put(String key, Object value, boolean pk, boolean override){
@@ -1070,11 +1070,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 */
 	@Override
 	public Object put(String key, Object value){
-		this.put(this.keyCase, key, value, false , true);
+		put(keyCase, key, value, false , true);
 		return this;
 	}
 	public DataRow set(String key, Object value){
-		this.put(this.keyCase, key, value, false , true);
+		put(keyCase, key, value, false , true);
 		return this;
 	}
 	public DataRow attr(String key, Object value){
