@@ -1344,7 +1344,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * ,{NM:部门2,USERS:[{LVL:1,SCORE:60},{LVL:3,SCORE:70},{LVL:2,SCORE:80}]}
      * ,{NM:部门3,USERS:[{LVL:1,SCORE:600},{LVL:5,SCORE:700},{LVL:2,SCORE:800}]}
      * ]
-     * sum("TOTAL", "USERS", "SCORE", "LVL>1") 计算每个部门中 LVL>1部分的用户子集 的SCORE合计 计算结果存储在TOTAL属性中
+     * sum("TOTAL", "USERS", "SCORE", "LVL&gt;1") 计算每个部门中 LVL大于1部分的用户子集 的SCORE合计 计算结果存储在TOTAL属性中
      * [
      *  {NM:部门1,TOTAL:8,     USERS:[{LVL:1,SCORE:6},{LVL:1,SCORE:7},{LVL:2,SCORE:8}]}
      * ,{NM:部门2,TOTAL:150,   USERS:[{LVL:1,SCORE:60},{LVL:3,SCORE:70},{LVL:2,SCORE:80}]}
