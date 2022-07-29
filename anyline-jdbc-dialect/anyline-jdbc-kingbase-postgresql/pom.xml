@@ -11,9 +11,9 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>anyline-jdbc-kingbase-prostgresql</artifactId>
+    <artifactId>anyline-jdbc-kingbase-postgresql</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-jdbc-kingbase-prostgresql</name>
+    <name>anyline-jdbc-kingbase-postgresql</name>
     <url>http://www.anyline.org/kingbase</url>
 
     <dependencies>
