@@ -17,7 +17,7 @@
  */
 
 
-package org.anyline.util; 
+package org.anyline.util;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -79,12 +79,11 @@ public class NumberUtil {
 	 */
 	public static BigDecimal max(BigDecimal... nums) {
 		BigDecimal max = nums[0];
-		int size = nums.length;
-		for (int i = 0; i < size; i++) {
+		for (BigDecimal num:nums) {
 			if(null == max){
-				max = nums[i];
-			}else if (null != nums[i] && max.compareTo(nums[i]) <0) {
-				max = nums[i];
+				max = num;
+			}else if (null != num && max.compareTo(num) <0) {
+				max = num;
 			}
 		}
 		return max;
@@ -97,12 +96,11 @@ public class NumberUtil {
 	 */
 	public static BigDecimal min(BigDecimal... nums) {
 		BigDecimal min = nums[0];
-		int size = nums.length;
-		for (int i = 0; i < size; i++) {
+		for (BigDecimal num:nums) {
 			if(null == min){
-				min = nums[i];
-			}else if (null != nums[i] && min.compareTo(nums[i]) >0) {
-				min = nums[i];
+				min = num;
+			}else if (null != num && min.compareTo(num) >0) {
+				min = num;
 			}
 		}
 		return min;
@@ -116,10 +114,9 @@ public class NumberUtil {
 	 */
 	public static double max(double... nums) {
 		double max = nums[0];
-		int size = nums.length;
-		for (int i = 0; i < size; i++) {
-			if (max < nums[i]) {
-				max = nums[i];
+		for (double num:nums) {
+			if (max < num) {
+				max = num;
 			}
 		}
 		return max;
@@ -132,15 +129,13 @@ public class NumberUtil {
 	 */
 	public static double min(double... nums) {
 		double min = nums[0];
-		int size = nums.length;
-		for (int i = 0; i < size; i++) {
-			if (min > nums[i]) {
-				min = nums[i];
+		for (double num:nums) {
+			if (min > num) {
+				min = num;
 			}
 		}
 		return min;
 	}
-
 	/**
 	 * 选取最大数
 	 * 
@@ -149,10 +144,9 @@ public class NumberUtil {
 	 */
 	public static int max(int... nums) {
 		int max = nums[0];
-		int size = nums.length;
-		for (int i = 0; i < size; i++) {
-			if (max < nums[i]) {
-				max = nums[i];
+		for (int num:nums) {
+			if (max < num) {
+				max = num;
 			}
 		}
 		return max;
@@ -166,10 +160,9 @@ public class NumberUtil {
 	 */
 	public static int min(int... nums) {
 		int min = nums[0];
-		int size = nums.length;
-		for (int i = 0; i < size; i++) {
-			if (min > nums[i]) {
-				min = nums[i];
+		for (int num:nums) {
+			if (min > num) {
+				min = num;
 			}
 		}
 		return min;
@@ -200,10 +193,9 @@ public class NumberUtil {
 	 */
 	public static long min(long... nums) {
 		long min = nums[0];
-		int size = nums.length;
-		for (int i = 0; i < size; i++) {
-			if (min > nums[i]) {
-				min = nums[i];
+		for (long num:nums) {
+			if (min > num) {
+				min = num;
 			}
 		}
 		return min;
@@ -217,10 +209,9 @@ public class NumberUtil {
 	 */
 	public static float max(float... nums) {
 		float max = nums[0];
-		int size = nums.length;
-		for (int i = 0; i < size; i++) {
-			if (max < nums[i]) {
-				max = nums[i];
+		for (float num:nums) {
+			if (max < num) {
+				max = num;
 			}
 		}
 		return max;
@@ -234,10 +225,9 @@ public class NumberUtil {
 	 */
 	public static float min(float... nums) {
 		float min = nums[0];
-		int size = nums.length;
-		for (int i = 1; i < size; i++) {
-			if (min > nums[i]) {
-				min = nums[i];
+		for (float num:nums) {
+			if (min > num) {
+				min = num;
 			}
 		}
 		return min;
@@ -251,10 +241,9 @@ public class NumberUtil {
 	 */
 	public static short max(short... nums) {
 		short max = nums[0];
-		int size = nums.length;
-		for (int i = 1; i < size; i++) {
-			if (max < nums[i]) {
-				max = nums[i];
+		for (short num:nums) {
+			if (max < num) {
+				max = num;
 			}
 		}
 		return max;
@@ -268,10 +257,9 @@ public class NumberUtil {
 	 */
 	public static short min(short... nums) {
 		short min = nums[0];
-		int size = nums.length;
-		for (int i = 1; i < size; i++) {
-			if (min > nums[i]) {
-				min = nums[i];
+		for (short num:nums) {
+			if (min > num) {
+				min = num;
 			}
 		}
 		return min;
