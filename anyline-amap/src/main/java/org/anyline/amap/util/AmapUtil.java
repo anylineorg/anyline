@@ -759,8 +759,8 @@ public class AmapUtil {
 	 * @param city  city
 	 * @return MapLocation
 	 */ 
-	public MapLocation geo(String address, String city){
-		MapLocation location = null; 
+	public MapPoint geo(String address, String city){
+		MapPoint location = null;
 		String url = "http://restapi.amap.com/v3/geocode/geo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
@@ -778,7 +778,7 @@ public class AmapUtil {
 				set = json.getSet("geocodes"); 
 				if(set.size()>0){ 
 					DataRow row = set.getRow(0); 
-					location = new MapLocation(row.getString("LOCATION")); 
+					location = new MapPoint(row.getString("LOCATION"));
 					location.setCode(row.getString("ADCODE")); 
 					location.setProvinceCode(BasicUtil.cut(row.getString("ADCODE"),0,4)); 
 					location.setProvinceNm(row.getString("PROVINCE")); 
@@ -788,7 +788,7 @@ public class AmapUtil {
 					location.setCountyNm(row.getString("DISTRICT")); 
 					location.setStreet(row.getString("STREET")); 
 					location.setAddress(row.getString("FORMATTED_ADDRESS")); 
-					location.setLevel(row.getString("LEVEL")); 
+					location.setLevel(row.getInt("LEVEL",0));
 				} 
 			}else{ 
 				log.warn("[坐标查询失败][info:{}][params:{}]",json.getString("info"),BeanUtil.map2string(params)); 
@@ -798,7 +798,7 @@ public class AmapUtil {
 		} 
 		return location; 
 	} 
-	public MapLocation geo(String address){ 
+	public MapPoint geo(String address){
 		return geo(address, null); 
 		 
 	} 
