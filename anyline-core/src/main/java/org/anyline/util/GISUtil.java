@@ -1,10 +1,14 @@
 package org.anyline.util;
 
-import org.anyline.entity.MapLocation;
+import org.anyline.entity.MapPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class GISUtil {
 
@@ -18,17 +22,17 @@ public class GISUtil {
      * 通过经纬度获取距离(单位:米)
      *
      * @param lat1  lat1
-     * @param lon1  lon1
+     * @param lng1  lng1
      * @param lat2  lat2
-     * @param lon2  lon2
+     * @param lng2  lng2
      * @return distance
      */
-    public static double distance(double lon1, double lat1, double lon2, double lat2) {
+    public static double distance(double lng1, double lat1, double lng2, double lat2) {
         try{
             double radLat1 = rad(lat1);
             double radLat2 = rad(lat2);
             double a = radLat1 - radLat2;
-            double b = rad(lon1) - rad(lon2);
+            double b = rad(lng1) - rad(lng2);
             double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2)
                     + Math.cos(radLat1) * Math.cos(radLat2)
                     * Math.pow(Math.sin(b / 2), 2)));
@@ -43,22 +47,22 @@ public class GISUtil {
             return -1;
         }
     }
-    public static String distanceFormat(double lon1, double lat1, double lon2, double lat2) {
-        double distance = distance(lon1, lat1, lon2, lat2);
+    public static String distanceFormat(double lng1, double lat1, double lng2, double lat2) {
+        double distance = distance(lng1, lat1, lng2, lat2);
         return distanceFormat(distance);
     }
-    public static String distanceFormatCn(double lon1, double lat1, double lon2, double lat2) {
-        double distance = distance(lon1, lat1, lon2, lat2);
+    public static String distanceFormatCn(double lng1, double lat1, double lng2, double lat2) {
+        double distance = distance(lng1, lat1, lng2, lat2);
         return distanceFormatCn(distance);
     }
 
-    public static double distance(String lon1, String lat1, String lon2, String lat2) {
+    public static double distance(String lng1, String lat1, String lng2, String lat2) {
         double distance = -1;
         try{
             distance = distance(
-                    BasicUtil.parseDouble(lon1, -1.0),
+                    BasicUtil.parseDouble(lng1, -1.0),
                     BasicUtil.parseDouble(lat1, -1.0),
-                    BasicUtil.parseDouble(lon2, -1.0),
+                    BasicUtil.parseDouble(lng2, -1.0),
                     BasicUtil.parseDouble(lat2, -1.0)
             );
         }catch(Exception e){
@@ -66,17 +70,17 @@ public class GISUtil {
         }
         return distance;
     }
-    public static String distanceFormat(String lon1, String lat1, String lon2, String lat2) {
-        double distance = distance(lon1, lat1, lon2, lat2);
+    public static String distanceFormat(String lng1, String lat1, String lng2, String lat2) {
+        double distance = distance(lng1, lat1, lng2, lat2);
         return distanceFormat(distance);
     }
-    public static String distanceFormatCn(String lon1, String lat1, String lon2, String lat2) {
-        double distance = distance(lon1, lat1, lon2, lat2);
+    public static String distanceFormatCn(String lng1, String lat1, String lng2, String lat2) {
+        double distance = distance(lng1, lat1, lng2, lat2);
         return distanceFormatCn(distance);
     }
 
 
-    public static double distance(MapLocation loc1, MapLocation loc2) {
+    public static double distance(MapPoint loc1, MapPoint loc2) {
         double distance = -1;
         try{
             distance = distance(
@@ -90,11 +94,11 @@ public class GISUtil {
         }
         return distance;
     }
-    public static String distanceFormat(MapLocation loc1, MapLocation loc2) {
+    public static String distanceFormat(MapPoint loc1, MapPoint loc2) {
         double distance = distance(loc1.getLng(), loc1.getLat(), loc2.getLng(), loc2.getLat());
         return distanceFormat(distance);
     }
-    public static String distanceFormatCn(MapLocation loc1, MapLocation loc2) {
+    public static String distanceFormatCn(MapPoint loc1, MapPoint loc2) {
         double distance = distance(loc1.getLng(), loc1.getLat(), loc2.getLng(), loc2.getLat());
         return distanceFormatCn(distance);
     }
@@ -135,15 +139,15 @@ public class GISUtil {
         return result;
     }
 
-     /**
+     /*
      * WGS-84 GPS坐标（谷歌地图国外）
      * GCJ-02 国测局坐标（谷歌地图国内，高德地图）
      * BD-09 百度坐标（百度地图）
       */
-    /** 地球半径,单位米（北京54 长半轴） */
+    /* 地球半径,单位米（北京54 长半轴） */
     private static final double RADIUS = 6378245;
 
-    /** 扁率 */
+    /* 扁率 */
     private static final double EE = 0.00669342162296594323;
 
     private static final double PI = Math.PI;
@@ -154,7 +158,6 @@ public class GISUtil {
         return bd2gcj(bd_lngLat[0], bd_lngLat[1]);
     }
 
-    /** BD-09 转 GCJ-02 */
     public static double[] bd2gcj(double bd_lng, double bd_lat) {
         double x = bd_lng - 0.0065;
         double y = bd_lat - 0.006;
@@ -169,7 +172,6 @@ public class GISUtil {
         return gcj2bd(lngLat[0], lngLat[1]);
     }
 
-    /** GCJ-02 转 BD-09 */
     public static double[] gcj2bd(double lng, double lat) {
         double z = Math.sqrt(lng * lng + lat * lat) + 0.00002 * Math.sin(lat * X_PI);
         double theta = Math.atan2(lat, lng) + 0.000003 * Math.cos(lng * X_PI);
@@ -188,7 +190,6 @@ public class GISUtil {
         return wgs2gcj(lngLat[0], lngLat[1]);
     }
 
-    /** WGS-84 转 GCJ-02 */
     public static double[] wgs2gcj(double lng, double lat) {
         if (inChina(lng, lat)) {
             double dlat = lat(lng - 105.0, lat - 35.0);
@@ -211,7 +212,6 @@ public class GISUtil {
         return gcj2wgs(lngLat[0], lngLat[1]);
     }
 
-    /** GCJ-02 转 WGS-84 */
     public static double[] gcj2wgs(double lng, double lat) {
         if (inChina(lng, lat)) {
             double dlat = lat(lng - 105.0, lat - 35.0);
@@ -246,9 +246,76 @@ public class GISUtil {
         return ret;
     }
 
-    /** 判断是否在国内，不在国内则不做偏移 */
     public static boolean inChina(double lng, double lat) {
         // 纬度3.86~53.55,经度73.66~135.05
         return (lng > 73.66 && lng < 135.05 && lat > 3.86 && lat < 53.55);
     }
+
+
+    /**
+     * 坐标点是否在多边形内
+     * @param point 检测点
+     * @param points 多边形边界点
+     * @return boolean
+     */
+    public static boolean pnpoly(MapPoint point, List<MapPoint> points) {
+        List<Double> lngs = new ArrayList<>();
+        List<Double> lats = new ArrayList<>();
+        for(MapPoint p:points){
+            lngs.add(p.getLng());
+            lats.add(p.getLat());
+        }
+        return pnpoly(point.getLng(), point.getLat(), lngs, lats);
+    }
+    public static boolean pnpoly(MapPoint point, MapPoint ... points) {
+        List<Double> lngs = new ArrayList<>();
+        List<Double> lats = new ArrayList<>();
+        for(MapPoint p:points){
+            lngs.add(p.getLng());
+            lats.add(p.getLat());
+        }
+        return pnpoly(point.getLng(), point.getLat(), lngs, lats);
+    }
+    /**
+     * 坐标点是否在多边形内
+     * @param lng lng
+     * @param lat lat
+     * @param points 边界点
+     * @return boolean
+     */
+    public static boolean pnpoly(double lng, double lat, List<Double[]> points) {
+        List<Double> lngs = new ArrayList<>();
+        List<Double> lats = new ArrayList<>();
+        for(Double[] point:points){
+            lngs.add(point[0]);
+            lats.add(point[1]);
+        }
+        return pnpoly(lng, lat, lngs, lats);
+    }
+    public static boolean pnpoly(double x, double y, List<Double> xs, List<Double> ys) {
+        if (CollectionUtils.isEmpty(xs) || CollectionUtils.isEmpty(ys)) {
+            return false;
+        }
+        double maxX = xs.stream().max(Comparator.comparingDouble(Double::doubleValue)).get();
+        double maxY = ys.stream().max(Comparator.comparingDouble(Double::doubleValue)).get();
+        double minX = xs.stream().min(Comparator.comparingDouble(Double::doubleValue)).get();
+        double minY = ys.stream().min(Comparator.comparingDouble(Double::doubleValue)).get();
+
+        if (x < minX || x > maxX || y < minY || y > maxY) {
+            return false;
+        }
+        int i, j;
+        boolean result = false;
+        int n = xs.size();
+        Double[] vertx = xs.toArray(new Double[0]);
+        Double[] verty = ys.toArray(new Double[0]);
+        for (i = 0, j = n - 1; i < n; j = i++) {
+            if ((verty[i] > y) != (verty[j] > y) &&
+                    (x < (vertx[j] - vertx[i]) * (y - verty[i]) / (verty[j] - verty[i]) + vertx[i])) {
+                result = !result;
+            }
+        }
+        return result;
+    }
+
 }
