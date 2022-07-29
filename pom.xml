@@ -55,7 +55,7 @@
 		<module>anyline-jdbc-dialect/anyline-jdbc-dm</module>						<!--达梦-->
 		<module>anyline-jdbc-dialect/anyline-jdbc-hgdb</module>						<!--瀚高-->
 		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase</module>					<!--人大金仓-->
-		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase-prostgresql</module>		<!--人大金仓-->
+		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase-postgresql</module>		<!--人大金仓-->
 		<module>anyline-jdbc-dialect/anyline-jdbc-gbasedbt</module>					<!--南大通用-->
 		<module>anyline-jdbc-dialect/anyline-jdbc-oscar</module>					<!--神舟通用-->
 		<module>anyline-jdbc-dialect/anyline-jdbc-cassandra</module>
