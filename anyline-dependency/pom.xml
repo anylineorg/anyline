@@ -82,7 +82,6 @@
 		<pdfbox.version>2.0.25</pdfbox.version>
 		<poi.version>3.17</poi.version>
 	</properties>
-
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -207,7 +206,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-kingbase-prostgresql</artifactId>
+				<artifactId>anyline-jdbc-kingbase-postgresql</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -623,10 +622,24 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
 	<dependencies>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
