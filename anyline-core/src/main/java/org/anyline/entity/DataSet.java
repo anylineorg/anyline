@@ -2484,12 +2484,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param <T>   T
      * @param index index
      * @param clazz clazz
+     * @configs 属性对应关系  name:USER_NAME
      * @return T
      */
-    public <T> T entity(int index, Class<T> clazz) {
+    public <T> T entity(int index, Class<T> clazz, String ... configs) {
         DataRow row = getRow(index);
         if (null != row) {
-            return row.entity(clazz);
+            return row.entity(clazz,configs);
         }
         return null;
     }
