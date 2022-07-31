@@ -946,9 +946,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 转换成对象 
 	 * @param <T>  T
 	 * @param clazz  clazz
+	 * @configs 属性对应关系  name:USER_NAME
 	 * @return T
 	 */ 
-	public <T> T entity(Class<T> clazz){ 
+	public <T> T entity(Class<T> clazz, String ... configs){
 		T entity = null; 
 		if(null == clazz){ 
 			return entity; 
@@ -959,21 +960,34 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 				return entity;
 			}
 		}
-		try { 
-			entity = (T)clazz.newInstance(); 
+		try {
+			entity = (T)clazz.newInstance();
 			/*读取类属性*/ 
 			List<Field> fields = ClassUtil.getFields(clazz);		 
 			for(Field field:fields){
 				if(Modifier.isStatic(field.getModifiers())){
 					continue;
-				} 
-				/*取request参数值*/ 
-//				String column = BeanUtil.getColumn(field, false, false); 
-//				Object value = get(column);
+				}
 				Object value = get(field.getName()); 
 				/*属性赋值*/ 
 				BeanUtil.setFieldValue(entity, field, value); 
-			}//end 自身属性 
+			}//end 自身属性
+
+			if(null != configs){
+				for(String config:configs){
+					String field = config;
+					String column = config;
+					if(config.contains(":")){
+						String[] tmps = config.split(":");
+						if(tmps.length>=2){
+							field = tmps[0];
+							column = tmps[1];
+						}
+					}
+					Object value = get(column);
+					BeanUtil.setFieldValue(entity, field, value);
+				}
+			}
 		} catch (InstantiationException e) { 
 			e.printStackTrace(); 
 		} catch (IllegalAccessException e) { 
