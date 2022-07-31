@@ -1,7 +1,7 @@
 package org.anyline.jdbc.config;
 
-import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
@@ -155,7 +155,7 @@ public class ConfigParser {
 		String config = result.getKey();
 		String className = null;
 		String methodName = null;
-		String regx = "^[a-z]+[0-9a-zA-Z_]*(\\.[a-z]+[0-9a-zA-Z_]*)*\\.[A-Z]+[0-9a-zA-Z_]*\\.[a-z]+\\S+\\(\\S+\\)$";
+		String regx = "^([a-z]+[0-9a-zA-Z_]*(\\.[a-z]+[0-9a-zA-Z_]*)*\\.?[A-Z]+[0-9a-zA-Z_]*\\.?)?[a-z]+\\S+\\(\\S+\\)$";
 		if(RegularUtil.match(config, regx, Regular.MATCH_MODE.MATCH)){
 			//有预处理方法
 
@@ -170,6 +170,16 @@ public class ConfigParser {
 				methodName = classMethod;
 			}
 			config = config.substring(config.indexOf("(")+1,config.indexOf(")"));
+			if(config.contains(",")){
+				String[] tmps = config.split(",");
+				int len = tmps.length;
+				for(int i=1; i<len; i++){
+					String arg = tmps[i];
+					arg.replace("'","").replace("\"","");
+					result.addArg(arg);
+				}
+				config = tmps[0];
+			}
 		}
 		result.setClazz(className);
 		result.setMethod(methodName);
@@ -315,7 +325,10 @@ public class ConfigParser {
 			boolean isKeyEncrypt = parser.isKeyEncrypt();
 			boolean isValueEncrypt = parser.isValueEncrypt();
 
-			if(null != className && null != methodName){
+			if(null != methodName){
+				if(null == className){
+					className = "org.anyline.jdbc.config.DefaultPrepare";
+				}
 				Class clazz = Class.forName(className);
 				Method method = clazz.getMethod(methodName, String.class);
 				if(Config.FETCH_REQUEST_VALUE_TYPE_SINGLE == fetchValueType){
@@ -325,8 +338,30 @@ public class ConfigParser {
 				}else{
 					List<Object> vs = getRuntimeValues(values, key,isKeyEncrypt, isValueEncrypt);
 					for(Object v:vs){
-						v = method.invoke(clazz, v);
-						list.add(v);
+						if(null != v) {
+							v = method.invoke(clazz, v);
+							if(null != v){
+								if(v instanceof Collection){
+									Collection tmps = (Collection) v;
+									for(Object item:tmps){
+										list.add(item);
+									}
+								}
+								if(v instanceof Object[]){
+									Object[] tmps = (Object[]) v;
+									for(Object tmp:tmps){
+										list.add(tmp);
+									}
+								}else{
+									list.add(v);
+								}
+
+							}else{
+								list.add(null);
+							}
+						}else{
+							list.add(null);
+						}
 					}
 				}
 			}else{

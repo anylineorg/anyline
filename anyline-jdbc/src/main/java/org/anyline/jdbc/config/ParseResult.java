@@ -1,18 +1,16 @@
-package org.anyline.jdbc.config; 
- 
-import java.io.Serializable; 
-import java.util.ArrayList; 
-import java.util.List; 
+package org.anyline.jdbc.config;
 
 import org.anyline.jdbc.config.db.Condition;
-import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * id.field:key
  * field:key
  */
-public class ParseResult{
+public class ParseResult {
 	private static final long serialVersionUID = 1L; 
 	public static int FETCH_REQUEST_VALUE_TYPE_SINGLE = 1;	//单值 
 	public static int FETCH_REQUEST_VALUE_TYPE_MULIT  = 2;	//数组 
@@ -22,7 +20,8 @@ public class ParseResult{
 	private String prefix						; //xml定义中的id 或auto sql的表别名
 	private String var						; //实体属性或表列名
 	private String clazz					; //取值后处理类 
-	private String method					; //处理方法 
+	private String method					; //处理方法
+	private List<String> args = new ArrayList<>(); //参数
 	 
 	private String key						; //http key 
 	private boolean isKeyEncrypt			; //key是否加密 
@@ -32,7 +31,7 @@ public class ParseResult{
  
 	private List<ParseResult> defs = new ArrayList<ParseResult>();	//默认值 
 	private ParseResult or = null;	//or 只有value或defs有值时 ors才生效
-	private COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL			; //比较方式			 
+	private COMPARE_TYPE compare = COMPARE_TYPE.EQUAL			; //比较方式
 	private String join = Condition.CONDITION_JOIN_TYPE_AND			; //连接方式 
 	private int paramFetchType = FETCH_REQUEST_VALUE_TYPE_SINGLE	; //request取值方式 
 	 
@@ -141,6 +140,18 @@ public class ParseResult{
 	} 
 	public void setStrictRequired(boolean strictRequired) { 
 		this.strictRequired = strictRequired; 
-	} 
- 
-} 
+	}
+
+
+	public ParseResult addArg(String arg){
+		args.add(arg);
+		return this;
+	}
+	public List<String> getArgs() {
+		return args;
+	}
+
+	public void setArgs(List<String> args) {
+		this.args = args;
+	}
+}
