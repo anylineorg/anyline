@@ -946,7 +946,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	 * 转换成对象 
 	 * @param <T>  T
 	 * @param clazz  clazz
-	 * @configs 属性对应关系  name:USER_NAME
+	 * @param configs 属性对应关系  name:USER_NAME
 	 * @return T
 	 */ 
 	public <T> T entity(Class<T> clazz, String ... configs){

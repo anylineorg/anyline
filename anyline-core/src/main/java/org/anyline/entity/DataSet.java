@@ -2484,7 +2484,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param <T>   T
      * @param index index
      * @param clazz clazz
-     * @configs 属性对应关系  name:USER_NAME
+     * @param configs 属性对应关系  name:USER_NAME
      * @return T
      */
     public <T> T entity(int index, Class<T> clazz, String ... configs) {
@@ -3917,6 +3917,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param strategy 发生异常时执行策略 0:忽略异常继续下一个 1:全部回滚
      * @param exception 发生异常时是否抛出
      * @return DataSet
+     * @throws  Exception Exception
      */
     public DataSet ognl(String key, String formula, Object values, int strategy, boolean exception) throws Exception{
         if(strategy == 0){

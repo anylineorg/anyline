@@ -1151,7 +1151,7 @@ public class DateUtil {
 	 * 期间的月份
 	 * @param fr yyyy-MM 或 yyyy-MM-dd
 	 * @param to yyyy-MM 或 yyyy-MM-dd
-	 * @return
+	 * @return List
 	 */
 	public static List<String> getMonths(String fr, String to){
 		List<String> list = new ArrayList<>();

@@ -114,13 +114,13 @@ public class BasicUtil {
 				return obj1.toString().equals(obj2.toString());
 			}
 		} 
-	} 
- 
-	/** 
-	 * nvl 取第一个不为null的值,没有符合条件的 则返回null 
-	 *
-	 * @param values  values
-	 * @return Object
+	}
+
+	/**
+	 * nvl 取第一个不为null的值,没有符合条件的 则返回null
+	 * @param values values
+	 * @return T
+	 * @param <T> T
 	 */
 	public static <T> T nvl(T... values) {
 		if (null == values) {
@@ -140,6 +140,7 @@ public class BasicUtil {
 	 * 与nvl区别 : ""不符合evl条件 但符合nvl条件  
 	 * @param recursion  recursion
 	 * @param values  values
+	 * @param <T> T
 	 * @return Object
 	 */ 
 	public static <T> T evl(boolean recursion, T... values) {
