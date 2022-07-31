@@ -131,6 +131,10 @@ public class BeanUtil {
 					v = new BigDecimal(value.toString());
 				}else if(type.equals("byte")){
 					v = Byte.parseByte(value.toString());
+				}else if(type.equals("date")){
+					v = DateUtil.parse(v);
+				}else if(type.equals("string")){
+					v = v.toString();
 				}
 			}else{
 				if(type.equals("int")
