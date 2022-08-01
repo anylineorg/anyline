@@ -2345,6 +2345,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public List<DataSet> split(int page){
         List<DataSet> list = new ArrayList<>();
         int size = this.size();
+        if(page <=0 ){
+            page = 1;
+        }
         int vol = (size-1) / page + 1;//每页多少行
         for(int i=0; i<page; i++){
             int fr = i*vol;
