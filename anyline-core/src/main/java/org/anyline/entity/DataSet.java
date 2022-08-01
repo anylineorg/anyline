@@ -2337,7 +2337,17 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return round(key, key, scale, mode);
     }
 
+
     /**
+     * 每页最少1行,最少分1页，最多分DataSet.size()页
+     * 多余的从第1页开始追加
+     * 5行分2页:共分成2页(3+2)
+     * 5行分3页:共分成3页(2+2+1)
+     * 10行分3页:共分成3页(4+3+3)
+     * 10行分6页:共分成6页(2+2+2+2+1+1)
+     * 5行分0页:共分成1页(5)
+     * 2行分3页:共分成2页(1+1)
+     *
      * DataSet拆分成size部分
      * @param page 拆成多少部分
      * @return list
@@ -2348,15 +2358,25 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if(page <=0 ){
             page = 1;
         }
-        int vol = (size-1) / page + 1;//每页多少行
+        if(page > size){
+            page = size;
+        }
+        int vol = size / page;//每页多少行
+        int dif = size - vol*page;
+        int fr = 0;
+        int to = 0;
         for(int i=0; i<page; i++){
-            int fr = i*vol;
-            int to = (i+1)*vol-1;
-            if(i == page-1){
+            to = fr + vol-1;
+            if(dif > 0){
+                to ++;
+                dif --;
+            }
+            if(to >= size){
                 to = size-1;
             }
             DataSet set = this.cuts(fr, to);
             list.add(set);
+            fr = to +1;
         }
         return list;
     }
