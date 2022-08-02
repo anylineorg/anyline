@@ -26,7 +26,7 @@ public class SMSUtil {
 	private static Hashtable<String,SMSUtil> instances = new Hashtable<String,SMSUtil>();
 
 	public Template template= new SMSUtil.Template();
-
+	private SMSListener listener;
  
     //产品名称:云通信短信API产品,开发者无需替换 
     static final String product = "Dysmsapi"; 
@@ -51,6 +51,7 @@ public class SMSUtil {
 					cfg.setAccessKeyId(config.ACCESS_KEY);
 					cfg.setAccessKeySecret(config.ACCESS_SECRET);
 					cfg.endpoint = endpoint;
+					util.listener = SMSBean.getListener();
 					util.client = new Client(cfg);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -72,7 +73,10 @@ public class SMSUtil {
 	 * @return SMSResult
 	 */
 	public SMSResult send(String sign, String template, String extend, String out, String mobile, Map<String, String> params) {
-		SMSResult result = new SMSResult(); 
+		SMSResult result = new SMSResult();
+		if(null != listener && !listener.before(config.INSTANCE_KEY, sign, template, extend, out, mobile, params)){
+			return result;
+		}
 		try { 
 			if(BasicUtil.isEmpty(sign)){ 
 				sign = config.SIGN; 
@@ -101,7 +105,10 @@ public class SMSUtil {
 			e.printStackTrace();
 			result.setResult(false);
 			result.setMsg(e.getMessage());
-		} 
+		}
+		if(null != listener){
+			listener.after(result, config.INSTANCE_KEY, sign, template, extend, out, mobile, params);
+		}
 		return result; 
 	}
 

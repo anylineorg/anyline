@@ -2,6 +2,7 @@ package org.anyline.aliyun.sms.util;
 
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,15 @@ public class SMSBean implements InitializingBean {
     private String SIGN;
 
 
+    public static SMSListener listener;
+
+    @Autowired(required=false)
+    public void setListener(SMSListener listener){
+        SMSBean.listener = listener;
+    }
+    public static SMSListener getListener(){
+        return listener;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
