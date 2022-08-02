@@ -2354,7 +2354,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public List<DataSet> split(int page){
         List<DataSet> list = new ArrayList<>();
-        int size = this.size();
+        int size = size();
         if(page <=0 ){
             page = 1;
         }
@@ -2374,13 +2374,36 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if(to >= size){
                 to = size-1;
             }
-            DataSet set = this.cuts(fr, to);
+            DataSet set = cuts(fr, to);
             list.add(set);
             fr = to +1;
         }
         return list;
     }
 
+    /**
+     * 分页
+     * @param vol 每页多少行
+     * @return List
+     */
+    public List<DataSet> page(int vol){
+        List<DataSet> list = new ArrayList<>();
+        if(vol <= 0){
+            vol = 1;
+        }
+        int size = size();
+        int page = (size-1) / vol + 1;
+        for(int i=0; i<page; i++){
+            int fr = i*vol;
+            int to = (i+1)*vol-1;
+            if(i == page-1){
+                to = size-1;
+            }
+            DataSet set = cuts(fr, to);
+            list.add(set);
+        }
+        return list;
+    }
     /**
      * rows 列表中的数据格式化成json格式   不同与toJSON
      * map.put("type", "list");
