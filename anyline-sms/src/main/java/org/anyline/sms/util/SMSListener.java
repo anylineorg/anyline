@@ -1,4 +1,4 @@
-package org.anyline.aliyun.sms.util;
+package org.anyline.sms.util;
 
 import org.anyline.sms.entity.SMSResult;
 
@@ -8,6 +8,7 @@ public interface SMSListener {
 
     /**
      * 发送短信
+     * @param instance 实例KEY
      * @param sign 签名(如果不指定则使用配置文件中默认签名)
      * @param template 模板code(SMS_88550009,注意不要写成工单号)
      * @param mobile 手机号，多个以逗号分隔

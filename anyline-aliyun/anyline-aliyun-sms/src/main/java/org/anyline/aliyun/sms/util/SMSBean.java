@@ -1,5 +1,6 @@
 package org.anyline.aliyun.sms.util;
 
+import org.anyline.sms.util.SMSListener;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
