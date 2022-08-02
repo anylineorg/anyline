@@ -1,4 +1,4 @@
-package org.anyline.entity;
+package org.anyline.entity.adapter;
 
 public interface KeyAdapter {
     public static enum KEY_CASE{
@@ -22,4 +22,19 @@ public interface KeyAdapter {
         public abstract String getCode();
     }
     public String key(String key);
+    public KEY_CASE getKeyCase();
+    public static KeyAdapter parse(KEY_CASE keyCase){
+        KeyAdapter keyAdapter;
+        switch (keyCase) {
+            case UPPER:
+                keyAdapter = UpperKeyAdapter.getInstance();
+                break;
+            case LOWER:
+                keyAdapter = LowerKeyAdapter.getInstance();
+                break;
+            default:
+                keyAdapter = SrcKeyAdapter.getInstance();
+        }
+        return keyAdapter;
+    }
 }

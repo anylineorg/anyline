@@ -19,10 +19,11 @@
 
 package org.anyline.jdbc.config.db.impl;
 
- 
+
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQLCreater;
@@ -53,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.anyline.entity.KeyAdapter.KEY_CASE;
 
 
 /**
@@ -301,7 +301,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
 			String pk = row.getPrimaryKey();
 			if(null == pk){
-				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 			}
 			row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 		}
@@ -403,7 +403,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
 				String pk = row.getPrimaryKey();
 				if(null == pk){
-					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 				}
 				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 			}

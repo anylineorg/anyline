@@ -111,7 +111,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			}else{ 
 				//2005 及以上 
 				if(BasicUtil.isEmpty(order)){ 
-					order = "ORDER BY "+ ConfigTable.getString("DEFAULT_PRIMARY_KEY"); 
+					order = "ORDER BY "+ ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 				} 
 				builder.append("SELECT "+cols+" FROM( \n"); 
 				builder.append("SELECT _TAB_I.* ,ROW_NUMBER() OVER(") 

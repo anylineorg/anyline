@@ -1,7 +1,8 @@
 package org.anyline.entity;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import org.anyline.entity.KeyAdapter.KEY_CASE;
+import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
+import org.anyline.entity.operator.*;
 import org.anyline.util.*;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
@@ -660,7 +661,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @return DataSet
      */
     public DataSet getRows(int begin, int qty, String... params) {
-        DataSet set = new DataSet();
         Map<String, String> kvs = new HashMap<String, String>();
         int len = params.length;
         int i = 0;
@@ -708,6 +708,106 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return getRows(begin, qty, map);
     }
+    public DataSet getRows(int begin, int qty, Map<String, String> kvs) {
+        DataSet set = new DataSet();
+        if(rows.size() ==0){
+            return set;
+        }
+        String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
+        Map<String,Compare> compares = new HashMap<>();
+
+        for (String k : kvs.keySet()) {
+            // k(ID) , v(>=10)(%A%)
+            String v = kvs.get(k);
+            if (null != v)   {
+                //与SQL.COMPARE_TYPE保持一致
+                Compare compare = new Equal(v);
+                if (v.startsWith("=")) {
+                    v = v.substring(1);
+                    compare = new Equal(v);
+                } else if (v.startsWith(">")) {
+                    v = v.substring(1);
+                    compare = new Big(v);
+                } else if (v.startsWith(">=")) {
+                    v = v.substring(2);
+                    compare = new BigEqual(v);
+                } else if (v.startsWith("<")) {
+                    v = v.substring(1);
+                    compare = new Less(v);
+                } else if (v.startsWith("<=")) {
+                    v = v.substring(2);
+                    compare = new LessEqual(v);
+                } else if (v.startsWith("%") && v.endsWith("%")) {
+                    v = v.substring(1, v.length() - 1);
+                    compare = new Like(v);
+                } else if (v.endsWith("%")) {
+                    v = v.substring(0, v.length() - 1);
+                    compare = new EndWith(v);
+                } else if (v.startsWith("%")) {
+                    v = v.substring(1);
+                    compare = new StartWith(v);
+                }
+                compares.put(k, compare);
+            }
+        }
+        for (DataRow row:rows) {
+            if(row.skip){
+                continue;
+            }
+            boolean chk = true;//对比结果
+            for (String k : kvs.keySet()) {
+                boolean srcFlag = false;
+                if (k.endsWith(srcFlagTag)) {
+                    continue;
+                } else {
+                    String srcFlagValue = kvs.get(k + srcFlagTag);
+                    if (BasicUtil.isNotEmpty(srcFlagValue)) {
+                        srcFlag = true;
+                    }
+                }
+                Object value = row.get(k);
+                String v = kvs.get(k);
+                if(!row.containsKey(k) && null == value){
+                    //注意这里有可能是个复合key
+                    chk = false;
+                    break;
+                }
+
+                if (null == v) {
+                    if (null != value) {
+                        chk = false;
+                        break;
+                    }else{
+                        continue;
+                    }
+                } else {
+                    if (null == value) {
+                        chk = false;
+                        break;
+                    }
+                    Compare compare = compares.get(k);
+                    if(null != compare) {
+                        if (srcFlag) {
+                            v = "${" + v + "}";
+                            compare.setValue(v);
+                        }
+                        if(!compare.compare(value)) {
+                            chk = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (chk) {
+                set.add(row);
+                if (qty > 0 && set.size() >= qty) {
+                    break;
+                }
+            }
+        }//end for rows
+        set.cloneProperty(this);
+        return set;
+    }/*
     public DataSet getRows(int begin, int qty, Map<String, String> kvs) {
         DataSet set = new DataSet();
         String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
@@ -849,7 +949,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }//end for rows
         set.cloneProperty(this);
         return set;
-    }
+    }*/
     public DataSet getRows(int begin, String... params) {
         return getRows(begin, -1, params);
     }
@@ -2600,7 +2700,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         List<String> list = BeanUtil.merge(fixs, keys);
         if (list.size() == 0) {
-            list.add(ConfigTable.getString("DEFAULT_PRIMARY_KEY"));
+            list.add(ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID"));
         }
         int size = set.size();
         for (int i = 0; i < size; i++) {
@@ -2743,7 +2843,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             throw new RuntimeException("未指定对应关系");
         }
         if (BasicUtil.isEmpty(field)) {
-            field = "ITEMS";
+            field = "items";
         }
         for (DataRow row : rows) {
             if (null == row.get(field)) {

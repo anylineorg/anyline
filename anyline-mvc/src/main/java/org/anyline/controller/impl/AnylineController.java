@@ -20,7 +20,6 @@ package org.anyline.controller.impl;
  
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.EntityAdapter;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.TableBuilder;
@@ -45,7 +44,7 @@ import javax.servlet.http.HttpSession;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import org.anyline.entity.KeyAdapter.KEY_CASE;
+import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
  
 public class AnylineController extends AbstractBasicController { 
  

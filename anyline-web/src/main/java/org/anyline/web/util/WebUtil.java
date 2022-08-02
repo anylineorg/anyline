@@ -21,7 +21,7 @@ package org.anyline.web.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.KeyAdapter.KEY_CASE;
+import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.util.*;

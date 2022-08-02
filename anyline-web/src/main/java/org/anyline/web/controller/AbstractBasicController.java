@@ -20,7 +20,7 @@
 package org.anyline.web.controller;
 
 import org.anyline.entity.*;
-import org.anyline.entity.KeyAdapter.KEY_CASE;
+import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;

@@ -110,7 +110,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 			if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
 				String pk = row.getPrimaryKey();
 				if(null == pk){
-					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY");
+					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 				}
 				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 			}
