@@ -290,7 +290,7 @@ public class SMSUtil {
 		 * @param name 名称
 		 * @param type 0:验证码 1:通知短信 2:推广短信
 		 * @param content 内容,如果type=1内容中需要有变量,如:${code}
-		 * @param remark
+		 * @param remark 备注
 		 * @return 返回模板编号 SMS_000000
 		 * @throws RuntimeException RuntimeException
 		 */
