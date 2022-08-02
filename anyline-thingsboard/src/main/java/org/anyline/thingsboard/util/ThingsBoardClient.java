@@ -69,7 +69,7 @@ public class ThingsBoardClient extends RestClient {
      *             ,{"ts":1634712287000,"values":{"temperature":26, "humidity":87}}
      *             ,{"ts":1634712287000,"values":{"temperature":26, "humidity":87}}
      *           ]
-     * @return
+     * @return boolean
      */
     public boolean saveEntityTelemetry(EntityType type, String id, String scope, Long ttl, List<Map<?,?>> maps) {
         String url = baseURL + "/api/plugins/telemetry/{type}/{id}/timeseries/{scope}";
@@ -95,7 +95,7 @@ public class ThingsBoardClient extends RestClient {
      * @param ttl 生存时间   如果不需要可以设置成0或null 一般是调用其他不带ttl的重载
      * @param values json结构的数据 {"temperature":26, "humidity":87}
      *         ts与values合成最终参数  {"ts":1634712287000,"values":{"temperature":26, "humidity":87}}
-     * @return
+     * @return boolean
      */
     public boolean saveEntityTelemetry(EntityType type, String id, String scope, Long ttl, Long ts, Map<?,?> values) {
         Map<String,Object> map = new HashMap<>();
