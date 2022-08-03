@@ -18,7 +18,9 @@ public class QQMapUtil {
     public QQMapConfig config = null;
     private static Hashtable<String, QQMapUtil> instances = new Hashtable<>();
 
-
+    public static Hashtable<String, QQMapUtil> getInstances(){
+        return instances;
+    }
     public QQMapConfig getConfig(){
         return config;
     }

@@ -1,20 +1,27 @@
-package org.anyline.qq.mp.util; 
- 
-import java.net.URLEncoder; 
-import java.util.Hashtable; 
- 
-import org.anyline.entity.DataRow; 
-import org.anyline.net.HttpUtil; 
-import org.anyline.util.BasicUtil; 
-import org.anyline.util.ConfigTable; 
-import org.anyline.util.regular.RegularUtil; 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+package org.anyline.qq.mp.util;
+
+import org.anyline.entity.DataRow;
+import org.anyline.net.HttpUtil;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
+import org.anyline.util.regular.RegularUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.net.URLEncoder;
+import java.util.Hashtable;
  
 public class QQMPUtil { 
 	private static final Logger log = LoggerFactory.getLogger(QQMPUtil.class); 
 	private static Hashtable<String,QQMPUtil> instances = new Hashtable<String,QQMPUtil>(); 
-	private QQMPConfig config = null; 
+	private QQMPConfig config = null;
+
+
+	public static Hashtable<String, QQMPUtil> getInstances(){
+		return instances;
+	}
+
+
 	public static QQMPUtil getInstance(){ 
 		return getInstance(QQMPConfig.DEFAULT_INSTANCE_KEY);
 	} 

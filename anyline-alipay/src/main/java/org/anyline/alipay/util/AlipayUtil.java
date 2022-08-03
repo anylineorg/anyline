@@ -34,8 +34,11 @@ public class AlipayUtil {
 				config.getString("ALIPAY_PUBLIC_KEY"),
 				config.getString("SIGN_TYPE"));
 	}
-	private static Hashtable<String, AlipayUtil> instances = new Hashtable<String, AlipayUtil>(); 
+	private static Hashtable<String, AlipayUtil> instances = new Hashtable<String, AlipayUtil>();
 
+	public static Hashtable<String, AlipayUtil> getInstances(){
+		return instances;
+	}
 
 	public static AlipayUtil getInstance() { 
 		return getInstance(AlipayConfig.DEFAULT_INSTANCE_KEY);

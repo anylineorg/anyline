@@ -35,6 +35,9 @@ public class MinioUtil {
                 .build();
 
     }
+    public static Hashtable<String, MinioUtil> getInstances(){
+        return instances;
+    }
 
     public static MinioUtil getInstance() {
         return getInstance(MinioConfig.DEFAULT_INSTANCE_KEY);

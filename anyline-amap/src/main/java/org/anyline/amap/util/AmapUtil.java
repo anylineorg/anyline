@@ -18,6 +18,9 @@ public class AmapUtil {
 	public AmapConfig config = null;
 	private static Hashtable<String, AmapUtil> instances = new Hashtable<>();
 
+	public static Hashtable<String, AmapUtil> getInstances(){
+		return instances;
+	}
 
 	public AmapConfig getConfig(){
 		return config;

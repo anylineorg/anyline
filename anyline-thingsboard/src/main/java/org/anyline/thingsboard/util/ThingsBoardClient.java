@@ -31,6 +31,9 @@ public class ThingsBoardClient extends RestClient {
 
 
 
+    public static Hashtable<String, ThingsBoardClient> getInstances(){
+        return instances;
+    }
 
     public static ThingsBoardClient getInstance(){
         return getInstance(ThingsBoardConfig.DEFAULT_INSTANCE_KEY);

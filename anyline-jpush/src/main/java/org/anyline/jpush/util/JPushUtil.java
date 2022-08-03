@@ -1,30 +1,32 @@
-package org.anyline.jpush.util; 
- 
-import java.util.HashMap; 
-import java.util.Hashtable; 
-import java.util.List; 
-import java.util.Map;
+package org.anyline.jpush.util;
 
+import cn.jiguang.common.ClientConfig;
+import cn.jpush.api.JPushClient;
+import cn.jpush.api.push.PushResult;
+import cn.jpush.api.push.model.Message;
+import cn.jpush.api.push.model.Options;
+import cn.jpush.api.push.model.Platform;
+import cn.jpush.api.push.model.PushPayload;
+import cn.jpush.api.push.model.audience.Audience;
+import cn.jpush.api.push.model.audience.AudienceTarget;
+import cn.jpush.api.push.model.notification.Notification;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 
-import cn.jiguang.common.ClientConfig; 
-import cn.jpush.api.JPushClient; 
-import cn.jpush.api.push.PushResult; 
-import cn.jpush.api.push.model.Message; 
-import cn.jpush.api.push.model.Options; 
-import cn.jpush.api.push.model.Platform; 
-import cn.jpush.api.push.model.PushPayload; 
-import cn.jpush.api.push.model.audience.Audience; 
-import cn.jpush.api.push.model.audience.AudienceTarget; 
-import cn.jpush.api.push.model.notification.Notification; 
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
  
 public class JPushUtil { 
  
 	private JPushConfig config = null; 
 	private static Hashtable<String,JPushUtil> instances = new Hashtable<String,JPushUtil>(); 
-	private JPushClient client; 
-	 
+	private JPushClient client;
+
+	public static Hashtable<String, JPushUtil> getInstances(){
+		return instances;
+	}
 	public static JPushUtil getInstance(){ 
 		return getInstance(AnylineConfig.DEFAULT_INSTANCE_KEY);
 	} 

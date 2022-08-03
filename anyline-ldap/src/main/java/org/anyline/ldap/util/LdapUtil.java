@@ -13,8 +13,10 @@ import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.*;
 import javax.naming.ldap.InitialLdapContext;
-import javax.naming.ldap.LdapContext;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 public class LdapUtil {
  	private static Logger log = LoggerFactory.getLogger(LdapUtil.class);
@@ -23,6 +25,9 @@ public class LdapUtil {
 	private DirContext dc = null;
 	private static Hashtable<String, LdapUtil> instances = new Hashtable<String, LdapUtil>();
 
+	public static Hashtable<String, LdapUtil> getInstances(){
+		return instances;
+	}
 
 	public static LdapUtil getInstance(){
 		return getInstance(LdapConfig.DEFAULT_INSTANCE_KEY);

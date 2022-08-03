@@ -50,6 +50,11 @@ public class WechatPayUtil {
     private WechatPayConfig config = null;
 
     private static Hashtable<String, WechatPayUtil> instances = new Hashtable<String, WechatPayUtil>();
+
+    public static Hashtable<String, WechatPayUtil> getInstances(){
+        return instances;
+    }
+
     public static WechatPayUtil getInstance(){
         return getInstance(WechatPayConfig.DEFAULT_INSTANCE_KEY);
     }

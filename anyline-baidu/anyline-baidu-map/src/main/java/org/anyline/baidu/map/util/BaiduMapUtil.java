@@ -14,6 +14,9 @@ public class BaiduMapUtil {
     public BaiduMapConfig config = null;
     private static Hashtable<String, BaiduMapUtil> instances = new Hashtable<>();
 
+    public static Hashtable<String, BaiduMapUtil> getInstances(){
+        return instances;
+    }
 
     public BaiduMapConfig getConfig(){
         return config;

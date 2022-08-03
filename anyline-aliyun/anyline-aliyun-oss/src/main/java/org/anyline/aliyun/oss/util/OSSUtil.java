@@ -32,6 +32,9 @@ public class OSSUtil {
         client = new OSSClient(config.ENDPOINT, config.ACCESS_ID, config.ACCESS_SECRET);
     }
 
+	public static Hashtable<String, OSSUtil> getInstances(){
+		return instances;
+	}
 	public static OSSUtil getInstance() {
 		return getInstance(OSSConfig.DEFAULT_INSTANCE_KEY);
 	}

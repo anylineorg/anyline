@@ -16,7 +16,7 @@
  *
  */
 package org.anyline.wechat.wap.util;
- 
+
 import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.wechat.entity.WechatAuthInfo;
@@ -42,7 +42,10 @@ public class WechatWapUtil {
 		WechatWapConfig conf = WechatWapConfig.parse(key, config);
 		this.config = conf; 
 		instances.put(key, this); 
-	} 
+	}
+	public static Hashtable<String, WechatWapUtil> getInstances(){
+		return instances;
+	}
 	public static WechatWapUtil getInstance(){
 		return getInstance(WechatWapConfig.DEFAULT_INSTANCE_KEY);
 	} 

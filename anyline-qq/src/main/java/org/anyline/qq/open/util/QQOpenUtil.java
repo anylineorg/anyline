@@ -1,27 +1,30 @@
-package org.anyline.qq.open.util; 
+package org.anyline.qq.open.util;
 
-import java.util.Base64;
-import java.util.Hashtable;
-import java.util.Map; 
- 
-import javax.crypto.Mac; 
-import javax.crypto.SecretKey; 
-import javax.crypto.spec.SecretKeySpec; 
- 
-import org.anyline.entity.DataRow; 
-import org.anyline.net.HttpUtil; 
-import org.anyline.net.SimpleHttpUtil; 
-import org.anyline.qq.open.entity.QQPayTradeOrder; 
+import org.anyline.entity.DataRow;
+import org.anyline.net.HttpUtil;
+import org.anyline.net.SimpleHttpUtil;
+import org.anyline.qq.open.entity.QQPayTradeOrder;
 import org.anyline.qq.open.entity.QQPayTradeResult;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.util.Hashtable;
+import java.util.Map;
  
 public class QQOpenUtil{ 
 	private static final Logger log = LoggerFactory.getLogger(QQOpenUtil.class); 
 	private static Hashtable<String,QQOpenUtil> instances = new Hashtable<String,QQOpenUtil>(); 
-	private QQOpenConfig config = null; 
+	private QQOpenConfig config = null;
+
+	public static Hashtable<String, QQOpenUtil> getInstances(){
+		return instances;
+	}
+
 	public static QQOpenUtil getInstance(){ 
 		return getInstance(QQOpenConfig.DEFAULT_INSTANCE_KEY);
 	} 

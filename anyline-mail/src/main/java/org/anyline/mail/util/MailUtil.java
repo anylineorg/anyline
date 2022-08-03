@@ -21,7 +21,12 @@ public class MailUtil {
 
 	public MailConfig getConfig(){ 
 		return config; 
-	} 
+	}
+
+	public static Hashtable<String, MailUtil> getInstances(){
+		return instances;
+	}
+
 	public static MailUtil getInstance() { 
 		return getInstance(MailConfig.DEFAULT_INSTANCE_KEY);
 	} 

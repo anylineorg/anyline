@@ -47,8 +47,13 @@ public class WechatOpenUtil {
 		WechatOpenUtil util = new WechatOpenUtil(conf);
 		instances.put(key, util); 
 		return util; 
-	} 
-	 
+	}
+
+
+	public static Hashtable<String, WechatOpenUtil> getInstances(){
+		return instances;
+	}
+
 	public static WechatOpenUtil getInstance(){
 		return getInstance(WechatOpenConfig.DEFAULT_INSTANCE_KEY);
 	} 

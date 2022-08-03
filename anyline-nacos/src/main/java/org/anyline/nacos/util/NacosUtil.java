@@ -25,7 +25,6 @@ import com.alibaba.nacos.api.exception.NacosException;
 import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.lang.reflect.Method;
@@ -47,6 +46,10 @@ public class NacosUtil {
 		if(null != util){
 			util.scan();
 		}
+	}
+
+	public static Hashtable<String, NacosUtil> getInstances(){
+		return instances;
 	}
 
 	public void scan(){

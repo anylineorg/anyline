@@ -33,7 +33,10 @@ public class SMSUtil {
     static final String product = "Dysmsapi"; 
     //产品域名,开发者无需替换 
     static final String endpoint = "dysmsapi.aliyuncs.com";
-     
+
+	public static Hashtable<String, SMSUtil> getInstances(){
+		return instances;
+	}
 	public static SMSUtil getInstance(){ 
 		return getInstance(SMSConfig.DEFAULT_INSTANCE_KEY);
 	} 

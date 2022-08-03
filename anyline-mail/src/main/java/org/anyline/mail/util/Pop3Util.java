@@ -43,6 +43,10 @@ public class Pop3Util {
 		return config;
 	}
 
+	public static Hashtable<String, Pop3Util> getInstances(){
+		return instances;
+	}
+
 	public static Pop3Util getInstance() {
 		return getInstance(MailConfig.DEFAULT_INSTANCE_KEY);
 	}

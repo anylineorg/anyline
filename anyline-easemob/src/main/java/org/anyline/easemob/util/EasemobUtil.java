@@ -31,8 +31,11 @@ public class EasemobUtil {
 //	private static final String host = EasemobConfig.HOST; 
 //	 
 	private String baseUrl =""; 
-	private String access_token = null; 
- 
+	private String access_token = null;
+
+	public static Hashtable<String, EasemobUtil> getInstances(){
+		return instances;
+	}
  
 	public static EasemobUtil getInstance(){ 
 		return getInstance(EasemobConfig.DEFAULT_INSTANCE_KEY);
