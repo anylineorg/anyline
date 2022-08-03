@@ -39,6 +39,7 @@
 		<module>anyline-aliyun/anyline-aliyun-oss</module>
 		<module>anyline-aliyun/anyline-aliyun-sms</module>
 		<module>anyline-amap</module>
+		<module>anyline-baidu/anyline-baidu-map</module>
 		<module>anyline-easemob</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-db2</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-mssql</module>
