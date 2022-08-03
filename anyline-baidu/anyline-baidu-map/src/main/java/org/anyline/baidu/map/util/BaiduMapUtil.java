@@ -54,7 +54,7 @@ public class BaiduMapUtil {
             }else{
                 point = new MapPoint(lng, lat);
                 point.setAddress(row.getString("formatted_address"));
-                DataRow adr = row.getRow("addressComponent");
+                DataRow adr = row.getRow("result","addressComponent");
                 if(null != adr) {
                     String adcode = adr.getString("adcode");
                     String provinceCode = adcode.substring(0,2);

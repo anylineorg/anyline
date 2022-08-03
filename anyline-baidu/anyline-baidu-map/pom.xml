@@ -13,7 +13,7 @@
 
     <artifactId>anyline-baidu-map</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-amap</name>
+    <name>anyline-baidu-map</name>
     <url>http://www.anyline.org/baidu/map</url>
 
     <dependencies>
