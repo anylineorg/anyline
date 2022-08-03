@@ -77,6 +77,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String CHILDREN = "CHILDREN"; //子数据
     public static String PRIMARY_KEY = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
     public static String ITEMS = "ITEMS";
+    public static KEY_CASE DEFAULT_KEY_KASE = KEY_CASE.CONFIG;
     private DataSet container = null; //包含当前对象的容器
 
     private List<String> primaryKeys = new ArrayList<>(); //主键
@@ -102,7 +103,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     private KeyAdapter keyAdapter = null;
 
-    //private KEY_CASE keyCase 				= KEY_CASE.CONFIG				; //列名格式
+    private KEY_CASE keyCase 				= DEFAULT_KEY_KASE				; //列名格式
 
     public DataRow() {
         parseKeycase(null);
@@ -114,16 +115,20 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     private void parseKeycase(KEY_CASE keyCase) {
+        if(null == keyCase){
+            keyCase = this.keyCase;
+        }
         if (null != keyCase) {
             keyAdapter = KeyAdapter.parse(keyCase);
-        } else {
-            if (ConfigTable.IS_UPPER_KEY) {
-                keyAdapter = UpperKeyAdapter.getInstance();
-            } else if (ConfigTable.IS_LOWER_KEY) {
-                keyAdapter = LowerKeyAdapter.getInstance();
-            } else {
-                keyAdapter = SrcKeyAdapter.getInstance();
+            if(keyCase == KEY_CASE.CONFIG){
+                if (ConfigTable.IS_UPPER_KEY) {
+                    keyAdapter = UpperKeyAdapter.getInstance();
+                } else if (ConfigTable.IS_LOWER_KEY) {
+                    keyAdapter = LowerKeyAdapter.getInstance();
+                }
             }
+        } else {
+            keyAdapter = SrcKeyAdapter.getInstance();
         }
 
     }
@@ -1097,6 +1102,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow put(KEY_CASE keyCase, String key, Object value){
         return put(true, keyCase, key, value);
     }
+    public DataRow put(boolean checkUpdate,String key, Object value){
+        return put(checkUpdate, null, key, value);
+    }
 
     public DataRow put(boolean checkUpdate, KEY_CASE keyCase, String key, Object value) {
         KeyAdapter keyAdapter = this.keyAdapter;
@@ -1133,19 +1141,23 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param keyCase keyCase
      * @param key key
      * @param value value
+     * @param checkUpdate 检测是否需要更新
      * @param pk        是否是主键 pk		是否是主键
      * @param override    是否覆盖之前的主键(追加到primaryKeys) 默认覆盖(单一主键)
      * @return DataRow
      */
-    public DataRow put(KEY_CASE keyCase, String key, Object value, boolean pk, boolean override) {
+    public DataRow put(boolean checkUpdate, KEY_CASE keyCase, String key, Object value, boolean pk, boolean override) {
         if (pk) {
             if (override) {
                 primaryKeys.clear();
             }
             addPrimaryKey(key);
         }
-        put(keyCase, key, value);
+        put(checkUpdate, keyCase, key, value);
         return this;
+    }
+    public DataRow put(KEY_CASE keyCase, String key, Object value, boolean pk, boolean override) {
+       return put(true, keyCase, key, value, pk, override);
     }
 
     public DataRow put(String key, Object value, boolean pk, boolean override) {
