@@ -47,13 +47,13 @@ public class AmapUtil {
 	 * 添加记录 
 	 * @param name  name
 	 * @param loctype 1:经纬度 2:地址 
-	 * @param lon  lon
-	 * @param lat  lat
+	 * @param lng 经度
+	 * @param lat 纬度
 	 * @param address  address
 	 * @param extras  extras
 	 * @return String
 	 */ 
-	public String create(String name, int loctype, String lon, String lat, String address, Map<String, Object> extras){ 
+	public String create(String name, int loctype, String lng, String lat, String address, Map<String, Object> extras){ 
 		String url = "http://yuntuapi.amap.com/datamanage/data/create"; 
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("key", config.KEY);
@@ -71,8 +71,8 @@ public class AmapUtil {
 			} 
 		} 
 		data.put("_name", name); 
-		if(BasicUtil.isNotEmpty(lon) && BasicUtil.isNotEmpty(lat)){ 
-			data.put("_location", lon+","+lat); 
+		if(BasicUtil.isNotEmpty(lng) && BasicUtil.isNotEmpty(lat)){ 
+			data.put("_location", lng+","+lat); 
 		} 
 		if(BasicUtil.isNotEmpty(address)){ 
 			data.put("_address", address); 
@@ -99,20 +99,20 @@ public class AmapUtil {
 		} 
 		return id; 
 	} 
-	public String create(String name, String lon, String lat, String address, Map<String,Object> extras){ 
-		return create(name, 1, lon, lat, address, extras); 
+	public String create(String name, String lng, String lat, String address, Map<String,Object> extras){ 
+		return create(name, 1, lng, lat, address, extras); 
 	} 
-	public String create(String name, String lon, String lat, Map<String,Object> extras){ 
-		return create(name, 1, lon, lat, null, extras); 
+	public String create(String name, String lng, String lat, Map<String,Object> extras){ 
+		return create(name, 1, lng, lat, null, extras); 
 	} 
-	public String create(String name, int loctype, String lon, String lat, String address){ 
-		return create(name, loctype, lon, lat, address, null); 
+	public String create(String name, int loctype, String lng, String lat, String address){ 
+		return create(name, loctype, lng, lat, address, null); 
 	} 
-	public String create(String name, String lon, String lat, String address){ 
-		return create(name, lon, lat, address, null); 
+	public String create(String name, String lng, String lat, String address){ 
+		return create(name, lng, lat, address, null); 
 	} 
-	public String create(String name, String lon, String lat){ 
-		return create(name, lon, lat, null, null); 
+	public String create(String name, String lng, String lat){ 
+		return create(name, lng, lat, null, null); 
 	} 
 	public String create(String name, String address){ 
 		return create(name, null, null, address); 
@@ -195,13 +195,13 @@ public class AmapUtil {
 	 * @param id  id
 	 * @param name  name
 	 * @param loctype  loctype
-	 * @param lon  lon
-	 * @param lat  lat
+	 * @param lng 经度
+	 * @param lat 纬度
 	 * @param address  address
 	 * @param extras  extras
 	 * @return int 0:更新失败,没有对应的id  1:更新完成  -1:异常
 	 */ 
-	public int update(String id, String name, int loctype, String lon, String lat, String address, Map<String,Object> extras){ 
+	public int update(String id, String name, int loctype, String lng, String lat, String address, Map<String,Object> extras){ 
 		int cnt = 0; 
 		String url = "http://yuntuapi.amap.com/datamanage/data/update"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
@@ -220,8 +220,8 @@ public class AmapUtil {
 		} 
 		data.put("_id", id); 
 		data.put("_name", name); 
-		if(BasicUtil.isNotEmpty(lon) && BasicUtil.isNotEmpty(lat)){ 
-			data.put("_location", lon+","+lat); 
+		if(BasicUtil.isNotEmpty(lng) && BasicUtil.isNotEmpty(lat)){ 
+			data.put("_location", lng+","+lat); 
 		} 
 		if(BasicUtil.isNotEmpty(address)){ 
 			data.put("_address", address); 
@@ -250,20 +250,20 @@ public class AmapUtil {
 		} 
 		return cnt; 
 	} 
-	public int update(String id, String name, String lon, String lat, String address, Map<String,Object> extras){ 
-		return update(id, name, 1, lon, lat, address, extras); 
+	public int update(String id, String name, String lng, String lat, String address, Map<String,Object> extras){ 
+		return update(id, name, 1, lng, lat, address, extras); 
 	} 
-	public int update(String id, String name, String lon, String lat, Map<String,Object> extras){ 
-		return update(id, name, 1, lon, lat, null, extras); 
+	public int update(String id, String name, String lng, String lat, Map<String,Object> extras){ 
+		return update(id, name, 1, lng, lat, null, extras); 
 	} 
-	public int update(String id, String name, int loctype, String lon, String lat, String address){ 
-		return update(id, name, loctype, lon, lat, address, null); 
+	public int update(String id, String name, int loctype, String lng, String lat, String address){ 
+		return update(id, name, loctype, lng, lat, address, null); 
 	} 
-	public int update(String id, String name, String lon, String lat, String address){ 
-		return update(id, name, lon, lat, address, null); 
+	public int update(String id, String name, String lng, String lat, String address){ 
+		return update(id, name, lng, lat, address, null); 
 	} 
-	public int update(String id, String name, String lon, String lat){ 
-		return update(id, name, lon, lat, null, null); 
+	public int update(String id, String name, String lng, String lat){ 
+		return update(id, name, lng, lat, null, null); 
 	} 
 	public int update(String id, String name, String address){ 
 		return update(id, name, null, null, address); 
@@ -722,7 +722,8 @@ public class AmapUtil {
 	 * @param location  经度在前,纬度在后,经纬度间以“,”分割
 	 * @return DataRow
 	 */ 
-	public DataRow regeo(String location){ 
+	public MapPoint regeo(String location){
+		MapPoint point = null;
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/geocode/regeo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
@@ -740,24 +741,36 @@ public class AmapUtil {
 				}else {
 					row = row.getRow("regeocode");
 					if (null != row) {
-						DataRow addressComponent = row.getRow("addressComponent");
-						if (null != addressComponent) {
-							addressComponent.put("address", row.getString("formatted_address"));
-							row = addressComponent;
-						} else {
-							row.put("address", row.getString("formatted_address"));
+						point = new MapPoint(location);
+						point.setAddress(row.getString("formatted_address"));
+
+						DataRow adr = row.getRow("addressComponent");
+						if (null != adr) {
+							String adcode = adr.getString("adcode");
+							String provinceCode = adcode.substring(0,2);
+							String cityCode = adcode.substring(0,4);
+							point.setProvinceCode(provinceCode);
+							point.setProvinceName(adr.getString("province"));
+							point.setCityCode(cityCode);
+							point.setCityName(adr.getString("city"));
+							point.setDistrictCode(adcode);
+							point.setDistrictName(adr.getString("district"));
+							point.setTownCode(adr.getString("towncode"));
+							point.setTownName(adr.getString("township"));
 						}
+
 					}
 				}
 			} 
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		} 
-		return row; 
+		return point;
 	}
-	public DataRow regeo(String lon, String lat){
-		return regeo(lon+","+lat);
+	public MapPoint regeo(String lng, String lat){
+		return regeo(lng+","+lat);
 	}
+
 	/** 
 	 * 根据地址查坐标 
 	 * @param address  address
@@ -786,12 +799,11 @@ public class AmapUtil {
 					location = new MapPoint(row.getString("LOCATION"));
 					location.setCode(row.getString("ADCODE")); 
 					location.setProvinceCode(BasicUtil.cut(row.getString("ADCODE"),0,4)); 
-					location.setProvinceNm(row.getString("PROVINCE")); 
+					location.setProvinceName(row.getString("PROVINCE"));
 					location.setCityCode(row.getString("CITYCODE")); 
-					location.setCityNm(row.getString("CITY")); 
-					location.setCountyCode(row.getString("ADCODE")); 
-					location.setCountyNm(row.getString("DISTRICT")); 
-					location.setStreet(row.getString("STREET")); 
+					location.setCityName(row.getString("CITY"));
+					location.setDistrictCode(row.getString("ADCODE"));
+					location.setDistrictName(row.getString("DISTRICT"));
 					location.setAddress(row.getString("FORMATTED_ADDRESS")); 
 					location.setLevel(row.getInt("LEVEL",0));
 				} 
