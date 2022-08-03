@@ -6,13 +6,14 @@ public class MapPoint {
 	 
 	private double lng;
 	private double lat;
-	private String provinceCode; 
-	private String provinceNm; 
-	private String cityCode; 
-	private String cityNm; 
-	private String countyCode; 
-	private String countyNm; 
-	private String street; 
+	private String provinceCode; 		//省
+	private String provinceName;
+	private String cityCode; 			//市
+	private String cityName;
+	private String districtCode;		//区
+	private String districtName;
+	private String townCode;			//街道
+	private String townName;
 	private String code; 
 	private int level;
 	private String address;
@@ -42,6 +43,46 @@ public class MapPoint {
 		return false; 
 	}
 
+	public String getProvinceName() {
+		return this.provinceName;
+	}
+
+	public void setProvinceName(final String provinceName) {
+		this.provinceName = provinceName;
+	}
+
+	public String getCityName() {
+		return this.cityName;
+	}
+
+	public void setCityName(final String cityName) {
+		this.cityName = cityName;
+	}
+
+	public String getDistrictName() {
+		return this.districtName;
+	}
+
+	public void setDistrictName(final String districtName) {
+		this.districtName = districtName;
+	}
+
+	public String getTownCode() {
+		return this.townCode;
+	}
+
+	public void setTownCode(final String townCode) {
+		this.townCode = townCode;
+	}
+
+	public String getTownName() {
+		return this.townName;
+	}
+
+	public void setTownName(final String townName) {
+		this.townName = townName;
+	}
+
 	public double getLng() {
 		return this.lng;
 	}
@@ -66,13 +107,6 @@ public class MapPoint {
 		this.provinceCode = provinceCode;
 	}
 
-	public String getProvinceNm() {
-		return this.provinceNm;
-	}
-
-	public void setProvinceNm(final String provinceNm) {
-		this.provinceNm = provinceNm;
-	}
 
 	public String getCityCode() {
 		return this.cityCode;
@@ -82,37 +116,15 @@ public class MapPoint {
 		this.cityCode = cityCode;
 	}
 
-	public String getCityNm() {
-		return this.cityNm;
+
+	public String getDistrictCode() {
+		return this.districtCode;
 	}
 
-	public void setCityNm(final String cityNm) {
-		this.cityNm = cityNm;
+	public void setDistrictCode(final String districtCode) {
+		this.districtCode = districtCode;
 	}
 
-	public String getCountyCode() {
-		return this.countyCode;
-	}
-
-	public void setCountyCode(final String countyCode) {
-		this.countyCode = countyCode;
-	}
-
-	public String getCountyNm() {
-		return this.countyNm;
-	}
-
-	public void setCountyNm(final String countyNm) {
-		this.countyNm = countyNm;
-	}
-
-	public String getStreet() {
-		return this.street;
-	}
-
-	public void setStreet(final String street) {
-		this.street = street;
-	}
 
 	public String getCode() {
 		return this.code;
