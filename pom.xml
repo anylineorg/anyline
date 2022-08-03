@@ -93,7 +93,7 @@
         <module>/anyline-cache/anyline-cache-ehcache</module>
 		<module>/anyline-cache/anyline-cache-redis</module>
         <module>/anyline-print/anyline-print-10ss</module>
-        <module>anyline-tencent</module>
+        <module>anyline-tencent-cloud</module>
 		<module>anyline-img</module>
         <module>anyline-minio</module>
         <module>anyline-oss</module>
@@ -101,7 +101,8 @@
         <module>anyline-compatible-default</module>
         <module>anyline-thingsboard</module>
         <module>anyline-sms</module>
-    </modules>
+		<module>anyline-qq-map</module>
+	</modules>
 	<build>
 		<plugins>
 			<plugin>
