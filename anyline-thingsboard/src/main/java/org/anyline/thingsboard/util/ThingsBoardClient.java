@@ -398,7 +398,7 @@ public class ThingsBoardClient extends RestClient {
                 DataRow row = new DataRow();
                 row.put("ts", group.get("ts"));
                 for(DataRow item:items){
-                    row.put(item.getString("key"), item.get("value"));
+                    row.put(false, null, item.getString("key"), item.get("value"), false, false);
                 }
                 set.add(row);
             }
