@@ -585,14 +585,14 @@ public class BeanUtil {
 	 * @param join key,value之间的拼接符(默认=)
 	 * @param separator  separator 多个kv的分隔符(默认&amp;)
 	 * @param ignoreEmpty 是否忽略空值
-	 * @param sort 是否排序
+	 * @param order 是否排序
 	 * @return String(a=1&amp;b=2&amp;b=3)
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static String map2string(Map<String,?> map, String join, String separator, boolean ignoreEmpty, boolean sort){
+	public static String map2string(Map map, String join, String separator, boolean ignoreEmpty, boolean order){
 		StringBuilder result = new StringBuilder();
 		Set es = null;
-		if(sort){
+		if(order){
 			SortedMap<String, Object> wrap = new TreeMap<String, Object>(map);
 			es = wrap.entrySet();
 		}else{
@@ -640,7 +640,11 @@ public class BeanUtil {
 		}
 		return result.toString();
 	}
-	public static String map2string(Map<String,?> map){
+
+	public static String map2string(Map map, boolean ignoreEmpty, boolean order){
+		return map2string(map, "=" , "&", ignoreEmpty, order);
+	}
+	public static String map2string(Map map){
 		return map2string(map, "=","&",true, true);
 	}
 	public static <T> T xml2object(String xml, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
