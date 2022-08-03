@@ -154,13 +154,19 @@ public class GISUtil {
 
     private static final double X_PI = Math.PI * 3000.0 / 180.0;
 
-    public static double[] bd2gcj(double[] bd_lngLat) {
-        return bd2gcj(bd_lngLat[0], bd_lngLat[1]);
+    public static double[] bd2gcj(double[] location) {
+        return bd2gcj(location[0], location[1]);
+    }
+    public static double[] bd2gcj(String[] location) {
+        return bd2gcj(location[0], location[1]);
     }
 
-    public static double[] bd2gcj(double bd_lng, double bd_lat) {
-        double x = bd_lng - 0.0065;
-        double y = bd_lat - 0.006;
+    public static double[] bd2gcj(String lng, String lat) {
+        return bd2gcj(BasicUtil.parseDouble(lng,0d),BasicUtil.parseDouble(lat,0d));
+    }
+    public static double[] bd2gcj(double lng, double lat) {
+        double x = lng - 0.0065;
+        double y = lat - 0.006;
         double z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * X_PI);
         double theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * X_PI);
         double gg_lng = z * Math.cos(theta);
@@ -168,10 +174,16 @@ public class GISUtil {
         return new double[]{gg_lng, gg_lat};
     }
 
-    public static double[] gcj2bd(double[] lngLat) {
-        return gcj2bd(lngLat[0], lngLat[1]);
+    public static double[] gcj2bd(double[] location) {
+        return gcj2bd(location[0], location[1]);
     }
 
+    public static double[] gcj2bd(String[] location) {
+        return gcj2bd(location[0], location[1]);
+    }
+    public static double[] gcj2bd(String lng, String lat) {
+        return gcj2bd(BasicUtil.parseDouble(lng, 0d),BasicUtil.parseDouble(lat, 0d));
+    }
     public static double[] gcj2bd(double lng, double lat) {
         double z = Math.sqrt(lng * lng + lat * lat) + 0.00002 * Math.sin(lat * X_PI);
         double theta = Math.atan2(lat, lng) + 0.000003 * Math.cos(lng * X_PI);
@@ -179,17 +191,33 @@ public class GISUtil {
         double bd_lat = z * Math.sin(theta) + 0.006;
         return new double[]{bd_lng, bd_lat};
     }
-    public static double[] wgs2bd(double[] lngLat){
-        return wgs2bd(lngLat[0], lngLat[1]);
+
+    public static double[] wgs2bd(double[] location){
+        return wgs2bd(location[0], location[1]);
+    }
+
+    public static double[] wgs2bd(String[] location){
+        return wgs2bd(location[0], location[1]);
+    }
+
+    public static double[] wgs2bd(String lng, String lat){
+        return gcj2bd(wgs2gcj(lng, lat));
     }
     public static double[] wgs2bd(double lng, double lat){
         return gcj2bd(wgs2gcj(lng, lat));
     }
 
-    public static double[] wgs2gcj(double[] lngLat) {
-        return wgs2gcj(lngLat[0], lngLat[1]);
+    public static double[] wgs2gcj(double[] location) {
+        return wgs2gcj(location[0], location[1]);
     }
 
+    public static double[] wgs2gcj(String[] location) {
+        return wgs2gcj(location[0], location[1]);
+    }
+
+    public static double[] wgs2gcj(String lng, String lat) {
+        return wgs2gcj(BasicUtil.parseDouble(lng, 0d),BasicUtil.parseDouble(lat, 0d));
+    }
     public static double[] wgs2gcj(double lng, double lat) {
         if (inChina(lng, lat)) {
             double dlat = lat(lng - 105.0, lat - 35.0);
@@ -208,10 +236,17 @@ public class GISUtil {
         }
     }
 
-    public static double[] gcj2wgs(double[] lngLat) {
-        return gcj2wgs(lngLat[0], lngLat[1]);
+    public static double[] gcj2wgs(double[] location) {
+        return gcj2wgs(location[0], location[1]);
     }
 
+    public static double[] gcj2wgs(String[] location) {
+        return gcj2wgs(location[0], location[1]);
+    }
+
+    public static double[] gcj2wgs(String lng, String lat) {
+        return gcj2wgs(BasicUtil.parseDouble(lng, 0d),BasicUtil.parseDouble(lat, 0d));
+    }
     public static double[] gcj2wgs(double lng, double lat) {
         if (inChina(lng, lat)) {
             double dlat = lat(lng - 105.0, lat - 35.0);
