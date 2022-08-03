@@ -566,7 +566,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 if (result.getRow(params) == null) {
                     DataRow tmp = new DataRow();
                     for (String key : keys) {
-                        tmp.put(key, row.get(key));
+                        tmp.put(false,  key, row.get(key));
                     }
                     result.addRow(tmp);
                 }
@@ -2855,7 +2855,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 if(unique) {
                     set.skip(true);
                 }
-                row.put(field, set);
+                row.put(false, field, set);
             }
         }
         items.skip(false);
