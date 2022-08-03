@@ -709,7 +709,7 @@ public class AmapUtil {
 		return set; 
 	} 
 	/** 
-	 * 按坐标查地址
+	 * 逆地理编码 按坐标查地址
 	 * "country" :"中国",
 	 * "province" :"山东省",
 	 * "city" :"青岛市",
@@ -733,17 +733,22 @@ public class AmapUtil {
 		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
 		try{ 
 			row = DataRow.parseJson(txt); 
-			if(null != row){ 
-				row = row.getRow("regeocode"); 
-				if(null != row){ 
-					DataRow addressComponent = row.getRow("addressComponent"); 
-					if(null != addressComponent){ 
-						addressComponent.put("address", row.getString("formatted_address")); 
-						row = addressComponent; 
-					}else{ 
-						row.put("address", row.getString("formatted_address")); 
-					} 
-				} 
+			if(null != row){
+				int status = row.getInt("STATUS",0);
+				if(status ==0){
+					log.warn("[逆地理编码][执行失败][code:{}][info:{}]", row.getString("INFOCODE"), row.getString("INFO"));
+				}else {
+					row = row.getRow("regeocode");
+					if (null != row) {
+						DataRow addressComponent = row.getRow("addressComponent");
+						if (null != addressComponent) {
+							addressComponent.put("address", row.getString("formatted_address"));
+							row = addressComponent;
+						} else {
+							row.put("address", row.getString("formatted_address"));
+						}
+					}
+				}
 			} 
 		}catch(Exception e){ 
 			e.printStackTrace(); 
