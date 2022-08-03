@@ -1220,6 +1220,20 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return null;
     }
 
+    public DataRow getRow(String ... keys) {
+        if (null == keys || keys.length == 0) {
+            return null;
+        }
+        DataRow result = this;
+        for(String key:keys){
+            if(null != result){
+                result = result.getRow(key);
+            }else{
+                return null;
+            }
+        }
+        return result;
+    }
     public DataSet getSet(String key) {
         if (null == key) {
             return null;
