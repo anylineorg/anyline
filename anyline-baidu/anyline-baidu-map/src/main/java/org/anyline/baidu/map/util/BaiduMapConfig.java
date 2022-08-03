@@ -8,7 +8,7 @@ import org.anyline.util.ConfigTable;
 import java.util.Hashtable;
 
 public class BaiduMapConfig extends AnylineConfig {
-    public static String CONFIG_NAME = "anyline-qq-mp.xml";
+    public static String CONFIG_NAME = "anyline-baidu-map.xml";
     private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 
     public static String DEFAULT_AK = ""				;

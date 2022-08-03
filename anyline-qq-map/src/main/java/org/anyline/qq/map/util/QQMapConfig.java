@@ -8,7 +8,7 @@ import org.anyline.util.ConfigTable;
 import java.util.Hashtable;
 
 public class QQMapConfig extends AnylineConfig {
-    public static String CONFIG_NAME = "anyline-qq-mp.xml";
+    public static String CONFIG_NAME = "anyline-qq-map.xml";
     private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
     public static String HOST           = "https://apis.map.qq.com";
     public static String DEFAULT_KEY    = ""			    ;
