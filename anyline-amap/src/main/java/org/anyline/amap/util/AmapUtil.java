@@ -770,6 +770,9 @@ public class AmapUtil {
 	public MapPoint regeo(String lng, String lat){
 		return regeo(lng+","+lat);
 	}
+	public MapPoint regeo(double lng, double lat){
+		return regeo(lng+","+lat);
+	}
 
 	/** 
 	 * 根据地址查坐标 
