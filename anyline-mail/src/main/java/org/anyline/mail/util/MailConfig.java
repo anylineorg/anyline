@@ -36,6 +36,10 @@ public class MailConfig extends AnylineConfig{
 	public String ATTACHMENT_DIR 			= DEFAULT_ATTACHMENT_DIR			;	//附件下载地址
 	public boolean SSL_FLAG 				= DEFAULT_SSL_FLAG					;  //是否需要ssl验证  具体看服务商情况  smtp  25不需要  465需要
 	public boolean AUTO_DOWNLOAD_ATTACHMENT = DEFAULT_AUTO_DOWNLOAD_ATTACHMENT	;
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{
 		init();
 		debug();
@@ -82,6 +86,8 @@ public class MailConfig extends AnylineConfig{
 	}
 	public static MailConfig register(String instance, DataRow row){
 		MailConfig config = parse(MailConfig.class, instance, row, instances, compatibles);
+		MailUtil.getInstance(instance);
+		Pop3Util.getInstance(instance);
 		return config;
 	}
 	public static MailConfig register(DataRow row){

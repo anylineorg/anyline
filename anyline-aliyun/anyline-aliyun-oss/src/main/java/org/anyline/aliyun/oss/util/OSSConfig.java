@@ -28,6 +28,9 @@ public class OSSConfig extends AnylineConfig{
 	public static String CONFIG_NAME = "anyline-aliyun-oss.xml";
 
 
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{ 
 		init(); 
 		debug(); 
@@ -89,6 +92,7 @@ public class OSSConfig extends AnylineConfig{
 		row.put("DIR", dir);
 		row.put("EXPIRE_SECOND", expire);
 		OSSConfig config = parse(OSSConfig.class, instance, row, instances, compatibles);
+		OSSUtil.getInstance(instance);
 		return config;
 	}
 

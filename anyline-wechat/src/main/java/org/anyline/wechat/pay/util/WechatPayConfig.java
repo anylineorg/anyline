@@ -108,6 +108,10 @@ public class WechatPayConfig extends AnylineConfig{
 		public abstract String getName();
 		public abstract String getCode();
 	};
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{
 		init();
 		debug();
@@ -141,8 +145,12 @@ public class WechatPayConfig extends AnylineConfig{
 		return (WechatPayConfig)instances.get(key);
 	}
 
-	public static WechatPayConfig parse(String key, DataRow row){
-		return parse(WechatPayConfig.class, key, row, instances,compatibles);
+	public static WechatPayConfig parse(String instance, DataRow row){
+		WechatPayConfig config = parse(WechatPayConfig.class, instance, row, instances,compatibles);
+		org.anyline.wechat.pay.util.v3.service.WechatPayUtil.getInstance(instance);
+		org.anyline.wechat.pay.util.v3.WechatPayUtil.getInstance(instance);
+		org.anyline.wechat.pay.util.WechatPayUtil.getInstance(instance);
+		return config;
 	}
 	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){
 		for(DataRow row:set){

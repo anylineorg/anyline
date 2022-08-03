@@ -40,11 +40,15 @@ public class NacosUtil {
 	private NacosConfig config = null;
 
 	private static Hashtable<String, NacosUtil> instances = new Hashtable<String, NacosUtil>();
-	
-	static{
-		NacosUtil util = NacosUtil.getInstance();
-		if(null != util){
-			util.scan();
+
+	static {
+		Hashtable<String, AnylineConfig> configs = NacosConfig.getInstances();
+		for(String key:configs.keySet()){
+			NacosUtil instance = getInstance(key);
+			if(null != instance) {
+				instances.put(key, instance);
+				instance.scan();
+			}
 		}
 	}
 

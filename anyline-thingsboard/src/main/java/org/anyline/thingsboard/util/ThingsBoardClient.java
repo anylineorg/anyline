@@ -3,6 +3,7 @@ package org.anyline.thingsboard.util;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,12 @@ public class ThingsBoardClient extends RestClient {
     private ThingsBoardConfig config = null;
     private static Hashtable<String,ThingsBoardClient> instances = new Hashtable<String,ThingsBoardClient>();
 
+    static {
+        Hashtable<String, AnylineConfig> configs = ThingsBoardConfig.getInstances();
+        for(String key:configs.keySet()){
+            instances.put(key, getInstance(key));
+        }
+    }
 
 
     public static Hashtable<String, ThingsBoardClient> getInstances(){

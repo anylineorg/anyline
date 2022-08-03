@@ -22,6 +22,11 @@ public class QQMPConfig extends AnylineConfig{
 	public String APP_ID			 = DEFAULT_APP_ID				; //AppID(应用ID)
 	public String API_KEY 			 = DEFAULT_API_KEY				; //APPKEY(应用密钥)
 	public String OAUTH_REDIRECT_URL = DEFAULT_OAUTH_REDIRECT_URL	; //登录成功回调URL
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
+
 	static{ 
 		init(); 
 		debug(); 
@@ -68,6 +73,7 @@ public class QQMPConfig extends AnylineConfig{
 	}
 	public static QQMPConfig register(String instance, DataRow row){
 		QQMPConfig config = parse(QQMPConfig.class, instance, row, instances, compatibles);
+		QQMPUtil.getInstance(instance);
 		return config;
 	}
 	public static QQMPConfig register(DataRow row){

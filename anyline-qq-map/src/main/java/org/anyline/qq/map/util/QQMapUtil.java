@@ -3,6 +3,7 @@ package org.anyline.qq.map.util;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.MapPoint;
 import org.anyline.net.HttpUtil;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.MD5Util;
@@ -18,6 +19,12 @@ public class QQMapUtil {
     public QQMapConfig config = null;
     private static Hashtable<String, QQMapUtil> instances = new Hashtable<>();
 
+    static {
+        Hashtable<String, AnylineConfig> configs = QQMapConfig.getInstances();
+        for(String key:configs.keySet()){
+            instances.put(key, getInstance(key));
+        }
+    }
     public static Hashtable<String, QQMapUtil> getInstances(){
         return instances;
     }
@@ -68,7 +75,7 @@ public class QQMapUtil {
         if(null != row){
             int status = row.getInt("status",-1);
             if(status != 0){
-                log.warn("[逆地理编码][执行失败][code:{}][info:{}]", status, row.getString("message"));
+                log.warn("[逆地理编码][执行失败][instance:{}][code:{}][info:{}]", config.INSTANCE_KEY, status, row.getString("message"));
                 return null;
             }else{
                 point = new MapPoint(lng, lat);

@@ -4,6 +4,7 @@ import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Bucket;
 import io.minio.messages.Item;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +22,7 @@ public class MinioUtil {
 
     private MinioConfig config = null;
     private static Hashtable<String, MinioUtil> instances = new Hashtable<String, MinioUtil>();
+
     public MinioUtil(){}
     public MinioUtil(String endpoint, String bucket, String key, String secret){
         MinioConfig config = new MinioConfig();
@@ -34,6 +36,13 @@ public class MinioUtil {
                 .credentials(key, secret)
                 .build();
 
+    }
+
+    static {
+        Hashtable<String, AnylineConfig> configs = MinioConfig.getInstances();
+        for(String key:configs.keySet()){
+            instances.put(key, getInstance(key));
+        }
     }
     public static Hashtable<String, MinioUtil> getInstances(){
         return instances;

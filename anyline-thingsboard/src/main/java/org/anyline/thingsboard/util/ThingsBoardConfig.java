@@ -25,6 +25,9 @@ public class ThingsBoardConfig extends AnylineConfig{
     
     public static String CONFIG_NAME = "anyline-thingsboard.xml";
 
+    public static Hashtable<String,AnylineConfig>getInstances(){
+        return instances;
+    }
     static {
         init();
         debug();
@@ -68,24 +71,25 @@ public class ThingsBoardConfig extends AnylineConfig{
     private static void debug() {
     }
 
-    public static ThingsBoardConfig register(String id, DataRow row) {
-        ThingsBoardConfig config = parse(ThingsBoardConfig.class, id, row, instances, compatibles);
+    public static ThingsBoardConfig register(String instance, DataRow row) {
+        ThingsBoardConfig config = parse(ThingsBoardConfig.class, instance, row, instances, compatibles);
+        ThingsBoardClient.getInstance(instance);
         return config;
     }
 
     public static ThingsBoardConfig register(DataRow row) {
         return register(DEFAULT_INSTANCE_KEY, row);
     }
-    public static ThingsBoardConfig register(String id, String host, String account, String password) {
-        return register(id, host, account, null);
+    public static ThingsBoardConfig register(String instance, String host, String account, String password) {
+        return register(instance, host, account, null);
     }
-    public static ThingsBoardConfig register(String id, String host, String account, String password, String tenant) {
+    public static ThingsBoardConfig register(String instance, String host, String account, String password, String tenant) {
         DataRow row = new DataRow();
         row.put("HOST", host);
         row.put("ACCOUNT", account);
         row.put("PASSWORD", password);
         row.put("TENANT", tenant);
-        ThingsBoardConfig config = parse(ThingsBoardConfig.class, id, row, instances, compatibles);
+        ThingsBoardConfig config = parse(ThingsBoardConfig.class, instance, row, instances, compatibles);
         return config;
     }
 }

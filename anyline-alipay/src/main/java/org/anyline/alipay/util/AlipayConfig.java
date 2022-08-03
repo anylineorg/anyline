@@ -33,10 +33,13 @@ public class AlipayConfig extends AnylineConfig{
 
 	public static String CONFIG_NAME = "anyline-alipay.xml";
 
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{ 
 		init(); 
 		debug(); 
-	} 
+	}
 	/**
 	 * 解析配置文件内容
 	 * @param content 配置文件内容
@@ -92,7 +95,9 @@ public class AlipayConfig extends AnylineConfig{
 	private static void debug(){ 
 	}
 
-	public static AlipayConfig register(String key, DataRow row){
-		return parse(AlipayConfig.class, key, row, instances,compatibles);
+	public static AlipayConfig register(String instance, DataRow row){
+		AlipayConfig config = parse(AlipayConfig.class, instance, row, instances,compatibles);
+		AlipayUtil.getInstance(instance);
+		return config;
 	}
 } 

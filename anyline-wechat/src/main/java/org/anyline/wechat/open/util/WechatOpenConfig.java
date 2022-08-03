@@ -37,8 +37,11 @@ public class WechatOpenConfig extends WechatConfig{
 	public static void init() { 
 		//加载配置文件 
 		load(); 
-	} 
- 
+	}
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	public static WechatOpenConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
@@ -54,8 +57,10 @@ public class WechatOpenConfig extends WechatConfig{
 		return (WechatOpenConfig)instances.get(key);
 	} 
  
-	public static WechatOpenConfig parse(String key, DataRow row){
-		return parse(WechatOpenConfig.class, key, row, instances, compatibles);
+	public static WechatOpenConfig parse(String instance, DataRow row){
+		WechatOpenConfig config = parse(WechatOpenConfig.class, instance, row, instances, compatibles);
+		WechatOpenUtil.getInstance(instance);
+		return config;
 	} 
 	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){ 
 		for(DataRow row:set){ 

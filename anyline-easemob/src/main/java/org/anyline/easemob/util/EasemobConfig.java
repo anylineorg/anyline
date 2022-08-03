@@ -24,7 +24,10 @@ public class EasemobConfig extends AnylineConfig{
 	public String CLIENT_SECRET = DEFAULT_CLIENT_SECRET	;
 	public String ORG_NAME 		= DEFAULT_ORG_NAME		;
 	public String APP_NAME 		= DEFAULT_APP_NAME		;
-		 
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{ 
 		init(); 
 		debug(); 
@@ -69,6 +72,7 @@ public class EasemobConfig extends AnylineConfig{
 	}
 	public static EasemobConfig register(String instance, DataRow row){
 		EasemobConfig config = parse(EasemobConfig.class, instance, row, instances, compatibles);
+		EasemobUtil.getInstance(instance);
 		return config;
 	}
 	public static EasemobConfig register(DataRow row){

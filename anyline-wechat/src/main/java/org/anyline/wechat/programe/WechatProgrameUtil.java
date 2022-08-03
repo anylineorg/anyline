@@ -21,6 +21,7 @@ package org.anyline.wechat.programe;
 import org.anyline.entity.DataRow;
 import org.anyline.net.AESUtil;
 import org.anyline.net.HttpUtil;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.FileUtil;
@@ -42,6 +43,14 @@ public class WechatProgrameUtil extends WechatUtil {
 
 
 	private static Hashtable<String, WechatProgrameUtil> instances = new Hashtable<String,WechatProgrameUtil>();
+
+	static {
+		Hashtable<String, AnylineConfig> configs = WechatProgrameConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
+
 	public static WechatProgrameUtil getInstance(){
 		return getInstance(WechatProgrameConfig.DEFAULT_INSTANCE_KEY);
 	}

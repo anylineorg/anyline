@@ -60,6 +60,9 @@ public class NacosConfig extends AnylineConfig{
 	public String cloudGroup;
 
 
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{
 		init(); 
 		debug(); 
@@ -126,7 +129,7 @@ public class NacosConfig extends AnylineConfig{
 	 * @param clazz 扫描clazz的子类
 	 * @return NacosConfig
 	 */
-	public static NacosConfig register(String id, String address, int port, String group, String namespace, boolean auto, String pack, String clazz) {
+	public static NacosConfig register(String instance, String address, int port, String group, String namespace, boolean auto, String pack, String clazz) {
 		DataRow row = new DataRow();
 		row.put("ADDRESS", address);
 		row.put("PORT", port);
@@ -135,8 +138,8 @@ public class NacosConfig extends AnylineConfig{
 		row.put("AUTO_SCAN", auto);
 		row.put("SCAN_PACKAGE", pack);
 		row.put("SCAN_CLASS", clazz);
-		NacosConfig config = parse(NacosConfig.class, id, row, instances, compatibles);
-		NacosUtil util = NacosUtil.getInstance(id);
+		NacosConfig config = parse(NacosConfig.class, instance, row, instances, compatibles);
+		NacosUtil util = NacosUtil.getInstance(instance);
 		if(null != util) {
 			util.scan();
 		}

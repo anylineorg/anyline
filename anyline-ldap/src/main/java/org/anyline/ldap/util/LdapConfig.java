@@ -32,6 +32,9 @@ public class LdapConfig extends AnylineConfig{
 	public int CONNECT_TIMEOUT 				= DEFAULT_CONNECT_TIMEOUT			;
 	public int READ_TIMEOUT 				= DEFAULT_READ_TIMEOUT				;
 
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{ 
 		init(); 
 		debug();
@@ -80,6 +83,7 @@ public class LdapConfig extends AnylineConfig{
 	}
 	public static LdapConfig register(String instance, DataRow row){
 		LdapConfig config = parse(LdapConfig.class, instance, row, instances, compatibles);
+		LdapUtil.getInstance(instance);
 		return config;
 	}
 	public static LdapConfig register(DataRow row){

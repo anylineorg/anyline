@@ -8,6 +8,7 @@ import com.alipay.api.request.*;
 import com.alipay.api.response.*;
 import org.anyline.alipay.entity.*;
 import org.anyline.entity.DataRow;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
@@ -17,10 +18,21 @@ import java.net.URLEncoder;
 import java.util.Hashtable;
 
 public class AlipayUtil { 
-	private static final Logger log = LoggerFactory.getLogger(AlipayUtil.class); 
- 
+	private static final Logger log = LoggerFactory.getLogger(AlipayUtil.class);
+
+	private static Hashtable<String, AlipayUtil> instances = new Hashtable<String, AlipayUtil>();
+
 	private AlipayClient client = null; 
 	private AlipayConfig config = null;
+
+
+	static {
+		Hashtable<String, AnylineConfig> configs = AlipayConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
+
 	public AlipayUtil(){
 	}
 	public AlipayUtil(AlipayConfig config){
@@ -34,8 +46,6 @@ public class AlipayUtil {
 				config.getString("ALIPAY_PUBLIC_KEY"),
 				config.getString("SIGN_TYPE"));
 	}
-	private static Hashtable<String, AlipayUtil> instances = new Hashtable<String, AlipayUtil>();
-
 	public static Hashtable<String, AlipayUtil> getInstances(){
 		return instances;
 	}

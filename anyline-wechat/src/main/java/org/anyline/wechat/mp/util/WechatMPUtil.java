@@ -3,10 +3,7 @@ package org.anyline.wechat.mp.util;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.net.HttpUtil;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.SHA1Util;
+import org.anyline.util.*;
 import org.anyline.wechat.entity.WechatAuthInfo;
 import org.anyline.wechat.entity.WechatTemplateMessage;
 import org.anyline.wechat.entity.WechatTemplateMessageResult;
@@ -28,8 +25,18 @@ public class WechatMPUtil extends WechatUtil {
 	private static DataSet jsapiTickets = new DataSet();
 
 	private WechatMPConfig config = null;
- 
-	private static Hashtable<String,WechatMPUtil> instances = new Hashtable<String,WechatMPUtil>(); 
+
+	private static Hashtable<String,WechatMPUtil> instances = new Hashtable<String,WechatMPUtil>();
+
+
+	static {
+		Hashtable<String, AnylineConfig> configs = WechatMPConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
+
+
 	public static WechatMPUtil getInstance(){ 
 		return getInstance(WechatMPConfig.DEFAULT_INSTANCE_KEY);
 	} 

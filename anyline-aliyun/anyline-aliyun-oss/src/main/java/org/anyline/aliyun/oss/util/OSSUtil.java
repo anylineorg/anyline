@@ -4,10 +4,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.common.utils.BinaryUtil;
 import com.aliyun.oss.model.*;
 import org.anyline.net.HttpUtil;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
-import org.anyline.util.FileUtil;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +18,19 @@ public class OSSUtil {
 	private OSSClient client = null;
 	private OSSConfig config = null;
 	private static Hashtable<String, OSSUtil> instances = new Hashtable<String, OSSUtil>();
-    public OSSUtil(){}
+
+
+	static {
+		Hashtable<String, AnylineConfig> configs = OSSConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
+	public static Hashtable<String, OSSUtil> getInstances(){
+		return instances;
+	}
+
+	public OSSUtil(){}
 	public OSSUtil(String endpoint, String bucket, String account, String password){
         OSSConfig config = new OSSConfig();
         config.ENDPOINT = endpoint;
@@ -32,9 +41,6 @@ public class OSSUtil {
         client = new OSSClient(config.ENDPOINT, config.ACCESS_ID, config.ACCESS_SECRET);
     }
 
-	public static Hashtable<String, OSSUtil> getInstances(){
-		return instances;
-	}
 	public static OSSUtil getInstance() {
 		return getInstance(OSSConfig.DEFAULT_INSTANCE_KEY);
 	}

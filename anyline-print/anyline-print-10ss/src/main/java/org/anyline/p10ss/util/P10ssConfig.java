@@ -36,6 +36,10 @@ public class P10ssConfig  extends AnylineConfig {
         public abstract String getName();
         public abstract String getCode();
     };
+
+    public static Hashtable<String,AnylineConfig>getInstances(){
+        return instances;
+    }
     static{
         init();
         debug();

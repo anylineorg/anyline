@@ -20,6 +20,7 @@ package org.anyline.wechat.pay.util.v3;
 import org.anyline.entity.DataRow;
 import org.anyline.net.HttpResult;
 import org.anyline.net.HttpUtil;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -51,6 +52,12 @@ public class WechatPayUtil {
 
     private static Hashtable<String, WechatPayUtil> instances = new Hashtable<String, WechatPayUtil>();
 
+    static {
+        Hashtable<String, AnylineConfig> configs = WechatPayConfig.getInstances();
+        for(String key:configs.keySet()){
+            instances.put(key, getInstance(key));
+        }
+    }
     public static Hashtable<String, WechatPayUtil> getInstances(){
         return instances;
     }

@@ -1,5 +1,6 @@
 package org.anyline.mail.util; 
  
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,12 @@ public class MailUtil {
 		return config; 
 	}
 
+	static {
+		Hashtable<String, AnylineConfig> configs = MailConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
 	public static Hashtable<String, MailUtil> getInstances(){
 		return instances;
 	}

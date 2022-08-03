@@ -49,6 +49,10 @@ public class WechatMPConfig extends WechatConfig{
 		//加载配置文件
 		load();
 	}
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	public static WechatMPConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	}
@@ -64,13 +68,15 @@ public class WechatMPConfig extends WechatConfig{
 		return (WechatMPConfig)instances.get(key);
 	}
 
-	public static WechatMPConfig parse(String key, DataRow row){
-		return parse(WechatMPConfig.class, key, row, instances,compatibles);
+	public static WechatMPConfig parse(String instance, DataRow row){
+		WechatMPConfig config = parse(WechatMPConfig.class, instance, row, instances,compatibles);
+		WechatMPUtil.getInstance(instance);
+		return config;
 	}
 	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){
 		for(DataRow row:set){
-			String key = row.getString(column);
-			parse(key, row);
+			String instance = row.getString(column);
+			parse(instance, row);
 		}
 		return instances;
 	}

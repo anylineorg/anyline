@@ -26,6 +26,9 @@ public class SMSConfig extends AnylineConfig {
 
 	public static String CONFIG_NAME = "anyline-sms.xml";
 
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static {
 		init();
 		debug();

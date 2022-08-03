@@ -3,6 +3,7 @@ package org.anyline.baidu.map.util;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.MapPoint;
 import org.anyline.net.HttpUtil;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,12 @@ public class BaiduMapUtil {
     public BaiduMapConfig config = null;
     private static Hashtable<String, BaiduMapUtil> instances = new Hashtable<>();
 
+    static {
+        Hashtable<String, AnylineConfig> configs = BaiduMapConfig.getInstances();
+        for(String key:configs.keySet()){
+            instances.put(key, getInstance(key));
+        }
+    }
     public static Hashtable<String, BaiduMapUtil> getInstances(){
         return instances;
     }

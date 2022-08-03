@@ -40,8 +40,11 @@ public class QQOpenConfig extends QQConfig{
 	public String PAY_NOTIFY_URL 		= DEFAULT_PAY_NOTIFY_URL		; //支付统一接口的回调action
 	public String PAY_CALLBACK_URL 		= DEFAULT_PAY_CALLBACK_URL		; //支付成功支付后跳转的地址
 	public String PAY_KEY_STORE_FILE 	= DEFAULT_PAY_KEY_STORE_FILE	; //支付证书存放路径地址
- 
-	 
+
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{ 
 		init(); 
 		debug(); 
@@ -76,6 +79,7 @@ public class QQOpenConfig extends QQConfig{
 	}
 	public static QQOpenConfig register(String instance, DataRow row){
 		QQOpenConfig config = parse(QQOpenConfig.class, instance, row, instances, compatibles);
+		QQOpenUtil.getInstance(instance);
 		return config;
 	}
 	public static QQOpenConfig register(DataRow row){

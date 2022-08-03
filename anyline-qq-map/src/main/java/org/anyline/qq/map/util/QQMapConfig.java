@@ -21,6 +21,9 @@ public class QQMapConfig extends AnylineConfig {
         init();
         debug();
     }
+    public static Hashtable<String,AnylineConfig>getInstances(){
+        return instances;
+    }
     /**
      * 解析配置文件内容
      * @param content 配置文件内容
@@ -63,6 +66,7 @@ public class QQMapConfig extends AnylineConfig {
     }
     public static QQMapConfig register(String instance, DataRow row){
         QQMapConfig config = parse(QQMapConfig.class, instance, row, instances, compatibles);
+        QQMapUtil.getInstance(instance);
         return config;
     }
     public static QQMapConfig register(DataRow row){

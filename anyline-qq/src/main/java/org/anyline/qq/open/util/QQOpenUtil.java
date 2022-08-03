@@ -21,6 +21,12 @@ public class QQOpenUtil{
 	private static Hashtable<String,QQOpenUtil> instances = new Hashtable<String,QQOpenUtil>(); 
 	private QQOpenConfig config = null;
 
+	static {
+		Hashtable<String, AnylineConfig> configs = QQOpenConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
 	public static Hashtable<String, QQOpenUtil> getInstances(){
 		return instances;
 	}

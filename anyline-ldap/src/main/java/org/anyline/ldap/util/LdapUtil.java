@@ -3,6 +3,7 @@ package org.anyline.ldap.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
@@ -25,6 +26,12 @@ public class LdapUtil {
 	private DirContext dc = null;
 	private static Hashtable<String, LdapUtil> instances = new Hashtable<String, LdapUtil>();
 
+	static {
+		Hashtable<String, AnylineConfig> configs = LdapConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
 	public static Hashtable<String, LdapUtil> getInstances(){
 		return instances;
 	}

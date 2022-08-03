@@ -20,6 +20,9 @@ public class EHCacheConfig extends AnylineConfig {
 
 	public static String CONFIG_NAME = "anyline-ehcache.xml";
 
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static {
 		init();
 		debug();

@@ -2,6 +2,7 @@ package org.anyline.qq.mp.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.net.HttpUtil;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
@@ -16,6 +17,12 @@ public class QQMPUtil {
 	private static Hashtable<String,QQMPUtil> instances = new Hashtable<String,QQMPUtil>(); 
 	private QQMPConfig config = null;
 
+	static {
+		Hashtable<String, AnylineConfig> configs = QQMPConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
 
 	public static Hashtable<String, QQMPUtil> getInstances(){
 		return instances;

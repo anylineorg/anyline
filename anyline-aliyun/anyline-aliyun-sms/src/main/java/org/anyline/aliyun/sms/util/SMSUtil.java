@@ -6,6 +6,7 @@ import com.aliyun.teaopenapi.models.Config;
 import com.aliyun.teautil.models.RuntimeOptions;
 import org.anyline.sms.entity.SMSResult;
 import org.anyline.sms.util.SMSListener;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DateUtil;
@@ -34,6 +35,13 @@ public class SMSUtil {
     //产品域名,开发者无需替换 
     static final String endpoint = "dysmsapi.aliyuncs.com";
 
+
+	static {
+		Hashtable<String, AnylineConfig> configs = SMSConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
 	public static Hashtable<String, SMSUtil> getInstances(){
 		return instances;
 	}

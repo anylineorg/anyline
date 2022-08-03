@@ -24,6 +24,12 @@ public class JPushUtil {
 	private static Hashtable<String,JPushUtil> instances = new Hashtable<String,JPushUtil>(); 
 	private JPushClient client;
 
+	static {
+		Hashtable<String, AnylineConfig> configs = JPushConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
 	public static Hashtable<String, JPushUtil> getInstances(){
 		return instances;
 	}

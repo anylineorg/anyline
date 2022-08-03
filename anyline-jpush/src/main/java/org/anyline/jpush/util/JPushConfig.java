@@ -19,6 +19,9 @@ public class JPushConfig extends AnylineConfig{
 
 	public static String CONFIG_NAME = "anyline-jpush.xml";
 
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{
 		init();
 		debug();
@@ -66,6 +69,7 @@ public class JPushConfig extends AnylineConfig{
 		row.put("APP_KEY",key);
 		row.put("MASTER_SECRET",secret);
 		JPushConfig config = parse(JPushConfig.class, instance, row, instances, compatibles);
+		JPushUtil.getInstance(instance);
 		return config;
 	}
 	public static JPushConfig register(String key, String secret){

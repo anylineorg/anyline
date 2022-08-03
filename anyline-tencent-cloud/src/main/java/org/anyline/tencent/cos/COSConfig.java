@@ -27,7 +27,10 @@ public class COSConfig extends AnylineConfig{
 	public String DIR			= DEFAULT_DIR					; //
 	public int EXPIRE_SECOND 	= DEFAULT_EXPIRE_SECOND			; //
 	public static String CONFIG_NAME = "anyline-tencent-cos.xml"; //
-	 
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{ 
 		init(); 
 		debug(); 

@@ -48,7 +48,11 @@ public class WechatProgrameConfig extends WechatConfig{
 	public static void init() { 
 		//加载配置文件 
 		load(); 
-	} 
+	}
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	public static WechatProgrameConfig getInstance(){
 		return getInstance(DEFAULT_INSTANCE_KEY);
 	} 
@@ -67,8 +71,10 @@ public class WechatProgrameConfig extends WechatConfig{
 	public static WechatProgrameConfig reg(String key, DataRow row){
 		return parse(WechatProgrameConfig.class, key, row, instances,compatibles);
 	} 
-	public static WechatProgrameConfig parse(String key, DataRow row){
-		return parse(WechatProgrameConfig.class, key, row, instances,compatibles);
+	public static WechatProgrameConfig parse(String instance, DataRow row){
+		WechatProgrameConfig config = parse(WechatProgrameConfig.class, instance, row, instances,compatibles);
+		WechatProgrameUtil.getInstance(instance);
+		return config;
 	} 
 	public static Hashtable<String,AnylineConfig> parse(String column, DataSet set){ 
 		for(DataRow row:set){ 

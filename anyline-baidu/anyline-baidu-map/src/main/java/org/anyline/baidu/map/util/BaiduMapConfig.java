@@ -21,6 +21,9 @@ public class BaiduMapConfig extends AnylineConfig {
         init();
         debug();
     }
+    public static Hashtable<String,AnylineConfig>getInstances(){
+        return instances;
+    }
     /**
      * 解析配置文件内容
      * @param content 配置文件内容
@@ -63,6 +66,7 @@ public class BaiduMapConfig extends AnylineConfig {
     }
     public static BaiduMapConfig register(String instance, DataRow row){
         BaiduMapConfig config = parse(BaiduMapConfig.class, instance, row, instances, compatibles);
+        BaiduMapUtil.getInstance(instance);
         return config;
     }
     public static BaiduMapConfig register(DataRow row){

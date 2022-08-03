@@ -3,9 +3,7 @@ package org.anyline.aliyun.sms.util;
 import org.anyline.entity.DataRow;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
-import org.springframework.beans.factory.annotation.Value;
 
-import javax.annotation.PostConstruct;
 import java.util.Hashtable;
  
 public class SMSConfig extends AnylineConfig {
@@ -23,6 +21,9 @@ public class SMSConfig extends AnylineConfig {
 
 	public static String CONFIG_NAME = "anyline-aliyun-sms.xml";
 
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static {
 		init();
 		debug();
@@ -71,11 +72,12 @@ public class SMSConfig extends AnylineConfig {
 		SMSConfig config = parse(SMSConfig.class, id, row, instances, compatibles);
 		return config;
 	}
-	public static SMSConfig register(String id, String key, String secret) {
+	public static SMSConfig register(String instance, String key, String secret) {
 		DataRow row = new DataRow();
 		row.put("ACCESS_KEY", key);
 		row.put("ACCESS_SECRET", secret);
-		SMSConfig config = parse(SMSConfig.class, id, row, instances, compatibles);
+		SMSConfig config = parse(SMSConfig.class, instance, row, instances, compatibles);
+		SMSUtil.getInstance(instance);
 		return config;
 	}
 	public static SMSConfig register(String key, String secret) {

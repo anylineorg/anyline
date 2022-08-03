@@ -35,6 +35,9 @@ public class MinioConfig extends AnylineConfig{
 
 
 
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 
 	static{ 
 		init(); 
@@ -86,6 +89,7 @@ public class MinioConfig extends AnylineConfig{
 
 	public static MinioConfig register(String instance, DataRow row){
 		MinioConfig config = parse(MinioConfig.class, instance, row, instances, compatibles);
+		MinioUtil.getInstance(instance);
 		return config;
 	}
 	public static MinioConfig register(DataRow row){

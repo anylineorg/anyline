@@ -16,8 +16,9 @@
  *
  */
 package org.anyline.wechat.open.util;
- 
+
 import org.anyline.entity.DataRow;
+import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.wechat.entity.WechatAuthInfo;
 import org.anyline.wechat.entity.WechatUserInfo;
@@ -31,7 +32,16 @@ public class WechatOpenUtil {
 	private static final Logger log = LoggerFactory.getLogger(WechatOpenUtil.class);
 	private static Hashtable<String, WechatOpenUtil> instances = new Hashtable<String, WechatOpenUtil>();
 	private WechatOpenConfig config;
- 
+
+
+	static {
+		Hashtable<String, AnylineConfig> configs = WechatOpenConfig.getInstances();
+		for(String key:configs.keySet()){
+			instances.put(key, getInstance(key));
+		}
+	}
+
+
 	public WechatOpenUtil(WechatOpenConfig config){
 		this.config = config; 
 	} 

@@ -22,7 +22,10 @@ public class AmapConfig extends AnylineConfig{
 
 	private static File configDir;
 	public static String CONFIG_NAME = "anyline-amap.xml";
-	 
+
+	public static Hashtable<String,AnylineConfig>getInstances(){
+		return instances;
+	}
 	static{ 
 		init(); 
 		debug(); 
