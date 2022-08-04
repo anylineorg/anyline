@@ -232,9 +232,8 @@ public class ThingsBoardClient extends RestClient {
             return pivot(timeseries);
         }catch (Exception e){
             log.warn("[get timeseries error][url:{}][params:{}]",urlBuilder.toString(), BeanUtil.map2json(params));
-            e.printStackTrace();
+            throw e;
         }
-        return new DataSet();
     }
 
     public DataSet getTimeseries(EntityType type, String entity, String keys,  SortOrder.Direction order, Long start, Long end, Integer limit, boolean strict) {
