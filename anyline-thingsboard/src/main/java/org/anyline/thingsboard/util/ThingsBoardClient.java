@@ -5,6 +5,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -220,15 +221,20 @@ public class ThingsBoardClient extends RestClient {
             urlBuilder.append("&endTs={end}");
             params.put("end", String.valueOf(end));
         }
-
-        Map<String, List<JsonNode>> timeseries = restTemplate.exchange(
-                urlBuilder.toString(),
-                HttpMethod.GET,
-                HttpEntity.EMPTY,
-                new ParameterizedTypeReference<Map<String, List<JsonNode>>>() {
-                },
-                params).getBody();
-        return pivot(timeseries);
+        try {
+            Map<String, List<JsonNode>> timeseries = restTemplate.exchange(
+                    urlBuilder.toString(),
+                    HttpMethod.GET,
+                    HttpEntity.EMPTY,
+                    new ParameterizedTypeReference<Map<String, List<JsonNode>>>() {
+                    },
+                    params).getBody();
+            return pivot(timeseries);
+        }catch (Exception e){
+            log.warn("[get timeseries error][url:{}][params:{}]",urlBuilder.toString(), BeanUtil.map2json(params));
+            e.printStackTrace();
+        }
+        return new DataSet();
     }
 
     public DataSet getTimeseries(EntityType type, String entity, String keys,  SortOrder.Direction order, Long start, Long end, Integer limit, boolean strict) {
