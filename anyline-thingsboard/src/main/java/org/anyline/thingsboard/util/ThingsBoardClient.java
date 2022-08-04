@@ -419,6 +419,7 @@ public class ThingsBoardClient extends RestClient {
             }
         }catch (Exception e){
             e.printStackTrace();
+            throw e;
         }
         return set;
     }
