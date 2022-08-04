@@ -17,20 +17,20 @@
  */
 
 
-package org.anyline.net; 
- 
+package org.anyline.net;
+
+import org.anyline.util.FileUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.anyline.util.FileUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
  
-public class HttpResult { 
-	private static final Logger log = LoggerFactory.getLogger(HttpResult.class); 
+public class HttpResponse {
+	private static final Logger log = LoggerFactory.getLogger(HttpResponse.class);
 	private String url				;//URL 
 	private String backFileCd		; //备份文件CD
 	private int status				; 

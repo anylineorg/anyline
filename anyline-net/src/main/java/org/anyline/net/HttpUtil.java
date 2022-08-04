@@ -60,19 +60,19 @@ public class HttpUtil {
 	public static String PROTOCOL_TLSV1 = "TLSv1";
 
 
-	public static HttpResult post(String url, String encode, Map<String, Object> params) {
+	public static HttpResponse post(String url, String encode, Map<String, Object> params) {
 		return post(null, url, encode, params);
 	}
-	public static HttpResult post(String url) {
+	public static HttpResponse post(String url) {
 		return post(null, url, "UTF-8", (HttpEntity)null);
 	}
-	public static HttpResult post(Map<String, String> headers, String url) {
+	public static HttpResponse post(Map<String, String> headers, String url) {
 		return post(headers, url, "UTF-8", (HttpEntity)null);
 	}
-	public static HttpResult post(String url, String encode, HttpEntity entity) {
+	public static HttpResponse post(String url, String encode, HttpEntity entity) {
 		return post(null, url, encode, entity);
 	}
-	public static HttpResult post(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResponse post(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -82,7 +82,7 @@ public class HttpUtil {
 	} 
  
  
-	public static HttpResult post(Map<String, String> headers, String url, String encode, HttpEntity entity) {
+	public static HttpResponse post(Map<String, String> headers, String url, String encode, HttpEntity entity) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -94,10 +94,10 @@ public class HttpUtil {
 
 
 
-	public static HttpResult put(String url, String encode, Map<String, Object> params) {
+	public static HttpResponse put(String url, String encode, Map<String, Object> params) {
 		return put(null, url, encode, params);
 	}
-	public static HttpResult put(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResponse put(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -107,7 +107,7 @@ public class HttpUtil {
 	}
 
 
-	public static HttpResult put(Map<String, String> headers, String url, String encode, HttpEntity entity) {
+	public static HttpResponse put(Map<String, String> headers, String url, String encode, HttpEntity entity) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -117,16 +117,16 @@ public class HttpUtil {
 	}
 
 
-	public static HttpResult stream(String url) {
+	public static HttpResponse stream(String url) {
 		return stream(null, url, "UTF-8", (HttpEntity)null);
 	}
-	public static HttpResult stream(String url, String encode, HttpEntity entity) {
+	public static HttpResponse stream(String url, String encode, HttpEntity entity) {
 		return stream(null, url, encode, entity);
 	}
-	public static HttpResult stream(String url, String encode, Map<String, Object> params) {
+	public static HttpResponse stream(String url, String encode, Map<String, Object> params) {
 		return stream(null, url, encode, params);
 	}
-	public static HttpResult stream(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResponse stream(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -137,7 +137,7 @@ public class HttpUtil {
 	}
 
 
-	public static HttpResult stream(Map<String, String> headers, String url, String encode,  HttpEntity entity) {
+	public static HttpResponse stream(Map<String, String> headers, String url, String encode, HttpEntity entity) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -147,17 +147,17 @@ public class HttpUtil {
 				.build().post();
 	}
 
-	public static HttpResult get(String url) {
+	public static HttpResponse get(String url) {
 		return get(url, "UTF-8");
 	} 
-	public static HttpResult get(String url, String encode) {
+	public static HttpResponse get(String url, String encode) {
 		return get(url, encode, new HashMap<String,Object>());
 	} 
-	public static HttpResult get(String url, String encode, Map<String, Object> params) {
+	public static HttpResponse get(String url, String encode, Map<String, Object> params) {
 		return get(null, url, encode, params);
 	} 
  
-	public static HttpResult get(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResponse get(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -166,11 +166,11 @@ public class HttpUtil {
 				.build().get();
 	} 
  
-	public static HttpResult get(String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResponse get(String url, String encode, List<NameValuePair> pairs) {
 		return get(null, url, encode, pairs);
 	} 
  
-	public static HttpResult get(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResponse get(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -181,11 +181,11 @@ public class HttpUtil {
 
 
 	 
-	public static HttpResult delete(String url, String encode, Map<String, Object> params) {
+	public static HttpResponse delete(String url, String encode, Map<String, Object> params) {
 		return delete(null, url, encode, params);
 	} 
  
-	public static HttpResult delete(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
+	public static HttpResponse delete(Map<String, String> headers, String url, String encode, Map<String, Object> params) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -194,14 +194,14 @@ public class HttpUtil {
 				.build().delete();
 	} 
  
-	public static HttpResult delete(String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResponse delete(String url, String encode, List<NameValuePair> pairs) {
 		return delete(null, url, encode, pairs);
 	} 
-	public static HttpResult delete(Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
+	public static HttpResponse delete(Map<String, String> headers, String url, String encode, NameValuePair ... pairs) {
 		return delete(headers, url, encode, BeanUtil.array2list(pairs));
 	} 
  
-	public static HttpResult delete(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
+	public static HttpResponse delete(Map<String, String> headers, String url, String encode, List<NameValuePair> pairs) {
 		return HttpBuilder.init()
 				.setHeaders(headers)
 				.setUrl(url)
@@ -262,17 +262,17 @@ public class HttpUtil {
 		return task; 
 	} 
 
-	public static HttpResult upload(String url, Map<String,File> files, Map<String,String> headers, Map<String,Object> params){ 
+	public static HttpResponse upload(String url, Map<String,File> files, Map<String,String> headers, Map<String,Object> params){
 		return upload(url, files, "UTF-8", headers, params); 
 	} 
-	public static HttpResult upload(String url, Map<String, File> files,  Map<String, Object> params) { 
+	public static HttpResponse upload(String url, Map<String, File> files, Map<String, Object> params) {
 		return upload( url, files, null, params); 
 	} 
-	public static HttpResult upload(String url, Map<String, File> files) { 
+	public static HttpResponse upload(String url, Map<String, File> files) {
 		return upload(url, files, null, null); 
 	}
 
-	public static HttpResult upload(String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params){
+	public static HttpResponse upload(String url, Map<String,File> files, String encode, Map<String,String> headers, Map<String,Object> params){
 		return HttpBuilder.init()
 				.setUrl(url)
 				.setEncode(encode)

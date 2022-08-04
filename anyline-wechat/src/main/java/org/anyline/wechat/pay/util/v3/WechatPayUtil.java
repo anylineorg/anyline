@@ -18,7 +18,7 @@
 package org.anyline.wechat.pay.util.v3;
 
 import org.anyline.entity.DataRow;
-import org.anyline.net.HttpResult;
+import org.anyline.net.HttpResponse;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
@@ -184,7 +184,7 @@ public class WechatPayUtil {
             headers.put("Content-Type", "application/json");
             headers.put("Accept", "application/json");
             headers.put("Authorization", authorization);
-            HttpResult http = HttpUtil.post(headers, url, "UTF-8", new StringEntity(json, "UTF-8"));
+            HttpResponse http = HttpUtil.post(headers, url, "UTF-8", new StringEntity(json, "UTF-8"));
             headers = http.getHeaders();
             String requestId = headers.get("Request-ID");
             String txt = http.getText();

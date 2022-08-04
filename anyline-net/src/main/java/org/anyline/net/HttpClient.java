@@ -22,7 +22,6 @@ import org.anyline.util.ConfigTable;
 import org.anyline.util.FileUtil;
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -85,7 +84,7 @@ public class HttpClient {
 
 
 
-	public HttpResult post() {
+	public HttpResponse post() {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
@@ -105,7 +104,7 @@ public class HttpClient {
 
 
 
-	public HttpResult put() {
+	public HttpResponse put() {
 		if(null != params && !params.isEmpty()){
 			List<NameValuePair> pairs = HttpUtil.packNameValuePair(params);
 			try {
@@ -122,7 +121,7 @@ public class HttpClient {
 		return exe(method);
 	}
 
-	public HttpResult get() {
+	public HttpResponse get() {
 		url = HttpUtil.mergeParam(url, params);
 		if (null != pairs && !pairs.isEmpty()) {
 			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs,encode));
@@ -130,7 +129,7 @@ public class HttpClient {
 		HttpGet method = new HttpGet(url);
 		return exe(method);
 	}
-	public HttpResult delete() {
+	public HttpResponse delete() {
 		url = HttpUtil.mergeParam(url, params);
 		if (null != pairs && !pairs.isEmpty()) {
 			url = HttpUtil.mergeParam(url, URLEncodedUtils.format(pairs,encode));
@@ -142,8 +141,8 @@ public class HttpClient {
 
 
 
-	public HttpResult postStream(Map<String, String> headers, String url, String encode,  HttpEntity entity) {
-		HttpResult result = new HttpResult();
+	public HttpResponse postStream(Map<String, String> headers, String url, String encode, HttpEntity entity) {
+		HttpResponse result = new HttpResponse();
 		InputStream is = null;
 		if(null == client){
 			client = HttpUtil.client(url);
@@ -167,7 +166,7 @@ public class HttpClient {
 	}
 
 
-	private HttpResult exe(HttpRequestBase method){
+	private HttpResponse exe(HttpRequestBase method){
 		setHeader(method, headers);
 		if(null == client){
 			client = HttpUtil.client(url, userAgent);
@@ -176,7 +175,7 @@ public class HttpClient {
 			url = "http:" + url;
 		}
 		CloseableHttpResponse response = null;
-		HttpResult result = null;
+		HttpResponse result = null;
 		try {
 			long fr = System.currentTimeMillis();
 			if(ConfigTable.isDebug() && log.isWarnEnabled()){
@@ -185,7 +184,7 @@ public class HttpClient {
 			if("stream".equals(returnType)) {
 				response = client.execute(method);
 				InputStream is = response.getEntity().getContent();
-				result = new HttpResult();
+				result = new HttpResponse();
 				result.setInputStream(is);
 			}else{
 				method.setHeader("Connection", "close");
@@ -196,7 +195,7 @@ public class HttpClient {
 				log.warn("[http request][method:{}][status:{}][耗时:{}][url:{}]",method.getMethod(), result.getStatus(), System.currentTimeMillis() - fr, method.getURI());
 			}
 		} catch (Exception e) {
-			result = new HttpResult();
+			result = new HttpResponse();
 			e.printStackTrace();
 		} finally {
 			if(!"stream".equals(returnType)) {
@@ -286,7 +285,7 @@ public class HttpClient {
 		get.setHeader("Range", range);
 
 		try {
-			HttpResponse response = client.execute(get);
+			org.apache.http.HttpResponse response = client.execute(get);
 			int code = response.getStatusLine().getStatusCode();
 			if(code == 416){
 				get.removeHeaders("Range");
@@ -360,7 +359,7 @@ public class HttpClient {
 		return result;
 	}
 
-	public HttpResult upload() {
+	public HttpResponse upload() {
 		if(null != url && url.startsWith("//")){
 			url = "http:"+url;
 		}
@@ -395,7 +394,7 @@ public class HttpClient {
 		HttpEntity entity = builder.build();// 生成 HTTP POST 实体
 		post.setEntity(entity);   //post 实体.
 		post.addHeader("Content-Type", "multipart/form-data;boundary="+ BOUNDARY);  //表单形式.
-		HttpResult source = post();
+		HttpResponse source = post();
 		return source;
 	}
 	public int status(){
@@ -422,9 +421,9 @@ public class HttpClient {
 		}
 		return code;
 	}
-	public static HttpResult parseResult(HttpResult result, CloseableHttpResponse response, String encode) {
+	public static HttpResponse parseResult(HttpResponse result, CloseableHttpResponse response, String encode) {
 		if (null == result) {
-			result = new HttpResult();
+			result = new HttpResponse();
 		}
 		try {
 			if(null != response){
