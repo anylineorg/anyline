@@ -79,7 +79,7 @@ public class QQMapUtil {
                 return null;
             }else{
                 point = new MapPoint(lng, lat);
-                point.setAddress(row.getString("formatted_address"));
+                point.setAddress(row.getString("address"));
                 DataRow adr = row.getRow("result","address_component");
                 if(null != adr) {
                     point.setProvinceName(adr.getString("province"));
