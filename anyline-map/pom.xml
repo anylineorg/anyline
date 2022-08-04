@@ -14,6 +14,7 @@
     <artifactId>anyline-map</artifactId>
     <packaging>jar</packaging>
     <name>anyline-map</name>
+    <description>集成高德、百度、腾讯三方地图API，可以用来解决调用额度受限问题</description>
     <url>http://www.anyline.org/map</url>
 
     <dependencies>
