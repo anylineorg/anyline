@@ -151,11 +151,15 @@ public class WebUtil {
 		return set;
 	}
 	private static String decode(String src, String encode){
-		try{
-			return URLDecoder.decode(src, encode);
-		}catch (Exception e){
-			return src;
+		//HTTP参数是否开启了ENCODE
+		if(ConfigTable.getBoolean("HTTP_PARAM_ENCODE", false)){
+			try{
+				return URLDecoder.decode(src, encode);
+			}catch (Exception e){
+				return src;
+			}
 		}
+		return src;
 
 	}
 	public static Map<String,Object> value(HttpServletRequest request){
