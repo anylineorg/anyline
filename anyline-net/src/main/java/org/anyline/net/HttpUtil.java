@@ -63,6 +63,9 @@ public class HttpUtil {
 	public static HttpResponse post(String url, String encode, Map<String, Object> params) {
 		return post(null, url, encode, params);
 	}
+	public static HttpResponse post(String url, Map<String, Object> params) {
+		return post(null, url, "UTF-8", params);
+	}
 	public static HttpResponse post(String url) {
 		return post(null, url, "UTF-8", (HttpEntity)null);
 	}
