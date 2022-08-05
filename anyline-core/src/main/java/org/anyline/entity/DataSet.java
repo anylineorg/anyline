@@ -557,19 +557,30 @@ public class DataSet implements Collection<DataRow>, Serializable {
      */
     public DataSet distinct(String... keys) {
         DataSet result = new DataSet();
+        Map<String,String> chks = new HashMap<>();
+        String ks = "";
+        for(String key:keys){
+            ks += "${"+key+"}";
+        }
         if (null != rows) {
             int size = rows.size();
             for (int i = 0; i < size; i++) {
                 DataRow row = rows.get(i);
                 //查看result中是否已存在
+                String tag = row.getString(ks);
+                if(chks.containsKey(tag)){
+                    continue;
+                }
+                result.addRow(row.extract(keys));
+                chks.put(tag,"0");
+                /*
+                以下方式太慢(在有其他运算方式时才用)
                 String[] params = packParam(row, keys);
                 if (result.getRow(params) == null) {
-                    DataRow tmp = new DataRow();
-                    for (String key : keys) {
-                        tmp.put(false,  key, row.get(key));
-                    }
-                    result.addRow(tmp);
+                    result.addRow(row.extract(keys));
                 }
+                */
+                //System.out.println("get:"+(System.currentTimeMillis()-fr));
             }
         }
         result.cloneProperty(this);
@@ -651,20 +662,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
-    /**
-     * 筛选符合条件的集合
-     * 注意如果String类型 1与1.0比较不相等, 可以先调用convertNumber转换一下数据类型
-     * @param params key1,value1,key2:value2,key3,value3
-     *               "NM:zh%","AGE:&gt;20","NM","%zh%"
-     * @param begin  begin
-     * @param qty    最多筛选多少个 0表示不限制
-     * @return DataSet
-     */
-    public DataSet getRows(int begin, int qty, String... params) {
+    private Map<String, String> kvs(String... params){
         Map<String, String> kvs = new HashMap<String, String>();
         int len = params.length;
         int i = 0;
-        String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对,如时间格式TIME:{10:10}
+        String srcFlagTag = "srcFlag"; //参数含有${}的 在kvs中根据key值+tag 放入一个新的键值对,如时间格式TIME:{10:10}
+
         while (i < len) {
             String p1 = params[i];
             if (BasicUtil.isEmpty(p1)) {
@@ -683,7 +686,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         i += 2;
                         continue;
                     } else if (p2.startsWith("${") && p2.endsWith("}")) {
-                        p2 = p2.substring(1, p2.length() - 1);
+                        p2 = p2.substring(2, p2.length() - 1);
                         kvs.put(p1, p2);
                         kvs.put(p1 + srcFlagTag, "true");
                         i += 2;
@@ -695,11 +698,22 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         continue;
                     }
                 }
-
             }
             i++;
         }
-        return getRows(begin, qty, kvs);
+        return kvs;
+    }
+    /**
+     * 筛选符合条件的集合
+     * 注意如果String类型 1与1.0比较不相等, 可以先调用convertNumber转换一下数据类型
+     * @param params key1,value1,key2:value2,key3,value3
+     *               "NM:zh%","AGE:&gt;20","NM","%zh%"
+     * @param begin  begin
+     * @param qty    最多筛选多少个 0表示不限制
+     * @return DataSet
+     */
+    public DataSet getRows(int begin, int qty, String... params) {
+        return getRows(begin, qty, kvs(params));
     }
     public DataSet getRows(int begin, int qty, DataRow kvs) {
         Map<String,String> map = new HashMap<String,String>();
@@ -708,6 +722,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return getRows(begin, qty, map);
     }
+
     public DataSet getRows(int begin, int qty, Map<String, String> kvs) {
         DataSet set = new DataSet();
         if(rows.size() ==0){
@@ -750,7 +765,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 compares.put(k, compare);
             }
         }
-        for (DataRow row:rows) {
+        int size = rows.size();
+        for (int i=begin; i<size; i++) {
+            DataRow row = rows.get(i);
             if(row.skip){
                 continue;
             }
@@ -798,6 +815,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     }
                 }
             }
+
             if (chk) {
                 set.add(row);
                 if (qty > 0 && set.size() >= qty) {
@@ -805,6 +823,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 }
             }
         }//end for rows
+
         set.cloneProperty(this);
         return set;
     }/*
@@ -2843,12 +2862,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
             throw new RuntimeException("未指定对应关系");
         }
         if (BasicUtil.isEmpty(field)) {
-            field = "items";
+            field = "ITEMS";
         }
         for (DataRow row : rows) {
             if (null == row.get(field)) {
                 String[] kvs = packParam(row, reverseKey(list));
-                DataSet set = items.getRows(kvs);
+                DataSet set = items.getRows(kvs(kvs));
                 if (recursion) {
                     set.dispatchs(field, unique, recursion, items, list);
                 }
@@ -3121,9 +3140,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     public DataSet group(String... keys) {
-        DataSet result = distinct(keys);
-        result.dispatchs(true,false, this, keys);
-        return result;
+        DataSet groups = distinct(keys);
+        groups.dispatchs(true,false, this, keys);
+        return groups;
     }
 
     public Object agg(String type, String key){
