@@ -5,12 +5,18 @@ import java.util.List;
 
 public abstract class BasicCompare implements Compare{
     protected Object value;
+    protected String str;
     protected List<Object> values = new ArrayList<>();
 
 
     @Override
     public Compare setValue(Object value) {
         this.value = value;
+        return this;
+    }
+    @Override
+    public Compare setString(String value) {
+        str = value;
         return this;
     }
     @Override
@@ -24,5 +30,12 @@ public abstract class BasicCompare implements Compare{
         this.values = values;
         return this;
     }
-
+    @Override
+    public Object getValue(){
+        return value;
+    }
+    @Override
+    public String getString(){
+        return str;
+    }
 }
