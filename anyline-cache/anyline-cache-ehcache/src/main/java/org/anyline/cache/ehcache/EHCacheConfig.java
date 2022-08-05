@@ -67,15 +67,15 @@ public class EHCacheConfig extends AnylineConfig {
 	private static void debug() {
 	}
 
-	public static EHCacheConfig register(String id, DataRow row) {
-		EHCacheConfig config = parse(EHCacheConfig.class, id, row, instances, compatibles);
+	public static EHCacheConfig register(String instance, DataRow row) {
+		EHCacheConfig config = parse(EHCacheConfig.class, instance, row, instances, compatibles);
 		return config;
 	}
-	public static EHCacheConfig register(String id, String key, String secret) {
+	public static EHCacheConfig register(String instance, String key, String secret) {
 		DataRow row = new DataRow();
 		row.put("ACCESS_KEY", key);
 		row.put("ACCESS_SECRET", secret);
-		EHCacheConfig config = parse(EHCacheConfig.class, id, row, instances, compatibles);
+		EHCacheConfig config = parse(EHCacheConfig.class, instance, row, instances, compatibles);
 		return config;
 	}
 }

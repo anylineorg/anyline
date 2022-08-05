@@ -78,7 +78,6 @@ public class NacosConfig extends AnylineConfig{
 			register("cloud", cloudAddress, 8848, cloudGroup, cloudNamespace, true, scanPackpage, scanClass);
 		}
 	}
-	//	public static NacosConfig register(String id, String address, int port, String group, String namespace, boolean auto, String pack, String clazz) {
 	/**
 	 * 解析配置文件内容
 	 * @param content 配置文件内容
@@ -119,7 +118,7 @@ public class NacosConfig extends AnylineConfig{
 
 	/**
 	 * 注册nacos实例
-	 * @param id “default”
+	 * @param instance “default”
 	 * @param address nacos 地址
 	 * @param port 端口
 	 * @param group group
@@ -146,11 +145,11 @@ public class NacosConfig extends AnylineConfig{
 		return config;
 	}
 
-	public static NacosConfig register(String id, String address, int port, String group, String namespace) {
-		return register(id, address, port, group, namespace, DEFAULT_AUTO_SCAN, null, null);
+	public static NacosConfig register(String instance, String address, int port, String group, String namespace) {
+		return register(instance, address, port, group, namespace, DEFAULT_AUTO_SCAN, null, null);
 	}
-	public static NacosConfig register(String id, String address, int port) {
-		return register(id, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, DEFAULT_AUTO_SCAN, null, null);
+	public static NacosConfig register(String instance, String address, int port) {
+		return register(instance, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, DEFAULT_AUTO_SCAN, null, null);
 	}
 	public static NacosConfig register(String address, int port) {
 		return register(DEFAULT_GROUP, address, port, DEFAULT_GROUP, DEFAULT_NAMESPACE, DEFAULT_AUTO_SCAN, null, null);

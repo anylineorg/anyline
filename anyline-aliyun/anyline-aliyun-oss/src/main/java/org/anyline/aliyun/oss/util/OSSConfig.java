@@ -96,8 +96,8 @@ public class OSSConfig extends AnylineConfig{
 		return config;
 	}
 
-	public static OSSConfig register(String id, String secret, String endpoint, String bucket, String dir, int expire) {
-		return register(DEFAULT_INSTANCE_KEY, id, secret, endpoint, bucket, dir, expire);
+	public static OSSConfig register(String instance, String secret, String endpoint, String bucket, String dir, int expire) {
+		return register(DEFAULT_INSTANCE_KEY, instance, secret, endpoint, bucket, dir, expire);
 	}
 
 } 
