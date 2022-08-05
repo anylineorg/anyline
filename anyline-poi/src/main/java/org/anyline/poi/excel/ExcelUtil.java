@@ -439,7 +439,8 @@ public class ExcelUtil {
 		}
 		String value = "";
 		//5.0.0 getCellType()
-		switch (cell.getCellTypeEnum()) {
+		//3.x getCellTypeEnum
+		switch (cell.getCellType()) {
 			case NUMERIC: // 数字
 				if (DateUtil.isCellDateFormatted(cell)) {
 					Date date = cell.getDateCellValue();

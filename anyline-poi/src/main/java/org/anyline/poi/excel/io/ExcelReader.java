@@ -49,16 +49,16 @@ public class ExcelReader {
 		if(list.size()>0) {
 			if (head != -1) {
 				//取第一行作为表头
-				List<String> headers = list.get(head);
+				List<String> headers = list.get(0);
 				int size = headers.size();
 				int rows = 0;
 				for(List<String> item:list){
-					if(rows ++ <= head){
+					if(rows ++ < (data-head)){
 						continue;
 					}
 					DataRow row = new DataRow();
 					for(int i=0; i<size; i++){
-						String key = headers.get(i);
+						String key = headers.get(i).trim();
 						String value = item.get(i);
 						row.put(key, value);
 					}
