@@ -24,6 +24,7 @@ import org.anyline.office.docx.util.DocxUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.FileUtil;
+import org.anyline.util.regular.RegularUtil;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.*;
@@ -79,6 +80,57 @@ public class ExcelUtil {
 	}
 
 	/**
+	 * 单元格内容定位
+	 * @param is 文件
+	 * @param sheet sheet
+	 * @param rows 开始行
+	 * @param cols 开始列
+	 * @param regex 匹配内容
+	 * @return
+	 */
+	public static int[] position(InputStream is, int sheet, int rows, int cols, String regex){
+		int row = -1;
+		int col = -1;
+		try {
+			Workbook workbook = getWorkbook(is);
+			Sheet st = workbook.getSheetAt(sheet);
+			int last = st.getLastRowNum();
+			for (int r = rows; r <= last; r++) {// 遍历行
+				List<String> list = new ArrayList<>();
+				Row line = st.getRow(r);
+				if(line != null){
+					int cells = line.getLastCellNum();// 表头总共的列数
+					for (int c = cols; c < cells; c++) {
+						Cell cell = line.getCell(c);
+						String value = null;
+						if(cell != null){
+							if(isMerged(st, r, c)){
+								value = getMergedRegionValue(st, r, c);
+							}else {
+								value = value(cell);
+							}
+						}else{
+							value = getMergedRegionValue(st, r, c);
+						}
+						if(null != value){
+							if(RegularUtil.match(value, regex)){
+								row = r;
+								col = c;
+								break;
+							}
+						}
+					}
+ 				}
+				if(row != -1){
+					break;
+				}
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return new int[]{row, col};
+	}
+	/**
 	 * 读取指定Sheet也的内容
 	 * @param is 输入流
 	 * @param sheet sheet序号,从0开始
@@ -87,10 +139,13 @@ public class ExcelUtil {
 	 *
 	 */
 	public static List<List<String>> read(InputStream is, int sheet, int rows) {
+		return read(is, sheet, rows, 0);
+	}
+	public static List<List<String>> read(InputStream is, int sheet, int rows, int foot) {
 		List<List<String>> list = null;
 		try {
 			Workbook workbook = getWorkbook(is);
-			list = read(workbook.getSheetAt(sheet), rows, 0);
+			list = read(workbook.getSheetAt(sheet), rows, foot);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -158,15 +213,18 @@ public class ExcelUtil {
 		return list;
 	}
 
-	public static List<List<String>> read(InputStream is, String sheet, int rows) {
+	public static List<List<String>> read(InputStream is, String sheet, int rows, int foot) {
 		List<List<String>> list = null;
 		try {
 			Workbook workbook = getWorkbook(is);
-			list = read(workbook.getSheet(sheet), rows, 0);
+			list = read(workbook.getSheet(sheet), rows, foot);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return list;
+	}
+	public static List<List<String>> read(InputStream is, String sheet, int rows) {
+		return read(is, sheet, rows, 0);
 	}
 	/**
 	 * 读取excel
