@@ -422,64 +422,131 @@ public class ExcelUtil {
 		return null ;
 	}
 
-	public static List<String> value(String path, int sheet, int row)  {
-		File xlsx = new File(path);
+	/**
+	 * 读取1行数据
+	 * @param file 文件
+	 * @param sheet sheet
+	 * @param row 行
+	 * @return List
+	 */
+	public static List<String> values(File file, int sheet, int row)  {
 		List<String> list = new ArrayList<>();
 		try {
-			Workbook workbook = WorkbookFactory.create(xlsx);
-			Sheet sheet1 = workbook.getSheetAt(sheet);
-			Row row1 = sheet1.getRow(row);
-			int rowNum = row1.getLastCellNum();
-			for (int i = 0; i < rowNum; i++) {
-				list.add(value(row1.getCell(i)));
-			}
+			Workbook workbook = WorkbookFactory.create(file);
+			return values(workbook.getSheetAt(sheet), row);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return list;
 	}
+	public static List<String> values(File file, String sheet, int row)  {
+		List<String> list = new ArrayList<>();
+		try {
+			Workbook workbook = WorkbookFactory.create(file);
+			return values(workbook.getSheet(sheet), row);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return list;
+	}
+	public static List<String> values(Sheet sheet, int row){
+		List<String> list = new ArrayList<>();
+		Row r = sheet.getRow(row);
+		int rowNum = r.getLastCellNum();
+		for (int i = 0; i < rowNum; i++) {
+			list.add(value(r.getCell(i)));
+		}
+		return list;
+	}
 
+	public static List<String> values(String path, int sheet, int row)  {
+		return values(new File(path), sheet, row);
+	}
+	public static List<String> values(String path, String sheet, int row)  {
+		return values(new File(path), sheet, row);
+	}
+	public static List<String> values(String path,  int row)  {
+		return values(new File(path), 0, row);
+	}
 
+	public static String value(Sheet sheet, int row, int col){
+		return value(sheet.getRow(row).getCell(col));
+	}
 	public static String value(String path, int sheet, int row, int col) {
 		File file = new File(path);
 		return value(file, sheet, row, col);
 	}
+	public static String value(Workbook workbook, int sheet, int row, int col){
+		return value(workbook.getSheetAt(sheet), row, col);
+	}
+	public static String value(Workbook workbook, String sheet, int row, int col){
+		return value(workbook.getSheet(sheet), row, col);
+	}
 	public static String value(File file, int sheet, int row, int col) {
-		String value = null;
 		try {
 			Workbook workbook = WorkbookFactory.create(file);
-			Sheet sheet1 = workbook.getSheetAt(sheet);
-			Row row1 = sheet1.getRow(row);
-			value = value(row1.getCell(col));
+			return value(workbook, sheet, row, col);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return value;
+		return null;
 	}
+
+	public static String value(File file, String sheet, int row, int col) {
+		try {
+			Workbook workbook = WorkbookFactory.create(file);
+			return value(workbook, sheet, row, col);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static String value(InputStream is, int sheet, int row, int col) {
+		try {
+			Workbook workbook = WorkbookFactory.create(is);
+			return value(workbook, sheet, row, col);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static String value(InputStream is, String sheet, int row, int col) {
+		try {
+			Workbook workbook = WorkbookFactory.create(is);
+			return value(workbook, sheet, row, col);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static void value(String path, int sheet, int row, int col, String value) {
-		File file = new File(path);
-		value(file, sheet, row, col, value);
+		value( new File(path), sheet, row, col, value);
+	}
+	public static void value(String path, int row, int col, String value) {
+		value( new File(path), 0, row, col, value);
+	}
+	public static void value(String path, String sheet, int row, int col, String value) {
+		value( new File(path), sheet, row, col, value);
 	}
 	public static void value(File file, int sheet, int row, int col, String value) {
-		OutputStream out = null;
+		OutputStream os = null;
 		try {
 			File tempFile = FileUtil.createTempFile(file);
 			FileInputStream is = new FileInputStream(tempFile);
-
 			Workbook workbook = new XSSFWorkbook(is);
-			Sheet sheet1 = workbook.getSheetAt(sheet);
-			value(sheet1, row, col, value);
+			value(workbook.getSheetAt(sheet), row, col, value);
 			is.close();
 			tempFile.delete();
-			out = new FileOutputStream(file);
-			workbook.write(out);
+			os = new FileOutputStream(file);
+			workbook.write(os);
 		}catch(Exception e){
 			e.printStackTrace();
 		}finally {
-			if(null != out) {
+			if(null != os) {
 				try {
-					out.flush();
-					out.close();
+					os.flush();
+					os.close();
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -487,56 +554,179 @@ public class ExcelUtil {
 			}
 		}
 	}
+	public static void value(File file, String sheet, int row, int col, String value) {
+		OutputStream os = null;
+		try {
+			File tempFile = FileUtil.createTempFile(file);
+			FileInputStream is = new FileInputStream(tempFile);
+			Workbook workbook = new XSSFWorkbook(is);
+			value(workbook.getSheet(sheet), row, col, value);
+			is.close();
+			tempFile.delete();
+			os = new FileOutputStream(file);
+			workbook.write(os);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally {
+			if(null != os) {
+				try {
+					os.flush();
+					os.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
 	public static void value(String path, int sheet, int row, int col, double value) {
-		File file = new File(path);
-		value(file, sheet, row, col, value);
+		value( new File(path), sheet, row, col, value);
+	}
+	public static void value(String path, int row, int col, double value) {
+		value( new File(path), 0, row, col, value);
+	}
+	public static void value(String path, String sheet, int row, int col, double value) {
+		value( new File(path), sheet, row, col, value);
 	}
 	public static void value(File file, int sheet, int row, int col, double value) {
+		OutputStream os = null;
 		try {
-			Workbook workbook = WorkbookFactory.create(file);
-			Sheet sheet1 = workbook.getSheetAt(sheet);
-			value(sheet1, row, col, value);
-		}catch (Exception e){
+			File tempFile = FileUtil.createTempFile(file);
+			FileInputStream is = new FileInputStream(tempFile);
+			Workbook workbook = new XSSFWorkbook(is);
+			value(workbook.getSheetAt(sheet), row, col, value);
+			is.close();
+			tempFile.delete();
+			os = new FileOutputStream(file);
+			workbook.write(os);
+		}catch(Exception e){
 			e.printStackTrace();
+		}finally {
+			if(null != os) {
+				try {
+					os.flush();
+					os.close();
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
+	public static void value(File file, String sheet, int row, int col, double value) {
+		OutputStream os = null;
+		try {
+			File tempFile = FileUtil.createTempFile(file);
+			FileInputStream is = new FileInputStream(tempFile);
+			Workbook workbook = new XSSFWorkbook(is);
+			value(workbook.getSheet(sheet), row, col, value);
+			is.close();
+			tempFile.delete();
+			os = new FileOutputStream(file);
+			workbook.write(os);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally {
+			if(null != os) {
+				try {
+					os.flush();
+					os.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+
 	public static void value(String path, int sheet, int row, int col, int value) {
-		File file = new File(path);
-		value(file, sheet, row, col, value);
+		value( new File(path), sheet, row, col, value);
+	}
+	public static void value(String path, String sheet, int row, int col, int value) {
+		value( new File(path), sheet, row, col, value);
 	}
 	public static void value(File file, int sheet, int row, int col, int value) {
+		OutputStream os = null;
 		try {
-			Workbook workbook = WorkbookFactory.create(file);
-			Sheet sheet1 = workbook.getSheetAt(sheet);
-			value(sheet1, row, col, value);
-		}catch (Exception e){
+			File tempFile = FileUtil.createTempFile(file);
+			FileInputStream is = new FileInputStream(tempFile);
+			Workbook workbook = new XSSFWorkbook(is);
+			value(workbook.getSheetAt(sheet), row, col, value);
+			is.close();
+			tempFile.delete();
+			os = new FileOutputStream(file);
+			workbook.write(os);
+		}catch(Exception e){
 			e.printStackTrace();
+		}finally {
+			if(null != os) {
+				try {
+					os.flush();
+					os.close();
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
 	}
-	public static String value(Sheet sheet, int row, int col){
-		Row row1 = sheet.getRow(row);
-		String value = value(row1.getCell(col));
-		return value;
-	}
-	public static String value(Sheet sheet, int row, int col, String value){
-		Row row1 = sheet.getRow(row);
-		if(null == row1){
-			row1 = sheet.createRow(row);
+	public static void value(File file, String sheet, int row, int col, int value) {
+		OutputStream os = null;
+		try {
+			File tempFile = FileUtil.createTempFile(file);
+			FileInputStream is = new FileInputStream(tempFile);
+			Workbook workbook = new XSSFWorkbook(is);
+			value(workbook.getSheet(sheet), row, col, value);
+			is.close();
+			tempFile.delete();
+			os = new FileOutputStream(file);
+			workbook.write(os);
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally {
+			if(null != os) {
+				try {
+					os.flush();
+					os.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		Cell cell = row1.getCell(col);
+	}
+
+	public static void value(Sheet sheet, int row, int col, String value){
+		Row r = sheet.getRow(row);
+		if(null == r){
+			r = sheet.createRow(row);
+		}
+		Cell cell = r.getCell(col);
 		if(null == cell){
-			cell = row1.createCell(col);
+			cell = r.createCell(col);
 		}
 		cell.setCellValue(value);
-		return value;
 	}
 	public static void value(Sheet sheet, int row, int col, double value){
-		Row row1 = sheet.getRow(row);
-		row1.getCell(col).setCellValue(value);
+		Row r = sheet.getRow(row);
+		if(null == r){
+			r = sheet.createRow(row);
+		}
+		Cell cell = r.getCell(col);
+		if(null == cell){
+			cell = r.createCell(col);
+		}
+		cell.setCellValue(value);
 	}
 	public static void value(Sheet sheet, int row, int col, int value){
-		Row row1 = sheet.getRow(row);
-		row1.getCell(col).setCellValue(value);
+		Row r = sheet.getRow(row);
+		if(null == r){
+			r = sheet.createRow(row);
+		}
+		Cell cell = r.getCell(col);
+		if(null == cell){
+			cell = r.createCell(col);
+		}
+		cell.setCellValue(value);
 	}
 
 	public static String value(Cell cell) {
