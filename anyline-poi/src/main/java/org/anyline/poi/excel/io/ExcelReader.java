@@ -5,6 +5,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.poi.excel.ExcelUtil;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
 public class ExcelReader {
@@ -14,13 +15,14 @@ public class ExcelReader {
 	private int foot = 0;		//表头行数
 	private int sheet = -1;
 	private String sheetName = null;
+	private InputStream is;
 
 	public static ExcelReader init(){
 		return new ExcelReader();
 	}
 	public DataSet read(){
 		DataSet set = new DataSet();
-		if(null == file || !file.exists()){
+		if(null == is &&(null == file || !file.exists())){
 			return set;
 		}
 		int fr = 0;
@@ -37,13 +39,26 @@ public class ExcelReader {
 		}
 
 		List<List<String>> list = null;
-		if(sheet != -1) {
-			list = ExcelUtil.read(file, sheet, fr, foot);
-		}else{
-			if(null != sheetName){
-				list = ExcelUtil.read(file, sheetName, fr, foot);
-			}else{
-				list = ExcelUtil.read(file, 0, fr, foot);
+		if(null != is){
+			if (sheet != -1) {
+				list = ExcelUtil.read(is, sheet, fr, foot);
+			} else {
+				if (null != sheetName) {
+					list = ExcelUtil.read(is, sheetName, fr, foot);
+				} else {
+					list = ExcelUtil.read(is, 0, fr, foot);
+				}
+			}
+
+		}else {
+			if (sheet != -1) {
+				list = ExcelUtil.read(file, sheet, fr, foot);
+			} else {
+				if (null != sheetName) {
+					list = ExcelUtil.read(file, sheetName, fr, foot);
+				} else {
+					list = ExcelUtil.read(file, 0, fr, foot);
+				}
 			}
 		}
 		if(list.size()>0) {
@@ -111,6 +126,15 @@ public class ExcelReader {
 	}
 	public ExcelReader setSheet(String sheet) {
 		this.sheetName = sheet;
+		return this;
+	}
+
+	public InputStream getInputStream() {
+		return this.is;
+	}
+
+	public ExcelReader setInputStream(final InputStream is) {
+		this.is = is;
 		return this;
 	}
 }
