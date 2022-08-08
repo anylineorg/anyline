@@ -17,6 +17,7 @@
  */
 package org.anyline.poi.excel;
 
+import jdk.internal.util.xml.impl.Input;
 import org.anyline.entity.html.Table;
 import org.anyline.entity.html.Td;
 import org.anyline.entity.html.Tr;
@@ -439,10 +440,36 @@ public class ExcelUtil {
 		}
 		return list;
 	}
+	public static List<String> values(InputStream is, int sheet, int row)  {
+		List<String> list = new ArrayList<>();
+		try {
+			Workbook workbook = WorkbookFactory.create(is);
+			return values(workbook.getSheetAt(sheet), row);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return list;
+	}
+	public static List<String> values(InputStream is, int row)  {
+		return values(is, 0, row);
+	}
+	public static List<String> values(File file, int row)  {
+		return values(file, 0, row);
+	}
 	public static List<String> values(File file, String sheet, int row)  {
 		List<String> list = new ArrayList<>();
 		try {
 			Workbook workbook = WorkbookFactory.create(file);
+			return values(workbook.getSheet(sheet), row);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return list;
+	}
+	public static List<String> values(InputStream is, String sheet, int row)  {
+		List<String> list = new ArrayList<>();
+		try {
+			Workbook workbook = WorkbookFactory.create(is);
 			return values(workbook.getSheet(sheet), row);
 		}catch (Exception e){
 			e.printStackTrace();
@@ -472,6 +499,7 @@ public class ExcelUtil {
 	public static String value(Sheet sheet, int row, int col){
 		return value(sheet.getRow(row).getCell(col));
 	}
+
 	public static String value(String path, int sheet, int row, int col) {
 		File file = new File(path);
 		return value(file, sheet, row, col);
@@ -491,7 +519,6 @@ public class ExcelUtil {
 		}
 		return null;
 	}
-
 	public static String value(File file, String sheet, int row, int col) {
 		try {
 			Workbook workbook = WorkbookFactory.create(file);
@@ -520,6 +547,9 @@ public class ExcelUtil {
 		return null;
 	}
 
+	public static String value(InputStream is, int row, int col) {
+		return value(is, 0, row, col);
+	}
 	public static void value(String path, int sheet, int row, int col, String value) {
 		value( new File(path), sheet, row, col, value);
 	}
