@@ -1749,11 +1749,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @param keys this与data中的key不同时 "this.key:data.key"(CD:ORDER_CD)
      * @return DataRow
      */
-    public DataRow copy(DataRow data, String[] fixs, String... keys) {
+    public DataRow copy(boolean regex, DataRow data, String[] fixs, String... keys) {
         return copy(data, BeanUtil.array2list(fixs, keys));
     }
 
-    public DataRow copy(DataRow data, String... keys) {
+    public DataRow copy(boolean regex, DataRow data, String... keys) {
         if (null == data) {
             return this;
         }
@@ -1764,9 +1764,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
 
     }
-
-
-    public DataRow copy(DataRow data, List<String> fixs, String... keys) {
+    public DataRow copy(boolean regex, DataRow data, List<String> fixs, String... keys) {
         if (null == data || data.isEmpty()) {
             return this;
         }
@@ -1782,21 +1780,39 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
+    public DataRow copy(DataRow data, String[] fixs, String... keys) {
+        return copy(false, data, fixs);
+    }
+
+    public DataRow copy(DataRow data, String... keys) {
+        return copy(false, data, keys);
+    }
+    public DataRow copy(DataRow data, List<String> fixs, String... keys) {
+        return copy(false, data, fixs, keys);
+    }
     /**
      * 抽取指定列,生成新的DataRow,新的DataRow只包括指定列的值,不包含其他附加信息(如来源表)
      * @param keys keys
      * @return DataRow
      */
-    public DataRow extract(String... keys) {
+    public DataRow extract(boolean regex, String... keys) {
         DataRow result = new DataRow();
-        result.copy(this, keys);
+        result.copy(regex,this, keys);
         return result;
     }
 
-    public DataRow extract(List<String> keys) {
+    public DataRow extract(boolean regex, List<String> keys) {
         DataRow result = new DataRow();
-        result.copy(this, keys);
+        result.copy(regex,this, keys);
         return result;
+    }
+
+    public DataRow extract(String... keys) {
+        return extract(false, keys);
+    }
+
+    public DataRow extract(List<String> keys) {
+       return extract(false, keys);
     }
 
     /**

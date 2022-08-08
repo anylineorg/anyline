@@ -2080,24 +2080,35 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     /**
      * 抽取指定列生成新的DataSet 新的DataSet只包括指定列的值与分页信息,不包含其他附加信息(如来源表)
+     * @param regex 是否开启正则匹配
      * @param keys keys
      * @return DataSet
      */
-    public DataSet extract(String ... keys){
-        return extract(BeanUtil.array2list(keys));
+    public DataSet extract(boolean regex, String ... keys){
+        return extract(regex, BeanUtil.array2list(keys));
     }
-    public DataSet extract(String[] fixs, String ... keys){
-        return extract(BeanUtil.array2list(fixs, keys));
+    public DataSet extract(boolean regex, String[] fixs, String ... keys){
+        return extract(regex, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet extract(List<String> fixs, String ... keys){
+    public DataSet extract(boolean regex, List<String> fixs, String ... keys){
         DataSet result = new DataSet();
         List<String> list = BeanUtil.merge(fixs, keys);
         for(DataRow row:rows){
-            DataRow item = row.extract(list);
+            DataRow item = row.extract(regex, list);
             result.add(item);
         }
         result.navi = this.navi;
         return result;
+    }
+
+    public DataSet extract(String ... keys){
+        return extract(false,keys);
+    }
+    public DataSet extract(String[] fixs, String ... keys){
+        return extract(false, fixs, keys);
+    }
+    public DataSet extract(List<String> fixs, String ... keys){
+        return extract(false, fixs, keys);
     }
     /**
      * html格式(未实现)
