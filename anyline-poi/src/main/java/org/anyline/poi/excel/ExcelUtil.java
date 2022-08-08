@@ -79,6 +79,42 @@ public class ExcelUtil {
 		return list;
 	}
 
+	public static int[] position(Sheet sheet, int rows, int cols, String regex){
+		int row = -1;
+		int col = -1;
+		int last = sheet.getLastRowNum();
+		for (int r = rows; r <= last; r++) {// 遍历行
+			List<String> list = new ArrayList<>();
+			Row line = sheet.getRow(r);
+			if(line != null){
+				int cells = line.getLastCellNum();// 表头总共的列数
+				for (int c = cols; c < cells; c++) {
+					Cell cell = line.getCell(c);
+					String value = null;
+					if(cell != null){
+						if(isMerged(sheet, r, c)){
+							value = getMergedRegionValue(sheet, r, c);
+						}else {
+							value = value(cell);
+						}
+					}else{
+						value = getMergedRegionValue(sheet, r, c);
+					}
+					if(null != value){
+						if(RegularUtil.match(value, regex)){
+							row = r;
+							col = c;
+							break;
+						}
+					}
+				}
+			}
+			if(row != -1){
+				break;
+			}
+		}
+		return new int[]{row, col};
+	}
 	/**
 	 * 单元格内容定位
 	 * @param is 文件
@@ -89,46 +125,59 @@ public class ExcelUtil {
 	 * @return
 	 */
 	public static int[] position(InputStream is, int sheet, int rows, int cols, String regex){
-		int row = -1;
-		int col = -1;
-		try {
+		try{
 			Workbook workbook = getWorkbook(is);
-			Sheet st = workbook.getSheetAt(sheet);
-			int last = st.getLastRowNum();
-			for (int r = rows; r <= last; r++) {// 遍历行
-				List<String> list = new ArrayList<>();
-				Row line = st.getRow(r);
-				if(line != null){
-					int cells = line.getLastCellNum();// 表头总共的列数
-					for (int c = cols; c < cells; c++) {
-						Cell cell = line.getCell(c);
-						String value = null;
-						if(cell != null){
-							if(isMerged(st, r, c)){
-								value = getMergedRegionValue(st, r, c);
-							}else {
-								value = value(cell);
-							}
-						}else{
-							value = getMergedRegionValue(st, r, c);
-						}
-						if(null != value){
-							if(RegularUtil.match(value, regex)){
-								row = r;
-								col = c;
-								break;
-							}
-						}
-					}
- 				}
-				if(row != -1){
-					break;
-				}
-			}
+			return position(workbook.getSheetAt(sheet), rows, cols, regex);
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return new int[]{row, col};
+		return new int[]{-1,-1};
+	}
+	public static int[] position(InputStream is, String sheet, int rows, int cols, String regex){
+		try{
+			Workbook workbook = getWorkbook(is);
+			return position(workbook.getSheet(sheet), rows, cols, regex);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return new int[]{-1,-1};
+	}
+	public static int[] position(InputStream is, int sheet, String regex){
+		return position(is, sheet, 0, 0, regex);
+	}
+	public static int[] position(InputStream is, String sheet, String regex){
+		return position(is, sheet, 0, 0, regex);
+	}
+	public static int[] position(InputStream is, String regex){
+		return position(is, 0, 0, 0, regex);
+	}
+
+	public static int[] position(File file, int sheet, int rows, int cols, String regex){
+		try{
+			Workbook workbook = getWorkbook(file);
+			return position(workbook.getSheetAt(sheet), rows, cols, regex);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return new int[]{-1,-1};
+	}
+	public static int[] position(File file, String sheet, int rows, int cols, String regex){
+		try{
+			Workbook workbook = getWorkbook(file);
+			return position(workbook.getSheet(sheet), rows, cols, regex);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return new int[]{-1,-1};
+	}
+	public static int[] position(File file, int sheet, String regex){
+		return position(file, sheet, 0, 0, regex);
+	}
+	public static int[] position(File file, String sheet, String regex){
+		return position(file, sheet, 0, 0, regex);
+	}
+	public static int[] position(File file, String regex){
+		return position(file, 0, 0, 0, regex);
 	}
 	/**
 	 * 读取指定Sheet也的内容
