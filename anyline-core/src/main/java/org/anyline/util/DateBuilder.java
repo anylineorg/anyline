@@ -80,8 +80,14 @@ public class DateBuilder{
 	public boolean before(Date date){
 		return this.date.getTime() < date.getTime();
 	}
+	public boolean before(){
+		return this.date.getTime() < new Date().getTime();
+	}
 	public boolean after(Date date){
 		return this.date.getTime() > date.getTime();
+	}
+	public boolean after(){
+		return this.date.getTime() > new Date().getTime();
 	}
 	public boolean equal(Date date){
 		return this.date.getTime() == date.getTime();
