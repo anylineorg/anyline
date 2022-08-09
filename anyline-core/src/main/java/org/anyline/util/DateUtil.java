@@ -1415,6 +1415,9 @@ public class DateUtil {
 	public static int year() {
 		return year(new Date());
 	}
+	public static int year(String date) {
+		return year(parse(date));
+	}
 
 	/**
 	 * 月份
@@ -1425,6 +1428,9 @@ public class DateUtil {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
 		return calendar.get(Calendar.MONTH)+1;
+	}
+	public static int month(String date) {
+		return month(parse(date));
 	}
 
 	public static int month() {
