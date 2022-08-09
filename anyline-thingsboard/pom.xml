@@ -46,7 +46,7 @@
             <artifactId>data</artifactId>
             <version>3.1.1</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/lib/data-3.1.1.jar</systemPath>
+            <systemPath>${basedir}/src/main/lib/data-3.1.1.jar</systemPath>
             <!--在这里下载  https://repo.thingsboard.io/artifactory/libs-release-public/org/thingsboard/common/data//-->
         </dependency>
     </dependencies>

@@ -11,9 +11,9 @@
         <relativePath>../anyline-dependency-web</relativePath>
     </parent>
 
-    <artifactId>anyline-tencent</artifactId>
+    <artifactId>anyline-tencent-cloud</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-tencent</name>
+    <name>anyline-tencent-cloud</name>
     <url>http://www.anyline.org/tencent</url>
 
     <dependencies>
