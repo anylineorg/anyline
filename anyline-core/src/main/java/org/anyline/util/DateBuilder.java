@@ -34,18 +34,19 @@ public class DateBuilder{
 	public DateBuilder(){
 
 	}
-	public DateBuilder init(){
+	public static DateBuilder init(){
 		return new DateBuilder();
 	}
-	public DateBuilder init(String date){
+	public static DateBuilder init(String date){
 		return new DateBuilder(date);
 	}
-	public DateBuilder init(String date, String format){
+	public static DateBuilder init(String date, String format){
 		return new DateBuilder(date, format);
 	}
-	public DateBuilder init(Date date){
+	public static DateBuilder init(Date date){
 		return new DateBuilder(date);
 	}
+
 	public Date getDate(){
 		return date;
 	}
