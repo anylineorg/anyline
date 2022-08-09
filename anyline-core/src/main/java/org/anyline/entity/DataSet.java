@@ -2097,7 +2097,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
             DataRow item = row.extract(regex, list);
             result.add(item);
         }
-        result.navi = this.navi;
+        result.navi = navi;
         return result;
     }
 

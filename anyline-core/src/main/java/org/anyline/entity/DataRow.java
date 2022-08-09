@@ -1743,6 +1743,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 将数据从data中复制到this
+     * @param regex 是否开启正则匹配
      * @param data data
      * @param fixs fixs
      * @param data data
@@ -1793,6 +1794,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     /**
      * 抽取指定列,生成新的DataRow,新的DataRow只包括指定列的值,不包含其他附加信息(如来源表)
      * @param keys keys
+     * @param regex 是否开启正则匹配
      * @return DataRow
      */
     public DataRow extract(boolean regex, String... keys) {
