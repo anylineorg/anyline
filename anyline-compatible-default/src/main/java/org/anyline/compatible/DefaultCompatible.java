@@ -84,7 +84,13 @@ public class DefaultCompatible implements Compatible{
 
     @Override
     public <T> T entity(Class<T> clazz, Map<String, Object> map) {
+        List<Field> fields = ClassUtil.getFields(clazz);
+        Map<Field,String> fk = new HashMap<>();
         T entity = BeanUtil.map2object(map, clazz, false, true, true);
+        for(Field field:fields){
+            String column = column(clazz, field);
+            BeanUtil.setFieldValue(entity, field, map.get(column));
+        }
         return entity;
     }
 
