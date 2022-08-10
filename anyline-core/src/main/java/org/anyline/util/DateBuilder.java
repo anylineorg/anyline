@@ -114,6 +114,22 @@ public class DateBuilder{
 		return DateUtil.getWeek(date);
 	}
 
+	/**
+	 * 年份
+	 * @return int
+	 */
+	public int year() {
+		return DateUtil.year(date);
+	}
+
+	/**
+	 * 月份
+	 * @return int
+	 */
+	public int month() {
+		return DateUtil.month(date);
+	}
+
 
 	/**
 	 * 当周第一天
@@ -232,14 +248,16 @@ public class DateBuilder{
 		return this;
 	}
 
-	// 获得本周星期日的日期
+	// 本周星期日的日期
 	public DateBuilder currentWeekday() {
 		date =  DateUtil.getCurrentWeekday(date);
 		return this;
 	}
-
-
-	// 获得下周星期一的日期
+ 
+    /**
+     *下周星期一的日期
+     * @return DateBuilder
+     */
 	public DateBuilder mondayOFWeek() {
 		date = DateUtil.getMondayOFWeek(date);
 		return this;
@@ -251,7 +269,7 @@ public class DateBuilder{
 		return this;
 	}
 
-	// 获得下周星期日的日期
+	// 下周星期日的日期
 	public DateBuilder nextSunday() {
 		date = DateUtil.getNextSunday(date);
 		return this;
@@ -260,7 +278,8 @@ public class DateBuilder{
 
 
 	/**
-	 * 获得明年最后一天的日期
+	 * 明年最后一天的日期
+	 * @return DateBuilder
 	 */
 	public DateBuilder nextYearEnd() {
 		date = DateUtil.getNextYearEnd(date);
@@ -268,7 +287,8 @@ public class DateBuilder{
 	}
 
 	/**
-	 * 获得明年第一天的日期
+	 * 明年第一天的日期
+     * @return DateBuilder
 	 */
 	public DateBuilder nextYearFirst() {
 		date = DateUtil.getNextYearFirst(date);

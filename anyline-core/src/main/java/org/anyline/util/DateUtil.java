@@ -555,7 +555,7 @@ public class DateUtil {
 		return getLastDayOfNextMonth(new Date());
 	}
 
-	// 获得本周星期日的日期
+	// 本周星期日的日期
 	public static Date getCurrentWeekday(Date date) {
 		Calendar calendar = getCalendar();
 		int mondayPlus = getMondayPlus(date);
@@ -572,11 +572,11 @@ public class DateUtil {
 		return getCurrentWeekday(new Date());
 	}
 
-	// 获得当前日期与本周日相差的天数
+	// 当前日期与本周日相差的天数
 	public static int getMondayPlus(Date date) {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
-		// 获得今天是一周的第几天,星期日是第一天,星期二是第二天......
+		// 今天是一周的第几天,星期日是第一天,星期二是第二天......
 		int dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1; // 因为按中国礼拜一作为第一天所以这里减1
 		if (dayOfWeek == 1) {
 			return 0;
@@ -589,7 +589,7 @@ public class DateUtil {
 		return getMondayPlus(new Date());
 	}
 
-	// 获得本周一的日期
+	// 本周一的日期
 	public static Date getMondayOFWeek(Date date) {
 		Calendar calendar = getCalendar();
 		int mondayPlus = getMondayPlus(date);
@@ -606,7 +606,7 @@ public class DateUtil {
 		return getMondayOFWeek(new Date());
 	}
 
-	// 获得下周星期一的日期
+	// 下周星期一的日期
 	public static Date getNextMonday(Date date) {
 		Calendar calendar = getCalendar();
 		int mondayPlus = getMondayPlus(date);
@@ -623,7 +623,7 @@ public class DateUtil {
 		return getNextMonday(new Date());
 	}
 
-	// 获得下周星期日的日期
+	// 下周星期日的日期
 	public static Date getNextSunday(Date date) {
 		Calendar calendar = getCalendar();
 		int mondayPlus = getMondayPlus(date);
@@ -656,7 +656,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 获得明年最后一天的日期
+	 * 明年最后一天的日期
 	 * @param date 日期
 	 * @return Date
 	 */
@@ -678,7 +678,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 获得明年第一天的日期
+	 * 明年第一天的日期
 	 * @param date 日期
 	 * @return Date
 	 */
@@ -744,7 +744,7 @@ public class DateUtil {
 	private static int getYearPlus(Date date) {
 		Calendar calendar = getCalendar();
 		calendar.setTime(date);
-		int yearOfNumber = calendar.get(Calendar.DAY_OF_YEAR);// 获得当天是一年中的第几天
+		int yearOfNumber = calendar.get(Calendar.DAY_OF_YEAR);// 当天是一年中的第几天
 		calendar.set(Calendar.DAY_OF_YEAR, 1);// 把日期设为当年第一天
 		calendar.roll(Calendar.DAY_OF_YEAR, -1);// 把日期回滚一天.
 		int MaxYear = calendar.get(Calendar.DAY_OF_YEAR);
@@ -757,7 +757,7 @@ public class DateUtil {
 
 
 	/**
-	 * 获得本年第一天的日期
+	 * 本年第一天的日期
 	 * @param date 日期
 	 * @return Date
 	 */
@@ -778,7 +778,7 @@ public class DateUtil {
 	}
 
 	/**
-	 * 获得本年最后一天的日期
+	 * 本年最后一天的日期
 	 * @param date 日期
 	 * @return String
 	 */
@@ -798,7 +798,7 @@ public class DateUtil {
 
 
 	/**
-	 * 获得上年第一天的日期
+	 * 上年第一天的日期
 	 * @param date 日期
 	 * @return String
 	 */
