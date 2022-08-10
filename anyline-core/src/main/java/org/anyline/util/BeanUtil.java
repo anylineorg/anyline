@@ -478,11 +478,12 @@ public class BeanUtil {
 	 * @param recursion 是否递归
 	 * @param ignoreCase 是否忽略大小写
 	 * @param ignoreSplit 是否忽略分隔符号
+	 * @param keys field:key对照关系
 	 * @return T
 	 * @param <T> T
 	 */
 	@SuppressWarnings("rawtypes")
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit){
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
 		T obj = null;
 		try {
 			obj = (T)clazz.newInstance();
@@ -496,12 +497,25 @@ public class BeanUtil {
 				Field field = ClassUtil.getField(fields, k, ignoreCase, ignoreSplit);
 				setFieldValue(obj, field, v);
 			}
+			if(null != keys){
+				for(String key:keys){
+					String f = key;
+					String k = key;
+					String[] tmp = key.split(":");
+					if(tmp.length > 1){
+						f = tmp[0];
+						k = tmp[1];
+					}
+					Object v = map.get(k);
+					setFieldValue(obj, f, v);
+				}
+			}
 		}catch(Exception e){
 			e.printStackTrace();
 		}
 		return obj;
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz){
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, String ... keys){
 		return map2object(map, clazz, false, false, false);
 	}
 	public static <T> T json2oject(String json, Class<T> clazz, JsonInclude.Include include){
