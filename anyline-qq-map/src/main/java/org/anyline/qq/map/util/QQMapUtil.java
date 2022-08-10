@@ -61,6 +61,55 @@ public class QQMapUtil {
         sign = MD5Util.crypto(src);
         return sign;
     }
+
+    /**
+     * 通过IP地址获取其当前所在地理位置
+     * @param ip
+     * @return
+     */
+    public MapPoint ip(String ip){
+        MapPoint point = null;
+        String api = "/ws/location/v1/ip";
+        Map<String, Object> params = new HashMap<>();
+        params.put("ip", ip);
+        params.put("key", config.KEY);
+        String sign = sign(api, params);
+        String url = QQMapConfig.HOST + api+"?"+BeanUtil.map2string(params, false,true)+"&sig="+sign;
+        String txt = HttpUtil.get(url).getText();
+        DataRow row = DataRow.parseJson(txt);
+        if(null != row){
+            int status = row.getInt("status",-1);
+            if(status != 0){
+                log.warn("[IP地址解析][执行失败][instance:{}][code:{}][info:{}]", config.INSTANCE_KEY, status, row.getString("message"));
+                return null;
+            }else{
+                point = new MapPoint();
+                DataRow result = row.getRow("result");
+                if(null != result) {
+                    DataRow location = result.getRow("location");
+                    if(null != location){
+                        point.setLng(location.getDouble("lng", -1));
+                        point.setLat(location.getDouble("lat", -1));
+                    }
+                    DataRow ad = result.getRow("ad_info");
+                    if(null != ad){
+                        point.setProvinceName(ad.getString("province"));
+                        point.setCityName(ad.getString("city"));
+                        point.setDistrictName(ad.getString("district"));
+                        point.setDistrictCode(ad.getString("adcode"));
+                    }
+                }
+            }
+        }
+        return point;
+    }
+
+    /**
+     * 逆地址解析
+     * @param lng 经度
+     * @param lat 纬度
+     * @return MapPoint
+     */
     public MapPoint regeo(String lng, String lat){
         MapPoint point = null;
         String api = "/ws/geocoder/v1";
