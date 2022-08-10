@@ -115,13 +115,13 @@ public class ExcelUtil {
 		return new int[]{row, col};
 	}
 	/**
-	 * 单元格内容定位
+	 * 根据内容(正则)定位单元格
 	 * @param is 文件
 	 * @param sheet sheet
 	 * @param rows 开始行
 	 * @param cols 开始列
 	 * @param regex 匹配内容
-	 * @return
+	 * @return int[]
 	 */
 	public static int[] position(InputStream is, int sheet, int rows, int cols, String regex){
 		try{
