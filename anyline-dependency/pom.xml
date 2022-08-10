@@ -111,7 +111,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-aliyun</artifactId>
+				<artifactId>anyline-aliyun-oss</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
