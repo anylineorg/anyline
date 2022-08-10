@@ -28,6 +28,8 @@ public class MapPoint {
 			} 
 		} 
 	}
+	public MapPoint(){
+	}
 	public MapPoint(String lng, String lat){
 		this.lng = BasicUtil.parseDouble(lng,0d);
 		this.lat = BasicUtil.parseDouble(lat,0d);
