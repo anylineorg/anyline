@@ -515,6 +515,19 @@ public class BeanUtil {
 		}
 		return obj;
 	}
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+		T obj = map2object(map, clazz, recursion, ignoreCase, ignoreSplit);
+		for(Map.Entry item:fields.entrySet()){
+			Field field = (Field)item.getKey();
+			String column = (String)item.getValue();
+			Object value = map.get(column);
+			setFieldValue(obj, field, value);
+		}
+		return obj;
+	}
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map<Field, String> fields){
+		return map2object(map, clazz, false, false, false, fields);
+	}
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz, String ... keys){
 		return map2object(map, clazz, false, false, false);
 	}
