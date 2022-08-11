@@ -4,6 +4,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
+import org.anyline.util.ConfigTable;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -14,10 +15,11 @@ import java.util.Map;
 
 @Component("anyline.compatible.default")
 public class DefaultCompatible implements Compatible{
-    private static Map<String,String> class2table   = new HashMap<>();  // class.name > table.name
-    private static Map<String,String> field2column  = new HashMap<>();  // class.name:field.name > column.name
-    private static Map<String,Field> column2field   = new HashMap<>();  // column.name > field
-    private static Map<String,List<String>> primary = new HashMap<>();  // 主键
+    private static Map<String,String> class2table    = new HashMap<>();  // class.name > table.name
+    private static Map<String,String> field2column   = new HashMap<>();  // class.name:field.name > column.name
+    private static Map<String,Field> column2field    = new HashMap<>();  // column.name > field
+    private static Map<String,List<String>> primarys = new HashMap<>();  // 主键
+    private static Map<String,List<String>> columns  = new HashMap<>();
     @Override
     public String table(Class clazz) {
         String key = clazz.getName();
@@ -40,18 +42,24 @@ public class DefaultCompatible implements Compatible{
 
     @Override
     public List<String> columns(Class clazz) {
-        List<String> columns = new ArrayList<>();
-        List<Field> fields = ClassUtil.getFields(clazz);
-        for(Field field:fields){
-            String column = column(clazz, field);
-            columns.add(column);
+        List<String> columns = DefaultCompatible.columns.get(clazz.getName());
+        if(null == columns) {
+            columns = new ArrayList<>();
+            List<Field> fields = ClassUtil.getFields(clazz);
+            List<Field> ignores = ClassUtil.getFieldsByAnnotation(clazz, "Transient");
+            fields.removeAll(ignores);
+            for (Field field : fields) {
+                String column = column(clazz, field);
+                columns.add(column);
+            }
+            DefaultCompatible.columns.put(clazz.getName(),columns);
         }
         return columns;
     }
 
     @Override
     public String column(Class clazz, Field field) {
-        String key = clazz.getName()+":"+field.getName();
+        String key = clazz.getName()+":"+field.getName().toUpperCase();
         //1.缓存
         String name = field2column.get(key);
         if(BasicUtil.isNotEmpty(name)){
@@ -60,21 +68,29 @@ public class DefaultCompatible implements Compatible{
         //2.注解
         name = ClassUtil.parseAnnotationFieldValue(field, "column.name", "column.value", "TableField.name","TableField.value","TableId.value");
         if(BasicUtil.isNotEmpty(name)){
-            field2column.put(key, name.toString());
-            column2field.put(clazz.getName()+":"+name, field);
+            field2column.put(key, name);
+            column2field.put(clazz.getName()+":"+name.toUpperCase(), field);
             return name;
         }
-        //3.属性名
+
+        //3.属性名转成列名
+        if("camel_".equals(ConfigTable.getString("ENTITY_FIELD_COLUMN_MAP"))){
+            name = BeanUtil.camel_(field.getName());
+            field2column.put(key, name);
+            column2field.put(clazz.getName()+":"+name.toUpperCase(), field);
+            return name;
+        }
+        //4.属性名
         name = field.getName();
-        field2column.put(key, name.toString());
-        column2field.put(clazz.getName()+":"+name, field);
+        field2column.put(key, name);
+        column2field.put(clazz.getName()+":"+name.toUpperCase(), field);
 
         return name;
     }
 
     @Override
     public Field field(Class clazz, String column) {
-        return column2field.get(clazz.getName()+":"+column);
+        return column2field.get(clazz.getName()+":"+column.toUpperCase());
     }
 
     @Override
@@ -88,11 +104,19 @@ public class DefaultCompatible implements Compatible{
 
     @Override
     public List<String> primaryKeys(Class clazz) {
-        List<String> list = primary.get(clazz.getName());
+        List<String> list = primarys.get(clazz.getName());
         if(null == list) {
             list = new ArrayList<>();
-            List<Field> fields = ClassUtil.searchFieldsByAnnotation(clazz, "TableId", "Id");
+            List<Field> fields = ClassUtil.getFieldsByAnnotation(clazz, "TableId", "Id");
             for (Field field : fields) {
+                String name = column(clazz, field);
+                if (BasicUtil.isNotEmpty(name)) {
+                    list.add(name);
+                }
+            }
+            fields = ClassUtil.getFields(clazz);
+            Field field = ClassUtil.getField(fields, DataRow.DEFAULT_PRIMARY_KEY, true, true);
+            if(null != field){
                 String name = column(clazz, field);
                 if (BasicUtil.isNotEmpty(name)) {
                     list.add(name);
@@ -101,7 +125,7 @@ public class DefaultCompatible implements Compatible{
             if (list.size() == 0) {
                 list.add(DataRow.DEFAULT_PRIMARY_KEY);
             }
-            primary.put(clazz.getName(), list);
+            primarys.put(clazz.getName(), list);
         }
         return list;
     }
@@ -121,7 +145,8 @@ public class DefaultCompatible implements Compatible{
     @Override
     public Map<String, Object> primaryValue(Object obj) {
         String primary = primaryKey(obj.getClass());
-        Object value = BeanUtil.getFieldValue(obj, primary);
+        Field field = column2field.get(obj.getClass().getName()+":"+primary.toUpperCase());
+        Object value = BeanUtil.getFieldValue(obj, field);
         Map<String,Object> map = new HashMap<>();
         map.put(primary, value);
         return map;
@@ -132,7 +157,8 @@ public class DefaultCompatible implements Compatible{
         List<String> primarys = primaryKeys(obj.getClass());
         Map<String,Object> map = new HashMap<>();
         for(String primary:primarys){
-            Object value = BeanUtil.getFieldValue(obj, primary);
+            Field field = column2field.get(obj.getClass().getName()+":"+primary.toUpperCase());
+            Object value = BeanUtil.getFieldValue(obj, field);
             map.put(primary, value);
         }
         return map;
