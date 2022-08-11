@@ -72,7 +72,7 @@ public class ClassUtil {
 	public static List<Class<?>> list(String packageName, boolean recursion, Class<?> ... bases){
 		List<Class<?>> list = new ArrayList<Class<?>>();
 		try {
-			List<String> names = getClassNameList(packageName, recursion);
+			List<String> names = getClassNames(packageName, recursion);
 			for (String name : names) {
 				try {
 					if(name.startsWith("java")){
@@ -93,10 +93,10 @@ public class ClassUtil {
 	}
 
 
-	public static List<String> nameList(String packageName, boolean recursion, Class<?> ... bases){
+	public static List<String> names(String packageName, boolean recursion, Class<?> ... bases){
 		List<String> list = new ArrayList<>();
 		try {
-			List<String> names = getClassNameList(packageName, recursion);
+			List<String> names = getClassNames(packageName, recursion);
 			for (String name : names) {
 				try {
 					Class<?> c = Class.forName(name);
@@ -155,7 +155,7 @@ public class ClassUtil {
 	 * @return 类的完整名称
 	 * @throws UnsupportedEncodingException
 	 */
-	private static List<String> getClassNameList(String packageName, boolean childPackage) throws IOException {
+	private static List<String> getClassNames(String packageName, boolean childPackage) throws IOException {
 		List<String> fileNames = new ArrayList<>();
 		log.warn("[正在加载本地类][package:{}]",packageName);
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
@@ -312,7 +312,7 @@ public class ClassUtil {
 	 * 注解名与属性名不区分大小写
 	 * *表示任意字符
 	 * @param target 属性
-	 * @param annotation 注解类名 如: *, Table*
+	 * @param annotation 注解类名 支持模糊匹配 如: *, Table*
 	 * @param field 属性名 如: *, value, name, *package*
 	 * @param qty 最多取几个值 -1:不限制
 	 * @return List
@@ -489,6 +489,33 @@ public class ClassUtil {
 		}
 		return list;
 	}
+	/**
+	 * 查询指定类的有annotation注解的属性
+	 * @param clazz  clazz
+	 * @param annotations  annotation 支持模糊匹配，不区分大小写 如 Table*
+	 * @return List
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List<Field> searchFieldsByAnnotation(Class clazz, String ... annotations){
+		List<Field> list = new ArrayList<Field>();
+		try{
+			List<Field> fields = getFields(clazz);
+			for(Field field:fields){
+				Annotation[] ans = field.getAnnotations();
+				for(Annotation an:ans){
+					for(String annotation:annotations){
+						if(match(an.getClass().getSimpleName(), annotation)){
+							list.add(field);
+							break;
+						}
+					}
+				}
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return list;
+	}
 
 	/**
 	 * pack包下的所有类 不包括jar包中定义类
@@ -538,5 +565,44 @@ public class ClassUtil {
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * 根据注解名与注解类属性 获取指定类上的注解值
+	 * @param clazz clazz上的注解
+	 * @param configs 注册名.注解属性名,不区分大小写 支持模糊匹配 如 *Table.ID*
+	 * @return String
+	 */
+	public static String parseAnnotationFieldValue(Class clazz, String ... configs){
+		for(String config:configs){
+			String[] tmps = config.split("\\.");
+			if(tmps.length <2){
+				continue;
+			}
+			Object name = parseAnnotationFieldValue(clazz, tmps[0], tmps[1]);
+			if(BasicUtil.isNotEmpty(name)){
+				return name.toString();
+			}
+		}
+		return null;
+	}
+	/**
+	 * 根据注解名与注解类属性 获取指定属性上的注解值
+	 * @param field field上的注解
+	 * @param configs 注册名.注解属性名,不区分大小写 支持模糊匹配 如 *Table.ID*
+	 * @return String
+	 */
+	public static String parseAnnotationFieldValue(Field field, String ... configs){
+		for(String config:configs){
+			String[] tmps = config.split("\\.");
+			if(tmps.length <2){
+				continue;
+			}
+			Object name = parseAnnotationFieldValue(field, tmps[0], tmps[1]);
+			if(BasicUtil.isNotEmpty(name)){
+				return name.toString();
+			}
+		}
+		return null;
 	}
 } 
