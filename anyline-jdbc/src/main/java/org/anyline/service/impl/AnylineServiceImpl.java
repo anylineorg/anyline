@@ -952,7 +952,15 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     protected int saveObject(String dest, Object data, boolean checkParimary, String... columns) {
-        dest = DataSourceHolder.parseDataSource(dest,data);
+        if(BasicUtil.isEmpty(dest)) {
+            if (data instanceof DataRow || data instanceof DataSet) {
+                dest = DataSourceHolder.parseDataSource(dest, data);
+            }else{
+                if(null != compatible){
+                    dest = compatible.table(data.getClass());
+                }
+            }
+        }
         return dao.save(dest, data, checkParimary, columns);
     }
 

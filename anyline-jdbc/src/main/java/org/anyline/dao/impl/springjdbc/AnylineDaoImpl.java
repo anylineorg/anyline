@@ -542,8 +542,17 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		if(obj instanceof DataRow){
 			DataRow row = (DataRow)obj;
 			return row.isNew();
+		}else{
+			if(null != compatible){
+				Map<String,Object> values = compatible.primaryValues(obj);
+				for(Map.Entry entry:values.entrySet()){
+					if(BasicUtil.isNotEmpty(entry.getValue())){
+						return false;
+					}
+				}
+			}
 		}
-		return false;
+		return true;
 	}
 
 	/**
