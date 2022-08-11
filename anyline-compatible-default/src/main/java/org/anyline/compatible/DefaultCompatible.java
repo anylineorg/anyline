@@ -14,9 +14,10 @@ import java.util.Map;
 
 @Component("anyline.compatible.default")
 public class DefaultCompatible implements Compatible{
-    private static Map<String,String> class2table = new HashMap<>();  // class.name > table.name
-    private static Map<String,String> field2column = new HashMap<>(); // class.name:field.name > column.name
-    private static Map<String,Field> column2field = new HashMap<>();  // column.name > field
+    private static Map<String,String> class2table   = new HashMap<>();  // class.name > table.name
+    private static Map<String,String> field2column  = new HashMap<>();  // class.name:field.name > column.name
+    private static Map<String,Field> column2field   = new HashMap<>();  // column.name > field
+    private static Map<String,List<String>> primary = new HashMap<>();  // 主键
     @Override
     public String table(Class clazz) {
         String key = clazz.getName();
@@ -84,16 +85,20 @@ public class DefaultCompatible implements Compatible{
 
     @Override
     public List<String> primarys(Class clazz) {
-        List<String> list = new ArrayList<>();
-        List<Field> fields = ClassUtil.searchFieldsByAnnotation(clazz, "TableId","Id");
-        for(Field field:fields){
-            String name = column(clazz, field);
-            if(BasicUtil.isNotEmpty(name)){
-                list.add(name);
+        List<String> list = primary.get(clazz.getName());
+        if(null == list) {
+            list = new ArrayList<>();
+            List<Field> fields = ClassUtil.searchFieldsByAnnotation(clazz, "TableId", "Id");
+            for (Field field : fields) {
+                String name = column(clazz, field);
+                if (BasicUtil.isNotEmpty(name)) {
+                    list.add(name);
+                }
             }
-        }
-        if(list.size()==0){
-            list.add(DataRow.DEFAULT_PRIMARY_KEY);
+            if (list.size() == 0) {
+                list.add(DataRow.DEFAULT_PRIMARY_KEY);
+            }
+            primary.put(clazz.getName(), list);
         }
         return list;
     }
