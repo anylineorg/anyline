@@ -17,13 +17,13 @@
  */
 
 
-package org.anyline.jdbc.config; 
- 
-import java.util.List;
-import java.util.Map;
+package org.anyline.jdbc.config;
 
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQL;
+
+import java.util.List;
+import java.util.Map;
  
 public interface ConfigChain extends Config{
 	public void addConfig(Config config);

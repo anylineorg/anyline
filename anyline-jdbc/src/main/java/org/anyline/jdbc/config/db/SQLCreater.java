@@ -17,14 +17,14 @@
  */
 
 
-package org.anyline.jdbc.config.db; 
- 
-import java.util.List;
+package org.anyline.jdbc.config.db;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.ConfigStore;
+import org.anyline.jdbc.config.db.run.RunSQL;
+
+import java.util.List;
  
 public interface SQLCreater{
 	public static enum DB_TYPE{

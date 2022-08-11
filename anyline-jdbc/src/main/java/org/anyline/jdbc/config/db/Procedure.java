@@ -23,7 +23,6 @@ package org.anyline.jdbc.config.db;
  */ 
 import org.anyline.jdbc.config.db.impl.ProcedureParam;
 
-import java.io.Serializable;
 import java.util.List;
  
  

@@ -17,14 +17,14 @@
  */
 
 
-package org.anyline.jdbc.config.db.impl; 
- 
-import java.util.ArrayList; 
-import java.util.List; 
+package org.anyline.jdbc.config.db.impl;
 
 import org.anyline.jdbc.config.db.Group;
 import org.anyline.jdbc.config.db.GroupStore;
-import org.anyline.util.BasicUtil; 
+import org.anyline.util.BasicUtil;
+
+import java.util.ArrayList;
+import java.util.List;
  
 public class GroupStoreImpl implements GroupStore{ 
 	private static final long serialVersionUID = 1257282062069295247L;

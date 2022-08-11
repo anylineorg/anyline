@@ -26,7 +26,6 @@ import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.Group;
 import org.anyline.jdbc.config.db.GroupStore;
-import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.impl.GroupImpl;
 import org.anyline.jdbc.config.db.impl.GroupStoreImpl;
@@ -513,16 +512,16 @@ public class ConfigStoreImpl implements ConfigStore {
 	}
 
 	@Override
-	public Config getConfig(String var, SQL.COMPARE_TYPE compare){
+	public Config getConfig(String var, COMPARE_TYPE compare){
 		return chain.getConfig(null,var,compare);
 	}
 	@Override
-	public ConfigStore removeConfig(String var, SQL.COMPARE_TYPE compare){
+	public ConfigStore removeConfig(String var, COMPARE_TYPE compare){
 		Config config = getConfig(var, compare);
 		return removeConfig(config);
 	}
 	@Override
-	public List<Object> getConfigValues(String var, SQL.COMPARE_TYPE compare){
+	public List<Object> getConfigValues(String var, COMPARE_TYPE compare){
 		Config config = chain.getConfig(null, var,compare);
 		if(null != config){
 			return config.getValues();
@@ -530,7 +529,7 @@ public class ConfigStoreImpl implements ConfigStore {
 		return null;
 	}
 	@Override
-	public Object getConfigValue(String var, SQL.COMPARE_TYPE compare){
+	public Object getConfigValue(String var, COMPARE_TYPE compare){
 		Config config = chain.getConfig(null, var,compare);
 		if(null != config){
 			List<Object> values = config.getValues();

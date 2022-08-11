@@ -17,16 +17,12 @@
  */
 
 
-package org.anyline.jdbc.config.db.impl; 
-import java.util.ArrayList;
-import java.util.List;
-
-
-/** 
- * V3.0 
- */ 
+package org.anyline.jdbc.config.db.impl;
 
 import org.anyline.jdbc.config.db.Procedure;
+
+import java.util.ArrayList;
+import java.util.List;
  
  
  

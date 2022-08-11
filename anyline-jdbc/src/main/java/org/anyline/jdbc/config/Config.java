@@ -17,15 +17,14 @@
  */
 
 
-package org.anyline.jdbc.config; 
- 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
+package org.anyline.jdbc.config;
 
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+
+import java.util.List;
+import java.util.Map;
  
 public interface Config {
 	//从request 取值方式 

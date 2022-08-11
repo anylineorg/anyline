@@ -17,12 +17,12 @@
  */
 
 
-package org.anyline.jdbc.config.db.sql.auto.impl; 
- 
-import java.util.List;
+package org.anyline.jdbc.config.db.sql.auto.impl;
 
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
+
+import java.util.List;
  
 public class TableSQLImpl extends AutoSQLImpl implements TableSQL{ 
 

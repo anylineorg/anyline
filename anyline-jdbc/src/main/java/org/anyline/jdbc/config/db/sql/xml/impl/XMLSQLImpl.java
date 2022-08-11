@@ -17,24 +17,20 @@
  */
 
 
-package org.anyline.jdbc.config.db.sql.xml.impl; 
- 
-import java.util.ArrayList; 
-import java.util.List; 
+package org.anyline.jdbc.config.db.sql.xml.impl;
 
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ParseResult;
-import org.anyline.jdbc.config.db.Condition;
-import org.anyline.jdbc.config.db.ConditionChain;
-import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.SQLHelper;
-import org.anyline.jdbc.config.db.SQLVariable;
+import org.anyline.jdbc.config.db.*;
 import org.anyline.jdbc.config.db.impl.BasicSQL;
 import org.anyline.jdbc.config.db.impl.SQLVariableImpl;
 import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
-import org.anyline.util.BasicUtil; 
+import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil; 
+import org.anyline.util.regular.RegularUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 public class XMLSQLImpl extends BasicSQL implements XMLSQL{ 
 	/*解析XML*/ 
 	private String id; 

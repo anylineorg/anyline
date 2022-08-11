@@ -29,7 +29,7 @@ public class SQLHelper {
 	 */ 
 	public static SQLVariable buildVariable(int signType, String all, String prefix, String fullKey, String afterChar){ 
 		int varType = -1; 
-		COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL; 
+		COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
 		if(null == afterChar){ 
 			afterChar = ""; 
 		} 
@@ -54,17 +54,17 @@ public class SQLHelper {
 			//AND CD LIKE '%:CD%' 
 			varType = SQLVariable.VAR_TYPE_KEY; 
 			if(prefix.endsWith("%") && afterChar.startsWith("%")){ 
-				compare = SQL.COMPARE_TYPE.LIKE; 
+				compare = COMPARE_TYPE.LIKE;
 			}else if(prefix.endsWith("%")){ 
-				compare = SQL.COMPARE_TYPE.LIKE_PREFIX; 
+				compare = COMPARE_TYPE.LIKE_PREFIX;
 			}else if(afterChar.startsWith("%")){ 
-				compare = SQL.COMPARE_TYPE.LIKE_SUBFIX; 
+				compare = COMPARE_TYPE.LIKE_SUBFIX;
 			} 
 		}else{ 
 			varType = SQLVariable.VAR_TYPE_KEY; 
 			if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
 				//AND CD IN({CD}) 
-				compare = SQL.COMPARE_TYPE.IN; 
+				compare = COMPARE_TYPE.IN;
 			} 
 		} 
 		var.setSignType(signType); 
@@ -73,7 +73,7 @@ public class SQLHelper {
 		var.setCompare(compare); 
 		return var; 
 	} 
-	public static SQL.COMPARE_TYPE parseCompare(int code){ 
+	public static COMPARE_TYPE parseCompare(int code){
 		for (COMPARE_TYPE type : COMPARE_TYPE.values()) { 
 			if(type.getCode() == code){ 
 				return type; 
@@ -81,7 +81,7 @@ public class SQLHelper {
         } 
 		return null; 
 	} 
-	public static SQL.COMPARE_TYPE parseCompare(String code){ 
+	public static COMPARE_TYPE parseCompare(String code){
 		if(BasicUtil.isEmpty(code)){ 
 			return null; 
 		} 

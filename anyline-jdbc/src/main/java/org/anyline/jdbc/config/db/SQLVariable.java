@@ -20,12 +20,12 @@
 /** 
  * V2.0 
  */ 
-package org.anyline.jdbc.config.db; 
- 
-import java.io.Serializable;
-import java.util.List;
+package org.anyline.jdbc.config.db;
 
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+
+import java.io.Serializable;
+import java.util.List;
  
 public interface SQLVariable extends Cloneable,Serializable{ 
 	public static final int VAR_TYPE_INDEX			= 0;		//根据下标区分 CD = ? 

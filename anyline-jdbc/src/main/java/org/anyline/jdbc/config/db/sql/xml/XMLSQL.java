@@ -17,12 +17,12 @@
  */
 
 
-package org.anyline.jdbc.config.db.sql.xml; 
- 
-import java.util.List; 
+package org.anyline.jdbc.config.db.sql.xml;
 
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQLVariable;
+
+import java.util.List;
 /** 
  * order 需要区分XML定义还是动态添加 
  * @author zh 

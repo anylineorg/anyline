@@ -20,13 +20,13 @@
 /** 
  * V2.0 
  */ 
-package org.anyline.jdbc.config.db.impl; 
- 
-import java.util.*;
+package org.anyline.jdbc.config.db.impl;
 
-import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.util.BeanUtil;
+
+import java.util.*;
 
 public class SQLVariableImpl implements SQLVariable{ 
 	private static final long serialVersionUID = 6111859581787193807L;

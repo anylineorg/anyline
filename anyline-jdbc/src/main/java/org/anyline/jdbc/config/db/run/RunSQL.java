@@ -17,20 +17,16 @@
  */
 
 
-package org.anyline.jdbc.config.db.run; 
- 
-import java.util.List;
+package org.anyline.jdbc.config.db.run;
 
-import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.Condition;
-import org.anyline.jdbc.config.db.ConditionChain;
-import org.anyline.jdbc.config.db.GroupStore;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
+import org.anyline.jdbc.config.db.*;
+import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+
+import java.util.List;
 
 public interface RunSQL { 
 	public void setCreater(SQLCreater creater); 
@@ -48,8 +44,8 @@ public interface RunSQL {
 	 * @param compare 比较方式
 	 * @return RunSQL
 	 */
-	public RunSQL setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, SQL.COMPARE_TYPE compare);
-	public RunSQL setConditionValue(boolean required, String prefix, String variable, Object value, SQL.COMPARE_TYPE compare);
+	public RunSQL setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, COMPARE_TYPE compare);
+	public RunSQL setConditionValue(boolean required, String prefix, String variable, Object value, COMPARE_TYPE compare);
 	public void setGroupStore(GroupStore groups) ; 
 	public GroupStore getGroupStore() ; 
 	public RunSQL group(String group); 

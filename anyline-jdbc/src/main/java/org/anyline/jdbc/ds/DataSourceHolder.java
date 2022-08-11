@@ -17,14 +17,7 @@
  */ 
  
  
-package org.anyline.jdbc.ds; 
- 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.sql.DataSource;
+package org.anyline.jdbc.ds;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -33,6 +26,12 @@ import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DataSourceHolder { 
 	public static Logger log = LoggerFactory.getLogger(DataSourceHolder.class); 
@@ -132,6 +131,8 @@ public class DataSourceHolder {
 			if(set.size()>0){
 				result = parseDataSource(dest, set.getRow(0));
 			}
+		}else{
+
 		}
 //		else{
 //			try{

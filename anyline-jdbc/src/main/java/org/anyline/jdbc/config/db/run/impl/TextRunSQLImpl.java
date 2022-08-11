@@ -115,7 +115,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		} 
 		try{ 
 			int varType = -1; 
-			COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL; 
+			COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
 			List<List<String>> keys = RegularUtil.fetchs(text, SQL.SQL_PARAM_VAIRABLE_REGEX, Regular.MATCH_MODE.CONTAIN); 
 			if(BasicUtil.isNotEmpty(true,keys)){ 
 				//AND CD = :CD 
@@ -138,7 +138,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						varType = SQLVariable.VAR_TYPE_KEY; 
 						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
 							//AND CD IN(:CD) 
-							compare = SQL.COMPARE_TYPE.IN; 
+							compare = COMPARE_TYPE.IN;
 						} 
 					} 
 					SQLVariable var = new SQLVariableImpl(); 
@@ -214,7 +214,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					// CD = :CD 
 					List<Object> varValues = var.getValues(); 
 					if(BasicUtil.isNotEmpty(true, varValues)){ 
-						if(var.getCompare() == SQL.COMPARE_TYPE.IN){ 
+						if(var.getCompare() == COMPARE_TYPE.IN){
 							//多个值IN 
 							String replaceSrc = ":"+var.getKey(); 
 							String replaceDst = "";  
@@ -291,7 +291,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
  
  
 	@Override 
-	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) { 
+	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, COMPARE_TYPE compare) {
 		/*不指定变量名时,根据condition为SQL主体变量赋值*/ 
 		if(null != variables && BasicUtil.isEmpty(variable)){ 
 			for(SQLVariable v:variables){
@@ -317,7 +317,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	} 
  
 	@Override
-	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, SQL.COMPARE_TYPE compare) {
+	public RunSQL setConditionValue(boolean required, String condition, String variable, Object value, COMPARE_TYPE compare) {
 		return setConditionValue(required, false, condition, variable, value, compare);
 	}
 

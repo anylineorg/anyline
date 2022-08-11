@@ -17,9 +17,7 @@
  */
 
 
-package org.anyline.jdbc.config.db.sql.xml.impl; 
- 
-import java.util.List;
+package org.anyline.jdbc.config.db.sql.xml.impl;
 
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
@@ -28,6 +26,8 @@ import org.anyline.jdbc.config.db.impl.BasicConditionChain;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.RegularUtil;
+
+import java.util.List;
  
 public class XMLConditionChainImpl extends BasicConditionChain implements ConditionChain{ 
 

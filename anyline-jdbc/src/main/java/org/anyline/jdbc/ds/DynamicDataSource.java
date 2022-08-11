@@ -1,13 +1,12 @@
-package org.anyline.jdbc.ds; 
- 
-import java.util.HashMap; 
-import java.util.Map; 
- 
-import javax.sql.DataSource; 
- 
-import org.slf4j.Logger; 
-import org.slf4j.LoggerFactory; 
-import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource; 
+package org.anyline.jdbc.ds;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
  
 public class DynamicDataSource extends AbstractRoutingDataSource { 
 	private Logger log = LoggerFactory.getLogger(DynamicDataSource.class); 

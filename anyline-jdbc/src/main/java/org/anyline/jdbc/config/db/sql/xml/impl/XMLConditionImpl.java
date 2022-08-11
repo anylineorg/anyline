@@ -17,21 +17,21 @@
  */
 
 
-package org.anyline.jdbc.config.db.sql.xml.impl; 
- 
-import java.util.ArrayList;
-import java.util.List;
+package org.anyline.jdbc.config.db.sql.xml.impl;
 
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.SQL;
+import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.SQLVariable;
-import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.impl.BasicCondition;
 import org.anyline.jdbc.config.db.impl.SQLVariableImpl;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
+
+import java.util.ArrayList;
+import java.util.List;
  
  
 /** 
@@ -120,7 +120,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 			if(BasicUtil.isNotEmpty(true,keys)){ 
 				setVariableType(VARIABLE_FLAG_TYPE_KEY); 
 				int varType = SQLVariable.VAR_TYPE_INDEX; 
-				COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL; 
+				COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
 				for(int i=0; i<keys.size(); i++){ 
 					List<String> keyItem = keys.get(i); 
 					String prefix = keyItem.get(1).trim();		// 前缀 
@@ -138,7 +138,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 						// AND CD = :CD 
 						varType = SQLVariable.VAR_TYPE_KEY; 
 						if(prefix.equalsIgnoreCase("IN") || prefix.equalsIgnoreCase("IN(")){ 
-							compare = SQL.COMPARE_TYPE.IN; 
+							compare = COMPARE_TYPE.IN;
 						} 
 					} 
 					SQLVariable var = new SQLVariableImpl(); 
@@ -240,7 +240,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 			if(var.getType() == SQLVariable.VAR_TYPE_KEY){ 
 				//CD=:CD 
 				List<Object> varValues = var.getValues(); 
-				if(SQL.COMPARE_TYPE.IN == var.getCompare()){ 
+				if(COMPARE_TYPE.IN == var.getCompare()){
 					String inParam = ""; 
 					for(int i=0; i<varValues.size(); i++){ 
 						inParam += "?"; 

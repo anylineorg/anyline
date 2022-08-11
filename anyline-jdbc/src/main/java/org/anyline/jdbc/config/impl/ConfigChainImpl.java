@@ -17,11 +17,7 @@
  */
 
 
-package org.anyline.jdbc.config.impl; 
- 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+package org.anyline.jdbc.config.impl;
 
 import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.ConfigChain;
@@ -30,6 +26,10 @@ import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.util.BasicUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ConfigChainImpl extends ConfigImpl implements ConfigChain{ 
 	private List<Config> configs = new ArrayList<Config>(); 
