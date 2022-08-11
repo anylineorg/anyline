@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
-import java.util.jar.JarFile; 
- 
+import java.util.jar.JarFile;
+
 public class ClassUtil {
 
 	private static final Logger log = LoggerFactory.getLogger(ClassUtil.class);
@@ -474,7 +474,7 @@ public class ClassUtil {
 	 * @return List
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static List<Field> searchFieldsByAnnotation(Class clazz, Class annotation){
+	public static List<Field> getFieldsByAnnotation(Class clazz, Class annotation){
 		List<Field> list = new ArrayList<Field>();
 		try{
 			List<Field> fields = getFields(clazz);
@@ -496,7 +496,7 @@ public class ClassUtil {
 	 * @return List
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static List<Field> searchFieldsByAnnotation(Class clazz, String ... annotations){
+	public static List<Field> getFieldsByAnnotation(Class clazz, String ... annotations){
 		List<Field> list = new ArrayList<Field>();
 		try{
 			List<Field> fields = getFields(clazz);
@@ -504,7 +504,7 @@ public class ClassUtil {
 				Annotation[] ans = field.getAnnotations();
 				for(Annotation an:ans){
 					for(String annotation:annotations){
-						if(match(an.getClass().getSimpleName(), annotation)){
+						if(match(an.annotationType().getSimpleName(), annotation)){
 							list.add(field);
 							break;
 						}
