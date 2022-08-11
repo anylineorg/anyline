@@ -74,7 +74,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String PARENT = "PARENT"; //上级数据
     public static String ALL_PARENT = "ALL_PARENT"; //所有上级数据
     public static String CHILDREN = "CHILDREN"; //子数据
-    public static String PRIMARY_KEY = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+    public static String DEFAULT_PRIMARY_KEY = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
     public static String ITEMS = "ITEMS";
     public static KEY_CASE DEFAULT_KEY_KASE = KEY_CASE.CONFIG;
     private DataSet container = null; //包含当前对象的容器
@@ -106,9 +106,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public DataRow() {
         parseKeycase(null);
-        String pk = keyAdapter.key(PRIMARY_KEY);
+        String pk = keyAdapter.key(DEFAULT_PRIMARY_KEY);
         if (null != pk) {
-            primaryKeys.add(PRIMARY_KEY);
+            primaryKeys.add(DEFAULT_PRIMARY_KEY);
         }
         createTime = System.currentTimeMillis();
     }

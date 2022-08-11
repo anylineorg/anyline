@@ -1,5 +1,6 @@
 package org.anyline.compatible;
 
+import org.anyline.entity.DataRow;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
@@ -25,7 +26,7 @@ public class DefaultCompatible implements Compatible{
             return name;
         }
         //2.注解
-        name = parseAnnotationFieldValue(clazz, "table:name", "table:value", "tableName:name", "tableName:value");
+        name = ClassUtil.parseAnnotationFieldValue(clazz, "table.name", "table.value", "tableName.name", "tableName.value");
         if(BasicUtil.isNotEmpty(name)){
             class2table.put(key, name.toString());
             return name;
@@ -56,7 +57,7 @@ public class DefaultCompatible implements Compatible{
             return name;
         }
         //2.注解
-        name = parseAnnotationFieldValue(field, "column:name", "column:value", "TableField:name","TableField:value");
+        name = ClassUtil.parseAnnotationFieldValue(field, "column.name", "column.value", "TableField.name","TableField.value","TableId.value");
         if(BasicUtil.isNotEmpty(name)){
             field2column.put(key, name.toString());
             return name;
@@ -74,12 +75,27 @@ public class DefaultCompatible implements Compatible{
 
     @Override
     public String primary(Class clazz) {
-        return null;
+       List<String> list = primarys(clazz);
+       if(list.size()>0){
+           return list.get(0);
+       }
+       return DataRow.DEFAULT_PRIMARY_KEY;
     }
 
     @Override
     public List<String> primarys(Class clazz) {
-        return null;
+        List<String> list = new ArrayList<>();
+        List<Field> fields = ClassUtil.searchFieldsByAnnotation(clazz, "TableId","Id");
+        for(Field field:fields){
+            String name = column(clazz, field);
+            if(BasicUtil.isNotEmpty(name)){
+                list.add(name);
+            }
+        }
+        if(list.size()==0){
+            list.add(DataRow.DEFAULT_PRIMARY_KEY);
+        }
+        return list;
     }
 
     @Override
@@ -94,43 +110,5 @@ public class DefaultCompatible implements Compatible{
         return entity;
     }
 
-    /**
-     * 根据注解名与注解类属性 获取指定类上的注解值
-     * @param clazz clazz上的注解
-     * @param configs 注册名:注解属性名
-     * @return String
-     */
-    private String parseAnnotationFieldValue(Class clazz, String ... configs){
-        for(String config:configs){
-            String[] tmps = config.split(":");
-            if(tmps.length <2){
-                continue;
-            }
-            Object name = ClassUtil.parseAnnotationFieldValue(clazz, tmps[0], tmps[1]);
-            if(BasicUtil.isNotEmpty(name)){
-                return name.toString();
-            }
-        }
-        return null;
-    }
-    /**
-     * 根据注解名与注解类属性 获取指定属性上的注解值
-     * @param field field上的注解
-     * @param configs 注册名:注解属性名
-     * @return String
-     */
-    private String parseAnnotationFieldValue(Field field, String ... configs){
-        for(String config:configs){
-            String[] tmps = config.split(":");
-            if(tmps.length <2){
-                continue;
-            }
-            Object name = ClassUtil.parseAnnotationFieldValue(field, tmps[0], tmps[1]);
-            if(BasicUtil.isNotEmpty(name)){
-                return name.toString();
-            }
-        }
-        return null;
-    }
 
 }
