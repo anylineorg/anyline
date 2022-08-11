@@ -81,6 +81,8 @@
 		<module>anyline-pdf</module>
 		<module>anyline-qq</module>
 		<module>anyline-start</module>
+		<module>anyline-start-jdbc</module>
+		<module>anyline-start-mysql</module>
 		<module>anyline-start-mvc</module>
 		<module>anyline-start-mvc-jsp</module>
 		<module>anyline-start-mvc-jsp-mysql</module>

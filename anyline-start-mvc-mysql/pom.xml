@@ -17,6 +17,10 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-jdbc-mysql</artifactId>
 		</dependency>
