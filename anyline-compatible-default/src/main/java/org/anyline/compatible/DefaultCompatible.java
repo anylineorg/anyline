@@ -115,5 +115,23 @@ public class DefaultCompatible implements Compatible{
         return entity;
     }
 
+    @Override
+    public Map<String, Object> primaryValue(Object obj) {
+        String primary = primary(obj.getClass());
+        Object value = BeanUtil.getFieldValue(obj, primary);
+        Map<String,Object> map = new HashMap<>();
+        map.put(primary, value);
+        return map;
+    }
 
+    @Override
+    public Map<String, Object> primaryValues(Object obj) {
+        List<String> primarys = primarys(obj.getClass());
+        Map<String,Object> map = new HashMap<>();
+        for(String primary:primarys){
+            Object value = BeanUtil.getFieldValue(obj, primary);
+            map.put(primary, value);
+        }
+        return map;
+    }
 }

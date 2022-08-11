@@ -42,6 +42,18 @@ public interface Compatible {
      */
     public String primary(Class clazz);
     /**
+     * 主键值
+     * @param obj 类
+     * @return String
+     */
+    public Map<String,Object> primaryValue(Object obj);
+    /**
+     * 主键值
+     * @param obj 类
+     * @return
+     */
+    public Map<String,Object> primaryValues(Object obj);
+    /**
      * 获取clazz类相关的主键s
      * @param clazz 类
      * @return List
