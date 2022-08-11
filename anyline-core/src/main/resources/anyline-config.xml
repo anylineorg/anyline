@@ -86,6 +86,9 @@
 		如果数据库中已经是驼峰,不要配置这个参数
 	-->
 	<property key="HTTP_PARAM_KEYS_CASE">camel</property>
+
+	<!--实体属性 与数据库表列名对照时 属性小驼峰转下划线-->
+	<property key="ENTITY_FIELD_COLUMN_MAP">camel_</property>
 	<!--忽略加密的值-->
 	<property key="DES_IGNORE">0,-1</property>
 	<!--http参数是否trim-->
