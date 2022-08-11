@@ -61,22 +61,25 @@ public class DefaultCompatible implements Compatible{
         name = ClassUtil.parseAnnotationFieldValue(field, "column.name", "column.value", "TableField.name","TableField.value","TableId.value");
         if(BasicUtil.isNotEmpty(name)){
             field2column.put(key, name.toString());
+            column2field.put(clazz.getName()+":"+name, field);
             return name;
         }
         //3.属性名
         name = field.getName();
         field2column.put(key, name.toString());
+        column2field.put(clazz.getName()+":"+name, field);
+
         return name;
     }
 
     @Override
     public Field field(Class clazz, String column) {
-        return null;
+        return column2field.get(clazz.getName()+":"+column);
     }
 
     @Override
-    public String primary(Class clazz) {
-       List<String> list = primarys(clazz);
+    public String primaryKey(Class clazz) {
+       List<String> list = primaryKeys(clazz);
        if(list.size()>0){
            return list.get(0);
        }
@@ -84,7 +87,7 @@ public class DefaultCompatible implements Compatible{
     }
 
     @Override
-    public List<String> primarys(Class clazz) {
+    public List<String> primaryKeys(Class clazz) {
         List<String> list = primary.get(clazz.getName());
         if(null == list) {
             list = new ArrayList<>();
@@ -117,7 +120,7 @@ public class DefaultCompatible implements Compatible{
 
     @Override
     public Map<String, Object> primaryValue(Object obj) {
-        String primary = primary(obj.getClass());
+        String primary = primaryKey(obj.getClass());
         Object value = BeanUtil.getFieldValue(obj, primary);
         Map<String,Object> map = new HashMap<>();
         map.put(primary, value);
@@ -126,7 +129,7 @@ public class DefaultCompatible implements Compatible{
 
     @Override
     public Map<String, Object> primaryValues(Object obj) {
-        List<String> primarys = primarys(obj.getClass());
+        List<String> primarys = primaryKeys(obj.getClass());
         Map<String,Object> map = new HashMap<>();
         for(String primary:primarys){
             Object value = BeanUtil.getFieldValue(obj, primary);

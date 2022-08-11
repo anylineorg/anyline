@@ -40,7 +40,14 @@ public interface Compatible {
      * @param clazz 类
      * @return String
      */
-    public String primary(Class clazz);
+    public String primaryKey(Class clazz);
+    /**
+     * 获取clazz类相关的主键s
+     * @param clazz 类
+     * @return List
+     */
+    public List<String> primaryKeys(Class clazz);
+
     /**
      * 主键值
      * @param obj 类
@@ -53,13 +60,6 @@ public interface Compatible {
      * @return
      */
     public Map<String,Object> primaryValues(Object obj);
-    /**
-     * 获取clazz类相关的主键s
-     * @param clazz 类
-     * @return List
-     */
-    public List<String> primarys(Class clazz);
-
     /**
      * map结构转换成clazz对象
      * @param clazz 类
