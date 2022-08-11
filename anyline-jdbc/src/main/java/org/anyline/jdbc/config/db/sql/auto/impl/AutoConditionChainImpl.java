@@ -17,10 +17,7 @@
  */
 
 
-package org.anyline.jdbc.config.db.sql.auto.impl; 
- 
-import java.util.ArrayList;
-import java.util.List;
+package org.anyline.jdbc.config.db.sql.auto.impl;
 
 import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.ConfigChain;
@@ -29,6 +26,9 @@ import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicConditionChain;
 import org.anyline.util.BasicUtil;
+
+import java.util.ArrayList;
+import java.util.List;
  
 public class AutoConditionChainImpl extends BasicConditionChain implements ConditionChain{
 	public AutoConditionChainImpl(){}

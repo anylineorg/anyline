@@ -17,23 +17,18 @@
  */
 
 
-package org.anyline.jdbc.config.db.sql.auto.impl; 
- 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package org.anyline.jdbc.config.db.sql.auto.impl;
 
 import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.db.Condition;
-import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicCondition;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+
+import java.util.*;
  
  
 /** 
@@ -46,8 +41,8 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	private String column;		//列 
 	private Object values;		//参数值 
 	private Object orValues;		//参数值 
-	private COMPARE_TYPE compare = SQL.COMPARE_TYPE.EQUAL; 
-	private COMPARE_TYPE orCompare = SQL.COMPARE_TYPE.EQUAL; 
+	private COMPARE_TYPE compare = COMPARE_TYPE.EQUAL;
+	private COMPARE_TYPE orCompare = COMPARE_TYPE.EQUAL;
  
  
 	public AutoConditionImpl(Config config){
@@ -213,7 +208,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		}
 		text += delimiterFr + column + delimiterTo;
 
-		if(compare == SQL.COMPARE_TYPE.EQUAL){
+		if(compare == COMPARE_TYPE.EQUAL){
 			Object v = getValue(val);
 			if(null == v || "NULL".equals(v.toString())){
 				text += " IS NULL";
@@ -223,26 +218,26 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			}else{
 				text += compare.getSql();
 			}
-		}else if(compare == SQL.COMPARE_TYPE.GREAT){
+		}else if(compare == COMPARE_TYPE.GREAT){
 			//text += "> ?";
 			text += compare.getSql();
-		}else if(compare == SQL.COMPARE_TYPE.GREAT_EQUAL){
+		}else if(compare == COMPARE_TYPE.GREAT_EQUAL){
 			//text += ">= ?";
 			text += compare.getSql();
-		}else if(compare == SQL.COMPARE_TYPE.LESS){
+		}else if(compare == COMPARE_TYPE.LESS){
 			//text += "< ?";
 			text += compare.getSql();
-		}else if(compare == SQL.COMPARE_TYPE.NOT_EQUAL){
+		}else if(compare == COMPARE_TYPE.NOT_EQUAL){
 			//text += "<> ?";
 			text += compare.getSql();
-		}else if(compare == SQL.COMPARE_TYPE.LESS_EQUAL){
+		}else if(compare == COMPARE_TYPE.LESS_EQUAL){
 			//text += "<= ?";
 			text += compare.getSql();
-		}else if(compare == SQL.COMPARE_TYPE.BETWEEN){
+		}else if(compare == COMPARE_TYPE.BETWEEN){
 			//text += " BETWEEN ? AND ?";
 			text += compare.getSql();
-		}else if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN){
-			if(compare == SQL.COMPARE_TYPE.NOT_IN){
+		}else if(compare == COMPARE_TYPE.IN || compare == COMPARE_TYPE.NOT_IN){
+			if(compare == COMPARE_TYPE.NOT_IN){
 				text += " NOT";
 			}
 			text += " IN (";
@@ -259,20 +254,20 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 			}else{
 				text += "= ?";
 			}
-		}else if(compare == SQL.COMPARE_TYPE.LIKE){
+		}else if(compare == COMPARE_TYPE.LIKE){
 			text += " LIKE "+ creater.concat("'%'", "?" , "'%'");
-		}else if(compare == SQL.COMPARE_TYPE.LIKE_PREFIX){
+		}else if(compare == COMPARE_TYPE.LIKE_PREFIX){
 			text += " LIKE "+ creater.concat("?" , "'%'");
-		}else if(compare == SQL.COMPARE_TYPE.LIKE_SUBFIX){
+		}else if(compare == COMPARE_TYPE.LIKE_SUBFIX){
 			text += " LIKE "+ creater.concat("'%'", "?");
 		}
 		text += "";
 		//runtime value
-		if(compare == SQL.COMPARE_TYPE.IN || compare == SQL.COMPARE_TYPE.NOT_IN || compare == SQL.COMPARE_TYPE.BETWEEN){
+		if(compare == COMPARE_TYPE.IN || compare == COMPARE_TYPE.NOT_IN || compare == COMPARE_TYPE.BETWEEN){
 			runValues.addAll(getValues(val));
 		}else{
 			Object value = getValue(val);
-			if((null == value || "NULL".equals(value)) && compare == SQL.COMPARE_TYPE.EQUAL){
+			if((null == value || "NULL".equals(value)) && compare == COMPARE_TYPE.EQUAL){
 			}else{
 				runValues.add(value);
 			}

@@ -17,17 +17,17 @@
  */
 
 
-package org.anyline.jdbc.config.db.impl; 
- 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+package org.anyline.jdbc.config.db.impl;
 
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.util.BasicUtil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
  
  
  

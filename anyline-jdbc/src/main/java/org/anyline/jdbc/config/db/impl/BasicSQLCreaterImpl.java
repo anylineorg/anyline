@@ -20,6 +20,7 @@
 package org.anyline.jdbc.config.db.impl;
 
 
+import org.anyline.compatible.Compatible;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -46,6 +47,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -66,6 +68,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	protected PrimaryCreater primaryCreater; 
 	public String delimiterFr = "";
 	public String delimiterTo = "";
+	@Autowired(required=false)
+	protected Compatible compatible;
 	public DB_TYPE type(){
 		return null;
 	}
@@ -287,6 +291,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				return createInsertTxtFromDataSet(dest,set,checkParimary, columns);
 			}
 		}
+
 		return null; 
 	}
 
@@ -475,11 +480,83 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		if(obj instanceof DataRow){ 
 			return createUpdateTxtFromDataRow(dest,(DataRow)obj,checkParimary, columns); 
+		}else{
+			return createUpdateTxtFromObject(dest, obj,checkParimary, columns);
 		}
-		return null; 
-	} 
+	}
 
-	private RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){ 
+	private RunSQL createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
+		RunSQL run = new TableRunSQLImpl();
+		StringBuilder builder = new StringBuilder();
+		List<Object> values = new ArrayList<Object>();
+		List<String> keys = null;
+		List<String> primaryKeys = null;
+		if(null != columns && columns.length >0 ){
+			keys = BeanUtil.array2list(columns);
+		}else{
+			if(null != compatible){
+				keys = compatible.columns(obj.getClass());
+			}
+		}
+		if(null != compatible){
+			primaryKeys = compatible.primaryKeys(obj.getClass());
+		}else{
+			primaryKeys = new ArrayList<>();
+			primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
+		}
+		//不更新主键
+		keys.removeAll(primaryKeys);
+
+		List<String> updateColumns = new ArrayList<>();
+		/*构造SQL*/
+		int size = keys.size();
+		if(size > 0){
+			builder.append("UPDATE ").append(parseTable(dest));
+			builder.append(" SET").append(SQLCreater.BR_TAB);
+			for(int i=0; i<size; i++){
+				String key = keys.get(i);
+				Object value = null;
+				if(null != compatible){
+					Field field = compatible.field(obj.getClass(), key);
+					value = BeanUtil.getFieldValue(obj, field);
+				}else {
+					value = BeanUtil.getFieldValue(obj, key);
+				}
+				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
+					String str = value.toString();
+					value = str.substring(2, str.length()-1);
+					builder.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
+				}else{
+					builder.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					if("NULL".equals(value)){
+						value = null;
+					}
+					updateColumns.add(key);
+					values.add(value);
+				}
+				if(i<size-1){
+					builder.append(",");
+				}
+			}
+			builder.append(SQLCreater.BR);
+			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
+			for(String pk:primaryKeys){
+				builder.append(" AND ").append(getDelimiterFr()).append(pk).append(getDelimiterTo()).append(" = ?");
+				updateColumns.add(pk);
+				if(null != compatible){
+					Field field = compatible.field(obj.getClass(), pk);
+					values.add(BeanUtil.getFieldValue(obj, field));
+				}else {
+					values.add(BeanUtil.getFieldValue(obj, pk));
+				}
+			}
+			run.addValues(values);
+		}
+		run.setUpdateColumns(updateColumns);
+		run.setBuilder(builder);
+		return run;
+	}
+		private RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
 		StringBuilder builder = new StringBuilder();
 		List<Object> values = new ArrayList<Object>(); 
@@ -489,11 +566,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		List<String> primaryKeys = row.getPrimaryKeys();
 		if(primaryKeys.size() == 0){
 			throw new SQLUpdateException("[更新更新异常][更新条件为空,upate方法不支持更新整表操作]");
-		} 
-		/*不更新主键*/
-		for(String pk:primaryKeys){
-			keys.remove(pk); 
 		}
+
+		//不更新主键
+		keys.removeAll(primaryKeys);
+
 		List<String> updateColumns = new ArrayList<>();
 		/*构造SQL*/
 		int size = keys.size();

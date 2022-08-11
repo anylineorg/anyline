@@ -174,7 +174,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	} 
  
 	@Override 
-	public RunSQL setConditionValue(boolean required, boolean strictRequired,  String prefix, String variable, Object value, SQL.COMPARE_TYPE compare) {
+	public RunSQL setConditionValue(boolean required, boolean strictRequired,  String prefix, String variable, Object value, COMPARE_TYPE compare) {
 		return this; 
 	} 
 	@Override 

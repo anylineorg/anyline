@@ -17,14 +17,14 @@
  */
 
 
-package org.anyline.jdbc.config.db.impl; 
- 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+package org.anyline.jdbc.config.db.impl;
 
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
  
 /** 
  * 自动生成的参数 

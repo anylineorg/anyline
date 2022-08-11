@@ -17,12 +17,12 @@
  */
 
 
-package org.anyline.jdbc.config.db.sql.auto; 
- 
-import java.util.List;
+package org.anyline.jdbc.config.db.sql.auto;
 
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+
+import java.util.List;
  
  
 /** 

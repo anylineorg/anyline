@@ -19,19 +19,19 @@
 
 package org.anyline.jdbc.config.db.sql.auto.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.anyline.entity.Order;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
-import org.anyline.entity.Order;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.jdbc.config.db.impl.BasicSQL;
 import org.anyline.jdbc.config.db.sql.auto.AutoSQL;
 import org.anyline.util.BasicUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	protected String datasoruce;

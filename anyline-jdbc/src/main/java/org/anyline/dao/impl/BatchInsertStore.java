@@ -15,14 +15,14 @@
  *
  *          
  */
-package org.anyline.dao.impl; 
- 
-import java.util.concurrent.ConcurrentHashMap; 
-import java.util.concurrent.ConcurrentLinkedDeque; 
- 
-import org.anyline.entity.DataRow; 
-import org.anyline.entity.DataSet; 
-import org.anyline.util.ConfigTable; 
+package org.anyline.dao.impl;
+
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.util.ConfigTable;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
  
  
 public class BatchInsertStore { 
