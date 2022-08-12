@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline</artifactId>
-	<version>8.5.6-SNAPSHOT</version>
+	<version>8.5.6-20220812</version>
 	<packaging>pom</packaging>
 	<name>anyline</name>
 
@@ -36,6 +36,7 @@
 		<module>anyline-web</module>
 		<module>anyline-mvc</module>
 		<module>anyline-alipay</module>
+		<module>anyline-comm</module>
 		<module>anyline-aliyun/anyline-aliyun-oss</module>
 		<module>anyline-aliyun/anyline-aliyun-sms</module>
 		<module>anyline-amap</module>
@@ -71,8 +72,8 @@
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
+		<module>anyline-spider</module>
 		<module>anyline-struts</module>
-		<module>anyline-comm</module>
 		<!--这个module需要本地库,没有本地库或不需要nc的 把这个module注释一下-->
 		<module>anyline-nc</module>
 		<module>anyline-office</module>
@@ -105,7 +106,7 @@
         <module>anyline-sms</module>
 		<module>anyline-qq-map</module>
         <module>anyline-map</module>
-    </modules>
+	</modules>
 	<build>
 		<plugins>
 			<plugin>
