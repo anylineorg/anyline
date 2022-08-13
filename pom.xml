@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline</artifactId>
-	<version>8.5.6-20220812</version>
+	<version>8.5.6-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline</name>
 
@@ -41,6 +41,8 @@
 		<module>anyline-aliyun/anyline-aliyun-sms</module>
 		<module>anyline-amap</module>
 		<module>anyline-baidu/anyline-baidu-map</module>
+		<module>anyline-qq-map</module>
+		<module>anyline-map</module>
 		<module>anyline-easemob</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-db2</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-mssql</module>
@@ -104,8 +106,6 @@
         <module>anyline-compatible-default</module>
         <module>anyline-thingsboard</module>
         <module>anyline-sms</module>
-		<module>anyline-qq-map</module>
-        <module>anyline-map</module>
 	</modules>
 	<build>
 		<plugins>
