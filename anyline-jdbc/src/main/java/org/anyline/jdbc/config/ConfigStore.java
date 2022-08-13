@@ -24,7 +24,6 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.Group;
 import org.anyline.jdbc.config.db.GroupStore;
-import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 
 import java.util.List;
@@ -53,10 +52,10 @@ public interface ConfigStore {
 	public ConfigStore removeConfig(Config config);
 	public List<Object> getConfigValues(String var);
 	public Object getConfigValue(String var);
-	public Config getConfig(String key, SQL.COMPARE_TYPE compare);
-	public ConfigStore removeConfig(String var, SQL.COMPARE_TYPE compare);
-	public List<Object> getConfigValues(String var, SQL.COMPARE_TYPE compare);
-	public Object getConfigValue(String var, SQL.COMPARE_TYPE compare);
+	public Config getConfig(String key, COMPARE_TYPE compare);
+	public ConfigStore removeConfig(String var, COMPARE_TYPE compare);
+	public List<Object> getConfigValues(String var, COMPARE_TYPE compare);
+	public Object getConfigValue(String var, COMPARE_TYPE compare);
 	public ConfigStore addConditions(String var, Object ... values);
 	public ConfigStore addCondition(String var, Object value);
 	/**
