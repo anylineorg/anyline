@@ -131,6 +131,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
+				<artifactId>anyline-map</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
 				<artifactId>anyline-easemob</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
@@ -332,6 +337,11 @@
 			<dependency>
 				<groupId>org.anyline</groupId>
 				<artifactId>anyline-print-10ss</artifactId>
+				<version>${anyline.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.anyline</groupId>
+				<artifactId>anyline-spider</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
@@ -711,6 +721,9 @@
 					<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
 				</snapshotRepository>
 			</distributionManagement>
+			<properties>
+				<additionalparam>-Xdoclint:none</additionalparam>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -729,13 +742,21 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.3</version>
+						<version>3.0.1</version>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<charset>UTF-8</charset>
+							<docencoding>UTF-8</docencoding>
+						</configuration>
 						<executions>
 							<execution>
 								<id>attach-javadocs</id>
 								<goals>
 									<goal>jar</goal>
 								</goals>
+								<configuration>
+									<additionalJOption>-Xdoclint:none</additionalJOption>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -799,7 +820,7 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>2.10.3</version>
+						<version>3.0.1</version>
 						<configuration>
 							<skip>true</skip>
 						</configuration>
