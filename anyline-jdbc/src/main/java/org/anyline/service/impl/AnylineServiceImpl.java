@@ -1125,13 +1125,22 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         if(null == obj){
             return 0;
         }
+        String dest = null;
         if(obj instanceof DataRow) {
             DataRow row = (DataRow)obj;
-            String dest = DataSourceHolder.parseDataSource(null, row);
+            dest = DataSourceHolder.parseDataSource(null, row);
             return dao.delete(dest, row, columns);
         }else{
-            return 0;
+            if(null != compatible){
+                if(obj instanceof Collection){
+                    dest = compatible.table(((Collection)obj).iterator().next().getClass());
+                }else{
+                    dest = compatible.table(obj.getClass());
+                }
+                return dao.delete(dest, obj, columns);
+            }
         }
+        return 0;
     }
 
     @Override
