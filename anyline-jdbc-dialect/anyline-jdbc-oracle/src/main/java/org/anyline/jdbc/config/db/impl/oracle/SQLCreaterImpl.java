@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Field;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -122,9 +123,17 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	@Override
-	public void format(StringBuilder builder, DataRow row, String key){
-		Object value = row.get(key);
-
+	public void format(StringBuilder builder, Object obj, String key){
+		Object value = null;
+		if(obj instanceof DataRow){
+			value = ((DataRow)obj).get(key);
+		}
+		if(null == compatible){
+			value = BeanUtil.getFieldValue(obj, key);
+		}else{
+			Field field = compatible.field(obj.getClass(), key);
+			value = BeanUtil.getFieldValue(obj, field);
+		}
 		if(null == value || "NULL".equals(value)){
 			builder.append("null");
 		}else if(value instanceof String){
