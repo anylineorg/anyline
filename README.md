@@ -11,10 +11,9 @@ AnyLine的核心是一个基于spring-jdbc生态的快捷数据库操作工具
 ## 适用场景
 适合于抽象设计阶段(实体概念还不明确或者设计不限于某个特别的实体)  
 常用于需要动态结构的场景    
-特别适合于需要大量复杂动态的查询，以及查询的结果集需要经过深度处理的场景
-如:可视化数据源、低代码后台、物联网数据处理、数据清洗、报表输出、运行时自定义表单、查询条件及数据结构等  
+特别适合于需要大量复杂动态的查询，以及查询的结果集需要经过深度处理的场景  
+如:可视化数据源、低代码后台、物联网数据处理、数据清洗、报表输出、运行时自定义表单/查询条件/数据结构等  
 
-只需要一个依赖、一个注解即可实现与springboot,netty等框架项目完美整合。  
 
 ## 不适用场景
 对已经非常明确的实体执行增删改查操作  
@@ -35,21 +34,10 @@ Anyline会自动生成,生成规则可以参考这里的[【约定规则】](htt
 
 返回的DataSet上附加了常用的数据二次处理功能如:排序、维度转换、截取、去重、方差、偏差、交集合集差集、分组、  
 行列转换、类SQL过滤筛选(like,eq,in,less,between...)、JSON、XML格式转换等  
-## 兼容
-如果实现放不下那些已存在的各种XOOO  
-DataSet与Entity之间可以相互转换  
-或者这样:  
-```
-List<User> = service.querys(User.class, 
-    condition(true,"anyline根据约定自动生成的查询条件")); 
-
-//也可以这样(如果真要这样就不要用anyline了,还是用MyBatis,Hibernate之类吧)
-public class UserService extends AnylinseService<User> 
-userService.querys(condition(true,"anyline根据约定自动生成的查询条件")); 
-```
 
 
 ## 如何集成
+只需要一个依赖、一个注解即可实现与springboot,netty等框架项目完美整合  
 直接看代码[【anyline-simple-hello】](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-hello)  
 生产环境可以参考这几个[pom](https://gitee.com/anyline/anyboot/tree/master)    
 [【anyboot-start】](https://gitee.com/anyline/anyboot/blob/master/anyboot-start/pom.xml) 没有web环境,如定时任务,爬虫等    
@@ -74,6 +62,18 @@ protected AnylineService service;
 ```
 接下来service就可以完成大部分的数据库操作了。常用示例可以参考[【示例代码】](https://gitee.com/anyline/anyline-simple)
 
+## 兼容
+如果实现放不下那些已存在的各种XOOO  
+DataSet与Entity之间可以相互转换  
+或者这样:
+```
+List<User> = service.querys(User.class, 
+    condition(true,"anyline根据约定自动生成的查询条件")); 
+
+//也可以这样(如果真要这样就不要用anyline了,还是用MyBatis,Hibernate之类吧)
+public class UserService extends AnylinseService<User> 
+userService.querys(condition(true,"anyline根据约定自动生成的查询条件")); 
+```
 
 
 ## 实战对比
