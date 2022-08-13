@@ -17,9 +17,8 @@
  */
 
 
-package org.anyline.dao; 
- 
-import org.anyline.entity.DataRow;
+package org.anyline.dao;
+
 import org.anyline.entity.DataSet;
 import org.anyline.entity.MetaData;
 import org.anyline.jdbc.config.ConfigStore;
@@ -29,7 +28,7 @@ import org.anyline.jdbc.config.db.SQL;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
- 
+
 public interface AnylineDao<E>{
 	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
 	public <T> List<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
@@ -108,8 +107,7 @@ public interface AnylineDao<E>{
 	 * @return DataSet
 	 */ 
 	public DataSet query(Procedure procedure);
-	public int delete(String dest, DataSet set, String ... columns);
-	public int delete(String dest, DataRow row, String ... columns);
+	public int delete(String dest, Object obj, String ... columns);
 	public int delete(String table, ConfigStore configs, String ... conditions);
 
 	/**

@@ -1238,18 +1238,21 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return result;
 	}
 	@Override
-	public int delete(String dest, DataSet set, String... columns) {
+	public int delete(String dest,Object obj, String... columns) {
 		int size = 0;
-		for(DataRow row:set){
-			size += delete(dest, row, columns);
+		if(null != obj){
+			if(obj instanceof Collection){
+				Collection list = (Collection) obj;
+				for(Object item:list){
+					size += delete(dest, item, columns);
+				}
+			}else{
+				RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(dest, obj, columns);
+				size = exeDelete(run);
+
+			}
 		}
 		return size;
-	}
-	@Override
-	public int delete(String dest, DataRow row, String... columns) {
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(dest, row, columns);
-		int result = exeDelete(run);
-		return result;
 	}
 
 	@Override
