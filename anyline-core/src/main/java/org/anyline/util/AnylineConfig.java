@@ -28,7 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
@@ -149,7 +148,7 @@ public abstract class AnylineConfig {
 					try {
 						String value = row.getString(nm);
 						config.setValue(nm, value);
-						log.info("[解析配置文件][{}={}]", nm, value);
+						log.warn("[解析配置文件][{}={}]", nm, value);
 						kvs.put(nm, value);
 						config.afterParse(nm, value);
 					} catch (Exception e) {
