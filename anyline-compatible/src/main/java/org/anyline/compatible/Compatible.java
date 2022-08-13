@@ -41,6 +41,7 @@ public interface Compatible {
      * @return String
      */
     public String primaryKey(Class clazz);
+
     /**
      * 获取clazz类相关的主键s
      * @param clazz 类
@@ -50,16 +51,22 @@ public interface Compatible {
 
     /**
      * 主键值
-     * @param obj 类
+     * @param obj obj
      * @return String
      */
     public Map<String,Object> primaryValue(Object obj);
     /**
      * 主键值
-     * @param obj 类
+     * @param obj obj
      * @return
      */
     public Map<String,Object> primaryValues(Object obj);
+
+    /**
+     * 生成主键值
+     * @param obj obj
+     */
+    public void createPrimaryValue(Object obj);
     /**
      * map结构转换成clazz对象
      * @param clazz 类
