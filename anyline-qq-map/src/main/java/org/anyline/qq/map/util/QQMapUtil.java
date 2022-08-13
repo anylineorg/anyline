@@ -2,6 +2,7 @@ package org.anyline.qq.map.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.MapPoint;
+import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
@@ -67,7 +68,7 @@ public class QQMapUtil {
      * @param ip
      * @return
      */
-    public MapPoint ip(String ip){
+    public MapPoint ip(String ip) {
         MapPoint point = null;
         String api = "/ws/location/v1/ip";
         Map<String, Object> params = new HashMap<>();
@@ -80,8 +81,12 @@ public class QQMapUtil {
         if(null != row){
             int status = row.getInt("status",-1);
             if(status != 0){
+                //[code:121][info:此key每日调用量已达到上限]
                 log.warn("[IP地址解析][执行失败][instance:{}][code:{}][info:{}]", config.INSTANCE_KEY, status, row.getString("message"));
-                return null;
+                log.warn("[IP地址解析][response:{}]",txt);
+                if("121".equals(status)) {
+                    throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                }
             }else{
                 point = new MapPoint();
                 DataRow result = row.getRow("result");
@@ -125,7 +130,10 @@ public class QQMapUtil {
             int status = row.getInt("status",-1);
             if(status != 0){
                 log.warn("[逆地理编码][执行失败][instance:{}][code:{}][info:{}]", config.INSTANCE_KEY, status, row.getString("message"));
-                return null;
+                log.warn("[逆地理编码][response:{}]",txt);
+                if("121".equals(status)) {
+                    throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                }
             }else{
                 point = new MapPoint(lng, lat);
                 DataRow result = row.getRow("result");

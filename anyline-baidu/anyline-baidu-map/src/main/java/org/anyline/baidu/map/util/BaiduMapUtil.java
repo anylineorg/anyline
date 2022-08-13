@@ -2,6 +2,7 @@ package org.anyline.baidu.map.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.MapPoint;
+import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
@@ -48,10 +49,10 @@ public class BaiduMapUtil {
         return util;
     }
 
-    public MapPoint regeo(double lng, double lat){
+    public MapPoint regeo(double lng, double lat) {
         return regeo(lng+"", lat+"");
     }
-    public MapPoint regeo(String lng, String lat){
+    public MapPoint regeo(String lng, String lat) {
         MapPoint point = null;
         String url = "https://api.map.baidu.com/reverse_geocoding/v3/?ak="+config.AK+"&location="+lat+","+lng+"&extensions_town=true&output=json";
         String txt = HttpUtil.get(url).getText();
@@ -59,8 +60,12 @@ public class BaiduMapUtil {
         if(null != row){
             int status = row.getInt("status",-1);
             if(status != 0){
+                // [code:302][info:天配额超限，限制访问]
                 log.warn("[逆地理编码][执行失败][code:{}][info:{}]", status, row.getString("message"));
-                return null;
+                log.warn("[逆地理编码][response:{}]",txt);
+                if("302".equals(status)) {
+                    throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                }
             }else{
                 point = new MapPoint(lng, lat);
                 point.setAddress(row.getString("formatted_address"));

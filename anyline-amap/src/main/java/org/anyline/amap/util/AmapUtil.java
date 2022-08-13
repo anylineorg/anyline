@@ -1,6 +1,7 @@
 package org.anyline.amap.util;
 
 import org.anyline.entity.*;
+import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -725,7 +726,7 @@ public class AmapUtil {
 	 * @param location  经度在前,纬度在后,经纬度间以“,”分割
 	 * @return DataRow
 	 */ 
-	public MapPoint regeo(String location){
+	public MapPoint regeo(String location)  {
 		MapPoint point = null;
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/geocode/regeo"; 
@@ -740,7 +741,12 @@ public class AmapUtil {
 			if(null != row){
 				int status = row.getInt("STATUS",0);
 				if(status ==0){
+					//[逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
 					log.warn("[逆地理编码][执行失败][code:{}][info:{}]", row.getString("INFOCODE"), row.getString("INFO"));
+					log.warn("[逆地理编码][response:{}]",txt);
+					if("10044".equals(row.getString("INFOCODE"))) {
+						throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+					}
 				}else {
 					row = row.getRow("regeocode");
 					if (null != row) {
