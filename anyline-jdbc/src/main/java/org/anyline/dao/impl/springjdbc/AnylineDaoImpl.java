@@ -57,6 +57,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Repository;
 
+import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -727,8 +728,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			DataRow row = (DataRow)obj;
 			row.put(row.getPrimaryKey(), value);
 		}else{
-//			String key = BeanUtil.getPrimaryKey(obj.getClass());
-//			BeanUtil.setFieldValue(obj, key, value);
+			if(null != compatible){
+				String key = compatible.primaryKey(obj.getClass());
+				Field field = compatible.field(obj.getClass(), key);
+				BeanUtil.setFieldValue(obj, field, value);
+			}
 		}
 	}
 
