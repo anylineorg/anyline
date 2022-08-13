@@ -39,10 +39,7 @@ import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLException;
 import org.anyline.jdbc.exception.SQLUpdateException;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -272,30 +269,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			dest = DataSourceHolder.parseDataSource(dest,obj);
 		}
 
-		if(obj instanceof DataRow){
-			DataRow row = (DataRow)obj;
-			row.setDataSource(dest); 
-			return createInsertTxtFromDataRow(dest,row,checkParimary, columns); 
-		}
-		if(obj instanceof DataSet){
-			DataSet set = (DataSet)obj;
-			set.setDataSource(dest);
-			if(set.size() >0){
-				return createInsertTxtFromDataSet(dest,set,checkParimary, columns);
-			}
-		}
 		if(obj instanceof Collection){
-			DataSet set = DataSet.parse((Collection)obj);
-			set.setDataSource(dest);
-			if(set.size() >0){
-				return createInsertTxtFromDataSet(dest,set,checkParimary, columns);
+			Collection list = (Collection) obj;
+			if(list.size() >0){
+				return createInsertTxtFromCollection(dest, list, checkParimary, columns);
 			}
 		}
+		return createInsertTxtFromEntity(dest, obj, checkParimary, columns);
 
-		return null; 
 	}
 
-	private RunSQL createInsertTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
+	private RunSQL createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
 		List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
@@ -303,16 +287,36 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			throw new SQLException("未指定表");
 		}
 		StringBuilder param = new StringBuilder();
-		if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
-			String pk = row.getPrimaryKey();
-			if(null == pk){
-				pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+		DataRow row = null;
+		if(obj instanceof DataRow){
+			row = (DataRow)obj;
+			if(row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())){
+				String pk = row.getPrimaryKey();
+				if(null == pk){
+					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+				}
+				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 			}
-			row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
+		}else{
+			String pk = null;
+			Object pv = null;
+			if(null != compatible){
+				pk = compatible.primaryKey(obj.getClass());
+				pv = compatible.primaryValue(obj);
+				compatible.createPrimaryValue(obj);
+			}else{
+				pk = DataRow.DEFAULT_PRIMARY_KEY;
+				pv = BeanUtil.getFieldValue(obj, pk);
+				if(null != primaryCreater && null == pv){
+					pv = primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null);
+					BeanUtil.setFieldValue(obj, pk, pv);
+				}
+			}
 		}
+
 		/*确定需要插入的列*/
 		
-		List<String> keys = confirmInsertColumns(dest, row, columns);
+		List<String> keys = confirmInsertColumns(dest, obj, columns);
 		if(null == keys || keys.size() == 0){
 			throw new SQLException("未指定列");
 		}
@@ -323,7 +327,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int size = keys.size();
 		for(int i=0; i<size; i++){
 			String key = keys.get(i);
-			Object value = row.get(key);
+			Object value = null;
+			if(null != row){
+				value = row.get(key);
+			}else{
+				if(null != compatible){
+					value = BeanUtil.getFieldValue(obj, compatible.field(obj.getClass(), key));
+				}else{
+					value = BeanUtil.getFieldValue(obj, key);
+				}
+			}
 			builder.append(getDelimiterFr()).append(key).append(getDelimiterTo());
 			if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 				String str = value.toString();
@@ -357,30 +370,38 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		run.setInsertColumns(insertColumns);
 		return run;
 	}
-	private RunSQL createInsertTxtFromDataSet(String dest, DataSet set, boolean checkParimary, String ... columns){
+	private RunSQL createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
 
 		StringBuilder builder = new StringBuilder();
-		if(null == set || set.size() ==0){
+		if(null == list || list.size() ==0){
 			throw new SQLException("空数据");
 		}
-		if(BasicUtil.isEmpty(dest)){
-			dest = DataSourceHolder.parseDataSource(dest,set);
-		}
-		if(BasicUtil.isEmpty(dest)){
-			dest = DataSourceHolder.parseDataSource(dest,set.getRow(0));
+		Object first = null;
+		if(list instanceof DataSet){
+			DataSet set = (DataSet)list;
+			first = set.getRow(0);
+			if(BasicUtil.isEmpty(dest)){
+				dest = DataSourceHolder.parseDataSource(dest,set);
+			}
+			if(BasicUtil.isEmpty(dest)){
+				dest = DataSourceHolder.parseDataSource(dest,first);
+			}
+		}else{
+			first = list.iterator().next();
+			if(null != compatible){
+				dest = compatible.table(first.getClass());
+			}
 		}
 		if(BasicUtil.isEmpty(dest)){
 			throw new SQLException("未指定表");
 		}
-		DataRow first = set.getRow(0);
 		/*确定需要插入的列*/
-		
 		List<String> keys = confirmInsertColumns(dest, first, columns);
 		if(null == keys || keys.size() == 0){
 			throw new SQLException("未指定列");
 		}
-		createInsertsTxt(builder, dest, set, keys);
+		createInsertsTxt(builder, dest, list, keys);
 		run.setBuilder(builder);
 		return run;
 	}
@@ -419,27 +440,89 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 	}
 
+	//@Override
+	public void createInsertsTxt(StringBuilder builder, String dest, Collection list,  List<String> keys){
+		builder.append("INSERT INTO ").append(parseTable(dest));
+		builder.append("(");
+
+		int keySize = keys.size();
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			builder.append(getDelimiterFr()).append(key).append(getDelimiterTo());
+			if(i<keySize-1){
+				builder.append(",");
+			}
+		}
+		builder.append(") VALUES ");
+		int dataSize = list.size();
+		int idx = 0;
+		for(Object obj:list){
+			if(obj instanceof DataRow) {
+				DataRow row = (DataRow)obj;
+				if (row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())) {
+					String pk = row.getPrimaryKey();
+					if (null == pk) {
+						pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+					}
+					row.put(pk, primaryCreater.createPrimary(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
+				}
+				insertValue(builder, row, keys);
+			}else{
+				String pk = null;
+				Object pv = null;
+				if(null != compatible){
+					pk = compatible.primaryKey(obj.getClass());
+					pv = compatible.primaryValue(obj);
+					compatible.createPrimaryValue(obj);
+				}else{
+					pk = DataRow.DEFAULT_PRIMARY_KEY;
+					pv = BeanUtil.getFieldValue(obj, pk);
+					if(null != primaryCreater && null == pv){
+						pv = primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null);
+						BeanUtil.setFieldValue(obj, pk, pv);
+					}
+				}
+				insertValue(builder, obj, keys);
+			}
+			if(idx<dataSize-1){
+				builder.append(",");
+			}
+			idx ++;
+		}
+	}
+
 	/**
 	 * 生成insert sql的value部分
 	 * @param builder builder
-	 * @param row row
+	 * @param obj obj
 	 * @param keys keys
 	 */
-	protected void insertValue(StringBuilder builder, DataRow row, List<String> keys){
+	protected void insertValue(StringBuilder builder, Object obj, List<String> keys){
 		int keySize = keys.size();
 		builder.append("(");
 		for(int j=0; j<keySize; j++){
-			format(builder, row, keys.get(j));
+			format(builder, obj, keys.get(j));
 			if(j<keySize-1){
 				builder.append(",");
 			}
 		}
 		builder.append(")");
 	}
-	@Override
-	public void format(StringBuilder builder, DataRow row, String key){
-		Object value = row.get(key);
-
+	public void format(StringBuilder builder, Object obj, String key){
+		Object value = null;
+		if(obj instanceof DataRow){
+			value = ((DataRow)obj).get(key);
+		}else {
+			if (null != compatible) {
+				Field field = compatible.field(obj.getClass(), key);
+				value = BeanUtil.getFieldValue(obj, field);
+			} else {
+				value = BeanUtil.getFieldValue(obj, key);
+			}
+		}
+		format(builder, value);
+	}
+	private void format(StringBuilder builder, Object value){
 		if(null == value || "NULL".equals(value)){
 			builder.append("null");
 		}else if(value instanceof String){
@@ -611,13 +694,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 	/** 
 	 * 确认需要插入的列 
-	 * @param row  row
+	 * @param obj  obj
 	 * @param columns  columns
 	 * @return List
 	 */ 
-	private List<String> confirmInsertColumns(String dst, DataRow row, String ... columns){ 
+	public List<String> confirmInsertColumns(String dst, Object obj, String ... columns){
 		List<String> keys = null;/*确定需要插入的列*/ 
-		if(null == row){ 
+		if(null == obj){
 			return new ArrayList<>();
 		} 
 		boolean each = true;//是否需要从row中查找列 
@@ -633,24 +716,41 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					continue; 
 				} 
 				if(column.startsWith("+")){ 
-					column = column.substring(1, column.length()); 
+					column = column.substring(1);
 					mastKeys.add(column); 
 					each = true; 
 				}else if(column.startsWith("-")){
-					column = column.substring(1, column.length()); 
+					column = column.substring(1);
 					delimiters.add(column);
 					each = true; 
 				}else if(column.startsWith("?")){
-					column = column.substring(1, column.length()); 
+					column = column.substring(1);
 					factKeys.add(column); 
 					each = true; 
 				} 
 				keys.add(column); 
 			} 
 		} 
-		if(each){ 
-			keys = row.keys(); 
-			//是否插入null及""列 
+		if(each){
+			DataRow row = null;
+			if(obj instanceof DataRow){
+				row = (DataRow)obj;
+				keys = row.keys();
+			}else{
+				if(null != compatible){
+					keys = compatible.columns(obj.getClass());
+				}else {
+					keys = new ArrayList<>();
+					List<Field> fields = ClassUtil.getFields(obj.getClass());
+					for (Field field : fields) {
+						Class clazz = field.getType();
+						if (clazz == String.class || clazz == Date.class || ClassUtil.isPrimitiveClass(clazz)) {
+							keys.add(field.getName());
+						}
+					}
+				}
+			}
+			//是否插入null及""列
 			boolean isInsertNullColumn = ConfigTable.getBoolean("IS_INSERT_NULL_COLUMN",false); 
 			boolean isInsertEmptyColumn = ConfigTable.getBoolean("IS_INSERT_EMPTY_COLUMN",false); 
 			int size = keys.size(); 
@@ -663,9 +763,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(delimiters.contains(key)){
 					keys.remove(key); 
 					continue; 
-				} 
-				 
-				Object value = row.get(KEY_CASE.SRC, key);
+				}
+				Object value = null;
+				if(null != row) {
+					value = row.get(KEY_CASE.SRC, key);
+				}else{
+					if(null != compatible){
+						value = BeanUtil.getFieldValue(obj, compatible.field(obj.getClass(), key));
+					}else{
+						value = BeanUtil.getFieldValue(obj, key);
+					}
+				}
 				if(null == value){ 
 					if(factKeys.contains(key)){ 
 						keys.remove(key); 
@@ -689,18 +797,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			} 
 		} 
 		return keys; 
-	}
-	/**
-	 * 确认需要插入的列 
-	 */
-	public List<String> confirmInsertColumns(String dst, Object data, String ... columns){
-		if(null == data){
-			return null;
-		}
-		if(data instanceof DataRow){
-			return confirmInsertColumns(dst, (DataRow)data, columns);
-		}
-		return null;
 	}
 	/** 
 	 * 确认需要更新的列 
