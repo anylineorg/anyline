@@ -8,10 +8,7 @@ import org.anyline.util.ConfigTable;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component("anyline.compatible.default")
 public class DefaultCompatible implements Compatible{
@@ -50,7 +47,9 @@ public class DefaultCompatible implements Compatible{
             fields.removeAll(ignores);
             for (Field field : fields) {
                 String column = column(clazz, field);
-                columns.add(column);
+                if(BasicUtil.isNotEmpty(column)) {
+                    columns.add(column);
+                }
             }
             DefaultCompatible.columns.put(clazz.getName(),columns);
         }
@@ -81,11 +80,15 @@ public class DefaultCompatible implements Compatible{
             return name;
         }
         //4.属性名
-        name = field.getName();
-        field2column.put(key, name);
-        column2field.put(clazz.getName()+":"+name.toUpperCase(), field);
 
-        return name;
+        Class c = field.getType();
+        if(c == String.class || c == Date.class || ClassUtil.isPrimitiveClass(c)) {
+            name = field.getName();
+            field2column.put(key, name);
+            column2field.put(clazz.getName()+":"+name.toUpperCase(), field);
+            return name;
+        }
+        return null;
     }
 
     @Override
@@ -150,6 +153,11 @@ public class DefaultCompatible implements Compatible{
         Map<String,Object> map = new HashMap<>();
         map.put(primary, value);
         return map;
+    }
+
+    @Override
+    public void createPrimaryValue(Object obj) {
+
     }
 
     @Override
