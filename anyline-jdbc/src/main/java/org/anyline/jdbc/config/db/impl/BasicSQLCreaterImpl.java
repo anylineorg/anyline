@@ -119,14 +119,21 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public RunSQL createDeleteRunSQL(String dest, Object obj, String ... columns){ 
 		if(null == obj){ 
 			return null; 
-		} 
+		}
 		RunSQL run = null; 
 		if(null == dest){ 
 			dest = DataSourceHolder.parseDataSource(dest,obj);
 		}
-		if(obj instanceof DataRow){
-			run = createDeleteRunSQLFromDataRow(dest, (DataRow)obj, columns);
-		}else if(obj instanceof ConfigStore){
+		if(null == dest){
+			Object entity = obj;
+			if(obj instanceof Collection){
+				entity = ((Collection)obj).iterator().next();
+			}
+			if(null != compatible){
+				dest = compatible.table(entity.getClass());
+			}
+		}
+	if(obj instanceof ConfigStore){
 			run = new TableRunSQLImpl();
 			run.setCreater(this);
 			SQL sql = new TableSQLImpl();
@@ -136,6 +143,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			run.addConditions(columns);
 			run.init();
 			run.createRunDeleteTxt();
+		}else{
+			run = createDeleteRunSQLFromEntity(dest, obj, columns);
 		}
 		return run; 
 	}
@@ -177,7 +186,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		run.setBuilder(builder);
 		return run;
 	}
-	private RunSQL createDeleteRunSQLFromDataRow(String dest, DataRow obj, String ... columns){ 
+	private RunSQL createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
 		TableRunSQLImpl run = new TableRunSQLImpl();
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
@@ -187,7 +196,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				keys.add(col);
 			}
 		}else{
-			keys = obj.getPrimaryKeys();
+			if(obj instanceof DataRow){
+				keys = ((DataRow)obj).getPrimaryKeys();
+			}else{
+				if(null != compatible){
+					keys = compatible.primaryKeys(obj.getClass());
+				}
+			}
 		}
 		int size = keys.size();
 		if(size >0){
@@ -197,7 +212,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}
 				String key = keys.get(i);
 				builder.append(getDelimiterFr()).append(key).append(getDelimiterTo()).append(" = ? ");
-				run.addValue(obj.get(key)); 
+				Object value = null;
+				if(obj instanceof DataRow){
+					value = ((DataRow)obj).get(key);
+				}else{
+					if(null != compatible){
+						value = BeanUtil.getFieldValue(obj,compatible.field(obj.getClass(), key));
+					}else{
+						value = BeanUtil.getFieldValue(obj, key);
+					}
+				}
+				run.addValue(value);
 			}
 		}else{
 			throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
