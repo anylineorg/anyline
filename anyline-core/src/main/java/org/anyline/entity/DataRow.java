@@ -48,29 +48,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private static final long serialVersionUID = -2098827041540802313L;
     protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
 
-    private static EntityAdapter adapter;
-    private static boolean is_adapter_load = false;
-
-    @Autowired(required = false)
-    @Qualifier("anyline.entity.adapter")
-    public void setAdapter(EntityAdapter adapter) {
-        DataRow.adapter = adapter;
-    }
-
-    private static EntityAdapter getAdapter() {
-        if (null != adapter) {
-            return adapter;
-        }
-        if (!is_adapter_load) {
-            try {
-                adapter = (EntityAdapter) SpringContextUtil.getBean("anyline.entity.adapter");
-            } catch (Exception e) {
-            }
-            is_adapter_load = true;
-        }
-        return adapter;
-    }
-
     public static String PARENT = "PARENT"; //上级数据
     public static String ALL_PARENT = "ALL_PARENT"; //所有上级数据
     public static String CHILDREN = "CHILDREN"; //子数据
@@ -195,8 +172,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     @SuppressWarnings("rawtypes")
     public static DataRow parse(Object obj, String... keys) {
         DataRow result = null;
-        if (null != getAdapter()) {
-            result = adapter.parse(obj, keys);
+        if (AdapterProxy.hasAdapter()) {
+            result = AdapterProxy.parse(obj, keys);
             if (null != result) {
                 return result;
             }
@@ -1023,8 +1000,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if (null == clazz) {
             return entity;
         }
-        if (null != getAdapter()) {
-            entity = adapter.entity(clazz, this);
+        if (AdapterProxy.hasAdapter()) {
+            entity = AdapterProxy.entity(clazz, this);
             if (null != entity) {
                 return entity;
             }

@@ -1,6 +1,7 @@
-package org.anyline.compatible;
+package org.anyline.adapter;
 
 import org.anyline.entity.DataRow;
+import org.anyline.entity.EntityAdapter;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
@@ -10,8 +11,8 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Field;
 import java.util.*;
 
-@Component("anyline.compatible.default")
-public class DefaultCompatible implements Compatible{
+@Component("anyline.entity.adapter")
+public class DefaultAdapter implements EntityAdapter {
     private static Map<String,String> class2table    = new HashMap<>();  // class.name > table.name
     private static Map<String,String> field2column   = new HashMap<>();  // class.name:field.name > column.name
     private static Map<String,Field> column2field    = new HashMap<>();  // column.name > field
@@ -39,7 +40,7 @@ public class DefaultCompatible implements Compatible{
 
     @Override
     public List<String> columns(Class clazz) {
-        List<String> columns = DefaultCompatible.columns.get(clazz.getName());
+        List<String> columns = DefaultAdapter.columns.get(clazz.getName());
         if(null == columns) {
             columns = new ArrayList<>();
             List<Field> fields = ClassUtil.getFields(clazz);
@@ -51,7 +52,7 @@ public class DefaultCompatible implements Compatible{
                     columns.add(column);
                 }
             }
-            DefaultCompatible.columns.put(clazz.getName(),columns);
+            DefaultAdapter.columns.put(clazz.getName(),columns);
         }
         return columns;
     }
@@ -171,4 +172,20 @@ public class DefaultCompatible implements Compatible{
         }
         return map;
     }
+
+    @Override
+    public DataRow parse(Object obj, String... keys) {
+        return null;
+    }
+
+    @Override
+    public void after(Object env, Object entity) {
+
+    }
+
+    @Override
+    public List<String> metadata2param(List<String> metadata) {
+        return null;
+    }
+
 }

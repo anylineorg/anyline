@@ -1,18 +1,15 @@
  
-package org.anyline.jdbc.config.db.impl.oracle; 
- 
+package org.anyline.jdbc.config.db.impl.oracle;
+
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
+import org.anyline.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -128,11 +125,11 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);
 		}
-		if(null == compatible){
-			value = BeanUtil.getFieldValue(obj, key);
-		}else{
-			Field field = compatible.field(obj.getClass(), key);
+		if(AdapterProxy.hasAdapter()){
+			Field field = AdapterProxy.field(obj.getClass(), key);
 			value = BeanUtil.getFieldValue(obj, field);
+		}else{
+			value = BeanUtil.getFieldValue(obj, key);
 		}
 		if(null == value || "NULL".equals(value)){
 			builder.append("null");

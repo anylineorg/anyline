@@ -20,7 +20,6 @@
 package org.anyline.jdbc.config.db.impl;
 
 
-import org.anyline.compatible.Compatible;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -65,8 +64,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	protected PrimaryCreater primaryCreater; 
 	public String delimiterFr = "";
 	public String delimiterTo = "";
-	@Autowired(required=false)
-	protected Compatible compatible;
 	public DB_TYPE type(){
 		return null;
 	}
@@ -129,8 +126,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(obj instanceof Collection){
 				entity = ((Collection)obj).iterator().next();
 			}
-			if(null != compatible){
-				dest = compatible.table(entity.getClass());
+			if(AdapterProxy.hasAdapter()){
+				dest = AdapterProxy.table(entity.getClass());
 			}
 		}
 	if(obj instanceof ConfigStore){
@@ -199,8 +196,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(obj instanceof DataRow){
 				keys = ((DataRow)obj).getPrimaryKeys();
 			}else{
-				if(null != compatible){
-					keys = compatible.primaryKeys(obj.getClass());
+				if(AdapterProxy.hasAdapter()){
+					keys = AdapterProxy.primaryKeys(obj.getClass());
 				}
 			}
 		}
@@ -216,8 +213,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(obj instanceof DataRow){
 					value = ((DataRow)obj).get(key);
 				}else{
-					if(null != compatible){
-						value = BeanUtil.getFieldValue(obj,compatible.field(obj.getClass(), key));
+					if(AdapterProxy.hasAdapter()){
+						value = BeanUtil.getFieldValue(obj,AdapterProxy.field(obj.getClass(), key));
 					}else{
 						value = BeanUtil.getFieldValue(obj, key);
 					}
@@ -325,10 +322,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}else{
 			String pk = null;
 			Object pv = null;
-			if(null != compatible){
-				pk = compatible.primaryKey(obj.getClass());
-				pv = compatible.primaryValue(obj);
-				compatible.createPrimaryValue(obj);
+			if(AdapterProxy.hasAdapter()){
+				pk = AdapterProxy.primaryKey(obj.getClass());
+				pv = AdapterProxy.primaryValue(obj);
+				AdapterProxy.createPrimaryValue(obj);
 			}else{
 				pk = DataRow.DEFAULT_PRIMARY_KEY;
 				pv = BeanUtil.getFieldValue(obj, pk);
@@ -356,8 +353,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(null != row){
 				value = row.get(key);
 			}else{
-				if(null != compatible){
-					value = BeanUtil.getFieldValue(obj, compatible.field(obj.getClass(), key));
+				if(AdapterProxy.hasAdapter()){
+					value = BeanUtil.getFieldValue(obj, AdapterProxy.field(obj.getClass(), key));
 				}else{
 					value = BeanUtil.getFieldValue(obj, key);
 				}
@@ -414,8 +411,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}else{
 			first = list.iterator().next();
-			if(null != compatible){
-				dest = compatible.table(first.getClass());
+			if(AdapterProxy.hasAdapter()){
+				dest = AdapterProxy.table(first.getClass());
 			}
 		}
 		if(BasicUtil.isEmpty(dest)){
@@ -495,10 +492,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}else{
 				String pk = null;
 				Object pv = null;
-				if(null != compatible){
-					pk = compatible.primaryKey(obj.getClass());
-					pv = compatible.primaryValue(obj);
-					compatible.createPrimaryValue(obj);
+				if(AdapterProxy.hasAdapter()){
+					pk = AdapterProxy.primaryKey(obj.getClass());
+					pv = AdapterProxy.primaryValue(obj);
+					AdapterProxy.createPrimaryValue(obj);
 				}else{
 					pk = DataRow.DEFAULT_PRIMARY_KEY;
 					pv = BeanUtil.getFieldValue(obj, pk);
@@ -538,8 +535,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);
 		}else {
-			if (null != compatible) {
-				Field field = compatible.field(obj.getClass(), key);
+			if (AdapterProxy.hasAdapter()) {
+				Field field = AdapterProxy.field(obj.getClass(), key);
 				value = BeanUtil.getFieldValue(obj, field);
 			} else {
 				value = BeanUtil.getFieldValue(obj, key);
@@ -602,12 +599,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null != columns && columns.length >0 ){
 			keys = BeanUtil.array2list(columns);
 		}else{
-			if(null != compatible){
-				keys = compatible.columns(obj.getClass());
+			if(AdapterProxy.hasAdapter()){
+				keys = AdapterProxy.columns(obj.getClass());
 			}
 		}
-		if(null != compatible){
-			primaryKeys = compatible.primaryKeys(obj.getClass());
+		if(AdapterProxy.hasAdapter()){
+			primaryKeys = AdapterProxy.primaryKeys(obj.getClass());
 		}else{
 			primaryKeys = new ArrayList<>();
 			primaryKeys.add(DataRow.DEFAULT_PRIMARY_KEY);
@@ -624,8 +621,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
 				Object value = null;
-				if(null != compatible){
-					Field field = compatible.field(obj.getClass(), key);
+				if(AdapterProxy.hasAdapter()){
+					Field field = AdapterProxy.field(obj.getClass(), key);
 					value = BeanUtil.getFieldValue(obj, field);
 				}else {
 					value = BeanUtil.getFieldValue(obj, key);
@@ -651,8 +648,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			for(String pk:primaryKeys){
 				builder.append(" AND ").append(getDelimiterFr()).append(pk).append(getDelimiterTo()).append(" = ?");
 				updateColumns.add(pk);
-				if(null != compatible){
-					Field field = compatible.field(obj.getClass(), pk);
+				if(AdapterProxy.hasAdapter()){
+					Field field = AdapterProxy.field(obj.getClass(), pk);
 					values.add(BeanUtil.getFieldValue(obj, field));
 				}else {
 					values.add(BeanUtil.getFieldValue(obj, pk));
@@ -762,8 +759,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				row = (DataRow)obj;
 				keys = row.keys();
 			}else{
-				if(null != compatible){
-					keys = compatible.columns(obj.getClass());
+				if(AdapterProxy.hasAdapter()){
+					keys = AdapterProxy.columns(obj.getClass());
 				}else {
 					keys = new ArrayList<>();
 					List<Field> fields = ClassUtil.getFields(obj.getClass());
@@ -793,8 +790,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(null != row) {
 					value = row.get(KEY_CASE.SRC, key);
 				}else{
-					if(null != compatible){
-						value = BeanUtil.getFieldValue(obj, compatible.field(obj.getClass(), key));
+					if(AdapterProxy.hasAdapter()){
+						value = BeanUtil.getFieldValue(obj, AdapterProxy.field(obj.getClass(), key));
 					}else{
 						value = BeanUtil.getFieldValue(obj, key);
 					}

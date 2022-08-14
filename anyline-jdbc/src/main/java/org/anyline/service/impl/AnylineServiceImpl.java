@@ -23,7 +23,6 @@ import org.anyline.cache.CacheElement;
 import org.anyline.cache.CacheProvider;
 import org.anyline.cache.CacheUtil;
 import org.anyline.cache.PageLazyStore;
-import org.anyline.compatible.Compatible;
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigStore;
@@ -36,6 +35,7 @@ import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.service.AnylineService;
+import org.anyline.util.AdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -63,9 +63,6 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     @Autowired(required = false)
     @Qualifier("anyline.cache.provider")
     protected CacheProvider cacheProvider;
-
-    @Autowired(required = false)
-    protected Compatible compatible;
 
     /**
      * 按条件查询
@@ -956,8 +953,8 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             if (data instanceof DataRow || data instanceof DataSet) {
                 dest = DataSourceHolder.parseDataSource(dest, data);
             }else{
-                if(null != compatible){
-                    dest = compatible.table(data.getClass());
+                if(AdapterProxy.hasAdapter()){
+                    dest = AdapterProxy.table(data.getClass());
                 }
             }
         }
@@ -1131,11 +1128,11 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             dest = DataSourceHolder.parseDataSource(null, row);
             return dao.delete(dest, row, columns);
         }else{
-            if(null != compatible){
+            if(AdapterProxy.hasAdapter()){
                 if(obj instanceof Collection){
-                    dest = compatible.table(((Collection)obj).iterator().next().getClass());
+                    dest = AdapterProxy.table(((Collection)obj).iterator().next().getClass());
                 }else{
-                    dest = compatible.table(obj.getClass());
+                    dest = AdapterProxy.table(obj.getClass());
                 }
                 return dao.delete(dest, obj, columns);
             }

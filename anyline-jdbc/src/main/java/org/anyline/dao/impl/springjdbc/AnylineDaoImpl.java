@@ -20,7 +20,6 @@
 package org.anyline.dao.impl.springjdbc;
 
 import org.anyline.cache.PageLazyStore;
-import org.anyline.compatible.Compatible;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.JDBCListener;
 import org.anyline.dao.impl.BatchInsertStore;
@@ -40,6 +39,7 @@ import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLQueryException;
 import org.anyline.jdbc.exception.SQLUpdateException;
 import org.anyline.jdbc.util.SQLCreaterUtil;
+import org.anyline.util.AdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -73,10 +73,6 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	@Autowired(required=false)
 	protected JDBCListener listener;
-
-
-	@Autowired(required=false)
-	protected Compatible compatible;
 
 	public JdbcTemplate getJdbc(){
 		return jdbc;
@@ -223,8 +219,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		List<T> list = null;
 		try {
 			SQL sql = new TableSQLImpl();
-			if(null != compatible){
-				sql.setDataSource(compatible.table(clazz));
+			if(AdapterProxy.hasAdapter()){
+				sql.setDataSource(AdapterProxy.table(clazz));
 			}
 			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
 			if (showSQL && !run.isValid()) {
@@ -544,8 +540,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			DataRow row = (DataRow)obj;
 			return row.isNew();
 		}else{
-			if(null != compatible){
-				Map<String,Object> values = compatible.primaryValues(obj);
+			if(AdapterProxy.hasAdapter()){
+				Map<String,Object> values = AdapterProxy.primaryValues(obj);
 				for(Map.Entry entry:values.entrySet()){
 					if(BasicUtil.isNotEmpty(entry.getValue())){
 						return false;
@@ -728,9 +724,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			DataRow row = (DataRow)obj;
 			row.put(row.getPrimaryKey(), value);
 		}else{
-			if(null != compatible){
-				String key = compatible.primaryKey(obj.getClass());
-				Field field = compatible.field(obj.getClass(), key);
+			if(AdapterProxy.hasAdapter()){
+				String key = AdapterProxy.primaryKey(obj.getClass());
+				Field field = AdapterProxy.field(obj.getClass(), key);
 				BeanUtil.setFieldValue(obj, field, value);
 			}
 		}
@@ -850,8 +846,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.warn(random + "[执行耗时:{}ms]",mid - fr);
 			}
 			for(Map<String,Object> map:list){
-				if(null != compatible){
-					T row = compatible.entity(clazz, map);
+				if(AdapterProxy.hasAdapter()){
+					T row = AdapterProxy.entity(clazz, map);
 					set.add(row);
 				}else{
 					T row = BeanUtil.map2object(map, clazz);
