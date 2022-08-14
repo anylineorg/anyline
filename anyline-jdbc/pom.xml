@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.anyline</groupId>
 		<artifactId>anyline-dependency</artifactId>
-		<version>8.5.6-SNAPSHOT</version>
+		<version>8.5.7-SNAPSHOT</version>
 		<relativePath>../anyline-dependency/pom.xml</relativePath>
 	</parent>
 
@@ -20,10 +20,6 @@
 		<dependency>
 			<groupId>org.anyline</groupId>
 			<artifactId>anyline-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.anyline</groupId>
-			<artifactId>anyline-compatible</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>

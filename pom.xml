@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.anyline</groupId>
 	<artifactId>anyline</artifactId>
-	<version>8.5.6-SNAPSHOT</version>
+	<version>8.5.7-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>anyline</name>
 
@@ -31,6 +31,7 @@
 		<module>anyline-dependency</module>
 		<module>anyline-dependency-web</module>
 		<module>anyline-core</module>
+		<module>anyline-adapter-default</module>
 		<module>anyline-net</module>
 		<module>anyline-jdbc</module>
 		<module>anyline-web</module>
@@ -102,8 +103,6 @@
 		<module>anyline-img</module>
         <module>anyline-minio</module>
         <module>anyline-oss</module>
-        <module>anyline-compatible</module>
-        <module>anyline-compatible-default</module>
         <module>anyline-thingsboard</module>
         <module>anyline-sms</module>
 	</modules>
