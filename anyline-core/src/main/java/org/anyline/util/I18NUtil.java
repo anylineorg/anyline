@@ -41,7 +41,7 @@ public class I18NUtil {
 		init(); 
 	} 
 	private static void init(){
-		String dir = ConfigTable.get("I18N_MESSAGE_DIR");
+		String dir = ConfigTable.getString("I18N_MESSAGE_DIR");
 		if(null == dir){
 			return;
 		}

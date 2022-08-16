@@ -26,7 +26,7 @@ public class ConfigListener implements ApplicationListener<ContextRefreshedEvent
 		if (app instanceof WebApplicationContext) { 
 			WebApplicationContext webApplicationContext = (WebApplicationContext) app; 
 			ServletContext servlet = webApplicationContext.getServletContext(); 
-			Map<String, String> configs = ConfigTable.getConfigs(); 
+			Map<String, Object> configs = ConfigTable.getConfigs();
 			String key = ConfigTable.getString("SERVLET_ATTRIBUTE_KEY", "al"); 
 			servlet.setAttribute(key, configs); 
 			log.warn("[配置文件加载至servlet context][key:{}]",key); 

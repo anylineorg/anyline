@@ -41,7 +41,7 @@ public class ConfigTable {
 	protected static String root;		//项目根目录 如果是jar文件运行表示jar文件所在目录
 	protected static String webRoot;
 	protected static String classpath;
-	protected static Hashtable<String,String> configs;
+	protected static Hashtable<String,Object> configs;
 	protected static long lastLoadTime = 0;	//最后一次加载时间
 	protected static int reload = 0;			//重新加载间隔
 	protected static boolean debug = false;
@@ -104,7 +104,7 @@ public class ConfigTable {
 			loadConfig(file);
 		}
 	}
-	public static Hashtable<String,String> getConfigs(){
+	public static Hashtable<String,Object> getConfigs(){
 		return configs;
 	}
 	public static String getWebRoot() {
@@ -219,7 +219,7 @@ public class ConfigTable {
 	protected synchronized static void loadConfig(String flag) {
 		try {
 			if(null == configs){
-				configs = new Hashtable<String,String>();
+				configs = new Hashtable<String,Object>();
 			}
 			if(null != root){
 				configs.put("HOME_DIR", root);
@@ -366,7 +366,7 @@ public class ConfigTable {
 		}
 	}
 
-	public static String get(String key){
+	public static Object get(String key){
 		if(null == key){
 			return null;
 		}
@@ -376,14 +376,28 @@ public class ConfigTable {
 			isLoading = false;
 			init();
 		}
-		val = configs.get(key.toUpperCase().trim());
+		Object obj = configs.get(key.toUpperCase().trim());
+		if(null != obj){
+			val = obj.toString();
+		}
 		return val;
 	}
 	public static String getString(String key) {
-		return get(key);
+		Object val = get(key);
+		if(null != val){
+			return val.toString();
+		}
+		return null;
 	}
 	public static String getString(String key, String def){
 		String val = getString(key);
+		if(null == val){
+			val = def;
+		}
+		return val;
+	}
+	public static Object get(String key, Object def){
+		Object val = get(key);
 		if(null == val){
 			val = def;
 		}
@@ -402,6 +416,12 @@ public class ConfigTable {
 		return BasicUtil.parseInt(get(key), def);
 	}
 	public static void put(String key, String value){
+		configs.put(key, value);
+		if(isDebug()){
+			log.warn("[ConfigTable动态更新][{}={}]",key,value);
+		}
+	}
+	public static void put(String key, Object value){
 		configs.put(key, value);
 		if(isDebug()){
 			log.warn("[ConfigTable动态更新][{}={}]",key,value);

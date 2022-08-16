@@ -266,7 +266,7 @@ public class DESUtil {
 					ignores.add(tmp);
 				}
 			}
-			String keyPath = ConfigTable.get("DES_KEY_FILE");
+			String keyPath = ConfigTable.getString("DES_KEY_FILE");
 			if (BasicUtil.isNotEmpty(keyPath)) {
 				if (keyPath.contains("${classpath}")) {
 					keyPath = keyPath.replace("${classpath}", ConfigTable.getClassPath());

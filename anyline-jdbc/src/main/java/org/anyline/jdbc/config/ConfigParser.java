@@ -30,7 +30,7 @@ public class ConfigParser {
 	static {
 		deskeys = new HashMap<String, DESKey>();
 		try {
-			String keyPath = ConfigTable.get("DES_KEY_FILE");
+			String keyPath = ConfigTable.getString("DES_KEY_FILE");
 
 			if(BasicUtil.isNotEmpty(keyPath)){
 				if (keyPath.contains("${classpath}")) {
