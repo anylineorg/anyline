@@ -38,7 +38,7 @@ public class Result {
         result.init();
         return result;
     }
-    public static Result init(boolean success, String code, Object data, String message){
+    public static Result init(boolean success, Object code, Object data, String message){
         Result result = new Result();
         result.success = success;
         result.data = data;
@@ -92,6 +92,27 @@ public class Result {
     public String json() {
         Map<String, Object> map = new HashMap<String, Object>();
         String dataType = null; // 数据类型
+        String response_key_message = ConfigTable.getString("RESPONSE_KEY_MESSAGE","message");
+        String response_key_data = ConfigTable.getString("RESPONSE_KEY_MESSAGE","data");
+        String response_key_code = ConfigTable.getString("RESPONSE_KEY_MESSAGE","code");
+
+
+        String response_key_navi = ConfigTable.getString("RESPONSE_KEY_NAVI","navi");
+        String response_key_navi_cur_page = ConfigTable.getString("RESPONSE_KEY_NAVI_PAGE","page");
+        String response_key_navi_total_page = ConfigTable.getString("RESPONSE_KEY_NAVI_PAGES","pages");
+        String response_key_navi_total_row = ConfigTable.getString("RESPONSE_KEY_NAVI_ROWS","rows");
+        String response_key_navi_page_rows = ConfigTable.getString("RESPONSE_KEY_NAVI_PAGE_ROWS","vol");
+
+        map.put("type", dataType);
+        map.put("result", success);
+        map.put(response_key_message, message);
+        map.put(response_key_data, data);
+        map.put("success", success);
+        map.put(response_key_code, code);
+        map.put("request_time", request_time);
+        map.put("response_time", response_time);
+        map.put("finish_time", finish_time);
+
         if (data instanceof DataSet) {
             DataSet set = (DataSet) data;
             dataType = "list";
@@ -99,22 +120,49 @@ public class Result {
             if(null == navi){
                 navi = set.getNavi();
             }
+            boolean simpleStruct = ConfigTable.getBoolean("SIMPLE_RESPONSE_STRUCT", false);
             if (null == data) {
                 //没有返回数据
             }else if (null != navi) {
+                //有分页对象
                 Map<String, Object> navi_ = new HashMap<>();
-                navi_.put("page", navi.getCurPage());         //当前页
-                navi_.put("pages", navi.getTotalPage());      //总页数
-                navi_.put("rows", navi.getTotalRow());        //总行数
-                navi_.put("vol", navi.getPageRows());         //第页行籹
-                map.put("navi", navi_);
+                navi_.put(response_key_navi_cur_page, navi.getCurPage());          //当前页
+                if(simpleStruct && !map.containsKey(response_key_navi_cur_page)){
+                    map.put(response_key_navi_cur_page, navi.getCurPage());
+                }
+                navi_.put(response_key_navi_total_page, navi.getTotalPage());      //总页数
+                if(simpleStruct && !map.containsKey(response_key_navi_total_page)){
+                    map.put(response_key_navi_total_page, navi.getTotalPage());
+                }
+                navi_.put(response_key_navi_total_row, navi.getTotalRow());        //总行数
+                if(simpleStruct && !map.containsKey(response_key_navi_total_row)){
+                    map.put(response_key_navi_total_row, navi.getTotalRow());
+                }
+                navi_.put(response_key_navi_page_rows, navi.getPageRows());        //每页行籹
+                if(simpleStruct && !map.containsKey(response_key_navi_page_rows)){
+                    map.put(response_key_navi_page_rows, navi.getPageRows());
+                }
+                map.put(response_key_navi, navi_);
             }else if(rows != -1){
+                //设置了总行数、每页行数
                 Map<String, Object> navi_ = new HashMap<String, Object>();
-                navi_.put("page", page);        //当前页
-                navi_.put("pages", pages);      //总页数
-                navi_.put("rows", rows);        //总行数
-                navi_.put("vol", vol);          //第页行籹
-                map.put("navi", navi_);
+                navi_.put(response_key_navi_cur_page, page);         //当前页
+                if(simpleStruct && !map.containsKey(response_key_navi_cur_page)){
+                    map.put(response_key_navi_cur_page, page);
+                }
+                navi_.put(response_key_navi_total_page, pages);      //总页数
+                if(simpleStruct && !map.containsKey(response_key_navi_total_page)){
+                    map.put(response_key_navi_total_page, pages);
+                }
+                navi_.put(response_key_navi_total_row, rows);        //总行数
+                if(simpleStruct && !map.containsKey(response_key_navi_total_row)){
+                    map.put(response_key_navi_total_row, rows);
+                }
+                navi_.put(response_key_navi_page_rows, vol);         //每页行籹
+                if(simpleStruct && !map.containsKey(response_key_navi_page_rows)){
+                    map.put(response_key_navi_page_rows, vol);
+                }
+                map.put(response_key_navi, navi_);
             }
 
         } else if (data instanceof Iterable) {
@@ -133,15 +181,8 @@ public class Result {
         } else {
             dataType = "map";
         }
-        map.put("type", dataType);
-        map.put("result", success);
-        map.put("message", message);
-        map.put("data", data);
-        map.put("success", success);
-        map.put("code", code);
-        map.put("request_time", request_time);
-        map.put("response_time", response_time);
-        map.put("finish_time", finish_time);
+
+
         if (null != response){
             response.setContentType("application/json;charset=utf-8");
             response.setHeader("Content-type", "application/json;charset=utf-8");
