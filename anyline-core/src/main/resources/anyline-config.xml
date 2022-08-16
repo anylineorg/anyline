@@ -97,4 +97,7 @@
 	<property key="HTTP_REQUEST_TIME_KET">_anyline_request_time</property>
 	<!---http 服务器端开始响应时间KEY-->
 	<property key="HTTP_RESPONSE_TIME_KEY">_anyline_response_time</property>
+
+	<!--简单的返回数据结构，true:分页参数会放到最外层-->
+	<property key="SIMPLE_RESPONSE_STRUCT">false</property>
 </properties>
