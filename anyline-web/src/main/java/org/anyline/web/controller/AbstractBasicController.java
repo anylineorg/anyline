@@ -47,7 +47,9 @@ public class AbstractBasicController {
 
 
 	protected static EntityAdapter adapter;
+	protected static EntityListener listener;
 	private static boolean is_adapter_load = false;
+	private static boolean is_listener_load = false;
 
 	@Autowired(required = false)
 	@Qualifier("anyline.entity.adapter")
@@ -65,6 +67,24 @@ public class AbstractBasicController {
 			is_adapter_load = true;
 		}
 		return adapter;
+	}
+
+	@Autowired(required = false)
+	@Qualifier("anyline.entity.listener")
+	public void setAdapter(EntityListener listener){
+		AbstractBasicController.listener = listener;
+	}
+	protected static EntityListener getListener(){
+		if(null != listener){
+			return listener;
+		}
+		if(!is_listener_load) {
+			try {
+				listener = (EntityListener)SpringContextUtil.getBean("anyline.entity.listener");
+			}catch (Exception e){}
+			is_listener_load = true;
+		}
+		return listener;
 	}
 	/******************************************************************************************************************
 	 *
@@ -120,9 +140,9 @@ public class AbstractBasicController {
 					BeanUtil.setFieldValue(entity, field, value);
 				}
 			}// end 未指定属性与request参数对应关系
-			adapter = getAdapter();
-			if(null != adapter){
-				adapter.after(request, entity);
+			listener = getListener();
+			if(null != listener){
+				listener.after(request, entity);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -174,9 +194,9 @@ public class AbstractBasicController {
 			}*/
 		}
 
-		adapter = getAdapter();
-		if(null != adapter){
-			adapter.after(request, row);
+		listener = getListener();
+		if(null != listener){
+			listener.after(request, row);
 		}
 		return row;
 	}
@@ -314,9 +334,9 @@ public class AbstractBasicController {
 					}
 				}
 
-				adapter = getAdapter();
-				if(null != adapter){
-					adapter.after(request, row);
+				listener = getListener();
+				if(null != listener){
+					listener.after(request, row);
 				}
 				set.addRow(row);
 			}

@@ -91,13 +91,6 @@ public interface EntityAdapter {
     public DataRow parse(Object obj, String ... keys);
 
     /**
-     * entity创建完成后调用 AbstractBasicController.entity后调用过
-     * @param env 上下文 如request
-     * @param entity entity
-     */
-    public void after(Object env, Object entity);
-
-    /**
      * 列名转换成http参数时调用
      * 如果不实现当前可以返回null,将继续执行默认处理方式
      * @param metadata metadata

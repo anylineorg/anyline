@@ -161,16 +161,6 @@ public class AdapterProxy {
         return null;
     }
 
-    /**
-     * entity创建完成后调用 AbstractBasicController.entity后调用过
-     * @param env 上下文 如request
-     * @param entity entity
-     */
-    public static void after(Object env, Object entity){
-        if(null != adapter){
-            adapter.after(env, entity);
-        }
-    }
 
     /**
      * 列名转换成http参数时调用

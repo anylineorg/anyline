@@ -178,10 +178,7 @@ public class DefaultAdapter implements EntityAdapter {
         return null;
     }
 
-    @Override
-    public void after(Object env, Object entity) {
 
-    }
 
     @Override
     public List<String> metadata2param(List<String> metadata) {
