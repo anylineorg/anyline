@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 @Component
 public class SpringContextUtil implements ApplicationContextAware {
 	 
-	private static ApplicationContext applicationContext;
+	public static ApplicationContext applicationContext;
 
 	@Override
 	public void setApplicationContext(ApplicationContext ac) throws BeansException { 
