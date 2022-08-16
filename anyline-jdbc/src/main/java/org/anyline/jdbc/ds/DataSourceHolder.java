@@ -177,13 +177,25 @@ public class DataSourceHolder {
 	 * @throws Exception Exception
 	 */
 	public static DataSource addDataSource(String key, DataSource ds) throws Exception{
-		if(dataSources.contains(key)){ 
-			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]"); 
-		} 
-		if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
-			log.warn("[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key); 
-		} 
-		DynamicDataSource.addDataSource(key, ds); 
+		return addDataSource(key, ds,true);
+	}
+
+	/**
+	 * 注册数据源
+	 * @param key 数据源名称
+	 * @param ds 数据源
+	 * @param over 是否允许覆盖已有的数据源
+	 * @return DataSource
+	 * @throws Exception Exception
+	 */
+	public static DataSource addDataSource(String key, DataSource ds, boolean over) throws Exception{
+		if(!over && dataSources.contains(key)){
+			throw new Exception("[重复注册][thread:"+Thread.currentThread().getId()+"][key:"+key+"]");
+		}
+		if(ConfigTable.isDebug() && log.isWarnEnabled()){
+			log.warn("[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key);
+		}
+		DynamicDataSource.addDataSource(key, ds);
 		dataSources.add(key);
 		return ds;
 	}
@@ -207,14 +219,20 @@ public class DataSourceHolder {
 		param.put("user", user);
 		param.put("password", password);
 		DataSource ds = buildDataSource(param);
-		return reg(key,ds);
+		return reg(key, ds, true);
+	}
+	public static DataSource reg(String key, DataSource ds, boolean over) throws Exception{
+		return addDataSource(key, ds, over);
 	}
 	public static DataSource reg(String key, DataSource ds) throws Exception{
-		return addDataSource(key, ds);
+		return addDataSource(key, ds, true);
 	}
 
+	public static DataSource reg(String key, Map<String,?> param, boolean over) throws Exception{
+		return addDataSource(key, buildDataSource(param), over);
+	}
 	public static DataSource reg(String key, Map<String,?> param) throws Exception{
-		return addDataSource(key, buildDataSource(param));
+		return addDataSource(key, buildDataSource(param), true);
 	}
 
 	/**
