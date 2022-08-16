@@ -61,7 +61,7 @@ public interface EntityAdapter {
     /**
      * 主键值
      * @param obj obj
-     * @return
+     * @return Map
      */
     public Map<String,Object> primaryValues(Object obj);
 

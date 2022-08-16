@@ -113,7 +113,7 @@ public class AdapterProxy {
     /**
      * 主键值
      * @param obj obj
-     * @return
+     * @return Map
      */
     public static Map<String,Object> primaryValues(Object obj){
         if(null != adapter){
