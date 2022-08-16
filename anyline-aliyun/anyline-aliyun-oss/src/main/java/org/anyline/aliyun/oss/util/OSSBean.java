@@ -19,7 +19,7 @@ public class OSSBean implements InitializingBean {
 	public String BUCKET		;
 	@Value("${anyline.aliyun.oss.dir:}")
 	public String DIR			;
-	@Value("${anyline.aliyun.oss.expire:}")
+	@Value("${anyline.aliyun.oss.expire:1800}")
 	public int EXPIRE_SECOND 	;
 
 	@Override
