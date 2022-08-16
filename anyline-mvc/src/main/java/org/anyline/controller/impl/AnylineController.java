@@ -659,7 +659,7 @@ public class AnylineController extends AbstractBasicController {
 	 * @param message  message
 	 * @return String
 	 */ 
-	public String result(String code, boolean result, Object data, String message) {
+	public String result(Object code, boolean result, Object data, String message) {
 		DataSet messages = (DataSet) getRequest().getAttribute(Constant.REQUEST_ATTR_MESSAGE);
 		message = BasicUtil.nvl(message, "").toString();
 		if (null != messages) { 
@@ -689,7 +689,7 @@ public class AnylineController extends AbstractBasicController {
 		if(encrypt){ 
 			msg = DESUtil.encryptParamValue(msg); 
 		}
-		String code = ConfigTable.getString("HTTP_FAIL_CODE", "-1");
+		Object code = ConfigTable.get("HTTP_FAIL_CODE", new Integer(-1));
 		return result(code,false, null, msg);
 	}
 	protected String fail(String code, String msg, boolean encrypt) {
@@ -700,7 +700,7 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 	protected String fail(String msg) {
-		String code = ConfigTable.getString("HTTP_FAIL_CODE", "-1");
+		Object code = ConfigTable.get("HTTP_FAIL_CODE", new Integer(-1));
 		return result(code,false, null, msg);
 	}
 	protected String fail(String code, String msg) {
@@ -718,7 +718,7 @@ public class AnylineController extends AbstractBasicController {
 	 * @return String
 	 */ 
 	protected String success(Object data, boolean encrypt) {
-		String code = ConfigTable.getString("HTTP_SUCCESS_CODE", "200");
+		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", new Integer(200));
 		if(encrypt && null != data){ 
 			return result(code,true,DESUtil.encryptParamValue(data.toString()),null);
 		} 
@@ -726,11 +726,11 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 	protected String success(Object data) {
-		String code = ConfigTable.getString("HTTP_SUCCESS_CODE", "200");
+		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", new Integer(200));
 		return result(code,true, data, null);
 	}
 	protected String success(Object ... data) {
-		String code = ConfigTable.getString("HTTP_SUCCESS_CODE", "200");
+		Object code = ConfigTable.get("HTTP_SUCCESS_CODE", new Integer(200));
 		return result(code,true, data, null);
 	}
 	/** 
