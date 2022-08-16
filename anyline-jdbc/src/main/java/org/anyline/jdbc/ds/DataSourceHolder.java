@@ -134,19 +134,6 @@ public class DataSourceHolder {
 		}else{
 
 		}
-//		else{
-//			try{
-//				Annotation annotation = obj.getClass().getAnnotation(Table.class);			//提取Table注解
-//				Method method = annotation.annotationType().getMethod("name");				//引用name方法
-//				result = (String)method.invoke(annotation);									//执行name方法返回结果
-//				result = result.replace(getDelimiterFr(), "").replace(getDelimiterTo(),"");
-//			}catch(NoClassDefFoundError e){
-//				e.printStackTrace();
-//			}catch(Exception e){
-//				e.printStackTrace();
-//				e.printStackTrace();
-//			}
-//		}
 		result = parseDataSource(result);
 		return result;
 	}
@@ -196,7 +183,9 @@ public class DataSourceHolder {
 			log.warn("[创建数据源][thread:{}][key:{}]",Thread.currentThread().getId(), key);
 		}
 		DynamicDataSource.addDataSource(key, ds);
-		dataSources.add(key);
+		if(!dataSources.contains(key)) {
+			dataSources.add(key);
+		}
 		return ds;
 	}
 
