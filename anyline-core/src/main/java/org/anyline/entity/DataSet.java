@@ -1852,6 +1852,15 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return result;
     }
 
+    /**
+     * 根据keys返回数组列表
+     * [
+     * {120.1,36.1}
+     * ,{120.2,36.2}
+     * ]
+     * @param keys keys 如 lng,lat
+     * @return List
+     */
     public List<String[]> getStringArrays(String ... keys){
         List<String[]> result = new ArrayList<>();
         for(DataRow row:rows){
