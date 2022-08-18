@@ -1671,6 +1671,9 @@ public class BeanUtil {
 				result.add(obj);
 			}
 			idx ++;
+			if(idx > end){
+				break;
+			}
 		}
 		return result;
 	}
