@@ -523,30 +523,46 @@ public class DataSet implements Collection<DataRow>, Serializable {
         DataRow row = getRow(0, params);
         return row != null;
     }
+    public DataRow getRow(Compare compare, String... params) {
+        return getRow(compare, 0, params);
+    }
     public DataRow getRow(String... params) {
+        return getRow(null,0, params);
+    }
+    public DataRow getRow(Compare compare, DataRow params) {
         return getRow(0, params);
     }
-    public DataRow getRow(DataRow params) {
-        return getRow(0, params);
+    public DataRow getRow( DataRow params) {
+        return getRow(CompareBuilder.EQUAL, 0, params);
     }
-    public DataRow getRow(List<String> params) {
+    public DataRow getRow(Compare compare, List<String> params) {
         String[] kvs = BeanUtil.list2array(params);
         return getRow(0, kvs);
     }
 
-    public DataRow getRow(int begin, String... params) {
+    public DataRow getRow(List<String> params) {
+        return getRow(CompareBuilder.EQUAL, params);
+    }
+    public DataRow getRow(Compare compare, int begin, String... params) {
         DataSet set = getRows(begin, 1, params);
+        if (set.size() > 0) {
+            return set.getRow(0);
+        }
+        return null;
+    }
+
+    public DataRow getRow(int begin, String... params) {
+        return getRow(CompareBuilder.EQUAL, begin, params);
+    }
+    public DataRow getRow(Compare compare,int begin, DataRow params) {
+        DataSet set = getRows(compare, begin, 1, params);
         if (set.size() > 0) {
             return set.getRow(0);
         }
         return null;
     }
     public DataRow getRow(int begin, DataRow params) {
-        DataSet set = getRows(begin, 1, params);
-        if (set.size() > 0) {
-            return set.getRow(0);
-        }
-        return null;
+        return getRow(CompareBuilder.EQUAL, begin, params);
     }
 
     /**
@@ -580,7 +596,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     result.addRow(row.extract(keys));
                 }
                 */
-                //System.out.println("get:"+(System.currentTimeMillis()-fr));
             }
         }
         result.cloneProperty(this);
@@ -715,54 +730,73 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataSet getRows(int begin, int qty, String... params) {
         return getRows(begin, qty, kvs(params));
     }
-    public DataSet getRows(int begin, int qty, DataRow kvs) {
+    public DataSet getRows(Compare compare, int begin, int qty, String... params) {
+        return getRows(compare, begin, qty, kvs(params));
+    }
+    public DataSet getRows(Compare compare, int begin, int qty, DataRow kvs) {
         Map<String,String> map = new HashMap<String,String>();
         for(String k:kvs.keySet()){
             map.put(k, kvs.getString(k));
         }
-        return getRows(begin, qty, map);
+        return getRows(compare, begin, qty, map);
     }
 
+    public DataSet getRows(int begin, int qty, DataRow kvs) {
+        return getRows(CompareBuilder.EQUAL, begin, qty, kvs);
+    }
     public DataSet getRows(int begin, int qty, Map<String, String> kvs) {
+        return getRows(CompareBuilder.EQUAL, begin, qty, kvs);
+    }
+    /**
+     *
+     * @param compare 对比方式，如果不指定则根据k:v解析 如 k:%v%
+     * @param begin 开始
+     * @param qty 结果最大数量
+     * @param kvs 条件
+     * @return DataSet
+     */
+    public DataSet getRows(Compare compare, int begin, int qty, Map<String, String> kvs) {
         DataSet set = new DataSet();
         if(rows.size() ==0){
             return set;
         }
         String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
-        Map<String,Compare> compares = new HashMap<>();
 
-        for (String k : kvs.keySet()) {
-            // k(ID) , v(>=10)(%A%)
-            String v = kvs.get(k);
-            if (null != v)   {
-                //与SQL.COMPARE_TYPE保持一致
-                Compare compare = new Equal(v);
-                if (v.startsWith("=")) {
-                    v = v.substring(1);
-                    compare = new Equal(v);
-                } else if (v.startsWith(">")) {
-                    v = v.substring(1);
-                    compare = new Big(v);
-                } else if (v.startsWith(">=")) {
-                    v = v.substring(2);
-                    compare = new BigEqual(v);
-                } else if (v.startsWith("<")) {
-                    v = v.substring(1);
-                    compare = new Less(v);
-                } else if (v.startsWith("<=")) {
-                    v = v.substring(2);
-                    compare = new LessEqual(v);
-                } else if (v.startsWith("%") && v.endsWith("%")) {
-                    v = v.substring(1, v.length() - 1);
-                    compare = new Like(v);
-                } else if (v.endsWith("%")) {
-                    v = v.substring(0, v.length() - 1);
-                    compare = new EndWith(v);
-                } else if (v.startsWith("%")) {
-                    v = v.substring(1);
-                    compare = new StartWith(v);
+        Map<String,Compare> compares = new HashMap<>();
+        if(null == compare || compare instanceof Auto) {
+            for (String k : kvs.keySet()) {
+                // k(ID) , v(>=10)(%A%)
+                String v = kvs.get(k);
+                if (null != v) {
+                    //与SQL.TYPE保持一致
+                    Compare cmp = new Equal(v);
+                    if (v.startsWith("=")) {
+                        v = v.substring(1);
+                        cmp = new Equal(v);
+                    } else if (v.startsWith(">")) {
+                        v = v.substring(1);
+                        cmp = new Big(v);
+                    } else if (v.startsWith(">=")) {
+                        v = v.substring(2);
+                        cmp = new BigEqual(v);
+                    } else if (v.startsWith("<")) {
+                        v = v.substring(1);
+                        cmp = new Less(v);
+                    } else if (v.startsWith("<=")) {
+                        v = v.substring(2);
+                        cmp = new LessEqual(v);
+                    } else if (v.startsWith("%") && v.endsWith("%")) {
+                        v = v.substring(1, v.length() - 1);
+                        cmp = new Like(v);
+                    } else if (v.endsWith("%")) {
+                        v = v.substring(0, v.length() - 1);
+                        cmp = new StartWith(v);
+                    } else if (v.startsWith("%")) {
+                        v = v.substring(1);
+                        cmp = new EndWith(v);
+                    }
+                    compares.put(k, cmp);
                 }
-                compares.put(k, compare);
             }
         }
         int size = rows.size();
@@ -802,13 +836,19 @@ public class DataSet implements Collection<DataRow>, Serializable {
                         chk = false;
                         break;
                     }
-                    Compare compare = compares.get(k);
-                    if(null != compare) {
+                    Compare cmp = null;
+                    if(null != compare){
+                        cmp = compare;
+                        cmp.setValue(v);
+                    }else{
+                        cmp = compares.get(k);;
+                    }
+                    if(null != cmp) {
                         if (srcFlag) {
                             v = "${" + v + "}";
-                            compare.setValue(v);
+                            cmp.setValue(v);
                         }
-                        if(!compare.compare(value)) {
+                        if(!cmp.compare(value)) {
                             chk = false;
                             break;
                         }
@@ -826,158 +866,23 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
         set.cloneProperty(this);
         return set;
-    }/*
-    public DataSet getRows(int begin, int qty, Map<String, String> kvs) {
-        DataSet set = new DataSet();
-        String srcFlagTag = "srcFlag"; //参数含有{}的 在kvs中根据key值+tag 放入一个新的键值对
-        BigDecimal d1;
-        BigDecimal d2;
-        for (DataRow row:rows) {
-            if(row.skip){
-                continue;
-            }
-            boolean chk = true;//对比结果
-            for (String k : kvs.keySet()) {
-                boolean srcFlag = false;
-                if (k.endsWith(srcFlagTag)) {
-                    continue;
-                } else {
-                    String srcFlagValue = kvs.get(k + srcFlagTag);
-                    if (BasicUtil.isNotEmpty(srcFlagValue)) {
-                        srcFlag = true;
-                    }
-                }
-                String v = kvs.get(k);
-                Object value = row.get(k);
-                if(!row.containsKey(k) && null == value){
-                    //注意这里有可能是个复合key
-                    chk = false;
-                    break;
-                }
+    }
 
-                if (null == v) {
-                    if (null != value) {
-                        chk = false;
-                        break;
-                    }else{
-                        continue;
-                    }
-                } else {
-                    if (null == value) {
-                        chk = false;
-                        break;
-                    }
-                    //与SQL.COMPARE_TYPE保持一致
-                    int compare = 10;
-                    if (v.startsWith("=")) {
-                        compare = 10;
-                        v = v.substring(1);
-                    } else if (v.startsWith(">")) {
-                        compare = 20;
-                        v = v.substring(1);
-                    } else if (v.startsWith(">=")) {
-                        compare = 21;
-                        v = v.substring(2);
-                    } else if (v.startsWith("<")) {
-                        compare = 30;
-                        v = v.substring(1);
-                    } else if (v.startsWith("<=")) {
-                        compare = 31;
-                        v = v.substring(2);
-                    } else if (v.startsWith("%") && v.endsWith("%")) {
-                        compare = 50;
-                        v = v.substring(1, v.length() - 1);
-                    } else if (v.endsWith("%")) {
-                        compare = 51;
-                        v = v.substring(0, v.length() - 1);
-                    } else if (v.startsWith("%")) {
-                        compare = 52;
-                        v = v.substring(1);
-                    }
-                    if(compare <= 31 && value instanceof Number) {
-                        try {
-                            d1 = new BigDecimal(value.toString());
-                            d2 = new BigDecimal(v);
-                            int cr = d1.compareTo(d2);
-                            if (compare == 10) {
-                                if (cr != 0) {
-                                    chk = false;
-                                    break;
-                                }
-                            } else if (compare == 20) {
-                                if (cr <= 0) {
-                                    chk = false;
-                                    break;
-                                }
-                            } else if (compare == 21) {
-                                if (cr < 0) {
-                                    chk = false;
-                                    break;
-                                }
-                            } else if (compare == 30) {
-                                if (cr >= 0) {
-                                    chk = false;
-                                    break;
-                                }
-                            } else if (compare == 31) {
-                                if (cr > 0) {
-                                    chk = false;
-                                    break;
-                                }
-                            }
-                        }catch (NumberFormatException e){
-                            chk = false;
-                            break;
-                        }
-                    }
-                    String str = value + "";
-                    str = str.toLowerCase();
-                    v = v.toLowerCase();
-                    if (srcFlag) {
-                        v = "${" + v + "}";
-                    }
-                    if (compare == 10) {
-                        if (!v.equals(str)) {
-                            chk = false;
-                            break;
-                        }
-                    } else if (compare == 50) {
-                        if (!str.contains(v)) {
-                            chk = false;
-                            break;
-                        }
-                    } else if (compare == 51) {
-                        if (!str.startsWith(v)) {
-                            chk = false;
-                            break;
-                        }
-                    } else if (compare == 52) {
-                        if (!str.endsWith(v)) {
-                            chk = false;
-                            break;
-                        }
-                    }
-                }
-            }//end for kvs
-            if (chk) {
-                set.add(row);
-                if (qty > 0 && set.size() >= qty) {
-                    break;
-                }
-            }
-        }//end for rows
-        set.cloneProperty(this);
-        return set;
-    }*/
+    public DataSet getRows(Compare compare, int begin, String... params) {
+        return getRows(compare, begin, -1, params);
+    }
+
     public DataSet getRows(int begin, String... params) {
-        return getRows(begin, -1, params);
+        return getRows(CompareBuilder.EQUAL, begin, -1, params);
     }
-
+    public DataSet getRows(Compare compare, String... params) {
+        return getRows(compare, 0, params);
+    }
     public DataSet getRows(String... params) {
-        return getRows(0, params);
+        return getRows(CompareBuilder.EQUAL, 0, params);
     }
 
-    public DataSet getRows(DataSet set, String key) {
+    public DataSet getRows(Compare compare, DataSet set, String key) {
         String kvs[] = new String[set.size()];
         int i = 0;
         for (DataRow row : set) {
@@ -986,10 +891,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 kvs[i++] = key + ":" + value;
             }
         }
-        return getRows(kvs);
+        return getRows(compare, kvs);
     }
 
-    public DataSet getRows(DataRow row, String... keys) {
+    public DataSet getRows(DataSet set, String key) {
+        return getRows(CompareBuilder.EQUAL, set, key);
+    }
+    public DataSet getRows(Compare compare, DataRow row, String... keys) {
         List<String> list = new ArrayList<>();
         int i = 0;
         for (String key : keys) {
@@ -999,9 +907,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
             }
         }
         String[] kvs = BeanUtil.list2array(list);
-        return getRows(kvs);
+        return getRows(compare, kvs);
     }
 
+    public DataSet getRows(DataRow row, String... keys) {
+        return getRows(CompareBuilder.EQUAL, row, keys);
+    }
     /**
      * 数字格式化
      *
@@ -1470,27 +1381,28 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * ,{NM:部门3,TOTAL:2100,  USERS:[{LVL:6,SCORE:600},{LVL:5,SCORE:700},{LVL:2,SCORE:800}]}
      * ]
      * @param result 合计结果存储
+     * @param compare 条件过滤对比方式
      * @param items 计算条目中的 items 集合
      * @param field 根据field列 求和
      * @param conditions items子集过滤条件
      * @return DataSet
      */
-    public DataSet sum(String result, String items, String field, String ... conditions){
+    public DataSet sum(String result, String items, String field, Compare compare, String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.sum(field));
         }
         return this;
     }
 
-    public DataSet avg(String result, String items, String field, String ... conditions){
+    public DataSet avg(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.avg(field));
         }
@@ -1498,141 +1410,191 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
 
-    public DataSet var(String result, String items, String field, String ... conditions){
+    public DataSet var(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.var(field));
         }
         return this;
     }
-    public DataSet min(String result, String items, String field, String ... conditions){
+    public DataSet min(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.min(field));
         }
         return this;
     }
-    public DataSet max(String result, String items, String field, String ... conditions){
+    public DataSet max(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.max(field));
         }
         return this;
     }
-    public DataSet count(String result, String items, String field, String ... conditions){
+    public DataSet count(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.size());
         }
         return this;
     }
-    public DataSet vara(String result, String items, String field, String ... conditions){
+    public DataSet vara(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.vara(field));
         }
         return this;
     }
 
-    public DataSet varp(String result, String items, String field, String ... conditions){
+    public DataSet varp(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.varp(field));
         }
         return this;
     }
 
-    public DataSet varpa(String result, String items, String field, String ... conditions){
+    public DataSet varpa(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.varpa(field));
         }
         return this;
     }
-    public DataSet stdev(String result, String items, String field, String ... conditions){
+    public DataSet stdev(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.stdev(field));
         }
         return this;
     }
 
-    public DataSet stdeva(String result, String items, String field, String ... conditions){
+    public DataSet stdeva(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.stdeva(field));
         }
         return this;
     }
 
-    public DataSet stdevp(String result, String items, String field, String ... conditions){
+    public DataSet stdevp(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.stdevp(field));
         }
         return this;
     }
 
-    public DataSet stdevpa(String result, String items, String field, String ... conditions){
+    public DataSet stdevpa(String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.stdevpa(field));
         }
         return this;
     }
 
-    public DataSet agg(Aggregation agg, String result, String items, String field, String ... conditions){
+    public DataSet agg(Aggregation agg, String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.agg(agg, field));
         }
         return this;
     }
-    public DataSet agg(String agg, String result, String items, String field, String ... conditions){
+    public DataSet agg(String agg, String result, String items, String field,Compare compare,  String ... conditions){
         for(DataRow row:rows){
             DataSet set = row.getSet(items);
             if(null != conditions && conditions.length>0){
-                set = set.getRows(conditions);
+                set = set.getRows(compare, conditions);
             }
             row.put(result, set.agg(agg, field));
         }
         return this;
+    }
+    public DataSet sum(String result, String items, String field, String ... conditions){
+        return sum(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+
+    public DataSet avg(String result, String items, String field, String ... conditions){
+        return avg(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+
+
+    public DataSet var(String result, String items, String field, String ... conditions){
+        return var(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+    public DataSet min(String result, String items, String field, String ... conditions){
+        return min(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+    public DataSet max(String result, String items, String field, String ... conditions){
+        return max(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+    public DataSet count(String result, String items, String field, String ... conditions){
+        return count(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+    public DataSet vara(String result, String items, String field, String ... conditions){
+        return vara(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+
+    public DataSet varp(String result, String items, String field, String ... conditions){
+        return varp(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+
+    public DataSet varpa(String result, String items, String field, String ... conditions){
+        return varpa(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+    public DataSet stdev(String result, String items, String field, String ... conditions){
+        return stdev(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+
+    public DataSet stdeva(String result, String items, String field, String ... conditions){
+        return stdeva(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+
+    public DataSet stdevp(String result, String items, String field, String ... conditions){
+        return stdevp(result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+
+    public DataSet agg(Aggregation agg, String result, String items, String field, String ... conditions){
+        return agg(agg, result, items, field, CompareBuilder.EQUAL, conditions);
+    }
+    public DataSet agg(String agg, String result, String items, String field, String ... conditions) {
+        return agg(agg, result, items, field, CompareBuilder.EQUAL, conditions);
     }
 
     public DataSet addRow(DataRow row) {
@@ -2873,7 +2835,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param keys     ID:DEPT_ID或ID
      * @return DataSet
      */
-    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
+    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         if (null == items) {
             return this;
         }
@@ -2887,9 +2849,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         for (DataRow row : rows) {
             if (null == row.get(field)) {
                 String[] kvs = packParam(row, reverseKey(list));
-                DataSet set = items.getRows(kvs(kvs));
+                DataSet set = items.getRows(compare, kvs(kvs));
                 if (recursion) {
-                    set.dispatchs(field, unique, recursion, items, list);
+                    set.dispatchs(compare, field, unique, recursion, items, list);
                 }
                 if(unique) {
                     set.skip(true);
@@ -2901,66 +2863,66 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
-    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
-        return dispatchs(field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(compare, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
     }
-    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs(field, unique, recursion, items, BeanUtil.array2list(keys));
-    }
-
-    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs("ITEMS", unique, recursion, items, keys);
-    }
-    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
-        return dispatchs("ITEMS", unique, recursion, items, BeanUtil.merge(fixs, keys));
-    }
-    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
-        return dispatchs("ITEMS", unique, recursion, items, BeanUtil.array2list(fixs, keys));
+    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs(compare, field, unique, recursion, items, BeanUtil.array2list(keys));
     }
 
-
-    public DataSet dispatchs(String field, DataSet items, String... keys) {
-        return dispatchs(field,false, false, items, keys);
+    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs(compare, "ITEMS", unique, recursion, items, keys);
     }
-    public DataSet dispatchs(String field, DataSet items, String[] fixs, String... keys) {
-        return dispatchs(field,false, false, items, BeanUtil.array2list(fixs, keys));
+    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
+        return dispatchs(compare, "ITEMS", unique, recursion, items, BeanUtil.merge(fixs, keys));
     }
-    public DataSet dispatchs(String field, DataSet items, List<String> fixs, String... keys) {
-        return dispatchs(field,false, false, items, BeanUtil.merge(fixs, keys));
-    }
-
-    public DataSet dispatchs(DataSet items, String... keys) {
-        return dispatchs("ITEMS", items, keys);
-    }
-    public DataSet dispatchs(DataSet items, List<String> fixs, String... keys) {
-        return dispatchs("ITEMS", items, BeanUtil.merge(fixs, keys));
-    }
-    public DataSet dispatchs(DataSet items, String[] fixs, String... keys) {
-        return dispatchs("ITEMS", items, BeanUtil.array2list(fixs, keys));
+    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(compare, "ITEMS", unique, recursion, items, BeanUtil.array2list(fixs, keys));
     }
 
-    public DataSet dispatchs(boolean unique, boolean recursion, String... keys) {
-        return dispatchs("ITEMS", unique, recursion, this, keys);
+
+    public DataSet dispatchs(Compare compare, String field, DataSet items, String... keys) {
+        return dispatchs(compare, field,false, false, items, keys);
+    }
+    public DataSet dispatchs(Compare compare, String field, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(compare, field,false, false, items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatchs(Compare compare, String field, DataSet items, List<String> fixs, String... keys) {
+        return dispatchs(compare, field,false, false, items, BeanUtil.merge(fixs, keys));
     }
 
-    public DataSet dispatchs(boolean unique, boolean recursion, List<String> fixs,  String... keys) {
-        return dispatchs("ITEMS", unique, recursion, this, BeanUtil.merge(fixs, keys));
+    public DataSet dispatchs(Compare compare, DataSet items, String... keys) {
+        return dispatchs(compare, "ITEMS", items, keys);
     }
-    public DataSet dispatchs(boolean unique, boolean recursion, String[] fixs,  String... keys) {
-        return dispatchs("ITEMS", unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    public DataSet dispatchs(Compare compare, DataSet items, List<String> fixs, String... keys) {
+        return dispatchs(compare, "ITEMS", items, BeanUtil.merge(fixs, keys));
     }
-
-    public DataSet dispatchs(String field, boolean unique, boolean recursion, String... keys) {
-        return dispatchs(field, unique, recursion, this, keys);
-    }
-    public DataSet dispatchs(String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
-        return dispatchs(field, unique, recursion, this, BeanUtil.merge(fixs, keys));
-    }
-    public DataSet dispatchs(String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
-        return dispatchs(field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    public DataSet dispatchs(Compare compare, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(compare, "ITEMS", items, BeanUtil.array2list(fixs, keys));
     }
 
-    public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
+    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, String... keys) {
+        return dispatchs(compare, "ITEMS", unique, recursion, this, keys);
+    }
+
+    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, List<String> fixs,  String... keys) {
+        return dispatchs(compare, "ITEMS", unique, recursion, this, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(Compare compare, boolean unique, boolean recursion, String[] fixs,  String... keys) {
+        return dispatchs(compare, "ITEMS", unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
+
+    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, String... keys) {
+        return dispatchs(compare, field, unique, recursion, this, keys);
+    }
+    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
+        return dispatchs(compare, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(Compare compare, String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
+        return dispatchs(compare, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
+
+    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
         if (null == items) {
             return this;
         }
@@ -2974,7 +2936,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         for (DataRow row : rows) {
             if (null == row.get(field)) {
                 String[] params = packParam(row, reverseKey(list));
-                DataRow result = items.getRow(params);
+                DataRow result = items.getRow(compare, params);
                 if(unique){
                     result.skip = true;
                 }
@@ -2985,52 +2947,165 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
 
+    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(compare, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs(compare, field, unique, recursion, items, BeanUtil.array2list(keys));
+    }
+    public DataSet dispatch(Compare compare, String field, DataSet items, String... keys) {
+        return dispatch(compare, field, false, false, items, keys);
+    }
+    public DataSet dispatch(Compare compare, String field, DataSet items, String[] fixs, String... keys) {
+        return dispatch(compare, field, false, false, items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(Compare compare, String field, DataSet items, List<String> fixs, String... keys) {
+        return dispatch(compare, field, false, false, items, BeanUtil.merge(fixs, keys));
+    }
+
+    public DataSet dispatch(Compare compare, DataSet items, String... keys) {
+        return dispatch(compare, "ITEM", items, BeanUtil.array2list(keys));
+    }
+    public DataSet dispatch(Compare compare, DataSet items, String[] fixs, String... keys) {
+        return dispatch(compare, "ITEM", items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(Compare compare, DataSet items, List<String> fixs, String... keys) {
+        return dispatch(compare, "ITEM", items, BeanUtil.merge(fixs, keys));
+    }
+
+    public DataSet dispatch(Compare compare, boolean unique, boolean recursion, String... keys) {
+        return dispatch(compare, "ITEM", unique, recursion, this, keys);
+    }
+    public DataSet dispatch(Compare compare, boolean unique, boolean recursion, String[] fixs, String... keys) {
+        return dispatch(compare, "ITEM", unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(Compare compare, boolean unique, boolean recursion, List<String> fixs, String... keys) {
+        return dispatch(compare, "ITEM", unique, recursion, this, BeanUtil.merge(fixs, keys));
+    }
+
+    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, String... keys) {
+        return dispatch(compare, field, unique, recursion, this, keys);
+    }
+    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
+        return dispatch(compare, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatch(Compare compare, String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
+        return dispatch(compare, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
+    }
+
+
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
+       return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, fixs, keys);
+    }
+
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, BeanUtil.array2list(keys));
+    }
+
+    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, items, keys);
+    }
+    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, items, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, items, BeanUtil.array2list(fixs, keys));
+    }
+
+
+    public DataSet dispatchs(String field, DataSet items, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, field,false, false, items, keys);
+    }
+    public DataSet dispatchs(String field, DataSet items, String[] fixs, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, field,false, false, items, BeanUtil.array2list(fixs, keys));
+    }
+    public DataSet dispatchs(String field, DataSet items, List<String> fixs, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, field,false, false, items, BeanUtil.merge(fixs, keys));
+    }
+
+    public DataSet dispatchs(DataSet items, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, "ITEMS", items, keys);
+    }
+    public DataSet dispatchs(DataSet items, List<String> fixs, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, "ITEMS", items, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(DataSet items, String[] fixs, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, "ITEMS", items, BeanUtil.array2list(fixs, keys));
+    }
+
+    public DataSet dispatchs(boolean unique, boolean recursion, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, this, keys);
+    }
+
+    public DataSet dispatchs(boolean unique, boolean recursion, List<String> fixs,  String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, this, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(boolean unique, boolean recursion, String[] fixs,  String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, "ITEMS", unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
+
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, this, keys);
+    }
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
+    }
+    public DataSet dispatchs(String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
+        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
+    }
+
+    public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, List<String> fixs, String... keys) {
+        return dispatch(CompareBuilder.EQUAL, field, unique, recursion, items, fixs, keys);
+    }
+
     public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String[] fixs, String... keys) {
-        return dispatchs(field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
+        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(String field, boolean unique, boolean recursion, DataSet items, String... keys) {
-        return dispatchs(field, unique, recursion, items, BeanUtil.array2list(keys));
+        return dispatchs(CompareBuilder.EQUAL, field, unique, recursion, items, BeanUtil.array2list(keys));
     }
     public DataSet dispatch(String field, DataSet items, String... keys) {
-        return dispatch(field, false, false, items, keys);
+        return dispatch(CompareBuilder.EQUAL, field, false, false, items, keys);
     }
     public DataSet dispatch(String field, DataSet items, String[] fixs, String... keys) {
-        return dispatch(field, false, false, items, BeanUtil.array2list(fixs, keys));
+        return dispatch(CompareBuilder.EQUAL, field, false, false, items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(String field, DataSet items, List<String> fixs, String... keys) {
-        return dispatch(field, false, false, items, BeanUtil.merge(fixs, keys));
+        return dispatch(CompareBuilder.EQUAL, field, false, false, items, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatch(DataSet items, String... keys) {
-        return dispatch("ITEM", items, BeanUtil.array2list(keys));
+        return dispatch(CompareBuilder.EQUAL, "ITEM", items, BeanUtil.array2list(keys));
     }
     public DataSet dispatch(DataSet items, String[] fixs, String... keys) {
-        return dispatch("ITEM", items, BeanUtil.array2list(fixs, keys));
+        return dispatch(CompareBuilder.EQUAL, "ITEM", items, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(DataSet items, List<String> fixs, String... keys) {
-        return dispatch("ITEM", items, BeanUtil.merge(fixs, keys));
+        return dispatch(CompareBuilder.EQUAL, "ITEM", items, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatch(boolean unique, boolean recursion, String... keys) {
-        return dispatch("ITEM", unique, recursion, this, keys);
+        return dispatch(CompareBuilder.EQUAL, "ITEM", unique, recursion, this, keys);
     }
     public DataSet dispatch(boolean unique, boolean recursion, String[] fixs, String... keys) {
-        return dispatch("ITEM", unique, recursion, this, BeanUtil.array2list(fixs, keys));
+        return dispatch(CompareBuilder.EQUAL, "ITEM", unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(boolean unique, boolean recursion, List<String> fixs, String... keys) {
-        return dispatch("ITEM", unique, recursion, this, BeanUtil.merge(fixs, keys));
+        return dispatch(CompareBuilder.EQUAL, "ITEM", unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
 
     public DataSet dispatch(String field, boolean unique, boolean recursion, String... keys) {
-        return dispatch(field, unique, recursion, this, keys);
+        return dispatch(CompareBuilder.EQUAL, field, unique, recursion, this, keys);
     }
     public DataSet dispatch(String field, boolean unique, boolean recursion, String[] fixs, String... keys) {
-        return dispatch(field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
+        return dispatch(CompareBuilder.EQUAL, field, unique, recursion, this, BeanUtil.array2list(fixs, keys));
     }
     public DataSet dispatch(String field, boolean unique, boolean recursion, List<String> fixs, String... keys) {
-        return dispatch(field, unique, recursion, this, BeanUtil.merge(fixs, keys));
+        return dispatch(CompareBuilder.EQUAL, field, unique, recursion, this, BeanUtil.merge(fixs, keys));
     }
-
 
     /**
      * 直接调用dispatchs
@@ -3270,6 +3345,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     public DataSet getRows(Map<String, String> kvs) {
         return getRows(0, -1, kvs);
+    }
+    public DataSet getRows(Compare compare, Map<String, String> kvs) {
+        return getRows(compare, 0, -1, kvs);
     }
     /**
      * 多个集合的交集
