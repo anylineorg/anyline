@@ -1746,7 +1746,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow copy(DataRow data, String[] fixs, String... keys) {
-        return copy(false, data, fixs);
+        return copy(false, data, fixs, keys);
     }
 
     public DataRow copy(DataRow data, String... keys) {
