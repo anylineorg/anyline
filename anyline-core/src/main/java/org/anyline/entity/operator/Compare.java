@@ -10,4 +10,5 @@ public interface Compare {
     public boolean compare(Object value);
     public Object getValue();
     public Object getString();
+
 }
