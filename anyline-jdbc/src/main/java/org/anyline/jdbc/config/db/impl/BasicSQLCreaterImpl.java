@@ -296,8 +296,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(list.size() >0){
 				return createInsertTxtFromCollection(dest, list, checkParimary, columns);
 			}
+			return null;
+		}else {
+			return createInsertTxtFromEntity(dest, obj, checkParimary, columns);
 		}
-		return createInsertTxtFromEntity(dest, obj, checkParimary, columns);
 
 	}
 
