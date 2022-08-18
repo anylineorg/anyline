@@ -32,8 +32,6 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
@@ -48,38 +46,36 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private static final long serialVersionUID = -2098827041540802313L;
     protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
 
-    public static String PARENT = "PARENT"; //上级数据
-    public static String ALL_PARENT = "ALL_PARENT"; //所有上级数据
-    public static String CHILDREN = "CHILDREN"; //子数据
+    public static String KEY_PARENT = "PARENT";                 // 上级数据
+    public static String KEY_ALL_PARENT = "ALL_PARENT";         // 所有上级数据
+    public static String KEY_CHILDREN = "CHILDREN";             // 子数据
+    public static String KEY_ITEMS = "ITEMS";
     public static String DEFAULT_PRIMARY_KEY = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
-    public static String ITEMS = "ITEMS";
     public static KEY_CASE DEFAULT_KEY_KASE = KEY_CASE.CONFIG;
-    private DataSet container = null; //包含当前对象的容器
+    private transient DataSet container = null;                 // 包含当前对象的容器
 
     private List<String> primaryKeys = new ArrayList<>(); //主键
     private List<String> updateColumns = new ArrayList<>();
     private List<String> ignoreUpdateColumns = new ArrayList<>();
     private String datalink = null;
-    private String dataSource = null; //数据源(表|视图|XML定义SQL)
+    private String dataSource = null;                           // 数据源(表|视图|XML定义SQL)
     private String schema = null;
     private String table = null;
-    private Map<String, Object> queryParams = new HashMap<>(); //查询条件
-    private Map<String, Object> attributes = new HashMap<>(); //属性
-    private Object clientTrace = null; //客户端数据
-    private long createTime = 0; //创建时间
-    private long expires = -1; //过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-    protected Boolean isNew = false; //强制新建(适应hibernate主键策略)
-    protected boolean isFromCache = false; //是否来自缓存
+    private Map<String, Object> attributes = new HashMap<>();   // 属性
+    private long createTime = 0;                                // 创建时间
+    private long expires = -1;                                  // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+    protected Boolean isNew = false;                            // 强制新建(适应hibernate主键策略)
+    protected boolean isFromCache = false;                      // 是否来自缓存
     private boolean updateNullColumn = ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
     private boolean updateEmptyColumn = ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
-    private Map<String, String> keymap = new HashMap<>(); //keymap
-    private boolean isUpperKey = false; //是否已执行大写key转换(影响到驼峰执行)
-    private Map<String, String> converts = new HashMap<>(); //key是否已转换<key,src><当前key,原key>
+    private Map<String, String> keymap = new HashMap<>();       // keymap
+    private boolean isUpperKey = false;                         // 是否已执行大写key转换(影响到驼峰执行)
+    private Map<String, String> converts = new HashMap<>();     // key是否已转换<key,src><当前key,原key>
     public boolean skip = false; //遍历计算时标记
 
     private KeyAdapter keyAdapter = null;
 
-    private KEY_CASE keyCase 				= DEFAULT_KEY_KASE				; //列名格式
+    private KEY_CASE keyCase 				= DEFAULT_KEY_KASE;  // 列名格式
 
     public DataRow() {
         parseKeycase(null);
@@ -557,7 +553,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return DataSet
      */
     public DataSet getItems() {
-        Object items = get(ITEMS);
+        Object items = get(KEY_ITEMS);
         if (items instanceof DataSet) {
             return (DataSet) items;
         }
@@ -565,7 +561,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow putItems(Object obj) {
-        put(ITEMS, obj);
+        put(KEY_ITEMS, obj);
         return this;
     }
 
@@ -946,11 +942,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return Object
      */
     public Object getChildren() {
-        return get(CHILDREN);
+        return get(KEY_CHILDREN);
     }
 
     public DataRow setChildren(Object children) {
-        put(CHILDREN, children);
+        put(KEY_CHILDREN, children);
         return this;
     }
 
@@ -959,11 +955,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return Object
      */
     public Object getParent() {
-        return get(PARENT);
+        return get(KEY_PARENT);
     }
 
     public DataRow setParent(Object parent) {
-        put(PARENT, parent);
+        put(KEY_PARENT, parent);
         return this;
     }
 
@@ -973,8 +969,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      */
     @SuppressWarnings("unchecked")
     public List<Object> getAllParent() {
-        if (null != get(ALL_PARENT)) {
-            return (List<Object>) get(ALL_PARENT);
+        if (null != get(KEY_ALL_PARENT)) {
+            return (List<Object>) get(KEY_ALL_PARENT);
         }
         List<Object> parents = new ArrayList<Object>();
         Object parent = getParent();
@@ -1507,14 +1503,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
 
-    public Object getClientTrace() {
-        return clientTrace;
-    }
-
-    public DataRow setClientTrace(Object clientTrace) {
-        this.clientTrace = clientTrace;
-        return this;
-    }
 
     public String getSchema() {
         if (null != schema) {
@@ -1605,7 +1593,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         row.dataSource = this.dataSource;
         row.schema = this.schema;
         row.table = this.table;
-        row.clientTrace = this.clientTrace;
         row.createTime = this.createTime;
         row.isNew = this.isNew;
         return row;
@@ -1981,38 +1968,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 	}
 */
 
-    /**
-     * 查询条件
-     * @return Map
-     */
-    public Map<String, Object> getQueryParams() {
-        if (queryParams.isEmpty()) {
-            return container.getQueryParams();
-        }
-        return queryParams;
-    }
 
-    /**
-     * 设置查询条件
-     * @param queryParams queryParams
-     * @return DataRow
-     */
-    public DataRow setQueryParams(Map<String, Object> queryParams) {
-        this.queryParams = queryParams;
-        return this;
-    }
-
-    public Object getQueryParam(String key) {
-        if (queryParams.isEmpty()) {
-            return container.getQueryParams().get(key);
-        }
-        return queryParams.get(key);
-    }
-
-    public DataRow addQueryParam(String key, Object param) {
-        queryParams.put(key, param);
-        return this;
-    }
 
     /**
      * 是否更新null列

@@ -115,11 +115,14 @@ public class ConfigImpl implements Config{
 		}
 		if(null != value){
 			if(value instanceof Collection) {
-				values.addAll((Collection) value);
+				Collection list = (Collection) value;
+				for(Object item:list){
+					addValue(item);
+				}
 			}else if(value instanceof Object[]){
 				Object[] tmps = (Object[]) value;
 				for(Object tmp:tmps){
-					values.add(tmp);
+					addValue(tmp);
 				}
 			}else{
 				values.add(value);

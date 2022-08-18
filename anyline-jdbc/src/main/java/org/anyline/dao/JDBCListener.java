@@ -18,6 +18,7 @@
 package org.anyline.dao;
 
 import org.anyline.entity.DataSet;
+import org.anyline.entity.EntitySet;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.run.RunSQL;
 
@@ -52,6 +53,7 @@ public interface JDBCListener {
      * @param maps 查询结果
      */
     public void afterQuery(AnylineDao dao, RunSQL run, List<?>  maps);
+    public void afterQuery(AnylineDao dao, RunSQL run, EntitySet<?> maps);
     /**
      * 查询之后调用(调用service.query或service.querys)
      * @param dao dao

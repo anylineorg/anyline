@@ -67,8 +67,14 @@ protected AnylineService service;
 DataSet与Entity之间可以相互转换  
 或者这样:
 ```
-List<User> = service.querys(User.class, 
+EntitySet<User> = service.querys(User.class, 
     condition(true,"anyline根据约定自动生成的查询条件")); 
+//true：表示需要分页
+//为什么不用返回的是一个EntitySet而不是List?
+//因为分页情况下,EntitySet中包含了分页数据,而List不行。
+//无论是否分页都返回相同的数据结构，而不需要根据是否分页实现两个接口返回不同的数据结构
+
+
 
 //也可以这样(如果真要这样就不要用anyline了,还是用MyBatis,Hibernate之类吧)
 public class UserService extends AnylinseService<User> 
