@@ -59,20 +59,20 @@ public interface AnylineService<E>{
 	public DataRow query(String src, ConfigStore configs, String ... conditions);
 	public DataRow query(String src, String ... conditions);
 
-	public <T> List<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public <T> List<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
-	public <T> List<T> querys(Class<T> clazz, String ... conditions);
-	public <T> List<T> querys(Class<T> clazz, int fr, int to, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, String ... conditions);
 	public <T> T query(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> T query(Class<T> clazz, String ... conditions);
 
 
-	public List<E> gets(ConfigStore configs, String ... conditions);
-	public List<E> gets(PageNavi navi, String ... conditions);
+	public EntitySet<E> gets(ConfigStore configs, String ... conditions);
+	public EntitySet<E> gets(PageNavi navi, String ... conditions);
 
 	//与public DataSet querys(String src, String ... conditions);  签名冲突
-	public List<E> gets(String ... conditions);
-	public List<E> gets(int fr, int to, String ... conditions);
+	public EntitySet<E> gets(String ... conditions);
+	public EntitySet<E> gets(int fr, int to, String ... conditions);
 	public E get(ConfigStore configs, String ... conditions);
 	public E get(String ... conditions);
 
@@ -142,20 +142,6 @@ public interface AnylineService<E>{
 	public DataSet caches(String cache, SQL sql, int fr, int to, String ... conditions);
 	public DataRow cache(String cache, SQL sql, ConfigStore configs, String ... conditions);
 	public DataRow cache(String cache, SQL sql, String ... conditions);
-
-
-
-	public DataRow next(DataRow row, String column, Order.TYPE order, ConfigStore configs, String ... conditions);
-	public DataRow next(DataRow row, String column, Order.TYPE order, String ... conditions);
-	public DataRow next(DataRow row, Order.TYPE order, String ... conditions);
-	public DataRow next(DataRow row, ConfigStore configs, String ... conditions);
-	public DataRow next(DataRow row, String ... conditions);
-	
-	public DataRow prev(DataRow row, String column, Order.TYPE order, ConfigStore configs, String ... conditions);
-	public DataRow prev(DataRow row, String column, Order.TYPE order, String ... conditions);
-	public DataRow prev(DataRow row, Order.TYPE order, String ... conditions);
-	public DataRow prev(DataRow row, ConfigStore configs, String ... conditions);
-	public DataRow prev(DataRow row, String ... conditions);
 
 
 	/**

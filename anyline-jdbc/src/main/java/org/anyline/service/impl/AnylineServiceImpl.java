@@ -267,24 +267,24 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public <T> List<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
+    public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
         return queryFromDao(clazz, configs, conditions);
     }
 
     @Override
-    public <T> List<T> querys(Class<T> clazz, PageNavi navi, String... conditions) {
+    public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String... conditions) {
         ConfigStore configs = new ConfigStoreImpl();
         configs.setPageNavi(navi);
         return querys(clazz, configs, conditions);
     }
 
     @Override
-    public <T> List<T> querys(Class<T> clazz, String... conditions) {
+    public <T> EntitySet<T> querys(Class<T> clazz, String... conditions) {
         return querys(clazz, (ConfigStore)null, conditions);
     }
 
     @Override
-    public <T> List<T> querys(Class<T> clazz, int fr, int to, String... conditions) {
+    public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, String... conditions) {
         ConfigStore configs = new ConfigStoreImpl(fr, to);
         return querys(clazz, configs, conditions);
     }
@@ -299,7 +299,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             configs = new ConfigStoreImpl();
         }
         configs.setPageNavi(navi);
-        List<T> list = querys(clazz, configs, conditions);
+        EntitySet<T> list = querys(clazz, configs, conditions);
         if (null != list && list.size() > 0) {
             return list.get(0);
         }
@@ -332,24 +332,24 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public List<E> gets(ConfigStore configs, String... conditions) {
+    public EntitySet<E> gets(ConfigStore configs, String... conditions) {
         Class<E> clazz = parseGenericClass();
         return querys(clazz, configs, conditions);
     }
     @Override
-    public List<E> gets(PageNavi navi, String... conditions) {
+    public EntitySet<E> gets(PageNavi navi, String... conditions) {
         Class<E> clazz = parseGenericClass();
         return querys(clazz, navi, conditions);
     }
 
     @Override
-    public List<E> gets(String... conditions) {
+    public EntitySet<E> gets(String... conditions) {
         Class<E> clazz = parseGenericClass();
         return querys(clazz, conditions);
     }
 
     @Override
-    public List<E> gets(int fr, int to, String... conditions) {
+    public EntitySet<E> gets(int fr, int to, String... conditions) {
         Class<E> clazz = parseGenericClass();
         return querys(clazz, fr, to, conditions);
     }
@@ -543,167 +543,6 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     public DataRow cache(String cache, SQL table, String ... conditions){
         return cache(cache, table, null, conditions);
     }
-
-    @Override
-    public DataRow next(DataRow row, String column, Order.TYPE order, ConfigStore configs, String ... conditions) {
-        //查询条件
-        if(null == configs){
-            configs = (ConfigStore)row.getQueryParam("query_config");
-        }
-        if(null == configs){
-            configs = new ConfigStoreImpl();
-        }
-        if(null == conditions){
-            conditions = (String[])row.getQueryParam("query_condition");
-        }
-        //排序列
-        if(BasicUtil.isEmpty(column)){
-            OrderStore orderStore = (OrderStore)row.getQueryParam("query_order");
-            if(null != orderStore){
-                List<Order> orders = orderStore.getOrders();
-                if(null != orders && orders.size()>0){
-                    Order od = orders.get(0);
-                    if(null == order){
-                        order = od.getType();
-                    }
-                    column = od.getColumn();
-                }
-            }
-        }
-        if(BasicUtil.isEmpty(column)){
-            column = row.getPrimaryKey();
-        }
-        if(null == order){
-            order = Order.TYPE.DESC;
-        }
-        String src = (String)row.getQueryParam("query_src");
-
-        Order.TYPE queryOrder = null;
-        String pk = row.getPrimaryKey();
-        Object pv = row.getPrimaryValue();
-        SQL.COMPARE_TYPE compare = null;
-        configs.removeConfig(pk);
-        if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv) || column.equalsIgnoreCase(pk)){
-            if(order == Order.TYPE.DESC){
-                compare = SQL.COMPARE_TYPE.LESS;
-                queryOrder = Order.TYPE.DESC;
-            }else{
-                compare = SQL.COMPARE_TYPE.GREAT;
-                queryOrder = Order.TYPE.ASC;
-            }
-        }else{
-            configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv, true, true);
-            if(order == Order.TYPE.DESC){
-                compare = SQL.COMPARE_TYPE.LESS_EQUAL;
-                queryOrder = Order.TYPE.DESC;
-            }else{
-                compare = SQL.COMPARE_TYPE.GREAT_EQUAL;
-                queryOrder = Order.TYPE.ASC;
-            }
-        }
-        configs.order(column, queryOrder.getCode());
-        configs.removeConfig(column);
-        configs.addCondition(compare, column, row.get(column), true, true);
-        return query(src, configs, conditions);
-    }
-
-    @Override
-    public DataRow next(DataRow row, String column, Order.TYPE order, String... conditions) {
-        return next(row, column, order, null, conditions);
-    }
-    @Override
-    public DataRow next(DataRow row, Order.TYPE order, String... conditions) {
-        return next(row, null, order, null, conditions);
-    }
-    @Override
-    public DataRow next(DataRow row,  String... conditions) {
-        return next(row, null, null, null, conditions);
-    }
-
-    @Override
-    public DataRow next(DataRow row, ConfigStore configs, String... conditions) {
-        return next(row, null, null, configs, conditions);
-    }
-    @Override
-    public DataRow prev(DataRow row, String column, Order.TYPE order, ConfigStore configs, String ... conditions) {
-        //查询条件
-        if(null == configs){
-            configs = (ConfigStore)row.getQueryParam("query_config");
-        }
-        if(null == configs){
-            configs = new ConfigStoreImpl();
-        }
-        if(null == conditions){
-            conditions = (String[])row.getQueryParam("query_condition");
-        }
-        //排序列
-        if(BasicUtil.isEmpty(column)){
-            OrderStore orderStore = (OrderStore)row.getQueryParam("query_order");
-            if(null != orderStore){
-                List<Order> orders = orderStore.getOrders();
-                if(null != orders && orders.size()>0){
-                    Order od = orders.get(0);
-                    if(null == order){
-                        order = od.getType();
-                    }
-                    column = od.getColumn();
-                }
-            }
-        }
-        if(BasicUtil.isEmpty(column)){
-            column = row.getPrimaryKey();
-        }
-        if(null == order){
-            order = Order.TYPE.DESC;
-        }
-        String src = (String)row.getQueryParam("query_src");
-
-        Order.TYPE queryOrder = null;
-        String pk = row.getPrimaryKey();
-        Object pv = row.getPrimaryValue();
-        SQL.COMPARE_TYPE compare = null;
-        configs.removeConfig(pk);
-        if(BasicUtil.isEmpty(pk) || BasicUtil.isEmpty(pv) || column.equalsIgnoreCase(pk)){
-            if(order == Order.TYPE.ASC){
-                compare = SQL.COMPARE_TYPE.LESS;
-                queryOrder = Order.TYPE.DESC;
-            }else{
-                compare = SQL.COMPARE_TYPE.GREAT;
-                queryOrder = Order.TYPE.ASC;
-            }
-        }else{
-            configs.addCondition(SQL.COMPARE_TYPE.NOT_EQUAL, pk, pv, true, true);
-            if(order == Order.TYPE.ASC){
-                compare = SQL.COMPARE_TYPE.LESS_EQUAL;
-                queryOrder = Order.TYPE.DESC;
-            }else{
-                compare = SQL.COMPARE_TYPE.GREAT_EQUAL;
-                queryOrder = Order.TYPE.ASC;
-            }
-        }
-        configs.order(column, queryOrder.getCode());
-        configs.removeConfig(column);
-        configs.addCondition(compare, column, row.get(column), true, true);
-        return query(src, configs, conditions);
-    }
-
-    @Override
-    public DataRow prev(DataRow row, String column, Order.TYPE order, String... conditions) {
-        return prev(row, column, order, null, conditions);
-    }
-    @Override
-    public DataRow prev(DataRow row, Order.TYPE order, String... conditions) {
-        return prev(row, null, order, null, conditions);
-    }
-    @Override
-    public DataRow prev(DataRow row, String... conditions) {
-        return prev(row, null, null, null, conditions);
-    }
-    @Override
-    public DataRow prev(DataRow row, ConfigStore configs, String... conditions) {
-        return prev(row, null, null, configs, conditions);
-    }
-
 
     /**
      * 删除缓存 参数保持与查询参数完全一致
@@ -1187,8 +1026,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         try {
             setPageLazy(sql.getText(), configs, conditions);
             set = dao.querys(sql, configs, conditions);
-            set.addQueryParam("query_src", sql.getText());
-        } catch (Exception e) {
+         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
             if(log.isWarnEnabled()){
@@ -1210,8 +1048,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             setPageLazy(src, configs, conditions);
             SQL sql = createSQL(src);
             set = dao.querys(sql, configs, conditions);
-            set.addQueryParam("query_src", src);
-        } catch (Exception e) {
+         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
             if(log.isWarnEnabled()){
@@ -1225,8 +1062,8 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return set;
     }
 
-    protected <T> List<T> queryFromDao(Class<T> clazz, ConfigStore configs, String... conditions){
-        List<T> list = null;
+    protected <T> EntitySet<T> queryFromDao(Class<T> clazz, ConfigStore configs, String... conditions){
+        EntitySet<T> list = null;
         if(ConfigTable.isSQLDebug()){
             log.warn("[解析SQL][src:{}]", clazz);
         }
@@ -1234,7 +1071,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             setPageLazy(clazz.getName(), configs, conditions);
             list = dao.querys(clazz, configs, conditions);
         } catch (Exception e) {
-            list = new ArrayList<>();
+            list = new EntitySet<>();
             if(log.isWarnEnabled()){
                 e.printStackTrace();
             }

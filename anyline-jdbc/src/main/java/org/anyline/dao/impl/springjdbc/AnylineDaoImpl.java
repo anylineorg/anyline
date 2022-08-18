@@ -23,10 +23,7 @@ import org.anyline.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.JDBCListener;
 import org.anyline.dao.impl.BatchInsertStore;
-import org.anyline.entity.DataRow;
-import org.anyline.entity.DataSet;
-import org.anyline.entity.MetaData;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
@@ -195,10 +192,6 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				set = new DataSet();
 			}
 			set.setDataSource(sql.getDataSource());
-			set.addQueryParam("query_config", configs)
-					.addQueryParam("query_condition", conditions)
-					.addQueryParam("query_order", run.getOrderStore())
-					.addQueryParam("query_column", sql.getColumns());
 //		set.setSchema(sql.getSchema());
 //		set.setTable(sql.getTable());
 			set.setNavi(navi);
@@ -215,8 +208,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public <T> List<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
-		List<T> list = null;
+	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
+		EntitySet<T> list = null;
 		try {
 			SQL sql = new TableSQLImpl();
 			if(AdapterProxy.hasAdapter()){
@@ -265,8 +258,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 				}
 			} else {
-				list = new ArrayList<>();
+				list = new EntitySet<>();
 			}
+			list.setNavi(navi);
 			if (null != navi && navi.isLazy()) {
 				PageLazyStore.setTotal(navi.getLazyKey(), navi.getTotalRow());
 			}
@@ -822,7 +816,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return set;
 	}
 
-	protected <T> List<T> select(Class<T> clazz, String sql, List<Object> values){
+	protected <T> EntitySet<T> select(Class<T> clazz, String sql, List<Object> values){
 		if(BasicUtil.isEmpty(sql)){
 			throw new SQLQueryException("未指定SQL");
 		}
@@ -833,7 +827,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			log.warn(random + "[txt:\n{}\n]",sql);
 			log.warn(random + "[参数:{}]",paramLogFormat(values));
 		}
-		List<T> set = new ArrayList<>();
+		EntitySet<T> set = new EntitySet<>();
 		try{
 			List<Map<String,Object>> list = null;
 			if(null != values && values.size()>0){

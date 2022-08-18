@@ -20,6 +20,7 @@
 package org.anyline.dao;
 
 import org.anyline.entity.DataSet;
+import org.anyline.entity.EntitySet;
 import org.anyline.entity.MetaData;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
@@ -31,7 +32,7 @@ import java.util.Map;
 
 public interface AnylineDao<E>{
 	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
-	public <T> List<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public DataSet querys(SQL sql, String ... conditions);
 	public List<String> metadata(String table);
 	public List<MetaData> metadatas(String table);
