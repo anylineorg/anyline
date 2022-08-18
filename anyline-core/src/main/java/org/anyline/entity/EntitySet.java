@@ -1,16 +1,9 @@
 package org.anyline.entity;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
-import org.anyline.entity.operator.*;
-import org.anyline.util.*;
-import org.anyline.util.regular.Regular;
-import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -25,7 +18,7 @@ public class EntitySet<T> implements Collection<T>, Serializable {
     private String message = null;              // 提示信息
     private PageNavi navi = null;               // 分页
     private List<String> head = null;           // 表头
-    private List<T> rows = new ArrayList<>();   // 数据
+    private List<T> datas = new ArrayList<>();   // 数据
     private List<String> primaryKeys = null;    // 主键
     private String datalink = null;             // 数据连接
     private String dataSource = null;           // 数据源(表|视图|XML定义SQL)
@@ -42,7 +35,7 @@ public class EntitySet<T> implements Collection<T>, Serializable {
         createTime = System.currentTimeMillis();
     }
     public T get(int index){
-        return rows.get(index);
+        return datas.get(index);
     }
 
 
@@ -95,12 +88,12 @@ public class EntitySet<T> implements Collection<T>, Serializable {
         this.head = head;
     }
 
-    public List<T> getRows() {
-        return rows;
+    public List<T> getDatas() {
+        return datas;
     }
 
-    public void setRows(List<T> rows) {
-        this.rows = rows;
+    public void setDatas(List<T> datas) {
+        this.datas = datas;
     }
 
     public List<String> getPrimaryKeys() {
@@ -185,22 +178,22 @@ public class EntitySet<T> implements Collection<T>, Serializable {
 
     @Override
     public int size() {
-        return rows.size();
+        return datas.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return rows.isEmpty();
+        return datas.isEmpty();
     }
 
     @Override
     public boolean contains(Object o) {
-        return rows.contains(o);
+        return datas.contains(o);
     }
 
     @Override
     public Iterator<T> iterator() {
-        return rows.iterator();
+        return datas.iterator();
     }
 
     @Override
@@ -220,27 +213,27 @@ public class EntitySet<T> implements Collection<T>, Serializable {
 
     @Override
     public boolean add(T t) {
-        return rows.add(t);
+        return datas.add(t);
     }
 
     @Override
     public boolean remove(Object o) {
-        return rows.remove(o);
+        return datas.remove(o);
     }
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return rows.containsAll(c);
+        return datas.containsAll(c);
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        return rows.addAll(c);
+        return datas.addAll(c);
     }
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        return rows.removeAll(c);
+        return datas.removeAll(c);
     }
 
     @Override
@@ -250,12 +243,12 @@ public class EntitySet<T> implements Collection<T>, Serializable {
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        return rows.retainAll(c);
+        return datas.retainAll(c);
     }
 
     @Override
     public void clear() {
-        rows.clear();
+        datas.clear();
     }
 
     @Override

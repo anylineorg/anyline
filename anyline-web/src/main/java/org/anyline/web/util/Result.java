@@ -2,6 +2,7 @@ package org.anyline.web.util;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -113,12 +114,20 @@ public class Result {
         map.put("response_time", response_time);
         map.put("finish_time", finish_time);
 
-        if (data instanceof DataSet) {
-            DataSet set = (DataSet) data;
+        if (data instanceof DataSet || data instanceof EntitySet) {
             dataType = "list";
-            data = set.getRows();
-            if(null == navi){
-                navi = set.getNavi();
+            if(data instanceof DataSet){
+                DataSet set = (DataSet) data;
+                data = set.getRows();
+                if(null == navi){
+                    navi = set.getNavi();
+                }
+            }else if(data instanceof EntitySet){
+                EntitySet set = (EntitySet) data;
+                data = set.getDatas();
+                if(null == navi){
+                    navi = set.getNavi();
+                }
             }
             boolean simpleStruct = ConfigTable.getBoolean("SIMPLE_RESPONSE_STRUCT", false);
             if (null == data) {
