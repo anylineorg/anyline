@@ -54,6 +54,7 @@ public class ConfigTable {
 	public static boolean  IS_LOWER_KEY = false;
 	public static boolean IS_KEY_IGNORE_CASE = true;
 	public static boolean IS_THROW_SQL_EXCEPTION = false;
+	public static boolean IS_SQL_DELIMITER_OPEN = false;
 	public static String CONFIG_NAME = "anyline-config.xml";
 
 	static{

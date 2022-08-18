@@ -18,14 +18,14 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 		delimiterTo = "`";
 	}
 
-	@Override
+/*	@Override
 	public String getDelimiterFr(){
 		return delimiterFr;
 	}
 	@Override
 	public String getDelimiterTo(){
 		return delimiterTo;
-	}
+	}*/
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		String sql = run.getBaseQueryTxt(); 

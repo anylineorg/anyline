@@ -67,6 +67,22 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public DB_TYPE type(){
 		return null;
 	}
+
+	@Override
+	public String getDelimiterFr(){
+		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
+			return "";
+		}
+		return this.delimiterFr;
+	}
+	@Override
+	public String getDelimiterTo(){
+		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
+			return "";
+		}
+		return this.delimiterTo;
+	}
+
 	/** 
 	 * 创建查询SQL 
 	 */ 

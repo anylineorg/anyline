@@ -100,4 +100,7 @@
 
 	<!--简单的返回数据结构，true:分页参数会放到最外层-->
 	<property key="SIMPLE_RESPONSE_STRUCT">false</property>
+	<!--定界符 -->
+	<property key="IS_SQL_DELIMITER_OPEN">false</property>
+
 </properties>
