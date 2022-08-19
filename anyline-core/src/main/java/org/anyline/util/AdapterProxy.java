@@ -24,17 +24,34 @@ public class AdapterProxy {
 
     @Autowired(required = false)
     public void setAdapter(Map<String,EntityAdapter> adapters) {
+        AdapterProxy.adapters = adapters;
         String defaultKey = "anyline.entity.adapter";
         if(ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false)){
+            //如果禁用 adapter 引用 随机引用一个 , adapters引用其他
+            //计算时先调用 adapter 再用其他覆盖
             adapters.remove(defaultKey);
-        }else{
-            adapter = adapters.get(defaultKey);
-        }
-        AdapterProxy.adapters = adapters;
-        for (String key:adapters.keySet()){
-            if(!key.equals(defaultKey)){
+            for (String key : adapters.keySet()) {
+                //如果没有default 则随机引用一个
                 adapter = adapters.get(key);
+                adapters.remove(key);
+                break;
             }
+        }else{
+            //如果不禁用 adapter 引用 default , adapters引用其他
+            //计算时先调用 adapter 再用其他覆盖
+
+            adapter = adapters.get(defaultKey);
+            if(null == adapter) {
+                for (String key : adapters.keySet()) {
+                    //如果没有default 则随机引用一个
+                    adapter = adapters.get(key);
+                    adapters.remove(key);
+                    break;
+                }
+            }else{
+                adapters.remove(defaultKey);
+            }
+
         }
 
     }
