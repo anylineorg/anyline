@@ -16,12 +16,27 @@ public class AdapterProxy {
     public static boolean hasAdapter(){
         return null != adapter;
     }
+
     public static EntityAdapter adapter;
+    public static Map<String,EntityAdapter> adapters;
+
+
 
     @Autowired(required = false)
-    @Qualifier("anyline.entity.adapter")
-    public void setAdapter(EntityAdapter adapter) {
-        AdapterProxy.adapter = adapter;
+    public void setAdapter(Map<String,EntityAdapter> adapters) {
+        String defaultKey = "anyline.entity.adapter";
+        if(ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false)){
+            adapters.remove(defaultKey);
+        }else{
+            adapter = adapters.get(defaultKey);
+        }
+        AdapterProxy.adapters = adapters;
+        for (String key:adapters.keySet()){
+            if(!key.equals(defaultKey)){
+                adapter = adapters.get(key);
+            }
+        }
+
     }
 
 

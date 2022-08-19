@@ -103,4 +103,6 @@
 	<!--定界符 -->
 	<property key="IS_SQL_DELIMITER_OPEN">false</property>
 
+	<!--禁用默认的entity adapter 默认false(开启)-->
+	<property key="IS_DISABLED_DEFAULT_ENTITY_ADAPTER">false</property>
 </properties>
