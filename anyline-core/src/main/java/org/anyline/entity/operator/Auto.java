@@ -6,4 +6,9 @@ public class Auto extends BasicCompare{
     public boolean compare(Object value) {
         return false;
     }
+
+    @Override
+    public boolean compare(Object value, Object target) {
+        return false;
+    }
 }

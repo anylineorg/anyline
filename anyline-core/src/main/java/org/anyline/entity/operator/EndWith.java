@@ -5,14 +5,19 @@ public class EndWith extends BasicCompare{
     public EndWith(){
     }
     public EndWith(String value){
-        this.value = value;
+        this.target = value;
     }
 
     @Override
     public boolean compare(Object value) {
-        if(null == this.value || null == value){
+        return compare(value, this.target);
+    }
+
+    @Override
+    public boolean compare(Object value, Object tar) {
+        if(null == target || null == value){
             return false;
         }
-        return value.toString().toUpperCase().endsWith(this.value.toString().toUpperCase());
+        return value.toString().toUpperCase().endsWith(target.toString().toUpperCase());
     }
 }

@@ -530,21 +530,21 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return getRow(null,0, params);
     }
     public DataRow getRow(Compare compare, DataRow params) {
-        return getRow(0, params);
+        return getRow(compare,0, params);
     }
     public DataRow getRow( DataRow params) {
         return getRow(CompareBuilder.EQUAL, 0, params);
     }
     public DataRow getRow(Compare compare, List<String> params) {
         String[] kvs = BeanUtil.list2array(params);
-        return getRow(0, kvs);
+        return getRow(compare,0, kvs);
     }
 
     public DataRow getRow(List<String> params) {
         return getRow(CompareBuilder.EQUAL, params);
     }
     public DataRow getRow(Compare compare, int begin, String... params) {
-        DataSet set = getRows(begin, 1, params);
+        DataSet set = getRows(compare,begin, 1, params);
         if (set.size() > 0) {
             return set.getRow(0);
         }
@@ -769,31 +769,31 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 String v = kvs.get(k);
                 if (null != v) {
                     //与SQL.TYPE保持一致
-                    Compare cmp = new Equal(v);
+                    Compare cmp = CompareBuilder.EQUAL;
                     if (v.startsWith("=")) {
                         v = v.substring(1);
-                        cmp = new Equal(v);
+                        cmp = CompareBuilder.EQUAL;
                     } else if (v.startsWith(">")) {
                         v = v.substring(1);
-                        cmp = new Big(v);
+                        cmp = CompareBuilder.BIG;
                     } else if (v.startsWith(">=")) {
                         v = v.substring(2);
-                        cmp = new BigEqual(v);
+                        cmp = CompareBuilder.BIG_EQUAL;
                     } else if (v.startsWith("<")) {
                         v = v.substring(1);
-                        cmp = new Less(v);
+                        cmp = CompareBuilder.LESS;
                     } else if (v.startsWith("<=")) {
                         v = v.substring(2);
-                        cmp = new LessEqual(v);
+                        cmp = CompareBuilder.LESS_EQUAL;
                     } else if (v.startsWith("%") && v.endsWith("%")) {
                         v = v.substring(1, v.length() - 1);
-                        cmp = new Like(v);
+                        cmp = CompareBuilder.LIKE;
                     } else if (v.endsWith("%")) {
                         v = v.substring(0, v.length() - 1);
-                        cmp = new StartWith(v);
+                        cmp = CompareBuilder.START_WITH;
                     } else if (v.startsWith("%")) {
                         v = v.substring(1);
-                        cmp = new EndWith(v);
+                        cmp = CompareBuilder.END_WITH;
                     }
                     compares.put(k, cmp);
                 }
@@ -839,16 +839,14 @@ public class DataSet implements Collection<DataRow>, Serializable {
                     Compare cmp = null;
                     if(null != compare){
                         cmp = compare;
-                        cmp.setValue(v);
                     }else{
                         cmp = compares.get(k);;
                     }
                     if(null != cmp) {
                         if (srcFlag) {
                             v = "${" + v + "}";
-                            cmp.setValue(v);
                         }
-                        if(!cmp.compare(value)) {
+                        if(!cmp.compare(value, v)) {
                             chk = false;
                             break;
                         }

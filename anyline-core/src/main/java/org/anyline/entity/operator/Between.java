@@ -29,7 +29,7 @@ public class Between extends BasicCompare{
     }
     @Override
     public boolean compare(Object value) {
-        if(values.size() < 2){
+        if(targets.size() < 2){
             return false;
         }
         if(null == value){
@@ -43,6 +43,11 @@ public class Between extends BasicCompare{
         }catch (Exception e){
             return false;
         }
+        return false;
+    }
+
+    @Override
+    public boolean compare(Object value, Object target) {
         return false;
     }
 }

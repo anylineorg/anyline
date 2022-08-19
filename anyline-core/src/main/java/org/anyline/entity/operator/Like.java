@@ -3,14 +3,19 @@ package org.anyline.entity.operator;
 public class Like extends BasicCompare{
     public Like(){
     }
-    public Like(String value){
-        this.value = value;
+    public Like(String target){
+        this.target = target;
     }
     @Override
     public boolean compare(Object value) {
-        if(null == this.value || null == value){
+        return compare(value, target);
+    }
+
+    @Override
+    public boolean compare(Object value, Object target) {
+        if(null == target || null == value){
             return false;
         }
-        return value.toString().toUpperCase().contains(this.value.toString().toUpperCase());
+        return value.toString().toUpperCase().contains(target.toString().toUpperCase());
     }
 }

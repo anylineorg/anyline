@@ -4,38 +4,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class BasicCompare implements Compare{
-    protected Object value;
-    protected String str;
-    protected List<Object> values = new ArrayList<>();
+    protected Object target;
+    protected List<Object> targets = new ArrayList<>();
 
 
     @Override
-    public Compare setValue(Object value) {
-        this.value = value;
+    public Compare setTarget(Object target) {
+        this.target = target;
         return this;
     }
     @Override
-    public Compare setString(String value) {
-        str = value;
+    public Compare setString(String target) {
+        this.target = target;
         return this;
     }
     @Override
-    public Compare addValue(Object value) {
-        values.add(value);
+    public Compare addTarget(Object value) {
+        targets.add(value);
         return this;
     }
 
     @Override
-    public Compare setValues(List<Object> values) {
-        this.values = values;
+    public Compare setTargets(List<Object> targets) {
+        this.targets = targets;
         return this;
     }
     @Override
-    public Object getValue(){
-        return value;
+    public Object getTarget(){
+        return target;
     }
     @Override
     public String getString(){
-        return str;
+        return target.toString();
     }
 }

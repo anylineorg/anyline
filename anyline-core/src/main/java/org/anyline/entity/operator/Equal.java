@@ -4,18 +4,23 @@ public class Equal extends BasicCompare{
 
     public Equal(){
     }
-    public Equal(String value){
-        this.value = value;
+    public Equal(String target){
+        this.target = target;
     }
     @Override
     public boolean compare(Object value) {
-        if(null == this.value){
+        return compare(value, this.target);
+    }
+
+    @Override
+    public boolean compare(Object value, Object target) {
+        if(null == target){
             if(null == value){
                 return true;
             }else {
                 return false;
             }
         }
-        return this.value.toString().equalsIgnoreCase(value.toString());
+        return target.toString().equalsIgnoreCase(value.toString());
     }
 }

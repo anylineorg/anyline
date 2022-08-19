@@ -6,16 +6,21 @@ public class Big extends BasicCompare{
 
     public Big(){
     }
-    public Big(String value){
-        this.value = value;
+    public Big(String target){
+        this.target = target;
     }
     @Override
     public boolean compare(Object value) {
-        if(null == this.value || null == value){
+        return compare(value, this.target);
+    }
+
+    @Override
+    public boolean compare(Object value, Object target) {
+        if(null == target || null == value){
             return false;
         }
         try {
-            return new BigDecimal(value.toString()).compareTo(new BigDecimal(this.value.toString())) > 0;
+            return new BigDecimal(value.toString()).compareTo(new BigDecimal(target.toString())) > 0;
         }catch (Exception e){
             return false;
         }
