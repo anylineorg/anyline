@@ -1,6 +1,7 @@
 package org.anyline.entity;
 
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -80,6 +81,17 @@ public interface EntityAdapter {
      */
     public <T> T entity(Class<T> clazz, Map<String,Object> map);
 
+    /**
+     * DataRow转换成entity时调用  如果有实现则不再执行 DataRow.entity
+     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * @param entity 在此基础上执行，如果不提供则新创建
+     * @param clazz 类
+     * @param map map
+     * @return T
+     * @param <T> T
+     */
+    public <T> T entity(T entity, Class<T> clazz, Map<String,Object> map);
+
 
     /**
      * entity转换成DataRow时调用 如果有实现则不再执行DataRow.parse
@@ -88,7 +100,20 @@ public interface EntityAdapter {
      * @param keys keys
      * @return DataRow
      */
-    public DataRow parse(Object obj, String ... keys);
+    public DataRow row(Object obj, String ... keys);
+
+
+
+    /**
+     * entity转换成DataRow时调用 如果有实现则不再执行DataRow.parse
+     * 如果不实现当前可以返回null,将继续执行默认处理方式
+     * 注意实现时不要调用 DataRow.public static DataRow parse(DataRow row, Object obj, String... keys) 形成无限递归
+     * @param row 在此基础上执行，如果不提供则新创建
+     * @param obj obj
+     * @param keys keys
+     * @return DataRow
+     */
+    public DataRow row(DataRow row, Object obj, String ... keys);
 
     /**
      * 列名转换成http参数时调用
