@@ -32,7 +32,7 @@
 			<artifactId>netcdf</artifactId>
 			<version>5.5.2</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/src/main/lib/netcdfAll-5.5.2.jar</systemPath>
+			<systemPath>${pom.basedir}/src/main/lib/netcdfAll-5.5.2.jar</systemPath>
 		</dependency>
 	</dependencies>
 </project>
