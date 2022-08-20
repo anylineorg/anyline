@@ -91,11 +91,6 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-adapter-default</artifactId>
-				<version>${anyline.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.anyline</groupId>
 				<artifactId>anyline-ext</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
