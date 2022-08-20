@@ -124,13 +124,16 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     /**
-     * 数组解析成DataSet
+     * 数组解析成DataRow
+     * @param row 在此基础上执行，如果不提供则新创建
      * @param list 数组
      * @param fields 下标对应的属性(字段/key)名称,如果不输入则以下标作为DataRow的key,如果属性数量超出list长度,取null值存入DataRow
      * @return DataRow
      */
-    public static DataRow parseList(Collection<?> list, String... fields) {
-        DataRow row = new DataRow();
+    public static DataRow parseList(DataRow row, Collection<?> list, String... fields) {
+        if(null == row) {
+            row = new DataRow();
+        }
         if (null != list) {
 
             if (null == fields || fields.length == 0) {
@@ -154,6 +157,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return row;
     }
 
+    public static DataRow parseList(Collection<?> list, String... fields) {
+        return parseList(null, list, fields);
+    }
+
     public DataRow setKeyCase(KEY_CASE keyCase) {
         parseKeycase(keyCase);
         return this;
@@ -161,27 +168,38 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     /**
      * 解析实体类对象
+     * @param row 在此基础上执行，如果不提供则新创建
      * @param obj obj
      * @param keys 列名:obj属性名 "ID:memberId"
      * @return DataRow
      */
     @SuppressWarnings("rawtypes")
-    public static DataRow parse(Object obj, String... keys) {
-        DataRow result = null;
+    public static DataRow parse(DataRow row, Object obj, String... keys) {
         if (AdapterProxy.hasAdapter()) {
-            result = AdapterProxy.parse(obj, keys);
-            if (null != result) {
-                return result;
+            row = AdapterProxy.row(row, obj, keys);
+            if (null != row) {
+                return row;
             }
         }
-        return parse(KEY_CASE.CONFIG, obj, keys);
+        return parse(row, KEY_CASE.CONFIG, obj, keys);
+    }
+    public static DataRow parse(Object obj, String... keys) {
+        return parse((DataRow)null, obj, keys);
+    }
+
+    public static DataRow build(DataRow row, Object obj, String... keys) {
+        return parse(row, obj, keys);
     }
 
     public static DataRow build(Object obj, String... keys) {
-        return parse(obj, keys);
+        return parse((DataRow)null, obj, keys);
     }
 
-    public static DataRow parse(KEY_CASE keyCase, Object obj, String... keys) {
+
+    public static DataRow parse(DataRow row, KEY_CASE keyCase, Object obj, String... keys) {
+        if(null == row) {
+            row = new DataRow(keyCase);
+        }
         Map<String, String> map = new HashMap<String, String>();
         if (null != keys) {
             for (String key : keys) {
@@ -191,7 +209,6 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 }
             }
         }
-        DataRow row = new DataRow(keyCase);
         if (null != obj) {
             if (obj instanceof JsonNode) {
                 row = parseJson(keyCase, (JsonNode) obj);
@@ -225,20 +242,27 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return row;
     }
 
+    public static DataRow parse(KEY_CASE keyCase, Object obj, String... keys) {
+        return parse(null, keyCase, obj, keys);
+    }
+    public static DataRow build(DataRow row, KEY_CASE keyCase, Object obj, String... keys) {
+        return parse(row, keyCase, obj, keys);
+    }
     public static DataRow build(KEY_CASE keyCase, Object obj, String... keys) {
-        return parse(keyCase, obj, keys);
+        return parse(null, keyCase, obj, keys);
     }
 
-    /*
+    /**
      * 解析json结构字符
+     * @param row 在此基础上执行，如果不提供则新创建
      * @param keyCase key大小写
      * @param json json
      * @return DataRow
      */
-    public static DataRow parseJson(KEY_CASE keyCase, String json) {
+    public static DataRow parseJson(DataRow row, KEY_CASE keyCase, String json) {
         if (null != json) {
             try {
-                return parseJson(keyCase, BeanUtil.JSON_MAPPER.readTree(json));
+                return parseJson(row, keyCase, BeanUtil.JSON_MAPPER.readTree(json));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -246,41 +270,63 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return null;
     }
 
+    public static DataRow parseJson(DataRow row, String json) {
+        return parseJson(row, KEY_CASE.CONFIG, json);
+    }
     public static DataRow parseJson(String json) {
-        return parseJson(KEY_CASE.CONFIG, json);
+        return parseJson(null, KEY_CASE.CONFIG, json);
     }
 
     /**
      * 解析JSONObject
+     * @param row 在此基础上执行，如果不提供则新创建
      * @param keyCase keyCase
      * @param json json
      * @return DataRow
      */
+    public static DataRow parseJson(DataRow row, KEY_CASE keyCase, JsonNode json) {
+        return (DataRow) parse(row, keyCase, json);
+    }
     public static DataRow parseJson(KEY_CASE keyCase, JsonNode json) {
-        return (DataRow) parse(keyCase, json);
+        return (DataRow) parse(null, keyCase, json);
     }
 
+    public static DataRow parseJson(DataRow row, JsonNode json) {
+        return parseJson(row, KEY_CASE.CONFIG, json);
+    }
     public static DataRow parseJson(JsonNode json) {
-        return parseJson(KEY_CASE.CONFIG, json);
+        return parseJson(null, KEY_CASE.CONFIG, json);
     }
 
-    private static Object parse(KEY_CASE keyCase, JsonNode json) {
+    private static Object parse(Object obj, KEY_CASE keyCase, JsonNode json) {
         if (null == json) {
-            return null;
+            return obj;
         }
         if (json.isValueNode()) {
             return BeanUtil.value(json);
         }
         if (json.isArray()) {
-            List<Object> list = new ArrayList<Object>();
+
+            Collection<Object> list = null;
+            if(null != obj && obj instanceof Collection) {
+                list = (Collection)obj;
+            }else{
+                list = new ArrayList<>();
+            }
             Iterator<JsonNode> items = json.iterator();
             while (items.hasNext()) {
                 JsonNode item = items.next();
-                list.add(parse(keyCase, item));
+                list.add(parse(obj, keyCase, item));
             }
             return list;
         } else if (json.isObject()) {
-            DataRow row = new DataRow(keyCase);
+
+            DataRow row = null;
+            if(null != obj && obj instanceof DataRow){
+                row = (DataRow)obj;
+            }else{
+                row = new DataRow(keyCase);
+            }
             Iterator<Map.Entry<String, JsonNode>> fields = json.fields();
             while (fields.hasNext()) {
                 Map.Entry<String, JsonNode> field = fields.next();
@@ -305,17 +351,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return null;
     }
 
+
+    private static Object parse(KEY_CASE keyCase, JsonNode json) {
+        return parse(null, keyCase, json);
+    }
     /**
      * 解析xml结构字符
+     * @param row 在此基础上执行，如果不提供则新创建
      * @param keyCase KEY_CASE
      * @param xml xml
      * @return DataRow
      */
-    public static DataRow parseXml(KEY_CASE keyCase, String xml) {
+    public static DataRow parseXml(DataRow row, KEY_CASE keyCase, String xml) {
         if (null != xml) {
             try {
                 Document doc = DocumentHelper.parseText(xml);
-                return parseXml(keyCase, doc.getRootElement());
+                return parseXml(row, keyCase, doc.getRootElement());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -323,18 +374,26 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return null;
     }
 
+    public static DataRow parseXml(DataRow row, String xml) {
+        return parseXml(row, KEY_CASE.CONFIG, xml);
+    }
+
     public static DataRow parseXml(String xml) {
-        return parseXml(KEY_CASE.CONFIG, xml);
+        return parseXml(null, KEY_CASE.CONFIG, xml);
     }
 
     /**
      * 解析xml
+     * @param row 在此基础上执行，如果不提供则新创建
      * @param keyCase KEY_CASE
      * @param element element
      * @return DataRow
      */
-    public static DataRow parseXml(KEY_CASE keyCase, Element element) {
-        DataRow row = new DataRow(keyCase);
+    public static DataRow parseXml(DataRow row, KEY_CASE keyCase, Element element) {
+
+        if(null == row){
+            row = new DataRow(keyCase);
+        }
         if (null == element) {
             return row;
         }
@@ -358,7 +417,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                     row.put(childKey, child.getTextTrim());
                     continue;
                 }
-                DataRow childRow = parseXml(keyCase, child);
+                DataRow childRow = parseXml(row, keyCase, child);
                 Object childStore = row.get(childKey);
                 if (null == childStore) {
                     row.put(childKey, childRow);
@@ -381,14 +440,20 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         return row;
     }
+    public static DataRow parseXml(KEY_CASE keyCase, Element element) {
+        return parseXml(null, keyCase, element);
+    }
 
     /**
      * 解析 key1,value1,key2,value2,key3:value3组合
+     * @param row 在此基础上执行，如果不提供则新创建
      * @param kvs kvs
      * @return DataRow
      */
-    public static DataRow parseArray(String... kvs) {
-        DataRow result = new DataRow();
+    public static DataRow parseArray(DataRow row, String... kvs) {
+        if(null == row){
+            row = new DataRow();
+        }
         int len = kvs.length;
         int i = 0;
         while (i < len) {
@@ -398,19 +463,19 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 continue;
             } else if (p1.contains(":")) {
                 String ks[] = BeanUtil.parseKeyValue(p1);
-                result.put(ks[0], ks[1]);
+                row.put(ks[0], ks[1]);
                 i++;
                 continue;
             } else {
                 if (i + 1 < len) {
                     String p2 = kvs[i + 1];
                     if (BasicUtil.isEmpty(p2) || !p2.contains(":")) {
-                        result.put(p1, p2);
+                        row.put(p1, p2);
                         i += 2;
                         continue;
                     } else {
                         String ks[] = BeanUtil.parseKeyValue(p2);
-                        result.put(ks[0], ks[1]);
+                        row.put(ks[0], ks[1]);
                         i += 2;
                         continue;
                     }
@@ -419,7 +484,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             }
             i++;
         }
-        return result;
+        return row;
+    }
+    public static DataRow parseArray(String... kvs) {
+        return parseArray((DataRow)null, kvs);
     }
 
     /**
