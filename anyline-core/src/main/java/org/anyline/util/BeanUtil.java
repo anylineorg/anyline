@@ -473,6 +473,7 @@ public class BeanUtil {
 
 	/**
 	 * map转实现
+	 * @param obj 在此基础上执行，如果不提供则新创建
 	 * @param map map
 	 * @param clazz class
 	 * @param recursion 是否递归
@@ -483,10 +484,11 @@ public class BeanUtil {
 	 * @param <T> T
 	 */
 	@SuppressWarnings("rawtypes")
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
-		T obj = null;
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
 		try {
-			obj = (T)clazz.newInstance();
+			if(null == obj) {
+				obj = (T) clazz.newInstance();
+			}
 			Set es = map.entrySet();
 			Iterator it = es.iterator();
 			List<Field> fields = ClassUtil.getFields(clazz);
@@ -515,8 +517,12 @@ public class BeanUtil {
 		}
 		return obj;
 	}
-	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
-		T obj = map2object(map, clazz, recursion, ignoreCase, ignoreSplit);
+
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit, String ... keys){
+		return map2object(null, map, clazz, recursion, ignoreCase, ignoreSplit, keys);
+	}
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+		obj = map2object(obj, map, clazz, recursion, ignoreCase, ignoreSplit);
 		for(Map.Entry item:fields.entrySet()){
 			Field field = (Field)item.getKey();
 			String column = (String)item.getValue();
@@ -525,12 +531,23 @@ public class BeanUtil {
 		}
 		return obj;
 	}
+
+	public static <T> T map2object(Map<String,?> map, Class<T> clazz, boolean recursion, boolean ignoreCase, boolean ignoreSplit,  Map<Field, String> fields){
+		return map2object(null, map, clazz, recursion, ignoreCase, ignoreSplit, fields);
+	}
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, Map<Field, String> fields){
+		return map2object(obj, map, clazz, false, false, false, fields);
+	}
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz, Map<Field, String> fields){
-		return map2object(map, clazz, false, false, false, fields);
+		return map2object(null, map, clazz, false, false, false, fields);
+	}
+	public static <T> T map2object(T obj, Map<String,?> map, Class<T> clazz, String ... keys){
+		return map2object(obj, map, clazz, false, false, false);
 	}
 	public static <T> T map2object(Map<String,?> map, Class<T> clazz, String ... keys){
-		return map2object(map, clazz, false, false, false);
+		return map2object(null, map, clazz, false, false, false);
 	}
+
 	public static <T> T json2oject(String json, Class<T> clazz, JsonInclude.Include include){
 		try {
 			if(null != include){
