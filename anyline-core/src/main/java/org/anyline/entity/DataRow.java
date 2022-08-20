@@ -270,6 +270,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return null;
     }
 
+    public static DataRow parseJson(KEY_CASE keyCase, String json) {
+        return parseJson(null, keyCase, json);
+    }
+
     public static DataRow parseJson(DataRow row, String json) {
         return parseJson(row, KEY_CASE.CONFIG, json);
     }
