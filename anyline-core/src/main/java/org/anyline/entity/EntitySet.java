@@ -1,5 +1,6 @@
 package org.anyline.entity;
 
+import org.anyline.util.AdapterProxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,9 @@ public class EntitySet<T> implements Collection<T>, Serializable {
         return datas.get(index);
     }
 
-
+    public DataSet set(String ... keys){
+        return AdapterProxy.set(this, keys);
+    }
 
     public boolean isResult() {
         return result;
@@ -265,4 +268,5 @@ public class EntitySet<T> implements Collection<T>, Serializable {
     public Stream<T> parallelStream() {
         return Collection.super.parallelStream();
     }
+
 }
