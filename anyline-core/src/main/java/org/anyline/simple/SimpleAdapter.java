@@ -1,7 +1,10 @@
 package org.anyline.simple;
 
 import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.entity.EntityAdapter;
+import org.anyline.entity.EntitySet;
+import org.anyline.entity.adapter.KeyAdapter;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ClassUtil;
@@ -135,15 +138,20 @@ public class SimpleAdapter implements EntityAdapter {
     }
 
     @Override
-    public <T> T entity(Class<T> clazz, Map<String, Object> map) {
+    public <T> T entity(T entity, Class<T> clazz, Map<String, Object> map) {
         List<Field> fields = ClassUtil.getFields(clazz);
         Map<Field,String> fk = new HashMap<>();
-        T entity = BeanUtil.map2object(map, clazz, false, true, true);
+        entity = BeanUtil.map2object(entity, map, clazz, false, true, true);
         for(Field field:fields){
             String column = column(clazz, field);
             BeanUtil.setFieldValue(entity, field, map.get(column));
         }
         return entity;
+    }
+
+    @Override
+    public <T> T entity(Class<T> clazz, Map<String, Object> map) {
+        return entity(null, clazz, map);
     }
 
     @Override
@@ -174,10 +182,14 @@ public class SimpleAdapter implements EntityAdapter {
     }
 
     @Override
-    public DataRow parse(Object obj, String... keys) {
-        return null;
+    public DataRow row(DataRow row, Object obj, String... keys) {
+        //注意不要调用 DataRow.public static DataRow parse(DataRow row, Object obj, String... keys) 形成无限递归
+        return DataRow.parse(row, KeyAdapter.KEY_CASE.CONFIG, obj, keys);
     }
-
+    @Override
+    public DataRow row(Object obj, String... keys) {
+        return row(null, obj, keys);
+    }
 
 
     @Override
