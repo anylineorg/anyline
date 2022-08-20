@@ -2664,7 +2664,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return null;
     }
-
+    public <T> EntitySet<T> entitys(Class<T> clazz){
+        return AdapterProxy.entitys(clazz, this);
+    }
     public DataSet setDataSource(String dataSource) {
         if (null == dataSource) {
             return this;
