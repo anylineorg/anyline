@@ -2,6 +2,7 @@ package org.anyline.jdbc.util;
 
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.util.SpringContextUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Repository;
@@ -15,14 +16,22 @@ import java.util.concurrent.ConcurrentHashMap;
 @Repository
 public class SQLCreaterUtil {
 
-	private static ConcurrentHashMap<String, SQLCreater> creaters= new ConcurrentHashMap<String, SQLCreater>();
+	private static ConcurrentHashMap<String, SQLCreater> creaters= new ConcurrentHashMap<>();
+
+	@Autowired(required = false)
+	public void setCreaters(Map<String, SQLCreater> map){
+		for (SQLCreater creater:map.values()){
+			creaters.put(creater.type().getCode(), creater);
+		}
+	}
+
 	private static SQLCreater defaultCreater = null;	//如果当前项目只有一个creater则不需要多次识别
 	public static SQLCreater getCreater(JdbcTemplate jdbc){
 		if(null != defaultCreater){
 			return defaultCreater;
 		}
-		if(SpringContextUtil.getBeans(SQLCreater.class).size() ==1){
-			defaultCreater = SpringContextUtil.getBean(SQLCreater.class);
+		if(creaters.size() ==1){
+			defaultCreater = creaters.values().iterator().next();
 			return defaultCreater;
 		}
 		SQLCreater creater = null;
@@ -35,49 +44,42 @@ public class SQLCreaterUtil {
 				if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 					DataSourceUtils.releaseConnection(con, ds);
 				}
-				SQLCreater.DB_TYPE type = SQLCreater.DB_TYPE.MYSQL;
+				creater = creaters.get(name);
+				if(null != creater){
+					return creater;
+				}
 				if(name.contains("mysql")){
-					type = SQLCreater.DB_TYPE.MYSQL;
+					creater = creaters.get(SQLCreater.DB_TYPE.MYSQL.getCode());
 				}else if(name.contains("mssql") || name.contains("sqlserver")){
-					type = SQLCreater.DB_TYPE.MSSQL;
+					creater =  creaters.get(SQLCreater.DB_TYPE.MSSQL.getCode());
 				}else if(name.contains("oracle")){
-					type = SQLCreater.DB_TYPE.ORACLE;
+					creater =  creaters.get(SQLCreater.DB_TYPE.ORACLE.getCode());
 				}else if(name.contains("db2")){
-					type = SQLCreater.DB_TYPE.DB2;
+					creater =  creaters.get(SQLCreater.DB_TYPE.DB2.getCode());
 				}else if(name.contains("hgdb") || name.contains("highgo")){
-					type = SQLCreater.DB_TYPE.HighGo;
+					creater =  creaters.get(SQLCreater.DB_TYPE.HighGo.getCode());
 				}else if(name.contains("dmdbms")){
-					type = SQLCreater.DB_TYPE.DM;
+					creater =  creaters.get(SQLCreater.DB_TYPE.DM.getCode());
 				}else if(name.contains("postgresql")){
-					type = SQLCreater.DB_TYPE.PostgreSQL;
+					creater =  creaters.get(SQLCreater.DB_TYPE.PostgreSQL.getCode());
 				}else if(name.contains("clickhouse")){
-					type = SQLCreater.DB_TYPE.ClickHouse;
+					creater =  creaters.get(SQLCreater.DB_TYPE.ClickHouse.getCode());
 				}else if(name.contains("kingbase")){
-					type = SQLCreater.DB_TYPE.KingBase;
+					creater =  creaters.get(SQLCreater.DB_TYPE.KingBase.getCode());
 				}else if(name.contains("oceanbase")){
-					type = SQLCreater.DB_TYPE.OceanBase;
+					creater =  creaters.get(SQLCreater.DB_TYPE.OceanBase.getCode());
 				}else if(name.contains("polardb")){
-					type = SQLCreater.DB_TYPE.PolarDB;
+					creater =  creaters.get(SQLCreater.DB_TYPE.PolarDB.getCode());
 				}else if(name.contains("sqlite")){
-					type = SQLCreater.DB_TYPE.SQLite;
+					creater =  creaters.get(SQLCreater.DB_TYPE.SQLite.getCode());
 				}else if(name.contains(":h2:")){
-					type = SQLCreater.DB_TYPE.H2;
+					creater =  creaters.get(SQLCreater.DB_TYPE.H2.getCode());
 				}else if(name.contains("hsqldb")){
-					type = SQLCreater.DB_TYPE.HSQLDB;
+					creater =  creaters.get(SQLCreater.DB_TYPE.HSQLDB.getCode());
 				}else if(name.contains("derby")){
-					type = SQLCreater.DB_TYPE.Derby;
+					creater =  creaters.get(SQLCreater.DB_TYPE.Derby.getCode());
 				}
-				creater = creaters.get(type.getName());
-				if(null == creater){
-					Map<String, SQLCreater> creaters = SpringContextUtil.getBeans(SQLCreater.class);
-					for(SQLCreater item: creaters.values()){
-						if(type ==item.type()){
-							creater = item;
-							SQLCreaterUtil.creaters.put(type.getName(), creater);
-							break;
-						}
-					}
-				}
+				creaters.put(name, creater);
 			}
 			if(null == creater){
 				creater = SpringContextUtil.getBean(SQLCreater.class);

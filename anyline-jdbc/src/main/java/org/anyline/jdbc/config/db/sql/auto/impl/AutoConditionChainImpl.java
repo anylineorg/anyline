@@ -75,11 +75,11 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 				//if(i>0 /*&& !condition.isContainer()*/){
 				if(joinSize>0){
 					String chk = txt.toLowerCase().trim();
-					if(!chk.startsWith("and") && !chk.startsWith("or")){
+					if(!chk.startsWith("and ") && !chk.startsWith("or ") && !chk.startsWith("and(") && !chk.startsWith("or(")){
 						subBuilder.append(condition.getJoin());
 					}
 				}
-				subBuilder.append(txt);
+				subBuilder.append(" ").append(txt);
 				addRunValue(values);
 				joinSize ++;
 			}
