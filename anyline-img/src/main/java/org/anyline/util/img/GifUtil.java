@@ -17,6 +17,7 @@ import javax.imageio.stream.FileImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GifUtil { 
@@ -28,7 +29,7 @@ public class GifUtil {
      * @return List
      */ 
     public static List<File> split(File file, File dir){
-    	List<File> files = new ArrayList<File>(); 
+    	List<File> files = new ArrayList<>();
     	FileImageInputStream in = null; 
     	FileImageOutputStream out = null; 
     	try { 
@@ -60,24 +61,22 @@ public class GifUtil {
      * @param srcs  源图片列表
      */ 
     public synchronized static void create(int delay, String tar, String ... srcs) {
-    	List<File> list = new ArrayList<File>(); 
+    	List<File> list = new ArrayList<>();
     	for(String src:srcs){ 
     		list.add(new File(src)); 
     	}
 		create(delay, new File(tar), list);
     } 
     public synchronized static void create(int delay, String tar, List<String> srcs) {
-    	List<File> list = new ArrayList<File>(); 
+    	List<File> list = new ArrayList<>();
     	for(String src:srcs){ 
     		list.add(new File(src)); 
     	}
 		create(delay, new File(tar), list);
     } 
     public synchronized static void create(int delay, File tar, File ... srcs) {
-    	List<File> list = new ArrayList<File>(); 
-    	for(File src:srcs){ 
-    		list.add(src); 
-    	}
+    	List<File> list = new ArrayList<>();
+		Collections.addAll(list, srcs);
 		create(delay, tar, list);
     } 
     /**
