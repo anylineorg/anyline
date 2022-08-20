@@ -38,6 +38,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,14 +48,14 @@ public class WebUtil {
 	protected static final Logger log = LoggerFactory.getLogger(WebUtil.class);
 
 	//	public static final String PARAMS_FULL_DECRYPT_MAP = "PARAMS_FULL_DECRYPT_MAP"; // 参数值解密后MAP(整体加密) 加密(k=v&k=v)
-//	public static final String PARAMS_PART_DECRYPT_MAP = "PARAMS_PART_DECRYPT_MAP"; // 参数值解密后MAP(逐个加密) 加密(k)=加密(v)&加密(k)=加密(v)
+	//	public static final String PARAMS_PART_DECRYPT_MAP = "PARAMS_PART_DECRYPT_MAP"; // 参数值解密后MAP(逐个加密) 加密(k)=加密(v)&加密(k)=加密(v)
 	public static final String DECRYPT_PARAM_MAP = "DECRYPT_PARAM_MAP"; //解析后的值(只存整体加密)
 	private static final String PACK_REQUEST_PARAM = "PACK_REQUEST_PARAM";//所有request参数
 	/**
-	 * 提取clicent真实ip
+	 * 提取远程ip
 	 *
 	 * @param request  request
-	 * @return String
+	 * @return ip
 	 */
 
 	public static String getRemoteIp(HttpServletRequest request) {
@@ -103,10 +104,7 @@ public class WebUtil {
 	 */
 	public static boolean isAjaxRequest(HttpServletRequest request) {
 		String header = request.getHeader("x-requested-with");
-		if (header != null && "XMLHttpRequest".equals(header)) {
-			return true;
-		}
-		return false;
+		return header != null && "XMLHttpRequest".equals(header);
 	}
 
 	/**
@@ -116,10 +114,7 @@ public class WebUtil {
 	 * @return boolean
 	 */
 	public static boolean isSpider(HttpServletRequest request) {
-		if (!hasReffer(request)) {
-			return true;
-		}
-		return false;
+		return !hasReffer(request);
 	}
 
 	/**
@@ -372,7 +367,7 @@ public class WebUtil {
 //	 * @return List
 //	 */
 	public static List<Object> getHttpRequestParams(HttpServletRequest request, String key, boolean keyEncrypt, boolean valueEncrypt) {
-		List<Object> result = new ArrayList<Object>();
+		List<Object> result = new ArrayList<>();
 		if (null == request || null == key) {
 			return null;
 		}
@@ -540,7 +535,7 @@ public class WebUtil {
 					"iemobile", "wap2.0", "WAPI" };
 			Pattern pf = Pattern.compile("wp\\d*");
 			Matcher mf = pf.matcher(agentcheck);
-			if (agentcheck != null && (agentcheck.indexOf("windows nt") == -1 && agentcheck .indexOf("Ubuntu") == -1)
+			if (agentcheck != null && (!agentcheck.contains("windows nt") && agentcheck .indexOf("Ubuntu") == -1)
 					|| (agentcheck.indexOf("windows nt") > -1 && mf.find())) {
 				for (int i = 0; i < keywords.length; i++) {
 					Pattern p = Pattern.compile(keywords[i]);
@@ -575,11 +570,7 @@ public class WebUtil {
 	 */
 	public static boolean isWechat(HttpServletRequest request){
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
-		if(userAgent.indexOf("micromessenger")>-1){
-			return true;
-		}else{
-			return false;
-		}
+		return userAgent.indexOf("micromessenger") > -1;
 	}
 	public static boolean isWechatApp(HttpServletRequest request){
 		String referer = request.getHeader("referer");
@@ -587,11 +578,7 @@ public class WebUtil {
 			return true;
 		}
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
-		if(userAgent.indexOf("micromessenger")>-1 && userAgent.indexOf("miniprogram")>-1){
-			return true;
-		}else{
-			return false;
-		}
+		return userAgent.indexOf("micromessenger") > -1 && userAgent.indexOf("miniprogram") > -1;
 	}
 	public static boolean isApp(HttpServletRequest request){
 		if(null == request){
@@ -601,10 +588,7 @@ public class WebUtil {
 			return false;
 		}
 		String isApp = request.getSession().getAttribute("_IS_APP")+"";
-		if("1".equals(isApp)){
-			return true;
-		}
-		return false;
+		return "1".equals(isApp);
 	}
 
 	/**
@@ -614,11 +598,7 @@ public class WebUtil {
 	 */
 	public static boolean isAlipay(HttpServletRequest request){
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
-		if(userAgent.indexOf("alipayclient")>-1){
-			return true;
-		}else{
-			return false;
-		}
+		return userAgent.indexOf("alipayclient") > -1;
 	}
 	/**
 	 * 是否QQ调用
@@ -627,11 +607,7 @@ public class WebUtil {
 	 */
 	public static boolean isQQ(HttpServletRequest request){
 		String userAgent = (request.getHeader("user-agent")+"").toLowerCase();
-		if(userAgent.indexOf("qq/")>-1){
-			return true;
-		}else{
-			return false;
-		}
+		return userAgent.indexOf("qq/") > -1;
 	}
 
 	/**
@@ -641,11 +617,7 @@ public class WebUtil {
 	 */
 	public static boolean isAndroid(HttpServletRequest request){
 		String userAgent = request.getHeader("user-agent").toLowerCase();
-		if(userAgent.indexOf("android")>-1){
-			return true;
-		}else{
-			return false;
-		}
+		return userAgent.indexOf("android") > -1;
 	}
 	/**
 	 * 是否android调用
@@ -654,11 +626,7 @@ public class WebUtil {
 	 */
 	public static boolean isIphone(HttpServletRequest request){
 		String userAgent = request.getHeader("user-agent").toLowerCase();
-		if(userAgent.indexOf("iphone")>-1){
-			return true;
-		}else{
-			return false;
-		}
+		return userAgent.indexOf("iphone") > -1;
 	}
 	public static String clientType(HttpServletRequest request){
 		String type = "";
@@ -851,7 +819,7 @@ public class WebUtil {
 	}
 
 	public static void render(HttpServletRequest request, HttpServletResponse response, String jsp, File target) throws ServletException, IOException {
-		render(request, response, jsp, new FileOutputStream(target), true);
+		render(request, response, jsp, Files.newOutputStream(target.toPath()), true);
 	}
 
 	/**
@@ -924,7 +892,7 @@ public class WebUtil {
 				if(BasicUtil.isEmpty(title)){
 					title = file.getName();
 				}
-				return download(request, response, new FileInputStream(file), title);
+				return download(request, response, Files.newInputStream(file.toPath()), title);
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -935,7 +903,7 @@ public class WebUtil {
 	public static boolean download(HttpServletRequest request, HttpServletResponse response, File file){
 		try{
 			if (null != file && file.exists()) {
-				return download(request, response, new FileInputStream(file), file.getName());
+				return download(request, response, Files.newInputStream(file.toPath()), file.getName());
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -1110,7 +1078,7 @@ public class WebUtil {
 	}
 
 	public static Map<String, Object> packParam(HttpServletRequest request, String... keys) {
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new HashMap<>();
 		if (null == keys || keys.length == 0) {
 			Enumeration<String> names = request.getParameterNames();
 			while (names.hasMoreElements()) {
@@ -1180,15 +1148,15 @@ public class WebUtil {
 			}
 			//以中划线分隔的配置文件
 			String[] ks = key.split("-");
-			String sKey = null;
+			StringBuilder sKey = null;
 			for(String k:ks){
 				if(null == sKey){
-					sKey = k;
+					sKey = new StringBuilder(k);
 				}else{
-					sKey = sKey + CharUtil.toUpperCaseHeader(k);
+					sKey.append(CharUtil.toUpperCaseHeader(k));
 				}
 			}
-			value = env.getProperty(sKey);
+			value = env.getProperty(sKey.toString());
 			if(null != value){
 				return value;
 			}
@@ -1198,12 +1166,12 @@ public class WebUtil {
 			sKey = null;
 			for(String k:ks){
 				if(null == sKey){
-					sKey = k;
+					sKey = new StringBuilder(k);
 				}else{
-					sKey = sKey + CharUtil.toUpperCaseHeader(k);
+					sKey.append(CharUtil.toUpperCaseHeader(k));
 				}
 			}
-			value = env.getProperty(sKey);
+			value = env.getProperty(sKey.toString());
 			if(null != value){
 				return value;
 			}
