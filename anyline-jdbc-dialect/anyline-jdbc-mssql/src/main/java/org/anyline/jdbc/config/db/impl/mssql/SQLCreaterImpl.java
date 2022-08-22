@@ -32,14 +32,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 		delimiterTo = "]";
 	}
 
-/*	@Override
-	public String getDelimiterFr(){
-		return delimiterFr;
-	}
-	@Override
-	public String getDelimiterTo(){
-		return delimiterTo;
-	}*/
 	private String getDbVersion(){ 
 		if(null == dbVersion){ 
 			DataSet set = dao.querys(new TextSQLImpl("SELECT @@VERSION AS VS")); 
