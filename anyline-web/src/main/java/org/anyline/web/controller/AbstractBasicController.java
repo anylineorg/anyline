@@ -71,7 +71,7 @@ public class AbstractBasicController {
 
 	@Autowired(required = false)
 	@Qualifier("anyline.entity.listener")
-	public void setAdapter(EntityListener listener){
+	public void setListener(EntityListener listener){
 		AbstractBasicController.listener = listener;
 	}
 	protected static EntityListener getListener(){
