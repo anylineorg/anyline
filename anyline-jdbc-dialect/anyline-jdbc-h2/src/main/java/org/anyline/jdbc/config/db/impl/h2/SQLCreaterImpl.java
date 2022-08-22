@@ -8,7 +8,7 @@ import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.postgresql")
+@Repository("anyline.jdbc.creater.h2")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
  
 	public DB_TYPE type(){ 
