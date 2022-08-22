@@ -4,9 +4,13 @@
 [https://gitee.com/anyline/anyline-simple](https://gitee.com/anyline/anyline-simple)
 
 
-AnyLine的核心是一个基于spring-jdbc生态的快捷数据库操作工具  
-摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O  
-以最简单+快速的方式操作数据库，并针对结果集附加了数据的二次处理功能  
+AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
+其重点是：  
+1.以最简单快速的方式操作数据库  
+2.针对结果集数据提供完善的二次处理功能    
+
+摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O
+
 
 ## 适用场景
 适合于抽象设计阶段(实体概念还不明确或者设计不限于某个特别的实体)  
