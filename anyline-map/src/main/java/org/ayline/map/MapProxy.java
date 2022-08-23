@@ -6,10 +6,13 @@ import org.anyline.entity.MapPoint;
 import org.anyline.exception.AnylineException;
 import org.anyline.qq.map.util.QQMapUtil;
 import org.anyline.util.DateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class MapProxy {
     private static AmapUtil amap;
     private static QQMapUtil qmap;
@@ -66,7 +69,7 @@ public class MapProxy {
         return MapProxy.amap;
     }
 
-    public static void setAmap(final AmapUtil amap) {
+    public static void setAmap(AmapUtil amap) {
         MapProxy.amap = amap;
     }
 
@@ -74,7 +77,7 @@ public class MapProxy {
         return MapProxy.qmap;
     }
 
-    public static void setQmap(final QQMapUtil qmap) {
+    public static void setQmap(QQMapUtil qmap) {
         MapProxy.qmap = qmap;
     }
 
@@ -82,7 +85,21 @@ public class MapProxy {
         return MapProxy.bmap;
     }
 
-    public static void setBmap(final BaiduMapUtil bmap) {
+    public static void setBmap(BaiduMapUtil bmap) {
+        MapProxy.bmap = bmap;
+    }
+
+
+    @Autowired(required = false)
+    public void init(AmapUtil amap){
+        MapProxy.amap = amap;
+    }
+    @Autowired(required = false)
+    public void init(QQMapUtil qmap){
+        MapProxy.qmap = qmap;
+    }
+    @Autowired(required = false)
+    public void init(BaiduMapUtil bmap){
         MapProxy.bmap = bmap;
     }
 }
