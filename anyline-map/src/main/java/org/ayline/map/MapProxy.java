@@ -10,7 +10,7 @@ import org.anyline.util.DateUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MapAdapter {
+public class MapProxy {
     private static AmapUtil amap;
     private static QQMapUtil qmap;
     private static BaiduMapUtil bmap;
@@ -18,43 +18,44 @@ public class MapAdapter {
     public static MapPoint regeo(double lng, double lat){
         return regeo(lng+"", lat+"");
     }
-    private static boolean enable(String type){
-        String ymd = over_limits.get(type);
+    private static boolean enable(String type, String platform){
+        String ymd = over_limits.get(type+"_"+platform);
         if(null == ymd){
             return true;
         }
         if(DateUtil.format("yyyy-MM-dd").equals(ymd)){
             return false;
         }
-        over_limits.remove(type);
+        over_limits.remove(type+"_"+platform);
         return true;
     }
     public static MapPoint regeo(String lng, String lat){
         MapPoint point = null;
-        if(null != amap && enable("amap")){
+        String type = "regeo";
+        if(null != amap && enable(type, "amap")){
             try{
                 point = amap.regeo(lng, lat);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
-                    over_limits.put("amap", DateUtil.format("yyyy-MM-dd"));
+                    over_limits.put(type+"_amap", DateUtil.format("yyyy-MM-dd"));
                 }
             }
         }
-        if(null == point && null != bmap && enable("bmap")){
+        if(null == point && null != bmap && enable(type,"bmap")){
             try{
                 point = bmap.regeo(lng, lat);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
-                    over_limits.put("bmap", DateUtil.format("yyyy-MM-dd"));
+                    over_limits.put(type+"_bmap", DateUtil.format("yyyy-MM-dd"));
                 }
             }
         }
-        if(null == point && null != qmap && enable("qmap")){
+        if(null == point && null != qmap && enable(type,"qmap")){
             try{
                 point = qmap.regeo(lng, lat);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
-                    over_limits.put("bmap", DateUtil.format("yyyy-MM-dd"));
+                    over_limits.put(type+"_qmap", DateUtil.format("yyyy-MM-dd"));
                 }
             }
         }
@@ -62,26 +63,26 @@ public class MapAdapter {
     }
 
     public static AmapUtil getAmap() {
-        return MapAdapter.amap;
+        return MapProxy.amap;
     }
 
     public static void setAmap(final AmapUtil amap) {
-        MapAdapter.amap = amap;
+        MapProxy.amap = amap;
     }
 
     public static QQMapUtil getQmap() {
-        return MapAdapter.qmap;
+        return MapProxy.qmap;
     }
 
     public static void setQmap(final QQMapUtil qmap) {
-        MapAdapter.qmap = qmap;
+        MapProxy.qmap = qmap;
     }
 
     public static BaiduMapUtil getBmap() {
-        return MapAdapter.bmap;
+        return MapProxy.bmap;
     }
 
     public static void setBmap(final BaiduMapUtil bmap) {
-        MapAdapter.bmap = bmap;
+        MapProxy.bmap = bmap;
     }
 }
