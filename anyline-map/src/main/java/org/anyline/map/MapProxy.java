@@ -1,4 +1,4 @@
-package org.ayline.map;
+package org.anyline.map;
 
 import org.anyline.amap.util.AmapUtil;
 import org.anyline.baidu.map.util.BaiduMapUtil;
@@ -8,18 +8,21 @@ import org.anyline.qq.map.util.QQMapUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.GISUtil;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
-@Component
+@Component("anyline.map.proxy")
 public class MapProxy {
     private static AmapUtil amap;
     private static QQMapUtil qmap;
     private static BaiduMapUtil bmap;
     public static Map<String,String> over_limits = new HashMap<>();
+    public MapProxy(){}
     private static boolean enable(String type, String platform){
         String ymd = over_limits.get(type+"_"+platform);
         if(null == ymd){
@@ -88,8 +91,7 @@ public class MapProxy {
     public static AmapUtil getAmap() {
         return MapProxy.amap;
     }
-
-    public static void setAmap(AmapUtil amap) {
+    public  static void setAmap(AmapUtil amap) {
         MapProxy.amap = amap;
     }
 
@@ -111,15 +113,19 @@ public class MapProxy {
 
 
     @Autowired(required = false)
+    @Qualifier("anyline.amap.init.util")
     public void init(AmapUtil amap){
         MapProxy.amap = amap;
     }
     @Autowired(required = false)
+    @Qualifier("anyline.qq.map.init.util")
     public void init(QQMapUtil qmap){
         MapProxy.qmap = qmap;
     }
     @Autowired(required = false)
+    @Qualifier("anyline.baidu.map.init.util")
     public void init(BaiduMapUtil bmap){
         MapProxy.bmap = bmap;
     }
+
 }
