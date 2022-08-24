@@ -14,6 +14,7 @@
     <artifactId>anyline-baidu-map</artifactId>
     <packaging>jar</packaging>
     <name>anyline-baidu-map</name>
+    <description>百度地图bd09ll坐标系</description>
     <url>http://www.anyline.org/baidu/map</url>
 
     <dependencies>
