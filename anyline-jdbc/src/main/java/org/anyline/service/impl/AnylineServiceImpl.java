@@ -1123,15 +1123,17 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         } else {
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
-            String chk = src.toUpperCase().trim();
-            if (chk.startsWith("SELECT")
-                    || chk.startsWith("DELETE")
-                    || chk.startsWith("INSERT")
-                    || chk.startsWith("UPDATE")
-                    || chk.startsWith("TRUNCATE")
-                    || chk.startsWith("CREATE")
-                    || chk.startsWith("DROP")
-                    || chk.startsWith("CALL")) {
+            String chk = src.toUpperCase().trim().replace("\t"," ");
+            if (chk.startsWith("SELECT ")
+                    || chk.startsWith("DELETE ")
+                    || chk.startsWith("INSERT ")
+                    || chk.startsWith("UPDATE ")
+                    || chk.startsWith("TRUNCATE ")
+                    || chk.startsWith("CREATE ")
+                    || chk.startsWith("ALTER ")
+                    || chk.startsWith("DROP ")
+                    || chk.startsWith("IF ")
+                    || chk.startsWith("CALL ")) {
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
