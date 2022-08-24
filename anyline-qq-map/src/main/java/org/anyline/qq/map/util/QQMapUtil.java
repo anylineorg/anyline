@@ -53,9 +53,6 @@ public class QQMapUtil {
     }
 
 
-    public MapPoint regeo(double lng, double lat){
-        return regeo(lng+"", lat+"");
-    }
     private String sign(String api, Map<String, Object> params){
         String sign = null;
         String src = api + "?" + BeanUtil.map2string(params, true, true)+config.SECRET;
@@ -109,6 +106,15 @@ public class QQMapUtil {
         return point;
     }
 
+    public MapPoint regeo(double lng, double lat){
+        return regeo(lng+"", lat+"");
+    }
+    public MapPoint regeo(String[] location){
+        return regeo(location[0], location[1]);
+    }
+    public MapPoint regeo(double[] location){
+        return regeo(location[0], location[1]);
+    }
     /**
      * 逆地址解析
      * @param lng 经度
