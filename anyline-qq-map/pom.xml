@@ -14,6 +14,7 @@
     <artifactId>anyline-qq-map</artifactId>
     <packaging>jar</packaging>
     <name>anyline-qq-map</name>
+    <description>腾讯地图GCJ02坐标系</description>
     <url>http://www.anyline.org/qq/map</url>
 
     <dependencies>
