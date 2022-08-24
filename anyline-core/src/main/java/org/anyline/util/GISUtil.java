@@ -209,6 +209,13 @@ public class GISUtil {
         return convert(src, BasicUtil.parseDouble(lng,0d),BasicUtil.parseDouble(lat,0d), tar );
     }
 
+    public static double[] convert(COORD_TYPE src, String[] location, COORD_TYPE tar){
+        return convert(src, location[0], location[1], tar );
+    }
+    public static double[] convert(COORD_TYPE src, double[] location, COORD_TYPE tar){
+        return convert(src, location[0], location[1], tar );
+    }
+
 
     public static double[] bd2gcj(double[] location) {
         return bd2gcj(location[0], location[1]);
