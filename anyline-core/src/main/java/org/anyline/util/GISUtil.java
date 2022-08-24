@@ -15,6 +15,20 @@ public class GISUtil {
     private static final Logger log = LoggerFactory.getLogger(GISUtil.class);
     private static double EARTH_RADIUS = 6378.137;
 
+
+    public static enum COORD_TYPE{
+        WGS84LL     			{public String getCode(){return "WGS84LL";} public String getName(){return "大地坐标系(GPS)";}},         //谷歌地图国外
+        GCJ02LL			        {public String getCode(){return "GCJ02LL";} public String getName(){return "火星坐标系(国家测绘局制定)";}}, //谷歌地图国内,高德地图,腾讯地图
+        BD09LL		            {public String getCode(){return "BD09LL";} public String getName(){return "百度坐标系";}},
+        BD09MC		            {public String getCode(){return "BD09MC";} public String getName(){return "百度米制坐标系";}};
+        public abstract String getCode();
+        public abstract String getName();
+    }
+    /*
+     * WGS-84 GPS坐标（谷歌地图国外）
+     * GCJ-02 国测局坐标（谷歌地图国内,高德地图,腾讯地图）
+     * BD-09 百度坐标（百度地图）
+     */
     private static double rad(double d) {
         return d * Math.PI / 180.0;
     }
@@ -154,6 +168,48 @@ public class GISUtil {
 
     private static final double X_PI = Math.PI * 3000.0 / 180.0;
 
+    /**
+     * src坐标系转成tar坐标系
+     * @param src src
+     * @param lng lng
+     * @param lat lat
+     * @param tar tar
+     * @return double
+     */
+    public static double[] convert(COORD_TYPE src, double lng, double lat, COORD_TYPE tar){
+        double[] location = new double[2];
+        if(src == tar){
+            location[0] = lng;
+            location[1] = lat;
+            return location;
+        }
+        if(tar == COORD_TYPE.GCJ02LL){
+            if(src == COORD_TYPE.WGS84LL){
+                location = wgs2gcj(lng, lat);
+            }else if(src == COORD_TYPE.BD09LL){
+                location = bd2gcj(lng, lat);
+            }
+        }else if(tar == COORD_TYPE.WGS84LL){
+            if(src == COORD_TYPE.GCJ02LL){
+                location = gcj2wgs(lng, lat);
+            }else if(src == COORD_TYPE.BD09LL){
+                location = bd2wgs(lng, lat);
+            }
+        }else if(tar == COORD_TYPE.BD09LL){
+            if(src == COORD_TYPE.GCJ02LL){
+                location = gcj2bd(lng, lat);
+            }else if(src == COORD_TYPE.WGS84LL){
+                location = wgs2bd(lng, lat);
+            }
+        }
+        return location;
+    }
+
+    public static double[] convert(COORD_TYPE src, String lng, String lat, COORD_TYPE tar){
+        return convert(src, BasicUtil.parseDouble(lng,0d),BasicUtil.parseDouble(lat,0d), tar );
+    }
+
+
     public static double[] bd2gcj(double[] location) {
         return bd2gcj(location[0], location[1]);
     }
@@ -173,6 +229,25 @@ public class GISUtil {
         double gg_lat = z * Math.sin(theta);
         return new double[]{gg_lng, gg_lat};
     }
+
+
+
+    public static double[] bd2wgs(double[] location) {
+        return bd2wgs(location[0], location[1]);
+    }
+    public static double[] bd2wgs(String[] location) {
+        return bd2wgs(location[0], location[1]);
+    }
+
+    public static double[] bd2wgs(String lng, String lat) {
+        return bd2wgs(BasicUtil.parseDouble(lng,0d),BasicUtil.parseDouble(lat,0d));
+    }
+    public static double[] bd2wgs(double lng, double lat) {
+        return gcj2wgs(bd2gcj(lng, lat));
+    }
+
+
+
 
     public static double[] gcj2bd(double[] location) {
         return gcj2bd(location[0], location[1]);
