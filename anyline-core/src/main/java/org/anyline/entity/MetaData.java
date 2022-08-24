@@ -3,19 +3,19 @@ package org.anyline.entity;
 public class MetaData { 
     private String catalogName;
     private String className;
+    private String schema                   ;
+    private String table                    ;
     private int displaySize;
-    private String label;
-    private String name;
-    private int type;
-    private String typeName;
-    private int precision;
-    private int scale;
-    private String schema;
-    private String table;
-    private boolean nullable;
-    private boolean caseSensitive;      //是否区分大小写
-    private boolean isCurrency;         //是否是货币
-    private boolean isSigned;           //是否可以带正负号
+    private String label                    ;
+    private String name                     ;
+    private int type                        ;
+    private String typeName                 ;
+    private int precision                   ; //整个字段的长度  123.45：precision = 5 ，scale = 2
+    private int scale                       ; //小数部分的长度
+    private boolean nullable                ; //是否可以为NULL
+    private boolean caseSensitive           ; //是否区分大小写
+    private boolean isCurrency              ; //是否是货币
+    private boolean isSigned                ; //是否可以带正负号
 
     public String getCatalogName() {
         return catalogName;
