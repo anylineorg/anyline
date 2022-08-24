@@ -4278,7 +4278,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
         this.datalink = datalink;
     }
 
-    public class Select {
+    public class Select implements Serializable {
+        private static final long serialVersionUID = 1L;
         private boolean ignoreCase = true;    //是否忽略大小写
         /**
          * 是否忽略NULL 如果设置成true 在执行equal notEqual like contains进 null与null比较返回false
@@ -4923,7 +4924,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
 
     }
 
-
-    public transient Select select = new Select();
+    public Select select = new Select();
 
 }
