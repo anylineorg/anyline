@@ -78,10 +78,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	protected BatchInsertStore batchInsertStore = new BatchInsertStore();
 
-	protected static boolean showSQL = true;
-	protected static boolean showSQLParam = true;
-	protected static boolean showSQLWhenError = true;
-	protected static boolean showSQLParamWhenError = true;
+	protected static boolean showSQL 				= true	;	//
+	protected static boolean showSQLParam 			= true	;
+	protected static boolean showSQLWhenError 		= true	;
+	protected static boolean showSQLParamWhenError 	= true	;
 
 	protected static boolean isBatchInsertRun = false;
 
