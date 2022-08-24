@@ -782,6 +782,12 @@ public class AmapUtil {
 	public MapPoint regeo(double lng, double lat){
 		return regeo(lng+","+lat);
 	}
+	public MapPoint regeo(String[] location){
+		return regeo(location[0],location[1]);
+	}
+	public MapPoint regeo(double[] location){
+		return regeo(location[0],location[1]);
+	}
 
 	/** 
 	 * 根据地址查坐标 
