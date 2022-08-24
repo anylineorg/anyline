@@ -20,9 +20,6 @@ public class MapProxy {
     private static QQMapUtil qmap;
     private static BaiduMapUtil bmap;
     public static Map<String,String> over_limits = new HashMap<>();
-    public static MapPoint regeo(GISUtil.COORD_TYPE coord, String lng, String lat){
-        return regeo(coord, BasicUtil.parseDouble(lng, 0d), BasicUtil.parseDouble(lat, 0d));
-    }
     private static boolean enable(String type, String platform){
         String ymd = over_limits.get(type+"_"+platform);
         if(null == ymd){
@@ -79,6 +76,15 @@ public class MapProxy {
         return point;
     }
 
+    public static MapPoint regeo(GISUtil.COORD_TYPE coord, String lng, String lat){
+        return regeo(coord, BasicUtil.parseDouble(lng, 0d), BasicUtil.parseDouble(lat,0d));
+    }
+    public static MapPoint regeo(GISUtil.COORD_TYPE coord, String[] location){
+        return regeo(coord, location[0], location[1]);
+    }
+    public static MapPoint regeo(GISUtil.COORD_TYPE coord, double[] location){
+        return regeo(coord, location[0], location[1]);
+    }
     public static AmapUtil getAmap() {
         return MapProxy.amap;
     }
