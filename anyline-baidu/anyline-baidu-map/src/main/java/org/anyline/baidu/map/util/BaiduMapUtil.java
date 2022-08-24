@@ -52,6 +52,12 @@ public class BaiduMapUtil {
     public MapPoint regeo(double lng, double lat) {
         return regeo(lng+"", lat+"");
     }
+    public MapPoint regeo(double[] laocation) {
+        return regeo(laocation[0], laocation[1]);
+    }
+    public MapPoint regeo(String[] laocation) {
+        return regeo(laocation[0], laocation[1]);
+    }
     public MapPoint regeo(String lng, String lat) {
         MapPoint point = null;
         String url = "https://api.map.baidu.com/reverse_geocoding/v3/?ak="+config.AK+"&location="+lat+","+lng+"&extensions_town=true&output=json";
