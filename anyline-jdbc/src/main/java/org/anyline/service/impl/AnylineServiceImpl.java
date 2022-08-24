@@ -1218,4 +1218,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         return set;
     }
+    public MetaDataService metadata = new MetaDataService() {
+        @Override
+        public List<MetaData> sync(String table, List<MetaData> metas) {
+            return null;
+        }
+    };
 }

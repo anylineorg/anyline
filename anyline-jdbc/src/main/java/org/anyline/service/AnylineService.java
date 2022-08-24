@@ -323,4 +323,8 @@ public interface AnylineService<E>{
 	 * @return 影响行数
 	 */
 	public int deletes(String table, String key, String ... values);
+
+	public interface MetaDataService{
+		public List<MetaData> sync(String table, List<MetaData> metas);
+	}
 }
