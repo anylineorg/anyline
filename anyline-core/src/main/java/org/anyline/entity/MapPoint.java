@@ -3,7 +3,17 @@ package org.anyline.entity;
 import org.anyline.util.BasicUtil; 
  
 public class MapPoint {
-	 
+
+
+	public static enum COORD_TYPE{
+		WGS84LL     			{public String getCode(){return "WGS84LL";} public String getName(){return "大地坐标系(GPS)";}},         //谷歌地图国外
+		GCJ02LL			        {public String getCode(){return "GCJ02LL";} public String getName(){return "火星坐标系(国家测绘局制定)";}}, //谷歌地图国内,高德地图,腾讯地图
+		BD09LL		            {public String getCode(){return "BD09LL";} public String getName(){return "百度坐标系";}},
+		BD09MC		            {public String getCode(){return "BD09MC";} public String getName(){return "百度米制坐标系";}};
+		public abstract String getCode();
+		public abstract String getName();
+	}
+	
 	private double lng;
 	private double lat;
 	private String provinceCode; 		//省

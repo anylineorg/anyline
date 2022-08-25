@@ -42,13 +42,13 @@ public class MapProxy {
      * @param lat 纬度
      * @return MapPoint
      */
-    public static MapPoint regeo(GISUtil.COORD_TYPE coord, double lng, double lat){
+    public static MapPoint regeo(MapPoint.COORD_TYPE coord, double lng, double lat){
         MapPoint point = null;
         String type = "regeo";
         double[] location = null;
         if(null != amap && enable(type, "amap")){
             try{
-                location = GISUtil.convert(coord, lng, lat, GISUtil.COORD_TYPE.GCJ02LL);
+                location = GISUtil.convert(coord, lng, lat, MapPoint.COORD_TYPE.GCJ02LL);
                 point = amap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
@@ -58,7 +58,7 @@ public class MapProxy {
         }
         if(null == point && null != bmap && enable(type,"bmap")){
             try{
-                location = GISUtil.convert(coord, lng, lat, GISUtil.COORD_TYPE.BD09LL);
+                location = GISUtil.convert(coord, lng, lat, MapPoint.COORD_TYPE.BD09LL);
                 point = bmap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
@@ -68,7 +68,7 @@ public class MapProxy {
         }
         if(null == point && null != qmap && enable(type,"qmap")){
             try{
-                location = GISUtil.convert(coord, lng, lat, GISUtil.COORD_TYPE.GCJ02LL);
+                location = GISUtil.convert(coord, lng, lat, MapPoint.COORD_TYPE.GCJ02LL);
                 point = qmap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
@@ -79,13 +79,13 @@ public class MapProxy {
         return point;
     }
 
-    public static MapPoint regeo(GISUtil.COORD_TYPE coord, String lng, String lat){
+    public static MapPoint regeo(MapPoint.COORD_TYPE coord, String lng, String lat){
         return regeo(coord, BasicUtil.parseDouble(lng, 0d), BasicUtil.parseDouble(lat,0d));
     }
-    public static MapPoint regeo(GISUtil.COORD_TYPE coord, String[] location){
+    public static MapPoint regeo(MapPoint.COORD_TYPE coord, String[] location){
         return regeo(coord, location[0], location[1]);
     }
-    public static MapPoint regeo(GISUtil.COORD_TYPE coord, double[] location){
+    public static MapPoint regeo(MapPoint.COORD_TYPE coord, double[] location){
         return regeo(coord, location[0], location[1]);
     }
     public static AmapUtil getAmap() {
