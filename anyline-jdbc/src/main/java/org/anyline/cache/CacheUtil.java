@@ -145,8 +145,8 @@ public class CacheUtil {
 	 * @param page 是否需要拼接分页下标
 	 * @param order order
 	 * @param src src
-	 * @param store store
-	 * @param conditions conditions
+	 * @param store 根据http等上下文构造查询条件
+	 * @param conditions 固定查询条件
 	 * @return String
 	 */
 	public static String createCacheElementKey(boolean page, boolean order, String src, ConfigStore store, String ... conditions){

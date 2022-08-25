@@ -35,10 +35,7 @@ import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.service.AnylineService;
-import org.anyline.util.AdapterProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
+import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +43,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -67,34 +65,56 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     /**
      * 按条件查询
      * @param src 表｜视图｜函数｜自定义SQL
-     * @param configs http参数封装
+     * @param src 			数据源(表或自定义SQL或SELECT语句)
+     * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions 固定查询条件
      * @return DataSet
      */
     @Override
-    public DataSet querys(String src, ConfigStore configs, String... conditions) {
+    public DataSet querys(String src, ConfigStore configs, Object obj, String... conditions) {
         src = BasicUtil.compressionSpace(src);
         conditions = BasicUtil.compressionSpace(conditions);
-        DataSet set = queryFromDao(src, configs, conditions);
-        return set;
+        configs = append(configs, obj);
+        return queryFromDao(src, configs, conditions);
+    }
+    @Override
+    public DataSet querys(String src, PageNavi navi, Object obj, String... conditions) {
+        ConfigStore configs = new ConfigStoreImpl();
+        configs.setPageNavi(navi);
+        return querys(src, configs, obj,conditions);
+    }
+
+    @Override
+    public DataSet querys(String src, Object obj, String... conditions) {
+        return querys(src, (ConfigStore)null, obj, conditions);
+    }
+
+    @Override
+    public DataSet querys(String src, int fr, int to, Object obj, String... conditions) {
+        ConfigStore configs = new ConfigStoreImpl(fr, to);
+        return querys(src, configs, obj, conditions);
+    }
+
+
+    @Override
+    public DataSet querys(String src, ConfigStore configs, String... conditions) {
+        return querys(src, configs, null, conditions);
     }
     @Override
     public DataSet querys(String src, PageNavi navi, String... conditions) {
-        ConfigStore configs = new ConfigStoreImpl();
-        configs.setPageNavi(navi);
-        return querys(src, configs, conditions);
+        return querys(src, navi, null, conditions);
     }
 
     @Override
     public DataSet querys(String src, String... conditions) {
-        return querys(src, (ConfigStore)null, conditions);
+        return querys(src,(Object)null, conditions);
     }
 
     @Override
     public DataSet querys(String src, int fr, int to, String... conditions) {
-        ConfigStore configs = new ConfigStoreImpl(fr, to);
-        return querys(src, configs, conditions);
+        return querys(src,fr, to,null, conditions);
     }
+
 
     public List<String> metadata(String table){
         List<String> list = null;
@@ -134,17 +154,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         return list;
     }
-    @Override
-    public List<Map<String,Object>> maps(String src, String... conditions) {
-        return maps(src, null, conditions);
-    }
-    @Override
-    public List<Map<String,Object>> maps(String src, int fr, int to, String... conditions) {
-        return maps(src, new ConfigStoreImpl(fr, to), conditions);
-    }
 
     @Override
-    public List<Map<String,Object>> maps(String src, ConfigStore configs, String... conditions) {
+    public List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String... conditions) {
         List<Map<String,Object>> maps = null;
         src = BasicUtil.compressionSpace(src);
         conditions = BasicUtil.compressionSpace(conditions);
@@ -153,6 +165,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         try {
             SQL sql = createSQL(src);
+            configs = append(configs, obj);
             maps = dao.maps(sql, configs, conditions);
         } catch (Exception e) {
             maps = new ArrayList<Map<String,Object>>();
@@ -168,12 +181,35 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions){
+    public List<Map<String,Object>> maps(String src, Object obj, String... conditions) {
+        return maps(src, null, obj, conditions);
+    }
+    @Override
+    public List<Map<String,Object>> maps(String src, int fr, int to, Object obj, String... conditions) {
+        return maps(src, new ConfigStoreImpl(fr, to), obj, conditions);
+    }
+
+    @Override
+    public List<Map<String,Object>> maps(String src, ConfigStore configs, String... conditions) {
+       return maps(src, configs, null, conditions);
+    }
+
+    @Override
+    public List<Map<String,Object>> maps(String src, String... conditions) {
+        return maps(src, null, conditions);
+    }
+    @Override
+    public List<Map<String,Object>> maps(String src, int fr, int to, String... conditions) {
+        return maps(src,fr, to, null, conditions);
+    }
+
+    @Override
+    public DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions){
         DataSet set = null;
         src = BasicUtil.compressionSpace(src);
         conditions = BasicUtil.compressionSpace(conditions);
         if(null == cache || "true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
-            set = querys(src, configs, conditions);
+            set = querys(src, append(configs, obj), conditions);
         }else{
             if(null != cacheProvider){
                 set = queryFromCache(cache, src, configs, conditions);
@@ -184,17 +220,31 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return set;
     }
     @Override
+    public DataSet caches(String cache, String src, Object obj, String ... conditions){
+        return caches(cache, src, null, obj, conditions);
+    }
+    @Override
+    public DataSet caches(String cache, String src, int fr, int to, Object obj, String ... conditions){
+        ConfigStore configs = new ConfigStoreImpl(fr, to);
+        return caches(cache, src, configs, obj, conditions);
+    }
+
+
+    @Override
+    public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions){
+        return caches(cache, src, configs, (Object)null, conditions);
+    }
+    @Override
     public DataSet caches(String cache, String src, String ... conditions){
-        return caches(cache, src, null, conditions);
+        return caches(cache, src, null, null, conditions);
     }
     @Override
     public DataSet caches(String cache, String src, int fr, int to, String ... conditions){
-        ConfigStore configs = new ConfigStoreImpl(fr, to);
-        return caches(cache, src, configs, conditions);
+        return caches(cache, src, fr, to, null, conditions);
     }
 
     @Override
-    public DataRow query(String src, ConfigStore store, String... conditions) {
+    public DataRow query(String src, ConfigStore store, Object obj, String... conditions) {
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(0);
         navi.setLastRow(0);
@@ -203,7 +253,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             store = new ConfigStoreImpl();
         }
         store.setPageNavi(navi);
-        DataSet set = querys(src, store, conditions);
+        DataSet set = querys(src, store, obj, conditions);
         if (null != set && set.size() > 0) {
             DataRow row = set.getRow(0);
             return row;
@@ -213,15 +263,26 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
 
     @Override
+    public DataRow query(String src, Object obj, String... conditions) {
+        return query(src, (ConfigStore)null, obj, conditions);
+    }
+
+    @Override
+    public DataRow query(String src, ConfigStore store, String... conditions) {
+        return query(src, store, null, conditions);
+    }
+
+
+    @Override
     public DataRow query(String src, String... conditions) {
         return query(src, (ConfigStore)null, conditions);
     }
 
     @Override
-    public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions){
+    public DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions){
         //是否启动缓存
         if(null == cache){
-            return query(src, configs, conditions);
+            return query(src, configs, obj, conditions);
         }
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(0);
@@ -230,6 +291,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         if (null == configs) {
             configs = new ConfigStoreImpl();
         }
+        configs = append(configs, obj);
         configs.setPageNavi(navi);
 
         DataRow row = null;
@@ -255,42 +317,51 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
         }
         // 调用实际 的方法
-        row = query(src, configs, conditions);
+        row = query(src, configs, obj, conditions);
         if(null != row && null != cacheProvider){
             cacheProvider.put(cache, key, row);
         }
         return row;
     }
     @Override
+    public DataRow cache(String cache, String src, Object obj, String ... conditions){
+        return cache(cache, src, null, obj, conditions);
+    }
+
+    @Override
+    public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions){
+        return cache(cache, src, configs, null, conditions);
+    }
+    @Override
     public DataRow cache(String cache, String src, String ... conditions){
-        return cache(cache, src, null, conditions);
+        return cache(cache, src, null, null, conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
-        return queryFromDao(clazz, configs, conditions);
+    public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
+        return queryFromDao(clazz, append(configs, entity), conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String... conditions) {
+    public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String... conditions) {
         ConfigStore configs = new ConfigStoreImpl();
         configs.setPageNavi(navi);
-        return querys(clazz, configs, conditions);
+        return querys(clazz, configs, entity, conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, String... conditions) {
-        return querys(clazz, (ConfigStore)null, conditions);
+    public <T> EntitySet<T> querys(Class<T> clazz, T entity, String... conditions) {
+        return querys(clazz, (ConfigStore)null, entity, conditions);
     }
 
     @Override
-    public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, String... conditions) {
+    public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, T entity, String... conditions) {
         ConfigStore configs = new ConfigStoreImpl(fr, to);
-        return querys(clazz, configs, conditions);
+        return querys(clazz, configs, entity, conditions);
     }
 
     @Override
-    public <T> T query(Class<T> clazz, ConfigStore configs, String... conditions) {
+    public <T> T query(Class<T> clazz, ConfigStore configs, T entity, String... conditions) {
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(0);
         navi.setLastRow(0);
@@ -299,7 +370,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             configs = new ConfigStoreImpl();
         }
         configs.setPageNavi(navi);
-        EntitySet<T> list = querys(clazz, configs, conditions);
+        EntitySet<T> list = querys(clazz, configs, entity, conditions);
         if (null != list && list.size() > 0) {
             return list.get(0);
         }
@@ -307,10 +378,39 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public <T> T query(Class<T> clazz, String... conditions) {
-        return query(clazz, (ConfigStore)null, conditions);
+    public <T> T query(Class<T> clazz, T entity, String... conditions) {
+        return query(clazz, (ConfigStore)null, entity, conditions);
     }
 
+    @Override
+    public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
+        return querys(clazz, configs, (T)null, conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String... conditions) {
+        return querys(clazz, navi, (T)null, conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> querys(Class<T> clazz, String... conditions) {
+        return querys(clazz, (T)null, conditions);
+    }
+
+    @Override
+    public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, String... conditions) {
+        return querys(clazz, fr, to, (T)null, conditions);
+    }
+
+    @Override
+    public <T> T query(Class<T> clazz, ConfigStore configs, String... conditions) {
+        return query(clazz, configs, (T)null, conditions);
+    }
+
+    @Override
+    public <T> T query(Class<T> clazz, String... conditions) {
+        return query(clazz, (T)null, conditions);
+    }
 
     /**
      * 解析泛型class
@@ -365,114 +465,87 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         Class<E> clazz = parseGenericClass();
         return query(clazz, conditions);
     }
-    @Override
-    public DataSet selects(String src, ConfigStore configs, String... conditions) {
-        return querys(src, configs, conditions);
-    }
-    @Override
-    public DataSet selects(String src, PageNavi navi, String... conditions) {
-        return querys(src, navi, conditions);
-    }
-    @Override
-    public DataSet selects(String src, String... conditions) {
-        return querys(src, conditions);
-    }
-    @Override
-    public DataSet selects(String src, int fr, int to, String... conditions) {
-        return querys(src, fr, to, conditions);
-    }
-    @Override
-    public DataRow select(String src, ConfigStore configs, String... conditions) {
-        return query(src, configs, conditions);
-    }
-    @Override
-    public DataRow select(String src, String... conditions) {
-        return query(src, conditions);
-    }
-    @Override
-    public DataSet selectProcedure(String procedure, String... inputs) {
-        return queryProcedure(procedure, inputs);
-    }
-    @Override
-    public DataSet select(Procedure procedure, String ... inputs) {
-        return query(procedure, inputs);
-    }
-    /*多表查询,左右连接*/
 
-    @Override
-    public DataSet selects(SQL table, ConfigStore configs, String... conditions) {
-        return querys(table, configs, conditions);
-    }
-    @Override
-    public DataSet selects(SQL table, String... conditions) {
-        return querys(table, conditions);
-    }
-    @Override
-    public DataSet selects(SQL table, int fr, int to, String... conditions) {
-        return querys(table, fr, to, conditions);
-    }
-    @Override
-    public DataRow select(SQL table, ConfigStore configs, String... conditions) {
-        return query(table, configs, conditions);
-    }
-    @Override
-    public DataRow select(SQL table, String... conditions) {
-        return query(table, conditions);
-    }
+
 
     /**
      * 按条件查询
      * @param sql 表｜视图｜函数｜自定义SQL |SQL
-     * @param configs http参数封装
+     * @param configs		根据http等上下文构造查询条件
+     * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions 固定查询条件
      * @return DataSet
      */
     @Override
-    public DataSet querys(SQL sql, ConfigStore configs, String... conditions) {
+    public DataSet querys(SQL sql, ConfigStore configs, Object obj, String... conditions) {
         conditions = BasicUtil.compressionSpace(conditions);
-        DataSet set = queryFromDao(sql, configs, conditions);
+        DataSet set = queryFromDao(sql, append(configs, obj), conditions);
         return set;
 
     }
+    @Override
+    public DataSet querys(SQL sql, ConfigStore configs, String... conditions) {
+        return querys(sql, configs, null, conditions);
+    }
 
+    @Override
+    public DataSet querys(SQL sql, Object obj, String... conditions) {
+        return querys(sql, null, obj, conditions);
+    }
     @Override
     public DataSet querys(SQL sql, String... conditions) {
-        return querys(sql, null, conditions);
+        return querys(sql, null, null, conditions);
     }
 
 
     @Override
-    public DataSet querys(SQL sql, int fr, int to, String... conditions) {
+    public DataSet querys(SQL sql, int fr, int to, Object obj, String... conditions) {
         ConfigStore configs = new ConfigStoreImpl(fr,to);
-        return querys(sql, configs, conditions);
+        return querys(sql, configs, obj, conditions);
     }
     @Override
-    public DataSet caches(String cache, SQL table, ConfigStore configs, String ... conditions){
+    public DataSet querys(SQL sql, int fr, int to,  String... conditions) {
+        return querys(sql, fr, to, null, conditions);
+    }
+    @Override
+    public DataSet caches(String cache, SQL table, ConfigStore configs, Object obj, String ... conditions){
         DataSet set = null;
         conditions = BasicUtil.compressionSpace(conditions);
         if(null == cache){
-            set = querys(table, configs, conditions);
+            set = querys(table, configs, obj, conditions);
         }else{
             if(null != cacheProvider){
                // set = queryFromCache(cache, table, configs, conditions);
             }else{
-                set = querys(table, configs, conditions);
+                set = querys(table, configs, obj, conditions);
             }
         }
         return set;
     }
     @Override
+    public DataSet caches(String cache, SQL table, ConfigStore configs, String ... conditions){
+        return caches(cache, table, configs, null, conditions);
+    }
+    @Override
+    public DataSet caches(String cache, SQL table, Object obj, String ... conditions){
+        return caches(cache, table, null, obj, conditions);
+    }
+    @Override
     public DataSet caches(String cache, SQL table, String ... conditions){
-        return caches(cache, table, null, conditions);
+        return caches(cache, table, null, null, conditions);
+    }
+    @Override
+    public DataSet caches(String cache, SQL table, int fr, int to, Object obj, String ... conditions){
+        ConfigStore configs = new ConfigStoreImpl(fr, to);
+        return caches(cache, table, configs, obj, conditions);
     }
     @Override
     public DataSet caches(String cache, SQL table, int fr, int to, String ... conditions){
-        ConfigStore configs = new ConfigStoreImpl(fr, to);
-        return caches(cache, table, configs, conditions);
+        return caches(cache, table, fr, to, null, conditions);
     }
 
     @Override
-    public DataRow query(SQL table, ConfigStore store, String... conditions) {
+    public DataRow query(SQL table, ConfigStore store, Object obj, String... conditions) {
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(0);
         navi.setLastRow(0);
@@ -481,7 +554,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             store = new ConfigStoreImpl();
         }
         store.setPageNavi(navi);
-        DataSet set = querys(table, store, conditions);
+        DataSet set = querys(table, store, obj, conditions);
         if (null != set && set.size() > 0) {
             DataRow row = set.getRow(0);
             return row;
@@ -489,17 +562,26 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return null;
     }
 
-
     @Override
-    public DataRow query(SQL table, String... conditions) {
-        return query(table, null, conditions);
+    public DataRow query(SQL table, ConfigStore store, String... conditions) {
+        return query(table, store, null, conditions);
     }
 
     @Override
-    public DataRow cache(String cache, SQL table, ConfigStore configs, String ... conditions){
+    public DataRow query(SQL table, Object obj, String... conditions) {
+        return query(table, null, obj, conditions);
+    }
+
+    @Override
+    public DataRow query(SQL table, String... conditions) {
+        return query(table, null, null, conditions);
+    }
+
+    @Override
+    public DataRow cache(String cache, SQL table, ConfigStore configs, Object obj, String ... conditions){
         //是否启动缓存
         if(null == cache){
-            return query(table, configs, conditions);
+            return query(table, configs, obj, conditions);
         }
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(0);
@@ -509,7 +591,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             configs = new ConfigStoreImpl();
         }
         configs.setPageNavi(navi);
-
+        configs = append(configs, obj);
         DataRow row = null;
         String key = "ROW:";
 
@@ -539,9 +621,18 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         return row;
     }
+
     @Override
-    public DataRow cache(String cache, SQL table, String ... conditions){
-        return cache(cache, table, null, conditions);
+    public DataRow cache(String cache, SQL table, ConfigStore configs, String ... conditions){
+        return cache(cache, table, configs, null, conditions);
+    }
+    @Override
+    public DataRow cache(String cache, SQL table, Object obj, String ... conditions){
+        return cache(cache, table, null, obj, conditions);
+    }
+    @Override
+    public DataRow cache(String cache, SQL table,  String ... conditions){
+        return cache(cache, table, null, null, conditions);
     }
 
     /**
@@ -601,23 +692,32 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     /**
      * 检查唯一性
      * @param src  src
-     * @param configs  configs
-     * @param conditions  conditions
+     * @param configs		根据http等上下文构造查询条件
+     * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+     * @param conditions 固定查询条件
      * @return boolean
      */
 
     @Override
-    public boolean exists(String src, ConfigStore configs, String ... conditions){
+    public boolean exists(String src, ConfigStore configs, Object obj, String ... conditions){
         boolean result = false;
         src = BasicUtil.compressionSpace(src);
         conditions = BasicUtil.compressionSpace(conditions);
         SQL sql = createSQL(src);
-        result = dao.exists(sql, configs, conditions);
+        result = dao.exists(sql, append(configs, obj), conditions);
         return result;
     }
     @Override
+    public boolean exists(String src, ConfigStore configs, String ... conditions){
+        return exists(src, configs, null, conditions);
+    }
+    @Override
+    public boolean exists(String src, Object obj, String ... conditions){
+        return exists(src, null, obj, conditions);
+    }
+    @Override
     public boolean exists(String src, String ... conditions){
-        return exists(src, null, conditions);
+        return exists(src, null, null, conditions);
     }
     /**
      * 只根据主键判断
@@ -645,14 +745,14 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public int count(String src, ConfigStore configs, String ... conditions){
+    public int count(String src, ConfigStore configs, Object obj, String ... conditions){
         int count = -1;
         try {
             //conditions = parseConditions(conditions);
             src = BasicUtil.compressionSpace(src);
             conditions = BasicUtil.compressionSpace(conditions);
             SQL sql = createSQL(src);
-            count = dao.count(sql, configs, conditions);
+            count = dao.count(sql, append(configs, obj), conditions);
         } catch (Exception e) {
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
                 e.printStackTrace();
@@ -664,9 +764,18 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         return count;
     }
+
+    @Override
+    public int count(String src, ConfigStore configs, String ... conditions){
+        return count(src, configs, null, conditions);
+    }
+    @Override
+    public int count(String src, Object obj, String ... conditions){
+        return count(src, null, obj, conditions);
+    }
     @Override
     public int count(String src, String ... conditions){
-        return count(src, null, conditions);
+        return count(src, null, null, conditions);
     }
 
 
@@ -1218,10 +1327,48 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         return set;
     }
+
+    private ConfigStore append(ConfigStore configs, Object entity){
+        if(null == configs){
+            configs = new ConfigStoreImpl();
+        }
+        if(null != entity) {
+            if(entity instanceof Map){
+                Map map = (Map)entity;
+                for(Object key:map.keySet()){
+                    Object value = map.get(key);
+                    if (value instanceof Collection) {
+                        configs.addConditions(key.toString(), value);
+                    } else {
+                        configs.addCondition(key.toString(), value);
+                    }
+                }
+            }else {
+                List<Field> fields = ClassUtil.getFields(entity.getClass());
+                for (Field field : fields) {
+                    Object value = BeanUtil.getFieldValue(entity, field);
+                    if (BasicUtil.isNotEmpty(true, value)) {
+                        String key = field.getName();
+                        if (AdapterProxy.hasAdapter()) {
+                            key = AdapterProxy.column(entity.getClass(), field);
+                        }
+                        if (value instanceof Collection) {
+                            configs.addConditions(key, value);
+                        } else {
+                            configs.addCondition(key, value);
+                        }
+                    }
+                }
+            }
+        }
+        return configs;
+    }
+
     public MetaDataService metadata = new MetaDataService() {
         @Override
         public List<MetaData> sync(String table, List<MetaData> metas) {
             return null;
         }
     };
+
 }

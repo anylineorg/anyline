@@ -32,7 +32,8 @@ public interface AnylineService<E>{
 	/**
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
-	 * @param configs		封装来自于http的查询条件 configs
+	 * @param configs		根据http等上下文构造查询条件
+	 * @param obj			根据obj的file/value构造查询条件
 	 * @param conditions	固定查询条件
 	 * 			原生SQL(AND GROUP ORDER)
 	 * 			{原生}
@@ -43,21 +44,60 @@ public interface AnylineService<E>{
 	 * 			
 	 * @return DataSet
 	 */
-	public DataSet querys(String src, ConfigStore configs, String ... conditions);
-	public DataSet querys(String src, String ... conditions);
-	public DataSet querys(String src, PageNavi navi, String ... conditions);
+	public DataSet querys(String src, ConfigStore configs, Object obj, String ... conditions);
+	public DataSet querys(String src, Object obj, String ... conditions);
+	public DataSet querys(String src, PageNavi navi, Object obj, String ... conditions);
 
 	/**
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param fr 起 下标从0开始
 	 * @param to 止
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
-	public DataSet querys(String src, int fr, int to, String ... conditions);
-	public DataRow query(String src, ConfigStore configs, String ... conditions);
+	public DataSet querys(String src, int fr, int to, Object obj, String ... conditions);
+	public DataRow query(String src, ConfigStore configs, Object obj, String ... conditions);
+	public DataRow query(String src, Object obj, String ... conditions);
+
+
+	public DataSet querys(String src, ConfigStore configs, String ... conditions);
+	public DataSet querys(String src,  String ... conditions);
+	public DataSet querys(String src, PageNavi navi,  String ... conditions);
+
+	/**
+	 * 按条件查询
+	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param fr 起 下标从0开始
+	 * @param to 止
+	 * @param conditions	固定查询条件
+	 * @return DataSet
+	 */
+	public DataSet querys(String src, int fr, int to,  String ... conditions);
+	public DataRow query(String src, ConfigStore configs,  String ... conditions);
 	public DataRow query(String src, String ... conditions);
+
+
+
+
+
+	/**
+	 *
+	 * @param clazz 返回类型
+	 * @param configs 根据http等上下文构造查询条件
+	 * @param entity 根据entity的field/value构造简单的查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions 固定查询条件
+	 * @return EntitySet
+	 * @param <T> T
+	 */
+	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, T entity, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, T entity, String ... conditions);
+	public <T> T query(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
+	public <T> T query(Class<T> clazz, T entity, String ... conditions);
 
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
@@ -67,6 +107,8 @@ public interface AnylineService<E>{
 	public <T> T query(Class<T> clazz, String ... conditions);
 
 
+
+	/*根据service构造泛型查询*/
 	public EntitySet<E> gets(ConfigStore configs, String ... conditions);
 	public EntitySet<E> gets(PageNavi navi, String ... conditions);
 
@@ -79,21 +121,19 @@ public interface AnylineService<E>{
 	/**
 	 * 直接返回Map集合不封装,不分页
 	 * @param src			数据源(表或自定义SQL或SELECT语句)
-	 * @param configs		封装来自于http的查询条件
+	 * @param configs		根据http等上下文构造查询条件
+	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param conditions	固定查询条件
 	 * @return List
 	 */
+	public List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
+	public List<Map<String,Object>> maps(String src, Object obj, String ... conditions);
+	public List<Map<String,Object>> maps(String src, int fr, int to, Object obj, String ... conditions);
 	public List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions);
 	public List<Map<String,Object>> maps(String src, String ... conditions);
 	public List<Map<String,Object>> maps(String src, int fr, int to, String ... conditions);
 
-	//实现与query相同的功能
-	public DataSet selects(String src, ConfigStore configs, String ... conditions);
-	public DataSet selects(String src, PageNavi navi, String ... conditions);
-	public DataSet selects(String src, String ... conditions);
-	public DataSet selects(String src, int fr, int to, String ... conditions);
-	public DataRow select(String src, ConfigStore configs, String ... conditions);
-	public DataRow select(String src, String ... conditions);
+
 
 	/**
 	 * 获取表结构(只返回列名)
@@ -115,34 +155,50 @@ public interface AnylineService<E>{
 	 * 如果二级缓存开启 会从二级缓存中提取数据
 	 * @param cache	对应ehcache缓存配置文件 中的cache.name
 	 * @param src src
-	 * @param configs configs
-	 * @param conditions conditions
+	 * @param configs		根据http等上下文构造查询条件
+	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param conditions 固定查询条件
 	 * @return DataSet
 	 */
-	public DataSet caches(String cache, String src, ConfigStore configs, String ... conditions);
+	public DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
+	public DataSet caches(String cache, String src, Object obj, String ... conditions);
+	public DataSet caches(String cache, String src, int fr, int to, Object obj, String ... conditions);
+	public DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
+	public DataRow cache(String cache, String src, Object obj, String ... conditions);
+
+	public DataSet caches(String cache, String src, ConfigStore configs,  String ... conditions);
 	public DataSet caches(String cache, String src, String ... conditions);
 	public DataSet caches(String cache, String src, int fr, int to, String ... conditions);
 	public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions);
 	public DataRow cache(String cache, String src, String ... conditions);
 
 
+
 	/*多表查询,左右连接时使用*/
-	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
-	public DataSet querys(SQL sql, String ... conditions);
-	public DataSet querys(SQL sql, int fr, int to, String ... conditions);
-	public DataRow query(SQL sql, ConfigStore configs, String ... conditions);
+	public DataSet querys(SQL sql, ConfigStore configs, Object obj, String ... conditions);
+	public DataSet querys(SQL sql, Object obj, String ... conditions);
+	public DataSet querys(SQL sql, int fr, int to, Object obj, String ... conditions);
+	public DataRow query(SQL sql, ConfigStore configs, Object obj, String ... conditions);
+	public DataRow query(SQL sql, Object obj, String ... conditions);
+
+	public DataSet querys(SQL sql, ConfigStore configs,  String ... conditions);
+	public DataSet querys(SQL sql,  String ... conditions);
+	public DataSet querys(SQL sql, int fr, int to,  String ... conditions);
+	public DataRow query(SQL sql, ConfigStore configs,  String ... conditions);
 	public DataRow query(SQL sql, String ... conditions);
-	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions);
-	public DataSet selects(SQL sql, String ... conditions);
-	public DataSet selects(SQL sql, int fr, int to, String ... conditions);
-	public DataRow select(SQL sql, ConfigStore configs, String ... conditions);
-	public DataRow select(SQL sql, String ... conditions);
+
+
+	public DataSet caches(String cache, SQL sql, ConfigStore configs, Object obj, String ... conditions);
+	public DataSet caches(String cache, SQL sql, Object obj, String ... conditions);
+	public DataSet caches(String cache, SQL sql, int fr, int to, Object obj, String ... conditions);
+	public DataRow cache(String cache, SQL sql, ConfigStore configs, Object obj, String ... conditions);
+	public DataRow cache(String cache, SQL sql, Object obj, String ... conditions);
+
 	public DataSet caches(String cache, SQL sql, ConfigStore configs, String ... conditions);
 	public DataSet caches(String cache, SQL sql, String ... conditions);
 	public DataSet caches(String cache, SQL sql, int fr, int to, String ... conditions);
 	public DataRow cache(String cache, SQL sql, ConfigStore configs, String ... conditions);
 	public DataRow cache(String cache, SQL sql, String ... conditions);
-
 
 	/**
 	 * 删除缓存 参数保持与查询参数完全一致
@@ -168,12 +224,16 @@ public interface AnylineService<E>{
 	 * @param configs  查询条件
 	 * @param conditions 查询条件
 	 * @return boolean
-	 */ 
-	public boolean exists(String src, ConfigStore configs, String ... conditions); 
-	public boolean exists(String src, String ... conditions); 
+	 */
+	public boolean exists(String src, ConfigStore configs, Object obj, String ... conditions);
+	public boolean exists(String src, Object obj, String ... conditions);
+	public boolean exists(String src, ConfigStore configs, String ... conditions);
+	public boolean exists(String src, String ... conditions);
 	public boolean exists(String src, DataRow row);
 	public boolean exists(DataRow row);
-	
+
+	public int count(String src, ConfigStore configs, Object obj, String ... conditions);
+	public int count(String src, Object obj, String ... conditions);
 	public int count(String src, ConfigStore configs, String ... conditions);
 	public int count(String src, String ... conditions);
 	
@@ -274,9 +334,6 @@ public interface AnylineService<E>{
 	 */ 
 	public DataSet queryProcedure(String procedure, String ... inputs);
 	public DataSet query(Procedure procedure, String ... inputs);
-
-	public DataSet selectProcedure(String procedure, String ... inputs);
-	public DataSet select(Procedure procedure, String ... inputs);
 
 	public int delete(String table, ConfigStore configs, String ... conditions);
 	/**
