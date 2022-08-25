@@ -44,11 +44,11 @@ public class MapProxy {
     public static Coordinate regeo(Coordinate.TYPE type, double lng, double lat){
         Coordinate coordinate = null;
         String api = "regeo";
-        double[] location = null;
+        Double[] point = null;
         if(null != amap && enable(api, "amap")){
             try{
-                location = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
-                coordinate = amap.regeo(location[0], location[1]);
+                point = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
+                coordinate = amap.regeo(point[0], point[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_amap", DateUtil.format("yyyy-MM-dd"));
@@ -57,8 +57,8 @@ public class MapProxy {
         }
         if(null == coordinate && null != bmap && enable(api,"bmap")){
             try{
-                location = GISUtil.convert(type, lng, lat, Coordinate.TYPE.BD09LL);
-                coordinate = bmap.regeo(location[0], location[1]);
+                point = GISUtil.convert(type, lng, lat, Coordinate.TYPE.BD09LL);
+                coordinate = bmap.regeo(point[0], point[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_bmap", DateUtil.format("yyyy-MM-dd"));
@@ -67,8 +67,8 @@ public class MapProxy {
         }
         if(null == coordinate && null != qmap && enable(api,"qmap")){
             try{
-                location = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
-                coordinate = qmap.regeo(location[0], location[1]);
+                point = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
+                coordinate = qmap.regeo(point[0], point[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_qmap", DateUtil.format("yyyy-MM-dd"));
@@ -82,7 +82,7 @@ public class MapProxy {
     }
 
     public static Coordinate regeo(Coordinate.TYPE coord, String lng, String lat){
-        return regeo(coord, BasicUtil.parseDouble(lng, 0d), BasicUtil.parseDouble(lat,0d));
+        return regeo(coord, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat,null));
     }
     public static Coordinate regeo(Coordinate.TYPE coord, String[] location){
         return regeo(coord, location[0], location[1]);
