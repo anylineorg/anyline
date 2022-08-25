@@ -59,11 +59,11 @@ public class AmapUtil {
 	 */ 
 	public String create(String name, int loctype, String lng, String lat, String address, Map<String, Object> extras){ 
 		String url = "http://yuntuapi.amap.com/datamanage/data/create"; 
-		Map<String,Object> params = new HashMap<String,Object>();
+		Map<String,Object> params = new HashMap<>();
 		params.put("key", config.KEY);
 		params.put("tableid", config.TABLE);
 		params.put("loctype", loctype+""); 
-		Map<String,Object> data = new HashMap<String, Object>(); 
+		Map<String,Object> data = new HashMap<>(); 
 		if(null != extras){ 
 			Iterator<String> keys = extras.keySet().iterator();
 			while(keys.hasNext()){ 
@@ -213,7 +213,7 @@ public class AmapUtil {
 		params.put("tableid", config.TABLE); 
 		params.put("loctype", loctype+""); 
  
-		Map<String,Object> data = new HashMap<String, Object>(); 
+		Map<String,Object> data = new HashMap<>(); 
 		if(null != extras){ 
 			Iterator<String> keys = extras.keySet().iterator(); 
 			while(keys.hasNext()){ 
@@ -724,16 +724,18 @@ public class AmapUtil {
 	 * "towncode" :"370215010000",
 	 *
 	 * @param type  坐标系
-	 * @param point  [经度,纬度][lng,lat]
+	 * @param lng   经度
+	 * @param lat  纬度
 	 * @return Coordinate
 	 */ 
-	public Coordinate regeo(Coordinate.TYPE type, String point)  {
-		Coordinate coordinate = null;
+	public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat)  {
+		Coordinate coordinate = new Coordinate(type, lng, lat);
+		coordinate.convert(Coordinate.TYPE.BD09LL);
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/geocode/regeo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("location", coordinate);
+		params.put("location", coordinate.getLng()+","+coordinate.getLat());
 		String sign = sign(params); 
 		params.put("sig", sign); 
 		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
@@ -751,7 +753,6 @@ public class AmapUtil {
 				}else {
 					row = row.getRow("regeocode");
 					if (null != row) {
-						coordinate = new Coordinate(point);
 						coordinate.setAddress(row.getString("formatted_address"));
 
 						DataRow adr = row.getRow("addressComponent");
@@ -775,15 +776,22 @@ public class AmapUtil {
 		}catch(Exception e){ 
 			e.printStackTrace(); 
 		}
+		//换回原坐标系
+		coordinate.setLng(lng);
+		coordinate.setLat(lat);
 		coordinate.setType(type);
 		return coordinate;
 	}
 
+	public Coordinate regeo(Coordinate.TYPE type, String lng, String lat)  {
+		return regeo(type, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
+	}
+	public Coordinate regeo(Coordinate.TYPE type, String point)  {
+		String[] points = point.split(",");
+		return regeo(type, BasicUtil.parseDouble(points[0], null), BasicUtil.parseDouble(points[1], null));
+	}
 	public Coordinate regeo(String point)  {
 		return regeo(Coordinate.TYPE.GCJ02LL, point);
-	}
-	public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){
-		return regeo(type,lng+","+lat);
 	}
 	public Coordinate regeo(String lng, String lat){
 		return regeo(lng+","+lat);
