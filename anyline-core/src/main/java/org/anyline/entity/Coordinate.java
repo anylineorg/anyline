@@ -1,7 +1,8 @@
 package org.anyline.entity; 
  
-import org.anyline.util.BasicUtil; 
- 
+import org.anyline.util.BasicUtil;
+import org.anyline.util.GISUtil;
+
 public class Coordinate {
 
 
@@ -14,44 +15,48 @@ public class Coordinate {
 		public abstract String getName();
 		public abstract String getRemark();
 	}
-	
-	private double lng					; //经度
-	private double lat					; //纬度
-	private TYPE type					; //坐标系
-	private String provinceCode			; //省
-	private String provinceName			;
-	private String cityCode				; //市
-	private String cityName				;
-	private String districtCode			; //区
-	private String districtName			;
-	private String townCode				; //街道
-	private String townName				;
-	private String code					;
-	private int level					;
-	private String address				;
+
+	private double[] point = new double[2]	; //坐标点[lng,lat][经度,纬度]
+	private TYPE type						; //坐标系
+	private String provinceCode				; //省
+	private String provinceName				;
+	private String cityCode					; //市
+	private String cityName					;
+	private String districtCode				; //区
+	private String districtName				;
+	private String townCode					; //街道
+	private String townName					;
+	private String code						;
+	private int level						;
+	private String address					;
 
 
 	public Coordinate(String location){
 		if(BasicUtil.isNotEmpty(location)){ 
 			String[] tmps = location.split(","); 
-			if(tmps.length > 1){ 
-				lng = BasicUtil.parseDouble(tmps[0],-1d);
-				lat = BasicUtil.parseDouble(tmps[1],-1d);
+			if(tmps.length > 1){
+				point[0] = BasicUtil.parseDouble(tmps[0],-1d);
+				point[1] = BasicUtil.parseDouble(tmps[1],-1d);
 			} 
 		} 
 	}
 	public Coordinate(){
 	}
 	public Coordinate(String lng, String lat){
-		this.lng = BasicUtil.parseDouble(lng,0d);
-		this.lat = BasicUtil.parseDouble(lat,0d);
+		point[0] = BasicUtil.parseDouble(lng,0d);
+		point[1] = BasicUtil.parseDouble(lat,0d);
 	}
 	public Coordinate(double lng, double lat){
-		this.lng = lng;
-		this.lat = lat;
+		point[0] = lng;
+		point[1] = lat;
+	}
+	public Coordinate convert(TYPE type){
+		this.point = GISUtil.convert(this.type, this.point[0], this.point[1], type);
+		this.setType(type);
+		return this;
 	}
 	public boolean isEmpty(){ 
-		if(BasicUtil.isEmpty(lng) || BasicUtil.isEmpty(lat) || "-1".equals(lng) || "-1".equals(lat)){
+		if(BasicUtil.isEmpty(point[0]) || BasicUtil.isEmpty(point[1]) || "-1".equals(point[0]) || "-1".equals(point[1])){
 			return true; 
 		} 
 		return false; 
@@ -98,19 +103,19 @@ public class Coordinate {
 	}
 
 	public double getLng() {
-		return this.lng;
+		return this.point[0];
 	}
 
 	public void setLng(final double lng) {
-		this.lng = lng;
+		this.point[0] = lng;
 	}
 
 	public double getLat() {
-		return this.lat;
+		return this.point[1];
 	}
 
 	public void setLat(final double lat) {
-		this.lat = lat;
+		this.point[1] = lat;
 	}
 
 	public String getProvinceCode() {
@@ -164,6 +169,22 @@ public class Coordinate {
 		this.address = address;
 	}
 	public String toString(){
-		return "["+lng+","+lat+"]";
+		return "["+point[0]+","+point[1]+"]";
+	}
+
+	public TYPE getType() {
+		return type;
+	}
+
+	public void setType(TYPE type) {
+		this.type = type;
+	}
+
+	public double[] getPoint() {
+		return point;
+	}
+
+	public void setPoint(double[] point) {
+		this.point = point;
 	}
 }

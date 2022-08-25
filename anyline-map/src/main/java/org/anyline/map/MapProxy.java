@@ -22,56 +22,56 @@ public class MapProxy {
     private static BaiduMapUtil bmap;
     public static Map<String,String> over_limits = new HashMap<>();
     public MapProxy(){}
-    private static boolean enable(String type, String platform){
-        String ymd = over_limits.get(type+"_"+platform);
+    private static boolean enable(String api, String platform){
+        String ymd = over_limits.get(api+"_"+platform);
         if(null == ymd){
             return true;
         }
         if(DateUtil.format("yyyy-MM-dd").equals(ymd)){
             return false;
         }
-        over_limits.remove(type+"_"+platform);
+        over_limits.remove(api+"_"+platform);
         return true;
     }
 
     /**
      *
-     * @param coord 坐标系
+     * @param type 坐标系
      * @param lng 经度
      * @param lat 纬度
      * @return MapPoint
      */
-    public static Coordinate regeo(Coordinate.TYPE coord, double lng, double lat){
+    public static Coordinate regeo(Coordinate.TYPE type, double lng, double lat){
         Coordinate point = null;
-        String type = "regeo";
+        String api = "regeo";
         double[] location = null;
-        if(null != amap && enable(type, "amap")){
+        if(null != amap && enable(api, "amap")){
             try{
-                location = GISUtil.convert(coord, lng, lat, Coordinate.TYPE.GCJ02LL);
+                location = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
                 point = amap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
-                    over_limits.put(type+"_amap", DateUtil.format("yyyy-MM-dd"));
+                    over_limits.put(api+"_amap", DateUtil.format("yyyy-MM-dd"));
                 }
             }
         }
-        if(null == point && null != bmap && enable(type,"bmap")){
+        if(null == point && null != bmap && enable(api,"bmap")){
             try{
-                location = GISUtil.convert(coord, lng, lat, Coordinate.TYPE.BD09LL);
+                location = GISUtil.convert(type, lng, lat, Coordinate.TYPE.BD09LL);
                 point = bmap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
-                    over_limits.put(type+"_bmap", DateUtil.format("yyyy-MM-dd"));
+                    over_limits.put(api+"_bmap", DateUtil.format("yyyy-MM-dd"));
                 }
             }
         }
-        if(null == point && null != qmap && enable(type,"qmap")){
+        if(null == point && null != qmap && enable(api,"qmap")){
             try{
-                location = GISUtil.convert(coord, lng, lat, Coordinate.TYPE.GCJ02LL);
+                location = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
                 point = qmap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
-                    over_limits.put(type+"_qmap", DateUtil.format("yyyy-MM-dd"));
+                    over_limits.put(api+"_qmap", DateUtil.format("yyyy-MM-dd"));
                 }
             }
         }
@@ -87,6 +87,11 @@ public class MapProxy {
     public static Coordinate regeo(Coordinate.TYPE coord, double[] location){
         return regeo(coord, location[0], location[1]);
     }
+
+    public static Coordinate regeo(Coordinate coordinate){
+        return regeo(coordinate.getType(), coordinate.getLng(), coordinate.getLat());
+    }
+
     public static AmapUtil getAmap() {
         return MapProxy.amap;
     }
