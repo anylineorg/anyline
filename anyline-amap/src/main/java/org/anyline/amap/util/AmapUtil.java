@@ -723,16 +723,17 @@ public class AmapUtil {
 	 * "township" :"**街道",
 	 * "towncode" :"370215010000",
 	 *
-	 * @param location  经度在前,纬度在后,经纬度间以“,”分割
-	 * @return DataRow
+	 * @param type  坐标系
+	 * @param point  [经度,纬度][lng,lat]
+	 * @return Coordinate
 	 */ 
-	public Coordinate regeo(String location)  {
-		Coordinate point = null;
+	public Coordinate regeo(Coordinate.TYPE type, String point)  {
+		Coordinate coordinate = null;
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/geocode/regeo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
-		params.put("location", location); 
+		params.put("location", coordinate);
 		String sign = sign(params); 
 		params.put("sig", sign); 
 		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
@@ -750,22 +751,22 @@ public class AmapUtil {
 				}else {
 					row = row.getRow("regeocode");
 					if (null != row) {
-						point = new Coordinate(location);
-						point.setAddress(row.getString("formatted_address"));
+						coordinate = new Coordinate(point);
+						coordinate.setAddress(row.getString("formatted_address"));
 
 						DataRow adr = row.getRow("addressComponent");
 						if (null != adr) {
 							String adcode = adr.getString("adcode");
 							String provinceCode = adcode.substring(0,2);
 							String cityCode = adcode.substring(0,4);
-							point.setProvinceCode(provinceCode);
-							point.setProvinceName(adr.getString("province"));
-							point.setCityCode(cityCode);
-							point.setCityName(adr.getString("city"));
-							point.setDistrictCode(adcode);
-							point.setDistrictName(adr.getString("district"));
-							point.setTownCode(adr.getString("towncode"));
-							point.setTownName(adr.getString("township"));
+							coordinate.setProvinceCode(provinceCode);
+							coordinate.setProvinceName(adr.getString("province"));
+							coordinate.setCityCode(cityCode);
+							coordinate.setCityName(adr.getString("city"));
+							coordinate.setDistrictCode(adcode);
+							coordinate.setDistrictName(adr.getString("district"));
+							coordinate.setTownCode(adr.getString("towncode"));
+							coordinate.setTownName(adr.getString("township"));
 						}
 
 					}
@@ -773,30 +774,47 @@ public class AmapUtil {
 			} 
 		}catch(Exception e){ 
 			e.printStackTrace(); 
-		} 
-		return point;
+		}
+		coordinate.setType(type);
+		return coordinate;
+	}
+
+	public Coordinate regeo(String point)  {
+		return regeo(Coordinate.TYPE.GCJ02LL, point);
+	}
+	public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){
+		return regeo(type,lng+","+lat);
 	}
 	public Coordinate regeo(String lng, String lat){
 		return regeo(lng+","+lat);
 	}
+	public Coordinate regeo(Coordinate.TYPE type, double lng, double lat){
+		return regeo(type,lng+","+lat);
+	}
 	public Coordinate regeo(double lng, double lat){
 		return regeo(lng+","+lat);
 	}
-	public Coordinate regeo(String[] location){
-		return regeo(location[0],location[1]);
+	public Coordinate regeo(Coordinate.TYPE type, String[] point){
+		return regeo(type, point[0],point[1]);
 	}
-	public Coordinate regeo(double[] location){
-		return regeo(location[0],location[1]);
+	public Coordinate regeo(String[] point){
+		return regeo(point[0],point[1]);
+	}
+	public Coordinate regeo(Coordinate.TYPE type, double[] point){
+		return regeo(type, point[0],point[1]);
+	}
+	public Coordinate regeo(double[] point){
+		return regeo(point[0],point[1]);
 	}
 
 	/** 
 	 * 根据地址查坐标 
 	 * @param address  address
 	 * @param city  city
-	 * @return MapLocation
+	 * @return Coordinate
 	 */ 
 	public Coordinate geo(String address, String city){
-		Coordinate location = null;
+		Coordinate coordinate = null;
 		String url = "http://restapi.amap.com/v3/geocode/geo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
@@ -814,24 +832,25 @@ public class AmapUtil {
 				set = json.getSet("geocodes"); 
 				if(set.size()>0){ 
 					DataRow row = set.getRow(0); 
-					location = new Coordinate(row.getString("LOCATION"));
-					location.setCode(row.getString("ADCODE")); 
-					location.setProvinceCode(BasicUtil.cut(row.getString("ADCODE"),0,4)); 
-					location.setProvinceName(row.getString("PROVINCE"));
-					location.setCityCode(row.getString("CITYCODE")); 
-					location.setCityName(row.getString("CITY"));
-					location.setDistrictCode(row.getString("ADCODE"));
-					location.setDistrictName(row.getString("DISTRICT"));
-					location.setAddress(row.getString("FORMATTED_ADDRESS")); 
-					location.setLevel(row.getInt("LEVEL",0));
+					coordinate = new Coordinate(row.getString("LOCATION"));
+					coordinate.setCode(row.getString("ADCODE"));
+					coordinate.setProvinceCode(BasicUtil.cut(row.getString("ADCODE"),0,4));
+					coordinate.setProvinceName(row.getString("PROVINCE"));
+					coordinate.setCityCode(row.getString("CITYCODE"));
+					coordinate.setCityName(row.getString("CITY"));
+					coordinate.setDistrictCode(row.getString("ADCODE"));
+					coordinate.setDistrictName(row.getString("DISTRICT"));
+					coordinate.setAddress(row.getString("FORMATTED_ADDRESS"));
+					coordinate.setLevel(row.getInt("LEVEL",0));
 				} 
 			}else{ 
 				log.warn("[坐标查询失败][info:{}][params:{}]",json.getString("info"),BeanUtil.map2string(params)); 
 			} 
 		}catch(Exception e){ 
 			log.warn("[坐标查询失败][error:{}]",e.getMessage()); 
-		} 
-		return location; 
+		}
+		coordinate.setType(Coordinate.TYPE.GCJ02LL);
+		return coordinate;
 	} 
 	public Coordinate geo(String address){
 		return geo(address, null); 
