@@ -49,18 +49,12 @@ public class BaiduMapUtil {
         return util;
     }
 
-    public Coordinate regeo(double lng, double lat) {
-        return regeo(lng+"", lat+"");
-    }
-    public Coordinate regeo(double[] point) {
-        return regeo(point[0], point[1]);
-    }
-    public Coordinate regeo(String[] point) {
-        return regeo(point[0], point[1]);
-    }
-    public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat) {
-        Coordinate coordinate = new Coordinate(type, lng, lat);
+    public Coordinate regeo(Coordinate coordinate) {
+        Coordinate.TYPE _type = coordinate.getType();
+        Double _lng = coordinate.getLng();
+        Double _lat = coordinate.getLat();
         coordinate.convert(Coordinate.TYPE.BD09LL);
+
         String url = "https://api.map.baidu.com/reverse_geocoding/v3/?ak="+config.AK+"&location="+coordinate.getLat()+","+coordinate.getLng()+"&extensions_town=true&output=json";
         String txt = HttpUtil.get(url).getText();
         DataRow row = DataRow.parseJson(txt);
@@ -74,7 +68,6 @@ public class BaiduMapUtil {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
                 }
             }else{
-                coordinate = new Coordinate(lng, lat);
                 coordinate.setAddress(row.getString("formatted_address"));
                 DataRow adr = row.getRow("result","addressComponent");
                 if(null != adr) {
@@ -94,10 +87,24 @@ public class BaiduMapUtil {
             }
         }
         //换回原坐标系
-        coordinate.setLng(lng);
-        coordinate.setLat(lat);
-        coordinate.setType(type);
+        coordinate.setLng(_lng);
+        coordinate.setLat(_lat);
+        coordinate.setType(_type);
         return coordinate;
+    }
+
+    public Coordinate regeo(double lng, double lat) {
+        return regeo(Coordinate.TYPE.BD09LL,lng, lat);
+    }
+    public Coordinate regeo(double[] point) {
+        return regeo(point[0], point[1]);
+    }
+    public Coordinate regeo(String[] point) {
+        return regeo(point[0], point[1]);
+    }
+    public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat) {
+        Coordinate coordinate = new Coordinate(type, lng, lat);
+        return regeo(coordinate);
     }
     public Coordinate regeo(String lng, String lat) {
         return regeo(Coordinate.TYPE.BD09LL, lng, lat);

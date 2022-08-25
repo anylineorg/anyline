@@ -108,7 +108,7 @@ public class QQMapUtil {
     }
 
     public Coordinate regeo(double lng, double lat){
-        return regeo(lng+"", lat+"");
+        return regeo(Coordinate.TYPE.GCJ02LL, lng, lat);
     }
     public Coordinate regeo(String[] point){
         return regeo(point[0], point[1]);
@@ -120,11 +120,25 @@ public class QQMapUtil {
      * 逆地址解析
      * @param lng 经度
      * @param lat 纬度
-     * @return MapPoint
+     * @return Coordinate
      */
     public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat){
         Coordinate coordinate = new Coordinate(type, lng, lat);
+        return regeo(coordinate);
+    }
+
+    /**
+     * 逆地址解析
+     * @param coordinate 坐标
+     * @return Coordinate
+     */
+    public Coordinate regeo(Coordinate coordinate){
+        Coordinate.TYPE _type = coordinate.getType();
+        Double _lng = coordinate.getLng();
+        Double _lat = coordinate.getLat();
+
         coordinate.convert(Coordinate.TYPE.GCJ02LL);
+
         String api = "/ws/geocoder/v1";
         Map<String, Object> params = new HashMap<>();
         params.put("location", coordinate.getLat()+","+coordinate.getLng());        //这里是纬度在前
@@ -170,9 +184,9 @@ public class QQMapUtil {
             }
         }
         //换回原坐标系
-        coordinate.setLng(lng);
-        coordinate.setLat(lat);
-        coordinate.setType(type);
+        coordinate.setLng(_lng);
+        coordinate.setLat(_lat);
+        coordinate.setType(_type);
         return coordinate;
     }
     public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){

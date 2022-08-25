@@ -39,7 +39,7 @@ public class MapProxy {
      * @param type 坐标系
      * @param lng 经度
      * @param lat 纬度
-     * @return MapPoint
+     * @return Coordinate
      */
     public static Coordinate regeo(Coordinate.TYPE type, double lng, double lat){
         Coordinate coordinate = null;

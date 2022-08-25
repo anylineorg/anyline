@@ -63,7 +63,7 @@ public class AmapUtil {
 		params.put("key", config.KEY);
 		params.put("tableid", config.TABLE);
 		params.put("loctype", loctype+""); 
-		Map<String,Object> data = new HashMap<>(); 
+		Map<String,Object> data = new HashMap<>();
 		if(null != extras){ 
 			Iterator<String> keys = extras.keySet().iterator();
 			while(keys.hasNext()){ 
@@ -711,8 +711,8 @@ public class AmapUtil {
 			set.setException(e); 
 		} 
 		return set; 
-	} 
-	/** 
+	}
+	/**
 	 * 逆地理编码 按坐标查地址
 	 * "country" :"中国",
 	 * "province" :"山东省",
@@ -723,14 +723,17 @@ public class AmapUtil {
 	 * "township" :"**街道",
 	 * "towncode" :"370215010000",
 	 *
-	 * @param type  坐标系
-	 * @param lng   经度
-	 * @param lat  纬度
+	 * @param coordinate  坐标
 	 * @return Coordinate
-	 */ 
-	public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat)  {
-		Coordinate coordinate = new Coordinate(type, lng, lat);
-		coordinate.convert(Coordinate.TYPE.BD09LL);
+	 */
+	public Coordinate regeo(Coordinate coordinate)  {
+
+		Coordinate.TYPE _type = coordinate.getType();
+		Double _lng = coordinate.getLng();
+		Double _lat = coordinate.getLat();
+
+		coordinate.convert(Coordinate.TYPE.GCJ02LL);
+
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/geocode/regeo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
@@ -777,10 +780,21 @@ public class AmapUtil {
 			e.printStackTrace(); 
 		}
 		//换回原坐标系
-		coordinate.setLng(lng);
-		coordinate.setLat(lat);
-		coordinate.setType(type);
+		coordinate.setLng(_lng);
+		coordinate.setLat(_lat);
+		coordinate.setType(_type);
 		return coordinate;
+	}
+
+	/**
+	 * 逆地址解析
+	 * @param lng 经度
+	 * @param lat 纬度
+	 * @return Coordinate
+	 */
+	public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat){
+		Coordinate coordinate = new Coordinate(type, lng, lat);
+		return regeo(coordinate);
 	}
 
 	public Coordinate regeo(Coordinate.TYPE type, String lng, String lat)  {
@@ -794,13 +808,13 @@ public class AmapUtil {
 		return regeo(Coordinate.TYPE.GCJ02LL, point);
 	}
 	public Coordinate regeo(String lng, String lat){
-		return regeo(lng+","+lat);
+		return regeo(BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
 	}
 	public Coordinate regeo(Coordinate.TYPE type, double lng, double lat){
 		return regeo(type,lng+","+lat);
 	}
 	public Coordinate regeo(double lng, double lat){
-		return regeo(lng+","+lat);
+		return regeo(Coordinate.TYPE.GCJ02LL,lng, lat);
 	}
 	public Coordinate regeo(Coordinate.TYPE type, String[] point){
 		return regeo(type, point[0],point[1]);
