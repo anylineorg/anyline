@@ -39,7 +39,7 @@ import java.util.jar.JarFile;
 public abstract class AnylineConfig {
 	protected static long lastLoadTime = 0;    //最后一次加载时间
 	protected static final Logger log = LoggerFactory.getLogger(AnylineConfig.class);
-	protected Map<String, String> kvs = new HashMap<String, String>();
+	protected Map<String, String> kvs = new HashMap<>();
 	protected static String[] compatibles = {};
 
 	public static final String DEFAULT_INSTANCE_KEY = "default";
@@ -136,7 +136,7 @@ public abstract class AnylineConfig {
 		try {
 			config = (T) T.newInstance();
 			List<Field> fields = ClassUtil.getFields(T);
-			Map<String, String> kvs = new HashMap<String, String>();
+			Map<String, String> kvs = new HashMap<>();
 			config.kvs = kvs;
 			for (Field field : fields) {
 				String nm = field.getName();
@@ -209,7 +209,7 @@ public abstract class AnylineConfig {
 				if (null == config) {
 					config = (AnylineConfig) T.newInstance();
 				}
-				Map<String, String> kvs = new HashMap<String, String>();
+				Map<String, String> kvs = new HashMap<>();
 				Iterator<Element> elements = configElement.elementIterator("property");
 				while (elements.hasNext()) {
 					Element element = elements.next();

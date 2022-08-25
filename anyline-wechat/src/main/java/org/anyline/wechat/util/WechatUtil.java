@@ -75,7 +75,7 @@ public class WechatUtil {
 	 * @return String
 	 */ 
 	public static String getPublicKey(String mch, String apiSecret, File keyStoreFile, String keyStorePassword) { 
-		Map<String, Object> parameters = new HashMap<String, Object>(); 
+		Map<String, Object> parameters = new HashMap<>(); 
 		parameters.put("mch_id", mch); 
 		parameters.put("nonce_str", BasicUtil.getRandomLowerString(20)); 
 		parameters.put("sign_type", "MD5"); 

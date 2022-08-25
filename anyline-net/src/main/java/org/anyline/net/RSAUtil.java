@@ -57,7 +57,7 @@ public class RSAUtil {
 		// 得到私钥 
 		Key privateKey = keyPair.getPrivate(); 
 		String privateKeyStr = Base64.encodeBase64URLSafeString(privateKey.getEncoded()); 
-		Map<String, String> keys = new HashMap<String, String>(); 
+		Map<String, String> keys = new HashMap<>(); 
 		keys.put("public", publicKeyStr); 
 		keys.put("private", privateKeyStr); 
 		return keys; 

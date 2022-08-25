@@ -180,7 +180,7 @@ public class WechatPayUtil {
        DataRow row = new DataRow();
         try {
             String authorization = "WECHATPAY2-SHA256-RSA2048 " + authorization("POST", url.replace("https://api.mch.weixin.qq.com",""), json);
-            Map<String, String> headers = new HashMap<String, String>();
+            Map<String, String> headers = new HashMap<>();
             headers.put("Content-Type", "application/json");
             headers.put("Accept", "application/json");
             headers.put("Authorization", authorization);

@@ -91,7 +91,7 @@ public class Result {
         finish_time = System.currentTimeMillis();
     }
     public String json() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         String dataType = null; // 数据类型
         String response_key_message = ConfigTable.getString("RESPONSE_KEY_MESSAGE","message");
         String response_key_data = ConfigTable.getString("RESPONSE_KEY_MESSAGE","data");
@@ -154,7 +154,7 @@ public class Result {
                 map.put(response_key_navi, navi_);
             }else if(rows != -1){
                 //设置了总行数、每页行数
-                Map<String, Object> navi_ = new HashMap<String, Object>();
+                Map<String, Object> navi_ = new HashMap<>();
                 navi_.put(response_key_navi_cur_page, page);         //当前页
                 if(simpleStruct && !map.containsKey(response_key_navi_cur_page)){
                     map.put(response_key_navi_cur_page, page);

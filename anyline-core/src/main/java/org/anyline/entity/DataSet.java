@@ -678,7 +678,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this;
     }
     private Map<String, String> kvs(String... params){
-        Map<String, String> kvs = new HashMap<String, String>();
+        Map<String, String> kvs = new HashMap<>();
         int len = params.length;
         int i = 0;
         String srcFlagTag = "srcFlag"; //参数含有${}的 在kvs中根据key值+tag 放入一个新的键值对,如时间格式TIME:{10:10}
@@ -2513,7 +2513,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * map.put("navi", navi);
      */
     public String toString() {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("type", "list");
         map.put("result", result);
         map.put("message", message);

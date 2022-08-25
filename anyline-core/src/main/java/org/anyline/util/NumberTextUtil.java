@@ -151,7 +151,7 @@ public abstract class NumberTextUtil {
  
 		private static final Map<String, String> _Ordinals; 
 		static { 
-			_Ordinals = new HashMap<String, String>(); 
+			_Ordinals = new HashMap<>(); 
 			for (Digit d : Digit.values()) 
 				_Ordinals.put(d.display, d.displayOrdinal); 
 		} 

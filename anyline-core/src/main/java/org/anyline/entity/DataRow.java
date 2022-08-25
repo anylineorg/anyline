@@ -200,7 +200,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         if(null == row) {
             row = new DataRow(keyCase);
         }
-        Map<String, String> map = new HashMap<String, String>();
+        Map<String, String> map = new HashMap<>();
         if (null != keys) {
             for (String key : keys) {
                 String tmp[] = key.split(":");

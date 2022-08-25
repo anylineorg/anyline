@@ -427,7 +427,7 @@ public class HttpClient {
 		}
 		try {
 			if(null != response){
-				Map<String, String> headers = new HashMap<String, String>();
+				Map<String, String> headers = new HashMap<>();
 				Header[] all = response.getAllHeaders();
 				for (Header header : all) {
 					String key = header.getName();

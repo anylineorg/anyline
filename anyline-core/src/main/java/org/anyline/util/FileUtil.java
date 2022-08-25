@@ -1213,7 +1213,7 @@ public class FileUtil {
 	//HTTP 文件类型
 		public final static List<String> httpFileExtend = new ArrayList<>();
 		public final static List<String> httpFileType = new ArrayList<>();
-		public final static Map<String, String> FILE_TYPE_MAP = new HashMap<String, String>();
+		public final static Map<String, String> FILE_TYPE_MAP = new HashMap<>();
 		static{
 			FILE_TYPE_MAP.put("jpg", "FFD8FF"); 	//JPEG (jpg)
 	        FILE_TYPE_MAP.put("png", "89504E47");   //PNG (png)

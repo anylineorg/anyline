@@ -119,7 +119,7 @@ public class MD5Util {
 	    if(null == file || !file.isDirectory() || !file.exists()){ 
 	    	return null; 
 	    } 
-	    Map<String, String> map=new HashMap<String, String>(); 
+	    Map<String, String> map=new HashMap<>(); 
 	    String md5; 
 	    File files[]=file.listFiles(); 
 	    for(int i=0;i<files.length;i++){ 

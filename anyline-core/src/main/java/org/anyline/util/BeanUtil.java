@@ -437,7 +437,7 @@ public class BeanUtil {
 	 * @return Map
 	 */
 	public static Map<String,String> array2map(String ... params){
-		Map<String, String> map = new HashMap<String, String>();
+		Map<String, String> map = new HashMap<>();
 		int len = params.length;
 		int i = 0;
 		while (i < len) {
@@ -1251,7 +1251,7 @@ public class BeanUtil {
 		return map;
 	}
 	public static Map<String, String> createMap(String... params) {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<>();
 		if (null != params) {
 			int size = params.length;
 			for (int i = 0; i < size - 1; i += 2) {

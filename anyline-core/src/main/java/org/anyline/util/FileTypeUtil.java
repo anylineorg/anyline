@@ -31,7 +31,7 @@ import java.util.Map.Entry;
  
  
 public class FileTypeUtil { 
-	public final static Map<String, String> FILE_TYPE_MAP = new HashMap<String, String>(); 
+	public final static Map<String, String> FILE_TYPE_MAP = new HashMap<>(); 
  
 	protected FileTypeUtil() { 
 	} 

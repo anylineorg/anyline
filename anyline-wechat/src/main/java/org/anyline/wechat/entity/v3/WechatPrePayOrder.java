@@ -121,25 +121,25 @@ public class WechatPrePayOrder {
 	}
 	public void setCost_price(int cost_price){
 		if(detail == null){
-			detail = new HashMap<String, Object>();
+			detail = new HashMap<>();
 		}
 		detail.put("cost_price",cost_price);
 	}
 	public void setInvoice_id(String invoice_id){
 		if(detail == null){
-			detail = new HashMap<String, Object>();
+			detail = new HashMap<>();
 		}
 		detail.put("invoice_id",invoice_id);
 	}
 	public void setGoods_detail(List<Map<String,Object>> goods_detail){
 		if(detail == null){
-			detail = new HashMap<String, Object>();
+			detail = new HashMap<>();
 		}
 		detail.put("goods_detail",goods_detail);
 	}
 	public void addGoods_detail(Map<String,Object> goods){
 		if(detail == null){
-			detail = new HashMap<String, Object>();
+			detail = new HashMap<>();
 		}
 		List<Map<String,Object>> goods_detail = (List<Map<String,Object>>)detail.get("goods_detail");
 		if(null == goods_detail){
@@ -157,7 +157,7 @@ public class WechatPrePayOrder {
 	 * @param unit_price 商品单价
 	 */
 	public void addGoods_detail(String merchant_goods_id, String wechatpay_goods_id, String goods_name, int quantity, int unit_price){
-		Map<String,Object> goods = new HashMap<String, Object>();
+		Map<String,Object> goods = new HashMap<>();
 		goods.put("merchant_goods_id",merchant_goods_id);
 		goods.put("wechatpay_goods_id",wechatpay_goods_id);
 		goods.put("goods_name",goods_name);
