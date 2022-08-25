@@ -58,7 +58,7 @@ public class BaiduMapUtil {
     public Coordinate regeo(String[] point) {
         return regeo(point[0], point[1]);
     }
-    public Coordinate regeo(Coordinate.TYPE type, String lng, String lat) {
+    public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat) {
         Coordinate coordinate = new Coordinate(type, lng, lat);
         coordinate.convert(Coordinate.TYPE.BD09LL);
         String url = "https://api.map.baidu.com/reverse_geocoding/v3/?ak="+config.AK+"&location="+coordinate.getLat()+","+coordinate.getLng()+"&extensions_town=true&output=json";
@@ -101,6 +101,9 @@ public class BaiduMapUtil {
     }
     public Coordinate regeo(String lng, String lat) {
         return regeo(Coordinate.TYPE.BD09LL, lng, lat);
+    }
+    public Coordinate regeo(Coordinate.TYPE type, String lng, String lat) {
+        return regeo(type, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
     public String sign(String api, Map<?,?> params){
         return null;

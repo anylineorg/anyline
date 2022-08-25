@@ -122,7 +122,7 @@ public class QQMapUtil {
      * @param lat 纬度
      * @return MapPoint
      */
-    public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){
+    public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat){
         Coordinate coordinate = new Coordinate(type, lng, lat);
         coordinate.convert(Coordinate.TYPE.GCJ02LL);
         String api = "/ws/geocoder/v1";
@@ -174,6 +174,9 @@ public class QQMapUtil {
         coordinate.setLat(lat);
         coordinate.setType(type);
         return coordinate;
+    }
+    public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){
+        return regeo(type, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
     public Coordinate regeo(String lng, String lat){
         return regeo(Coordinate.TYPE.GCJ02LL, lng, lat);
