@@ -52,15 +52,16 @@ public class BaiduMapUtil {
     public Coordinate regeo(double lng, double lat) {
         return regeo(lng+"", lat+"");
     }
-    public Coordinate regeo(double[] laocation) {
-        return regeo(laocation[0], laocation[1]);
+    public Coordinate regeo(double[] point) {
+        return regeo(point[0], point[1]);
     }
-    public Coordinate regeo(String[] laocation) {
-        return regeo(laocation[0], laocation[1]);
+    public Coordinate regeo(String[] point) {
+        return regeo(point[0], point[1]);
     }
-    public Coordinate regeo(String lng, String lat) {
-        Coordinate point = null;
-        String url = "https://api.map.baidu.com/reverse_geocoding/v3/?ak="+config.AK+"&location="+lat+","+lng+"&extensions_town=true&output=json";
+    public Coordinate regeo(Coordinate.TYPE type, String lng, String lat) {
+        Coordinate coordinate = new Coordinate(type, lng, lat);
+        coordinate.convert(Coordinate.TYPE.BD09LL);
+        String url = "https://api.map.baidu.com/reverse_geocoding/v3/?ak="+config.AK+"&location="+coordinate.getLat()+","+coordinate.getLng()+"&extensions_town=true&output=json";
         String txt = HttpUtil.get(url).getText();
         DataRow row = DataRow.parseJson(txt);
         if(null != row){
@@ -73,26 +74,33 @@ public class BaiduMapUtil {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
                 }
             }else{
-                point = new Coordinate(lng, lat);
-                point.setAddress(row.getString("formatted_address"));
+                coordinate = new Coordinate(lng, lat);
+                coordinate.setAddress(row.getString("formatted_address"));
                 DataRow adr = row.getRow("result","addressComponent");
                 if(null != adr) {
                     String adcode = adr.getString("adcode");
                     String provinceCode = adcode.substring(0,2);
                     String cityCode = adcode.substring(0,4);
-                    point.setProvinceCode(provinceCode);
-                    point.setProvinceName(adr.getString("province"));
-                    point.setCityCode(cityCode);
-                    point.setCityName(adr.getString("city"));
-                    point.setDistrictName(adr.getString("district"));
-                    point.setDistrictCode(adr.getString("adcode"));
-                    point.setTownCode(adr.getString("town_code"));
-                    point.setTownName(adr.getString("town"));
+                    coordinate.setProvinceCode(provinceCode);
+                    coordinate.setProvinceName(adr.getString("province"));
+                    coordinate.setCityCode(cityCode);
+                    coordinate.setCityName(adr.getString("city"));
+                    coordinate.setDistrictName(adr.getString("district"));
+                    coordinate.setDistrictCode(adr.getString("adcode"));
+                    coordinate.setTownCode(adr.getString("town_code"));
+                    coordinate.setTownName(adr.getString("town"));
                 }
 
             }
         }
-        return point;
+        //换回原坐标系
+        coordinate.setLng(lng);
+        coordinate.setLat(lat);
+        coordinate.setType(type);
+        return coordinate;
+    }
+    public Coordinate regeo(String lng, String lat) {
+        return regeo(Coordinate.TYPE.BD09LL, lng, lat);
     }
     public String sign(String api, Map<?,?> params){
         return null;
