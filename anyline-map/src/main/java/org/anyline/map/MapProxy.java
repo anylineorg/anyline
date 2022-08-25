@@ -42,42 +42,40 @@ public class MapProxy {
      * @return Coordinate
      */
     public static Coordinate regeo(Coordinate.TYPE type, double lng, double lat){
-        Coordinate coordinate = null;
+        Coordinate coordinate = new Coordinate(type, lng, lat);
         String api = "regeo";
         Double[] point = null;
         if(null != amap && enable(api, "amap")){
             try{
-                point = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
-                coordinate = amap.regeo(point[0], point[1]);
+                amap.regeo(coordinate);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_amap", DateUtil.format("yyyy-MM-dd"));
                 }
+                coordinate = null;
             }
         }
         if(null == coordinate && null != bmap && enable(api,"bmap")){
             try{
-                point = GISUtil.convert(type, lng, lat, Coordinate.TYPE.BD09LL);
-                coordinate = bmap.regeo(point[0], point[1]);
+                coordinate = bmap.regeo(coordinate);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_bmap", DateUtil.format("yyyy-MM-dd"));
                 }
+                coordinate = null;
             }
         }
         if(null == coordinate && null != qmap && enable(api,"qmap")){
             try{
-                point = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
-                coordinate = qmap.regeo(point[0], point[1]);
+                coordinate = qmap.regeo(coordinate);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_qmap", DateUtil.format("yyyy-MM-dd"));
                 }
+                coordinate = null;
             }
         }
-        coordinate.setType(type);
-        coordinate.setLng(lng);
-        coordinate.setLat(lat);
+
         return coordinate;
     }
 
