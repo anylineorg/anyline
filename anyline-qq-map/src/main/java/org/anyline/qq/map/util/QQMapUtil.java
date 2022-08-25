@@ -1,7 +1,7 @@
 package org.anyline.qq.map.util;
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.MapPoint;
+import org.anyline.entity.Coordinate;
 import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.AnylineConfig;
@@ -65,8 +65,8 @@ public class QQMapUtil {
      * @param ip
      * @return
      */
-    public MapPoint ip(String ip) {
-        MapPoint point = null;
+    public Coordinate ip(String ip) {
+        Coordinate point = null;
         String api = "/ws/location/v1/ip";
         Map<String, Object> params = new HashMap<>();
         params.put("ip", ip);
@@ -85,7 +85,7 @@ public class QQMapUtil {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
                 }
             }else{
-                point = new MapPoint();
+                point = new Coordinate();
                 DataRow result = row.getRow("result");
                 if(null != result) {
                     DataRow location = result.getRow("location");
@@ -106,13 +106,13 @@ public class QQMapUtil {
         return point;
     }
 
-    public MapPoint regeo(double lng, double lat){
+    public Coordinate regeo(double lng, double lat){
         return regeo(lng+"", lat+"");
     }
-    public MapPoint regeo(String[] location){
+    public Coordinate regeo(String[] location){
         return regeo(location[0], location[1]);
     }
-    public MapPoint regeo(double[] location){
+    public Coordinate regeo(double[] location){
         return regeo(location[0], location[1]);
     }
     /**
@@ -121,8 +121,8 @@ public class QQMapUtil {
      * @param lat 纬度
      * @return MapPoint
      */
-    public MapPoint regeo(String lng, String lat){
-        MapPoint point = null;
+    public Coordinate regeo(String lng, String lat){
+        Coordinate point = null;
         String api = "/ws/geocoder/v1";
         Map<String, Object> params = new HashMap<>();
         params.put("location", lat+","+lng);
@@ -141,7 +141,7 @@ public class QQMapUtil {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
                 }
             }else{
-                point = new MapPoint(lng, lat);
+                point = new Coordinate(lng, lat);
                 DataRow result = row.getRow("result");
                 if(null != result) {
                     point.setAddress(result.getString("address"));

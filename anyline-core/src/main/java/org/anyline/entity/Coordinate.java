@@ -2,34 +2,36 @@ package org.anyline.entity;
  
 import org.anyline.util.BasicUtil; 
  
-public class MapPoint {
+public class Coordinate {
 
 
-	public static enum COORD_TYPE{
-		WGS84LL     			{public String getCode(){return "WGS84LL";} public String getName(){return "大地坐标系(GPS)";}},         //谷歌地图国外
-		GCJ02LL			        {public String getCode(){return "GCJ02LL";} public String getName(){return "火星坐标系(国家测绘局制定)";}}, //谷歌地图国内,高德地图,腾讯地图
-		BD09LL		            {public String getCode(){return "BD09LL";} public String getName(){return "百度坐标系";}},
-		BD09MC		            {public String getCode(){return "BD09MC";} public String getName(){return "百度米制坐标系";}};
+	public static enum TYPE {
+		WGS84LL     {public String getCode(){return "WGS84LL";} public String getName(){return "大地坐标系";} 	public String getRemark(){return "GPS/国外谷歌";}},
+		GCJ02LL		{public String getCode(){return "GCJ02LL";} public String getName(){return "火星坐标系";} 	public String getRemark(){return "国家测绘局制定(国内谷歌/高德/腾讯)";}},
+		BD09LL		{public String getCode(){return "BD09LL";}  public String getName(){return "百度坐标系";} 	public String getRemark(){return "百度坐标系";}},
+		BD09MC		{public String getCode(){return "BD09MC";}  public String getName(){return "百度米制坐标系";} 	public String getRemark(){return "百度米制坐标系";}};
 		public abstract String getCode();
 		public abstract String getName();
+		public abstract String getRemark();
 	}
 	
-	private double lng;
-	private double lat;
-	private String provinceCode; 		//省
-	private String provinceName;
-	private String cityCode; 			//市
-	private String cityName;
-	private String districtCode;		//区
-	private String districtName;
-	private String townCode;			//街道
-	private String townName;
-	private String code; 
-	private int level;
-	private String address;
+	private double lng					; //经度
+	private double lat					; //纬度
+	private TYPE type					; //坐标系
+	private String provinceCode			; //省
+	private String provinceName			;
+	private String cityCode				; //市
+	private String cityName				;
+	private String districtCode			; //区
+	private String districtName			;
+	private String townCode				; //街道
+	private String townName				;
+	private String code					;
+	private int level					;
+	private String address				;
 
 
-	public MapPoint(String location){
+	public Coordinate(String location){
 		if(BasicUtil.isNotEmpty(location)){ 
 			String[] tmps = location.split(","); 
 			if(tmps.length > 1){ 
@@ -38,13 +40,13 @@ public class MapPoint {
 			} 
 		} 
 	}
-	public MapPoint(){
+	public Coordinate(){
 	}
-	public MapPoint(String lng, String lat){
+	public Coordinate(String lng, String lat){
 		this.lng = BasicUtil.parseDouble(lng,0d);
 		this.lat = BasicUtil.parseDouble(lat,0d);
 	}
-	public MapPoint(double lng, double lat){
+	public Coordinate(double lng, double lat){
 		this.lng = lng;
 		this.lat = lat;
 	}

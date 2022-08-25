@@ -1,6 +1,6 @@
 package org.anyline.util;
 
-import org.anyline.entity.MapPoint;
+import org.anyline.entity.Coordinate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.CollectionUtils;
@@ -85,7 +85,7 @@ public class GISUtil {
     }
 
 
-    public static double distance(MapPoint loc1, MapPoint loc2) {
+    public static double distance(Coordinate loc1, Coordinate loc2) {
         double distance = -1;
         try{
             distance = distance(
@@ -99,11 +99,11 @@ public class GISUtil {
         }
         return distance;
     }
-    public static String distanceFormat(MapPoint loc1, MapPoint loc2) {
+    public static String distanceFormat(Coordinate loc1, Coordinate loc2) {
         double distance = distance(loc1.getLng(), loc1.getLat(), loc2.getLng(), loc2.getLat());
         return distanceFormat(distance);
     }
-    public static String distanceFormatCn(MapPoint loc1, MapPoint loc2) {
+    public static String distanceFormatCn(Coordinate loc1, Coordinate loc2) {
         double distance = distance(loc1.getLng(), loc1.getLat(), loc2.getLng(), loc2.getLat());
         return distanceFormatCn(distance);
     }
@@ -167,43 +167,43 @@ public class GISUtil {
      * @param tar tar
      * @return double
      */
-    public static double[] convert(MapPoint.COORD_TYPE src, double lng, double lat, MapPoint.COORD_TYPE tar){
+    public static double[] convert(Coordinate.TYPE src, double lng, double lat, Coordinate.TYPE tar){
         double[] location = new double[2];
         if(src == tar){
             location[0] = lng;
             location[1] = lat;
             return location;
         }
-        if(tar == MapPoint.COORD_TYPE.GCJ02LL){
-            if(src == MapPoint.COORD_TYPE.WGS84LL){
+        if(tar == Coordinate.TYPE.GCJ02LL){
+            if(src == Coordinate.TYPE.WGS84LL){
                 location = wgs2gcj(lng, lat);
-            }else if(src == MapPoint.COORD_TYPE.BD09LL){
+            }else if(src == Coordinate.TYPE.BD09LL){
                 location = bd2gcj(lng, lat);
             }
-        }else if(tar == MapPoint.COORD_TYPE.WGS84LL){
-            if(src == MapPoint.COORD_TYPE.GCJ02LL){
+        }else if(tar == Coordinate.TYPE.WGS84LL){
+            if(src == Coordinate.TYPE.GCJ02LL){
                 location = gcj2wgs(lng, lat);
-            }else if(src == MapPoint.COORD_TYPE.BD09LL){
+            }else if(src == Coordinate.TYPE.BD09LL){
                 location = bd2wgs(lng, lat);
             }
-        }else if(tar == MapPoint.COORD_TYPE.BD09LL){
-            if(src == MapPoint.COORD_TYPE.GCJ02LL){
+        }else if(tar == Coordinate.TYPE.BD09LL){
+            if(src == Coordinate.TYPE.GCJ02LL){
                 location = gcj2bd(lng, lat);
-            }else if(src == MapPoint.COORD_TYPE.WGS84LL){
+            }else if(src == Coordinate.TYPE.WGS84LL){
                 location = wgs2bd(lng, lat);
             }
         }
         return location;
     }
 
-    public static double[] convert(MapPoint.COORD_TYPE src, String lng, String lat, MapPoint.COORD_TYPE tar){
+    public static double[] convert(Coordinate.TYPE src, String lng, String lat, Coordinate.TYPE tar){
         return convert(src, BasicUtil.parseDouble(lng,0d),BasicUtil.parseDouble(lat,0d), tar );
     }
 
-    public static double[] convert(MapPoint.COORD_TYPE src, String[] location, MapPoint.COORD_TYPE tar){
+    public static double[] convert(Coordinate.TYPE src, String[] location, Coordinate.TYPE tar){
         return convert(src, location[0], location[1], tar );
     }
-    public static double[] convert(MapPoint.COORD_TYPE src, double[] location, MapPoint.COORD_TYPE tar){
+    public static double[] convert(Coordinate.TYPE src, double[] location, Coordinate.TYPE tar){
         return convert(src, location[0], location[1], tar );
     }
 
@@ -366,19 +366,19 @@ public class GISUtil {
      * @param points 多边形边界点
      * @return boolean
      */
-    public static boolean pnpoly(MapPoint point, List<MapPoint> points) {
+    public static boolean pnpoly(Coordinate point, List<Coordinate> points) {
         List<Double> lngs = new ArrayList<>();
         List<Double> lats = new ArrayList<>();
-        for(MapPoint p:points){
+        for(Coordinate p:points){
             lngs.add(p.getLng());
             lats.add(p.getLat());
         }
         return pnpoly(point.getLng(), point.getLat(), lngs, lats);
     }
-    public static boolean pnpoly(MapPoint point, MapPoint ... points) {
+    public static boolean pnpoly(Coordinate point, Coordinate... points) {
         List<Double> lngs = new ArrayList<>();
         List<Double> lats = new ArrayList<>();
-        for(MapPoint p:points){
+        for(Coordinate p:points){
             lngs.add(p.getLng());
             lats.add(p.getLat());
         }

@@ -1,7 +1,7 @@
 package org.anyline.baidu.map.util;
 
 import org.anyline.entity.DataRow;
-import org.anyline.entity.MapPoint;
+import org.anyline.entity.Coordinate;
 import org.anyline.exception.AnylineException;
 import org.anyline.net.HttpUtil;
 import org.anyline.util.AnylineConfig;
@@ -49,17 +49,17 @@ public class BaiduMapUtil {
         return util;
     }
 
-    public MapPoint regeo(double lng, double lat) {
+    public Coordinate regeo(double lng, double lat) {
         return regeo(lng+"", lat+"");
     }
-    public MapPoint regeo(double[] laocation) {
+    public Coordinate regeo(double[] laocation) {
         return regeo(laocation[0], laocation[1]);
     }
-    public MapPoint regeo(String[] laocation) {
+    public Coordinate regeo(String[] laocation) {
         return regeo(laocation[0], laocation[1]);
     }
-    public MapPoint regeo(String lng, String lat) {
-        MapPoint point = null;
+    public Coordinate regeo(String lng, String lat) {
+        Coordinate point = null;
         String url = "https://api.map.baidu.com/reverse_geocoding/v3/?ak="+config.AK+"&location="+lat+","+lng+"&extensions_town=true&output=json";
         String txt = HttpUtil.get(url).getText();
         DataRow row = DataRow.parseJson(txt);
@@ -73,7 +73,7 @@ public class BaiduMapUtil {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
                 }
             }else{
-                point = new MapPoint(lng, lat);
+                point = new Coordinate(lng, lat);
                 point.setAddress(row.getString("formatted_address"));
                 DataRow adr = row.getRow("result","addressComponent");
                 if(null != adr) {

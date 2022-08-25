@@ -726,8 +726,8 @@ public class AmapUtil {
 	 * @param location  经度在前,纬度在后,经纬度间以“,”分割
 	 * @return DataRow
 	 */ 
-	public MapPoint regeo(String location)  {
-		MapPoint point = null;
+	public Coordinate regeo(String location)  {
+		Coordinate point = null;
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/geocode/regeo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
@@ -750,7 +750,7 @@ public class AmapUtil {
 				}else {
 					row = row.getRow("regeocode");
 					if (null != row) {
-						point = new MapPoint(location);
+						point = new Coordinate(location);
 						point.setAddress(row.getString("formatted_address"));
 
 						DataRow adr = row.getRow("addressComponent");
@@ -776,16 +776,16 @@ public class AmapUtil {
 		} 
 		return point;
 	}
-	public MapPoint regeo(String lng, String lat){
+	public Coordinate regeo(String lng, String lat){
 		return regeo(lng+","+lat);
 	}
-	public MapPoint regeo(double lng, double lat){
+	public Coordinate regeo(double lng, double lat){
 		return regeo(lng+","+lat);
 	}
-	public MapPoint regeo(String[] location){
+	public Coordinate regeo(String[] location){
 		return regeo(location[0],location[1]);
 	}
-	public MapPoint regeo(double[] location){
+	public Coordinate regeo(double[] location){
 		return regeo(location[0],location[1]);
 	}
 
@@ -795,8 +795,8 @@ public class AmapUtil {
 	 * @param city  city
 	 * @return MapLocation
 	 */ 
-	public MapPoint geo(String address, String city){
-		MapPoint location = null;
+	public Coordinate geo(String address, String city){
+		Coordinate location = null;
 		String url = "http://restapi.amap.com/v3/geocode/geo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
@@ -814,7 +814,7 @@ public class AmapUtil {
 				set = json.getSet("geocodes"); 
 				if(set.size()>0){ 
 					DataRow row = set.getRow(0); 
-					location = new MapPoint(row.getString("LOCATION"));
+					location = new Coordinate(row.getString("LOCATION"));
 					location.setCode(row.getString("ADCODE")); 
 					location.setProvinceCode(BasicUtil.cut(row.getString("ADCODE"),0,4)); 
 					location.setProvinceName(row.getString("PROVINCE"));
@@ -833,7 +833,7 @@ public class AmapUtil {
 		} 
 		return location; 
 	} 
-	public MapPoint geo(String address){
+	public Coordinate geo(String address){
 		return geo(address, null); 
 		 
 	} 

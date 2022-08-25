@@ -2,13 +2,12 @@ package org.anyline.map;
 
 import org.anyline.amap.util.AmapUtil;
 import org.anyline.baidu.map.util.BaiduMapUtil;
-import org.anyline.entity.MapPoint;
+import org.anyline.entity.Coordinate;
 import org.anyline.exception.AnylineException;
 import org.anyline.qq.map.util.QQMapUtil;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.DateUtil;
 import org.anyline.util.GISUtil;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -42,13 +41,13 @@ public class MapProxy {
      * @param lat 纬度
      * @return MapPoint
      */
-    public static MapPoint regeo(MapPoint.COORD_TYPE coord, double lng, double lat){
-        MapPoint point = null;
+    public static Coordinate regeo(Coordinate.TYPE coord, double lng, double lat){
+        Coordinate point = null;
         String type = "regeo";
         double[] location = null;
         if(null != amap && enable(type, "amap")){
             try{
-                location = GISUtil.convert(coord, lng, lat, MapPoint.COORD_TYPE.GCJ02LL);
+                location = GISUtil.convert(coord, lng, lat, Coordinate.TYPE.GCJ02LL);
                 point = amap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
@@ -58,7 +57,7 @@ public class MapProxy {
         }
         if(null == point && null != bmap && enable(type,"bmap")){
             try{
-                location = GISUtil.convert(coord, lng, lat, MapPoint.COORD_TYPE.BD09LL);
+                location = GISUtil.convert(coord, lng, lat, Coordinate.TYPE.BD09LL);
                 point = bmap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
@@ -68,7 +67,7 @@ public class MapProxy {
         }
         if(null == point && null != qmap && enable(type,"qmap")){
             try{
-                location = GISUtil.convert(coord, lng, lat, MapPoint.COORD_TYPE.GCJ02LL);
+                location = GISUtil.convert(coord, lng, lat, Coordinate.TYPE.GCJ02LL);
                 point = qmap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
@@ -79,13 +78,13 @@ public class MapProxy {
         return point;
     }
 
-    public static MapPoint regeo(MapPoint.COORD_TYPE coord, String lng, String lat){
+    public static Coordinate regeo(Coordinate.TYPE coord, String lng, String lat){
         return regeo(coord, BasicUtil.parseDouble(lng, 0d), BasicUtil.parseDouble(lat,0d));
     }
-    public static MapPoint regeo(MapPoint.COORD_TYPE coord, String[] location){
+    public static Coordinate regeo(Coordinate.TYPE coord, String[] location){
         return regeo(coord, location[0], location[1]);
     }
-    public static MapPoint regeo(MapPoint.COORD_TYPE coord, double[] location){
+    public static Coordinate regeo(Coordinate.TYPE coord, double[] location){
         return regeo(coord, location[0], location[1]);
     }
     public static AmapUtil getAmap() {
