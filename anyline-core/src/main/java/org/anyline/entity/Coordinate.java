@@ -16,7 +16,7 @@ public class Coordinate {
 		public abstract String getRemark();
 	}
 
-	private double[] point = new double[2]	; //坐标点[lng,lat][经度,纬度]
+	private Double[] point = new Double[2]	; //坐标点[lng,lat][经度,纬度]
 	private TYPE type						; //坐标系
 	private String provinceCode				; //省
 	private String provinceName				;
@@ -35,16 +35,26 @@ public class Coordinate {
 		if(BasicUtil.isNotEmpty(location)){ 
 			String[] tmps = location.split(","); 
 			if(tmps.length > 1){
-				point[0] = BasicUtil.parseDouble(tmps[0],-1d);
-				point[1] = BasicUtil.parseDouble(tmps[1],-1d);
+				point[0] = BasicUtil.parseDouble(tmps[0],null);
+				point[1] = BasicUtil.parseDouble(tmps[1],null);
 			} 
 		} 
 	}
 	public Coordinate(){
 	}
+	public Coordinate(TYPE type, String lng, String lat){
+		this.type = type;
+		point[0] = BasicUtil.parseDouble(lng, null);
+		point[1] = BasicUtil.parseDouble(lat, null);
+	}
+	public Coordinate(TYPE type, double lng, double lat){
+		this.type = type;
+		point[0] = lng;
+		point[1] = lat;
+	}
 	public Coordinate(String lng, String lat){
-		point[0] = BasicUtil.parseDouble(lng,0d);
-		point[1] = BasicUtil.parseDouble(lat,0d);
+		point[0] = BasicUtil.parseDouble(lng,null);
+		point[1] = BasicUtil.parseDouble(lat,null);
 	}
 	public Coordinate(double lng, double lat){
 		point[0] = lng;
@@ -56,7 +66,7 @@ public class Coordinate {
 		return this;
 	}
 	public boolean isEmpty(){ 
-		if(BasicUtil.isEmpty(point[0]) || BasicUtil.isEmpty(point[1]) || "-1".equals(point[0]) || "-1".equals(point[1])){
+		if(point.length != 2 || null == point[0] || null == point[1]){
 			return true; 
 		} 
 		return false; 
@@ -66,7 +76,7 @@ public class Coordinate {
 		return this.provinceName;
 	}
 
-	public void setProvinceName(final String provinceName) {
+	public void setProvinceName(String provinceName) {
 		this.provinceName = provinceName;
 	}
 
@@ -74,7 +84,7 @@ public class Coordinate {
 		return this.cityName;
 	}
 
-	public void setCityName(final String cityName) {
+	public void setCityName(String cityName) {
 		this.cityName = cityName;
 	}
 
@@ -82,7 +92,7 @@ public class Coordinate {
 		return this.districtName;
 	}
 
-	public void setDistrictName(final String districtName) {
+	public void setDistrictName(String districtName) {
 		this.districtName = districtName;
 	}
 
@@ -90,7 +100,7 @@ public class Coordinate {
 		return this.townCode;
 	}
 
-	public void setTownCode(final String townCode) {
+	public void setTownCode(String townCode) {
 		this.townCode = townCode;
 	}
 
@@ -98,7 +108,7 @@ public class Coordinate {
 		return this.townName;
 	}
 
-	public void setTownName(final String townName) {
+	public void setTownName(String townName) {
 		this.townName = townName;
 	}
 
@@ -106,23 +116,29 @@ public class Coordinate {
 		return this.point[0];
 	}
 
-	public void setLng(final double lng) {
+	public void setLng(double lng) {
 		this.point[0] = lng;
+	}
+	public void setLng(String lng) {
+		this.point[0] = BasicUtil.parseDouble(lng, null);
 	}
 
 	public double getLat() {
 		return this.point[1];
 	}
 
-	public void setLat(final double lat) {
+	public void setLat(double lat) {
 		this.point[1] = lat;
+	}
+	public void setLat(String lat) {
+		this.point[1] = BasicUtil.parseDouble(lat, null);
 	}
 
 	public String getProvinceCode() {
 		return this.provinceCode;
 	}
 
-	public void setProvinceCode(final String provinceCode) {
+	public void setProvinceCode(String provinceCode) {
 		this.provinceCode = provinceCode;
 	}
 
@@ -131,7 +147,7 @@ public class Coordinate {
 		return this.cityCode;
 	}
 
-	public void setCityCode(final String cityCode) {
+	public void setCityCode(String cityCode) {
 		this.cityCode = cityCode;
 	}
 
@@ -140,7 +156,7 @@ public class Coordinate {
 		return this.districtCode;
 	}
 
-	public void setDistrictCode(final String districtCode) {
+	public void setDistrictCode(String districtCode) {
 		this.districtCode = districtCode;
 	}
 
@@ -149,7 +165,7 @@ public class Coordinate {
 		return this.code;
 	}
 
-	public void setCode(final String code) {
+	public void setCode(String code) {
 		this.code = code;
 	}
 
@@ -157,7 +173,7 @@ public class Coordinate {
 		return this.level;
 	}
 
-	public void setLevel(final int level) {
+	public void setLevel(int level) {
 		this.level = level;
 	}
 
@@ -165,7 +181,7 @@ public class Coordinate {
 		return this.address;
 	}
 
-	public void setAddress(final String address) {
+	public void setAddress(String address) {
 		this.address = address;
 	}
 	public String toString(){
@@ -180,11 +196,11 @@ public class Coordinate {
 		this.type = type;
 	}
 
-	public double[] getPoint() {
+	public Double[] getPoint() {
 		return point;
 	}
 
-	public void setPoint(double[] point) {
+	public void setPoint(Double[] point) {
 		this.point = point;
 	}
 }
