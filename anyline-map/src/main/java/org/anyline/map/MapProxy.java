@@ -42,40 +42,43 @@ public class MapProxy {
      * @return MapPoint
      */
     public static Coordinate regeo(Coordinate.TYPE type, double lng, double lat){
-        Coordinate point = null;
+        Coordinate coordinate = null;
         String api = "regeo";
         double[] location = null;
         if(null != amap && enable(api, "amap")){
             try{
                 location = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
-                point = amap.regeo(location[0], location[1]);
+                coordinate = amap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_amap", DateUtil.format("yyyy-MM-dd"));
                 }
             }
         }
-        if(null == point && null != bmap && enable(api,"bmap")){
+        if(null == coordinate && null != bmap && enable(api,"bmap")){
             try{
                 location = GISUtil.convert(type, lng, lat, Coordinate.TYPE.BD09LL);
-                point = bmap.regeo(location[0], location[1]);
+                coordinate = bmap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_bmap", DateUtil.format("yyyy-MM-dd"));
                 }
             }
         }
-        if(null == point && null != qmap && enable(api,"qmap")){
+        if(null == coordinate && null != qmap && enable(api,"qmap")){
             try{
                 location = GISUtil.convert(type, lng, lat, Coordinate.TYPE.GCJ02LL);
-                point = qmap.regeo(location[0], location[1]);
+                coordinate = qmap.regeo(location[0], location[1]);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_qmap", DateUtil.format("yyyy-MM-dd"));
                 }
             }
         }
-        return point;
+        coordinate.setType(type);
+        coordinate.setLng(lng);
+        coordinate.setLat(lat);
+        return coordinate;
     }
 
     public static Coordinate regeo(Coordinate.TYPE coord, String lng, String lat){
