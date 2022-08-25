@@ -71,16 +71,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 	@Override
 	public String getDelimiterFr(){
-		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
+		/*if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
 			return "";
-		}
+		}*/
 		return this.delimiterFr;
 	}
 	@Override
 	public String getDelimiterTo(){
-		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
+		/*if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
 			return "";
-		}
+		}*/
 		return this.delimiterTo;
 	}
 

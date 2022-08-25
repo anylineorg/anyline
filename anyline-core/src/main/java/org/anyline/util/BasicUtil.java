@@ -981,9 +981,11 @@ public class BasicUtil {
 
 	public static StringBuilder delimiter(StringBuilder builder, String column, String delimiter){
 		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
+			builder.append(column);
 			return builder;
 		}
 		if(delimiter == null){
+			builder.append(column);
 			return builder;
 		}
 		String delimiterFr = "";
@@ -1002,10 +1004,12 @@ public class BasicUtil {
 	}
 	public static StringBuilder delimiter(StringBuilder builder, String column, String delimiterFr, String delimiterTo){
 		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
+			builder.append(column);
 			return builder;
 		}
 		column = column.trim();
 		if(column.startsWith(delimiterFr) || column.endsWith(delimiterTo)){
+			builder.append(column);
 			return builder ;
 		}
 		builder.append(delimiterFr).append(column).append(delimiterTo);
@@ -1049,7 +1053,7 @@ public class BasicUtil {
 			holderFr = holder.substring(0,1);
 			holderTo = holder.substring(1,2);
 		}
-		if(holderFr.equals(holderTo) || delimiterFr.equals(delimiterTo)){
+		if(holderFr.equals(holderTo) && delimiterFr.equals(delimiterTo)){
 			text = text.replace(holderFr, delimiterFr);
 		}else{
 			try {
