@@ -191,7 +191,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public String getFinalQueryTxt() { 
 		String text = creater.parseFinalQueryTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = BasicSQLCreaterImpl.placeholder(text, delimiterFr, delimiterTo);
+			text = BasicUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		return text;
 	} 
@@ -199,7 +199,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public String getTotalQueryTxt() {
 		String text = creater.parseTotalQueryTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = BasicSQLCreaterImpl.placeholder(text, delimiterFr, delimiterTo);
+			text = BasicUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		return text;
 	}
@@ -207,7 +207,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public String getExistsTxt(){
 		String text =  creater.parseExistsTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = BasicSQLCreaterImpl.placeholder(text, delimiterFr, delimiterTo);
+			text = BasicUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		return text;
 	}
@@ -372,19 +372,19 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	 
 	public String getDeleteTxt(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  BasicSQLCreaterImpl.placeholder(builder.toString(), delimiterFr, delimiterTo);
+			return  BasicUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		return builder.toString();
 	} 
 	public String getInsertTxt(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  BasicSQLCreaterImpl.placeholder(builder.toString(), delimiterFr, delimiterTo);
+			return  BasicUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		return builder.toString();
 	} 
 	public String getUpdateTxt(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  BasicSQLCreaterImpl.placeholder(builder.toString(), delimiterFr, delimiterTo);
+			return  BasicUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		return builder.toString();
 	} 
@@ -428,7 +428,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	@Override
 	public String getExecuteTxt(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  BasicSQLCreaterImpl.placeholder(sql.getText(), delimiterFr, delimiterTo);
+			return  BasicUtil.placeholder(sql.getText(), delimiterFr, delimiterTo);
 		}
 		return sql.getText();
 	}
@@ -442,9 +442,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				for(String col:cols){
 					if(null == result){
 
-						result = BasicSQLCreaterImpl.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
+						result = BasicUtil.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
 					}else{
-						result += "," + BasicSQLCreaterImpl.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
+						result += "," + BasicUtil.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
 					}
 				}
 			}

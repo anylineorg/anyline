@@ -977,4 +977,98 @@ public class BasicUtil {
 		result[1] = end;
 		return result;
 	}
+
+
+	public static StringBuilder delimiter(StringBuilder builder, String column, String delimiter){
+		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
+			return builder;
+		}
+		if(delimiter == null){
+			return builder;
+		}
+		String delimiterFr = "";
+		String delimiterTo = "";
+		delimiter = delimiter.replaceAll("\\s", "");
+		if(delimiter.length() == 0){
+			return builder;
+		}else if(delimiter.length() ==1){
+			delimiterFr = delimiter;
+			delimiterTo = delimiter;
+		}else{
+			delimiterFr = delimiter.substring(0,1);
+			delimiterTo = delimiter.substring(1,2);
+		}
+		return delimiter(builder, column, delimiterFr, delimiterTo);
+	}
+	public static StringBuilder delimiter(StringBuilder builder, String column, String delimiterFr, String delimiterTo){
+		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
+			return builder;
+		}
+		column = column.trim();
+		if(column.startsWith(delimiterFr) || column.endsWith(delimiterTo)){
+			return builder ;
+		}
+		builder.append(delimiterFr).append(column).append(delimiterTo);
+
+		return builder ;
+	}
+	public static String delimiter(String column, String delimiterFr, String delimiterTo){
+		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
+			return column;
+		}
+		if(column.startsWith(delimiterFr) || column.endsWith(delimiterTo)){
+			return column ;
+		}
+		String result = delimiterFr + column.trim() + delimiterTo;
+		return result;
+	}
+
+	public static String placeholder(String text, String delimiterFr, String delimiterTo){
+		//已开启界定符(SQL中已添加界定符)
+		if(ConfigTable.IS_SQL_DELIMITER_OPEN){
+			return text;
+		}
+		//未开启占位符
+		if(!ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+			return text;
+		}
+		String holder = ConfigTable.SQL_DELIMITER_PLACEHOLDER;
+		if(null == holder){
+			return text;
+		}
+
+		String holderFr = "";
+		String holderTo = "";
+		holder = holder.replaceAll("\\s", "");
+		if(holder.length() == 0){
+			return text;
+		}else if(holder.length() ==1){
+			holderFr = holder;
+			holderTo = holder;
+		}else{
+			holderFr = holder.substring(0,1);
+			holderTo = holder.substring(1,2);
+		}
+		if(holderFr.equals(holderTo) || delimiterFr.equals(delimiterTo)){
+			text = text.replace(holderFr, delimiterFr);
+		}else{
+			try {
+				String regxFr = holderFr.replace("(","\\(").replace("{", "、\\{").replace("[", "\\[");
+				String regxTo = holderTo.replace(")","\\)").replace("}", "、\\}").replace("]", "\\]");
+				List<List<String>> lists = RegularUtil.fetchs(text, "("+regxFr+")" + "(.+?)" + "("+regxTo+")");
+				for(List<String> list: lists){
+					String full = list.get(0);
+					//String fr = list.get(1);
+					String key = list.get(2);
+					//String to = list.get(3);
+					String replace = delimiterFr + key + delimiterTo;
+					text = text.replace(full, replace);
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
+		}
+
+		return text;
+	}
 }

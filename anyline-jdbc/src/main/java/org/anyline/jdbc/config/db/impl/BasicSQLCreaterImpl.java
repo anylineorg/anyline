@@ -172,7 +172,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		builder.append("DELETE FROM ").append(table).append(" WHERE ");
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
-			BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			if(cons.size() > 1){
 				builder.append(" IN(");
 				int idx = 0;
@@ -194,7 +194,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}else{
 
-			BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			builder.append("=?");
 			run.addValue(values);
 		}
@@ -227,7 +227,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}
 				String key = keys.get(i);
 
-				BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
+				BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
 				Object value = null;
 				if(obj instanceof DataRow){
 					value = ((DataRow)obj).get(key);
@@ -380,7 +380,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					value = BeanUtil.getFieldValue(obj, key);
 				}
 			}
-			BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 				String str = value.toString();
 				value = str.substring(2, str.length()-1);
@@ -457,7 +457,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int keySize = keys.size();
 		for(int i=0; i<keySize; i++){
 			String key = keys.get(i);
-			BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			if(i<keySize-1){
 				builder.append(",");
 			}
@@ -491,7 +491,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int keySize = keys.size();
 		for(int i=0; i<keySize; i++){
 			String key = keys.get(i);
-			BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			if(i<keySize-1){
 				builder.append(",");
 			}
@@ -652,9 +652,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
 
-					BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
+					BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 				}else{
-					BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
@@ -669,7 +669,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
 			for(String pk:primaryKeys){
 				builder.append(" AND ");
-				BasicSQLCreaterImpl.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
+				BasicUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
 				updateColumns.add(pk);
 				if(AdapterProxy.hasAdapter()){
 					Field field = AdapterProxy.field(obj.getClass(), pk);
@@ -711,9 +711,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
-					BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
+					BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 				}else{
-					BasicSQLCreaterImpl.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
@@ -728,7 +728,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
 			for(String pk:primaryKeys){
 				builder.append(" AND ");
-				BasicSQLCreaterImpl.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
+				BasicUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
 				updateColumns.add(pk);
 				values.add(row.get(pk)); 
 			}
@@ -944,11 +944,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		table = DataSourceHolder.parseDataSource(table, null);
 		if(table.contains(".")){
 			String tmps[] = table.split("\\.");
-			table = BasicSQLCreaterImpl.delimiter(tmps[0],getDelimiterFr() , getDelimiterTo())
+			table = BasicUtil.delimiter(tmps[0],getDelimiterFr() , getDelimiterTo())
 					+ "."
-					+ BasicSQLCreaterImpl.delimiter(tmps[1],getDelimiterFr() , getDelimiterTo());
+					+ BasicUtil.delimiter(tmps[1],getDelimiterFr() , getDelimiterTo());
 		}else{
-			table = BasicSQLCreaterImpl.delimiter(table,getDelimiterFr() , getDelimiterTo());
+			table = BasicUtil.delimiter(table,getDelimiterFr() , getDelimiterTo());
 		}
 		return table;
 	}
@@ -999,97 +999,4 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return result;
 	}
 
-
-	public static StringBuilder delimiter(StringBuilder builder, String column, String delimiter){
-		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
-			return builder;
-		}
-		if(delimiter == null){
-			return builder;
-		}
-		String delimiterFr = "";
-		String delimiterTo = "";
-		delimiter = delimiter.replaceAll("\\s", "");
-		if(delimiter.length() == 0){
-			return builder;
-		}else if(delimiter.length() ==1){
-			delimiterFr = delimiter;
-			delimiterTo = delimiter;
-		}else{
-			delimiterFr = delimiter.substring(0,1);
-			delimiterTo = delimiter.substring(1,2);
-		}
-		return delimiter(builder, column, delimiterFr, delimiterTo);
-	}
-	public static StringBuilder delimiter(StringBuilder builder, String column, String delimiterFr, String delimiterTo){
-		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
-			return builder;
-		}
-		column = column.trim();
-		if(column.startsWith(delimiterFr) || column.endsWith(delimiterTo)){
-			return builder ;
-		}
-		builder.append(delimiterFr).append(column).append(delimiterTo);
-
-		return builder ;
-	}
-	public static String delimiter(String column, String delimiterFr, String delimiterTo){
-		if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
-			return column;
-		}
-		if(column.startsWith(delimiterFr) || column.endsWith(delimiterTo)){
-			return column ;
-		}
-		String result = delimiterFr + column.trim() + delimiterTo;
-		return result;
-	}
-
-	public static String placeholder(String text, String delimiterFr, String delimiterTo){
-		//已开启界定符(SQL中已添加界定符)
-		if(ConfigTable.IS_SQL_DELIMITER_OPEN){
-			return text;
-		}
-		//未开启占位符
-		if(!ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return text;
-		}
-		String holder = ConfigTable.SQL_DELIMITER_PLACEHOLDER;
-		if(null == holder){
-			return text;
-		}
-
-		String holderFr = "";
-		String holderTo = "";
-		holder = holder.replaceAll("\\s", "");
-		if(holder.length() == 0){
-			return text;
-		}else if(holder.length() ==1){
-			holderFr = holder;
-			holderTo = holder;
-		}else{
-			holderFr = holder.substring(0,1);
-			holderTo = holder.substring(1,2);
-		}
-		if(holderFr.equals(holderTo) || delimiterFr.equals(delimiterTo)){
-			text = text.replace(holderFr, delimiterFr);
-		}else{
-			try {
-				String regxFr = holderFr.replace("(","\\(").replace("{", "、\\{").replace("[", "\\[");
-				String regxTo = holderTo.replace(")","\\)").replace("}", "、\\}").replace("]", "\\]");
-				List<List<String>> lists = RegularUtil.fetchs(text, "("+regxFr+")" + "(.+?)" + "("+regxTo+")");
-				for(List<String> list: lists){
-					String full = list.get(0);
-					//String fr = list.get(1);
-					String key = list.get(2);
-					//String to = list.get(3);
-					String replace = delimiterFr + key + delimiterTo;
-					text = text.replace(full, replace);
-				}
-			}catch (Exception e){
-				e.printStackTrace();
-			}
-		}
-
-		return text;
-	}
 } 

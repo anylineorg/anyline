@@ -114,7 +114,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					}else if("*".equals(column)){
 						builder.append("*");
 					}else{
-						BasicSQLCreaterImpl.delimiter(builder, column.replace(".", delimiterTo+"."+delimiterFr), delimiterFr, delimiterTo);
+						BasicUtil.delimiter(builder, column.replace(".", delimiterTo+"."+delimiterFr), delimiterFr, delimiterTo);
 					} 
 				} 
 				if(i<size-1){ 
@@ -129,9 +129,9 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		} 
 		builder.append("FROM").append(SQLCreater.BR_TAB);
 		if(null != author){
-			BasicSQLCreaterImpl.delimiter(builder, author, delimiterFr, delimiterTo).append(".");
+			BasicUtil.delimiter(builder, author, delimiterFr, delimiterTo).append(".");
 		}
-		BasicSQLCreaterImpl.delimiter(builder, table, delimiterFr, delimiterTo);
+		BasicUtil.delimiter(builder, table, delimiterFr, delimiterTo);
 		builder.append(SQLCreater.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
 			//builder.append(" AS ").append(sql.getAlias());
@@ -141,7 +141,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != joins) {
 			for (Join join:joins) {
 				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ");
-				BasicSQLCreaterImpl.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
+				BasicUtil.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
 				if(BasicUtil.isNotEmpty(join.getAlias())){
 					//builder.append(" AS ").append(join.getAlias());
 					builder.append("  ").append(join.getAlias());
@@ -166,10 +166,10 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		TableSQL sql = (TableSQL)this.getSql();
 		builder.append("DELETE FROM ");
 		if(null != author){
-			BasicSQLCreaterImpl.delimiter(builder, author, delimiterFr, delimiterTo).append(".");
+			BasicUtil.delimiter(builder, author, delimiterFr, delimiterTo).append(".");
 		}
 
-		BasicSQLCreaterImpl.delimiter(builder, table, delimiterFr, delimiterTo);
+		BasicUtil.delimiter(builder, table, delimiterFr, delimiterTo);
 		builder.append(SQLCreater.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
 			//builder.append(" AS ").append(sql.getAlias());
@@ -179,7 +179,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != joins) {
 			for (Join join:joins) {
 				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ");
-				BasicSQLCreaterImpl.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
+				BasicUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
 				if(BasicUtil.isNotEmpty(join.getAlias())){
 					builder.append("  ").append(join.getAlias());
 				}
