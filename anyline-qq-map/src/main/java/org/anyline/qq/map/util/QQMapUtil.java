@@ -155,6 +155,8 @@ public class QQMapUtil {
                 log.warn("[逆地理编码][response:{}]",txt);
                 if("121".equals(status)) {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                }else{
+                    throw new AnylineException(status, row.getString("message"));
                 }
             }else{
                 DataRow result = row.getRow("result");

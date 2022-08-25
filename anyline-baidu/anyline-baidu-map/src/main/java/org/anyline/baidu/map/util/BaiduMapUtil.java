@@ -66,6 +66,8 @@ public class BaiduMapUtil {
                 log.warn("[逆地理编码][response:{}]",txt);
                 if("302".equals(status)) {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+                }else{
+                    throw new AnylineException(status, row.getString("message"));
                 }
             }else{
                 coordinate.setAddress(row.getString("formatted_address"));

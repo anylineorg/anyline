@@ -752,6 +752,8 @@ public class AmapUtil {
 					log.warn("[逆地理编码][response:{}]",txt);
 					if("10044".equals(row.getString("INFOCODE"))) {
 						throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+					}else{
+						throw new AnylineException(status, row.getString("INFO"));
 					}
 				}else {
 					row = row.getRow("regeocode");
