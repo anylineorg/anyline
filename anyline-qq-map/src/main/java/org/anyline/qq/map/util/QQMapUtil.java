@@ -66,7 +66,7 @@ public class QQMapUtil {
      * @return
      */
     public Coordinate ip(String ip) {
-        Coordinate point = null;
+        Coordinate coordinate = null;
         String api = "/ws/location/v1/ip";
         Map<String, Object> params = new HashMap<>();
         params.put("ip", ip);
@@ -85,35 +85,36 @@ public class QQMapUtil {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
                 }
             }else{
-                point = new Coordinate();
+                coordinate = new Coordinate();
                 DataRow result = row.getRow("result");
                 if(null != result) {
-                    DataRow location = result.getRow("location");
-                    if(null != location){
-                        point.setLng(location.getDouble("lng", -1));
-                        point.setLat(location.getDouble("lat", -1));
+                    DataRow point = result.getRow("location");
+                    if(null != point){
+                        coordinate.setLng(point.getDouble("lng", -1));
+                        coordinate.setLat(point.getDouble("lat", -1));
                     }
                     DataRow ad = result.getRow("ad_info");
                     if(null != ad){
-                        point.setProvinceName(ad.getString("province"));
-                        point.setCityName(ad.getString("city"));
-                        point.setDistrictName(ad.getString("district"));
-                        point.setDistrictCode(ad.getString("adcode"));
+                        coordinate.setProvinceName(ad.getString("province"));
+                        coordinate.setCityName(ad.getString("city"));
+                        coordinate.setDistrictName(ad.getString("district"));
+                        coordinate.setDistrictCode(ad.getString("adcode"));
                     }
                 }
             }
         }
-        return point;
+        coordinate.setType(Coordinate.TYPE.GCJ02LL);
+        return coordinate;
     }
 
     public Coordinate regeo(double lng, double lat){
         return regeo(lng+"", lat+"");
     }
-    public Coordinate regeo(String[] location){
-        return regeo(location[0], location[1]);
+    public Coordinate regeo(String[] point){
+        return regeo(point[0], point[1]);
     }
-    public Coordinate regeo(double[] location){
-        return regeo(location[0], location[1]);
+    public Coordinate regeo(double[] point){
+        return regeo(point[0], point[1]);
     }
     /**
      * 逆地址解析
@@ -121,11 +122,12 @@ public class QQMapUtil {
      * @param lat 纬度
      * @return MapPoint
      */
-    public Coordinate regeo(String lng, String lat){
-        Coordinate point = null;
+    public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){
+        Coordinate coordinate = new Coordinate(type, lng, lat);
+        coordinate.convert(Coordinate.TYPE.GCJ02LL);
         String api = "/ws/geocoder/v1";
         Map<String, Object> params = new HashMap<>();
-        params.put("location", lat+","+lng);
+        params.put("location", coordinate.getLat()+","+coordinate.getLng());        //这里是纬度在前
         params.put("key", config.KEY);
         String sign = sign(api, params);
         String url = QQMapConfig.HOST + api+"?"+BeanUtil.map2string(params, false,true)+"&sig="+sign;
@@ -141,34 +143,40 @@ public class QQMapUtil {
                     throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
                 }
             }else{
-                point = new Coordinate(lng, lat);
                 DataRow result = row.getRow("result");
                 if(null != result) {
-                    point.setAddress(result.getString("address"));
+                    coordinate.setAddress(result.getString("address"));
                 }
                 DataRow adr = row.getRow("result","address_component");
                 if(null != adr) {
-                    point.setProvinceName(adr.getString("province"));
-                    point.setCityName(adr.getString("city"));
-                    point.setDistrictName(adr.getString("district"));
+                    coordinate.setProvinceName(adr.getString("province"));
+                    coordinate.setCityName(adr.getString("city"));
+                    coordinate.setDistrictName(adr.getString("district"));
                 }
                 adr = row.getRow("result","ad_info");
                 if(null != adr) {
                     String adcode = adr.getString("adcode");
                     String provinceCode = adcode.substring(0,2);
                     String cityCode = adcode.substring(0,4);
-                    point.setProvinceCode(provinceCode);
-                    point.setCityCode(cityCode);
-                    point.setDistrictCode(adcode);
+                    coordinate.setProvinceCode(provinceCode);
+                    coordinate.setCityCode(cityCode);
+                    coordinate.setDistrictCode(adcode);
                 }
                 adr = row.getRow("result","address_reference","town");
                 if(null != adr){
-                    point.setTownCode(adr.getString("id"));
-                    point.setTownName(adr.getString("title"));
+                    coordinate.setTownCode(adr.getString("id"));
+                    coordinate.setTownName(adr.getString("title"));
                 }
             }
         }
-        return point;
+        //换回原坐标系
+        coordinate.setLng(lng);
+        coordinate.setLat(lat);
+        coordinate.setType(type);
+        return coordinate;
+    }
+    public Coordinate regeo(String lng, String lat){
+        return regeo(Coordinate.TYPE.GCJ02LL, lng, lat);
     }
 
 }
