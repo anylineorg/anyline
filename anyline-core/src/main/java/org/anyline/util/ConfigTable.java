@@ -50,11 +50,13 @@ public class ConfigTable {
 	protected static final String minVersion = "0007";
 	protected static boolean isLoading = false;
 	private static boolean listener_running = false;	//监听是否启动
-	public static boolean  IS_UPPER_KEY = true;
-	public static boolean  IS_LOWER_KEY = false;
-	public static boolean IS_KEY_IGNORE_CASE = true;
-	public static boolean IS_THROW_SQL_EXCEPTION = false;
-	public static boolean IS_SQL_DELIMITER_OPEN = false;
+	public static boolean IS_UPPER_KEY 						= true;
+	public static boolean IS_LOWER_KEY 						= false;
+	public static boolean IS_KEY_IGNORE_CASE 				= true;
+	public static boolean IS_THROW_SQL_EXCEPTION 			= false;
+	public static boolean IS_SQL_DELIMITER_OPEN 			= false;
+	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN = false;
+	public static String SQL_DELIMITER_PLACEHOLDER			= "`";
 	public static String CONFIG_NAME = "anyline-config.xml";
 
 	static{

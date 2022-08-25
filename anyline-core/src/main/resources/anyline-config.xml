@@ -105,4 +105,18 @@
 
 	<!--禁用默认的entity adapter 默认false(开启)-->
 	<property key="IS_DISABLED_DEFAULT_ENTITY_ADAPTER">false</property>
+	<!--
+		是否开启界定符占位
+		需要IS_SQL_DELIMITER_OPEN=false关闭后才会生效
+		开启后,无论什么数据库都用这里指定的界定符,在SQL执行之前会替换成相应数据库的界定符
+		如果SQL中出现界定符(不包括?占位的参数值),需要把占位符写两次 类似与sql中出'要写成''
+	-->
+	<property key="IS_SQL_DELIMITER_PLACEHOLDER_OPEN">false</property>
+	<!--
+		界定符占位符(IS_SQL_DELIMITER_PLACEHOLDER_OPEN开启才才生效) 如果不设置默认`(mysql界定符),
+
+		可以设置成一对[],尽量不要设置一对,因为会设置成了一对后,会自动开启正则匹配
+		只有类似SQL Server设置了只支持[],不支持""时才需要设置成一对[]
+	-->
+	<property key="SQL_DELIMITER_PLACEHOLDER"></property>
 </properties>

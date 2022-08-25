@@ -28,11 +28,13 @@ import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.db.*;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
+import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.impl.GroupStoreImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -187,15 +189,27 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	} 
 	@Override 
 	public String getFinalQueryTxt() { 
-		return creater.parseFinalQueryTxt(this); 
+		String text = creater.parseFinalQueryTxt(this);
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+			text = BasicSQLCreaterImpl.placeholder(text, delimiterFr, delimiterTo);
+		}
+		return text;
 	} 
 	@Override 
-	public String getTotalQueryTxt() { 
-		return creater.parseTotalQueryTxt(this); 
+	public String getTotalQueryTxt() {
+		String text = creater.parseTotalQueryTxt(this);
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+			text = BasicSQLCreaterImpl.placeholder(text, delimiterFr, delimiterTo);
+		}
+		return text;
 	}
 	@Override
 	public String getExistsTxt(){
-		return creater.parseExistsTxt(this);
+		String text =  creater.parseExistsTxt(this);
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+			text = BasicSQLCreaterImpl.placeholder(text, delimiterFr, delimiterTo);
+		}
+		return text;
 	}
 	@Override 
 	public String getBaseQueryTxt() { 
@@ -356,13 +370,22 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		return this; 
 	}
 	 
-	public String getDeleteTxt(){ 
+	public String getDeleteTxt(){
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+			return  BasicSQLCreaterImpl.placeholder(builder.toString(), delimiterFr, delimiterTo);
+		}
 		return builder.toString();
 	} 
-	public String getInsertTxt(){ 
+	public String getInsertTxt(){
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+			return  BasicSQLCreaterImpl.placeholder(builder.toString(), delimiterFr, delimiterTo);
+		}
 		return builder.toString();
 	} 
-	public String getUpdateTxt(){ 
+	public String getUpdateTxt(){
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+			return  BasicSQLCreaterImpl.placeholder(builder.toString(), delimiterFr, delimiterTo);
+		}
 		return builder.toString();
 	} 
 	 
@@ -404,6 +427,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	}
 	@Override
 	public String getExecuteTxt(){
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+			return  BasicSQLCreaterImpl.placeholder(sql.getText(), delimiterFr, delimiterTo);
+		}
 		return sql.getText();
 	}
 	//需要查询的列 
@@ -415,9 +441,10 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				result = null;
 				for(String col:cols){
 					if(null == result){
-						result = creater.getDelimiterFr() + col + creater.getDelimiterTo();
+
+						result = BasicSQLCreaterImpl.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
 					}else{
-						result += "," + creater.getDelimiterFr() + col + creater.getDelimiterTo();
+						result += "," + BasicSQLCreaterImpl.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
 					}
 				}
 			}
@@ -469,6 +496,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		this.updateColumns = updateColumns;
 		return this;
 	}
+
 }
  
  

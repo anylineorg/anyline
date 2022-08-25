@@ -28,6 +28,7 @@ import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
@@ -113,7 +114,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					}else if("*".equals(column)){
 						builder.append("*");
 					}else{
-						builder.append(delimiterFr).append(column.replace(".", delimiterTo+"."+delimiterFr)).append(delimiterTo);
+						BasicSQLCreaterImpl.delimiter(builder, column.replace(".", delimiterTo+"."+delimiterFr), delimiterFr, delimiterTo);
 					} 
 				} 
 				if(i<size-1){ 
@@ -128,9 +129,9 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		} 
 		builder.append("FROM").append(SQLCreater.BR_TAB);
 		if(null != author){
-			builder.append(delimiterFr).append(author).append(delimiterTo).append(".");
+			BasicSQLCreaterImpl.delimiter(builder, author, delimiterFr, delimiterTo).append(".");
 		}
-		builder.append(delimiterFr).append(table).append(delimiterTo);
+		BasicSQLCreaterImpl.delimiter(builder, table, delimiterFr, delimiterTo);
 		builder.append(SQLCreater.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
 			//builder.append(" AS ").append(sql.getAlias());
@@ -139,7 +140,8 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		List<Join> joins = sql.getJoins();
 		if(null != joins) {
 			for (Join join:joins) {
-				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ").append(delimiterFr).append(join.getName()).append(delimiterTo);
+				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ");
+				BasicSQLCreaterImpl.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
 				if(BasicUtil.isNotEmpty(join.getAlias())){
 					//builder.append(" AS ").append(join.getAlias());
 					builder.append("  ").append(join.getAlias());
@@ -164,9 +166,10 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		TableSQL sql = (TableSQL)this.getSql();
 		builder.append("DELETE FROM ");
 		if(null != author){
-			builder.append(delimiterFr).append(author).append(delimiterTo).append(".");
+			BasicSQLCreaterImpl.delimiter(builder, author, delimiterFr, delimiterTo).append(".");
 		}
-		builder.append(delimiterFr).append(table).append(delimiterTo);
+
+		BasicSQLCreaterImpl.delimiter(builder, table, delimiterFr, delimiterTo);
 		builder.append(SQLCreater.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
 			//builder.append(" AS ").append(sql.getAlias());
@@ -175,7 +178,8 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		List<Join> joins = sql.getJoins();
 		if(null != joins) {
 			for (Join join:joins) {
-				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ").append(delimiterFr).append(join.getName()).append(delimiterTo);
+				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ");
+				BasicSQLCreaterImpl.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
 				if(BasicUtil.isNotEmpty(join.getAlias())){
 					builder.append("  ").append(join.getAlias());
 				}

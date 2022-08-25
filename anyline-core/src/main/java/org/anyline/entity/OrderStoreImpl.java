@@ -87,8 +87,8 @@ public class OrderStoreImpl implements OrderStore{
 				Order order = orders.get(i);
 				if(null == order){
 					continue;
-				} 
-				builder.append(order.getColumn()).append(" ").append(order.getType()); 
+				}
+				BasicSQLCreaterImpl.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
 				if(i<orders.size()-1){ 
 					builder.append(","); 
 				} 
