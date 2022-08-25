@@ -138,6 +138,7 @@ public class QQMapUtil {
         Double _lat = coordinate.getLat();
 
         coordinate.convert(Coordinate.TYPE.GCJ02LL);
+        coordinate.setSuccess(false);
 
         String api = "/ws/geocoder/v1";
         Map<String, Object> params = new HashMap<>();
@@ -145,6 +146,11 @@ public class QQMapUtil {
         params.put("key", config.KEY);
         String sign = sign(api, params);
         String url = QQMapConfig.HOST + api+"?"+BeanUtil.map2string(params, false,true)+"&sig="+sign;
+
+        //换回原坐标系
+        coordinate.setLng(_lng);
+        coordinate.setLat(_lat);
+        coordinate.setType(_type);
 
         String txt = HttpUtil.get(url).getText();
         DataRow row = DataRow.parseJson(txt);
@@ -185,10 +191,7 @@ public class QQMapUtil {
                 }
             }
         }
-        //换回原坐标系
-        coordinate.setLng(_lng);
-        coordinate.setLat(_lat);
-        coordinate.setType(_type);
+        coordinate.setSuccess(true);
         return coordinate;
     }
     public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){

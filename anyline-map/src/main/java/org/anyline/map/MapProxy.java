@@ -52,27 +52,27 @@ public class MapProxy {
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_amap", DateUtil.format("yyyy-MM-dd"));
                 }
-                coordinate = null;
+            }catch (Exception e){
             }
         }
-        if(null == coordinate && null != bmap && enable(api,"bmap")){
+        if(!coordinate.isSuccess()  && null != bmap && enable(api,"bmap")){
             try{
                 coordinate = bmap.regeo(coordinate);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_bmap", DateUtil.format("yyyy-MM-dd"));
                 }
-                coordinate = null;
+            }catch (Exception e){
             }
         }
-        if(null == coordinate && null != qmap && enable(api,"qmap")){
+        if(!coordinate.isSuccess() && null != qmap && enable(api,"qmap")){
             try{
                 coordinate = qmap.regeo(coordinate);
             }catch (AnylineException e){
                 if("API_OVER_LIMIT".equals(e.getCode())){
                     over_limits.put(api+"_qmap", DateUtil.format("yyyy-MM-dd"));
                 }
-                coordinate = null;
+            }catch (Exception e){
             }
         }
 

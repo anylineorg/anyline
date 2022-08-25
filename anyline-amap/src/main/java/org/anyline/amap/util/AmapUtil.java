@@ -733,58 +733,57 @@ public class AmapUtil {
 		Double _lat = coordinate.getLat();
 
 		coordinate.convert(Coordinate.TYPE.GCJ02LL);
-
+		coordinate.setSuccess(false);
 		DataRow row = null; 
 		String url = "http://restapi.amap.com/v3/geocode/regeo"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("location", coordinate.getLng()+","+coordinate.getLat());
 		String sign = sign(params); 
-		params.put("sig", sign); 
-		String txt = HttpUtil.get(url, "UTF-8", params).getText(); 
-		try{ 
-			row = DataRow.parseJson(txt); 
-			if(null != row){
-				int status = row.getInt("STATUS",0);
-				if(status ==0){
-					//[逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
-					log.warn("[逆地理编码][执行失败][code:{}][info:{}]", row.getString("INFOCODE"), row.getString("INFO"));
-					log.warn("[逆地理编码][response:{}]",txt);
-					if("10044".equals(row.getString("INFOCODE"))) {
-						throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
-					}else{
-						throw new AnylineException(status, row.getString("INFO"));
-					}
-				}else {
-					row = row.getRow("regeocode");
-					if (null != row) {
-						coordinate.setAddress(row.getString("formatted_address"));
+		params.put("sig", sign);
 
-						DataRow adr = row.getRow("addressComponent");
-						if (null != adr) {
-							String adcode = adr.getString("adcode");
-							String provinceCode = adcode.substring(0,2);
-							String cityCode = adcode.substring(0,4);
-							coordinate.setProvinceCode(provinceCode);
-							coordinate.setProvinceName(adr.getString("province"));
-							coordinate.setCityCode(cityCode);
-							coordinate.setCityName(adr.getString("city"));
-							coordinate.setDistrictCode(adcode);
-							coordinate.setDistrictName(adr.getString("district"));
-							coordinate.setTownCode(adr.getString("towncode"));
-							coordinate.setTownName(adr.getString("township"));
-						}
-
-					}
-				}
-			} 
-		}catch(Exception e){ 
-			e.printStackTrace(); 
-		}
 		//换回原坐标系
 		coordinate.setLng(_lng);
 		coordinate.setLat(_lat);
 		coordinate.setType(_type);
+
+		String txt = HttpUtil.get(url, "UTF-8", params).getText();
+		row = DataRow.parseJson(txt);
+		if(null != row){
+			int status = row.getInt("STATUS",0);
+			if(status ==0){
+				//[逆地理编码][执行失败][code:10044][info:USER_DAILY_QUERY_OVER_LIMIT]
+				log.warn("[逆地理编码][执行失败][code:{}][info:{}]", row.getString("INFOCODE"), row.getString("INFO"));
+				log.warn("[逆地理编码][response:{}]",txt);
+				if("10044".equals(row.getString("INFOCODE"))) {
+					throw new AnylineException("API_OVER_LIMIT", "访问已超出日访问量");
+				}else{
+					throw new AnylineException(status, row.getString("INFO"));
+				}
+			}else {
+				row = row.getRow("regeocode");
+				if (null != row) {
+					coordinate.setAddress(row.getString("formatted_address"));
+
+					DataRow adr = row.getRow("addressComponent");
+					if (null != adr) {
+						String adcode = adr.getString("adcode");
+						String provinceCode = adcode.substring(0,2);
+						String cityCode = adcode.substring(0,4);
+						coordinate.setProvinceCode(provinceCode);
+						coordinate.setProvinceName(adr.getString("province"));
+						coordinate.setCityCode(cityCode);
+						coordinate.setCityName(adr.getString("city"));
+						coordinate.setDistrictCode(adcode);
+						coordinate.setDistrictName(adr.getString("district"));
+						coordinate.setTownCode(adr.getString("towncode"));
+						coordinate.setTownName(adr.getString("township"));
+					}
+
+				}
+			}
+		}
+		coordinate.setSuccess(true);
 		return coordinate;
 	}
 

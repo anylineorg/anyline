@@ -29,6 +29,8 @@ public class Coordinate {
 	private String code						;
 	private int level						;
 	private String address					;
+	private boolean success = true			; //执行结果
+	private String message = null			; //执行结果说明
 
 
 	public Coordinate(String location){
@@ -202,5 +204,21 @@ public class Coordinate {
 
 	public void setPoint(Double[] point) {
 		this.point = point;
+	}
+
+	public boolean isSuccess() {
+		return success;
+	}
+
+	public void setSuccess(boolean success) {
+		this.success = success;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 }

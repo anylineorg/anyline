@@ -54,6 +54,12 @@ public class BaiduMapUtil {
         Double _lng = coordinate.getLng();
         Double _lat = coordinate.getLat();
         coordinate.convert(Coordinate.TYPE.BD09LL);
+        coordinate.setSuccess(false);
+
+        //换回原坐标系
+        coordinate.setLng(_lng);
+        coordinate.setLat(_lat);
+        coordinate.setType(_type);
 
         String url = "https://api.map.baidu.com/reverse_geocoding/v3/?ak="+config.AK+"&location="+coordinate.getLat()+","+coordinate.getLng()+"&extensions_town=true&output=json";
         String txt = HttpUtil.get(url).getText();
@@ -88,10 +94,7 @@ public class BaiduMapUtil {
 
             }
         }
-        //换回原坐标系
-        coordinate.setLng(_lng);
-        coordinate.setLat(_lat);
-        coordinate.setType(_type);
+        coordinate.setSuccess(true);
         return coordinate;
     }
 
