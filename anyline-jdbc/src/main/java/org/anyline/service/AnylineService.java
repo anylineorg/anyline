@@ -153,11 +153,11 @@ public interface AnylineService<E>{
 
 	/**
 	 * 如果二级缓存开启 会从二级缓存中提取数据
-	 * @param cache	对应ehcache缓存配置文件 中的cache.name
-	 * @param src src
+	 * @param cache			对应ehcache缓存配置文件 中的cache.name
+	 * @param src 			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
 	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param conditions 固定查询条件
+	 * @param conditions 	固定查询条件
 	 * @return DataSet
 	 */
 	public DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
@@ -202,10 +202,10 @@ public interface AnylineService<E>{
 
 	/**
 	 * 删除缓存 参数保持与查询参数完全一致
-	 * @param channel channel
-	 * @param src src
-	 * @param configs  查询条件
-	 * @param conditions 查询条件
+	 * @param channel 		channel
+	 * @param src 			数据源(表或自定义SQL或SELECT语句)
+	 * @param configs  		根据http等上下文构造查询条件
+	 * @param conditions 	固定查询条件
 	 * @return boolean
 	 */
 	public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
@@ -220,9 +220,9 @@ public interface AnylineService<E>{
 	 
 	/** 
 	 * 是否存在 
-	 * @param src  表
-	 * @param configs  查询条件
-	 * @param conditions 查询条件
+	 * @param src  			数据源(表或自定义SQL或SELECT语句)
+	 * @param configs  		根据http等上下文构造查询条件
+	 * @param conditions 	固定查询条件
 	 * @return boolean
 	 */
 	public boolean exists(String src, ConfigStore configs, Object obj, String ... conditions);
