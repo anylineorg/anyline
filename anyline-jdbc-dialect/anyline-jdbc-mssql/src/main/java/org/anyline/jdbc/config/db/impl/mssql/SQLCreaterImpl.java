@@ -11,12 +11,14 @@ import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
  
 @Repository("anyline.jdbc.creater.mssql") 
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
+public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
 	 
 	@Autowired(required = false) 
 	@Qualifier("anyline.dao") 
@@ -24,8 +26,16 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	 
 	public DB_TYPE type(){ 
 		return DB_TYPE.MSSQL; 
-	} 
-	 
+	}
+
+	@Value("${anyline.jdbc.delimiter.mssql:}")
+	private String delimiter;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		setDelimiter(delimiter);
+	}
+
 	private static String dbVersion = ConfigTable.getString("DATABASE_VERSION"); 
 	public SQLCreaterImpl(){ 
 		delimiterFr = "[";

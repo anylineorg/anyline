@@ -10,8 +10,10 @@ import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.util.*;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.lang.reflect.Field;
@@ -23,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 @Repository("anyline.jdbc.creater.oracle") 
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
+public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
 	 
 	@Autowired(required = false) 
 	@Qualifier("anyline.dao") 
@@ -31,8 +33,16 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 
 	public DB_TYPE type(){ 
 		return DB_TYPE.ORACLE; 
-	} 
- 
+	}
+
+	@Value("${anyline.jdbc.delimiter.oracle:}")
+	private String delimiter;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		setDelimiter(delimiter);
+	}
+
 	public SQLCreaterImpl(){ 
 		delimiterFr = "";
 		delimiterTo = "";

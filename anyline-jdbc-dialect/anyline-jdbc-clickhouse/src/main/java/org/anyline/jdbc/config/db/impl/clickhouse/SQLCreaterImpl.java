@@ -5,17 +5,29 @@ import org.anyline.entity.OrderStore;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.util.BasicUtil;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository("anyline.jdbc.creater.clickhouse")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
+public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
  
 	public DB_TYPE type(){ 
 		return DB_TYPE.ClickHouse;
-	} 
+	}
+
 	public SQLCreaterImpl(){ 
 		delimiterFr = "";
 		delimiterTo = "";
+	}
+
+	@Value("${anyline.jdbc.delimiter.clickhouse:}")
+	private String delimiter;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		setDelimiter(delimiter);
 	}
 
 	@Override 
@@ -44,5 +56,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
  
 	public String concat(String ... args){
 		return concatFun(args);
-	} 
-} 
+	}
+
+}

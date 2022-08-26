@@ -84,6 +84,18 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return this.delimiterTo;
 	}
 
+	public void setDelimiter(String delimiter){
+		if(BasicUtil.isNotEmpty(delimiter)){
+			delimiter = delimiter.replaceAll("\\s", "");
+			if(delimiter.length() == 1){
+				this.delimiterFr = delimiter;
+				this.delimiterTo = delimiter;
+			}else{
+				this.delimiterFr = delimiter.substring(0,1);
+				this.delimiterTo = delimiter.substring(1,2);
+			}
+		}
+	}
 	/** 
 	 * 创建查询SQL 
 	 */ 

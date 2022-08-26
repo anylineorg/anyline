@@ -7,12 +7,14 @@ import org.anyline.entity.OrderStore;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository("anyline.jdbc.creater.kingbase")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{ 
+public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
 	 
 	@Autowired(required = false) 
 	@Qualifier("anyline.dao") 
@@ -20,8 +22,16 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 
 	public DB_TYPE type(){ 
 		return DB_TYPE.KingBase;
-	} 
- 
+	}
+	@Value("${anyline.jdbc.delimiter.kingbase:}")
+	private String delimiter;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		setDelimiter(delimiter);
+	}
+
+
 	public SQLCreaterImpl(){ 
 		delimiterFr = "";
 		delimiterTo = "";

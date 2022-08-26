@@ -5,10 +5,12 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 @Repository("anyline.jdbc.creater.gbasedbt")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
+public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
  
 	public DB_TYPE type(){ 
 		return DB_TYPE.GBase;
@@ -16,6 +18,14 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater{
 	public SQLCreaterImpl(){ 
 		delimiterFr = "";
 		delimiterTo = "";
+	}
+
+	@Value("${anyline.jdbc.delimiter.gbasedbt:}")
+	private String delimiter;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		setDelimiter(delimiter);
 	}
 
 	@Override
