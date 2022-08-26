@@ -3768,7 +3768,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return ds;
     }
 
-    public DataSet order(final String... keys) {
+    public DataSet order(String... keys) {
         return asc(keys);
     }
 
@@ -3785,8 +3785,13 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
-
-    public DataSet put(String key, Object value) {
+    public DataSet put(String key, Object value){
+        for(DataRow row:rows){
+            row.put(key, value);
+        }
+        return this;
+    }
+    public DataSet putFormula(String key, Object value) {
         int regex = 0;
         if(null != value && value instanceof String){
             String str = (String)value;
