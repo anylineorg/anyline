@@ -1028,10 +1028,6 @@ public class BasicUtil {
 	}
 
 	public static String placeholder(String text, String delimiterFr, String delimiterTo){
-		//已开启界定符(SQL中已添加界定符)
-		if(ConfigTable.IS_SQL_DELIMITER_OPEN){
-			return text;
-		}
 		//未开启占位符
 		if(!ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			return text;
