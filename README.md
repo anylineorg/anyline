@@ -13,9 +13,9 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
 
 
 ## 适用场景
-适合于抽象设计阶段(实体概念还不明确或者设计不限于某个特别的实体)  
-常用于需要动态结构的场景    
-特别适合于需要大量复杂动态的查询，以及查询的结果集需要经过深度处理的场景  
+Anyline一的切都是面向动态、面向运行时环境  
+适合于抽象设计阶段(实体概念还不明确或者设计不限于某个特别的实体)   
+常用于需要大量复杂动态的查询，以及查询的结果集需要经过深度处理的场景  
 如:可视化数据源、低代码后台、物联网数据处理、数据清洗、报表输出、运行时自定义表单/查询条件/数据结构等  
 
 
@@ -109,7 +109,7 @@ userService.querys(condition(true,"anyline根据约定自动生成的查询条�
   铺垫完了要操作数据实现业务了，依然啰嗦，各种 劳力 不劳心 的遍历及加减乘除
 
 ### &nbsp;所以重点说 优势
-###  &nbsp;&nbsp;1. **关于查询条件**  
+####  &nbsp;&nbsp;1. **关于查询条件**  
 &nbsp;&nbsp;&nbsp;&nbsp;这是开发人员最繁重的体力劳动<font color="red">之一</font>  
 &nbsp;&nbsp;&nbsp;&nbsp;接收参数、验证、格式化、层层封装传递到mapper.xml，再各种判断、遍历就为生成一条SQL    
 &nbsp;&nbsp;&nbsp;&nbsp;下面的这些标签许多人可能感觉习以为常了
@@ -141,23 +141,45 @@ condition("CODE:code","NAME:name%", "TYPE:[type]")
 &nbsp;&nbsp;&nbsp;&nbsp;这应该不需要注释了，更多的约定可以参考这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)
 
 
-###  &nbsp;&nbsp;2. **结果集的二次操作**    
+####  &nbsp;&nbsp;2. **结果集的二次操作**    
 &nbsp;&nbsp;&nbsp;&nbsp;这是开发人员最繁重的劳动<font color="red">之二</font>    
 &nbsp;&nbsp;&nbsp;&nbsp;从数据库中查询出数据后，根据业务需求还需要对结果集作各种操作，最简单的如加减乘除、交集差集、筛选过滤等  
 &nbsp;&nbsp;&nbsp;&nbsp;这些常见的操作DataSet中都已经提供默认实现了，如ngl表达式、聚合函数、类SQL筛选过滤、维度转换等。
 
 
-### &nbsp;3. **关于动态数据结构**
-&nbsp;&nbsp;&nbsp;&nbsp;这里要说的数据结构也就是数据库查询后返回的结果集，常用的数据结构有两种  
+#### &nbsp;3. **关于面向动态与运行时环境**  
+&nbsp;&nbsp;&nbsp;&nbsp;这里说的动态是指出动态数据源、动态数据结构、动态结果集  
+&nbsp;&nbsp;&nbsp;&nbsp;运行时环境是指在系统运行阶段才能确定以上内容，而不是在需求、设计、编码阶段    
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+###### &nbsp;&nbsp;&nbsp;&nbsp;动态数据源：
+&nbsp;&nbsp;&nbsp;&nbsp;一般是在系统运行时生成  
+&nbsp;&nbsp;&nbsp;&nbsp;典型场景如数据中台，用户通过管理端提交第三方数据库的地址帐号，中台汇聚多个数据源的数据  
+&nbsp;&nbsp;&nbsp;&nbsp;   
+&nbsp;&nbsp;&nbsp;&nbsp;这种情况下显示不是在配置文件中添加多个数据源可以解决的  
+&nbsp;&nbsp;&nbsp;&nbsp;而是需要在接收到用户提交数据后，生成动态的数据源  
+&nbsp;&nbsp;&nbsp;&nbsp;生成的动态数据源最好交给Spring等容器管理  
+&nbsp;&nbsp;&nbsp;&nbsp;以充分利用其生态内的连接池,事务管理,切面等现有工具  
+&nbsp;&nbsp;&nbsp;&nbsp;  
+&nbsp;&nbsp;&nbsp;&nbsp;在切换数据源时也不能通过切面来实现    
+&nbsp;&nbsp;&nbsp;&nbsp;而是根据组织或租户身份等上下文环境来切换
+###### &nbsp;&nbsp;&nbsp;&nbsp;动态数据结构:
+&nbsp;&nbsp;&nbsp;&nbsp;一般由非专业开发人员甚至是最终用户来设计表结构  
+&nbsp;&nbsp;&nbsp;&nbsp;根据用户设置或不同场景返回不同结构的结果集    
+&nbsp;&nbsp;&nbsp;&nbsp;查询条件也由用户动态指定    
+&nbsp;&nbsp;&nbsp;&nbsp;结果集与查询条件的选择范围也不能在编码阶段设置限定    
+&nbsp;&nbsp;&nbsp;&nbsp;典型场景如物联网平台仪器设备参数、低代码平台、报表工具    
+
+
+###### &nbsp;&nbsp;&nbsp;&nbsp;常用的数据结构有两种  
 &nbsp;&nbsp;&nbsp;&nbsp;1).DataRow类似于一个Map  
 &nbsp;&nbsp;&nbsp;&nbsp;2).DataSet是DataRow的集合，并内含了分页信息  
 
 &nbsp;&nbsp;&nbsp;&nbsp;以下场景中将逐步体现出相对于List,Entity的优势  
-&nbsp;&nbsp;&nbsp;&nbsp;**1). 最常见的如更新或查询部分列**  
+###### &nbsp;&nbsp;&nbsp;&nbsp;**1). 最常见的如更新或查询部分列**  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataRow row = service.query("HR_USER(ID,CODE)")  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service.update(row,"CODE") 
- 
-&nbsp;&nbsp;&nbsp;&nbsp;**2).可视化数据源、报表输出、数据清洗**  
+
+###### &nbsp;&nbsp;&nbsp;&nbsp;**2).可视化数据源、报表输出、数据清洗**  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这些场景下都需要的数据结构都是灵活多变的    
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;经常是针对不同的业务从多个表中合成不同的结构集  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;甚至是运行时根据用户输入动态结合的结构集  
@@ -168,7 +190,7 @@ condition("CODE:code","NAME:name%", "TYPE:[type]")
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-&nbsp;&nbsp;&nbsp;&nbsp;**3).低代码后台、元数据管理**  
+###### &nbsp;&nbsp;&nbsp;&nbsp;**3).低代码后台、元数据管理**  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;作为一个低代码的后台，首先需要具体灵活可定制的表结构(通常会是一个半静半动的结构)     
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;我们将不再操作具体的业务对象与属性。对大部分业务的操作都只能通过抽象的元数据进行。    
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;举例来说一个简单的求和过程，原来在对静态结构时常用的的遍历、Lamda、反射都难堪重任了。  
@@ -177,7 +199,7 @@ condition("CODE:code","NAME:name%", "TYPE:[type]")
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataSet set = service.querys(学生,年级=1);  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int 平均年龄 = set.agg(平均值,年龄);   
 
-&nbsp;&nbsp;&nbsp;&nbsp;**4).运行时自定义表单、查询条件**  
+###### &nbsp;&nbsp;&nbsp;&nbsp;**4).运行时自定义表单、查询条件**  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;许多情况下我们的基础版本产品，很难满足用户100%的需求，  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;而这些新需求又大部分是一些简单的表单、查询条件    
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;如果是让程序员去开发一个表单，添加几个查询条件，那确实很简单    
@@ -190,7 +212,7 @@ condition("CODE:code","NAME:name%", "TYPE:[type]")
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service.query(类型(属性集合),condition().add('对比方式','属性','值');
 
 
-&nbsp;&nbsp;&nbsp;&nbsp;**5).物联网环境(特别是像Cassandra、ClickHouse等列式数据库 InfluxDB、TimescaleDB等时序数据库)**  
+###### &nbsp;&nbsp;&nbsp;&nbsp;**5).物联网环境(特别是像Cassandra、ClickHouse等列式数据库 InfluxDB、TimescaleDB等时序数据库)**  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;与低代码平台类似都需要一种动态的结构，并且为了数据读取的高效，数据在水平方向上变的更分散。  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这与最终用户需要显示的格式完全不一样，直接通过数据库查询出来的原始数据通常是类似这样  
 
@@ -232,21 +254,27 @@ condition("CODE:code","NAME:name%", "TYPE:[type]")
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-&nbsp;&nbsp;&nbsp;&nbsp;**6).关于分页查询的数据存储结构**
+###### &nbsp;&nbsp;&nbsp;&nbsp;**6).关于分页查询的数据存储结构**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  
 ###### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通过默认的方式查询  
-- 如果没有分页 可以通过DataSet结构接收数据
-- 如果有分页了 可以通过DataSet结构接收数据
-- 不同的是分页后DataSet.PageNavi中会嵌入详细的分页信息
+- 无论是否分页 都可以通过DataSet结构接收数据  
+- 不同的是分页后DataSet.PageNavi中会嵌入详细的分页信息  
 ###### &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;通过User.class查询数据时  
-- 如果没有分页 可以通过List&lt;User&gt;&gt;结构接收数据
-- 如果有分页了 那需要通过Page&lt;List&lt;User&gt;&gt;结构接收数据
-- 简单查询个部门列表，还要根据分不分页写两个接口吗  
+- 如果没有分页 可以通过List&lt;User&gt;&gt;结构接收数据  
+- 如果有分页了 那需要通过Page&lt;List&lt;User&gt;&gt;结构接收数据  
+- 简单查询个部门列表，还要根据分不分页写两个接口吗   
 
-&nbsp;&nbsp;&nbsp;&nbsp;**7).数据加密**      
+###### &nbsp;&nbsp;&nbsp;&nbsp;**7).数据加密**      
 &nbsp;&nbsp;&nbsp;&nbsp;对于需要加密的数据经常会遇到数字类型的ID  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;而加密后的数据类型通常是String类型，导致原对象无法存储  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+  
+&nbsp;&nbsp;&nbsp;&nbsp;  
+&nbsp;&nbsp;&nbsp;&nbsp;  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
