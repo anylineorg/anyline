@@ -1012,7 +1012,19 @@ public class BasicUtil {
 			builder.append(column);
 			return builder ;
 		}
-		builder.append(delimiterFr).append(column).append(delimiterTo);
+		if(column.contains(".")){
+			String[] cols = column.split("\\.");
+			int size = cols.length;
+			for(int i=0; i<size; i++){
+				String col = cols[i];
+				builder.append(delimiterFr).append(col).append(delimiterTo);
+				if(i < size-1){
+					builder.append(".");
+				}
+			}
+		}else {
+			builder.append(delimiterFr).append(column).append(delimiterTo);
+		}
 
 		return builder ;
 	}
@@ -1023,7 +1035,7 @@ public class BasicUtil {
 		if(column.startsWith(delimiterFr) || column.endsWith(delimiterTo)){
 			return column ;
 		}
-		String result = delimiterFr + column.trim() + delimiterTo;
+		String result = BasicUtil.delimiter(new StringBuilder(), column, delimiterFr, delimiterTo).toString();
 		return result;
 	}
 
@@ -1059,7 +1071,7 @@ public class BasicUtil {
 				for(List<String> list: lists){
 					String full = list.get(0);
 					//String fr = list.get(1);
-					String key = list.get(2);
+					String key = list.get(2).trim();
 					//String to = list.get(3);
 					String replace = delimiterFr + key + delimiterTo;
 					text = text.replace(full, replace);

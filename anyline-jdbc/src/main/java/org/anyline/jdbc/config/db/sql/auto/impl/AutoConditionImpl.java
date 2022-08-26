@@ -204,9 +204,10 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		String delimiterTo = creater.getDelimiterTo();
 		String text = "";
 		if(BasicUtil.isNotEmpty(table)){
-			text += delimiterFr + table + delimiterTo + ".";
+			text += BasicUtil.delimiter(table,delimiterFr, delimiterTo) + ".";
 		}
-		text += delimiterFr + column + delimiterTo;
+
+		text += BasicUtil.delimiter(column, delimiterFr, delimiterTo);
 
 		if(compare == COMPARE_TYPE.EQUAL){
 			Object v = getValue(val);

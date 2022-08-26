@@ -114,7 +114,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					}else if("*".equals(column)){
 						builder.append("*");
 					}else{
-						BasicUtil.delimiter(builder, column.replace(".", delimiterTo+"."+delimiterFr), delimiterFr, delimiterTo);
+						BasicUtil.delimiter(builder, column, delimiterFr, delimiterTo);
 					} 
 				} 
 				if(i<size-1){ 

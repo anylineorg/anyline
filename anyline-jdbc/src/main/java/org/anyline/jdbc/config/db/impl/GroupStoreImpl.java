@@ -91,8 +91,8 @@ public class GroupStoreImpl implements GroupStore{
 				Group group = groups.get(i);
 				if(null == group){
 					continue;
-				} 
-				builder.append(group.getColumn()); 
+				}
+				BasicUtil.delimiter(builder, group.getColumn(), delimiter);
 				if(i<groups.size()-1){ 
 					builder.append(","); 
 				} 
