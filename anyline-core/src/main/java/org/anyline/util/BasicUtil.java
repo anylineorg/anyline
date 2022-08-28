@@ -1012,6 +1012,13 @@ public class BasicUtil {
 			builder.append(column);
 			return builder ;
 		}
+		String[] holder = placeholder();
+		if(null != holder){
+			if(column.startsWith(holder[0]) || column.endsWith(holder[1])){
+				builder.append(column);
+				return builder ;
+			}
+		}
 		if(column.contains(".")){
 			String[] cols = column.split("\\.");
 			int size = cols.length;
@@ -1044,23 +1051,14 @@ public class BasicUtil {
 		if(!ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			return text;
 		}
-		String holder = ConfigTable.SQL_DELIMITER_PLACEHOLDER;
+		String[] holder = placeholder();
 		if(null == holder){
 			return text;
 		}
 
-		String holderFr = "";
-		String holderTo = "";
-		holder = holder.replaceAll("\\s", "");
-		if(holder.length() == 0){
-			return text;
-		}else if(holder.length() ==1){
-			holderFr = holder;
-			holderTo = holder;
-		}else{
-			holderFr = holder.substring(0,1);
-			holderTo = holder.substring(1,2);
-		}
+		String holderFr = holder[0];
+		String holderTo = holder[1];
+
 		if(holderFr.equals(holderTo) && delimiterFr.equals(delimiterTo)){
 			text = text.replace(holderFr, delimiterFr);
 		}else{
@@ -1082,5 +1080,33 @@ public class BasicUtil {
 		}
 
 		return text;
+	}
+
+	private static String[] static_holder = null;
+	public static String[] placeholder(){
+		if(null != static_holder){
+			return static_holder;
+		}
+		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
+			String holder = ConfigTable.SQL_DELIMITER_PLACEHOLDER;
+			if(null == holder){
+				return null;
+			}
+			String holderFr = "";
+			String holderTo = "";
+			holder = holder.replaceAll("\\s", "");
+			if(holder.length() == 0){
+				return null;
+			}else if(holder.length() ==1){
+				holderFr = holder;
+				holderTo = holder;
+			}else{
+				holderFr = holder.substring(0,1);
+				holderTo = holder.substring(1,2);
+			}
+			static_holder = new String[]{holderFr, holderTo};
+			return static_holder;
+		}
+		return null;
 	}
 }
