@@ -1082,27 +1082,30 @@ public class BasicUtil {
 		return text;
 	}
 
+	private static String config_holder = null;
 	private static String[] static_holder = null;
 	public static String[] placeholder(){
-		if(null != static_holder){
-			return static_holder;
+		if (config_holder != null && config_holder.equals(ConfigTable.SQL_DELIMITER_PLACEHOLDER)) {
+			if(null != static_holder){
+				return static_holder;
+			}
 		}
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			String holder = ConfigTable.SQL_DELIMITER_PLACEHOLDER;
-			if(null == holder){
+			config_holder = ConfigTable.SQL_DELIMITER_PLACEHOLDER;
+			if(null == config_holder){
 				return null;
 			}
 			String holderFr = "";
 			String holderTo = "";
-			holder = holder.replaceAll("\\s", "");
-			if(holder.length() == 0){
+			config_holder = config_holder.replaceAll("\\s", "");
+			if(config_holder.length() == 0){
 				return null;
-			}else if(holder.length() ==1){
-				holderFr = holder;
-				holderTo = holder;
+			}else if(config_holder.length() ==1){
+				holderFr = config_holder;
+				holderTo = config_holder;
 			}else{
-				holderFr = holder.substring(0,1);
-				holderTo = holder.substring(1,2);
+				holderFr = config_holder.substring(0,1);
+				holderTo = config_holder.substring(1,2);
 			}
 			static_holder = new String[]{holderFr, holderTo};
 			return static_holder;
