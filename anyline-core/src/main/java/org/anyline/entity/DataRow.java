@@ -122,7 +122,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             put(keyAdapter.key(entity.getKey()), entity.getValue());
         }
     }
-
+    public DataRow serCreateTime(Long time){
+        this.createTime = time;
+        return this;
+    }
+    public DataRow serCreateTime(Date time){
+        this.createTime = time.getTime();
+        return this;
+    }
     /**
      * 数组解析成DataRow
      * @param row 在此基础上执行，如果不提供则新创建
