@@ -1,17 +1,21 @@
  
 package org.anyline.jdbc.config.db.impl.influxdb;
 
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.config.db.run.impl.TableRunSQLImpl;
+import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 @Repository("anyline.jdbc.creater.influxdb")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
@@ -62,7 +66,41 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 
 
 	public RunSQL createInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
-		return null;
+		RunSQL run = null;
+		if(null != obj){
+			StringBuilder builder = new StringBuilder();
+			run = new TableRunSQLImpl();
+			if(obj instanceof DataRow){
+				DataRow row = (DataRow)obj;
+				List<String> cols = confirmInsertColumns(dest, obj, columns);
+				//insert al, tag1=value1 qty=1,name=5
+				builder.append("insert ").append(parseTable(dest)).append(" ");
+				Map<String,Object> tags = row.getTags();
+				for(String tag:tags.keySet()){
+					builder.append(",").append(tag).append("=").append(tags.get(tag));
+				}
+				int qty = 0;
+				for(String col:cols){
+					Object value = row.get(col);
+					if(null == value){
+						continue;
+					}
+					if(qty>0) {
+						builder.append(",");
+					}
+					builder.append(col).append("=");
+					if(BasicUtil.isNumber(value) || BasicUtil.isBoolean(value)){
+						builder.append(value);
+					}else{
+						builder.append("\"").append(value).append("\"");
+					}
+					qty ++;
+				}
+				builder.append(" ").append(row.getCreateTime()*1000);
+				run.setBuilder(builder);
+			}
+		}
+		return run;
 	}
 	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys){
 		return;

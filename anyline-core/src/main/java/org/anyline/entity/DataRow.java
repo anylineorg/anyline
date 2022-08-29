@@ -64,6 +64,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private Map<String, Object> attributes = new HashMap<>();   // 属性
     private Map<String, Object> tags = new HashMap<>();         // 标签
     private long createTime = 0;                                // 创建时间
+    private long nanoTime = 0;
     private long expires = -1;                                  // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     protected Boolean isNew = false;                            // 强制新建(适应hibernate主键策略)
     protected boolean isFromCache = false;                      // 是否来自缓存
@@ -85,6 +86,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             primaryKeys.add(DEFAULT_PRIMARY_KEY);
         }
         createTime = System.currentTimeMillis();
+        nanoTime = System.currentTimeMillis();
     }
 
     private void parseKeycase(KEY_CASE keyCase) {
@@ -131,6 +133,15 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         this.createTime = time.getTime();
         return this;
     }
+
+    public long getNanoTime() {
+        return nanoTime;
+    }
+
+    public void setNanoTime(long nanoTime) {
+        this.nanoTime = nanoTime;
+    }
+
     /**
      * 数组解析成DataRow
      * @param row 在此基础上执行，如果不提供则新创建
@@ -1697,6 +1708,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         row.schema = this.schema;
         row.table = this.table;
         row.createTime = this.createTime;
+        row.nanoTime = this.nanoTime;
         row.isNew = this.isNew;
         return row;
     }
