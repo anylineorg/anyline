@@ -258,6 +258,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             DataRow row = set.getRow(0);
             return row;
         }
+        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            return new DataRow();
+        }
         return null;
     }
 
@@ -321,6 +324,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         if(null != row && null != cacheProvider){
             cacheProvider.put(cache, key, row);
         }
+        if(null == row && ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            row = new DataRow();
+        }
         return row;
     }
     @Override
@@ -373,6 +379,13 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         EntitySet<T> list = querys(clazz, configs, entity, conditions);
         if (null != list && list.size() > 0) {
             return list.get(0);
+        }
+        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            try {
+                return (T) clazz.newInstance();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
         return null;
     }
@@ -559,6 +572,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             DataRow row = set.getRow(0);
             return row;
         }
+        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            return new DataRow();
+        }
         return null;
     }
 
@@ -618,6 +634,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         row = query(table, configs, conditions);
         if(null != row && null != cacheProvider){
             cacheProvider.put(cache, key, row);
+        }
+        if(null == row && ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            row = new DataRow();
         }
         return row;
     }
@@ -985,7 +1004,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
      * @return DataSet
      */
     @Override
-    public DataSet query(Procedure procedure, String ... inputs) {
+    public DataSet querys(Procedure procedure, PageNavi navi, String ... inputs) {
         DataSet set = null;
         try {
             procedure.setName(DataSourceHolder.parseDataSource(procedure.getName()));
@@ -994,8 +1013,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                     procedure.addInput(input);
                 }
             }
-
-            set = dao.query(procedure);
+            set = dao.querys(procedure, navi);
         } catch (Exception e) {
             set = new DataSet();
             set.setException(e);
@@ -1010,9 +1028,18 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return set;
     }
 
+    public DataSet querys(Procedure procedure,  String ... inputs) {
+        return querys(procedure, null, inputs);
+    }
+    public DataSet querys(Procedure procedure, int fr, int to, String ... inputs) {
+        PageNavi navi = new PageNaviImpl();
+        navi.setFirstRow(fr);
+        navi.setLastRow(to);
+        return querys(procedure, navi, inputs);
+    }
 
     @Override
-    public DataSet queryProcedure(String procedure, String... inputs) {
+    public DataSet querysProcedure(String procedure, PageNavi navi, String... inputs) {
         Procedure proc = new ProcedureImpl();
         proc.setName(procedure);
         if(null != inputs) {
@@ -1020,9 +1047,33 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                 proc.addInput(input);
             }
         }
-        return query(proc);
+        return querys(proc, navi);
+    }
+    public DataSet querysProcedure(String procedure, int fr, int to, String... inputs) {
+        PageNavi navi = new PageNaviImpl();
+        navi.setFirstRow(fr);
+        navi.setLastRow(to);
+        return querysProcedure(procedure, navi, inputs);
+    }
+    public DataSet querysProcedure(String procedure, String... inputs) {
+        return querysProcedure(procedure, null, inputs);
+    }
+    public DataRow queryProcedure(String procedure, String... inputs) {
+        Procedure proc = new ProcedureImpl();
+        proc.setName(procedure);
+        return query(procedure, inputs);
     }
 
+    public DataRow query(Procedure procedure,  String ... inputs) {
+        DataSet set = querys(procedure, 0,0, inputs);
+        if(set.size()>0){
+            return set.getRow(0);
+        }
+        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            return new DataRow();
+        }
+        return null;
+    }
 
     @Override
     public int execute(String src, ConfigStore store, String... conditions) {

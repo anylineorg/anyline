@@ -52,12 +52,12 @@ public interface AnylineService<E>{
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
 	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param fr 起 下标从0开始
-	 * @param to 止
+	 * @param first 起 下标从0开始
+	 * @param last 止
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
-	public DataSet querys(String src, int fr, int to, Object obj, String ... conditions);
+	public DataSet querys(String src, int first, int last, Object obj, String ... conditions);
 	public DataRow query(String src, ConfigStore configs, Object obj, String ... conditions);
 	public DataRow query(String src, Object obj, String ... conditions);
 
@@ -70,12 +70,12 @@ public interface AnylineService<E>{
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
 	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-	 * @param fr 起 下标从0开始
-	 * @param to 止
+	 * @param first 起 下标从0开始
+	 * @param last 止
 	 * @param conditions	固定查询条件
 	 * @return DataSet
 	 */
-	public DataSet querys(String src, int fr, int to,  String ... conditions);
+	public DataSet querys(String src, int first, int last,  String ... conditions);
 	public DataRow query(String src, ConfigStore configs,  String ... conditions);
 	public DataRow query(String src, String ... conditions);
 
@@ -95,14 +95,14 @@ public interface AnylineService<E>{
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, T entity, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, T entity, String ... conditions);
-	public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, T entity, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, T entity, String ... conditions);
 	public <T> T query(Class<T> clazz, ConfigStore configs, T entity, String ... conditions);
 	public <T> T query(Class<T> clazz, T entity, String ... conditions);
 
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, PageNavi navi, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, String ... conditions);
-	public <T> EntitySet<T> querys(Class<T> clazz, int fr, int to, String ... conditions);
+	public <T> EntitySet<T> querys(Class<T> clazz, int first, int last, String ... conditions);
 	public <T> T query(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public <T> T query(Class<T> clazz, String ... conditions);
 
@@ -114,7 +114,7 @@ public interface AnylineService<E>{
 
 	//与public DataSet querys(String src, String ... conditions);  签名冲突
 	public EntitySet<E> gets(String ... conditions);
-	public EntitySet<E> gets(int fr, int to, String ... conditions);
+	public EntitySet<E> gets(int first, int last, String ... conditions);
 	public E get(ConfigStore configs, String ... conditions);
 	public E get(String ... conditions);
 
@@ -128,10 +128,10 @@ public interface AnylineService<E>{
 	 */
 	public List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String ... conditions);
 	public List<Map<String,Object>> maps(String src, Object obj, String ... conditions);
-	public List<Map<String,Object>> maps(String src, int fr, int to, Object obj, String ... conditions);
+	public List<Map<String,Object>> maps(String src, int first, int last, Object obj, String ... conditions);
 	public List<Map<String,Object>> maps(String src, ConfigStore configs, String ... conditions);
 	public List<Map<String,Object>> maps(String src, String ... conditions);
-	public List<Map<String,Object>> maps(String src, int fr, int to, String ... conditions);
+	public List<Map<String,Object>> maps(String src, int first, int last, String ... conditions);
 
 
 
@@ -162,13 +162,13 @@ public interface AnylineService<E>{
 	 */
 	public DataSet caches(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
 	public DataSet caches(String cache, String src, Object obj, String ... conditions);
-	public DataSet caches(String cache, String src, int fr, int to, Object obj, String ... conditions);
+	public DataSet caches(String cache, String src, int first, int last, Object obj, String ... conditions);
 	public DataRow cache(String cache, String src, ConfigStore configs, Object obj, String ... conditions);
 	public DataRow cache(String cache, String src, Object obj, String ... conditions);
 
 	public DataSet caches(String cache, String src, ConfigStore configs,  String ... conditions);
 	public DataSet caches(String cache, String src, String ... conditions);
-	public DataSet caches(String cache, String src, int fr, int to, String ... conditions);
+	public DataSet caches(String cache, String src, int first, int last, String ... conditions);
 	public DataRow cache(String cache, String src, ConfigStore configs, String ... conditions);
 	public DataRow cache(String cache, String src, String ... conditions);
 
@@ -177,26 +177,26 @@ public interface AnylineService<E>{
 	/*多表查询,左右连接时使用*/
 	public DataSet querys(SQL sql, ConfigStore configs, Object obj, String ... conditions);
 	public DataSet querys(SQL sql, Object obj, String ... conditions);
-	public DataSet querys(SQL sql, int fr, int to, Object obj, String ... conditions);
+	public DataSet querys(SQL sql, int first, int last, Object obj, String ... conditions);
 	public DataRow query(SQL sql, ConfigStore configs, Object obj, String ... conditions);
 	public DataRow query(SQL sql, Object obj, String ... conditions);
 
 	public DataSet querys(SQL sql, ConfigStore configs,  String ... conditions);
 	public DataSet querys(SQL sql,  String ... conditions);
-	public DataSet querys(SQL sql, int fr, int to,  String ... conditions);
+	public DataSet querys(SQL sql, int first, int last,  String ... conditions);
 	public DataRow query(SQL sql, ConfigStore configs,  String ... conditions);
 	public DataRow query(SQL sql, String ... conditions);
 
 
 	public DataSet caches(String cache, SQL sql, ConfigStore configs, Object obj, String ... conditions);
 	public DataSet caches(String cache, SQL sql, Object obj, String ... conditions);
-	public DataSet caches(String cache, SQL sql, int fr, int to, Object obj, String ... conditions);
+	public DataSet caches(String cache, SQL sql, int first, int last, Object obj, String ... conditions);
 	public DataRow cache(String cache, SQL sql, ConfigStore configs, Object obj, String ... conditions);
 	public DataRow cache(String cache, SQL sql, Object obj, String ... conditions);
 
 	public DataSet caches(String cache, SQL sql, ConfigStore configs, String ... conditions);
 	public DataSet caches(String cache, SQL sql, String ... conditions);
-	public DataSet caches(String cache, SQL sql, int fr, int to, String ... conditions);
+	public DataSet caches(String cache, SQL sql, int first, int last, String ... conditions);
 	public DataRow cache(String cache, SQL sql, ConfigStore configs, String ... conditions);
 	public DataRow cache(String cache, SQL sql, String ... conditions);
 
@@ -210,7 +210,7 @@ public interface AnylineService<E>{
 	 */
 	public boolean removeCache(String channel, String src, ConfigStore configs, String ... conditions);
 	public boolean removeCache(String channel, String src, String ... conditions);
-	public boolean removeCache(String channel, String src, int fr, int to, String ... conditions);
+	public boolean removeCache(String channel, String src, int first, int last, String ... conditions);
 	/**
 	 * 清空缓存
 	 * @param channel channel
@@ -329,11 +329,19 @@ public interface AnylineService<E>{
 	/** 
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
+	 * @param first  first
+	 * @param last  last
 	 * @param inputs  inputs
 	 * @return DataSet
-	 */ 
-	public DataSet queryProcedure(String procedure, String ... inputs);
-	public DataSet query(Procedure procedure, String ... inputs);
+	 */
+	public DataSet querysProcedure(String procedure, int first, int last , String ... inputs);
+	public DataSet querysProcedure(String procedure, PageNavi navi , String ... inputs);
+	public DataSet querysProcedure(String procedure, String ... inputs);
+	public DataSet querys(Procedure procedure, int first, int last,  String ... inputs);
+	public DataSet querys(Procedure procedure, PageNavi navi ,  String ... inputs);
+
+	public DataRow queryProcedure(String procedure, String ... inputs);
+	public DataRow query(Procedure procedure, String ... inputs);
 
 	public int delete(String table, ConfigStore configs, String ... conditions);
 	/**
