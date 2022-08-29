@@ -29,7 +29,6 @@ public class SQLCreaterUtil {
 	private static SQLCreater defaultCreater = null;	//如果当前项目只有一个creater则不需要多次识别
 	public static SQLCreater getCreater(JdbcTemplate jdbc){
 
-		String ds = DataSourceHolder.getDataSource();
 
 		if(null != defaultCreater){
 			return defaultCreater;
@@ -39,6 +38,15 @@ public class SQLCreaterUtil {
 			return defaultCreater;
 		}
 		SQLCreater creater = null;
+		SQLCreater.DB_TYPE type = DataSourceHolder.dialect();
+		if(null != type){
+			//根据 别名
+			creater = getCreater(type.getName());
+			if(null != creater){
+				return creater;
+			}
+		}
+
 		try {
 			if(null != jdbc){
 				DataSource ds = jdbc.getDataSource();
@@ -48,46 +56,9 @@ public class SQLCreaterUtil {
 				if(!DataSourceUtils.isConnectionTransactional(con, ds)){
 					DataSourceUtils.releaseConnection(con, ds);
 				}
-				creater = creaters.get(name);
-				if(null != creater){
-					return creater;
-				}
-				if(name.contains("mysql")){
-					creater = creaters.get(SQLCreater.DB_TYPE.MYSQL.getCode());
-				}else if(name.contains("mssql") || name.contains("sqlserver")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.MSSQL.getCode());
-				}else if(name.contains("oracle")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.ORACLE.getCode());
-				}else if(name.contains("postgresql")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.PostgreSQL.getCode());
-				}
+				//根据url中关键字
+				creater = getCreater(name);
 
-				else if(name.contains("clickhouse")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.ClickHouse.getCode());
-				}else if(name.contains("db2")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.DB2.getCode());
-				}else if(name.contains("derby")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.Derby.getCode());
-				}else if(name.contains("dmdbms")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.DM.getCode());
-				}else if(name.contains("hgdb") || name.contains("highgo")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.HighGo.getCode());
-				}else if(name.contains("kingbase")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.KingBase.getCode());
-				}else if(name.contains("oceanbase")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.OceanBase.getCode());
-				}else if(name.contains("polardb")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.PolarDB.getCode());
-				}else if(name.contains("sqlite")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.SQLite.getCode());
-				}else if(name.contains(":h2:")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.H2.getCode());
-				}else if(name.contains("hsqldb")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.HSQLDB.getCode());
-				}else if(name.contains("taos")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.TDengine.getCode());
-				}
-				creaters.put(name, creater);
 			}
 			if(null == creater){
 				creater = SpringContextUtil.getBean(SQLCreater.class);
@@ -95,6 +66,50 @@ public class SQLCreaterUtil {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return creater;
+	}
+	private static SQLCreater getCreater(String name){
+		SQLCreater creater = null;
+		creater = creaters.get(name);
+		if(null != creater){
+			return creater;
+		}
+		if(name.contains("mysql")){
+			creater = creaters.get(SQLCreater.DB_TYPE.MYSQL.getCode());
+		}else if(name.contains("mssql") || name.contains("sqlserver")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.MSSQL.getCode());
+		}else if(name.contains("oracle")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.ORACLE.getCode());
+		}else if(name.contains("postgresql")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.PostgreSQL.getCode());
+		}
+
+		else if(name.contains("clickhouse")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.ClickHouse.getCode());
+		}else if(name.contains("db2")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.DB2.getCode());
+		}else if(name.contains("derby")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.Derby.getCode());
+		}else if(name.contains("dmdbms")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.DM.getCode());
+		}else if(name.contains("hgdb") || name.contains("highgo")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.HighGo.getCode());
+		}else if(name.contains("kingbase")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.KingBase.getCode());
+		}else if(name.contains("oceanbase")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.OceanBase.getCode());
+		}else if(name.contains("polardb")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.PolarDB.getCode());
+		}else if(name.contains("sqlite")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.SQLite.getCode());
+		}else if(name.contains(":h2:")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.H2.getCode());
+		}else if(name.contains("hsqldb")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.HSQLDB.getCode());
+		}else if(name.contains("taos")){
+			creater =  creaters.get(SQLCreater.DB_TYPE.TDengine.getCode());
+		}
+		creaters.put(name, creater);
 		return creater;
 	}
 }
