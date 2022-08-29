@@ -96,7 +96,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 					}
 					qty ++;
 				}
-				builder.append(" ").append(row.getCreateTime()*1000);
+				builder.append(" ").append(row.getNanoTime());
 				run.setBuilder(builder);
 			}
 		}
