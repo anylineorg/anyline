@@ -126,7 +126,8 @@ public class ProcedureImpl  implements Procedure{
 	}
 
 	@Override
-	public void setNavi(PageNavi navi) {
+	public Procedure setNavi(PageNavi navi) {
 		this.navi = navi;
+		return this;
 	}
 }
