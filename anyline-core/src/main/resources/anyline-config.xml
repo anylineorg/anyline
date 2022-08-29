@@ -118,4 +118,7 @@
 		只有类似SQL Server设置了只支持[],不支持""时才需要设置成一对[]
 	-->
 	<property key="SQL_DELIMITER_PLACEHOLDER"></property>
+
+	<!--查询单行数据不存在时,是否空实例-->
+	<property key="IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL">flase</property>
 </properties>
