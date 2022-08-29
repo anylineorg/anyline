@@ -1,6 +1,7 @@
 package org.anyline.jdbc.util;
 
 import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.util.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -27,6 +28,9 @@ public class SQLCreaterUtil {
 
 	private static SQLCreater defaultCreater = null;	//如果当前项目只有一个creater则不需要多次识别
 	public static SQLCreater getCreater(JdbcTemplate jdbc){
+
+		String ds = DataSourceHolder.getDataSource();
+
 		if(null != defaultCreater){
 			return defaultCreater;
 		}

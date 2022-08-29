@@ -21,6 +21,8 @@ package org.anyline.jdbc.ds;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.jdbc.config.ParseResult;
+import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -42,12 +44,21 @@ public class DataSourceHolder {
     //是否还原默认数据源,执行一次操作后还原回默认数据源 
     private static final ThreadLocal<Boolean> THREAD_AUTO_DEFAULT = new ThreadLocal<Boolean>(); 
     private static List<String> dataSources = new ArrayList<>();
+	private static Map<String, SQLCreater.DB_TYPE> types = new HashMap<>();
     static{ 
     	THREAD_AUTO_DEFAULT.set(false); 
     } 
     public static String getDataSource() { 
         return THREAD_CUR_SOURCE.get(); 
     }
+
+	public static SQLCreater.DB_TYPE dialect(){
+		String ds = getDataSource();
+		return types.get(ds);
+	}
+	public static void dialect(String ds, SQLCreater.DB_TYPE type){
+		types.put(ds, type);
+	}
 
 	/**
 	 * 设置当前数据源名称
