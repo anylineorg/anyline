@@ -1107,13 +1107,15 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
+
 	/**
 	 * 根据存储过程查询(MSSQL AS 后必须加 SET NOCOUNT ON)
 	 * @param procedure  procedure
+	 * @param navi  navi
 	 * @return DataSet
 	 */
 	@Override
-	public DataSet query(final Procedure procedure){
+	public DataSet querys(Procedure procedure, PageNavi navi){
 		final List<ProcedureParam> inputs = procedure.getInputs();
 		final List<ProcedureParam> outputs = procedure.getOutputs();
 		long fr = System.currentTimeMillis();
@@ -1174,13 +1176,39 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 						set.addHead(rsmd.getColumnName(i));
 					}
 					long mid = System.currentTimeMillis();
-					while(rs.next()){
-						DataRow row = new DataRow();
-						for(int i=1; i<=cols; i++){
-							row.put(rsmd.getColumnName(i), rs.getObject(i));
-						}
-						set.addRow(row);
+					int index = 0;
+					int first = -1;
+					int last = -1;
+					if(null != navi){
+						first = navi.getFirstRow();
+						last = navi.getLastRow();
 					}
+					while(rs.next()){
+						if(
+								first ==-1
+								|| (index >= first && index <= last)
+						){
+							DataRow row = new DataRow();
+							for(int i=1; i<=cols; i++){
+								row.put(rsmd.getColumnName(i), rs.getObject(i));
+							}
+							set.addRow(row);
+						}
+						index ++;
+						if(first != -1){
+							if(index > last){
+								break;
+							}
+							if(first ==0 && last==0){ //只取一行
+								break;
+							}
+						}
+					}
+					if(null != navi){
+						navi.setTotalRow(index);
+						set.setNavi(navi);
+					}
+
 					set.setDatalink(DataSourceHolder.getDataSource());
 					if(showSQL){
 						log.warn("{}[封装耗时:{}ms][封装行数:{}]", rdm, System.currentTimeMillis() - mid,set.size());

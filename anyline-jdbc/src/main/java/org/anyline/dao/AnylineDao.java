@@ -19,9 +19,7 @@
 
 package org.anyline.dao;
 
-import org.anyline.entity.DataSet;
-import org.anyline.entity.EntitySet;
-import org.anyline.entity.MetaData;
+import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
@@ -106,8 +104,9 @@ public interface AnylineDao<E>{
 	 * 根据存储过程查询 
 	 * @param procedure  procedure
 	 * @return DataSet
-	 */ 
-	public DataSet query(Procedure procedure);
+	 */
+	//public DataSet querys(Procedure procedure);
+	public DataSet querys(Procedure procedure, PageNavi navi);
 	public int delete(String dest, Object obj, String ... columns);
 	public int delete(String table, ConfigStore configs, String ... conditions);
 

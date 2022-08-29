@@ -19,6 +19,7 @@
 
 package org.anyline.jdbc.config.db.impl;
 
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.Procedure;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class ProcedureImpl  implements Procedure{
 	private List<ProcedureParam> outputs = new ArrayList<ProcedureParam>();//输出参数,输入输出参数
 	private List<Object> result;	//输出参数结果
 	private boolean hasReturn = false;
+	private PageNavi navi;
 	
 	
 	public ProcedureImpl(String name){
@@ -116,5 +118,15 @@ public class ProcedureImpl  implements Procedure{
 	}
 	public boolean hasReturn(){
 		return hasReturn;
+	}
+
+	@Override
+	public PageNavi getNavi() {
+		return navi;
+	}
+
+	@Override
+	public void setNavi(PageNavi navi) {
+		this.navi = navi;
 	}
 }

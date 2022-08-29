@@ -21,6 +21,7 @@ package org.anyline.jdbc.config.db;
 /** 
  * V3.0 
  */ 
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.impl.ProcedureParam;
 
 import java.util.List;
@@ -62,6 +63,9 @@ public interface Procedure {
 	public List<Object> getResult();
 	public void regReturn();
 	public boolean hasReturn();
+
+	public Procedure setNavi(PageNavi navi);
+	public PageNavi getNavi();
 
 
 } 
