@@ -268,6 +268,19 @@ public class BasicUtil {
 		} 
 		return result; 
 	}
+	public static boolean isBoolean(Object obj){
+		boolean result = false;
+		if(null == obj){
+			return result;
+		}
+		if(obj instanceof Boolean){
+			return true;
+		}
+		if(obj.toString().equalsIgnoreCase("true") || obj.toString().equalsIgnoreCase("false")){
+			return true;
+		}
+		return result;
+	}
 	public static boolean isDate(Object obj){
 		if(null == obj){
 			return false;
