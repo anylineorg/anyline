@@ -54,16 +54,20 @@ public class SQLCreaterUtil {
 					creater =  creaters.get(SQLCreater.DB_TYPE.MSSQL.getCode());
 				}else if(name.contains("oracle")){
 					creater =  creaters.get(SQLCreater.DB_TYPE.ORACLE.getCode());
-				}else if(name.contains("db2")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.DB2.getCode());
-				}else if(name.contains("hgdb") || name.contains("highgo")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.HighGo.getCode());
-				}else if(name.contains("dmdbms")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.DM.getCode());
 				}else if(name.contains("postgresql")){
 					creater =  creaters.get(SQLCreater.DB_TYPE.PostgreSQL.getCode());
-				}else if(name.contains("clickhouse")){
+				}
+
+				else if(name.contains("clickhouse")){
 					creater =  creaters.get(SQLCreater.DB_TYPE.ClickHouse.getCode());
+				}else if(name.contains("db2")){
+					creater =  creaters.get(SQLCreater.DB_TYPE.DB2.getCode());
+				}else if(name.contains("derby")){
+					creater =  creaters.get(SQLCreater.DB_TYPE.Derby.getCode());
+				}else if(name.contains("dmdbms")){
+					creater =  creaters.get(SQLCreater.DB_TYPE.DM.getCode());
+				}else if(name.contains("hgdb") || name.contains("highgo")){
+					creater =  creaters.get(SQLCreater.DB_TYPE.HighGo.getCode());
 				}else if(name.contains("kingbase")){
 					creater =  creaters.get(SQLCreater.DB_TYPE.KingBase.getCode());
 				}else if(name.contains("oceanbase")){
@@ -76,8 +80,8 @@ public class SQLCreaterUtil {
 					creater =  creaters.get(SQLCreater.DB_TYPE.H2.getCode());
 				}else if(name.contains("hsqldb")){
 					creater =  creaters.get(SQLCreater.DB_TYPE.HSQLDB.getCode());
-				}else if(name.contains("derby")){
-					creater =  creaters.get(SQLCreater.DB_TYPE.Derby.getCode());
+				}else if(name.contains("taos")){
+					creater =  creaters.get(SQLCreater.DB_TYPE.TDengine.getCode());
 				}
 				creaters.put(name, creater);
 			}
