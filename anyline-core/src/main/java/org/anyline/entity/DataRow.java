@@ -62,6 +62,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private String schema = null;
     private String table = null;
     private Map<String, Object> attributes = new HashMap<>();   // 属性
+    private Map<String, Object> tags = new HashMap<>();         // 标签
     private long createTime = 0;                                // 创建时间
     private long expires = -1;                                  // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     protected Boolean isNew = false;                            // 强制新建(适应hibernate主键策略)
@@ -1258,6 +1259,29 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public Object getAttribute(String key) {
         return attributes.get(key);
+    }
+
+
+    public DataRow tag(String key, Object value) {
+        tags.put(key, value);
+        return this;
+    }
+
+    public DataRow setTag(String key, Object value) {
+        tags.put(key, value);
+        return this;
+    }
+
+    public Object tag(String key) {
+        return tags.get(key);
+    }
+
+    public Object getTag(String key) {
+        return tags.get(key);
+    }
+
+    public Map<String,Object> getTags(){
+        return tags;
     }
 
     public DataRow getRow(String key) {
