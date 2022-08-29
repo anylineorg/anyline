@@ -763,7 +763,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		} 
 		boolean each = true;//是否需要从row中查找列 
 		List<String> mastKeys = new ArrayList<>();		//必须插入列
-		List<String> delimiters = new ArrayList<>();			//必须不插入列
+		List<String> ignores = new ArrayList<>();		//必须不插入列
 		List<String> factKeys = new ArrayList<>();		//根据是否空值
  
 		if(null != columns && columns.length>0){ 
@@ -779,7 +779,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					each = true; 
 				}else if(column.startsWith("-")){
 					column = column.substring(1);
-					delimiters.add(column);
+					ignores.add(column);
 					each = true; 
 				}else if(column.startsWith("?")){
 					column = column.substring(1);
@@ -818,7 +818,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					//必须插入 
 					continue; 
 				} 
-				if(delimiters.contains(key)){
+				if(ignores.contains(key)){
 					keys.remove(key); 
 					continue; 
 				}
