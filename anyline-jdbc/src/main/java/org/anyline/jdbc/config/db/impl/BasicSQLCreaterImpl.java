@@ -38,11 +38,13 @@ import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.exception.SQLException;
 import org.anyline.jdbc.exception.SQLUpdateException;
+import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.lang.reflect.Field;
 import java.sql.Timestamp;
@@ -61,8 +63,16 @@ import java.util.List;
 
 public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	protected static final Logger log = LoggerFactory.getLogger(BasicSQLCreaterImpl.class);
+
 	@Autowired(required=false)
-	protected PrimaryCreater primaryCreater; 
+	protected PrimaryCreater primaryCreater;
+
+
+	@Autowired(required = false)
+	@Qualifier("anyline.service")
+	protected AnylineService service;
+
+
 	public String delimiterFr = "";
 	public String delimiterTo = "";
 	public DB_TYPE type(){
@@ -701,11 +711,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		StringBuilder builder = new StringBuilder();
 		List<Object> values = new ArrayList<Object>(); 
 		/*确定需要更新的列*/ 
-		List<String> keys = confirmUpdateColumns(row, columns);
-
+		List<String> keys = confirmUpdateColumns(dest, row, columns);
 		List<String> primaryKeys = row.getPrimaryKeys();
 		if(primaryKeys.size() == 0){
-			throw new SQLUpdateException("[更新更新异常][更新条件为空,upate方法不支持更新整表操作]");
+			throw new SQLUpdateException("[更新更新异常][更新条件为空,update方法不支持更新整表操作]");
 		}
 
 		//不更新主键
@@ -750,7 +759,28 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		run.setBuilder(builder);
 		return run; 
 	}
-	/** 
+
+	/**
+	 * 过滤掉表结构中不存在的列
+	 * @param table table
+	 * @param columns columns
+	 * @return List
+	 */
+	public List<String> checkMetadata(String table, List<String> columns){
+		if(!ConfigTable.IS_AUTO_CHECK_METADATA || null == service){
+			return columns;
+		}
+		List<String> list = new ArrayList<>();
+		List<String> metadatas = service.metadata(table);
+		metadatas = BeanUtil.toUpperCase(metadatas);
+		for (String item:columns){
+			if(metadatas.contains(item.toUpperCase())){
+				list.add(item);
+			}
+		}
+		return list;
+	}
+	/**
 	 * 确认需要插入的列 
 	 * @param obj  obj
 	 * @param columns  columns
@@ -853,16 +883,18 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				} 
 				 
 			} 
-		} 
+		}
+		keys = checkMetadata(dst, keys);
 		return keys; 
 	}
 	/** 
 	 * 确认需要更新的列 
+	 * @param dest  dest
 	 * @param row  row
 	 * @param columns  columns
 	 * @return List
 	 */ 
-	private List<String> confirmUpdateColumns(DataRow row, String ... columns){
+	private List<String> confirmUpdateColumns(String dest, DataRow row, String ... columns){
 		List<String> keys = null;/*确定需要更新的列*/ 
 		if(null == row){ 
 			return new ArrayList<>();
@@ -946,6 +978,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		for(String key:ignores){
 			keys.remove(key);
 		}
+		keys = checkMetadata(dest, keys);
 		return keys; 
 	}
 	public String parseTable(String table){
