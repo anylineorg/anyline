@@ -280,8 +280,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public List<String> metadata(String table){
 		Long fr = System.currentTimeMillis();
 		List<String> list = new ArrayList<>();
-		String sql = "SELECT * FROM " + table + " WHERE 1=0";
-		SqlRowSet row = getJdbc().queryForRowSet(sql);
+		SQL sql = new TableSQLImpl();
+		sql.setDataSource(table);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, null,"1=0");
+
+		SqlRowSet row = getJdbc().queryForRowSet(run.getFinalQueryTxt());
 		SqlRowSetMetaData rsm = row.getMetaData();
 		for (int i = 1; i <= rsm.getColumnCount(); i++) {
 			list.add(rsm.getColumnName(i));
@@ -296,8 +299,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public List<MetaData> metadatas(String table){
 		Long fr = System.currentTimeMillis();
 		List<MetaData> list = new ArrayList<MetaData>();
-		String sql = "SELECT * FROM " + table + " WHERE 1=0";
-		SqlRowSet row = getJdbc().queryForRowSet(sql);
+		SQL sql = new TableSQLImpl();
+		sql.setDataSource(table);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, null,"1=0");
+		SqlRowSet row = getJdbc().queryForRowSet(run.getFinalQueryTxt());
 		SqlRowSetMetaData rsm = row.getMetaData();
 
 		for (int i = 1; i <= rsm.getColumnCount(); i++) {
