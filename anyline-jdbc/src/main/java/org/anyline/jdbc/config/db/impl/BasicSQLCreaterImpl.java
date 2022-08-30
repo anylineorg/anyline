@@ -373,7 +373,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		
 		List<String> keys = confirmInsertColumns(dest, obj, columns);
 		if(null == keys || keys.size() == 0){
-			throw new SQLException("未指定列");
+			throw new SQLException("未指定列(DataRow或Entity中没有需要更新的属性值)["+obj.getClass().getName()+":"+BeanUtil.object2json(obj)+"]");
 		}
 		builder.append("INSERT INTO ").append(parseTable(dest));
 		builder.append("(");
@@ -454,7 +454,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		/*确定需要插入的列*/
 		List<String> keys = confirmInsertColumns(dest, first, columns);
 		if(null == keys || keys.size() == 0){
-			throw new SQLException("未指定列");
+			throw new SQLException("未指定列(DataRow或Entity中没有需要更新的属性值)["+first.getClass().getName()+":"+BeanUtil.object2json(first)+"]");
 		}
 		createInsertsTxt(builder, dest, list, keys);
 		run.setBuilder(builder);
