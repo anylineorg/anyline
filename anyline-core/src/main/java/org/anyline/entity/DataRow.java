@@ -520,6 +520,10 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public long getCreateTime() {
         return createTime;
     }
+    public DataRow setCreateTime(long createTime){
+        this.createTime = createTime;
+        return this;
+    }
 
     /**
      * 过期时间
