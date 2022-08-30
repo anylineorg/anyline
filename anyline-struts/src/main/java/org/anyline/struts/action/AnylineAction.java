@@ -49,10 +49,7 @@ public class AnylineAction extends AbstractBasicController implements ServletReq
 	protected HttpServletRequest request; 
 	protected HttpServletResponse response; 
 	protected HttpSession session; 
-	protected ServletContext servlet; 
-	@Autowired(required = false) 
-	@Qualifier("anyline.service") 
-	protected AnylineService service; 
+	protected ServletContext servlet;
  
 	protected Object data; // 返回数据 
 	protected boolean result = true; // 执行结果 

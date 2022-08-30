@@ -24,7 +24,9 @@ import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;
+import org.anyline.jdbc.config.TableBuilder;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
+import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.web.util.WebUtil;
 import org.slf4j.Logger;
@@ -52,22 +54,8 @@ public class AbstractBasicController {
 	private static boolean is_listener_load = false;
 
 	@Autowired(required = false)
-	@Qualifier("anyline.entity.adapter")
-	public void setAdapter(EntityAdapter adapter){
-		AbstractBasicController.adapter = adapter;
-	}
-	protected static EntityAdapter getAdapter(){
-		if(null != adapter){
-			return adapter;
-		}
-		if(!is_adapter_load) {
-			try {
-				adapter = (EntityAdapter)SpringContextUtil.getBean("anyline.entity.adapter");
-			}catch (Exception e){}
-			is_adapter_load = true;
-		}
-		return adapter;
-	}
+	@Qualifier("anyline.service")
+	protected AnylineService service;
 
 	@Autowired(required = false)
 	@Qualifier("anyline.entity.listener")
@@ -173,6 +161,16 @@ public class AbstractBasicController {
 			row = new DataRow(keyCase);
 		}
 		List<String> arrays = BeanUtil.merge(fixs, params);
+
+		if(arrays.size() == 1){
+			String param = arrays.get(0);
+			if(param.startsWith("${") && param.endsWith("}")){
+				String table = param.substring(2, param.length()-1);
+				List<String> metadatas = service.metadata(table);
+				arrays = AdapterProxy.metadata2param(metadatas);
+			}
+		}
+
 		if (arrays.size() > 0) {
 			Map<String,Object> requestValues = WebUtil.value(request);
 			for (String param : arrays) {
@@ -281,6 +279,16 @@ public class AbstractBasicController {
 	public DataSet entitys(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, List<String> fixs, String ... params) {
 		DataSet set = new DataSet();
 		List<String> arrays = BeanUtil.merge(fixs, params);
+
+		if(arrays.size() == 1){
+			String param = arrays.get(0);
+			if(param.startsWith("${") && param.endsWith("}")){
+				String table = param.substring(2, param.length()-1);
+				List<String> metadatas = service.metadata(table);
+				arrays = AdapterProxy.metadata2param(metadatas);
+			}
+		}
+
 		if (arrays.size() > 0) {
 			//raw [json]格式
 			DataSet list = WebUtil.values(request);
