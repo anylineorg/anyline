@@ -123,5 +123,6 @@ public interface EntityAdapter {
      *
      */
     public List<String> metadata2param(List<String> metadata);
+    public String metadata2param(String metadata);
 
 }
