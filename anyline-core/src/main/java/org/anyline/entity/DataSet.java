@@ -3226,6 +3226,30 @@ public class DataSet implements Collection<DataRow>, Serializable {
     }
 
     /**
+     * 设置是否更新null列
+     * @param updateNullColumn updateNullColumn
+     * @return DataRow
+     */
+    public DataSet setUpdateNullColumn(boolean updateNullColumn) {
+        for(DataRow row:rows){
+            row.setUpdateNullColumn(updateNullColumn);
+        }
+        return this;
+    }
+    /**
+     * 设置是否更新null列
+     * @param updateEmptyColumn updateEmptyColumn
+     * @return DataRow
+     */
+    public DataSet setUpdateEmptyColumn(boolean updateEmptyColumn) {
+        for(DataRow row:rows){
+            row.setUpdateEmptyColumn(updateEmptyColumn);
+        }
+        return this;
+    }
+
+
+    /**
      * 按keys分组
      *
      * @param fixs keys

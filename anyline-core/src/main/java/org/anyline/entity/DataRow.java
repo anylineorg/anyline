@@ -68,8 +68,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private long expires = -1;                                  // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
     protected Boolean isNew = false;                            // 强制新建(适应hibernate主键策略)
     protected boolean isFromCache = false;                      // 是否来自缓存
-    private boolean updateNullColumn = ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN", true);
-    private boolean updateEmptyColumn = ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN", true);
+    private boolean updateNullColumn = ConfigTable.IS_UPDATE_NULL_COLUMN;
+    private boolean updateEmptyColumn = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
     private Map<String, String> keymap = new HashMap<>();       // keymap
     private boolean isUpperKey = false;                         // 是否已执行大写key转换(影响到驼峰执行)
     private Map<String, String> converts = new HashMap<>();     // key是否已转换<key,src><当前key,原key>

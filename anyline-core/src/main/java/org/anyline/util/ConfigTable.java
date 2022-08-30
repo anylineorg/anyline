@@ -55,6 +55,8 @@ public class ConfigTable {
 	public static boolean IS_LOWER_KEY 								= false		;	//是否自动转换成小写
 	public static boolean IS_KEY_IGNORE_CASE 						= true		;	//是否忽略大小写
 	public static boolean IS_THROW_SQL_EXCEPTION 					= false		;	//SQL执行异常时是否抛出
+	public static boolean IS_UPDATE_NULL_COLUMN						= false		;	//是否更新nul值的列
+	public static boolean IS_UPDATE_EMPTY_COLUMN					= false		;	//是否更新空值的列
 	public static boolean IS_SQL_DELIMITER_OPEN 					= false		;	//是否开启 界定符
 	public static boolean IS_SQL_DELIMITER_PLACEHOLDER_OPEN 		= false		;	//是否开启 界定符的占位符
 	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL		= false		;	//service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()
