@@ -299,7 +299,7 @@ public class BasicUtil {
 		}
 		return RegularUtil.isDateTime(obj.toString());
 	}
-	public static int parseInt(Object value, int def) {
+	public static int parseInt(Object value, Integer def) {
 		if (null == value) {
 			return def;
 		}

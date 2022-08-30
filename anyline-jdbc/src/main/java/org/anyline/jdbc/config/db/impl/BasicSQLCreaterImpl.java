@@ -27,6 +27,7 @@ import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.run.impl.TableRunSQLImpl;
 import org.anyline.jdbc.config.db.run.impl.TextRunSQLImpl;
@@ -40,7 +41,6 @@ import org.anyline.jdbc.exception.SQLException;
 import org.anyline.jdbc.exception.SQLUpdateException;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
-import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,16 +81,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 	@Override
 	public String getDelimiterFr(){
-		/*if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
-			return "";
-		}*/
 		return this.delimiterFr;
 	}
 	@Override
 	public String getDelimiterTo(){
-		/*if(!ConfigTable.IS_SQL_DELIMITER_OPEN){
-			return "";
-		}*/
 		return this.delimiterTo;
 	}
 
@@ -169,7 +163,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				dest = AdapterProxy.table(entity.getClass());
 			}
 		}
-	if(obj instanceof ConfigStore){
+		if(obj instanceof ConfigStore){
 			run = new TableRunSQLImpl();
 			run.setCreater(this);
 			SQL sql = new TableSQLImpl();
@@ -190,7 +184,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		TableRunSQLImpl run = new TableRunSQLImpl();
+		TableRunSQLImpl run = new TableRunSQLImpl(table);
 		builder.append("DELETE FROM ").append(table).append(" WHERE ");
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
@@ -209,7 +203,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}else if(cons.size() == 1){
 				for(Object obj:cons){
 					builder.append("=?");
-					run.addValue(obj);
+					run.addValues(new RunValue(key, obj));
 				}
 			}else{
 				throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
@@ -218,13 +212,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			builder.append("=?");
-			run.addValue(values);
+			run.addValues(key, values);
 		}
 		run.setBuilder(builder);
+
 		return run;
 	}
 	private RunSQL createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
-		TableRunSQLImpl run = new TableRunSQLImpl();
+		TableRunSQLImpl run = new TableRunSQLImpl(dest);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
 		List<String> keys = new ArrayList<>();
@@ -260,12 +255,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 						value = BeanUtil.getFieldValue(obj, key);
 					}
 				}
-				run.addValue(value);
+				run.addValues(key,value);
 			}
 		}else{
 			throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
 		}
 		run.setBuilder(builder);
+
 		return run; 
 	} 
 
@@ -345,8 +341,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	private RunSQL createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl();
-		List<Object> values = new ArrayList<Object>();
+		RunSQL run = new TableRunSQLImpl(dest);
+		//List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
 		if(BasicUtil.isEmpty(dest)){
 			throw new SQLException("未指定表");
@@ -410,7 +406,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					//保存json时可以{json格式}最终会有两层:{{a:1}}8.5之前
 					param.append("?");
 					insertColumns.add(key);
-					values.add(value);
+					//values.add(value);
+					run.addValues(key, value);
 				}else {
 					param.append(value);
 				}
@@ -418,9 +415,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				param.append("?");
 				insertColumns.add(key);
 				if("NULL".equals(value)){
-					values.add(null);
+					//values.add(null);
+					run.addValues(key, null);
 				}else{
-					values.add(value);
+					//values.add(value);
+					run.addValues(key, value);
 				}
 			}
 			if(i<size-1){
@@ -430,13 +429,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		param.append(")");
 		builder.append(param);
-		run.addValues(values);
+		//run.addValues(values);
 		run.setBuilder(builder);
 		run.setInsertColumns(insertColumns);
+
 		return run;
 	}
 	private RunSQL createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl();
+		RunSQL run = new TableRunSQLImpl(dest);
 
 		StringBuilder builder = new StringBuilder();
 		if(null == list || list.size() ==0){
@@ -468,6 +468,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		createInsertsTxt(builder, dest, list, keys);
 		run.setBuilder(builder);
+
 		return run;
 	}
 
@@ -634,9 +635,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	private RunSQL createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl();
+		RunSQL run = new TableRunSQLImpl(dest);
 		StringBuilder builder = new StringBuilder();
-		List<Object> values = new ArrayList<Object>();
+		//List<Object> values = new ArrayList<Object>();
 		List<String> keys = null;
 		List<String> primaryKeys = null;
 		if(null != columns && columns.length >0 ){
@@ -681,7 +682,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 						value = null;
 					}
 					updateColumns.add(key);
-					values.add(value);
+					//values.add(value);
+					run.addValues(key, value);
 				}
 				if(i<size-1){
 					builder.append(",");
@@ -695,21 +697,24 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				updateColumns.add(pk);
 				if(AdapterProxy.hasAdapter()){
 					Field field = AdapterProxy.field(obj.getClass(), pk);
-					values.add(BeanUtil.getFieldValue(obj, field));
+					//values.add(BeanUtil.getFieldValue(obj, field));
+					run.addValues(pk, BeanUtil.getFieldValue(obj, field));
 				}else {
-					values.add(BeanUtil.getFieldValue(obj, pk));
+					//values.add(BeanUtil.getFieldValue(obj, pk));
+					run.addValues(pk, BeanUtil.getFieldValue(obj, pk));
 				}
 			}
-			run.addValues(values);
+			//run.addValues(values);
 		}
 		run.setUpdateColumns(updateColumns);
 		run.setBuilder(builder);
+
 		return run;
 	}
-		private RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
+	private RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
 		StringBuilder builder = new StringBuilder();
-		List<Object> values = new ArrayList<Object>(); 
+		//List<Object> values = new ArrayList<Object>();
 		/*确定需要更新的列*/ 
 		List<String> keys = confirmUpdateColumns(dest, row, columns);
 		List<String> primaryKeys = row.getPrimaryKeys();
@@ -739,7 +744,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 						value = null;
 					}
 					updateColumns.add(key);
-					values.add(value);
+					//values.add(value);
+					run.addValues(key, value);
 				} 
 				if(i<size-1){
 					builder.append(",");
@@ -751,12 +757,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				builder.append(" AND ");
 				BasicUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
 				updateColumns.add(pk);
-				values.add(row.get(pk)); 
+				//values.add(row.get(pk));
+				run.addValues(pk, row.get(pk));
 			}
-			run.addValues(values);
+			//run.addValues(values);
 		}
 		run.setUpdateColumns(updateColumns);
 		run.setBuilder(builder);
+
 		return run; 
 	}
 

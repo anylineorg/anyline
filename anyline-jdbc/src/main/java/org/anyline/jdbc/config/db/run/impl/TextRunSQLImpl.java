@@ -29,28 +29,34 @@ import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.SQLVariable;
+import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.impl.SQLVariableImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionImpl;
+import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.regular.Regular;
 import org.anyline.util.regular.RegularUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
- 
+
 public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{ 
 	public TextRunSQLImpl(){ 
 		this.conditionChain = new AutoConditionChainImpl(); 
 		this.orderStore = new OrderStoreImpl();
 		setStrict(false); 
-	} 
-	 
+	}
+
 	public RunSQL setSql(SQL sql){ 
-		this.sql = sql; 
+		this.sql = sql;
+		this.table = sql.getTable();
 		parseText(); 
 		return this; 
 	} 
@@ -219,7 +225,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 							String replaceSrc = ":"+var.getKey(); 
 							String replaceDst = "";  
 							for(Object tmp:varValues){ 
-								addValues(tmp); 
+								addValues(var.getKey(),tmp);
 								replaceDst += " ?"; 
 							} 
 							replaceDst = replaceDst.trim().replace(" ", ","); 
@@ -227,7 +233,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						}else{ 
 							//单个值 
 							result = result.replace(":"+var.getKey(), "?"); 
-							addValues(varValues.get(0)); 
+							addValues(var.getKey(), varValues.get(0));
 						} 
 					} 
 				} 
@@ -244,7 +250,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					if(BasicUtil.isNotEmpty(true, varValues)){ 
 						value = (String)varValues.get(0); 
 					} 
-					addValues(value); 
+					addValues(var.getKey(), value);
 				} 
 			} 
 		} 
@@ -277,7 +283,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			builder.append(" WHERE 1=1"); 
 		}
 		builder.append(conditionChain.getRunText(creater));
-		addValues(conditionChain.getRunValues());
+		values.addAll(conditionChain.getRunValues());
 	}
 	 
 	public void setConfigs(ConfigStore configs) { 
@@ -324,27 +330,34 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		 
  
  
-	/** 
+	/**
 	 * 添加参数值 
+	 * @param key  key
 	 * @param obj  obj
 	 * @return TextRunSQLImpl
-	 */ 
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public TextRunSQLImpl addValues(Object obj){ 
+	public TextRunSQLImpl addValues(String key, Object obj){
 		if(null == obj){ 
 			return this; 
 		} 
 		if(null == values){ 
-			values = new ArrayList<Object>(); 
-		} 
-		if(obj instanceof Collection){ 
-			values.addAll((Collection)obj); 
+			values = new ArrayList<>();
+		}
+		if(null != obj && obj instanceof RunValue){
+			throw new RuntimeException("run value");
+		}
+		if(obj instanceof Collection){
+			Collection list = (Collection)obj;
+			for(Object item:list){
+				addValues(key,item);
+			}
 		}else{ 
-			values.add(obj); 
+			values.add(new RunValue(key, obj));
 		} 
 		return this; 
 	} 
-	 
+
 	public RunSQL addOrders(OrderStore orderStore){ 
 		if(null == orderStore){ 
 			return this; 

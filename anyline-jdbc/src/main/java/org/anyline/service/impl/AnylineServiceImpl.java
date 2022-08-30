@@ -119,10 +119,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     public List<String> metadata(String table){
         List<String> list = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-
+        String key = "METADATA_" + table.toUpperCase();
         //启用了缓存
         if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
-            String key = "METADATA_" + table;
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if(null != cacheElement){
                 list = (List<String>) cacheElement.getValue();
@@ -133,12 +132,12 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
         }else{
             //通过静态变量缓存
-            DataRow static_cache = cache_metadata.get(table);
+            DataRow static_cache = cache_metadata.get(key);
             if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND<0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
                 list = (List<String>)static_cache.get("keys");
             }
             if(null == list){
-                DataRow static_caches = cache_metadatas.get(table);
+                DataRow static_caches = cache_metadatas.get(key);
                 if(null != static_caches && (ConfigTable.TABLE_METADATA_CACHE_SECOND<0 || !static_caches.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
                     list = new ArrayList<>();
                     List<MetaData> metaDataList = (List<MetaData>) static_caches.get("keys");
@@ -148,14 +147,14 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                     static_cache = new DataRow();
                     static_cache.setCreateTime(static_caches.getCreateTime());
                     static_cache.put("keys", list);
-                    cache_metadata.put(table, static_cache);
+                    cache_metadata.put(key, static_cache);
                 }
             }
             if(null == list){
                 list = dao.metadata(table);
                 static_cache = new DataRow();
                 static_cache.put("keys", list);
-                cache_metadata.put(table, static_cache);
+                cache_metadata.put(key, static_cache);
             }
         }
         return list;
@@ -167,11 +166,14 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
     @Override
     public List<MetaData> metadatas(String table){
+        if(null == table){
+            return new ArrayList<>();
+        }
         List<MetaData> list = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+        String key = "METADATAS_" + table;
 
         if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
-            String key = "METADATAS_" + table;
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if(null != cacheElement){
                 list = (List<MetaData>) cacheElement.getValue();
@@ -183,7 +185,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }else{
 
             //通过静态变量缓存
-            DataRow static_cache = cache_metadatas.get(table);
+            DataRow static_cache = cache_metadatas.get(key);
             if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
                 list = (List<MetaData>)static_cache.get("keys");
             }
@@ -191,7 +193,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                 list = dao.metadatas(table);
                 static_cache = new DataRow();
                 static_cache.put("keys", list);
-                cache_metadatas.put(table, static_cache);
+                cache_metadatas.put(key, static_cache);
             }
         }
         return list;

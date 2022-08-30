@@ -19,34 +19,38 @@
 
 package org.anyline.jdbc.config.db.run.impl;
 
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.OrderStoreImpl;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.Join;
+import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
- 
-public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{ 
-	private String table;
-	private String author; 
-	public TableRunSQLImpl(){ 
-		this.conditionChain = new AutoConditionChainImpl(); 
+
+public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
+	public TableRunSQLImpl(){
+		this.conditionChain = new AutoConditionChainImpl();
 		this.orderStore = new OrderStoreImpl();
-		setStrict(false); 
-	} 
+		setStrict(false);
+	}
+	public TableRunSQLImpl(String table){
+		this();
+		this.table = table;
+	}
+
 	private void parseDataSource(){ 
 		table = sql.getTable(); 
 		table = table.replace(delimiterFr, "").replace(delimiterTo, "");
@@ -88,7 +92,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != conditionChain && !conditionChain.isValid()){
 			this.valid = false;
 		}
-	} 
+	}
 	public void createRunQueryTxt(){
 		TableSQL sql = (TableSQL)this.getSql();
 		builder.append("SELECT ");
@@ -218,7 +222,8 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			return; 
 		}
 		builder.append(conditionChain.getRunText(creater));
-		addValues(conditionChain.getRunValues()); 
+		List<RunValue> values = conditionChain.getRunValues();
+		addValues(values);
 	} 
 
 	public void setConfigs(ConfigStore configs) { 
@@ -226,28 +231,8 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != configs){ 
 			this.pageNavi = configs.getPageNavi();
 		} 
-	} 
- 
-	/** 
-	 * 添加参数值 
-	 * @param obj  obj
-	 * @return RunSQL
-	 */ 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public RunSQL addValues(Object obj){ 
-		if(null == obj){ 
-			return this; 
-		} 
-		if(null == values){ 
-			values = new ArrayList<Object>(); 
-		} 
-		if(obj instanceof Collection){ 
-			values.addAll((Collection)obj); 
-		}else{ 
-			values.add(obj); 
-		} 
-		return this; 
 	}
+
 	@Override
 	public RunSQL setConditionValue(boolean required, boolean strictRequired, String condition, String variable, Object value, COMPARE_TYPE compare) {
 		return this;

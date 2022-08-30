@@ -22,6 +22,7 @@ package org.anyline.jdbc.config.db.impl;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQLVariable;
+import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.util.BasicUtil;
 
 import java.util.ArrayList;
@@ -41,10 +42,10 @@ public abstract class BasicCondition implements Condition{
 	protected boolean strictRequired = false;							//是否必须 
 	protected boolean active = false;									//是否活动(是否拼接到SQL中) 
 	protected int variableType = VARIABLE_FLAG_TYPE_NONE;				//变量标记方式 
-	protected List<Object> runValues = new ArrayList<Object>();			//运行时参数
-	protected List<Object> runOrValues = new ArrayList<Object>();		//运行时参数(or)
-	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();//运行时参数
-	protected Map<String,Object> runOrValuesMap = new HashMap<String,Object>();//运行时参数(or) 
+	protected List<RunValue> runValues = new ArrayList<>();				//运行时参数
+	protected List<RunValue> runOrValues = new ArrayList<>();				//运行时参数(or)
+	protected Map<String,Object> runValuesMap = new HashMap<String,Object>();		//运行时参数
+	protected Map<String,Object> runOrValuesMap = new HashMap<String,Object>();		//运行时参数(or)
 	protected String join = Condition.CONDITION_JOIN_TYPE_AND;			//连接方式 
 	protected ConditionChain container;									//当前条件所处容器 
 	protected String id; 
@@ -53,9 +54,9 @@ public abstract class BasicCondition implements Condition{
 	public Object clone() throws CloneNotSupportedException{ 
 		BasicCondition clone = (BasicCondition)super.clone(); 
 		if(null != runValues){ 
-			List<Object> cRunValues = new ArrayList<Object>(); 
-			for(Object obj:runValues){ 
-				Object tmp = obj; 
+			List<RunValue> cRunValues = new ArrayList<>();
+			for(RunValue obj:runValues){
+				RunValue tmp = obj;
 				cRunValues.add(tmp); 
 			} 
 			clone.runValues = cRunValues; 
@@ -70,7 +71,7 @@ public abstract class BasicCondition implements Condition{
 	} 
 	public void initRunValue(){ 
 		if(null == runValues){ 
-			runValues = new ArrayList<Object>(); 
+			runValues = new ArrayList<>();
 		}else{ 
 			runValues.clear(); 
 		} 
@@ -83,7 +84,7 @@ public abstract class BasicCondition implements Condition{
 	public boolean isActive(){ 
 		return active; 
 	} 
-	public List<Object> getRunValues(){ 
+	public List<RunValue> getRunValues(){
 		return runValues; 
 	} 
 	 

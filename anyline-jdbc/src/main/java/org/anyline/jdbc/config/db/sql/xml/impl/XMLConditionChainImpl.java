@@ -21,6 +21,7 @@ package org.anyline.jdbc.config.db.sql.xml.impl;
 
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
+import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicConditionChain;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
@@ -46,7 +47,7 @@ public class XMLConditionChainImpl extends BasicConditionChain implements Condit
 				}else if(condition.isActive()){ 
 					builder.append("\n\t");
 					txt = condition.getRunText(creater); 
-					List<Object> values = condition.getRunValues();
+					List<RunValue> values = condition.getRunValues();
 					if(BasicUtil.isEmpty(true, values)){
 						String reg = "=\\s*\\?";
 						if(RegularUtil.match(txt, reg)){

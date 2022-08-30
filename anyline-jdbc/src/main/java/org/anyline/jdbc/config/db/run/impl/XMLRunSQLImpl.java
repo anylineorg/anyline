@@ -35,9 +35,13 @@ import org.anyline.jdbc.config.db.impl.GroupStoreImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.jdbc.config.db.sql.xml.impl.XMLConditionChainImpl;
+import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.DefaultMemberAccess;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -51,10 +55,12 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	} 
  
 	public RunSQL setSql(SQL sql){ 
-		this.sql = sql; 
+		this.sql = sql;
+		this.table = sql.getTable();
 		copyParam(); 
 		return this; 
-	} 
+	}
+
 	public void init(){ 
 		super.init(); 
 		if(null != configStore){ 
@@ -221,18 +227,18 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						if(var.getCompare() == SQL.COMPARE_TYPE.LIKE){ 
 							//CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%' 
 							result = result.replace("'%"+replaceKey+"%'", creater.concat("'%'","?","'%'")); 
-							addValues(varValues.get(0)); 
+							addValues(var.getKey(), varValues.get(0));
 						}else if(var.getCompare() == SQL.COMPARE_TYPE.LIKE_SUBFIX){ 
 							result = result.replace("'%"+replaceKey+"'", creater.concat("'%'","?")); 
-							addValues(varValues.get(0)); 
+							addValues(var.getKey(), varValues.get(0));
 						}else if(var.getCompare() == SQL.COMPARE_TYPE.LIKE_PREFIX){ 
 							result = result.replace("'"+replaceKey+"%'", creater.concat("?","'%'")); 
-							addValues(varValues.get(0)); 
+							addValues(var.getKey(), varValues.get(0));
 						}else if(var.getCompare() == SQL.COMPARE_TYPE.IN){ 
 							//多个值IN 
 							String replaceDst = "";  
 							for(Object tmp:varValues){ 
-								addValues(tmp); 
+								addValues(var.getKey(), tmp);
 								replaceDst += " ?"; 
 							} 
 							replaceDst = replaceDst.trim().replace(" ", ","); 
@@ -240,7 +246,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						}else{ 
 							//单个值 
 							result = result.replace(replaceKey, "?"); 
-							addValues(varValues.get(0)); 
+							addValues(var.getKey(), varValues.get(0));
 						} 
 					} 
 				} 
@@ -257,7 +263,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					if(BasicUtil.isNotEmpty(true, varValues)){ 
 						value = (String)varValues.get(0); 
 					} 
-					addValues(value); 
+					addValues(var.getKey(), value);
 				} 
 			} 
 		}
@@ -591,28 +597,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		return this; 
 	} 
  
- 
-	/** 
-	 * 添加参数值 
-	 * @param obj  obj
-	 * @return RunSQL
-	 */ 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public RunSQL addValues(Object obj){ 
-		if(null == obj){ 
-			return this; 
-		} 
-		if(null == values){ 
-			values = new ArrayList<Object>(); 
-		} 
-		if(obj instanceof Collection){ 
-			values.addAll((Collection)obj); 
-		}else{ 
-			values.add(obj); 
-		} 
-		return this; 
-	} 
-	 
+
 	public RunSQL addOrders(OrderStore orderStore){ 
 		if(null == orderStore){ 
 			return this; 

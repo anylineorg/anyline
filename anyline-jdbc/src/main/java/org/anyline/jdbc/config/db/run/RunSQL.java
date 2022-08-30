@@ -83,14 +83,18 @@ public interface RunSQL {
 	 */ 
 	/** 
 	 * 添加参数值 
+	 * @param column  column
 	 * @param obj  obj
 	 * @return RunSQL
 	 */ 
-	public RunSQL addValues(Object obj);
+	public RunSQL addValues(String column, Object obj);
 
 	public RunSQL addOrders(OrderStore orderStore); 
 	public RunSQL addOrder(Order order); 
-	public SQL getSql() ; 
+	public SQL getSql() ;
+	public String getTable();
+	public String getAuthor();
+	public String getDataSource();
 	public RunSQL setSql(SQL sql) ;
 	public RunSQL setInsertColumns(List<String> keys);
 	public List<String> getInsertColumns();
@@ -103,8 +107,9 @@ public interface RunSQL {
 	public String getInsertTxt();
 	public String getDeleteTxt(); 
 	public String getUpdateTxt();
-	public String getExecuteTxt(); 
-	public List<Object> getValues() ; 
+	public String getExecuteTxt();
+	public List<RunValue> getRunValues() ;
+	public List<Object> getValues() ;
 	public PageNavi getPageNavi() ; 
 	public void setPageNavi(PageNavi pageNavi) ;
 	public String getFetchColumns();

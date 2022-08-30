@@ -42,7 +42,7 @@ public interface Condition extends Cloneable{
 	 * 运行时参数值 
 	 * @return List
 	 */ 
-	public List<Object> getRunValues(); 
+	public List<RunValue> getRunValues();
 	/** 
 	 * 拼接方式 
 	 * @return String

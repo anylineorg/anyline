@@ -21,6 +21,7 @@ package org.anyline.jdbc.config.db.impl;
 
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
+import org.anyline.jdbc.config.db.RunValue;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -51,20 +52,42 @@ public abstract class BasicConditionChain extends BasicCondition implements Cond
 	public ConditionChain addCondition(Condition condition){ 
 		conditions.add(condition); 
 		return this; 
-	} 
-	 
+	}
+
+	protected void addRunValue(RunValue value){
+		if(null == value){
+			return;
+		}
+		runValues.add(value);
+	}
+	protected void addRunValue(List<RunValue> values){
+		for(RunValue value:values){
+			addRunValue(value);
+		}
+	}
 	@SuppressWarnings("unchecked") 
-	protected void addRunValue(Object value){ 
+	protected void addRunValue(String key, Object value){
 		if(null == value){ 
 			return; 
-		} 
-		if(value instanceof Collection){ 
-			runValues.addAll((Collection<Object>)value); 
-		}else{ 
-			runValues.add(value); 
+		}
+		if(null == key){
+			key = "none";
+		}
+		if(value instanceof RunValue){
+			throw new RuntimeException("run value");
+		}
+		if(value instanceof Collection){
+			Collection<Object> list = (Collection<Object>)value;
+			for(Object obj:list){
+				RunValue v = new RunValue(key, obj);
+				addRunValue(v);
+			}
+		}else{
+			RunValue v = new RunValue(key, value);
+			addRunValue(v);
 		} 
 	} 
-	public List<Object> getRunValues(){ 
+	public List<RunValue> getRunValues(){
 		return runValues; 
 	} 
 	public String getJoin(){ 

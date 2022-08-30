@@ -19,11 +19,8 @@
 
 package org.anyline.jdbc.config.db.sql.xml.impl;
 
-import org.anyline.jdbc.config.db.Condition;
-import org.anyline.jdbc.config.db.SQL;
+import org.anyline.jdbc.config.db.*;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.SQLVariable;
 import org.anyline.jdbc.config.db.impl.BasicCondition;
 import org.anyline.jdbc.config.db.impl.SQLVariableImpl;
 import org.anyline.util.BasicUtil;
@@ -189,7 +186,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
  
 	public String getRunText(SQLCreater creater) { 
 		String result = text; 
-		runValues = new ArrayList<Object>(); 
+		runValues = new ArrayList<>();
 		if(null == variables){
 			return result;
 		}
@@ -250,7 +247,9 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 					}
 					result = result.replace(":"+var.getKey(), inParam);
 					result = result.replace("${"+var.getKey()+"}", inParam);
-					runValues.addAll(varValues);	 
+					for(Object obj:varValues){
+						runValues.add(new RunValue(var.getKey(), obj));
+					}
 				}else{
 					result = result.replace(":"+var.getKey(), "?");
 					result = result.replace("${"+var.getKey()+"}", "?");
@@ -258,7 +257,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 					if(BasicUtil.isNotEmpty(true,varValues)){ 
 						value = varValues.get(0).toString(); 
 					} 
-					runValues.add(value); 
+					runValues.add(new RunValue(var.getKey(), value));
 				} 
 				 
 			} 
@@ -274,7 +273,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
 				if(BasicUtil.isNotEmpty(true,values)){ 
 					value = (String)values.get(0); 
 				} 
-				runValues.add(value); 
+				runValues.add(new RunValue(null, value));
 			} 
 		} 
 		return result; 

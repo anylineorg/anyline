@@ -19,35 +19,41 @@
 
 package org.anyline.jdbc.config.db.run.impl;
 
-import org.anyline.entity.Order;
-import org.anyline.entity.OrderStore;
-import org.anyline.entity.OrderStoreImpl;
-import org.anyline.entity.PageNavi;
+import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.db.*;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.impl.GroupStoreImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionImpl;
+import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.DateUtil;
+import org.anyline.util.SpringContextUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.util.ArrayList;
-import java.util.List;
- 
- 
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.*;
+
+
 public abstract class BasicRunSQLImpl implements RunSQL { 
 	protected static final Logger log = LoggerFactory.getLogger(BasicRunSQLImpl.class);
 	protected StringBuilder builder = new StringBuilder();
-	protected SQL sql; 
-	protected List<Object> values; 
+	protected SQL sql;
+	protected String author;
+	protected String table;
+	protected List<String> keys;
+	protected List<RunValue> values;
 	protected PageNavi pageNavi;
 	protected ConditionChain conditionChain;			//查询条件 
 	protected ConfigStore configStore; 
@@ -64,10 +70,12 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	protected SQLCreater creater; 
 	protected String delimiterFr;
 	protected String delimiterTo;
+	protected static AnylineService service;
 	 
 	public void setCreater(SQLCreater creater){ 
 		this.creater = creater; 
-	} 
+	}
+
 	public void init(){ 
 		this.delimiterFr = creater.getDelimiterFr();
 		this.delimiterTo = creater.getDelimiterTo();
@@ -87,7 +95,23 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 			} 
 		} 
 		 
-	} 
+	}
+	public String getTable(){
+		return table;
+	}
+	public String getAuthor(){
+		return author;
+	}
+	public String getDataSource() {
+		String ds = table;
+		if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(author)) {
+			ds = author + "." + ds;
+		}
+		if (BasicUtil.isEmpty(ds)) {
+			ds = author;
+		}
+		return ds;
+	}
 	public RunSQL group(String group){ 
 		/*避免添加空条件*/ 
 		if(BasicUtil.isEmpty(group)){ 
@@ -119,21 +143,77 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		return sql; 
 	} 
 	public RunSQL setSql(SQL sql) { 
-		this.sql = sql; 
+		this.sql = sql;
+		this.table = sql.getTable();
 		return this; 
-	} 
-	public List<Object> getValues() { 
-		return values; 
-	} 
-	public void setValues(List<Object> values) { 
-		this.values = values; 
-	} 
-	public void addValue(Object value){ 
-		if(null == values){ 
-			values = new ArrayList<Object>(); 
-		} 
-		values.add(value); 
-	} 
+	}
+	public List<RunValue> getRunValues() {
+		return values;
+	}
+	public List<Object> getValues() {
+		List<Object> list = new ArrayList<>();
+		if(null != values){
+			for(RunValue value:values){
+				list.add(value.getValue());
+			}
+		}
+		return list;
+	}
+	public void setValues(String key, List<Object> values) {
+		for(Object value:values){
+			values.add(new RunValue(key, value));
+		}
+	}
+
+	/**
+	 * 添加参数值
+	 * @param obj  obj
+	 * @return RunSQL
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public RunSQL addValues(String key, Object obj){
+		if(null == obj){
+			return this;
+		}
+		if(null == key){
+			key = "none";
+		}
+		if(obj instanceof Collection){
+			Collection list = (Collection)obj;
+			for(Object item:list){
+				addValues(new RunValue(key, item));
+			}
+
+		}else{
+			addValues(new RunValue(key, obj));
+		}
+		return this;
+	}
+
+
+	/**
+	 * 添加参数值
+	 * @param value  value
+	 * @return RunSQL
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public RunSQL addValues(RunValue value){
+		if(null == value){
+			return this;
+		}
+		if(null == values){
+			values = new ArrayList<>();
+		}
+		convert(value);
+		values.add(value);
+		return this;
+	}
+	public RunSQL addValues(List<RunValue> values){
+		for(RunValue value:values){
+			addValues(value);
+		}
+		return this;
+	}
 	public PageNavi getPageNavi() { 
 		return pageNavi; 
 	} 
@@ -449,6 +529,119 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				}
 			}
 		}
+		return result;
+	}
+
+
+	private Map<String,MetaData> metadatas = null;
+	protected void convert(RunValue run){
+		if(null == metadatas){
+			if(null == service){
+				service = (AnylineService)SpringContextUtil.getBean("anyline.service");
+			}
+			metadatas = new HashMap<>();
+			List<MetaData> list = service.metadatas(getDataSource());
+			for(MetaData meta:list){
+				metadatas.put(meta.getName().toUpperCase(), meta);
+			}
+		}
+		run.setValue(convert(metadatas, run.getKey(), run.getValue()));
+	}
+	protected Object convert(Map<String,MetaData> metadatas, String key, Object value){
+		Object result = null;
+		if(null != metadatas && null != value){
+			result = convert(metadatas.get(key.toUpperCase()), value);
+		}
+		return result;
+	}
+
+	protected Object convert(MetaData meta, Object value){
+		Object result = null;
+			try {
+				String clazz = meta.getClassName();
+				String typeName = meta.getTypeName();
+
+				if(typeName.equalsIgnoreCase("uuid")){
+					if(value instanceof UUID) {
+						result = value;
+					}else{
+						result = UUID.fromString(value.toString());
+					}
+				}else if(clazz.contains("String")){
+					if(value instanceof String){
+						result = value;
+					}else {
+						result = value.toString();
+					}
+				}else if(clazz.contains("Integer")){
+					if(value instanceof Integer){
+						result = value;
+					}else {
+						result = BasicUtil.parseInt(value, null);
+					}
+				}else if(clazz.contains("Long")){
+					if(value instanceof Long){
+						result = value;
+					}else {
+						result = BasicUtil.parseLong(value, null);
+					}
+				}else if(clazz.contains("Double")){
+					if(value instanceof Double){
+						result = value;
+					}else {
+						result = BasicUtil.parseDouble(value, null);
+					}
+				}else if(clazz.contains("Float")){
+					if(value instanceof Float){
+						result = value;
+					}else {
+						result = BasicUtil.parseFloat(value, null);
+					}
+				}else if(clazz.contains("Boolean")){
+					if(value instanceof Boolean){
+						result = value;
+					}else {
+						result = BasicUtil.parseBoolean(value, null);
+					}
+				}else if(clazz.contains("Timestamp")){
+					if(value instanceof Timestamp){
+						result = value;
+					}else {
+						Date date = DateUtil.parse(value);
+						if(null != date) {
+							result = new Timestamp(date.getTime());
+						}
+					}
+				}else if(clazz.contains("Time")){
+					if(value instanceof Time){
+						result = value;
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							result = new Time(date.getTime());
+						}
+					}
+				}else if(clazz.contains("Date")){
+					if(value instanceof java.sql.Date){
+						result = value;
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							result = new java.sql.Date(date.getTime());
+						}
+					}
+				}else if(clazz.contains("BigDecimal")){
+					if(value instanceof BigDecimal){
+						result = value;
+					}else {
+						result = BasicUtil.parseDecimal(value, null);
+					}
+				}else{
+					result = value;
+				}
+			}catch (Exception e){
+				e.printStackTrace();
+			}
 		return result;
 	}
 	public boolean isStrict() {

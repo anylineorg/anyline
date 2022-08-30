@@ -23,6 +23,7 @@ import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.impl.BasicCondition;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
@@ -171,7 +172,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	 * @return String
 	 */ 
 	public String getRunText(SQLCreater creater){ 
-		runValues = new ArrayList<Object>();
+		runValues = new ArrayList<>();
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
 			text = this.text; 
@@ -265,12 +266,17 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		text += "";
 		//runtime value
 		if(compare == COMPARE_TYPE.IN || compare == COMPARE_TYPE.NOT_IN || compare == COMPARE_TYPE.BETWEEN){
-			runValues.addAll(getValues(val));
+			List<Object> list = getValues(val);
+			if(null != list){
+				for(Object obj:list){
+					runValues.add(new RunValue(this.column, obj));
+				}
+			}
 		}else{
 			Object value = getValue(val);
 			if((null == value || "NULL".equals(value)) && compare == COMPARE_TYPE.EQUAL){
 			}else{
-				runValues.add(value);
+				runValues.add(new RunValue(this.column,value));
 			}
 		}
 		return text; 

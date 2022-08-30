@@ -24,6 +24,7 @@ import org.anyline.jdbc.config.ConfigChain;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.impl.BasicConditionChain;
 import org.anyline.util.BasicUtil;
 
@@ -45,7 +46,7 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 		}
 	} 
 	public String getRunText(SQLCreater creater){ 
-		runValues = new ArrayList<Object>(); 
+		runValues = new ArrayList<>();
 		int size = conditions.size(); 
 		if(size == 0){ 
 			return ""; 
@@ -66,7 +67,7 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 			if(BasicUtil.isEmpty(txt)){
 				continue;
 			}
-			List<Object> values = condition.getRunValues();
+			List<RunValue> values = condition.getRunValues();
 			if(condition.getVariableType() == Condition.VARIABLE_FLAG_TYPE_NONE 
 					|| !BasicUtil.isEmpty(true, values) 
 					|| condition.isActive()
