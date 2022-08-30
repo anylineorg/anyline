@@ -143,12 +143,18 @@ public interface AnylineService<E>{
 	public List<String> metadata(String table);
 
 	/**
+	 * 列名转找成参数名 可以给condition()提供参数用来接收前端参数
+	 * @param table 表
+	 * @return List
+	 */
+	public List<String> metadata2param(String table);
+
+	/**
 	 * 获取表结构(返回列名,数据类型,长度等)
 	 * @param table 表
 	 * @return List
 	 */
 	public List<MetaData> metadatas(String table);
-
 
 
 	/**
