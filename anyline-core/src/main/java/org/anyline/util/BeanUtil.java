@@ -1209,6 +1209,9 @@ public class BeanUtil {
 		return map;
 	}
 	public static <T> T[] list2array(List<T> list){
+		if(null == list || list.isEmpty()){
+			return null;
+		}
 		T[] result = (T[]) Array.newInstance(list.get(0).getClass(), list.size());
 		int index = 0;
 		for(T item:list){
