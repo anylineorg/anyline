@@ -2113,21 +2113,40 @@ public class BeanUtil {
 	public static <T> T[] merge(T[] array, T[]... items) {
 		T[] result = null;
 		int len = array.length;
-		for (T[] item : items) {
-			if(null != item) {
-				len += array.length;
+		Class clazz = null;
+		if(null != items) {
+			for (T[] item : items) {
+				if (null != item) {
+					len += array.length;
+					if(null == array && null == clazz) {
+						for (T obj : item) {
+							if (null != obj) {
+								clazz = obj.getClass();
+								break;
+							}
+						}
+					}
+				}
 			}
 		}
 		if(null != array) {
 			result = Arrays.copyOf(array, len);
 		}else{
-			result = (T[]) new Object[len];
+			if(null != clazz) {
+				result = (T[]) Array.newInstance(clazz, len);
+			}else{
+				return null;
+			}
 		}
+
+
 		int offset = array.length;
-		for (T[] item : items) {
-			if(null != item) {
-				System.arraycopy(item, 0, result, offset, item.length);
-				offset += item.length;
+		if(null != items) {
+			for (T[] item : items) {
+				if (null != item) {
+					System.arraycopy(item, 0, result, offset, item.length);
+					offset += item.length;
+				}
 			}
 		}
 		return result;
