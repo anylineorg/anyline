@@ -1297,17 +1297,26 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     public DataRow getRow(String key) {
         if (null == key) {
+            if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+                return new DataRow();
+            }
             return null;
         }
         Object obj = get(key);
         if (null != obj && obj instanceof DataRow) {
             return (DataRow) obj;
         }
+        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            return new DataRow();
+        }
         return null;
     }
 
     public DataRow getRow(String ... keys) {
         if (null == keys || keys.length == 0) {
+            if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+                return new DataRow();
+            }
             return null;
         }
         DataRow result = this;
@@ -1315,8 +1324,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             if(null != result){
                 result = result.getRow(key);
             }else{
+                if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+                    return new DataRow();
+                }
                 return null;
             }
+        }
+        if(null == result && ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            return new DataRow();
         }
         return result;
     }
