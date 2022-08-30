@@ -1168,6 +1168,30 @@ public class BeanUtil {
 		return concat(list,",");
 	}
 
+	public static List<String> toUpperCase(List<String> list){
+		if(null != list){
+			int size = list.size();
+			for(int i=0; i<size; i++){
+				String value = list.get(i);
+				if(null != value){
+					list.set(i, value.toUpperCase());
+				}
+			}
+		}
+		return list;
+	}
+	public static List<String> toLowerCase(List<String> list){
+		if(null != list){
+			int size = list.size();
+			for(int i=0; i<size; i++){
+				String value = list.get(i);
+				if(null != value){
+					list.set(i, value.toLowerCase());
+				}
+			}
+		}
+		return list;
+	}
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static Object toUpperCaseKey(Object obj, String ... keys){
 		if(null == obj){
