@@ -548,6 +548,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         if (set.size() > 0) {
             return set.getRow(0);
         }
+        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            return new DataRow();
+        }
         return null;
     }
 
@@ -558,6 +561,9 @@ public class DataSet implements Collection<DataRow>, Serializable {
         DataSet set = getRows(compare, begin, 1, params);
         if (set.size() > 0) {
             return set.getRow(0);
+        }
+        if(ConfigTable.IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL){
+            return new DataRow();
         }
         return null;
     }
@@ -607,7 +613,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
             for (DataRow row:rows) {
                 //查看result中是否已存在
                 String[] params = packParam(row, keys);
-                if (result.getRow(params) == null) {
+                DataRow chk = result.getRow(params);
+                if (chk == null || chk.isEmpty()) {
                     DataRow tmp = new DataRow();
                     for (String key : keys) {
                         tmp.put(key, row.get(key));
@@ -2937,10 +2944,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
             if (null == row.get(field)) {
                 String[] params = packParam(row, reverseKey(list));
                 DataRow result = items.getRow(compare, params);
-                if(unique){
-                    result.skip = true;
+                if(null != result && !result.isEmpty()) {
+                    if (unique) {
+                        result.skip = true;
+                    }
+                    row.put(field, result);
                 }
-                row.put(field, result);
             }
         }
         items.skip(false);
@@ -3188,7 +3197,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         for (DataRow row : rows) {
             String[] params = packParam(row, reverseKey(list));
             DataRow result = items.getRow(params);
-            if (null != result) {
+            if (null != result && !result.isEmpty()) {
                 row.copy(result, result.keys());
             }
         }
@@ -3858,7 +3867,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
                 DataRow params = new DataRow();
                 params.copy(row, pks).copy(classValue);
                 DataRow valueRow = getRow(params);
-                if(null != valueRow){
+                if(null != valueRow && !valueRow.isEmpty()){
                     valueRow.skip = true;
                 }
                 String finalKey = concatValue(classValue,"-");//2010-数学
