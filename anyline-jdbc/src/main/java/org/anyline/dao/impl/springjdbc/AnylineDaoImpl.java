@@ -278,6 +278,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	public List<String> metadata(String table){
+		Long fr = System.currentTimeMillis();
 		List<String> list = new ArrayList<>();
 		String sql = "SELECT * FROM " + table + " WHERE 1=0";
 		SqlRowSet row = getJdbc().queryForRowSet(sql);
@@ -285,9 +286,15 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		for (int i = 1; i <= rsm.getColumnCount(); i++) {
 			list.add(rsm.getColumnName(i));
 		}
+
+		if (showSQL) {
+			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+			log.warn("{}[metadata][table:{}][执行耗时:{}ms]", random, table, System.currentTimeMillis() - fr);
+		}
 		return list;
 	}
 	public List<MetaData> metadatas(String table){
+		Long fr = System.currentTimeMillis();
 		List<MetaData> list = new ArrayList<MetaData>();
 		String sql = "SELECT * FROM " + table + " WHERE 1=0";
 		SqlRowSet row = getJdbc().queryForRowSet(sql);
@@ -310,6 +317,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			item.setType(rsm.getColumnType(i));
 			item.setTypeName(rsm.getColumnTypeName(i));
 			list.add(item);
+		}
+		if (showSQL) {
+			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+			log.warn("{}[metadatas][table:{}][执行耗时:{}ms]", random, table, System.currentTimeMillis() - fr);
 		}
 		return list;
 	}
