@@ -1060,6 +1060,10 @@ public class BasicUtil {
 	}
 
 	public static String placeholder(String text, String delimiterFr, String delimiterTo){
+		if(null == text){
+			return text;
+		}
+
 		//未开启占位符
 		if(!ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			return text;
@@ -1071,8 +1075,10 @@ public class BasicUtil {
 
 		String holderFr = holder[0];
 		String holderTo = holder[1];
-
-		if(holderFr.equals(holderTo) && delimiterFr.equals(delimiterTo)){
+		if(null == holderFr || null == holderTo || null == delimiterFr || null == delimiterTo){
+			return text;
+		}
+		if(holderFr.equals(holderTo) && delimiterFr.equals(delimiterTo)) {
 			text = text.replace(holderFr, delimiterFr);
 		}else{
 			try {
