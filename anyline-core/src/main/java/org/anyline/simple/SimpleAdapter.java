@@ -5,10 +5,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.EntityAdapter;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.adapter.KeyAdapter;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ClassUtil;
-import org.anyline.util.ConfigTable;
+import org.anyline.util.*;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -144,7 +141,10 @@ public class SimpleAdapter implements EntityAdapter {
         entity = BeanUtil.map2object(entity, map, clazz, false, true, true);
         for(Field field:fields){
             String column = column(clazz, field);
-            BeanUtil.setFieldValue(entity, field, map.get(column));
+            Object value = map.get(column);
+            if(null != value) {
+                BeanUtil.setFieldValue(entity, field, map.get(column));
+            }
         }
         return entity;
     }
@@ -193,8 +193,30 @@ public class SimpleAdapter implements EntityAdapter {
 
 
     @Override
-    public List<String> metadata2param(List<String> metadata) {
-        return null;
+    public List<String> metadata2param(List<String> metadatas) {
+        List<String> params = new ArrayList<>();
+        for(String metadata:metadatas){
+            params.add(metadata2param(metadata));
+        }
+        return params;
+    }
+
+
+    @Override
+    public String metadata2param(String metadata){
+        String param = null;
+        //注意这里只支持下划线转驼峰
+        //如果数据库中已经是驼峰,不要配置这个参数
+        String keyCase = ConfigTable.getString("HTTP_PARAM_KEYS_CASE");
+        if("camel".equals(keyCase)){
+            param = metadata + ":" + BeanUtil.camel(metadata.toLowerCase());
+        }else if("Camel".equals(keyCase)){
+            String key = CharUtil.toUpperCaseHeader(metadata.toLowerCase());
+            param = key+":"+BeanUtil.Camel(key);
+        }else{
+            param = metadata + ":" + metadata;
+        }
+        return param;
     }
 
 }
