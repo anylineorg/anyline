@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -263,9 +264,9 @@ public class AdapterProxy {
     public static DataRow row(DataRow row, Object obj, String ... keys){
         if(!ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false)){
             row = DataRow.parse(row, KeyAdapter.KEY_CASE.CONFIG, obj, keys);
-        }
-        if(null != adapter){
-            row = row(adapter, row, obj, keys);
+            if(null != adapter){
+                row = row(adapter, row, obj, keys);
+            }
         }
         for(EntityAdapter item:adapters.values()){
             row = row(item, row, obj, keys);
@@ -293,15 +294,43 @@ public class AdapterProxy {
      * @return List
      *
      */
-    public static List<String> metadata2param(EntityAdapter adapter, List<String> metadata){
+    public static List<String> metadata2param(EntityAdapter adapter, List<String> metadatas){
+        if(null != adapter){
+            return adapter.metadata2param(metadatas);
+        }
+        return null;
+    }
+    public static String metadata2param(EntityAdapter adapter, String metadata){
         if(null != adapter){
             return adapter.metadata2param(metadata);
         }
         return null;
     }
 
-    public static List<String> metadata2param(List<String> metadata){
-        return metadata2param(adapter, metadata);
+    public static List<String> metadata2param(List<String> metadatas){
+        //如果有用户设置的adapter
+        if(null != adapters && adapters.size()>0){
+            return adapters.get(adapters.size()-1).metadata2param(metadatas);
+        }
+
+        //如果没有禁用默认adapter
+        if(!ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false) && null != adapter){
+            return metadata2param(adapter, metadatas);
+        }
+        return metadatas;
+    }
+
+    public static String metadata2param(String metadata){
+        //如果有用户设置的adapter
+        if(null != adapters && adapters.size()>0){
+            return adapters.get(adapters.size()-1).metadata2param(metadata);
+        }
+
+        //如果没有禁用默认adapter
+        if(!ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false) && null != adapter){
+            return metadata2param(adapter, metadata);
+        }
+        return metadata;
     }
 
 
