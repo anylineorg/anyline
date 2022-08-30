@@ -172,13 +172,10 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public RunSQL addValues(String key, Object obj){
-		if(null == obj){
-			return this;
-		}
 		if(null == key){
 			key = "none";
 		}
-		if(obj instanceof Collection){
+		if(null != obj && obj instanceof Collection){
 			Collection list = (Collection)obj;
 			for(Object item:list){
 				addValues(new RunValue(key, item));
@@ -198,9 +195,6 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public RunSQL addValues(RunValue value){
-		if(null == value){
-			return this;
-		}
 		if(null == values){
 			values = new ArrayList<>();
 		}
