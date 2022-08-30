@@ -79,13 +79,13 @@
 	<!--获取表结构的缓存KEY-->
 	<property key="TABLE_METADATA_CACHE_KEY">static_1800</property>
 	<!--
-		http参数格式camel:小驼峰 Camel:大驼峰
+		http参数格式camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写
 		在entity()中会用到如果数据库列表中有下划线会按以下格式转换
 
 		注意这里只支持下划线转驼峰
 		如果数据库中已经是驼峰,不要配置这个参数
 	-->
-	<property key="HTTP_PARAM_KEYS_CASE">camel</property>
+	<property key="HTTP_PARAM_KEY_CASE">camel</property>
 
 	<!--实体属性 与数据库表列名对照时 属性小驼峰转下划线-->
 	<property key="ENTITY_FIELD_COLUMN_MAP">camel_</property>
@@ -121,4 +121,6 @@
 
 	<!--查询单行数据不存在时,是否空实例-->
 	<property key="IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL">flase</property>
+	<!--insert update 时是否自动检测表结构(删除表中不存在的属性)-->
+	<property key="IS_AUTO_CHECK_METADATA">flase</property>
 </properties>
