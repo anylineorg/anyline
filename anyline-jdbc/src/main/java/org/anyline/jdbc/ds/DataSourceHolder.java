@@ -23,6 +23,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.util.AdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 import org.anyline.util.ConfigTable;
@@ -143,7 +144,7 @@ public class DataSourceHolder {
 				result = parseDataSource(dest, set.getRow(0));
 			}
 		}else{
-
+			result = AdapterProxy.table(obj.getClass());
 		}
 		result = parseDataSource(result);
 		return result;
