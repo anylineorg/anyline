@@ -207,12 +207,16 @@ public class SimpleAdapter implements EntityAdapter {
         String param = null;
         //注意这里只支持下划线转驼峰
         //如果数据库中已经是驼峰,不要配置这个参数
-        String keyCase = ConfigTable.getString("HTTP_PARAM_KEYS_CASE");
+        String keyCase = ConfigTable.HTTP_PARAM_KEY_CASE;
         if("camel".equals(keyCase)){
             param = metadata + ":" + BeanUtil.camel(metadata.toLowerCase());
         }else if("Camel".equals(keyCase)){
             String key = CharUtil.toUpperCaseHeader(metadata.toLowerCase());
-            param = key+":"+BeanUtil.Camel(key);
+            param = metadata+":"+BeanUtil.Camel(key);
+        }else if("lower".equalsIgnoreCase(keyCase)){
+            param = metadata + ":" + metadata.toLowerCase();
+        }else if("upper".equalsIgnoreCase(keyCase)){
+            param = metadata + ":" + metadata.toUpperCase();
         }else{
             param = metadata + ":" + metadata;
         }
