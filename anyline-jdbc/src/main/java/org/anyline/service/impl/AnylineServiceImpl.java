@@ -41,6 +41,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -804,13 +805,15 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
      * @param async  是否异步
      * @param dest  dest
      * @param data  需要更新的数据
+     * @param fixs 需要更新的列
      * @param columns 需要更新的列
      * @return int
      */
     @Override
-    public int update(boolean async, String dest, Object data, String... columns) {
+    public int update(boolean async, String dest, Object data, List<String> fixs, String... columns) {
         dest = DataSourceHolder.parseDataSource(dest,dest);
-        final String cols[] = BasicUtil.compressionSpace(columns);
+        fixs = BeanUtil.merge(fixs, columns);
+        final String cols[] = BasicUtil.compressionSpace(BeanUtil.list2array(fixs));
         final String _dest = BasicUtil.compressionSpace(dest);
         final Object _data = data;
         if(async){
@@ -826,34 +829,78 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
     }
 
+    public int update(boolean async, String dest, Object data, String[] fixs, String... columns) {
+        return update(async, dest, data, BeanUtil.array2list(fixs, columns));
+    }
+    public int update(boolean async, String dest, Object data, String... columns) {
+        return update(async, dest, data, BeanUtil.array2list(columns));
+    }
+
     @Override
+    public int update(String dest, ConfigStore configs, List<String> fixs, String... conditions) {
+        //TODO
+        return 0;
+    }
+    public int update(String dest, ConfigStore configs, String[] fixs, String... conditions) {
+        //TODO
+        return 0;
+    }
     public int update(String dest, ConfigStore configs, String... conditions) {
+        //TODO
         return 0;
     }
     @Override
-    public int update(String dest, Object data, String... columns) {
+    public int update(String dest, Object data, List<String> fixs, String... columns) {
+        fixs = BeanUtil.merge(fixs, columns);
         dest = BasicUtil.compressionSpace(dest);
         dest = DataSourceHolder.parseDataSource(dest,data);
-        columns = BasicUtil.compressionSpace(columns);
+        columns = BasicUtil.compressionSpace(BeanUtil.list2array(fixs));
         return dao.update(dest, data, columns);
     }
 
+    @Override
+    public int update(String dest, Object data, String[] fixs, String... columns) {
+        return update(dest, data, BeanUtil.array2list(fixs, columns));
+    }
 
     @Override
-    public int update(Object data, String... columns) {
-        return update(null, data, columns);
+    public int update(String dest, Object data, String... columns) {
+        return update(dest, data, BeanUtil.array2list(columns));
+    }
+
+
+    @Override
+    public int update(Object data, List<String> fixs, String... columns) {
+        return update(null, data, fixs, columns);
     }
     @Override
-    public int update(boolean async, Object data, String... columns) {
-        return update(async, null, data, columns);
+    public int update(Object data, String[] fixs, String... columns) {
+        return update(null, data, fixs, columns);
     }
     @Override
-    public int save(boolean async, String dest, Object data, boolean checkParimary, String... columns) {
+    public int update(Object data,  String... columns) {
+        return update(null, data,  columns);
+    }
+
+    @Override
+    public int update(boolean async, Object data, List<String> fixs ,String... columns) {
+        return update(async, null, data, BeanUtil.merge(fixs, columns));
+    }
+    @Override
+    public int update(boolean async, Object data, String[] fixs ,String... columns) {
+        return update(async, null, data, BeanUtil.array2list(fixs, columns));
+    }
+    @Override
+    public int update(boolean async, Object data,String... columns) {
+        return update(async, null, data, BeanUtil.array2list(columns));
+    }
+    @Override
+    public int save(boolean async, String dest, Object data, boolean checkParimary, List<String> fixs,  String... columns) {
         if(async){
             final String _dest = dest;
             final Object _data = data;
             final boolean _chk = checkParimary;
-            final String[] cols = columns;
+            final String[] cols = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
             new Thread(new Runnable(){
                 @Override
                 public void run() {
@@ -867,12 +914,20 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
     }
+
+    public int save(boolean async, String dest, Object data, boolean checkParimary, String[] fixs,  String... columns) {
+        return save(async, dest, data, checkParimary, BeanUtil.array2list(fixs, columns));
+    }
+    public int save(boolean async, String dest, Object data, boolean checkParimary,  String... columns) {
+        return save(async, dest, data, checkParimary, BeanUtil.array2list(columns));
+    }
     @SuppressWarnings("rawtypes")
     @Override
-    public int save(String dest, Object data, boolean checkParimary, String... columns) {
+    public int save(String dest, Object data, boolean checkParimary, List<String> fixs, String... columns) {
         if (null == data) {
             return 0;
         }
+        columns = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
         if (data instanceof Collection) {
             Collection datas = (Collection) data;
             int cnt = 0;
@@ -884,25 +939,86 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return saveObject(dest, data, checkParimary, columns);
     }
 
+    @Override
+    public int save(String dest, Object data, boolean checkParimary, String[] fixs, String... columns) {
+        return save(dest, data, checkParimary, BeanUtil.array2list(fixs, columns));
+    }
+    @Override
+    public int save(String dest, Object data, boolean checkParimary, String... columns) {
+        return save(dest, data, checkParimary, BeanUtil.array2list(columns));
+    }
 
+    @Override
+    public int save(Object data, boolean checkParimary, List<String>fixs, String... columns) {
+        return save(null, data, checkParimary, BeanUtil.merge(fixs, columns));
+    }
+    @Override
+    public int save(Object data, boolean checkParimary, String[] fixs, String... columns) {
+        return save(null, data, checkParimary, BeanUtil.array2list(fixs, columns));
+    }
     @Override
     public int save(Object data, boolean checkParimary, String... columns) {
         return save(null, data, checkParimary, columns);
     }
+
     @Override
-    public int save(boolean async, Object data, boolean checkParimary, String... columns) {
+    public int save(boolean async, Object data, boolean checkParimary, List<String> fixs, String... columns) {
+        return save(async, null, data, checkParimary, fixs, columns);
+    }
+
+    @Override
+    public int save(boolean async, Object data, boolean checkParimary, String[] fixs, String... columns) {
+        return save(async, null, data, checkParimary, fixs, columns);
+    }
+
+    @Override
+    public int save(boolean async, Object data, boolean checkParimary,  String... columns) {
         return save(async, null, data, checkParimary, columns);
     }
 
 
     @Override
-    public int save(Object data, String... columns) {
+    public int save(Object data, List<String> fixs, String... columns) {
+        return save(null, data, false, fixs, columns);
+    }
+
+    @Override
+    public int save(Object data, String[] fixs, String... columns) {
+        return save(null, data, false, fixs, columns);
+    }
+
+    @Override
+    public int save(Object data,  String... columns) {
         return save(null, data, false, columns);
     }
+
+
+    @Override
+    public int save(boolean async, Object data, List<String> fixs, String... columns) {
+        return save(async, null, data, false, fixs, columns);
+    }
+
+
+    @Override
+    public int save(boolean async, Object data, String[] fixs, String... columns) {
+        return save(async, null, data, false, fixs, columns);
+    }
+
 
     @Override
     public int save(boolean async, Object data, String... columns) {
         return save(async, null, data, false, columns);
+    }
+
+
+    @Override
+    public int save(String dest, Object data, List<String> fixs, String... columns) {
+        return save(dest, data, false, fixs, columns);
+    }
+
+    @Override
+    public int save(String dest, Object data, String[] fixs, String... columns) {
+        return save(dest, data, false, fixs, columns);
     }
 
     @Override
@@ -911,11 +1027,19 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
+    public int save(boolean async, String dest, Object data, List<String> fixs, String... columns) {
+        return save(async, dest, data, false, fixs, columns);
+    }
+    @Override
+    public int save(boolean async, String dest, Object data, String[] fixs, String... columns) {
+        return save(async, dest, data, false, fixs, columns);
+    }
+    @Override
     public int save(boolean async, String dest, Object data, String... columns) {
         return save(async, dest, data, false, columns);
     }
 
-    protected int saveObject(String dest, Object data, boolean checkParimary, String... columns) {
+    protected int saveObject(String dest, Object data, boolean checkParimary, List<String> fixs, String... columns) {
         if(BasicUtil.isEmpty(dest)) {
             if (data instanceof DataRow || data instanceof DataSet) {
                 dest = DataSourceHolder.parseDataSource(dest, data);
@@ -925,45 +1049,114 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                 }
             }
         }
-        return dao.save(dest, data, checkParimary, columns);
+
+        return dao.save(dest, data, checkParimary, BeanUtil.list2array(BeanUtil.merge(fixs, columns)));
     }
 
+    protected int saveObject(String dest, Object data, boolean checkParimary, String[] fixs, String... columns) {
+        return saveObject(dest, data, checkParimary, BeanUtil.array2list(fixs, columns));
+    }
     @Override
-    public int insert(String dest, Object data, boolean checkParimary, String... columns) {
+    public int insert(String dest, Object data, boolean checkParimary, List<String> fixs, String... columns) {
         dest = DataSourceHolder.parseDataSource(dest,data);
+        columns = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
         return dao.insert(dest, data, checkParimary, columns);
     }
-
-
     @Override
-    public int insert(Object data, boolean checkParimary, String... columns) {
-        return insert(null, data, checkParimary, columns);
+    public int insert(String dest, Object data, boolean checkParimary, String[] fixs, String... columns) {
+        return insert(dest, data, checkParimary, BeanUtil.array2list(fixs, columns));
+    }
+    @Override
+    public int insert(String dest, Object data, boolean checkParimary, String... columns) {
+        return insert(dest, data, checkParimary, BeanUtil.array2list(columns));
     }
 
 
+    @Override
+    public int insert(Object data, boolean checkParimary, List<String> fixs, String... columns) {
+        return insert(null, data, checkParimary, fixs, columns);
+    }
+
+    @Override
+    public int insert(Object data, boolean checkParimary, String[] fixs, String... columns) {
+        return insert(null, data, checkParimary, BeanUtil.array2list(fixs, columns));
+    }
+
+    @Override
+    public int insert(Object data, boolean checkParimary,  String... columns) {
+        return insert(null, data, checkParimary, BeanUtil.array2list(columns));
+    }
+
+
+    @Override
+    public int insert(Object data, List<String> fixs, String... columns) {
+        return insert(null, data, false, fixs, columns);
+    }
+    @Override
+    public int insert(Object data, String[] fixs, String... columns) {
+        return insert(null, data, false, fixs, columns);
+    }
     @Override
     public int insert(Object data, String... columns) {
-        return insert(null, data, false, columns);
+        return insert(null, data, false,columns);
     }
 
 
 
+    @Override
+    public int insert(String dest, Object data, List<String> fixs, String... columns) {
+        return insert(dest, data, false, fixs, columns);
+    }
+    @Override
+    public int insert(String dest, Object data, String[] fixs, String... columns) {
+        return insert(dest, data, false, fixs, columns);
+    }
     @Override
     public int insert(String dest, Object data, String... columns) {
         return insert(dest, data, false, columns);
     }
 
     @Override
-    public int batchInsert(String dest, Object data, boolean checkParimary, String... columns) {
+    public int batchInsert(String dest, Object data, boolean checkParimary, List<String> fixs,  String... columns) {
         dest = DataSourceHolder.parseDataSource(dest,data);
+        columns = BeanUtil.list2array(BeanUtil.merge(fixs, columns));
         return dao.batchInsert(dest, data, checkParimary, columns);
+    }
+
+    @Override
+    public int batchInsert(String dest, Object data, boolean checkParimary, String[] fixs,  String... columns) {
+        return batchInsert(dest, data, checkParimary, BeanUtil.array2list(fixs, columns));
+    }
+    @Override
+    public int batchInsert(String dest, Object data, boolean checkParimary, String... columns) {
+        return batchInsert(dest, data, checkParimary, BeanUtil.array2list(columns));
     }
 
 
     @Override
+    public int batchInsert(Object data, boolean checkParimary, List<String> fixs, String... columns) {
+        return batchInsert(null, data, checkParimary, fixs, columns);
+    }
+    @Override
+    public int batchInsert(Object data, boolean checkParimary, String[] fixs, String... columns) {
+        return batchInsert(null, data, checkParimary, fixs, columns);
+    }
+    @Override
     public int batchInsert(Object data, boolean checkParimary, String... columns) {
         return batchInsert(null, data, checkParimary, columns);
     }
+
+    @Override
+    public int batchInsert(Object data, List<String> fixs, String... columns) {
+        return batchInsert(null, data, false, fixs, columns);
+    }
+
+
+    @Override
+    public int batchInsert(Object data, String[] fixs, String... columns) {
+        return batchInsert(null, data, false, fixs, columns);
+    }
+
 
     @Override
     public int batchInsert(Object data, String... columns) {
@@ -971,6 +1164,14 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
 
+    @Override
+    public int batchInsert(String dest, Object data, List<String> fixs, String... columns) {
+        return batchInsert(dest, data, false, fixs, columns);
+    }
+    @Override
+    public int batchInsert(String dest, Object data, String[] fixs, String... columns) {
+        return batchInsert(dest, data, false, fixs, columns);
+    }
     @Override
     public int batchInsert(String dest, Object data, String... columns) {
         return batchInsert(dest, data, false, columns);

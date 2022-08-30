@@ -47,10 +47,7 @@ import java.util.*;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
  
 public class AnylineController extends AbstractBasicController { 
- 
-	@Autowired(required = false) 
-	@Qualifier("anyline.service") 
-	protected AnylineService service; 
+
 	protected HttpServletRequest _request;
 	protected HttpServletResponse _response;
 	/** 
@@ -152,7 +149,7 @@ public class AnylineController extends AbstractBasicController {
 	}
 	public DataRow entity(TableBuilder table, DataRow row){
 		List<String> metadatas = service.metadata(table.getTable());
-		List<String> params = params(metadatas);
+		List<String> params = AdapterProxy.metadata2param(metadatas);
 		return entity(getRequest(), null, row, false, false, params);
 	}
 
@@ -206,13 +203,6 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 	public DataRow entity(DataRow row, String... params) {
-		if(null != params && params.length==1){
-			String param = params[0];
-			if(param.startsWith("${") && param.endsWith("}")){
-				String table = param.substring(2, param.length()-1);
-				return entity(TableBuilder.init(table), row);
-			}
-		}
 		return entity(getRequest(), KEY_CASE.CONFIG, row, false, false, params);
 	}
 
@@ -256,13 +246,6 @@ public class AnylineController extends AbstractBasicController {
 		return entity(getRequest(),keyCase, null, false, false, fixs, params);
 	}
 	public DataRow entity(String... params) {
-		if(null != params && params.length==1){
-			String param = params[0];
-			if(param.startsWith("${") && param.endsWith("}")){
-				String table = param.substring(2, param.length()-1);
-				return entity(TableBuilder.init(table));
-			}
-		}
 		return entity(getRequest(), KEY_CASE.CONFIG, null, false, false, params);
 	}
 	public DataRow entity(String[] fixs, String... params) {
@@ -331,44 +314,15 @@ public class AnylineController extends AbstractBasicController {
 
 	public DataSet entitys(TableBuilder table){
 		List<String> metadatas = service.metadata(table.getTable());
-		List<String> params = params(metadatas);
+		List<String> params = AdapterProxy.metadata2param(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}
 
 	public DataSet entitys(SQL sql){
 		List<String> metadatas = service.metadata(sql.getTable());
-		List<String> params = params(metadatas);
+		List<String> params = AdapterProxy.metadata2param(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}
-	private List<String> params(List<String> metadatas){
-		List<String> params = null;
-		adapter = getAdapter();
-		if(null != adapter){
-			params = adapter.metadata2param(metadatas);
-			if(null != params){
-				return params;
-			}
-		}
-		//注意这里只支持下划线转驼峰
-		//如果数据库中已经是驼峰,不要配置这个参数
-		String keyCase = ConfigTable.getString("HTTP_PARAM_KEYS_CASE");
-		if("camel".equals(keyCase)){
-			if(null != metadatas){
-				for(String key:metadatas){
-					params.add(key+":"+BeanUtil.camel(key.toLowerCase()));
-				}
-			}
-		}else if("Camel".equals(keyCase)){
-			if(null != metadatas){
-				for(String key:metadatas){
-					key = CharUtil.toUpperCaseHeader(key.toLowerCase());
-					params.add(key+":"+BeanUtil.Camel(key));
-				}
-			}
-		}
-		return params;
-	}
-
 
 	protected ConfigStore condition(boolean navi, String... configs) {
 		return condition(getRequest(), navi, configs);

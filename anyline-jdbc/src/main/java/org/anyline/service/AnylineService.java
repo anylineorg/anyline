@@ -241,49 +241,102 @@ public interface AnylineService<E>{
 	 
 	/** 
 	 * 更新记录 
-	 * @param columns	  需要更新的列 
+	 * @param fixs	  需要更新的列
+	 * @param columns	  需要更新的列
 	 * @param dest	   表 
 	 * @param data data
 	 * @return int
 	 */
+	public int update(String dest, Object data, List<String> fixs, String ... columns);
+	public int update(Object data, List<String> fixs, String ... columns);
+	public int update(String dest, ConfigStore configs, List<String> fixs, String ... conditions);
+
+	public int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
+	public int update(boolean async, Object data, List<String> fixs, String ... columns);
+
+
+	public int update(String dest, Object data, String[] fixs, String ... columns);
+	public int update(Object data, String[] fixs, String ... columns);
+	public int update(String dest, ConfigStore configs, String[] fixs, String ... conditions);
+
+	public int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
+	public int update(boolean async, Object data, String[] fixs, String ... columns);
+
+
+
 	public int update(String dest, Object data, String ... columns);
 	public int update(Object data, String ... columns);
 	public int update(String dest, ConfigStore configs, String ... conditions);
-	
+
 	public int update(boolean async, String dest, Object data, String ... columns);
 	public int update(boolean async, Object data, String ... columns);
 	/** 
 	 * 保存(insert|update)根据是否有主键值确定insert或update
 	 * @param data  数据
 	 * @param checkPriamry 是否检测主键
+	 * @param fixs 指定更新或保存的列
 	 * @param columns 指定更新或保存的列
 	 * @param dest 表 
 	 * @return 影响行数
-	 */ 
-	public int save(String dest, Object data, boolean checkPriamry, String ... columns); 
-	public int save(Object data, boolean checkPriamry, String ... columns); 
-	public int save(Object data, String ... columns); 
+	 */
+	public int save(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(Object data, List<String> fixs, String ... columns);
+	public int save(String dest, Object data, List<String> fixs, String ... columns);
+
+	public int save(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int save(Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int save(Object data, String[] fixs, String ... columns);
+	public int save(String dest, Object data, String[] fixs, String ... columns);
+
+
+	public int save(String dest, Object data, boolean checkPriamry, String ... columns);
+	public int save(Object data, boolean checkPriamry, String ... columns);
+	public int save(Object data, String ... columns);
 	public int save(String dest, Object data, String ... columns);
+
 
 	/**
 	 * 保存(insert|update)根据是否有主键值确定insert或update
 	 * @param async 是否异步执行
 	 * @param data  数据
 	 * @param checkPriamry 是否检测主键
+	 * @param fixs 指定更新或保存的列
 	 * @param columns 指定更新或保存的列
 	 * @param dest 表
 	 * @return 影响行数
 	 */
+	public int save(boolean async, String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(boolean async, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(boolean async, Object data, List<String> fixs, String ... columns);
+	public int save(boolean async, String dest, Object data, List<String> fixs, String ... columns);
+
+	public int save(boolean async, String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int save(boolean async, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int save(boolean async, Object data, String[] fixs, String ... columns);
+	public int save(boolean async, String dest, Object data, String[] fixs, String ... columns);
+
 	public int save(boolean async, String dest, Object data, boolean checkPriamry, String ... columns);
 	public int save(boolean async, Object data, boolean checkPriamry, String ... columns);
 	public int save(boolean async, Object data, String ... columns);
-	public int save(boolean async, String dest, Object data, String ... columns); 
- 
- 
-	public int insert(String dest, Object data, boolean checkPriamry, String ... columns); 
-	public int insert(Object data, boolean checkPriamry, String ... columns); 
-	public int insert(Object data, String ... columns); 
-	public int insert(String dest, Object data, String ... columns); 
+	public int save(boolean async, String dest, Object data, String ... columns);
+
+
+	public int insert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int insert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int insert(Object data, List<String> fixs, String ... columns);
+	public int insert(String dest, Object data, List<String> fixs, String ... columns);
+
+	public int insert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int insert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int insert(Object data, String[] fixs, String ... columns);
+	public int insert(String dest, Object data, String[] fixs, String ... columns);
+
+
+	public int insert(String dest, Object data, boolean checkPriamry, String ... columns);
+	public int insert(Object data, boolean checkPriamry, String ... columns);
+	public int insert(Object data, String ... columns);
+	public int insert(String dest, Object data, String ... columns);
 
 
 	/**
@@ -291,13 +344,26 @@ public interface AnylineService<E>{
 	 * @param dest dest
 	 * @param data data
 	 * @param checkPriamry checkPriamry
+	 * @param fixs 指定更新或保存的列
 	 * @param columns columns
 	 * @return int
 	 */
+	public int batchInsert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int batchInsert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int batchInsert(Object data, List<String> fixs, String ... columns);
+	public int batchInsert(String dest, Object data, List<String> fixs, String ... columns);
+
+
+	public int batchInsert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int batchInsert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int batchInsert(Object data, String[] fixs, String ... columns);
+	public int batchInsert(String dest, Object data, String[] fixs, String ... columns);
+
 	public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
 	public int batchInsert(Object data, boolean checkPriamry, String ... columns);
 	public int batchInsert(Object data, String ... columns);
-	public int batchInsert(String dest, Object data, String ... columns); 
+	public int batchInsert(String dest, Object data, String ... columns);
+
 	/** 
 	 * save insert区别 
 	 * 操作单个对象时没有区别 

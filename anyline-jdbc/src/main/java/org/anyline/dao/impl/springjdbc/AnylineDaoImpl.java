@@ -1297,7 +1297,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				listenerResult = listener.beforeDelete(this,run);
 			}
 			if(listenerResult) {
-				result = getJdbc().update(sql, values.toArray());
+				if(null == values) {
+					result = getJdbc().update(sql);
+				}else{
+					result = getJdbc().update(sql, values.toArray());
+				}
 //			result = getJdbc().update(
 //	            new PreparedStatementCreator() {
 //	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
