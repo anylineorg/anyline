@@ -23,6 +23,7 @@ package org.anyline.jdbc.config.db.impl;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
+import org.anyline.entity.MetaData;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.SQL;
@@ -47,14 +48,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -185,6 +185,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		StringBuilder builder = new StringBuilder();
 		TableRunSQLImpl run = new TableRunSQLImpl(table);
+		run.setCreater(this);
 		builder.append("DELETE FROM ").append(table).append(" WHERE ");
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
@@ -220,6 +221,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 	private RunSQL createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
 		TableRunSQLImpl run = new TableRunSQLImpl(dest);
+		run.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
 		List<String> keys = new ArrayList<>();
@@ -342,6 +344,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 	private RunSQL createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl(dest);
+		run.setCreater(this);
 		//List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
 		if(BasicUtil.isEmpty(dest)){
@@ -437,7 +440,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 	private RunSQL createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl(dest);
-
+		run.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		if(null == list || list.size() ==0){
 			throw new SQLException("空数据");
@@ -636,6 +639,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 	private RunSQL createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl(dest);
+		run.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		List<String> keys = null;
@@ -713,6 +717,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 	private RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl();
+		run.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		/*确定需要更新的列*/ 
@@ -1004,6 +1009,118 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			table = BasicUtil.delimiter(table,getDelimiterFr() , getDelimiterTo());
 		}
 		return table;
+	}
+
+
+	@Override
+	public RunValue convert(String table, RunValue run){
+		if(ConfigTable.IS_AUTO_CHECK_METADATA){
+			LinkedHashMap<String,MetaData> metadatas = service.metadatas(table, true);
+			run.setValue(convert(metadatas, run.getKey(), run.getValue()));
+		}
+		return run;
+	}
+	@Override
+	public Object convert(Map<String,MetaData> metadatas, String key, Object value){
+		Object result = null;
+		if(null != metadatas && null != value){
+			result = convert(metadatas.get(key.toUpperCase()), value);
+		}
+		return result;
+	}
+
+	@Override
+	public Object convert(MetaData meta, Object value){
+		Object result = null;
+		if(null == meta || null == value){
+			return value;
+		}
+		try {
+			String clazz = meta.getClassName();
+			String typeName = meta.getTypeName();
+
+			if(typeName.equalsIgnoreCase("uuid")){
+				if(value instanceof UUID) {
+					result = value;
+				}else{
+					result = UUID.fromString(value.toString());
+				}
+			}else if(clazz.contains("String")){
+				if(value instanceof String){
+					result = value;
+				}else {
+					result = value.toString();
+				}
+			}else if(clazz.contains("Integer")){
+				if(value instanceof Integer){
+					result = value;
+				}else {
+					result = BasicUtil.parseInt(value, null);
+				}
+			}else if(clazz.contains("Long")){
+				if(value instanceof Long){
+					result = value;
+				}else {
+					result = BasicUtil.parseLong(value, null);
+				}
+			}else if(clazz.contains("Double")){
+				if(value instanceof Double){
+					result = value;
+				}else {
+					result = BasicUtil.parseDouble(value, null);
+				}
+			}else if(clazz.contains("Float")){
+				if(value instanceof Float){
+					result = value;
+				}else {
+					result = BasicUtil.parseFloat(value, null);
+				}
+			}else if(clazz.contains("Boolean")){
+				if(value instanceof Boolean){
+					result = value;
+				}else {
+					result = BasicUtil.parseBoolean(value, null);
+				}
+			}else if(clazz.contains("Timestamp")){
+				if(value instanceof Timestamp){
+					result = value;
+				}else {
+					Date date = DateUtil.parse(value);
+					if(null != date) {
+						result = new Timestamp(date.getTime());
+					}
+				}
+			}else if(clazz.contains("Time")){
+				if(value instanceof Time){
+					result = value;
+				}else {
+					Date date = DateUtil.parse(value);
+					if (null != date) {
+						result = new Time(date.getTime());
+					}
+				}
+			}else if(clazz.contains("Date")){
+				if(value instanceof java.sql.Date){
+					result = value;
+				}else {
+					Date date = DateUtil.parse(value);
+					if (null != date) {
+						result = new java.sql.Date(date.getTime());
+					}
+				}
+			}else if(clazz.contains("BigDecimal")){
+				if(value instanceof BigDecimal){
+					result = value;
+				}else {
+					result = BasicUtil.parseDecimal(value, null);
+				}
+			}else{
+				result = value;
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return result;
 	}
 	/* ************** 拼接字符串 *************** */
 	protected String concatFun(String ... args){
