@@ -25,6 +25,7 @@ import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -155,6 +156,7 @@ public interface AnylineService<E>{
 	 * @return List
 	 */
 	public List<MetaData> metadatas(String table);
+	public LinkedHashMap<String,MetaData> metadatas(String table, boolean map);
 
 
 	/**

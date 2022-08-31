@@ -115,11 +115,56 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     private static Map<String,DataRow> cache_metadata = new HashMap<>();
     private static Map<String,DataRow> cache_metadatas = new HashMap<>();
+
+    @Override
+    public LinkedHashMap<String,MetaData> metadatas(String table, boolean map){
+        LinkedHashMap<String,MetaData> maps = new LinkedHashMap();
+        List<MetaData> list = metadatas(table);
+        for(MetaData meta:list){
+            maps.put(meta.getName(), meta);
+        }
+        return maps;
+    }
+    @Override
+    public List<MetaData> metadatas(String table){
+        if(null == table){
+            return new ArrayList<>();
+        }
+        List<MetaData> list = null;
+        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+        String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table;
+
+        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
+            CacheElement cacheElement = cacheProvider.get(cache, key);
+            if(null != cacheElement){
+                list = (List<MetaData>) cacheElement.getValue();
+            }
+            if(null == list){
+                list = dao.metadatas(table);
+                cacheProvider.put(cache, key, list);
+            }
+        }else{
+
+            //通过静态变量缓存
+            DataRow static_cache = cache_metadatas.get(key);
+            if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
+                list = (List<MetaData>)static_cache.get("keys");
+            }
+            if(null == list){
+                list = dao.metadatas(table);
+                static_cache = new DataRow();
+                static_cache.put("keys", list);
+                cache_metadatas.put(key, static_cache);
+            }
+        }
+        return list;
+    }
+
     @Override
     public List<String> metadata(String table){
         List<String> list = null;
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = "METADATA_" + table.toUpperCase();
+        String key = DataSourceHolder.getDataSource()+"_METADATA_" + table.toUpperCase();
         //启用了缓存
         if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
             CacheElement cacheElement = cacheProvider.get(cache, key);
@@ -159,46 +204,12 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         return list;
     }
+
     @Override
     public List<String>metadata2param(String table){
         List<String> metadata = metadata(table);
         return AdapterProxy.metadata2param(metadata);
     }
-    @Override
-    public List<MetaData> metadatas(String table){
-        if(null == table){
-            return new ArrayList<>();
-        }
-        List<MetaData> list = null;
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = "METADATAS_" + table;
-
-        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
-            CacheElement cacheElement = cacheProvider.get(cache, key);
-            if(null != cacheElement){
-                list = (List<MetaData>) cacheElement.getValue();
-            }
-            if(null == list){
-                list = dao.metadatas(table);
-                cacheProvider.put(cache, key, list);
-            }
-        }else{
-
-            //通过静态变量缓存
-            DataRow static_cache = cache_metadatas.get(key);
-            if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                list = (List<MetaData>)static_cache.get("keys");
-            }
-            if(null == list){
-                list = dao.metadatas(table);
-                static_cache = new DataRow();
-                static_cache.put("keys", list);
-                cache_metadatas.put(key, static_cache);
-            }
-        }
-        return list;
-    }
-
     @Override
     public List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String... conditions) {
         List<Map<String,Object>> maps = null;
