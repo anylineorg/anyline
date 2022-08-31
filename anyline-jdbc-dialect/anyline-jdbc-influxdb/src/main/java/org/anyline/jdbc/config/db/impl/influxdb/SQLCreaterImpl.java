@@ -69,7 +69,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		RunSQL run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();
-			run = new TableRunSQLImpl();
+			run = new TableRunSQLImpl(this,dest);
 			if(obj instanceof DataRow){
 				DataRow row = (DataRow)obj;
 				List<String> cols = confirmInsertColumns(dest, obj, columns);

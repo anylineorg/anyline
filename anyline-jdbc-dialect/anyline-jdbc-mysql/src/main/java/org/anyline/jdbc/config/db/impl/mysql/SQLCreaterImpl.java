@@ -49,7 +49,38 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
 	} 
- 
+ /*
+BIGINT:java.lang.Long
+BINARY:byte[]
+BIT:Boolean
+BLOB:byte[]
+CHAR:String
+DATE:java.sql.Date
+DATETIME:java.sql.Timestamp
+DECIMAL:BigDecimal
+JSON:String
+FLOAT:Float
+GEOMETRY:byte[]
+INT:Integer
+GEOMETRY:byte[]
+LONGBLOB:byte[]
+LONGTEXT:String
+MEDIUMBLOB:byte[]
+MEDIUMINT：Integer
+MEDIUMTEXT:String
+GEOMETRY:byte[]
+DOUBLE:Double
+SMALLINT:Short
+YEAR:java.sql.Date
+VARBINARY:byte[]
+TINYTEXT:java.lang.String
+TINYINT:java.lang.Byte
+TINYBLOB:byte[]
+TIMESTAMP:java.sql.Timestamp
+TIME:java.sql.Time
+TEXT:String
+SMALLINT:Short
+*/
 	public String concat(String ... args){
 		return concatFun(args);
 	} 
