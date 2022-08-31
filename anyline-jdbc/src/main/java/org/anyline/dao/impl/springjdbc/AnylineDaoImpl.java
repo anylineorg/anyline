@@ -1369,7 +1369,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				result += "param" + idx++ + "=";
 				result += param;
 				if(null != param){
-					result += "(" + param.getClass().getSimpleName() + ")";
+					result += "(" + param.getClass().getName()+ ")";
 				}
 				result += "\n";
 			}
@@ -1387,7 +1387,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					result += keys.get(i) + "=";
 					result += value;
 					if (null != value) {
-						result += "(" + value.getClass().getSimpleName() + ")";
+						result += "(" + value.getClass().getName() + ")";
 					}
 					result += "\n";
 				}
