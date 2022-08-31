@@ -47,6 +47,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.beans.PropertyEditorSupport;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -107,7 +108,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public RunSQL createQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions){ 
 		RunSQL run = null; 
 		if(sql instanceof TableSQL){ 
-			run = new TableRunSQLImpl(); 
+			run = new TableRunSQLImpl(this,sql.getTable());
 		}else if(sql instanceof XMLSQL){ 
 			run = new XMLRunSQLImpl();
 		}else if(sql instanceof TextSQL){ 
@@ -164,8 +165,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		if(obj instanceof ConfigStore){
-			run = new TableRunSQLImpl();
-			run.setCreater(this);
+			run = new TableRunSQLImpl(this,dest);
 			SQL sql = new TableSQLImpl();
 			sql.setDataSource(dest);
 			run.setSql(sql);
@@ -184,8 +184,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		TableRunSQLImpl run = new TableRunSQLImpl(table);
-		run.setCreater(this);
+		TableRunSQLImpl run = new TableRunSQLImpl(this,table);
 		builder.append("DELETE FROM ").append(table).append(" WHERE ");
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
@@ -220,8 +219,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return run;
 	}
 	private RunSQL createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
-		TableRunSQLImpl run = new TableRunSQLImpl(dest);
-		run.setCreater(this);
+		TableRunSQLImpl run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
 		List<String> keys = new ArrayList<>();
@@ -343,8 +341,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	private RunSQL createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl(dest);
-		run.setCreater(this);
+		RunSQL run = new TableRunSQLImpl(this,dest);
 		//List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
 		if(BasicUtil.isEmpty(dest)){
@@ -439,8 +436,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return run;
 	}
 	private RunSQL createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl(dest);
-		run.setCreater(this);
+		RunSQL run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		if(null == list || list.size() ==0){
 			throw new SQLException("空数据");
@@ -638,8 +634,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	private RunSQL createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl(dest);
-		run.setCreater(this);
+		RunSQL run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		List<String> keys = null;
@@ -716,8 +711,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return run;
 	}
 	private RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl();
-		run.setCreater(this);
+		RunSQL run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		/*确定需要更新的列*/ 
@@ -738,7 +732,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append(" SET").append(SQLCreater.BR_TAB);
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
-				Object value = row.get(KEY_CASE.SRC, key);
+				Object value = row.get(key);
 				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
@@ -867,7 +861,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}
 				Object value = null;
 				if(null != row) {
-					value = row.get(KEY_CASE.SRC, key);
+					value = row.get(key);
 				}else{
 					if(AdapterProxy.hasAdapter()){
 						value = BeanUtil.getFieldValue(obj, AdapterProxy.field(obj.getClass(), key));
@@ -1013,114 +1007,136 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 
 	@Override
-	public RunValue convert(String table, RunValue run){
+	public boolean convert(String table, RunValue run){
+		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
 			LinkedHashMap<String,MetaData> metadatas = service.metadatas(table, true);
-			run.setValue(convert(metadatas, run.getKey(), run.getValue()));
+			result = convert(metadatas, run);
 		}
-		return run;
+		return result;
 	}
 	@Override
-	public Object convert(Map<String,MetaData> metadatas, String key, Object value){
-		Object result = null;
+	public boolean convert(Map<String,MetaData> metadatas, RunValue value){
+		boolean result = false;
 		if(null != metadatas && null != value){
-			result = convert(metadatas.get(key.toUpperCase()), value);
+			MetaData meta = metadatas.get(value.getKey().toUpperCase());
+			result = convert(meta, value);
 		}
 		return result;
 	}
 
+	/**
+	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
+	 * @param meta MetaData
+	 * @param run RunValue
+	 * @return boolean
+	 */
 	@Override
-	public Object convert(MetaData meta, Object value){
-		Object result = null;
-		if(null == meta || null == value){
-			return value;
+	public boolean convert(MetaData meta, RunValue run){
+		if(null == meta || null == run){
+			return false;
 		}
+		Object value = run.getValue();
 		try {
 			String clazz = meta.getClassName();
-			String typeName = meta.getTypeName();
-
-			if(typeName.equalsIgnoreCase("uuid")){
+			String typeName = meta.getTypeName().toUpperCase();
+			//根据数据库类型
+			if(typeName.equals("UUID")){
 				if(value instanceof UUID) {
-					result = value;
 				}else{
-					result = UUID.fromString(value.toString());
+					run.setValue(UUID.fromString(value.toString()));
 				}
-			}else if(clazz.contains("String")){
+				return true;
+			}else if(
+					typeName.contains("CHAR")
+					|| typeName.contains("TEXT")
+			){
 				if(value instanceof String){
-					result = value;
-				}else {
-					result = value.toString();
+				}else if(value instanceof Date){
+					run.setValue(DateUtil.format((Date)value));
+				}else{
+					run.setValue(value.toString());
 				}
-			}else if(clazz.contains("Integer")){
+				return true;
+			}else if(typeName.equals("BIT")){
+				if("0".equals(value.toString()) || "false".equalsIgnoreCase(value.toString())){
+					run.setValue("0");
+				}else{
+					run.setValue("1");
+				}
+				return true;
+			}
+			// 根据Java类
+			// 不要解析String 许多不识别的类型会对应String 交给子类解析
+			// 不要解析Boolean类型 有可能是 0,1
+			else if(clazz.contains("Integer")){
 				if(value instanceof Integer){
-					result = value;
 				}else {
-					result = BasicUtil.parseInt(value, null);
+					run.setValue(BasicUtil.parseInt(value, null));
 				}
+				return true;
 			}else if(clazz.contains("Long")){
 				if(value instanceof Long){
-					result = value;
 				}else {
-					result = BasicUtil.parseLong(value, null);
+					run.setValue(BasicUtil.parseLong(value, null));
 				}
+				return true;
 			}else if(clazz.contains("Double")){
 				if(value instanceof Double){
-					result = value;
 				}else {
-					result = BasicUtil.parseDouble(value, null);
+					run.setValue(BasicUtil.parseDouble(value, null));
 				}
+				return true;
 			}else if(clazz.contains("Float")){
 				if(value instanceof Float){
-					result = value;
 				}else {
-					result = BasicUtil.parseFloat(value, null);
+					run.setValue(BasicUtil.parseFloat(value, null));
 				}
-			}else if(clazz.contains("Boolean")){
-				if(value instanceof Boolean){
-					result = value;
+				return true;
+			}else if(clazz.contains("BigDecimal")){
+				if(value instanceof BigDecimal){
 				}else {
-					result = BasicUtil.parseBoolean(value, null);
+					run.setValue(BasicUtil.parseDecimal(value, null));
 				}
-			}else if(clazz.contains("Timestamp")){
+				return true;
+			}else if(clazz.contains("java.sql.Timestamp")){
 				if(value instanceof Timestamp){
-					result = value;
 				}else {
 					Date date = DateUtil.parse(value);
 					if(null != date) {
-						result = new Timestamp(date.getTime());
+						run.setValue(new Timestamp(date.getTime()));
+					}else{
+						run.setValue(null);
 					}
 				}
-			}else if(clazz.contains("Time")){
+				return true;
+			}else if(clazz.equals("java.sql.Time")){
 				if(value instanceof Time){
-					result = value;
 				}else {
 					Date date = DateUtil.parse(value);
 					if (null != date) {
-						result = new Time(date.getTime());
+						run.setValue( new Time(date.getTime()));
+					}else{
+						run.setValue(null);
 					}
 				}
-			}else if(clazz.contains("Date")){
+				return true;
+			}else if(clazz.contains("java.sql.Date")){
 				if(value instanceof java.sql.Date){
-					result = value;
 				}else {
 					Date date = DateUtil.parse(value);
 					if (null != date) {
-						result = new java.sql.Date(date.getTime());
+						run.setValue(new java.sql.Date(date.getTime()));
+					}else{
+						run.setValue(null);
 					}
 				}
-			}else if(clazz.contains("BigDecimal")){
-				if(value instanceof BigDecimal){
-					result = value;
-				}else {
-					result = BasicUtil.parseDecimal(value, null);
-				}
-			}else{
-				result = value;
+				return true;
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-		return result;
+		return false;
 	}
 	/* ************** 拼接字符串 *************** */
 	protected String concatFun(String ... args){
