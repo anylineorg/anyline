@@ -41,14 +41,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
-	public TableRunSQLImpl(){
+
+	public TableRunSQLImpl(SQLCreater creater, String table){
 		this.conditionChain = new AutoConditionChainImpl();
 		this.orderStore = new OrderStoreImpl();
-		setStrict(false);
-	}
-	public TableRunSQLImpl(String table){
-		this();
 		this.table = table;
+		this.creater = creater;
 	}
 
 	private void parseDataSource(){ 
