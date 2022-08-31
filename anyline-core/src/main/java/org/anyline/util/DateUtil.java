@@ -34,7 +34,7 @@ import java.util.*;
 public class DateUtil {
 	private static int MaxDate;// 一月最大天数
 
-	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.S";
+	public static final String FORMAT_FULL = "yyyy-MM-dd HH:mm:ss.SSS";
 	public static final String FORMAT_DATE_TIME = "yyyy-MM-dd HH:mm:ss";
 	public static final String FORMAT_DATE = "yyyy-MM-dd";
 	public static final int DATE_PART_YEAR = Calendar.YEAR;
