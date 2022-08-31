@@ -190,16 +190,16 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 
 	/**
 	 * 添加参数值
-	 * @param value  value
+	 * @param run  run
 	 * @return RunSQL
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public RunSQL addValues(RunValue value){
+	public RunSQL addValues(RunValue run){
 		if(null == values){
 			values = new ArrayList<>();
 		}
-		creater.convert(getTable(), value);
-		values.add(value);
+		creater.convert(getTable(), run);
+		values.add(run);
 		return this;
 	}
 	public RunSQL addValues(List<RunValue> values){
