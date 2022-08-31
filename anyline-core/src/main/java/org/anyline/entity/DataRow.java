@@ -49,6 +49,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public static String KEY_PARENT = "PARENT";                 // 上级数据
     public static String KEY_ALL_PARENT = "ALL_PARENT";         // 所有上级数据
     public static String KEY_CHILDREN = "CHILDREN";             // 子数据
+    public static String KEY_ALL_CHILDREN = "CHILDREN";         // 所有子级
     public static String KEY_ITEMS = "ITEMS";
     public static String DEFAULT_PRIMARY_KEY = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
     public static KEY_CASE DEFAULT_KEY_KASE = KEY_CASE.CONFIG;
@@ -1050,11 +1051,18 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return Object
      */
     public Object getParent() {
-        return get(KEY_PARENT);
+        return getParent(KEY_PARENT);
+    }
+    public Object getParent(String key) {
+        return get(key);
     }
 
     public DataRow setParent(Object parent) {
         put(KEY_PARENT, parent);
+        return this;
+    }
+    public DataRow setParent(String key, Object parent) {
+        put(key, parent);
         return this;
     }
 
@@ -1063,22 +1071,40 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return List
      */
     @SuppressWarnings("unchecked")
-    public List<Object> getAllParent() {
+    public List<Object> getAllParent(String key) {
         if (null != get(KEY_ALL_PARENT)) {
             return (List<Object>) get(KEY_ALL_PARENT);
         }
         List<Object> parents = new ArrayList<Object>();
-        Object parent = getParent();
+        Object parent = getParent(key);
         if (null != parent) {
             parents.add(parent);
             if (parent instanceof DataRow) {
                 DataRow tmp = (DataRow) parent;
-                parents.addAll(tmp.getAllParent());
+                parents.addAll(tmp.getAllParent(key));
             }
         }
+        put(KEY_ALL_PARENT, parents);
         return parents;
     }
 
+    public List<Object> getAllParent() {
+        return getAllParent(KEY_PARENT);
+    }
+    public DataSet getAllChild(String key){
+        Object obj = get(KEY_ALL_CHILDREN);
+        if (null != obj) {
+            return (DataSet) obj;
+        }
+        DataSet set = new DataSet();
+        DataSet childs = getSet(key);
+        for(DataRow child:childs){
+            set.add(child);
+            set.addAll(child.getAllChild(key));
+        }
+        put(KEY_ALL_CHILDREN, set);
+        return set;
+    }
     /**
      * 转换成对象
      * @param <T>  T
