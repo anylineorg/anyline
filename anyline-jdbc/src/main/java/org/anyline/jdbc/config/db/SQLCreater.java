@@ -20,11 +20,14 @@
 package org.anyline.jdbc.config.db;
 
 import org.anyline.entity.DataSet;
+import org.anyline.entity.MetaData;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.run.RunSQL;
 
+import java.util.HashMap;
 import java.util.List;
- 
+import java.util.Map;
+
 public interface SQLCreater{
 	public static enum DB_TYPE{
 		Cassandra			{public String getCode(){return "DB_TYPE_CASSANDRA";}			public String getName(){return "Cassandra";}}			,
@@ -101,6 +104,11 @@ public interface SQLCreater{
 	public String getPrimaryKey(Object obj); 
 	public Object getPrimaryValue(Object obj);
 	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
+
+
+	public RunValue convert(String table, RunValue run);
+	public Object convert(Map<String,MetaData> metadatas, String key, Object value);
+	public Object convert(MetaData meta, Object value);
 	/**
 	 * 拼接字符串
 	 * @param args args
