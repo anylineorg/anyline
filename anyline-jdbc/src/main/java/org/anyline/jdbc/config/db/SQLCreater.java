@@ -106,9 +106,9 @@ public interface SQLCreater{
 	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
 
 
-	public RunValue convert(String table, RunValue run);
-	public Object convert(Map<String,MetaData> metadatas, String key, Object value);
-	public Object convert(MetaData meta, Object value);
+	public boolean convert(String table, RunValue run);
+	public boolean convert(Map<String,MetaData> metadatas, RunValue value);
+	public boolean convert(MetaData meta, RunValue value);
 	/**
 	 * 拼接字符串
 	 * @param args args
