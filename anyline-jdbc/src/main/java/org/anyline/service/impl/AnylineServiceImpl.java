@@ -121,7 +121,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         LinkedHashMap<String,MetaData> maps = new LinkedHashMap();
         List<MetaData> list = metadatas(table);
         for(MetaData meta:list){
-            maps.put(meta.getName(), meta);
+            maps.put(meta.getName().toUpperCase(), meta);
         }
         return maps;
     }
