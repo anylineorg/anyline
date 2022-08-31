@@ -543,6 +543,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
     public DataRow getRow(List<String> params) {
         return getRow(CompareBuilder.EQUAL, params);
     }
+
+
     public DataRow getRow(Compare compare, int begin, String... params) {
         DataSet set = getRows(compare,begin, 1, params);
         if (set.size() > 0) {
@@ -554,6 +556,12 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return null;
     }
 
+    public DataSet getRows(Map<String, String> kvs) {
+        return getRows(0, -1, kvs);
+    }
+    public DataSet getRows(Compare compare, Map<String, String> kvs) {
+        return getRows(compare, 0, -1, kvs);
+    }
     public DataRow getRow(int begin, String... params) {
         return getRow(CompareBuilder.EQUAL, begin, params);
     }
@@ -2836,8 +2844,8 @@ public class DataSet implements Collection<DataRow>, Serializable {
      *
      * @param field     默认"ITEMS"
      * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
-     * @param recursion 是否递归
-     * @param items     items
+     * @param recursion 是否递归 所有子级以相同条件执行dispatchs
+     * @param items     items默认this
      * @param fixs     fixs
      * @param keys     ID:DEPT_ID或ID
      * @return DataSet
@@ -3376,12 +3384,6 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return this.union(set, keys);
     }
 
-    public DataSet getRows(Map<String, String> kvs) {
-        return getRows(0, -1, kvs);
-    }
-    public DataSet getRows(Compare compare, Map<String, String> kvs) {
-        return getRows(compare, 0, -1, kvs);
-    }
     /**
      * 多个集合的交集
      *
