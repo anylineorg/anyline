@@ -299,7 +299,7 @@ public class BasicUtil {
 		}
 		return RegularUtil.isDateTime(obj.toString());
 	}
-	public static int parseInt(Object value, Integer def) {
+	public static Integer parseInt(Object value, Integer def) {
 		if (null == value) {
 			return def;
 		}
@@ -309,7 +309,7 @@ public class BasicUtil {
 			return def;
 		}
 	}
-	public static int parseInt(Object value) throws Exception{
+	public static Integer parseInt(Object value) throws Exception{
 		return (int) Double.parseDouble(value.toString());
 	}
 
@@ -375,7 +375,7 @@ public class BasicUtil {
 		}
 	} 
  
-	public static boolean parseBoolean(Object obj) throws Exception{
+	public static Boolean parseBoolean(Object obj) throws Exception{
 		if ("1".equals(obj.toString())
 				|| "true".equalsIgnoreCase(obj.toString())
 				|| "on".equalsIgnoreCase(obj.toString())) {
