@@ -16,23 +16,23 @@ import java.util.*;
 public class DataSet implements Collection<DataRow>, Serializable {
     private static final long serialVersionUID = 6443551515441660101L;
     protected static final Logger log = LoggerFactory.getLogger(DataSet.class);
-    private boolean result = true;              // 执行结果
-    private String code = null;
-    private Exception exception = null;         // 异常
-    private String message = null;              // 提示信息
-    private PageNavi navi = null;               // 分页
-    private List<String> head = null;           // 表头
-    private List<DataRow> rows = null;          // 数据
-    private List<String> primaryKeys = null;    // 主键
-    private String datalink = null;             // 数据连接
-    private String dataSource = null;           // 数据源(表|视图|XML定义SQL)
-    private String schema = null;
-    private String table = null;
-    private long createTime = 0;                // 创建时间
-    private long expires = -1;                  // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-    private boolean isFromCache = false;        // 是否来自缓存
-    private boolean isAsc = false;
-    private boolean isDesc = false;
+    private boolean result                      = true  ; // 执行结果
+    private String code                         = null  ; // code
+    private Exception exception                 = null  ; // 异常
+    private String message                      = null  ; // 提示信息
+    private PageNavi navi                       = null  ; // 分页
+    private List<String> head                   = null  ; // 表头
+    private List<DataRow> rows                  = null  ; // 数据
+    private List<String> primaryKeys            = null  ; // 主键
+    private String datalink                     = null  ; // 数据连接
+    private String dataSource                   = null  ; // 数据源(表|视图|XML定义SQL)
+    private String schema                       = null  ; //
+    private String table                        = null  ; //
+    private long createTime                     = 0     ; // 创建时间
+    private long expires                        = -1    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+    private boolean isFromCache                 = false ; // 是否来自缓存
+    private boolean isAsc                       = false ; //
+    private boolean isDesc                      = false ; //
 
     /**
      * 创建索引
