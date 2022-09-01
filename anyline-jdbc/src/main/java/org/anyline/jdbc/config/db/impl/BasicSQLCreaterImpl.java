@@ -56,6 +56,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 /**
@@ -806,7 +807,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null != columns && columns.length>0){ 
 			each = false; 
 			keys = new ArrayList<>();
-			for(String column:columns){ 
+			for(String column:columns){
 				if(BasicUtil.isEmpty(column)){ 
 					continue; 
 				} 
@@ -827,11 +828,21 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			} 
 		} 
 		if(each){
+			//是否插入null及""列
+			boolean isInsertNullColumn =  false;
+			boolean isInsertEmptyColumn = false;
 			DataRow row = null;
 			if(obj instanceof DataRow){
 				row = (DataRow)obj;
+				mastKeys.addAll(row.getUpdateColumns());
+				ignores.addAll(row.getIgnoreUpdateColumns());
 				keys = row.keys();
+				isInsertNullColumn = row.isUpdateNullColumn();
+				isInsertEmptyColumn = row.isUpdateEmptyColumn();
+
 			}else{
+				isInsertNullColumn = ConfigTable.getBoolean("IS_INSERT_NULL_COLUMN",false);
+				isInsertEmptyColumn = ConfigTable.getBoolean("IS_INSERT_EMPTY_COLUMN",false);
 				if(AdapterProxy.hasAdapter()){
 					keys = AdapterProxy.columns(obj.getClass());
 				}else {
@@ -845,9 +856,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					}
 				}
 			}
-			//是否插入null及""列
-			boolean isInsertNullColumn = ConfigTable.getBoolean("IS_INSERT_NULL_COLUMN",false); 
-			boolean isInsertEmptyColumn = ConfigTable.getBoolean("IS_INSERT_EMPTY_COLUMN",false); 
 			int size = keys.size(); 
 			for(int i=size-1;i>=0; i--){ 
 				String key = keys.get(i); 
@@ -892,7 +900,22 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			} 
 		}
 		keys = checkMetadata(dst, keys);
+		keys = distinct(keys);
 		return keys; 
+	}
+	public List<String> distinct(List<String> list){
+		List<String> result = new ArrayList<>();
+		List<String> check = new ArrayList<>();
+		if(null != list){
+			for(String item:list){
+				String upper = item.toUpperCase();
+				if(!check.contains(upper)){
+					result.add(item);
+					check.add(upper);
+				}
+			}
+		}
+		return result;
 	}
 	/** 
 	 * 确认需要更新的列 
@@ -902,14 +925,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @return List
 	 */ 
 	private List<String> confirmUpdateColumns(String dest, DataRow row, String ... columns){
-		List<String> keys = null;/*确定需要更新的列*/ 
+		List<String> keys = null;/*确定需要更新的列*/
 		if(null == row){ 
 			return new ArrayList<>();
 		} 
 		boolean each = true;//是否需要从row中查找列 
-		List<String> mastKeys = row.getUpdateColumns();		//必须更新列 
-		List<String> delimiters = new ArrayList<>();			//必须不更新列
-		List<String> factKeys = new ArrayList<>();		//根据是否空值
+		List<String> masters = row.getUpdateColumns()		;//必须更新列
+		List<String> ignores = row.getIgnoreUpdateColumns()	;//必须不更新列
+		List<String> factKeys = new ArrayList<>()			;//根据是否空值
 		if(null != columns && columns.length>0){ 
 			each = false; 
 			keys = new ArrayList<>();
@@ -918,12 +941,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					continue; 
 				} 
 				if(column.startsWith("+")){ 
-					column = column.substring(1, column.length()); 
-					mastKeys.add(column); 
+					column = column.substring(1, column.length());
+					masters.add(column);
 					each = true; 
 				}else if(column.startsWith("-")){
 					column = column.substring(1, column.length()); 
-					delimiters.add(column);
+					ignores.add(column);
 					each = true; 
 				}else if(column.startsWith("?")){
 					column = column.substring(1, column.length()); 
@@ -932,28 +955,28 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				} 
 				keys.add(column); 
 			} 
-		}else if(null != mastKeys && mastKeys.size()>0){
+		}else if(null != masters && masters.size()>0){
 			each = false;
-			keys = mastKeys;
+			keys = masters;
 		}
 		if(each){ 
 			keys = row.keys();
-			for(String k:mastKeys){
+			for(String k:masters){
 				if(!keys.contains(k)){
 					keys.add(k);
 				}
 			}
 			//是否更新null及""列 
-			boolean isUpdateNullColumn = row.isUpdateNullColumn();//ConfigTable.getBoolean("IS_UPDATE_NULL_COLUMN",true); 
-			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();//ConfigTable.getBoolean("IS_UPDATE_EMPTY_COLUMN",true); 
+			boolean isUpdateNullColumn = row.isUpdateNullColumn();
+			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
 			int size = keys.size(); 
 			for(int i=size-1;i>=0; i--){ 
 				String key = keys.get(i); 
-				if(mastKeys.contains(key)){ 
+				if(masters.contains(key)){
 					//必须更新 
 					continue; 
 				} 
-				if(delimiters.contains(key)){
+				if(ignores.contains(key)){
 					keys.remove(key); 
 					continue; 
 				} 
@@ -981,11 +1004,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				 
 			} 
 		}
-		List<String> ignores = row.getIgnoreUpdateColumns();
-		for(String key:ignores){
-			keys.remove(key);
-		}
+		keys.removeAll(ignores);
 		keys = checkMetadata(dest, keys);
+		keys = distinct(keys);
 		return keys; 
 	}
 	public String parseTable(String table){
@@ -1029,14 +1050,20 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
 	 * @param meta MetaData
 	 * @param run RunValue
-	 * @return boolean
+	 * @return boolean 是否完成类型转换，决定下一步是否继续
 	 */
 	@Override
 	public boolean convert(MetaData meta, RunValue run){
-		if(null == meta || null == run){
+		if(null == meta){
 			return false;
 		}
+		if(null == run){
+			return true;
+		}
 		Object value = run.getValue();
+		if(null == value){
+			return true;
+		}
 		try {
 			String clazz = meta.getClassName();
 			String typeName = meta.getTypeName().toUpperCase();
