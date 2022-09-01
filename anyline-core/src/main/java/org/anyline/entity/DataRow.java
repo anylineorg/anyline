@@ -46,39 +46,37 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private static final long serialVersionUID = -2098827041540802313L;
     protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
 
-    public static String KEY_PARENT = "PARENT";                 // 上级数据
-    public static String KEY_ALL_PARENT = "ALL_PARENT";         // 所有上级数据
-    public static String KEY_CHILDREN = "CHILDREN";             // 子数据
-    public static String KEY_ALL_CHILDREN = "CHILDREN";         // 所有子级
-    public static String KEY_ITEMS = "ITEMS";
-    public static String DEFAULT_PRIMARY_KEY = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
-    public static KEY_CASE DEFAULT_KEY_KASE = KEY_CASE.CONFIG;
-    private transient DataSet container = null;                 // 包含当前对象的容器
+    public static String DEFAULT_PRIMARY_KEY    = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+    private boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
+    private boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
 
-    private List<String> primaryKeys = new ArrayList<>(); //主键
-    private List<String> updateColumns = new ArrayList<>();
-    private List<String> ignoreUpdateColumns = new ArrayList<>();
-    private String datalink = null;
-    private String dataSource = null;                           // 数据源(表|视图|XML定义SQL)
-    private String schema = null;
-    private String table = null;
-    private Map<String, Object> attributes = new HashMap<>();   // 属性
-    private Map<String, Object> tags = new HashMap<>();         // 标签
-    private long createTime = 0;                                // 创建时间
-    private long nanoTime = 0;
-    private long expires = -1;                                  // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
-    protected Boolean isNew = false;                            // 强制新建(适应hibernate主键策略)
-    protected boolean isFromCache = false;                      // 是否来自缓存
-    private boolean updateNullColumn = ConfigTable.IS_UPDATE_NULL_COLUMN;
-    private boolean updateEmptyColumn = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
-    private Map<String, String> keymap = new HashMap<>();       // keymap
-    private boolean isUpperKey = false;                         // 是否已执行大写key转换(影响到驼峰执行)
-    private Map<String, String> converts = new HashMap<>();     // key是否已转换<key,src><当前key,原key>
-    public boolean skip = false; //遍历计算时标记
-
-    private KeyAdapter keyAdapter = null;
-
-    private KEY_CASE keyCase 				= DEFAULT_KEY_KASE;  // 列名格式
+    public static String KEY_PARENT             = "PARENT"              ; // 上级
+    public static String KEY_ALL_PARENT         = "ALL_PARENT"          ; // 所有上级
+    public static String KEY_CHILDREN           = "CHILDREN"            ; // 子级
+    public static String KEY_ALL_CHILDREN       = "CHILDREN"            ; // 所有子级
+    public static String KEY_ITEMS              = "ITEMS"               ; // items
+    public static KEY_CASE DEFAULT_KEY_KASE     = KEY_CASE.CONFIG       ; // key case
+    private transient DataSet container         = null                  ; // 包含当前对象的容器
+    private List<String> primaryKeys            = new ArrayList<>()     ; // 主键
+    private List<String> updateColumns          = new ArrayList<>()     ; // 需要参与update insert操作
+    private List<String> ignoreUpdateColumns    = new ArrayList<>()     ; // 不参与update insert操作
+    private String datalink                     = null                  ; // 超链接
+    private String dataSource                   = null                  ; // 数据源(表|视图|XML定义SQL)
+    private String schema                       = null                  ; // schema
+    private String table                        = null                  ; // table
+    private Map<String, Object> attributes      = new HashMap<>()       ; // 属性
+    private Map<String, Object> tags            = new HashMap<>()       ; // 标签
+    private long createTime                     = 0                     ; // 创建时间(毫秒)
+    private long nanoTime                       = 0                     ; // 创建时间(纳秒)
+    private long expires                        = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
+    protected Boolean isNew                     = false                 ; // 强制新建(否则根据主键值判断insert | update)
+    protected boolean isFromCache               = false                 ; // 是否来自缓存
+    private Map<String, String> keymap          = new HashMap<>()       ; // keymap
+    private boolean isUpperKey                  = false                 ; // 是否已执行大写key转换(影响到驼峰执行)
+    private Map<String, String> converts        = new HashMap<>()       ; // key是否已转换<key,src><当前key,原key>
+    public boolean skip                         = false                 ; // 遍历计算时标记
+    private KeyAdapter keyAdapter               = null                  ; // key格式转换
+    private KEY_CASE keyCase 				    = DEFAULT_KEY_KASE      ; // 列名格式
 
     public DataRow() {
         parseKeycase(null);
@@ -1210,6 +1208,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 if (key.startsWith("+")) {
                     key = key.substring(1);
                     addUpdateColumns(key);
+                }else if (key.startsWith("-")) {
+                    key = key.substring(1);
+                    addIgnoreColumns(key);
                 }
                 Object oldValue = get(keyCase, key);
                 if (null == oldValue || !oldValue.equals(value)) {
@@ -1852,6 +1853,18 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 if (!updateColumns.contains(key)) {
                     updateColumns.add(key);
                     ignoreUpdateColumns.remove(key);
+                }
+            }
+        }
+        return this;
+    }
+    public DataRow addIgnoreColumns(String... cols) {
+        if (null != cols) {
+            for (String col : cols) {
+                String key =  keyAdapter.key(col);
+                if (!ignoreUpdateColumns.contains(key)) {
+                    ignoreUpdateColumns.add(key);
+                    updateColumns.remove(key);
                 }
             }
         }
