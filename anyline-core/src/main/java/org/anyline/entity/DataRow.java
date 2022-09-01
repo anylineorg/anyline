@@ -1204,6 +1204,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
         if (null != key) {
             key = keyAdapter.key(key);
+            boolean ignore = false;
             if(checkUpdate) {
                 if (key.startsWith("+")) {
                     key = key.substring(1);
@@ -1211,12 +1212,14 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 }else if (key.startsWith("-")) {
                     key = key.substring(1);
                     addIgnoreColumns(key);
+                    ignore = true;
                 }
+
                 Object oldValue = get(keyCase, key);
                 if (null == oldValue || !oldValue.equals(value)) {
                     super.put(key, value);
                 }
-                if (!BasicUtil.equal(oldValue, value)) {
+                if (!ignore && !BasicUtil.equal(oldValue, value)) {
                     addUpdateColumns(key);
                 }
             }else{
