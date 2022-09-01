@@ -283,7 +283,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			builder.append(" WHERE 1=1"); 
 		}
 		builder.append(conditionChain.getRunText(creater));
-		values.addAll(conditionChain.getRunValues());
+		addValues(conditionChain.getRunValues());
 	}
 	 
 	public void setConfigs(ConfigStore configs) { 
@@ -353,7 +353,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 				addValues(key,item);
 			}
 		}else{ 
-			values.add(new RunValue(key, obj));
+			addValues(new RunValue(key, obj));
 		} 
 		return this; 
 	} 
