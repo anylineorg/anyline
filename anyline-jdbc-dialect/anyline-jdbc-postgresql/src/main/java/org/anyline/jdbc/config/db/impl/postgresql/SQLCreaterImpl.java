@@ -105,34 +105,41 @@ varbit:String
 
 	public boolean convert(MetaData meta, RunValue run){
 		boolean result = false;
-			if(null == meta || null == run){
-				return false;
+
+		if(null == meta){
+			return false;
+		}
+		if(null == run){
+			return true;
+		}
+		Object value = run.getValue();
+		if(null == value){
+			return true;
+		}
+		try {
+			String clazz = meta.getClassName();
+			String typeName = meta.getTypeName().toUpperCase();
+			//先解析特定数据库类型，注意不需要重复解析super中解析的类型
+			//
+			if(typeName.equals("JSON")
+					|| typeName.equals("XML")
+					|| typeName.equals("BOX")
+					|| typeName.equals("BIT")
+					|| typeName.equals("CIDR")
+					|| typeName.equals("CIRCLE")
+			){
+				run.setValue(value(typeName.toLowerCase(), value));
+				return true;
+			}else if(typeName.equals("BOOL")){
+				run.setValue(BasicUtil.parseBoolean(value, null));
+				return true;
+			}else{
+				//没有成功,super继续解析通用类型
+				result = super.convert(meta, run);
 			}
-			try {
-				Object value = run.getValue();
-				String clazz = meta.getClassName();
-				String typeName = meta.getTypeName().toUpperCase();
-				//先解析特定数据库类型，注意不需要重复解析super中解析的类型
-				//
-				if(typeName.equals("JSON")
-						|| typeName.equals("XML")
-						|| typeName.equals("BOX")
-						|| typeName.equals("BIT")
-						|| typeName.equals("CIDR")
-						|| typeName.equals("CIRCLE")
-				){
-					run.setValue(value(typeName.toLowerCase(), value));
-					return true;
-				}else if(typeName.equals("BOOL")){
-					run.setValue(BasicUtil.parseBoolean(value, null));
-					return true;
-				}else{
-					//没有成功,super继续解析通用类型
-					result = super.convert(meta, run);
-				}
-			}catch (Exception e){
-				e.printStackTrace();
-			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 		return result;
 	}
 	public PGobject value(String type, Object value) throws SQLException {
