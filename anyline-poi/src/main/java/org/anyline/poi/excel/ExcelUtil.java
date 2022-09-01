@@ -1157,7 +1157,7 @@ public class ExcelUtil {
 					int px = BasicUtil.parseInt(fontSize.replace("px",""),0);
 					pt = (short) DocxUtil.px2pt(px);
 				}else if(fontSize.endsWith("pt")){
-					pt = (short)BasicUtil.parseInt(fontSize.replace("pt",""),0);
+					pt = BasicUtil.parseInt(fontSize.replace("pt",""),0).shortValue();
 				}
 				if(pt>0){
 					font.setFontHeightInPoints(pt);
