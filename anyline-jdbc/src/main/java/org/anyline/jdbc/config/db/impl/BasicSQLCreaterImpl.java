@@ -803,7 +803,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		List<String> mastKeys = new ArrayList<>();		//必须插入列
 		List<String> ignores = new ArrayList<>();		//必须不插入列
 		List<String> factKeys = new ArrayList<>();		//根据是否空值
- 
+
+
 		if(null != columns && columns.length>0){ 
 			each = false; 
 			keys = new ArrayList<>();
@@ -856,15 +857,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					}
 				}
 			}
+			BeanUtil.removeAll(ignores, columns);
+			BeanUtil.removeAll(keys, ignores);
 			int size = keys.size(); 
 			for(int i=size-1;i>=0; i--){ 
 				String key = keys.get(i); 
 				if(mastKeys.contains(key)){ 
 					//必须插入 
-					continue; 
-				} 
-				if(ignores.contains(key)){
-					keys.remove(key); 
 					continue; 
 				}
 				Object value = null;
@@ -900,23 +899,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			} 
 		}
 		keys = checkMetadata(dst, keys);
-		keys = distinct(keys);
+		keys = BeanUtil.distinct(keys);
 		return keys; 
 	}
-	public List<String> distinct(List<String> list){
-		List<String> result = new ArrayList<>();
-		List<String> check = new ArrayList<>();
-		if(null != list){
-			for(String item:list){
-				String upper = item.toUpperCase();
-				if(!check.contains(upper)){
-					result.add(item);
-					check.add(upper);
-				}
-			}
-		}
-		return result;
-	}
+
 	/** 
 	 * 确认需要更新的列 
 	 * @param dest  dest
@@ -930,9 +916,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return new ArrayList<>();
 		} 
 		boolean each = true;//是否需要从row中查找列 
-		List<String> masters = row.getUpdateColumns()		;//必须更新列
-		List<String> ignores = row.getIgnoreUpdateColumns()	;//必须不更新列
-		List<String> factKeys = new ArrayList<>()			;//根据是否空值
+		List<String> masters = BeanUtil.copy(row.getUpdateColumns())		; //必须更新列
+		List<String> ignores = BeanUtil.copy(row.getIgnoreUpdateColumns())	; //必须不更新列
+		List<String> factKeys = new ArrayList<>()							; //根据是否空值
+		BeanUtil.removeAll(ignores, columns);
+
 		if(null != columns && columns.length>0){ 
 			each = false; 
 			keys = new ArrayList<>();
@@ -969,17 +957,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			//是否更新null及""列 
 			boolean isUpdateNullColumn = row.isUpdateNullColumn();
 			boolean isUpdateEmptyColumn = row.isUpdateEmptyColumn();
+			BeanUtil.removeAll(keys, ignores);
 			int size = keys.size(); 
 			for(int i=size-1;i>=0; i--){ 
 				String key = keys.get(i); 
 				if(masters.contains(key)){
 					//必须更新 
 					continue; 
-				} 
-				if(ignores.contains(key)){
-					keys.remove(key); 
-					continue; 
-				} 
+				}
 				 
 				Object value = row.get(key); 
 				if(null == value){ 
@@ -1006,7 +991,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		keys.removeAll(ignores);
 		keys = checkMetadata(dest, keys);
-		keys = distinct(keys);
+		keys = BeanUtil.distinct(keys);
 		return keys; 
 	}
 	public String parseTable(String table){
