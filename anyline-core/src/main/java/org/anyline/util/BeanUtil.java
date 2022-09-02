@@ -2226,7 +2226,7 @@ public class BeanUtil {
 	 * @return list
 	 * @param <T> T
 	 */
-	public static <T> List<T> merge(List<T> list, T... items) {
+	public static <T> List<T> merge(Collection<T> list, T ... items) {
 		List<T> result = new ArrayList<>();
 		if(null != list){
 			result.addAll(list);
@@ -2238,6 +2238,19 @@ public class BeanUtil {
 		}
 		return result;
 	}
+	public static <T> List<T> merge(List<T> list, T ... items) {
+		List<T> result = new ArrayList<>();
+		if(null != list){
+			result.addAll(list);
+		}
+		if(null != items){
+			for(T item:items){
+				result.add(item);
+			}
+		}
+		return result;
+	}
+
 
 	/**
 	 * items拼接到list中
@@ -2257,6 +2270,19 @@ public class BeanUtil {
 		}
 		return list;
 	}
+
+	public static <T> Collection<T> join(Collection<T> list, T... items) {
+		if(null == list){
+			list = new ArrayList<>();
+		}
+		if(null != items){
+			for(T item:items){
+				list.add(item);
+			}
+		}
+		return list;
+	}
+
 
 
 	public static String parseRuntimeValue(Object obj, String key){
@@ -2565,5 +2591,60 @@ public class BeanUtil {
 			kvs[i*2+1] = value;
 		}
 		return kvs;
+	}
+
+	/**
+	 * distinct 不区分大小写
+	 * @param list List
+	 * @return List
+	 */
+	public static List<String> distinct(Collection<String> list){
+		List<String> result = new ArrayList<>();
+		List<String> check = new ArrayList<>();
+		if(null != list){
+			for(String item:list){
+				String upper = item.toUpperCase();
+				if(!check.contains(upper)){
+					result.add(item);
+					check.add(upper);
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * removeAll 不区分大小写
+	 * @param src src
+	 * @param remove remove
+	 * @return List
+	 */
+	public static List<String> removeAll(List<String> src, List<String> remove){
+		List<String> check = new ArrayList<>();
+		if(null != src){
+			toUpperCase(remove);
+			for(String item:src){
+				if(null != item && remove.contains(item.toUpperCase())){
+					check.add(item);
+				}
+			}
+			src.removeAll(check);
+		}
+		return src;
+	}
+
+	public static List<String> removeAll(List<String> src, String ... remove){
+		return removeAll(src, array2list(remove));
+	}
+	public static <T> List<T> copy(Collection<T> list){
+		return merge(list);
+	}
+	public static <T> Collection<T> copy(Collection<T> tar, Collection<T> ... items){
+		if(null != tar && null != items){
+			for(Collection<T> item:items){
+				tar.addAll(item);
+			}
+		}
+		return tar;
 	}
 } 
