@@ -1670,6 +1670,22 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return configs;
     }
 
+    public List<String> tables(String catalog, String schema, String name, String types){
+        return dao.tables(catalog, schema, name, types);
+    }
+    public List<String> tables(String schema, String name, String types){
+        return dao.tables(schema, name, types);
+    }
+    public List<String> tables(String name, String types){
+        return dao.tables(name, types);
+    }
+    public List<String> tables(String types){
+        return dao.tables(types);
+    }
+    public List<String> tables(){
+        return dao.tables();
+    }
+
     public MetaDataService metadata = new MetaDataService() {
         @Override
         public List<MetaData> sync(String table, List<MetaData> metas) {

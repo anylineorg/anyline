@@ -48,12 +48,14 @@ import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.CallableStatementCreator;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.ArrayList;
@@ -1356,46 +1358,102 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
+
+
+	/**
+	 * tables
+	 * @param catalog 对于MySQL，则对应相应的数据库，对于Oracle来说，则是对应相应的数据库实例，可以不填，也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+	 * @param schema 可以理解为数据库的登录名，而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意，其登陆名必须是大写，不然的话是无法获取到相应的数据，而MySQL则不做强制要求。
+	 * @param name 一般情况下如果要获取所有的表的话，可以直接设置为null，如果设置为特定的表名称，则返回该表的具体信息。
+	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+	 * @return List
+	 * TABLE_CAT String => 表类别（可为 null）
+	 * TABLE_SCHEM String => 表模式（可为 null）
+	 * TABLE_NAME String => 表名称
+	 * TABLE_TYPE String => 表类型。
+	 * REMARKS String => 表的解释性注释
+	 * TYPE_CAT String => 类型的类别（可为 null）
+	 * TYPE_SCHEM String => 类型模式（可为 null）
+	 * TYPE_NAME String => 类型名称（可为 null）
+	 * SELF_REFERENCING_COL_NAME String => 有类型表的指定 "identifier" 列的名称（可为 null）
+	 * REF_GENERATION String
+	 */
+	public List<String> tables(String catalog, String schema, String name, String types){
+		List<String> tables = new ArrayList<>();
+		try{
+			Connection con = DataSourceUtils.getConnection(getJdbc().getDataSource());
+			if(null == catalog){
+				catalog = con.getCatalog();
+			}
+			String[] tps = null;
+			if(null != types){
+				tps = types.toUpperCase().trim().split(",");
+			}
+			ResultSet rs = con.getMetaData().getTables(catalog, schema, name, tps );
+			while(rs.next()) {
+				tables.add(rs.getString("TABLE_NAME"));
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return tables;
+	}
+	public List<String> tables(String schema, String name, String types){
+		return tables(null, schema, name, types);
+	}
+	public List<String> tables(String name, String types){
+		return tables(null, null, name, types);
+	}
+	public List<String> tables(String types){
+		return tables(null, null, null, types);
+	}
+	public List<String> tables(){
+		return tables(null, null, null, "TABLE");
+	}
+
 	/**
 	 * 参数日志格式化
 	 * @param params params
 	 * @return String
 	 */
 	protected String paramLogFormat(List<?> params){
-		String result = "\n";
+		StringBuilder builder = new StringBuilder();
+		builder.append("\n");
 		if(null != params){
 			int idx = 0;
 			for(Object param:params){
-				result += "param" + idx++ + "=";
-				result += param;
+				builder.append("param").append(idx++).append("=");
+				builder.append(param);
 				if(null != param){
-					result += "(" + param.getClass().getName()+ ")";
+					builder.append("(").append(param.getClass().getName()).append(")");
 				}
-				result += "\n";
+				builder.append("\n");
 			}
 		}
-		return result;
+		return builder.toString();
 	}
 	protected String paramLogFormat(List<?> keys, List<?> values) {
-		String result = "\n";
+		StringBuilder builder = new StringBuilder();
+		builder.append("\n");
 		if (null != keys && null != values) {
 			if(keys.size() == values.size()) {
 				int size = keys.size();
 				for (int i = 0; i < size; i++) {
 					Object key = keys.get(i);
 					Object value = values.get(i);
-					result += keys.get(i) + "=";
-					result += value;
+					builder.append(keys.get(i)).append("=");
+					builder.append(value);
 					if (null != value) {
-						result += "(" + value.getClass().getName() + ")";
+						builder.append("(").append(value.getClass().getName()).append(")");
 					}
-					result += "\n";
+					builder.append("\n");
 				}
 			}else{
-				result = paramLogFormat(values);
+				return paramLogFormat(values);
 			}
 		}
-		return result;
+		return builder.toString();
 
 	}
+
 }

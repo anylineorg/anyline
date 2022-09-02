@@ -463,6 +463,13 @@ public interface AnylineService<E>{
 	 */
 	public int deletes(String table, String key, String ... values);
 
+
+	public List<String> tables(String catalog, String schema, String name, String types);
+	public List<String> tables(String schema, String name, String types);
+	public List<String> tables(String name, String types);
+	public List<String> tables(String types);
+	public List<String> tables();
+
 	public interface MetaDataService{
 		public List<MetaData> sync(String table, List<MetaData> metas);
 	}

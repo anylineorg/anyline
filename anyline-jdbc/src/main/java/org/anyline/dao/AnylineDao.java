@@ -119,4 +119,10 @@ public interface AnylineDao<E>{
 	 */
 	public int deletes(String table, String key, Collection<Object> values);
 	public int deletes(String table, String key, String ... values);
+
+	public List<String> tables(String catalog, String schema, String name, String types);
+	public List<String> tables(String schema, String name, String types);
+	public List<String> tables(String name, String types);
+	public List<String> tables(String types);
+	public List<String> tables();
 } 
