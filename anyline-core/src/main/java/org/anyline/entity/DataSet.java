@@ -3826,7 +3826,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
         }
         return this;
     }
-    public DataSet putFormula(String key, Object value) {
+    public DataSet putVar(String key, Object value) {
         int regex = 0;
         if(null != value && value instanceof String){
             String str = (String)value;
