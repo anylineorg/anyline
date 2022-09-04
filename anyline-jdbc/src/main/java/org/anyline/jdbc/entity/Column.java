@@ -6,7 +6,7 @@ public class Column {
     private String className;
     private String schema                   ;
     private String table                    ;
-    private int displaySize;
+    private int displaySize                 ;
     private String label                    ;
     private String name                     ;
     private int type                        ;
@@ -18,123 +18,154 @@ public class Column {
     private boolean isCurrency              ; //是否是货币
     private boolean isSigned                ; //是否可以带正负号
 
+    private Column update;
+
+    public Column update(){
+        update = new Column();
+        return update;
+    }
+
+    public Column getUpdate() {
+        return update;
+    }
+
+    public Column setUpdate(Column update) {
+        this.update = update;
+        return this;
+    }
+
     public String getCatalogName() {
         return catalogName;
     }
 
-    public void setCatalogName(String catalogName) {
+    public Column setCatalogName(String catalogName) {
         this.catalogName = catalogName;
+        return this;
     }
 
     public String getClassName() {
         return className;
     }
 
-    public void setClassName(String className) {
+    public Column setClassName(String className) {
         this.className = className;
+        return this;
     }
 
     public int getDisplaySize() {
         return displaySize;
     }
 
-    public void setDisplaySize(int displaySize) {
+    public Column setDisplaySize(int displaySize) {
         this.displaySize = displaySize;
+        return this;
     }
 
     public String getLabel() {
         return label;
     }
 
-    public void setLabel(String label) {
+    public Column setLabel(String label) {
         this.label = label;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Column setName(String name) {
         this.name = name;
+        return this;
     }
 
     public int getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public Column setType(int type) {
         this.type = type;
+        return this;
     }
 
     public String getTypeName() {
         return typeName;
     }
 
-    public void setTypeName(String typeName) {
+    public Column setTypeName(String typeName) {
         this.typeName = typeName;
+        return this;
     }
 
     public int getPrecision() {
         return precision;
     }
 
-    public void setPrecision(int precision) {
+    public Column setPrecision(int precision) {
         this.precision = precision;
+        return this;
     }
 
     public String getSchema() {
         return schema;
     }
 
-    public void setSchema(String schema) {
+    public Column setSchema(String schema) {
         this.schema = schema;
+        return this;
     }
 
     public String getTable() {
         return table;
     }
 
-    public void setTable(String table) {
+    public Column setTable(String table) {
         this.table = table;
+        return this;
     }
 
     public boolean isCaseSensitive() {
         return caseSensitive;
     }
 
-    public void setCaseSensitive(boolean caseSensitive) {
+    public Column setCaseSensitive(boolean caseSensitive) {
         this.caseSensitive = caseSensitive;
+        return this;
     }
 
     public boolean isCurrency() {
         return isCurrency;
     }
 
-    public void setCurrency(boolean currency) {
+    public Column setCurrency(boolean currency) {
         isCurrency = currency;
+        return this;
     }
 
     public boolean isSigned() {
         return isSigned;
     }
 
-    public void setSigned(boolean signed) {
+    public Column setSigned(boolean signed) {
         isSigned = signed;
+        return this;
     }
 
     public int getScale() {
         return scale;
     }
 
-    public void setScale(int scale) {
+    public Column setScale(int scale) {
         this.scale = scale;
+        return this;
     }
 
     public boolean isNullable() {
         return nullable;
     }
 
-    public void setNullable(boolean nullable) {
+    public Column setNullable(boolean nullable) {
         this.nullable = nullable;
+        return this;
     }
 }
