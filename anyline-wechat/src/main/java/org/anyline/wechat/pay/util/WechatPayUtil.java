@@ -103,7 +103,7 @@ public class WechatPayUtil {
         if(null == order.getAppid()){
             throw new Exception("未设置appid");
         }
-        if(null == order.getOpenid()){
+        if("JSAPI".equals(order.getTrade_type()) && null == order.getOpenid()){
             throw new Exception("未设置openid");
         }
         if(BasicUtil.isEmpty(order.getMch_id())){
