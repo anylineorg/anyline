@@ -197,24 +197,23 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					if(idx > 0){
 						builder.append(",");
 					}
-					builder.append("'").append(obj).append("'");
+					//builder.append("'").append(obj).append("'");
+					builder.append("?");
 					idx ++;
 				}
 				builder.append(")");
 			}else if(cons.size() == 1){
 				for(Object obj:cons){
 					builder.append("=?");
-					run.addValues(new RunValue(key, obj));
 				}
 			}else{
 				throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
 			}
 		}else{
-
 			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			builder.append("=?");
-			run.addValues(key, values);
 		}
+		run.addValues(key, values);
 		run.setBuilder(builder);
 
 		return run;
