@@ -23,6 +23,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.MetaData;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.entity.Column;
 
 import java.util.HashMap;
 import java.util.List;
@@ -107,8 +108,8 @@ public interface SQLCreater{
 
 
 	public boolean convert(String table, RunValue run);
-	public boolean convert(Map<String,MetaData> metadatas, RunValue value);
-	public boolean convert(MetaData meta, RunValue value);
+	public boolean convert(Map<String, Column> columns, RunValue value);
+	public boolean convert(Column column, RunValue value);
 	/**
 	 * 拼接字符串
 	 * @param args args

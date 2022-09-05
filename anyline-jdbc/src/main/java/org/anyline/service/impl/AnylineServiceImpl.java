@@ -34,6 +34,8 @@ import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
+import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
@@ -113,102 +115,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return querys(src,fr, to,null, conditions);
     }
 
-    private static Map<String,DataRow> cache_metadata = new HashMap<>();
-    private static Map<String,DataRow> cache_metadatas = new HashMap<>();
-
     @Override
-    public LinkedHashMap<String,MetaData> metadatas(String table, boolean map){
-        LinkedHashMap<String,MetaData> maps = new LinkedHashMap();
-        List<MetaData> list = metadatas(table);
-        for(MetaData meta:list){
-            maps.put(meta.getName().toUpperCase(), meta);
-        }
-        return maps;
-    }
-    @Override
-    public List<MetaData> metadatas(String table){
-        if(null == table){
-            return new ArrayList<>();
-        }
-        List<MetaData> list = null;
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table;
-
-        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
-            CacheElement cacheElement = cacheProvider.get(cache, key);
-            if(null != cacheElement){
-                list = (List<MetaData>) cacheElement.getValue();
-            }
-            if(null == list){
-                list = dao.metadatas(table);
-                cacheProvider.put(cache, key, list);
-            }
-        }else{
-
-            //通过静态变量缓存
-            DataRow static_cache = cache_metadatas.get(key);
-            if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                list = (List<MetaData>)static_cache.get("keys");
-            }
-            if(null == list){
-                list = dao.metadatas(table);
-                static_cache = new DataRow();
-                static_cache.put("keys", list);
-                cache_metadatas.put(key, static_cache);
-            }
-        }
-        return list;
-    }
-
-    @Override
-    public List<String> metadata(String table){
-        List<String> list = null;
-        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.getDataSource()+"_METADATA_" + table.toUpperCase();
-        //启用了缓存
-        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
-            CacheElement cacheElement = cacheProvider.get(cache, key);
-            if(null != cacheElement){
-                list = (List<String>) cacheElement.getValue();
-            }
-            if(null == list){
-                list = dao.metadata(table);
-                cacheProvider.put(cache, key, list);
-            }
-        }else{
-            //通过静态变量缓存
-            DataRow static_cache = cache_metadata.get(key);
-            if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND<0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                list = (List<String>)static_cache.get("keys");
-            }
-            if(null == list){
-                DataRow static_caches = cache_metadatas.get(key);
-                if(null != static_caches && (ConfigTable.TABLE_METADATA_CACHE_SECOND<0 || !static_caches.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                    list = new ArrayList<>();
-                    List<MetaData> metaDataList = (List<MetaData>) static_caches.get("keys");
-                    for(MetaData item:metaDataList){
-                        list.add(item.getName());
-                    }
-                    static_cache = new DataRow();
-                    static_cache.setCreateTime(static_caches.getCreateTime());
-                    static_cache.put("keys", list);
-                    cache_metadata.put(key, static_cache);
-                }
-            }
-            if(null == list){
-                list = dao.metadata(table);
-                static_cache = new DataRow();
-                static_cache.put("keys", list);
-                cache_metadata.put(key, static_cache);
-            }
-        }
-        return list;
-    }
-
-    @Override
-    public List<String>metadata2param(String table){
-        List<String> metadata = metadata(table);
-        return AdapterProxy.metadata2param(metadata);
+    public List<String> column2param(String table){
+        List<String> columns = columns(table);
+        return AdapterProxy.column2param(columns);
     }
     @Override
     public List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String... conditions) {
@@ -1671,26 +1581,113 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     public List<String> tables(String catalog, String schema, String name, String types){
-        return dao.tables(catalog, schema, name, types);
+        List<Table> tables = metadata.tables(catalog, schema, name, types);
+        List<String> list = new ArrayList<>();
+        for(Table table:tables){
+            list.add(table.getName());
+        }
+        return list;
     }
     public List<String> tables(String schema, String name, String types){
-        return dao.tables(schema, name, types);
+        return tables(null, schema, name, types);
     }
     public List<String> tables(String name, String types){
-        return dao.tables(name, types);
+        return tables(null, null, name, types);
     }
     public List<String> tables(String types){
-        return dao.tables(types);
+        return tables(null, null, null, types);
     }
     public List<String> tables(){
-        return dao.tables();
+        return tables("TABLE");
+    }
+    public List<String> columns(String table){
+        List<Column> columns = metadata.columns(table);
+        List<String> list = new ArrayList<>();
+        for(Column column:columns){
+            list.add(column.getName());
+        }
+        return list;
     }
 
+
+    private static Map<String,DataRow> cache_metadata = new HashMap<>();
+    private static Map<String,DataRow> cache_metadatas = new HashMap<>();
     public MetaDataService metadata = new MetaDataService() {
         @Override
-        public List<MetaData> sync(String table, List<MetaData> metas) {
-            return null;
+        public List<Table> tables(String catalog, String schema, String name, String types) {
+            return dao.tables(catalog, schema, name, types);
+        }
+
+        @Override
+        public List<Table> tables(String schema, String name, String types) {
+            return dao.tables(schema, name, types);
+        }
+
+        @Override
+        public List<Table> tables(String name, String types) {
+            return dao.tables(name, types);
+        }
+
+        @Override
+        public List<Table> tables(String types) {
+            return dao.tables(types);
+        }
+
+        @Override
+        public List<Table> tables() {
+            return dao.tables();
+        }
+
+
+
+
+        @Override
+        public LinkedHashMap<String,Column> columns(String table, boolean map){
+            LinkedHashMap<String,Column> maps = new LinkedHashMap();
+            List<Column> columns = columns(table);
+            for(Column column:columns){
+                maps.put(column.getName().toUpperCase(), column);
+            }
+            return maps;
+        }
+        @Override
+        public List<Column> columns(String table){
+            if(null == table){
+                return new ArrayList<>();
+            }
+            List<Column> list = null;
+            String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+            String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table;
+
+            if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
+                CacheElement cacheElement = cacheProvider.get(cache, key);
+                if(null != cacheElement){
+                    list = (List<Column>) cacheElement.getValue();
+                }
+                if(null == list){
+                    list = dao.columns(table);
+                    cacheProvider.put(cache, key, list);
+                }
+            }else{
+
+                //通过静态变量缓存
+                DataRow static_cache = cache_metadatas.get(key);
+                if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
+                    list = (List<Column>)static_cache.get("keys");
+                }
+                if(null == list){
+                    list = dao.columns(table);
+                    static_cache = new DataRow();
+                    static_cache.put("keys", list);
+                    cache_metadatas.put(key, static_cache);
+                }
+            }
+            return list;
         }
     };
+
+
+
+
 
 }

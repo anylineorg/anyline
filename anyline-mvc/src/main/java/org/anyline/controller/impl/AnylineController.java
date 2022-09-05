@@ -148,8 +148,8 @@ public class AnylineController extends AbstractBasicController {
 		return entity(table, null);
 	}
 	public DataRow entity(TableBuilder table, DataRow row){
-		List<String> metadatas = service.metadata(table.getTable());
-		List<String> params = AdapterProxy.metadata2param(metadatas);
+		List<String> metadatas = service.columns(table.getTable());
+		List<String> params = AdapterProxy.column2param(metadatas);
 		return entity(getRequest(), null, row, false, false, params);
 	}
 
@@ -313,14 +313,14 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 	public DataSet entitys(TableBuilder table){
-		List<String> metadatas = service.metadata(table.getTable());
-		List<String> params = AdapterProxy.metadata2param(metadatas);
+		List<String> metadatas = service.columns(table.getTable());
+		List<String> params = AdapterProxy.column2param(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}
 
 	public DataSet entitys(SQL sql){
-		List<String> metadatas = service.metadata(sql.getTable());
-		List<String> params = AdapterProxy.metadata2param(metadatas);
+		List<String> metadatas = service.columns(sql.getTable());
+		List<String> params = AdapterProxy.column2param(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}
 

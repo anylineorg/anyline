@@ -166,8 +166,8 @@ public class AbstractBasicController {
 			String param = arrays.get(0);
 			if(param.startsWith("${") && param.endsWith("}")){
 				String table = param.substring(2, param.length()-1);
-				List<String> metadatas = service.metadata(table);
-				arrays = AdapterProxy.metadata2param(metadatas);
+				List<String> columns = service.columns(table);
+				arrays = AdapterProxy.column2param(columns);
 			}
 		}
 
@@ -284,8 +284,8 @@ public class AbstractBasicController {
 			String param = arrays.get(0);
 			if(param.startsWith("${") && param.endsWith("}")){
 				String table = param.substring(2, param.length()-1);
-				List<String> metadatas = service.metadata(table);
-				arrays = AdapterProxy.metadata2param(metadatas);
+				List<String> columns = service.columns(table);
+				arrays = AdapterProxy.column2param(columns);
 			}
 		}
 

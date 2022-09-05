@@ -33,6 +33,8 @@ import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
+import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
 import org.anyline.jdbc.exception.SQLQueryException;
 import org.anyline.jdbc.exception.SQLUpdateException;
 import org.anyline.jdbc.util.SQLCreaterUtil;
@@ -279,58 +281,6 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return querys(sql, null, conditions);
 	}
 
-	public List<String> metadata(String table){
-		Long fr = System.currentTimeMillis();
-		List<String> list = new ArrayList<>();
-		SQL sql = new TableSQLImpl();
-		sql.setDataSource(table);
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, null,"1=0");
-
-		SqlRowSet row = getJdbc().queryForRowSet(run.getFinalQueryTxt());
-		SqlRowSetMetaData rsm = row.getMetaData();
-		for (int i = 1; i <= rsm.getColumnCount(); i++) {
-			list.add(rsm.getColumnName(i));
-		}
-
-		if (showSQL) {
-			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
-			log.warn("{}[metadata][table:{}][执行耗时:{}ms]", random, table, System.currentTimeMillis() - fr);
-		}
-		return list;
-	}
-	public List<MetaData> metadatas(String table){
-		Long fr = System.currentTimeMillis();
-		List<MetaData> list = new ArrayList<MetaData>();
-		SQL sql = new TableSQLImpl();
-		sql.setDataSource(table);
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, null,"1=0");
-		SqlRowSet row = getJdbc().queryForRowSet(run.getFinalQueryTxt());
-		SqlRowSetMetaData rsm = row.getMetaData();
-
-		for (int i = 1; i <= rsm.getColumnCount(); i++) {
-			MetaData item = new MetaData();
-			item.setCatalogName(rsm.getCatalogName(i));
-			item.setClassName(rsm.getColumnClassName(i));
-			item.setCaseSensitive(rsm.isCaseSensitive(i));
-			item.setCurrency(rsm.isCurrency(i));
-			item.setLabel(rsm.getColumnLabel(i));
-			item.setName(rsm.getColumnName(i));
-			item.setPrecision(rsm.getPrecision(i));
-			item.setScale(rsm.getScale(i));
-			item.setDisplaySize(rsm.getColumnDisplaySize(i));
-			item.setSchema(rsm.getSchemaName(i));
-			item.setSigned(rsm.isSigned(i));
-			item.setTable(rsm.getTableName(i));
-			item.setType(rsm.getColumnType(i));
-			item.setTypeName(rsm.getColumnTypeName(i));
-			list.add(item);
-		}
-		if (showSQL) {
-			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
-			log.warn("{}[metadatas][table:{}][执行耗时:{}ms]", random, table, System.currentTimeMillis() - fr);
-		}
-		return list;
-	}
 	/**
 	 * 查询
 	 */
@@ -1378,8 +1328,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * SELF_REFERENCING_COL_NAME String => 有类型表的指定 "identifier" 列的名称（可为 null）
 	 * REF_GENERATION String
 	 */
-	public List<String> tables(String catalog, String schema, String name, String types){
-		List<String> tables = new ArrayList<>();
+	public List<Table> tables(String catalog, String schema, String name, String types){
+		List<Table> tables = new ArrayList<>();
 		try{
 			Connection con = DataSourceUtils.getConnection(getJdbc().getDataSource());
 			if(null == catalog){
@@ -1391,24 +1341,68 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			ResultSet rs = con.getMetaData().getTables(catalog, schema, name, tps );
 			while(rs.next()) {
-				tables.add(rs.getString("TABLE_NAME"));
+				Table table = new Table();
+				table.setCat(rs.getString("TABLE_CAT"));
+				table.setSchema(rs.getString("TABLE_SCHEM"));
+				table.setName(rs.getString("TABLE_NAME"));
+				table.setType(rs.getString("TABLE_TYPE"));
+				table.setRemarks(rs.getString("REMARKS"));
+				table.setTypeCat(rs.getString("TYPE_CAT"));
+				table.setTypeName(rs.getString("TYPE_NAME"));
+				table.setSelfReferencingColumn(rs.getString("SELF_REFERENCING_COL_NAME"));
+				table.setRefGeneration(rs.getString("REF_GENERATION"));
+				tables.add(table);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
 		}
 		return tables;
 	}
-	public List<String> tables(String schema, String name, String types){
+	public List<Table> tables(String schema, String name, String types){
 		return tables(null, schema, name, types);
 	}
-	public List<String> tables(String name, String types){
+	public List<Table> tables(String name, String types){
 		return tables(null, null, name, types);
 	}
-	public List<String> tables(String types){
+	public List<Table> tables(String types){
 		return tables(null, null, null, types);
 	}
-	public List<String> tables(){
+	public List<Table> tables(){
 		return tables(null, null, null, "TABLE");
+	}
+
+	public List<Column> columns(String table){
+		Long fr = System.currentTimeMillis();
+		List<Column> list = new ArrayList<>();
+		SQL sql = new TableSQLImpl();
+		sql.setDataSource(table);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, null,"1=0");
+		SqlRowSet row = getJdbc().queryForRowSet(run.getFinalQueryTxt());
+		SqlRowSetMetaData rsm = row.getMetaData();
+
+		for (int i = 1; i <= rsm.getColumnCount(); i++) {
+			Column column = new Column();
+			column.setCatalogName(rsm.getCatalogName(i));
+			column.setClassName(rsm.getColumnClassName(i));
+			column.setCaseSensitive(rsm.isCaseSensitive(i));
+			column.setCurrency(rsm.isCurrency(i));
+			column.setLabel(rsm.getColumnLabel(i));
+			column.setName(rsm.getColumnName(i));
+			column.setPrecision(rsm.getPrecision(i));
+			column.setScale(rsm.getScale(i));
+			column.setDisplaySize(rsm.getColumnDisplaySize(i));
+			column.setSchema(rsm.getSchemaName(i));
+			column.setSigned(rsm.isSigned(i));
+			column.setTable(rsm.getTableName(i));
+			column.setType(rsm.getColumnType(i));
+			column.setTypeName(rsm.getColumnTypeName(i));
+			list.add(column);
+		}
+		if (showSQL) {
+			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+			log.warn("{}[columns][table:{}][执行耗时:{}ms]", random, table, System.currentTimeMillis() - fr);
+		}
+		return list;
 	}
 
 	/**

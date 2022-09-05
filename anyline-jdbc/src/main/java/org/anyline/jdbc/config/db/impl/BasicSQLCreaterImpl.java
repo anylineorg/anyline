@@ -38,6 +38,7 @@ import org.anyline.jdbc.config.db.sql.auto.TextSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
+import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.exception.SQLException;
 import org.anyline.jdbc.exception.SQLUpdateException;
 import org.anyline.service.AnylineService;
@@ -778,7 +779,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return columns;
 		}
 		List<String> list = new ArrayList<>();
-		List<String> metadatas = service.metadata(table);
+		List<String> metadatas = service.columns(table);
 		metadatas = BeanUtil.toUpperCase(metadatas);
 		for (String item:columns){
 			if(metadatas.contains(item.toUpperCase())){
@@ -1015,16 +1016,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public boolean convert(String table, RunValue run){
 		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String,MetaData> metadatas = service.metadatas(table, true);
-			result = convert(metadatas, run);
+			LinkedHashMap<String, Column> columns = service.metadata.columns(table, true);
+			result = convert(columns, run);
 		}
 		return result;
 	}
 	@Override
-	public boolean convert(Map<String,MetaData> metadatas, RunValue value){
+	public boolean convert(Map<String,Column> columns, RunValue value){
 		boolean result = false;
-		if(null != metadatas && null != value){
-			MetaData meta = metadatas.get(value.getKey().toUpperCase());
+		if(null != columns && null != value){
+			Column meta = columns.get(value.getKey().toUpperCase());
 			result = convert(meta, value);
 		}
 		return result;
@@ -1032,13 +1033,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 	/**
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再到这里解析
-	 * @param meta MetaData
+	 * @param column column
 	 * @param run RunValue
 	 * @return boolean 是否完成类型转换，决定下一步是否继续
 	 */
 	@Override
-	public boolean convert(MetaData meta, RunValue run){
-		if(null == meta){
+	public boolean convert(Column column, RunValue run){
+		if(null == column){
 			return false;
 		}
 		if(null == run){
@@ -1049,8 +1050,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return true;
 		}
 		try {
-			String clazz = meta.getClassName();
-			String typeName = meta.getTypeName().toUpperCase();
+			String clazz = column.getClassName();
+			String typeName = column.getTypeName().toUpperCase();
 			//根据数据库类型
 			if(typeName.equals("UUID")){
 				if(value instanceof UUID) {

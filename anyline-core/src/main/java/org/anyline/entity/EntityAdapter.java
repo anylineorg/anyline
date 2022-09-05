@@ -122,7 +122,7 @@ public interface EntityAdapter {
      * @return List
      *
      */
-    public List<String> metadata2param(List<String> metadata);
-    public String metadata2param(String metadata);
+    public List<String> column2param(List<String> metadata);
+    public String column2param(String metadata);
 
 }

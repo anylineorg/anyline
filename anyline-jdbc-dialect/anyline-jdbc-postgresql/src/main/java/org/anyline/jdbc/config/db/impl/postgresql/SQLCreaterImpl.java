@@ -8,6 +8,7 @@ import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.entity.Column;
 import org.anyline.util.BasicUtil;
 import org.postgresql.ds.common.PGObjectFactory;
 import org.postgresql.util.PGobject;
@@ -103,10 +104,10 @@ txid_snapshot:String
 varbit:String
 * */
 
-	public boolean convert(MetaData meta, RunValue run){
+	public boolean convert(Column column, RunValue run){
 		boolean result = false;
 
-		if(null == meta){
+		if(null == column){
 			return false;
 		}
 		if(null == run){
@@ -117,8 +118,8 @@ varbit:String
 			return true;
 		}
 		try {
-			String clazz = meta.getClassName();
-			String typeName = meta.getTypeName().toUpperCase();
+			String clazz = column.getClassName();
+			String typeName = column.getTypeName().toUpperCase();
 			//先解析特定数据库类型，注意不需要重复解析super中解析的类型
 			//
 			if(typeName.equals("JSON")
@@ -135,7 +136,7 @@ varbit:String
 				return true;
 			}else{
 				//没有成功,super继续解析通用类型
-				result = super.convert(meta, run);
+				result = super.convert(column, run);
 			}
 		}catch (Exception e){
 			e.printStackTrace();

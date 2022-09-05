@@ -23,6 +23,8 @@ import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
+import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,8 +34,6 @@ public interface AnylineDao<E>{
 	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public DataSet querys(SQL sql, String ... conditions);
-	public List<String> metadata(String table);
-	public List<MetaData> metadatas(String table);
 	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions);
 	public DataSet selects(SQL sql, String ... conditions);
 
@@ -120,9 +120,10 @@ public interface AnylineDao<E>{
 	public int deletes(String table, String key, Collection<Object> values);
 	public int deletes(String table, String key, String ... values);
 
-	public List<String> tables(String catalog, String schema, String name, String types);
-	public List<String> tables(String schema, String name, String types);
-	public List<String> tables(String name, String types);
-	public List<String> tables(String types);
-	public List<String> tables();
+	public List<Table> tables(String catalog, String schema, String name, String types);
+	public List<Table> tables(String schema, String name, String types);
+	public List<Table> tables(String name, String types);
+	public List<Table> tables(String types);
+	public List<Table> tables();
+	public List<Column> columns(String table);
 } 

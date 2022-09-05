@@ -290,45 +290,45 @@ public class AdapterProxy {
      * 列名转换成http参数时调用
      * 如果不实现当前可以返回null,将继续执行默认处理方式
      * @param adapter adapter
-     * @param metadata metadata
+     * @param metadatas metadatas
      * @return List
      *
      */
-    public static List<String> metadata2param(EntityAdapter adapter, List<String> metadatas){
+    public static List<String> column2param(EntityAdapter adapter, List<String> metadatas){
         if(null != adapter){
-            return adapter.metadata2param(metadatas);
+            return adapter.column2param(metadatas);
         }
         return null;
     }
-    public static String metadata2param(EntityAdapter adapter, String metadata){
+    public static String column2param(EntityAdapter adapter, String metadata){
         if(null != adapter){
-            return adapter.metadata2param(metadata);
+            return adapter.column2param(metadata);
         }
         return null;
     }
 
-    public static List<String> metadata2param(List<String> metadatas){
+    public static List<String> column2param(List<String> metadatas){
         //如果有用户设置的adapter
         if(null != adapters && adapters.size()>0){
-            return adapters.get(adapters.size()-1).metadata2param(metadatas);
+            return adapters.get(adapters.size()-1).column2param(metadatas);
         }
 
         //如果没有禁用默认adapter
         if(!ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false) && null != adapter){
-            return metadata2param(adapter, metadatas);
+            return column2param(adapter, metadatas);
         }
         return metadatas;
     }
 
-    public static String metadata2param(String metadata){
+    public static String column2param(String metadata){
         //如果有用户设置的adapter
         if(null != adapters && adapters.size()>0){
-            return adapters.get(adapters.size()-1).metadata2param(metadata);
+            return adapters.get(adapters.size()-1).column2param(metadata);
         }
 
         //如果没有禁用默认adapter
         if(!ConfigTable.getBoolean("IS_DISABLED_DEFAULT_ENTITY_ADAPTER", false) && null != adapter){
-            return metadata2param(adapter, metadata);
+            return column2param(adapter, metadata);
         }
         return metadata;
     }

@@ -193,17 +193,17 @@ public class SimpleAdapter implements EntityAdapter {
 
 
     @Override
-    public List<String> metadata2param(List<String> metadatas) {
+    public List<String> column2param(List<String> metadatas) {
         List<String> params = new ArrayList<>();
         for(String metadata:metadatas){
-            params.add(metadata2param(metadata));
+            params.add(column2param(metadata));
         }
         return params;
     }
 
 
     @Override
-    public String metadata2param(String metadata){
+    public String column2param(String metadata){
         String param = null;
         //注意这里只支持下划线转驼峰
         //如果数据库中已经是驼峰,不要配置这个参数

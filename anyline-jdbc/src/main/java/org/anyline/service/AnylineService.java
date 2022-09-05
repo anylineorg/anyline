@@ -23,6 +23,9 @@ import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
+import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -137,26 +140,12 @@ public interface AnylineService<E>{
 
 
 	/**
-	 * 获取表结构(只返回列名)
-	 * @param table 表
-	 * @return List
-	 */
-	public List<String> metadata(String table);
-
-	/**
 	 * 列名转找成参数名 可以给condition()提供参数用来接收前端参数
 	 * @param table 表
 	 * @return List
 	 */
-	public List<String> metadata2param(String table);
+	public List<String> column2param(String table);
 
-	/**
-	 * 获取表结构(返回列名,数据类型,长度等)
-	 * @param table 表
-	 * @return List
-	 */
-	public List<MetaData> metadatas(String table);
-	public LinkedHashMap<String,MetaData> metadatas(String table, boolean map);
 
 
 	/**
@@ -469,8 +458,23 @@ public interface AnylineService<E>{
 	public List<String> tables(String name, String types);
 	public List<String> tables(String types);
 	public List<String> tables();
-
+	public List<String> columns(String table);
+	public MetaDataService metadata = null;
 	public interface MetaDataService{
-		public List<MetaData> sync(String table, List<MetaData> metas);
+		/**
+		 * tables
+		 * @param catalog 对于MySQL，则对应相应的数据库，对于Oracle来说，则是对应相应的数据库实例，可以不填，也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+		 * @param schema 可以理解为数据库的登录名，而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意，其登陆名必须是大写，不然的话是无法获取到相应的数据，而MySQL则不做强制要求。
+		 * @param name 一般情况下如果要获取所有的表的话，可以直接设置为null，如果设置为特定的表名称，则返回该表的具体信息。
+		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+		 * @return List
+		 */
+		public List<Table> tables(String catalog, String schema, String name, String types);
+		public List<Table> tables(String schema, String name, String types);
+		public List<Table> tables(String name, String types);
+		public List<Table> tables(String types);
+		public List<Table> tables();
+		public List<Column> columns(String table);
+		public LinkedHashMap<String,Column> columns(String table, boolean map);
 	}
 }
