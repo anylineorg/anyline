@@ -26,7 +26,6 @@ import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;
 import org.anyline.jdbc.config.TableBuilder;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
-import org.anyline.jdbc.entity.Column;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.web.util.WebUtil;
@@ -167,13 +166,8 @@ public class AbstractBasicController {
 			String param = arrays.get(0);
 			if(param.startsWith("${") && param.endsWith("}")){
 				String table = param.substring(2, param.length()-1);
-
-				List<Column> columns = service.columns(table);
-				List<String> list = new ArrayList<>();
-				for(Column column:columns){
-					list.add(column.getName());
-				}
-				arrays = AdapterProxy.column2param(list);
+				List<String> columns = service.columns(table);
+				arrays = AdapterProxy.column2param(columns);
 			}
 		}
 
@@ -290,13 +284,8 @@ public class AbstractBasicController {
 			String param = arrays.get(0);
 			if(param.startsWith("${") && param.endsWith("}")){
 				String table = param.substring(2, param.length()-1);
-				List<Column> columns = service.columns(table);
-				List<String> list = new ArrayList<>();
-				for(Column column:columns){
-					list.add(column.getName());
-				}
-
-				arrays = AdapterProxy.column2param(list);
+				List<String> columns = service.columns(table);
+				arrays = AdapterProxy.column2param(columns);
 			}
 		}
 

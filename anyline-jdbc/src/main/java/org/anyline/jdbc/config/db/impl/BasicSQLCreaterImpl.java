@@ -778,11 +778,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return columns;
 		}
 		List<String> list = new ArrayList<>();
-		List<Column> cols = service.columns(table);
-		List<String> metadatas = new ArrayList<>();
-		for(Column col:cols){
-			metadatas.add(col.getName());
-		}
+		List<String> metadatas = service.columns(table);
 		metadatas = BeanUtil.toUpperCase(metadatas);
 		for (String item:columns){
 			if(metadatas.contains(item.toUpperCase())){

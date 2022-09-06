@@ -24,7 +24,6 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.TableBuilder;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.entity.Column;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.web.controller.AbstractBasicController;
@@ -149,14 +148,8 @@ public class AnylineController extends AbstractBasicController {
 		return entity(table, null);
 	}
 	public DataRow entity(TableBuilder table, DataRow row){
-
-		List<Column> columns = service.columns(table.getTable());
-		List<String> list = new ArrayList<>();
-		for(Column column:columns){
-			list.add(column.getName());
-		}
-
-		List<String> params = AdapterProxy.column2param(list);
+		List<String> metadatas = service.columns(table.getTable());
+		List<String> params = AdapterProxy.column2param(metadatas);
 		return entity(getRequest(), null, row, false, false, params);
 	}
 
@@ -320,26 +313,14 @@ public class AnylineController extends AbstractBasicController {
 	}
 
 	public DataSet entitys(TableBuilder table){
-		List<Column> columns = service.columns(table.getTable());
-		List<String> list = new ArrayList<>();
-		for(Column column:columns){
-			list.add(column.getName());
-		}
-
-
-		List<String> params = AdapterProxy.column2param(list);
+		List<String> metadatas = service.columns(table.getTable());
+		List<String> params = AdapterProxy.column2param(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}
 
 	public DataSet entitys(SQL sql){
-
-		List<Column> columns = service.columns(sql.getTable());
-		List<String> list = new ArrayList<>();
-		for(Column column:columns){
-			list.add(column.getName());
-		}
-
-		List<String> params = AdapterProxy.column2param(list);
+		List<String> metadatas = service.columns(sql.getTable());
+		List<String> params = AdapterProxy.column2param(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}
 
