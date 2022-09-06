@@ -20,7 +20,6 @@
 package org.anyline.jdbc.config.db;
 
 import org.anyline.entity.DataSet;
-import org.anyline.entity.MetaData;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;

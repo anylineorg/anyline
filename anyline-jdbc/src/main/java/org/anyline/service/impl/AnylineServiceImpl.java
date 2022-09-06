@@ -117,8 +117,12 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     @Override
     public List<String> column2param(String table){
-        List<String> columns = columns(table);
-        return AdapterProxy.column2param(columns);
+        List<Column> columns = columns(table);
+        List<String> list = new ArrayList<>();
+        for(Column column:columns){
+            list.add(column.getName());
+        }
+        return AdapterProxy.column2param(list);
     }
     @Override
     public List<Map<String,Object>> maps(String src, ConfigStore configs, Object obj, String... conditions) {
@@ -1580,39 +1584,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return configs;
     }
 
-    public List<String> tables(String catalog, String schema, String name, String types){
-        List<Table> tables = metadata.tables(catalog, schema, name, types);
-        List<String> list = new ArrayList<>();
-        for(Table table:tables){
-            list.add(table.getName());
-        }
-        return list;
-    }
-    public List<String> tables(String schema, String name, String types){
-        return tables(null, schema, name, types);
-    }
-    public List<String> tables(String name, String types){
-        return tables(null, null, name, types);
-    }
-    public List<String> tables(String types){
-        return tables(null, null, null, types);
-    }
-    public List<String> tables(){
-        return tables("TABLE");
-    }
-    public List<String> columns(String table){
-        List<Column> columns = metadata.columns(table);
-        List<String> list = new ArrayList<>();
-        for(Column column:columns){
-            list.add(column.getName());
-        }
-        return list;
-    }
 
 
     private static Map<String,DataRow> cache_metadata = new HashMap<>();
     private static Map<String,DataRow> cache_metadatas = new HashMap<>();
-    public MetaDataService metadata = new MetaDataService() {
         @Override
         public List<Table> tables(String catalog, String schema, String name, String types) {
             return dao.tables(catalog, schema, name, types);
@@ -1684,7 +1659,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
             return list;
         }
-    };
+
 
 
 

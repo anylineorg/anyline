@@ -23,7 +23,6 @@ package org.anyline.jdbc.config.db.impl;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.MetaData;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.SQL;
@@ -779,7 +778,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			return columns;
 		}
 		List<String> list = new ArrayList<>();
-		List<String> metadatas = service.columns(table);
+		List<Column> cols = service.columns(table);
+		List<String> metadatas = new ArrayList<>();
+		for(Column col:cols){
+			metadatas.add(col.getName());
+		}
 		metadatas = BeanUtil.toUpperCase(metadatas);
 		for (String item:columns){
 			if(metadatas.contains(item.toUpperCase())){
@@ -1016,7 +1019,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public boolean convert(String table, RunValue run){
 		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String, Column> columns = service.metadata.columns(table, true);
+			LinkedHashMap<String, Column> columns = service.columns(table, true);
 			result = convert(columns, run);
 		}
 		return result;

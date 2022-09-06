@@ -1,7 +1,6 @@
  
 package org.anyline.jdbc.config.db.impl.postgresql; 
- 
-import org.anyline.entity.MetaData;
+
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
 import org.anyline.jdbc.config.db.RunValue;
