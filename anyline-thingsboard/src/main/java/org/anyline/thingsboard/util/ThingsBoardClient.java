@@ -109,7 +109,7 @@ public class ThingsBoardClient extends RestClient {
      * @param id 实体ID
      * @param scope 范围 ANY
      * @param ts 数据创建时间 1634712287000
-     * @param ttl 生存时间   如果不需要可以设置成0或null 一般是调用其他不带ttl的重载
+     * @param ttl 生存时间(秒)   如果不需要可以设置成0或null 一般是调用其他不带ttl的重载
      * @param values json结构的数据 {"temperature":26, "humidity":87}
      *         ts与values合成最终参数  {"ts":1634712287000,"values":{"temperature":26, "humidity":87}}
      * @return boolean
