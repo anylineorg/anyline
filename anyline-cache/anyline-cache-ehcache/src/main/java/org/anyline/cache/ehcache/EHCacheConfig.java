@@ -10,14 +10,6 @@ import java.util.Hashtable;
 
 public class EHCacheConfig extends AnylineConfig {
 	private static Hashtable<String, AnylineConfig> instances = new Hashtable<String, AnylineConfig>();
-
-	public String SERVER_HOST = "";
-	public String APP_KEY = "";
-	public String APP_SECRET = "";
-	public String TENANT_CODE = "";
-	public String SIGN = "";
-	public String PLATFORM_CODE = "";
-
 	public static String CONFIG_NAME = "anyline-ehcache.xml";
 
 	public static Hashtable<String,AnylineConfig>getInstances(){

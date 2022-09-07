@@ -26,4 +26,5 @@ public interface CacheProvider {
 	public boolean clear(String channel);
 	public boolean clears();
 	public HashSet<String> channels();
+	public int getLvl();
 }
