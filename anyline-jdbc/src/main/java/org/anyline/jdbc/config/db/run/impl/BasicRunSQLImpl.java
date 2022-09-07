@@ -50,7 +50,8 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	protected static final Logger log = LoggerFactory.getLogger(BasicRunSQLImpl.class);
 	protected StringBuilder builder = new StringBuilder();
 	protected SQL sql;
-	protected String author;
+	protected String catalog;
+	protected String schema;
 	protected String table;
 	protected List<String> keys;
 	protected List<RunValue> values;
@@ -99,16 +100,34 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public String getTable(){
 		return table;
 	}
-	public String getAuthor(){
-		return author;
+
+	public String getCatalog() {
+		return catalog;
 	}
+
+	public void setCatalog(String catalog) {
+		this.catalog = catalog;
+	}
+
+	public String getSchema() {
+		return schema;
+	}
+
+	public void setSchema(String schema) {
+		this.schema = schema;
+	}
+
+	public void setTable(String table) {
+		this.table = table;
+	}
+
 	public String getDataSource() {
 		String ds = table;
-		if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(author)) {
-			ds = author + "." + ds;
+		if (BasicUtil.isNotEmpty(ds) && BasicUtil.isNotEmpty(schema)) {
+			ds = schema + "." + ds;
 		}
 		if (BasicUtil.isEmpty(ds)) {
-			ds = author;
+			ds = schema;
 		}
 		return ds;
 	}
@@ -198,7 +217,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		if(null == values){
 			values = new ArrayList<>();
 		}
-		creater.convert(getTable(), run);
+		creater.convert(getCatalog(), getSchema(), getTable(), run);
 		values.add(run);
 		return this;
 	}

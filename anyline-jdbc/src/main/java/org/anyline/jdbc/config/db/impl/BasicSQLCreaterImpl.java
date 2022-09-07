@@ -1012,10 +1012,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 
 	@Override
-	public boolean convert(String table, RunValue run){
+	public boolean convert(String catalog, String schema, String table, RunValue run){
 		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String, Column> columns = service.columns(table, true);
+			LinkedHashMap<String, Column> columns = service.metadata().columns(catalog, schema, table, true);
 			result = convert(columns, run);
 		}
 		return result;
