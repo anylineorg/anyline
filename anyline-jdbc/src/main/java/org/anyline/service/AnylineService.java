@@ -458,8 +458,12 @@ public interface AnylineService<E>{
 	public List<String> tables(String name, String types);
 	public List<String> tables(String types);
 	public List<String> tables();
+
+	public List<String> columns(Table table);
 	public List<String> columns(String table);
-	public LinkedHashMap<String,Column> columns(String table, boolean map);
+	public List<String> columns(String catalog, String schema, String table);
+
+
 	public MetaDataService metadata();
 	public interface MetaDataService{
 		/**
@@ -476,7 +480,12 @@ public interface AnylineService<E>{
 		public List<Table> tables(String types);
 		public List<Table> tables();
 		public Table table(String name);
+		public List<Column> columns(Table table);
 		public List<Column> columns(String table);
+		public List<Column> columns(String catalog, String schema, String table);
+
+		public LinkedHashMap<String,Column> columns(Table table, boolean map);
 		public LinkedHashMap<String,Column> columns(String table, boolean map);
+		public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table, boolean map);
 	}
 }

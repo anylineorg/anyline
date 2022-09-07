@@ -27,6 +27,7 @@ import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -125,5 +126,7 @@ public interface AnylineDao<E>{
 	public List<Table> tables(String name, String types);
 	public List<Table> tables(String types);
 	public List<Table> tables();
-	public List<Column> columns(String table);
+	public LinkedHashMap<String,Column> columns(Table table);
+	public LinkedHashMap<String,Column> columns(String table);
+	public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table);
 } 

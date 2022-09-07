@@ -1600,18 +1600,27 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     public List<String> tables(){
         return tables("TABLE");
     }
+    public LinkedHashMap<String,Column> columns(String table, boolean map){
+        return metadata.columns(table, map);
+    }
+
+
+    @Override
+    public List<String> columns(Table table){
+        return columns(table.getCatalog(), table.getSchema(), table.getName());
+    }
     public List<String> columns(String table){
-        List<Column> columns = metadata.columns(table);
+        return columns(null, null, table);
+    }
+    public List<String> columns(String catalog, String schema, String table){
+        List<Column> columns = metadata.columns(catalog, schema, table);
         List<String> list = new ArrayList<>();
         for(Column column:columns){
             list.add(column.getName());
         }
         return list;
     }
-    @Override
-    public LinkedHashMap<String,Column> columns(String table, boolean map){
-        return metadata.columns(table, map);
-    }
+
 
 
     private static Map<String,DataRow> cache_metadata = new HashMap<>();
@@ -1657,50 +1666,64 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
 
+        @Override
+        public List<Column> columns(Table table){
+            return columns(table.getCatalog(), table.getSchema(), table.getName());
+        }
+        @Override
+        public List<Column> columns(String table){
+            return columns(null, null, table);
+        }
+        @Override
+        public List<Column> columns(String catalog, String schema, String table){
+            LinkedHashMap<String,Column> maps = columns(catalog, schema, table, true);
+            List<Column> columns = new ArrayList<>();
+            columns.addAll(maps.values());
+            return columns;
+        }
+
 
 
         @Override
         public LinkedHashMap<String,Column> columns(String table, boolean map){
-            LinkedHashMap<String,Column> maps = new LinkedHashMap();
-            List<Column> columns = columns(table);
-            for(Column column:columns){
-                maps.put(column.getName().toUpperCase(), column);
-            }
-            return maps;
+            return columns(null, null, table, map);
         }
         @Override
-        public List<Column> columns(String table){
+        public LinkedHashMap<String,Column> columns(Table table, boolean map){
+            return columns(table.getCatalog(), table.getSchema(), table.getName(), map);
+        }
+        @Override
+        public LinkedHashMap<String,Column> columns(String catalog, String schema, String table, boolean map){
             if(null == table){
-                return new ArrayList<>();
+                return new LinkedHashMap<>();
             }
-            List<Column> list = null;
+            LinkedHashMap<String,Column> columns = null;
             String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
             String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table;
 
             if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
                 CacheElement cacheElement = cacheProvider.get(cache, key);
                 if(null != cacheElement){
-                    list = (List<Column>) cacheElement.getValue();
+                    columns = (LinkedHashMap<String,Column>) cacheElement.getValue();
                 }
-                if(null == list){
-                    list = dao.columns(table);
-                    cacheProvider.put(cache, key, list);
+                if(null == columns){
+                    columns = dao.columns(catalog, schema, table);
+                    cacheProvider.put(cache, key, columns);
                 }
             }else{
-
                 //通过静态变量缓存
                 DataRow static_cache = cache_metadatas.get(key);
                 if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
-                    list = (List<Column>)static_cache.get("keys");
+                    columns = (LinkedHashMap<String,Column>) static_cache.get("keys");
                 }
-                if(null == list){
-                    list = dao.columns(table);
+                if(null == columns){
+                    columns = dao.columns(catalog, schema, table);
                     static_cache = new DataRow();
-                    static_cache.put("keys", list);
+                    static_cache.put("keys", columns);
                     cache_metadatas.put(key, static_cache);
                 }
             }
-            return list;
+            return columns;
         }
     };
 

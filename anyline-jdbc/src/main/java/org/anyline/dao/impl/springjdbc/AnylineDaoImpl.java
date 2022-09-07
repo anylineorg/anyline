@@ -58,12 +58,10 @@ import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import javax.xml.transform.Result;
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository("anyline.dao")
 public class AnylineDaoImpl<E> implements AnylineDao<E> {
@@ -1342,7 +1340,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			ResultSet rs = con.getMetaData().getTables(catalog, schema, name, tps );
 			while(rs.next()) {
 				Table table = new Table();
-				table.setCat(rs.getString("TABLE_CAT"));
+				table.setCatalog(rs.getString("TABLE_CAT"));
 				table.setSchema(rs.getString("TABLE_SCHEM"));
 				table.setName(rs.getString("TABLE_NAME"));
 				table.setType(rs.getString("TABLE_TYPE"));
@@ -1370,39 +1368,85 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public List<Table> tables(){
 		return tables(null, null, null, "TABLE");
 	}
+	public LinkedHashMap<String,Column> columns(Table table){
+		return columns(table.getCatalog(), table.getSchema(), table.getName());
+	}
+	public LinkedHashMap<String,Column> columns(String table){
+		return columns(null, null, table);
+	}
+	public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table){
+		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
-	public List<Column> columns(String table){
 		Long fr = System.currentTimeMillis();
-		List<Column> list = new ArrayList<>();
-		SQL sql = new TableSQLImpl();
-		sql.setDataSource(table);
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, null,"1=0");
-		SqlRowSet row = getJdbc().queryForRowSet(run.getFinalQueryTxt());
-		SqlRowSetMetaData rsm = row.getMetaData();
 
-		for (int i = 1; i <= rsm.getColumnCount(); i++) {
-			Column column = new Column();
-			column.setCatalogName(rsm.getCatalogName(i));
-			column.setClassName(rsm.getColumnClassName(i));
-			column.setCaseSensitive(rsm.isCaseSensitive(i));
-			column.setCurrency(rsm.isCurrency(i));
-			column.setLabel(rsm.getColumnLabel(i));
-			column.setName(rsm.getColumnName(i));
-			column.setPrecision(rsm.getPrecision(i));
-			column.setScale(rsm.getScale(i));
-			column.setDisplaySize(rsm.getColumnDisplaySize(i));
-			column.setSchema(rsm.getSchemaName(i));
-			column.setSigned(rsm.isSigned(i));
-			column.setTable(rsm.getTableName(i));
-			column.setType(rsm.getColumnType(i));
-			column.setTypeName(rsm.getColumnTypeName(i));
-			list.add(column);
+		try {
+			SQL sql = new TableSQLImpl();
+			sql.setDataSource(table);
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, null,"1=0");
+			SqlRowSet set = getJdbc().queryForRowSet(run.getFinalQueryTxt());
+			SqlRowSetMetaData rsm = set.getMetaData();
+			for (int i = 1; i <= rsm.getColumnCount(); i++) {
+				Column column = new Column();
+				column.setCatalogName(rsm.getCatalogName(i));
+				column.setClassName(rsm.getColumnClassName(i));
+				column.setCaseSensitive(rsm.isCaseSensitive(i));
+				column.setCurrency(rsm.isCurrency(i));
+				column.setLabel(rsm.getColumnLabel(i));
+				column.setName(rsm.getColumnName(i));
+				column.setPrecision(rsm.getPrecision(i));
+				column.setScale(rsm.getScale(i));
+				column.setDisplaySize(rsm.getColumnDisplaySize(i));
+				column.setSchema(rsm.getSchemaName(i));
+				column.setSigned(rsm.isSigned(i));
+				column.setTable(rsm.getTableName(i));
+				column.setType(rsm.getColumnType(i));
+				column.setTypeName(rsm.getColumnTypeName(i));
+				columns.put(column.getName(), column);
+			}
+			//isAutoIncrement isGenerated remark default
+			DatabaseMetaData metaData = getJdbc().getDataSource().getConnection().getMetaData();
+			ResultSet rs = metaData.getColumns(catalog, schema, table, null);
+			while (rs.next()){
+				String name = rs.getString("COLUMN_NAME");
+				Column column = columns.get(name);
+				if(null == column){
+					continue;
+				}
+				column.setAutoIncrement(rs.getBoolean("IS_AUTOINCREMENT"));
+				column.setGenerated(rs.getBoolean("IS_GENERATEDCOLUMN"));
+				if(BasicUtil.isEmpty(column.getLabel())){
+					column.setLabel(rs.getString("REMARKS"));
+				}
+				if(BasicUtil.isEmpty(column.getDefaultValue())){
+					column.setDefaultValue(rs.getObject("COLUMN_DEF"));
+				}
+			}
+
+			//主键
+			rs = metaData.getPrimaryKeys(catalog, schema, table);
+			while (rs.next()){
+				String name = rs.getString(4);
+				Column column = columns.get(name);
+				if(null == column){
+					continue;
+				}
+				column.setPrimaryKey(true);
+				column.setPrimaryKeyName(rs.getString(6));
+				column.setPrimaryKeyIndex(rs.getInt(5));
+			}
+
+
+		}catch (Exception e){
+			e.printStackTrace();
 		}
+
+
+
 		if (showSQL) {
 			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
 			log.warn("{}[columns][table:{}][执行耗时:{}ms]", random, table, System.currentTimeMillis() - fr);
 		}
-		return list;
+		return columns;
 	}
 
 	/**

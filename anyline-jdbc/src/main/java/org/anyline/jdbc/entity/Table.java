@@ -15,7 +15,7 @@ public class Table {
      * SELF_REFERENCING_COL_NAME String => 有类型表的指定 "identifier" 列的名称（可为 null）
      * REF_GENERATION String  => 指定在 SELF_REFERENCING_COL_NAME 中创建值的方式。这些值为 "SYSTEM"、"USER" 和 "DERIVED"。（可能为 null）
      */
-    private String cat;
+    private String catalog;
     private String schema;
     private String name;
     private String type;
@@ -49,13 +49,13 @@ public class Table {
         columns.add(column);
         return this;
     }
-    public String getCat() {
-        return cat;
+
+    public String getCatalog() {
+        return catalog;
     }
 
-    public Table setCat(String cat) {
-        this.cat = cat;
-        return this;
+    public void setCatalog(String catalog) {
+        this.catalog = catalog;
     }
 
     public String getSchema() {
