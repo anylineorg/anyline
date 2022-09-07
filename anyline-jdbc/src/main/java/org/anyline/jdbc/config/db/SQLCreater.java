@@ -106,7 +106,7 @@ public interface SQLCreater{
 	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
 
 
-	public boolean convert(String table, RunValue run);
+	public boolean convert(String catalog, String schema, String table, RunValue run);
 	public boolean convert(Map<String, Column> columns, RunValue value);
 	public boolean convert(Column column, RunValue value);
 	/**
