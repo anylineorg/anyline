@@ -62,6 +62,7 @@ public abstract class AnylineConfig {
 	protected synchronized static void load(Hashtable<String, AnylineConfig> instances, Class<? extends AnylineConfig> clazz, String fileName, String... compatibles) {
 		try {
 
+			int configSize = 0;
 			if ("jar".equals(ConfigTable.getPackageType())) {
 				InputStream in = null;
 				log.warn("[加载配置文件][type:jar][file:{}]", fileName);
@@ -77,14 +78,10 @@ public abstract class AnylineConfig {
 							list.add(entry);
 						}
 					}
-					int configSize = 0;
 					for (JarEntry jarEntry : list) {
 						in = AnylineConfig.class.getClassLoader().getResourceAsStream(jarEntry.getName());
 						parse(clazz, in, instances, compatibles);
 						configSize++;
-					}
-					if (configSize == 0) {
-						log.warn("[解析配置文件][未加载配置文件:{}][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/{}]", fileName, fileName);
 					}
 				} else {
 					in = ConfigTable.class.getClassLoader().getResourceAsStream("/" + fileName);
@@ -97,15 +94,11 @@ public abstract class AnylineConfig {
 					dir = new File(ConfigTable.getWebRoot());
 				}
 				List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-				int configSize = 0;
 				for (File file : files) {
 					if (fileName.equals(file.getName())) {
 						parse(clazz, file, instances, compatibles);
 						configSize++;
 					}
-				}
-				if (configSize == 0) {
-					log.warn("[解析配置文件][未加载配置文件:{}][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/{}]", fileName, fileName);
 				}
 			} else {
 				//File dir = new File(ConfigTable.getWebRoot(), "WEB-INF/classes");
@@ -114,17 +107,15 @@ public abstract class AnylineConfig {
 					dir = new File(ConfigTable.getWebRoot());
 				}
 				List<File> files = FileUtil.getAllChildrenFile(dir, "xml");
-				int configSize = 0;
 				for (File file : files) {
 					if (fileName.equals(file.getName())) {
 						parse(clazz, file, instances, compatibles);
 						configSize++;
 					}
 				}
-				if (configSize == 0) {
-					log.warn("[解析配置文件][未加载配置文件:{}][配置文件模板请参考:http://api.anyline.org/config或源文件中src/main/resources/{}]", fileName, fileName);
-				}
 			}
+			log.warn("[解析配置文件][文件:{}][数量:{}/{}][请参考:http://doc.anyline.org或源码中resources/{}]", fileName, configSize, instances.size(), fileName);
+
 		} catch (Exception e) {
 			log.error("[解析配置文件][file:{}][配置文件解析异常:{}]", fileName, e);
 		}
