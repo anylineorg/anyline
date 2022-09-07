@@ -42,6 +42,9 @@ public class EHCacheProvider implements CacheProvider {
 	private CacheManager manager = null;
 	private HashSet<String> channels = new HashSet<>();
 	private Hashtable<String,Long> reflushFlag = new Hashtable<String,Long>();		//缓存刷新标记
+	public int getLvl(){
+		return 1;
+	}
 
 	public static InputStream getConfigFile() throws Exception{
 		File file = null;
