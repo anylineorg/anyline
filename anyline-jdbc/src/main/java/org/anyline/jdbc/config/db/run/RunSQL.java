@@ -93,7 +93,8 @@ public interface RunSQL {
 	public RunSQL addOrder(Order order); 
 	public SQL getSql() ;
 	public String getTable();
-	public String getAuthor();
+	public String getCatalog();
+	public String getSchema();
 	public String getDataSource();
 	public RunSQL setSql(SQL sql) ;
 	public RunSQL setInsertColumns(List<String> keys);

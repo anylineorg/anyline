@@ -53,11 +53,11 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		table = sql.getTable(); 
 		table = table.replace(delimiterFr, "").replace(delimiterTo, "");
 		if(table.contains(".")){ 
-			this.author = table.substring(0,table.indexOf(".")); 
+			this.schema = table.substring(0,table.indexOf("."));
 			this.table = table.substring(table.indexOf(".") + 1); 
 		} else{
 			if(BasicUtil.isNotEmpty(sql.getSchema())){
-				author = sql.getSchema();
+				schema = sql.getSchema();
 			}
 		}
 	} 
@@ -130,8 +130,8 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 			builder.append(SQLCreater.BR); 
 		} 
 		builder.append("FROM").append(SQLCreater.BR_TAB);
-		if(null != author){
-			BasicUtil.delimiter(builder, author, delimiterFr, delimiterTo).append(".");
+		if(null != schema){
+			BasicUtil.delimiter(builder, schema, delimiterFr, delimiterTo).append(".");
 		}
 		BasicUtil.delimiter(builder, table, delimiterFr, delimiterTo);
 		builder.append(SQLCreater.BR);
@@ -167,8 +167,8 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 	public void createRunDeleteTxt(){
 		TableSQL sql = (TableSQL)this.getSql();
 		builder.append("DELETE FROM ");
-		if(null != author){
-			BasicUtil.delimiter(builder, author, delimiterFr, delimiterTo).append(".");
+		if(null != schema){
+			BasicUtil.delimiter(builder, schema, delimiterFr, delimiterTo).append(".");
 		}
 
 		BasicUtil.delimiter(builder, table, delimiterFr, delimiterTo);
