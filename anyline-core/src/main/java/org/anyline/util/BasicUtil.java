@@ -378,11 +378,17 @@ public class BasicUtil {
 	public static Boolean parseBoolean(Object obj) throws Exception{
 		if ("1".equals(obj.toString())
 				|| "true".equalsIgnoreCase(obj.toString())
-				|| "on".equalsIgnoreCase(obj.toString())) {
+				|| "t".equalsIgnoreCase(obj.toString())
+				|| "on".equalsIgnoreCase(obj.toString())
+				|| "yes".equalsIgnoreCase(obj.toString())
+				|| "y".equalsIgnoreCase(obj.toString())) {
 			return true;
 		} else if ("0".equals(obj.toString())
 				|| "false".equalsIgnoreCase(obj.toString())
-				|| "off".equalsIgnoreCase(obj.toString())) {
+				|| "off".equalsIgnoreCase(obj.toString())
+				|| "f".equalsIgnoreCase(obj.toString())
+				|| "no".equalsIgnoreCase(obj.toString())
+				|| "n".equalsIgnoreCase(obj.toString())) {
 			return  false;
 		} else {
 			return Boolean.parseBoolean(obj.toString());
