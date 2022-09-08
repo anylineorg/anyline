@@ -1,5 +1,8 @@
 package org.anyline.jdbc.entity;
 
+import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+
 public class Column {
 
     private String catalog                  ; //数据库
@@ -12,7 +15,7 @@ public class Column {
     private int type                        ; //类型
     private String typeName                 ; //类型名称
     private int precision                   ; //整个字段的长度  123.45：precision = 5 ，scale = 2
-    private int scale                       ; //小数部分的长度
+    private Integer scale                   ; //小数部分的长度
     private boolean nullable                ; //是否可以为NULL
     private boolean caseSensitive           ; //是否区分大小写
     private boolean isCurrency              ; //是否是货币
@@ -21,7 +24,7 @@ public class Column {
     private boolean isPrimaryKey            ; //是否主键
     private boolean isGenerated             ; //是否generated
     private Object defaultValue             ; //默认值
-    private int position                    ; //在索引或表中的位置
+    private int position                    ; //在表或索引中的位置
     private String order                    ; //在索引中的排序方式ASC | DESC
 
     private String after                    ; //修改列时 在表中的位置
@@ -164,7 +167,7 @@ public class Column {
         return scale;
     }
 
-    public Column setScale(int scale) {
+    public Column setScale(Integer scale) {
         this.scale = scale;
         return this;
     }
@@ -241,4 +244,46 @@ public class Column {
     public void setBefore(String before) {
         this.before = before;
     }
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+        builder.append(name).append(" ").append(typeName);
+        if(precision > 0){
+            builder.append("(").append(precision);
+            if(null != scale){
+                builder.append(",").append(scale);
+            }
+            builder.append(")");
+        }
+        if(BasicUtil.isNotEmpty(defaultValue)){
+            builder.append(" default ").append(defaultValue);
+        }
+        return builder.toString();
+    }
+    public Object clone(){
+        Column copy = new Column();
+        copy.setName(name);
+        copy.setCatalog(catalog);
+        copy.setClassName(className);
+        copy.setSchema(schema);
+        copy.setTable(table);
+        copy.setDisplaySize(displaySize);
+        copy.setLabel(label);
+        copy.setType(type);
+        copy.setTypeName(typeName);
+        copy.setPrecision(precision);
+        copy.setScale(scale);
+        copy.setNullable(nullable);
+        copy.setCaseSensitive(caseSensitive);
+        copy.setCurrency(isCurrency);
+        copy.setSigned(isSigned);
+        copy.setPrimaryKey(isPrimaryKey);
+        copy.setGenerated(isGenerated);
+        copy.setDefaultValue(defaultValue);
+        copy.setPosition(position);
+        copy.setOrder(order);
+        copy.setBefore(before);
+        copy.setAfter(after);
+        return copy;
+    }
 }
+
