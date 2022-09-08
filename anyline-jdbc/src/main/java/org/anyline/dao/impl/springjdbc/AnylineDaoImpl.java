@@ -1320,10 +1320,14 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			ResultSet rs = con.getMetaData().getTables(catalog, schema, name, tps );
 			while(rs.next()) {
+				String tableName = rs.getString("TABLE_NAME");
+				if(BasicUtil.isEmpty(tableName)){
+					continue;
+				}
 				Table table = new Table();
-				table.setCatalog(rs.getString("TABLE_CAT"));
-				table.setSchema(rs.getString("TABLE_SCHEM"));
-				table.setName(rs.getString("TABLE_NAME"));
+				table.setCatalog(BasicUtil.evl(rs.getString("TABLE_CAT"), catalog));
+				table.setSchema(BasicUtil.evl(rs.getString("TABLE_SCHEM"), schema));
+				table.setName(tableName);
 				table.setType(rs.getString("TABLE_TYPE"));
 				table.setRemarks(rs.getString("REMARKS"));
 				table.setTypeCat(rs.getString("TYPE_CAT"));
@@ -1359,7 +1363,6 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
 		Long fr = System.currentTimeMillis();
-
 		try {
 			SQL sql = new TableSQLImpl();
 			sql.setDataSource(table);
@@ -1367,21 +1370,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			SqlRowSet set = getJdbc().queryForRowSet(run.getFinalQueryTxt());
 			SqlRowSetMetaData rsm = set.getMetaData();
 			for (int i = 1; i <= rsm.getColumnCount(); i++) {
-				Column column = new Column();
-				column.setCatalog(rsm.getCatalogName(i));
-				column.setClassName(rsm.getColumnClassName(i));
-				column.setCaseSensitive(rsm.isCaseSensitive(i));
-				column.setCurrency(rsm.isCurrency(i));
-				column.setLabel(rsm.getColumnLabel(i));
-				column.setName(rsm.getColumnName(i));
-				column.setPrecision(rsm.getPrecision(i));
-				column.setScale(rsm.getScale(i));
-				column.setDisplaySize(rsm.getColumnDisplaySize(i));
-				column.setSchema(rsm.getSchemaName(i));
-				column.setSigned(rsm.isSigned(i));
-				column.setTable(rsm.getTableName(i));
-				column.setType(rsm.getColumnType(i));
-				column.setTypeName(rsm.getColumnTypeName(i));
+				Column column = column(null, rsm, i);
 				columns.put(column.getName(), column);
 			}
 			//isAutoIncrement isGenerated remark default
@@ -1400,16 +1389,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if(null == column){
 					continue;
 				}
-				column.setAutoIncrement(rs.getBoolean("IS_AUTOINCREMENT"));
-				column.setGenerated(rs.getBoolean("IS_GENERATEDCOLUMN"));
-				if(BasicUtil.isEmpty(column.getLabel())){
-					column.setLabel(rs.getString("REMARKS"));
-				}
-				if(BasicUtil.isEmpty(column.getDefaultValue())){
-					column.setDefaultValue(rs.getObject("COLUMN_DEF"));
-				}
+				column.setCatalog(BasicUtil.evl(rs.getString("TABLE_CAT"), catalog));
+				column.setSchema(BasicUtil.evl(rs.getString("TABLE_SCHEM"), schema));
+				column.setTable(BasicUtil.evl(rs.getString("TABLE_NAME"), table));
+				column(column, rs);
 			}
-
 			//主键
 			rs = metaData.getPrimaryKeys(catalog, schema, table);
 			while (rs.next()){
@@ -1432,16 +1416,104 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return columns;
 	}
+	private Column column(Column column, SqlRowSetMetaData rsm, int index){
+		if(null == column){
+			column = new Column();
+		}
+		try {
+			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
+			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
+			column.setClassName(rsm.getColumnClassName(index));
+			column.setCaseSensitive(rsm.isCaseSensitive(index));
+			column.setCurrency(rsm.isCurrency(index));
+			column.setLabel(rsm.getColumnLabel(index));
+			column.setName(rsm.getColumnName(index));
+			column.setPrecision(rsm.getPrecision(index));
+			column.setScale(rsm.getScale(index));
+			column.setDisplaySize(rsm.getColumnDisplaySize(index));
+			column.setSigned(rsm.isSigned(index));
+			column.setTable(rsm.getTableName(index));
+			column.setType(rsm.getColumnType(index));
+			column.setTypeName(rsm.getColumnTypeName(index));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return column;
+	}
 
+
+
+	/**
+	 * 构建Column
+	 * TABLE_CAT=simple
+	 * TABLE_SCHEM=null
+	 * TABLE_NAME=hr_department
+	 * COLUMN_NAME=SCORE
+	 * DATA_TYPE=7
+	 * TYPE_NAME=FLOAT
+	 * COLUMN_SIZE=11
+	 * BUFFER_LENGTH=65535
+	 * DECIMAL_DIGITS=2
+	 * NUM_PREC_RADIX=10
+	 * NULLABLE=1
+	 * REMARKS=
+	 * COLUMN_DEF=null
+	 * SQL_DATA_TYPE=0
+	 * SQL_DATETIME_SUB=0
+	 * CHAR_OCTET_LENGTH=null
+	 * ORDINAL_POSITION=4
+	 * IS_NULLABLE=YES
+	 * SCOPE_CATALOG=null
+	 * SCOPE_SCHEMA=null
+	 * SCOPE_TABLE=null
+	 * SOURCE_DATA_TYPE=null
+	 * IS_AUTOINCREMENT=NO
+	 * @param column column
+	 * @param rs  ResultSet
+	 * @return Column
+	 */
+	private Column column(Column column, ResultSet rs){
+		if(null == column){
+			column = new Column();
+		}
+		try {
+			column.setScale(BasicUtil.parseInt(rs.getString("DECIMAL_DIGITS"), null));
+			column.setPosition(BasicUtil.parseInt(rs.getString("ORDINAL_POSITION"), 0));
+			column.setAutoIncrement(BasicUtil.parseBoolean(rs.getString("IS_AUTOINCREMENT"), false));
+			column.setGenerated(BasicUtil.parseBoolean(rs.getString("IS_GENERATEDCOLUMN"), false));
+			column.setLabel(rs.getString("REMARKS"));
+			column.setPosition(BasicUtil.parseInt(rs.getString("ORDINAL_POSITION"), 0));
+			if (BasicUtil.isEmpty(column.getDefaultValue())) {
+				column.setDefaultValue(rs.getObject("COLUMN_DEF"));
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return column;
+	}
+
+	/**
+	 * 所引
+	 * TABLE_CAT=simple
+	 * TABLE_SCHEM=null
+	 * TABLE_NAME=hr_department
+	 * NON_UNIQUE=false
+	 * INDEX_QUALIFIER=null
+	 * INDEX_NAME=PRIMARY
+	 * TYPE=3
+	 * ORDINAL_POSITION=1
+	 * COLUMN_NAME=ID
+	 * ASC_OR_DESC=A
+	 * CARDINALITY=81
+	 * PAGES=0
+	 * @param table table
+	 * @return map
+	 */
 	public LinkedHashMap<String, Index> index(Table table){
 		LinkedHashMap<String,Index> indexs = new LinkedHashMap<>();
-		LinkedHashMap<String, Column> columns = table.getColumns();
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		String tab = table.getName();
-		if(null == columns){
-			columns = new LinkedHashMap<>();
-		}
 		try {
 			Connection con = DataSourceUtils.getConnection(getJdbc().getDataSource());
 			if(null == catalog){
@@ -1454,7 +1526,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			ResultSet rs = metaData.getIndexInfo(catalog, schema, tab, false, false);
 
 			ResultSetMetaData md = rs.getMetaData();
-			LinkedHashMap<String, Column> cols = null;
+			LinkedHashMap<String, Column> columns = null;
 			while (rs.next()) {
 				String name = rs.getString("INDEX_NAME");
 				if(null == name){
@@ -1466,18 +1538,21 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					index.setName(rs.getString("INDEX_NAME"));
 					index.setType(rs.getInt("TYPE"));
 					index.setUnique(!rs.getBoolean("NON_UNIQUE"));
-					index.setCatalog(rs.getString("TABLE_CAT"));
-					index.setSchema(rs.getString("TABLE_SCHEM"));
+					index.setCatalog(BasicUtil.evl(rs.getString("TABLE_CAT"), catalog));
+					index.setSchema(BasicUtil.evl(rs.getString("TABLE_SCHEM"), schema));
 					index.setTable(rs.getString("TABLE_NAME"));
 					indexs.put(name, index);
-					cols = new LinkedHashMap<>();
-					index.setColumns(cols);
+					columns = new LinkedHashMap<>();
+					index.setColumns(columns);
 				}else {
-					cols = index.getColumns();
+					columns = index.getColumns();
 				}
 				String columnName = rs.getString("COLUMN_NAME");
-				Column column = columns.get(columnName);
-				if(null == column){
+				Column col = table.getColumn(columnName);
+				Column column = null;
+				if(null != col){
+					column = (Column) col.clone();
+				}else{
 					column = new Column();
 					column.setName(columnName);
 				}
@@ -1489,7 +1564,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 				column.setOrder(order);
 				column.setPosition(rs.getInt("ORDINAL_POSITION"));
-				cols.put(columnName, column);
+				columns.put(column.getName(), column);
 			}
 			table.setIndexs(indexs);
 		}catch (Exception e){

@@ -157,4 +157,7 @@ public class Table {
     public void setIndexs(LinkedHashMap<String, Index> indexs) {
         this.indexs = indexs;
     }
+    public Column getColumn(String name){
+        return columns.get(name);
+    }
 }
