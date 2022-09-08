@@ -2,7 +2,7 @@ package org.anyline.jdbc.entity;
 
 public class Column {
 
-    private String catalogName              ; //数据库
+    private String catalog                  ; //数据库
     private String className                ; //java.lang.Long
     private String schema                   ; //dbo
     private String table                    ; //表名
@@ -19,10 +19,13 @@ public class Column {
     private boolean isSigned                ; //是否可以带正负号
     private boolean isAutoIncrement         ; //是否自增
     private boolean isPrimaryKey            ; //是否主键
-    private String primaryKeyName           ; //主键名称
-    private int primaryKeyIndex             ; //主键顺序
     private boolean isGenerated             ; //是否generated
     private Object defaultValue             ; //默认值
+    private int position                    ; //在索引或表中的位置
+    private String order                    ; //在索引中的排序方式ASC | DESC
+
+    private String after                    ; //修改列时 在表中的位置
+    private String before                   ; //修改列时 在表中的位置
 
     private Column update;
 
@@ -40,12 +43,12 @@ public class Column {
         return this;
     }
 
-    public String getCatalogName() {
-        return catalogName;
+    public String getCatalog() {
+        return catalog;
     }
 
-    public Column setCatalogName(String catalogName) {
-        this.catalogName = catalogName;
+    public Column setCatalog(String catalog) {
+        this.catalog = catalog;
         return this;
     }
 
@@ -207,19 +210,35 @@ public class Column {
         this.defaultValue = defaultValue;
     }
 
-    public String getPrimaryKeyName() {
-        return primaryKeyName;
+    public int getPosition() {
+        return position;
     }
 
-    public void setPrimaryKeyName(String primaryKeyName) {
-        this.primaryKeyName = primaryKeyName;
+    public String getOrder() {
+        return order;
     }
 
-    public int getPrimaryKeyIndex() {
-        return primaryKeyIndex;
+    public void setOrder(String order) {
+        this.order = order;
     }
 
-    public void setPrimaryKeyIndex(int primaryKeyIndex) {
-        this.primaryKeyIndex = primaryKeyIndex;
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public String getAfter() {
+        return after;
+    }
+
+    public void setAfter(String after) {
+        this.after = after;
+    }
+
+    public String getBefore() {
+        return before;
+    }
+
+    public void setBefore(String before) {
+        this.before = before;
     }
 }
