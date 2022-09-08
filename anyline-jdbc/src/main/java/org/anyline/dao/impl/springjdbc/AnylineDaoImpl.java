@@ -19,6 +19,7 @@
 
 package org.anyline.dao.impl.springjdbc;
 
+import javafx.scene.control.Tab;
 import org.anyline.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.JDBCListener;
@@ -34,6 +35,7 @@ import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Index;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.jdbc.exception.SQLQueryException;
 import org.anyline.jdbc.exception.SQLUpdateException;
@@ -1268,20 +1270,6 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}else{
 					result = getJdbc().update(sql, values.toArray());
 				}
-//			result = getJdbc().update(
-//	            new PreparedStatementCreator() {
-//	                public PreparedStatement createPreparedStatement(Connection con) throws SQLException
-//	                {
-//	                    PreparedStatement ps = getJdbc().getDataSource().getConnection().prepareStatement(sql);
-//	                    int idx = 0;
-//	                    if(null != values){
-//		                    for(Object obj:values){
-//		                    	ps.setObject(++idx, obj);
-//		                    }
-//	                    }
-//	                    return ps;
-//	                }
-//	            });
 				if (showSQL) {
 					log.warn("{}[执行耗时:{}ms][影响行数:{}]", random, System.currentTimeMillis() - fr, result);
 				}
@@ -1315,16 +1303,6 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * @param name 一般情况下如果要获取所有的表的话，可以直接设置为null，如果设置为特定的表名称，则返回该表的具体信息。
 	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 	 * @return List
-	 * TABLE_CAT String => 表类别（可为 null）
-	 * TABLE_SCHEM String => 表模式（可为 null）
-	 * TABLE_NAME String => 表名称
-	 * TABLE_TYPE String => 表类型。
-	 * REMARKS String => 表的解释性注释
-	 * TYPE_CAT String => 类型的类别（可为 null）
-	 * TYPE_SCHEM String => 类型模式（可为 null）
-	 * TYPE_NAME String => 类型名称（可为 null）
-	 * SELF_REFERENCING_COL_NAME String => 有类型表的指定 "identifier" 列的名称（可为 null）
-	 * REF_GENERATION String
 	 */
 	public List<Table> tables(String catalog, String schema, String name, String types){
 		List<Table> tables = new ArrayList<>();
@@ -1332,6 +1310,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			Connection con = DataSourceUtils.getConnection(getJdbc().getDataSource());
 			if(null == catalog){
 				catalog = con.getCatalog();
+			}
+			if(null == schema){
+				schema = con.getSchema();
 			}
 			String[] tps = null;
 			if(null != types){
@@ -1387,7 +1368,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			SqlRowSetMetaData rsm = set.getMetaData();
 			for (int i = 1; i <= rsm.getColumnCount(); i++) {
 				Column column = new Column();
-				column.setCatalogName(rsm.getCatalogName(i));
+				column.setCatalog(rsm.getCatalogName(i));
 				column.setClassName(rsm.getColumnClassName(i));
 				column.setCaseSensitive(rsm.isCaseSensitive(i));
 				column.setCurrency(rsm.isCurrency(i));
@@ -1404,7 +1385,14 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				columns.put(column.getName(), column);
 			}
 			//isAutoIncrement isGenerated remark default
-			DatabaseMetaData metaData = getJdbc().getDataSource().getConnection().getMetaData();
+			Connection con = DataSourceUtils.getConnection(getJdbc().getDataSource());
+			DatabaseMetaData metaData = con.getMetaData();
+			if(null == catalog){
+				catalog = con.getCatalog();
+			}
+			if(null == schema){
+				schema = con.getSchema();
+			}
 			ResultSet rs = metaData.getColumns(catalog, schema, table, null);
 			while (rs.next()){
 				String name = rs.getString("COLUMN_NAME");
@@ -1431,16 +1419,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					continue;
 				}
 				column.setPrimaryKey(true);
-				column.setPrimaryKeyName(rs.getString(6));
-				column.setPrimaryKeyIndex(rs.getInt(5));
 			}
 
 
 		}catch (Exception e){
 			e.printStackTrace();
 		}
-
-
 
 		if (showSQL) {
 			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
@@ -1449,6 +1433,70 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return columns;
 	}
 
+	public LinkedHashMap<String, Index> index(Table table){
+		LinkedHashMap<String,Index> indexs = new LinkedHashMap<>();
+		LinkedHashMap<String, Column> columns = table.getColumns();
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		String tab = table.getName();
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+		try {
+			Connection con = DataSourceUtils.getConnection(getJdbc().getDataSource());
+			if(null == catalog){
+				catalog = con.getCatalog();
+			}
+			if(null == schema){
+				schema = con.getSchema();
+			}
+			DatabaseMetaData metaData = con.getMetaData();
+			ResultSet rs = metaData.getIndexInfo(catalog, schema, tab, false, false);
+
+			ResultSetMetaData md = rs.getMetaData();
+			LinkedHashMap<String, Column> cols = null;
+			while (rs.next()) {
+				String name = rs.getString("INDEX_NAME");
+				if(null == name){
+					continue;
+				}
+				Index index = indexs.get(name);
+				if(null == index){
+					index = new Index();
+					index.setName(rs.getString("INDEX_NAME"));
+					index.setType(rs.getInt("TYPE"));
+					index.setUnique(!rs.getBoolean("NON_UNIQUE"));
+					index.setCatalog(rs.getString("TABLE_CAT"));
+					index.setSchema(rs.getString("TABLE_SCHEM"));
+					index.setTable(rs.getString("TABLE_NAME"));
+					indexs.put(name, index);
+					cols = new LinkedHashMap<>();
+					index.setColumns(cols);
+				}else {
+					cols = index.getColumns();
+				}
+				String columnName = rs.getString("COLUMN_NAME");
+				Column column = columns.get(columnName);
+				if(null == column){
+					column = new Column();
+					column.setName(columnName);
+				}
+				String order = rs.getString("ASC_OR_DESC");
+				if(null != order && order.startsWith("D")){
+					order = "DESC";
+				}else{
+					order = "ASC";
+				}
+				column.setOrder(order);
+				column.setPosition(rs.getInt("ORDINAL_POSITION"));
+				cols.put(columnName, column);
+			}
+			table.setIndexs(indexs);
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return indexs;
+	}
 	/**
 	 * 参数日志格式化
 	 * @param params params

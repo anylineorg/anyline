@@ -479,6 +479,8 @@ public interface AnylineService<E>{
 		public List<Table> tables(String name, String types);
 		public List<Table> tables(String types);
 		public List<Table> tables();
+		public Table table(String catalog, String schema, String name);
+		public Table table(String schema, String name);
 		public Table table(String name);
 		public List<Column> columns(Table table);
 		public List<Column> columns(String table);

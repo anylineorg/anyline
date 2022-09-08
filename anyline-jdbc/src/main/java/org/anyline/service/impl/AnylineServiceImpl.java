@@ -1655,14 +1655,23 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public Table table(String name) {
+        public Table table(String catalog, String schema,String name) {
             Table table = null;
-            List<Table> tables = tables(name,"TABLE");
+            List<Table> tables = tables(catalog, schema, name,"TABLE");
             if(tables.size()>0){
                 table = tables.get(0);
-                table.setColumns(columns(table.getName()));
+                table.setColumns(columns(table.getName(), true));
+                dao.index(table);
             }
-            return null;
+            return table;
+        }
+        @Override
+        public Table table(String schema,String name) {
+            return table(null, schema, name);
+        }
+        @Override
+        public Table table(String name) {
+            return table(null, null, name);
         }
 
 

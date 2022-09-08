@@ -19,11 +19,14 @@
 
 package org.anyline.dao;
 
-import org.anyline.entity.*;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.EntitySet;
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Index;
 import org.anyline.jdbc.entity.Table;
 
 import java.util.Collection;
@@ -129,4 +132,5 @@ public interface AnylineDao<E>{
 	public LinkedHashMap<String,Column> columns(Table table);
 	public LinkedHashMap<String,Column> columns(String table);
 	public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table);
+	public LinkedHashMap<String, Index>  index(Table table);
 } 
