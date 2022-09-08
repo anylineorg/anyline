@@ -11,7 +11,7 @@ import java.util.Hashtable;
 public class AmapConfig extends AnylineConfig{ 
 	private static Hashtable<String,AnylineConfig> instances = new Hashtable<String,AnylineConfig>();
 
-
+	public static String DEFAULT_HOST			= "http://yuntuapi.amap.com";
 	public static String DEFAULT_KEY			= "";
 	public static String DEFAULT_SECRET 		= "";
 	public static String DEFAULT_TABLE 			= "";
