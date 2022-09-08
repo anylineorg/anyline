@@ -58,7 +58,7 @@ public class AmapUtil {
 	 * @return String
 	 */ 
 	public String create(String name, int loctype, String lng, String lat, String address, Map<String, Object> extras){ 
-		String url = "http://yuntuapi.amap.com/datamanage/data/create"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datamanage/data/create"; 
 		Map<String,Object> params = new HashMap<>();
 		params.put("key", config.KEY);
 		params.put("tableid", config.TABLE);
@@ -172,7 +172,7 @@ public class AmapUtil {
 		params.put("tableid", config.TABLE); 
 		params.put("ids", param); 
 		params.put("sig", sign(params)); 
-		String url = "http://yuntuapi.amap.com/datamanage/data/delete"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datamanage/data/delete"; 
 		String txt = HttpUtil.post(url, "UTF-8", params).getText(); 
 		if(ConfigTable.isDebug() && log.isWarnEnabled()){
 			log.warn("[删除标注][param:{}]",BeanUtil.map2string(params)); 
@@ -207,7 +207,7 @@ public class AmapUtil {
 	 */ 
 	public int update(String id, String name, int loctype, String lng, String lat, String address, Map<String,Object> extras){ 
 		int cnt = 0; 
-		String url = "http://yuntuapi.amap.com/datamanage/data/update"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datamanage/data/update"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -283,7 +283,7 @@ public class AmapUtil {
 	 */ 
 	public String createTable(String name){ 
 		String tableId = null; 
-		String url = "http://yuntuapi.amap.com/datamanage/table/create"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datamanage/table/create"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("name", name); 
@@ -312,7 +312,7 @@ public class AmapUtil {
 	 */ 
 	public DataSet local(String keywords, String city, String filter, String sortrule, int limit, int page){
 		DataSet set = null; 
-		String url = "http://yuntuapi.amap.com/datasearch/local"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datasearch/local"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -369,7 +369,7 @@ public class AmapUtil {
 	 */ 
 	public DataSet around(String center, int radius, String keywords, Map<String,String> filters, String sortrule, int limit, int page){ 
 		DataSet set = null; 
-		String url = "http://yuntuapi.amap.com/datasearch/around"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datasearch/around"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -480,7 +480,7 @@ public class AmapUtil {
 	 */ 
 	public DataSet list(String filter, String sortrule, int limit, int page){ 
 		DataSet set = null; 
-		String url = "http://yuntuapi.amap.com/datamanage/data/list"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datamanage/data/list"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -532,7 +532,7 @@ public class AmapUtil {
 	 */ 
 	public DataRow info(String id){ 
 		DataRow row = null; 
-		String url = "http://yuntuapi.amap.com/datasearch/id"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datasearch/id"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -567,7 +567,7 @@ public class AmapUtil {
 	 */ 
 	public DataSet statByProvince(String keywords, String country, String filter){ 
 		DataSet set = null; 
-		String url = "http://yuntuapi.amap.com/datasearch/statistics/province"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -606,7 +606,7 @@ public class AmapUtil {
 	 */ 
 	public DataSet statByCity(String keywords, String province, String filter){ 
 		DataSet set = null; 
-		String url = "http://yuntuapi.amap.com/datasearch/statistics/city"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datasearch/statistics/city"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -646,7 +646,7 @@ public class AmapUtil {
 	 */ 
 	public DataSet statByDistrict(String keywords, String province, String city, String filter){ 
 		DataSet set = null; 
-		String url = "http://yuntuapi.amap.com/datasearch/statistics/province"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("tableid", config.TABLE); 
@@ -684,7 +684,7 @@ public class AmapUtil {
 	 */ 
 	public DataSet nearby(String center, String radius, int limit, int timerange ){ 
 		DataSet set = null; 
-		String url = "http://yuntuapi.amap.com/datasearch/statistics/province"; 
+		String url = AmapConfig.DEFAULT_HOST + "/datasearch/statistics/province"; 
 		Map<String,Object> params = new HashMap<String,Object>(); 
 		params.put("key", config.KEY); 
 		params.put("center", center); 
