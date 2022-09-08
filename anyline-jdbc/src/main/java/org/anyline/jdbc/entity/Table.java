@@ -1,9 +1,6 @@
 package org.anyline.jdbc.entity;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class Table {
     private String catalog;
@@ -17,13 +14,13 @@ public class Table {
     private String typeName;
     private String selfReferencingColumn;
     private String refGeneration;
-    private List<Column> columns = new ArrayList<>();
-
+    private LinkedHashMap<String,Column> columns;
+    private LinkedHashMap<String,Index> indexs;
     private Table update;
 
-    private List<Column> getPrimaryKeys(){
+    public List<Column> getPrimaryKeys(){
         List<Column> pks = new ArrayList<>();
-        for(Column column:columns){
+        for(Column column:columns.values()){
             if(column.isPrimaryKey()){
                 pks.add(column);
             }
@@ -31,7 +28,7 @@ public class Table {
         Collections.sort(pks, new Comparator<Column>() {
             @Override
             public int compare(Column o1, Column o2) {
-                return o1.getPrimaryKeyIndex() > o2.getPrimaryKeyIndex() ? 1:-1;
+                return o1.getPosition() > o2.getPosition() ? 1:-1;
             }
         });
         return pks;
@@ -52,7 +49,7 @@ public class Table {
 
 
     public Table addColumn(Column column){
-        columns.add(column);
+        columns.put(column.getName(), column);
         return this;
     }
 
@@ -145,12 +142,19 @@ public class Table {
         return this;
     }
 
-    public List<Column> getColumns() {
+    public LinkedHashMap<String, Column> getColumns() {
         return columns;
     }
 
-    public Table setColumns(List<Column> columns) {
+    public void setColumns(LinkedHashMap<String, Column> columns) {
         this.columns = columns;
-        return this;
+    }
+
+    public LinkedHashMap<String, Index> getIndexs() {
+        return indexs;
+    }
+
+    public void setIndexs(LinkedHashMap<String, Index> indexs) {
+        this.indexs = indexs;
     }
 }
