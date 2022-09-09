@@ -3,20 +3,26 @@ package org.anyline.jdbc.entity;
 import java.util.*;
 
 public class Table {
-    private String catalog;
-    private String schema;
-    private String name;
-    private String type;
-    private String remarks;
+    private String catalog                      ;
+    private String schema                       ;
+    private String name                         ;
+    private String type                         ;
+    private String comment                      ;
 
-    private String typeCat;
-    private String typeSchema;
-    private String typeName;
-    private String selfReferencingColumn;
-    private String refGeneration;
+    private String typeCat                      ;
+    private String typeSchema                   ;
+    private String typeName                     ;
+    private String selfReferencingColumn        ;
+    private String refGeneration                ;
+
+    private String engine                       ;
+    private String charset                      ;
+    private String collate                      ;
+
     private LinkedHashMap<String,Column> columns;
-    private LinkedHashMap<String,Index> indexs;
+    private LinkedHashMap<String,Index> indexs  ;
     private Table update;
+
 
     public List<Column> getPrimaryKeys(){
         List<Column> pks = new ArrayList<>();
@@ -88,12 +94,12 @@ public class Table {
         return this;
     }
 
-    public String getRemarks() {
-        return remarks;
+    public String getComment() {
+        return comment;
     }
 
-    public Table setRemarks(String remarks) {
-        this.remarks = remarks;
+    public Table setComment(String comment) {
+        this.comment = comment;
         return this;
     }
 
@@ -159,5 +165,29 @@ public class Table {
     }
     public Column getColumn(String name){
         return columns.get(name);
+    }
+
+    public String getEngine() {
+        return engine;
+    }
+
+    public void setEngine(String engine) {
+        this.engine = engine;
+    }
+
+    public String getCharset() {
+        return charset;
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
+
+    public String getCollate() {
+        return collate;
+    }
+
+    public void setCollate(String collate) {
+        this.collate = collate;
     }
 }
