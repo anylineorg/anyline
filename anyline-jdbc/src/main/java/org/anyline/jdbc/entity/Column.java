@@ -1,7 +1,6 @@
 package org.anyline.jdbc.entity;
 
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 
 public class Column {
 
@@ -10,7 +9,7 @@ public class Column {
     private String schema                   ; //dbo
     private String table                    ; //表名
     private int displaySize                 ; //display size
-    private String label                    ; //备注
+    private String comment                  ; //备注
     private String name                     ; //名称
     private int type                        ; //类型
     private String typeName                 ; //类型名称
@@ -21,9 +20,14 @@ public class Column {
     private boolean isCurrency              ; //是否是货币
     private boolean isSigned                ; //是否可以带正负号
     private boolean isAutoIncrement         ; //是否自增
+    private int incrementSeed = 1           ; //自增起始值
+    private int incrementStep = 1           ; //自增增量
     private boolean isPrimaryKey            ; //是否主键
     private boolean isGenerated             ; //是否generated
     private Object defaultValue             ; //默认值
+    private String charset                  ; //编码
+    private String collate                  ; //排序编码
+
     private int position                    ; //在表或索引中的位置
     private String order                    ; //在索引中的排序方式ASC | DESC
 
@@ -73,12 +77,12 @@ public class Column {
         return this;
     }
 
-    public String getLabel() {
-        return label;
+    public String getComment() {
+        return comment;
     }
 
-    public Column setLabel(String label) {
-        this.label = label;
+    public Column setComment(String comment) {
+        this.comment = comment;
         return this;
     }
 
@@ -241,6 +245,22 @@ public class Column {
         return before;
     }
 
+    public String getCharset() {
+        return charset;
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
+
+    public String getCollate() {
+        return collate;
+    }
+
+    public void setCollate(String collate) {
+        this.collate = collate;
+    }
+
     public void setBefore(String before) {
         this.before = before;
     }
@@ -267,7 +287,7 @@ public class Column {
         copy.setSchema(schema);
         copy.setTable(table);
         copy.setDisplaySize(displaySize);
-        copy.setLabel(label);
+        copy.setComment(comment);
         copy.setType(type);
         copy.setTypeName(typeName);
         copy.setPrecision(precision);
@@ -283,6 +303,8 @@ public class Column {
         copy.setOrder(order);
         copy.setBefore(before);
         copy.setAfter(after);
+        copy.setCharset(charset);
+        copy.setCollate(collate);
         return copy;
     }
 }

@@ -19,7 +19,6 @@
 
 package org.anyline.dao.impl.springjdbc;
 
-import javafx.scene.control.Tab;
 import org.anyline.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
 import org.anyline.dao.JDBCListener;
@@ -59,8 +58,6 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
-import javax.xml.transform.Result;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
@@ -1329,7 +1326,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				table.setSchema(BasicUtil.evl(rs.getString("TABLE_SCHEM"), schema));
 				table.setName(tableName);
 				table.setType(rs.getString("TABLE_TYPE"));
-				table.setRemarks(rs.getString("REMARKS"));
+				table.setComment(rs.getString("REMARKS"));
 				table.setTypeCat(rs.getString("TYPE_CAT"));
 				table.setTypeName(rs.getString("TYPE_NAME"));
 				table.setSelfReferencingColumn(rs.getString("SELF_REFERENCING_COL_NAME"));
@@ -1426,7 +1423,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			column.setClassName(rsm.getColumnClassName(index));
 			column.setCaseSensitive(rsm.isCaseSensitive(index));
 			column.setCurrency(rsm.isCurrency(index));
-			column.setLabel(rsm.getColumnLabel(index));
+			column.setComment(rsm.getColumnLabel(index));
 			column.setName(rsm.getColumnName(index));
 			column.setPrecision(rsm.getPrecision(index));
 			column.setScale(rsm.getScale(index));
@@ -1481,7 +1478,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			column.setPosition(BasicUtil.parseInt(rs.getString("ORDINAL_POSITION"), 0));
 			column.setAutoIncrement(BasicUtil.parseBoolean(rs.getString("IS_AUTOINCREMENT"), false));
 			column.setGenerated(BasicUtil.parseBoolean(rs.getString("IS_GENERATEDCOLUMN"), false));
-			column.setLabel(rs.getString("REMARKS"));
+			column.setComment(rs.getString("REMARKS"));
 			column.setPosition(BasicUtil.parseInt(rs.getString("ORDINAL_POSITION"), 0));
 			if (BasicUtil.isEmpty(column.getDefaultValue())) {
 				column.setDefaultValue(rs.getObject("COLUMN_DEF"));
