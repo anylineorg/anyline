@@ -38,6 +38,7 @@ import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
 import org.anyline.jdbc.exception.SQLException;
 import org.anyline.jdbc.exception.SQLUpdateException;
 import org.anyline.service.AnylineService;
@@ -1194,6 +1195,174 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 		}
 		return result;
+	}
+
+
+	public String createDropRunSQL(Table table){
+		StringBuilder builder = new StringBuilder();
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		builder.append("DROP TABLE ");
+		if(BasicUtil.isNotEmpty(catalog)){
+			BasicUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			BasicUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		BasicUtil.delimiter(builder, table.getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
+	}
+	/**
+	 * 删除列
+	 * ALTER TABLE HR_USER DROP COLUMN NAME;
+	 * @param column column
+	 * @return String
+	 */
+	public String createDropRunSQL(Column column){
+		StringBuilder builder = new StringBuilder();
+		String catalog = column.getCatalog();
+		String schema = column.getSchema();
+		builder.append("ALTER TABLE ");
+		if(BasicUtil.isNotEmpty(catalog)){
+			BasicUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			BasicUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		BasicUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" DROP COLUMN ");
+		BasicUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
+	}
+
+	/**
+	 * 修改列 ALTER TABLE   HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
+	 * @param column
+	 * @return
+	 */
+	@Override
+	public String createAlterRunSQL(Column column){
+
+		StringBuilder builder = new StringBuilder();
+		String catalog = column.getCatalog();
+		String schema = column.getSchema();
+		builder.append("ALTER TABLE ");
+		if(BasicUtil.isNotEmpty(catalog)){
+			BasicUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			BasicUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		BasicUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		Column update = column.getUpdate();
+		if(null != update){
+			builder.append(" CHANGE ");
+			BasicUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			BasicUtil.delimiter(builder, update.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			define(builder, update);
+		}
+		return builder.toString();
+	}
+	/**
+	 * 添加列
+	 * ALTER TABLE  HR_USER ADD COLUMN UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
+	 * @param column column
+	 * @return String
+	 */
+	@Override
+	public String createAddRunSQL(Column column){
+		StringBuilder builder = new StringBuilder();
+		String catalog = column.getCatalog();
+		String schema = column.getSchema();
+		builder.append("ALTER TABLE ");
+		if(BasicUtil.isNotEmpty(catalog)){
+			BasicUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			BasicUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		BasicUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		Column update = column.getUpdate();
+		if(null == update){
+			//添加列
+			builder.append(" ADD COLUMN ");
+			BasicUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			define(builder, column);
+		}
+		return builder.toString();
+	}
+
+	public void define(StringBuilder builder, Column column){
+		//数据类型
+		builder.append(column.getTypeName());
+
+		//精度
+		int precision = column.getPrecision();
+		Integer scale = column.getScale();
+		if(precision > 0){
+			builder.append("(").append(precision);
+			if(null != scale){
+				builder.append(",").append(scale);
+			}
+			builder.append(")");
+		}else if(precision == -1){
+			builder.append("(max)");
+		}
+		// 编码
+		// CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
+		String charset = column.getCharset();
+		if(BasicUtil.isNotEmpty(charset)){
+			builder.append(" CHARACTER SET ").append(charset);
+			String collate = column.getCollate();
+			if(BasicUtil.isNotEmpty(collate)){
+				builder.append(" COLLATE ").append(collate);
+			}
+		}
+		//默认值
+		Object def = column.getDefaultValue();
+		if(BasicUtil.isNotEmpty(def)){
+			builder.append(" default ");
+			boolean isNumberType = isNumberType(column);
+			if(isNumberType){
+				builder.append("'");
+			}
+			builder.append(def);
+			if(isNumberType){
+				builder.append("'");
+			}
+		}else {
+			//非空
+			if (!column.isNullable()) {
+				builder.append(" NOT NULL");
+			}
+		}
+		if(column.isOnUpdate()){
+			builder.append(" ON UPDATE CURRENT_TIMESTAMP");
+		}
+		//备注
+		String comment = column.getComment();
+		if(BasicUtil.isNotEmpty(comment)){
+			builder.append(" COMMENT '").append(comment).append("'");
+		}
+		//位置
+		Integer position = column.getPosition();;
+		if(null != position && position == 0){
+			builder.append(" FIRST");
+		}else{
+			String after = column.getAfter();
+			if(BasicUtil.isNotEmpty(after)){
+				builder.append(" AFTER").append(after);
+			}
+		}
+	}
+
+	/**
+	 * 是否同数字 或 boolean列
+	 * @param column column
+	 * @return boolean
+	 */
+	public  boolean isNumberType(Column column){
+		return false;
 	}
 
 } 
