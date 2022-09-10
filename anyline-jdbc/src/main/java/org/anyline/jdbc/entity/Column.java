@@ -1,6 +1,11 @@
 package org.anyline.jdbc.entity;
 
+import org.anyline.jdbc.listener.Listener;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
+
+import java.lang.reflect.Field;
+import java.util.List;
 
 public class Column {
 
@@ -13,7 +18,7 @@ public class Column {
     private String name                     ; //名称
     private int type                        ; //类型
     private String typeName                 ; //类型名称
-    private int precision                   ; //整个字段的长度  123.45：precision = 5 ，scale = 2
+    private int precision                   ; //整个字段的长度(包含小数部分)  123.45：precision = 5 ，scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     private Integer scale                   ; //小数部分的长度
     private boolean nullable                ; //是否可以为NULL
     private boolean caseSensitive           ; //是否区分大小写
@@ -28,16 +33,40 @@ public class Column {
     private String charset                  ; //编码
     private String collate                  ; //排序编码
 
-    private int position                    ; //在表或索引中的位置
+    private Integer position                ; //在表或索引中的位置,如果需要在第一列 设置成0
     private String order                    ; //在索引中的排序方式ASC | DESC
 
     private String after                    ; //修改列时 在表中的位置
     private String before                   ; //修改列时 在表中的位置
+    private boolean isOnUpdate              ; //是否在更新行时 更新这一列数据
 
-    private Column update;
+    private Column update                   ;
 
+    private Listener listener               ; //修改事件
+
+
+    public Column(){
+    }
+    public Column(String name){
+        this.name = name;
+    }
+    public Column(String table, String name){
+        this.table = table;
+        this.name = name;
+    }
+    public Column(String catalog, String schema, String table, String name){
+        this.catalog = catalog;
+        this.schema = schema;
+        this.table = table;
+        this.name = name;
+    }
+    public Column(String schema, String table, String name){
+        this.schema = schema;
+        this.table = table;
+        this.name = name;
+    }
     public Column update(){
-        update = new Column();
+        update = (Column) this.clone();
         return update;
     }
 
@@ -46,6 +75,7 @@ public class Column {
     }
 
     public Column setUpdate(Column update) {
+        BeanUtil.copyFieldValueNvl(update, this);
         this.update = update;
         return this;
     }
@@ -121,6 +151,11 @@ public class Column {
         this.precision = precision;
         return this;
     }
+    public Column setPrecision(int precision, int scale) {
+        this.precision = precision;
+        this.scale = scale;
+        return this;
+    }
 
     public String getSchema() {
         return schema;
@@ -167,7 +202,7 @@ public class Column {
         return this;
     }
 
-    public int getScale() {
+    public Integer getScale() {
         return scale;
     }
 
@@ -217,7 +252,7 @@ public class Column {
         this.defaultValue = defaultValue;
     }
 
-    public int getPosition() {
+    public Integer getPosition() {
         return position;
     }
 
@@ -229,12 +264,44 @@ public class Column {
         this.order = order;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(Integer position) {
         this.position = position;
     }
 
     public String getAfter() {
         return after;
+    }
+
+    public int getIncrementSeed() {
+        return incrementSeed;
+    }
+
+    public void setIncrementSeed(int incrementSeed) {
+        this.incrementSeed = incrementSeed;
+    }
+
+    public int getIncrementStep() {
+        return incrementStep;
+    }
+
+    public void setIncrementStep(int incrementStep) {
+        this.incrementStep = incrementStep;
+    }
+
+    public boolean isOnUpdate() {
+        return isOnUpdate;
+    }
+
+    public void setOnUpdate(boolean onUpdate) {
+        isOnUpdate = onUpdate;
+    }
+
+    public Listener getListener() {
+        return listener;
+    }
+
+    public void setListener(Listener listener) {
+        this.listener = listener;
     }
 
     public void setAfter(String after) {
@@ -259,6 +326,20 @@ public class Column {
 
     public void setCollate(String collate) {
         this.collate = collate;
+    }
+
+    public String getNewName() {
+        if(null != update){
+            return update.getName();
+        }
+        return null;
+    }
+
+    public void setNewName(String newName) {
+        if(null == update){
+            update();
+        }
+        update.setName(newName);
     }
 
     public void setBefore(String before) {
