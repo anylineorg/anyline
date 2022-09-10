@@ -1423,9 +1423,16 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
+		DDListener listener = column.getListener();
 		try{
-			getJdbc().update(sql);
-			result = true;
+			boolean exe = true;
+			if(null != listener){
+				exe = listener.beforeAdd(column);
+			}
+			if(exe) {
+				getJdbc().update(sql);
+				result = true;
+			}
 		}catch (Exception e){
 			e.printStackTrace();
 			result = false;
@@ -1436,7 +1443,15 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	public boolean alter(Column column){
+
+	/**
+	 * 修改列
+	 * @param column 列
+	 * @param trigger 是否触发异常事件
+	 * @return boolean
+	 */
+	private boolean alter(Column column, boolean trigger){
+
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
 		String random = null;
@@ -1446,18 +1461,36 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
+		DDListener listener = column.getListener();
 		try{
-			getJdbc().update(sql);
-			result = true;
+			boolean exe = true;
+			if(null != listener){
+				exe = listener.beforeAlter(column);
+			}
+			if(exe) {
+				getJdbc().update(sql);
+				result = true;
+			}
 		}catch (Exception e){
-			e.printStackTrace();
-			result = false;
+			if(null != listener) {
+				boolean exe = false;
+				exe = listener.afterAlterException(column, e);
+				if(exe){
+					result = alter(column, false);
+				}
+			}else{
+				e.printStackTrace();
+				result = false;
+			}
 		}
 
 		if (showSQL) {
 			log.warn("{}[update column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTable(), column.getName(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
+	}
+	public boolean alter(Column column){
+		return alter(column, true);
 	}
 	public boolean drop(Column column){
 		boolean result = false;
@@ -1470,11 +1503,14 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		DDListener listener = column.getListener();
 		try{
+			boolean exe = true;
 			if(null != listener){
-				listener.beforeDrop(column);
+				exe = listener.beforeDrop(column);
 			}
-			getJdbc().update(sql);
-			result = true;
+			if(exe) {
+				getJdbc().update(sql);
+				result = true;
+			}
 		}catch (Exception e){
 			e.printStackTrace();
 			result = false;
@@ -1498,9 +1534,16 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
+		DDListener listener = table.getListener();
 		try{
-			getJdbc().update(sql);
-			result = true;
+			boolean exe = true;
+			if(null != listener){
+				exe = listener.beforeDrop(table);
+			}
+			if(exe) {
+				getJdbc().update(sql);
+				result = true;
+			}
 		}catch (Exception e){
 			e.printStackTrace();
 			result = false;
@@ -1508,6 +1551,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 		if (showSQL) {
 			log.warn("{}[drop table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(table, result);
 		}
 		return result;
 	}

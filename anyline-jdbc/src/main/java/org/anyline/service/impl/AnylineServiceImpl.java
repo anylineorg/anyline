@@ -1629,6 +1629,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
      */
 
     public boolean save(Table table){
+        table.setService(this);
         return ddl.save(table);
     }
     /**
@@ -1661,9 +1662,6 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     public DDLService ddl = new DDLService() {
 
-        public boolean save(Table table){
-            return true;
-        }
         /**
          * 修改列  名称 数据类型 位置 默认值
          * 执行save前先调用column.update()设置修改后的属性
@@ -1690,6 +1688,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         private boolean alter(LinkedHashMap<String, Column> columns, Column column){
             boolean result = false;
+            column.setService(AnylineServiceImpl.this);
             Column original = columns.get(column.getName());
 
             Column update = column.getUpdate();
@@ -1730,17 +1729,34 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return add(columns, column);
         }
         private boolean add(LinkedHashMap<String, Column> columns, Column column){
+            column.setService(AnylineServiceImpl.this);
             boolean result =  dao.add(column);
             if(result) {
                 columns.put(column.getName(), column);
             }
             return result;
         }
+        public boolean drop(Column column){
+            column.setService(AnylineServiceImpl.this);
+            return dao.drop(column);
+        }
+
+
         public boolean drop(Table table){
+            table.setService(AnylineServiceImpl.this);
             return dao.drop(table);
         }
-        public boolean drop(Column column){
-            return dao.drop(column);
+        public boolean save(Table table){
+            table.setService(AnylineServiceImpl.this);
+            return true;
+        }
+        public boolean add(Table table){
+            table.setService(AnylineServiceImpl.this);
+            return true;
+        }
+        public boolean alter(Table table){
+            table.setService(AnylineServiceImpl.this);
+            return true;
         }
     };
 

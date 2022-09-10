@@ -1,6 +1,8 @@
 package org.anyline.jdbc.entity;
 
 import org.anyline.listener.DDListener;
+import org.anyline.listener.impl.DefaulDDtListener;
+import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
@@ -39,10 +41,11 @@ public class Column {
 
     private Column update                   ;
 
-    private DDListener listener               ; //修改事件
+    private DDListener listener             ;
 
 
     public Column(){
+        this.listener = new DefaulDDtListener();
     }
     public Column(String name){
         this(null, name);
@@ -50,14 +53,15 @@ public class Column {
     public Column(String table, String name){
         this(null, table, name);
     }
+    public Column(String schema, String table, String name){
+        this(null, schema, table, name);
+    }
     public Column(String catalog, String schema, String table, String name){
         this.catalog = catalog;
         this.schema = schema;
         this.table = table;
         this.name = name;
-    }
-    public Column(String schema, String table, String name){
-        this(null, schema, table, name);
+        this.listener = new DefaulDDtListener();
     }
     public Column update(){
         update = (Column) this.clone();
@@ -218,32 +222,36 @@ public class Column {
         return isAutoIncrement;
     }
 
-    public void setAutoIncrement(boolean autoIncrement) {
+    public Column setAutoIncrement(boolean autoIncrement) {
         isAutoIncrement = autoIncrement;
+        return this;
     }
 
     public boolean isPrimaryKey() {
         return isPrimaryKey;
     }
 
-    public void setPrimaryKey(boolean primaryKey) {
+    public Column setPrimaryKey(boolean primaryKey) {
         isPrimaryKey = primaryKey;
+        return this;
     }
 
     public boolean isGenerated() {
         return isGenerated;
     }
 
-    public void setGenerated(boolean generated) {
+    public Column setGenerated(boolean generated) {
         isGenerated = generated;
+        return this;
     }
 
     public Object getDefaultValue() {
         return defaultValue;
     }
 
-    public void setDefaultValue(Object defaultValue) {
+    public Column setDefaultValue(Object defaultValue) {
         this.defaultValue = defaultValue;
+        return this;
     }
 
     public Integer getPosition() {
@@ -254,12 +262,14 @@ public class Column {
         return order;
     }
 
-    public void setOrder(String order) {
+    public Column setOrder(String order) {
         this.order = order;
+        return this;
     }
 
-    public void setPosition(Integer position) {
+    public Column setPosition(Integer position) {
         this.position = position;
+        return this;
     }
 
     public String getAfter() {
@@ -270,36 +280,41 @@ public class Column {
         return incrementSeed;
     }
 
-    public void setIncrementSeed(int incrementSeed) {
+    public Column setIncrementSeed(int incrementSeed) {
         this.incrementSeed = incrementSeed;
+        return this;
     }
 
     public int getIncrementStep() {
         return incrementStep;
     }
 
-    public void setIncrementStep(int incrementStep) {
+    public Column setIncrementStep(int incrementStep) {
         this.incrementStep = incrementStep;
+        return this;
     }
 
     public boolean isOnUpdate() {
         return isOnUpdate;
     }
 
-    public void setOnUpdate(boolean onUpdate) {
+    public Column setOnUpdate(boolean onUpdate) {
         isOnUpdate = onUpdate;
+        return this;
     }
 
     public DDListener getListener() {
         return listener;
     }
 
-    public void setListener(DDListener listener) {
+    public Column setListener(DDListener listener) {
         this.listener = listener;
+        return this;
     }
 
-    public void setAfter(String after) {
+    public Column setAfter(String after) {
         this.after = after;
+        return this;
     }
 
     public String getBefore() {
@@ -310,16 +325,18 @@ public class Column {
         return charset;
     }
 
-    public void setCharset(String charset) {
+    public Column setCharset(String charset) {
         this.charset = charset;
+        return this;
     }
 
     public String getCollate() {
         return collate;
     }
 
-    public void setCollate(String collate) {
+    public Column setCollate(String collate) {
         this.collate = collate;
+        return this;
     }
 
     public String getNewName() {
@@ -329,15 +346,22 @@ public class Column {
         return null;
     }
 
-    public void setNewName(String newName) {
+    public Column setNewName(String newName) {
         if(null == update){
             update();
         }
         update.setName(newName);
+        return this;
     }
-
-    public void setBefore(String before) {
+    public Column setBefore(String before) {
         this.before = before;
+        return this;
+    }
+    public Column setService(AnylineService service){
+        if(null != listener){
+            listener.setService(service);
+        }
+        return this;
     }
     public String toString(){
         StringBuilder builder = new StringBuilder();

@@ -1,5 +1,9 @@
 package org.anyline.jdbc.entity;
 
+import org.anyline.listener.DDListener;
+import org.anyline.listener.impl.DefaulDDtListener;
+import org.anyline.service.AnylineService;
+
 import java.util.*;
 
 public class Table {
@@ -22,21 +26,23 @@ public class Table {
     private LinkedHashMap<String,Column> columns;
     private LinkedHashMap<String,Index> indexs  ;
     private Table update;
+    private DDListener listener             ;
 
 
     public Table(){
+        this.listener = new DefaulDDtListener();
     }
     public Table(String name){
-        this.name = name;
+        this(null, name);
     }
-    public Table(String catalog, String schema){
-        this.catalog = catalog;
-        this.schema = schema;
+    public Table(String schema, String table){
+        this(null, schema, table);
     }
     public Table(String catalog, String schema, String name){
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
+        this.listener = new DefaulDDtListener();
     }
 
     public List<Column> getPrimaryKeys(){
@@ -78,8 +84,9 @@ public class Table {
         return catalog;
     }
 
-    public void setCatalog(String catalog) {
+    public Table setCatalog(String catalog) {
         this.catalog = catalog;
+        return this;
     }
 
     public String getSchema() {
@@ -167,16 +174,18 @@ public class Table {
         return columns;
     }
 
-    public void setColumns(LinkedHashMap<String, Column> columns) {
+    public Table setColumns(LinkedHashMap<String, Column> columns) {
         this.columns = columns;
+        return this;
     }
 
     public LinkedHashMap<String, Index> getIndexs() {
         return indexs;
     }
 
-    public void setIndexs(LinkedHashMap<String, Index> indexs) {
+    public Table setIndexs(LinkedHashMap<String, Index> indexs) {
         this.indexs = indexs;
+        return this;
     }
     public Column getColumn(String name){
         return columns.get(name);
@@ -186,23 +195,41 @@ public class Table {
         return engine;
     }
 
-    public void setEngine(String engine) {
+    public Table setEngine(String engine) {
         this.engine = engine;
+        return this;
     }
 
     public String getCharset() {
         return charset;
     }
 
-    public void setCharset(String charset) {
+    public Table setCharset(String charset) {
         this.charset = charset;
+        return this;
     }
 
     public String getCollate() {
         return collate;
     }
 
-    public void setCollate(String collate) {
+    public Table setCollate(String collate) {
         this.collate = collate;
+        return this;
+    }
+
+    public DDListener getListener() {
+        return listener;
+    }
+
+    public Table setListener(DDListener listener) {
+        this.listener = listener;
+        return this;
+    }
+    public Table setService(AnylineService service){
+        if(null != listener){
+            listener.setService(service);
+        }
+        return this;
     }
 }

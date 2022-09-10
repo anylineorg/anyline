@@ -468,7 +468,6 @@ public interface AnylineService<E>{
 	public DDLService ddl();
 	public MetaDataService metadata();
 	public interface DDLService{
-		public boolean save(Table table);
 		/**
 		 * 修改列  名称 数据类型 位置 默认值
 		 * 执行save前先调用column.update()设置修改后的属性
@@ -478,8 +477,12 @@ public interface AnylineService<E>{
 		public boolean save(Column column);
 		public boolean add(Column column);
 		public boolean alter(Column column);
-		public boolean drop(Table table);
 		public boolean drop(Column column);
+
+		public boolean save(Table table);
+		public boolean add(Table table);
+		public boolean alter(Table table);
+		public boolean drop(Table table);
 	}
 	public interface MetaDataService{
 		/**
