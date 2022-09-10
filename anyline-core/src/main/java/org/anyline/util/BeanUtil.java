@@ -2647,4 +2647,40 @@ public class BeanUtil {
 		}
 		return tar;
 	}
+
+	/**
+	 * 复制copy的属性值到src(src属性值为null的情况下生效)
+	 * @param src src
+	 * @param copy copy
+	 */
+	public static void copyFieldValueNvl(Object src, Object copy){
+		List<Field> fields = ClassUtil.getFields(src.getClass());
+		for(Field field:fields){
+			Object value = getFieldValue(src, field);
+			if(null == value){
+				value = getFieldValue(copy, field);
+				setFieldValue(src, field, value);
+			}
+		}
+	}
+	public static void copyFieldValue(Object src, Object copy){
+		List<Field> fields = ClassUtil.getFields(src.getClass());
+		for(Field field:fields){
+			setFieldValue(src, field, getFieldValue(copy, field));
+		}
+	}
+	/**
+	 * 复制copy的属性值到src(copy属性值is not null的情况下生效)
+	 * @param src src
+	 * @param copy copy
+	 */
+	public static void copyFieldValueWithoutNull(Object src, Object copy){
+		List<Field> fields = ClassUtil.getFields(src.getClass());
+		for(Field field:fields){
+			Object value = getFieldValue(copy, field);
+			if(null != value){
+				setFieldValue(src, field, value);
+			}
+		}
+	}
 } 
