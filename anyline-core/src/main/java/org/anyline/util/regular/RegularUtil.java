@@ -451,6 +451,18 @@ public class RegularUtil {
 		} 
 		return null; 
 	}
+	public static List<String> fetchNumbers(String src) throws Exception{
+		List<String> numbers = null;
+		numbers = fetch(src, Regular.PATTERN.NUMBER.getCode(), Regular.MATCH_MODE.CONTAIN,0);
+		return numbers;
+	}
+	public static String fetchNumber(String src) throws Exception{
+		List<String> numbers = fetchNumbers(src);
+		if(null != numbers && numbers.size()>0){
+			return numbers.get(0);
+		}
+		return null;
+	}
 	/**
 	 * 提取双标签&lt;div&gt;content&lt;div&gt;
 	 * 依次取出p,table,div中的内容 有嵌套时只取外层 
