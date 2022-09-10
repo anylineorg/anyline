@@ -23,8 +23,8 @@ import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -115,5 +115,13 @@ public interface SQLCreater{
 	 * @return String
 	 */
 	public String concat(String ... args);
+
+
+	public String createDropRunSQL(Column column);
+	public String createAddRunSQL(Column column);
+	public String createAlterRunSQL(Column column);
+
+
+	public String createDropRunSQL(Table table);
 
 }
