@@ -56,18 +56,19 @@ public class DefaulDDtListener implements DDListener {
         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION ==  0){
             return false;
         }
+        boolean result = false;
         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION == 1){
             exeAfterException(table, column, exception);
         }else{
             //根据行数
             int rows = service.count(table.getName());
             if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION){
-                afterAlterException(table, column, rows, exception);
+                result = afterAlterException(table, column, rows, exception);
             }else{
-                exeAfterException(table, column, exception);
+                result = exeAfterException(table, column, exception);
             }
         }
-        return false;
+        return result;
     }
 
     @Override
@@ -83,10 +84,17 @@ public class DefaulDDtListener implements DDListener {
             int vol = 100;
             PageNavi navi = new PageNaviImpl();
             List<Column> pks = table.getPrimaryKeys();
+            if(pks.size() == 0){
+                if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)){
+                    //没有主键
+                    return false;
+                }
+            }
             List<String> keys = new ArrayList<>();
             for (Column pk:pks){
                 keys.add(pk.getName());
             }
+
             while (true){
                 navi.setCurPage(page);
                 DataSet set = service.querys(table.getName(), navi);

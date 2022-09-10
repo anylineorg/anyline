@@ -1700,7 +1700,6 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         private boolean alter(Table table, Column column) throws Exception{
             boolean result = false;
             LinkedHashMap<String, Column> columns = table.getColumns();
-            column.setService(AnylineServiceImpl.this);
             Column original = columns.get(column.getName());
 
             Column update = column.getUpdate();
@@ -1712,6 +1711,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                 }
             }
             original.setUpdate(update);
+            original.setService(AnylineServiceImpl.this);
             result = dao.alter(table, original);
             if(result) {
                 columns.remove(original.getName());

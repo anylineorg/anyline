@@ -1,5 +1,6 @@
 package org.anyline.jdbc.entity;
 
+import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.listener.DDListener;
 import org.anyline.listener.impl.DefaulDDtListener;
 import org.anyline.service.AnylineService;
@@ -229,6 +230,12 @@ public class Table {
     public Table setService(AnylineService service){
         if(null != listener){
             listener.setService(service);
+        }
+        return this;
+    }
+    public Table setCreater(SQLCreater creater){
+        if(null != listener){
+            listener.setCreater(creater);
         }
         return this;
     }

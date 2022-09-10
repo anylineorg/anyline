@@ -453,7 +453,7 @@ public class RegularUtil {
 	}
 	public static List<String> fetchNumbers(String src) throws Exception{
 		List<String> numbers = null;
-		numbers = fetch(src, Regular.PATTERN.NUMBER.getCode(), Regular.MATCH_MODE.CONTAIN,0);
+		numbers = fetch(src, "(\\-|\\+)?\\d+(\\.\\d+)?", Regular.MATCH_MODE.CONTAIN,0);
 		return numbers;
 	}
 	public static String fetchNumber(String src) throws Exception{

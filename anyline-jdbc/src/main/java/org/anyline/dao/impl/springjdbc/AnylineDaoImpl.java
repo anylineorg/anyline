@@ -1470,16 +1470,18 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
+			log.warn("{}[DDL 执行异常][尝试修正数据]",random);
 			if(trigger && null != listener) {
 				boolean exe = false;
 				if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0){
 					exe = listener.afterAlterException(table, column, e);
 				}
-
+				log.warn("{}[DDL 执行异常][尝试修正数据][修正结果:{}]",random, exe);
 				if(exe){
 					result = alter(table, column, false);
 				}
 			}else{
+				log.warn("{}[DDL 执行异常][中断执行]",random);
 				result = false;
 				throw e;
 			}

@@ -1199,6 +1199,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 
 	public String createDropRunSQL(Table table){
+		table.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
@@ -1219,6 +1220,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @return String
 	 */
 	public String createDropRunSQL(Column column){
+		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		String catalog = column.getCatalog();
 		String schema = column.getSchema();
@@ -1242,7 +1244,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 */
 	@Override
 	public String createAlterRunSQL(Column column){
-
+		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		String catalog = column.getCatalog();
 		String schema = column.getSchema();
@@ -1271,6 +1273,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 */
 	@Override
 	public String createAddRunSQL(Column column){
+		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		String catalog = column.getCatalog();
 		String schema = column.getSchema();
@@ -1369,6 +1372,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(
 				clazz.contains("int")
 				|| clazz.contains("integer")
+				|| clazz.contains("long")
 				|| clazz.contains("decimal")
 				|| clazz.contains("float")
 				|| clazz.contains("double")
@@ -1382,7 +1386,15 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				String type = column.getTypeName();
 				if(null != type){
 					type = type.toLowerCase();
-					if(type.equals("bit") || type.equals("bool")){
+					if(type.contains("int")
+							||type.contains("float")
+							||type.contains("double")
+							||type.contains("short")
+							||type.contains("long")
+							||type.contains("decimal")
+							||type.contains("numeric")
+							||type.contains("timestamp")
+					){
 						return true;
 					}
 				}
@@ -1413,6 +1425,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 	@Override
 	public boolean isCharColumn(Column column) {
-		return !isNumberColumn(column) && isBooleanColumn(column);
+		return !isNumberColumn(column) && !isBooleanColumn(column);
 	}
 }
