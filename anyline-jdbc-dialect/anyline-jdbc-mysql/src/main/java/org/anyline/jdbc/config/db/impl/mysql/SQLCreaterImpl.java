@@ -105,12 +105,12 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 			Object def = column.getDefaultValue();
 			if(BasicUtil.isNotEmpty(def)){
 				builder.append(" default ");
-				boolean isNumberType = isNumberType(column);
-				if(isNumberType){
+				boolean isCharColumn = isCharColumn(column);
+				if(isCharColumn){
 					builder.append("'");
 				}
 				builder.append(def);
-				if(isNumberType){
+				if(isCharColumn){
 					builder.append("'");
 				}
 			}else {

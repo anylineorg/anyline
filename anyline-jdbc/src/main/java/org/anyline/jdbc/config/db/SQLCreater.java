@@ -124,4 +124,18 @@ public interface SQLCreater{
 
 	public String createDropRunSQL(Table table);
 
+	/**
+	 * 是否是字符类型
+	 * 决定值是否需要加单引号
+	 * number boolean 返回false
+	 * 其他返回true
+	 * @param column 列
+	 * @return boolean
+	 */
+	public boolean isCharColumn(Column column);
+
+	public boolean isNumberColumn(Column column);
+
+	public boolean isBooleanColumn(Column column);
+
 }
