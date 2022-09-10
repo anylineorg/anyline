@@ -19,6 +19,8 @@
 
 package org.anyline.util.regular; 
  
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import java.util.List; 
  
 public interface Regular { 
@@ -177,6 +179,10 @@ public interface Regular {
 		,LOWER_CHAR{
 			public String getName(){return "26个英文字母的小写组成的字符串";}
 			public String getCode(){return "^[a-z]+$";}
+		}
+		,NUMBER{
+			public String getName(){return  "数字";}
+			public String getCode(){return "^(\\-|\\+)?\\d+(\\.\\d+)?$";}
 		}
 		,INTEGER{
 			public String getName(){return "整数 ";}
