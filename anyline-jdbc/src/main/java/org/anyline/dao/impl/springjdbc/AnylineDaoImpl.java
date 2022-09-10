@@ -1447,7 +1447,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * @return boolean
 	 * @throws Exception SQL异常
 	 */
-	private boolean alter(Column column, boolean trigger) throws Exception{
+	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
 
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
@@ -1472,9 +1472,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
 			if(trigger && null != listener) {
 				boolean exe = false;
-				exe = listener.afterAlterException(column, e);
+				if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0){
+					exe = listener.afterAlterException(table, column, e);
+				}
+
 				if(exe){
-					result = alter(column, false);
+					result = alter(table, column, false);
 				}
 			}else{
 				result = false;
@@ -1487,8 +1490,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	public boolean alter(Column column) throws Exception{
-		return alter(column, true);
+	public boolean alter(Table table, Column column) throws Exception{
+		return alter(table, column, true);
 	}
 	public boolean drop(Column column) throws Exception{
 		boolean result = false;

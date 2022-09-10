@@ -139,6 +139,6 @@ public interface AnylineDao<E>{
 	public boolean alter(Table column) throws Exception;
 
 	public boolean add(Column column) throws Exception;
-	public boolean alter(Column column) throws Exception;
+	public boolean alter(Table table, Column column) throws Exception;
 	public boolean drop(Column column) throws Exception;
 } 

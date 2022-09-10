@@ -1674,19 +1674,20 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         @Override
         public boolean save(Column column) throws Exception{
             boolean result = false;
-            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTable(), true);
+            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTable());
+            LinkedHashMap<String, Column> columns = table.getColumns();
             Column original = columns.get(column.getName());
             if(null == original){
                 result = add(columns, column);
             }else {
-                result = alter(columns, column);
+                result = alter(table, column);
             }
             return result;
         }
         @Override
         public boolean alter(Column column) throws Exception{
-            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTable(), true);
-            return alter(columns, column);
+            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTable());
+            return alter(table, column);
         }
 
         /**
@@ -1696,8 +1697,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
          * @return boolean
          * @throws Exception sql异常
          */
-        private boolean alter(LinkedHashMap<String, Column> columns, Column column) throws Exception{
+        private boolean alter(Table table, Column column) throws Exception{
             boolean result = false;
+            LinkedHashMap<String, Column> columns = table.getColumns();
             column.setService(AnylineServiceImpl.this);
             Column original = columns.get(column.getName());
 
@@ -1710,7 +1712,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                 }
             }
             original.setUpdate(update);
-            result = dao.alter(original);
+            result = dao.alter(table, original);
             if(result) {
                 columns.remove(original.getName());
 

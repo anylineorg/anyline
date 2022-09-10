@@ -1322,12 +1322,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		Object def = column.getDefaultValue();
 		if(BasicUtil.isNotEmpty(def)){
 			builder.append(" default ");
-			boolean isNumberType = isNumberType(column);
-			if(isNumberType){
+			boolean isCharColumn = isCharColumn(column);
+			if(isCharColumn){
 				builder.append("'");
 			}
 			builder.append(def);
-			if(isNumberType){
+			if(isCharColumn){
 				builder.append("'");
 			}
 		}else {
@@ -1357,12 +1357,62 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	/**
-	 * 是否同数字 或 boolean列
+	 * 是否同数字
 	 * @param column column
 	 * @return boolean
 	 */
-	public  boolean isNumberType(Column column){
+	@Override
+	public  boolean isNumberColumn(Column column){
+		String clazz = column.getClassName();
+		if(null != clazz){
+			clazz = clazz.toLowerCase();
+			if(
+				clazz.contains("int")
+				|| clazz.contains("integer")
+				|| clazz.contains("decimal")
+				|| clazz.contains("float")
+				|| clazz.contains("double")
+				|| clazz.contains("timestamp")
+				//|| clazz.contains("bit")
+				|| clazz.contains("short")
+			){
+				return true;
+			}else{
+				//如果没有同步法数据库，直接生成column可能只设置了type Name
+				String type = column.getTypeName();
+				if(null != type){
+					type = type.toLowerCase();
+					if(type.equals("bit") || type.equals("bool")){
+						return true;
+					}
+				}
+			}
+		}
 		return false;
 	}
 
-} 
+	@Override
+	public boolean isBooleanColumn(Column column) {
+		String clazz = column.getClassName();
+		if(null != clazz){
+			clazz = clazz.toLowerCase();
+			if(clazz.contains("boolean")){
+				return true;
+			}
+		}else{
+			//如果没有同步法数据库，直接生成column可能只设置了type Name
+			String type = column.getTypeName();
+			if(null != type){
+				type = type.toLowerCase();
+				if(type.equals("bit") || type.equals("bool")){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	@Override
+	public boolean isCharColumn(Column column) {
+		return !isNumberColumn(column) && isBooleanColumn(column);
+	}
+}
