@@ -1626,10 +1626,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
      * 执行save前先调用column.update()设置修改后的属性
      * column.update().setName().setDefaultValue().setAfter()....
      * @param column column
+     * @throws Exception SQL异常
      */
 
-    public boolean save(Table table){
-        table.setService(this);
+    public boolean save(Table table) throws Exception{
         return ddl.save(table);
     }
     /**
@@ -1637,14 +1637,15 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
      * 执行save前先调用column.update()设置修改后的属性
      * column.update().setName().setDefaultValue().setAfter()....
      * @param column column
+     * @throws Exception SQL异常
      */
-    public boolean save(Column column){
+    public boolean save(Column column) throws Exception{
         return ddl.save(column);
     }
-    public boolean drop(Table table){
+    public boolean drop(Table table) throws Exception{
         return ddl.drop(table);
     }
-    public boolean drop(Column column){
+    public boolean drop(Column column) throws Exception{
         return ddl.drop(column);
     }
 
@@ -1667,10 +1668,11 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
          * 执行save前先调用column.update()设置修改后的属性
          * column.update().setName().setDefaultValue().setAfter()....
          * @param column column
+         * @throws Exception SQL异常
          */
 
         @Override
-        public boolean save(Column column){
+        public boolean save(Column column) throws Exception{
             boolean result = false;
             LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTable(), true);
             Column original = columns.get(column.getName());
@@ -1682,11 +1684,19 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return result;
         }
         @Override
-        public boolean alter(Column column){
+        public boolean alter(Column column) throws Exception{
             LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTable(), true);
             return alter(columns, column);
         }
-        private boolean alter(LinkedHashMap<String, Column> columns, Column column){
+
+        /**
+         * 修改列
+         * @param columns 表中所有的列
+         * @param column 修改目标
+         * @return boolean
+         * @throws Exception sql异常
+         */
+        private boolean alter(LinkedHashMap<String, Column> columns, Column column) throws Exception{
             boolean result = false;
             column.setService(AnylineServiceImpl.this);
             Column original = columns.get(column.getName());
@@ -1700,18 +1710,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                 }
             }
             original.setUpdate(update);
-            DDListener listener = column.getListener();
-            if(null != listener){
-                listener.setService(AnylineServiceImpl.this);
-                boolean exe = listener.beforeAlter(column);
-                if(!exe){
-                    return result;
-                }
-            }
             result = dao.alter(original);
-            if(null != listener){
-                listener.afterAlter(column, result);
-            }
             if(result) {
                 columns.remove(original.getName());
 
@@ -1724,11 +1723,11 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public boolean add(Column column){
+        public boolean add(Column column) throws Exception{
             LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTable(), true);
             return add(columns, column);
         }
-        private boolean add(LinkedHashMap<String, Column> columns, Column column){
+        private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{
             column.setService(AnylineServiceImpl.this);
             boolean result =  dao.add(column);
             if(result) {
@@ -1736,25 +1735,25 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
             return result;
         }
-        public boolean drop(Column column){
+        public boolean drop(Column column) throws Exception{
             column.setService(AnylineServiceImpl.this);
             return dao.drop(column);
         }
 
 
-        public boolean drop(Table table){
+        public boolean drop(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
             return dao.drop(table);
         }
-        public boolean save(Table table){
+        public boolean save(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
             return true;
         }
-        public boolean add(Table table){
+        public boolean add(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
             return true;
         }
-        public boolean alter(Table table){
+        public boolean alter(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
             return true;
         }

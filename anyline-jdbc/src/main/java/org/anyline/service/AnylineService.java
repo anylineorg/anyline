@@ -473,16 +473,19 @@ public interface AnylineService<E>{
 		 * 执行save前先调用column.update()设置修改后的属性
 		 * column.update().setName().setDefaultValue().setAfter()....
 		 * @param column column
+		 * @throws Exception SQL异常
 		 */
-		public boolean save(Column column);
-		public boolean add(Column column);
-		public boolean alter(Column column);
-		public boolean drop(Column column);
+		public boolean save(Column column) throws Exception;
+		public boolean add(Column column) throws Exception;
+		public boolean alter(Column column) throws Exception;
 
-		public boolean save(Table table);
-		public boolean add(Table table);
-		public boolean alter(Table table);
-		public boolean drop(Table table);
+
+		public boolean drop(Column column) throws Exception;
+
+		public boolean save(Table table) throws Exception;
+		public boolean add(Table table) throws Exception;
+		public boolean alter(Table table) throws Exception;
+		public boolean drop(Table table) throws Exception;
 	}
 	public interface MetaDataService{
 		/**

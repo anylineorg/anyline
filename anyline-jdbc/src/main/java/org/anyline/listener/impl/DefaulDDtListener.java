@@ -34,6 +34,11 @@ public class DefaulDDtListener implements DDListener {
     }
 
     @Override
+    public boolean afterAlterException(Column column, Exception exception) {
+        return false;
+    }
+
+    @Override
     public boolean beforeDrop(Column column) {
         return true;
     }

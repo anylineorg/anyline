@@ -1414,7 +1414,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return columns;
 	}
-	public boolean add(Column column){
+	public boolean add(Column column) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
 		String random = null;
@@ -1424,18 +1424,14 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
 		DDListener listener = column.getListener();
-		try{
-			boolean exe = true;
-			if(null != listener){
-				exe = listener.beforeAdd(column);
-			}
-			if(exe) {
-				getJdbc().update(sql);
-				result = true;
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-			result = false;
+
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeAdd(column);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
 		}
 
 		if (showSQL) {
@@ -1449,8 +1445,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * @param column 列
 	 * @param trigger 是否触发异常事件
 	 * @return boolean
+	 * @throws Exception SQL异常
 	 */
-	private boolean alter(Column column, boolean trigger){
+	private boolean alter(Column column, boolean trigger) throws Exception{
 
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
@@ -1472,15 +1469,16 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				result = true;
 			}
 		}catch (Exception e){
-			if(null != listener) {
+			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
+			if(trigger && null != listener) {
 				boolean exe = false;
 				exe = listener.afterAlterException(column, e);
 				if(exe){
 					result = alter(column, false);
 				}
 			}else{
-				e.printStackTrace();
 				result = false;
+				throw e;
 			}
 		}
 
@@ -1489,10 +1487,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	public boolean alter(Column column){
+	public boolean alter(Column column) throws Exception{
 		return alter(column, true);
 	}
-	public boolean drop(Column column){
+	public boolean drop(Column column) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
 		String sql = SQLCreaterUtil.getCreater(getJdbc()).createDropRunSQL(column);
@@ -1502,18 +1500,13 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
 		DDListener listener = column.getListener();
-		try{
-			boolean exe = true;
-			if(null != listener){
-				exe = listener.beforeDrop(column);
-			}
-			if(exe) {
-				getJdbc().update(sql);
-				result = true;
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-			result = false;
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(column);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
 		}
 		if (showSQL) {
 			log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTable(), column.getName(), result, System.currentTimeMillis() - fr);
@@ -1525,7 +1518,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public boolean drop(Table table) {
+	public boolean drop(Table table)  throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
 		String sql = SQLCreaterUtil.getCreater(getJdbc()).createDropRunSQL(table);
@@ -1535,18 +1528,13 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
 		DDListener listener = table.getListener();
-		try{
-			boolean exe = true;
-			if(null != listener){
-				exe = listener.beforeDrop(table);
-			}
-			if(exe) {
-				getJdbc().update(sql);
-				result = true;
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-			result = false;
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(table);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
 		}
 
 		if (showSQL) {
@@ -1557,6 +1545,17 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
+
+	@Override
+	public boolean add(Table column) throws Exception {
+		return false;
+	}
+
+	@Override
+	public boolean alter(Table column) throws Exception {
+		return false;
+	}
+
 	private Column column(Column column, SqlRowSetMetaData rsm, int index){
 		if(null == column){
 			column = new Column();
