@@ -1,11 +1,8 @@
 package org.anyline.jdbc.entity;
 
-import org.anyline.jdbc.listener.Listener;
+import org.anyline.listener.DDListener;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
-
-import java.lang.reflect.Field;
-import java.util.List;
 
 public class Column {
 
@@ -42,17 +39,16 @@ public class Column {
 
     private Column update                   ;
 
-    private Listener listener               ; //修改事件
+    private DDListener listener               ; //修改事件
 
 
     public Column(){
     }
     public Column(String name){
-        this.name = name;
+        this(null, name);
     }
     public Column(String table, String name){
-        this.table = table;
-        this.name = name;
+        this(null, table, name);
     }
     public Column(String catalog, String schema, String table, String name){
         this.catalog = catalog;
@@ -61,9 +57,7 @@ public class Column {
         this.name = name;
     }
     public Column(String schema, String table, String name){
-        this.schema = schema;
-        this.table = table;
-        this.name = name;
+        this(null, schema, table, name);
     }
     public Column update(){
         update = (Column) this.clone();
@@ -296,11 +290,11 @@ public class Column {
         isOnUpdate = onUpdate;
     }
 
-    public Listener getListener() {
+    public DDListener getListener() {
         return listener;
     }
 
-    public void setListener(Listener listener) {
+    public void setListener(DDListener listener) {
         this.listener = listener;
     }
 

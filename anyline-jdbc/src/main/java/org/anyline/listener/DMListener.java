@@ -15,17 +15,17 @@
  *
  *
  */
-package org.anyline.dao;
+package org.anyline.listener;
 
+import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.run.RunSQL;
 
 import java.util.List;
-import java.util.Map;
 
-public interface JDBCListener {
+public interface DMListener {
 
     /**
      * 统计总记录数之前调用

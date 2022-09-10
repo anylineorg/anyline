@@ -36,7 +36,7 @@ import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
-import org.anyline.jdbc.listener.Listener;
+import org.anyline.listener.DDListener;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
@@ -44,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
@@ -1702,8 +1701,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                 }
             }
             original.setUpdate(update);
-            Listener listener = column.getListener();
+            DDListener listener = column.getListener();
             if(null != listener){
+                listener.setService(AnylineServiceImpl.this);
                 boolean exe = listener.beforeAlter(column);
                 if(!exe){
                     return result;

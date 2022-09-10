@@ -21,7 +21,7 @@ package org.anyline.dao.impl.springjdbc;
 
 import org.anyline.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
-import org.anyline.dao.JDBCListener;
+import org.anyline.listener.DMListener;
 import org.anyline.dao.impl.BatchInsertStore;
 import org.anyline.entity.*;
 import org.anyline.jdbc.config.ConfigParser;
@@ -38,6 +38,7 @@ import org.anyline.jdbc.entity.Index;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.jdbc.exception.SQLQueryException;
 import org.anyline.jdbc.exception.SQLUpdateException;
+import org.anyline.listener.DDListener;
 import org.anyline.jdbc.util.SQLCreaterUtil;
 import org.anyline.util.AdapterProxy;
 import org.anyline.util.BasicUtil;
@@ -70,7 +71,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	protected JdbcTemplate jdbc;
 
 	@Autowired(required=false)
-	protected JDBCListener listener;
+	protected DMListener listener;
 
 	public JdbcTemplate getJdbc(){
 		return jdbc;
@@ -1467,16 +1468,22 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn("{}[txt:\n{}\n]",random,sql);
 		}
+		DDListener listener = column.getListener();
 		try{
+			if(null != listener){
+				listener.beforeDrop(column);
+			}
 			getJdbc().update(sql);
 			result = true;
 		}catch (Exception e){
 			e.printStackTrace();
 			result = false;
 		}
-
 		if (showSQL) {
 			log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTable(), column.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(column, result);
 		}
 		return result;
 	}
