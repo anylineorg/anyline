@@ -1413,6 +1413,97 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return columns;
 	}
+	public boolean add(Column column){
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String random = null;
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).createAddRunSQL(column);
+		if(showSQL){
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		try{
+			getJdbc().update(sql);
+			result = true;
+		}catch (Exception e){
+			e.printStackTrace();
+			result = false;
+		}
+
+		if (showSQL) {
+			log.warn("{}[add column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTable(), column.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+	public boolean alter(Column column){
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String random = null;
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).createAlterRunSQL(column);
+
+		if(showSQL){
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		try{
+			getJdbc().update(sql);
+			result = true;
+		}catch (Exception e){
+			e.printStackTrace();
+			result = false;
+		}
+
+		if (showSQL) {
+			log.warn("{}[update column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTable(), column.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+	public boolean drop(Column column){
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).createDropRunSQL(column);
+		String random = null;
+		if(showSQL){
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		try{
+			getJdbc().update(sql);
+			result = true;
+		}catch (Exception e){
+			e.printStackTrace();
+			result = false;
+		}
+
+		if (showSQL) {
+			log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTable(), column.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean drop(Table table) {
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).createDropRunSQL(table);
+		String random = null;
+		if(showSQL){
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		try{
+			getJdbc().update(sql);
+			result = true;
+		}catch (Exception e){
+			e.printStackTrace();
+			result = false;
+		}
+
+		if (showSQL) {
+			log.warn("{}[drop table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
 	private Column column(Column column, SqlRowSetMetaData rsm, int index){
 		if(null == column){
 			column = new Column();
@@ -1569,6 +1660,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return indexs;
 	}
+
+
 	/**
 	 * 参数日志格式化
 	 * @param params params

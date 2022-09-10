@@ -36,6 +36,7 @@ import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
+import org.anyline.jdbc.listener.Listener;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
@@ -1621,13 +1622,128 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return list;
     }
 
+    /**
+     * 修改列  名称 数据类型 位置 默认值
+     * 执行save前先调用column.update()设置修改后的属性
+     * column.update().setName().setDefaultValue().setAfter()....
+     * @param column column
+     */
+
+    public boolean save(Table table){
+        return ddl.save(table);
+    }
+    /**
+     * 修改列  名称 数据类型 位置 默认值
+     * 执行save前先调用column.update()设置修改后的属性
+     * column.update().setName().setDefaultValue().setAfter()....
+     * @param column column
+     */
+    public boolean save(Column column){
+        return ddl.save(column);
+    }
+    public boolean drop(Table table){
+        return ddl.drop(table);
+    }
+    public boolean drop(Column column){
+        return ddl.drop(column);
+    }
+
 
 
     private static Map<String,DataRow> cache_metadata = new HashMap<>();
     private static Map<String,DataRow> cache_metadatas = new HashMap<>();
+
     public MetaDataService metadata(){
         return metadata;
     }
+    public DDLService ddl(){
+        return ddl;
+    }
+
+    public DDLService ddl = new DDLService() {
+
+        public boolean save(Table table){
+            return true;
+        }
+        /**
+         * 修改列  名称 数据类型 位置 默认值
+         * 执行save前先调用column.update()设置修改后的属性
+         * column.update().setName().setDefaultValue().setAfter()....
+         * @param column column
+         */
+
+        @Override
+        public boolean save(Column column){
+            boolean result = false;
+            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTable(), true);
+            Column original = columns.get(column.getName());
+            if(null == original){
+                result = add(columns, column);
+            }else {
+                result = alter(columns, column);
+            }
+            return result;
+        }
+        @Override
+        public boolean alter(Column column){
+            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTable(), true);
+            return alter(columns, column);
+        }
+        private boolean alter(LinkedHashMap<String, Column> columns, Column column){
+            boolean result = false;
+            Column original = columns.get(column.getName());
+
+            Column update = column.getUpdate();
+            if(null == update){
+                update = (Column) column.clone();
+                String newName = column.getNewName();
+                if(BasicUtil.isNotEmpty(newName)){
+                    update.setName(newName);
+                }
+            }
+            original.setUpdate(update);
+            Listener listener = column.getListener();
+            if(null != listener){
+                boolean exe = listener.beforeAlter(column);
+                if(!exe){
+                    return result;
+                }
+            }
+            result = dao.alter(original);
+            if(null != listener){
+                listener.afterAlter(column, result);
+            }
+            if(result) {
+                columns.remove(original.getName());
+
+                BeanUtil.copyFieldValueWithoutNull(original, update);
+                original.setUpdate(update);
+                BeanUtil.copyFieldValue(column, original);
+                columns.put(original.getName(), original);
+            }
+            return result;
+        }
+
+        @Override
+        public boolean add(Column column){
+            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTable(), true);
+            return add(columns, column);
+        }
+        private boolean add(LinkedHashMap<String, Column> columns, Column column){
+            boolean result =  dao.add(column);
+            if(result) {
+                columns.put(column.getName(), column);
+            }
+            return result;
+        }
+        public boolean drop(Table table){
+            return dao.drop(table);
+        }
+        public boolean drop(Column column){
+            return dao.drop(column);
+        }
+    };
+
     public MetaDataService metadata = new MetaDataService() {
         @Override
         public List<Table> tables(String catalog, String schema, String name, String types) {
@@ -1734,6 +1850,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
             return columns;
         }
+
     };
 
 

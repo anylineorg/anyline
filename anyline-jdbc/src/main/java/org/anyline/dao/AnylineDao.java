@@ -133,4 +133,10 @@ public interface AnylineDao<E>{
 	public LinkedHashMap<String,Column> columns(String table);
 	public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table);
 	public LinkedHashMap<String, Index>  index(Table table);
+
+	public boolean drop(Table table);
+
+	public boolean add(Column column);
+	public boolean alter(Column column);
+	public boolean drop(Column column);
 } 
