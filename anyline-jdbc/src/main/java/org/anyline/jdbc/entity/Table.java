@@ -24,6 +24,21 @@ public class Table {
     private Table update;
 
 
+    public Table(){
+    }
+    public Table(String name){
+        this.name = name;
+    }
+    public Table(String catalog, String schema){
+        this.catalog = catalog;
+        this.schema = schema;
+    }
+    public Table(String catalog, String schema, String name){
+        this.catalog = catalog;
+        this.schema = schema;
+        this.name = name;
+    }
+
     public List<Column> getPrimaryKeys(){
         List<Column> pks = new ArrayList<>();
         for(Column column:columns.values()){
