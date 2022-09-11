@@ -21,6 +21,7 @@ package org.anyline.dao.impl.springjdbc;
 
 import org.anyline.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
+import org.anyline.exception.AnylineException;
 import org.anyline.listener.DMListener;
 import org.anyline.dao.impl.BatchInsertStore;
 import org.anyline.entity.*;
@@ -1495,6 +1496,14 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean alter(Table table, Column column) throws Exception{
 		return alter(table, column, true);
 	}
+	public boolean alter(Column column) throws Exception{
+		List<Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTable(), "TABLE");
+		if(tables.size() ==0){
+			throw new AnylineException("表不存在:"+column.getTable());
+		}else {
+			return alter(tables.get(0), column, true);
+		}
+	}
 	public boolean drop(Column column) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
@@ -1552,12 +1561,36 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public boolean add(Table column) throws Exception {
-		return false;
+	public boolean create(Table table) throws Exception {
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).createAddRunSQL(table);
+		String random = null;
+		if(showSQL){
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = table.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(table);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (showSQL) {
+			log.warn("{}[create table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(table, result);
+		}
+		return result;
 	}
 
 	@Override
-	public boolean alter(Table column) throws Exception {
+	public boolean alter(Table table) throws Exception {
 		return false;
 	}
 

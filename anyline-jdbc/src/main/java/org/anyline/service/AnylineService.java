@@ -469,6 +469,12 @@ public interface AnylineService<E>{
 	public MetaDataService metadata();
 	public interface DDLService{
 		/**
+		 * 列是否存在
+		 * @param table table
+		 * @return boolean
+		 */
+		public boolean exists(Column column);
+		/**
 		 * 修改列  名称 数据类型 位置 默认值
 		 * 执行save前先调用column.update()设置修改后的属性
 		 * column.update().setName().setDefaultValue().setAfter()....
@@ -478,12 +484,11 @@ public interface AnylineService<E>{
 		public boolean save(Column column) throws Exception;
 		public boolean add(Column column) throws Exception;
 		public boolean alter(Column column) throws Exception;
-
-
 		public boolean drop(Column column) throws Exception;
 
+		public boolean exists(Table table);
 		public boolean save(Table table) throws Exception;
-		public boolean add(Table table) throws Exception;
+		public boolean create(Table table) throws Exception;
 		public boolean alter(Table table) throws Exception;
 		public boolean drop(Table table) throws Exception;
 	}

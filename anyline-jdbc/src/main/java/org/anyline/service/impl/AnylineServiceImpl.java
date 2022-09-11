@@ -1663,6 +1663,21 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     public DDLService ddl = new DDLService() {
 
+        @Override
+        public boolean exists(Column column) {
+            try {
+                Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTable());
+                if(null != table){
+                    if(table.getColumns().containsKey(column.getName())){
+                        return true;
+                    }
+                }
+            }catch (Exception e){
+
+            }
+            return false;
+        }
+
         /**
          * 修改列  名称 数据类型 位置 默认值
          * 执行save前先调用column.update()设置修改后的属性
@@ -1742,18 +1757,29 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return dao.drop(column);
         }
 
+        @Override
+        public boolean exists(Table table) {
+            if(null != metadata.table(table.getCatalog(), table.getSchema(), table.getName())){
+                return true;
+            }
+            return false;
+        }
+
 
         public boolean drop(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
             return dao.drop(table);
         }
         public boolean save(Table table) throws Exception{
-            table.setService(AnylineServiceImpl.this);
-            return true;
+            if(exists(table)){
+                return alter(table);
+            }else{
+                return create(table);
+            }
         }
-        public boolean add(Table table) throws Exception{
+        public boolean create(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
-            return true;
+            return dao.create(table);
         }
         public boolean alter(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);

@@ -190,7 +190,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		builder.append("DELETE FROM ").append(table).append(" WHERE ");
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
-			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			if(cons.size() > 1){
 				builder.append(" IN(");
 				int idx = 0;
@@ -211,7 +211,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				throw new SQLUpdateException("删除异常:删除条件为空,delete方法不支持删除整表操作.");
 			}
 		}else{
-			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			builder.append("=?");
 		}
 		run.addValues(key, values);
@@ -245,7 +245,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}
 				String key = keys.get(i);
 
-				BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
+				SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ? ");
 				Object value = null;
 				if(obj instanceof DataRow){
 					value = ((DataRow)obj).get(key);
@@ -399,7 +399,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					value = BeanUtil.getFieldValue(obj, key);
 				}
 			}
-			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 				String str = value.toString();
 				value = str.substring(2, str.length()-1);
@@ -480,7 +480,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int keySize = keys.size();
 		for(int i=0; i<keySize; i++){
 			String key = keys.get(i);
-			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			if(i<keySize-1){
 				builder.append(",");
 			}
@@ -514,7 +514,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int keySize = keys.size();
 		for(int i=0; i<keySize; i++){
 			String key = keys.get(i);
-			BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
+			SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo());
 			if(i<keySize-1){
 				builder.append(",");
 			}
@@ -675,9 +675,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
 
-					BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 				}else{
-					BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
@@ -693,7 +693,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
 			for(String pk:primaryKeys){
 				builder.append(" AND ");
-				BasicUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
+				SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
 				updateColumns.add(pk);
 				if(AdapterProxy.hasAdapter()){
 					Field field = AdapterProxy.field(obj.getClass(), pk);
@@ -737,9 +737,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
-					BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
 				}else{
-					BasicUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
@@ -755,7 +755,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
 			for(String pk:primaryKeys){
 				builder.append(" AND ");
-				BasicUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
+				SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
 				updateColumns.add(pk);
 				//values.add(row.get(pk));
 				run.addValues(pk, row.get(pk));
@@ -1002,11 +1002,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		table = DataSourceHolder.parseDataSource(table, null);
 		if(table.contains(".")){
 			String tmps[] = table.split("\\.");
-			table = BasicUtil.delimiter(tmps[0],getDelimiterFr() , getDelimiterTo())
+			table = SQLUtil.delimiter(tmps[0],getDelimiterFr() , getDelimiterTo())
 					+ "."
-					+ BasicUtil.delimiter(tmps[1],getDelimiterFr() , getDelimiterTo());
+					+ SQLUtil.delimiter(tmps[1],getDelimiterFr() , getDelimiterTo());
 		}else{
-			table = BasicUtil.delimiter(table,getDelimiterFr() , getDelimiterTo());
+			table = SQLUtil.delimiter(table,getDelimiterFr() , getDelimiterTo());
 		}
 		return table;
 	}
@@ -1205,12 +1205,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String schema = table.getSchema();
 		builder.append("DROP TABLE ");
 		if(BasicUtil.isNotEmpty(catalog)){
-			BasicUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
 		if(BasicUtil.isNotEmpty(schema)){
-			BasicUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
-		BasicUtil.delimiter(builder, table.getName(), getDelimiterFr(), getDelimiterTo());
+		SQLUtil.delimiter(builder, table.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();
 	}
 	/**
@@ -1226,14 +1226,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String schema = column.getSchema();
 		builder.append("ALTER TABLE ");
 		if(BasicUtil.isNotEmpty(catalog)){
-			BasicUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
 		if(BasicUtil.isNotEmpty(schema)){
-			BasicUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
-		BasicUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		SQLUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" DROP COLUMN ");
-		BasicUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();
 	}
 
@@ -1250,17 +1250,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String schema = column.getSchema();
 		builder.append("ALTER TABLE ");
 		if(BasicUtil.isNotEmpty(catalog)){
-			BasicUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
 		if(BasicUtil.isNotEmpty(schema)){
-			BasicUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
-		BasicUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		SQLUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
 		Column update = column.getUpdate();
 		if(null != update){
 			builder.append(" CHANGE ");
-			BasicUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			BasicUtil.delimiter(builder, update.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			SQLUtil.delimiter(builder, update.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			define(builder, update);
 		}
 		return builder.toString();
@@ -1279,22 +1279,63 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String schema = column.getSchema();
 		builder.append("ALTER TABLE ");
 		if(BasicUtil.isNotEmpty(catalog)){
-			BasicUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
 		if(BasicUtil.isNotEmpty(schema)){
-			BasicUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
-		BasicUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		SQLUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
 		Column update = column.getUpdate();
 		if(null == update){
 			//添加列
 			builder.append(" ADD COLUMN ");
-			BasicUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			define(builder, column);
 		}
 		return builder.toString();
 	}
 
+	@Override
+	public String createAddRunSQL(Table table){
+		table.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		builder.append("CREATE TABLEE ");
+		if(BasicUtil.isNotEmpty(catalog)){
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)){
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, table.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append("(");
+		Collection<Column> columns = table.getColumns().values();
+		int idx = 0;
+		for(Column column:columns){
+			if(idx > 0){
+				builder.append(",");
+			}
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			define(builder, column);
+			idx ++;
+		}
+		List<Column> pks = table.getPrimaryKeys();
+		if(pks.size()>0){
+			builder.append(",PRIMARY KEY (");
+			idx = 0;
+			for(Column pk:pks){
+				if(idx > 0){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
+			}
+			builder.append(")");
+		}
+		builder.append(")");
+
+		return builder.toString();
+	}
 	public void define(StringBuilder builder, Column column){
 		//数据类型
 		builder.append(column.getTypeName());
@@ -1348,7 +1389,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			builder.append(" COMMENT '").append(comment).append("'");
 		}
 		//位置
-		Integer position = column.getPosition();;
+		Integer position = column.getPosition();
 		if(null != position && position == 0){
 			builder.append(" FIRST");
 		}else{

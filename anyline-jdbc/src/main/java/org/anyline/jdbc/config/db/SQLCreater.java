@@ -117,11 +117,13 @@ public interface SQLCreater{
 	public String concat(String ... args);
 
 
-	public String createDropRunSQL(Column column);
 	public String createAddRunSQL(Column column);
 	public String createAlterRunSQL(Column column);
+	public String createDropRunSQL(Column column);
 
 
+	public String createAddRunSQL(Table table);
+	public String createAlterRunSQL(Table table);
 	public String createDropRunSQL(Table table);
 
 	/**

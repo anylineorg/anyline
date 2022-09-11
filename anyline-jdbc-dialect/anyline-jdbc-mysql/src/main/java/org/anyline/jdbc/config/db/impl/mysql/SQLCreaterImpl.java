@@ -65,17 +65,17 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		String schema = column.getSchema();
 		builder.append("ALTER TABLE ");
 		if(BasicUtil.isNotEmpty(catalog)){
-			BasicUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
 		if(BasicUtil.isNotEmpty(schema)){
-			BasicUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
-		BasicUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		SQLUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
 		Column update = column.getUpdate();
 		if(null == update){
 			//添加列
 			builder.append(" ADD COLUMN ");
-			BasicUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			//数据类型
 			builder.append(column.getTypeName());
 
