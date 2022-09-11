@@ -20,6 +20,7 @@
 package org.anyline.jdbc.config.db.impl;
 
 
+import javafx.util.Builder;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -1219,16 +1220,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public String buildDropRunSQL(Column column){
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
-		String catalog = column.getCatalog();
-		String schema = column.getSchema();
+		Table table = column.getTable();
 		builder.append("ALTER TABLE ");
-		if(BasicUtil.isNotEmpty(catalog)){
-			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)){
-			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		SQLUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		name(builder, table);
 		builder.append(" DROP COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();
@@ -1243,16 +1237,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public String buildAlterRunSQL(Column column){
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
-		String catalog = column.getCatalog();
-		String schema = column.getSchema();
+		Table table = column.getTable();
 		builder.append("ALTER TABLE ");
-		if(BasicUtil.isNotEmpty(catalog)){
-			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)){
-			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		SQLUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		name(builder, table);
 		Column update = column.getUpdate();
 		if(null != update){
 			builder.append(" CHANGE ");
@@ -1272,16 +1259,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public String buildAddRunSQL(Column column){
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
-		String catalog = column.getCatalog();
-		String schema = column.getSchema();
+		Table table = column.getTable();
 		builder.append("ALTER TABLE ");
-		if(BasicUtil.isNotEmpty(catalog)){
-			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)){
-			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		SQLUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		name(builder, table);
 		Column update = column.getUpdate();
 		if(null == update){
 			//添加列
@@ -1312,7 +1292,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				builder.append(",");
 			}
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			define(builder, column);
+			define(builder, column).append("\n");
+
 			idx ++;
 		}
 		primary(builder, table);
@@ -1322,7 +1303,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	@Override
-	public void name(StringBuilder builder, Table table){
+	public StringBuilder name(StringBuilder builder, Table table){
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		String name = table.getName();
@@ -1333,15 +1314,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
 		SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
-
+		return builder;
 	}
 	/**
 	 * 主键
 	 * @param builder builder
 	 * @param table table
+	 * @return builder
 	 */
 	@Override
-	public void primary(StringBuilder builder, Table table){
+	public StringBuilder primary(StringBuilder builder, Table table){
 		List<Column> pks = table.getPrimaryKeys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
@@ -1354,15 +1336,17 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 			builder.append(")");
 		}
+		return builder;
 	}
 
 	/**
 	 * 定义列
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
 	@Override
-	public void define(StringBuilder builder, Column column){
+	public StringBuilder define(StringBuilder builder, Column column){
 		//数据类型
 		type(builder, column);
 		// 编码
@@ -1381,14 +1365,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		comment(builder, column);
 		//位置
 		position(builder, column);
+		return builder;
 	}
 
 	/**
 	 * 数据类型
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void type(StringBuilder builder, Column column){
+	public StringBuilder type(StringBuilder builder, Column column){
 
 		builder.append(column.getTypeName());
 		//精度
@@ -1403,13 +1389,15 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}else if(precision == -1){
 			builder.append("(max)");
 		}
+		return builder;
 	}
 	/**
 	 * 编码
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void charset(StringBuilder builder, Column column){
+	public StringBuilder charset(StringBuilder builder, Column column){
 		// CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
 		String charset = column.getCharset();
 		if(BasicUtil.isNotEmpty(charset)){
@@ -1419,13 +1407,15 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				builder.append(" COLLATE ").append(collate);
 			}
 		}
+		return builder;
 	}
 	/**
 	 * 默认值
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void defaultValue(StringBuilder builder, Column column){
+	public StringBuilder defaultValue(StringBuilder builder, Column column){
 		Object def = column.getDefaultValue();
 		if(null != def) {
 			builder.append(" default ");
@@ -1445,37 +1435,46 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				}
 			}
 		}
+		return builder;
 	}
 	/**
 	 * 更新行事件
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void onupdate(StringBuilder builder, Column column){
+	public StringBuilder onupdate(StringBuilder builder, Column column){
+		return builder;
 	}
 	/**
 	 * 自增长列
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void increment(StringBuilder builder, Column column){
+	public StringBuilder increment(StringBuilder builder, Column column){
+		return builder;
 	}
 
 	/**
 	 * 位置
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void position(StringBuilder builder, Column column){
+	public StringBuilder position(StringBuilder builder, Column column){
+		return builder;
 	}
 
 	/**
 	 * 备注
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
 	@Override
-	public void comment(StringBuilder builder, Column column){
+	public StringBuilder comment(StringBuilder builder, Column column){
+		return builder;
 	}
 
 	/**

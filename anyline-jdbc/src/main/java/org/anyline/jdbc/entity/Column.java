@@ -12,7 +12,8 @@ public class Column {
     private String catalog                  ; //数据库
     private String className                ; //java.lang.Long
     private String schema                   ; //dbo
-    private String table                    ; //表名
+    private String tableName                ; //表名
+    private Table table                     ; //表
     private int displaySize                 ; //display size
     private String comment                  ; //备注
     private String name                     ; //名称
@@ -60,7 +61,7 @@ public class Column {
     public Column(String catalog, String schema, String table, String name){
         this.catalog = catalog;
         this.schema = schema;
-        this.table = table;
+        this.tableName = table;
         this.name = name;
         this.listener = new DefaulDDtListener();
     }
@@ -133,6 +134,18 @@ public class Column {
         return this;
     }
 
+    public Table getTable() {
+        return table;
+    }
+
+    public void setTable(Table table) {
+        this.table = table;
+    }
+
+    public void setTable(String table) {
+       setTableName(table);
+    }
+
     public String getTypeName() {
         return typeName;
     }
@@ -165,12 +178,13 @@ public class Column {
         return this;
     }
 
-    public String getTable() {
-        return table;
+    public String getTableName() {
+        return tableName;
     }
 
-    public Column setTable(String table) {
-        this.table = table;
+    public Column setTableName(String tableName) {
+        this.tableName = tableName;
+        this.table = new Table(tableName);
         return this;
     }
 
@@ -391,7 +405,7 @@ public class Column {
         copy.setCatalog(catalog);
         copy.setClassName(className);
         copy.setSchema(schema);
-        copy.setTable(table);
+        copy.setTableName(tableName);
         copy.setDisplaySize(displaySize);
         copy.setComment(comment);
         copy.setType(type);

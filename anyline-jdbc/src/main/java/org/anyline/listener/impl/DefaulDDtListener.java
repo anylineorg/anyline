@@ -155,6 +155,16 @@ public class DefaulDDtListener implements DDListener {
 
     }
 
+    @Override
+    public boolean beforeRename(Table table) {
+        return true;
+    }
+
+    @Override
+    public void afterRename(Table table, boolean result) {
+
+    }
+
     public AnylineService getService() {
         return service;
     }

@@ -78,6 +78,7 @@ public class Table {
 
 
     public Column addColumn(Column column){
+        column.setTable(this);
         return columns.put(column.getName(), column);
     }
     public Column addColumn(String name, String type){
@@ -207,6 +208,11 @@ public class Table {
 
     public Table setColumns(LinkedHashMap<String, Column> columns) {
         this.columns = columns;
+        if(null != columns) {
+            for (Column column : columns.values()) {
+                column.setTable(this);
+            }
+        }
         return this;
     }
 

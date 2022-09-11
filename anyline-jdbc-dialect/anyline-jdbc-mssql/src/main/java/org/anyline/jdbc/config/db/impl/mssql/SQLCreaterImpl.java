@@ -154,9 +154,10 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	 * )
 	 * @param builder builder
 	 * @param table table
+	 * @return builder
 	 */
 	@Override
-	public void primary(StringBuilder builder, Table table){
+	public StringBuilder primary(StringBuilder builder, Table table){
 		List<Column> pks = table.getPrimaryKeys();
 		if(pks.size()>0){
 			builder.append(",CONSTRAINT ").append("PK_").append(table.getName()).append(" PRIMARY KEY (");
@@ -169,16 +170,19 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 			}
 			builder.append(")");
 		}
+		return builder;
 	}
 	/**
 	 * 自增长列
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void increment(StringBuilder builder, Column column){
+	public StringBuilder increment(StringBuilder builder, Column column){
 		if(column.isAutoIncrement()){
 			builder.append(" IDENTITY(").append(column.getIncrementSeed()).append(",").append(column.getIncrementStep()).append(")");
 		}
+		return builder;
 	}
 
 

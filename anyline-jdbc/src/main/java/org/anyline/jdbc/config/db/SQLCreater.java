@@ -171,68 +171,74 @@ public interface SQLCreater{
 	public String buildRenameRunSQL(Table table);
 
 
-	public void name(StringBuilder builder, Table table);
+	/**
+	 * 构造表名
+	 * @param builder builder
+	 * @param table table
+	 * @return builder
+	 */
+	public StringBuilder name(StringBuilder builder, Table table);
 
 	/**
 	 * 主键
 	 * @param builder builder
 	 * @param table table
 	 */
-	public void primary(StringBuilder builder, Table table);
+	public StringBuilder primary(StringBuilder builder, Table table);
 
 	/**
 	 * 定义列
 	 * @param builder builder
 	 * @param column column
 	 */
-	public void define(StringBuilder builder, Column column);
+	public StringBuilder define(StringBuilder builder, Column column);
 	/**
 	 * 自增长列
 	 * @param builder builder
 	 * @param column column
 	 */
-	public void increment(StringBuilder builder, Column column);
+	public StringBuilder increment(StringBuilder builder, Column column);
 
 	/**
 	 * 备注
 	 * @param builder builder
 	 * @param column column
 	 */
-	public void comment(StringBuilder builder, Column column);
+	public StringBuilder comment(StringBuilder builder, Column column);
 
 	/**
 	 * 位置
 	 * @param builder builder
 	 * @param column column
 	 */
-	public void position(StringBuilder builder, Column column);
+	public StringBuilder position(StringBuilder builder, Column column);
 	/**
 	 * 更新行事件
 	 * @param builder builder
 	 * @param column column
 	 */
-	public void onupdate(StringBuilder builder, Column column);
+	public StringBuilder onupdate(StringBuilder builder, Column column);
 
 	/**
 	 * 默认值
 	 * @param builder builder
 	 * @param column column
 	 */
-	public void defaultValue(StringBuilder builder, Column column);
+	public StringBuilder defaultValue(StringBuilder builder, Column column);
 
 	/**
 	 * 编码
 	 * @param builder builder
 	 * @param column column
 	 */
-	public void charset(StringBuilder builder, Column column);
+	public StringBuilder charset(StringBuilder builder, Column column);
 
 	/**
 	 * 数据类型
 	 * @param builder builder
 	 * @param column column
 	 */
-	public void type(StringBuilder builder, Column column);
+	public StringBuilder type(StringBuilder builder, Column column);
 
 	/**
 	 * 是否是字符类型

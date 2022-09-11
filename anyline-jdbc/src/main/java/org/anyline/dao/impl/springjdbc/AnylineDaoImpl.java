@@ -1390,7 +1390,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 				column.setCatalog(BasicUtil.evl(rs.getString("TABLE_CAT"), catalog));
 				column.setSchema(BasicUtil.evl(rs.getString("TABLE_SCHEM"), schema));
-				column.setTable(BasicUtil.evl(rs.getString("TABLE_NAME"), table));
+				column.setTableName(BasicUtil.evl(rs.getString("TABLE_NAME"), table));
 				column(column, rs);
 			}
 			//主键
@@ -1436,7 +1436,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 
 		if (showSQL) {
-			log.warn("{}[add column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTable(), column.getName(), result, System.currentTimeMillis() - fr);
+			log.warn("{}[add column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -1471,7 +1471,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
-			log.warn("{}[DDL 执行异常][尝试修正数据]",random);
+			log.warn("{}[DDL 执行异常][尝试修正数据][exception:{}]",random, e.getMessage());
 			if(trigger && null != listener) {
 				boolean exe = false;
 				if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0){
@@ -1489,7 +1489,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 
 		if (showSQL) {
-			log.warn("{}[update column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTable(), column.getName(), result, System.currentTimeMillis() - fr);
+			log.warn("{}[update column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
@@ -1497,9 +1497,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return alter(table, column, true);
 	}
 	public boolean alter(Column column) throws Exception{
-		List<Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTable(), "TABLE");
+		List<Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(), "TABLE");
 		if(tables.size() ==0){
-			throw new AnylineException("表不存在:"+column.getTable());
+			throw new AnylineException("表不存在:"+column.getTableName());
 		}else {
 			return alter(tables.get(0), column, true);
 		}
@@ -1523,7 +1523,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			result = true;
 		}
 		if (showSQL) {
-			log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTable(), column.getName(), result, System.currentTimeMillis() - fr);
+			log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
 		}
 		if(null != listener){
 			listener.afterDrop(column, result);
@@ -1629,17 +1629,20 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			Column column = columns.get(ucolumn.getName());
 			if(null != column){
 				//修改列
+				column.setTable(update);
 				column.setUpdate(ucolumn);
 				alter(column);
 			}else{
-				//添加我
+				//添加列
+				ucolumn.setTable(update);
 				add(ucolumn);
 			}
 		}
 		//删除列
 		for(Column column : columns.values()){
 			Column ucolumn = ucolumns.get(column.getName());
-			if(null != ucolumn){
+			if(null == ucolumn){
+				column.setTable(update);
 				drop(column);
 			}
 		}
@@ -1662,7 +1665,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			column.setScale(rsm.getScale(index));
 			column.setDisplaySize(rsm.getColumnDisplaySize(index));
 			column.setSigned(rsm.isSigned(index));
-			column.setTable(rsm.getTableName(index));
+			column.setTableName(rsm.getTableName(index));
 			column.setType(rsm.getColumnType(index));
 			column.setTypeName(rsm.getColumnTypeName(index));
 		}catch (Exception e){

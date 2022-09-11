@@ -176,9 +176,10 @@ varbit:String
 	 * )
 	 * @param builder builder
 	 * @param table table
+	 * @return builder
 	 */
 	@Override
-	public void primary(StringBuilder builder, Table table){
+	public StringBuilder primary(StringBuilder builder, Table table){
 		List<Column> pks = table.getPrimaryKeys();
 		if(pks.size()>0){
 			builder.append(",CONSTRAINT ").append("PK_").append(table.getName()).append(" PRIMARY KEY (");
@@ -191,5 +192,6 @@ varbit:String
 			}
 			builder.append(")");
 		}
+		return builder;
 	}
 } 

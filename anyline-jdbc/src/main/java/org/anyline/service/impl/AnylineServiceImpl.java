@@ -1666,7 +1666,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         @Override
         public boolean exists(Column column) {
             try {
-                Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTable());
+                Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
                 if(null != table){
                     if(table.getColumns().containsKey(column.getName())){
                         return true;
@@ -1689,7 +1689,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         @Override
         public boolean save(Column column) throws Exception{
             boolean result = false;
-            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTable());
+            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
             LinkedHashMap<String, Column> columns = table.getColumns();
             Column original = columns.get(column.getName());
             if(null == original){
@@ -1701,7 +1701,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         @Override
         public boolean alter(Column column) throws Exception{
-            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTable());
+            Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
             return alter(table, column);
         }
 
@@ -1741,7 +1741,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
         @Override
         public boolean add(Column column) throws Exception{
-            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTable(), true);
+            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName(), true);
             return add(columns, column);
         }
         private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{

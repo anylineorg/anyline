@@ -66,16 +66,9 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	@Override
 	public String buildAddRunSQL(Column column){
 		StringBuilder builder = new StringBuilder();
-		String catalog = column.getCatalog();
-		String schema = column.getSchema();
+		Table table = column.getTable();
 		builder.append("ALTER TABLE ");
-		if(BasicUtil.isNotEmpty(catalog)){
-			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)){
-			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		SQLUtil.delimiter(builder, column.getTable(), getDelimiterFr(), getDelimiterTo());
+		name(builder, table);
 		Column update = column.getUpdate();
 		if(null == update){
 			//添加列
@@ -196,9 +189,10 @@ SMALLINT:Short
 	 * 主键
 	 * @param builder builder
 	 * @param table table
+	 * @return builder
 	 */
 	@Override
-	public void primary(StringBuilder builder, Table table){
+	public StringBuilder primary(StringBuilder builder, Table table){
 		List<Column> pks = table.getPrimaryKeys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
@@ -207,30 +201,38 @@ SMALLINT:Short
 				if(idx > 0){
 					builder.append(",");
 				}
-				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo()).append(" ").append(pk.getOrder());
+				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
+				String order = pk.getOrder();
+				if(BasicUtil.isNotEmpty(order)){
+					builder.append(" ").append(order);
+				}
 			}
 			builder.append(")");
 		}
+		return builder;
 	}
 	/**
 	 * 备注
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
 	@Override
-	public void comment(StringBuilder builder, Column column){
+	public StringBuilder comment(StringBuilder builder, Column column){
 		String comment = column.getComment();
 		if(BasicUtil.isNotEmpty(comment)){
 			builder.append(" COMMENT '").append(comment).append("'");
 		}
+		return builder;
 	}
 
 	/**
 	 * 位置
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void position(StringBuilder builder, Column column){
+	public StringBuilder position(StringBuilder builder, Column column){
 		Integer position = column.getPosition();
 		if(null != position && position == 0){
 			builder.append(" FIRST");
@@ -240,27 +242,32 @@ SMALLINT:Short
 				builder.append(" AFTER").append(after);
 			}
 		}
+		return builder;
 	}
 
 	/**
 	 * 自增长列
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void increment(StringBuilder builder, Column column){
+	public StringBuilder increment(StringBuilder builder, Column column){
 		if(column.isAutoIncrement()){
 			builder.append(" AUTO_INCREMENT");
 		}
+		return builder;
 	}
 	/**
 	 * 更新行事件
 	 * @param builder builder
 	 * @param column column
+	 * @return builder
 	 */
-	public void onupdate(StringBuilder builder, Column column){
+	public StringBuilder onupdate(StringBuilder builder, Column column){
 		if(column.isOnUpdate()){
 			builder.append(" ON UPDATE CURRENT_TIMESTAMP");
 		}
+		return builder;
 	}
 	/**
 	 * 内置函数
