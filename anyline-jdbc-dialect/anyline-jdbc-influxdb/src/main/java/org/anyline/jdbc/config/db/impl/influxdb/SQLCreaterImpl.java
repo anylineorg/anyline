@@ -65,7 +65,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	}
 
 
-	public RunSQL createInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
+	public RunSQL buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
 		RunSQL run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();

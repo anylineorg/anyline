@@ -122,7 +122,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	}
 
 	@Override
-	public void format(StringBuilder builder, Object obj, String key){
+	public void value(StringBuilder builder, Object obj, String key){
 		Object value = null;
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);

@@ -1,5 +1,6 @@
 package org.anyline.jdbc.entity;
 
+import org.anyline.exception.AnylineException;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.listener.DDListener;
 import org.anyline.listener.impl.DefaulDDtListener;
@@ -76,8 +77,37 @@ public class Table {
     }
 
 
-    public Table addColumn(Column column){
-        columns.put(column.getName(), column);
+    public Column addColumn(Column column){
+        return columns.put(column.getName(), column);
+    }
+    public Column addColumn(String name, String type){
+        return addColumn(name, type, true, null);
+    }
+    public Column addColumn(String name, String type, boolean nullable, Object def){
+        Column column = new Column();
+        column.setName(name);
+        column.setNullable(nullable);
+        column.setDefaultValue(def);
+        column.setTypeName(type);
+        if(null == columns){
+            columns = new LinkedHashMap<>();
+        }
+        columns.put(name, column);
+        return column;
+    }
+    public Table setPrimaryKey(String ... keys){
+        if(null != columns){
+            for(String key:keys){
+                Column column = columns.get(key);
+                if(null != column){
+                    column.setPrimaryKey(true);
+                }else{
+                    throw new AnylineException("未匹配到"+key+",请诜添加到columns");
+                }
+            }
+        }else{
+            throw new AnylineException("请先设置columns");
+        }
         return this;
     }
 
@@ -218,7 +248,6 @@ public class Table {
         this.collate = collate;
         return this;
     }
-
     public DDListener getListener() {
         return listener;
     }

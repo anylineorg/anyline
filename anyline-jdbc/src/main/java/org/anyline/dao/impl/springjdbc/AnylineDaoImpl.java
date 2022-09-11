@@ -102,7 +102,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public List<Map<String,Object>> maps(SQL sql, ConfigStore configs, String ... conditions) {
 		List<Map<String,Object>> maps = null;
 		try {
-			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
@@ -143,7 +143,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		try {
-			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
@@ -218,7 +218,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			if(AdapterProxy.hasAdapter()){
 				sql.setDataSource(AdapterProxy.table(clazz));
 			}
-			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				tmp += "[SQL:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
@@ -293,7 +293,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public int count(SQL sql, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try{
-			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			if(null != listener){
 				listener.beforeCount(this,run);
 			}
@@ -315,7 +315,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean exists(SQL sql, ConfigStore configs, String ... conditions){
 		boolean result = false;
 		try {
-			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, configs, conditions);
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			String txt = run.getExistsTxt();
 			List<Object> values = run.getValues();
 
@@ -523,7 +523,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkParimary, String ... columns){
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createInsertTxt(dest, data, checkParimary, columns);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildInsertTxt(dest, data, checkParimary, columns);
 		if(null == run){
 			return 0;
 		}
@@ -831,7 +831,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	@Override
 	public int execute(SQL sql, ConfigStore configs, String ... conditions){
 		int result = -1;
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createExecuteRunSQL(sql, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildExecuteRunSQL(sql, configs, conditions);
 		if(!run.isValid()){
 			if(showSQL){
 				log.warn("[valid:false]");
@@ -1207,7 +1207,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	public int deletes(String table, String key, Collection<Object> values){
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(table, key, values);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildDeleteRunSQL(table, key, values);
 		int result = exeDelete(run);
 		return result;
 	}
@@ -1218,7 +1218,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				list.add(value);
 			}
 		}
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(table, key, list);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildDeleteRunSQL(table, key, list);
 		int result = exeDelete(run);
 		return result;
 	}
@@ -1232,7 +1232,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					size += delete(dest, item, columns);
 				}
 			}else{
-				RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(dest, obj, columns);
+				RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildDeleteRunSQL(dest, obj, columns);
 				size = exeDelete(run);
 
 			}
@@ -1242,7 +1242,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	@Override
 	public int delete(String table, ConfigStore configs, String... conditions) {
-		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createDeleteRunSQL(table, configs, conditions);
+		RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildDeleteRunSQL(table, configs, conditions);
 		int result = exeDelete(run);
 		return result;
 	}
@@ -1365,7 +1365,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		try {
 			SQL sql = new TableSQLImpl();
 			sql.setDataSource(table);
-			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).createQueryRunSQL(sql, null,"1=0");
+			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildQueryRunSQL(sql, null,"1=0");
 			SqlRowSet set = getJdbc().queryForRowSet(run.getFinalQueryTxt());
 			SqlRowSetMetaData rsm = set.getMetaData();
 			for (int i = 1; i <= rsm.getColumnCount(); i++) {
@@ -1419,7 +1419,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
 		String random = null;
-		String sql = SQLCreaterUtil.getCreater(getJdbc()).createAddRunSQL(column);
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).buildAddRunSQL(column);
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
 			log.warn("{}[txt:\n{}\n]",random,sql);
@@ -1453,7 +1453,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
 		String random = null;
-		String sql = SQLCreaterUtil.getCreater(getJdbc()).createAlterRunSQL(column);
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).buildAlterRunSQL(column);
 
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
@@ -1507,7 +1507,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean drop(Column column) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
-		String sql = SQLCreaterUtil.getCreater(getJdbc()).createDropRunSQL(column);
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).buildDropRunSQL(column);
 		String random = null;
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
@@ -1535,7 +1535,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean drop(Table table)  throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
-		String sql = SQLCreaterUtil.getCreater(getJdbc()).createDropRunSQL(table);
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).buildDropRunSQL(table);
 		String random = null;
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
@@ -1564,7 +1564,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean create(Table table) throws Exception {
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
-		String sql = SQLCreaterUtil.getCreater(getJdbc()).createAddRunSQL(table);
+		String sql = SQLCreaterUtil.getCreater(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
 		if(showSQL){
 			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";

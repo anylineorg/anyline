@@ -74,11 +74,11 @@ public interface SQLCreater{
 	 * @param conditions 查询条件
 	 * @return RunSQL
 	 */
-	public RunSQL createQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions);
+	public RunSQL buildQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions);
 
-	public RunSQL createDeleteRunSQL(String dest, Object obj, String ... columns);
-	public RunSQL createDeleteRunSQL(String table, String key, Object values);
-	public RunSQL createExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions); 
+	public RunSQL buildDeleteRunSQL(String dest, Object obj, String ... columns);
+	public RunSQL buildDeleteRunSQL(String table, String key, Object values);
+	public RunSQL buildExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions);
 	 
 	public String parseBaseQueryTxt(RunSQL run); 
 	/** 
@@ -95,20 +95,54 @@ public interface SQLCreater{
 	 * @return String
 	 */ 
 	public String parseFinalQueryTxt(RunSQL run);
-	public RunSQL createInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns);
+	public RunSQL buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns);
 	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys);
-	public void format(StringBuilder builder, Object row, String key);
-	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns); 
+
+	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns);
+
+	/**
+	 * 界定符
+	 * @return String
+	 */
 	public String getDelimiterFr();
 	public String getDelimiterTo();
 	public String getPrimaryKey(Object obj); 
 	public Object getPrimaryValue(Object obj);
+
+	/**
+	 * 确认需要插入的列
+	 * @param dst dst
+	 * @param data data
+	 * @param columns 明确指定需要插入的列
+	 * @return list
+	 */
 	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
 
+	/**
+	 * 数据类型转换
+	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param table table
+	 * @param run  RunValue
+	 * @return boolean 返回false表示转换失败 如果有多个creater 则交给creater继续转换
+	 */
 
 	public boolean convert(String catalog, String schema, String table, RunValue run);
 	public boolean convert(Map<String, Column> columns, RunValue value);
 	public boolean convert(Column column, RunValue value);
+
+	/**
+	 * 在不检测数据库结构时才生效，否则会被convert代替
+	 * 生成value格式 主要确定是否需要单引号  或  类型转换
+	 * 有些数据库不提供默认的 隐式转换 需要显示的把String转换成相应的数据类型
+	 * 如 TO_DATE('')
+	 * @param builder builder
+	 * @param row DataRow 或 Entity
+	 * @param key 列名
+	 */
+	public void value(StringBuilder builder, Object row, String key);
+
 	/**
 	 * 拼接字符串
 	 * @param args args
@@ -117,14 +151,76 @@ public interface SQLCreater{
 	public String concat(String ... args);
 
 
-	public String createAddRunSQL(Column column);
-	public String createAlterRunSQL(Column column);
-	public String createDropRunSQL(Column column);
+	public String buildAddRunSQL(Column column);
+	public String buildAlterRunSQL(Column column);
+	public String buildDropRunSQL(Column column);
 
 
-	public String createAddRunSQL(Table table);
-	public String createAlterRunSQL(Table table);
-	public String createDropRunSQL(Table table);
+	public String buildCreateRunSQL(Table table);
+	public String buildAlterRunSQL(Table table);
+	public String buildDropRunSQL(Table table);
+
+
+	/**
+	 * 主键
+	 * @param builder builder
+	 * @param table table
+	 */
+	public void primary(StringBuilder builder, Table table);
+
+	/**
+	 * 定义列
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void define(StringBuilder builder, Column column);
+	/**
+	 * 自增长列
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void increment(StringBuilder builder, Column column);
+
+	/**
+	 * 备注
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void comment(StringBuilder builder, Column column);
+
+	/**
+	 * 位置
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void position(StringBuilder builder, Column column);
+	/**
+	 * 更新行事件
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void onupdate(StringBuilder builder, Column column);
+
+	/**
+	 * 默认值
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void defaultValue(StringBuilder builder, Column column);
+
+	/**
+	 * 编码
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void charset(StringBuilder builder, Column column);
+
+	/**
+	 * 数据类型
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void type(StringBuilder builder, Column column);
 
 	/**
 	 * 是否是字符类型
@@ -135,9 +231,7 @@ public interface SQLCreater{
 	 * @return boolean
 	 */
 	public boolean isCharColumn(Column column);
-
 	public boolean isNumberColumn(Column column);
-
 	public boolean isBooleanColumn(Column column);
 
 }

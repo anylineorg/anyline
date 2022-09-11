@@ -23,7 +23,6 @@ package org.anyline.jdbc.config.db.impl;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.config.db.SQLCreater;
@@ -48,7 +47,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.beans.PropertyEditorSupport;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.sql.Time;
@@ -57,7 +55,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 /**
@@ -107,7 +104,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * 创建查询SQL 
 	 */ 
 	@Override 
-	public RunSQL createQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions){ 
+	public RunSQL buildQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions){
 		RunSQL run = null; 
 		if(sql instanceof TableSQL){ 
 			run = new TableRunSQLImpl(this,sql.getTable());
@@ -128,7 +125,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return run; 
 	}
 	@Override
-	public RunSQL createExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions){
+	public RunSQL buildExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions){
 		RunSQL run = null;
 		if(sql instanceof XMLSQL){
 			run = new XMLRunSQLImpl();
@@ -145,11 +142,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return run;
 	}
 	@Override
-	public RunSQL createDeleteRunSQL(String table, String key, Object values){
+	public RunSQL buildDeleteRunSQL(String table, String key, Object values){
 		return createDeleteRunSQLFromTable(table, key, values);
 	}
 	@Override 
-	public RunSQL createDeleteRunSQL(String dest, Object obj, String ... columns){ 
+	public RunSQL buildDeleteRunSQL(String dest, Object obj, String ... columns){
 		if(null == obj){ 
 			return null; 
 		}
@@ -321,7 +318,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
  
 	@Override 
-	public RunSQL createInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){ 
+	public RunSQL buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
 		if(null == obj){ 
 			return null; 
 		} 
@@ -567,14 +564,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int keySize = keys.size();
 		builder.append("(");
 		for(int j=0; j<keySize; j++){
-			format(builder, obj, keys.get(j));
+			value(builder, obj, keys.get(j));
 			if(j<keySize-1){
 				builder.append(",");
 			}
 		}
 		builder.append(")");
 	}
-	public void format(StringBuilder builder, Object obj, String key){
+	public void value(StringBuilder builder, Object obj, String key){
 		Object value = null;
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);
@@ -1198,7 +1195,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 
-	public String createDropRunSQL(Table table){
+	public String buildDropRunSQL(Table table){
 		table.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		String catalog = table.getCatalog();
@@ -1219,7 +1216,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param column column
 	 * @return String
 	 */
-	public String createDropRunSQL(Column column){
+	public String buildDropRunSQL(Column column){
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		String catalog = column.getCatalog();
@@ -1243,7 +1240,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @return
 	 */
 	@Override
-	public String createAlterRunSQL(Column column){
+	public String buildAlterRunSQL(Column column){
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		String catalog = column.getCatalog();
@@ -1272,7 +1269,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @return String
 	 */
 	@Override
-	public String createAddRunSQL(Column column){
+	public String buildAddRunSQL(Column column){
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		String catalog = column.getCatalog();
@@ -1296,12 +1293,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	@Override
-	public String createAddRunSQL(Table table){
+	public String buildAlterRunSQL(Table table){
+		return null;
+	}
+	@Override
+	public String buildCreateRunSQL(Table table){
 		table.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
-		builder.append("CREATE TABLEE ");
+		builder.append("CREATE TABLE ");
 		if(BasicUtil.isNotEmpty(catalog)){
 			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
 		}
@@ -1320,10 +1321,23 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			define(builder, column);
 			idx ++;
 		}
+		primary(builder, table);
+		builder.append(")");
+
+		return builder.toString();
+	}
+
+	/**
+	 * 主键
+	 * @param builder builder
+	 * @param table table
+	 */
+	@Override
+	public void primary(StringBuilder builder, Table table){
 		List<Column> pks = table.getPrimaryKeys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
-			idx = 0;
+			int idx = 0;
 			for(Column pk:pks){
 				if(idx > 0){
 					builder.append(",");
@@ -1332,14 +1346,43 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			}
 			builder.append(")");
 		}
-		builder.append(")");
-
-		return builder.toString();
 	}
+
+	/**
+	 * 定义列
+	 * @param builder builder
+	 * @param column column
+	 */
+	@Override
 	public void define(StringBuilder builder, Column column){
 		//数据类型
-		builder.append(column.getTypeName());
+		type(builder, column);
+		// 编码
+		charset(builder, column);
+		//默认值
+		defaultValue(builder, column);
+		//非空
+		if (!column.isNullable()) {
+			builder.append(" NOT NULL");
+		}
+		//自增长列
+		increment(builder, column);
+		//更新行事件
+		onupdate(builder, column);
+		//备注
+		comment(builder, column);
+		//位置
+		position(builder, column);
+	}
 
+	/**
+	 * 数据类型
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void type(StringBuilder builder, Column column){
+
+		builder.append(column.getTypeName());
 		//精度
 		int precision = column.getPrecision();
 		Integer scale = column.getScale();
@@ -1352,7 +1395,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}else if(precision == -1){
 			builder.append("(max)");
 		}
-		// 编码
+	}
+	/**
+	 * 编码
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void charset(StringBuilder builder, Column column){
 		// CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
 		String charset = column.getCharset();
 		if(BasicUtil.isNotEmpty(charset)){
@@ -1362,33 +1411,51 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				builder.append(" COLLATE ").append(collate);
 			}
 		}
-		//默认值
+	}
+	/**
+	 * 默认值
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void defaultValue(StringBuilder builder, Column column){
 		Object def = column.getDefaultValue();
-		if(BasicUtil.isNotEmpty(def)){
-			builder.append(" default ");
-			boolean isCharColumn = isCharColumn(column);
-			if(isCharColumn){
-				builder.append("'");
-			}
-			builder.append(def);
-			if(isCharColumn){
-				builder.append("'");
-			}
-		}else {
-			//非空
-			if (!column.isNullable()) {
-				builder.append(" NOT NULL");
-			}
+		builder.append(" default ");
+		boolean isCharColumn = isCharColumn(column);
+		if(isCharColumn){
+			builder.append("'");
 		}
+		builder.append(def);
+		if(isCharColumn){
+			builder.append("'");
+		}
+	}
+	/**
+	 * 更新行事件
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void onupdate(StringBuilder builder, Column column){
 		if(column.isOnUpdate()){
 			builder.append(" ON UPDATE CURRENT_TIMESTAMP");
 		}
-		//备注
-		String comment = column.getComment();
-		if(BasicUtil.isNotEmpty(comment)){
-			builder.append(" COMMENT '").append(comment).append("'");
+	}
+	/**
+	 * 自增长列
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void increment(StringBuilder builder, Column column){
+		if(column.isAutoIncrement()){
+			builder.append(" AUTO_INCREMENT");
 		}
-		//位置
+	}
+
+	/**
+	 * 位置
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void position(StringBuilder builder, Column column){
 		Integer position = column.getPosition();
 		if(null != position && position == 0){
 			builder.append(" FIRST");
@@ -1397,6 +1464,18 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			if(BasicUtil.isNotEmpty(after)){
 				builder.append(" AFTER").append(after);
 			}
+		}
+	}
+
+	/**
+	 * 备注
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void comment(StringBuilder builder, Column column){
+		String comment = column.getComment();
+		if(BasicUtil.isNotEmpty(comment)){
+			builder.append(" COMMENT '").append(comment).append("'");
 		}
 	}
 

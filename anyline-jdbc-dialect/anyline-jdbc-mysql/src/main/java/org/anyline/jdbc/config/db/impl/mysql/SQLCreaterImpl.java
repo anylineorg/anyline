@@ -1,12 +1,13 @@
 package org.anyline.jdbc.config.db.impl.mysql;
- 
-import org.anyline.entity.PageNavi;
+
 import org.anyline.entity.OrderStore;
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
@@ -59,7 +60,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	 * @return String
 	 */
 	@Override
-	public String createAddRunSQL(Column column){
+	public String buildAddRunSQL(Column column){
 		StringBuilder builder = new StringBuilder();
 		String catalog = column.getCatalog();
 		String schema = column.getSchema();
