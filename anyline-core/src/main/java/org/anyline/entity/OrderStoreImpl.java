@@ -20,6 +20,7 @@
 package org.anyline.entity;
 
 import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,7 @@ public class OrderStoreImpl implements OrderStore{
 				if(null == order){
 					continue;
 				}
-				BasicUtil.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
+				SQLUtil.delimiter(builder, order.getColumn(), delimiter).append(" ").append(order.getType());
 				if(i<orders.size()-1){ 
 					builder.append(","); 
 				} 

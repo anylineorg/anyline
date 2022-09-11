@@ -22,6 +22,7 @@ package org.anyline.jdbc.config.db.impl;
 import org.anyline.jdbc.config.db.Group;
 import org.anyline.jdbc.config.db.GroupStore;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +93,7 @@ public class GroupStoreImpl implements GroupStore{
 				if(null == group){
 					continue;
 				}
-				BasicUtil.delimiter(builder, group.getColumn(), delimiter);
+				SQLUtil.delimiter(builder, group.getColumn(), delimiter);
 				if(i<groups.size()-1){ 
 					builder.append(","); 
 				} 

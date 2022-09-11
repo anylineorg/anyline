@@ -21,13 +21,14 @@ package org.anyline.jdbc.config.db.sql.auto.impl;
 
 import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.db.Condition;
+import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.impl.BasicCondition;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
+import org.anyline.util.SQLUtil;
 
 import java.util.*;
  
@@ -205,10 +206,10 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		String delimiterTo = creater.getDelimiterTo();
 		String text = "";
 		if(BasicUtil.isNotEmpty(table)){
-			text += BasicUtil.delimiter(table,delimiterFr, delimiterTo) + ".";
+			text += SQLUtil.delimiter(table,delimiterFr, delimiterTo) + ".";
 		}
 
-		text += BasicUtil.delimiter(column, delimiterFr, delimiterTo);
+		text += SQLUtil.delimiter(column, delimiterFr, delimiterTo);
 
 		if(compare == COMPARE_TYPE.EQUAL){
 			Object v = getValue(val);

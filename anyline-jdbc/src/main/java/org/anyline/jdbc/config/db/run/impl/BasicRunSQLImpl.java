@@ -19,7 +19,10 @@
 
 package org.anyline.jdbc.config.db.run.impl;
 
-import org.anyline.entity.*;
+import org.anyline.entity.Order;
+import org.anyline.entity.OrderStore;
+import org.anyline.entity.OrderStoreImpl;
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;
@@ -32,18 +35,14 @@ import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionImpl;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
-import org.anyline.util.DateUtil;
-import org.anyline.util.SpringContextUtil;
+import org.anyline.util.SQLUtil;
 import org.anyline.util.regular.RegularUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
-import java.math.BigDecimal;
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 
 public abstract class BasicRunSQLImpl implements RunSQL { 
@@ -284,7 +283,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public String getFinalQueryTxt() { 
 		String text = creater.parseFinalQueryTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = BasicUtil.placeholder(text, delimiterFr, delimiterTo);
+			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		return text;
 	} 
@@ -292,7 +291,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public String getTotalQueryTxt() {
 		String text = creater.parseTotalQueryTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = BasicUtil.placeholder(text, delimiterFr, delimiterTo);
+			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		return text;
 	}
@@ -300,7 +299,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public String getExistsTxt(){
 		String text =  creater.parseExistsTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			text = BasicUtil.placeholder(text, delimiterFr, delimiterTo);
+			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
 		return text;
 	}
@@ -465,19 +464,19 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	 
 	public String getDeleteTxt(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  BasicUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
+			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		return builder.toString();
 	} 
 	public String getInsertTxt(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  BasicUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
+			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		return builder.toString();
 	} 
 	public String getUpdateTxt(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  BasicUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
+			return  SQLUtil.placeholder(builder.toString(), delimiterFr, delimiterTo);
 		}
 		return builder.toString();
 	} 
@@ -521,7 +520,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	@Override
 	public String getExecuteTxt(){
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
-			return  BasicUtil.placeholder(sql.getText(), delimiterFr, delimiterTo);
+			return  SQLUtil.placeholder(sql.getText(), delimiterFr, delimiterTo);
 		}
 		return sql.getText();
 	}
@@ -535,9 +534,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				for(String col:cols){
 					if(null == result){
 
-						result = BasicUtil.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
+						result = SQLUtil.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
 					}else{
-						result += "," + BasicUtil.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
+						result += "," + SQLUtil.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
 					}
 				}
 			}
