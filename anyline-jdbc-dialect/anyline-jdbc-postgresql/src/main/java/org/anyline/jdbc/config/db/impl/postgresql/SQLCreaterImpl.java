@@ -8,7 +8,9 @@ import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 import org.postgresql.ds.common.PGObjectFactory;
 import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.InitializingBean;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository("anyline.jdbc.creater.postgresql")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
@@ -165,4 +168,28 @@ varbit:String
 		return concatOr(args);
 	}
 
+	/**
+	 * 主键
+	 * CONSTRAINT [PK_BS_DEV] PRIMARY KEY
+	 * (
+	 * 	ID ASC
+	 * )
+	 * @param builder builder
+	 * @param table table
+	 */
+	@Override
+	public void primary(StringBuilder builder, Table table){
+		List<Column> pks = table.getPrimaryKeys();
+		if(pks.size()>0){
+			builder.append(",CONSTRAINT ").append("PK_").append(table.getName()).append(" PRIMARY KEY (");
+			int idx = 0;
+			for(Column pk:pks){
+				if(idx > 0){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo()).append(" ").append(pk.getOrder());
+			}
+			builder.append(")");
+		}
+	}
 } 

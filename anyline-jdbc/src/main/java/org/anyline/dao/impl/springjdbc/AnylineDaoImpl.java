@@ -1591,7 +1591,59 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean alter(Table table) throws Exception {
-		return false;
+		boolean result = false;
+		Table update = table.getUpdate();
+		LinkedHashMap<String, Column> columns = table.getColumns();
+		LinkedHashMap<String, Column> ucolumns = update.getColumns();
+		String name = table.getName();
+		String uname = update.getName();
+		Long fr = System.currentTimeMillis();
+		if(!name.equalsIgnoreCase(uname)){
+			//修改表名
+			String sql = SQLCreaterUtil.getCreater(getJdbc()).buildRenameRunSQL(table);
+			String random = null;
+			if(showSQL){
+				random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+				log.warn("{}[txt:\n{}\n]",random,sql);
+			}
+
+			DDListener listener = table.getListener();
+			boolean exe = true;
+			if(null != listener){
+				exe = listener.beforeRename(table);
+			}
+			if(exe) {
+				getJdbc().update(sql);
+				result = true;
+			}
+
+			if (showSQL) {
+				log.warn("{}[rename table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+			}
+			if(null != listener){
+				listener.afterRename(table, result);
+			}
+		}
+		//更新列
+		for(Column ucolumn : ucolumns.values()){
+			Column column = columns.get(ucolumn.getName());
+			if(null != column){
+				//修改列
+				column.setUpdate(ucolumn);
+				alter(column);
+			}else{
+				//添加我
+				add(ucolumn);
+			}
+		}
+		//删除列
+		for(Column column : columns.values()){
+			Column ucolumn = ucolumns.get(column.getName());
+			if(null != ucolumn){
+				drop(column);
+			}
+		}
+		return result;
 	}
 
 	private Column column(Column column, SqlRowSetMetaData rsm, int index){

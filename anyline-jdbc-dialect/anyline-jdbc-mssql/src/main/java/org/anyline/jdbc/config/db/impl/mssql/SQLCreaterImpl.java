@@ -147,6 +147,30 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	}
 
 	/**
+	 * 主键
+	 * CONSTRAINT [PK_BS_DEV] PRIMARY KEY
+	 * (
+	 * 	[ID] ASC
+	 * )
+	 * @param builder builder
+	 * @param table table
+	 */
+	@Override
+	public void primary(StringBuilder builder, Table table){
+		List<Column> pks = table.getPrimaryKeys();
+		if(pks.size()>0){
+			builder.append(",CONSTRAINT ").append("PK_").append(table.getName()).append(" PRIMARY KEY (");
+			int idx = 0;
+			for(Column pk:pks){
+				if(idx > 0){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo()).append(" ").append(pk.getOrder());
+			}
+			builder.append(")");
+		}
+	}
+	/**
 	 * 自增长列
 	 * @param builder builder
 	 * @param column column
@@ -157,26 +181,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		}
 	}
 
-	/**
-	 * 主键
-	 * @param builder builder
-	 * @param table table
-	 */
-	@Override
-	public void primary(StringBuilder builder, Table table){
-		List<Column> pks = table.getPrimaryKeys();
-		if(pks.size()>0){
-			builder.append(",PRIMARY KEY (");
-			int idx = 0;
-			for(Column pk:pks){
-				if(idx > 0){
-					builder.append(",");
-				}
-				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
-			}
-			builder.append(")");
-		}
-	}
 
 	/**
 	 * 内置函数

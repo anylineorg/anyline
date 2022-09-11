@@ -35,8 +35,8 @@ import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Index;
 import org.anyline.jdbc.entity.Table;
-import org.anyline.listener.DDListener;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
@@ -1771,8 +1771,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return dao.drop(table);
         }
         public boolean save(Table table) throws Exception{
-            if(exists(table)){
-                return alter(table);
+            Table otable = metadata.table(table.getCatalog(), table.getSchema(), table.getName());
+            if(null != otable){
+                otable.setUpdate(table);
+                return alter(otable);
             }else{
                 return create(table);
             }
@@ -1783,7 +1785,15 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         public boolean alter(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
-            return true;
+            return dao.alter(table);
+        }
+
+        public boolean add(Index index) throws Exception{
+            index.setService(AnylineServiceImpl.this);
+            return false;
+        }
+        public boolean drop(Index index) throws Exception{
+            return false;
         }
     };
 

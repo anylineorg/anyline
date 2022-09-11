@@ -1201,14 +1201,14 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		builder.append("DROP TABLE ");
-		if(BasicUtil.isNotEmpty(catalog)){
-			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)){
-			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		SQLUtil.delimiter(builder, table.getName(), getDelimiterFr(), getDelimiterTo());
+		name(builder, table);
 		return builder.toString();
+	}
+
+
+	@Override
+	public String buildRenameRunSQL(Table table) {
+		return null;
 	}
 	/**
 	 * 删除列
@@ -1303,13 +1303,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		builder.append("CREATE TABLE ");
-		if(BasicUtil.isNotEmpty(catalog)){
-			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)){
-			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		SQLUtil.delimiter(builder, table.getName(), getDelimiterFr(), getDelimiterTo());
+		name(builder, table);
 		builder.append("(");
 		Collection<Column> columns = table.getColumns().values();
 		int idx = 0;
@@ -1327,6 +1321,20 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return builder.toString();
 	}
 
+	@Override
+	public void name(StringBuilder builder, Table table){
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		String name = table.getName();
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
+
+	}
 	/**
 	 * 主键
 	 * @param builder builder
@@ -1546,4 +1554,5 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	public String buildInValue(SQL_BUILD_IN_VALUE value){
 		return null;
 	}
+
 }

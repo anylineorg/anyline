@@ -6,12 +6,16 @@ import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-@Repository("anyline.jdbc.creater.mysql") 
+
+import java.util.List;
+
+@Repository("anyline.jdbc.creater.mysql")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
  
 	public DB_TYPE type(){ 
@@ -177,8 +181,37 @@ SMALLINT:Short
 		return concatFun(args);
 	}
 
+	@Override
+	public String buildRenameRunSQL(Table table) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("RENAME TABLE ");
+		name(builder, table);
+		builder.append(" TO ");
+		name(builder, table.getUpdate());
+		return builder.toString();
+	}
 
 
+	/**
+	 * 主键
+	 * @param builder builder
+	 * @param table table
+	 */
+	@Override
+	public void primary(StringBuilder builder, Table table){
+		List<Column> pks = table.getPrimaryKeys();
+		if(pks.size()>0){
+			builder.append(",PRIMARY KEY (");
+			int idx = 0;
+			for(Column pk:pks){
+				if(idx > 0){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo()).append(" ").append(pk.getOrder());
+			}
+			builder.append(")");
+		}
+	}
 	/**
 	 * 备注
 	 * @param builder builder

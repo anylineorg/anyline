@@ -17,15 +17,18 @@
  */
 
 
-package org.anyline.service; 
- 
-import org.anyline.entity.*;
+package org.anyline.service;
+
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
+import org.anyline.entity.EntitySet;
+import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Index;
 import org.anyline.jdbc.entity.Table;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -491,6 +494,9 @@ public interface AnylineService<E>{
 		public boolean create(Table table) throws Exception;
 		public boolean alter(Table table) throws Exception;
 		public boolean drop(Table table) throws Exception;
+
+		public boolean add(Index index) throws Exception;
+		public boolean drop(Index index) throws Exception;
 	}
 	public interface MetaDataService{
 		/**

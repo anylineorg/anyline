@@ -168,11 +168,13 @@ public interface SQLCreater{
 	public String buildCreateRunSQL(Table table);
 	public String buildAlterRunSQL(Table table);
 	public String buildDropRunSQL(Table table);
+	public String buildRenameRunSQL(Table table);
 
+
+	public void name(StringBuilder builder, Table table);
 
 	/**
 	 * 主键
-	 * 默认实现:PRIMARY KEY (ID)
 	 * @param builder builder
 	 * @param table table
 	 */
@@ -186,7 +188,6 @@ public interface SQLCreater{
 	public void define(StringBuilder builder, Column column);
 	/**
 	 * 自增长列
-	 * 默认实现:ID int AUTO_INCREMENT
 	 * @param builder builder
 	 * @param column column
 	 */
@@ -194,7 +195,6 @@ public interface SQLCreater{
 
 	/**
 	 * 备注
-	 * 默认实现:COMMENT '备注内容'
 	 * @param builder builder
 	 * @param column column
 	 */
@@ -202,7 +202,6 @@ public interface SQLCreater{
 
 	/**
 	 * 位置
-	 * 默认实现:空
 	 * @param builder builder
 	 * @param column column
 	 */
