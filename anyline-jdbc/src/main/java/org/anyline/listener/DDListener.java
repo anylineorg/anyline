@@ -51,6 +51,8 @@ public interface DDListener {
     public void afterAlter(Table table, boolean result);
     public boolean beforeDrop(Table table);
     public void afterDrop(Table table, boolean result);
+    public boolean beforeRename(Table table);
+    public void afterRename(Table table, boolean result);
 
     public void setService(AnylineService srvice);
     public void setCreater(SQLCreater creater);
