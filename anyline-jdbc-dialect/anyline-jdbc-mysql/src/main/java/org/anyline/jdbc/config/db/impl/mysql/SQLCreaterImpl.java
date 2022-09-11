@@ -175,5 +175,69 @@ SMALLINT:Short
 */
 	public String concat(String ... args){
 		return concatFun(args);
-	} 
+	}
+
+
+
+	/**
+	 * 备注
+	 * @param builder builder
+	 * @param column column
+	 */
+	@Override
+	public void comment(StringBuilder builder, Column column){
+		String comment = column.getComment();
+		if(BasicUtil.isNotEmpty(comment)){
+			builder.append(" COMMENT '").append(comment).append("'");
+		}
+	}
+
+	/**
+	 * 位置
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void position(StringBuilder builder, Column column){
+		Integer position = column.getPosition();
+		if(null != position && position == 0){
+			builder.append(" FIRST");
+		}else{
+			String after = column.getAfter();
+			if(BasicUtil.isNotEmpty(after)){
+				builder.append(" AFTER").append(after);
+			}
+		}
+	}
+
+	/**
+	 * 自增长列
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void increment(StringBuilder builder, Column column){
+		if(column.isAutoIncrement()){
+			builder.append(" AUTO_INCREMENT");
+		}
+	}
+	/**
+	 * 更新行事件
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void onupdate(StringBuilder builder, Column column){
+		if(column.isOnUpdate()){
+			builder.append(" ON UPDATE CURRENT_TIMESTAMP");
+		}
+	}
+	/**
+	 * 内置函数
+	 * @param value SQL_BUILD_IN_VALUE
+	 * @return String
+	 */
+	public String buildInValue(SQL_BUILD_IN_VALUE value){
+		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
+			return "now()";
+		}
+		return null;
+	}
 } 

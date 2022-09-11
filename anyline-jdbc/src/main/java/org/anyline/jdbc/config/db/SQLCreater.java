@@ -29,6 +29,15 @@ import java.util.List;
 import java.util.Map;
 
 public interface SQLCreater{
+	//内置VALUE
+	public static enum SQL_BUILD_IN_VALUE{
+		CURRENT_TIME  		{public String getCode(){return "CURRENT_TIME";}	public String getName(){return "当前时间";}};
+
+		public abstract String getCode();
+		public abstract String getName();
+	}
+
+
 	public static enum DB_TYPE{
 		Cassandra			{public String getCode(){return "DB_TYPE_CASSANDRA";}			public String getName(){return "Cassandra";}}			,
 		ClickHouse			{public String getCode(){return "DB_TYPE_CLICKHOUSE";}			public String getName(){return "ClickHouse";}}			,
@@ -163,6 +172,7 @@ public interface SQLCreater{
 
 	/**
 	 * 主键
+	 * 默认实现:PRIMARY KEY (ID)
 	 * @param builder builder
 	 * @param table table
 	 */
@@ -176,6 +186,7 @@ public interface SQLCreater{
 	public void define(StringBuilder builder, Column column);
 	/**
 	 * 自增长列
+	 * 默认实现:ID int AUTO_INCREMENT
 	 * @param builder builder
 	 * @param column column
 	 */
@@ -183,6 +194,7 @@ public interface SQLCreater{
 
 	/**
 	 * 备注
+	 * 默认实现:COMMENT '备注内容'
 	 * @param builder builder
 	 * @param column column
 	 */
@@ -190,6 +202,7 @@ public interface SQLCreater{
 
 	/**
 	 * 位置
+	 * 默认实现:空
 	 * @param builder builder
 	 * @param column column
 	 */
@@ -233,5 +246,13 @@ public interface SQLCreater{
 	public boolean isCharColumn(Column column);
 	public boolean isNumberColumn(Column column);
 	public boolean isBooleanColumn(Column column);
+
+	/**
+	 * 内置函数
+	 * 如果需要引号，方法应该一块返回
+	 * @param value SQL_BUILD_IN_VALUE
+	 * @return String
+	 */
+	public String buildInValue(SQL_BUILD_IN_VALUE value);
 
 }

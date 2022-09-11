@@ -1419,14 +1419,23 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 */
 	public void defaultValue(StringBuilder builder, Column column){
 		Object def = column.getDefaultValue();
-		builder.append(" default ");
-		boolean isCharColumn = isCharColumn(column);
-		if(isCharColumn){
-			builder.append("'");
-		}
-		builder.append(def);
-		if(isCharColumn){
-			builder.append("'");
+		if(null != def) {
+			builder.append(" default ");
+			boolean isCharColumn = isCharColumn(column);
+			if(def instanceof SQL_BUILD_IN_VALUE){
+				String value = buildInValue((SQL_BUILD_IN_VALUE)def);
+				if(null != value){
+					builder.append(value);
+				}
+			}else {
+				if (isCharColumn) {
+					builder.append("'");
+				}
+				builder.append(def);
+				if (isCharColumn) {
+					builder.append("'");
+				}
+			}
 		}
 	}
 	/**
@@ -1435,9 +1444,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param column column
 	 */
 	public void onupdate(StringBuilder builder, Column column){
-		if(column.isOnUpdate()){
-			builder.append(" ON UPDATE CURRENT_TIMESTAMP");
-		}
 	}
 	/**
 	 * 自增长列
@@ -1445,9 +1451,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param column column
 	 */
 	public void increment(StringBuilder builder, Column column){
-		if(column.isAutoIncrement()){
-			builder.append(" AUTO_INCREMENT");
-		}
 	}
 
 	/**
@@ -1456,15 +1459,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param column column
 	 */
 	public void position(StringBuilder builder, Column column){
-		Integer position = column.getPosition();
-		if(null != position && position == 0){
-			builder.append(" FIRST");
-		}else{
-			String after = column.getAfter();
-			if(BasicUtil.isNotEmpty(after)){
-				builder.append(" AFTER").append(after);
-			}
-		}
 	}
 
 	/**
@@ -1472,11 +1466,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param builder builder
 	 * @param column column
 	 */
+	@Override
 	public void comment(StringBuilder builder, Column column){
-		String comment = column.getComment();
-		if(BasicUtil.isNotEmpty(comment)){
-			builder.append(" COMMENT '").append(comment).append("'");
-		}
 	}
 
 	/**
@@ -1546,5 +1537,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	@Override
 	public boolean isCharColumn(Column column) {
 		return !isNumberColumn(column) && !isBooleanColumn(column);
+	}
+	/**
+	 * 内置函数
+	 * @param value SQL_BUILD_IN_VALUE
+	 * @return String
+	 */
+	public String buildInValue(SQL_BUILD_IN_VALUE value){
+		return null;
 	}
 }

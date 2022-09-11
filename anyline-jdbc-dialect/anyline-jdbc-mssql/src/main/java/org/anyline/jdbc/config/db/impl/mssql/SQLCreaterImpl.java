@@ -1,6 +1,7 @@
  
 package org.anyline.jdbc.config.db.impl.mssql; 
  
+import com.sun.org.apache.regexp.internal.RE;
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -9,14 +10,19 @@ import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
+import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
+import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
- 
+
+import java.util.List;
+
 @Repository("anyline.jdbc.creater.mssql") 
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
 	 
@@ -138,6 +144,49 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	} 
 	public String concat(String ... args){
 		return concatAdd(args);
-	} 
-	 
+	}
+
+	/**
+	 * 自增长列
+	 * @param builder builder
+	 * @param column column
+	 */
+	public void increment(StringBuilder builder, Column column){
+		if(column.isAutoIncrement()){
+			builder.append(" IDENTITY(").append(column.getIncrementSeed()).append(",").append(column.getIncrementStep()).append(")");
+		}
+	}
+
+	/**
+	 * 主键
+	 * @param builder builder
+	 * @param table table
+	 */
+	@Override
+	public void primary(StringBuilder builder, Table table){
+		List<Column> pks = table.getPrimaryKeys();
+		if(pks.size()>0){
+			builder.append(",PRIMARY KEY (");
+			int idx = 0;
+			for(Column pk:pks){
+				if(idx > 0){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
+			}
+			builder.append(")");
+		}
+	}
+
+	/**
+	 * 内置函数
+	 * @param value SQL_BUILD_IN_VALUE
+	 * @return String
+	 */
+	public String buildInValue(SQL_BUILD_IN_VALUE value){
+		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
+			return "getdate()";
+		}
+		return null;
+	}
 }
