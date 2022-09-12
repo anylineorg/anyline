@@ -13,6 +13,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository("anyline.jdbc.creater.mysql")
@@ -57,87 +58,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		return sql; 
 	}
 
-	/**
-	 * 修改(添加)列
-	 * ALTER TABLE  HR_USER ADD COLUMN UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
-	 * @param column column
-	 * @return String
-	 */
-	@Override
-	public String buildAddRunSQL(Column column){
-		StringBuilder builder = new StringBuilder();
-		Table table = column.getTable();
-		builder.append("ALTER TABLE ");
-		name(builder, table);
-		Column update = column.getUpdate();
-		if(null == update){
-			//添加列
-			builder.append(" ADD COLUMN ");
-			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			//数据类型
-			builder.append(column.getTypeName());
-
-			//精度
-			int precision = column.getPrecision();
-			Integer scale = column.getScale();
-			if(precision > 0){
-				builder.append("(").append(precision);
-				if(null != scale){
-					builder.append(",").append(scale);
-				}
-				builder.append(")");
-			}else if(precision == -1){
-				builder.append("(max)");
-			}
-			// 编码
-			// CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
-			String charset = column.getCharset();
-			if(BasicUtil.isNotEmpty(charset)){
-				builder.append(" CHARACTER SET ").append(charset);
-				String collate = column.getCollate();
-				if(BasicUtil.isNotEmpty(collate)){
-					builder.append(" COLLATE ").append(collate);
-				}
-			}
-			//默认值
-			Object def = column.getDefaultValue();
-			if(BasicUtil.isNotEmpty(def)){
-				builder.append(" default ");
-				boolean isCharColumn = isCharColumn(column);
-				if(isCharColumn){
-					builder.append("'");
-				}
-				builder.append(def);
-				if(isCharColumn){
-					builder.append("'");
-				}
-			}else {
-				//非空
-				if (!column.isNullable()) {
-					builder.append(" NOT NULL");
-				}
-			}
-			if(column.isOnUpdate()){
-				builder.append(" ON UPDATE CURRENT_TIMESTAMP");
-			}
-			//备注
-			String comment = column.getComment();
-			if(BasicUtil.isNotEmpty(comment)){
-				builder.append(" COMMENT '").append(comment).append("'");
-			}
-			//位置
-			Integer position = column.getPosition();;
-			if(null != position && position == 0){
-				builder.append(" FIRST");
-			}else{
-				String after = column.getAfter();
-				if(BasicUtil.isNotEmpty(after)){
-					builder.append(" AFTER").append(after);
-				}
-			}
-		}
-		return builder.toString();
-	}
  /*
 BIGINT:java.lang.Long
 BINARY:byte[]
@@ -173,6 +93,65 @@ SMALLINT:Short
 	public String concat(String ... args){
 		return concatFun(args);
 	}
+	/**
+	 * 修改列 ALTER TABLE   HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
+	 * @param column
+	 * @return
+	 */
+	@Override
+	public List<String> buildAlterRunSQL(Column column){
+		List<String> sqls = new ArrayList<>();
+		column.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = column.getTable();
+		builder.append("ALTER TABLE ");
+		name(builder, table);
+		Column update = column.getUpdate();
+		if(null != update){
+			builder.append(" CHANGE ");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			if(!BasicUtil.equalsIgnoreCase(column.getName(), update.getTableName())) {
+				SQLUtil.delimiter(builder, update.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			}
+			define(builder, update);
+		}
+		sqls.add(builder.toString());
+		return sqls;
+	}
+	/**
+	 * 添加列
+	 * ALTER TABLE  HR_USER ADD COLUMN UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
+	 * @param column column
+	 * @return String
+	 */
+	@Override
+	public String buildAddRunSQL(Column column){
+		StringBuilder builder = new StringBuilder();
+		Table table = column.getTable();
+		builder.append("ALTER TABLE ");
+		name(builder, table);
+		Column update = column.getUpdate();
+		if(null == update){
+			//添加列
+			builder.append(" ADD COLUMN ");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			//数据类型
+			type(builder, column);
+			// 编码
+			charset(builder, column);
+			//默认值
+			defaultValue(builder, column);
+			//非空
+			nullable(builder, column);
+			//更新事件
+			onupdate(builder, column);
+			//备注
+			comment(builder, column);
+			//位置
+			position(builder, column);
+		}
+		return builder.toString();
+	}
 
 	@Override
 	public String buildRenameRunSQL(Table table) {
@@ -185,6 +164,10 @@ SMALLINT:Short
 	}
 
 
+	@Override
+	public String alterColumnKeyword(){
+		return "ALTER COLUMN";
+	}
 	/**
 	 * 主键
 	 * @param builder builder
