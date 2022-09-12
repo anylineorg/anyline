@@ -9,41 +9,41 @@ import org.anyline.util.BeanUtil;
 
 public class Column {
 
-    private String catalog                  ; //数据库
-    private String className                ; //java.lang.Long
-    private String schema                   ; //dbo
-    private String tableName                ; //表名
-    private Table table                     ; //表
-    private int displaySize                 ; //display size
-    private String comment                  ; //备注
-    private String name                     ; //名称
-    private int type                        ; //类型
-    private String typeName                 ; //类型名称
-    private int precision                   ; //整个字段的长度(包含小数部分)  123.45：precision = 5 ，scale = 2 对于SQL Server 中 varchar(max)设置成 -1
-    private Integer scale                   ; //小数部分的长度
-    private boolean nullable                ; //是否可以为NULL
-    private boolean caseSensitive           ; //是否区分大小写
-    private boolean isCurrency              ; //是否是货币
-    private boolean isSigned                ; //是否可以带正负号
-    private boolean isAutoIncrement         ; //是否自增
-    private int incrementSeed = 1           ; //自增起始值
-    private int incrementStep = 1           ; //自增增量
-    private boolean isPrimaryKey            ; //是否主键
-    private boolean isGenerated             ; //是否generated
-    private Object defaultValue             ; //默认值
-    private String charset                  ; //编码
-    private String collate                  ; //排序编码
+    private String catalog                      ; //数据库
+    private String className                    ; //java.lang.Long
+    private String schema                       ; //dbo
+    private String tableName                    ; //表名
+    private Table table                         ; //表
+    private int displaySize                     ; //display size
+    private String comment                      ; //备注
+    private String name                         ; //名称
+    private int type                            ; //类型
+    private String typeName                     ; //类型名称
+    private int precision                       ; //整个字段的长度(包含小数部分)  123.45：precision = 5 ，scale = 2 对于SQL Server 中 varchar(max)设置成 -1
+    private Integer scale                       ; //小数部分的长度
+    private boolean nullable            = true  ; //是否可以为NULL
+    private boolean caseSensitive               ; //是否区分大小写
+    private boolean isCurrency                  ; //是否是货币
+    private boolean isSigned                    ; //是否可以带正负号
+    private boolean isAutoIncrement             ; //是否自增
+    private int incrementSeed           = 1     ; //自增起始值
+    private int incrementStep           = 1     ; //自增增量
+    private boolean isPrimaryKey                ; //是否主键
+    private boolean isGenerated                 ; //是否generated
+    private Object defaultValue                 ; //默认值
+    private String charset                      ; //编码
+    private String collate                      ; //排序编码
 
-    private Integer position                ; //在表或索引中的位置,如果需要在第一列 设置成0
-    private String order                    ; //在索引中的排序方式ASC | DESC
+    private Integer position                    ; //在表或索引中的位置,如果需要在第一列 设置成0
+    private String order                        ; //在索引中的排序方式ASC | DESC
 
-    private String after                    ; //修改列时 在表中的位置
-    private String before                   ; //修改列时 在表中的位置
-    private boolean isOnUpdate              ; //是否在更新行时 更新这一列数据
+    private String after                        ; //修改列时 在表中的位置
+    private String before                       ; //修改列时 在表中的位置
+    private boolean isOnUpdate                  ; //是否在更新行时 更新这一列数据
 
-    private Column update                   ;
+    private Column update                       ;
 
-    private DDListener listener             ;
+    private DDListener listener                 ;
 
 
     public Column(){
@@ -131,6 +131,7 @@ public class Column {
 
     public Column setType(int type) {
         this.type = type;
+        this.className = null;
         return this;
     }
 
@@ -152,6 +153,7 @@ public class Column {
 
     public Column setTypeName(String typeName) {
         this.typeName = typeName;
+        this.className = null;
         return this;
     }
 
@@ -179,6 +181,9 @@ public class Column {
     }
 
     public String getTableName() {
+        if(null != table){
+            return table.getName();
+        }
         return tableName;
     }
 
@@ -366,7 +371,7 @@ public class Column {
             update();
         }
         update.setName(newName);
-        return this;
+        return update;
     }
     public Column setBefore(String before) {
         this.before = before;
@@ -389,7 +394,7 @@ public class Column {
         builder.append(name).append(" ").append(typeName);
         if(precision > 0){
             builder.append("(").append(precision);
-            if(null != scale){
+            if(null != scale && scale > 0){
                 builder.append(",").append(scale);
             }
             builder.append(")");
