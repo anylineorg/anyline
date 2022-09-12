@@ -1219,7 +1219,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
                 if (null == oldValue || !oldValue.equals(value)) {
                     super.put(key, value);
                 }
-                if (!ignore && !BasicUtil.equal(oldValue, value)) {
+                if (!ignore && !BasicUtil.equals(oldValue, value)) {
                     addUpdateColumns(key);
                 }
             }else{

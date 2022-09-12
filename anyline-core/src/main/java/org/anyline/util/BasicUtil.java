@@ -98,22 +98,37 @@ public class BasicUtil {
 	}
 	public static boolean isNotEmpty(boolean recursion, Object obj) {
 		return !isEmpty(recursion, obj);
-	} 
- 
-	public static boolean equal(Object obj1, Object obj2) {
-		if (null == obj1) { 
-			if (null == obj2) { 
-				return true; 
-			} else { 
+	}
+
+	public static boolean equals(Object obj1, Object obj2) {
+		if (null == obj1) {
+			if (null == obj2) {
+				return true;
+			} else {
 				return false;
-			} 
+			}
 		} else {
 			if(null == obj2){
 				return false;
 			}else {
 				return obj1.toString().equals(obj2.toString());
 			}
-		} 
+		}
+	}
+	public static boolean equalsIgnoreCase(Object obj1, Object obj2) {
+		if (null == obj1) {
+			if (null == obj2) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			if(null == obj2){
+				return false;
+			}else {
+				return obj1.toString().equalsIgnoreCase(obj2.toString());
+			}
+		}
 	}
 
 	/**
