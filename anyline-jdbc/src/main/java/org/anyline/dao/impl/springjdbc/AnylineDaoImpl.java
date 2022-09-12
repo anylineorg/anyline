@@ -60,6 +60,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Repository;
 
+import javax.sql.DataSource;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.*;
@@ -1303,10 +1304,15 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 	 * @return List
 	 */
+	private static Map<String,Map<String,String>> table_maps = new HashMap<>();
 	public List<Table> tables(String catalog, String schema, String name, String types){
 		List<Table> tables = new ArrayList<>();
+		DataSource ds = null;
+		Connection con = null;
 		try{
-			Connection con = DataSourceUtils.getConnection(getJdbc().getDataSource());
+			Long fr = System.currentTimeMillis();
+			ds = getJdbc().getDataSource();
+			con = DataSourceUtils.getConnection(ds);
 			if(null == catalog){
 				catalog = con.getCatalog();
 			}
@@ -1316,6 +1322,23 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			String[] tps = null;
 			if(null != types){
 				tps = types.toUpperCase().trim().split(",");
+			}
+			Map<String,String> table_map = table_maps.get(DataSourceHolder.getDataSource()+"");
+			if(null == table_map){
+				table_map = new HashMap<>();
+				table_maps.put(DataSourceHolder.getDataSource()+"", table_map);
+			}
+			if(null != name){
+				if(table_map.isEmpty()){
+					tables(catalog, schema, null, types);
+				}
+				String key = "_"+name.toUpperCase();
+				if(null != types){
+					key = types.toUpperCase() + key;
+				}
+				if(table_map.containsKey(key)){
+					name = table_map.get(key);
+				}
 			}
 			ResultSet rs = con.getMetaData().getTables(catalog, schema, name, tps );
 			while(rs.next()) {
@@ -1334,9 +1357,20 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				table.setSelfReferencingColumn(rs.getString("SELF_REFERENCING_COL_NAME"));
 				table.setRefGeneration(rs.getString("REF_GENERATION"));
 				tables.add(table);
+
+				table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+			}
+
+			if (showSQL) {
+				String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+				log.warn("{}[tables][catalog:{}][schema:{}][name:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, name, types, tables.size(), System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
 			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
 		}
 		return tables;
 	}
@@ -1362,7 +1396,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 
 		Long fr = System.currentTimeMillis();
+		DataSource ds = null;
+		Connection con = null;
 		try {
+			ds = getJdbc().getDataSource();
+			con = DataSourceUtils.getConnection(ds);
 			SQL sql = new TableSQLImpl();
 			sql.setDataSource(table);
 			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildQueryRunSQL(sql, null,"1=0");
@@ -1370,10 +1408,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			SqlRowSetMetaData rsm = set.getMetaData();
 			for (int i = 1; i <= rsm.getColumnCount(); i++) {
 				Column column = column(null, rsm, i);
-				columns.put(column.getName(), column);
+				columns.put(column.getName().toUpperCase(), column);
 			}
 			//isAutoIncrement isGenerated remark default
-			Connection con = DataSourceUtils.getConnection(getJdbc().getDataSource());
 			DatabaseMetaData metaData = con.getMetaData();
 			if(null == catalog){
 				catalog = con.getCatalog();
@@ -1384,7 +1421,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			ResultSet rs = metaData.getColumns(catalog, schema, table, null);
 			while (rs.next()){
 				String name = rs.getString("COLUMN_NAME");
-				Column column = columns.get(name);
+				if(null == name){
+					continue;
+				}
+				Column column = columns.get(name.toUpperCase());
 				if(null == column){
 					continue;
 				}
@@ -1397,7 +1437,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			rs = metaData.getPrimaryKeys(catalog, schema, table);
 			while (rs.next()){
 				String name = rs.getString(4);
-				Column column = columns.get(name);
+				Column column = columns.get(name.toUpperCase());
 				if(null == column){
 					continue;
 				}
@@ -1407,11 +1447,15 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 		}catch (Exception e){
 			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
 		}
 
 		if (showSQL) {
 			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
-			log.warn("{}[columns][table:{}][执行耗时:{}ms]", random, table, System.currentTimeMillis() - fr);
+			log.warn("{}[columns][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
 		}
 		return columns;
 	}
@@ -1453,21 +1497,23 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
 		String random = null;
-		String sql = SQLCreaterUtil.getCreater(getJdbc()).buildAlterRunSQL(column);
+		List<String> sqls = SQLCreaterUtil.getCreater(getJdbc()).buildAlterRunSQL(column);
 
-		if(showSQL){
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
-			log.warn("{}[txt:\n{}\n]",random,sql);
-		}
 		DDListener listener = column.getListener();
 		try{
-			boolean exe = true;
-			if(null != listener){
-				exe = listener.beforeAlter(column);
-			}
-			if(exe) {
-				getJdbc().update(sql);
-				result = true;
+			for(String sql:sqls) {
+				if (showSQL) {
+					random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+					log.warn("{}[txt:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (null != listener) {
+					exe = listener.beforeAlter(column);
+				}
+				if (exe) {
+					getJdbc().update(sql);
+					result = true;
+				}
 			}
 		}catch (Exception e){
 			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
@@ -1626,11 +1672,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		//更新列
 		for(Column ucolumn : ucolumns.values()){
-			Column column = columns.get(ucolumn.getName());
+			Column column = columns.get(ucolumn.getName().toUpperCase());
 			if(null != column){
 				//修改列
 				column.setTable(update);
 				column.setUpdate(ucolumn);
+				column.setService(table.getService());
 				alter(column);
 			}else{
 				//添加列
@@ -1640,7 +1687,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		//删除列
 		for(Column column : columns.values()){
-			Column ucolumn = ucolumns.get(column.getName());
+			Column ucolumn = ucolumns.get(column.getName().toUpperCase());
 			if(null == ucolumn){
 				column.setTable(update);
 				drop(column);
@@ -1747,8 +1794,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		String tab = table.getName();
+		DataSource ds = null;
+		Connection con = null;
 		try {
-			Connection con = DataSourceUtils.getConnection(getJdbc().getDataSource());
+			ds = jdbc.getDataSource();
+			con = DataSourceUtils.getConnection(ds);
 			if(null == catalog){
 				catalog = con.getCatalog();
 			}
@@ -1802,6 +1852,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			table.setIndexs(indexs);
 		}catch (Exception e){
 			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
 		}
 		return indexs;
 	}
