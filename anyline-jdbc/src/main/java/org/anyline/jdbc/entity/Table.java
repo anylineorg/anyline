@@ -99,7 +99,7 @@ public class Table {
     public Table setPrimaryKey(String ... keys){
         if(null != columns){
             for(String key:keys){
-                Column column = columns.get(key);
+                Column column = columns.get(key.toUpperCase());
                 if(null != column){
                     column.setPrimaryKey(true);
                 }else{
@@ -225,7 +225,7 @@ public class Table {
         return this;
     }
     public Column getColumn(String name){
-        return columns.get(name);
+        return columns.get(name.toUpperCase());
     }
 
     public String getEngine() {
@@ -261,6 +261,12 @@ public class Table {
     public Table setListener(DDListener listener) {
         this.listener = listener;
         return this;
+    }
+    public AnylineService getService(){
+        if(null != listener){
+            return listener.getService();
+        }
+        return null;
     }
     public Table setService(AnylineService service){
         if(null != listener){
