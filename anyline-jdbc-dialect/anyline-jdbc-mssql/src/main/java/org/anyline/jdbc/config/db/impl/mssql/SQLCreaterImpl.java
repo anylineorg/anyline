@@ -146,6 +146,24 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		return concatAdd(args);
 	}
 
+
+	/**
+	 * 修改表名
+	 * EXEC SP_RENAME 'A', 'B'
+	 * @param table table
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Table table) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC SP_RENAME ");
+		name(builder, table);
+		builder.append(",");
+		name(builder, table.getUpdate());
+		return builder.toString();
+	}
+
+
 	/**
 	 * 主键
 	 * CONSTRAINT [PK_BS_DEV] PRIMARY KEY
