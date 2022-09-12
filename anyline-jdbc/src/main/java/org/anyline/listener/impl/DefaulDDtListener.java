@@ -180,4 +180,7 @@ public class DefaulDDtListener implements DDListener {
     public void setService(AnylineService service){
         this.service = service;
     }
+    public AnylineService setService(){
+        return service;
+    }
 }
