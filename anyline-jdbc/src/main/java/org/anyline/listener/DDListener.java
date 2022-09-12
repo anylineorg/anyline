@@ -55,5 +55,6 @@ public interface DDListener {
     public void afterRename(Table table, boolean result);
 
     public void setService(AnylineService srvice);
+    public AnylineService getService();
     public void setCreater(SQLCreater creater);
 }
