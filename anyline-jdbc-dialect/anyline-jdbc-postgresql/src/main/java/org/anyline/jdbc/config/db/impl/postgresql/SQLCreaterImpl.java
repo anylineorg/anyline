@@ -169,11 +169,37 @@ varbit:String
 	}
 
 	/**
+	 * 修改表名
+	 * ALTER TABLE A RENAME TO B;
+	 * @param table table
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Table table) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, table);
+		builder.append(" RENAME TO ");
+		name(builder, table.getUpdate());
+		return builder.toString();
+	}
+
+	/**
+	 * 修改列名
+	 * ALTER TABLE T  RENAME  A  to B ;
+	 * @param column column
+	 * @return String
+	 */
+	public String buildRenameRunSQL(Column column) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, column.getTable());
+		builder.append(" RENAME ").append(column.getName()).append(" TO ").append(column.getNewName());
+		return builder.toString();
+	}
+	/**
 	 * 主键
-	 * CONSTRAINT [PK_BS_DEV] PRIMARY KEY
-	 * (
-	 * 	ID ASC
-	 * )
+	 * CONSTRAINT PK_BS_DEV PRIMARY KEY (ID ASC)
 	 * @param builder builder
 	 * @param table table
 	 * @return builder
@@ -188,10 +214,21 @@ varbit:String
 				if(idx > 0){
 					builder.append(",");
 				}
-				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo()).append(" ").append(pk.getOrder());
+				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
+				String order = pk.getOrder();
+				if(null != order){
+					builder.append(" ").append(order);
+				}
 			}
 			builder.append(")");
 		}
 		return builder;
+	}
+	@Override
+	public String type(String type){
+		if(type.equalsIgnoreCase("int")){
+			return "int4";
+		}
+		return type;
 	}
 } 
