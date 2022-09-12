@@ -9,6 +9,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.entity.Table;
 import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,5 +160,21 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		}else{
 			builder.append(value.toString());
 		}
+	}
+
+	/**
+	 * 修改表名
+	 * ALTER TABLE A RENAME TO B;
+	 * @param table table
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Table table) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, table);
+		builder.append(" RENAME TO ");
+		name(builder, table.getUpdate());
+		return builder.toString();
 	}
 }
