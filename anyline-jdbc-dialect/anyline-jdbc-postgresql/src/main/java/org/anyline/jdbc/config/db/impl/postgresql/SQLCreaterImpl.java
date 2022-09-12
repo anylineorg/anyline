@@ -224,6 +224,28 @@ varbit:String
 		}
 		return builder;
 	}
+
+	/**
+	 * alter table T alter column C type varchar(64);
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeTypeRunSQL(Column column){
+		StringBuilder builder = new StringBuilder();
+		Column update = column.getUpdate();
+		builder.append("ALTER TABLE ");
+		name(builder, column.getTable());
+		builder.append(" ALTER COLUMN ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" TYPE ");
+		type(builder, update);
+		String type = update.getTypeName();
+		if(type.contains("(")){
+			type = type.substring(0,type.indexOf("("));
+		}
+		builder.append(" USING ").append(column.getName()).append("::").append(type);
+		return builder.toString();
+	}
 	@Override
 	public String type(String type){
 		if(type.equalsIgnoreCase("int")){
