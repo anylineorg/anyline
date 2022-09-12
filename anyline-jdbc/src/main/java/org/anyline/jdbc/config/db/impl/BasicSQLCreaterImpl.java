@@ -20,7 +20,6 @@
 package org.anyline.jdbc.config.db.impl;
 
 
-import javafx.util.Builder;
 import org.anyline.dao.PrimaryCreater;
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
@@ -1198,6 +1197,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 	public String buildDropRunSQL(Table table){
 		table.setCreater(this);
+
 		StringBuilder builder = new StringBuilder();
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
@@ -1207,10 +1207,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 
-	@Override
-	public String buildRenameRunSQL(Table table) {
-		return null;
-	}
 	/**
 	 * 删除列
 	 * ALTER TABLE HR_USER DROP COLUMN NAME;
@@ -1234,20 +1230,133 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @return
 	 */
 	@Override
-	public String buildAlterRunSQL(Column column){
-		column.setCreater(this);
-		StringBuilder builder = new StringBuilder();
-		Table table = column.getTable();
-		builder.append("ALTER TABLE ");
-		name(builder, table);
+	public List<String> buildAlterRunSQL(Column column){
+		List<String> sqls = new ArrayList<>();
+
 		Column update = column.getUpdate();
 		if(null != update){
-			builder.append(" CHANGE ");
-			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			SQLUtil.delimiter(builder, update.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			define(builder, update);
+			column.setCreater(this);
+			update.setCreater(this);
+			//修改数据类型
+			String type = type(column.getTypeName());
+			String utype = type(update.getTypeName());
+			if(!BasicUtil.equalsIgnoreCase(type, utype)){
+				String sql = buildChangeTypeRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			//修改默认值
+			Object def = column.getDefaultValue();
+			Object udef = update.getDefaultValue();
+			if(!BasicUtil.equalsIgnoreCase(def, udef)){
+				String sql = buildChangeDefaultRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			//修改非空限制
+			boolean nullable = column.isNullable();
+			boolean unullable = update.isNullable();
+			if(nullable != unullable){
+				String sql = buildChangeNullableRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			//修改备注
+			String comment = column.getComment();
+			String ucomment = update.getComment();
+			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
+				String sql = buildChangeCommentRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+
+			//修改列名
+			String name = column.getName();
+			String uname = update.getName();
+			if(!BasicUtil.equalsIgnoreCase(name, uname)){
+				String sql = buildRenameRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
 		}
-		return builder.toString();
+
+		return sqls;
+	}
+
+	/**
+	 * 修改表名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param table table
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Table table) {
+		return null;
+	}
+
+	/**
+	 * 修改列名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Column column) {
+		return null;
+	}
+
+	/**
+	 * 修改默认值
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeDefaultRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改非空限制
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeNullableRunSQL(Column column){
+		return null;
+	}
+	/**
+	 * 修改备注
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改数据类型
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return sql
+	 */
+	public String buildChangeTypeRunSQL(Column column){
+		return null;
+	}
+	@Override
+	public String alterColumnKeyword(){
+		return "ALTER";
 	}
 	/**
 	 * 添加列
@@ -1284,10 +1393,11 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String schema = table.getSchema();
 		builder.append("CREATE TABLE ");
 		name(builder, table);
-		builder.append("(");
+		builder.append("(\n");
 		Collection<Column> columns = table.getColumns().values();
 		int idx = 0;
 		for(Column column:columns){
+			builder.append("\t");
 			if(idx > 0){
 				builder.append(",");
 			}
@@ -1296,12 +1406,19 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 			idx ++;
 		}
+		builder.append("\t");
 		primary(builder, table);
 		builder.append(")");
 
 		return builder.toString();
 	}
 
+	/**
+	 * 构造完整表名
+	 * @param builder builder
+	 * @param table table
+	 * @return StringBuilder
+	 */
 	@Override
 	public StringBuilder name(StringBuilder builder, Table table){
 		String catalog = table.getCatalog();
@@ -1354,9 +1471,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		//默认值
 		defaultValue(builder, column);
 		//非空
-		if (!column.isNullable()) {
-			builder.append(" NOT NULL");
-		}
+		nullable(builder, column);
 		//自增长列
 		increment(builder, column);
 		//更新行事件
@@ -1382,12 +1497,24 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		Integer scale = column.getScale();
 		if(precision > 0){
 			builder.append("(").append(precision);
-			if(null != scale){
+			if(null != scale && scale>0){
 				builder.append(",").append(scale);
 			}
 			builder.append(")");
 		}else if(precision == -1){
 			builder.append("(max)");
+		}
+		return builder;
+	}
+	/**
+	 * 编码
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder nullable(StringBuilder builder, Column column){
+		if (!column.isNullable()) {
+			builder.append(" NOT NULL");
 		}
 		return builder;
 	}
@@ -1499,22 +1626,22 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 				|| clazz.contains("short")
 			){
 				return true;
-			}else{
-				//如果没有同步法数据库，直接生成column可能只设置了type Name
-				String type = column.getTypeName();
-				if(null != type){
-					type = type.toLowerCase();
-					if(type.contains("int")
-							||type.contains("float")
-							||type.contains("double")
-							||type.contains("short")
-							||type.contains("long")
-							||type.contains("decimal")
-							||type.contains("numeric")
-							||type.contains("timestamp")
-					){
-						return true;
-					}
+			}
+		}else{
+			//如果没有同步法数据库，直接生成column可能只设置了type Name
+			String type = column.getTypeName();
+			if(null != type){
+				type = type.toLowerCase();
+				if(type.contains("int")
+						||type.contains("float")
+						||type.contains("double")
+						||type.contains("short")
+						||type.contains("long")
+						||type.contains("decimal")
+						||type.contains("numeric")
+						||type.contains("timestamp")
+				){
+					return true;
 				}
 			}
 		}
@@ -1554,4 +1681,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return null;
 	}
 
+	@Override
+	public String type(String type){
+		return type;
+	}
 }
