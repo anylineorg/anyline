@@ -25,6 +25,7 @@ import org.anyline.cache.CacheUtil;
 import org.anyline.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.*;
+import org.anyline.exception.AnylineException;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
@@ -1690,19 +1691,25 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         public boolean save(Column column) throws Exception{
             boolean result = false;
             Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
+            if(null == table){
+                throw new AnylineException("表不存在:"+column.getTableName());
+            }
             LinkedHashMap<String, Column> columns = table.getColumns();
-            Column original = columns.get(column.getName());
+            Column original = columns.get(column.getName().toUpperCase());
             if(null == original){
                 result = add(columns, column);
             }else {
                 result = alter(table, column);
             }
+            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
             return result;
         }
         @Override
         public boolean alter(Column column) throws Exception{
             Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
-            return alter(table, column);
+            boolean result = alter(table, column);
+            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+            return result;
         }
 
         /**
@@ -1715,7 +1722,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         private boolean alter(Table table, Column column) throws Exception{
             boolean result = false;
             LinkedHashMap<String, Column> columns = table.getColumns();
-            Column original = columns.get(column.getName());
+            Column original = columns.get(column.getName().toUpperCase());
 
             Column update = column.getUpdate();
             if(null == update){
@@ -1742,7 +1749,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         @Override
         public boolean add(Column column) throws Exception{
             LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName(), true);
-            return add(columns, column);
+            boolean result = add(columns, column);
+
+            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+            return result;
         }
         private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{
             column.setService(AnylineServiceImpl.this);
@@ -1766,28 +1776,44 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
 
+        @Override
         public boolean drop(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
-            return dao.drop(table);
+            boolean result = dao.drop(table);
+
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
         }
+        @Override
         public boolean save(Table table) throws Exception{
+            boolean result = false;
             Table otable = metadata.table(table.getCatalog(), table.getSchema(), table.getName());
             if(null != otable){
                 otable.setUpdate(table);
-                return alter(otable);
+                result = alter(otable);
             }else{
-                return create(table);
+                result =  create(table);
             }
+
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
         }
+        @Override
         public boolean create(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
-            return dao.create(table);
+            boolean result =  dao.create(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
         }
+        @Override
         public boolean alter(Table table) throws Exception{
             table.setService(AnylineServiceImpl.this);
-            return dao.alter(table);
+            boolean result = dao.alter(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
         }
 
+        @Override
         public boolean add(Index index) throws Exception{
             index.setService(AnylineServiceImpl.this);
             return false;
@@ -1797,6 +1823,15 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
     };
 
+    public void clearColumnCache(String catalog, String schema, String table){
+        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+        String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table;
+        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))) {
+            cacheProvider.remove(cache, key);
+        }else{
+            cache_metadatas.remove(key);
+        }
+    }
     public MetaDataService metadata = new MetaDataService() {
         @Override
         public List<Table> tables(String catalog, String schema, String name, String types) {
