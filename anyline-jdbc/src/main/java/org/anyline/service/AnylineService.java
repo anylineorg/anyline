@@ -515,10 +515,17 @@ public interface AnylineService<E>{
 		public Table table(String catalog, String schema, String name);
 		public Table table(String schema, String name);
 		public Table table(String name);
+
 		public List<Column> columns(Table table);
 		public List<Column> columns(String table);
 		public List<Column> columns(String catalog, String schema, String table);
 
+		/**
+		 * 查询表中所有的表，注意这里的map.KEY全部转大写
+		 * @param table table
+		 * @param map true
+		 * @return map
+		 */
 		public LinkedHashMap<String,Column> columns(Table table, boolean map);
 		public LinkedHashMap<String,Column> columns(String table, boolean map);
 		public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table, boolean map);
