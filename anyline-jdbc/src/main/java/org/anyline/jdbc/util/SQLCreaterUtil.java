@@ -47,15 +47,14 @@ public class SQLCreaterUtil {
 			}
 		}
 
+		DataSource ds = null;
+		Connection con = null;
 		try {
 			if(null != jdbc){
-				DataSource ds = jdbc.getDataSource();
-				Connection con = DataSourceUtils.getConnection(ds);
+				ds = jdbc.getDataSource();
+				con = DataSourceUtils.getConnection(ds);
 				String name = con.getMetaData().getDatabaseProductName().toLowerCase().replace(" ", "");
 				name += con.getMetaData().getURL().toLowerCase();
-				if(!DataSourceUtils.isConnectionTransactional(con, ds)){
-					DataSourceUtils.releaseConnection(con, ds);
-				}
 				//根据url中关键字
 				creater = getCreater(name);
 
@@ -65,6 +64,10 @@ public class SQLCreaterUtil {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
 		}
 		return creater;
 	}
