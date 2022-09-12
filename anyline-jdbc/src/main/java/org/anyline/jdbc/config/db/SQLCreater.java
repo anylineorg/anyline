@@ -161,8 +161,60 @@ public interface SQLCreater{
 
 
 	public String buildAddRunSQL(Column column);
-	public String buildAlterRunSQL(Column column);
+
+	/**
+	 * 修改列
+	 * 有可能生成多条SQL
+	 * @param column column
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(Column column);
+
+	/**
+	 * 删除列
+	 * @param column column
+	 * @return String
+	 */
 	public String buildDropRunSQL(Column column);
+
+	/**
+	 * 修改列名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildRenameRunSQL(Column column);
+
+	/**
+	 * 修改数据类型
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeTypeRunSQL(Column column);
+	/**
+	 * 修改默认值
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeDefaultRunSQL(Column column);
+
+	/**
+	 * 修改非空限制
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeNullableRunSQL(Column column);
+
+	/**
+	 * 修改备注
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Column column);
 
 
 	public String buildCreateRunSQL(Table table);
@@ -179,6 +231,7 @@ public interface SQLCreater{
 	 */
 	public StringBuilder name(StringBuilder builder, Table table);
 
+	public String alterColumnKeyword();
 	/**
 	 * 主键
 	 * @param builder builder
@@ -234,6 +287,13 @@ public interface SQLCreater{
 	public StringBuilder charset(StringBuilder builder, Column column);
 
 	/**
+	 * 非空
+	 * @param builder builder
+	 * @param column column
+	 */
+	public StringBuilder nullable(StringBuilder builder, Column column);
+
+	/**
 	 * 数据类型
 	 * @param builder builder
 	 * @param column column
@@ -259,5 +319,12 @@ public interface SQLCreater{
 	 * @return String
 	 */
 	public String buildInValue(SQL_BUILD_IN_VALUE value);
+
+	/**
+	 * 数据类型
+	 * @param type type
+	 * @return String
+	 */
+	public String type(String type);
 
 }
