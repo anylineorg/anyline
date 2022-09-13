@@ -30,7 +30,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	@Qualifier("anyline.dao") 
 	protected AnylineDao dao; 
 	 
-	public DB_TYPE type(){ 
+	public DB_TYPE type(){
 		return DB_TYPE.MSSQL; 
 	}
 

@@ -11,7 +11,6 @@ import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
-import org.postgresql.ds.common.PGObjectFactory;
 import org.postgresql.util.PGobject;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +22,7 @@ import java.util.List;
 @Repository("anyline.jdbc.creater.postgresql")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
  
-	public DB_TYPE type(){ 
+	public DB_TYPE type(){
 		return DB_TYPE.PostgreSQL; 
 	} 
 	public SQLCreaterImpl(){ 
@@ -238,7 +237,7 @@ varbit:String
 		builder.append(" ALTER COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" TYPE ");
-		type(builder, update);
+		type2type(builder, update);
 		String type = update.getTypeName();
 		if(type.contains("(")){
 			type = type.substring(0,type.indexOf("("));
@@ -247,7 +246,7 @@ varbit:String
 		return builder.toString();
 	}
 	@Override
-	public String type(String type){
+	public String type2type(String type){
 		if(type.equalsIgnoreCase("int")){
 			return "int4";
 		}

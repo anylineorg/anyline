@@ -19,7 +19,7 @@ import java.util.List;
 @Repository("anyline.jdbc.creater.mysql")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
  
-	public DB_TYPE type(){ 
+	public DB_TYPE type(){
 		return DB_TYPE.MYSQL; 
 	} 
 	public SQLCreaterImpl(){ 
@@ -136,7 +136,7 @@ SMALLINT:Short
 			builder.append(" ADD COLUMN ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			//数据类型
-			type(builder, column);
+			type2type(builder, column);
 			// 编码
 			charset(builder, column);
 			//默认值

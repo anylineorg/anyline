@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.jdbc.creater.gbasedbt")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
  
-	public DB_TYPE type(){ 
+	public DB_TYPE type(){
 		return DB_TYPE.GBase;
 	} 
 	public SQLCreaterImpl(){ 

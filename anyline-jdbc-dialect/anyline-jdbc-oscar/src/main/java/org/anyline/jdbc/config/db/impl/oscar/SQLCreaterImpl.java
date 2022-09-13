@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository("anyline.jdbc.creater.oscar")
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
  
-	public DB_TYPE type(){ 
+	public DB_TYPE type(){
 		return DB_TYPE.oscar;
 	} 
 	public SQLCreaterImpl(){ 

@@ -32,7 +32,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	@Qualifier("anyline.dao") 
 	protected AnylineDao dao; 
 
-	public DB_TYPE type(){ 
+	public DB_TYPE type(){
 		return DB_TYPE.ORACLE; 
 	}
 
@@ -113,7 +113,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 				if(null == pk){
 					pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
 				}
-				row.put(pk, primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
+				row.put(pk, primaryCreater.createPrimary(this.type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
 			}
 			builder.append(head).append("VALUES ");
 			insertValue(builder, row, keys);

@@ -28,7 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 @Repository("anyline.jdbc.creater.db2") 
 public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
-	public DB_TYPE type(){ 
+	public DB_TYPE type(){
 		return DB_TYPE.DB2; 
 	} 
 	public SQLCreaterImpl(){ 
