@@ -18,10 +18,11 @@
 package org.anyline.exception; 
  
 public class SQLException extends RuntimeException{
+	protected Exception src;
 	public SQLException(){ 
 		super(); 
 	} 
 	public SQLException(String title){ 
 		super(title); 
-	} 
+	}
 } 

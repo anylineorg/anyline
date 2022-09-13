@@ -21,8 +21,12 @@ public class SQLUpdateException extends SQLException{
 	private static final long serialVersionUID = 1L; 
 	public SQLUpdateException(){ 
 		super(); 
-	} 
-	public SQLUpdateException(String title){ 
-		super(title); 
-	} 
+	}
+	public SQLUpdateException(String title){
+		super(title);
+	}
+	public SQLUpdateException(String title, Exception src){
+		super(title);
+		this.src = src;
+	}
 } 
