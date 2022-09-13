@@ -298,7 +298,7 @@ public interface SQLCreater{
 	 * @param builder builder
 	 * @param column column
 	 */
-	public StringBuilder type(StringBuilder builder, Column column);
+	public StringBuilder type2type(StringBuilder builder, Column column);
 
 	/**
 	 * 是否是字符类型
@@ -321,10 +321,17 @@ public interface SQLCreater{
 	public String buildInValue(SQL_BUILD_IN_VALUE value);
 
 	/**
-	 * 数据类型
+	 * 转换成相应数据库的数据类型
 	 * @param type type
 	 * @return String
 	 */
-	public String type(String type);
+	public String type2type(String type);
+
+	/**
+	 * 数据库类型转换成java类型
+	 * @param type type
+	 * @return String
+	 */
+	public String type2class(String type);
 
 }

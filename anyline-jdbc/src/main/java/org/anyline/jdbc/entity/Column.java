@@ -130,8 +130,10 @@ public class Column {
     }
 
     public Column setType(int type) {
+        if(this.type != type) {
+            this.className = null;
+        }
         this.type = type;
-        this.className = null;
         return this;
     }
 
@@ -152,8 +154,10 @@ public class Column {
     }
 
     public Column setTypeName(String typeName) {
+        if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
+            this.className = null;
+        }
         this.typeName = typeName;
-        this.className = null;
         return this;
     }
 

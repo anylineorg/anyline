@@ -1049,99 +1049,137 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		try {
 			String clazz = column.getClassName();
 			String typeName = column.getTypeName().toUpperCase();
-			//根据数据库类型
-			if(typeName.equals("UUID")){
-				if(value instanceof UUID) {
-				}else{
-					run.setValue(UUID.fromString(value.toString()));
+			if(null != typeName){
+				//根据数据库类型
+				if(typeName.equals("UUID")){
+					if(value instanceof UUID) {
+					}else{
+						run.setValue(UUID.fromString(value.toString()));
+					}
+					return true;
+				}else if(
+						typeName.contains("CHAR")
+								|| typeName.contains("TEXT")
+				){
+					if(value instanceof String){
+					}else if(value instanceof Date){
+						run.setValue(DateUtil.format((Date)value));
+					}else{
+						run.setValue(value.toString());
+					}
+					return true;
+				}else if(typeName.equals("BIT")){
+					if("0".equals(value.toString()) || "false".equalsIgnoreCase(value.toString())){
+						run.setValue("0");
+					}else{
+						run.setValue("1");
+					}
+					return true;
+				}else if(typeName.equals("DATETIME")){
+					if(value instanceof Timestamp || value instanceof java.util.Date){
+					}else {
+						Date date = DateUtil.parse(value);
+						if(null != date) {
+							run.setValue(new Timestamp(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(typeName.equals("DATE")){
+					if(value instanceof java.sql.Date){
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							run.setValue(new java.sql.Date(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(typeName.equals("TIME")){
+					if(value instanceof Time){
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							run.setValue( new Time(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
 				}
-				return true;
-			}else if(
-					typeName.contains("CHAR")
-					|| typeName.contains("TEXT")
-			){
-				if(value instanceof String){
-				}else if(value instanceof Date){
-					run.setValue(DateUtil.format((Date)value));
-				}else{
-					run.setValue(value.toString());
-				}
-				return true;
-			}else if(typeName.equals("BIT")){
-				if("0".equals(value.toString()) || "false".equalsIgnoreCase(value.toString())){
-					run.setValue("0");
-				}else{
-					run.setValue("1");
-				}
-				return true;
 			}
-			// 根据Java类
-			// 不要解析String 许多不识别的类型会对应String 交给子类解析
-			// 不要解析Boolean类型 有可能是 0,1
-			else if(clazz.contains("Integer")){
-				if(value instanceof Integer){
-				}else {
-					run.setValue(BasicUtil.parseInt(value, null));
-				}
-				return true;
-			}else if(clazz.contains("Long")){
-				if(value instanceof Long){
-				}else {
-					run.setValue(BasicUtil.parseLong(value, null));
-				}
-				return true;
-			}else if(clazz.contains("Double")){
-				if(value instanceof Double){
-				}else {
-					run.setValue(BasicUtil.parseDouble(value, null));
-				}
-				return true;
-			}else if(clazz.contains("Float")){
-				if(value instanceof Float){
-				}else {
-					run.setValue(BasicUtil.parseFloat(value, null));
-				}
-				return true;
-			}else if(clazz.contains("BigDecimal")){
-				if(value instanceof BigDecimal){
-				}else {
-					run.setValue(BasicUtil.parseDecimal(value, null));
-				}
-				return true;
-			}else if(clazz.contains("java.sql.Timestamp")){
-				if(value instanceof Timestamp){
-				}else {
-					Date date = DateUtil.parse(value);
-					if(null != date) {
-						run.setValue(new Timestamp(date.getTime()));
-					}else{
-						run.setValue(null);
+			if(null != clazz){
+				// 根据Java类
+				// 不要解析String 许多不识别的类型会对应String 交给子类解析
+				// 不要解析Boolean类型 有可能是 0,1
+				if(clazz.contains("Integer")){
+					if(value instanceof Integer){
+					}else {
+						run.setValue(BasicUtil.parseInt(value, null));
 					}
-				}
-				return true;
-			}else if(clazz.equals("java.sql.Time")){
-				if(value instanceof Time){
-				}else {
-					Date date = DateUtil.parse(value);
-					if (null != date) {
-						run.setValue( new Time(date.getTime()));
-					}else{
-						run.setValue(null);
+					return true;
+				}else if(clazz.contains("Long")){
+					if(value instanceof Long){
+					}else {
+						run.setValue(BasicUtil.parseLong(value, null));
 					}
-				}
-				return true;
-			}else if(clazz.contains("java.sql.Date")){
-				if(value instanceof java.sql.Date){
-				}else {
-					Date date = DateUtil.parse(value);
-					if (null != date) {
-						run.setValue(new java.sql.Date(date.getTime()));
-					}else{
-						run.setValue(null);
+					return true;
+				}else if(clazz.contains("Double")){
+					if(value instanceof Double){
+					}else {
+						run.setValue(BasicUtil.parseDouble(value, null));
 					}
+					return true;
+				}else if(clazz.contains("Float")){
+					if(value instanceof Float){
+					}else {
+						run.setValue(BasicUtil.parseFloat(value, null));
+					}
+					return true;
+				}else if(clazz.contains("BigDecimal")){
+					if(value instanceof BigDecimal){
+					}else {
+						run.setValue(BasicUtil.parseDecimal(value, null));
+					}
+					return true;
+				}else if(clazz.contains("java.sql.Timestamp")){
+					if(value instanceof Timestamp){
+					}else {
+						Date date = DateUtil.parse(value);
+						if(null != date) {
+							run.setValue(new Timestamp(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(clazz.equals("java.sql.Time")){
+					if(value instanceof Time){
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							run.setValue( new Time(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
+				}else if(clazz.contains("java.sql.Date")){
+					if(value instanceof java.sql.Date){
+					}else {
+						Date date = DateUtil.parse(value);
+						if (null != date) {
+							run.setValue(new java.sql.Date(date.getTime()));
+						}else{
+							run.setValue(null);
+						}
+					}
+					return true;
 				}
-				return true;
 			}
+
 		}catch (Exception e){
 			e.printStackTrace();
 		}
@@ -1238,8 +1276,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			column.setCreater(this);
 			update.setCreater(this);
 			//修改数据类型
-			String type = type(column.getTypeName());
-			String utype = type(update.getTypeName());
+			String type = type2type(column.getTypeName());
+			String utype = type2type(update.getTypeName());
 			if(!BasicUtil.equalsIgnoreCase(type, utype)){
 				String sql = buildChangeTypeRunSQL(column);
 				if(null != sql){
@@ -1465,7 +1503,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	@Override
 	public StringBuilder define(StringBuilder builder, Column column){
 		//数据类型
-		type(builder, column);
+		type2type(builder, column);
 		// 编码
 		charset(builder, column);
 		//默认值
@@ -1489,7 +1527,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param column column
 	 * @return builder
 	 */
-	public StringBuilder type(StringBuilder builder, Column column){
+	public StringBuilder type2type(StringBuilder builder, Column column){
 
 		builder.append(column.getTypeName());
 		//精度
@@ -1682,7 +1720,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	@Override
-	public String type(String type){
+	public String type2type(String type){
 		return type;
 	}
+	@Override
+	public String type2class(String type){
+		return type;
+	}
+
 }
