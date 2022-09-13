@@ -13,7 +13,7 @@
 
     <artifactId>anyline-jdbc-tdengine</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-jdbc-oracle</name>
+    <name>anyline-jdbc-tdengine</name>
     <url>http://www.anyline.org/tdengine</url>
 
     <dependencies>
