@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository("anyline.jdbc.creater.mssql") 
@@ -269,7 +270,8 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	 * @param column column
 	 * @return sql
 	 */
-	public String buildChangeTypeRunSQL(Column column){
+	public List<String> buildChangeTypeRunSQL(Column column){
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		Column update = column.getUpdate();
 		builder.append("ALTER TABLE ");
@@ -279,7 +281,8 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		builder.append(" ");
 		type(builder, update);
 		nullable(builder, update);
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 	/**
