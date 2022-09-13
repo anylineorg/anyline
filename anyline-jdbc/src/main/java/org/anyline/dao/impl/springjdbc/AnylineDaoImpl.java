@@ -1541,16 +1541,16 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 */
 	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
 
-		boolean result = false;
+		boolean result = true;
 		Long fr = System.currentTimeMillis();
 		String random = null;
 		List<String> sqls = SQLCreaterUtil.getCreater(getJdbc()).buildAlterRunSQL(column);
 
+		random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
 		DDListener listener = column.getListener();
 		try{
 			for(String sql:sqls) {
 				if (showSQL) {
-					random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
 					log.warn("{}[txt:\n{}\n]", random, sql);
 				}
 				boolean exe = true;
@@ -1582,7 +1582,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 
 		if (showSQL) {
-			log.warn("{}[update column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
+			log.warn("{}[update column][table:{}][column:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, column.getTableName(), column.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
 		}
 		return result;
 	}
