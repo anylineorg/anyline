@@ -726,8 +726,8 @@ public class BasicUtil {
 	 * 数组是否包含 
 	 * @param objs  objs
 	 * @param obj  obj
-	 * @param ignoreCase  ignoreCase
-	 * @param ignoreNull  ignoreNull
+	 * @param ignoreCase  是否不区分大小写
+	 * @param ignoreNull  是否忽略null, 如果忽略 则无论是否包含null都返回false
 	 * @return boolean
 	 */
 	public static boolean containsString(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj){
@@ -736,14 +736,33 @@ public class BasicUtil {
 		}
 		return containsString(ignoreNull, ignoreCase, BeanUtil.array2list(objs), obj);
 	}
+	public static int index(boolean ignoreNull, boolean ignoreCase, Object[] objs, String obj){
+		if(null == objs){
+			return -1;
+		}
+		return index(ignoreNull, ignoreCase, BeanUtil.array2list(objs), obj);
+	}
 	public static boolean containsString(Object[] objs, String obj){
 		return containsString(false,false,objs, obj);
+	}
+	public static int index(Object[] objs, String obj){
+		return index(false,false,objs, obj);
 	}
 	public static boolean contains(Object[] objs, Object obj){
 		if(null == objs){
 			return false;
 		}
 		return contains(false,BeanUtil.array2list(objs), obj);
+	}
+	public static int index(Object[] objs, Object obj){
+		if(null == objs){
+			return -1;
+		}
+		return index(false,BeanUtil.array2list(objs), obj);
+	}
+
+	public static int index(boolean ignoreNull, Collection<Object> objs, Object obj){
+		return index(ignoreNull, objs, obj);
 	}
 	public static boolean contains(boolean ignoreNull, Collection<Object> objs, Object obj){
 		if(null == objs){
@@ -772,6 +791,7 @@ public class BasicUtil {
 		if(null == objs){
 			return false;
 		}
+		int idx = 0;
 		for(T o : objs){
 			if(ignoreNull){
 				if(null == obj || null == o){
@@ -799,8 +819,43 @@ public class BasicUtil {
 		return false;
 	}
 
+	public static <T> int index(boolean ignoreNull, boolean ignoreCase, Collection<T> objs, String obj){
+		int idx = -1;
+		if(null == objs){
+			return -1;
+		}
+		for(T o : objs){
+			idx ++;
+			if(ignoreNull){
+				if(null == obj || null == o){
+					continue;
+				}
+			}else{
+				if(null == obj && null == o){
+					return idx;
+				}
+			}
+			if (null != obj) {
+				if(null == o){
+					continue;
+				}
+				String val = o.toString();
+				if(ignoreCase){
+					obj = obj.toLowerCase();
+					val = val.toLowerCase();
+				}
+				if(obj.equals(val)){
+					return idx;
+				}
+			}
+		}
+		return -1;
+	}
 	public static boolean containsString(Collection<Object> objs, String obj){
 		return containsString(false,false,objs,obj);
+	}
+	public static int index(Collection<Object> objs, String obj){
+		return index(false,false,objs,obj);
 	}
 
 	/**
