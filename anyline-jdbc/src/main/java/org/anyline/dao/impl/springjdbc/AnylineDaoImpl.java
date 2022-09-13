@@ -357,7 +357,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					log.error(random + "[异常TXT:\n{}\n]", sql);
 					log.error(random + "[异常参数:{}]", paramLogFormat(values));
 				}
-				throw new SQLQueryException("查询异常:"+e.getMessage() ,e);
+				throw e;
 			}
 		}finally {
 			//自动切换回默认数据源
@@ -438,7 +438,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error(random + "[异常][txt:\n{}\n]",sql);
 				log.error(random + "[异常参数][param:{}]",paramLogFormat(run.getUpdateColumns(),values));
 			}
-			throw new SQLUpdateException("更新异常:"+e.getMessage(), e);
+			throw e;
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -584,7 +584,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error(random + "[异常][txt:\n{}\n]",sql);
 				log.error(random + "[异常参数][param:{}]",paramLogFormat(run.getInsertColumns(),values));
 			}
-			throw new SQLUpdateException("插入异常:"+e.getMessage(), e);
+			throw e;
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -730,7 +730,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error(random + "[异常][txt:\n{}\n]",sql);
 				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
 			}
-			throw new SQLQueryException("查询异常:" + e.getMessage() + "\ntxt:" + sql + "\nparam:" + values, e);
+			throw e;
 		}
 		return maps;
 	}
@@ -777,7 +777,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error(random + "[异常][txt:\n{}\n]",sql);
 				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
 			}
-			throw new SQLQueryException("查询异常:" + e.getMessage() + "\ntxt:" + sql + "\nparam:" + values, e);
+			throw e;
 		}
 		return set;
 	}
@@ -822,7 +822,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error(random + "[异常][txt:\n{}\n]",sql);
 				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
 			}
-			throw new SQLQueryException("查询异常:" + e.getMessage() + "\ntxt:" + sql + "\nparam:" + values, e);
+			throw e;
 		}
 		return set;
 	}
@@ -871,7 +871,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error(random + "[异常][txt:\n{}\n]",sql);
 				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
 			}
-			throw new SQLUpdateException(random + "执行异常:" + e.getMessage() + "\nTXT:" + txt + "\nPARAM:" + values, e);
+			throw e;
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -1061,7 +1061,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error("{}[异常][输出参数:{}]",random,paramLogFormat(outputs));
 			}
 			e.printStackTrace();
-			throw new SQLUpdateException("procedure执行异常:" + e.getMessage() + "\nprocedure:" + procedure.getName() + "\ninputs:" + paramLogFormat(inputs)+"\noutputs:"+paramLogFormat(outputs), e);
+			throw e;
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -1191,7 +1191,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
 				log.error("{}[输出参数:{}]",random,paramLogFormat(inputs));
 			}
-			throw new SQLQueryException("查询异常:" + e.getMessage() + "\nPROCEDURE:" + procedure.getName(), e);
+			throw e;
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
@@ -1278,7 +1278,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				log.error("{}[异常][参数:{}]",random, paramLogFormat(values));
 			}
 			result = 0;
-			throw new SQLUpdateException("删除异常:"+e.getMessage() , e);
+			throw e;
 		}finally{
 			//自动切换回默认数据源
 			if(DataSourceHolder.isAutoDefault()){
