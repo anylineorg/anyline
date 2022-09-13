@@ -237,7 +237,7 @@ varbit:String
 		builder.append(" ALTER COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" TYPE ");
-		type2type(builder, update);
+		type(builder, update);
 		String type = update.getTypeName();
 		if(type.contains("(")){
 			type = type.substring(0,type.indexOf("("));
