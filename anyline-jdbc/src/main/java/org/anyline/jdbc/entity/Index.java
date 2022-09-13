@@ -16,7 +16,7 @@ public class Index {
     private String name         ;
     private boolean unique      ; //是否唯一
     private boolean cluster     ; //是否聚簇索引
-    private int type            ; //
+    private Integer type        ; //
     private LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
     private Index update;
     private DDListener listener ;
@@ -74,7 +74,7 @@ public class Index {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(Integer type) {
         this.type = type;
     }
 
