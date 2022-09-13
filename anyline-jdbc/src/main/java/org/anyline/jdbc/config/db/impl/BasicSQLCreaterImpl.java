@@ -1275,13 +1275,24 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		if(null != update){
 			column.setCreater(this);
 			update.setCreater(this);
+
+			//修改列名
+			String name = column.getName();
+			String uname = update.getName();
+			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
+				String sql = buildRenameRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			column.setName(uname);
 			//修改数据类型
 			String type = type2type(column.getTypeName());
 			String utype = type2type(update.getTypeName());
 			if(!BasicUtil.equalsIgnoreCase(type, utype)){
-				String sql = buildChangeTypeRunSQL(column);
-				if(null != sql){
-					sqls.add(sql);
+				List<String> list = buildChangeTypeRunSQL(column);
+				if(null != list){
+					sqls.addAll(list);
 				}
 			}
 			//修改默认值
@@ -1307,16 +1318,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 			String ucomment = update.getComment();
 			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
 				String sql = buildChangeCommentRunSQL(column);
-				if(null != sql){
-					sqls.add(sql);
-				}
-			}
-
-			//修改列名
-			String name = column.getName();
-			String uname = update.getName();
-			if(!BasicUtil.equalsIgnoreCase(name, uname)){
-				String sql = buildRenameRunSQL(column);
 				if(null != sql){
 					sqls.add(sql);
 				}
@@ -1389,7 +1390,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param column column
 	 * @return sql
 	 */
-	public String buildChangeTypeRunSQL(Column column){
+	public List<String> buildChangeTypeRunSQL(Column column){
 		return null;
 	}
 	@Override
@@ -1409,13 +1410,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		Table table = column.getTable();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
-		Column update = column.getUpdate();
-		if(null == update){
+		//Column update = column.getUpdate();
+		//if(null == update){
 			//添加列
 			builder.append(" ADD COLUMN ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			define(builder, column);
-		}
+		//}
 		return builder.toString();
 	}
 
