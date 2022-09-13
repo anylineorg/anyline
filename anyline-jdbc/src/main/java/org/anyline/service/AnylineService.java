@@ -40,7 +40,7 @@ public interface AnylineService<E>{
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
-	 * @param obj			根据obj的file/value构造查询条件
+	 * @param obj			根据obj的field/value构造查询条件
 	 * @param conditions	固定查询条件
 	 * 			原生SQL(AND GROUP ORDER)
 	 * 			{原生}
@@ -58,7 +58,7 @@ public interface AnylineService<E>{
 	/**
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
-	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param first 起 下标从0开始
 	 * @param last 止
 	 * @param conditions	固定查询条件
@@ -76,7 +76,7 @@ public interface AnylineService<E>{
 	/**
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
-	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param first 起 下标从0开始
 	 * @param last 止
 	 * @param conditions	固定查询条件
@@ -129,7 +129,7 @@ public interface AnylineService<E>{
 	 * 直接返回Map集合不封装,不分页
 	 * @param src			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
-	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param conditions	固定查询条件
 	 * @return List
 	 */
@@ -156,7 +156,7 @@ public interface AnylineService<E>{
 	 * @param cache			对应ehcache缓存配置文件 中的cache.name
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
 	 * @param configs		根据http等上下文构造查询条件
-	 * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param conditions 	固定查询条件
 	 * @return DataSet
 	 */
@@ -473,7 +473,7 @@ public interface AnylineService<E>{
 	public interface DDLService{
 		/**
 		 * 列是否存在
-		 * @param table table
+		 * @param column column
 		 * @return boolean
 		 */
 		public boolean exists(Column column);

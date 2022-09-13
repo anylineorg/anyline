@@ -65,9 +65,8 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     /**
      * 按条件查询
-     * @param src 表｜视图｜函数｜自定义SQL
-     * @param src 			数据源(表或自定义SQL或SELECT语句)
-     * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+     * @param src 			数据源(表｜视图｜函数｜自定义SQL | SELECT语句)
+     * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions 固定查询条件
      * @return DataSet
      */
@@ -451,7 +450,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
      * 按条件查询
      * @param sql 表｜视图｜函数｜自定义SQL |SQL
      * @param configs		根据http等上下文构造查询条件
-     * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+     * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions 固定查询条件
      * @return DataSet
      */
@@ -678,7 +677,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
      * 检查唯一性
      * @param src  src
      * @param configs		根据http等上下文构造查询条件
-     * @param obj			根据obj的file/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
+     * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions 固定查询条件
      * @return boolean
      */
@@ -1623,13 +1622,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     /**
-     * 修改列  名称 数据类型 位置 默认值
-     * 执行save前先调用column.update()设置修改后的属性
-     * column.update().setName().setDefaultValue().setAfter()....
-     * @param column column
+     * 修改表结构
+     * @param table table
      * @throws Exception SQL异常
      */
-
     public boolean save(Table table) throws Exception{
         return ddl.save(table);
     }
