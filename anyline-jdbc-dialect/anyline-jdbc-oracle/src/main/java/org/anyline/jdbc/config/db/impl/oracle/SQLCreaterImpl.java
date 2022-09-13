@@ -9,6 +9,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
@@ -22,6 +23,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -177,4 +179,152 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		name(builder, table.getUpdate());
 		return builder.toString();
 	}
+
+
+
+	/**
+	 * 修改列名
+	 * 子类实现
+	 * ALTER TABLE 表名 RENAME COLUMN RENAME 老列名 TO 新列名
+	 * @param column column
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Column column) {
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, column.getTable());
+		builder.append(" RENAME COLUMN ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" TO ");
+		SQLUtil.delimiter(builder, column.getNewName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
+	}
+
+	/**
+	 * 修改默认值
+	 * 子类实现
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeDefaultRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改非空限制
+	 * 子类实现
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeNullableRunSQL(Column column){
+		return null;
+	}
+	/**
+	 * 修改备注
+	 * 子类实现
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改数据类型
+	 * 1.ADD NEW COLUMN
+	 * 2.FORMAT VALUE
+	 * 3.MOVE VALUE
+	 * alter table tb modify (name nvarchar2(20))
+	 * @param column column
+	 * @return sql
+	 */
+	public List<String> buildChangeTypeRunSQL(Column column){
+		List<String> sqls = new ArrayList<>();
+		Column update = column.getUpdate();
+		String name = column.getName();
+		String type = column.getTypeName();
+		if(type.contains("(")){
+			type = type.substring(0,type.indexOf("("));
+		}
+		String uname = update.getName();
+		String utype = update.getTypeName();
+		if(uname.endsWith("_TMP_UPDATE_TYPE")){
+			sqls.add(buildDropRunSQL(update));
+		}else {
+			if (utype != null && utype.contains("(")) {
+				utype = utype.substring(0, utype.indexOf("("));
+			}
+			if (!type.equals(utype)) {
+				String tmp_name = column.getName() + "_TMP_UPDATE_TYPE";
+
+				update.setName(tmp_name);
+				String rename = buildRenameRunSQL(column);
+				sqls.add(rename);
+
+				update.setName(uname);
+				String add = buildAddRunSQL(update);
+				sqls.add(add);
+
+				StringBuilder builder = new StringBuilder();
+				builder.append("UPDATE ");
+				name(builder, column.getTable());
+				builder.append(" SET ");
+				SQLUtil.delimiter(builder, uname, getDelimiterFr(), getDelimiterTo());
+				builder.append(" = ");
+				SQLUtil.delimiter(builder, tmp_name, getDelimiterFr(), getDelimiterTo());
+				sqls.add(builder.toString());
+
+				column.setName(tmp_name);
+				String drop = buildDropRunSQL(column);
+				sqls.add(drop);
+
+				column.setName(name);
+				update.setName(tmp_name);
+			} else {
+				StringBuilder builder = new StringBuilder();
+				builder.append("ALTER TABLE ");
+				name(builder, column.getTable());
+				builder.append(" MODIFY(");
+				SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+				type(builder, column.getUpdate());
+				builder.append(")");
+				sqls.add(builder.toString());
+			}
+		}
+
+		return sqls;
+	}
+	@Override
+	public String alterColumnKeyword(){
+		return "ALTER";
+	}
+	/**
+	 * 添加列
+	 * ALTER TABLE  HR_USER ADD  UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
+	 * @param column column
+	 * @return String
+	 */
+	@Override
+	public String buildAddRunSQL(Column column){
+		column.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = column.getTable();
+		builder.append("ALTER TABLE ");
+		name(builder, table);
+		//Column update = column.getUpdate();
+		//if(null == update){
+			//添加列
+			builder.append(" ADD ");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			define(builder, column);
+		//}
+		return builder.toString();
+	}
+
+	@Override
+	public String buildAlterRunSQL(Table table){
+		return null;
+	}
+
 }
