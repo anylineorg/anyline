@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository("anyline.jdbc.creater.postgresql")
@@ -229,7 +230,8 @@ varbit:String
 	 * @param column column
 	 * @return String
 	 */
-	public String buildChangeTypeRunSQL(Column column){
+	public List<String> buildChangeTypeRunSQL(Column column){
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		Column update = column.getUpdate();
 		builder.append("ALTER TABLE ");
@@ -243,7 +245,8 @@ varbit:String
 			type = type.substring(0,type.indexOf("("));
 		}
 		builder.append(" USING ").append(column.getName()).append("::").append(type);
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 	@Override
 	public String type2type(String type){
