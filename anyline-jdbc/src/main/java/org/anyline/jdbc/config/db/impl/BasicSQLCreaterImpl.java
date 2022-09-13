@@ -1503,7 +1503,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	@Override
 	public StringBuilder define(StringBuilder builder, Column column){
 		//数据类型
-		type2type(builder, column);
+		type(builder, column);
 		// 编码
 		charset(builder, column);
 		//默认值
@@ -1527,7 +1527,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @param column column
 	 * @return builder
 	 */
-	public StringBuilder type2type(StringBuilder builder, Column column){
+	public StringBuilder type(StringBuilder builder, Column column){
 
 		builder.append(column.getTypeName());
 		//精度
