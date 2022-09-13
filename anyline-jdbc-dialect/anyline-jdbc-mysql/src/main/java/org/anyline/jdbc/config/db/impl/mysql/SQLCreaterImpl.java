@@ -136,7 +136,7 @@ SMALLINT:Short
 			builder.append(" ADD COLUMN ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 			//数据类型
-			type2type(builder, column);
+			type(builder, column);
 			// 编码
 			charset(builder, column);
 			//默认值
