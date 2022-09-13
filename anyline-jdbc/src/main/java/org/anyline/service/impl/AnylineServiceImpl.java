@@ -1710,7 +1710,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
         /**
          * 修改列
-         * @param columns 表中所有的列
+         * @param table table
          * @param column 修改目标
          * @return boolean
          * @throws Exception sql异常
@@ -1760,7 +1760,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         public boolean drop(Column column) throws Exception{
             column.setService(AnylineServiceImpl.this);
-            return dao.drop(column);
+            boolean result = dao.drop(column);
+            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+            return result;
         }
 
         @Override
@@ -1821,7 +1823,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     public void clearColumnCache(String catalog, String schema, String table){
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table;
+        String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table.toUpperCase();
         if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))) {
             cacheProvider.remove(cache, key);
         }else{
@@ -1908,7 +1910,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
             LinkedHashMap<String,Column> columns = null;
             String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-            String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table;
+            String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table.toUpperCase();
 
             if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
                 CacheElement cacheElement = cacheProvider.get(cache, key);
