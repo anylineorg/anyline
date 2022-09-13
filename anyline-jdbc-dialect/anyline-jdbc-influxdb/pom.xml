@@ -13,7 +13,7 @@
 
 <artifactId>anyline-jdbc-influxdb</artifactId>
 <packaging>jar</packaging>
-<name>anyline-jdbc-oracle</name>
+<name>anyline-jdbc-influxdb</name>
 <url>http://www.anyline.org/influxdb</url>
 
 <dependencies>
