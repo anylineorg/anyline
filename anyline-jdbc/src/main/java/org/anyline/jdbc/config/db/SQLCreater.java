@@ -298,7 +298,7 @@ public interface SQLCreater{
 	 * @param builder builder
 	 * @param column column
 	 */
-	public StringBuilder type2type(StringBuilder builder, Column column);
+	public StringBuilder type(StringBuilder builder, Column column);
 
 	/**
 	 * 是否是字符类型
