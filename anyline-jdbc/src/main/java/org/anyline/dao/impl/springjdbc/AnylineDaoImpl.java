@@ -1334,21 +1334,22 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 			ResultSet rs = con.getMetaData().getTables(catalog, schema, name, tps );
+			List<String> keys = keys(rs);
 			while(rs.next()) {
-				String tableName = rs.getString("TABLE_NAME");
+				String tableName = string(keys, "TABLE_NAME", rs);
 				if(BasicUtil.isEmpty(tableName)){
 					continue;
 				}
 				Table table = new Table();
-				table.setCatalog(BasicUtil.evl(rs.getString("TABLE_CAT"), catalog));
-				table.setSchema(BasicUtil.evl(rs.getString("TABLE_SCHEM"), schema));
+				table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", rs), catalog));
+				table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", rs), schema));
 				table.setName(tableName);
-				table.setType(rs.getString("TABLE_TYPE"));
-				table.setComment(rs.getString("REMARKS"));
-				table.setTypeCat(rs.getString("TYPE_CAT"));
-				table.setTypeName(rs.getString("TYPE_NAME"));
-				table.setSelfReferencingColumn(rs.getString("SELF_REFERENCING_COL_NAME"));
-				table.setRefGeneration(rs.getString("REF_GENERATION"));
+				table.setType(string(keys, "TABLE_TYPE", rs));
+				table.setComment(string(keys, "REMARKS", rs));
+				table.setTypeCat(string(keys, "TYPE_CAT", rs));
+				table.setTypeName(string(keys, "TYPE_NAME", rs));
+				table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", rs));
+				table.setRefGeneration(string(keys, "REF_GENERATION", rs));
 				tables.add(table);
 
 				table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
@@ -1366,6 +1367,58 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}
 		return tables;
+	}
+
+	/**
+	 * 获取ResultSet中的列
+	 * @param rs rs
+	 * @return list
+	 * @throws Exception Exception
+	 */
+	private List<String> keys(ResultSet rs) throws Exception{
+		ResultSetMetaData rsmd = rs.getMetaData();
+		List<String> keys = new ArrayList<>();
+		for(int i=1; i<rsmd.getColumnCount(); i++){
+			keys.add(rsmd.getColumnName(i).toUpperCase());
+		}
+		return keys;
+	}
+	/**
+	 * 先检测rs中是否包含当前key 如果包含再取值, 取值时按keys中的大小写为准
+	 * @param keys keys
+	 * @param key key
+	 * @param set ResultSet
+	 * @return String
+	 * @throws Exception
+	 */
+	private String string(List<String> keys, String key, ResultSet set) throws Exception{
+		Object value = value(keys, key, set);
+		if(null != value){
+			return value.toString();
+		}
+		return null;
+	}
+	private Integer integer(List<String> keys, String key, ResultSet set, Integer def) throws Exception{
+		Object value = value(keys, key, set);
+		if(null != value){
+			return BasicUtil.parseInt(value, def);
+		}
+		return null;
+	}
+	private Boolean bool(List<String> keys, String key, ResultSet set, Boolean def) throws Exception{
+		Object value = value(keys, key, set);
+		if(null != value){
+			return BasicUtil.parseBoolean(value, def);
+		}
+		return null;
+	}
+	private Object value(List<String> keys, String key, ResultSet set) throws Exception{
+		int index = BasicUtil.index(true, true, keys, key);
+		if(index != -1){
+			key = keys.get(index);
+			return set.getObject(key);
+		}
+		return null;
 	}
 	public List<Table> tables(String schema, String name, String types){
 		return tables(null, schema, name, types);
@@ -1412,6 +1465,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				schema = con.getSchema();
 			}
 			ResultSet rs = metaData.getColumns(catalog, schema, table, null);
+			List<String> keys = keys(rs);
 			while (rs.next()){
 				String name = rs.getString("COLUMN_NAME");
 				if(null == name){
@@ -1421,9 +1475,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				if(null == column){
 					continue;
 				}
-				column.setCatalog(BasicUtil.evl(rs.getString("TABLE_CAT"), catalog));
-				column.setSchema(BasicUtil.evl(rs.getString("TABLE_SCHEM"), schema));
-				column.setTableName(BasicUtil.evl(rs.getString("TABLE_NAME"), table));
+				column.setCatalog(BasicUtil.evl(string(keys,"TABLE_CAT", rs), catalog));
+				column.setSchema(BasicUtil.evl(string(keys,"TABLE_SCHEM", rs), schema));
+				column.setTableName(BasicUtil.evl(string(keys,"TABLE_NAME", rs), table));
 				column(column, rs);
 			}
 			//主键
@@ -1750,14 +1804,15 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			column = new Column();
 		}
 		try {
-			column.setScale(BasicUtil.parseInt(rs.getString("DECIMAL_DIGITS"), null));
-			column.setPosition(BasicUtil.parseInt(rs.getString("ORDINAL_POSITION"), 0));
-			column.setAutoIncrement(BasicUtil.parseBoolean(rs.getString("IS_AUTOINCREMENT"), false));
-			column.setGenerated(BasicUtil.parseBoolean(rs.getString("IS_GENERATEDCOLUMN"), false));
-			column.setComment(rs.getString("REMARKS"));
-			column.setPosition(BasicUtil.parseInt(rs.getString("ORDINAL_POSITION"), 0));
+			List<String> keys = keys(rs);
+			column.setScale(BasicUtil.parseInt(string(keys, "DECIMAL_DIGITS", rs), null));
+			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
+			column.setAutoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
+			column.setGenerated(BasicUtil.parseBoolean(string(keys, "IS_GENERATEDCOLUMN", rs), false));
+			column.setComment(string(keys, "REMARKS", rs));
+			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
 			if (BasicUtil.isEmpty(column.getDefaultValue())) {
-				column.setDefaultValue(rs.getObject("COLUMN_DEF"));
+				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
 			}
 		}catch (Exception e){
 			e.printStackTrace();
@@ -1800,30 +1855,29 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			DatabaseMetaData metaData = con.getMetaData();
 			ResultSet rs = metaData.getIndexInfo(catalog, schema, tab, false, false);
-
-			ResultSetMetaData md = rs.getMetaData();
+			List<String> keys = keys(rs);
 			LinkedHashMap<String, Column> columns = null;
 			while (rs.next()) {
-				String name = rs.getString("INDEX_NAME");
+				String name = string(keys, "INDEX_NAME", rs);
 				if(null == name){
 					continue;
 				}
 				Index index = indexs.get(name);
 				if(null == index){
 					index = new Index();
-					index.setName(rs.getString("INDEX_NAME"));
-					index.setType(rs.getInt("TYPE"));
-					index.setUnique(!rs.getBoolean("NON_UNIQUE"));
-					index.setCatalog(BasicUtil.evl(rs.getString("TABLE_CAT"), catalog));
-					index.setSchema(BasicUtil.evl(rs.getString("TABLE_SCHEM"), schema));
-					index.setTable(rs.getString("TABLE_NAME"));
+					index.setName(string(keys, "INDEX_NAME", rs));
+					index.setType(integer(keys, "TYPE", rs, null));
+					index.setUnique(!bool(keys, "NON_UNIQUE", rs, false));
+					index.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", rs), catalog));
+					index.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", rs), schema));
+					index.setTable(string(keys, "TABLE_NAME", rs));
 					indexs.put(name, index);
 					columns = new LinkedHashMap<>();
 					index.setColumns(columns);
 				}else {
 					columns = index.getColumns();
 				}
-				String columnName = rs.getString("COLUMN_NAME");
+				String columnName = string(keys, "COLUMN_NAME", rs);
 				Column col = table.getColumn(columnName);
 				Column column = null;
 				if(null != col){
@@ -1832,14 +1886,14 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					column = new Column();
 					column.setName(columnName);
 				}
-				String order = rs.getString("ASC_OR_DESC");
+				String order = string(keys, "ASC_OR_DESC", rs);
 				if(null != order && order.startsWith("D")){
 					order = "DESC";
 				}else{
 					order = "ASC";
 				}
 				column.setOrder(order);
-				column.setPosition(rs.getInt("ORDINAL_POSITION"));
+				column.setPosition(integer(keys,"ORDINAL_POSITION", rs, null));
 				columns.put(column.getName(), column);
 			}
 			table.setIndexs(indexs);
