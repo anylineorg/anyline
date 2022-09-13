@@ -191,7 +191,7 @@ public interface SQLCreater{
 	 * @param column column
 	 * @return String
 	 */
-	public String buildChangeTypeRunSQL(Column column);
+	public List<String> buildChangeTypeRunSQL(Column column);
 	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
