@@ -1,7 +1,6 @@
  
 package org.anyline.jdbc.config.db.impl.mssql; 
- 
-import com.sun.org.apache.regexp.internal.RE;
+
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
@@ -156,20 +155,45 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	@Override
 	public String buildRenameRunSQL(Table table) {
 		StringBuilder builder = new StringBuilder();
-		builder.append("EXEC SP_RENAME ");
-		name(builder, table);
-		builder.append(",");
-		name(builder, table.getUpdate());
+		builder.append("EXEC SP_RENAME '").append(table.getName()).append("', '").append(table.getUpdate().getName()).append("'");
 		return builder.toString();
 	}
 
+	/**
+	 * 修改列名
+	 * EXEC sp_rename '表名.列名', '新列名', 'COLUMN'
+	 * @param column column
+	 * @return
+	 */
+	@Override
+	public String buildRenameRunSQL(Column column){
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC SP_RENAME '").append(column.getTableName()).append(".").append(column.getName()).append("' , '").append(column.getUpdate().getName()).append("','COLUMN' ");
+		return builder.toString();
+	}
+
+	/**
+	 * 添加新列
+	 * ALTER TABLE TAB_A ADD USER_NAME VARCHAR(10)
+	 * @param column column
+	 * @return String
+	 */
+	@Override
+	public String buildAddRunSQL(Column column){
+		column.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = column.getTable();
+		builder.append("ALTER TABLE ");
+		name(builder, table);
+		builder.append(" ADD ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+		define(builder, column);
+		return builder.toString();
+	}
 
 	/**
 	 * 主键
-	 * CONSTRAINT [PK_BS_DEV] PRIMARY KEY
-	 * (
-	 * 	[ID] ASC
-	 * )
+	 * CONSTRAINT [PK_BS_DEV] PRIMARY KEY (ID  ASC)
 	 * @param builder builder
 	 * @param table table
 	 * @return builder
@@ -184,7 +208,11 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 				if(idx > 0){
 					builder.append(",");
 				}
-				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo()).append(" ").append(pk.getOrder());
+				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
+				String order = pk.getOrder();
+				if(BasicUtil.isNotEmpty(order)){
+					builder.append(" ").append(order);
+				}
 			}
 			builder.append(")");
 		}
@@ -203,6 +231,56 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		return builder;
 	}
 
+
+	/**
+	 * 修改默认值
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeDefaultRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改非空限制
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeNullableRunSQL(Column column){
+		return null;
+	}
+	/**
+	 * 修改备注
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改数据类型
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * alter table 表名 alter column 字段名 varchar(255) not null
+	 * @param column column
+	 * @return sql
+	 */
+	public String buildChangeTypeRunSQL(Column column){
+		StringBuilder builder = new StringBuilder();
+		Column update = column.getUpdate();
+		builder.append("ALTER TABLE ");
+		name(builder, column.getTable());
+		builder.append(" ALTER COLUMN ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" ");
+		type(builder, update);
+		nullable(builder, update);
+		return builder.toString();
+	}
 
 	/**
 	 * 内置函数
