@@ -11,6 +11,8 @@ import org.anyline.listener.DDListener;
 import org.anyline.service.AnylineService;
 import org.anyline.util.ConfigTable;
 import org.anyline.util.regular.RegularUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -20,6 +22,7 @@ import java.util.List;
 @Component("anyline.jdbc.listener.dd.default")
 public class DefaulDDtListener implements DDListener {
 
+    protected Logger log = LoggerFactory.getLogger(DefaulDDtListener.class);
     protected AnylineService service;
     protected SQLCreater creater;
 
@@ -83,6 +86,7 @@ public class DefaulDDtListener implements DDListener {
             int page = 1;
             int vol = 100;
             PageNavi navi = new PageNaviImpl();
+            navi.setPageRows(vol);
             List<Column> pks = table.getPrimaryKeys();
             if(pks.size() == 0){
                 if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)){
@@ -103,12 +107,19 @@ public class DefaulDDtListener implements DDListener {
                 }
                 set.setPrimaryKey(true, keys);
                 for(DataRow row:set){
-                    String value = row.getString(column.getName());
+                    String value = row.getString(column.getName()+"_TMP_UPDATE_TYPE");
+                    if(null == value){
+                        value = row.getString(column.getName());
+                    }
                     if(null != value){
-                        value = char2number(value);
-                        row.put(column.getName(), value);
+                        String num = char2number(value);
+                        row.put(column.getName(), num);
+                        log.warn("[after exception][数据修正][{}>{}]", value, num);
                         service.update(table.getName(), row, column.getName());
                     }
+                }
+                if(set.size() <  vol){
+                    break;
                 }
                 page ++;
             }
