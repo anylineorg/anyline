@@ -209,15 +209,17 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	 */
 	public String buildChangeDefaultRunSQL(Column column){
 		Object def = column.getDefaultValue();
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, column.getTable()).append(" MODIFY ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" DEFAULT ");
 		if(null != def){
-			StringBuilder builder = new StringBuilder();
-			builder.append("ALTER TABLE ");
-			name(builder, column.getTable()).append(" MODIFY ");
-			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
-			builder.append(" DEFAULT '").append(def).append("'");
-			return builder.toString();
+			builder.append("'").append(def).append("'");
+		}else{
+			builder.append("NULL");
 		}
-		return null;
+		return builder.toString();
 	}
 
 	/**
