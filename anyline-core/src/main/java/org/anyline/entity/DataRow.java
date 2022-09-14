@@ -121,7 +121,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         this();
         Set<Map.Entry<String, Object>> set = map.entrySet();
         for (Map.Entry<String, Object> entity : set) {
-            put(keyAdapter.key(entity.getKey()), entity.getValue());
+            Object value = entity.getValue();
+            if(null != value && value instanceof byte[]){
+                value = new String((byte[]) value);
+            }
+            put(keyAdapter.key(entity.getKey()), value);
         }
     }
     public DataRow serCreateTime(Long time){
