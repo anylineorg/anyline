@@ -279,6 +279,45 @@ varbit:String
 		return null;
 	}
 
+	/**
+	 * 修改默认值
+	 * ALTER TABLE T ALTER COLUMN C SET DEFAULT 0;
+	 * ALTER TABLE T ALTER COLUMN C DROP DEFAULT;
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeDefaultRunSQL(Column column){
+		Object def = column.getDefaultValue();
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, column.getTable()).append(" ALTER COLUMN");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		if(null != def){
+			builder.append(" SET DEFAULT '").append(def).append("'");
+		}else{
+			builder.append(" DROP DEFAULT");
+		}
+		return builder.toString();
+	}
+	/**
+	 * 修改备注
+	 * COMMENT ON COLUMN T.ID IS 'ABC'
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Column column){
+		String comment = column.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			StringBuilder builder = new StringBuilder();
+			builder.append("COMMENT ON COLUMN ");
+			name(builder, column.getTable()).append(".");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+			builder.append(" IS '").append(comment).append("'");
+			return builder.toString();
+		}else{
+			return null;
+		}
+	}
 	@Override
 	public String type2type(String type){
 		if(type.equalsIgnoreCase("int")){
