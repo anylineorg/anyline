@@ -9,41 +9,41 @@ import org.anyline.util.BeanUtil;
 
 public class Column {
 
-    private String catalog                      ; //数据库
-    private String className                    ; //java.lang.Long
-    private String schema                       ; //dbo
-    private String tableName                    ; //表名
-    private Table table                         ; //表
-    private Integer displaySize                 ; //display size
-    private String comment                      ; //备注
-    private String name                         ; //名称
-    private Integer type                        ; //类型
-    private String typeName                     ; //类型名称
-    private Integer precision                   ; //整个字段的长度(包含小数部分)  123.45：precision = 5 ，scale = 2 对于SQL Server 中 varchar(max)设置成 -1
-    private Integer scale                       ; //小数部分的长度
-    private Boolean nullable                    ; //是否可以为NULL
-    private Boolean caseSensitive               ; //是否区分大小写
-    private Boolean isCurrency                  ; //是否是货币
-    private Boolean isSigned                    ; //是否可以带正负号
-    private Boolean isAutoIncrement             ; //是否自增
-    private Integer incrementSeed       = 1     ; //自增起始值
-    private Integer incrementStep       = 1     ; //自增增量
-    private Boolean isPrimaryKey                ; //是否主键
-    private Boolean isGenerated                 ; //是否generated
-    private Object defaultValue                 ; //默认值
-    private String charset                      ; //编码
-    private String collate                      ; //排序编码
+    protected String catalog                      ; //数据库
+    protected String className                    ; //java.lang.Long
+    protected String schema                       ; //dbo
+    protected String tableName                    ; //表名
+    protected Table table                         ; //表
+    protected Integer displaySize                 ; //display size
+    protected String comment                      ; //备注
+    protected String name                         ; //名称
+    protected Integer type                        ; //类型
+    protected String typeName                     ; //类型名称
+    protected Integer precision                   ; //整个字段的长度(包含小数部分)  123.45：precision = 5 ，scale = 2 对于SQL Server 中 varchar(max)设置成 -1
+    protected Integer scale                       ; //小数部分的长度
+    protected Boolean nullable                    ; //是否可以为NULL
+    protected Boolean caseSensitive               ; //是否区分大小写
+    protected Boolean isCurrency                  ; //是否是货币
+    protected Boolean isSigned                    ; //是否可以带正负号
+    protected Boolean isAutoIncrement             ; //是否自增
+    protected Integer incrementSeed       = 1     ; //自增起始值
+    protected Integer incrementStep       = 1     ; //自增增量
+    protected Boolean isPrimaryKey                ; //是否主键
+    protected Boolean isGenerated                 ; //是否generated
+    protected Object defaultValue                 ; //默认值
+    protected String charset                      ; //编码
+    protected String collate                      ; //排序编码
 
-    private Integer position                    ; //在表或索引中的位置,如果需要在第一列 设置成0
-    private String order                        ; //在索引中的排序方式ASC | DESC
+    protected Integer position                    ; //在表或索引中的位置,如果需要在第一列 设置成0
+    protected String order                        ; //在索引中的排序方式ASC | DESC
 
-    private String after                        ; //修改列时 在表中的位置
-    private String before                       ; //修改列时 在表中的位置
-    private Boolean isOnUpdate                  ; //是否在更新行时 更新这一列数据
+    protected String after                        ; //修改列时 在表中的位置
+    protected String before                       ; //修改列时 在表中的位置
+    protected Boolean isOnUpdate                  ; //是否在更新行时 更新这一列数据
 
-    private Column update                       ;
+    protected Column update                       ;
 
-    private DDListener listener                 ;
+    protected DDListener listener                 ;
 
 
     public Column(){
