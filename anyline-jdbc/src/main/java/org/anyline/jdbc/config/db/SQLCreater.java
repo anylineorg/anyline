@@ -85,6 +85,22 @@ public interface SQLCreater{
 	 */
 	public RunSQL buildQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions);
 
+	/**
+	 * 查询超表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types);
+
+	/**
+	 * 从查询结果中提取出超表名
+	 * @param set 查询结果
+	 * @return List
+	 */
+	public List<String> stables(DataSet set);
 	public RunSQL buildDeleteRunSQL(String dest, Object obj, String ... columns);
 	public RunSQL buildDeleteRunSQL(String table, String key, Object values);
 	public RunSQL buildExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions);
