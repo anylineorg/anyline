@@ -33,21 +33,17 @@ import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
+import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.config.db.impl.ProcedureParam;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
-import org.anyline.jdbc.entity.Column;
-import org.anyline.jdbc.entity.Index;
-import org.anyline.jdbc.entity.Table;
+import org.anyline.jdbc.entity.*;
 import org.anyline.jdbc.util.SQLCreaterUtil;
 import org.anyline.listener.DDListener;
 import org.anyline.listener.DMListener;
-import org.anyline.util.AdapterProxy;
-import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
-import org.anyline.util.ConfigTable;
+import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -884,83 +880,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public int execute(SQL sql, String ... conditions){
 		return execute(sql, null, conditions);
 	}
-	//	@SuppressWarnings("unchecked")
-//	@Override
-//	public boolean executeProcedure(Procedure procedure){
-//		boolean result = false;
-//		List<Object> list = new ArrayList<Object>();
-//		final List<String> inputValues = procedure.getInputValues();
-//		final List<Integer> inputTypes = procedure.getInputTypes();
-//		final List<Integer> outputTypes = procedure.getOutputTypes();
-//		long fr = System.currentTimeMillis();
-//		String random = "";
-//		if(showSQL){
-//			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+DataSourceHolder.getDataSource()+"]";
-//			log.warn(random + "[txt:\n{}\n]",procedure.getName() );
-//			log.warn(random + "[参数:{}]",paramLogFormat(inputValues));
-//		}
-//		String sql = "{call " +procedure.getName()+"(";
-//		final int sizeIn = null == inputTypes? 0 : inputTypes.size();
-//		final int sizeOut = null == outputTypes? 0 : outputTypes.size();
-//		final int size = sizeIn + sizeOut;
-//		for(int i=0; i<size; i++){
-//			sql += "?";
-//			if(i < size-1){
-//				sql += ",";
-//			}
-//		}
-//		sql += ")}";
-//		try{
-//			list = (List<Object>)getJdbc().execute(sql,new CallableStatementCallback<Object>(){
-//		        public Object doInCallableStatement(final CallableStatement cs) throws SQLException, DataAccessException {
-//					final List<Object> result = new ArrayList<Object>();
-//					for(int i=1; i<=sizeIn; i++){
-//						Object value = inputValues.get(i-1);
-//						if(null == value || "NULL".equalsIgnoreCase(value.toString())){
-//							value = null;
-//						}
-//						cs.setObject(i, value, inputTypes.get(i-1));
-//					}
-//					for(int i=1; i<=sizeOut; i++){
-//						cs.registerOutParameter(i+sizeIn, outputTypes.get(i-1));
-//					}
-//		            if(sizeOut > 0){
-//						//注册输出参数
-//						cs.execute();
-//						for(int i=1; i<=sizeOut; i++){
-//							final Object output = cs.getObject(sizeIn+i);
-//							result.add(output);
-//						}
-//					}else{
-//						cs.execute();
-//					}
-//		            return result;
-//		        }
-//		    });
-//
-//			if(showSQL){
-//				log.warn(random + "[执行耗时:{}ms]",System.currentTimeMillis()-fr);
-//				log.warn(random + "[输出参数:{}]",list);
-//			}
-//			procedure.setResult(list);
-//			result = true;
-//		}catch(Exception e){
-//			result = false;
-//			log.error(random+":" +e);
-//			if(showSQLWhenError){
-//				log.error(random + "[异常][txt:\n{}\n]",sql);
-//				log.error(random + "[异常][参数:{}]",paramLogFormat(inputValues));
-//			}
-//			e.printStackTrace();
-//			throw new SQLUpdateException("PROCEDURE执行异常:" + e + "\nPROCEDURE:" + procedure.getName() + "\nPARAM:" + procedure.getInputValues());
-//		}finally{
-//			//自动切换回默认数据源
-//			if(DataSourceHolder.isAutoDefault()){
-//				DataSourceHolder.recoverDataSource();
-//			}
-//		}
-//		return result;
-//	}
+
 	@Override
 	public boolean execute(Procedure procedure){
 		boolean result = false;
@@ -1298,6 +1218,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * @return List
 	 */
 	private static Map<String,Map<String,String>> table_maps = new HashMap<>();
+	private static Map<String,Map<String,String>> stable_maps = new HashMap<>();
 	public List<Table> tables(String catalog, String schema, String name, String types){
 		List<Table> tables = new ArrayList<>();
 		DataSource ds = null;
@@ -1369,6 +1290,130 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return tables;
 	}
 
+	public List<Table> tables(String schema, String name, String types){
+		return tables(null, schema, name, types);
+	}
+	public List<Table> tables(String name, String types){
+		return tables(null, null, name, types);
+	}
+	public List<Table> tables(String types){
+		return tables(null, null, null, types);
+	}
+	public List<Table> tables(){
+		return tables(null, null, null, "TABLE");
+	}
+
+	@Override
+	public List<STable> stables(String catalog, String schema, String pattern, String types) {
+		List<STable> tables = new ArrayList<>();
+		DataSource ds = null;
+		Connection con = null;
+		boolean queryTable = false;	//根据查询获取表结构
+		Long fr = System.currentTimeMillis();
+		List<String> list = null;
+		try{
+			SQLCreater creater = SQLCreaterUtil.getCreater(getJdbc());
+			String sql = creater.buildQuerySTableRunSQL(catalog, schema, pattern, types);
+			DataSet set = select(sql, null);
+			list = creater.stables(set);
+			if(null != list) {
+				queryTable = true;
+			}
+		}catch (Exception e){
+
+		}
+		try{
+
+			ds = getJdbc().getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			if(null == catalog){
+				catalog = con.getCatalog();
+			}
+			if(null == schema){
+				schema = con.getSchema();
+			}
+			String[] tps = null;
+			if(null != types){
+				tps = types.toUpperCase().trim().split(",");
+			}
+			Map<String,String> table_map = stable_maps.get(DataSourceHolder.getDataSource()+"");
+			if(null == table_map){
+				table_map = new HashMap<>();
+				stable_maps.put(DataSourceHolder.getDataSource()+"", table_map);
+			}
+			if(null != pattern){
+				if(table_map.isEmpty()){
+					tables(catalog, schema, null, types);
+				}
+				String key = "_"+pattern.toUpperCase();
+				if(null != types){
+					key = types.toUpperCase() + key;
+				}
+				if(table_map.containsKey(key)){
+					pattern = table_map.get(key);
+				}
+			}
+			ResultSet rs = con.getMetaData().getTables(catalog, schema, pattern, tps );
+			List<String> keys = keys(rs);
+			while(rs.next()) {
+				String tableName = string(keys, "TABLE_NAME", rs);
+				if(BasicUtil.isEmpty(tableName)){
+					continue;
+				}
+				if(!BasicUtil.containsString(true, true, list, tableName)){
+					if(queryTable){
+						continue;
+					}
+				}
+				STable table = new STable();
+				table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", rs), catalog));
+				table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", rs), schema));
+				table.setName(tableName);
+				table.setType(string(keys, "TABLE_TYPE", rs));
+				table.setComment(string(keys, "REMARKS", rs));
+				table.setTypeCat(string(keys, "TYPE_CAT", rs));
+				table.setTypeName(string(keys, "TYPE_NAME", rs));
+				table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", rs));
+				table.setRefGeneration(string(keys, "REF_GENERATION", rs));
+				tables.add(table);
+
+				table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+			}
+
+			if (showSQL) {
+				String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+				log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		return tables;
+	}
+
+	@Override
+	public List<STable> stables(String schema, String name, String types) {
+		return stables(null, schema, name, types);
+	}
+
+	@Override
+	public List<STable> stables(String name, String types) {
+		return stables(null, null, name, types);
+	}
+
+	@Override
+	public List<STable> stables(String types) {
+		return stables(null, types);
+	}
+
+	@Override
+	public List<STable> stables() {
+		return stables("STABLE");
+	}
+
 	/**
 	 * 获取ResultSet中的列
 	 * @param rs rs
@@ -1427,18 +1472,6 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 	private Object value(List<String> keys, String key, ResultSet set) throws Exception{
 		return value(keys, key, set, null);
-	}
-	public List<Table> tables(String schema, String name, String types){
-		return tables(null, schema, name, types);
-	}
-	public List<Table> tables(String name, String types){
-		return tables(null, null, name, types);
-	}
-	public List<Table> tables(String types){
-		return tables(null, null, null, types);
-	}
-	public List<Table> tables(){
-		return tables(null, null, null, "TABLE");
 	}
 	public LinkedHashMap<String,Column> columns(Table table){
 		return columns(table.getCatalog(), table.getSchema(), table.getName());
@@ -1535,6 +1568,22 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return columns;
 	}
+
+	@Override
+	public LinkedHashMap<String, Tag> tags(Table table) {
+		return null;
+	}
+
+	@Override
+	public LinkedHashMap<String, Tag> tags(String table) {
+		return null;
+	}
+
+	@Override
+	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table) {
+		return null;
+	}
+
 	public boolean add(Column column) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
