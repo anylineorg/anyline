@@ -17,8 +17,8 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	}
 
 	public SQLCreaterImpl(){ 
-		delimiterFr = "\"";
-		delimiterTo = "\"";
+		delimiterFr = "`";
+		delimiterTo = "`";
 	}
 
 	@Value("${anyline.jdbc.delimiter.tdengine:}")
