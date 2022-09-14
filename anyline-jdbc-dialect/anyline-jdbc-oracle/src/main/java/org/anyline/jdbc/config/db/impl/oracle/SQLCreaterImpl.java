@@ -203,31 +203,67 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 
 	/**
 	 * 修改默认值
-	 * 子类实现
+	 * ALTER TABLE MY_TEST_TABLE MODIFY B DEFAULT 2
 	 * @param column column
 	 * @return String
 	 */
 	public String buildChangeDefaultRunSQL(Column column){
+		Object def = column.getDefaultValue();
+		if(null != def){
+			StringBuilder builder = new StringBuilder();
+			builder.append("ALTER TABLE ");
+			name(builder, column.getTable()).append(" MODIFY ");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+			builder.append(" DEFAULT '").append(def).append("'");
+			return builder.toString();
+		}
 		return null;
 	}
 
 	/**
 	 * 修改非空限制
-	 * 子类实现
+	 * ALTER TABLE T  MODIFY C NOT NULL ;
 	 * @param column column
 	 * @return String
 	 */
 	public String buildChangeNullableRunSQL(Column column){
+		Boolean nullable = column.isNullable();
+		Boolean uNullable = column.getUpdate().isNullable();
+		if(null != nullable && null != uNullable){
+			if(nullable == uNullable){
+				return null;
+			}
+
+			StringBuilder builder = new StringBuilder();
+			builder.append("ALTER TABLE ");
+			name(builder, column.getTable()).append(" MODIFY ");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+			if(!uNullable){
+				builder.append(" NOT ");
+			}
+			builder.append("NULL");
+			return builder.toString();
+		}
 		return null;
 	}
 	/**
 	 * 修改备注
-	 * 子类实现
+	 * COMMENT ON COLUMN T.ID IS 'ABC'
 	 * @param column column
 	 * @return String
 	 */
 	public String buildChangeCommentRunSQL(Column column){
-		return null;
+		String comment = column.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			StringBuilder builder = new StringBuilder();
+			builder.append("COMMENT ON COLUMN ");
+			name(builder, column.getTable()).append(".");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+			builder.append(" IS '").append(comment).append("'");
+			return builder.toString();
+		}else{
+			return null;
+		}
 	}
 
 	/**
@@ -322,8 +358,17 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		return builder.toString();
 	}
 
-	@Override
-	public String buildAlterRunSQL(Table table){
+
+
+	/**
+	 * 内置函数
+	 * @param value SQL_BUILD_IN_VALUE
+	 * @return String
+	 */
+	public String buildInValue(SQL_BUILD_IN_VALUE value){
+		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
+			return "sysdate";
+		}
 		return null;
 	}
 
