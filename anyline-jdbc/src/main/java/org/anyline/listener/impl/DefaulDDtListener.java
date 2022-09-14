@@ -4,6 +4,7 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.PageNaviImpl;
+import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.SQLCreater;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
@@ -79,8 +80,8 @@ public class DefaulDDtListener implements DDListener {
         return false;
     }
     public boolean exeAfterException(Table table, Column column, Exception exception){
-
         Column update = column.getUpdate();
+        boolean isNum = creater.isNumberColumn(update);
         if(creater.isCharColumn(column) && !creater.isCharColumn(update)){
             //原来是String类型 修改成 boolean或number类型 失败
             int page = 1;
@@ -112,9 +113,16 @@ public class DefaulDDtListener implements DDListener {
                         value = row.getString(column.getName());
                     }
                     if(null != value){
-                        String num = char2number(value);
-                        row.put(column.getName(), num);
-                        log.warn("[after exception][数据修正][{}>{}]", value, num);
+                        Object convert = null;
+                        if(isNum) {
+                            value = char2number(value);
+                        }
+                        RunValue run = new RunValue();
+                        run.setValue(value);
+                        creater.convert(update, run);
+                        convert = run.getValue();
+                        row.put(column.getName(), convert);
+                        log.warn("[after exception][数据修正][{}>{}]", value, convert);
                         service.update(table.getName(), row, column.getName());
                     }
                 }
