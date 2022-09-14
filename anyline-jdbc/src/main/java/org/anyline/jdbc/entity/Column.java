@@ -14,22 +14,22 @@ public class Column {
     private String schema                       ; //dbo
     private String tableName                    ; //表名
     private Table table                         ; //表
-    private int displaySize                     ; //display size
+    private Integer displaySize                 ; //display size
     private String comment                      ; //备注
     private String name                         ; //名称
-    private int type                            ; //类型
+    private Integer type                        ; //类型
     private String typeName                     ; //类型名称
-    private int precision                       ; //整个字段的长度(包含小数部分)  123.45：precision = 5 ，scale = 2 对于SQL Server 中 varchar(max)设置成 -1
+    private Integer precision                   ; //整个字段的长度(包含小数部分)  123.45：precision = 5 ，scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     private Integer scale                       ; //小数部分的长度
-    private boolean nullable            = true  ; //是否可以为NULL
-    private boolean caseSensitive               ; //是否区分大小写
-    private boolean isCurrency                  ; //是否是货币
-    private boolean isSigned                    ; //是否可以带正负号
-    private boolean isAutoIncrement             ; //是否自增
-    private int incrementSeed           = 1     ; //自增起始值
-    private int incrementStep           = 1     ; //自增增量
-    private boolean isPrimaryKey                ; //是否主键
-    private boolean isGenerated                 ; //是否generated
+    private Boolean nullable                    ; //是否可以为NULL
+    private Boolean caseSensitive               ; //是否区分大小写
+    private Boolean isCurrency                  ; //是否是货币
+    private Boolean isSigned                    ; //是否可以带正负号
+    private Boolean isAutoIncrement             ; //是否自增
+    private Integer incrementSeed       = 1     ; //自增起始值
+    private Integer incrementStep       = 1     ; //自增增量
+    private Boolean isPrimaryKey                ; //是否主键
+    private Boolean isGenerated                 ; //是否generated
     private Object defaultValue                 ; //默认值
     private String charset                      ; //编码
     private String collate                      ; //排序编码
@@ -39,7 +39,7 @@ public class Column {
 
     private String after                        ; //修改列时 在表中的位置
     private String before                       ; //修改列时 在表中的位置
-    private boolean isOnUpdate                  ; //是否在更新行时 更新这一列数据
+    private Boolean isOnUpdate                  ; //是否在更新行时 更新这一列数据
 
     private Column update                       ;
 
@@ -98,11 +98,11 @@ public class Column {
         return this;
     }
 
-    public int getDisplaySize() {
+    public Integer getDisplaySize() {
         return displaySize;
     }
 
-    public Column setDisplaySize(int displaySize) {
+    public Column setDisplaySize(Integer displaySize) {
         this.displaySize = displaySize;
         return this;
     }
@@ -125,11 +125,11 @@ public class Column {
         return this;
     }
 
-    public int getType() {
+    public Integer getType() {
         return type;
     }
 
-    public Column setType(int type) {
+    public Column setType(Integer type) {
         if(this.type != type) {
             this.className = null;
         }
@@ -161,15 +161,15 @@ public class Column {
         return this;
     }
 
-    public int getPrecision() {
+    public Integer getPrecision() {
         return precision;
     }
 
-    public Column setPrecision(int precision) {
+    public Column setPrecision(Integer precision) {
         this.precision = precision;
         return this;
     }
-    public Column setPrecision(int precision, int scale) {
+    public Column setPrecision(Integer precision, Integer scale) {
         this.precision = precision;
         this.scale = scale;
         return this;
@@ -197,29 +197,29 @@ public class Column {
         return this;
     }
 
-    public boolean isCaseSensitive() {
+    public Boolean isCaseSensitive() {
         return caseSensitive;
     }
 
-    public Column setCaseSensitive(boolean caseSensitive) {
+    public Column setCaseSensitive(Boolean caseSensitive) {
         this.caseSensitive = caseSensitive;
         return this;
     }
 
-    public boolean isCurrency() {
+    public Boolean isCurrency() {
         return isCurrency;
     }
 
-    public Column setCurrency(boolean currency) {
+    public Column setCurrency(Boolean currency) {
         isCurrency = currency;
         return this;
     }
 
-    public boolean isSigned() {
+    public Boolean isSigned() {
         return isSigned;
     }
 
-    public Column setSigned(boolean signed) {
+    public Column setSigned(Boolean signed) {
         isSigned = signed;
         return this;
     }
@@ -233,38 +233,38 @@ public class Column {
         return this;
     }
 
-    public boolean isNullable() {
+    public Boolean isNullable() {
         return nullable;
     }
 
-    public Column setNullable(boolean nullable) {
+    public Column setNullable(Boolean nullable) {
         this.nullable = nullable;
         return this;
     }
 
-    public boolean isAutoIncrement() {
+    public Boolean isAutoIncrement() {
         return isAutoIncrement;
     }
 
-    public Column setAutoIncrement(boolean autoIncrement) {
+    public Column setAutoIncrement(Boolean autoIncrement) {
         isAutoIncrement = autoIncrement;
         return this;
     }
 
-    public boolean isPrimaryKey() {
+    public Boolean isPrimaryKey() {
         return isPrimaryKey;
     }
 
-    public Column setPrimaryKey(boolean primaryKey) {
+    public Column setPrimaryKey(Boolean primaryKey) {
         isPrimaryKey = primaryKey;
         return this;
     }
 
-    public boolean isGenerated() {
+    public Boolean isGenerated() {
         return isGenerated;
     }
 
-    public Column setGenerated(boolean generated) {
+    public Column setGenerated(Boolean generated) {
         isGenerated = generated;
         return this;
     }
@@ -300,29 +300,29 @@ public class Column {
         return after;
     }
 
-    public int getIncrementSeed() {
+    public Integer getIncrementSeed() {
         return incrementSeed;
     }
 
-    public Column setIncrementSeed(int incrementSeed) {
+    public Column setIncrementSeed(Integer incrementSeed) {
         this.incrementSeed = incrementSeed;
         return this;
     }
 
-    public int getIncrementStep() {
+    public Integer getIncrementStep() {
         return incrementStep;
     }
 
-    public Column setIncrementStep(int incrementStep) {
+    public Column setIncrementStep(Integer incrementStep) {
         this.incrementStep = incrementStep;
         return this;
     }
 
-    public boolean isOnUpdate() {
+    public Boolean isOnUpdate() {
         return isOnUpdate;
     }
 
-    public Column setOnUpdate(boolean onUpdate) {
+    public Column setOnUpdate(Boolean onUpdate) {
         isOnUpdate = onUpdate;
         return this;
     }
