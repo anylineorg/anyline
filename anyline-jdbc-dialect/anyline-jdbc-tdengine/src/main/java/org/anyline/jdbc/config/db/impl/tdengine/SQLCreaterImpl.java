@@ -106,12 +106,13 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	@Override
 	public String buildCreateRunSQL(Table table){
 		LinkedHashMap<String,Tag> tags = table.getTags();
-		StringBuilder builder = new StringBuilder();
+		String sql = super.buildCreateRunSQL(table);
 		if(null == tags || tags.size()==0){
-			return buildCreateRunSQL(builder, table, "TABLE").toString();
+			return sql;
 		}
-		buildCreateRunSQL(builder, table, "STABLE");
-		builder.append("(");
+		StringBuilder builder = new StringBuilder();
+		builder.append(sql);
+		builder.append(" TAGS (");
 		int idx = 0;
 		for(Tag tag:tags.values()){
 			if(idx > 0){
@@ -126,6 +127,21 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		return builder.toString();
 	}
 
+	/**
+	 * 创建之前  检测表是否存在
+	 * IF NOT EXISTS
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
+		builder.append(" IF ");
+		if(!exists){
+			builder.append("NOT ");
+		}
+		builder.append("EXISTS");
+		return builder;
+	}
 	/**
 	 * 修改表名
 	 * 子类实现
