@@ -318,6 +318,24 @@ varbit:String
 			return null;
 		}
 	}
+	/**
+	 * 修改备注
+	 * COMMENT ON TABLE T IS 'ABC';
+	 * @param table table
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Table table){
+		String comment = table.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			StringBuilder builder = new StringBuilder();
+			builder.append("COMMENT ON TABLE ");
+			name(builder, table);
+			builder.append(" IS '").append(comment).append("'");
+			return builder.toString();
+		}else{
+			return null;
+		}
+	}
 	@Override
 	public String type2type(String type){
 		if(type.equalsIgnoreCase("int")){

@@ -221,6 +221,7 @@ public interface SQLCreater{
 	public String buildAlterRunSQL(Table table);
 	public String buildDropRunSQL(Table table);
 	public String buildRenameRunSQL(Table table);
+	public String buildChangeCommentRunSQL(Table table);
 
 
 	/**

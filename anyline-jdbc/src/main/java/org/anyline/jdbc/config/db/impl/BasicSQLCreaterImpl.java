@@ -1263,7 +1263,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 
 	/**
-	 * 修改列 ALTER TABLE   HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
+	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
 	 * @param column
 	 * @return
 	 */
@@ -1383,6 +1383,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return null;
 	}
 
+	/**
+	 * 修改备注
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param table table
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Table table){
+		return null;
+	}
 	/**
 	 * 修改数据类型
 	 * 子类实现

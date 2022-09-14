@@ -163,6 +163,25 @@ SMALLINT:Short
 		return builder.toString();
 	}
 
+	/**
+	 * 修改表备注
+	 *  ALTER TABLE T COMMENT 'ABC';
+	 * @param table
+	 * @return
+	 */
+	@Override
+	public String buildChangeCommentRunSQL(Table table) {
+		String commnet = table.getComment();
+		if(BasicUtil.isEmpty(commnet)){
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, table);
+		builder.append(" COMMENT '").append(commnet).append("'");
+		return builder.toString();
+	}
+
 
 	@Override
 	public String alterColumnKeyword(){

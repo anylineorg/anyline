@@ -225,6 +225,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	 * @param column column
 	 * @return builder
 	 */
+	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
 		if(column.isAutoIncrement()){
 			builder.append(" IDENTITY(").append(column.getIncrementSeed()).append(",").append(column.getIncrementStep()).append(")");
@@ -240,36 +241,90 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	 * @param column column
 	 * @return String
 	 */
+	@Override
 	public String buildChangeDefaultRunSQL(Column column){
 		return null;
 	}
 
 	/**
 	 * 修改非空限制
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * ALTER TABLE T ALTER COLUMN C VARCHAR (20) NOT NULL;
 	 * @param column column
 	 * @return String
 	 */
+	@Override
 	public String buildChangeNullableRunSQL(Column column){
-		return null;
+		Column update = column.getUpdate();
+		Boolean nullable = update.isNullable();
+		if(null == nullable){
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("ALTER TABLE ");
+		name(builder, column.getTable()).append(" ALTER COLUMN ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		type(builder, update);
+		if(!nullable){
+			builder.append("NOT");
+		}
+		builder.append(" NULL");
+		return builder.toString();
 	}
 	/**
 	 * 修改备注
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 *  -- 字段加注释
+	 * EXEC sys.sp_addextendedproperty @name=N'MS_Description'
+	 * , @value=N'注释内容'
+	 * , @level0type=N'SCHEMA'
+	 * ,@level0name=N'dbo'
+	 * , @level1type=N'TABLE'
+	 * ,@level1name=N'表名'
+	 * , @level2type=N'COLUMN'
+	 * ,@level2name=N'字段名'
+	 *
 	 * @param column column
 	 * @return String
 	 */
+	@Override
 	public String buildChangeCommentRunSQL(Column column){
-		return null;
+		String comment = column.getComment();
+		if(BasicUtil.isEmpty(comment)){
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
+		builder.append(",@value=N'").append(comment).append("'");
+		builder.append(",@level0type=N'SCHEMA'");
+		builder.append(",@level0name=N'").append(column.getSchema()).append("'");
+		builder.append(",@level1type=N'TABLE'");
+		builder.append(",@level1name=N'").append(column.getTableName()).append("'");
+		builder.append(",@level2type=N'COLUMN'");
+		builder.append(",@level2name=N'").append(column.getName()).append("'");
+		return builder.toString();
 	}
 
+	@Override
+	public String buildChangeCommentRunSQL(Table table){
+		String comment = table.getComment();
+		if(BasicUtil.isEmpty(comment)){
+			return null;
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append("EXEC sys.sp_addextendedproperty @name=N'MS_Description'");
+		builder.append(",@value=N'").append(comment).append("'");
+		builder.append(",@level0type=N'SCHEMA'");
+		builder.append(",@level0name=N'").append(table.getSchema()).append("'");
+		builder.append(",@level1type=N'TABLE'");
+		builder.append(",@level1name=N'").append(table.getName()).append("'");
+		return builder.toString();
+	}
 	/**
 	 * 修改数据类型
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * alter table 表名 alter column 字段名 varchar(255) not null
+	 * ALTER TABLE T ALTER COLUMN C VARCHAR (2);
 	 * @param column column
 	 * @return sql
 	 */
+	@Override
 	public List<String> buildChangeTypeRunSQL(Column column){
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
@@ -290,6 +345,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	 * @param value SQL_BUILD_IN_VALUE
 	 * @return String
 	 */
+	@Override
 	public String buildInValue(SQL_BUILD_IN_VALUE value){
 		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
 			return "getdate()";

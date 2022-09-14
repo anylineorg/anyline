@@ -269,6 +269,24 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	}
 
 	/**
+	 * 修改备注
+	 * COMMENT ON TABLE T IS 'ABC';
+	 * @param table table
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Table table){
+		String comment = table.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			StringBuilder builder = new StringBuilder();
+			builder.append("COMMENT ON TABLE ");
+			name(builder, table);
+			builder.append(" IS '").append(comment).append("'");
+			return builder.toString();
+		}else{
+			return null;
+		}
+	}
+	/**
 	 * 修改数据类型
 	 * 1.ADD NEW COLUMN
 	 * 2.FORMAT VALUE
