@@ -1542,9 +1542,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 
 		builder.append(column.getTypeName());
 		//精度
-		int precision = column.getPrecision();
+		Integer precision = column.getPrecision();
 		Integer scale = column.getScale();
-		if(precision > 0){
+		if(null != precision && precision > 0){
 			builder.append("(").append(precision);
 			if(null != scale && scale>0){
 				builder.append(",").append(scale);

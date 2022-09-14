@@ -396,7 +396,7 @@ public class Column {
     public String toString(){
         StringBuilder builder = new StringBuilder();
         builder.append(name).append(" ").append(typeName);
-        if(precision > 0){
+        if(null != precision && precision > 0){
             builder.append("(").append(precision);
             if(null != scale && scale > 0){
                 builder.append(",").append(scale);
