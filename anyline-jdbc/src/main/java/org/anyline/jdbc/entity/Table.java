@@ -51,7 +51,7 @@ public class Table {
         this.listener = new DefaulDDtListener();
     }
 
-    public List<Column> getPrimaryKeys(){
+    public List<Column> primaryKeys(){
         List<Column> pks = new ArrayList<>();
         for(Column column:columns.values()){
             Boolean isPrimaryKey = column.isPrimaryKey();
@@ -325,11 +325,7 @@ public class Table {
     }
 
     public String getKeyword() {
-        return keyword;
-    }
-
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
+        return this.keyword;
     }
 
     public String getBase() {

@@ -88,7 +88,7 @@ public class DefaulDDtListener implements DDListener {
             int vol = 100;
             PageNavi navi = new PageNaviImpl();
             navi.setPageRows(vol);
-            List<Column> pks = table.getPrimaryKeys();
+            List<Column> pks = table.primaryKeys();
             if(pks.size() == 0){
                 if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)){
                     //没有主键

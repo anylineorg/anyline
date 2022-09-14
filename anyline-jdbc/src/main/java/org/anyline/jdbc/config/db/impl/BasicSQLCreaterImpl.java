@@ -40,7 +40,6 @@ import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
-import org.anyline.jdbc.entity.Tag;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -1237,6 +1236,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		builder.append("DROP TABLE ");
+		checkTableExists(builder, true);
 		name(builder, table);
 		return builder.toString();
 	}
@@ -1381,12 +1381,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	@Override
 	public String buildCreateRunSQL(Table table){
 		StringBuilder builder = new StringBuilder();
-		return buildCreateRunSQL(builder, table, "TABLE").toString();
-	}
-
-	public StringBuilder buildCreateRunSQL(StringBuilder builder, Table table, String type){
 		table.setCreater(this);
-		builder.append("CREATE ").append(table).append(" ");
+		builder.append("CREATE ").append(table.getKeyword()).append(" ");
+		checkTableExists(builder, false);
 		name(builder, table);
 		builder.append("(\n");
 		Collection<Column> columns = table.getColumns().values();
@@ -1405,7 +1402,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		primary(builder, table);
 		builder.append(")");
 
-		return builder;
+		return builder.toString();
 	}
 	/**
 	 * 构造完整表名
@@ -1435,7 +1432,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 */
 	@Override
 	public StringBuilder primary(StringBuilder builder, Table table){
-		List<Column> pks = table.getPrimaryKeys();
+		List<Column> pks = table.primaryKeys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
 			int idx = 0;
@@ -1653,6 +1650,10 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return type;
 	}
 
+	@Override
+	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
+		return builder;
+	}
 
 	/**
 	 * 修改表名

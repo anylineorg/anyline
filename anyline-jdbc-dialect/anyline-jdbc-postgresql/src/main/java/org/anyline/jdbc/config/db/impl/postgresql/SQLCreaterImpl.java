@@ -206,7 +206,7 @@ varbit:String
 	 */
 	@Override
 	public StringBuilder primary(StringBuilder builder, Table table){
-		List<Column> pks = table.getPrimaryKeys();
+		List<Column> pks = table.primaryKeys();
 		if(pks.size()>0){
 			builder.append(",CONSTRAINT ").append("PK_").append(table.getName()).append(" PRIMARY KEY (");
 			int idx = 0;

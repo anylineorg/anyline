@@ -239,6 +239,14 @@ public interface SQLCreater{
 	public String buildRenameRunSQL(Table table);
 	public String buildChangeCommentRunSQL(Table table);
 
+	/**
+	 * 创建之前  检测表是否存在
+	 * IF NOT EXISTS
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	public StringBuilder checkTableExists(StringBuilder builder, boolean exists);
 
 	/**
 	 * 构造表名
