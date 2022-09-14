@@ -50,7 +50,8 @@ public class Table {
     public List<Column> getPrimaryKeys(){
         List<Column> pks = new ArrayList<>();
         for(Column column:columns.values()){
-            if(column.isPrimaryKey()){
+            Boolean isPrimaryKey = column.isPrimaryKey();
+            if(null != isPrimaryKey && isPrimaryKey){
                 pks.add(column);
             }
         }
