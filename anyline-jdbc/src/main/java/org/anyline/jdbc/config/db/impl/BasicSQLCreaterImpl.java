@@ -1520,7 +1520,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		//默认值
 		defaultValue(builder, column);
 		//非空
-		nullable(builder, column);
+		if(null != column.isNullable() && !column.isNullable()) {
+			nullable(builder, column);
+		}
 		//自增长列
 		increment(builder, column);
 		//更新行事件
@@ -1544,14 +1546,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		//精度
 		Integer precision = column.getPrecision();
 		Integer scale = column.getScale();
-		if(null != precision && precision > 0){
-			builder.append("(").append(precision);
-			if(null != scale && scale>0){
-				builder.append(",").append(scale);
+		if(null != precision) {
+			if (precision > 0) {
+				builder.append("(").append(precision);
+				if (null != scale && scale > 0) {
+					builder.append(",").append(scale);
+				}
+				builder.append(")");
+			} else if (precision == -1) {
+				builder.append("(max)");
 			}
-			builder.append(")");
-		}else if(precision == -1){
-			builder.append("(max)");
 		}
 		return builder;
 	}
