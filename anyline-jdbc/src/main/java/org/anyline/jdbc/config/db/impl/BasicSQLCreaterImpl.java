@@ -1552,8 +1552,12 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 * @return builder
 	 */
 	public StringBuilder nullable(StringBuilder builder, Column column){
-		if (!column.isNullable()) {
-			builder.append(" NOT NULL");
+		Boolean nullable = column.isNullable();
+		if(null != nullable) {
+			if (!nullable) {
+				builder.append(" NOT");
+			}
+			builder.append(" NULL");
 		}
 		return builder;
 	}
