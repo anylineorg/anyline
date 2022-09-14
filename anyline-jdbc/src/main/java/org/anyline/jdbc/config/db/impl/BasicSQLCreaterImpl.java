@@ -40,6 +40,7 @@ import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
+import org.anyline.jdbc.entity.Tag;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -312,11 +313,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
 		return sql;
 	}
-	 
-	 
- 
 
- 
 	@Override 
 	public RunSQL buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
 		if(null == obj){ 
@@ -1327,82 +1324,29 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		return sqls;
 	}
 
+
+
 	/**
-	 * 修改表名
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param table table
+	 * 查询超表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
 	 * @return String
 	 */
-	@Override
-	public String buildRenameRunSQL(Table table) {
+	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types){
 		return null;
 	}
 
 	/**
-	 * 修改列名
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return String
+	 * 从查询结果中提取出超表名
+	 * @param set 查询结果
+	 * @return List
 	 */
-	@Override
-	public String buildRenameRunSQL(Column column) {
+	public List<String> stables(DataSet set){
 		return null;
 	}
 
-	/**
-	 * 修改默认值
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return String
-	 */
-	public String buildChangeDefaultRunSQL(Column column){
-		return null;
-	}
-
-	/**
-	 * 修改非空限制
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return String
-	 */
-	public String buildChangeNullableRunSQL(Column column){
-		return null;
-	}
-	/**
-	 * 修改备注
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return String
-	 */
-	public String buildChangeCommentRunSQL(Column column){
-		return null;
-	}
-
-	/**
-	 * 修改备注
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param table table
-	 * @return String
-	 */
-	public String buildChangeCommentRunSQL(Table table){
-		return null;
-	}
-	/**
-	 * 修改数据类型
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return sql
-	 */
-	public List<String> buildChangeTypeRunSQL(Column column){
-		return null;
-	}
 	@Override
 	public String alterColumnKeyword(){
 		return "ALTER";
@@ -1436,11 +1380,13 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	}
 	@Override
 	public String buildCreateRunSQL(Table table){
-		table.setCreater(this);
 		StringBuilder builder = new StringBuilder();
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
-		builder.append("CREATE TABLE ");
+		return buildCreateRunSQL(builder, table, "TABLE").toString();
+	}
+
+	public StringBuilder buildCreateRunSQL(StringBuilder builder, Table table, String type){
+		table.setCreater(this);
+		builder.append("CREATE ").append(table).append(" ");
 		name(builder, table);
 		builder.append("(\n");
 		Collection<Column> columns = table.getColumns().values();
@@ -1459,9 +1405,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		primary(builder, table);
 		builder.append(")");
 
-		return builder.toString();
+		return builder;
 	}
-
 	/**
 	 * 构造完整表名
 	 * @param builder builder
@@ -1621,45 +1566,6 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		return builder;
 	}
-	/**
-	 * 更新行事件
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder onupdate(StringBuilder builder, Column column){
-		return builder;
-	}
-	/**
-	 * 自增长列
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder increment(StringBuilder builder, Column column){
-		return builder;
-	}
-
-	/**
-	 * 位置
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder position(StringBuilder builder, Column column){
-		return builder;
-	}
-
-	/**
-	 * 备注
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	@Override
-	public StringBuilder comment(StringBuilder builder, Column column){
-		return builder;
-	}
 
 	/**
 	 * 是否同数字
@@ -1745,6 +1651,127 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	@Override
 	public String type2class(String type){
 		return type;
+	}
+
+
+	/**
+	 * 修改表名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param table table
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Table table) {
+		return null;
+	}
+
+	/**
+	 * 修改列名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Column column) {
+		return null;
+	}
+
+	/**
+	 * 修改默认值
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeDefaultRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改非空限制
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeNullableRunSQL(Column column){
+		return null;
+	}
+	/**
+	 * 修改备注
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改备注
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param table table
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Table table){
+		return null;
+	}
+	/**
+	 * 修改数据类型
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return sql
+	 */
+	public List<String> buildChangeTypeRunSQL(Column column){
+		return null;
+	}
+	/**
+	 * 更新行事件
+	 * 子类实现
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder onupdate(StringBuilder builder, Column column){
+		return builder;
+	}
+	/**
+	 * 自增长列
+	 * 子类实现
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder increment(StringBuilder builder, Column column){
+		return builder;
+	}
+
+	/**
+	 * 位置
+	 * 子类实现
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder position(StringBuilder builder, Column column){
+		return builder;
+	}
+
+	/**
+	 * 备注
+	 * 子类实现
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder comment(StringBuilder builder, Column column){
+		return builder;
 	}
 
 }
