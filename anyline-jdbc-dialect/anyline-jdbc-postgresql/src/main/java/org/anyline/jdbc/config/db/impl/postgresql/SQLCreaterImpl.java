@@ -248,6 +248,37 @@ varbit:String
 		sqls.add(builder.toString());
 		return sqls;
 	}
+
+	/**
+	 * 修改非空限制
+	 * ALTER TABLE TABLE_NAME ALTER COLUMN_NAME DROP NOT NULL
+	 * ALTER TABLE TABLE_NAME ALTER COLUMN_NAME SET NOT NULL
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeNullableRunSQL(Column column){
+		Boolean nullable = column.isNullable();
+		Boolean uNullable = column.getUpdate().isNullable();
+		if(null != nullable && null != uNullable){
+			if(nullable == uNullable){
+				return null;
+			}
+
+			StringBuilder builder = new StringBuilder();
+			builder.append("ALTER TABLE ");
+			name(builder, column.getTable()).append(" ALTER ");
+			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+			if(!uNullable){
+				builder.append("SET");
+			}else{
+				builder.append("DROP");
+			}
+			builder.append(" NOT NULL");
+			return builder.toString();
+		}
+		return null;
+	}
+
 	@Override
 	public String type2type(String type){
 		if(type.equalsIgnoreCase("int")){
