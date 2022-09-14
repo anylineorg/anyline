@@ -9,26 +9,30 @@ import org.anyline.service.AnylineService;
 import java.util.*;
 
 public class Table {
-    private String catalog                      ;
-    private String schema                       ;
-    private String name                         ;
-    private String type                         ;
-    private String comment                      ;
+    protected String keyword = "TABLE"            ;
+    protected String catalog                      ;
+    protected String schema                       ;
+    protected String name                         ;
+    protected String base                         ; //超级表
+    protected String type                         ;
+    protected String comment                      ;
 
-    private String typeCat                      ;
-    private String typeSchema                   ;
-    private String typeName                     ;
-    private String selfReferencingColumn        ;
-    private String refGeneration                ;
+    protected String typeCat                      ;
+    protected String typeSchema                   ;
+    protected String typeName                     ;
+    protected String selfReferencingColumn        ;
+    protected String refGeneration                ;
 
-    private String engine                       ;
-    private String charset                      ;
-    private String collate                      ;
+    protected String engine                       ;
+    protected String charset                      ;
+    protected String collate                      ;
 
-    private LinkedHashMap<String,Column> columns;
-    private LinkedHashMap<String,Index> indexs  ;
-    private Table update;
-    private DDListener listener             ;
+
+    protected LinkedHashMap<String,Column> columns;
+    protected LinkedHashMap<String,Tag> tags   ;
+    protected LinkedHashMap<String,Index> indexs  ;
+    protected Table update;
+    protected DDListener listener                 ;
 
 
     public Table(){
@@ -78,9 +82,13 @@ public class Table {
     }
 
 
-    public Column addColumn(Column column){
+    public Table addColumn(Column column){
         column.setTable(this);
-        return columns.put(column.getName(), column);
+        if(null == columns){
+            columns = new LinkedHashMap<>();
+        }
+        columns.put(column.getName(), column);
+        return this;
     }
     public Column addColumn(String name, String type){
         return addColumn(name, type, true, null);
@@ -91,10 +99,7 @@ public class Table {
         column.setNullable(nullable);
         column.setDefaultValue(def);
         column.setTypeName(type);
-        if(null == columns){
-            columns = new LinkedHashMap<>();
-        }
-        columns.put(name, column);
+        addColumn(column);
         return column;
     }
     public Table setPrimaryKey(String ... keys){
@@ -113,6 +118,27 @@ public class Table {
         return this;
     }
 
+
+    public Table addTag(Tag tag){
+        tag.setTable(this);
+        if(null == tags){
+            tags = new LinkedHashMap<>();
+        }
+        tags.put(tag.getName(), tag);
+        return this;
+    }
+    public Tag addTag(String name, String type){
+        return addTag(name, type, true, null);
+    }
+    public Tag addTag(String name, String type, boolean nullable, Object def){
+        Tag tag = new Tag();
+        tag.setName(name);
+        tag.setNullable(nullable);
+        tag.setDefaultValue(def);
+        tag.setTypeName(type);
+        addTag(tag);
+        return tag;
+    }
     public String getCatalog() {
         return catalog;
     }
@@ -217,6 +243,19 @@ public class Table {
         return this;
     }
 
+    public LinkedHashMap<String, Tag> getTags() {
+        return tags;
+    }
+
+    public Table setTags(LinkedHashMap<String, Tag> tags) {
+        this.tags = tags;
+        if(null != tags) {
+            for (Column tag : tags.values()) {
+                tag.setTable(this);
+            }
+        }
+        return this;
+    }
     public LinkedHashMap<String, Index> getIndexs() {
         return indexs;
     }
@@ -227,6 +266,9 @@ public class Table {
     }
     public Column getColumn(String name){
         return columns.get(name.toUpperCase());
+    }
+    public Column getTag(String name){
+        return tags.get(name.toUpperCase());
     }
 
     public String getEngine() {
@@ -280,5 +322,21 @@ public class Table {
             listener.setCreater(creater);
         }
         return this;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getBase() {
+        return base;
+    }
+
+    public void setBase(String base) {
+        this.base = base;
     }
 }
