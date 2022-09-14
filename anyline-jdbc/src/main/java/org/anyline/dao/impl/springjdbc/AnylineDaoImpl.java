@@ -1378,8 +1378,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	private List<String> keys(ResultSet rs) throws Exception{
 		ResultSetMetaData rsmd = rs.getMetaData();
 		List<String> keys = new ArrayList<>();
-		for(int i=1; i<rsmd.getColumnCount(); i++){
-			keys.add(rsmd.getColumnName(i).toUpperCase());
+		if(null != rsmd){
+			for (int i = 1; i < rsmd.getColumnCount(); i++) {
+				keys.add(rsmd.getColumnName(i).toUpperCase());
+			}
 		}
 		return keys;
 	}
@@ -1391,12 +1393,15 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * @return String
 	 * @throws Exception
 	 */
-	private String string(List<String> keys, String key, ResultSet set) throws Exception{
+	private String string(List<String> keys, String key, ResultSet set, String def) throws Exception{
 		Object value = value(keys, key, set);
 		if(null != value){
 			return value.toString();
 		}
-		return null;
+		return def;
+	}
+	private String string(List<String> keys, String key, ResultSet set) throws Exception{
+		return string(keys, key, set, null);
 	}
 	private Integer integer(List<String> keys, String key, ResultSet set, Integer def) throws Exception{
 		Object value = value(keys, key, set);
@@ -1412,13 +1417,16 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return null;
 	}
-	private Object value(List<String> keys, String key, ResultSet set) throws Exception{
+	private Object value(List<String> keys, String key, ResultSet set, Object def) throws Exception{
 		int index = BasicUtil.index(true, true, keys, key);
 		if(index != -1){
 			key = keys.get(index);
 			return set.getObject(key);
 		}
-		return null;
+		return def;
+	}
+	private Object value(List<String> keys, String key, ResultSet set) throws Exception{
+		return value(keys, key, set, null);
 	}
 	public List<Table> tables(String schema, String name, String types){
 		return tables(null, schema, name, types);
@@ -1440,21 +1448,26 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 	public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table){
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-
+		boolean queryColumns = false;	//根据查询获取表结构
 		Long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
 		try {
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			SQL sql = new TableSQLImpl();
-			sql.setDataSource(table);
-			RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildQueryRunSQL(sql, null,"1=0");
-			SqlRowSet set = getJdbc().queryForRowSet(run.getFinalQueryTxt());
-			SqlRowSetMetaData rsm = set.getMetaData();
-			for (int i = 1; i <= rsm.getColumnCount(); i++) {
-				Column column = column(null, rsm, i);
-				columns.put(column.getName().toUpperCase(), column);
+			try {
+				SQL sql = new TableSQLImpl();
+				sql.setDataSource(table);
+				RunSQL run = SQLCreaterUtil.getCreater(getJdbc()).buildQueryRunSQL(sql, null, "1=0");
+				SqlRowSet set = getJdbc().queryForRowSet(run.getFinalQueryTxt());
+				SqlRowSetMetaData rsm = set.getMetaData();
+				for (int i = 1; i <= rsm.getColumnCount(); i++) {
+					Column column = column(null, rsm, i);
+					columns.put(column.getName().toUpperCase(), column);
+				}
+				queryColumns = true;
+			}catch (Exception e){
+
 			}
 			//isAutoIncrement isGenerated remark default
 			DatabaseMetaData metaData = con.getMetaData();
@@ -1473,11 +1486,27 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 				Column column = columns.get(name.toUpperCase());
 				if(null == column){
-					continue;
+					if(queryColumns) {
+						continue;
+					}else{
+						column = new Column(name);
+					}
 				}
-				column.setCatalog(BasicUtil.evl(string(keys,"TABLE_CAT", rs), catalog));
-				column.setSchema(BasicUtil.evl(string(keys,"TABLE_SCHEM", rs), schema));
-				column.setTableName(BasicUtil.evl(string(keys,"TABLE_NAME", rs), table));
+				column.setCatalog(string(keys,"TABLE_CAT", rs, catalog));
+				column.setSchema(string(keys,"TABLE_SCHEM", rs, schema));
+				column.setTableName(string(keys,"TABLE_NAME", rs, table));
+				column.setType(integer(keys, "DATA_TYPE", rs, column.getType()));
+				column.setType(integer(keys, "SQL_DATA_TYPE", rs, column.getType()));
+				column.setTypeName(string(keys, "TYPE_NAME", rs, column.getTypeName()));
+				column.setPrecision(integer(keys, "COLUMN_SIZE", rs, column.getPrecision()));
+				column.setScale(integer(keys, "DECIMAL_DIGITS", rs, column.getScale()));
+				column.setNullable(bool(keys, "NULLABLE", rs, column.isNullable()));
+				column.setComment(string(keys, "REMARKS", rs, column.getComment()));
+				column.setDefaultValue(value(keys, "COLUMN_DEF", rs, column.getDefaultValue()));
+				column.setPosition(integer(keys, "ORDINAL_POSITION", rs, column.getPosition()));
+				column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", rs, column.isAutoIncrement()));
+
+
 				column(column, rs);
 			}
 			//主键
