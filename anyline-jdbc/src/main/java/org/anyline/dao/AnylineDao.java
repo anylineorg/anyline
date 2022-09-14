@@ -25,9 +25,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.entity.Column;
-import org.anyline.jdbc.entity.Index;
-import org.anyline.jdbc.entity.Table;
+import org.anyline.jdbc.entity.*;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -129,10 +127,22 @@ public interface AnylineDao<E>{
 	public List<Table> tables(String name, String types);
 	public List<Table> tables(String types);
 	public List<Table> tables();
-	public LinkedHashMap<String,Column> columns(Table table);
-	public LinkedHashMap<String,Column> columns(String table);
-	public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table);
-	public LinkedHashMap<String, Index>  index(Table table);
+
+	public List<STable> stables(String catalog, String schema, String name, String types);
+	public List<STable> stables(String schema, String name, String types);
+	public List<STable> stables(String name, String types);
+	public List<STable> stables(String types);
+	public List<STable> stables();
+
+	public LinkedHashMap<String, Column> columns(Table table);
+	public LinkedHashMap<String, Column> columns(String table);
+	public LinkedHashMap<String, Column> columns(String catalog, String schema, String table);
+
+	public LinkedHashMap<String, Tag> tags(Table table);
+	public LinkedHashMap<String, Tag> tags(String table);
+	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
+
+	public LinkedHashMap<String, Index> index(Table table);
 
 	public boolean drop(Table table) throws Exception;
 	public boolean create(Table table) throws Exception;
