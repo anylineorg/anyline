@@ -35,9 +35,7 @@ import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.jdbc.config.impl.ConfigStoreImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
-import org.anyline.jdbc.entity.Column;
-import org.anyline.jdbc.entity.Index;
-import org.anyline.jdbc.entity.Table;
+import org.anyline.jdbc.entity.*;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.util.regular.RegularUtil;
@@ -1600,6 +1598,37 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     public List<String> tables(){
         return tables("TABLE");
     }
+
+    @Override
+    public List<String> stables(String catalog, String schema, String name, String types) {
+        List<STable> tables = metadata.stables(catalog, schema, name, types);
+        List<String> list = new ArrayList<>();
+        for(STable table:tables){
+            list.add(table.getName());
+        }
+        return list;
+    }
+
+    @Override
+    public List<String> stables(String schema, String name, String types) {
+        return stables(null, schema, name, types);
+    }
+
+    @Override
+    public List<String> stables(String name, String types) {
+        return stables(null, null, name, types);
+    }
+
+    @Override
+    public List<String> stables(String types) {
+        return stables(null, null, null, types);
+    }
+
+    @Override
+    public List<String> stables() {
+        return stables("STABLE");
+    }
+
     public LinkedHashMap<String,Column> columns(String table, boolean map){
         return metadata.columns(table, map);
     }
@@ -1621,6 +1650,22 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return list;
     }
 
+
+    @Override
+    public List<String> tags(Table table){
+        return tags(table.getCatalog(), table.getSchema(), table.getName());
+    }
+    public List<String> tags(String table){
+        return tags(null, null, table);
+    }
+    public List<String> tags(String catalog, String schema, String table){
+        List<Tag> tags = metadata.tags(catalog, schema, table);
+        List<String> list = new ArrayList<>();
+        for(Tag tag:tags){
+            list.add(tag.getName());
+        }
+        return list;
+    }
     /**
      * 修改表结构
      * @param table table
@@ -1765,6 +1810,95 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return result;
         }
 
+        /**
+         * 修改列  名称 数据类型 位置 默认值
+         * 执行save前先调用tag.update()设置修改后的属性
+         * tag.update().setName()
+         * @param tag tag
+         * @throws Exception SQL异常
+         */
+
+        @Override
+        public boolean save(Tag tag) throws Exception{
+            boolean result = false;
+            Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            if(null == table){
+                throw new AnylineException("表不存在:"+tag.getTableName());
+            }
+            LinkedHashMap<String, Tag> tags = table.getTags();
+            Tag original = tags.get(tag.getName().toUpperCase());
+            if(null == original){
+                result = add(tags, tag);
+            }else {
+                result = alter(table, tag);
+            }
+            clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            return result;
+        }
+        @Override
+        public boolean alter(Tag tag) throws Exception{
+            Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            boolean result = alter(table, tag);
+            clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            return result;
+        }
+
+        /**
+         * 修改列
+         * @param table table
+         * @param tag 修改目标
+         * @return boolean
+         * @throws Exception sql异常
+         */
+        private boolean alter(Table table, Tag tag) throws Exception{
+            boolean result = false;
+            LinkedHashMap<String, Tag> tags = table.getTags();
+            Tag original = tags.get(tag.getName().toUpperCase());
+
+            Tag update = tag.getUpdate();
+            if(null == update){
+                update = (Tag) tag.clone();
+                String newName = tag.getNewName();
+                if(BasicUtil.isNotEmpty(newName)){
+                    update.setName(newName);
+                }
+            }
+            original.setUpdate(update);
+            original.setService(AnylineServiceImpl.this);
+            result = dao.alter(table, original);
+            if(result) {
+                tags.remove(original.getName());
+
+                BeanUtil.copyFieldValueWithoutNull(original, update);
+                original.setUpdate(update);
+                BeanUtil.copyFieldValue(tag, original);
+                tags.put(original.getName(), original);
+            }
+            return result;
+        }
+
+        @Override
+        public boolean add(Tag tag) throws Exception{
+            LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName(), true);
+            boolean result = add(tags, tag);
+            clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            return result;
+        }
+        private boolean add(LinkedHashMap<String, Tag> tags, Tag tag) throws Exception{
+            tag.setService(AnylineServiceImpl.this);
+            boolean result =  dao.add(tag);
+            if(result) {
+                tags.put(tag.getName(), tag);
+            }
+            return result;
+        }
+        public boolean drop(Tag tag) throws Exception{
+            tag.setService(AnylineServiceImpl.this);
+            boolean result = dao.drop(tag);
+            clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            return result;
+        }
+
         @Override
         public boolean exists(Table table) {
             if(null != metadata.table(table.getCatalog(), table.getSchema(), table.getName())){
@@ -1782,6 +1916,48 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
+
+        @Override
+        public boolean exists(STable table) {
+            return false;
+        }
+
+        @Override
+        public boolean save(STable table) throws Exception {
+            boolean result = false;
+            STable otable = metadata.stable(table.getCatalog(), table.getSchema(), table.getName());
+            if(null != otable){
+                otable.setUpdate(table);
+                result = alter(otable);
+            }else{
+                result =  create(table);
+            }
+
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
+        }
+
+        @Override
+        public boolean create(STable table) throws Exception {
+            table.setService(AnylineServiceImpl.this);
+            boolean result =  dao.create(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
+        }
+
+        @Override
+        public boolean alter(STable table) throws Exception {
+            table.setService(AnylineServiceImpl.this);
+            boolean result = dao.alter(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
+        }
+
+        @Override
+        public boolean drop(STable table) throws Exception {
+            return ddl.drop(table);
+        }
+
         @Override
         public boolean save(Table table) throws Exception{
             boolean result = false;
@@ -1823,7 +1999,16 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     public void clearColumnCache(String catalog, String schema, String table){
         String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-        String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table.toUpperCase();
+        String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.toUpperCase();
+        if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))) {
+            cacheProvider.remove(cache, key);
+        }else{
+            cache_metadatas.remove(key);
+        }
+    }
+    public void clearTagCache(String catalog, String schema, String table){
+        String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+        String key = DataSourceHolder.getDataSource()+"_TAGS_" + table.toUpperCase();
         if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))) {
             cacheProvider.remove(cache, key);
         }else{
@@ -1838,22 +2023,22 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
         @Override
         public List<Table> tables(String schema, String name, String types) {
-            return dao.tables(schema, name, types);
+            return tables(null, schema, name, types);
         }
 
         @Override
         public List<Table> tables(String name, String types) {
-            return dao.tables(name, types);
+            return tables(null, null, name, types);
         }
 
         @Override
         public List<Table> tables(String types) {
-            return dao.tables(types);
+            return tables(null, types);
         }
 
         @Override
         public List<Table> tables() {
-            return dao.tables();
+            return tables("STABLE");
         }
 
         @Override
@@ -1876,6 +2061,46 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return table(null, null, name);
         }
 
+        @Override
+        public List<STable> stables(String catalog, String schema, String name, String types) {
+            return dao.stables(catalog, schema, name, types);
+        }
+
+        @Override
+        public List<STable> stables(String schema, String name, String types) {
+            return stables(null, schema, name, types);
+        }
+
+        @Override
+        public List<STable> stables(String name, String types) {
+            return stables(null, null, name, types);
+        }
+
+        @Override
+        public List<STable> stables(String types) {
+            return stables(null, types);
+        }
+
+        @Override
+        public List<STable> stables() {
+            return stables("STABLE");
+        }
+
+        @Override
+        public STable stable(String catalog, String schema, String name) {
+            return null;
+        }
+
+        @Override
+        public STable stable(String schema, String name) {
+            return null;
+        }
+
+        @Override
+        public STable stable(String name) {
+            return null;
+        }
+
 
         @Override
         public List<Column> columns(Table table){
@@ -1894,6 +2119,21 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
 
+        @Override
+        public List<Tag> tags(Table table){
+            return tags(table.getCatalog(), table.getSchema(), table.getName());
+        }
+        @Override
+        public List<Tag> tags(String table){
+            return tags(null, null, table);
+        }
+        @Override
+        public List<Tag> tags(String catalog, String schema, String table){
+            LinkedHashMap<String,Tag> maps = tags(catalog, schema, table, true);
+            List<Tag> tags = new ArrayList<>();
+            tags.addAll(maps.values());
+            return tags;
+        }
 
         @Override
         public LinkedHashMap<String,Column> columns(String table, boolean map){
@@ -1910,7 +2150,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
             LinkedHashMap<String,Column> columns = null;
             String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-            String key = DataSourceHolder.getDataSource()+"_METADATAS_" + table.toUpperCase();
+            String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.toUpperCase();
 
             if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
                 CacheElement cacheElement = cacheProvider.get(cache, key);
@@ -1937,6 +2177,48 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return columns;
         }
 
+
+        @Override
+        public LinkedHashMap<String,Tag> tags(String table, boolean map){
+            return tags(null, null, table, map);
+        }
+        @Override
+        public LinkedHashMap<String,Tag> tags(Table table, boolean map){
+            return tags(table.getCatalog(), table.getSchema(), table.getName(), map);
+        }
+        @Override
+        public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table, boolean map){
+            if(null == table){
+                return new LinkedHashMap<>();
+            }
+            LinkedHashMap<String,Tag> tags = null;
+            String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
+            String key = DataSourceHolder.getDataSource()+"_TAGS_" + table.toUpperCase();
+
+            if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
+                CacheElement cacheElement = cacheProvider.get(cache, key);
+                if(null != cacheElement){
+                    tags = (LinkedHashMap<String,Tag>) cacheElement.getValue();
+                }
+                if(null == tags){
+                    tags = dao.tags(catalog, schema, table);
+                    cacheProvider.put(cache, key, tags);
+                }
+            }else{
+                //通过静态变量缓存
+                DataRow static_cache = cache_metadatas.get(key);
+                if(null != static_cache && (ConfigTable.TABLE_METADATA_CACHE_SECOND <0 || !static_cache.isExpire(ConfigTable.TABLE_METADATA_CACHE_SECOND*1000))) {
+                    tags = (LinkedHashMap<String,Tag>) static_cache.get("keys");
+                }
+                if(null == tags){
+                    tags = dao.tags(catalog, schema, table);
+                    static_cache = new DataRow();
+                    static_cache.put("keys", tags);
+                    cache_metadatas.put(key, static_cache);
+                }
+            }
+            return tags;
+        }
     };
 
 

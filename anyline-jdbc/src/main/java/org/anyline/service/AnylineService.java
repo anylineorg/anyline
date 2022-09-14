@@ -26,9 +26,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.entity.Column;
-import org.anyline.jdbc.entity.Index;
-import org.anyline.jdbc.entity.Table;
+import org.anyline.jdbc.entity.*;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -76,7 +74,6 @@ public interface AnylineService<E>{
 	/**
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
-	 * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
 	 * @param first 起 下标从0开始
 	 * @param last 止
 	 * @param conditions	固定查询条件
@@ -462,9 +459,20 @@ public interface AnylineService<E>{
 	public List<String> tables(String types);
 	public List<String> tables();
 
+	public List<String> stables(String catalog, String schema, String name, String types);
+	public List<String> stables(String schema, String name, String types);
+	public List<String> stables(String name, String types);
+	public List<String> stables(String types);
+	public List<String> stables();
+
+
 	public List<String> columns(Table table);
 	public List<String> columns(String table);
 	public List<String> columns(String catalog, String schema, String table);
+
+	public List<String> tags(Table table);
+	public List<String> tags(String table);
+	public List<String> tags(String catalog, String schema, String table);
 
 
 
@@ -489,11 +497,22 @@ public interface AnylineService<E>{
 		public boolean alter(Column column) throws Exception;
 		public boolean drop(Column column) throws Exception;
 
+		public boolean save(Tag tag) throws Exception;
+		public boolean add(Tag tag) throws Exception;
+		public boolean alter(Tag tag) throws Exception;
+		public boolean drop(Tag tag) throws Exception;
+
 		public boolean exists(Table table);
 		public boolean save(Table table) throws Exception;
 		public boolean create(Table table) throws Exception;
 		public boolean alter(Table table) throws Exception;
 		public boolean drop(Table table) throws Exception;
+
+		public boolean exists(STable table);
+		public boolean save(STable table) throws Exception;
+		public boolean create(STable table) throws Exception;
+		public boolean alter(STable table) throws Exception;
+		public boolean drop(STable table) throws Exception;
 
 		public boolean add(Index index) throws Exception;
 		public boolean drop(Index index) throws Exception;
@@ -516,9 +535,24 @@ public interface AnylineService<E>{
 		public Table table(String schema, String name);
 		public Table table(String name);
 
+
+		public List<STable> stables(String catalog, String schema, String name, String types);
+		public List<STable> stables(String schema, String name, String types);
+		public List<STable> stables(String name, String types);
+		public List<STable> stables(String types);
+		public List<STable> stables();
+		public STable stable(String catalog, String schema, String name);
+		public STable stable(String schema, String name);
+		public STable stable(String name);
+
+
 		public List<Column> columns(Table table);
 		public List<Column> columns(String table);
 		public List<Column> columns(String catalog, String schema, String table);
+
+		public List<Tag> tags(Table table);
+		public List<Tag> tags(String table);
+		public List<Tag> tags(String catalog, String schema, String table);
 
 		/**
 		 * 查询表中所有的表，注意这里的map.KEY全部转大写
@@ -528,7 +562,11 @@ public interface AnylineService<E>{
 		 */
 		public LinkedHashMap<String,Column> columns(Table table, boolean map);
 		public LinkedHashMap<String,Column> columns(String table, boolean map);
-		public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table, boolean map);
+		public LinkedHashMap<String,Column> columns(String catalog, String schema, String table, boolean map);
+
+		public LinkedHashMap<String,Tag> tags(Table table, boolean map);
+		public LinkedHashMap<String,Tag> tags(String table, boolean map);
+		public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table, boolean map);
 
 
 	}
