@@ -154,6 +154,10 @@ public class Column {
     }
 
     public Column setTypeName(String typeName) {
+        if(null != typeName && typeName.contains(" ")){
+            //TYPE_NAME=int identity
+            typeName = typeName.split(" ")[0];
+        }
         if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
             this.className = null;
         }
