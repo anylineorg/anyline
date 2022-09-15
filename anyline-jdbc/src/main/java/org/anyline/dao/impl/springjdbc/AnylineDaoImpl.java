@@ -1534,6 +1534,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 						column = new Column(name);
 					}
 				}
+				String remark = string(keys, "REMARKS", rs, column.getComment());
+				if("TAG".equals(remark)){
+					column = new Tag();
+				}
+				column.setName(name);
+				column.setComment(remark);
 				column.setCatalog(string(keys,"TABLE_CAT", rs, catalog));
 				column.setSchema(string(keys,"TABLE_SCHEM", rs, schema));
 				column.setTableName(string(keys,"TABLE_NAME", rs, table));
@@ -1543,13 +1549,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				column.setPrecision(integer(keys, "COLUMN_SIZE", rs, column.getPrecision()));
 				column.setScale(integer(keys, "DECIMAL_DIGITS", rs, column.getScale()));
 				column.setNullable(bool(keys, "NULLABLE", rs, column.isNullable()));
-				column.setComment(string(keys, "REMARKS", rs, column.getComment()));
 				column.setDefaultValue(value(keys, "COLUMN_DEF", rs, column.getDefaultValue()));
 				column.setPosition(integer(keys, "ORDINAL_POSITION", rs, column.getPosition()));
 				column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", rs, column.isAutoIncrement()));
-
-
 				column(column, rs);
+				columns.put(column.getName().toUpperCase(), column);
 			}
 			//主键
 			rs = metaData.getPrimaryKeys(catalog, schema, table);
@@ -1577,28 +1581,51 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return columns;
 	}
-	/*  DESCRIBE st1;
-         field              |         type         |   length    |   note   |
-=================================================================================
-id                             | TIMESTAMP            |           8 |          |
-code                           | INT                  |           4 |          |
-tag1                           | INT                  |           4 | TAG      |
-tag2                           | INT                  |           4 | TAG      |
-*/
 	@Override
 	public LinkedHashMap<String, Tag> tags(Table table) {
+		LinkedHashMap<String,Tag> tags = new LinkedHashMap<>();
+		DataSource ds = null;
+		Connection con = null;
+		Long fr = System.currentTimeMillis();
+		try {
+			ds = getJdbc().getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			if (null == table.getCatalog()) {
+				table.setCatalog(con.getCatalog());
+			}
+			SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+			String sql = adapter.buildQueryTagRunSQL(table);
 
-		return null;
+			DataSet set = select(sql, null);
+			tags = adapter.tags(set);
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		if (showSQL) {
+			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+			log.warn("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, table.getCatalog(), table.getSchema(), table.getName(), System.currentTimeMillis() - fr);
+		}
+		return tags;
 	}
 
 	@Override
 	public LinkedHashMap<String, Tag> tags(String table) {
-		return null;
+		Table tab = new Table();
+		tab.setName(table);
+		return tags(tab);
 	}
 
 	@Override
 	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table) {
-		return null;
+		Table tab = new Table();
+		tab.setCatalog(catalog);
+		tab.setSchema(schema);
+		tab.setName(table);
+		return tags(tab);
 	}
 
 	public boolean add(Column column) throws Exception{
@@ -1829,11 +1856,13 @@ tag2                           | INT                  |           4 | TAG      |
 			}
 		}
 		//删除列
-		for(Column column : columns.values()){
-			Column ucolumn = ucolumns.get(column.getName().toUpperCase());
-			if(null == ucolumn){
-				column.setTable(update);
-				drop(column);
+		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
+			for (Column column : columns.values()) {
+				Column ucolumn = ucolumns.get(column.getName().toUpperCase());
+				if (null == ucolumn) {
+					column.setTable(update);
+					drop(column);
+				}
 			}
 		}
 		return result;
