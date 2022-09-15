@@ -227,7 +227,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 */
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
-		if(column.isAutoIncrement()){
+		if(column.isAutoIncrement() == 1){
 			builder.append(" IDENTITY(").append(column.getIncrementSeed()).append(",").append(column.getIncrementStep()).append(")");
 		}
 		return builder;
@@ -255,8 +255,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	@Override
 	public String buildChangeNullableRunSQL(Column column){
 		Column update = column.getUpdate();
-		Boolean nullable = update.isNullable();
-		if(null == nullable){
+		int nullable = update.isNullable();
+		if(nullable == -1){
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
@@ -264,7 +264,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		name(builder, column.getTable()).append(" ALTER COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		type(builder, update);
-		if(!nullable){
+		if(nullable == 0){
 			builder.append("NOT");
 		}
 		builder.append(" NULL");

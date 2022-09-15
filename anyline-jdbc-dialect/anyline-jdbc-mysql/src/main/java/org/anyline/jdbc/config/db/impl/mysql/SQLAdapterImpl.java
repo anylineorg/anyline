@@ -171,14 +171,14 @@ SMALLINT:Short
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Table table) {
-		String commnet = table.getComment();
-		if(BasicUtil.isEmpty(commnet)){
+		String comment = table.getComment();
+		if(BasicUtil.isEmpty(comment)){
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
 		name(builder, table);
-		builder.append(" COMMENT '").append(commnet).append("'");
+		builder.append(" COMMENT '").append(comment).append("'");
 		return builder.toString();
 	}
 
@@ -236,7 +236,7 @@ SMALLINT:Short
 	 */
 	public StringBuilder position(StringBuilder builder, Column column){
 		Integer position = column.getPosition();
-		if(null != position && position == 0){
+		if(0 == position){
 			builder.append(" FIRST");
 		}else{
 			String after = column.getAfter();
@@ -254,7 +254,7 @@ SMALLINT:Short
 	 * @return builder
 	 */
 	public StringBuilder increment(StringBuilder builder, Column column){
-		if(column.isAutoIncrement()){
+		if(column.isAutoIncrement() == 1){
 			builder.append(" AUTO_INCREMENT");
 		}
 		return builder;
@@ -266,7 +266,7 @@ SMALLINT:Short
 	 * @return builder
 	 */
 	public StringBuilder onupdate(StringBuilder builder, Column column){
-		if(column.isOnUpdate()){
+		if(column.isOnUpdate() == 1){
 			builder.append(" ON UPDATE CURRENT_TIMESTAMP");
 		}
 		return builder;

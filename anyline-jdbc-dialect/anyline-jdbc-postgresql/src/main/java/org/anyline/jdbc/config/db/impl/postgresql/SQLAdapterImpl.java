@@ -257,9 +257,9 @@ varbit:String
 	 * @return String
 	 */
 	public String buildChangeNullableRunSQL(Column column){
-		Boolean nullable = column.isNullable();
-		Boolean uNullable = column.getUpdate().isNullable();
-		if(null != nullable && null != uNullable){
+		int nullable = column.isNullable();
+		int uNullable = column.getUpdate().isNullable();
+		if(nullable != -1 && uNullable != -1){
 			if(nullable == uNullable){
 				return null;
 			}
@@ -268,7 +268,7 @@ varbit:String
 			builder.append("ALTER TABLE ");
 			name(builder, column.getTable()).append(" ALTER ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
-			if(!uNullable){
+			if(uNullable == 0){
 				builder.append("SET");
 			}else{
 				builder.append("DROP");
@@ -290,7 +290,7 @@ varbit:String
 		Object def = column.getDefaultValue();
 		StringBuilder builder = new StringBuilder();
 		builder.append("ALTER TABLE ");
-		name(builder, column.getTable()).append(" ALTER COLUMN");
+		name(builder, column.getTable()).append(" ALTER COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		if(null != def){
 			builder.append(" SET DEFAULT '").append(def).append("'");

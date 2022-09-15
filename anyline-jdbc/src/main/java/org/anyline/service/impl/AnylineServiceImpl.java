@@ -1775,7 +1775,12 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
             original.setUpdate(update);
             original.setService(AnylineServiceImpl.this);
-            result = dao.alter(table, original);
+            String name = original.getName();
+            try {
+                result = dao.alter(table, original);
+            }finally {
+                original.setName(name);
+            }
             if(result) {
                 columns.remove(original.getName());
 

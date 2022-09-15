@@ -1462,6 +1462,15 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return null;
 	}
+	private Boolean bool(List<String> keys, String key, ResultSet set, int def) throws Exception{
+		Boolean defaultValue = null;
+		if(def == 0){
+			defaultValue = false;
+		}else if(def == 1){
+			defaultValue = true;
+		}
+		return bool(keys, key, set, defaultValue);
+	}
 	private Object value(List<String> keys, String key, ResultSet set, Object def) throws Exception{
 		int index = BasicUtil.index(true, true, keys, key);
 		if(index != -1){

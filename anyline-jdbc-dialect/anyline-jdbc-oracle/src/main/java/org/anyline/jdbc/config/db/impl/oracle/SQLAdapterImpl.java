@@ -215,7 +215,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		builder.append(" DEFAULT ");
 		if(null != def){
-			builder.append("'").append(def).append("'");
+			format(builder, def);
 		}else{
 			builder.append("NULL");
 		}
@@ -229,9 +229,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @return String
 	 */
 	public String buildChangeNullableRunSQL(Column column){
-		Boolean nullable = column.isNullable();
-		Boolean uNullable = column.getUpdate().isNullable();
-		if(null != nullable && null != uNullable){
+		int nullable = column.isNullable();
+		int uNullable = column.getUpdate().isNullable();
+		if(nullable != -1 && uNullable != -1){
 			if(nullable == uNullable){
 				return null;
 			}
@@ -240,7 +240,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			builder.append("ALTER TABLE ");
 			name(builder, column.getTable()).append(" MODIFY ");
 			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
-			if(!uNullable){
+			if(uNullable == 0){
 				builder.append(" NOT ");
 			}
 			builder.append("NULL");
@@ -348,7 +348,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 				sqls.add(builder.toString());
 			}
 		}
-
+		//column.setName(name);
 		return sqls;
 	}
 	@Override

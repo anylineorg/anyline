@@ -582,12 +582,13 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		format(builder, value);
 	}
 	public void format(StringBuilder builder, Object value){
-		if(null == value || "NULL".equals(value)){
+		if(null == value || "NULL".equalsIgnoreCase(value.toString())){
 			builder.append("null");
 		}else if(value instanceof String){
 			String str = value.toString();
 			if(str.startsWith("${") && str.endsWith("}") && !BeanUtil.isJson(value)){
 				str = str.substring(2, str.length()-1);
+			}else if(str.startsWith("'") && str.endsWith("'")){
 			}else{
 				str = "'" + str.replace("'", "''") + "'";
 			}
@@ -1302,8 +1303,8 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 				}
 			}
 			//修改非空限制
-			boolean nullable = column.isNullable();
-			boolean unullable = update.isNullable();
+			int nullable = column.isNullable();
+			int unullable = update.isNullable();
 			if(nullable != unullable){
 				String sql = buildChangeNullableRunSQL(column);
 				if(null != sql){
@@ -1470,7 +1471,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		//默认值
 		defaultValue(builder, column);
 		//非空
-		if(null != column.isNullable() && !column.isNullable()) {
+		if(column.isNullable() == 0) {
 			nullable(builder, column);
 		}
 		//自增长列
@@ -1516,9 +1517,9 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return builder
 	 */
 	public StringBuilder nullable(StringBuilder builder, Column column){
-		Boolean nullable = column.isNullable();
-		if(null != nullable) {
-			if (!nullable) {
+		int nullable = column.isNullable();
+		if(nullable != -1) {
+			if (nullable == 0) {
 				builder.append(" NOT");
 			}
 			builder.append(" NULL");
@@ -1552,7 +1553,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	public StringBuilder defaultValue(StringBuilder builder, Column column){
 		Object def = column.getDefaultValue();
 		if(null != def) {
-			builder.append(" default ");
+			builder.append(" DEFAULT ");
 			boolean isCharColumn = isCharColumn(column);
 			if(def instanceof SQL_BUILD_IN_VALUE){
 				String value = buildInValue((SQL_BUILD_IN_VALUE)def);
@@ -1560,13 +1561,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 					builder.append(value);
 				}
 			}else {
-				if (isCharColumn) {
-					builder.append("'");
-				}
-				builder.append(def);
-				if (isCharColumn) {
-					builder.append("'");
-				}
+				format(builder, def);
 			}
 		}
 		return builder;
