@@ -130,8 +130,8 @@ public class Table {
     public Tag addTag(String name, String type){
         return addTag(name, type, true, null);
     }
-    public Tag addTag(String name, Object value){
-        Tag tag = new Tag(name, value);
+    public Tag addTag(String name, String type, Object value){
+        Tag tag = new Tag(name, type, value);
         addTag(tag);
         return tag;
     }
