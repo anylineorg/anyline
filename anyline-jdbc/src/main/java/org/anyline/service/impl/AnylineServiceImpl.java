@@ -1960,7 +1960,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
         @Override
         public boolean drop(STable table) throws Exception {
-            return ddl.drop(table);
+            table.setService(AnylineServiceImpl.this);
+            boolean result = dao.drop(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
         }
 
         @Override
