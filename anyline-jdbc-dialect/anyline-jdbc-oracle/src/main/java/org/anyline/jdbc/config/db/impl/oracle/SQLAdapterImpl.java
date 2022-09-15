@@ -10,7 +10,9 @@ import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.STable;
 import org.anyline.jdbc.entity.Table;
+import org.anyline.jdbc.entity.Tag;
 import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +25,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Repository("anyline.jdbc.sql.adapter.oracle") 
 public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
@@ -239,8 +238,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		name(builder, table.getUpdate());
 		return builder.toString();
 	}
-
-
 
 	/**
 	 * 修改列名
