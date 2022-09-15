@@ -2096,17 +2096,26 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
         @Override
         public STable stable(String catalog, String schema, String name) {
-            return null;
+            List<STable> tables = stables(catalog, schema, name, "STABLE");
+            if(tables.size() == 0){
+                return null;
+            }
+            STable table = tables.get(0);
+            LinkedHashMap<String,Column> columns = columns(table, true);
+            table.setColumns(columns);
+            LinkedHashMap<String,Tag> tags = tags(table, true);
+            table.setTags(tags);
+            return table;
         }
 
         @Override
         public STable stable(String schema, String name) {
-            return null;
+            return stable(null, schema, name);
         }
 
         @Override
         public STable stable(String name) {
-            return null;
+            return stable(null, null, name);
         }
 
 
@@ -2129,7 +2138,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
         @Override
         public List<Tag> tags(Table table){
-            return tags(table.getCatalog(), table.getSchema(), table.getName());
+            LinkedHashMap<String,Tag> maps = tags(table, true);
+            List<Tag> tags = new ArrayList<>();
+            tags.addAll(maps.values());
+            return tags;
         }
         @Override
         public List<Tag> tags(String table){
@@ -2137,10 +2149,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         @Override
         public List<Tag> tags(String catalog, String schema, String table){
-            LinkedHashMap<String,Tag> maps = tags(catalog, schema, table, true);
-            List<Tag> tags = new ArrayList<>();
-            tags.addAll(maps.values());
-            return tags;
+            Table tab = new Table(table);
+            tab.setCatalog(catalog);
+            tab.setSchema(schema);
+            return tags(tab);
         }
 
         @Override
@@ -2191,17 +2203,21 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return tags(null, null, table, map);
         }
         @Override
-        public LinkedHashMap<String,Tag> tags(Table table, boolean map){
-            return tags(table.getCatalog(), table.getSchema(), table.getName(), map);
+        public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table, boolean map){
+            Table tab = new Table(table);
+            tab.setCatalog(catalog);
+            tab.setSchema(schema);
+            return tags(tab, map);
         }
         @Override
-        public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table, boolean map){
+        public LinkedHashMap<String,Tag> tags(Table table, boolean map){
             if(null == table){
                 return new LinkedHashMap<>();
             }
+            String name = table.getName();
             LinkedHashMap<String,Tag> tags = null;
             String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-            String key = DataSourceHolder.getDataSource()+"_TAGS_" + table.toUpperCase();
+            String key = DataSourceHolder.getDataSource()+"_TAGS_" + name.toUpperCase();
 
             if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
                 CacheElement cacheElement = cacheProvider.get(cache, key);
@@ -2209,7 +2225,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                     tags = (LinkedHashMap<String,Tag>) cacheElement.getValue();
                 }
                 if(null == tags){
-                    tags = dao.tags(catalog, schema, table);
+                    tags = dao.tags(table);
                     cacheProvider.put(cache, key, tags);
                 }
             }else{
@@ -2219,7 +2235,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                     tags = (LinkedHashMap<String,Tag>) static_cache.get("keys");
                 }
                 if(null == tags){
-                    tags = dao.tags(catalog, schema, table);
+                    tags = dao.tags(table);
                     static_cache = new DataRow();
                     static_cache.put("keys", tags);
                     cache_metadatas.put(key, static_cache);
