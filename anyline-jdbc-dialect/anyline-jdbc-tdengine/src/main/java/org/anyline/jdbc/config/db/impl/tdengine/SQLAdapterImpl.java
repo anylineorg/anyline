@@ -1,5 +1,6 @@
 package org.anyline.jdbc.config.db.impl.tdengine;
 
+import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
@@ -129,6 +130,38 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return sql;
 	}
 
+
+	/**
+	 * 查询标签
+	 *  select * from INFORMATION_SCHEMA.INS_TAGS WHERE db_name = 'simple' AND table_name = '';
+	 *  table_name ,db_name,stable_name,tag_name,tag_type,tag_value
+	 * @param table table
+	 * @return String
+	 */
+	public String buildQueryTagRunSQL(Table table){
+		StringBuilder builder = new StringBuilder();
+		if(table instanceof STable){
+			builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
+			builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
+		}else {
+			builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
+			builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
+		}
+		return builder.toString();
+	}
+
+	public LinkedHashMap<String, Tag> tags(DataSet set){
+		LinkedHashMap<String, Tag> tags = new LinkedHashMap<>();
+		for(DataRow row:set){
+			Tag tag = new Tag();
+			String name = row.getString("TAG_NAME");
+			tag.setName(name);
+			tag.setTypeName(row.getString("TAG_TYPE"));
+			tag.setValue(row.get("TAG_VALUE"));
+			tags.put(name.toUpperCase(), tag);
+		}
+		return tags;
+	}
 	public StringBuilder fromSuperTable(StringBuilder builder, Table table){
 
 		String stable = table.getStableName();
@@ -220,8 +253,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 	/**
 	 * 修改备注
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 不支付
 	 * @param column column
 	 * @return String
 	 */
@@ -291,11 +323,16 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Column column){
-		String comment = column.getComment();
-		if(BasicUtil.isNotEmpty(comment)){
-			builder.append(" COMMENT '").append(comment).append("'");
+		if(column instanceof Tag) {
+			String comment = column.getComment();
+			if (BasicUtil.isNotEmpty(comment)) {
+				builder.append(" COMMENT '").append(comment).append("'");
+			}
+			return builder;
+		}else{
+			//列不支付
+			return null;
 		}
-		return builder;
 	}
 
 }
