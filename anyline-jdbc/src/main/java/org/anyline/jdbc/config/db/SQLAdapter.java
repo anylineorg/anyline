@@ -24,8 +24,10 @@ import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
+import org.anyline.jdbc.entity.Tag;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,6 +97,20 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types);
+
+	/**
+	 * 查询瑗表上的标签
+	 * @param table table
+	 * @return sql
+	 */
+	public String buildQueryTagRunSQL(Table table);
+
+	/**
+	 *  根据查询结果集构造Tag
+	 * @param set set
+	 * @return tags
+	 */
+	public LinkedHashMap<String, Tag> tags(DataSet set);
 
 	/**
 	 * 从查询结果中提取出超表名
