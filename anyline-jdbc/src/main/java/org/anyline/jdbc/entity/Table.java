@@ -55,8 +55,7 @@ public class Table {
     public List<Column> primarys(){
         List<Column> pks = new ArrayList<>();
         for(Column column:columns.values()){
-            Boolean isPrimaryKey = column.isPrimaryKey();
-            if(null != isPrimaryKey && isPrimaryKey){
+            if(column.isPrimaryKey() == 1){
                 pks.add(column);
             }
         }

@@ -21,15 +21,15 @@ public class Column {
     protected String typeName                     ; //类型名称
     protected Integer precision                   ; //整个字段的长度(包含小数部分)  123.45：precision = 5 ，scale = 2 对于SQL Server 中 varchar(max)设置成 -1
     protected Integer scale                       ; //小数部分的长度
-    protected Boolean nullable                    ; //是否可以为NULL
-    protected Boolean caseSensitive               ; //是否区分大小写
-    protected Boolean isCurrency                  ; //是否是货币
-    protected Boolean isSigned                    ; //是否可以带正负号
-    protected Boolean isAutoIncrement             ; //是否自增
-    protected Integer incrementSeed       = 1     ; //自增起始值
-    protected Integer incrementStep       = 1     ; //自增增量
-    protected Boolean isPrimaryKey                ; //是否主键
-    protected Boolean isGenerated                 ; //是否generated
+    protected int nullable                   = -1 ; //是否可以为NULL
+    protected int caseSensitive              = -1 ; //是否区分大小写
+    protected int isCurrency                 = -1 ; //是否是货币
+    protected int isSigned                   = -1 ; //是否可以带正负号
+    protected int isAutoIncrement            = -1 ; //是否自增
+    protected Integer incrementSeed          = 1  ; //自增起始值
+    protected Integer incrementStep          = 1  ; //自增增量
+    protected int isPrimaryKey               = -1 ; //是否主键
+    protected int isGenerated                = -1 ; //是否generated
     protected Object defaultValue                 ; //默认值
     protected String charset                      ; //编码
     protected String collate                      ; //排序编码
@@ -39,7 +39,7 @@ public class Column {
 
     protected String after                        ; //修改列时 在表中的位置
     protected String before                       ; //修改列时 在表中的位置
-    protected Boolean isOnUpdate                  ; //是否在更新行时 更新这一列数据
+    protected int isOnUpdate                 = -1 ; //是否在更新行时 更新这一列数据
 
     protected Column update                       ;
 
@@ -154,6 +154,8 @@ public class Column {
     }
 
     public Column setTypeName(String typeName) {
+        this.precision = 0;
+        this.scale = 0;
         if(null != typeName && typeName.contains(" ")){
             //TYPE_NAME=int identity
             typeName = typeName.split(" ")[0];
@@ -201,30 +203,60 @@ public class Column {
         return this;
     }
 
-    public Boolean isCaseSensitive() {
+    public int isCaseSensitive() {
         return caseSensitive;
     }
 
-    public Column setCaseSensitive(Boolean caseSensitive) {
+    public Column setCaseSensitive(int caseSensitive) {
         this.caseSensitive = caseSensitive;
         return this;
     }
-
-    public Boolean isCurrency() {
-        return isCurrency;
-    }
-
-    public Column setCurrency(Boolean currency) {
-        isCurrency = currency;
+    public Column setCaseSensitive(Boolean caseSensitive) {
+        if(null != caseSensitive) {
+            if(caseSensitive) {
+                this.caseSensitive = 1;
+            }else {
+                this.caseSensitive = 0;
+            }
+        }
         return this;
     }
 
-    public Boolean isSigned() {
+    public int isCurrency() {
+        return isCurrency;
+    }
+
+    public Column setCurrency(int currency) {
+        this.isCurrency = currency;
+        return this;
+    }
+    public Column setCurrency(Boolean currency) {
+        if(null != currency){
+            if(currency){
+                this.isCurrency = 1;
+            }else{
+                this.isCurrency = 0;
+            }
+        }
+        return this;
+    }
+
+    public int isSigned() {
         return isSigned;
     }
 
+    public Column setSigned(int signed) {
+        this.isSigned = signed;
+        return this;
+    }
     public Column setSigned(Boolean signed) {
-        isSigned = signed;
+        if(null != signed){
+            if(signed){
+                this.isSigned = 1;
+            }else{
+                this.isSigned = 0;
+            }
+        }
         return this;
     }
 
@@ -237,39 +269,80 @@ public class Column {
         return this;
     }
 
-    public Boolean isNullable() {
+    public int isNullable() {
         return nullable;
     }
 
-    public Column setNullable(Boolean nullable) {
+    public Column setNullable(int nullable) {
         this.nullable = nullable;
         return this;
     }
+    public Column setNullable(Boolean nullable) {
+        if(null != nullable){
+            if(nullable){
+                this.nullable = 1;
+            }else{
+                this.nullable = 0;
+            }
+        }
+        return this;
+    }
 
-    public Boolean isAutoIncrement() {
+    public int isAutoIncrement() {
         return isAutoIncrement;
     }
 
-    public Column setAutoIncrement(Boolean autoIncrement) {
-        isAutoIncrement = autoIncrement;
+    public Column setAutoIncrement(int autoIncrement) {
+        this.isAutoIncrement = autoIncrement;
         return this;
     }
 
-    public Boolean isPrimaryKey() {
+    public Column setAutoIncrement(Boolean autoIncrement) {
+        if(null != autoIncrement) {
+            if(autoIncrement){
+                this.isAutoIncrement = 1;
+            }else{
+                this.isAutoIncrement = 0;
+            }
+        }
+        return this;
+    }
+
+    public int isPrimaryKey() {
         return isPrimaryKey;
     }
 
+    public Column setPrimaryKey(int primaryKey) {
+        this.isPrimaryKey = primaryKey;
+        return this;
+    }
     public Column setPrimaryKey(Boolean primaryKey) {
-        isPrimaryKey = primaryKey;
+        if(null != primaryKey){
+            if(primaryKey){
+                this.isPrimaryKey = 1 ;
+            }else{
+                this.isPrimaryKey = 0 ;
+            }
+        }
         return this;
     }
 
-    public Boolean isGenerated() {
+    public int isGenerated() {
         return isGenerated;
     }
 
+    public Column setGenerated(int generated) {
+        this.isGenerated = generated;
+        return this;
+    }
     public Column setGenerated(Boolean generated) {
-        isGenerated = generated;
+        if(null != generated){
+            if(generated){
+                this.isGenerated = 1;
+            }else{
+                this.isGenerated = 0;
+            }
+        }
         return this;
     }
 
@@ -322,12 +395,22 @@ public class Column {
         return this;
     }
 
-    public Boolean isOnUpdate() {
+    public int isOnUpdate() {
         return isOnUpdate;
     }
 
+    public Column setOnUpdate(int onUpdate) {
+        this.isOnUpdate = onUpdate;
+        return this;
+    }
     public Column setOnUpdate(Boolean onUpdate) {
-        isOnUpdate = onUpdate;
+        if(null != onUpdate){
+            if(onUpdate){
+                this.isOnUpdate = 1;
+            }else{
+                this.isOnUpdate = 0;
+            }
+        }
         return this;
     }
 
@@ -415,6 +498,7 @@ public class Column {
     public Object clone(){
         Column copy = new Column();
         copy.setName(name);
+        copy.setTypeName(typeName);
         copy.setCatalog(catalog);
         copy.setClassName(className);
         copy.setSchema(schema);
@@ -422,7 +506,6 @@ public class Column {
         copy.setDisplaySize(displaySize);
         copy.setComment(comment);
         copy.setType(type);
-        copy.setTypeName(typeName);
         copy.setPrecision(precision);
         copy.setScale(scale);
         copy.setNullable(nullable);
