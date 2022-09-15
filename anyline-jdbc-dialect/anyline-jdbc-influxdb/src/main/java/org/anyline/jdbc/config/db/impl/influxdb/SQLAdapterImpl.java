@@ -5,8 +5,8 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.run.impl.TableRunSQLImpl;
 import org.anyline.util.BasicUtil;
@@ -17,13 +17,13 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Map;
 
-@Repository("anyline.jdbc.creater.influxdb")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.influxdb")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
 		return DB_TYPE.InfluxDB;
 	} 
-	public SQLCreaterImpl(){ 
+	public SQLAdapterImpl(){
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 	}

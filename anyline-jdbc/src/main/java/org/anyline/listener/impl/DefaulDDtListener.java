@@ -5,7 +5,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.PageNaviImpl;
 import org.anyline.jdbc.config.db.RunValue;
-import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.listener.DDListener;
@@ -25,7 +25,7 @@ public class DefaulDDtListener implements DDListener {
 
     protected Logger log = LoggerFactory.getLogger(DefaulDDtListener.class);
     protected AnylineService service;
-    protected SQLCreater creater;
+    protected SQLAdapter adapter;
 
 
     @Override
@@ -81,14 +81,14 @@ public class DefaulDDtListener implements DDListener {
     }
     public boolean exeAfterException(Table table, Column column, Exception exception){
         Column update = column.getUpdate();
-        boolean isNum = creater.isNumberColumn(update);
-        if(creater.isCharColumn(column) && !creater.isCharColumn(update)){
+        boolean isNum = adapter.isNumberColumn(update);
+        if(adapter.isCharColumn(column) && !adapter.isCharColumn(update)){
             //原来是String类型 修改成 boolean或number类型 失败
             int page = 1;
             int vol = 100;
             PageNavi navi = new PageNaviImpl();
             navi.setPageRows(vol);
-            List<Column> pks = table.primaryKeys();
+            List<Column> pks = table.primarys();
             if(pks.size() == 0){
                 if(null == table.getColumn(DataRow.DEFAULT_PRIMARY_KEY)){
                     //没有主键
@@ -119,7 +119,7 @@ public class DefaulDDtListener implements DDListener {
                         }
                         RunValue run = new RunValue();
                         run.setValue(value);
-                        creater.convert(update, run);
+                        adapter.convert(update, run);
                         convert = run.getValue();
                         row.put(column.getName(), convert);
                         log.warn("[after exception][数据修正][{}>{}]", value, convert);
@@ -188,12 +188,12 @@ public class DefaulDDtListener implements DDListener {
         return service;
     }
 
-    public SQLCreater getCreater() {
-        return creater;
+    public SQLAdapter getAdapter() {
+        return adapter;
     }
 
-    public void setCreater(SQLCreater creater) {
-        this.creater = creater;
+    public void setAdapter(SQLAdapter adapter) {
+        this.adapter = adapter;
     }
 
     public void setService(AnylineService service){

@@ -1,27 +1,25 @@
- 
-package org.anyline.jdbc.config.db.impl.dm;
- 
-import org.anyline.entity.PageNavi;
+package org.anyline.jdbc.config.db.impl.oscar;
+
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.dm")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.oscar")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
-		return DB_TYPE.DM;
+		return DB_TYPE.oscar;
 	} 
-	public SQLCreaterImpl(){ 
-		delimiterFr = "\"";
-		delimiterTo = "\"";
+	public SQLAdapterImpl(){
+		delimiterFr = "";
+		delimiterTo = "";
 	}
-
-	@Value("${anyline.jdbc.delimiter.dm:}")
+	@Value("${anyline.jdbc.delimiter.oscar:}")
 	private String delimiter;
 
 	@Override
@@ -51,9 +49,9 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
-	}
-
+	} 
+ 
 	public String concat(String ... args){
-		return concatOr(args);
-	}
+		return concatFun(args);
+	} 
 } 

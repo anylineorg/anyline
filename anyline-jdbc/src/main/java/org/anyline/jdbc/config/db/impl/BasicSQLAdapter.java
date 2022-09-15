@@ -28,7 +28,7 @@ import org.anyline.exception.SQLUpdateException;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.run.impl.TableRunSQLImpl;
 import org.anyline.jdbc.config.db.run.impl.TextRunSQLImpl;
@@ -61,8 +61,8 @@ import java.util.*;
  * SQL生成 子类主要实现与分页相关的SQL 以及delimiter
  */
 
-public abstract class BasicSQLCreaterImpl implements SQLCreater{
-	protected static final Logger log = LoggerFactory.getLogger(BasicSQLCreaterImpl.class);
+public abstract class BasicSQLAdapter implements SQLAdapter {
+	protected static final Logger log = LoggerFactory.getLogger(BasicSQLAdapter.class);
 
 	@Autowired(required=false)
 	protected PrimaryCreater primaryCreater;
@@ -581,7 +581,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		}
 		format(builder, value);
 	}
-	private void format(StringBuilder builder, Object value){
+	public void format(StringBuilder builder, Object value){
 		if(null == value || "NULL".equals(value)){
 			builder.append("null");
 		}else if(value instanceof String){
@@ -654,7 +654,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int size = keys.size();
 		if(size > 0){
 			builder.append("UPDATE ").append(parseTable(dest));
-			builder.append(" SET").append(SQLCreater.BR_TAB);
+			builder.append(" SET").append(SQLAdapter.BR_TAB);
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
 				Object value = null;
@@ -668,9 +668,9 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
 
-					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLAdapter.BR_TAB);
 				}else{
-					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLAdapter.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
@@ -682,8 +682,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					builder.append(",");
 				}
 			}
-			builder.append(SQLCreater.BR);
-			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
+			builder.append(SQLAdapter.BR);
+			builder.append("\nWHERE 1=1").append(SQLAdapter.BR_TAB);
 			for(String pk:primaryKeys){
 				builder.append(" AND ");
 				SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
@@ -723,16 +723,16 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		int size = keys.size();
 		if(size > 0){
 			builder.append("UPDATE ").append(parseTable(dest));
-			builder.append(" SET").append(SQLCreater.BR_TAB);
+			builder.append(" SET").append(SQLAdapter.BR_TAB);
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
 				Object value = row.get(key);
 				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
-					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLCreater.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(SQLAdapter.BR_TAB);
 				}else{
-					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLCreater.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(SQLAdapter.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
@@ -744,8 +744,8 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 					builder.append(",");
 				} 
 			}
-			builder.append(SQLCreater.BR);
-			builder.append("\nWHERE 1=1").append(SQLCreater.BR_TAB);
+			builder.append(SQLAdapter.BR);
+			builder.append("\nWHERE 1=1").append(SQLAdapter.BR_TAB);
 			for(String pk:primaryKeys){
 				builder.append(" AND ");
 				SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
@@ -1385,24 +1385,32 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 		builder.append("CREATE ").append(table.getKeyword()).append(" ");
 		checkTableExists(builder, false);
 		name(builder, table);
-		builder.append("(\n");
-		Collection<Column> columns = table.getColumns().values();
-		int idx = 0;
-		for(Column column:columns){
-			builder.append("\t");
-			if(idx > 0){
-				builder.append(",");
+		LinkedHashMap columMap = table.getColumns();
+		if(null != columMap){
+			Collection<Column> columns = columMap.values();
+			if(null != columns && columns.size() >0){
+				builder.append("(\n");
+				int idx = 0;
+				for(Column column:columns){
+					builder.append("\t");
+					if(idx > 0){
+						builder.append(",");
+					}
+					SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+					define(builder, column).append("\n");
+					idx ++;
+				}
+				builder.append("\t");
+				primary(builder, table);
+				builder.append(")");
 			}
-			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			define(builder, column).append("\n");
-
-			idx ++;
 		}
-		builder.append("\t");
-		primary(builder, table);
-		builder.append(")");
-
+		fromSuperTable(builder, table);
 		return builder.toString();
+	}
+
+	public StringBuilder fromSuperTable(StringBuilder builder, Table table){
+		return builder;
 	}
 	/**
 	 * 构造完整表名
@@ -1432,7 +1440,7 @@ public abstract class BasicSQLCreaterImpl implements SQLCreater{
 	 */
 	@Override
 	public StringBuilder primary(StringBuilder builder, Table table){
-		List<Column> pks = table.primaryKeys();
+		List<Column> pks = table.primarys();
 		if(pks.size()>0){
 			builder.append(",PRIMARY KEY (");
 			int idx = 0;

@@ -3,10 +3,11 @@ package org.anyline.jdbc.config.db.impl.tdengine;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.STable;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.jdbc.entity.Tag;
 import org.anyline.util.BasicUtil;
@@ -19,14 +20,14 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-@Repository("anyline.jdbc.creater.tdengine")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.tdengine")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
 		return DB_TYPE.TDengine;
 	}
 
-	public SQLCreaterImpl(){ 
+	public SQLAdapterImpl(){
 		delimiterFr = "`";
 		delimiterTo = "`";
 	}
@@ -107,26 +108,56 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	public String buildCreateRunSQL(Table table){
 		LinkedHashMap<String,Tag> tags = table.getTags();
 		String sql = super.buildCreateRunSQL(table);
-		if(null == tags || tags.size()==0){
-			return sql;
-		}
-		StringBuilder builder = new StringBuilder();
-		builder.append(sql);
-		builder.append(" TAGS (");
-		int idx = 0;
-		for(Tag tag:tags.values()){
-			if(idx > 0){
-				builder.append(",");
+		if(table instanceof STable){
+			//超表
+			StringBuilder builder = new StringBuilder();
+			builder.append(sql);
+			builder.append(" TAGS (");
+			int idx = 0;
+			for(Tag tag:tags.values()){
+				if(idx > 0){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+				type(builder, tag);
+				comment(builder, tag);
+				idx ++;
 			}
-			SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			type(builder, tag);
-			comment(builder, tag);
-			idx ++;
+			builder.append(")");
+			return builder.toString();
 		}
-		builder.append(")");
-		return builder.toString();
+		return sql;
 	}
 
+	public StringBuilder fromSuperTable(StringBuilder builder, Table table){
+
+		String stable = table.getStableName();
+		if(BasicUtil.isNotEmpty(stable)){
+			builder.append(" USING ");
+			SQLUtil.delimiter(builder, stable, getDelimiterFr(), getDelimiterTo());
+			builder.append("(");
+			Collection<Tag> tags = table.getTags().values();
+			int idx = 0;
+			for(Tag tag:tags){
+				if(idx > 0){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
+				idx ++;
+			}
+			builder.append(") TAGS (");
+			idx = 0;
+			for(Tag tag:tags){
+				if(idx > 0){
+					builder.append(",");
+				}
+				format(builder, tag.getValue());
+				idx ++;
+			}
+			builder.append(")");
+		}
+		return builder;
+	}
 	/**
 	 * 创建之前  检测表是否存在
 	 * IF NOT EXISTS
@@ -139,7 +170,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		if(!exists){
 			builder.append("NOT ");
 		}
-		builder.append("EXISTS");
+		builder.append("EXISTS ");
 		return builder;
 	}
 	/**

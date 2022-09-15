@@ -184,7 +184,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
  
 	 
  
-	public String getRunText(SQLCreater creater) { 
+	public String getRunText(SQLAdapter adapter) {
 		String result = text; 
 		runValues = new ArrayList<>();
 		if(null == variables){

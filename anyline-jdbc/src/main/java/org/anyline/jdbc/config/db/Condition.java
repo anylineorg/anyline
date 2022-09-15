@@ -34,10 +34,10 @@ public interface Condition extends Cloneable{
 	 
 	/** 
 	 * 运行时文本 
-	 * @param creater creater
+	 * @param adapter adapter
 	 * @return String
 	 */ 
-	public String getRunText(SQLCreater creater); 
+	public String getRunText(SQLAdapter adapter);
 	/** 
 	 * 运行时参数值 
 	 * @return List

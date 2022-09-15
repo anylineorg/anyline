@@ -1,26 +1,27 @@
-package org.anyline.jdbc.config.db.impl.polardb;
+package org.anyline.jdbc.config.db.impl.clickhouse;
  
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.polardb")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.clickhouse")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
-		return DB_TYPE.PolarDB;
-	} 
-	public SQLCreaterImpl(){ 
-		delimiterFr = "`";
-		delimiterTo = "`";
+		return DB_TYPE.ClickHouse;
 	}
 
-	@Value("${anyline.jdbc.delimiter.polardb:}")
+	public SQLAdapterImpl(){
+		delimiterFr = "";
+		delimiterTo = "";
+	}
+
+	@Value("${anyline.jdbc.delimiter.clickhouse:}")
 	private String delimiter;
 
 	@Override
@@ -54,5 +55,6 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
  
 	public String concat(String ... args){
 		return concatFun(args);
-	} 
-} 
+	}
+
+}

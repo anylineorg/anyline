@@ -1,26 +1,26 @@
+package org.anyline.jdbc.config.db.impl.oceanbase;
  
-package org.anyline.jdbc.config.db.impl.hsqldb;
-
-import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.entity.OrderStore;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.hsqldb")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.oceanbase")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
-		return DB_TYPE.HSQLDB;
+		return DB_TYPE.OceanBase;
 	} 
-	public SQLCreaterImpl(){ 
-		delimiterFr = "";
-		delimiterTo = "";
+	public SQLAdapterImpl(){
+		delimiterFr = "`";
+		delimiterTo = "`";
 	}
-	@Value("${anyline.jdbc.delimiter.hsqldb:}")
+
+	@Value("${anyline.jdbc.delimiter.oceanbase:}")
 	private String delimiter;
 
 	@Override
@@ -46,14 +46,13 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 			if(limit < 0){ 
 				limit = 0; 
 			} 
-			sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow(); 
+			sql += " LIMIT " + navi.getFirstRow() + "," + limit; 
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
 	} 
  
- 
 	public String concat(String ... args){
-		return concatOr(args);
+		return concatFun(args);
 	} 
 } 

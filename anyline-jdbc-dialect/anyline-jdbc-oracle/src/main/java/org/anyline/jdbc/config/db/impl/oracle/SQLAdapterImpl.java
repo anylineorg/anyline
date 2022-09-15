@@ -6,8 +6,8 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@Repository("anyline.jdbc.creater.oracle") 
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.oracle") 
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
 	 
 	@Autowired(required = false) 
 	@Qualifier("anyline.dao") 
@@ -46,7 +46,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		setDelimiter(delimiter);
 	}
 
-	public SQLCreaterImpl(){ 
+	public SQLAdapterImpl(){
 		delimiterFr = "";
 		delimiterTo = "";
 	}

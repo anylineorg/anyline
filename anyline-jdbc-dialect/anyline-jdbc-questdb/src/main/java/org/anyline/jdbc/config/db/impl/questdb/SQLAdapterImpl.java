@@ -3,8 +3,8 @@ package org.anyline.jdbc.config.db.impl.questdb;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.questdb")
-public class SQLCreaterImpl extends org.anyline.jdbc.config.db.impl.postgresql.SQLCreaterImpl{
+@Repository("anyline.jdbc.sql.adapter.questdb")
+public class SQLAdapterImpl extends org.anyline.jdbc.config.db.impl.postgresql.SQLAdapterImpl {
     public DB_TYPE type(){
         return DB_TYPE.QuestDB;
     }

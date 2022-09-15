@@ -4,8 +4,8 @@ package org.anyline.jdbc.config.db.impl.postgresql;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
 import org.anyline.jdbc.config.db.RunValue;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
@@ -20,13 +20,13 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository("anyline.jdbc.creater.postgresql")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.postgresql")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
 		return DB_TYPE.PostgreSQL; 
 	} 
-	public SQLCreaterImpl(){ 
+	public SQLAdapterImpl(){
 		delimiterFr = "\"";
 		delimiterTo = "\"";
 	}
@@ -206,7 +206,7 @@ varbit:String
 	 */
 	@Override
 	public StringBuilder primary(StringBuilder builder, Table table){
-		List<Column> pks = table.primaryKeys();
+		List<Column> pks = table.primarys();
 		if(pks.size()>0){
 			builder.append(",CONSTRAINT ").append("PK_").append(table.getName()).append(" PRIMARY KEY (");
 			int idx = 0;
@@ -335,6 +335,21 @@ varbit:String
 		}else{
 			return null;
 		}
+	}
+	/**
+	 * 创建之前  检测表是否存在
+	 * IF NOT EXISTS
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
+		builder.append(" IF ");
+		if(!exists){
+			builder.append("NOT ");
+		}
+		builder.append("EXISTS ");
+		return builder;
 	}
 	@Override
 	public String type2type(String type){

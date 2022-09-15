@@ -1,25 +1,27 @@
-package org.anyline.jdbc.config.db.impl.oscar;
-
-import org.anyline.entity.OrderStore;
+ 
+package org.anyline.jdbc.config.db.impl.mariadb; 
+ 
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.entity.OrderStore;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-
-@Repository("anyline.jdbc.creater.oscar")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.mariadb") 
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
-		return DB_TYPE.oscar;
+		return DB_TYPE.MYSQL; 
 	} 
-	public SQLCreaterImpl(){ 
-		delimiterFr = "";
-		delimiterTo = "";
+	 
+	public SQLAdapterImpl(){
+		delimiterFr = "`";
+		delimiterTo = "`";
 	}
-	@Value("${anyline.jdbc.delimiter.oscar:}")
+
+	@Value("${anyline.jdbc.delimiter.mariadb:}")
 	private String delimiter;
 
 	@Override

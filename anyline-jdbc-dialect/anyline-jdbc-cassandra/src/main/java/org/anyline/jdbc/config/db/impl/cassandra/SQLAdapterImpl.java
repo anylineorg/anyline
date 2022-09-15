@@ -1,26 +1,27 @@
-package org.anyline.jdbc.config.db.impl.derby;
- 
-import org.anyline.entity.PageNavi;
+package org.anyline.jdbc.config.db.impl.cassandra;
+
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.derby")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.cassandra")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
-		return DB_TYPE.Derby;
-	} 
-	public SQLCreaterImpl(){ 
-		delimiterFr = "";
-		delimiterTo = "";
+		return DB_TYPE.Cassandra;
 	}
 
-	@Value("${anyline.jdbc.delimiter.derby:}")
+	public SQLAdapterImpl(){
+		delimiterFr = "\"";
+		delimiterTo = "\"";
+	}
+
+	@Value("${anyline.jdbc.delimiter.cassandra:}")
 	private String delimiter;
 
 	@Override
@@ -46,15 +47,14 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 			if(limit < 0){ 
 				limit = 0; 
 			} 
-			sql += " OFFSET " + navi.getFirstRow() + " ROWS FETCH NEXT " + limit + " ROWS ONLY ";
+			sql += " LIMIT " + (navi.getLastRow()-navi.getFirstRow());
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
-	}
-
-
-	@Override
+	} 
+ 
 	public String concat(String ... args){
-		return concatOr(args);
+		return concatFun(args);
 	}
-} 
+
+}

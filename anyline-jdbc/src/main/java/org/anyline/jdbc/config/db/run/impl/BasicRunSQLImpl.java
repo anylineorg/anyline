@@ -67,18 +67,18 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	protected List<String> updateColumns;
 	 
 	 
-	protected SQLCreater creater; 
+	protected SQLAdapter adapter;
 	protected String delimiterFr;
 	protected String delimiterTo;
 	protected static AnylineService service;
 	 
-	public void setCreater(SQLCreater creater){ 
-		this.creater = creater; 
+	public void setCreater(SQLAdapter adapter){
+		this.adapter = adapter; 
 	}
 
 	public void init(){ 
-		this.delimiterFr = creater.getDelimiterFr();
-		this.delimiterTo = creater.getDelimiterTo();
+		this.delimiterFr = adapter.getDelimiterFr();
+		this.delimiterTo = adapter.getDelimiterTo();
 		 
  
 		if(null != configStore){ 
@@ -216,7 +216,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 		if(null == values){
 			values = new ArrayList<>();
 		}
-		creater.convert(getCatalog(), getSchema(), getTable(), run);
+		adapter.convert(getCatalog(), getSchema(), getTable(), run);
 		values.add(run);
 		return this;
 	}
@@ -263,8 +263,8 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public void setDelimiterTo(String delimiterTo) {
 		this.delimiterTo = delimiterTo;
 	} 
-	public SQLCreater getCreater() { 
-		return creater; 
+	public SQLAdapter getAdapter() {
+		return adapter;
 	} 
  
 	@Override 
@@ -281,7 +281,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	} 
 	@Override 
 	public String getFinalQueryTxt() { 
-		String text = creater.parseFinalQueryTxt(this);
+		String text = adapter.parseFinalQueryTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -289,7 +289,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	} 
 	@Override 
 	public String getTotalQueryTxt() {
-		String text = creater.parseTotalQueryTxt(this);
+		String text = adapter.parseTotalQueryTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -297,7 +297,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	}
 	@Override
 	public String getExistsTxt(){
-		String text =  creater.parseExistsTxt(this);
+		String text =  adapter.parseExistsTxt(this);
 		if(ConfigTable.IS_SQL_DELIMITER_PLACEHOLDER_OPEN){
 			text = SQLUtil.placeholder(text, delimiterFr, delimiterTo);
 		}
@@ -534,9 +534,9 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 				for(String col:cols){
 					if(null == result){
 
-						result = SQLUtil.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
+						result = SQLUtil.delimiter(col, adapter.getDelimiterFr() , adapter.getDelimiterTo());
 					}else{
-						result += "," + SQLUtil.delimiter(col, creater.getDelimiterFr() , creater.getDelimiterTo());
+						result += "," + SQLUtil.delimiter(col, adapter.getDelimiterFr() , adapter.getDelimiterTo());
 					}
 				}
 			}

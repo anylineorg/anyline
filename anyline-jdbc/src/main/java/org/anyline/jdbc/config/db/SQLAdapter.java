@@ -28,7 +28,7 @@ import org.anyline.jdbc.entity.Table;
 import java.util.List;
 import java.util.Map;
 
-public interface SQLCreater{
+public interface SQLAdapter {
 	//内置VALUE
 	public static enum SQL_BUILD_IN_VALUE{
 		CURRENT_TIME  		{public String getCode(){return "CURRENT_TIME";}	public String getName(){return "当前时间";}};
@@ -167,7 +167,7 @@ public interface SQLCreater{
 	 * @param key 列名
 	 */
 	public void value(StringBuilder builder, Object row, String key);
-
+	public void format(StringBuilder builder, Object value);
 	/**
 	 * 拼接字符串
 	 * @param args args
@@ -248,6 +248,7 @@ public interface SQLCreater{
 	 */
 	public StringBuilder checkTableExists(StringBuilder builder, boolean exists);
 
+	public StringBuilder fromSuperTable(StringBuilder builder, Table table);
 	/**
 	 * 构造表名
 	 * @param builder builder

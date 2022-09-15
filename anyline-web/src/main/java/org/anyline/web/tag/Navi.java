@@ -27,8 +27,7 @@ import org.anyline.entity.PageNaviConfig;
 import org.anyline.util.AnylineConfig;
 import org.anyline.util.BasicUtil;
 import org.anyline.web.util.WebUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 /**
  * ajax形式分页
  * @author zh

@@ -1,13 +1,10 @@
 package org.anyline.jdbc.entity;
 
-import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.listener.DDListener;
 import org.anyline.service.AnylineService;
 
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
-import java.util.List;
 
 public class Index {
     private String catalog      ;
@@ -108,9 +105,9 @@ public class Index {
         }
         return this;
     }
-    public Index setCreater(SQLCreater creater) {
+    public Index setCreater(SQLAdapter adapter) {
         if (null != listener) {
-            listener.setCreater(creater);
+            listener.setAdapter(adapter);
         }
         return this;
     }

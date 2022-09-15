@@ -497,23 +497,45 @@ public interface AnylineService<E>{
 		public boolean alter(Column column) throws Exception;
 		public boolean drop(Column column) throws Exception;
 
-		public boolean save(Tag tag) throws Exception;
+		/**
+		 * 添加标签
+		 * @param tag tag
+		 * @return boolean
+		 * @throws Exception Exception
+		 */
 		public boolean add(Tag tag) throws Exception;
+		public boolean save(Tag tag) throws Exception;
 		public boolean alter(Tag tag) throws Exception;
 		public boolean drop(Tag tag) throws Exception;
 
+		/**
+		 * 表是否存在
+		 * @param table table
+		 * @return boolean
+		 */
 		public boolean exists(Table table);
 		public boolean save(Table table) throws Exception;
 		public boolean create(Table table) throws Exception;
 		public boolean alter(Table table) throws Exception;
 		public boolean drop(Table table) throws Exception;
 
+		/**
+		 * 超表是否存在
+		 * @param table table
+		 * @return boolean
+		 */
 		public boolean exists(STable table);
 		public boolean save(STable table) throws Exception;
 		public boolean create(STable table) throws Exception;
 		public boolean alter(STable table) throws Exception;
 		public boolean drop(STable table) throws Exception;
 
+		/**
+		 * 添加索引
+		 * @param index index
+		 * @return boolean
+		 * @throws Exception Exception
+		 */
 		public boolean add(Index index) throws Exception;
 		public boolean drop(Index index) throws Exception;
 	}

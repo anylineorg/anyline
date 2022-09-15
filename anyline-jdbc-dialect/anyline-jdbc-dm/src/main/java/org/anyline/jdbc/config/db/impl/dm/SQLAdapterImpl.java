@@ -1,26 +1,27 @@
-package org.anyline.jdbc.config.db.impl.oceanbase;
+ 
+package org.anyline.jdbc.config.db.impl.dm;
  
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.oceanbase")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.dm")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
-		return DB_TYPE.OceanBase;
+		return DB_TYPE.DM;
 	} 
-	public SQLCreaterImpl(){ 
-		delimiterFr = "`";
-		delimiterTo = "`";
+	public SQLAdapterImpl(){
+		delimiterFr = "\"";
+		delimiterTo = "\"";
 	}
 
-	@Value("${anyline.jdbc.delimiter.oceanbase:}")
+	@Value("${anyline.jdbc.delimiter.dm:}")
 	private String delimiter;
 
 	@Override
@@ -50,9 +51,9 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
-	} 
- 
+	}
+
 	public String concat(String ... args){
-		return concatFun(args);
-	} 
+		return concatOr(args);
+	}
 } 

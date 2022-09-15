@@ -1,32 +1,47 @@
-package org.anyline.jdbc.config.db.impl.sqlite;
+/*
+ * Copyright 2006-2022 www.anyline.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ *
+ */
+
+package org.anyline.jdbc.config.db.impl.db2; 
  
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-
-@Repository("anyline.jdbc.creater.sqlite")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
- 
+@Repository("anyline.jdbc.sql.adapter.db2") 
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
 	public DB_TYPE type(){
-		return DB_TYPE.SQLite;
+		return DB_TYPE.DB2; 
 	} 
-	public SQLCreaterImpl(){ 
-		delimiterFr = "`";
-		delimiterTo = "`";
+	public SQLAdapterImpl(){
+		delimiterFr = "\"";
+		delimiterTo = "\"";
 	}
-	@Value("${anyline.jdbc.delimiter.sqlite:}")
+	@Value("${anyline.jdbc.delimiter.db2:}")
 	private String delimiter;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		setDelimiter(delimiter);
 	}
-
 
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
@@ -50,11 +65,9 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
-	}
-
-
-	@Override
-	public String concat(String ... args){
-		return concatOr(args);
-	}
+	} 
+ 
+	public String concat(String ... args){ 
+		return concatFun(args);
+	} 
 } 

@@ -5,8 +5,8 @@ import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
 import org.anyline.jdbc.entity.Column;
@@ -23,8 +23,8 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository("anyline.jdbc.creater.mssql") 
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.mssql") 
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
 	 
 	@Autowired(required = false) 
 	@Qualifier("anyline.dao") 
@@ -43,7 +43,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	}
 
 	private static String dbVersion = ConfigTable.getString("DATABASE_VERSION"); 
-	public SQLCreaterImpl(){ 
+	public SQLAdapterImpl(){
 		delimiterFr = "[";
 		delimiterTo = "]";
 	}
@@ -201,7 +201,7 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 	 */
 	@Override
 	public StringBuilder primary(StringBuilder builder, Table table){
-		List<Column> pks = table.primaryKeys();
+		List<Column> pks = table.primarys();
 		if(pks.size()>0){
 			builder.append(",CONSTRAINT ").append("PK_").append(table.getName()).append(" PRIMARY KEY (");
 			int idx = 0;

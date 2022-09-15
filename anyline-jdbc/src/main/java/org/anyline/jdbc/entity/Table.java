@@ -1,7 +1,7 @@
 package org.anyline.jdbc.entity;
 
 import org.anyline.exception.AnylineException;
-import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.listener.DDListener;
 import org.anyline.listener.impl.DefaulDDtListener;
 import org.anyline.service.AnylineService;
@@ -13,7 +13,8 @@ public class Table {
     protected String catalog                      ;
     protected String schema                       ;
     protected String name                         ;
-    protected String base                         ; //超级表
+    protected String stableName                   ; //超级表
+    protected STable stable                       ;
     protected String type                         ;
     protected String comment                      ;
 
@@ -51,7 +52,7 @@ public class Table {
         this.listener = new DefaulDDtListener();
     }
 
-    public List<Column> primaryKeys(){
+    public List<Column> primarys(){
         List<Column> pks = new ArrayList<>();
         for(Column column:columns.values()){
             Boolean isPrimaryKey = column.isPrimaryKey();
@@ -129,6 +130,11 @@ public class Table {
     }
     public Tag addTag(String name, String type){
         return addTag(name, type, true, null);
+    }
+    public Tag addTag(String name, Object value){
+        Tag tag = new Tag(name, value);
+        addTag(tag);
+        return tag;
     }
     public Tag addTag(String name, String type, boolean nullable, Object def){
         Tag tag = new Tag();
@@ -317,9 +323,9 @@ public class Table {
         }
         return this;
     }
-    public Table setCreater(SQLCreater creater){
+    public Table setCreater(SQLAdapter adapter){
         if(null != listener){
-            listener.setCreater(creater);
+            listener.setAdapter(adapter);
         }
         return this;
     }
@@ -328,11 +334,11 @@ public class Table {
         return this.keyword;
     }
 
-    public String getBase() {
-        return base;
+    public String getStableName() {
+        return stableName;
     }
 
-    public void setBase(String base) {
-        this.base = base;
+    public void setStableName(String stableName) {
+        this.stableName = stableName;
     }
 }

@@ -226,13 +226,13 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 						} 
 						if(var.getCompare() == SQL.COMPARE_TYPE.LIKE){ 
 							//CD LIKE '%{CD}%' > CD LIKE concat('%',?,'%') || CD LIKE '%' + ? + '%' 
-							result = result.replace("'%"+replaceKey+"%'", creater.concat("'%'","?","'%'")); 
+							result = result.replace("'%"+replaceKey+"%'", adapter.concat("'%'","?","'%'"));
 							addValues(var.getKey(), varValues.get(0));
 						}else if(var.getCompare() == SQL.COMPARE_TYPE.LIKE_SUBFIX){ 
-							result = result.replace("'%"+replaceKey+"'", creater.concat("'%'","?")); 
+							result = result.replace("'%"+replaceKey+"'", adapter.concat("'%'","?"));
 							addValues(var.getKey(), varValues.get(0));
 						}else if(var.getCompare() == SQL.COMPARE_TYPE.LIKE_PREFIX){ 
-							result = result.replace("'"+replaceKey+"%'", creater.concat("?","'%'")); 
+							result = result.replace("'"+replaceKey+"%'", adapter.concat("?","'%'"));
 							addValues(var.getKey(), varValues.get(0));
 						}else if(var.getCompare() == SQL.COMPARE_TYPE.IN){ 
 							//多个值IN 
@@ -398,7 +398,7 @@ public class XMLRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(!endwithWhere(builder.toString())){
 			builder.append(" WHERE 1=1");
 		}
-		builder.append(conditionChain.getRunText(creater));
+		builder.append(conditionChain.getRunText(adapter));
 		addValues(conditionChain.getRunValues()); 
 //		if(null != staticConditions){ 
 //			for(String con:staticConditions){ 

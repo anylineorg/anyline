@@ -282,7 +282,7 @@ public class TextRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(!where){ 
 			builder.append(" WHERE 1=1"); 
 		}
-		builder.append(conditionChain.getRunText(creater));
+		builder.append(conditionChain.getRunText(adapter));
 		addValues(conditionChain.getRunValues());
 	}
 	 

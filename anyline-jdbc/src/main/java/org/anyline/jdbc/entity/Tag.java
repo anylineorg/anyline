@@ -4,6 +4,21 @@ import org.anyline.util.BeanUtil;
 
 public class Tag extends Column{
     protected Tag update = null;
+    protected Object value;
+
+    public Tag(){
+    }
+    public Tag(String name, String type, Object value){
+        this.name = name;
+        this.typeName = type;
+        this.value = value;
+    }
+    public Tag(String name, Object value){
+        this.name = name;
+        this.value = value;
+    }
+
+
     public Tag update(){
         update = (Tag) this.clone();
         return update;
@@ -17,6 +32,14 @@ public class Tag extends Column{
         BeanUtil.copyFieldValueNvl(update, this);
         this.update = update;
         return this;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
     }
 
     public Object clone(){

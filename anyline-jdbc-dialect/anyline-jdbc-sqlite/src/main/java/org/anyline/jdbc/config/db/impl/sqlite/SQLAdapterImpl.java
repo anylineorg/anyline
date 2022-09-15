@@ -1,33 +1,32 @@
-package org.anyline.jdbc.config.db.impl.cassandra;
-
-import org.anyline.entity.OrderStore;
+package org.anyline.jdbc.config.db.impl.sqlite;
+ 
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.entity.OrderStore;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.cassandra")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.sqlite")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
-		return DB_TYPE.Cassandra;
+		return DB_TYPE.SQLite;
+	} 
+	public SQLAdapterImpl(){
+		delimiterFr = "`";
+		delimiterTo = "`";
 	}
-
-	public SQLCreaterImpl(){ 
-		delimiterFr = "\"";
-		delimiterTo = "\"";
-	}
-
-	@Value("${anyline.jdbc.delimiter.cassandra:}")
+	@Value("${anyline.jdbc.delimiter.sqlite:}")
 	private String delimiter;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		setDelimiter(delimiter);
 	}
+
 
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
@@ -47,14 +46,15 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 			if(limit < 0){ 
 				limit = 0; 
 			} 
-			sql += " LIMIT " + (navi.getLastRow()-navi.getFirstRow());
+			sql += " LIMIT " + navi.getFirstRow() + "," + limit; 
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
-	} 
- 
-	public String concat(String ... args){
-		return concatFun(args);
 	}
 
-}
+
+	@Override
+	public String concat(String ... args){
+		return concatOr(args);
+	}
+} 

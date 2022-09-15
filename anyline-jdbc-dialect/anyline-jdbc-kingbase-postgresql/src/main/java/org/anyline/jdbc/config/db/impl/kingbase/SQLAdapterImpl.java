@@ -1,26 +1,26 @@
  
-package org.anyline.jdbc.config.db.impl.h2;
-
-import org.anyline.entity.OrderStore;
+package org.anyline.jdbc.config.db.impl.kingbase;
+ 
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.entity.OrderStore;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.h2")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.kingbase")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
-		return DB_TYPE.H2;
+		return DB_TYPE.KingBase;
 	} 
-	public SQLCreaterImpl(){ 
-		delimiterFr = "";
-		delimiterTo = "";
+	public SQLAdapterImpl(){
+		delimiterFr = "\"";
+		delimiterTo = "\"";
 	}
-	@Value("${anyline.jdbc.delimiter.h2:}")
+	@Value("${anyline.jdbc.delimiter.kingbase:}")
 	private String delimiter;
 
 	@Override

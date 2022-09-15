@@ -29,7 +29,7 @@ import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import java.util.List;
 
 public interface RunSQL { 
-	public void setCreater(SQLCreater creater); 
+	public void setCreater(SQLAdapter adapter);
 	public void init();
 	public void createRunDeleteTxt();
 	public void createRunQueryTxt();

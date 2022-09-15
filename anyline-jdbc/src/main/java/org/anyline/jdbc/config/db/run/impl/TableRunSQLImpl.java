@@ -28,7 +28,7 @@ import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
-import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
@@ -40,11 +40,11 @@ import java.util.List;
 
 public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 
-	public TableRunSQLImpl(SQLCreater creater, String table){
+	public TableRunSQLImpl(SQLAdapter adapter, String table){
 		this.conditionChain = new AutoConditionChainImpl();
 		this.orderStore = new OrderStoreImpl();
 		this.table = table;
-		this.creater = creater;
+		this.adapter = adapter;
 	}
 
 	private void parseDataSource(){ 
@@ -95,7 +95,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null != sql.getDistinct()){
 			builder.append(sql.getDistinct());
 		}
-		builder.append(SQLCreater.BR_TAB);
+		builder.append(SQLAdapter.BR_TAB);
 		List<String> columns = sql.getColumns(); 
 		if(null != columns && columns.size()>0){ 
 			//指定查询列 
@@ -121,18 +121,18 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 					builder.append(","); 
 				} 
 			} 
-			builder.append(SQLCreater.BR); 
+			builder.append(SQLAdapter.BR);
 		}else{ 
 			//全部查询 
 			builder.append("*"); 
-			builder.append(SQLCreater.BR); 
+			builder.append(SQLAdapter.BR);
 		} 
-		builder.append("FROM").append(SQLCreater.BR_TAB);
+		builder.append("FROM").append(SQLAdapter.BR_TAB);
 		if(null != schema){
 			SQLUtil.delimiter(builder, schema, delimiterFr, delimiterTo).append(".");
 		}
 		SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
-		builder.append(SQLCreater.BR);
+		builder.append(SQLAdapter.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
 			//builder.append(" AS ").append(sql.getAlias());
 			builder.append("  ").append(sql.getAlias());
@@ -140,7 +140,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		List<Join> joins = sql.getJoins();
 		if(null != joins) {
 			for (Join join:joins) {
-				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ");
+				builder.append(SQLAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
 				SQLUtil.delimiter(builder, join.getName(), delimiterFr, delimiterTo);
 				if(BasicUtil.isNotEmpty(join.getAlias())){
 					//builder.append(" AS ").append(join.getAlias());
@@ -170,7 +170,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		}
 
 		SQLUtil.delimiter(builder, table, delimiterFr, delimiterTo);
-		builder.append(SQLCreater.BR);
+		builder.append(SQLAdapter.BR);
 		if(BasicUtil.isNotEmpty(sql.getAlias())){
 			//builder.append(" AS ").append(sql.getAlias());
 			builder.append("  ").append(sql.getAlias());
@@ -178,7 +178,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		List<Join> joins = sql.getJoins();
 		if(null != joins) {
 			for (Join join:joins) {
-				builder.append(SQLCreater.BR_TAB).append(join.getType().getCode()).append(" ");
+				builder.append(SQLAdapter.BR_TAB).append(join.getType().getCode()).append(" ");
 				SQLUtil.delimiter(builder, join.getName(), getDelimiterFr(), getDelimiterTo());
 				if(BasicUtil.isNotEmpty(join.getAlias())){
 					builder.append("  ").append(join.getAlias());
@@ -217,7 +217,7 @@ public class TableRunSQLImpl extends BasicRunSQLImpl implements RunSQL{
 		if(null == conditionChain){ 
 			return; 
 		}
-		builder.append(conditionChain.getRunText(creater));
+		builder.append(conditionChain.getRunText(adapter));
 		List<RunValue> values = conditionChain.getRunValues();
 		addValues(values);
 	} 

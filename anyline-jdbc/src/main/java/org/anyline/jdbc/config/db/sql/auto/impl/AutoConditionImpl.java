@@ -23,7 +23,7 @@ import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
-import org.anyline.jdbc.config.db.SQLCreater;
+import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.jdbc.config.db.impl.BasicCondition;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
@@ -89,8 +89,8 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 
 //	@SuppressWarnings("unchecked") 
 //	public String getRunText(SQLCreater creater){ 
-//		String delimiterFr = creater.getDelimiterFr();
-//		String delimiterTo = creater.getDelimiterTo();
+//		String delimiterFr = adapter.getDelimiterFr();
+//		String delimiterTo = adapter.getDelimiterTo();
 //		runValues = new ArrayList<Object>(); /////////////////////////////////////////////////////////////////////////////
 //		String text = ""; 
 //		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){  /////////////////////////////////////////////////////////////////////////////
@@ -169,10 +169,10 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 
 	/** 
 	 * 运行时文本
-	 * @param creater creater
+	 * @param adapter adapter
 	 * @return String
 	 */ 
-	public String getRunText(SQLCreater creater){ 
+	public String getRunText(SQLAdapter adapter){
 		runValues = new ArrayList<>();
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
@@ -180,12 +180,12 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 		}else{ 
 			String txt = "";
 			if(BasicUtil.isNotEmpty(true, values) || isRequired()){
-				txt = getRunText(creater, values, compare);
+				txt = getRunText(adapter, values, compare);
 				if(BasicUtil.isNotEmpty(txt)){
 					text = txt;
 				}
 				if(BasicUtil.isNotEmpty(true, orValues)){
-					txt = getRunText(creater, orValues, orCompare);
+					txt = getRunText(adapter, orValues, orCompare);
 					if(BasicUtil.isNotEmpty(txt)){
 						if(BasicUtil.isEmpty(text)){
 							text = txt;
@@ -201,9 +201,9 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	} 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public String getRunText(SQLCreater creater, Object val, COMPARE_TYPE compare){ 
-		String delimiterFr = creater.getDelimiterFr();
-		String delimiterTo = creater.getDelimiterTo();
+	public String getRunText(SQLAdapter adapter, Object val, COMPARE_TYPE compare){
+		String delimiterFr = adapter.getDelimiterFr();
+		String delimiterTo = adapter.getDelimiterTo();
 		String text = "";
 		if(BasicUtil.isNotEmpty(table)){
 			text += SQLUtil.delimiter(table,delimiterFr, delimiterTo) + ".";
@@ -258,11 +258,11 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 				text += "= ?";
 			}
 		}else if(compare == COMPARE_TYPE.LIKE){
-			text += " LIKE "+ creater.concat("'%'", "?" , "'%'");
+			text += " LIKE "+ adapter.concat("'%'", "?" , "'%'");
 		}else if(compare == COMPARE_TYPE.LIKE_PREFIX){
-			text += " LIKE "+ creater.concat("?" , "'%'");
+			text += " LIKE "+ adapter.concat("?" , "'%'");
 		}else if(compare == COMPARE_TYPE.LIKE_SUBFIX){
-			text += " LIKE "+ creater.concat("'%'", "?");
+			text += " LIKE "+ adapter.concat("'%'", "?");
 		}
 		text += "";
 		//runtime value

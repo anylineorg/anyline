@@ -1,28 +1,26 @@
-package org.anyline.jdbc.config.db.impl.clickhouse;
  
-import org.anyline.entity.PageNavi;
+package org.anyline.jdbc.config.db.impl.h2;
+
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.config.db.SQLCreater;
-import org.anyline.jdbc.config.db.impl.BasicSQLCreaterImpl;
+import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
-import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-@Repository("anyline.jdbc.creater.clickhouse")
-public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, InitializingBean {
+@Repository("anyline.jdbc.sql.adapter.h2")
+public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
  
 	public DB_TYPE type(){
-		return DB_TYPE.ClickHouse;
-	}
-
-	public SQLCreaterImpl(){ 
+		return DB_TYPE.H2;
+	} 
+	public SQLAdapterImpl(){
 		delimiterFr = "";
 		delimiterTo = "";
 	}
-
-	@Value("${anyline.jdbc.delimiter.clickhouse:}")
+	@Value("${anyline.jdbc.delimiter.h2:}")
 	private String delimiter;
 
 	@Override
@@ -48,14 +46,14 @@ public class SQLCreaterImpl extends BasicSQLCreaterImpl implements SQLCreater, I
 			if(limit < 0){ 
 				limit = 0; 
 			} 
-			sql += " LIMIT " + navi.getFirstRow() + "," + limit; 
+			sql += " LIMIT " + limit + " OFFSET " + navi.getFirstRow(); 
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
 	} 
  
+ 
 	public String concat(String ... args){
-		return concatFun(args);
-	}
-
-}
+		return concatOr(args);
+	} 
+} 
