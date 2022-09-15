@@ -62,6 +62,7 @@ public class ConfigTable {
 	public static boolean IS_RETURN_EMPTY_INSTANCE_REPLACE_NULL			= false		;	//service.query() DataSet.getRow()返回null时,是否替换成new DataRow(), new Entity()
 	public static boolean IS_AUTO_CHECK_METADATA						= false		; 	//insert update 时是否自动检测表结构(删除表中不存在的属性)
 	public static int AFTER_ALTER_COLUMN_EXCEPTION_ACTION				= 1000		;   //DDL修改列异常后 0:中断修改 1:删除列 n:总行数小于多少时更新值否则触发另一个监听
+	public static boolean IS_DDL_AUTO_DROP_COLUMN						= false		;   //DDL执行时是否自动删除定义中不存在的列
 	public static String HTTP_PARAM_KEY_CASE							= "camel"	;	//http参数格式 camel:小驼峰 Camel:大驼峰 lower:小写 upper:大写  service.column2param会把 USER_NAME 转成userName
 	public static String TABLE_METADATA_CACHE_KEY						= ""		;	//表结构缓存key
 	public static int TABLE_METADATA_CACHE_SECOND						= 3600*24	;	//表析构缓存时间(没有设置缓存key的情况下生效)(-1:表示永不失效)
