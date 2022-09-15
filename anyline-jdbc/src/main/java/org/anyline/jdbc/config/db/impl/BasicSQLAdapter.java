@@ -447,8 +447,10 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			}
 		}else{
 			first = list.iterator().next();
-			if(AdapterProxy.hasAdapter()){
-				dest = AdapterProxy.table(first.getClass());
+			if(BasicUtil.isEmpty(dest)) {
+				if (AdapterProxy.hasAdapter()) {
+					dest = AdapterProxy.table(first.getClass());
+				}
 			}
 		}
 		if(BasicUtil.isEmpty(dest)){
@@ -499,8 +501,13 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 	}
 
-	//@Override
+	@Override
 	public void createInsertsTxt(StringBuilder builder, String dest, Collection list,  List<String> keys){
+		if(list instanceof DataSet){
+			DataSet set = (DataSet) list;
+			createInsertsTxt(builder, dest, set, keys);
+			return;
+		}
 		builder.append("INSERT INTO ").append(parseTable(dest));
 		builder.append("(");
 

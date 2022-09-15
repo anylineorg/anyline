@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		delimiterFr = "";
 		delimiterTo = "";
 	}
+
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		StringBuilder builder = new StringBuilder(); 
@@ -90,6 +92,18 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return concatOr(args);
 	}
 
+	/**
+	 * 批量插入
+	 * INSERT ALL
+	 * INTO T (ID, NAME) VALUES (1,'N1')
+	 * INTO T (ID, NAME) VALUES (2,'N2')
+	 * INTO T (ID, NAME) VALUES (3,'N3')
+	 * SELECT 1 FROM DUAL
+	 * @param builder
+	 * @param dest
+	 * @param set
+	 * @param keys
+	 */
 	@Override
 	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys){
 		builder.append("INSERT ALL \n");
@@ -103,7 +117,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			}
 		}
 		head += ") ";
-
 		int dataSize = set.size();
 		for(int i=0; i<dataSize; i++){
 			DataRow row = set.getRow(i);
@@ -125,12 +138,65 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 
 	@Override
+	public void createInsertsTxt(StringBuilder builder, String dest, Collection list, List<String> keys){
+		if(list instanceof DataSet){
+			DataSet set = (DataSet) list;
+			createInsertsTxt(builder, dest, set, keys);
+			return;
+		}
+		builder.append("INSERT ALL \n");
+		String head = "INTO " + dest + " (";
+		int keySize = keys.size();
+		for(int i=0; i<keySize; i++){
+			String key = keys.get(i);
+			head += key;
+			if(i<keySize-1){
+				head += ", ";
+			}
+		}
+		head += ") ";
+
+		for(Object obj:list){
+			if(obj instanceof DataRow) {
+				DataRow row = (DataRow)obj;
+				if (row.hasPrimaryKeys() && null != primaryCreater && BasicUtil.isEmpty(row.getPrimaryValue())) {
+					String pk = row.getPrimaryKey();
+					if (null == pk) {
+						pk = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+					}
+					row.put(pk, primaryCreater.createPrimary(type(), dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null));
+				}
+				builder.append(head).append("VALUES ");
+				insertValue(builder, row, keys);
+			}else{
+				String pk = null;
+				Object pv = null;
+				if(AdapterProxy.hasAdapter()){
+					pk = AdapterProxy.primaryKey(obj.getClass());
+					pv = AdapterProxy.primaryValue(obj);
+					AdapterProxy.createPrimaryValue(obj);
+				}else{
+					pk = DataRow.DEFAULT_PRIMARY_KEY;
+					pv = BeanUtil.getFieldValue(obj, pk);
+					if(null != primaryCreater && null == pv){
+						pv = primaryCreater.createPrimary(type(),dest.replace(getDelimiterFr(), "").replace(getDelimiterTo(), ""), pk, null);
+						BeanUtil.setFieldValue(obj, pk, pv);
+					}
+				}
+				builder.append(head).append("VALUES ");
+				insertValue(builder, obj, keys);
+			}
+			builder.append(" \n");
+		}
+		builder.append("SELECT 1 FROM DUAL");
+	}
+
+	@Override
 	public void value(StringBuilder builder, Object obj, String key){
 		Object value = null;
 		if(obj instanceof DataRow){
 			value = ((DataRow)obj).get(key);
-		}
-		if(AdapterProxy.hasAdapter()){
+		}else if(AdapterProxy.hasAdapter()){
 			Field field = AdapterProxy.field(obj.getClass(), key);
 			value = BeanUtil.getFieldValue(obj, field);
 		}else{
@@ -139,13 +205,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		if(null == value || "NULL".equals(value)){
 			builder.append("null");
 		}else if(value instanceof String){
-			String str = value.toString();
-			if(str.startsWith("${") && str.endsWith("}") && !BeanUtil.isJson(value)){
-				str = str.substring(2, str.length()-1);
-			}else{
-				str = "'" + str.replace("'", "''") + "'";
-			}
-			builder.append(str);
+			format(builder, value);
 		}else if(value instanceof Timestamp
 				|| value instanceof java.util.Date
 				|| value instanceof java.sql.Date
@@ -158,9 +218,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		}else if(value instanceof Date){
 			builder.append("TO_DATE('").append(DateUtil.format((Date)value,DateUtil.FORMAT_DATE_TIME)).append("','yyyy-mm-dd hh24:mi:ss')");
 		}else if(value instanceof Number || value instanceof Boolean){
-			builder.append(value.toString());
+			builder.append(value);
 		}else{
-			builder.append(value.toString());
+			builder.append(value);
 		}
 	}
 

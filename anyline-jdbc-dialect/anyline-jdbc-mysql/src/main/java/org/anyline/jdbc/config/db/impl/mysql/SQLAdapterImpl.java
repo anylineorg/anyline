@@ -236,7 +236,7 @@ SMALLINT:Short
 	 */
 	public StringBuilder position(StringBuilder builder, Column column){
 		Integer position = column.getPosition();
-		if(0 == position){
+		if(null != position && 0 == position){
 			builder.append(" FIRST");
 		}else{
 			String after = column.getAfter();

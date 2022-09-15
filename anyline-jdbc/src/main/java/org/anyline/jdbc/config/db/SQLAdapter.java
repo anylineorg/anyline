@@ -25,6 +25,7 @@ import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -121,6 +122,7 @@ public interface SQLAdapter {
 	 */ 
 	public String parseFinalQueryTxt(RunSQL run);
 	public RunSQL buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns);
+	public void createInsertsTxt(StringBuilder builder, String dest, Collection list, List<String> keys);
 	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys);
 
 	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns);
