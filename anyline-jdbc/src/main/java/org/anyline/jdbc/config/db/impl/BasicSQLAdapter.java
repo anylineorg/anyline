@@ -40,6 +40,7 @@ import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
+import org.anyline.jdbc.entity.Tag;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.slf4j.Logger;
@@ -1243,7 +1244,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		StringBuilder builder = new StringBuilder();
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
-		builder.append("DROP TABLE ");
+		builder.append("DROP ").append(table.getKeyword()).append(" ");
 		checkTableExists(builder, true);
 		name(builder, table);
 		return builder.toString();
@@ -1260,7 +1261,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable();
-		builder.append("ALTER TABLE ");
+		builder.append("ALTER ").append(table.getKeyword()).append(" ");
 		name(builder, table);
 		builder.append(" DROP COLUMN ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
@@ -1370,7 +1371,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable();
-		builder.append("ALTER TABLE ");
+		builder.append("ALTER ").append(table.getKeyword()).append(" ");
 		name(builder, table);
 		//Column update = column.getUpdate();
 		//if(null == update){
@@ -1665,6 +1666,19 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder;
 	}
 
+	/**
+	 * 查询标签
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param table table
+	 * @return String
+	 */
+	public String buildQueryTagRunSQL(Table table){
+		return null;
+	}
+	public LinkedHashMap<String, Tag> tags(DataSet set){
+		return null;
+	}
 	/**
 	 * 修改表名
 	 * 子类实现
