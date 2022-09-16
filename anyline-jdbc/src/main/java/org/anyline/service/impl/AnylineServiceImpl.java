@@ -1579,9 +1579,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     public List<String> tables(String catalog, String schema, String name, String types){
-        List<Table> tables = metadata.tables(catalog, schema, name, types);
+        LinkedHashMap<String,Table> tables = metadata.tables(catalog, schema, name, types);
         List<String> list = new ArrayList<>();
-        for(Table table:tables){
+        for(Table table:tables.values()){
             list.add(table.getName());
         }
         return list;
@@ -1601,9 +1601,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     @Override
     public List<String> stables(String catalog, String schema, String name, String types) {
-        List<STable> tables = metadata.stables(catalog, schema, name, types);
+        LinkedHashMap<String,STable> tables = metadata.stables(catalog, schema, name, types);
         List<String> list = new ArrayList<>();
-        for(STable table:tables){
+        for(STable table:tables.values()){
             list.add(table.getName());
         }
         return list;
@@ -1630,7 +1630,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     public LinkedHashMap<String,Column> columns(String table, boolean map){
-        return metadata.columns(table, map);
+        return metadata.columns(table);
     }
 
 
@@ -1642,9 +1642,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return columns(null, null, table);
     }
     public List<String> columns(String catalog, String schema, String table){
-        List<Column> columns = metadata.columns(catalog, schema, table);
+        LinkedHashMap<String,Column> columns = metadata.columns(catalog, schema, table);
         List<String> list = new ArrayList<>();
-        for(Column column:columns){
+        for(Column column:columns.values()){
             list.add(column.getName());
         }
         return list;
@@ -1659,9 +1659,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return tags(null, null, table);
     }
     public List<String> tags(String catalog, String schema, String table){
-        List<Tag> tags = metadata.tags(catalog, schema, table);
+        LinkedHashMap<String,Tag> tags = metadata.tags(catalog, schema, table);
         List<String> list = new ArrayList<>();
-        for(Tag tag:tags){
+        for(Tag tag:tags.values()){
             list.add(tag.getName());
         }
         return list;
@@ -1794,7 +1794,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
         @Override
         public boolean add(Column column) throws Exception{
-            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName(), true);
+            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName());
             boolean result = add(columns, column);
 
             clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
@@ -1884,7 +1884,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
         @Override
         public boolean add(Tag tag) throws Exception{
-            LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName(), true);
+            LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             boolean result = add(tags, tag);
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             return result;
@@ -2025,38 +2025,39 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
     public MetaDataService metadata = new MetaDataService() {
         @Override
-        public List<Table> tables(String catalog, String schema, String name, String types) {
+        public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types) {
             return dao.tables(catalog, schema, name, types);
         }
 
         @Override
-        public List<Table> tables(String schema, String name, String types) {
+        public LinkedHashMap<String, Table> tables(String schema, String name, String types) {
             return tables(null, schema, name, types);
         }
 
         @Override
-        public List<Table> tables(String name, String types) {
+        public LinkedHashMap<String, Table> tables(String name, String types) {
             return tables(null, null, name, types);
         }
 
         @Override
-        public List<Table> tables(String types) {
+        public LinkedHashMap<String, Table> tables(String types) {
             return tables(null, types);
         }
 
         @Override
-        public List<Table> tables() {
+        public LinkedHashMap<String, Table> tables() {
             return tables("STABLE");
         }
 
         @Override
         public Table table(String catalog, String schema,String name) {
             Table table = null;
-            List<Table> tables = tables(catalog, schema, name,"TABLE");
+            LinkedHashMap<String, Table> tables = tables(catalog, schema, name,"TABLE");
             if(tables.size()>0){
-                table = tables.get(0);
-                table.setColumns(columns(table.getName(), true));
-                dao.index(table);
+                table = tables.values().iterator().next();
+                table.setColumns(columns(table));
+                table.setTags(tags(table));
+                table.setIndexs(indexs(table));
             }
             return table;
         }
@@ -2069,42 +2070,43 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return table(null, null, name);
         }
 
+
+
         @Override
-        public List<STable> stables(String catalog, String schema, String name, String types) {
+        public LinkedHashMap<String, STable> stables(String catalog, String schema, String name, String types) {
             return dao.stables(catalog, schema, name, types);
         }
 
         @Override
-        public List<STable> stables(String schema, String name, String types) {
+        public LinkedHashMap<String, STable> stables(String schema, String name, String types) {
             return stables(null, schema, name, types);
         }
 
         @Override
-        public List<STable> stables(String name, String types) {
+        public LinkedHashMap<String, STable> stables(String name, String types) {
             return stables(null, null, name, types);
         }
 
         @Override
-        public List<STable> stables(String types) {
+        public LinkedHashMap<String, STable> stables(String types) {
             return stables(null, types);
         }
 
         @Override
-        public List<STable> stables() {
+        public LinkedHashMap<String, STable> stables() {
             return stables("STABLE");
         }
 
         @Override
         public STable stable(String catalog, String schema, String name) {
-            List<STable> tables = stables(catalog, schema, name, "STABLE");
+            LinkedHashMap<String,STable> tables = stables(catalog, schema, name, "STABLE");
             if(tables.size() == 0){
                 return null;
             }
-            STable table = tables.get(0);
-            LinkedHashMap<String,Column> columns = columns(table, true);
-            table.setColumns(columns);
-            LinkedHashMap<String,Tag> tags = tags(table, true);
-            table.setTags(tags);
+            STable table = tables.values().iterator().next();
+            table.setColumns(columns(table));
+            table.setTags(tags(table));
+            table.setIndexs(indexs(table));
             return table;
         }
 
@@ -2119,58 +2121,16 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
 
+
         @Override
-        public List<Column> columns(Table table){
-            return columns(table.getCatalog(), table.getSchema(), table.getName());
-        }
-        @Override
-        public List<Column> columns(String table){
+        public LinkedHashMap<String,Column> columns(String table){
             return columns(null, null, table);
         }
         @Override
-        public List<Column> columns(String catalog, String schema, String table){
-            LinkedHashMap<String,Column> maps = columns(catalog, schema, table, true);
-            List<Column> columns = new ArrayList<>();
-            columns.addAll(maps.values());
-            return columns;
-        }
-
-
-        @Override
-        public List<Tag> tags(Table table){
-            LinkedHashMap<String,Tag> maps = tags(table, true);
-            List<Tag> tags = new ArrayList<>();
-            tags.addAll(maps.values());
-            return tags;
-        }
-        @Override
-        public List<Tag> tags(String table){
-            return tags(null, null, table);
-        }
-        @Override
-        public List<Tag> tags(String catalog, String schema, String table){
-            Table tab = new Table(table);
-            tab.setCatalog(catalog);
-            tab.setSchema(schema);
-            return tags(tab);
-        }
-
-        @Override
-        public LinkedHashMap<String,Column> columns(String table, boolean map){
-            return columns(null, null, table, map);
-        }
-        @Override
-        public LinkedHashMap<String,Column> columns(Table table, boolean map){
-            return columns(table.getCatalog(), table.getSchema(), table.getName(), map);
-        }
-        @Override
-        public LinkedHashMap<String,Column> columns(String catalog, String schema, String table, boolean map){
-            if(null == table){
-                return new LinkedHashMap<>();
-            }
+        public LinkedHashMap<String,Column> columns(Table table){
             LinkedHashMap<String,Column> columns = null;
             String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
-            String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.toUpperCase();
+            String key = DataSourceHolder.getDataSource()+"_COLUMNS_" + table.getName().toUpperCase();
 
             if(null != cacheProvider && BasicUtil.isNotEmpty(cache) && !"true".equalsIgnoreCase(ConfigTable.getString("CACHE_DISABLED"))){
                 CacheElement cacheElement = cacheProvider.get(cache, key);
@@ -2178,7 +2138,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                     columns = (LinkedHashMap<String,Column>) cacheElement.getValue();
                 }
                 if(null == columns){
-                    columns = dao.columns(catalog, schema, table);
+                    columns = dao.columns(table);
                     cacheProvider.put(cache, key, columns);
                 }
             }else{
@@ -2188,32 +2148,47 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                     columns = (LinkedHashMap<String,Column>) static_cache.get("keys");
                 }
                 if(null == columns){
-                    columns = dao.columns(catalog, schema, table);
+                    columns = dao.columns(table);
                     static_cache = new DataRow();
                     static_cache.put("keys", columns);
                     cache_metadatas.put(key, static_cache);
                 }
             }
             return columns;
+
+        }
+        @Override
+        public LinkedHashMap<String,Column> columns(String catalog, String schema, String table){
+            return columns(new Table(catalog, schema, table));
         }
 
 
         @Override
-        public LinkedHashMap<String,Tag> tags(String table, boolean map){
-            return tags(null, null, table, map);
+        public LinkedHashMap<String,Tag> tags(String table){
+            return tags(null, null, table);
         }
         @Override
-        public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table, boolean map){
-            Table tab = new Table(table);
-            tab.setCatalog(catalog);
-            tab.setSchema(schema);
-            return tags(tab, map);
+        public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table){
+            return tags(new Table(catalog, schema, table));
         }
+
         @Override
-        public LinkedHashMap<String,Tag> tags(Table table, boolean map){
-            if(null == table){
-                return new LinkedHashMap<>();
-            }
+        public LinkedHashMap<String, Index> indexs(Table table) {
+            return dao.indexs(table);
+        }
+
+        @Override
+        public LinkedHashMap<String, Index> indexs(String table) {
+            return indexs(new Table(table));
+        }
+
+        @Override
+        public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table) {
+            return indexs(new Table(catalog, schema, table));
+        }
+
+        @Override
+        public LinkedHashMap<String,Tag> tags(Table table){
             String name = table.getName();
             LinkedHashMap<String,Tag> tags = null;
             String cache = ConfigTable.getString("TABLE_METADATA_CACHE_KEY");
