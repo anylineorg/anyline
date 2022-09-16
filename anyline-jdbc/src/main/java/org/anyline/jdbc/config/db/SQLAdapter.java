@@ -22,10 +22,10 @@ package org.anyline.jdbc.config.db;
 import org.anyline.entity.DataSet;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.run.RunSQL;
-import org.anyline.jdbc.entity.Column;
-import org.anyline.jdbc.entity.Table;
-import org.anyline.jdbc.entity.Tag;
+import org.anyline.jdbc.entity.*;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 
+import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -88,36 +88,7 @@ public interface SQLAdapter {
 	 */
 	public RunSQL buildQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions);
 
-	/**
-	 * 查询超表
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern pattern
-	 * @param types types
-	 * @return String
-	 */
-	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types);
 
-	/**
-	 * 查询瑗表上的标签
-	 * @param table table
-	 * @return sql
-	 */
-	public String buildQueryTagRunSQL(Table table);
-
-	/**
-	 *  根据查询结果集构造Tag
-	 * @param set set
-	 * @return tags
-	 */
-	public LinkedHashMap<String, Tag> tags(DataSet set);
-
-	/**
-	 * 从查询结果中提取出超表名
-	 * @param set 查询结果
-	 * @return List
-	 */
-	public List<String> stables(DataSet set);
 	public RunSQL buildDeleteRunSQL(String dest, Object obj, String ... columns);
 	public RunSQL buildDeleteRunSQL(String table, String key, Object values);
 	public RunSQL buildExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions);
@@ -193,6 +164,121 @@ public interface SQLAdapter {
 	 */
 	public String concat(String ... args);
 
+	/* *****************************************************************************************************************
+	 *
+	 * 													DDL
+	 *
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询超表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return String
+	 */
+	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types, boolean metadata);
+
+	/**
+	 *  根据查询结果集构造Table
+	 * @param table table
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws exception
+	 */
+	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception;
+	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception;
+
+
+	/**
+	 * 查询超表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return String
+	 */
+	public String buildQueryTableRunSQL(String catalog, String schema, String pattern, String types, boolean metadata);
+
+	/**
+	 *  根据查询结果集构造Table
+	 * @param table table
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws exception
+	 */
+	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
+	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
+
+	/**
+	 * 查询瑗表上的列
+	 * @param table table
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return sql
+	 */
+	public String buildQueryColumnRunSQL(Table table, boolean metadata);
+
+	/**
+	 *  根据查询结果集构造Tag
+	 * @param table table
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return tags
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
+	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception;
+
+
+
+	/**
+	 * 查询瑗表上的列
+	 * @param table table
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return sql
+	 */
+	public String buildQueryTagRunSQL(Table table, boolean metadata);
+
+	/**
+	 *  根据查询结果集构造Tag
+	 * @param table table
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return tags
+	 * @throws exception
+	 */
+	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
+	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
+
+
+	/**
+	 * 查询瑗表上的列
+	 * @param table table
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return sql
+	 */
+	public String buildQueryIndexRunSQL(Table table, boolean metadata);
+
+	/**
+	 *  根据查询结果集构造Tag
+	 * @param table table
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return tags
+	 * @throws exception
+	 */
+	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
+	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
 
 	public String buildAddRunSQL(Column column);
 
@@ -210,6 +296,12 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Column column);
+	/**
+	 * 删除列
+	 * @param column column
+	 * @return String
+	 */
+	public String buildDropRunSQL(Tag tag);
 
 	/**
 	 * 修改列名

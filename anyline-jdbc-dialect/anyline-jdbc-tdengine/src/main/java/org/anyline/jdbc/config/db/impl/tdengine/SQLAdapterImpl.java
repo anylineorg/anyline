@@ -89,7 +89,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param types types
 	 * @return String
 	 */
-	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types){
+	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types, boolean metadata){
 		String sql = "SHOW STABLES";
 		if(BasicUtil.isNotEmpty(pattern)){
 			sql += " LIKE '" + pattern + "'";
@@ -140,27 +140,81 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 */
 	public String buildQueryTagRunSQL(Table table){
 		StringBuilder builder = new StringBuilder();
-		if(table instanceof STable){
+		/*if(table instanceof STable){
 			builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
 			builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
 		}else {
 			builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
 			builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
-		}
+		}*/
+		builder.append("DESCRIBE ").append(table.getName());
 		return builder.toString();
 	}
 
-	public LinkedHashMap<String, Tag> tags(DataSet set){
-		LinkedHashMap<String, Tag> tags = new LinkedHashMap<>();
+	@Override
+	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
+		if(null == tags){
+			tags = new LinkedHashMap<>();
+		}
 		for(DataRow row:set){
-			Tag tag = new Tag();
+			Tag item = new Tag();
+			/*
+			//查询 INFORMATION_SCHEMA.INS_TAGS
 			String name = row.getString("TAG_NAME");
 			tag.setName(name);
 			tag.setTypeName(row.getString("TAG_TYPE"));
 			tag.setValue(row.get("TAG_VALUE"));
-			tags.put(name.toUpperCase(), tag);
+			tags.put(name.toUpperCase(), tag);*/
+
+			//DESCRIBE
+			String note = row.getString("note");
+			if(!"TAG".equalsIgnoreCase(note)){
+				continue;
+			}
+			String name = row.getString("field");
+			item.setName(name);
+			item.setTypeName(row.getString("type"));
+			item.setPrecision(row.getInt("length", 0));
+			item.setValue(row.get("TAG_VALUE"));
+			tags.put(name.toUpperCase(), item);
 		}
 		return tags;
+	}
+
+	@Override
+	public String buildQueryColumnRunSQL(Table table, boolean metadata){
+		StringBuilder builder = new StringBuilder();
+		/*if(table instanceof STable){
+			builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
+			builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
+		}else {
+			builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
+			builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
+		}*/
+		builder.append("DESCRIBE ").append(table.getName());
+		return builder.toString();
+	}
+	@Override
+	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			Column item = new Column();
+			//DESCRIBE
+			String note = row.getString("note");
+			if("TAG".equalsIgnoreCase(note)){
+				continue;
+			}
+			String name = row.getString("field");
+			item.setName(name);
+			item.setCatalog(table.getCatalog());
+			item.setSchema(table.getSchema());
+			item.setTypeName(row.getString("type"));
+			item.setPrecision(row.getInt("length", 0));
+			columns.put(name.toUpperCase(), item);
+		}
+		return columns;
 	}
 	public StringBuilder fromSuperTable(StringBuilder builder, Table table){
 

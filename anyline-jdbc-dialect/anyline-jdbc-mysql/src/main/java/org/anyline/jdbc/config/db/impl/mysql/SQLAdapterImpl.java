@@ -1,11 +1,14 @@
 package org.anyline.jdbc.config.db.impl.mysql;
 
+import org.anyline.entity.DataRow;
+import org.anyline.entity.DataSet;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.STable;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
@@ -13,8 +16,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.zip.CheckedOutputStream;
 
 @Repository("anyline.jdbc.sql.adapter.mysql")
 public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
@@ -58,41 +64,140 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return sql; 
 	}
 
- /*
-BIGINT:java.lang.Long
-BINARY:byte[]
-BIT:Boolean
-BLOB:byte[]
-CHAR:String
-DATE:java.sql.Date
-DATETIME:java.sql.Timestamp
-DECIMAL:BigDecimal
-JSON:String
-FLOAT:Float
-GEOMETRY:byte[]
-INT:Integer
-GEOMETRY:byte[]
-LONGBLOB:byte[]
-LONGTEXT:String
-MEDIUMBLOB:byte[]
-MEDIUMINT：Integer
-MEDIUMTEXT:String
-GEOMETRY:byte[]
-DOUBLE:Double
-SMALLINT:Short
-YEAR:java.sql.Date
-VARBINARY:byte[]
-TINYTEXT:java.lang.String
-TINYINT:java.lang.Byte
-TINYBLOB:byte[]
-TIMESTAMP:java.sql.Timestamp
-TIME:java.sql.Time
-TEXT:String
-SMALLINT:Short
-*/
 	public String concat(String ... args){
 		return concatFun(args);
 	}
+
+	/******************************************************************************************************
+	 *
+	 * 									metadata
+	 *
+	 * ****************************************************************************************************/
+
+	/**
+	 * 查询超表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return String
+	 */
+	public String buildQueryTableRunSQL(String catalog, String schema, String pattern, String types, boolean metadata){
+		StringBuilder builder = new StringBuilder();
+		if(!metadata){
+			builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
+			if(BasicUtil.isNotEmpty(catalog)){
+				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
+			}
+			if(BasicUtil.isNotEmpty(schema)){
+				builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
+			}
+			if(BasicUtil.isNotEmpty(pattern)){
+				builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+			}
+			if(BasicUtil.isNotEmpty(types)){
+				String[] tmps = types.split(",");
+				builder.append(" AND TABLE_TYPE IN(");
+				int idx = 0;
+				for(String tmp:tmps){
+					if(idx > 0){
+						builder.append(",");
+					}
+					builder.append("'").append(tmp).append("'");
+					idx ++;
+				}
+				builder.append(")");
+			}else {
+				builder.append(" AND TABLE_TYPE IN ('BASE TABLE','TABLE')");
+			}
+
+		}else{
+
+		}
+		return builder.toString();
+	}
+
+	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			Table table = new Table();
+			table.setCatalog(row.getString("TABLE_CATALOG"));
+			table.setSchema(row.getString("TABLE_SCHEMA"));
+			table.setName(row.getString("TABLE_NAME"));
+			table.setEngine(row.getString("ENGINE"));
+			table.setComment(row.getString("TABLE_COMMENT"));
+			tables.put(table.getName().toUpperCase(), table);
+		}
+		return tables;
+	}
+
+	/**
+	 * 查询瑗表上的列
+	 * @param table table
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return sql
+	 */
+	public String buildQueryColumnRunSQL(Table table, boolean metadata){
+		StringBuilder builder = new StringBuilder();
+		if(metadata){
+			builder.append("SELECT * FROM ");
+			name(builder, table);
+			builder.append(" WHERE 1=0");
+		}else{
+			String catalog = table.getCatalog();
+			String schema = table.getSchema();
+			builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
+			if(BasicUtil.isNotEmpty(catalog)){
+				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
+			}
+			if(BasicUtil.isNotEmpty(schema)){
+				builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
+			}
+			builder.append(" AND TABLE_NAME = '").append(table.getName()).append("'");
+		}
+		return builder.toString();
+	}
+
+
+	/**
+	 *  根据查询结果集构造Tag
+	 * @param table table
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return tags
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			Column column = new Column();
+			column.setCatalog(row.getString("TABLE_CATALOG"));
+			column.setSchema(row.getString("TABLE_SCHEMA"));
+			column.setTable(row.getString("TABLE_NAME"));
+			column.setName(row.getString("COLUMN_NAME"));
+			column.setPosition(row.getInt("ORDINAL_POSITION"));
+			column.setComment(row.getString("COLUMN_COMMENT"));
+			column.setTypeName(row.getString("DATA_TYPE"));
+			column.setDefaultValue(row.get("COLUMN_DEFAULT"));
+			column.setNullable(row.getBoolean("IS_NULLABLE"));
+			int len = row.getInt("CHARACTER_MAXIMUM_LENGTH",-1);
+			if(len == -1){
+				len = row.getInt("NUMERIC_PRECISION",0);
+			}
+			column.setPrecision(len);
+			column.setScale(row.getInt("NUMERIC_SCALE",0));
+			column.setCharset(row.getString("CHARACTER_SET_NAME"));
+			column.setCollate(row.getString("COLLATION_NAME"));
+			columns.put(column.getName().toUpperCase(), column);
+		}
+		return columns;
+	}
+
 	/**
 	 * 修改列 ALTER TABLE   HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
 	 * @param column

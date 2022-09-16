@@ -38,18 +38,20 @@ import org.anyline.jdbc.config.db.sql.auto.TextSQL;
 import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
-import org.anyline.jdbc.entity.Column;
-import org.anyline.jdbc.entity.Table;
-import org.anyline.jdbc.entity.Tag;
+import org.anyline.jdbc.entity.*;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.LocalDate;
@@ -1018,7 +1020,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	public boolean convert(String catalog, String schema, String table, RunValue run){
 		boolean result = false;
 		if(ConfigTable.IS_AUTO_CHECK_METADATA){
-			LinkedHashMap<String, Column> columns = service.metadata().columns(catalog, schema, table, true);
+			LinkedHashMap<String, Column> columns = service.metadata().columns(catalog, schema, table);
 			result = convert(columns, run);
 		}
 		return result;
@@ -1236,6 +1238,291 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 		return result;
 	}
+/* ******************************************************************************************************************************************
+ *
+ * 																DDL
+ *
+ * ******************************************************************************************************************************************/
+
+	/**
+	 * 查询超表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types, boolean metaata){
+		return null;
+	}
+
+	/**
+	 * 从查询结果中提取出超表名
+	 * @param set 查询结果
+	 * @return List
+	 */
+	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception{
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+
+		List<String> keys = keys(set);
+		while(set.next()) {
+			String tableName = string(keys, "TABLE_NAME", set);
+			if(BasicUtil.isEmpty(tableName)){
+				continue;
+			}
+			STable table = new STable();
+			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
+			table.setName(tableName);
+			table.setType(string(keys, "TABLE_TYPE", set));
+			table.setComment(string(keys, "REMARKS", set));
+			table.setTypeCat(string(keys, "TYPE_CAT", set));
+			table.setTypeName(string(keys, "TYPE_NAME", set));
+			table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", set));
+			table.setRefGeneration(string(keys, "REF_GENERATION", set));
+			tables.put(tableName.toUpperCase(), table);
+
+			//table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+		}
+		return tables;
+	}
+
+
+	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception{return null;}
+	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, SqlRowSet set) throws Exception{return null;}
+
+	/**
+	 * 查询超表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return String
+	 */
+	public String buildQueryTableRunSQL(String catalog, String schema, String pattern, String types, boolean metadata){
+		return null;
+	}
+
+	/**
+	 *
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+		return tables;
+	}
+	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, SqlRowSet set) throws Exception{
+		return tables;
+	}
+	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		List<String> keys = keys(set);
+		while(set.next()) {
+			String tableName = string(keys, "TABLE_NAME", set);
+			if(BasicUtil.isEmpty(tableName)){
+				continue;
+			}
+			Table table = new Table();
+			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
+			table.setName(tableName);
+			table.setType(string(keys, "TABLE_TYPE", set));
+			table.setComment(string(keys, "REMARKS", set));
+			table.setTypeCat(string(keys, "TYPE_CAT", set));
+			table.setTypeName(string(keys, "TYPE_NAME", set));
+			table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", set));
+			table.setRefGeneration(string(keys, "REF_GENERATION", set));
+			tables.put(tableName.toUpperCase(), table);
+
+			//table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+		}
+		return tables;
+	}
+
+	/**
+	 * 查询瑗表上的列
+	 * @param table table
+	 * @return sql
+	 */
+	public String buildQueryColumnRunSQL(Table table, boolean metadata){
+		StringBuilder builder = new StringBuilder();
+
+		return builder.toString();
+	}
+
+	/**
+	 *  根据查询结果集构造Tag
+	 * @param set set
+	 * @return tags
+	 */
+	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+		return columns;
+	}
+	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception{
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+		SqlRowSetMetaData rsm = set.getMetaData();
+		for (int i = 1; i <= rsm.getColumnCount(); i++) {
+			Column column = column(null, rsm, i);
+			columns.put(column.getName().toUpperCase(), column);
+		}
+		return columns;
+	}
+	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception{
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+		List<String> keys = keys(set);
+		while (set.next()){
+			String name = set.getString("COLUMN_NAME");
+			if(null == name){
+				continue;
+			}
+			Column column = columns.get(name.toUpperCase());
+			if(null == column){
+				/*if(queryColumns) {
+				//是否已经根据metedata和系统表查过了
+					continue;
+				}else{
+					column = new Column(name);
+				}*/
+				column = new Column(name);
+			}
+			String remark = string(keys, "REMARKS", set, column.getComment());
+			if("TAG".equals(remark)){
+				column = new Tag();
+			}
+			column.setName(name);
+			column.setComment(remark);
+			column.setCatalog(string(keys,"TABLE_CAT", set, table.getCatalog()));
+			column.setSchema(string(keys,"TABLE_SCHEM", set, table.getSchema()));
+			column.setTableName(string(keys,"TABLE_NAME", set, table.getName()));
+			column.setType(integer(keys, "DATA_TYPE", set, column.getType()));
+			column.setType(integer(keys, "SQL_DATA_TYPE", set, column.getType()));
+			column.setTypeName(string(keys, "TYPE_NAME", set, column.getTypeName()));
+			column.setPrecision(integer(keys, "COLUMN_SIZE", set, column.getPrecision()));
+			column.setScale(integer(keys, "DECIMAL_DIGITS", set, column.getScale()));
+			column.setNullable(bool(keys, "NULLABLE", set, column.isNullable()));
+			column.setDefaultValue(value(keys, "COLUMN_DEF", set, column.getDefaultValue()));
+			column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
+			column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
+			column(column, set);
+			columns.put(column.getName().toUpperCase(), column);
+		}
+		return columns;
+	}
+
+	/**
+	 * 查询瑗表上的列
+	 * @param table table
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return sql
+	 */
+	public String buildQueryTagRunSQL(Table table, boolean metadata){
+		return null;
+	}
+
+	/**
+	 *  根据查询结果集构造Tag
+	 * @param table table
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return tags
+	 * @throws exception
+	 */
+	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
+		return tags;
+	}
+	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
+		return tags;
+	}
+	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
+		return tags;
+	}
+	/**
+	 * 查询瑗表上的列
+	 * @param table table
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return sql
+	 */
+	public String buildQueryIndexRunSQL(Table table, boolean metadata){
+		return null;
+	}
+
+	/**
+	 *  根据查询结果集构造Tag
+	 * @param table table
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return tags
+	 * @throws exception
+	 */
+	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
+		return null;
+	}
+	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception{
+		return null;
+	}
+	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception{
+		if(null == indexs){
+			indexs = new LinkedHashMap<>();
+		}
+		List<String> keys = keys(set);
+		LinkedHashMap<String, Column> columns = null;
+		while (set.next()) {
+			String name = string(keys, "INDEX_NAME", set);
+			if(null == name){
+				continue;
+			}
+			Index index = indexs.get(name);
+			if(null == index){
+				index = new Index();
+				index.setName(string(keys, "INDEX_NAME", set));
+				index.setType(integer(keys, "TYPE", set, null));
+				index.setUnique(!bool(keys, "NON_UNIQUE", set, false));
+				index.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), table.getCatalog()));
+				index.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), table.getSchema()));
+				index.setTable(string(keys, "TABLE_NAME", set));
+				indexs.put(name, index);
+				columns = new LinkedHashMap<>();
+				index.setColumns(columns);
+			}else {
+				columns = index.getColumns();
+			}
+			String columnName = string(keys, "COLUMN_NAME", set);
+			Column col = table.getColumn(columnName);
+			Column column = null;
+			if(null != col){
+				column = (Column) col.clone();
+			}else{
+				column = new Column();
+				column.setName(columnName);
+			}
+			String order = string(keys, "ASC_OR_DESC", set);
+			if(null != order && order.startsWith("D")){
+				order = "DESC";
+			}else{
+				order = "ASC";
+			}
+			column.setOrder(order);
+			column.setPosition(integer(keys,"ORDINAL_POSITION", set, null));
+			columns.put(column.getName(), column);
+		}
+		return indexs;
+	}
 
 
 	public String buildDropRunSQL(Table table){
@@ -1258,16 +1545,37 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Column column){
+		if(column instanceof Tag){
+			Tag tag = (Tag)column;
+			return buildDropRunSQL(tag);
+		}
+
 		column.setCreater(this);
 		StringBuilder builder = new StringBuilder();
 		Table table = column.getTable();
 		builder.append("ALTER ").append(table.getKeyword()).append(" ");
 		name(builder, table);
-		builder.append(" DROP COLUMN ");
+		builder.append(" DROP ").append(column.getKeyword()).append(" ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
 		return builder.toString();
 	}
 
+	/**
+	 * 删除标签
+	 * ALTER TABLE HR_USER DROP COLUMN NAME;
+	 * @param column column
+	 * @return String
+	 */
+	public String buildDropRunSQL(Tag tag){
+		tag.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = tag.getTable();
+		builder.append("ALTER ").append(table.getKeyword()).append(" ");
+		name(builder, table);
+		builder.append(" DROP ").append(tag.getKeyword()).append(" ");
+		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
+	}
 	/**
 	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
 	 * @param column
@@ -1334,27 +1642,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 
 
-
-	/**
-	 * 查询超表
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern pattern
-	 * @param types types
-	 * @return String
-	 */
-	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types){
-		return null;
-	}
-
-	/**
-	 * 从查询结果中提取出超表名
-	 * @param set 查询结果
-	 * @return List
-	 */
-	public List<String> stables(DataSet set){
-		return null;
-	}
 
 	@Override
 	public String alterColumnKeyword(){
@@ -1666,19 +1953,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder;
 	}
 
-	/**
-	 * 查询标签
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param table table
-	 * @return String
-	 */
-	public String buildQueryTagRunSQL(Table table){
-		return null;
-	}
-	public LinkedHashMap<String, Tag> tags(DataSet set){
-		return null;
-	}
+
 	/**
 	 * 修改表名
 	 * 子类实现
@@ -1799,4 +2074,147 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder;
 	}
 
+	protected Column column(Column column, SqlRowSetMetaData rsm, int index){
+		if(null == column){
+			column = new Column();
+		}
+		try {
+			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
+			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
+			column.setClassName(rsm.getColumnClassName(index));
+			column.setCaseSensitive(rsm.isCaseSensitive(index));
+			column.setCurrency(rsm.isCurrency(index));
+			column.setComment(rsm.getColumnLabel(index));
+			column.setName(rsm.getColumnName(index));
+			column.setPrecision(rsm.getPrecision(index));
+			column.setScale(rsm.getScale(index));
+			column.setDisplaySize(rsm.getColumnDisplaySize(index));
+			column.setSigned(rsm.isSigned(index));
+			column.setTableName(rsm.getTableName(index));
+			column.setType(rsm.getColumnType(index));
+			column.setTypeName(rsm.getColumnTypeName(index));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return column;
+	}
+
+	/**
+	 * 构建Column
+	 * TABLE_CAT=simple
+	 * TABLE_SCHEM=null
+	 * TABLE_NAME=hr_department
+	 * COLUMN_NAME=SCORE
+	 * DATA_TYPE=7
+	 * TYPE_NAME=FLOAT
+	 * COLUMN_SIZE=11
+	 * BUFFER_LENGTH=65535
+	 * DECIMAL_DIGITS=2
+	 * NUM_PREC_RADIX=10
+	 * NULLABLE=1
+	 * REMARKS=
+	 * COLUMN_DEF=null
+	 * SQL_DATA_TYPE=0
+	 * SQL_DATETIME_SUB=0
+	 * CHAR_OCTET_LENGTH=null
+	 * ORDINAL_POSITION=4
+	 * IS_NULLABLE=YES
+	 * SCOPE_CATALOG=null
+	 * SCOPE_SCHEMA=null
+	 * SCOPE_TABLE=null
+	 * SOURCE_DATA_TYPE=null
+	 * IS_AUTOINCREMENT=NO
+	 * @param column column
+	 * @param rs  ResultSet
+	 * @return Column
+	 */
+	protected Column column(Column column, ResultSet rs){
+		if(null == column){
+			column = new Column();
+		}
+		try {
+			List<String> keys = keys(rs);
+			column.setScale(BasicUtil.parseInt(string(keys, "DECIMAL_DIGITS", rs), null));
+			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
+			column.setAutoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
+			column.setGenerated(BasicUtil.parseBoolean(string(keys, "IS_GENERATEDCOLUMN", rs), false));
+			column.setComment(string(keys, "REMARKS", rs));
+			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
+			if (BasicUtil.isEmpty(column.getDefaultValue())) {
+				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return column;
+	}
+
+	/**
+	 * 获取ResultSet中的列
+	 * @param rs rs
+	 * @return list
+	 * @throws Exception Exception
+	 */
+	protected List<String> keys(ResultSet rs) throws Exception{
+		ResultSetMetaData rsmd = rs.getMetaData();
+		List<String> keys = new ArrayList<>();
+		if(null != rsmd){
+			for (int i = 1; i < rsmd.getColumnCount(); i++) {
+				keys.add(rsmd.getColumnName(i).toUpperCase());
+			}
+		}
+		return keys;
+	}
+	/**
+	 * 先检测rs中是否包含当前key 如果包含再取值, 取值时按keys中的大小写为准
+	 * @param keys keys
+	 * @param key key
+	 * @param set ResultSet
+	 * @return String
+	 * @throws Exception
+	 */
+	protected String string(List<String> keys, String key, ResultSet set, String def) throws Exception{
+		Object value = value(keys, key, set);
+		if(null != value){
+			return value.toString();
+		}
+		return def;
+	}
+	protected String string(List<String> keys, String key, ResultSet set) throws Exception{
+		return string(keys, key, set, null);
+	}
+	protected Integer integer(List<String> keys, String key, ResultSet set, Integer def) throws Exception{
+		Object value = value(keys, key, set);
+		if(null != value){
+			return BasicUtil.parseInt(value, def);
+		}
+		return null;
+	}
+	protected Boolean bool(List<String> keys, String key, ResultSet set, Boolean def) throws Exception{
+		Object value = value(keys, key, set);
+		if(null != value){
+			return BasicUtil.parseBoolean(value, def);
+		}
+		return null;
+	}
+	protected Boolean bool(List<String> keys, String key, ResultSet set, int def) throws Exception{
+		Boolean defaultValue = null;
+		if(def == 0){
+			defaultValue = false;
+		}else if(def == 1){
+			defaultValue = true;
+		}
+		return bool(keys, key, set, defaultValue);
+	}
+	protected Object value(List<String> keys, String key, ResultSet set, Object def) throws Exception{
+		int index = BasicUtil.index(true, true, keys, key);
+		if(index != -1){
+			key = keys.get(index);
+			return set.getObject(key);
+		}
+		return def;
+	}
+	protected Object value(List<String> keys, String key, ResultSet set) throws Exception{
+		return value(keys, key, set, null);
+	}
 }
