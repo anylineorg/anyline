@@ -9,6 +9,8 @@ import org.anyline.util.BeanUtil;
 
 public class Column {
 
+    protected String keyword = "COLUMN"            ;
+
     protected String catalog                      ; //数据库
     protected String className                    ; //java.lang.Long
     protected String schema                       ; //dbo
@@ -522,6 +524,9 @@ public class Column {
         copy.setCharset(charset);
         copy.setCollate(collate);
         return copy;
+    }
+    public String getKeyword() {
+        return this.keyword;
     }
 }
 

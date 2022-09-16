@@ -3,6 +3,7 @@ package org.anyline.jdbc.entity;
 import org.anyline.util.BeanUtil;
 
 public class Tag extends Column{
+    protected String keyword = "TAG"            ;
     protected Tag update = null;
     protected Object value;
 
@@ -69,5 +70,8 @@ public class Tag extends Column{
         copy.setCharset(charset);
         copy.setCollate(collate);
         return copy;
+    }
+    public String getKeyword() {
+        return this.keyword;
     }
 }

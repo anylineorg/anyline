@@ -29,9 +29,9 @@ public class Table {
     protected String collate                      ;
 
 
-    protected LinkedHashMap<String,Column> columns;
-    protected LinkedHashMap<String,Tag> tags   ;
-    protected LinkedHashMap<String,Index> indexs  ;
+    protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
+    protected LinkedHashMap<String,Tag> tags       = new LinkedHashMap<>();
+    protected LinkedHashMap<String,Index> indexs   = new LinkedHashMap<>();
     protected Table update;
     protected DDListener listener                 ;
 
@@ -235,6 +235,9 @@ public class Table {
     }
 
     public LinkedHashMap<String, Column> getColumns() {
+        if(null == columns){
+            columns = new LinkedHashMap<>();
+        }
         return columns;
     }
 
@@ -249,6 +252,9 @@ public class Table {
     }
 
     public LinkedHashMap<String, Tag> getTags() {
+        if(null == tags){
+            tags = new LinkedHashMap<>();
+        }
         return tags;
     }
 
@@ -262,6 +268,9 @@ public class Table {
         return this;
     }
     public LinkedHashMap<String, Index> getIndexs() {
+        if(null == indexs){
+            indexs = new LinkedHashMap<>();
+        }
         return indexs;
     }
 
@@ -270,6 +279,9 @@ public class Table {
         return this;
     }
     public Column getColumn(String name){
+        if(null == columns){
+            return null;
+        }
         return columns.get(name.toUpperCase());
     }
     public Column getTag(String name){
