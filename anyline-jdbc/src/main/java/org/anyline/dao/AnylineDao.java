@@ -122,17 +122,17 @@ public interface AnylineDao<E>{
 	public int deletes(String table, String key, Collection<Object> values);
 	public int deletes(String table, String key, String ... values);
 
-	public List<Table> tables(String catalog, String schema, String name, String types);
-	public List<Table> tables(String schema, String name, String types);
-	public List<Table> tables(String name, String types);
-	public List<Table> tables(String types);
-	public List<Table> tables();
+	public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types);
+	public LinkedHashMap<String, Table> tables(String schema, String name, String types);
+	public LinkedHashMap<String, Table> tables(String name, String types);
+	public LinkedHashMap<String, Table> tables(String types);
+	public LinkedHashMap<String, Table> tables();
 
-	public List<STable> stables(String catalog, String schema, String name, String types);
-	public List<STable> stables(String schema, String name, String types);
-	public List<STable> stables(String name, String types);
-	public List<STable> stables(String types);
-	public List<STable> stables();
+	public LinkedHashMap<String, STable> stables(String catalog, String schema, String name, String types);
+	public LinkedHashMap<String, STable> stables(String schema, String name, String types);
+	public LinkedHashMap<String, STable> stables(String name, String types);
+	public LinkedHashMap<String, STable> stables(String types);
+	public LinkedHashMap<String, STable> stables();
 
 	public LinkedHashMap<String, Column> columns(Table table);
 	public LinkedHashMap<String, Column> columns(String table);
@@ -142,7 +142,7 @@ public interface AnylineDao<E>{
 	public LinkedHashMap<String, Tag> tags(String table);
 	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
 
-	public LinkedHashMap<String, Index> index(Table table);
+	public LinkedHashMap<String, Index> indexs(Table table);
 
 	public boolean drop(Table table) throws Exception;
 	public boolean create(Table table) throws Exception;
