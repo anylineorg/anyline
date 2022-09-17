@@ -95,6 +95,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		showSQLParamWhenError = ConfigTable.getBoolean("SHOW_SQL_PARAM_WHEN_ERROR",showSQLParamWhenError);
 	}
 
+	/* *****************************************************************************************************************
+	 *
+	 * 													DML
+	 *
+	 ******************************************************************************************************************/
 	/**
 	 * 查询
 	 */
@@ -1209,6 +1214,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 
+	/* *****************************************************************************************************************
+	 *
+	 * 													metadata
+	 *
+	 ******************************************************************************************************************/
 	private static Map<String,Map<String,String>> table_maps = new HashMap<>();
 	/**
 	 * tables
@@ -1259,26 +1269,17 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					pattern = table_map.get(key);
 				}
 			}
-
-			//先根据metadata解析
-			try {
-				String sql = adapter.buildQueryTableRunSQL(catalog, schema, pattern, types, true);
-				if(BasicUtil.isNotEmpty(sql)) {
-					SqlRowSet set = getJdbc().queryForRowSet(sql);
-					tables = adapter.tables(catalog, schema, tables, set);
-				}
-			}catch (Exception e){
-				if (showSQL) {
-					log.warn("{}[tables][根据metadata解析失败][catalog:{}][schema:{}][pattern:{}][msg:]", random, catalog, schema, pattern, e.getMessage());
-				}
-			}
-
-			//再根据系统表查询
+			//根据系统表查询
 			try{
-				String sql = adapter.buildQueryTableRunSQL(catalog, schema, pattern, types, false);
-				if(BasicUtil.isNotEmpty(sql)) {
-					DataSet set = select(sql, null);
-					tables = adapter.tables(catalog, schema, tables, set);
+				List<String> sqls = adapter.buildQueryTableRunSQL(catalog, schema, pattern, types);
+				if(null != sqls) {
+					int idx = 0;
+					for(String sql:sqls) {
+						if (BasicUtil.isNotEmpty(sql)) {
+							DataSet set = select(sql, null);
+							tables = adapter.tables(idx++, catalog, schema, tables, set);
+						}
+					}
 				}
 			}catch (Exception e){
 				if (showSQL) {
@@ -1363,25 +1364,17 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 
-			//先根据metadata解析
-			try {
-				String sql = adapter.buildQueryTableRunSQL(catalog, schema, pattern, types, true);
-				if(BasicUtil.isNotEmpty(sql)) {
-					SqlRowSet set = getJdbc().queryForRowSet(sql);
-					tables = adapter.stables(catalog, schema, tables, set);
-				}
-			}catch (Exception e){
-				if (showSQL) {
-					log.warn("{}[stables][根据metadata解析失败][catalog:{}][schema:{}][pattern:{}][msg:]", random, catalog, schema, pattern, e.getMessage());
-				}
-			}
-
-			//再根据系统表查询
+			//根据系统表查询
 			try{
-				String sql = adapter.buildQueryTableRunSQL(catalog, schema, pattern, types, false);
-				if(BasicUtil.isNotEmpty(sql)) {
-					DataSet set = select(sql, null);
-					tables = adapter.stables(catalog, schema, tables, set);
+				List<String> sqls = adapter.buildQuerySTableRunSQL(catalog, schema, pattern, types);
+				if(null != sqls) {
+					int idx = 0;
+					for(String sql:sqls) {
+						if (BasicUtil.isNotEmpty(sql)) {
+							DataSet set = select(sql, null);
+							tables = adapter.stables(idx++, catalog, schema, tables, set);
+						}
+					}
 				}
 			}catch (Exception e){
 				if (showSQL) {
@@ -1432,7 +1425,6 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	public LinkedHashMap<String,Column> columns(Table table){
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
-		boolean queryColumns = false;	//根据查询获取表结构
 		Long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
@@ -1457,13 +1449,16 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){}
 
-		//先根据metadata解析
+		//先根据metadata解析 SELECT * FROM T WHERE 1=0
 		try {
-			String sql = adapter.buildQueryColumnRunSQL(table , true);
-			if(BasicUtil.isNotEmpty(sql)) {
-				SqlRowSet set = getJdbc().queryForRowSet(sql);
-				columns = adapter.columns(table, columns, set);
-				queryColumns = true;
+			List<String> sqls = adapter.buildQueryColumnRunSQL(table , true);
+			if(null != sqls){
+				for(String sql:sqls) {
+					if (BasicUtil.isNotEmpty(sql)) {
+						SqlRowSet set = getJdbc().queryForRowSet(sql);
+						columns = adapter.columns(table, columns, set);
+					}
+				}
 			}
 		}catch (Exception e){
 			if (showSQL) {
@@ -1473,11 +1468,16 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 		//再根据系统表查询
 		try{
-			String sql = adapter.buildQueryColumnRunSQL(table, false);
-			if(BasicUtil.isNotEmpty(sql)) {
-				DataSet set = select(sql, null);
-				columns = adapter.columns(table, columns, set);
-				queryColumns = true;
+			List<String> sqls = adapter.buildQueryColumnRunSQL(table, false);
+			if(null != sqls){
+				int idx = 0;
+				for(String sql:sqls){
+					if(BasicUtil.isNotEmpty(sql)) {
+						DataSet set = select(sql, null);
+						columns = adapter.columns(idx, table, columns, set);
+					}
+					idx ++;
+				}
 			}
 		}catch (Exception e){
 			if (showSQL) {
@@ -1527,22 +1527,73 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 	@Override
 	public LinkedHashMap<String, Tag> tags(Table table) {
+
 		LinkedHashMap<String,Tag> tags = new LinkedHashMap<>();
+		Long fr = System.currentTimeMillis();
 		DataSource ds = null;
 		Connection con = null;
-		Long fr = System.currentTimeMillis();
+		String random = null;
+		DatabaseMetaData metadata = null;
+		if (showSQL) {
+			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+		}
+
+		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
 		try {
 			ds = getJdbc().getDataSource();
 			con = DataSourceUtils.getConnection(ds);
-			if (null == table.getCatalog()) {
-				table.setCatalog(con.getCatalog());
+			metadata = con.getMetaData();;
+			if (null == catalog) {
+				catalog = con.getCatalog();
 			}
-			SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
-			String sql = adapter.buildQueryTagRunSQL(table, false);
-			if(BasicUtil.isNotEmpty(sql)) {
-				DataSet set = select(sql, null);
-				tags = adapter.tags(table, tags, set);
+			if(null == schema){
+				schema = con.getSchema();
 			}
+		}catch (Exception e){}
+
+		//先根据metadata解析 SELECT * FROM T WHERE 1=0
+		try {
+			List<String> sqls = adapter.buildQueryTagRunSQL(table , true);
+			if(null != sqls){
+				for(String sql:sqls) {
+					if (BasicUtil.isNotEmpty(sql)) {
+						SqlRowSet set = getJdbc().queryForRowSet(sql);
+						tags = adapter.tags(table, tags, set);
+					}
+				}
+			}
+		}catch (Exception e){
+			if (showSQL) {
+				log.warn("{}[tags][根据metadata解析失败][catalog:{}][schema:{}][table:{}][msg:]", random, catalog, schema, table, e.getMessage());
+			}
+		}
+
+		//再根据系统表查询
+		try{
+			List<String> sqls = adapter.buildQueryTagRunSQL(table, false);
+			if(null != sqls){
+				int idx = 0;
+				for(String sql:sqls){
+					if(BasicUtil.isNotEmpty(sql)) {
+						DataSet set = select(sql, null);
+						tags = adapter.tags(idx, table, tags, set);
+					}
+					idx ++;
+				}
+			}
+		}catch (Exception e){
+			if (showSQL) {
+				log.warn("{}[tags][根据系统表查询失败][catalog:{}][schema:{}][table:{}][msg:]", random, catalog, schema, table, e.getMessage());
+			}
+		}
+
+		//根据jdbc接口补充
+		try {
+			//isAutoIncrement isGenerated remark default
+			ResultSet rs = metadata.getColumns(catalog, schema, table.getName(), null);
+			tags = adapter.tags(table, tags, rs);
 		}catch (Exception e){
 			e.printStackTrace();
 		}finally {
@@ -1550,9 +1601,24 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
+
+		//主键
+		try {
+			ResultSet rs = metadata.getPrimaryKeys(catalog, schema, table.getName());
+			while (rs.next()) {
+				String name = rs.getString(4);
+				Tag tag = tags.get(name.toUpperCase());
+				if (null == tag) {
+					continue;
+				}
+				tag.setPrimaryKey(true);
+			}
+		}catch (Exception e){
+
+		}
+
 		if (showSQL) {
-			String random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
-			log.warn("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, table.getCatalog(), table.getSchema(), table.getName(), System.currentTimeMillis() - fr);
+			log.warn("{}[tags][catalog:{}][schema:{}][table:{}][执行耗时:{}ms]", random, catalog, schema, table, System.currentTimeMillis() - fr);
 		}
 		return tags;
 	}
@@ -1573,153 +1639,89 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return tags(tab);
 	}
 
-	public boolean add(Column column) throws Exception{
-		boolean result = false;
-		Long fr = System.currentTimeMillis();
-		String random = null;
-		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(column);
-		if(showSQL){
-			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
-		}
-		DDListener listener = column.getListener();
-
-		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeAdd(column);
-		}
-		if(exe) {
-			getJdbc().update(sql);
-			result = true;
-		}
-
-		if (showSQL) {
-			log.warn("{}[add column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
-		}
-		return result;
-	}
-
 	/**
-	 * 修改列
-	 * @param column 列
-	 * @param trigger 是否触发异常事件
-	 * @return boolean
-	 * @throws Exception SQL异常
+	 * 所引
+	 * TABLE_CAT=simple
+	 * TABLE_SCHEM=null
+	 * TABLE_NAME=hr_department
+	 * NON_UNIQUE=false
+	 * INDEX_QUALIFIER=null
+	 * INDEX_NAME=PRIMARY
+	 * TYPE=3
+	 * ORDINAL_POSITION=1
+	 * COLUMN_NAME=ID
+	 * ASC_OR_DESC=A
+	 * CARDINALITY=81
+	 * PAGES=0
+	 * @param table table
+	 * @return map
 	 */
-	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
-
-		boolean result = true;
-		Long fr = System.currentTimeMillis();
-		String random = null;
-		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(column);
-
-		random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
-		DDListener listener = column.getListener();
-		try{
-			for(String sql:sqls) {
-				if (showSQL) {
-					log.warn("{}[txt:\n{}\n]", random, sql);
-				}
-				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeAlter(column);
-				}
-				if (exe) {
-					getJdbc().update(sql);
-					result = true;
-				}
+	public LinkedHashMap<String, Index> indexs(Table table){
+		LinkedHashMap<String,Index> indexs = null;
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		String tab = table.getName();
+		DataSource ds = null;
+		Connection con = null;
+		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		try {
+			ds = jdbc.getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			if(null == catalog){
+				catalog = con.getCatalog();
 			}
+			if(null == schema){
+				schema = con.getSchema();
+			}
+			DatabaseMetaData metaData = con.getMetaData();
+			ResultSet set = metaData.getIndexInfo(catalog, schema, tab, false, false);
+			indexs = adapter.indexs(table, indexs, set);
+			table.setIndexs(indexs);
 		}catch (Exception e){
-			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
-			log.warn("{}[DDL 执行异常][尝试修正数据][exception:{}]",random, e.getMessage());
-			if(trigger && null != listener) {
-				boolean exe = false;
-				if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0){
-					exe = listener.afterAlterException(table, column, e);
-				}
-				log.warn("{}[DDL 执行异常][尝试修正数据][修正结果:{}]",random, exe);
-				if(exe){
-					result = alter(table, column, false);
-				}
-			}else{
-				log.warn("{}[DDL 执行异常][中断执行]",random);
-				result = false;
-				throw e;
+			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
 			}
 		}
-
-		if (showSQL) {
-			log.warn("{}[update column][table:{}][column:{}][qty:{}][result:{}][执行耗时:{}ms]"
-					, random, column.getTableName(), column.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
-		}
-		return result;
-	}
-	public boolean alter(Table table, Column column) throws Exception{
-		return alter(table, column, true);
-	}
-	public boolean alter(Column column) throws Exception{
-		LinkedHashMap<String,Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(), "TABLE");
-		if(tables.size() ==0){
-			throw new AnylineException("表不存在:"+column.getTableName());
-		}else {
-			return alter(tables.values().iterator().next(), column, true);
-		}
-	}
-	public boolean drop(Column column) throws Exception{
-		boolean result = false;
-		Long fr = System.currentTimeMillis();
-		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(column);
-		String random = null;
-		if(showSQL){
-			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
-		}
-		DDListener listener = column.getListener();
-		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeDrop(column);
-		}
-		if(exe) {
-			getJdbc().update(sql);
-			result = true;
-		}
-		if (showSQL) {
-			log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
-		}
-		if(null != listener){
-			listener.afterDrop(column, result);
-		}
-		return result;
+		return indexs;
 	}
 
 	@Override
-	public boolean drop(Table table)  throws Exception{
-		boolean result = false;
-		Long fr = System.currentTimeMillis();
-		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
-		String random = null;
-		if(showSQL){
-			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
-		}
-		DDListener listener = table.getListener();
-		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeDrop(table);
-		}
-		if(exe) {
-			getJdbc().update(sql);
-			result = true;
-		}
-
-		if (showSQL) {
-			log.warn("{}[drop table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
-		}
-		if(null != listener){
-			listener.afterDrop(table, result);
-		}
-		return result;
+	public LinkedHashMap<String, Index> indexs(String table) {
+		Table tab = new Table();
+		tab.setName(table);
+		return indexs(tab);
 	}
+
+	@Override
+	public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table) {
+		Table tab = new Table();
+		tab.setCatalog(catalog);
+		tab.setSchema(schema);
+		tab.setName(table);
+		return indexs(tab);
+	}
+
+	@Override
+	public LinkedHashMap<String, Constraint> constraints(Table table) {
+		return null;
+	}
+
+	@Override
+	public LinkedHashMap<String, Constraint> constraints(String table) {
+		return null;
+	}
+
+	@Override
+	public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table) {
+		return null;
+	}
+	/* *****************************************************************************************************************
+	 *
+	 * 													DDL
+	 *
+	 ******************************************************************************************************************/
 
 	@Override
 	public boolean create(Table table) throws Exception {
@@ -1816,57 +1818,209 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return result;
 	}
 
+	@Override
+	public boolean drop(Table table)  throws Exception{
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
+		String random = null;
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = table.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(table);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (showSQL) {
+			log.warn("{}[drop table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(table, result);
+		}
+		return result;
+	}
 
 
+	@Override
+	public boolean add(Column column) throws Exception{
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String random = null;
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(column);
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = column.getListener();
 
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeAdd(column);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (showSQL) {
+			log.warn("{}[add column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
 
 	/**
-	 * 所引
-	 * TABLE_CAT=simple
-	 * TABLE_SCHEM=null
-	 * TABLE_NAME=hr_department
-	 * NON_UNIQUE=false
-	 * INDEX_QUALIFIER=null
-	 * INDEX_NAME=PRIMARY
-	 * TYPE=3
-	 * ORDINAL_POSITION=1
-	 * COLUMN_NAME=ID
-	 * ASC_OR_DESC=A
-	 * CARDINALITY=81
-	 * PAGES=0
-	 * @param table table
-	 * @return map
+	 * 修改列
+	 * @param column 列
+	 * @param trigger 是否触发异常事件
+	 * @return boolean
+	 * @throws Exception SQL异常
 	 */
-	public LinkedHashMap<String, Index> indexs(Table table){
-		LinkedHashMap<String,Index> indexs = null;
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
-		String tab = table.getName();
-		DataSource ds = null;
-		Connection con = null;
-		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
-		try {
-			ds = jdbc.getDataSource();
-			con = DataSourceUtils.getConnection(ds);
-			if(null == catalog){
-				catalog = con.getCatalog();
+	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
+
+		boolean result = true;
+		Long fr = System.currentTimeMillis();
+		String random = null;
+		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(column);
+
+		random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+		DDListener listener = column.getListener();
+		try{
+			for(String sql:sqls) {
+				if (showSQL) {
+					log.warn("{}[txt:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (null != listener) {
+					exe = listener.beforeAlter(column);
+				}
+				if (exe) {
+					getJdbc().update(sql);
+					result = true;
+				}
 			}
-			if(null == schema){
-				schema = con.getSchema();
-			}
-			DatabaseMetaData metaData = con.getMetaData();
-			ResultSet set = metaData.getIndexInfo(catalog, schema, tab, false, false);
-			indexs = adapter.indexs(table, indexs, set);
-			table.setIndexs(indexs);
 		}catch (Exception e){
-			e.printStackTrace();
-		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
-				DataSourceUtils.releaseConnection(con, ds);
+			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
+			log.warn("{}[DDL 执行异常][尝试修正数据][exception:{}]",random, e.getMessage());
+			if(trigger && null != listener) {
+				boolean exe = false;
+				if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0){
+					exe = listener.afterAlterException(table, column, e);
+				}
+				log.warn("{}[DDL 执行异常][尝试修正数据][修正结果:{}]",random, exe);
+				if(exe){
+					result = alter(table, column, false);
+				}
+			}else{
+				log.warn("{}[DDL 执行异常][中断执行]",random);
+				result = false;
+				throw e;
 			}
 		}
-		return indexs;
+
+		if (showSQL) {
+			log.warn("{}[update column][table:{}][column:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, column.getTableName(), column.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
 	}
+	@Override
+	public boolean alter(Table table, Column column) throws Exception{
+		return alter(table, column, true);
+	}
+	@Override
+	public boolean alter(Column column) throws Exception{
+		LinkedHashMap<String,Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(), "TABLE");
+		if(tables.size() ==0){
+			throw new AnylineException("表不存在:"+column.getTableName());
+		}else {
+			return alter(tables.values().iterator().next(), column, true);
+		}
+	}
+	@Override
+	public boolean drop(Column column) throws Exception{
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(column);
+		String random = null;
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = column.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(column);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+		if (showSQL) {
+			log.warn("{}[drop column][table:{}][column:{}][result:{}][执行耗时:{}ms]", random, column.getTableName(), column.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(column, result);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean add(Tag tag) throws Exception {
+		return false;
+	}
+
+	@Override
+	public boolean alter(Tag tag) throws Exception {
+		return false;
+	}
+
+	@Override
+	public boolean drop(Tag tag) throws Exception {
+		return false;
+	}
+
+	@Override
+	public boolean add(Index index) throws Exception {
+		return false;
+	}
+
+	@Override
+	public boolean alter(Index index) throws Exception {
+		return false;
+	}
+
+	@Override
+	public boolean drop(Index index) throws Exception {
+		return false;
+	}
+
+	@Override
+	public boolean add(Constraint constraint) throws Exception {
+		return false;
+	}
+
+	@Override
+	public boolean alter(Constraint constraint) throws Exception {
+		return false;
+	}
+
+	@Override
+	public boolean drop(Constraint constraint) throws Exception {
+		return false;
+	}
+	/* *****************************************************************************************************************
+	 *
+	 * 													common
+	 *
+	 ******************************************************************************************************************/
+
 
 
 	/**
