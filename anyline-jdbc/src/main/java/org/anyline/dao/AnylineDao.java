@@ -33,6 +33,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface AnylineDao<E>{
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													DML
+	 *
+	 ******************************************************************************************************************/
 	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
 	public DataSet querys(SQL sql, String ... conditions);
@@ -92,9 +98,7 @@ public interface AnylineDao<E>{
 
 	public int execute(SQL sql, ConfigStore configs, String ... conditions);
 	public int execute(SQL sql, String ... conditions);
-	
-	
- 
+
  
 	/** 
 	 * 执行存储过程 
@@ -122,6 +126,11 @@ public interface AnylineDao<E>{
 	public int deletes(String table, String key, Collection<Object> values);
 	public int deletes(String table, String key, String ... values);
 
+	/* *****************************************************************************************************************
+	 *
+	 * 													metadata
+	 *
+	 ******************************************************************************************************************/
 	public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types);
 	public LinkedHashMap<String, Table> tables(String schema, String name, String types);
 	public LinkedHashMap<String, Table> tables(String name, String types);
@@ -143,13 +152,38 @@ public interface AnylineDao<E>{
 	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
 
 	public LinkedHashMap<String, Index> indexs(Table table);
+	public LinkedHashMap<String, Index> indexs(String table);
+	public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table);
 
-	public boolean drop(Table table) throws Exception;
+	public LinkedHashMap<String, Constraint> constraints(Table table);
+	public LinkedHashMap<String, Constraint> constraints(String table);
+	public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table);
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													DDL
+	 *
+	 ******************************************************************************************************************/
 	public boolean create(Table table) throws Exception;
 	public boolean alter(Table table) throws Exception;
+	public boolean drop(Table table) throws Exception;
 
 	public boolean add(Column column) throws Exception;
-	public boolean alter(Column column) throws Exception;
 	public boolean alter(Table table, Column column) throws Exception;
+	public boolean alter(Column column) throws Exception;
 	public boolean drop(Column column) throws Exception;
+
+	public boolean add(Tag tag) throws Exception;
+	public boolean alter(Tag tag) throws Exception;
+	public boolean drop(Tag tag) throws Exception;
+
+	public boolean add(Index index) throws Exception;
+	public boolean alter(Index index) throws Exception;
+	public boolean drop(Index index) throws Exception;
+
+	public boolean add(Constraint constraint) throws Exception;
+	public boolean alter(Constraint constraint) throws Exception;
+	public boolean drop(Constraint constraint) throws Exception;
+
+
 } 
