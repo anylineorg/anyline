@@ -23,10 +23,17 @@ import org.anyline.entity.OrderStore;
 import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.entity.Column;
+import org.anyline.jdbc.entity.Table;
+import org.anyline.util.BasicUtil;
+import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
-@Repository("anyline.jdbc.sql.adapter.db2") 
+
+import java.util.List;
+
+@Repository("anyline.jdbc.sql.adapter.db2")
 public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {
 	public DB_TYPE type(){
 		return DB_TYPE.DB2; 
@@ -43,6 +50,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		setDelimiter(delimiter);
 	}
 
+	/* *****************************************************************************************************************
+	 *
+	 * 													DML
+	 *
+	 ******************************************************************************************************************/
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		String sql = run.getBaseQueryTxt(); 
@@ -65,8 +77,65 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
-	} 
- 
+	}
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													metadata
+	 *
+	 ******************************************************************************************************************/
+	/* *****************************************************************************************************************
+	 *
+	 * 													DML
+	 *
+	 ******************************************************************************************************************/
+
+	/**
+	 * 自增长列
+	 * ID INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1 )
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder increment(StringBuilder builder, Column column){
+		if(column.isAutoIncrement() == 1){
+			builder.append(" GENERATED ALWAYS AS IDENTITY (START WITH").append(column.getIncrementSeed()).append(",INCREMENT BY ").append(column.getIncrementStep()).append(")");
+		}
+		return builder;
+	}
+
+	/**
+	 * 主键
+	 * @param builder builder
+	 * @param table table
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder primary(StringBuilder builder, Table table){
+		List<Column> pks = table.primarys();
+		if(pks.size()>0){
+			builder.append(",PRIMARY KEY (");
+			int idx = 0;
+			for(Column pk:pks){
+				if(idx > 0){
+					builder.append(",");
+				}
+				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
+				String order = pk.getOrder();
+				if(BasicUtil.isNotEmpty(order)){
+					builder.append(" ").append(order);
+				}
+			}
+			builder.append(")");
+		}
+		return builder;
+	}
+	/* *****************************************************************************************************************
+	 *
+	 * 													common
+	 *
+	 ******************************************************************************************************************/
 	public String concat(String ... args){ 
 		return concatFun(args);
 	} 
