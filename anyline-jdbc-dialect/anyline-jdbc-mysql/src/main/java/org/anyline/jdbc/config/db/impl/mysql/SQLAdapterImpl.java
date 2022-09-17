@@ -40,6 +40,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		setDelimiter(delimiter);
 	}
 
+	/* *****************************************************************************************************
+	 *
+	 * 											DML
+	 *
+	 * ****************************************************************************************************/
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		String sql = run.getBaseQueryTxt(); 
@@ -68,9 +73,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return concatFun(args);
 	}
 
-	/******************************************************************************************************
+	/* *****************************************************************************************************
 	 *
-	 * 									metadata
+	 * 											metadata
 	 *
 	 * ****************************************************************************************************/
 
@@ -80,45 +85,55 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param schema schema
 	 * @param pattern pattern
 	 * @param types types
-	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return String
 	 */
-	public String buildQueryTableRunSQL(String catalog, String schema, String pattern, String types, boolean metadata){
+	@Override
+	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types){
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		if(!metadata){
-			builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
-			if(BasicUtil.isNotEmpty(catalog)){
-				builder.append(" AND TABLE_CATALOG = '").append(catalog).append("'");
-			}
-			if(BasicUtil.isNotEmpty(schema)){
-				builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
-			}
-			if(BasicUtil.isNotEmpty(pattern)){
-				builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
-			}
-			if(BasicUtil.isNotEmpty(types)){
-				String[] tmps = types.split(",");
-				builder.append(" AND TABLE_TYPE IN(");
-				int idx = 0;
-				for(String tmp:tmps){
-					if(idx > 0){
-						builder.append(",");
-					}
-					builder.append("'").append(tmp).append("'");
-					idx ++;
-				}
-				builder.append(")");
-			}else {
-				builder.append(" AND TABLE_TYPE IN ('BASE TABLE','TABLE')");
-			}
 
-		}else{
-
+		builder.append("SELECT * FROM information_schema.TABLES WHERE 1=1 ");
+		//8.0版本中 这个表中 TABLE_CATALOG = def  TABLE_SCHEMA = 数据库名
+		if(BasicUtil.isNotEmpty(catalog)){
+			builder.append(" AND TABLE_SCHEMA = '").append(catalog).append("'");
 		}
-		return builder.toString();
+		/*if(BasicUtil.isNotEmpty(schema)){
+			builder.append(" AND TABLE_SCHEMA = '").append(schema).append("'");
+		}*/
+		if(BasicUtil.isNotEmpty(pattern)){
+			builder.append(" AND TABLE_NAME LIKE '").append(pattern).append("'");
+		}
+		if(BasicUtil.isNotEmpty(types)){
+			String[] tmps = types.split(",");
+			builder.append(" AND TABLE_TYPE IN(");
+			int idx = 0;
+			for(String tmp:tmps){
+				if(idx > 0){
+					builder.append(",");
+				}
+				builder.append("'").append(tmp).append("'");
+				idx ++;
+			}
+			builder.append(")");
+		}else {
+			builder.append(" AND TABLE_TYPE IN ('BASE TABLE','TABLE')");
+		}
+ 		sqls.add(builder.toString());
+		return sqls;
 	}
 
-	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+	/**
+	 *
+	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	@Override
+	public LinkedHashMap<String, Table> tables(int index, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -140,7 +155,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sql
 	 */
-	public String buildQueryColumnRunSQL(Table table, boolean metadata){
+	@Override
+	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata){
+		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
 		if(metadata){
 			builder.append("SELECT * FROM ");
@@ -158,19 +175,22 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			}
 			builder.append(" AND TABLE_NAME = '").append(table.getName()).append("'");
 		}
-		return builder.toString();
+		sqls.add(builder.toString());
+		return sqls;
 	}
 
 
 	/**
-	 *  根据查询结果集构造Tag
+	 * 根据查询结果集构造Tag
+	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
 	 * @param table table
 	 * @param columns 上一步查询结果
 	 * @param set set
-	 * @return tags
+	 * @return columns
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+	@Override
+	public LinkedHashMap<String, Column> columns(int index, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
@@ -197,6 +217,13 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		}
 		return columns;
 	}
+
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													DDL
+	 *
+	 ******************************************************************************************************************/
 
 	/**
 	 * 修改列 ALTER TABLE   HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
@@ -376,6 +403,13 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		}
 		return builder;
 	}
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													common
+	 *
+	 ******************************************************************************************************************/
+
 	/**
 	 * 内置函数
 	 * @param value SQL_BUILD_IN_VALUE
