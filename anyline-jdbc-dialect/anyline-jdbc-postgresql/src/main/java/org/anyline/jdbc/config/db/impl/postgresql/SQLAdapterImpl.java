@@ -38,6 +38,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		setDelimiter(delimiter);
 	}
 
+	/* *****************************************************************************************************************
+	 *
+	 * 														DML
+	 *
+	 *  *****************************************************************************************************************/
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		String sql = run.getBaseQueryTxt(); 
@@ -62,112 +67,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return sql; 
 	}
 
-/*
-uuid:String
-int8:Long
-varchar:String
-date:java.sql.Date
-timestamp:java.sql.Timestamp
-timestamptz:java.sql.Timestamp
-time:java.sql.Time
-timez:java.sql.Time
-text:String
-numeric:BigDecimal
-json:String
-xml:String
-bit:Boolean
-bool:Boolean
-box:String
-bytea:byte[]
-bpchar:String
-cidr:String
-circle:String
-float4:Float
-float8:Double
-inet:String
-int2:Short
-int4:Integer
-int8:Long
-interval:String
-jsonb:String
-line:String
-lseg:String
-macaddr:String
-money:Double
-path:String
-point:String
-polygon:String
-smallserial:Short
-serial:Integer
-bigserial:Long
-tsquery:String
-tsvector:String
-txid_snapshot:String
-varbit:String
-* */
-
-	public boolean convert(Column column, RunValue run){
-		boolean result = false;
-
-		if(null == column){
-			return false;
-		}
-		if(null == run){
-			return true;
-		}
-		Object value = run.getValue();
-		if(null == value){
-			return true;
-		}
-		try {
-			String clazz = column.getClassName();
-			String typeName = column.getTypeName().toUpperCase();
-			//先解析特定数据库类型，注意不需要重复解析super中解析的类型
-			//
-			if(typeName.equals("JSON")
-					|| typeName.equals("XML")
-					|| typeName.equals("BOX")
-					|| typeName.equals("BIT")
-					|| typeName.equals("CIDR")
-					|| typeName.equals("CIRCLE")
-			){
-				run.setValue(value(typeName.toLowerCase(), value));
-				return true;
-			}else if(typeName.equals("BOOL")){
-				run.setValue(BasicUtil.parseBoolean(value, null));
-				return true;
-			}else{
-				//没有成功,super继续解析通用类型
-				result = super.convert(column, run);
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		return result;
-	}
-	public PGobject value(String type, Object value) throws SQLException {
-		PGobject pg = null;
-		if(value instanceof PGobject) {
-			pg =  (PGobject)value;
-			if(!type.equals(pg.getType())){
-				String val = pg.getValue();
-				pg = new PGobject();
-				pg.setType(type);
-				pg.setValue(val);
-			}
-			return pg;
-		}
-		pg = new PGobject();
-		pg.setType(type);
-		if(null != value) {
-			pg.setValue(value.toString());
-		}
-		return pg;
-	}
-	public String concat(String ... args){
-		return concatOr(args);
-	}
-
+	/* *****************************************************************************************************************
+	 *
+	 * 														DDL
+	 *
+	 *  *****************************************************************************************************************/
 	/**
 	 * 修改表名
 	 * ALTER TABLE A RENAME TO B;
@@ -351,6 +255,120 @@ varbit:String
 		builder.append("EXISTS ");
 		return builder;
 	}
+
+	/* *****************************************************************************************************************
+	 *
+	 * 														common
+	 *
+	 *  *****************************************************************************************************************/
+
+/*
+uuid:String
+int8:Long
+varchar:String
+date:java.sql.Date
+timestamp:java.sql.Timestamp
+timestamptz:java.sql.Timestamp
+time:java.sql.Time
+timez:java.sql.Time
+text:String
+numeric:BigDecimal
+json:String
+xml:String
+bit:Boolean
+bool:Boolean
+box:String
+bytea:byte[]
+bpchar:String
+cidr:String
+circle:String
+float4:Float
+float8:Double
+inet:String
+int2:Short
+int4:Integer
+int8:Long
+interval:String
+jsonb:String
+line:String
+lseg:String
+macaddr:String
+money:Double
+path:String
+point:String
+polygon:String
+smallserial:Short
+serial:Integer
+bigserial:Long
+tsquery:String
+tsvector:String
+txid_snapshot:String
+varbit:String
+* */
+
+	@Override
+	public boolean convert(Column column, RunValue run){
+		boolean result = false;
+
+		if(null == column){
+			return false;
+		}
+		if(null == run){
+			return true;
+		}
+		Object value = run.getValue();
+		if(null == value){
+			return true;
+		}
+		try {
+			String clazz = column.getClassName();
+			String typeName = column.getTypeName().toUpperCase();
+			//先解析特定数据库类型，注意不需要重复解析super中解析的类型
+			//
+			if(typeName.equals("JSON")
+					|| typeName.equals("XML")
+					|| typeName.equals("BOX")
+					|| typeName.equals("BIT")
+					|| typeName.equals("CIDR")
+					|| typeName.equals("CIRCLE")
+			){
+				run.setValue(value(typeName.toLowerCase(), value));
+				return true;
+			}else if(typeName.equals("BOOL")){
+				run.setValue(BasicUtil.parseBoolean(value, null));
+				return true;
+			}else{
+				//没有成功,super继续解析通用类型
+				result = super.convert(column, run);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public PGobject value(String type, Object value) throws SQLException {
+		PGobject pg = null;
+		if(value instanceof PGobject) {
+			pg =  (PGobject)value;
+			if(!type.equals(pg.getType())){
+				String val = pg.getValue();
+				pg = new PGobject();
+				pg.setType(type);
+				pg.setValue(val);
+			}
+			return pg;
+		}
+		pg = new PGobject();
+		pg.setType(type);
+		if(null != value) {
+			pg.setValue(value.toString());
+		}
+		return pg;
+	}
+	public String concat(String ... args){
+		return concatOr(args);
+	}
 	@Override
 	public String type2type(String type){
 		if(type.equalsIgnoreCase("int")){
@@ -358,4 +376,5 @@ varbit:String
 		}
 		return type;
 	}
+
 } 
