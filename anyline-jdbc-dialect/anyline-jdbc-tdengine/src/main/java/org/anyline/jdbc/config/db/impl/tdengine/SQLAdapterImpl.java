@@ -12,11 +12,13 @@ import org.anyline.jdbc.entity.STable;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.jdbc.entity.Tag;
 import org.anyline.util.BasicUtil;
+import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -100,16 +102,92 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			sql += " LIKE '" + pattern + "'";
 		}
 		sqls.add(sql);
+
 		sql = "SELECT * FROM INFORMATION_SCHEMA.INS_STABLES WHERE 1=1 ";
 		if (BasicUtil.isNotEmpty(catalog)) {
-			sql += " AND DB_NAME LIKE '" + pattern + "'";
+			sql += " AND DB_NAME = '" + catalog + "'";
 		}
 		if (BasicUtil.isNotEmpty(pattern)) {
-			sql += " AND TABLE_NAME LIKE '" + pattern + "'";
+			sql += " AND STABLE_NAME LIKE '" + pattern + "'";
 		}
 		sqls.add(sql);
 		return sqls;
 	}
+
+	/**
+	 *  根据查询结果集构造Table
+	 * @param index 第几条SQL 对照 buildQuerySTableRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	@Override
+	public LinkedHashMap<String, STable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		if(index == 0){
+			//SHOW STABLES 只返回一列stable_name
+			for(DataRow row:set){
+				String name = row.getString("stable_name");
+				if(BasicUtil.isEmpty(name)){
+					continue;
+				}
+				STable table = tables.get(name.toUpperCase());
+				if(null == table){
+					if(create) {
+						table = new STable(name);
+						tables.put(name.toUpperCase(), table);
+					}else{
+						continue;
+					}
+				}
+			}
+		}else if(index == 1){
+			//SELECT * FROM INFORMATION_SCHEMA.INS_STABLES
+			//stable_name  |db_name|create_time            |columns|tags|last_update           |table_comment|watermark  |max_delay|rollup|
+			//meters       |simple |yyyy-MM-dd HH:mm:ss.SSS|4      |2   |yyyy-MM-dd HH:mm:ss.SS|NULL         |5000a,5000a|-1a,-1a  |      |
+			for(DataRow row:set){
+				String name = row.getString("stable_name");
+				if(BasicUtil.isEmpty(name)){
+					continue;
+				}
+				STable table = tables.get(name.toUpperCase());
+				if(null == table){
+					if(create) {
+						table = new STable(name);
+						tables.put(name.toUpperCase(), table);
+					}else{
+						continue;
+					}
+				}
+				table.setCatalog(row.getString("db_name"));
+				table.setComment(row.getString("table_comment"));
+			}
+		}
+		return tables;
+	}
+
+	/**
+	 * 根据JDBC
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables tables
+	 * @param set set
+	 * @return stables
+	 * @throws Exception
+	 */
+	@Override
+	public LinkedHashMap<String, STable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception{
+		return tables;
+	}
+
+
 	/**
 	 *
 	 * @param catalog catalog
@@ -126,9 +204,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			sql += " LIKE '" + pattern + "'";
 		}
 		sqls.add(sql);
-		sql = "SELECT * FROM INFORMATION_SCHEMA.INS_STABLES WHERE TYPE = 'NORMAL_TABLE' ";
+		sql = "SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE TYPE = 'NORMAL_TABLE' ";
 		if (BasicUtil.isNotEmpty(catalog)) {
-			sql += " AND DB_NAME LIKE '" + pattern + "'";
+			sql += " AND DB_NAME = '" + catalog + "'";
 		}
 		if (BasicUtil.isNotEmpty(pattern)) {
 			sql += " AND TABLE_NAME LIKE '" + pattern + "'";
@@ -137,6 +215,107 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return sqls;
 	}
 
+
+	/**
+	 * 根据JDBC
+	 *
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables tables
+	 * @param set set
+	 * @return stables
+	 * @throws Exception
+	 */
+	@Override
+	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
+		LinkedHashMap<String, Table> tmps = super.tables(create, catalog, schema, null, set);
+		System.out.println(BeanUtil.object2json(tmps));
+		return tables;
+	}
+
+
+	@Override
+	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata){
+		List<String> sqls = new ArrayList<>();
+		StringBuilder builder = new StringBuilder();
+		if(metadata){
+			builder.append("SELECT * FROM ");
+			name(builder, table);
+			//builder.append(" WHERE 1=0");
+			sqls.add(builder.toString());
+		}else {
+			if (table instanceof STable) {
+				builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
+				builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
+			} else {
+				builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
+				builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
+			}
+			sqls.add(builder.toString());
+
+			builder = new StringBuilder();
+			builder.append("DESCRIBE ").append(table.getName());
+			sqls.add(builder.toString());
+		}
+		return sqls;
+	}
+
+	/**
+	 *
+	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table table
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return columns
+	 * @throws Exception
+	 */
+	@Override
+	public LinkedHashMap<String, Column> columns(int index,boolean create,  Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+		if(index == 0){
+
+		}else if(index == 1){
+			//DESCRIBE
+			for(DataRow row:set){
+				String name = row.getString("field");
+				String note = row.getString("note");
+				if(BasicUtil.isEmpty(name)){
+					continue;
+				}
+				if("TAG".equalsIgnoreCase(note)){
+					continue;
+				}
+				Column column = columns.get(name.toUpperCase());
+				if(null == column){
+					if(create){
+						column = new Column();
+						columns.put(name.toUpperCase(), column);
+					}else{
+						continue;
+					}
+				}
+				column.setName(name);
+				column.setCatalog(table.getCatalog());
+				column.setSchema(table.getSchema());
+				column.setTypeName(row.getString("type"));
+				column.setPrecision(row.getInt("length", 0));
+			}
+		}
+		return columns;
+	}
+
+	@Override
+	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception{
+		//上一步中没有的不要新创建，这一步可能获取到tag
+		if(null == columns){
+			columns = new LinkedHashMap<>();
+		}
+		return columns;
+	}
 
 	/**
 	 *
@@ -151,21 +330,32 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	public List<String> buildQueryTagRunSQL(Table table, boolean metadata){
 		List<String> sqls = new ArrayList<>();
 		StringBuilder builder = new StringBuilder();
-		/*if(table instanceof STable){
-			builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
-			builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
+		if(metadata){
+			builder.append("SELECT * FROM ");
+			name(builder, table);
+			builder.append(" WHERE 1=0");
+			sqls.add(builder.toString());
 		}else {
-			builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
-			builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
-		}*/
-		builder.append("DESCRIBE ").append(table.getName());
-		sqls.add(builder.toString());
+			if (table instanceof STable) {
+				builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
+				builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
+			} else {
+				builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
+				builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
+			}
+			sqls.add(builder.toString());
+
+			builder = new StringBuilder();
+			builder.append("DESCRIBE ").append(table.getName());
+			sqls.add(builder.toString());
+		}
 		return sqls;
 	}
 
 	/**
 	 *
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param tags
 	 * @param set set
@@ -173,7 +363,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, Tag> tags(int index, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
+	public LinkedHashMap<String, Tag> tags(int index,boolean create,  Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
 		if(null == tags){
 			tags = new LinkedHashMap<>();
 		}
@@ -202,53 +392,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return tags;
 	}
 
-	@Override
-	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata){
-		List<String> sqls = new ArrayList<>();
-		StringBuilder builder = new StringBuilder();
-		/*if(table instanceof STable){
-			builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
-			builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
-		}else {
-			builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
-			builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
-		}*/
-		builder.append("DESCRIBE ").append(table.getName());
-		sqls.add(builder.toString());
-		return sqls;
-	}
-
-	/**
-	 *
-	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
-	 * @param table table
-	 * @param columns 上一步查询结果
-	 * @param set set
-	 * @return columns
-	 * @throws Exception
-	 */
-	@Override
-	public LinkedHashMap<String, Column> columns(int index, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
-		if(null == columns){
-			columns = new LinkedHashMap<>();
-		}
-		for(DataRow row:set){
-			Column item = new Column();
-			//DESCRIBE
-			String note = row.getString("note");
-			if("TAG".equalsIgnoreCase(note)){
-				continue;
-			}
-			String name = row.getString("field");
-			item.setName(name);
-			item.setCatalog(table.getCatalog());
-			item.setSchema(table.getSchema());
-			item.setTypeName(row.getString("type"));
-			item.setPrecision(row.getInt("length", 0));
-			columns.put(name.toUpperCase(), item);
-		}
-		return columns;
-	}
 	/* *****************************************************************************************************************
 	 *
 	 * 													DDL

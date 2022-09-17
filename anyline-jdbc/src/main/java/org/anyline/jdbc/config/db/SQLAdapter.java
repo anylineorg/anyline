@@ -270,17 +270,19 @@ public interface SQLAdapter {
 	/**
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照 buildQuerySTableRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
-	 * @throws exception
+	 * @throws Exception
 	 */
-	public LinkedHashMap<String, STable> stables(int index, String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception;
+	public LinkedHashMap<String, STable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables tables
@@ -288,11 +290,12 @@ public interface SQLAdapter {
 	 * @return stables
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception;
+	public LinkedHashMap<String, STable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception;
 
 
 	/**
 	 * 查询超表
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -304,6 +307,7 @@ public interface SQLAdapter {
 	/**
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -311,10 +315,11 @@ public interface SQLAdapter {
 	 * @return tables
 	 * @throws exception
 	 */
-	public LinkedHashMap<String, Table> tables(int index, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
+	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables tables
@@ -322,10 +327,11 @@ public interface SQLAdapter {
 	 * @return tables
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
+	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
 
 	/**
 	 * 查询瑗表上的列
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata(SELEC * FROM T WHERE 1=0) | 查询系统表
 	 * @return sqls
@@ -335,38 +341,42 @@ public interface SQLAdapter {
 	/**
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param columns 上一步查询结果
 	 * @param set set
 	 * @return tags
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Column> columns(int index, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
+	public LinkedHashMap<String, Column> columns(int index,boolean create,  Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
 
 	/**
 	 * 解析查询结果metadata
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param columns columns
 	 * @param set set
 	 * @return columns
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
 
 	/**
 	 * 解析JDBC getcolumns结果
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param columns columns
 	 * @param set set
 	 * @return columns
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception;
+	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception;
 
 
 
 	/**
 	 * 查询瑗表上的列
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
@@ -376,19 +386,21 @@ public interface SQLAdapter {
 	/**
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param columns 上一步查询结果
 	 * @param set set
 	 * @return tags
 	 * @throws exception
 	 */
-	public LinkedHashMap<String, Tag> tags(int index, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
-	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
-	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
+	public LinkedHashMap<String, Tag> tags(int index,boolean create,  Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
+	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
 
 
 	/**
 	 * 查询瑗表上的所引
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
@@ -398,15 +410,16 @@ public interface SQLAdapter {
 	/**
 	 *  根据查询结果集构造Index
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param columns 上一步查询结果
 	 * @param set set
 	 * @return tags
 	 * @throws exception
 	 */
-	public LinkedHashMap<String, Index> indexs(int index, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
-	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
-	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
+	public LinkedHashMap<String, Index> indexs(int index,boolean create,  Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
+	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
 
 	public String buildAddRunSQL(Column column);
 
@@ -510,19 +523,29 @@ public interface SQLAdapter {
 	 * 主键
 	 * @param builder builder
 	 * @param table table
+	 * @return StringBuilder
 	 */
 	public StringBuilder primary(StringBuilder builder, Table table);
 
 	/**
+	 * 表备注
+	 * @param builder builder
+	 * @param table table
+	 * @return StringBuilder
+	 */
+	public StringBuilder comment(StringBuilder builder, Table table);
+	/**
 	 * 定义列
 	 * @param builder builder
 	 * @param column column
+	 * @return StringBuilder
 	 */
 	public StringBuilder define(StringBuilder builder, Column column);
 	/**
 	 * 自增长列
 	 * @param builder builder
 	 * @param column column
+	 * @return StringBuilder
 	 */
 	public StringBuilder increment(StringBuilder builder, Column column);
 
@@ -530,6 +553,7 @@ public interface SQLAdapter {
 	 * 备注
 	 * @param builder builder
 	 * @param column column
+	 * @return StringBuilder
 	 */
 	public StringBuilder comment(StringBuilder builder, Column column);
 
@@ -537,12 +561,14 @@ public interface SQLAdapter {
 	 * 位置
 	 * @param builder builder
 	 * @param column column
+	 * @return StringBuilder
 	 */
 	public StringBuilder position(StringBuilder builder, Column column);
 	/**
 	 * 更新行事件
 	 * @param builder builder
 	 * @param column column
+	 * @return StringBuilder
 	 */
 	public StringBuilder onupdate(StringBuilder builder, Column column);
 
@@ -550,6 +576,7 @@ public interface SQLAdapter {
 	 * 默认值
 	 * @param builder builder
 	 * @param column column
+	 * @return StringBuilder
 	 */
 	public StringBuilder defaultValue(StringBuilder builder, Column column);
 
@@ -557,6 +584,7 @@ public interface SQLAdapter {
 	 * 编码
 	 * @param builder builder
 	 * @param column column
+	 * @return StringBuilder
 	 */
 	public StringBuilder charset(StringBuilder builder, Column column);
 
@@ -564,6 +592,7 @@ public interface SQLAdapter {
 	 * 非空
 	 * @param builder builder
 	 * @param column column
+	 * @return StringBuilder
 	 */
 	public StringBuilder nullable(StringBuilder builder, Column column);
 
@@ -571,6 +600,7 @@ public interface SQLAdapter {
 	 * 数据类型
 	 * @param builder builder
 	 * @param column column
+	 * @return StringBuilder
 	 */
 	public StringBuilder type(StringBuilder builder, Column column);
 

@@ -1263,13 +1263,14 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/**
 	 * 从jdbc结果中提取表结构
 	 * ResultSet set = con.getMetaData().getTables()
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param set 查询结果
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception{
+	public LinkedHashMap<String, STable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1280,10 +1281,17 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			if(BasicUtil.isEmpty(tableName)){
 				continue;
 			}
-			STable table = new STable();
+			STable table = tables.get(tableName.toUpperCase());
+			if(null == table){
+				if(create) {
+					table = new STable(tableName);
+					tables.put(tableName.toUpperCase(), table);
+				}else {
+					continue;
+				}
+			}
 			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
 			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
-			table.setName(tableName);
 			table.setType(string(keys, "TABLE_TYPE", set));
 			table.setComment(string(keys, "REMARKS", set));
 			table.setTypeCat(string(keys, "TYPE_CAT", set));
@@ -1301,6 +1309,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/**
 	 * 从上一步生成的SQL查询结果中 提取表结构
 	 * @param index 第几条SQL
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -1309,10 +1318,16 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, STable> stables(int index, String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception{return null;}
+	public LinkedHashMap<String, STable> stables(int index,boolean create,  String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception{
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		return tables;
+	}
 
 	/**
 	 * 查询超表
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -1326,11 +1341,11 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 
 	@Override
-	public LinkedHashMap<String, Table> tables(int index, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+	public LinkedHashMap<String, Table> tables(int index,boolean create,  String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
 		return tables;
 	}
 	@Override
-	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1340,7 +1355,15 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			if(BasicUtil.isEmpty(tableName)){
 				continue;
 			}
-			Table table = new Table();
+			Table table = tables.get(tableName.toUpperCase());
+			if(null == table){
+				if(create){
+					table = new Table();
+					tables.put(tableName.toUpperCase(), table);
+				}else{
+					continue;
+				}
+			}
 			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
 			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
 			table.setName(tableName);
@@ -1370,6 +1393,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/**
 	 *
 	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param columns 上一步查询结果
 	 * @param set set
@@ -1377,26 +1401,37 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, Column> columns(int index, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+	public LinkedHashMap<String, Column> columns(int index,boolean create,  Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
 		return columns;
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception{
+	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
 		SqlRowSetMetaData rsm = set.getMetaData();
 		for (int i = 1; i <= rsm.getColumnCount(); i++) {
-			Column column = column(null, rsm, i);
-			columns.put(column.getName().toUpperCase(), column);
+			String name = rsm.getColumnName(i);
+			if(BasicUtil.isEmpty(name)){
+				continue;
+			}
+			Column column = columns.get(name.toUpperCase());
+			if(null == column){
+				if(create){
+					column = column(column, rsm, i);
+					columns.put(column.getName().toUpperCase(), column);
+				}else{
+					continue;
+				}
+			}
 		}
 		return columns;
 	}
 	@Override
-	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
@@ -1408,13 +1443,12 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			}
 			Column column = columns.get(name.toUpperCase());
 			if(null == column){
-				/*if(queryColumns) {
-				//是否已经根据metedata和系统表查过了
-					continue;
-				}else{
+				if(create) {
 					column = new Column(name);
-				}*/
-				column = new Column(name);
+					columns.put(name.toUpperCase(), column);
+				}else {
+					continue;
+				}
 			}
 			String remark = string(keys, "REMARKS", set, column.getComment());
 			if("TAG".equals(remark)){
@@ -1435,7 +1469,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			column.setPosition(integer(keys, "ORDINAL_POSITION", set, column.getPosition()));
 			column.setAutoIncrement(bool(keys,"IS_AUTOINCREMENT", set, column.isAutoIncrement()));
 			column(column, set);
-			columns.put(column.getName().toUpperCase(), column);
 		}
 		return columns;
 	}
@@ -1454,6 +1487,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/**
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param tags
 	 * @param set set
@@ -1461,19 +1495,20 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, Tag> tags(int index, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
+	public LinkedHashMap<String, Tag> tags(int index,boolean create,  Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
 		return tags;
 	}
 	@Override
-	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
+	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
 		return tags;
 	}
 	@Override
-	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
 		return tags;
 	}
 	/**
 	 * 查询瑗表上的列
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sql
@@ -1486,6 +1521,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/**
 	 *
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param indexs indexs
 	 * @param set set
@@ -1493,15 +1529,15 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, Index> indexs(int index, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
+	public LinkedHashMap<String, Index> indexs(int index,boolean create,  Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
 		return null;
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception{
+	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception{
 		return null;
 	}
 	@Override
-	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception{
+	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception{
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
 		}
@@ -1512,9 +1548,14 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			if(null == name){
 				continue;
 			}
-			Index index = indexs.get(name);
+			Index index = indexs.get(name.toUpperCase());
 			if(null == index){
-				index = new Index();
+				if(create){
+					index = new Index();
+					indexs.put(name.toUpperCase(), index);
+				}else{
+					continue;
+				}
 				index.setName(string(keys, "INDEX_NAME", set));
 				index.setType(integer(keys, "TYPE", set, null));
 				index.setUnique(!bool(keys, "NON_UNIQUE", set, false));
@@ -1528,7 +1569,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 				columns = index.getColumns();
 			}
 			String columnName = string(keys, "COLUMN_NAME", set);
-			Column col = table.getColumn(columnName);
+			Column col = table.getColumn(columnName.toUpperCase());
 			Column column = null;
 			if(null != col){
 				column = (Column) col.clone();
@@ -1544,7 +1585,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			}
 			column.setOrder(order);
 			column.setPosition(integer(keys,"ORDINAL_POSITION", set, null));
-			columns.put(column.getName(), column);
+			columns.put(column.getName().toUpperCase(), column);
 		}
 		return indexs;
 	}
@@ -1827,6 +1868,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			}
 		}
 		fromSuperTable(builder, table);
+		comment(builder, table);
 		return builder.toString();
 	}
 
@@ -1991,6 +2033,21 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return null;
 	}
 
+	/**
+	 * 备注
+	 * 子类实现
+	 * @param builder builder
+	 * @param table table
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder comment(StringBuilder builder, Table table){
+		String comment = table.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			builder.append(" COMMENT'").append(comment).append("'");
+		}
+		return builder;
+	}
 	/**
 	 * 修改列名
 	 * 子类实现

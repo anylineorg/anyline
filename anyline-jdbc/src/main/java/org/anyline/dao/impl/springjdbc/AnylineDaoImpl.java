@@ -1258,15 +1258,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					//如果是根据表名查询、大小写有可能造成查询失败，先查询全部表，生成缓存，再从缓存中不区分大小写查询
 					LinkedHashMap<String,Table> all = tables(catalog, schema, null, types);
 					for(Table table:all.values()){
-						table_map.put(table.getType().toUpperCase()+"_"+table.getName().toUpperCase(), table.getName());
+						table_map.put(table.getName().toUpperCase(), table.getName());
 					}
 				}
-				String key = "_" + pattern.toUpperCase();
-				if(null != types){
-					key = types.toUpperCase() + key;
-				}
-				if(table_map.containsKey(key)){
-					pattern = table_map.get(key);
+				if(table_map.containsKey(pattern.toUpperCase())){
+					pattern = table_map.get(pattern.toUpperCase());
 				}
 			}
 			//根据系统表查询
@@ -1277,7 +1273,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
 							DataSet set = select(sql, null);
-							tables = adapter.tables(idx++, catalog, schema, tables, set);
+							tables = adapter.tables(idx++, true, catalog, schema, tables, set);
 						}
 					}
 				}
@@ -1290,7 +1286,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			//根据jdbc接口补充
 			try {
 				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
-				tables = adapter.tables(catalog, schema, tables, set);
+				tables = adapter.tables(true, catalog, schema, tables, set);
 			}catch (Exception e){
 				log.warn("{}[tables][根据jdbc接口补充][catalog:{}][schema:{}][pattern:{}][msg:]", random, catalog, schema, pattern, e.getMessage());
 			}
@@ -1352,15 +1348,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					//如果是根据表名查询、大小写有可能造成查询失败，先查询全部表，生成缓存，再从缓存中不区分大小写查询
 					LinkedHashMap<String,STable> all = stables(catalog, schema, null, types);
 					for(Table table:all.values()){
-						table_map.put(table.getType().toUpperCase()+"_"+table.getName().toUpperCase(), table.getName());
+						table_map.put(table.getName().toUpperCase(), table.getName());
 					}
 				}
-				String key = "_" + pattern.toUpperCase();
-				if(null != types){
-					key = types.toUpperCase() + key;
-				}
-				if(table_map.containsKey(key)){
-					pattern = table_map.get(key);
+				if(table_map.containsKey(pattern.toUpperCase())){
+					pattern = table_map.get(pattern.toUpperCase());
 				}
 			}
 
@@ -1372,7 +1364,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
 							DataSet set = select(sql, null);
-							tables = adapter.stables(idx++, catalog, schema, tables, set);
+							tables = adapter.stables(idx++, true, catalog, schema, tables, set);
 						}
 					}
 				}
@@ -1385,7 +1377,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			//根据jdbc接口补充
 			try {
 				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
-				tables = adapter.stables(catalog, schema, tables, set);
+				tables = adapter.stables(false, catalog, schema, tables, set);
 			}catch (Exception e){
 				log.warn("{}[stables][根据jdbc接口补充][catalog:{}][schema:{}][pattern:{}][msg:]", random, catalog, schema, pattern, e.getMessage());
 			}
@@ -1456,7 +1448,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				for(String sql:sqls) {
 					if (BasicUtil.isNotEmpty(sql)) {
 						SqlRowSet set = getJdbc().queryForRowSet(sql);
-						columns = adapter.columns(table, columns, set);
+						columns = adapter.columns(true, table, columns, set);
 					}
 				}
 			}
@@ -1474,7 +1466,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
 						DataSet set = select(sql, null);
-						columns = adapter.columns(idx, table, columns, set);
+						columns = adapter.columns(idx, true, table, columns, set);
 					}
 					idx ++;
 				}
@@ -1489,7 +1481,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		try {
 			//isAutoIncrement isGenerated remark default
 			ResultSet rs = metadata.getColumns(catalog, schema, table.getName(), null);
-			columns = adapter.columns(table, columns, rs);
+			columns = adapter.columns(true, table, columns, rs);
 		}catch (Exception e){
 			e.printStackTrace();
 		}finally {
@@ -1560,7 +1552,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				for(String sql:sqls) {
 					if (BasicUtil.isNotEmpty(sql)) {
 						SqlRowSet set = getJdbc().queryForRowSet(sql);
-						tags = adapter.tags(table, tags, set);
+						tags = adapter.tags(true, table, tags, set);
 					}
 				}
 			}
@@ -1578,7 +1570,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				for(String sql:sqls){
 					if(BasicUtil.isNotEmpty(sql)) {
 						DataSet set = select(sql, null);
-						tags = adapter.tags(idx, table, tags, set);
+						tags = adapter.tags(idx, true, table, tags, set);
 					}
 					idx ++;
 				}
@@ -1593,7 +1585,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		try {
 			//isAutoIncrement isGenerated remark default
 			ResultSet rs = metadata.getColumns(catalog, schema, table.getName(), null);
-			tags = adapter.tags(table, tags, rs);
+			//这一步会查出所有列(包括非tag列)
+			tags = adapter.tags(false, table, tags, rs);
 		}catch (Exception e){
 			e.printStackTrace();
 		}finally {
@@ -1675,7 +1668,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			DatabaseMetaData metaData = con.getMetaData();
 			ResultSet set = metaData.getIndexInfo(catalog, schema, tab, false, false);
-			indexs = adapter.indexs(table, indexs, set);
+			indexs = adapter.indexs(true, table, indexs, set);
 			table.setIndexs(indexs);
 		}catch (Exception e){
 			e.printStackTrace();
