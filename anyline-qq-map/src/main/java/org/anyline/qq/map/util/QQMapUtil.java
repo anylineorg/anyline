@@ -90,8 +90,8 @@ public class QQMapUtil {
                 if(null != result) {
                     DataRow point = result.getRow("location");
                     if(null != point){
-                        coordinate.setLng(point.getDouble("lng", -1));
-                        coordinate.setLat(point.getDouble("lat", -1));
+                        coordinate.setLng(point.getDouble("lng", -1.0));
+                        coordinate.setLat(point.getDouble("lat", -1.d));
                     }
                     DataRow ad = result.getRow("ad_info");
                     if(null != ad){
