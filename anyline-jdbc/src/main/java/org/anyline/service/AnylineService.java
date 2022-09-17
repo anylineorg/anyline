@@ -34,6 +34,12 @@ import java.util.List;
 import java.util.Map;
 
 public interface AnylineService<E>{
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													DML
+	 *
+	 ******************************************************************************************************************/
 	/**
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
@@ -478,13 +484,94 @@ public interface AnylineService<E>{
 
 	public DDLService ddl();
 	public MetaDataService metadata();
-	public interface DDLService{
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													metadata
+	 *
+	 ******************************************************************************************************************/
+	public interface MetaDataService{
+
+		/**
+		 * 表是否存在
+		 * @param table table
+		 * @return boolean
+		 */
+		public boolean exists(Table table);
+		/**
+		 * tables
+		 * @param catalog 对于MySQL，则对应相应的数据库，对于Oracle来说，则是对应相应的数据库实例，可以不填，也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
+		 * @param schema 可以理解为数据库的登录名，而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意，其登陆名必须是大写，不然的话是无法获取到相应的数据，而MySQL则不做强制要求。
+		 * @param name 一般情况下如果要获取所有的表的话，可以直接设置为null，如果设置为特定的表名称，则返回该表的具体信息。
+		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
+		 * @return tables
+		 */
+		public LinkedHashMap<String,Table> tables(String catalog, String schema, String name, String types);
+		public LinkedHashMap<String,Table> tables(String schema, String name, String types);
+		public LinkedHashMap<String,Table> tables(String name, String types);
+		public LinkedHashMap<String,Table> tables(String types);
+		public LinkedHashMap<String,Table> tables();
+
+		public Table table(String catalog, String schema, String name);
+		public Table table(String schema, String name);
+		public Table table(String name);
+
+
+		/**
+		 * 超表是否存在
+		 * @param table table
+		 * @return boolean
+		 */
+		public boolean exists(STable table);
+		public LinkedHashMap<String,STable> stables(String catalog, String schema, String name, String types);
+		public LinkedHashMap<String,STable> stables(String schema, String name, String types);
+		public LinkedHashMap<String,STable> stables(String name, String types);
+		public LinkedHashMap<String,STable> stables(String types);
+		public LinkedHashMap<String,STable> stables();
+
+		public STable stable(String catalog, String schema, String name);
+		public STable stable(String schema, String name);
+		public STable stable(String name);
+
+
 		/**
 		 * 列是否存在
 		 * @param column column
 		 * @return boolean
 		 */
 		public boolean exists(Column column);
+		/**
+		 * 查询表中所有的表，注意这里的map.KEY全部转大写
+		 * @param table table
+		 * @return map
+		 */
+		public LinkedHashMap<String,Column> columns(Table table);
+		public LinkedHashMap<String,Column> columns(String table);
+		public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
+
+		public LinkedHashMap<String,Tag> tags(Table table);
+		public LinkedHashMap<String,Tag> tags(String table);
+		public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table);
+
+		public LinkedHashMap<String,Index> indexs(Table table);
+		public LinkedHashMap<String,Index> indexs(String table);
+		public LinkedHashMap<String,Index> indexs(String catalog, String schema, String table);
+
+
+		public LinkedHashMap<String,Constraint> constraints(Table table);
+		public LinkedHashMap<String,Constraint> constraints(String table);
+		public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table);
+
+
+	}
+
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													DDL
+	 *
+	 ******************************************************************************************************************/
+	public interface DDLService{
 		/**
 		 * 修改列  名称 数据类型 位置 默认值
 		 * 执行save前先调用column.update()设置修改后的属性
@@ -508,85 +595,29 @@ public interface AnylineService<E>{
 		public boolean alter(Tag tag) throws Exception;
 		public boolean drop(Tag tag) throws Exception;
 
-		/**
-		 * 表是否存在
-		 * @param table table
-		 * @return boolean
-		 */
-		public boolean exists(Table table);
 		public boolean save(Table table) throws Exception;
 		public boolean create(Table table) throws Exception;
 		public boolean alter(Table table) throws Exception;
 		public boolean drop(Table table) throws Exception;
 
-		/**
-		 * 超表是否存在
-		 * @param table table
-		 * @return boolean
-		 */
-		public boolean exists(STable table);
 		public boolean save(STable table) throws Exception;
 		public boolean create(STable table) throws Exception;
 		public boolean alter(STable table) throws Exception;
 		public boolean drop(STable table) throws Exception;
 
 		/**
-		 * 添加索引
-		 * @param index index
+		 * 添加约束
+		 * @param constraint constraint
 		 * @return boolean
 		 * @throws Exception Exception
 		 */
+		public boolean add(Constraint constraint) throws Exception;
+		public boolean alter(Constraint constraint) throws Exception;
+		public boolean drop(Constraint constraint) throws Exception;
+
 		public boolean add(Index index) throws Exception;
+		public boolean alter(Index index) throws Exception;
 		public boolean drop(Index index) throws Exception;
-	}
-	public interface MetaDataService{
-		/**
-		 * tables
-		 * @param catalog 对于MySQL，则对应相应的数据库，对于Oracle来说，则是对应相应的数据库实例，可以不填，也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
-		 * @param schema 可以理解为数据库的登录名，而对于Oracle也可以理解成对该数据库操作的所有者的登录名。对于Oracle要特别注意，其登陆名必须是大写，不然的话是无法获取到相应的数据，而MySQL则不做强制要求。
-		 * @param name 一般情况下如果要获取所有的表的话，可以直接设置为null，如果设置为特定的表名称，则返回该表的具体信息。
-		 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
-		 * @return tables
-		 */
-		public LinkedHashMap<String,Table> tables(String catalog, String schema, String name, String types);
-		public LinkedHashMap<String,Table> tables(String schema, String name, String types);
-		public LinkedHashMap<String,Table> tables(String name, String types);
-		public LinkedHashMap<String,Table> tables(String types);
-		public LinkedHashMap<String,Table> tables();
-
-		public Table table(String catalog, String schema, String name);
-		public Table table(String schema, String name);
-		public Table table(String name);
-
-
-		public LinkedHashMap<String,STable> stables(String catalog, String schema, String name, String types);
-		public LinkedHashMap<String,STable> stables(String schema, String name, String types);
-		public LinkedHashMap<String,STable> stables(String name, String types);
-		public LinkedHashMap<String,STable> stables(String types);
-		public LinkedHashMap<String,STable> stables();
-
-		public STable stable(String catalog, String schema, String name);
-		public STable stable(String schema, String name);
-		public STable stable(String name);
-
-
-		/**
-		 * 查询表中所有的表，注意这里的map.KEY全部转大写
-		 * @param table table
-		 * @return map
-		 */
-		public LinkedHashMap<String,Column> columns(Table table);
-		public LinkedHashMap<String,Column> columns(String table);
-		public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
-
-		public LinkedHashMap<String,Tag> tags(Table table);
-		public LinkedHashMap<String,Tag> tags(String table);
-		public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table);
-
-		public LinkedHashMap<String,Index> indexs(Table table);
-		public LinkedHashMap<String,Index> indexs(String table);
-		public LinkedHashMap<String,Index> indexs(String catalog, String schema, String table);
-
 
 
 
