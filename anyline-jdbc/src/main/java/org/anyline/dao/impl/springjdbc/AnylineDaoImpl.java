@@ -1929,12 +1929,16 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 	@Override
 	public boolean alter(Column column) throws Exception{
-		LinkedHashMap<String,Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(), "TABLE");
-		if(tables.size() ==0){
-			throw new AnylineException("表不存在:"+column.getTableName());
-		}else {
-			return alter(tables.values().iterator().next(), column, true);
+		Table table = column.getTable();
+		if(null == table){
+			LinkedHashMap<String,Table> tables = tables(column.getCatalog(), column.getSchema(), column.getTableName(), "TABLE");
+			if(tables.size() ==0){
+				throw new AnylineException("表不存在:"+column.getTableName());
+			}else {
+				table = tables.values().iterator().next();
+			}
 		}
+		return alter(table, column, true);
 	}
 	@Override
 	public boolean drop(Column column) throws Exception{
