@@ -1439,7 +1439,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
      * @return int
      * @throws Exception Exception
      */
-    public int getInt(String key) throws Exception {
+    public Integer getInt(String key) throws Exception {
         Object val = get(key);
         if (val instanceof Boolean) {
             boolean bol = (Boolean) val;
@@ -1453,7 +1453,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public int getInt(String key, int def) {
+    public Integer getInt(String key, Integer def) {
         try {
             return getInt(key);
         } catch (Exception e) {
@@ -1461,12 +1461,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public double getDouble(String key) throws Exception {
+    public Double getDouble(String key) throws Exception {
         Object value = get(key);
         return Double.parseDouble(value.toString());
     }
 
-    public double getDouble(String key, double def) {
+    public Double getDouble(String key, Double def) {
         try {
             return getDouble(key);
         } catch (Exception e) {
@@ -1474,12 +1474,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public long getLong(String key) throws Exception {
+    public Long getLong(String key) throws Exception {
         Object value = get(key);
         return Long.parseLong(value.toString());
     }
 
-    public long getLong(String key, long def) {
+    public Long getLong(String key, Long def) {
         try {
             return getLong(key);
         } catch (Exception e) {
@@ -1487,12 +1487,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public float getFloat(String key) throws Exception {
+    public Float getFloat(String key) throws Exception {
         Object value = get(key);
         return Float.parseFloat(value.toString());
     }
 
-    public float getFloat(String key, float def) {
+    public Float getFloat(String key, Float def) {
         try {
             return getFloat(key);
         } catch (Exception e) {
@@ -1500,11 +1500,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
     }
 
-    public boolean getBoolean(String key, boolean def) {
+    public Boolean getBoolean(String key, Boolean def) {
         return BasicUtil.parseBoolean(getString(key), def);
     }
 
-    public boolean getBoolean(String key) throws Exception {
+    public Boolean getBoolean(String key) throws Exception {
         return BasicUtil.parseBoolean(getString(key));
     }
 
@@ -2425,7 +2425,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow add(String target, String key, double value) {
-        put(target, getDouble(key, 0) + value);
+        put(target, getDouble(key, 0D) + value);
         return this;
     }
 
@@ -2435,7 +2435,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow add(String target, String key, float value) {
-        put(target, getFloat(key, 0) + value);
+        put(target, getFloat(key, 0F) + value);
         return this;
     }
 
@@ -2471,7 +2471,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow subtract(String target, String key, double value) {
-        put(target, getDouble(key, 0) - value);
+        put(target, getDouble(key, 0D) - value);
         return this;
     }
 
@@ -2481,7 +2481,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow subtract(String target, String key, float value) {
-        put(target, getFloat(key, 0) - value);
+        put(target, getFloat(key, 0F) - value);
         return this;
     }
 
@@ -2518,7 +2518,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow multiply(String target, String key, double value) {
-        put(target, getDouble(key, 0) * value);
+        put(target, getDouble(key, 0D) * value);
         return this;
     }
 
@@ -2528,7 +2528,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow multiply(String target, String key, float value) {
-        put(target, getFloat(key, 0) * value);
+        put(target, getFloat(key, 0F) * value);
         return this;
     }
 
@@ -2565,7 +2565,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow divide(String target, String key, double value) {
-        put(target, getDouble(key, 0) / value);
+        put(target, getDouble(key, 0D) / value);
         return this;
     }
 
@@ -2575,7 +2575,7 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow divide(String target, String key, float value) {
-        put(target, getFloat(key, 0) / value);
+        put(target, getFloat(key, 0F) / value);
         return this;
     }
 
