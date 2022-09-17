@@ -181,7 +181,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return run; 
 	}
 	@SuppressWarnings("rawtypes")
-	private RunSQL createDeleteRunSQLFromTable(String table, String key, Object values){
+	protected RunSQL createDeleteRunSQLFromTable(String table, String key, Object values){
 		if(null == table || null == key || null == values){
 			return null;
 		}
@@ -219,7 +219,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 
 		return run;
 	}
-	private RunSQL createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
+	protected RunSQL createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
 		TableRunSQLImpl run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
@@ -337,7 +337,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 
 	}
 
-	private RunSQL createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
+	protected RunSQL createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl(this,dest);
 		//List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
@@ -432,7 +432,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 
 		return run;
 	}
-	private RunSQL createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
+	protected RunSQL createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		if(null == list || list.size() ==0){
@@ -577,6 +577,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 		builder.append(")");
 	}
+	@Override
 	public void value(StringBuilder builder, Object obj, String key){
 		Object value = null;
 		if(obj instanceof DataRow){
@@ -591,6 +592,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 		format(builder, value);
 	}
+	@Override
 	public void format(StringBuilder builder, Object value){
 		if(null == value || "NULL".equalsIgnoreCase(value.toString())){
 			builder.append("null");
@@ -638,7 +640,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 	}
 
-	private RunSQL createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
+	protected RunSQL createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
@@ -715,7 +717,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 
 		return run;
 	}
-	private RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
+	protected RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
 		RunSQL run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
@@ -797,7 +799,8 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @param obj  obj
 	 * @param columns  columns
 	 * @return List
-	 */ 
+	 */
+	@Override
 	public List<String> confirmInsertColumns(String dst, Object obj, String ... columns){
 		List<String> keys = null;/*确定需要插入的列*/ 
 		if(null == obj){
@@ -914,7 +917,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @param columns  columns
 	 * @return List
 	 */ 
-	private List<String> confirmUpdateColumns(String dest, DataRow row, String ... columns){
+	protected List<String> confirmUpdateColumns(String dest, DataRow row, String ... columns){
 		List<String> keys = null;/*确定需要更新的列*/
 		if(null == row){ 
 			return new ArrayList<>();
@@ -1240,7 +1243,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 /* ******************************************************************************************************************************************
  *
- * 																DDL
+ * 																metadata
  *
  * ******************************************************************************************************************************************/
 
@@ -1252,15 +1255,20 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	public String buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types, boolean metaata){
+	@Override
+	public List<String> buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types){
 		return null;
 	}
 
 	/**
-	 * 从查询结果中提取出超表名
+	 * 从jdbc结果中提取表结构
+	 * ResultSet set = con.getMetaData().getTables()
+	 * @param catalog catalog
+	 * @param schema schema
 	 * @param set 查询结果
 	 * @return List
 	 */
+	@Override
 	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -1290,8 +1298,18 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 
 
-	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception{return null;}
-	public LinkedHashMap<String, STable> stables(String catalog, String schema, LinkedHashMap<String, STable> tables, SqlRowSet set) throws Exception{return null;}
+	/**
+	 * 从上一步生成的SQL查询结果中 提取表结构
+	 * @param index 第几条SQL
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	@Override
+	public LinkedHashMap<String, STable> stables(int index, String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception{return null;}
 
 	/**
 	 * 查询超表
@@ -1302,25 +1320,16 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return String
 	 */
-	public String buildQueryTableRunSQL(String catalog, String schema, String pattern, String types, boolean metadata){
+	@Override
+	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types){
 		return null;
 	}
 
-	/**
-	 *
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param tables 上一步查询结果
-	 * @param set set
-	 * @return tables
-	 * @throws Exception
-	 */
-	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+	@Override
+	public LinkedHashMap<String, Table> tables(int index, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
 		return tables;
 	}
-	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, SqlRowSet set) throws Exception{
-		return tables;
-	}
+	@Override
 	public LinkedHashMap<String, Table> tables(String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -1353,23 +1362,28 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @param table table
 	 * @return sql
 	 */
-	public String buildQueryColumnRunSQL(Table table, boolean metadata){
-		StringBuilder builder = new StringBuilder();
-
-		return builder.toString();
+	@Override
+	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata){
+		return null;
 	}
 
 	/**
-	 *  根据查询结果集构造Tag
+	 *
+	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
+	 * @param table table
+	 * @param columns 上一步查询结果
 	 * @param set set
-	 * @return tags
+	 * @return columns
+	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
+	@Override
+	public LinkedHashMap<String, Column> columns(int index, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
 		return columns;
 	}
+	@Override
 	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
@@ -1381,6 +1395,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 		return columns;
 	}
+	@Override
 	public LinkedHashMap<String, Column> columns(Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception{
 		if(null == columns){
 			columns = new LinkedHashMap<>();
@@ -1426,29 +1441,34 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 
 	/**
-	 * 查询瑗表上的列
+	 *
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
-	 * @return sql
+	 * @return sqls
 	 */
-	public String buildQueryTagRunSQL(Table table, boolean metadata){
+	@Override
+	public List<String> buildQueryTagRunSQL(Table table, boolean metadata){
 		return null;
 	}
 
 	/**
 	 *  根据查询结果集构造Tag
+	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
 	 * @param table table
-	 * @param columns 上一步查询结果
+	 * @param tags
 	 * @param set set
-	 * @return tags
-	 * @throws exception
+	 * @return
+	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
+	@Override
+	public LinkedHashMap<String, Tag> tags(int index, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
 		return tags;
 	}
+	@Override
 	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
 		return tags;
 	}
+	@Override
 	public LinkedHashMap<String, Tag> tags(Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
 		return tags;
 	}
@@ -1458,24 +1478,29 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sql
 	 */
-	public String buildQueryIndexRunSQL(Table table, boolean metadata){
+	@Override
+	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata){
 		return null;
 	}
 
 	/**
-	 *  根据查询结果集构造Tag
+	 *
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
 	 * @param table table
-	 * @param columns 上一步查询结果
+	 * @param indexs indexs
 	 * @param set set
-	 * @return tags
-	 * @throws exception
+	 * @return indexs
+	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
+	@Override
+	public LinkedHashMap<String, Index> indexs(int index, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
 		return null;
 	}
+	@Override
 	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception{
 		return null;
 	}
+	@Override
 	public LinkedHashMap<String, Index> indexs(Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception{
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
@@ -1523,6 +1548,105 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 		return indexs;
 	}
+
+	protected Column column(Column column, SqlRowSetMetaData rsm, int index){
+		if(null == column){
+			column = new Column();
+		}
+		try {
+			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
+			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
+			column.setClassName(rsm.getColumnClassName(index));
+			column.setCaseSensitive(rsm.isCaseSensitive(index));
+			column.setCurrency(rsm.isCurrency(index));
+			column.setComment(rsm.getColumnLabel(index));
+			column.setName(rsm.getColumnName(index));
+			column.setPrecision(rsm.getPrecision(index));
+			column.setScale(rsm.getScale(index));
+			column.setDisplaySize(rsm.getColumnDisplaySize(index));
+			column.setSigned(rsm.isSigned(index));
+			column.setTableName(rsm.getTableName(index));
+			column.setType(rsm.getColumnType(index));
+			column.setTypeName(rsm.getColumnTypeName(index));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return column;
+	}
+
+	/**
+	 * 构建Column
+	 * TABLE_CAT=simple
+	 * TABLE_SCHEM=null
+	 * TABLE_NAME=hr_department
+	 * COLUMN_NAME=SCORE
+	 * DATA_TYPE=7
+	 * TYPE_NAME=FLOAT
+	 * COLUMN_SIZE=11
+	 * BUFFER_LENGTH=65535
+	 * DECIMAL_DIGITS=2
+	 * NUM_PREC_RADIX=10
+	 * NULLABLE=1
+	 * REMARKS=
+	 * COLUMN_DEF=null
+	 * SQL_DATA_TYPE=0
+	 * SQL_DATETIME_SUB=0
+	 * CHAR_OCTET_LENGTH=null
+	 * ORDINAL_POSITION=4
+	 * IS_NULLABLE=YES
+	 * SCOPE_CATALOG=null
+	 * SCOPE_SCHEMA=null
+	 * SCOPE_TABLE=null
+	 * SOURCE_DATA_TYPE=null
+	 * IS_AUTOINCREMENT=NO
+	 * @param column column
+	 * @param rs  ResultSet
+	 * @return Column
+	 */
+	protected Column column(Column column, ResultSet rs){
+		if(null == column){
+			column = new Column();
+		}
+		try {
+			List<String> keys = keys(rs);
+			column.setScale(BasicUtil.parseInt(string(keys, "DECIMAL_DIGITS", rs), null));
+			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
+			column.setAutoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
+			column.setGenerated(BasicUtil.parseBoolean(string(keys, "IS_GENERATEDCOLUMN", rs), false));
+			column.setComment(string(keys, "REMARKS", rs));
+			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
+			if (BasicUtil.isEmpty(column.getDefaultValue())) {
+				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return column;
+	}
+
+	/**
+	 * 获取ResultSet中的列
+	 * @param rs rs
+	 * @return list
+	 * @throws Exception Exception
+	 */
+	protected List<String> keys(ResultSet rs) throws Exception{
+		ResultSetMetaData rsmd = rs.getMetaData();
+		List<String> keys = new ArrayList<>();
+		if(null != rsmd){
+			for (int i = 1; i < rsmd.getColumnCount(); i++) {
+				keys.add(rsmd.getColumnName(i).toUpperCase());
+			}
+		}
+		return keys;
+	}
+
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													DDL
+	 *
+	 ******************************************************************************************************************/
 
 
 	public String buildDropRunSQL(Table table){
@@ -1674,6 +1798,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	public String buildAlterRunSQL(Table table){
 		return null;
 	}
+
 	@Override
 	public String buildCreateRunSQL(Table table){
 		StringBuilder builder = new StringBuilder();
@@ -1705,27 +1830,13 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder.toString();
 	}
 
-	public StringBuilder fromSuperTable(StringBuilder builder, Table table){
-		return builder;
-	}
 	/**
-	 * 构造完整表名
+	 * 通过超表 创建子表
 	 * @param builder builder
 	 * @param table table
-	 * @return StringBuilder
+	 * @return builder
 	 */
-	@Override
-	public StringBuilder name(StringBuilder builder, Table table){
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
-		String name = table.getName();
-		if(BasicUtil.isNotEmpty(catalog)) {
-			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
+	public StringBuilder fromSuperTable(StringBuilder builder, Table table){
 		return builder;
 	}
 	/**
@@ -1862,92 +1973,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder;
 	}
 
-	/**
-	 * 是否同数字
-	 * @param column column
-	 * @return boolean
-	 */
-	@Override
-	public  boolean isNumberColumn(Column column){
-		String clazz = column.getClassName();
-		if(null != clazz){
-			clazz = clazz.toLowerCase();
-			if(
-				clazz.contains("int")
-				|| clazz.contains("integer")
-				|| clazz.contains("long")
-				|| clazz.contains("decimal")
-				|| clazz.contains("float")
-				|| clazz.contains("double")
-				|| clazz.contains("timestamp")
-				//|| clazz.contains("bit")
-				|| clazz.contains("short")
-			){
-				return true;
-			}
-		}else{
-			//如果没有同步法数据库，直接生成column可能只设置了type Name
-			String type = column.getTypeName();
-			if(null != type){
-				type = type.toLowerCase();
-				if(type.contains("int")
-						||type.contains("float")
-						||type.contains("double")
-						||type.contains("short")
-						||type.contains("long")
-						||type.contains("decimal")
-						||type.contains("numeric")
-						||type.contains("timestamp")
-				){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isBooleanColumn(Column column) {
-		String clazz = column.getClassName();
-		if(null != clazz){
-			clazz = clazz.toLowerCase();
-			if(clazz.contains("boolean")){
-				return true;
-			}
-		}else{
-			//如果没有同步法数据库，直接生成column可能只设置了type Name
-			String type = column.getTypeName();
-			if(null != type){
-				type = type.toLowerCase();
-				if(type.equals("bit") || type.equals("bool")){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	@Override
-	public boolean isCharColumn(Column column) {
-		return !isNumberColumn(column) && !isBooleanColumn(column);
-	}
-	/**
-	 * 内置函数
-	 * @param value SQL_BUILD_IN_VALUE
-	 * @return String
-	 */
-	public String buildInValue(SQL_BUILD_IN_VALUE value){
-		return null;
-	}
-
-	@Override
-	public String type2type(String type){
-		return type;
-	}
-	@Override
-	public String type2class(String type){
-		return type;
-	}
-
 	@Override
 	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
 		return builder;
@@ -2074,97 +2099,98 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder;
 	}
 
-	protected Column column(Column column, SqlRowSetMetaData rsm, int index){
-		if(null == column){
-			column = new Column();
-		}
-		try {
-			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
-			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
-			column.setClassName(rsm.getColumnClassName(index));
-			column.setCaseSensitive(rsm.isCaseSensitive(index));
-			column.setCurrency(rsm.isCurrency(index));
-			column.setComment(rsm.getColumnLabel(index));
-			column.setName(rsm.getColumnName(index));
-			column.setPrecision(rsm.getPrecision(index));
-			column.setScale(rsm.getScale(index));
-			column.setDisplaySize(rsm.getColumnDisplaySize(index));
-			column.setSigned(rsm.isSigned(index));
-			column.setTableName(rsm.getTableName(index));
-			column.setType(rsm.getColumnType(index));
-			column.setTypeName(rsm.getColumnTypeName(index));
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		return column;
-	}
+	/* *****************************************************************************************************************
+	 *
+	 * 													common
+	 *
+	 ******************************************************************************************************************/
 
 	/**
-	 * 构建Column
-	 * TABLE_CAT=simple
-	 * TABLE_SCHEM=null
-	 * TABLE_NAME=hr_department
-	 * COLUMN_NAME=SCORE
-	 * DATA_TYPE=7
-	 * TYPE_NAME=FLOAT
-	 * COLUMN_SIZE=11
-	 * BUFFER_LENGTH=65535
-	 * DECIMAL_DIGITS=2
-	 * NUM_PREC_RADIX=10
-	 * NULLABLE=1
-	 * REMARKS=
-	 * COLUMN_DEF=null
-	 * SQL_DATA_TYPE=0
-	 * SQL_DATETIME_SUB=0
-	 * CHAR_OCTET_LENGTH=null
-	 * ORDINAL_POSITION=4
-	 * IS_NULLABLE=YES
-	 * SCOPE_CATALOG=null
-	 * SCOPE_SCHEMA=null
-	 * SCOPE_TABLE=null
-	 * SOURCE_DATA_TYPE=null
-	 * IS_AUTOINCREMENT=NO
+	 * 是否同数字
 	 * @param column column
-	 * @param rs  ResultSet
-	 * @return Column
+	 * @return boolean
 	 */
-	protected Column column(Column column, ResultSet rs){
-		if(null == column){
-			column = new Column();
-		}
-		try {
-			List<String> keys = keys(rs);
-			column.setScale(BasicUtil.parseInt(string(keys, "DECIMAL_DIGITS", rs), null));
-			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
-			column.setAutoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
-			column.setGenerated(BasicUtil.parseBoolean(string(keys, "IS_GENERATEDCOLUMN", rs), false));
-			column.setComment(string(keys, "REMARKS", rs));
-			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
-			if (BasicUtil.isEmpty(column.getDefaultValue())) {
-				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
+	@Override
+	public  boolean isNumberColumn(Column column){
+		String clazz = column.getClassName();
+		if(null != clazz){
+			clazz = clazz.toLowerCase();
+			if(
+					clazz.contains("int")
+							|| clazz.contains("integer")
+							|| clazz.contains("long")
+							|| clazz.contains("decimal")
+							|| clazz.contains("float")
+							|| clazz.contains("double")
+							|| clazz.contains("timestamp")
+							//|| clazz.contains("bit")
+							|| clazz.contains("short")
+			){
+				return true;
 			}
-		}catch (Exception e){
-			e.printStackTrace();
+		}else{
+			//如果没有同步法数据库，直接生成column可能只设置了type Name
+			String type = column.getTypeName();
+			if(null != type){
+				type = type.toLowerCase();
+				if(type.contains("int")
+						||type.contains("float")
+						||type.contains("double")
+						||type.contains("short")
+						||type.contains("long")
+						||type.contains("decimal")
+						||type.contains("numeric")
+						||type.contains("timestamp")
+				){
+					return true;
+				}
+			}
 		}
-		return column;
+		return false;
 	}
 
-	/**
-	 * 获取ResultSet中的列
-	 * @param rs rs
-	 * @return list
-	 * @throws Exception Exception
-	 */
-	protected List<String> keys(ResultSet rs) throws Exception{
-		ResultSetMetaData rsmd = rs.getMetaData();
-		List<String> keys = new ArrayList<>();
-		if(null != rsmd){
-			for (int i = 1; i < rsmd.getColumnCount(); i++) {
-				keys.add(rsmd.getColumnName(i).toUpperCase());
+	@Override
+	public boolean isBooleanColumn(Column column) {
+		String clazz = column.getClassName();
+		if(null != clazz){
+			clazz = clazz.toLowerCase();
+			if(clazz.contains("boolean")){
+				return true;
+			}
+		}else{
+			//如果没有同步法数据库，直接生成column可能只设置了type Name
+			String type = column.getTypeName();
+			if(null != type){
+				type = type.toLowerCase();
+				if(type.equals("bit") || type.equals("bool")){
+					return true;
+				}
 			}
 		}
-		return keys;
+		return false;
 	}
+	@Override
+	public boolean isCharColumn(Column column) {
+		return !isNumberColumn(column) && !isBooleanColumn(column);
+	}
+	/**
+	 * 内置函数
+	 * @param value SQL_BUILD_IN_VALUE
+	 * @return String
+	 */
+	public String buildInValue(SQL_BUILD_IN_VALUE value){
+		return null;
+	}
+
+	@Override
+	public String type2type(String type){
+		return type;
+	}
+	@Override
+	public String type2class(String type){
+		return type;
+	}
+
 	/**
 	 * 先检测rs中是否包含当前key 如果包含再取值, 取值时按keys中的大小写为准
 	 * @param keys keys
@@ -2216,5 +2242,26 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 	protected Object value(List<String> keys, String key, ResultSet set) throws Exception{
 		return value(keys, key, set, null);
+	}
+
+	/**
+	 * 构造完整表名
+	 * @param builder builder
+	 * @param table table
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder name(StringBuilder builder, Table table){
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		String name = table.getName();
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
+		return builder;
 	}
 }
