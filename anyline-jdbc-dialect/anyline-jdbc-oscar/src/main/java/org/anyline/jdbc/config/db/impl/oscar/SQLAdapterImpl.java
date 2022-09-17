@@ -27,6 +27,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		setDelimiter(delimiter);
 	}
 
+	/* *****************************************************************************************************************
+	 *
+	 * 														DML
+	 *
+	 *  *****************************************************************************************************************/
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		String sql = run.getBaseQueryTxt(); 
@@ -49,8 +54,13 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		} 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 
-	} 
- 
+	}
+
+	/* *****************************************************************************************************************
+	 *
+	 * 														common
+	 *
+	 *  *****************************************************************************************************************/
 	public String concat(String ... args){
 		return concatFun(args);
 	} 
