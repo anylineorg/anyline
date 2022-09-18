@@ -44,6 +44,7 @@ import org.anyline.jdbc.util.SQLAdapterUtil;
 import org.anyline.listener.DDListener;
 import org.anyline.listener.DMListener;
 import org.anyline.util.*;
+import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -327,7 +328,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			long fr = System.currentTimeMillis();
 			String random = "";
 			if (showSQL) {
-				random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				random = random();
 				log.warn("{}[txt:\n{}\n]", random, txt);
 				log.warn("{}[参数:{}]", random, paramLogFormat(values));
 			}
@@ -355,8 +356,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			} catch (Exception e) {
 				if (showSQLWhenError) {
-					log.error(random + "[异常TXT:\n{}\n]", sql);
-					log.error(random + "[异常参数:{}]", paramLogFormat(values));
+					log.error("[{}][txt:\n{}\n]", random, LogUtil.format("查询异常", 33), sql);
+					log.error("{}[参数][param:{}]", random, paramLogFormat(values));
 				}
 				throw e;
 			}
@@ -436,8 +437,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
-				log.error(random + "[异常][txt:\n{}\n]",sql);
-				log.error(random + "[异常参数][param:{}]",paramLogFormat(run.getUpdateColumns(),values));
+				log.error("[{}][txt:\n{}\n]", random, LogUtil.format("更新异常", 33), sql);
+				log.error("{}[参数][param:{}]", random, paramLogFormat(run.getUpdateColumns(),values));
 			}
 			throw e;
 		}finally{
@@ -582,8 +583,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
-				log.error(random + "[异常][txt:\n{}\n]",sql);
-				log.error(random + "[异常参数][param:{}]",paramLogFormat(run.getInsertColumns(),values));
+				log.error("{}[{}][txt:\n{}\n]", random, LogUtil.format("插入异常", 33), sql);
+				log.error("{}[参数][param:{}]", random, paramLogFormat(run.getInsertColumns(),values));
 			}
 			throw e;
 		}finally{
@@ -728,8 +729,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
-				log.error(random + "[异常][txt:\n{}\n]",sql);
-				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
+				log.error("[{}][txt:\n{}\n]",LogUtil.format("查询异常", 33), random, sql);
+				log.error("[{}][参数:{}]", random, paramLogFormat(values));
 			}
 			throw e;
 		}
@@ -775,8 +776,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
-				log.error(random + "[异常][txt:\n{}\n]",sql);
-				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
+				log.error("[{}][txt:\n{}\n]",LogUtil.format("查询异常", 33), random, sql);
+				log.error("[{}][参数:{}]", random, paramLogFormat(values));
 			}
 			throw e;
 		}
@@ -820,8 +821,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
-				log.error(random + "[异常][txt:\n{}\n]",sql);
-				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
+				log.error("{}[{}][txt:\n{}\n]",random, LogUtil.format("查询异常", 33), sql);
+				log.error("{}}[参数:{}]",random,paramLogFormat(values));
 			}
 			throw e;
 		}
@@ -869,8 +870,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
-				log.error(random + "[异常][txt:\n{}\n]",sql);
-				log.error(random + "[异常][参数:{}]",paramLogFormat(values));
+				log.error("{},[{}][txt:\n{}\n]" ,random, LogUtil.format("SQL执行异常", 33),sql);
+				log.error("{}[参数:{}]",random , paramLogFormat(values));
 			}
 			throw e;
 		}finally{
@@ -981,9 +982,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}catch(Exception e){
 			result = false;
 			if(showSQLWhenError){
-				log.error("{}[异常][txt:\n{}\n]",random,sql);
-				log.error("{}[异常][输入参数:{}]",random,paramLogFormat(inputs));
-				log.error("{}[异常][输出参数:{}]",random,paramLogFormat(outputs));
+				log.error("{}[{}][txt:\n{}\n]",random,LogUtil.format("存储过程执行异常", 33), sql);
+				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
+				log.error("{}[输出参数:{}]",random,paramLogFormat(outputs));
 			}
 			e.printStackTrace();
 			throw e;
@@ -1112,7 +1113,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
-				log.error("{}[异常][txt:\n{}\n]",random,procedure.getName());
+				log.error("{}[{}][txt:\n{}\n]",random,LogUtil.format("存储过程查询异常", 33), procedure.getName());
 				log.error("{}[输入参数:{}]",random,paramLogFormat(inputs));
 				log.error("{}[输出参数:{}]",random,paramLogFormat(inputs));
 			}
@@ -1199,8 +1200,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
-				log.error("{}[异常][txt:\n{}\n]",random,sql);
-				log.error("{}[异常][参数:{}]",random, paramLogFormat(values));
+				log.error("{}[{}][txt:\n{}\n]", random, LogUtil.format("删除异常", 33), sql);
+				log.error("{}[参数:{}]",random, paramLogFormat(values));
 			}
 			result = 0;
 			throw e;
@@ -1279,7 +1280,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if (showSQL) {
-					log.warn("{}[tables][根据系统表查询失败][catalog:{}][schema:{}][pattern:{}][msg:]", random, catalog, schema, pattern, e.getMessage());
+					log.warn("{}[tables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
 				}
 			}
 
@@ -1288,7 +1289,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
 				tables = adapter.tables(true, catalog, schema, tables, set);
 			}catch (Exception e){
-				log.warn("{}[tables][根据jdbc接口补充][catalog:{}][schema:{}][pattern:{}][msg:]", random, catalog, schema, pattern, e.getMessage());
+				log.warn("{}[tables][][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
 			}
 			if (showSQL) {
 				log.warn("{}[tables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
@@ -1370,7 +1371,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}catch (Exception e){
 				if (showSQL) {
-					log.warn("{}[stables][根据系统表查询失败][catalog:{}][schema:{}][pattern:{}][msg:]", random, catalog, schema, pattern, e.getMessage());
+					log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, pattern, e.getMessage());
 				}
 			}
 
@@ -1379,7 +1380,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
 				tables = adapter.stables(false, catalog, schema, tables, set);
 			}catch (Exception e){
-				log.warn("{}[stables][根据jdbc接口补充][catalog:{}][schema:{}][pattern:{}][msg:]", random, catalog, schema, pattern, e.getMessage());
+				log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
 			}
 			if (showSQL) {
 				log.warn("{}[stables][catalog:{}][schema:{}][pattern:{}][type:{}][result:{}][执行耗时:{}ms]", random, catalog, schema, pattern, types, tables.size(), System.currentTimeMillis() - fr);
@@ -1423,7 +1424,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String random = null;
 		DatabaseMetaData metadata = null;
 		if (showSQL) {
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+			random = random();
 		}
 
 		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
@@ -1454,7 +1455,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (showSQL) {
-				log.warn("{}[columns][根据metadata解析失败][catalog:{}][schema:{}][table:{}][msg:]", random, catalog, schema, table, e.getMessage());
+				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
 
@@ -1473,7 +1474,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (showSQL) {
-				log.warn("{}[columns][根据系统表查询失败][catalog:{}][schema:{}][table:{}][msg:]", random, catalog, schema, table, e.getMessage());
+				log.warn("{}[columns][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
 
@@ -1527,7 +1528,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String random = null;
 		DatabaseMetaData metadata = null;
 		if (showSQL) {
-			random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+			random = random();
 		}
 
 		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
@@ -1558,7 +1559,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (showSQL) {
-				log.warn("{}[tags][根据metadata解析失败][catalog:{}][schema:{}][table:{}][msg:]", random, catalog, schema, table, e.getMessage());
+				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据metadata解析失败", 33), catalog, schema, table, e.getMessage());
 			}
 		}
 
@@ -1577,7 +1578,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch (Exception e){
 			if (showSQL) {
-				log.warn("{}[tags][根据系统表查询失败][catalog:{}][schema:{}][table:{}][msg:]", random, catalog, schema, table, e.getMessage());
+				log.warn("{}[tags][{}][catalog:{}][schema:{}][table:{}][msg:]", random, LogUtil.format("根据系统表查询失败",33), catalog, schema, table, e.getMessage());
 			}
 		}
 
@@ -1882,7 +1883,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String random = null;
 		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(column);
 
-		random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+		random = random();
 		DDListener listener = column.getListener();
 		try{
 			for(String sql:sqls) {
@@ -1899,19 +1900,19 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
-			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
-			log.warn("{}[DDL 执行异常][尝试修正数据][exception:{}]",random, e.getMessage());
-			if(trigger && null != listener) {
-				boolean exe = false;
-				if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0){
-					exe = listener.afterAlterColumnException(table, column, e);
-				}
-				log.warn("{}[DDL 执行异常][尝试修正数据][修正结果:{}]",random, exe);
-				if(exe){
-					result = alter(table, column, false);
-				}
+			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
+			log.warn("{}[{}][exception:{}]",random, LogUtil.format("修改Column执行异常", 33), e.getMessage());
+			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
+					boolean exe = false;
+					if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
+						exe = listener.afterAlterColumnException(table, column, e);
+					}
+					log.warn("{}[修改Column执行异常][尝试修正数据][修正结果:{}]", random, exe);
+					if (exe) {
+						result = alter(table, column, false);
+					}
 			}else{
-				log.warn("{}[DDL 执行异常][中断执行]",random);
+				log.warn("{}[修改Column执行异常][中断执行]",random);
 				result = false;
 				throw e;
 			}
@@ -2009,7 +2010,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String random = null;
 		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(tag);
 
-		random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+		random = random();
 		DDListener listener = tag.getListener();
 		try{
 			for(String sql:sqls) {
@@ -2026,19 +2027,19 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			}
 		}catch (Exception e){
-			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
-			log.warn("{}[DDL 执行异常][尝试修正数据][exception:{}]",random, e.getMessage());
-			if(trigger && null != listener) {
+			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
+			log.warn("{}[{}][exception:{}]",random, LogUtil.format("修改tag执行异常", 33), e.getMessage());
+			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(tag.getTypeName(), tag.getUpdate().getTypeName())) {
 				boolean exe = false;
-				if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0){
+				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
 					exe = listener.afterAlterColumnException(table, tag, e);
 				}
-				log.warn("{}[DDL 执行异常][尝试修正数据][修正结果:{}]",random, exe);
-				if(exe){
+				log.warn("{}[修改tag执行异常][尝试修正数据][修正结果:{}]", random, exe);
+				if (exe) {
 					result = alter(table, tag, false);
 				}
 			}else{
-				log.warn("{}[DDL 执行异常][中断执行]",random);
+				log.warn("{}[修改tag执行异常][中断执行]",random);
 				result = false;
 				throw e;
 			}
@@ -2179,6 +2180,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	private static String random(){
-		return "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:"+Thread.currentThread().getId()+"][ds:"+ DataSourceHolder.getDataSource()+"]";
+		StringBuilder builder = new StringBuilder();
+		builder.append("[SQL:").append(LogUtil.format(System.currentTimeMillis()+"-"+BasicUtil.getRandomNumberString(8), 34))
+				.append("][thread:")
+				.append(Thread.currentThread().getId()).append("][ds:").append(DataSourceHolder.getDataSource()).append("]");
+		return builder.toString();
 	}
 }

@@ -12,7 +12,6 @@ import org.anyline.jdbc.entity.STable;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.jdbc.entity.Tag;
 import org.anyline.util.BasicUtil;
-import org.anyline.util.BeanUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -461,19 +460,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	public String buildRenameRunSQL(Table table) {
 		return null;
 	}
-
-	/**
-	 * 修改列名
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return String
-	 */
-	@Override
-	public String buildRenameRunSQL(Column column) {
-		return null;
-	}
-
 	/**
 	 * 修改默认值
 	 * 子类实现
