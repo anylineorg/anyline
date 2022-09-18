@@ -1703,136 +1703,9 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 
 
-	/**
-	 * 删除列
-	 * ALTER TABLE HR_USER DROP COLUMN NAME;
-	 * @param column column
-	 * @return String
-	 */
-	public String buildDropRunSQL(Column column){
-		if(column instanceof Tag){
-			Tag tag = (Tag)column;
-			return buildDropRunSQL(tag);
-		}
-
-		column.setCreater(this);
-		StringBuilder builder = new StringBuilder();
-		Table table = column.getTable();
-		builder.append("ALTER ").append(table.getKeyword()).append(" ");
-		name(builder, table);
-		builder.append(" DROP ").append(column.getKeyword()).append(" ");
-		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
-		return builder.toString();
-	}
-
-	/**
-	 * 删除标签
-	 * ALTER TABLE HR_USER DROP COLUMN NAME;
-	 * @param column column
-	 * @return String
-	 */
-	public String buildDropRunSQL(Tag tag){
-		tag.setCreater(this);
-		StringBuilder builder = new StringBuilder();
-		Table table = tag.getTable();
-		builder.append("ALTER ").append(table.getKeyword()).append(" ");
-		name(builder, table);
-		builder.append(" DROP ").append(tag.getKeyword()).append(" ");
-		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
-		return builder.toString();
-	}
-	/**
-	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
-	 * @param column
-	 * @return
-	 */
-	@Override
-	public List<String> buildAlterRunSQL(Column column){
-		List<String> sqls = new ArrayList<>();
-
-		Column update = column.getUpdate();
-		if(null != update){
-			column.setCreater(this);
-			update.setCreater(this);
-
-			//修改列名
-			String name = column.getName();
-			String uname = update.getName();
-			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
-				String sql = buildRenameRunSQL(column);
-				if(null != sql){
-					sqls.add(sql);
-				}
-			}
-			column.setName(uname);
-			//修改数据类型
-			String type = type2type(column.getTypeName());
-			String utype = type2type(update.getTypeName());
-			if(!BasicUtil.equalsIgnoreCase(type, utype)){
-				List<String> list = buildChangeTypeRunSQL(column);
-				if(null != list){
-					sqls.addAll(list);
-				}
-			}
-			//修改默认值
-			Object def = column.getDefaultValue();
-			Object udef = update.getDefaultValue();
-			if(!BasicUtil.equalsIgnoreCase(def, udef)){
-				String sql = buildChangeDefaultRunSQL(column);
-				if(null != sql){
-					sqls.add(sql);
-				}
-			}
-			//修改非空限制
-			int nullable = column.isNullable();
-			int unullable = update.isNullable();
-			if(nullable != unullable){
-				String sql = buildChangeNullableRunSQL(column);
-				if(null != sql){
-					sqls.add(sql);
-				}
-			}
-			//修改备注
-			String comment = column.getComment();
-			String ucomment = update.getComment();
-			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
-				String sql = buildChangeCommentRunSQL(column);
-				if(null != sql){
-					sqls.add(sql);
-				}
-			}
-		}
-
-		return sqls;
-	}
-
-
-
 	@Override
 	public String alterColumnKeyword(){
 		return "ALTER";
-	}
-	/**
-	 * 添加列
-	 * ALTER TABLE  HR_USER ADD COLUMN UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
-	 * @param column column
-	 * @return String
-	 */
-	@Override
-	public String buildAddRunSQL(Column column){
-		column.setCreater(this);
-		StringBuilder builder = new StringBuilder();
-		Table table = column.getTable();
-		builder.append("ALTER ").append(table.getKeyword()).append(" ");
-		name(builder, table);
-		//Column update = column.getUpdate();
-		//if(null == update){
-			//添加列
-			builder.append(" ADD COLUMN ");
-			SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-			define(builder, column);
-		//}
-		return builder.toString();
 	}
 
 	@Override
@@ -1903,6 +1776,358 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 		return builder;
 	}
+
+
+	/**
+	 * 修改表名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param table table
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Table table) {
+		return null;
+	}
+	/**
+	 * 添加列
+	 * ALTER TABLE  HR_USER ADD COLUMN UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
+	 * @param column column
+	 * @return String
+	 */
+	@Override
+	public String buildAddRunSQL(Column column){
+		column.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = column.getTable();
+		builder.append("ALTER ").append(table.getKeyword()).append(" ");
+		name(builder, table);
+		//Column update = column.getUpdate();
+		//if(null == update){
+		//添加列
+		builder.append(" ADD COLUMN ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+		define(builder, column);
+		//}
+		return builder.toString();
+	}
+
+
+	/**
+	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
+	 * @param column
+	 * @return
+	 */
+	@Override
+	public List<String> buildAlterRunSQL(Column column){
+		List<String> sqls = new ArrayList<>();
+
+		Column update = column.getUpdate();
+		if(null != update){
+			column.setCreater(this);
+			update.setCreater(this);
+
+			//修改列名
+			String name = column.getName();
+			String uname = update.getName();
+			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
+				String sql = buildRenameRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			column.setName(uname);
+			//修改数据类型
+			String type = type2type(column.getTypeName());
+			String utype = type2type(update.getTypeName());
+			if(!BasicUtil.equalsIgnoreCase(type, utype)){
+				List<String> list = buildChangeTypeRunSQL(column);
+				if(null != list){
+					sqls.addAll(list);
+				}
+			}
+			//修改默认值
+			Object def = column.getDefaultValue();
+			Object udef = update.getDefaultValue();
+			if(!BasicUtil.equalsIgnoreCase(def, udef)){
+				String sql = buildChangeDefaultRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			//修改非空限制
+			int nullable = column.isNullable();
+			int unullable = update.isNullable();
+			if(nullable != unullable){
+				String sql = buildChangeNullableRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			//修改备注
+			String comment = column.getComment();
+			String ucomment = update.getComment();
+			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
+				String sql = buildChangeCommentRunSQL(column);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+		}
+
+		return sqls;
+	}
+
+
+	/**
+	 * 删除列
+	 * ALTER TABLE HR_USER DROP COLUMN NAME;
+	 * @param column column
+	 * @return String
+	 */
+	public String buildDropRunSQL(Column column){
+		if(column instanceof Tag){
+			Tag tag = (Tag)column;
+			return buildDropRunSQL(tag);
+		}
+
+		column.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = column.getTable();
+		builder.append("ALTER ").append(table.getKeyword()).append(" ");
+		name(builder, table);
+		builder.append(" DROP ").append(column.getKeyword()).append(" ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
+	}
+
+	/**
+	 * 修改列名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Column column) {
+		return null;
+	}
+
+	/**
+	 * 修改默认值
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeDefaultRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改非空限制
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeNullableRunSQL(Column column){
+		return null;
+	}
+	/**
+	 * 修改备注
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Column column){
+		return null;
+	}
+
+	/**
+	 * 修改备注
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param table table
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Table table){
+		return null;
+	}
+	/**
+	 * 修改数据类型
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return sql
+	 */
+	public List<String> buildChangeTypeRunSQL(Column column){
+		return null;
+	}
+	/**
+	 * 添加标签
+	 * ALTER TABLE  HR_USER ADD TAG UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
+	 * @param tag tag
+	 * @return String
+	 */
+	@Override
+	public String buildAddRunSQL(Tag tag){
+		tag.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = tag.getTable();
+		builder.append("ALTER ").append(table.getKeyword()).append(" ");
+		name(builder, table);
+		//Tag update = tag.getUpdate();
+		//if(null == update){
+		//添加标签
+		builder.append(" ADD TAG ");
+		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+		define(builder, tag);
+		//}
+		return builder.toString();
+	}
+
+
+	/**
+	 * 修改标签 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
+	 * @param tag
+	 * @return
+	 */
+	@Override
+	public List<String> buildAlterRunSQL(Tag tag){
+		List<String> sqls = new ArrayList<>();
+
+		Tag update = tag.getUpdate();
+		if(null != update){
+			tag.setCreater(this);
+			update.setCreater(this);
+
+			//修改标签名
+			String name = tag.getName();
+			String uname = update.getName();
+			if(!BasicUtil.equalsIgnoreCase(name, uname) && !uname.endsWith("_TMP_UPDATE_TYPE")){
+				String sql = buildRenameRunSQL(tag);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			tag.setName(uname);
+			//修改数据类型
+			String type = type2type(tag.getTypeName());
+			String utype = type2type(update.getTypeName());
+			if(!BasicUtil.equalsIgnoreCase(type, utype)){
+				List<String> list = buildChangeTypeRunSQL(tag);
+				if(null != list){
+					sqls.addAll(list);
+				}
+			}
+			//修改默认值
+			Object def = tag.getDefaultValue();
+			Object udef = update.getDefaultValue();
+			if(!BasicUtil.equalsIgnoreCase(def, udef)){
+				String sql = buildChangeDefaultRunSQL(tag);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			//修改非空限制
+			int nullable = tag.isNullable();
+			int unullable = update.isNullable();
+			if(nullable != unullable){
+				String sql = buildChangeNullableRunSQL(tag);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+			//修改备注
+			String comment = tag.getComment();
+			String ucomment = update.getComment();
+			if(!BasicUtil.equalsIgnoreCase(comment, ucomment)){
+				String sql = buildChangeCommentRunSQL(tag);
+				if(null != sql){
+					sqls.add(sql);
+				}
+			}
+		}
+
+		return sqls;
+	}
+
+
+	/**
+	 * 删除标签
+	 * ALTER TABLE HR_USER DROP TAG NAME;
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildDropRunSQL(Tag tag){
+		tag.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = tag.getTable();
+		builder.append("ALTER ").append(table.getKeyword()).append(" ");
+		name(builder, table);
+		builder.append(" DROP ").append(tag.getKeyword()).append(" ");
+		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
+	}
+
+
+	/**
+	 * 修改标签名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Tag tag) {
+		return null;
+	}
+
+	/**
+	 * 修改默认值
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildChangeDefaultRunSQL(Tag tag){
+		return null;
+	}
+
+	/**
+	 * 修改非空限制
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildChangeNullableRunSQL(Tag tag){
+		return null;
+	}
+	/**
+	 * 修改备注
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Tag tag){
+		return null;
+	}
+
+	/**
+	 * 修改数据类型
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return sql
+	 */
+	public List<String> buildChangeTypeRunSQL(Tag tag){
+		return null;
+	}
+
 
 	/**
 	 * 定义列
@@ -2022,18 +2247,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 
 
 	/**
-	 * 修改表名
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param table table
-	 * @return String
-	 */
-	@Override
-	public String buildRenameRunSQL(Table table) {
-		return null;
-	}
-
-	/**
 	 * 备注
 	 * 子类实现
 	 * @param builder builder
@@ -2047,70 +2260,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			builder.append(" COMMENT'").append(comment).append("'");
 		}
 		return builder;
-	}
-	/**
-	 * 修改列名
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return String
-	 */
-	@Override
-	public String buildRenameRunSQL(Column column) {
-		return null;
-	}
-
-	/**
-	 * 修改默认值
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return String
-	 */
-	public String buildChangeDefaultRunSQL(Column column){
-		return null;
-	}
-
-	/**
-	 * 修改非空限制
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return String
-	 */
-	public String buildChangeNullableRunSQL(Column column){
-		return null;
-	}
-	/**
-	 * 修改备注
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return String
-	 */
-	public String buildChangeCommentRunSQL(Column column){
-		return null;
-	}
-
-	/**
-	 * 修改备注
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param table table
-	 * @return String
-	 */
-	public String buildChangeCommentRunSQL(Table table){
-		return null;
-	}
-	/**
-	 * 修改数据类型
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
-	 * @return sql
-	 */
-	public List<String> buildChangeTypeRunSQL(Column column){
-		return null;
 	}
 	/**
 	 * 更新行事件

@@ -28,7 +28,7 @@ public interface DDListener {
      * @param exception
      * @return boolean  如果返回false则中断执行
      */
-    public boolean afterAlterException(Table table, Column column, Exception exception);
+    public boolean afterAlterColumnException(Table table, Column column, Exception exception);
     /**
      * 修改列之后触发
      * 触发之后如果返回true dao将再执行一次 alter column
@@ -39,7 +39,7 @@ public interface DDListener {
      * @param exception
      * @return boolean  如果返回false则中断执行
      */
-    public boolean afterAlterException(Table table, Column column, int rows, Exception exception);
+    public boolean afterAlterColumnException(Table table, Column column, int rows, Exception exception);
 
     public boolean beforeDrop(Column column);
     public void afterDrop(Column column, boolean result);

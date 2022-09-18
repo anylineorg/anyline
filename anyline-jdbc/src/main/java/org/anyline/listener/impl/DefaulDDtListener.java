@@ -56,7 +56,7 @@ public class DefaulDDtListener implements DDListener {
      * @return boolean 如果返回true(如处理完异常数据后),dao中会再执行一次ddl
      */
     @Override
-    public boolean afterAlterException(Table table, Column column, Exception exception) {
+    public boolean afterAlterColumnException(Table table, Column column, Exception exception) {
         if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION ==  0){
             return false;
         }
@@ -67,7 +67,7 @@ public class DefaulDDtListener implements DDListener {
             //根据行数
             int rows = service.count(table.getName());
             if(rows > ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION){
-                result = afterAlterException(table, column, rows, exception);
+                result = afterAlterColumnException(table, column, rows, exception);
             }else{
                 result = exeAfterException(table, column, exception);
             }
@@ -76,7 +76,7 @@ public class DefaulDDtListener implements DDListener {
     }
 
     @Override
-    public boolean afterAlterException(Table table, Column column, int rows, Exception exception) {
+    public boolean afterAlterColumnException(Table table, Column column, int rows, Exception exception) {
         return false;
     }
     public boolean exeAfterException(Table table, Column column, Exception exception){

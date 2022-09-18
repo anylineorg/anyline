@@ -174,6 +174,7 @@ public interface AnylineDao<E>{
 	public boolean drop(Column column) throws Exception;
 
 	public boolean add(Tag tag) throws Exception;
+	public boolean alter(Table table, Tag tag) throws Exception;
 	public boolean alter(Tag tag) throws Exception;
 	public boolean drop(Tag tag) throws Exception;
 

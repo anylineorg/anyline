@@ -1904,7 +1904,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			if(trigger && null != listener) {
 				boolean exe = false;
 				if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0){
-					exe = listener.afterAlterException(table, column, e);
+					exe = listener.afterAlterColumnException(table, column, e);
 				}
 				log.warn("{}[DDL 执行异常][尝试修正数据][修正结果:{}]",random, exe);
 				if(exe){
@@ -1969,18 +1969,130 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public boolean add(Tag tag) throws Exception {
-		return false;
+	public boolean add(Tag tag) throws Exception{
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String random = null;
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(tag);
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = tag.getListener();
+
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeAdd(tag);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (showSQL) {
+			log.warn("{}[add tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
 	}
 
-	@Override
-	public boolean alter(Tag tag) throws Exception {
-		return false;
-	}
+	/**
+	 * 修改标签
+	 * @param tag 标签
+	 * @param trigger 是否触发异常事件
+	 * @return boolean
+	 * @throws Exception SQL异常
+	 */
+	private boolean alter(Table table, Tag tag, boolean trigger) throws Exception{
 
+		boolean result = true;
+		Long fr = System.currentTimeMillis();
+		String random = null;
+		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(tag);
+
+		random = "[SQL:" + System.currentTimeMillis() + "-" + BasicUtil.getRandomNumberString(8) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+		DDListener listener = tag.getListener();
+		try{
+			for(String sql:sqls) {
+				if (showSQL) {
+					log.warn("{}[txt:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (null != listener) {
+					exe = listener.beforeAlter(tag);
+				}
+				if (exe) {
+					getJdbc().update(sql);
+					result = true;
+				}
+			}
+		}catch (Exception e){
+			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发)
+			log.warn("{}[DDL 执行异常][尝试修正数据][exception:{}]",random, e.getMessage());
+			if(trigger && null != listener) {
+				boolean exe = false;
+				if(ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0){
+					exe = listener.afterAlterColumnException(table, tag, e);
+				}
+				log.warn("{}[DDL 执行异常][尝试修正数据][修正结果:{}]",random, exe);
+				if(exe){
+					result = alter(table, tag, false);
+				}
+			}else{
+				log.warn("{}[DDL 执行异常][中断执行]",random);
+				result = false;
+				throw e;
+			}
+		}
+
+		if (showSQL) {
+			log.warn("{}[update tag][table:{}][tag:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, tag.getTableName(), tag.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
 	@Override
-	public boolean drop(Tag tag) throws Exception {
-		return false;
+	public boolean alter(Table table, Tag tag) throws Exception{
+		return alter(table, tag, true);
+	}
+	@Override
+	public boolean alter(Tag tag) throws Exception{
+		Table table = tag.getTable();
+		if(null == table){
+			LinkedHashMap<String,Table> tables = tables(tag.getCatalog(), tag.getSchema(), tag.getTableName(), "TABLE");
+			if(tables.size() ==0){
+				throw new AnylineException("表不存在:"+tag.getTableName());
+			}else {
+				table = tables.values().iterator().next();
+			}
+		}
+		return alter(table, tag, true);
+	}
+	@Override
+	public boolean drop(Tag tag) throws Exception{
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(tag);
+		String random = null;
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = tag.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(tag);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+		if (showSQL) {
+			log.warn("{}[drop tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(tag, result);
+		}
+		return result;
 	}
 
 	@Override
@@ -2012,6 +2124,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean drop(Constraint constraint) throws Exception {
 		return false;
 	}
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													common

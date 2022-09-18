@@ -421,7 +421,6 @@ public interface SQLAdapter {
 	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
 	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
 
-	public String buildAddRunSQL(Column column);
 
 
 	/* *****************************************************************************************************************
@@ -429,6 +428,13 @@ public interface SQLAdapter {
 	 * 													DDL
 	 *
 	 ******************************************************************************************************************/
+
+	/**
+	 * 添加列
+	 * @param column column
+	 * @return String
+	 */
+	public String buildAddRunSQL(Column column);
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL
@@ -443,12 +449,6 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Column column);
-	/**
-	 * 删除列
-	 * @param column column
-	 * @return String
-	 */
-	public String buildDropRunSQL(Tag tag);
 
 	/**
 	 * 修改列名
@@ -488,6 +488,67 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public String buildChangeCommentRunSQL(Column column);
+
+
+	/**
+	 * 添加标签
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildAddRunSQL(Tag tag);
+	/**
+	 * 修改标签
+	 * 有可能生成多条SQL
+	 * @param tag tag
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(Tag tag);
+
+	/**
+	 * 删除标签
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildDropRunSQL(Tag tag);
+
+	/**
+	 * 修改标签名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildRenameRunSQL(Tag tag);
+
+	/**
+	 * 修改数据类型
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return String
+	 */
+	public List<String> buildChangeTypeRunSQL(Tag tag);
+	/**
+	 * 修改默认值
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildChangeDefaultRunSQL(Tag tag);
+
+	/**
+	 * 修改非空限制
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildChangeNullableRunSQL(Tag tag);
+
+	/**
+	 * 修改备注
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Tag tag);
 
 
 	public String buildCreateRunSQL(Table table);

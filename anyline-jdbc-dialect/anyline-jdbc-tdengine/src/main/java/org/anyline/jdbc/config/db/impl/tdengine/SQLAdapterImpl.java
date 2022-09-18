@@ -229,9 +229,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 */
 	@Override
 	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
-		LinkedHashMap<String, Table> tmps = super.tables(create, catalog, schema, null, set);
-		System.out.println(BeanUtil.object2json(tmps));
-		return tables;
+		return  super.tables(create, catalog, schema, null, set);
 	}
 
 
@@ -592,6 +590,29 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		}
 	}
 
+	/**
+	 * 数据类型
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder type(StringBuilder builder, Column column){
+		String typeName = column.getTypeName();
+		if(BasicUtil.isEmpty(typeName)){
+			return builder;
+		}
+		builder.append(typeName);
+		if(typeName.equalsIgnoreCase("NCHAR")){
+			//精度
+			Integer precision = column.getPrecision();
+			if(null != precision) {
+				if (precision > 0) {
+					builder.append("(").append(precision).append(")");
+				}
+			}
+		}
+		return builder;
+	}
 
 	/* *****************************************************************************************************************
 	 *
