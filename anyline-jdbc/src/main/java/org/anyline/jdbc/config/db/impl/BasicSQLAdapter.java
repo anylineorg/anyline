@@ -1910,7 +1910,16 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildRenameRunSQL(Column column) {
-		return null;
+		column.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = column.getTable();
+		builder.append("ALTER ").append(table.getKeyword()).append(" ");
+		name(builder, table);
+		builder.append(" RENAME ").append(column.getKeyword()).append(" ");
+		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" ");
+		SQLUtil.delimiter(builder, column.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
 	}
 
 	/**
@@ -2082,7 +2091,16 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildRenameRunSQL(Tag tag) {
-		return null;
+		tag.setCreater(this);
+		StringBuilder builder = new StringBuilder();
+		Table table = tag.getTable();
+		builder.append("ALTER ").append(table.getKeyword()).append(" ");
+		name(builder, table);
+		builder.append(" RENAME ").append(tag.getKeyword()).append(" ");
+		SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
+		builder.append(" ");
+		SQLUtil.delimiter(builder, tag.getUpdate().getName(), getDelimiterFr(), getDelimiterTo());
+		return builder.toString();
 	}
 
 	/**
