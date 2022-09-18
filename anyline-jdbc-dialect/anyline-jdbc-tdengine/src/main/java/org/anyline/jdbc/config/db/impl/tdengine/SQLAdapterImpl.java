@@ -242,15 +242,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			//builder.append(" WHERE 1=0");
 			sqls.add(builder.toString());
 		}else {
-			if (table instanceof STable) {
-				builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
-				builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
-			} else {
-				builder.append("SELECT * FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
-				builder.append(table.getCatalog()).append("' AND TABLE_NAME='").append(table.getName()).append("'");
-			}
-			sqls.add(builder.toString());
-
 			builder = new StringBuilder();
 			builder.append("DESCRIBE ").append(table.getName());
 			sqls.add(builder.toString());
@@ -273,34 +264,30 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
-		if(index == 0){
-
-		}else if(index == 1){
-			//DESCRIBE
-			for(DataRow row:set){
-				String name = row.getString("field");
-				String note = row.getString("note");
-				if(BasicUtil.isEmpty(name)){
-					continue;
-				}
-				if("TAG".equalsIgnoreCase(note)){
-					continue;
-				}
-				Column column = columns.get(name.toUpperCase());
-				if(null == column){
-					if(create){
-						column = new Column();
-						columns.put(name.toUpperCase(), column);
-					}else{
-						continue;
-					}
-				}
-				column.setName(name);
-				column.setCatalog(table.getCatalog());
-				column.setSchema(table.getSchema());
-				column.setTypeName(row.getString("type"));
-				column.setPrecision(row.getInt("length", 0));
+		//DESCRIBE
+		for(DataRow row:set){
+			String name = row.getString("field");
+			String note = row.getString("note");
+			if(BasicUtil.isEmpty(name)){
+				continue;
 			}
+			if("TAG".equalsIgnoreCase(note)){
+				continue;
+			}
+			Column column = columns.get(name.toUpperCase());
+			if(null == column){
+				if(create){
+					column = new Column();
+					columns.put(name.toUpperCase(), column);
+				}else{
+					continue;
+				}
+			}
+			column.setName(name);
+			column.setCatalog(table.getCatalog());
+			column.setSchema(table.getSchema());
+			column.setTypeName(row.getString("type"));
+			column.setPrecision(row.getInt("length", 0));
 		}
 		return columns;
 	}
