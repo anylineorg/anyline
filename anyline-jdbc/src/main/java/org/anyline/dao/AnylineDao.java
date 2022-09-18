@@ -136,6 +136,7 @@ public interface AnylineDao<E>{
 	public LinkedHashMap<String, Table> tables(String name, String types);
 	public LinkedHashMap<String, Table> tables(String types);
 	public LinkedHashMap<String, Table> tables();
+	public LinkedHashMap<String, Table> tables(STable table);
 
 	public LinkedHashMap<String, STable> stables(String catalog, String schema, String name, String types);
 	public LinkedHashMap<String, STable> stables(String schema, String name, String types);

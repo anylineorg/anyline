@@ -1317,6 +1317,47 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return tables(null, null, null, "TABLE");
 	}
 
+	public LinkedHashMap<String,Table> tables(STable table){
+		LinkedHashMap<String,Table> tables = new LinkedHashMap<>();
+		DataSource ds = null;
+		Connection con = null;
+		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		String random = random();
+		try{
+			Long fr = System.currentTimeMillis();
+			ds = getJdbc().getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			//根据系统表查询
+			try{
+				List<String> sqls = adapter.buildQueryTableRunSQL(table);
+				if(null != sqls) {
+					int idx = 0;
+					for(String sql:sqls) {
+						if (BasicUtil.isNotEmpty(sql)) {
+							DataSet set = select(sql, null);
+							tables = adapter.tables(idx++, true, table, tables, set);
+						}
+					}
+				}
+			}catch (Exception e){
+				if (showSQL) {
+					log.warn("{}[tables][{}][stable:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), table.getName(), e.getMessage());
+				}
+			}
+
+			if (showSQL) {
+				log.warn("{}[tables][stable:{}][result:{}][执行耗时:{}ms]", random, table.getName(), tables.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		return tables;
+	}
+
 	@Override
 	public LinkedHashMap<String,STable> stables(String catalog, String schema, String pattern, String types) {
 
