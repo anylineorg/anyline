@@ -1,5 +1,6 @@
 package org.anyline.jdbc.entity;
 
+import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
 
 public class Tag extends Column{
@@ -43,6 +44,21 @@ public class Tag extends Column{
         this.value = value;
     }
 
+    public String toString(){
+        StringBuilder builder = new StringBuilder();
+        builder.append(name).append(" ").append(typeName);
+        if(null != precision && precision > 0){
+            builder.append("(").append(precision);
+            if(null != scale && scale > 0){
+                builder.append(",").append(scale);
+            }
+            builder.append(")");
+        }
+        if(BasicUtil.isNotEmpty(value)){
+            builder.append(" value: ").append(value);
+        }
+        return builder.toString();
+    }
     public Object clone(){
         Tag copy = new Tag();
         copy.setName(name);
