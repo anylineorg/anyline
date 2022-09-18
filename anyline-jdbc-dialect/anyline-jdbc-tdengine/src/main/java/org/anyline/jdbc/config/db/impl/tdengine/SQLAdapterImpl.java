@@ -239,7 +239,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		if(metadata){
 			builder.append("SELECT * FROM ");
 			name(builder, table);
-			//builder.append(" WHERE 1=0");
+			builder.append(" WHERE 1=0");
 			sqls.add(builder.toString());
 		}else {
 			builder = new StringBuilder();
