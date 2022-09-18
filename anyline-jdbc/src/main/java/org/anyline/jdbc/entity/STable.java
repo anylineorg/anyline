@@ -57,4 +57,7 @@ public class STable extends Table {
         Table table = null;
         return table;
     }
+    public String toString(){
+        return keyword+":"+name;
+    }
 }

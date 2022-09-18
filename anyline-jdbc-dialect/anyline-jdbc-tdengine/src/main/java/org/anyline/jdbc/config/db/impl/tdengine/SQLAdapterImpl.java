@@ -249,7 +249,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			tables = new LinkedHashMap<>();
 		}
 		for(DataRow row:set){
-			String name = row.getString("");
+			String name = row.getString("table_name");
 			if(BasicUtil.isEmpty(name)){
 				continue;
 			}
@@ -265,6 +265,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			tab.setCatalog(table.getCatalog());
 			tab.setSchema(table.getSchema());
 			tab.setName(name);
+			tab.setTtl(row.getLong("TTL", null));
 			tab.setStableName(table.getName());
 			tab.setType(row.getString("TYPE"));
 

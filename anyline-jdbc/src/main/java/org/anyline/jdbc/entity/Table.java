@@ -27,6 +27,7 @@ public class Table {
     protected String engine                       ;
     protected String charset                      ;
     protected String collate                      ;
+    protected Long ttl                            ;
 
 
     protected LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
@@ -70,6 +71,14 @@ public class Table {
     public Table update(){
         update = new Table();
         return update;
+    }
+
+    public Long getTtl() {
+        return ttl;
+    }
+
+    public void setTtl(Long ttl) {
+        this.ttl = ttl;
     }
 
     public Table getUpdate() {
