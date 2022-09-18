@@ -351,27 +351,52 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		if(null == tags){
 			tags = new LinkedHashMap<>();
 		}
-		for(DataRow row:set){
-			Tag item = new Tag();
-			/*
+		if(index ==0){
 			//查询 INFORMATION_SCHEMA.INS_TAGS
-			String name = row.getString("TAG_NAME");
-			tag.setName(name);
-			tag.setTypeName(row.getString("TAG_TYPE"));
-			tag.setValue(row.get("TAG_VALUE"));
-			tags.put(name.toUpperCase(), tag);*/
-
-			//DESCRIBE
-			String note = row.getString("note");
-			if(!"TAG".equalsIgnoreCase(note)){
-				continue;
+			for(DataRow row:set) {
+				String name = row.getString("TAG_NAME");
+				if(BasicUtil.isEmpty(name)){
+					continue;
+				}
+				Tag item = tags.get(name.toUpperCase());
+				if(null == item){
+					if(create){
+						item = new Tag();
+					}else{
+						continue;
+					}
+				}
+				item.setName(name);
+				item.setTypeName(row.getString("TAG_TYPE"));
+				item.setValue(row.get("TAG_VALUE"));
+				tags.put(name.toUpperCase(), item);
 			}
-			String name = row.getString("field");
-			item.setName(name);
-			item.setTypeName(row.getString("type"));
-			item.setPrecision(row.getInt("length", 0));
-			item.setValue(row.get("TAG_VALUE"));
-			tags.put(name.toUpperCase(), item);
+		}else if(index ==1){
+			//DESCRIBE
+			for(DataRow row:set){
+				String note = row.getString("note");
+				if(!"TAG".equalsIgnoreCase(note)){
+					continue;
+				}
+				String name = row.getString("field");
+
+				if(BasicUtil.isEmpty(name)){
+					continue;
+				}
+				Tag item = tags.get(name.toUpperCase());
+				if(null == item){
+					if(create){
+						item = new Tag();
+					}else{
+						continue;
+					}
+				}
+				item.setName(name);
+				item.setTypeName(row.getString("type"));
+				item.setPrecision(row.getInt("length", 0));
+				item.setValue(row.get("TAG_VALUE"));
+				tags.put(name.toUpperCase(), item);
+			}
 		}
 		return tags;
 	}
