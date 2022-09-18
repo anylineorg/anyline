@@ -352,4 +352,7 @@ public class Table {
     public void setStableName(String stableName) {
         this.stableName = stableName;
     }
+    public String toString(){
+        return keyword+":"+name;
+    }
 }
