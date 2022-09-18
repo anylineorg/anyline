@@ -33,6 +33,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     private boolean isFromCache                 = false ; // 是否来自缓存
     private boolean isAsc                       = false ; //
     private boolean isDesc                      = false ; //
+    private Map<String, Object> tags            = new HashMap<>()       ; // 标签
 
     /**
      * 创建索引
@@ -281,6 +282,27 @@ public class DataSet implements Collection<DataRow>, Serializable {
         return primaryKeys;
     }
 
+    public DataSet tag(String key, Object value) {
+        tags.put(key, value);
+        return this;
+    }
+
+    public DataSet setTag(String key, Object value) {
+        tags.put(key, value);
+        return this;
+    }
+
+    public Object tag(String key) {
+        return tags.get(key);
+    }
+
+    public Object getTag(String key) {
+        return tags.get(key);
+    }
+
+    public Map<String,Object> getTags(){
+        return tags;
+    }
     /**
      * 添加表头
      *
