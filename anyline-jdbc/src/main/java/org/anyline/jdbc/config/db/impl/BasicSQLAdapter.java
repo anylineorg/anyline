@@ -1380,6 +1380,23 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return tables;
 	}
 
+
+	/**
+	 * 根据超表查询子表
+	 * @param table 超表
+	 * @return List
+	 */
+	@Override
+	public List<String> buildQueryTableRunSQL(STable table){
+		return null;
+	}
+
+	public LinkedHashMap<String, Table> tables(int index, boolean create, STable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+		if(null == table){
+			tables = new LinkedHashMap<>();
+		}
+		return tables;
+	}
 	/**
 	 * 查询瑗表上的列
 	 * @param table table

@@ -304,6 +304,8 @@ public interface SQLAdapter {
 	 */
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
 
+	public List<String> buildQueryTableRunSQL(STable table);
+
 	/**
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照buildQueryTableRunSQL返回顺序
@@ -329,6 +331,7 @@ public interface SQLAdapter {
 	 */
 	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
 
+	public LinkedHashMap<String, Table> tables(int index, boolean create, STable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
 	/**
 	 * 查询瑗表上的列
 	 * @param create 上一步没有查到的，这一步是否需要新创建
