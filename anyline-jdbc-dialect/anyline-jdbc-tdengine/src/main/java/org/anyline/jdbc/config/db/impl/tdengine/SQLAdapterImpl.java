@@ -231,7 +231,46 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return  super.tables(create, catalog, schema, null, set);
 	}
 
+	/**
+	 * 根据超表查询子表
+	 * @param table 超表
+	 * @return List
+	 */
+	@Override
+	public List<String> buildQueryTableRunSQL(STable table){
+		List<String> sqls = new ArrayList<>();
+		String sql = "SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '"+table.getName()+"' AND TYPE='CHILD_TABLE'";
+		sqls.add(sql);
+		return sqls;
+	}
 
+	public LinkedHashMap<String, Table> tables(int index, boolean create, STable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+		if(null == table){
+			tables = new LinkedHashMap<>();
+		}
+		for(DataRow row:set){
+			String name = row.getString("");
+			if(BasicUtil.isEmpty(name)){
+				continue;
+			}
+			Table tab = tables.get(name.toUpperCase());
+			if(null == tab){
+				if(create){
+					tab = new Table();
+					tables.put(name.toUpperCase(), tab);
+				}else{
+					continue;
+				}
+			}
+			tab.setCatalog(table.getCatalog());
+			tab.setSchema(table.getSchema());
+			tab.setName(name);
+			tab.setStableName(table.getName());
+			tab.setType(row.getString("TYPE"));
+
+		}
+		return tables;
+	}
 	@Override
 	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata){
 		List<String> sqls = new ArrayList<>();
