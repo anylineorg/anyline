@@ -155,12 +155,29 @@ public class Column {
         return typeName;
     }
 
+
     public Column setTypeName(String typeName) {
         this.precision = 0;
         this.scale = 0;
-        if(null != typeName && typeName.contains(" ")){
-            //TYPE_NAME=int identity
-            typeName = typeName.split(" ")[0];
+        if(null != typeName){
+            if(typeName.toUpperCase().contains("IDENTITY")){
+                setAutoIncrement(true);
+            }
+            if(typeName.contains(" ")) {
+                //TYPE_NAME=int identity
+                typeName = typeName.split(" ")[0];
+            }
+            if(typeName.contains("(")){
+                String len = typeName.substring(typeName.indexOf("(")+1, typeName.indexOf(")"));
+                if(len.contains(",")){
+                    String[] lens = len.split("\\,");
+                    setPrecision(BasicUtil.parseInt(lens[0], null));
+                    setScale(BasicUtil.parseInt(lens[1], null));
+                }else{
+                    setPrecision(BasicUtil.parseInt(len,null));
+                }
+                typeName = typeName.substring(0,typeName.indexOf("(") );
+            }
         }
         if(!BasicUtil.equalsIgnoreCase(typeName, this.typeName)) {
             this.className = null;
