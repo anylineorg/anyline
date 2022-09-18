@@ -1436,9 +1436,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			metadata = con.getMetaData();;
 			if (null == catalog) {
 				catalog = con.getCatalog();
+				table.setCatalog(catalog);
 			}
 			if(null == schema){
 				schema = con.getSchema();
+				table.setSchema(schema);
 			}
 		}catch (Exception e){}
 
@@ -1540,9 +1542,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			metadata = con.getMetaData();;
 			if (null == catalog) {
 				catalog = con.getCatalog();
+				table.setCatalog(catalog);
 			}
 			if(null == schema){
 				schema = con.getSchema();
+				table.setSchema(schema);
 			}
 		}catch (Exception e){}
 
@@ -1663,9 +1667,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			con = DataSourceUtils.getConnection(ds);
 			if(null == catalog){
 				catalog = con.getCatalog();
+				table.setCatalog(catalog);
 			}
 			if(null == schema){
 				schema = con.getSchema();
+				table.setSchema(schema);
 			}
 			DatabaseMetaData metaData = con.getMetaData();
 			ResultSet set = metaData.getIndexInfo(catalog, schema, tab, false, false);
