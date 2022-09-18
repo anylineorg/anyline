@@ -512,6 +512,13 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String,Table> tables(String types);
 		public LinkedHashMap<String,Table> tables();
 
+		/**
+		 * 查询了表
+		 * @param table 超表
+		 * @return tables
+		 */
+		public LinkedHashMap<String,Table> tables(STable table);
+
 		public Table table(String catalog, String schema, String name);
 		public Table table(String schema, String name);
 		public Table table(String name);

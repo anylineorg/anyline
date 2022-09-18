@@ -1769,6 +1769,11 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
+        public LinkedHashMap<String, Table> tables(STable table) {
+            return dao.tables(table);
+        }
+
+        @Override
         public Table table(String catalog, String schema,String name) {
             Table table = null;
             LinkedHashMap<String, Table> tables = tables(catalog, schema, name,"TABLE");
