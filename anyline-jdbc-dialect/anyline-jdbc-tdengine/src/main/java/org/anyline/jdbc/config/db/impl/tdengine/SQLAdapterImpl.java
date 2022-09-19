@@ -524,49 +524,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 
 	/**
-	 * 创建主表
-	 * @param table table
-	 * @return String
-	 */
-	public String buildCreateRunSQL(MasterTable table){
-		return null;
-	}
-	public String buildAlterRunSQL(MasterTable table){
-		return null;
-	}
-	public String buildDropRunSQL(MasterTable table){
-		return null;
-	}
-	public String buildRenameRunSQL(MasterTable table){
-		return null;
-	}
-	public String buildChangeCommentRunSQL(MasterTable table){
-		return null;
-	}
-
-	/**
-	 * 创建分区表
-	 * @param table table
-	 * @return String
-	 */
-	public String buildCreateRunSQL(PartitionTable table){
-		return null;
-	}
-	public String buildAlterRunSQL(PartitionTable table){
-		return null;
-	}
-	public String buildDropRunSQL(PartitionTable table){
-		return null;
-	}
-	public String buildRenameRunSQL(PartitionTable table){
-		return null;
-	}
-	public String buildChangeCommentRunSQL(PartitionTable table){
-		return null;
-	}
-
-	/**
 	 * 主键
+	 * 不需要显式创建 第一列默认主键
 	 * @param builder builder
 	 * @param table table
 	 * @return builder

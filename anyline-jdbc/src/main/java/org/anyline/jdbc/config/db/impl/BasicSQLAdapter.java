@@ -1706,6 +1706,52 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 *
 	 ******************************************************************************************************************/
 
+	/* *****************************************************************************************************************
+	 * 													TABLE
+	 ******************************************************************************************************************/
+
+	/**
+	 * 创建主表
+	 * @param table table
+	 * @return String
+	 */
+	public String buildCreateRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildAlterRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildDropRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildRenameRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildChangeCommentRunSQL(MasterTable table){
+		return null;
+	}
+
+	/**
+	 * 创建分区表
+	 * @param table table
+	 * @return String
+	 */
+	public String buildCreateRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildAlterRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildDropRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildRenameRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildChangeCommentRunSQL(PartitionTable table){
+		return null;
+	}
+
 
 	@Override
 	public String buildCreateRunSQL(Table table){
@@ -1983,16 +2029,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return null;
 	}
 
-	/**
-	 * 修改备注
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param table table
-	 * @return String
-	 */
-	public String buildChangeCommentRunSQL(Table table){
-		return null;
-	}
 	/**
 	 * 修改数据类型
 	 * 子类实现
