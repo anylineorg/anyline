@@ -84,7 +84,7 @@ public class SFTPUtil {
      * @param local 存在本地的路径  
      * @throws Exception 异常  
      */   
-    public void download(String remote, String local)  throws Exception {   
+    public void download(String remote, String local) throws Exception {   
         FileOutputStream os = null;   
         File localFile = new File(local);   
         try {   
