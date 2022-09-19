@@ -6,24 +6,24 @@ import org.anyline.listener.impl.DefaulDDtListener;
 
 import java.util.LinkedHashMap;
 
-public class STable extends Table {
-    protected String keyword = "STABLE"            ;
-    private LinkedHashMap<String,Table> tables     ; //子表
+public class MasterTable extends Table {
+    protected String keyword = "STABLE"             ;
+    private LinkedHashMap<String,Table> partitions  ; //分区表
 
-    public STable(){
+    public MasterTable(){
         this.listener = new DefaulDDtListener();
     }
-    public STable(String name){
+    public MasterTable(String name){
         this(null, name);
     }
-    public STable(String schema, String table){
+    public MasterTable(String schema, String table){
         this(null, schema, table);
     }
-    public STable(String catalog, String schema, String name){
+    public MasterTable(String catalog, String schema, String name){
+        this();
         this.catalog = catalog;
         this.schema = schema;
         this.name = name;
-        this.listener = new DefaulDDtListener();
     }
 
 
@@ -31,29 +31,29 @@ public class STable extends Table {
         return this.keyword;
     }
 
-    public LinkedHashMap<String, Table> getTables() {
-        return tables;
+    public LinkedHashMap<String, Table> getPartitions() {
+        return partitions;
     }
 
-    public void setTables(LinkedHashMap<String, Table> tables) {
-        this.tables = tables;
+    public void setPartitions(LinkedHashMap<String, Table> partitions) {
+        this.partitions = partitions;
     }
 
     /**
-     * 根据值定位子表
+     * 根据值定位分区表
      * @param value value
      * @return Table
      */
-    public Table getTable(DataRow value){
+    public Table getPartition(DataRow value){
         Table table = null;
         return table;
     }
     /**
-     * 根据标签定位子表
+     * 根据标签定位分区表
      * @param tags tags
      * @return Table
      */
-    public Table getTable(Tag ... tags){
+    public Table getPartition(Tag ... tags){
         Table table = null;
         return table;
     }
