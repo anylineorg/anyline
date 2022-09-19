@@ -776,12 +776,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 */
 	@Override
 	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
-		builder.append(" IF ");
-		if(!exists){
-			builder.append("NOT ");
-		}
-		builder.append("EXISTS ");
-		return builder;
+		return super.checkTableExists(builder, exists);
 	}
 
 
@@ -892,34 +887,34 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	public String buildCreateRunSQL(PartitionTable table) throws Exception{
 		StringBuilder builder = new StringBuilder();
 		String stable = table.getMasterName();
-		if(BasicUtil.isNotEmpty(stable)){
+		if(BasicUtil.isEmpty(stable)){
 			throw new SQLException("未指定主表");
 		}
-		if(BasicUtil.isNotEmpty(stable)){
-			builder.append(super.buildCreateRunSQL(table));
-			builder.append(" USING ");
-			SQLUtil.delimiter(builder, stable, getDelimiterFr(), getDelimiterTo());
-			builder.append("(");
-			Collection<Tag> tags = table.getTags().values();
-			int idx = 0;
-			for(Tag tag:tags){
-				if(idx > 0){
-					builder.append(",");
-				}
-				SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
-				idx ++;
+		Table tab = table;
+		builder.append(super.buildCreateRunSQL(tab));
+		builder.append(" USING ");
+		SQLUtil.delimiter(builder, stable, getDelimiterFr(), getDelimiterTo());
+		builder.append("(");
+		Collection<Tag> tags = table.getTags().values();
+		int idx = 0;
+		for(Tag tag:tags){
+			if(idx > 0){
+				builder.append(",");
 			}
-			builder.append(") TAGS (");
-			idx = 0;
-			for(Tag tag:tags){
-				if(idx > 0){
-					builder.append(",");
-				}
-				format(builder, tag.getValue());
-				idx ++;
-			}
-			builder.append(")");
+			SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo());
+			idx ++;
 		}
+		builder.append(") TAGS (");
+		idx = 0;
+		for(Tag tag:tags){
+			if(idx > 0){
+				builder.append(",");
+			}
+			format(builder, tag.getValue());
+			idx ++;
+		}
+		builder.append(")");
+
 		return builder.toString();
 	}
 	@Override
@@ -928,7 +923,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 	@Override
 	public String buildDropRunSQL(PartitionTable table) throws Exception{
-		return super.buildDropRunSQL(table);
+		Table tab = table;
+		return super.buildDropRunSQL(tab);
 	}
 	@Override
 	public String buildRenameRunSQL(PartitionTable table) throws Exception{
