@@ -405,18 +405,19 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
 	/**
-	 *
+	 * 不支持
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
 	@Override
 	public List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
-		return super.buildQueryTagRunSQL(table, metadata);
+		return null;
 	}
 
 	/**
-	 *  根据查询结果集构造Tag
+	 * 不支持
+	 * 根据查询结果集构造Tag
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
@@ -427,15 +428,15 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 */
 	@Override
 	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
-		return super.tags(index, create, table, tags, set);
+		return null;
 	}
 	@Override
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
-		return super.tags(create, table, tags, set);
+		return null;
 	}
 	@Override
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
-		return super.tags(create, table, tags, set);
+		return null;
 	}
 
 	/* *****************************************************************************************************************
@@ -1030,96 +1031,92 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 添加标签
-	 * ALTER TABLE  HR_USER ADD TAG UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
+	 * 不支持
 	 * @param tag tag
 	 * @return String
 	 */
 	@Override
 	public String buildAddRunSQL(Tag tag) throws Exception{
-		return super.buildAddRunSQL(tag);
+		return null;
 	}
 
 
 	/**
-	 * 修改标签 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
+	 * 不支持
 	 * @param tag
 	 * @return
 	 */
 	@Override
 	public List<String> buildAlterRunSQL(Tag tag) throws Exception{
-		return super.buildAlterRunSQL(tag);
+		return null;
 	}
 
 
 	/**
 	 * 删除标签
-	 * ALTER TABLE HR_USER DROP TAG NAME;
+	 * 不支持
 	 * @param tag tag
 	 * @return String
 	 */
 	@Override
 	public String buildDropRunSQL(Tag tag) throws Exception{
-		return super.buildDropRunSQL(tag);
+		return null;
 	}
 
 
 	/**
 	 * 修改标签名
-	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 不支持
 	 * @param tag tag
 	 * @return String
 	 */
 	@Override
 	public String buildRenameRunSQL(Tag tag) throws Exception{
-		return super.buildRenameRunSQL(tag);
+		return null;
 	}
 
 	/**
 	 * 修改默认值
-	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 不支持
 	 * @param tag tag
 	 * @return String
 	 */
 	@Override
 	public String buildChangeDefaultRunSQL(Tag tag) throws Exception{
-		return super.buildChangeDefaultRunSQL(tag);
+		return null;
 	}
 
 	/**
 	 * 修改非空限制
-	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 不支持
 	 * @param tag tag
 	 * @return String
 	 */
 	@Override
 	public String buildChangeNullableRunSQL(Tag tag) throws Exception{
-		return super.buildChangeNullableRunSQL(tag);
+		return null;
 	}
 	/**
 	 * 修改备注
-	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 *
+	 * 不支持
 	 * @param tag tag
 	 * @return String
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Tag tag) throws Exception{
-		return super.buildChangeCommentRunSQL(tag);
+		return null;
 	}
 
 	/**
 	 * 修改数据类型
-	 * 
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 不支持
 	 * @param tag tag
 	 * @return sql
 	 */
 	@Override
 	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception{
-		return super.buildChangeTypeRunSQL(tag);
+		return null;
 	}
 
 	/* *****************************************************************************************************************
