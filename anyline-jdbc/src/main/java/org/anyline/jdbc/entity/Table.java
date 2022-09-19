@@ -13,8 +13,6 @@ public class Table {
     protected String catalog                      ;
     protected String schema                       ;
     protected String name                         ;
-    protected String stableName                   ; //超级表
-    protected STable stable                       ;
     protected String type                         ;
     protected String comment                      ;
 
@@ -354,13 +352,6 @@ public class Table {
         return this.keyword;
     }
 
-    public String getStableName() {
-        return stableName;
-    }
-
-    public void setStableName(String stableName) {
-        this.stableName = stableName;
-    }
     public String toString(){
         return keyword+":"+name;
     }
