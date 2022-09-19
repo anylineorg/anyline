@@ -21,5 +21,10 @@
             <groupId>org.anyline</groupId>
             <artifactId>anyline-jdbc</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>
