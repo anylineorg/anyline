@@ -323,7 +323,7 @@ public class Pop3Util {
 	 * @throws IOException IOException
 	 * @return boolean
 	 */
-	public static boolean isContainAttachment(Part part)  throws MessagingException, IOException {
+	public static boolean isContainAttachment(Part part) throws MessagingException, IOException {
 		boolean flag = false;
 		if (part.isMimeType("multipart/*")) {
 			MimeMultipart multipart = (MimeMultipart) part.getContent();
