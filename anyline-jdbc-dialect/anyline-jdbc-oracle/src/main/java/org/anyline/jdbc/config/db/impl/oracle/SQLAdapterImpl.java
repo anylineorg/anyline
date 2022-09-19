@@ -616,7 +616,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	@Override
 	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
-		return super.checkTableExists(builder, exists);
+		return builder;
 	}
 
 
