@@ -279,7 +279,7 @@ public interface SQLAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
+	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
@@ -319,7 +319,7 @@ public interface SQLAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
+	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
@@ -358,8 +358,8 @@ public interface SQLAdapter {
 	 * @param types types
 	 * @return String
 	 */
-	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable table);
+	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
@@ -397,7 +397,7 @@ public interface SQLAdapter {
 	 * @param metadata 是否根据metadata(SELEC * FROM T WHERE 1=0) | 查询系统表
 	 * @return sqls
 	 */
-	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
+	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Tag
@@ -409,7 +409,7 @@ public interface SQLAdapter {
 	 * @return tags
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, Column> columns(int index,boolean create,  Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
+	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
 
 	/**
 	 * 解析查询结果metadata
@@ -445,7 +445,7 @@ public interface SQLAdapter {
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
-	public List<String> buildQueryTagRunSQL(Table table, boolean metadata);
+	public List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Tag
@@ -457,7 +457,7 @@ public interface SQLAdapter {
 	 * @return tags
 	 * @throws exception
 	 */
-	public LinkedHashMap<String, Tag> tags(int index,boolean create,  Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
+	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
 
@@ -472,7 +472,7 @@ public interface SQLAdapter {
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
-	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata);
+	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Index
@@ -484,7 +484,7 @@ public interface SQLAdapter {
 	 * @return indexs
 	 * @throws exception
 	 */
-	public LinkedHashMap<String, Index> indexs(int index,boolean create,  Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
+	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
 	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
 	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
 
@@ -500,7 +500,7 @@ public interface SQLAdapter {
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
-	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
+	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Constraint
@@ -537,11 +537,11 @@ public interface SQLAdapter {
 	 * 													table
 	 ******************************************************************************************************************/
 
-	public String buildCreateRunSQL(Table table);
-	public String buildAlterRunSQL(Table table);
-	public String buildRenameRunSQL(Table table);
-	public String buildChangeCommentRunSQL(Table table);
-	public String buildDropRunSQL(Table table);
+	public String buildCreateRunSQL(Table table) throws Exception;
+	public String buildAlterRunSQL(Table table) throws Exception;
+	public String buildRenameRunSQL(Table table) throws Exception;
+	public String buildChangeCommentRunSQL(Table table) throws Exception;
+	public String buildDropRunSQL(Table table) throws Exception;
 	/**
 	 * 创建之前  检测表是否存在
 	 * IF NOT EXISTS
@@ -577,20 +577,20 @@ public interface SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
-	public String buildCreateRunSQL(MasterTable table);
-	public String buildAlterRunSQL(MasterTable table);
-	public String buildDropRunSQL(MasterTable table);
-	public String buildRenameRunSQL(MasterTable table);
-	public String buildChangeCommentRunSQL(MasterTable table);
+	public String buildCreateRunSQL(MasterTable table) throws Exception;
+	public String buildAlterRunSQL(MasterTable table) throws Exception;
+	public String buildDropRunSQL(MasterTable table) throws Exception;
+	public String buildRenameRunSQL(MasterTable table) throws Exception;
+	public String buildChangeCommentRunSQL(MasterTable table) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
-	public String buildCreateRunSQL(PartitionTable table);
-	public String buildAlterRunSQL(PartitionTable table);
-	public String buildDropRunSQL(PartitionTable table);
-	public String buildRenameRunSQL(PartitionTable table);
-	public String buildChangeCommentRunSQL(PartitionTable table);
+	public String buildCreateRunSQL(PartitionTable table) throws Exception;
+	public String buildAlterRunSQL(PartitionTable table) throws Exception;
+	public String buildDropRunSQL(PartitionTable table) throws Exception;
+	public String buildRenameRunSQL(PartitionTable table) throws Exception;
+	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													column
@@ -605,21 +605,21 @@ public interface SQLAdapter {
 	 * @param column column
 	 * @return String
 	 */
-	public String buildAddRunSQL(Column column);
+	public String buildAddRunSQL(Column column) throws Exception;
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL
 	 * @param column column
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Column column);
+	public List<String> buildAlterRunSQL(Column column) throws Exception;
 
 	/**
 	 * 删除列
 	 * @param column column
 	 * @return String
 	 */
-	public String buildDropRunSQL(Column column);
+	public String buildDropRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改列名
@@ -627,7 +627,7 @@ public interface SQLAdapter {
 	 * @param column column
 	 * @return String
 	 */
-	public String buildRenameRunSQL(Column column);
+	public String buildRenameRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改数据类型
@@ -635,14 +635,14 @@ public interface SQLAdapter {
 	 * @param column column
 	 * @return String
 	 */
-	public List<String> buildChangeTypeRunSQL(Column column);
+	public List<String> buildChangeTypeRunSQL(Column column) throws Exception;
 	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
 	 * @param column column
 	 * @return String
 	 */
-	public String buildChangeDefaultRunSQL(Column column);
+	public String buildChangeDefaultRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改非空限制
@@ -650,7 +650,7 @@ public interface SQLAdapter {
 	 * @param column column
 	 * @return String
 	 */
-	public String buildChangeNullableRunSQL(Column column);
+	public String buildChangeNullableRunSQL(Column column) throws Exception;
 
 	/**
 	 * 修改备注
@@ -658,7 +658,7 @@ public interface SQLAdapter {
 	 * @param column column
 	 * @return String
 	 */
-	public String buildChangeCommentRunSQL(Column column);
+	public String buildChangeCommentRunSQL(Column column) throws Exception;
 
 
 	/**
@@ -742,21 +742,21 @@ public interface SQLAdapter {
 	 * @param tag tag
 	 * @return String
 	 */
-	public String buildAddRunSQL(Tag tag);
+	public String buildAddRunSQL(Tag tag) throws Exception;
 	/**
 	 * 修改标签
 	 * 有可能生成多条SQL
 	 * @param tag tag
 	 * @return List
 	 */
-	public List<String> buildAlterRunSQL(Tag tag);
+	public List<String> buildAlterRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 删除标签
 	 * @param tag tag
 	 * @return String
 	 */
-	public String buildDropRunSQL(Tag tag);
+	public String buildDropRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改标签名
@@ -764,7 +764,7 @@ public interface SQLAdapter {
 	 * @param tag tag
 	 * @return String
 	 */
-	public String buildRenameRunSQL(Tag tag);
+	public String buildRenameRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改默认值
@@ -772,7 +772,7 @@ public interface SQLAdapter {
 	 * @param tag tag
 	 * @return String
 	 */
-	public String buildChangeDefaultRunSQL(Tag tag);
+	public String buildChangeDefaultRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改非空限制
@@ -780,7 +780,7 @@ public interface SQLAdapter {
 	 * @param tag tag
 	 * @return String
 	 */
-	public String buildChangeNullableRunSQL(Tag tag);
+	public String buildChangeNullableRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 修改备注
@@ -788,7 +788,7 @@ public interface SQLAdapter {
 	 * @param tag tag
 	 * @return String
 	 */
-	public String buildChangeCommentRunSQL(Tag tag);
+	public String buildChangeCommentRunSQL(Tag tag) throws Exception;
 
 
 	/**
@@ -797,7 +797,70 @@ public interface SQLAdapter {
 	 * @param tag tag
 	 * @return String
 	 */
-	public List<String> buildChangeTypeRunSQL(Tag tag);
+	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception;
+
+
+	/* *****************************************************************************************************************
+	 * 													index
+	 ******************************************************************************************************************/
+	/**
+	 * 添加索引
+	 * @param index index
+	 * @return String
+	 */
+	public String buildAddRunSQL(Index index) throws Exception;
+	/**
+	 * 修改索引
+	 * 有可能生成多条SQL
+	 * @param index index
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(Index index) throws Exception;
+
+	/**
+	 * 删除索引
+	 * @param index index
+	 * @return String
+	 */
+	public String buildDropRunSQL(Index index) throws Exception;
+	/**
+	 * 修改索引名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param index index
+	 * @return String
+	 */
+	public String buildRenameRunSQL(Index index) throws Exception;
+
+	/* *****************************************************************************************************************
+	 * 													constraint
+	 ******************************************************************************************************************/
+	/**
+	 * 添加索引
+	 * @param constraint constraint
+	 * @return String
+	 */
+	public String buildAddRunSQL(Constraint constraint) throws Exception;
+	/**
+	 * 修改索引
+	 * 有可能生成多条SQL
+	 * @param constraint constraint
+	 * @return List
+	 */
+	public List<String> buildAlterRunSQL(Constraint constraint) throws Exception;
+
+	/**
+	 * 删除索引
+	 * @param constraint constraint
+	 * @return String
+	 */
+	public String buildDropRunSQL(Constraint constraint) throws Exception;
+	/**
+	 * 修改索引名
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param index index
+	 * @return String
+	 */
+	public String buildRenameRunSQL(Constraint index) throws Exception;
 
 
 	/* *****************************************************************************************************************
