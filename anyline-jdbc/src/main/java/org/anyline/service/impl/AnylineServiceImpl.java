@@ -2229,22 +2229,41 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
          ******************************************************************************************************************/
         @Override
         public boolean save(PartitionTable table) throws Exception {
-            return false;
+            boolean result = false;
+            PartitionTable otable = metadata.ptable(table.getCatalog(), table.getSchema(), table.getName());
+            if(null != otable){
+                otable.setUpdate(table);
+                result = alter(otable);
+            }else{
+                result =  create(table);
+            }
+
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
         }
 
         @Override
         public boolean create(PartitionTable table) throws Exception {
-            return false;
+            table.setService(AnylineServiceImpl.this);
+            boolean result =  dao.create(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
         }
 
         @Override
         public boolean alter(PartitionTable table) throws Exception {
-            return false;
+            table.setService(AnylineServiceImpl.this);
+            boolean result = dao.alter(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
         }
 
         @Override
         public boolean drop(PartitionTable table) throws Exception {
-            return false;
+            table.setService(AnylineServiceImpl.this);
+            boolean result = dao.drop(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
         }
 
         /* *****************************************************************************************************************
