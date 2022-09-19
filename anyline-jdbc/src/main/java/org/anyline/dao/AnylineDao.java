@@ -126,63 +126,139 @@ public interface AnylineDao<E>{
 	public int deletes(String table, String key, Collection<Object> values);
 	public int deletes(String table, String key, String ... values);
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
 	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
+	 ******************************************************************************************************************/
+
+	/* *****************************************************************************************************************
+	 * 													table
 	 ******************************************************************************************************************/
 	public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types);
 	public LinkedHashMap<String, Table> tables(String schema, String name, String types);
 	public LinkedHashMap<String, Table> tables(String name, String types);
 	public LinkedHashMap<String, Table> tables(String types);
 	public LinkedHashMap<String, Table> tables();
-	public LinkedHashMap<String, Table> tables(MasterTable table);
 
+	/* *****************************************************************************************************************
+	 * 													master table
+	 ******************************************************************************************************************/
 	public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
 	public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
 	public LinkedHashMap<String, MasterTable> mtables(String name, String types);
 	public LinkedHashMap<String, MasterTable> mtables(String types);
 	public LinkedHashMap<String, MasterTable> mtables();
 
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 ******************************************************************************************************************/
+	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types);
+	public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types);
+	public LinkedHashMap<String, PartitionTable> ptables(String name, String types);
+	public LinkedHashMap<String, PartitionTable> ptables(String types);
+	public LinkedHashMap<String, PartitionTable> ptables();
+	public LinkedHashMap<String, PartitionTable> ptables(MasterTable table);
+
+	/* *****************************************************************************************************************
+	 * 													column
+	 ******************************************************************************************************************/
 	public LinkedHashMap<String, Column> columns(Table table);
 	public LinkedHashMap<String, Column> columns(String table);
 	public LinkedHashMap<String, Column> columns(String catalog, String schema, String table);
 
+	/* *****************************************************************************************************************
+	 * 													tag
+	 ******************************************************************************************************************/
 	public LinkedHashMap<String, Tag> tags(Table table);
 	public LinkedHashMap<String, Tag> tags(String table);
 	public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
 
+	/* *****************************************************************************************************************
+	 * 													index
+	 ******************************************************************************************************************/
 	public LinkedHashMap<String, Index> indexs(Table table);
 	public LinkedHashMap<String, Index> indexs(String table);
 	public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table);
 
+	/* *****************************************************************************************************************
+	 * 													constraint
+	 ******************************************************************************************************************/
 	public LinkedHashMap<String, Constraint> constraints(Table table);
 	public LinkedHashMap<String, Constraint> constraints(String table);
 	public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table);
+
+
 
 	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
 	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
+	 ******************************************************************************************************************/
+	/* *****************************************************************************************************************
+	 * 													table
 	 ******************************************************************************************************************/
 	public boolean create(Table table) throws Exception;
 	public boolean alter(Table table) throws Exception;
 	public boolean drop(Table table) throws Exception;
+	/* *****************************************************************************************************************
+	 * 													master table
+	 ******************************************************************************************************************/
+	public boolean create(MasterTable table) throws Exception;
+	public boolean alter(MasterTable table) throws Exception;
+	public boolean drop(MasterTable table) throws Exception;
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 ******************************************************************************************************************/
+	public boolean create(PartitionTable table) throws Exception;
+	public boolean alter(PartitionTable table) throws Exception;
+	public boolean drop(PartitionTable table) throws Exception;
 
+	/* *****************************************************************************************************************
+	 * 													column
+	 ******************************************************************************************************************/
 	public boolean add(Column column) throws Exception;
 	public boolean alter(Table table, Column column) throws Exception;
 	public boolean alter(Column column) throws Exception;
 	public boolean drop(Column column) throws Exception;
 
+	/* *****************************************************************************************************************
+	 * 													tag
+	 ******************************************************************************************************************/
 	public boolean add(Tag tag) throws Exception;
 	public boolean alter(Table table, Tag tag) throws Exception;
 	public boolean alter(Tag tag) throws Exception;
 	public boolean drop(Tag tag) throws Exception;
 
+	/* *****************************************************************************************************************
+	 * 													index
+	 ******************************************************************************************************************/
 	public boolean add(Index index) throws Exception;
 	public boolean alter(Index index) throws Exception;
 	public boolean drop(Index index) throws Exception;
 
+	/* *****************************************************************************************************************
+	 * 													constraint
+	 ******************************************************************************************************************/
 	public boolean add(Constraint constraint) throws Exception;
 	public boolean alter(Constraint constraint) throws Exception;
 	public boolean drop(Constraint constraint) throws Exception;

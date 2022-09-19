@@ -251,50 +251,27 @@ public interface SQLAdapter {
 	 */
 	public String concat(String ... args);
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
 	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
 	 ******************************************************************************************************************/
 
+	/* *****************************************************************************************************************
+	 * 													table
+	 ******************************************************************************************************************/
 	/**
-	 * 查询超表
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern pattern
-	 * @param types types
-	 * @return String
-	 */
-	public List<String> buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types);
-
-	/**
-	 *  根据查询结果集构造Table
-	 * @param index 第几条SQL 对照 buildQuerySTableRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param tables 上一步查询结果
-	 * @param set set
-	 * @return tables
-	 * @throws Exception
-	 */
-	public LinkedHashMap<String, MasterTable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
-
-	/**
-	 * 根据JDBC
-	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param tables tables
-	 * @param set set
-	 * @return stables
-	 * @throws Exception
-	 */
-	public LinkedHashMap<String, MasterTable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception;
-
-
-	/**
-	 * 查询超表
+	 * 查询表
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -303,8 +280,6 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
-
-	public List<String> buildQueryTableRunSQL(MasterTable table);
 
 	/**
 	 *  根据查询结果集构造Table
@@ -331,9 +306,92 @@ public interface SQLAdapter {
 	 */
 	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
 
-	public LinkedHashMap<String, Table> tables(int index, boolean create, MasterTable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
+
+
+	/* *****************************************************************************************************************
+	 * 													master table
+	 ******************************************************************************************************************/
 	/**
-	 * 查询瑗表上的列
+	 * 查询主表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
+
+	/**
+	 *  根据查询结果集构造Table
+	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
+
+	/**
+	 * 根据JDBC
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables tables
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception;
+
+
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 ******************************************************************************************************************/
+	/**
+	 * 查询分区
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable table);
+
+	/**
+	 *  根据查询结果集构造Table
+	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table MasterTable
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+
+	/**
+	 * 根据JDBC
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table MasterTable
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables tables
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+	/* *****************************************************************************************************************
+	 * 													column
+	 ******************************************************************************************************************/
+	/**
+	 * 查询表上的列
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata(SELEC * FROM T WHERE 1=0) | 查询系统表
@@ -377,8 +435,11 @@ public interface SQLAdapter {
 
 
 
+	/* *****************************************************************************************************************
+	 * 													tag
+	 ******************************************************************************************************************/
 	/**
-	 * 查询瑗表上的列
+	 * 查询表上的列
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
@@ -401,8 +462,11 @@ public interface SQLAdapter {
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
 
 
+	/* *****************************************************************************************************************
+	 * 													index
+	 ******************************************************************************************************************/
 	/**
-	 * 查询瑗表上的所引
+	 * 查询表上的所引
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
@@ -417,7 +481,7 @@ public interface SQLAdapter {
 	 * @param table table
 	 * @param columns 上一步查询结果
 	 * @param set set
-	 * @return tags
+	 * @return indexs
 	 * @throws exception
 	 */
 	public LinkedHashMap<String, Index> indexs(int index,boolean create,  Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
@@ -427,29 +491,115 @@ public interface SQLAdapter {
 
 
 	/* *****************************************************************************************************************
+	 * 													constraint
+	 ******************************************************************************************************************/
+	/**
+	 * 查询表上的约束
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table table
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return sqls
+	 */
+	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
+
+	/**
+	 *  根据查询结果集构造Constraint
+	 * @param constraint 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table table
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return constraints
+	 * @throws exception
+	 */
+	public LinkedHashMap<String, Constraint> constraints(int constraint,boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
+	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
+	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
+
+
+
+
+	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
 	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
+	 ******************************************************************************************************************/
+	/* *****************************************************************************************************************
+	 * 													table
 	 ******************************************************************************************************************/
 
 	public String buildCreateRunSQL(Table table);
 	public String buildAlterRunSQL(Table table);
-	public String buildDropRunSQL(Table table);
 	public String buildRenameRunSQL(Table table);
 	public String buildChangeCommentRunSQL(Table table);
+	public String buildDropRunSQL(Table table);
+	/**
+	 * 创建之前  检测表是否存在
+	 * IF NOT EXISTS
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	public StringBuilder checkTableExists(StringBuilder builder, boolean exists);
 
+
+	/**
+	 * 主键
+	 * @param builder builder
+	 * @param table table
+	 * @return StringBuilder
+	 */
+	public StringBuilder primary(StringBuilder builder, Table table);
+
+	/**
+	 * 表备注
+	 * @param builder builder
+	 * @param table table
+	 * @return StringBuilder
+	 */
+	public StringBuilder comment(StringBuilder builder, Table table);
+	/**
+	 * 构造表名
+	 * @param builder builder
+	 * @param table table
+	 * @return builder
+	 */
+	public StringBuilder name(StringBuilder builder, Table table);
+	/* *****************************************************************************************************************
+	 * 													master table
+	 ******************************************************************************************************************/
 	public String buildCreateRunSQL(MasterTable table);
 	public String buildAlterRunSQL(MasterTable table);
 	public String buildDropRunSQL(MasterTable table);
 	public String buildRenameRunSQL(MasterTable table);
 	public String buildChangeCommentRunSQL(MasterTable table);
 
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 ******************************************************************************************************************/
 	public String buildCreateRunSQL(PartitionTable table);
 	public String buildAlterRunSQL(PartitionTable table);
 	public String buildDropRunSQL(PartitionTable table);
 	public String buildRenameRunSQL(PartitionTable table);
 	public String buildChangeCommentRunSQL(PartitionTable table);
 
+	/* *****************************************************************************************************************
+	 * 													column
+	 ******************************************************************************************************************/
+	/**
+	 * 修改表的关键字
+	 * @return String
+	 */
+	public String alterColumnKeyword();
 	/**
 	 * 添加列
 	 * @param column column
@@ -512,6 +662,82 @@ public interface SQLAdapter {
 
 
 	/**
+	 * 定义列
+	 * @param builder builder
+	 * @param column column
+	 * @return StringBuilder
+	 */
+	public StringBuilder define(StringBuilder builder, Column column);
+
+	/**
+	 * 数据类型
+	 * @param builder builder
+	 * @param column column
+	 * @return StringBuilder
+	 */
+	public StringBuilder type(StringBuilder builder, Column column);
+	/**
+	 * 非空
+	 * @param builder builder
+	 * @param column column
+	 * @return StringBuilder
+	 */
+	public StringBuilder nullable(StringBuilder builder, Column column);
+
+	/**
+	 * 编码
+	 * @param builder builder
+	 * @param column column
+	 * @return StringBuilder
+	 */
+	public StringBuilder charset(StringBuilder builder, Column column);
+
+	/**
+	 * 默认值
+	 * @param builder builder
+	 * @param column column
+	 * @return StringBuilder
+	 */
+	public StringBuilder defaultValue(StringBuilder builder, Column column);
+	/**
+	 * 自增长列
+	 * @param builder builder
+	 * @param column column
+	 * @return StringBuilder
+	 */
+	public StringBuilder increment(StringBuilder builder, Column column);
+
+
+	/**
+	 * 更新行事件
+	 * @param builder builder
+	 * @param column column
+	 * @return StringBuilder
+	 */
+	public StringBuilder onupdate(StringBuilder builder, Column column);
+
+
+
+
+	/**
+	 * 位置
+	 * @param builder builder
+	 * @param column column
+	 * @return StringBuilder
+	 */
+	public StringBuilder position(StringBuilder builder, Column column);
+	/**
+	 * 备注
+	 * @param builder builder
+	 * @param column column
+	 * @return StringBuilder
+	 */
+	public StringBuilder comment(StringBuilder builder, Column column);
+
+	/* *****************************************************************************************************************
+	 * 													tag
+	 ******************************************************************************************************************/
+	/**
 	 * 添加标签
 	 * @param tag tag
 	 * @return String
@@ -541,13 +767,6 @@ public interface SQLAdapter {
 	public String buildRenameRunSQL(Tag tag);
 
 	/**
-	 * 修改数据类型
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
-	 * @return String
-	 */
-	public List<String> buildChangeTypeRunSQL(Tag tag);
-	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
 	 * @param tag tag
@@ -573,119 +792,12 @@ public interface SQLAdapter {
 
 
 	/**
-	 * 创建之前  检测表是否存在
-	 * IF NOT EXISTS
-	 * @param builder builder
-	 * @param exists exists
-	 * @return StringBuilder
-	 */
-	public StringBuilder checkTableExists(StringBuilder builder, boolean exists);
-
-	/**
-	 * 根据主表创建分区表
-	 * @param builder builder
-	 * @param table table
-	 * @return StringBuilder
-	 *//*
-	public StringBuilder fromSuperTable(StringBuilder builder, Table table);*/
-	/**
-	 * 构造表名
-	 * @param builder builder
-	 * @param table table
-	 * @return builder
-	 */
-	public StringBuilder name(StringBuilder builder, Table table);
-
-	/**
-	 * 修改表的关键字
+	 * 修改数据类型
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param tag tag
 	 * @return String
 	 */
-	public String alterColumnKeyword();
-	/**
-	 * 主键
-	 * @param builder builder
-	 * @param table table
-	 * @return StringBuilder
-	 */
-	public StringBuilder primary(StringBuilder builder, Table table);
-
-	/**
-	 * 表备注
-	 * @param builder builder
-	 * @param table table
-	 * @return StringBuilder
-	 */
-	public StringBuilder comment(StringBuilder builder, Table table);
-	/**
-	 * 定义列
-	 * @param builder builder
-	 * @param column column
-	 * @return StringBuilder
-	 */
-	public StringBuilder define(StringBuilder builder, Column column);
-	/**
-	 * 自增长列
-	 * @param builder builder
-	 * @param column column
-	 * @return StringBuilder
-	 */
-	public StringBuilder increment(StringBuilder builder, Column column);
-
-	/**
-	 * 备注
-	 * @param builder builder
-	 * @param column column
-	 * @return StringBuilder
-	 */
-	public StringBuilder comment(StringBuilder builder, Column column);
-
-	/**
-	 * 位置
-	 * @param builder builder
-	 * @param column column
-	 * @return StringBuilder
-	 */
-	public StringBuilder position(StringBuilder builder, Column column);
-	/**
-	 * 更新行事件
-	 * @param builder builder
-	 * @param column column
-	 * @return StringBuilder
-	 */
-	public StringBuilder onupdate(StringBuilder builder, Column column);
-
-	/**
-	 * 默认值
-	 * @param builder builder
-	 * @param column column
-	 * @return StringBuilder
-	 */
-	public StringBuilder defaultValue(StringBuilder builder, Column column);
-
-	/**
-	 * 编码
-	 * @param builder builder
-	 * @param column column
-	 * @return StringBuilder
-	 */
-	public StringBuilder charset(StringBuilder builder, Column column);
-
-	/**
-	 * 非空
-	 * @param builder builder
-	 * @param column column
-	 * @return StringBuilder
-	 */
-	public StringBuilder nullable(StringBuilder builder, Column column);
-
-	/**
-	 * 数据类型
-	 * @param builder builder
-	 * @param column column
-	 * @return StringBuilder
-	 */
-	public StringBuilder type(StringBuilder builder, Column column);
-
+	public List<String> buildChangeTypeRunSQL(Tag tag);
 
 
 	/* *****************************************************************************************************************
@@ -693,6 +805,9 @@ public interface SQLAdapter {
 	 * 													common
 	 *
 	 ******************************************************************************************************************/
+
+	public boolean isNumberColumn(Column column);
+	public boolean isBooleanColumn(Column column);
 
 	/**
 	 * 是否是字符类型
@@ -703,8 +818,6 @@ public interface SQLAdapter {
 	 * @return boolean
 	 */
 	public boolean isCharColumn(Column column);
-	public boolean isNumberColumn(Column column);
-	public boolean isBooleanColumn(Column column);
 	/**
 	 * 内置函数
 	 * 如果需要引号，方法应该一块返回
@@ -726,4 +839,5 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public String type2class(String type);
+
 }

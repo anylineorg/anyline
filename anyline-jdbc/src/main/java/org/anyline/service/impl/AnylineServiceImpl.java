@@ -1600,8 +1600,8 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public List<String> stables(String catalog, String schema, String name, String types) {
-        LinkedHashMap<String, MasterTable> tables = metadata.stables(catalog, schema, name, types);
+    public List<String> mtables(String catalog, String schema, String name, String types) {
+        LinkedHashMap<String, MasterTable> tables = metadata.mtables(catalog, schema, name, types);
         List<String> list = new ArrayList<>();
         for(MasterTable table:tables.values()){
             list.add(table.getName());
@@ -1610,23 +1610,23 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public List<String> stables(String schema, String name, String types) {
-        return stables(null, schema, name, types);
+    public List<String> mtables(String schema, String name, String types) {
+        return mtables(null, schema, name, types);
     }
 
     @Override
-    public List<String> stables(String name, String types) {
-        return stables(null, null, name, types);
+    public List<String> mtables(String name, String types) {
+        return mtables(null, null, name, types);
     }
 
     @Override
-    public List<String> stables(String types) {
-        return stables(null, null, null, types);
+    public List<String> mtables(String types) {
+        return mtables(null, null, null, types);
     }
 
     @Override
-    public List<String> stables() {
-        return stables("STABLE");
+    public List<String> mtables() {
+        return mtables("STABLE");
     }
 
     public LinkedHashMap<String,Column> columns(String table, boolean map){
@@ -1727,25 +1727,37 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     /* *****************************************************************************************************************
      *
      * 													metadata
+     * =================================================================================================================
+     * table			: 表
+     * master table		: 主表
+     * partition table	: 分区有
+     * column			: 列
+     * tag				: 标签
+     * index			: 索引
+     * constraint		: 约束
      *
      ******************************************************************************************************************/
     public MetaDataService metadata = new MetaDataService() {
 
+        /* *****************************************************************************************************************
+         * 													table
+         * -----------------------------------------------------------------------------------------------------------------
+         * public boolean exists(Table table);
+         * public LinkedHashMap<String,Table> tables(String catalog, String schema, String name, String types);
+         * public LinkedHashMap<String,Table> tables(String schema, String name, String types);
+         * public LinkedHashMap<String,Table> tables(String name, String types);
+         * public LinkedHashMap<String,Table> tables(String types);
+         * public LinkedHashMap<String,Table> tables();
+         * public Table table(String catalog, String schema, String name);
+         * public Table table(String schema, String name);
+         * public Table table(String name);
+         ******************************************************************************************************************/
         @Override
         public boolean exists(Table table) {
             if(null != table(table.getCatalog(), table.getSchema(), table.getName())){
                 return true;
             }
             return false;
-        }
-
-        @Override
-        public boolean exists(MasterTable table) {
-            return false;
-        }
-        @Override
-        public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types) {
-            return dao.tables(catalog, schema, name, types);
         }
 
         @Override
@@ -1768,9 +1780,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return tables("TABLE");
         }
 
+
         @Override
-        public LinkedHashMap<String, Table> tables(MasterTable table) {
-            return dao.tables(table);
+        public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types) {
+            return dao.tables(catalog, schema, name, types);
         }
 
         @Override
@@ -1795,35 +1808,54 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
 
+        /* *****************************************************************************************************************
+         * 													master table
+         * -----------------------------------------------------------------------------------------------------------------
+         * public boolean exists(MasterTable table);
+         * public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
+         * public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
+         * public LinkedHashMap<String, MasterTable> mtables(String name, String types);
+         * public LinkedHashMap<String, MasterTable> mtables(String types);
+         * public LinkedHashMap<String, MasterTable> mtables();
+         * public MasterTable mtable(String catalog, String schema, String name);
+         * public MasterTable mtable(String schema, String name);
+         * public MasterTable mtable(String name);
+         ******************************************************************************************************************/
 
         @Override
-        public LinkedHashMap<String, MasterTable> stables(String catalog, String schema, String name, String types) {
+        public boolean exists(MasterTable table) {
+            return false;
+        }
+
+
+        @Override
+        public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types) {
             return dao.mtables(catalog, schema, name, types);
         }
 
         @Override
-        public LinkedHashMap<String, MasterTable> stables(String schema, String name, String types) {
-            return stables(null, schema, name, types);
+        public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types) {
+            return mtables(null, schema, name, types);
         }
 
         @Override
-        public LinkedHashMap<String, MasterTable> stables(String name, String types) {
-            return stables(null, null, name, types);
+        public LinkedHashMap<String, MasterTable> mtables(String name, String types) {
+            return mtables(null, null, name, types);
         }
 
         @Override
-        public LinkedHashMap<String, MasterTable> stables(String types) {
-            return stables(null, types);
+        public LinkedHashMap<String, MasterTable> mtables(String types) {
+            return mtables(null, types);
         }
 
         @Override
-        public LinkedHashMap<String, MasterTable> stables() {
-            return stables("STABLE");
+        public LinkedHashMap<String, MasterTable> mtables() {
+            return mtables("STABLE");
         }
 
         @Override
-        public MasterTable stable(String catalog, String schema, String name) {
-            LinkedHashMap<String, MasterTable> tables = stables(catalog, schema, name, "STABLE");
+        public MasterTable mtable(String catalog, String schema, String name) {
+            LinkedHashMap<String, MasterTable> tables = mtables(catalog, schema, name, "STABLE");
             if(tables.size() == 0){
                 return null;
             }
@@ -1835,16 +1867,97 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public MasterTable stable(String schema, String name) {
-            return stable(null, schema, name);
+        public MasterTable mtable(String schema, String name) {
+            return mtable(null, schema, name);
         }
 
         @Override
-        public MasterTable stable(String name) {
-            return stable(null, null, name);
+        public MasterTable mtable(String name) {
+            return mtable(null, null, name);
+        }
+
+        /* *****************************************************************************************************************
+         * 													partition  table
+         * -----------------------------------------------------------------------------------------------------------------
+         * public boolean exists(PartitionTable table);
+         * public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types);
+         * public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types);
+         * public LinkedHashMap<String, PartitionTable> ptables(String name, String types);
+         * public LinkedHashMap<String, PartitionTable> ptables(String types);
+         * public LinkedHashMap<String, PartitionTable> ptables();
+         * public LinkedHashMap<String, PartitionTable> ptables(MasterTable table);
+         * public PartitionTable ptable(String catalog, String schema, String name);
+         * public PartitionTable ptable(String schema, String name);
+         * public PartitionTable ptable(String name);
+         ******************************************************************************************************************/
+
+        @Override
+        public boolean exists(PartitionTable table) {
+            return false;
         }
 
 
+        @Override
+        public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types) {
+            return dao.ptables(catalog, schema, name, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types) {
+            return ptables(null, schema, name, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, PartitionTable> ptables(String name, String types) {
+            return ptables(null, null, name, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, PartitionTable> ptables(String types) {
+            return ptables(null, types);
+        }
+
+        @Override
+        public LinkedHashMap<String, PartitionTable> ptables() {
+            return ptables("STABLE");
+        }
+
+        @Override
+        public LinkedHashMap<String, PartitionTable> ptables(MasterTable table) {
+            return dao.ptables(table);
+        }
+
+        @Override
+        public PartitionTable ptable(String catalog, String schema, String name) {
+            LinkedHashMap<String, PartitionTable> tables = ptables(catalog, schema, name, "STABLE");
+            if(tables.size() == 0){
+                return null;
+            }
+            PartitionTable table = tables.values().iterator().next();
+            table.setColumns(columns(table));
+            table.setTags(tags(table));
+            table.setIndexs(indexs(table));
+            return table;
+        }
+
+        @Override
+        public PartitionTable ptable(String schema, String name) {
+            return ptable(null, schema, name);
+        }
+
+        @Override
+        public PartitionTable ptable(String name) {
+            return ptable(null, null, name);
+        }
+
+        /* *****************************************************************************************************************
+         * 													column
+         * -----------------------------------------------------------------------------------------------------------------
+         * public boolean exists(Column column);
+         * public LinkedHashMap<String,Column> columns(Table table);
+         * public LinkedHashMap<String,Column> columns(String table);
+         * public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
+         ******************************************************************************************************************/
         @Override
         public boolean exists(Column column) {
             try {
@@ -1902,45 +2015,22 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
 
-        @Override
-        public LinkedHashMap<String,Tag> tags(String table){
-            return tags(null, null, table);
-        }
+        /* *****************************************************************************************************************
+         * 													tag
+         * -----------------------------------------------------------------------------------------------------------------
+         * public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table);
+         * public LinkedHashMap<String,Tag> tags(String table);
+         * public LinkedHashMap<String,Tag> tags(Table table);
+         ******************************************************************************************************************/
+
         @Override
         public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table){
             return tags(new Table(catalog, schema, table));
         }
-
         @Override
-        public LinkedHashMap<String, Index> indexs(Table table) {
-            return dao.indexs(table);
+        public LinkedHashMap<String,Tag> tags(String table){
+            return tags(null, null, table);
         }
-
-        @Override
-        public LinkedHashMap<String, Index> indexs(String table) {
-            return indexs(new Table(table));
-        }
-
-        @Override
-        public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table) {
-            return indexs(new Table(catalog, schema, table));
-        }
-
-        @Override
-        public LinkedHashMap<String, Constraint> constraints(Table table) {
-            return null;
-        }
-
-        @Override
-        public LinkedHashMap<String, Constraint> constraints(String table) {
-            return null;
-        }
-
-        @Override
-        public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table) {
-            return null;
-        }
-
         @Override
         public LinkedHashMap<String,Tag> tags(Table table){
             String name = table.getName();
@@ -1972,64 +2062,76 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
             return tags;
         }
+        /* *****************************************************************************************************************
+         * 													index
+         * -----------------------------------------------------------------------------------------------------------------
+         * public LinkedHashMap<String, Index> indexs(Table table)
+         * public LinkedHashMap<String, Index> indexs(String table)
+         * public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table)
+         ******************************************************************************************************************/
+        @Override
+        public LinkedHashMap<String, Index> indexs(Table table) {
+            return dao.indexs(table);
+        }
+
+        @Override
+        public LinkedHashMap<String, Index> indexs(String table) {
+            return indexs(new Table(table));
+        }
+
+        @Override
+        public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table) {
+            return indexs(new Table(catalog, schema, table));
+        }
+
+        /* *****************************************************************************************************************
+         * 													constraint
+         * -----------------------------------------------------------------------------------------------------------------
+		 * public LinkedHashMap<String,Constraint> constraints(Table table);
+		 * public LinkedHashMap<String,Constraint> constraints(String table);
+		 * public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table);
+         ******************************************************************************************************************/
+        @Override
+        public LinkedHashMap<String, Constraint> constraints(Table table) {
+            return null;
+        }
+
+        @Override
+        public LinkedHashMap<String, Constraint> constraints(String table) {
+            return null;
+        }
+
+        @Override
+        public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table) {
+            return null;
+        }
+
     };
+
 
     /* *****************************************************************************************************************
      *
      * 													DDL
+     * =================================================================================================================
+     * table			: 表
+     * master table		: 主表
+     * partition table	: 分区有
+     * column			: 列
+     * tag				: 标签
+     * index			: 索引
+     * constraint		: 约束
      *
      ******************************************************************************************************************/
+
     public DDLService ddl = new DDLService() {
-
-
-
-        @Override
-        public boolean drop(Table table) throws Exception{
-            table.setService(AnylineServiceImpl.this);
-            boolean result = dao.drop(table);
-
-            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
-            return result;
-        }
-
-        @Override
-        public boolean save(MasterTable table) throws Exception {
-            boolean result = false;
-            MasterTable otable = metadata.stable(table.getCatalog(), table.getSchema(), table.getName());
-            if(null != otable){
-                otable.setUpdate(table);
-                result = alter(otable);
-            }else{
-                result =  create(table);
-            }
-
-            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
-            return result;
-        }
-
-        @Override
-        public boolean create(MasterTable table) throws Exception {
-            table.setService(AnylineServiceImpl.this);
-            boolean result =  dao.create(table);
-            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
-            return result;
-        }
-
-        @Override
-        public boolean alter(MasterTable table) throws Exception {
-            table.setService(AnylineServiceImpl.this);
-            boolean result = dao.alter(table);
-            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
-            return result;
-        }
-
-        @Override
-        public boolean drop(MasterTable table) throws Exception {
-            table.setService(AnylineServiceImpl.this);
-            boolean result = dao.drop(table);
-            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
-            return result;
-        }
+        /* *****************************************************************************************************************
+         * 													table
+         * -----------------------------------------------------------------------------------------------------------------
+		 * public boolean save(Table table) throws Exception;
+		 * public boolean create(Table table) throws Exception;
+		 * public boolean alter(Table table) throws Exception;
+         * public boolean drop(Table table) throws Exception;
+         ******************************************************************************************************************/
 
         @Override
         public boolean save(Table table) throws Exception{
@@ -2059,40 +2161,103 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
-        /**
-         * 修改列
-         * @param table table
-         * @param tag 修改目标
-         * @return boolean
-         * @throws Exception sql异常
-         */
-        private boolean alter(Table table, Tag tag) throws Exception{
-            boolean result = false;
-            LinkedHashMap<String, Tag> tags = table.getTags();
-            Tag original = tags.get(tag.getName().toUpperCase());
 
-            Tag update = tag.getUpdate();
-            if(null == update){
-                update = (Tag) tag.clone();
-                String newName = tag.getNewName();
-                if(BasicUtil.isNotEmpty(newName)){
-                    update.setName(newName);
-                }
-            }
-            original.setUpdate(update);
-            original.setService(AnylineServiceImpl.this);
-            result = dao.alter(table, original);
-            if(result) {
-                tags.remove(original.getName());
+        @Override
+        public boolean drop(Table table) throws Exception{
+            table.setService(AnylineServiceImpl.this);
+            boolean result = dao.drop(table);
 
-                BeanUtil.copyFieldValueWithoutNull(original, update);
-                original.setUpdate(update);
-                BeanUtil.copyFieldValue(tag, original);
-                tags.put(original.getName(), original);
-            }
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
             return result;
         }
 
+        /* *****************************************************************************************************************
+         * 													master table
+         * -----------------------------------------------------------------------------------------------------------------
+		 * public boolean save(MasterTable table) throws Exception;
+		 * public boolean create(MasterTable table) throws Exception;
+		 * public boolean alter(MasterTable table) throws Exception;
+         * public boolean drop(MasterTable table) throws Exception;
+         ******************************************************************************************************************/
+
+
+        @Override
+        public boolean save(MasterTable table) throws Exception {
+            boolean result = false;
+            MasterTable otable = metadata.mtable(table.getCatalog(), table.getSchema(), table.getName());
+            if(null != otable){
+                otable.setUpdate(table);
+                result = alter(otable);
+            }else{
+                result =  create(table);
+            }
+
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
+        }
+        @Override
+        public boolean create(MasterTable table) throws Exception {
+            table.setService(AnylineServiceImpl.this);
+            boolean result =  dao.create(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
+        }
+
+        @Override
+        public boolean alter(MasterTable table) throws Exception {
+            table.setService(AnylineServiceImpl.this);
+            boolean result = dao.alter(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
+        }
+
+        @Override
+        public boolean drop(MasterTable table) throws Exception {
+            table.setService(AnylineServiceImpl.this);
+            boolean result = dao.drop(table);
+            clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
+            return result;
+        }
+
+        /* *****************************************************************************************************************
+         * 													partition table
+         * -----------------------------------------------------------------------------------------------------------------
+		 * public boolean save(PartitionTable table) throws Exception;
+		 * public boolean create(PartitionTable table) throws Exception;
+		 * public boolean alter(PartitionTable table) throws Exception;
+         * public boolean drop(PartitionTable table) throws Exception;
+         ******************************************************************************************************************/
+        @Override
+        public boolean save(PartitionTable table) throws Exception {
+            return false;
+        }
+
+        @Override
+        public boolean create(PartitionTable table) throws Exception {
+            return false;
+        }
+
+        @Override
+        public boolean alter(PartitionTable table) throws Exception {
+            return false;
+        }
+
+        @Override
+        public boolean drop(PartitionTable table) throws Exception {
+            return false;
+        }
+
+        /* *****************************************************************************************************************
+         * 													column
+         * -----------------------------------------------------------------------------------------------------------------
+		 * public boolean save(Column column) throws Exception;
+		 * public boolean add(Column column) throws Exception;
+		 * public boolean alter(Column column) throws Exception;
+         * public boolean drop(Column column) throws Exception;
+         *
+         * private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception
+         * private boolean alter(Table table, Column column) throws Exception
+         ******************************************************************************************************************/
 
         /**
          * 修改列  名称 数据类型 位置 默认值
@@ -2120,6 +2285,14 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return result;
         }
         @Override
+        public boolean add(Column column) throws Exception{
+            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName());
+            boolean result = add(columns, column);
+
+            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+            return result;
+        }
+        @Override
         public boolean alter(Column column) throws Exception{
             Table table = metadata.table(column.getCatalog(), column.getSchema(), column.getTableName());
             boolean result = alter(table, column);
@@ -2127,6 +2300,22 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return result;
         }
 
+        @Override
+        public boolean drop(Column column) throws Exception{
+            column.setService(AnylineServiceImpl.this);
+            boolean result = dao.drop(column);
+            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
+            return result;
+        }
+
+        private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{
+            column.setService(AnylineServiceImpl.this);
+            boolean result =  dao.add(column);
+            if(result) {
+                columns.put(column.getName(), column);
+            }
+            return result;
+        }
         /**
          * 修改列
          * @param table table
@@ -2166,28 +2355,18 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             return result;
         }
 
-        @Override
-        public boolean add(Column column) throws Exception{
-            LinkedHashMap<String, Column> columns = metadata.columns(column.getCatalog(), column.getSchema(), column.getTableName());
-            boolean result = add(columns, column);
 
-            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
-            return result;
-        }
-        private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception{
-            column.setService(AnylineServiceImpl.this);
-            boolean result =  dao.add(column);
-            if(result) {
-                columns.put(column.getName(), column);
-            }
-            return result;
-        }
-        public boolean drop(Column column) throws Exception{
-            column.setService(AnylineServiceImpl.this);
-            boolean result = dao.drop(column);
-            clearColumnCache(column.getCatalog(), column.getSchema(), column.getTableName());
-            return result;
-        }
+        /* *****************************************************************************************************************
+         * 													tag
+         * -----------------------------------------------------------------------------------------------------------------
+		 * public boolean save(Tag tag) throws Exception;
+		 * public boolean add(Tag tag) throws Exception;
+		 * public boolean alter(Tag tag) throws Exception;
+         * public boolean drop(Tag tag) throws Exception;
+         *
+         * private boolean add(LinkedHashMap<String, Tag> tags, Tag tag) throws Exception
+         * private boolean alter(Table table, Tag tag) throws Exception
+         ******************************************************************************************************************/
 
         /**
          * 修改列  名称 数据类型 位置 默认值
@@ -2214,6 +2393,15 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             return result;
         }
+
+
+        @Override
+        public boolean add(Tag tag) throws Exception{
+            LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            boolean result = add(tags, tag);
+            clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+            return result;
+        }
         @Override
         public boolean alter(Tag tag) throws Exception{
             Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName());
@@ -2223,12 +2411,13 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public boolean add(Tag tag) throws Exception{
-            LinkedHashMap<String, Tag> tags = metadata.tags(tag.getCatalog(), tag.getSchema(), tag.getTableName());
-            boolean result = add(tags, tag);
+        public boolean drop(Tag tag) throws Exception{
+            tag.setService(AnylineServiceImpl.this);
+            boolean result = dao.drop(tag);
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             return result;
         }
+
         private boolean add(LinkedHashMap<String, Tag> tags, Tag tag) throws Exception{
             tag.setService(AnylineServiceImpl.this);
             boolean result =  dao.add(tag);
@@ -2237,13 +2426,69 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             }
             return result;
         }
-        public boolean drop(Tag tag) throws Exception{
-            tag.setService(AnylineServiceImpl.this);
-            boolean result = dao.drop(tag);
-            clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
+        /**
+         * 修改标签
+         * @param table table
+         * @param tag 修改目标
+         * @return boolean
+         * @throws Exception sql异常
+         */
+        private boolean alter(Table table, Tag tag) throws Exception{
+            boolean result = false;
+            LinkedHashMap<String, Tag> tags = table.getTags();
+            Tag original = tags.get(tag.getName().toUpperCase());
+
+            Tag update = tag.getUpdate();
+            if(null == update){
+                update = (Tag) tag.clone();
+                String newName = tag.getNewName();
+                if(BasicUtil.isNotEmpty(newName)){
+                    update.setName(newName);
+                }
+            }
+            original.setUpdate(update);
+            original.setService(AnylineServiceImpl.this);
+            result = dao.alter(table, original);
+            if(result) {
+                tags.remove(original.getName());
+
+                BeanUtil.copyFieldValueWithoutNull(original, update);
+                original.setUpdate(update);
+                BeanUtil.copyFieldValue(tag, original);
+                tags.put(original.getName(), original);
+            }
             return result;
         }
 
+        /* *****************************************************************************************************************
+         * 													index
+         * -----------------------------------------------------------------------------------------------------------------
+		 * public boolean add(Index index) throws Exception;
+		 * public boolean alter(Index index) throws Exception;
+         * public boolean drop(Index index) throws Exception;
+         ******************************************************************************************************************/
+
+        @Override
+        public boolean add(Index index) throws Exception{
+            index.setService(AnylineServiceImpl.this);
+            return false;
+        }
+
+        @Override
+        public boolean alter(Index index) throws Exception {
+            return false;
+        }
+
+        public boolean drop(Index index) throws Exception{
+            return false;
+        }
+        /* *****************************************************************************************************************
+         * 													constraint
+         * -----------------------------------------------------------------------------------------------------------------
+		 * public boolean add(Constraint constraint) throws Exception;
+		 * public boolean alter(Constraint constraint) throws Exception;
+         * public boolean drop(Constraint constraint) throws Exception;
+         ******************************************************************************************************************/
         @Override
         public boolean add(Constraint constraint) throws Exception {
             return false;
@@ -2260,20 +2505,6 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
 
-        @Override
-        public boolean add(Index index) throws Exception{
-            index.setService(AnylineServiceImpl.this);
-            return false;
-        }
-
-        @Override
-        public boolean alter(Index index) throws Exception {
-            return false;
-        }
-
-        public boolean drop(Index index) throws Exception{
-            return false;
-        }
     };
 
 

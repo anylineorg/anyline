@@ -1213,12 +1213,32 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
 	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
 	 ******************************************************************************************************************/
 	private static Map<String,Map<String,String>> table_maps = new HashMap<>();
+
+	/* *****************************************************************************************************************
+	 * 													table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, Table> tables(String catalog, String schema, String name, String types);
+	 * public LinkedHashMap<String, Table> tables(String schema, String name, String types);
+	 * public LinkedHashMap<String, Table> tables(String name, String types);
+	 * public LinkedHashMap<String, Table> tables(String types);
+	 * public LinkedHashMap<String, Table> tables();
+	 ******************************************************************************************************************/
 	/**
 	 * tables
 	 * @param catalog 对于MySQL，则对应相应的数据库，对于Oracle来说，则是对应相应的数据库实例，可以不填，也可以直接使用Connection的实例对象中的getCatalog()方法返回的值填充；
@@ -1227,6 +1247,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * @param types 以逗号分隔  "TABLE"、"VIEW"、"SYSTEM TABLE"、"GLOBAL TEMPORARY"、"LOCAL TEMPORARY"、"ALIAS" 和 "SYNONYM"
 	 * @return List
 	 */
+	@Override
 	public LinkedHashMap<String,Table> tables(String catalog, String schema, String pattern, String types){
 		LinkedHashMap<String,Table> tables = new LinkedHashMap<>();
 		DataSource ds = null;
@@ -1302,60 +1323,33 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return tables;
 	}
 
+	@Override
 	public LinkedHashMap<String,Table> tables(String schema, String name, String types){
 		return tables(null, schema, name, types);
 	}
+	@Override
 	public LinkedHashMap<String,Table> tables(String name, String types){
 		return tables(null, null, name, types);
 	}
+	@Override
 	public LinkedHashMap<String,Table> tables(String types){
 		return tables(null, null, null, types);
 	}
+	@Override
 	public LinkedHashMap<String,Table> tables(){
 		return tables(null, null, null, "TABLE");
 	}
 
-	public LinkedHashMap<String,Table> tables(MasterTable table){
-		LinkedHashMap<String,Table> tables = new LinkedHashMap<>();
-		DataSource ds = null;
-		Connection con = null;
-		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
-		String random = random();
-		try{
-			Long fr = System.currentTimeMillis();
-			ds = getJdbc().getDataSource();
-			con = DataSourceUtils.getConnection(ds);
-			//根据系统表查询
-			try{
-				List<String> sqls = adapter.buildQueryTableRunSQL(table);
-				if(null != sqls) {
-					int idx = 0;
-					for(String sql:sqls) {
-						if (BasicUtil.isNotEmpty(sql)) {
-							DataSet set = select(sql, null);
-							tables = adapter.tables(idx++, true, table, tables, set);
-						}
-					}
-				}
-			}catch (Exception e){
-				if (showSQL) {
-					log.warn("{}[tables][{}][stable:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), table.getName(), e.getMessage());
-				}
-			}
 
-			if (showSQL) {
-				log.warn("{}[tables][stable:{}][result:{}][执行耗时:{}ms]", random, table.getName(), tables.size(), System.currentTimeMillis() - fr);
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-		}finally {
-			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
-				DataSourceUtils.releaseConnection(con, ds);
-			}
-		}
-		return tables;
-	}
-
+	/* *****************************************************************************************************************
+	 * 													master table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
+	 * public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
+	 * public LinkedHashMap<String, MasterTable> mtables(String name, String types);
+	 * public LinkedHashMap<String, MasterTable> mtables(String types);
+	 * public LinkedHashMap<String, MasterTable> mtables();
+	 ******************************************************************************************************************/
 	@Override
 	public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String pattern, String types) {
 
@@ -1398,13 +1392,13 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 			//根据系统表查询
 			try{
-				List<String> sqls = adapter.buildQuerySTableRunSQL(catalog, schema, pattern, types);
+				List<String> sqls = adapter.buildQueryMasterTableRunSQL(catalog, schema, pattern, types);
 				if(null != sqls) {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
 							DataSet set = select(sql, null);
-							tables = adapter.stables(idx++, true, catalog, schema, tables, set);
+							tables = adapter.mtables(idx++, true, catalog, schema, tables, set);
 						}
 					}
 				}
@@ -1417,7 +1411,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			//根据jdbc接口补充
 			try {
 				ResultSet set = con.getMetaData().getTables(catalog, schema, pattern, tps );
-				tables = adapter.stables(false, catalog, schema, tables, set);
+				tables = adapter.mtables(false, catalog, schema, tables, set);
 			}catch (Exception e){
 				log.warn("{}[stables][{}][catalog:{}][schema:{}][pattern:{}][msg:]", random, LogUtil.format("根据jdbc接口补充失败", 33), catalog, schema, pattern, e.getMessage());
 			}
@@ -1454,7 +1448,87 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return mtables("STABLE");
 	}
 
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types);
+	 * public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types);
+	 * public LinkedHashMap<String, PartitionTable> ptables(String name, String types);
+	 * public LinkedHashMap<String, PartitionTable> ptables(String types);
+	 * public LinkedHashMap<String, PartitionTable> ptables();
+	 * public LinkedHashMap<String, PartitionTable> ptables(MasterTable table);
+	 ******************************************************************************************************************/
 
+	@Override
+	public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types){
+		return null;
+	}
+	@Override
+	public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types){
+		return null;
+	}
+	@Override
+	public LinkedHashMap<String, PartitionTable> ptables(String name, String types){
+		return null;
+	}
+	@Override
+	public LinkedHashMap<String, PartitionTable> ptables(String types){
+		return null;
+	}
+	@Override
+	public LinkedHashMap<String, PartitionTable> ptables(){
+		return null;
+	}
+	@Override
+	public LinkedHashMap<String,PartitionTable> ptables(MasterTable table){
+		LinkedHashMap<String,PartitionTable> tables = new LinkedHashMap<>();
+		DataSource ds = null;
+		Connection con = null;
+		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		String random = random();
+		try{
+			Long fr = System.currentTimeMillis();
+			ds = getJdbc().getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			//根据系统表查询
+			try{
+				List<String> sqls = adapter.buildQueryTableRunSQL(table);
+				if(null != sqls) {
+					int idx = 0;
+					for(String sql:sqls) {
+						if (BasicUtil.isNotEmpty(sql)) {
+							DataSet set = select(sql, null);
+							tables = adapter.ptables(idx++, true, table, table.getCatalog(), table.getSchema(), tables, set);
+						}
+					}
+				}
+			}catch (Exception e){
+				if (showSQL) {
+					log.warn("{}[tables][{}][stable:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), table.getName(), e.getMessage());
+				}
+			}
+
+			if (showSQL) {
+				log.warn("{}[tables][stable:{}][result:{}][执行耗时:{}ms]", random, table.getName(), tables.size(), System.currentTimeMillis() - fr);
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+		return tables;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													column
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, Column> columns(Table table);
+	 * public LinkedHashMap<String, Column> columns(String table);
+	 * public LinkedHashMap<String, Column> columns(String catalog, String schema, String table);
+	 ******************************************************************************************************************/
+	@Override
 	public LinkedHashMap<String,Column> columns(Table table){
 		LinkedHashMap<String,Column> columns = new LinkedHashMap<>();
 		Long fr = System.currentTimeMillis();
@@ -1552,13 +1626,23 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return columns;
 	}
+	@Override
 	public LinkedHashMap<String,Column> columns(String table){
 		return columns(null, null, table);
 	}
+	@Override
 	public LinkedHashMap<String,Column>  columns(String catalog, String schema, String table){
 		Table tab = new Table(catalog, schema, table);
 		return columns(tab);
 	}
+
+	/* *****************************************************************************************************************
+	 * 													tag
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, Tag> tags(Table table);
+	 * public LinkedHashMap<String, Tag> tags(String table);
+	 * public LinkedHashMap<String, Tag> tags(String catalog, String schema, String table);
+	 ******************************************************************************************************************/
 	@Override
 	public LinkedHashMap<String, Tag> tags(Table table) {
 
@@ -1676,23 +1760,20 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return tags(tab);
 	}
 
+
+	/* *****************************************************************************************************************
+	 * 													index
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, Index> indexs(Table table);
+	 * public LinkedHashMap<String, Index> indexs(String table);
+	 * public LinkedHashMap<String, Index> indexs(String catalog, String schema, String table);
+	 ******************************************************************************************************************/
 	/**
 	 * 所引
-	 * TABLE_CAT=simple
-	 * TABLE_SCHEM=null
-	 * TABLE_NAME=hr_department
-	 * NON_UNIQUE=false
-	 * INDEX_QUALIFIER=null
-	 * INDEX_NAME=PRIMARY
-	 * TYPE=3
-	 * ORDINAL_POSITION=1
-	 * COLUMN_NAME=ID
-	 * ASC_OR_DESC=A
-	 * CARDINALITY=81
-	 * PAGES=0
 	 * @param table table
 	 * @return map
 	 */
+	@Override
 	public LinkedHashMap<String, Index> indexs(Table table){
 		LinkedHashMap<String,Index> indexs = null;
 		String catalog = table.getCatalog();
@@ -1742,6 +1823,13 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return indexs(tab);
 	}
 
+	/* *****************************************************************************************************************
+	 * 													constraint
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public LinkedHashMap<String, Constraint> constraints(Table table);
+	 * public LinkedHashMap<String, Constraint> constraints(String table);
+	 * public LinkedHashMap<String, Constraint> constraints(String catalog, String schema, String table);
+	 ******************************************************************************************************************/
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(Table table) {
 		return null;
@@ -1760,8 +1848,24 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 *
 	 * 													DDL
 	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
 	 ******************************************************************************************************************/
 
+	/* *****************************************************************************************************************
+	 * 													table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean create(Table table) throws Exception;
+	 * public boolean alter(Table table) throws Exception;
+	 * public boolean drop(Table table) throws Exception;
+	 ******************************************************************************************************************/
 	@Override
 	public boolean create(Table table) throws Exception {
 		boolean result = false;
@@ -1887,6 +1991,57 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 
+	/* *****************************************************************************************************************
+	 * 													master table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean create(MasterTable table) throws Exception;
+	 * public boolean alter(MasterTable table) throws Exception;
+	 * public boolean drop(MasterTable table) throws Exception;
+	 ******************************************************************************************************************/
+	@Override
+	public boolean create(MasterTable table) throws Exception{
+		return false;
+	}
+	@Override
+	public boolean alter(MasterTable table) throws Exception{
+		return false;
+	}
+	@Override
+	public boolean drop(MasterTable table) throws Exception{
+		return false;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean create(PartitionTable table) throws Exception;
+	 * public boolean alter(PartitionTable table) throws Exception;
+	 * public boolean drop(PartitionTable table) throws Exception;
+	 ******************************************************************************************************************/
+
+	@Override
+	public boolean create(PartitionTable table) throws Exception{
+		return false;
+	}
+	@Override
+	public boolean alter(PartitionTable table) throws Exception{
+		return false;
+	}
+	@Override
+	public boolean drop(PartitionTable table) throws Exception{
+		return false;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													column
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean add(Column column) throws Exception;
+	 * public boolean alter(Table table, Column column) throws Exception;
+	 * public boolean alter(Column column) throws Exception;
+	 * public boolean drop(Column column) throws Exception;
+	 *
+	 * private boolean alter(Table table, Column column, boolean trigger) throws Exception
+	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Column column) throws Exception{
 		boolean result = false;
@@ -1914,61 +2069,6 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return result;
 	}
 
-	/**
-	 * 修改列
-	 * @param column 列
-	 * @param trigger 是否触发异常事件
-	 * @return boolean
-	 * @throws Exception SQL异常
-	 */
-	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
-
-		boolean result = true;
-		Long fr = System.currentTimeMillis();
-		String random = null;
-		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(column);
-
-		random = random();
-		DDListener listener = column.getListener();
-		try{
-			for(String sql:sqls) {
-				if (showSQL) {
-					log.warn("{}[txt:\n{}\n]", random, sql);
-				}
-				boolean exe = true;
-				if (null != listener) {
-					exe = listener.beforeAlter(column);
-				}
-				if (exe) {
-					getJdbc().update(sql);
-					result = true;
-				}
-			}
-		}catch (Exception e){
-			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
-			log.warn("{}[{}][exception:{}]",random, LogUtil.format("修改Column执行异常", 33), e.getMessage());
-			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
-					boolean exe = false;
-					if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
-						exe = listener.afterAlterColumnException(table, column, e);
-					}
-					log.warn("{}[修改Column执行异常][尝试修正数据][修正结果:{}]", random, exe);
-					if (exe) {
-						result = alter(table, column, false);
-					}
-			}else{
-				log.warn("{}[修改Column执行异常][中断执行]",random);
-				result = false;
-				throw e;
-			}
-		}
-
-		if (showSQL) {
-			log.warn("{}[update column][table:{}][column:{}][qty:{}][result:{}][执行耗时:{}ms]"
-					, random, column.getTableName(), column.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
-		}
-		return result;
-	}
 	@Override
 	public boolean alter(Table table, Column column) throws Exception{
 		return alter(table, column, true);
@@ -2014,6 +2114,73 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return result;
 	}
 
+	/**
+	 * 修改列
+	 * @param column 列
+	 * @param trigger 是否触发异常事件
+	 * @return boolean
+	 * @throws Exception SQL异常
+	 */
+	private boolean alter(Table table, Column column, boolean trigger) throws Exception{
+
+		boolean result = true;
+		Long fr = System.currentTimeMillis();
+		String random = null;
+		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(column);
+
+		random = random();
+		DDListener listener = column.getListener();
+		try{
+			for(String sql:sqls) {
+				if (showSQL) {
+					log.warn("{}[txt:\n{}\n]", random, sql);
+				}
+				boolean exe = true;
+				if (null != listener) {
+					exe = listener.beforeAlter(column);
+				}
+				if (exe) {
+					getJdbc().update(sql);
+					result = true;
+				}
+			}
+		}catch (Exception e){
+			//如果发生异常(如现在数据类型转换异常) && 有监听器 && 允许触发监听(递归调用后不再触发) && 由数据类型更新引起
+			log.warn("{}[{}][exception:{}]",random, LogUtil.format("修改Column执行异常", 33), e.getMessage());
+			if(trigger && null != listener && !BasicUtil.equalsIgnoreCase(column.getTypeName(), column.getUpdate().getTypeName())) {
+				boolean exe = false;
+				if (ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION != 0) {
+					exe = listener.afterAlterColumnException(table, column, e);
+				}
+				log.warn("{}[修改Column执行异常][尝试修正数据][修正结果:{}]", random, exe);
+				if (exe) {
+					result = alter(table, column, false);
+				}
+			}else{
+				log.warn("{}[修改Column执行异常][中断执行]",random);
+				result = false;
+				throw e;
+			}
+		}
+
+		if (showSQL) {
+			log.warn("{}[update column][table:{}][column:{}][qty:{}][result:{}][执行耗时:{}ms]"
+					, random, column.getTableName(), column.getName(), sqls.size(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													tag
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean add(Tag tag) throws Exception;
+	 * public boolean alter(Table table, Tag tag) throws Exception;
+	 * public boolean alter(Tag tag) throws Exception;
+	 * public boolean drop(Tag tag) throws Exception;
+	 *
+	 * private boolean alter(Table table, Tag tag, boolean trigger) throws Exception
+	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Tag tag) throws Exception{
 		boolean result = false;
@@ -2037,6 +2204,51 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 		if (showSQL) {
 			log.warn("{}[add tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean alter(Table table, Tag tag) throws Exception{
+		return alter(table, tag, true);
+	}
+	@Override
+	public boolean alter(Tag tag) throws Exception{
+		Table table = tag.getTable();
+		if(null == table){
+			LinkedHashMap<String,Table> tables = tables(tag.getCatalog(), tag.getSchema(), tag.getTableName(), "TABLE");
+			if(tables.size() ==0){
+				throw new AnylineException("表不存在:"+tag.getTableName());
+			}else {
+				table = tables.values().iterator().next();
+			}
+		}
+		return alter(table, tag, true);
+	}
+	@Override
+	public boolean drop(Tag tag) throws Exception{
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(tag);
+		String random = null;
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = tag.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(tag);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+		if (showSQL) {
+			log.warn("{}[drop tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(tag, result);
 		}
 		return result;
 	}
@@ -2096,51 +2308,14 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	@Override
-	public boolean alter(Table table, Tag tag) throws Exception{
-		return alter(table, tag, true);
-	}
-	@Override
-	public boolean alter(Tag tag) throws Exception{
-		Table table = tag.getTable();
-		if(null == table){
-			LinkedHashMap<String,Table> tables = tables(tag.getCatalog(), tag.getSchema(), tag.getTableName(), "TABLE");
-			if(tables.size() ==0){
-				throw new AnylineException("表不存在:"+tag.getTableName());
-			}else {
-				table = tables.values().iterator().next();
-			}
-		}
-		return alter(table, tag, true);
-	}
-	@Override
-	public boolean drop(Tag tag) throws Exception{
-		boolean result = false;
-		Long fr = System.currentTimeMillis();
-		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(tag);
-		String random = null;
-		if(showSQL){
-			random = random();
-			log.warn("{}[txt:\n{}\n]",random,sql);
-		}
-		DDListener listener = tag.getListener();
-		boolean exe = true;
-		if(null != listener){
-			exe = listener.beforeDrop(tag);
-		}
-		if(exe) {
-			getJdbc().update(sql);
-			result = true;
-		}
-		if (showSQL) {
-			log.warn("{}[drop tag][table:{}][tag:{}][result:{}][执行耗时:{}ms]", random, tag.getTableName(), tag.getName(), result, System.currentTimeMillis() - fr);
-		}
-		if(null != listener){
-			listener.afterDrop(tag, result);
-		}
-		return result;
-	}
 
+	/* *****************************************************************************************************************
+	 * 													index
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean add(Index index) throws Exception;
+	 * public boolean alter(Index index) throws Exception;
+	 * public boolean drop(Index index) throws Exception;
+	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Index index) throws Exception {
 		return false;
@@ -2156,6 +2331,13 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return false;
 	}
 
+	/* *****************************************************************************************************************
+	 * 													constraint
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public boolean add(Constraint constraint) throws Exception;
+	 * public boolean alter(Constraint constraint) throws Exception;
+	 * public boolean drop(Constraint constraint) throws Exception;
+	 ******************************************************************************************************************/
 	@Override
 	public boolean add(Constraint constraint) throws Exception {
 		return false;
@@ -2175,6 +2357,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 *
 	 * 													common
 	 *
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * protected String paramLogFormat(List<?> params)
+	 * protected String paramLogFormat(List<?> keys, List<?> values)
+	 * private static String random()
 	 ******************************************************************************************************************/
 
 

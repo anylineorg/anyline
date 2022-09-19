@@ -91,7 +91,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<String> buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types){
+	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types){
 		List<String> sqls = new ArrayList<>();
 		String sql = "SHOW STABLES";
 		if (BasicUtil.isNotEmpty(pattern)) {
@@ -112,7 +112,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 *  根据查询结果集构造Table
-	 * @param index 第几条SQL 对照 buildQuerySTableRunSQL返回顺序
+	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -122,7 +122,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, MasterTable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
+	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -175,11 +175,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param schema schema
 	 * @param tables tables
 	 * @param set set
-	 * @return stables
+	 * @return tables
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, MasterTable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception{
+	public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception{
 		return tables;
 	}
 
@@ -220,7 +220,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param schema schema
 	 * @param tables tables
 	 * @param set set
-	 * @return stables
+	 * @return tables
 	 * @throws Exception
 	 */
 	@Override
@@ -229,8 +229,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 
 	/**
-	 * 根据超表查询分区表
-	 * @param table 超表
+	 * 根据主表查询分区表
+	 * @param table 主表
 	 * @return List
 	 */
 	@Override
@@ -451,7 +451,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		LinkedHashMap<String,Tag> tags = table.getTags();
 		String sql = super.buildCreateRunSQL(table);
 		if(table instanceof MasterTable){
-			//超表
+			//主表
 			StringBuilder builder = new StringBuilder();
 			builder.append(sql);
 			builder.append(" TAGS (");

@@ -1241,92 +1241,32 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 		return result;
 	}
-/* ******************************************************************************************************************************************
- *
- * 																metadata
- *
- * ******************************************************************************************************************************************/
 
+
+	/* *****************************************************************************************************************
+	 *
+	 * 													metadata
+	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
+	 ******************************************************************************************************************/
+
+	/* *****************************************************************************************************************
+	 * 													table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
+	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
+	 ******************************************************************************************************************/
 	/**
-	 * 查询超表
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param pattern pattern
-	 * @param types types
-	 * @return String
-	 */
-	@Override
-	public List<String> buildQuerySTableRunSQL(String catalog, String schema, String pattern, String types){
-		return null;
-	}
-
-	/**
-	 * 从jdbc结果中提取表结构
-	 * ResultSet set = con.getMetaData().getTables()
-	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param set 查询结果
-	 * @return List
-	 */
-	@Override
-	public LinkedHashMap<String, MasterTable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception{
-		if(null == tables){
-			tables = new LinkedHashMap<>();
-		}
-
-		List<String> keys = keys(set);
-		while(set.next()) {
-			String tableName = string(keys, "TABLE_NAME", set);
-			if(BasicUtil.isEmpty(tableName)){
-				continue;
-			}
-			MasterTable table = tables.get(tableName.toUpperCase());
-			if(null == table){
-				if(create) {
-					table = new MasterTable(tableName);
-					tables.put(tableName.toUpperCase(), table);
-				}else {
-					continue;
-				}
-			}
-			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
-			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
-			table.setType(string(keys, "TABLE_TYPE", set));
-			table.setComment(string(keys, "REMARKS", set));
-			table.setTypeCat(string(keys, "TYPE_CAT", set));
-			table.setTypeName(string(keys, "TYPE_NAME", set));
-			table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", set));
-			table.setRefGeneration(string(keys, "REF_GENERATION", set));
-			tables.put(tableName.toUpperCase(), table);
-
-			//table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
-		}
-		return tables;
-	}
-
-
-	/**
-	 * 从上一步生成的SQL查询结果中 提取表结构
-	 * @param index 第几条SQL
-	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param tables 上一步查询结果
-	 * @param set set
-	 * @return tables
-	 * @throws Exception
-	 */
-	@Override
-	public LinkedHashMap<String, MasterTable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
-		if(null == tables){
-			tables = new LinkedHashMap<>();
-		}
-		return tables;
-	}
-
-	/**
-	 * 查询超表
+	 * 查询表
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
@@ -1380,25 +1320,163 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return tables;
 	}
 
-
+	/* *****************************************************************************************************************
+	 * 													master table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
+	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception;
+	 ******************************************************************************************************************/
 	/**
-	 * 根据超表查询分区表
-	 * @param table 超表
-	 * @return List
+	 * 查询主表
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
 	 */
 	@Override
-	public List<String> buildQueryTableRunSQL(MasterTable table){
+	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types){
 		return null;
 	}
 
-	public LinkedHashMap<String, Table> tables(int index, boolean create, MasterTable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
-		if(null == table){
+	/**
+	 * 从jdbc结果中提取表结构
+	 * ResultSet set = con.getMetaData().getTables()
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param set 查询结果
+	 * @return List
+	 */
+	@Override
+	public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception{
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+
+		List<String> keys = keys(set);
+		while(set.next()) {
+			String tableName = string(keys, "TABLE_NAME", set);
+			if(BasicUtil.isEmpty(tableName)){
+				continue;
+			}
+			MasterTable table = tables.get(tableName.toUpperCase());
+			if(null == table){
+				if(create) {
+					table = new MasterTable(tableName);
+					tables.put(tableName.toUpperCase(), table);
+				}else {
+					continue;
+				}
+			}
+			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
+			table.setType(string(keys, "TABLE_TYPE", set));
+			table.setComment(string(keys, "REMARKS", set));
+			table.setTypeCat(string(keys, "TYPE_CAT", set));
+			table.setTypeName(string(keys, "TYPE_NAME", set));
+			table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", set));
+			table.setRefGeneration(string(keys, "REF_GENERATION", set));
+			tables.put(tableName.toUpperCase(), table);
+
+			//table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
+		}
+		return tables;
+	}
+
+
+	/**
+	 * 从上一步生成的SQL查询结果中 提取表结构
+	 * @param index 第几条SQL
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	@Override
+	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
+		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
 		return tables;
 	}
+
+
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
+ 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable table);
+ 	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+	 ******************************************************************************************************************/
+
 	/**
-	 * 查询瑗表上的列
+	 * 查询分区
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param pattern pattern
+	 * @param types types
+	 * @return String
+	 */
+	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types){
+		return null;
+	}
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable table){
+		return null;
+	}
+
+	/**
+	 *  根据查询结果集构造Table
+	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table MasterTable
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables 上一步查询结果
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
+		return null;
+	}
+
+	/**
+	 * 根据JDBC
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table MasterTable
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param tables tables
+	 * @param set set
+	 * @return tables
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
+		return null;
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													column
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
+	 * public LinkedHashMap<String, Column> columns(int index,boolean create,  Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
+	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception;
+	 *
+	 * protected Column column(Column column, SqlRowSetMetaData rsm, int index)
+	 * protected Column column(Column column, ResultSet rs)
+	 * protected List<String> keys(ResultSet rs) throws Exception
+	 ******************************************************************************************************************/
+
+	/**
+	 * 查询表上的列
 	 * @param table table
 	 * @return sql
 	 */
@@ -1490,6 +1568,84 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return columns;
 	}
 
+
+	protected Column column(Column column, SqlRowSetMetaData rsm, int index){
+		if(null == column){
+			column = new Column();
+		}
+		try {
+			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
+			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
+			column.setClassName(rsm.getColumnClassName(index));
+			column.setCaseSensitive(rsm.isCaseSensitive(index));
+			column.setCurrency(rsm.isCurrency(index));
+			column.setComment(rsm.getColumnLabel(index));
+			column.setName(rsm.getColumnName(index));
+			column.setPrecision(rsm.getPrecision(index));
+			column.setScale(rsm.getScale(index));
+			column.setDisplaySize(rsm.getColumnDisplaySize(index));
+			column.setSigned(rsm.isSigned(index));
+			column.setTableName(rsm.getTableName(index));
+			column.setType(rsm.getColumnType(index));
+			column.setTypeName(rsm.getColumnTypeName(index));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return column;
+	}
+
+	/**
+	 * 构建Column
+	 * @param column column
+	 * @param rs  ResultSet
+	 * @return Column
+	 */
+	protected Column column(Column column, ResultSet rs){
+		if(null == column){
+			column = new Column();
+		}
+		try {
+			List<String> keys = keys(rs);
+			column.setScale(BasicUtil.parseInt(string(keys, "DECIMAL_DIGITS", rs), null));
+			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
+			column.setAutoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
+			column.setGenerated(BasicUtil.parseBoolean(string(keys, "IS_GENERATEDCOLUMN", rs), false));
+			column.setComment(string(keys, "REMARKS", rs));
+			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
+			if (BasicUtil.isEmpty(column.getDefaultValue())) {
+				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
+			}
+		}catch (Exception e){
+			e.printStackTrace();
+		}
+		return column;
+	}
+
+	/**
+	 * 获取ResultSet中的列
+	 * @param rs rs
+	 * @return list
+	 * @throws Exception Exception
+	 */
+	protected List<String> keys(ResultSet rs) throws Exception{
+		ResultSetMetaData rsmd = rs.getMetaData();
+		List<String> keys = new ArrayList<>();
+		if(null != rsmd){
+			for (int i = 1; i < rsmd.getColumnCount(); i++) {
+				keys.add(rsmd.getColumnName(i).toUpperCase());
+			}
+		}
+		return keys;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													tag
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata);
+	 * public LinkedHashMap<String, Tag> tags(int index,boolean create,  Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
+	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
+	 ******************************************************************************************************************/
 	/**
 	 *
 	 * @param table table
@@ -1523,8 +1679,17 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
 		return tags;
 	}
+
+	/* *****************************************************************************************************************
+	 * 													index
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata);
+	 * public LinkedHashMap<String, Index> indexs(int index,boolean create,  Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
+	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
+	 ******************************************************************************************************************/
 	/**
-	 * 查询瑗表上的列
+	 * 查询表上的列
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
@@ -1607,150 +1772,83 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return indexs;
 	}
 
-	protected Column column(Column column, SqlRowSetMetaData rsm, int index){
-		if(null == column){
-			column = new Column();
-		}
-		try {
-			column.setCatalog(BasicUtil.evl(rsm.getCatalogName(index)));
-			column.setSchema(BasicUtil.evl(rsm.getSchemaName(index)));
-			column.setClassName(rsm.getColumnClassName(index));
-			column.setCaseSensitive(rsm.isCaseSensitive(index));
-			column.setCurrency(rsm.isCurrency(index));
-			column.setComment(rsm.getColumnLabel(index));
-			column.setName(rsm.getColumnName(index));
-			column.setPrecision(rsm.getPrecision(index));
-			column.setScale(rsm.getScale(index));
-			column.setDisplaySize(rsm.getColumnDisplaySize(index));
-			column.setSigned(rsm.isSigned(index));
-			column.setTableName(rsm.getTableName(index));
-			column.setType(rsm.getColumnType(index));
-			column.setTypeName(rsm.getColumnTypeName(index));
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		return column;
+
+	/* *****************************************************************************************************************
+	 * 													constraint
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
+	 * public LinkedHashMap<String, Constraint> constraints(int constraint,boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
+	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
+	 ******************************************************************************************************************/
+	/**
+	 * 查询表上的约束
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table table
+	 * @param metadata 是否根据metadata | 查询系统表
+	 * @return sqls
+	 */
+	@Override
+	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata){
+		return null;
 	}
 
 	/**
-	 * 构建Column
-	 * TABLE_CAT=simple
-	 * TABLE_SCHEM=null
-	 * TABLE_NAME=hr_department
-	 * COLUMN_NAME=SCORE
-	 * DATA_TYPE=7
-	 * TYPE_NAME=FLOAT
-	 * COLUMN_SIZE=11
-	 * BUFFER_LENGTH=65535
-	 * DECIMAL_DIGITS=2
-	 * NUM_PREC_RADIX=10
-	 * NULLABLE=1
-	 * REMARKS=
-	 * COLUMN_DEF=null
-	 * SQL_DATA_TYPE=0
-	 * SQL_DATETIME_SUB=0
-	 * CHAR_OCTET_LENGTH=null
-	 * ORDINAL_POSITION=4
-	 * IS_NULLABLE=YES
-	 * SCOPE_CATALOG=null
-	 * SCOPE_SCHEMA=null
-	 * SCOPE_TABLE=null
-	 * SOURCE_DATA_TYPE=null
-	 * IS_AUTOINCREMENT=NO
-	 * @param column column
-	 * @param rs  ResultSet
-	 * @return Column
+	 *  根据查询结果集构造Constraint
+	 * @param constraint 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table table
+	 * @param columns 上一步查询结果
+	 * @param set set
+	 * @return constraints
+	 * @throws exception
 	 */
-	protected Column column(Column column, ResultSet rs){
-		if(null == column){
-			column = new Column();
-		}
-		try {
-			List<String> keys = keys(rs);
-			column.setScale(BasicUtil.parseInt(string(keys, "DECIMAL_DIGITS", rs), null));
-			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
-			column.setAutoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
-			column.setGenerated(BasicUtil.parseBoolean(string(keys, "IS_GENERATEDCOLUMN", rs), false));
-			column.setComment(string(keys, "REMARKS", rs));
-			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
-			if (BasicUtil.isEmpty(column.getDefaultValue())) {
-				column.setDefaultValue(string(keys, "COLUMN_DEF", rs));
-			}
-		}catch (Exception e){
-			e.printStackTrace();
-		}
-		return column;
+	@Override
+	public LinkedHashMap<String, Constraint> constraints(int constraint,boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{
+		return null;
+	}
+	@Override
+	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception{
+		return null;
+	}
+	@Override
+	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception{
+		return null;
 	}
 
-	/**
-	 * 获取ResultSet中的列
-	 * @param rs rs
-	 * @return list
-	 * @throws Exception Exception
-	 */
-	protected List<String> keys(ResultSet rs) throws Exception{
-		ResultSetMetaData rsmd = rs.getMetaData();
-		List<String> keys = new ArrayList<>();
-		if(null != rsmd){
-			for (int i = 1; i < rsmd.getColumnCount(); i++) {
-				keys.add(rsmd.getColumnName(i).toUpperCase());
-			}
-		}
-		return keys;
-	}
+
+
+
 
 
 	/* *****************************************************************************************************************
 	 *
 	 * 													DDL
 	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
 	 ******************************************************************************************************************/
-
+	
 	/* *****************************************************************************************************************
-	 * 													TABLE
+	 * 													table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public String buildCreateRunSQL(Table table);
+	 * public String buildAlterRunSQL(Table table);
+     * public String buildRenameRunSQL(Table table);
+	 * public String buildChangeCommentRunSQL(Table table);
+	 * public String buildDropRunSQL(Table table);
+	 * public StringBuilder checkTableExists(StringBuilder builder, boolean exists)
+	 * public StringBuilder primary(StringBuilder builder, Table table)
+	 * public StringBuilder comment(StringBuilder builder, Table table)
+	 * public StringBuilder name(StringBuilder builder, Table table)
 	 ******************************************************************************************************************/
-
-	/**
-	 * 创建主表
-	 * @param table table
-	 * @return String
-	 */
-	public String buildCreateRunSQL(MasterTable table){
-		return null;
-	}
-	public String buildAlterRunSQL(MasterTable table){
-		return null;
-	}
-	public String buildDropRunSQL(MasterTable table){
-		return null;
-	}
-	public String buildRenameRunSQL(MasterTable table){
-		return null;
-	}
-	public String buildChangeCommentRunSQL(MasterTable table){
-		return null;
-	}
-
-	/**
-	 * 创建分区表
-	 * @param table table
-	 * @return String
-	 */
-	public String buildCreateRunSQL(PartitionTable table){
-		return null;
-	}
-	public String buildAlterRunSQL(PartitionTable table){
-		return null;
-	}
-	public String buildDropRunSQL(PartitionTable table){
-		return null;
-	}
-	public String buildRenameRunSQL(PartitionTable table){
-		return null;
-	}
-	public String buildChangeCommentRunSQL(PartitionTable table){
-		return null;
-	}
 
 
 	@Override
@@ -1800,6 +1898,9 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return null;
 	}
 
+	public String buildChangeCommentRunSQL(Table table){
+		return null;
+	}
 	/**
 	 * 删除表
 	 * @param table table
@@ -1817,27 +1918,12 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder.toString();
 	}
 
-	/**
-	 * 备注
-	 * 子类实现
-	 * @param builder builder
-	 * @param table table
-	 * @return builder
-	 */
+
 	@Override
-	public StringBuilder comment(StringBuilder builder, Table table){
-		String comment = table.getComment();
-		if(BasicUtil.isNotEmpty(comment)) {
-			builder.append(" COMMENT'").append(comment).append("'");
-		}
+	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
 		return builder;
 	}
 
-
-	@Override
-	public String alterColumnKeyword(){
-		return "ALTER";
-	}
 
 
 	/**
@@ -1863,6 +1949,130 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder;
 	}
 
+
+	/**
+	 * 备注
+	 * 子类实现
+	 * @param builder builder
+	 * @param table table
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder comment(StringBuilder builder, Table table){
+		String comment = table.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			builder.append(" COMMENT'").append(comment).append("'");
+		}
+		return builder;
+	}
+
+	/**
+	 * 构造完整表名
+	 * @param builder builder
+	 * @param table table
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder name(StringBuilder builder, Table table){
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		String name = table.getName();
+		if(BasicUtil.isNotEmpty(catalog)) {
+			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		if(BasicUtil.isNotEmpty(schema)) {
+			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
+		}
+		SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
+		return builder;
+	}
+	/* *****************************************************************************************************************
+	 * 													master table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public String buildCreateRunSQL(MasterTable table);
+	 * public String buildAlterRunSQL(MasterTable table);
+	 * public String buildDropRunSQL(MasterTable table);
+	 * public String buildRenameRunSQL(MasterTable table);
+	 * public String buildChangeCommentRunSQL(MasterTable table);
+	 ******************************************************************************************************************/
+	/**
+	 * 创建主表
+	 * @param table table
+	 * @return String
+	 */
+	public String buildCreateRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildAlterRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildDropRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildRenameRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildChangeCommentRunSQL(MasterTable table){
+		return null;
+	}
+
+
+	/* *****************************************************************************************************************
+	 * 													partition table
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public String buildCreateRunSQL(PartitionTable table);
+	 * public String buildAlterRunSQL(PartitionTable table);
+	 * public String buildDropRunSQL(PartitionTable table);
+	 * public String buildRenameRunSQL(PartitionTable table);
+	 * public String buildChangeCommentRunSQL(PartitionTable table);
+	 ******************************************************************************************************************/
+	/**
+	 * 创建分区表
+	 * @param table table
+	 * @return String
+	 */
+	public String buildCreateRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildAlterRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildDropRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildRenameRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildChangeCommentRunSQL(PartitionTable table){
+		return null;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													column
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public String alterColumnKeyword();
+	 * public String buildAddRunSQL(Column column);
+	 * public List<String> buildAlterRunSQL(Column column);
+	 * public String buildDropRunSQL(Column column);
+	 * public String buildRenameRunSQL(Column column);
+	 * public List<String> buildChangeTypeRunSQL(Column column);
+	 * public String buildChangeDefaultRunSQL(Column column);
+	 * public String buildChangeNullableRunSQL(Column column);
+	 * public String buildChangeCommentRunSQL(Column column);
+	 * public StringBuilder define(StringBuilder builder, Column column);
+	 * public StringBuilder type(StringBuilder builder, Column column);
+	 * public StringBuilder nullable(StringBuilder builder, Column column);
+	 * public StringBuilder charset(StringBuilder builder, Column column);
+	 * public StringBuilder defaultValue(StringBuilder builder, Column column);
+	 * public StringBuilder increment(StringBuilder builder, Column column);
+	 * public StringBuilder onupdate(StringBuilder builder, Column column);
+	 * public StringBuilder position(StringBuilder builder, Column column);
+	 * public StringBuilder comment(StringBuilder builder, Column column);
+	 ******************************************************************************************************************/
+	@Override
+	public String alterColumnKeyword(){
+		return "ALTER";
+	}
 
 	/**
 	 * 添加列
@@ -1997,6 +2207,17 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder.toString();
 	}
 
+
+	/**
+	 * 修改数据类型
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param column column
+	 * @return sql
+	 */
+	public List<String> buildChangeTypeRunSQL(Column column){
+		return null;
+	}
 	/**
 	 * 修改默认值
 	 * 子类实现
@@ -2029,16 +2250,181 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return null;
 	}
 
+
+
+
 	/**
-	 * 修改数据类型
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * 定义列
+	 * @param builder builder
 	 * @param column column
-	 * @return sql
+	 * @return builder
 	 */
-	public List<String> buildChangeTypeRunSQL(Column column){
-		return null;
+	@Override
+	public StringBuilder define(StringBuilder builder, Column column){
+		//数据类型
+		type(builder, column);
+		// 编码
+		charset(builder, column);
+		//默认值
+		defaultValue(builder, column);
+		//非空
+		if(column.isNullable() == 0) {
+			nullable(builder, column);
+		}
+		//自增长列
+		increment(builder, column);
+		//更新行事件
+		onupdate(builder, column);
+		//备注
+		comment(builder, column);
+		//位置
+		position(builder, column);
+		return builder;
 	}
+	/**
+	 * 数据类型
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder type(StringBuilder builder, Column column){
+
+		builder.append(column.getTypeName());
+		//精度
+		Integer precision = column.getPrecision();
+		Integer scale = column.getScale();
+		if(null != precision) {
+			if (precision > 0) {
+				builder.append("(").append(precision);
+				if (null != scale && scale > 0) {
+					builder.append(",").append(scale);
+				}
+				builder.append(")");
+			} else if (precision == -1) {
+				builder.append("(max)");
+			}
+		}
+		return builder;
+	}
+	/**
+	 * 编码
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder nullable(StringBuilder builder, Column column){
+		int nullable = column.isNullable();
+		if(nullable != -1) {
+			if (nullable == 0) {
+				builder.append(" NOT");
+			}
+			builder.append(" NULL");
+		}
+		return builder;
+	}
+	/**
+	 * 编码
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder charset(StringBuilder builder, Column column){
+		// CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
+		String charset = column.getCharset();
+		if(BasicUtil.isNotEmpty(charset)){
+			builder.append(" CHARACTER SET ").append(charset);
+			String collate = column.getCollate();
+			if(BasicUtil.isNotEmpty(collate)){
+				builder.append(" COLLATE ").append(collate);
+			}
+		}
+		return builder;
+	}
+	/**
+	 * 默认值
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder defaultValue(StringBuilder builder, Column column){
+		Object def = column.getDefaultValue();
+		if(null != def) {
+			builder.append(" DEFAULT ");
+			boolean isCharColumn = isCharColumn(column);
+			if(def instanceof SQL_BUILD_IN_VALUE){
+				String value = buildInValue((SQL_BUILD_IN_VALUE)def);
+				if(null != value){
+					builder.append(value);
+				}
+			}else {
+				format(builder, def);
+			}
+		}
+		return builder;
+	}
+	/**
+	 * 自增长列
+	 * 子类实现
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder increment(StringBuilder builder, Column column){
+		return builder;
+	}
+
+
+
+
+	/**
+	 * 更新行事件
+	 * 子类实现
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder onupdate(StringBuilder builder, Column column){
+		return builder;
+	}
+
+	/**
+	 * 位置
+	 * 子类实现
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	public StringBuilder position(StringBuilder builder, Column column){
+		return builder;
+	}
+
+	/**
+	 * 备注
+	 * 子类实现
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder comment(StringBuilder builder, Column column){
+		return builder;
+	}
+
+
+
+	/* *****************************************************************************************************************
+	 * 													tag
+	 * -----------------------------------------------------------------------------------------------------------------
+	 * public String buildAddRunSQL(Tag tag);
+	 * public List<String> buildAlterRunSQL(Tag tag);
+	 * public String buildDropRunSQL(Tag tag);
+	 * public String buildRenameRunSQL(Tag tag);
+	 * public String buildChangeDefaultRunSQL(Tag tag);
+	 * public String buildChangeNullableRunSQL(Tag tag);
+	 * public String buildChangeCommentRunSQL(Tag tag);
+	 * public List<String> buildChangeTypeRunSQL(Tag tag);
+	 ******************************************************************************************************************/
+
 	/**
 	 * 添加标签
 	 * ALTER TABLE  HR_USER ADD TAG UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
@@ -2211,174 +2597,46 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return null;
 	}
 
-
-	/**
-	 * 定义列
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	@Override
-	public StringBuilder define(StringBuilder builder, Column column){
-		//数据类型
-		type(builder, column);
-		// 编码
-		charset(builder, column);
-		//默认值
-		defaultValue(builder, column);
-		//非空
-		if(column.isNullable() == 0) {
-			nullable(builder, column);
-		}
-		//自增长列
-		increment(builder, column);
-		//更新行事件
-		onupdate(builder, column);
-		//备注
-		comment(builder, column);
-		//位置
-		position(builder, column);
-		return builder;
-	}
-
-	/**
-	 * 数据类型
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder type(StringBuilder builder, Column column){
-
-		builder.append(column.getTypeName());
-		//精度
-		Integer precision = column.getPrecision();
-		Integer scale = column.getScale();
-		if(null != precision) {
-			if (precision > 0) {
-				builder.append("(").append(precision);
-				if (null != scale && scale > 0) {
-					builder.append(",").append(scale);
-				}
-				builder.append(")");
-			} else if (precision == -1) {
-				builder.append("(max)");
-			}
-		}
-		return builder;
-	}
-	/**
-	 * 编码
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder nullable(StringBuilder builder, Column column){
-		int nullable = column.isNullable();
-		if(nullable != -1) {
-			if (nullable == 0) {
-				builder.append(" NOT");
-			}
-			builder.append(" NULL");
-		}
-		return builder;
-	}
-	/**
-	 * 编码
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder charset(StringBuilder builder, Column column){
-		// CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci
-		String charset = column.getCharset();
-		if(BasicUtil.isNotEmpty(charset)){
-			builder.append(" CHARACTER SET ").append(charset);
-			String collate = column.getCollate();
-			if(BasicUtil.isNotEmpty(collate)){
-				builder.append(" COLLATE ").append(collate);
-			}
-		}
-		return builder;
-	}
-	/**
-	 * 默认值
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder defaultValue(StringBuilder builder, Column column){
-		Object def = column.getDefaultValue();
-		if(null != def) {
-			builder.append(" DEFAULT ");
-			boolean isCharColumn = isCharColumn(column);
-			if(def instanceof SQL_BUILD_IN_VALUE){
-				String value = buildInValue((SQL_BUILD_IN_VALUE)def);
-				if(null != value){
-					builder.append(value);
-				}
-			}else {
-				format(builder, def);
-			}
-		}
-		return builder;
-	}
-
-	@Override
-	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
-		return builder;
-	}
-
-
-	/**
-	 * 更新行事件
-	 * 子类实现
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder onupdate(StringBuilder builder, Column column){
-		return builder;
-	}
-	/**
-	 * 自增长列
-	 * 子类实现
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder increment(StringBuilder builder, Column column){
-		return builder;
-	}
-
-	/**
-	 * 位置
-	 * 子类实现
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	public StringBuilder position(StringBuilder builder, Column column){
-		return builder;
-	}
-
-	/**
-	 * 备注
-	 * 子类实现
-	 * @param builder builder
-	 * @param column column
-	 * @return builder
-	 */
-	@Override
-	public StringBuilder comment(StringBuilder builder, Column column){
-		return builder;
-	}
-
 	/* *****************************************************************************************************************
 	 *
 	 * 													common
+	 *------------------------------------------------------------------------------------------------------------------
+	 * public boolean isBooleanColumn(Column column)
+	 * public  boolean isNumberColumn(Column column)
+	 * public boolean isCharColumn(Column column)
+	 * public String buildInValue(SQL_BUILD_IN_VALUE value)
+	 * public String type2type(String type)
+	 * public String type2class(String type)
 	 *
+	 * protected String string(List<String> keys, String key, ResultSet set, String def) throws Exception
+	 * protected String string(List<String> keys, String key, ResultSet set) throws Exception
+	 * protected Integer integer(List<String> keys, String key, ResultSet set, Integer def) throws Exception
+	 * protected Boolean bool(List<String> keys, String key, ResultSet set, Boolean def) throws Exception
+	 * protected Boolean bool(List<String> keys, String key, ResultSet set, int def) throws Exception
+	 * protected Object value(List<String> keys, String key, ResultSet set, Object def) throws Exception
+	 * protected Object value(List<String> keys, String key, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 
+	@Override
+	public boolean isBooleanColumn(Column column) {
+		String clazz = column.getClassName();
+		if(null != clazz){
+			clazz = clazz.toLowerCase();
+			if(clazz.contains("boolean")){
+				return true;
+			}
+		}else{
+			//如果没有同步法数据库，直接生成column可能只设置了type Name
+			String type = column.getTypeName();
+			if(null != type){
+				type = type.toLowerCase();
+				if(type.equals("bit") || type.equals("bool")){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	/**
 	 * 是否同数字
 	 * @param column column
@@ -2423,26 +2681,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return false;
 	}
 
-	@Override
-	public boolean isBooleanColumn(Column column) {
-		String clazz = column.getClassName();
-		if(null != clazz){
-			clazz = clazz.toLowerCase();
-			if(clazz.contains("boolean")){
-				return true;
-			}
-		}else{
-			//如果没有同步法数据库，直接生成column可能只设置了type Name
-			String type = column.getTypeName();
-			if(null != type){
-				type = type.toLowerCase();
-				if(type.equals("bit") || type.equals("bool")){
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 	@Override
 	public boolean isCharColumn(Column column) {
 		return !isNumberColumn(column) && !isBooleanColumn(column);
@@ -2518,24 +2756,4 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return value(keys, key, set, null);
 	}
 
-	/**
-	 * 构造完整表名
-	 * @param builder builder
-	 * @param table table
-	 * @return StringBuilder
-	 */
-	@Override
-	public StringBuilder name(StringBuilder builder, Table table){
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
-		String name = table.getName();
-		if(BasicUtil.isNotEmpty(catalog)) {
-			SQLUtil.delimiter(builder, catalog, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		if(BasicUtil.isNotEmpty(schema)) {
-			SQLUtil.delimiter(builder, schema, getDelimiterFr(), getDelimiterTo()).append(".");
-		}
-		SQLUtil.delimiter(builder, name, getDelimiterFr(), getDelimiterTo());
-		return builder;
-	}
 }

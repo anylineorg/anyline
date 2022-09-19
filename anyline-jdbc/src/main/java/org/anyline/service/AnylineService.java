@@ -465,11 +465,11 @@ public interface AnylineService<E>{
 	public List<String> tables(String types);
 	public List<String> tables();
 
-	public List<String> stables(String catalog, String schema, String name, String types);
-	public List<String> stables(String schema, String name, String types);
-	public List<String> stables(String name, String types);
-	public List<String> stables(String types);
-	public List<String> stables();
+	public List<String> mtables(String catalog, String schema, String name, String types);
+	public List<String> mtables(String schema, String name, String types);
+	public List<String> mtables(String name, String types);
+	public List<String> mtables(String types);
+	public List<String> mtables();
 
 
 	public List<String> columns(Table table);
@@ -485,13 +485,26 @@ public interface AnylineService<E>{
 	public DDLService ddl();
 	public MetaDataService metadata();
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													metadata
 	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
 	 ******************************************************************************************************************/
 	public interface MetaDataService{
 
+		/* *****************************************************************************************************************
+		 * 													table
+		 ******************************************************************************************************************/
 		/**
 		 * 表是否存在
 		 * @param table table
@@ -512,35 +525,56 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String,Table> tables(String types);
 		public LinkedHashMap<String,Table> tables();
 
-		/**
-		 * 查询了表
-		 * @param table 超表
-		 * @return tables
-		 */
-		public LinkedHashMap<String,Table> tables(MasterTable table);
 
 		public Table table(String catalog, String schema, String name);
 		public Table table(String schema, String name);
 		public Table table(String name);
 
 
+		/* *****************************************************************************************************************
+		 * 													master table
+		 ******************************************************************************************************************/
 		/**
-		 * 超表是否存在
+		 * 主表是否存在
 		 * @param table table
 		 * @return boolean
 		 */
 		public boolean exists(MasterTable table);
-		public LinkedHashMap<String, MasterTable> stables(String catalog, String schema, String name, String types);
-		public LinkedHashMap<String, MasterTable> stables(String schema, String name, String types);
-		public LinkedHashMap<String, MasterTable> stables(String name, String types);
-		public LinkedHashMap<String, MasterTable> stables(String types);
-		public LinkedHashMap<String, MasterTable> stables();
+		public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
+		public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
+		public LinkedHashMap<String, MasterTable> mtables(String name, String types);
+		public LinkedHashMap<String, MasterTable> mtables(String types);
+		public LinkedHashMap<String, MasterTable> mtables();
 
-		public MasterTable stable(String catalog, String schema, String name);
-		public MasterTable stable(String schema, String name);
-		public MasterTable stable(String name);
+		public MasterTable mtable(String catalog, String schema, String name);
+		public MasterTable mtable(String schema, String name);
+		public MasterTable mtable(String name);
 
 
+
+		/* *****************************************************************************************************************
+		 * 													partition table
+		 ******************************************************************************************************************/
+		/**
+		 * 主表是否存在
+		 * @param table table
+		 * @return boolean
+		 */
+		public boolean exists(PartitionTable table);
+		public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types);
+		public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types);
+		public LinkedHashMap<String, PartitionTable> ptables(String name, String types);
+		public LinkedHashMap<String, PartitionTable> ptables(String types);
+		public LinkedHashMap<String, PartitionTable> ptables();
+		public LinkedHashMap<String, PartitionTable> ptables(MasterTable table);
+
+		public PartitionTable ptable(String catalog, String schema, String name);
+		public PartitionTable ptable(String schema, String name);
+		public PartitionTable ptable(String name);
+
+		/* *****************************************************************************************************************
+		 * 													column
+		 ******************************************************************************************************************/
 		/**
 		 * 列是否存在
 		 * @param column column
@@ -556,15 +590,24 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String,Column> columns(String table);
 		public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
 
+		/* *****************************************************************************************************************
+		 * 													tag
+		 ******************************************************************************************************************/
 		public LinkedHashMap<String,Tag> tags(Table table);
 		public LinkedHashMap<String,Tag> tags(String table);
 		public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table);
 
+		/* *****************************************************************************************************************
+		 * 													index
+		 ******************************************************************************************************************/
 		public LinkedHashMap<String,Index> indexs(Table table);
 		public LinkedHashMap<String,Index> indexs(String table);
 		public LinkedHashMap<String,Index> indexs(String catalog, String schema, String table);
 
 
+		/* *****************************************************************************************************************
+		 * 													constraint
+		 ******************************************************************************************************************/
 		public LinkedHashMap<String,Constraint> constraints(Table table);
 		public LinkedHashMap<String,Constraint> constraints(String table);
 		public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table);
@@ -577,8 +620,43 @@ public interface AnylineService<E>{
 	 *
 	 * 													DDL
 	 *
+	 * =================================================================================================================
+	 * table			: 表
+	 * master table		: 主表
+	 * partition table	: 分区有
+	 * column			: 列
+	 * tag				: 标签
+	 * index			: 索引
+	 * constraint		: 约束
+	 *
 	 ******************************************************************************************************************/
 	public interface DDLService{
+		/* *****************************************************************************************************************
+		 * 													table
+		 ******************************************************************************************************************/
+		public boolean save(Table table) throws Exception;
+		public boolean create(Table table) throws Exception;
+		public boolean alter(Table table) throws Exception;
+		public boolean drop(Table table) throws Exception;
+
+		/* *****************************************************************************************************************
+		 * 													master table
+		 ******************************************************************************************************************/
+		public boolean save(MasterTable table) throws Exception;
+		public boolean create(MasterTable table) throws Exception;
+		public boolean alter(MasterTable table) throws Exception;
+		public boolean drop(MasterTable table) throws Exception;
+
+		/* *****************************************************************************************************************
+		 * 													partition table
+		 ******************************************************************************************************************/
+		public boolean save(PartitionTable table) throws Exception;
+		public boolean create(PartitionTable table) throws Exception;
+		public boolean alter(PartitionTable table) throws Exception;
+		public boolean drop(PartitionTable table) throws Exception;
+		/* *****************************************************************************************************************
+		 * 													column
+		 ******************************************************************************************************************/
 		/**
 		 * 修改列  名称 数据类型 位置 默认值
 		 * 执行save前先调用column.update()设置修改后的属性
@@ -590,28 +668,25 @@ public interface AnylineService<E>{
 		public boolean add(Column column) throws Exception;
 		public boolean alter(Column column) throws Exception;
 		public boolean drop(Column column) throws Exception;
-
-		/**
-		 * 添加标签
-		 * @param tag tag
-		 * @return boolean
-		 * @throws Exception Exception
-		 */
-		public boolean add(Tag tag) throws Exception;
+		/* *****************************************************************************************************************
+		 * 													tag
+		 ******************************************************************************************************************/
 		public boolean save(Tag tag) throws Exception;
+		public boolean add(Tag tag) throws Exception;
 		public boolean alter(Tag tag) throws Exception;
 		public boolean drop(Tag tag) throws Exception;
 
-		public boolean save(Table table) throws Exception;
-		public boolean create(Table table) throws Exception;
-		public boolean alter(Table table) throws Exception;
-		public boolean drop(Table table) throws Exception;
+		/* *****************************************************************************************************************
+		 * 													index
+		 ******************************************************************************************************************/
+		public boolean add(Index index) throws Exception;
+		public boolean alter(Index index) throws Exception;
+		public boolean drop(Index index) throws Exception;
 
-		public boolean save(MasterTable table) throws Exception;
-		public boolean create(MasterTable table) throws Exception;
-		public boolean alter(MasterTable table) throws Exception;
-		public boolean drop(MasterTable table) throws Exception;
 
+		/* *****************************************************************************************************************
+		 * 													constraint
+		 ******************************************************************************************************************/
 		/**
 		 * 添加约束
 		 * @param constraint constraint
@@ -621,11 +696,6 @@ public interface AnylineService<E>{
 		public boolean add(Constraint constraint) throws Exception;
 		public boolean alter(Constraint constraint) throws Exception;
 		public boolean drop(Constraint constraint) throws Exception;
-
-		public boolean add(Index index) throws Exception;
-		public boolean alter(Index index) throws Exception;
-		public boolean drop(Index index) throws Exception;
-
 
 
 	}

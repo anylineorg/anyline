@@ -77,7 +77,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * ****************************************************************************************************/
 
 	/**
-	 * 查询超表
+	 * 查询主表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -147,7 +147,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 
 	/**
-	 * 查询瑗表上的列
+	 * 查询表上的列
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sql
