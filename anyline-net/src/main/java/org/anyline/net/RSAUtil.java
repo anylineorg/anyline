@@ -121,7 +121,7 @@ public class RSAUtil {
 	 * @throws Exception Exception
 	 */ 
  
-	public static String privateDecrypt(String data, RSAPrivateKey privateKey)  throws Exception{
+	public static String privateDecrypt(String data, RSAPrivateKey privateKey) throws Exception{
 		try { 
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.DECRYPT_MODE, privateKey); 
@@ -140,7 +140,7 @@ public class RSAUtil {
 	 * @throws Exception Exception
 	 */ 
  
-	public static String privateEncrypt(String data, RSAPrivateKey privateKey)  throws Exception{
+	public static String privateEncrypt(String data, RSAPrivateKey privateKey) throws Exception{
 		try { 
 			Cipher cipher = Cipher.getInstance(RSA_ALGORITHM); 
 			cipher.init(Cipher.ENCRYPT_MODE, privateKey); 
@@ -170,7 +170,7 @@ public class RSAUtil {
 	} 
  
 	@SuppressWarnings("deprecation")
-	private static byte[] rsaSplitCodec(Cipher cipher, int opmode, byte[] datas, int keySize)  throws Exception{
+	private static byte[] rsaSplitCodec(Cipher cipher, int opmode, byte[] datas, int keySize) throws Exception{
 		int maxBlock = 0; 
 		if (opmode == Cipher.DECRYPT_MODE) { 
 			maxBlock = keySize / 8; 
