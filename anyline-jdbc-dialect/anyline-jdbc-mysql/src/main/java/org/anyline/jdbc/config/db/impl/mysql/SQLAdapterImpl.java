@@ -8,7 +8,6 @@ import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.entity.Column;
-import org.anyline.jdbc.entity.STable;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
@@ -16,11 +15,9 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.zip.CheckedOutputStream;
 
 @Repository("anyline.jdbc.sql.adapter.mysql")
 public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, InitializingBean {

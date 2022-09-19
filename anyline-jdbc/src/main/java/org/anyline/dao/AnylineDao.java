@@ -136,13 +136,13 @@ public interface AnylineDao<E>{
 	public LinkedHashMap<String, Table> tables(String name, String types);
 	public LinkedHashMap<String, Table> tables(String types);
 	public LinkedHashMap<String, Table> tables();
-	public LinkedHashMap<String, Table> tables(STable table);
+	public LinkedHashMap<String, Table> tables(MasterTable table);
 
-	public LinkedHashMap<String, STable> stables(String catalog, String schema, String name, String types);
-	public LinkedHashMap<String, STable> stables(String schema, String name, String types);
-	public LinkedHashMap<String, STable> stables(String name, String types);
-	public LinkedHashMap<String, STable> stables(String types);
-	public LinkedHashMap<String, STable> stables();
+	public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
+	public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
+	public LinkedHashMap<String, MasterTable> mtables(String name, String types);
+	public LinkedHashMap<String, MasterTable> mtables(String types);
+	public LinkedHashMap<String, MasterTable> mtables();
 
 	public LinkedHashMap<String, Column> columns(Table table);
 	public LinkedHashMap<String, Column> columns(String table);

@@ -1270,7 +1270,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return List
 	 */
 	@Override
-	public LinkedHashMap<String, STable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception{
+	public LinkedHashMap<String, MasterTable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1281,10 +1281,10 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			if(BasicUtil.isEmpty(tableName)){
 				continue;
 			}
-			STable table = tables.get(tableName.toUpperCase());
+			MasterTable table = tables.get(tableName.toUpperCase());
 			if(null == table){
 				if(create) {
-					table = new STable(tableName);
+					table = new MasterTable(tableName);
 					tables.put(tableName.toUpperCase(), table);
 				}else {
 					continue;
@@ -1318,7 +1318,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, STable> stables(int index,boolean create,  String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception{
+	public LinkedHashMap<String, MasterTable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1382,16 +1382,16 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 
 
 	/**
-	 * 根据超表查询子表
+	 * 根据超表查询分区表
 	 * @param table 超表
 	 * @return List
 	 */
 	@Override
-	public List<String> buildQueryTableRunSQL(STable table){
+	public List<String> buildQueryTableRunSQL(MasterTable table){
 		return null;
 	}
 
-	public LinkedHashMap<String, Table> tables(int index, boolean create, STable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+	public LinkedHashMap<String, Table> tables(int index, boolean create, MasterTable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
 		if(null == table){
 			tables = new LinkedHashMap<>();
 		}
@@ -1707,29 +1707,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 ******************************************************************************************************************/
 
 
-	public String buildDropRunSQL(Table table){
-		table.setCreater(this);
-
-		StringBuilder builder = new StringBuilder();
-		String catalog = table.getCatalog();
-		String schema = table.getSchema();
-		builder.append("DROP ").append(table.getKeyword()).append(" ");
-		checkTableExists(builder, true);
-		name(builder, table);
-		return builder.toString();
-	}
-
-
-	@Override
-	public String alterColumnKeyword(){
-		return "ALTER";
-	}
-
-	@Override
-	public String buildAlterRunSQL(Table table){
-		return null;
-	}
-
 	@Override
 	public String buildCreateRunSQL(Table table){
 		StringBuilder builder = new StringBuilder();
@@ -1757,20 +1734,66 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 				builder.append(")");
 			}
 		}
-		fromSuperTable(builder, table);
 		comment(builder, table);
 		return builder.toString();
 	}
 
+	@Override
+	public String buildAlterRunSQL(Table table){
+		return null;
+	}
 	/**
-	 * 通过超表 创建子表
+	 * 修改表名
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param table table
+	 * @return String
+	 */
+	@Override
+	public String buildRenameRunSQL(Table table) {
+		return null;
+	}
+
+	/**
+	 * 删除表
+	 * @param table table
+	 * @return String
+	 */
+	public String buildDropRunSQL(Table table){
+		table.setCreater(this);
+
+		StringBuilder builder = new StringBuilder();
+		String catalog = table.getCatalog();
+		String schema = table.getSchema();
+		builder.append("DROP ").append(table.getKeyword()).append(" ");
+		checkTableExists(builder, true);
+		name(builder, table);
+		return builder.toString();
+	}
+
+	/**
+	 * 备注
+	 * 子类实现
 	 * @param builder builder
 	 * @param table table
 	 * @return builder
 	 */
-	public StringBuilder fromSuperTable(StringBuilder builder, Table table){
+	@Override
+	public StringBuilder comment(StringBuilder builder, Table table){
+		String comment = table.getComment();
+		if(BasicUtil.isNotEmpty(comment)) {
+			builder.append(" COMMENT'").append(comment).append("'");
+		}
 		return builder;
 	}
+
+
+	@Override
+	public String alterColumnKeyword(){
+		return "ALTER";
+	}
+
+
 	/**
 	 * 主键
 	 * @param builder builder
@@ -1795,17 +1818,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 
 
-	/**
-	 * 修改表名
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param table table
-	 * @return String
-	 */
-	@Override
-	public String buildRenameRunSQL(Table table) {
-		return null;
-	}
 	/**
 	 * 添加列
 	 * ALTER TABLE  HR_USER ADD COLUMN UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
@@ -2281,21 +2293,6 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 
 
-	/**
-	 * 备注
-	 * 子类实现
-	 * @param builder builder
-	 * @param table table
-	 * @return builder
-	 */
-	@Override
-	public StringBuilder comment(StringBuilder builder, Table table){
-		String comment = table.getComment();
-		if(BasicUtil.isNotEmpty(comment)) {
-			builder.append(" COMMENT'").append(comment).append("'");
-		}
-		return builder;
-	}
 	/**
 	 * 更新行事件
 	 * 子类实现

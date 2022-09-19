@@ -1601,9 +1601,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     @Override
     public List<String> stables(String catalog, String schema, String name, String types) {
-        LinkedHashMap<String,STable> tables = metadata.stables(catalog, schema, name, types);
+        LinkedHashMap<String, MasterTable> tables = metadata.stables(catalog, schema, name, types);
         List<String> list = new ArrayList<>();
-        for(STable table:tables.values()){
+        for(MasterTable table:tables.values()){
             list.add(table.getName());
         }
         return list;
@@ -1740,7 +1740,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public boolean exists(STable table) {
+        public boolean exists(MasterTable table) {
             return false;
         }
         @Override
@@ -1769,7 +1769,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public LinkedHashMap<String, Table> tables(STable table) {
+        public LinkedHashMap<String, Table> tables(MasterTable table) {
             return dao.tables(table);
         }
 
@@ -1797,37 +1797,37 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
 
         @Override
-        public LinkedHashMap<String, STable> stables(String catalog, String schema, String name, String types) {
-            return dao.stables(catalog, schema, name, types);
+        public LinkedHashMap<String, MasterTable> stables(String catalog, String schema, String name, String types) {
+            return dao.mtables(catalog, schema, name, types);
         }
 
         @Override
-        public LinkedHashMap<String, STable> stables(String schema, String name, String types) {
+        public LinkedHashMap<String, MasterTable> stables(String schema, String name, String types) {
             return stables(null, schema, name, types);
         }
 
         @Override
-        public LinkedHashMap<String, STable> stables(String name, String types) {
+        public LinkedHashMap<String, MasterTable> stables(String name, String types) {
             return stables(null, null, name, types);
         }
 
         @Override
-        public LinkedHashMap<String, STable> stables(String types) {
+        public LinkedHashMap<String, MasterTable> stables(String types) {
             return stables(null, types);
         }
 
         @Override
-        public LinkedHashMap<String, STable> stables() {
+        public LinkedHashMap<String, MasterTable> stables() {
             return stables("STABLE");
         }
 
         @Override
-        public STable stable(String catalog, String schema, String name) {
-            LinkedHashMap<String,STable> tables = stables(catalog, schema, name, "STABLE");
+        public MasterTable stable(String catalog, String schema, String name) {
+            LinkedHashMap<String, MasterTable> tables = stables(catalog, schema, name, "STABLE");
             if(tables.size() == 0){
                 return null;
             }
-            STable table = tables.values().iterator().next();
+            MasterTable table = tables.values().iterator().next();
             table.setColumns(columns(table));
             table.setTags(tags(table));
             table.setIndexs(indexs(table));
@@ -1835,12 +1835,12 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public STable stable(String schema, String name) {
+        public MasterTable stable(String schema, String name) {
             return stable(null, schema, name);
         }
 
         @Override
-        public STable stable(String name) {
+        public MasterTable stable(String name) {
             return stable(null, null, name);
         }
 
@@ -1993,9 +1993,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public boolean save(STable table) throws Exception {
+        public boolean save(MasterTable table) throws Exception {
             boolean result = false;
-            STable otable = metadata.stable(table.getCatalog(), table.getSchema(), table.getName());
+            MasterTable otable = metadata.stable(table.getCatalog(), table.getSchema(), table.getName());
             if(null != otable){
                 otable.setUpdate(table);
                 result = alter(otable);
@@ -2008,7 +2008,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public boolean create(STable table) throws Exception {
+        public boolean create(MasterTable table) throws Exception {
             table.setService(AnylineServiceImpl.this);
             boolean result =  dao.create(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
@@ -2016,7 +2016,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public boolean alter(STable table) throws Exception {
+        public boolean alter(MasterTable table) throws Exception {
             table.setService(AnylineServiceImpl.this);
             boolean result = dao.alter(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());
@@ -2024,7 +2024,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public boolean drop(STable table) throws Exception {
+        public boolean drop(MasterTable table) throws Exception {
             table.setService(AnylineServiceImpl.this);
             boolean result = dao.drop(table);
             clearColumnCache(table.getCatalog(), table.getSchema(), table.getName());

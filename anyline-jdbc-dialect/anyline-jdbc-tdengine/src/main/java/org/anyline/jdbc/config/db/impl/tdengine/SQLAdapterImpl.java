@@ -7,10 +7,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.config.db.SQLAdapter;
 import org.anyline.jdbc.config.db.impl.BasicSQLAdapter;
 import org.anyline.jdbc.config.db.run.RunSQL;
-import org.anyline.jdbc.entity.Column;
-import org.anyline.jdbc.entity.STable;
-import org.anyline.jdbc.entity.Table;
-import org.anyline.jdbc.entity.Tag;
+import org.anyline.jdbc.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
 import org.springframework.beans.factory.InitializingBean;
@@ -125,7 +122,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, STable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception{
+	public LinkedHashMap<String, MasterTable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -136,10 +133,10 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
-				STable table = tables.get(name.toUpperCase());
+				MasterTable table = tables.get(name.toUpperCase());
 				if(null == table){
 					if(create) {
-						table = new STable(name);
+						table = new MasterTable(name);
 						tables.put(name.toUpperCase(), table);
 					}else{
 						continue;
@@ -155,10 +152,10 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 				if(BasicUtil.isEmpty(name)){
 					continue;
 				}
-				STable table = tables.get(name.toUpperCase());
+				MasterTable table = tables.get(name.toUpperCase());
 				if(null == table){
 					if(create) {
-						table = new STable(name);
+						table = new MasterTable(name);
 						tables.put(name.toUpperCase(), table);
 					}else{
 						continue;
@@ -182,7 +179,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, STable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception{
+	public LinkedHashMap<String, MasterTable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception{
 		return tables;
 	}
 
@@ -232,19 +229,19 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 
 	/**
-	 * 根据超表查询子表
+	 * 根据超表查询分区表
 	 * @param table 超表
 	 * @return List
 	 */
 	@Override
-	public List<String> buildQueryTableRunSQL(STable table){
+	public List<String> buildQueryTableRunSQL(MasterTable table){
 		List<String> sqls = new ArrayList<>();
 		String sql = "SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '"+table.getName()+"' AND TYPE='CHILD_TABLE'";
 		sqls.add(sql);
 		return sqls;
 	}
 
-	public LinkedHashMap<String, Table> tables(int index, boolean create, STable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
+	public LinkedHashMap<String, Table> tables(int index, boolean create, MasterTable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
 		if(null == table){
 			tables = new LinkedHashMap<>();
 		}
@@ -266,7 +263,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			tab.setSchema(table.getSchema());
 			tab.setName(name);
 			tab.setTtl(row.getLong("TTL", null));
-			tab.setStableName(table.getName());
 			tab.setType(row.getString("TYPE"));
 
 		}
@@ -360,7 +356,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			builder.append(" WHERE 1=0");
 			sqls.add(builder.toString());
 		}else {
-			if (table instanceof STable) {
+			if (table instanceof MasterTable) {
 				builder.append("SELECT DISTINCT STABLE_NAME,DB_NAME,TAG_NAME,TAG_TYPE FROM INFORMATION_SCHEMA.INS_TAGS WHERE db_name = '");
 				builder.append(table.getCatalog()).append("' AND STABLE_NAME='").append(table.getName()).append("'");
 			} else {
@@ -447,11 +443,14 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 *
 	 ******************************************************************************************************************/
 
+	/* *****************************************************************************************************************
+	 * 													TABLE
+	 ******************************************************************************************************************/
 	@Override
 	public String buildCreateRunSQL(Table table){
 		LinkedHashMap<String,Tag> tags = table.getTags();
 		String sql = super.buildCreateRunSQL(table);
-		if(table instanceof STable){
+		if(table instanceof MasterTable){
 			//超表
 			StringBuilder builder = new StringBuilder();
 			builder.append(sql);
@@ -472,9 +471,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return sql;
 	}
 
-	public StringBuilder fromSuperTable(StringBuilder builder, Table table){
+	public StringBuilder fromSuperTable(StringBuilder builder, PartitionTable table){
 
-		String stable = table.getStableName();
+		String stable = table.getMasterName();
 		if(BasicUtil.isNotEmpty(stable)){
 			builder.append(" USING ");
 			SQLUtil.delimiter(builder, stable, getDelimiterFr(), getDelimiterTo());
@@ -512,6 +511,74 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	public String buildRenameRunSQL(Table table) {
 		return null;
 	}
+
+	/**
+	 * 修改备注
+	 * 子类实现
+	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
+	 * @param table table
+	 * @return String
+	 */
+	public String buildChangeCommentRunSQL(Table table){
+		return null;
+	}
+
+	/**
+	 * 创建主表
+	 * @param table table
+	 * @return String
+	 */
+	public String buildCreateRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildAlterRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildDropRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildRenameRunSQL(MasterTable table){
+		return null;
+	}
+	public String buildChangeCommentRunSQL(MasterTable table){
+		return null;
+	}
+
+	/**
+	 * 创建分区表
+	 * @param table table
+	 * @return String
+	 */
+	public String buildCreateRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildAlterRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildDropRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildRenameRunSQL(PartitionTable table){
+		return null;
+	}
+	public String buildChangeCommentRunSQL(PartitionTable table){
+		return null;
+	}
+
+	/**
+	 * 主键
+	 * @param builder builder
+	 * @param table table
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder primary(StringBuilder builder, Table table){
+		return builder;
+	}
+
+	/* *****************************************************************************************************************
+	 * 													COLUMN
+	 ******************************************************************************************************************/
 	/**
 	 * 修改默认值
 	 * 子类实现
@@ -544,16 +611,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 
 
-	/**
-	 * 修改备注
-	 * 子类实现
-	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param table table
-	 * @return String
-	 */
-	public String buildChangeCommentRunSQL(Table table){
-		return null;
-	}
 	/**
 	 * 修改数据类型
 	 * 子类实现
@@ -596,17 +653,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return builder;
 	}
 
-	/**
-	 * 主键
-	 * 不需要显式创建 第一列默认主键
-	 * @param builder builder
-	 * @param table table
-	 * @return builder
-	 */
-	@Override
-	public StringBuilder primary(StringBuilder builder, Table table){
-		return builder;
-	}
 	/**
 	 * 备注
 	 * 子类实现

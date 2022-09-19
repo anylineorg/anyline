@@ -278,7 +278,7 @@ public interface SQLAdapter {
 	 * @return tables
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, STable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, DataSet set) throws Exception;
+	public LinkedHashMap<String, MasterTable> stables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
@@ -290,7 +290,7 @@ public interface SQLAdapter {
 	 * @return stables
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, STable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, STable> tables, ResultSet set) throws Exception;
+	public LinkedHashMap<String, MasterTable> stables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception;
 
 
 	/**
@@ -304,7 +304,7 @@ public interface SQLAdapter {
 	 */
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
 
-	public List<String> buildQueryTableRunSQL(STable table);
+	public List<String> buildQueryTableRunSQL(MasterTable table);
 
 	/**
 	 *  根据查询结果集构造Table
@@ -331,7 +331,7 @@ public interface SQLAdapter {
 	 */
 	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
 
-	public LinkedHashMap<String, Table> tables(int index, boolean create, STable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
+	public LinkedHashMap<String, Table> tables(int index, boolean create, MasterTable table, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
 	/**
 	 * 查询瑗表上的列
 	 * @param create 上一步没有查到的，这一步是否需要新创建
@@ -431,6 +431,24 @@ public interface SQLAdapter {
 	 * 													DDL
 	 *
 	 ******************************************************************************************************************/
+
+	public String buildCreateRunSQL(Table table);
+	public String buildAlterRunSQL(Table table);
+	public String buildDropRunSQL(Table table);
+	public String buildRenameRunSQL(Table table);
+	public String buildChangeCommentRunSQL(Table table);
+
+	public String buildCreateRunSQL(MasterTable table);
+	public String buildAlterRunSQL(MasterTable table);
+	public String buildDropRunSQL(MasterTable table);
+	public String buildRenameRunSQL(MasterTable table);
+	public String buildChangeCommentRunSQL(MasterTable table);
+
+	public String buildCreateRunSQL(PartitionTable table);
+	public String buildAlterRunSQL(PartitionTable table);
+	public String buildDropRunSQL(PartitionTable table);
+	public String buildRenameRunSQL(PartitionTable table);
+	public String buildChangeCommentRunSQL(PartitionTable table);
 
 	/**
 	 * 添加列
@@ -554,12 +572,6 @@ public interface SQLAdapter {
 	public String buildChangeCommentRunSQL(Tag tag);
 
 
-	public String buildCreateRunSQL(Table table);
-	public String buildAlterRunSQL(Table table);
-	public String buildDropRunSQL(Table table);
-	public String buildRenameRunSQL(Table table);
-	public String buildChangeCommentRunSQL(Table table);
-
 	/**
 	 * 创建之前  检测表是否存在
 	 * IF NOT EXISTS
@@ -569,7 +581,13 @@ public interface SQLAdapter {
 	 */
 	public StringBuilder checkTableExists(StringBuilder builder, boolean exists);
 
-	public StringBuilder fromSuperTable(StringBuilder builder, Table table);
+	/**
+	 * 根据主表创建分区表
+	 * @param builder builder
+	 * @param table table
+	 * @return StringBuilder
+	 *//*
+	public StringBuilder fromSuperTable(StringBuilder builder, Table table);*/
 	/**
 	 * 构造表名
 	 * @param builder builder

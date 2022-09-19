@@ -517,7 +517,7 @@ public interface AnylineService<E>{
 		 * @param table 超表
 		 * @return tables
 		 */
-		public LinkedHashMap<String,Table> tables(STable table);
+		public LinkedHashMap<String,Table> tables(MasterTable table);
 
 		public Table table(String catalog, String schema, String name);
 		public Table table(String schema, String name);
@@ -529,16 +529,16 @@ public interface AnylineService<E>{
 		 * @param table table
 		 * @return boolean
 		 */
-		public boolean exists(STable table);
-		public LinkedHashMap<String,STable> stables(String catalog, String schema, String name, String types);
-		public LinkedHashMap<String,STable> stables(String schema, String name, String types);
-		public LinkedHashMap<String,STable> stables(String name, String types);
-		public LinkedHashMap<String,STable> stables(String types);
-		public LinkedHashMap<String,STable> stables();
+		public boolean exists(MasterTable table);
+		public LinkedHashMap<String, MasterTable> stables(String catalog, String schema, String name, String types);
+		public LinkedHashMap<String, MasterTable> stables(String schema, String name, String types);
+		public LinkedHashMap<String, MasterTable> stables(String name, String types);
+		public LinkedHashMap<String, MasterTable> stables(String types);
+		public LinkedHashMap<String, MasterTable> stables();
 
-		public STable stable(String catalog, String schema, String name);
-		public STable stable(String schema, String name);
-		public STable stable(String name);
+		public MasterTable stable(String catalog, String schema, String name);
+		public MasterTable stable(String schema, String name);
+		public MasterTable stable(String name);
 
 
 		/**
@@ -607,10 +607,10 @@ public interface AnylineService<E>{
 		public boolean alter(Table table) throws Exception;
 		public boolean drop(Table table) throws Exception;
 
-		public boolean save(STable table) throws Exception;
-		public boolean create(STable table) throws Exception;
-		public boolean alter(STable table) throws Exception;
-		public boolean drop(STable table) throws Exception;
+		public boolean save(MasterTable table) throws Exception;
+		public boolean create(MasterTable table) throws Exception;
+		public boolean alter(MasterTable table) throws Exception;
+		public boolean drop(MasterTable table) throws Exception;
 
 		/**
 		 * 添加约束

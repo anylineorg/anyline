@@ -44,7 +44,6 @@ import org.anyline.jdbc.util.SQLAdapterUtil;
 import org.anyline.listener.DDListener;
 import org.anyline.listener.DMListener;
 import org.anyline.util.*;
-import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +56,6 @@ import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.jdbc.support.rowset.SqlRowSetMetaData;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
@@ -1317,7 +1315,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return tables(null, null, null, "TABLE");
 	}
 
-	public LinkedHashMap<String,Table> tables(STable table){
+	public LinkedHashMap<String,Table> tables(MasterTable table){
 		LinkedHashMap<String,Table> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
@@ -1359,9 +1357,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public LinkedHashMap<String,STable> stables(String catalog, String schema, String pattern, String types) {
+	public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String pattern, String types) {
 
-		LinkedHashMap<String,STable> tables = new LinkedHashMap<>();
+		LinkedHashMap<String, MasterTable> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
 		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
@@ -1388,7 +1386,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			if(null != pattern){
 				if(table_map.isEmpty()){
 					//如果是根据表名查询、大小写有可能造成查询失败，先查询全部表，生成缓存，再从缓存中不区分大小写查询
-					LinkedHashMap<String,STable> all = stables(catalog, schema, null, types);
+					LinkedHashMap<String, MasterTable> all = mtables(catalog, schema, null, types);
 					for(Table table:all.values()){
 						table_map.put(table.getName().toUpperCase(), table.getName());
 					}
@@ -1437,23 +1435,23 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public LinkedHashMap<String,STable> stables(String schema, String name, String types) {
-		return stables(null, schema, name, types);
+	public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types) {
+		return mtables(null, schema, name, types);
 	}
 
 	@Override
-	public LinkedHashMap<String,STable> stables(String name, String types) {
-		return stables(null, null, name, types);
+	public LinkedHashMap<String, MasterTable> mtables(String name, String types) {
+		return mtables(null, null, name, types);
 	}
 
 	@Override
-	public LinkedHashMap<String,STable> stables(String types) {
-		return stables(null, types);
+	public LinkedHashMap<String, MasterTable> mtables(String types) {
+		return mtables(null, types);
 	}
 
 	@Override
-	public LinkedHashMap<String,STable> stables() {
-		return stables("STABLE");
+	public LinkedHashMap<String, MasterTable> mtables() {
+		return mtables("STABLE");
 	}
 
 
