@@ -133,7 +133,51 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	@Override
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
-		return super.tables(index, create, catalog, schema, tables, set);
+		if(null == tables){
+			tables = new LinkedHashMap<>();
+		}
+		if(index == 0){
+			//SHOW TABLES 只返回一列stable_name
+			for(DataRow row:set){
+				String name = row.getString("stable_name");
+				if(BasicUtil.isEmpty(name)){
+					continue;
+				}
+				Table table = tables.get(name.toUpperCase());
+				if(null == table){
+					if(create) {
+						table = new MasterTable(name);
+						tables.put(name.toUpperCase(), table);
+					}else{
+						continue;
+					}
+				}
+			}
+		}else if(index == 1){
+			//SELECT * FROM INFORMATION_SCHEMA.INS_TABLES
+			//table_name   | db_name|create_time            |columns |stable_name    |uid                |vgroup_id        |     ttl     |         table_comment          |         type          |
+			//a_test       | simple  2022-09-19 11:08:46.512|3       | NULL          |657579901363175104 |           2     |           0 | NULL                           | NORMAL_TABLE          |
+
+			for(DataRow row:set){
+				String name = row.getString("stable_name");
+				if(BasicUtil.isEmpty(name)){
+					continue;
+				}
+				Table table = tables.get(name.toUpperCase());
+				if(null == table){
+					if(create) {
+						table = new MasterTable(name);
+						tables.put(name.toUpperCase(), table);
+					}else{
+						continue;
+					}
+				}
+				table.setCatalog(row.getString("db_name"));
+				table.setType(row.getString("type"));
+				table.setComment(row.getString("table_comment"));
+			}
+		}
+		return tables;
 	}
 	@Override
 	public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception{
@@ -417,9 +461,20 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception{
 		return super.columns(create, table, columns, set);
 	}
+
+	/**
+	 * 根据JDBC接口
+	 * 会返回TAG，所以上一步未查到的，不需要新创建
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table table
+	 * @param columns columns
+	 * @param set set
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception{
-		return super.columns(create, table, columns, set);
+		return super.columns(false, table, columns, set);
 	}
 
 
@@ -532,13 +587,27 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		}
 		return tags;
 	}
+
+	/**
+	 * 根据metadata 解析
+	 * 没有相应接口，不需要实现
+	 * @param create
+	 * @param table
+	 * @param tags
+	 * @param set
+	 * @return
+	 * @throws Exception
+	 */
 	@Override
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
 		return super.tags(create, table, tags, set);
 	}
 	@Override
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
-		return super.tags(create, table, tags, set);
+		if(null == tags){
+			tags = new LinkedHashMap<>();
+		}
+		return tags;
 	}
 
 	/* *****************************************************************************************************************
@@ -664,27 +733,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	@Override
 	public String buildCreateRunSQL(Table table) throws Exception{
-		LinkedHashMap<String,Tag> tags = table.getTags();
-		String sql = super.buildCreateRunSQL(table);
-		if(table instanceof MasterTable){
-			//主表
-			StringBuilder builder = new StringBuilder();
-			builder.append(sql);
-			builder.append(" TAGS (");
-			int idx = 0;
-			for(Tag tag:tags.values()){
-				if(idx > 0){
-					builder.append(",");
-				}
-				SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
-				type(builder, tag);
-				comment(builder, tag);
-				idx ++;
-			}
-			builder.append(")");
-			return builder.toString();
-		}
-		return sql;
+		return super.buildCreateRunSQL(table);
 	}
 	@Override
 	public String buildAlterRunSQL(Table table) throws Exception{
@@ -750,14 +799,15 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 备注
-	 * 子类实现
+	 * 不支持
 	 * @param builder builder
 	 * @param table table
 	 * @return builder
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Table table){
-		return super.comment(builder, table);
+		log.warn("主表不支持comment");
+		return builder;
 	}
 
 	/**
@@ -786,7 +836,24 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 */
 	@Override
 	public String buildCreateRunSQL(MasterTable table) throws Exception{
-		return super.buildCreateRunSQL(table);
+		StringBuilder builder = new StringBuilder();
+		Table tab = table;
+ 		String sql = buildCreateRunSQL(tab);
+		builder.append(sql);
+		builder.append(" TAGS (");
+		LinkedHashMap<String,Tag> tags = table.getTags();
+		int idx = 0;
+		for(Tag tag:tags.values()){
+			if(idx > 0){
+				builder.append(",");
+			}
+			SQLUtil.delimiter(builder, tag.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
+			type(builder, tag);
+			comment(builder, tag);
+			idx ++;
+		}
+		builder.append(")");
+		return builder.toString();
 	}
 	@Override
 	public String buildAlterRunSQL(MasterTable table) throws Exception{
@@ -794,7 +861,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 	@Override
 	public String buildDropRunSQL(MasterTable table) throws Exception{
-		return super.buildDropRunSQL(table);
+		Table tab = table;
+		return super.buildDropRunSQL(tab);
 	}
 	@Override
 	public String buildRenameRunSQL(MasterTable table) throws Exception{
@@ -1095,14 +1163,14 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 位置
-	 * 子类实现
+	 * 不支持
 	 * @param builder builder
 	 * @param column column
 	 * @return builder
 	 */
 	@Override
 	public StringBuilder position(StringBuilder builder, Column column){
-		return super.position(builder, column);
+		return builder;
 	}
 	/**
 	 * 备注

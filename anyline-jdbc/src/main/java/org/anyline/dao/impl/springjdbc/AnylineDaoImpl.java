@@ -2000,15 +2000,152 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	@Override
 	public boolean create(MasterTable table) throws Exception{
-		return false;
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
+		String random = null;
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = table.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(table);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (showSQL) {
+			log.warn("{}[create master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(table, result);
+		}
+		return result;
 	}
 	@Override
 	public boolean alter(MasterTable table) throws Exception{
-		return false;
+
+		boolean result = false;
+		Table update = table.getUpdate();
+		LinkedHashMap<String, Column> columns = table.getColumns();
+		LinkedHashMap<String, Column> ucolumns = update.getColumns();
+		LinkedHashMap<String, Tag> tags = table.getTags();
+		LinkedHashMap<String, Tag> utags = update.getTags();
+		String name = table.getName();
+		String uname = update.getName();
+		Long fr = System.currentTimeMillis();
+		if(!name.equalsIgnoreCase(uname)){
+			//修改表名
+			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
+			String random = null;
+			if(showSQL){
+				random = random();
+				log.warn("{}[txt:\n{}\n]",random,sql);
+			}
+
+			DDListener listener = table.getListener();
+			boolean exe = true;
+			if(null != listener){
+				exe = listener.beforeRename(table);
+			}
+			if(exe) {
+				getJdbc().update(sql);
+				result = true;
+			}
+
+			if (showSQL) {
+				log.warn("{}[rename master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+			}
+			if(null != listener){
+				listener.afterRename(table, result);
+			}
+		}
+		//更新列
+		for(Column ucolumn : ucolumns.values()){
+			Column column = columns.get(ucolumn.getName().toUpperCase());
+			if(null != column){
+				//修改列
+				column.setTable(update);
+				column.setUpdate(ucolumn);
+				column.setService(table.getService());
+				alter(column);
+			}else{
+				//添加列
+				ucolumn.setTable(update);
+				add(ucolumn);
+			}
+		}
+		//删除列
+		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
+			for (Column column : columns.values()) {
+				if(column instanceof Tag){
+					continue;
+				}
+				Column ucolumn = ucolumns.get(column.getName().toUpperCase());
+				if (null == ucolumn) {
+					column.setTable(update);
+					drop(column);
+				}
+			}
+		}
+		//更新标签
+		for(Tag utag : utags.values()){
+			Tag tag = tags.get(utag.getName().toUpperCase());
+			if(null != tag){
+				//修改列
+				tag.setTable(update);
+				tag.setUpdate(utag);
+				tag.setService(table.getService());
+				alter(tag);
+			}else{
+				//添加列
+				utag.setTable(update);
+				add(utag);
+			}
+		}
+		//删除标签
+		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
+			for (Tag tag : tags.values()) {
+				Tag utag = utags.get(tag.getName().toUpperCase());
+				if (null == utag) {
+					tag.setTable(update);
+					drop(tag);
+				}
+			}
+		}
+		return result;
 	}
 	@Override
 	public boolean drop(MasterTable table) throws Exception{
-		return false;
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
+		String random = null;
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = table.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(table);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (showSQL) {
+			log.warn("{}[drop master table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(table, result);
+		}
+		return result;
 	}
 
 	/* *****************************************************************************************************************
@@ -2021,15 +2158,126 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	@Override
 	public boolean create(PartitionTable table) throws Exception{
-		return false;
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
+		String random = null;
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = table.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(table);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (showSQL) {
+			log.warn("{}[create partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(table, result);
+		}
+		return result;
 	}
 	@Override
 	public boolean alter(PartitionTable table) throws Exception{
-		return false;
+
+		boolean result = false;
+		Table update = table.getUpdate();
+		LinkedHashMap<String, Column> columns = table.getColumns();
+		LinkedHashMap<String, Column> ucolumns = update.getColumns();
+		String name = table.getName();
+		String uname = update.getName();
+		Long fr = System.currentTimeMillis();
+		if(!name.equalsIgnoreCase(uname)){
+			//修改表名
+			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
+			String random = null;
+			if(showSQL){
+				random = random();
+				log.warn("{}[txt:\n{}\n]",random,sql);
+			}
+
+			DDListener listener = table.getListener();
+			boolean exe = true;
+			if(null != listener){
+				exe = listener.beforeRename(table);
+			}
+			if(exe) {
+				getJdbc().update(sql);
+				result = true;
+			}
+
+			if (showSQL) {
+				log.warn("{}[rename partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+			}
+			if(null != listener){
+				listener.afterRename(table, result);
+			}
+		}
+		//更新列
+		for(Column ucolumn : ucolumns.values()){
+			Column column = columns.get(ucolumn.getName().toUpperCase());
+			if(null != column){
+				//修改列
+				column.setTable(update);
+				column.setUpdate(ucolumn);
+				column.setService(table.getService());
+				alter(column);
+			}else{
+				//添加列
+				ucolumn.setTable(update);
+				add(ucolumn);
+			}
+		}
+		//删除列
+		if(ConfigTable.IS_DDL_AUTO_DROP_COLUMN) {
+			for (Column column : columns.values()) {
+				if(column instanceof Tag){
+					continue;
+				}
+				Column ucolumn = ucolumns.get(column.getName().toUpperCase());
+				if (null == ucolumn) {
+					column.setTable(update);
+					drop(column);
+				}
+			}
+		}
+		return result;
 	}
 	@Override
 	public boolean drop(PartitionTable table) throws Exception{
-		return false;
+
+		boolean result = false;
+		Long fr = System.currentTimeMillis();
+		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
+		String random = null;
+		if(showSQL){
+			random = random();
+			log.warn("{}[txt:\n{}\n]",random,sql);
+		}
+		DDListener listener = table.getListener();
+		boolean exe = true;
+		if(null != listener){
+			exe = listener.beforeDrop(table);
+		}
+		if(exe) {
+			getJdbc().update(sql);
+			result = true;
+		}
+
+		if (showSQL) {
+			log.warn("{}[drop partition table][table:{}][result:{}][执行耗时:{}ms]", random, table.getName(), result, System.currentTimeMillis() - fr);
+		}
+		if(null != listener){
+			listener.afterDrop(table, result);
+		}
+		return result;
 	}
 
 	/* *****************************************************************************************************************
