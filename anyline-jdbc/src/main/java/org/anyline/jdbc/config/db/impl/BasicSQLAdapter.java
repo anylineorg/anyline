@@ -1276,13 +1276,13 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)",37));
 		return null;
 	}
 
 	@Override
 	public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set)",37));
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1341,7 +1341,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)",37));
 		return null;
 	}
 
@@ -1404,7 +1404,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set)",37));
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1431,12 +1431,12 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)",37));
 		return null;
 	}
 	@Override
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable table)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable table)",37));
 		return null;
 	}
 
@@ -1454,7 +1454,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set)",37));
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1474,7 +1474,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set)",37));
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
@@ -1502,7 +1502,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public List<String> buildQueryColumnRunSQL(Table table, boolean metadata) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildQueryColumnRunSQL(Table table, boolean metadata)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildQueryColumnRunSQL(Table table, boolean metadata)",37));
 		return null;
 	}
 
@@ -1518,7 +1518,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set)",37));
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
@@ -1676,7 +1676,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public List<String> buildQueryTagRunSQL(Table table, boolean metadata) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildQueryTagRunSQL(Table table, boolean metadata)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildQueryTagRunSQL(Table table, boolean metadata)",37));
 		return null;
 	}
 
@@ -1692,7 +1692,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set)",37));
 		if(null == tags){
 			tags = new LinkedHashMap<>();
 		}
@@ -1700,7 +1700,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set)",37));
 		if(null == tags){
 			tags = new LinkedHashMap<>();
 		}
@@ -1708,7 +1708,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set)",37));
 		if(null == tags){
 			tags = new LinkedHashMap<>();
 		}
@@ -1732,7 +1732,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public List<String> buildQueryIndexRunSQL(Table table, boolean metadata) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildQueryIndexRunSQL(Table table, boolean metadata)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildQueryIndexRunSQL(Table table, boolean metadata)",37));
 		return null;
 	}
 
@@ -1748,7 +1748,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set)",37));
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
 		}
@@ -1756,7 +1756,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set)",37));
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
 		}
@@ -1834,7 +1834,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildQueryConstraintRunSQL(Table table, boolean metadata)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildQueryConstraintRunSQL(Table table, boolean metadata)",37));
 		return null;
 	}
 
@@ -1850,7 +1850,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(int constraint,boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Constraint> constraints(int constraint,boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Constraint> constraints(int constraint,boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set)",37));
 		if(null == constraints){
 			constraints = new LinkedHashMap<>();
 		}
@@ -1858,7 +1858,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set)",37));
 		if(null == constraints){
 			constraints = new LinkedHashMap<>();
 		}
@@ -1866,7 +1866,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	}
 	@Override
 	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set)",33));
+		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set)",37));
 		if(null == constraints){
 			constraints = new LinkedHashMap<>();
 		}
@@ -1941,7 +1941,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 
 	@Override
 	public String buildAlterRunSQL(Table table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildAlterRunSQL(Table table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildAlterRunSQL(Table table)",37));
 		return null;
 	}
 	/**
@@ -1953,13 +1953,13 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildRenameRunSQL(Table table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildRenameRunSQL(Table table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildRenameRunSQL(Table table)",37));
 		return null;
 	}
 
 	@Override
 	public String buildChangeCommentRunSQL(Table table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(Table table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(Table table)",37));
 		return null;
 	}
 	/**
@@ -2068,27 +2068,27 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildCreateRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildCreateRunSQL(MasterTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildCreateRunSQL(MasterTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildAlterRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildAlterRunSQL(MasterTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildAlterRunSQL(MasterTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildDropRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildDropRunSQL(MasterTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildDropRunSQL(MasterTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildRenameRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildRenameRunSQL(MasterTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildRenameRunSQL(MasterTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildChangeCommentRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(MasterTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(MasterTable table)",37));
 		return null;
 	}
 
@@ -2109,27 +2109,27 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildCreateRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildCreateRunSQL(PartitionTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildCreateRunSQL(PartitionTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildAlterRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildAlterRunSQL(PartitionTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildAlterRunSQL(PartitionTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildDropRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildDropRunSQL(PartitionTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildDropRunSQL(PartitionTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildRenameRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildRenameRunSQL(PartitionTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildRenameRunSQL(PartitionTable table)",37));
 		return null;
 	}
 	@Override
 	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(PartitionTable table)",33));
+		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(PartitionTable table)",37));
 		return null;
 	}
 
@@ -2176,7 +2176,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		//Column update = column.getUpdate();
 		//if(null == update){
 		//添加列
-		builder.append(" ADD COLUMN ");
+		builder.append(" ADD ").append(column.getKeyword()).append(" ");
 		SQLUtil.delimiter(builder, column.getName(), getDelimiterFr(), getDelimiterTo()).append(" ");
 		define(builder, column);
 		//}
@@ -2304,7 +2304,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public List<String> buildChangeTypeRunSQL(Column column) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildChangeTypeRunSQL(Column column)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildChangeTypeRunSQL(Column column)",37));
 		return null;
 	}
 	/**
@@ -2316,7 +2316,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildChangeDefaultRunSQL(Column column) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildChangeDefaultRunSQL(Column column)",33));
+		log.warn(LogUtil.format("子类未实现 String buildChangeDefaultRunSQL(Column column)",37));
 		return null;
 	}
 
@@ -2329,7 +2329,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildChangeNullableRunSQL(Column column) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildChangeNullableRunSQL(Column column)",33));
+		log.warn(LogUtil.format("子类未实现 String buildChangeNullableRunSQL(Column column)",37));
 		return null;
 	}
 	/**
@@ -2341,7 +2341,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Column column) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(Column column)",33));
+		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(Column column)",37));
 		return null;
 	}
 
@@ -2470,7 +2470,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
-		log.warn(LogUtil.format("子类未实现 StringBuilder increment(StringBuilder builder, Column column)",33));
+		log.warn(LogUtil.format("子类未实现 StringBuilder increment(StringBuilder builder, Column column)",37));
 		return builder;
 	}
 
@@ -2486,7 +2486,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public StringBuilder onupdate(StringBuilder builder, Column column){
-		log.warn(LogUtil.format("子类未实现 StringBuilder onupdate(StringBuilder builder, Column column)",33));
+		log.warn(LogUtil.format("子类未实现 StringBuilder onupdate(StringBuilder builder, Column column)",37));
 		return builder;
 	}
 
@@ -2499,7 +2499,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public StringBuilder position(StringBuilder builder, Column column){
-		log.warn(LogUtil.format("子类未实现 StringBuilder position(StringBuilder builder, Column column)",33));
+		log.warn(LogUtil.format("子类未实现 StringBuilder position(StringBuilder builder, Column column)",37));
 		return builder;
 	}
 
@@ -2512,7 +2512,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public StringBuilder comment(StringBuilder builder, Column column){
-		log.warn(LogUtil.format("子类未实现 StringBuilder comment(StringBuilder builder, Column column)",33));
+		log.warn(LogUtil.format("子类未实现 StringBuilder comment(StringBuilder builder, Column column)",37));
 		return builder;
 	}
 
@@ -2670,7 +2670,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildChangeDefaultRunSQL(Tag tag) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildChangeDefaultRunSQL(Tag tag)",33));
+		log.warn(LogUtil.format("子类未实现 String buildChangeDefaultRunSQL(Tag tag)",37));
 		return null;
 	}
 
@@ -2683,7 +2683,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildChangeNullableRunSQL(Tag tag) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildChangeNullableRunSQL(Tag tag)",33));
+		log.warn(LogUtil.format("子类未实现 String buildChangeNullableRunSQL(Tag tag)",37));
 		return null;
 	}
 	/**
@@ -2695,7 +2695,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public String buildChangeCommentRunSQL(Tag tag) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(Tag tag)",33));
+		log.warn(LogUtil.format("子类未实现 String buildChangeCommentRunSQL(Tag tag)",37));
 		return null;
 	}
 
@@ -2708,7 +2708,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildChangeTypeRunSQL(Tag tag)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildChangeTypeRunSQL(Tag tag)",37));
 		return null;
 	}
 
@@ -2726,7 +2726,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return String
 	 */
 	public String buildAddRunSQL(Index index) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Index index)",33));
+		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Index index)",37));
 		return null;
 	}
 	/**
@@ -2736,7 +2736,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return List
 	 */
 	public List<String> buildAlterRunSQL(Index index) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Index index)",33));
+		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Index index)",37));
 		return null;
 	}
 
@@ -2746,7 +2746,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Index index) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Index index)",33));
+		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Index index)",37));
 		return null;
 	}
 	/**
@@ -2756,7 +2756,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return String
 	 */
 	public String buildRenameRunSQL(Index index) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Index index)",33));
+		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Index index)",37));
 		return null;
 	}
 	/* *****************************************************************************************************************
@@ -2773,7 +2773,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return String
 	 */
 	public String buildAddRunSQL(Constraint constraint) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Constraint constraint)",33));
+		log.warn(LogUtil.format("子类未实现 String buildAddRunSQL(Constraint constraint)",37));
 		return null;
 	}
 	/**
@@ -2783,7 +2783,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return List
 	 */
 	public List<String> buildAlterRunSQL(Constraint constraint) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildAlterRunSQL(Constraint constraint)",33));
+		log.warn(LogUtil.format("子类未实现 List<String> buildAlterRunSQL(Constraint constraint)",37));
 		return null;
 	}
 
@@ -2793,7 +2793,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Constraint constraint) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildDropRunSQL(Constraint constraint)",33));
+		log.warn(LogUtil.format("子类未实现 String buildDropRunSQL(Constraint constraint)",37));
 		return null;
 	}
 	/**
@@ -2803,7 +2803,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return String
 	 */
 	public String buildRenameRunSQL(Constraint index) throws Exception{
-		log.warn(LogUtil.format("子类未实现 String buildRenameRunSQL(Constraint index)",33));
+		log.warn(LogUtil.format("子类未实现 String buildRenameRunSQL(Constraint index)",37));
 		return null;
 	}
 
