@@ -234,7 +234,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @return List
 	 */
 	@Override
-	public List<String> buildQueryTableRunSQL(MasterTable table){
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable table){
 		List<String> sqls = new ArrayList<>();
 		String sql = "SELECT * FROM INFORMATION_SCHEMA.INS_TABLES WHERE STABLE_NAME = '"+table.getName()+"' AND TYPE='CHILD_TABLE'";
 		sqls.add(sql);

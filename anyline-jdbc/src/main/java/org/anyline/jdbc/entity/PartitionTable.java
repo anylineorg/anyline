@@ -29,6 +29,9 @@ public class PartitionTable extends Table{
     public void setMasterName(String masterName) {
         this.masterName = masterName;
     }
+    public void setMaster(String masterName) {
+        this.masterName = masterName;
+    }
 
     public MasterTable getMaster() {
         return master;

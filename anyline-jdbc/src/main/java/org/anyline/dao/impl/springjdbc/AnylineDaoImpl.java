@@ -1492,7 +1492,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			con = DataSourceUtils.getConnection(ds);
 			//根据系统表查询
 			try{
-				List<String> sqls = adapter.buildQueryTableRunSQL(table);
+				List<String> sqls = adapter.buildQueryPartitionTableRunSQL(table);
 				if(null != sqls) {
 					int idx = 0;
 					for(String sql:sqls) {
