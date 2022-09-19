@@ -1962,7 +1962,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	@Override
-	public boolean drop(Table table)  throws Exception{
+	public boolean drop(Table table) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
