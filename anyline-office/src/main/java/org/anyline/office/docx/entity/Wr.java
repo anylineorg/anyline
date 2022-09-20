@@ -56,7 +56,7 @@ public class Wr {
     }
     /**
      * 字体颜色
-     * @param  color color
+     * @param color color
      * @return Wr
      */
     public Wr setColor(String color){

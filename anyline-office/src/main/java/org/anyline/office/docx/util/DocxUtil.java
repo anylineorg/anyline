@@ -171,7 +171,7 @@ public class DocxUtil {
     }
     /**
      * 前一个节点
-     * @param  element element
+     * @param element element
      * @return element
      */
     public static Element prevByName(Element element){
@@ -219,7 +219,7 @@ public class DocxUtil {
     }
     /**
      * 前一个节点
-     * @param  element element
+     * @param element element
      * @return element
      */
     public static Element prev(Element element){

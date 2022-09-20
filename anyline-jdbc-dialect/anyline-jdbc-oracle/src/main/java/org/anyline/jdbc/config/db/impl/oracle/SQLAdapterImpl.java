@@ -104,8 +104,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * SELECT 1 FROM DUAL
 	 * @param builder builder
 	 * @param dest dest
-	 * @param dest dest
-	 * @param  keys keys
+	 * @param keys keys
 	 */
 	@Override
 	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys){

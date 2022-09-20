@@ -178,7 +178,7 @@ public class DESUtil {
 
 	/**
 	 * 加密String
-	 * @param  str str
+	 * @param str str
 	 * @return  String
 	 * @throws IllegalBlockSizeException IllegalBlockSizeException
 	 * @throws BadPaddingException BadPaddingException
