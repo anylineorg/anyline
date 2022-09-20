@@ -948,6 +948,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param column column
 	 * @return builder
 	 */
+	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
 		if(column.isAutoIncrement() == 1){
 			builder.append(" AUTO_INCREMENT");

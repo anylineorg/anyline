@@ -365,6 +365,30 @@ varbit:String
 		return concatOr(args);
 	}
 
+	/**
+	 * 数据类型
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder define(StringBuilder builder, Column column){
+		if(column.isAutoIncrement() == 1){
+			column.setType("SERIAL");
+		}
+		return super.define(builder, column);
+	}
+	/**
+	 * 自增长列
+	 * @param builder builder
+	 * @param column column
+	 * @return builder
+	 */
+	@Override
+	public StringBuilder increment(StringBuilder builder, Column column){
+		return builder;
+	}
+
 
 	/**
 	 * 内置函数
