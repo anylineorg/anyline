@@ -1961,10 +1961,47 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return result;
 	}
 
+	/**
+	 * 检测 catalog schema
+	 * @param table
+	 */
+	private void check(Table table){
+		DataSource ds = null;
+		Connection con = null;
+		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		String random = random();
+		try {
+			Long fr = System.currentTimeMillis();
+			ds = getJdbc().getDataSource();
+			con = DataSourceUtils.getConnection(ds);
+			if (null == table.getCatalog()) {
+				table.setCatalog(con.getCatalog());
+			}
+			if (null == table.getSchema()) {
+				table.setSchema(con.getSchema());
+			}
+
+		}catch (Exception e){
+
+		}finally {
+			if(!DataSourceUtils.isConnectionTransactional(con, ds)){
+				DataSourceUtils.releaseConnection(con, ds);
+			}
+		}
+	}
+	private void check(Column column){
+		Table table = column.getTable();
+		if(null != table){
+			check(table);
+			column.setCatalog(table.getCatalog());
+			column.setSchema(table.getSchema());
+		}
+	}
 	@Override
 	public boolean drop(Table table) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
+		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
 		String random = null;
 		if(showSQL){
@@ -2002,6 +2039,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean create(MasterTable table) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
+		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
 		if(showSQL){
@@ -2028,8 +2066,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 	@Override
 	public boolean alter(MasterTable table) throws Exception{
-
 		boolean result = false;
+		check(table);
 		Table update = table.getUpdate();
 		LinkedHashMap<String, Column> columns = table.getColumns();
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
@@ -2123,6 +2161,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean drop(MasterTable table) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
+		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
 		String random = null;
 		if(showSQL){
@@ -2160,6 +2199,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean create(PartitionTable table) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
+		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
 		if(showSQL){
@@ -2188,6 +2228,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean alter(PartitionTable table) throws Exception{
 
 		boolean result = false;
+		check(table);
 		Table update = table.getUpdate();
 		LinkedHashMap<String, Column> columns = table.getColumns();
 		LinkedHashMap<String, Column> ucolumns = update.getColumns();
@@ -2255,6 +2296,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
+		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(table);
 		String random = null;
 		if(showSQL){
@@ -2338,6 +2380,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean drop(Column column) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
+		check(column);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(column);
 		String random = null;
 		if(showSQL){
@@ -2374,6 +2417,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		boolean result = true;
 		Long fr = System.currentTimeMillis();
 		String random = null;
+		check(column);
 		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(column);
 
 		random = random();
@@ -2434,6 +2478,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
 		String random = null;
+		check(tag);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildAddRunSQL(tag);
 		if(showSQL){
 			random = random();
@@ -2477,6 +2522,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean drop(Tag tag) throws Exception{
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
+		check(tag);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildDropRunSQL(tag);
 		String random = null;
 		if(showSQL){
@@ -2513,6 +2559,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		boolean result = true;
 		Long fr = System.currentTimeMillis();
 		String random = null;
+		check(tag);
 		List<String> sqls = SQLAdapterUtil.getAdapter(getJdbc()).buildAlterRunSQL(tag);
 
 		random = random();
