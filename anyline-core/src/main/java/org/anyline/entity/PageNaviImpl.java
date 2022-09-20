@@ -61,8 +61,27 @@ public class PageNaviImpl implements PageNavi{
 	protected boolean showStat = false; 
 	protected boolean showJump = false; 
 	protected boolean showVol = true; 
-	protected String loadMoreFormat = ""; 
-	 
+	protected String loadMoreFormat = "";
+
+	public PageNaviImpl(){}
+
+	/**
+	 * Page
+	 * @param page 当前第几页
+	 */
+	public PageNaviImpl(int page){
+		this.curPage = page;
+	}
+
+	/**
+	 * Page
+	 * @param page 当前第几页
+	 * @param vol 每页多少行
+	 */
+	public PageNaviImpl(int page, int vol){
+		this.curPage = page;
+		this.pageRows = vol;
+	}
 	public PageNaviImpl(int totalRow, int curPage, int pageRows, String baseLink) { 
 		this.totalRow = totalRow; 
 		this.curPage = curPage; 
@@ -84,8 +103,7 @@ public class PageNaviImpl implements PageNavi{
 		} 
 		PageNavi navi = row.entity(PageNaviImpl.class); 
 		return navi; 
-	} 
-	public PageNaviImpl(){} 
+	}
  
 	/** 
 	 * 分页计算方式 
