@@ -379,7 +379,7 @@ public class DocxUtil {
     /**
      * 当前节点在上级节点的下标
      * @param element element
-     * @return index
+     * @return index index
      */
     public static int index(Element element){
         int index = -1;

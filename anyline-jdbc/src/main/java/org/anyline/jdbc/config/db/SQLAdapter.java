@@ -144,7 +144,7 @@ public interface SQLAdapter {
 
 	/**
 	 * 创建检测是否存在SQL
-	 * @param run
+	 * @param run run
 	 * @return String
 	 */
 	public String parseExistsTxt(RunSQL run); 
@@ -272,7 +272,6 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
-	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -392,7 +391,6 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
-	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata(SELEC * FROM T WHERE 1=0) | 查询系统表
 	 * @return sqls
@@ -406,7 +404,7 @@ public interface SQLAdapter {
 	 * @param table table
 	 * @param columns 上一步查询结果
 	 * @param set set
-	 * @return tags
+	 * @return tags tags
 	 * @throws Exception
 	 */
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
@@ -417,7 +415,7 @@ public interface SQLAdapter {
 	 * @param table table
 	 * @param columns columns
 	 * @param set set
-	 * @return columns
+	 * @return columns columns
 	 * @throws Exception
 	 */
 	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
@@ -428,7 +426,7 @@ public interface SQLAdapter {
 	 * @param table table
 	 * @param columns columns
 	 * @param set set
-	 * @return columns
+	 * @return columns columns
 	 * @throws Exception
 	 */
 	public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception;
@@ -440,7 +438,6 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
-	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
@@ -452,9 +449,9 @@ public interface SQLAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
-	 * @param columns 上一步查询结果
+	 * @param tags 上一步查询结果
 	 * @param set set
-	 * @return tags
+	 * @return tags tags
 	 * @throws exception
 	 */
 	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
@@ -467,7 +464,6 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的所引
-	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
@@ -479,9 +475,9 @@ public interface SQLAdapter {
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
-	 * @param columns 上一步查询结果
+	 * @param indexs 上一步查询结果
 	 * @param set set
-	 * @return indexs
+	 * @return indexs indexs
 	 * @throws exception
 	 */
 	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
@@ -495,7 +491,6 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
-	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
@@ -507,9 +502,9 @@ public interface SQLAdapter {
 	 * @param constraint 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
-	 * @param columns 上一步查询结果
+	 * @param constraints 上一步查询结果
 	 * @param set set
-	 * @return constraints
+	 * @return constraints constraints
 	 * @throws exception
 	 */
 	public LinkedHashMap<String, Constraint> constraints(int constraint,boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;

@@ -61,10 +61,10 @@ public class Column {
         this(null, schema, table, name);
     }
     public Column(String catalog, String schema, String table, String name){
-        this.catalog = catalog;
-        this.schema = schema;
-        this.tableName = table;
-        this.name = name;
+        setCatalog(catalog);
+        setSchema(schema);
+        setName(name);
+        setTable(table);
         this.listener = new DefaulDDtListener();
     }
     public Column update(){
@@ -114,6 +114,9 @@ public class Column {
     }
 
     public Column setComment(String comment) {
+        if(null != comment){
+            comment = comment.trim().replace("'","");
+        }
         this.comment = comment;
         return this;
     }
@@ -123,6 +126,9 @@ public class Column {
     }
 
     public Column setName(String name) {
+        if(null != name){
+            name = name.trim().replace("'","");
+        }
         this.name = name;
         return this;
     }
@@ -131,12 +137,25 @@ public class Column {
         return type;
     }
 
+    /**
+     * 设置数据类型 根据jdbc定义的类型ID
+     * @param type type
+     * @return Column
+     */
     public Column setType(Integer type) {
         if(this.type != type) {
             this.className = null;
         }
         this.type = type;
         return this;
+    }
+    /**
+     * 设置数据类型 根据数据库定义的数据类型 实际调用了setTypeName(String)
+     * @param type  数据类型 如 int  varchar(10) decimal(18,6)
+     * @return Column
+     */
+    public Column setType(String type) {
+        return setTypeName(type);
     }
 
     public Table getTable() {
@@ -156,10 +175,16 @@ public class Column {
     }
 
 
+    /**
+     * 设置数据类型 根据数据库定义的数据类型
+     * @param typeName 数据类型 如 int  varchar(10) decimal(18,6)
+     * @return Column
+     */
     public Column setTypeName(String typeName) {
         this.precision = 0;
         this.scale = 0;
         if(null != typeName){
+            typeName = typeName.trim().replace("'","");
             if(typeName.toUpperCase().contains("IDENTITY")){
                 setAutoIncrement(true);
             }

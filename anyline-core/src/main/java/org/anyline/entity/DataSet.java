@@ -3890,7 +3890,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param pks       唯一标识key(如编号,姓名)
      * @param classKeys 分类key(如年度,科目)
      * @param valueKeys 取值key(如分数,等级),如果不指定key则将整行作为value
-     * @return
+     * @return DataSet
      * 如果指定key
      * 返回结构 [
      *      {编号:01,姓名:张三,2010-数学-分数:100},
@@ -3957,7 +3957,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * @param pk       唯一标识key(如姓名)多个key以,分隔如(编号,姓名)
      * @param classKey 分类key(如科目)多个key以,分隔如(科目,年度)
      * @param valueKey 取值key(如分数)多个key以,分隔如(分数,等级)
-     * @return
+     * @return DataSet
      *  表结构(姓名,科目,分数)
      *  返回结构 [{姓名:张三,数学:100,物理:90,英语:80},{姓名:李四,数学:100,物理:90,英语:80}]
      */

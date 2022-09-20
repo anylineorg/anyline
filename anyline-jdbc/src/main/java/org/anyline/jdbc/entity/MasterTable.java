@@ -42,7 +42,7 @@ public class MasterTable extends Table {
     /**
      * 根据值定位分区表
      * @param value value
-     * @return Table
+     * @return table table
      */
     public Table getPartition(DataRow value){
         Table table = null;
@@ -51,7 +51,7 @@ public class MasterTable extends Table {
     /**
      * 根据标签定位分区表
      * @param tags tags
-     * @return Table
+     * @return table table
      */
     public Table getPartition(Tag ... tags){
         Table table = null;

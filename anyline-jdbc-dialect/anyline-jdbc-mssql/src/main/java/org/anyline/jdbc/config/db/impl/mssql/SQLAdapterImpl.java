@@ -349,7 +349,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param table table
 	 * @param columns 上一步查询结果
 	 * @param set set
-	 * @return columns
+	 * @return columns columns
 	 * @throws Exception
 	 */
 	@Override
@@ -390,9 +390,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
-	 * @param tags
+	 * @param tags tags
 	 * @param set set
-	 * @return
+	 * @return tags tags
 	 * @throws Exception
 	 */
 	@Override
@@ -434,7 +434,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param table table
 	 * @param indexs indexs
 	 * @param set set
-	 * @return indexs
+	 * @return indexs indexs
 	 * @throws Exception
 	 */
 	@Override
@@ -477,7 +477,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param table table
 	 * @param constraints 上一步查询结果
 	 * @param set set
-	 * @return constraints
+	 * @return constraints constraints
 	 * @throws Exception
 	 */
 	@Override
@@ -756,8 +756,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
-	 * @param column
-	 * @return
+	 * @param column column
+	 * @return sqls
 	 */
 	@Override
 	public List<String> buildAlterRunSQL(Column column) throws Exception{
@@ -781,7 +781,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改列名
 	 * EXEC sp_rename '表名.列名', '新列名', 'COLUMN'
 	 * @param column column
-	 * @return
+	 * @return sql
 	 */
 	@Override
 	public String buildRenameRunSQL(Column column) throws Exception{
@@ -1012,8 +1012,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 修改标签 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
-	 * @param tag
-	 * @return
+	 * @param tag tag
+	 * @return sql
 	 */
 	@Override
 	public List<String> buildAlterRunSQL(Tag tag) throws Exception{

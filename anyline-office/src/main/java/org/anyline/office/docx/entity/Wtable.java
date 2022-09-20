@@ -268,7 +268,7 @@ public class Wtable {
     /**
      * 追加列, 每一行追加,追加的列将复制前一列的样式(背景色、字体等)
      * @param qty 追加数量
-     * @return table
+     * @return table table
      */
     public Wtable addColumns(int qty){
         insertColumns(-1, qty);
@@ -281,7 +281,7 @@ public class Wtable {
      * 如果col=0则将制后一列的样式(背景色、字体等)
      * @param col 插入位置 -1:表示追加以最后一行
      * @param qty 数量
-     * @return table
+     * @return table table
      */
     public Wtable insertColumns(int col, int qty){
         List<Element> trs = src.elements("tr");
@@ -322,7 +322,7 @@ public class Wtable {
      * 追加行,追加的行将复制上一行的样式(背景色、字体等)
      * @param index 位置
      * @param qty 追加数量
-     * @return table
+     * @return table table
      */
     public Wtable insertRows(int index, int qty){
         if(wtrs.size()>0){
@@ -668,7 +668,7 @@ public class Wtable {
 
     /**
      * 设置所有单元格默认边框
-     * @return table
+     * @return table table
      */
     public Wtable setCellBorder(){
         for(Wtr tr:wtrs){
@@ -746,7 +746,7 @@ public class Wtable {
      * @param size 边框宽度
      * @param color 颜色
      * @param style 样式
-     * @return table
+     * @return table table
      */
     public Wtable setLeftBorder(int cols, int size, String color, String style){
         for(Wtr tr:wtrs){
@@ -760,7 +760,7 @@ public class Wtable {
      * @param size 边框宽度
      * @param color 颜色
      * @param style 样式
-     * @return table
+     * @return table table
      */
     public Wtable setRightBorder(int cols, int size, String color, String style){
         for(Wtr tr:wtrs){
@@ -899,7 +899,7 @@ public class Wtable {
      * 设置整列宽度
      * @param cols 列
      * @param width 宽度
-     * @return table
+     * @return table table
      */
     public Wtable setWidth(int cols, String width){
         for(Wtr tr:wtrs){

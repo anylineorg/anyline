@@ -94,7 +94,7 @@ public class WechatPayUtil {
     /**
      * 统一下单
      * @param order  order
-     * @return WechatPrePayResult
+     * @return WechatPrePayResult WechatPrePayResult
      * @throws Exception Exception
      */
     public WechatPrePayResult unifiedorder(WechatPrePayOrder order) throws Exception{

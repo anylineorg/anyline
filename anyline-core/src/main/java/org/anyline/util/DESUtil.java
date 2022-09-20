@@ -414,10 +414,8 @@ public class DESUtil {
 	/**
 	 * 加密
 	 * 
-	 * @param src
-	 *            src 原文
-	 * @param type
-	 *            type 原文类型
+	 * @param src src 原文
+	 * @param type type 原文类型
 	 * @return 加密>插入版本号>添加前缀
 	 */
 	private static String encryptByType(String src, String type, boolean mix) {
@@ -492,10 +490,8 @@ public class DESUtil {
 	/**
 	 * 解密
 	 * 
-	 * @param src
-	 *            src 密文
-	 * @param type
-	 *            type 密文类型
+	 * @param src src 密文
+	 * @param type type 密文类型
 	 * @return 删除前缀 > 解析版本号 > 解密
 	 */
 	private static String decrypt(String src, String type) {

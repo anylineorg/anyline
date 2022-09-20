@@ -92,7 +92,7 @@ public class Table {
     /**
      * 添加行
      * @param tr tr
-     * @return table
+     * @return table table
      */
     public Table addTr(Tr tr){
         trs.add(tr);
@@ -106,7 +106,7 @@ public class Table {
     /**
      * 追加列, 每一行追加,追加的列将复制前一列的样式(背景色、字体等)
      * @param qty 追加数量
-     * @return table
+     * @return table table
      */
     public Table addColumns(int qty){
         insertColumns(-1, qty);
@@ -119,7 +119,7 @@ public class Table {
      * 如果col=0则将制后一列的样式(背景色、字体等)
      * @param col 插入位置 -1:表示追加以最后一行
      * @param qty 数量
-     * @return table
+     * @return table table
      */
     public Table insertColumns(int col, int qty){
         for(Tr tr:trs){
@@ -156,7 +156,7 @@ public class Table {
      * 追加行,追加的行将复制上一行的样式(背景色、字体等)
      * @param index 位置
      * @param qty 追加数量
-     * @return table
+     * @return table table
      */
     public Table insertRows(int index, int qty){
         if(trs.size()>0){
@@ -417,7 +417,7 @@ public class Table {
     /**
      * 设置需要合并行的列下标
      * @param cols 依据列1,2,3(1,2) 第1,2,3列值相同时合并行,第3列合并的前提是第1,2列已合并
-     * @return Table
+     * @return table table
      */
     public Table setMergeRow(String ... cols){
         for(String col:cols){
@@ -441,7 +441,7 @@ public class Table {
     /**
      * 设置需要合并行的列
      * @param cols cols
-     * @return Table
+     * @return table table
      */
     public Table setMergeRow(Integer ... cols){
         mergeRows = BeanUtil.array2list(cols);
@@ -452,7 +452,7 @@ public class Table {
      * 设置需要合并的列(根据内容)
      * @param start 开始
      * @param qty 右侧合并范围
-     * @return Table
+     * @return table table
      */
     public Table setMergeCol(int start, int qty){
         Integer[] merge = new Integer[2];

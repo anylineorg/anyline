@@ -62,8 +62,8 @@ public class QQMapUtil {
 
     /**
      * 通过IP地址获取其当前所在地理位置
-     * @param ip
-     * @return
+     * @param ip ip
+     * @return Coordinate
      */
     public Coordinate ip(String ip) {
         Coordinate coordinate = null;

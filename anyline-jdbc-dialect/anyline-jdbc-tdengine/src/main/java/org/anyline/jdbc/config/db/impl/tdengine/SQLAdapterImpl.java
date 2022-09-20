@@ -235,17 +235,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 
 
-	/**
-	 * 从上一步生成的SQL查询结果中 提取表结构
-	 * @param index 第几条SQL
-	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param catalog catalog
-	 * @param schema schema
-	 * @param tables 上一步查询结果
-	 * @param set set
-	 * @return tables
-	 * @throws Exception
-	 */
 
 	/**
 	 *  根据查询结果集构造Table
@@ -404,16 +393,6 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		}
 		return sqls;
 	}
-	/**
-	 *
-	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
-	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
-	 * @param columns 上一步查询结果
-	 * @param set set
-	 * @return columns
-	 * @throws Exception
-	 */
 
 	/**
 	 *
@@ -422,7 +401,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param table table
 	 * @param columns 上一步查询结果
 	 * @param set set
-	 * @return columns
+	 * @return columns columns
 	 * @throws Exception
 	 */
 	@Override
@@ -469,7 +448,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param table table
 	 * @param columns columns
 	 * @param set set
-	 * @return
+	 * @return columns columns
 	 * @throws Exception
 	 */
 	@Override
@@ -528,9 +507,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table table
-	 * @param tags
+	 * @param tags tags
 	 * @param set set
-	 * @return
+	 * @return tags tags
 	 * @throws Exception
 	 */
 	@Override
@@ -591,11 +570,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 根据metadata 解析
 	 * 没有相应接口，不需要实现
-	 * @param create
-	 * @param table
-	 * @param tags
-	 * @param set
-	 * @return
+	 * @param create create
+	 * @param table table
+	 * @param tags tags
+	 * @param set set
+	 * @return tags tags
 	 * @throws Exception
 	 */
 	@Override
@@ -636,7 +615,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param table table
 	 * @param indexs indexs
 	 * @param set set
-	 * @return indexs
+	 * @return indexs indexs
 	 * @throws Exception
 	 */
 	@Override
@@ -679,7 +658,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param table table
 	 * @param constraints 上一步查询结果
 	 * @param set set
-	 * @return constraints
+	 * @return constraints constraints
 	 * @throws Exception
 	 */
 	@Override
@@ -976,8 +955,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
-	 * @param column
-	 * @return
+	 * @param column column
+	 * @return List
 	 */
 	@Override
 	public List<String> buildAlterRunSQL(Column column) throws Exception{
@@ -1217,8 +1196,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 修改标签 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
-	 * @param tag
-	 * @return
+	 * @param tag tag
+	 * @return List
 	 */
 	@Override
 	public List<String> buildAlterRunSQL(Tag tag) throws Exception{

@@ -76,7 +76,7 @@ public class DataSourceHolder {
 	/**
 	 * 设置当前数据源名称
 	 * @param dataSource 数据源在spring context中注册的名称
-	 * @param auto 扫行完后切换回原来的数据库
+	 * @param auto 执行完后切换回原来的数据库
 	 */
     public static void setDataSource(String dataSource, boolean auto) { 
     	if(ConfigTable.isDebug() && log.isWarnEnabled()){ 
