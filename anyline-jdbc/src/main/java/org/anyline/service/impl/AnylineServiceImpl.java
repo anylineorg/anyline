@@ -1566,6 +1566,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                         if (AdapterProxy.hasAdapter()) {
                             key = AdapterProxy.column(entity.getClass(), field);
                         }
+                        if(BasicUtil.isEmpty(key)){
+                            continue;
+                        }
                         if (value instanceof Collection) {
                             configs.addConditions(key, value);
                         } else {
