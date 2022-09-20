@@ -384,10 +384,16 @@ varbit:String
 	}
 	@Override
 	public String type2type(String type){
-		if(type.equalsIgnoreCase("int")){
-			return "int4";
+		if(null != type) {
+			type = type.toUpperCase();
+			if (type.equalsIgnoreCase("INT")) {
+				return "INT4";
+			}
+			if (type.equalsIgnoreCase("datetime")) {
+				return "TIMESTAMP";
+			}
 		}
-		return type;
+		return super.type2type(type);
 	}
 
-} 
+}
