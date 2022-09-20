@@ -581,7 +581,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	@Override
 	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
-		return builder;
+		return super.checkTableExists(builder, exists);
 	}
 
 
@@ -1233,6 +1233,12 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	@Override
 	public String type2type(String type){
+		if(null != type){
+			type = type.toUpperCase();
+			if(type.equals("DOUBLE")){
+				return  "DECIMAL";
+			}
+		}
 		return super.type2type(type);
 	}
 	@Override
