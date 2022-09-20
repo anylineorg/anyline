@@ -1870,6 +1870,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public boolean create(Table table) throws Exception {
 		boolean result = false;
 		Long fr = System.currentTimeMillis();
+		check(table);
 		String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildCreateRunSQL(table);
 		String random = null;
 		if(showSQL){
@@ -1904,6 +1905,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String name = table.getName();
 		String uname = update.getName();
 		Long fr = System.currentTimeMillis();
+		check(table);
 		if(!name.equalsIgnoreCase(uname)){
 			//修改表名
 			String sql = SQLAdapterUtil.getAdapter(getJdbc()).buildRenameRunSQL(table);
