@@ -364,6 +364,24 @@ varbit:String
 	public String concat(String ... args){
 		return concatOr(args);
 	}
+
+
+	/**
+	 * 内置函数
+	 * @param value SQL_BUILD_IN_VALUE
+	 * @return String
+	 */
+	public String buildInValue(SQL_BUILD_IN_VALUE value){
+		if(value == SQL_BUILD_IN_VALUE.CURRENT_TIME){
+			return "now()";
+		}
+		return null;
+	}
+
+	@Override
+	public String type2class(String type){
+		return super.type2class(type);
+	}
 	@Override
 	public String type2type(String type){
 		if(type.equalsIgnoreCase("int")){
