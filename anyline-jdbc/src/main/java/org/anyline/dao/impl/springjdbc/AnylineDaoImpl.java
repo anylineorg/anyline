@@ -1480,7 +1480,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return null;
 	}
 	@Override
-	public LinkedHashMap<String,PartitionTable> ptables(MasterTable table){
+	public LinkedHashMap<String,PartitionTable> ptables(MasterTable master){
 		LinkedHashMap<String,PartitionTable> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
@@ -1492,24 +1492,24 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			con = DataSourceUtils.getConnection(ds);
 			//根据系统表查询
 			try{
-				List<String> sqls = adapter.buildQueryPartitionTableRunSQL(table);
+				List<String> sqls = adapter.buildQueryPartitionTableRunSQL(master);
 				if(null != sqls) {
 					int idx = 0;
 					for(String sql:sqls) {
 						if (BasicUtil.isNotEmpty(sql)) {
 							DataSet set = select(sql, null);
-							tables = adapter.ptables(idx++, true, table, table.getCatalog(), table.getSchema(), tables, set);
+							tables = adapter.ptables(idx++, true, master, master.getCatalog(), master.getSchema(), tables, set);
 						}
 					}
 				}
 			}catch (Exception e){
 				if (showSQL) {
-					log.warn("{}[tables][{}][stable:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), table.getName(), e.getMessage());
+					log.warn("{}[tables][{}][stable:{}][msg:]", random, LogUtil.format("根据系统表查询失败", 33), master.getName(), e.getMessage());
 				}
 			}
 
 			if (showSQL) {
-				log.warn("{}[tables][stable:{}][result:{}][执行耗时:{}ms]", random, table.getName(), tables.size(), System.currentTimeMillis() - fr);
+				log.warn("{}[tables][stable:{}][result:{}][执行耗时:{}ms]", random, master.getName(), tables.size(), System.currentTimeMillis() - fr);
 			}
 		}catch (Exception e){
 			e.printStackTrace();

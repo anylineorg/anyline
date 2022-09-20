@@ -566,7 +566,7 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String, PartitionTable> ptables(String name, String types);
 		public LinkedHashMap<String, PartitionTable> ptables(String types);
 		public LinkedHashMap<String, PartitionTable> ptables();
-		public LinkedHashMap<String, PartitionTable> ptables(MasterTable table);
+		public LinkedHashMap<String, PartitionTable> ptables(MasterTable master);
 
 		public PartitionTable ptable(String catalog, String schema, String name);
 		public PartitionTable ptable(String schema, String name);

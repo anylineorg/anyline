@@ -1885,7 +1885,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
          * public LinkedHashMap<String, PartitionTable> ptables(String name, String types);
          * public LinkedHashMap<String, PartitionTable> ptables(String types);
          * public LinkedHashMap<String, PartitionTable> ptables();
-         * public LinkedHashMap<String, PartitionTable> ptables(MasterTable table);
+         * public LinkedHashMap<String, PartitionTable> ptables(MasterTable master);
          * public PartitionTable ptable(String catalog, String schema, String name);
          * public PartitionTable ptable(String schema, String name);
          * public PartitionTable ptable(String name);
@@ -1923,8 +1923,8 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
 
         @Override
-        public LinkedHashMap<String, PartitionTable> ptables(MasterTable table) {
-            return dao.ptables(table);
+        public LinkedHashMap<String, PartitionTable> ptables(MasterTable master) {
+            return dao.ptables(master);
         }
 
         @Override
@@ -2174,10 +2174,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													master table
          * -----------------------------------------------------------------------------------------------------------------
-		 * public boolean save(MasterTable table) throws Exception;
-		 * public boolean create(MasterTable table) throws Exception;
-		 * public boolean alter(MasterTable table) throws Exception;
-         * public boolean drop(MasterTable table) throws Exception;
+		 * public boolean save(MasterTable master) throws Exception;
+		 * public boolean create(MasterTable master) throws Exception;
+		 * public boolean alter(MasterTable master) throws Exception;
+         * public boolean drop(MasterTable master) throws Exception;
          ******************************************************************************************************************/
 
 

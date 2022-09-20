@@ -237,9 +237,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable table);
-	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master);
+	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -255,15 +255,15 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return super.buildQueryPartitionTableRunSQL(catalog, schema, pattern, types);
 	}
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable table) throws Exception{
-		return super.buildQueryPartitionTableRunSQL(table);
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master) throws Exception{
+		return super.buildQueryPartitionTableRunSQL(master);
 	}
 
 	/**
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table MasterTable
+	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -272,14 +272,14 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
-		return super.ptables(index, create, table, catalog, schema, tables, set);
+	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
+		return super.ptables(index, create, master, catalog, schema, tables, set);
 	}
 
 	/**
 	 * 根据JDBC
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table MasterTable
+	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables tables
@@ -288,8 +288,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
-		return super.ptables(create, catalog, table, schema, tables, set);
+	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
+		return super.ptables(create, catalog, master, schema, tables, set);
 	}
 
 

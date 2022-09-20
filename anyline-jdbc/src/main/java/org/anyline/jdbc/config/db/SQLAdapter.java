@@ -358,13 +358,13 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable table) throws Exception;
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master) throws Exception;
 
 	/**
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table MasterTable
+	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -372,12 +372,12 @@ public interface SQLAdapter {
 	 * @return tables
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
 
 	/**
 	 * 根据JDBC
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table MasterTable
+	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables tables
@@ -385,7 +385,7 @@ public interface SQLAdapter {
 	 * @return tables
 	 * @throws Exception
 	 */
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
@@ -572,11 +572,11 @@ public interface SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
-	public String buildCreateRunSQL(MasterTable table) throws Exception;
-	public String buildAlterRunSQL(MasterTable table) throws Exception;
-	public String buildDropRunSQL(MasterTable table) throws Exception;
-	public String buildRenameRunSQL(MasterTable table) throws Exception;
-	public String buildChangeCommentRunSQL(MasterTable table) throws Exception;
+	public String buildCreateRunSQL(MasterTable master) throws Exception;
+	public String buildAlterRunSQL(MasterTable master) throws Exception;
+	public String buildDropRunSQL(MasterTable master) throws Exception;
+	public String buildRenameRunSQL(MasterTable master) throws Exception;
+	public String buildChangeCommentRunSQL(MasterTable master) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													partition table

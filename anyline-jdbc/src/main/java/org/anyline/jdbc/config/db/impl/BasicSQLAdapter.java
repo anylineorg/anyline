@@ -1292,9 +1292,13 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		if(null == tables){
 			tables = new LinkedHashMap<>();
 		}
-		List<String> keys = keys(set);
+		Map<String,Integer> keys = keys(set);
 		while(set.next()) {
 			String tableName = string(keys, "TABLE_NAME", set);
+
+			if(BasicUtil.isEmpty(tableName)){
+				tableName = string(keys, "NAME", set);
+			}
 			if(BasicUtil.isEmpty(tableName)){
 				continue;
 			}
@@ -1359,9 +1363,13 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			tables = new LinkedHashMap<>();
 		}
 
-		List<String> keys = keys(set);
+		Map<String,Integer> keys = keys(set);
 		while(set.next()) {
 			String tableName = string(keys, "TABLE_NAME", set);
+
+			if(BasicUtil.isEmpty(tableName)){
+				tableName = string(keys, "NAME", set);
+			}
 			if(BasicUtil.isEmpty(tableName)){
 				continue;
 			}
@@ -1415,9 +1423,9 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
- 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable table);
- 	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+ 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master);
+ 	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
 
 	/**
@@ -1434,8 +1442,8 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return null;
 	}
 	@Override
-	public List<String> buildQueryPartitionTableRunSQL(MasterTable table) throws Exception{
-		log.warn(LogUtil.format("子类未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable table)",37));
+	public List<String> buildQueryPartitionTableRunSQL(MasterTable master) throws Exception{
+		log.warn(LogUtil.format("子类未实现 List<String> buildQueryPartitionTableRunSQL(MasterTable master)",37));
 		return null;
 	}
 
@@ -1443,7 +1451,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 *  根据查询结果集构造Table
 	 * @param index 第几条SQL 对照 buildQueryMasterTableRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table MasterTable
+	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables 上一步查询结果
@@ -1452,7 +1460,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
+	public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception{
 		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable table, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set)",37));
 		if(null == tables){
 			tables = new LinkedHashMap<>();
@@ -1463,7 +1471,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/**
 	 * 根据JDBC
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table MasterTable
+	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param tables tables
@@ -1472,10 +1480,41 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @throws Exception
 	 */
 	@Override
-	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
-		log.warn(LogUtil.format("子类未实现 LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable table, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set)",37));
+	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception{
 		if(null == tables){
 			tables = new LinkedHashMap<>();
+		}
+
+		Map<String,Integer> keys = keys(set);
+		while(set.next()) {
+			String tableName = string(keys, "TABLE_NAME", set);
+
+			if(BasicUtil.isEmpty(tableName)){
+				tableName = string(keys, "NAME", set);
+			}
+			if(BasicUtil.isEmpty(tableName)){
+				continue;
+			}
+			PartitionTable table = tables.get(tableName.toUpperCase());
+			if(null == table){
+				if(create) {
+					table = new PartitionTable(tableName);
+					tables.put(tableName.toUpperCase(), table);
+				}else {
+					continue;
+				}
+			}
+			table.setCatalog(BasicUtil.evl(string(keys, "TABLE_CAT", set), catalog));
+			table.setSchema(BasicUtil.evl(string(keys, "TABLE_SCHEM", set), schema));
+			table.setType(string(keys, "TABLE_TYPE", set));
+			table.setComment(string(keys, "REMARKS", set));
+			table.setTypeCat(string(keys, "TYPE_CAT", set));
+			table.setTypeName(string(keys, "TYPE_NAME", set));
+			table.setSelfReferencingColumn(string(keys, "SELF_REFERENCING_COL_NAME", set));
+			table.setRefGeneration(string(keys, "REF_GENERATION", set));
+			tables.put(tableName.toUpperCase(), table);
+
+			//table_map.put(table.getType().toUpperCase()+"_"+tableName.toUpperCase(), tableName);
 		}
 		return tables;
 	}
@@ -1551,7 +1590,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		if(null == columns){
 			columns = new LinkedHashMap<>();
 		}
-		List<String> keys = keys(set);
+		Map<String,Integer> keys = keys(set);
 		while (set.next()){
 			String name = set.getString("COLUMN_NAME");
 			if(null == name){
@@ -1626,7 +1665,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 			column = new Column();
 		}
 		try {
-			List<String> keys = keys(rs);
+			Map<String,Integer> keys = keys(rs);
 			column.setScale(BasicUtil.parseInt(string(keys, "DECIMAL_DIGITS", rs), null));
 			column.setPosition(BasicUtil.parseInt(string(keys, "ORDINAL_POSITION", rs), 0));
 			column.setAutoIncrement(BasicUtil.parseBoolean(string(keys, "IS_AUTOINCREMENT", rs), false));
@@ -1648,12 +1687,12 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return list
 	 * @throws Exception Exception
 	 */
-	protected List<String> keys(ResultSet rs) throws Exception{
-		ResultSetMetaData rsmd = rs.getMetaData();
-		List<String> keys = new ArrayList<>();
+	protected Map<String, Integer> keys(ResultSet set) throws Exception{
+		ResultSetMetaData rsmd = set.getMetaData();
+		Map<String, Integer> keys = new HashMap<>();
 		if(null != rsmd){
 			for (int i = 1; i < rsmd.getColumnCount(); i++) {
-				keys.add(rsmd.getColumnName(i).toUpperCase());
+				keys.put(rsmd.getColumnName(i).toUpperCase(), i);
 			}
 		}
 		return keys;
@@ -1765,7 +1804,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		if(null == indexs){
 			indexs = new LinkedHashMap<>();
 		}
-		List<String> keys = keys(set);
+		Map<String, Integer> keys = keys(set);
 		LinkedHashMap<String, Column> columns = null;
 		while (set.next()) {
 			String name = string(keys, "INDEX_NAME", set);
@@ -2919,31 +2958,31 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * @return String
 	 * @throws Exception
 	 */
-	protected String string(List<String> keys, String key, ResultSet set, String def) throws Exception{
+	protected String string(Map<String, Integer> keys, String key, ResultSet set, String def) throws Exception{
 		Object value = value(keys, key, set);
 		if(null != value){
 			return value.toString();
 		}
 		return def;
 	}
-	protected String string(List<String> keys, String key, ResultSet set) throws Exception{
+	protected String string(Map<String, Integer> keys, String key, ResultSet set) throws Exception{
 		return string(keys, key, set, null);
 	}
-	protected Integer integer(List<String> keys, String key, ResultSet set, Integer def) throws Exception{
+	protected Integer integer(Map<String, Integer> keys, String key, ResultSet set, Integer def) throws Exception{
 		Object value = value(keys, key, set);
 		if(null != value){
 			return BasicUtil.parseInt(value, def);
 		}
 		return null;
 	}
-	protected Boolean bool(List<String> keys, String key, ResultSet set, Boolean def) throws Exception{
+	protected Boolean bool(Map<String, Integer> keys, String key, ResultSet set, Boolean def) throws Exception{
 		Object value = value(keys, key, set);
 		if(null != value){
 			return BasicUtil.parseBoolean(value, def);
 		}
 		return null;
 	}
-	protected Boolean bool(List<String> keys, String key, ResultSet set, int def) throws Exception{
+	protected Boolean bool(Map<String, Integer> keys, String key, ResultSet set, int def) throws Exception{
 		Boolean defaultValue = null;
 		if(def == 0){
 			defaultValue = false;
@@ -2952,15 +2991,15 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		}
 		return bool(keys, key, set, defaultValue);
 	}
-	protected Object value(List<String> keys, String key, ResultSet set, Object def) throws Exception{
-		int index = BasicUtil.index(true, true, keys, key);
-		if(index != -1){
-			key = keys.get(index);
-			return set.getObject(key);
+	protected Object value(Map<String, Integer> keys, String key, ResultSet set, Object def) throws Exception{
+		Integer index = keys.get(key);
+		if(null != index){
+			//db2 直接用 set.getObject(String) 可能发行 参数无效：未知列名 String
+			return set.getObject(index);
 		}
 		return def;
 	}
-	protected Object value(List<String> keys, String key, ResultSet set) throws Exception{
+	protected Object value(Map<String, Integer> keys, String key, ResultSet set) throws Exception{
 		return value(keys, key, set, null);
 	}
 
