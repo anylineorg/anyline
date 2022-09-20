@@ -2421,7 +2421,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	@Override
 	public StringBuilder type(StringBuilder builder, Column column){
 
-		builder.append(column.getTypeName());
+		builder.append(type2type(column.getTypeName()));
 		//精度
 		Integer precision = column.getPrecision();
 		Integer scale = column.getScale();
