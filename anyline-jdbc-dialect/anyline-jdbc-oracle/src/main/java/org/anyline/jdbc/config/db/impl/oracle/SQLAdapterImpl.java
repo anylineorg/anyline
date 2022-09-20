@@ -1319,6 +1319,12 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 	@Override
 	public String type2type(String type){
+		if(null != type){
+			type = type.toUpperCase();
+			if("DATETIME".equals(type)){
+				return "TIMESTAMP";
+			}
+		}
 		return super.type2type(type);
 	}
 	@Override
