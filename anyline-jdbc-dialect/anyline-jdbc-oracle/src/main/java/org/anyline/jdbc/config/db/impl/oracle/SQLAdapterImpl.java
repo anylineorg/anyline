@@ -1324,6 +1324,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 			if("DATETIME".equals(type)){
 				return "TIMESTAMP";
 			}
+			if("DOUBLE".equals(type)){
+				return "DECIMAL";
+			}
 		}
 		return super.type2type(type);
 	}
