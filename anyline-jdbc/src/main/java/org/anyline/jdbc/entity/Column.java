@@ -352,6 +352,19 @@ public class Column {
         return this;
     }
 
+    /**
+     * 自增长列
+     * @param seed 起始值
+     * @param step 增量
+     * @return  Column
+     */
+    public Column setAutoIncrement(int seed, int step) {
+        setAutoIncrement(1);
+        this.incrementSeed= seed;
+        this.incrementStep = step;
+        return this;
+    }
+
     public int isPrimaryKey() {
         return isPrimaryKey;
     }
