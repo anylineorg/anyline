@@ -6,11 +6,23 @@
 
 AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具  
 其重点是：  
-1.以最简单、快速的方式操作数据库  
-2.针对结果集的数据二次处理能力    
+- 以最简单、快速的方式操作数据库  
+- 针对结果集的数据二次处理能力    
 
-摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O  
+同时摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O  
 没有需要自动生成的代码,没有模板文件(自动生成的都是程序员的负担)    
+
+
+简单来说主要作了两方面的工作：    
+- 对查询条件的封装  
+  拼接个查询条件不再需要各种空判断、遍历、类型转换了,这些繁琐的工作让工具去完成  
+
+
+- 返回的结果集中处理了开发中能遇到到的各种情况  
+  为前端或第三方应用提供数据不再需要各种遍历、各种判断、各种计算了,尽量作到一键...
+
+
+
 
 ## 适用场景
 Anyline一的切都是面向动态、面向运行时环境  
@@ -24,10 +36,105 @@ Anyline一的切都是面向动态、面向运行时环境
 - 运行时自定义表单/查询条件/数据结构  
 - 还有一种很实现的场景是 许多项目到了交付的那一天 实体也没有设计完成   
 
+### 什么情况下说明你的应该考虑换工具了  
+- 非常简单的增删改查,Entity中大部分只用到了get/set方法,很少需要计算  
+这一般都是些hello world 或 练习作业  
+这样的直接利用默认的service查出数据返回给前端就可以收工了  
+不要再生成一堆重复的模板，简单改个属性也要层层修改，从头改个遍。    
+
+  
+- 代码中出现了大量的List,Map结构 或者 针对查询结果集需要大量的二次计算  
+这种情况应该非常多见  
+随着系统的增强完善和高度的抽象,同一份数据源将为各种不同的业务场景提供数据支持  
+每个场景需要的数据结构各不雷同  
+这时经常是为每类场景订制视图或SQL  
+但数据支持部门不可能针对每种场景每个视图、每个SQL 生成不同的Entity  
+更也不可能生成一个大而全的Entity以应万变  
+
+无论是Map还是Entity计算能力都非常有限,通过需要开发人员各种遍历、计算、格式化  
+而这种大量的机械的计算应该占用开发人员的时间  
+Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据二次处理功能,如:   
+排序、维度转换、截取、去重、方差、偏差、交集合集差集、分组、忽略大小写对比、行列转换、类SQL过滤筛选(like,eq,in,less,between...)、JSON、XML格式转换等
+
+
 
 ## 不适用场景
 对已经非常明确的实体执行增删改查操作  
 不要跨过设计人员直接拿给业务开发人员用  
+
+##  关于数据库的适配
+直接看示例(代码都是一样的、可以用来测试一下自己的数据库是否被支持)
+[https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect](https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect)
+
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-mysql">
+<img alt="MySQL" src="http://cdn.anyline.org/img/logo/mysql.jpg" width="100">
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-postgresql">
+<img alt="PostgreSQL" src="http://cdn.anyline.org/img/logo/postgre.jpg" width="100">
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-oracle">
+<img alt="Oracle 11G" src="http://cdn.anyline.org/img/logo/oracle.jpg" width="100">
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-mssql">
+<img alt="SQL Server" src="http://cdn.anyline.org/img/logo/mssql.jpg" width="100">
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-clickhouse">
+<img alt="clickhouse" src="http://cdn.anyline.org/img/logo/clickhouse.jpg" width="100">
+</a>
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-sqlite">
+<img alt="sqlite" src="http://cdn.anyline.org/img/logo/sqlite.jpg" width="100">
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-dm">
+<img alt="达梦" src="http://cdn.anyline.org/img/logo/dm.webp" width="100">
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-tdengine">
+<img alt="tdengine" src="http://cdn.anyline.org/img/logo/tdengine.png" width="100">
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-db2">
+IBM DB2
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-derby">
+derby
+</a>
+
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-h2">
+H2
+</a>
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-hsqldb">
+
+<img alt="hsqldb" src="http://cdn.anyline.org/img/logo/hsqldb.webp" width="100">
+</a>
+
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-kingbase">
+
+<img alt="kingbase" src="http://cdn.anyline.org/img/logo/kingbase.png" width="100">
+</a>
+
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-neo4j">
+<img alt="Neo4j" src="http://cdn.anyline.org/img/logo/neo4j.webp" width="100">
+</a>
+
+
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-hgdb">
+<img alt="hgdb" src="http://cdn.anyline.org/img/logo/hgdb.webp" width="100">
+</a>
+
+
+没有示例的看这个目录下有没有 [【anyline-jdbc-dialect】](https://gitee.com/anyline/anyline/tree/master/anyline-jdbc-dialect)还没有的请QQ群管理管理员
+
 
 ## 如何使用
 数据操作***不要***再从生成xml/dao/service以及各种配置各种O开始  
@@ -39,11 +146,7 @@ DataSet set = service.querys("HR_USER(ID,NM)",
 ```
 这里的查询条件不再需要各种配置,各种if else foreach标签  
 Anyline会自动生成,生成规则可以参考这里的[【约定规则】](http://doc.anyline.org/s?id=p298pn6e9o1r5gv78acvic1e624c62387f2c45dd13bb112b34176fad5a868fa6a4)  
-分页也不需要另外的插件，更不需要繁琐的计算和配置，指定true或false即可  
-繁琐机械的工作不要浪费程序员的时间  
-
-返回的DataSet上附加了常用的数据二次处理功能如:排序、维度转换、截取、去重、方差、偏差、交集合集差集、分组、  
-行列转换、类SQL过滤筛选(like,eq,in,less,between...)、JSON、XML格式转换等  
+分页也不需要另外的插件，更不需要繁琐的计算和配置，指定true或false即可
 
 
 ## 如何集成
