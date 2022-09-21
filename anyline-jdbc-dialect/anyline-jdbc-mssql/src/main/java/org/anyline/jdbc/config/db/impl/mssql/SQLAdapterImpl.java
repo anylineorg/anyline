@@ -941,7 +941,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 
 	/**
-	 * 自增长列
+	 * 递增列
 	 * @param builder builder
 	 * @param column 列
 	 * @return builder

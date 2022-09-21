@@ -695,7 +695,7 @@ public interface SQLAdapter {
 	 */
 	public StringBuilder defaultValue(StringBuilder builder, Column column);
 	/**
-	 * 自增长列
+	 * 递增列
 	 * @param builder builder
 	 * @param column 列
 	 * @return StringBuilder

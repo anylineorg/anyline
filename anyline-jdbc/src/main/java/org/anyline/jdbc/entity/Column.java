@@ -353,7 +353,7 @@ public class Column {
     }
 
     /**
-     * 自增长列
+     * 递增列
      * @param seed 起始值
      * @param step 增量
      * @return  Column

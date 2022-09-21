@@ -2402,7 +2402,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		if(column.isNullable() == 0) {
 			nullable(builder, column);
 		}
-		//自增长列
+		//递增列
 		increment(builder, column);
 		//更新行事件
 		onupdate(builder, column);
@@ -2498,7 +2498,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder;
 	}
 	/**
-	 * 自增长列
+	 * 递增列
 	 * 子类实现
 	 * @param builder builder
 	 * @param column 列

@@ -759,14 +759,18 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return super.defaultValue(builder, column);
 	}
 	/**
-	 * 自增长列
+	 * 递增列
+	 * 不指定AUTOINCREMENT 也可以，主键默认递增
 	 * @param builder builder
 	 * @param column 列
 	 * @return builder
 	 */
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
-		return super.increment(builder, column);
+		if(column.isAutoIncrement() == 1){
+			builder.append(" AUTOINCREMENT");
+		}
+		return builder;
 	}
 
 

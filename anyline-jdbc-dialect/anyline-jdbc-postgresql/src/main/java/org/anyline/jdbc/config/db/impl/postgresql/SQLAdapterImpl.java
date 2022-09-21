@@ -814,7 +814,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 */
 	@Override
 	public StringBuilder define(StringBuilder builder, Column column){
-		//如果有自增长列 通过数据类型实现
+		//如果有递增列 通过数据类型实现
 		if(column.isAutoIncrement() == 1){
 			column.setType("SERIAL");
 		}
@@ -862,7 +862,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return super.defaultValue(builder, column);
 	}
 	/**
-	 * 自增长列
+	 * 递增列
 	 * 通过数据类型实现，这里不需要
 	 * @param builder builder
 	 * @param column 列

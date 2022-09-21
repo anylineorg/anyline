@@ -1110,7 +1110,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return super.defaultValue(builder, column);
 	}
 	/**
-	 * 自增长列
+	 * 递增列
 	 * 不支持
 	 * @param builder builder
 	 * @param column 列
