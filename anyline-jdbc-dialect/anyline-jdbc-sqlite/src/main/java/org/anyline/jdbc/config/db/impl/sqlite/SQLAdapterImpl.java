@@ -760,16 +760,16 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 	/**
 	 * 递增列
-	 * 不指定AUTOINCREMENT 也可以，主键默认递增
+	 * 主键默认递增
 	 * @param builder builder
 	 * @param column 列
 	 * @return builder
 	 */
 	@Override
 	public StringBuilder increment(StringBuilder builder, Column column){
-		if(column.isAutoIncrement() == 1){
-			builder.append(" AUTOINCREMENT");
-		}
+		/*if(column.isAutoIncrement() == 1){
+			builder.append(" AUTO_INCREMENT");
+		}*/
 		return builder;
 	}
 
