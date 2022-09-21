@@ -111,6 +111,8 @@ public class SQLAdapterUtil {
 			adapter =  adapters.get(SQLAdapter.DB_TYPE.HSQLDB.getCode());
 		}else if(name.contains("taos")){
 			adapter =  adapters.get(SQLAdapter.DB_TYPE.TDengine.getCode());
+		}else if(name.contains("neo4j")){
+			adapter =  adapters.get(SQLAdapter.DB_TYPE.Neo4j.getCode());
 		}
 		adapters.put(name, adapter);
 		return adapter;
