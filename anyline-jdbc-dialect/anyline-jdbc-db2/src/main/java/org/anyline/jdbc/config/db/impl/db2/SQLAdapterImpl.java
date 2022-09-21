@@ -512,6 +512,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 					builder.append(" ").append(order);
 				}
 			}
+			idx ++;
 			builder.append(")");
 		}
 		return builder;
