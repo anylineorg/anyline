@@ -2045,6 +2045,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 					builder.append(",");
 				}
 				SQLUtil.delimiter(builder, pk.getName(), getDelimiterFr(), getDelimiterTo());
+				idx ++;
 			}
 			builder.append(")");
 		}
@@ -2398,12 +2399,10 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		charset(builder, column);
 		//默认值
 		defaultValue(builder, column);
-		//非空
-		if(column.isNullable() == 0) {
-			nullable(builder, column);
-		}
 		//递增列
 		increment(builder, column);
+		//非空
+		nullable(builder, column);
 		//更新行事件
 		onupdate(builder, column);
 		//备注
@@ -2446,12 +2445,14 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 */
 	@Override
 	public StringBuilder nullable(StringBuilder builder, Column column){
-		int nullable = column.isNullable();
-		if(nullable != -1) {
-			if (nullable == 0) {
-				builder.append(" NOT");
+		if(column.isNullable() == 0) {
+			int nullable = column.isNullable();
+			if(nullable != -1) {
+				if (nullable == 0) {
+					builder.append(" NOT");
+				}
+				builder.append(" NULL");
 			}
-			builder.append(" NULL");
 		}
 		return builder;
 	}
