@@ -84,7 +84,7 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 </a>
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-db2">
-IBM DB2
+<b>IBM DB2</b>
 </a>
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-clickhouse">
 <img alt="clickhouse" src="http://cdn.anyline.org/img/logo/clickhouse.jpg" width="100">
