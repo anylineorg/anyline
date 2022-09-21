@@ -18,6 +18,16 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j-jdbc-driver</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.anyline</groupId>
             <artifactId>anyline-jdbc</artifactId>
         </dependency>
