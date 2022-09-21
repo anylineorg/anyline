@@ -83,6 +83,10 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 <img alt="SQL Server" src="http://cdn.anyline.org/img/logo/mssql.jpg" width="100">
 </a>
 
+<a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-mariadb">
+<img alt="MariaDB" src="http://cdn.anyline.org/img/logo/mariadb.svg" width="100">
+</a>
+
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-db2">
 <b>IBM DB2</b>
 </a>
@@ -131,6 +135,33 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-hgdb">
 <img alt="hgdb" src="http://cdn.anyline.org/img/logo/hgdb.webp" width="100">
 </a>
+
+
+<a href="">
+<img alt="南大通用" src="http://cdn.anyline.org/img/logo/gbasedbt.jpg" width="100">
+</a>
+
+<a href="">
+<img alt="cassandra" src="http://cdn.anyline.org/img/logo/cassandra.svg" width="100">
+</a>
+
+<a href="">
+<img alt="oceanbase" src="http://cdn.anyline.org/img/logo/oceanbase.webp" width="100">
+</a>
+<a href="">
+<img alt="神舟通用" src="http://cdn.anyline.org/img/logo/oscar.png" width="100">
+</a>
+
+<a href="">
+<img alt="polardb" src="http://cdn.anyline.org/img/logo/polardb.webp" width="100">
+</a>
+<a href="">
+<img alt="questdb" src="http://cdn.anyline.org/img/logo/questdb.svg" width="100">
+</a>
+<a href="">
+<img alt="timescale" src="http://cdn.anyline.org/img/logo/timescale.svg" width="100">
+</a>
+
 
 
 没有示例的看这个目录下有没有 [【anyline-jdbc-dialect】](https://gitee.com/anyline/anyline/tree/master/anyline-jdbc-dialect)还没有的请QQ群管理管理员
@@ -321,7 +352,7 @@ condition("CODE:code","NAME:name%", "TYPE:[type]")
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service.query(类型(属性集合),condition().add('对比方式','属性','值');
 
 
-###### &nbsp;&nbsp;&nbsp;&nbsp;**5).物联网环境(特别是像Cassandra、ClickHouse等列式数据库 InfluxDB、TimescaleDB等时序数据库)**  
+###### &nbsp;&nbsp;&nbsp;&nbsp;**5).物联网环境(特别是像Cassandra、ClickHouse等列式数据库 InfluxDB、timescale等时序数据库)**  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;与低代码平台类似都需要一种动态的结构，并且为了数据读取的高效，数据在水平方向上变的更分散。  
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;这与最终用户需要显示的格式完全不一样，直接通过数据库查询出来的原始数据通常是类似这样  
 
