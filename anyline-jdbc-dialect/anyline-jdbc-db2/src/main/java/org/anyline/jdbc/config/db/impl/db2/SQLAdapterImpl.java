@@ -192,7 +192,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 ******************************************************************************************************************/
 
 	/**
-	 * 查询分区
+	 * 查询分区表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -231,7 +231,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables tables
+	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
 	 * @throws Exception
@@ -253,7 +253,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 查询表上的列
-	 * @param table table
+	 * @param table 表
 	 * @return sql
 	 */
 	@Override
@@ -265,7 +265,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 *
 	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
+	 * @param table 表
 	 * @param columns 上一步查询结果
 	 * @param set set
 	 * @return columns columns
@@ -295,7 +295,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 ******************************************************************************************************************/
 	/**
 	 *
-	 * @param table table
+	 * @param table 表
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
@@ -308,8 +308,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
-	 * @param tags tags
+	 * @param table 表
+	 * @param tags 上一步查询结果
 	 * @param set set
 	 * @return tags
 	 * @throws Exception
@@ -337,7 +337,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
-	 * @param table table
+	 * @param table 表
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sql
 	 */
@@ -350,8 +350,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 *
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
-	 * @param indexs indexs
+	 * @param table 表
+	 * @param indexs 上一步查询结果
 	 * @param set set
 	 * @return indexs indexs
 	 * @throws Exception
@@ -374,13 +374,13 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
 	 * public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Constraint> constraints(int constraint,boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
+	 * public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
 	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
 	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
-	 * @param table table
+	 * @param table 表
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
@@ -393,7 +393,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 *  根据查询结果集构造Constraint
 	 * @param index 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
+	 * @param table 表
 	 * @param constraints 上一步查询结果
 	 * @param set set
 	 * @return constraints constraints
@@ -461,7 +461,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改表名
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param table table
+	 * @param table 表
 	 * @return String
 	 */
 	@Override
@@ -475,7 +475,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 	/**
 	 * 删除表
-	 * @param table table
+	 * @param table 表
 	 * @return String
 	 */
 	@Override
@@ -493,7 +493,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 主键
 	 * @param builder builder
-	 * @param table table
+	 * @param table 表
 	 * @return builder
 	 */
 	@Override
@@ -521,7 +521,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 备注
 	 *
 	 * @param builder builder
-	 * @param table table
+	 * @param table 表
 	 * @return builder
 	 */
 	@Override
@@ -532,7 +532,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 构造完整表名
 	 * @param builder builder
-	 * @param table table
+	 * @param table 表
 	 * @return StringBuilder
 	 */
 	@Override
@@ -586,7 +586,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 ******************************************************************************************************************/
 	/**
 	 * 创建分区表
-	 * @param table table
+	 * @param table 表
 	 * @return String
 	 */
 	@Override
@@ -640,7 +640,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 添加列
 	 * ALTER TABLE  HR_USER ADD COLUMN UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -651,7 +651,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 修改列 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
-	 * @param column column
+	 * @param column 列
 	 * @return sqls
 	 */
 	@Override
@@ -663,7 +663,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 删除列
 	 * ALTER TABLE HR_USER DROP COLUMN NAME;
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -675,7 +675,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改列名
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -688,7 +688,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改数据类型
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return sql
 	 */
 	@Override
@@ -699,7 +699,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改默认值
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -711,7 +711,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改非空限制
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -722,7 +722,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改备注
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	@Override
@@ -736,7 +736,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 定义列
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return builder
 	 */
 	@Override
@@ -746,7 +746,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 数据类型
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return builder
 	 */
 	@Override
@@ -757,7 +757,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 编码
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return builder
 	 */
 	@Override
@@ -767,7 +767,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 编码
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return builder
 	 */
 	@Override
@@ -777,7 +777,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 默认值
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return builder
 	 */
 	@Override
@@ -787,7 +787,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 自增长列
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return builder
 	 */
 	@Override
@@ -802,7 +802,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 更新行事件
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return builder
 	 */
 	@Override
@@ -814,7 +814,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 位置
 	 *
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return builder
 	 */
 	@Override
@@ -825,7 +825,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 备注
 	 *
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return builder
 	 */
 	@Override
@@ -850,7 +850,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 添加标签
 	 * ALTER TABLE  HR_USER ADD TAG UPT_TIME datetime CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci  DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP comment '修改时间' AFTER ID;
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
@@ -861,7 +861,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 修改标签 ALTER TABLE  HR_USER CHANGE UPT_TIME UPT_TIME datetime   DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP  comment '修改时间' AFTER ID;
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return sqls
 	 */
 	@Override
@@ -873,7 +873,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 删除标签
 	 * ALTER TABLE HR_USER DROP TAG NAME;
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
@@ -886,7 +886,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改标签名
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
@@ -898,7 +898,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改默认值
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
@@ -910,7 +910,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改非空限制
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
@@ -921,7 +921,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改备注
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	@Override
@@ -933,7 +933,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * 修改数据类型
 	 *
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return sql
 	 */
 	@Override
@@ -951,7 +951,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
-	 * @param index index
+	 * @param index 索引
 	 * @return String
 	 */
 	@Override
@@ -961,7 +961,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 修改索引
 	 * 有可能生成多条SQL
-	 * @param index index
+	 * @param index 索引
 	 * @return List
 	 */
 	@Override
@@ -971,7 +971,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 
 	/**
 	 * 删除索引
-	 * @param index index
+	 * @param index 索引
 	 * @return String
 	 */
 	@Override
@@ -981,7 +981,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/**
 	 * 修改索引名
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param index index
+	 * @param index 索引
 	 * @return String
 	 */
 	@Override
@@ -994,11 +994,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * public String buildAddRunSQL(Constraint constraint) throws Exception
 	 * public List<String> buildAlterRunSQL(Constraint constraint) throws Exception
 	 * public String buildDropRunSQL(Constraint constraint) throws Exception
-	 * public String buildRenameRunSQL(Constraint index) throws Exception
+	 * public String buildRenameRunSQL(Constraint constraint) throws Exception
 	 ******************************************************************************************************************/
 	/**
-	 * 添加索引
-	 * @param constraint constraint
+	 * 添加索约束
+	 * @param constraint 约束
 	 * @return String
 	 */
 	@Override
@@ -1006,9 +1006,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return super.buildAddRunSQL(constraint);
 	}
 	/**
-	 * 修改索引
+	 * 修改约束
 	 * 有可能生成多条SQL
-	 * @param constraint constraint
+	 * @param constraint 约束
 	 * @return List
 	 */
 	@Override
@@ -1017,8 +1017,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 
 	/**
-	 * 删除索引
-	 * @param constraint constraint
+	 * 删除约束
+	 * @param constraint 约束
 	 * @return String
 	 */
 	@Override
@@ -1026,14 +1026,14 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return super.buildDropRunSQL(constraint);
 	}
 	/**
-	 * 修改索引名
+	 * 修改约束名
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param index index
+	 * @param constraint 约束
 	 * @return String
 	 */
 	@Override
-	public String buildRenameRunSQL(Constraint index) throws Exception{
-		return super.buildRenameRunSQL(index);
+	public String buildRenameRunSQL(Constraint constraint) throws Exception{
+		return super.buildRenameRunSQL(constraint);
 	}
 
 
@@ -1055,7 +1055,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	}
 	/**
 	 * 是否同数字
-	 * @param column column
+	 * @param column 列
 	 * @return boolean
 	 */
 	@Override
