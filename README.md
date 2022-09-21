@@ -9,8 +9,8 @@ AnyLine的核心是一个基于spring-jdbc生态的(No-ORM)数据库操作工具
 1.以最简单、快速的方式操作数据库  
 2.针对结果集的数据二次处理能力    
 
-摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O
-
+摒弃了各种繁琐呆板的Service/Dao/Entity/*O/Mapper 没有mybatis 没有各种配置 各种O  
+没有需要自动生成的代码,没有模板文件(自动生成的都是程序员的负担)    
 
 ## 适用场景
 Anyline一的切都是面向动态、面向运行时环境  
