@@ -1447,7 +1447,6 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             src = DataSourceHolder.parseDataSource(src);//解析数据源
             src = parsePrimaryKey(src, pks);//解析主键
             //String chk = src.toUpperCase().trim().replace("\t"," ");
-
             /*if (chk.startsWith("SELECT ")
                     || chk.startsWith("DELETE ")
                     || chk.startsWith("INSERT ")
@@ -1463,7 +1462,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                     || chk.startsWith("REMOVE ")
                     || chk.startsWith("SET ")
             )*/
-            if(src.trim().matches("[a-zA-Z]+\\s+")){
+            if(src.trim().matches("^[a-zA-Z]+\\s+.+")){
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
