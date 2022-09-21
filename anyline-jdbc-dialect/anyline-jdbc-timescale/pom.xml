@@ -11,10 +11,10 @@
         <relativePath>../../anyline-dependency/pom.xml</relativePath>
     </parent>
 
-    <artifactId>anyline-jdbc-timescaledb</artifactId>
+    <artifactId>anyline-jdbc-timescale</artifactId>
     <packaging>jar</packaging>
-    <name>anyline-jdbc-timescaledb</name>
-    <url>http://www.anyline.org/timescaledb</url>
+    <name>anyline-jdbc-timescale</name>
+    <url>http://www.anyline.org/timescale</url>
 
     <dependencies>
         <dependency>

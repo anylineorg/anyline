@@ -67,7 +67,7 @@
 		<module>anyline-jdbc-dialect/anyline-jdbc-hsqldb</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-derby</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-cassandra</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-timescaledb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-timescale</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-influxdb</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-tdengine</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-questdb</module>

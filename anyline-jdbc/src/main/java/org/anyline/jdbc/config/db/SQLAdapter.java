@@ -69,7 +69,7 @@ public interface SQLAdapter {
 		RethinkDB  			{public String getCode(){return "DB_TYPE_RETHINKDB";}			public String getName(){return "RethinkDB";}}			,
 		SQLite  			{public String getCode(){return "DB_TYPE_SQLITE";}				public String getName(){return "SQLite";}}				,
 		TDengine  			{public String getCode(){return "DB_TYPE_TDENGINE";}			public String getName(){return "TDengine";}}			,
-		TimescaleDB			{public String getCode(){return "DB_TYPE_TIMESCALEDB";}			public String getName(){return "TimescaleDB";}};
+		Timescale			{public String getCode(){return "DB_TYPE_TIMESCALE";}			public String getName(){return "Timescale";}};
 
 		public abstract String getCode();
 		public abstract String getName();

@@ -297,7 +297,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.anyline</groupId>
-				<artifactId>anyline-jdbc-timescaledb</artifactId>
+				<artifactId>anyline-jdbc-timescale</artifactId>
 				<version>${anyline.version}</version>
 			</dependency>
 			<dependency>
