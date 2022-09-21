@@ -507,7 +507,7 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 		/**
 		 * 表是否存在
-		 * @param table table
+		 * @param table 表
 		 * @return boolean
 		 */
 		public boolean exists(Table table);
@@ -536,7 +536,7 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 		/**
 		 * 主表是否存在
-		 * @param table table
+		 * @param table 表
 		 * @return boolean
 		 */
 		public boolean exists(MasterTable table);
@@ -557,7 +557,7 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 		/**
 		 * 主表是否存在
-		 * @param table table
+		 * @param table 表
 		 * @return boolean
 		 */
 		public boolean exists(PartitionTable table);
@@ -577,13 +577,13 @@ public interface AnylineService<E>{
 		 ******************************************************************************************************************/
 		/**
 		 * 列是否存在
-		 * @param column column
+		 * @param column 列
 		 * @return boolean
 		 */
 		public boolean exists(Column column);
 		/**
 		 * 查询表中所有的表，注意这里的map.KEY全部转大写
-		 * @param table table
+		 * @param table 表
 		 * @return map
 		 */
 		public LinkedHashMap<String,Column> columns(Table table);
@@ -661,7 +661,7 @@ public interface AnylineService<E>{
 		 * 修改列  名称 数据类型 位置 默认值
 		 * 执行save前先调用column.update()设置修改后的属性
 		 * column.update().setName().setDefaultValue().setAfter()....
-		 * @param column column
+		 * @param column 列
 		 * @throws Exception SQL异常
 		 */
 		public boolean save(Column column) throws Exception;
@@ -688,8 +688,8 @@ public interface AnylineService<E>{
 		 * 													constraint
 		 ******************************************************************************************************************/
 		/**
-		 * 添加约束
-		 * @param constraint constraint
+		 * 修改约束
+		 * @param constraint 约束
 		 * @return boolean
 		 * @throws Exception Exception
 		 */

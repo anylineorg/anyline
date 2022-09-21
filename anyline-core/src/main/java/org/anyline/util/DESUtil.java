@@ -645,7 +645,7 @@ public class DESUtil {
 	/**
 	 * 加密htmla标签中的url
 	 * 
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	public static String encryptHtmlTagA(String tag) {

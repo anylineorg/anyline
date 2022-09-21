@@ -1671,7 +1671,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
     /**
      * 修改表结构
-     * @param table table
+     * @param table 表
      * @throws Exception SQL异常
      */
     public boolean save(Table table) throws Exception{
@@ -1681,7 +1681,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
      * 修改列  名称 数据类型 位置 默认值
      * 执行save前先调用column.update()设置修改后的属性
      * column.update().setName().setDefaultValue().setAfter()....
-     * @param column column
+     * @param column 列
      * @throws Exception SQL异常
      */
     public boolean save(Column column) throws Exception{
@@ -2285,7 +2285,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
          * 修改列  名称 数据类型 位置 默认值
          * 执行save前先调用column.update()设置修改后的属性
          * column.update().setName().setDefaultValue().setAfter()....
-         * @param column column
+         * @param column 列
          * @throws Exception SQL异常
          */
 
@@ -2340,7 +2340,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         /**
          * 修改列
-         * @param table table
+         * @param table 表
          * @param column 修改目标
          * @return boolean
          * @throws Exception sql异常
@@ -2394,7 +2394,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
          * 修改列  名称 数据类型 位置 默认值
          * 执行save前先调用tag.update()设置修改后的属性
          * tag.update().setName()
-         * @param tag tag
+         * @param tag 标签
          * @throws Exception SQL异常
          */
 
@@ -2450,7 +2450,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         /**
          * 修改标签
-         * @param table table
+         * @param table 表
          * @param tag 修改目标
          * @return boolean
          * @throws Exception sql异常

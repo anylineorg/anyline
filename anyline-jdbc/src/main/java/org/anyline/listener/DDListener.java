@@ -23,8 +23,8 @@ public interface DDListener {
      * 修改列之后触发
      * 触发之后如果返回true dao将再执行一次 alter column
      * 一般在此事件中处理 发生类型转换时(如String to Number) 修改表内容
-     * @param table table
-     * @param column column
+     * @param table 表
+     * @param column 列
      * @param exception exception
      * @return boolean  如果返回false则中断执行
      */
@@ -33,8 +33,8 @@ public interface DDListener {
      * 修改列之后触发
      * 触发之后如果返回true dao将再执行一次 alter column
      * 一般在此事件中处理 发生类型转换时(如String to Number) 修改表内容
-     * @param table table
-     * @param column column
+     * @param table 表
+     * @param column 列
      * @param rows rows 整个表中行数(超出ConfigTable.AFTER_ALTER_COLUMN_EXCEPTION_ACTION时调用)
      * @param exception exception
      * @return boolean  如果返回false则中断执行

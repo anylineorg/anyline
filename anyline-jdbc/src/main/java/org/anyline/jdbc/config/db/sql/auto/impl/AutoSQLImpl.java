@@ -54,7 +54,7 @@ public class AutoSQLImpl extends BasicSQL implements AutoSQL{
 	/**
 	 * 设置数据源
 	 * table(c1,c2)[pk1,pk2]
-	 * @param table table
+	 * @param table 表
 	 * @return SQL
 	 */
 	public SQL setDataSource(String table){

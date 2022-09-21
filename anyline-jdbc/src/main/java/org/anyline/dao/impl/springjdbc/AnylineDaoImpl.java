@@ -1770,7 +1770,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 ******************************************************************************************************************/
 	/**
 	 * 所引
-	 * @param table table
+	 * @param table 表
 	 * @return map
 	 */
 	@Override

@@ -26,7 +26,7 @@ public interface AutoSQL extends SQL{
  
 	/** 
 	 * 设置数据源 
-	 * @param table table
+	 * @param table 表
 	 * @return SQL
 	 */ 
 	public SQL setDataSource(String table); 

@@ -528,7 +528,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * 读取一行数据
      *
-     * @param index index
+     * @param index 索引
      * @return DataRow
      */
     public DataRow getRow(int index) {
@@ -1780,7 +1780,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * String
      *
-     * @param index index
+     * @param index 索引
      * @param key   key
      * @return String
      * @throws Exception Exception
@@ -2119,7 +2119,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * html格式(未实现)
      *
-     * @param index index
+     * @param index 索引
      * @param key   key
      * @return String
      * @throws Exception Exception
@@ -2141,7 +2141,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * escape String
      *
-     * @param index index
+     * @param index 索引
      * @param key   key
      * @return String
      * @throws Exception Exception
@@ -2182,7 +2182,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * int
      *
-     * @param index index
+     * @param index 索引
      * @param key   key
      * @return int
      * @throws Exception Exception
@@ -2210,7 +2210,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
     /**
      * double
      *
-     * @param index index
+     * @param index 索引
      * @param key   key
      * @return double
      * @throws Exception Exception
@@ -2664,7 +2664,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * 转换成对象
      *
      * @param <T>   T
-     * @param index index
+     * @param index 索引
      * @param clazz clazz
      * @param configs 属性对应关系  name:USER_NAME
      * @return T

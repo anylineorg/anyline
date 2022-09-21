@@ -244,10 +244,10 @@ public class AbstractBasicController {
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(request, keyCase, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
-	public DataRow entity(HttpServletRequest request,boolean keyEncrypt, boolean valueEncrypt, String... params) {
+	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(params));
 	}
-	public DataRow entity(HttpServletRequest request,boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
+	public DataRow entity(HttpServletRequest request, boolean keyEncrypt, boolean valueEncrypt, String[] fixs, String... params) {
 		return entity(request, KEY_CASE.CONFIG, null, keyEncrypt, valueEncrypt, BeanUtil.array2list(fixs, params));
 	}
 	public DataRow entity(HttpServletRequest request, KEY_CASE keyCase, boolean keyEncrypt, String... params) {

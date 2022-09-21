@@ -125,7 +125,7 @@ public class CacheUtil {
     }
     /**
      * 创建集中缓存的key
-     * @param table table
+     * @param table 表
      * @param row row
      * @return String
      */

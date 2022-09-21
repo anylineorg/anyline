@@ -115,7 +115,7 @@ public class MD5Util {
     * @param recursion ;true递归子目录中的文件 
     * @return Map
     */ 
-    public static Map<String, String> getDirMD5(File file,boolean recursion) { 
+    public static Map<String, String> getDirMD5(File file, boolean recursion) { 
 	    if(null == file || !file.isDirectory() || !file.exists()){ 
 	    	return null; 
 	    } 

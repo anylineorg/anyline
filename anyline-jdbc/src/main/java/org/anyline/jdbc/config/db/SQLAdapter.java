@@ -113,7 +113,7 @@ public interface SQLAdapter {
 
 	/**
 	 * 根据key values删除
-	 * @param table table
+	 * @param table 表
 	 * @param key key
 	 * @param values values
 	 * @return RunSQL
@@ -219,7 +219,7 @@ public interface SQLAdapter {
 	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param table table
+	 * @param table 表
 	 * @param run  RunValue
 	 * @return boolean 返回false表示转换失败 如果有多个creater 则交给creater继续转换
 	 */
@@ -298,7 +298,7 @@ public interface SQLAdapter {
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables tables
+	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
 	 * @throws Exception
@@ -338,7 +338,7 @@ public interface SQLAdapter {
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables tables
+	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
 	 * @throws Exception
@@ -350,7 +350,7 @@ public interface SQLAdapter {
 	 * 													partition table
 	 ******************************************************************************************************************/
 	/**
-	 * 查询分区
+	 * 查询分区表
 	 * @param catalog catalog
 	 * @param schema schema
 	 * @param pattern pattern
@@ -380,7 +380,7 @@ public interface SQLAdapter {
 	 * @param master 主表
 	 * @param catalog catalog
 	 * @param schema schema
-	 * @param tables tables
+	 * @param tables 上一步查询结果
 	 * @param set set
 	 * @return tables
 	 * @throws Exception
@@ -391,7 +391,7 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
-	 * @param table table
+	 * @param table 表
 	 * @param metadata 是否根据metadata(SELEC * FROM T WHERE 1=0) | 查询系统表
 	 * @return sqls
 	 */
@@ -401,7 +401,7 @@ public interface SQLAdapter {
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条SQL 对照 buildQueryColumnRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
+	 * @param table 表
 	 * @param columns 上一步查询结果
 	 * @param set set
 	 * @return tags tags
@@ -412,7 +412,7 @@ public interface SQLAdapter {
 	/**
 	 * 解析查询结果metadata
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
+	 * @param table 表
 	 * @param columns columns
 	 * @param set set
 	 * @return columns columns
@@ -423,7 +423,7 @@ public interface SQLAdapter {
 	/**
 	 * 解析JDBC getcolumns结果
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
+	 * @param table 表
 	 * @param columns columns
 	 * @param set set
 	 * @return columns columns
@@ -438,7 +438,7 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
-	 * @param table table
+	 * @param table 表
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
@@ -448,7 +448,7 @@ public interface SQLAdapter {
 	 *  根据查询结果集构造Tag
 	 * @param index 第几条查询SQL 对照 buildQueryTagRunSQL返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
+	 * @param table 表
 	 * @param tags 上一步查询结果
 	 * @param set set
 	 * @return tags tags
@@ -464,7 +464,7 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的所引
-	 * @param table table
+	 * @param table 表
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
@@ -474,7 +474,7 @@ public interface SQLAdapter {
 	 *  根据查询结果集构造Index
 	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
+	 * @param table 表
 	 * @param indexs 上一步查询结果
 	 * @param set set
 	 * @return indexs indexs
@@ -491,7 +491,7 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
-	 * @param table table
+	 * @param table 表
 	 * @param metadata 是否根据metadata | 查询系统表
 	 * @return sqls
 	 */
@@ -501,13 +501,13 @@ public interface SQLAdapter {
 	 *  根据查询结果集构造Constraint
 	 * @param constraint 第几条查询SQL 对照 buildQueryConstraintRunSQL 返回顺序
 	 * @param create 上一步没有查到的，这一步是否需要新创建
-	 * @param table table
+	 * @param table 表
 	 * @param constraints 上一步查询结果
 	 * @param set set
 	 * @return constraints constraints
 	 * @throws exception
 	 */
-	public LinkedHashMap<String, Constraint> constraints(int constraint,boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
+	public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
 	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
 	public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
 
@@ -550,7 +550,7 @@ public interface SQLAdapter {
 	/**
 	 * 主键
 	 * @param builder builder
-	 * @param table table
+	 * @param table 表
 	 * @return StringBuilder
 	 */
 	public StringBuilder primary(StringBuilder builder, Table table);
@@ -558,14 +558,14 @@ public interface SQLAdapter {
 	/**
 	 * 表备注
 	 * @param builder builder
-	 * @param table table
+	 * @param table 表
 	 * @return StringBuilder
 	 */
 	public StringBuilder comment(StringBuilder builder, Table table);
 	/**
 	 * 构造表名
 	 * @param builder builder
-	 * @param table table
+	 * @param table 表
 	 * @return builder
 	 */
 	public StringBuilder name(StringBuilder builder, Table table);
@@ -597,21 +597,21 @@ public interface SQLAdapter {
 	public String alterColumnKeyword();
 	/**
 	 * 添加列
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public String buildAddRunSQL(Column column) throws Exception;
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL
-	 * @param column column
+	 * @param column 列
 	 * @return List
 	 */
 	public List<String> buildAlterRunSQL(Column column) throws Exception;
 
 	/**
 	 * 删除列
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public String buildDropRunSQL(Column column) throws Exception;
@@ -619,7 +619,7 @@ public interface SQLAdapter {
 	/**
 	 * 修改列名
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public String buildRenameRunSQL(Column column) throws Exception;
@@ -627,14 +627,14 @@ public interface SQLAdapter {
 	/**
 	 * 修改数据类型
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public List<String> buildChangeTypeRunSQL(Column column) throws Exception;
 	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public String buildChangeDefaultRunSQL(Column column) throws Exception;
@@ -642,7 +642,7 @@ public interface SQLAdapter {
 	/**
 	 * 修改非空限制
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public String buildChangeNullableRunSQL(Column column) throws Exception;
@@ -650,7 +650,7 @@ public interface SQLAdapter {
 	/**
 	 * 修改备注
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param column column
+	 * @param column 列
 	 * @return String
 	 */
 	public String buildChangeCommentRunSQL(Column column) throws Exception;
@@ -659,7 +659,7 @@ public interface SQLAdapter {
 	/**
 	 * 定义列
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return StringBuilder
 	 */
 	public StringBuilder define(StringBuilder builder, Column column);
@@ -667,14 +667,14 @@ public interface SQLAdapter {
 	/**
 	 * 数据类型
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return StringBuilder
 	 */
 	public StringBuilder type(StringBuilder builder, Column column);
 	/**
 	 * 非空
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return StringBuilder
 	 */
 	public StringBuilder nullable(StringBuilder builder, Column column);
@@ -682,7 +682,7 @@ public interface SQLAdapter {
 	/**
 	 * 编码
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return StringBuilder
 	 */
 	public StringBuilder charset(StringBuilder builder, Column column);
@@ -690,14 +690,14 @@ public interface SQLAdapter {
 	/**
 	 * 默认值
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return StringBuilder
 	 */
 	public StringBuilder defaultValue(StringBuilder builder, Column column);
 	/**
 	 * 自增长列
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return StringBuilder
 	 */
 	public StringBuilder increment(StringBuilder builder, Column column);
@@ -706,7 +706,7 @@ public interface SQLAdapter {
 	/**
 	 * 更新行事件
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return StringBuilder
 	 */
 	public StringBuilder onupdate(StringBuilder builder, Column column);
@@ -717,14 +717,14 @@ public interface SQLAdapter {
 	/**
 	 * 位置
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return StringBuilder
 	 */
 	public StringBuilder position(StringBuilder builder, Column column);
 	/**
 	 * 备注
 	 * @param builder builder
-	 * @param column column
+	 * @param column 列
 	 * @return StringBuilder
 	 */
 	public StringBuilder comment(StringBuilder builder, Column column);
@@ -734,21 +734,21 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 添加标签
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	public String buildAddRunSQL(Tag tag) throws Exception;
 	/**
 	 * 修改标签
 	 * 有可能生成多条SQL
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return List
 	 */
 	public List<String> buildAlterRunSQL(Tag tag) throws Exception;
 
 	/**
 	 * 删除标签
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	public String buildDropRunSQL(Tag tag) throws Exception;
@@ -756,7 +756,7 @@ public interface SQLAdapter {
 	/**
 	 * 修改标签名
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	public String buildRenameRunSQL(Tag tag) throws Exception;
@@ -764,7 +764,7 @@ public interface SQLAdapter {
 	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	public String buildChangeDefaultRunSQL(Tag tag) throws Exception;
@@ -772,7 +772,7 @@ public interface SQLAdapter {
 	/**
 	 * 修改非空限制
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	public String buildChangeNullableRunSQL(Tag tag) throws Exception;
@@ -780,7 +780,7 @@ public interface SQLAdapter {
 	/**
 	 * 修改备注
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	public String buildChangeCommentRunSQL(Tag tag) throws Exception;
@@ -789,7 +789,7 @@ public interface SQLAdapter {
 	/**
 	 * 修改数据类型
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param tag tag
+	 * @param tag 标签
 	 * @return String
 	 */
 	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception;
@@ -800,28 +800,28 @@ public interface SQLAdapter {
 	 ******************************************************************************************************************/
 	/**
 	 * 添加索引
-	 * @param index index
+	 * @param index 索引
 	 * @return String
 	 */
 	public String buildAddRunSQL(Index index) throws Exception;
 	/**
 	 * 修改索引
 	 * 有可能生成多条SQL
-	 * @param index index
+	 * @param index 索引
 	 * @return List
 	 */
 	public List<String> buildAlterRunSQL(Index index) throws Exception;
 
 	/**
 	 * 删除索引
-	 * @param index index
+	 * @param index 索引
 	 * @return String
 	 */
 	public String buildDropRunSQL(Index index) throws Exception;
 	/**
 	 * 修改索引名
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param index index
+	 * @param index 索引
 	 * @return String
 	 */
 	public String buildRenameRunSQL(Index index) throws Exception;
@@ -830,32 +830,32 @@ public interface SQLAdapter {
 	 * 													constraint
 	 ******************************************************************************************************************/
 	/**
-	 * 添加索引
-	 * @param constraint constraint
+	 * 添加约束
+	 * @param constraint 约束
 	 * @return String
 	 */
 	public String buildAddRunSQL(Constraint constraint) throws Exception;
 	/**
-	 * 修改索引
+	 * 修改约束
 	 * 有可能生成多条SQL
-	 * @param constraint constraint
+	 * @param constraint 约束
 	 * @return List
 	 */
 	public List<String> buildAlterRunSQL(Constraint constraint) throws Exception;
 
 	/**
-	 * 删除索引
-	 * @param constraint constraint
+	 * 删除约束
+	 * @param constraint 约束
 	 * @return String
 	 */
 	public String buildDropRunSQL(Constraint constraint) throws Exception;
 	/**
-	 * 修改索引名
+	 * 修改约束名
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
-	 * @param index index
+	 * @param constraint 约束
 	 * @return String
 	 */
-	public String buildRenameRunSQL(Constraint index) throws Exception;
+	public String buildRenameRunSQL(Constraint constraint) throws Exception;
 
 
 	/* *****************************************************************************************************************
