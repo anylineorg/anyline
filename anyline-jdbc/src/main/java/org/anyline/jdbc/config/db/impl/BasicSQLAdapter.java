@@ -1261,9 +1261,9 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
+	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -1330,9 +1330,9 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception;
+	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception
+	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -1422,10 +1422,10 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
- 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master);
- 	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
+ 	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master)
+ 	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
+	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -1523,10 +1523,10 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception;
+	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata)
+	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception
 	 *
 	 * protected Column column(Column column, SqlRowSetMetaData rsm, int index)
 	 * protected Column column(Column column, ResultSet rs)
@@ -1701,10 +1701,10 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
+	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata)
+	 * public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -1756,10 +1756,10 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
+	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata)
+	 * public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -1857,10 +1857,10 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
+	 * public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata)
+	 * public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
@@ -2016,7 +2016,12 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder.toString();
 	}
 
-
+	/**
+	 * 创建或删除表时检测表是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return
+	 */
 	@Override
 	public StringBuilder checkTableExists(StringBuilder builder, boolean exists){
 		builder.append(" IF ");
@@ -2191,6 +2196,7 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	 * public StringBuilder onupdate(StringBuilder builder, Column column)
 	 * public StringBuilder position(StringBuilder builder, Column column)
 	 * public StringBuilder comment(StringBuilder builder, Column column)
+	 * public StringBuilder checkColumnExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 	@Override
 	public String alterColumnKeyword(){
@@ -2553,19 +2559,30 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 		return builder;
 	}
 
-
+	/**
+	 * 创建或删除列时检测是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return sql
+	 */
+	@Override
+	public StringBuilder checkColumnExists(StringBuilder builder, boolean exists){
+		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.jdbc.config.db.impl.","") + ")未实现 checkColumnExists(StringBuilder builder, boolean exists)",37));
+		return builder;
+	}
 
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public String buildAddRunSQL(Tag tag);
-	 * public List<String> buildAlterRunSQL(Tag tag);
-	 * public String buildDropRunSQL(Tag tag);
-	 * public String buildRenameRunSQL(Tag tag);
-	 * public String buildChangeDefaultRunSQL(Tag tag);
-	 * public String buildChangeNullableRunSQL(Tag tag);
-	 * public String buildChangeCommentRunSQL(Tag tag);
-	 * public List<String> buildChangeTypeRunSQL(Tag tag);
+	 * public String buildAddRunSQL(Tag tag)
+	 * public List<String> buildAlterRunSQL(Tag tag)
+	 * public String buildDropRunSQL(Tag tag)
+	 * public String buildRenameRunSQL(Tag tag)
+	 * public String buildChangeDefaultRunSQL(Tag tag)
+	 * public String buildChangeNullableRunSQL(Tag tag)
+	 * public String buildChangeCommentRunSQL(Tag tag)
+	 * public List<String> buildChangeTypeRunSQL(Tag tag)
+	 * public StringBuilder checkTagExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 
 	/**
@@ -2747,6 +2764,19 @@ public abstract class BasicSQLAdapter implements SQLAdapter {
 	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception{
 		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.jdbc.config.db.impl.","") + ")未实现 List<String> buildChangeTypeRunSQL(Tag tag)",37));
 		return null;
+	}
+
+	/**
+	 * 创建或删除标签之前  检测表是否存在
+	 * IF NOT EXISTS
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	@Override
+	public StringBuilder checkTagExists(StringBuilder builder, boolean exists){
+		log.warn(LogUtil.format("子类(" + this.getClass().getName().replace("org.anyline.jdbc.config.db.impl.","") + ")未实现 StringBuilder checkTagExists(StringBuilder builder, boolean exists)",37));
+		return builder;
 	}
 
 	/* *****************************************************************************************************************

@@ -36,6 +36,12 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		delimiterFr = "";
 		delimiterTo = "";
 	}
+
+	/* *****************************************************************************************************
+	 *
+	 * 											DML
+	 *
+	 * ****************************************************************************************************/
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		StringBuilder builder = new StringBuilder(); 

@@ -538,7 +538,7 @@ public interface SQLAdapter {
 	public String buildChangeCommentRunSQL(Table table) throws Exception;
 	public String buildDropRunSQL(Table table) throws Exception;
 	/**
-	 * 创建之前  检测表是否存在
+	 * 创建或删除表之前  检测表是否存在
 	 * IF NOT EXISTS
 	 * @param builder builder
 	 * @param exists exists
@@ -729,6 +729,14 @@ public interface SQLAdapter {
 	 */
 	public StringBuilder comment(StringBuilder builder, Column column);
 
+	/**
+	 * 创建或删除列之前  检测表是否存在
+	 * IF NOT EXISTS
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	public StringBuilder checkColumnExists(StringBuilder builder, boolean exists);
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
@@ -795,6 +803,14 @@ public interface SQLAdapter {
 	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception;
 
 
+	/**
+	 * 创建或删除标签之前  检测表是否存在
+	 * IF NOT EXISTS
+	 * @param builder builder
+	 * @param exists exists
+	 * @return StringBuilder
+	 */
+	public StringBuilder checkTagExists(StringBuilder builder, boolean exists);
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/

@@ -29,6 +29,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		setDelimiter(delimiter);
 	}
 
+	/* *****************************************************************************************************
+	 *
+	 * 											DML
+	 *
+	 * ****************************************************************************************************/
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		String sql = run.getBaseQueryTxt(); 

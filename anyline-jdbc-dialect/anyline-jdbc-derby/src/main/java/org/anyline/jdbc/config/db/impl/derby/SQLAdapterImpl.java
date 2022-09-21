@@ -37,6 +37,11 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		setDelimiter(delimiter);
 	}
 
+	/* *****************************************************************************************************
+	 *
+	 * 											DML
+	 *
+	 * ****************************************************************************************************/
 	@Override 
 	public String parseFinalQueryTxt(RunSQL run){ 
 		String sql = run.getBaseQueryTxt(); 
@@ -83,9 +88,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception;
+	 * public List<String> buildQueryTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public LinkedHashMap<String, Table> tables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Table> tables(boolean create, String catalog, String schema, LinkedHashMap<String, Table> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表
@@ -112,9 +117,9 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													master table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception;
+	 * public List<String> buildQueryMasterTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public LinkedHashMap<String, MasterTable> mtables(int index, boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, DataSet set) throws Exception
+	 * public LinkedHashMap<String, MasterTable> mtables(boolean create, String catalog, String schema, LinkedHashMap<String, MasterTable> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询主表
@@ -164,10 +169,10 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types);
-	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master);
-	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+	 * public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types)
+	 * public List<String> buildQueryPartitionTableRunSQL(MasterTable master)
+	 * public LinkedHashMap<String, PartitionTable> ptables(int index, boolean create, MasterTable master, String catalog, String schema, LinkedHashMap<String, PartitionTable> tables, DataSet set) throws Exception
+	 * public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -224,10 +229,10 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													column
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception;
+	 * public List<String> buildQueryColumnRunSQL(Table table, boolean metadata)
+	 * public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Column> columns(boolean create, Table table, LinkedHashMap<String, Column> columns, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 
 	/**
@@ -267,10 +272,10 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													tag
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
+	 * public List<String> buildQueryTagRunSQL(Table table, boolean metadata)
+	 * public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 *
@@ -309,10 +314,10 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
+	 * public List<String> buildQueryIndexRunSQL(Table table, boolean metadata)
+	 * public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的列
@@ -352,10 +357,10 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata);
-	 * public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception;
-	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception;
-	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception;
+	 * public List<String> buildQueryConstraintRunSQL(Table table, boolean metadata)
+	 * public LinkedHashMap<String, Constraint> constraints(int constraint, boolean create,  Table table, LinkedHashMap<String, Constraint> constraints, DataSet set) throws Exception
+	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, SqlRowSet set) throws Exception
+	 * public LinkedHashMap<String, Constraint> constraints(boolean create, Table table, LinkedHashMap<String, Constraint> constraints, ResultSet set) throws Exception
 	 ******************************************************************************************************************/
 	/**
 	 * 查询表上的约束
@@ -611,6 +616,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * public StringBuilder onupdate(StringBuilder builder, Column column)
 	 * public StringBuilder position(StringBuilder builder, Column column)
 	 * public StringBuilder comment(StringBuilder builder, Column column)
+	 * public StringBuilder checkColumnExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 	@Override
 	public String alterColumnKeyword(){
@@ -817,6 +823,16 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return super.comment(builder, column);
 	}
 
+	/**
+	 * 创建或删除列时检测是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return sql
+	 */
+	@Override
+	public StringBuilder checkColumnExists(StringBuilder builder, boolean exists){
+		return super.checkColumnExists(builder, exists);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													tag
@@ -829,6 +845,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * public String buildChangeNullableRunSQL(Tag tag);
 	 * public String buildChangeCommentRunSQL(Tag tag);
 	 * public List<String> buildChangeTypeRunSQL(Tag tag);
+	 * public StringBuilder checkTagExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 
 	/**
@@ -925,6 +942,16 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return super.buildChangeTypeRunSQL(tag);
 	}
 
+	/**
+	 * 创建或删除标签时检测是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return sql
+	 */
+	@Override
+	public StringBuilder checkTagExists(StringBuilder builder, boolean exists){
+		return super.checkTagExists(builder, exists);
+	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------

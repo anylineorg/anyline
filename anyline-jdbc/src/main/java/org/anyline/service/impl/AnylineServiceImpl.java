@@ -1745,15 +1745,15 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													table
          * -----------------------------------------------------------------------------------------------------------------
-         * public boolean exists(Table table);
-         * public LinkedHashMap<String,Table> tables(String catalog, String schema, String name, String types);
-         * public LinkedHashMap<String,Table> tables(String schema, String name, String types);
-         * public LinkedHashMap<String,Table> tables(String name, String types);
-         * public LinkedHashMap<String,Table> tables(String types);
-         * public LinkedHashMap<String,Table> tables();
-         * public Table table(String catalog, String schema, String name);
-         * public Table table(String schema, String name);
-         * public Table table(String name);
+         * public boolean exists(Table table)
+         * public LinkedHashMap<String,Table> tables(String catalog, String schema, String name, String types)
+         * public LinkedHashMap<String,Table> tables(String schema, String name, String types)
+         * public LinkedHashMap<String,Table> tables(String name, String types)
+         * public LinkedHashMap<String,Table> tables(String types)
+         * public LinkedHashMap<String,Table> tables()
+         * public Table table(String catalog, String schema, String name)
+         * public Table table(String schema, String name)
+         * public Table table(String name)
          ******************************************************************************************************************/
         @Override
         public boolean exists(Table table) {
@@ -1814,15 +1814,15 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													master table
          * -----------------------------------------------------------------------------------------------------------------
-         * public boolean exists(MasterTable table);
-         * public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types);
-         * public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types);
-         * public LinkedHashMap<String, MasterTable> mtables(String name, String types);
-         * public LinkedHashMap<String, MasterTable> mtables(String types);
-         * public LinkedHashMap<String, MasterTable> mtables();
-         * public MasterTable mtable(String catalog, String schema, String name);
-         * public MasterTable mtable(String schema, String name);
-         * public MasterTable mtable(String name);
+         * public boolean exists(MasterTable table)
+         * public LinkedHashMap<String, MasterTable> mtables(String catalog, String schema, String name, String types)
+         * public LinkedHashMap<String, MasterTable> mtables(String schema, String name, String types)
+         * public LinkedHashMap<String, MasterTable> mtables(String name, String types)
+         * public LinkedHashMap<String, MasterTable> mtables(String types)
+         * public LinkedHashMap<String, MasterTable> mtables()
+         * public MasterTable mtable(String catalog, String schema, String name)
+         * public MasterTable mtable(String schema, String name)
+         * public MasterTable mtable(String name)
          ******************************************************************************************************************/
 
         @Override
@@ -1882,16 +1882,16 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													partition  table
          * -----------------------------------------------------------------------------------------------------------------
-         * public boolean exists(PartitionTable table);
-         * public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types);
-         * public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types);
-         * public LinkedHashMap<String, PartitionTable> ptables(String name, String types);
-         * public LinkedHashMap<String, PartitionTable> ptables(String types);
-         * public LinkedHashMap<String, PartitionTable> ptables();
-         * public LinkedHashMap<String, PartitionTable> ptables(MasterTable master);
-         * public PartitionTable ptable(String catalog, String schema, String name);
-         * public PartitionTable ptable(String schema, String name);
-         * public PartitionTable ptable(String name);
+         * public boolean exists(PartitionTable table)
+         * public LinkedHashMap<String, PartitionTable> ptables(String catalog, String schema, String name, String types)
+         * public LinkedHashMap<String, PartitionTable> ptables(String schema, String name, String types)
+         * public LinkedHashMap<String, PartitionTable> ptables(String name, String types)
+         * public LinkedHashMap<String, PartitionTable> ptables(String types)
+         * public LinkedHashMap<String, PartitionTable> ptables()
+         * public LinkedHashMap<String, PartitionTable> ptables(MasterTable master)
+         * public PartitionTable ptable(String catalog, String schema, String name)
+         * public PartitionTable ptable(String schema, String name)
+         * public PartitionTable ptable(String name)
          ******************************************************************************************************************/
 
         @Override
@@ -1956,10 +1956,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													column
          * -----------------------------------------------------------------------------------------------------------------
-         * public boolean exists(Column column);
-         * public LinkedHashMap<String,Column> columns(Table table);
-         * public LinkedHashMap<String,Column> columns(String table);
-         * public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
+         * public boolean exists(Column column)
+         * public LinkedHashMap<String,Column> columns(Table table)
+         * public LinkedHashMap<String,Column> columns(String table)
+         * public LinkedHashMap<String,Column> columns(String catalog, String schema, String table)
          ******************************************************************************************************************/
         @Override
         public boolean exists(Column column) {

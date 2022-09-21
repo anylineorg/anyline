@@ -580,8 +580,8 @@ class LZWEncoder {
  
   // Define the storage for the packet accumulator 
   byte[] accum = new byte[256]; 
- 
-  // ---------------------------------------------------------------------------- 
+
+
   LZWEncoder(int width, int height, byte[] pixels, int color_depth) { 
     imgW = width; 
     imgH = height; 
@@ -683,8 +683,8 @@ class LZWEncoder {
     output(ent, outs); 
     output(EOFCode, outs); 
   } 
- 
-  // ---------------------------------------------------------------------------- 
+
+
   void encode(OutputStream os) throws IOException { 
     os.write(initCodeSize); // write "initial code size" byte 
  

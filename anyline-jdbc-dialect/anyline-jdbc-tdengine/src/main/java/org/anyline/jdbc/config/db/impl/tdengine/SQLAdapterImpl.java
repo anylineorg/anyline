@@ -935,6 +935,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * public StringBuilder onupdate(StringBuilder builder, Column column)
 	 * public StringBuilder position(StringBuilder builder, Column column)
 	 * public StringBuilder comment(StringBuilder builder, Column column)
+	 * public StringBuilder checkColumnExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 	@Override
 	public String alterColumnKeyword(){
@@ -1168,6 +1169,16 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		}
 	}
 
+	/**
+	 * 创建或删除列时检测是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return sql
+	 */
+	@Override
+	public StringBuilder checkColumnExists(StringBuilder builder, boolean exists){
+		return super.checkColumnExists(builder, exists);
+	}
 
 	/* *****************************************************************************************************************
 	 * 													tag
@@ -1180,6 +1191,7 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	 * public String buildChangeNullableRunSQL(Tag tag);
 	 * public String buildChangeCommentRunSQL(Tag tag);
 	 * public List<String> buildChangeTypeRunSQL(Tag tag);
+	 * public StringBuilder checkTagExists(StringBuilder builder, boolean exists)
 	 ******************************************************************************************************************/
 
 	/**
@@ -1276,6 +1288,16 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 		return super.buildChangeTypeRunSQL(tag);
 	}
 
+	/**
+	 * 创建或删除标签时检测是否存在
+	 * @param builder builder
+	 * @param exists exists
+	 * @return sql
+	 */
+	@Override
+	public StringBuilder checkTagExists(StringBuilder builder, boolean exists){
+		return super.checkTagExists(builder, exists);
+	}
 	/* *****************************************************************************************************************
 	 * 													index
 	 * -----------------------------------------------------------------------------------------------------------------
