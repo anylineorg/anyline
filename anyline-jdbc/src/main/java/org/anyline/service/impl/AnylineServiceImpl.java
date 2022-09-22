@@ -65,7 +65,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
      * 按条件查询
      * @param src 			数据源(表｜视图｜函数｜自定义SQL | SELECT语句)
      * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-     * @param conditions 固定查询条件
+     * @param conditions    固定查询条件
      * @return DataSet
      */
     @Override
@@ -446,10 +446,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     /**
      * 按条件查询
-     * @param sql 表｜视图｜函数｜自定义SQL |SQL
+     * @param sql           表｜视图｜函数｜自定义SQL |SQL
      * @param configs		根据http等上下文构造查询条件
      * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
-     * @param conditions 固定查询条件
+     * @param conditions    固定查询条件
      * @return DataSet
      */
     @Override
@@ -2027,9 +2027,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													tag
          * -----------------------------------------------------------------------------------------------------------------
-         * public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table);
-         * public LinkedHashMap<String,Tag> tags(String table);
-         * public LinkedHashMap<String,Tag> tags(Table table);
+         * public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table)
+         * public LinkedHashMap<String,Tag> tags(String table)
+         * public LinkedHashMap<String,Tag> tags(Table table)
          ******************************************************************************************************************/
 
         @Override
@@ -2096,9 +2096,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													constraint
          * -----------------------------------------------------------------------------------------------------------------
-		 * public LinkedHashMap<String,Constraint> constraints(Table table);
-		 * public LinkedHashMap<String,Constraint> constraints(String table);
-		 * public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table);
+		 * public LinkedHashMap<String,Constraint> constraints(Table table)
+		 * public LinkedHashMap<String,Constraint> constraints(String table)
+		 * public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table)
          ******************************************************************************************************************/
         @Override
         public LinkedHashMap<String, Constraint> constraints(Table table) {
@@ -2136,10 +2136,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													table
          * -----------------------------------------------------------------------------------------------------------------
-		 * public boolean save(Table table) throws Exception;
-		 * public boolean create(Table table) throws Exception;
-		 * public boolean alter(Table table) throws Exception;
-         * public boolean drop(Table table) throws Exception;
+		 * public boolean save(Table table) throws Exception
+		 * public boolean create(Table table) throws Exception
+		 * public boolean alter(Table table) throws Exception
+         * public boolean drop(Table table) throws Exception
          ******************************************************************************************************************/
 
         @Override
@@ -2183,10 +2183,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													master table
          * -----------------------------------------------------------------------------------------------------------------
-		 * public boolean save(MasterTable master) throws Exception;
-		 * public boolean create(MasterTable master) throws Exception;
-		 * public boolean alter(MasterTable master) throws Exception;
-         * public boolean drop(MasterTable master) throws Exception;
+		 * public boolean save(MasterTable master) throws Exception
+		 * public boolean create(MasterTable master) throws Exception
+		 * public boolean alter(MasterTable master) throws Exception
+         * public boolean drop(MasterTable master) throws Exception
          ******************************************************************************************************************/
 
 
@@ -2231,10 +2231,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													partition table
          * -----------------------------------------------------------------------------------------------------------------
-		 * public boolean save(PartitionTable table) throws Exception;
-		 * public boolean create(PartitionTable table) throws Exception;
-		 * public boolean alter(PartitionTable table) throws Exception;
-         * public boolean drop(PartitionTable table) throws Exception;
+		 * public boolean save(PartitionTable table) throws Exception
+		 * public boolean create(PartitionTable table) throws Exception
+		 * public boolean alter(PartitionTable table) throws Exception
+         * public boolean drop(PartitionTable table) throws Exception
          ******************************************************************************************************************/
         @Override
         public boolean save(PartitionTable table) throws Exception {
@@ -2278,10 +2278,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													column
          * -----------------------------------------------------------------------------------------------------------------
-		 * public boolean save(Column column) throws Exception;
-		 * public boolean add(Column column) throws Exception;
-		 * public boolean alter(Column column) throws Exception;
-         * public boolean drop(Column column) throws Exception;
+		 * public boolean save(Column column) throws Exception
+		 * public boolean add(Column column) throws Exception
+		 * public boolean alter(Column column) throws Exception
+         * public boolean drop(Column column) throws Exception
          *
          * private boolean add(LinkedHashMap<String, Column> columns, Column column) throws Exception
          * private boolean alter(Table table, Column column) throws Exception
@@ -2387,10 +2387,10 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													tag
          * -----------------------------------------------------------------------------------------------------------------
-		 * public boolean save(Tag tag) throws Exception;
-		 * public boolean add(Tag tag) throws Exception;
-		 * public boolean alter(Tag tag) throws Exception;
-         * public boolean drop(Tag tag) throws Exception;
+		 * public boolean save(Tag tag) throws Exception
+		 * public boolean add(Tag tag) throws Exception
+		 * public boolean alter(Tag tag) throws Exception
+         * public boolean drop(Tag tag) throws Exception
          *
          * private boolean add(LinkedHashMap<String, Tag> tags, Tag tag) throws Exception
          * private boolean alter(Table table, Tag tag) throws Exception
@@ -2430,6 +2430,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             return result;
         }
+
         @Override
         public boolean alter(Tag tag) throws Exception{
             Table table = metadata.table(tag.getCatalog(), tag.getSchema(), tag.getTableName());
@@ -2445,7 +2446,6 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             clearTagCache(tag.getCatalog(), tag.getSchema(), tag.getTableName());
             return result;
         }
-
         private boolean add(LinkedHashMap<String, Tag> tags, Tag tag) throws Exception{
             tag.setService(AnylineServiceImpl.this);
             boolean result =  dao.add(tag);
@@ -2491,9 +2491,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													index
          * -----------------------------------------------------------------------------------------------------------------
-		 * public boolean add(Index index) throws Exception;
-		 * public boolean alter(Index index) throws Exception;
-         * public boolean drop(Index index) throws Exception;
+		 * public boolean add(Index index) throws Exception
+		 * public boolean alter(Index index) throws Exception
+         * public boolean drop(Index index) throws Exception
          ******************************************************************************************************************/
 
         @Override
@@ -2513,9 +2513,9 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         /* *****************************************************************************************************************
          * 													constraint
          * -----------------------------------------------------------------------------------------------------------------
-		 * public boolean add(Constraint constraint) throws Exception;
-		 * public boolean alter(Constraint constraint) throws Exception;
-         * public boolean drop(Constraint constraint) throws Exception;
+		 * public boolean add(Constraint constraint) throws Exception
+		 * public boolean alter(Constraint constraint) throws Exception
+         * public boolean drop(Constraint constraint) throws Exception
          ******************************************************************************************************************/
         @Override
         public boolean add(Constraint constraint) throws Exception {
@@ -2531,12 +2531,5 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         public boolean drop(Constraint constraint) throws Exception {
             return false;
         }
-
-
     };
-
-
-
-
-
 }
