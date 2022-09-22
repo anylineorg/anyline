@@ -53,13 +53,13 @@ public interface SQLAdapter {
 		HighGo				{public String getCode(){return "DB_TYPE_HIGHGO";}				public String getName(){return "瀚高";}}					,
 		HSQLDB  			{public String getCode(){return "DB_TYPE_HSQLDB";}				public String getName(){return "HSQLDB";}}				,
 		InfluxDB			{public String getCode(){return "DB_TYPE_INFLUXDB";}			public String getName(){return "InfluxDB";}}			,
+		KingBase			{public String getCode(){return "DB_TYPE_KINGBASE";}			public String getName(){return "人大金仓 Oracle";}}		,
+		KingBase_PostgreSQL	{public String getCode(){return "DB_TYPE_KINGBASE_POSTGRESQL";}	public String getName(){return "人大金仓 PostgreSQL";}}	,
 		MariaDB				{public String getCode(){return "DB_TYPE_MARIADB";}				public String getName(){return "MariaDB";}}				,
 		MongoDB				{public String getCode(){return "DB_TYPE_MONGODB";}				public String getName(){return "MongoDB";}}				,
 		MSSQL				{public String getCode(){return "DB_TYPE_MSSQL";}				public String getName(){return "mssql";}}				,
 		MYSQL				{public String getCode(){return "DB_TYPE_MYSQL";}				public String getName(){return "mysql";}}				,
 		Neo4j  				{public String getCode(){return "DB_TYPE_NEO4J";}				public String getName(){return "Neo4j";}}				,
-		KingBase			{public String getCode(){return "DB_TYPE_KINGBASE";}			public String getName(){return "人大金仓 Oracle";}}		,
-		KingBase_PostgreSQL	{public String getCode(){return "DB_TYPE_KINGBASE_POSTGRESQL";}	public String getName(){return "人大金仓 PostgreSQL";}}	,
 		OceanBase 			{public String getCode(){return "DB_TYPE_OCEANBASE";}			public String getName(){return "OceanBase";}}			,
 		ORACLE				{public String getCode(){return "DB_TYPE_ORACLE";}				public String getName(){return "oracle";}}				,
 		oscar				{public String getCode(){return "DB_TYPE_OSCAR";}				public String getName(){return "神舟通用";}}				,
@@ -74,9 +74,9 @@ public interface SQLAdapter {
 		public abstract String getCode();
 		public abstract String getName();
 	} 
-	public static final String TAB = "\t"; 
-	public static final String BR = "\n"; 
-	public static final String BR_TAB = "\n\t"; 
+	public static final String TAB 		= "\t"		;
+	public static final String BR 		= "\n"		;
+	public static final String BR_TAB 	= "\n\t"	;
 	
 	public DB_TYPE type();
 
@@ -86,8 +86,6 @@ public interface SQLAdapter {
 	 */
 	public String getDelimiterFr();
 	public String getDelimiterTo();
-
-
 
 
 	/* *****************************************************************************************************************
@@ -102,8 +100,9 @@ public interface SQLAdapter {
 	 * COUNT			: 统计
 	 * EXECUTE			: 执行(原生SQL及存储过程)
 	 * DELETE			: 删除
-	 * COMMON
+	 * COMMON			：其他通用
 	 ******************************************************************************************************************/
+
 
 	/* *****************************************************************************************************************
 	 * 													INSERT
@@ -127,6 +126,7 @@ public interface SQLAdapter {
 	 * @param keys keys
 	 */
 	public void createInsertsTxt(StringBuilder builder, String dest, Collection list, List<String> keys);
+
 	/**
 	 * 创建批量插入SQL
 	 * @param builder builder
@@ -145,9 +145,11 @@ public interface SQLAdapter {
 	 */
 	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
 
+
 	/* *****************************************************************************************************************
 	 * 													UPDATE
 	 ******************************************************************************************************************/
+
 	/**
 	 * 创建更新SQL
 	 * @param dest dest
@@ -159,9 +161,11 @@ public interface SQLAdapter {
 	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns);
 
 
+
 	/* *****************************************************************************************************************
 	 * 													QUERY
 	 ******************************************************************************************************************/
+
 	/**
 	 * 创建查询SQL
 	 * @param sql  sql
@@ -185,9 +189,11 @@ public interface SQLAdapter {
 	 */
 	public String parseFinalQueryTxt(RunSQL run);
 
+
 	/* *****************************************************************************************************************
 	 * 													COUNT
 	 ******************************************************************************************************************/
+
 	/**
 	 * 创建统计总数SQL
 	 * @param run  RunSQL
@@ -195,9 +201,11 @@ public interface SQLAdapter {
 	 */
 	public String parseTotalQueryTxt(RunSQL run);
 
+
 	/* *****************************************************************************************************************
 	 * 													EXISTS
 	 ******************************************************************************************************************/
+
 	/**
 	 * 创建检测是否存在SQL
 	 * @param run run
@@ -205,9 +213,11 @@ public interface SQLAdapter {
 	 */
 	public String parseExistsTxt(RunSQL run);
 
+
 	/* *****************************************************************************************************************
 	 * 													EXECUTE
 	 ******************************************************************************************************************/
+
 	/**
 	 * 创建执行SQL
 	 * @param sql sql
@@ -217,9 +227,11 @@ public interface SQLAdapter {
 	 */
 	public RunSQL buildExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions);
 
+
 	/* *****************************************************************************************************************
 	 * 													DELETE
 	 ******************************************************************************************************************/
+
 	/**
 	 * 创建删除SQL
 	 * @param dest 表
@@ -255,9 +267,11 @@ public interface SQLAdapter {
 	 *
 	 ******************************************************************************************************************/
 
+
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询表
 	 * @param catalog catalog
@@ -337,6 +351,7 @@ public interface SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询分区表
 	 * @param catalog catalog
@@ -346,6 +361,13 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public List<String> buildQueryPartitionTableRunSQL(String catalog, String schema, String pattern, String types) throws Exception;
+
+	/**
+	 * 根据主表查询分区有
+	 * @param master 主表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public List<String> buildQueryPartitionTableRunSQL(MasterTable master) throws Exception;
 
 	/**
@@ -374,9 +396,12 @@ public interface SQLAdapter {
 	 * @throws Exception
 	 */
 	public LinkedHashMap<String, PartitionTable> ptables(boolean create, String catalog, MasterTable master, String schema, LinkedHashMap<String, PartitionTable> tables, ResultSet set) throws Exception;
+
+
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询表上的列
 	 * @param table 表
@@ -398,7 +423,7 @@ public interface SQLAdapter {
 	public LinkedHashMap<String, Column> columns(int index, boolean create, Table table, LinkedHashMap<String, Column> columns, DataSet set) throws Exception;
 
 	/**
-	 * 解析查询结果metadata
+	 * 解析查询结果metadata(0=1)
 	 * @param create 上一步没有查到的，这一步是否需要新创建
 	 * @param table 表
 	 * @param columns columns
@@ -424,6 +449,7 @@ public interface SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询表上的列
 	 * @param table 表
@@ -439,17 +465,39 @@ public interface SQLAdapter {
 	 * @param table 表
 	 * @param tags 上一步查询结果
 	 * @param set set
-	 * @return tags tags
+	 * @return tags
 	 * @throws exception
 	 */
 	public LinkedHashMap<String, Tag> tags(int index, boolean create, Table table, LinkedHashMap<String, Tag> tags, DataSet set) throws Exception;
+
+	/**
+	 * 解析查询结果metadata(0=1)
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table 表
+	 * @param tags 上一步查询结果
+	 * @param set 查询结果
+	 * @return tags
+	 * @throws Exception
+	 */
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, SqlRowSet set) throws Exception;
+
+	/**
+	 *
+	 * 解析JDBC getcolumns结果
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table 表
+	 * @param tags 上一步查询结果
+	 * @param set 查询结果
+	 * @return tags
+	 * @throws Exception
+	 */
 	public LinkedHashMap<String, Tag> tags(boolean create, Table table, LinkedHashMap<String, Tag> tags, ResultSet set) throws Exception;
 
 
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询表上的所引
 	 * @param table 表
@@ -469,14 +517,36 @@ public interface SQLAdapter {
 	 * @throws exception
 	 */
 	public LinkedHashMap<String, Index> indexs(int index, boolean create, Table table, LinkedHashMap<String, Index> indexs, DataSet set) throws Exception;
-	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
-	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
 
+	/**
+	 *
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table 表
+	 * @param indexs 上一步查询结果
+	 * @param set set
+	 * @return indexs indexs
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, SqlRowSet set) throws Exception;
+
+	/**
+	 * 解析JDBC getIndex结果
+	 * @param index 第几条查询SQL 对照 buildQueryIndexRunSQL 返回顺序
+	 * @param create 上一步没有查到的，这一步是否需要新创建
+	 * @param table 表
+	 * @param indexs 上一步查询结果
+	 * @param set set
+	 * @return indexs indexs
+	 * @throws Exception
+	 */
+	public LinkedHashMap<String, Index> indexs(boolean create, Table table, LinkedHashMap<String, Index> indexs, ResultSet set) throws Exception;
 
 
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
+
 	/**
 	 * 查询表上的约束
 	 * @param table 表
@@ -516,6 +586,8 @@ public interface SQLAdapter {
 	 * constraint		: 约束
 	 *
 	 ******************************************************************************************************************/
+
+
 	/* *****************************************************************************************************************
 	 * 													table
 	 ******************************************************************************************************************/
@@ -559,6 +631,7 @@ public interface SQLAdapter {
 	 * @throws Exception
 	 */
 	public String buildDropRunSQL(Table table) throws Exception;
+
 	/**
 	 * 创建或删除表之前  检测表是否存在
 	 * IF NOT EXISTS
@@ -584,6 +657,7 @@ public interface SQLAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder comment(StringBuilder builder, Table table);
+
 	/**
 	 * 构造表名
 	 * @param builder builder
@@ -591,49 +665,52 @@ public interface SQLAdapter {
 	 * @return builder
 	 */
 	public StringBuilder name(StringBuilder builder, Table table);
+
+
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
 
 	/**
 	 * 创建主有
-	 * @param master 表
+	 * @param table 表
 	 * @return sql
 	 * @throws Exception
 	 */
-	public String buildCreateRunSQL(MasterTable master) throws Exception;
+	public String buildCreateRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表
-	 * @param master 表
+	 * @param table 表
 	 * @return sql
 	 * @throws Exception
 	 */
-	public String buildAlterRunSQL(MasterTable master) throws Exception;
+	public String buildAlterRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 主表重命名
-	 * @param master 表
+	 * @param table 表
 	 * @return sql
 	 * @throws Exception
 	 */
-	public String buildRenameRunSQL(MasterTable master) throws Exception;
+	public String buildRenameRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 修改主表备注
-	 * @param master 表
+	 * @param table 表
 	 * @return sql
 	 * @throws Exception
 	 */
-	public String buildChangeCommentRunSQL(MasterTable master) throws Exception;
+	public String buildChangeCommentRunSQL(MasterTable table) throws Exception;
 
 	/**
 	 * 删除主表
-	 * @param master 表
+	 * @param table 表
 	 * @return sql
 	 * @throws Exception
 	 */
-	public String buildDropRunSQL(MasterTable master) throws Exception;
+	public String buildDropRunSQL(MasterTable table) throws Exception;
+
 
 	/* *****************************************************************************************************************
 	 * 													partition table
@@ -679,20 +756,24 @@ public interface SQLAdapter {
 	 */
 	public String buildDropRunSQL(PartitionTable table) throws Exception;
 
+
 	/* *****************************************************************************************************************
 	 * 													column
 	 ******************************************************************************************************************/
+
 	/**
 	 * 修改表的关键字
 	 * @return String
 	 */
 	public String alterColumnKeyword();
+
 	/**
 	 * 添加列
 	 * @param column 列
 	 * @return String
 	 */
 	public String buildAddRunSQL(Column column) throws Exception;
+
 	/**
 	 * 修改列
 	 * 有可能生成多条SQL
@@ -723,6 +804,7 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public List<String> buildChangeTypeRunSQL(Column column) throws Exception;
+
 	/**
 	 * 修改默认值
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
@@ -747,7 +829,6 @@ public interface SQLAdapter {
 	 */
 	public String buildChangeCommentRunSQL(Column column) throws Exception;
 
-
 	/**
 	 * 定义列
 	 * @param builder builder
@@ -763,6 +844,7 @@ public interface SQLAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder type(StringBuilder builder, Column column);
+
 	/**
 	 * 非空
 	 * @param builder builder
@@ -786,6 +868,7 @@ public interface SQLAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder defaultValue(StringBuilder builder, Column column);
+
 	/**
 	 * 递增列
 	 * @param builder builder
@@ -793,7 +876,6 @@ public interface SQLAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder increment(StringBuilder builder, Column column);
-
 
 	/**
 	 * 更新行事件
@@ -803,9 +885,6 @@ public interface SQLAdapter {
 	 */
 	public StringBuilder onupdate(StringBuilder builder, Column column);
 
-
-
-
 	/**
 	 * 位置
 	 * @param builder builder
@@ -813,6 +892,7 @@ public interface SQLAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder position(StringBuilder builder, Column column);
+
 	/**
 	 * 备注
 	 * @param builder builder
@@ -829,15 +909,19 @@ public interface SQLAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder checkColumnExists(StringBuilder builder, boolean exists);
+
+
 	/* *****************************************************************************************************************
 	 * 													tag
 	 ******************************************************************************************************************/
+
 	/**
 	 * 添加标签
 	 * @param tag 标签
 	 * @return String
 	 */
 	public String buildAddRunSQL(Tag tag) throws Exception;
+
 	/**
 	 * 修改标签
 	 * 有可能生成多条SQL
@@ -885,7 +969,6 @@ public interface SQLAdapter {
 	 */
 	public String buildChangeCommentRunSQL(Tag tag) throws Exception;
 
-
 	/**
 	 * 修改数据类型
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
@@ -893,7 +976,6 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public List<String> buildChangeTypeRunSQL(Tag tag) throws Exception;
-
 
 	/**
 	 * 创建或删除标签之前  检测表是否存在
@@ -903,15 +985,19 @@ public interface SQLAdapter {
 	 * @return StringBuilder
 	 */
 	public StringBuilder checkTagExists(StringBuilder builder, boolean exists);
+
+
 	/* *****************************************************************************************************************
 	 * 													index
 	 ******************************************************************************************************************/
+
 	/**
 	 * 添加索引
 	 * @param index 索引
 	 * @return String
 	 */
 	public String buildAddRunSQL(Index index) throws Exception;
+
 	/**
 	 * 修改索引
 	 * 有可能生成多条SQL
@@ -926,6 +1012,7 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Index index) throws Exception;
+
 	/**
 	 * 修改索引名
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
@@ -934,15 +1021,18 @@ public interface SQLAdapter {
 	 */
 	public String buildRenameRunSQL(Index index) throws Exception;
 
+
 	/* *****************************************************************************************************************
 	 * 													constraint
 	 ******************************************************************************************************************/
+
 	/**
 	 * 添加约束
 	 * @param constraint 约束
 	 * @return String
 	 */
 	public String buildAddRunSQL(Constraint constraint) throws Exception;
+
 	/**
 	 * 修改约束
 	 * 有可能生成多条SQL
@@ -957,6 +1047,7 @@ public interface SQLAdapter {
 	 * @return String
 	 */
 	public String buildDropRunSQL(Constraint constraint) throws Exception;
+
 	/**
 	 * 修改约束名
 	 * 一般不直接调用,如果需要由buildAlterRunSQL内部统一调用
@@ -972,20 +1063,19 @@ public interface SQLAdapter {
 	 *
 	 ******************************************************************************************************************/
 
-
 	/**
 	 * 获取单主键列名
 	 * @param obj obj
 	 * @return String
 	 */
 	public String getPrimaryKey(Object obj);
+
 	/**
 	 * 获取单主键值
 	 * @param obj obj
 	 * @return Object
 	 */
 	public Object getPrimaryValue(Object obj);
-
 
 	/**
 	 * 数据类型转换
@@ -1031,6 +1121,7 @@ public interface SQLAdapter {
 	 * @param value value
 	 */
 	public void format(StringBuilder builder, Object value);
+
 	/**
 	 * 拼接字符串
 	 * @param args args
@@ -1061,6 +1152,7 @@ public interface SQLAdapter {
 	 * @return boolean
 	 */
 	public boolean isCharColumn(Column column);
+
 	/**
 	 * 内置函数
 	 * 如果需要引号，方法应该一块返回
