@@ -44,35 +44,37 @@
 		<module>anyline-qq-map</module>
 		<module>anyline-map</module>
 		<module>anyline-easemob</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-db2</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-mssql</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-mysql</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-oracle</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-postgresql</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-mariadb</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-mongodb</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-redis</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-cassandra</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-clickhouse</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-oceanbase</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-polardb</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-neo4j</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-cockroachdb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-couchdb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-db2</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-derby</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-dm</module>						<!--达梦-->
+		<module>anyline-jdbc-dialect/anyline-jdbc-gbasedbt</module>					<!--南大通用-->
+		<module>anyline-jdbc-dialect/anyline-jdbc-h2</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-hgdb</module>						<!--瀚高-->
+		<module>anyline-jdbc-dialect/anyline-jdbc-hsqldb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-influxdb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-informix</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase</module>					<!--人大金仓-->
 		<module>anyline-jdbc-dialect/anyline-jdbc-kingbase-postgresql</module>		<!--人大金仓-->
-		<module>anyline-jdbc-dialect/anyline-jdbc-gbasedbt</module>					<!--南大通用-->
+		<module>anyline-jdbc-dialect/anyline-jdbc-mariadb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-mongodb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-mssql</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-mysql</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-neo4j</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-oceanbase</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-oracle</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-oscar</module>					<!--神舟通用-->
-		<module>anyline-jdbc-dialect/anyline-jdbc-sqlite</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-h2</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-hsqldb</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-derby</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-cassandra</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-timescale</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-influxdb</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-tdengine</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-polardb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-postgresql</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-questdb</module>
-		<module>anyline-jdbc-dialect/anyline-jdbc-cockroachdb</module>
 		<module>anyline-jdbc-dialect/anyline-jdbc-rethinkdb</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-sqlite</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-sybase</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-tdengine</module>
+		<module>anyline-jdbc-dialect/anyline-jdbc-timescale</module>
 		<module>anyline-jpush</module>
 		<module>anyline-mail</module>
 		<module>anyline-nacos</module>
