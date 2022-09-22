@@ -88,72 +88,26 @@ public interface SQLAdapter {
 	public String getDelimiterTo();
 
 
+
+
 	/* *****************************************************************************************************************
-	*
-	* 														DML
-	*
-	*  *****************************************************************************************************************/
-	/** 
-	 * 创建查询SQL 
-	 * @param sql  sql
-	 * @param configs 查询条件配置
-	 * @param conditions 查询条件
-	 * @return RunSQL
-	 */
-	public RunSQL buildQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions);
+	 *
+	 * 													DML
+	 *
+	 * =================================================================================================================
+	 * INSERT			: 插入
+	 * UPDATE			: 更新
+	 * QUERY			: 查询(SQL/XML/TABLE/VIEW/PROCEDURE)
+	 * EXISTS			: 是否存在
+	 * COUNT			: 统计
+	 * EXECUTE			: 执行(原生SQL及存储过程)
+	 * DELETE			: 删除
+	 * COMMON
+	 ******************************************************************************************************************/
 
-	/**
-	 * 创建删除SQL
-	 * @param dest 表
-	 * @param obj entity
-	 * @param columns 删除条件的我
-	 * @return RunSQL
-	 */
-	public RunSQL buildDeleteRunSQL(String dest, Object obj, String ... columns);
-
-	/**
-	 * 根据key values删除
-	 * @param table 表
-	 * @param key key
-	 * @param values values
-	 * @return RunSQL
-	 */
-	public RunSQL buildDeleteRunSQL(String table, String key, Object values);
-
-	/**
-	 * 创建执行SQL
-	 * @param sql sql
-	 * @param configs configs
-	 * @param conditions conditions
-	 * @return RunSQL
-	 */
-	public RunSQL buildExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions);
-
-	/**
-	 * 基础SQL 不含排序 分页等
-	 * @param run run
-	 * @return String
-	 */
-	public String parseBaseQueryTxt(RunSQL run); 
-	/** 
-	 * 创建统计总数SQL
-	 * @param run  RunSQL
-	 * @return String
-	 */ 
-	public String parseTotalQueryTxt(RunSQL run);
-
-	/**
-	 * 创建检测是否存在SQL
-	 * @param run run
-	 * @return String
-	 */
-	public String parseExistsTxt(RunSQL run); 
-	/** 
-	 * 创建最终执行查询SQL
-	 * @param run  run
-	 * @return String
-	 */ 
-	public String parseFinalQueryTxt(RunSQL run);
+	/* *****************************************************************************************************************
+	 * 													INSERT
+	 ******************************************************************************************************************/
 
 	/**
 	 * 创建insert SQL
@@ -183,6 +137,18 @@ public interface SQLAdapter {
 	public void createInsertsTxt(StringBuilder builder, String dest, DataSet set, List<String> keys);
 
 	/**
+	 * 确认需要插入的列
+	 * @param dst dst
+	 * @param data data
+	 * @param columns 明确指定需要插入的列
+	 * @return list
+	 */
+	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
+
+	/* *****************************************************************************************************************
+	 * 													UPDATE
+	 ******************************************************************************************************************/
+	/**
 	 * 创建更新SQL
 	 * @param dest dest
 	 * @param obj obj
@@ -192,64 +158,86 @@ public interface SQLAdapter {
 	 */
 	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns);
 
+
+	/* *****************************************************************************************************************
+	 * 													QUERY
+	 ******************************************************************************************************************/
 	/**
-	 * 获取单主键列名
-	 * @param obj obj
+	 * 创建查询SQL
+	 * @param sql  sql
+	 * @param configs 查询条件配置
+	 * @param conditions 查询条件
+	 * @return RunSQL
+	 */
+	public RunSQL buildQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions);
+
+	/**
+	 * 基础SQL 不含排序 分页等
+	 * @param run run
 	 * @return String
 	 */
-	public String getPrimaryKey(Object obj);
-	/**
-	 * 获取单主键值
-	 * @param obj obj
-	 * @return Object
-	 */
-	public Object getPrimaryValue(Object obj);
+	public String parseBaseQueryTxt(RunSQL run);
 
 	/**
-	 * 确认需要插入的列
-	 * @param dst dst
-	 * @param data data
-	 * @param columns 明确指定需要插入的列
-	 * @return list
+	 * 创建最终执行查询SQL
+	 * @param run  run
+	 * @return String
 	 */
-	public List<String> confirmInsertColumns(String dst, Object data, String ... columns);
+	public String parseFinalQueryTxt(RunSQL run);
+
+	/* *****************************************************************************************************************
+	 * 													COUNT
+	 ******************************************************************************************************************/
+	/**
+	 * 创建统计总数SQL
+	 * @param run  RunSQL
+	 * @return String
+	 */
+	public String parseTotalQueryTxt(RunSQL run);
+
+	/* *****************************************************************************************************************
+	 * 													EXISTS
+	 ******************************************************************************************************************/
+	/**
+	 * 创建检测是否存在SQL
+	 * @param run run
+	 * @return String
+	 */
+	public String parseExistsTxt(RunSQL run);
+
+	/* *****************************************************************************************************************
+	 * 													EXECUTE
+	 ******************************************************************************************************************/
+	/**
+	 * 创建执行SQL
+	 * @param sql sql
+	 * @param configs configs
+	 * @param conditions conditions
+	 * @return RunSQL
+	 */
+	public RunSQL buildExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions);
+
+	/* *****************************************************************************************************************
+	 * 													DELETE
+	 ******************************************************************************************************************/
+	/**
+	 * 创建删除SQL
+	 * @param dest 表
+	 * @param obj entity
+	 * @param columns 删除条件的我
+	 * @return RunSQL
+	 */
+	public RunSQL buildDeleteRunSQL(String dest, Object obj, String ... columns);
 
 	/**
-	 * 数据类型转换
-	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
-	 * @param catalog catalog
-	 * @param schema schema
+	 * 根据key values删除
 	 * @param table 表
-	 * @param run  RunValue
-	 * @return boolean 返回false表示转换失败 如果有多个creater 则交给creater继续转换
+	 * @param key key
+	 * @param values values
+	 * @return RunSQL
 	 */
-	public boolean convert(String catalog, String schema, String table, RunValue run);
-	public boolean convert(Map<String, Column> columns, RunValue value);
-	public boolean convert(Column column, RunValue value);
+	public RunSQL buildDeleteRunSQL(String table, String key, Object values);
 
-	/**
-	 * 在不检测数据库结构时才生效，否则会被convert代替
-	 * 生成value格式 主要确定是否需要单引号  或  类型转换
-	 * 有些数据库不提供默认的 隐式转换 需要显示的把String转换成相应的数据类型
-	 * 如 TO_DATE('')
-	 * @param builder builder
-	 * @param row DataRow 或 Entity
-	 * @param key 列名
-	 */
-	public void value(StringBuilder builder, Object row, String key);
-
-	/**
-	 * 根据数据类型生成SQL(如是否需要'')
-	 * @param builder builder
-	 * @param value value
-	 */
-	public void format(StringBuilder builder, Object value);
-	/**
-	 * 拼接字符串
-	 * @param args args
-	 * @return String
-	 */
-	public String concat(String ... args);
 
 
 	/* *****************************************************************************************************************
@@ -532,10 +520,44 @@ public interface SQLAdapter {
 	 * 													table
 	 ******************************************************************************************************************/
 
+	/**
+	 * 创建表
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildCreateRunSQL(Table table) throws Exception;
+
+	/**
+	 * 修改表
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildAlterRunSQL(Table table) throws Exception;
+
+	/**
+	 * 重命名
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildRenameRunSQL(Table table) throws Exception;
+
+	/**
+	 * 修改备注
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildChangeCommentRunSQL(Table table) throws Exception;
+
+	/**
+	 * 删除表
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildDropRunSQL(Table table) throws Exception;
 	/**
 	 * 创建或删除表之前  检测表是否存在
@@ -548,7 +570,7 @@ public interface SQLAdapter {
 
 
 	/**
-	 * 主键
+	 * 创建主键在创建表的DDL结尾部分
 	 * @param builder builder
 	 * @param table 表
 	 * @return StringBuilder
@@ -572,20 +594,90 @@ public interface SQLAdapter {
 	/* *****************************************************************************************************************
 	 * 													master table
 	 ******************************************************************************************************************/
+
+	/**
+	 * 创建主有
+	 * @param master 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildCreateRunSQL(MasterTable master) throws Exception;
+
+	/**
+	 * 修改主表
+	 * @param master 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildAlterRunSQL(MasterTable master) throws Exception;
-	public String buildDropRunSQL(MasterTable master) throws Exception;
+
+	/**
+	 * 主表重命名
+	 * @param master 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildRenameRunSQL(MasterTable master) throws Exception;
+
+	/**
+	 * 修改主表备注
+	 * @param master 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildChangeCommentRunSQL(MasterTable master) throws Exception;
+
+	/**
+	 * 删除主表
+	 * @param master 表
+	 * @return sql
+	 * @throws Exception
+	 */
+	public String buildDropRunSQL(MasterTable master) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													partition table
 	 ******************************************************************************************************************/
+
+	/**
+	 * 创建分区表
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildCreateRunSQL(PartitionTable table) throws Exception;
+
+	/**
+	 * 修改分区表
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildAlterRunSQL(PartitionTable table) throws Exception;
-	public String buildDropRunSQL(PartitionTable table) throws Exception;
+
+	/**
+	 * 分区表重命名
+	 * @param table
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildRenameRunSQL(PartitionTable table) throws Exception;
+
+	/**
+	 * 修改分区有备注
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception
+	 */
 	public String buildChangeCommentRunSQL(PartitionTable table) throws Exception;
+
+	/**
+	 * 删除分区表
+	 * @param table 表
+	 * @return sql
+	 * @throws Exception
+	 */
+	public String buildDropRunSQL(PartitionTable table) throws Exception;
 
 	/* *****************************************************************************************************************
 	 * 													column
@@ -880,7 +972,84 @@ public interface SQLAdapter {
 	 *
 	 ******************************************************************************************************************/
 
+
+	/**
+	 * 获取单主键列名
+	 * @param obj obj
+	 * @return String
+	 */
+	public String getPrimaryKey(Object obj);
+	/**
+	 * 获取单主键值
+	 * @param obj obj
+	 * @return Object
+	 */
+	public Object getPrimaryValue(Object obj);
+
+
+	/**
+	 * 数据类型转换
+	 * 子类先解析(有些同名的类型以子类为准)、失败后再调用默认转换
+	 * @param catalog catalog
+	 * @param schema schema
+	 * @param table 表
+	 * @param run  值
+	 * @return boolean 返回false表示转换失败 如果有多个creater 则交给creater继续转换
+	 */
+	public boolean convert(String catalog, String schema, String table, RunValue run);
+
+	/**
+	 * 数据类型转换
+	 * @param columns 列
+	 * @param run 值
+	 * @return boolean 返回false表示转换失败 如果有多个creater 则交给creater继续转换
+	 */
+	public boolean convert(Map<String, Column> columns, RunValue run);
+
+	/**
+	 * 数据类型转换
+	 * @param column 列
+	 * @param run 值
+	 * @return boolean 返回false表示转换失败 如果有多个creater 则交给creater继续转换
+	 */
+	public boolean convert(Column column, RunValue run);
+
+	/**
+	 * 在不检测数据库结构时才生效，否则会被convert代替
+	 * 生成value格式 主要确定是否需要单引号  或  类型转换
+	 * 有些数据库不提供默认的 隐式转换 需要显示的把String转换成相应的数据类型
+	 * 如 TO_DATE('')
+	 * @param builder builder
+	 * @param row DataRow 或 Entity
+	 * @param key 列名
+	 */
+	public void value(StringBuilder builder, Object row, String key);
+
+	/**
+	 * 根据数据类型生成SQL(如是否需要'')
+	 * @param builder builder
+	 * @param value value
+	 */
+	public void format(StringBuilder builder, Object value);
+	/**
+	 * 拼接字符串
+	 * @param args args
+	 * @return String
+	 */
+	public String concat(String ... args);
+
+	/**
+	 * 是否是数字列
+	 * @param column 列
+	 * @return boolean
+	 */
 	public boolean isNumberColumn(Column column);
+
+	/**
+	 * 是否是boolean列
+	 * @param column 列
+	 * @return boolean
+	 */
 	public boolean isBooleanColumn(Column column);
 
 	/**
