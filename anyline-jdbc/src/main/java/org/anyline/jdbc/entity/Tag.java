@@ -6,7 +6,6 @@ import org.anyline.util.BeanUtil;
 public class Tag extends Column{
     protected String keyword = "TAG"            ;
     protected Tag update = null;
-    protected Object value;
 
     public Tag(){
     }
@@ -36,13 +35,6 @@ public class Tag extends Column{
         return this;
     }
 
-    public Object getValue() {
-        return value;
-    }
-
-    public void setValue(Object value) {
-        this.value = value;
-    }
 
     public String toString(){
         StringBuilder builder = new StringBuilder();

@@ -42,6 +42,7 @@ public class Column {
     protected String after                        ; //修改列时 在表中的位置
     protected String before                       ; //修改列时 在表中的位置
     protected int isOnUpdate                 = -1 ; //是否在更新行时 更新这一列数据
+    protected Object value                        ;
 
     protected Column update                       ;
 
@@ -245,6 +246,14 @@ public class Column {
         this.tableName = tableName;
         this.table = new Table(tableName);
         return this;
+    }
+
+    public Object getValue() {
+        return value;
+    }
+
+    public void setValue(Object value) {
+        this.value = value;
     }
 
     public int isCaseSensitive() {
