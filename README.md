@@ -68,15 +68,15 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-mysql">
-<img alt="MySQL" src="http://cdn.anyline.org/img/logo/mysql.jpg" width="100">
+<img alt="MySQL" src="http://cdn.anyline.org/img/logo/mysql.png" width="100">
 </a>
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-postgresql">
-<img alt="PostgreSQL" src="http://cdn.anyline.org/img/logo/postgre.jpg" width="100">
+<img alt="PostgreSQL" src="http://cdn.anyline.org/img/logo/postgres.png" width="100">
 </a>
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-oracle">
-<img alt="Oracle 11G" src="http://cdn.anyline.org/img/logo/oracle.jpg" width="100">
+<img alt="Oracle 11G" src="http://cdn.anyline.org/img/logo/oracle.png" width="100">
 </a>
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-mssql">
@@ -84,7 +84,7 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 </a>
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-mariadb">
-<img alt="MariaDB" src="http://cdn.anyline.org/img/logo/mariadb.svg" width="100">
+<img alt="MariaDB" src="http://cdn.anyline.org/img/logo/mariadb.png" width="100">
 </a>
 
 <a href="https://gitee.com/anyline/anyline-simple/tree/master/anyline-simple-jdbc-dialect/anyline-simple-jdbc-db2">
@@ -142,7 +142,7 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 </a>
 
 <a href="">
-<img alt="cassandra" src="http://cdn.anyline.org/img/logo/cassandra.svg" width="100">
+<img alt="cassandra" src="http://cdn.anyline.org/img/logo/cassandra.png" width="100">
 </a>
 
 <a href="">
@@ -156,7 +156,7 @@ Anyline提供的默认数据结构DataSet/DataRow已经实现了常用的数据�
 <img alt="polardb" src="http://cdn.anyline.org/img/logo/polardb.webp" width="100">
 </a>
 <a href="">
-<img alt="questdb" src="http://cdn.anyline.org/img/logo/questdb.svg" width="100">
+<img alt="questdb" src="http://cdn.anyline.org/img/logo/questdb.png" width="100">
 </a>
 <a href="">
 <img alt="timescale" src="http://cdn.anyline.org/img/logo/timescale.svg" width="100">
