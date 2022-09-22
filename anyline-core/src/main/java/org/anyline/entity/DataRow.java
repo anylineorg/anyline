@@ -1478,6 +1478,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return def;
         }
     }
+    public Double getDouble(String key, Integer def) {
+        if(null == def){
+            return getDouble(key, (Double)null);
+        }
+        return getDouble(key, def.doubleValue());
+    }
 
     public Long getLong(String key) throws Exception {
         Object value = get(key);
@@ -1490,6 +1496,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         } catch (Exception e) {
             return def;
         }
+    }
+    public Long getLong(String key, Integer def) {
+        if(null == def){
+            return getLong(key, (Long)null);
+        }
+        return getLong(key, def.longValue());
     }
 
     public Float getFloat(String key) throws Exception {
@@ -1504,6 +1516,12 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
             return def;
         }
     }
+    public Float getFloat(String key, Integer def) {
+        if(null == def){
+            return getFloat(key, (Float)null);
+        }
+        return getFloat(key, def.floatValue());
+    }
 
     public Boolean getBoolean(String key, Boolean def) {
         return BasicUtil.parseBoolean(getString(key), def);
@@ -1517,7 +1535,11 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return new BigDecimal(getString(key));
     }
 
-    public BigDecimal getDecimal(String key, double def) {
+    public BigDecimal getDecimal(String key, Double def) {
+        return getDecimal(key, new BigDecimal(def));
+    }
+
+    public BigDecimal getDecimal(String key, Integer def) {
         return getDecimal(key, new BigDecimal(def));
     }
 
