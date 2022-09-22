@@ -37,6 +37,8 @@ public class SQLAdapterImpl extends BasicSQLAdapter implements SQLAdapter, Initi
 	public void afterPropertiesSet() throws Exception {
 		setDelimiter(delimiter);
 	}
+
+
 	////////////////////////////////////////////【以下全部待实现,以原生CQL执行】/////////////////////////////////
 	/* *****************************************************************************************************
 	 *

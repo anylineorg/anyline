@@ -2864,6 +2864,7 @@ public class DataSet implements Collection<DataRow>, Serializable {
      * dispatch("children",items, "DEPAT_CD")
      * dispatchs("children",items, "CD:BASE_CD")
      *
+     * @param compare   匹配方式 默认=
      * @param field     默认"ITEMS"
      * @param unique    是否只分配一次(同一个条目不能分配到多个组中)
      * @param recursion 是否递归 所有子级以相同条件执行dispatchs
