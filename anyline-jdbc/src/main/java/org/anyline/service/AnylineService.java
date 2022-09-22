@@ -35,11 +35,176 @@ import java.util.Map;
 
 public interface AnylineService<E>{
 
+
 	/* *****************************************************************************************************************
 	 *
 	 * 													DML
 	 *
+	 * =================================================================================================================
+	 * INSERT			: 插入
+	 * BATCH INSERT		: 批量插入
+	 * UPDATE			: 更新
+	 * SAVE				: 根据情况插入或更新
+	 * QUERY			: 查询(SQL/XML/TABLE/VIEW/PROCEDURE)
+	 * EXISTS			: 是否存在
+	 * COUNT			: 统计
+	 * EXECUTE			: 执行(原生SQL及存储过程)
+	 * DELETE			: 删除
+	 * CACHE			: 缓存
+	 * METADATA			: 简单格式元数据，只返回NAME
 	 ******************************************************************************************************************/
+
+	/* *****************************************************************************************************************
+	 * 													INSERT
+	 ******************************************************************************************************************/
+
+	public int insert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int insert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int insert(Object data, List<String> fixs, String ... columns);
+	public int insert(String dest, Object data, List<String> fixs, String ... columns);
+
+	public int insert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int insert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int insert(Object data, String[] fixs, String ... columns);
+	public int insert(String dest, Object data, String[] fixs, String ... columns);
+
+	public int insert(String dest, Object data, boolean checkPriamry, String ... columns);
+	public int insert(Object data, boolean checkPriamry, String ... columns);
+	public int insert(Object data, String ... columns);
+	public int insert(String dest, Object data, String ... columns);
+
+	/* *****************************************************************************************************************
+	 * 													BATCH INSERT
+	 ******************************************************************************************************************/
+	/**
+	 * 异步插入
+	 * @param dest dest
+	 * @param data data
+	 * @param checkPriamry checkPriamry
+	 * @param fixs 指定更新或保存的列
+	 * @param columns columns
+	 * @return int
+	 */
+	public int batchInsert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int batchInsert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int batchInsert(Object data, List<String> fixs, String ... columns);
+	public int batchInsert(String dest, Object data, List<String> fixs, String ... columns);
+
+	public int batchInsert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int batchInsert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int batchInsert(Object data, String[] fixs, String ... columns);
+	public int batchInsert(String dest, Object data, String[] fixs, String ... columns);
+
+	public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
+	public int batchInsert(Object data, boolean checkPriamry, String ... columns);
+	public int batchInsert(Object data, String ... columns);
+	public int batchInsert(String dest, Object data, String ... columns);
+
+	/* *****************************************************************************************************************
+	 * 													UPDATE
+	 ******************************************************************************************************************/
+
+	/**
+	 * 更新记录
+	 * @param fixs	  需要更新的列
+	 * @param columns	  需要更新的列
+	 * @param dest	   表
+	 * @param data data
+	 * @return int
+	 */
+	public int update(String dest, Object data, List<String> fixs, String ... columns);
+	public int update(Object data, List<String> fixs, String ... columns);
+	public int update(String dest, ConfigStore configs, List<String> fixs, String ... conditions);
+
+	public int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
+	public int update(boolean async, Object data, List<String> fixs, String ... columns);
+
+
+	public int update(String dest, Object data, String[] fixs, String ... columns);
+	public int update(Object data, String[] fixs, String ... columns);
+	public int update(String dest, ConfigStore configs, String[] fixs, String ... conditions);
+
+	public int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
+	public int update(boolean async, Object data, String[] fixs, String ... columns);
+
+
+
+	public int update(String dest, Object data, String ... columns);
+	public int update(Object data, String ... columns);
+	public int update(String dest, ConfigStore configs, String ... conditions);
+
+	public int update(boolean async, String dest, Object data, String ... columns);
+	public int update(boolean async, Object data, String ... columns);
+
+	/* *****************************************************************************************************************
+	 * 													SAVE
+	 ******************************************************************************************************************/
+
+
+	/**
+	 * save insert区别
+	 * 操作单个对象时没有区别
+	 * 在操作集合时区别:
+	 * save会循环操作数据库每次都会判断insert|update
+	 * save 集合中的数据可以是不同的表不同的结构
+	 * insert 集合中的数据必须保存到相同的表,结构必须相同
+	 * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势
+	 *
+	 * 保存(insert|update)根据是否有主键值确定insert或update
+	 * @param data  数据
+	 * @param checkPriamry 是否检测主键
+	 * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
+	 * @param columns 指定更新或保存的列
+	 * @param dest 表
+	 * @return 影响行数
+	 */
+	public int save(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(Object data, List<String> fixs, String ... columns);
+	public int save(String dest, Object data, List<String> fixs, String ... columns);
+
+	public int save(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int save(Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int save(Object data, String[] fixs, String ... columns);
+	public int save(String dest, Object data, String[] fixs, String ... columns);
+
+
+	public int save(String dest, Object data, boolean checkPriamry, String ... columns);
+	public int save(Object data, boolean checkPriamry, String ... columns);
+	public int save(Object data, String ... columns);
+	public int save(String dest, Object data, String ... columns);
+
+
+	/**
+	 * 保存(insert|update)根据是否有主键值确定insert或update
+	 * @param async 是否异步执行
+	 * @param data  数据
+	 * @param checkPriamry 是否检测主键
+	 * @param fixs 指定更新或保存的列 一般与columns配合使用,fixs通过常量指定常用的列,columns在调用时临时指定经常是从上一步接收
+	 * @param columns 指定更新或保存的列
+	 * @param dest 表
+	 * @return 影响行数
+	 */
+	public int save(boolean async, String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(boolean async, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
+	public int save(boolean async, Object data, List<String> fixs, String ... columns);
+	public int save(boolean async, String dest, Object data, List<String> fixs, String ... columns);
+
+	public int save(boolean async, String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int save(boolean async, Object data, boolean checkPriamry, String[] fixs, String ... columns);
+	public int save(boolean async, Object data, String[] fixs, String ... columns);
+	public int save(boolean async, String dest, Object data, String[] fixs, String ... columns);
+
+	public int save(boolean async, String dest, Object data, boolean checkPriamry, String ... columns);
+	public int save(boolean async, Object data, boolean checkPriamry, String ... columns);
+	public int save(boolean async, Object data, String ... columns);
+	public int save(boolean async, String dest, Object data, String ... columns);
+
+
+	/* *****************************************************************************************************************
+	 * 													QUERY
+	 ******************************************************************************************************************/
+
 	/**
 	 * 按条件查询
 	 * @param src 			数据源(表或自定义SQL或SELECT语句)
@@ -220,7 +385,11 @@ public interface AnylineService<E>{
 	 * @return boolean
 	 */
 	public boolean clearCache(String channel);
-	 
+
+	/* *****************************************************************************************************************
+	 * 													EXISTS
+	 ******************************************************************************************************************/
+
 	/** 
 	 * 是否存在 
 	 * @param src  			数据源(表或自定义SQL或SELECT语句)
@@ -235,149 +404,20 @@ public interface AnylineService<E>{
 	public boolean exists(String src, DataRow row);
 	public boolean exists(DataRow row);
 
+	/* *****************************************************************************************************************
+	 * 													COUNT
+	 ******************************************************************************************************************/
 	public int count(String src, ConfigStore configs, Object obj, String ... conditions);
 	public int count(String src, Object obj, String ... conditions);
 	public int count(String src, ConfigStore configs, String ... conditions);
 	public int count(String src, String ... conditions);
-	
-	 
-	 
-	/** 
-	 * 更新记录 
-	 * @param fixs	  需要更新的列
-	 * @param columns	  需要更新的列
-	 * @param dest	   表 
-	 * @param data data
-	 * @return int
-	 */
-	public int update(String dest, Object data, List<String> fixs, String ... columns);
-	public int update(Object data, List<String> fixs, String ... columns);
-	public int update(String dest, ConfigStore configs, List<String> fixs, String ... conditions);
-
-	public int update(boolean async, String dest, Object data, List<String> fixs, String ... columns);
-	public int update(boolean async, Object data, List<String> fixs, String ... columns);
-
-
-	public int update(String dest, Object data, String[] fixs, String ... columns);
-	public int update(Object data, String[] fixs, String ... columns);
-	public int update(String dest, ConfigStore configs, String[] fixs, String ... conditions);
-
-	public int update(boolean async, String dest, Object data, String[] fixs, String ... columns);
-	public int update(boolean async, Object data, String[] fixs, String ... columns);
 
 
 
-	public int update(String dest, Object data, String ... columns);
-	public int update(Object data, String ... columns);
-	public int update(String dest, ConfigStore configs, String ... conditions);
+	/* *****************************************************************************************************************
+	 * 													EXECUTE
+	 ******************************************************************************************************************/
 
-	public int update(boolean async, String dest, Object data, String ... columns);
-	public int update(boolean async, Object data, String ... columns);
-	/** 
-	 * 保存(insert|update)根据是否有主键值确定insert或update
-	 * @param data  数据
-	 * @param checkPriamry 是否检测主键
-	 * @param fixs 指定更新或保存的列
-	 * @param columns 指定更新或保存的列
-	 * @param dest 表 
-	 * @return 影响行数
-	 */
-	public int save(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int save(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int save(Object data, List<String> fixs, String ... columns);
-	public int save(String dest, Object data, List<String> fixs, String ... columns);
-
-	public int save(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int save(Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int save(Object data, String[] fixs, String ... columns);
-	public int save(String dest, Object data, String[] fixs, String ... columns);
-
-
-	public int save(String dest, Object data, boolean checkPriamry, String ... columns);
-	public int save(Object data, boolean checkPriamry, String ... columns);
-	public int save(Object data, String ... columns);
-	public int save(String dest, Object data, String ... columns);
-
-
-	/**
-	 * 保存(insert|update)根据是否有主键值确定insert或update
-	 * @param async 是否异步执行
-	 * @param data  数据
-	 * @param checkPriamry 是否检测主键
-	 * @param fixs 指定更新或保存的列
-	 * @param columns 指定更新或保存的列
-	 * @param dest 表
-	 * @return 影响行数
-	 */
-	public int save(boolean async, String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int save(boolean async, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int save(boolean async, Object data, List<String> fixs, String ... columns);
-	public int save(boolean async, String dest, Object data, List<String> fixs, String ... columns);
-
-	public int save(boolean async, String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int save(boolean async, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int save(boolean async, Object data, String[] fixs, String ... columns);
-	public int save(boolean async, String dest, Object data, String[] fixs, String ... columns);
-
-	public int save(boolean async, String dest, Object data, boolean checkPriamry, String ... columns);
-	public int save(boolean async, Object data, boolean checkPriamry, String ... columns);
-	public int save(boolean async, Object data, String ... columns);
-	public int save(boolean async, String dest, Object data, String ... columns);
-
-
-	public int insert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int insert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int insert(Object data, List<String> fixs, String ... columns);
-	public int insert(String dest, Object data, List<String> fixs, String ... columns);
-
-	public int insert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int insert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int insert(Object data, String[] fixs, String ... columns);
-	public int insert(String dest, Object data, String[] fixs, String ... columns);
-
-
-	public int insert(String dest, Object data, boolean checkPriamry, String ... columns);
-	public int insert(Object data, boolean checkPriamry, String ... columns);
-	public int insert(Object data, String ... columns);
-	public int insert(String dest, Object data, String ... columns);
-
-
-	/**
-	 * 异步插入
-	 * @param dest dest
-	 * @param data data
-	 * @param checkPriamry checkPriamry
-	 * @param fixs 指定更新或保存的列
-	 * @param columns columns
-	 * @return int
-	 */
-	public int batchInsert(String dest, Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int batchInsert(Object data, boolean checkPriamry, List<String> fixs, String ... columns);
-	public int batchInsert(Object data, List<String> fixs, String ... columns);
-	public int batchInsert(String dest, Object data, List<String> fixs, String ... columns);
-
-
-	public int batchInsert(String dest, Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int batchInsert(Object data, boolean checkPriamry, String[] fixs, String ... columns);
-	public int batchInsert(Object data, String[] fixs, String ... columns);
-	public int batchInsert(String dest, Object data, String[] fixs, String ... columns);
-
-	public int batchInsert(String dest, Object data, boolean checkPriamry, String ... columns);
-	public int batchInsert(Object data, boolean checkPriamry, String ... columns);
-	public int batchInsert(Object data, String ... columns);
-	public int batchInsert(String dest, Object data, String ... columns);
-
-	/** 
-	 * save insert区别 
-	 * 操作单个对象时没有区别 
-	 * 在操作集合时区别: 
-	 * save会循环操作数据库每次都会判断insert|update 
-	 * save 集合中的数据可以是不同的表不同的结构  
-	 * insert 集合中的数据必须保存到相同的表,结构必须相同 
-	 * insert 将一次性插入多条数据整个过程有可能只操作一次数据库  并 不考虑update情况 对于大批量数据来说 性能是主要优势 
-	 *  
-	 */
-	 
 	/** 
 	 * 执行 
 	 * @param src  src
@@ -412,6 +452,9 @@ public interface AnylineService<E>{
 	public DataRow queryProcedure(String procedure, String ... inputs);
 	public DataRow query(Procedure procedure, String ... inputs);
 
+	/* *****************************************************************************************************************
+	 * 													DELETE
+	 ******************************************************************************************************************/
 	public int delete(String table, ConfigStore configs, String ... conditions);
 	/**
 	 * 删除 根据columns列删除 可设置复合主键
@@ -459,6 +502,10 @@ public interface AnylineService<E>{
 	public int deletes(String table, String key, String ... values);
 
 
+	/* *****************************************************************************************************************
+	 * 													METADATA
+	 ******************************************************************************************************************/
+
 	public List<String> tables(String catalog, String schema, String name, String types);
 	public List<String> tables(String schema, String name, String types);
 	public List<String> tables(String name, String types);
@@ -502,9 +549,11 @@ public interface AnylineService<E>{
 	 ******************************************************************************************************************/
 	public interface MetaDataService{
 
+
 		/* *****************************************************************************************************************
 		 * 													table
 		 ******************************************************************************************************************/
+
 		/**
 		 * 表是否存在
 		 * @param table 表
@@ -534,6 +583,7 @@ public interface AnylineService<E>{
 		/* *****************************************************************************************************************
 		 * 													master table
 		 ******************************************************************************************************************/
+
 		/**
 		 * 主表是否存在
 		 * @param table 表
@@ -551,10 +601,10 @@ public interface AnylineService<E>{
 		public MasterTable mtable(String name);
 
 
-
 		/* *****************************************************************************************************************
 		 * 													partition table
 		 ******************************************************************************************************************/
+
 		/**
 		 * 主表是否存在
 		 * @param table 表
@@ -572,9 +622,11 @@ public interface AnylineService<E>{
 		public PartitionTable ptable(String schema, String name);
 		public PartitionTable ptable(String name);
 
+
 		/* *****************************************************************************************************************
 		 * 													column
 		 ******************************************************************************************************************/
+
 		/**
 		 * 列是否存在
 		 * @param column 列
@@ -590,16 +642,20 @@ public interface AnylineService<E>{
 		public LinkedHashMap<String,Column> columns(String table);
 		public LinkedHashMap<String,Column> columns(String catalog, String schema, String table);
 
+
 		/* *****************************************************************************************************************
 		 * 													tag
 		 ******************************************************************************************************************/
+
 		public LinkedHashMap<String,Tag> tags(Table table);
 		public LinkedHashMap<String,Tag> tags(String table);
 		public LinkedHashMap<String,Tag> tags(String catalog, String schema, String table);
 
+
 		/* *****************************************************************************************************************
 		 * 													index
 		 ******************************************************************************************************************/
+
 		public LinkedHashMap<String,Index> indexs(Table table);
 		public LinkedHashMap<String,Index> indexs(String table);
 		public LinkedHashMap<String,Index> indexs(String catalog, String schema, String table);
@@ -608,6 +664,7 @@ public interface AnylineService<E>{
 		/* *****************************************************************************************************************
 		 * 													constraint
 		 ******************************************************************************************************************/
+
 		public LinkedHashMap<String,Constraint> constraints(Table table);
 		public LinkedHashMap<String,Constraint> constraints(String table);
 		public LinkedHashMap<String,Constraint> constraints(String catalog, String schema, String table);
@@ -631,29 +688,38 @@ public interface AnylineService<E>{
 	 *
 	 ******************************************************************************************************************/
 	public interface DDLService{
+
+
 		/* *****************************************************************************************************************
 		 * 													table
 		 ******************************************************************************************************************/
+
 		public boolean save(Table table) throws Exception;
 		public boolean create(Table table) throws Exception;
 		public boolean alter(Table table) throws Exception;
 		public boolean drop(Table table) throws Exception;
 
+
 		/* *****************************************************************************************************************
 		 * 													master table
 		 ******************************************************************************************************************/
+
 		public boolean save(MasterTable table) throws Exception;
 		public boolean create(MasterTable table) throws Exception;
 		public boolean alter(MasterTable table) throws Exception;
 		public boolean drop(MasterTable table) throws Exception;
 
+
 		/* *****************************************************************************************************************
 		 * 													partition table
 		 ******************************************************************************************************************/
+
 		public boolean save(PartitionTable table) throws Exception;
 		public boolean create(PartitionTable table) throws Exception;
 		public boolean alter(PartitionTable table) throws Exception;
 		public boolean drop(PartitionTable table) throws Exception;
+
+
 		/* *****************************************************************************************************************
 		 * 													column
 		 ******************************************************************************************************************/
@@ -668,17 +734,22 @@ public interface AnylineService<E>{
 		public boolean add(Column column) throws Exception;
 		public boolean alter(Column column) throws Exception;
 		public boolean drop(Column column) throws Exception;
+
+
 		/* *****************************************************************************************************************
 		 * 													tag
 		 ******************************************************************************************************************/
+
 		public boolean save(Tag tag) throws Exception;
 		public boolean add(Tag tag) throws Exception;
 		public boolean alter(Tag tag) throws Exception;
 		public boolean drop(Tag tag) throws Exception;
 
+
 		/* *****************************************************************************************************************
 		 * 													index
 		 ******************************************************************************************************************/
+
 		public boolean add(Index index) throws Exception;
 		public boolean alter(Index index) throws Exception;
 		public boolean drop(Index index) throws Exception;
@@ -696,7 +767,5 @@ public interface AnylineService<E>{
 		public boolean add(Constraint constraint) throws Exception;
 		public boolean alter(Constraint constraint) throws Exception;
 		public boolean drop(Constraint constraint) throws Exception;
-
-
 	}
 }
