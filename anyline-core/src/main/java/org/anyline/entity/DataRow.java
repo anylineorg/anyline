@@ -46,16 +46,24 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private static final long serialVersionUID = -2098827041540802313L;
     protected static final Logger log = LoggerFactory.getLogger(DataRow.class);
 
-    public static String DEFAULT_PRIMARY_KEY    = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
-    private boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
-    private boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
-
     public static String KEY_PARENT             = "PARENT"              ; // 上级
     public static String KEY_ALL_PARENT         = "ALL_PARENT"          ; // 所有上级
     public static String KEY_CHILDREN           = "CHILDREN"            ; // 子级
     public static String KEY_ALL_CHILDREN       = "CHILDREN"            ; // 所有子级
     public static String KEY_ITEMS              = "ITEMS"               ; // items
     public static KEY_CASE DEFAULT_KEY_KASE     = KEY_CASE.CONFIG       ; // key case
+    public static String DEFAULT_PRIMARY_KEY    = ConfigTable.getString("DEFAULT_PRIMARY_KEY", "ID");
+
+    private boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
+    private boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
+
+    /*
+     * 相当于Class Name 如User/Department
+     * 在关系型数据库场景中 也相当于表名
+     * 主要应用在在非关系型数据库场景中 如Neo4j中的Node名 MongonDB中的Document名
+     */
+    private String category                     = null                  ; //分类
+
     private transient DataSet container         = null                  ; // 包含当前对象的容器
     private List<String> primaryKeys            = new ArrayList<>()     ; // 主键
     private List<String> updateColumns          = new ArrayList<>()     ; // 需要参与update insert操作
@@ -64,8 +72,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private String dataSource                   = null                  ; // 数据源(表|视图|XML定义SQL)
     private String schema                       = null                  ; // schema
     private String table                        = null                  ; // table
-    private Map<String, Object> attributes      = new HashMap<>()       ; // 属性
-    private Map<String, Object> tags            = new HashMap<>()       ; // 标签
+    private DataRow attributes                  = new DataRow()         ; // 属性
+    private DataRow tags                        = new DataRow()         ; // 标签
+    private DataRow relations                   = new DataRow()         ; // 对外关系
     private long createTime                     = 0                     ; // 创建时间(毫秒)
     private long nanoTime                       = 0                     ; // 创建时间(纳秒)
     private long expires                        = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
@@ -1009,6 +1018,37 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         }
 
         return ds;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public DataRow setCategory(String category) {
+        this.category = category;
+        return this;
+    }
+
+    public DataRow getRelations() {
+        return relations;
+    }
+
+    public DataRow setRelations(DataRow relations) {
+        this.relations = relations;
+        return this;
+    }
+    public DataRow addRelation(DataRow relation) {
+        this.relations.put(relation.getCategory(), relation);
+        return this;
+    }
+    public DataRow addRelation(String relation) {
+        DataRow row = new DataRow();
+        row.setCategory(relation);
+        this.relations.put(relation, row);
+        return this;
+    }
+    public DataRow getRelation(String key){
+        return (DataRow)relations.get(key);
     }
 
     public String getDataLink() {
