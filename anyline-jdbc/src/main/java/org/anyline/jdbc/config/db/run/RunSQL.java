@@ -22,6 +22,7 @@ package org.anyline.jdbc.config.db.run;
 import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.*;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
@@ -29,7 +30,7 @@ import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import java.util.List;
 
 public interface RunSQL { 
-	public void setCreater(SQLAdapter adapter);
+	public void setCreater(JDBCAdapter adapter);
 	public void init();
 	public void createRunDeleteTxt();
 	public void createRunQueryTxt();

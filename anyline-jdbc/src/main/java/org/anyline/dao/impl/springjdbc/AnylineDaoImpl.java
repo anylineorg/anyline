@@ -33,7 +33,7 @@ import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.db.Procedure;
 import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.config.db.impl.ProcedureParam;
 import org.anyline.jdbc.config.db.run.RunSQL;
 import org.anyline.jdbc.config.db.sql.auto.TableSQL;
@@ -1252,7 +1252,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		LinkedHashMap<String,Table> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
-		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		String random = random();
 		try{
 			Long fr = System.currentTimeMillis();
@@ -1356,7 +1356,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		LinkedHashMap<String, MasterTable> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
-		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		String random = random();
 		try{
 			Long fr = System.currentTimeMillis();
@@ -1484,7 +1484,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		LinkedHashMap<String,PartitionTable> tables = new LinkedHashMap<>();
 		DataSource ds = null;
 		Connection con = null;
-		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		String random = random();
 		try{
 			Long fr = System.currentTimeMillis();
@@ -1540,7 +1540,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			random = random();
 		}
 
-		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		try {
@@ -1656,7 +1656,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			random = random();
 		}
 
-		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		String catalog = table.getCatalog();
 		String schema = table.getSchema();
 		try {
@@ -1781,7 +1781,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		String tab = table.getName();
 		DataSource ds = null;
 		Connection con = null;
-		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		try {
 			ds = jdbc.getDataSource();
 			con = DataSourceUtils.getConnection(ds);
@@ -1970,7 +1970,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	private void check(Table table){
 		DataSource ds = null;
 		Connection con = null;
-		SQLAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
+		JDBCAdapter adapter = SQLAdapterUtil.getAdapter(getJdbc());
 		String random = random();
 		try {
 			Long fr = System.currentTimeMillis();

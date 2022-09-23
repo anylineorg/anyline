@@ -5,7 +5,7 @@ import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.PageNaviImpl;
 import org.anyline.jdbc.config.db.RunValue;
-import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.listener.DDListener;
@@ -25,7 +25,7 @@ public class DefaulDDtListener implements DDListener {
 
     protected Logger log = LoggerFactory.getLogger(DefaulDDtListener.class);
     protected AnylineService service;
-    protected SQLAdapter adapter;
+    protected JDBCAdapter adapter;
 
 
     @Override
@@ -188,11 +188,11 @@ public class DefaulDDtListener implements DDListener {
         return service;
     }
 
-    public SQLAdapter getAdapter() {
+    public JDBCAdapter getAdapter() {
         return adapter;
     }
 
-    public void setAdapter(SQLAdapter adapter) {
+    public void setAdapter(JDBCAdapter adapter) {
         this.adapter = adapter;
     }
 

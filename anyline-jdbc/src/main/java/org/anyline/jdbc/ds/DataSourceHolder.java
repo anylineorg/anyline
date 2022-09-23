@@ -21,7 +21,7 @@ package org.anyline.jdbc.ds;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
-import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.util.AdapterProxy;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -44,7 +44,7 @@ public class DataSourceHolder {
     //是否还原默认数据源,执行一次操作后还原回默认数据源 
     private static final ThreadLocal<Boolean> THREAD_AUTO_DEFAULT = new ThreadLocal<Boolean>(); 
     private static List<String> dataSources = new ArrayList<>();
-	private static Map<String, SQLAdapter.DB_TYPE> types = new HashMap<>();
+	private static Map<String, JDBCAdapter.DB_TYPE> types = new HashMap<>();
     static{ 
     	THREAD_AUTO_DEFAULT.set(false); 
     } 
@@ -52,11 +52,11 @@ public class DataSourceHolder {
         return THREAD_CUR_SOURCE.get(); 
     }
 
-	public static SQLAdapter.DB_TYPE dialect(){
+	public static JDBCAdapter.DB_TYPE dialect(){
 		String ds = getDataSource();
 		return types.get(ds);
 	}
-	public static void dialect(String ds, SQLAdapter.DB_TYPE type){
+	public static void dialect(String ds, JDBCAdapter.DB_TYPE type){
 		types.put(ds, type);
 	}
 

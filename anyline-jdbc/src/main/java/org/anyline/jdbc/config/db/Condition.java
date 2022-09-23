@@ -19,6 +19,8 @@
 
 package org.anyline.jdbc.config.db; 
  
+import org.anyline.jdbc.adapter.JDBCAdapter;
+
 import java.util.List;
 import java.util.Map;
  
@@ -37,7 +39,7 @@ public interface Condition extends Cloneable{
 	 * @param adapter adapter
 	 * @return String
 	 */ 
-	public String getRunText(SQLAdapter adapter);
+	public String getRunText(JDBCAdapter adapter);
 	/** 
 	 * 运行时参数值 
 	 * @return List

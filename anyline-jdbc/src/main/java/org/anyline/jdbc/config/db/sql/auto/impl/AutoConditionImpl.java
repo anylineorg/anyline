@@ -23,7 +23,7 @@ import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
-import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.config.db.impl.BasicCondition;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
@@ -172,7 +172,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	 * @param adapter adapter
 	 * @return String
 	 */ 
-	public String getRunText(SQLAdapter adapter){
+	public String getRunText(JDBCAdapter adapter){
 		runValues = new ArrayList<>();
 		String text = "";
 		if(this.variableType == Condition.VARIABLE_FLAG_TYPE_NONE){
@@ -201,7 +201,7 @@ public class AutoConditionImpl extends BasicCondition implements AutoCondition{
 	} 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public String getRunText(SQLAdapter adapter, Object val, COMPARE_TYPE compare){
+	public String getRunText(JDBCAdapter adapter, Object val, COMPARE_TYPE compare){
 		String delimiterFr = adapter.getDelimiterFr();
 		String delimiterTo = adapter.getDelimiterTo();
 		String text = "";

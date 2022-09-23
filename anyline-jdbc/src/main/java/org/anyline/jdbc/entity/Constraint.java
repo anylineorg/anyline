@@ -1,6 +1,6 @@
 package org.anyline.jdbc.entity;
 
-import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.listener.DDListener;
 import org.anyline.service.AnylineService;
 
@@ -97,7 +97,7 @@ public class Constraint {
         }
         return this;
     }
-    public Constraint setCreater(SQLAdapter adapter) {
+    public Constraint setCreater(JDBCAdapter adapter) {
         if (null != listener) {
             listener.setAdapter(adapter);
         }

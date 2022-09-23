@@ -23,7 +23,7 @@ import org.anyline.jdbc.config.Config;
 import org.anyline.jdbc.config.ConfigChain;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
-import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.config.db.impl.BasicConditionChain;
 import org.anyline.util.BasicUtil;
@@ -45,7 +45,7 @@ public class AutoConditionChainImpl extends BasicConditionChain implements Condi
 			}
 		}
 	} 
-	public String getRunText(SQLAdapter adapter){
+	public String getRunText(JDBCAdapter adapter){
 		runValues = new ArrayList<>();
 		int size = conditions.size(); 
 		if(size == 0){ 

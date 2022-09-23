@@ -1,6 +1,6 @@
 package org.anyline.listener;
 
-import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.entity.Column;
 import org.anyline.jdbc.entity.Table;
 import org.anyline.service.AnylineService;
@@ -55,5 +55,5 @@ public interface DDListener {
 
     public void setService(AnylineService srvice);
     public AnylineService getService();
-    public void setAdapter(SQLAdapter adapter);
+    public void setAdapter(JDBCAdapter adapter);
 }

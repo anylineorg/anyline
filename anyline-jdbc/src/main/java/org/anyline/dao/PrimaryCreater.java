@@ -19,7 +19,7 @@
 
 package org.anyline.dao; 
 
-import org.anyline.jdbc.config.db.SQLAdapter.DB_TYPE;
+import org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE;
  
 public interface PrimaryCreater { 
 	public Object createPrimary(DB_TYPE type,String table, String column, String other);

@@ -1,6 +1,6 @@
 package org.anyline.jdbc.entity;
 
-import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.listener.DDListener;
 import org.anyline.listener.impl.DefaulDDtListener;
 import org.anyline.service.AnylineService;
@@ -540,7 +540,7 @@ public class Column {
         }
         return this;
     }
-    public Column setCreater(SQLAdapter adapter){
+    public Column setCreater(JDBCAdapter adapter){
         if(null != listener){
             listener.setAdapter(adapter);
         }

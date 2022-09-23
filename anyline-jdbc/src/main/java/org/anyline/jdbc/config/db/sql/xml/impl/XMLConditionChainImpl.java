@@ -22,7 +22,7 @@ package org.anyline.jdbc.config.db.sql.xml.impl;
 import org.anyline.jdbc.config.db.Condition;
 import org.anyline.jdbc.config.db.ConditionChain;
 import org.anyline.jdbc.config.db.RunValue;
-import org.anyline.jdbc.config.db.SQLAdapter;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.config.db.impl.BasicConditionChain;
 import org.anyline.jdbc.config.db.sql.auto.AutoCondition;
 import org.anyline.util.BasicUtil;
@@ -32,7 +32,7 @@ import java.util.List;
  
 public class XMLConditionChainImpl extends BasicConditionChain implements ConditionChain{ 
 
-	public String getRunText(SQLAdapter adapter){
+	public String getRunText(JDBCAdapter adapter){
 		initRunValue(); 
 		StringBuilder builder = new StringBuilder(); 
 		if(null != conditions){ 

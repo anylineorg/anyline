@@ -19,6 +19,7 @@
 
 package org.anyline.jdbc.config.db.sql.xml.impl;
 
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.config.db.*;
 import org.anyline.jdbc.config.db.SQL.COMPARE_TYPE;
 import org.anyline.jdbc.config.db.impl.BasicCondition;
@@ -184,7 +185,7 @@ public class XMLConditionImpl extends BasicCondition implements Condition{
  
 	 
  
-	public String getRunText(SQLAdapter adapter) {
+	public String getRunText(JDBCAdapter adapter) {
 		String result = text; 
 		runValues = new ArrayList<>();
 		if(null == variables){

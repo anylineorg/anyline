@@ -56,6 +56,8 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
 
     private boolean updateNullColumn            = ConfigTable.IS_UPDATE_NULL_COLUMN;
     private boolean updateEmptyColumn           = ConfigTable.IS_UPDATE_EMPTY_COLUMN;
+    private boolean insertNullColumn            = ConfigTable.IS_INSERT_NULL_COLUMN;
+    private boolean insertEmptyColumn           = ConfigTable.IS_INSERT_EMPTY_COLUMN;
 
     /*
      * 相当于Class Name 如User/Department
@@ -72,9 +74,9 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     private String dataSource                   = null                  ; // 数据源(表|视图|XML定义SQL)
     private String schema                       = null                  ; // schema
     private String table                        = null                  ; // table
-    private DataRow attributes                  = new DataRow()         ; // 属性
-    private DataRow tags                        = new DataRow()         ; // 标签
-    private DataRow relations                   = new DataRow()         ; // 对外关系
+    private DataRow attributes                  = null                  ; // 属性
+    private DataRow tags                        = null                  ; // 标签
+    private DataRow relations                   = null                  ; // 对外关系
     private long createTime                     = 0                     ; // 创建时间(毫秒)
     private long nanoTime                       = 0                     ; // 创建时间(纳秒)
     private long expires                        = -1                    ; // 过期时间(毫秒) 从创建时刻计时expires毫秒后过期
@@ -1038,16 +1040,25 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
         return this;
     }
     public DataRow addRelation(DataRow relation) {
+        if(null == relations){
+            relations = new DataRow();
+        }
         this.relations.put(relation.getCategory(), relation);
         return this;
     }
     public DataRow addRelation(String relation) {
+        if(null == relations){
+            relations = new DataRow();
+        }
         DataRow row = new DataRow();
         row.setCategory(relation);
         this.relations.put(relation, row);
         return this;
     }
     public DataRow getRelation(String key){
+        if(null == relations){
+            relations = new DataRow();
+        }
         return (DataRow)relations.get(key);
     }
 
@@ -1338,43 +1349,70 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     }
 
     public DataRow attr(String key, Object value) {
+        if(null == attributes){
+            attributes = new DataRow();
+        }
         attributes.put(key, value);
         return this;
     }
 
     public DataRow setAttribute(String key, Object value) {
+        if(null == attributes){
+            attributes = new DataRow();
+        }
         attributes.put(key, value);
         return this;
     }
 
     public Object attr(String key) {
+        if(null == attributes){
+            attributes = new DataRow();
+        }
         return attributes.get(key);
     }
 
     public Object getAttribute(String key) {
+        if(null == attributes){
+            attributes = new DataRow();
+        }
         return attributes.get(key);
     }
 
 
     public DataRow tag(String key, Object value) {
+        if(null == tags){
+            tags = new DataRow();
+        }
         tags.put(key, value);
         return this;
     }
 
     public DataRow setTag(String key, Object value) {
+        if(null == tags){
+            tags = new DataRow();
+        }
         tags.put(key, value);
         return this;
     }
 
     public Object tag(String key) {
+        if(null == tags){
+            tags = new DataRow();
+        }
         return tags.get(key);
     }
 
     public Object getTag(String key) {
+        if(null == tags){
+            tags = new DataRow();
+        }
         return tags.get(key);
     }
 
     public Map<String,Object> getTags(){
+        if(null == tags){
+            tags = new DataRow();
+        }
         return tags;
     }
 
@@ -2250,6 +2288,22 @@ public class DataRow extends LinkedHashMap<String, Object> implements Serializab
     public DataRow setUpdateEmptyColumn(boolean updateEmptyColumn) {
         this.updateEmptyColumn = updateEmptyColumn;
         return this;
+    }
+
+    public boolean isInsertNullColumn() {
+        return insertNullColumn;
+    }
+
+    public void setInsertNullColumn(boolean insertNullColumn) {
+        this.insertNullColumn = insertNullColumn;
+    }
+
+    public boolean isInsertEmptyColumn() {
+        return insertEmptyColumn;
+    }
+
+    public void setInsertEmptyColumn(boolean insertEmptyColumn) {
+        this.insertEmptyColumn = insertEmptyColumn;
     }
 
     /**

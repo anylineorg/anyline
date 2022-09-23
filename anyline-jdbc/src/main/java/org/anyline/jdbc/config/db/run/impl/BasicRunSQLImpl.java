@@ -23,6 +23,7 @@ import org.anyline.entity.Order;
 import org.anyline.entity.OrderStore;
 import org.anyline.entity.OrderStoreImpl;
 import org.anyline.entity.PageNavi;
+import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.config.ConfigParser;
 import org.anyline.jdbc.config.ConfigStore;
 import org.anyline.jdbc.config.ParseResult;
@@ -67,12 +68,12 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	protected List<String> updateColumns;
 	 
 	 
-	protected SQLAdapter adapter;
+	protected JDBCAdapter adapter;
 	protected String delimiterFr;
 	protected String delimiterTo;
 	protected static AnylineService service;
 	 
-	public void setCreater(SQLAdapter adapter){
+	public void setCreater(JDBCAdapter adapter){
 		this.adapter = adapter; 
 	}
 
@@ -263,7 +264,7 @@ public abstract class BasicRunSQLImpl implements RunSQL {
 	public void setDelimiterTo(String delimiterTo) {
 		this.delimiterTo = delimiterTo;
 	} 
-	public SQLAdapter getAdapter() {
+	public JDBCAdapter getAdapter() {
 		return adapter;
 	} 
  
