@@ -29,15 +29,15 @@ import org.anyline.entity.PageNavi;
 import org.anyline.exception.AnylineException;
 import org.anyline.exception.SQLQueryException;
 import org.anyline.exception.SQLUpdateException;
-import org.anyline.jdbc.config.ConfigParser;
-import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.db.Procedure;
-import org.anyline.jdbc.config.db.SQL;
 import org.anyline.jdbc.adapter.JDBCAdapter;
-import org.anyline.jdbc.config.db.impl.ProcedureParam;
-import org.anyline.jdbc.config.db.run.RunSQL;
-import org.anyline.jdbc.config.db.sql.auto.TableSQL;
-import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
+import org.anyline.jdbc.param.ConfigParser;
+import org.anyline.jdbc.param.ConfigStore;
+import org.anyline.jdbc.prepare.Procedure;
+import org.anyline.jdbc.prepare.RunPrepare;
+import org.anyline.jdbc.prepare.simple.ProcedureParam;
+import org.anyline.jdbc.run.Run;
+import org.anyline.jdbc.prepare.sql.auto.TableSQL;
+import org.anyline.jdbc.prepare.sql.auto.impl.TableSQLImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
 import org.anyline.jdbc.util.SQLAdapterUtil;
@@ -103,10 +103,10 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * 查询
 	 */
 	@Override
-	public List<Map<String,Object>> maps(SQL sql, ConfigStore configs, String ... conditions) {
+	public List<Map<String,Object>> maps(RunPrepare sql, ConfigStore configs, String ... conditions) {
 		List<Map<String,Object>> maps = null;
 		try {
-			RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
@@ -115,7 +115,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				} else {
 					src = sql.getText();
 				}
-				tmp += "[SQL:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
 				log.warn(tmp);
 			}
 			if (run.isValid()) {
@@ -137,17 +137,17 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return maps;
 	}
-	public List<Map<String,Object>> maps(SQL sql, String ... conditions){
+	public List<Map<String,Object>> maps(RunPrepare sql, String ... conditions){
 		return maps(sql, null, conditions);
 	}
 	/**
 	 * 查询
 	 */
 	@Override
-	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions) {
+	public DataSet querys(RunPrepare sql, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		try {
-			RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
@@ -156,7 +156,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				} else {
 					src = sql.getText();
 				}
-				tmp += "[SQL:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
 				log.warn(tmp);
 			}
 			PageNavi navi = run.getPageNavi();
@@ -218,14 +218,14 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
 		EntitySet<T> list = null;
 		try {
-			SQL sql = new TableSQLImpl();
+			RunPrepare sql = new TableSQLImpl();
 			if(AdapterProxy.hasAdapter()){
 				sql.setDataSource(AdapterProxy.table(clazz));
 			}
-			RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
-				tmp += "[SQL:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
+				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
 				log.warn(tmp);
 			}
 			PageNavi navi = run.getPageNavi();
@@ -280,7 +280,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return list;
 	}
 
-	public DataSet querys(SQL sql, String ... conditions){
+	public DataSet querys(RunPrepare sql, String ... conditions){
 		return querys(sql, null, conditions);
 	}
 
@@ -288,16 +288,16 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * 查询
 	 */
 	@Override
-	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions) {
+	public DataSet selects(RunPrepare sql, ConfigStore configs, String ... conditions) {
 		return querys(sql, configs, conditions);
 	}
-	public DataSet selects(SQL sql, String ... conditions){
+	public DataSet selects(RunPrepare sql, String ... conditions){
 		return querys(sql, null, conditions);
 	}
-	public int count(SQL sql, ConfigStore configs, String ... conditions){
+	public int count(RunPrepare sql, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try{
-			RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			if(null != listener){
 				listener.beforeCount(this,run);
 			}
@@ -313,13 +313,13 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return count;
 	}
-	public int count(SQL sql, String ... conditions){
+	public int count(RunPrepare sql, String ... conditions){
 		return count(sql, null, conditions);
 	}
-	public boolean exists(SQL sql, ConfigStore configs, String ... conditions){
+	public boolean exists(RunPrepare sql, ConfigStore configs, String ... conditions){
 		boolean result = false;
 		try {
-			RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
 			String txt = run.getExistsTxt();
 			List<Object> values = run.getValues();
 
@@ -367,7 +367,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	public boolean exists(SQL sql, String ... conditions){
+	public boolean exists(RunPrepare sql, String ... conditions){
 		return exists(sql, null, conditions);
 	}
 	/**
@@ -402,7 +402,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 			return result;
 		}
-		RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).createUpdateTxt(dest, obj, false, columns);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).createUpdateTxt(dest, obj, false, columns);
 		String sql = run.getUpdateTxt();
 		if(BasicUtil.isEmpty(sql)){
 			log.warn("[不具备更新条件][dest:{}]",dest);
@@ -525,7 +525,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 */
 	@Override
 	public int insert(String dest, Object data, boolean checkParimary, String ... columns){
-		RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildInsertTxt(dest, data, checkParimary, columns);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildInsertTxt(dest, data, checkParimary, columns);
 		if(null == run){
 			return 0;
 		}
@@ -827,9 +827,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return set;
 	}
 	@Override
-	public int execute(SQL sql, ConfigStore configs, String ... conditions){
+	public int execute(RunPrepare sql, ConfigStore configs, String ... conditions){
 		int result = -1;
-		RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildExecuteRunSQL(sql, configs, conditions);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildExecuteRunSQL(sql, configs, conditions);
 		if(!run.isValid()){
 			if(showSQL){
 				log.warn("[valid:false]");
@@ -881,7 +881,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return result;
 	}
 	@Override
-	public int execute(SQL sql, String ... conditions){
+	public int execute(RunPrepare sql, String ... conditions){
 		return execute(sql, null, conditions);
 	}
 
@@ -1126,7 +1126,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	}
 
 	public int deletes(String table, String key, Collection<Object> values){
-		RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(table, key, values);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(table, key, values);
 		int result = exeDelete(run);
 		return result;
 	}
@@ -1137,7 +1137,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				list.add(value);
 			}
 		}
-		RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(table, key, list);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(table, key, list);
 		int result = exeDelete(run);
 		return result;
 	}
@@ -1151,7 +1151,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 					size += delete(dest, item, columns);
 				}
 			}else{
-				RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(dest, obj, columns);
+				Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(dest, obj, columns);
 				size = exeDelete(run);
 
 			}
@@ -1161,12 +1161,12 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	@Override
 	public int delete(String table, ConfigStore configs, String... conditions) {
-		RunSQL run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(table, configs, conditions);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildDeleteRunSQL(table, configs, conditions);
 		int result = exeDelete(run);
 		return result;
 	}
 
-	protected int exeDelete(RunSQL run){
+	protected int exeDelete(Run run){
 		int result = 0;
 		final String sql = run.getDeleteTxt();
 		final List<Object> values = run.getValues();
@@ -2709,7 +2709,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 
 	private static String random(){
 		StringBuilder builder = new StringBuilder();
-		builder.append("[SQL:").append(System.currentTimeMillis()).append("-").append(LogUtil.format(BasicUtil.getRandomNumberString(8), 34))
+		builder.append("[RunPrepare:").append(System.currentTimeMillis()).append("-").append(LogUtil.format(BasicUtil.getRandomNumberString(8), 34))
 				.append("][thread:")
 				.append(Thread.currentThread().getId()).append("][ds:").append(DataSourceHolder.getDataSource()).append("]");
 		return builder.toString();

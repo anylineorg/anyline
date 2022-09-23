@@ -21,11 +21,10 @@ package org.anyline.web.controller;
 
 import org.anyline.entity.*;
 import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
-import org.anyline.jdbc.config.ConfigParser;
-import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.ParseResult;
-import org.anyline.jdbc.config.TableBuilder;
-import org.anyline.jdbc.config.impl.ConfigStoreImpl;
+import org.anyline.jdbc.param.ConfigParser;
+import org.anyline.jdbc.param.ConfigStore;
+import org.anyline.jdbc.param.ParseResult;
+import org.anyline.jdbc.param.simple.ConfigStoreImpl;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.web.util.WebUtil;

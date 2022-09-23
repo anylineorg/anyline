@@ -7,8 +7,8 @@ import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.adapter.SQLAdapter;
-import org.anyline.jdbc.config.db.run.RunSQL;
-import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
+import org.anyline.jdbc.run.Run;
+import org.anyline.jdbc.prepare.sql.auto.impl.TextSQLImpl;
 import org.anyline.jdbc.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;
@@ -76,12 +76,12 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 	 * ****************************************************************************************************/
 	/** 
 	 * 查询SQL 
-	 * RunSQL 反转调用 
+	 * Run 反转调用
 	 * @param run  run
 	 * @return String
 	 */ 
 	@Override 
-	public String parseFinalQueryTxt(RunSQL run){ 
+	public String parseFinalQueryTxt(Run run){
 		StringBuilder builder = new StringBuilder(); 
 		String cols = run.getFetchColumns(); 
 		PageNavi navi = run.getPageNavi(); 
@@ -145,7 +145,7 @@ public class MSSQLAdapter extends SQLAdapter implements JDBCAdapter, Initializin
 		 
 	} 
 	@Override 
-	public String parseExistsTxt(RunSQL run){ 
+	public String parseExistsTxt(Run run){
 		String sql = "IF EXISTS(\n" + run.getBuilder().toString() +"\n) SELECT 1 AS IS_EXISTS ELSE SELECT 0 AS IS_EXISTS"; 
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE"); 
 		return sql; 

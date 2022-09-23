@@ -22,9 +22,9 @@ package org.anyline.dao;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.db.Procedure;
-import org.anyline.jdbc.config.db.SQL;
+import org.anyline.jdbc.param.ConfigStore;
+import org.anyline.jdbc.prepare.Procedure;
+import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.entity.*;
 
 import java.util.Collection;
@@ -39,21 +39,21 @@ public interface AnylineDao<E>{
 	 * 													DML
 	 *
 	 ******************************************************************************************************************/
-	public DataSet querys(SQL sql, ConfigStore configs, String ... conditions);
+	public DataSet querys(RunPrepare sql, ConfigStore configs, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public DataSet querys(SQL sql, String ... conditions);
-	public DataSet selects(SQL sql, ConfigStore configs, String ... conditions);
-	public DataSet selects(SQL sql, String ... conditions);
+	public DataSet querys(RunPrepare sql, String ... conditions);
+	public DataSet selects(RunPrepare sql, ConfigStore configs, String ... conditions);
+	public DataSet selects(RunPrepare sql, String ... conditions);
 
 
-	public List<Map<String,Object>> maps(SQL sql, ConfigStore configs, String ... conditions);
-	public List<Map<String,Object>> maps(SQL sql, String ... conditions);
+	public List<Map<String,Object>> maps(RunPrepare sql, ConfigStore configs, String ... conditions);
+	public List<Map<String,Object>> maps(RunPrepare sql, String ... conditions);
 
-	public int count(SQL sql, ConfigStore configs, String ... conditions);
-	public int count(SQL sql, String ... conditions);
+	public int count(RunPrepare sql, ConfigStore configs, String ... conditions);
+	public int count(RunPrepare sql, String ... conditions);
 	
-	public boolean exists(SQL sql, ConfigStore configs, String ... conditions);
-	public boolean exists(SQL sql, String ... conditions);
+	public boolean exists(RunPrepare sql, ConfigStore configs, String ... conditions);
+	public boolean exists(RunPrepare sql, String ... conditions);
 	/** 
 	 * 更新 
 	 * @param	columns  需要更新的列 
@@ -96,8 +96,8 @@ public interface AnylineDao<E>{
 	public int save(Object data, String ... columns); 
  
 
-	public int execute(SQL sql, ConfigStore configs, String ... conditions);
-	public int execute(SQL sql, String ... conditions);
+	public int execute(RunPrepare sql, ConfigStore configs, String ... conditions);
+	public int execute(RunPrepare sql, String ... conditions);
 
  
 	/** 

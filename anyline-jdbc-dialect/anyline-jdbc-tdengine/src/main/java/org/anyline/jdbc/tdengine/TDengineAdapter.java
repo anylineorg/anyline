@@ -6,7 +6,7 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.adapter.SQLAdapter;
-import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
@@ -50,7 +50,7 @@ public class TDengineAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 ******************************************************************************************************************/
 
 	@Override 
-	public String parseFinalQueryTxt(RunSQL run){ 
+	public String parseFinalQueryTxt(Run run){
 		String sql = run.getBaseQueryTxt(); 
 		String cols = run.getFetchColumns(); 
 		if(!"*".equals(cols)){ 

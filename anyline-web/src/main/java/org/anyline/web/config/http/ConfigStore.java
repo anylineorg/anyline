@@ -27,7 +27,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author zh 
  * 
  */ 
-public interface ConfigStore extends org.anyline.jdbc.config.ConfigStore{ 
+public interface ConfigStore extends org.anyline.jdbc.param.ConfigStore {
 	public ConfigStore setValue(HttpServletRequest request); 
 } 
  

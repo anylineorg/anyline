@@ -23,7 +23,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.anyline.jdbc.config.Config;
+import org.anyline.jdbc.param.Config;
 import org.anyline.web.config.http.ConfigStore;
 
 
@@ -32,7 +32,7 @@ import org.anyline.web.config.http.ConfigStore;
  * @author zh 
  * 
  */ 
-public class ConfigStoreImpl extends org.anyline.jdbc.config.impl.ConfigStoreImpl implements ConfigStore{
+public class ConfigStoreImpl extends org.anyline.jdbc.param.simple.ConfigStoreImpl implements ConfigStore{
 	@Override 
 	public ConfigStore setValue(HttpServletRequest request){
 		if(null == chain){ 

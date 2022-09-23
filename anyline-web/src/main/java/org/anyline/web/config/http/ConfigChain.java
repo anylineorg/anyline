@@ -21,6 +21,6 @@ package org.anyline.web.config.http;
  
 import javax.servlet.http.HttpServletRequest;
  
-public interface ConfigChain extends org.anyline.jdbc.config.ConfigChain{
+public interface ConfigChain extends org.anyline.jdbc.param.ConfigChain {
 	public void setValue(HttpServletRequest request); 
 }

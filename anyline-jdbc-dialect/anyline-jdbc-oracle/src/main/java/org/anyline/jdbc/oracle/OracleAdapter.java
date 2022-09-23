@@ -8,7 +8,7 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.adapter.SQLAdapter;
-import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.entity.*;
 import org.anyline.util.*;
 import org.springframework.beans.factory.InitializingBean;
@@ -56,7 +56,7 @@ public class OracleAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 *
 	 *  *****************************************************************************************************************/
 	@Override 
-	public String parseFinalQueryTxt(RunSQL run){ 
+	public String parseFinalQueryTxt(Run run){
 		StringBuilder builder = new StringBuilder(); 
 		String cols = run.getFetchColumns(); 
 		PageNavi navi = run.getPageNavi(); 

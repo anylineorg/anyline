@@ -21,7 +21,7 @@ package org.anyline.web.config.http;
  
 import javax.servlet.http.HttpServletRequest;
  
-public interface Config extends org.anyline.jdbc.config.Config{ 
+public interface Config extends org.anyline.jdbc.param.Config {
 	/** 
 	 * 赋值 
 	 * @param request  request

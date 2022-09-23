@@ -4,10 +4,10 @@ package org.anyline.jdbc.postgresql;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
-import org.anyline.jdbc.config.db.RunValue;
 import org.anyline.jdbc.adapter.JDBCAdapter;
+import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.adapter.SQLAdapter;
-import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.entity.*;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.SQLUtil;
@@ -47,7 +47,7 @@ public class PostgresqlAdapter extends SQLAdapter implements JDBCAdapter, Initia
 	 *
 	 *  *****************************************************************************************************************/
 	@Override 
-	public String parseFinalQueryTxt(RunSQL run){ 
+	public String parseFinalQueryTxt(Run run){
 		String sql = run.getBaseQueryTxt(); 
 		String cols = run.getFetchColumns(); 
 		if(!"*".equals(cols)){ 

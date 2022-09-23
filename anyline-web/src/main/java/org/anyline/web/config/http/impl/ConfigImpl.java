@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.anyline.web.config.http.Config;
 import org.anyline.web.util.WebUtil;
  
-public class ConfigImpl extends org.anyline.jdbc.config.impl.ConfigImpl implements Config{
+public class ConfigImpl extends org.anyline.jdbc.param.simple.ConfigImpl implements Config{
 
 	@Override
 	public void setValue(HttpServletRequest request) {

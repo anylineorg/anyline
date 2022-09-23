@@ -19,9 +19,9 @@ package org.anyline.cache;
 
 import org.anyline.entity.DataRow;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.Config;
-import org.anyline.jdbc.config.ConfigChain;
-import org.anyline.jdbc.config.ConfigStore;
+import org.anyline.jdbc.param.Config;
+import org.anyline.jdbc.param.ConfigChain;
+import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.entity.OrderStore;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.ConfigTable;

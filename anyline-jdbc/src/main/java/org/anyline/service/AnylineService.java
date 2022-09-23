@@ -23,9 +23,9 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.db.Procedure;
-import org.anyline.jdbc.config.db.SQL;
+import org.anyline.jdbc.param.ConfigStore;
+import org.anyline.jdbc.prepare.Procedure;
+import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.entity.*;
 
 import java.util.Collection;
@@ -45,7 +45,7 @@ public interface AnylineService<E>{
 	 * BATCH INSERT		: 批量插入
 	 * UPDATE			: 更新
 	 * SAVE				: 根据情况插入或更新
-	 * QUERY			: 查询(SQL/XML/TABLE/VIEW/PROCEDURE)
+	 * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
 	 * EXISTS			: 是否存在
 	 * COUNT			: 统计
 	 * EXECUTE			: 执行(原生SQL及存储过程)
@@ -343,30 +343,30 @@ public interface AnylineService<E>{
 
 
 	/*多表查询,左右连接时使用*/
-	public DataSet querys(SQL sql, ConfigStore configs, Object obj, String ... conditions);
-	public DataSet querys(SQL sql, Object obj, String ... conditions);
-	public DataSet querys(SQL sql, int first, int last, Object obj, String ... conditions);
-	public DataRow query(SQL sql, ConfigStore configs, Object obj, String ... conditions);
-	public DataRow query(SQL sql, Object obj, String ... conditions);
+	public DataSet querys(RunPrepare sql, ConfigStore configs, Object obj, String ... conditions);
+	public DataSet querys(RunPrepare sql, Object obj, String ... conditions);
+	public DataSet querys(RunPrepare sql, int first, int last, Object obj, String ... conditions);
+	public DataRow query(RunPrepare sql, ConfigStore configs, Object obj, String ... conditions);
+	public DataRow query(RunPrepare sql, Object obj, String ... conditions);
 
-	public DataSet querys(SQL sql, ConfigStore configs,  String ... conditions);
-	public DataSet querys(SQL sql,  String ... conditions);
-	public DataSet querys(SQL sql, int first, int last,  String ... conditions);
-	public DataRow query(SQL sql, ConfigStore configs,  String ... conditions);
-	public DataRow query(SQL sql, String ... conditions);
+	public DataSet querys(RunPrepare sql, ConfigStore configs,  String ... conditions);
+	public DataSet querys(RunPrepare sql,  String ... conditions);
+	public DataSet querys(RunPrepare sql, int first, int last,  String ... conditions);
+	public DataRow query(RunPrepare sql, ConfigStore configs,  String ... conditions);
+	public DataRow query(RunPrepare sql, String ... conditions);
 
 
-	public DataSet caches(String cache, SQL sql, ConfigStore configs, Object obj, String ... conditions);
-	public DataSet caches(String cache, SQL sql, Object obj, String ... conditions);
-	public DataSet caches(String cache, SQL sql, int first, int last, Object obj, String ... conditions);
-	public DataRow cache(String cache, SQL sql, ConfigStore configs, Object obj, String ... conditions);
-	public DataRow cache(String cache, SQL sql, Object obj, String ... conditions);
+	public DataSet caches(String cache, RunPrepare sql, ConfigStore configs, Object obj, String ... conditions);
+	public DataSet caches(String cache, RunPrepare sql, Object obj, String ... conditions);
+	public DataSet caches(String cache, RunPrepare sql, int first, int last, Object obj, String ... conditions);
+	public DataRow cache(String cache, RunPrepare sql, ConfigStore configs, Object obj, String ... conditions);
+	public DataRow cache(String cache, RunPrepare sql, Object obj, String ... conditions);
 
-	public DataSet caches(String cache, SQL sql, ConfigStore configs, String ... conditions);
-	public DataSet caches(String cache, SQL sql, String ... conditions);
-	public DataSet caches(String cache, SQL sql, int first, int last, String ... conditions);
-	public DataRow cache(String cache, SQL sql, ConfigStore configs, String ... conditions);
-	public DataRow cache(String cache, SQL sql, String ... conditions);
+	public DataSet caches(String cache, RunPrepare sql, ConfigStore configs, String ... conditions);
+	public DataSet caches(String cache, RunPrepare sql, String ... conditions);
+	public DataSet caches(String cache, RunPrepare sql, int first, int last, String ... conditions);
+	public DataRow cache(String cache, RunPrepare sql, ConfigStore configs, String ... conditions);
+	public DataRow cache(String cache, RunPrepare sql, String ... conditions);
 
 	/**
 	 * 删除缓存 参数保持与查询参数完全一致

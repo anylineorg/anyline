@@ -21,32 +21,31 @@ package org.anyline.web.config.http.impl;
  
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.anyline.jdbc.config.Config;
-import org.anyline.jdbc.config.ConfigChain;
-import org.anyline.jdbc.config.db.Condition;
-import org.anyline.jdbc.config.db.ConditionChain;
-import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.sql.auto.impl.AutoConditionChainImpl;
+import org.anyline.jdbc.param.Config;
+import org.anyline.jdbc.param.ConfigChain;
+import org.anyline.jdbc.prepare.Condition;
+import org.anyline.jdbc.prepare.ConditionChain;
+import org.anyline.jdbc.prepare.RunPrepare;
+import org.anyline.jdbc.prepare.sql.auto.impl.AutoConditionChainImpl;
 import org.anyline.util.BasicUtil;
 
 public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.config.http.ConfigChain{ 
 	private List<Config> configs = new ArrayList<Config>();
 
 	public Config getConfig(String prefix, String var){
-		return getConfig(prefix, var, SQL.COMPARE_TYPE.EQUAL);
+		return getConfig(prefix, var, RunPrepare.COMPARE_TYPE.EQUAL);
 	}
-	public Config getConfig(String prefix, String var, SQL.COMPARE_TYPE type){
+	public Config getConfig(String prefix, String var, RunPrepare.COMPARE_TYPE type){
 		if(BasicUtil.isEmpty(prefix, var)){
 			return null;
 		}
 		for(Config conf: configs){
 			String confId = conf.getPrefix();
 			String confVar = conf.getVariable();
-			SQL.COMPARE_TYPE confType = conf.getCompare();
+			RunPrepare.COMPARE_TYPE confType = conf.getCompare();
 			if(BasicUtil.isEmpty(prefix)){
 				//只提供列名,不提供表名
 				if(var.equalsIgnoreCase(confVar) && type == confType){
@@ -71,7 +70,7 @@ public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.confi
 		Config config = getConfig(prefix, var);
 		return removeConfig(config);
 	}
-	public ConfigChain removeConfig(String key, String var, SQL.COMPARE_TYPE type){
+	public ConfigChain removeConfig(String key, String var, RunPrepare.COMPARE_TYPE type){
 		Config config = getConfig(key, var, type);
 		return removeConfig(config);
 	}

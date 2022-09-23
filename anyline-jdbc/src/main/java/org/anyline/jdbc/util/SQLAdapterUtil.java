@@ -78,41 +78,41 @@ public class SQLAdapterUtil {
 			return adapter;
 		}
 		if(name.contains("mysql")){
-			adapter = adapters.get(JDBCAdapter.DB_TYPE.MYSQL.getCode());
+			adapter = adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.MYSQL.getCode());
 		}else if(name.contains("mssql") || name.contains("sqlserver")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.MSSQL.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.MSSQL.getCode());
 		}else if(name.contains("oracle")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.ORACLE.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.ORACLE.getCode());
 		}else if(name.contains("postgresql")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.PostgreSQL.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.PostgreSQL.getCode());
 		}
 
 		else if(name.contains("clickhouse")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.ClickHouse.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.ClickHouse.getCode());
 		}else if(name.contains("db2")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.DB2.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.DB2.getCode());
 		}else if(name.contains("derby")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.Derby.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.Derby.getCode());
 		}else if(name.contains("dmdbms")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.DM.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.DM.getCode());
 		}else if(name.contains("hgdb") || name.contains("highgo")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.HighGo.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.HighGo.getCode());
 		}else if(name.contains("kingbase")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.KingBase.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.KingBase.getCode());
 		}else if(name.contains("oceanbase")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.OceanBase.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.OceanBase.getCode());
 		}else if(name.contains("polardb")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.PolarDB.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.PolarDB.getCode());
 		}else if(name.contains("sqlite")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.SQLite.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.SQLite.getCode());
 		}else if(name.contains(":h2:")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.H2.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.H2.getCode());
 		}else if(name.contains("hsqldb")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.HSQLDB.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.HSQLDB.getCode());
 		}else if(name.contains("taos")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.TDengine.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.TDengine.getCode());
 		}else if(name.contains("neo4j")){
-			adapter =  adapters.get(JDBCAdapter.DB_TYPE.Neo4j.getCode());
+			adapter =  adapters.get(org.anyline.jdbc.adapter.JDBCAdapter.DB_TYPE.Neo4j.getCode());
 		}
 		adapters.put(name, adapter);
 		return adapter;

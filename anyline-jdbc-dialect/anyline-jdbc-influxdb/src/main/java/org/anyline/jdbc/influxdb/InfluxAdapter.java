@@ -7,8 +7,8 @@ import org.anyline.entity.OrderStore;
 import org.anyline.entity.PageNavi;
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.adapter.SQLAdapter;
-import org.anyline.jdbc.config.db.run.RunSQL;
-import org.anyline.jdbc.config.db.run.impl.TableRunSQLImpl;
+import org.anyline.jdbc.run.Run;
+import org.anyline.jdbc.run.sql.TableRunSQLImpl;
 import org.anyline.util.BasicUtil;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +41,7 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQueryTxt(RunSQL run){ 
+	public String parseFinalQueryTxt(Run run){
 		String sql = run.getBaseQueryTxt(); 
 		String cols = run.getFetchColumns(); 
 		if(!"*".equals(cols)){ 
@@ -70,8 +70,8 @@ public class InfluxAdapter extends SQLAdapter implements JDBCAdapter, Initializi
 	}
 
 
-	public RunSQL buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
-		RunSQL run = null;
+	public Run buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
+		Run run = null;
 		if(null != obj){
 			StringBuilder builder = new StringBuilder();
 			run = new TableRunSQLImpl(this,dest);

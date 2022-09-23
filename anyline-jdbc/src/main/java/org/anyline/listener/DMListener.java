@@ -20,8 +20,8 @@ package org.anyline.listener;
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.DataSet;
 import org.anyline.entity.EntitySet;
-import org.anyline.jdbc.config.db.Procedure;
-import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.prepare.Procedure;
+import org.anyline.jdbc.run.Run;
 
 import java.util.List;
 
@@ -32,62 +32,62 @@ public interface DMListener {
      * @param dao dao
      * @param run sql
      */
-    public void beforeTotal(AnylineDao dao, RunSQL run);
+    public void beforeTotal(AnylineDao dao, Run run);
     /**
      * 统计总记录数之后调用
      * @param dao dao
      * @param run sql
      * @param total total
      */
-    public void afterTotal(AnylineDao dao, RunSQL run, int total);
+    public void afterTotal(AnylineDao dao, Run run, int total);
     /**
      * 查询之前调用
      * @param dao dao
      * @param run sql
      */
-    public void beforeQuery(AnylineDao dao, RunSQL run);
+    public void beforeQuery(AnylineDao dao, Run run);
     /**
      * 查询之后调用(调用service.map或service.maps)
      * @param dao dao
      * @param run sql
      * @param maps 查询结果
      */
-    public void afterQuery(AnylineDao dao, RunSQL run, List<?>  maps);
-    public void afterQuery(AnylineDao dao, RunSQL run, EntitySet<?> maps);
+    public void afterQuery(AnylineDao dao, Run run, List<?>  maps);
+    public void afterQuery(AnylineDao dao, Run run, EntitySet<?> maps);
     /**
      * 查询之后调用(调用service.query或service.querys)
      * @param dao dao
      * @param run sql
      * @param set 查询结果
      */
-    public void afterQuery(AnylineDao dao, RunSQL run, DataSet set );
+    public void afterQuery(AnylineDao dao, Run run, DataSet set );
     /**
      * count之前调用
      * @param dao dao
      * @param run sql
      */
-    public void beforeCount(AnylineDao dao, RunSQL run);
+    public void beforeCount(AnylineDao dao, Run run);
     /**
      * count之后调用
      * @param dao dao
      * @param run sql
      * @param count count
      */
-    public void afterCount(AnylineDao dao, RunSQL run, int count);
+    public void afterCount(AnylineDao dao, Run run, int count);
 
     /**
      * 判断是否存在之前调用
      * @param dao dao
      * @param run sql
      */
-    public void beforeExists(AnylineDao dao, RunSQL run);
+    public void beforeExists(AnylineDao dao, Run run);
     /**
      * 判断是否存在之后调用
      * @param dao dao
      * @param run sql
      * @param exists 是否存在
      */
-    public void afterExists(AnylineDao dao, RunSQL run, boolean exists);
+    public void afterExists(AnylineDao dao, Run run, boolean exists);
 
     /**
      * 更新之前调用
@@ -98,7 +98,7 @@ public interface DMListener {
      * @param columns 需要更新的列
      * @return 是否执行  如果返回false 将不执行更新
      */
-    public boolean beforeUpdate(AnylineDao dao, RunSQL run, String dest, Object obj, String ... columns);
+    public boolean beforeUpdate(AnylineDao dao, Run run, String dest, Object obj, String ... columns);
     /**
      * 更新之前调用
      * @param dao dao
@@ -108,7 +108,7 @@ public interface DMListener {
      * @param obj 更新内容
      * @param columns 需要更新的列
      */
-    public void afterUpdate(AnylineDao dao, RunSQL run,int count, String dest, Object obj, String ... columns);
+    public void afterUpdate(AnylineDao dao, Run run, int count, String dest, Object obj, String ... columns);
 
     /**
      * 插入之前调用
@@ -120,7 +120,7 @@ public interface DMListener {
      * @param columns 需要插入的列
      * @return 是否执行  如果返回false 将不执行插入
      */
-    public boolean beforeInsert(AnylineDao dao, RunSQL run, String dest, Object obj, boolean checkParimary, String ... columns);
+    public boolean beforeInsert(AnylineDao dao, Run run, String dest, Object obj, boolean checkParimary, String ... columns);
 
     /**
      * 插入之后调用
@@ -132,7 +132,7 @@ public interface DMListener {
      * @param checkParimary 是否需要检测主键
      * @param columns 需要插入的列
      */
-    public void afterInsert(AnylineDao dao, RunSQL run,int count, String dest, Object obj, boolean checkParimary, String ... columns);
+    public void afterInsert(AnylineDao dao, Run run, int count, String dest, Object obj, boolean checkParimary, String ... columns);
 
     /**
      * 批量插入前调用
@@ -161,7 +161,7 @@ public interface DMListener {
      * @param run sql
      * @return 是否执行 如果返回false装不执行sql
      */
-    public boolean beforeExecute(AnylineDao dao, RunSQL run);
+    public boolean beforeExecute(AnylineDao dao, Run run);
 
     /**
      * 执行SQL之后调用
@@ -169,7 +169,7 @@ public interface DMListener {
      * @param run sql
      * @param count 影响行数
      */
-    public void afterExecute(AnylineDao dao, RunSQL run, int count);
+    public void afterExecute(AnylineDao dao, Run run, int count);
 
     /**
      * 执行存储过程之前调用
@@ -208,7 +208,7 @@ public interface DMListener {
      * @param run sql
      * @return 是否执行 如果返回false装不执行删除
      */
-    public boolean beforeDelete(AnylineDao dao, RunSQL run);
+    public boolean beforeDelete(AnylineDao dao, Run run);
 
     /**
      * 执行删除后调用
@@ -216,5 +216,5 @@ public interface DMListener {
      * @param run sql
      * @param count 影响行数
      */
-    public void afterDelete(AnylineDao dao, RunSQL run, int count);
+    public void afterDelete(AnylineDao dao, Run run, int count);
 }

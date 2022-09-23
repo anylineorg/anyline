@@ -25,17 +25,17 @@ import org.anyline.entity.DataRow;
 import org.anyline.entity.DataSet;
 import org.anyline.exception.SQLException;
 import org.anyline.exception.SQLUpdateException;
-import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.db.RunValue;
-import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.run.RunSQL;
-import org.anyline.jdbc.config.db.run.impl.TableRunSQLImpl;
-import org.anyline.jdbc.config.db.run.impl.TextRunSQLImpl;
-import org.anyline.jdbc.config.db.run.impl.XMLRunSQLImpl;
-import org.anyline.jdbc.config.db.sql.auto.TableSQL;
-import org.anyline.jdbc.config.db.sql.auto.TextSQL;
-import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
-import org.anyline.jdbc.config.db.sql.xml.XMLSQL;
+import org.anyline.jdbc.param.ConfigStore;
+import org.anyline.jdbc.prepare.RunPrepare;
+import org.anyline.jdbc.run.RunValue;
+import org.anyline.jdbc.run.Run;
+import org.anyline.jdbc.run.sql.TableRunSQLImpl;
+import org.anyline.jdbc.run.sql.TextRunSQLImpl;
+import org.anyline.jdbc.run.sql.XMLRunSQLImpl;
+import org.anyline.jdbc.prepare.sql.auto.TableSQL;
+import org.anyline.jdbc.prepare.sql.auto.TextSQL;
+import org.anyline.jdbc.prepare.sql.auto.impl.TableSQLImpl;
+import org.anyline.jdbc.prepare.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
 import org.anyline.service.AnylineService;
@@ -112,7 +112,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	 * INSERT			: 插入
 	 * UPDATE			: 更新
 	 * SAVE				: 根据情况插入或更新
-	 * QUERY			: 查询(SQL/XML/TABLE/VIEW/PROCEDURE)
+	 * QUERY			: 查询(RunPrepare/XML/TABLE/VIEW/PROCEDURE)
 	 * EXISTS			: 是否存在
 	 * COUNT			: 统计
 	 * EXECUTE			: 执行(原生SQL及存储过程)
@@ -123,26 +123,26 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	/* *****************************************************************************************************************
 	 * 													INSERT
 	 * -----------------------------------------------------------------------------------------------------------------
-	 * public RunSQL buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns)
+	 * public Run buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns)
 	 * public void createInsertsTxt(StringBuilder builder, String dest, DataSet set,  List<String> keys)
 	 * public void createInsertsTxt(StringBuilder builder, String dest, Collection list,  List<String> keys)
 	 * public List<String> confirmInsertColumns(String dst, Object obj, String ... columns)
 	 * protected void insertValue(StringBuilder builder, Object obj, List<String> keys)
 	 *
-	 * protected RunSQL createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns)
-	 * protected RunSQL createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns)
+	 * protected Run createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns)
+	 * protected Run createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns)
 	 ******************************************************************************************************************/
 
 	/**
-	 * 创建INSERT SQL
+	 * 创建INSERT RunPrepare
 	 * @param dest 表
 	 * @param obj 实体
 	 * @param checkParimary 是否检测主键
 	 * @param columns 需要抛入的列 如果不指定  则根据实体属性解析
-	 * @return RunSQL
+	 * @return Run
 	 */
 	@Override
-	public RunSQL buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
+	public Run buildInsertTxt(String dest, Object obj, boolean checkParimary, String ... columns){
 		if(null == obj){
 			return null;
 		}
@@ -163,7 +163,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	}
 
 	/**
-	 * 根据DataSet创建批量INSERT SQL
+	 * 根据DataSet创建批量INSERT RunPrepare
 	 * @param builder builder
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param set 集合
@@ -204,7 +204,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	}
 
 	/**
-	 * 根据Collection创建批量INSERT SQL
+	 * 根据Collection创建批量INSERT RunPrepare
 	 * @param builder builder
 	 * @param dest 表 如果不指定则根据set解析
 	 * @param set 集合
@@ -397,15 +397,15 @@ public abstract class SQLAdapter implements JDBCAdapter {
 
 
 	/**
-	 * 根据entity创建 INSERT SQL
+	 * 根据entity创建 INSERT RunPrepare
 	 * @param dest
 	 * @param obj
 	 * @param checkParimary
 	 * @param columns
-	 * @return RunSQL
+	 * @return Run
 	 */
-	protected RunSQL createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl(this,dest);
+	protected Run createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
+		Run run = new TableRunSQLImpl(this,dest);
 		//List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
 		if(BasicUtil.isEmpty(dest)){
@@ -501,15 +501,15 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	}
 
 	/**
-	 * 根据collection创建 INSERT SQL
+	 * 根据collection创建 INSERT RunPrepare
 	 * @param dest 表
 	 * @param list 对象集合
 	 * @param checkParimary 是否检测主键
 	 * @param columns 需要插入的列，如果不指定则全部插入
-	 * @return RunSQL
+	 * @return Run
 	 */
-	protected RunSQL createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl(this,dest);
+	protected Run createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
+		Run run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		if(null == list || list.size() ==0){
 			throw new SQLException("空数据");
@@ -569,8 +569,8 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	 * 创建查询SQL 
 	 */ 
 	@Override 
-	public RunSQL buildQueryRunSQL(SQL sql, ConfigStore configs, String ... conditions){
-		RunSQL run = null; 
+	public Run buildQueryRunSQL(RunPrepare sql, ConfigStore configs, String ... conditions){
+		Run run = null;
 		if(sql instanceof TableSQL){ 
 			run = new TableRunSQLImpl(this,sql.getTable());
 		}else if(sql instanceof XMLSQL){ 
@@ -590,8 +590,8 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		return run; 
 	}
 	@Override
-	public RunSQL buildExecuteRunSQL(SQL sql, ConfigStore configs, String ... conditions){
-		RunSQL run = null;
+	public Run buildExecuteRunSQL(RunPrepare sql, ConfigStore configs, String ... conditions){
+		Run run = null;
 		if(sql instanceof XMLSQL){
 			run = new XMLRunSQLImpl();
 		}else if(sql instanceof TextSQL){
@@ -607,15 +607,15 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		return run;
 	}
 	@Override
-	public RunSQL buildDeleteRunSQL(String table, String key, Object values){
+	public Run buildDeleteRunSQL(String table, String key, Object values){
 		return createDeleteRunSQLFromTable(table, key, values);
 	}
 	@Override 
-	public RunSQL buildDeleteRunSQL(String dest, Object obj, String ... columns){
+	public Run buildDeleteRunSQL(String dest, Object obj, String ... columns){
 		if(null == obj){ 
 			return null; 
 		}
-		RunSQL run = null; 
+		Run run = null;
 		if(null == dest){ 
 			dest = DataSourceHolder.parseDataSource(dest,obj);
 		}
@@ -630,7 +630,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		}
 		if(obj instanceof ConfigStore){
 			run = new TableRunSQLImpl(this,dest);
-			SQL sql = new TableSQLImpl();
+			RunPrepare sql = new TableSQLImpl();
 			sql.setDataSource(dest);
 			run.setSql(sql);
 			run.setConfigStore((ConfigStore)obj);
@@ -643,7 +643,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		return run; 
 	}
 	@SuppressWarnings("rawtypes")
-	protected RunSQL createDeleteRunSQLFromTable(String table, String key, Object values){
+	protected Run createDeleteRunSQLFromTable(String table, String key, Object values){
 		if(null == table || null == key || null == values){
 			return null;
 		}
@@ -681,7 +681,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 
 		return run;
 	}
-	protected RunSQL createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
+	protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
 		TableRunSQLImpl run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
@@ -752,27 +752,27 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	} 
 	/** 
 	 * 基础查询SQL 
-	 * RunSQL 反转调用 
+	 * Run 反转调用
 	 */ 
 	@Override 
-	public String parseBaseQueryTxt(RunSQL run){ 
+	public String parseBaseQueryTxt(Run run){
 		return run.getBuilder().toString();
 	} 
 	/** 
 	 * 求总数SQL 
-	 * RunSQL 反转调用 
+	 * Run 反转调用
 	 * @param run  run
 	 * @return String
 	 */
 	@Override
-	public String parseTotalQueryTxt(RunSQL run){
+	public String parseTotalQueryTxt(Run run){
 		String sql = "SELECT COUNT(0) AS CNT FROM (\n" + run.getBuilder().toString() +"\n) F";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
 		return sql;
 	}
 
 	@Override
-	public String parseExistsTxt(RunSQL run){
+	public String parseExistsTxt(Run run){
 		String sql = "SELECT EXISTS(\n" + run.getBuilder().toString() +"\n)  IS_EXISTS";
 		sql = sql.replaceAll("WHERE\\s*1=1\\s*AND", "WHERE ");
 		return sql;
@@ -827,7 +827,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 
  
 	@Override 
-	public RunSQL createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns){ 
+	public Run createUpdateTxt(String dest, Object obj, boolean checkParimary, String ... columns){
 		if(null == obj){ 
 			return null; 
 		}
@@ -841,8 +841,8 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		}
 	}
 
-	protected RunSQL createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl(this,dest);
+	protected Run createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
+		Run run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		List<String> keys = null;
@@ -868,7 +868,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		int size = keys.size();
 		if(size > 0){
 			builder.append("UPDATE ").append(parseTable(dest));
-			builder.append(" SET").append(JDBCAdapter.BR_TAB);
+			builder.append(" SET").append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
 				Object value = null;
@@ -882,9 +882,9 @@ public abstract class SQLAdapter implements JDBCAdapter {
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
 
-					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
 				}else{
-					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
@@ -896,8 +896,8 @@ public abstract class SQLAdapter implements JDBCAdapter {
 					builder.append(",");
 				}
 			}
-			builder.append(JDBCAdapter.BR);
-			builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
+			builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR);
+			builder.append("\nWHERE 1=1").append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
 			for(String pk:primaryKeys){
 				builder.append(" AND ");
 				SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");
@@ -918,8 +918,8 @@ public abstract class SQLAdapter implements JDBCAdapter {
 
 		return run;
 	}
-	protected RunSQL createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
-		RunSQL run = new TableRunSQLImpl(this,dest);
+	protected Run createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
+		Run run = new TableRunSQLImpl(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		/*确定需要更新的列*/ 
@@ -937,16 +937,16 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		int size = keys.size();
 		if(size > 0){
 			builder.append("UPDATE ").append(parseTable(dest));
-			builder.append(" SET").append(JDBCAdapter.BR_TAB);
+			builder.append(" SET").append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
 			for(int i=0; i<size; i++){
 				String key = keys.get(i);
 				Object value = row.get(key);
 				if(null != value && value.toString().startsWith("${") && value.toString().endsWith("}") && !BeanUtil.isJson(value)){
 					String str = value.toString();
 					value = str.substring(2, str.length()-1);
-					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(JDBCAdapter.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ").append(value).append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
 				}else{
-					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(JDBCAdapter.BR_TAB);
+					SQLUtil.delimiter(builder, key, getDelimiterFr(), getDelimiterTo()).append(" = ?").append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
 					if("NULL".equals(value)){
 						value = null;
 					}
@@ -958,8 +958,8 @@ public abstract class SQLAdapter implements JDBCAdapter {
 					builder.append(",");
 				} 
 			}
-			builder.append(JDBCAdapter.BR);
-			builder.append("\nWHERE 1=1").append(JDBCAdapter.BR_TAB);
+			builder.append(org.anyline.jdbc.adapter.JDBCAdapter.BR);
+			builder.append("\nWHERE 1=1").append(org.anyline.jdbc.adapter.JDBCAdapter.BR_TAB);
 			for(String pk:primaryKeys){
 				builder.append(" AND ");
 				SQLUtil.delimiter(builder, pk, getDelimiterFr(), getDelimiterTo()).append(" = ?");

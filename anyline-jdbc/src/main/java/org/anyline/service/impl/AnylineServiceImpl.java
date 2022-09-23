@@ -26,14 +26,14 @@ import org.anyline.cache.PageLazyStore;
 import org.anyline.dao.AnylineDao;
 import org.anyline.entity.*;
 import org.anyline.exception.AnylineException;
-import org.anyline.jdbc.config.ConfigStore;
-import org.anyline.jdbc.config.db.Procedure;
-import org.anyline.jdbc.config.db.SQL;
-import org.anyline.jdbc.config.db.impl.ProcedureImpl;
-import org.anyline.jdbc.config.db.impl.SQLStoreImpl;
-import org.anyline.jdbc.config.db.sql.auto.impl.TableSQLImpl;
-import org.anyline.jdbc.config.db.sql.auto.impl.TextSQLImpl;
-import org.anyline.jdbc.config.impl.ConfigStoreImpl;
+import org.anyline.jdbc.param.ConfigStore;
+import org.anyline.jdbc.prepare.Procedure;
+import org.anyline.jdbc.prepare.RunPrepare;
+import org.anyline.jdbc.prepare.simple.ProcedureImpl;
+import org.anyline.jdbc.prepare.sql.simple.SQLStoreImpl;
+import org.anyline.jdbc.prepare.sql.auto.impl.TableSQLImpl;
+import org.anyline.jdbc.prepare.sql.auto.impl.TextSQLImpl;
+import org.anyline.jdbc.param.simple.ConfigStoreImpl;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
 import org.anyline.service.AnylineService;
@@ -127,7 +127,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             log.warn("[解析SQL][src:{}]", src);
         }
         try {
-            SQL sql = createSQL(src);
+            RunPrepare sql = createSQL(src);
             configs = append(configs, obj);
             maps = dao.maps(sql, configs, conditions);
         } catch (Exception e) {
@@ -446,45 +446,45 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
 
     /**
      * 按条件查询
-     * @param sql           表｜视图｜函数｜自定义SQL |SQL
+     * @param sql           表｜视图｜函数｜自定义SQL |RunPrepare
      * @param configs		根据http等上下文构造查询条件
      * @param obj			根据obj的field/value构造查询条件(支侍Map和Object)(查询条件只支持 =和in)
      * @param conditions    固定查询条件
      * @return DataSet
      */
     @Override
-    public DataSet querys(SQL sql, ConfigStore configs, Object obj, String... conditions) {
+    public DataSet querys(RunPrepare sql, ConfigStore configs, Object obj, String... conditions) {
         conditions = BasicUtil.compressionSpace(conditions);
         DataSet set = queryFromDao(sql, append(configs, obj), conditions);
         return set;
 
     }
     @Override
-    public DataSet querys(SQL sql, ConfigStore configs, String... conditions) {
+    public DataSet querys(RunPrepare sql, ConfigStore configs, String... conditions) {
         return querys(sql, configs, null, conditions);
     }
 
     @Override
-    public DataSet querys(SQL sql, Object obj, String... conditions) {
+    public DataSet querys(RunPrepare sql, Object obj, String... conditions) {
         return querys(sql, null, obj, conditions);
     }
     @Override
-    public DataSet querys(SQL sql, String... conditions) {
+    public DataSet querys(RunPrepare sql, String... conditions) {
         return querys(sql, null, null, conditions);
     }
 
 
     @Override
-    public DataSet querys(SQL sql, int fr, int to, Object obj, String... conditions) {
+    public DataSet querys(RunPrepare sql, int fr, int to, Object obj, String... conditions) {
         ConfigStore configs = new ConfigStoreImpl(fr,to);
         return querys(sql, configs, obj, conditions);
     }
     @Override
-    public DataSet querys(SQL sql, int fr, int to,  String... conditions) {
+    public DataSet querys(RunPrepare sql, int fr, int to,  String... conditions) {
         return querys(sql, fr, to, null, conditions);
     }
     @Override
-    public DataSet caches(String cache, SQL table, ConfigStore configs, Object obj, String ... conditions){
+    public DataSet caches(String cache, RunPrepare table, ConfigStore configs, Object obj, String ... conditions){
         DataSet set = null;
         conditions = BasicUtil.compressionSpace(conditions);
         if(null == cache){
@@ -499,29 +499,29 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return set;
     }
     @Override
-    public DataSet caches(String cache, SQL table, ConfigStore configs, String ... conditions){
+    public DataSet caches(String cache, RunPrepare table, ConfigStore configs, String ... conditions){
         return caches(cache, table, configs, null, conditions);
     }
     @Override
-    public DataSet caches(String cache, SQL table, Object obj, String ... conditions){
+    public DataSet caches(String cache, RunPrepare table, Object obj, String ... conditions){
         return caches(cache, table, null, obj, conditions);
     }
     @Override
-    public DataSet caches(String cache, SQL table, String ... conditions){
+    public DataSet caches(String cache, RunPrepare table, String ... conditions){
         return caches(cache, table, null, null, conditions);
     }
     @Override
-    public DataSet caches(String cache, SQL table, int fr, int to, Object obj, String ... conditions){
+    public DataSet caches(String cache, RunPrepare table, int fr, int to, Object obj, String ... conditions){
         ConfigStore configs = new ConfigStoreImpl(fr, to);
         return caches(cache, table, configs, obj, conditions);
     }
     @Override
-    public DataSet caches(String cache, SQL table, int fr, int to, String ... conditions){
+    public DataSet caches(String cache, RunPrepare table, int fr, int to, String ... conditions){
         return caches(cache, table, fr, to, null, conditions);
     }
 
     @Override
-    public DataRow query(SQL table, ConfigStore store, Object obj, String... conditions) {
+    public DataRow query(RunPrepare table, ConfigStore store, Object obj, String... conditions) {
         PageNaviImpl navi = new PageNaviImpl();
         navi.setFirstRow(0);
         navi.setLastRow(0);
@@ -542,22 +542,22 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataRow query(SQL table, ConfigStore store, String... conditions) {
+    public DataRow query(RunPrepare table, ConfigStore store, String... conditions) {
         return query(table, store, null, conditions);
     }
 
     @Override
-    public DataRow query(SQL table, Object obj, String... conditions) {
+    public DataRow query(RunPrepare table, Object obj, String... conditions) {
         return query(table, null, obj, conditions);
     }
 
     @Override
-    public DataRow query(SQL table, String... conditions) {
+    public DataRow query(RunPrepare table, String... conditions) {
         return query(table, null, null, conditions);
     }
 
     @Override
-    public DataRow cache(String cache, SQL table, ConfigStore configs, Object obj, String ... conditions){
+    public DataRow cache(String cache, RunPrepare table, ConfigStore configs, Object obj, String ... conditions){
         //是否启动缓存
         if(null == cache){
             return query(table, configs, obj, conditions);
@@ -605,15 +605,15 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
     }
 
     @Override
-    public DataRow cache(String cache, SQL table, ConfigStore configs, String ... conditions){
+    public DataRow cache(String cache, RunPrepare table, ConfigStore configs, String ... conditions){
         return cache(cache, table, configs, null, conditions);
     }
     @Override
-    public DataRow cache(String cache, SQL table, Object obj, String ... conditions){
+    public DataRow cache(String cache, RunPrepare table, Object obj, String ... conditions){
         return cache(cache, table, null, obj, conditions);
     }
     @Override
-    public DataRow cache(String cache, SQL table,  String ... conditions){
+    public DataRow cache(String cache, RunPrepare table,  String ... conditions){
         return cache(cache, table, null, null, conditions);
     }
 
@@ -685,7 +685,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         boolean result = false;
         src = BasicUtil.compressionSpace(src);
         conditions = BasicUtil.compressionSpace(conditions);
-        SQL sql = createSQL(src);
+        RunPrepare sql = createSQL(src);
         result = dao.exists(sql, append(configs, obj), conditions);
         return result;
     }
@@ -733,7 +733,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             //conditions = parseConditions(conditions);
             src = BasicUtil.compressionSpace(src);
             conditions = BasicUtil.compressionSpace(conditions);
-            SQL sql = createSQL(src);
+            RunPrepare sql = createSQL(src);
             count = dao.count(sql, append(configs, obj), conditions);
         } catch (Exception e) {
             if(ConfigTable.isDebug() && log.isWarnEnabled()){
@@ -1244,7 +1244,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         src = BasicUtil.compressionSpace(src);
         src = DataSourceHolder.parseDataSource(src);
         conditions = BasicUtil.compressionSpace(conditions);
-        SQL sql = createSQL(src);
+        RunPrepare sql = createSQL(src);
         if (null == sql) {
             return result;
         }
@@ -1341,7 +1341,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         return navi;
     }
-    protected DataSet queryFromDao(SQL sql, ConfigStore configs, String... conditions){
+    protected DataSet queryFromDao(RunPrepare sql, ConfigStore configs, String... conditions){
         DataSet set = null;
         if(ConfigTable.isSQLDebug()){
             log.warn("[解析SQL][src:{}]", sql.getText());
@@ -1369,7 +1369,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         }
         try {
             setPageLazy(src, configs, conditions);
-            SQL sql = createSQL(src);
+            RunPrepare sql = createSQL(src);
             set = dao.querys(sql, configs, conditions);
          } catch (Exception e) {
             set = new DataSet();
@@ -1430,8 +1430,8 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
         return src;
     }
 
-    protected synchronized SQL createSQL(String src){
-        SQL sql = null;
+    protected synchronized RunPrepare createSQL(String src){
+        RunPrepare sql = null;
         src = src.trim();
         List<String> pks = new ArrayList<>();
         //文本sql
@@ -1467,7 +1467,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                     log.warn("[解析SQL类型] [类型:JAVA定义] [src:{}]", src);
                 }
                 sql = new TextSQLImpl(src);
-            }else if (RegularUtil.match(src, SQL.XML_SQL_ID_STYLE)) {
+            }else if (RegularUtil.match(src, RunPrepare.XML_SQL_ID_STYLE)) {
                 /* XML定义 */
                 if(ConfigTable.isSQLDebug()){
                     log.warn("[解析SQL类型] [类型:XML定义] [src:{}]", src);
@@ -1506,7 +1506,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
             key += ks[1]+":";
         }
         key += CacheUtil.createCacheElementKey(true, true, src, configs, conditions);
-        SQL sql = createSQL(src);
+        RunPrepare sql = createSQL(src);
         if(null != cacheProvider) {
             CacheElement cacheElement = cacheProvider.get(cache, key);
             if (null != cacheElement && null != cacheElement.getValue()) {
@@ -1526,7 +1526,7 @@ public class AnylineServiceImpl<E> implements AnylineService<E> {
                     }
                     final String _key = key;
                     final String _cache = cache;
-                    final SQL _sql = sql;
+                    final RunPrepare _sql = sql;
                     final ConfigStore _configs = configs;
                     final String[] _conditions = conditions;
                     new Thread(new Runnable() {

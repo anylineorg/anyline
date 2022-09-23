@@ -6,7 +6,7 @@ import org.anyline.entity.PageNavi;
 import org.anyline.entity.OrderStore;
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.jdbc.adapter.SQLAdapter;
-import org.anyline.jdbc.config.db.run.RunSQL;
+import org.anyline.jdbc.run.Run;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,7 +43,7 @@ public class KingbaseAdapter extends SQLAdapter implements JDBCAdapter, Initiali
 	 *
 	 * ****************************************************************************************************/
 	@Override 
-	public String parseFinalQueryTxt(RunSQL run){ 
+	public String parseFinalQueryTxt(Run run){
 		StringBuilder builder = new StringBuilder(); 
 		String cols = run.getFetchColumns(); 
 		PageNavi navi = run.getPageNavi(); 
