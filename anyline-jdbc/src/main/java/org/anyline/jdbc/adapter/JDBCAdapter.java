@@ -1099,7 +1099,7 @@ public interface JDBCAdapter {
 	 * @param schema schema
 	 * @param table 表
 	 * @param run  值
-	 * @return boolean 返回false表示转换失败 如果有多个creater 则交给creater继续转换
+	 * @return boolean 返回false表示转换失败 如果有多个 adapter 则交给adapter继续转换
 	 */
 	public boolean convert(String catalog, String schema, String table, RunValue run);
 
@@ -1107,7 +1107,7 @@ public interface JDBCAdapter {
 	 * 数据类型转换
 	 * @param columns 列
 	 * @param run 值
-	 * @return boolean 返回false表示转换失败 如果有多个creater 则交给creater继续转换
+	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
 	public boolean convert(Map<String, Column> columns, RunValue run);
 
@@ -1115,7 +1115,7 @@ public interface JDBCAdapter {
 	 * 数据类型转换
 	 * @param column 列
 	 * @param run 值
-	 * @return boolean 返回false表示转换失败 如果有多个creater 则交给creater继续转换
+	 * @return boolean 返回false表示转换失败 如果有多个adapter 则交给adapter继续转换
 	 */
 	public boolean convert(Column column, RunValue run);
 

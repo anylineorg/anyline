@@ -98,7 +98,7 @@ public interface RunPrepare extends Cloneable {
 	 *  admin.power : XML文件路径,文件目录以.分隔<br> 
 	 *  S_POWER : 自定义SQL的id 
 	 * </p>
-	 * @param	ds  数据源 : 表|视图|自定义SQL.id
+	 * @param ds  数据源 : 表|视图|自定义SQL.id
 	 * @return RunPrepare
 	 */
 	public RunPrepare setDataSource(String ds);

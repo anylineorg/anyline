@@ -33,19 +33,19 @@ import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
 import java.util.List;
 
 public interface Run {
-	public void setCreater(JDBCAdapter adapter);
+	public void setAdapter(JDBCAdapter adapter);
 	public void init();
 	public void createRunDeleteTxt();
 	public void createRunQueryTxt();
 	 
 	/** 
 	 * 添加查询条件 
-	 * @param required 是否必须
-	 * @param strictRequired 是否严格验证必须
-	 * @param	prefix  查询条件ID或表名
-	 * @param	variable  列名|变量key
-	 * @param	value  值 
-	 * @param compare 比较方式
+	 * @param required 			是否必须
+	 * @param strictRequired 	是否严格验证必须
+	 * @param prefix  			查询条件ID或表名
+	 * @param variable  		列名|变量key
+	 * @param value  			值
+	 * @param compare 			比较方式
 	 * @return Run
 	 */
 	public Run setConditionValue(boolean required, boolean strictRequired, String prefix, String variable, Object value, COMPARE_TYPE compare);
@@ -65,26 +65,28 @@ public interface Run {
  
 	/** 
 	 * 添加查询条件 
-	 * @param	required 是否必须 
+	 * @param required 是否必须 
 	 * @param strictRequired 是否严格验证必须
-	 * @param	prefix 表名
-	 * @param	var 列名
-	 * @param	value 值 
-	 * @param	compare 比较方式 
+	 * @param prefix 表名
+	 * @param var 列名
+	 * @param value 值 
+	 * @param compare 比较方式 
 	 * @return Run
 	 */
 	public Run addCondition(boolean required, boolean strictRequired, String prefix, String var, Object value, RunPrepare.COMPARE_TYPE compare);
 	public Run addCondition(boolean required, String prefix, String var, Object value, RunPrepare.COMPARE_TYPE compare);
 	public Run setConditionChain(ConditionChain chain);
-	public Run addConditions(String[] conditions) ;
-	public Run addCondition(String condition);
+
+	/**
+	 * 添加条件
+	 * @param conditions 查询条件、ORDER、GROUP、HAVING 等
+	 * @return Run
+	 */
+	public Run addConditions(String ... conditions) ;
 	public Run addCondition(Condition condition) ;
 	public Condition getCondition(String name); 
 	public ConditionChain getConditionChain() ; 
-	 
-	/** 
-	 * 添加静态文本查询条件 
-	 */ 
+
 	/** 
 	 * 添加参数值 
 	 * @param column  column
@@ -117,7 +119,7 @@ public interface Run {
 	public List<Object> getValues() ;
 	public PageNavi getPageNavi() ; 
 	public void setPageNavi(PageNavi pageNavi) ;
-	public String getFetchColumns();
+	public String getQueryColumns();
 	public void setStrict(boolean strict);
 	public boolean isStrict();
 	public boolean isValid();
