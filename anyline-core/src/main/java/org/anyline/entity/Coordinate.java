@@ -26,7 +26,7 @@ public class Coordinate {
 	private String districtName				; //区中文名
 	private String townCode					; //街道编号
 	private String townName					; //街道中文名
-	private String code						; //
+	private String code						; //当前地区最小级别编号
 	private int level						; //级别(国家:0,省:1)
 	private String address					; //详细地址
 	private boolean success = true			; //执行结果

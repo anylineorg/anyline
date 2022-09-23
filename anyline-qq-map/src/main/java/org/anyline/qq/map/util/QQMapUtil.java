@@ -53,6 +53,12 @@ public class QQMapUtil {
     }
 
 
+    /**
+     * 参数签名
+     * @param api 接口
+     * @param params 参数
+     * @return String
+     */
     private String sign(String api, Map<String, Object> params){
         String sign = null;
         String src = api + "?" + BeanUtil.map2string(params, true, true)+config.SECRET;
@@ -63,7 +69,7 @@ public class QQMapUtil {
     /**
      * 通过IP地址获取其当前所在地理位置
      * @param ip ip
-     * @return Coordinate
+     * @return 坐标
      */
     public Coordinate ip(String ip) {
         Coordinate coordinate = null;
@@ -107,28 +113,8 @@ public class QQMapUtil {
         return coordinate;
     }
 
-    public Coordinate regeo(double lng, double lat){
-        return regeo(Coordinate.TYPE.GCJ02LL, lng, lat);
-    }
-    public Coordinate regeo(String[] point){
-        return regeo(point[0], point[1]);
-    }
-    public Coordinate regeo(double[] point){
-        return regeo(point[0], point[1]);
-    }
     /**
-     * 逆地址解析
-     * @param lng 经度
-     * @param lat 纬度
-     * @return Coordinate
-     */
-    public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat){
-        Coordinate coordinate = new Coordinate(type, lng, lat);
-        return regeo(coordinate);
-    }
-
-    /**
-     * 逆地址解析
+     * 逆地址解析 根据坐标返回详细地址及各级地区编号
      * @param coordinate 坐标
      * @return Coordinate
      */
@@ -194,6 +180,26 @@ public class QQMapUtil {
         coordinate.setSuccess(true);
         return coordinate;
     }
+    public Coordinate regeo(double lng, double lat){
+        return regeo(Coordinate.TYPE.GCJ02LL, lng, lat);
+    }
+    public Coordinate regeo(String[] point){
+        return regeo(point[0], point[1]);
+    }
+    public Coordinate regeo(double[] point){
+        return regeo(point[0], point[1]);
+    }
+    /**
+     * 逆地址解析 根据坐标返回详细地址及各级地区编号
+     * @param lng 经度
+     * @param lat 纬度
+     * @return Coordinate
+     */
+    public Coordinate regeo(Coordinate.TYPE type, Double lng, Double lat){
+        Coordinate coordinate = new Coordinate(type, lng, lat);
+        return regeo(coordinate);
+    }
+
     public Coordinate regeo(Coordinate.TYPE type, String lng, String lat){
         return regeo(type, BasicUtil.parseDouble(lng, null), BasicUtil.parseDouble(lat, null));
     }
