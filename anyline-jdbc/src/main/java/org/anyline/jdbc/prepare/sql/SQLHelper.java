@@ -2,7 +2,7 @@ package org.anyline.jdbc.prepare.sql;
  
 import org.anyline.jdbc.prepare.Variable;
 import org.anyline.jdbc.prepare.RunPrepare.COMPARE_TYPE;
-import org.anyline.jdbc.prepare.simple.VariableImpl;
+import org.anyline.jdbc.prepare.init.SimpleVariable;
 import org.anyline.util.BasicUtil; 
  
 public class SQLHelper { 
@@ -34,7 +34,7 @@ public class SQLHelper {
 		if(null == afterChar){ 
 			afterChar = ""; 
 		} 
-		Variable var = new VariableImpl();
+		Variable var = new SimpleVariable();
 		String key = null; 
 		if(signType ==1){ 
 			key = fullKey.replace(":", ""); 

@@ -29,7 +29,7 @@ import org.anyline.jdbc.param.ConfigChain;
 import org.anyline.jdbc.prepare.Condition;
 import org.anyline.jdbc.prepare.ConditionChain;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.sql.auto.impl.AutoConditionChainImpl;
+import org.anyline.jdbc.prepare.sql.auto.init.SimpleAutoConditionChain;
 import org.anyline.util.BasicUtil;
 
 public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.config.http.ConfigChain{ 
@@ -109,7 +109,7 @@ public class ConfigChainImpl extends ConfigImpl implements org.anyline.web.confi
 		return configs;
 	}
 	public ConditionChain createAutoConditionChain(){
-		ConditionChain chain = new AutoConditionChainImpl();
+		ConditionChain chain = new SimpleAutoConditionChain();
 		for(Config config:configs){
 			Condition condition = config.createAutoCondition(chain);
 			if(null != condition){

@@ -95,12 +95,12 @@ public interface Run {
 
 	public Run addOrders(OrderStore orderStore);
 	public Run addOrder(Order order);
-	public RunPrepare getSql() ;
+	public RunPrepare getPrepare() ;
 	public String getTable();
 	public String getCatalog();
 	public String getSchema();
 	public String getDataSource();
-	public Run setSql(RunPrepare sql) ;
+	public Run setPrepare(RunPrepare prepare) ;
 	public Run setInsertColumns(List<String> keys);
 	public List<String> getInsertColumns();
 	public Run setUpdateColumns(List<String> keys);

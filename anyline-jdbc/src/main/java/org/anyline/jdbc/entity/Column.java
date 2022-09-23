@@ -2,7 +2,7 @@ package org.anyline.jdbc.entity;
 
 import org.anyline.jdbc.adapter.JDBCAdapter;
 import org.anyline.listener.DDListener;
-import org.anyline.listener.impl.DefaulDDtListener;
+import org.anyline.listener.init.SimpleDDListener;
 import org.anyline.service.AnylineService;
 import org.anyline.util.BasicUtil;
 import org.anyline.util.BeanUtil;
@@ -50,7 +50,7 @@ public class Column {
 
 
     public Column(){
-        this.listener = new DefaulDDtListener();
+        this.listener = new SimpleDDListener();
     }
     public Column(String name){
         this(null, name);
@@ -66,7 +66,7 @@ public class Column {
         setSchema(schema);
         setName(name);
         setTable(table);
-        this.listener = new DefaulDDtListener();
+        this.listener = new SimpleDDListener();
     }
     public Column update(){
         update = (Column) this.clone();

@@ -22,7 +22,6 @@ package org.anyline.jdbc.prepare;
  * V3.0 
  */ 
 import org.anyline.entity.PageNavi;
-import org.anyline.jdbc.prepare.simple.ProcedureParam;
 
 import java.util.List;
  

@@ -1,13 +1,13 @@
 package org.anyline.jdbc.entity;
 
-import org.anyline.listener.impl.DefaulDDtListener;
+import org.anyline.listener.init.SimpleDDListener;
 
 public class PartitionTable extends Table{
     protected String masterName;
     protected MasterTable master;
 
     public PartitionTable(){
-        this.listener = new DefaulDDtListener();
+        this.listener = new SimpleDDListener();
     }
     public PartitionTable(String name){
         this(null, name);

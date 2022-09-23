@@ -343,30 +343,30 @@ public interface AnylineService<E>{
 
 
 	/*多表查询,左右连接时使用*/
-	public DataSet querys(RunPrepare sql, ConfigStore configs, Object obj, String ... conditions);
-	public DataSet querys(RunPrepare sql, Object obj, String ... conditions);
-	public DataSet querys(RunPrepare sql, int first, int last, Object obj, String ... conditions);
-	public DataRow query(RunPrepare sql, ConfigStore configs, Object obj, String ... conditions);
-	public DataRow query(RunPrepare sql, Object obj, String ... conditions);
+	public DataSet querys(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	public DataSet querys(RunPrepare prepare, Object obj, String ... conditions);
+	public DataSet querys(RunPrepare prepare, int first, int last, Object obj, String ... conditions);
+	public DataRow query(RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	public DataRow query(RunPrepare prepare, Object obj, String ... conditions);
 
-	public DataSet querys(RunPrepare sql, ConfigStore configs,  String ... conditions);
-	public DataSet querys(RunPrepare sql,  String ... conditions);
-	public DataSet querys(RunPrepare sql, int first, int last,  String ... conditions);
-	public DataRow query(RunPrepare sql, ConfigStore configs,  String ... conditions);
-	public DataRow query(RunPrepare sql, String ... conditions);
+	public DataSet querys(RunPrepare prepare, ConfigStore configs,  String ... conditions);
+	public DataSet querys(RunPrepare prepare,  String ... conditions);
+	public DataSet querys(RunPrepare prepare, int first, int last,  String ... conditions);
+	public DataRow query(RunPrepare prepare, ConfigStore configs,  String ... conditions);
+	public DataRow query(RunPrepare prepare, String ... conditions);
 
 
-	public DataSet caches(String cache, RunPrepare sql, ConfigStore configs, Object obj, String ... conditions);
-	public DataSet caches(String cache, RunPrepare sql, Object obj, String ... conditions);
-	public DataSet caches(String cache, RunPrepare sql, int first, int last, Object obj, String ... conditions);
-	public DataRow cache(String cache, RunPrepare sql, ConfigStore configs, Object obj, String ... conditions);
-	public DataRow cache(String cache, RunPrepare sql, Object obj, String ... conditions);
+	public DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	public DataSet caches(String cache, RunPrepare prepare, Object obj, String ... conditions);
+	public DataSet caches(String cache, RunPrepare prepare, int first, int last, Object obj, String ... conditions);
+	public DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, Object obj, String ... conditions);
+	public DataRow cache(String cache, RunPrepare prepare, Object obj, String ... conditions);
 
-	public DataSet caches(String cache, RunPrepare sql, ConfigStore configs, String ... conditions);
-	public DataSet caches(String cache, RunPrepare sql, String ... conditions);
-	public DataSet caches(String cache, RunPrepare sql, int first, int last, String ... conditions);
-	public DataRow cache(String cache, RunPrepare sql, ConfigStore configs, String ... conditions);
-	public DataRow cache(String cache, RunPrepare sql, String ... conditions);
+	public DataSet caches(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	public DataSet caches(String cache, RunPrepare prepare, String ... conditions);
+	public DataSet caches(String cache, RunPrepare prepare, int first, int last, String ... conditions);
+	public DataRow cache(String cache, RunPrepare prepare, ConfigStore configs, String ... conditions);
+	public DataRow cache(String cache, RunPrepare prepare, String ... conditions);
 
 	/**
 	 * 删除缓存 参数保持与查询参数完全一致

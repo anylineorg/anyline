@@ -2,7 +2,7 @@ package org.anyline.jdbc.entity;
 
 
 import org.anyline.entity.DataRow;
-import org.anyline.listener.impl.DefaulDDtListener;
+import org.anyline.listener.init.SimpleDDListener;
 
 import java.util.LinkedHashMap;
 
@@ -12,7 +12,7 @@ public class MasterTable extends Table {
     private Partition partition                     ; //分区方式
 
     public MasterTable(){
-        this.listener = new DefaulDDtListener();
+        this.listener = new SimpleDDListener();
     }
     public MasterTable(String name){
         this(null, name);

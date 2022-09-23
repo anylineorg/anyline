@@ -188,7 +188,7 @@ public interface JDBCAdapter {
 	 * @param conditions 查询条件
 	 * @return Run
 	 */
-	public Run buildQueryRunSQL(RunPrepare sql, ConfigStore configs, String ... conditions);
+	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 	/**
 	 * 基础SQL 不含排序 分页等
@@ -240,7 +240,7 @@ public interface JDBCAdapter {
 	 * @param conditions conditions
 	 * @return Run
 	 */
-	public Run buildExecuteRunSQL(RunPrepare sql, ConfigStore configs, String ... conditions);
+	public Run buildExecuteRunSQL(RunPrepare prepare, ConfigStore configs, String ... conditions);
 
 
 	/* *****************************************************************************************************************

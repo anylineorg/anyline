@@ -29,12 +29,12 @@ import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.RunPrepare;
 import org.anyline.jdbc.run.RunValue;
 import org.anyline.jdbc.run.Run;
-import org.anyline.jdbc.run.sql.TableRunSQLImpl;
-import org.anyline.jdbc.run.sql.TextRunSQLImpl;
-import org.anyline.jdbc.run.sql.XMLRunSQLImpl;
+import org.anyline.jdbc.run.sql.TableRunSQL;
+import org.anyline.jdbc.run.sql.TextRunSQL;
+import org.anyline.jdbc.run.sql.XMLRunSQL;
 import org.anyline.jdbc.prepare.sql.auto.TableSQL;
 import org.anyline.jdbc.prepare.sql.auto.TextSQL;
-import org.anyline.jdbc.prepare.sql.auto.impl.TableSQLImpl;
+import org.anyline.jdbc.prepare.sql.auto.init.SimpleTableSQL;
 import org.anyline.jdbc.prepare.sql.xml.XMLSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
@@ -405,7 +405,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	 * @return Run
 	 */
 	protected Run createInsertTxtFromEntity(String dest, Object obj, boolean checkParimary, String ... columns){
-		Run run = new TableRunSQLImpl(this,dest);
+		Run run = new TableRunSQL(this,dest);
 		//List<Object> values = new ArrayList<Object>();
 		StringBuilder builder = new StringBuilder();
 		if(BasicUtil.isEmpty(dest)){
@@ -509,7 +509,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	 * @return Run
 	 */
 	protected Run createInsertTxtFromCollection(String dest, Collection list, boolean checkParimary, String ... columns){
-		Run run = new TableRunSQLImpl(this,dest);
+		Run run = new TableRunSQL(this,dest);
 		StringBuilder builder = new StringBuilder();
 		if(null == list || list.size() ==0){
 			throw new SQLException("空数据");
@@ -569,19 +569,19 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	 * 创建查询SQL 
 	 */ 
 	@Override 
-	public Run buildQueryRunSQL(RunPrepare sql, ConfigStore configs, String ... conditions){
+	public Run buildQueryRun(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
-		if(sql instanceof TableSQL){ 
-			run = new TableRunSQLImpl(this,sql.getTable());
-		}else if(sql instanceof XMLSQL){ 
-			run = new XMLRunSQLImpl();
-		}else if(sql instanceof TextSQL){ 
-			run = new TextRunSQLImpl(); 
+		if(prepare instanceof TableSQL){
+			run = new TableRunSQL(this,prepare.getTable());
+		}else if(prepare instanceof XMLSQL){
+			run = new XMLRunSQL();
+		}else if(prepare instanceof TextSQL){
+			run = new TextRunSQL();
 		} 
 		if(null != run){
-			run.setStrict(sql.isStrict()); 
+			run.setStrict(prepare.isStrict());
 			run.setCreater(this); 
-			run.setSql(sql);
+			run.setPrepare(prepare);
 			run.setConfigStore(configs); 
 			run.addConditions(conditions);
 			run.init();
@@ -590,16 +590,16 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		return run; 
 	}
 	@Override
-	public Run buildExecuteRunSQL(RunPrepare sql, ConfigStore configs, String ... conditions){
+	public Run buildExecuteRunSQL(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		Run run = null;
-		if(sql instanceof XMLSQL){
-			run = new XMLRunSQLImpl();
-		}else if(sql instanceof TextSQL){
-			run = new TextRunSQLImpl();
+		if(prepare instanceof XMLSQL){
+			run = new XMLRunSQL();
+		}else if(prepare instanceof TextSQL){
+			run = new TextRunSQL();
 		}
 		if(null != run){
 			run.setCreater(this);
-			run.setSql(sql);
+			run.setPrepare(prepare);
 			run.setConfigStore(configs);
 			run.addConditions(conditions);
 			run.init();
@@ -629,10 +629,10 @@ public abstract class SQLAdapter implements JDBCAdapter {
 			}
 		}
 		if(obj instanceof ConfigStore){
-			run = new TableRunSQLImpl(this,dest);
-			RunPrepare sql = new TableSQLImpl();
-			sql.setDataSource(dest);
-			run.setSql(sql);
+			run = new TableRunSQL(this,dest);
+			RunPrepare prepare = new SimpleTableSQL();
+			prepare.setDataSource(dest);
+			run.setPrepare(prepare);
 			run.setConfigStore((ConfigStore)obj);
 			run.addConditions(columns);
 			run.init();
@@ -648,7 +648,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 			return null;
 		}
 		StringBuilder builder = new StringBuilder();
-		TableRunSQLImpl run = new TableRunSQLImpl(this,table);
+		TableRunSQL run = new TableRunSQL(this,table);
 		builder.append("DELETE FROM ").append(table).append(" WHERE ");
 		if(values instanceof Collection){
 			Collection cons = (Collection)values;
@@ -682,7 +682,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		return run;
 	}
 	protected Run createDeleteRunSQLFromEntity(String dest, Object obj, String ... columns){
-		TableRunSQLImpl run = new TableRunSQLImpl(this,dest);
+		TableRunSQL run = new TableRunSQL(this,dest);
 		StringBuilder builder = new StringBuilder();
 		builder.append("DELETE FROM ").append(parseTable(dest)).append(" WHERE ");
 		List<String> keys = new ArrayList<>();
@@ -842,7 +842,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 	}
 
 	protected Run createUpdateTxtFromObject(String dest, Object obj, boolean checkParimary, String ... columns){
-		Run run = new TableRunSQLImpl(this,dest);
+		Run run = new TableRunSQL(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		List<String> keys = null;
@@ -919,7 +919,7 @@ public abstract class SQLAdapter implements JDBCAdapter {
 		return run;
 	}
 	protected Run createUpdateTxtFromDataRow(String dest, DataRow row, boolean checkParimary, String ... columns){
-		Run run = new TableRunSQLImpl(this,dest);
+		Run run = new TableRunSQL(this,dest);
 		StringBuilder builder = new StringBuilder();
 		//List<Object> values = new ArrayList<Object>();
 		/*确定需要更新的列*/ 

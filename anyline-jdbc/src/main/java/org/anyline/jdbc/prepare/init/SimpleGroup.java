@@ -17,23 +17,29 @@
  */
 
 
-package org.anyline.web.config.http.impl; 
+package org.anyline.jdbc.prepare.init;
  
-import javax.servlet.http.HttpServletRequest;
-
-import org.anyline.jdbc.param.init.SimpleConfig;
-import org.anyline.web.config.http.Config;
-import org.anyline.web.util.WebUtil;
+import org.anyline.jdbc.prepare.Group;
  
-public class ConfigImpl extends SimpleConfig implements Config{
-
-	@Override
-	public void setValue(HttpServletRequest request) {
-		super.setValue(WebUtil.values(request));
-	}
-	public ConfigImpl(){
-	}
-	public ConfigImpl(String config){
-		super(config);
-	}
-}
+ 
+public class SimpleGroup implements Group{
+	private static final long serialVersionUID = 5820480420021701152L;
+	private String column;						//排序列 
+	 
+	public SimpleGroup(){}
+	public SimpleGroup(String column){
+		setColumn(column); 
+	} 
+	public String getColumn() { 
+		return column; 
+	} 
+	public void setColumn(String column) { 
+		if(null != column){ 
+			this.column = column.trim(); 
+		} 
+	} 
+	public Object clone() throws CloneNotSupportedException{ 
+		SimpleGroup clone = (SimpleGroup)super.clone();
+		return clone; 
+	} 
+} 

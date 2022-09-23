@@ -24,7 +24,7 @@ import org.anyline.entity.adapter.KeyAdapter.KEY_CASE;
 import org.anyline.jdbc.param.ConfigParser;
 import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.param.ParseResult;
-import org.anyline.jdbc.param.simple.ConfigStoreImpl;
+import org.anyline.jdbc.param.init.SimpleConfigStore;
 import org.anyline.service.AnylineService;
 import org.anyline.util.*;
 import org.anyline.web.util.WebUtil;
@@ -396,7 +396,7 @@ public class AbstractBasicController {
 	 * @return ConfigStore
 	 */
 	protected ConfigStore condition(HttpServletRequest request, boolean navi, List<String> fixs, String... configs) {
-		ConfigStore store = new ConfigStoreImpl(BeanUtil.merge(fixs, configs));
+		ConfigStore store = new SimpleConfigStore(BeanUtil.merge(fixs, configs));
 		if (navi) {
 			PageNavi pageNavi = parsePageNavi(request);
 			store.setPageNavi(pageNavi);
@@ -421,7 +421,7 @@ public class AbstractBasicController {
 	 * @return ConfigStore
 	 */
 	protected ConfigStore condition(HttpServletRequest request, int vol, List<String> fixs, String... configs) {
-		ConfigStore store = new ConfigStoreImpl(BeanUtil.merge(fixs, configs));
+		ConfigStore store = new SimpleConfigStore(BeanUtil.merge(fixs, configs));
 		if(vol >0){
 			PageNavi pageNavi = parsePageNavi(request);
 			pageNavi.setPageRows(vol);
@@ -447,7 +447,7 @@ public class AbstractBasicController {
 	 * @return ConfigStore
 	 */
 	protected ConfigStore condition(HttpServletRequest request, int fr, int to, List<String> fixs, String... configs) {
-		ConfigStore store = new ConfigStoreImpl(BeanUtil.merge(fixs, configs));
+		ConfigStore store = new SimpleConfigStore(BeanUtil.merge(fixs, configs));
 		PageNavi navi = new PageNaviImpl();
 		navi.setCalType(1);
 		navi.setFirstRow(fr);

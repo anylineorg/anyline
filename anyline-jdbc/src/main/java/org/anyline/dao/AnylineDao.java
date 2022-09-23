@@ -39,21 +39,21 @@ public interface AnylineDao<E>{
 	 * 													DML
 	 *
 	 ******************************************************************************************************************/
-	public DataSet querys(RunPrepare sql, ConfigStore configs, String ... conditions);
+	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions);
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String ... conditions);
-	public DataSet querys(RunPrepare sql, String ... conditions);
-	public DataSet selects(RunPrepare sql, ConfigStore configs, String ... conditions);
-	public DataSet selects(RunPrepare sql, String ... conditions);
+	public DataSet querys(RunPrepare prepare, String ... conditions);
+	public DataSet selects(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	public DataSet selects(RunPrepare prepare, String ... conditions);
 
 
-	public List<Map<String,Object>> maps(RunPrepare sql, ConfigStore configs, String ... conditions);
-	public List<Map<String,Object>> maps(RunPrepare sql, String ... conditions);
+	public List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	public List<Map<String,Object>> maps(RunPrepare prepare, String ... conditions);
 
-	public int count(RunPrepare sql, ConfigStore configs, String ... conditions);
-	public int count(RunPrepare sql, String ... conditions);
+	public int count(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	public int count(RunPrepare prepare, String ... conditions);
 	
-	public boolean exists(RunPrepare sql, ConfigStore configs, String ... conditions);
-	public boolean exists(RunPrepare sql, String ... conditions);
+	public boolean exists(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	public boolean exists(RunPrepare prepare, String ... conditions);
 	/** 
 	 * 更新 
 	 * @param	columns  需要更新的列 
@@ -96,8 +96,8 @@ public interface AnylineDao<E>{
 	public int save(Object data, String ... columns); 
  
 
-	public int execute(RunPrepare sql, ConfigStore configs, String ... conditions);
-	public int execute(RunPrepare sql, String ... conditions);
+	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions);
+	public int execute(RunPrepare prepare, String ... conditions);
 
  
 	/** 

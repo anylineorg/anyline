@@ -34,10 +34,10 @@ import org.anyline.jdbc.param.ConfigParser;
 import org.anyline.jdbc.param.ConfigStore;
 import org.anyline.jdbc.prepare.Procedure;
 import org.anyline.jdbc.prepare.RunPrepare;
-import org.anyline.jdbc.prepare.simple.ProcedureParam;
+import org.anyline.jdbc.prepare.ProcedureParam;
 import org.anyline.jdbc.run.Run;
 import org.anyline.jdbc.prepare.sql.auto.TableSQL;
-import org.anyline.jdbc.prepare.sql.auto.impl.TableSQLImpl;
+import org.anyline.jdbc.prepare.sql.auto.init.SimpleTableSQL;
 import org.anyline.jdbc.ds.DataSourceHolder;
 import org.anyline.jdbc.entity.*;
 import org.anyline.jdbc.util.SQLAdapterUtil;
@@ -103,17 +103,17 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	 * 查询
 	 */
 	@Override
-	public List<Map<String,Object>> maps(RunPrepare sql, ConfigStore configs, String ... conditions) {
+	public List<Map<String,Object>> maps(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		List<Map<String,Object>> maps = null;
 		try {
-			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
-				if (sql instanceof TableSQL) {
-					src = sql.getTable();
+				if (prepare instanceof TableSQL) {
+					src = prepare.getTable();
 				} else {
-					src = sql.getText();
+					src = prepare.getText();
 				}
 				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
 				log.warn(tmp);
@@ -137,24 +137,24 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return maps;
 	}
-	public List<Map<String,Object>> maps(RunPrepare sql, String ... conditions){
-		return maps(sql, null, conditions);
+	public List<Map<String,Object>> maps(RunPrepare prepare, String ... conditions){
+		return maps(prepare, null, conditions);
 	}
 	/**
 	 * 查询
 	 */
 	@Override
-	public DataSet querys(RunPrepare sql, ConfigStore configs, String ... conditions) {
+	public DataSet querys(RunPrepare prepare, ConfigStore configs, String ... conditions) {
 		DataSet set = null;
 		try {
-			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				String src = "";
-				if (sql instanceof TableSQL) {
-					src = sql.getTable();
+				if (prepare instanceof TableSQL) {
+					src = prepare.getTable();
 				} else {
-					src = sql.getText();
+					src = prepare.getText();
 				}
 				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, src, configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
 				log.warn(tmp);
@@ -198,7 +198,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			} else {
 				set = new DataSet();
 			}
-			set.setDataSource(sql.getDataSource());
+			set.setDataSource(prepare.getDataSource());
 //		set.setSchema(sql.getSchema());
 //		set.setTable(sql.getTable());
 			set.setNavi(navi);
@@ -218,11 +218,11 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 	public <T> EntitySet<T> querys(Class<T> clazz, ConfigStore configs, String... conditions) {
 		EntitySet<T> list = null;
 		try {
-			RunPrepare sql = new TableSQLImpl();
+			RunPrepare prepare = new SimpleTableSQL();
 			if(AdapterProxy.hasAdapter()){
-				sql.setDataSource(AdapterProxy.table(clazz));
+				prepare.setDataSource(AdapterProxy.table(clazz));
 			}
-			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
 			if (showSQL && !run.isValid()) {
 				String tmp = "[valid:false]";
 				tmp += "[RunPrepare:" + ConfigParser.createSQLSign(false, false, clazz.getName(), configs, conditions) + "][thread:" + Thread.currentThread().getId() + "][ds:" + DataSourceHolder.getDataSource() + "]";
@@ -280,24 +280,24 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return list;
 	}
 
-	public DataSet querys(RunPrepare sql, String ... conditions){
-		return querys(sql, null, conditions);
+	public DataSet querys(RunPrepare prepare, String ... conditions){
+		return querys(prepare, null, conditions);
 	}
 
 	/**
 	 * 查询
 	 */
 	@Override
-	public DataSet selects(RunPrepare sql, ConfigStore configs, String ... conditions) {
-		return querys(sql, configs, conditions);
+	public DataSet selects(RunPrepare prepare, ConfigStore configs, String ... conditions) {
+		return querys(prepare, configs, conditions);
 	}
-	public DataSet selects(RunPrepare sql, String ... conditions){
-		return querys(sql, null, conditions);
+	public DataSet selects(RunPrepare prepare, String ... conditions){
+		return querys(prepare, null, conditions);
 	}
-	public int count(RunPrepare sql, ConfigStore configs, String ... conditions){
+	public int count(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int count = -1;
 		try{
-			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
 			if(null != listener){
 				listener.beforeCount(this,run);
 			}
@@ -313,13 +313,13 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return count;
 	}
-	public int count(RunPrepare sql, String ... conditions){
-		return count(sql, null, conditions);
+	public int count(RunPrepare prepare, String ... conditions){
+		return count(prepare, null, conditions);
 	}
-	public boolean exists(RunPrepare sql, ConfigStore configs, String ... conditions){
+	public boolean exists(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		boolean result = false;
 		try {
-			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRunSQL(sql, configs, conditions);
+			Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildQueryRun(prepare, configs, conditions);
 			String txt = run.getExistsTxt();
 			List<Object> values = run.getValues();
 
@@ -354,7 +354,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 				}
 			} catch (Exception e) {
 				if (showSQLWhenError) {
-					log.error("[{}][txt:\n{}\n]", random, LogUtil.format("查询异常", 33), sql);
+					log.error("[{}][txt:\n{}\n]", random, LogUtil.format("查询异常", 33), prepare);
 					log.error("{}[参数][param:{}]", random, paramLogFormat(values));
 				}
 				throw e;
@@ -367,8 +367,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		}
 		return result;
 	}
-	public boolean exists(RunPrepare sql, String ... conditions){
-		return exists(sql, null, conditions);
+	public boolean exists(RunPrepare prepare, String ... conditions){
+		return exists(prepare, null, conditions);
 	}
 	/**
 	 * 总记录数
@@ -827,9 +827,9 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return set;
 	}
 	@Override
-	public int execute(RunPrepare sql, ConfigStore configs, String ... conditions){
+	public int execute(RunPrepare prepare, ConfigStore configs, String ... conditions){
 		int result = -1;
-		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildExecuteRunSQL(sql, configs, conditions);
+		Run run = SQLAdapterUtil.getAdapter(getJdbc()).buildExecuteRunSQL(prepare, configs, conditions);
 		if(!run.isValid()){
 			if(showSQL){
 				log.warn("[valid:false]");
@@ -868,7 +868,7 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 			}
 		}catch(Exception e){
 			if(showSQLWhenError){
-				log.error("{},[{}][txt:\n{}\n]" ,random, LogUtil.format("SQL执行异常", 33),sql);
+				log.error("{},[{}][txt:\n{}\n]" ,random, LogUtil.format("SQL执行异常", 33),prepare);
 				log.error("{}[参数:{}]",random , paramLogFormat(values));
 			}
 			throw e;
@@ -881,8 +881,8 @@ public class AnylineDaoImpl<E> implements AnylineDao<E> {
 		return result;
 	}
 	@Override
-	public int execute(RunPrepare sql, String ... conditions){
-		return execute(sql, null, conditions);
+	public int execute(RunPrepare prepare, String ... conditions){
+		return execute(prepare, null, conditions);
 	}
 
 	@Override

@@ -316,8 +316,8 @@ public class AnylineController extends AbstractBasicController {
 		return entitys(getRequest(), null, false, false, params);
 	}
 
-	public DataSet entitys(RunPrepare sql){
-		List<String> metadatas = service.columns(sql.getTable());
+	public DataSet entitys(RunPrepare prepare){
+		List<String> metadatas = service.columns(prepare.getTable());
 		List<String> params = AdapterProxy.column2param(metadatas);
 		return entitys(getRequest(), null, false, false, params);
 	}

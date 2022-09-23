@@ -17,23 +17,19 @@
  */
 
 
-package org.anyline.web.config.http.impl; 
+package org.anyline.jdbc.prepare.sql.auto.init;
  
-import javax.servlet.http.HttpServletRequest;
+import org.anyline.jdbc.prepare.sql.auto.TextSQL;
 
-import org.anyline.jdbc.param.init.SimpleConfig;
-import org.anyline.web.config.http.Config;
-import org.anyline.web.util.WebUtil;
- 
-public class ConfigImpl extends SimpleConfig implements Config{
-
-	@Override
-	public void setValue(HttpServletRequest request) {
-		super.setValue(WebUtil.values(request));
-	}
-	public ConfigImpl(){
-	}
-	public ConfigImpl(String config){
-		super(config);
-	}
-}
+public class SimpleTextSQL extends SimpleAutoSQL implements TextSQL {
+	private String text; 
+	public SimpleTextSQL(String text){
+		super(); 
+		this.text = text; 
+		chain = new SimpleAutoConditionChain();
+	} 
+	public String getText(){ 
+		return this.text; 
+	} 
+	 
+} 
