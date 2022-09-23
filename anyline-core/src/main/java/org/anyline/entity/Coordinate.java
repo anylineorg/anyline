@@ -18,17 +18,17 @@ public class Coordinate {
 
 	private Double[] point = new Double[2]	; //坐标点[lng,lat][经度,纬度]
 	private TYPE type						; //坐标系
-	private String provinceCode				; //省
-	private String provinceName				;
-	private String cityCode					; //市
-	private String cityName					;
-	private String districtCode				; //区
-	private String districtName				;
-	private String townCode					; //街道
-	private String townName					;
-	private String code						;
-	private int level						;
-	private String address					;
+	private String provinceCode				; //省编号
+	private String provinceName				; //省中文名
+	private String cityCode					; //市编号
+	private String cityName					; //市中文我
+	private String districtCode				; //区编号
+	private String districtName				; //区中文名
+	private String townCode					; //街道编号
+	private String townName					; //街道中文名
+	private String code						; //
+	private int level						; //级别(国家:0,省:1)
+	private String address					; //详细地址
 	private boolean success = true			; //执行结果
 	private String message = null			; //执行结果说明
 
@@ -114,22 +114,22 @@ public class Coordinate {
 		this.townName = townName;
 	}
 
-	public double getLng() {
+	public Double getLng() {
 		return this.point[0];
 	}
 
-	public void setLng(double lng) {
+	public void setLng(Double lng) {
 		this.point[0] = lng;
 	}
 	public void setLng(String lng) {
 		this.point[0] = BasicUtil.parseDouble(lng, null);
 	}
 
-	public double getLat() {
+	public Double getLat() {
 		return this.point[1];
 	}
 
-	public void setLat(double lat) {
+	public void setLat(Double lat) {
 		this.point[1] = lat;
 	}
 	public void setLat(String lat) {
